@@ -2,78 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6810533301A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6CD333026
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbhCIUkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:40:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
+        id S231842AbhCIUnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:43:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbhCIUkN (ORCPT
+        with ESMTP id S231668AbhCIUmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:40:13 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EC5C06174A;
-        Tue,  9 Mar 2021 12:40:12 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id v2so16518575lft.9;
-        Tue, 09 Mar 2021 12:40:12 -0800 (PST)
+        Tue, 9 Mar 2021 15:42:31 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752BFC06174A;
+        Tue,  9 Mar 2021 12:42:31 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id p21so9607431pgl.12;
+        Tue, 09 Mar 2021 12:42:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0xx82RtkNjKUidXeOgDKcY7HvxO1Hnef7TiNr4pRn4Q=;
-        b=KY0hdqLqthB5dH+OJucInorKfaNUZqtsMeGjI79ZJcssu/6Uwxf/34unEcRveOdOLH
-         XPvexut7erm5Run7sxmtRmRaMW5SHEMKWUsKg37LEfKuB+m6cUGKSbOVA8Yvj/yt0nRF
-         eDxSE/CCTllk3oAT60FVEVDTHS/xmNo8CR4Y7ZJso80IPVfNznNG6NdN++7Wgg13KLQQ
-         vI7yKMtWoCwX/H1iIJzlFs+xdGdqmf3aF1Mbut3RrkIf9Qw5LG9LDXjYU5J4Urge9CbM
-         3xuh1Yz7BkmSf65CbUnMOZcncaaQxFoNj/7KZ1tP2T2+bH+CeAacgTxrsqAQqNoJ29Qz
-         if+g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F6H1eLaGJlqQ66tBpb5I9uNj9GMESOoJy7m0GH1JP58=;
+        b=HU3izlQAk8Mt6/FCeP8tXvAj4M+vWcnDiOFwwiJ6y6zFRu1CwFcqogAzDOLCwTjCEL
+         qAXZV+VH/9XjnGRjPstDE7SJn9Bq8zB98UNwP2rapNDbbwN3werptIlYRxYS3utLPE8m
+         GydBXNhKDLdtz2oF9t85xMM6gScMocSS7SFcC3w47DDRdAipUUNuTnRKyJxSvX8RPTmL
+         2yrrBMOHkzompBJ7NE1phX8f3qKmyHcV3i+PWHXyxa7ZkWbEy3x6WXZvp9h1QrzrSz2n
+         ky6yWI96REKN7irWvjsWjZAxaFNWSKb6+3cjWTDE1zWB/F0MuWfBhAOFTDNmquULAGpZ
+         1ApA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0xx82RtkNjKUidXeOgDKcY7HvxO1Hnef7TiNr4pRn4Q=;
-        b=DRhs14HaY1Rkvsbj/mOLGGeRoWcYGDJY7AyHEZhmxG6P21acVWC4e9EWAmKiz0rZGP
-         MuyKQA+NojSDs+yjTWFIu/MpvTnzIqdldu2H6yJgY5SJg7aT9W7iSGFRIeUG2rRonK1L
-         towSVqKJOFsS4zDfSdGC54yPWNIHg8eDfXk+ZiiXPnxs1AsqX/OACboA/9wo2tMM13b9
-         czWSOwIqLn4D1CGfZUFYVF/4crOnfFhhWzrjkMjmH3Fc8yTbsQcgB63VvGr/V9/kmZ77
-         jL/vv7031eMveOeEwfs6VwvQTrluVTT6Qf68bnvlXHqIYIiStnh0HInTWDX48OC6iy4+
-         sSKQ==
-X-Gm-Message-State: AOAM533C2HhuA28lA9z1mSdtRI4RLFh9xChOue1weJ/pksghR8YvGKvU
-        0vUzyFG7JPac1qmJBMtfQ9zyXWXMNf7BLsOTZc4=
-X-Google-Smtp-Source: ABdhPJxfrYj3coUqt82BUSqFQO2q2Kpjt7phXIuqG8JkXYBbSiqkWmpTstcRkHZZLj/g8GmaXszIeG7dbrBG2L3MvhI=
-X-Received: by 2002:a05:6512:2254:: with SMTP id i20mr18809952lfu.534.1615322411488;
- Tue, 09 Mar 2021 12:40:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
- <20210309124011.709c6cd3@gandalf.local.home> <5fda3ef7-d760-df4f-e076-23b635f6c758@gmail.com>
- <20210309150227.48281a18@gandalf.local.home> <fffda629-0028-2824-2344-3507b75d9188@gmail.com>
- <20210309153504.0b06ded1@gandalf.local.home>
-In-Reply-To: <20210309153504.0b06ded1@gandalf.local.home>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 9 Mar 2021 12:39:59 -0800
-Message-ID: <CAADnVQJe7GQjYvdBYvG3opeAdaY2EY2vtRafSp0zZ+Pe=Nnsdg@mail.gmail.com>
-Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F6H1eLaGJlqQ66tBpb5I9uNj9GMESOoJy7m0GH1JP58=;
+        b=RVXMMOE4nguA09Rm79aR59oMBTbftYngUEtbzHNiHlTNd0hMDZ76Zl3d7OIu20zmPt
+         4DKKTwMxE5cU+DoQU3chk/Xay99haZl6xx5l0Lm37rDWn6XgU27yZGGst4vdowGHuK2K
+         5pBhuRfktn653oIQS/wQU6groUVxUuz1JI+wtwCKeBsrSftDXFd8Xk12r4Bqkdtj/X88
+         fVvDcbex2Al19w9n+kU2fgh83/AlPqkKrmOypYiHZ1NOxKXvVOSFGXY9rglqnn3VUJQF
+         D/msdRLLH4NQI4+Ll7knk/Eke9fuTblQ396EpZMBvDJwmv22kIg5mlZq130lvYQL7M83
+         7mow==
+X-Gm-Message-State: AOAM531Djxatntfgzvj30qZJ3ssLPnNt4V2NF0lVNrLU++vHK9riVzG5
+        JNmqDCLQ7BipsVOaWAapVtGg0q8dLouKMxX0
+X-Google-Smtp-Source: ABdhPJyVs9xS1EYgSQPTuVJ1Eflsd1/06bOMzFrw2XXmi2tQtDVl+TncNGcEp6MAi0oeoeb6qg954w==
+X-Received: by 2002:a65:4344:: with SMTP id k4mr3119724pgq.48.1615322551060;
+        Tue, 09 Mar 2021 12:42:31 -0800 (PST)
+Received: from panda-xps.hsd1.ca.comcast.net ([98.37.48.39])
+        by smtp.googlemail.com with ESMTPSA id j3sm13298098pgk.24.2021.03.09.12.42.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 12:42:30 -0800 (PST)
+From:   Daniel Phan <daniel.phan36@gmail.com>
+X-Google-Original-From: Daniel Phan
+Cc:     daniel.phan36@gmail.com, Johannes Berg <johannes@sipsolutions.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mac80211: Check crypto_aead_encrypt for errors
+Date:   Tue,  9 Mar 2021 12:41:36 -0800
+Message-Id: <20210309204137.823268-1-daniel.phan36@gmail.com>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 12:37 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> The size of the fields and order changes all the time in various events. I
-> recommend doing so *all the time*. If you upgrade a kernel, then all the bpf
-> programs you have for that kernel should also be updated. You can't rely on
-> fields being the same, size or order. The best you can do is expect the
-> field to continue to exist, and that's not even a guarantee.
+From: panda <daniel.phan36@gmail.com>
 
-+1. Tracing bpf progs already do that.
-Old style tracing progs do it based on the kernel version.
-New style is using CO-RE.
+crypto_aead_encrypt returns <0 on error, so if these calls are not checked,
+execution may continue with failed encrypts.  It also seems that these two
+crypto_aead_encrypt calls are the only instances in the codebase that are
+not checked for errors.
+
+Signed-off-by: Daniel Phan <daniel.phan36@gmail.com>
+---
+ net/mac80211/aead_api.c | 5 +++--
+ net/mac80211/aes_gmac.c | 5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/net/mac80211/aead_api.c b/net/mac80211/aead_api.c
+index d7b3d905d535..b00d6f5b33f4 100644
+--- a/net/mac80211/aead_api.c
++++ b/net/mac80211/aead_api.c
+@@ -23,6 +23,7 @@ int aead_encrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad, size_t aad_len,
+ 	struct aead_request *aead_req;
+ 	int reqsize = sizeof(*aead_req) + crypto_aead_reqsize(tfm);
+ 	u8 *__aad;
++	int ret;
+ 
+ 	aead_req = kzalloc(reqsize + aad_len, GFP_ATOMIC);
+ 	if (!aead_req)
+@@ -40,10 +41,10 @@ int aead_encrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad, size_t aad_len,
+ 	aead_request_set_crypt(aead_req, sg, sg, data_len, b_0);
+ 	aead_request_set_ad(aead_req, sg[0].length);
+ 
+-	crypto_aead_encrypt(aead_req);
++	ret = crypto_aead_encrypt(aead_req);
+ 	kfree_sensitive(aead_req);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ int aead_decrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad, size_t aad_len,
+diff --git a/net/mac80211/aes_gmac.c b/net/mac80211/aes_gmac.c
+index 6f3b3a0cc10a..512cab073f2e 100644
+--- a/net/mac80211/aes_gmac.c
++++ b/net/mac80211/aes_gmac.c
+@@ -22,6 +22,7 @@ int ieee80211_aes_gmac(struct crypto_aead *tfm, const u8 *aad, u8 *nonce,
+ 	struct aead_request *aead_req;
+ 	int reqsize = sizeof(*aead_req) + crypto_aead_reqsize(tfm);
+ 	const __le16 *fc;
++	int ret;
+ 
+ 	if (data_len < GMAC_MIC_LEN)
+ 		return -EINVAL;
+@@ -59,10 +60,10 @@ int ieee80211_aes_gmac(struct crypto_aead *tfm, const u8 *aad, u8 *nonce,
+ 	aead_request_set_crypt(aead_req, sg, sg, 0, iv);
+ 	aead_request_set_ad(aead_req, GMAC_AAD_LEN + data_len);
+ 
+-	crypto_aead_encrypt(aead_req);
++	ret = crypto_aead_encrypt(aead_req);
+ 	kfree_sensitive(aead_req);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ struct crypto_aead *ieee80211_aes_gmac_key_setup(const u8 key[],
+-- 
+2.30.1
+
