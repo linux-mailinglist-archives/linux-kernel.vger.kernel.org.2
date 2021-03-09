@@ -2,153 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB05331CEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203A1331CEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhCICXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 21:23:30 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:43788 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229599AbhCICXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 21:23:00 -0500
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD_P620ZgwjQXAA--.30714S3;
-        Tue, 09 Mar 2021 10:22:50 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Check __clang__ to avoid performance influence with
- GCC in csum_tcpudp_nofold()
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1615207807-29972-1-git-send-email-yangtiezhu@loongson.cn>
- <8d61574e815a4cf098d21eb4d749be0f@AcuMS.aculab.com>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <0e07b9bf-03b7-64d4-1989-cba7abc5edeb@loongson.cn>
-Date:   Tue, 9 Mar 2021 10:22:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S230387AbhCICXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 21:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230027AbhCICXV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 21:23:21 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7C6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 18:23:21 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id i14so44549pjz.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 18:23:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jDz13J2Ic/rseTFIgsbUpalTQ6rauQ94sMWBebPKNBo=;
+        b=B+wrMG148xSOQut1zLdIYxfkmA51sRhXQ+CwydWsxglnLUyzJyebOmenhOa8xHU3mp
+         mNNnPKLl1WGr/+2lh9ba6v7qkFbi3nLgIsZ+IEVthGzaT8uhigxlnYxnTsivDaJ7eTi/
+         +r9ra1NKqvkNF99kTBcX2V5W+FgjMid0lp3zaFQQjqrB3MkZ5XONDAbzVyXbMkejWcae
+         uJo6fkiIlSzJ5tFA1Rr1b7gM0PTTm0hLSYmQLYoHAkhEJl8tsCSbcRwMTO5oRQdj3bN6
+         vCZzpTSQ/lbpyZ1l2wEWQAq2hpARC+to2RQQQAquhG0nqzwk18boerwG3Usi09/o/o1O
+         BDAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jDz13J2Ic/rseTFIgsbUpalTQ6rauQ94sMWBebPKNBo=;
+        b=OFQoBlQDoWJrJvgU3rc+t5pxWgYF01gReIsht4VFr/f87aDje9FlBoRe1zdXputAKc
+         AsvKFkEOBVgLUWoZnkKlfbGC3hRHh8/UfgzKL9/j+H3laQchCgI3fwjmazpFEwne2HsL
+         BUHQlcksiCq4At1KVPlXQLPoLC2rG54RFBihB6ztHDitrrbzxsX+tb0Pzo0y6OEucPQn
+         gGldcOhsASMVmlja+oI900atq72NdSXPW2er4f2YQHNlC9jS5AeXAGrEngC0zhvfYniO
+         ioTf/VAvnX3Crmcm68QamFHfgs+/CjZWRU9ivvflS9oWf5tN+LY1leLYZIc37N3IsH1F
+         GVEg==
+X-Gm-Message-State: AOAM533EnZjjlFEy5jr5BXUsVXR5PcMDFgCeEt1rphn3v2ly/Y7kvuh4
+        PkW53SgxiYMyo3rVZGNRbtE=
+X-Google-Smtp-Source: ABdhPJw1SxvmBDIvoxd/6zwjhMPEI1fV9zrHpkxtKLybJOelTcIN23xLNhCzyA8UKRMZAyo3RmGO8w==
+X-Received: by 2002:a17:902:c317:b029:e4:aecd:8539 with SMTP id k23-20020a170902c317b02900e4aecd8539mr23798801plx.61.1615256600587;
+        Mon, 08 Mar 2021 18:23:20 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:4ccc:acdd:25da:14d1])
+        by smtp.gmail.com with ESMTPSA id s200sm11440914pfs.53.2021.03.08.18.23.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 18:23:19 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 8 Mar 2021 18:23:17 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Rong Chen <rong.a.chen@intel.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, kbuild-all@01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Dias <joaodias@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Baron <jbaron@akamai.com>
+Subject: Re: [kbuild-all] Re: [PATCH v2] mm: page_alloc: dump migrate-failed
+ pages
+Message-ID: <YEbcFc0up0NFnSjY@google.com>
+References: <20210308202047.1903802-1-minchan@kernel.org>
+ <202103090555.LtLPf1Ho-lkp@intel.com>
+ <YEalYUiTH45XO2EV@google.com>
+ <d994f666-7883-25a3-9d46-ca431874dc18@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <8d61574e815a4cf098d21eb4d749be0f@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxD_P620ZgwjQXAA--.30714S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWkuw4fCr43WF1xKryUJrb_yoW5WF47pF
-        4jkas2q3yvqryUKF9Ivr4S9r98Kr4rGF92vrnIg3Wjva45Xr13Wr93Kw15Gry8JaykAa4S
-        9FWfWr1kCrs2vaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
-        67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
-        73UjIFyTuYvjfU0GYLUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d994f666-7883-25a3-9d46-ca431874dc18@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/09/2021 12:52 AM, David Laight wrote:
-> From: Tiezhu Yang
->> Sent: 08 March 2021 12:50
->>
->> The asm code in csum_tcpudp_nofold() is performance-critical, I am sorry
->> for the poorly considered implementation about the performance influence
->> with GCC in the commit 198688edbf77 ("MIPS: Fix inline asm input/output
->> type mismatch in checksum.h used with Clang").
->>
->> With this patch, we can build successfully by both GCC and Clang,
->> at the same time, we can avoid the potential performance influence
->> with GCC.
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   arch/mips/include/asm/checksum.h | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
->> index 1e6c135..64d353e 100644
->> --- a/arch/mips/include/asm/checksum.h
->> +++ b/arch/mips/include/asm/checksum.h
->> @@ -130,7 +130,9 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
->>   					__u32 len, __u8 proto,
->>   					__wsum sum)
->>   {
->> +#ifdef __clang__
->>   	unsigned long tmp = (__force unsigned long)sum;
->> +#endif
-> What happens if you make the above:
-> #ifdef __clang__
-> 	unsigned long tmp = (__force unsigned long)sum;
-> #else
-> 	__wsum tmp = sum;
-> #endif
-> 	
-> and then leave the rest of the function the same for both compilers.
-> Maybe do s/sum/sum_in/,s/tmp/sum/ to reduce the changes.
+On Tue, Mar 09, 2021 at 08:41:44AM +0800, Rong Chen wrote:
+> 
+> 
+> On 3/9/21 6:29 AM, Minchan Kim wrote:
+> > On Tue, Mar 09, 2021 at 05:29:30AM +0800, kernel test robot wrote:
+> > > Hi Minchan,
+> > > 
+> > > I love your patch! Perhaps something to improve:
+> > > 
+> > > [auto build test WARNING on hnaz-linux-mm/master]
+> > > 
+> > > url:    https://github.com/0day-ci/linux/commits/Minchan-Kim/mm-page_alloc-dump-migrate-failed-pages/20210309-042205
+> > > base:   https://github.com/hnaz/linux-mm master
+> > > config: m68k-allmodconfig (attached as .config)
+> > > compiler: m68k-linux-gcc (GCC) 9.3.0
+> > > reproduce (this is a W=1 build):
+> > >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >          chmod +x ~/bin/make.cross
+> > >          # https://github.com/0day-ci/linux/commit/3c635af37b862e9c601ee8d5818f7da9cd3e2e57
+> > >          git remote add linux-review https://github.com/0day-ci/linux
+> > >          git fetch --no-tags linux-review Minchan-Kim/mm-page_alloc-dump-migrate-failed-pages/20210309-042205
+> > >          git checkout 3c635af37b862e9c601ee8d5818f7da9cd3e2e57
+> > >          # save the attached .config to linux build tree
+> > >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All warnings (new ones prefixed by >>):
+> > > 
+> > >     arch/m68k/include/asm/page_mm.h:169:49: warning: ordered comparison of pointer with null pointer [-Wextra]
+> > >       169 | #define virt_addr_valid(kaddr) ((void *)(kaddr) >= (void *)PAGE_OFFSET && (void *)(kaddr) < high_memory)
+> > >           |                                                 ^~
+> > >     include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+> > >        78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+> > >           |                                          ^
+> > >     include/linux/scatterlist.h:143:2: note: in expansion of macro 'BUG_ON'
+> > >       143 |  BUG_ON(!virt_addr_valid(buf));
+> > >           |  ^~~~~~
+> > >     include/linux/scatterlist.h:143:10: note: in expansion of macro 'virt_addr_valid'
+> > >       143 |  BUG_ON(!virt_addr_valid(buf));
+> > >           |          ^~~~~~~~~~~~~~~
+> > >     In file included from arch/m68k/include/asm/page.h:60,
+> > >                      from arch/m68k/include/asm/thread_info.h:6,
+> > >                      from include/linux/thread_info.h:38,
+> > >                      from include/asm-generic/preempt.h:5,
+> > >                      from ./arch/m68k/include/generated/asm/preempt.h:1,
+> > >                      from include/linux/preempt.h:78,
+> > >                      from include/linux/spinlock.h:51,
+> > >                      from include/linux/mmzone.h:8,
+> > >                      from include/linux/gfp.h:6,
+> > >                      from include/linux/mm.h:10,
+> > >                      from mm/page_alloc.c:19:
+> > I am not sure this is triggered by the patch since I could see the
+> > warn with reverting the patch.
+> 
+> Hi Minchan,
+> 
+> Only the lines prefixed by ">>" are related with the patch:
+> 
+> > > mm/page_alloc.c:8348:5: warning: no previous prototype for 'alloc_contig_ratelimit' [-Wmissing-prototypes]
+> 
+>     8348 | int alloc_contig_ratelimit(void)
+>          |     ^~~~~~~~~~~~~~~~~~~~~~
+> 
+> > > mm/page_alloc.c:8353:6: warning: no previous prototype for 'dump_migrate_failure_pages' [-Wmissing-prototypes]
+> 
+>     8353 | void dump_migrate_failure_pages(struct list_head *page_list)
+> 
 
-Hi David,
+Thanks for the clarification.
 
-Thank you very much.
+Then, below should fix the warning.
+I will respin it at next revision once I get more feedback.
 
-As you suggested, the following changes looks much better,
-I will test it and then send v2 later.
-
-diff --git a/arch/mips/include/asm/checksum.h 
-b/arch/mips/include/asm/checksum.h
-index 1e6c135..80eddd4 100644
---- a/arch/mips/include/asm/checksum.h
-+++ b/arch/mips/include/asm/checksum.h
-@@ -128,9 +128,13 @@ static inline __sum16 ip_fast_csum(const void *iph, 
-unsigned int ihl)
-
-  static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
-                                         __u32 len, __u8 proto,
--                                       __wsum sum)
-+                                       __wsum sum_in)
-  {
--       unsigned long tmp = (__force unsigned long)sum;
-+#ifdef __clang__
-+       unsigned long sum = (__force unsigned long)sum_in;
++#if defined(CONFIG_DYNAMIC_DEBUG) || \
++       (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
++static void dump_migrate_failure_pages(struct list_head *page_list)
++{
++       static DEFINE_RATELIMIT_STATE(_rs,
++                                       DEFAULT_RATELIMIT_INTERVAL,
++                                       DEFAULT_RATELIMIT_BURST);
++
++       DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
++                       "migrate failure");
++       if (DYNAMIC_DEBUG_BRANCH(descriptor) && __ratelimit(&_rs)) {
++               struct page *page;
++
++               WARN(1, "failed callstack");
++               list_for_each_entry(page, page_list, lru)
++                       dump_page(page, "migration failure");
++       }
++}
 +#else
-+       __wsum sum = sum_in;
++static inline void dump_migrate_failure_pages(struct list_head *page_list)
++{
++}
 +#endif
-
-         __asm__(
-         "       .set    push            # csum_tcpudp_nofold\n"
-@@ -159,7 +163,7 @@ static inline __wsum csum_tcpudp_nofold(__be32 
-saddr, __be32 daddr,
-         "       addu    %0, $1          \n"
-  #endif
-         "       .set    pop"
--       : "=r" (tmp)
-+       : "=r" (sum)
-         : "0" ((__force unsigned long)daddr),
-           "r" ((__force unsigned long)saddr),
-  #ifdef __MIPSEL__
-@@ -169,7 +173,7 @@ static inline __wsum csum_tcpudp_nofold(__be32 
-saddr, __be32 daddr,
-  #endif
-           "r" ((__force unsigned long)sum));
-
--       return (__force __wsum)tmp;
-+       return (__force __wsum)sum;
-  }
-  #define csum_tcpudp_nofold csum_tcpudp_nofold
-
-Thanks,
-Tiezhu
-
->
-> 	David
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-
++
+ /* [start, end) must belong to a single zone. */
+ static int __alloc_contig_migrate_range(struct compact_control *cc,
+                                        unsigned long start, unsigned long end)
+@@ -8496,6 +8520,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+                                NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+        }
+        if (ret < 0) {
++               dump_migrate_failure_pages(&cc->migratepages);
+                putback_movable_pages(&cc->migratepages);
+                return ret;
+        }
