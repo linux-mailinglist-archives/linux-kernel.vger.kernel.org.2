@@ -2,232 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC337331FE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 08:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A29331FEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 08:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhCIHcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 02:32:22 -0500
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:44938 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230401AbhCIHcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 02:32:01 -0500
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1297UBpl014277;
-        Mon, 8 Mar 2021 23:31:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=t8jj5Dj4GUh8iuzyleftFT1N9JH8R3nUBXBaiG6dlYc=;
- b=NM98ZazsOBKLFPGXKDekxtT+IGT8LvzlMqJd6aaOV2IaiNH13ucOUzf769LsibTKjVu6
- aaA31TKhCGsIHxcU/B9718fwiaYRFE/XHY+AU+vXby7FB79qeSGX4gYx77SLKfxl3VE4
- j28AybNN7kX/G++3M0Wxs58iMgiFBgygdREqblNtQp9zP/QJxTIcvQ1WzJjn0DCLNI6A
- DaqS6No2UKrU7oqFffM6hq+HEVRGv8K7iBFWqjX7mUNnjhFZEAmZBatsODaZkrSQ2PTx
- cNAf8PnwK4qNhoiq1cwlbhkWIxiMgPzlIzuuZLWew26/O3/sKbGlS5zUK3ki6GAwOZbD CA== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 374674yyfv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Mar 2021 23:31:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gRJtLDFMixiW5fT9aRPGXMo4t7b16osGm5NQPx+HKk+XogBiW+r92BZOC7aeSiy55tG/Zx6fD8BIkfVcb4k4h+fLBuy+pXrEQFUM+MxxOB352fpaliZujfHJ48udVcsZD0z+THyBXqs6u1oqHS3qIdV9FGq4wSJdebVZKSwLd+GUKGO1WVKpVfSHgyARJdlKdwNrG5nodSU5azx52ZC5oF3arLI9XDlAwxxQbsgWgJSklPtSp2cc/9gBHVJrOlKYlglRx3+Omf669i0Fv35SX3OwTP2cVMOd/O2PLbPx0trrgb8CpS4cxEhTUbX9jqSNj8DWGrJXZWaRbG0bPoNZew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t8jj5Dj4GUh8iuzyleftFT1N9JH8R3nUBXBaiG6dlYc=;
- b=eN5+VSyRH7ZqHU0jPRZNKHJE0Rc6W7g937ukMkQw0iBAsMgt+ueWv0782SNl3mNhxSL5POZRtEWQczbCRyj66Gc6fjdw64GDBo96FjjiNr1jP3aHdmBR1wXBB5HwkjcVItIheyhseVELS59k28gyqJ1vwZl3lODRoTA6ftbzn8hmYxIMFYLG2iWlMuBMfvThkQ98Ico9yJD78mapL/rrqkLXURgVQvA5iC3M/2TH9VMO8v7pKqS9C6aAZFJN+xIPCJvqc8cSm7ubNv0QacpBjN1eiYgne87jMolxn3uEUOgqb4LE2sPsTmrCN0RRoHCcuV/27G2LPP0xvxv4skIcaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 199.43.4.23) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t8jj5Dj4GUh8iuzyleftFT1N9JH8R3nUBXBaiG6dlYc=;
- b=R7WJWrw72pYX/7mBf7UIwmDBHjPYGoGUoQ2hEgNDSuswcYUXwe99jxjX/5MLcXpXjPRD+7jjsStnk+xBarY+ykpq9b3Ghy3ODVg6Yh9CLe0SF8ghTpzSv8sz6jbAiyWQIjiIO3UDCpM7G73a89NNWGivq67JH1mEu0QvLrpfR7c=
-Received: from DM5PR07CA0033.namprd07.prod.outlook.com (2603:10b6:3:16::19) by
- MWHPR07MB3534.namprd07.prod.outlook.com (2603:10b6:301:61::34) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3890.23; Tue, 9 Mar 2021 07:31:48 +0000
-Received: from DM6NAM12FT012.eop-nam12.prod.protection.outlook.com
- (2603:10b6:3:16:cafe::10) by DM5PR07CA0033.outlook.office365.com
- (2603:10b6:3:16::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Tue, 9 Mar 2021 07:31:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
- smtp.mailfrom=cadence.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none
- header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
- client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
-Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- DM6NAM12FT012.mail.protection.outlook.com (10.13.179.161) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3933.16 via Frontend Transport; Tue, 9 Mar 2021 07:31:48 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 1297Vi7t003118
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Mar 2021 02:31:47 -0500
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 9 Mar 2021 08:31:47 +0100
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 9 Mar 2021 08:31:46 +0100
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 1297Vkbx013299;
-        Tue, 9 Mar 2021 08:31:46 +0100
-Received: (from nadeem@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 1297VknL013298;
-        Tue, 9 Mar 2021 08:31:46 +0100
-From:   Nadeem Athani <nadeem@cadence.com>
-To:     <tjoseph@cadence.com>, <bhelgaas@google.com>, <robh+dt@kernel.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lorenzo.pieralisi@arm.com>,
-        <robh@kernel.org>, <kishon@ti.com>
-CC:     <mparab@cadence.com>, <sjakhade@cadence.com>, <nadeem@cadence.com>,
-        <pthombar@cadence.com>
-Subject: [PATCH 2/2] PCI: cadence: Set LTSSM Detect.Quiet state delay.
-Date:   Tue, 9 Mar 2021 08:31:42 +0100
-Message-ID: <20210309073142.13219-3-nadeem@cadence.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20210309073142.13219-1-nadeem@cadence.com>
-References: <20210309073142.13219-1-nadeem@cadence.com>
+        id S229480AbhCIHe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 02:34:27 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:63339 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229625AbhCIHeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 02:34:12 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dvn5Y3ZSfz9txlJ;
+        Tue,  9 Mar 2021 08:34:09 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Ts3OxJuiZwLg; Tue,  9 Mar 2021 08:34:09 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dvn5Y2c3Vz9txlH;
+        Tue,  9 Mar 2021 08:34:09 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6357A8B7CE;
+        Tue,  9 Mar 2021 08:34:10 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id vEw3QlpfrpDT; Tue,  9 Mar 2021 08:34:10 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 885058B773;
+        Tue,  9 Mar 2021 08:34:09 +0100 (CET)
+Subject: Re: [PATCH v2 1/7] CMDLINE: add generic builtin command line
+To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        xe-linux-external@cisco.com
+Cc:     Ruslan Bilovol <rbilovol@cisco.com>, linux-kernel@vger.kernel.org
+References: <20210309000247.2989531-2-danielwa@cisco.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <2654902f-c738-b3a2-2f3c-a376cdf1e46d@csgroup.eu>
+Date:   Tue, 9 Mar 2021 08:34:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5e7bb356-4787-42d4-0605-08d8e2cd6610
-X-MS-TrafficTypeDiagnostic: MWHPR07MB3534:
-X-Microsoft-Antispam-PRVS: <MWHPR07MB35348ED624FDE785F0131AB3D8929@MWHPR07MB3534.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /7V25yECxpKwh5+RTb9YMiJIJHvCNYCq1rsegJXHH7ImhptstPPABjhbcjXnYrJhK4msR9ZY/CNNmXMsKPp8g/pLzcBtGaiUK+/gt6uY1oip9+8ithAxKAYFhEFOEfPi9LKyQn/AK1DJdmLSkiZSraTTwwE1xLxHxlC5Q7JXkHeQn4aDSLBdufjXUwca987QytxZ5mahiiKs6jvjhpDbYlPY1HAsxSZQhDOB/OO19b0KChMDr8PSL9OGALY3RLlhdOMsBnBCOykZMwNEw1S5qNOmE0aRSbmYGNX+8ZFW/FYWWtOq+Wfa3WTAqNeGD62yLAbMRUIBHrZrwEoNi+fFU3550ReYprxCRAowKzWSVnTQeky03CaK/wVbU04cVN1vc9pEECkL+b4qA8cY/ayNt0dE3HhMwgEi3lddFy0cXsj0kKWAy9YNkG+vBIuSiBMWYCGEY8N10SdJZYzhydP9eseOvdI9JSyYnizrzPi1LcJxPhxr4DB2PQyHGklq1MAYGcNX7bTxydwBKpgXi2U1fPTwT+YvP1wLPd55/2FqE3RLUvjbr6yt9U29AOngJ64saO70b1Bb2vqjRk2bFCnc3JnoUJbkH7Fh8RfF6Mrwio1kZIRG/S+iDgQXRq4IIjpxGOr7EuWodzZqjxQ3lELSb3XFbfIxYQaWAJYSzJ/K+QpaVcDnHUyWO1P8BxAJOfv0j9nj/vTTaCofTkKAMExAd26r0dOGmEE4NIZd3VTTo2M=
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(36092001)(36840700001)(46966006)(186003)(70206006)(70586007)(47076005)(478600001)(82740400003)(26005)(110136005)(2616005)(336012)(81166007)(107886003)(4326008)(54906003)(83380400001)(426003)(42186006)(6666004)(36906005)(316002)(86362001)(8936002)(82310400003)(36756003)(36860700001)(8676002)(1076003)(2906002)(5660300002)(356005)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 07:31:48.0704
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e7bb356-4787-42d4-0605-08d8e2cd6610
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT012.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR07MB3534
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-09_06:2021-03-08,2021-03-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 suspectscore=0
- phishscore=0 clxscore=1015 bulkscore=0 impostorscore=0 priorityscore=1501
- spamscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090036
+In-Reply-To: <20210309000247.2989531-2-danielwa@cisco.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The parameter detect_quiet_min_delay can be used to program the minimum
-time that LTSSM waits on entering Detect.Quiet state.
-00 : 0us minimum wait time in Detect.Quiet state.
-01 : 100us minimum wait time in Detect.Quiet state.
-10 : 1000us minimum wait time in Detect.Quiet state.
-11 : 2000us minimum wait time in Detect.Quiet state.
 
-As per PCIe specification, all Receivers must meet the Z-RX-DC
-specification for 2.5 GT/s within 1000us of entering Detect.Quiet LTSSM
-substate. The LTSSM must stay in this substate until the ZRXDC
-specification for 2.5 GT/s is met.
 
-Signed-off-by: Nadeem Athani <nadeem@cadence.com>
----
- drivers/pci/controller/cadence/pcie-cadence-host.c | 22 ++++++++++++++++++++++
- drivers/pci/controller/cadence/pcie-cadence.h      | 10 ++++++++++
- 2 files changed, 32 insertions(+)
+Le 09/03/2021 à 01:02, Daniel Walker a écrit :
+> This code allows architectures to use a generic builtin command line.
+> The state of the builtin command line options across architecture is
+> diverse. On x86 and mips they have pretty much the same code and the
+> code prepends the builtin command line onto the boot loader provided
+> one. On powerpc there is only a builtin override and nothing else.
 
-diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
-index 73dcf8cf98fb..056161b3fe65 100644
---- a/drivers/pci/controller/cadence/pcie-cadence-host.c
-+++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
-@@ -461,6 +461,20 @@ static int cdns_pcie_host_init(struct device *dev,
- 	return cdns_pcie_host_init_address_translation(rc);
- }
- 
-+static void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie_rc *rc)
-+{
-+	struct cdns_pcie *pcie = &rc->pcie;
-+	u32 delay = rc->detect_quiet_min_delay;
-+	u32 ltssm_control_cap;
-+
-+	ltssm_control_cap = cdns_pcie_readl(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP);
-+	ltssm_control_cap = ((ltssm_control_cap &
-+			     ~CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK) |
-+			    CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay));
-+
-+	cdns_pcie_writel(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP, ltssm_control_cap);
-+}
-+
- int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
- {
- 	struct device *dev = rc->pcie.dev;
-@@ -485,6 +499,10 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
- 	rc->device_id = 0xffff;
- 	of_property_read_u32(np, "device-id", &rc->device_id);
- 
-+	rc->detect_quiet_min_delay = 0;
-+	of_property_read_u32(np, "detect-quiet-min-delay",
-+			     &rc->detect_quiet_min_delay);
-+
- 	pcie->reg_base = devm_platform_ioremap_resource_byname(pdev, "reg");
- 	if (IS_ERR(pcie->reg_base)) {
- 		dev_err(dev, "missing \"reg\"\n");
-@@ -497,6 +515,10 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
- 		return PTR_ERR(rc->cfg_base);
- 	rc->cfg_res = res;
- 
-+	/* Default Detect.Quiet state delay is 0 */
-+	if (rc->detect_quiet_min_delay)
-+		cdns_pcie_detect_quiet_min_delay_set(rc);
-+
- 	ret = cdns_pcie_start_link(pcie);
- 	if (ret) {
- 		dev_err(dev, "Failed to start link\n");
-diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-index 254d2570f8c9..f2d3cca2c707 100644
---- a/drivers/pci/controller/cadence/pcie-cadence.h
-+++ b/drivers/pci/controller/cadence/pcie-cadence.h
-@@ -189,6 +189,14 @@
- /* AXI link down register */
- #define CDNS_PCIE_AT_LINKDOWN (CDNS_PCIE_AT_BASE + 0x0824)
- 
-+/* LTSSM Capabilities register */
-+#define CDNS_PCIE_LTSSM_CONTROL_CAP		 (CDNS_PCIE_LM_BASE + 0x0054)
-+#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK	 GENMASK(2, 1)
-+#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT 1
-+#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay) \
-+	  (((delay) << CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT) & \
-+	  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK)
-+
- enum cdns_pcie_rp_bar {
- 	RP_BAR_UNDEFINED = -1,
- 	RP_BAR0,
-@@ -289,6 +297,7 @@ struct cdns_pcie {
-  *            single function at a time
-  * @vendor_id: PCI vendor ID
-  * @device_id: PCI device ID
-+ * @detect_quiet_min_delay: LTSSM Detect Quite state min. delay
-  * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and	RP_NO_BAR if it's free or
-  *                available
-  * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
-@@ -299,6 +308,7 @@ struct cdns_pcie_rc {
- 	void __iomem		*cfg_base;
- 	u32			vendor_id;
- 	u32			device_id;
-+	u32			detect_quiet_min_delay;
- 	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
- 	bool                    quirk_retrain_flag;
- };
--- 
-2.15.0
+Same comment as in v1: The above is not correct for powerpc.
 
+> 
+> The code in this commit unifies the code into a generic
+> header file under the CONFIG_GENERIC_CMDLINE option. When this
+> option is enabled the architecture can call the cmdline_add_builtin()
+> to add the builtin command line.
+> 
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> ---
+>   include/linux/cmdline.h | 89 +++++++++++++++++++++++++++++++++++++++++
+>   init/Kconfig            | 68 +++++++++++++++++++++++++++++++
+>   2 files changed, 157 insertions(+)
+>   create mode 100644 include/linux/cmdline.h
+> 
+> diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
+> new file mode 100644
+> index 000000000000..00929b6e49e6
+> --- /dev/null
+> +++ b/include/linux/cmdline.h
+> @@ -0,0 +1,89 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_CMDLINE_H
+> +#define _LINUX_CMDLINE_H
+> +
+> +/*
+> + *
+> + * Copyright (C) 2006,2021. Cisco Systems, Inc.
+> + *
+> + * Generic Append/Prepend cmdline support.
+> + */
+> +
+> +#if defined(CONFIG_GENERIC_CMDLINE) && defined(CONFIG_CMDLINE_BOOL)
+> +
+> +#ifndef CONFIG_CMDLINE_OVERRIDE
+> +#define GENERIC_CMDLINE_NEED_STRLCAT
+> +/*
+> + * This function will append or prepend a builtin command line to the command
+> + * line provided by the bootloader. Kconfig options can be used to alter
+> + * the behavior of this builtin command line.
+> + * @dest: The destination of the final appended/prepended string
+> + * @src: The starting string or NULL if there isn't one.
+> + * @tmp: temporary space used for prepending
+> + * @length: the maximum length of the strings above.
+> + * @cmdline_strlcpy: point to a compatible strlcpy
+> + * @cmdline_strlcat: point to a compatible strlcat
+> + */
+> +static inline void
+> +__cmdline_add_builtin(char *dest, const char *src, char *tmp, unsigned long length,
+> +		size_t (*cmdline_strlcpy)(char *dest, const char *src, size_t size),
+> +		size_t (*cmdline_strlcat)(char *dest, const char *src, size_t count))
+> +{
+> +	if (src != dest && src != NULL) {
+> +		cmdline_strlcpy(dest, " ", length);
+> +		cmdline_strlcat(dest, src, length);
+> +	}
+> +
+> +	if (sizeof(CONFIG_CMDLINE_APPEND) > 1)
+
+This test can probably be avoided. if CONFIG_CMDLINE_APPEND is empty, it will add a space at the end 
+of dest, that's harmless.
+
+> +		cmdline_strlcat(dest, " " CONFIG_CMDLINE_APPEND, length);
+> +
+> +	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) {
+
+Same. Keep it simple. Provide tmp all the time, have only one logic.
+
+> +		cmdline_strlcpy(tmp, CONFIG_CMDLINE_PREPEND " ", length);
+> +		cmdline_strlcat(tmp, dest, length);
+> +		cmdline_strlcpy(dest, tmp, length);
+> +	}
+> +}
+> +
+> +#define cmdline_add_builtin_custom(dest, src, length, label, cmdline_strlcpy, cmdline_strlcat)			\
+> +{														\
+> +	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) {								\
+> +		static label char cmdline_tmp_space[length];							\
+> +		__cmdline_add_builtin(dest, src, cmdline_tmp_space, length, cmdline_strlcpy, cmdline_strlcat);	\
+> +	} else if (sizeof(CONFIG_CMDLINE_APPEND) > 1) {								\
+> +		__cmdline_add_builtin(dest, src, NULL, length, cmdline_strlcpy, cmdline_strlcat);		\
+> +	}													\
+
+No need to micro-optimise this, you can provide cmdline_tmp_space all the time and only keep on leg 
+of the if/elseif
+
+> +}
+> +#define cmdline_add_builtin(dest, src, length)	\
+> +	cmdline_add_builtin_custom(dest, src, length, __initdata, strlcpy, strlcat)
+> +
+> +#else /* CONFIG_CMDLINE_OVERRIDE */
+> +
+> +static inline void
+> +__cmdline_add_builtin_custom(char *dest, const char *src, unsigned long length,
+> +		size_t (*cmdline_strlcpy)(char *dest, const char *src, size_t size))
+
+Argh ! So the same function as different semantics whether CONFIG_CMDLINE_OVERRIDE and/or 
+CONFIG_CMDLINE_BOOL is selected ? It means the architecture will have to know it as well in order to 
+call it right ? That looks like micro-optimisation, I think it is not worth it.
+
+
+> +{
+> +	cmdline_strlcpy(dest, CONFIG_CMDLINE_PREPEND " " CONFIG_CMDLINE_APPEND, length);
+> +}
+> +#define cmdline_add_builtin_custom(dest, src, length, label, cmdline_strlcpy, cmdline_strlcat)	\
+> +	__cmdline_add_builtin_custom(dest, src, length, cmdline_strlcpy)
+> +#define cmdline_add_builtin(dest, src, length)	\
+> +	__cmdline_add_builtin_custom(dest, src, length, strlcpy)
+> +#endif /* !CONFIG_CMDLINE_OVERRIDE */
+> +
+> +#else /* !CONFIG_GENERIC_CMDLINE || !CONFIG_CMDLINE_BOOL */
+> +
+> +static inline void
+> +__cmdline_add_builtin_custom(char *dest, const char *src, unsigned long length,
+> +		size_t (*cmdline_strlcpy)(char *dest, const char *src, size_t size))
+> +{
+> +	if (src != NULL)
+> +		cmdline_strlcpy(dest, src, length);
+> +}
+> +#define cmdline_add_builtin_custom(dest, src, length, label, cmdline_strlcpy, cmdline_strlcat)	\
+> +	__cmdline_add_builtin_custom(dest, src, length, cmdline_strlcpy)
+> +#define cmdline_add_builtin(dest, src, length)	\
+> +	__cmdline_add_builtin_custom(dest, src, length, strlcpy)	\
+> +
+> +#endif /* CONFIG_GENERIC_CMDLINE */
+> +
+> +#endif /* _LINUX_CMDLINE_H */
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 29ad68325028..28363ab07cd4 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -2032,6 +2032,74 @@ config PROFILING
+>   config TRACEPOINTS
+>   	bool
+>   
+> +config GENERIC_CMDLINE
+> +	bool
+> +
+> +if GENERIC_CMDLINE
+> +
+> +config CMDLINE_BOOL
+> +	bool "Built-in kernel command line"
+> +	help
+> +	  Allow for specifying boot arguments to the kernel at
+> +	  build time.  On some systems (e.g. embedded ones), it is
+> +	  necessary or convenient to provide some or all of the
+> +	  kernel boot arguments with the kernel itself (that is,
+> +	  to not rely on the boot loader to provide them.)
+> +
+> +	  To compile command line arguments into the kernel,
+> +	  set this option to 'Y', then fill in the
+> +	  the boot arguments in CONFIG_CMDLINE.
+
+CONFIG_CMDLINE doesn't exist.
+
+> +
+> +	  Systems with fully functional boot loaders (i.e. non-embedded)
+> +	  should leave this option set to 'N'.
+> +
+> +config CMDLINE_APPEND
+> +	string "Built-in kernel command string append"
+> +	depends on CMDLINE_BOOL
+
+I think it would be better to have CMDLINE_APPEND and CMDLINE_PREPENT defined at all time, and not 
+leak CMDLINE_BOOL into code. It should just be used here to unable user customisation of 
+CMDLINE_APPEND, as follows:
+
+config CMDLINE_APPEND
+	string "Built-in kernel command string append" if CMDLINE_BOOL
+	default ""
+
+
+> +	default ""
+> +	help
+> +	  Enter arguments here that should be compiled into the kernel
+> +	  image and used at boot time.  If the boot loader provides a
+> +	  command line at boot time, this string is appended to it to
+> +	  form the full kernel command line, when the system boots.
+> +
+> +	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
+> +	  change this behavior.
+> +
+> +	  In most cases, the command line (whether built-in or provided
+> +	  by the boot loader) should specify the device for the root
+> +	  file system.
+> +
+> +config CMDLINE_PREPEND
+> +	string "Built-in kernel command string prepend"
+> +	depends on CMDLINE_BOOL
+
+Same comment as for CMDLINE_APPEND
+
+> +	default ""
+> +	help
+> +	  Enter arguments here that should be compiled into the kernel
+> +	  image and used at boot time.  If the boot loader provides a
+> +	  command line at boot time, this string is prepended to it to
+> +	  form the full kernel command line, when the system boots.
+> +
+> +	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
+> +	  change this behavior.
+> +
+> +	  In most cases, the command line (whether built-in or provided
+> +	  by the boot loader) should specify the device for the root
+> +	  file system.
+> +
+> +config CMDLINE_OVERRIDE
+> +	bool "Built-in command line overrides boot loader arguments"
+> +	depends on CMDLINE_BOOL
+> +	help
+> +	  Set this option to 'Y' to have the kernel ignore the boot loader
+> +	  command line, and use ONLY the built-in command line. In this case
+> +	  append and prepend strings are concatenated to form the full
+> +	  command line.
+> +
+> +	  This is used to work around broken boot loaders.  This should
+> +	  be set to 'N' under normal conditions.
+
+In powerpc, by default, when a CMDLINE is provided, it is used only if the bootloader doesn't 
+provide a command line. I can't see how I can do that here.
+
+> +endif
+> +
+>   endmenu		# General setup
+>   
+>   source "arch/Kconfig"
+> 
