@@ -2,133 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346EB333154
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B62CC33317F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbhCIWDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 17:03:38 -0500
-Received: from mail.acd.net ([207.179.106.7]:44306 "EHLO mail.acd.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230173AbhCIWDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 17:03:08 -0500
-X-Greylist: delayed 375 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Mar 2021 17:03:07 EST
-Received: from mail00.acd.net (mail.acd.net [127.0.0.1])
-        by mail.acd.net (Postfix) with ESMTP id 4Dw8GG0lRYzBKZpM
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 16:57:58 -0500 (EST)
-Authentication-Results: mail00.acd.net (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=acd.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=acd.net; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :reply-to:subject:to:from:date:mime-version; s=dkim; t=
-        1615327076; x=1617919077; bh=mdpg/qrILYPhfWqvJVZpANlRYNNlMj2g3r0
-        qQuSroZ0=; b=EZeqD5Obr8KiLA1HcT/lu+Up7xg0Hlw6lU1X2Ydv24s0oH6nVCJ
-        2l57FevWD4C9vRaCw7XxVDg7XDxZnwIA/rxLi6xQEuiafj93kHituByaqr7jCBdN
-        Aoe8ZM/rS0CJzrDdMG0iNhgyvsnTQ4rI5Q9N5+xDRChbhyCRTaB3pYfO31hnTeJk
-        unR2UhBw/IsE5m9kuLtbc2khZkec0RRgACTMYqlr9PuNUlPGci3UA3nMN1fWLNvO
-        Nat2IKFgF/d2qwJ8a2TaPA8E6TY6PwsxLW7RFcJYsgLqGwANzJfZPHYvM9/JqY1a
-        8vPVfnh/ehorlWtlnd2MEPD5px4GmkxnWhg==
-X-Virus-Scanned: amavisd-new at mail00.acd.net
-X-Spam-Flag: NO
-X-Spam-Score: 5.052
-X-Spam-Level: *****
-X-Spam-Status: No, score=5.052 tagged_above=-100 required=6
-        tests=[ALL_TRUSTED=-1, FREEMAIL_FORGED_REPLYTO=2.503,
-        FREEMAIL_REPLYTO_END_DIGIT=0.25, UNDISC_MONEY=3.299]
-        autolearn=no autolearn_force=no
-Received: from mail.acd.net ([127.0.0.1])
-        by mail00.acd.net (mail00.acd.net [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 47E-aeN4WUkz for <linux-kernel@vger.kernel.org>;
-        Tue,  9 Mar 2021 16:57:56 -0500 (EST)
-Received: from localhost (mail.acd.net [127.0.0.1])
-        by mail.acd.net (Postfix) with ESMTPSA id 4Dw8F20LbyzBKZ6t;
-        Tue,  9 Mar 2021 16:56:54 -0500 (EST)
+        id S231246AbhCIW2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 17:28:49 -0500
+Received: from gateway30.websitewelcome.com ([192.185.192.34]:35600 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230086AbhCIW2g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 17:28:36 -0500
+X-Greylist: delayed 1476 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Mar 2021 17:28:36 EST
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id C27993EDE
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 16:03:57 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id JkSLlxYcq4HRaJkSLlw6v1; Tue, 09 Mar 2021 16:03:57 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=sFVC56Nr3h3444R3x8H8hPzvSqttuM8D3wbuXBin/jo=; b=PeJdk4VRD7mV8U9CDR6MEC2yi3
+        iFWD9tLrWs10yakUaZQJ/1bFEi1TcKKME+gZAKB78pwnXG8OY6UesQV4WNCBcQ9hROzZm59ZhyRiv
+        uUVO4J+WLc/zJD0pRWjaQD71iDzBQTkLB0YX+m6Q14ZnUXH/ey53Lyuhdm7dHvCi7WSdDacKCFDMF
+        +4anh9P8fTcBztYaeFTf5jdd3dR+e5RVy7Maw7LL7sSyRy++sv8IJVKxQ9aRgXq/sPeiGYBrkqTp7
+        tkyN1HWkB85f8CA9cNSWDpE+JqvJcsE1NqLHCJ2W+QDWB42SBtXVwOV8pZQ09zdh80eEEMLI+e2Bi
+        sd9K86pg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:49312 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lJkSL-000zzy-E3; Tue, 09 Mar 2021 16:03:57 -0600
+Subject: Re: [PATCH][next] xfs: Replace one-element arrays with flexible-array
+ members
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210302150558.GA198498@embeddedor>
+ <20210309174212.GV3419940@magnolia>
+ <8bf7e1d2-e2d4-c56f-cd04-0045dc4c7e2f@embeddedor.com>
+ <20210309212643.GZ3419940@magnolia>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <6cd7c00a-a49c-41f9-06cb-e3123bb32d6c@embeddedor.com>
+Date:   Tue, 9 Mar 2021 16:03:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Date:   Tue, 09 Mar 2021 13:56:53 -0800
-From:   Patricia Gunnarsson <office@stefing.rs>
-To:     undisclosed-recipients:;
-Subject: =?UTF-8?Q?Frau_Patricia_Humanit=C3=A4re_Unterst=C3=BCtzung?=
-Reply-To: ppatricia422@yahoo.com
-User-Agent: Roundcube Webmail
-Message-ID: <8fbe22e911063f448dbeb498f92f14cf@stefing.rs>
-X-Sender: office@stefing.rs
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210309212643.GZ3419940@magnolia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lJkSL-000zzy-E3
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:49312
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gr=C3=BC=C3=9Fe lieber Freund,
 
-Mein Name ist Frau Patricia Gunnarsson aus Irland, verheiratet mit Late=20
-Engr George Gunnarsson {PhD}, der 19 Jahre lang bei Tullow Oil plc,=20
-einem multinationalen =C3=96l- und Gasexplorationsunternehmen in London,=20
-gearbeitet hat, bevor er starb am 25. August 2013. Wir waren 24 Jahre=20
-ohne Kind verheiratet. Mein Mann starb nach kurzer Krankheit, die nur=20
-vier Tage dauerte. Als mein verstorbener Mann noch lebte, hinterlegte er=20
-3.200.000 $ auf sein Offshore-Konto bei der Cahoot Bank London,=20
-Gro=C3=9Fbritannien. und dieser Fonds ist derzeit bei der Bank und wartet=
- auf=20
-den Tag, an dem ich ihn verwenden werde.
 
-Bevor ich heiratete, war ich Lungenkrebspatient und k=C3=BCrzlich sagte m=
-ir=20
-mein Arzt, dass ich nicht l=C3=A4nger als im n=C3=A4chsten Monat leben w=C3=
-=BCrde, weil=20
-mein Lungenkrebs jetzt schlimmer ist. Was mich am meisten st=C3=B6rt, ist=
-=20
-mein Schlaganfall. Nachdem ich meinen Zustand gekannt hatte, beschloss=20
-ich, eine ehrliche Person zu suchen, die mit mir zusammenarbeitet, und=20
-diesen Fonds einer Kirche oder vielmehr den mutterlosen Kinderheimen zu=20
-spenden.
+On 3/9/21 15:26, Darrick J. Wong wrote:
+>>> It seems to work all right for casted NULL pointers, and then we get all
+>>> the typechecking and multiplication overflow checking, e.g.:
+>>>
+>>> 	size_t len64 = struct_size((struct xfs_efi_log_format_32 *)NULL,
+>>> 				efi_extents src_efi_fmt->efi_nextents);
+>> Yeah; in that case, what do you think about casting 0, instead of NULL:
+>>
+>>        uint len32 = struct_size((xfs_efi_log_format_32_t *)0, efi_extents,
+>>                                 src_efi_fmt->efi_nextents);
+>>        uint len64 = struct_size((xfs_efi_log_format_64_t *)0, efi_extents,
+>>                                 src_efi_fmt->efi_nextents);
+> I don't have a preference either way, either here or for the half-dozen
+> more of these scattered elsewhere in the file.
 
-Ich kontaktiere Sie, weil ich m=C3=B6chte, dass eine Gemeinde oder eine=20
-Einzelperson dieses Geld verwendet, um Kirchen, Waisenh=C3=A4user und Wit=
-wen=20
-zu finanzieren, um sicherzustellen, dass der Wille Gottes erhalten=20
-bleibt. Ich habe diese Entscheidung getroffen, weil ich kein Kind habe,=20
-das dieses Geld erben wird.
+OK. I'll send v2, shortly
 
-Ich kann mich nicht mehr auf die Familie meines verstorbenen Mannes=20
-verlassen, weil sie das Geld niemals verwenden werden, wie es Gott=20
-gef=C3=A4llt. Stattdessen verwenden sie das Geld f=C3=BCr ihre pers=C3=B6=
-nlichen=20
-Bed=C3=BCrfnisse, und ich m=C3=B6chte nicht, dass dies geschieht.
-
-In diesem Zusammenhang bitte ich Sie aufrichtig um Ihre Unterst=C3=BCtzun=
-g=20
-bei dieser humanit=C3=A4ren Arbeit f=C3=BCr Christus.. Ich m=C3=B6chte, d=
-ass die Bank=20
-diesen Fonds auf Ihr Bankkonto =C3=BCberweist, sodass Sie 60% des Fonds=20
-verwenden, um folgenden Personen zu helfen: 1. Die mutterlosen Babys. 2,=20
-Kirchen. 3, Witwen. 4, Menschen deaktivieren. Und dann die restlichen=20
-40% des Fonds f=C3=BCr Sie und Ihre Familie verwenden. Wenn Sie diese=20
-humanit=C3=A4re Arbeit akzeptieren, m=C3=BCssen Sie mir versprechen, dass=
- Sie mich=20
-nicht verraten werden, wenn die Bank meines Mannes den Fonds auf Ihr=20
-Bankkonto in Ihrem Land =C3=BCberweist.
-Au=C3=9Ferdem m=C3=BCssen Sie mir versichern, dass Sie die 60% des Geldes=
- f=C3=BCr den=20
-angegebenen Zweck verwenden werden
-
-Ich habe diese Kaution bis heute geheim gehalten. Und jetzt habe ich=20
-beschlossen, den Fonds so zu nutzen, dass Christus geehrt wird, damit=20
-meine Seele im Himmel willkommen gehei=C3=9Fen wird, da ich Ihnen diese=20
-E-Mail aus dem Krankenhausbett geschickt habe und mein medizinischer=20
-Bericht besagt, dass ich nicht l=C3=A4nger leben werde als der n=C3=A4chs=
-te drei=20
-Monate .
-
-Wenn Sie sich f=C3=BCr dieses Werk Gottes interessieren, antworten Sie mi=
-r=20
-bitte, damit ich Ihnen alle Details =C3=BCber die Bank mitteilen kann und=
- wie=20
-das Geld zu diesem Zweck auf Ihr Bankkonto =C3=BCberwiesen wird.
-
-F=C3=BCr weitere Informationen kontaktieren Sie mich bitte =C3=BCber mein=
-e private=20
-E-Mail-Adresse: ppatricia422@yahoo.com
-
-Mit freundlichen Gr=C3=BC=C3=9Fen,
-
-Frau Patricia
+Thanks for the feedback!
+--
+Gustavo
