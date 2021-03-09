@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07AA332BDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8378332BE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhCIQXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:23:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27851 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230512AbhCIQXC (ORCPT
+        id S231131AbhCIQXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:23:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhCIQXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:23:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615306981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=19LP5gRKwmwH1jc81ul4akn1QbWUor1+lZY/TUhT8Cc=;
-        b=XJb4Obr+FQUpaJjZu4O5DER5+ZOj0BXYJfIQ0XsQ8Zx3j1LEFjTvIdLu1oxZBCWbmPVXyw
-        uQ+lxDUMC4QiqyRtgsVmGfIWTrRCb9no0hC2a8j98yWbOfXFrivsTIcebmZEEVqw/3QFx3
-        iNoJKChhqt6MsPd4W/Re6E0jK4FoU7Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-6dAmojhlMgOOkpbQO0364g-1; Tue, 09 Mar 2021 11:22:58 -0500
-X-MC-Unique: 6dAmojhlMgOOkpbQO0364g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 411A310199A6;
-        Tue,  9 Mar 2021 16:22:56 +0000 (UTC)
-Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ADE225C233;
-        Tue,  9 Mar 2021 16:22:46 +0000 (UTC)
-Subject: Re: [PATCH 2/9] fs: add an argument-less alloc_anon_inode
-To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>, Nadav Amit <namit@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-References: <20210309155348.974875-1-hch@lst.de>
- <20210309155348.974875-3-hch@lst.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a0ca78b1-e663-8521-e69c-edae30b8082c@redhat.com>
-Date:   Tue, 9 Mar 2021 17:22:45 +0100
+        Tue, 9 Mar 2021 11:23:13 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E11C06174A;
+        Tue,  9 Mar 2021 08:23:13 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id ba1so6844410plb.1;
+        Tue, 09 Mar 2021 08:23:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=spUY8lyLrO5xdVbAHEgZwfYUMMR7eoWtx3a0hWF14KY=;
+        b=sRkVb8sM0kdiaK+Pgzbm64V8G2smL5F6eKgu2SfEqARNDY7oPuOEZIAlOhBX/5xvKT
+         +qfvsuc0YGxH3aXUuXOA4iVD2Aum/kd00Rquct/oBweu3o7yhcO7iKKp3Qw1MgkF7iDc
+         PAk737R/m0l4ujLF/s61g/qcPhZbPGuszbbsAT+hsSoJWVHoyeLe/Yu3N7vba/+JK1Y7
+         /T+47SC8XCxbzF6KjwKUXbPVHqLS4RTZPQgU4N2YQ2MuLzxh1T3tQGEa7FKa5+sWxsAs
+         kJOnzj7T94eSxU6IExaFgLcjDIR9Rsg3o53Yz/AHkCFUA5uSGQBL7UNUryJFAuNK6TF+
+         i0Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=spUY8lyLrO5xdVbAHEgZwfYUMMR7eoWtx3a0hWF14KY=;
+        b=E8wWlYKlTly90rzftal7kAxJUQP04BNZeyHP1C3YvCYk0WSJBxakpAgyhEPM/sfzWP
+         gZyQthpuREchN/MZ0f+7gIpe0p2tHguhgtOc+/RImHFBgEFV2B8hhQJAvb3Hyd1XG/Or
+         Oc28+gZZFan0RRFhuGIJTgvsh9ADuMyOYxhw7GLqqoLPIce/4bPrpOFQFd/8H9KKcPej
+         xrHyS+a8BM/Fq7AukXKOVxpxOXuO61cx30E/tmA44K0rNr9N8/1HOyulOCwJssSzxwf/
+         AsgN1QcNpTSoY3CHb1NCNsL6y3/KC7S5BvxjLp0bNP1/YrYUvETgE3lal+sg4m2EQWGW
+         qWKg==
+X-Gm-Message-State: AOAM532KxD8H+UYXsUbIQz8ERoc4XMh9Sh7XJ99V0ZBsxNC/iT1uwkpA
+        N1mSQCp6JMA3NqcXBRkBk24=
+X-Google-Smtp-Source: ABdhPJxngpt9MZlizCIEUN4dMgj6xsEBIcgOzK/B95vpNyZtwVDhi4bz41KFp7v0yST4Q7hem8/7Jg==
+X-Received: by 2002:a17:903:31c4:b029:e1:8840:8ab9 with SMTP id v4-20020a17090331c4b02900e188408ab9mr4547205ple.70.1615306992982;
+        Tue, 09 Mar 2021 08:23:12 -0800 (PST)
+Received: from [172.30.1.19] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id i20sm13127547pgg.65.2021.03.09.08.23.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 08:23:12 -0800 (PST)
+Subject: Re: [PATCH 11/11] PM / devfreq: imx8m-ddrc: drop polling_ms
+To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, abel.vesa@nxp.com
+References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
+ <1615294733-22761-12-git-send-email-aisheng.dong@nxp.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <89ce7e90-55d9-872a-59d3-48c3dcadfc9d@gmail.com>
+Date:   Wed, 10 Mar 2021 01:23:06 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210309155348.974875-3-hch@lst.de>
+In-Reply-To: <1615294733-22761-12-git-send-email-aisheng.dong@nxp.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.03.21 16:53, Christoph Hellwig wrote:
-> Add a new alloc_anon_inode helper that allocates an inode on
-> the anon_inode file system.
+On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
+> polling_ms is only used by simple ondemand governor which
+> this driver can't support. Drop it to avoid confusing.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 > ---
->   fs/anon_inodes.c            | 15 +++++++++++++--
->   include/linux/anon_inodes.h |  1 +
->   2 files changed, 14 insertions(+), 2 deletions(-)
+>   drivers/devfreq/imx8m-ddrc.c | 1 -
+>   1 file changed, 1 deletion(-)
 > 
-> diff --git a/fs/anon_inodes.c b/fs/anon_inodes.c
-> index 4745fc37014332..b6a8ea71920bc3 100644
-> --- a/fs/anon_inodes.c
-> +++ b/fs/anon_inodes.c
-> @@ -63,7 +63,7 @@ static struct inode *anon_inode_make_secure_inode(
->   	const struct qstr qname = QSTR_INIT(name, strlen(name));
->   	int error;
+> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
+> index 0a6b7a1c829d..ecb9375aa877 100644
+> --- a/drivers/devfreq/imx8m-ddrc.c
+> +++ b/drivers/devfreq/imx8m-ddrc.c
+> @@ -417,7 +417,6 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
+>   	if (ret < 0)
+>   		goto err;
 >   
-> -	inode = alloc_anon_inode_sb(anon_inode_mnt->mnt_sb);
-> +	inode = alloc_anon_inode();
->   	if (IS_ERR(inode))
->   		return inode;
->   	inode->i_flags &= ~S_PRIVATE;
-> @@ -225,13 +225,24 @@ int anon_inode_getfd_secure(const char *name, const struct file_operations *fops
->   }
->   EXPORT_SYMBOL_GPL(anon_inode_getfd_secure);
->   
-> +/**
-> + * alloc_anon_inode - create a new anonymous inode
-> + *
-> + * Create an inode on the anon_inode file system and return it.
-> + */
-> +struct inode *alloc_anon_inode(void)
-> +{
-> +	return alloc_anon_inode_sb(anon_inode_mnt->mnt_sb);
-> +}
-> +EXPORT_SYMBOL_GPL(alloc_anon_inode);
-> +
->   static int __init anon_inode_init(void)
->   {
->   	anon_inode_mnt = kern_mount(&anon_inode_fs_type);
->   	if (IS_ERR(anon_inode_mnt))
->   		panic("anon_inode_init() kernel mount failed (%ld)\n", PTR_ERR(anon_inode_mnt));
->   
-> -	anon_inode_inode = alloc_anon_inode_sb(anon_inode_mnt->mnt_sb);
-> +	anon_inode_inode = alloc_anon_inode();
->   	if (IS_ERR(anon_inode_inode))
->   		panic("anon_inode_init() inode allocation failed (%ld)\n", PTR_ERR(anon_inode_inode));
->   
-> diff --git a/include/linux/anon_inodes.h b/include/linux/anon_inodes.h
-> index 71881a2b6f7860..b5ae9a6eda9923 100644
-> --- a/include/linux/anon_inodes.h
-> +++ b/include/linux/anon_inodes.h
-> @@ -21,6 +21,7 @@ int anon_inode_getfd_secure(const char *name,
->   			    const struct file_operations *fops,
->   			    void *priv, int flags,
->   			    const struct inode *context_inode);
-> +struct inode *alloc_anon_inode(void);
->   
->   #endif /* _LINUX_ANON_INODES_H */
->   
+> -	priv->profile.polling_ms = 1000;
+>   	priv->profile.target = imx8m_ddrc_target;
+>   	priv->profile.exit = imx8m_ddrc_exit;
+>   	priv->profile.get_cur_freq = imx8m_ddrc_get_cur_freq;
 > 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+You can squash this patch with patch10 because polling_ms
+is related to .get_dev_status.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
