@@ -2,119 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188BC332D31
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB2C332D36
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbhCIR0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:26:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbhCIR0K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:26:10 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B9BC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:26:10 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id a24so6916699plm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:26:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=urAaypekQgaubc5jPAbSIvvw+GQR+qdziDhnK+qSiO4=;
-        b=A+MV8h7QyRMx3+QfhUVA0oaXcPDEyynfUB6PCR/zmv80WtBzxOXS/RXb36gNqwrAvf
-         52Itc4np4MrLvNADeqEnKL2E4YSEpw7xoUzL+lXN3CTHxgKQkm3VWGSAokjtvJhyobEQ
-         OyD/u3TPj2KQwSCcFLC5AHcSS/NxebmDoRA9xEVfyiqwA1guHnt7L7SliAb79rGEnWXk
-         JOzIDj2uT86bDdNo822I0Yg5fIbSyLOPiduKcpjUo0TrAqX9QME1eb4PH8AmtCJZK0QE
-         CtrPsMMhWpbCgmm71QMz88I+AUpx2MoHGhfdrffz5/8YExyZgxJhKJWPg2qxQM/zWiKt
-         wFZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=urAaypekQgaubc5jPAbSIvvw+GQR+qdziDhnK+qSiO4=;
-        b=K7ubU1E9G8pqy8ZBQSSprE0x6Y2xa/ynhjy7E7mnb2BIgPDs2c7X0BFr8dyZdNgC59
-         YYe9scw5UtfBc5G7xzbBWDsrgK6JJvmKriUtOQXQTUbSVQSdXKn479l66zzDvJlhLqbz
-         3QxIj51Sw3INRflPl5zf7sphuUzHrlBuKkwS9FDjemdn3BplP0o9K4E7RfNGGcIf3B9r
-         vKu+t/CU+PNyn8Cs2tFKufntwDmXuKsRcc4f5zofqwECtNQJU+vzlZ+llp+DO8hDFYiB
-         efT7D+WaYhgtCa60USgg1niVW/GUxSsvRC531U+859kKDlvJkovEfC8DtEwTubzE1Mlo
-         YUww==
-X-Gm-Message-State: AOAM530lBrl29jr/8lZzCocCifWY8AaJZajr4GtKAoCjzWF3qwhsqvxW
-        RZXr0J7WzpzDxRjNDxnG+YH4gA==
-X-Google-Smtp-Source: ABdhPJzHAbAMiIKY//SaDBpEhgcYsNnsCXZWVmFwCZ8MUE+7GI5zYswzU23258mTykiDGvr7DEboyQ==
-X-Received: by 2002:a17:90a:ae14:: with SMTP id t20mr5645989pjq.90.1615310769838;
-        Tue, 09 Mar 2021 09:26:09 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
-        by smtp.gmail.com with ESMTPSA id b14sm3628460pji.14.2021.03.09.09.26.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 09:26:09 -0800 (PST)
-Date:   Tue, 9 Mar 2021 09:26:02 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Fixup "Get active PCID only when writing a
- CR3 value"
-Message-ID: <YEevqq3bywrowDLC@google.com>
-References: <20210309021900.1001843-1-seanjc@google.com>
- <20210309021900.1001843-2-seanjc@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309021900.1001843-2-seanjc@google.com>
+        id S231613AbhCIR1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:27:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231683AbhCIR1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:27:17 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65AAB6523A;
+        Tue,  9 Mar 2021 17:27:17 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lJg8Z-000bSO-EF; Tue, 09 Mar 2021 17:27:15 +0000
+Date:   Tue, 09 Mar 2021 17:27:14 +0000
+Message-ID: <87h7lkxmod.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v9 3/6] arm64: kvm: Save/restore MTE registers
+In-Reply-To: <20210301142315.30920-4-steven.price@arm.com>
+References: <20210301142315.30920-1-steven.price@arm.com>
+        <20210301142315.30920-4-steven.price@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021, Sean Christopherson wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+On Mon, 01 Mar 2021 14:23:12 +0000,
+Steven Price <steven.price@arm.com> wrote:
 > 
-> Fix SME and PCID, which got horribly mangled on application.
-
-Gah, the SME changes are supposed to be in "KVM: x86/mmu: Mark the PAE roots as
-decrypted for shadow paging", which has not yet been merged.  Stuffing them
-here doesn't make things work, but it does break git blame.
-
-I'll send you a v2 with more appropriate fixup, and the PAE changes on top.
-
-> Fixes: a16241ae56fa ("KVM: x86: Get active PCID only when writing a CR3 value")
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Define the new system registers that MTE introduces and context switch
+> them. The MTE feature is still hidden from the ID register as it isn't
+> supported in a VM yet.
+> 
+> Signed-off-by: Steven Price <steven.price@arm.com>
 > ---
->  arch/x86/kvm/svm/svm.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+>  arch/arm64/include/asm/kvm_host.h          |  6 ++
+>  arch/arm64/include/asm/kvm_mte.h           | 66 ++++++++++++++++++++++
+>  arch/arm64/include/asm/sysreg.h            |  3 +-
+>  arch/arm64/kernel/asm-offsets.c            |  3 +
+>  arch/arm64/kvm/hyp/entry.S                 |  7 +++
+>  arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 21 +++++++
+>  arch/arm64/kvm/sys_regs.c                  | 22 ++++++--
+>  7 files changed, 123 insertions(+), 5 deletions(-)
+>  create mode 100644 arch/arm64/include/asm/kvm_mte.h
 > 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 7876ddf896b8..271196400495 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3907,15 +3907,20 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
->  	struct vcpu_svm *svm = to_svm(vcpu);
->  	unsigned long cr3;
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 1170ee137096..d00cc3590f6e 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -208,6 +208,12 @@ enum vcpu_sysreg {
+>  	CNTP_CVAL_EL0,
+>  	CNTP_CTL_EL0,
 >  
-> -	cr3 = __sme_set(root_hpa);
->  	if (npt_enabled) {
-> -		svm->vmcb->control.nested_cr3 = root_hpa;
-> +		svm->vmcb->control.nested_cr3 = __sme_set(root_hpa);
->  		vmcb_mark_dirty(svm->vmcb, VMCB_NPT);
+> +	/* Memory Tagging Extension registers */
+> +	RGSR_EL1,	/* Random Allocation Tag Seed Register */
+> +	GCR_EL1,	/* Tag Control Register */
+> +	TFSR_EL1,	/* Tag Fault Status Register (EL1) */
+> +	TFSRE0_EL1,	/* Tag Fault Status Register (EL0) */
+> +
+>  	/* 32bit specific registers. Keep them at the end of the range */
+>  	DACR32_EL2,	/* Domain Access Control Register */
+>  	IFSR32_EL2,	/* Instruction Fault Status Register */
+> diff --git a/arch/arm64/include/asm/kvm_mte.h b/arch/arm64/include/asm/kvm_mte.h
+> new file mode 100644
+> index 000000000000..6541c7d6ce06
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/kvm_mte.h
+> @@ -0,0 +1,66 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020 ARM Ltd.
+> + */
+> +#ifndef __ASM_KVM_MTE_H
+> +#define __ASM_KVM_MTE_H
+> +
+> +#ifdef __ASSEMBLY__
+> +
+> +#include <asm/sysreg.h>
+> +
+> +#ifdef CONFIG_ARM64_MTE
+> +
+> +.macro mte_switch_to_guest g_ctxt, h_ctxt, reg1
+> +alternative_if_not ARM64_MTE
+> +	b	.L__skip_switch\@
+> +alternative_else_nop_endif
+> +	mrs	\reg1, hcr_el2
+> +	and	\reg1, \reg1, #(HCR_ATA)
+> +	cbz	\reg1, .L__skip_switch\@
+> +
+> +	mrs_s	\reg1, SYS_RGSR_EL1
+> +	str	\reg1, [\h_ctxt, #CPU_RGSR_EL1]
+> +	mrs_s	\reg1, SYS_GCR_EL1
+> +	str	\reg1, [\h_ctxt, #CPU_GCR_EL1]
+> +
+> +	ldr	\reg1, [\g_ctxt, #CPU_RGSR_EL1]
+> +	msr_s	SYS_RGSR_EL1, \reg1
+> +	ldr	\reg1, [\g_ctxt, #CPU_GCR_EL1]
+> +	msr_s	SYS_GCR_EL1, \reg1
+> +
+> +.L__skip_switch\@:
+> +.endm
+> +
+> +.macro mte_switch_to_hyp g_ctxt, h_ctxt, reg1
+> +alternative_if_not ARM64_MTE
+> +	b	.L__skip_switch\@
+> +alternative_else_nop_endif
+> +	mrs	\reg1, hcr_el2
+> +	and	\reg1, \reg1, #(HCR_ATA)
+> +	cbz	\reg1, .L__skip_switch\@
+> +
+> +	mrs_s	\reg1, SYS_RGSR_EL1
+> +	str	\reg1, [\g_ctxt, #CPU_RGSR_EL1]
+> +	mrs_s	\reg1, SYS_GCR_EL1
+> +	str	\reg1, [\g_ctxt, #CPU_GCR_EL1]
+> +
+> +	ldr	\reg1, [\h_ctxt, #CPU_RGSR_EL1]
+> +	msr_s	SYS_RGSR_EL1, \reg1
+> +	ldr	\reg1, [\h_ctxt, #CPU_GCR_EL1]
+> +	msr_s	SYS_GCR_EL1, \reg1
+> +
+> +.L__skip_switch\@:
+> +.endm
+> +
+> +#else /* CONFIG_ARM64_MTE */
+> +
+> +.macro mte_switch_to_guest g_ctxt, h_ctxt, reg1
+> +.endm
+> +
+> +.macro mte_switch_to_hyp g_ctxt, h_ctxt, reg1
+> +.endm
+> +
+> +#endif /* CONFIG_ARM64_MTE */
+> +#endif /* __ASSEMBLY__ */
+> +#endif /* __ASM_KVM_MTE_H */
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index dfd4edbfe360..5424d195cf96 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -580,7 +580,8 @@
+>  #define SCTLR_ELx_M	(BIT(0))
 >  
->  		/* Loading L2's CR3 is handled by enter_svm_guest_mode.  */
->  		if (!test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
->  			return;
->  		cr3 = vcpu->arch.cr3;
-> +	} else if (vcpu->arch.mmu->shadow_root_level >= PT64_ROOT_4LEVEL) {
-> +		cr3 = __sme_set(root_hpa) | kvm_get_active_pcid(vcpu);
-> +	} else {
-> +		/* PCID in the guest should be impossible with a 32-bit MMU. */
-> +		WARN_ON_ONCE(kvm_get_active_pcid(vcpu));
-> +		cr3 = root_hpa;
->  	}
+>  #define SCTLR_ELx_FLAGS	(SCTLR_ELx_M  | SCTLR_ELx_A | SCTLR_ELx_C | \
+> -			 SCTLR_ELx_SA | SCTLR_ELx_I | SCTLR_ELx_IESB)
+> +			 SCTLR_ELx_SA | SCTLR_ELx_I | SCTLR_ELx_IESB | \
+> +			 SCTLR_ELx_ITFSB)
 >  
->  	svm->vmcb->save.cr3 = cr3;
-> -- 
-> 2.30.1.766.gb4fecdf3b7-goog
-> 
+>  /* SCTLR_EL2 specific flags. */
+>  #define SCTLR_EL2_RES1	((BIT(4))  | (BIT(5))  | (BIT(11)) | (BIT(16)) | \
+> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+> index a36e2fc330d4..944e4f1f45d9 100644
+> --- a/arch/arm64/kernel/asm-offsets.c
+> +++ b/arch/arm64/kernel/asm-offsets.c
+> @@ -108,6 +108,9 @@ int main(void)
+>    DEFINE(VCPU_WORKAROUND_FLAGS,	offsetof(struct kvm_vcpu, arch.workaround_flags));
+>    DEFINE(VCPU_HCR_EL2,		offsetof(struct kvm_vcpu, arch.hcr_el2));
+>    DEFINE(CPU_USER_PT_REGS,	offsetof(struct kvm_cpu_context, regs));
+> +  DEFINE(CPU_RGSR_EL1,		offsetof(struct kvm_cpu_context, sys_regs[RGSR_EL1]));
+> +  DEFINE(CPU_GCR_EL1,		offsetof(struct kvm_cpu_context, sys_regs[GCR_EL1]));
+> +  DEFINE(CPU_TFSRE0_EL1,	offsetof(struct kvm_cpu_context, sys_regs[TFSRE0_EL1]));
+>    DEFINE(CPU_APIAKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APIAKEYLO_EL1]));
+>    DEFINE(CPU_APIBKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APIBKEYLO_EL1]));
+>    DEFINE(CPU_APDAKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APDAKEYLO_EL1]));
+> diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
+> index b0afad7a99c6..c67582c6dd55 100644
+> --- a/arch/arm64/kvm/hyp/entry.S
+> +++ b/arch/arm64/kvm/hyp/entry.S
+> @@ -13,6 +13,7 @@
+>  #include <asm/kvm_arm.h>
+>  #include <asm/kvm_asm.h>
+>  #include <asm/kvm_mmu.h>
+> +#include <asm/kvm_mte.h>
+>  #include <asm/kvm_ptrauth.h>
+>  
+>  	.text
+> @@ -51,6 +52,9 @@ alternative_else_nop_endif
+>  
+>  	add	x29, x0, #VCPU_CONTEXT
+>  
+> +	// mte_switch_to_guest(g_ctxt, h_ctxt, tmp1)
+> +	mte_switch_to_guest x29, x1, x2
+> +
+>  	// Macro ptrauth_switch_to_guest format:
+>  	// 	ptrauth_switch_to_guest(guest cxt, tmp1, tmp2, tmp3)
+>  	// The below macro to restore guest keys is not implemented in C code
+> @@ -140,6 +144,9 @@ SYM_INNER_LABEL(__guest_exit, SYM_L_GLOBAL)
+>  	// when this feature is enabled for kernel code.
+>  	ptrauth_switch_to_hyp x1, x2, x3, x4, x5
+>  
+> +	// mte_switch_to_hyp(g_ctxt, h_ctxt, reg1)
+> +	mte_switch_to_hyp x1, x2, x3
+> +
+>  	// Restore hyp's sp_el0
+>  	restore_sp_el0 x2, x3
+>  
+> diff --git a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> index cce43bfe158f..de7e14c862e6 100644
+> --- a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> +++ b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> @@ -14,6 +14,7 @@
+>  #include <asm/kvm_asm.h>
+>  #include <asm/kvm_emulate.h>
+>  #include <asm/kvm_hyp.h>
+> +#include <asm/kvm_mmu.h>
+>  
+>  static inline void __sysreg_save_common_state(struct kvm_cpu_context *ctxt)
+>  {
+> @@ -26,6 +27,16 @@ static inline void __sysreg_save_user_state(struct kvm_cpu_context *ctxt)
+>  	ctxt_sys_reg(ctxt, TPIDRRO_EL0)	= read_sysreg(tpidrro_el0);
+>  }
+>  
+> +static inline bool ctxt_has_mte(struct kvm_cpu_context *ctxt)
+> +{
+> +	struct kvm_vcpu *vcpu = ctxt->__hyp_running_vcpu;
+> +
+> +	if (!vcpu)
+> +		vcpu = container_of(ctxt, struct kvm_vcpu, arch.ctxt);
+> +
+> +	return kvm_has_mte(kern_hyp_va(vcpu->kvm));
+> +}
+> +
+>  static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
+>  {
+>  	ctxt_sys_reg(ctxt, CSSELR_EL1)	= read_sysreg(csselr_el1);
+> @@ -46,6 +57,11 @@ static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
+>  	ctxt_sys_reg(ctxt, PAR_EL1)	= read_sysreg_par();
+>  	ctxt_sys_reg(ctxt, TPIDR_EL1)	= read_sysreg(tpidr_el1);
+>  
+> +	if (ctxt_has_mte(ctxt)) {
+> +		ctxt_sys_reg(ctxt, TFSR_EL1) = read_sysreg_el1(SYS_TFSR);
+> +		ctxt_sys_reg(ctxt, TFSRE0_EL1) = read_sysreg_s(SYS_TFSRE0_EL1);
+> +	}
+
+Could TFSRE0_EL1 be synchronised on vcpu_load()/vcpu_put() instead of
+being done eagerly on each save/restore? Same thing for TFSR_EL1 when
+running VHE?
+
+I'd like to keep the switch as lean as possible. I'm pretty sure this
+would simplify some of the "container_of()" ugliness above.
+
+> +
+>  	ctxt_sys_reg(ctxt, SP_EL1)	= read_sysreg(sp_el1);
+>  	ctxt_sys_reg(ctxt, ELR_EL1)	= read_sysreg_el1(SYS_ELR);
+>  	ctxt_sys_reg(ctxt, SPSR_EL1)	= read_sysreg_el1(SYS_SPSR);
+> @@ -107,6 +123,11 @@ static inline void __sysreg_restore_el1_state(struct kvm_cpu_context *ctxt)
+>  	write_sysreg(ctxt_sys_reg(ctxt, PAR_EL1),	par_el1);
+>  	write_sysreg(ctxt_sys_reg(ctxt, TPIDR_EL1),	tpidr_el1);
+>  
+> +	if (ctxt_has_mte(ctxt)) {
+> +		write_sysreg_el1(ctxt_sys_reg(ctxt, TFSR_EL1), SYS_TFSR);
+> +		write_sysreg_s(ctxt_sys_reg(ctxt, TFSRE0_EL1), SYS_TFSRE0_EL1);
+> +	}
+> +
+>  	if (!has_vhe() &&
+>  	    cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT) &&
+>  	    ctxt->__hyp_running_vcpu) {
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index e09dbc00b0a2..17cb6256f205 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -1301,6 +1301,20 @@ static bool access_ccsidr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
+>  	return true;
+>  }
+>  
+> +static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
+> +				   const struct sys_reg_desc *rd)
+> +{
+> +	return REG_HIDDEN;
+> +}
+> +
+> +#define MTE_REG(name) {				\
+> +	SYS_DESC(SYS_##name),			\
+> +	.access = undef_access,			\
+> +	.reset = reset_unknown,			\
+> +	.reg = name,				\
+> +	.visibility = mte_visibility,		\
+> +}
+> +
+>  /* sys_reg_desc initialiser for known cpufeature ID registers */
+>  #define ID_SANITISED(name) {			\
+>  	SYS_DESC(SYS_##name),			\
+> @@ -1469,8 +1483,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>  	{ SYS_DESC(SYS_ACTLR_EL1), access_actlr, reset_actlr, ACTLR_EL1 },
+>  	{ SYS_DESC(SYS_CPACR_EL1), NULL, reset_val, CPACR_EL1, 0 },
+>  
+> -	{ SYS_DESC(SYS_RGSR_EL1), undef_access },
+> -	{ SYS_DESC(SYS_GCR_EL1), undef_access },
+> +	MTE_REG(RGSR_EL1),
+> +	MTE_REG(GCR_EL1),
+>  
+>  	{ SYS_DESC(SYS_ZCR_EL1), NULL, reset_val, ZCR_EL1, 0, .visibility = sve_visibility },
+>  	{ SYS_DESC(SYS_TTBR0_EL1), access_vm_reg, reset_unknown, TTBR0_EL1 },
+> @@ -1496,8 +1510,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>  	{ SYS_DESC(SYS_ERXMISC0_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_ERXMISC1_EL1), trap_raz_wi },
+>  
+> -	{ SYS_DESC(SYS_TFSR_EL1), undef_access },
+> -	{ SYS_DESC(SYS_TFSRE0_EL1), undef_access },
+> +	MTE_REG(TFSR_EL1),
+> +	MTE_REG(TFSRE0_EL1),
+>  
+>  	{ SYS_DESC(SYS_FAR_EL1), access_vm_reg, reset_unknown, FAR_EL1 },
+>  	{ SYS_DESC(SYS_PAR_EL1), NULL, reset_unknown, PAR_EL1 },
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
