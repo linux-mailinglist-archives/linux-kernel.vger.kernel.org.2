@@ -2,118 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD98E332D85
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2F6332D8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhCIRpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:45:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhCIRpJ (ORCPT
+        id S231252AbhCIRt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:49:28 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2673 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhCIRtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:45:09 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F573C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:45:09 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id t9so1255417pjl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:45:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ddj7nKUPn1pV75cOckX3PbYPAps+K18BC++0gJune7Q=;
-        b=sDmP48uYySkZp9vu5Jw6w6ZIZGiKV/YFHodszvUxJCgglWE+SCQM6TAOyY/FYoIQ5N
-         igYMNFcHvfwXJklSRt95bQ9/wiNO+5ZdIxG3VdJt2wrhuEZp4ZxSFZwv1c/fPDwxBD1l
-         xGWyx8v+H3/+AEsACUN22qZVdBF9e4ByA2S8jm0SgM6/zCcMb4lZ5FhxQmLya7Lv3tXC
-         HcMefG/bbqj2JLYQY6mkrlt+6ncngDTojyHBy3cWAZz5HmPm/0SiJo1ifqGhXYVJYYC1
-         YGwRFx1Msn8MqWhEmrw2WuCHtnnUaCgEc46WWWEsSgfAqfGb0/mmgvPRhh8VGM8qCWkg
-         46BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ddj7nKUPn1pV75cOckX3PbYPAps+K18BC++0gJune7Q=;
-        b=hKIH9Ycjx8FtIi9pxtpwamB7+T6s5/qgT3eniyQf8mIFVQY95dVIEW7ZAefUYG3lgc
-         ppDdW2IRX3H9ioKO9gHtjTIWCDcprg2fqjLyga0FIFOqhrJ8Vbg8qCbNoHvgBSn3uTgE
-         OxHj4HHEvt7oubz1CNaaK890MEODe4n2EduamYRn6pIS0vQUBuNQC+1xYStYMO22QU5i
-         5t5Wr2KZUAh0HrMRljR9pcfXN5Iz1FiURzvKxp0G7vL+9LRQhdannxXbSCTT+xhZgrzb
-         rm32fGAtxXePppcHh6mKs58v3jV+bzKgCd/iue+4XEXC283ndhVTutFWmXWBmabtNoG4
-         LLEQ==
-X-Gm-Message-State: AOAM531qp9ZAKCCH1bU+MIkj7xPIdlv8MdNebsnIc8PS7HggeVVqtsxV
-        K8xreCyWdzjuvyiBgNKpp5OvXQ==
-X-Google-Smtp-Source: ABdhPJzVGq3iCKaEQHLBSlEDjud8CI9SNe6E5b0RoZcqe3V2TX4I2nl5Cfw+7cJ7JQ4vTLYzijOPJQ==
-X-Received: by 2002:a17:90a:7847:: with SMTP id y7mr5985611pjl.65.1615311908475;
-        Tue, 09 Mar 2021 09:45:08 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
-        by smtp.gmail.com with ESMTPSA id y16sm6083205pgl.58.2021.03.09.09.45.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 09:45:07 -0800 (PST)
-Date:   Tue, 9 Mar 2021 09:45:01 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Steve Rutherford <srutherford@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Nathan Tempelman <natet@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, X86 ML <x86@kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
-Message-ID: <YEe0HWlwXyNvu9ps@google.com>
-References: <20210224085915.28751-1-natet@google.com>
- <CABayD+cZ1nRwuFWKHGh5a2sVXG5AEB_AyTGqZs_xVQLoWwmaSA@mail.gmail.com>
- <9eb0b655-48ca-94d0-0588-2a4f3e5b3651@amd.com>
- <CABayD+efSV0m95+a=WT+Lvq_zZhxw2Q3Xu4zErzuyuRxMNUHfw@mail.gmail.com>
- <20210305223647.GA2289@ashkalra_ubuntu_server>
+        Tue, 9 Mar 2021 12:49:20 -0500
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dw2fH35Pdz67x39;
+        Wed, 10 Mar 2021 01:44:55 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 9 Mar 2021 18:49:18 +0100
+Received: from [10.210.172.22] (10.210.172.22) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 9 Mar 2021 17:49:16 +0000
+Subject: Re: [RFC PATCH v3 3/3] blk-mq: Lockout tagset iterator when exiting
+ elevator
+To:     Bart Van Assche <bvanassche@acm.org>, <hare@suse.de>,
+        <ming.lei@redhat.com>, <axboe@kernel.dk>, <hch@lst.de>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <pragalla@codeaurora.org>, <kashyap.desai@broadcom.com>,
+        <yuyufen@huawei.com>
+References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
+ <1614957294-188540-4-git-send-email-john.garry@huawei.com>
+ <48a3cf78-3f6d-c13c-bca2-1f8277817b45@acm.org>
+ <9c9360bf-7ca9-5c8f-c61d-441044f9c78f@huawei.com>
+ <784a3686-cb54-561d-740c-30e0b3f46df8@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <f60dc68f-9206-2bfb-950e-cb312f1c4c8b@huawei.com>
+Date:   Tue, 9 Mar 2021 17:47:15 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305223647.GA2289@ashkalra_ubuntu_server>
+In-Reply-To: <784a3686-cb54-561d-740c-30e0b3f46df8@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.172.22]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021, Ashish Kalra wrote:
-> On Thu, Feb 25, 2021 at 10:49:00AM -0800, Steve Rutherford wrote:
-> > On Thu, Feb 25, 2021 at 6:57 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
-> > > >> +int svm_vm_copy_asid_to(struct kvm *kvm, unsigned int mirror_kvm_fd)
-> > > >> +{
-> > > >> +       struct file *mirror_kvm_file;
-> > > >> +       struct kvm *mirror_kvm;
-> > > >> +       struct kvm_sev_info *mirror_kvm_sev;
-> > > >> +       unsigned int asid;
-> > > >> +       int ret;
-> > > >> +
-> > > >> +       if (!sev_guest(kvm))
-> > > >> +               return -ENOTTY;
-> > > >
-> > > > You definitely don't want this: this is the function that turns the vm
-> > > > into an SEV guest (marks SEV as active).
-> > >
-> > > The sev_guest() function does not set sev->active, it only checks it. The
-> > > sev_guest_init() function is where sev->active is set.
-> > Sorry, bad use of the english on my part: the "this" was referring to
-> > svm_vm_copy_asid_to. Right now, you could only pass this sev_guest
-> > check if you had already called sev_guest_init, which seems incorrect.
-> > >
-> > > >
-> > > > (Not an issue with this patch, but a broader issue) I believe
-> > > > sev_guest lacks the necessary acquire/release barriers on sev->active,
-> > >
-> > > The svm_mem_enc_op() takes the kvm lock and that is the only way into the
-> > > sev_guest_init() function where sev->active is set.
-> > There are a few places that check sev->active which don't have the kvm
-> > lock, which is not problematic if we add in a few compiler barriers
-> > (ala irqchip_split et al).
+On 08/03/2021 19:59, Bart Van Assche wrote:
+>>> This changes the behavior of blk_mq_tagset_busy_iter(). What will e.g.
+>>> happen if the mtip driver calls blk_mq_tagset_busy_iter(&dd->tags,
+>>> mtip_abort_cmd, dd) concurrently with another blk_mq_tagset_busy_iter()
+>>> call and if that causes all mtip_abort_cmd() calls to be skipped?
+>>
+>> I'm not sure that I understand this problem you describe. So if 
+>> blk_mq_tagset_busy_iter(&dd->tags, mtip_abort_cmd, dd) is called, 
+>> either can happen:
+>> a. normal operation, iter_usage_counter initially holds >= 1, and then 
+>> iter_usage_counter is incremented in blk_mq_tagset_busy_iter() and we 
+>> iter the busy tags. Any parallel call to blk_mq_tagset_busy_iter() 
+>> will also increase iter_usage_counter.
+>> b. we're switching IO scheduler. In this scenario, first we quiesce 
+>> all queues. After that, there should be no active requests. At that 
+>> point, we ensure any calls to blk_mq_tagset_busy_iter() are finished 
+>> and block (or discard may be a better term) any more calls. Blocking 
+>> any more calls should be safe as there are no requests to iter. 
+>> atomic_cmpxchg() is used to set iter_usage_counter to 0, blocking any 
+>> more calls.
+> 
 
-Eh, I don't see the point in taking on the complexity of barriers.  Ignoring the
-vCPU behavior, the only existing call that isn't safe is svm_register_enc_region().
-Fixing that is trivial and easy to understand.
 
-As for the vCPU stuff, adding barriers will not make them safe.  E.g. a barrier
-won't magically make init_vmcb() go back in time and set SVM_NESTED_CTL_SEV_ENABLE
-if SEV is enabled after vCPUs are created.
+Hi Bart,
 
-> Probably, sev->active accesses can be made safe using READ_ONCE() &
-> WRITE_ONCE().
+> My concern is about the insertion of the early return statement in 
+> blk_mq_tagset_busy_iter(). 
+
+So I take this approach as I don't see any way to use a mutual exclusion 
+waiting mechanism to block calls to blk_mq_tagset_busy_iter() while the 
+IO scheduler is being switched.
+
+The reason is that blk_mq_tagset_busy_iter() can be called from any 
+context, including hardirq.
+
+> Although most blk_mq_tagset_busy_iter() 
+> callers can handle skipping certain blk_mq_tagset_busy_iter() calls 
+> (e.g. when gathering statistics), I'm not sure this is safe for all 
+> blk_mq_tagset_busy_iter() callers. The example I cited is an example of 
+> a blk_mq_tagset_busy_iter() call with side effects.
+
+I don't like to think that we're skipping it, which may imply that there 
+are some active requests to iter and we're just ignoring them.
+
+It's more like: we know that there are no requests active, so don't 
+bother trying to iterate.
+
+> 
+> The mtip driver allocates one tag set per request queue so quiescing 
+> queues should be sufficient to address my concern for the mtip driver.
+> 
+> The NVMe core and SCSI core however share a single tag set across 
+> multiple namespaces / LUNs. In the error path of nvme_rdma_setup_ctrl()
+> I found a call to nvme_cancel_tagset(). nvme_cancel_tagset() calls 
+> blk_mq_tagset_busy_iter(ctrl->tagset, nvme_cancel_request, ctrl). I'm 
+> not sure it is safe to skip the nvme_cancel_request() calls if the I/O 
+> scheduler for another NVMe namespace is being modified.
+
+Again, I would be relying on all request_queues associated with that 
+tagset to be queisced when switching IO scheduler at the point 
+blk_mq_tagset_busy_iter() is called and returns early.
+
+Now if there were active requests, I am relying on the request queue 
+quiescing to flush them. So blk_mq_tagset_busy_iter() could be called 
+during that quiescing period, and would continue to iter the requests.
+
+This does fall over if some tags are allocated without associated 
+request queue, which I do not know exists.
+
+Thanks,
+John
+
