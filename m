@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106A1332398
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD1433239C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhCILFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:05:16 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:53126 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhCILFA (ORCPT
+        id S230242AbhCILFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhCILFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:05:00 -0500
-Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 129B4r0C042703;
-        Tue, 9 Mar 2021 20:04:53 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
- Tue, 09 Mar 2021 20:04:53 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 129B4r9G042700
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 9 Mar 2021 20:04:53 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races
- leading to gpf
-To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
-        valentina.manea.m@gmail.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1615171203.git.skhan@linuxfoundation.org>
- <268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org>
- <05aed75a-4a81-ef59-fc4f-6007f18e7839@i-love.sakura.ne.jp>
- <5df3d221-9e78-4cbe-826b-81cbfc4d5888@i-love.sakura.ne.jp>
- <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <f8f5e763-da2d-b26f-c6a5-d345bbe55448@i-love.sakura.ne.jp>
-Date:   Tue, 9 Mar 2021 20:04:52 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 9 Mar 2021 06:05:44 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB11C06174A;
+        Tue,  9 Mar 2021 03:05:43 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso2550450pjb.4;
+        Tue, 09 Mar 2021 03:05:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3T4W4xV4Tf3QOElTCSezyQGIMFwB4ft/YIBh6UXVS8s=;
+        b=RIY35qb6rf0fzFHNnG54ojrKJX9RKNfRAtFmlwJlQouu+k/mgFGYylDSGNJ2/e3OsH
+         zUTAhWc3w4FMtnnANd/1aZT7deE7RjOkc134fnm5q26+a63FG1pdJwrm+lmYw5IbTTSC
+         xQ+b8AdQcyKU57HJOaMOqDZJc4rDQOH1XDz9ogRgPh5cXPb3pNhaDkx/GG9q28zU6ygd
+         cbKepLPv/pnTcxw+ESAKe3n8wWny4gu+00fpTEEdZMwEFAY+x4rUECMgfslfTw1jdpvx
+         lAXkbcSkHjfc1A/lzVfeywPrqGAqjm5aXOsXCWSYNwqGdzMppa0YlTRnrv1yvq/nzTot
+         T5dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3T4W4xV4Tf3QOElTCSezyQGIMFwB4ft/YIBh6UXVS8s=;
+        b=EqQ7CxduprRdmBpmEGMg/P4RdZJBROC4peWfRsjH3mwpkw9ijv/FdPJql2jE6J7xEt
+         WY+MEvjlh5o7W9S9nox35oaN+emm02ToWEgDJm8T74TtjDwboawTXEsj2z8cba92YEZs
+         +jnU7Td1ZC0s8fNtzKUF32PRDYg2rxXCKHR5PvBX5vJn8lHo5lrl5XsHwevhJ4CaVM7c
+         pHz9tgISTWgfpqG0vIgBNLYhvkBbMoA70hdpBcdNOhPaTE1/i9IWIoMps7v2FW+3njvX
+         wZt3kxV9wNqrjDvl5ev7jRsJMHFlzeE6Gg9zlHyUc2drPdlswqBWhc6igPICFEAQPcr1
+         kxWg==
+X-Gm-Message-State: AOAM533/IefIXL+I8uAPcfhQfHVOBHTSLhrytETpQn8IbR/4OKei890q
+        MygIwUKNp1hDwMOqCyKCIB//iI9colkOoMD3XxTOVZh8C++nuQ==
+X-Google-Smtp-Source: ABdhPJzIuJ6hLAK8fFWlrH+mxFgPVgYC2CvPYakI0dg/jy1WNPvCByyQjHV+7I3A5z7rd2DWJLua2Kz7/HyVVcRGDMc=
+X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr4261198pjx.181.1615287943267;
+ Tue, 09 Mar 2021 03:05:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210305133813.27967-1-o.rempel@pengutronix.de>
+ <20210305133813.27967-3-o.rempel@pengutronix.de> <20210305190239.000075fe@Huawei.com>
+In-Reply-To: <20210305190239.000075fe@Huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 9 Mar 2021 13:05:27 +0200
+Message-ID: <CAHp75Veu-G41mDUZubCgHD_V+_znd0HJoO03ZL7JpgwtjMYLCQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] iio: adc: add ADC driver for the TI TSC2046 controller
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/09 1:27, Shuah Khan wrote:
-> Yes. We might need synchronization between events, threads, and shutdown
-> in usbip_host side and in connection polling and threads in vhci.
-> 
-> I am also looking at the shutdown sequences closely as well since the
-> local state is referenced without usbip_device lock in these paths.
-> 
-> I am approaching these problems as peeling the onion an expression so
-> we can limit the changes and take a spot fix approach. We have the
-> goal to address these crashes and not introduce regressions.
+On Fri, Mar 5, 2021 at 9:05 PM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Fri, 5 Mar 2021 14:38:13 +0100
+> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+>
+> > Basically the TI TSC2046 touchscreen controller is 8 channel ADC optimized for
+> > the touchscreen use case. By implementing it as IIO ADC device, we can
+> > make use of resistive-adc-touch and iio-hwmon drivers.
+> >
+> > So far, this driver was tested with custom version of resistive-adc-touch driver,
+> > since it need to be extended to make use of Z1 and Z2 channels. The X/Y
+> > are working without additional changes.
+> >
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+>
+> Hi Oleksij,
+>
+> To consider this as a possible long term route instead of just making this
+> a touchscreen driver, we'll want to see those mods to the resistive-adc-touch.
+> Of course that doesn't stop review of this in the meantime.
+>
+> There are quite a few things in here that feel pretty specific to the touchscreen
+> usecase. That makes me wonder if this is a sensible approach or not.
 
-I think my [PATCH v4 01/12]-[PATCH v4 06/12] simplify your further changes
-without introducing regressions. While ud->lock is held when checking ud->status,
-current attach/detach code is racy about read/update of ud->status . I think we
-can close race in attach/detach code via a simple usbip_event_mutex serialization.
+I'm wondering if this has any similarities with existing drivers under
+drivers/input/touchscreen.
 
+-- 
+With Best Regards,
+Andy Shevchenko
