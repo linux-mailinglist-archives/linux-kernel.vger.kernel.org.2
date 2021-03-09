@@ -2,365 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB5033273F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE51332730
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbhCINct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:32:49 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:35192 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231512AbhCINcR (ORCPT
+        id S230150AbhCINbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:31:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58111 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229900AbhCINb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:32:17 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129DR3q2004454;
-        Tue, 9 Mar 2021 07:31:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=L+AL+FQ7OXS8XENOakvv10pPi7OI5CEzWLiz/gh7v58=;
- b=AQm1lvwfJta1jsOpVr2yMGXb7aFQL6rrFFHVSBvkXbqmsrNc+qkCfFDNlz4nl3kGKGCu
- 10lv4rgLnWnIfxBBJHKfxVxTU77lm4rUEVRtwbxVU09ONw9yWLnmQS5ih6Zx7l+YlyfG
- KKAV1KvwmDStBCTClz9J1ccWXFXaQsUQ6Cyz4hFJUjQUXKne8JLmJ7KLQBs5dtzdQkwE
- B3U9zZbsSUHTwwKoD9EFsGJqTA3qP8UGvyIx1e7WTzoZ0LegQiaozlHFuOaiStVV7vzM
- EdHzB8ARgdK7YI9TBoA8ZJDAw7ilgQDatfin4F6jJwOXphZEx93TbTEeZ980ShOgJOdj 5g== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 374819bdya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 09 Mar 2021 07:31:19 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 9 Mar 2021
- 13:31:17 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Tue, 9 Mar 2021 13:31:17 +0000
-Received: from [198.90.238.45] (unknown [198.90.238.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7387011CF;
-        Tue,  9 Mar 2021 13:31:17 +0000 (UTC)
-Subject: Re: [PATCH v3 2/4] ALSA: hda/cirrus: Add support for CS8409 HDA
- bridge and CS42L42 companion codec.
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210306111934.4832-1-vitalyr@opensource.cirrus.com>
- <20210306111934.4832-3-vitalyr@opensource.cirrus.com>
- <3e1bd870-b0e6-cc30-fcdb-b65c7668b0c3@linux.intel.com>
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Message-ID: <04d34713-a1a3-dbc5-ec5e-59c10af152e9@opensource.cirrus.com>
-Date:   Tue, 9 Mar 2021 13:31:17 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 9 Mar 2021 08:31:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615296688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EpvaiT9lNridqnyvnBIVcNFfk1XSrEn77fD74rsW3bg=;
+        b=GqhJTLtR7XC7p4NWBwZqyqK5m8nFQyrAcFujvruDJ2Zu9x40hCopqogVJSLPO/cDOVuXWo
+        1yyqbJBPnW/+J2rkEPfNclyQbVpMFAckeqluHJ1rws7m1P0JjJhMrZdVrAhgh9bj2fSbdn
+        BckPDEmpXZF2n9t0ZWR6tyLrJawy4/M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-76-yuDpp31vNJ2ZcgeLvMHd8A-1; Tue, 09 Mar 2021 08:31:26 -0500
+X-MC-Unique: yuDpp31vNJ2ZcgeLvMHd8A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 218F71005D4A;
+        Tue,  9 Mar 2021 13:31:25 +0000 (UTC)
+Received: from starship (unknown [10.35.206.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7600319D7C;
+        Tue,  9 Mar 2021 13:31:22 +0000 (UTC)
+Message-ID: <b0e0aaac1b1aae31a12a416a6df2c7f2ef768734.camel@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: x86/mmu: Exclude the MMU_PRESENT bit from MMIO
+ SPTE's generation
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Date:   Tue, 09 Mar 2021 15:31:21 +0200
+In-Reply-To: <d72993d9-c11c-a5f4-0452-b2bed730938c@redhat.com>
+References: <20210309021900.1001843-1-seanjc@google.com>
+         <20210309021900.1001843-3-seanjc@google.com>
+         <785c17c307e66b9d7b422cc577499d284cfb6e7b.camel@redhat.com>
+         <d72993d9-c11c-a5f4-0452-b2bed730938c@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <3e1bd870-b0e6-cc30-fcdb-b65c7668b0c3@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103090067
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/03/2021 3:33 pm, Pierre-Louis Bossart wrote:
+On Tue, 2021-03-09 at 14:12 +0100, Paolo Bonzini wrote:
+> On 09/03/21 11:09, Maxim Levitsky wrote:
+> > What happens if mmio generation overflows (e.g if userspace keeps on updating the memslots)?
+> > In theory if we have a SPTE with a stale generation, it can became valid, no?
+> > 
+> > I think that we should in the case of the overflow zap all mmio sptes.
+> > What do you think?
+> 
+> Zapping all MMIO SPTEs is done by updating the generation count.  When 
+> it overflows, all SPs are zapped:
+> 
+>          /*
+>           * The very rare case: if the MMIO generation number has wrapped,
+>           * zap all shadow pages.
+>           */
+>          if (unlikely(gen == 0)) {
+>                  kvm_debug_ratelimited("kvm: zapping shadow pages for 
+> mmio generation wraparound\n");
+>                  kvm_mmu_zap_all_fast(kvm);
+>          }
+> 
+> So giving it more bits make this more rare, at the same time having to 
+> remove one or two bits is not the end of the world.
 
-Hi Pierre-Louis
+This is exactly what I expected to happen, I just didn't find that code.
+Thanks for explanation, and it shows that I didn't study the mmio spte
+code much.
 
-Thanks a lot for your comments. Since this patch set has been merged we 
-will address
-your comments in a next fix patch.
->
->> +/* Enable I2C clocks */
->> +static void cs8409_enable_i2c_clock(struct hda_codec *codec, 
->> unsigned int flag)
->> +{
->> +    unsigned int retval = 0;
->> +    unsigned int newval = 0;
->
-> initializations not needed
-Will fix that.
->
->> +    retval = cs_vendor_coef_get(codec, 0x0);
->> +    newval = (flag) ? (retval | 0x8) : (retval & 0xfffffff7);
->> +    cs_vendor_coef_set(codec, 0x0, newval);
->> +}
->> +
->> +/* Wait I2C transaction  */
->> +static int cs8409_i2c_wait_complete(struct hda_codec *codec)
->> +{
->> +    int repeat = 5;
->> +    unsigned int retval = 0;
->
-> initialization not needed.
-Will fix that.
->
->> +
->> +    do {
->> +        retval = cs_vendor_coef_get(codec, CIR_I2C_STATUS);
->> +        if ((retval & 0x18) != 0x18) {
->> +            usleep_range(2000, 4000);
->> +            --repeat;
->> +        } else
->> +            break;
->> +
->> +    } while (repeat);
->> +
->> +    return repeat > 0 ? 0 : -1;
->
-> can we simplify by returning !!repeat ?
-Yes, we can simplify this code as well.
->
->> +}
->> +
->> +/* CS8409 slave i2cRead */
->> +static unsigned int cs8409_i2c_read(struct hda_codec *codec,
->> +        unsigned int i2c_address,
->> +        unsigned int i2c_reg,
->> +        unsigned int paged)
->> +{
->> +    unsigned int i2c_reg_data;
->> +    unsigned int retval = 0;
->> +
->> +    cs8409_enable_i2c_clock(codec, 1);
->> +    cs_vendor_coef_set(codec, CIR_I2C_ADDR, i2c_address);
->> +
->> +    if (paged) {
->> +        cs_vendor_coef_set(codec, CIR_I2C_QWRITE, i2c_reg >> 8);
->> +        if (cs8409_i2c_wait_complete(codec) == -1) {
->> +            codec_err(codec,
->> +                "%s() Paged Transaction Failed 0x%02x : 0x%04x = 
->> 0x%02x\n",
->> +                __func__, i2c_address, i2c_reg, retval);
->
-> return an error?
-Yes, you are right there is no reason to continue if we hit an error 
-here. Will be fixed.
->
->> +        }
->> +    }
->> +
->> +    i2c_reg_data = (i2c_reg << 8) & 0x0ffff;
->> +    cs_vendor_coef_set(codec, CIR_I2C_QREAD, i2c_reg_data);
->> +    if (cs8409_i2c_wait_complete(codec) == -1) {
->> +        codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x = 
->> 0x%02x\n",
->> +            __func__, i2c_address, i2c_reg, retval);
->
-> return and error?
-Same as above
->
->> +    }
->> +
->> +    /* Register in bits 15-8 and the data in 7-0 */
->> +    retval = cs_vendor_coef_get(codec, CIR_I2C_QREAD);
->> +    retval &= 0x0ff;
->> +
->> +    cs8409_enable_i2c_clock(codec, 0);
->> +
->> +    return retval;
->> +}
->> +
->> +/* CS8409 slave i2cWrite */
->> +static unsigned int cs8409_i2c_write(struct hda_codec *codec,
->> +        unsigned int i2c_address, unsigned int i2c_reg,
->> +        unsigned int i2c_data,
->> +        unsigned int paged)
->> +{
->> +    unsigned int retval = 0;
->> +    unsigned int i2c_reg_data = 0;
->> +
->> +    cs8409_enable_i2c_clock(codec, 1);
->> +    cs_vendor_coef_set(codec, CIR_I2C_ADDR, i2c_address);
->> +
->> +    if (paged) {
->> +        cs_vendor_coef_set(codec, CIR_I2C_QWRITE, i2c_reg >> 8);
->> +        if (cs8409_i2c_wait_complete(codec) == -1) {
->> +            codec_err(codec,
->> +                "%s() Paged Transaction Failed 0x%02x : 0x%04x = 
->> 0x%02x\n",
->> +                __func__, i2c_address, i2c_reg, retval);
->
-> return error?
-Same as above
->
->> +        }
->> +    }
->> +
->> +    i2c_reg_data = ((i2c_reg << 8) & 0x0ff00) | (i2c_data & 0x0ff);
->> +    cs_vendor_coef_set(codec, CIR_I2C_QWRITE, i2c_reg_data);
->> +
->> +    if (cs8409_i2c_wait_complete(codec) == -1) {
->> +        codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x = 
->> 0x%02x\n",
->> +            __func__, i2c_address, i2c_reg, retval);
->
-> return error?
-Same as above
->
->> +    }
->> +
->> +    cs8409_enable_i2c_clock(codec, 0);
->> +
->> +    return retval;
->> +}
->> +
->> +/* Assert/release RTS# line to CS42L42 */
->> +static void cs8409_cs42l42_reset(struct hda_codec *codec)
->> +{
->> +    /* Assert RTS# line */
->> +    snd_hda_codec_write(codec,
->> +            codec->core.afg, 0, AC_VERB_SET_GPIO_DATA, 0);
->> +    /* wait ~10ms */
->> +    usleep_range(10000, 15000);
->> +    /* Release RTS# line */
->> +    snd_hda_codec_write(codec,
->> +            codec->core.afg, 0, AC_VERB_SET_GPIO_DATA, GPIO5_INT);
->> +    /* wait ~10ms */
->> +    usleep_range(10000, 15000);
->> +
->> +    /* Clear interrupts status */
->> +    cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308, 1);
->> +    cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1309, 1);
->> +    cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130A, 1);
->> +    cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130F, 1);
->
-> clear on read?
-This is how CS42L42 works, to clear interrupts we have to read 
-interrupts status registers.
->
->
->> +static int cs8409_cs42l42_fixup(struct hda_codec *codec)
->> +{
->> +    int err = 0;
->
-> useless init
-Will fix.
->
->> +    struct cs_spec *spec = codec->spec;
->> +    unsigned int pincap = 0;
->> +
->> +    /* Basic initial sequence for specific hw configuration */
->> +    snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
->> +
->> +    /* CS8409 is simple HDA bridge and intended to be used with a 
->> remote
->> +     * companion codec. Most of input/output PIN(s) have only basic
->> +     * capabilities. NID(s) 0x24 and 0x34 have only OUTC and INC
->> +     * capabilities and no presence detect capable (PDC) and call to
->> +     * snd_hda_gen_build_controls() will mark them as non detectable
->> +     * phantom jacks. However, in this configuration companion codec
->> +     * CS42L42 is connected to these pins and it has jack detect
->> +     * capabilities. We have to override pin capabilities,
->> +     * otherwise they will not be created as input devices.
->> +     */
->> +    _snd_hdac_read_parm(&codec->core,
->> +            CS8409_CS42L42_HP_PIN_NID, AC_PAR_PIN_CAP, &pincap);
->> +
->> +    snd_hdac_override_parm(&codec->core,
->> +            CS8409_CS42L42_HP_PIN_NID, AC_PAR_PIN_CAP,
->> +            (pincap | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
->> +
->> +    _snd_hdac_read_parm(&codec->core, CS8409_CS42L42_AMIC_PIN_NID,
->> +            AC_PAR_PIN_CAP, &pincap);
->> +
->> +    snd_hdac_override_parm(&codec->core,
->> +            CS8409_CS42L42_AMIC_PIN_NID, AC_PAR_PIN_CAP,
->> +            (pincap | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
->> +
->> +    snd_hda_override_wcaps(codec, CS8409_CS42L42_HP_PIN_NID,
->> +            (get_wcaps(codec, CS8409_CS42L42_HP_PIN_NID) | 
->> AC_WCAP_UNSOL_CAP));
->> +
->> +    snd_hda_override_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID,
->> +            (get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | 
->> AC_WCAP_UNSOL_CAP));
->> +
->> +    snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
->> +
->> +    err = snd_hda_parse_pin_defcfg(codec, &spec->gen.autocfg, 0, 0);
->> +    if (err < 0)
->> +        return err;
->> +
->> +    err = snd_hda_gen_parse_auto_config(codec, &spec->gen.autocfg);
->> +    if (err < 0)
->> +        return err;
->> +
->> +    snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
->> +
->> +    return err;
->> +}
->> +
->> +static int patch_cs8409(struct hda_codec *codec)
->> +{
->> +    struct cs_spec *spec;
->> +    int err = -EINVAL;
->> +
->> +    spec = cs_alloc_spec(codec, CS8409_VENDOR_NID);
->> +    if (!spec)
->> +        return -ENOMEM;
->> +
->> +    snd_hda_pick_fixup(codec,
->> +            cs8409_models, cs8409_fixup_tbl, cs8409_fixups);
->> +
->> +    codec_dbg(codec, "Picked ID=%d, VID=%08x, DEV=%08x\n",
->> +            codec->fixup_id,
->> +            codec->bus->pci->subsystem_vendor,
->> +            codec->bus->pci->subsystem_device);
->> +
->> +    switch (codec->fixup_id) {
->> +    /* Dell platforms with CS42L42 companion codec */
->> +    case CS8409_BULLSEYE:
->> +    case CS8409_WARLOCK:
->> +    case CS8409_CYBORG:
->> +
->> +        snd_hda_add_verbs(codec, cs8409_cs42l42_add_verbs);
->> +
->> +        codec->patch_ops = cs8409_cs42l42_patch_ops;
->> +
->> +        spec->gen.suppress_auto_mute = 1;
->> +        spec->gen.no_primary_hp = 1;
->> +        /* GPIO 5 out, 3,4 in */
->> +        spec->gpio_dir = GPIO5_INT;
->> +        spec->gpio_data = 0;
->> +        spec->gpio_mask = 0x03f;
->> +
->> +        err = cs8409_cs42l42_fixup(codec);
->> +
->> +        if (err > 0)
->
-> better keep the convention that errors are negative and zero is success.
-Agreed. Will fix.
->
->> +            err = cs8409_cs42l42_hw_init(codec);
->> +        break;
->> +
->> +    default:
->> +        codec_err(codec, "VID=%08x, DEV=%08x not supported\n",
->> +                codec->bus->pci->subsystem_vendor,
->> +                codec->bus->pci->subsystem_device);
->> +        break;
->> +    }
->> +    if (err < 0)
->> +        cs_free(codec);
->> +    else
->> +        snd_hda_codec_set_name(codec, "CS8409/CS42L42");
->> +
->> +    return err;
->> +}
->>     /*
->>    * patch entries
->> @@ -1229,6 +1804,7 @@ static const struct hda_device_id 
->> snd_hda_id_cirrus[] = {
->>       HDA_CODEC_ENTRY(0x10134208, "CS4208", patch_cs4208),
->>       HDA_CODEC_ENTRY(0x10134210, "CS4210", patch_cs4210),
->>       HDA_CODEC_ENTRY(0x10134213, "CS4213", patch_cs4213),
->> +    HDA_CODEC_ENTRY(0x10138409, "CS8409", patch_cs8409),
->>       {} /* terminator */
->>   };
->>   MODULE_DEVICE_TABLE(hdaudio, snd_hda_id_cirrus);
->>
+Best regards,
+	Maxim Levitsky
+
+> 
+> Paolo
+> 
+
 
