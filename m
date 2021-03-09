@@ -2,134 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AAC3322A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF7C3322AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhCIKKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 05:10:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28308 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230084AbhCIKJu (ORCPT
+        id S230118AbhCIKMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 05:12:12 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2667 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230420AbhCIKLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 05:09:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615284589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E7+PqvKTFHdaKCmM0AiAKUNzRu+ZOxj1wno09Cr/Az0=;
-        b=EafcPI/op90kkAEWnqO5qUK04T8DRdXfLZ25Mn7dzuykRSN8rxl8l4giBTO60DRkhZ9A8t
-        3dVs/nOTSD2QP8OXYdsb5Em4/pgZzRxOCmzLmrFR7Jv9SAwaUL9ZvPf8PPyn9M52zN1yHO
-        E/TsT002iY851k0NSnmttVmJXrVK8K8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-BGkCS5InMzyjBBKcXi9jAA-1; Tue, 09 Mar 2021 05:09:47 -0500
-X-MC-Unique: BGkCS5InMzyjBBKcXi9jAA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59DB11005D45;
-        Tue,  9 Mar 2021 10:09:46 +0000 (UTC)
-Received: from starship (unknown [10.35.206.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DB0935D6D7;
-        Tue,  9 Mar 2021 10:09:43 +0000 (UTC)
-Message-ID: <785c17c307e66b9d7b422cc577499d284cfb6e7b.camel@redhat.com>
-Subject: Re: [PATCH 2/2] KVM: x86/mmu: Exclude the MMU_PRESENT bit from MMIO
- SPTE's generation
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Date:   Tue, 09 Mar 2021 12:09:41 +0200
-In-Reply-To: <20210309021900.1001843-3-seanjc@google.com>
-References: <20210309021900.1001843-1-seanjc@google.com>
-         <20210309021900.1001843-3-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Tue, 9 Mar 2021 05:11:52 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DvrVS0xBYz67wrv;
+        Tue,  9 Mar 2021 18:07:28 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 9 Mar 2021 11:11:50 +0100
+Received: from [10.210.172.22] (10.210.172.22) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 9 Mar 2021 10:11:49 +0000
+Subject: Re: [PATCH v1] scsi: storvsc: Cap cmd_per_lun at can_queue
+To:     Michael Kelley <mikelley@microsoft.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "andres@anarazel.de" <andres@anarazel.de>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>
+References: <20210305232151.1531-1-melanieplageman@gmail.com>
+ <MWHPR21MB1593078007256C5155ED5A86D7939@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210308175618.GA2376@goldwasser>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <01aa44d0-f0a5-6de6-6778-a1658a3d8a8f@huawei.com>
+Date:   Tue, 9 Mar 2021 10:09:48 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
+In-Reply-To: <20210308175618.GA2376@goldwasser>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Originating-IP: [10.210.172.22]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-08 at 18:19 -0800, Sean Christopherson wrote:
-> Drop bit 11, used for the MMU_PRESENT flag, from the set of bits used to
-> store the generation number in MMIO SPTEs.  MMIO SPTEs with bit 11 set,
-> which occurs when userspace creates 128+ memslots in an address space,
-> get false positives for is_shadow_present_spte(), which lead to a variety
-> of fireworks, crashes KVM, and likely hangs the host kernel.
+On 08/03/2021 17:56, Melanie Plageman wrote:
+> On Mon, Mar 08, 2021 at 02:37:40PM +0000, Michael Kelley wrote:
+>> From: Melanie Plageman (Microsoft) <melanieplageman@gmail.com> Sent: Friday, March 5, 2021 3:22 PM
+>>>
+>>> The scsi_device->queue_depth is set to Scsi_Host->cmd_per_lun during
+>>> allocation.
+>>>
+>>> Cap cmd_per_lun at can_queue to avoid dispatch errors.
+>>>
+>>> Signed-off-by: Melanie Plageman (Microsoft) <melanieplageman@gmail.com>
+>>> ---
+>>>   drivers/scsi/storvsc_drv.c | 2 ++
+>>>   1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+>>> index 6bc5453cea8a..d7953a6e00e6 100644
+>>> --- a/drivers/scsi/storvsc_drv.c
+>>> +++ b/drivers/scsi/storvsc_drv.c
+>>> @@ -1946,6 +1946,8 @@ static int storvsc_probe(struct hv_device *device,
+>>>   				(max_sub_channels + 1) *
+>>>   				(100 - ring_avail_percent_lowater) / 100;
+>>>
+>>> +	scsi_driver.cmd_per_lun = min_t(u32, scsi_driver.cmd_per_lun, scsi_driver.can_queue);
+>>> +
+>>
+>> I'm not sure what you mean by "avoid dispatch errors".  Can you elaborate?
 > 
-> Fixes: b14e28f37e9b ("KVM: x86/mmu: Use a dedicated bit to track shadow/MMU-present SPTEs")
-> Reported-by: Tom Lendacky <thomas.lendacky@amd.com>
-> Reported-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/spte.h | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
+> The scsi_driver.cmd_per_lun is set to 2048. Which is then used to set
+> Scsi_Host->cmd_per_lun in storvsc_probe().
 > 
-> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-> index b53036d9ddf3..bca0ba11cccf 100644
-> --- a/arch/x86/kvm/mmu/spte.h
-> +++ b/arch/x86/kvm/mmu/spte.h
-> @@ -101,11 +101,11 @@ static_assert(!(EPT_SPTE_MMU_WRITABLE & SHADOW_ACC_TRACK_SAVED_MASK));
->  #undef SHADOW_ACC_TRACK_SAVED_MASK
->  
->  /*
-> - * Due to limited space in PTEs, the MMIO generation is a 20 bit subset of
-> + * Due to limited space in PTEs, the MMIO generation is a 19 bit subset of
->   * the memslots generation and is derived as follows:
->   *
-> - * Bits 0-8 of the MMIO generation are propagated to spte bits 3-11
-> - * Bits 9-19 of the MMIO generation are propagated to spte bits 52-62
-> + * Bits 0-7 of the MMIO generation are propagated to spte bits 3-10
-> + * Bits 8-18 of the MMIO generation are propagated to spte bits 52-62
->   *
->   * The KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS flag is intentionally not included in
->   * the MMIO generation number, as doing so would require stealing a bit from
-> @@ -116,7 +116,7 @@ static_assert(!(EPT_SPTE_MMU_WRITABLE & SHADOW_ACC_TRACK_SAVED_MASK));
->   */
->  
->  #define MMIO_SPTE_GEN_LOW_START		3
-> -#define MMIO_SPTE_GEN_LOW_END		11
-> +#define MMIO_SPTE_GEN_LOW_END		10
->  
->  #define MMIO_SPTE_GEN_HIGH_START	52
->  #define MMIO_SPTE_GEN_HIGH_END		62
-> @@ -125,12 +125,14 @@ static_assert(!(EPT_SPTE_MMU_WRITABLE & SHADOW_ACC_TRACK_SAVED_MASK));
->  						    MMIO_SPTE_GEN_LOW_START)
->  #define MMIO_SPTE_GEN_HIGH_MASK		GENMASK_ULL(MMIO_SPTE_GEN_HIGH_END, \
->  						    MMIO_SPTE_GEN_HIGH_START)
-> +static_assert(!(SPTE_MMU_PRESENT_MASK &
-> +		(MMIO_SPTE_GEN_LOW_MASK | MMIO_SPTE_GEN_HIGH_MASK)));
->  
->  #define MMIO_SPTE_GEN_LOW_BITS		(MMIO_SPTE_GEN_LOW_END - MMIO_SPTE_GEN_LOW_START + 1)
->  #define MMIO_SPTE_GEN_HIGH_BITS		(MMIO_SPTE_GEN_HIGH_END - MMIO_SPTE_GEN_HIGH_START + 1)
->  
->  /* remember to adjust the comment above as well if you change these */
-> -static_assert(MMIO_SPTE_GEN_LOW_BITS == 9 && MMIO_SPTE_GEN_HIGH_BITS == 11);
-> +static_assert(MMIO_SPTE_GEN_LOW_BITS == 8 && MMIO_SPTE_GEN_HIGH_BITS == 11);
->  
->  #define MMIO_SPTE_GEN_LOW_SHIFT		(MMIO_SPTE_GEN_LOW_START - 0)
->  #define MMIO_SPTE_GEN_HIGH_SHIFT	(MMIO_SPTE_GEN_HIGH_START - MMIO_SPTE_GEN_LOW_BITS)
-I bisected this and I reached the same conclusion that bit 11 has to be removed from mmio generation mask.
+> In storvsc_probe(), when doing scsi_scan_host(), scsi_alloc_sdev() is
+> called and sets the scsi_device->queue_depth to the Scsi_Host's
+> cmd_per_lun with this code:
+>      
+> scsi_change_queue_depth(sdev, sdev->host->cmd_per_lun ?
+>                                          sdev->host->cmd_per_lun : 1);
+> 
+> During dispatch, the scsi_device->queue_depth is used in
+> scsi_dev_queue_ready(), called by scsi_mq_get_budget() to determine
+> whether or not the device can queue another command.
+> 
+> On some machines, with the 2048 value of cmd_per_lun that was used to
+> set the initial scsi_device->queue_depth, commands can be queued that
+> are later not able to be dispatched after running out of space in the
+> ringbuffer.
+> 
+> On an 8 core Azure VM with 16GB of memory with a single 1 TiB SSD
+> (running an fio workload that I can provide if needed), storvsc_do_io()
+> ends up often returning SCSI_MLQUEUE_DEVICE_BUSY.
+>                                                                        
+> This is the call stack:
+>      
+> hv_get_bytes_to_write
+> hv_ringbuffer_write
+> vmbus_send_packet
+> storvsc_dio_io
+> storvsc_queuecommand
+> scsi_dispatch_cmd
+> scsi_queue_rq
+> dispatch_rq_list
+> 
+>> Be aware that the calculation of "can_queue" in this driver is somewhat
+>> flawed -- it should not be based on the size of the ring buffer, but instead on
+>> the maximum number of requests Hyper-V will queue.  And even then,
+>> can_queue doesn't provide the cap you might expect because the blk-mq layer
+>> allocates can_queue tags for each HW queue, not as a total.
+> 
+> 
+> The docs for scsi_mid_low_api document Scsi_Host can_queue this way:
+> 
+>    can_queue
+>    - must be greater than 0; do not send more than can_queue
+>      commands to the adapter.
+>          
+> I did notice that in scsi_host.h, the comment for can_queue does say
+> can_queue is the "maximum number of simultaneous commands a single hw
+> queue in HBA will accept." However, I don't see it being used this way
+> in the code.
+>                            
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
- 
-I do wonder, why do we need 19 (and now 18 bits) for the mmio generation:
+JFYI, the block layer ensures that no more than can_queue requests are 
+sent to the host. See scsi_mq_setup_tags(), and how the tagset queue 
+depth is set to shost->can_queue.
 
-What happens if mmio generation overflows (e.g if userspace keeps on updating the memslots)? 
-In theory if we have a SPTE with a stale generation, it can became valid, no?
+Thanks,
+John
 
-I think that we should in the case of the overflow zap all mmio sptes.
-What do you think?
 
-Best regards,
-	Maxim Levitsky
+> During dispatch, In scsi_target_queue_ready(), there is this code:
+> 
+>          if (busy >= starget->can_queue)
+>                  goto starved;
+> 
+> And the scsi_target->can_queue value should be coming from Scsi_host as
+> mentioned in the scsi_target definition in scsi_device.h
+>      /*
+>        * LLDs should set this in the slave_alloc host template callout.
+>        * If set to zero then there is not limit.
+>        */
+>      unsigned int            can_queue;
+> 
+> So, I don't really see how this would be per hardware queue.
+> 
+>>
+>> I agree that the cmd_per_lun setting is also too big, but we should fix that in
+>> the context of getting all of these different settings working together correctly,
+>> and not piecemeal.
+>>
+> 
+> Capping Scsi_Host->cmd_per_lun to scsi_driver.can_queue during probe
+> will also prevent the LUN queue_depth from being set to a value that is
+> higher than it can ever be set to again by the user when
+> storvsc_change_queue_depth() is invoked.
+> 
+> Also in scsi_sysfs sdev_store_queue_depth() there is this check:
+> 
+>            if (depth < 1 || depth > sdev->host->can_queue)
+>                  return -EINVAL;
+> 
+> I would also note that VirtIO SCSI in virtscsi_probe(), Scsi_Host->cmd_per_lun
+> is set to the min of the configured cmd_per_lun and
+> Scsi_Host->can_queue:
+> 
+>      shost->cmd_per_lun = min_t(u32, cmd_per_lun, shost->can_queue);
+> 
+> Best,
+> Melanie
+> .
+> 
 
