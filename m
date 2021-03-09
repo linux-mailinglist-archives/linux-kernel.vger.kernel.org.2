@@ -2,181 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF98332F39
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE50332F3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhCITnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:43:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhCITnE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:43:04 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B986C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:43:04 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id o38so9497900pgm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:43:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nrSjbcfbtpDu99fWTpmyTiTS4z7P8iLrCevZq+OwJDk=;
-        b=fxZkdSwllM3KcD1tprgJ8Qwwl3PI5A+cU8oORbvgRMWthQA0elQUWYTsTefxo87ZMH
-         csmfaAMMCvh7WBAPvVauUmDmZGZj1yKsoDGNatLLTaHDvpE93tQVrzeqnmrkE8dw+19g
-         H4NzNxqJTkhxUUKb6moJUDCHrSdkD3Mn2YC8vv8/ax319/eIZFWqVitKiicr3Q9vwnWL
-         C8iZA/cO52ZIoF+Y0a8FtA3ipQmjOmywD6Dl4b4oDoU8/FL4gYiEU9PEuhi7cG6ryrpP
-         LpmHctDWZMDMaQIz2OpaVQeOHmmf0/qTOSIh/dx5RZKdqq6dBJPmVN2QpiTqphqK9QNM
-         SSGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nrSjbcfbtpDu99fWTpmyTiTS4z7P8iLrCevZq+OwJDk=;
-        b=dfRynS+z8vjTX6RRUGNj5usy9SuVc8V7iMOyER/xo8vKUZ0SZ4zbD+PXdwF6L3B9+i
-         IEsrpRHkU2tlcc7//ExKqyXaY80az4I0AvDMpbSk94zXWP45nLtHTXaKBMS5tfLj4tbf
-         EuGIMytMqGJhHs0FDuJBf2Z7l//+hS+nyxZTJVBMcPUxgVZfeFoJbwi2InOqur2H4tNh
-         wy9TYyBkuFdphi9/QJ1edM+FMX2qUXVQxXhFnf+jWztmiP6OcFv4TfLQRH1bbjh+Japm
-         COM0zd5jtWqVgu+sO3rDbchqeUiSe1C00WxrZUBCvB1uxsvq5nvXvlYfhNKtnSbiXMAv
-         W2KA==
-X-Gm-Message-State: AOAM532PfHxibPmlFGDyPutPP6ZYPGb+ngLoR7gYz958p/vDjw+VC0JG
-        L9eqYaMecCtr2VhlCb5pB1EPIQ==
-X-Google-Smtp-Source: ABdhPJxG0mCqsNk6TCaFJMi2aql7w63MaxtH/VOu8x+69eBxPHe97w/5N8Km/Rme/8HzauKwfNe/gw==
-X-Received: by 2002:a62:3085:0:b029:1ec:a6b8:6dd2 with SMTP id w127-20020a6230850000b02901eca6b86dd2mr26760622pfw.7.1615318983949;
-        Tue, 09 Mar 2021 11:43:03 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
-        by smtp.gmail.com with ESMTPSA id 25sm14296910pfh.199.2021.03.09.11.43.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 11:43:03 -0800 (PST)
-Date:   Tue, 9 Mar 2021 11:42:56 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Steve Rutherford <srutherford@google.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        id S231468AbhCIToR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:44:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43306 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231326AbhCIToH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 14:44:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EC710AC1F;
+        Tue,  9 Mar 2021 19:44:05 +0000 (UTC)
+Date:   Tue, 9 Mar 2021 20:44:04 +0100
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
- ioctl
-Message-ID: <YEfPwD6/XiTp7v0y@google.com>
-References: <20210224175122.GA19661@ashkalra_ubuntu_server>
- <YDaZacLqNQ4nK/Ex@google.com>
- <20210225202008.GA5208@ashkalra_ubuntu_server>
- <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
- <20210226140432.GB5950@ashkalra_ubuntu_server>
- <YDkzibkC7tAYbfFQ@google.com>
- <20210308104014.GA5333@ashkalra_ubuntu_server>
- <YEaAXXGZH0uSMA3v@google.com>
- <bdf0767f-c2c4-5863-fd0d-352a3f68f7f9@amd.com>
- <CABayD+ftv5DNdXj-Bs8MXGeFNKx7-aTt99fPuD2R6w1mJ2u8TQ@mail.gmail.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: make STACKPROTECTOR_PER_TASK configurable.
+Message-ID: <20210309194404.GC6564@kitsune.suse.cz>
+References: <20210309123544.14040-1-msuchanek@suse.de>
+ <CAK7LNAT+8mGunqXSPLHxhF1FTXQEzbAoKPY=48pBgtLbhcB0jg@mail.gmail.com>
+ <20210309133523.GX6564@kitsune.suse.cz>
+ <CAK7LNARVPYBWvaA+MCjVic+qLay1AR-+UZuyC+_FRGShL=gahg@mail.gmail.com>
+ <20210309151046.GZ6564@kitsune.suse.cz>
+ <CAK7LNAQ_oJJem6sdEwTjLucjHF_R70Pa=C_c__v7x3QMz-WBAw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CABayD+ftv5DNdXj-Bs8MXGeFNKx7-aTt99fPuD2R6w1mJ2u8TQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNAQ_oJJem6sdEwTjLucjHF_R70Pa=C_c__v7x3QMz-WBAw@mail.gmail.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021, Steve Rutherford wrote:
-> On Mon, Mar 8, 2021 at 1:11 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
-> > On 3/8/21 1:51 PM, Sean Christopherson wrote:
-> > > If the guest does the hypercall after writing the page, then the guest is hosed
-> > > if it gets migrated while writing the page (scenario #1):
+On Wed, Mar 10, 2021 at 04:07:00AM +0900, Masahiro Yamada wrote:
+> On Wed, Mar 10, 2021 at 12:10 AM Michal Suchánek <msuchanek@suse.de> wrote:
+> >
+> > On Tue, Mar 09, 2021 at 11:53:21PM +0900, Masahiro Yamada wrote:
+> > > On Tue, Mar 9, 2021 at 10:35 PM Michal Suchánek <msuchanek@suse.de> wrote:
+> > > >
+> > > > On Tue, Mar 09, 2021 at 10:22:36PM +0900, Masahiro Yamada wrote:
+> > > > > On Tue, Mar 9, 2021 at 9:35 PM Michal Suchanek <msuchanek@suse.de> wrote:
+> > > > > >
+> > > > > > When using dummy-tools STACKPROTECTOR_PER_TASK is unconditionally
+> > > > > > selected. This defeats the purpose of the all-enabled tool.
+> > > > > >
+> > > > > > Description copied from arm
+> > > > > >
+> > > > > > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > > >
+> > > > >
+> > > > > Could you explain what problem
+> > > > > this patch is trying to solve?
+> > > >
+> > > > The option cannot be disabled when compiler has the required capability.
 > > >
-> > >   vCPU                 Userspace
-> > >   zero_bytes[0:N]
-> > >                        <transfers written bytes as private instead of shared>
-> > >                      <migrates vCPU>
-> > >   zero_bytes[N+1:4095]
-> > >   set_shared (dest)
-> > >   kaboom!
-> >
-> >
-> > Maybe I am missing something, this is not any different from a normal
-> > operation inside a guest. Making a page shared/private in the page table
-> > does not update the content of the page itself. In your above case, I
-> > assume zero_bytes[N+1:4095] are written by the destination VM. The
-> > memory region was private in the source VM page table, so, those writes
-> > will be performed encrypted. The destination VM later changed the memory
-> > to shared, but nobody wrote to the memory after it has been transitioned
-> > to the  shared, so a reader of the memory should get ciphertext and
-> > unless there was a write after the set_shared (dest).
-
-Sorry, that wasn't clear, there's an implied page table update to make the page
-shared before zero_bytes.
-
-> > > If userspace does GET_DIRTY after GET_LIST, then the host would transfer bad
-> > > data by consuming a stale list (scenario #2):
 > > >
-> > >   vCPU               Userspace
-> > >                      get_list (from KVM or internally)
-> > >   set_shared (src)
-> > >   zero_page (src)
-> > >                      get_dirty
-> > >                      <transfers private data instead of shared>
-> > >                      <migrates vCPU>
-> > >   kaboom!
-> >
-> >
-> > I don't remember how things are done in recent Ashish Qemu/KVM patches
-> > but in previous series, the get_dirty() happens before the querying the
-> > encrypted state. There was some logic in VMM to resync the encrypted
-> > bitmap during the final migration stage and perform any additional data
-> > transfer since last sync.
-
-It's likely that Ashish's patches did the correct thing, I just wanted to point
-out that both host and guest need to do everything in a very specific order.
-
-> > > If both guest and host order things to avoid #1 and #2, the host can still
-> > > migrate the wrong data (scenario #3):
+> > > Yes.
+> > > Currently, this symbol claims "def_bool y",
+> > > so there is no way to disable it.
 > > >
-> > >   vCPU               Userspace
-> > >   set_private
-> > >   zero_bytes[0:4096]
-> > >                      get_dirty
-> > >   set_shared (src)
-> > >                      get_list
-> > >                      <transfers as shared instead of private>
-> > >                    <migrates vCPU>
-> > >   set_private (dest)
-> > >   kaboom!
-> >
-> >
-> > Since there was no write to the memory after the set_shared (src), so
-> > the content of the page should not have changed. After the set_private
-> > (dest), the caller should be seeing the same content written by the
-> > zero_bytes[0:4096]
->
-> I think Sean was going for the situation where the VM has moved to the
-> destination, which would have changed the VEK. That way the guest
-> would be decrypting the old ciphertext with the new (wrong) key.
-
-I think that's what I was saying?
-
-I was pointing out that the userspace VMM would see the page as "shared" and so
-read the guest memory directly instead of routing it through the PSP.
-
-Anyways, my intent wasn't to point out a known issue anywhere.  I was working
-through how GET_LIST would interact with GET_DIRTY_LOG to convince myself that
-the various flows were bombproof.  I wanted to record those thoughts so that I
-can remind myself of the requirements when I inevitably forget them in the future.
-
-> > > Scenario #3 is unlikely, but plausible, e.g. if the guest bails from its
-> > > conversion flow for whatever reason, after making the initial hypercall.  Maybe
-> > > it goes without saying, but to address #3, the guest must consider existing data
-> > > as lost the instant it tells the host the page has been converted to a different
-> > > type.
+> > > But, it comes from the nature of Kconfig in general.
 > > >
-> > >> For the above reason if we do in-kernel hypercall handling for page
-> > >> encryption status (which we probably won't require for SEV-SNP &
-> > >> correspondingly there will be no hypercall exiting),
-> > > As above, that doesn't preclude KVM from exiting to userspace on conversion.
-> > >
-> > >> then we can implement a standard GET/SET ioctl interface to get/set the guest
-> > >> page encryption status for userspace, which will work across SEV, SEV-ES and
-> > >> SEV-SNP.
+> > > dummy-tools is completely unrelated here.
+> >
+> > dummy-tools makes all configuration options available in order to be
+> > able to author configuration files on system different from the one
+> > where the kernel is built. This prevents authoring a configuration file
+> > with this option disabled.
+> 
+> 
+> No.
+> dummy-tools enables as many $(cc-option, ...)
+> and $(shell, ...) as possible. That's it.
+> 
+> 
+> In my understanding, STACKPROTECTOR_PER_TASK
+> should not be user-configurable.
+> That is why 'def_bool y'.
+
+How do you author a specific configuration with dummy-tools when options
+are allowed to unconditionally follow these options that dummy-tools
+enables?
+
+Thanks
+
+Michal
