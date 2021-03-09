@@ -2,72 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746AF332D01
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2156332D08
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhCIROi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:14:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230435AbhCIROU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:14:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE89364FCF;
-        Tue,  9 Mar 2021 17:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615310060;
-        bh=N0pPMrK8HZHwb5BJj+qk6BSsG+2O9CU/YqlNYMGEKpA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ltR5t/nzKKHa7wFgh79pYyxcdr4JFqOtSJov/34oYjORS85fG70G3BOGF6BK9mxMf
-         OUShmHdNwV7ogUhnaO1fNVN6HWvdmg1HkcSrBrU5Uk3qepbFdgcFseS0D7DuFHTAcc
-         yKB7iUJtzeWl6YGTa78vdjLN01T15J2R42duEKQN+fUWW4VxXYIZel0x7IMv2dvJ9m
-         Vpju6behX8JWpdw3UVIotX4GaV2Ub7GVcGeupaDRrrVXC+vIlUkPqZLlKahx1ge9mF
-         2E5oFOQf9xkUx7E+WDnwfXJImRqjX8jaVjZ/8No8oVIpGvlxI8yrnJ8yhqbFihUo7w
-         r5LeR4SmToteQ==
-Date:   Tue, 9 Mar 2021 09:14:19 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] docs: ABI: Fix the spelling oustanding to outstanding in
- the file sysfs-fs-xfs
-Message-ID: <20210309171419.GU3419940@magnolia>
-References: <20210213152436.1639458-1-unixbhaskar@gmail.com>
+        id S231161AbhCIRPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231386AbhCIRPP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:15:15 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9027C06174A;
+        Tue,  9 Mar 2021 09:15:15 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id e26so1238836pfd.9;
+        Tue, 09 Mar 2021 09:15:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zNrkVM3opIo4Ct7GIJQvQcLjEK4NZGCkwbt5BqsE3ko=;
+        b=LYQJKcZG5pX/aD26EtSnR/DH6zYpdM5UWiWr32Y7SM6Ph8LOV+8yok4Z2edFmt2bIe
+         kek8Ufbe5lLonqpuaj30w0JmyZxWK4BhQcGeUVytB2v3G4rKwsJPA2irJOi7OB8UQHgw
+         ceuj8wW6AG8b9L2tZrPiQ7+bD2nbD03Axlr1ejnoZzGOXMgdQeSNNt4Vqo08OH2nORwi
+         BXaXnZaSGj5e/5984sx7RnwrNe2mqtrwfEDyzGu8gkCz973942t9D1pMyTUseHcDUWBb
+         mfC5Pu7Z5KoBiOFuMVRql4Q+NzzE3dTLfK5EDxoqujXm5oMwSo8RvtwvrSqnoRPy9X/1
+         oyIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=zNrkVM3opIo4Ct7GIJQvQcLjEK4NZGCkwbt5BqsE3ko=;
+        b=EYEQM3lCoPcClH3jHW5JLwRhs5va6EDBhfWaQpmjCl9L2SkwKC6XPAomSXHAnUbVTo
+         dm6yhxb84509ySwuNLagCmCjZPf7owjbGDAab38NaDmwAaeDIT5PCOeqYXi01DkdBQbx
+         h+E/xQ4t5/Jl0CTtF3oJwr0VqD7suk0EGWvH9jBxHmVQZrayLlWiRbRiG8SFtuGDIvKY
+         QkWWDlNzVR3D8rd+EKuwvt6ArkRL9T7Dnatm7GtGz7j/B2QDWex1lrRPxK3/RQ1m06Pf
+         aU5MCEyf4kAb7lWhU+Zoe7Qe5TAghdcsQTgdD6ql7VYVIBqR7I4F7gftCZA6K9wn0CMp
+         ZEng==
+X-Gm-Message-State: AOAM531h3aq3SM3kGsTXhsDXKojvYzCVntAuYmhwD40gh6voXTd1gJZY
+        QX4Yhj1NHiIMscR3ueY5uFQ=
+X-Google-Smtp-Source: ABdhPJyeBMxGTjHEttE1j3stbXA8OHsaZUshmIOE5BfZOomN2sQc8OZiip7l9yPgljMo6J4zPVE94Q==
+X-Received: by 2002:a65:4942:: with SMTP id q2mr25390686pgs.34.1615310115222;
+        Tue, 09 Mar 2021 09:15:15 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:f896:d6be:86d4:a59b])
+        by smtp.gmail.com with ESMTPSA id q15sm13218413pfk.181.2021.03.09.09.15.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 09:15:14 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 9 Mar 2021 09:15:11 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        surenb@google.com, cgoldswo@codeaurora.org, willy@infradead.org,
+        vbabka@suse.cz, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mm: disable LRU pagevec during the migration
+ temporarily
+Message-ID: <YEetHx49DPVlC0Ap@google.com>
+References: <20210309051628.3105973-1-minchan@kernel.org>
+ <YEdV7Leo7MC93PlK@dhcp22.suse.cz>
+ <YEeiYbBjefM08h18@google.com>
+ <0ae7c7de-f274-c2ec-1b3a-a006ea280f98@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210213152436.1639458-1-unixbhaskar@gmail.com>
+In-Reply-To: <0ae7c7de-f274-c2ec-1b3a-a006ea280f98@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 08:54:36PM +0530, Bhaskar Chowdhury wrote:
+On Tue, Mar 09, 2021 at 05:31:09PM +0100, David Hildenbrand wrote:
 > 
-> s/oustanding/outstanding/
+> > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > > > ---
+> > > > * from v1 - https://lore.kernel.org/lkml/20210302210949.2440120-1-minchan@kernel.org/
+> > > >    * introduce __lru_add_drain_all to minimize changes - mhocko
+> > > >    * use lru_cache_disable for memory-hotplug
+> > > >    * schedule for every cpu at force_all_cpus
+> > > > 
+> > > > * from RFC - http://lore.kernel.org/linux-mm/20210216170348.1513483-1-minchan@kernel.org
+> > > >    * use atomic and lru_add_drain_all for strict ordering - mhocko
+> > > >    * lru_cache_disable/enable - mhocko
+> > > > 
+> > > >   include/linux/migrate.h |  6 ++-
+> > > >   include/linux/swap.h    |  2 +
+> > > >   mm/memory_hotplug.c     |  3 +-
+> > > >   mm/mempolicy.c          |  6 +++
+> > > >   mm/migrate.c            | 13 ++++---
+> > > >   mm/page_alloc.c         |  3 ++
+> > > >   mm/swap.c               | 82 +++++++++++++++++++++++++++++++++--------
+> > > >   7 files changed, 91 insertions(+), 24 deletions(-)
+> > > 
+> > > Sorry for nit picking but I think the additional abstraction for
+> > > migrate_prep is not really needed and we can remove some more code.
+> > > Maybe we should even get rid of migrate_prep_local which only has a
+> > > single caller and open coding lru draining with a comment would be
+> > > better from code reading POV IMO.
+> > 
+> > Thanks for the code. I agree with you.
+> > However, in this moment, let's go with this one until we conclude.
+> > The removal of migrate_prep could be easily done after that.
+> > I am happy to work on it.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Can you prepare + send along these cleanups so we can have a look at the end
+> result?
+> 
+> (either cleanups before or after your changes - doing cleanups before might
+> be cleaner as we are not dealing with a fix here that we want to backport)
 
-Looks good,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> ---
->  Documentation/ABI/testing/sysfs-fs-xfs | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-fs-xfs b/Documentation/ABI/testing/sysfs-fs-xfs
-> index ea0cc8c42093..f704925f6fe9 100644
-> --- a/Documentation/ABI/testing/sysfs-fs-xfs
-> +++ b/Documentation/ABI/testing/sysfs-fs-xfs
-> @@ -33,7 +33,7 @@ Contact:	xfs@oss.sgi.com
->  Description:
->  		The current state of the log write grant head. It
->  		represents the total log reservation of all currently
-> -		oustanding transactions, including regrants due to
-> +		outstanding transactions, including regrants due to
->  		rolling transactions. The grant head is exported in
->  		"cycle:bytes" format.
->  Users:		xfstests
-> --
-> 2.30.1
-> 
+Okay, let me try one more time.
