@@ -2,218 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2806332F69
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:57:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3A5332F6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhCIT5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:57:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21702 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231339AbhCIT4v (ORCPT
+        id S231410AbhCIT6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231559AbhCIT6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:56:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615319810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7zFVpycpZHtVMdvFk5Dnq9yKM0ZpsUG8FNKf17uIyDA=;
-        b=RvC/SKP216WY3SWqzsMEphmPE5ERNsLQua/DuhIA/slFCzXUBoGr3niPhxcJckJelidxa3
-        ewTzoDfGugSoPYJRWrYtIgODX3+82swgqF8VEXz9yDKlglJ7swSbI3ROaobEInfKhXZ5va
-        ra7Xw5AFEEyVh9UFV1kXtP3evehbgbs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-0FK79J_kMa2LRacfDn0vrQ-1; Tue, 09 Mar 2021 14:56:46 -0500
-X-MC-Unique: 0FK79J_kMa2LRacfDn0vrQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B47EE1009E38;
-        Tue,  9 Mar 2021 19:56:44 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 684915C261;
-        Tue,  9 Mar 2021 19:56:40 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 12:56:39 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH] vfio/pci: make the vfio_pci_mmap_fault reentrant
-Message-ID: <20210309125639.70724531@omen.home.shazbot.org>
-In-Reply-To: <20210309122607.0b68fb9b@omen.home.shazbot.org>
-References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
-        <20210308132106.49da42e2@omen.home.shazbot.org>
-        <20210308225626.GN397383@xz-x1>
-        <6b98461600f74f2385b9096203fa3611@hisilicon.com>
-        <20210309124609.GG2356281@nvidia.com>
-        <20210309082951.75f0eb01@x1.home.shazbot.org>
-        <20210309164004.GJ2356281@nvidia.com>
-        <20210309184739.GD763132@xz-x1>
-        <20210309122607.0b68fb9b@omen.home.shazbot.org>
+        Tue, 9 Mar 2021 14:58:04 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6DBC061760
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:58:03 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id p10so13304490ils.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:58:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=E3EULr6DvczRPFIruCZafwpzbVJHUineMzXORqlcchQ=;
+        b=AmitSmdh/V2mw5Yx89HuI1Zq+N3q8QBASWKZCt0sbt3F5/6nVjBACQwMNjgBQym3Hf
+         0B7dtbRdzAUR1hIDa7+DzHiCD3NV0/FPbPkLK4d1QLy8sBtfB9I88MZSKrVsDnU8fpoG
+         5/FTWeqEB6uQp8dQanKUK5V452UeMcZRUDRSEgSg9bkQSaXcbub8grk58rsQ94TKtv5M
+         fU1m99DEzED3Cq7im8oRtui5aN4cxAE21qZc8T8+nfu++Xu7WZCQpsmoz0tI3fEPoZgQ
+         ekjBxXOtnnZwKk1bXqkLfpyLADqoy1BLnZEOGTZkpV+eTwR9kDCaDwGNvraPZlClZbcu
+         7AUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=E3EULr6DvczRPFIruCZafwpzbVJHUineMzXORqlcchQ=;
+        b=Qvc9qZg1X3kjiCjZETVoi50rQO324m3Xih16jtwMRR2fEr+pXcoD6aM0vX24ejAgrh
+         O78uO6c+qA5l+DEZezVAIVWun+4K8lQcxqt6ZLcH4HujjdCILzqhiND10uedTQUe9CB2
+         M5InBWBRO78aIBJfirRRFTfic658ehJBwHh4J3wkZTp4JjGeLBWpIteuF/K+aiTRqL3M
+         SIgFAEFUYtKJOJR7Tu87G69NzhcHrGAbc2Y70Cnf9cxHIhFCxo2jWdNU9gh2dpHMNhW/
+         s69oY8Wi8UaKaiJAY2HrecWXmvRXBJQ869s4oaNsAGRA0cRm7kW8zS5WCSz9ACfygGTp
+         hQiw==
+X-Gm-Message-State: AOAM532rHJrpIYVsixz6GDO0Y6kI2qsvPFvLSZXZkLNrog5bByE+ji64
+        hTKfhvZ/gBD83kp62Imc45gOJaX+/KoHw0RzK/1BDw==
+X-Google-Smtp-Source: ABdhPJxj7kBpd2DRoLvs8wrf2H+fISF4BDTMGksQYSZt+kpke54saNcwvy57UiJ0RI97BbmSKtvnnbDMHoyUqSk6Njk=
+X-Received: by 2002:a05:6e02:194a:: with SMTP id x10mr26158846ilu.165.1615319882972;
+ Tue, 09 Mar 2021 11:58:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210302000133.272579-1-axelrasmussen@google.com>
+ <20210302000133.272579-2-axelrasmussen@google.com> <04697A35-AEC7-43F1-8462-1CD39648544A@nvidia.com>
+In-Reply-To: <04697A35-AEC7-43F1-8462-1CD39648544A@nvidia.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Tue, 9 Mar 2021 11:57:26 -0800
+Message-ID: <CAJHvVcjjX8FEsdngUTH+0c3C17T0ud-FXj=GJf90R8hn8PKekA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] userfaultfd: support minor fault handling for shmem
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>, Wang Qing <wangqing@vivo.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021 12:26:07 -0700
-Alex Williamson <alex.williamson@redhat.com> wrote:
+On Tue, Mar 9, 2021 at 11:52 AM Zi Yan <ziy@nvidia.com> wrote:
+>
+> On 1 Mar 2021, at 19:01, Axel Rasmussen wrote:
+>
+> > Modify the userfaultfd register API to allow registering shmem VMAs in
+> > minor mode. Modify the shmem mcopy implementation to support
+> > UFFDIO_CONTINUE in order to resolve such faults.
+> >
+> > Combine the shmem mcopy handler functions into a single
+> > shmem_mcopy_atomic_pte, which takes a mode parameter. This matches how
+> > the hugetlbfs implementation is structured, and lets us remove a good
+> > chunk of boilerplate.
+> >
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> > ---
+> >  fs/userfaultfd.c                 |  6 +--
+> >  include/linux/shmem_fs.h         | 26 ++++-----
+> >  include/uapi/linux/userfaultfd.h |  4 +-
+> >  mm/memory.c                      |  8 +--
+> >  mm/shmem.c                       | 92 +++++++++++++++-----------------
+> >  mm/userfaultfd.c                 | 27 +++++-----
+> >  6 files changed, 79 insertions(+), 84 deletions(-)
+> >
+> > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+> > index 14f92285d04f..9f3b8684cf3c 100644
+> > --- a/fs/userfaultfd.c
+> > +++ b/fs/userfaultfd.c
+> > @@ -1267,8 +1267,7 @@ static inline bool vma_can_userfault(struct vm_ar=
+ea_struct *vma,
+> >       }
+> >
+> >       if (vm_flags & VM_UFFD_MINOR) {
+> > -             /* FIXME: Add minor fault interception for shmem. */
+> > -             if (!is_vm_hugetlb_page(vma))
+> > +             if (!(is_vm_hugetlb_page(vma) || vma_is_shmem(vma)))
+> >                       return false;
+> >       }
+> >
+> > @@ -1941,7 +1940,8 @@ static int userfaultfd_api(struct userfaultfd_ctx=
+ *ctx,
+> >       /* report all available features and ioctls to userland */
+> >       uffdio_api.features =3D UFFD_API_FEATURES;
+> >  #ifndef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
+> > -     uffdio_api.features &=3D ~UFFD_FEATURE_MINOR_HUGETLBFS;
+> > +     uffdio_api.features &=3D
+> > +             ~(UFFD_FEATURE_MINOR_HUGETLBFS | UFFD_FEATURE_MINOR_SHMEM=
+);
+> >  #endif
+> >       uffdio_api.ioctls =3D UFFD_API_IOCTLS;
+> >       ret =3D -EFAULT;
+> > diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+> > index d82b6f396588..f0919c3722e7 100644
+> > --- a/include/linux/shmem_fs.h
+> > +++ b/include/linux/shmem_fs.h
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/percpu_counter.h>
+> >  #include <linux/xattr.h>
+> >  #include <linux/fs_parser.h>
+> > +#include <linux/userfaultfd_k.h>
+> >
+> >  /* inode in-kernel data */
+> >
+> > @@ -122,21 +123,16 @@ static inline bool shmem_file(struct file *file)
+> >  extern bool shmem_charge(struct inode *inode, long pages);
+> >  extern void shmem_uncharge(struct inode *inode, long pages);
+> >
+> > +#ifdef CONFIG_USERFAULTFD
+> >  #ifdef CONFIG_SHMEM
+> > -extern int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst=
+_pmd,
+> > -                               struct vm_area_struct *dst_vma,
+> > -                               unsigned long dst_addr,
+> > -                               unsigned long src_addr,
+> > -                               struct page **pagep);
+> > -extern int shmem_mfill_zeropage_pte(struct mm_struct *dst_mm,
+> > -                                 pmd_t *dst_pmd,
+> > -                                 struct vm_area_struct *dst_vma,
+> > -                                 unsigned long dst_addr);
+> > -#else
+> > -#define shmem_mcopy_atomic_pte(dst_mm, dst_pte, dst_vma, dst_addr, \
+> > -                            src_addr, pagep)        ({ BUG(); 0; })
+> > -#define shmem_mfill_zeropage_pte(dst_mm, dst_pmd, dst_vma, \
+> > -                              dst_addr)      ({ BUG(); 0; })
+> > -#endif
+> > +int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> > +                        struct vm_area_struct *dst_vma,
+> > +                        unsigned long dst_addr, unsigned long src_addr=
+,
+> > +                        enum mcopy_atomic_mode mode, struct page **pag=
+ep);
+> > +#else /* !CONFIG_SHMEM */
+> > +#define shmem_mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma, dst_addr, \
+> > +                            src_addr, mode, pagep)        ({ BUG(); 0;=
+ })
+> > +#endif /* CONFIG_SHMEM */
+> > +#endif /* CONFIG_USERFAULTFD */
+> >
+> >  #endif
+> > diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/user=
+faultfd.h
+> > index bafbeb1a2624..47d9790d863d 100644
+> > --- a/include/uapi/linux/userfaultfd.h
+> > +++ b/include/uapi/linux/userfaultfd.h
+> > @@ -31,7 +31,8 @@
+> >                          UFFD_FEATURE_MISSING_SHMEM |         \
+> >                          UFFD_FEATURE_SIGBUS |                \
+> >                          UFFD_FEATURE_THREAD_ID |             \
+> > -                        UFFD_FEATURE_MINOR_HUGETLBFS)
+> > +                        UFFD_FEATURE_MINOR_HUGETLBFS |       \
+> > +                        UFFD_FEATURE_MINOR_SHMEM)
+> >  #define UFFD_API_IOCTLS                              \
+> >       ((__u64)1 << _UFFDIO_REGISTER |         \
+> >        (__u64)1 << _UFFDIO_UNREGISTER |       \
+> > @@ -196,6 +197,7 @@ struct uffdio_api {
+> >  #define UFFD_FEATURE_SIGBUS                  (1<<7)
+> >  #define UFFD_FEATURE_THREAD_ID                       (1<<8)
+> >  #define UFFD_FEATURE_MINOR_HUGETLBFS         (1<<9)
+> > +#define UFFD_FEATURE_MINOR_SHMEM             (1<<10)
+> >       __u64 features;
+> >
+> >       __u64 ioctls;
+> > diff --git a/mm/memory.c b/mm/memory.c
+> > index c8e357627318..a1e5ff55027e 100644
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@ -3929,9 +3929,11 @@ static vm_fault_t do_read_fault(struct vm_fault =
+*vmf)
+> >        * something).
+> >        */
+> >       if (vma->vm_ops->map_pages && fault_around_bytes >> PAGE_SHIFT > =
+1) {
+> > -             ret =3D do_fault_around(vmf);
+> > -             if (ret)
+> > -                     return ret;
+> > +             if (likely(!userfaultfd_minor(vmf->vma))) {
+> > +                     ret =3D do_fault_around(vmf);
+> > +                     if (ret)
+> > +                             return ret;
+> > +             }
+> >       }
+> >
+> >       ret =3D __do_fault(vmf);
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index b2db4ed0fbc7..6f81259fabb3 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -77,7 +77,6 @@ static struct vfsmount *shm_mnt;
+> >  #include <linux/syscalls.h>
+> >  #include <linux/fcntl.h>
+> >  #include <uapi/linux/memfd.h>
+> > -#include <linux/userfaultfd_k.h>
+> >  #include <linux/rmap.h>
+> >  #include <linux/uuid.h>
+> >
+> > @@ -1785,8 +1784,8 @@ static int shmem_swapin_page(struct inode *inode,=
+ pgoff_t index,
+> >   * vm. If we swap it in we mark it dirty since we also free the swap
+> >   * entry since a page cannot live in both the swap and page cache.
+> >   *
+> > - * vmf and fault_type are only supplied by shmem_fault:
+> > - * otherwise they are NULL.
+> > + * vma, vmf, and fault_type are only supplied by shmem_fault: otherwis=
+e they
+> > + * are NULL.
+> >   */
+> >  static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+> >       struct page **pagep, enum sgp_type sgp, gfp_t gfp,
+> > @@ -1830,6 +1829,12 @@ static int shmem_getpage_gfp(struct inode *inode=
+, pgoff_t index,
+> >               return error;
+> >       }
+> >
+> > +     if (page && vma && userfaultfd_minor(vma)) {
+> > +             unlock_page(page);
+> > +             *fault_type =3D handle_userfault(vmf, VM_UFFD_MINOR);
+> > +             return 0;
+> > +     }
+> > +
+> >       if (page)
+> >               hindex =3D page->index;
+> >       if (page && sgp =3D=3D SGP_WRITE)
+> > @@ -2354,14 +2359,12 @@ static struct inode *shmem_get_inode(struct sup=
+er_block *sb, const struct inode
+> >       return inode;
+> >  }
+> >
+> > -static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
+> > -                               pmd_t *dst_pmd,
+> > -                               struct vm_area_struct *dst_vma,
+> > -                               unsigned long dst_addr,
+> > -                               unsigned long src_addr,
+> > -                               bool zeropage,
+> > -                               struct page **pagep)
+> > +int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> > +                        struct vm_area_struct *dst_vma,
+> > +                        unsigned long dst_addr, unsigned long src_addr=
+,
+> > +                        enum mcopy_atomic_mode mode, struct page **pag=
+ep)
+> >  {
+> > +     bool is_continue =3D (mode =3D=3D MCOPY_ATOMIC_CONTINUE);
+> >       struct inode *inode =3D file_inode(dst_vma->vm_file);
+> >       struct shmem_inode_info *info =3D SHMEM_I(inode);
+> >       struct address_space *mapping =3D inode->i_mapping;
+> > @@ -2378,12 +2381,17 @@ static int shmem_mfill_atomic_pte(struct mm_str=
+uct *dst_mm,
+> >       if (!shmem_inode_acct_block(inode, 1))
+> >               goto out;
+> >
+> > -     if (!*pagep) {
+> > +     if (is_continue) {
+> > +             ret =3D -EFAULT;
+> > +             page =3D find_lock_page(mapping, pgoff);
+> > +             if (!page)
+> > +                     goto out_unacct_blocks;
+> > +     } else if (!*pagep) {
+> >               page =3D shmem_alloc_page(gfp, info, pgoff);
+> >               if (!page)
+> >                       goto out_unacct_blocks;
+> >
+> > -             if (!zeropage) {        /* mcopy_atomic */
+> > +             if (mode =3D=3D MCOPY_ATOMIC_NORMAL) {      /* mcopy_atom=
+ic */
+> >                       page_kaddr =3D kmap_atomic(page);
+> >                       ret =3D copy_from_user(page_kaddr,
+> >                                            (const void __user *)src_add=
+r,
+>
+> Hi Axel,
+>
+> shmem_mcopy_atomic_pte is not guarded by CONFIG_USERFAULTFD, thus it is
+> causing compilation errors due to the use of enum mcopy_atomic_mode mode,
+> when CONFIG_USERFAULTFD is not set.
 
-> On Tue, 9 Mar 2021 13:47:39 -0500
-> Peter Xu <peterx@redhat.com> wrote:
-> 
-> > On Tue, Mar 09, 2021 at 12:40:04PM -0400, Jason Gunthorpe wrote:  
-> > > On Tue, Mar 09, 2021 at 08:29:51AM -0700, Alex Williamson wrote:    
-> > > > On Tue, 9 Mar 2021 08:46:09 -0400
-> > > > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > > >     
-> > > > > On Tue, Mar 09, 2021 at 03:49:09AM +0000, Zengtao (B) wrote:    
-> > > > > > Hi guys:
-> > > > > > 
-> > > > > > Thanks for the helpful comments, after rethinking the issue, I have proposed
-> > > > > >  the following change: 
-> > > > > > 1. follow_pte instead of follow_pfn.      
-> > > > > 
-> > > > > Still no on follow_pfn, you don't need it once you use vmf_insert_pfn    
-> > > > 
-> > > > vmf_insert_pfn() only solves the BUG_ON, follow_pte() is being used
-> > > > here to determine whether the translation is already present to avoid
-> > > > both duplicate work in inserting the translation and allocating a
-> > > > duplicate vma tracking structure.    
-> > >  
-> > > Oh.. Doing something stateful in fault is not nice at all
-> > > 
-> > > I would rather see __vfio_pci_add_vma() search the vma_list for dups
-> > > than call follow_pfn/pte..    
-> > 
-> > It seems to me that searching vma list is still the simplest way to fix the
-> > problem for the current code base.  I see io_remap_pfn_range() is also used in
-> > the new series - maybe that'll need to be moved to where PCI_COMMAND_MEMORY got
-> > turned on/off in the new series (I just noticed remap_pfn_range modifies vma
-> > flags..), as you suggested in the other email.  
-> 
-> 
-> In the new series, I think the fault handler becomes (untested):
-> 
-> static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
-> {
->         struct vm_area_struct *vma = vmf->vma;
->         struct vfio_pci_device *vdev = vma->vm_private_data;
->         unsigned long base_pfn, pgoff;
->         vm_fault_t ret = VM_FAULT_SIGBUS;
-> 
->         if (vfio_pci_bar_vma_to_pfn(vma, &base_pfn))
->                 return ret;
-> 
->         pgoff = (vmf->address - vma->vm_start) >> PAGE_SHIFT;
-> 
->         down_read(&vdev->memory_lock);
-> 
->         if (__vfio_pci_memory_enabled(vdev))
->                 ret = vmf_insert_pfn(vma, vmf->address, pgoff + base_pfn);
-> 
->         up_read(&vdev->memory_lock);
-> 
->         return ret;
-> }
+Ah, my apologies, I guarded it in the header but forgot to do so in
+shmem.c. I'll send an updated patch today.
 
-And I think this is what we end up with for the current code base:
-
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 65e7e6b44578..2f247ab18c66 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -1568,19 +1568,24 @@ void vfio_pci_memory_unlock_and_restore(struct vfio_pci_device *vdev, u16 cmd)
- }
- 
- /* Caller holds vma_lock */
--static int __vfio_pci_add_vma(struct vfio_pci_device *vdev,
--			      struct vm_area_struct *vma)
-+struct vfio_pci_mmap_vma *__vfio_pci_add_vma(struct vfio_pci_device *vdev,
-+					     struct vm_area_struct *vma)
- {
- 	struct vfio_pci_mmap_vma *mmap_vma;
- 
-+	list_for_each_entry(mmap_vma, &vdev->vma_list, vma_next) {
-+		if (mmap_vma->vma == vma)
-+			return ERR_PTR(-EEXIST);
-+	}
-+
- 	mmap_vma = kmalloc(sizeof(*mmap_vma), GFP_KERNEL);
- 	if (!mmap_vma)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
- 	mmap_vma->vma = vma;
- 	list_add(&mmap_vma->vma_next, &vdev->vma_list);
- 
--	return 0;
-+	return mmap_vma;
- }
- 
- /*
-@@ -1612,30 +1617,39 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
- {
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct vfio_pci_device *vdev = vma->vm_private_data;
--	vm_fault_t ret = VM_FAULT_NOPAGE;
-+	struct vfio_pci_mmap_vma *mmap_vma;
-+	unsigned long vaddr, pfn;
-+	vm_fault_t ret;
- 
- 	mutex_lock(&vdev->vma_lock);
- 	down_read(&vdev->memory_lock);
- 
- 	if (!__vfio_pci_memory_enabled(vdev)) {
- 		ret = VM_FAULT_SIGBUS;
--		mutex_unlock(&vdev->vma_lock);
- 		goto up_out;
- 	}
- 
--	if (__vfio_pci_add_vma(vdev, vma)) {
--		ret = VM_FAULT_OOM;
--		mutex_unlock(&vdev->vma_lock);
-+	mmap_vma = __vfio_pci_add_vma(vdev, vma);
-+	if (IS_ERR(mmap_vma)) {
-+		/* A concurrent fault might have already inserted the page */
-+		ret = (PTR_ERR(mmap_vma) == -EEXIST) ? VM_FAULT_NOPAGE :
-+						       VM_FAULT_OOM;
- 		goto up_out;
- 	}
- 
--	mutex_unlock(&vdev->vma_lock);
--
--	if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
--			       vma->vm_end - vma->vm_start, vma->vm_page_prot))
--		ret = VM_FAULT_SIGBUS;
--
-+	for (vaddr = vma->vm_start, pfn = vma->vm_pgoff;
-+	     vaddr < vma->vm_end; vaddr += PAGE_SIZE, pfn++) {
-+		ret = vmf_insert_pfn(vma, vaddr, pfn);
-+		if (ret != VM_FAULT_NOPAGE) {
-+			zap_vma_ptes(vma, vma->vm_start,
-+				     vma->vm_end - vma->vm_start);
-+			list_del(&mmap_vma->vma_next);
-+			kfree(mmap_vma);
-+			break;
-+		}
-+	}
- up_out:
-+	mutex_unlock(&vdev->vma_lock);
- 	up_read(&vdev->memory_lock);
- 	return ret;
- }
-
+>
+>
+> =E2=80=94
+> Best Regards,
+> Yan Zi
