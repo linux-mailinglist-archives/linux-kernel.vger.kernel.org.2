@@ -2,200 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDB3332CD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B221332CD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbhCIRGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:06:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231207AbhCIRG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:06:26 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39FE764F45;
-        Tue,  9 Mar 2021 17:06:26 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lJfoO-000bDF-1a; Tue, 09 Mar 2021 17:06:24 +0000
-Date:   Tue, 09 Mar 2021 17:06:23 +0000
-Message-ID: <87im60xnn4.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        id S231146AbhCIRHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:07:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhCIRH0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:07:26 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937F7C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:07:26 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id n26so1559664qtv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:07:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=56FbvxYSyCO6wMKJdNcCg3DsZ58M3AgopzwpcrCwJ8M=;
+        b=p9MFtEixfJK+C3OPIvyxsnbCCdPeJyP3yuIayQyx4bcy51/7AwiQHD3E2kH2inD3Sl
+         dZDcwuFfelPyoPNTWto0FOXnVbZ4TquFs/P+y92UFfHoOXPVcFZcZFjDIoe77pTJT4OO
+         SEt6H9KErkFAg7BGl7kYWMyC63q1CeR4dWZ4lyGhmbyb5fbOWiS5m5BxZb2huYOL+KuE
+         FQjbUmGWAT1ypB8dukJilItUFmrV6gSu1Ryzz0clWm1Dpcqud3jCYwx0KM7HOpP9Ps3L
+         a/I7xOsBGQqH8E/TXf1gdaLWPw2obeK/IAEpRUYkcrokwD4iBCSC6A3jvQ2t83xq8EGD
+         MqMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=56FbvxYSyCO6wMKJdNcCg3DsZ58M3AgopzwpcrCwJ8M=;
+        b=OL7X2WjjGLZLwK5/qOY+dBZ5Ex39P6MBEWNujoObv5iqi4hBalGuTMMr288R1G5cWy
+         A64Bc/BxRI6iKTS1mhHXXyaYSbeYQ+b7BHw6t/z2w+4vkju0XRIDDQFVQnIzmu6Wqf6H
+         ZlHFQsv8Gw+GelfKqrEFaoMYVO4hSEh1iVPUJBDWOFvt1WeCD/MwKgWSNmrsh8LLxTLy
+         aOxmlCX/Ufq//HQK4hxj8AXstSqvGth7tJM30SxUXFeYDyaSKMAw9AzruDdps8RIKh5i
+         h7mgMPmpFz67EM56o0TjenYFTsCaWo1UXEf03a4jrfMmnThc2bYOwaoiEn50iBb8Jqeh
+         FweQ==
+X-Gm-Message-State: AOAM533/QW4I52tPg0Zjn1p+OnqGOXOT7inEqnNqDmvuazFGJhsxlWM9
+        GUWVPjoRahm1UlrcpLSUEJXf5kN5uxW4Z/3OiaUCxA==
+X-Google-Smtp-Source: ABdhPJxZX3UdvVqs1e2abPQvsIZT5YVWWWzFsq8aDd2lDWVh0cD2NXhUm8HucMz85rZmRKEA3T7/bWLQMWcO6Xm0t7Q=
+X-Received: by 2002:ac8:7318:: with SMTP id x24mr7500268qto.67.1615309645573;
+ Tue, 09 Mar 2021 09:07:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20210305223331.4173565-1-seanjc@google.com> <053d0a22-394d-90d0-8d3b-3cd37ca3f378@intel.com>
+ <YEXmILSHDNDuMk/N@hirez.programming.kicks-ass.net> <YEaLzKWd0wAmdqvs@google.com>
+ <YEcn6bGYxdgrp0Ik@hirez.programming.kicks-ass.net> <YEc1mFkaILfF37At@hirez.programming.kicks-ass.net>
+ <YEeqvC4QmJcj+pkC@google.com>
+In-Reply-To: <YEeqvC4QmJcj+pkC@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 9 Mar 2021 18:07:14 +0100
+Message-ID: <CACT4Y+b6rDO0PiHrhYHMynXmW+f_s5AaJLDo39rGJX69ZWSaMQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/perf: Fix guest_get_msrs static call if there is no PMU
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Xu, Like" <like.xu@intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v9 2/6] arm64: kvm: Introduce MTE VM feature
-In-Reply-To: <20210301142315.30920-3-steven.price@arm.com>
-References: <20210301142315.30920-1-steven.price@arm.com>
-        <20210301142315.30920-3-steven.price@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Like Xu <like.xu@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        KVM list <kvm@vger.kernel.org>,
+        "Thomas Gleixner
+        (x86/pti/timer/core/smp/irq/perf/efi/locking/ras/objtool)
+        (x86@kernel.org)" <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Mar 2021 14:23:11 +0000,
-Steven Price <steven.price@arm.com> wrote:
-> 
-> Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
-> for a VM. This will expose the feature to the guest and automatically
-> tag memory pages touched by the VM as PG_mte_tagged (and clear the tag
-> storage) to ensure that the guest cannot see stale tags, and so that
-> the tags are correctly saved/restored across swap.
-> 
-> Actually exposing the new capability to user space happens in a later
-> patch.
-> 
-> Signed-off-by: Steven Price <steven.price@arm.com>
-> ---
->  arch/arm64/include/asm/kvm_emulate.h |  3 +++
->  arch/arm64/include/asm/kvm_host.h    |  3 +++
->  arch/arm64/kvm/hyp/exception.c       |  3 ++-
->  arch/arm64/kvm/mmu.c                 | 16 ++++++++++++++++
->  arch/arm64/kvm/sys_regs.c            |  3 ++-
->  include/uapi/linux/kvm.h             |  1 +
->  6 files changed, 27 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
-> index f612c090f2e4..6bf776c2399c 100644
-> --- a/arch/arm64/include/asm/kvm_emulate.h
-> +++ b/arch/arm64/include/asm/kvm_emulate.h
-> @@ -84,6 +84,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
->  	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
->  	    vcpu_el1_is_32bit(vcpu))
->  		vcpu->arch.hcr_el2 |= HCR_TID2;
-> +
-> +	if (kvm_has_mte(vcpu->kvm))
-> +		vcpu->arch.hcr_el2 |= HCR_ATA;
->  }
->  
->  static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 3d10e6527f7d..1170ee137096 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -132,6 +132,8 @@ struct kvm_arch {
->  
->  	u8 pfr0_csv2;
->  	u8 pfr0_csv3;
-> +	/* Memory Tagging Extension enabled for the guest */
-> +	bool mte_enabled;
->  };
->  
->  struct kvm_vcpu_fault_info {
-> @@ -767,6 +769,7 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
->  #define kvm_arm_vcpu_sve_finalized(vcpu) \
->  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
->  
-> +#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
->  #define kvm_vcpu_has_pmu(vcpu)					\
->  	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
->  
-> diff --git a/arch/arm64/kvm/hyp/exception.c b/arch/arm64/kvm/hyp/exception.c
-> index 73629094f903..56426565600c 100644
-> --- a/arch/arm64/kvm/hyp/exception.c
-> +++ b/arch/arm64/kvm/hyp/exception.c
-> @@ -112,7 +112,8 @@ static void enter_exception64(struct kvm_vcpu *vcpu, unsigned long target_mode,
->  	new |= (old & PSR_C_BIT);
->  	new |= (old & PSR_V_BIT);
->  
-> -	// TODO: TCO (if/when ARMv8.5-MemTag is exposed to guests)
-> +	if (kvm_has_mte(vcpu->kvm))
-> +		new |= PSR_TCO_BIT;
->  
->  	new |= (old & PSR_DIT_BIT);
->  
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 77cb2d28f2a4..fdb6ab604fd0 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -879,6 +879,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	if (vma_pagesize == PAGE_SIZE && !force_pte)
->  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->  							   &pfn, &fault_ipa);
-> +
-> +	if (kvm_has_mte(kvm) && pfn_valid(pfn)) {
-> +		/*
-> +		 * VM will be able to see the page's tags, so we must ensure
-> +		 * they have been initialised. if PG_mte_tagged is set, tags
-> +		 * have already been initialised.
-> +		 */
-> +		struct page *page = pfn_to_page(pfn);
-> +		unsigned long i, nr_pages = vma_pagesize >> PAGE_SHIFT;
-> +
-> +		for (i = 0; i < nr_pages; i++, page++) {
-> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-> +				mte_clear_page_tags(page_address(page));
-> +		}
-> +	}
+On Tue, Mar 9, 2021 at 6:05 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Mar 09, 2021, Peter Zijlstra wrote:
+> > On Tue, Mar 09, 2021 at 08:46:49AM +0100, Peter Zijlstra wrote:
+> > > On Mon, Mar 08, 2021 at 12:40:44PM -0800, Sean Christopherson wrote:
+> > > > On Mon, Mar 08, 2021, Peter Zijlstra wrote:
+> > >
+> > > > > Given the one user in atomic_switch_perf_msrs() that should work because
+> > > > > it doesn't seem to care about nr_msrs when !msrs.
+> > > >
+> > > > Uh, that commit quite cleary says:
+> > >
+> > > D0h! I got static_call_cond() and __static_call_return0 mixed up.
+> > > Anyway, let me see if I can make something work here.
+> >
+> > Does this work? I can never seem to start a VM, and if I do accidentally
+> > manage, then it never contains the things I need :/
+>
+> Yep, once I found the dependencies in tip/sched/core (thank tip-bot!).  I'll
+> send v2 your way.
 
-Is there any reason to do this dance for anything but a translation
-fault?
-
-> +
->  	if (writable)
->  		prot |= KVM_PGTABLE_PROT_W;
->  
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 4f2f1e3145de..e09dbc00b0a2 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -1046,7 +1046,8 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
->  		val |= FIELD_PREP(FEATURE(ID_AA64PFR0_CSV3), (u64)vcpu->kvm->arch.pfr0_csv3);
->  		break;
->  	case SYS_ID_AA64PFR1_EL1:
-> -		val &= ~FEATURE(ID_AA64PFR1_MTE);
-> +		if (!kvm_has_mte(vcpu->kvm))
-> +			val &= ~FEATURE(ID_AA64PFR1_MTE);
-
-Are we happy to expose *any* of the MTE flavours? Or should we
-restrict it in any way?
-
->  		break;
->  	case SYS_ID_AA64ISAR1_EL1:
->  		if (!vcpu_has_ptrauth(vcpu))
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 8b281f722e5b..05618a4abf7e 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1078,6 +1078,7 @@ struct kvm_ppc_resize_hpt {
->  #define KVM_CAP_DIRTY_LOG_RING 192
->  #define KVM_CAP_X86_BUS_LOCK_EXIT 193
->  #define KVM_CAP_PPC_DAWR1 194
-> +#define KVM_CAP_ARM_MTE 195
->  
->  #ifdef KVM_CAP_IRQ_ROUTING
->  
-> -- 
-> 2.20.1
-> 
-> 
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+If you are resending, please also add the syzbot Reported-by tag. Thanks.
