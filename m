@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B557C331DC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B49CC331DD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhCIEDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 23:03:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
+        id S229901AbhCIERY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 23:17:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhCIECj (ORCPT
+        with ESMTP id S229714AbhCIEQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 23:02:39 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15F2C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iM+/dn+YhIAlWAYAVQcoqGr6ZVF7ceWPf6AbVrGnBfA=; b=OUj945fp0c25Ck1x1CORIjI7y6
-        uxhLXajEd83UoACqAIgCF/aJsafBbA3E/oQxWukhEUctxbGmAFCJxd1UETGApes1n/nBXjkTCOxeF
-        KvlOQzcwbKscc3/4essTpANC3nKPpZBq3Nk5G+zLCmWKBYA1wnh+pkJfOVwsa87mksG4tCv5lMwUo
-        SLh+TtNEb5/W4aJE5T0m4Mf4FlysP1hlG5LPoUJthuk793Ckev5Dr2je4AsMRb1FKF4xOhp3M39TY
-        SAOO61+7sbjuCE8nZyUCAkGdDxur8vlS0cplB9nFuFUgenR3eHzQW3dmWrwiOlScZSRRu7nx5JIvj
-        S0bINp6w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJTZ2-00HLCQ-Bk; Tue, 09 Mar 2021 04:01:53 +0000
-Date:   Tue, 9 Mar 2021 04:01:44 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Weichao Guo <guoweichao@oppo.com>
-Cc:     rpalethorpe@suse.de, kernel test robot <oliver.sang@intel.com>,
-        "huangjianan@oppo.com" <huangjianan@oppo.com>, lkp@intel.com,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Chao Yu <yuchao0@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, ltp@lists.linux.it
-Subject: Re: [LTP] [f2fs] 02eb84b96b: ltp.swapon03.fail
-Message-ID: <20210309040144.GH3479805@casper.infradead.org>
-References: <20210308072510.GA902@xsang-OptiPlex-9020>
- <87h7llhnfe.fsf@suse.de>
- <c75229cc-e325-1c8b-0afa-fd236db8319c@oppo.com>
+        Mon, 8 Mar 2021 23:16:46 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F5FC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:16:46 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id q204so8508172pfq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:16:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OOzXeoaDPDG4o7C6QAmsob4sFXF0PCvgXzZVS0klYx0=;
+        b=VkTs3X6JDzLp04bSLBCOaODP8wcxa6dTq9kp8PLjDNTn2k/wKlA8YDK7QIUb+gAxUw
+         eIQZuiHknEQKeUyy36vzovwOLSUIuGrCnwITT8IJ1t55doh6c6wgr5RUH8puDFSGVP8V
+         gy8tZ1hbaEhrExEsXy9cSK6yNBh+79lsX/Iexzilbh2cLtzfyVUi2NvCRRz1s034Tzct
+         Nr2IkssxTMW7qd9DCY/ANZkwFAPkQZrFeXNc0K5wLFPe6uN1h48RaCeQ+KieVcEq07U9
+         Khqqf5WZ/rxW8mNHilHP8Ojsom/4bvR/uJfHZZCN809av8gbgjGEk7vCTHomH27BT+zM
+         L/Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OOzXeoaDPDG4o7C6QAmsob4sFXF0PCvgXzZVS0klYx0=;
+        b=CKQp/J4TM3hn5wD7l+EdQOY2pJyeigkU3yex8t6AAq/nszSTDIm9oYOjyA/HhRdShR
+         jkAalJ/13EMaUB5PZNzPOyeXnvf5bqN3VrIjQdyt5V6x8e1pWz7v4+M7Prc8Wz74IsQP
+         SUmmQ1DLlbLVtdqW5mcU5gldOjvtpkrPDO4CmuTCWY4mprDEZa6+Wewrn1sM0LeGp2AW
+         qja0gMlwBCymvWeBQQUf8ZlorkVJ5DUbaMXq3zEFWreBS3xwZzyqEUpcS+QUBcczWY7k
+         gPAqu0NwXD+OjfjxmmBWGxZNQu5n8SQc+FJjzji6S+yB9wK0ZQMQRwe5zvZuFx614d/2
+         1GoA==
+X-Gm-Message-State: AOAM530pLO2pcB081WIfVXtqqS8O64cL/WwDRjxjOr6rCV2dorY/kFf7
+        ubTFNworNQ4iMa+BeW+TuZkPuw==
+X-Google-Smtp-Source: ABdhPJxlnCGX2ecU6fCM4SKglrm857xKd9/sHAb+MjRrm2nf7HrUVkpgeXZh0ZbsNdK2qBqheigI5A==
+X-Received: by 2002:a63:1813:: with SMTP id y19mr15956854pgl.317.1615263406257;
+        Mon, 08 Mar 2021 20:16:46 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id l19sm864473pjt.16.2021.03.08.20.16.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Mar 2021 20:16:45 -0800 (PST)
+Date:   Tue, 9 Mar 2021 09:46:43 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V5 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210309041643.tcyv6rpto4k3sv5v@vireshk-i7>
+References: <cover.1614580695.git.viresh.kumar@linaro.org>
+ <a34f549bc75eecd4804aebb7b7794b45769eccf0.1614580695.git.viresh.kumar@linaro.org>
+ <20210308145209.GA26458@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c75229cc-e325-1c8b-0afa-fd236db8319c@oppo.com>
+In-Reply-To: <20210308145209.GA26458@willie-the-truck>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 10:23:35AM +0800, Weichao Guo wrote:
-> Hi Richard,
+On 08-03-21, 14:52, Will Deacon wrote:
+> On Mon, Mar 01, 2021 at 12:21:17PM +0530, Viresh Kumar wrote:
+> > +EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
 > 
-> On 2021/3/8 19:53, Richard Palethorpe wrote:
-> > Hello,
-> > 
-> > > kern  :err   : [  187.461914] F2FS-fs (sda1): Swapfile does not align to section
-> > > commit 02eb84b96bc1b382dd138bf60724edbefe77b025
-> > > Author: huangjianan@oppo.com <huangjianan@oppo.com>
-> > > Date:   Mon Mar 1 12:58:44 2021 +0800
-> > >      f2fs: check if swapfile is section-alligned
-> > >      If the swapfile isn't created by pin and fallocate, it can't be
-> > >      guaranteed section-aligned, so it may be selected by f2fs gc. When
-> > >      gc_pin_file_threshold is reached, the address of swapfile may change,
-> > >      but won't be synchronized to swap_extent, so swap will write to wrong
-> > >      address, which will cause data corruption.
-> > >      Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> > >      Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> > >      Reviewed-by: Chao Yu <yuchao0@huawei.com>
-> > >      Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > The test uses fallocate to preallocate the swap file and writes zeros to
-> > it. I'm not sure what pin refers to?
+> I don't get why you need to export this in this patch. The arm64 topology
+> code is never built as a module.
 > 
-> 'pin' refers to pinned file feature in F2FS, the LBA(Logical Block Address)
-> of a file is fixed after pinned. Without this operation before fallocate,
-> the LBA may not align with section(F2FS GC unit), some LBA of the file may
-> be changed by F2FS GC in some extreme cases.
+> > +EXPORT_SYMBOL_GPL(topology_clear_scale_freq_source);
 > 
-> For this test case, how about pin the swap file before fallocate for F2FS as
-> following:
+> Same here.
 > 
-> ioctl(fd, F2FS_IOC_SET_PIN_FILE, true);
+> > +EXPORT_SYMBOL_GPL(freq_scale);
+> 
+> And here.
 
-No special ioctl should be needed.  f2fs_swap_activate() should pin the
-file, just like it converts inline inodes and disables compression.
+After this patch, any part of the kernel can use these
+helpers/variables to run their own implementation of tick-freq-scale
+and so this patch looked to be the right place for that to me.
+
+And the second patch in the series updates the CPPC cpufreq driver
+(tristate) to use these exported symbols, so we have the first user
+who needs the exported symbols as well.
+
+> This one probably wants a less generic name as well if it's going
+> to be exported.
+
+x86 names it arch_freq_scale, perhaps we should stick to that instead.
+
+-- 
+viresh
