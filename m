@@ -2,81 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4711B33223D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4DC332242
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbhCIJls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:41:48 -0500
-Received: from mga03.intel.com ([134.134.136.65]:43335 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230089AbhCIJl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:41:27 -0500
-IronPort-SDR: YAXP2GH/e0kOetX0FCCuqEs15INVoUonjJNl8qBL0EQlQIly1hrDFtnX6wQCfR5XWedZVvAJ0F
- R/+4+H8DJa1Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188241596"
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="188241596"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:41:26 -0800
-IronPort-SDR: BdkZpLfxzqmExKJN/qVCYqQXuxLHx/PHNnHpY5k/VZ15joBiqkNA1LCWCeYf5u64BzOg/ajAOv
- +8B9cctpTMow==
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="437841215"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:41:24 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lJYrh-00B1mG-3h; Tue, 09 Mar 2021 11:41:21 +0200
-Date:   Tue, 9 Mar 2021 11:41:21 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 0/5] gpiolib: switch to fwnode in the core
-Message-ID: <YEdCwfYRaQuKJFtA@smile.fi.intel.com>
-References: <20210304201253.14652-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0gR=gN2ROo9JSOGHokw5imscMBwDERni8X83p0eWt634w@mail.gmail.com>
- <CAMpxmJUQ3r0YCeQvPq=SW57w-5BLtoTO1_bv=2uw6CX_1-EXcQ@mail.gmail.com>
- <CAJZ5v0h7zUMU9DMofa3fhop9fYY6UJQ6Nm3xBOmG48bcmLCj3w@mail.gmail.com>
- <CAMpxmJXa2Qxznss3c79Zf-PzsX=SY6WOJorAMvS-UxKoViKP_w@mail.gmail.com>
- <YEZ81OraApPIu8d9@smile.fi.intel.com>
- <YEaAY37PsqT6WQB9@smile.fi.intel.com>
- <CAMpxmJUQ+Fhz8XTh14eHiqdQc3jBEwr8wuezw+NcgtU8XXFUQg@mail.gmail.com>
+        id S229929AbhCIJmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:42:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229851AbhCIJmQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:42:16 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC628C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 01:42:15 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id l11so11064950wrp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 01:42:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+8z683na594yqCX1pdVyG9428Cw3vR0wQavj58NFFZo=;
+        b=uZuGomwiZeFsx3ITBzUpfm7pegICvujyD4CKFgnUSbvmW5uXbRTSvDucSDIqLod8Yd
+         V83iS+04g3fo36BsTD7ne22jgr+PJnVHcQCYaVcRiTJJigIBut7M2Ob4Vm3v+TQNN82d
+         YUelDSLEFuoiafHYhkilNJUad0Dvgc1dDN3xuqVJ1Tp5Y5TLkdKFrQABlTrR7UtWpJu9
+         YasUP8wBgS1wBfUQedq8t7BkL/22Yn5QXFo5a3gUN+OlcNp2NyfizrgaScmSFIIg6tPn
+         fCZAUWGq+qwFhGyQ/5s12SR5Xp3pl+/UuCKOftBHC4MMtaJqhraQS87vjxo38s1b2qmA
+         eptQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+8z683na594yqCX1pdVyG9428Cw3vR0wQavj58NFFZo=;
+        b=I4pyLowQqoaRi+VL/CWPETMtx66cwSlp0T+7xVH+RxjH/SHgU8T6jfHmVYKRr6f2lD
+         GoKpK4+ZP50sl5Rx3ez0qCIil+PxQD1q4eJPQ614P1gBHQ78vqtE/FOVu71b3nDs2xkt
+         scrpuRXeJ9Mkv7Q+SQEsAsrk9GsL3Vu4CnVMDdnDyAXgjh5o1ZUsVUVjBEtUblyNAI5d
+         5mEAuk4zMxqxtRRrvk+Xo7MM3rp4xtL6tn7yivYNUxtvSkkBeqeron/zAA9giOvzjmcF
+         nVi74+sSi6idt0zDU3EI2gH+Kt+QsTTiPLDA63RUJRmbNtmJzhUMRRCjSQZTiIKP0bye
+         6eqw==
+X-Gm-Message-State: AOAM531vSPzggTfFQo44uxXHU07iY+nLaUFc8Il8qbb6vrCIARWvIDpH
+        pWP5Bb6lvZBbe3aS8+bj58353w==
+X-Google-Smtp-Source: ABdhPJy9ZOKwri1W96ZaagyjWjomo9RwLfOcbQsi52dwi0VG20S/UVn4GNITZfNVngrfAlCKyqNZvg==
+X-Received: by 2002:a5d:554b:: with SMTP id g11mr26460044wrw.411.1615282934319;
+        Tue, 09 Mar 2021 01:42:14 -0800 (PST)
+Received: from dell ([91.110.221.130])
+        by smtp.gmail.com with ESMTPSA id d85sm3223740wmd.15.2021.03.09.01.42.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 01:42:13 -0800 (PST)
+Date:   Tue, 9 Mar 2021 09:42:11 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Jonas <toertel@gmail.com>
+Cc:     Mark Jonas <mark.jonas@de.bosch.com>,
+        Support Opensource <support.opensource@diasemi.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Adam.Thomson.Opensource@diasemi.com, stwiss.opensource@diasemi.com,
+        marek.vasut@gmail.com,
+        "RUAN Tingquan (BT-FIR/ENG1-Zhu)" <tingquan.ruan@cn.bosch.com>,
+        "Streidl Hubert (BT-FIR/ENG1-Grb)" <hubert.streidl@de.bosch.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: Re: [PATCH v4] mfd: da9063: Support SMBus and I2C mode
+Message-ID: <20210309094211.GN4931@dell>
+References: <20210208152758.13093-1-mark.jonas@de.bosch.com>
+ <20210308144211.GK4931@dell>
+ <CAEE5dN3DcULAtmQ=4WjT3nD20AVV2sX=Yx1WSS1UuJsBWTgc3g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMpxmJUQ+Fhz8XTh14eHiqdQc3jBEwr8wuezw+NcgtU8XXFUQg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEE5dN3DcULAtmQ=4WjT3nD20AVV2sX=Yx1WSS1UuJsBWTgc3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:19:19AM +0100, Bartosz Golaszewski wrote:
-> On Mon, Mar 8, 2021 at 8:52 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Mar 08, 2021 at 09:36:52PM +0200, Andy Shevchenko wrote:
+On Tue, 09 Mar 2021, Mark Jonas wrote:
 
-...
-
-> > So, I will send v6 with those included.
+> Hi Lee,
 > 
-> Does this series depend on patches already in Rafael's tree? If so,
-> maybe Rafael can provide me with an immutable tag to merge in?
+> Thank you for having a look at the patch.
+> 
+> > > From: Hubert Streidl <hubert.streidl@de.bosch.com>
+> > >
+> > > By default the PMIC DA9063 2-wire interface is SMBus compliant. This
+> > > means the PMIC will automatically reset the interface when the clock
+> > > signal ceases for more than the SMBus timeout of 35 ms.
+> > >
+> > > If the I2C driver / device is not capable of creating atomic I2C
+> > > transactions, a context change can cause a ceasing of the clock signal.
+> > > This can happen if for example a real-time thread is scheduled. Then
+> > > the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
+> > > a write message could end up in the wrong register. This could cause
+> > > unpredictable system behavior.
+> > >
+> > > The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
+> > > interface. This mode does not reset the interface when the clock
+> > > signal ceases. Thus the problem depicted above does not occur.
+> > >
+> > > This patch tests for the bus functionality "I2C_FUNC_I2C". It can
+> > > reasonably be assumed that the bus cannot obey SMBus timings if
+> > > this functionality is set. SMBus commands most probably are emulated
+> > > in this case which is prone to the latency issue described above.
+> > >
+> > > This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
+> > > otherwise enables the SMBus mode for a native SMBus controller
+> > > which doesn't have I2C_FUNC_I2C set.
+> > >
+> > > Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
+> > > Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+> > > ---
+> > > Changes in v4:
+> > >   - Remove logging of selected 2-wire bus mode.
+> > >
+> > > Changes in v3:
+> > >   - busmode now contains the correct bit DA9063_TWOWIRE_TO
+> > >
+> > > Changes in v2:
+> > >   - Implement proposal by Adam Thomson and Wolfram Sang to check for
+> > >     functionality I2C_FUNC_I2C instead of introducing a new DT property.
+> > >
+> > >  drivers/mfd/da9063-i2c.c             | 11 +++++++++++
+> > >  include/linux/mfd/da9063/registers.h |  3 +++
+> > >  2 files changed, 14 insertions(+)
+> > >
+> > > diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
+> > > index 3781d0bb7786..9450c95a3741 100644
+> > > --- a/drivers/mfd/da9063-i2c.c
+> > > +++ b/drivers/mfd/da9063-i2c.c
+> > > @@ -355,6 +355,7 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
+> > >                           const struct i2c_device_id *id)
+> > >  {
+> > >       struct da9063 *da9063;
+> > > +     unsigned int busmode;
+> > >       int ret;
+> > >
+> > >       da9063 = devm_kzalloc(&i2c->dev, sizeof(struct da9063), GFP_KERNEL);
+> > > @@ -442,6 +443,16 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
+> > >               return ret;
+> > >       }
+> > >
+> > > +     busmode = i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C) ?
+> > > +                   0 : DA9063_TWOWIRE_TO;
+> >
+> > Nit: I find ternaries like this tend to complicate matters and
+> > harm readability rather than the converse.
+> 
+> We can send an update of the patch if required.
+> 
+> > > +     ret = regmap_update_bits(da9063->regmap, DA9063_REG_CONFIG_J,
+> > > +           DA9063_TWOWIRE_TO, busmode);
+> > > +     if (ret < 0) {
+> > > +             dev_err(da9063->dev, "Failed to set 2-wire bus mode.\n");
+> > > +             return -EIO;
+> > > +     }
+> >
+> > I'm a little confused by this.  It's likely just me, but I would still
+> > like some clarification.
+> >
+> > So you write to the TWOWIRE register despite whether I2C is operable
+> > not, which I guess is fine.
+> 
+> In our understanding at this point the I2C / SMBus is definitely
+> operable. Otherwise the call to da9063_get_device_type() would have
+> already failed because it reads the chip ID via I2C / SMBus.
+> 
+> > But what if I2C is disabled and the update fails.  You seem to complain
+> > to the user that a failure occurred and return an error even if the
+> > configuration is invalid in the first place.
+> >
+> > Would it not be better to encapsulate the update inside the
+> > functionality check?
+> 
+> Do you mean i2c_check_functionality() with "functionality check"? I
+> understood that this function is part of the I2C / SMBus subsystem. It
+> checks available features of the I2C / SMBus controller. As proposed
+> during review of this patch we check for I2C_FUNC_I2C to determine
+> whether the controller can do SMBus or if it is limited to I2C
+> functionality. If the controller can only do I2C then the DA9063 shall
+> not expect SMBus.
+> 
+> By default the DA9063 assumes that it is connected to an SMBus. Thus,
+> even with our patch there are potentially still two (get chip ID, set
+> 2-wire mode) accesses to the DA9063 by an I2C controller but the
+> DA9063 assumes SMBus. Yet, our patch closes the window of opportunity
+> for something bad to happen from maybe one accesse per second to two
+> accesses over the complete lifetime of the driver. I think this is
+> already pretty good.
+> 
+> If you have a concrete proposal we could try to improve further. But
+> one write access for setting the twowire mode will always be there.
+> And without the call to da9063_get_device_type() this would also have
+> to be "hard-coded" without the use of the regmap.
+> 
+> I consider our patch being already that much better than the current
+> state that it is worth taking it mainline. Without the patch our
+> system triggers the fault during normal operation. Even with heavy
+> stress testing we have not been able to trigger the fault once our
+> patch was applied.
 
-Not anymore since v5.12-rc2 has a necessary fix.
+This is my suggestion:
 
-In any case I have sent a v6. It should be clean to apply on top of your for-next.
+	/* If SMBus Mode is not available, enter Two-Wire Mode */
+	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C)) {
+		ret = regmap_update_bits(da9063->regmap, DA9063_REG_CONFIG_J,
+					 DA9063_TWOWIRE_TO, DA9063_TWOWIRE_TO);
+		if (ret < 0) {
+			dev_err(da9063->dev, "Failed to set Two-Wire Bus Mode\n");
+			return -EIO;
+		}
+	}
+
+> > >       return da9063_device_init(da9063, i2c->irq);
+> > >  }
+> > >
+> > > diff --git a/include/linux/mfd/da9063/registers.h b/include/linux/mfd/da9063/registers.h
+> > > index 1dbabf1b3cb8..6e0f66a2e727 100644
+> > > --- a/include/linux/mfd/da9063/registers.h
+> > > +++ b/include/linux/mfd/da9063/registers.h
+> > > @@ -1037,6 +1037,9 @@
+> > >  #define              DA9063_NONKEY_PIN_AUTODOWN      0x02
+> > >  #define              DA9063_NONKEY_PIN_AUTOFLPRT     0x03
+> > >
+> > > +/* DA9063_REG_CONFIG_J (addr=0x10F) */
+> > > +#define DA9063_TWOWIRE_TO                    0x40
+> > > +
+> > >  /* DA9063_REG_MON_REG_5 (addr=0x116) */
+> > >  #define DA9063_MON_A8_IDX_MASK                       0x07
+> > >  #define              DA9063_MON_A8_IDX_NONE          0x00
+> 
+> I am currently out of office. In case of change requirements we'll
+> most likely send an updated patch mid of next week.
+> 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
