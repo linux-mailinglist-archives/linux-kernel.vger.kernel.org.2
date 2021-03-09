@@ -2,65 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BA7331F3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 07:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B14CE331F1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 07:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbhCIG1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 01:27:49 -0500
-Received: from esa4.hc1455-7.c3s2.iphmx.com ([68.232.139.117]:47404 "EHLO
-        esa4.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229544AbhCIG1k (ORCPT
+        id S229656AbhCIGVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 01:21:53 -0500
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:43548 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhCIGVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 01:27:40 -0500
-X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Mar 2021 01:27:39 EST
-IronPort-SDR: Cb9ql9Ynuaut7MWvI5r/4uX+WPSVVlfk6CB6PPjlXPyz/m2dxfOWJPvdNj+AEDS2Y+2zYIzgCk
- r5QclFtoTwCS3799sJVqc1TduT9nd/th7qZnfR7C2l4UECCRgQkkaRzHnvGwDrkm2y9SkTd0DK
- DuARi25GuaSLK0FkOSMBFBc9t0dlQXzeZKG9U88M4BzOtLtqnavAz5WYYDe76FNfZ8rPR9ce4r
- 7eU/evN3NYaXiK8BHMA+2cXIxnQTIQ7jbgpqda6wEX5/AvgHRhwRdCA6Spfm8n34egLqDd7Ekh
- J30=
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="22170783"
-X-IronPort-AV: E=Sophos;i="5.81,234,1610377200"; 
-   d="scan'208";a="22170783"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
-  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP; 09 Mar 2021 15:20:29 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
-        by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 4DFC31F514A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 15:20:28 +0900 (JST)
-Received: from oym-om4.fujitsu.com (oym-om4.o.css.fujitsu.com [10.85.58.164])
-        by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 8856BC9CEE
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 15:20:27 +0900 (JST)
-Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
-        by oym-om4.fujitsu.com (Postfix) with ESMTP id 1C4FE4008A2EC;
-        Tue,  9 Mar 2021 15:20:27 +0900 (JST)
-From:   Yuichi Ito <ito-yuichi@fujitsu.com>
-To:     maz@kernel.org, mark.rutland@arm.com
-Cc:     Valentin.Schneider@arm.com, catalin.marinas@arm.com,
-        ito-yuichi@fujitsu.com, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@arm.linux.org.uk, peterz@infradead.org, tglx@linutronix.de,
-        will@kernel.org
-Subject: Re: [PATCH v2 0/6] arm/arm64: Allow the rescheduling IPI to bypass irq_enter/exit
-Date:   Tue,  9 Mar 2021 15:20:07 +0900
-Message-Id: <20210309062007.1600708-1-ito-yuichi@fujitsu.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <f7a1cf64f8e0181a18e2b117b61622f4@kernel.org>
-References: <f7a1cf64f8e0181a18e2b117b61622f4@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+        Tue, 9 Mar 2021 01:21:34 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id E85CB400410;
+        Tue,  9 Mar 2021 14:21:12 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     daejun7.park@samsung.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Can Guo <cang@codeaurora.org>, Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kaixian.yang@vivo.com, wangqing@vivo.com
+Subject: [Resend]Re: [PATCH] [v26,1/4] scsi: ufs: Introduce HPB feature
+Date:   Tue,  9 Mar 2021 14:21:02 +0800
+Message-Id: <1615270866-32000-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <20210303062800epcms2p1c14c69e74782f25aaaef808ae625d701@epcms2p1>
+References: <20210303062800epcms2p1c14c69e74782f25aaaef808ae625d701@epcms2p1>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHh5DTx5ISElLQ0xNVkpNSk5JTEtDQ0pLT0tVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hNSlVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nhg6LBw*LT8RMQ5DIhUwNTYu
+        PlEaCx1VSlVKTUpOSUxLQ0NKQ0NJVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFIS05CNwY+
+X-HM-Tid: 0a7815a5a3ced991kuwse85cb400410
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc, Mark
+>The Following is experiment environment:
+> - kernel version: 4.4.0
+> - RAM: 8GB
+> - UFS 2.1 (64GB)
+>
+>Result:
+>+-------+----------+----------+-------+
+>| cycle | baseline | with HPB | diff  |
+>+-------+----------+----------+-------+
+>| 1     | 272.4    | 264.9    | -7.5  |
+>| 2     | 250.4    | 248.2    | -2.2  |
+>| 3     | 226.2    | 215.6    | -10.6 |
+>| 4     | 230.6    | 214.8    | -15.8 |
+>| 5     | 232.0    | 218.1    | -13.9 |
+>| 6     | 231.9    | 212.6    | -19.3 |
+>+-------+----------+----------+-------+
+>
+>We also measured HPB performance using iozone.
+>Here is my iozone script:
+>iozone -r 4k -+n -i2 -ecI -t 16 -l 16 -u 16
+>-s $IO_RANGE/16 -F mnt/tmp_1 mnt/tmp_2 mnt/tmp_3 mnt/tmp_4 mnt/tmp_5
+>mnt/tmp_6 mnt/tmp_7 mnt/tmp_8 mnt/tmp_9 mnt/tmp_10 mnt/tmp_11 mnt/tmp_12
+>mnt/tmp_13 mnt/tmp_14 mnt/tmp_15 mnt/tmp_16
+>
+>Result:
+>+----------+--------+---------+
+>| IO range | HPB on | HPB off |
+>+----------+--------+---------+
+>|   1 GB   | 294.8  | 300.87  |
+>|   4 GB   | 293.51 | 179.35  |
+>|   8 GB   | 294.85 | 162.52  |
+>|  16 GB   | 293.45 | 156.26  |
+>|  32 GB   | 277.4  | 153.25  |
+>+----------+--------+---------+
 
-> Mark is working on this, I believe. I'll let him comment on the current 
-> state of things.
+According to Samsung's iozone test result, HPB is going to boost random 
+performance of rom on mobile, we believe it will help our customers on 
+several occasions.
 
-I understand.
-Mark, Could you tell me current state?
-
-Thanks,
-
-Yuichi Ito
-
+WangQing
