@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AC7332A1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F6A332A2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhCIPR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:17:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:55184 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231829AbhCIPRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:17:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB8B71042;
-        Tue,  9 Mar 2021 07:17:39 -0800 (PST)
-Received: from [10.57.15.199] (unknown [10.57.15.199])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 037AC3F71B;
-        Tue,  9 Mar 2021 07:17:38 -0800 (PST)
-Subject: Re: [PATCH 4/5] powercap/drivers/dtpm: Use container_of instead of a
- private data field
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210301212149.22877-1-daniel.lezcano@linaro.org>
- <20210301212149.22877-4-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <654792e7-f0ca-73b4-2a68-721bcffc8ff0@arm.com>
-Date:   Tue, 9 Mar 2021 15:17:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231991AbhCIPSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:18:55 -0500
+Received: from conuserg-09.nifty.com ([210.131.2.76]:31185 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231969AbhCIPS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:18:27 -0500
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 129FHiTg030658;
+        Wed, 10 Mar 2021 00:17:48 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 129FHiTg030658
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615303068;
+        bh=r71y+AUxa/wzY3HGAOw/Hv/yHZgfi9z2nUjKyYbaVPA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LMkdLWh09zNrqCExiZIrv2+lAjaz1szHIzNg9/P1CO9bSo+j7dkJMWRIBYTFGFeGm
+         qHKYGyY34FJ7TRep/rJ14p5DXgyWSQC6ZSwepbsuoEmmhDbTEKNAz4yh6zIFUOu9h3
+         tkEB6MAkPz/OezTrodwJObCLE9qxo+/1jNKWn2UgkjhUlIh4iwLcBIzOX33cq/U2Nd
+         ZOfKT8fGYy2SAd9YxogBXawByyIqPb3FtWXmvjToiohKCKghEA4Sj7Qae+kK+3U6d5
+         9QJifDrC3u4TLGOYEyAfxZMtuhHuwLdLYsKo9u0pH+WWBgWbxkTzZN2bROoXy2rhhF
+         74ZvJW1JbCzjA==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>, Nicolas Pitre <nico@fluxnic.net>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v2 4/4] kbuild: remove guarding from TRIM_UNUSED_KSYMS
+Date:   Wed, 10 Mar 2021 00:17:37 +0900
+Message-Id: <20210309151737.345722-5-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210309151737.345722-1-masahiroy@kernel.org>
+References: <20210309151737.345722-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210301212149.22877-4-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Now that the build time cost of this option is unnoticeable level,
+revert the following two:
 
+  a555bdd0c58c ("Kbuild: enable TRIM_UNUSED_KSYMS again, with some guarding")
+  5cf0fd591f2e ("Kbuild: disable TRIM_UNUSED_KSYMS option")
 
-On 3/1/21 9:21 PM, Daniel Lezcano wrote:
-> The dtpm framework provides an API to allocate a dtpm node. However
-> when a backend dtpm driver needs to allocate a dtpm node it must
-> define its own structure and store the pointer of this structure in
-> the private field of the dtpm structure.
-> 
-> It is more elegant to use the container_of macro and add the dtpm
-> structure inside the dtpm backend specific structure. The code will be
-> able to deal properly with the dtpm structure as a generic entity,
-> making all this even more self-encapsulated.
-> 
-> The dtpm_alloc() function does no longer make sense as the dtpm
-> structure will be allocated when allocating the device specific dtpm
-> structure. The dtpm_init() is provided instead.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   drivers/powercap/dtpm.c     | 27 ++++++++++------------
->   drivers/powercap/dtpm_cpu.c | 46 ++++++++++++++++++-------------------
->   include/linux/dtpm.h        |  3 +--
->   3 files changed, 35 insertions(+), 41 deletions(-)
-> 
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Changes in v2:
+  - New patch
+
+ init/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 22946fe5ded9..0cbdc20b9322 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -2265,8 +2265,7 @@ config MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS
+ 	  If unsure, say N.
+ 
+ config TRIM_UNUSED_KSYMS
+-	bool "Trim unused exported kernel symbols" if EXPERT
+-	depends on !COMPILE_TEST
++	bool "Trim unused exported kernel symbols"
+ 	help
+ 	  The kernel and some modules make many symbols available for
+ 	  other modules to use via EXPORT_SYMBOL() and variants. Depending
+-- 
+2.27.0
+
