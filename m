@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00856332CFC
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC28332CFD
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbhCIRNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:13:37 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:27598 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbhCIRNE (ORCPT
+        id S231699AbhCIRNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:13:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231522AbhCIRNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:13:04 -0500
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 129HCjEB021999;
-        Wed, 10 Mar 2021 02:12:45 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 129HCjEB021999
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615309965;
-        bh=HQz0eqgwXM4TQ+VhcwSduAv9iEwVCWz6iaE77e/XCCw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zuMZQPQo4KW3iBjMosStz7/tuOoVmbaGDiRutTXHwNRAHrVzDBmiYhQEskfH+HJhq
-         NF7Nk4aVuNJLBkE9tLsRWDCSyhYpzDpxxtQg69Z97ClKaR7FaYxOY5WXVXiNvJ+o3L
-         mId5eMAqtKBQk8LE//5k5dzkWsCvT5IdOddBH903xAT6b3YbZ7gDJeoxgJXJ+xw2HU
-         UGSydXKjymJmYO80rX63aMek3CmJy1TpEKd+y71AGGxNTmc87AAof2ZQZ6N1TRYjgC
-         vO/tWGqZyU4eUC7r77bY4Ly4WnU8Myoqmz4Pfu0zjPzSHvKBgJX7B7Dl549mykdlFK
-         K32xtHBvqn+MA==
-X-Nifty-SrcIP: [209.85.216.45]
-Received: by mail-pj1-f45.google.com with SMTP id kx1so1213539pjb.3;
-        Tue, 09 Mar 2021 09:12:45 -0800 (PST)
-X-Gm-Message-State: AOAM531MZfP5koio3EmqY29MkDN3JxsdJOS1bW18+k0ifBz539c6rQLc
-        cBtbUxszY1X7bYv5z88s1RkHzKgdJquzYQhsEbU=
-X-Google-Smtp-Source: ABdhPJx6Xjh/yWePtHmH8WtstwVgIEb8OX85KgO0lUQzcWU3prZxKHJKx0Z5fyDGOUYsY8HA2wKCkoBGbMJx1AfIk7w=
-X-Received: by 2002:a17:90a:5510:: with SMTP id b16mr5689486pji.87.1615309964768;
- Tue, 09 Mar 2021 09:12:44 -0800 (PST)
+        Tue, 9 Mar 2021 12:13:09 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBEAC06174A;
+        Tue,  9 Mar 2021 09:13:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5U491TQdNsjhbIYsUSmgNKAf6MVmCm1WHLEIdhpS/JU=; b=gPUvkAbBbisJ6IK3aBstPSkfYW
+        LukBQjq/CPDnD0C7fLKVYWPdq9Iiad/BOrw2QSQfrb6a4muKVZ7KrqbRUBTR+lMUA+KCNg3xdtlQt
+        sAGf6WDADgoDIcO5wmX6UkX1Vtz2XQLXRFYZef49Hn4NcdwbVdoz428WnEGx+0zTA6zvcLTpbvHjG
+        JJHVj+uGRN8OrHg62WGpB64yAOFpCqCyhmX2wvRrNOMuWd4IqrETREBWRWrMGnYY5TilXWe3EhFwK
+        goyU/0YkSUWwsxfFfzhkhX6/4xLVqLCC2FMOQ8KfyjAGZ0OS7LGeC2XNoorKDvehK520r4/YMpWxB
+        UAOpD0Yg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJfuI-000q0x-T5; Tue, 09 Mar 2021 17:12:39 +0000
+Date:   Tue, 9 Mar 2021 17:12:30 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210309171230.GA198878@infradead.org>
+References: <20210301161200.18852-1-mgorman@techsingularity.net>
+ <20210301161200.18852-3-mgorman@techsingularity.net>
 MIME-Version: 1.0
-References: <20210308184656.1914947-1-samitolvanen@google.com> <202103081339.B18898E@keescook>
-In-Reply-To: <202103081339.B18898E@keescook>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 10 Mar 2021 02:12:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASjXiZJ3N6XsQ-5+d3fwNOkFmLLnbn3KLpf-xBGGDuqAw@mail.gmail.com>
-Message-ID: <CAK7LNASjXiZJ3N6XsQ-5+d3fwNOkFmLLnbn3KLpf-xBGGDuqAw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Allow LTO to be selected with KASAN_HW_TAGS
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Delva <adelva@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301161200.18852-3-mgorman@techsingularity.net>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 6:39 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Mar 08, 2021 at 10:46:56AM -0800, Sami Tolvanen wrote:
-> > While LTO with KASAN is normally not useful, hardware tag-based KASAN
-> > can be used also in production kernels with ARM64_MTE. Therefore, allow
-> > KASAN_HW_TAGS to be selected together with HAS_LTO_CLANG.
-> >
-> > Reported-by: Alistair Delva <adelva@google.com>
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> --
-> Kees Cook
+Would vmalloc be another good user of this API? 
 
-Applied to linux-kbuild/fixes. Thanks.
+> +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
+> +	if (!prepare_alloc_pages(gfp_mask, 0, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
 
+This crazy long line is really hard to follow.
 
--- 
-Best Regards
-Masahiro Yamada
+> +		return 0;
+> +	gfp_mask = alloc_mask;
+> +
+> +	/* Find an allowed local zone that meets the high watermark. */
+> +	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
+
+Same here.
+
+> +		unsigned long mark;
+> +
+> +		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
+> +		    !__cpuset_zone_allowed(zone, gfp_mask)) {
+> +			continue;
+> +		}
+
+No need for the curly braces.
+
+>  	}
+>  
+> -	gfp_mask &= gfp_allowed_mask;
+> -	alloc_mask = gfp_mask;
+
+Is this change intentional?
