@@ -2,289 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86439332BD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C3E332BD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhCIQWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:22:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24264 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229688AbhCIQWR (ORCPT
+        id S229546AbhCIQWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:22:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhCIQWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:22:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615306936;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GfvvN9tfZ1vW/DdSGra38p5ZkQa3HZgeLwzsf8q57fs=;
-        b=W1Dtjnj29su8V6/zwHWz6+lBK2eb5L6E1u9O2lmHffspAfqpbe/flpGe3wKQgjp/E6xWxH
-        f8k9Xx2fJ75HbDWbm9LpGzKhQBBysHFuLUbrASWdJoUkwR029o+t8RQxNf4FZ67554av6B
-        G8eT2inDWOXHbhEDe5ej4vG4nXmRnBY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-464-Nf8Soui0OlueRt3lcaU7qw-1; Tue, 09 Mar 2021 11:22:12 -0500
-X-MC-Unique: Nf8Soui0OlueRt3lcaU7qw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75388835BDD;
-        Tue,  9 Mar 2021 16:22:09 +0000 (UTC)
-Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 937A41037E82;
-        Tue,  9 Mar 2021 16:21:57 +0000 (UTC)
-Subject: Re: [PATCH 1/9] fs: rename alloc_anon_inode to alloc_anon_inode_sb
-To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>, Nadav Amit <namit@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-References: <20210309155348.974875-1-hch@lst.de>
- <20210309155348.974875-2-hch@lst.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <9b197345-9dbe-ba9c-d1dd-1b432e6a9680@redhat.com>
-Date:   Tue, 9 Mar 2021 17:21:56 +0100
+        Tue, 9 Mar 2021 11:22:11 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0A0C06174A;
+        Tue,  9 Mar 2021 08:22:11 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id p21so9100414pgl.12;
+        Tue, 09 Mar 2021 08:22:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=epYXOj0a23UYo6KGluvXPsddDr0IApQn+if8TyHD91k=;
+        b=YddDgNJhrfBHRzG5hYh/0UXdt+pd/+kaeF0T98l7yB+mZSAFlbtZTkMVkPd36SDyDd
+         RKxOuX3j4HFR6HktPOUZD8AE503zePz3RjNSH7YV5XaBCCAH5KjEXoT95S0l9c1D2E8d
+         O9QCUa/uh2kDJpyGuNL+05YmTRofZ2T/R22ez9pg5my3AI3Tk8aUfh6GJwaYJJtZBJMw
+         ePcZoqNdhVy+XURydgrcr/V4UdHaiWsguCl4W7zjMgw5fbLL7RsD58khH52NpS3mNjZa
+         Ts4TOGdcD62/iaStWlGHsz94DUXE/hFyPQy5tJRiGmqFQUPCTp+BKoLLXZC3KqttfiP1
+         F6vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=epYXOj0a23UYo6KGluvXPsddDr0IApQn+if8TyHD91k=;
+        b=iIb5jxQDSw5HF9CYlzfFpNIBy34Frni2A7XPngGSQKGPAWHRUSN6NQuY/b1k27OB2h
+         n+/T5OHpQPGuLsFDayPwUT5jTcBD2evH8MAGVb67CIQDRMSd91o5vPQt6F/zjD3L9UWK
+         TlekjtHri0EpK5+7ftIgUtVsI508+KS3ZC62OwXlCMG6PkCJQmYqWzNiiphIGVD4dJ6Y
+         ODPSYvQSAbMmYv40JaxF/MxRCobZWZc0BpryFAhJTe2n9huDZYAzh1fIZp0HQ5aSyLMQ
+         1YFaVNNuz1Sl8iRWt7Rd+iYCmuftLn89XvuNS/7DpMBLeBPUFJthaxg+2gTDdxaZ9nD+
+         tv4g==
+X-Gm-Message-State: AOAM530i1EmnaB5B/Xyvv0xRWmSXPjSwru3lx2HHdUSpIGkpZxAftpu6
+        plJmaMshQw4TGSCUGj6dmBs=
+X-Google-Smtp-Source: ABdhPJxeTrvswxWvrzQ7oBpiWNyUbs1yrmJ0I9YLUzN/2YpQP/QgoLsjJj8TBUzbmbiXOJty1ARI8g==
+X-Received: by 2002:aa7:9f52:0:b029:1ee:db83:dac6 with SMTP id h18-20020aa79f520000b02901eedb83dac6mr4070793pfr.45.1615306930807;
+        Tue, 09 Mar 2021 08:22:10 -0800 (PST)
+Received: from [172.30.1.19] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id j23sm10017380pfn.94.2021.03.09.08.22.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 08:22:10 -0800 (PST)
+Subject: Re: [PATCH 10/11] PM / devfreq: imx8m-ddrc: remove
+ imx8m_ddrc_get_dev_status
+To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, abel.vesa@nxp.com
+References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
+ <1615294733-22761-11-git-send-email-aisheng.dong@nxp.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <ece39c80-a398-a9e4-6922-5805aba5254a@gmail.com>
+Date:   Wed, 10 Mar 2021 01:22:05 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210309155348.974875-2-hch@lst.de>
+In-Reply-To: <1615294733-22761-11-git-send-email-aisheng.dong@nxp.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.03.21 16:53, Christoph Hellwig wrote:
-> Rename alloc_inode to free the name for a new variant that does not
-> need boilerplate to create a super_block first.
+On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
+> Current driver actually does not support simple ondemand governor
+> as it's unable to provide device load information. So removing
+> the unnecessary callback to avoid confusing.
+> Right now the driver is using userspace governor by default.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 > ---
->   arch/powerpc/platforms/pseries/cmm.c | 2 +-
->   drivers/dma-buf/dma-buf.c            | 2 +-
->   drivers/gpu/drm/drm_drv.c            | 2 +-
->   drivers/misc/cxl/api.c               | 2 +-
->   drivers/misc/vmw_balloon.c           | 2 +-
->   drivers/scsi/cxlflash/ocxl_hw.c      | 2 +-
->   drivers/virtio/virtio_balloon.c      | 2 +-
->   fs/aio.c                             | 2 +-
->   fs/anon_inodes.c                     | 4 ++--
->   fs/libfs.c                           | 2 +-
->   include/linux/fs.h                   | 2 +-
->   kernel/resource.c                    | 2 +-
->   mm/z3fold.c                          | 2 +-
->   mm/zsmalloc.c                        | 2 +-
->   14 files changed, 15 insertions(+), 15 deletions(-)
+>   drivers/devfreq/imx8m-ddrc.c | 13 -------------
+>   1 file changed, 13 deletions(-)
 > 
-> diff --git a/arch/powerpc/platforms/pseries/cmm.c b/arch/powerpc/platforms/pseries/cmm.c
-> index 45a3a3022a85c9..6d36b858b14df1 100644
-> --- a/arch/powerpc/platforms/pseries/cmm.c
-> +++ b/arch/powerpc/platforms/pseries/cmm.c
-> @@ -580,7 +580,7 @@ static int cmm_balloon_compaction_init(void)
->   		return rc;
->   	}
->   
-> -	b_dev_info.inode = alloc_anon_inode(balloon_mnt->mnt_sb);
-> +	b_dev_info.inode = alloc_anon_inode_sb(balloon_mnt->mnt_sb);
->   	if (IS_ERR(b_dev_info.inode)) {
->   		rc = PTR_ERR(b_dev_info.inode);
->   		b_dev_info.inode = NULL;
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index f264b70c383eb4..dedcc9483352dc 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -445,7 +445,7 @@ static inline int is_dma_buf_file(struct file *file)
->   static struct file *dma_buf_getfile(struct dma_buf *dmabuf, int flags)
->   {
->   	struct file *file;
-> -	struct inode *inode = alloc_anon_inode(dma_buf_mnt->mnt_sb);
-> +	struct inode *inode = alloc_anon_inode_sb(dma_buf_mnt->mnt_sb);
->   
->   	if (IS_ERR(inode))
->   		return ERR_CAST(inode);
-> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
-> index 20d22e41d7ce74..87e7214a8e3565 100644
-> --- a/drivers/gpu/drm/drm_drv.c
-> +++ b/drivers/gpu/drm/drm_drv.c
-> @@ -519,7 +519,7 @@ static struct inode *drm_fs_inode_new(void)
->   		return ERR_PTR(r);
->   	}
->   
-> -	inode = alloc_anon_inode(drm_fs_mnt->mnt_sb);
-> +	inode = alloc_anon_inode_sb(drm_fs_mnt->mnt_sb);
->   	if (IS_ERR(inode))
->   		simple_release_fs(&drm_fs_mnt, &drm_fs_cnt);
->   
-> diff --git a/drivers/misc/cxl/api.c b/drivers/misc/cxl/api.c
-> index b493de962153ba..2efbf6c98028ef 100644
-> --- a/drivers/misc/cxl/api.c
-> +++ b/drivers/misc/cxl/api.c
-> @@ -73,7 +73,7 @@ static struct file *cxl_getfile(const char *name,
->   		goto err_module;
->   	}
->   
-> -	inode = alloc_anon_inode(cxl_vfs_mount->mnt_sb);
-> +	inode = alloc_anon_inode_sb(cxl_vfs_mount->mnt_sb);
->   	if (IS_ERR(inode)) {
->   		file = ERR_CAST(inode);
->   		goto err_fs;
-> diff --git a/drivers/misc/vmw_balloon.c b/drivers/misc/vmw_balloon.c
-> index b837e7eba5f7dc..5d057a05ddbee8 100644
-> --- a/drivers/misc/vmw_balloon.c
-> +++ b/drivers/misc/vmw_balloon.c
-> @@ -1900,7 +1900,7 @@ static __init int vmballoon_compaction_init(struct vmballoon *b)
->   		return PTR_ERR(vmballoon_mnt);
->   
->   	b->b_dev_info.migratepage = vmballoon_migratepage;
-> -	b->b_dev_info.inode = alloc_anon_inode(vmballoon_mnt->mnt_sb);
-> +	b->b_dev_info.inode = alloc_anon_inode_sb(vmballoon_mnt->mnt_sb);
->   
->   	if (IS_ERR(b->b_dev_info.inode))
->   		return PTR_ERR(b->b_dev_info.inode);
-> diff --git a/drivers/scsi/cxlflash/ocxl_hw.c b/drivers/scsi/cxlflash/ocxl_hw.c
-> index 244fc27215dc79..40184ed926b557 100644
-> --- a/drivers/scsi/cxlflash/ocxl_hw.c
-> +++ b/drivers/scsi/cxlflash/ocxl_hw.c
-> @@ -88,7 +88,7 @@ static struct file *ocxlflash_getfile(struct device *dev, const char *name,
->   		goto err2;
->   	}
->   
-> -	inode = alloc_anon_inode(ocxlflash_vfs_mount->mnt_sb);
-> +	inode = alloc_anon_inode_sb(ocxlflash_vfs_mount->mnt_sb);
->   	if (IS_ERR(inode)) {
->   		rc = PTR_ERR(inode);
->   		dev_err(dev, "%s: alloc_anon_inode failed rc=%d\n",
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 8985fc2cea8615..cae76ee5bdd688 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -916,7 +916,7 @@ static int virtballoon_probe(struct virtio_device *vdev)
->   	}
->   
->   	vb->vb_dev_info.migratepage = virtballoon_migratepage;
-> -	vb->vb_dev_info.inode = alloc_anon_inode(balloon_mnt->mnt_sb);
-> +	vb->vb_dev_info.inode = alloc_anon_inode_sb(balloon_mnt->mnt_sb);
->   	if (IS_ERR(vb->vb_dev_info.inode)) {
->   		err = PTR_ERR(vb->vb_dev_info.inode);
->   		goto out_kern_unmount;
-> diff --git a/fs/aio.c b/fs/aio.c
-> index 1f32da13d39ee6..d1c2aa7fd6de7c 100644
-> --- a/fs/aio.c
-> +++ b/fs/aio.c
-> @@ -234,7 +234,7 @@ static const struct address_space_operations aio_ctx_aops;
->   static struct file *aio_private_file(struct kioctx *ctx, loff_t nr_pages)
->   {
->   	struct file *file;
-> -	struct inode *inode = alloc_anon_inode(aio_mnt->mnt_sb);
-> +	struct inode *inode = alloc_anon_inode_sb(aio_mnt->mnt_sb);
->   	if (IS_ERR(inode))
->   		return ERR_CAST(inode);
->   
-> diff --git a/fs/anon_inodes.c b/fs/anon_inodes.c
-> index a280156138ed89..4745fc37014332 100644
-> --- a/fs/anon_inodes.c
-> +++ b/fs/anon_inodes.c
-> @@ -63,7 +63,7 @@ static struct inode *anon_inode_make_secure_inode(
->   	const struct qstr qname = QSTR_INIT(name, strlen(name));
->   	int error;
->   
-> -	inode = alloc_anon_inode(anon_inode_mnt->mnt_sb);
-> +	inode = alloc_anon_inode_sb(anon_inode_mnt->mnt_sb);
->   	if (IS_ERR(inode))
->   		return inode;
->   	inode->i_flags &= ~S_PRIVATE;
-> @@ -231,7 +231,7 @@ static int __init anon_inode_init(void)
->   	if (IS_ERR(anon_inode_mnt))
->   		panic("anon_inode_init() kernel mount failed (%ld)\n", PTR_ERR(anon_inode_mnt));
->   
-> -	anon_inode_inode = alloc_anon_inode(anon_inode_mnt->mnt_sb);
-> +	anon_inode_inode = alloc_anon_inode_sb(anon_inode_mnt->mnt_sb);
->   	if (IS_ERR(anon_inode_inode))
->   		panic("anon_inode_init() inode allocation failed (%ld)\n", PTR_ERR(anon_inode_inode));
->   
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index e2de5401abca5a..600bebc1cd847f 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -1216,7 +1216,7 @@ static int anon_set_page_dirty(struct page *page)
+> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
+> index bc82d3653bff..0a6b7a1c829d 100644
+> --- a/drivers/devfreq/imx8m-ddrc.c
+> +++ b/drivers/devfreq/imx8m-ddrc.c
+> @@ -280,18 +280,6 @@ static int imx8m_ddrc_get_cur_freq(struct device *dev, unsigned long *freq)
 >   	return 0;
->   };
+>   }
 >   
-> -struct inode *alloc_anon_inode(struct super_block *s)
-> +struct inode *alloc_anon_inode_sb(struct super_block *s)
+> -static int imx8m_ddrc_get_dev_status(struct device *dev,
+> -				     struct devfreq_dev_status *stat)
+> -{
+> -	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> -
+> -	stat->busy_time = 0;
+> -	stat->total_time = 0;
+> -	stat->current_frequency = clk_get_rate(priv->dram_core);
+> -
+> -	return 0;
+> -}
+> -
+>   static int imx8m_ddrc_init_freq_info(struct device *dev)
 >   {
->   	static const struct address_space_operations anon_aops = {
->   		.set_page_dirty = anon_set_page_dirty,
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index ec8f3ddf4a6aa8..52387368af3c00 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3286,7 +3286,7 @@ extern int simple_write_end(struct file *file, struct address_space *mapping,
->   			loff_t pos, unsigned len, unsigned copied,
->   			struct page *page, void *fsdata);
->   extern int always_delete_dentry(const struct dentry *);
-> -extern struct inode *alloc_anon_inode(struct super_block *);
-> +extern struct inode *alloc_anon_inode_sb(struct super_block *);
->   extern int simple_nosetlease(struct file *, long, struct file_lock **, void **);
->   extern const struct dentry_operations simple_dentry_operations;
+>   	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> @@ -431,7 +419,6 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
 >   
-> diff --git a/kernel/resource.c b/kernel/resource.c
-> index 627e61b0c12418..0fd091a3f2fc66 100644
-> --- a/kernel/resource.c
-> +++ b/kernel/resource.c
-> @@ -1863,7 +1863,7 @@ static int __init iomem_init_inode(void)
->   		return rc;
->   	}
->   
-> -	inode = alloc_anon_inode(iomem_vfs_mount->mnt_sb);
-> +	inode = alloc_anon_inode_sb(iomem_vfs_mount->mnt_sb);
->   	if (IS_ERR(inode)) {
->   		rc = PTR_ERR(inode);
->   		pr_err("Cannot allocate inode for iomem: %d\n", rc);
-> diff --git a/mm/z3fold.c b/mm/z3fold.c
-> index b5dafa7e44e429..e7cd9298b221f5 100644
-> --- a/mm/z3fold.c
-> +++ b/mm/z3fold.c
-> @@ -376,7 +376,7 @@ static void z3fold_unmount(void)
->   static const struct address_space_operations z3fold_aops;
->   static int z3fold_register_migration(struct z3fold_pool *pool)
->   {
-> -	pool->inode = alloc_anon_inode(z3fold_mnt->mnt_sb);
-> +	pool->inode = alloc_anon_inode_sb(z3fold_mnt->mnt_sb);
->   	if (IS_ERR(pool->inode)) {
->   		pool->inode = NULL;
->   		return 1;
-> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-> index 30c358b7202510..a6449a2ad861de 100644
-> --- a/mm/zsmalloc.c
-> +++ b/mm/zsmalloc.c
-> @@ -2086,7 +2086,7 @@ static const struct address_space_operations zsmalloc_aops = {
->   
->   static int zs_register_migration(struct zs_pool *pool)
->   {
-> -	pool->inode = alloc_anon_inode(zsmalloc_mnt->mnt_sb);
-> +	pool->inode = alloc_anon_inode_sb(zsmalloc_mnt->mnt_sb);
->   	if (IS_ERR(pool->inode)) {
->   		pool->inode = NULL;
->   		return 1;
+>   	priv->profile.polling_ms = 1000;
+>   	priv->profile.target = imx8m_ddrc_target;
+> -	priv->profile.get_dev_status = imx8m_ddrc_get_dev_status;
+>   	priv->profile.exit = imx8m_ddrc_exit;
+>   	priv->profile.get_cur_freq = imx8m_ddrc_get_cur_freq;
+>   	priv->profile.initial_freq = clk_get_rate(priv->dram_core);
 > 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+
+Will merge this patch after finishing the discussion of
+prev patch related to.get_dev_status.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
