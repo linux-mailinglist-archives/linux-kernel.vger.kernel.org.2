@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DD8332054
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F20433205C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhCIIP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:15:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
+        id S229775AbhCIITq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:19:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbhCIIPb (ORCPT
+        with ESMTP id S229524AbhCIITb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:15:31 -0500
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FDCC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 00:15:31 -0800 (PST)
-Received: by mail-vs1-xe30.google.com with SMTP id a15so6352686vsi.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 00:15:31 -0800 (PST)
+        Tue, 9 Mar 2021 03:19:31 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F34DC061760
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 00:19:31 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id c10so25642058ejx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 00:19:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zt/Qo1WuohJnN8BsEHz9cxnvtJashQ/NC/B5GNdt0Vw=;
-        b=xTMuS7ToMWt37R/E2TwMkIlTyw/OnDiCgFudLcVzRWMSo5w4RdGfYHysaMdM/p1NTM
-         /fqG/hW6BZDUtUgCO1V3seC2X6TEO0zAQWMWvFIatAc2w/rS757Rr+QoLDwCAZudOklN
-         rKGr2+ojXgZPf867xtn+jGgS+l/xekob1NmvS0r1aYibZoE9XIGrR4cHObok+kU5TrAk
-         MprRVuBqMFuG6neSTkuAyQQlG5hEKPh+ZfOZ8ujoA9opxP+AtZh6gqFknJNahGMTgson
-         midmLZwd521PiW899MPbJHiWpD/79d5cW2IU7wdkBmMqCs4Kxhk3I2o16pSfzTtc/tE9
-         WRXg==
+        bh=ktw6Vy0vKj0+IWZr4PuUcyXC0kFObus7a2EmBpNWdj4=;
+        b=tH0VLSft5rYfI6ehechyQeyeheTGF4WBZ+zVPMOcqhQtUjwdPp/ZIgO6N92PQP22nv
+         jv7WqiKtR4Ey4bLqONv4Cj7l3pDkLs/Ut7+UGvl0J6MV8P/IBpSgq+AWKTRoOM21azGt
+         y9fA0kV7UhDZjTp4r94mkOrBYZxy0UAfHbRrceqBC2ydMnRvAi+JH40r3yqJkX4N1qiZ
+         IAy8wffkslT8wuq9LrR6DpBc8ENsmvCBVL/hdRRKe7oEw5DgjxIvF276O+mp1q1Fw57v
+         SjeBUjPf1gBQ1xzkmpHLkS8xjnd3+tSha2HFaHHjS7fZI/YJ2nXKW8wUl9CVqd937/+g
+         mX3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zt/Qo1WuohJnN8BsEHz9cxnvtJashQ/NC/B5GNdt0Vw=;
-        b=cOA2Bz8p8wfH6JwxjSA2DP3VVZrVI35GuQTW3n5W+qz+JOOpjDzrcifFNQnVZfQGwv
-         WpKVmlXFF1Ct50QZWpxdvvvy7GLXILH89Frzjks3wn053C4Cv2chgaYuho00/fBuo21N
-         bMutHZuvUHsl7xxXlZOPWa1nZCwQyPnKeiOgb8+ssTMoOPraoIgmSUcBeGFvh5OfyK6N
-         XDyXw88fxdfFjbLIHUE9IhpErAvftt4A8a+CohZm6zYWefactfLCVLNERY1T0YZjJvom
-         D9/1TxIaKyxz1zRIyX675i6MweNwo3EZb7TQz+UrBfoFSJOXxF+qARLMWcJ+C0xY5N5e
-         q3JA==
-X-Gm-Message-State: AOAM5334YCJH2d7keu0p+CawLcuf8kU3rSMkpDzLo3lWqL2oNf3V+Ks5
-        jXk0tMnFx6hSjmUPItN+83PkTp/1aeYx7ttSoi5BuA==
-X-Google-Smtp-Source: ABdhPJyIREswXY8HIMohbytoDNg1hEAh37OQLrBbhEhyA1hgNSWz8OdncAaF+NnykgRA5ocddH6xzrc2+bGXFLcbPYs=
-X-Received: by 2002:a05:6102:7b0:: with SMTP id x16mr13806738vsg.34.1615277730169;
- Tue, 09 Mar 2021 00:15:30 -0800 (PST)
+        bh=ktw6Vy0vKj0+IWZr4PuUcyXC0kFObus7a2EmBpNWdj4=;
+        b=bXPM/Y7pQI/snolsGIOito21GLFHbYiVCoBaLYO9EBW9tgAWnPRHJdtPG7/g5FkwER
+         6Y0jZ3MR33wPdYUew8uRMv4xF0/rZ7ClDdYI++GDvFG1Qd1t48rtqCo30f3Q0L5qYJMP
+         mXj1VE1iQ9s9UaGSl5rXA8UNAXio6X8ISs009fshWFN/PuixD+mAq18aVLtB3g/rhS0T
+         FjERn0f4xSifnxL2p1DAGK+O9WxVWBzIwf4bVoiRd3rB/E1Iy7rbSr4mB6COLrC1l3uK
+         icY5MTJZDKkiKU62I1ki7GhHnDHt6QWxK+j3XKd1JaBLaLLPpEA9adNf25QsYn49wiyl
+         w3tA==
+X-Gm-Message-State: AOAM533ns94KQ4YEPd0VGkmkqL6dRHN6vLOGY1VrFd9FPNoj3cyebmkc
+        we3qLEuGWmd5x2wk/vdFJVB71J7B6qjz2zlBmpRgkA==
+X-Google-Smtp-Source: ABdhPJxccaY07lvzI3pyPNA1B4j+TqZ/AgQnJSiW91vnn1Z11jeetk9yG4K3pnXMtESj7nJOyz2L+HZGYHjmyyoztkU=
+X-Received: by 2002:a17:907:76c7:: with SMTP id kf7mr18687281ejc.470.1615277969766;
+ Tue, 09 Mar 2021 00:19:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225095216.28591-1-nsaenzjulienne@suse.de>
-In-Reply-To: <20210225095216.28591-1-nsaenzjulienne@suse.de>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 9 Mar 2021 09:14:53 +0100
-Message-ID: <CAPDyKFoN6WERg=wq7Fo-iykDSp6w7eC1aRFi4Qih0wZ=LSR4XA@mail.gmail.com>
-Subject: Re: [RFC 0/2] sdhci-iproc CMD timeouts
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2835..." 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, phil@raspberrypi.com,
-        tim.gover@raspberrypi.com, Adrian Hunter <adrian.hunter@intel.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304201253.14652-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0gR=gN2ROo9JSOGHokw5imscMBwDERni8X83p0eWt634w@mail.gmail.com>
+ <CAMpxmJUQ3r0YCeQvPq=SW57w-5BLtoTO1_bv=2uw6CX_1-EXcQ@mail.gmail.com>
+ <CAJZ5v0h7zUMU9DMofa3fhop9fYY6UJQ6Nm3xBOmG48bcmLCj3w@mail.gmail.com>
+ <CAMpxmJXa2Qxznss3c79Zf-PzsX=SY6WOJorAMvS-UxKoViKP_w@mail.gmail.com>
+ <YEZ81OraApPIu8d9@smile.fi.intel.com> <YEaAY37PsqT6WQB9@smile.fi.intel.com>
+In-Reply-To: <YEaAY37PsqT6WQB9@smile.fi.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 9 Mar 2021 09:19:19 +0100
+Message-ID: <CAMpxmJUQ+Fhz8XTh14eHiqdQc3jBEwr8wuezw+NcgtU8XXFUQg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/5] gpiolib: switch to fwnode in the core
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 at 10:53, Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
+On Mon, Mar 8, 2021 at 8:52 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> I'm seeing a rather odd behavior from sdhci-iproc's integration in BCM2711
-> (Raspberry Pi 4's SoC), and would appreciate some opinions.
+> On Mon, Mar 08, 2021 at 09:36:52PM +0200, Andy Shevchenko wrote:
+> > On Mon, Mar 08, 2021 at 08:29:27PM +0100, Bartosz Golaszewski wrote:
+> > > On Mon, Mar 8, 2021 at 8:26 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > On Mon, Mar 8, 2021 at 8:23 PM Bartosz Golaszewski
+> > > > <bgolaszewski@baylibre.com> wrote:
+> >
+> > ...
+> >
+> > > > My impression was that Andy wanted me to take them.
+> > > >
+> > > > However, if you'd rather take care of them yourself, there you go!
+> > > >
+> > > > I'll drop them now and assume that they will be routed through the GPIO tree.
+> > > >
+> > > > Thanks!
+> > >
+> > > They touch a lot of core GPIO code and are likely to conflict if any
+> > > other changes show up this release cycle. I'd rather take them through
+> > > the usual channel. Thanks!
+> >
+> > Since now we have v4 based on Rafael's bleeding-edge, what do you want me to
+> > do? Resend a v5 with all patches included?
 >
-> The controller will timeout on SDHCI CMDs under the following conditions:
+> I have decided to resend as usually it's better for maintainers.
 >
->  - No SD card plugged in (the card polling thread is running, CD irq disabled).
->  - BCM2711's VPU clock[1] configured at 500MHz or more, lower clocks are OK.
+> But it appears I was too quick to miss Rafael's review tag / comments.
 >
-> There is no specific command that will time out, it seems random.
->
-> Here's what I found out. The SDHCI controller runs at 100MHz, by bumping the
-> frequency to 150MHz the issue disapears. Might be pure luck, or maybe I hit the
-> nail and it's proper interference. Can't say.
-
-As you probably know, I don't have the in-depth knowledge about this
-HW. Although, let me provide a very vague guess. Could be that the
-controller needs a higher clock rate to stay within some spec, for an
-OPP/voltage domain for example?
-
-In any case, assuming you get some confirmation from the Broadcom
-folkz that this makes sense, you  need to update the DT doc bindings
-to add the clock-frequency property. In regards to this, please take
-the opportunity to convert from legacy DT doc format
-(brcm,sdhci-iproc.txt) into the new yaml format.
-
-Kind regards
-Uffe
-
->
-> Regards,
-> Nicolas
->
-> ---
->
-> [1] For those who are not aware, here's the relationship between VPU's clock
->     and emmc2's:
->
->          osc                                    54000000
->             plld                              3000000091
->                plld_per                        750000023
->                   emmc2                        149882908
->             pllc                              2999999988
->                pllc_core0                      999999996
->                   vpu                          499999998
->
-> Nicolas Saenz Julienne (2):
->   ARM: dts: Fix-up EMMC2 controller's frequency
->   mmc: sdhci-iproc: Set clock frequency as per DT
->
->  arch/arm/boot/dts/bcm2711-rpi-4-b.dts |  6 ++++++
->  drivers/mmc/host/sdhci-iproc.c        | 10 ++++++++++
->  2 files changed, 16 insertions(+)
+> So, I will send v6 with those included.
 >
 > --
-> 2.30.1
+> With Best Regards,
+> Andy Shevchenko
 >
+>
+
+Does this series depend on patches already in Rafael's tree? If so,
+maybe Rafael can provide me with an immutable tag to merge in?
+
+Bartosz
