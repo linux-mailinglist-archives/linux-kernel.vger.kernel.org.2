@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397FC333003
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CE7333009
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbhCIUfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:35:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36566 "EHLO mail.kernel.org"
+        id S231709AbhCIUgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:36:31 -0500
+Received: from marcansoft.com ([212.63.210.85]:52296 "EHLO mail.marcansoft.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231510AbhCIUfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:35:06 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S231510AbhCIUgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:36:03 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 059576522E;
-        Tue,  9 Mar 2021 20:35:05 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 15:35:04 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
-        mingo@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
-Message-ID: <20210309153504.0b06ded1@gandalf.local.home>
-In-Reply-To: <fffda629-0028-2824-2344-3507b75d9188@gmail.com>
-References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
-        <20210309124011.709c6cd3@gandalf.local.home>
-        <5fda3ef7-d760-df4f-e076-23b635f6c758@gmail.com>
-        <20210309150227.48281a18@gandalf.local.home>
-        <fffda629-0028-2824-2344-3507b75d9188@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 49EFB41982;
+        Tue,  9 Mar 2021 20:35:54 +0000 (UTC)
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-27-marcan@marcan.st>
+ <CACRpkdYzkOCurtLaeyZ+A6EWnSPGU66by4gYoCpLcn=52hTEPQ@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFT PATCH v3 26/27] dt-bindings: display: Add
+ apple,simple-framebuffer
+Message-ID: <c482f0ed-a0cf-5a87-b9f1-744a044fb44a@marcan.st>
+Date:   Wed, 10 Mar 2021 05:35:52 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CACRpkdYzkOCurtLaeyZ+A6EWnSPGU66by4gYoCpLcn=52hTEPQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021 13:17:23 -0700
-David Ahern <dsahern@gmail.com> wrote:
-
-> On 3/9/21 1:02 PM, Steven Rostedt wrote:
-> > On Tue, 9 Mar 2021 12:53:37 -0700
-> > David Ahern <dsahern@gmail.com> wrote:
-> >   
-> >> Changing the order of the fields will impact any bpf programs expecting
-> >> the existing format  
-> > 
-> > I thought bpf programs were not API. And why are they not parsing this
-> > information? They have these offsets hard coded???? Why would they do that!
-> > The information to extract the data where ever it is has been there from
-> > day 1! Way before BPF ever had access to trace events.  
+On 10/03/2021 01.37, Linus Walleij wrote:
+> On Thu, Mar 4, 2021 at 10:42 PM Hector Martin <marcan@marcan.st> wrote:
 > 
-> BPF programs attached to a tracepoint are passed a context - a structure
-> based on the format for the tracepoint. To take an in-tree example, look
-> at samples/bpf/offwaketime_kern.c:
+>> Apple SoCs run firmware that sets up a simplefb-compatible framebuffer
+>> for us. Add a compatible for it, and two missing supported formats.
+>>
+>> Signed-off-by: Hector Martin <marcan@marcan.st>
 > 
-> ...
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > 
-> /* taken from /sys/kernel/debug/tracing/events/sched/sched_switch/format */
-> struct sched_switch_args {
->         unsigned long long pad;
->         char prev_comm[16];
->         int prev_pid;
->         int prev_prio;
->         long long prev_state;
->         char next_comm[16];
->         int next_pid;
->         int next_prio;
-> };
-> SEC("tracepoint/sched/sched_switch")
-> int oncpu(struct sched_switch_args *ctx)
-> {
-> 
-> ...
-> 
-> Production systems do not typically have toolchains installed, so
-> dynamic generation of the program based on the 'format' file on the
-> running system is not realistic. That means creating the programs on a
-> development machine and installing on the production box. Further, there
-> is an expectation that a bpf program compiled against version X works on
-> version Y. Changing the order of the fields will break such programs in
-> non-obvious ways.
+> Marcan: tell me if you need me to apply this to the drm-misc tree
+> and I'll fix it.
 
-The size of the fields and order changes all the time in various events. I
-recommend doing so *all the time*. If you upgrade a kernel, then all the bpf
-programs you have for that kernel should also be updated. You can't rely on
-fields being the same, size or order. The best you can do is expect the
-field to continue to exist, and that's not even a guarantee.
+I think Arnd is okay merging this one through the SoC tree.
 
-I'm not sure how that sample is used. I can't find "oncpu()" anywhere in
-that directory besides where it is defined, and I wouldn't think a bpf
-program would just blindly map the fields without verifying them.
-
-
--- Steve
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
