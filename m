@@ -2,162 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073D2332D3E
+	by mail.lfdr.de (Postfix) with ESMTP id CFD85332D40
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhCIR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41144 "EHLO
+        id S231933AbhCIR2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:28:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbhCIR1z (ORCPT
+        with ESMTP id S231150AbhCIR2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:27:55 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52581C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:27:55 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id w7so3446705pll.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:27:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RgCAC8soedBAR4QV6xrwRz7z96hXnQfIsjeHL6pqe5I=;
-        b=neFB4ap49LsR/+Ea8ax5epXOkyWa4xXrzFKkoAMpt7upOSctyqk+0Znslr3U5Thf0G
-         UkedV76CyXkyNkUD505gwubYQbvFedbL773bhgVpfauWpGD7Kr52RJeMQhzMzXRN0Or4
-         HibQ5z3ETpIFtOF3yZUS94v1IVqNO2KGgXePMLGxr8wFNHjNH0pMePO40l5ebSwD5SFB
-         x0KZY231Kqy7GfPBHRwugE1BXgQ8/C0S9GjzmVPDINz2tbsH0wzsQPtGqEfWDij0bTDT
-         T2LLFeHo2v/0oC0NaLt+qlkqUPBQP294Wml1/VhONdDh3j/jGBcfJ+XFiipiX7zHivw7
-         2zRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=RgCAC8soedBAR4QV6xrwRz7z96hXnQfIsjeHL6pqe5I=;
-        b=TUWKPC2eyrxndbLkw+bYQyowEGP52FrwyyWHMR3RITN1ScRG7p37TkC5C6IiIo6g97
-         o0DGwkQQSiWr2kMg4DOwj9TPHsNfdhLVkDTWK197OgYZK/TyXRpLhkbh/wOOHaEiZwmw
-         2EH1X69iiIihXyY3CC/MN0B0FYCQddsTYrtQdl/brsiIIARdY13F4qwZAwlKYb6PB6B3
-         YEBnfJXPkn3JKosYmF/IZpz/ne4UegU9n18XIkFk/do/jS37PYrlxn9USVsrlRBenogy
-         LIIv152j6xklZ89zyLX3+5a5pIeHtcDczbVEIdbZu7CHDvF/l16ZzNULjsHq+Wb7ZKeF
-         O9wQ==
-X-Gm-Message-State: AOAM530oKU2MUKqpKCGiTCgbPTGhJgafYDYe+bITGCLQGQi+EzRQGLrq
-        PfJgOTtH0S32n5rkZ8yppY3rGwKNs+Y=
-X-Google-Smtp-Source: ABdhPJyD8Z2B4M1dFVTdJp5evU8UPdMy5k3IS9vQ4jFRKfoj4IZVuV0T3UZWyAZASZ7TZ8MPVIwIzw==
-X-Received: by 2002:a17:90a:5587:: with SMTP id c7mr5549405pji.5.1615310874689;
-        Tue, 09 Mar 2021 09:27:54 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:f896:d6be:86d4:a59b])
-        by smtp.gmail.com with ESMTPSA id e83sm6038999pfh.80.2021.03.09.09.27.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 09:27:53 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 9 Mar 2021 09:27:51 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
-Message-ID: <YEewF8c1ydu2pU0A@google.com>
-References: <20210308202047.1903802-1-minchan@kernel.org>
- <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
- <YEefLYiX6rF3Uk4E@google.com>
- <YEejCP5tzUtrAjcw@dhcp22.suse.cz>
+        Tue, 9 Mar 2021 12:28:02 -0500
+Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701B9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:28:02 -0800 (PST)
+Received: from tux.applied-asynchrony.com (p5b07e8e5.dip0.t-ipconnect.de [91.7.232.229])
+        by mail.itouring.de (Postfix) with ESMTPSA id ECB3D11DD5E;
+        Tue,  9 Mar 2021 18:27:59 +0100 (CET)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id 1B8ACF01600;
+        Tue,  9 Mar 2021 18:27:59 +0100 (CET)
+Subject: Re: systematic crash in amdgpu init since 5.10.20. Not fixed with
+ 5.10.21
+To:     eric.valette@free.fr,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <c288c34d-9989-c45d-4ea7-03c9b11c48ff@free.fr>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <e426efc9-cc4b-8663-ec92-0c4a4cabcb96@applied-asynchrony.com>
+Date:   Tue, 9 Mar 2021 18:27:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEejCP5tzUtrAjcw@dhcp22.suse.cz>
+In-Reply-To: <c288c34d-9989-c45d-4ea7-03c9b11c48ff@free.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 05:32:08PM +0100, Michal Hocko wrote:
-> On Tue 09-03-21 08:15:41, Minchan Kim wrote:
-> > On Tue, Mar 09, 2021 at 10:32:51AM +0100, Michal Hocko wrote:
-> > > On Mon 08-03-21 12:20:47, Minchan Kim wrote:
-> > > > alloc_contig_range is usually used on cma area or movable zone.
-> > > > It's critical if the page migration fails on those areas so
-> > > > dump more debugging message.
-> > > 
-> > > I disagree with this statement. alloc_contig_range is not a reliable
-> > > allocator. Any user, be it CMA or direct users of alloc_contig_range
-> > > have to deal with allocation failures. Debugging information can be
-> > > still useful but considering migration failures critical is
-> > > overstatement to say the least.
-> > 
-> > Fair enough. Let's change it.
-> > 
-> > "Currently, debugging CMA allocation failure is too hard
-> > due to lacking of page information. alloc_contig_range is
-> > proper place to dump them since it has migrate-failed page
-> > list."
+On 2021-03-07 17:18, Eric Valette wrote:
+> I have the following systematic crash at boot since 5.10.20 (.19 was ok)
 > 
-> "Currently, debugging CMA allocation failures is quite limited. The most
-> commong source of these failures seems to be page migration which
-> doesn't provide any useful information on the reason of the failure by
-> itself. alloc_contig_range can report those failures as it holds a list
-> of migrate-failed pages."
-
-Will take it. Thanks.
-
-< snip >
-
-> > > Somebody more familiar with the dynamic debugging infrastructure needs
-> > > to have a look but from from a quick look it seems ok.
-> > > 
-> > > Do we really need all the ugly ifdefery, though? Don't we want to have
-> > > this compiled in all the time and just rely on the static branch managed
-> > > by the dynamic debugging framework?
-> > 
-> > I have no further idea to make it simple while we keep the flexibility
-> > for arguments and print format.
-> > 
-> > #if defined(CONFIG_DYNAMIC_DEBUG) || \
-> >         (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > static void alloc_contig_dump_pages(struct list_head *page_list)
-> > {
-> >         static DEFINE_RATELIMIT_STATE(_rs,
-> >                                         DEFAULT_RATELIMIT_INTERVAL,
-> >                                         DEFAULT_RATELIMIT_BURST);
-> > 
-> >         DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
-> >                         "migrate failure");
-> >         if (DYNAMIC_DEBUG_BRANCH(descriptor) && __ratelimit(&_rs)) {
-> >                 struct page *page;
-> > 
-> >                 WARN(1, "failed callstack");
-> >                 list_for_each_entry(page, page_list, lru)
-> >                         dump_page(page, "migration failure");
-> >         }
-> > }
-> > #else
-> > static inline void alloc_contig_dump_pages(struct list_head *page_list)
-> > {
-> > }
-> > #endif
+> This laptop has two graphic cards:
 > 
-> First, you would be much better off by droping the rate limitting. I am
-> nt really convinced this is really necessary as this is a debugging aid
-> enabled on request. A single list can be large enough to swamp logs so
-> why bother?
-
-No problem. Just added since David mentioned hugetlb pages are easily
-fail to mgirate at this moment.
-Yes, We could add the ratelimit if we get complain.
-
+> 03:00.0 Display controller: Advanced Micro Devices, Inc. [AMD/ATI] Navi 14 [Radeon RX 5500/5500M / Pro 5500M] (rev c1)
+> 07:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Renoir (rev c6)
 > 
-> Also are all those CONFIG_DYNAMIC_DEBUG* ifdefs necessary?  Can we
-> simply enable DYNAMIC_DEBUG for page_alloc as I've suggested above?
+> NB: cc me I'm not subscribed
+> 
+> CPU: 13 PID: 721 Comm: systemd-udevd Not tainted 5.10.21 #2
+> [    4.446170] Hardware name: Micro-Star International Co., Ltd. Bravo 17 A4DDR/MS-17FK, BIOS E17FKAMS.117 10/29/2020
+> [    4.446175] RIP: 0010:kernel_fpu_begin_mask+0xc5/0xe0
+> [    4.446179] Code: 65 8a 05 86 32 9f 52 84 c0 74 9a 0f 0b eb 96 48 8b 07 f6 c4 40 75 b0 f0 80 4f 01 40 48 81 c7 00 0c 00 00 e8 cd fb ff ff eb 9d <0f> 0b eb 82 db e3 eb b8 e8 3e 63 e0 00 66 66 2e 0f 1f 84 00 00 00
+> [    4.446182] RSP: 0018:ffffbc70012ef5e8 EFLAGS: 00010202
+> [    4.446185] RAX: 0000000080000001 RBX: 0000000000000003 RCX: ffffbc70012ef65c
+> [    4.446186] RDX: ffff9bd4415b4000 RSI: ffff9bd4525c0000 RDI: 0000000000000003
+> [    4.446188] RBP: ffff9bd433e20000 R08: ffffbc70012ef660 R09: 0000000000000000
+> [    4.446190] R10: ffff9bd415ba4000 R11: ffff9bd4525c10f0 R12: ffffffffc0c46560
+> [    4.446191] R13: 0000000000000000 R14: ffff9bd4415b4000 R15: 0000000000000001
+> [    4.446194] FS:  00007f00024218c0(0000) GS:ffff9bd71f940000(0000) knlGS:0000000000000000
+> [    4.446196] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    4.446199] CR2: 00005575ca8bb8e8 CR3: 00000001117e8000 CR4: 0000000000350ee0
+> [    4.446200] Call Trace:
+> [    4.446532]  dcn21_calculate_wm+0x49/0x410 [amdgpu]
+> [    4.446848]  dcn21_validate_bandwidth_fp+0x174/0x280 [amdgpu]
+> [    4.447162]  dcn21_validate_bandwidth+0x29/0x40 [amdgpu]
+> [    4.447415]  dc_validate_global_state+0x2f2/0x390 [amdgpu]
+> [    4.447667]  amdgpu_dm_atomic_check+0xb0d/0xc00 [amdgpu]
+> [    4.447704]  drm_atomic_check_only+0x55a/0x7d0 [drm]
+> [    4.447735]  drm_atomic_commit+0x13/0x50 [drm]
+> [    4.447765]  drm_client_modeset_commit_atomic+0x1e4/0x220 [drm]
+> [    4.447795]  drm_client_modeset_commit_locked+0x56/0x150 [drm]
+> [    4.447822]  drm_client_modeset_commit+0x24/0x40 [drm]
+> [    4.447840]  drm_fb_helper_set_par+0xa5/0xd0 [drm_kms_helper]
+> [    4.447846]  fbcon_init+0x2b3/0x570
+> [    4.447850]  visual_init+0xce/0x130
+> [    4.447853]  do_bind_con_driver.isra.0+0x1db/0x2e0
+> [    4.447857]  do_take_over_console+0x116/0x180
+> [    4.447861]  do_fbcon_takeover+0x5c/0xc0
+> [    4.447864]  register_framebuffer+0x1e4/0x300
+> [    4.447881]  __drm_fb_helper_initial_config_and_unlock+0x321/0x4a0 [drm_kms_helper]
+> [    4.448081]  amdgpu_fbdev_init+0xb9/0xf0 [amdgpu]
+> [    4.448326]  amdgpu_device_init.cold+0x166b/0x1a4d [amdgpu]
+> [    4.448334]  ? pci_bus_read_config_word+0x49/0x70
+> [    4.448527]  amdgpu_driver_load_kms+0x2b/0x1f0 [amdgpu]
+> [    4.448718]  amdgpu_pci_probe+0x114/0x1a0 [amdgpu]
+> [    4.448761]  local_pci_probe+0x42/0x80
+> [    4.448770]  ? _cond_resched+0x16/0x40
+> [    4.448774]  pci_device_probe+0xfa/0x1b0
+> [    4.448781]  really_probe+0xf2/0x440
+> [    4.448786]  driver_probe_device+0xe1/0x150
+> [    4.448789]  device_driver_attach+0xa1/0xb0
+> [    4.448792]  __driver_attach+0x8a/0x150
+> [    4.448794]  ? device_driver_attach+0xb0/0xb0
+> [    4.448797]  ? device_driver_attach+0xb0/0xb0
+> [    4.448800]  bus_for_each_dev+0x78/0xc0
+> [    4.448805]  bus_add_driver+0x12b/0x1e0
+> [    4.448808]  driver_register+0x8b/0xe0
+> [    4.448812]  ? 0xffffffffc134a000
+> [    4.448817]  do_one_initcall+0x44/0x1d0
+> [    4.448822]  ? do_init_module+0x23/0x260
+> [    4.448828]  ? kmem_cache_alloc_trace+0xf5/0x200
+> [    4.448831]  do_init_module+0x5c/0x260
+> [    4.448834]  __do_sys_finit_module+0xb1/0x110
+> [    4.448840]  do_syscall_64+0x33/0x80
+> [    4.448844]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [    4.448848] RIP: 0033:0x7f00028da9b9
+> [    4.448853] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a7 54 0c 00 f7 d8 64 89 01 48
+> [    4.448855] RSP: 002b:00007ffcab625508 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> [    4.448860] RAX: ffffffffffffffda RBX: 000056314a23dff0 RCX: 00007f00028da9b9
+> [    4.448862] RDX: 0000000000000000 RSI: 00007f0002a65e2d RDI: 0000000000000017
+> [    4.448864] RBP: 0000000000020000 R08: 0000000000000000 R09: 000056314a243020
+> [    4.448866] R10: 0000000000000017 R11: 0000000000000246 R12: 00007f0002a65e2d
+> [    4.448868] R13: 0000000000000000 R14: 000056314a24a2d0 R15: 000056314a23dff0
+> [    4.448873] ---[ end trace 72b8a47f60a3c4b2 ]---
+> [    4.449556] ------------[ cut here ]------------
+> [    4.449562] WARNING: CPU: 13 PID: 721 at arch/x86/kernel/fpu/core.c:155 kernel_fpu_end+0x19/0x20
+> [    4.449563] Modules linked in: uinput binfmt_misc amdgpu(+) uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videodev iwlmvm videobuf2_common gpu_sched ttm msi_wmi drm_kms_helper pcspkr serio_raw sparse_keymap sp5100_tco cec watchdog btusb i2c_algo_bit fb_sys_fops syscopyarea iwlwifi sysfillrect sysimgblt tpm_crb tpm_tis tpm_tis_core tpm drm configfs ip_tables x_tables autofs4 i2c_hid
+> [    4.449590] CPU: 13 PID: 721 Comm: systemd-udevd Tainted: G        W        5.10.21 #2
+> [    4.449592] Hardware name: Micro-Star International Co., Ltd. Bravo 17 A4DDR/MS-17FK, BIOS E17FKAMS.117 10/29/2020
+> [    4.449595] RIP: 0010:kernel_fpu_end+0x19/0x20
+> [    4.449599] Code: ae 47 40 b8 01 00 00 00 c3 0f 0b eb d7 0f 0b eb c9 0f 1f 44 00 00 65 8a 05 2c 36 9f 52 84 c0 74 09 65 c6 05 20 36 9f 52 00 c3 <0f> 0b eb f3 0f 1f 00 0f 1f 44 00 00 8b 15 a5 b6 59 02 31 f6 e8 fe
+> [    4.449600] RSP: 0018:ffffbc70012ef6b0 EFLAGS: 00010246
+> [    4.449602] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000000007a4
+> [    4.449604] RDX: 00000000000007a3 RSI: cade29b7434a9329 RDI: 000000000002d740
+> [    4.449605] RBP: ffff9bd4525c0000 R08: 0000000000000000 R09: 0000000000000040
+> [    4.449606] R10: 00000000c4444440 R11: 0000000000000003 R12: 0000000000000001
+> [    4.449607] R13: ffff9bd415ba4000 R14: ffff9bd4525c1518 R15: ffff9bd4525c0000
+> [    4.449610] FS:  00007f00024218c0(0000) GS:ffff9bd71f940000(0000) knlGS:0000000000000000
+> [    4.449611] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    4.449612] CR2: 00005575ca8bb8e8 CR3: 00000001117e8000 CR4: 0000000000350ee0
+> [    4.449613] Call Trace:
+> [    4.449861]  dcn21_validate_bandwidth+0x31/0x40 [amdgpu]
+> [    4.450104]  dc_validate_global_state+0x2f2/0x390 [amdgpu]
+> [    4.450355]  amdgpu_dm_atomic_check+0xb0d/0xc00 [amdgpu]
+> [    4.450393]  drm_atomic_check_only+0x55a/0x7d0 [drm]
+> [    4.450424]  drm_atomic_commit+0x13/0x50 [drm]
+> [    4.450454]  drm_client_modeset_commit_atomic+0x1e4/0x220 [drm]
+> [    4.450483]  drm_client_modeset_commit_locked+0x56/0x150 [drm]
+> [    4.450511]  drm_client_modeset_commit+0x24/0x40 [drm]
+> [    4.450528]  drm_fb_helper_set_par+0xa5/0xd0 [drm_kms_helper]
+> [    4.450534]  fbcon_init+0x2b3/0x570
+> [    4.450538]  visual_init+0xce/0x130
+> [    4.450543]  do_bind_con_driver.isra.0+0x1db/0x2e0
+> [    4.450547]  do_take_over_console+0x116/0x180
+> [    4.450551]  do_fbcon_takeover+0x5c/0xc0
+> [    4.450554]  register_framebuffer+0x1e4/0x300
+> [    4.450571]  __drm_fb_helper_initial_config_and_unlock+0x321/0x4a0 [drm_kms_helper]
+> [    4.450769]  amdgpu_fbdev_init+0xb9/0xf0 [amdgpu]
+> [    4.451011]  amdgpu_device_init.cold+0x166b/0x1a4d [amdgpu]
+> [    4.451018]  ? pci_bus_read_config_word+0x49/0x70
+> [    4.451211]  amdgpu_driver_load_kms+0x2b/0x1f0 [amdgpu]
+> [    4.451401]  amdgpu_pci_probe+0x114/0x1a0 [amdgpu]
+> [    4.451405]  local_pci_probe+0x42/0x80
+> [    4.451409]  ? _cond_resched+0x16/0x40
+> [    4.451412]  pci_device_probe+0xfa/0x1b0
+> [    4.451417]  really_probe+0xf2/0x440
+> [    4.451420]  driver_probe_device+0xe1/0x150
+> [    4.451422]  device_driver_attach+0xa1/0xb0
+> [    4.451424]  __driver_attach+0x8a/0x150
+> [    4.451426]  ? device_driver_attach+0xb0/0xb0
+> [    4.451427]  ? device_driver_attach+0xb0/0xb0
+> [    4.451430]  bus_for_each_dev+0x78/0xc0
+> [    4.451434]  bus_add_driver+0x12b/0x1e0
+> [    4.451436]  driver_register+0x8b/0xe0
+> [    4.451438]  ? 0xffffffffc134a000
+> [    4.451441]  do_one_initcall+0x44/0x1d0
+> [    4.451444]  ? do_init_module+0x23/0x260
+> [    4.451448]  ? kmem_cache_alloc_trace+0xf5/0x200
+> [    4.451451]  do_init_module+0x5c/0x260
+> [    4.451453]  __do_sys_finit_module+0xb1/0x110
+> [    4.451458]  do_syscall_64+0x33/0x80
+> [    4.451461]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [    4.451464] RIP: 0033:0x7f00028da9b9
+> [    4.451467] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a7 54 0c 00 f7 d8 64 89 01 48
+> [    4.451469] RSP: 002b:00007ffcab625508 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> [    4.451473] RAX: ffffffffffffffda RBX: 000056314a23dff0 RCX: 00007f00028da9b9
+> [    4.451474] RDX: 0000000000000000 RSI: 00007f0002a65e2d RDI: 0000000000000017
+> [    4.451475] RBP: 0000000000020000 R08: 0000000000000000 R09: 000056314a243020
+> [    4.451476] R10: 0000000000000017 R11: 0000000000000246 R12: 00007f0002a65e2d
+> [    4.451478] R13: 0000000000000000 R14: 000056314a24a2d0 R15: 000056314a23dff0
+> [    4.451481] ---[ end trace 72b8a47f60a3c4b3 ]---
+> [    4.476162] Console: switching to colour frame buffer device 240x67
+> 
 
-They are different usecases.
+I had the same problem and got annoyed enough to do something about it. Try these
+two fixes on top of .22:
 
-With DYNAMIC_DEBUG_MODULE with CONFIG_DYNAMIC_DEBUG_CORE,
-it works for only specific compile flags as you suggested.
-(CONFIG_DYNAMIC_DEBUG_CORE is requirement to work DYNAMIC_DEBUG_MODULE.
+https://gitlab.freedesktop.org/agd5f/linux/-/commit/b42c68fac891d8c23c81cdfd66f82864c2353d7b
+https://gitlab.freedesktop.org/agd5f/linux/-/commit/37ba52c6bd13a31fa35008dc0b5790a1b57de7eb
 
-With CONFIG_DYNAMIC_DEBUG, user could enable/disable every dynamic
-debug places without needing DYNAMIC_DEBUG_MODULE flags for source
-files.
-
-Both usecase makes sense to me.
+cheers,
+Holger
