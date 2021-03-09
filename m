@@ -2,258 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E1F331DD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F79E331DE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhCIEWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 23:22:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
+        id S230033AbhCIE2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 23:28:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhCIEWR (ORCPT
+        with ESMTP id S229813AbhCIE2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 23:22:17 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC35C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:22:17 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id h10so18012744edl.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:22:17 -0800 (PST)
+        Mon, 8 Mar 2021 23:28:13 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA355C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:28:12 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id a188so8644080pfb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:28:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=m6tZwUbokIeBXeV/DnNSwkZ9hS9ZCPfaIxmxV2RDTZw=;
-        b=OkDnp82YvS7ktccNiRLiNE4B0ZYfiJ10cJTkxg+16Ki0jyMiuDL0A2AOlYa2OFTfzV
-         wECHkzqgEYhiX99R8ZW8WhiFS0JwZNd1hP2jsxvYjyx5b1lO71i27yVLIG7hczvzQPCl
-         FlU2fldeuFauaupP/h6ipAF3S4IEKgKefYyMV38SRgD1p2HJU3Smp2z3IkQxTHgeSsa9
-         WiR+k49dsrqsIIkTa+i/tgD9yLCW1fuXE4mc8/wOdRgWCsmLNa8YVjfZd7Z36ri/Ho2d
-         SUh6jJp0pmMd+56AhFL5nuefBqQ7PIJwfyymPLlqWj9cjgjCNUECx809bycVqTPQek4a
-         Yd1w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=B+8YOxcfUeJ6df3e8CyV/VT9IvcELWSikbdkoM3b6Ug=;
+        b=WPQTHGnSeREz9wSvHz9r2PrjIKMMEsp2yhjGN3B/a/X0/KqBnUNKB/YUejoBWSnPph
+         ZAn8jlYWvfHr3LGNSSUXIspLawzHepuruNXmTdqcvG81J++aulzAoyHuQ5RY7PMClzQ9
+         RvKxmf9JhuAYeCtd2JLVA+B8+AykXOjYoCrkGEwcJRjd8y89IaTKuXG4Ieo7aZIhremy
+         nD0czU60gNDUv92hVYvqxb/8f0H8pg1Ccq43PVnWbeqF8oFoG/dXK1Ebk44IDS4coatb
+         Vc3b8v2jgU3hTIC4AztvqPODlan1X18N8QJZSz+Sp8xsussgSNIE0rO4obq/a6jd8Nat
+         KOWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=m6tZwUbokIeBXeV/DnNSwkZ9hS9ZCPfaIxmxV2RDTZw=;
-        b=DILx6i2kgdKvriXj4FgTBzbEMISuaPQHWotBD2Re5sMflaUbZDGq3iZN+6U0NCYm4u
-         kutWj1GxcluGjbWDx7AD2c1wciqN7qfkAltkFx3B4qcLHpC4W3GMIErYPwVPl5Z058fd
-         ioU6IarwUKQ0JvbeVlYyKGCTq7bSvc2tx3uXQ+hZ3mcc3sGypbYdPUr11PS5l2QmLl4L
-         e/lU/9HGNDoPfOdXG86+khPGcPjk1gKodk34QuL6f3XgJ1vF8LoVcFOCGAf8yW3SoTD1
-         8DbDo+IYjKfTCuvEuHn6CeLBmSnxrwqabMwjhS0AD2zI7VsgbluwMgoYtjpQ1mtOqH4g
-         BtQg==
-X-Gm-Message-State: AOAM530I8anGORB7+5BQsh/ZWPdvDNwqxSOaXpQE3VHMn6XCX0DQke/4
-        GPMaozkMVcHMMZuZZ4onEMssmRvXnzhZpYREs/ynRg==
-X-Google-Smtp-Source: ABdhPJz56rp3nxHXNcoWFSY6ZMzLqg5AFyApV1bTfSaBP6ccS2+wpcj+XLhVmXtgkXE8GtTm5Wf2wky6A4QYCmZcO5A=
-X-Received: by 2002:aa7:d287:: with SMTP id w7mr1870488edq.23.1615263735669;
- Mon, 08 Mar 2021 20:22:15 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=B+8YOxcfUeJ6df3e8CyV/VT9IvcELWSikbdkoM3b6Ug=;
+        b=CU9iQkqAqZ2Bd9ygcS1CLPiBKYr6Zcck0lvQ33Oswvld9IYzg7TKbKZV2TcDa5XwHZ
+         BmePpKzuaMgkS0krdqMDYU9v0cPaYjKCjsAjEI0XAFzuvFcOLc3buKi+rLOTyrK8CVHR
+         fsOvgqVOUSk0Ms3bvGassCO0zxXT8YWVra80vxmuQzKRi1ZyjHDTd2q9cTPcCcTBPxKh
+         dz8hhdJMq/FftxutV854/+sOjuch9pUR73uVSmzDBu5R6CJj6dXko7j6HPN9KQPNCUXa
+         wfLLiTV5ks/vM0fplsJM1uXVPgP5jWI9p9wKUIdb1zM3HDBW9Zp2yjawYE3Tahuwf/TG
+         F1pg==
+X-Gm-Message-State: AOAM530C72ZadeiwpOTIXeuQWyKMUOUpaMNSk9Ocf5KVwoSVLNWKxj8O
+        y5g+YI2sovaqHMB2G+hBVJe6Ow==
+X-Google-Smtp-Source: ABdhPJxLhPHdVshVOVKrFuQWBus/qDOL4qzrr0c6GqxPCA+N0GE32fx4ze30gezz4TNI4bi2Zd3iNg==
+X-Received: by 2002:a63:4d4e:: with SMTP id n14mr23409013pgl.37.1615264092034;
+        Mon, 08 Mar 2021 20:28:12 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id g2sm11719102pfi.28.2021.03.08.20.28.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Mar 2021 20:28:11 -0800 (PST)
+Date:   Tue, 9 Mar 2021 09:58:09 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-tegra@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        broonie@kernel.org, gregkh@linuxfoundation.org, elder@kernel.org,
+        johan@kernel.org, vireshk@kernel.org, rmfrfs@gmail.com,
+        f.fainelli@gmail.com, ldewangan@nvidia.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, linux@deviqon.com
+Subject: Re: [PATCH 06/10] staging: greybus: spilib: use 'spi_delay_to_ns'
+ for getting xfer delay
+Message-ID: <20210309042809.dgop5dli36z27sj2@vireshk-i7>
+References: <20210308145502.1075689-1-aardelean@deviqon.com>
+ <20210308145502.1075689-7-aardelean@deviqon.com>
 MIME-Version: 1.0
-References: <20210308122718.586629218@linuxfoundation.org>
-In-Reply-To: <20210308122718.586629218@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 9 Mar 2021 09:52:04 +0530
-Message-ID: <CA+G9fYs+sw5R0wE2YmeYpu+9b5tR=VgfFCk3Aw_ey6iDv13RQw@mail.gmail.com>
-Subject: Re: [PATCH 5.11 00/44] 5.11.5-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308145502.1075689-7-aardelean@deviqon.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 at 18:06, <gregkh@linuxfoundation.org> wrote:
->
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> This is the start of the stable review cycle for the 5.11.5 release.
-> There are 44 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.5-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 08-03-21, 16:54, Alexandru Ardelean wrote:
+> The intent is the removal of the 'delay_usecs' field from the
+> spi_transfer struct, as there is a 'delay' field that does the same
+> thing.
+> 
+> The spi_delay_to_ns() can be used to get the transfer delay. It works by
+> using the 'delay_usecs' field first (if it is non-zero), and finally
+> uses the 'delay' field.
+> 
+> Since the 'delay_usecs' field is going away, this change makes use of the
+> spi_delay_to_ns() function. This also means dividing the return value of
+> the function by 1000, to convert it to microseconds.
+> To prevent any potential faults when converting to microseconds and since
+> the result of spi_delay_to_ns() is int, the delay is being computed in 32
+> bits and then clamped between 0 & U16_MAX.
+> 
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
+>  drivers/staging/greybus/spilib.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/greybus/spilib.c b/drivers/staging/greybus/spilib.c
+> index 672d540d3365..30655153df6a 100644
+> --- a/drivers/staging/greybus/spilib.c
+> +++ b/drivers/staging/greybus/spilib.c
+> @@ -245,6 +245,7 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
+>  	/* Fill in the transfers array */
+>  	xfer = spi->first_xfer;
+>  	while (msg->state != GB_SPI_STATE_OP_DONE) {
+> +		int xfer_delay;
+>  		if (xfer == spi->last_xfer)
+>  			xfer_len = spi->last_xfer_size;
+>  		else
+> @@ -259,7 +260,9 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
+>  
+>  		gb_xfer->speed_hz = cpu_to_le32(xfer->speed_hz);
+>  		gb_xfer->len = cpu_to_le32(xfer_len);
+> -		gb_xfer->delay_usecs = cpu_to_le16(xfer->delay_usecs);
+> +		xfer_delay = spi_delay_to_ns(&xfer->delay, xfer) / 1000;
+> +		xfer_delay = clamp_t(u16, xfer_delay, 0, U16_MAX);
+> +		gb_xfer->delay_usecs = cpu_to_le16(xfer_delay);
+>  		gb_xfer->cs_change = xfer->cs_change;
+>  		gb_xfer->bits_per_word = xfer->bits_per_word;
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.11.5-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.11.y
-git commit: 89449ac6c71545ec3c6f1ea5a63b16a0c8b4d479
-git describe: v5.11.4-45-g89449ac6c715
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
-.y/build/v5.11.4-45-g89449ac6c715
-
-No regressions (compared to build v5.11.4)
-
-No fixes (compared to build v5.11.4)
-
-
-Ran 53609 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-64k_page_size
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-intel_pstate
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-lib
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* perf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-vm
-* kselftest-x86
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* fwts
-* rcutorture
-* kunit
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+viresh
