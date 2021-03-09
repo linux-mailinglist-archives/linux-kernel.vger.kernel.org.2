@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B1C331C52
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FA4331C58
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhCIBfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 20:35:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229520AbhCIBet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 20:34:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6A33650CB;
-        Tue,  9 Mar 2021 01:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615253689;
-        bh=N9DEEHqSHBgZ7+31sSiczhaBg08b9xHQZ6OF+C2d/W8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=EYhPzqZaIgbsLCun9w6l6lU+tPHQ6B3/XXZD49glBvlioU7kg6/K69MAifpl4pFdB
-         VM8TS7AAHL+JYi/LqYfIRx/JJMK+d4f1yi+dgC4O1UV+/3xugywBbeZ1MyDju4gCKR
-         o8xH0eOOA8CAs1YjBv0MyO2igOrbHNjrG3DRZZH2S2O38PnXANwmdFdtghPLjLoflu
-         rsPjXM65dpEhQZe0AvWRNLhXXp1FIB38JsoNFguXq7Pe58p3DUsvG0s1Dy1v7oQaXW
-         k3RGk567HK8E+Z2yx1F9iJ8GnqSG5C/dNHAsCW9ZlzKB03eim7xtiBn1rG1FptKiib
-         sFB2n6/QoNaKw==
-Date:   Mon, 8 Mar 2021 19:34:47 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/2] nPCI: brcmstb: Use reset/rearm instead of
- deassert/assert
-Message-ID: <20210309013447.GA1831980@bjorn-Precision-5520>
+        id S230089AbhCIBiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 20:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhCIBhv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 20:37:51 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8974C06174A;
+        Mon,  8 Mar 2021 17:37:51 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id jx13so723598pjb.1;
+        Mon, 08 Mar 2021 17:37:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zkWlKxbyx+sVkq98HfkrWeDXZlDaVe9hGssoZDf3e+k=;
+        b=LXkzos6pxxHONe1mBJsCtD17IEboFA7FeUBY0Af3cRV0zWuMgDoEAM/lJYzXghNpJ+
+         fdkGlt+4JWoNo+ZOQA35ejF+F9JCbYpI3aWMeg6MjFmeT7lQ2MUEqecBEuhP15uhl6Vw
+         X/242/C6Wbk869p4R/cQkEvWDI2sgF4wRa2pEi4Ghhm0XI8Bi3sPyM7fOQrr/L7XaZwm
+         Ji/2hGv1VawRfaDJbBC6WgAUuazt+PW5ET3zjKeQBVj0l4qRwnEBol4fxTo1SEO4naLC
+         xYJO051sK5OHgWjrd31ZNm0lHGTsIYfwceOcz/CTDIMOJWUef9alAkPob0xWM1Qrn5PK
+         lwpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zkWlKxbyx+sVkq98HfkrWeDXZlDaVe9hGssoZDf3e+k=;
+        b=cNf2O6uwMOsTfAeLtZj+vSfOBId78rE7GwPrsZvd92L4Cgu0LluADD/Q4InoiFOp0y
+         pMuqVu2hF8jyBqbi7q8IZ/9APe97LWX4EylomGvE89wXJH8SPX7lawQ+NyZbocLFYmhp
+         nfkjthZFPwTZnHbQUdsc4f6FX0oKvfRpwEEMe7W3tQa8IRBgvbS3BtX1dWka1mKdBz8A
+         tUa9bJTll2vCU/Mjm/+/eA/7yrewZVvqPthSIDZXEhGfS6GIKS7pLnZMoTas4IoAlaAf
+         q0nvU/orEDUeszOpg5k9GOUVmXprdOL11qgTAFfd1DvCcgaLil/KFHiQOjKljRQYjqfL
+         RVUQ==
+X-Gm-Message-State: AOAM533iLkbitpZHL9kMer/MmUarIb67nJnr6TtTsWXOJV+Gd4f2Q7/i
+        541bJi04V6X8Pg6qdj9leL8=
+X-Google-Smtp-Source: ABdhPJwETOxx/NdGFdjwtagBqgTpBSSPBb2ki3mZ7E+NQ9aPFUC3gcxPEkRDyRoz4vJXpb/f9TIe8Q==
+X-Received: by 2002:a17:902:e889:b029:e6:4c9:ef02 with SMTP id w9-20020a170902e889b02900e604c9ef02mr14286646plg.1.1615253871127;
+        Mon, 08 Mar 2021 17:37:51 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:39e0:7b5c:9fa7:f6e0])
+        by smtp.gmail.com with ESMTPSA id w8sm11115919pgk.46.2021.03.08.17.37.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 17:37:50 -0800 (PST)
+Date:   Mon, 8 Mar 2021 17:37:47 -0800
+From:   'Dmitry Torokhov' <dmitry.torokhov@gmail.com>
+To:     jingle <jingle.wu@emc.com.tw>
+Cc:     'linux-kernel' <linux-kernel@vger.kernel.org>,
+        'linux-input' <linux-input@vger.kernel.org>,
+        'phoenix' <phoenix@emc.com.tw>,
+        "'dave.wang'" <dave.wang@emc.com.tw>,
+        "'josh.chen'" <josh.chen@emc.com.tw>
+Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for new dev ices
+Message-ID: <YEbRazfF0iTreYYz@google.com>
+References: <20210226073537.4926-1-jingle.wu@emc.com.tw>
+ <YDx8M4Rhdi8hW4EO@google.com>
+ <1614647097.9201.jingle.wu@emc.com.tw>
+ <YEGBeWHRfL4gN9pX@google.com>
+ <004f01d7115e$3ba005e0$b2e011a0$@emc.com.tw>
+ <YEGJ7z479pqyBW1w@google.com>
+ <005401d71161$ef9b20e0$ced162a0$@emc.com.tw>
+ <YEWXcV62YpxbBp9P@google.com>
+ <005d01d713f8$e4b715a0$ae2540e0$@emc.com.tw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308195037.1503-3-jim2101024@gmail.com>
+In-Reply-To: <005d01d713f8$e4b715a0$ae2540e0$@emc.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If you update this, please fix the s/nPCI: /PCI: / in the subject
+Hi Jingle,
 
-On Mon, Mar 08, 2021 at 02:50:37PM -0500, Jim Quinlan wrote:
-> The Brcmstb PCIe RC uses a reset control "rescal" for certain chips.  This
-> reset implements a "pulse reset" so it matches more the reset/rearm
-> calls instead of the deassert/assert calls.
-
-You say "also" below, but the paragraph above doesn't tell us the
-*first* thing this patch does.  It just tells us that some chips use
-"rescal" and that "rescal" implements a "pulse reset".
-
-I guess you're replacing reset_control_deassert() with
-reset_control_reset(), and reset_control_assert() with
-reset_control_rearm().
-
-It's not obvious to me that those are equivalent or why it's safe to
-do this for all chips, including those that don't use the "rescal"
-(since it sounds like only certain chips have that).
-
-> Also, add reset_control calls in suspend/resume functions.
+On Mon, Mar 08, 2021 at 04:56:14PM +0800, jingle wrote:
+> Hi Dmitry:
 > 
-> Fixes: 740d6c3708a9 ("PCI: brcmstb: Add control of rescal reset")
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 19 +++++++++++++------
->  1 file changed, 13 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index e330e6811f0b..18f23cba7e3a 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -1148,6 +1148,7 @@ static int brcm_pcie_suspend(struct device *dev)
->  
->  	brcm_pcie_turn_off(pcie);
->  	ret = brcm_phy_stop(pcie);
-> +	reset_control_rearm(pcie->rescal);
->  	clk_disable_unprepare(pcie->clk);
->  
->  	return ret;
-> @@ -1163,9 +1164,13 @@ static int brcm_pcie_resume(struct device *dev)
->  	base = pcie->base;
->  	clk_prepare_enable(pcie->clk);
->  
-> +	ret = reset_control_reset(pcie->rescal);
-> +	if (ret)
-> +		goto err0;
+> 1. missing "i<" 
+> +	u32 quirks = 0;
+> +	int i;
 > +
->  	ret = brcm_phy_start(pcie);
->  	if (ret)
-> -		goto err;
-> +		goto err1;
->  
->  	/* Take bridge out of reset so we can access the SERDES reg */
->  	pcie->bridge_sw_init_set(pcie, 0);
-> @@ -1180,14 +1185,16 @@ static int brcm_pcie_resume(struct device *dev)
->  
->  	ret = brcm_pcie_setup(pcie);
->  	if (ret)
-> -		goto err;
-> +		goto err1;
->  
->  	if (pcie->msi)
->  		brcm_msi_set_regs(pcie->msi);
->  
->  	return 0;
->  
-> -err:
-> +err1:
-> +	reset_control_rearm(pcie->rescal);
-> +err0:
->  	clk_disable_unprepare(pcie->clk);
->  	return ret;
->  }
-> @@ -1197,7 +1204,7 @@ static void __brcm_pcie_remove(struct brcm_pcie *pcie)
->  	brcm_msi_remove(pcie);
->  	brcm_pcie_turn_off(pcie);
->  	brcm_phy_stop(pcie);
-> -	reset_control_assert(pcie->rescal);
-> +	reset_control_rearm(pcie->rescal);
->  	clk_disable_unprepare(pcie->clk);
->  }
->  
-> @@ -1278,13 +1285,13 @@ static int brcm_pcie_probe(struct platform_device *pdev)
->  		return PTR_ERR(pcie->perst_reset);
->  	}
->  
-> -	ret = reset_control_deassert(pcie->rescal);
-> +	ret = reset_control_reset(pcie->rescal);
->  	if (ret)
->  		dev_err(&pdev->dev, "failed to deassert 'rescal'\n");
->  
->  	ret = brcm_phy_start(pcie);
->  	if (ret) {
-> -		reset_control_assert(pcie->rescal);
-> +		reset_control_rearm(pcie->rescal);
->  		clk_disable_unprepare(pcie->clk);
->  		return ret;
->  	}
-> -- 
-> 2.17.1
+> +	for (i = 0; ARRAY_SIZE(elan_i2c_quirks); i++) {
 > 
+> -> for (i = 0; i<ARRAY_SIZE(elan_i2c_quirks); i++) {
+
+Yes, you are right of course. Was this the only issue with the updated
+patch? Did it work for you otherwise?
+
+> 
+> 2. elan_resume () funtion are different with at Chromeos driver.
+> @@ -1384,7 +1422,7 @@ static int __maybe_unused elan_resume(struct device
+> *dev)
+>  		goto err;
+>  	}
+>  
+> -	error = elan_initialize(data);
+> +	error = elan_initialize(data, data->quirks &
+> ETP_QUIRK_QUICK_WAKEUP);
+>  	if (error)
+>  		dev_err(dev, "initialize when resuming failed: %d\n",
+> error);
+> 
+> -> https://chromium.googlesource.com/chromiumos/third_party/kernel/+/ref
+> -> s/heads/chromeos-5.4/drivers/input/mouse/elan_i2c_core.c#1434
+> -> error = elan_initialize(data);  this code is in elan_reactivate()
+> function at Chromeos driver.
+> -> Will this change affect cherrypick from linux kernel to chromeos?
+
+Yes, we would need to adjust the patch for Chrome OS and have
+elan_reactivate() to call elan_initialize() with appropriate argument.
+
+Thanks.
+
+-- 
+Dmitry
