@@ -2,63 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69802331B99
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFEF331B9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhCIAVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 19:21:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232114AbhCIAVQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 19:21:16 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6E2C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 16:21:12 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 5062131A;
-        Tue,  9 Mar 2021 00:21:12 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5062131A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1615249272; bh=InMkmI9paP+8jJ22XBL8NtI/vyyreFrYdmisaZeCtho=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bL/Cj0OSPYmimuAv5gOx0Sv/RT2fTdOW1CdP/kO/xM+psv/aUuTPxItusXmO3MqhX
-         mbBOQU9fZTcwr3LHpxG2Tlf4ds1x4GrIvhPwts4eqlNVI5TR5bPqkSeOI47MjsR0Ye
-         0Nc+ZGhG7P2uN/gcAIVM8akj+Ldl0UNOBHr7pNfKTnSFOnD/iV4wh1Fhg5C+KvfF6K
-         7nZ7luPkq+3eXf1xxRwIDpq12gZ0WHvfWXXP6cOjngQIWUAGFajlzr5oMasyKLiyjV
-         yk5Z5QY8vABC5qroAwr8eCpTg2/iIKtcCFTQLEzjeWycDoV8u3DxEGLmGjotCz1C7U
-         /+YfAOvrgw26w==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>
-Subject: Re: [PATCH v2] docs: filesystem: Update smaps vm flag list to latest
-In-Reply-To: <20210302000646.432358-1-peterx@redhat.com>
-References: <20210302000646.432358-1-peterx@redhat.com>
-Date:   Mon, 08 Mar 2021 17:21:11 -0700
-Message-ID: <87k0qh41oo.fsf@meer.lwn.net>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S232105AbhCIAVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 19:21:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231864AbhCIAVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 19:21:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD52C64FFD;
+        Tue,  9 Mar 2021 00:21:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1615249289;
+        bh=DlBHQTYx7AJjClppLF+twkS9JNHiruHKDw5scvY5BrA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bz4V75JpPXo1KIN+GkM4xn8NkmqewhCdNlKTr+cJK/BdQsFf98dTcK+7z1R+DP81R
+         5AcnE/X7h1rlyY07XBIzIE5udXa8itnYRkvfj664sPVLvixjCHP8yGtmg8unzPvWRJ
+         7F5c0pCJiBLFkS8nUwozNkTIWnPsmhTZRudFJFfA=
+Date:   Mon, 8 Mar 2021 16:21:28 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Dias <joaodias@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Baron <jbaron@akamai.com>
+Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
+Message-Id: <20210308162128.9b4a7d4c1576a72fd4878bdb@linux-foundation.org>
+In-Reply-To: <20210308202047.1903802-1-minchan@kernel.org>
+References: <20210308202047.1903802-1-minchan@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Xu <peterx@redhat.com> writes:
+On Mon,  8 Mar 2021 12:20:47 -0800 Minchan Kim <minchan@kernel.org> wrote:
 
-> We've missed a few documentation when adding new VM_* flags.  Add the missing
-> pieces so they'll be in sync now.
+> alloc_contig_range is usually used on cma area or movable zone.
+> It's critical if the page migration fails on those areas so
+> dump more debugging message.
+> 
+> page refcount, mapcount with page flags on dump_page are
+> helpful information to deduce the culprit. Furthermore,
+> dump_page_owner was super helpful to find long term pinner
+> who initiated the page allocation.
+> 
+> Admin could enable the dump like this(by default, disabled)
+> 
+> 	echo "func dump_migrate_failure_pages +p" > control
+> 
+> Admin could disable it.
+> 
+> 	echo "func dump_migrate_failure_pages =_" > control
+> 
+> ...
 >
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
-> v2:
-> - rebase
-> ---
->  Documentation/filesystems/proc.rst | 4 ++++
->  1 file changed, 4 insertions(+)
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8453,6 +8453,34 @@ static unsigned long pfn_max_align_up(unsigned long pfn)
+>  				pageblock_nr_pages));
+>  }
+>  
+> +#if defined(CONFIG_DYNAMIC_DEBUG) || \
+> +	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
+> +static DEFINE_RATELIMIT_STATE(alloc_contig_ratelimit_state,
+> +		DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST);
+> +int alloc_contig_ratelimit(void)
+> +{
+> +	return __ratelimit(&alloc_contig_ratelimit_state);
+> +}
 
-Applied, thanks.
+Wow, that's an eyesore.  We're missing helpers in the ratelimit code. 
+Can we do something like
 
-jon
+/* description goes here */
+#define RATELIMIT2(interval, burst)
+({
+	static DEFINE_RATELIMIT_STATE(_rs, interval, burst);
+
+	__ratelimit(_rs);
+})
+
+#define RATELIMIT()
+	RATELIMIT2(DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST)
+
+> +void dump_migrate_failure_pages(struct list_head *page_list)
+> +{
+> +	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
+> +			"migrate failure");
+> +	if (DYNAMIC_DEBUG_BRANCH(descriptor) &&
+> +			alloc_contig_ratelimit()) {
+> +		struct page *page;
+> +
+> +		WARN(1, "failed callstack");
+> +		list_for_each_entry(page, page_list, lru)
+> +			dump_page(page, "migration failure");
+> +	}
+> +}
+
+Then we can simply do
+
+	if (DYNAMIC_DEBUG_BRANCH(descriptor) && RATELIMIT())
+
+
