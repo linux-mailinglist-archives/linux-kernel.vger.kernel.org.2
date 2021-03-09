@@ -2,127 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D853332D0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D36332D0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhCIRQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:16:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26152 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229775AbhCIRPs (ORCPT
+        id S231236AbhCIRQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231519AbhCIRQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:15:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615310148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d6Atk3r60by6TY7OYkWgG8UO+5JPZv2/zHXdvP4ImTo=;
-        b=RkcMg/zPXmzuJQKtlrfo8Eacd+prYyYbAMKVUX62AaO05ARCGuS/h2WfRLgOh3oz7vwoo1
-        YmMp0NYjsC027BVKwmICvZgihtLmBSxNqpV9ltc+GB7VRWZbMFbcs4FBKGcqJaFxj2pELr
-        QTvNtvfXSJlJ/ITQRMq8W2BBMuQh7+A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-FbYuOk6WPiez2b0qQL3zKQ-1; Tue, 09 Mar 2021 12:15:44 -0500
-X-MC-Unique: FbYuOk6WPiez2b0qQL3zKQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA75A800D62;
-        Tue,  9 Mar 2021 17:15:42 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.181])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3159D1037E83;
-        Tue,  9 Mar 2021 17:15:40 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  9 Mar 2021 18:15:42 +0100 (CET)
-Date:   Tue, 9 Mar 2021 18:15:39 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jim Newsome <jnewsome@torproject.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
-Message-ID: <20210309171539.GA32475@redhat.com>
-References: <20210309161548.18786-1-jnewsome@torproject.org>
+        Tue, 9 Mar 2021 12:16:17 -0500
+X-Greylist: delayed 57509 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 Mar 2021 09:16:17 PST
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D02C06174A;
+        Tue,  9 Mar 2021 09:16:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=yZ/aNKIfBBiurPsOI51o3dQGeWvqW69W+SaIV+4rEMc=; b=oLhHgQzujRwECvMkXmDXZCh0y/
+        PTz9x4yPrbDrpOwiJca2APXL5UJWYFdCBfxM1cXY5wlWhEsSnZ6/MbjKjS7l12NZtjnAgmABfzQy7
+        mu0g1kO2Ye0wp01GwME7CxM5FOXqz+LhV0uI2tCGqhv2nOGxQQDuUla+/+sXx58nkrTZDZVlMWKwW
+        JrEY9f57VsfVYm7SJ7pOAp/FlOBEeI3OA4n2+hcWal2zOgEeG0wnjGA3o2Er4VHmgqebWDX3Bao8M
+        1g3KlOw9HRtZ/kTV5xVz2AF4b/R7ExN5+QURrZCNKZlwrG/cCGTgHQzvgZzGKBMEoVceaf+Z0iynV
+        GxsPbbWQ==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJfxu-000h5F-CA; Tue, 09 Mar 2021 17:16:14 +0000
+Subject: Re: [PATCH] docs: dt: submitting-patches: Fix grammar in subsystem
+ section
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210309130650.2318419-1-geert+renesas@glider.be>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <77c82f6c-033e-9757-0b88-4e2e5f5626a2@infradead.org>
+Date:   Tue, 9 Mar 2021 09:16:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309161548.18786-1-jnewsome@torproject.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210309130650.2318419-1-geert+renesas@glider.be>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jim,
-
-Thanks, the patch looks good to me. Yet I think you need to send V3 even
-if I personally do not care ;) Please consider ./scripts/checkpatch.pl,
-it reports all the coding-style problems I was going to mention.
-
-I too have a couple of cosmetic nits, but feel free to ignore, this is
-subjective.
-
-On 03/09, Jim Newsome wrote:
->
-> do_wait is an internal function used to implement waitpid, waitid,
-> wait4, etc. To handle the general case, it does an O(n) linear scan of
-> the thread group's children and tracees.
+On 3/9/21 5:06 AM, Geert Uytterhoeven wrote:
+> Reword the subsystem bindings section to make sense, from a grammatical
+> point of view.
 > 
-> This patch adds a special-case when waiting on a pid to skip these scans
-> and instead do an O(1) lookup. This improves performance when waiting on
-> a pid from a thread group with many children and/or tracees.
-> 
-> Signed-off-by: James Newsome
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
 > ---
->  kernel/exit.c | 54 ++++++++++++++++++++++++++++++++++++++++++---------
->  1 file changed, 45 insertions(+), 9 deletions(-)
+>  Documentation/devicetree/bindings/submitting-patches.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 04029e35e69a..312c4dfc9555 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -1439,6 +1439,33 @@ void __wake_up_parent(struct task_struct *p, struct task_struct *parent)
->  			   TASK_INTERRUPTIBLE, p);
->  }
+> diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
+> index 68129ff09967d5d7..1d11c25249ff5465 100644
+> --- a/Documentation/devicetree/bindings/submitting-patches.rst
+> +++ b/Documentation/devicetree/bindings/submitting-patches.rst
+> @@ -75,8 +75,8 @@ II. For kernel maintainers
+>       binding, and it hasn't received an Acked-by from the devicetree
+>       maintainers after a few weeks, go ahead and take it.
 >  
-> +// Optimization for waiting on PIDTYPE_PID. No need to iterate through child
-> +// and tracee lists to find the target task.
-> +static int do_wait_pid(struct wait_opts *wo, struct task_struct *tsk)
-> +{
-> +	struct task_struct *target = pid_task(wo->wo_pid, PIDTYPE_PID);
-> +	if (!target) {
-> +		return 0;
-> +	}
-> +	if (tsk == target->real_parent ||
-> +	    (!(wo->wo_flags & __WNOTHREAD) &&
-> +	     same_thread_group(tsk, target->real_parent))) {
-> +		int retval = wait_consider_task(wo, /* ptrace= */ 0, target);
-> +		if (retval) {
-> +			return retval;
-> +		}
-> +	}
-> +	if (target->ptrace && (tsk == target->parent ||
-> +			       (!(wo->wo_flags & __WNOTHREAD) &&
-> +				same_thread_group(tsk, target->parent)))) {
-> +		int retval = wait_consider_task(wo, /* ptrace= */ 1, target);
-> +		if (retval) {
-> +			return retval;
-> +		}
-> +	}
+> -     Subsystem bindings (anything affecting more than a single device)
+> -     then getting a devicetree maintainer to review it is required.
+> +     For subsystem bindings (anything affecting more than a single device),
+> +     getting a devicetree maintainer to review it is required.
+>  
+>    3) For a series going though multiple trees, the binding patch should be
+>       kept with the driver using the binding.
+> 
 
-Both if's use "int retval", to me it would be better to declare this variable
-at the start of do_wait_pid(). But again, I won't insist this is up to you.
 
-I am wondering if something like
-
-	static inline bool is_parent(struct task_struct *tsk, struct task_struct *p, int flags)
-	{
-		return	tsk == p || !(flags & __WNOTHREAD)) && same_thread_group(tsk, p);
-	}
-
-makes any sense to make do_wait_pid() more clear... probably not.
-
-Oleg.
+-- 
+~Randy
 
