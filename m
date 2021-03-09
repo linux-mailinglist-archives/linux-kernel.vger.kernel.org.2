@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF10A332AFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9BA332B04
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhCIPsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:48:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhCIPrq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:47:46 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB1FC06174A;
-        Tue,  9 Mar 2021 07:47:46 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id w7so3284014pll.8;
-        Tue, 09 Mar 2021 07:47:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SdbWLauHZPc6u4Mx3ysIBEeU7QGCIx7AKGpPTrmJ2E8=;
-        b=dgeqe78ksFCHm0AeSIQvZRcc2aFaU8fG+MkkEGnfiD27B0RiMcutVkm4UOxJ7aaPAt
-         EyoEa+megMMCmPYPH6xXnE4dqeqOkpdfp3OaA6dnxaFvjzGUbv+vDJ7w/8LSktscmLNy
-         8cy9FrgaeuAt0LTNZQ4bL8RX3AC2Gj2DUcl6aJaZKp7tdzzNcdy+4AlFVgCqfutp2gQ0
-         rNxmg6+Iat1pVHFZvMs/Hm77fUGfSBoUr0l5lNSNYrp7ZJYka7Vgz2XwROZx9lDAT9D8
-         FcBfEpxpDrf9Gp0Oowur60Sn6yyKOLQg/ERnmeKcTkqUV5HCTsdMM5jIEBWFN4GCpd4M
-         9L7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SdbWLauHZPc6u4Mx3ysIBEeU7QGCIx7AKGpPTrmJ2E8=;
-        b=uc8W6qDjLGpPwx2jQ0Yy99KMiBiSSMophcUFuzGRVkBtDKU8wELlmkFAbUiJUkjEDa
-         z34g72eSWRSRm0I9pm6/OZ8wy8obrGrfiZJSDBT1HzuPcznuUJMeoim1nDjOIjo9kV/J
-         TPbPxhD9bq2dBlE8Pr62CixcdOiPW3kimj6euZnbkefjTua2obu2yVoG3vPLxWARVF3c
-         y67zMGZvvFvRMqCZ1F+Bwt+wZm7Hb23uBLtW3H/J0EFEyYyzmVab55iqoUFDKciA+vg/
-         nMVg027TLKypuMNTqCaNfj0GC+IW7gfgYMXaE5f9QWE3bFoWPO5hP5ymz1OSgBuamtxm
-         CsrA==
-X-Gm-Message-State: AOAM531eZgQYPVVIAbndSB8JIb47sQ34BamjBivP00dejX2gjivFBqxo
-        d0To6jbFecUcZ4K+X8bFcBw=
-X-Google-Smtp-Source: ABdhPJzCQ9iSADJ6pw37Q4ShFb6QS8konk8Lyxo/7WHyubZZ3LpshUbzYh0qlp0OooUCrjN6N9lATA==
-X-Received: by 2002:a17:90b:4b87:: with SMTP id lr7mr5007612pjb.5.1615304865772;
-        Tue, 09 Mar 2021 07:47:45 -0800 (PST)
-Received: from [172.30.1.19] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id w18sm3280866pjh.19.2021.03.09.07.47.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 07:47:43 -0800 (PST)
-Subject: Re: [PATCH 04/11] PM / devfreq: bail out early if no freq changes in
- devfreq_set_target
-To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, abel.vesa@nxp.com
-References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
- <1615294733-22761-5-git-send-email-aisheng.dong@nxp.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <b6de03c9-8744-90b2-11fe-914ef016fa1f@gmail.com>
-Date:   Wed, 10 Mar 2021 00:47:39 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231846AbhCIPsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:48:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230478AbhCIPsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:48:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83B2F6525F;
+        Tue,  9 Mar 2021 15:48:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615304910;
+        bh=BHEDDhLgphZzaj7IBNRHUe5wpWfdaAtzCDRMEm59Td4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WV8BkwWZHuegaK421aKCzu65nlfF3NR1LiCQEch1R/BhBMgYtEAKwqpqZ0oAa0FKU
+         Vqnu4Lz1RgfkGn+3MfHh1WU1PopTrZjaEjtv68Ryzzkf0H2cJuwcLBomHX4MCrsLNi
+         Lpi1WH1M6jxsHhhih0memdEl5dnmxjx/ffZJGrYTxDeK8DIetC14jnHXQNGbrntNC4
+         uTU1k+WXl9F4whkRJxEj5pqibQKgz9Q4/T9TcnVILkLUDkWciHGdYl+tkL0x392xml
+         uMblIyAk3vLeG1w/tHr+xlhyHF6qT+PYGYh9Ravu3dih1d3RAnDrIV9imALbVrDSKN
+         W+73kDyiaZI3A==
+Received: by mail-ed1-f48.google.com with SMTP id dm26so21029195edb.12;
+        Tue, 09 Mar 2021 07:48:30 -0800 (PST)
+X-Gm-Message-State: AOAM532Z53VYnE0rCbCVfuxALHWJi7FvBYrIkKbiH0Ar1Y81PrScTMbU
+        DKCNeLJkeaH897DPdhciT1bZJxEFIUzZL+wv3w==
+X-Google-Smtp-Source: ABdhPJxV5XCnS45TAr4+B2+ig1cxhxtG4MMbYqVXoYfVd4hAqlaPl8H/s/yCm4qWvnmTnSV0ZHH3LccBzcWQZpWr2JY=
+X-Received: by 2002:a05:6402:c88:: with SMTP id cm8mr4880507edb.62.1615304909030;
+ Tue, 09 Mar 2021 07:48:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1615294733-22761-5-git-send-email-aisheng.dong@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
+ <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
+ <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st> <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
+ <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
+ <CAK8P3a0_GBB-VYFO5NaySyBJDN2Ra-WMH4WfFrnzgOejmJVG8g@mail.gmail.com>
+ <20210308211306.GA2920998@robh.at.kernel.org> <CAK8P3a2GfzUevuQNZeQarJ4GNFsuDj0g7oFuN940Hdaw06YJbA@mail.gmail.com>
+In-Reply-To: <CAK8P3a2GfzUevuQNZeQarJ4GNFsuDj0g7oFuN940Hdaw06YJbA@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 9 Mar 2021 08:48:17 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqK8FagJyQVyG5DAocUjLGZT91b6NzDm_DNMW1hdCz51Xg@mail.gmail.com>
+Message-ID: <CAL_JsqK8FagJyQVyG5DAocUjLGZT91b6NzDm_DNMW1hdCz51Xg@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
+ MMIO as non-posted
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
-> It's unnecessary to set the same freq again and run notifier calls.
-> 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
->   drivers/devfreq/devfreq.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index bf3047896e41..6e80bf70e7b3 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -358,6 +358,9 @@ static int devfreq_set_target(struct devfreq *devfreq, unsigned long new_freq,
->   	else
->   		cur_freq = devfreq->previous_freq;
->   
-> +	if (new_freq == cur_freq)
-> +		return 0;
-> +
->   	freqs.old = cur_freq;
->   	freqs.new = new_freq;
->   	devfreq_notify_transition(devfreq, &freqs, DEVFREQ_PRECHANGE);
-> @@ -374,7 +377,7 @@ static int devfreq_set_target(struct devfreq *devfreq, unsigned long new_freq,
->   	 * and DEVFREQ_POSTCHANGE because for showing the correct frequency
->   	 * change order of between devfreq device and passive devfreq device.
->   	 */
-> -	if (trace_devfreq_frequency_enabled() && new_freq != cur_freq)
-> +	if (trace_devfreq_frequency_enabled())
->   		trace_devfreq_frequency(devfreq, new_freq, cur_freq);
->   
->   	freqs.new = new_freq;
-> 
+On Mon, Mar 8, 2021 at 2:56 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Mon, Mar 8, 2021 at 10:14 PM Rob Herring <robh@kernel.org> wrote:
+> > On Mon, Mar 08, 2021 at 09:29:54PM +0100, Arnd Bergmann wrote:
+> > > On Mon, Mar 8, 2021 at 4:56 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > Let's just stick with 'nonposted-mmio', but drop 'posted-mmio'. I'd
+> > rather know if and when we need 'posted-mmio'. It does need to be added
+> > to the DT spec[1] and schema[2] though (GH PRs are fine for both).
+>
+> I think the reason for having "posted-mmio" is that you cannot properly
+> define the PCI host controller nodes on the M1 without that: Since
+> nonposted-mmio applies to all child nodes, this would mean the PCI
+> memory space gets declared as nonposted by the DT, but the hardware
+> requires it to be mapped as posted.
 
-I'd like you to squash patch4 with patch6 because actually patch6
-is too minor clean-up. I think it is possible.
+I don't think so. PCI devices wouldn't use any of the code paths in
+this patch. They would map their memory space with plain ioremap()
+which is posted.
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Rob
