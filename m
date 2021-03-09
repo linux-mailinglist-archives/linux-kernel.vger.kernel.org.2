@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F6C331BD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE1E331BD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhCIAma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 19:42:30 -0500
-Received: from mga05.intel.com ([192.55.52.43]:8561 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230327AbhCIAm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 19:42:29 -0500
-IronPort-SDR: inreQXQxrfk51/FIaMAX854dBKu1Aj2BnkmxL90ahy2g7Pn+0BUEVSr2DUQGZbbib7t85sPc/D
- rnBBzQCpcmLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="273158804"
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="273158804"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 16:42:29 -0800
-IronPort-SDR: StTEf6YiRf8FOCI3WurmyAfyK6jvUGJrlrIAvcdaKRUoGTowH8OTH+tNAMjKKGGnwp/2zbmIm7
- 6VyEyWuzTKsA==
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="409512751"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 16:42:26 -0800
-Subject: Re: [kbuild-all] Re: [PATCH v2] mm: page_alloc: dump migrate-failed
- pages
-To:     Minchan Kim <minchan@kernel.org>, kernel test robot <lkp@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, kbuild-all@01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-References: <20210308202047.1903802-1-minchan@kernel.org>
- <202103090555.LtLPf1Ho-lkp@intel.com> <YEalYUiTH45XO2EV@google.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <d994f666-7883-25a3-9d46-ca431874dc18@intel.com>
-Date:   Tue, 9 Mar 2021 08:41:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S229854AbhCIAnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 19:43:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhCIAmf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 19:42:35 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309C1C061761
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 16:42:35 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id p7so12687902eju.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 16:42:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C76/WHac0N5dofcpCfqmmbgG/z/7d+A5P13qFcVNTw0=;
+        b=aNi9vvcZjpTpC0ikBenjWHm1ZPsi4x8VyV09lw4CeHGd5H4Vaph8cgfFK3uIS8FqfJ
+         KQ2jzaGIOm3wrWNR9VmtZyy7ECTl6fqS84xHDSjqj/3J8uCNjZoJZTr/72IHbUg6YvSX
+         yZI07xMyXmv88iUtWnafN0Oucy3z3yEC/vmyxh+yMA1yEcSAQgw2Y947s+sIbyXZJgmG
+         p4U+/iPP3AcGRJOncOCbb5NnDt9P2hriv6UROarWJ+qSSXmNc6te1gHbXnIaifZIwEjr
+         jheymuT2SdP7g0l5H+zNWEFkqHdcrjavhRaK95kB+a/FaljGtFCaZjJD3peWQY/zhKUN
+         R+YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C76/WHac0N5dofcpCfqmmbgG/z/7d+A5P13qFcVNTw0=;
+        b=Kaq5wb72WzuVJEie7WlX86i5GAzXRqalzKEh7i9ZIOBlV+FoTzZc0aTi35PQLCEaPs
+         6qHSJl1KZUptZPjPwYyHgsto2WFmAdBjqW/cLT1JT0+3vUm21eMfZI9tC6xFYG5hPozd
+         5x6fMJHAfb9t0luTGs8TdMrhas1n4rUPuMBIIsZoEEkTFukm+Tfa18TOK3+GnqER3gHz
+         47/Vxdmob7hjnh4I5cRbkpKkTG9E4uAFcKi+T/i/uql9a1k8n0fLzr7z8NNMlGqQ1BX0
+         Mu9JyIzXqO4dhXQxnAv5IFs3gYPEypdswxGx33TbqdydwQsdyxyfZlT/aDel/ykhlVdH
+         ekwA==
+X-Gm-Message-State: AOAM533+t3g4aQ+ThJExIUfTfEsTzbgKDoVS4aNuUuHovuBXae2Q8rpu
+        1AVBKLEh1QEJD4+Rz0pkFAMNPbe1vN96eHx0y74F
+X-Google-Smtp-Source: ABdhPJwIXGkaBF8V6dy+G5/2xAXi9yydRYkl9mxsxD52Mh+nITMM46/Nu7niLBb8GSPoDLAba2ZlQ7UqF7KtZM2svqE=
+X-Received: by 2002:a17:906:3b84:: with SMTP id u4mr17224484ejf.431.1615250553701;
+ Mon, 08 Mar 2021 16:42:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YEalYUiTH45XO2EV@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210212163709.3139-1-nramas@linux.microsoft.com>
+ <CAHC9VhSMz8FtK5HMPA1+FMeU0cs4vfCCaimxb-J+VDj_Dyk-nA@mail.gmail.com>
+ <af0f2d60c6584b613172b08e4fcea4119e231e93.camel@HansenPartnership.com>
+ <CAHC9VhRBdJ9Vh1ESezim129OEf1UJ-Mxm1g9FpxEJmt-PUSLjg@mail.gmail.com> <9170636f-1793-2272-e3fe-1551c18edeb9@linux.microsoft.com>
+In-Reply-To: <9170636f-1793-2272-e3fe-1551c18edeb9@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 8 Mar 2021 19:42:22 -0500
+Message-ID: <CAHC9VhQEAPB_kQFxBrJWtsL8wP9YoQkCzXnXmaD5gm9duBzYcQ@mail.gmail.com>
+Subject: Re: [PATCH v3] selinux: measure state and policy capabilities
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, sashal@kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 5, 2021 at 2:29 PM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+> On 3/5/21 11:22 AM, Paul Moore wrote:
+>
+> Hi Paul,
+>
+> > On Fri, Mar 5, 2021 at 12:57 PM James Bottomley
+> > <James.Bottomley@hansenpartnership.com> wrote:
+> >> On Fri, 2021-03-05 at 12:52 -0500, Paul Moore wrote:
+> >> [...]
+> >>> This draft seems fine to me, but there is a small logistical blocker
+> >>> at the moment which means I can't merge this until -rc2 is released,
+> >>> which likely means this coming Monday.  The problem is that this
+> >>> patch relies on code that went upstream via in the last merge window
+> >>> via the IMA tree, not the SELinux tree; normally that wouldn't be a
+> >>> problem as I typically rebase the selinux/next to Linus' -rc1 tag
+> >>> once the merge window is closed, but in this particular case the -rc1
+> >>> tag is dangerously broken for some system configurations (the tag has
+> >>> since been renamed) so I'm not rebasing onto -rc1 this time around.
+> >>>
+> >>> Assuming that -rc2 fixes the swapfile/fs-corruption problem, early
+> >>> next week I'll rebase selinux/next to -rc2 and merge this patch.
+> >>> However, if the swapfile bug continues past -rc2 we can consider
+> >>> merging this via the IMA tree, but I'd assume not do that if possible
+> >>> due to merge conflict and testing reasons.
+> >>
+> >> If it helps, we rebased the SCSI tree on top of the merge for the
+> >> swapfile fix which is this one, without waiting for -rc2:
+> >
+> > Considering that -rc2 is only two days away I'm not going to lose a
+> > lot of sleep over it.
+> >
+>
+> Thanks for reviewing the patch.
+>
+> I can wait until the swapfile issue is resolved (in rc2 or later) and
+> you are able to merge this patch. Please take your time.
 
+Thanks for your patience Lakshmi, I just merged this into my local
+selinux/next branch and will be pushing it up to kernel.org later
+tonight - thank you!
 
-On 3/9/21 6:29 AM, Minchan Kim wrote:
-> On Tue, Mar 09, 2021 at 05:29:30AM +0800, kernel test robot wrote:
->> Hi Minchan,
->>
->> I love your patch! Perhaps something to improve:
->>
->> [auto build test WARNING on hnaz-linux-mm/master]
->>
->> url:    https://github.com/0day-ci/linux/commits/Minchan-Kim/mm-page_alloc-dump-migrate-failed-pages/20210309-042205
->> base:   https://github.com/hnaz/linux-mm master
->> config: m68k-allmodconfig (attached as .config)
->> compiler: m68k-linux-gcc (GCC) 9.3.0
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # https://github.com/0day-ci/linux/commit/3c635af37b862e9c601ee8d5818f7da9cd3e2e57
->>          git remote add linux-review https://github.com/0day-ci/linux
->>          git fetch --no-tags linux-review Minchan-Kim/mm-page_alloc-dump-migrate-failed-pages/20210309-042205
->>          git checkout 3c635af37b862e9c601ee8d5818f7da9cd3e2e57
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All warnings (new ones prefixed by >>):
->>
->>     arch/m68k/include/asm/page_mm.h:169:49: warning: ordered comparison of pointer with null pointer [-Wextra]
->>       169 | #define virt_addr_valid(kaddr) ((void *)(kaddr) >= (void *)PAGE_OFFSET && (void *)(kaddr) < high_memory)
->>           |                                                 ^~
->>     include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
->>        78 | # define unlikely(x) __builtin_expect(!!(x), 0)
->>           |                                          ^
->>     include/linux/scatterlist.h:143:2: note: in expansion of macro 'BUG_ON'
->>       143 |  BUG_ON(!virt_addr_valid(buf));
->>           |  ^~~~~~
->>     include/linux/scatterlist.h:143:10: note: in expansion of macro 'virt_addr_valid'
->>       143 |  BUG_ON(!virt_addr_valid(buf));
->>           |          ^~~~~~~~~~~~~~~
->>     In file included from arch/m68k/include/asm/page.h:60,
->>                      from arch/m68k/include/asm/thread_info.h:6,
->>                      from include/linux/thread_info.h:38,
->>                      from include/asm-generic/preempt.h:5,
->>                      from ./arch/m68k/include/generated/asm/preempt.h:1,
->>                      from include/linux/preempt.h:78,
->>                      from include/linux/spinlock.h:51,
->>                      from include/linux/mmzone.h:8,
->>                      from include/linux/gfp.h:6,
->>                      from include/linux/mm.h:10,
->>                      from mm/page_alloc.c:19:
-> I am not sure this is triggered by the patch since I could see the
-> warn with reverting the patch.
-
-Hi Minchan,
-
-Only the lines prefixed by ">>" are related with the patch:
-
->> mm/page_alloc.c:8348:5: warning: no previous prototype for 'alloc_contig_ratelimit' [-Wmissing-prototypes]
-
-     8348 | int alloc_contig_ratelimit(void)
-          |     ^~~~~~~~~~~~~~~~~~~~~~
-
->> mm/page_alloc.c:8353:6: warning: no previous prototype for 'dump_migrate_failure_pages' [-Wmissing-prototypes]
-
-     8353 | void dump_migrate_failure_pages(struct list_head *page_list)
-
-
-
-Best Regards,
-Rong Chen
+-- 
+paul moore
+www.paul-moore.com
