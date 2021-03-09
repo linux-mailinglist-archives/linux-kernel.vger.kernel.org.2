@@ -2,176 +2,490 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7859B3331AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E89E3331B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhCIWmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 17:42:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52920 "EHLO
+        id S230215AbhCIWnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 17:43:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232109AbhCIWmY (ORCPT
+        with ESMTP id S232173AbhCIWmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 17:42:24 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA187C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 14:42:23 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id n10so18855411ybb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 14:42:23 -0800 (PST)
+        Tue, 9 Mar 2021 17:42:54 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26845C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 14:42:54 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id v15so19110308wrx.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 14:42:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=ZCcijjOapg1QfLSW5pXm/pEGIGsY5zGSFUclPuMLRrU=;
-        b=Ka6Q2KV9oKbUwNMAtkfqhzyygrpwjUKJVNSh9cGOTU+JKNsOmL2ijkXvlzh/7xllPH
-         GT94sUKQ+TeH08Yu3/t61gUG3ysV/FHOjeXupzOwY386eJA7lYJbe8VBbwNndoojIr8O
-         dQ5CP8HbuHA/+W96UJVeec3rFWquzFDD8WdggMb+tMzPgeP4nDC3avsqDx2Fuqw0xC12
-         tincV7nAebvFMSHX+3+QG6vCs5wzZybIliv2YggU/ECUPlz0iHtZ26OMv7DV3AFjUz5S
-         dS0Vf3ufhu3U+9o3XD5Nr+ADZ5aj80sMJUSeQ0bEYrReuPTj5u/GIksGYi8iUvZ0oW/B
-         2Qjw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=GoTOdV/s4l3cqoypT5zUMlfkcoLLVwoOXrCw3mPvlog=;
+        b=A41AsGXFsRHJrRzA8lw9FLreB0ZjhH2MeFEigLEUrIsKyAEc8rjCZT+NWV8i+ws5id
+         DHs6hwkBEELd02yschGbG3BnOsEVJyeCUVeHZfyafXCEklEFbKChHmLAWoL54XHELjxa
+         dsCD0mufz8LP0DlyBkyEzRWK9h0WVWxAy4yndCyhl3ouPT03v7FdoNGRUmtV/OwM2uPv
+         krhTvJkc/FdJnRDiGbBIzVutESmyhZ+0e3+rIKXiubnpEhumO2vlHvvYc/wEAIU+j/hh
+         zNaWR0Mrt3eg46Fo2PCmuWBWvdsJlWK5/MDUpVOu7Mj7JiQbbsPi5pbeEH3Um75mwzte
+         SEtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=ZCcijjOapg1QfLSW5pXm/pEGIGsY5zGSFUclPuMLRrU=;
-        b=VbsI1vYPpqC9ts38EAADDDzK7MAPxkf6tiBW01x2TxA5/DcJBXl7oUPbz8+tYtFVij
-         G7F5sWV4ayQXLtYAZSwc9mTGZOG/xh8xesBJ67GxYAfXaDKkxCD3jcj5hQF/ZhqhBaKu
-         SslFTikm3D7TLQZLhdSE3qFqWDm2GclLr9Dm/0xXRU/BI7WJ1PN6GAfu5Hihxa9/Um0H
-         hPb5IeyCBKd8tglFXC++fIcFs+MxYfzeVY/j/71VQwLRl7XII4wehaqi9N/HqgsOwNVq
-         CsWb/c08EpsHWt1Q9aAcgVTh9JJOxvXhRFdaYWLoAk/KZbfp+S7ohRzOdr2gI6uiVsN+
-         3fxA==
-X-Gm-Message-State: AOAM533eEZMzhxMGQBIyMKcEm4OtGalSsPwAMvv/bV3wgatCIJFxX1qt
-        Mik3F+jl3OUoLxpAa4aEpsmrS79DovM=
-X-Google-Smtp-Source: ABdhPJw7Ygss7b6NJViF19DgNNTwghaiMvMFHvfIkteutHyQ89ttNtYn5UuFtFI3UEt3A4eUl5v3SWkTzio=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
- (user=seanjc job=sendgmr) by 2002:a25:c793:: with SMTP id w141mr91195ybe.29.1615329743155;
- Tue, 09 Mar 2021 14:42:23 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  9 Mar 2021 14:42:07 -0800
-In-Reply-To: <20210309224207.1218275-1-seanjc@google.com>
-Message-Id: <20210309224207.1218275-5-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210309224207.1218275-1-seanjc@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v2 4/4] KVM: x86/mmu: Mark the PAE roots as decrypted for
- shadow paging
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GoTOdV/s4l3cqoypT5zUMlfkcoLLVwoOXrCw3mPvlog=;
+        b=Qgh1AHqKoIdS1g5X0fg5TYditeFd0qDG6n8xj+Og0saDcvw0CfCGebohdqLA5lgVFY
+         nqH4Hgk5759GGflHLcatajdpP522psXOChL0f7pDu07++UV59WGEb09ygM/04U0aPk80
+         raKpYJpEAieHIIAlziY4bXZOVYSs0noJB2VC4JwRiI7pQC5KCY7DMDt5QTab7zQzV/sy
+         quThxs/qmTmZo7werjmhVnmJKptHVn+R99OGX2ESPKtpcFph0VDe22Uak/DwZkY87urO
+         BaZD2sGThw/7xmZU4KhOtmAfMNN2C1nRqZJguNQtoxBa34jqezNgCJmVQOy/7omJ5oo6
+         XAAw==
+X-Gm-Message-State: AOAM5328iWKuoneex/4VoLk/2Es07Iw7L7RFrKoQZsLCQ9z/biobS2O3
+        4U2dZcqkf0dK8RRhcbWA6neMtA==
+X-Google-Smtp-Source: ABdhPJwICbiP+ObhxKzmsO0CIyTWW2eb8PPYQS1XiMIB+VjWvviMONaYaEN0hlBG4UGGQQ3UaloxiQ==
+X-Received: by 2002:a5d:538d:: with SMTP id d13mr169591wrv.92.1615329772784;
+        Tue, 09 Mar 2021 14:42:52 -0800 (PST)
+Received: from localhost.localdomain ([82.142.0.212])
+        by smtp.gmail.com with ESMTPSA id p16sm30352179wrt.54.2021.03.09.14.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 14:42:52 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org, rafael@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        lukasz.luba@arm.com
+Subject: [PATCH v2 1/5] powercap/drivers/dtpm: Encapsulate even more the code
+Date:   Tue,  9 Mar 2021 23:42:40 +0100
+Message-Id: <20210309224244.27225-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the PAE roots used as decrypted to play nice with SME when KVM is
-using shadow paging.  Explicitly skip setting the C-bit when loading
-CR3 for PAE shadow paging, even though it's completely ignored by the
-CPU.  The extra documentation is nice to have.
+In order to increase the self-encapsulation of the dtpm generic code,
+the following changes are adding a power update ops to the dtpm
+ops. That allows the generic code to call directly the dtpm backend
+function to update the power values.
 
-Note, there are several subtleties at play with NPT.  In addition to
-legacy shadow paging, the PAE roots are used for SVM's NPT when either
-KVM is 32-bit (uses PAE paging) or KVM is 64-bit and shadowing 32-bit
-NPT.  However, 32-bit Linux, and thus KVM, doesn't support SME.  And
-64-bit KVM can happily set the C-bit in CR3.  This also means that
-keeping __sme_set(root) for 32-bit KVM when NPT is enabled is
-conceptually wrong, but functionally ok since SME is 64-bit only.
-Leave it as is to avoid unnecessary pollution.
+The power update function does compute the power characteristics when
+the function is invoked. In the case of the CPUs, the power
+consumption depends on the number of online CPUs. The online CPUs mask
+is not up to date at CPUHP_AP_ONLINE_DYN state in the tear down
+callback. That is the reason why the online / offline are at separate
+state. As there is already an existing state for DTPM, this one is
+only moved to the DEAD state, so there is no addition of new state
+with these changes. The dtpm node is not removed when the cpu is
+unplugged.
 
-Fixes: d0ec49d4de90 ("kvm/x86/svm: Support Secure Memory Encryption within KVM")
-Cc: stable@vger.kernel.org
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+That simplifies the code for the next changes and results in a more
+self-encapsulated code.
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- arch/x86/kvm/mmu/mmu.c | 22 +++++++++++++++++++++-
- arch/x86/kvm/svm/svm.c |  5 ++---
- 2 files changed, 23 insertions(+), 4 deletions(-)
+V2:
+ - Updated the changelog with the CPU node not being removed
+ - Commented the cpu hotplug callbacks to explain why there are two callbacks
+ - Changed 'upt_power_uw' to 'update_power_uw'
+ - Removed unused cpumask variable
+---
+ drivers/powercap/dtpm.c     |  54 ++++++-------
+ drivers/powercap/dtpm_cpu.c | 148 ++++++++++++++++--------------------
+ include/linux/cpuhotplug.h  |   2 +-
+ include/linux/dtpm.h        |   3 +-
+ 4 files changed, 97 insertions(+), 110 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6b0576ff2846..c6ed633594a2 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -48,6 +48,7 @@
- #include <asm/memtype.h>
- #include <asm/cmpxchg.h>
- #include <asm/io.h>
-+#include <asm/set_memory.h>
- #include <asm/vmx.h>
- #include <asm/kvm_page_track.h>
- #include "trace.h"
-@@ -3388,7 +3389,10 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
- 	if (WARN_ON_ONCE(!tdp_enabled || mmu->pae_root || mmu->lm_root))
- 		return -EIO;
- 
--	/* Unlike 32-bit NPT, the PDP table doesn't need to be in low mem. */
-+	/*
-+	 * Unlike 32-bit NPT, the PDP table doesn't need to be in low mem, and
-+	 * doesn't need to be decrypted.
-+	 */
- 	pae_root = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
- 	if (!pae_root)
- 		return -ENOMEM;
-@@ -5274,6 +5278,8 @@ slot_handle_leaf(struct kvm *kvm, struct kvm_memory_slot *memslot,
- 
- static void free_mmu_pages(struct kvm_mmu *mmu)
- {
-+	if (!tdp_enabled && mmu->pae_root)
-+		set_memory_encrypted((unsigned long)mmu->pae_root, 1);
- 	free_page((unsigned long)mmu->pae_root);
- 	free_page((unsigned long)mmu->lm_root);
+diff --git a/drivers/powercap/dtpm.c b/drivers/powercap/dtpm.c
+index c2185ec5f887..58433b8ef9a1 100644
+--- a/drivers/powercap/dtpm.c
++++ b/drivers/powercap/dtpm.c
+@@ -116,8 +116,6 @@ static void __dtpm_sub_power(struct dtpm *dtpm)
+ 		parent->power_limit -= dtpm->power_limit;
+ 		parent = parent->parent;
+ 	}
+-
+-	__dtpm_rebalance_weight(root);
  }
-@@ -5308,6 +5314,20 @@ static int __kvm_mmu_create(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
- 		return -ENOMEM;
  
- 	mmu->pae_root = page_address(page);
+ static void __dtpm_add_power(struct dtpm *dtpm)
+@@ -130,45 +128,45 @@ static void __dtpm_add_power(struct dtpm *dtpm)
+ 		parent->power_limit += dtpm->power_limit;
+ 		parent = parent->parent;
+ 	}
++}
++
++static int __dtpm_update_power(struct dtpm *dtpm)
++{
++	int ret;
++
++	__dtpm_sub_power(dtpm);
+ 
+-	__dtpm_rebalance_weight(root);
++	ret = dtpm->ops->update_power_uw(dtpm);
++	if (ret)
++		pr_err("Failed to update power for '%s': %d\n",
++		       dtpm->zone.name, ret);
++
++	if (!test_bit(DTPM_POWER_LIMIT_FLAG, &dtpm->flags))
++		dtpm->power_limit = dtpm->power_max;
++
++	__dtpm_add_power(dtpm);
++
++	if (root)
++		__dtpm_rebalance_weight(root);
++
++	return ret;
+ }
+ 
+ /**
+  * dtpm_update_power - Update the power on the dtpm
+  * @dtpm: a pointer to a dtpm structure to update
+- * @power_min: a u64 representing the new power_min value
+- * @power_max: a u64 representing the new power_max value
+  *
+  * Function to update the power values of the dtpm node specified in
+  * parameter. These new values will be propagated to the tree.
+  *
+  * Return: zero on success, -EINVAL if the values are inconsistent
+  */
+-int dtpm_update_power(struct dtpm *dtpm, u64 power_min, u64 power_max)
++int dtpm_update_power(struct dtpm *dtpm)
+ {
+-	int ret = 0;
++	int ret;
+ 
+ 	mutex_lock(&dtpm_lock);
+-
+-	if (power_min == dtpm->power_min && power_max == dtpm->power_max)
+-		goto unlock;
+-
+-	if (power_max < power_min) {
+-		ret = -EINVAL;
+-		goto unlock;
+-	}
+-
+-	__dtpm_sub_power(dtpm);
+-
+-	dtpm->power_min = power_min;
+-	dtpm->power_max = power_max;
+-	if (!test_bit(DTPM_POWER_LIMIT_FLAG, &dtpm->flags))
+-		dtpm->power_limit = power_max;
+-
+-	__dtpm_add_power(dtpm);
+-
+-unlock:
++	ret = __dtpm_update_power(dtpm);
+ 	mutex_unlock(&dtpm_lock);
+ 
+ 	return ret;
+@@ -436,6 +434,7 @@ int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent)
+ 
+ 	if (dtpm->ops && !(dtpm->ops->set_power_uw &&
+ 			   dtpm->ops->get_power_uw &&
++			   dtpm->ops->update_power_uw &&
+ 			   dtpm->ops->release))
+ 		return -EINVAL;
+ 
+@@ -455,7 +454,8 @@ int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent)
+ 		root = dtpm;
+ 	}
+ 
+-	__dtpm_add_power(dtpm);
++	if (dtpm->ops && !dtpm->ops->update_power_uw(dtpm))
++		__dtpm_add_power(dtpm);
+ 
+ 	pr_info("Registered dtpm node '%s' / %llu-%llu uW, \n",
+ 		dtpm->zone.name, dtpm->power_min, dtpm->power_max);
+diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+index 51c366938acd..cfb120280887 100644
+--- a/drivers/powercap/dtpm_cpu.c
++++ b/drivers/powercap/dtpm_cpu.c
+@@ -14,6 +14,8 @@
+  * The CPU hotplug is supported and the power numbers will be updated
+  * if a CPU is hot plugged / unplugged.
+  */
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
+ #include <linux/cpumask.h>
+ #include <linux/cpufreq.h>
+ #include <linux/cpuhotplug.h>
+@@ -23,8 +25,6 @@
+ #include <linux/slab.h>
+ #include <linux/units.h>
+ 
+-static struct dtpm *__parent;
+-
+ static DEFINE_PER_CPU(struct dtpm *, dtpm_per_cpu);
+ 
+ struct dtpm_cpu {
+@@ -32,57 +32,16 @@ struct dtpm_cpu {
+ 	int cpu;
+ };
+ 
+-/*
+- * When a new CPU is inserted at hotplug or boot time, add the power
+- * contribution and update the dtpm tree.
+- */
+-static int power_add(struct dtpm *dtpm, struct em_perf_domain *em)
+-{
+-	u64 power_min, power_max;
+-
+-	power_min = em->table[0].power;
+-	power_min *= MICROWATT_PER_MILLIWATT;
+-	power_min += dtpm->power_min;
+-
+-	power_max = em->table[em->nr_perf_states - 1].power;
+-	power_max *= MICROWATT_PER_MILLIWATT;
+-	power_max += dtpm->power_max;
+-
+-	return dtpm_update_power(dtpm, power_min, power_max);
+-}
+-
+-/*
+- * When a CPU is unplugged, remove its power contribution from the
+- * dtpm tree.
+- */
+-static int power_sub(struct dtpm *dtpm, struct em_perf_domain *em)
+-{
+-	u64 power_min, power_max;
+-
+-	power_min = em->table[0].power;
+-	power_min *= MICROWATT_PER_MILLIWATT;
+-	power_min = dtpm->power_min - power_min;
+-
+-	power_max = em->table[em->nr_perf_states - 1].power;
+-	power_max *= MICROWATT_PER_MILLIWATT;
+-	power_max = dtpm->power_max - power_max;
+-
+-	return dtpm_update_power(dtpm, power_min, power_max);
+-}
+-
+ static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
+ {
+ 	struct dtpm_cpu *dtpm_cpu = dtpm->private;
+-	struct em_perf_domain *pd;
++	struct em_perf_domain *pd = em_cpu_get(dtpm_cpu->cpu);
+ 	struct cpumask cpus;
+ 	unsigned long freq;
+ 	u64 power;
+ 	int i, nr_cpus;
+ 
+-	pd = em_cpu_get(dtpm_cpu->cpu);
+-
+ 	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
+-
+ 	nr_cpus = cpumask_weight(&cpus);
+ 
+ 	for (i = 0; i < pd->nr_perf_states; i++) {
+@@ -113,6 +72,7 @@ static u64 get_pd_power_uw(struct dtpm *dtpm)
+ 
+ 	pd = em_cpu_get(dtpm_cpu->cpu);
+ 	freq = cpufreq_quick_get(dtpm_cpu->cpu);
++
+ 	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
+ 	nr_cpus = cpumask_weight(&cpus);
+ 
+@@ -128,6 +88,27 @@ static u64 get_pd_power_uw(struct dtpm *dtpm)
+ 	return 0;
+ }
+ 
++static int update_pd_power_uw(struct dtpm *dtpm)
++{
++	struct dtpm_cpu *dtpm_cpu = dtpm->private;
++	struct em_perf_domain *em = em_cpu_get(dtpm_cpu->cpu);
++	struct cpumask cpus;
++	int nr_cpus;
++
++	cpumask_and(&cpus, cpu_online_mask, to_cpumask(em->cpus));
++	nr_cpus = cpumask_weight(&cpus);
++
++	dtpm->power_min = em->table[0].power;
++	dtpm->power_min *= MICROWATT_PER_MILLIWATT;
++	dtpm->power_min *= nr_cpus;
++
++	dtpm->power_max = em->table[em->nr_perf_states - 1].power;
++	dtpm->power_max *= MICROWATT_PER_MILLIWATT;
++	dtpm->power_max *= nr_cpus;
++
++	return 0;
++}
++
+ static void pd_release(struct dtpm *dtpm)
+ {
+ 	struct dtpm_cpu *dtpm_cpu = dtpm->private;
+@@ -139,39 +120,24 @@ static void pd_release(struct dtpm *dtpm)
+ }
+ 
+ static struct dtpm_ops dtpm_ops = {
+-	.set_power_uw = set_pd_power_limit,
+-	.get_power_uw = get_pd_power_uw,
+-	.release = pd_release,
++	.set_power_uw	 = set_pd_power_limit,
++	.get_power_uw	 = get_pd_power_uw,
++	.update_power_uw = update_pd_power_uw,
++	.release	 = pd_release,
+ };
+ 
+ static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
+ {
+-	struct cpufreq_policy *policy;
+ 	struct em_perf_domain *pd;
+ 	struct dtpm *dtpm;
+ 
+-	policy = cpufreq_cpu_get(cpu);
+-
+-	if (!policy)
+-		return 0;
+-
+ 	pd = em_cpu_get(cpu);
+ 	if (!pd)
+ 		return -EINVAL;
+ 
+ 	dtpm = per_cpu(dtpm_per_cpu, cpu);
+ 
+-	power_sub(dtpm, pd);
+-
+-	if (cpumask_weight(policy->cpus) != 1)
+-		return 0;
+-
+-	for_each_cpu(cpu, policy->related_cpus)
+-		per_cpu(dtpm_per_cpu, cpu) = NULL;
+-
+-	dtpm_unregister(dtpm);
+-
+-	return 0;
++	return dtpm_update_power(dtpm);
+ }
+ 
+ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+@@ -184,7 +150,6 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+ 	int ret = -ENOMEM;
+ 
+ 	policy = cpufreq_cpu_get(cpu);
+-
+ 	if (!policy)
+ 		return 0;
+ 
+@@ -194,7 +159,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+ 
+ 	dtpm = per_cpu(dtpm_per_cpu, cpu);
+ 	if (dtpm)
+-		return power_add(dtpm, pd);
++		return dtpm_update_power(dtpm);
+ 
+ 	dtpm = dtpm_alloc(&dtpm_ops);
+ 	if (!dtpm)
+@@ -210,27 +175,20 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+ 	for_each_cpu(cpu, policy->related_cpus)
+ 		per_cpu(dtpm_per_cpu, cpu) = dtpm;
+ 
+-	sprintf(name, "cpu%d", dtpm_cpu->cpu);
++	sprintf(name, "cpu%d-cpufreq", dtpm_cpu->cpu);
+ 
+-	ret = dtpm_register(name, dtpm, __parent);
++	ret = dtpm_register(name, dtpm, NULL);
+ 	if (ret)
+ 		goto out_kfree_dtpm_cpu;
+ 
+-	ret = power_add(dtpm, pd);
+-	if (ret)
+-		goto out_dtpm_unregister;
+-
+ 	ret = freq_qos_add_request(&policy->constraints,
+ 				   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
+ 				   pd->table[pd->nr_perf_states - 1].frequency);
+ 	if (ret)
+-		goto out_power_sub;
++		goto out_dtpm_unregister;
+ 
+ 	return 0;
+ 
+-out_power_sub:
+-	power_sub(dtpm, pd);
+-
+ out_dtpm_unregister:
+ 	dtpm_unregister(dtpm);
+ 	dtpm_cpu = NULL;
+@@ -248,10 +206,38 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+ 
+ int dtpm_register_cpu(struct dtpm *parent)
+ {
+-	__parent = parent;
++	int ret;
 +
 +	/*
-+	 * CR3 is only 32 bits when PAE paging is used, thus it's impossible to
-+	 * get the CPU to treat the PDPTEs as encrypted.  Decrypt the page so
-+	 * that KVM's writes and the CPU's reads get along.  Note, this is
-+	 * only necessary when using shadow paging, as 64-bit NPT can get at
-+	 * the C-bit even when shadowing 32-bit NPT, and SME isn't supported
-+	 * by 32-bit kernels (when KVM itself uses 32-bit NPT).
++	 * The callbacks at CPU hotplug time are calling
++	 * dtpm_update_power() which in turns calls update_pd_power().
++	 *
++	 * The function update_pd_power() uses the online mask to
++	 * figure out the power consumption limits.
++	 *
++	 * At CPUHP_AP_ONLINE_DYN, the CPU is present in the CPU
++	 * online mask when the cpuhp_dtpm_cpu_online function is
++	 * called, but the CPU is still in the online mask for the
++	 * tear down callback. So the power can not be updated when
++	 * the CPU is unplugged.
++	 *
++	 * At CPUHP_AP_DTPM_CPU_DEAD, the situation is the opposite as
++	 * above. The CPU online mask is not up to date when the CPU
++	 * is plugged in.
++	 *
++	 * For this reason, we need to call the online and offline
++	 * callbacks at different moments when the CPU online mask is
++	 * consistent with the power numbers we want to update.
 +	 */
-+	if (!tdp_enabled)
-+		set_memory_decrypted((unsigned long)mmu->pae_root, 1);
-+	else
-+		WARN_ON_ONCE(shadow_me_mask);
++	ret = cpuhp_setup_state(CPUHP_AP_DTPM_CPU_DEAD, "dtpm_cpu:offline",
++				NULL, cpuhp_dtpm_cpu_offline);
++	if (ret < 0)
++		return ret;
 +
- 	for (i = 0; i < 4; ++i)
- 		mmu->pae_root[i] = INVALID_PAE_ROOT;
++	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "dtpm_cpu:online",
++				cpuhp_dtpm_cpu_online, NULL);
++	if (ret < 0)
++		return ret;
  
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 58f4dc0e7864..271196400495 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3907,9 +3907,8 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	unsigned long cr3;
+-	return cpuhp_setup_state(CPUHP_AP_DTPM_CPU_ONLINE,
+-				 "dtpm_cpu:online",
+-				 cpuhp_dtpm_cpu_online,
+-				 cpuhp_dtpm_cpu_offline);
++	return 0;
+ }
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index ee09a39627d6..fcb2967fb5ba 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -61,6 +61,7 @@ enum cpuhp_state {
+ 	CPUHP_LUSTRE_CFS_DEAD,
+ 	CPUHP_AP_ARM_CACHE_B15_RAC_DEAD,
+ 	CPUHP_PADATA_DEAD,
++	CPUHP_AP_DTPM_CPU_DEAD,
+ 	CPUHP_WORKQUEUE_PREP,
+ 	CPUHP_POWER_NUMA_PREPARE,
+ 	CPUHP_HRTIMERS_PREPARE,
+@@ -193,7 +194,6 @@ enum cpuhp_state {
+ 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
+ 	CPUHP_AP_X86_HPET_ONLINE,
+ 	CPUHP_AP_X86_KVM_CLK_ONLINE,
+-	CPUHP_AP_DTPM_CPU_ONLINE,
+ 	CPUHP_AP_ACTIVE,
+ 	CPUHP_ONLINE,
+ };
+diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
+index e80a332e3d8a..acf8d3638988 100644
+--- a/include/linux/dtpm.h
++++ b/include/linux/dtpm.h
+@@ -29,6 +29,7 @@ struct dtpm {
+ struct dtpm_ops {
+ 	u64 (*set_power_uw)(struct dtpm *, u64);
+ 	u64 (*get_power_uw)(struct dtpm *);
++	int (*update_power_uw)(struct dtpm *);
+ 	void (*release)(struct dtpm *);
+ };
  
--	root_hpa = __sme_set(root_hpa);
- 	if (npt_enabled) {
--		svm->vmcb->control.nested_cr3 = root_hpa;
-+		svm->vmcb->control.nested_cr3 = __sme_set(root_hpa);
- 		vmcb_mark_dirty(svm->vmcb, VMCB_NPT);
+@@ -62,7 +63,7 @@ static inline struct dtpm *to_dtpm(struct powercap_zone *zone)
+ 	return container_of(zone, struct dtpm, zone);
+ }
  
- 		/* Loading L2's CR3 is handled by enter_svm_guest_mode.  */
-@@ -3917,7 +3916,7 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
- 			return;
- 		cr3 = vcpu->arch.cr3;
- 	} else if (vcpu->arch.mmu->shadow_root_level >= PT64_ROOT_4LEVEL) {
--		cr3 = root_hpa | kvm_get_active_pcid(vcpu);
-+		cr3 = __sme_set(root_hpa) | kvm_get_active_pcid(vcpu);
- 	} else {
- 		/* PCID in the guest should be impossible with a 32-bit MMU. */
- 		WARN_ON_ONCE(kvm_get_active_pcid(vcpu));
+-int dtpm_update_power(struct dtpm *dtpm, u64 power_min, u64 power_max);
++int dtpm_update_power(struct dtpm *dtpm);
+ 
+ int dtpm_release_zone(struct powercap_zone *pcz);
+ 
 -- 
-2.30.1.766.gb4fecdf3b7-goog
+2.17.1
 
