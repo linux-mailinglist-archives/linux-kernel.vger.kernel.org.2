@@ -2,151 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC87331D3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB6C331D41
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhCIDAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 22:00:32 -0500
-Received: from mga02.intel.com ([134.134.136.20]:27909 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230492AbhCIDAK (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 22:00:10 -0500
-IronPort-SDR: IxUR+JC2wFTjdjCFYA+co/7274qMKJEe1yZlSj3jVUVsJTzAAI1t0MxZbvPa8NGnehtM7tVlgZ
- +6HRRzk+6HfQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175257362"
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="175257362"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 19:00:09 -0800
-IronPort-SDR: bz9DyvP7moEZSv9RyKdF6OSUNwClMq9rqTZp8ayaUO5o9h5ZRgowmZy/Y8CWdbnsb+QJ/1Zbaf
- b7hi+ND2rXEw==
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="403056145"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 19:00:05 -0800
-Subject: Re: [PATCH v3] perf pmu: Validate raw event with sysfs exported
- format bits
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210308031506.23019-1-yao.jin@linux.intel.com>
- <YEX91MTGMU41zeuF@krava>
- <c06cdd0d-fee2-ab6d-1d22-49a6590996ea@linux.intel.com>
- <YEYjQOYI7utqnCq6@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <b84f76b1-1300-ef04-9845-ff206dec9f10@linux.intel.com>
-Date:   Tue, 9 Mar 2021 11:00:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <YEYjQOYI7utqnCq6@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230516AbhCIDBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 22:01:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhCIDBA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 22:01:00 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40602C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:01:00 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id q204so8409789pfq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 19:01:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=QS+W2evi8k5aHYAfWwTIFQNUplOvcunWdrdhU6E7/AA=;
+        b=kKuYcz7AdrgLmLkWgfpAYgI5827ld1D7r0uARL6409oh58xjPf0s95Mt9rsUKb/c4V
+         TiU2UWZLf55hky2fN2jnn6OWekuSybPn/XV5pTZIpXmzvJNIdyqn8Xkvynr32Mq6cojH
+         13i0+4VM1KX5Ny2E0EIbTBxmEq9w08cgbdeTg5+K9/ybwksUWAhDT4/nKINFLN6j7cIl
+         Bq2aaXjN292EkLs1wn4Rpp1D3OwbtTlwmrfxtbaI0oBJFIiHYbArn+X1K4gkVHNVY133
+         f5ms5mDtZg9XuhygfMhFrePFRv+Y18MEzCzLNVXwSmZYqLFDcoNdy9OM4sNXDxQY/JiT
+         G2Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=QS+W2evi8k5aHYAfWwTIFQNUplOvcunWdrdhU6E7/AA=;
+        b=BPdhpQauqSLL1xZflnevwAG2M3PZzow3n0lUZbiM+xvWORr2M/F/Kq1Q+wV6YmGHyV
+         g8kg+Wty8DrQ6h8DgEkWL+6EYl79Q6MTmRdamaeYRcu9MkBV9gLiuAuxSjhB+XSxRKly
+         t+4xrzxqA+cXwDZwyAwhnRrBRQFbOUnpztn4dhT8voYpSPjX3lQiRb4DuBS/hdEu3WXM
+         lvtFGOPnxClx6CTyIVID6B1mjHMl9L6OVTSLiFQO4xvyVlWIA+1N8T5zjBSRD5MB8Sla
+         W0NLOEQWm/+E7AYHdZpani/UNvYGwhAlXjSYpbJ+1jCF8dLKkx9acNU18z5ThH76oUMr
+         TnXg==
+X-Gm-Message-State: AOAM533iAOWdk4K7lA2/ghlzilaebTxzuM5QuE5y56oP7CaoKd7jlYsP
+        QGZjBZVWFjjNu78fNgyVfX24lg==
+X-Google-Smtp-Source: ABdhPJwT+ra5WOUg4Um3PiQsfJlLbl29zPQtKJWW422EPe2I7c0CRd9gwTFXtMd/pYdYo87tKtEURQ==
+X-Received: by 2002:a63:1266:: with SMTP id 38mr9543939pgs.266.1615258859820;
+        Mon, 08 Mar 2021 19:00:59 -0800 (PST)
+Received: from localhost.localdomain ([240e:362:435:6a00:e593:6e0:bfb4:a65f])
+        by smtp.gmail.com with ESMTPSA id y24sm3162782pfn.213.2021.03.08.19.00.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Mar 2021 19:00:59 -0800 (PST)
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        kw@linux.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhangfei Gao <zhangfei.gao@linaro.org>
+Subject: [PATCH v3 0/3] PCI: Add a quirk to enable SVA for HiSilicon chip
+Date:   Tue,  9 Mar 2021 11:00:34 +0800
+Message-Id: <1615258837-12189-1-git-send-email-zhangfei.gao@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+actually on the AMBA bus. These fake PCI devices have PASID capability
+though not supporting TLP.
 
-On 3/8/2021 9:14 PM, Jiri Olsa wrote:
-> On Mon, Mar 08, 2021 at 08:57:49PM +0800, Jin, Yao wrote:
->> Hi Jiri,
->>
->> On 3/8/2021 6:35 PM, Jiri Olsa wrote:
->>> On Mon, Mar 08, 2021 at 11:15:06AM +0800, Jin Yao wrote:
->>>
->>> SNIP
->>>
->>>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->>>> index 44ef28302fc7..03ab1e6d0418 100644
->>>> --- a/tools/perf/util/pmu.c
->>>> +++ b/tools/perf/util/pmu.c
->>>> @@ -1812,3 +1812,39 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
->>>>    	return nr_caps;
->>>>    }
->>>> +
->>>> +void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
->>>> +				   char *name)
->>>> +{
->>>> +	struct perf_pmu_format *format;
->>>> +	__u64 masks = 0, bits;
->>>> +	char buf[100];
->>>> +	unsigned int i;
->>>> +
->>>> +	list_for_each_entry(format, &pmu->format, list)	{
->>>> +		/*
->>>> +		 * Skip extra configs such as config1/config2.
->>>> +		 */
->>>> +		if (format->value > 0)
->>>> +			continue;
->>>
->>> sorry I did not notice before, but could you please use more direct
->>> approach like:
->>>
->>> 		if (format->value == PERF_PMU_FORMAT_VALUE_CONFIG) {
->>> 			break;
->>> 		}
->>>
->>> this will be more obvious, also no need for the comment.. I spent some
->>> time looking what's the value for ;-)
->>>
->>> thanks,
->>> jirka
->>>
->>
->> Oh, yes, using PERF_PMU_FORMAT_VALUE_CONFIG is much more obvious. Sorry about that!
->>
->> While it can't break the loop, because we need to iterate over the whole
->> list to get the total valid bits. So like:
->>
->> if (format->value != PERF_PMU_FORMAT_VALUE_CONFIG)
->> 	continue;
->>
->> Is it right?
-> 
-> sure, what I meant was to process only PERF_PMU_FORMAT_VALUE_CONFIG
-> and then call break, because there's no need to iterate further
-> 
-> jirka
-> 
+Add a quirk to set pasid_no_tlp and dma-can-stall for these devices.
 
-Sorry, maybe I still misunderstood what you suggested.
+v3:
+Rebase to Linux 5.12-rc1
+Change commit msg adding:
+Property dma-can-stall depends on patchset
+https://lore.kernel.org/linux-iommu/20210302092644.2553014-1-jean-philippe@linaro.org/
 
-My understanding is we still need to iterate the whole formats list even we find a 
-PERF_PMU_FORMAT_VALUE_CONFIG.
+By the way the patchset can directly applied on 5.12-rc1 and build successfully though
+without the dependent patchset.
 
-root@kbl-ppc:/sys/devices/cpu/format# ls
-any  cmask  edge  event  frontend  in_tx  in_tx_cp  inv  ldlat  offcore_rsp  pc  umask
-root@kbl-ppc:/sys/devices/cpu/format# cat any
-config:21
-root@kbl-ppc:/sys/devices/cpu/format# cat cmask
-config:24-31
-root@kbl-ppc:/sys/devices/cpu/format# cat edge
-config:18
-root@kbl-ppc:/sys/devices/cpu/format# cat edge
-config:18
-root@kbl-ppc:/sys/devices/cpu/format# cat event
-config:0-7
-root@kbl-ppc:/sys/devices/cpu/format# cat frontend
-config1:0-23
-root@kbl-ppc:/sys/devices/cpu/format# cat in_tx_cp
-config:33
-root@kbl-ppc:/sys/devices/cpu/format# cat inv
-config:23
-root@kbl-ppc:/sys/devices/cpu/format# cat ldlat
-config1:0-15
-root@kbl-ppc:/sys/devices/cpu/format# cat offcore_rsp
-config1:0-63
-root@kbl-ppc:/sys/devices/cpu/format# cat pc
-config:19
-root@kbl-ppc:/sys/devices/cpu/format# cat umask
-config:8-15
+v2:
+Add a new pci_dev bit: pasid_no_tlp, suggested by Bjorn 
+"Apparently these devices have a PASID capability.  I think you should
+add a new pci_dev bit that is specific to this idea of "PASID works
+without TLP prefixes" and then change pci_enable_pasid() to look at
+that bit as well as eetlp_prefix_path."
+https://lore.kernel.org/linux-pci/20210112170230.GA1838341@bjorn-Precision-5520/
 
-If we break the loop when we get the first PERF_PMU_FORMAT_VALUE_CONFIG, we will only get the format 
-'any', right?
+Zhangfei Gao (3):
+  PCI: PASID can be enabled without TLP prefix
+  PCI: Add a quirk to set pasid_no_tlp for HiSilicon chips
+  PCI: Set dma-can-stall for HiSilicon chips
 
-Thanks
-Jin Yao
+ drivers/pci/ats.c    |  2 +-
+ drivers/pci/quirks.c | 27 +++++++++++++++++++++++++++
+ include/linux/pci.h  |  1 +
+ 3 files changed, 29 insertions(+), 1 deletion(-)
+
+-- 
+2.9.5
+
