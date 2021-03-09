@@ -2,194 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD85332D40
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E307A332D48
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhCIR2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:28:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbhCIR2C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:28:02 -0500
-Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701B9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:28:02 -0800 (PST)
-Received: from tux.applied-asynchrony.com (p5b07e8e5.dip0.t-ipconnect.de [91.7.232.229])
-        by mail.itouring.de (Postfix) with ESMTPSA id ECB3D11DD5E;
-        Tue,  9 Mar 2021 18:27:59 +0100 (CET)
-Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id 1B8ACF01600;
-        Tue,  9 Mar 2021 18:27:59 +0100 (CET)
-Subject: Re: systematic crash in amdgpu init since 5.10.20. Not fixed with
- 5.10.21
-To:     eric.valette@free.fr,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <c288c34d-9989-c45d-4ea7-03c9b11c48ff@free.fr>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <e426efc9-cc4b-8663-ec92-0c4a4cabcb96@applied-asynchrony.com>
-Date:   Tue, 9 Mar 2021 18:27:59 +0100
-MIME-Version: 1.0
-In-Reply-To: <c288c34d-9989-c45d-4ea7-03c9b11c48ff@free.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S231430AbhCIRaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:30:20 -0500
+Received: from mail-eopbgr60070.outbound.protection.outlook.com ([40.107.6.70]:62038
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230303AbhCIRaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:30:03 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iPHpWJO5epvlSFgOwixQoaN2yrlI2z60E206s/RmJGt1aqWD8eILap8dj112TpMglDLbivZS+E97KVh+hvbBMJz+CmTbaz0v1FGWpANcQwSBWqWoPVDY9xhEu60TROQqGWQ6FUn9/wOBDAw01Wjm1exmyu4pqLgvjMt1PAcorHWthci6GeSmpHE0fYaS3FrEQfF5ruAN/RYczXzaqv1DmpyCwIEpW3Z5kHKyHJuvhYzntrVhZQjOhRBMsbgoRqLCmG7jZakctHkWMo6u/2wNyjHBpNFdlXc9+H/2Lh188GyA8C7HgXKENx2BAaPDIWuCm8ou1zaT2Z2QNFAYMHjmJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GD5JfsuWzgmo2mb9Wap1TJ/8HaCT6deNhRuM4bmANPY=;
+ b=ngqNCS4k3u5XmRCrbZ8vB2eVj9a89PSSv73GLlgJfNs5bcIM+TQ7SY7Ni34mGM2/hgARNZ+C883MF5yn0rVZ7e+o+7nAxEopouNzrX7D4/dKW6ZTrD5IJJyfCbtoto0tw5fvAaAwlqqcfgB+TRT9OVrBb9/A3oCi11c/X2SCK+CsJ61MBxhGCizI2hTwLJws6dMsuDVL5+lA2a2xYwcxExUuySkoUXXfHjZW7ZvCgQltaP+6VovY/+8U1yO4Jp4MRcE4SU2vus7THcf3cnI5ugNGuPrOsELPAkQdkCc4DX7xjKowSYBekk0Js1VB5sKU5nbpupHmWEQBLE4JVL/SJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GD5JfsuWzgmo2mb9Wap1TJ/8HaCT6deNhRuM4bmANPY=;
+ b=XLQmxisneMKlPAz8YvBb1xUJsMKqdQ/CESZuG617yvIuMPgH7JGwAcVxUUKtV1JstoTc4aIzXQgU2NsCqnzqU7xjF09s3JBiYHI6qXoXKy2eavljLMSL3BBa+LkGtkt3SGaXq6LUUHwc2XxynwCuIowecmvSSL2V/KTsGw53GXE=
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
+ by DBAPR04MB7223.eurprd04.prod.outlook.com (2603:10a6:10:1b0::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Tue, 9 Mar
+ 2021 17:30:01 +0000
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8%5]) with mapi id 15.20.3890.037; Tue, 9 Mar 2021
+ 17:30:00 +0000
+From:   Kuldeep Singh <kuldeep.singh@nxp.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ashish Kumar <ashish.kumar@nxp.com>
+Subject: RE: [EXT] Re: [PATCH] dt-bindings: spi: Convert NXP flexspi to json
+ schema
+Thread-Topic: [EXT] Re: [PATCH] dt-bindings: spi: Convert NXP flexspi to json
+ schema
+Thread-Index: AQHXFM/6iIqk6EfgdU6QexJiEf5Gy6p7hhTAgAAR0oCAAE7kYA==
+Date:   Tue, 9 Mar 2021 17:30:00 +0000
+Message-ID: <DB6PR0402MB275840529A4F50EBFC723E1AE0929@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+References: <20210309103528.3538910-1-kuldeep.singh@nxp.com>
+ <DB6PR0402MB275834FAF7CEF44AB7F342B2E0929@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+ <20210309123601.GA4878@sirena.org.uk>
+In-Reply-To: <20210309123601.GA4878@sirena.org.uk>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [27.58.231.233]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2697cb92-902d-40e1-afba-08d8e320f7d4
+x-ms-traffictypediagnostic: DBAPR04MB7223:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBAPR04MB72235EBB45866218C6C48DA3E0929@DBAPR04MB7223.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: l17LmEJv9dAvJdL2jf7Xj3BrG/ych3WHUjAG844CASBrer2BxieyhdV30ZdxPo4gSZl4op6Pefv/3nhDXhEv7xtFLycmE8raiyNhBnmwo9NGTtpCmzizwWyUGVHvLq8lV1T/Cs28+9+VfEd5zt4iJBFSO5IQXNN8A8DAsdMNSWCXMiMTDbNExE59u0lpCGAPTQY1628OCd0Oi6buvIekYByJ2IjPns/kWd2Jfptg3NjMW8J7tMEQ1ZxNBoi9RP2JFfdpipiGHQxhf5T03SKvMXFcQHWt03Ta4Wqd7f4HUA8oqguww6g0kp8CjlKnRyUog550BoTCWO+w4IOQC/ByWe+vKrjRwOC46gz1N87jfmuN4l3zQ6gUHv7COkM7iaYxMADK9ZKkCL0v2Z/N6Iar9gUs6FzKmWP1a/TSXZMgCr2QOWS0I360bpp3Dvl66ai5vuMZl06lP8iNkPKkF3WeTWJG8Z2HKXKAjUYfLrSmCSfCGdT7tfUrdNE7G+Xlwfu3MUzGCkdV54NCJ8qMgwmvPvvrs3iLNokig9CHUYpr4VgI/rg7K8vmCIeASEJiCYtu3y5z2MsJnZ85YofPKc86m4KhbPXSaGO/KMZCiiYzxLQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2758.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(39850400004)(396003)(6506007)(26005)(53546011)(966005)(9686003)(54906003)(8676002)(186003)(6916009)(83380400001)(4326008)(66476007)(52536014)(66946007)(86362001)(2906002)(316002)(44832011)(7696005)(8936002)(64756008)(5660300002)(71200400001)(478600001)(66446008)(66556008)(76116006)(55016002)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?BTjjBkHjjD7tMt4IWFA7EbGiYsGvUwq++03zHgoAhxJDjQYLY2YZHFFXpx6p?=
+ =?us-ascii?Q?7r9Q5wX/idFMcn/vYYQB7YRbSmRlbG1G78iHrVsdFKn37OOQYWBxmepOV49x?=
+ =?us-ascii?Q?ZSxSqoUOmXTv+VNvUatHK2Dr92SFbXB6R9VL00eihyEXGeLR5sUD/wIUZVYD?=
+ =?us-ascii?Q?SZRWbe8juGIkcaUatO3dByVyrQ0RB+8b7PxZZHiocx0Yif55FbAMjrlA2Mo6?=
+ =?us-ascii?Q?gdLZVkA2a7e/NwY4iJy9FrOdOGIFCg453iJnpDCxFDrLhRJOJthdKg8V8kyU?=
+ =?us-ascii?Q?D5SGp/fdZ7YjlXM3eA2oVjLcpym9s9cxOL/6X3SaXc8Sv1jQYOKMB0iuFANf?=
+ =?us-ascii?Q?pHSfFh+Qq98UAId2u0bQKJHMUlMdNKDXCFWp2gy5EK8NzvhbdxsL538aWyKu?=
+ =?us-ascii?Q?WgYjcmOu7ohjnzAtGdSa9qwtUmJIQCeQMHy+RT57XLoWTSb0ijp0k7Xekc1B?=
+ =?us-ascii?Q?dO3AFcrTLkpBxgGH7h1UCYUOAFO+bVmyPGD0DJcGByNAQFMNrEF0bmRc2jnr?=
+ =?us-ascii?Q?ZKxAHCj72k2cZUeqPHaSxn9DRzqlK/0W/4xMB/Z382ZCSplPxQaHtkteVcw0?=
+ =?us-ascii?Q?d0jUghToL8mbaRwQeHSuy8cGzT3s628MqBiq74jkgOrpCFV17btnC2FYsx59?=
+ =?us-ascii?Q?6M7zx+1wf3jTpgPFcVoUOkg9zX9hk7Snqq0j4YRTGZQgqvsbxYWv4GB0d/B9?=
+ =?us-ascii?Q?hKGey+0rhe9cTyPxErYXi82uhUb86wgf2Pt3utztV8raWi6HNGu+DNuCEg2d?=
+ =?us-ascii?Q?7VDbhH4gOxZBE0ncC6yN35777zgMsug3vWzAiXLQePzfUHMNYfFBydiGWlg8?=
+ =?us-ascii?Q?gwIR/nJszXipIGzM2ZIS7t2W8f6DAO4j0JMMG+x1uTIll8WV3JapKltn8bbp?=
+ =?us-ascii?Q?qUBwht1tbP07d5S6n9HmxRigjsDGmzewva5W6e8uMNq7+HOvQu+9+zbMzNpg?=
+ =?us-ascii?Q?V5+Bg4O1Xr1n9uReCnnejKvuFevhsgBlKq12p7YJDFDr8M5VSMMTr1rVZBy4?=
+ =?us-ascii?Q?izD0Fni1yB4cr9C8CtUHrFjcHQda+xhata0Pzq2HWOni+cSeMgBnQA08f2B4?=
+ =?us-ascii?Q?/WCoL+DK4ttX8d0c+kwMYDkzbdBm9LrK8rk29NwDd8trdVPEt+7c3HGa3DtW?=
+ =?us-ascii?Q?7ad33cO2DDNSZqhnCTOlEXafkq913FLy9/P3Z3JQPR3ZJBJfbMSGlTPwPZzD?=
+ =?us-ascii?Q?2urQxFSxU3fdbJzxV4ljaXWeE3nHpJnkyKeQLeOY4dTL1kK/JeeT7tD/FQeE?=
+ =?us-ascii?Q?O668UY/d12XJIl4N0kwRuJBSc7YhKZC9/PzbQONdyO2xX+FngH1G0Fq9KOEA?=
+ =?us-ascii?Q?7MM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2697cb92-902d-40e1-afba-08d8e320f7d4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Mar 2021 17:30:00.8035
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AZRE/8zSt6RGJDjbZVTOLAbsIP9RDpUXmZsEYaaGx0J88ECNjfNMeNDGyBGoKG4SLYS6liQqtnOpA2Zmm6QNAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7223
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-07 17:18, Eric Valette wrote:
-> I have the following systematic crash at boot since 5.10.20 (.19 was ok)
-> 
-> This laptop has two graphic cards:
-> 
-> 03:00.0 Display controller: Advanced Micro Devices, Inc. [AMD/ATI] Navi 14 [Radeon RX 5500/5500M / Pro 5500M] (rev c1)
-> 07:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Renoir (rev c6)
-> 
-> NB: cc me I'm not subscribed
-> 
-> CPU: 13 PID: 721 Comm: systemd-udevd Not tainted 5.10.21 #2
-> [    4.446170] Hardware name: Micro-Star International Co., Ltd. Bravo 17 A4DDR/MS-17FK, BIOS E17FKAMS.117 10/29/2020
-> [    4.446175] RIP: 0010:kernel_fpu_begin_mask+0xc5/0xe0
-> [    4.446179] Code: 65 8a 05 86 32 9f 52 84 c0 74 9a 0f 0b eb 96 48 8b 07 f6 c4 40 75 b0 f0 80 4f 01 40 48 81 c7 00 0c 00 00 e8 cd fb ff ff eb 9d <0f> 0b eb 82 db e3 eb b8 e8 3e 63 e0 00 66 66 2e 0f 1f 84 00 00 00
-> [    4.446182] RSP: 0018:ffffbc70012ef5e8 EFLAGS: 00010202
-> [    4.446185] RAX: 0000000080000001 RBX: 0000000000000003 RCX: ffffbc70012ef65c
-> [    4.446186] RDX: ffff9bd4415b4000 RSI: ffff9bd4525c0000 RDI: 0000000000000003
-> [    4.446188] RBP: ffff9bd433e20000 R08: ffffbc70012ef660 R09: 0000000000000000
-> [    4.446190] R10: ffff9bd415ba4000 R11: ffff9bd4525c10f0 R12: ffffffffc0c46560
-> [    4.446191] R13: 0000000000000000 R14: ffff9bd4415b4000 R15: 0000000000000001
-> [    4.446194] FS:  00007f00024218c0(0000) GS:ffff9bd71f940000(0000) knlGS:0000000000000000
-> [    4.446196] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    4.446199] CR2: 00005575ca8bb8e8 CR3: 00000001117e8000 CR4: 0000000000350ee0
-> [    4.446200] Call Trace:
-> [    4.446532]  dcn21_calculate_wm+0x49/0x410 [amdgpu]
-> [    4.446848]  dcn21_validate_bandwidth_fp+0x174/0x280 [amdgpu]
-> [    4.447162]  dcn21_validate_bandwidth+0x29/0x40 [amdgpu]
-> [    4.447415]  dc_validate_global_state+0x2f2/0x390 [amdgpu]
-> [    4.447667]  amdgpu_dm_atomic_check+0xb0d/0xc00 [amdgpu]
-> [    4.447704]  drm_atomic_check_only+0x55a/0x7d0 [drm]
-> [    4.447735]  drm_atomic_commit+0x13/0x50 [drm]
-> [    4.447765]  drm_client_modeset_commit_atomic+0x1e4/0x220 [drm]
-> [    4.447795]  drm_client_modeset_commit_locked+0x56/0x150 [drm]
-> [    4.447822]  drm_client_modeset_commit+0x24/0x40 [drm]
-> [    4.447840]  drm_fb_helper_set_par+0xa5/0xd0 [drm_kms_helper]
-> [    4.447846]  fbcon_init+0x2b3/0x570
-> [    4.447850]  visual_init+0xce/0x130
-> [    4.447853]  do_bind_con_driver.isra.0+0x1db/0x2e0
-> [    4.447857]  do_take_over_console+0x116/0x180
-> [    4.447861]  do_fbcon_takeover+0x5c/0xc0
-> [    4.447864]  register_framebuffer+0x1e4/0x300
-> [    4.447881]  __drm_fb_helper_initial_config_and_unlock+0x321/0x4a0 [drm_kms_helper]
-> [    4.448081]  amdgpu_fbdev_init+0xb9/0xf0 [amdgpu]
-> [    4.448326]  amdgpu_device_init.cold+0x166b/0x1a4d [amdgpu]
-> [    4.448334]  ? pci_bus_read_config_word+0x49/0x70
-> [    4.448527]  amdgpu_driver_load_kms+0x2b/0x1f0 [amdgpu]
-> [    4.448718]  amdgpu_pci_probe+0x114/0x1a0 [amdgpu]
-> [    4.448761]  local_pci_probe+0x42/0x80
-> [    4.448770]  ? _cond_resched+0x16/0x40
-> [    4.448774]  pci_device_probe+0xfa/0x1b0
-> [    4.448781]  really_probe+0xf2/0x440
-> [    4.448786]  driver_probe_device+0xe1/0x150
-> [    4.448789]  device_driver_attach+0xa1/0xb0
-> [    4.448792]  __driver_attach+0x8a/0x150
-> [    4.448794]  ? device_driver_attach+0xb0/0xb0
-> [    4.448797]  ? device_driver_attach+0xb0/0xb0
-> [    4.448800]  bus_for_each_dev+0x78/0xc0
-> [    4.448805]  bus_add_driver+0x12b/0x1e0
-> [    4.448808]  driver_register+0x8b/0xe0
-> [    4.448812]  ? 0xffffffffc134a000
-> [    4.448817]  do_one_initcall+0x44/0x1d0
-> [    4.448822]  ? do_init_module+0x23/0x260
-> [    4.448828]  ? kmem_cache_alloc_trace+0xf5/0x200
-> [    4.448831]  do_init_module+0x5c/0x260
-> [    4.448834]  __do_sys_finit_module+0xb1/0x110
-> [    4.448840]  do_syscall_64+0x33/0x80
-> [    4.448844]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [    4.448848] RIP: 0033:0x7f00028da9b9
-> [    4.448853] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a7 54 0c 00 f7 d8 64 89 01 48
-> [    4.448855] RSP: 002b:00007ffcab625508 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> [    4.448860] RAX: ffffffffffffffda RBX: 000056314a23dff0 RCX: 00007f00028da9b9
-> [    4.448862] RDX: 0000000000000000 RSI: 00007f0002a65e2d RDI: 0000000000000017
-> [    4.448864] RBP: 0000000000020000 R08: 0000000000000000 R09: 000056314a243020
-> [    4.448866] R10: 0000000000000017 R11: 0000000000000246 R12: 00007f0002a65e2d
-> [    4.448868] R13: 0000000000000000 R14: 000056314a24a2d0 R15: 000056314a23dff0
-> [    4.448873] ---[ end trace 72b8a47f60a3c4b2 ]---
-> [    4.449556] ------------[ cut here ]------------
-> [    4.449562] WARNING: CPU: 13 PID: 721 at arch/x86/kernel/fpu/core.c:155 kernel_fpu_end+0x19/0x20
-> [    4.449563] Modules linked in: uinput binfmt_misc amdgpu(+) uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videodev iwlmvm videobuf2_common gpu_sched ttm msi_wmi drm_kms_helper pcspkr serio_raw sparse_keymap sp5100_tco cec watchdog btusb i2c_algo_bit fb_sys_fops syscopyarea iwlwifi sysfillrect sysimgblt tpm_crb tpm_tis tpm_tis_core tpm drm configfs ip_tables x_tables autofs4 i2c_hid
-> [    4.449590] CPU: 13 PID: 721 Comm: systemd-udevd Tainted: G        W        5.10.21 #2
-> [    4.449592] Hardware name: Micro-Star International Co., Ltd. Bravo 17 A4DDR/MS-17FK, BIOS E17FKAMS.117 10/29/2020
-> [    4.449595] RIP: 0010:kernel_fpu_end+0x19/0x20
-> [    4.449599] Code: ae 47 40 b8 01 00 00 00 c3 0f 0b eb d7 0f 0b eb c9 0f 1f 44 00 00 65 8a 05 2c 36 9f 52 84 c0 74 09 65 c6 05 20 36 9f 52 00 c3 <0f> 0b eb f3 0f 1f 00 0f 1f 44 00 00 8b 15 a5 b6 59 02 31 f6 e8 fe
-> [    4.449600] RSP: 0018:ffffbc70012ef6b0 EFLAGS: 00010246
-> [    4.449602] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000000007a4
-> [    4.449604] RDX: 00000000000007a3 RSI: cade29b7434a9329 RDI: 000000000002d740
-> [    4.449605] RBP: ffff9bd4525c0000 R08: 0000000000000000 R09: 0000000000000040
-> [    4.449606] R10: 00000000c4444440 R11: 0000000000000003 R12: 0000000000000001
-> [    4.449607] R13: ffff9bd415ba4000 R14: ffff9bd4525c1518 R15: ffff9bd4525c0000
-> [    4.449610] FS:  00007f00024218c0(0000) GS:ffff9bd71f940000(0000) knlGS:0000000000000000
-> [    4.449611] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    4.449612] CR2: 00005575ca8bb8e8 CR3: 00000001117e8000 CR4: 0000000000350ee0
-> [    4.449613] Call Trace:
-> [    4.449861]  dcn21_validate_bandwidth+0x31/0x40 [amdgpu]
-> [    4.450104]  dc_validate_global_state+0x2f2/0x390 [amdgpu]
-> [    4.450355]  amdgpu_dm_atomic_check+0xb0d/0xc00 [amdgpu]
-> [    4.450393]  drm_atomic_check_only+0x55a/0x7d0 [drm]
-> [    4.450424]  drm_atomic_commit+0x13/0x50 [drm]
-> [    4.450454]  drm_client_modeset_commit_atomic+0x1e4/0x220 [drm]
-> [    4.450483]  drm_client_modeset_commit_locked+0x56/0x150 [drm]
-> [    4.450511]  drm_client_modeset_commit+0x24/0x40 [drm]
-> [    4.450528]  drm_fb_helper_set_par+0xa5/0xd0 [drm_kms_helper]
-> [    4.450534]  fbcon_init+0x2b3/0x570
-> [    4.450538]  visual_init+0xce/0x130
-> [    4.450543]  do_bind_con_driver.isra.0+0x1db/0x2e0
-> [    4.450547]  do_take_over_console+0x116/0x180
-> [    4.450551]  do_fbcon_takeover+0x5c/0xc0
-> [    4.450554]  register_framebuffer+0x1e4/0x300
-> [    4.450571]  __drm_fb_helper_initial_config_and_unlock+0x321/0x4a0 [drm_kms_helper]
-> [    4.450769]  amdgpu_fbdev_init+0xb9/0xf0 [amdgpu]
-> [    4.451011]  amdgpu_device_init.cold+0x166b/0x1a4d [amdgpu]
-> [    4.451018]  ? pci_bus_read_config_word+0x49/0x70
-> [    4.451211]  amdgpu_driver_load_kms+0x2b/0x1f0 [amdgpu]
-> [    4.451401]  amdgpu_pci_probe+0x114/0x1a0 [amdgpu]
-> [    4.451405]  local_pci_probe+0x42/0x80
-> [    4.451409]  ? _cond_resched+0x16/0x40
-> [    4.451412]  pci_device_probe+0xfa/0x1b0
-> [    4.451417]  really_probe+0xf2/0x440
-> [    4.451420]  driver_probe_device+0xe1/0x150
-> [    4.451422]  device_driver_attach+0xa1/0xb0
-> [    4.451424]  __driver_attach+0x8a/0x150
-> [    4.451426]  ? device_driver_attach+0xb0/0xb0
-> [    4.451427]  ? device_driver_attach+0xb0/0xb0
-> [    4.451430]  bus_for_each_dev+0x78/0xc0
-> [    4.451434]  bus_add_driver+0x12b/0x1e0
-> [    4.451436]  driver_register+0x8b/0xe0
-> [    4.451438]  ? 0xffffffffc134a000
-> [    4.451441]  do_one_initcall+0x44/0x1d0
-> [    4.451444]  ? do_init_module+0x23/0x260
-> [    4.451448]  ? kmem_cache_alloc_trace+0xf5/0x200
-> [    4.451451]  do_init_module+0x5c/0x260
-> [    4.451453]  __do_sys_finit_module+0xb1/0x110
-> [    4.451458]  do_syscall_64+0x33/0x80
-> [    4.451461]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [    4.451464] RIP: 0033:0x7f00028da9b9
-> [    4.451467] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a7 54 0c 00 f7 d8 64 89 01 48
-> [    4.451469] RSP: 002b:00007ffcab625508 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> [    4.451473] RAX: ffffffffffffffda RBX: 000056314a23dff0 RCX: 00007f00028da9b9
-> [    4.451474] RDX: 0000000000000000 RSI: 00007f0002a65e2d RDI: 0000000000000017
-> [    4.451475] RBP: 0000000000020000 R08: 0000000000000000 R09: 000056314a243020
-> [    4.451476] R10: 0000000000000017 R11: 0000000000000246 R12: 00007f0002a65e2d
-> [    4.451478] R13: 0000000000000000 R14: 000056314a24a2d0 R15: 000056314a23dff0
-> [    4.451481] ---[ end trace 72b8a47f60a3c4b3 ]---
-> [    4.476162] Console: switching to colour frame buffer device 240x67
-> 
+Hi Mark,
 
-I had the same problem and got annoyed enough to do something about it. Try these
-two fixes on top of .22:
+> -----Original Message-----
+> From: Mark Brown <broonie@kernel.org>
+> Sent: Tuesday, March 9, 2021 6:06 PM
+> To: Kuldeep Singh <kuldeep.singh@nxp.com>
+> Cc: Rob Herring <robh+dt@kernel.org>; linux-spi@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Ashish Kumar
+> <ashish.kumar@nxp.com>
+> Subject: [EXT] Re: [PATCH] dt-bindings: spi: Convert NXP flexspi to json =
+schema
+>=20
+> On Tue, Mar 09, 2021 at 11:41:50AM +0000, Kuldeep Singh wrote:
+> > + Mark (Forgot to add him previously)
+>=20
+> ...
+>=20
+> > I was not sure with which tree this patch will go through.
+> > Currently, I have rebased this on top of
+> > tree(git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git,
+> > branch: for-next)
+>=20
+> Binding patches generally go through the subsystem tree so please send th=
+e patch
+> to me.
 
-https://gitlab.freedesktop.org/agd5f/linux/-/commit/b42c68fac891d8c23c81cdfd66f82864c2353d7b
-https://gitlab.freedesktop.org/agd5f/linux/-/commit/37ba52c6bd13a31fa35008dc0b5790a1b57de7eb
+Thanks for letting me know.
+I have developed the patch on top of your tree and also sent to spi-devel m=
+ailing list.
+Please see [1] for more details. Kindly let me know if I need to resubmit t=
+he patch.
 
-cheers,
-Holger
+Regards
+Kuldeep
+[1] https://patchwork.kernel.org/project/spi-devel-general/patch/2021030910=
+3528.3538910-1-kuldeep.singh@nxp.com/
+
