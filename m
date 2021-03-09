@@ -2,182 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C7133220E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4568E332229
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhCIJgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:36:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53326 "EHLO mail.kernel.org"
+        id S230231AbhCIJiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:38:05 -0500
+Received: from mga02.intel.com ([134.134.136.20]:29451 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229544AbhCIJf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:35:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6859F6514A;
-        Tue,  9 Mar 2021 09:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615282559;
-        bh=5pFvOOvqI662JEp6sJpxhT5TSkcEIQojooEtA4imY+c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0D1SjHDrV5Cy1lrg60HeYRc2dA+ZFChqgR6ZmC4w9ecoUfnIAmRi7q1crDCdNoCzF
-         jEcWbnnf34LaNpsttyZqnOCeZj7SaxW8snE7nyACukdvG8M3yIlSMqkDOghZIAjCdj
-         EOXbKLby99pLRLXEP8UmdzbCtGmcY3j0JklMHqqg=
-Date:   Tue, 9 Mar 2021 10:35:56 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     kuba@kernel.org, davem@davemloft.net,
-        linux-arm-msm@vger.kernel.org, aleksander@aleksander.es,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bjorn.andersson@linaro.org, manivannan.sadhasivam@linaro.org,
-        hemantk@codeaurora.org
-Subject: Re: [PATCH net-next v3] net: Add Qcom WWAN control driver
-Message-ID: <YEdBfHAYkTGI8sE4@kroah.com>
-References: <1615279336-27227-1-git-send-email-loic.poulain@linaro.org>
+        id S229515AbhCIJhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:37:41 -0500
+IronPort-SDR: hiehay2Od8+CHc8TFIjZKaxXAoW2uZtBFKUoxmQ6iE/j7D719j/6UyG1V8TH28fi2Ug2nSP9oz
+ vZF7M9GfOmtw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175303411"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="175303411"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:37:40 -0800
+IronPort-SDR: nr63oc0PNfB2pHc+gU4StUQ9vGCvf6MqbqzJEXz9VUaBkogbsDsWrt4vbIxG0cqJoTjAQuegqi
+ 1WVhRNJ+whCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="369725423"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 09 Mar 2021 01:37:37 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 4B0C11EC; Tue,  9 Mar 2021 11:37:38 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org
+Cc:     Marc Zyngier <maz@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v6 0/6] gpiolib: switch to fwnode in the core
+Date:   Tue,  9 Mar 2021 11:37:30 +0200
+Message-Id: <20210309093736.67925-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615279336-27227-1-git-send-email-loic.poulain@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:42:16AM +0100, Loic Poulain wrote:
-> The MHI WWWAN control driver allows MHI Qcom based modems to expose
-> different modem control protocols/ports to userspace, so that userspace
-> modem tools or daemon (e.g. ModemManager) can control WWAN config
-> and state (APN config, SMS, provider selection...). A Qcom based
-> modem can expose one or several of the following protocols:
-> - AT: Well known AT commands interactive protocol (microcom, minicom...)
-> - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
-> - QMI: Qcom MSM/Modem Interface (libqmi, qmicli)
-> - QCDM: Qcom Modem diagnostic interface (libqcdm)
-> - FIREHOSE: XML-based protocol for Modem firmware management
->         (qmi-firmware-update)
-> 
-> The different interfaces are exposed as character devices, in the same
-> way as for USB modem variants (known as modem 'ports').
-> 
-> Note that this patch is mostly a rework of the earlier MHI UCI
-> tentative that was a generic interface for accessing MHI bus from
-> userspace. As suggested, this new version is WWAN specific and is
-> dedicated to only expose channels used for controlling a modem, and
-> for which related opensource user support exist. Other MHI channels
-> not fitting the requirements will request either to be plugged to
-> the right Linux subsystem (when available) or to be discussed as a
-> new MHI driver (e.g AI accelerator, WiFi debug channels, etc...).
-> 
-> This change introduces a new drivers/net/wwan directory, aiming to
-> be the common place for WWAN drivers.
-> 
-> Co-developed-by: Hemant Kumar <hemantk@codeaurora.org>
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> ---
->  v2: update copyright (2021)
->  v3: Move driver to dedicated drivers/net/wwan directory
-> 
->  drivers/net/Kconfig              |   2 +
->  drivers/net/Makefile             |   1 +
->  drivers/net/wwan/Kconfig         |  26 ++
->  drivers/net/wwan/Makefile        |   6 +
->  drivers/net/wwan/mhi_wwan_ctrl.c | 559 +++++++++++++++++++++++++++++++++++++++
->  5 files changed, 594 insertions(+)
->  create mode 100644 drivers/net/wwan/Kconfig
->  create mode 100644 drivers/net/wwan/Makefile
->  create mode 100644 drivers/net/wwan/mhi_wwan_ctrl.c
-> 
-> diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-> index 1ebb4b9..28b18f2 100644
-> --- a/drivers/net/Kconfig
-> +++ b/drivers/net/Kconfig
-> @@ -501,6 +501,8 @@ source "drivers/net/wan/Kconfig"
->  
->  source "drivers/net/ieee802154/Kconfig"
->  
-> +source "drivers/net/wwan/Kconfig"
-> +
->  config XEN_NETDEV_FRONTEND
->  	tristate "Xen network device frontend driver"
->  	depends on XEN
-> diff --git a/drivers/net/Makefile b/drivers/net/Makefile
-> index f4990ff..5da6424 100644
-> --- a/drivers/net/Makefile
-> +++ b/drivers/net/Makefile
-> @@ -68,6 +68,7 @@ obj-$(CONFIG_SUNGEM_PHY) += sungem_phy.o
->  obj-$(CONFIG_WAN) += wan/
->  obj-$(CONFIG_WLAN) += wireless/
->  obj-$(CONFIG_IEEE802154) += ieee802154/
-> +obj-$(CONFIG_WWAN) += wwan/
->  
->  obj-$(CONFIG_VMXNET3) += vmxnet3/
->  obj-$(CONFIG_XEN_NETDEV_FRONTEND) += xen-netfront.o
-> diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
-> new file mode 100644
-> index 0000000..643aa10
-> --- /dev/null
-> +++ b/drivers/net/wwan/Kconfig
-> @@ -0,0 +1,26 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Wireless WAN device configuration
-> +#
-> +
-> +menuconfig WWAN
-> +       bool "Wireless WAN"
-> +       help
-> +         This section contains Wireless WAN driver configurations.
-> +
-> +if WWAN
-> +
-> +config MHI_WWAN_CTRL
-> +	tristate "MHI WWAN control driver for QCOM based PCIe modems"
-> +	depends on MHI_BUS
-> +	help
-> +	  MHI WWAN CTRL allow QCOM based PCIe modems to expose different modem
-> +	  control protocols/ports to userspace, including AT, MBIM, QMI, DIAG
-> +	  and FIREHOSE. These protocols can be accessed directly from userspace
-> +	  (e.g. AT commands) or via libraries/tools (e.g. libmbim, libqmi,
-> +	  libqcdm...).
-> +
-> +	  To compile this driver as a module, choose M here: the module will be
-> +	  called mhi_wwan_ctrl.
-> +
-> +endif # WWAN
-> diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
-> new file mode 100644
-> index 0000000..994a80b
-> --- /dev/null
-> +++ b/drivers/net/wwan/Makefile
-> @@ -0,0 +1,6 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Makefile for the Linux WWAN device drivers.
-> +#
-> +
-> +obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
-> diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
-> new file mode 100644
-> index 0000000..3904cd0
-> --- /dev/null
-> +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
-> @@ -0,0 +1,559 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.*/
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/mhi.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/poll.h>
-> +
-> +#define MHI_WWAN_CTRL_DRIVER_NAME "mhi_wwan_ctrl"
+GPIO library uses of_node and fwnode in the core in non-unified way.
+The series cleans this up and improves IRQ domain creation for non-OF cases
+where currently the names of the domain are 'unknown'.
 
-So a driver name is the same as the class that is being created?
+This has been tested on Intel Galileo Gen 2.
 
-That feels wrong, shouldn't the "class" be wwan?
+It touches GPIO core parts and it's expected that the series is routed via
+GPIO tree.
 
-> +#define MHI_WWAN_CTRL_MAX_MINORS 128
+In v6:
+- added tag to the patch 5 (Rafael)
+- dropped ops temporary variable (Rafael)
 
-Why so many?
+In v5:
+- same as v4 + v3 (patches 1-4/5) in order to route via GPIO tree (Bart)
 
-thanks,
+In v4:
+- based on Rafael's bleeding-edge
+- split the rest to two patches (Rafael)
+- elaborate WARN() deduplication in the commit message (Rafael)
 
-greg k-h
+In v3:
+- fixed subtle bug in gpiod_count
+- made irq_domain_add_simple() static inline (Marc)
+
+In v2:
+- added a new patch due to functionality in irq_comain_add_simple() (Linus)
+- tagged patches 2-4 (Linus)
+- Cc'ed to Rafael
+
+Andy Shevchenko (6):
+  irqdomain: Introduce irq_domain_create_simple() API
+  gpiolib: Unify the checks on fwnode type
+  gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
+  gpiolib: Introduce acpi_gpio_dev_init() and call it from core
+  gpiolib: Reuse device's fwnode to create IRQ domain
+  gpiolib: Fold conditionals into a simple ternary operator
+
+ Documentation/core-api/irq/irq-domain.rst | 22 ++++----
+ drivers/gpio/gpiolib-acpi.c               |  7 +++
+ drivers/gpio/gpiolib-acpi.h               |  4 ++
+ drivers/gpio/gpiolib-of.c                 |  6 ++-
+ drivers/gpio/gpiolib.c                    | 62 +++++++++--------------
+ include/linux/irqdomain.h                 | 19 +++++--
+ kernel/irq/irqdomain.c                    | 20 ++++----
+ 7 files changed, 75 insertions(+), 65 deletions(-)
+
+-- 
+2.30.1
+
