@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82799332A75
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89352332A78
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhCIPaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:30:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49354 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231891AbhCIPaD (ORCPT
+        id S231468AbhCIPbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:31:19 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:54958 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231819AbhCIPbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:30:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615303802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jxpAuLrdI2KEsxNtc6yigl8rRFIzhCgLVMdHGZZ+fc=;
-        b=YZmdyplQwxeUA0QcW+ZWNKr2iXWkUHzLCcyUzpUAfMazbykwJERis0/qd0SAVrItnoxn1w
-        Adh7Xzi+7tE0KiP+oUyptEgXcg9IsNFKvC/Gwmu0ZLLXAnEZEIsy33UZQ6zAAyyT0aR79o
-        fnsKzQzbzy4rUB1ZNv5mmSaZNStinvk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-PMx_YHNmNgK-G03W2rIzkA-1; Tue, 09 Mar 2021 10:29:59 -0500
-X-MC-Unique: PMx_YHNmNgK-G03W2rIzkA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2509057;
-        Tue,  9 Mar 2021 15:29:57 +0000 (UTC)
-Received: from x1.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 443A060CF0;
-        Tue,  9 Mar 2021 15:29:52 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 08:29:51 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Peter Xu <peterx@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH] vfio/pci: make the vfio_pci_mmap_fault reentrant
-Message-ID: <20210309082951.75f0eb01@x1.home.shazbot.org>
-In-Reply-To: <20210309124609.GG2356281@nvidia.com>
-References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
-        <20210308132106.49da42e2@omen.home.shazbot.org>
-        <20210308225626.GN397383@xz-x1>
-        <6b98461600f74f2385b9096203fa3611@hisilicon.com>
-        <20210309124609.GG2356281@nvidia.com>
-Organization: Red Hat
+        Tue, 9 Mar 2021 10:31:13 -0500
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 129FUcdn018321;
+        Wed, 10 Mar 2021 00:30:38 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 129FUcdn018321
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615303838;
+        bh=duaVjO6ZT9w3WdK0Ejkic79qcK1IWR5fB/TZDf76FGA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qgM9NFwMiLY47ay6AZVLPl12PZ16k7tMoEC4jOirg2Q556CR9IVNEayLHEsX96iHg
+         z2vIdkeX66iopgC/rKnB/V3drNeqJMZ02q7ZdkOykQwXe1fmQJdptphUd5U/FOzP8f
+         O+SYC5sgdCw7huTniJEp5fWce79kEb8eocxZnzMYaISEj85T8uA5dzNvmLBQ15TSOe
+         CrRyBA7GzDRGJc+gyebsJ+uYgmnSs3HYphNge77KDioK3/y4QIbeg2ygDcr6UznoZH
+         wYKUVlcPe+dNIf/Y/B7Gtk5Hm4wcxJoOda3bfJWNQi149t5XuLzyGz+3HF5Py547JE
+         RrAGzO0hDuGcg==
+X-Nifty-SrcIP: [209.85.210.177]
+Received: by mail-pf1-f177.google.com with SMTP id t85so4409241pfc.13;
+        Tue, 09 Mar 2021 07:30:38 -0800 (PST)
+X-Gm-Message-State: AOAM532P79lgEG4iqDUotU4Y/A8TaqvEr/R/H/UJ7p+5jBQzSRVkg6XY
+        dgXZxdG/VdHO7D1H00xEsRtRaiqkn4n1A64m4/I=
+X-Google-Smtp-Source: ABdhPJyLsPDnmD2y2htemNUFNTD3CKccrm7a07/ky8tR1jO6hHrNhdi3f+3km8/+c3tYh8GKZEI34XL1WNiXXYuYd64=
+X-Received: by 2002:aa7:8d84:0:b029:1f8:3449:1bc6 with SMTP id
+ i4-20020aa78d840000b02901f834491bc6mr6900507pfr.76.1615303835416; Tue, 09 Mar
+ 2021 07:30:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210302142614.505888-1-masahiroy@kernel.org>
+In-Reply-To: <20210302142614.505888-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 10 Mar 2021 00:29:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARcrGJnoBuzC8mSJqAXPQjdTt-bC8EZEwNBTCTb=o3yQA@mail.gmail.com>
+Message-ID: <CAK7LNARcrGJnoBuzC8mSJqAXPQjdTt-bC8EZEwNBTCTb=o3yQA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: show warning for 'make headers_check'
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021 08:46:09 -0400
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Tue, Mar 2, 2021 at 11:26 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Since commit 7ecaf069da52 ("kbuild: move headers_check rule to
+> usr/include/Makefile"), the headers_check target is no-op.
+>
+> This stub target is remaining here in case some scripts still invoke
+> 'make headers_check'. In order to prompt people to remove stale code,
+> show a noisy warning message if used. The stub will be really removed
+> after the Linux 5.15 release.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
 
-> On Tue, Mar 09, 2021 at 03:49:09AM +0000, Zengtao (B) wrote:
-> > Hi guys:
-> > 
-> > Thanks for the helpful comments, after rethinking the issue, I have proposed
-> >  the following change: 
-> > 1. follow_pte instead of follow_pfn.  
-> 
-> Still no on follow_pfn, you don't need it once you use vmf_insert_pfn
+Applied to linux-kbuild.
 
-vmf_insert_pfn() only solves the BUG_ON, follow_pte() is being used
-here to determine whether the translation is already present to avoid
-both duplicate work in inserting the translation and allocating a
-duplicate vma tracking structure.
 
-> > 2. vmf_insert_pfn loops instead of io_remap_pfn_range
-> > 3. proper undos when some call fails.
-> > 4. keep the bigger lock range to avoid unessary pte install.   
-> 
-> Why do we need locks at all here?
 
-For the vma tracking and testing whether the fault is already
-populated.  Once we get rid of the vma list, maybe it makes sense to
-only insert the faulting page rather than the entire vma, at which
-point I think we'd have no reason to serialize.  Thanks,
+>
+>  Makefile | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/Makefile b/Makefile
+> index f9b54da2fca0..a3336d9b4a22 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1339,7 +1339,11 @@ headers: $(version_h) scripts_unifdef uapi-asm-generic archheaders archscripts
+>  # Deprecated. It is no-op now.
+>  PHONY += headers_check
+>  headers_check:
+> -       @:
+> +       @echo >&2 "=================== WARNING ==================="
+> +       @echo >&2 "Since Linux 5.5, 'make headers_check' is no-op,"
+> +       @echo >&2 "and will be removed after Linux 5.15 release."
+> +       @echo >&2 "Please remove headers_check from your scripts."
+> +       @echo >&2 "==============================================="
+>
+>  ifdef CONFIG_HEADERS_INSTALL
+>  prepare: headers
+> --
+> 2.27.0
+>
 
-Alex
 
+-- 
+Best Regards
+Masahiro Yamada
