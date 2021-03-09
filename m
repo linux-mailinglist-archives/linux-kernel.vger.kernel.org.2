@@ -2,88 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F724332188
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B76F33218A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhCIJDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:03:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbhCIJC3 (ORCPT
+        id S229530AbhCIJDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:03:08 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3297 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229730AbhCIJCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:02:29 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024FBC061760
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 01:02:29 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id w7so2749908pll.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 01:02:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=u8ArZQ+KHFSvmT08uvy27XesXoPhuLhAZbHVQzDz71U=;
-        b=TTMen7rmz9A5cwnAhB1I1c3j/wk9evkRPeSQQGW+a3khDM1AnhEVP2EX5mHXYn7+3W
-         +MWTIlYiaixVr7fWXU7O+9Ur72ieA1NaYAbJzjAjHGRzJ+ad+T+0PAyIdeROL5Tbtken
-         WuPBVa3QHKQ0bfopO/dIyPXLu3/d8ZOUME10Ui3i1YHS9dyadoSDR/aFGQIf/BAf539t
-         lvSXhV0rgGxjEQuZDOkWG2Fzs1UdlLmftPjsKk7lf8QUwHnX+KYIAUtjcBhDtRz+i5Xp
-         DtT5De+c/cYyhdIWuorCuQLEXfD1nF9ijPKuCrrID6L3KjEveRLE17YHFfjMGOQxbUM5
-         J0Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=u8ArZQ+KHFSvmT08uvy27XesXoPhuLhAZbHVQzDz71U=;
-        b=SlkvwMH/8NUd4ryw4Zj+QFgqIa0AamowSL6g1ExvJ/DHrtOHiFXVPaZHhZ7Vf2Uhvb
-         xnUvH5ZTvCjEx6+AyLBFpp2ECprEu32EIj3OT8GwSx0o4kV5Rq9PgCmvg419R5Qc149j
-         OoRR6o/io2ZN0oEwrduX2CiQ7TrUWaB1eizfIwnvVGu3wImL50X7yNSjNYHz//NjH8+n
-         /rPNy8nVK0zIs+C9GD9wiaJ3KyNQy5Xse+DOqnzQpWNv+sXRpCnDZLO9RCvchyxrMJPW
-         NnqG7ZyjJTkul1PPJczg3Ia3RyWe2Xr2hwyZceWgezttbUOYPW+RW0G5p2jK/O62GIie
-         GKTw==
-X-Gm-Message-State: AOAM533w0tloQCMoEISwWs1c2+jAGtDP5XmHA/kEXbA9cEVNP4SIFr2e
-        8qx8QI44FJ48khavFvaVqXs=
-X-Google-Smtp-Source: ABdhPJyshDQSFkreK/47GHrolspCwwxZDlmp4r7dRsLECu5plzyAoQXxM2XYGHyyiZRxl1JrPbnO3A==
-X-Received: by 2002:a17:90a:16d6:: with SMTP id y22mr3739120pje.55.1615280548564;
-        Tue, 09 Mar 2021 01:02:28 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.97])
-        by smtp.gmail.com with ESMTPSA id b14sm12469114pfi.74.2021.03.09.01.02.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 01:02:28 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     bigeasy@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] kernel: profile: fix error return code of create_proc_profile()
-Date:   Tue,  9 Mar 2021 01:02:15 -0800
-Message-Id: <20210309090215.25669-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 9 Mar 2021 04:02:38 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Dvq0C3dsFz143DX;
+        Tue,  9 Mar 2021 16:59:39 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 9 Mar 2021 17:02:30 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Tue, 9 Mar 2021 17:02:30 +0800
+Subject: Re: [PATCH 2/2] KVM: arm64: Skip the cache flush when coalescing
+ tables into a block
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>,
+        <yuzenghui@huawei.com>
+References: <20210125141044.380156-1-wangyanan55@huawei.com>
+ <20210125141044.380156-3-wangyanan55@huawei.com>
+ <20210308163454.GA26561@willie-the-truck>
+ <8a947c73-16e9-7ca7-c185-d4c951938505@huawei.com>
+ <87y2ewyawn.wl-maz@kernel.org>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <fbdd19aa-fae6-0613-d5ec-dd062c66514a@huawei.com>
+Date:   Tue, 9 Mar 2021 17:02:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <87y2ewyawn.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When proc_create() returns NULL to entry, no error return code of
-create_proc_profile() is assigned.
-To fix this bug, err is assigned with -ENOMEM in this case.
 
-Fixes: e722d8daafb9 ("profile: Convert to hotplug state machine")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- kernel/profile.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On 2021/3/9 16:43, Marc Zyngier wrote:
+> On Tue, 09 Mar 2021 08:34:43 +0000,
+> "wangyanan (Y)" <wangyanan55@huawei.com> wrote:
+>>
+>> On 2021/3/9 0:34, Will Deacon wrote:
+>>> On Mon, Jan 25, 2021 at 10:10:44PM +0800, Yanan Wang wrote:
+>>>> After dirty-logging is stopped for a VM configured with huge mappings,
+>>>> KVM will recover the table mappings back to block mappings. As we only
+>>>> replace the existing page tables with a block entry and the cacheability
+>>>> has not been changed, the cache maintenance opreations can be skipped.
+>>>>
+>>>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>>>> ---
+>>>>    arch/arm64/kvm/mmu.c | 12 +++++++++---
+>>>>    1 file changed, 9 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>>>> index 8e8549ea1d70..37b427dcbc4f 100644
+>>>> --- a/arch/arm64/kvm/mmu.c
+>>>> +++ b/arch/arm64/kvm/mmu.c
+>>>> @@ -744,7 +744,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>>>    {
+>>>>    	int ret = 0;
+>>>>    	bool write_fault, writable, force_pte = false;
+>>>> -	bool exec_fault;
+>>>> +	bool exec_fault, adjust_hugepage;
+>>>>    	bool device = false;
+>>>>    	unsigned long mmu_seq;
+>>>>    	struct kvm *kvm = vcpu->kvm;
+>>>> @@ -872,12 +872,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>>>    		mark_page_dirty(kvm, gfn);
+>>>>    	}
+>>>>    -	if (fault_status != FSC_PERM && !device)
+>>>> +	/*
+>>>> +	 * There is no necessity to perform cache maintenance operations if we
+>>>> +	 * will only replace the existing table mappings with a block mapping.
+>>>> +	 */
+>>>> +	adjust_hugepage = fault_granule < vma_pagesize ? true : false;
+>>> nit: you don't need the '? true : false' part
+>>>
+>>> That said, your previous patch checks for 'fault_granule > vma_pagesize',
+>>> so I'm not sure the local variable helps all that much here because it
+>>> obscures the size checks in my opinion. It would be more straight-forward
+>>> if we could structure the logic as:
+>>>
+>>>
+>>> 	if (fault_granule < vma_pagesize) {
+>>>
+>>> 	} else if (fault_granule > vma_page_size) {
+>>>
+>>> 	} else {
+>>>
+>>> 	}
+>>>
+>>> With some comments describing what we can infer about the memcache and cache
+>>> maintenance requirements for each case.
+>> Thanks for your suggestion here, Will.
+>> But I have resent another newer series [1] (KVM: arm64: Improve
+>> efficiency of stage2 page table)
+>> recently, which has the same theme but different solutions that I
+>> think are better.
+>> [1]
+>> https://lore.kernel.org/lkml/20210208112250.163568-1-wangyanan55@huawei.com/
+>>
+>> Could you please comment on that series ?  I think it can be found in
+>> your inbox :).
+> There were already a bunch of comments on that series, and I stopped
+> at the point where the cache maintenance was broken. Please respin
+> that series if you want further feedback on it.
+Ok, I will send a new version later.
+>
+> In the future, if you deprecate a series (which is completely
+> understandable), please leave a note on the list with a pointer to the
+> new series so that people don't waste time reviewing an obsolete
+> series. Or post the new series with a new version number so that it is
+> obvious that the original series has been superseded.
+I apologize for this, I will be more careful in the future.
 
-diff --git a/kernel/profile.c b/kernel/profile.c
-index 6f69a4195d56..65bf03bb8a5e 100644
---- a/kernel/profile.c
-+++ b/kernel/profile.c
-@@ -549,8 +549,10 @@ int __ref create_proc_profile(void)
- #endif
- 	entry = proc_create("profile", S_IWUSR | S_IRUGO,
- 			    NULL, &profile_proc_ops);
--	if (!entry)
-+	if (!entry) {
-+		err = -ENOMEM;
- 		goto err_state_onl;
-+	}
- 	proc_set_size(entry, (1 + prof_len) * sizeof(atomic_t));
- 
- 	return err;
--- 
-2.17.1
+Thanks,
 
+Yanan
+> Thanks,
+>
+> 	M.
+>
