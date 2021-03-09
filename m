@@ -2,68 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606B8332D9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D303332DA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhCIRzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:55:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56076 "EHLO mx2.suse.de"
+        id S231835AbhCIRz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:55:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56300 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231571AbhCIRyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:54:54 -0500
+        id S230173AbhCIRzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:55:51 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615312493; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U/QDGXem12Pxb7eLy5qL+FVC4i3Gwof8hgAbnQWzXZQ=;
-        b=nJktd1E7kuiWKgLuQn2T5fbjub8/ihZ6F/p8Mpfiybg3fLsbOne/B+4tVBh3QTSanWO0DA
-        4iVmn8VLUrAFMgRd6lUhml9bpgAsAgGdbRM72/te9R4gcIvJUFn2lSGAE7nR5YHzytHsoY
-        bR4OjzBpc8LpBLW2QuxjMer+5PfTxQE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E9813ACC6;
-        Tue,  9 Mar 2021 17:54:52 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 18:54:52 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        surenb@google.com, cgoldswo@codeaurora.org, willy@infradead.org,
-        david@redhat.com, vbabka@suse.cz, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mm: disable LRU pagevec during the migration
- temporarily
-Message-ID: <YEe2bIfYZvmaTMIb@dhcp22.suse.cz>
-References: <20210309051628.3105973-1-minchan@kernel.org>
- <YEdV7Leo7MC93PlK@dhcp22.suse.cz>
- <YEeiYbBjefM08h18@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEeiYbBjefM08h18@google.com>
+        by mx2.suse.de (Postfix) with ESMTP id 6B76EAC1F;
+        Tue,  9 Mar 2021 17:55:50 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v4 0/5] Allocate memmap from hotadded memory (per device)
+Date:   Tue,  9 Mar 2021 18:55:41 +0100
+Message-Id: <20210309175546.5877-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 09-03-21 08:29:21, Minchan Kim wrote:
-> On Tue, Mar 09, 2021 at 12:03:08PM +0100, Michal Hocko wrote:
-[...]
-> > Sorry for nit picking but I think the additional abstraction for
-> > migrate_prep is not really needed and we can remove some more code.
-> > Maybe we should even get rid of migrate_prep_local which only has a
-> > single caller and open coding lru draining with a comment would be
-> > better from code reading POV IMO.
-> 
-> Thanks for the code. I agree with you.
-> However, in this moment, let's go with this one until we conclude.
-> The removal of migrate_prep could be easily done after that.
-> I am happy to work on it.
+Hi,
 
-I will leave that up to you but I find it a bit pointless to add
-migrate_finish just to remove it in the next patch.
+here is v4.
 
-Btw. you should also move lru_cache_disabled up in swap.c to fix up
-compilation issues by 0 day bot. I didn't do that in my version.
+Changes from v3 -> v4:
+ - Addressed feedback from David
+ - Wrap memmap_on_memory module thingy with #ifdef
+   on MHP_MEMMAP_ON_MEMORY
+ - Move "depend on MEMORY_HOTPLUG" to MHP_MEMMAP_ON_MEMORY
+   in generic mm/Kconfig
+ - Collect David's Reviewed-bys
+
+Changes from v2 -> v3:
+ - Addressed feedback from David
+ - Squash former patch#4 and and patch#5 into patch#1
+ - Fix config dependency CONFIR_SPARSE_VMEMMAP vs CONFIG_SPARSE_VMEMMAP_ENABLE
+ - Simplify module parameter functions
+
+Changes from v1 -> v2
+ - Addressed feedback from David
+ - Fence off the feature in case struct page size is not
+   multiple of PMD size or pageblock alignment cannot be guaranted
+ - Tested on x86_64 small and large memory_blocks
+ - Tested on arm64 4KB and 64KB page sizes (for some reason I cannot boot
+   my VM with 16KB page size).
+
+ Arm64 with 4KB page size behaves like x86_64 after [1], which made section
+ size smaller.
+ With 64KB, the feature gets fenced off due to pageblock alignment.
+
+Changes from RFCv3 -> v1:
+ - Addressed feedback from David
+ - Re-order patches
+
+Changes from v2 -> v3 (RFC):
+ - Re-order patches (Michal)
+ - Fold "mm,memory_hotplug: Introduce MHP_MEMMAP_ON_MEMORY" in patch#1
+ - Add kernel boot option to enable this feature (Michal)
+
+Changes from v1 -> v2 (RFC):
+ - Addressed feedback provided by David
+ - Add a arch_support_memmap_on_memory to be called
+   from mhp_supports_memmap_on_memory, as atm,
+   only ARM, powerpc and x86_64 have altmat support.
+
+[1] https://lore.kernel.org/lkml/cover.1611206601.git.sudaraja@codeaurora.org/
+
+Original cover letter:
+
+----
+
+ The primary goal of this patchset is to reduce memory overhead of the
+ hot-added memory (at least for SPARSEMEM_VMEMMAP memory model).
+ The current way we use to populate memmap (struct page array) has two main drawbacks:
+ 
+ a) it consumes an additional memory until the hotadded memory itself is
+    onlined and
+ b) memmap might end up on a different numa node which is especially true
+    for movable_node configuration.
+ c) due to fragmentation we might end up populating memmap with base
+    pages
+ 
+ One way to mitigate all these issues is to simply allocate memmap array
+ (which is the largest memory footprint of the physical memory hotplug)
+ from the hot-added memory itself. SPARSEMEM_VMEMMAP memory model allows
+ us to map any pfn range so the memory doesn't need to be online to be
+ usable for the array. See patch 3 for more details.
+ This feature is only usable when CONFIG_SPARSEMEM_VMEMMAP is set.
+ 
+ [Overall design]:
+ 
+ Implementation wise we reuse vmem_altmap infrastructure to override
+ the default allocator used by vmemap_populate.
+ memory_block structure gained a new field called nr_vmemmap_pages.
+ This plays well for two reasons:
+ 
+  1) {offline/online}_pages know the difference between start_pfn and
+     buddy_start_pfn, which is start_pfn + nr_vmemmap_pages.
+     In this way all isolation/migration operations are
+     done to within the right range of memory without vmemmap pages.
+     This allows us for a much cleaner handling.
+ 
+  2) In try_remove_memory, we construct a new vmemap_altmap struct with the
+     right information based on memory_block->nr_vmemap_pages, so we end up
+     calling vmem_altmap_free instead of free_pagetable when removing the memory.
+
+Oscar Salvador (5):
+  mm,memory_hotplug: Allocate memmap from the added memory range
+  acpi,memhotplug: Enable MHP_MEMMAP_ON_MEMORY when supported
+  mm,memory_hotplug: Add kernel boot option to enable memmap_on_memory
+  x86/Kconfig: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+  arm64/Kconfig: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+
+ Documentation/admin-guide/kernel-parameters.txt |  16 +++
+ arch/arm64/Kconfig                              |   3 +
+ arch/x86/Kconfig                                |   3 +
+ drivers/acpi/acpi_memhotplug.c                  |   5 +-
+ drivers/base/memory.c                           |  20 +--
+ include/linux/memory.h                          |   8 +-
+ include/linux/memory_hotplug.h                  |  21 +++-
+ include/linux/memremap.h                        |   2 +-
+ include/linux/mmzone.h                          |   5 +
+ mm/Kconfig                                      |   5 +
+ mm/Makefile                                     |   5 +-
+ mm/memory_hotplug.c                             | 157 ++++++++++++++++++++----
+ mm/page_alloc.c                                 |   4 +-
+ 13 files changed, 216 insertions(+), 38 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.16.3
+
