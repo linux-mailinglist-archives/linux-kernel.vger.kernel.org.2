@@ -2,165 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D698A332B54
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4119C332B55
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhCIP7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:59:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbhCIP6p (ORCPT
+        id S231339AbhCIP7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:59:03 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52362 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231953AbhCIP65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:58:45 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F70CC06174A;
-        Tue,  9 Mar 2021 07:58:45 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso5434742pjb.3;
-        Tue, 09 Mar 2021 07:58:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pCTLgyJmDFeD56n8IUl4QFZTL7P5pMyXAP3fRfLsqCA=;
-        b=EMnKZMFI2eLQ0rt0e9KDNFrGAgUHGDjzC0XkQdB60i3fGhH27/FLqoqgJwiM/rAhnr
-         eBm2zmS8FTDC8jwt7hkgFnphw7seNAkJFocrNVE5xy96ge3eZL3iN4rqCnKrB1mQ9HPU
-         jkwlcY5Ax1itn0BeZ+ybMDllYyAKg2cNsSmzz3jPK1dqASYhBtMvhOAD5ldPDfOnIk3j
-         n9ba7U3EnT2Vjse07/AYtWJ03e+Jb0qvoPVSm1J6meKZvf6FyGYZGTm8HmbdRJD3983s
-         yl7BPcqQmE9ZTzM7qjox9xpwFjZMO5pSm8729cHeb2LkZ1Ayybvcf90vGAF2Fo08Am3u
-         nvDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pCTLgyJmDFeD56n8IUl4QFZTL7P5pMyXAP3fRfLsqCA=;
-        b=UxVnCz3RRNpwFHY037r06TD9llRnRd+kbhSc2WhlSzU1baPAV04IHJ3n+ZsxQinf6D
-         2APlXxA15vwSKQRJQEEKTOrvD0jikQCOh8AOjRawIXF5RrMEThsUhSsptKGyu+qTiHeW
-         rME6giMWOmf1xNllIPOlMPGL84iVRa0dv4Y5ROPElusdMLTITYpGK/indxY+VRzmBLMh
-         8jS3PkiOKYBNkiduC5PISD2dy7GAe+oTLRcKVQgG+EUWf3/viMNA+/6+jc4uKUqECZGd
-         j1F9j/Z19RvLS2+TMsVyP74/gv+8gq27gtx9IEZmSZbUweOIvsM//OoLmqar71mtLQJO
-         VqUA==
-X-Gm-Message-State: AOAM533niqXrfQ8lJJSOch6iWaAFItt44vDj8uCy0ec7QhjrvZGV5Zyh
-        bxBUlWshndZqh6NQBO4PmPw=
-X-Google-Smtp-Source: ABdhPJw12w2HrAYuH89g+Rsn9/jFr7o/q1FZOEm66TRiXHODXNYZnQjjpwnrwOdoEre8+kAnujMsoQ==
-X-Received: by 2002:a17:90b:e01:: with SMTP id ge1mr5506817pjb.117.1615305524561;
-        Tue, 09 Mar 2021 07:58:44 -0800 (PST)
-Received: from [172.30.1.19] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id q95sm3557419pjq.20.2021.03.09.07.58.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 07:58:43 -0800 (PST)
-Subject: Re: [PATCH 07/11] PM / devfreq: check get_dev_status before start
- monitor
-To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, abel.vesa@nxp.com
-References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
- <1615294733-22761-8-git-send-email-aisheng.dong@nxp.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <de25cd22-7f17-5902-21d3-881e3128dd31@gmail.com>
-Date:   Wed, 10 Mar 2021 00:58:37 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 9 Mar 2021 10:58:57 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129Fwpau025678;
+        Tue, 9 Mar 2021 09:58:51 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615305531;
+        bh=BV8/rpExm5BWu2SNJlrTfVmgWccLMXLmXBTkkOWPwlk=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=h06LAQaoPzpZ2xkw2njAFEO5CJuiOyNvFKL9G+X6Nn4FakzOcSSymzihJ6qy4EU1r
+         C7JnWkXTtcO43x9HQOgUersjmg3yhHZaiV3FA9etirIwicxTbw6L7bU0Yr5qmcJxnq
+         svUpy5BCeLXjxXYkzs4gsrZXbXHx0Hca7sj5q/Y0=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129FwpWh045054
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Mar 2021 09:58:51 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
+ 2021 09:58:50 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 9 Mar 2021 09:58:50 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129FwoUG106375;
+        Tue, 9 Mar 2021 09:58:50 -0600
+Date:   Tue, 9 Mar 2021 09:58:50 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/2] AM64: Add support for GPIO
+Message-ID: <20210309155850.auyuxkrv5p3gkxcd@speed>
+References: <20210304112924.12470-1-a-govindraju@ti.com>
+ <20210309144333.6ko6olztldslj3fo@paralegal>
+ <9ba5e86d-7a60-a35b-0fb4-ddc3052eecee@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1615294733-22761-8-git-send-email-aisheng.dong@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9ba5e86d-7a60-a35b-0fb4-ddc3052eecee@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
-> The devfreq monitor depends on the device to provide load information
-> by .get_dev_status() to calculate the next target freq.
+On 21:20-20210309, Aswath Govindraju wrote:
+> Hi Nishanth,
 > 
-> And this will cause changing governor to simple ondemand fail
-> if device can't support.
+> On 09/03/21 8:13 pm, Nishanth Menon wrote:
+> > On 16:59-20210304, Aswath Govindraju wrote:
+> >> The following series of patches adds support for gpio on AM642 evm/sk.
+> >>
+> >> Changes since v1:
+> >> - Added DT for gpio subsystem present in MCU domain
+> >> - reserved the mcu gpio for firmware usage
+> >>
+> >> This series of patches depend on,
+> >> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439039
+> >> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439153
+> >>
+> >>
+> >> Aswath Govindraju (2):
+> >>   arm64: dts: ti: k3-am64: Add GPIO DT nodes
+> >>   arm64: dts: ti: k3-am642: reserve gpio in mcu domain for firmware
+> >>     usage
+> >>
+> >>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 45 ++++++++++++++++++++++++
+> >>  arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi  | 27 ++++++++++++++
+> >>  arch/arm64/boot/dts/ti/k3-am642-evm.dts  |  5 +++
+> >>  arch/arm64/boot/dts/ti/k3-am642-sk.dts   |  5 +++
+> >>  4 files changed, 82 insertions(+)
+> >>
+> >> -- 
+> >> 2.17.1
+> >>
+> > 
+> > 
+> > Based on your offline comment:
+> > -----
+> > 
+> > On going through the bootlogs before posting for I found the following
+> > errors,
+> > 
+> > [    1.091117] davinci_gpio 601000.gpio: IRQ index 2 not found
+> > [    1.101522] davinci_gpio 601000.gpio: error -ENXIO: IRQ not populated
+> > 
+> > Some issues in allocating interrupts in case of main_gpio1. I
+> > accumulated the gpio with interrupt numbers. I'll try to debug the
+> > reason behind it and update you with its status. (bootlogs of ti-sdk,
+> > also have this error).
+> > 
+> > -----
+> > 
+> > I am going to drop this off my queue, please update if the fixup is some
+> > system configuration error or repost with fix.
+> > 
 > 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
->   drivers/devfreq/devfreq.c                 | 10 +++++++---
->   drivers/devfreq/governor.h                |  2 +-
->   drivers/devfreq/governor_simpleondemand.c |  3 +--
->   3 files changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index 7231fe6862a2..d1787b6c7d7c 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -482,10 +482,13 @@ static void devfreq_monitor(struct work_struct *work)
->    * to be called from governor in response to DEVFREQ_GOV_START
->    * event when device is added to devfreq framework.
->    */
-> -void devfreq_monitor_start(struct devfreq *devfreq)
-> +int devfreq_monitor_start(struct devfreq *devfreq)
->   {
->   	if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
-> -		return;
-> +		return 0;
-> +
-> +	if (!devfreq->profile->get_dev_status)
-> +		return -EINVAL;
->   
->   	switch (devfreq->profile->timer) {
->   	case DEVFREQ_TIMER_DEFERRABLE:
-> @@ -495,12 +498,13 @@ void devfreq_monitor_start(struct devfreq *devfreq)
->   		INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
->   		break;
->   	default:
-> -		return;
-> +		return -EINVAL;
->   	}
->   
->   	if (devfreq->profile->polling_ms)
->   		queue_delayed_work(devfreq_wq, &devfreq->work,
->   			msecs_to_jiffies(devfreq->profile->polling_ms));
-> +	return 0;
->   }
->   EXPORT_SYMBOL(devfreq_monitor_start);
->   
-> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
-> index 5cee3f64fe2b..31af6d072a10 100644
-> --- a/drivers/devfreq/governor.h
-> +++ b/drivers/devfreq/governor.h
-> @@ -75,7 +75,7 @@ struct devfreq_governor {
->   				unsigned int event, void *data);
->   };
->   
-> -void devfreq_monitor_start(struct devfreq *devfreq);
-> +int devfreq_monitor_start(struct devfreq *devfreq);
->   void devfreq_monitor_stop(struct devfreq *devfreq);
->   void devfreq_monitor_suspend(struct devfreq *devfreq);
->   void devfreq_monitor_resume(struct devfreq *devfreq);
-> diff --git a/drivers/devfreq/governor_simpleondemand.c b/drivers/devfreq/governor_simpleondemand.c
-> index d57b82a2b570..ea287b57cbf3 100644
-> --- a/drivers/devfreq/governor_simpleondemand.c
-> +++ b/drivers/devfreq/governor_simpleondemand.c
-> @@ -89,8 +89,7 @@ static int devfreq_simple_ondemand_handler(struct devfreq *devfreq,
->   {
->   	switch (event) {
->   	case DEVFREQ_GOV_START:
-> -		devfreq_monitor_start(devfreq);
-> -		break;
-> +		return devfreq_monitor_start(devfreq);
->   
->   	case DEVFREQ_GOV_STOP:
->   		devfreq_monitor_stop(devfreq);
-> 
+> This is expected to be a fixup in the system configuration and not a bug
+> in the patch series. So, can you please have these patches in your queue
+> ? I'll soon post the test results indicating the functioning of GPIOs.
 
-Need to handle the all points of devfreq_monitor_start() usage.
-please check the tegra30-devfreq.c for this update.
 
-$ grep -rn "devfreq_monitor_start" drivers/
-drivers/devfreq/governor_simpleondemand.c:92: 
-devfreq_monitor_start(devfreq);
-drivers/devfreq/tegra30-devfreq.c:744:		devfreq_monitor_start(devfreq);
-......
+Thanks for clarifying. I will wait till the test results are posted.
+Thanks in advance for digging into this and detailed testing.
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
