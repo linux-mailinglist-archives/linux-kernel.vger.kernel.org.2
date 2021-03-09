@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54E1332B78
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF42332B7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbhCIQHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:07:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33364 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230495AbhCIQGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:06:33 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615305992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yE5Leq5IeRX/BGMbx+e0U1ktiHL+YFJD+F5kGmaHXd0=;
-        b=EwCIEbawx8JZXbWyvRDdft0L71brX1Fx+d/eZYuwgZItIq6G5aTUcSr2UVJrwlCkGFKXrm
-        pYZ0uFkIF6aGMVsjGli9Q1bZ51U3C5zgCu/XaNKv4ki1lj4IDx6a5FOxErE/kI43Yk5vp9
-        k+ZEUtvPFtuaXGTylCOasP4UGg38aPA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 21C7AAF0C;
-        Tue,  9 Mar 2021 16:06:32 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH v6 14/12] x86/alternative: don't open code ALTERNATIVE_TERNARY() in _static_cpu_has()
-Date:   Tue,  9 Mar 2021 17:06:21 +0100
-Message-Id: <20210309160621.29290-2-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210309160621.29290-1-jgross@suse.com>
-References: <20210309134813.23912-1-jgross@suse.com>
- <20210309160621.29290-1-jgross@suse.com>
+        id S232071AbhCIQHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:07:37 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:60202 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232066AbhCIQHR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:07:17 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 129Fra1f124120;
+        Tue, 9 Mar 2021 16:07:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=b5dVdoI7QKOmhvlb6MzN5U9RU3I4t3hNEqEOjp5BgBA=;
+ b=ut3AgnFMRDb2vT/2Uu+wpFUpa8Tlu080teWQp5ScnFNOJvtnXN9gIHodjoK1CmDxBEMg
+ JYAZJijU2K+NY0vSXomRh5hu8xXdkxoZiZt7x+E/+HygkBifMqhPD5r8v/CksryQW8cS
+ b7kJm6qIPNB4NDQhpUFMN/XoYhDjA3dqKYCB5k2e+z7jr6PptkUQ7b+gF8wPOT1FvHHD
+ Dn+h8NQ7L32KPUF0Y2UNKZt0nMBlf7NUHm3O3gfmp0+DkdvJxZ5MW6ipks+r/67uel3u
+ VhVVwsMN9Lkm7+ZraGYxxK+NAzKgkBuxu7Te7tjTefMaT5RuD8hQx34cvQtZd1bZinCr HA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 373y8br0ch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 09 Mar 2021 16:07:06 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 129Fsxo0078429;
+        Tue, 9 Mar 2021 16:07:04 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 374kgs0yxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 09 Mar 2021 16:07:04 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 129G70Ku012258;
+        Tue, 9 Mar 2021 16:07:00 GMT
+Received: from mwanda (/10.175.175.8)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 09 Mar 2021 08:06:59 -0800
+Date:   Tue, 9 Mar 2021 19:06:52 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Evgeniy Polyakov <zbr@ioremap.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Akira Shimahara <akira215corp@gmail.com>,
+        Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] w1: w1_therm: use clamp() in int_to_short()
+Message-ID: <YEedHNwqEH8fvjkD@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9918 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103090080
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9918 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 mlxscore=0 phishscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103090080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-_static_cpu_has() contains a completely open coded version of
-ALTERNATIVE_TERNARY(). Replace that with the macro instead.
+It's slightly cleaner to use the clamp() macro instead of open coding
+this.
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- arch/x86/include/asm/cpufeature.h | 41 +++++++------------------------
- 1 file changed, 9 insertions(+), 32 deletions(-)
+ drivers/w1/slaves/w1_therm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
-index 1728d4ce5730..16a51e7288d5 100644
---- a/arch/x86/include/asm/cpufeature.h
-+++ b/arch/x86/include/asm/cpufeature.h
-@@ -8,6 +8,7 @@
- 
- #include <asm/asm.h>
- #include <linux/bitops.h>
-+#include <asm/alternative.h>
- 
- enum cpuid_leafs
+diff --git a/drivers/w1/slaves/w1_therm.c b/drivers/w1/slaves/w1_therm.c
+index 976eea28f268..ad47c164bc05 100644
+--- a/drivers/w1/slaves/w1_therm.c
++++ b/drivers/w1/slaves/w1_therm.c
+@@ -906,8 +906,7 @@ static inline int temperature_from_RAM(struct w1_slave *sl, u8 rom[9])
+ static inline s8 int_to_short(int i)
  {
-@@ -175,39 +176,15 @@ extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
-  */
- static __always_inline bool _static_cpu_has(u16 bit)
- {
--	asm_volatile_goto("1: jmp 6f\n"
--		 "2:\n"
--		 ".skip -(((5f-4f) - (2b-1b)) > 0) * "
--			 "((5f-4f) - (2b-1b)),0x90\n"
--		 "3:\n"
--		 ".section .altinstructions,\"a\"\n"
--		 " .long 1b - .\n"		/* src offset */
--		 " .long 4f - .\n"		/* repl offset */
--		 " .word %P[always]\n"		/* always replace */
--		 " .byte 3b - 1b\n"		/* src len */
--		 " .byte 5f - 4f\n"		/* repl len */
--		 " .byte 3b - 2b\n"		/* pad len */
--		 ".previous\n"
--		 ".section .altinstr_replacement,\"ax\"\n"
--		 "4: jmp %l[t_no]\n"
--		 "5:\n"
--		 ".previous\n"
--		 ".section .altinstructions,\"a\"\n"
--		 " .long 1b - .\n"		/* src offset */
--		 " .long 0\n"			/* no replacement */
--		 " .word %P[feature]\n"		/* feature bit */
--		 " .byte 3b - 1b\n"		/* src len */
--		 " .byte 0\n"			/* repl len */
--		 " .byte 0\n"			/* pad len */
--		 ".previous\n"
--		 ".section .altinstr_aux,\"ax\"\n"
--		 "6:\n"
--		 " testb %[bitnum],%[cap_byte]\n"
--		 " jnz %l[t_yes]\n"
--		 " jmp %l[t_no]\n"
--		 ".previous\n"
-+	asm_volatile_goto(
-+		ALTERNATIVE_TERNARY("jmp 6f", %P[feature], "", "jmp %l[t_no]")
-+		".section .altinstr_aux,\"ax\"\n"
-+		"6:\n"
-+		" testb %[bitnum],%[cap_byte]\n"
-+		" jnz %l[t_yes]\n"
-+		" jmp %l[t_no]\n"
-+		".previous\n"
- 		 : : [feature]  "i" (bit),
--		     [always]   "i" (X86_FEATURE_ALWAYS),
- 		     [bitnum]   "i" (1 << (bit & 7)),
- 		     [cap_byte] "m" (((const char *)boot_cpu_data.x86_capability)[bit >> 3])
- 		 : : t_yes, t_no);
+ 	/* Prepare to cast to short by eliminating out of range values */
+-	i = i > MAX_TEMP ? MAX_TEMP : i;
+-	i = i < MIN_TEMP ? MIN_TEMP : i;
++	i = clamp(i, MIN_TEMP, MAX_TEMP);
+ 	return (s8) i;
+ }
+ 
 -- 
-2.26.2
+2.30.1
 
