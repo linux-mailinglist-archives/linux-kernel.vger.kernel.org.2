@@ -2,169 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCAF331EC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E43E331ED5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhCIFvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 00:51:04 -0500
-Received: from mga03.intel.com ([134.134.136.65]:26342 "EHLO mga03.intel.com"
+        id S229875AbhCIFwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 00:52:41 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:51965 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229481AbhCIFup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 00:50:45 -0500
-IronPort-SDR: zTsIF8QdPj/DEcmjbc4Grobmt5IhBDiQ2eMDYURy43MZ48yW6Ha2K1qu4/bvozjGyUGa8c/oQz
- 8EJxKuRjQuQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188211755"
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="188211755"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 21:50:44 -0800
-IronPort-SDR: eBfZNne6GFYr0HVLC5ATPoAVGAgEzKJ8YYJ4noZ2rarbc2fN4gbwEvvNKaVjtkHN9azhPg4kKw
- 0rxeOXHMlf0A==
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="447383043"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.255.31.165]) ([10.255.31.165])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 21:50:42 -0800
-Subject: Re: [PATCH V2 2/4] vDPA/ifcvf: enable Intel C5000X-PL virtio-net for
- vDPA
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com, lulu@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210308083525.382514-1-lingshan.zhu@intel.com>
- <20210308083525.382514-3-lingshan.zhu@intel.com>
- <d37ea3f4-1c18-087b-a444-0d4e1ebbe417@redhat.com>
- <93aabf0c-3ea0-72d7-e7d7-1d503fe6cc75@intel.com>
- <91c08fdd-0a36-ddca-5b8c-ef2eef7cddc2@redhat.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <0e72009d-60af-980d-a43e-495733f6f6f7@intel.com>
-Date:   Tue, 9 Mar 2021 13:50:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <91c08fdd-0a36-ddca-5b8c-ef2eef7cddc2@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S229829AbhCIFwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 00:52:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615269136; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=GnXT3CMbghQtyRJZBgCfodavscSOdiLXWyQmtmjzkks=; b=Tko7x++ENGSpffCUEKycxx75XFPCx3eq7cDL/au1Z5ju0fm5OJMXUbuKCOVv4BorrGyoxFkM
+ IdVLUIZitLr1gculZuyJINJmL1JJCv8aI4bPsao+FViFVMzlqiX/NP8wvpPMUBRIhMjBXSjm
+ Hah2aZKFr13QS/9QLPfP7DQTQu8=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60470d07c862e1b9fdd58070 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Mar 2021 05:52:07
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AC30DC43462; Tue,  9 Mar 2021 05:52:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38D3FC433CA;
+        Tue,  9 Mar 2021 05:52:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 38D3FC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
+        bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, mani@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH 0/6] Enable miscellaneous hardware blocks to boot WPSS
+Date:   Tue,  9 Mar 2021 11:21:45 +0530
+Message-Id: <1615269111-25559-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series enables miscellaneous hardware blocks to boot Wireless
+Processor Subsystem (WPSS) on SC7280 SoC.
 
+[1] https://lore.kernel.org/patchwork/cover/1389010/
+The series depends on ^^
 
-On 3/9/2021 10:42 AM, Jason Wang wrote:
->
-> On 2021/3/9 10:28 上午, Zhu, Lingshan wrote:
->>
->>
->> On 3/9/2021 10:23 AM, Jason Wang wrote:
->>>
->>> On 2021/3/8 4:35 下午, Zhu Lingshan wrote:
->>>> This commit enabled Intel FPGA SmartNIC C5000X-PL virtio-net
->>>> for vDPA
->>>>
->>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>>> ---
->>>>   drivers/vdpa/ifcvf/ifcvf_base.h | 5 +++++
->>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 +++++
->>>>   2 files changed, 10 insertions(+)
->>>>
->>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
->>>> b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>> index 64696d63fe07..75d9a8052039 100644
->>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
->>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>> @@ -23,6 +23,11 @@
->>>>   #define IFCVF_SUBSYS_VENDOR_ID    0x8086
->>>>   #define IFCVF_SUBSYS_DEVICE_ID    0x001A
->>>>   +#define C5000X_PL_VENDOR_ID        0x1AF4
->>>> +#define C5000X_PL_DEVICE_ID        0x1000
->>>> +#define C5000X_PL_SUBSYS_VENDOR_ID    0x8086
->>>> +#define C5000X_PL_SUBSYS_DEVICE_ID    0x0001
->>>
->>>
->>> I just notice that the device is a transtitional one. Any reason for 
->>> doing this?
->>>
->>> Note that IFCVF is a moden device anyhow (0x1041). Supporting legacy 
->>> drive may bring many issues (e.g the definition is non-nomartive). 
->>> One example is the support of VIRTIO_F_IOMMU_PLATFORM, legacy driver 
->>> may assume the device can bypass IOMMU.
->>>
->>> Thanks
->> Hi Jason,
->>
->> This device will support virtio1.0 by default, so has 
->> VIRTIO_F_IOMMU_PLATFORM by default.
->
->
-> If you device want to force VIRTIO_F_IOMMU_PLATFORM you probably need 
-> to do what has been done by mlx5 (verify_min_features).
->
-> According to the spec, if VIRTIO_F_IOMMU_PLATFORM is not mandatory, 
-> when it's not negotiated, device needs to disable or bypass IOMMU:
->
->
-> "
->
-> If this feature bit is set to 0, then the device has same access to 
-> memory addresses supplied to it as the driver has. In particular, the 
-> device will always use physical addresses matching addresses used by 
-> the driver (typically meaning physical addresses used by the CPU) and 
-> not translated further, and can access any address supplied to it by 
-> the driver.
->
-> "
-sure, I can implement code to check the feature bits.
->
->
->> Transitional device gives the software a chance to fall back to 
->> virtio 0.95.
->
->
-> This only applies if you want to passthrough the card to guest 
-> directly without the help of vDPA.
->
-> If we go with vDPA, it doesn't hlep. For virtio-vdpa, we know it will 
-> negotiated IOMMU_PLATFORM. For vhost-vdpa, Qemu can provide a legacy 
-> or transitional device on top of a modern vDPA device.
->
-> Thanks
-For some cases, users may run quite out of date OS does not have vDPA 
-nor virtio 1.0 support, transitional characters give them a chance to 
-use the devices.
+Sibi Sankar (6):
+  soc: qcom: smem: Update max processor count
+  dt-bindings: mailbox: Add WPSS client index to IPCC
+  dt-bindings: reset: aoss: Add AOSS reset controller binding
+  dt-bindings: reset: pdc: Add PDC Global bindings
+  reset: qcom: Add PDC Global reset signals for WPSS
+  arm64: dts: qcom: sc7280: Add nodes to boot WPSS
 
-Thanks
-Zhu Lingshan
->
->
->> ifcvf drives this device in virtio 1.0 mode, set features 
->> VIRTIO_F_IOMMU_PLATFORM successfully.
->>
->> Thanks,
->> Zhu Lingshan
->>>
->>>
->>>> +
->>>>   #define IFCVF_SUPPORTED_FEATURES \
->>>>           ((1ULL << VIRTIO_NET_F_MAC)            | \
->>>>            (1ULL << VIRTIO_F_ANY_LAYOUT) | \
->>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> index e501ee07de17..26a2dab7ca66 100644
->>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> @@ -484,6 +484,11 @@ static struct pci_device_id ifcvf_pci_ids[] = {
->>>>           IFCVF_DEVICE_ID,
->>>>           IFCVF_SUBSYS_VENDOR_ID,
->>>>           IFCVF_SUBSYS_DEVICE_ID) },
->>>> +    { PCI_DEVICE_SUB(C5000X_PL_VENDOR_ID,
->>>> +             C5000X_PL_DEVICE_ID,
->>>> +             C5000X_PL_SUBSYS_VENDOR_ID,
->>>> +             C5000X_PL_SUBSYS_DEVICE_ID) },
->>>> +
->>>>       { 0 },
->>>>   };
->>>>   MODULE_DEVICE_TABLE(pci, ifcvf_pci_ids);
->>>
->>
->
+ .../devicetree/bindings/reset/qcom,aoss-reset.yaml |   5 +
+ .../devicetree/bindings/reset/qcom,pdc-global.yaml |   4 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 143 +++++++++++++++++++++
+ drivers/reset/reset-qcom-pdc.c                     |  62 +++++++--
+ drivers/soc/qcom/smem.c                            |   2 +-
+ include/dt-bindings/mailbox/qcom-ipcc.h            |   1 +
+ include/dt-bindings/reset/qcom,sdm845-pdc.h        |   2 +
+ 7 files changed, 207 insertions(+), 12 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
