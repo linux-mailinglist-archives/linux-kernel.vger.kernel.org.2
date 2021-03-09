@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CA133305D
+	by mail.lfdr.de (Postfix) with ESMTP id E684A33305E
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhCIU5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:57:01 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:59755 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231634AbhCIU42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:56:28 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dw6vD207tz9sW5;
-        Wed, 10 Mar 2021 07:56:24 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615323385;
-        bh=Q6GcSsIjU4/8fscAKA4ja2cTi2mrX+hfESDsVlxKeq0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=i+PS8BzHE1hgZWIVcMF+gCaKLyKz3KEM1V7BHqudofkB4f+VOyM+EvR6eDYU/5wyy
-         ov+Sa3O0wK02XgsEWBV5VV1wDqabuiY0prmQ/BLKvaRLHiRNdPHKB+Yws23O7wN0Yu
-         3hA5yy66Xhi88ON04Eq8UcYubAO2eTqzMwFTfHfN3EJGd2AukAC80hPkb7LvZ/OWkE
-         Vy9Zx2EhSpmL6O9hDf9vk+wfFRRtWN0fnTDB70JDx7U7pzyjlgRTwyOh6fiugPHjzd
-         gdjILPjYpMcP7F+rAcq4ymE/WRacOk17LiUdHqV/hv9ZPPfjVKPCDAIPfdpwBrf+Ci
-         Jcb3fGgp4dfxg==
-Date:   Wed, 10 Mar 2021 07:56:23 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org
-Subject: Re: mmotm 2021-03-08-21-52 uploaded
-Message-ID: <20210310075623.303ce786@canb.auug.org.au>
-In-Reply-To: <20210309204502.GL3479805@casper.infradead.org>
-References: <20210309055255.QSi-xADe2%akpm@linux-foundation.org>
-        <20210309204502.GL3479805@casper.infradead.org>
+        id S231852AbhCIU5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:57:02 -0500
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:54228 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230266AbhCIU4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:56:33 -0500
+Received: by mail-wm1-f46.google.com with SMTP id e23so3783789wmh.3;
+        Tue, 09 Mar 2021 12:56:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JFD+knxhbgjWL3eI/xavMNJfjLYJTwVKvjMVSZz9+6g=;
+        b=lXjGX0q+WzNZwVEAk7ffDocmRPp8IR+b+a0lOLVaIELQMLKRC7qdO8M65e5a5zwsQV
+         jYGhbzff0Ml4tfar8vESNHbi1s4m8DW9zAZqppKshaU2po6rtWg7xC9qIy8OzEM1hpQF
+         LklI/kjL6rx3YPpQd3M1/D4NNhpZxLYNiuP1yu1ZVBYjk0gR4l+ovmYNzzQ2OP2Fcuqm
+         2AqsBNeOkCEzO6L177Jv8Cj6S4G6x3xyByaAHfQoqPI3pna0ASf7DW5i+Sf05OBP/C06
+         sBbxMqFi8ybK1loLPTMi8Hh5RlEfNZ52KMhYdua/m/xJJ8OhrW0T8j5dkoFTqEWjLI7P
+         4gqw==
+X-Gm-Message-State: AOAM533Bn2cR3easIhL0c8PM42uiFvrnIUZrcT9wGWpaX3ITO7tDfYFp
+        d+x5BXGJZd8pJc0l2nuyLbQ=
+X-Google-Smtp-Source: ABdhPJxNHh2Fj3Pxn1keVzJYAksuucsgzc3xGcO6rLV4pNx2sU2Y3jMmK8jBHUSODlQMS+vapZb6Dg==
+X-Received: by 2002:a1c:9d51:: with SMTP id g78mr6226198wme.5.1615323392396;
+        Tue, 09 Mar 2021 12:56:32 -0800 (PST)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id s3sm25072658wrt.93.2021.03.09.12.56.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 12:56:31 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: imx8mq: remove SoC ID compatible
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>,
+        alice.guo@oss.nxp.com
+Cc:     devicetree@vger.kernel.org, festevam@gmail.com,
+        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org, robh@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org
+References: <20210104091544.13972-4-alice.guo@oss.nxp.com>
+ <20210309134251.2583679-1-martin.kepplinger@puri.sm>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Message-ID: <d2030810-a307-0438-d4b0-be6aa092e551@kernel.org>
+Date:   Tue, 9 Mar 2021 21:56:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_SZDwKGM1/IOkm8Ic+qkYwH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210309134251.2583679-1-martin.kepplinger@puri.sm>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_SZDwKGM1/IOkm8Ic+qkYwH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 09/03/2021 14:42, Martin Kepplinger wrote:
+> this reverts commit ce58459d8c7f4174e7b8a8ea903dd949631334a3 for imx8mq.
+> 
+> this is most likely not the real fix but works around the problem I have
+> (with v5.12-rc2) I want to report:
+> 
+> [    0.766925] SoC revision 0x21
+> [    0.770286] imx8_soc_info soc@0: SoC revision via nvmem read failed: -517
+> 
+> This leads to the system not booting up.
+> 
+> This change makes use of the old way of reading soc_revision and thus
+> works around the problem.
+> 
+> What could be missing for the nvmem way to work here? Should it work
+> in any case? I assume so if you add the compatible to imx8mq.dtsi. But
+> if it would work, why keep the ocotp reads?
 
-Hi Matthew,
+Hi,
 
-On Tue, 9 Mar 2021 20:45:02 +0000 Matthew Wilcox <willy@infradead.org> wrot=
-e:
->
-> On Mon, Mar 08, 2021 at 09:52:55PM -0800, akpm@linux-foundation.org wrote:
-> > The mm-of-the-moment snapshot 2021-03-08-21-52 has been uploaded to
-> >=20
-> >    https://www.ozlabs.org/~akpm/mmotm/ =20
-> ...
-> > This mmotm tree contains the following patches against 5.12-rc2:
-> > (patches marked "*" will be included in linux-next) =20
->=20
-> Something seems to have gone wrong in next-20210309.  There are a number
-> of patches listed here which are missing, and some patches are included
-> that aren't listed here.
->=20
-> > * mm-use-rcu_dereference-in-in_vfork.patch =20
->=20
-> This was the one I noticed was missing.
+Thanks for the report. 517 is deferred probe, so this could mean that
+efuse/ocotp did not come up yet. However soc_id driver should handle it
+and re-try after some try, shouldn't it? Unless there is a bug inside
+(your change basically disables soc_id driver).
 
-I haven't done a linux-next with this new mmotm yet, it arrived after I
-finished 20210309.  It will be included today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/_SZDwKGM1/IOkm8Ic+qkYwH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBH4PcACgkQAVBC80lX
-0GzOHQf6AqJgmlOVzuqFC3eg4ohshlDCZhzT8RGSwqf+RZBBiu4x7x0i+gio4DcM
-vhUA5t+3q1WAXrUyC+ZS1BzY+9A4zoNMJaLtz6LN2sx79qblUlmW+juTCG+d+v7z
-xg7NF6d1Tj1qv4io36Xe2IU0qaWcQpSeUP6CYTSFXS5e4zaq4q5IbnLnpRq4Du0P
-CVi3yvw2CVl/I6akHVs/Enehtf4gqcvyqK8O7A4rKb0YMEYT2+87E7RtAL5IJn7n
-Gd5+0w8E/28CcXKyLj4kh2LinUNUYgmVrhLQOxKcKgf2P5+I8GFh5exkxpTBz1VI
-TdosS7+aS4Yj+fGMMUhAziGRH2wqLA==
-=quys
------END PGP SIGNATURE-----
-
---Sig_/_SZDwKGM1/IOkm8Ic+qkYwH--
+Best regards,
+Krzysztof
