@@ -2,181 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A7333247F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF2B332489
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhCILwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:52:18 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:63593 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230266AbhCILvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:51:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615290712; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=V5L3WVB1qXI2HbP+qKoMQF6jfFpfX1gMX6BTozK6W1k=; b=lrvMlAvxaeEQzwlWROHwH5DBSr3H6CMKCUsYmeOjeB6vGB5U+62081ZZF6e0o65ibLtC7Ilq
- 8ugUnQSelDLVRN9WnfmLAKHsCnhePNW4AH0MyGzUdzjFo8DMtMH32q/aAU3jXORpf31939ov
- cWXl2eYcvTyob86ryZARp6NlboU=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60476158106ec1d906c1d8f9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Mar 2021 11:51:52
- GMT
-Sender: okukatla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7EE69C43461; Tue,  9 Mar 2021 11:51:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from okukatla1-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: okukatla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7FFBEC433C6;
-        Tue,  9 Mar 2021 11:51:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7FFBEC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=okukatla@codeaurora.org
-From:   Odelu Kukatla <okukatla@codeaurora.org>
-To:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        evgreen@google.com, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        id S230149AbhCILz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:55:28 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:49236 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhCILyz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 06:54:55 -0500
+Date:   Tue, 09 Mar 2021 11:54:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1615290891;
+        bh=au8P311SmZ1/czCL4nVmAVr6ahOSI3lXF7J9b/rBkuk=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=ZDnc7rxJyrR4tLUITVTmEGkNJC1G99TX73DVWgs2x4rG6IxlowmqI5c0VPVhCYcWU
+         I9ohzZ9o7wzYZ4MuD9RL9fSUsa4QZHoEjEixFgfqogtfipCP6p7XMU/GfsQdm2Vr+y
+         Kw1WeWW+Zb1r33uGJYcru0g+u72zzvxeDgydatQY=
+To:     caleb@connolly.tech
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, ejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        cang@codeaurora.org, beanhuo@micron.com, jaegeuk@kernel.org,
+        asutoshd@codeaurora.org, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     sboyd@kernel.org, ilina@codeaurora.org, seansw@qti.qualcomm.com,
-        elder@linaro.org, linux-pm@vger.kernel.org,
-        linux-arm-msm-owner@vger.kernel.org,
-        Odelu Kukatla <okukatla@codeaurora.org>
-Subject: [3/3] arm64: dts: sc7280: Add interconnect provider DT nodes
-Date:   Tue,  9 Mar 2021 17:20:09 +0530
-Message-Id: <1615290609-21009-4-git-send-email-okukatla@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615290609-21009-1-git-send-email-okukatla@codeaurora.org>
-References: <1615290609-21009-1-git-send-email-okukatla@codeaurora.org>
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: v2: scsi: ufshcd: use a macro for UFS versions
+Message-ID: <20210309115336.117206-1-caleb@connolly.tech>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the DT nodes for the network-on-chip interconnect buses found
-on sc7280-based platforms.
+When using a device with UFS > 2.1 the error "invalid UFS version" is
+misleadingly printed. There was a patch for this almost a year
+ago to which this solution was suggested.
 
-Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+This series replaces the use of the growing UFSHCI_VERSION_xy macros with
+an inline function to encode a major and minor version into the scheme
+used on devices, that being:
+
+        (major << 8) + (minor << 4)
+
+I dealt with the different encoding used for UFS 1.x by converting it
+to match the newer versions in ufshcd_get_ufs_version(). That means it's
+possible to use comparisons for version checks, e.g.
+
+        if (hba->ufs_version < ufshci_version(3, 0))
+                ...
+
+I've also dropped the "invalid UFS version" check entirely as it seems to
+be more misleading than useful, and hasn't been accurate for a long time.
+
+This has been tested on a device with UFS 3.0 and a device with UFS 2.1,
+however I don't own any older devices to test with.
+
+        Caleb
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 88 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
+Changes since v1:
+ * Switch from macro to static inline function
+ * Address Christoph's formatting comments
+ * Add Nitin's signoff on patch 3 ("scsi: ufshcd: remove version check")
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 8af6d77..ecb2a77 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -7,6 +7,7 @@
- 
- #include <dt-bindings/clock/qcom,gcc-sc7280.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
-+#include <dt-bindings/interconnect/qcom,sc7280.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/power/qcom-rpmpd.h>
- #include <dt-bindings/soc/qcom,rpmh-rsc.h>
-@@ -596,6 +597,93 @@
- 				clock-names = "xo";
- 				#clock-cells = <1>;
- 			};
-+
-+			apps_bcm_voter: bcm_voter {
-+				compatible = "qcom,bcm-voter";
-+			};
-+		};
-+
-+		clk_virt: interconnect {
-+			compatible = "qcom,sc7280-clk-virt";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		cnoc2: interconnect@1500000 {
-+			reg = <0 0x1500000 0 0x1000>;
-+			compatible = "qcom,sc7280-cnoc2";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		cnoc3: interconnect@1502000 {
-+			reg = <0 0x1502000 0 0x1000>;
-+			compatible = "qcom,sc7280-cnoc3";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		mc_virt: interconnect@1580000 {
-+			reg = <0 0x1580000 0 0x4>;
-+			compatible = "qcom,sc7280-mc-virt";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		system_noc: interconnect@1680000 {
-+			reg = <0 0x1680000 0 0x15480>;
-+			compatible = "qcom,sc7280-system-noc";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		aggre1_noc: interconnect@16e0000 {
-+			compatible = "qcom,sc7280-aggre1-noc";
-+			reg = <0 0x016e0000 0 0x1c080>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		aggre2_noc: interconnect@1700000 {
-+			reg = <0 0x1700000 0 0x2b080>;
-+			compatible = "qcom,sc7280-aggre2-noc";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		mmss_noc: interconnect@1740000 {
-+			reg = <0 0x1740000 0 0x1e080>;
-+			compatible = "qcom,sc7280-mmss-noc";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		lpass_ag_noc: interconnect@3c40000 {
-+			reg = <0 0x03c40000 0 0xf080>;
-+			compatible = "qcom,sc7280-lpass-ag-noc";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		dc_noc: interconnect@90e0000 {
-+			reg = <0 0x90e0000 0 0x5080>;
-+			compatible = "qcom,sc7280-dc-noc";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		gem_noc: interconnect@9100000 {
-+			reg = <0 0x9100000 0 0xe2200>;
-+			compatible = "qcom,sc7280-gem-noc";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		nsp_noc: interconnect@a0c0000 {
-+			reg = <0 0x0a0c0000 0 0x10000>;
-+			compatible = "qcom,sc7280-nsp-noc";
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 	};
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Caleb Connolly (3):
+      scsi: ufshcd: use a function to calculate versions
+      scsi: ufs: qcom: use ufshci_version function
+      scsi: ufshcd: remove version check
+
+ drivers/scsi/ufs/ufs-qcom.c |  4 +--
+ drivers/scsi/ufs/ufshcd.c   | 66 ++++++++++++++++++-----------------------=
+----
+ drivers/scsi/ufs/ufshci.h   | 17 +++++++-----
+ 3 files changed, 38 insertions(+), 49 deletions(-)
+
+
 
