@@ -2,173 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85EB332D75
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E88332D78
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:42:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbhCIRlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:41:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50910 "EHLO mx2.suse.de"
+        id S231883AbhCIRmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:42:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:57278 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231536AbhCIRlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:41:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0FBBFAF1E;
-        Tue,  9 Mar 2021 17:41:22 +0000 (UTC)
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v5 4/4] x86/vmemmap: Optimize for consecutive sections in partial populated PMDs
-Date:   Tue,  9 Mar 2021 18:41:13 +0100
-Message-Id: <20210309174113.5597-5-osalvador@suse.de>
-X-Mailer: git-send-email 2.13.7
-In-Reply-To: <20210309174113.5597-1-osalvador@suse.de>
-References: <20210309174113.5597-1-osalvador@suse.de>
+        id S231835AbhCIRmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:42:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AAAA71FB;
+        Tue,  9 Mar 2021 09:42:04 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69AE93F73C;
+        Tue,  9 Mar 2021 09:42:03 -0800 (PST)
+Date:   Tue, 9 Mar 2021 17:42:01 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Subject: Re: [PATCH v7 2/2] ARM: ftrace: Add MODULE_PLTS support
+Message-ID: <20210309174201.n53za7mw33dqyleh@e107158-lin.cambridge.arm.com>
+References: <20210127110944.41813-1-alexander.sverdlin@nokia.com>
+ <20210127110944.41813-3-alexander.sverdlin@nokia.com>
+ <20210307172650.uztx3sk5abybbp3f@e107158-lin.cambridge.arm.com>
+ <0c122390-6e76-f773-86e9-8c085f4384f2@nokia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0c122390-6e76-f773-86e9-8c085f4384f2@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can optimize in the case we are adding consecutive sections, so no
-memset(PAGE_UNUSED) is needed.
-In that case, let us keep track where the unused range of the previous
-memory range begins, so we can compare it with start of the range to be
-added.
-If they are equal, we know sections are added consecutively.
+On 03/08/21 08:58, Alexander Sverdlin wrote:
+> Hi!
+> 
+> On 07/03/2021 18:26, Qais Yousef wrote:
+> > I tried on 5.12-rc2 and 5.11 but couldn't reproduce the problem using your
 
-For that purpose, let us introduce 'unused_pmd_start', which always holds
-the beginning of the unused memory range.
+I still can't reproduce on 5.12-rc2.
 
-In the case a section does not contiguously follow the previous one, we
-know we can memset [unused_pmd_start, PMD_BOUNDARY) with PAGE_UNUSE.
+I do have CONFIG_ARM_MODULE_PLTS=y. Do you need to do something else after
+loading the module? I tried starting ftrace, but maybe there's a particular
+combination required?
 
-This patch is based on a similar patch by David Hildenbrand:
+> > instructions on the other email. But most likely because I'm hitting another
+> > problem that could be masking it. I'm not sure it is related or just randomly
+> > happened to hit it.
+> > 
+> > Did you see something similar?
+> 
+> [...]
+> 
+> > 	[    0.000000] [<c1b01a38>] (ftrace_bug) from [<c046316c>] (ftrace_process_locs+0x2b0/0x518)
+> > 	[    0.000000]  r7:c3817ac4 r6:c38040c0 r5:00000a3c r4:000134e4
+> > 	[    0.000000] [<c0462ebc>] (ftrace_process_locs) from [<c2b25240>] (ftrace_init+0xc8/0x174)
+> > 	[    0.000000]  r10:c2ffa000 r9:c2be8a78 r8:c2c5d1fc r7:c2c0c208 r6:00000001 r5:c2d0908c
+> > 	[    0.000000]  r4:c362f518
+> > 	[    0.000000] [<c2b25178>] (ftrace_init) from [<c2b00e14>] (start_kernel+0x2f4/0x5b8)
+> > 	[    0.000000]  r9:c2be8a78 r8:dbfffec0 r7:00000000 r6:c36385cc r5:c2d08f00 r4:c2ffa000
+> > 	[    0.000000] [<c2b00b20>] (start_kernel) from [<00000000>] (0x0)
+> 
+> This means, FTRACE has more problems with your kernel/compiler/platform, I've addressed similar issue
+> in the past, but my patch should be long merged:
+> 
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1817963.html
+> 
+> Could it be the same problem as here:
+> https://www.spinics.net/lists/arm-kernel/msg854022.html
+> 
+> Seems that the size check deserves something line BUILD_BUG_ON() with FTRACE...
 
-https://lore.kernel.org/linux-mm/20200722094558.9828-10-david@redhat.com/
+So I only see this when I convert all modules to be built-in
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- arch/x86/mm/init_64.c | 62 ++++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 57 insertions(+), 5 deletions(-)
+	sed -i 's/=m/=y/' .config
 
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index 3bb3988c7681..9251f841ffb5 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -874,17 +874,40 @@ int arch_add_memory(int nid, u64 start, u64 size,
- #ifdef CONFIG_SPARSEMEM_VMEMMAP
- #define PAGE_UNUSED 0xFD
- 
-+/*
-+ * The unused vmemmap range, which was not yet memset(PAGE_UNUSED), ranges
-+ * from unused_pmd_start to next PMD_SIZE boundary.
-+ */
-+static unsigned long unused_pmd_start __meminitdata;
-+
-+static void __meminit vmemmap_flush_unused_pmd(void)
-+{
-+	if (!unused_pmd_start)
-+		return;
-+	/*
-+	 * Clears (unused_pmd_start, PMD_END]
-+	 */
-+	memset((void *)unused_pmd_start, PAGE_UNUSED,
-+	       ALIGN(unused_pmd_start, PMD_SIZE) - unused_pmd_start);
-+	unused_pmd_start = 0;
-+}
-+
- /* Returns true if the PMD is completely unused and thus it can be freed */
- static bool __meminit vmemmap_pmd_is_unused(unsigned long addr, unsigned long end)
- {
- 	unsigned long start = ALIGN_DOWN(addr, PMD_SIZE);
- 
-+	/*
-+	 * Flush the unused range cache to ensure that memchr_inv() will work
-+	 * for the whole range.
-+	 */
-+	vmemmap_flush_unused_pmd();
- 	memset((void *)addr, PAGE_UNUSED, end - addr);
- 
- 	return !memchr_inv((void *)start, PAGE_UNUSED, PMD_SIZE);
- }
- 
--static void __meminit vmemmap_use_sub_pmd(unsigned long start)
-+static void __meminit __vmemmap_use_sub_pmd(unsigned long start)
- {
- 	/*
- 	 * As we expect to add in the same granularity as we remove, it's
-@@ -896,13 +919,37 @@ static void __meminit vmemmap_use_sub_pmd(unsigned long start)
- 	memset((void *)start, 0, sizeof(struct page));
- }
- 
-+static void __meminit vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
-+{
-+	/*
-+	 * We only optimize if the new used range directly follows the
-+	 * previously unused range (esp., when populating consecutive sections).
-+	 */
-+	if (unused_pmd_start == start) {
-+		if (likely(IS_ALIGNED(end, PMD_SIZE)))
-+			unused_pmd_start = 0;
-+		else
-+			unused_pmd_start = end;
-+		return;
-+	}
-+
-+	/*
-+	 * If the range does not contiguously follows previous one, make sure
-+	 * to mark the unused range of the previous one so it can be removed.
-+	 */
-+	vmemmap_flush_unused_pmd();
-+	__vmemmap_use_sub_pmd(start);
-+}
-+
- static void __meminit vmemmap_use_new_sub_pmd(unsigned long start, unsigned long end)
- {
-+	vmemmap_flush_unused_pmd();
-+
- 	/*
- 	 * Could be our memmap page is filled with PAGE_UNUSED already from a
- 	 * previous remove. Make sure to reset it.
- 	 */
--	vmemmap_use_sub_pmd(start);
-+	__vmemmap_use_sub_pmd(start);
- 
- 	/*
- 	 * Mark with PAGE_UNUSED the unused parts of the new memmap range
-@@ -910,9 +957,14 @@ static void __meminit vmemmap_use_new_sub_pmd(unsigned long start, unsigned long
- 	if (!IS_ALIGNED(start, PMD_SIZE))
- 	        memset((void *)start, PAGE_UNUSED,
- 	               start - ALIGN_DOWN(start, PMD_SIZE));
-+
-+	/*
-+	 * We want to avoid memset(PAGE_UNUSED) when populating the vmemmap of
-+	 * consecutive sections. Remember for the last added PMD where the
-+	 * unused range begins.
-+	 */
- 	if (!IS_ALIGNED(end, PMD_SIZE))
--		memset((void *)end, PAGE_UNUSED,
--		       ALIGN(end, PMD_SIZE) - end);
-+		unused_pmd_start = end;
- }
- #endif
- 
-@@ -1537,7 +1589,7 @@ static int __meminit vmemmap_populate_hugepages(unsigned long start,
- 				return -ENOMEM; /* no fallback */
- 		} else if (pmd_large(*pmd)) {
- 			vmemmap_verify((pte_t *)pmd, node, addr, next);
--			vmemmap_use_sub_pmd(addr);
-+			vmemmap_use_sub_pmd(addr, next);
- 			continue;
- 		}
- 		if (vmemmap_populate_basepages(addr, next, node, NULL))
--- 
-2.16.3
+FWIW, I see the problem with your patch applied too. Trying to dig more into
+it..
 
+> 
+> >> diff --git a/arch/arm/kernel/ftrace.c b/arch/arm/kernel/ftrace.c
+> >> index 9a79ef6..fa867a5 100644
+> >> --- a/arch/arm/kernel/ftrace.c
+> >> +++ b/arch/arm/kernel/ftrace.c
+> >> @@ -70,6 +70,19 @@ int ftrace_arch_code_modify_post_process(void)
+> >>  
+> >>  static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
+> >>  {
+> >> +	s32 offset = addr - pc;
+> >> +	s32 blim = 0xfe000008;
+> >> +	s32 flim = 0x02000004;
+> > 
+> > This look like magic numbers to me..
+> 
+> These magic numbers are most probably the reason for your FTRACE to resign...
+> Those are backward- and forward-branch limits. I didn't find the matching DEFINEs
+> in the kernel, but I would be happy to learn them. I can also put some comments,
+> but I actually thought the purpose would be obvious from the code...
+
+So I did dig more into it. The range is asymmetrical indeed. And the strange
+offset is to cater for the pc being incremented by +8 (+4 for thumb2).
+
+You're duplicating the checks in __arm_gen_branch_{thumb2, arm}(). As you noted
+__arm_gen_branch() which is called by arm_gen_branch_link() will end up doing
+the exact same check and return 0. So why do you need to duplicate the check
+here? We can do something about the WARN_ON_ONCE(1).
+
+[...]
+
+> >> +
+> >>  	return arm_gen_branch_link(pc, addr);
+> >>  }
+> >>  
+> >> @@ -124,10 +137,22 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+> >>  {
+> >>  	unsigned long new, old;
+> >>  	unsigned long ip = rec->ip;
+> >> +	unsigned long aaddr = adjust_address(rec, addr);
+> >>  
+> >>  	old = ftrace_nop_replace(rec);
+> >>  
+> >> -	new = ftrace_call_replace(ip, adjust_address(rec, addr));
+> >> +	new = ftrace_call_replace(ip, aaddr);
+> >> +
+> >> +#ifdef CONFIG_ARM_MODULE_PLTS
+> >> +	if (!new) {
+> >> +		struct module *mod = rec->arch.mod;
+> >> +
+> >> +		if (mod) {
+> > 
+> > What would happen if !new and !mod?
+> 
+> I believe, that's exactly what happens in the dump you experience with your kernel.
+> This is not covered by this patch, this patch covers the issue with modules in vmalloc area.
+> 
+> >> +			aaddr = get_module_plt(mod, ip, aaddr);
+> >> +			new = ftrace_call_replace(ip, aaddr);
+> > 
+> > I assume we're guaranteed to have a sensible value returned in 'new' here?
+> 
+> Otherwise you'd see the dump you see :)
+> It relies on the already existing error handling.
+
+I understand from this there are still loose ends to be handled in this area of
+the code.
+
+I admit I need to spend more time to understand why I get the failure above and
+how this overlaps with your proposal. But as it stands it seems there's more
+work to be done here.
+
+Thanks
+
+--
+Qais Yousef
