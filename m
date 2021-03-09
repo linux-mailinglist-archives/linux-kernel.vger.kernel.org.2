@@ -2,173 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11C53323B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BAD332385
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhCILN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:13:57 -0500
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:40418 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229544AbhCILNd (ORCPT
+        id S229851AbhCILB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:01:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhCILBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:13:33 -0500
-X-Greylist: delayed 998 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Mar 2021 06:13:32 EST
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1lJa2g-00066w-9p; Tue, 09 Mar 2021 10:56:46 +0000
-Subject: Re: [PATCH v4 3/5] RISC-V: Initial DTS for Microchip ICICLE board
-To:     Atish Patra <atish.patra@wdc.com>, linux-kernel@vger.kernel.org
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>, Conor.Dooley@microchip.com,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Ivan.Griffin@microchip.com, Lewis.Hanly@microchip.com
-References: <20210303200253.1827553-1-atish.patra@wdc.com>
- <20210303200253.1827553-4-atish.patra@wdc.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <e97e6dd6-fcb5-fac1-41e2-534f524bf5d2@codethink.co.uk>
-Date:   Tue, 9 Mar 2021 10:56:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 9 Mar 2021 06:01:20 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27BEC06174A;
+        Tue,  9 Mar 2021 03:01:19 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id kx1so701398pjb.3;
+        Tue, 09 Mar 2021 03:01:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q1cLJCT+U4+pmf7tfi6eJGOEwZrcQQZX5hIWWq7++uA=;
+        b=k+HJmElhMJV/XRqoJY3jQqvnlUoBmTyEUqJXNhPKkIyPNJaApNjG6B+mj9ass5IxVC
+         bISVrvzPm5uJx6aLaGE2XYfOf6d6t4d7w1pYZ4SqqMKrdWWLFd2YPo0MoLfBkcvl04fn
+         hQbZsfjJ6rQqnmXnnRiNfdxuAiX1293/3C6usLZmtwYfdg6lNIJ6TwSeeGj0ygWGtdXe
+         E4Z6YcXRRt8WHXk3slPIUeAh/EdAnW9b/jSbH7J6z8JYYgGUCU2mMrBGQ9Fg1Sq28Kr2
+         0jTsM6iOVwDRboR6MjCecPl8RFxZoxWajTASnrkd8wNRGpAl5nH3NB54nBIgi0BEUQak
+         y3og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q1cLJCT+U4+pmf7tfi6eJGOEwZrcQQZX5hIWWq7++uA=;
+        b=BVFUiQcUy9DCfI3tH34xg4dVR+YH14zRdvPuzk3xVtjrmtVojJdOXrf2AozMagjofS
+         sVR2UV9Ox9pSnh7v557/VaEAF6IRtyUAFvVwQqicslzaI4xsdPvPU+AbzIjPUrJi6dmc
+         BEg811z/rhgy++I/xAW3hKqfiGiY/A8WMyCDiDDd0gYlX38UxckdaGiFGry2UjwLZoYP
+         N08jsxHwIzSrNjz3ecKyPNHAm9KPIEoRGnxnJLctIGUcBwiptRRv5+MMxqzgWSoW23Sd
+         ElV2WRnE1xcKECaHoYP6pB0tcJL2goUTgmIqpb/DUAzmUD1R+zzc8LPtx/lJYUhAkb8N
+         F5kw==
+X-Gm-Message-State: AOAM530M5XRoZLlPI/79KsvSyG3FW6Py9f85049LbiWVQ+HWrS5zXOpK
+        bOd/QBTNBXt/w4F03VyJcOTnWiPUu+J5SqN7nvw=
+X-Google-Smtp-Source: ABdhPJwqWZ5xIN184n8KYzSep418TYpT83oYXGRwwuQerm4R1zEoo6fDbtEPXFlVtaKa0OH38qRUjuZwJgW3HJ+n0+o=
+X-Received: by 2002:a17:90a:e454:: with SMTP id jp20mr742370pjb.129.1615287679414;
+ Tue, 09 Mar 2021 03:01:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210303200253.1827553-4-atish.patra@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210305070536.2880-1-Qing-wu.Li@leica-geosystems.com.cn>
+ <20210305070536.2880-2-Qing-wu.Li@leica-geosystems.com.cn> <20210306164217.2d8166da@archlinux>
+In-Reply-To: <20210306164217.2d8166da@archlinux>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 9 Mar 2021 13:01:03 +0200
+Message-ID: <CAHp75VdBRtpkA5zmpEZ+gdP=RwYaoTsyDBqvvO2w67T6-6kqMw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] iio:magnetometer: Support for ST magnetic sensors
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Denis Ciocca <denis.ciocca@st.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        grygorii.tertychnyi@leica-geosystems.com,
+        andrey.zhizhikin@leica-geosystems.com,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/03/2021 20:02, Atish Patra wrote:
-> Add initial DTS for Microchip ICICLE board having only
-> essential devices (clocks, sdhci, ethernet, serial, etc).
-> The device tree is based on the U-Boot patch.
-> 
-> https://patchwork.ozlabs.org/project/uboot/patch/20201110103414.10142-6-padmarao.begari@microchip.com/
-> 
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->   arch/riscv/boot/dts/Makefile                  |   1 +
->   arch/riscv/boot/dts/microchip/Makefile        |   2 +
->   .../microchip/microchip-mpfs-icicle-kit.dts   |  72 ++++
->   .../boot/dts/microchip/microchip-mpfs.dtsi    | 329 ++++++++++++++++++
->   4 files changed, 404 insertions(+)
->   create mode 100644 arch/riscv/boot/dts/microchip/Makefile
->   create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
->   create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> 
-> diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-> index 7ffd502e3e7b..fe996b88319e 100644
-> --- a/arch/riscv/boot/dts/Makefile
-> +++ b/arch/riscv/boot/dts/Makefile
-> @@ -1,5 +1,6 @@
->   # SPDX-License-Identifier: GPL-2.0
->   subdir-y += sifive
->   subdir-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += canaan
-> +subdir-y += microchip
->   
->   obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix /, $(subdir-y))
-> diff --git a/arch/riscv/boot/dts/microchip/Makefile b/arch/riscv/boot/dts/microchip/Makefile
-> new file mode 100644
-> index 000000000000..622b12771fd3
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/microchip/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +dtb-$(CONFIG_SOC_MICROCHIP_POLARFIRE) += microchip-mpfs-icicle-kit.dtb
-> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> new file mode 100644
-> index 000000000000..ec79944065c9
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> @@ -0,0 +1,72 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/* Copyright (c) 2020 Microchip Technology Inc */
-> +
-> +/dts-v1/;
-> +
-> +#include "microchip-mpfs.dtsi"
-> +
-> +/* Clock frequency (in Hz) of the rtcclk */
-> +#define RTCCLK_FREQ		1000000
-> +
-> +/ {
-> +	#address-cells = <2>;
-> +	#size-cells = <2>;
-> +	model = "Microchip PolarFire-SoC Icicle Kit";
-> +	compatible = "microchip,mpfs-icicle-kit";
-> +
-> +	chosen {
-> +		stdout-path = &serial0;
-> +	};
-> +
-> +	cpus {
-> +		timebase-frequency = <RTCCLK_FREQ>;
-> +	};
-> +
-> +	memory@80000000 {
-> +		device_type = "memory";
-> +		reg = <0x0 0x80000000 0x0 0x40000000>;
-> +		clocks = <&clkcfg 26>;
-> +	};
-> +
+On Sat, Mar 6, 2021 at 6:44 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> On Fri,  5 Mar 2021 07:05:36 +0000
+> LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn> wrote:
+>
+> > Add support for STMicroelectronics digital magnetic sensors,
+> > LSM303AH,LSM303AGR,LIS2MDL,ISM303DAC,IIS2MDC.
+> >
+> > The patch tested with IIS2MDC instrument.
+> >
+> > Signed-off-by: LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+>
+> Hi,
+>
+> Given that at least two parts in here is supported by the existing
+> driver in
+> iio/magnetometers/st_magn_*.c (lsm303agr) can you confirm that it
+> doesn't make sense to simply extend that driver to support the
+> other parts?  This is particularly true when the WHO AM I register
+> reads 0x40 for all these parts.
+>
+> I've done a fairly superficial review whilst here, but please check
+> you can't just add the relevant entries to the existing driver.
 
-The latest Microchip releases have two memory nodes to provide the
-full 2GiB of memory space.
-
-> +	soc {
-> +	};
-> +};
-> +
-> +&serial0 {
-> +	status = "okay";
-> +};
-> +
-> +&serial1 {
-> +	status = "okay";
-> +};
-> +
-> +&serial2 {
-> +	status = "okay";
-> +};
-> +
-> +&serial3 {
-> +	status = "okay";
-> +};
-> +
-> +&sdcard {
-> +	status = "okay";
-> +};
-> +
-> +&emac0 {
-> +	phy-mode = "sgmii";
-> +	phy-handle = <&phy0>;
-> +	phy0: ethernet-phy@8 {
-> +		reg = <8>;
-> +		ti,fifo-depth = <0x01>;
-> +	};
-> +};
-> +
-> +&emac1 {
-> +	status = "okay";
-> +	phy-mode = "sgmii";
-> +	phy-handle = <&phy1>;
-> +	phy1: ethernet-phy@9 {
-> +		reg = <9>;
-> +		ti,fifo-depth = <0x01>;
-> +	};
-> +};
-
-
+I even hadn't looked into the code because this one needs a very good
+justification why it's a new driver rather than extension of the
+existing one.
 
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
+With Best Regards,
+Andy Shevchenko
