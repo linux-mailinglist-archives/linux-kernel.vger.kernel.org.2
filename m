@@ -2,157 +2,424 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B8833236B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22375332376
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCIKzt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Mar 2021 05:55:49 -0500
-Received: from mail-vk1-f173.google.com ([209.85.221.173]:40620 "EHLO
-        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhCIKzP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 05:55:15 -0500
-Received: by mail-vk1-f173.google.com with SMTP id l17so2876658vkk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 02:55:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=oX7AxwHbI6o3a5Bi4c9f3W+YD88gdE1RWPCa5CVMxh4=;
-        b=hGl171fH0+suEZKkgEilfYBzfdniqucsccGareb8SWqldDXNp3q4wcPVvtwGI6C+gy
-         TUh2PXlRvamOqzIDImWvZ4OygXLZi/ZPaa5/U9/8Fpnp/vBtgRRHgYJ9V0UU6AI0rZc6
-         u3W6WNfjCPJEIHL4x98VrdQlyJexNtptvYxJKPUw1edPipixTMOJm+mNC7LsqOZNsvE7
-         1UhHDahcfXSiWPmw9Uvty3nP5x1zMZpvuavgVgYy49mZpVmnnn+wgRCQME4jHt0dL8s4
-         2MFPtR5ZFVsF/aC8sIB+IZTkwq7dMjqTPmfzOqb28wbF0zStC8dhldoR1XLxqfbuGxc/
-         ThMg==
-X-Gm-Message-State: AOAM531aEy6A5fHe1XBb8kVcAiL9sPWe0BPOl6Ycmu5HAz8iKYXOnJuX
-        om5Cqx+5Vf3YDv8+BGluwOBGeUtTARAPkFTIjxw=
-X-Google-Smtp-Source: ABdhPJwveE/U9SAwH7PSfNB+ROkadaF3IBN/Y7JnqtqYAHB2l2g3/7Wr7l7W359+lNpN6E+AIE0VV7DgzraTAMlMtWs=
-X-Received: by 2002:a1f:1a51:: with SMTP id a78mr15741334vka.2.1615287315138;
- Tue, 09 Mar 2021 02:55:15 -0800 (PST)
-MIME-Version: 1.0
-References: <8d7d285a027e9d21f5ff7f850fa71a2655b0c4af.1615279170.git.christophe.leroy@csgroup.eu>
- <CAMuHMdW0Cn1So8ckvhsT+N+p2hiPiksmCS32jzM0xCUYU4UAdQ@mail.gmail.com>
- <b12f9128-790b-7d8b-5f3c-e0912f5bec0a@csgroup.eu> <CAMuHMdXM0qg23UN6VBqbb0Vm2bg3tRSM=OCD5r7U2K1brpnJAg@mail.gmail.com>
- <b64111a3-df3f-bf59-20ce-0af57715ad53@csgroup.eu>
-In-Reply-To: <b64111a3-df3f-bf59-20ce-0af57715ad53@csgroup.eu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Mar 2021 11:55:03 +0100
-Message-ID: <CAMuHMdUQcE7+O9NWH4Xxxv+r7ZFnTGqtHuteOMiSPY_gK5xkZw@mail.gmail.com>
-Subject: Re: [PATCH] powerpc: Fix missing declaration of [en/dis]able_kernel_vsx()
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexdeucher@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229854AbhCIK6O convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Mar 2021 05:58:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229546AbhCIK6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 05:58:12 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 311406522B;
+        Tue,  9 Mar 2021 10:58:12 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lJa41-000WL8-VS; Tue, 09 Mar 2021 10:58:10 +0000
+Date:   Tue, 09 Mar 2021 10:58:09 +0000
+Message-ID: <87sg54y4ou.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] irqchip: add support for BCM6345 external interrupt controller
+In-Reply-To: <20210224075640.20465-3-noltari@gmail.com>
+References: <20210223204340.312-1-noltari@gmail.com>
+        <20210224075640.20465-1-noltari@gmail.com>
+        <20210224075640.20465-3-noltari@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: noltari@gmail.com, tglx@linutronix.de, robh+dt@kernel.org, f.fainelli@gmail.com, jonas.gorski@gmail.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+On Wed, 24 Feb 2021 07:56:40 +0000,
+Álvaro Fernández Rojas <noltari@gmail.com> wrote:
+> 
+> This interrupt controller is present on bcm63xx SoCs in order to generate
+> interrupts based on GPIO status changes.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  v3: no changes.
+>  v2: no changes.
+> 
+>  drivers/irqchip/Kconfig           |   4 +
+>  drivers/irqchip/Makefile          |   1 +
+>  drivers/irqchip/irq-bcm6345-ext.c | 271 ++++++++++++++++++++++++++++++
+>  3 files changed, 276 insertions(+)
+>  create mode 100644 drivers/irqchip/irq-bcm6345-ext.c
+> 
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index e74fa206240a..eaa101939a34 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -113,6 +113,10 @@ config I8259
+>  	bool
+>  	select IRQ_DOMAIN
+>  
+> +config BCM6345_EXT_IRQ
+> +	bool "BCM6345 External IRQ Controller"
+> +	select IRQ_DOMAIN
+> +
+>  config BCM6345_L1_IRQ
+>  	bool
+>  	select GENERIC_IRQ_CHIP
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index c59b95a0532c..3cba65bc0aa5 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -62,6 +62,7 @@ obj-$(CONFIG_XTENSA_MX)			+= irq-xtensa-mx.o
+>  obj-$(CONFIG_XILINX_INTC)		+= irq-xilinx-intc.o
+>  obj-$(CONFIG_IRQ_CROSSBAR)		+= irq-crossbar.o
+>  obj-$(CONFIG_SOC_VF610)			+= irq-vf610-mscm-ir.o
+> +obj-$(CONFIG_BCM6345_EXT_IRQ)		+= irq-bcm6345-ext.o
+>  obj-$(CONFIG_BCM6345_L1_IRQ)		+= irq-bcm6345-l1.o
+>  obj-$(CONFIG_BCM7038_L1_IRQ)		+= irq-bcm7038-l1.o
+>  obj-$(CONFIG_BCM7120_L2_IRQ)		+= irq-bcm7120-l2.o
+> diff --git a/drivers/irqchip/irq-bcm6345-ext.c b/drivers/irqchip/irq-bcm6345-ext.c
+> new file mode 100644
+> index 000000000000..5721ac8de295
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-bcm6345-ext.c
+> @@ -0,0 +1,271 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Broadcom BCM6345 style external interrupt controller driver
+> + *
+> + * Copyright (C) 2021 Álvaro Fernández Rojas <noltari@gmail.com>
+> + * Copyright (C) 2014 Jonas Gorski <jonas.gorski@gmail.com>
+> + */
+> +
+> +#include <linux/ioport.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqchip.h>
+> +#include <linux/irqchip/chained_irq.h>
+> +#include <linux/kernel.h>
+> +#include <linux/of.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/of_address.h>
+> +#include <linux/slab.h>
+> +#include <linux/spinlock.h>
+> +
+> +#define MAX_IRQS		4
+> +
+> +#define EXTIRQ_CFG_SENSE	0
+> +#define EXTIRQ_CFG_STAT		1
+> +#define EXTIRQ_CFG_CLEAR	2
+> +#define EXTIRQ_CFG_MASK		3
+> +#define EXTIRQ_CFG_BOTHEDGE	4
+> +#define EXTIRQ_CFG_LEVELSENSE	5
+> +
+> +struct intc_data {
+> +	struct irq_chip chip;
+> +	struct irq_domain *domain;
+> +	raw_spinlock_t lock;
+> +
+> +	int parent_irq[MAX_IRQS];
+> +	void __iomem *reg;
+> +	int shift;
+> +	unsigned int toggle_clear_on_ack:1;
 
-On Tue, Mar 9, 2021 at 10:58 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> Le 09/03/2021 à 10:16, Geert Uytterhoeven a écrit :
-> > On Tue, Mar 9, 2021 at 9:52 AM Christophe Leroy
-> > <christophe.leroy@csgroup.eu> wrote:
-> >> Le 09/03/2021 à 09:45, Geert Uytterhoeven a écrit :
-> >>> On Tue, Mar 9, 2021 at 9:39 AM Christophe Leroy
-> >>> <christophe.leroy@csgroup.eu> wrote:
-> >>>> Add stub instances of enable_kernel_vsx() and disable_kernel_vsx()
-> >>>> when CONFIG_VSX is not set, to avoid following build failure.
-> >>>>
-> >>>>     CC [M]  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o
-> >>>> In file included from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_types.h:29,
-> >>>>                    from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services.h:37,
-> >>>>                    from drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:27:
-> >>>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: In function 'dcn_bw_apply_registry_override':
-> >>>> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:64:3: error: implicit declaration of function 'enable_kernel_vsx'; did you mean 'enable_kernel_fp'? [-Werror=implicit-function-declaration]
-> >>>>      64 |   enable_kernel_vsx(); \
-> >>>>         |   ^~~~~~~~~~~~~~~~~
-> >>>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:640:2: note: in expansion of macro 'DC_FP_START'
-> >>>>     640 |  DC_FP_START();
-> >>>>         |  ^~~~~~~~~~~
-> >>>> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:75:3: error: implicit declaration of function 'disable_kernel_vsx'; did you mean 'disable_kernel_fp'? [-Werror=implicit-function-declaration]
-> >>>>      75 |   disable_kernel_vsx(); \
-> >>>>         |   ^~~~~~~~~~~~~~~~~~
-> >>>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:676:2: note: in expansion of macro 'DC_FP_END'
-> >>>>     676 |  DC_FP_END();
-> >>>>         |  ^~~~~~~~~
-> >>>> cc1: some warnings being treated as errors
-> >>>> make[5]: *** [drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o] Error 1
-> >>>>
-> >>>> Fixes: 16a9dea110a6 ("amdgpu: Enable initial DCN support on POWER")
-> >>>> Cc: stable@vger.kernel.org
-> >>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> >>>
-> >>> Thanks for your patch!
-> >>>
-> >>>> --- a/arch/powerpc/include/asm/switch_to.h
-> >>>> +++ b/arch/powerpc/include/asm/switch_to.h
-> >>>> @@ -71,6 +71,16 @@ static inline void disable_kernel_vsx(void)
-> >>>>    {
-> >>>>           msr_check_and_clear(MSR_FP|MSR_VEC|MSR_VSX);
-> >>>>    }
-> >>>> +#else
-> >>>> +static inline void enable_kernel_vsx(void)
-> >>>> +{
-> >>>> +       BUILD_BUG();
-> >>>> +}
-> >>>> +
-> >>>> +static inline void disable_kernel_vsx(void)
-> >>>> +{
-> >>>> +       BUILD_BUG();
-> >>>> +}
-> >>>>    #endif
-> >>>
-> >>> I'm wondering how this is any better than the current situation: using
-> >>> BUILD_BUG() will still cause a build failure?
-> >>
-> >> No it won't cause a failure. In drivers/gpu/drm/amd/display/dc/os_types.h you have:
-> >>
-> >> #define DC_FP_START() { \
-> >>          if (cpu_has_feature(CPU_FTR_VSX_COMP)) { \
-> >>                  preempt_disable(); \
-> >>                  enable_kernel_vsx(); \
-> >>          } else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) { \
-> >>                  preempt_disable(); \
-> >>                  enable_kernel_altivec(); \
-> >>          } else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) { \
-> >>                  preempt_disable(); \
-> >>                  enable_kernel_fp(); \
-> >>          } \
-> >>
-> >> When CONFIG_VSX is not selected, cpu_has_feature(CPU_FTR_VSX_COMP) constant folds to 'false' so the
-> >> call to enable_kernel_vsx() is discarded and the build succeeds.
-> >
-> > IC. So you might as well have an empty (dummy) function instead?
-> >
->
-> But with an empty function, you take the risk that one day, someone calls it without checking that
-> CONFIG_VSX is selected. Here if someone does that, build will fail.
+Please use the bool type.
 
-OK, convinced.
+> +};
+> +
+> +static void bcm6345_ext_intc_irq_handle(struct irq_desc *desc)
+> +{
+> +	struct intc_data *data = irq_desc_get_handler_data(desc);
+> +	struct irq_chip *chip = irq_desc_get_chip(desc);
+> +	unsigned int irq = irq_desc_get_irq(desc);
+> +	unsigned int idx;
+> +
+> +	chained_irq_enter(chip, desc);
+> +
+> +	for (idx = 0; idx < MAX_IRQS; idx++) {
+> +		if (data->parent_irq[idx] != irq)
+> +			continue;
+> +
+> +		generic_handle_irq(irq_find_mapping(data->domain, idx));
 
-> Another solution is to declare a non static prototype of it, like __put_user_bad() for instance. In
-> that case, the link will fail.
->
-> I prefer the BUILD_BUG() approach as I find it cleaner and more explicit, and also because it breaks
-> the build at compile time, you don't have to wait link time to catch the error.
+One parent IRQ per input? Why isn't this a hierarchical interrupt
+controller? Even *if* this really has to be a chained interrupt
+controller, I'm sure there are better ways to identify the input then
+this loop (offset from a base, for example).
 
-Gr{oetje,eeting}s,
+> +	}
+> +
+> +	chained_irq_exit(chip, desc);
+> +}
+> +
+> +static void bcm6345_ext_intc_irq_ack(struct irq_data *data)
+> +{
+> +	struct intc_data *priv = data->domain->host_data;
+> +	irq_hw_number_t hwirq = irqd_to_hwirq(data);
+> +	u32 reg;
+> +
+> +	raw_spin_lock(&priv->lock);
+> +	reg = __raw_readl(priv->reg);
+> +	__raw_writel(reg | (1 << (hwirq + EXTIRQ_CFG_CLEAR * priv->shift)),
+> +		     priv->reg);
+> +	if (priv->toggle_clear_on_ack)
 
-                        Geert
+Under what condition do you need this?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> +		__raw_writel(reg, priv->reg);
+> +	raw_spin_unlock(&priv->lock);
+> +}
+> +
+> +static void bcm6345_ext_intc_irq_mask(struct irq_data *data)
+> +{
+> +	struct intc_data *priv = data->domain->host_data;
+> +	irq_hw_number_t hwirq = irqd_to_hwirq(data);
+> +	u32 reg;
+> +
+> +	raw_spin_lock(&priv->lock);
+> +	reg = __raw_readl(priv->reg);
+> +	reg &= ~(1 << (hwirq + EXTIRQ_CFG_MASK * priv->shift));
+> +	__raw_writel(reg, priv->reg);
+> +	raw_spin_unlock(&priv->lock);
+> +}
+> +
+> +static void bcm6345_ext_intc_irq_unmask(struct irq_data *data)
+> +{
+> +	struct intc_data *priv = data->domain->host_data;
+> +	irq_hw_number_t hwirq = irqd_to_hwirq(data);
+> +	u32 reg;
+> +
+> +	raw_spin_lock(&priv->lock);
+> +	reg = __raw_readl(priv->reg);
+> +	reg |= 1 << (hwirq + EXTIRQ_CFG_MASK * priv->shift);
+> +	__raw_writel(reg, priv->reg);
+> +	raw_spin_unlock(&priv->lock);
+> +}
+> +
+> +static int bcm6345_ext_intc_set_type(struct irq_data *data,
+> +				     unsigned int flow_type)
+> +{
+> +	struct intc_data *priv = data->domain->host_data;
+> +	irq_hw_number_t hwirq = irqd_to_hwirq(data);
+> +	bool levelsense = 0, sense = 0, bothedge = 0;
+> +	u32 reg;
+> +
+> +	flow_type &= IRQ_TYPE_SENSE_MASK;
+> +
+> +	if (flow_type == IRQ_TYPE_NONE)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+You should never get NONE. If you have that value here, that's
+probably a bug somewhere else.
+
+> +		flow_type = IRQ_TYPE_LEVEL_LOW;
+> +
+> +	switch (flow_type) {
+> +	case IRQ_TYPE_EDGE_BOTH:
+> +		bothedge = 1;
+> +		break;
+> +
+> +	case IRQ_TYPE_EDGE_RISING:
+> +		sense = 1;
+> +		break;
+> +
+> +	case IRQ_TYPE_EDGE_FALLING:
+> +		break;
+> +
+> +	case IRQ_TYPE_LEVEL_HIGH:
+> +		levelsense = 1;
+> +		sense = 1;
+> +		break;
+> +
+> +	case IRQ_TYPE_LEVEL_LOW:
+> +		levelsense = 1;
+> +		break;
+> +
+> +	default:
+> +		pr_err("bogus flow type combination given!\n");
+> +		return -EINVAL;
+
+How can this happen?
+
+> +	}
+> +
+> +	raw_spin_lock(&priv->lock);
+> +	reg = __raw_readl(priv->reg);
+> +
+> +	if (levelsense)
+> +		reg |= 1 << (hwirq + EXTIRQ_CFG_LEVELSENSE * priv->shift);
+> +	else
+> +		reg &= ~(1 << (hwirq + EXTIRQ_CFG_LEVELSENSE * priv->shift));
+> +	if (sense)
+> +		reg |= 1 << (hwirq + EXTIRQ_CFG_SENSE * priv->shift);
+> +	else
+> +		reg &= ~(1 << (hwirq + EXTIRQ_CFG_SENSE * priv->shift));
+> +	if (bothedge)
+> +		reg |= 1 << (hwirq + EXTIRQ_CFG_BOTHEDGE * priv->shift);
+> +	else
+> +		reg &= ~(1 << (hwirq + EXTIRQ_CFG_BOTHEDGE * priv->shift));
+
+So all these levelsense, sense and bothedge variables are already
+contained in flow_type. Why the need to reinvent the wheel?
+
+> +
+> +	__raw_writel(reg, priv->reg);
+> +	raw_spin_unlock(&priv->lock);
+> +
+> +	irqd_set_trigger_type(data, flow_type);
+> +	if (flow_type & (IRQ_TYPE_LEVEL_LOW | IRQ_TYPE_LEVEL_HIGH))
+> +		irq_set_handler_locked(data, handle_level_irq);
+> +	else
+> +		irq_set_handler_locked(data, handle_edge_irq);
+> +
+> +	return 0;
+> +}
+> +
+> +static int bcm6345_ext_intc_map(struct irq_domain *d, unsigned int irq,
+> +				irq_hw_number_t hw)
+> +{
+> +	struct intc_data *priv = d->host_data;
+> +
+> +	irq_set_chip_and_handler(irq, &priv->chip, handle_level_irq);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct irq_domain_ops bcm6345_ext_domain_ops = {
+> +	.xlate = irq_domain_xlate_twocell,
+> +	.map = bcm6345_ext_intc_map,
+> +};
+> +
+> +static int __init bcm6345_ext_intc_init(struct device_node *node,
+> +					int num_irqs, int *irqs,
+> +					void __iomem *reg, int shift,
+> +					bool toggle_clear_on_ack)
+> +{
+> +	struct intc_data *data;
+> +	unsigned int i;
+> +
+> +	data = kzalloc(sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	raw_spin_lock_init(&data->lock);
+> +
+> +	for (i = 0; i < num_irqs; i++) {
+> +		data->parent_irq[i] = irqs[i];
+> +
+> +		irq_set_handler_data(irqs[i], data);
+> +		irq_set_chained_handler(irqs[i], bcm6345_ext_intc_irq_handle);
+> +	}
+> +
+> +	data->reg = reg;
+> +	data->shift = shift;
+> +	data->toggle_clear_on_ack = toggle_clear_on_ack;
+> +
+> +	data->chip.name = "bcm6345-ext-intc";
+> +	data->chip.irq_ack = bcm6345_ext_intc_irq_ack;
+> +	data->chip.irq_mask = bcm6345_ext_intc_irq_mask;
+> +	data->chip.irq_unmask = bcm6345_ext_intc_irq_unmask;
+> +	data->chip.irq_set_type = bcm6345_ext_intc_set_type;
+> +
+> +	data->domain = irq_domain_add_simple(node, num_irqs, 0,
+> +					     &bcm6345_ext_domain_ops, data);
+
+Consider using irq_domain_add_linear(), given that you don't seem to
+care about the first interrupt number.
+
+> +	if (!data->domain) {
+> +		kfree(data);
+> +		return -ENOMEM;
+> +	}
+
+At this point, you have registered a bunch of chained handlers with
+data structures that you have freed. What could possibly go wrong?
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int __init bcm6345_ext_intc_of_init(struct device_node *node,
+> +					   struct device_node *parent)
+> +{
+> +	int num_irqs, ret = -EINVAL;
+> +	unsigned i;
+> +	void __iomem *base;
+> +	int irqs[MAX_IRQS] = { 0 };
+> +	u32 shift;
+> +	bool toggle_clear_on_ack = false;
+> +
+> +	num_irqs = of_irq_count(node);
+> +
+> +	if (!num_irqs || num_irqs > MAX_IRQS)
+> +		return -EINVAL;
+> +
+> +	if (of_property_read_u32(node, "brcm,field-width", &shift))
+> +		shift = 4;
+
+Why this default? Given that it is a new driver without any backward
+compatibility requirement, either make the property mandatory or get
+rid of it.
+
+> +
+> +	/* On BCM6318 setting CLEAR seems to continuously mask interrupts */
+> +	if (of_device_is_compatible(node, "brcm,bcm6318-ext-intc"))
+> +		toggle_clear_on_ack = true;
+
+Seems? What does the documentation says about this?
+
+> +
+> +	for (i = 0; i < num_irqs; i++) {
+> +		irqs[i] = irq_of_parse_and_map(node, i);
+> +		if (!irqs[i])
+> +			return -ENOMEM;
+> +	}
+> +
+> +	base = of_iomap(node, 0);
+> +	if (!base)
+> +		return -ENXIO;
+> +
+> +	ret = bcm6345_ext_intc_init(node, num_irqs, irqs, base, shift,
+> +				    toggle_clear_on_ack);
+> +	if (!ret)
+> +		return 0;
+> +
+> +	iounmap(base);
+> +
+> +	for (i = 0; i < num_irqs; i++)
+> +		irq_dispose_mapping(irqs[i]);
+> +
+> +	return ret;
+> +}
+> +
+> +IRQCHIP_DECLARE(bcm6318_ext_intc, "brcm,bcm6318-ext-intc",
+> +		bcm6345_ext_intc_of_init);
+> +IRQCHIP_DECLARE(bcm6345_ext_intc, "brcm,bcm6345-ext-intc",
+> +		bcm6345_ext_intc_of_init);
+> -- 
+> 2.20.1
+> 
+> 
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
