@@ -2,102 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD1433239C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56543323AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhCILFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhCILFo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:05:44 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB11C06174A;
-        Tue,  9 Mar 2021 03:05:43 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso2550450pjb.4;
-        Tue, 09 Mar 2021 03:05:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3T4W4xV4Tf3QOElTCSezyQGIMFwB4ft/YIBh6UXVS8s=;
-        b=RIY35qb6rf0fzFHNnG54ojrKJX9RKNfRAtFmlwJlQouu+k/mgFGYylDSGNJ2/e3OsH
-         zUTAhWc3w4FMtnnANd/1aZT7deE7RjOkc134fnm5q26+a63FG1pdJwrm+lmYw5IbTTSC
-         xQ+b8AdQcyKU57HJOaMOqDZJc4rDQOH1XDz9ogRgPh5cXPb3pNhaDkx/GG9q28zU6ygd
-         cbKepLPv/pnTcxw+ESAKe3n8wWny4gu+00fpTEEdZMwEFAY+x4rUECMgfslfTw1jdpvx
-         lAXkbcSkHjfc1A/lzVfeywPrqGAqjm5aXOsXCWSYNwqGdzMppa0YlTRnrv1yvq/nzTot
-         T5dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3T4W4xV4Tf3QOElTCSezyQGIMFwB4ft/YIBh6UXVS8s=;
-        b=EqQ7CxduprRdmBpmEGMg/P4RdZJBROC4peWfRsjH3mwpkw9ijv/FdPJql2jE6J7xEt
-         WY+MEvjlh5o7W9S9nox35oaN+emm02ToWEgDJm8T74TtjDwboawTXEsj2z8cba92YEZs
-         +jnU7Td1ZC0s8fNtzKUF32PRDYg2rxXCKHR5PvBX5vJn8lHo5lrl5XsHwevhJ4CaVM7c
-         pHz9tgISTWgfpqG0vIgBNLYhvkBbMoA70hdpBcdNOhPaTE1/i9IWIoMps7v2FW+3njvX
-         wZt3kxV9wNqrjDvl5ev7jRsJMHFlzeE6Gg9zlHyUc2drPdlswqBWhc6igPICFEAQPcr1
-         kxWg==
-X-Gm-Message-State: AOAM533/IefIXL+I8uAPcfhQfHVOBHTSLhrytETpQn8IbR/4OKei890q
-        MygIwUKNp1hDwMOqCyKCIB//iI9colkOoMD3XxTOVZh8C++nuQ==
-X-Google-Smtp-Source: ABdhPJzIuJ6hLAK8fFWlrH+mxFgPVgYC2CvPYakI0dg/jy1WNPvCByyQjHV+7I3A5z7rd2DWJLua2Kz7/HyVVcRGDMc=
-X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr4261198pjx.181.1615287943267;
- Tue, 09 Mar 2021 03:05:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20210305133813.27967-1-o.rempel@pengutronix.de>
- <20210305133813.27967-3-o.rempel@pengutronix.de> <20210305190239.000075fe@Huawei.com>
-In-Reply-To: <20210305190239.000075fe@Huawei.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 9 Mar 2021 13:05:27 +0200
-Message-ID: <CAHp75Veu-G41mDUZubCgHD_V+_znd0HJoO03ZL7JpgwtjMYLCQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] iio: adc: add ADC driver for the TI TSC2046 controller
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        id S229481AbhCILKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:10:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhCILKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 06:10:40 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5098965256;
+        Tue,  9 Mar 2021 11:10:40 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lJaG6-000WSp-AM; Tue, 09 Mar 2021 11:10:38 +0000
+Date:   Tue, 09 Mar 2021 11:10:37 +0000
+Message-ID: <87r1koy442.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sj Huang <sj.huang@mediatek.com>, <youlin.pei@mediatek.com>,
+        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
+        <sin_jieyang@mediatek.com>, <drinkcat@chromium.org>,
+        <Rex-BC.Chen@mediatek.com>, <anson.chuang@mediatek.com>
+Subject: Re: [v8,4/7] PCI: mediatek-gen3: Add INTx support
+In-Reply-To: <20210224061132.26526-5-jianjun.wang@mediatek.com>
+References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+        <20210224061132.26526-5-jianjun.wang@mediatek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: jianjun.wang@mediatek.com, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, ryder.lee@mediatek.com, p.zabel@pengutronix.de, matthias.bgg@gmail.com, linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, sj.huang@mediatek.com, youlin.pei@mediatek.com, chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com, sin_jieyang@mediatek.com, drinkcat@chromium.org, Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 9:05 PM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Fri, 5 Mar 2021 14:38:13 +0100
-> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->
-> > Basically the TI TSC2046 touchscreen controller is 8 channel ADC optimized for
-> > the touchscreen use case. By implementing it as IIO ADC device, we can
-> > make use of resistive-adc-touch and iio-hwmon drivers.
-> >
-> > So far, this driver was tested with custom version of resistive-adc-touch driver,
-> > since it need to be extended to make use of Z1 and Z2 channels. The X/Y
-> > are working without additional changes.
-> >
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
->
-> Hi Oleksij,
->
-> To consider this as a possible long term route instead of just making this
-> a touchscreen driver, we'll want to see those mods to the resistive-adc-touch.
-> Of course that doesn't stop review of this in the meantime.
->
-> There are quite a few things in here that feel pretty specific to the touchscreen
-> usecase. That makes me wonder if this is a sensible approach or not.
+On Wed, 24 Feb 2021 06:11:29 +0000,
+Jianjun Wang <jianjun.wang@mediatek.com> wrote:
+> 
+> Add INTx support for MediaTek Gen3 PCIe controller.
+> 
+> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> ---
+>  drivers/pci/controller/pcie-mediatek-gen3.c | 176 ++++++++++++++++++++
+>  1 file changed, 176 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+> index c602beb9afec..8b3b5f838b69 100644
+> --- a/drivers/pci/controller/pcie-mediatek-gen3.c
+> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+> @@ -9,6 +9,9 @@
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/iopoll.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqchip/chained_irq.h>
+> +#include <linux/irqdomain.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/pci.h>
+> @@ -45,6 +48,13 @@
+>  #define PCIE_LINK_STATUS_REG		0x154
+>  #define PCIE_PORT_LINKUP		BIT(8)
+>  
+> +#define PCIE_INT_ENABLE_REG		0x180
+> +#define PCIE_INTX_SHIFT			24
+> +#define PCIE_INTX_ENABLE \
+> +	GENMASK(PCIE_INTX_SHIFT + PCI_NUM_INTX - 1, PCIE_INTX_SHIFT)
+> +
+> +#define PCIE_INT_STATUS_REG		0x184
+> +
+>  #define PCIE_TRANS_TABLE_BASE_REG	0x800
+>  #define PCIE_ATR_SRC_ADDR_MSB_OFFSET	0x4
+>  #define PCIE_ATR_TRSL_ADDR_LSB_OFFSET	0x8
+> @@ -73,6 +83,9 @@
+>   * @phy: PHY controller block
+>   * @clks: PCIe clocks
+>   * @num_clks: PCIe clocks count for this port
+> + * @irq: PCIe controller interrupt number
+> + * @irq_lock: lock protecting IRQ register access
+> + * @intx_domain: legacy INTx IRQ domain
+>   */
+>  struct mtk_pcie_port {
+>  	struct device *dev;
+> @@ -83,6 +96,10 @@ struct mtk_pcie_port {
+>  	struct phy *phy;
+>  	struct clk_bulk_data *clks;
+>  	int num_clks;
+> +
+> +	int irq;
+> +	raw_spinlock_t irq_lock;
+> +	struct irq_domain *intx_domain;
+>  };
+>  
+>  /**
+> @@ -199,6 +216,11 @@ static int mtk_pcie_startup_port(struct mtk_pcie_port *port)
+>  	val |= PCI_CLASS(PCI_CLASS_BRIDGE_PCI << 8);
+>  	writel_relaxed(val, port->base + PCIE_PCI_IDS_1);
+>  
+> +	/* Mask all INTx interrupts */
+> +	val = readl_relaxed(port->base + PCIE_INT_ENABLE_REG);
+> +	val &= ~PCIE_INTX_ENABLE;
+> +	writel_relaxed(val, port->base + PCIE_INT_ENABLE_REG);
+> +
+>  	/* Assert all reset signals */
+>  	val = readl_relaxed(port->base + PCIE_RST_CTRL_REG);
+>  	val |= PCIE_MAC_RSTB | PCIE_PHY_RSTB | PCIE_BRG_RSTB | PCIE_PE_RSTB;
+> @@ -262,6 +284,154 @@ static int mtk_pcie_startup_port(struct mtk_pcie_port *port)
+>  	return 0;
+>  }
+>  
+> +static int mtk_pcie_set_affinity(struct irq_data *data,
+> +				 const struct cpumask *mask, bool force)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +static void mtk_intx_mask(struct irq_data *data)
+> +{
+> +	struct mtk_pcie_port *port = irq_data_get_irq_chip_data(data);
+> +	unsigned long flags;
+> +	u32 val;
+> +
+> +	raw_spin_lock_irqsave(&port->irq_lock, flags);
+> +	val = readl_relaxed(port->base + PCIE_INT_ENABLE_REG);
+> +	val &= ~BIT(data->hwirq + PCIE_INTX_SHIFT);
+> +	writel_relaxed(val, port->base + PCIE_INT_ENABLE_REG);
+> +	raw_spin_unlock_irqrestore(&port->irq_lock, flags);
+> +}
+> +
+> +static void mtk_intx_unmask(struct irq_data *data)
+> +{
+> +	struct mtk_pcie_port *port = irq_data_get_irq_chip_data(data);
+> +	unsigned long flags;
+> +	u32 val;
+> +
+> +	raw_spin_lock_irqsave(&port->irq_lock, flags);
+> +	val = readl_relaxed(port->base + PCIE_INT_ENABLE_REG);
+> +	val |= BIT(data->hwirq + PCIE_INTX_SHIFT);
+> +	writel_relaxed(val, port->base + PCIE_INT_ENABLE_REG);
+> +	raw_spin_unlock_irqrestore(&port->irq_lock, flags);
+> +}
+> +
+> +/**
+> + * mtk_intx_eoi
+> + * @data: pointer to chip specific data
+> + *
+> + * As an emulated level IRQ, its interrupt status will remain
+> + * until the corresponding de-assert message is received; hence that
+> + * the status can only be cleared when the interrupt has been serviced.
+> + */
+> +static void mtk_intx_eoi(struct irq_data *data)
+> +{
+> +	struct mtk_pcie_port *port = irq_data_get_irq_chip_data(data);
+> +	unsigned long hwirq;
+> +
+> +	hwirq = data->hwirq + PCIE_INTX_SHIFT;
+> +	writel_relaxed(BIT(hwirq), port->base + PCIE_INT_STATUS_REG);
+> +}
+> +
+> +static struct irq_chip mtk_intx_irq_chip = {
+> +	.irq_enable		= mtk_intx_unmask,
+> +	.irq_disable		= mtk_intx_mask,
 
-I'm wondering if this has any similarities with existing drivers under
-drivers/input/touchscreen.
+Please get rid of enable/disable. Given that you already have
+mask/unmask with the *same* implementation, this offers zero benefit.
+
+> +	.irq_mask		= mtk_intx_mask,
+> +	.irq_unmask		= mtk_intx_unmask,
+> +	.irq_eoi		= mtk_intx_eoi,
+> +	.irq_set_affinity	= mtk_pcie_set_affinity,
+> +	.name			= "INTx",
+> +};
+
+[...]
+
+Other that that, this look good to me.
+
+Thanks,
+
+	M.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Without deviation from the norm, progress is not possible.
