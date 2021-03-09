@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496FA331BDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8E6331BDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhCIAnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 19:43:53 -0500
-Received: from mga06.intel.com ([134.134.136.31]:55544 "EHLO mga06.intel.com"
+        id S229976AbhCIAnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 19:43:51 -0500
+Received: from mga05.intel.com ([192.55.52.43]:8628 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229718AbhCIAnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229730AbhCIAnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Mar 2021 19:43:42 -0500
-IronPort-SDR: 06o+ORTrUfFA6cRc+TlfeifY2Epuj/Bj+c6zkkk1DthF1XCh/U+KUqL32KMxBk2kJsg3LpwZNo
- KeK4Bjb6tN6Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="249510096"
+IronPort-SDR: tWAXcNk5j8qd3CyHzTo6Zs16+a/osCYDY8FpTS4+YfA0a1hcGbFuiF8xrKgIFB7/hlEB9Jv804
+ tHPQFrz4VVZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="273158960"
 X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="249510096"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 16:43:41 -0800
-IronPort-SDR: itquM/X4pgjxm/D5ewqo61PTqDc5kc3MeU5NgVxdcasIYPMtgbqdtN74xdDCVmVaLBdXwRqlNR
- ctMp6kOw22nw==
+   d="scan'208";a="273158960"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 16:43:42 -0800
+IronPort-SDR: 4gTEtyM7zEoM4jEV5XjheNzxM6blviLmZEMYug/OzzUudBpLWfwLMq+GF2Pwbi5bUY248T9xnS
+ wPho8Vl9rM/Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="447315620"
+   d="scan'208";a="369596939"
 Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 08 Mar 2021 16:43:40 -0800
+  by orsmga003.jf.intel.com with ESMTP; 08 Mar 2021 16:43:40 -0800
 Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lJQTL-0001Fr-MZ; Tue, 09 Mar 2021 00:43:39 +0000
-Date:   Tue, 09 Mar 2021 08:43:07 +0800
+        id 1lJQTL-0001Fp-Lk; Tue, 09 Mar 2021 00:43:39 +0000
+Date:   Tue, 09 Mar 2021 08:43:09 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 09141ec0e4efede4fb5e2aa68cb819fba974325c
-Message-ID: <6046c49b.+3hJvZgQhPHqGv/b%lkp@intel.com>
+Subject: [tip:x86/misc] BUILD SUCCESS
+ c6b2f240bf8d5604e6507aff15d5c441944c2f89
+Message-ID: <6046c49d.aKGiOfM44e+tguDR%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: 09141ec0e4efede4fb5e2aa68cb819fba974325c  x86: Remove duplicate TSC DEADLINE MSR definitions
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/misc
+branch HEAD: c6b2f240bf8d5604e6507aff15d5c441944c2f89  tools/x86: Add a kcpuid tool to show raw CPU features
 
 elapsed time: 728m
 
-configs tested: 189
+configs tested: 153
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -60,22 +60,13 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-mips                        workpad_defconfig
-nds32                               defconfig
-sh                           se7724_defconfig
-mips                         bigsur_defconfig
-mips                          ath25_defconfig
-m68k                           sun3_defconfig
 powerpc                     akebono_defconfig
 sh                          polaris_defconfig
 sh                          rsk7264_defconfig
 powerpc                 mpc832x_mds_defconfig
 arm                          pcm027_defconfig
 powerpc                     skiroot_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                           gcw0_defconfig
-arm                            lart_defconfig
-sh                        edosk7705_defconfig
+mips                        workpad_defconfig
 sh                          sdk7780_defconfig
 sh                        edosk7760_defconfig
 powerpc                          g5_defconfig
@@ -90,11 +81,6 @@ powerpc                  mpc885_ads_defconfig
 nds32                            alldefconfig
 parisc                generic-32bit_defconfig
 sh                          lboxre2_defconfig
-arm                         socfpga_defconfig
-powerpc                     pseries_defconfig
-arm                         s5pv210_defconfig
-mips                    maltaup_xpa_defconfig
-mips                        vocore2_defconfig
 sh                          rsk7203_defconfig
 sh                           se7619_defconfig
 powerpc                        cell_defconfig
@@ -123,11 +109,6 @@ powerpc                      mgcoge_defconfig
 sh                             sh03_defconfig
 mips                       capcella_defconfig
 xtensa                  audio_kc705_defconfig
-arc                          axs101_defconfig
-powerpc                    ge_imp3a_defconfig
-mips                           jazz_defconfig
-ia64                        generic_defconfig
-mips                         tb0226_defconfig
 sh                           se7705_defconfig
 arm                         bcm2835_defconfig
 arm                        keystone_defconfig
@@ -146,12 +127,6 @@ powerpc                 mpc8272_ads_defconfig
 sh                ecovec24-romimage_defconfig
 arm                            hisi_defconfig
 ia64                            zx1_defconfig
-mips                           ip28_defconfig
-powerpc                     redwood_defconfig
-powerpc                     tqm5200_defconfig
-sh                              ul2_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                        oxnas_v6_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -161,13 +136,14 @@ m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
 nds32                             allnoconfig
+nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
 xtensa                           allyesconfig
-arc                                 defconfig
 h8300                            allyesconfig
+arc                                 defconfig
 sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
@@ -195,12 +171,6 @@ i386                 randconfig-a002-20210308
 i386                 randconfig-a006-20210308
 i386                 randconfig-a004-20210308
 i386                 randconfig-a001-20210308
-i386                 randconfig-a005-20210309
-i386                 randconfig-a003-20210309
-i386                 randconfig-a002-20210309
-i386                 randconfig-a006-20210309
-i386                 randconfig-a004-20210309
-i386                 randconfig-a001-20210309
 x86_64               randconfig-a013-20210309
 x86_64               randconfig-a016-20210309
 x86_64               randconfig-a015-20210309
@@ -213,12 +183,6 @@ i386                 randconfig-a014-20210308
 i386                 randconfig-a013-20210308
 i386                 randconfig-a011-20210308
 i386                 randconfig-a015-20210308
-i386                 randconfig-a016-20210309
-i386                 randconfig-a012-20210309
-i386                 randconfig-a014-20210309
-i386                 randconfig-a013-20210309
-i386                 randconfig-a011-20210309
-i386                 randconfig-a015-20210309
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
