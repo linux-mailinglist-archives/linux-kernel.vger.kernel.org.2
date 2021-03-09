@@ -2,232 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564E6332C46
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF35A332C39
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbhCIQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:37:53 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2672 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbhCIQho (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:37:44 -0500
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dw11t0Hb8z67x38;
-        Wed, 10 Mar 2021 00:31:46 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 17:37:42 +0100
-Received: from [10.210.172.22] (10.210.172.22) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 16:37:41 +0000
-Subject: Re: [PATCH v1] scsi: storvsc: Cap cmd_per_lun at can_queue
-To:     Michael Kelley <mikelley@microsoft.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "andres@anarazel.de" <andres@anarazel.de>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>
-References: <20210305232151.1531-1-melanieplageman@gmail.com>
- <MWHPR21MB1593078007256C5155ED5A86D7939@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210308175618.GA2376@goldwasser>
- <01aa44d0-f0a5-6de6-6778-a1658a3d8a8f@huawei.com>
- <MWHPR21MB1593A9670EFF745B2FB96C1BD7929@MWHPR21MB1593.namprd21.prod.outlook.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <343cce4d-58f6-a1f2-ca4f-e32ff1eddf65@huawei.com>
-Date:   Tue, 9 Mar 2021 16:35:39 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-In-Reply-To: <MWHPR21MB1593A9670EFF745B2FB96C1BD7929@MWHPR21MB1593.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S231402AbhCIQgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:36:17 -0500
+Received: from mail-mw2nam12on2060.outbound.protection.outlook.com ([40.107.244.60]:64800
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230491AbhCIQgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:36:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GIUE3WXHl37oQLPmV6EO+cnVZ30r11B2bwOdgNtWRF/ezcT9aPL0RDXfQXIavSDl7yaACREv2xLc5uIys2+eWdaqUS3bxE3vJxT4jAbSGz9MI3/XCN+p8fZzs+wi2y9gfPLuwzXrH7ME8Nx724TVoIuAkB0T4bpzRre9JHzbKj0D+t6WA0MtCuum4Y9jeao2zoauyusZZCeBeef10j5ZtPM7fAisUvCvH5BsjRySFy5tNNtWnXlOnOkZeZzJyScsU6Ih9R5wdT6sUhCEKLZI23KmmdCqlfLER90wiwZf4pION+mCITUW+BVxFTep247/THFvYlko9BpcZTUzuvZ/wA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=inFjzHCc3ZFfZeTonuvI3EiTWcndFCC6NFAi8mTqFnw=;
+ b=fUi9+H9mGWvKYUbVLXqbjM0tJqtu/srhQUdBOF8MN62SR2vNCBvhiLYKFqZRsfzey+NdWCFMKmiFahyHCQZITYpBArgn156vw+PPTXkAL/Eo+36GREt9Ep8d089dRNfGrgy9PK6wc/n04LsD8mOV8PsCNlF/80dWd2x7Ve8NOLQ7Mecnfz4RTUGvAZDJJiQmEjGCioecRD/YXHccBd3MZMShSGMz+6ISkF6FV2+tVd9Y+1ylPou9gjYgyFk7KL7tRlX4HSWahKnvIc8K8u1zlqN0aHSDqxUHM2Yp4Nz4yEZZta5Osi+Esn5ISJZ4tdLq/27BokE0vIo7Z0lfKgOS5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=inFjzHCc3ZFfZeTonuvI3EiTWcndFCC6NFAi8mTqFnw=;
+ b=fb++egXvGz0RrER0n3Et7BFFZy4ml33IulzI8KTFwKqBgN1Cwc+UynPGLVJARBp8H/dQ2EE4vR40PI2yOZOTefCZBBJ4TEvKD5k5Hx44QrCmsAQaAzjIh4LEPHp/gVgwEZecwEcF2zHo4BuhB8p04v0Gh3JfwovoE1q9zsNDNOg=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3690.namprd12.prod.outlook.com (2603:10b6:5:149::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3890.28; Tue, 9 Mar 2021 16:36:03 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::c9b6:a9ce:b253:db70]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::c9b6:a9ce:b253:db70%6]) with mapi id 15.20.3912.027; Tue, 9 Mar 2021
+ 16:36:03 +0000
+Subject: Re: [PATCH 0/3] PSP TEE driver update and bug fixes
+To:     Rijo Thomas <Rijo-john.Thomas@amd.com>,
+        John Allen <john.allen@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     Mythri Pandeshwara krishna <mythri.pandeshwarakrishna@amd.com>,
+        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+References: <cover.1615276206.git.Rijo-john.Thomas@amd.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <6f036523-6eb4-4b74-c22c-e45a98f63f86@amd.com>
+Date:   Tue, 9 Mar 2021 10:36:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <cover.1615276206.git.Rijo-john.Thomas@amd.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.172.22]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SN7PR04CA0208.namprd04.prod.outlook.com
+ (2603:10b6:806:126::33) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.118] (165.204.77.1) by SN7PR04CA0208.namprd04.prod.outlook.com (2603:10b6:806:126::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 16:36:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: fcf9878d-19da-4061-1398-08d8e3196e1b
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3690:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB369054EBB2BEB238E9D9B0C7EC929@DM6PR12MB3690.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oHT4GigCShnlCcV0x4UWLwLzaqXJhACW+/si7sLZzucvqhWg8Hxhn6v4LUzzomWENHpRs625ZRCNVOpdO7pBuFHy21XE+N5X6/I+aJTwLv6Zun98VIH3hf29v1ufsN4MJkYjxavmpHsXfZTFvMKDaBGFYGYl0DVPDlzUox0uGVx2wiKlnz5RQPBnWpf18RX3vqhq+9GBPrdPT1dywoyC5olI732YlIe02RzytGmycdvBMWk8L9e6lrjVAxeqJBZkTMN/kyFKqFVvAI4QiCdv3ZeLfzahGcINcWMT1QsAl5S2sEP85XgEqVAqoGRhjNUayN+Jr5+vktxYlb8+mcjEaMoH7pTWebkj6u3+H2CFkfFyvJiXOpOyT3yqFwo01BI/doplfPbWAJ7htLFH72B7OEuTXpwcAMZImQw5+4PNKITVm2JRW3P9jwPhshnDS+P5AVVsbAsRQ8zuU/Xj+oHoUObeg3cZl5qPTulMlCWejbsv3ICKiqgeNrtCrY3sDY6hJ/owLsGPb7oYwJNL5O2ZmJ68/ZUU7xVg3bVczsGrJnXOVIHaCD+ISqbJbQTqxrxK7WnZKajAuxMB5c9ZQ8NLxA6CdEIoSLkNZXGRJchZNUI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(376002)(136003)(39860400002)(16526019)(26005)(36756003)(6486002)(31696002)(54906003)(83380400001)(16576012)(8676002)(52116002)(2616005)(110136005)(53546011)(8936002)(15650500001)(86362001)(956004)(186003)(316002)(31686004)(5660300002)(66476007)(2906002)(66946007)(478600001)(4326008)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aFY5eHB3QjQ4ZGZMTldjaG9yV3hRNE9vZHdLVU1paTFidUZmalgvQWNZMzQ1?=
+ =?utf-8?B?S1hOMkQ5ejRvWWtFanNaeEhkSG9VZUlxZXRVRFFDeEFmYThocVZYWExtejlU?=
+ =?utf-8?B?eG1BcWtqa0VaSEthYlp2VUUrS0VuYW9VUGw4eHhpVHphUDE1WnVHUkhaaW1a?=
+ =?utf-8?B?QXFsZlhNQTdHZGE1d1V0am5rSzV5T00veDFvdXg5WUJmZGo2Mi9ZVXZzbEdK?=
+ =?utf-8?B?VDZTMXJ2VmxiUUYyMWxhSEIvbTNkMVRCelU0V2lOeENkcmhWQkpqbi9LdkdO?=
+ =?utf-8?B?b2NWRjBRZmYvQTVtdW9FR2pYMDYvR0wzZGIvd2hNUHl3WVpJNVh2VmdQaldM?=
+ =?utf-8?B?S2RNOTlybTZJRkw5bTdlYVA1dDVLYUZJZUlPNHdJa3pXL2tEeS9iakV5RExr?=
+ =?utf-8?B?b0ZlRzlvbU9vMU50RndGK0FBWG1HME8raUI1NUJNL1pDcTVNd2dvc3Z2YnRi?=
+ =?utf-8?B?QUp6Mms3NW94QkhUQ3FaVFpsa3JZb0ZiZDNDNXBXZ2N1SUQveWh5UFhtM3Bn?=
+ =?utf-8?B?a0g2eUsvcVhwSUJGdU9TZlpZYTZBVEs4Zjg0dTFWL1ZTek9CYWFWWFNIYlIw?=
+ =?utf-8?B?K3IrRGF5OFNOVXoxY1lhUlQycjJKMDRKaDZmVGVobytQdEYvSDMzYXJMQ0ky?=
+ =?utf-8?B?T3VNTTBmQ2NYc2VrWFpJVVZ4UklNNXA2ZnU1aWRoeFYwNTlOdTVNM2RFNi93?=
+ =?utf-8?B?L3ljSGdBbTJrQmhuUktxaXljTll0S0ZTOEt5d3VRMVhKVWpYQjRvZUZoVlMr?=
+ =?utf-8?B?c2oxTVZzYmltQ3dXL1V5WVJPTkw0cEpINU5tQlNTQm1GdkJaWHVxRUlSMFJh?=
+ =?utf-8?B?RGxVY3BhRWZwZUUrcmt1QzZCTkI2Z0UwOU4rWDlWekZwVUJtTDdJWUVlN21M?=
+ =?utf-8?B?WElHQzc5M1JxTVRnSS9ML2UwZHJNN2dFMDRGTDdIREFySGpyVFdoeDFpV1pP?=
+ =?utf-8?B?TmZpNXZ1d0dheFZuM3A0NktMNWI4aXVGbTRMeHBmK0hFdmFsWlVPckNFZE9V?=
+ =?utf-8?B?OFNwN0Vxc003UzM5UTU1TVBxeDVRY2xOSklyOGFnN1FJSFpnNUhVdkFYV1Rt?=
+ =?utf-8?B?REgwRHY1dzZyNGZaYkNMSVRqSFpaaDZlR25MV0x3V2l6cElhMi9vbXJJVnVx?=
+ =?utf-8?B?RFBNUnBrd1l2UjQvTDF4MXJVMTg1QTJKQTdFK2o5aWVmaEFubjFldkxnZ0dR?=
+ =?utf-8?B?VG0vcTl6Z1haMXBUMWZUQ0hGVmE5RHEyQThVUWF3ZHJDWnM2dG9Id2N0b2t6?=
+ =?utf-8?B?Y01yY2pWbVl5SXBxNEpLSUdaTzJESDRiSzUvMnBCQ1Y2YXFEWDlSdWNlNjk5?=
+ =?utf-8?B?RUVKWnBrSlg2KzJYQXhCaFZUY3o4OUc5OUprc3lHMjA5QTZ4bGJtOWZPeFg5?=
+ =?utf-8?B?UHgxejQveE4wZzFaN3RiTlVEci9RQ203T2QzdXQxMjlVcU9XaWZDd0NVdE1v?=
+ =?utf-8?B?WUJBNVFCaXVxOTYxVTc0WVl2Wm00ajdwZU8xQjc2RWQ4REpjZzJXVFlDbnMz?=
+ =?utf-8?B?eEQrTjgwVm1Ec2ZlQlJUY1BMa2o2UEhJY0pibFE2NXhld1BoOXFkSm4rUm05?=
+ =?utf-8?B?RXorVithWVYvUkV1cG9zRjhiNVRsakJLVHd1eE9ablFkbDhIbUZqbVdURTJt?=
+ =?utf-8?B?Q0wzaWZKaFZRN0tQQ1VtUXRuT0ZrT1VZcWhPTjFjS294KzExMnhPRTBMVXdu?=
+ =?utf-8?B?QWc0dllPMjVtaG9HR0loYTg1Z21wWHJodkhwMFBUdldxaWF2WmtiYUFEQ3lM?=
+ =?utf-8?Q?XE7kUkThzHuk7Ww7gtYuNFpMyfvXbbD42Cfnwhc?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fcf9878d-19da-4061-1398-08d8e3196e1b
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 16:36:03.6289
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 13vpx1LkwdvYuGt3XCqT3bYOUsAWy6KqFj+9ct1f8GN4VJpFE+EOK2b0SvFacSXb0JZWxbeExH08Svta3wOWrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3690
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/03/2021 15:57, Michael Kelley wrote:
-> From: John Garry <john.garry@huawei.com> Sent: Tuesday, March 9, 2021 2:10 AM
->>
->> On 08/03/2021 17:56, Melanie Plageman wrote:
->>> On Mon, Mar 08, 2021 at 02:37:40PM +0000, Michael Kelley wrote:
->>>> From: Melanie Plageman (Microsoft) <melanieplageman@gmail.com> Sent: Friday,
->> March 5, 2021 3:22 PM
->>>>>
->>>>> The scsi_device->queue_depth is set to Scsi_Host->cmd_per_lun during
->>>>> allocation.
->>>>>
->>>>> Cap cmd_per_lun at can_queue to avoid dispatch errors.
->>>>>
->>>>> Signed-off-by: Melanie Plageman (Microsoft) <melanieplageman@gmail.com>
->>>>> ---
->>>>>    drivers/scsi/storvsc_drv.c | 2 ++
->>>>>    1 file changed, 2 insertions(+)
->>>>>
->>>>> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
->>>>> index 6bc5453cea8a..d7953a6e00e6 100644
->>>>> --- a/drivers/scsi/storvsc_drv.c
->>>>> +++ b/drivers/scsi/storvsc_drv.c
->>>>> @@ -1946,6 +1946,8 @@ static int storvsc_probe(struct hv_device *device,
->>>>>    				(max_sub_channels + 1) *
->>>>>    				(100 - ring_avail_percent_lowater) / 100;
->>>>>
->>>>> +	scsi_driver.cmd_per_lun = min_t(u32, scsi_driver.cmd_per_lun,
->> scsi_driver.can_queue);
->>>>> +
->>>>
->>>> I'm not sure what you mean by "avoid dispatch errors".  Can you elaborate?
->>>
->>> The scsi_driver.cmd_per_lun is set to 2048. Which is then used to set
->>> Scsi_Host->cmd_per_lun in storvsc_probe().
->>>
->>> In storvsc_probe(), when doing scsi_scan_host(), scsi_alloc_sdev() is
->>> called and sets the scsi_device->queue_depth to the Scsi_Host's
->>> cmd_per_lun with this code:
->>>
->>> scsi_change_queue_depth(sdev, sdev->host->cmd_per_lun ?
->>>                                           sdev->host->cmd_per_lun : 1);
->>>
->>> During dispatch, the scsi_device->queue_depth is used in
->>> scsi_dev_queue_ready(), called by scsi_mq_get_budget() to determine
->>> whether or not the device can queue another command.
->>>
->>> On some machines, with the 2048 value of cmd_per_lun that was used to
->>> set the initial scsi_device->queue_depth, commands can be queued that
->>> are later not able to be dispatched after running out of space in the
->>> ringbuffer.
->>>
->>> On an 8 core Azure VM with 16GB of memory with a single 1 TiB SSD
->>> (running an fio workload that I can provide if needed), storvsc_do_io()
->>> ends up often returning SCSI_MLQUEUE_DEVICE_BUSY.
->>>
->>> This is the call stack:
->>>
->>> hv_get_bytes_to_write
->>> hv_ringbuffer_write
->>> vmbus_send_packet
->>> storvsc_dio_io
->>> storvsc_queuecommand
->>> scsi_dispatch_cmd
->>> scsi_queue_rq
->>> dispatch_rq_list
->>>
->>>> Be aware that the calculation of "can_queue" in this driver is somewhat
->>>> flawed -- it should not be based on the size of the ring buffer, but instead on
->>>> the maximum number of requests Hyper-V will queue.  And even then,
->>>> can_queue doesn't provide the cap you might expect because the blk-mq layer
->>>> allocates can_queue tags for each HW queue, not as a total.
->>>
->>>
->>> The docs for scsi_mid_low_api document Scsi_Host can_queue this way:
->>>
->>>     can_queue
->>>     - must be greater than 0; do not send more than can_queue
->>>       commands to the adapter.
->>>
->>> I did notice that in scsi_host.h, the comment for can_queue does say
->>> can_queue is the "maximum number of simultaneous commands a single hw
->>> queue in HBA will accept." However, I don't see it being used this way
->>> in the code.
->>>
->>
->> JFYI, the block layer ensures that no more than can_queue requests are
->> sent to the host. See scsi_mq_setup_tags(), and how the tagset queue
->> depth is set to shost->can_queue.
->>
->> Thanks,
->> John
+On 3/9/21 2:11 AM, Rijo Thomas wrote:
+> The first patch helps to improve the response time by reducing the
+> polling time of the tee command status variable.
 > 
-> Agree on what's in scsi_mq_setup_tags().  But scsi_mq_setup_tags() calls
-> blk_mq_alloc_tag_set(), which in turn calls blk_mq_alloc_map_and_requests(),
-> which calls __blk_mq_alloc_rq_maps() repeatedly, reducing the tag
-> set queue_depth as needed until it succeeds.
+> Second patch is a bug fix to handle multi-threaded use-case.
+> During testing, race condition was seen due to missing synchronisation
+> in writes to the TEE ring buffer. This patch helps to resolve that.
 > 
-> The key thing is that __blk_mq_alloc_rq_maps() iterates over the
-> number of HW queues calling __blk_mq_alloc_map_and_request().
-> The latter function allocates the map and the requests with a count
-> of the tag set's queue_depth.   There's no logic to apportion the
-> can_queue value across multiple HW queues. So each HW queue gets
-> can_queue tags allocated, and the SCSI host driver may see up to
-> (can_queue * # HW queues) simultaneous requests.
+> Third patch is to update the copyright year for the tee driver files.
 > 
-> I'm certainly not an expert in this area, but that's what I see in the
-> code.  We've run live experiments, and can see the number
-> simultaneous requests sent to the storvsc driver be greater than
-> can_queue when the # of HW queues is greater than 1, which seems
-> to be consistent with the code.
 
-ah, ok. I assumed that # of HW queues = 1 here. So you're describing a 
-problem similar to 
-https://lore.kernel.org/linux-scsi/b3e4e597-779b-7c1e-0d3c-07bc3dab1bb5@huawei.com/
-
-So if you check nr_hw_queues comment in include/scsi/scsi_host.h, it reads:
-the total queue depth per host is nr_hw_queues * can_queue. However, for 
-when host_tagset is set, the total queue depth is can_queue.
-
-Setting .host_tagset will ensure at most can_queue requests will be sent 
-over all HW queues at any given time. A few SCSI MQ drivers set this now.
+Just something to think about and not as part of this patch series, but
+think about submitting a patch that adds you as maintainer of the TEE
+portion of the driver (see how the SEV portion is handled).
 
 Thanks,
-John
+Tom
 
+> Rijo Thomas (3):
+>   crypto: ccp - reduce tee command status polling interval from 5ms to
+>     1ms
+>   crypto: ccp - fix command queuing to TEE ring buffer
+>   crypto: ccp - update copyright year for tee
 > 
-> Michael
+>  drivers/crypto/ccp/tee-dev.c | 57 ++++++++++++++++++++++++------------
+>  drivers/crypto/ccp/tee-dev.h | 20 +++++++++++--
+>  2 files changed, 57 insertions(+), 20 deletions(-)
 > 
->>
->>
->>> During dispatch, In scsi_target_queue_ready(), there is this code:
->>>
->>>           if (busy >= starget->can_queue)
->>>                   goto starved;
->>>
->>> And the scsi_target->can_queue value should be coming from Scsi_host as
->>> mentioned in the scsi_target definition in scsi_device.h
->>>       /*
->>>         * LLDs should set this in the slave_alloc host template callout.
->>>         * If set to zero then there is not limit.
->>>         */
->>>       unsigned int            can_queue;
->>>
->>> So, I don't really see how this would be per hardware queue.
->>>
->>>>
->>>> I agree that the cmd_per_lun setting is also too big, but we should fix that in
->>>> the context of getting all of these different settings working together correctly,
->>>> and not piecemeal.
->>>>
->>>
->>> Capping Scsi_Host->cmd_per_lun to scsi_driver.can_queue during probe
->>> will also prevent the LUN queue_depth from being set to a value that is
->>> higher than it can ever be set to again by the user when
->>> storvsc_change_queue_depth() is invoked.
->>>
->>> Also in scsi_sysfs sdev_store_queue_depth() there is this check:
->>>
->>>             if (depth < 1 || depth > sdev->host->can_queue)
->>>                   return -EINVAL;
->>>
->>> I would also note that VirtIO SCSI in virtscsi_probe(), Scsi_Host->cmd_per_lun
->>> is set to the min of the configured cmd_per_lun and
->>> Scsi_Host->can_queue:
->>>
->>>       shost->cmd_per_lun = min_t(u32, cmd_per_lun, shost->can_queue);
->>>
->>> Best,
->>> Melanie
->>> .
->>>
-> 
-
