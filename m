@@ -2,122 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0768E332E43
+	by mail.lfdr.de (Postfix) with ESMTP id 5341E332E44
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhCIS1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:27:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhCIS0u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:26:50 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56731C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 10:26:50 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id d20so15978717oiw.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 10:26:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aA39NALH0TyAKu/mVeAb+Hf6XqKon/lgpyQHkCA2b/s=;
-        b=Oj2xkiT3AZrHJGVbcWUElH9kYBD3g5/BxJeoEniFwxOzd9NsKyvfl78BWMj0qFw/vf
-         HKyc6JZUU0BKNbo5d3AatS/wqGOdVWghthNo81J+TOUZbu5LWzrIfZJr6uqYPxrfBets
-         iDBaf2+bTdC+V+e+Mn92heLFMoT9jo0bHAKKx+vH3NxRVBvjd4Z5epnMec/J8XwPDul+
-         L8/MrWlTMM1bFyrNoK1AHlhwASTfnw+ooUjnOGLpCC4k8JFz1pzZM2gEnjAxdizXjv5O
-         Yk8NV7p4w6YN7C38Znh/5zcpGY2Bj1wHkzfnGvKfX2zNiYUyJIFBFUlDqohXbsx3gNev
-         v8Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aA39NALH0TyAKu/mVeAb+Hf6XqKon/lgpyQHkCA2b/s=;
-        b=SM3vHhwNnTUyUFBL1uuiN11S5m67Vvqpb8OjRC4hRmetNBkrq0MMTJj7WyCeOBczMk
-         AWnmxH4NHDZs2HbXTaC7bIZU/Y6ySymjiUbdPkWbuLWlG1iyqwpWHF8zBEBy7q2ka3s5
-         eA+mwjX/B5yLENpdMc1cH+x+XFp0kWkWlZJaYWdKHUvRbDgOnZA8s5eiKTMm6gGmR/W0
-         jDJb4exUcD4l/zgRfUSYwhmTjkmF4EuYGml9sbEBfuBT873d3dR3rgIqNtZzq2xLAOs7
-         EsvPO91rgJW9xc+2jfB5xwbc9iDvb4Q4LZ0jSledtLup/18uSDN2BYQ6yhnPFDjiwtgt
-         rYKg==
-X-Gm-Message-State: AOAM532eS0buL/OqV4bXopHYCQzm8ZVVmDgTrHhyPZ//QH4xJmBlyAjh
-        TEhJ+XFqW3pWUdmcfLtrrc4rsCfeCG77eE0JtGxPWQ==
-X-Google-Smtp-Source: ABdhPJw56yVgQmF8+OzteYQZh54ZMqLc17XK6NQjBauRe6wk6irf/rtD1PTQqeTsb9QIJdjiT8BD5U6/Oq42vXHgCLI=
-X-Received: by 2002:aca:acc2:: with SMTP id v185mr3774689oie.28.1615314409351;
- Tue, 09 Mar 2021 10:26:49 -0800 (PST)
+        id S230421AbhCIS1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:27:15 -0500
+Received: from mga09.intel.com ([134.134.136.24]:34136 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229815AbhCIS04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 13:26:56 -0500
+IronPort-SDR: L4Bnj4u6DTGgMrLFSe6igXX55273ihzW+GGZuzw/jZ/+ss/iUxLyzEUE2PvfoEbR9C3eivm24L
+ 7mUhyShrUgyw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188399795"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="188399795"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 10:26:50 -0800
+IronPort-SDR: DsIsB94LmBqxVFlg3gxJEokxZbihTfvRnqEL8y2qSbmpk1zDuUp9i4UumqBgGXw3M05AAQp1je
+ +AI/3o0NEWng==
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="409842966"
+Received: from gna-dev.igk.intel.com (HELO localhost) ([10.102.80.34])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 10:26:47 -0800
+References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com> <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com> <YCwFBNa2npYcEIQ+@kroah.com> <85wnuvrnml.fsf@linux.intel.com> <YDjxu+0zvz3zsRb3@kroah.com>
+User-agent: mu4e 1.4.13; emacs 26.3
+From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+Subject: Re: [PATCH v1 01/12] gna: add driver module
+In-reply-to: <YDjxu+0zvz3zsRb3@kroah.com>
+Date:   Tue, 09 Mar 2021 19:26:44 +0100
+Message-ID: <85wnug2nff.fsf@linux.intel.com>
 MIME-Version: 1.0
-References: <20210309171019.1125243-1-seanjc@google.com>
-In-Reply-To: <20210309171019.1125243-1-seanjc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 9 Mar 2021 10:26:38 -0800
-Message-ID: <CALMp9eRmxLTXdVoweUpZPaSyY7O4HK=KcLT243TbV4MpE8Dttg@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/perf: Use RET0 as default for guest_get_msrs to
- handle "no PMU" case
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Like Xu <like.xu@linux.intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 9:10 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> Initialize x86_pmu.guest_get_msrs to return 0/NULL to handle the "nop"
-> case.  Patching in perf_guest_get_msrs_nop() during setup does not work
-> if there is no PMU, as setup bails before updating the static calls,
-> leaving x86_pmu.guest_get_msrs NULL and thus a complete nop.  Ultimately,
-> this causes VMX abort on VM-Exit due to KVM putting random garbage from
-> the stack into the MSR load list.
->
-> Add a comment in KVM to note that nr_msrs is valid if and only if the
-> return value is non-NULL.
->
-> Fixes: abd562df94d1 ("x86/perf: Use static_call for x86_pmu.guest_get_msrs")
-> Cc: Like Xu <like.xu@linux.intel.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Reported-by: syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->
-> v2:
->  - Use __static_call_return0 to return NULL instead of manually checking
->    the hook at invocation.  [Peter]
->  - Rebase to tip/sched/core, commit 4117cebf1a9f ("psi: Optimize task
->    switch inside shared cgroups").
->
-...
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 50810d471462..32cf8287d4a7 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6580,8 +6580,8 @@ static void atomic_switch_perf_msrs(struct vcpu_vmx *vmx)
->         int i, nr_msrs;
->         struct perf_guest_switch_msr *msrs;
->
-> +       /* Note, nr_msrs may be garbage if perf_guest_get_msrs() returns NULL. */
 
-You could drop the scary comment with a profligate initialization of
-nr_msrs to 0.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-[Apologies to those seeing this twice. I blame gmail.]
+> On Fri, Feb 26, 2021 at 01:59:14PM +0100, Maciej Kwapulinski wrote:
+>> 
+>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+>> 
+>> > On Tue, Feb 16, 2021 at 05:05:14PM +0100, Maciej Kwapulinski wrote:
+>> ....
+>> >> --- /dev/null
+>> >> +++ b/drivers/misc/gna/gna_driver.h
+>> >> @@ -0,0 +1,41 @@
+>> >> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> >> +/* Copyright(c) 2017-2021 Intel Corporation */
+>> >> +
+>> >> +#ifndef __GNA_DRIVER_H__
+>> >> +#define __GNA_DRIVER_H__
+>> >> +
+>> >> +#include <linux/kernel.h>
+>> >> +#include <linux/mutex.h>
+>> >> +#include <linux/types.h>
+>> >> +
+>> >> +#define GNA_DRV_NAME	"gna"
+>> >
+>> > Way too generic, no one knows what "gna" is.
+>> >
+>> 
+>> "intel gna" is much more verbose in search engines.
+>> As we do not (plan to) have more "gna" drivers, is the following ok?:
+>> 
+>> intel-gna
+>> 
+>> the change would imply the following:
+>> 
+>> prompt$ lspci -s 00:00.3 -vvvv
+>> 00:00.3 System peripheral: Intel Corporation Device 3190 (rev 03)
+>> 	Subsystem: Intel Corporation Device 2072
+>>   ....
+>> 	Kernel driver in use: intel-gna
+>> 	Kernel modules: gna
+>> 
+>> is it ok?
+>
+> Why not intel-gna as the kernel module as well?
+>
+>> also, how about the interface to library (it's part of one of next patches)?:
+>> prompt$ file /dev/gna0
+>> /dev/gna0: character special (235/0)
+>> 
+>> can "gna" stay intact here?
+>
+> Again, I have no idea what "gna" is, so you might want to pick something
+> more descriptive?
+>
+>> I'm pointing this out, because gna exists on the market for a while and
+>> changing the above may have some impact we'd like to avoid.
+>
+> If it exists but Linux does not support it, how would anyone know about
+> it?  :)
+>
+> Please use real terms where possible.
+>
+> thanks,
+>
+> greg k-h
+
+summarizing gna name justification topic, is the intel_gna.ko driver's
+following layout within kernel code OK for You?:
+1. driver/module name:
+   prompt$ lspci -s 00:00.3 -vvvv
+   00:00.3 System peripheral: Intel Corporation Device 3190 (rev 03)
+     ....
+     Kernel driver in use: intel_gna
+     Kernel modules: intel_gna
+
+2. mv drivers/misc/gna/* drivers/misc/intel_gna/
+
+3. prompt$ file /dev/intel_gna0     
+/dev/intel_gna0: character special (10/120)
+
+# ..., /dev/intel_gna1, /dev/intel_gna2 for subsequent devices
