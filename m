@@ -2,161 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DF3332C8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85924332C92
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhCIQtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:49:41 -0500
-Received: from pb-smtp20.pobox.com ([173.228.157.52]:60073 "EHLO
-        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbhCIQtW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:49:22 -0500
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id EB70310E553;
-        Tue,  9 Mar 2021 11:49:21 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=E9MbVhkCmutKtFD9vVxlmwEupRk=; b=Yk3Pi9
-        1SFIOhGT3sSWmMbjxqA5ZMQyKQFY1oWiO24BJGbPSB99w1xgdGp96GU32Wahwx6T
-        BkkYoma5knMqWUF8+oqPjEBJVfnqq/pG95nIgVG76gj+OVhrEk29ht267lXwAESJ
-        MIC7+e0K/cNuI90tEznAio7HtOl3zNVgO3ceo=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id E0BC910E552;
-        Tue,  9 Mar 2021 11:49:21 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=Jl2Ko8laId4g9IMRvYTHhzlWdkRni9KCBszZL0sGFkw=; b=YN+D0sNW7Ti9vvXGiEMY2f7x+FKgbmmOXrSH5qZzLqWOwsraknJf0Uew9TLvQbW5Dcp0WVoQFvetL/xHerPu7Tfg3wmFjsK5w8scZr2z4mcJPHssl7aI/eohxQA8c0vSvrf1Q0M03dmnUtEpuN/Lsxp7gu6MA/gmsfhJzfJsDO8=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 9A0FC10E54D;
-        Tue,  9 Mar 2021 11:49:18 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id DBCBD2DA017E;
-        Tue,  9 Mar 2021 11:49:16 -0500 (EST)
-Date:   Tue, 9 Mar 2021 11:49:16 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH 0/4] kbuild: build speed improvment of
- CONFIG_TRIM_UNUSED_KSYMS
-In-Reply-To: <CAK7LNATw9tLZ7sgPhK5TcsQnYW6_O25JOqxGA_wm4rN+Hi0SLg@mail.gmail.com>
-Message-ID: <8552376s-o19r-3775-6917-p8oq181oosq6@syhkavp.arg>
-References: <20210225160247.2959903-1-masahiroy@kernel.org> <r3584n3-sq21-qo49-9sp5-r3qp6o611s55@syhkavp.arg> <CAK7LNAQeL7jQt1RJjLbU7MUj7XGAwEAhtTvMocQw85uJj9NA9g@mail.gmail.com> <46506ns0-1477-n7nq-9qq4-9pn48634oq4@syhkavp.arg>
- <CAK7LNATw9tLZ7sgPhK5TcsQnYW6_O25JOqxGA_wm4rN+Hi0SLg@mail.gmail.com>
+        id S230458AbhCIQvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:51:20 -0500
+Received: from mail-eopbgr760084.outbound.protection.outlook.com ([40.107.76.84]:61670
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229775AbhCIQus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:50:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lBOIINa8eMiiClS/xo1wvms3qPGRJXvbaQszvcwN+5tvfZlgWpLueK+ZII1Yw9DwIUkDrqha1WlDQIPc9I2ryusHUfsOPyDdil7ZRvXD9SZjTEaDR3XAZtAKF4q6N1L+70ynx6VvRoAr6/MIh6qLcglhEbby5DjcxMuaTm4VC7U/L8O+WRifPrSOnO2rH1c1kkpNe5Vm90s6rTAEe+Qedd0b0+Az9GLV2bAo0e06QZTmaRepJSG3GBBiTMKZs89ox0tvzbfeB29x9Ub1xuFTJ5cQzrHZV1g4v2U8dyQPXBTA34bGLocuOz0vlmDzmCpbywjlxNuWtzyFyLp17Oi5uA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7SH1hprtVAekCCiy+NG2XyJ9KGAuMoXJVOV6KDuIRVk=;
+ b=CpiAFF1ZaFXWRxwfau4LllWz41gHk1BV2ZedyunVMKfoXzJ3BJlOdIDRRngnVN7RkTJa331H8EE8DYFC7C/uGn5SMs1iOhc93gsMimxJWmhKS81rK9Vg9l9Y40Dlmkszlde5LMVRrXfU7nwvX21EdALe18FE7KPFBbHQJEoFl5X4SWI2H/Jen/P3IsQyiwSYuF77GzehWPIcXug9FWZfo8ut+fYlm0qobbbvjvyMqwPa9WaLUN51UOicHgpuSRrDAUn/7t4RqDxEw97DqYmpnCE8WIs2G77KAdnIhzBH0tQzrsUStcuf0cDuVPDQ+SW/A4XKaSg+oxIjgitVasqIzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7SH1hprtVAekCCiy+NG2XyJ9KGAuMoXJVOV6KDuIRVk=;
+ b=1ahvGXuvDAmvaYRisil59TYcxleuOxtHprGqlBWOiueZ7Mg/0CbF98DJSu4cHtvMYeTdbhXXhT6TjdpFH/LSJ6N0aLDabS0XOMZ50nxqdpOCXE83kJ+nfpNEpOqQv7bkxHPvKhhpTD6Kxn8yNTVheBlnPI1AJPQOXUsUyIGmoXg=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20)
+ by MN2PR12MB4224.namprd12.prod.outlook.com (2603:10b6:208:1dd::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.27; Tue, 9 Mar
+ 2021 16:50:42 +0000
+Received: from BL0PR12MB4948.namprd12.prod.outlook.com
+ ([fe80::ec8d:851e:525d:a6ab]) by BL0PR12MB4948.namprd12.prod.outlook.com
+ ([fe80::ec8d:851e:525d:a6ab%9]) with mapi id 15.20.3784.031; Tue, 9 Mar 2021
+ 16:50:42 +0000
+From:   Felix Kuehling <Felix.Kuehling@amd.com>
+To:     arnd@kernel.org, alexander.deucher@amd.com,
+        christian.koenig@amd.com
+Cc:     arnd@arndb.de, airlied@linux.ie, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v2 1/1] drm/amdkfd: fix build error with AMD_IOMMU_V2=m
+Date:   Tue,  9 Mar 2021 11:50:18 -0500
+Message-Id: <20210309165018.26213-1-Felix.Kuehling@amd.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <4c692eff-9d57-278e-8da4-36bc2c293506@amd.com>
+References: <4c692eff-9d57-278e-8da4-36bc2c293506@amd.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [165.204.55.251]
+X-ClientProxiedBy: YT1PR01CA0054.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2e::23) To BL0PR12MB4948.namprd12.prod.outlook.com
+ (2603:10b6:208:1cc::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 63E9F066-80F7-11EB-A106-E43E2BB96649-78420484!pb-smtp20.pobox.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Harpoon.amd.com (165.204.55.251) by YT1PR01CA0054.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26 via Frontend Transport; Tue, 9 Mar 2021 16:50:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 9a219696-5ac1-4927-ac2b-08d8e31b79b7
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4224:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4224A8E2AD6A5225AAA6A81892929@MN2PR12MB4224.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: J2ZDMm8sdSXirKFjH8uPxn1fWRKgFwkbJYj0bDJgkE0g5wFUhhxCFjt34nh19XACNKAIHO6FohXlBRcn1mwaLuDUtDDQU1lm4QH5wzjByY/aP0t0XR1EAHglC74wYX3dmMnP9+XJsuLFck9DQ3n7JEcfKagqPk7By13dMgr0uAaS56Jc0c4Ie5QNoC7k9gqrTg0Qg4dQrtPE7W91kh6wB66JnsaFcQSWWh/SeujJv14Jtnv/ltGK91X869AwAMoXLjxMn1WYmAVilWCdLzVxoVyqa1LumM5HtK9DuHxkGWRxdGIoZJEwoQRiU9y5uPHSw0Z2mtsLi5IXuMa+KIS2RqpXaLgHpKG1iV4/Kj6m8m5taE+08Di7iVNGZSmrj1TJwDIlwc4vCnVL+X4cYppFBj8v0cPJLnuT8t4xIKgaN3wk9cHYcXUpyNwH0SIu9GWH7/qtflhNREFxFthPCpVJNVw4kgTj627s1uWH/aSD+uRSQAr0kripIHcc8omi6kFgkYOeOKivpScoslD267KpKw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4948.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(39860400002)(346002)(83380400001)(26005)(4326008)(7696005)(5660300002)(16526019)(66946007)(66556008)(186003)(8676002)(52116002)(6666004)(956004)(1076003)(478600001)(2616005)(36756003)(2906002)(6636002)(86362001)(8936002)(6486002)(316002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?U6nO768hT+BG1RFerGi72AAQhaxpGu9DCvGH+CApMY7rympNz8CgRvxqqVOV?=
+ =?us-ascii?Q?m0ZPqUaI0XprOP6nAl/BV6blVauc1s0+NWWvq9MAtvQsDSLquBQhmvyqNRGG?=
+ =?us-ascii?Q?ZbBtb+7jWtFL2bTHZPHUkvJvORnMPWim4qeKplBYTwRkF60aRPO41uuWS5Zg?=
+ =?us-ascii?Q?/m+gQkCgS20LSrCgCNxC/8w2fw/FVpLTfcgHKItBkpePgQWO544DAwyHRhA0?=
+ =?us-ascii?Q?JAWuzeJHiV/+a8vUZLvBHsF+yygVtbMXRGXnNUaVKzZoCnOlfCyY5v223UTM?=
+ =?us-ascii?Q?0pbjnVLAUItou8EqGczRG+FzPnkCng5onnJEwkHq65xPRdmzA5WyGim1fFfM?=
+ =?us-ascii?Q?3zQyCWYRJes0vOU/fwu+CxAWdMmrYMb5nDWwM8MY2v6qIJ3m1exfSsb9mMqZ?=
+ =?us-ascii?Q?STzSWq9a/KoUEx+a9TV8tGAR/VgbobMfQLRwo0pJLfaxD/eg0u5Eqx1wBe+z?=
+ =?us-ascii?Q?fxHMmfelRf+8KnkA6w22k81hpM1N8pqw6kCShLkTAJjLYb3JraRUIdE+x2by?=
+ =?us-ascii?Q?/Ccq8E3KKIxEgZw0fInVgN4H0LUNFzkkqbyTNCIteZXKe6CP4qCEc7P38EhJ?=
+ =?us-ascii?Q?lmclNgNYgIscB7PlThisESWsQpiLw4j2BHtrEum1ZGvXdWThsiFBuVAs36uf?=
+ =?us-ascii?Q?qOkIPf0TajruFG+pqh3N4t6lDEaJ1eAK5eahjvyUXgHXMikFDSpMuhMr+EfF?=
+ =?us-ascii?Q?d5KY9oeLjNx/dVJBU4rToDsR3K36LAt5c8ugbHc4EtE1lKstFEuO5954BzS0?=
+ =?us-ascii?Q?pzUwAT8e1VIEWz2PBhzgv7LBQJ1d3Pox+G/yi1zlCj1Xrlg68z3gqHAdwMrq?=
+ =?us-ascii?Q?PaJ5AuH1YYDYbrAsbPPyuCvdXlMclG482If7a9QwpnKkMuGgVeUBsVmcpMI4?=
+ =?us-ascii?Q?cJPGqcSsx3sYveMIsXCjJXEntlK+/4toZBnPsPJm3EnIa/xJdJu3nzP5XV5F?=
+ =?us-ascii?Q?Fx4jbLX/abyULV59v/C6CvdoXXHIsTpI4PM95Bez/QqzuvCZAAFNE8++4MwV?=
+ =?us-ascii?Q?Zugk0cwvwUa53q1sFBtcfcwEH0enyW4RO7i3KP+kFkdMCpLyGS9dFpvyr8O0?=
+ =?us-ascii?Q?XPQDfFfdi/uFpYU3Pio7lGIZgpjxXVJtFHYTKaonICzglLZiZYnADX7zi2Kq?=
+ =?us-ascii?Q?tGolVMWKwv57sYRBdWbnA5ojbddQEDUY1D48TQRby1rIisvWioly1PkGybEp?=
+ =?us-ascii?Q?rXPvc/JYV2jTwqvmjUhimzxExe9QCAgf+QXDE0vk/8QuqNoy4Uqarzi/6Du6?=
+ =?us-ascii?Q?5THpxm5QYs7MaIaVKfMRs9BX4rZEmOgf2f1psJJp0AWT276id4mdvUEmOlPH?=
+ =?us-ascii?Q?8AFo3PP76p74WxjOO/mrGR2U?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a219696-5ac1-4927-ac2b-08d8e31b79b7
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4948.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 16:50:42.0698
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wxS0bkn31NhLx87z4O68g/sfuF4EXyMWDmL8mpCpQ9CPxXe+F/Fr6yPLqSe1HY0S9zvtI54lw0IJgpzESqgNsw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4224
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021, Masahiro Yamada wrote:
+Using 'imply AMD_IOMMU_V2' does not guarantee that the driver can link
+against the exported functions. If the GPU driver is built-in but the
+IOMMU driver is a loadable module, the kfd_iommu.c file is indeed
+built but does not work:
 
-> On Fri, Feb 26, 2021 at 4:24 AM Nicolas Pitre <nico@fluxnic.net> wrote:
-> >
-> > If CONFIG_TRIM_UNUSED_KSYMS is enabled then build time willincrease.
-> > That comes with the feature.
-> 
-> This patch set intends to change this.
-> TRIM_UNUSED_KSYMS will build without additional cost,
-> like LD_DEAD_CODE_DATA_ELIMINATION.
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_bind_process_to_device':
+kfd_iommu.c:(.text+0x516): undefined reference to `amd_iommu_bind_pasid'
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_unbind_process':
+kfd_iommu.c:(.text+0x691): undefined reference to `amd_iommu_unbind_pasid'
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_suspend':
+kfd_iommu.c:(.text+0x966): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0x97f): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0x9a4): undefined reference to `amd_iommu_free_device'
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_resume':
+kfd_iommu.c:(.text+0xa9a): undefined reference to `amd_iommu_init_device'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xadc): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xaff): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xc72): undefined reference to `amd_iommu_bind_pasid'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xe08): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xe26): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xe42): undefined reference to `amd_iommu_free_device'
 
-OK... I do see how you're going about it.
+Use IS_REACHABLE to only build IOMMU-V2 support if the amd_iommu symbols
+are reachable by the amdkfd driver. Output a warning if they are not,
+because that may not be what the user was expecting.
 
-> > > Modules are relocatable ELF.
-> > > Clang LTO cannot eliminate any code.
-> > > GCC LTO does not work with relocatable ELF
-> > > in the first place.
-> >
-> > I don't think I follow you here. What relocatable ELF has to do with LTO?
-> 
-> What is important is,
-> GCC LTO is the feature of gcc, not binutils.
-> That is, LD_FINAL is $(CC).
+Fixes: 64d1c3a43a6f ("drm/amdkfd: Centralize IOMMUv2 code and make it conditional")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+---
+ drivers/gpu/drm/amd/amdkfd/kfd_iommu.c | 6 ++++++
+ drivers/gpu/drm/amd/amdkfd/kfd_iommu.h | 9 +++++++--
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-Exact.
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
+index 66bbca61e3ef..9318936aa805 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
+@@ -20,6 +20,10 @@
+  * OTHER DEALINGS IN THE SOFTWARE.
+  */
+ 
++#include <linux/kconfig.h>
++
++#if IS_REACHABLE(CONFIG_AMD_IOMMU_V2)
++
+ #include <linux/printk.h>
+ #include <linux/device.h>
+ #include <linux/slab.h>
+@@ -355,3 +359,5 @@ int kfd_iommu_add_perf_counters(struct kfd_topology_device *kdev)
+ 
+ 	return 0;
+ }
++
++#endif
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
+index dd23d9fdf6a8..afd420b01a0c 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
+@@ -23,7 +23,9 @@
+ #ifndef __KFD_IOMMU_H__
+ #define __KFD_IOMMU_H__
+ 
+-#if defined(CONFIG_AMD_IOMMU_V2_MODULE) || defined(CONFIG_AMD_IOMMU_V2)
++#include <linux/kconfig.h>
++
++#if IS_REACHABLE(CONFIG_AMD_IOMMU_V2)
+ 
+ #define KFD_SUPPORT_IOMMU_V2
+ 
+@@ -46,6 +48,9 @@ static inline int kfd_iommu_check_device(struct kfd_dev *kfd)
+ }
+ static inline int kfd_iommu_device_init(struct kfd_dev *kfd)
+ {
++#if IS_MODULE(CONFIG_AMD_IOMMU_V2)
++	WARN_ONCE(1, "iommu_v2 module is not usable by built-in KFD");
++#endif
+ 	return 0;
+ }
+ 
+@@ -73,6 +78,6 @@ static inline int kfd_iommu_add_perf_counters(struct kfd_topology_device *kdev)
+ 	return 0;
+ }
+ 
+-#endif /* defined(CONFIG_AMD_IOMMU_V2) */
++#endif /* IS_REACHABLE(CONFIG_AMD_IOMMU_V2) */
+ 
+ #endif /* __KFD_IOMMU_H__ */
+-- 
+2.30.0
 
-> GCC LTO can be implemented for the final link stage
-> by using $(CC) as the linker driver.
-> Then, it can determine which code is unreachable.
-> In other words, GCC LTO works only when building
-> the final executable.
-
-Yes. And it does so by filling .o files with its intermediate code 
-representation and not ELF code.
-
-> On the other hand, a relocatable ELF is created
-> by $(LD) -r by combining some objects together.
-> The relocatable ELF can be fed to another $(LD) -r,
-> or the final link stage.
-
-You still can create relocatable ELF using LTO. But LTO stops there. 
-From that point on, .o files will no longer contain data that LTO can 
-use if you further combine those object files together. But until that 
-point, LTO is still usable.
-
-> As I said above, modules are created by $(LD) -r.
-> It is not possible to implement GCC LTO for modules.
-
-If I remember correctly (that was a while ago) the problem with LTO and 
-the kernel had to do with the fact that avery subdirectory was gathering 
-object files in built-in.o using ld -r. At some point we switched to 
-gathering object files into built-in.a files where no linking is taking 
-place. The real linking happens in vmlinux.o where LTO may now do its 
-magic.
-
-The same is true for modules. Compiling foo_module.c into foo_module.o 
-will create a .o file with LTO data rather than executable code. But 
-when you create the final .o for the module then LTO takes place and 
-produce the relocatable ELF executable.
-
-> > I've successfully used gcc LTO on the kernel quite a while ago.
-> >
-> > For a reference about binary size reduction with LTO and
-> > CONFIG_TRIM_UNUSED_KSYMS please read this article:
-> >
-> > https://lwn.net/Articles/746780/
-> 
-> Thanks for the great articles.
-> 
-> Just for curiosity, I think you used GCC LTO from
-> Andy's GitHub.
-
-Right. I provided the reference in the preceding article:
-https://lwn.net/Articles/744507/ 
-
-> In the article, you took stm32_defconfig as an example,
-> but ARM does not select ARCH_SUPPORTS_LTO.
-> 
-> Did you add some local hacks to make LTO work
-> for ARM?
-
-Of course. This article was written in 2017 and no LTO support at all 
-was in mainline back then. But, besides adding CONFIG_LTO, very little 
-was needed to make it compile, and I did upstream most changes such as 
-commit 75fea300d7, commit a85b2257a5, commit 5d48417592, commit 
-19c233b79d, etc.
-
-> I tried the lto-5.8.1 branch, but
-> I did not even succeed in building x86 + LTO.
-
-My latest working LTO branch (i.e. last time I worked on it) is much 
-older than that.
-
-Maybe people aren't very excited about LTO because it makes the time to 
-recompiling the kernel many times longer because gcc does its 
-optimization passes on the whole kernel even if you modify a single 
-file.
-
-
-Nicolas
