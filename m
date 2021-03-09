@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2025A332165
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C37633216A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhCIIzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:55:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
+        id S229775AbhCII6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:58:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhCIIzn (ORCPT
+        with ESMTP id S229555AbhCII5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:55:43 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC30C06174A;
-        Tue,  9 Mar 2021 00:55:43 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id 16so7515853pfn.5;
-        Tue, 09 Mar 2021 00:55:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=B5ih2s0wGc6zEFGLbxaitiDeyP8RPIDxWcG4Pgj6aB8=;
-        b=skIi6WtK6erYgcTFqAwcc4M5eJz175vB27CUN/27YkRO+dfOhWaYavQbh3YRsCJvxQ
-         H8V60Cqx1GIFDazpK5UDJUbLlDQS+5nvVb4Wkn8yyOstL5uP7Gtkmm3Sb+bccTtDJbXU
-         GZWUcydG+y6fQdpiYT/6fjbjkgjMC1o/p4BsXQq4Ka/B45g8y8t9uruFQgot5v/6vAHL
-         qDA8oDvupxDCrhVjfefEwbMk5C61cW6OkBFuKJpNbVJGoClU91RLL/MUClC0BnWvb45j
-         g7CBwhZPLSDFkUYicRdaYeu+qmsRbFkanzkliQDnIUxM6fej2uong4IjbKg8IkmNLG3w
-         dqmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=B5ih2s0wGc6zEFGLbxaitiDeyP8RPIDxWcG4Pgj6aB8=;
-        b=JUCM7LksH0bpIDY5he/OunPcJmhpLnqBCM8L07KZctsfv31h/W7LhpqeHsibO7IomI
-         VwroaJ5HfwmnrgnxnVGhYUMo3OEhihE5XhX3hIuIy0ATyt2v3VnTfWiG/gqNx/JkY2dF
-         2eP6kHSdqjOMYueQwQtve6lupnN82i+EwWt765v1GOHQ6zgOQ6mJDxwbhDiXIRnp5351
-         AzwUZUBMkFuBA5+Wi1kDLCG6C4aTDys9veu2zXidRqjHiE34N5ivcA9QSBEskvK4vIrL
-         Kf0YGteY3Ldorx2IjjT0RtJBTm/oHQMdaN/M7gLleMSP3SXUrQpMdr3Q0Byf2sfb54Xz
-         lkPw==
-X-Gm-Message-State: AOAM531MKz0U9SJOiT0lB/L2syGDfshsg9tdcei+szMuG96UuS2ZugbX
-        Z/tADrt8eB/XswXK80zWRWHldTxqhnv6I5AI
-X-Google-Smtp-Source: ABdhPJyUidhLxO3ucv6QEixM3GFAayp3mRjka2yVAXt2nBJzBPNyqYya/vLaPZLxcrpMT2cBdlI1bw==
-X-Received: by 2002:a63:a22:: with SMTP id 34mr23965822pgk.328.1615280142844;
-        Tue, 09 Mar 2021 00:55:42 -0800 (PST)
-Received: from [10.160.0.86] ([45.135.186.124])
-        by smtp.gmail.com with ESMTPSA id q34sm12073556pgl.92.2021.03.09.00.55.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 00:55:42 -0800 (PST)
-Subject: Re: [PATCH] net: netlink: fix error return code of
- netlink_proto_init()
-To:     Heiner Kallweit <hkallweit1@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        marcelo.leitner@gmail.com, mkubecek@suse.cz, jbi.octave@gmail.com,
-        yangyingliang@huawei.com, 0x7f454c46@gmail.com,
-        rdunlap@infradead.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20210309083356.24083-1-baijiaju1990@gmail.com>
- <1ca491b5-1c65-6dee-1f8c-d86006714b51@gmail.com>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <fb1e13d8-6b7e-ca47-2f65-930dfdb651dc@gmail.com>
-Date:   Tue, 9 Mar 2021 16:55:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 9 Mar 2021 03:57:41 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0E9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 00:57:41 -0800 (PST)
+Message-Id: <20210309085552.815026890@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615280259;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RjGB+NgM5iS0Xu0u/IjAds1E07pnNykvhbvtqJ9R5vg=;
+        b=K3diAjT1vyFS//40dbNw+A+FdTknzNVwJxzVuJSKV+owi90vIDv1xE30np/GuIzhtuq8EI
+        A0trqJgujioqfCzyTOInyAqTqevUFmDrFkZUFJ1e8UJpxM6YgQ45aZA4Z8RnmJul7NTVyf
+        ZpLAZ43ZWqOMIa8OB6x4rwviXDg1BCiOKF9ewjjre2smVuyLJTzb6dXuzRGI8Oso883DFl
+        5E2+GrOENKWc9JUIltEGZRBT7CTbJf5ZGgNmQkvoyknKr8xFAfB9EFfTGR9pBVKHGwEf4N
+        3DAtMsQGrtEWZXwftUk0raeCA++GeSEkBl8kbaGDsfjPNulDbx0DMFrND54+gw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615280259;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RjGB+NgM5iS0Xu0u/IjAds1E07pnNykvhbvtqJ9R5vg=;
+        b=XMnZOjbOwnJdu9d40opODcxynEz/Op5/LfqFpidmeGa3MC7xg1KRrZwhM6c07AZsdmDGRv
+        6IqpkCoOc2S2L9Bg==
+Date:   Tue, 09 Mar 2021 09:55:52 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [patch V3 0/6] softirq: Add RT specific softirq accounting
 MIME-Version: 1.0
-In-Reply-To: <1ca491b5-1c65-6dee-1f8c-d86006714b51@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/3/9 16:47, Heiner Kallweit wrote:
-> On 09.03.2021 09:33, Jia-Ju Bai wrote:
->> When kcalloc() returns NULL to nl_table, no error return code of
->> netlink_proto_init() is assigned.
->> To fix this bug, err is assigned with -ENOMEM in this case.
->>
-> Didn't we talk enough about your incorrect patches yesterday?
-> This one is incorrect again. panic() never returns.
-> Stop sending patches until you understand the code you're changing!
-
-Ah, sorry, I was too confident about this bug report...
-Thanks for your reply.
-Following your advice, now I am sending the patches only for the bug 
-reports that I am confident about after careful code review.
-Some of the patches have been applied, but some of them are still wrong, 
-like this patch...
-I am sorry for the false positives...
-
-
-Best wishes,
-Jia-Ju Bai
+UlQgcnVucyBzb2Z0aXJxIHByb2Nlc3NpbmcgYWx3YXlzIGluIHRocmVhZCBjb250ZXh0IGFuZCBp
+dCByZXF1aXJlcyB0aGF0CmJvdGggdGhlIHNvZnRpcnEgZXhlY3V0aW9uIGFuZCB0aGUgQkggZGlz
+YWJsZWQgc2VjdGlvbnMgYXJlIHByZWVtcHRpYmxlLgoKVGhpcyBpcyBhY2hpZXZlZCBieSBzZXJp
+YWxpemF0aW9uIHRocm91Z2ggcGVyIENQVSBsb2NhbCBsb2NrcyBhbmQKc3Vic3RpdHV0aW5nIGEg
+ZmV3IHBhcnRzIG9mIHRoZSBleGlzdGluZyBzb2Z0aXJxIHByb2Nlc3NpbmcgY29kZSB3aXRoCmhl
+bHBlciBmdW5jdGlvbnMuCgpUaGUgc2VyaWVzIGFwcGxpZXMgb24gdG9wIG9mCgogICBnaXQ6Ly9n
+aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGdseC9kZXZlbC5naXQgdGFz
+a2xldC0yMDIxLTAzLTA5CgphbmQgaXMgY29tcGxldGVseSBhdmFpbGFibGUgZnJvbToKCiAgIGdp
+dDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90Z2x4L2RldmVsLmdp
+dCBzb2Z0aXJxCgpDaGFuZ2VzIHRvIFYyIHdoaWNoIGNhbiBiZSBmb3VuZCBoZXJlOgoKICBodHRw
+czovL2xvcmUua2VybmVsLm9yZy9yLzIwMjAxMjA0MTcwMTUxLjk2MDMzNjY5OEBsaW51dHJvbml4
+LmRlCgogLSBTcGxpdCB0aGUgdGFza2xldCBjaGFuZ2VzIG91dCAoc2VwZXJhdGUgc3VibWlzc2lv
+bikKIAogLSBSZWJhc2UgaXQgb24gdGhlIHRhc2tsZXQgc2VyaWVzIChubyBmdXJ0aGVyIGNoYW5n
+ZXMpCgpUaGFua3MsCgoJdGdseAoK
