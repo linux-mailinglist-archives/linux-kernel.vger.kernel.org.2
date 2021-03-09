@@ -2,90 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A8C331CF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90974331CFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhCICZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 21:25:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37737 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230506AbhCICZV (ORCPT
+        id S230137AbhCIC1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 21:27:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229589AbhCIC12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 21:25:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615256720;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lc5h0GfyvI7xx+Arv3sOyw+PpmTx52yrKALPXb2J8vk=;
-        b=Dvu6NNyWoL3aAb4f2W5VplLHKFlL4vzH0Ao1ieEAJwHmxHuvi2+U/vZDyYiUjzARh5EHix
-        I660RKzxTr9TBd34snQnsbN2xAcVBbK1fYU4RE2kqp5JkvtzYHqwNkW9wmR+6liqzEromE
-        vsDBsfWqlHrsY7k4b5ewwiq++28McYs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-Wqq1xv3cNcOZ67RLXc7g1g-1; Mon, 08 Mar 2021 21:25:19 -0500
-X-MC-Unique: Wqq1xv3cNcOZ67RLXc7g1g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6F0387504F;
-        Tue,  9 Mar 2021 02:25:17 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-202.pek2.redhat.com [10.72.13.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8BF8B5D9D3;
-        Tue,  9 Mar 2021 02:25:12 +0000 (UTC)
-Subject: Re: [PATCH V2 4/4] vDPA/ifcvf: remove the version number string
-To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210308083525.382514-1-lingshan.zhu@intel.com>
- <20210308083525.382514-5-lingshan.zhu@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <cdd01cc0-4741-cf6e-2f7d-7294bf03a7ff@redhat.com>
-Date:   Tue, 9 Mar 2021 10:25:10 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        Mon, 8 Mar 2021 21:27:28 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A952C06174A;
+        Mon,  8 Mar 2021 18:27:28 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so4145407pjb.0;
+        Mon, 08 Mar 2021 18:27:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rj6oQ4IFYTilxkF7OoIJ90szUzse8S46mCr6GX2/bfU=;
+        b=HcT2lUKj+yEHpiC+3lSZHbHqbUdhv0x8pp5lxuEsUJc2MWiJYwUL3ON9FFpxZFkb3q
+         JuwPjN59wA9uspSyC1M68oW6+L/T+edPpRWbaNmArOpFY1Z8DY4rk1e9yzWaqusenRYH
+         gre4ieYC1fw0zThy+sNGHviiJlPFN2F9+jKFnGsFEqI70thfJUF7o3i0LTM+TEyKmnX8
+         3OrBTz86Gq0N/S+sS4emunEAtH2H+9JQisP3AR6BAXO/nI4JdWCG8KUoQw9uherhQHDo
+         UyJYmJjLdW01b9EVTlDHi7qyouDFRZKAkwWQuyXqjMSDuSowdmE3f8OWvh2SzXQIQw3A
+         kMxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rj6oQ4IFYTilxkF7OoIJ90szUzse8S46mCr6GX2/bfU=;
+        b=ssZY0HFgWVDTSlM7DsVK6J0+ZcHBmJvmMn1WucVYZgl2KYwOhO2yphP2eR0975K4gf
+         FTYwKPaNIUa9bw4G20mstVVzdm2GCOYxYF9J0q45Hr7exb5q/ZG3vr8yjFd6uj1qdz9t
+         A+/rJr8Y1orjrZMATUUb37kLcp3NbgPFHBQ5oOQIPPhxbNqYmUHYbahpcgUj3fKzWVA4
+         Q1RZukcfQ49mqcg7gfZdQpuMGIZdry0kDtBuRWMQtCurP8S5zIcYQEa1QJhuobSEaow9
+         o0pc46W3IbDW4x45tYI1C4zOWPRWLAFmsw2+ubvmg0G7ru0V1xb8uAQL3Ni/sjZAD3W1
+         DdPw==
+X-Gm-Message-State: AOAM531pqpLbWqts65soFyRuAtxCV7oOQAB3QXiD7btgCIPqHdYlpEdj
+        Ww3iCRtFO0MEGjUG7LsHpBU=
+X-Google-Smtp-Source: ABdhPJz2WAPpZvlB94fcAgE87Wvh3NtfxKCFB52ElTrB1MEdzsSZ0b6iAwOMFu5vCQ96/CPHHiKYYQ==
+X-Received: by 2002:a17:90a:8811:: with SMTP id s17mr2085211pjn.74.1615256847962;
+        Mon, 08 Mar 2021 18:27:27 -0800 (PST)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id x4sm4311496pfn.134.2021.03.08.18.27.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 18:27:27 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        alim.akhtar@samsung.com, avri.altman@wdc.com,
+        stanley.chu@mediatek.com, cang@codeaurora.org, beanhuo@micron.com,
+        jaegeuk@kernel.org, asutoshd@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH] scsi: ufs: Don't spew log for enabling WB in ufshcd_wb_config()
+Date:   Tue,  9 Mar 2021 10:27:03 +0800
+Message-Id: <20210309022703.422-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-In-Reply-To: <20210308083525.382514-5-lingshan.zhu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yue Hu <huyue2@yulong.com>
 
-On 2021/3/8 4:35 下午, Zhu Lingshan wrote:
-> This commit removes the version number string, using kernel
-> version is enough.
->
-> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
-> ---
+Since ufshcd_wb_ctrl() will spew error/debug log firstly, no need to
+spew similar error/info log again in the caller ufshcd_wb_config().
 
+Also, several log words in ufshcd_wb_ctrl() are not consistent with
+other sites, let's improve them. And remove unhelpful ret from debug
+log due to successful control.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-
->   drivers/vdpa/ifcvf/ifcvf_main.c | 2 --
->   1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index fd5befc5cbcc..c34e1eec6b6c 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -14,7 +14,6 @@
->   #include <linux/sysfs.h>
->   #include "ifcvf_base.h"
->   
-> -#define VERSION_STRING  "0.1"
->   #define DRIVER_AUTHOR   "Intel Corporation"
->   #define IFCVF_DRIVER_NAME       "ifcvf"
->   
-> @@ -503,4 +502,3 @@ static struct pci_driver ifcvf_driver = {
->   module_pci_driver(ifcvf_driver);
->   
->   MODULE_LICENSE("GPL v2");
-> -MODULE_VERSION(VERSION_STRING);
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 7716175..991c880 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -280,11 +280,7 @@ static inline void ufshcd_wb_config(struct ufs_hba *hba)
+ 	if (!ufshcd_is_wb_allowed(hba))
+ 		return;
+ 
+-	ret = ufshcd_wb_ctrl(hba, true);
+-	if (ret)
+-		dev_err(hba->dev, "%s: Enable WB failed: %d\n", __func__, ret);
+-	else
+-		dev_info(hba->dev, "%s: Write Booster Configured\n", __func__);
++	ufshcd_wb_ctrl(hba, true);
+ 	ret = ufshcd_wb_toggle_flush_during_h8(hba, true);
+ 	if (ret)
+ 		dev_err(hba->dev, "%s: En WB flush during H8: failed: %d\n",
+@@ -5452,14 +5448,14 @@ int ufshcd_wb_ctrl(struct ufs_hba *hba, bool enable)
+ 	ret = ufshcd_query_flag_retry(hba, opcode,
+ 				      QUERY_FLAG_IDN_WB_EN, index, NULL);
+ 	if (ret) {
+-		dev_err(hba->dev, "%s write booster %s failed %d\n",
++		dev_err(hba->dev, "%s Write Booster %s failed %d\n",
+ 			__func__, enable ? "enable" : "disable", ret);
+ 		return ret;
+ 	}
+ 
+ 	hba->dev_info.wb_enabled = enable;
+-	dev_dbg(hba->dev, "%s write booster %s %d\n",
+-			__func__, enable ? "enable" : "disable", ret);
++	dev_dbg(hba->dev, "%s Write Booster %s\n",
++			__func__, enable ? "enabled" : "disabled");
+ 
+ 	return ret;
+ }
+-- 
+1.9.1
 
