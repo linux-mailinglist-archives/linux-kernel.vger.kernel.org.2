@@ -2,83 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21112332A70
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5178A332A72
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231828AbhCIP3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:29:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbhCIP3M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:29:12 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B190C06174A;
-        Tue,  9 Mar 2021 07:29:12 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id v2so14701108lft.9;
-        Tue, 09 Mar 2021 07:29:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w5ZVq6qO8e5SzhIkBtoDJ2wfF3ZTvqMngw/5OUOs0/o=;
-        b=uKG9tc9xKyNawNtTlpOYIX3VrofJ30zh28bvjP/iqDC+YVNFa5wt34q9Tq+MmvrJ+d
-         uv5YgnYN9u1YrUYlZMGqsR0ZJ4FK0/LU1S0GhKDzr19uoNHbIxjXFmWA37858/aDk6pj
-         7WVOmSOGuYcQXrsu1SpX30iVGq0RzpweSlcSQq46x9b9u5nkSNF0N3LIE0t76pV0BV7c
-         zIHPgN4TJvhm2miuKxZReId8dsmKdk1VBlKpgX667Y2etUS6byiVhXkbkRfImGfOe5Ga
-         lSBkz+Os/FRSorukrAHbNoBkk6JtNOXUWRbxni0lKwm5fi0ofWV1qJ6LDRJcKsu4/xGO
-         cDVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w5ZVq6qO8e5SzhIkBtoDJ2wfF3ZTvqMngw/5OUOs0/o=;
-        b=dFDZmOfsqNReBomoNY6WSVXoHKPDNhKlTkRwSMRb+ihiWpOFoYtxTSjxBfziIVs2Lu
-         JfOcFzSdsL83i9CRrY6VHaDX3zq+9xzgQJj6iPWCxkH2y1TylPKmTHU53vSXexLr+xBu
-         i3/2f6eWM+AKhA62o5ultKyO5fQz7X1yALaT1NNnhNnmIwEgYVqEFs0IGyRm3n8vhrqC
-         7DSXqiBJKZgfAm3JOjrjbQGUGrj3Qu+l0BfRzv8c2BCxctgXnDoteUI43esq9FidFUCF
-         N1McUKwlX2eW9PbT77TvDBBl+j4J1dq/P4iQ+f2Py4UcdWNiZmiEo2UwId2TWROw31Qh
-         8MfA==
-X-Gm-Message-State: AOAM532Y6Yd5tLXBI8K9NId/GqPJnbCrDXcOhJHlDVqMMuqNOPPVRjnS
-        9V4IZB9Kg1ns4GJqKRZsXkVnhjOGDGfFokerJLw=
-X-Google-Smtp-Source: ABdhPJxbJw6hyXnyYAaelc+qheOLwz/cFIz/Ax14rHl3XqVU9mBT4dBn3LS4jRehNX1Wjk3cWcAN76ebPlYgUZrCJEE=
-X-Received: by 2002:a19:85c5:: with SMTP id h188mr17775973lfd.273.1615303751036;
- Tue, 09 Mar 2021 07:29:11 -0800 (PST)
+        id S231881AbhCIP3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:29:43 -0500
+Received: from mga01.intel.com ([192.55.52.88]:61154 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231410AbhCIP3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:29:19 -0500
+IronPort-SDR: K6lOzAKmN+HZ8xYshP/ndP1W1RpTxlxq+nam3O4PUQhB+MdaxTaBN++OJAcWvn2E3q8ieHoLqc
+ CaYsvruWrVdA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9918"; a="208038578"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="208038578"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 07:29:19 -0800
+IronPort-SDR: HXhNSzlJcaoWxXYMkJh0n/FLWUC0iN37HDe7/go7waGyvAvW5JPz9GIuQhayOOfHX2Fahu7fN7
+ bwUKx3XLRhdw==
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="409775839"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.0.249]) ([10.213.0.249])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 07:29:16 -0800
+Subject: Re: No sound cards detected on Kabylake laptops after upgrade to
+ kernel 5.8
+To:     Chris Chiu <chris.chiu@canonical.com>,
+        pierre-louis.bossart@linux.intel.com,
+        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
+        broonie@kernel.org, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+References: <CABTNMG31sH99P0F7EKhpFwJf99x4U-VjFWrwXVe1wkra6owFLw@mail.gmail.com>
+From:   Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <dba864a6-1442-1ebc-9de0-8c1511682b70@intel.com>
+Date:   Tue, 9 Mar 2021 16:29:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210217065427.122943-1-dong.menglong@zte.com.cn> <20210223123052.1b27aad1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210223123052.1b27aad1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Tue, 9 Mar 2021 23:28:59 +0800
-Message-ID: <CADxym3Zcxf05w2a0jis2ZyGewwmXpLzS4u54+GRwf_n2Ky7u0A@mail.gmail.com>
-Subject: Re: [PATCH v4 net-next] net: socket: use BIT() for MSG_*
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CABTNMG31sH99P0F7EKhpFwJf99x4U-VjFWrwXVe1wkra6owFLw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On 2021-03-09 1:19 PM, Chris Chiu wrote:
+> Hi Guys,
+>      We have received reports that on some Kabylake laptops (Acer Swift
+> SF314-54/55 and Lenovo Yoga C930...etc), all sound cards no longer be
+> detected after upgrade to kernel later than 5.8. These laptops have
+> one thing in common, all of them have Realtek audio codec and connect
+> the internal microphone to DMIC of the Intel SST controller either
+> [8086:9d71] or [8086:9dc8]. Please refer to
+> https://bugzilla.kernel.org/show_bug.cgi?id=201251#c246 and
+> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1915117.
+> 
+>      From the dmesg from kernel 5.8, the sound related parts only show
+> as follows but the expected snd_hda_codec_realtek and the snd_soc_skl
+> are not even loaded then.
+> [ 13.357495] snd_hda_intel 0000:00:1f.3: DSP detected with PCI
+> class/subclass/prog-if info 0x040100
+> [ 13.357500] snd_hda_intel 0000:00:1f.3: Digital mics found on
+> Skylake+ platform, using SST driver
+> 
+>      Building the kernel with the CONFIG_SND_SOC_INTEL_KBL removed can
+> load the snd_hda_codec_realtek successfully and the pulseaudio and
+> alsa-utils can detect the sound cards again. The result of bisecting
+> between kernel 5.4 and 5.8 also get similar result, reverting the
+> commit "ALSA: hda: Allow SST driver on SKL and KBL platforms with
+> DMIC" can fix the issue. I tried to generate the required firmware for
+> snd_soc_skl but it did not help. Please refer to what I did in
+> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1915117/comments/14
+> and https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1915117/comments/18.
+> 
+>      Since the skl_hda_dsp_generic-tplg.bin and dfw_sst.bin are not in
+> the linux-firmware. The Intel SST support for Skylake family is not
+> yet complete. Can we simply revert the "ALSA: hda: Allow SST driver on
+> SKL and KBL platforms with DMIC" in the current stage and wait for SOF
+> support for Skylake family? Or please suggest a better solution for
+> this. Thanks
+> 
+> Chris
+> 
 
-On Wed, Feb 24, 2021 at 4:30 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-...
-> Please repost when net-next reopens after 5.12-rc1 is cut.
->
-> Look out for the announcement on the mailing list or check:
-> http://vger.kernel.org/~davem/net-next.html
->
-> RFC patches sent for review only are obviously welcome at any time.
+Hello Chris,
 
-Is 'net-next' open? Can I resend this patch now? It seems that a long
-time has passed.
+Guide: "Linux: HDA+DMIC with skylake driver" [1] should help 
+understanding history behind the problem as well as fixing it.
 
-Thanks~
-Menglong Dong
+Upstream skylake driver - snd_soc_skl - is intended to support HDA DSP + 
+DMIC configuration via means of snd_soc_skl_hda_dsp machine board 
+driver. You _may_ switch to legacy HDAudio driver - snd_hda_intel - 
+losing DMIC support in the process. To remove any confusion - for 
+Skylake and Kabylake platforms, snd_soc_skl is your option.
+
+Now, due to above, I doubt any skylake-related topology has ever been 
+upstreamed to linux-firmware as a) most boards are I2S-based, these are 
+used by our clients which we support via separate channel b) hda 
+dsp+dmic support on linux for missing until early 2020.
+
+Topologies for most common skylake driver configurations:
+- skl/kbl with i2s rt286
+- apl/glk with i2s rt298
+- <any> with hda dsp
+can be found in alsa-topology-conf [2].
+
+Standard, official tool called 'alsatplg' is capable of compiling these 
+into binary form which, after being transferred to /lib/firmware/ may be 
+consumed by the driver during runtime.
+I have no problem with providing precompiled binaries to linux-firmware, 
+if that's what community wants.
+
+Regards,
+Czarek
+
+
+[1]: https://gist.github.com/crojewsk/4e6382bfb0dbfaaf60513174211f29cb
+[2]: https://github.com/alsa-project/alsa-topology-conf/tree/master/topology
