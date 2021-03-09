@@ -2,252 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2817C331E1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D00331E35
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhCIE7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 23:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
+        id S229527AbhCIFL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 00:11:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCIE7R (ORCPT
+        with ESMTP id S229475AbhCIFLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 23:59:17 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F767C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:59:16 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id v13so18033442edw.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:59:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NNsn0ufTvi2ZhdmZLPZ/mCVUGoeVfVXO8bsMlOKraZQ=;
-        b=xcdYd9CWVObqkrOASccmMaIZ8RFtWwy5vhs2pCdLkc9ZH8p9QGMHu4IyKqEd2Gjvdu
-         dC8y8QqY7JIZpqfSd+D1XBsnbAgrNmsCnhRyz7JddNyNP0/mrBG1CA0Mo+SbdFLR9GIq
-         BLnUaeVWCguu6j5YnXLIJD4QRjQBP0OzCdu7K8icwXnz8RVeanZ1awFhl3o3xG1M/bzb
-         ou/H1DhoicV9MZXu8TjT0AFYz/6NCBqdntJJotT/4YxdcOaDqILcPbUZfPlFFNTVgfjV
-         JjqZeBHufAiJTuUPaSJng85nkxl7Ns+/XMwVf/z8ZNWvqPO4XmMsuRkXIQHSf2aqYpoR
-         vhUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NNsn0ufTvi2ZhdmZLPZ/mCVUGoeVfVXO8bsMlOKraZQ=;
-        b=dwHMlDbhOiCJtRNPRoOXDByB+qkU7zycU9QX5aChLUVO5F3ReXylq+qH6a1s7p6Ib4
-         2/YAYm7WNdtrn4VRDa+9uShqycgnb0Gy6taFTGtdJDcv2Aqh8iYXdF6Hpe2DWJGyvaTs
-         Qfpicga9UzyZDw+2mXOedX4wuNoPF7wuTGtJnZ4ZSJw5c5VE56uL701zB/CtPKjO8fGR
-         GIwTosINp3gdEYAz8qpI/tu4lySPkxmdRrYUKDnZclke6KdRJJ2omkBap69lZv8IFrEN
-         cTsD+uSFjVv/4rs0hosDif0Bctb/xP6ATsyuHVY8iHvJv31+y1gGlwX4dPJtMesohB16
-         DJTQ==
-X-Gm-Message-State: AOAM532mhWL7QhEeFlc8oOE5RarozYlnWUWZajxU0nblzRDXxC5QDEjl
-        i14tKB0b87eGTu40M3qBxwk06SMIR7x9g4kTxffMHw==
-X-Google-Smtp-Source: ABdhPJxWPym7XShOKgZ71XxnLgW+IYugTIrsXclVAT3z0F2KEkp3VlaPEtkKeRzo8Qtu2W+e1rb3CUQ9PRls/l+PSTo=
-X-Received: by 2002:aa7:d287:: with SMTP id w7mr1970518edq.23.1615265955213;
- Mon, 08 Mar 2021 20:59:15 -0800 (PST)
+        Tue, 9 Mar 2021 00:11:06 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22958C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 21:11:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=phSls5/z7pMWFoWfKnD4G0cKXJ2g4WG/8VLnlH/vZp4=; b=PXby+zrMmIjZdegwlDTz33sgPR
+        igZOAAyXuOcPG4Bc3JguGNQGxiSLYNbEtm1wOvwY838krEJESHBoeXz4PnLpC0LofHMfZCLst3us2
+        xx0AY/MKddouSQ5YO2cpteiPPLHhaqpilPTh8IQmVi/BkHXx0X1w9t2uILHdySjrwsJjidYt8jSwM
+        NV3MfxUszzYqOY2oVCtAiax2hxLQ1AONGQWD0guPwy/y+HNzBjAD6uBFnG7Zry80Gj5pNyucdWkfG
+        KEWT5NvmZrydD7j8CH2FY1hpnM9C/KgGV2O/NH/qe380BWPn7QiylTPAujx2v0zP07mH7ECwCwSdR
+        qrKGbSWw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJUe4-000cFt-Gy; Tue, 09 Mar 2021 05:11:01 +0000
+Subject: Re: [PATCH] arch: x86: kernel: Adjust the words to suit sentences in
+ the file vmlinux.lds.S
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        keescook@chromium.org, jpoimboe@redhat.com, jroedel@suse.de,
+        hjl.tools@gmail.com, nivedita@alum.mit.edu, inglorion@google.com,
+        linux-kernel@vger.kernel.org
+References: <20210309034144.3283899-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5bed08e7-ce2b-438a-5ba1-37ee27078be8@infradead.org>
+Date:   Mon, 8 Mar 2021 21:10:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210308122714.391917404@linuxfoundation.org>
-In-Reply-To: <20210308122714.391917404@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 9 Mar 2021 10:29:03 +0530
-Message-ID: <CA+G9fYupNTEE_o-wwn6eHaZRAPqPsHwLDkpsQTHz=tXf2_VAvg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/22] 5.4.104-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210309034144.3283899-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 at 18:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.104 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.104-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 3/8/21 7:41 PM, Bhaskar Chowdhury wrote:
+> 
+> 
+> s/percpu/per CPU/
+> s/baremetal/bare metal/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Yeah, "bare metal" is a little better than "baremetal".
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+OTOH, "percpu" is a kernel construct's name. It doesn't have to
+be proper English IMHO. (2 cents worth)
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.104-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 1d493929c06100abd14b955538afa461dc2c8b69
-git describe: v5.4.103-23-g1d493929c061
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.103-23-g1d493929c061
-
-No regressions (compared to build v5.4.103)
-
-No fixes (compared to build v5.4.103)
+> ---
+>  arch/x86/kernel/vmlinux.lds.S | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+> index efd9e9ea17f2..592a44ad13b1 100644
+> --- a/arch/x86/kernel/vmlinux.lds.S
+> +++ b/arch/x86/kernel/vmlinux.lds.S
+> @@ -217,7 +217,7 @@ SECTIONS
+> 
+>  #if defined(CONFIG_X86_64) && defined(CONFIG_SMP)
+>  	/*
+> -	 * percpu offsets are zero-based on SMP.  PERCPU_VADDR() changes the
+> +	 * per CPU offsets are zero-based on SMP.  PERCPU_VADDR() changes the
+>  	 * output PHDR, so the next output section - .init.text - should
+>  	 * start another segment - init.
+>  	 */
+> @@ -262,7 +262,7 @@ SECTIONS
+>  	/*
+>  	 * start address and size of operations which during runtime
+>  	 * can be patched with virtualization friendly instructions or
+> -	 * baremetal native ones. Think page table operations.
+> +	 * bare metal native ones. Think page table operations.
+>  	 * Details in paravirt_types.h
+>  	 */
+>  	. = ALIGN(8);
+> --
 
 
-Ran 53363 total tests in the following environments and test suites.
+-- 
+~Randy
 
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-tc-testing
-* kvm-unit-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* network-basic-tests
-* kselftest-kexec
-* kselftest-vm
-* kselftest-x86
-* ltp-open-posix-tests
-* rcutorture
-* kselftest-
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
