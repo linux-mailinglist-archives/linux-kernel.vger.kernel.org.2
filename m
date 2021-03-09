@@ -2,167 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831F2332FA4
+	by mail.lfdr.de (Postfix) with ESMTP id CF625332FA5
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhCIULZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:11:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhCIULJ (ORCPT
+        id S231550AbhCIUL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:11:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37132 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230431AbhCIULO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:11:09 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3DBC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:11:06 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id p1so22900761edy.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:11:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=B8/32gF659TPX/5eYINA0NMCAB5fgPljLbGnRiQdnYg=;
-        b=HEUDvkWM2OFBGBu29IvnFBmfS+Gt2wCcZJ/ayUsAC2S6N/N3L0CEVfF8qcDiEZ0AXP
-         yPaPwm2PuvzIkmjPIxP+8C2RzdkJafbpT21pQRp8egSQoDuXR9U+3h1eKNGpCPFNxyJL
-         mLYAONdRQZayyLUWco/a6BRNXKafSz4PWZQoQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B8/32gF659TPX/5eYINA0NMCAB5fgPljLbGnRiQdnYg=;
-        b=bcsEg3KLrYXzA9f5cRK/mgnIzsKa+5IVfeVjDZMBArTN7P3I7LeVGpbOEnSQoTEuem
-         LkpXLdliSf4NFeNee7cm7Xli6KAQQ0Nt2B+E1KjHnR2+ed5YxwRn0lLdLuIDMJZVeI57
-         0/SrocJQapf2aAvW9naTcxR5UKLTyJxz94oVTWWzKkODKrOPA6QPqQCOzYu/S9JO0wik
-         JqceLtquWdAZDqtF+W6FWcw1M3UhdQe6bR6r0LPlza1GEgW4xSbZRXFmbDl9Sx5HSNbs
-         10GbKZm7WbqbqpZ//2Y4rr/L1mUEoAGLfqN/u2vAYvBN0I8GknqV7kAkfs/XFSTZ6Tfd
-         CPhw==
-X-Gm-Message-State: AOAM533I8eiQX3VlC5v9NQF/0lOtysU1Qbx0hhWxtV4kwOo2LSnFvsFI
-        6LXoqR8c6XLD55lpLQxvZ/LSmA==
-X-Google-Smtp-Source: ABdhPJxaL4O3pJaCdNKg0mD1df/BfGKBvhhC7MuO0ig6LMNEdhKG/JlMLI/ZYh2CLH9LXjPM30SYAw==
-X-Received: by 2002:a05:6402:350f:: with SMTP id b15mr6186693edd.6.1615320665265;
-        Tue, 09 Mar 2021 12:11:05 -0800 (PST)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id t6sm9275838edq.48.2021.03.09.12.11.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 12:11:04 -0800 (PST)
-Subject: Re: [PATCH v2 3/4] kbuild: re-implement CONFIG_TRIM_UNUSED_KSYMS to
- make it work in one-pass
-To:     Nicolas Pitre <nico@fluxnic.net>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-References: <20210309151737.345722-1-masahiroy@kernel.org>
- <20210309151737.345722-4-masahiroy@kernel.org>
- <354sr3np-67o8-oss9-813s-p2qoro06p4o@syhkavp.arg>
- <CAK7LNAS97kTsOW_RSy1ZL2P5Q+5Hh05qvE4KwSVkvrhkzb3Shg@mail.gmail.com>
- <2o2rpn97-79nq-p7s2-nq5-8p83391473r@syhkavp.arg>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <fb8af488-8137-d628-b1c4-983b9ab153a3@rasmusvillemoes.dk>
-Date:   Tue, 9 Mar 2021 21:11:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 9 Mar 2021 15:11:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615320673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pPWSIVWYD5uhXg5OS/brIRidglvKzUiZYDWWxI4gaXY=;
+        b=cmnnVNEYewIYDygBI1gR7+zj+b3KcDL6mVRTArc8SO/Lf7DP9Jwkp0wXLXaqtVSD2iwike
+        x5xB3CQf6BA0u0AzTF5UMXwrVAzL7KWYi3+72OXePejvt0XaU/pTS2xFXlbqXa3O42pDZo
+        N3PFyJfGHTHpm8epdGRjyjmmBLSooVU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-63-lQKzdEJdM7KaXRfMynlepw-1; Tue, 09 Mar 2021 15:11:11 -0500
+X-MC-Unique: lQKzdEJdM7KaXRfMynlepw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 865CD801817;
+        Tue,  9 Mar 2021 20:11:09 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E5B360CCD;
+        Tue,  9 Mar 2021 20:11:05 +0000 (UTC)
+Date:   Tue, 9 Mar 2021 13:11:04 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH] vfio/pci: make the vfio_pci_mmap_fault reentrant
+Message-ID: <20210309131104.1094b798@omen.home.shazbot.org>
+In-Reply-To: <20210309194824.GE763132@xz-x1>
+References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
+        <20210308132106.49da42e2@omen.home.shazbot.org>
+        <20210308225626.GN397383@xz-x1>
+        <6b98461600f74f2385b9096203fa3611@hisilicon.com>
+        <20210309124609.GG2356281@nvidia.com>
+        <20210309082951.75f0eb01@x1.home.shazbot.org>
+        <20210309164004.GJ2356281@nvidia.com>
+        <20210309184739.GD763132@xz-x1>
+        <20210309122607.0b68fb9b@omen.home.shazbot.org>
+        <20210309194824.GE763132@xz-x1>
 MIME-Version: 1.0
-In-Reply-To: <2o2rpn97-79nq-p7s2-nq5-8p83391473r@syhkavp.arg>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/03/2021 20.54, Nicolas Pitre wrote:
-> On Wed, 10 Mar 2021, Masahiro Yamada wrote:
-> 
+On Tue, 9 Mar 2021 14:48:24 -0500
+Peter Xu <peterx@redhat.com> wrote:
 
->>> I'm not sure I do understand every detail here, especially since it is
->>> so far away from the version that I originally contributed. But the
->>> concept looks good.
->>>
->>> I still think that there is no way around a recursive approach to get
->>> the maximum effect with LTO, but given that true LTO still isn't applied
->>> to mainline after all those years, the recursive approach brings
->>> nothing. Maybe that could be revisited if true LTO ever makes it into
->>> mainline, and the desire to reduce the binary size is still relevant
->>> enough to justify it.
->>
->> Hmm, I am confused.
->>
->> Does this patch change the behavior in the
->> combination with the "true LTO"?
->>
->> Please let me borrow this sentence from your article:
->> "But what LTO does is more like getting rid of branches that simply
->> float in the air without being connected to anything or which have
->> become loose due to optimization."
->> (https://lwn.net/Articles/746780/)
->>
->> This patch throws unneeded EXPORT_SYMBOL metadata
->> into the /DISCARD/ section of the linker script.
->>
->> The approach is different (preprocessor vs linker), but
->> we will still get the same result; the unneeded
->> EXPORT_SYMBOLs are disconnected from the main trunk.
->>
->> Then, the true LTO will remove branches floating in the air,
->> right?
->>
->> So, what will be lost by this patch?
+> On Tue, Mar 09, 2021 at 12:26:07PM -0700, Alex Williamson wrote:
+> > On Tue, 9 Mar 2021 13:47:39 -0500
+> > Peter Xu <peterx@redhat.com> wrote:
+> >   
+> > > On Tue, Mar 09, 2021 at 12:40:04PM -0400, Jason Gunthorpe wrote:  
+> > > > On Tue, Mar 09, 2021 at 08:29:51AM -0700, Alex Williamson wrote:    
+> > > > > On Tue, 9 Mar 2021 08:46:09 -0400
+> > > > > Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > > > >     
+> > > > > > On Tue, Mar 09, 2021 at 03:49:09AM +0000, Zengtao (B) wrote:    
+> > > > > > > Hi guys:
+> > > > > > > 
+> > > > > > > Thanks for the helpful comments, after rethinking the issue, I have proposed
+> > > > > > >  the following change: 
+> > > > > > > 1. follow_pte instead of follow_pfn.      
+> > > > > > 
+> > > > > > Still no on follow_pfn, you don't need it once you use vmf_insert_pfn    
+> > > > > 
+> > > > > vmf_insert_pfn() only solves the BUG_ON, follow_pte() is being used
+> > > > > here to determine whether the translation is already present to avoid
+> > > > > both duplicate work in inserting the translation and allocating a
+> > > > > duplicate vma tracking structure.    
+> > > >  
+> > > > Oh.. Doing something stateful in fault is not nice at all
+> > > > 
+> > > > I would rather see __vfio_pci_add_vma() search the vma_list for dups
+> > > > than call follow_pfn/pte..    
+> > > 
+> > > It seems to me that searching vma list is still the simplest way to fix the
+> > > problem for the current code base.  I see io_remap_pfn_range() is also used in
+> > > the new series - maybe that'll need to be moved to where PCI_COMMAND_MEMORY got
+> > > turned on/off in the new series (I just noticed remap_pfn_range modifies vma
+> > > flags..), as you suggested in the other email.  
+> > 
+> > 
+> > In the new series, I think the fault handler becomes (untested):
+> > 
+> > static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
+> > {
+> >         struct vm_area_struct *vma = vmf->vma;
+> >         struct vfio_pci_device *vdev = vma->vm_private_data;
+> >         unsigned long base_pfn, pgoff;
+> >         vm_fault_t ret = VM_FAULT_SIGBUS;
+> > 
+> >         if (vfio_pci_bar_vma_to_pfn(vma, &base_pfn))
+> >                 return ret;
+> > 
+> >         pgoff = (vmf->address - vma->vm_start) >> PAGE_SHIFT;
+> > 
+> >         down_read(&vdev->memory_lock);
+> > 
+> >         if (__vfio_pci_memory_enabled(vdev))
+> >                 ret = vmf_insert_pfn(vma, vmf->address, pgoff + base_pfn);
+> > 
+> >         up_read(&vdev->memory_lock);
+> > 
+> >         return ret;
+> > }  
 > 
-> Let's say you have this in module_foo:
-> 
-> int foo(int x)
-> {
-> 	return 2 + bar(x);
-> }
-> EXPORT_SYMBOL(foo);
-> 
-> And module_bar:
-> 
-> int bar(int y)
-> {
-> 	return 3 * baz(y);
-> }
-> EXPORT_SYMBOL(bar);
-> 
-> And this in the main kernel image:
-> 
-> int baz(int z)
-> {
-> 	return plonk(z);
-> }
-> EXPORT_SYMBOLbaz);
-> 
-> Now we build the kernel and modules. Then we realize that nothing 
-> references symbol "foo". We can trim the "foo" export. But it would be 
-> necessary to recompile module_foo with LTO (especially if there is 
-> some other code in that module) to realize that nothing 
-> references foo() any longer and optimize away the reference to bar(). 
+> It's just that the initial MMIO access delay would be spread to the 1st access
+> of each mmio page access rather than using the previous pre-fault scheme.  I
+> think an userspace cares the delay enough should pre-fault all pages anyway,
+> but just raise this up.  Otherwise looks sane.
 
-But, does LTO even do that to modules? Sure, the export metadata for foo
-vanishes, so there's no function pointer reference to foo, but given
-that modules are just -r links, the compiler/linker can't really assume
-that the generated object won't later be linked with something that does
-require foo? At least for the simpler case of --gc-sections, ld docs say:
+Yep, this is a concern.  Is it safe to have loops concurrently and fully
+populating the same vma with vmf_insert_pfn()?  If it is then we could
+just ignore that we're doing duplicate work when we hit this race
+condition.  Otherwise we'd need to serialize again, perhaps via a lock
+and flag stored in a struct linked from vm_private_data, along with
+tracking to free that object :-\  Thanks,
 
-'--gc-sections'
-...
+Alex
 
-    This option can be set when doing a partial link (enabled with
-     option '-r').  In this case the root of symbols kept must be
-     explicitly specified either by one of the options '--entry',
-     '--undefined', or '--gc-keep-exported' or by a 'ENTRY' command in
-     the linker script.
-
-and I would assume that for LTO, --gc-keep-exported would be the only
-sane semantics (keep any external symbol with default visibility).
-
-Can you point me at a tree/set of LTO patches and a toolchain where the
-previous implementation would actually eventually eliminate bar() from
-module_bar?
-
-Rasmus
