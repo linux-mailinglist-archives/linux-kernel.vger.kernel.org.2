@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EC6332235
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 967B0332237
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCIJkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:40:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhCIJkH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:40:07 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102C3C06174A;
-        Tue,  9 Mar 2021 01:40:07 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so4872826pjb.2;
-        Tue, 09 Mar 2021 01:40:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=bhy6FXnbh4g+JCSS127G4frcWWfQNf7o2VFHd7ec+k4=;
-        b=UQyRFBWrNgIc49iey0If78H6OGf3xwlVT2o14ix/yYEElcXIbtMU973jPmL/uekbVQ
-         F2JVve2TxxmlThx+UcfTRV4IWW8BMe/MsSckVe6eDpoeNY6298F27RAqJQrrW/x7F9DQ
-         LhPzRGNMlQ1tIOIZ+jPmIVfL/AO3C4hyx3oRDys29+kUPVGoBDoNEK4GoBwD53jhJCr/
-         aMF8uCpEz3VrmPDXvxxOsYftTBr0sQcIB03cawE/iVd69pF/ilyJ6IGbaJVrlYxyb2Vt
-         WcnL3fFiUErUTF2cPQk6Loivu24WO9uEgJN0vFx9Of8mnP/1Gch+6r132IplCRiyXhoj
-         EpxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=bhy6FXnbh4g+JCSS127G4frcWWfQNf7o2VFHd7ec+k4=;
-        b=jFc2goNWNPDHkL5SJx/+SwGCuUIk16jgxzPHsmGl3VMFVPnrvkZDpl8XCEu1F/0azh
-         AXH6WD8+P79pmingikBk+kmvnD0r1lPQVBEdDLVs5MUEh2eQIvnKIAoHvhuqVX65PmfW
-         3WsfUw+kCI24gkcWQfM+n3lVvwhPU4WhOxND77cOJq8U2z1VhEaYs7Oz2EPmYF9Uk8MP
-         5aIlaCakib+U7FjU+NzCPGOK3TLItcQOwpmNcVdDgtZQSUUpUauySZAZ0YEW/WkQxRfW
-         aRlmKmjyuEF3zhz3pRZLxotSAMt/hloX5yA0u/v6iCdGF/xBCh7ydA8oOw7SBQGTc9/G
-         NGLQ==
-X-Gm-Message-State: AOAM5333jHW2w5dk7QjS78HxWIlqT2Ki+XnC+V+U44+Gq0nLbnnUbhmQ
-        2kyA5ulZDEwMYDhHH/RNDBvePxAxBqV6EW1U
-X-Google-Smtp-Source: ABdhPJzjqvWZK8GONzQa8oMCqFW57cQCnPLHl8FZ4uQw+kxAoQjuPA7zlo8OwmtYX/bEsvYT82UoyA==
-X-Received: by 2002:a17:902:70c7:b029:e3:71cf:33d2 with SMTP id l7-20020a17090270c7b02900e371cf33d2mr25117699plt.21.1615282806332;
-        Tue, 09 Mar 2021 01:40:06 -0800 (PST)
-Received: from [10.160.0.62] ([45.135.186.124])
-        by smtp.gmail.com with ESMTPSA id a20sm1429627pfl.97.2021.03.09.01.40.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 01:40:05 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] Possible bug of missing error return code in
- __ext4_journalled_writepage()
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <7d7b3a16-74c3-1958-85df-fe6d10ed85be@gmail.com>
-Date:   Tue, 9 Mar 2021 17:40:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S230126AbhCIJkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:40:43 -0500
+Received: from mga14.intel.com ([192.55.52.115]:45678 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230086AbhCIJkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:40:13 -0500
+IronPort-SDR: 7KoT38ZETIFdBVMGA/JftHNzfIqZK3tHmPh/RGAPVehG5rfnbYvCRpxG6PAGvDJW3RoXiaxi62
+ H/Xu0kwTDQRQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="187560158"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="187560158"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:40:12 -0800
+IronPort-SDR: m4YDkeyC8C+m9+YqilzStlL5v2gkAVAYdUJrroqHVRncPx3oKA7kpZiKcRziIGOTj1S/ogDrxJ
+ kwjIQb3aNpGg==
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="509232945"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:40:11 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lJYqW-00B1kz-VQ; Tue, 09 Mar 2021 11:40:08 +0200
+Date:   Tue, 9 Mar 2021 11:40:08 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the
+ gpio-brgl-fixes tree
+Message-ID: <YEdCeICFjpbgD4UT@smile.fi.intel.com>
+References: <20210309072620.656e8078@canb.auug.org.au>
+ <20210309073211.392a838d@canb.auug.org.au>
+ <CAHp75Ve2qGd5fFC9ztaEk9d+YBa-aTu-gMn_9dRUbpkWGY9YTw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Ve2qGd5fFC9ztaEk9d+YBa-aTu-gMn_9dRUbpkWGY9YTw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In __ext4_journalled_writepage():
-     ......
-     inode_bh = ext4_journalled_write_inline_data(inode, len, page);
-     if (inode_bh == NULL)
-         goto out;
-     ......
-out:
-     unlock_page(page);
-out_no_pagelock:
-     brelse(inode_bh);
-     return ret;
+On Mon, Mar 08, 2021 at 11:01:44PM +0200, Andy Shevchenko wrote:
+> On Mon, Mar 8, 2021 at 10:34 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > On Tue, 9 Mar 2021 07:26:20 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > Commits
+> > >
+> > >   eb441337c714 ("gpio: pca953x: Set IRQ type when handle Intel Galileo Gen 2")
+> > >   809390219fb9 ("gpiolib: acpi: Allow to find GpioInt() resource by name and index")
+> > >   62d5247d239d ("gpiolib: acpi: Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk")
+> > >   6e5d5791730b ("gpiolib: acpi: Add missing IRQF_ONESHOT")
+> > >
+> > > are missing a Signed-off-by from their committers.
+> >
+> > This also applies to the gpio-intel-fixes tree (since it is now headed
+> > by the same commit as the gpio-brgl-fixes tree).
+> 
+> I rebased my branch according to Linus, but I have decided to take
+> directly Bart's tree.
+> So when original will be fixed I'll fix mine.
+> 
+> Thanks!
+> 
+> P.S. Bart, you may simply merge my tag even on top of v5.12-rc2. It
+> will save you time and keep the original SHA IDs.
 
-When inode_bh is NULL, ret is not assigned with an error code like -ENOENT.
-I wonder whether this is intentional? Or ret should be assigned with 
--ENOENT here?
+I think I have to elaborate.
+1/ you need to drop those commits from your tree (yeah, rebase :-(, nut you may
+   do it interactively and inject the merge in the same location in the
+   history)
+2/ instead of cherry-picking them run something like
+  git fetch git@gitolite.kernel.org:pub/scm/linux/kernel/git/andy/linux-gpio-intel.git intel-gpio-v5.12-2
+  git merge FETCH_HEAD
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Best wishes,
-Jia-Ju Bai
