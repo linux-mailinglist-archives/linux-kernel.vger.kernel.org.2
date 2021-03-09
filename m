@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512E8332DDD
+	by mail.lfdr.de (Postfix) with ESMTP id C28A9332DDE
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbhCISI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:08:58 -0500
-Received: from mga09.intel.com ([134.134.136.24]:32469 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhCISI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:08:26 -0500
-IronPort-SDR: EQA/y7d2+ZGXty8uRwddQ0hbMn+FrW3NXZKRU3Q/I/qm1P+7bX3ltCUJbxP22Ky2E7XkK8BpPv
- IFG7Jk0vVc7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188395941"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="188395941"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 10:08:22 -0800
-IronPort-SDR: 20GELUBpTBCAyjRitRaEEf2u0/w3WWcCgFpSSYmo4fiujBJPTDDu3iMMDGXjXUTkadkkRrv6p/
- MG2fAgxxQC4w==
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="403326250"
-Received: from kvolpe-mobl1.amr.corp.intel.com ([10.251.3.165])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 10:08:16 -0800
-Message-ID: <b6b93b11e9b5383c613d402806678fa77b7df7e8.camel@intel.com>
-Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
-From:   Kai Huang <kai.huang@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
-        b.thiel@posteo.de, jmattson@google.com, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, corbet@lwn.net
-Date:   Wed, 10 Mar 2021 07:08:14 +1300
-In-Reply-To: <20210309093037.GA699@zn.tnic>
-References: <cover.1615250634.git.kai.huang@intel.com>
-         <20210309093037.GA699@zn.tnic>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S231890AbhCISJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:09:00 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:34048 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231175AbhCISIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 13:08:53 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 8919B1C0B7A; Tue,  9 Mar 2021 19:08:51 +0100 (CET)
+Date:   Tue, 9 Mar 2021 19:08:51 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Arnd Bergmann <arnd@kernel.org>, rafael.j.wysocki@intel.com
+Cc:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, Dan Murphy <dmurphy@ti.com>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Intel, please maintain your drivers was Re: [PATCH] leds: lgm: fix
+ gpiolib dependency
+Message-ID: <20210309180851.GA4669@duo.ucw.cz>
+References: <20210308153052.2353885-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+Content-Disposition: inline
+In-Reply-To: <20210308153052.2353885-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-09 at 10:30 +0100, Borislav Petkov wrote:
-> On Tue, Mar 09, 2021 at 02:38:49PM +1300, Kai Huang wrote:
-> > This series adds KVM SGX virtualization support. The first 14 patches starting
-> > with x86/sgx or x86/cpu.. are necessary changes to x86 and SGX core/driver to
-> > support KVM SGX virtualization, while the rest are patches to KVM subsystem.
-> 
-> Ok, I guess I'll queue 1-14 once Sean doesn't find anything
-> objectionable then give Paolo an immutable commit to base the KVM stuff
-> ontop.
-> 
-> Unless folks have better suggestions, ofc.
-> 
-> Thx.
-> 
-Thanks Boris!
 
-Hi Sean, Paolo,
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Could you take a look? Thanks.
+Hi!
 
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> Without gpiolib, the driver fails to build:
+>=20
+>     drivers/leds/blink/leds-lgm-sso.c:123:19: error: field has incomplete=
+ type 'struct gpio_chip'
+>             struct gpio_chip chip;
+>                              ^
+
+Thanks, applied.
+
+I'd like people from Intel to contact me. There's more to fix there,
+and AFAICT original author went away.
+
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--pf9I7BMVVzbSWLtt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEe5swAKCRAw5/Bqldv6
+8g/BAKChV/y8/zyZH3eUHuuZxTtxolrmFQCfXSS4rIX4JrvPLkCXXICRu0eWr0o=
+=hNjL
+-----END PGP SIGNATURE-----
+
+--pf9I7BMVVzbSWLtt--
