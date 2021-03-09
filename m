@@ -2,94 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1C2332A94
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E91332A97
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbhCIPee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:34:34 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:34724 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhCIPeR (ORCPT
+        id S231834AbhCIPfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:35:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231811AbhCIPe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:34:17 -0500
-Received: by mail-io1-f69.google.com with SMTP id r3so10533431iol.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:34:17 -0800 (PST)
+        Tue, 9 Mar 2021 10:34:56 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6FAC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:34:56 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so3900494wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:34:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yzsw0t26e6RgC3Z//6/tf4qdzaRYRX8gCuMeUSGPexc=;
+        b=f0NjAAtkPD27dyFd/dyrvExuFHkunfaEkLs8LRY9YGOYfqqatBqUwXjgNrK9axhn6z
+         xwa0YP0K4IQqL/n4oYpJGZ8OnVfcF76CMDiURPJMtndV74YtZle2dLALxDY0LsKx/Llj
+         tsG3Buj/Ibdw4qpCNxy1lcl8A1cB5I5UVm9lG/+9jZKExzOMnHGag3o0iwOZj/4euEcn
+         4+2Mnng0HiniwIsGSGElcJw7npmS7nEB+6zhL5nRKvCE6y7Ty46rdOgJhidmWyIqWIl/
+         YQ5KCwL/y7OzMiM5Q6Nfj2veWAQU4o8+uIIpziIUObNq3PBRDGy6khLDHc7FfUSXeKPT
+         Hz1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=OIcb6Uf33gHiMvq3K9ajgQ2UxF2hlgBVbHwSRPUV0ds=;
-        b=H/6I8w1UBb6gPP7ftMBUG5JbdG4vAger4A0sL9K0BJoxtSZ7CDTQB+5ymM36ydHeOA
-         ECE7iksWLNyk6wbIf7nLyKWuNLXv0D8DWsjNCnOTorZcMKkW7XMCfy5GBO7xPmPsycCg
-         TCy/d6v0Lt9k0e1eNIRjvG5D9lCk3WCa2aoA3W2nR0nC91at3zPB0cBbs8oyc8nyonts
-         zTmEUBnWCAkfXF6x2jmaCQeNYlt2NTC7LArwauQtVixqezW1Z61sdwHLjWNUITVbB9lr
-         Bjd8ZT0lRRPmcBnjRkQlrlfcOPF9Ut59EkO7AwzjKPdh60dy0vh41iuTnVtrSs29pCmg
-         PzUw==
-X-Gm-Message-State: AOAM532cgm6+IpWaThwBQhJbC1A+rHUzfdTuOQxay4Cd2gjREyC7hhsA
-        +Gh7ntXBphFSR4fYnhtoY28G/BX8Lh2Cap9032amzM9t4R3N
-X-Google-Smtp-Source: ABdhPJxkd2ALCT1AuFECiT/s8ngbQXL00J4adYRT5jqAhI9bWfZ7p6+BsRxRfOpULcO1ipEB1nvUY+ZcvZOIghaTtKO26+0Z5S3E
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yzsw0t26e6RgC3Z//6/tf4qdzaRYRX8gCuMeUSGPexc=;
+        b=lKvhw1/pxAM+OtY1C7AU4VgMzo8oIlxyGbVbNe7+hS5UxcPWDnu6varO2zsJ0Aj0Wq
+         BMWwxyrAYUNmbpuWnpV/4pd5kyjmcUsUNl1ICeEKfAPr3TdM8msTJhktASO8+wbYb2eF
+         zgH9T4lSmEzbb2DL8Waw37lVFu04CU0z8d3hRh8KSB023CKekTAseJMoPclQkXmmcE27
+         c5Y/djhpIOkDg0c6mDDzkbhXuOWkp81EgdWxOZOaHXu/b+Aipo2Di779DphpsUpviYFg
+         ZETWmbdhncM6r+EDRbnD3pJ/Pcw/0xRRvMv4MCtcxWKxZCGhnH1GdYJeWgCm6IPv8m01
+         jArg==
+X-Gm-Message-State: AOAM5325cvu1DOvT7w4sXzU4ofCqPrYin3n64CNFlD8pFJOxc8pRIZ4Q
+        8oLtXs69JUEMkO8qFdKqKjj7okTuhrexWw==
+X-Google-Smtp-Source: ABdhPJyvtARdrMCqNLvCKFczKedLboQLlk3AyeGPSQfdcBppgkMEvuwgsGJiyeyCfpeqWSD6PWSoRg==
+X-Received: by 2002:a1c:7715:: with SMTP id t21mr4651344wmi.132.1615304095057;
+        Tue, 09 Mar 2021 07:34:55 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id b15sm4915530wmd.41.2021.03.09.07.34.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 07:34:54 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: fixes for v5.12-rc3
+Date:   Tue,  9 Mar 2021 16:34:43 +0100
+Message-Id: <20210309153443.16647-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:94a9:: with SMTP id x38mr28881497jah.50.1615304057014;
- Tue, 09 Mar 2021 07:34:17 -0800 (PST)
-Date:   Tue, 09 Mar 2021 07:34:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000085d60f05bd1c481f@google.com>
-Subject: [syzbot] WARNING in __handle_mm_fault (2)
-From:   syzbot <syzbot+ce14a1f8667e17a759a5@syzkaller.appspotmail.com>
-To:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
-        longman@redhat.com, mingo@redhat.com, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Linus,
 
-syzbot found the following issue on:
+Here's a bunch of fixes for the GPIO subsystem. We have two regressions in the
+core code spotted right after the merge window, a series of fixes for ACPI GPIO
+and a subsequent fix for a related regression in gpio-pca953x + a minor tweak
+in .gitignore and a rework of handling of the gpio-line-names to remedy a
+regression in stm32mp151.
 
-HEAD commit:    144c79ef Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07'..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14747f1ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3c825a7b7b408394
-dashboard link: https://syzkaller.appspot.com/bug?extid=ce14a1f8667e17a759a5
+Please pull!
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Best Regards,
+Bartosz Golaszewski
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ce14a1f8667e17a759a5@syzkaller.appspotmail.com
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 0 PID: 8390 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 0 PID: 8390 Comm: syz-fuzzer Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d bd 36 af 04 00 74 01 c3 48 c7 c7 a0 8f 6b 89 c6 05 ac 36 af 04 01 e8 87 ba be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-RSP: 0000:ffffc90001b77ac8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff8880320435a0 RCX: 0000000000000000
-RDX: ffff888025c20040 RSI: ffffffff815c0ef5 RDI: fffff5200036ef4b
-RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815b9c5e R11: 0000000000000000 R12: 0000000000000003
-R13: ffffed10064086b4 R14: 0000000000000001 R15: ffff8880b9c36000
-FS:  000000c00002e490(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c0002d4020 CR3: 000000001927f000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-Call Trace:
- __handle_mm_fault+0xeeb/0x4f70 mm/memory.c:4445
- handle_mm_fault+0x1bc/0x7e0 mm/memory.c:4549
-RIP: 0033:0x46d4d4
-RAX: 0000000000000080 RBX: 0000000000011f60 RCX: 000000c0002e6000
-RDX: 0000000000827a04 RSI: 000000c0002d4020 RDI: 000000c0004aa020
-R10: 000000c00048c000 R11: 0000000000000020 R12: 00000000000000fa
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
+are available in the Git repository at:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12-rc3
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+for you to fetch changes up to b41ba2ec54a70908067034f139aa23d0dd2985ce:
+
+  gpiolib: Read "gpio-line-names" from a firmware node (2021-03-08 11:59:17 +0100)
+
+----------------------------------------------------------------
+gpio fixes for v5.12-rc3
+
+- fix two regressions in core GPIO subsystem code: one NULL-pointer dereference
+  and one list corruption
+- read GPIO line names from fwnode instead of using the generic device
+  properties to fix a regression on stm32mp151
+- fixes to ACPI GPIO and gpio-pca953x to handle a regression in IRQ handling
+  on Intel Galileo
+- update .gitignore in GPIO selftests
+
+----------------------------------------------------------------
+Andy Shevchenko (4):
+      gpiolib: acpi: Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk
+      gpiolib: acpi: Allow to find GpioInt() resource by name and index
+      gpio: pca953x: Set IRQ type when handle Intel Galileo Gen 2
+      gpiolib: Read "gpio-line-names" from a firmware node
+
+Bartosz Golaszewski (1):
+      selftests: gpio: update .gitignore
+
+Johan Hovold (2):
+      gpio: fix NULL-deref-on-deregistration regression
+      gpio: fix gpio-device list corruption
+
+Yang Li (1):
+      gpiolib: acpi: Add missing IRQF_ONESHOT
+
+ drivers/gpio/gpio-pca953x.c             | 78 ++++++++++-----------------------
+ drivers/gpio/gpiolib-acpi.c             | 21 ++++++---
+ drivers/gpio/gpiolib.c                  | 19 ++++----
+ include/linux/acpi.h                    | 10 ++++-
+ include/linux/gpio/consumer.h           |  2 +
+ tools/testing/selftests/gpio/.gitignore |  2 +-
+ 6 files changed, 58 insertions(+), 74 deletions(-)
