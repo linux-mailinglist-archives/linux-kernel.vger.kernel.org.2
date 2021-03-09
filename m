@@ -2,112 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBF1332D95
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24695332D9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbhCIRxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:53:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48369 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229904AbhCIRws (ORCPT
+        id S231472AbhCIRyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:54:51 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41332 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231631AbhCIRyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:52:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615312367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s63iBzKBd4M36rC3LznClTyqjR9ceoDGyLPQ5MKvLKY=;
-        b=IIZtFUey+9YwhGinj8Ax6JBNolEUcEAMuNqYpYg9xLT2VFx11AtvP+hpel1465A/5gGBzN
-        hJ6AqQV3dC0tR5anEEUSRveusrGF3oCW/8KD+Udn2twZgRa5HhVbblYmnfC6YONqWu7/GZ
-        aCigHxtHs7ls0UckxJmJ4wPr8++x2NE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-5Gzoo8e2Pcu_ka1g8Rs6Fg-1; Tue, 09 Mar 2021 12:52:44 -0500
-X-MC-Unique: 5Gzoo8e2Pcu_ka1g8Rs6Fg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BF82108BD0E;
-        Tue,  9 Mar 2021 17:52:42 +0000 (UTC)
-Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B316560C4A;
-        Tue,  9 Mar 2021 17:52:39 +0000 (UTC)
-Subject: Re: [PATCH v5 3/4] x86/vmemmap: Handle unpopulated sub-pmd ranges
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210309174113.5597-1-osalvador@suse.de>
- <20210309174113.5597-4-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <3471fe0e-d8f4-c8fe-2096-8d9c8b1ab5bc@redhat.com>
-Date:   Tue, 9 Mar 2021 18:52:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 9 Mar 2021 12:54:41 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129HXoZd056462;
+        Tue, 9 Mar 2021 12:54:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=b9K8DVL60ariE8FoWoox5S7uTRkZZZrvKhNQe7qdncs=;
+ b=VGcg4ORZHWQazQ1FF5fXjbW4WcElNm9c5O1EsdD8OyXyuPjdLwk+yhnMn7Lzil85aRDF
+ IErn/6Bgde77eta/QXw615PdiinjsvOU0aKS3w4x3q4FRWJEnbzkno/+0kObGMqCA/Gs
+ +B7+VYMBCLkkSAABDguCbQHUvwr2faO4/6fxC4KYbq8iNzpgIy9IH9ftth1m1uIVH0kL
+ e+D26+C7wm2CfAMabxYOEykZtWDh32bg9HzPiMAYamgNn1V90L8Qt7W9ldzkQbRErTVa
+ PK6yqN9tTGk3z02wVvl3FT/jcbTVcU4SihZFXlJ+iORnpTwjH9hmUk8lwhrUDo86ZIzE 2Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 375wfm0y07-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 12:54:27 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 129HY6UP056836;
+        Tue, 9 Mar 2021 12:54:26 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 375wfm0xyf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 12:54:26 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 129HmsXV022977;
+        Tue, 9 Mar 2021 17:54:23 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3768n1g98h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 17:54:23 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 129HsKtp39322016
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Mar 2021 17:54:21 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B692EA405F;
+        Tue,  9 Mar 2021 17:54:20 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E08FA4054;
+        Tue,  9 Mar 2021 17:54:18 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.23.212])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  9 Mar 2021 17:54:18 +0000 (GMT)
+Date:   Tue, 9 Mar 2021 19:54:16 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     George Kennedy <george.kennedy@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Message-ID: <YEe2SAESEaEak+HB@linux.ibm.com>
+References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
+ <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
+ <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
+ <YESEymRQ2/F7xJGt@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210309174113.5597-4-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YESEymRQ2/F7xJGt@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-09_14:2021-03-08,2021-03-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 spamscore=0
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103090084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.03.21 18:41, Oscar Salvador wrote:
-> When sizeof(struct page) is not a power of 2, sections do not span
-> a PMD anymore and so when populating them some parts of the PMD will
-> remain unused.
-> Because of this, PMDs will be left behind when depopulating sections
-> since remove_pmd_table() thinks that those unused parts are still in
-> use.
+On Sun, Mar 07, 2021 at 09:46:22AM +0200, Mike Rapoport wrote:
+> Hello Rafael,
 > 
-> Fix this by marking the unused parts with PAGE_UNUSED, so memchr_inv()
-> will do the right thing and will let us free the PMD when the last user
-> of it is gone.
+> On Fri, Mar 05, 2021 at 02:30:07PM +0100, Rafael J. Wysocki wrote:
+> > On Fri, Mar 5, 2021 at 12:14 AM George Kennedy <george.kennedy@oracle.com> wrote:
+> >
+> > > The ibft table, for example, is mapped in via acpi_map() and kmap(). The
+> > > page for the ibft table is not reserved, so it can end up on the freelist.
+> > 
+> > You appear to be saying that it is not sufficient to kmap() a page in
+> > order to use it safely.  It is also necessary to reserve it upfront,
+> > for example with the help of memblock_reserve().  Is that correct?  If
+> > so, is there an alternative way to reserve a page frame?
 > 
-> This patch is based on a similar patch by David Hildenbrand:
-> 
-> https://lore.kernel.org/linux-mm/20200722094558.9828-9-david@redhat.com/
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> ---
->   arch/x86/mm/init_64.c | 63 ++++++++++++++++++++++++++++++++++++++++++---------
->   1 file changed, 52 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index 9ecb3c488ac8..3bb3988c7681 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -871,7 +871,50 @@ int arch_add_memory(int nid, u64 start, u64 size,
->   	return add_pages(nid, start_pfn, nr_pages, params);
->   }
->   
-> -#define PAGE_INUSE 0xFD
-> +#ifdef CONFIG_SPARSEMEM_VMEMMAP
-> +#define PAGE_UNUSED 0xFD
-> +
-> +/* Returns true if the PMD is completely unused and thus it can be freed */
-> +static bool __meminit vmemmap_pmd_is_unused(unsigned long addr, unsigned long end)
-> +{
+> Like David said in the other reply, if a BIOS does not mark the memory that
+> contains an ACPI table as used (e.g. reserved or ACPI data), we need to
+> make sure the kernel knows that such memory is in use and an early call to
+> memblock_reserve() is exactly what we need here.
+> George had this issue with iBFT, but in general this could be any table
+> that a buggy BIOS forgot to mark as ACPI data.
+  
+BTW, I wonder is there a fundamental reason to use ioremap() to access ACPI
+tables at all? 
+In the end, they reside in RAM and, apparently, they live at the same DIMM
+as neighboring "normal memory" so why cannot we just map them normally as
+read-only not executable?
 
-I don't think the new name is any better. It implies that all it does is 
-a check - yet it actually clears the given range. (I prefer the old 
-name, but well, I came up with that, so what do I know :D )
 
+> > > >> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > > >> index d883176..97deea3 100644
+> > > >> --- a/arch/x86/kernel/setup.c
+> > > >> +++ b/arch/x86/kernel/setup.c
+> > > >> @@ -1046,6 +1046,7 @@ void __init setup_arch(char **cmdline_p)
+> > > >>          cleanup_highmap();
+> > > >>
+> > > >>          memblock_set_current_limit(ISA_END_ADDRESS);
+> > > >> +       acpi_boot_table_init();
+> > > > This cannot be moved before the acpi_table_upgrade() invocation AFAICS.
+> > > >
+> > > > Why exactly do you want to move it?
+> > >
+> > > Want to make sure there are slots for memblock_reserve() to be able to
+> > > reserve the page.
+> > 
+> > Well, that may not require reordering the initialization this way.
+> 
+> The memory that is used by the firmware should be reserved before memblock
+> allocations are allowed so that ACPI tables won't get trampled by some
+> random allocation.
+> 
+> On x86 this essentially means that the early reservations need to be
+> complete before the call to e820__memblock_setup().
+> 
+> We probably need more precise refactoring of ACPI init than simply moving
+> acpi_boot_table_init() earlier. 
+>  
+> > > >>          e820__memblock_setup();
+> > > >>
+> 
+> -- 
+> Sincerely yours,
+> Mike.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Sincerely yours,
+Mike.
