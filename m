@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E11D332178
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F47332196
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhCII7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:59:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhCII6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:58:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BBD764ED9
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:58:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615280334;
-        bh=bGrgYHxt1zWRljmNWdTWF89KwQPE/WC7bjxroFUZJHs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MDRPXWtVs3yMMI2osLWEdRXy9xiKGo9kAp4Cdr1VTzeHhbW/HPaPLJLaeX4AuzpZo
-         zAc5ZHRcWCHSVB1NPZOowwzzf2l7TZ7yILtMOO44xoq3OSCSiQGv5XBjtqEu7XOtpa
-         R11yFXYTUKGXauoGArGgeBKSPTEHU+mG0b1dyDTGqRRGjD12JLZW24sYpgULzT3x9X
-         yfxFvPRwtbz6TAd/snAQtmYm5WNPDougT6CuJYx9K++8A9Q+7tw6b6EL4GZBzKG9oq
-         i/7crnr+2//TOewdvwSDZxPApDyeCmEMil4R16x7Z7X0NUOVIO2BZMM7pp5neNQfBa
-         mgoSQmGX1TDAw==
-Received: by mail-oi1-f175.google.com with SMTP id x135so9670276oia.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 00:58:54 -0800 (PST)
-X-Gm-Message-State: AOAM533C6yW7e+7OVpt5DkJhlsnTF5hoWx93wde5QdcGJx7+PGv2/Qca
-        iR7RcH9fIv4fVpo6pA/8/gwCDGhl+PeDWPWW8g8=
-X-Google-Smtp-Source: ABdhPJy7KwmLHvhrNLftroGyUGQ/t+PND67LUPNySsQX0tVy70CsU1/qFEJEzMXrNv8DMLGhBPueB6t1Sz6S4o59CIs=
-X-Received: by 2002:aca:bf44:: with SMTP id p65mr1097765oif.11.1615280333519;
- Tue, 09 Mar 2021 00:58:53 -0800 (PST)
+        id S229637AbhCIJFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:05:43 -0500
+Received: from esa5.hc3370-68.iphmx.com ([216.71.155.168]:35948 "EHLO
+        esa5.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhCIJFM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:05:12 -0500
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Mar 2021 04:05:12 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1615280712;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ucEyClNY7Tik8Yk7WI9RZer5oJR2JMMqQHVmFQC9FDE=;
+  b=QVONzvvlN7I7XsaRYUQCGNmh2ULqBq9zQrA/TQ0S0pkRkKnWaTW8SCrZ
+   gj/21jE5kFIp2NMtw2vpwEMoosCY/AHJUiydPKRfTf4V1VlPDFtZB45HP
+   AASZbA5TUuSthGPTvhPSpBuxjn/L6gxGBBuaXLPfAyVJj3/KEYOGIutr8
+   w=;
+Authentication-Results: esa5.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: ifhYFTrHtVgd68c/XUGtBuHNjVRWo6LfOxF3XIc6nQNmeHSBls/AkrbJ89p6twz1cYS0qfTMYE
+ 8tm4S8oS6YFEHMWGJKuMwDAScH2anoCglpbi60qWwpVBQcBGKwPYm/A0aEeGbZ0OfFdfGCxVHB
+ vTkzH4T5pVvmrmdoHlz1NFEYy/WZD59qZSW6ilFF8vw6GqX2T6sJmQVlPCrcKpYXvQI3Netdin
+ SS2On1Z3Azsqs9QyW25t8LjPLwIcVK1udb23wbHb6LXikGmvqMqYehSQ5PxdYJL3zywqd/12FN
+ xtU=
+X-SBRS: 4.0
+X-MesageID: 38751923
+X-Ironport-Server: esa5.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.81,234,1610427600"; 
+   d="scan'208";a="38751923"
+Subject: Re: [PATCH v4 2/3] xen/events: don't unmask an event channel when an
+ eoi is pending
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
+CC:     Stefano Stabellini <sstabellini@kernel.org>,
+        <stable@vger.kernel.org>, Julien Grall <julien@xen.org>,
+        Julien Grall <jgrall@amazon.com>
+References: <20210306161833.4552-1-jgross@suse.com>
+ <20210306161833.4552-3-jgross@suse.com>
+ <ff9fb99f-12ca-c04e-e4bc-1b1c67381cc2@oracle.com>
+ <d6a1ab2e-4b77-7b14-e397-74aa71efb70d@suse.com>
+From:   Ross Lagerwall <ross.lagerwall@citrix.com>
+Message-ID: <b6d41422-47cf-956c-9c4a-98998c64b103@citrix.com>
+Date:   Tue, 9 Mar 2021 08:57:23 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <4c692eff-9d57-278e-8da4-36bc2c293506@amd.com> <20210309032356.20800-1-Felix.Kuehling@amd.com>
-In-Reply-To: <20210309032356.20800-1-Felix.Kuehling@amd.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 9 Mar 2021 09:58:37 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1EeHimbufajcHzV+-bBarWtLHzzFSsa=qdUDsip=Wz_A@mail.gmail.com>
-Message-ID: <CAK8P3a1EeHimbufajcHzV+-bBarWtLHzzFSsa=qdUDsip=Wz_A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] drm/amdkfd: fix build error with AMD_IOMMU_V2=m
-To:     Felix Kuehling <Felix.Kuehling@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d6a1ab2e-4b77-7b14-e397-74aa71efb70d@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 4:23 AM Felix Kuehling <Felix.Kuehling@amd.com> wrote:
->
-> Using 'imply AMD_IOMMU_V2' does not guarantee that the driver can link
-> against the exported functions. If the GPU driver is built-in but the
-> IOMMU driver is a loadable module, the kfd_iommu.c file is indeed
-> built but does not work:
->
-> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_bind_process_to_device':
-> kfd_iommu.c:(.text+0x516): undefined reference to `amd_iommu_bind_pasid'
-> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_unbind_process':
-> kfd_iommu.c:(.text+0x691): undefined reference to `amd_iommu_unbind_pasid'
-> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_suspend':
-> kfd_iommu.c:(.text+0x966): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-> x86_64-linux-ld: kfd_iommu.c:(.text+0x97f): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-> x86_64-linux-ld: kfd_iommu.c:(.text+0x9a4): undefined reference to `amd_iommu_free_device'
-> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_resume':
-> kfd_iommu.c:(.text+0xa9a): undefined reference to `amd_iommu_init_device'
-> x86_64-linux-ld: kfd_iommu.c:(.text+0xadc): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-> x86_64-linux-ld: kfd_iommu.c:(.text+0xaff): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-> x86_64-linux-ld: kfd_iommu.c:(.text+0xc72): undefined reference to `amd_iommu_bind_pasid'
-> x86_64-linux-ld: kfd_iommu.c:(.text+0xe08): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-> x86_64-linux-ld: kfd_iommu.c:(.text+0xe26): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-> x86_64-linux-ld: kfd_iommu.c:(.text+0xe42): undefined reference to `amd_iommu_free_device'
->
-> Use IS_REACHABLE to only build IOMMU-V2 support if the amd_iommu symbols
-> are reachable by the amdkfd driver. Output a warning if they are not,
-> because that may not be what the user was expecting.
+On 2021-03-09 05:14, Jürgen Groß wrote:
+> On 08.03.21 21:33, Boris Ostrovsky wrote:
+>>
+>> On 3/6/21 11:18 AM, Juergen Gross wrote:
+>>> An event channel should be kept masked when an eoi is pending for it.
+>>> When being migrated to another cpu it might be unmasked, though.
+>>>
+>>> In order to avoid this keep three different flags for each event channel
+>>> to be able to distinguish "normal" masking/unmasking from eoi related
+>>> masking/unmasking and temporary masking. The event channel should only
+>>> be able to generate an interrupt if all flags are cleared.
+>>>
+>>> Cc: stable@vger.kernel.org
+>>> Fixes: 54c9de89895e0a36047 ("xen/events: add a new late EOI evtchn framework")
+>>> Reported-by: Julien Grall <julien@xen.org>
+>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>> Reviewed-by: Julien Grall <jgrall@amazon.com>
+>>> ---
+>>> V2:
+>>> - introduce a lock around masking/unmasking
+>>> - merge patch 3 into this one (Jan Beulich)
+>>> V4:
+>>> - don't set eoi masking flag in lateeoi_mask_ack_dynirq()
+>>
+>>
+>> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+>>
+>>
+>> Ross, are you planning to test this?
+> 
+> Just as another data point: With the previous version of the patches
+> a reboot loop of a guest needed max 33 reboots to loose network in
+> my tests (those were IIRC 6 test runs). With this patch version I
+> stopped the test after about 1300 reboots without having seen any
+> problems.
+> 
 
-This would fix the compile-time failure, but it still fails my CI
-because you introduce
-a compile-time warning. Can you change it into a runtime warning instead?
+Thanks, I'll test it today and get back to you.
 
-Neither type of warning is likely to actually reach the person trying
-to debug the
-problem, so you still end up with machines that don't do what they should,
-but I can live with the runtime warning as long as the build doesn't break.
-
-I think the proper fix would be to not rely on custom hooks into a particular
-IOMMU driver, but to instead ensure that the amdgpu driver can do everything
-it needs through the regular linux/iommu.h interfaces. I realize this
-is more work,
-but I wonder if you've tried that, and why it didn't work out.
-
-       Arnd
+Ross
