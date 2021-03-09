@@ -2,369 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD151331B59
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B819C331B5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhCIAEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 19:04:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
+        id S231321AbhCIAFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 19:05:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232159AbhCIAEB (ORCPT
+        with ESMTP id S229627AbhCIAFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 19:04:01 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F34C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 16:04:00 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id x9so17351317edd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 16:04:00 -0800 (PST)
+        Mon, 8 Mar 2021 19:05:23 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B36C06174A;
+        Mon,  8 Mar 2021 16:05:23 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id o9so11994095iow.6;
+        Mon, 08 Mar 2021 16:05:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0dbxPVxty7S0FTjd9YfEPyg4JwOlpFEdqNuRwZRhWT0=;
-        b=KeFcQQvct2WR7F4ahCrvTVGSiA4xlLYJbeuIpAW3/+CT5X/O62jw1S/rGUtlNgFKI8
-         2UDmHQ9Z09UhYURZn0cHRtxl8MzUEQEp1JEmNnJjxsF3ypZSZx5NJ2lnUaUcF+ktcwJH
-         tEJ1cFCYZrM7OJqP1iQbW9nEjcW8/SfPTt4MoIU9ZUpYEuke6wCuJr0EEzIt/XfrKRmZ
-         AAdMzX1Z0uBS+KEOL4mt3JwSqIoNQM6znvbiVNhnjJNQXUZWrcmxWyU+55MgiVLPeVKU
-         bb1Fh2vc60uZ7acU9TVxiByzP9agtxWQmitIUCj2VTe3k9/Abcuwj6Aq3X065kbY3aGL
-         dKfg==
+        bh=1dqCVTG2109HqZ5qitjhQym98S7SrqCwUMAJTjbj+9Y=;
+        b=UEihR8CrE4FeNvT2OdS7bRAfFJCmRPsb30Kiepa47DNk2DE7zZbdu+v6dLRCJfRBCO
+         oRwRvLNClbJaUy5/ecqwuAWxT5sW1ijnnlfn2osB6d9V7I6PD5SClj98hqqAlzk0YiTi
+         Kz8NkwSO1Ts26CcybddV9OyUWdDndv3VPBlFEkusMyTOyW5Skb17fmNoWrNThK3nNtcY
+         WhCy8NNJIy7prx5fKzFWuoBkcJCn0Thh6PTC8bGOP8LmKZBsglQXDo9LiIv5DLP5uxLY
+         AefbjUIWHSznFSoHWpa9nSdJJg/siTERIO7DByP+cOdkVI1O3d27tCAyQMvWO5IvfdGA
+         GQWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0dbxPVxty7S0FTjd9YfEPyg4JwOlpFEdqNuRwZRhWT0=;
-        b=RNfm7D3lMNfdAT+d+TfZmZoizdhr01F3tWyo9gxfir9dj9MSbjGIRkLz7FXqzbVnZ3
-         2DyoztZVSBxPlxRB4FVlWNfGYODzvtcuHRjGhQa5iLitifEJ4/3WGbn/nexWblZ4M87d
-         Jb/lTT1dLjchpMIGqEkYlkiQlnsnY171FB5G53eQJAOdwvjD3F8r7GAjOwIhQMv/OKvY
-         ranjh7cK8e9fREztmeylOxKRUx0qUmbrxOAA/cGXjyI5E114RdZnRI3EqSGys0MdQYUT
-         UB3R6PMa/WzZbj89A7eN0s8NHe5zAxOhwCbXlr1C+RunW/SrcATGIwfBQy9nUGjL/2ce
-         hV0A==
-X-Gm-Message-State: AOAM530z36ZdNf64flkS4YcU3gS/EBOQZQF9uqhZfFqtBqIJPGkxiP8b
-        a3DmVrwWWhy4XZF5zh0850r12z0hYQA8aEohqkY=
-X-Google-Smtp-Source: ABdhPJwrn4Ocd3cyj62z+neHA6zA7ZX5REnfKTANwwcLg7Ce3Kra69sLmHMv7Y05T0MLzFAQF6EC0uH4rT9tuRwiVpw=
-X-Received: by 2002:aa7:df86:: with SMTP id b6mr1072395edy.294.1615248239438;
- Mon, 08 Mar 2021 16:03:59 -0800 (PST)
+        bh=1dqCVTG2109HqZ5qitjhQym98S7SrqCwUMAJTjbj+9Y=;
+        b=pp8117bgi5sketlHPV5AJ9jrYSyCnpjsM4CdKKKREaWitKJphvVudoGmvtwuJhiJlf
+         PwT7nOJbxTeT/kvsLG4J9DFMmrbvFgYbVSMnOYWDK9pnZkPlXs8Wr4qavW29JwbabzgO
+         FHJhQonHQhDkFxe3sbdzEXWMnGa6+WiXYiKOyaKIcuEH7WgrIzMGY446qVbWyyDSB8w+
+         DT2YsMgWcqxGdE/JnSho4Mzo6Nc58EinKW7yhU0dwyqdbiHob19iaizPGXk+VjDLx+eM
+         o3N1fRMS4WPElz7fzigN5ufK4jBnn7Drj77x8CyKDLWzodlS4gXKo5o8lyG9/aOe39QW
+         0zXw==
+X-Gm-Message-State: AOAM533bpGav2iCMjpJSr0EL0dLLX9bX/Wb6HKMA35YP0Yg2NK8mlOdB
+        wnEAkYnkOJWX/TS9/ZNd8C9LD72NnGexgv0HvNw=
+X-Google-Smtp-Source: ABdhPJzTcYB5yot0LrZe6zznt36hN//F09p3og4Ka+6TY2XhELvZ9Za8LU1mTe1TUZ6Z4d31CE/oMDyplA5k2K9kA9w=
+X-Received: by 2002:a02:9042:: with SMTP id y2mr26340053jaf.94.1615248322889;
+ Mon, 08 Mar 2021 16:05:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20210304235949.7922C1C3@viggo.jf.intel.com> <20210304235955.05514241@viggo.jf.intel.com>
-In-Reply-To: <20210304235955.05514241@viggo.jf.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 8 Mar 2021 16:03:47 -0800
-Message-ID: <CAHbLzkqHHh2BK6BYW2kKnBjZcVKdmM+z-+0ij9HS0t73Xi8r1w@mail.gmail.com>
-Subject: Re: [PATCH 03/10] mm/migrate: update node demotion order during on
- hotplug events
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
+References: <20210305094107.13743-1-vincent.whitchurch@axis.com> <CANT5p=rB2=DvjtpmVy803emWpuzsy-C2+d4wqQ5g_9fJ8+a5Cw@mail.gmail.com>
+In-Reply-To: <CANT5p=rB2=DvjtpmVy803emWpuzsy-C2+d4wqQ5g_9fJ8+a5Cw@mail.gmail.com>
+From:   ronnie sahlberg <ronniesahlberg@gmail.com>
+Date:   Tue, 9 Mar 2021 10:05:11 +1000
+Message-ID: <CAN05THQtb5RY2ye7nkyWBjrXS+=usZCxUM7jBQG+JEpg_TQQTA@mail.gmail.com>
+Subject: Re: [PATCH] CIFS: Prevent error log on spurious oplock break
+To:     Shyam Prasad N <nspmangalore@gmail.com>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steve French <sfrench@samba.org>, kernel@axis.com,
+        Pavel Shilovsky <pshilov@microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 4:00 PM Dave Hansen <dave.hansen@linux.intel.com> wrote:
+On Sun, Mar 7, 2021 at 8:52 PM Shyam Prasad N via samba-technical
+<samba-technical@lists.samba.org> wrote:
 >
+> Hi Vincent,
 >
-> From: Dave Hansen <dave.hansen@linux.intel.com>
->
-> Reclaim-based migration is attempting to optimize data placement in
-> memory based on the system topology.  If the system changes, so must
-> the migration ordering.
->
-> The implementation is conceptually simple and entirely unoptimized.
-> On any memory or CPU hotplug events, assume that a node was added or
-> removed and recalculate all migration targets.  This ensures that the
-> node_demotion[] array is always ready to be used in case the new
-> reclaim mode is enabled.
->
-> This recalculation is far from optimal, most glaringly that it does
-> not even attempt to figure out the hotplug event would have some
-> *actual* effect on the demotion order.  But, given the expected
-> paucity of hotplug events, this should be fine.
->
-> === What does RCU provide? ===
->
-> Imaginge a simple loop which walks down the demotion path looking
-> for the last node:
->
->         terminal_node = start_node;
->         while (node_demotion[terminal_node] != NUMA_NO_NODE) {
->                 terminal_node = node_demotion[terminal_node];
->         }
->
-> The initial values are:
->
->         node_demotion[0] = 1;
->         node_demotion[1] = NUMA_NO_NODE;
->
-> and are updated to:
->
->         node_demotion[0] = NUMA_NO_NODE;
->         node_demotion[1] = 0;
->
-> What guarantees that the loop did not observe:
->
->         node_demotion[0] = 1;
->         node_demotion[1] = 0;
->
-> and would loop forever?
->
-> With RCU, a rcu_read_lock/unlock() can be placed around the
-> loop.  Since the write side does a synchronize_rcu(), the loop
-> that observed the old contents is known to be complete after the
-> synchronize_rcu() has completed.
->
-> RCU, combined with disable_all_migrate_targets(), ensures that
-> the old migration state is not visible by the time
-> __set_migration_target_nodes() is called.
->
-> === What does READ_ONCE() provide? ===
->
-> READ_ONCE() forbids the compiler from merging or reordering
-> successive reads of node_demotion[].  This ensures that any
-> updates are *eventually* observed.
->
-> Consider the above loop again.  The compiler could theoretically
-> read the entirety of node_demotion[] into local storage
-> (registers) and never go back to memory, and *permanently*
-> observe bad values for node_demotion[].
->
-> Note: RCU does not provide any universal compiler-ordering
-> guarantees:
->
->         https://lore.kernel.org/lkml/20150921204327.GH4029@linux.vnet.ibm.com/
->
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: osalvador <osalvador@suse.de>
-> ---
->
->  b/mm/migrate.c |  159 +++++++++++++++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 137 insertions(+), 22 deletions(-)
->
-> diff -puN mm/migrate.c~enable-numa-demotion mm/migrate.c
-> --- a/mm/migrate.c~enable-numa-demotion 2021-03-04 15:35:53.670806436 -0800
-> +++ b/mm/migrate.c      2021-03-04 15:35:53.677806436 -0800
-> @@ -49,6 +49,7 @@
->  #include <linux/sched/mm.h>
->  #include <linux/ptrace.h>
->  #include <linux/oom.h>
-> +#include <linux/memory.h>
->
->  #include <asm/tlbflush.h>
->
-> @@ -1192,8 +1193,12 @@ out:
->   */
->
->  /*
-> - * Writes to this array occur without locking.  READ_ONCE()
-> - * is recommended for readers to ensure consistent reads.
-> + * Writes to this array occur without locking.  Cycles are
-> + * not allowed: Node X demotes to Y which demotes to X...
-> + *
-> + * If multiple reads are performed, a single rcu_read_lock()
-> + * must be held over all reads to ensure that no cycles are
-> + * observed.
->   */
->  static int node_demotion[MAX_NUMNODES] __read_mostly =
->         {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
-> @@ -1209,13 +1214,22 @@ static int node_demotion[MAX_NUMNODES] _
->   */
->  int next_demotion_node(int node)
->  {
-> +       int target;
-> +
->         /*
-> -        * node_demotion[] is updated without excluding
-> -        * this function from running.  READ_ONCE() avoids
-> -        * reading multiple, inconsistent 'node' values
-> -        * during an update.
-> +        * node_demotion[] is updated without excluding this
-> +        * function from running.  RCU doesn't provide any
-> +        * compiler barriers, so the READ_ONCE() is required
-> +        * to avoid compiler reordering or read merging.
-> +        *
-> +        * Make sure to use RCU over entire code blocks if
-> +        * node_demotion[] reads need to be consistent.
->          */
-> -       return READ_ONCE(node_demotion[node]);
-> +       rcu_read_lock();
-> +       target = READ_ONCE(node_demotion[node]);
-> +       rcu_read_unlock();
-> +
-> +       return target;
->  }
->
->  /*
-> @@ -3220,8 +3234,9 @@ void migrate_vma_finalize(struct migrate
->  EXPORT_SYMBOL(migrate_vma_finalize);
->  #endif /* CONFIG_DEVICE_PRIVATE */
->
-> +#if defined(CONFIG_MEMORY_HOTPLUG)
->  /* Disable reclaim-based migration. */
-> -static void disable_all_migrate_targets(void)
-> +static void __disable_all_migrate_targets(void)
->  {
->         int node;
->
-> @@ -3229,6 +3244,25 @@ static void disable_all_migrate_targets(
->                 node_demotion[node] = NUMA_NO_NODE;
->  }
->
-> +static void disable_all_migrate_targets(void)
-> +{
-> +       __disable_all_migrate_targets();
-> +
-> +       /*
-> +        * Ensure that the "disable" is visible across the system.
-> +        * Readers will see either a combination of before+disable
-> +        * state or disable+after.  They will never see before and
-> +        * after state together.
-> +        *
-> +        * The before+after state together might have cycles and
-> +        * could cause readers to do things like loop until this
-> +        * function finishes.  This ensures they can only see a
-> +        * single "bad" read and would, for instance, only loop
-> +        * once.
-> +        */
-> +       synchronize_rcu();
-> +}
-> +
->  /*
->   * Find an automatic demotion target for 'node'.
->   * Failing here is OK.  It might just indicate
-> @@ -3291,20 +3325,6 @@ static void __set_migration_target_nodes
->         disable_all_migrate_targets();
->
->         /*
-> -        * Ensure that the "disable" is visible across the system.
-> -        * Readers will see either a combination of before+disable
-> -        * state or disable+after.  They will never see before and
-> -        * after state together.
-> -        *
-> -        * The before+after state together might have cycles and
-> -        * could cause readers to do things like loop until this
-> -        * function finishes.  This ensures they can only see a
-> -        * single "bad" read and would, for instance, only loop
-> -        * once.
-> -        */
-> -       smp_wmb();
-> -
-> -       /*
->          * Allocations go close to CPUs, first.  Assume that
->          * the migration path starts at the nodes with CPUs.
->          */
-> @@ -3347,3 +3367,98 @@ static void set_migration_target_nodes(v
->         __set_migration_target_nodes();
->         put_online_mems();
->  }
-> +
-> +/*
-> + * React to hotplug events that might affect the migration targets
-> + * like events that online or offline NUMA nodes.
-> + *
-> + * The ordering is also currently dependent on which nodes have
-> + * CPUs.  That means we need CPU on/offline notification too.
-> + */
-> +static int migration_online_cpu(unsigned int cpu)
-> +{
-> +       set_migration_target_nodes();
-> +       return 0;
-> +}
-> +
-> +static int migration_offline_cpu(unsigned int cpu)
-> +{
-> +       set_migration_target_nodes();
-> +       return 0;
-> +}
-> +
-> +/*
-> + * This leaves migrate-on-reclaim transiently disabled between
-> + * the MEM_GOING_OFFLINE and MEM_OFFLINE events.  This runs
-> + * whether reclaim-based migration is enabled or not, which
-> + * ensures that the user can turn reclaim-based migration at
-> + * any time without needing to recalculate migration targets.
-> + *
-> + * These callbacks already hold get_online_mems().  That is why
-> + * __set_migration_target_nodes() can be used as opposed to
-> + * set_migration_target_nodes().
-> + */
-> +static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
-> +                                                unsigned long action, void *arg)
-> +{
-> +       switch (action) {
-> +       case MEM_GOING_OFFLINE:
-> +               /*
-> +                * Make sure there are not transient states where
-> +                * an offline node is a migration target.  This
-> +                * will leave migration disabled until the offline
-> +                * completes and the MEM_OFFLINE case below runs.
-> +                */
-> +               disable_all_migrate_targets();
-> +
-> +               /*
-> +                * Ensure the disable operation is globally visible.
-> +                * This avoids readers ever being able to
-> +                * simultaneously observe the old (pre-hotplug) and
-> +                * new (post-hotplug) migration targets.
-> +                */
-> +               synchronize_rcu();
+> The reason for rejecting the request maybe a number of things like:
+> corrupted request, stale request (for some old session), or for a
+> wrong handle.
+> I don't think we should treat any of these cases as a success.
 
-It seems disable_all_migrate_targets() already has synchronize_rcu()
-called. We don't need to call it twice. Otherwise, it looks good to
-me. Reviewed-by: Yang Shi <shy828301@gmail.com>
+I agree with Shyam here.
+We shouldn't change the return value to pretend success just to
+suppress a warning.
 
-> +               break;
-> +       case MEM_OFFLINE:
-> +       case MEM_ONLINE:
-> +               /*
-> +                * Recalculate the target nodes once the node
-> +                * reaches its final state (online or offline).
-> +                */
-> +               __set_migration_target_nodes();
-> +               break;
-> +       case MEM_CANCEL_OFFLINE:
-> +               /*
-> +                * MEM_GOING_OFFLINE disabled all the migration
-> +                * targets.  Reenable them.
-> +                */
-> +               __set_migration_target_nodes();
-> +               break;
-> +       case MEM_GOING_ONLINE:
-> +       case MEM_CANCEL_ONLINE:
-> +               break;
-> +       }
-> +
-> +       return notifier_from_errno(0);
-> +}
-> +
-> +static int __init migrate_on_reclaim_init(void)
-> +{
-> +       int ret;
-> +
-> +       ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "migrate on reclaim",
-> +                               migration_online_cpu,
-> +                               migration_offline_cpu);
-> +       /*
-> +        * In the unlikely case that this fails, the automatic
-> +        * migration targets may become suboptimal for nodes
-> +        * where N_CPU changes.  With such a small impact in a
-> +        * rare case, do not bother trying to do anything special.
-> +        */
-> +       WARN_ON(ret < 0);
-> +
-> +       hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
-> +       return 0;
-> +}
-> +late_initcall(migrate_on_reclaim_init);
-> +#endif /* CONFIG_MEMORY_HOTPLUG */
-> _
+However, if it is common to trigger with false positives we might want
+to something to prevent it from
+spamming the logs.
+These messages could be useful if we encounter bugs in our leasing
+code, or bugs in server
+lease code, so we should't throw them away completely. But if false
+positives are common ...
+
+Some thoughts I and Stever brainstormed about could be to change the code in the
+demiltiplex thread where we currently dump the packets that were "invalid"
+to maybe:
+*  log once as VFS and then log any future ones as FYI
+* log once as VFS and then only make the others available via dynamic
+trace points
+* rate limit it so we only log it once every n minutes?  (this is overkill?)
+
+
+
+>
+> Also, from the MS-SMB2 documentation:
+> https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-smb2/4f35576a-6f3b-40f0-a832-1c30b0afccb3
+>
+> "The client MUST locate the file in the GlobalFileTable using the
+> LeaseKey in the Lease Break Notification. If a file is not found, no
+> further processing is required."
+>
+> So I don't think we should be changing the logic here.
+> If SMB v1 had a different behaviour, we should check if that is as per
+> the protocol documentation. If not, change it.
+>
+> Regards,
+> Shyam
+>
+> On Fri, Mar 5, 2021 at 3:12 PM Vincent Whitchurch
+> <vincent.whitchurch@axis.com> wrote:
+> >
+> > The SMB1 version of ->is_oplock_break() returns true even if the FileId
+> > is not found, as long as the oplock break notification message structure
+> > itself appears to be valid.  A true return value makes
+> > cifs_demultiplex_thread() to not print an error message for such
+> > packets.
+> >
+> > However, the SMB2 version returns false in such cases, leading to an
+> > error "No task to wake, unknown frame received!" followed by a hexdump
+> > of the packet header being printed by cifs_demultiplex_thread().
+> >
+> > Note that before commit fa9c2362497fbd64788063288d ("CIFS: Fix SMB2
+> > oplock break processing"), SMB2 also returned true for the case where a
+> > connection was found but the FileId was not, but it's not clear to me if
+> > that commit really intended to change the behaviour of the error prints.
+> >
+> > Change the behaviour of SMB2 to be the same as SMB1 and avoid the error
+> > messages for these packets which we ignore as per the spec.
+> >
+> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> > ---
+> >  fs/cifs/smb2misc.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
+> > index 60d4bd1eae2b..3ea3bda64083 100644
+> > --- a/fs/cifs/smb2misc.c
+> > +++ b/fs/cifs/smb2misc.c
+> > @@ -679,7 +679,7 @@ smb2_is_valid_lease_break(char *buffer)
+> >         }
+> >         spin_unlock(&cifs_tcp_ses_lock);
+> >         cifs_dbg(FYI, "Can not process lease break - no lease matched\n");
+> > -       return false;
+> > +       return true;
+> >  }
+> >
+> >  bool
+> > @@ -755,7 +755,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
+> >         }
+> >         spin_unlock(&cifs_tcp_ses_lock);
+> >         cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
+> > -       return false;
+> > +       return true;
+> >  }
+> >
+> >  void
+> > --
+> > 2.28.0
+> >
+>
+>
+> --
+> Regards,
+> Shyam
 >
