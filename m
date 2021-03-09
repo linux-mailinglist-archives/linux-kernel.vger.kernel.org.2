@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4F83325CB
+	by mail.lfdr.de (Postfix) with ESMTP id 187073325CA
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhCIMvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 07:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhCIMuj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 07:50:39 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F95CC06174A;
-        Tue,  9 Mar 2021 04:50:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pZ/COBNbblJO+x07w0308qCGnfsww0L8iErIm0GU3pk=; b=OwbzsZ7Ekm7vjuMsGUDxy9IzZB
-        aYNSzv5gJVgAdrZj4EuSbYdC1NbhsHVYWcyKD5HDML0sTHUjneU88cMrc3Usnq8uFrRYRRNCb+Hdr
-        m/LqpRf/aHhyPRh4rbrxdW7Pct4tPO2kTbhNdtH+K69l6xJOlJj/z1ZgMXfV2ROYPp8npVcU+rXU2
-        Dew94FhovF/W/xp164C6bDgOeS09uC5hy43MtfnWObcKL9V0I/qfat/PfktpUvW/U88XS4brjBEcF
-        l9YfOHt2tK9eaWDDUj7m9uUz4lbGzPnWNMCRt191+VjJdsHevacr700C9rBOS5UCEU0HdvhMZicVp
-        j5kcRFpA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJbo5-000aTt-T6; Tue, 09 Mar 2021 12:50:04 +0000
-Date:   Tue, 9 Mar 2021 12:49:49 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
-        bskeggs@redhat.com, akpm@linux-foundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com
-Subject: Re: [PATCH v5 1/8] mm: Remove special swap entry functions
-Message-ID: <20210309124949.GJ3479805@casper.infradead.org>
-References: <20210309121505.23608-1-apopple@nvidia.com>
- <20210309121505.23608-2-apopple@nvidia.com>
+        id S230386AbhCIMvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 07:51:06 -0500
+Received: from foss.arm.com ([217.140.110.172]:52576 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231211AbhCIMug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 07:50:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 092291042;
+        Tue,  9 Mar 2021 04:50:36 -0800 (PST)
+Received: from [10.57.55.135] (unknown [10.57.55.135])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C1F493F70D;
+        Tue,  9 Mar 2021 04:50:34 -0800 (PST)
+Subject: Re: [PATCH v3] iommu: Check dev->iommu in iommu_dev_xxx functions
+To:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Cc:     joro@8bytes.org, jean-philippe@linaro.org, will@kernel.org,
+        prime.zeng@hisilicon.com, linuxarm@openeuler.org
+References: <20210303173611.520-1-shameerali.kolothum.thodi@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <ed0f8327-a23d-c9fd-672d-a431b3327593@arm.com>
+Date:   Tue, 9 Mar 2021 12:50:29 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309121505.23608-2-apopple@nvidia.com>
+In-Reply-To: <20210303173611.520-1-shameerali.kolothum.thodi@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 11:14:58PM +1100, Alistair Popple wrote:
-> -static inline struct page *migration_entry_to_page(swp_entry_t entry)
-> -{
-> -	struct page *p = pfn_to_page(swp_offset(entry));
-> -	/*
-> -	 * Any use of migration entries may only occur while the
-> -	 * corresponding page is locked
-> -	 */
-> -	BUG_ON(!PageLocked(compound_head(p)));
-> -	return p;
-> -}
+On 2021-03-03 17:36, Shameer Kolothum wrote:
+> The device iommu probe/attach might have failed leaving dev->iommu
+> to NULL and device drivers may still invoke these functions resulting
+> in a crash in iommu vendor driver code.
+> 
+> Hence make sure we check that.
 
-> +static inline struct page *pfn_swap_entry_to_page(swp_entry_t entry)
-> +{
-> +	struct page *p = pfn_to_page(swp_offset(entry));
-> +
-> +	/*
-> +	 * Any use of migration entries may only occur while the
-> +	 * corresponding page is locked
-> +	 */
-> +	BUG_ON(is_migration_entry(entry) && !PageLocked(compound_head(p)));
-> +
-> +	return p;
-> +}
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-I appreciate you're only moving this code, but PageLocked includes an
-implicit compound_head():
-
-1. __PAGEFLAG(Locked, locked, PF_NO_TAIL)
-
-2. #define __PAGEFLAG(uname, lname, policy)                                \
-        TESTPAGEFLAG(uname, lname, policy)                              \
-
-3. #define TESTPAGEFLAG(uname, lname, policy)                              \
-static __always_inline int Page##uname(struct page *page)               \
-        { return test_bit(PG_##lname, &policy(page, 0)->flags); }
-
-4. #define PF_NO_TAIL(page, enforce) ({                                    \
-                VM_BUG_ON_PGFLAGS(enforce && PageTail(page), page);     \
-                PF_POISONED_CHECK(compound_head(page)); })
-
-5. #define PF_POISONED_CHECK(page) ({                                      \
-                VM_BUG_ON_PGFLAGS(PagePoisoned(page), page);            \
-                page; })
-
-
-This macrology isn't easy to understand the first time you read it (nor,
-indeed, the tenth time), so let me decode it:
-
-Substitute 5 into 4 and remove irrelevancies:
-
-6. #define PF_NO_TAIL(page, enforce) compound_head(page)
-
-Expand 1 in 2:
-
-7.	TESTPAGEFLAG(Locked, locked, PF_NO_TAIL)
-
-Expand 7 in 3:
-
-8. static __always_inline int PageLocked(struct page *page)
-	{ return test_bit(PG_locked, &PF_NO_TAIL(page, 0)->flags); }
-
-Expand 6 in 8:
-
-9. static __always_inline int PageLocked(struct page *page)
-	{ return test_bit(PG_locked, &compound_head(page)->flags); }
-
-(in case it's not clear, compound_head() is idempotent.  that is:
-	f(f(a)) == f(a))
+> Fixes: a3a195929d40 ("iommu: Add APIs for multiple domains per device")
+> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+> ---
+> v2 --> v3
+>   -Removed iommu_ops from struct dev_iommu.
+> v1 --> v2:
+>   -Added iommu_ops to struct dev_iommu based on the discussion with Robin.
+>   -Rebased against iommu-tree core branch.
+> ---
+>   drivers/iommu/iommu.c | 24 +++++++++++++++---------
+>   1 file changed, 15 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index d0b0a15dba84..e10cfa99057c 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2878,10 +2878,12 @@ EXPORT_SYMBOL_GPL(iommu_fwspec_add_ids);
+>    */
+>   int iommu_dev_enable_feature(struct device *dev, enum iommu_dev_features feat)
+>   {
+> -	const struct iommu_ops *ops = dev->bus->iommu_ops;
+> +	if (dev->iommu && dev->iommu->iommu_dev) {
+> +		const struct iommu_ops *ops = dev->iommu->iommu_dev->ops;
+>   
+> -	if (ops && ops->dev_enable_feat)
+> -		return ops->dev_enable_feat(dev, feat);
+> +		if (ops->dev_enable_feat)
+> +			return ops->dev_enable_feat(dev, feat);
+> +	}
+>   
+>   	return -ENODEV;
+>   }
+> @@ -2894,10 +2896,12 @@ EXPORT_SYMBOL_GPL(iommu_dev_enable_feature);
+>    */
+>   int iommu_dev_disable_feature(struct device *dev, enum iommu_dev_features feat)
+>   {
+> -	const struct iommu_ops *ops = dev->bus->iommu_ops;
+> +	if (dev->iommu && dev->iommu->iommu_dev) {
+> +		const struct iommu_ops *ops = dev->iommu->iommu_dev->ops;
+>   
+> -	if (ops && ops->dev_disable_feat)
+> -		return ops->dev_disable_feat(dev, feat);
+> +		if (ops->dev_disable_feat)
+> +			return ops->dev_disable_feat(dev, feat);
+> +	}
+>   
+>   	return -EBUSY;
+>   }
+> @@ -2905,10 +2909,12 @@ EXPORT_SYMBOL_GPL(iommu_dev_disable_feature);
+>   
+>   bool iommu_dev_feature_enabled(struct device *dev, enum iommu_dev_features feat)
+>   {
+> -	const struct iommu_ops *ops = dev->bus->iommu_ops;
+> +	if (dev->iommu && dev->iommu->iommu_dev) {
+> +		const struct iommu_ops *ops = dev->iommu->iommu_dev->ops;
+>   
+> -	if (ops && ops->dev_feat_enabled)
+> -		return ops->dev_feat_enabled(dev, feat);
+> +		if (ops->dev_feat_enabled)
+> +			return ops->dev_feat_enabled(dev, feat);
+> +	}
+>   
+>   	return false;
+>   }
+> 
