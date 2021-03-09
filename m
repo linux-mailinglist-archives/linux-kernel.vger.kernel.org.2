@@ -2,195 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F49332BA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC070332BAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhCIQLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:11:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231919AbhCIQL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:11:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2F4C64FBD;
-        Tue,  9 Mar 2021 16:11:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615306289;
-        bh=jP4SlGRYL9z9+eyGPwRsaTLzvGEXcjhnvO8W76wpgNg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZVrTVRlsTUZ6UvAFSqnFRXzFTuQ+RTH+KKVz80hwNJhcVb8oPDqu3VUXPxU08MljE
-         KwQn8X4P+k3aO/P71x48UcI3mUXon9e0sO13vmZTlYMgq5vLgEnwqAFq9sKDfMkxTd
-         mDT80HetJ45/BY6gIZetj74YgC344aL8/8eHU48l2pI2a5a9g64isjQpFurdbGLNpM
-         1ycmOuKDCP2N2pkLoFejOEAw0aDIBrZeyVy/G/6GwYn4rhVAfdqB5arhHGktPsqT5V
-         PeMh/vzPynAhkBZcSvYJte7w9F2ZVQNfDAeX5D1G++lMklup3F8WUxdNtaqCcjZCBh
-         DYVpOQRq4uP0g==
-Received: by mail-ej1-f51.google.com with SMTP id mm21so29127530ejb.12;
-        Tue, 09 Mar 2021 08:11:28 -0800 (PST)
-X-Gm-Message-State: AOAM532T7NmkX/hNtCfMVF5q3eEgNw8crSJFhcaNx+IFZWOk9iNMQg71
-        ErdB+TjmR+QOtRKIININtW9Sa+63bED9c4aPjg==
-X-Google-Smtp-Source: ABdhPJyUkLV5udpIPwopun4y9FIyMOM7Kb/GLOh2/MhA1kzOLho0N807A6srQjeEqqxkaM/xpiP2WAOCDXgqauEOczc=
-X-Received: by 2002:a17:906:25c4:: with SMTP id n4mr21228200ejb.359.1615306287477;
- Tue, 09 Mar 2021 08:11:27 -0800 (PST)
+        id S231941AbhCIQM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:12:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231963AbhCIQMu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:12:50 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32204C06174A;
+        Tue,  9 Mar 2021 08:12:50 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so5261006pjh.1;
+        Tue, 09 Mar 2021 08:12:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cRekcBH7rVWJ+cXQbK+iyWwu9LAOnwcOABEvQsGJb/4=;
+        b=qFXAzmzob2l3MfmxbGRZRVIZSsWfb7p+zKUl04lOZaGWRgoYiVMutQ8az7/LClHmLC
+         EcIOlbNDQ2UFAORIMfOgKb2xRoD/QZSKPZEmi3950R4cn0LUdaF0Zicq5gIAk7olYimA
+         HWMGlHvY7VIC1ujRyfYfKvy0ezsZFw3FdnpXQOuNzTgsUpBdhGG/tQa2zMBZq7tmvNNG
+         BTpFTPd8vTSje37UsnfRV8p4TY9h2kLBS7APjivYpUhST0idxITYTqSPuRWkhl85NmRP
+         Uo7orygBjQ89XFn630dFmR6lrEVQuJWa22ivk+oJ8xHpwEBeU6jIIXnwuYysWjxThOJ/
+         Hfxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cRekcBH7rVWJ+cXQbK+iyWwu9LAOnwcOABEvQsGJb/4=;
+        b=IkazibODoGnXmdmF80PCFnaaqXH/zZUt+brVrFhuWaPDpJ68LzZnDunbWbtNyGEkwQ
+         g+KS7EaxI/LEA138rag9ITDYmxWhCCs2YpwqhI/fx1KtzyHkRYSIDVLwDOKnhL5suPma
+         bT1MxPXaeD59KLhWgIxFksD/4khQI/Izry7zzv/NcoSnfIgiyKXqyn0txA/J2BAZ5Xzw
+         rqJQY7iq+cLylH+mNldeeYaK8iw2R+bBZ+FWF4Y9zBEdfm0itgyt8NWyRUOLzeyEbekU
+         76r6K5g0WgM12KjFRREMJfTDsvIk68W8IMPn5h9blK7TztLDmomCtrzEc6soYW3iH4tZ
+         CRjw==
+X-Gm-Message-State: AOAM530j/xTs411qnp6ahmJ3GyUuXfsR1fIJKeYQU2h7UQDZ19x63kB7
+        nIvcNp7Mj8SYGoJU2eFjs34=
+X-Google-Smtp-Source: ABdhPJzNxA+FndNawwctuvqhJyAVFHpBpTm4C0rBGCuwrAdUJnHDnpddaqaC8GmJAjVtPJ/NL2SQZQ==
+X-Received: by 2002:a17:90a:cb0a:: with SMTP id z10mr5499609pjt.170.1615306369755;
+        Tue, 09 Mar 2021 08:12:49 -0800 (PST)
+Received: from [172.30.1.19] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id x9sm3344130pjp.29.2021.03.09.08.12.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 08:12:48 -0800 (PST)
+Subject: Re: [PATCH 07/11] PM / devfreq: check get_dev_status before start
+ monitor
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, abel.vesa@nxp.com
+References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
+ <1615294733-22761-8-git-send-email-aisheng.dong@nxp.com>
+ <de25cd22-7f17-5902-21d3-881e3128dd31@gmail.com>
+Message-ID: <a546248b-3946-c781-94a9-30f0c92f88d2@gmail.com>
+Date:   Wed, 10 Mar 2021 01:12:40 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-7-marcan@marcan.st>
- <20210308203841.GA2906683@robh.at.kernel.org> <87zgzdqnbs.wl-maz@kernel.org>
-In-Reply-To: <87zgzdqnbs.wl-maz@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 9 Mar 2021 09:11:15 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqJVmr+23HDN-7Wjbrkh5jt=4dbU9y1iUqDu1nPOV2+38Q@mail.gmail.com>
-Message-ID: <CAL_JsqJVmr+23HDN-7Wjbrkh5jt=4dbU9y1iUqDu1nPOV2+38Q@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 06/27] dt-bindings: timer: arm,arch_timer: Add
- interrupt-names support
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <de25cd22-7f17-5902-21d3-881e3128dd31@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 3:42 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Mon, 08 Mar 2021 20:38:41 +0000,
-> Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Fri, Mar 05, 2021 at 06:38:41AM +0900, Hector Martin wrote:
-> > > Not all platforms provide the same set of timers/interrupts, and Linux
-> > > only needs one (plus kvm/guest ones); some platforms are working around
-> > > this by using dummy fake interrupts. Implementing interrupt-names allows
-> > > the devicetree to specify an arbitrary set of available interrupts, so
-> > > the timer code can pick the right one.
-> > >
-> > > This also adds the hyp-virt timer/interrupt, which was previously not
-> > > expressed in the fixed 4-interrupt form.
-> > >
-> > > Signed-off-by: Hector Martin <marcan@marcan.st>
-> > > ---
-> > >  .../devicetree/bindings/timer/arm,arch_timer.yaml  | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml b/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml
-> > > index 2c75105c1398..ebe9b0bebe41 100644
-> > > --- a/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml
-> > > +++ b/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml
-> > > @@ -34,11 +34,25 @@ properties:
-> > >                - arm,armv8-timer
-> > >
-> > >    interrupts:
-> > > +    minItems: 1
-> > > +    maxItems: 5
-> > >      items:
-> > >        - description: secure timer irq
-> > >        - description: non-secure timer irq
-> > >        - description: virtual timer irq
-> > >        - description: hypervisor timer irq
-> > > +      - description: hypervisor virtual timer irq
-> > > +
-> > > +  interrupt-names:
-> > > +    minItems: 1
-> > > +    maxItems: 5
-> > > +    items:
-> > > +      enum:
-> > > +        - phys-secure
-> > > +        - phys
-> > > +        - virt
-> > > +        - hyp-phys
-> > > +        - hyp-virt
-> >
-> > phys-secure and hyp-phys is not very consistent. secure-phys or sec-phys
-> > instead?
-> >
-> > This allows any order which is not ideal (unfortunately json-schema
-> > doesn't have a way to define order with optional entries in the middle).
-> > How many possible combinations are there which make sense? If that's a
-> > reasonable number, I'd rather see them listed out.
->
-> The available of interrupts are a function of the number of security
-> states, privileged exception levels and architecture revisions, as
-> described in D11.1.1:
->
-> <quote>
-> - An EL1 physical timer.
-> - A Non-secure EL2 physical timer.
-> - An EL3 physical timer.
-> - An EL1 virtual timer.
-> - A Non-secure EL2 virtual timer.
-> - A Secure EL2 virtual timer.
-> - A Secure EL2 physical timer.
-> </quote>
->
-> * Single security state, EL1 only, ARMv7 & ARMv8.0+ (assumed NS):
->   - physical, virtual
->
-> * Single security state, EL1 + EL2, ARMv7 & ARMv8.0 (assumed NS)
->   - physical, virtual, hyp physical
->
-> * Single security state, EL1 + EL2, ARMv8.1+ (assumed NS)
->   - physical, virtual, hyp physical, hyp virtual
->
-> * Two security states, EL1 + EL3, ARMv7 & ARMv8.0+:
->   - secure physical, physical, virtual
->
-> * Two security states, EL1 + EL2 + EL3, ARMv7 & ARMv8.0
->   - secure physical, physical, virtual, hyp physical
->
-> * Two security states, EL1 + EL2 + EL3, ARMv8.1+
->   - secure physical, physical, virtual, hyp physical, hyp virtual
->
-> * Two security states, EL1 + EL2 + S-EL2 + EL3, ARMv8.4+
->   - secure physical, physical, virtual, hyp physical, hyp virtual,
->     secure hyp physical, secure hyp virtual
->
-> Nobody has seen the last combination in the wild (that is, outside of
-> a SW model).
->
-> I'm really not convinced we want to express this kind of complexity in
-> the binding (each of the 7 cases), specially given that we don't
-> encode the underlying HW architecture level or number of exception
-> levels anywhere, and have ho way to validate such information.
+On 21. 3. 10. 오전 12:58, Chanwoo Choi wrote:
+> On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
+>> The devfreq monitor depends on the device to provide load information
+>> by .get_dev_status() to calculate the next target freq.
+>>
+>> And this will cause changing governor to simple ondemand fail
+>> if device can't support.
+>>
+>> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+>> ---
+>>   drivers/devfreq/devfreq.c                 | 10 +++++++---
+>>   drivers/devfreq/governor.h                |  2 +-
+>>   drivers/devfreq/governor_simpleondemand.c |  3 +--
+>>   3 files changed, 9 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+>> index 7231fe6862a2..d1787b6c7d7c 100644
+>> --- a/drivers/devfreq/devfreq.c
+>> +++ b/drivers/devfreq/devfreq.c
+>> @@ -482,10 +482,13 @@ static void devfreq_monitor(struct work_struct 
+>> *work)
+>>    * to be called from governor in response to DEVFREQ_GOV_START
+>>    * event when device is added to devfreq framework.
+>>    */
+>> -void devfreq_monitor_start(struct devfreq *devfreq)
+>> +int devfreq_monitor_start(struct devfreq *devfreq)
+>>   {
+>>       if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
+>> -        return;
+>> +        return 0;
+>> +
+>> +    if (!devfreq->profile->get_dev_status)
+>> +        return -EINVAL;
 
-Actually, we can simplify this down to 2 cases:
+Again, I think that get_dev_status is not used for all governors.
+So that it cause the governor start fail. Don't check whether
+.get_dev_status is NULL or not.
 
-oneOf:
-  - minItems: 2
-    items:
-      - const: phys
-      - const: virt
-      - const: hyp-phys
-      - const: hyp-virt
-  - minItems: 3
-    items:
-      - const: sec-phys
-      - const: phys
-      - const: virt
-      - const: hyp-phys
-      - const: hyp-virt
-      - const: sec-hyp-phy
-      - const: sec-hyp-virt
+>>       switch (devfreq->profile->timer) {
+>>       case DEVFREQ_TIMER_DEFERRABLE:
+>> @@ -495,12 +498,13 @@ void devfreq_monitor_start(struct devfreq *devfreq)
+>>           INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
+>>           break;
+>>       default:
+>> -        return;
+>> +        return -EINVAL;
+>>       }
+>>       if (devfreq->profile->polling_ms)
+>>           queue_delayed_work(devfreq_wq, &devfreq->work,
+>>               msecs_to_jiffies(devfreq->profile->polling_ms));
+>> +    return 0;
+>>   }
+>>   EXPORT_SYMBOL(devfreq_monitor_start);
+>> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
+>> index 5cee3f64fe2b..31af6d072a10 100644
+>> --- a/drivers/devfreq/governor.h
+>> +++ b/drivers/devfreq/governor.h
+>> @@ -75,7 +75,7 @@ struct devfreq_governor {
+>>                   unsigned int event, void *data);
+>>   };
+>> -void devfreq_monitor_start(struct devfreq *devfreq);
+>> +int devfreq_monitor_start(struct devfreq *devfreq);
+>>   void devfreq_monitor_stop(struct devfreq *devfreq);
+>>   void devfreq_monitor_suspend(struct devfreq *devfreq);
+>>   void devfreq_monitor_resume(struct devfreq *devfreq);
+>> diff --git a/drivers/devfreq/governor_simpleondemand.c 
+>> b/drivers/devfreq/governor_simpleondemand.c
+>> index d57b82a2b570..ea287b57cbf3 100644
+>> --- a/drivers/devfreq/governor_simpleondemand.c
+>> +++ b/drivers/devfreq/governor_simpleondemand.c
+>> @@ -89,8 +89,7 @@ static int devfreq_simple_ondemand_handler(struct 
+>> devfreq *devfreq,
+>>   {
+>>       switch (event) {
+>>       case DEVFREQ_GOV_START:
+>> -        devfreq_monitor_start(devfreq);
+>> -        break;
+>> +        return devfreq_monitor_start(devfreq);
+>>       case DEVFREQ_GOV_STOP:
+>>           devfreq_monitor_stop(devfreq);
+>>
+> 
+> Need to handle the all points of devfreq_monitor_start() usage.
+> please check the tegra30-devfreq.c for this update.
+> 
+> $ grep -rn "devfreq_monitor_start" drivers/
+> drivers/devfreq/governor_simpleondemand.c:92: 
+> devfreq_monitor_start(devfreq);
+> drivers/devfreq/tegra30-devfreq.c:744:        
+> devfreq_monitor_start(devfreq);
+> ......
+> 
 
-And that's below my threshold for not worth the complexity.
 
-Rob
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
