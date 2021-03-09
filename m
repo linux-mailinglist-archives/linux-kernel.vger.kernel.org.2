@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551A0332766
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 796E33327B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhCINlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:41:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbhCINk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:40:57 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE120C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 05:40:56 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id 2so20686771ljr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 05:40:56 -0800 (PST)
+        id S231709AbhCINtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:49:10 -0500
+Received: from smtp1.axis.com ([195.60.68.17]:26741 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231366AbhCINsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 08:48:30 -0500
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Mar 2021 08:48:29 EST
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M2PVFTJad13/HHdNzwN8/vmlKlKOh1dKDhYFEC+sxbs=;
-        b=oCa2SWgwfdjgNjhmNjTTUyxncE1srgWbgq4n1tk+YicLak1fz2d0Ocha/HJoao7WS4
-         ijbw64tDUrTAHzwHknKJW5AWPQKLFKb9IYDL4Qsofhy5Zym6TQryG8BBvl1YlDiaM1Wx
-         PzK6QjxGbq6GglgWkaZRgJwFDjNDCYoFLs7xqyx5sZav6TvYbzLRsIbSF6k5iYuOBTmk
-         MuGvUGklfu2vmHSLGHJKvH0szrB7f5LB0aK8Bd9d4LWpxQXqhcHjW0+clsfA6zcFiXPZ
-         QJEOtQF+8u7WccHrdPD389iZjrOIP+sR/aSMvqPTn8OA/LFDOkOn1URA6ZDzGTykGwjc
-         d1Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M2PVFTJad13/HHdNzwN8/vmlKlKOh1dKDhYFEC+sxbs=;
-        b=WAzej/5yk2R2xmTDg3qoe+7eOO5xM46d5paODaMQzQwwTGsWQ+VZb2fNvIRC7L4ZND
-         nGpHfX0QF/iVTyYaagHO/aj/ptdlWfDx+73Uj90wupAgg+PdHfPiCcyqu0NwM3fO9/NU
-         iJaxZ0roZfZRWTZEZjj1QdkNcNo6o9reQ0Br2vguDKlkmknuHzmtb+Ly8zmP6B9CW3kz
-         lr0LOxhJD9Zjb+yRDrTpAPb6ZH7oN+PZ02joQ/wYmV8NLpDvRt1vqdr7y1GIAGzCY1LL
-         Zb1l0+8s2r3okgPYmhg16sZ/hmXdrGb3WgbD7zNjbn0X5iKs9Ij512tTY3/D91hY5qYF
-         mm7Q==
-X-Gm-Message-State: AOAM531r8Pe7vKrOQDz59GCsnbfjxkN3a+Ri9EYq2JzODG/UWvS7Bora
-        pjHvV2XDffba5SYTjdZNWWI4lPorVRSGHapU07kWRw==
-X-Google-Smtp-Source: ABdhPJybzyO6ZNZPaRk+OvWdcYfIHCWIpj+B9KZrup6oxp1HHl3PlLebHYEChGoROoICQaGOC6ZyrFwRYceCJuRDs0w=
-X-Received: by 2002:a05:651c:103a:: with SMTP id w26mr14436853ljm.273.1615297255364;
- Tue, 09 Mar 2021 05:40:55 -0800 (PST)
+  d=axis.com; q=dns/txt; s=axis-central1; t=1615297710;
+  x=1646833710;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IX5Ccrifhwn+TfdveaPZcVPwzE7RzbHoY8Z21/LsAAI=;
+  b=MhYOhJI99KpekbU9DwCBnzGztZIYDbbJfLD0G8hreO8f5942rvbX0yHh
+   aTs5n3wqJE5YTxUdHpjkhP12/ixRLUTF6UZ0/8fhEqEcRvY6DBbQNDGrR
+   Z4Zq5u66JehjUURYeNycDFYPWClyRJtxXOr9DtFYUH43idfFSiXiT7lMc
+   lwOkhFgFPIcKCWph+ZoiiH9kzAgcaOG2mnsHzV2Dxz8kbztyOlQXNCsn2
+   DlSoG+m+C3IhpVLVBWuP0D2ofP3I8EKEejVBwY+mCyqAn3ptswqa0ZRNl
+   7AFwuizTZw/Umy/kv2+D5QY9pyAj25UDbZZws353bdvuZ3Cu0AnDHJ4RU
+   g==;
+Date:   Tue, 9 Mar 2021 14:41:18 +0100
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     ronnie sahlberg <ronniesahlberg@gmail.com>
+CC:     Shyam Prasad N <nspmangalore@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steve French <sfrench@samba.org>, kernel <kernel@axis.com>,
+        Pavel Shilovsky <pshilov@microsoft.com>
+Subject: Re: [PATCH] CIFS: Prevent error log on spurious oplock break
+Message-ID: <20210309134118.GA31041@axis.com>
+References: <20210305094107.13743-1-vincent.whitchurch@axis.com>
+ <CANT5p=rB2=DvjtpmVy803emWpuzsy-C2+d4wqQ5g_9fJ8+a5Cw@mail.gmail.com>
+ <CAN05THQtb5RY2ye7nkyWBjrXS+=usZCxUM7jBQG+JEpg_TQQTA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210302011813.2331879-1-alexander.sverdlin@gmail.com>
- <CACRpkdYErJH5RUjL+jPC5vnaqGiOqBwHsr0E42wOWrpBGrpS3w@mail.gmail.com> <20210308183704.GA2747088@robh.at.kernel.org>
-In-Reply-To: <20210308183704.GA2747088@robh.at.kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Mar 2021 14:40:44 +0100
-Message-ID: <CACRpkda8+Lvz+c=ohXsEDkNSQ63hPo613P4p_90fvKyC_kQ_GA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: omap: Honor "aliases" node
-To:     Rob Herring <robh@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAN05THQtb5RY2ye7nkyWBjrXS+=usZCxUM7jBQG+JEpg_TQQTA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 7:37 PM Rob Herring <robh@kernel.org> wrote:
+On Tue, Mar 09, 2021 at 01:05:11AM +0100, ronnie sahlberg wrote:
+> On Sun, Mar 7, 2021 at 8:52 PM Shyam Prasad N via samba-technical
+> <samba-technical@lists.samba.org> wrote:
+> > The reason for rejecting the request maybe a number of things like:
+> > corrupted request, stale request (for some old session), or for a
+> > wrong handle.
+> > I don't think we should treat any of these cases as a success.
+> 
+> I agree with Shyam here.
+> We shouldn't change the return value to pretend success just to
+> suppress a warning.
 
-> Can we remove the ones we have already for GPIO?
+Thank you all for your comments.  I see that everyone agrees that the
+error print is useful for SMB2, so I will drop this patch.
 
-I think we would get pretty hard pushback if we attempt that.
-We have all these drivers that utilize it:
+> However, if it is common to trigger with false positives we might want
+> to something to prevent it from
+> spamming the logs.
+> These messages could be useful if we encounter bugs in our leasing
+> code, or bugs in server
+> lease code, so we should't throw them away completely. But if false
+> positives are common ...
+> 
+> Some thoughts I and Stever brainstormed about could be to change the code in the
+> demiltiplex thread where we currently dump the packets that were "invalid"
+> to maybe:
+> *  log once as VFS and then log any future ones as FYI
+> * log once as VFS and then only make the others available via dynamic
+> trace points
+> * rate limit it so we only log it once every n minutes?  (this is overkill?)
 
-gpio-clps711x.c:        id = of_alias_get_id(np, "gpio");
-gpio-mvebu.c:   id = of_alias_get_id(pdev->dev.of_node, "gpio");
-gpio-mxc.c:     port->gc.base = (pdev->id < 0) ? of_alias_get_id(np,
-"gpio") * 32 :
-gpio-mxs.c:     port->id = of_alias_get_id(np, "gpio");
-gpio-vf610.c:   gc->base = of_alias_get_id(np, "gpio") * VF610_GPIO_PER_PORT;
-gpio-zynq.c:    chip->base = of_alias_get_id(pdev->dev.of_node, "gpio");
-pinctrl-at91.c: int alias_idx = of_alias_get_id(np, "gpio");
-pinctrl-st.c:   int bank_num = of_alias_get_id(np, "gpio");
-samsung/pinctrl-samsung.c:      id = of_alias_get_id(node, "pinctrl");
-
-Predictably it is so many bad examples that new driver authors will claim
-something along the line of
-"why can't I have a lollipop when all other kids got one".
-
-Several of those have this by a claim one way or another that
-the DT boot need to look like the boardfile boot. Some of these
-have been migrated from board files so could possible drop
-this id/base coding.
-
-I don't know what the maintainers would say, should we send
-attack patches? :D At least some kind of motivation would come
-out of it.
-
-Yours,
-Linus Walleij
+Thank you for the suggestions.  In my case, I've only received some
+reports of this error being emitted very rarely (couple of times a month
+in our stability tests).  Right now it looks like the problem may only
+be with a particular NAS, and we're looking into triggering oplock
+breaks more often and catching the problem with some more logging.
