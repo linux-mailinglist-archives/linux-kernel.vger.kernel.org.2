@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5EC332A4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A47332A54
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhCIPXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:23:13 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:53011 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231962AbhCIPXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:23:04 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 129FMtWk014950
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Mar 2021 16:22:55 +0100
-Received: from [139.22.125.36] ([139.22.125.36])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 129FMsQp020098;
-        Tue, 9 Mar 2021 16:22:55 +0100
-Subject: Re: [PATCH v3 3/4] arm64: dts: ti: Add support for Siemens IOT2050
- boards
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Bao Cheng Su <baocheng.su@siemens.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Le Jin <le.jin@siemens.com>
-References: <cover.1613071976.git.jan.kiszka@siemens.com>
- <0c64b6ad43e7a691c1547524da4a9fd33e61c70c.1613071976.git.jan.kiszka@siemens.com>
- <95e4231c-6bee-ba64-412f-87d257df61c4@ti.com>
- <0561ad0d-7297-35ad-a3a9-49dc9a6bacd3@siemens.com>
- <aecad46d-bce6-5caf-254e-e6385ce8f44b@siemens.com>
- <20210309151019.kbay4ragt6ctyhmx@remote>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <58952252-1770-a226-828b-dd58fd466ae8@siemens.com>
-Date:   Tue, 9 Mar 2021 16:22:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231575AbhCIPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:24:50 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:20140 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231527AbhCIPYa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:24:30 -0500
+Received: from localhost.localdomain ([153.202.107.157])
+        by mwinf5d20 with ME
+        id eFQD2400T3PnFJp03FQMkA; Tue, 09 Mar 2021 16:24:28 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 09 Mar 2021 16:24:28 +0100
+X-ME-IP: 153.202.107.157
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Tom Herbert <therbert@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [RFC PATCH 0/1] Modify dql.min_limit value inside the driver
+Date:   Wed, 10 Mar 2021 00:23:53 +0900
+Message-Id: <20210309152354.95309-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210309151019.kbay4ragt6ctyhmx@remote>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.03.21 16:10, Nishanth Menon wrote:
-> On 09:38-20210309, Jan Kiszka wrote:
->> From: Jan Kiszka <jan.kiszka@siemens.com>
->>
->> Add support for two Siemens SIMATIC IOT2050 variants, Basic and
->> Advanced. They are based on the TI AM6528 GP and AM6548 SOCs HS, thus
->> differ in their number of cores and availability of security features.
->> Furthermore the Advanced version comes with more RAM, an eMMC and a few
->> internal differences.
->>
->> Based on original version by Le Jin.
->>
->> Link: https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
->> Link: https://github.com/siemens/meta-iot2050
->> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
->> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
->> ---
-> 
-> Jan,
-> 
-> I am not sure if
-> https://lore.kernel.org/linux-arm-kernel/20210304160712.8452-2-s-anna@ti.com/
-> is going to impact your platform. I am planning on picking that series up today.
-> might be good to test against tomorrow's next - running through my basic
-> tests right now before committing to the ICSS-G nodes being picked up.
-> 
-> If you could repost after testing against tomorrow's next, it will
-> probably be better.
+Abstract: would like to directly set dql.min_limit value inside a
+driver to improve BQL performances of a CAN USB driver.
 
-Thanks, I was already on CC. That series does not affect the board
-features as configured in this patch. However, we are eagerly awaiting
-ISCCG and then PRU Ethernet support in upstream as this is used on our
-boards, with both SR1.0 and (upcoming) SR2.0.
+CAN packets have a small PDU: for classical CAN maximum size is
+roughly 16 bytes (8 for payload and 8 for arbitration, CRC and
+others).
 
-However, I can update [1] with that series and retest our staging
-integration. But as you can see from the topmost commit, it is
-constantly shaking as upstreaming goes on.
+I am writing an CAN driver for an USB interface. To compensate the
+extra latency introduced by the USB, I want to group several CAN
+frames and do one USB bulk send. To this purpose, I implemented BQL in
+my driver.
 
-Jan
+However, the BQL algorithms can take time to adjust, especially if
+there are small bursts.
 
-[1] https://github.com/siemens/linux/commits/jan/iot2050
+The best way I found is to directly modify the dql.min_limit and set
+it to some empirical values. This way, even during small burst events
+I can have a good throughput. Slightly increasing the dql.min_limit
+has no measurable impact on the latency as long as frames fit in the
+same USB packet (i.e. BQL overheard is negligible compared to USB
+overhead).
+
+The BQL was not designed for USB nor was it designed for CAN's small
+PDUs which probably explains why I am the first one to ever have
+thought of using dql.min_limit within the driver.
+
+The code I wrote looks like:
+
+> #ifdef CONFIG_BQL
+>	netdev_get_tx_queue(netdev, 0)->dql.min_limit = <some empirical value>;
+> #endif
+
+Using #ifdef to set up some variables is not a best practice. I am
+sending this RFC to see if we can add a function to set this
+dql.min_limit in a more pretty way.
+
+For your reference, this RFQ is a follow-up of a discussion on the
+linux-can mailing list:
+https://lore.kernel.org/linux-can/20210309125708.ei75tr5vp2sanfh6@pengutronix.de/
+
+Thank you for your comments.
+
+Yours sincerely,
+Vincent
+
+
+Vincent Mailhol (1):
+  dql: add dql_set_min_limit()
+
+ include/linux/dynamic_queue_limits.h | 3 +++
+ lib/dynamic_queue_limits.c           | 8 ++++++++
+ 2 files changed, 11 insertions(+)
 
 -- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+2.26.2
+
