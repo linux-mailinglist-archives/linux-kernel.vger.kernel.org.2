@@ -2,48 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA34C3321DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5150A3321F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbhCIJXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:23:46 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13487 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhCIJXn (ORCPT
+        id S229639AbhCIJ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:28:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhCIJ2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:23:43 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DvqTt6KFzzrT2Q;
-        Tue,  9 Mar 2021 17:21:54 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 9 Mar 2021
- 17:23:36 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: expose # of overprivision segments
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-References: <20210302054233.3886681-1-jaegeuk@kernel.org>
- <YD/jTtjVqDklvoof@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <b1ced8b6-c4f2-1674-5e57-783485fbdf2b@huawei.com>
-Date:   Tue, 9 Mar 2021 17:23:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 9 Mar 2021 04:28:14 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6183C06174A;
+        Tue,  9 Mar 2021 01:28:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TeDLK0Rk12FTIyPCKoKkTCZzXQMFNcyT1sCUu+HO6mk=; b=qHmYZkKfCsSMxdycWOwzAXy3kE
+        Q4QMaiUl/PWS+7L4QK21Yc4arVaYHDQostGzfzsHT7uB8ZdhbBuECBshuUarsoWWVMb4ddg4g4XIj
+        hCIKeKPlw3QtLU8Vi8bzeiv8R13HCO2UVABDEQOqUW5ouw5IYHs2VLoWiNBfw6Wy3xxMiZrd2wfQd
+        T1OJfQaqECs3hfY/ClHKuc577scgY8+CprWSqJokVe/NWFrxXSxi0TNTVz9s28h2DJsjsiaQQoRud
+        USdQKNWqFzIwBKJSPMdUqw0COAUr1ijMUNiiGOUEC4AnO+01J1rU8yArnQzb3wDZZrGs/k1D+K/TL
+        XefqhlRA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJYeq-000Lnv-Bl; Tue, 09 Mar 2021 09:28:04 +0000
+Date:   Tue, 9 Mar 2021 09:28:04 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sanket Parmar <sparmar@cadence.com>
+Cc:     peter.chen@kernel.org, pawell@cadence.com, a-govindraju@ti.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kurahul@cadence.com, gregkh@linuxfoundation.org, kishon@ti.com
+Subject: Re: [PATCH 2/2] usb: cdns3: Optimize DMA request buffer allocation
+Message-ID: <20210309092804.GA76839@infradead.org>
+References: <1615267180-9289-1-git-send-email-sparmar@cadence.com>
+ <1615267180-9289-2-git-send-email-sparmar@cadence.com>
 MIME-Version: 1.0
-In-Reply-To: <YD/jTtjVqDklvoof@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615267180-9289-2-git-send-email-sparmar@cadence.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/4 3:28, Jaegeuk Kim wrote:
-> This is useful when checking conditions during checkpoint=disable in Android.
+On Tue, Mar 09, 2021 at 06:19:40AM +0100, Sanket Parmar wrote:
+> dma_alloc_coherent() might fail on the platform with a small DMA region.
 > 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> To avoid such failure in cdns3_prepare_aligned_request_buf(),
+> dma_alloc_coherent() is replaced with kmalloc and dma_map API to
+> allocate aligned request buffer of dynamic length.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-
-Thanks,
+dma_alloc_noncoherent is the proper API instead of using kmalloc, which
+can lead to unaddressable memory that might require bounce buffering.
