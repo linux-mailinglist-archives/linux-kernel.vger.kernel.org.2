@@ -2,93 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A59331CAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47260331CB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhCIB7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 20:59:47 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13452 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhCIB7d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 20:59:33 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Dvddm1d3zzkWQf;
-        Tue,  9 Mar 2021 09:58:04 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 9 Mar 2021 09:59:24 +0800
-Subject: Re: [PATCH 5.4 00/22] 5.4.104-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210308122714.391917404@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <52791aa7-54ef-ca71-60de-317ee3191ae8@huawei.com>
-Date:   Tue, 9 Mar 2021 09:59:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S229475AbhCICAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 21:00:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41360 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230139AbhCICAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 21:00:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D60ADAB8C;
+        Tue,  9 Mar 2021 01:59:59 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     npiggin@gmail.com
+Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, dave@stgolabs.net
+Subject: [PATCH 0/3] powerpc/qspinlock: Some tuning updates
+Date:   Mon,  8 Mar 2021 17:59:47 -0800
+Message-Id: <20210309015950.27688-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210308122714.391917404@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+A few updates while going through the powerpc port of the qspinlock.
 
-On 2021/3/8 20:30, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.104 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.104-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Patches 1 and 2 are straightforward, while patch 3 can be considered
+more of an rfc as I've only tested on a single machine, and there
+could be an alternative way if it doesn't end up being nearly a
+universal performance win.
 
-Tested on arm64 and x86 for 5.4.104-rc1,
+Thanks!
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.104-rc1
-Commit: 1d493929c06100abd14b955538afa461dc2c8b69
-Compiler: gcc version 7.3.0 (GCC)
+Davidlohr Bueso (3):
+  powerpc/spinlock: Define smp_mb__after_spinlock only once
+  powerpc/spinlock: Unserialize spin_is_locked
+  powerpc/qspinlock: Use generic smp_cond_load_relaxed
 
+ arch/powerpc/include/asm/barrier.h         | 16 ----------------
+ arch/powerpc/include/asm/qspinlock.h       | 14 --------------
+ arch/powerpc/include/asm/simple_spinlock.h |  6 +-----
+ arch/powerpc/include/asm/spinlock.h        |  3 +++
+ 4 files changed, 4 insertions(+), 35 deletions(-)
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total_num: 4710
-succeed_num: 4710
-failed_num: 0
-timeout_num: 0
-
-x86 (No kernel failures)
---------------------------------------------------------------------
-Testcase Result Summary:
-total_num: 4710
-succeed_num: 4704
-failed_num: 6
-timeout_num: 0
-
-Tested-by: Hulk Robot <hulkci@huawei.com>
+--
+2.26.2
 
