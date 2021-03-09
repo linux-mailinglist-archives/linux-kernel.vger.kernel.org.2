@@ -2,162 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C52332FC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57678332FBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhCIUUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:20:05 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10684 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231768AbhCIUTg (ORCPT
+        id S231451AbhCIURw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231358AbhCIUR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:19:36 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129KEMmm145065;
-        Tue, 9 Mar 2021 15:19:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=aS1Aa9fTZPc17/c+7pqDOz2pDumYV23TjqmU+LSMAOo=;
- b=l1HCX84DeDgONbHKAiKDvthvg1br726HpMhKQ26VclKhgoGaBj0/oaKCpB1EqLGYj9pA
- 78JN6jUNR1Y1LDguDXOaaGVJmliy1GSC1S9r82I6eebftQOHXk8aREzEIsRFZNoHGSQu
- 8UzWHPul9qyoITPDwxMoUBULvasv06r8dCVzSc6RvAR+lBAUA0PDKRGA8LOnsASugtKS
- V0gqqW17aIQSMWweo6wSCJMpChsD1MZwTWp/c7Ag3frWCd9WjZTBOOmuoyT8EdsJB5zP
- 57MdXVn48yNyHygw7zftAQ1gsbRfM6R/jCeXgBaau50ay0l+uKpWdwFiix29pJ2F6TAI MQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 376fvm83n5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 15:19:23 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 129KEYCU145985;
-        Tue, 9 Mar 2021 15:17:27 -0500
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 376fvm837k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 15:17:26 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 129K7vW6026055;
-        Tue, 9 Mar 2021 20:16:33 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 3768n606pm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 20:16:33 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 129KGVgu46268922
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Mar 2021 20:16:31 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ED0AC11C04C;
-        Tue,  9 Mar 2021 20:16:30 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A1F1E11C052;
-        Tue,  9 Mar 2021 20:16:26 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.23.212])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  9 Mar 2021 20:16:26 +0000 (GMT)
-Date:   Tue, 9 Mar 2021 22:16:23 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     George Kennedy <george.kennedy@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
-Message-ID: <YEfXl38hFc0jSsXm@linux.ibm.com>
-References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
- <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
- <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
- <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
- <YESEymRQ2/F7xJGt@linux.ibm.com>
- <YEe2SAESEaEak+HB@linux.ibm.com>
- <CAJZ5v0hAQo7+3bthoC8K7n7qyhQFMuOd8U3BhZWSREjPmq0-7w@mail.gmail.com>
+        Tue, 9 Mar 2021 15:17:26 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD47C06174A;
+        Tue,  9 Mar 2021 12:17:26 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id t83so6394982oih.12;
+        Tue, 09 Mar 2021 12:17:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nDkAQCanWh6x4Rfg/VlqS3Z7N14cNMWqlLERB0C8xnc=;
+        b=pGCuEA8nE0iytzx5MKNhtJGtsSmywE/Ztdblr8LrqrN8i6QjWKy7fr0RXwYColbaPi
+         HpC2aRBhbO/U5No2KPSErmkuxeri+n42kMzc3gMc9iNH31xcoRjGyKPWV0P0GoWM5oE5
+         Xf97imy4/3GjZ32zXiXVEa0pDKCGm1pM206xUliP3qaP04J21+XUxR9xFdLCHG2KhnB8
+         CTbdkQpGrxEcjDTQu6iCE0nWogYGGcTtbhheJAieoD4t/VtVjWyQ8ouU5D90grm1b/4X
+         cJC9uTRpuGRhuKyxqUk4OAfpAf/oEpCn67j4qHON+/7qiB70cJBuNkrfz1AM5+S5VMd2
+         LKJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nDkAQCanWh6x4Rfg/VlqS3Z7N14cNMWqlLERB0C8xnc=;
+        b=uFuibO7NOFBQGlGUgdPjgBttY1T+iZYsNiVwlavHfjZZIzpYkCAqwjP6lQaGC7vZDh
+         AOkhm1RqsOcw3DmHRfgZeWJ9LwcBZaQ+FSArRa2vkODXyWl5SeCz1Q2SPYU5LFHSjFRX
+         pjWd4Z/WBwN8Io8EVHncwfcnq5xA/mFnUOxAZudMcvolYTDFJ6BssW25OW0Z/Pt2Mn1b
+         rhGdGs1IqxPp6RBP8XNaKZX+ZjaQel6vfloNJ309g8N4G01t3InLR3rKsFw7Ias2GukD
+         IsKMdb3I5zrABzIqOq0hP9OqTV/21tuiF9WCXB4o6sQNqU1inFXjgQraLLEb/ewLYBQV
+         iqVQ==
+X-Gm-Message-State: AOAM530s41YEvbqblhRdAIMekpbR+wSWPNR42zHnn7QaQ9GLR6gdaGtA
+        RZfyW4q2lyoB9NEanKxiZjJFSLrc/po=
+X-Google-Smtp-Source: ABdhPJwjHOfm4kJCV2Ke3bmwzYU9kSY/uHijkSbflc5vfH/zNRNNv6sT3PM1UnfTLmYyOYXc2/1RbQ==
+X-Received: by 2002:a54:468f:: with SMTP id k15mr4146146oic.58.1615321045615;
+        Tue, 09 Mar 2021 12:17:25 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.40])
+        by smtp.googlemail.com with ESMTPSA id i3sm3178525oov.2.2021.03.09.12.17.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 12:17:25 -0800 (PST)
+Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
+        mingo@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
+ <20210309124011.709c6cd3@gandalf.local.home>
+ <5fda3ef7-d760-df4f-e076-23b635f6c758@gmail.com>
+ <20210309150227.48281a18@gandalf.local.home>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <fffda629-0028-2824-2344-3507b75d9188@gmail.com>
+Date:   Tue, 9 Mar 2021 13:17:23 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hAQo7+3bthoC8K7n7qyhQFMuOd8U3BhZWSREjPmq0-7w@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-09_15:2021-03-09,2021-03-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- bulkscore=0 mlxscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- priorityscore=1501 mlxlogscore=999 suspectscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090096
+In-Reply-To: <20210309150227.48281a18@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 07:29:51PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Mar 9, 2021 at 6:54 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> >
-> > On Sun, Mar 07, 2021 at 09:46:22AM +0200, Mike Rapoport wrote:
-> > > Hello Rafael,
-> > >
-> > > On Fri, Mar 05, 2021 at 02:30:07PM +0100, Rafael J. Wysocki wrote:
-> > > > On Fri, Mar 5, 2021 at 12:14 AM George Kennedy <george.kennedy@oracle.com> wrote:
-> > > >
-> > > > > The ibft table, for example, is mapped in via acpi_map() and kmap(). The
-> > > > > page for the ibft table is not reserved, so it can end up on the freelist.
-> > > >
-> > > > You appear to be saying that it is not sufficient to kmap() a page in
-> > > > order to use it safely.  It is also necessary to reserve it upfront,
-> > > > for example with the help of memblock_reserve().  Is that correct?  If
-> > > > so, is there an alternative way to reserve a page frame?
-> > >
-> > > Like David said in the other reply, if a BIOS does not mark the memory that
-> > > contains an ACPI table as used (e.g. reserved or ACPI data), we need to
-> > > make sure the kernel knows that such memory is in use and an early call to
-> > > memblock_reserve() is exactly what we need here.
-> > > George had this issue with iBFT, but in general this could be any table
-> > > that a buggy BIOS forgot to mark as ACPI data.
-> >
-> > BTW, I wonder is there a fundamental reason to use ioremap() to access ACPI
-> > tables at all?
-> > In the end, they reside in RAM and, apparently, they live at the same DIMM
-> > as neighboring "normal memory" so why cannot we just map them normally as
-> > read-only not executable?
+On 3/9/21 1:02 PM, Steven Rostedt wrote:
+> On Tue, 9 Mar 2021 12:53:37 -0700
+> David Ahern <dsahern@gmail.com> wrote:
 > 
-> This may be NVS memory (depending on the configuration of the system)
-> which isn't "normal" RAM AFAICS.
+>> Changing the order of the fields will impact any bpf programs expecting
+>> the existing format
+> 
+> I thought bpf programs were not API. And why are they not parsing this
+> information? They have these offsets hard coded???? Why would they do that!
+> The information to extract the data where ever it is has been there from
+> day 1! Way before BPF ever had access to trace events.
 
-Hmm, according to the description of "ACPI NVS" in ACPI 6.3
+BPF programs attached to a tracepoint are passed a context - a structure
+based on the format for the tracepoint. To take an in-tree example, look
+at samples/bpf/offwaketime_kern.c:
 
-	ACPI NVS Memory. This range of addresses is in use or reserved by
-			 the system and must not be used by the operating
-			 system. This range is required to be saved and
- 			 restored across an NVS sleep.
+...
 
-it behaves more like "normal" RAM rather than actual non-volatile storage.
+/* taken from /sys/kernel/debug/tracing/events/sched/sched_switch/format */
+struct sched_switch_args {
+        unsigned long long pad;
+        char prev_comm[16];
+        int prev_pid;
+        int prev_prio;
+        long long prev_state;
+        char next_comm[16];
+        int next_pid;
+        int next_prio;
+};
+SEC("tracepoint/sched/sched_switch")
+int oncpu(struct sched_switch_args *ctx)
+{
 
-There are other places in ACPI text that imply that "ACPI NVS" is actually
-RAM, it's just reserved by the firmware.
+...
 
-And judging by the example below both "ACPI data" and "ACPI NVS" live in
-the very same DIMM as "usable" RAM.
-
-[    0.000000] BIOS-e820: [mem 0x0000000029931000-0x0000000029932fff] usable
-[    0.000000] BIOS-e820: [mem 0x0000000029933000-0x000000002993afff] ACPI data
-[    0.000000] BIOS-e820: [mem 0x000000002993b000-0x000000002993bfff] ACPI NVS
-[    0.000000] BIOS-e820: [mem 0x000000002993c000-0x0000000029940fff] ACPI data
-[    0.000000] BIOS-e820: [mem 0x0000000029941000-0x0000000029944fff] usable
-
-Unfortunately, both UEFI and ACPI standards are very vague about the
-meaning of "ACPI NVS" so there may be systems that use real non-volatile
-storage for it...
-
--- 
-Sincerely yours,
-Mike.
+Production systems do not typically have toolchains installed, so
+dynamic generation of the program based on the 'format' file on the
+running system is not realistic. That means creating the programs on a
+development machine and installing on the production box. Further, there
+is an expectation that a bpf program compiled against version X works on
+version Y. Changing the order of the fields will break such programs in
+non-obvious ways.
