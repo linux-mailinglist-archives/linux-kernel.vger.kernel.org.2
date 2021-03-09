@@ -2,214 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC31F331DB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E86331DB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhCIDti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 22:49:38 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3462 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhCIDtM (ORCPT
+        id S230047AbhCIDuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 22:50:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229980AbhCIDt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 22:49:12 -0500
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Dvh3v1clRz5XhJ;
-        Tue,  9 Mar 2021 11:47:23 +0800 (CST)
-Received: from dggemm752-chm.china.huawei.com (10.1.198.58) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 9 Mar 2021 11:49:09 +0800
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemm752-chm.china.huawei.com (10.1.198.58) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 11:49:09 +0800
-Received: from dggpemm000003.china.huawei.com ([7.185.36.128]) by
- dggpemm000003.china.huawei.com ([7.185.36.128]) with mapi id 15.01.2106.013;
- Tue, 9 Mar 2021 11:49:09 +0800
-From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
-To:     Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-CC:     Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Michel Lespinasse <walken@google.com>,
-        "Jann Horn" <jannh@google.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHZmaW8vcGNpOiBtYWtlIHRoZSB2ZmlvX3BjaV9t?=
- =?utf-8?Q?map=5Ffault_reentrant?=
-Thread-Topic: [PATCH] vfio/pci: make the vfio_pci_mmap_fault reentrant
-Thread-Index: AQHXFAyY7ntFdLSdaUWKyN+XefXlKKp6Au0AgAArZgCAAFHIUA==
-Date:   Tue, 9 Mar 2021 03:49:09 +0000
-Message-ID: <6b98461600f74f2385b9096203fa3611@hisilicon.com>
-References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
- <20210308132106.49da42e2@omen.home.shazbot.org>
- <20210308225626.GN397383@xz-x1>
-In-Reply-To: <20210308225626.GN397383@xz-x1>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.69.38.183]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 8 Mar 2021 22:49:58 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F051CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:49:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=Em4tvMXPYiKF+oE0u3rKmZiyAST6rAz5Klub7t+/W7M=; b=KTNOWwIYqzDsSmXgVPJcvClkl7
+        mcJ8iGITlOTpKzIUp1tsuwr6UYPEd+Icwq7HRb22ih2+WpsYczs5sKpGCNH8v5q2lxhgjQFZb2IKy
+        0CJgs6JTMQxKPSGwp/gtJN88jyTucD+vBigTRgY4mK53W2RPr2QeAOn4oAxtLh5VQh2PQP5kJJAkk
+        VDGtUN13AoRnGcnTzVw56GHq9HN4yu+lcnI+f6o9Kn+vS/XzfAaLwbUXzXsNd1XKPWRhnrQXfnzLd
+        fBR4ArtG2U1eq3tkgI2WETdwtoiKaAo4k6SXAe3gGhGwslMUT/9nU5hr6c4ATlhcLNxyFSuU2fYWv
+        CjIUM20w==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJTNb-000bxU-CO; Tue, 09 Mar 2021 03:49:56 +0000
+Subject: Re: [PATCH] soc: qcom: Fix typos in the file qmi_encdec.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210306213542.19413-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <080d15f5-6f91-68fe-a135-87269b722a3d@infradead.org>
+Date:   Mon, 8 Mar 2021 19:49:52 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210306213542.19413-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgZ3V5czoNCg0KVGhhbmtzIGZvciB0aGUgaGVscGZ1bCBjb21tZW50cywgYWZ0ZXIgcmV0aGlu
-a2luZyB0aGUgaXNzdWUsIEkgaGF2ZSBwcm9wb3NlZA0KIHRoZSBmb2xsb3dpbmcgY2hhbmdlOiAN
-CjEuIGZvbGxvd19wdGUgaW5zdGVhZCBvZiBmb2xsb3dfcGZuLg0KMi4gdm1mX2luc2VydF9wZm4g
-bG9vcHMgaW5zdGVhZCBvZiBpb19yZW1hcF9wZm5fcmFuZ2UNCjMuIHByb3BlciB1bmRvcyB3aGVu
-IHNvbWUgY2FsbCBmYWlscy4NCjQuIGtlZXAgdGhlIGJpZ2dlciBsb2NrIHJhbmdlIHRvIGF2b2lk
-IHVuZXNzYXJ5IHB0ZSBpbnN0YWxsLiANCg0KcGxlYXNlIGhlbHAgdG8gdGFrZSBhIGxvb2sgYW5k
-IGdldCB5b3VyIGNvbW1lbnRzLCB0aGFua3MuDQoNCnN0YXRpYyB2bV9mYXVsdF90IHZmaW9fcGNp
-X21tYXBfZmF1bHQoc3RydWN0IHZtX2ZhdWx0ICp2bWYpDQp7DQoJc3RydWN0IHZtX2FyZWFfc3Ry
-dWN0ICp2bWEgPSB2bWYtPnZtYTsNCglzdHJ1Y3QgdmZpb19wY2lfZGV2aWNlICp2ZGV2ID0gdm1h
-LT52bV9wcml2YXRlX2RhdGE7DQoJdm1fZmF1bHRfdCByZXQgPSBWTV9GQVVMVF9OT1BBR0U7DQoJ
-dW5zaWduZWQgbG9uZyB2YWRkciwgcGZuOw0KCXB0ZV90ICpwdGVwOw0KCXNwaW5sb2NrX3QgKnB0
-bDsNCg0KCW11dGV4X2xvY2soJnZkZXYtPnZtYV9sb2NrKTsNCglkb3duX3JlYWQoJnZkZXYtPm1l
-bW9yeV9sb2NrKTsNCg0KCWlmICghX192ZmlvX3BjaV9tZW1vcnlfZW5hYmxlZCh2ZGV2KSkgew0K
-CQlyZXQgPSBWTV9GQVVMVF9TSUdCVVM7DQoJCWdvdG8gdXBfb3V0Ow0KCX0NCg0KCWlmICghZm9s
-bG93X3B0ZSh2bWEtPnZtX21tLCB2bWEtPnZtX3N0YXJ0LCAmcHRlcCwgJnB0bCkpDQoJCWdvdG8g
-dXBfb3V0Ow0KDQoJZm9yICh2YWRkciA9IHZtYS0+c3RhcnQsIHBmbiA9IHZtYS0+dm1fcGdvZmY7
-IHZhZGRyIDwgdm1hLT5lbmQ7KSB7DQoJCXJldCA9IHZtZl9pbnNlcnRfcGZuKHZtYSwgdmFkZHIs
-IHBmbik7DQoJCWlmIChyZXQpDQoJCQlnb3RvIHphcF92bWE7DQoJCXZhZGRyICs9IFBBR0VfU0la
-RTsNCgkJcGZuICs9IDE7DQoJfQ0KDQoJaWYgKF9fdmZpb19wY2lfYWRkX3ZtYSh2ZGV2LCB2bWEp
-KSB7DQoJCXJldCA9IFZNX0ZBVUxUX09PTTsNCgkJZ290byB6YXBfdm1hOw0KCX0NCg0KCW11dGV4
-X3VubG9jaygmdmRldi0+dm1hX2xvY2spOw0KCXVwX3JlYWQoJnZkZXYtPm1lbW9yeV9sb2NrKTsN
-CglyZXR1cm4gcmV0Ow0KDQp6YXBfdm1hOg0KCXphcF92bWFfcHRlcyh2bWEsIHZtYS0+dm1fc3Rh
-cnQsIHZhZGRyIC0gdm1hLT52bV9zdGFydCk7DQp1cF9vdXQ6DQoJbXV0ZXhfdW5sb2NrKCZ2ZGV2
-LT52bWFfbG9jayk7DQoJdXBfcmVhZCgmdmRldi0+bWVtb3J5X2xvY2spOw0KCXJldHVybiByZXQ7
-DQp9DQoNCj4gLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0KPiDlj5Hku7bkuro6IFBldGVyIFh1IFtt
-YWlsdG86cGV0ZXJ4QHJlZGhhdC5jb21dDQo+IOWPkemAgeaXtumXtDogMjAyMeW5tDPmnIg55pel
-IDY6NTYNCj4g5pS25Lu25Lq6OiBBbGV4IFdpbGxpYW1zb24gPGFsZXgud2lsbGlhbXNvbkByZWRo
-YXQuY29tPg0KPiDmioTpgIE6IFplbmcgVGFvIDxwcmltZS56ZW5nQGhpc2lsaWNvbi5jb20+OyBs
-aW51eGFybUBodWF3ZWkuY29tOyBDb3JuZWxpYQ0KPiBIdWNrIDxjb2h1Y2tAcmVkaGF0LmNvbT47
-IEtldmluIFRpYW4gPGtldmluLnRpYW5AaW50ZWwuY29tPjsgQW5kcmV3DQo+IE1vcnRvbiA8YWtw
-bUBsaW51eC1mb3VuZGF0aW9uLm9yZz47IEdpb3Zhbm5pIENhYmlkZHUNCj4gPGdpb3Zhbm5pLmNh
-YmlkZHVAaW50ZWwuY29tPjsgTWljaGVsIExlc3BpbmFzc2UgPHdhbGtlbkBnb29nbGUuY29tPjsg
-SmFubg0KPiBIb3JuIDxqYW5uaEBnb29nbGUuY29tPjsgTWF4IEd1cnRvdm95IDxtZ3VydG92b3lA
-bnZpZGlhLmNvbT47DQo+IGt2bUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmc7IEphc29uIEd1bnRob3JwZQ0KPiA8amdnQG52aWRpYS5jb20+DQo+IOS4u+mimDog
-UmU6IFtQQVRDSF0gdmZpby9wY2k6IG1ha2UgdGhlIHZmaW9fcGNpX21tYXBfZmF1bHQgcmVlbnRy
-YW50DQo+IA0KPiBPbiBNb24sIE1hciAwOCwgMjAyMSBhdCAwMToyMTowNlBNIC0wNzAwLCBBbGV4
-IFdpbGxpYW1zb24gd3JvdGU6DQo+ID4gT24gTW9uLCA4IE1hciAyMDIxIDE5OjExOjI2ICswODAw
-DQo+ID4gWmVuZyBUYW8gPHByaW1lLnplbmdAaGlzaWxpY29uLmNvbT4gd3JvdGU6DQo+ID4NCj4g
-PiA+IFdlIGhhdmUgbWV0IHRoZSBmb2xsb3dpbmcgZXJyb3Igd2hlbiB0ZXN0IHdpdGggRFBESyB0
-ZXN0cG1kOg0KPiA+ID4gWyAxNTkxLjczMzI1Nl0ga2VybmVsIEJVRyBhdCBtbS9tZW1vcnkuYzoy
-MTc3IQ0KPiA+ID4gWyAxNTkxLjczOTUxNV0gSW50ZXJuYWwgZXJyb3I6IE9vcHMgLSBCVUc6IDAg
-WyMxXSBQUkVFTVBUIFNNUCBbDQo+ID4gPiAxNTkxLjc0NzM4MV0gTW9kdWxlcyBsaW5rZWQgaW46
-IHZmaW9faW9tbXVfdHlwZTEgdmZpb19wY2kNCj4gPiA+IHZmaW9fdmlycWZkIHZmaW8gcHY2ODBf
-bWlpKE8pIFsgMTU5MS43NjA1MzZdIENQVTogMiBQSUQ6IDIyNyBDb21tOg0KPiA+ID4gbGNvcmUt
-d29ya2VyLTIgVGFpbnRlZDogRyBPIDUuMTEuMC1yYzMrICMxIFsgMTU5MS43NzA3MzVdIEhhcmR3
-YXJlDQo+ID4gPiBuYW1lOiAgLCBCSU9TIEhpeHh4eEZQR0EgMVAgQjYwMCBWMTIxLTEgWyAxNTkx
-Ljc3ODg3Ml0gcHN0YXRlOg0KPiA+ID4gNDA0MDAwMDkgKG5aY3YgZGFpZiArUEFOIC1VQU8gLVRD
-TyBCVFlQRT0tLSkgWyAxNTkxLjc4NjEzNF0gcGMgOg0KPiA+ID4gcmVtYXBfcGZuX3JhbmdlKzB4
-MjE0LzB4MzQwIFsgMTU5MS43OTM1NjRdIGxyIDoNCj4gPiA+IHJlbWFwX3Bmbl9yYW5nZSsweDFi
-OC8weDM0MCBbIDE1OTEuNzk5MTE3XSBzcCA6IGZmZmY4MDAwMTA2OGJiZDAgWw0KPiA+ID4gMTU5
-MS44MDM0NzZdIHgyOTogZmZmZjgwMDAxMDY4YmJkMCB4Mjg6IDAwMDAwNDJlZmY2ZjAwMDAgWw0K
-PiA+ID4gMTU5MS44MTA0MDRdIHgyNzogMDAwMDAwMTEwMDkxMDAwMCB4MjY6IDAwMDAwMDEzMDA5
-MTAwMDAgWw0KPiA+ID4gMTU5MS44MTc0NTddIHgyNTogMDA2ODAwMDAwMDAwMGZkMyB4MjQ6IGZm
-ZmZhOTJmMTMzOGUzNTggWw0KPiA+ID4gMTU5MS44MjUxNDRdIHgyMzogMDAwMDAwMTE0MDAwMDAw
-MCB4MjI6IDAwMDAwMDAwMDAwMDAwNDEgWw0KPiA+ID4gMTU5MS44MzI1MDZdIHgyMTogMDAwMDAw
-MTMwMDkxMDAwMCB4MjA6IGZmZmZhOTJmMTQxYTQwMDAgWw0KPiA+ID4gMTU5MS44Mzk1MjBdIHgx
-OTogMDAwMDAwMTEwMGEwMDAwMCB4MTg6IDAwMDAwMDAwMDAwMDAwMDAgWw0KPiA+ID4gMTU5MS44
-NDYxMDhdIHgxNzogMDAwMDAwMDAwMDAwMDAwMCB4MTY6IGZmZmZhOTJmMTE4NDQ1NDAgWw0KPiA+
-ID4gMTU5MS44NTM1NzBdIHgxNTogMDAwMDAwMDAwMDAwMDAwMCB4MTQ6IDAwMDAwMDAwMDAwMDAw
-MDAgWw0KPiA+ID4gMTU5MS44NjA3NjhdIHgxMzogZmZmZmZjMDAwMDAwMDAwMCB4MTI6IDAwMDAw
-MDAwMDAwMDA4ODAgWw0KPiA+ID4gMTU5MS44NjgwNTNdIHgxMTogZmZmZjA4MjFiZjNkMDFkMCB4
-MTA6IGZmZmY1ZWYyYWJkODkwMDAgWw0KPiA+ID4gMTU5MS44NzU5MzJdIHg5IDogZmZmZmE5MmYx
-MmFiMDA2NCB4OCA6IGZmZmZhOTJmMTM2NDcxYzAgWw0KPiA+ID4gMTU5MS44ODMyMDhdIHg3IDog
-MDAwMDAwMTE0MDkxMDAwMCB4NiA6IDAwMDAwMDAyMDAwMDAwMDAgWw0KPiA+ID4gMTU5MS44OTAx
-NzddIHg1IDogMDAwMDAwMDAwMDAwMDAwMSB4NCA6IDAwMDAwMDAwMDAwMDAwMDEgWw0KPiA+ID4g
-MTU5MS44OTY2NTZdIHgzIDogMDAwMDAwMDAwMDAwMDAwMCB4MiA6IDAxNjgwNDQwMDAwMDBmZDMg
-Ww0KPiA+ID4gMTU5MS45MDMyMTVdIHgxIDogZmZmZjA4MjEyNjI2MTg4MCB4MCA6IGZmZmZmYzIw
-ODQ5ODk4NjggWw0KPiA+ID4gMTU5MS45MTAyMzRdIENhbGwgdHJhY2U6DQo+ID4gPiBbIDE1OTEu
-OTE0ODM3XSAgcmVtYXBfcGZuX3JhbmdlKzB4MjE0LzB4MzQwIFsgMTU5MS45MjE3NjVdDQo+ID4g
-PiB2ZmlvX3BjaV9tbWFwX2ZhdWx0KzB4YWMvMHgxMzAgW3ZmaW9fcGNpXSBbIDE1OTEuOTMxMjAw
-XQ0KPiA+ID4gX19kb19mYXVsdCsweDQ0LzB4MTJjIFsgMTU5MS45MzcwMzFdICBoYW5kbGVfbW1f
-ZmF1bHQrMHhjYzgvMHgxMjMwIFsNCj4gPiA+IDE1OTEuOTQyNDc1XSAgZG9fcGFnZV9mYXVsdCsw
-eDE2Yy8weDQ4NCBbIDE1OTEuOTQ4NjM1XQ0KPiA+ID4gZG9fdHJhbnNsYXRpb25fZmF1bHQrMHhi
-Yy8weGQ4IFsgMTU5MS45NTQxNzFdDQo+ID4gPiBkb19tZW1fYWJvcnQrMHg0Yy8weGMwIFsgMTU5
-MS45NjAzMTZdICBlbDBfZGErMHg0MC8weDgwIFsNCj4gPiA+IDE1OTEuOTY1NTg1XSAgZWwwX3N5
-bmNfaGFuZGxlcisweDE2OC8weDFiMCBbIDE1OTEuOTcxNjA4XQ0KPiA+ID4gZWwwX3N5bmMrMHgx
-NzQvMHgxODAgWyAxNTkxLjk3ODMxMl0gQ29kZTogZWIxYjAyN2YgNTQwMDAwYzAgZjk0MDAwMjIN
-Cj4gPiA+IGI0ZmZmZTAyIChkNDIxMDAwMCkNCj4gPiA+DQo+ID4gPiBUaGUgY2F1c2UgaXMgdGhh
-dCB0aGUgdmZpb19wY2lfbW1hcF9mYXVsdCBmdW5jdGlvbiBpcyBub3QgcmVlbnRyYW50LA0KPiA+
-ID4gaWYgbXVsdGlwbGUgdGhyZWFkcyBhY2Nlc3MgdGhlIHNhbWUgYWRkcmVzcyB3aGljaCB3aWxs
-IGxlYWQgdG8gYQ0KPiA+ID4gcGFnZSBmYXVsdCBhdCB0aGUgc2FtZSB0aW1lLCB3ZSB3aWxsIGhh
-dmUgdGhlIGFib3ZlIGVycm9yLg0KPiA+ID4NCj4gPiA+IEZpeCB0aGUgaXNzdWUgYnkgbWFraW5n
-IHRoZSB2ZmlvX3BjaV9tbWFwX2ZhdWx0IHJlZW50cmFudCwgYW5kIHRoZXJlDQo+ID4gPiBpcyBh
-bm90aGVyIGlzc3VlIHRoYXQgd2hlbiB0aGUgaW9fcmVtYXBfcGZuX3JhbmdlIGZhaWxzLCB3ZSBu
-ZWVkIHRvDQo+ID4gPiB1bmRvIHRoZSBfX3ZmaW9fcGNpX2FkZF92bWEsIGZpeCBpdCBieSBtb3Zp
-bmcgdGhlIF9fdmZpb19wY2lfYWRkX3ZtYQ0KPiA+ID4gZG93biBhZnRlciB0aGUgaW9fcmVtYXBf
-cGZuX3JhbmdlLg0KPiA+ID4NCj4gPiA+IEZpeGVzOiAxMWM0Y2QwN2JhMTEgKCJ2ZmlvLXBjaTog
-RmF1bHQgbW1hcHMgdG8gZW5hYmxlIHZtYSB0cmFja2luZyIpDQo+ID4gPiBTaWduZWQtb2ZmLWJ5
-OiBaZW5nIFRhbyA8cHJpbWUuemVuZ0BoaXNpbGljb24uY29tPg0KPiA+ID4gLS0tDQo+ID4gPiAg
-ZHJpdmVycy92ZmlvL3BjaS92ZmlvX3BjaS5jIHwgMTQgKysrKysrKysrKy0tLS0NCj4gPiA+ICAx
-IGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4gPiA+DQo+
-ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy92ZmlvL3BjaS92ZmlvX3BjaS5jDQo+ID4gPiBiL2Ry
-aXZlcnMvdmZpby9wY2kvdmZpb19wY2kuYyBpbmRleCA2NWU3ZTZiLi42OTI4YzM3IDEwMDY0NA0K
-PiA+ID4gLS0tIGEvZHJpdmVycy92ZmlvL3BjaS92ZmlvX3BjaS5jDQo+ID4gPiArKysgYi9kcml2
-ZXJzL3ZmaW8vcGNpL3ZmaW9fcGNpLmMNCj4gPiA+IEBAIC0xNjEzLDYgKzE2MTMsNyBAQCBzdGF0
-aWMgdm1fZmF1bHRfdCB2ZmlvX3BjaV9tbWFwX2ZhdWx0KHN0cnVjdA0KPiB2bV9mYXVsdCAqdm1m
-KQ0KPiA+ID4gIAlzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSA9IHZtZi0+dm1hOw0KPiA+ID4g
-IAlzdHJ1Y3QgdmZpb19wY2lfZGV2aWNlICp2ZGV2ID0gdm1hLT52bV9wcml2YXRlX2RhdGE7DQo+
-ID4gPiAgCXZtX2ZhdWx0X3QgcmV0ID0gVk1fRkFVTFRfTk9QQUdFOw0KPiA+ID4gKwl1bnNpZ25l
-ZCBsb25nIHBmbjsNCj4gPiA+DQo+ID4gPiAgCW11dGV4X2xvY2soJnZkZXYtPnZtYV9sb2NrKTsN
-Cj4gPiA+ICAJZG93bl9yZWFkKCZ2ZGV2LT5tZW1vcnlfbG9jayk7DQo+ID4gPiBAQCAtMTYyMywx
-OCArMTYyNCwyMyBAQCBzdGF0aWMgdm1fZmF1bHRfdCB2ZmlvX3BjaV9tbWFwX2ZhdWx0KHN0cnVj
-dA0KPiB2bV9mYXVsdCAqdm1mKQ0KPiA+ID4gIAkJZ290byB1cF9vdXQ7DQo+ID4gPiAgCX0NCj4g
-PiA+DQo+ID4gPiAtCWlmIChfX3ZmaW9fcGNpX2FkZF92bWEodmRldiwgdm1hKSkgew0KPiA+ID4g
-LQkJcmV0ID0gVk1fRkFVTFRfT09NOw0KPiA+ID4gKwlpZiAoIWZvbGxvd19wZm4odm1hLCB2bWEt
-PnZtX3N0YXJ0LCAmcGZuKSkgew0KPiA+ID4gIAkJbXV0ZXhfdW5sb2NrKCZ2ZGV2LT52bWFfbG9j
-ayk7DQo+ID4gPiAgCQlnb3RvIHVwX291dDsNCj4gPiA+ICAJfQ0KPiA+ID4NCj4gPiA+IC0JbXV0
-ZXhfdW5sb2NrKCZ2ZGV2LT52bWFfbG9jayk7DQo+ID4NCj4gPg0KPiA+IElmIEkgdW5kZXJzdGFu
-ZCBjb3JyZWN0bHksIEkgdGhpbmsgeW91J3JlIHVzaW5nIChwZXJoYXBzIHNsaWdodGx5DQo+ID4g
-YWJ1c2luZykgdGhlIHZtYV9sb2NrIHRvIGV4dGVuZCB0aGUgc2VyaWFsaXphdGlvbiBvZiB0aGUg
-dm1hX2xpc3QNCj4gPiBtYW5pcHVsYXRpb24gdG8gaW5jbHVkZSBpb19yZW1hcF9wZm5fcmFuZ2Uo
-KSBzdWNoIHRoYXQgeW91IGNhbiB0ZXN0DQo+ID4gd2hldGhlciB0aGUgcHRlIGhhcyBhbHJlYWR5
-IGJlZW4gcG9wdWxhdGVkIHVzaW5nIGZvbGxvd19wZm4oKS4gIEluDQo+ID4gdGhhdCBjYXNlIHdl
-IHJldHVybiBWTV9GQVVMVF9OT1BBR0Ugd2l0aG91dCB0cnlpbmcgdG8gcmVwb3B1bGF0ZSB0aGUN
-Cj4gPiBwYWdlIGFuZCB0aGVyZWZvcmUgYXZvaWQgdGhlIEJVR19PTiBpbiByZW1hcF9wdGVfcmFu
-Z2UoKSB0cmlnZ2VyZWQgYnkNCj4gPiB0cnlpbmcgdG8gb3ZlcndyaXRlIGFuIGV4aXN0aW5nIHB0
-ZSwgYW5kIGxlc3MgaW1wb3J0YW50bHksIGEgZHVwbGljYXRlDQo+ID4gdm1hIGluIG91ciBsaXN0
-LiAgSSB3b25kZXIgaWYgdXNlIG9mIGZvbGxvd19wZm4oKSBpcyBzdGlsbCBzdHJvbmdseQ0KPiA+
-IGRpc2NvdXJhZ2VkIGZvciB0aGlzIHVzZSBjYXNlLg0KPiA+DQo+ID4gSSdtIHN1cnByaXNlZCB0
-aGF0IGl0J3MgbGVmdCB0byB0aGUgZmF1bHQgaGFuZGxlciB0byBwcm92aWRlIHRoaXMNCj4gPiBz
-ZXJpYWxpemF0aW9uLCBpcyB0aGlzIGJlY2F1c2Ugd2UncmUgZmlsbGluZyB0aGUgZW50aXJlIHZt
-YSByYXRoZXINCj4gPiB0aGFuIG9ubHkgdGhlIGZhdWx0aW5nIHBhZ2U/DQo+IA0KPiBUaGVyZSdz
-IGRlZmluaXRlbHkgc29tZSBraW5kIG9mIHNlcmlhbGl6YXRpb24gaW4gdGhlIHByb2Nlc3MgdXNp
-bmcgcGd0YWJsZSBsb2NrcywNCj4gd2hpY2ggZ2l2ZXMgbWUgdGhlIGZlZWxpbmcgdGhhdCB0aGUg
-QlVHX09OKCkgaW4gcmVtYXBfcHRlX3JhbmdlKCkgc2VlbXMgdG9vDQo+IHN0cm9uZyBvbiAiIXB0
-ZV9ub25lKCpwdGUpIiByYXRoZXIgdGhhbiAtRUVYSVNULg0KPiANCj4gSG93ZXZlciB0aGVyZSds
-bCBzdGlsbCBiZSB0aGUgaXNzdWUgb2YgZHVwbGljYXRlZCB2bWEgaW4gdm1hX2xpc3QgLSB0aGF0
-IHNlZW1zIHRvDQo+IGJlIGEgc2lnbiB0aGF0IGl0J3Mgc3RpbGwgYmV0dGVyIHRvIGZpeCBpdCBm
-cm9tIHZmaW8gbGF5ZXIuDQo+IA0KPiA+DQo+ID4gQXMgd2UgbW92ZSB0byB1bm1hcF9tYXBwaW5n
-X3JhbmdlKClbMV0gd2UgcmVtb3ZlIGFsbCBvZiB0aGUgY29tcGxleGl0eQ0KPiA+IG9mIG1hbmFn
-aW5nIGEgbGlzdCBvZiB2bWFzIHRvIHphcCBiYXNlZCBvbiB3aGV0aGVyIGRldmljZSBtZW1vcnkg
-aXMNCj4gPiBlbmFibGVkLCBpbmNsdWRpbmcgdGhlIHZtYV9sb2NrLiAgQXJlIHdlIGdvaW5nIHRv
-IG5lZWQgdG8gcmVwbGFjZSB0aGF0DQo+ID4gd2l0aCBhbm90aGVyIGxvY2sgaGVyZSwgb3IgaXMg
-dGhlcmUgYSBiZXR0ZXIgYXBwcm9hY2ggdG8gaGFuZGxpbmcNCj4gPiBjb25jdXJyZW5jeSBvZiB0
-aGlzIGZhdWx0IGhhbmRsZXI/ICBKYXNvbi9QZXRlcj8gIFRoYW5rcywNCj4gDQo+IE5vdCBsb29r
-ZWQgaW50byB0aGUgbmV3IHNlcmllcyBvZiB1bm1hcF9tYXBwaW5nX3JhbmdlKCkgeWV0Li4gIEJ1
-dCBmb3IgdGhlDQo+IGN1cnJlbnQgY29kZSBiYXNlOiBpbnN0ZWFkIG9mIGZvbGxvd19wdGUoKSwg
-bWF5YmUgd2UgY291bGQgc2ltcGx5IGRvIHRoZQ0KPiBvcmRlcmluZyBieSBzZWFyY2hpbmcgdGhl
-IHZtYSBsaXN0IGZpcnN0IGJlZm9yZSBpbnNlcnRpbmcgaW50byB0aGUgdm1hIGxpc3Q/DQo+IEJl
-Y2F1c2UgaWYgdm1hIGV4aXN0ZWQsIGl0IG1lYW5zIHRoZSBwdGUgaW5zdGFsbGF0aW9uIGhhcyBk
-b25lLCBvciBhdCBsZWFzdCBpbg0KPiBwcm9ncmVzcy4gIFRoZW4gd2UgY291bGQgcmV0dXJuIFZN
-X0ZBVUxUX1JFVFJZIGhvcGluZyB0aGF0IGl0J2xsIGJlIGRvbmUNCj4gc29vbi4NCj4gDQo+IFRo
-ZW4gbWF5YmUgaXQgd291bGQgYWxzbyBtYWtlIHNvbWUgc2Vuc2UgdG8gaGF2ZSB2bWFfbG9jayBw
-cm90ZWN0IHRoZSB3aG9sZQ0KPiBpb19yZW1hcF9wZm5fcmFuZ2UoKSB0b28/IC0gaXQnbGwgbm90
-IGJlIGZvciB0aGUgb3JkZXJpbmcsIGJ1dCBqdXN0IHRoYXQgaXQnbGwNCj4gZ3VhcmFudGVlIGFm
-dGVyIHdlJ3JlIHdpdGggdGhlIHZtYV9sb2NrIGl0IG1lYW5zIGN1cnJlbnQgdm1hIGhhcyBhbGwg
-cHRlcw0KPiBpbnN0YWxsZWQsIHRoZW4gdGhlIG5leHQgbWVtb3J5IGFjY2VzcyB3aWxsIGd1YXJh
-bnRlZWQgdG8gc3VjY2Vzcy4gIEl0IHNlZW1zDQo+IG1vcmUgZWZmaWNpZW50IHRoYW4gbXVsdGlw
-bGUgVk1fRkFVTFRfUkVUUlkgcGFnZSBmYXVsdCBsb29waW5nIHVudGlsIGl0J3MgZG9uZS4NCj4g
-DQo+IFRoYW5rcywNCj4gDQo+IC0tDQo+IFBldGVyIFh1DQo=
+On 3/6/21 1:35 PM, Bhaskar Chowdhury wrote:
+> 
+> Rudimentory spelling fixes throughout the file.
+> 
+> s/descibing/describing/
+> s/inforation/information/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> ---
+>  drivers/soc/qcom/qmi_encdec.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/qmi_encdec.c b/drivers/soc/qcom/qmi_encdec.c
+> index 3aaab71d1b2c..328cc8237191 100644
+> --- a/drivers/soc/qcom/qmi_encdec.c
+> +++ b/drivers/soc/qcom/qmi_encdec.c
+> @@ -451,11 +451,11 @@ static int qmi_decode_basic_elem(void *buf_dst, const void *buf_src,
+> 
+>  /**
+>   * qmi_decode_struct_elem() - Decodes elements of struct data type
+> - * @ei_array: Struct info array descibing the struct element.
+> + * @ei_array: Struct info array describing the struct element.
+>   * @buf_dst: Buffer to store the decoded element.
+>   * @buf_src: Buffer containing the elements in QMI wire format.
+>   * @elem_len: Number of elements to be decoded.
+> - * @tlv_len: Total size of the encoded inforation corresponding to
+> + * @tlv_len: Total size of the encoded information corresponding to
+>   *           this struct element.
+>   * @dec_level: Depth of the nested structure from the main structure.
+>   *
+> @@ -499,10 +499,10 @@ static int qmi_decode_struct_elem(struct qmi_elem_info *ei_array,
+> 
+>  /**
+>   * qmi_decode_string_elem() - Decodes elements of string data type
+> - * @ei_array: Struct info array descibing the string element.
+> + * @ei_array: Struct info array describing the string element.
+>   * @buf_dst: Buffer to store the decoded element.
+>   * @buf_src: Buffer containing the elements in QMI wire format.
+> - * @tlv_len: Total size of the encoded inforation corresponding to
+> + * @tlv_len: Total size of the encoded information corresponding to
+>   *           this string element.
+>   * @dec_level: Depth of the string element from the main structure.
+>   *
+> --
+
+
+-- 
+~Randy
+
