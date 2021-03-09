@@ -2,204 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D0E331EEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 07:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57911331EF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 07:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhCIF7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 00:59:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhCIF72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 00:59:28 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47CAC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 21:59:27 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id x4so18399139lfu.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 21:59:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LfdWGUGUgt3KVZT4oX5kzvvtwfjtBAs6OhZr398cIDI=;
-        b=EuAmSWd7pNIIhIt8rKjIV46zt+Ex+tlABUJ+OuQXOZRK0eZAqZOd0hBuvwxjY3OlZA
-         TWfx5jwu71V6+Owjq1nHK8OKxmgaw0xcvs3XKmo0FoKANFry8DkrY3Qf4c2L5fr/79Mq
-         2Uj/7UAJhUCXNtfM47OZwyo03cn3j8U7hciKf8weFzMvC2tj9O48U13O2fD/QZEg3smn
-         oEf3nsvYAucFBxsWF7/0tnpWB4wyphVgZWpRdMFQLo8N2q8xOo7TlUfTDFIJRnAZ4Zaw
-         serQTx0K2b3T7v6gnSGipN8ipfNkPo89gMXaFMQdZXfqL8PJlJFwj/Bn83hRepr0KuXu
-         OumQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LfdWGUGUgt3KVZT4oX5kzvvtwfjtBAs6OhZr398cIDI=;
-        b=k3WdWNOI+CbRff41DJoqLvFqQ6WYJWF/U0qt27+93drDdtM/MCrPQ/qkkN9xRN5zN7
-         3j6Bzkf0YoSAU0h0DyQHuubm7D+5wNSud+5yL4bCskZOAApk2HlQbWDKVQVy4VREu7V2
-         q1FYb4U2xRmNyXj2nLbz5748EbIV13soCJ0djCvcATaxanb7lECprInYYSZ+KNoJSoig
-         kyIO7zS2pnrNSz4Vfg8BIQyJ2YyNWpDdXmKwbb3wzsvxk+B/na+zM5oKjNp4g1lkA7+3
-         lyjLjdhmp92zwTWxlR1haeeeOkbdT0CpiQAGAt9Ungcaq1fZGfOlPl6TuUqIJbU0m8sn
-         y2iA==
-X-Gm-Message-State: AOAM531iwlwhAW6Y24Qy1Lto6TYOHmf0/En8lJs3z2u0LeTb/aCiOQcs
-        McjyMx6c+PhiMHjUo+poQSkVZYyPRA9lMv5APxs=
-X-Google-Smtp-Source: ABdhPJwh6mrHgK8pcW7M7PP1PqbpDjLBUIEL61wejMHMf3cKXLRjHQtOeVeKZJztIsFwcWGrnkuVMiKCFkCQHy6715M=
-X-Received: by 2002:ac2:47ea:: with SMTP id b10mr15758232lfp.499.1615269566318;
- Mon, 08 Mar 2021 21:59:26 -0800 (PST)
+        id S229683AbhCIGFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 01:05:13 -0500
+Received: from mail-eopbgr1310047.outbound.protection.outlook.com ([40.107.131.47]:33760
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229520AbhCIGEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 01:04:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mvexhkPgkwariD7BXMT5kr2tCMdt/HVvrh1/2HAW8vQAsxGPOaWxbPTauifndRkDWt1+ZzvCr+3ZVQP405ZgnvsplQlCDdlHOyVixwTxcfWI1owJTJeNm1/0hApMGnmsiNu2kKJ+YpL49Qz8NdnVAGI2mcp+1JXSI0cLy2o8SVA62nj7M2a80YnPXXoOOxfEcNwf/IY6WYK6OEYR7yP8aeiaT59YtpL939T7xOsFDh5+yLKKmI5Dl//nkRU5vZ0/JUmOuKprPfVEymDGtc+f7uCjPoAM7/xcXbYjVsuc8sOESWQon1HC6PyqSKn0o0k80b238VgSr1UOViC/m2x3lg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FOnkZyWm282YAI4axzVVtLmmDv6onHaFYQXpgiS8PRk=;
+ b=P2ArBFhy8M+gJnccOfoKVWZHL3cr6F4jBn098Un0R4AHNvoUs8BJyLNkpi4r4RCT7zMqo7UgBG0gsGT0m4KMvLaoCTz1YFdrkApPYlYaSFlb01Pr4gTQoUzNmPvDoWHzyXHli8F8HqpUXgab61v3XxQL8wzEcd/mhVUOBDa05sTFkw7xMbHJMXoF+JFnPcm5tsfk/oCw6cSuO0+kj/ccq73kFVqNyM4d7/4feMfelvzW3iBz13rnBTD2NL9md6NLmlvKEgly/7YxwIYKWl+ylpo75FWnAzFxnHLV76Sgv4KU72UG47yNd5sRR2sRAWZZDcaHJJ/tf64IMVr1lOj0PA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FOnkZyWm282YAI4axzVVtLmmDv6onHaFYQXpgiS8PRk=;
+ b=OTxHKnbQunhWVKZ2VBam6GV1fqOc4Lnx1+eYUaMFGUpJ5QTmCqwkSByH22KNy6YTSxVXE3WtOafagW5YtUupLXUhDCVwAhIvNp4SBy39uGT8SmzEE/Tslzk/gp5UTTjugxNu5vC12EtNUh9hwqYQOQbssFxA9akI85pybl3suoE=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TY2PR01MB4970.jpnprd01.prod.outlook.com (2603:1096:404:10e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Tue, 9 Mar
+ 2021 06:04:41 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72%7]) with mapi id 15.20.3912.026; Tue, 9 Mar 2021
+ 06:04:41 +0000
+From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
+        <naoya.horiguchi@nec.com>
+To:     Aili Yao <yaoaili@kingsoft.com>
+CC:     "Luck, Tony" <tony.luck@intel.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
+Subject: Re: [PATCH] mm/memory-failure: Use a mutex to avoid memory_failure()
+ races
+Thread-Topic: [PATCH] mm/memory-failure: Use a mutex to avoid memory_failure()
+ races
+Thread-Index: AQHXFG4a6KBUueS0DE2O2dOaNXi1CKp66C2AgABDJQA=
+Date:   Tue, 9 Mar 2021 06:04:41 +0000
+Message-ID: <20210309060440.GA29668@hori.linux.bs1.fc.nec.co.jp>
+References: <20210304144524.795872d7@alex-virtual-machine>
+ <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
+ <20210305093016.40c87375@alex-virtual-machine>
+ <20210305093656.6c262b19@alex-virtual-machine>
+ <20210305221143.GA220893@agluck-desk2.amr.corp.intel.com>
+ <20210308064558.GA3617@hori.linux.bs1.fc.nec.co.jp>
+ <3690ece2101d428fb9067fcd2a423ff8@intel.com>
+ <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
+ <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
+ <20210309100421.3d09b6b1@alex-virtual-machine>
+In-Reply-To: <20210309100421.3d09b6b1@alex-virtual-machine>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kingsoft.com; dkim=none (message not signed)
+ header.d=none;kingsoft.com; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.110.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e59a9632-0012-468a-5251-08d8e2c13ac0
+x-ms-traffictypediagnostic: TY2PR01MB4970:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TY2PR01MB4970D98BBCF38E6CF4E4A52CE7929@TY2PR01MB4970.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CmZsqWo1sRyRoqnwIuQbheV/7TqTsTbsulcExeKkiwXpsW+roDQnOpN48l2YaqQk5FjFKwNkJTYr3elrB1ls1GXD6/cSou1ZVCS4rdnxbA9RLwFw9NPx6kaYXt+hbBouGnEMiwEZSB75R9X/5zMQbd+VNtjtvuq+ZaUGOqIeDQlkJQsuvQnHjKH3gSm+iwvRQqxovayTNTOTZeHr5H6rCnGj/gQZOBqUfWzX4koasJ+GgW45hg/C7Pd008c1sx+Mm5vZXO+rl1V0h1Ud/gSWydWFDU2aQMBgZsNmsWPk0nLc8axVhxB1aCUegh3KRPExHK1/6/IhPfrv2D9fRe5rZCQbYzYF85iKHtQA//HTI3IX6K5dTjnWQIXZrGql0tKY9aDHMMWzF4Xr2UF+nzg6E0948pBkgE/aRgDHf8R0OezDi1oFcqu9s4hOIdHy0YSWfiDnCmSbYuesT1pFQRkNXFDdjQenjX6XTbTqApZ+yfGnI0SCxB+ccpbuJXCaGUtkhzuKYntP8Oc30X1biCZfgw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(396003)(346002)(376002)(85182001)(66946007)(316002)(7416002)(478600001)(71200400001)(8936002)(8676002)(33656002)(6506007)(26005)(76116006)(66446008)(5660300002)(64756008)(66476007)(66556008)(6486002)(186003)(86362001)(2906002)(55236004)(6512007)(4326008)(1076003)(54906003)(6916009)(9686003)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?Z3pQNFZpV2FiTlpaUUtIWDltZUFyaXZrQm43b1pLZmRqMUorMzkwVmo0?=
+ =?iso-2022-jp?B?YVNwN2c3eGxFUTU2bGxOWVhRSkc2SnY0RFB5b0hNNDk4WDdtZGZuRy9Y?=
+ =?iso-2022-jp?B?ZmRaRklKWmtpUEk4b2t4UzU4SDhTbWpNSVJwbTM4Q3RDTTU5WVdWT1pB?=
+ =?iso-2022-jp?B?MXNhd05ucHQwU3BRcjEvZXMzS0NUTGRJRHAwckw4TXNtdDN2SHBYVW1W?=
+ =?iso-2022-jp?B?VGM4VG8rdkhsNURROWtubkVVSmd3SUZPdER3UDZPcWgvYjNCQ3RFd0Ux?=
+ =?iso-2022-jp?B?TnY5NzROQUJGQTBnT1pieHZZNmxidUZCTkduUndwdlhNZEtwS3cybGV6?=
+ =?iso-2022-jp?B?eE9XNi9PNFVWam9uV0lRd0VrV2M5OVNIS0dEam9nVXhIZmlsTDF3N2NM?=
+ =?iso-2022-jp?B?NTcvVG1rZmdHQjhxejRxWEpkWHlqZEE1RXFGU0NiUmF6alQzS1JUanc0?=
+ =?iso-2022-jp?B?cXpGKys1bkEyTW5QZEJxTDlRek1oWll0V3g2aTVzRG8wVmw2cU4wVE8r?=
+ =?iso-2022-jp?B?QnVCeitMM2tMNmNhTWtlQkM5cm9zTG9Wbkl4L240TXBneEFuK1Zxc3Jz?=
+ =?iso-2022-jp?B?Rk1TWFlBVnAvT2w4SUhUMXJqQ3BoZFpXb1N2TG1zNC83ZDcxcnczckNQ?=
+ =?iso-2022-jp?B?L2Fqc25hRE5SVUhITytwRVpmc1JpWE5SQ1lqNk1XMUZpTGQzbmxZYll3?=
+ =?iso-2022-jp?B?YzdmdU5WWnFKcmErU3dGM0RRZUN1a0lidUtoWHBGall4Q1NZK0Z5b00x?=
+ =?iso-2022-jp?B?bkFnaFVlNTU0V2REb2tZTFJ3NEd0UXZ5SjlCKzlKZW0wczRtY2hpaEFC?=
+ =?iso-2022-jp?B?WEcxc1hLTHpDNWV0cDZ0Um5ibklaZlpUT0UwUVBIektVVFdISnZPakhw?=
+ =?iso-2022-jp?B?QWI1QjlyMXJMaUtTaUsxM1UwY0R6cmRCRHFFald2YzFYa3ljZ0ZzUitY?=
+ =?iso-2022-jp?B?NGY3ZHUvYTFkQUdOMFJVSUpJWElhbGdRVUR4am52cWtHTGlMOUZWVGJF?=
+ =?iso-2022-jp?B?VjNDOWxQRENxL1ZnMUlaaEN2dTNMZkhHWC9nbDF6MDFVS0dvVW1heWNP?=
+ =?iso-2022-jp?B?S2VqTHhMY0JXdUJMMDlXTk5LM21oellpNnlyTzM1eTh2a2RCM1hCMUt4?=
+ =?iso-2022-jp?B?U0ZTS0VTYzhveDBmSkdkWFdPV29vZ3MwNWMxQlErQzBLc1pTcTE0bXlO?=
+ =?iso-2022-jp?B?RW5aUzd0MG95anpZVUQwY2cyZ1pmZzhVdFIyaWt5Qkh5aVhFeXVpMGhW?=
+ =?iso-2022-jp?B?ZWtWWFBBZW1IUHcxcjhyOXZ5UGYvdXkyOFEzck93OHhWSnN6M3QrSHMw?=
+ =?iso-2022-jp?B?Z0Q5T3U2Q2ZRYThmVzkrcTU4VVlwVFozMm1VeUkvS2k1SEdnY0lzaWlD?=
+ =?iso-2022-jp?B?cjdoRjFYNHNtT2laNDFpUUhwTTFYVWowWTdEK1JwUzhxcEV2QTRac0hJ?=
+ =?iso-2022-jp?B?emFDV01nTmhuWHlVN3RkREFlZWZvb1ZwSnRMRGZCU2hyaUZqaG1ueGYz?=
+ =?iso-2022-jp?B?T1M3ZFczUjQ2RjBmY2wzYUVLZDUxM0JjYjdKYmFVTXR6anJVSk9SbVV0?=
+ =?iso-2022-jp?B?QUNCWURVRXJlUHlXM3A2L1R4cDkvREVueWc3T2hxNmQzMytxNzhXOHFQ?=
+ =?iso-2022-jp?B?TzNVbHZ6VTFjQisweWxmRG4rdFZjY0taMFMybWtYTU54Sng0VWxDZUtS?=
+ =?iso-2022-jp?B?cEkwd2ZMOTFEQWZCUG5Id0oxUzI1SzRPcHUya09NRGRydFJ5dmY5QldV?=
+ =?iso-2022-jp?B?S0FvK0JBdENpaDlrSm9idlZDNGJhTFNhR0ZWOU5TT252SndiTjB1NGYr?=
+ =?iso-2022-jp?B?RnUvbkNWWkRxQVBqVkkrZ0FNemt2ZUw5MC9DNGlvZ2o4bUtzai9UMkxO?=
+ =?iso-2022-jp?B?ME04YmpKOEhzakJpamwyVkZNdFBvSGxuVi80UWR0cld0WUJTTUEvT3Fx?=
+ =?iso-2022-jp?B?Q09VdUplalN6VEtqUWxWd3pmRnQ3dz09?=
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-ID: <80A5152386199044B2FE867603F339F9@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CAGyP=7dpTbbj39uO37YrNMg9h4Nzmkszc3MoZg9n8ALir_A52g@mail.gmail.com>
- <YEZcVKbPzfMVK2aK@zeniv-ca.linux.org.uk>
-In-Reply-To: <YEZcVKbPzfMVK2aK@zeniv-ca.linux.org.uk>
-From:   Palash Oswal <oswalpalash@gmail.com>
-Date:   Tue, 9 Mar 2021 11:29:14 +0530
-Message-ID: <CAGyP=7fHhyrTP-u0tqCy5ZHzZN0v_0dAoj6dCHnFuBbqtfnBmQ@mail.gmail.com>
-Subject: Re: kernel panic: Attempted to kill init!
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     akpm@linux-foundation.org, dave@stgolabs.net,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        peterz@infradead.org, rppt@linux.vnet.ibm.com, sds@tycho.nsa.gov,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e59a9632-0012-468a-5251-08d8e2c13ac0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Mar 2021 06:04:41.3933
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dez4vAA8alZzRAV4ruBA5KHvEngZXQYGrkuDwG8R7FnN7jE03NBZkGjNIsMgxwiF8QZYLbwQ6G20mgl4EewLNg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4970
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 10:50 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Tue, Mar 09, 2021 at 10:04:21AM +0800, Aili Yao wrote:
+> On Mon, 8 Mar 2021 14:55:04 -0800
+> "Luck, Tony" <tony.luck@intel.com> wrote:
+>=20
+> > There can be races when multiple CPUs consume poison from the same
+> > page. The first into memory_failure() atomically sets the HWPoison
+> > page flag and begins hunting for tasks that map this page. Eventually
+> > it invalidates those mappings and may send a SIGBUS to the affected
+> > tasks.
+> >=20
+> > But while all that work is going on, other CPUs see a "success"
+> > return code from memory_failure() and so they believe the error
+> > has been handled and continue executing.
+> >=20
+> > Fix by wrapping most of the internal parts of memory_failure() in
+> > a mutex.
+> >=20
+> > Signed-off-by: Tony Luck <tony.luck@intel.com>
+> > ---
+...
+>=20
+> If others are OK with this method, then I am OK too.
+> But I have two concerns, May you take into account:
+>=20
+> 1. The memory_failure with 0 return code for race condition, then the kil=
+l_me_maybe() goes into branch:
+> 	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
+> 	    !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
+> 		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
+> 		sync_core();
+> 		return;
+> 	}
+>=20
+> while we place set_mce_nospec() here is for a reason, please see commit f=
+d0e786d9d09024f67b.
+>=20
+> 2. When memory_failure return 0 and maybe return to user process, and it =
+may re-execute the instruction triggering previous fault, this behavior
+> assume an implicit dependence that the related pte has been correctly set=
+. or if not correctlily set, it will lead to infinite loop again.
 
-> I'd suggest to add printk(KERN_ERR "got to %d", __LINE__); in fs/fhandle.c at
->         beginning of do_handle_open()
->         right before each copy_from_user() in handle_to_path()
->         right before and right after the call of do_handle_to_path() (in the same)
-> and try your reproducers on the resulting kernel.
+These seem to be separate issues from memory_failure()'s concurrency issue,
+so I'm still expecting that your patch is to be merged. Maybe do you want
+to update it based on the discussion (if it's concluded)?
 
-While applying this diff and re-running the reproducer, I see the following:
-diff --git a/fs/fhandle.c b/fs/fhandle.c
-index 01263ffbc4c0..4e0b171ec9af 100644
---- a/fs/fhandle.c
-+++ b/fs/fhandle.c
-@@ -180,6 +180,7 @@ static int handle_to_path(int mountdirfd, struct
-file_handle __user *ufh,
-                retval = -EPERM;
-                goto out_err;
-        }
-+       printk(KERN_ERR "got to %d", __LINE__);
-        if (copy_from_user(&f_handle, ufh, sizeof(struct file_handle))) {
-                retval = -EFAULT;
-                goto out_err;
-@@ -197,14 +198,16 @@ static int handle_to_path(int mountdirfd, struct
-file_handle __user *ufh,
-        }
-        /* copy the full handle */
-        *handle = f_handle;
-+       printk(KERN_ERR "got to %d", __LINE__);
-        if (copy_from_user(&handle->f_handle,
-                           &ufh->f_handle,
-                           f_handle.handle_bytes)) {
-                retval = -EFAULT;
-                goto out_handle;
-        }
--
-+       printk(KERN_ERR "got to %d", __LINE__);
-        retval = do_handle_to_path(mountdirfd, handle, path);
-+       printk(KERN_ERR "got to %d", __LINE__);
-
- out_handle:
-        kfree(handle);
-@@ -215,6 +218,7 @@ static int handle_to_path(int mountdirfd, struct
-file_handle __user *ufh,
- static long do_handle_open(int mountdirfd, struct file_handle __user *ufh,
-                           int open_flag)
- {
-+       printk(KERN_ERR "got to %d", __LINE__);
-        long retval = 0;
-        struct path path;
-        struct file *file
-
-root@sandbox:~# ./repro
-[    8.325247] got to 221
-[    8.325270] got to 183
-[    8.326433] got to 201
-[    8.327620] got to 208
-[    8.328983] got to 210
-[    8.360955] Kernel panic - not syncing: Attempted to kill init!
-exitcode=0x0000000b
-[    8.362261] CPU: 0 PID: 1 Comm: systemd Not tainted 5.11.2+ #20
-[    8.363015] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.14.0-1 04/01/2014
-[    8.364044] Call Trace:
-[    8.364357]  dump_stack+0xb2/0xe4
-[    8.364782]  panic+0x196/0x502
-[    8.365171]  do_exit.cold+0x70/0x108
-[    8.365624]  do_group_exit+0x78/0x120
-[    8.366087]  get_signal+0x22e/0xd60
-[    8.366528]  arch_do_signal_or_restart+0xef/0x890
-[    8.367120]  exit_to_user_mode_prepare+0x102/0x190
-[    8.367724]  irqentry_exit_to_user_mode+0x9/0x20
-[    8.368303]  irqentry_exit+0x19/0x30
-[    8.368759]  exc_page_fault+0xc3/0x240
-[    8.369220]  ? asm_exc_page_fault+0x8/0x30
-[    8.369726]  asm_exc_page_fault+0x1e/0x30
-[    8.370217] RIP: 0033:0x7fa902b4cf10
-[    8.370661] Code: Unable to access opcode bytes at RIP 0x7fa902b4cee6.
-[    8.371444] RSP: 002b:00007ffc391b20b8 EFLAGS: 00010246
-[    8.372081] RAX: 0000000000000000 RBX: 0000559276a67f40 RCX: 00007fa902b7d2e3
-[    8.372935] RDX: 00007ffc391b2240 RSI: 00007ffc391b2370 RDI: 0000000000000007
-[    8.373860] RBP: 0000000000000007 R08: 0000000000000000 R09: 000000000000000b
-[    8.374714] R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffc399afaa0
-[    8.375568] R13: 0000000000000001 R14: ffffffffffffffff R15: 0000000000000002
-[    8.376574] Kernel Offset: disabled
-[    8.376992] ---[ end Kernel panic - not syncing: Attempted to kill
-init! exitcode=0x0000000b ]---
-
-When I add this change on top of the previous diff:
-@@ -263,6 +267,7 @@ SYSCALL_DEFINE3(open_by_handle_at, int, mountdirfd,
-                flags |= O_LARGEFILE;
-
-        ret = do_handle_open(mountdirfd, handle, flags);
-+       printk(KERN_ERR "got to %d", __LINE__);
-        return ret;
- }
-I observe the following result(notice the segfault in systemd):
-root@sandbox:~# ./repro
-[    9.457767] got to 221
-[    9.457791] got to 183
-[    9.459144] got to 201
-[    9.459471] got to 208
-[    9.459773] got to 210
-[    9.462602] got to 270
-[    9.488551] systemd[1]: segfault at 7ffe59fd7fb8 ip
-000055be8f20b466 sp 00007ffe59fd7fc0 error 6 in
-systemd[55be8f15f000+ed000]
-[    9.490723] Code: 00 00 00 00 41 57 41 56 41 55 41 54 55 53 89 fd
-48 81 ec 48 01 00 00 64 48 8b 04 25 28 00 00 00 48 89 84 24 38 01 00
-00 31 c0 <e8> f5 bf f7 ff 83 f8 01 0f 84 b7 00 00 00 48 8d 9c 240
-[    9.492637] Kernel panic - not syncing: Attempted to kill init!
-exitcode=0x0000000b
-[    9.493421] CPU: 0 PID: 1 Comm: systemd Not tainted 5.11.2+ #22
-[    9.494067] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.14.0-1 04/01/2014
-[    9.495082] Call Trace:
-[    9.495348]  dump_stack+0xb2/0xe4
-[    9.495709]  panic+0x196/0x502
-[    9.496041]  do_exit.cold+0x70/0x108
-[    9.496429]  do_group_exit+0x78/0x120
-[    9.496822]  get_signal+0x22e/0xd60
-[    9.497205]  arch_do_signal_or_restart+0xef/0x890
-[    9.497708]  exit_to_user_mode_prepare+0x102/0x190
-[    9.498217]  irqentry_exit_to_user_mode+0x9/0x20
-[    9.498713]  irqentry_exit+0x19/0x30
-[    9.499097]  exc_page_fault+0xc3/0x240
-[    9.499498]  ? asm_exc_page_fault+0x8/0x30
-[    9.499935]  asm_exc_page_fault+0x1e/0x30
-[    9.500364] RIP: 0033:0x55be8f20b466
-[    9.500748] Code: 00 00 00 00 41 57 41 56 41 55 41 54 55 53 89 fd
-48 81 ec 48 01 00 00 64 48 8b 04 25 28 00 00 00 48 89 84 24 38 01 00
-00 31 c0 <e8> f5 bf f7 ff 83 f8 01 0f 84 b7 00 00 00 48 8d 9c 240
-[    9.502787] RSP: 002b:00007ffe59fd7fc0 EFLAGS: 00010246
-[    9.503364] RAX: 0000000000000000 RBX: 000055be9029bf40 RCX: 00007f4aaec4a2e3
-[    9.504102] RDX: 00007ffe59fd8140 RSI: 00007ffe59fd8270 RDI: 0000000000000007
-[    9.504839] RBP: 0000000000000007 R08: 0000000000000000 R09: 000000000000000b
-[    9.505577] R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffe5a7d5fa0
-[    9.506315] R13: 0000000000000001 R14: ffffffffffffffff R15: 0000000000000002
-[    9.507126] Kernel Offset: disabled
-[    9.507534] ---[ end Kernel panic - not syncing: Attempted to kill
-init! exitcode=0x0000000b ]---
+Thanks,
+Naoya Horiguchi=
