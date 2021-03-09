@@ -2,169 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDD7332E2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D891A332E31
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhCISW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:22:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbhCISWv (ORCPT
+        id S230458AbhCISXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:23:30 -0500
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:46696 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230403AbhCISXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:22:51 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064A8C06174A;
-        Tue,  9 Mar 2021 10:22:50 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id x4so22005459lfu.7;
-        Tue, 09 Mar 2021 10:22:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nPcKXNtUEVOXwaBBJEtR6Bl/12Ymo4LlBYKDQmcyiIs=;
-        b=k4KMZ2viAP4DmQIxJDKBBn1WXTr02JDJzyuq7hUYNtUbK01fkDwM3qInYlRPiZfrWk
-         tR5LzER8rbt+kjaT2A192hn33oJJhSQIxZHul9RJ1egI9BXuc7vLcQEYcAKLIFDhtO0v
-         EbxHcPi7EH5SdlVto3wmuFIgjhUnGUIVU6ehZ3cAX3uq99IA4L1IUc9x89xD+ceN98gw
-         N2OtOOAferpXGw4DCSuOV5FsMH0r3dykkFStktVAdxeMtTyL2GdffjrGxom/AfK6hAf2
-         asVwSP7tTbUEby14RgSFs+ZrH3SVHBmIHK42fXTYYevaotnBRcnbqqYbC4xug2U3NT6i
-         v3qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nPcKXNtUEVOXwaBBJEtR6Bl/12Ymo4LlBYKDQmcyiIs=;
-        b=R+3Q4cCsI0iQQKCudYxfB2xTZ4sfYZBJqFEdbKZkkjvgZFeKVIXxGe4JPKgnw05jsD
-         AtBKMGHl7yHXqdduoSd1E7vLN9vp23riO8X1OLTv3X/JXCwtRoRR0JPX4KaQb4/D5Fxp
-         TpIYU373yUaQPlUCgSMFAJW3fWc2TS7S2L35dUH29oktWhZG9pPLkj1msq6aAyfXeK8/
-         bYlbjKlsQIzRMNU7Mkl4wNTccFBRb7dnnlf6zWwvdu5p+dpRmRQTE5QzmzTPAqhLECRc
-         2zWC2EESdbqHg9LzHMq2HQ7eJeqonMuTmXvZ3+B9IAVATrMa+dgm1ARSkqPc+wHNVssC
-         QlBw==
-X-Gm-Message-State: AOAM53223YmKp79f/YlT8eIHRrDwRWqbkiu0+B/gVIvyb0cqTGI93sbi
-        Lc+XXUoH5kX7XGJI3LFW00cRiCPN4bmhFw==
-X-Google-Smtp-Source: ABdhPJwWJf5k7Z6vwmOswpO5RhCPnxK/mGkhuY3focuVVIxpamv75nNJY1n/XMLism6s7eWUUWjD1g==
-X-Received: by 2002:a05:6512:3185:: with SMTP id i5mr17724391lfe.653.1615314168934;
-        Tue, 09 Mar 2021 10:22:48 -0800 (PST)
-Received: from [192.168.16.194] (h-4-68-234.A785.priv.bahnhof.se. [155.4.68.234])
-        by smtp.googlemail.com with ESMTPSA id a28sm2280191ljn.45.2021.03.09.10.22.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 10:22:48 -0800 (PST)
-Subject: Re: [RESEND v12] can: usb: etas_es58X: add support for ETAS ES58X CAN
- USB interfaces
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>
-References: <20210309120946.1640-1-mailhol.vincent@wanadoo.fr>
- <20210309120946.1640-2-mailhol.vincent@wanadoo.fr>
- <45c0b0cc-bfd6-5180-7ad9-51eebc9de3c9@gmail.com>
- <CAMZ6RqJ8j0yqw1Sa1dbLpakBSuKie5xpYMpg6oQFG_MuE3sWkw@mail.gmail.com>
- <CAMZ6Rq+xJv+NVHAUYjT+-MLeO+Owoo03T2hzaA9tOKLstxU0uA@mail.gmail.com>
-From:   Jimmy Assarsson <jimmyassarsson@gmail.com>
-Message-ID: <d5b7f0c5-68d4-364f-b2ff-6cd003c70cb4@gmail.com>
-Date:   Tue, 9 Mar 2021 19:22:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Tue, 9 Mar 2021 13:23:10 -0500
+Received: from iva8-d077482f1536.qloud-c.yandex.net (iva8-d077482f1536.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f26:0:640:d077:482f])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 7FB332E150B;
+        Tue,  9 Mar 2021 21:23:05 +0300 (MSK)
+Received: from iva4-f06c35e68a0a.qloud-c.yandex.net (iva4-f06c35e68a0a.qloud-c.yandex.net [2a02:6b8:c0c:152e:0:640:f06c:35e6])
+        by iva8-d077482f1536.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id wcnaa8RXHT-N5JiONba;
+        Tue, 09 Mar 2021 21:23:05 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
+        t=1615314185; bh=04qMOwDZliJ4nJyv6wec/a7UlSmhF51F/NyAZPQ4Q9w=;
+        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
+        b=y3dHOgf/5hmNhvNu/3cGc5E2ES5yO94+MLGeeSxzMHmf3AkeVwEpV7RSDc1d/jBJB
+         bpDqXXsW19wWkvUqO5c3BEw2tXmHnpkKjDLT0EcZ+hs9TZudU3nSCcRxVNcXwnyHm1
+         8JtkWgXIL6YFaF7CGq6yLvtueQ/NKSuaad+YAHQo=
+Authentication-Results: iva8-d077482f1536.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:203::1:15])
+        by iva4-f06c35e68a0a.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id T5bJwzP5HK-N4nWQO9P;
+        Tue, 09 Mar 2021 21:23:04 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Andrey Ryabinin <arbn@yandex-team.com>
+To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
+Cc:     jroedel@suse.de, will@kernel.org, linux-kernel@vger.kernel.org,
+        Andrey Ryabinin <arbn@yandex-team.com>
+Subject: [PATCH stable 4.14-4.19] iommu/amd: Fix sleeping in atomic in increase_address_space()
+Date:   Tue,  9 Mar 2021 21:24:27 +0300
+Message-Id: <20210309182430.18849-1-arbn@yandex-team.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <161512522533161@kroah.com>
+References: <161512522533161@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMZ6Rq+xJv+NVHAUYjT+-MLeO+Owoo03T2hzaA9tOKLstxU0uA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-09 19:18, Vincent MAILHOL wrote:
-> On Wed. 10 Mar 2021 at 03:11, Vincent MAILHOL
-> <mailhol.vincent@wanadoo.fr> wrote:
->>
->> On Wed. 10 Mar 2021 at 02:27, Jimmy Assarsson <jimmyassarsson@gmail.com> wrote:
->>>
->>> Hi Vincent,
->>>
->>> On 2021-03-09 13:09, Vincent Mailhol wrote:
->>>> This driver supports the ES581.4, ES582.1 and ES584.1 interfaces from
->>>> ETAS GmbH (https://www.etas.com/en/products/es58x.php).
->>> ...
->>>> diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
->>>> new file mode 100644
->>>> index 000000000000..31f907a7b75f
->>>> --- /dev/null
->>>> +++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
->>> ...
->>>> +/**
->>>> + * es58x_add_skb_idx() - Increment an index of the loopback FIFO.
->>>> + * @priv: ES58X private parameters related to the network device.
->>>> + * @idx: address of the index to be incremented.
->>>> + * @a: the increment. Must be positive and less or equal to
->>>> + *   @priv->can.echo_skb_max.
->>>> + *
->>>> + * Do a modulus addition: set *@idx to (*@idx + @a) %
->>>> + * @priv->can.echo_skb_max.
->>>> + *
->>>> + * Rationale: the modulus operator % takes a decent amount of CPU
->>>> + * cycles (c.f. other division functions such as
->>>> + * include/linux/math64.h:iter_div_u64_rem()).
->>>> + */
->>>> +static __always_inline void es58x_add_skb_idx(struct es58x_priv *priv,
->>>> +                                           u16 *idx, u16 a)
->>>
->>> Never used?
->>
->> Indeed, this is a leftover. Should have been removed in v11 when I
->> made the device FIFO size a power of two.
->> I was not warned by the compiler, probably because this is an inline function.
->>
->>> ...
->>>> +/**
->>>> + * es58x_get_product_info() - Get the product information and print them.
->>>> + * @es58x_dev: ES58X device.
->>>> + *
->>>> + * Do a synchronous call to get the product information.
->>>> + *
->>>> + * Return: zero on success, errno when any error occurs.
->>>> + */
->>>> +static int es58x_get_product_info(struct es58x_device *es58x_dev)
->>>> +{
->>>> +     struct usb_device *udev = es58x_dev->udev;
->>>> +     const int es58x_prod_info_idx = 6;
->>>> +     /* Empirical tests show a prod_info length of maximum 83,
->>>> +      * below should be more than enough.
->>>> +      */
->>>> +     const size_t prod_info_len = 127;
->>>> +     char *prod_info;
->>>> +     int ret;
->>>> +
->>>> +     prod_info = kmalloc(prod_info_len, GFP_KERNEL);
->>>> +     if (!prod_info)
->>>> +             return -ENOMEM;
->>>> +
->>>> +     ret = usb_string(udev, es58x_prod_info_idx, prod_info, prod_info_len);
->>>> +     if (ret < 0) {
->>>> +             dev_err(es58x_dev->dev,
->>>> +                     "%s: Could not read the product info: %pe\n",
->>>> +                     __func__, ERR_PTR(ret));
->>>
->>> Missing free
->>
->> Absolutely!
->>
->>>> +             return ret;
->>>> +     } else if (ret >= prod_info_len - 1) {
->>>> +             dev_warn(es58x_dev->dev,
->>>> +                      "%s: Buffer is too small, result might be truncated\n",
->>>> +                      __func__);
->>>> +     }
->>>> +     dev_info(es58x_dev->dev, "Product info: %s\n", prod_info);
->>>> +     kfree(prod_info);
->>>> +
->>>> +     return 0;
->>>> +}
->>
->> Thanks for the two findings, both will be fixed in v13.
-> 
-> Out of curiosity, did you find the two issues throughout a code
-> review or did you use any kind of static analysis tool?
+commit 140456f994195b568ecd7fc2287a34eadffef3ca upstream.
 
-Code review.
+increase_address_space() calls get_zeroed_page(gfp) under spin_lock with
+disabled interrupts. gfp flags passed to increase_address_space() may allow
+sleeping, so it comes to this:
+
+ BUG: sleeping function called from invalid context at mm/page_alloc.c:4342
+ in_atomic(): 1, irqs_disabled(): 1, pid: 21555, name: epdcbbf1qnhbsd8
+
+ Call Trace:
+  dump_stack+0x66/0x8b
+  ___might_sleep+0xec/0x110
+  __alloc_pages_nodemask+0x104/0x300
+  get_zeroed_page+0x15/0x40
+  iommu_map_page+0xdd/0x3e0
+  amd_iommu_map+0x50/0x70
+  iommu_map+0x106/0x220
+  vfio_iommu_type1_ioctl+0x76e/0x950 [vfio_iommu_type1]
+  do_vfs_ioctl+0xa3/0x6f0
+  ksys_ioctl+0x66/0x70
+  __x64_sys_ioctl+0x16/0x20
+  do_syscall_64+0x4e/0x100
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fix this by moving get_zeroed_page() out of spin_lock/unlock section.
+
+Fixes: 754265bcab ("iommu/amd: Fix race in increase_address_space()")
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210217143004.19165-1-arbn@yandex-team.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+---
+ drivers/iommu/amd_iommu.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
+index 494caaa265af0..8195ff219b48c 100644
+--- a/drivers/iommu/amd_iommu.c
++++ b/drivers/iommu/amd_iommu.c
+@@ -1347,24 +1347,26 @@ static void increase_address_space(struct protection_domain *domain,
+ 	unsigned long flags;
+ 	u64 *pte;
+ 
++	pte = (void *)get_zeroed_page(gfp);
++	if (!pte)
++		return;
++
+ 	spin_lock_irqsave(&domain->lock, flags);
+ 
+ 	if (WARN_ON_ONCE(domain->mode == PAGE_MODE_6_LEVEL))
+ 		/* address space already 64 bit large */
+ 		goto out;
+ 
+-	pte = (void *)get_zeroed_page(gfp);
+-	if (!pte)
+-		goto out;
+-
+ 	*pte             = PM_LEVEL_PDE(domain->mode,
+ 					iommu_virt_to_phys(domain->pt_root));
+ 	domain->pt_root  = pte;
+ 	domain->mode    += 1;
+ 	domain->updated  = true;
++	pte              = NULL;
+ 
+ out:
+ 	spin_unlock_irqrestore(&domain->lock, flags);
++	free_page((unsigned long)pte);
+ 
+ 	return;
+ }
+-- 
+2.26.2
+
