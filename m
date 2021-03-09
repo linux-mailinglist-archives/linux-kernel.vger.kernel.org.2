@@ -2,216 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC9D332DAF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C90B332DB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhCIR6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:58:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230504AbhCIR5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:57:52 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 109B76522E;
-        Tue,  9 Mar 2021 17:57:52 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lJgc9-000biu-V8; Tue, 09 Mar 2021 17:57:50 +0000
-Date:   Tue, 09 Mar 2021 17:57:49 +0000
-Message-ID: <87ft14xl9e.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        id S230504AbhCISAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:00:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhCIR77 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:59:59 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C31C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:59:59 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id j8so13725052otc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:59:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yDPCYluFrdjMuzSEcawbKVQhqqsYOAVXybwEkOdxycU=;
+        b=fQQzGb/jC1+8DjdcNxsptTS92WplKKRFklYa26EweJxZelK+27rO4Dk3Z+c0CcoG0i
+         ex6lvP02F6oP23QRdP1abDLhXK+leEIvngG7dxSPifhRUVltVm0o/jlN4lgIbZQMSGfC
+         +Q1rQe9M8OUTe+Jfi28FRJZ9Kro9wwNnlntZekOUY38dTsiRA1vPTiL5fXNkSVVyh8K+
+         t3IJjkXzGkhvzgm40JVKnCLUJezdQUyyK7kR2BsDjle84ERuGhTM1b5v7WGGrcWhVLsv
+         FJdeLG2DUkH9/8Iqp4xXALIgFo1/j5y+60UcIzb/pOS7MShzZtw17n3lj6Ue2wmRdsga
+         4Cbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yDPCYluFrdjMuzSEcawbKVQhqqsYOAVXybwEkOdxycU=;
+        b=lzdd52c4IEMtXjsfQtcHigEoT5eHtR4+n1PQbfigA5V58A/2I5qAAXsrQk1fJK4UDm
+         3pZXVlDIqAZ//KMYTN4HDvNN7rKUA7JferuEV5qwa5TuUUsiSiRd7t/0gwK8J3ZRpZzb
+         Yc7qPWyolJpDFtqUdmFx6IrV5JUCYos8lQfsdG0xyA6Ld5M/GNh/l9DjZA6YiQHVgRBI
+         bP0XBVk1qQVHgH6BA3WcqB3HodUkJFOOqPtw72oOGJJsypICpDPdz1Snq1a7/fouv69O
+         yhK8m4TyMEKI/k85F7iE08QbrjUt6pw7tn3hCShCN+b33VgA0yWr8nCqv1T61B9dwft2
+         SvbA==
+X-Gm-Message-State: AOAM530dw/FTRnxsRrqN2HQ7bI0pDFj8WojAaBCvE1N6XMC/W9Y3QMuW
+        R87lq/ac1fnZhdhDiM2KpkMA//sSpRc+/ympK8o=
+X-Google-Smtp-Source: ABdhPJwEwsQ2caBdS22GuC0IAzNDOpvTy7t2RPblLIObbiLdaz9uhek4Vj9BBKsWFEIVLdwuEa4xRZ7j1/P0+lG9We8=
+X-Received: by 2002:a9d:760a:: with SMTP id k10mr25146289otl.23.1615312798691;
+ Tue, 09 Mar 2021 09:59:58 -0800 (PST)
+MIME-Version: 1.0
+References: <4c692eff-9d57-278e-8da4-36bc2c293506@amd.com> <20210309032356.20800-1-Felix.Kuehling@amd.com>
+ <CAK8P3a1EeHimbufajcHzV+-bBarWtLHzzFSsa=qdUDsip=Wz_A@mail.gmail.com>
+ <8023bb6b-b6aa-230c-afa5-871ce32782c6@amd.com> <YEexf0/V/YF394bf@myrica>
+In-Reply-To: <YEexf0/V/YF394bf@myrica>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 9 Mar 2021 12:59:47 -0500
+Message-ID: <CADnq5_OTeK7-nN57+F+WE+Hdg86uiuTN8c_n0bmCtx40N_wraQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] drm/amdkfd: fix build error with AMD_IOMMU_V2=m
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Felix Kuehling <felix.kuehling@amd.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "Suthikulpanit, Suravee" <Suravee.Suthikulpanit@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v9 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
-In-Reply-To: <20210301142315.30920-6-steven.price@arm.com>
-References: <20210301142315.30920-1-steven.price@arm.com>
-        <20210301142315.30920-6-steven.price@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Mar 2021 14:23:14 +0000,
-Steven Price <steven.price@arm.com> wrote:
-> 
-> The VMM may not wish to have it's own mapping of guest memory mapped
-> with PROT_MTE because this causes problems if the VMM has tag checking
-> enabled (the guest controls the tags in physical RAM and it's unlikely
-> the tags are correct for the VMM).
-> 
-> Instead add a new ioctl which allows the VMM to easily read/write the
-> tags from guest memory, allowing the VMM's mapping to be non-PROT_MTE
-> while the VMM can still read/write the tags for the purpose of
-> migration.
-> 
-> Signed-off-by: Steven Price <steven.price@arm.com>
-> ---
->  arch/arm64/include/uapi/asm/kvm.h | 13 +++++++
->  arch/arm64/kvm/arm.c              | 57 +++++++++++++++++++++++++++++++
->  include/uapi/linux/kvm.h          |  1 +
->  3 files changed, 71 insertions(+)
-> 
-> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
-> index 24223adae150..5fc2534ac5df 100644
-> --- a/arch/arm64/include/uapi/asm/kvm.h
-> +++ b/arch/arm64/include/uapi/asm/kvm.h
-> @@ -184,6 +184,19 @@ struct kvm_vcpu_events {
->  	__u32 reserved[12];
->  };
->  
-> +struct kvm_arm_copy_mte_tags {
-> +	__u64 guest_ipa;
-> +	__u64 length;
-> +	union {
-> +		void __user *addr;
-> +		__u64 padding;
-> +	};
-> +	__u64 flags;
+On Tue, Mar 9, 2021 at 12:55 PM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+>
+> Hi Felix,
+>
+> On Tue, Mar 09, 2021 at 11:30:19AM -0500, Felix Kuehling wrote:
+> > > I think the proper fix would be to not rely on custom hooks into a particular
+> > > IOMMU driver, but to instead ensure that the amdgpu driver can do everything
+> > > it needs through the regular linux/iommu.h interfaces. I realize this
+> > > is more work,
+> > > but I wonder if you've tried that, and why it didn't work out.
+> >
+> > As far as I know this hasn't been tried. I see that intel-iommu has its
+> > own SVM thing, which seems to be similar to what our IOMMUv2 does. I
+> > guess we'd have to abstract that into a common API.
+>
+> The common API was added in 26b25a2b98e4 and implemented by the Intel
+> driver in 064a57d7ddfc. To support it an IOMMU driver implements new IOMMU
+> ops:
+>         .dev_has_feat()
+>         .dev_feat_enabled()
+>         .dev_enable_feat()
+>         .dev_disable_feat()
+>         .sva_bind()
+>         .sva_unbind()
+>         .sva_get_pasid()
+>
+> And a device driver calls iommu_dev_enable_feature(IOMMU_DEV_FEAT_SVA)
+> followed by iommu_sva_bind_device().
+>
+> If I remember correctly the biggest obstacle for KFD is the PASID
+> allocation, done by the GPU driver instead of the IOMMU driver, but there
+> may be others.
 
-I'd be keen on a couple of reserved __64s. Just in case...
+IIRC, we tried to make the original IOMMUv2 functionality generic but
+other vendors were not interested at the time, so it ended up being
+AMD specific and since nothing else was using the pasid allocations we
+put them in the GPU driver.  I guess if this is generic now, it could
+be moved to a common API and taken out of the driver.
 
-> +};
-> +
-> +#define KVM_ARM_TAGS_TO_GUEST		0
-> +#define KVM_ARM_TAGS_FROM_GUEST		1
-> +
->  /* If you need to interpret the index values, here is the key: */
->  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
->  #define KVM_REG_ARM_COPROC_SHIFT	16
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 46bf319f6cb7..01d404833e24 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -1297,6 +1297,53 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
->  	}
->  }
->  
-> +static int kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
-> +				      struct kvm_arm_copy_mte_tags *copy_tags)
-> +{
-> +	gpa_t guest_ipa = copy_tags->guest_ipa;
-> +	size_t length = copy_tags->length;
-> +	void __user *tags = copy_tags->addr;
-> +	gpa_t gfn;
-> +	bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
-> +
-> +	if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
-> +		return -EINVAL;
-> +
-> +	if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
-> +		return -EINVAL;
-
-It is a bit odd to require userspace to provide a page-aligned
-addr/size, as it now has to find out about the kernel's page
-size. MTE_GRANULE_SIZE-aligned values would make more sense. Is there
-an underlying reason for this?
-
-> +
-> +	gfn = gpa_to_gfn(guest_ipa);
-> +
-> +	while (length > 0) {
-> +		kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
-> +		void *maddr;
-> +		unsigned long num_tags = PAGE_SIZE / MTE_GRANULE_SIZE;
-> +
-> +		if (is_error_noslot_pfn(pfn))
-> +			return -ENOENT;
-> +
-> +		maddr = page_address(pfn_to_page(pfn));
-> +
-> +		if (!write) {
-> +			num_tags = mte_copy_tags_to_user(tags, maddr, num_tags);
-> +			kvm_release_pfn_clean(pfn);
-> +		} else {
-> +			num_tags = mte_copy_tags_from_user(maddr, tags,
-> +							   num_tags);
-> +			kvm_release_pfn_dirty(pfn);
-> +		}
-> +
-
-Is it actually safe to do this without holding any lock, without
-checking anything against the mmu_notifier_seq? What if the pages are
-being swapped out? Or the memslot removed from under your feet?
-
-It looks... dangerous. Do you even want to allow this while vcpus are
-actually running?
-
-> +		if (num_tags != PAGE_SIZE / MTE_GRANULE_SIZE)
-> +			return -EFAULT;
-> +
-> +		gfn++;
-> +		tags += num_tags;
-> +		length -= PAGE_SIZE;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  long kvm_arch_vm_ioctl(struct file *filp,
->  		       unsigned int ioctl, unsigned long arg)
->  {
-> @@ -1333,6 +1380,16 @@ long kvm_arch_vm_ioctl(struct file *filp,
->  
->  		return 0;
->  	}
-> +	case KVM_ARM_MTE_COPY_TAGS: {
-> +		struct kvm_arm_copy_mte_tags copy_tags;
-> +
-> +		if (!kvm_has_mte(kvm))
-> +			return -EINVAL;
-> +
-> +		if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
-> +			return -EFAULT;
-> +		return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
-> +	}
->  	default:
->  		return -EINVAL;
->  	}
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 05618a4abf7e..b75af0f9ba55 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1423,6 +1423,7 @@ struct kvm_s390_ucas_mapping {
->  /* Available with KVM_CAP_PMU_EVENT_FILTER */
->  #define KVM_SET_PMU_EVENT_FILTER  _IOW(KVMIO,  0xb2, struct kvm_pmu_event_filter)
->  #define KVM_PPC_SVM_OFF		  _IO(KVMIO,  0xb3)
-> +#define KVM_ARM_MTE_COPY_TAGS	  _IOR(KVMIO,  0xb4, struct kvm_arm_copy_mte_tags)
->  
->  /* ioctl for vm fd */
->  #define KVM_CREATE_DEVICE	  _IOWR(KVMIO,  0xe0, struct kvm_create_device)
-> -- 
-> 2.20.1
-> 
-> 
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Alex
