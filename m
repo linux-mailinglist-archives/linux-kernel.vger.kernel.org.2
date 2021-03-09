@@ -2,423 +2,556 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF5E331C65
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0AD331C63
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhCIBjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 20:39:48 -0500
-Received: from mga09.intel.com ([134.134.136.24]:4065 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230403AbhCIBjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 20:39:35 -0500
-IronPort-SDR: gTMOEaNrAVPwMygS5q9Jx/y1ZH+xsO9sJny9RfH5O8fdE2krJ0VK116PdintyvDhIGT0rvB7bD
- gdA4aR699/1Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188245419"
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="188245419"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 17:39:34 -0800
-IronPort-SDR: /+sD537bxPwLjWeOGxLFtY0mG3HEpR2bMnu9nDr03vFUdaUy6ZIj8D7CV9D8azGFMrytZuIkf+
- Cw3BDrzGULnQ==
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="447327214"
-Received: from kzliu-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.128.38])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 17:39:28 -0800
-From:   Kai Huang <kai.huang@intel.com>
-To:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        Kai Huang <kai.huang@intel.com>
-Subject: [PATCH v2 05/25] x86/sgx: Introduce virtual EPC for use by KVM guests
-Date:   Tue,  9 Mar 2021 14:39:03 +1300
-Message-Id: <4cad909bc908a9319634957f6c23c6a3f0beb37a.1615250634.git.kai.huang@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1615250634.git.kai.huang@intel.com>
-References: <cover.1615250634.git.kai.huang@intel.com>
+        id S231150AbhCIBjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 20:39:46 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:56550 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhCIBja (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 20:39:30 -0500
+Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7301D20B39C5;
+        Mon,  8 Mar 2021 17:39:29 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7301D20B39C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1615253969;
+        bh=KUGV6hydJiC2ecOYgOhUlT08L9k+FkrRtg+TJ0Z2Bf8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=QEHDmsudkxhyQvgK4w3DcqxUng8+bGPjMcbExn3gvKrY3aR8dbwKbZ+SVzfV3qHX/
+         AP7HtX4iB/5HwSsbk7GKTNLCJJ9SXJSdnLRPwR8bGSGjjaIqXpHBtA5EeR5kOe6XXG
+         xCDIaPHtO33ymKU021PZp2xqGyenlVUGqdSWMn5s=
+Subject: Re: [RFC PATCH 10/18] virt/mshv: get and set vcpu registers ioctls
+To:     Michael Kelley <mikelley@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Cc:     "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Lillian Grassin-Drake <Lillian.GrassinDrake@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>
+References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1605918637-12192-11-git-send-email-nunodasneves@linux.microsoft.com>
+ <MWHPR21MB1593DC9AAF0ABBD0DE2EBA30D78F9@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Message-ID: <c7972607-7d99-5dad-354d-6ca8e8be0d8a@linux.microsoft.com>
+Date:   Mon, 8 Mar 2021 17:39:28 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <MWHPR21MB1593DC9AAF0ABBD0DE2EBA30D78F9@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+On 2/8/2021 11:47 AM, Michael Kelley wrote:
+> From: Nuno Das Neves <nunodasneves@linux.microsoft.com> Sent: Friday, November 20, 2020 4:30 PM
+>>
+>> Add ioctls for getting and setting virtual processor registers.
+>>
+>> Co-developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+>> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+>> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+>> ---
+>>  Documentation/virt/mshv/api.rst         |  11 +
+>>  arch/x86/include/uapi/asm/hyperv-tlfs.h | 601 ++++++++++++++++++++++++
+>>  include/asm-generic/hyperv-tlfs.h       |  65 +--
+>>  include/linux/mshv.h                    |   1 +
+>>  include/uapi/linux/mshv.h               |  12 +
+>>  virt/mshv/mshv_main.c                   | 258 +++++++++-
+>>  6 files changed, 903 insertions(+), 45 deletions(-)
+>>
+[snip]
+>> +
+>> +union hv_register_value {
+>> +	struct hv_u128 reg128;
+>> +	__u64 reg64;
+>> +	__u32 reg32;
+>> +	__u16 reg16;
+>> +	__u8 reg8;
+>> +	union hv_x64_fp_register fp;
+>> +	union hv_x64_fp_control_status_register fp_control_status;
+>> +	union hv_x64_xmm_control_status_register xmm_control_status;
+>> +	struct hv_x64_segment_register segment;
+>> +	struct hv_x64_table_register table;
+>> +	union hv_explicit_suspend_register explicit_suspend;
+>> +	union hv_intercept_suspend_register intercept_suspend;
+>> +	union hv_dispatch_suspend_register dispatch_suspend;
+>> +	union hv_x64_interrupt_state_register interrupt_state;
+>> +	union hv_x64_pending_interruption_register pending_interruption;
+>> +	union hv_x64_msr_npiep_config_contents npiep_config;
+>> +	union hv_x64_pending_exception_event pending_exception_event;
+>> +	union hv_x64_pending_virtualization_fault_event
+>> +		pending_virtualization_fault_event;
+>> +};
+>> +
+>>  #endif
+>> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+>> index 6e5072e29897..b9295400c20b 100644
+>> --- a/include/asm-generic/hyperv-tlfs.h
+>> +++ b/include/asm-generic/hyperv-tlfs.h
+>> @@ -622,53 +622,30 @@ struct hv_retarget_device_interrupt {
+>>  } __packed __aligned(8);
+>>
+>>
+>> -/* HvGetVpRegisters hypercall input with variable size reg name list*/
+>> -struct hv_get_vp_registers_input {
+>> -	struct {
+>> -		u64 partitionid;
+>> -		u32 vpindex;
+>> -		u8  inputvtl;
+>> -		u8  padding[3];
+>> -	} header;
+>> -	struct input {
+>> -		u32 name0;
+>> -		u32 name1;
+>> -	} element[];
+>> -} __packed;
+>> -
+>> +/* HvGetVpRegisters hypercall with variable size reg name list*/
+>> +struct hv_get_vp_registers {
+>> +	u64 partition_id;
+>> +	u32 vp_index;
+>> +	u8  input_vtl;
+>> +	u8  rsvd_z8;
+>> +	u16 rsvd_z16;
+>> +	__aligned(8) enum hv_register_name names[];
+>> +} __aligned(8);
+>>
+>> -/* HvGetVpRegisters returns an array of these output elements */
+>> -struct hv_get_vp_registers_output {
+>> -	union {
+>> -		struct {
+>> -			u32 a;
+>> -			u32 b;
+>> -			u32 c;
+>> -			u32 d;
+>> -		} as32 __packed;
+>> -		struct {
+>> -			u64 low;
+>> -			u64 high;
+>> -		} as64 __packed;
+>> -	};
+>> +/* HvSetVpRegisters hypercall with variable size reg name/value list*/
+>> +struct hv_register_assoc {
+>> +	enum hv_register_name name;
+>> +	__aligned(16) union hv_register_value value;
+>>  };
+>>
+>> -/* HvSetVpRegisters hypercall with variable size reg name/value list*/
+>> -struct hv_set_vp_registers_input {
+>> -	struct {
+>> -		u64 partitionid;
+>> -		u32 vpindex;
+>> -		u8  inputvtl;
+>> -		u8  padding[3];
+>> -	} header;
+>> -	struct {
+>> -		u32 name;
+>> -		u32 padding1;
+>> -		u64 padding2;
+>> -		u64 valuelow;
+>> -		u64 valuehigh;
+>> -	} element[];
+>> -} __packed;
+>> +struct hv_set_vp_registers {
+>> +	u64 partition_id;
+>> +	u32 vp_index;
+>> +	u8  input_vtl;
+>> +	u8  rsvd_z8;
+>> +	u16 rsvd_z16;
+>> +	struct hv_register_assoc elements[];
+>> +} __aligned(16);
+> 
+> Throughout these structures, I think the approach needs to be more
+> explicit about the memory layout.  The current definitions assume that
+> the compiler is inserting padding in the expected places, and not in
+> any unexpected places.  My previous concerns about use of enum
+> also apply.
+> 
+> The code also removes some layouts that are used in the
+> not-yet-accepted patches for ARM64.   Let sync on how to get
+> those back in.
+> 
 
-Add a misc device /dev/sgx_vepc to allow userspace to allocate "raw" EPC
-without an associated enclave.  The intended and only known use case for
-raw EPC allocation is to expose EPC to a KVM guest, hence the 'vepc'
-moniker, virt.{c,h} files and X86_SGX_KVM Kconfig.
+I'll add __packed to all these structures.
+The hv_register_name enum can be replaced by #defines, and the type can be
+u32 or u64 (it only needs 32 bits).
 
-SGX driver uses misc device /dev/sgx_enclave to support userspace to
-create enclave.  Each file descriptor from opening /dev/sgx_enclave
-represents an enclave.  Unlike SGX driver, KVM doesn't control how guest
-uses EPC, therefore EPC allocated to KVM guest is not associated to an
-enclave, and /dev/sgx_enclave is not suitable for allocating EPC for KVM
-guest.
+I'll sync with you on the ARM64 structs.
 
-Having separate device nodes for SGX driver and KVM virtual EPC also
-allows separate permission control for running host SGX enclaves and
-KVM SGX guests.
+>>
+>>  enum hv_device_type {
+>>  	HV_DEVICE_TYPE_LOGICAL = 0,
+>> diff --git a/include/linux/mshv.h b/include/linux/mshv.h
+>> index 50521c5f7948..dfe469f573f9 100644
+>> --- a/include/linux/mshv.h
+>> +++ b/include/linux/mshv.h
+>> @@ -17,6 +17,7 @@
+>>  struct mshv_vp {
+>>  	u32 index;
+>>  	struct mshv_partition *partition;
+>> +	struct mutex mutex;
+>>  };
+>>
+>>  struct mshv_mem_region {
+>> diff --git a/include/uapi/linux/mshv.h b/include/uapi/linux/mshv.h
+>> index 1f053eae68a6..5d53ed655429 100644
+>> --- a/include/uapi/linux/mshv.h
+>> +++ b/include/uapi/linux/mshv.h
+>> @@ -33,6 +33,14 @@ struct mshv_create_vp {
+>>  	__u32 vp_index;
+>>  };
+>>
+>> +#define MSHV_VP_MAX_REGISTERS	128
+>> +
+>> +struct mshv_vp_registers {
+>> +	int count; /* at most MSHV_VP_MAX_REGISTERS */
+>> +	enum hv_register_name *names;
+>> +	union hv_register_value *values;
+>> +};
+> 
+> Having separate arrays for the names and values results in an extra
+> copy of the data down in the ioctl code.  Any reason the caller couldn't
+> supply the data as an array, where each entry is already a name/value
+> pair?
+> 
 
-To use /dev/sgx_vepc to allocate a virtual EPC instance with particular
-size, the userspace hypervisor opens /dev/sgx_vepc, and uses mmap()
-with the intended size to get an address range of virtual EPC.  Then
-it may use the address range to create one KVM memory slot as virtual
-EPC for guest.
+I initially thought it would not make a difference to the number of copies,
+but it turns out it does. I will change it to use hv_register_assoc everywhere.
 
-Implement the "raw" EPC allocation in the x86 core-SGX subsystem via
-/dev/sgx_vepc rather than in KVM. Doing so has two major advantages:
+>> +
+>>  #define MSHV_IOCTL 0xB8
+>>
+>>  /* mshv device */
+>> @@ -44,4 +52,8 @@ struct mshv_create_vp {
+>>  #define MSHV_UNMAP_GUEST_MEMORY	_IOW(MSHV_IOCTL, 0x03, struct
+>> mshv_user_mem_region)
+>>  #define MSHV_CREATE_VP		_IOW(MSHV_IOCTL, 0x04, struct mshv_create_vp)
+>>
+>> +/* vp device */
+>> +#define MSHV_GET_VP_REGISTERS   _IOWR(MSHV_IOCTL, 0x05, struct
+>> mshv_vp_registers)
+>> +#define MSHV_SET_VP_REGISTERS   _IOW(MSHV_IOCTL, 0x06, struct mshv_vp_registers)
+>> +
+>>  #endif
+>> diff --git a/virt/mshv/mshv_main.c b/virt/mshv/mshv_main.c
+>> index 3be9d9a468c1..2a10137a1e84 100644
+>> --- a/virt/mshv/mshv_main.c
+>> +++ b/virt/mshv/mshv_main.c
+>> @@ -74,6 +74,12 @@ static struct miscdevice mshv_dev = {
+>>  #define HV_MAP_GPA_BATCH_SIZE	\
+>>  		(PAGE_SIZE / sizeof(struct hv_map_gpa_pages) / sizeof(u64))
+>>  #define PIN_PAGES_BATCH_SIZE	(0x10000000 / PAGE_SIZE)
+>> +#define HV_GET_REGISTER_BATCH_SIZE	\
+>> +	(PAGE_SIZE / \
+>> +	 sizeof(struct hv_get_vp_registers) / sizeof(enum hv_register_name))
+>> +#define HV_SET_REGISTER_BATCH_SIZE	\
+>> +	(PAGE_SIZE / \
+>> +	 sizeof(struct hv_set_vp_registers) / sizeof(struct hv_register_assoc))
+> 
+> These new size calculations have the same bug as HV_MAP_GPA_BATCH_SIZE.
+> The first divide operations should be subtraction.
+> 
 
-  - Does not require changes to KVM's uAPI, e.g. EPC gets handled as
-    just another memory backend for guests.
+Yep, I'll fix it.
 
-  - EPC management is wholly contained in the SGX subsystem, e.g. SGX
-    does not have to export any symbols, changes to reclaim flows don't
-    need to be routed through KVM, SGX's dirty laundry doesn't have to
-    get aired out for the world to see, and so on and so forth.
+> With the correct calculation, HV_GET_REGISTER_BATCH_SIZE  will be
+> too large.  The input page will accommodate more 32 bit register names
+> than the output page will accommodate 128 bit register values.  The limit
+> should be based on the latter, not the former.  Or calculate both the
+> input and output limit and use the minimum.
+> 
 
-The virtual EPC pages allocated to guests are currently not reclaimable.
-Reclaiming EPC page used by enclave requires a special reclaim mechanism
-separate from normal page reclaim, and that mechanism is not supported
-for virutal EPC pages.  Due to the complications of handling reclaim
-conflicts between guest and host, reclaiming virtual EPC pages is
-significantly more complex than basic support for SGX virtualization.
+I didn't think about this previously! Will fix.
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Co-developed-by: Kai Huang <kai.huang@intel.com>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
----
-v1->v2:
+>>
+>>  static int
+>>  hv_call_withdraw_memory(u64 count, int node, u64 partition_id)
+>> @@ -380,10 +386,258 @@ hv_call_unmap_gpa_pages(u64 partition_id,
+>>  	return ret;
+>>  }
+>>
+>> +static int
+>> +hv_call_get_vp_registers(u32 vp_index,
+>> +			 u64 partition_id,
+>> +			 u16 count,
+>> +			 const enum hv_register_name *names,
+>> +			 union hv_register_value *values)
+>> +{
+>> +	struct hv_get_vp_registers *input_page;
+>> +	union hv_register_value *output_page;
+>> +	u16 completed = 0;
+>> +	u64 hypercall_status;
+>> +	unsigned long remaining = count;
+>> +	int rep_count;
+>> +	int status;
+>> +	unsigned long flags;
+>> +
+>> +	local_irq_save(flags);
+>> +
+>> +	input_page = (struct hv_get_vp_registers *)(*this_cpu_ptr(
+>> +		hyperv_pcpu_input_arg));
+>> +	output_page = (union hv_register_value *)(*this_cpu_ptr(
+>> +		hyperv_pcpu_output_arg));
+>> +
+>> +	input_page->partition_id = partition_id;
+>> +	input_page->vp_index = vp_index;
+>> +	input_page->input_vtl = 0;
+>> +	input_page->rsvd_z8 = 0;
+>> +	input_page->rsvd_z16 = 0;
+>> +
+>> +	while (remaining) {
+>> +		rep_count = min(remaining, HV_GET_REGISTER_BATCH_SIZE);
+>> +		memcpy(input_page->names, names,
+>> +			sizeof(enum hv_register_name) * rep_count);
+>> +
+>> +		hypercall_status =
+>> +			hv_do_rep_hypercall(HVCALL_GET_VP_REGISTERS, rep_count,
+>> +					    0, input_page, output_page);
+>> +		status = hypercall_status & HV_HYPERCALL_RESULT_MASK;
+>> +		if (status != HV_STATUS_SUCCESS) {
+>> +			pr_err("%s: completed %li out of %u, %s\n",
+>> +			       __func__,
+>> +			       count - remaining, count,
+>> +			       hv_status_to_string(status));
+>> +			break;
+>> +		}
+>> +		completed = (hypercall_status & HV_HYPERCALL_REP_COMP_MASK) >>
+>> +			    HV_HYPERCALL_REP_COMP_OFFSET;
+>> +		memcpy(values, output_page,
+>> +			sizeof(union hv_register_value) * completed);
+>> +
+>> +		names += completed;
+>> +		values += completed;
+>> +		remaining -= completed;
+>> +	}
+>> +	local_irq_restore(flags);
+>> +
+>> +	return -hv_status_to_errno(status);
+>> +}
+>> +
+>> +static int
+>> +hv_call_set_vp_registers(u32 vp_index,
+>> +			 u64 partition_id,
+>> +			 u16 count,
+>> +			 struct hv_register_assoc *registers)
+>> +{
+>> +	struct hv_set_vp_registers *input_page;
+>> +	u16 completed = 0;
+>> +	u64 hypercall_status;
+>> +	unsigned long remaining = count;
+>> +	int rep_count;
+>> +	int status;
+>> +	unsigned long flags;
+>> +
+>> +	local_irq_save(flags);
+>> +	input_page = (struct hv_set_vp_registers *)(*this_cpu_ptr(
+>> +		hyperv_pcpu_input_arg));
+>> +
+>> +	input_page->partition_id = partition_id;
+>> +	input_page->vp_index = vp_index;
+>> +	input_page->input_vtl = 0;
+>> +	input_page->rsvd_z8 = 0;
+>> +	input_page->rsvd_z16 = 0;
+>> +
+>> +	while (remaining) {
+>> +		rep_count = min(remaining, HV_SET_REGISTER_BATCH_SIZE);
+>> +		memcpy(input_page->elements, registers,
+>> +			sizeof(struct hv_register_assoc) * rep_count);
+>> +
+>> +		hypercall_status =
+>> +			hv_do_rep_hypercall(HVCALL_SET_VP_REGISTERS, rep_count,
+>> +					    0, input_page, NULL);
+>> +		status = hypercall_status & HV_HYPERCALL_RESULT_MASK;
+>> +		if (status != HV_STATUS_SUCCESS) {
+>> +			pr_err("%s: completed %li out of %u, %s\n",
+>> +			       __func__,
+>> +			       count - remaining, count,
+>> +			       hv_status_to_string(status));
+>> +			break;
+>> +		}
+>> +		completed = (hypercall_status & HV_HYPERCALL_REP_COMP_MASK) >>
+>> +			    HV_HYPERCALL_REP_COMP_OFFSET;
+>> +		registers += completed;
+>> +		remaining -= completed;
+>> +	}
+>> +
+>> +	local_irq_restore(flags);
+>> +
+>> +	return -hv_status_to_errno(status);
+>> +}
+>> +
+>> +static long
+>> +mshv_vp_ioctl_get_regs(struct mshv_vp *vp, void __user *user_args)
+>> +{
+>> +	struct mshv_vp_registers args;
+>> +	enum hv_register_name *names;
+>> +	union hv_register_value *values;
+>> +	long ret;
+>> +
+>> +	if (copy_from_user(&args, user_args, sizeof(args)))
+>> +		return -EFAULT;
+>> +
+>> +	if (args.count > MSHV_VP_MAX_REGISTERS)
+>> +		return -EINVAL;
+>> +
+>> +	names = kmalloc_array(args.count,
+>> +			      sizeof(enum hv_register_name),
+>> +			      GFP_KERNEL);
+>> +	if (!names)
+>> +		return -ENOMEM;
+>> +
+>> +	values = kmalloc_array(args.count,
+>> +			       sizeof(union hv_register_value),
+>> +			       GFP_KERNEL);
+>> +	if (!values) {
+>> +		kfree(names);
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	if (copy_from_user(names, args.names,
+>> +			   sizeof(enum hv_register_name) * args.count)) {
+>> +		ret = -EFAULT;
+>> +		goto free_return;
+>> +	}
+>> +
+>> +	ret = hv_call_get_vp_registers(vp->index, vp->partition->id,
+>> +				       args.count, names, values);
+>> +	if (ret)
+>> +		goto free_return;
+>> +
+>> +	if (copy_to_user(args.values, values,
+>> +			 sizeof(union hv_register_value) * args.count)) {
+>> +		ret = -EFAULT;
+>> +	}
+>> +
+>> +free_return:
+>> +	kfree(names);
+>> +	kfree(values);
+>> +	return ret;
+>> +}
+>> +
+>> +static long
+>> +mshv_vp_ioctl_set_regs(struct mshv_vp *vp, void __user *user_args)
+>> +{
+>> +	int i;
+>> +	struct mshv_vp_registers args;
+>> +	struct hv_register_assoc *registers;
+>> +	enum hv_register_name *names;
+>> +	union hv_register_value *values;
+>> +	long ret;
+>> +
+>> +	if (copy_from_user(&args, user_args, sizeof(args)))
+>> +		return -EFAULT;
+>> +
+>> +	if (args.count > MSHV_VP_MAX_REGISTERS)
+>> +		return -EINVAL;
+>> +
+>> +	names = kmalloc_array(args.count,
+>> +			      sizeof(enum hv_register_name),
+>> +			      GFP_KERNEL);
+>> +	if (!names)
+>> +		return -ENOMEM;
+>> +
+>> +	values = kmalloc_array(args.count,
+>> +			       sizeof(union hv_register_value),
+>> +			       GFP_KERNEL);
+>> +	if (!values) {
+>> +		kfree(names);
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	registers = kmalloc_array(args.count,
+>> +				  sizeof(struct hv_register_assoc),
+>> +				  GFP_KERNEL);
+>> +	if (!registers) {
+>> +		kfree(values);
+>> +		kfree(names);
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	if (copy_from_user(names, args.names,
+>> +			   sizeof(enum hv_register_name) * args.count)) {
+>> +		ret = -EFAULT;
+>> +		goto free_return;
+>> +	}
+>> +
+>> +	if (copy_from_user(values, args.values,
+>> +			   sizeof(union hv_register_value) * args.count)) {
+>> +		ret = -EFAULT;
+>> +		goto free_return;
+>> +	}
+>> +
+>> +	for (i = 0; i < args.count; i++) {
+>> +		memcpy(&registers[i].name, &names[i],
+>> +		       sizeof(enum hv_register_name));
+>> +		memcpy(&registers[i].value, &values[i],
+>> +		       sizeof(union hv_register_value));
+>> +	}
+> 
+> The above will result in uninitialized memory being sent to
+> Hyper-V, since there is implicit padding associated with the
+> 32 bit name field.
+> 
 
- - Addressed one typo in comments for last round of zapping zombie_secs_pages,
-   pointed out by Sean.
+This shouldn't be an issue after I change this to use hv_register_assoc,
+instead of separate names and values buffers.
 
----
- arch/x86/Kconfig                 |  12 ++
- arch/x86/kernel/cpu/sgx/Makefile |   1 +
- arch/x86/kernel/cpu/sgx/sgx.h    |   9 ++
- arch/x86/kernel/cpu/sgx/virt.c   | 260 +++++++++++++++++++++++++++++++
- 4 files changed, 282 insertions(+)
- create mode 100644 arch/x86/kernel/cpu/sgx/virt.c
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2792879d398e..0ea36eedadf0 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1941,6 +1941,18 @@ config X86_SGX
- 
- 	  If unsure, say N.
- 
-+config X86_SGX_KVM
-+	bool "Software Guard eXtensions (SGX) Virtualization"
-+	depends on X86_SGX && KVM_INTEL
-+	help
-+
-+	  Enables KVM guests to create SGX enclaves.
-+
-+	  This includes support to expose "raw" unreclaimable enclave memory to
-+	  guests via a device node, e.g. /dev/sgx_vepc.
-+
-+	  If unsure, say N.
-+
- config EFI
- 	bool "EFI runtime service support"
- 	depends on ACPI
-diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
-index 91d3dc784a29..9c1656779b2a 100644
---- a/arch/x86/kernel/cpu/sgx/Makefile
-+++ b/arch/x86/kernel/cpu/sgx/Makefile
-@@ -3,3 +3,4 @@ obj-y += \
- 	encl.o \
- 	ioctl.o \
- 	main.o
-+obj-$(CONFIG_X86_SGX_KVM)	+= virt.o
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 5fa42d143feb..1bff93be7bf4 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -83,4 +83,13 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
- int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
- struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
- 
-+#ifdef CONFIG_X86_SGX_KVM
-+int __init sgx_vepc_init(void);
-+#else
-+static inline int __init sgx_vepc_init(void)
-+{
-+	return -ENODEV;
-+}
-+#endif
-+
- #endif /* _X86_SGX_H */
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-new file mode 100644
-index 000000000000..29d8d28b4695
---- /dev/null
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -0,0 +1,260 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device driver to expose SGX enclave memory to KVM guests.
-+ *
-+ * Copyright(c) 2021 Intel Corporation.
-+ */
-+
-+#include <linux/miscdevice.h>
-+#include <linux/mm.h>
-+#include <linux/mman.h>
-+#include <linux/sched/mm.h>
-+#include <linux/sched/signal.h>
-+#include <linux/slab.h>
-+#include <linux/xarray.h>
-+#include <asm/sgx.h>
-+#include <uapi/asm/sgx.h>
-+
-+#include "encls.h"
-+#include "sgx.h"
-+
-+struct sgx_vepc {
-+	struct xarray page_array;
-+	struct mutex lock;
-+};
-+
-+/*
-+ * Temporary SECS pages that cannot be EREMOVE'd due to having child in other
-+ * virtual EPC instances, and the lock to protect it.
-+ */
-+static struct mutex zombie_secs_pages_lock;
-+static struct list_head zombie_secs_pages;
-+
-+static int __sgx_vepc_fault(struct sgx_vepc *vepc,
-+			    struct vm_area_struct *vma, unsigned long addr)
-+{
-+	struct sgx_epc_page *epc_page;
-+	unsigned long index, pfn;
-+	int ret;
-+
-+	WARN_ON(!mutex_is_locked(&vepc->lock));
-+
-+	/* Calculate index of EPC page in virtual EPC's page_array */
-+	index = vma->vm_pgoff + PFN_DOWN(addr - vma->vm_start);
-+
-+	epc_page = xa_load(&vepc->page_array, index);
-+	if (epc_page)
-+		return 0;
-+
-+	epc_page = sgx_alloc_epc_page(vepc, false);
-+	if (IS_ERR(epc_page))
-+		return PTR_ERR(epc_page);
-+
-+	ret = xa_err(xa_store(&vepc->page_array, index, epc_page, GFP_KERNEL));
-+	if (ret)
-+		goto err_free;
-+
-+	pfn = PFN_DOWN(sgx_get_epc_phys_addr(epc_page));
-+
-+	ret = vmf_insert_pfn(vma, addr, pfn);
-+	if (ret != VM_FAULT_NOPAGE) {
-+		ret = -EFAULT;
-+		goto err_delete;
-+	}
-+
-+	return 0;
-+
-+err_delete:
-+	xa_erase(&vepc->page_array, index);
-+err_free:
-+	sgx_free_epc_page(epc_page);
-+	return ret;
-+}
-+
-+static vm_fault_t sgx_vepc_fault(struct vm_fault *vmf)
-+{
-+	struct vm_area_struct *vma = vmf->vma;
-+	struct sgx_vepc *vepc = vma->vm_private_data;
-+	int ret;
-+
-+	mutex_lock(&vepc->lock);
-+	ret = __sgx_vepc_fault(vepc, vma, vmf->address);
-+	mutex_unlock(&vepc->lock);
-+
-+	if (!ret)
-+		return VM_FAULT_NOPAGE;
-+
-+	if (ret == -EBUSY && (vmf->flags & FAULT_FLAG_ALLOW_RETRY)) {
-+		mmap_read_unlock(vma->vm_mm);
-+		return VM_FAULT_RETRY;
-+	}
-+
-+	return VM_FAULT_SIGBUS;
-+}
-+
-+const struct vm_operations_struct sgx_vepc_vm_ops = {
-+	.fault = sgx_vepc_fault,
-+};
-+
-+static int sgx_vepc_mmap(struct file *file, struct vm_area_struct *vma)
-+{
-+	struct sgx_vepc *vepc = file->private_data;
-+
-+	if (!(vma->vm_flags & VM_SHARED))
-+		return -EINVAL;
-+
-+	vma->vm_ops = &sgx_vepc_vm_ops;
-+	/* Don't copy VMA in fork() */
-+	vma->vm_flags |= VM_PFNMAP | VM_IO | VM_DONTDUMP | VM_DONTCOPY;
-+	vma->vm_private_data = vepc;
-+
-+	return 0;
-+}
-+
-+static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
-+{
-+	int ret;
-+
-+	/*
-+	 * Take a previously guest-owned EPC page and return it to the
-+	 * general EPC page pool.
-+	 *
-+	 * Guests can not be trusted to have left this page in a good
-+	 * state, so run EREMOVE on the page unconditionally.  In the
-+	 * case that a guest properly EREMOVE'd this page, a superfluous
-+	 * EREMOVE is harmless.
-+	 */
-+	ret = __eremove(sgx_get_epc_virt_addr(epc_page));
-+	if (ret) {
-+		/*
-+		 * Only SGX_CHILD_PRESENT is expected, which is because of
-+		 * EREMOVE'ing an SECS still with child, in which case it can
-+		 * be handled by EREMOVE'ing the SECS again after all pages in
-+		 * virtual EPC have been EREMOVE'd. See comments in below in
-+		 * sgx_vepc_release().
-+		 *
-+		 * The user of virtual EPC (KVM) needs to guarantee there's no
-+		 * logical processor is still running in the enclave in guest,
-+		 * otherwise EREMOVE will get SGX_ENCLAVE_ACT which cannot be
-+		 * handled here.
-+		 */
-+		WARN_ONCE(ret != SGX_CHILD_PRESENT,
-+			  "EREMOVE (EPC page 0x%lx): unexpected error: %d\n",
-+			  sgx_get_epc_phys_addr(epc_page), ret);
-+		return ret;
-+	}
-+
-+	sgx_free_epc_page(epc_page);
-+
-+	return 0;
-+}
-+
-+static int sgx_vepc_release(struct inode *inode, struct file *file)
-+{
-+	struct sgx_vepc *vepc = file->private_data;
-+	struct sgx_epc_page *epc_page, *tmp, *entry;
-+	unsigned long index;
-+
-+	LIST_HEAD(secs_pages);
-+
-+	xa_for_each(&vepc->page_array, index, entry) {
-+		/*
-+		 * Remove all normal, child pages.  sgx_vepc_free_page()
-+		 * will fail if EREMOVE fails, but this is OK and expected on
-+		 * SECS pages.  Those can only be EREMOVE'd *after* all their
-+		 * child pages. Retries below will clean them up.
-+		 */
-+		if (sgx_vepc_free_page(entry))
-+			continue;
-+
-+		xa_erase(&vepc->page_array, index);
-+	}
-+
-+	/*
-+	 * Retry EREMOVE'ing pages.  This will clean up any SECS pages that
-+	 * only had children in this 'epc' area.
-+	 */
-+	xa_for_each(&vepc->page_array, index, entry) {
-+		epc_page = entry;
-+		/*
-+		 * An EREMOVE failure here means that the SECS page still
-+		 * has children.  But, since all children in this 'sgx_vepc'
-+		 * have been removed, the SECS page must have a child on
-+		 * another instance.
-+		 */
-+		if (sgx_vepc_free_page(epc_page))
-+			list_add_tail(&epc_page->list, &secs_pages);
-+
-+		xa_erase(&vepc->page_array, index);
-+	}
-+
-+	/*
-+	 * SECS pages are "pinned" by child pages, and unpinned once all
-+	 * children have been EREMOVE'd.  A child page in this instance
-+	 * may have pinned an SECS page encountered in an earlier release(),
-+	 * creating a zombie.  Since some children were EREMOVE'd above,
-+	 * try to EREMOVE all zombies in the hopes that one was unpinned.
-+	 */
-+	mutex_lock(&zombie_secs_pages_lock);
-+	list_for_each_entry_safe(epc_page, tmp, &zombie_secs_pages, list) {
-+		/*
-+		 * Speculatively remove the page from the list of zombies,
-+		 * if the page is successfully EREMOVE it will be added to
-+		 * the list of free pages.  If EREMOVE fails, throw the page
-+		 * on the local list, which will be spliced on at the end.
-+		 */
-+		list_del(&epc_page->list);
-+
-+		if (sgx_vepc_free_page(epc_page))
-+			list_add_tail(&epc_page->list, &secs_pages);
-+	}
-+
-+	if (!list_empty(&secs_pages))
-+		list_splice_tail(&secs_pages, &zombie_secs_pages);
-+	mutex_unlock(&zombie_secs_pages_lock);
-+
-+	kfree(vepc);
-+
-+	return 0;
-+}
-+
-+static int sgx_vepc_open(struct inode *inode, struct file *file)
-+{
-+	struct sgx_vepc *vepc;
-+
-+	vepc = kzalloc(sizeof(struct sgx_vepc), GFP_KERNEL);
-+	if (!vepc)
-+		return -ENOMEM;
-+	mutex_init(&vepc->lock);
-+	xa_init(&vepc->page_array);
-+
-+	file->private_data = vepc;
-+
-+	return 0;
-+}
-+
-+static const struct file_operations sgx_vepc_fops = {
-+	.owner		= THIS_MODULE,
-+	.open		= sgx_vepc_open,
-+	.release	= sgx_vepc_release,
-+	.mmap		= sgx_vepc_mmap,
-+};
-+
-+static struct miscdevice sgx_vepc_dev = {
-+	.minor = MISC_DYNAMIC_MINOR,
-+	.name = "sgx_vepc",
-+	.nodename = "sgx_vepc",
-+	.fops = &sgx_vepc_fops,
-+};
-+
-+int __init sgx_vepc_init(void)
-+{
-+	/* SGX virtualization requires KVM to work */
-+	if (!boot_cpu_has(X86_FEATURE_VMX))
-+		return -ENODEV;
-+
-+	INIT_LIST_HEAD(&zombie_secs_pages);
-+	mutex_init(&zombie_secs_pages_lock);
-+
-+	return misc_register(&sgx_vepc_dev);
-+}
--- 
-2.29.2
-
+>> +
+>> +	ret = hv_call_set_vp_registers(vp->index, vp->partition->id,
+>> +				       args.count, registers);
+>> +
+>> +free_return:
+>> +	kfree(names);
+>> +	kfree(values);
+>> +	kfree(registers);
+>> +	return ret;
+>> +}
+>> +
+>> +
+>>  static long
+>>  mshv_vp_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+>>  {
+>> -	return -ENOTTY;
+>> +	struct mshv_vp *vp = filp->private_data;
+>> +	long r = 0;
+>> +
+>> +	if (mutex_lock_killable(&vp->mutex))
+>> +		return -EINTR;
+>> +
+>> +	switch (ioctl) {
+>> +	case MSHV_GET_VP_REGISTERS:
+>> +		r = mshv_vp_ioctl_get_regs(vp, (void __user *)arg);
+>> +		break;
+>> +	case MSHV_SET_VP_REGISTERS:
+>> +		r = mshv_vp_ioctl_set_regs(vp, (void __user *)arg);
+>> +		break;
+>> +	default:
+>> +		r = -ENOTTY;
+>> +		break;
+>> +	}
+>> +	mutex_unlock(&vp->mutex);
+>> +
+>> +	return r;
+>>  }
+>>
+>>  static int
+>> @@ -420,6 +674,8 @@ mshv_partition_ioctl_create_vp(struct mshv_partition *partition,
+>>  	if (!vp)
+>>  		return -ENOMEM;
+>>
+>> +	mutex_init(&vp->mutex);
+>> +
+>>  	vp->index = args.vp_index;
+>>  	vp->partition = mshv_partition_get(partition);
+>>  	if (!vp->partition) {
+>> --
+>> 2.25.1
