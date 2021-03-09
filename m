@@ -2,98 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE51332BEF
+	by mail.lfdr.de (Postfix) with ESMTP id E6CDA332BF0
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhCIQ0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:26:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhCIQ0U (ORCPT
+        id S231226AbhCIQ0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:26:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56498 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230422AbhCIQ0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:26:20 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18004C06174A;
-        Tue,  9 Mar 2021 08:26:20 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id f12so16835608wrx.8;
-        Tue, 09 Mar 2021 08:26:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TdtX2sAcluZunzjO1B5Jwegzd5Uwhijb5PNqHMJaTlc=;
-        b=R8paXwW3L03tr5Z6f2dHW6O0d6W6tOShYK0YfHl3dJElK3BOPPkDh3Us+dPlTAe+l6
-         DuuWgPKpmOMu6ntzXoXsl2yi5XRxdQsLXGtYHRNYDL9oMpNhTargOULruDdQpjMZ/oG8
-         3i+J0Xxp63x/xV1+32cKJNmfF9+/KkXM28N6bKCSeLNHBu8+R2VZzustlNQ7tbYhp6qW
-         c6UmsrsQYXJ77AzdKAR3vXg4UZgJ1oGhg2HgnODyfZHWi8M1Md9PXhgwjZ4rHSOrit0s
-         7LzyozSRCt+kVh8CWY3+w1wOEv+rvlUqtEebUCYamUR8FitSvRb62t93wVbUYAbbmy2k
-         gBqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TdtX2sAcluZunzjO1B5Jwegzd5Uwhijb5PNqHMJaTlc=;
-        b=O1/JIr9kdUft9JTFsImgE03eWBHmrrxK+N+urTvMsfHOjZ8lB6FdRJWwj0if3GlA/+
-         NKzD3dkViL6J9UJ6XfKIKn/+3st1KOdcQumgvfeZS4KKY1rV+rgEbaFJOAgqSIFRqHGQ
-         0rr2xbPWx2TvWxj1Ve9gslmzm2GBiOaVtgbOAekLm1SwN9mbbdcgsyCiexWfCyjwXNWz
-         asdN1ITTS8WgQoMzAY7WwdRG5dZQjcdolcWXJtA/5PaV2279CKcldnsRH+dRXB3i6Yxy
-         U8bWQsOBxMFyQPs/cyV8TYKhCwV/HwwlDZ2OuZuETirhw8tidwLmZ9kdLA8VjLpE1mca
-         iqJQ==
-X-Gm-Message-State: AOAM532xA+JPCHsYICde6GMiywyiQumO9EVFhHLoGLKi4Jj7HE/OdvQc
-        Wn6eFL3ctDjIpqKD1+pLpnw=
-X-Google-Smtp-Source: ABdhPJwudyf+BLWnjfIraLg3ACXU3j00XkabOU3nP4//lR0XCD8y6ttlEv5GiwtvPxsNIywxP6gglg==
-X-Received: by 2002:adf:cd8c:: with SMTP id q12mr28653584wrj.185.1615307178744;
-        Tue, 09 Mar 2021 08:26:18 -0800 (PST)
-Received: from xws.localdomain (p5487b975.dip0.t-ipconnect.de. [84.135.185.117])
-        by smtp.gmail.com with ESMTPSA id a17sm5343792wmj.9.2021.03.09.08.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 08:26:18 -0800 (PST)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/surface: aggregator_registry: Add support for Surface Pro 7+
-Date:   Tue,  9 Mar 2021 17:25:50 +0100
-Message-Id: <20210309162550.302161-1-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        Tue, 9 Mar 2021 11:26:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615307191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QDc/X1+87E7IT2HUEvNRCZ2BjXCFrZE0D42derxTKz0=;
+        b=Rj7megbT3ZnaJVu6v6GHR7ErBpdzGK9gcEME3OT9GH38vrvkdTj/gik6bGImow//XcHgXx
+        mz/avtYQXbVNNdI841QJp/AJtSVBL4Jfw8s4xNEAPAPPA5Mn2sAWkl/OM1Da2zRrs3ScHE
+        sTAgY19wj3yWf6WTGLTbOAr2tMEmuTY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-Q3Hdf_Q4ODeKumoAfx1BcQ-1; Tue, 09 Mar 2021 11:26:24 -0500
+X-MC-Unique: Q3Hdf_Q4ODeKumoAfx1BcQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 374F7108BD08;
+        Tue,  9 Mar 2021 16:26:22 +0000 (UTC)
+Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1707A19C59;
+        Tue,  9 Mar 2021 16:26:18 +0000 (UTC)
+Subject: Re: [PATCH 3/9] powerpc/pseries: remove the ppc-cmm file system
+To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Nadav Amit <namit@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+References: <20210309155348.974875-1-hch@lst.de>
+ <20210309155348.974875-4-hch@lst.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <001be2e1-995c-d5d9-734f-06f75c702b42@redhat.com>
+Date:   Tue, 9 Mar 2021 17:26:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210309155348.974875-4-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Surface Pro 7+ is essentially a refresh of the Surface Pro 7 with
-updated hardware and a new WSID identifier.
+On 09.03.21 16:53, Christoph Hellwig wrote:
+> Just use the generic anon_inode file system.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   arch/powerpc/platforms/pseries/cmm.c | 27 ++-------------------------
+>   1 file changed, 2 insertions(+), 25 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/pseries/cmm.c b/arch/powerpc/platforms/pseries/cmm.c
+> index 6d36b858b14df1..9d07e6bea7126c 100644
+> --- a/arch/powerpc/platforms/pseries/cmm.c
+> +++ b/arch/powerpc/platforms/pseries/cmm.c
+> @@ -6,6 +6,7 @@
+>    * Author(s): Brian King (brking@linux.vnet.ibm.com),
+>    */
+>   
+> +#include <linux/anon_inodes.h>
+>   #include <linux/ctype.h>
+>   #include <linux/delay.h>
+>   #include <linux/errno.h>
+> @@ -502,19 +503,6 @@ static struct notifier_block cmm_mem_nb = {
+>   };
+>   
+>   #ifdef CONFIG_BALLOON_COMPACTION
+> -static struct vfsmount *balloon_mnt;
+> -
+> -static int cmm_init_fs_context(struct fs_context *fc)
+> -{
+> -	return init_pseudo(fc, PPC_CMM_MAGIC) ? 0 : -ENOMEM;
+> -}
+> -
+> -static struct file_system_type balloon_fs = {
+> -	.name = "ppc-cmm",
+> -	.init_fs_context = cmm_init_fs_context,
+> -	.kill_sb = kill_anon_super,
+> -};
+> -
+>   static int cmm_migratepage(struct balloon_dev_info *b_dev_info,
+>   			   struct page *newpage, struct page *page,
+>   			   enum migrate_mode mode)
+> @@ -573,19 +561,10 @@ static int cmm_balloon_compaction_init(void)
+>   	balloon_devinfo_init(&b_dev_info);
+>   	b_dev_info.migratepage = cmm_migratepage;
+>   
+> -	balloon_mnt = kern_mount(&balloon_fs);
+> -	if (IS_ERR(balloon_mnt)) {
+> -		rc = PTR_ERR(balloon_mnt);
+> -		balloon_mnt = NULL;
+> -		return rc;
+> -	}
+> -
+> -	b_dev_info.inode = alloc_anon_inode_sb(balloon_mnt->mnt_sb);
+> +	b_dev_info.inode = alloc_anon_inode();
+>   	if (IS_ERR(b_dev_info.inode)) {
+>   		rc = PTR_ERR(b_dev_info.inode);
+>   		b_dev_info.inode = NULL;
+> -		kern_unmount(balloon_mnt);
+> -		balloon_mnt = NULL;
+>   		return rc;
+>   	}
+>   
+> @@ -597,8 +576,6 @@ static void cmm_balloon_compaction_deinit(void)
+>   	if (b_dev_info.inode)
+>   		iput(b_dev_info.inode);
+>   	b_dev_info.inode = NULL;
+> -	kern_unmount(balloon_mnt);
+> -	balloon_mnt = NULL;
+>   }
+>   #else /* CONFIG_BALLOON_COMPACTION */
+>   static int cmm_balloon_compaction_init(void)
+> 
 
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
----
- drivers/platform/surface/surface_aggregator_registry.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I always wondered why that was necessary after all (with my limited fs 
+knowledge :) ).
 
-diff --git a/drivers/platform/surface/surface_aggregator_registry.c b/drivers/platform/surface/surface_aggregator_registry.c
-index cdb4a95af3e8..c42b97f61a57 100644
---- a/drivers/platform/surface/surface_aggregator_registry.c
-+++ b/drivers/platform/surface/surface_aggregator_registry.c
-@@ -191,7 +191,7 @@ static const struct software_node *ssam_node_group_sp6[] = {
- 	NULL,
- };
- 
--/* Devices for Surface Pro 7. */
-+/* Devices for Surface Pro 7 and Surface Pro 7+. */
- static const struct software_node *ssam_node_group_sp7[] = {
- 	&ssam_node_root,
- 	&ssam_node_bat_ac,
-@@ -521,6 +521,9 @@ static const struct acpi_device_id ssam_platform_hub_match[] = {
- 	/* Surface Pro 7 */
- 	{ "MSHW0116", (unsigned long)ssam_node_group_sp7 },
- 
-+	/* Surface Pro 7+ */
-+	{ "MSHW0119", (unsigned long)ssam_node_group_sp7 },
-+
- 	/* Surface Book 2 */
- 	{ "MSHW0107", (unsigned long)ssam_node_group_sb2 },
- 
+a) I assume you want to remove PPC_CMM_MAGIC from 
+include/uapi/linux/magic.h as well?
+
+b) Do we still need #include <linux/magic.h>, #include <linux/mount.h> 
+and #include <linux/pseudo_fs.h>?
+
+Apart from that looks much cleaner.
+
 -- 
-2.30.1
+Thanks,
+
+David / dhildenb
 
