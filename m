@@ -2,126 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2F6332D8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B7A332D91
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhCIRt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:49:28 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2673 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbhCIRtU (ORCPT
+        id S231324AbhCIRue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:50:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54573 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231245AbhCIRua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:49:20 -0500
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dw2fH35Pdz67x39;
-        Wed, 10 Mar 2021 01:44:55 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 18:49:18 +0100
-Received: from [10.210.172.22] (10.210.172.22) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 17:49:16 +0000
-Subject: Re: [RFC PATCH v3 3/3] blk-mq: Lockout tagset iterator when exiting
- elevator
-To:     Bart Van Assche <bvanassche@acm.org>, <hare@suse.de>,
-        <ming.lei@redhat.com>, <axboe@kernel.dk>, <hch@lst.de>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <pragalla@codeaurora.org>, <kashyap.desai@broadcom.com>,
-        <yuyufen@huawei.com>
-References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
- <1614957294-188540-4-git-send-email-john.garry@huawei.com>
- <48a3cf78-3f6d-c13c-bca2-1f8277817b45@acm.org>
- <9c9360bf-7ca9-5c8f-c61d-441044f9c78f@huawei.com>
- <784a3686-cb54-561d-740c-30e0b3f46df8@acm.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <f60dc68f-9206-2bfb-950e-cb312f1c4c8b@huawei.com>
-Date:   Tue, 9 Mar 2021 17:47:15 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 9 Mar 2021 12:50:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615312230;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wB5JlP23hp5tAup4AoVFCokVu35qaVntvZJ1seqr1d4=;
+        b=fGLRW+t/WI1D0JIjwOuNknXVKEZ/nMLjFwOCLavZ+HnrPDRLPJbj6NZ9q3L2sdOl5WCo06
+        FPW9e4/ie5B4fQRHnukGmhGMYm57+1zaWFopQz+B1lwXikoJbV6DL3k5MGqpbDE98zYZTF
+        vNwvAqeMMXo8jlnr+4OYOW3FSsDL6ZY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-VwQ_SSYQNLW_VT530u0oqg-1; Tue, 09 Mar 2021 12:50:28 -0500
+X-MC-Unique: VwQ_SSYQNLW_VT530u0oqg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76D091842149;
+        Tue,  9 Mar 2021 17:50:26 +0000 (UTC)
+Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9560819C59;
+        Tue,  9 Mar 2021 17:50:24 +0000 (UTC)
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
+        Zi Yan <ziy@nvidia.com>, David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210309001855.142453-1-mike.kravetz@oracle.com>
+ <29cb78c5-4fca-0f0a-c603-0c75f9f50d05@redhat.com>
+ <ebb19eb5-ae9e-22f1-4e19-e5fce32c695c@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [RFC PATCH 0/3] hugetlb: add demote/split page functionality
+Message-ID: <6c66c265-c9b9-ffe9-f860-f96f3485477e@redhat.com>
+Date:   Tue, 9 Mar 2021 18:50:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <784a3686-cb54-561d-740c-30e0b3f46df8@acm.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <ebb19eb5-ae9e-22f1-4e19-e5fce32c695c@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.172.22]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/03/2021 19:59, Bart Van Assche wrote:
->>> This changes the behavior of blk_mq_tagset_busy_iter(). What will e.g.
->>> happen if the mtip driver calls blk_mq_tagset_busy_iter(&dd->tags,
->>> mtip_abort_cmd, dd) concurrently with another blk_mq_tagset_busy_iter()
->>> call and if that causes all mtip_abort_cmd() calls to be skipped?
+On 09.03.21 18:11, Mike Kravetz wrote:
+> On 3/9/21 1:01 AM, David Hildenbrand wrote:
+>> On 09.03.21 01:18, Mike Kravetz wrote:
+>>> To address these issues, introduce the concept of hugetlb page demotion.
+>>> Demotion provides a means of 'in place' splitting a hugetlb page to
+>>> pages of a smaller size.  For example, on x86 one 1G page can be
+>>> demoted to 512 2M pages.  Page demotion is controlled via sysfs files.
+>>> - demote_size    Read only target page size for demotion
+>>> - demote    Writable number of hugetlb pages to be demoted
+>>>
+>>> Only hugetlb pages which are free at the time of the request can be demoted.
+>>> Demotion does not add to the complexity surplus pages.  Demotion also honors
+>>> reserved huge pages.  Therefore, when a value is written to the sysfs demote
+>>> file that value is only the maximum number of pages which will be demoted.
+>>> It is possible fewer will actually be demoted.
+>>>
+>>> If demote_size is PAGESIZE, demote will simply free pages to the buddy
+>>> allocator.
 >>
->> I'm not sure that I understand this problem you describe. So if 
->> blk_mq_tagset_busy_iter(&dd->tags, mtip_abort_cmd, dd) is called, 
->> either can happen:
->> a. normal operation, iter_usage_counter initially holds >= 1, and then 
->> iter_usage_counter is incremented in blk_mq_tagset_busy_iter() and we 
->> iter the busy tags. Any parallel call to blk_mq_tagset_busy_iter() 
->> will also increase iter_usage_counter.
->> b. we're switching IO scheduler. In this scenario, first we quiesce 
->> all queues. After that, there should be no active requests. At that 
->> point, we ensure any calls to blk_mq_tagset_busy_iter() are finished 
->> and block (or discard may be a better term) any more calls. Blocking 
->> any more calls should be safe as there are no requests to iter. 
->> atomic_cmpxchg() is used to set iter_usage_counter to 0, blocking any 
->> more calls.
+>> With the vmemmap optimizations you will have to rework the vmemmap layout. How is that handled? Couldn't it happen that you are half-way through splitting a PUD into PMDs when you realize that you cannot allocate vmemmap pages for properly handling the remaining PMDs? What would happen then?
+>>
+>> Or are you planning on making both features mutually exclusive?
+>>
+>> Of course, one approach would be first completely restoring the vmemmap for the whole PUD (allocating more pages than necessary in the end) and then freeing individual pages again when optimizing the layout per PMD.
+>>
+> 
+> You are right about the need to address this issue.  Patch 3 has the
+> comment:
+> 
+> +	/*
+> +	 * Note for future:
+> +	 * When support for reducing vmemmap of huge pages is added, we
+> +	 * will need to allocate vmemmap pages here and could fail.
+> +	 */
 > 
 
+I only skimmed over the cover letter so far. :)
 
-Hi Bart,
-
-> My concern is about the insertion of the early return statement in 
-> blk_mq_tagset_busy_iter(). 
-
-So I take this approach as I don't see any way to use a mutual exclusion 
-waiting mechanism to block calls to blk_mq_tagset_busy_iter() while the 
-IO scheduler is being switched.
-
-The reason is that blk_mq_tagset_busy_iter() can be called from any 
-context, including hardirq.
-
-> Although most blk_mq_tagset_busy_iter() 
-> callers can handle skipping certain blk_mq_tagset_busy_iter() calls 
-> (e.g. when gathering statistics), I'm not sure this is safe for all 
-> blk_mq_tagset_busy_iter() callers. The example I cited is an example of 
-> a blk_mq_tagset_busy_iter() call with side effects.
-
-I don't like to think that we're skipping it, which may imply that there 
-are some active requests to iter and we're just ignoring them.
-
-It's more like: we know that there are no requests active, so don't 
-bother trying to iterate.
-
+> The simplest approach would be to restore the entire vmemmmap for the
+> larger page and then delete for smaller pages after the split.  We could
+> hook into the existing vmemmmap reduction code with just a few calls.
+> This would fail to demote/split, if the allocation fails.  However, this
+> is not optimal.
 > 
-> The mtip driver allocates one tag set per request queue so quiescing 
-> queues should be sufficient to address my concern for the mtip driver.
+> Ideally, the code would compute how many pages for vmemmmap are needed
+> after the split, allocate those and then construct vmmemmap
+> appropriately when creating the smaller pages.
 > 
-> The NVMe core and SCSI core however share a single tag set across 
-> multiple namespaces / LUNs. In the error path of nvme_rdma_setup_ctrl()
-> I found a call to nvme_cancel_tagset(). nvme_cancel_tagset() calls 
-> blk_mq_tagset_busy_iter(ctrl->tagset, nvme_cancel_request, ctrl). I'm 
-> not sure it is safe to skip the nvme_cancel_request() calls if the I/O 
-> scheduler for another NVMe namespace is being modified.
+> I think we would want to always do the allocation of vmmemmap pages up
+> front and not even start the split process if the allocation fails.  No
+> sense starting something we may not be able to finish.
+> 
 
-Again, I would be relying on all request_queues associated with that 
-tagset to be queisced when switching IO scheduler at the point 
-blk_mq_tagset_busy_iter() is called and returns early.
+Makes sense.
 
-Now if there were active requests, I am relying on the request queue 
-quiescing to flush them. So blk_mq_tagset_busy_iter() could be called 
-during that quiescing period, and would continue to iter the requests.
+Another case might also be interesting: Assume you allocated a gigantic 
+page via CMA and denoted it to huge pages. Theoretically (after Oscar's 
+series!), we could come back later and re-allocate a gigantic page via 
+CMA, migrating all now-hugepages out of the CMA region. Would require 
+telling CMA that that area is effectively no longer allocated via CMA 
+(adjusting accounting, bitmaps, etc).
 
-This does fall over if some tags are allocated without associated 
-request queue, which I do not know exists.
+That would actually be a neat use case to form new gigantic pages later 
+on when necessary :)
 
+But I assume your primary use case is denoting gigantic pages allocated 
+during boot, not via CMA.
+
+Maybe you addresses that already as well :)
+
+> I purposely did not address that here as first I wanted to get feedback
+> on the usefulness demote functionality.
+> 
+
+Makes sense. I think there could be some value in having this 
+functionality. Gigantic pages are rare and we might want to keep them as 
+long as possible (and as long as we have sufficient free memory). But 
+once we need huge pages (e.g., smaller VMs, different granularity 
+requiremets), we could denote.
+
+If we ever have pre-zeroing of huge/gigantic pages, your approach could 
+also avoid having to zero huge pages again when the gigantic page was 
+already zeroed.
+
+-- 
 Thanks,
-John
+
+David / dhildenb
 
