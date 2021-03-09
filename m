@@ -2,111 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BED533306F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8653333088
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbhCIU7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
+        id S231964AbhCIVAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 16:00:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbhCIU7S (ORCPT
+        with ESMTP id S231847AbhCIU7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:59:18 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A67C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:59:18 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id g9so13469766ilc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:59:18 -0800 (PST)
+        Tue, 9 Mar 2021 15:59:39 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AF3C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:59:39 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id y124-20020a1c32820000b029010c93864955so8124983wmy.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:59:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hIzrQXT4h4W7AAe4jB29ri4tAfpUHw+wk/thHCyaZW8=;
-        b=0PynGrDnEoidiWaGP32JQlA4a5VjaKkR4KQKhqeG77Fqs8yD8G7u99UoKt8GalCtyr
-         TqL7WMhubuDC6guqo+zx+QQiRXrUy3UoQoZq6GnxoFv+CzUb3C7wCX8sySwmDY9bEn0I
-         TL7sY5nhJo6IbgDzvcPo3qHI/ZxMgful41e/1caGki+V6vmEJuVIrxDV7wu5ZzAnAFU6
-         j3xDxnAVozU8PD/meTNgkQQFmLFT7NkjPD/++eCvA08Wb0YlR080pVb466SYQTCXDEIY
-         YP/1wX9/CVb3+DFxWBIOy6jI2gWuB7zfUr+as+/UcomSiYO/KQFqN3c0LR6uB4u/0x+H
-         WBWw==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=z5Cepyi5kn4wd4FWddheSiToZBY6ONr0o29KGf5Ep/4=;
+        b=FXoeK8pn7/bXwIkDmDTwdjVh7uXQLo/AGBs/r8JIhOCGq0Ytp4GqAEu/Siww4WuqD4
+         ajA/2B7afZT5v/SQG01tiGUiwgKGV5AyLhDQZmVKxWIGqGjpg/6jcPGuWxIRH9jHDZ6I
+         rhJn4GmbbWKBpqu91tB7B61FIeaROPWMPRQCMmMFMFHuNqYYfFmXEAdGSmQFETQByBIY
+         FUaES4hpJkpy1y0UhgNaTmccj4yfHJ7bHzjh7zRSH/ebV/OGIi1ZWswzDlbAlAgb36fU
+         f9zTvmHCNqxxtM+2nXW4UJEk/MwSNUpmPxq497HvCdavd8cOODvfbgPqlfJ4zQFZgdyD
+         8S0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hIzrQXT4h4W7AAe4jB29ri4tAfpUHw+wk/thHCyaZW8=;
-        b=CbPjywVDe3NLnTBlTDTNQ4rucWaE3PEqUQXOOSJsOqTPtRJi+Z/5hqh4Z55UO9xT0j
-         O3Zy+VkHOHcXTGUYO3daMkUv+gZgeVLSJaz2Kcf7uuDPDwaWbsuzFFrryBsgqNxoPmCN
-         njRdkNtgW8YRwPeG/DIh0XCWWzJ0+Ynif9MjS8Fnd/P2XrcTsYvGmsBzUWx0+o9YVmyr
-         G9rPBRhKKvWiiJQuNra3FqhCK6YJIOlvxZElbzhLBCBmRePg7bWOHG/t8uyb/cDisPez
-         T9k4Lixq6Ry3jRkHpZcIscd+TKwgrzjFgVwX09B0s/Tf44nA/tdtSHBYWGSJIZz44BGZ
-         +zFQ==
-X-Gm-Message-State: AOAM5317JDp3Vas8xqBpCilLZAreUGMiTYnFpVFu3CoEjarIan0e32Ur
-        Si5vM4Ju6HHo0liWtcOVdy1pME7ZCy1cFQ==
-X-Google-Smtp-Source: ABdhPJx6YWGVJo0YZArjr64qms/FJr2bXrrXCNjG3kmjLDReMWKK0JV3kBMtCHPy/70KnggJjKw+AA==
-X-Received: by 2002:a92:b003:: with SMTP id x3mr43220ilh.15.1615323557300;
-        Tue, 09 Mar 2021 12:59:17 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id i8sm7865845ilv.57.2021.03.09.12.59.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 12:59:16 -0800 (PST)
-Subject: Re: [PATCH] block: rsxx: fix error return code of rsxx_pci_probe()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>, josh.h.morris@us.ibm.com,
-        pjk1939@linux.ibm.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210308100554.10375-1-baijiaju1990@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cf2dd66c-0e1e-944e-f4c5-542095f6c9d7@kernel.dk>
-Date:   Tue, 9 Mar 2021 13:59:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=z5Cepyi5kn4wd4FWddheSiToZBY6ONr0o29KGf5Ep/4=;
+        b=jxmZaeSzJsQJj2V7dSfX1e5K7ibWiF1mdMTgGu+ghuQrxFTLfULTYcE3OPuoGdk6BB
+         YwAeyDrbN0OJePOJLEnQ9Ze6VZ6ix1SMGMWp9ro110+xvZOVGSnlUhtIx7ojpi8Ifjdf
+         nIKtrCUb9PTZQrJXI41IqVAjUFMlILH7bieV7OGsZ+HwQU7BdJwGz+ZVj4TF3lVPRqXS
+         PjSH3pYV3QGOXMLjyJfUUbswOeqzM0jPZHRESpCmAgN6GfnJwb/QpOxeCNLB1p9botWo
+         EhnZqKH7/T3qS7AlIYH3daBBEa+qvNw8LgA7bYNkowTrUpDuG7d54k8d1NgcqdHfMVfQ
+         CKnQ==
+X-Gm-Message-State: AOAM530tkDfha7cyliC3VGd2JsNgwtLGX/pDbnZKn7me6VgOZIWMZTL2
+        QR8ac0+cHQLG+KPJ9b67Q1Wq0g==
+X-Google-Smtp-Source: ABdhPJyImU/76uTvFHR22HNq1CjEupG6hD+pTOB9kEZ0oUpMwPkyYvd9LBO/0LbdX2Ynalo7Ab6YLw==
+X-Received: by 2002:a1c:7fd8:: with SMTP id a207mr5943463wmd.40.1615323578115;
+        Tue, 09 Mar 2021 12:59:38 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id j6sm5501305wmq.16.2021.03.09.12.59.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 12:59:37 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v3 06/11] lib: bitmap: order includes alphabetically
+Date:   Tue,  9 Mar 2021 21:59:16 +0100
+Message-Id: <20210309205921.15992-7-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210309205921.15992-1-brgl@bgdev.pl>
+References: <20210309205921.15992-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-In-Reply-To: <20210308100554.10375-1-baijiaju1990@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 3:05 AM, Jia-Ju Bai wrote:
-> Some error handling segments of rsxx_pci_probe() do not return error code, 
-> so add error code for these segments.
-> 
-> Fixes: 8722ff8cdbfa ("block: IBM RamSan 70/80 device driver")
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  drivers/block/rsxx/core.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-> index 63f549889f87..6b3b9b31a3e8 100644
-> --- a/drivers/block/rsxx/core.c
-> +++ b/drivers/block/rsxx/core.c
-> @@ -760,13 +760,17 @@ static int rsxx_pci_probe(struct pci_dev *dev,
->  	pci_set_drvdata(dev, card);
->  
->  	st = ida_alloc(&rsxx_disk_ida, GFP_KERNEL);
-> -	if (st < 0)
-> +	if (st < 0) {
-> +		st = -ENOMEM;
->  		goto failed_ida_get;
-> +	}
->  	card->disk_id = st;
->  
->  	st = pci_enable_device(dev);
-> -	if (st)
-> +	if (st) {
-> +		st = -EIO;
->  		goto failed_enable;
-> +	}
->  
->  	pci_set_master(dev);
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Maybe there are some valid parts to the patch, but the two above at
-least make no sense - we're returning the error here as passed from
-ida_alloc or pci_enable_device, why are you overriding them?
+For better readability and maintenance: order the includes in bitmap
+source files alphabetically.
 
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/bitmap.h | 4 ++--
+ lib/bitmap.c           | 9 +++++----
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 6939a8983026..3282db97e06c 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -4,10 +4,10 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
+-#include <linux/types.h>
+ #include <linux/bitops.h>
+-#include <linux/string.h>
+ #include <linux/kernel.h>
++#include <linux/string.h>
++#include <linux/types.h>
+ 
+ /*
+  * bitmaps provide bit arrays that consume one or more unsigned
+diff --git a/lib/bitmap.c b/lib/bitmap.c
+index 75006c4036e9..78f70d9007ad 100644
+--- a/lib/bitmap.c
++++ b/lib/bitmap.c
+@@ -3,17 +3,18 @@
+  * lib/bitmap.c
+  * Helper functions for bitmap.h.
+  */
+-#include <linux/export.h>
+-#include <linux/thread_info.h>
+-#include <linux/ctype.h>
+-#include <linux/errno.h>
++
+ #include <linux/bitmap.h>
+ #include <linux/bitops.h>
+ #include <linux/bug.h>
++#include <linux/ctype.h>
++#include <linux/errno.h>
++#include <linux/export.h>
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
++#include <linux/thread_info.h>
+ #include <linux/uaccess.h>
+ 
+ #include <asm/page.h>
 -- 
-Jens Axboe
+2.30.1
 
