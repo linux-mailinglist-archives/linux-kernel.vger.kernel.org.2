@@ -2,129 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD09333013
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E46333016
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbhCIUjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:39:44 -0500
-Received: from mx1.riseup.net ([198.252.153.129]:42002 "EHLO mx1.riseup.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231808AbhCIUjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:39:40 -0500
-Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4Dw6Ws4dPBzDsZK;
-        Tue,  9 Mar 2021 12:39:37 -0800 (PST)
-X-Riseup-User-ID: AE255FD18F480507363915D2831290FBD05F26D3B88E602C6B93B21A0BF6B213
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews1.riseup.net (Postfix) with ESMTPSA id 4Dw6Wr570mz5vNG;
-        Tue,  9 Mar 2021 12:39:36 -0800 (PST)
-From:   Jim Newsome <jnewsome@torproject.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org, Jim Newsome <jnewsome@torproject.org>
-Subject: [PATCH v3] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
-Date:   Tue,  9 Mar 2021 14:39:19 -0600
-Message-Id: <20210309203919.15920-1-jnewsome@torproject.org>
+        id S231834AbhCIUkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:40:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231790AbhCIUjz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:39:55 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEB7C06174A;
+        Tue,  9 Mar 2021 12:39:54 -0800 (PST)
+Date:   Tue, 9 Mar 2021 21:39:50 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615322392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=OKNd7/rxYhsQelqiJwdxJxn//ZZydN8JASiDCTZZB7g=;
+        b=Jnp3fZr6v+apcHPh8jxqPomCAnAFzcx78KT2LQ4ZRCwQnceg4aaRBwLfRNsdmf3jH6kJN0
+        G3p7dYSooSoxOoFnhQmbXNaLzK/DGuGJoFnXCOFCb8Z1dz7bJKCb6L8NSnl/WQDX7WnkZo
+        0PjR8Lids7pbcG74xe0y0mYBgQ3gzFyIN1ankq3LCxas9GoEuz/s78AlHX0iSq/nwbR2KH
+        6yPMnMolfKyCf2SA/Rx5ns0wQuzbz2iNmAq211e3eYU267O9Q+rrg+jHBNM73AdVnG3Olj
+        Egv986JIsuDStnZwhMFdtGSR1EVulwt67KUpRFGlb8vGZ93F+f/ofKt0CKFlHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615322392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=OKNd7/rxYhsQelqiJwdxJxn//ZZydN8JASiDCTZZB7g=;
+        b=/mOgnauX/la44fyehgxzWPGwcy2MTcg6zb6AjRq8lfUvRb0reOymdtyT2i8hA5qUzn8xJc
+        mdMN8pEbC/jLRnAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.10.21-rt34
+Message-ID: <20210309203950.33ikot2ddvoj7gmo@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_wait is an internal function used to implement waitpid, waitid,
-wait4, etc. To handle the general case, it does an O(n) linear scan of
-the thread group's children and tracees.
+Dear RT folks!
 
-This patch adds a special-case when waiting on a pid to skip these scans
-and instead do an O(1) lookup. This improves performance when waiting on
-a pid from a thread group with many children and/or tracees.
+I'm pleased to announce the v5.10.21-rt34 patch set.
 
-Signed-off-by: James Newsome <jnewsome@torproject.org>
----
- kernel/exit.c | 53 +++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 43 insertions(+), 10 deletions(-)
+Changes since v5.10.21-rt33:
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 04029e35e69a..c2438d4ba262 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -1439,9 +1439,34 @@ void __wake_up_parent(struct task_struct *p, struct task_struct *parent)
- 			   TASK_INTERRUPTIBLE, p);
+  - The alloc/free tracker sysfs file uses one PAGE size for
+    collecting the results. If it runs out of space it reallocates
+    more memory with disabled interrupts. The reallocation is now
+    forbidden on PREEMPT_RT.
+
+  - Update the softirq/tasklet patches to the latest version posted to
+    the list.
+
+Known issues
+     - kdb/kgdb can easily deadlock.
+     - netconsole triggers WARN.
+
+The delta patch against v5.10.21-rt33 is appended below and can be found here:
+
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/incr/patch-5.10.21-rt33-rt34.patch.xz
+
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.10.21-rt34
+
+The RT patch against v5.10.21 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.21-rt34.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10.21-rt34.tar.xz
+
+Sebastian
+
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index 2725c6ad10af6..7545a2f18560a 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -663,6 +663,7 @@ static inline int tasklet_trylock(struct tasklet_struct *t)
+ void tasklet_unlock(struct tasklet_struct *t);
+ void tasklet_unlock_wait(struct tasklet_struct *t);
+ void tasklet_unlock_spin_wait(struct tasklet_struct *t);
++
+ #else
+ static inline int tasklet_trylock(struct tasklet_struct *t) { return 1; }
+ static inline void tasklet_unlock(struct tasklet_struct *t) { }
+@@ -693,8 +694,8 @@ static inline void tasklet_disable_nosync(struct tasklet_struct *t)
  }
  
-+// Optimization for waiting on PIDTYPE_PID. No need to iterate through child
-+// and tracee lists to find the target task.
-+static int do_wait_pid(struct wait_opts *wo)
-+{
-+	struct task_struct *target = pid_task(wo->wo_pid, PIDTYPE_PID);
-+	int retval;
-+
-+	if (!target)
-+		return 0;
-+	if (current == target->real_parent ||
-+	    (!(wo->wo_flags & __WNOTHREAD) &&
-+	     same_thread_group(current, target->real_parent))) {
-+		retval = wait_consider_task(wo, /* ptrace= */ 0, target);
-+		if (retval)
-+			return retval;
-+	}
-+	if (target->ptrace && (current == target->parent ||
-+			       (!(wo->wo_flags & __WNOTHREAD) &&
-+				same_thread_group(current, target->parent)))) {
-+		retval = wait_consider_task(wo, /* ptrace= */ 1, target);
-+		if (retval)
-+			return retval;
-+	}
-+	return 0;
-+}
-+
- static long do_wait(struct wait_opts *wo)
+ /*
+- * Do not use in new code. There is no real reason to invoke this from
+- * atomic contexts.
++ * Do not use in new code. Disabling tasklets from atomic contexts is
++ * error prone and should be avoided.
+  */
+ static inline void tasklet_disable_in_atomic(struct tasklet_struct *t)
  {
--	struct task_struct *tsk;
- 	int retval;
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index f0074f1344402..c9adc5c462485 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -830,8 +830,8 @@ EXPORT_SYMBOL(tasklet_init);
  
- 	trace_sched_process_wait(wo->wo_pid);
-@@ -1463,19 +1488,27 @@ static long do_wait(struct wait_opts *wo)
+ #if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
+ /*
+- * Do not use in new code. There is no real reason to invoke this from
+- * atomic contexts.
++ * Do not use in new code. Waiting for tasklets from atomic contexts is
++ * error prone and should be avoided.
+  */
+ void tasklet_unlock_spin_wait(struct tasklet_struct *t)
+ {
+diff --git a/localversion-rt b/localversion-rt
+index e1d8362520178..21988f9ad53f1 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt33
++-rt34
+diff --git a/mm/slub.c b/mm/slub.c
+index 32a87e0038776..15690db5223e7 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4697,6 +4697,9 @@ static int alloc_loc_track(struct loc_track *t, unsigned long max, gfp_t flags)
+ 	struct location *l;
+ 	int order;
  
- 	set_current_state(TASK_INTERRUPTIBLE);
- 	read_lock(&tasklist_lock);
--	tsk = current;
--	do {
--		retval = do_wait_thread(wo, tsk);
--		if (retval)
--			goto end;
- 
--		retval = ptrace_do_wait(wo, tsk);
-+	if (wo->wo_type == PIDTYPE_PID) {
-+		retval = do_wait_pid(wo);
- 		if (retval)
- 			goto end;
-+	} else {
-+		struct task_struct *tsk = current;
- 
--		if (wo->wo_flags & __WNOTHREAD)
--			break;
--	} while_each_thread(current, tsk);
-+		do {
-+			retval = do_wait_thread(wo, tsk);
-+			if (retval)
-+				goto end;
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && flags == GFP_ATOMIC)
++		return 0;
 +
-+			retval = ptrace_do_wait(wo, tsk);
-+			if (retval)
-+				goto end;
-+
-+			if (wo->wo_flags & __WNOTHREAD)
-+				break;
-+		} while_each_thread(current, tsk);
-+	}
- 	read_unlock(&tasklist_lock);
+ 	order = get_order(sizeof(struct location) * max);
  
- notask:
--- 
-2.30.1
-
+ 	l = (void *)__get_free_pages(flags, order);
