@@ -2,96 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF42332B7C
+	by mail.lfdr.de (Postfix) with ESMTP id CB48D332B7D
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbhCIQHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:07:37 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:60202 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232066AbhCIQHR (ORCPT
+        id S232084AbhCIQHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:07:38 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:41872 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232062AbhCIQHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:07:17 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 129Fra1f124120;
-        Tue, 9 Mar 2021 16:07:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=b5dVdoI7QKOmhvlb6MzN5U9RU3I4t3hNEqEOjp5BgBA=;
- b=ut3AgnFMRDb2vT/2Uu+wpFUpa8Tlu080teWQp5ScnFNOJvtnXN9gIHodjoK1CmDxBEMg
- JYAZJijU2K+NY0vSXomRh5hu8xXdkxoZiZt7x+E/+HygkBifMqhPD5r8v/CksryQW8cS
- b7kJm6qIPNB4NDQhpUFMN/XoYhDjA3dqKYCB5k2e+z7jr6PptkUQ7b+gF8wPOT1FvHHD
- Dn+h8NQ7L32KPUF0Y2UNKZt0nMBlf7NUHm3O3gfmp0+DkdvJxZ5MW6ipks+r/67uel3u
- VhVVwsMN9Lkm7+ZraGYxxK+NAzKgkBuxu7Te7tjTefMaT5RuD8hQx34cvQtZd1bZinCr HA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 373y8br0ch-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Mar 2021 16:07:06 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 129Fsxo0078429;
-        Tue, 9 Mar 2021 16:07:04 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 374kgs0yxh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Mar 2021 16:07:04 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 129G70Ku012258;
-        Tue, 9 Mar 2021 16:07:00 GMT
-Received: from mwanda (/10.175.175.8)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 09 Mar 2021 08:06:59 -0800
-Date:   Tue, 9 Mar 2021 19:06:52 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Evgeniy Polyakov <zbr@ioremap.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Akira Shimahara <akira215corp@gmail.com>,
-        Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] w1: w1_therm: use clamp() in int_to_short()
-Message-ID: <YEedHNwqEH8fvjkD@mwanda>
+        Tue, 9 Mar 2021 11:07:19 -0500
+Received: by mail-io1-f70.google.com with SMTP id n1so10600822iob.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 08:07:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Jv4SOKympZI1lFbKbP+deVJG7+51oX2f6Ly05q3pAJI=;
+        b=nToqUn7Vh2U8DgYsG7/TTl+lzRQ99LpT88lUKDmaycHsl2LfTuePiQVLu58lqwfa6f
+         heUnqlG7Sanxaa2LUaCszVUTe8dzoeJ+36bfseIIHfuwYwaMOHHoO+ED2u8LP0BhdRpg
+         vS+N8HO3R6viSB5VsE6WK6X7D8L37SrcAxc/Ub5QXyye0lntDP29/jnj/E69hv3ysamh
+         XIRpGORj3ZtTgqaQyfPsW52zrWPOW9RZpvS3he8QfalUuVhAR43cPHDg1nmm7qDuKEPd
+         9fqFhSHjv6jOkEgp8Wczihns24zzRHJfBZIt6n5xZLZkrw65/utfaG62qQDmQMH740Ud
+         SI7g==
+X-Gm-Message-State: AOAM5302YzxXYPCJTrJdsJU2KxdOqMwS8EWnapgZmgkA1YyAaSRQB8OM
+        +RzAMWb5YsgHCHi/M4d0VmxA8z33DIhRcF8EOAlAP/s0xs+z
+X-Google-Smtp-Source: ABdhPJywKroXgsWSrwDQGmJl/J5keQvxV4wq7iuLaLdKNKYTb8DKRtQNXIzR0Zoy6Ftv8+b8RhMgInyyPMVQvWvfzY1R0DLBzot6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9918 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
- malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090080
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9918 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 mlxscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 adultscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103090080
+X-Received: by 2002:a05:6e02:12ac:: with SMTP id f12mr24541349ilr.103.1615306038996;
+ Tue, 09 Mar 2021 08:07:18 -0800 (PST)
+Date:   Tue, 09 Mar 2021 08:07:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a8733205bd1cbead@google.com>
+Subject: [syzbot] KASAN: use-after-free Write in h4_recv_buf
+From:   syzbot <syzbot+1e678fbc60167d46f2a5@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's slightly cleaner to use the clamp() macro instead of open coding
-this.
+Hello,
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+syzbot found the following issue on:
+
+HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14f818a2d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2d28ee81eb70698
+dashboard link: https://syzkaller.appspot.com/bug?extid=1e678fbc60167d46f2a5
+compiler:       Debian clang version 11.0.1-2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1e678fbc60167d46f2a5@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in skb_put_data include/linux/skbuff.h:2293 [inline]
+BUG: KASAN: use-after-free in h4_recv_buf+0x3d5/0xd00 drivers/bluetooth/hci_h4.c:200
+Write of size 1 at addr ffff88806243d00c by task syz-executor.0/10259
+
+CPU: 0 PID: 10259 Comm: syz-executor.0 Not tainted 5.12.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x176/0x24e lib/dump_stack.c:120
+ print_address_description+0x5f/0x3a0 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report+0x15e/0x210 mm/kasan/report.c:416
+ check_region_inline mm/kasan/generic.c:135 [inline]
+ kasan_check_range+0x2b5/0x2f0 mm/kasan/generic.c:186
+ memcpy+0x3c/0x60 mm/kasan/shadow.c:66
+ skb_put_data include/linux/skbuff.h:2293 [inline]
+ h4_recv_buf+0x3d5/0xd00 drivers/bluetooth/hci_h4.c:200
+ h4_recv+0xf4/0x1b0 drivers/bluetooth/hci_h4.c:115
+ hci_uart_tty_receive+0x157/0x490 drivers/bluetooth/hci_ldisc.c:613
+ tiocsti drivers/tty/tty_io.c:2317 [inline]
+ tty_ioctl+0xc64/0x15f0 drivers/tty/tty_io.c:2718
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465f69
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb4a52aa188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465f69
+RDX: 0000000020000000 RSI: 0000000000005412 RDI: 0000000000000003
+RBP: 00000000004bfa67 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffc4fc6b23f R14: 00007fb4a52aa300 R15: 0000000000022000
+
+Allocated by task 0:
+(stack is not available)
+
+Freed by task 9934:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
+ kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:357
+ ____kasan_slab_free+0x100/0x140 mm/kasan/common.c:360
+ kasan_slab_free include/linux/kasan.h:199 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x171/0x270 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kfree+0xcf/0x2d0 mm/slub.c:4213
+ skb_release_all net/core/skbuff.c:725 [inline]
+ __kfree_skb+0x56/0x1d0 net/core/skbuff.c:739
+ h4_recv_buf+0xcdb/0xd00 include/net/bluetooth/bluetooth.h:390
+ h4_recv+0xf4/0x1b0 drivers/bluetooth/hci_h4.c:115
+ hci_uart_tty_receive+0x157/0x490 drivers/bluetooth/hci_ldisc.c:613
+ tty_ldisc_receive_buf+0x12b/0x170 drivers/tty/tty_buffer.c:465
+ tty_port_default_receive_buf+0x6a/0x90 drivers/tty/tty_port.c:38
+ receive_buf drivers/tty/tty_buffer.c:481 [inline]
+ flush_to_ldisc+0x2f2/0x510 drivers/tty/tty_buffer.c:533
+ process_one_work+0x789/0xfd0 kernel/workqueue.c:2275
+ worker_thread+0xac1/0x1300 kernel/workqueue.c:2421
+ kthread+0x39a/0x3c0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+The buggy address belongs to the object at ffff88806243d000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 12 bytes inside of
+ 2048-byte region [ffff88806243d000, ffff88806243d800)
+The buggy address belongs to the page:
+page:000000004c9987b8 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x62438
+head:000000004c9987b8 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010842000
+raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88806243cf00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88806243cf80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88806243d000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                      ^
+ ffff88806243d080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88806243d100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
 ---
- drivers/w1/slaves/w1_therm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/w1/slaves/w1_therm.c b/drivers/w1/slaves/w1_therm.c
-index 976eea28f268..ad47c164bc05 100644
---- a/drivers/w1/slaves/w1_therm.c
-+++ b/drivers/w1/slaves/w1_therm.c
-@@ -906,8 +906,7 @@ static inline int temperature_from_RAM(struct w1_slave *sl, u8 rom[9])
- static inline s8 int_to_short(int i)
- {
- 	/* Prepare to cast to short by eliminating out of range values */
--	i = i > MAX_TEMP ? MAX_TEMP : i;
--	i = i < MIN_TEMP ? MIN_TEMP : i;
-+	i = clamp(i, MIN_TEMP, MAX_TEMP);
- 	return (s8) i;
- }
- 
--- 
-2.30.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
