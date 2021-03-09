@@ -2,118 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04BC332B0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07061332B1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhCIPyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:54:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
+        id S231542AbhCIPzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhCIPxn (ORCPT
+        with ESMTP id S231367AbhCIPyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:53:43 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CBBC06174A;
-        Tue,  9 Mar 2021 07:53:43 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso5427531pjb.3;
-        Tue, 09 Mar 2021 07:53:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XTQS0aC3ey6iJ5CioVwvjyd2BBYlfManBKXsa0QRx38=;
-        b=N2VU1bE2NI0JllfDLBDTjxn6GpHBmKr1208qsPb2633LxmyDpjKeFG87S8ZLoXw5W1
-         NeOErweovjja04p9BUE1j+U8LlD1JXTQdZn0EWbl72ZsyM2LLkjLNUw+vLn63kOupDbn
-         cH/HjFSRLdUJz8dALKkOjrZJVSiV6f2W7NNEABSEYeinPNDM9gC8kMLQ8YdFHCInNbBI
-         voIpfXkrPj/UNndN6u0ODW7XJzKvboiDwzJeC9bMtlseMOByOXif50B4cCVRLaksPSfB
-         MPQ29b9kC6vls/8UDDf4OVMl4TN6r6KQjmaIMXyso8vO6cBvr1uuS/UVgv7ugSHk+mUe
-         aA1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XTQS0aC3ey6iJ5CioVwvjyd2BBYlfManBKXsa0QRx38=;
-        b=Ma8enpBRHGTtOWpxuEWS6ITVS2LQEQVunYrQRXbFUTV5sabfjnqPtpvXsw0A4oLNl+
-         U78vu5hd23WgDmDUC621SsBiMwlELPGTIBxJPV7HussPi08OrGekZhR+2GDpBxNxNIKp
-         w5y2R+mHkUV+3sgNsO6hcZdZS+ahP2JTQlseBTkSf2NDmdnCgoH0GWeOjv4fGUmGNqLk
-         RmemWaO6CcRWFGnYkH4uUB4qcFVL7xILLfrL6jp0CsPv9u/L9Y/XYO5C5Tf6vTPg3ADU
-         JocZ2/hLtvwNmrJwajdD+lO1WQtvTfrzLXi4hPh3x8JAOMU5f9Q7kbB9xZmR0vnLBPBx
-         whcg==
-X-Gm-Message-State: AOAM533g6LGHfhaitaUcJ5Y17NNCIfkbFLoXVXFwS8MZRcPD54/HfuIF
-        XrW1jE39OIfsKMMqVBlGy1w=
-X-Google-Smtp-Source: ABdhPJwSX8n16QaBIIKFvWEyLq3CvrFuMfoFjsnbbRN31EnAPKwunPWxeewBvXTHkj6XyqkVrEdwIA==
-X-Received: by 2002:a17:90b:344c:: with SMTP id lj12mr5490610pjb.208.1615305222453;
-        Tue, 09 Mar 2021 07:53:42 -0800 (PST)
-Received: from [172.30.1.19] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id x9sm3313983pjp.29.2021.03.09.07.53.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 07:53:41 -0800 (PST)
-Subject: Re: [PATCH 05/11] PM / devfreq: use more accurate returned new_freq
- as resume_freq
-To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, abel.vesa@nxp.com
-References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
- <1615294733-22761-6-git-send-email-aisheng.dong@nxp.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <83240e9d-383a-74a9-3222-68cf42d3d0e1@gmail.com>
-Date:   Wed, 10 Mar 2021 00:53:35 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 9 Mar 2021 10:54:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5077C06175F;
+        Tue,  9 Mar 2021 07:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=KGWSD1qzjw8jWYcVTd5k5Vux/eD/dPBH9TiN6yLVseE=; b=UqioM+JOtMrCZY+99WNlohS+n6
+        D8sXLpSvt07nrEhE9GYHmdMTmjw4DL1jAclk+Ci+jnYGdn+IEIwZ0S8fpKJ2whNwkyjmljxBPh47g
+        cMsKfNPA0fujb0XrwseHmDs/2m816gk63sTddN9x9X9wgRohgavTvx8tm6KQtpAyIG7cxz0OK5MKP
+        PgIH6/WtutbbPjhpmXZVF7C1m9jWVkHGrdDIIbgcgrxaJ3JqKKlPb7/Swf8vZxBO2cCE67ILF7rVn
+        MmRlVgFU4oQqmQ/DBvwu33p+M9TPPMt61GrQMTQJl2w3aFf67m+MltPsTuxfefjtilLeB/ZfnOnxB
+        lkLQIpmA==;
+Received: from [2001:4bb8:180:9884:c70:4a89:bc61:3] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJegA-000lLy-1I; Tue, 09 Mar 2021 15:53:56 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Nadav Amit <namit@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: make alloc_anon_inode more useful
+Date:   Tue,  9 Mar 2021 16:53:39 +0100
+Message-Id: <20210309155348.974875-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <1615294733-22761-6-git-send-email-aisheng.dong@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
-> Use the more accurate returned new_freq as resume_freq.
-> It's the same as how devfreq->previous_freq was updated.
-> 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
->   drivers/devfreq/devfreq.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index 6e80bf70e7b3..ce569bd9adfa 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -390,7 +390,7 @@ static int devfreq_set_target(struct devfreq *devfreq, unsigned long new_freq,
->   	devfreq->previous_freq = new_freq;
->   
->   	if (devfreq->suspend_freq)
-> -		devfreq->resume_freq = cur_freq;
-> +		devfreq->resume_freq = new_freq;
->   
->   	return err;
->   }
-> 
+Hi all,
 
-This patch fixes the previous patch[1]. So that you need to
-add 'Fixes' tag as following:
+this series first renames the existing alloc_anon_inode to
+alloc_anon_inode_sb to clearly mark it as requiring a superblock.
 
-Fixes: 83f8ca45afbf0 ("PM / devfreq: add support for suspend/resume of a 
-devfreq device")
+It then adds a new alloc_anon_inode that works on the anon_inode
+file system super block, thus removing tons of boilerplate code.
 
-commit 83f8ca45afbf041e312909f442128b99657d90b7
-Refs: v4.20-rc6-2-g83f8ca45afbf
-Author:     Lukasz Luba <lukasz.luba@arm.com>
-AuthorDate: Wed Dec 5 12:05:53 2018 +0100
-Commit:     MyungJoo Ham <myungjoo.ham@samsung.com>
-CommitDate: Tue Dec 11 11:09:47 2018 +0900
+The few remainig callers of alloc_anon_inode_sb all use alloc_file_pseudo
+later, but might also be ripe for some cleanup.
 
-     PM / devfreq: add support for suspend/resume of a devfreq device
-
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Diffstat:
+ arch/powerpc/platforms/pseries/cmm.c |   27 +-------------
+ drivers/dma-buf/dma-buf.c            |    2 -
+ drivers/gpu/drm/drm_drv.c            |   64 +----------------------------------
+ drivers/misc/cxl/api.c               |    2 -
+ drivers/misc/vmw_balloon.c           |   24 +------------
+ drivers/scsi/cxlflash/ocxl_hw.c      |    2 -
+ drivers/virtio/virtio_balloon.c      |   30 +---------------
+ fs/aio.c                             |    2 -
+ fs/anon_inodes.c                     |   15 +++++++-
+ fs/libfs.c                           |    2 -
+ include/linux/anon_inodes.h          |    1 
+ include/linux/fs.h                   |    2 -
+ kernel/resource.c                    |   30 ++--------------
+ mm/z3fold.c                          |   38 +-------------------
+ mm/zsmalloc.c                        |   48 +-------------------------
+ 15 files changed, 39 insertions(+), 250 deletions(-)
