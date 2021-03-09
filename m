@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293EA331D65
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA67331D6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhCIDUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 22:20:23 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33712 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229573AbhCIDUF (ORCPT
+        id S230094AbhCIDVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 22:21:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230134AbhCIDVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 22:20:05 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12933ksC098358;
-        Mon, 8 Mar 2021 22:20:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=r4ZHfyMVfpl0A6ww0nnnsiNSSZQhjqnjXmSjL+/mXOM=;
- b=Zt0XKlc2X5V8RfwUHyrEw927FVjhvQBRPNHJoolq0FVnVwQF4MzppiHGy+hsZJyZzj2W
- HGmokWvbwlIEFbG36FblW8gDKwqy5TM5I4ZCDt6A20OnRl21WFyTKD7imas1tHqDwsR4
- 85x8Yl61f7g4cDwb8xJVRQfzBqeaH7dt68k54IeK7x2+gnk7uOSXmzc4023cQyZUbcAG
- 2OQ61D1NUSkaXHlLjPwgoCk+trl95gCqXtX2VH2qKS6CkdAGOKYrM4Khxg3ONOkXwyR3
- PcaudhcxlEvq+bWybBbgGxfCPkt+0wiMxq8iX3cKem/fhKzf8/St5X7pTgKu3daW85/v AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 375wesmgk0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Mar 2021 22:20:04 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12933qd7098746;
-        Mon, 8 Mar 2021 22:20:04 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 375wesmgjh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Mar 2021 22:20:04 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1293GdU2024971;
-        Tue, 9 Mar 2021 03:20:03 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma02wdc.us.ibm.com with ESMTP id 3741c8u9tt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 03:20:03 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1293K2Wm20316464
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Mar 2021 03:20:02 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 284A3BE05F;
-        Tue,  9 Mar 2021 03:20:02 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 90438BE061;
-        Tue,  9 Mar 2021 03:20:01 +0000 (GMT)
-Received: from sbct-2.pok.ibm.com (unknown [9.47.158.152])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  9 Mar 2021 03:20:01 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.ibm.com>
-To:     peterhuewe@gmx.de, jarkko@kernel.org
-Cc:     jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH 3/3] tpm: vtpm_proxy: Avoid reading host log when using a virtual device
-Date:   Mon,  8 Mar 2021 22:19:54 -0500
-Message-Id: <20210309031954.6232-4-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210309031954.6232-1-stefanb@linux.ibm.com>
-References: <20210309031954.6232-1-stefanb@linux.ibm.com>
+        Mon, 8 Mar 2021 22:21:23 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361AFC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:21:13 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id l4so11744466qkl.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 19:21:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z16WDXE67iIqm41Rng3wniiStsJjjQQ4aKs0GYyXmUw=;
+        b=lFIwPsSve1GdH5z+2oIrBVqkLopXi4LKpfanGCKTqMCfnTf9WVHpXXTKljsCRKu1QM
+         +rxqLGiWL7TjNJ9C7jeD9MU3VMV+PGAb0Zu837GObxnfj5HS4qR1qnG8AdrE97SH5Xq8
+         iZMlpB4G14ytsqrLsIoIR+eZ6Hj9PHsNyh4jtRbN98l8htcAOR0Dish1HFb+eBoGcWt4
+         NgMTqNk3xVILW4hmiYy4ty/6u/nZZFTHoxhfpcpJw8GdQLkkF5Tc9kG3W5cSqUUUQ6L/
+         oVc8x547XNyyfQh7kJJXTbjb47dvzmGibEZfB/tcdNFFHwtcmGvvZJ8bn+5OrXnTvwGC
+         nm9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z16WDXE67iIqm41Rng3wniiStsJjjQQ4aKs0GYyXmUw=;
+        b=jsYjriSm7BAv+7giwQEdWSOQM68d9aSwDKF4MKycr/YTv1ZxUc43EN24NVRq4aymcl
+         psDEsHibcXdeeBXgr5cY91dXzpWz4mquXl0NG1+f3wp8DRheR4nt1RyqNSq1+/Okq5M9
+         LhlEQMw8ZHWvYRfoQ4olPK99VNRW0GE85x8EB8MDzgnMDfiLruL41dpPGOJxw/gnG//0
+         nqbyGyvfLnFFfCOR+dVPR5JkDM0CQXmmPE5lb/1vOaxDYg8b7Od0EaZFV32q9hJR/COD
+         yNQ/3R6h4j78t23ehI1aw13OQ7q1BWosF+Qu/Aa0ihGoKt4F18WjZ12qeLQWYe61kqC2
+         NEVQ==
+X-Gm-Message-State: AOAM532y9PzaqYbDob+Z5dZ6YI7TlZKkDyJcdeyWGqsUioDmGAG4CdSv
+        tOnLLLHWDRfYXm7Ous2SWbc=
+X-Google-Smtp-Source: ABdhPJwlUZ0+s5i/gDuWYrBVEFoDbfHdPbYAFvT0Hy7oFBSRanA5x+uclo8nVg2zuF7Z8nRVVFkBJg==
+X-Received: by 2002:a05:620a:1369:: with SMTP id d9mr24265928qkl.378.1615260072337;
+        Mon, 08 Mar 2021 19:21:12 -0800 (PST)
+Received: from localhost.localdomain ([156.146.37.204])
+        by smtp.gmail.com with ESMTPSA id e190sm9251006qkd.122.2021.03.08.19.21.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 19:21:11 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, nivedita@alum.mit.edu, keescook@chromium.org,
+        jroedel@suse.de, ardb@kernel.org, unixbhaskar@gmail.com,
+        ubizjak@gmail.com, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] arch: x86: boot: compressed: Fix a typo in the file head_64.S
+Date:   Tue,  9 Mar 2021 08:50:38 +0530
+Message-Id: <20210309032038.3182206-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-08_22:2021-03-08,2021-03-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- spamscore=0 bulkscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090014
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid allocating memory and reading the host log when a virtual device
-is used since this log is of no use to that driver. A virtual
-device can be identified through the flag TPM_CHIP_FLAG_VIRTUAL, which
-is only set for the tpm_vtpm_proxy driver.
 
-Fixes: 6f99612e2500 ("tpm: Proxy driver for supporting multiple emulated TPMs")
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+
+s/performend/performed/
+
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- drivers/char/tpm/eventlog/common.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/boot/compressed/head_64.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/tpm/eventlog/common.c b/drivers/char/tpm/eventlog/common.c
-index 7460f230bae4..8512ec76d526 100644
---- a/drivers/char/tpm/eventlog/common.c
-+++ b/drivers/char/tpm/eventlog/common.c
-@@ -107,6 +107,9 @@ void tpm_bios_log_setup(struct tpm_chip *chip)
- 	int log_version;
- 	int rc = 0;
- 
-+	if (chip->flags & TPM_CHIP_FLAG_VIRTUAL)
-+		return;
-+
- 	rc = tpm_read_log(chip);
- 	if (rc < 0)
- 		return;
--- 
-2.29.2
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index e94874f4bbc1..a8c4095ee115 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -231,7 +231,7 @@ SYM_FUNC_START(startup_32)
+ 	/*
+ 	 * Setup for the jump to 64bit mode
+ 	 *
+-	 * When the jump is performend we will be in long mode but
++	 * When the jump is performed we will be in long mode but
+ 	 * in 32bit compatibility mode with EFER.LME = 1, CS.L = 0, CS.D = 1
+ 	 * (and in turn EFER.LMA = 1).	To jump into 64bit mode we use
+ 	 * the new gdt/idt that has __KERNEL_CS with CS.L = 1.
+--
+2.30.1
 
