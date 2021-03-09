@@ -2,78 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15132332F5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5ED5332F5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhCITyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:54:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhCITxk (ORCPT
+        id S231393AbhCITzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:55:08 -0500
+Received: from pb-smtp20.pobox.com ([173.228.157.52]:54761 "EHLO
+        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231596AbhCITyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:53:40 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F3CC06174A;
-        Tue,  9 Mar 2021 11:53:40 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id y131so13419258oia.8;
-        Tue, 09 Mar 2021 11:53:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xlm3NXLS5y/y/m14R+0UIQSq3jLijWbnK89X832gUiw=;
-        b=UfM72oRmW3ndgJT2HO0oPS5J3WGJDysd2sT8n0uYHd5JnkWZ8iQ8LwlkLfiSMFDO5j
-         BOXEtIshEk1wLYWJRukYRIcEpzGhipSql9Bf4EDkQ3o2HKzuCzJM9iJD9sJxl3KjcSWH
-         CUQfGysXPIM/8GSSNM815MYb8MhosjbbeiLCni7M1mGj5b4xXx87SjYPUw7vzA2dawS1
-         +BeYci5UnvJ0vPFIzdGZx0ig7gBmGBy8ZGkYhHYj+zywq2PP6YivLJ1tJdZB0YqvAP5F
-         B1BorM+eQsG0LZWuC8X8/ROm10ttR+hYf2MqSb6g6hymUWnWybjC5psydCdsT3UkYJ42
-         ArkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xlm3NXLS5y/y/m14R+0UIQSq3jLijWbnK89X832gUiw=;
-        b=L7V06MKDSoLQN/9Oqr9R1lGO0HA2Cji+diZOb6PV2Y4BCY9e19f6EHmUGnIhOtm6Yq
-         SthWb5xpB3cCkOStS+lMSixofXDqT7xyRQDHsPtrwQ1ZfjqwQGyno66s0DIo50ChZS4m
-         mudLyyN9ond5244n1/1L3OWqh2XQdDxaECyzDnbjXuG7QHDXd5M+D3ykQDTY91qPhcDp
-         f0bHqA0MKie1y/uoHTX9p3zL/3zQ1asyLvhA7vl3A29sBH29bALLWprQjCHj2jUCJL8g
-         9cfYVF7qp/cEnDZe99cJnQxI0TcO4c/J1NgXIJDyjTlBAVt3XnJfF4j/oFZ2XGlIYA+z
-         SD/w==
-X-Gm-Message-State: AOAM531VCMx0eRdF6Ey2ZbL1HlHIfwh71Gn8ZB3GuC6aybo2+KhFc0KT
-        A9hte+02UWEy+QyXoNCk20epMGqNCW4=
-X-Google-Smtp-Source: ABdhPJz4YNH7lhuHvJWo2XLQk4wBGRpx2GYdQuivjeczEVB14ZW4re3KcqXw/4BXIkV8QewGIVcNDQ==
-X-Received: by 2002:aca:4486:: with SMTP id r128mr4082901oia.171.1615319619686;
-        Tue, 09 Mar 2021 11:53:39 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.40])
-        by smtp.googlemail.com with ESMTPSA id p67sm3288625oih.21.2021.03.09.11.53.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 11:53:39 -0800 (PST)
-Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Tony Lu <tonylu@linux.alibaba.com>
-Cc:     davem@davemloft.net, mingo@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
- <20210309124011.709c6cd3@gandalf.local.home>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <5fda3ef7-d760-df4f-e076-23b635f6c758@gmail.com>
-Date:   Tue, 9 Mar 2021 12:53:37 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        Tue, 9 Mar 2021 14:54:43 -0500
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 24EB010FC46;
+        Tue,  9 Mar 2021 14:54:39 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=X+fpNI8wAlkIa8HtAWVTCKgtpeE=; b=iacdaa
+        5PYicBLXi17pnea2k5IilYO/Vv1DKW+EcKyyySDNpWStg54Ck69G/cheD2dHcIs2
+        dOWEceDwXePBE9bn37aWbJ91q8620m34ID6XAC5FeEvuxAr20ftAf0x9UvdEfVD2
+        Mq8HWHRLBefVnyv/QifM2OpfmpEQkB2L6Ut3w=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 1D34E10FC45;
+        Tue,  9 Mar 2021 14:54:39 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=vSzFF6Zn+X6Rkesi42r5jvmugdfCQY8l70418EqnA4A=; b=xmowcB275hUF94JmHoIlyB39htqV+cHBWygkkz+5VuQ9gIaNunjARaC/ZSb6t7XLCuffioT8gTX6HH2YYOiKjh+0GdCCKLHZTydLcVSpS5vvnfJuH9xgV0Kvenz6EhfgU/XCBV4MPV2S8PIythFnw9FS6H2GYLA7PM4SnKFbelk=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id EF6C010FC42;
+        Tue,  9 Mar 2021 14:54:35 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id 295DE2DA017E;
+        Tue,  9 Mar 2021 14:54:34 -0500 (EST)
+Date:   Tue, 9 Mar 2021 14:54:33 -0500 (EST)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH v2 3/4] kbuild: re-implement CONFIG_TRIM_UNUSED_KSYMS to
+ make it work in one-pass
+In-Reply-To: <CAK7LNAS97kTsOW_RSy1ZL2P5Q+5Hh05qvE4KwSVkvrhkzb3Shg@mail.gmail.com>
+Message-ID: <2o2rpn97-79nq-p7s2-nq5-8p83391473r@syhkavp.arg>
+References: <20210309151737.345722-1-masahiroy@kernel.org> <20210309151737.345722-4-masahiroy@kernel.org> <354sr3np-67o8-oss9-813s-p2qoro06p4o@syhkavp.arg> <CAK7LNAS97kTsOW_RSy1ZL2P5Q+5Hh05qvE4KwSVkvrhkzb3Shg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210309124011.709c6cd3@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 465EC48A-8111-11EB-AAD6-E43E2BB96649-78420484!pb-smtp20.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 10:40 AM, Steven Rostedt wrote:
-> The order of the fields is important. Don't worry about breaking API by
-> fixing it. The parsing code uses this output to find where the binary data
-> is.
+On Wed, 10 Mar 2021, Masahiro Yamada wrote:
 
-Changing the order of the fields will impact any bpf programs expecting
-the existing format.
+> On Wed, Mar 10, 2021 at 2:36 AM Nicolas Pitre <nico@fluxnic.net> wrote:
+> >
+> > On Wed, 10 Mar 2021, Masahiro Yamada wrote:
+> >
+> > > Commit a555bdd0c58c ("Kbuild: enable TRIM_UNUSED_KSYMS again, with some
+> > > guarding") re-enabled this feature, but Linus is still unhappy about
+> > > the build time.
+> > >
+> > > The reason of the slowness is the recursion - this basically works in
+> > > two loops.
+> > >
+> > > In the first loop, Kbuild builds the entire tree based on the temporary
+> > > autoksyms.h, which contains macro defines to control whether their
+> > > corresponding EXPORT_SYMBOL() is enabled or not, and also gathers all
+> > > symbols required by modules. After the tree traverse, Kbuild updates
+> > > autoksyms.h and triggers the second loop to rebuild source files whose
+> > > EXPORT_SYMBOL() needs flipping.
+> > >
+> > > This commit re-implements CONFIG_TRIM_UNUSED_KSYMS to make it work in
+> > > one pass. In the new design, unneeded EXPORT_SYMBOL() instances are
+> > > trimmed by the linker instead of the preprocessor.
+> > >
+> > > After the tree traverse, a linker script snippet <generated/keep-ksyms.h>
+> > > is generated. It feeds the list of necessary sections to vmlinus.lds.S
+> > > and modules.lds.S. The other sections fall into /DISCARD/.
+> > >
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> >
+> > I'm not sure I do understand every detail here, especially since it is
+> > so far away from the version that I originally contributed. But the
+> > concept looks good.
+> >
+> > I still think that there is no way around a recursive approach to get
+> > the maximum effect with LTO, but given that true LTO still isn't applied
+> > to mainline after all those years, the recursive approach brings
+> > nothing. Maybe that could be revisited if true LTO ever makes it into
+> > mainline, and the desire to reduce the binary size is still relevant
+> > enough to justify it.
+> 
+> Hmm, I am confused.
+> 
+> Does this patch change the behavior in the
+> combination with the "true LTO"?
+> 
+> Please let me borrow this sentence from your article:
+> "But what LTO does is more like getting rid of branches that simply
+> float in the air without being connected to anything or which have
+> become loose due to optimization."
+> (https://lwn.net/Articles/746780/)
+> 
+> This patch throws unneeded EXPORT_SYMBOL metadata
+> into the /DISCARD/ section of the linker script.
+> 
+> The approach is different (preprocessor vs linker), but
+> we will still get the same result; the unneeded
+> EXPORT_SYMBOLs are disconnected from the main trunk.
+> 
+> Then, the true LTO will remove branches floating in the air,
+> right?
+> 
+> So, what will be lost by this patch?
+
+Let's say you have this in module_foo:
+
+int foo(int x)
+{
+	return 2 + bar(x);
+}
+EXPORT_SYMBOL(foo);
+
+And module_bar:
+
+int bar(int y)
+{
+	return 3 * baz(y);
+}
+EXPORT_SYMBOL(bar);
+
+And this in the main kernel image:
+
+int baz(int z)
+{
+	return plonk(z);
+}
+EXPORT_SYMBOLbaz);
+
+Now we build the kernel and modules. Then we realize that nothing 
+references symbol "foo". We can trim the "foo" export. But it would be 
+necessary to recompile module_foo with LTO (especially if there is 
+some other code in that module) to realize that nothing 
+references foo() any longer and optimize away the reference to bar(). 
+With another round, we now realize that the "bar" export is no longer 
+necessary. But that will require another compile round to optimize away 
+the reference to baz(). And then a final compilation round with 
+LTO to possibly optimize plonk() out of the kernel.
+
+I don't see how you can propagate all this chain reaction with only one 
+pass.
+
+
+Nicolas
