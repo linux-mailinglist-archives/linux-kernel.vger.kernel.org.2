@@ -2,330 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D51332548
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64BE33254E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhCIMSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 07:18:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
+        id S230504AbhCIMSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 07:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbhCIMSE (ORCPT
+        with ESMTP id S230458AbhCIMSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 07:18:04 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C47C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 04:18:04 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so5097765pjv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 04:18:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YMe1Reipq+pUMVMRE0+FPXbOWOU/b1ED4qcuTqK1ghc=;
-        b=Y19ZHseAo6Hf+XdFmH7G5u/kWcQ4ebnMvUX6r09EJ9aqY9k/NwFkPobPVlUCn5qOvI
-         57C3uzWoJHrcbgUg9oWpAm25++WM7LFK9OZa1uubE8w7B+9YsoykbAHh2KYyMDds6n10
-         oToGKC1wwGZm5EWe30wo9Szge/KP/0hthWBcYV1OVpfIxNpnzp7uZezHLPudJjw7wenP
-         H5wdXe1ev44I3XyucVKdZwzIClnKqV5j300tqkUH3HDfot0I+tsov7UmBxp2sQg0B5QN
-         mE9meH3F5f7YWhVeQDVCg1IOr2e2xPoZQtennF7irnxKXbLOTggXndXQElv0T3PxFNKr
-         +1qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YMe1Reipq+pUMVMRE0+FPXbOWOU/b1ED4qcuTqK1ghc=;
-        b=r08xLP+q6w1ME/7L8R9x3QfarHEhxPqlKMpmq3bENe2x55amyl34q+kz8fhkm58cMD
-         1aKfKjdY8HH1wcA4yMFrVANl3ZSDF/V0pRW7fHg9ZIEmrr3teiAi+tCmu+pErpmPBM3x
-         C3e88TM/zXUV10WIORtfKmxve0Yz0b+aPUKoebQ2gfvIo6ns1FdtYR+S1hONiIVrJr4x
-         9gy3kqg9twvFM0zGedcv9/HLh7PBQGfTcKqBfyhnfUwaJLwQpPvlQ4m9rdeenLwk65IL
-         mF4c3UfgPYteKOjI16iGLLIVeSfdOWZTGbnVfG4iaS15BniHc95tq8RD3DbnzrwTBHjw
-         PdOw==
-X-Gm-Message-State: AOAM5339QXPME+f6WQK9GfomCMpd/62TR1d71YdBAk6z4rFMCTZJu8cw
-        0c2dbEEJMGTHiZFLWABTKymh8g==
-X-Google-Smtp-Source: ABdhPJyy5HCirQAKbPH84rJgbw/RcNuoEn37oDc5e3m8yWMb2Cy5JXXi3yOxfCIoRnM9B4hQacBZ3A==
-X-Received: by 2002:a17:90a:4381:: with SMTP id r1mr4769515pjg.20.1615292284114;
-        Tue, 09 Mar 2021 04:18:04 -0800 (PST)
-Received: from localhost.localdomain ([27.56.151.62])
-        by smtp.gmail.com with ESMTPSA id x190sm13338787pfx.166.2021.03.09.04.18.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 04:18:03 -0800 (PST)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     kgdb-bugreport@lists.sourceforge.net
-Cc:     daniel.thompson@linaro.org, jason.wessel@windriver.com,
-        dianders@chromium.org, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH] kdb: Refactor kdb_defcmd implementation
-Date:   Tue,  9 Mar 2021 17:47:47 +0530
-Message-Id: <20210309121747.859823-1-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Mar 2021 07:18:31 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE00BC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 04:18:30 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lJbJd-0005bo-DE; Tue, 09 Mar 2021 13:18:21 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lJbJb-000860-AO; Tue, 09 Mar 2021 13:18:19 +0100
+Date:   Tue, 9 Mar 2021 13:18:19 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Robin van der Gracht <robin@protonic.nl>,
+        David Jander <david@protonic.nl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v1 2/2] iio: adc: add ADC driver for the TI TSC2046
+ controller
+Message-ID: <20210309121819.yzvta7tyrslnepts@pengutronix.de>
+References: <20210305133813.27967-1-o.rempel@pengutronix.de>
+ <20210305133813.27967-3-o.rempel@pengutronix.de>
+ <20210305190239.000075fe@Huawei.com>
+ <CAHp75Veu-G41mDUZubCgHD_V+_znd0HJoO03ZL7JpgwtjMYLCQ@mail.gmail.com>
+ <20210309114150.lubvvtqblw2y5zlk@pengutronix.de>
+ <CAHp75VfR2_N=krD8Rady77ST19o5vL7zChLnJ32wmx-+M1N3pg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHp75VfR2_N=krD8Rady77ST19o5vL7zChLnJ32wmx-+M1N3pg@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 13:03:28 up 97 days,  2:09, 44 users,  load average: 0.04, 0.08,
+ 0.05
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use kdbtab_t instead of separate struct defcmd_set since
-now we have kdb_register_table() to register pre-allocated kdb commands.
+On Tue, Mar 09, 2021 at 01:46:55PM +0200, Andy Shevchenko wrote:
+> On Tue, Mar 9, 2021 at 1:42 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> > On Tue, Mar 09, 2021 at 01:05:27PM +0200, Andy Shevchenko wrote:
+> > > On Fri, Mar 5, 2021 at 9:05 PM Jonathan Cameron
+> > > <Jonathan.Cameron@huawei.com> wrote:
+> > > >
+> > > > On Fri, 5 Mar 2021 14:38:13 +0100
+> > > > Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> > > >
+> > > > > Basically the TI TSC2046 touchscreen controller is 8 channel ADC optimized for
+> > > > > the touchscreen use case. By implementing it as IIO ADC device, we can
+> > > > > make use of resistive-adc-touch and iio-hwmon drivers.
+> > > > >
+> > > > > So far, this driver was tested with custom version of resistive-adc-touch driver,
+> > > > > since it need to be extended to make use of Z1 and Z2 channels. The X/Y
+> > > > > are working without additional changes.
+> > > > >
+> > > > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > > >
+> > > > Hi Oleksij,
+> > > >
+> > > > To consider this as a possible long term route instead of just making this
+> > > > a touchscreen driver, we'll want to see those mods to the resistive-adc-touch.
+> > > > Of course that doesn't stop review of this in the meantime.
+> > > >
+> > > > There are quite a few things in here that feel pretty specific to the touchscreen
+> > > > usecase. That makes me wonder if this is a sensible approach or not.
+> > >
+> > > I'm wondering if this has any similarities with existing drivers under
+> > > drivers/input/touchscreen.
+> >
+> > Yes, for example: drivers/input/touchscreen/ads7846.c
+> 
+> Then I have a few questions here:
+> 1/ why the above mentioned driver can't be extended to cover this?
 
-Also, switch to use a linked list for sub-commands instead of dynamic
-array which makes traversing the sub-commands list simpler.
+It is not possible to keep old device tree binding compatible with the
+new driver at least not for currently existing abstraction: ADC +
+touchscreen node.
 
-Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- kernel/debug/kdb/kdb_main.c    | 136 +++++++++++++++------------------
- kernel/debug/kdb/kdb_private.h |   7 ++
- 2 files changed, 70 insertions(+), 73 deletions(-)
+It is too expensive to overwrite the old driver, we do not have enough time and
+resource to do it. I lardy spend some weeks to do it and I would need a
+many more weeks to make it by tiny slices without solving actual
+problem. Many resistive touchscreen driver should share a lot of code.
 
-diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index 9d69169582c6..2f54e81fd9f7 100644
---- a/kernel/debug/kdb/kdb_main.c
-+++ b/kernel/debug/kdb/kdb_main.c
-@@ -33,7 +33,6 @@
- #include <linux/kallsyms.h>
- #include <linux/kgdb.h>
- #include <linux/kdb.h>
--#include <linux/list.h>
- #include <linux/notifier.h>
- #include <linux/interrupt.h>
- #include <linux/delay.h>
-@@ -678,16 +677,7 @@ static void kdb_cmderror(int diag)
-  * Returns:
-  *	zero for success, a kdb diagnostic if error
-  */
--struct defcmd_set {
--	int count;
--	bool usable;
--	char *name;
--	char *usage;
--	char *help;
--	char **command;
--};
--static struct defcmd_set *defcmd_set;
--static int defcmd_set_count;
-+static kdbtab_t *defcmd_set;
- static bool defcmd_in_progress;
- 
- /* Forward references */
-@@ -695,53 +685,52 @@ static int kdb_exec_defcmd(int argc, const char **argv);
- 
- static int kdb_defcmd2(const char *cmdstr, const char *argv0)
- {
--	struct defcmd_set *s = defcmd_set + defcmd_set_count - 1;
--	char **save_command = s->command;
-+	struct kdb_subcmd *ks;
-+
-+	if (!defcmd_set)
-+		return KDB_NOTIMP;
-+
- 	if (strcmp(argv0, "endefcmd") == 0) {
- 		defcmd_in_progress = false;
--		if (!s->count)
--			s->usable = false;
--		if (s->usable)
--			/* macros are always safe because when executed each
--			 * internal command re-enters kdb_parse() and is
--			 * safety checked individually.
--			 */
--			kdb_register_flags(s->name, kdb_exec_defcmd, s->usage,
--					   s->help, 0,
--					   KDB_ENABLE_ALWAYS_SAFE);
-+		if (!list_empty(&defcmd_set->kdb_scmds_head))
-+			kdb_register_table(defcmd_set, 1);
- 		return 0;
- 	}
--	if (!s->usable)
--		return KDB_NOTIMP;
--	s->command = kcalloc(s->count + 1, sizeof(*(s->command)), GFP_KDB);
--	if (!s->command) {
-+
-+	ks = kmalloc(sizeof(*ks), GFP_KDB);
-+	if (!ks) {
- 		kdb_printf("Could not allocate new kdb_defcmd table for %s\n",
- 			   cmdstr);
--		s->usable = false;
- 		return KDB_NOTIMP;
- 	}
--	memcpy(s->command, save_command, s->count * sizeof(*(s->command)));
--	s->command[s->count++] = kdb_strdup(cmdstr, GFP_KDB);
--	kfree(save_command);
-+
-+	ks->scmd_name = kdb_strdup(cmdstr, GFP_KDB);
-+	list_add_tail(&ks->list_node, &defcmd_set->kdb_scmds_head);
-+
- 	return 0;
- }
- 
- static int kdb_defcmd(int argc, const char **argv)
- {
--	struct defcmd_set *save_defcmd_set = defcmd_set, *s;
- 	if (defcmd_in_progress) {
- 		kdb_printf("kdb: nested defcmd detected, assuming missing "
- 			   "endefcmd\n");
- 		kdb_defcmd2("endefcmd", "endefcmd");
- 	}
- 	if (argc == 0) {
--		int i;
--		for (s = defcmd_set; s < defcmd_set + defcmd_set_count; ++s) {
--			kdb_printf("defcmd %s \"%s\" \"%s\"\n", s->name,
--				   s->usage, s->help);
--			for (i = 0; i < s->count; ++i)
--				kdb_printf("%s", s->command[i]);
--			kdb_printf("endefcmd\n");
-+		kdbtab_t *kp;
-+		struct kdb_subcmd *ks;
-+
-+		list_for_each_entry(kp, &kdb_cmds_head, list_node) {
-+			if (kp->cmd_func == kdb_exec_defcmd) {
-+				kdb_printf("defcmd %s \"%s\" \"%s\"\n",
-+					   kp->cmd_name, kp->cmd_usage,
-+					   kp->cmd_help);
-+				list_for_each_entry(ks, &kp->kdb_scmds_head,
-+						    list_node)
-+					kdb_printf("%s", ks->scmd_name);
-+				kdb_printf("endefcmd\n");
-+			}
- 		}
- 		return 0;
- 	}
-@@ -751,45 +740,42 @@ static int kdb_defcmd(int argc, const char **argv)
- 		kdb_printf("Command only available during kdb_init()\n");
- 		return KDB_NOTIMP;
- 	}
--	defcmd_set = kmalloc_array(defcmd_set_count + 1, sizeof(*defcmd_set),
--				   GFP_KDB);
-+	defcmd_set = kzalloc(sizeof(*defcmd_set), GFP_KDB);
- 	if (!defcmd_set)
- 		goto fail_defcmd;
--	memcpy(defcmd_set, save_defcmd_set,
--	       defcmd_set_count * sizeof(*defcmd_set));
--	s = defcmd_set + defcmd_set_count;
--	memset(s, 0, sizeof(*s));
--	s->usable = true;
--	s->name = kdb_strdup(argv[1], GFP_KDB);
--	if (!s->name)
-+
-+	defcmd_set->cmd_func = kdb_exec_defcmd;
-+	defcmd_set->cmd_minlen = 0;
-+	defcmd_set->cmd_flags = KDB_ENABLE_ALWAYS_SAFE;
-+	defcmd_set->cmd_name = kdb_strdup(argv[1], GFP_KDB);
-+	if (!defcmd_set->cmd_name)
- 		goto fail_name;
--	s->usage = kdb_strdup(argv[2], GFP_KDB);
--	if (!s->usage)
-+	defcmd_set->cmd_usage = kdb_strdup(argv[2], GFP_KDB);
-+	if (!defcmd_set->cmd_usage)
- 		goto fail_usage;
--	s->help = kdb_strdup(argv[3], GFP_KDB);
--	if (!s->help)
-+	defcmd_set->cmd_help = kdb_strdup(argv[3], GFP_KDB);
-+	if (!defcmd_set->cmd_help)
- 		goto fail_help;
--	if (s->usage[0] == '"') {
--		strcpy(s->usage, argv[2]+1);
--		s->usage[strlen(s->usage)-1] = '\0';
-+	if (defcmd_set->cmd_usage[0] == '"') {
-+		strcpy(defcmd_set->cmd_usage, argv[2]+1);
-+		defcmd_set->cmd_usage[strlen(defcmd_set->cmd_usage)-1] = '\0';
- 	}
--	if (s->help[0] == '"') {
--		strcpy(s->help, argv[3]+1);
--		s->help[strlen(s->help)-1] = '\0';
-+	if (defcmd_set->cmd_help[0] == '"') {
-+		strcpy(defcmd_set->cmd_help, argv[3]+1);
-+		defcmd_set->cmd_help[strlen(defcmd_set->cmd_help)-1] = '\0';
- 	}
--	++defcmd_set_count;
-+
-+	INIT_LIST_HEAD(&defcmd_set->kdb_scmds_head);
- 	defcmd_in_progress = true;
--	kfree(save_defcmd_set);
- 	return 0;
- fail_help:
--	kfree(s->usage);
-+	kfree(defcmd_set->cmd_usage);
- fail_usage:
--	kfree(s->name);
-+	kfree(defcmd_set->cmd_name);
- fail_name:
- 	kfree(defcmd_set);
- fail_defcmd:
- 	kdb_printf("Could not allocate new defcmd_set entry for %s\n", argv[1]);
--	defcmd_set = save_defcmd_set;
- 	return KDB_NOTIMP;
- }
- 
-@@ -804,25 +790,29 @@ static int kdb_defcmd(int argc, const char **argv)
-  */
- static int kdb_exec_defcmd(int argc, const char **argv)
- {
--	int i, ret;
--	struct defcmd_set *s;
-+	int ret;
-+	kdbtab_t *kp;
-+	struct kdb_subcmd *ks;
-+
- 	if (argc != 0)
- 		return KDB_ARGCOUNT;
--	for (s = defcmd_set, i = 0; i < defcmd_set_count; ++i, ++s) {
--		if (strcmp(s->name, argv[0]) == 0)
-+
-+	list_for_each_entry(kp, &kdb_cmds_head, list_node) {
-+		if (strcmp(kp->cmd_name, argv[0]) == 0)
- 			break;
- 	}
--	if (i == defcmd_set_count) {
-+	if (list_entry_is_head(kp, &kdb_cmds_head, list_node)) {
- 		kdb_printf("kdb_exec_defcmd: could not find commands for %s\n",
- 			   argv[0]);
- 		return KDB_NOTIMP;
- 	}
--	for (i = 0; i < s->count; ++i) {
--		/* Recursive use of kdb_parse, do not use argv after
--		 * this point */
-+	list_for_each_entry(ks, &kp->kdb_scmds_head, list_node) {
-+		/*
-+		 * Recursive use of kdb_parse, do not use argv after this point.
-+		 */
- 		argv = NULL;
--		kdb_printf("[%s]kdb> %s\n", s->name, s->command[i]);
--		ret = kdb_parse(s->command[i]);
-+		kdb_printf("[%s]kdb> %s\n", kp->cmd_name, ks->scmd_name);
-+		ret = kdb_parse(ks->scmd_name);
- 		if (ret)
- 			return ret;
- 	}
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index ec91d7e02334..a8bda278c9c1 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -13,6 +13,7 @@
-  */
- 
- #include <linux/kgdb.h>
-+#include <linux/list.h>
- #include "../debug_core.h"
- 
- /* Kernel Debugger Command codes.  Must not overlap with error codes. */
-@@ -164,6 +165,11 @@ typedef struct _kdb_bp {
- #ifdef CONFIG_KGDB_KDB
- extern kdb_bp_t kdb_breakpoints[/* KDB_MAXBPT */];
- 
-+struct kdb_subcmd {
-+	char    *scmd_name;		/* Sub-command name */
-+	struct  list_head list_node;	/* Sub-command node */
-+};
-+
- /* The KDB shell command table */
- typedef struct _kdbtab {
- 	char    *cmd_name;		/* Command name */
-@@ -175,6 +181,7 @@ typedef struct _kdbtab {
- 	kdb_cmdflags_t cmd_flags;	/* Command behaviour flags */
- 	struct list_head list_node;	/* Command list */
- 	bool    is_dynamic;		/* Command table allocation type */
-+	struct list_head kdb_scmds_head; /* Sub-commands list */
- } kdbtab_t;
- 
- extern void kdb_register_table(kdbtab_t *kp, size_t len);
+Since there is already existing IIO based components, it seems to me
+better to spend available resource and making it properly in a way,
+which reflect modern best practices.
+
+> 2/ or why is the proposed driver named after the touchscreen instead
+> of the real AD/C chip behind it?
+
+I do not understand this question. The proposed driver is named after
+the chip which provides ADC functionality, In this case, it is TSC2046.
+The touchscreen is a separate physical module.
+
+The idea of this proposition is to keep physically separate components
+separately on the kernel side.
+
+> 3/ maybe we can introduce a simple AD/C driver under IIO for that?
+
+There are already simple ADC drivers for that:
+iio-hwmon: drivers/hwmon/iio_hwmon.c
+resistive-adc-touch: drivers/input/touchscreen/resistive-adc-touch.c
+
+This two driver + the proposed one, will replace functionality of ads7846.c
+
+Regards,
+Oleksij
 -- 
-2.25.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
