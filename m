@@ -2,128 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF37331EF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 07:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63494331F06
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 07:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhCIGGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 01:06:50 -0500
-Received: from mail-out.m-online.net ([212.18.0.9]:56094 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCIGG1 (ORCPT
+        id S229704AbhCIGMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 01:12:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhCIGL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 01:06:27 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Dvl8K1N5jz1qs49;
-        Tue,  9 Mar 2021 07:06:25 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Dvl8K0H5Nz1qqkj;
-        Tue,  9 Mar 2021 07:06:25 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id z7RsuVO_N5Bt; Tue,  9 Mar 2021 07:06:22 +0100 (CET)
-X-Auth-Info: EqBJ4vaOt1kmSNyU5jbSBDc1dVSIvvbVLPsrRxBaEhg=
-Received: from [192.168.1.107] (92-52-238-184.pool.digikabel.hu [92.52.238.184])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 9 Mar 2021 01:11:56 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0033C06174A;
+        Mon,  8 Mar 2021 22:11:55 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Tue,  9 Mar 2021 07:06:22 +0100 (CET)
-Reply-To: hs@denx.de
-Subject: Re: [EXT] [PATCH v2 2/4] dt-bindings: spi: add compatible entry for
- imx8mp in FlexSPI controller
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Cc:     Ashish Kumar <ashish.kumar@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-References: <20210309053116.1486347-1-hs@denx.de>
- <20210309053116.1486347-3-hs@denx.de>
- <DB6PR0402MB275838BF727B891FD6E2A62AE0929@DB6PR0402MB2758.eurprd04.prod.outlook.com>
-From:   Heiko Schocher <hs@denx.de>
-Message-ID: <290d37d7-7362-e00d-0e19-5fb5b78a4bf2@denx.de>
-Date:   Tue, 9 Mar 2021 07:06:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DvlGZ29Fqz9sW5;
+        Tue,  9 Mar 2021 17:11:50 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615270311;
+        bh=yLJJE5xxeeaZ/0EtxYZhcbzn8VJqWRF42XlqZ1TBzpc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cVsM1vdAyP10esMijFiQ3sbTwoyHJXfYRxDuLalpWLARR+9KrOxUi+J/A6+YszFnv
+         8t431YoqqFNS2QK/v0oj8utxDb4ua+SUn2VUs6RKGfQzUWRPUqh3Otl9YFtpZm/faX
+         zLGyUArJSW/+l+23LCzy3pzj7nS/qDJTr0p2Nhx+MO6agIoBOpMNVnLiZfEg7Vkm0M
+         pok0YryqA5zwcCvAQdtbZ4D3Fc/vIVtMiApKbqLn6apmKMyVPbf/DaJ1VDmsQIUVT8
+         YoUWJ4I0vp6f3xYbZXda4ppuOgpFB4w8i8Wh1hlZ9K5c1tvDrCchpIEyvKrGTsfQog
+         scfTp3jCgmM7g==
+Date:   Tue, 9 Mar 2021 17:11:49 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     akpm@linux-foundation.org
+Cc:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org
+Subject: Re: mmotm 2021-03-08-21-52 uploaded
+Message-ID: <20210309171149.0039e74d@canb.auug.org.au>
+In-Reply-To: <20210309055255.QSi-xADe2%akpm@linux-foundation.org>
+References: <20210309055255.QSi-xADe2%akpm@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <DB6PR0402MB275838BF727B891FD6E2A62AE0929@DB6PR0402MB2758.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/ITWOSbH7WFIqE1bGc_i+rPH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+--Sig_/ITWOSbH7WFIqE1bGc_i+rPH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 09.03.21 06:56, Kuldeep Singh wrote:
-> Hi Heiko,
-> 
->> -----Original Message-----
->> From: Heiko Schocher <hs@denx.de>
->> Sent: Tuesday, March 9, 2021 11:01 AM
->> To: linux-arm-kernel@lists.infradead.org
->> Cc: Heiko Schocher <hs@denx.de>; Ashish Kumar <ashish.kumar@nxp.com>;
->> Mark Brown <broonie@kernel.org>; Rob Herring <robh+dt@kernel.org>; Yogesh
->> Gaur <yogeshgaur.83@gmail.com>; devicetree@vger.kernel.org; linux-
->> kernel@vger.kernel.org; linux-spi@vger.kernel.org
->> Subject: [EXT] [PATCH v2 2/4] dt-bindings: spi: add compatible entry for imx8mp in
->> FlexSPI controller
->>
->> Caution: EXT Email
->>
->> add compatible entry "nxp,imx8mp-fspi" in NXP FlexSPI controller
->>
->> Signed-off-by: Heiko Schocher <hs@denx.de>
->> ---
->>
->> (no changes since v1)
->>
->>  Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
->> b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
->> index 7ac60d9fe3571..fd5f081f6d91b 100644
->> --- a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
->> +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
->> @@ -4,6 +4,7 @@ Required properties:
->>    - compatible : Should be "nxp,lx2160a-fspi"
->>                             "nxp,imx8qxp-fspi"
->>                             "nxp,imx8mm-fspi"
->> +                           "nxp,imx8mp-fspi"
-> 
-> It seems the changes are not on top of tree. Please see[1] for latest changes including imx8dxl entry.
-> Snippet below:
-> 
-> Required properties:
->   - compatible : Should be "nxp,lx2160a-fspi"
-> 			    "nxp,imx8qxp-fspi"
-> 			    "nxp,imx8mm-fspi"
-> 			    "nxp,imx8dxl-fspi"
+Hi Andrew,
 
-My patches are based on mainline..
-*   144c79ef33536 - (origin/master, origin/HEAD) Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07'
-of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux (vor 32 Stunden) <Linus Torvalds>
+On Mon, 08 Mar 2021 21:52:55 -0800 akpm@linux-foundation.org wrote:
+>
+> * mm-mempool-minor-coding-style-tweaks.patch
+	.
+	.
+> * mm-mempool-minor-coding-style-tweaks.patch
 
-Should I post this patch rebased on [1] or may all patches
-rebased on [1] ?
+This patch appears twice (I just dropped the second one).
 
-Thanks!
+--=20
+Cheers,
+Stephen Rothwell
 
-bye,
-Heiko
-> 
-> Thanks
-> Kuldeep
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/tree/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> 
+--Sig_/ITWOSbH7WFIqE1bGc_i+rPH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
--- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBHEaUACgkQAVBC80lX
+0GwewQf/YCCIFc/sK82ulf0nzcVKVA13VkyYW3HgqZX3/t7wCiwRmEVcEpz27EwW
+dy48G68N83df+nSgy1dfHJrMtden0nZsp15cQ1S4YX3C6AkY3brRTKYd/bxYzIAi
+fE8U1Q5Bb6m13ouBiqrrijvkZ6E7i+nPOK9dlNHiVrqV3AAO16sP7+6r1Xol7Jfb
+OxgBsnl2z9mNItbkalYSaJEYZg/TlwsloZnh5PB4wHd7Mrhtl0TbNW9qOJCCTVdw
+yM/n6/z15TaxQR0RmTZwKVdw2mc3SnmkAnoU8/Uy4qidPfv/YBNlQebLsaNlWCgo
+bSaRJD8QZNNqgu07tOxajEBrVP2CxQ==
+=1Gcw
+-----END PGP SIGNATURE-----
+
+--Sig_/ITWOSbH7WFIqE1bGc_i+rPH--
