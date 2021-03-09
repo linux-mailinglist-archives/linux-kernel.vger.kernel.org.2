@@ -2,821 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13095332322
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5303A332327
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhCIKfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 05:35:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230156AbhCIKee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 05:34:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B22236522F;
-        Tue,  9 Mar 2021 10:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615286073;
-        bh=v767C0k4VPjVlR2gIA0UXY56wrD/viimOTqj0o52g4A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W0sXrq40GQN5TiLHxYDfY1F5OHkLkG3J2IVbdKzLO5O4b4IzbhI+cMYn00egXpOO9
-         dugfSVJAWh0usI7JY7hP9BKJXo0KuqTE8zgjbSw6acHUQ/iH5QxGu7VU+MKDxiQ+WT
-         dEyK2wKigWDrfidz/GAha43Abu8nfnBRsCiSQHrg=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.4.104
-Date:   Tue,  9 Mar 2021 11:34:26 +0100
-Message-Id: <1615286066234112@kroah.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <161528606622750@kroah.com>
-References: <161528606622750@kroah.com>
-MIME-Version: 1.0
+        id S230435AbhCIKgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 05:36:05 -0500
+Received: from mail-eopbgr30089.outbound.protection.outlook.com ([40.107.3.89]:28406
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230436AbhCIKfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 05:35:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mG55KxtXiwbsUkRyMEol9Pz6DDxiClv+8Ekao0XTq+kwvUCNgzY7rXE1NoFds/YrFo2RU3WTgHxirOhCCkzIjls4JiKJDsl9yKbgabNvq9068PuQg6yCz88aFPFOlbRHhIFxuVglPqPZcNZexZ0d/igpXDkcYG9W53bBGgX8078JQNOvf+mSdUGwEqwcx1dftkrMrt1d9p0WVZ5oI2teCRmS6BU2uE9rI9duaVNXvBPfEvhNGgBAoGR3KFvXdhEHpHQzP1ZBrEoQ/UAIGb8ghsLzBQigLUz/9dCDRlAbMgXD3VTM1iKnHL1xhR+NtUrrQL1tK1OeTH6lTCFOQGw8Mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tgdImo7raeJf9HrCKuQ+i0aYH06nQjpDY7Jqc4JgBuw=;
+ b=hAKgS+kB//bBggv5R8/iw0u+uQIGNC7p+5msWhpCr96XRJVmkqp05K1EGNzLuWiefEpKJpbZBeIFajdbQjFUKNHoCC0Xqy+CCzpDtayREqx/OXfspfvLks2lgVzcz3otIlzhFqZWTT0uk7HnvVyY15CKRWGV7thWEOJNmi6tNR8MVS93XgZt65miIsg3GNONnkodoq7kUHQj0IKbmLNEbykA/jAK878spUQlS+4ce8Ur25+nPgJMI9yLFJ25Zt6kbtxLzrBO8Hwz2GJD8u0onSBnSC8NXUxbRIu5yQZSqpTnWNOBNuEj5VRhYapbNN34kONn7UVKy6Jax2p4XOXDSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tgdImo7raeJf9HrCKuQ+i0aYH06nQjpDY7Jqc4JgBuw=;
+ b=VXy/oBDtHI62/MMAmjY7F/7mz/e/BQfzk9MepvJGkCJxumDiW1Bg6A1vqnMrLWgwG+NEZn6Ink7nXopK3iZs1xXu35yzkEH+Ve4j0dza4JqsEz4MsVvM99+W7lEAZb0htLhnAMl2ZZNMr750gz9g4ZgKrI8p8VdwMp8N/1UGO1Y=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
+ by DB8PR04MB6860.eurprd04.prod.outlook.com (2603:10a6:10:112::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Tue, 9 Mar
+ 2021 10:35:52 +0000
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8%5]) with mapi id 15.20.3890.037; Tue, 9 Mar 2021
+ 10:35:52 +0000
+From:   Kuldeep Singh <kuldeep.singh@nxp.com>
+To:     Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ashish Kumar <ashish.kumar@nxp.com>,
+        Kuldeep Singh <kuldeep.singh@nxp.com>
+Subject: [PATCH] dt-bindings: spi: Convert NXP flexspi to json schema
+Date:   Tue,  9 Mar 2021 16:05:28 +0530
+Message-Id: <20210309103528.3538910-1-kuldeep.singh@nxp.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: HK2PR02CA0201.apcprd02.prod.outlook.com
+ (2603:1096:201:20::13) To DB6PR0402MB2758.eurprd04.prod.outlook.com
+ (2603:10a6:4:96::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03378.swis.in-blr01.nxp.com (14.142.151.118) by HK2PR02CA0201.apcprd02.prod.outlook.com (2603:1096:201:20::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 10:35:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e16f3fe5-1ca1-4c81-fc82-08d8e2e71d00
+X-MS-TrafficTypeDiagnostic: DB8PR04MB6860:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB686007FC478B4AD84BC6A066E0929@DB8PR04MB6860.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: maeEDxr2ambRu/XQPRLaTlaVUwvW56+5pUYsRQSjuXeDDERZOxIL/av9aiV0pjUcxmzppWcscNDkyzVriRsCGso5muPHIzguqvE4rr/+BhBbQmy4paMnLsIZaeml7/4gZGZ+HZkGsU6xEibODytA6ik3BuyhqgebIH+miRi536912tJh051rXH1TLlUPXeO0019OZdEsw19CTaDIRf21kZeKQTKIu3tqRsgN8mQV3t0ye2+lkda08K/dhGyuhw2XOdfxVHSz+0iDp9x/N3uwlT02ZRO+wh6wr1cjtYg34CEZu7+fkpMkKP841w1mkQSRI05SC6x7t124NpWDFn8On5YBgh60eCQmpP4MArnDjAy/+VvNBqj9dhPOKDwqKj8MskwNFDzhE18LV0VNb3sYQRuHcjB5XRQvMeeOJYDB+oo5sVr9Yi0n3q/t0clOTR1VpyVkekvRQ8Y+7ELlTXkdGaaPGj7Q0zgfRQxOFWpqiO5a4Xr2MAPZw4R/WW9D5AGAYYi1VfVro2AH6TILcFGk2fo5Fls4VZ2VwlmJnPXoLhC14NVRqR4QSM7YQexMZwVYMYwl/fLEWw8d8XJ2E0KIBQXmbVx8zhUHXL7iN31Ix8jUzTwNkmeQGcra53tSZP1ohAwFGcg32vg4w4ClaQW6tg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2758.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(346002)(376002)(396003)(6666004)(478600001)(66946007)(186003)(1076003)(66556008)(54906003)(16526019)(66476007)(316002)(83380400001)(4326008)(26005)(36756003)(1006002)(8676002)(7696005)(966005)(52116002)(5660300002)(6486002)(956004)(86362001)(44832011)(2616005)(8936002)(2906002)(55236004)(110426009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?MSYzfCKeUx63jBGJWmGDj2G1AIlYlxHNGEPnPmRCJIxfLyhaQa1KUXZJvliJ?=
+ =?us-ascii?Q?aHrGjPmzRux98sya5M6TefVRnX9lokdg3FbCBHMnyfsLzdelK46WgC6mwHwW?=
+ =?us-ascii?Q?F7KT98ePNYeAQZcmxhtIt+/YyGKr0Fi58Ieh4xBrsnwVDXiZT+BX/ArXtTSO?=
+ =?us-ascii?Q?cckOdOV2HVWQ082N5hjhqw8WNxIOxEb3Dfjw7X/jwC1hZc2VYH/gQPFaURPm?=
+ =?us-ascii?Q?eRh7miQMdBufauQu6ZnRsNPMNM+CjdePNkfs35t2SVih+v4kTrOzbBMUynEO?=
+ =?us-ascii?Q?3utEVGDsFeeEJ3oAWJNjiTq3egmL65IOenFK6capeAkefIcDxzK/C52kj6xb?=
+ =?us-ascii?Q?ezFYCNC/dFCSIkkdwxnFOmzQkdlBzgeBQF3V26hTBh7uq5FL6xyYjFTssRue?=
+ =?us-ascii?Q?NORxkkYmW0KZsC0nu2PeonSptPf0Nqk7uZ+CfWd0Lof6kwJj+FKQDYyyRfsf?=
+ =?us-ascii?Q?lcfHqgEcE6ewS9YiThKH0X/VEW7XM5dci7jYXA2AYbx+OTSs++0y40F6/Fky?=
+ =?us-ascii?Q?QEL1f+at3lA9CeLbbFwv2YDILiPxsX93iRqbvjMOBpk2GdUXVjA/rTtQleY9?=
+ =?us-ascii?Q?HJiZwN6jkNY/dqyPVn7R04tsjwTWDbhMyUya4cL+sHJgspSjKEi9FpwSYnCU?=
+ =?us-ascii?Q?W8HyZj2sOYhJZvW/WcSofD5ApgIXTVmJn6NKQyU2ZKZhLV1US80mgjQwOLYq?=
+ =?us-ascii?Q?SJZPptUarFKfycgDT8IJcUqQztFzW6wQisLFxMVU7by4SO0EyAOx+uURX6d5?=
+ =?us-ascii?Q?FJs7QH0uKNSd084gUUY+f5poSVJsDP9WvsJwtBS5KQ1dp7pDzew8CuQsniBm?=
+ =?us-ascii?Q?ECoevbC6/02asLFgR9zsarx7PrnK/lYj2b+qYjO5Q7jfVkP4TZ6W1nXkimtS?=
+ =?us-ascii?Q?L1V0bPUYBz3xmNgYbdg5Svw8xTYGi9rGKD5L1vk8gU1M81h85LsaPDEVfoPz?=
+ =?us-ascii?Q?2EfGISNHruz8QNTmzl0GpZSF2f343FX883lDCzvj6h1uGVxASLbqfHE4BVbH?=
+ =?us-ascii?Q?bPc4e4a7F2POdeScELdaaNrfnSdHyhDUrr/+ZEY7/nGQRC/4fVGZQ/vwydPH?=
+ =?us-ascii?Q?9lcXvNA6XMOgFiJnOKQPKeDklmgdOZtiO76kCeHD/PhZiFG8qomU1+sAkvTR?=
+ =?us-ascii?Q?/2pT123B1nbvaXqmBntrRnH9rCCnTRQcebZKfMnsKBWFvMTp+LGYqhQwloGN?=
+ =?us-ascii?Q?EOIIKcs3Oh4odQart2CqfZZOme8xSWb48KV63HpIESzFaI1Bq/ZAqN2pqzBW?=
+ =?us-ascii?Q?ytwi3A8L0Cty4+XVXBgKbJFIdk2aLeJ1BaG/aSoThi/EMP81bpR6Yz+OvRun?=
+ =?us-ascii?Q?UBFFYiVC0RUVR6hpXbZGp+vH?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e16f3fe5-1ca1-4c81-fc82-08d8e2e71d00
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 10:35:52.7510
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TJpOfv+fX4IDvP6ifYK8kE1vWq/gx/T8urTazEtWNvZefWUqdOBFys8e6q3wCmVEi2QC0lW+Qiwj9NlgjWoU+g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6860
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Convert the NXP FlexSPI binding to DT schema format using json-schema.
 
-diff --git a/Makefile b/Makefile
-index c95435d78fcb..e94dcf2d77f5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 4
--SUBLEVEL = 103
-+SUBLEVEL = 104
- EXTRAVERSION =
- NAME = Kleptomaniac Octopus
- 
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 30b877f8b85e..0cfd68577489 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1844,7 +1844,7 @@ int syscall_trace_enter(struct pt_regs *regs)
- 
- 	if (flags & (_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE)) {
- 		tracehook_report_syscall(regs, PTRACE_SYSCALL_ENTER);
--		if (!in_syscall(regs) || (flags & _TIF_SYSCALL_EMU))
-+		if (flags & _TIF_SYSCALL_EMU)
- 			return -1;
- 	}
- 
-diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-index 137a7ba053d7..8e3d0228b05b 100644
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -325,22 +325,22 @@ static void rpm_put_suppliers(struct device *dev)
- static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
- 	__releases(&dev->power.lock) __acquires(&dev->power.lock)
- {
--	int retval, idx;
- 	bool use_links = dev->power.links_count > 0;
-+	bool get = false;
-+	int retval, idx;
-+	bool put;
- 
- 	if (dev->power.irq_safe) {
- 		spin_unlock(&dev->power.lock);
-+	} else if (!use_links) {
-+		spin_unlock_irq(&dev->power.lock);
- 	} else {
-+		get = dev->power.runtime_status == RPM_RESUMING;
+Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+---
+ .../bindings/spi/nxp,spi-nxp-fspi.yaml        | 85 +++++++++++++++++++
+ .../devicetree/bindings/spi/spi-nxp-fspi.txt  | 43 ----------
+ MAINTAINERS                                   |  2 +-
+ 3 files changed, 86 insertions(+), 44 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+
+diff --git a/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml b/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+new file mode 100644
+index 000000000000..e3f2c5aae847
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+@@ -0,0 +1,85 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/nxp,spi-nxp-fspi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 		spin_unlock_irq(&dev->power.lock);
- 
--		/*
--		 * Resume suppliers if necessary.
--		 *
--		 * The device's runtime PM status cannot change until this
--		 * routine returns, so it is safe to read the status outside of
--		 * the lock.
--		 */
--		if (use_links && dev->power.runtime_status == RPM_RESUMING) {
-+		/* Resume suppliers if necessary. */
-+		if (get) {
- 			idx = device_links_read_lock();
- 
- 			retval = rpm_get_suppliers(dev);
-@@ -355,24 +355,36 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
- 
- 	if (dev->power.irq_safe) {
- 		spin_lock(&dev->power.lock);
--	} else {
--		/*
--		 * If the device is suspending and the callback has returned
--		 * success, drop the usage counters of the suppliers that have
--		 * been reference counted on its resume.
--		 *
--		 * Do that if resume fails too.
--		 */
--		if (use_links
--		    && ((dev->power.runtime_status == RPM_SUSPENDING && !retval)
--		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
--			idx = device_links_read_lock();
-+		return retval;
-+	}
- 
-- fail:
--			rpm_put_suppliers(dev);
-+	spin_lock_irq(&dev->power.lock);
- 
--			device_links_read_unlock(idx);
--		}
-+	if (!use_links)
-+		return retval;
++title: NXP Flex Serial Peripheral Interface (FSPI)
 +
-+	/*
-+	 * If the device is suspending and the callback has returned success,
-+	 * drop the usage counters of the suppliers that have been reference
-+	 * counted on its resume.
-+	 *
-+	 * Do that if the resume fails too.
-+	 */
-+	put = dev->power.runtime_status == RPM_SUSPENDING && !retval;
-+	if (put)
-+		__update_runtime_status(dev, RPM_SUSPENDED);
-+	else
-+		put = get && retval;
++maintainers:
++  - Ashish Kumar <ashish.kumar@nxp.com>
 +
-+	if (put) {
-+		spin_unlock_irq(&dev->power.lock);
++allOf:
++  - $ref: "spi-controller.yaml#"
 +
-+		idx = device_links_read_lock();
++properties:
++  compatible:
++    enum:
++      - nxp,lx2160a-fspi
++      - nxp,imx8qxp-fspi
++      - nxp,imx8mm-fspi
++      - nxp,imx8dxl-fspi
 +
-+fail:
-+		rpm_put_suppliers(dev);
++  reg:
++    items:
++      - description: registers
++      - description: memory mapping
 +
-+		device_links_read_unlock(idx);
- 
- 		spin_lock_irq(&dev->power.lock);
- 	}
-diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-index 10f6368117d8..804d28faa97b 100644
---- a/drivers/block/rsxx/core.c
-+++ b/drivers/block/rsxx/core.c
-@@ -165,15 +165,17 @@ static ssize_t rsxx_cram_read(struct file *fp, char __user *ubuf,
- {
- 	struct rsxx_cardinfo *card = file_inode(fp)->i_private;
- 	char *buf;
--	ssize_t st;
-+	int st;
- 
- 	buf = kzalloc(cnt, GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
- 
- 	st = rsxx_creg_read(card, CREG_ADD_CRAM + (u32)*ppos, cnt, buf, 1);
--	if (!st)
--		st = copy_to_user(ubuf, buf, cnt);
-+	if (!st) {
-+		if (copy_to_user(ubuf, buf, cnt))
-+			st = -EFAULT;
-+	}
- 	kfree(buf);
- 	if (st)
- 		return st;
-diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-index 46d1fac247db..7da35867b6ad 100644
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -618,12 +618,22 @@ static int tpm_tis_gen_interrupt(struct tpm_chip *chip)
- 	const char *desc = "attempting to generate an interrupt";
- 	u32 cap2;
- 	cap_t cap;
-+	int ret;
- 
-+	/* TPM 2.0 */
- 	if (chip->flags & TPM_CHIP_FLAG_TPM2)
- 		return tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
--	else
--		return tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc,
--				  0);
++  reg-names:
++    items:
++      - const: fspi_base
++      - const: fspi_mmap
 +
-+	/* TPM 1.2 */
-+	ret = request_locality(chip, 0);
-+	if (ret < 0)
-+		return ret;
++  interrupts:
++    maxItems: 1
 +
-+	ret = tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc, 0);
++  clocks:
++    items:
++      - description: SoC SPI fspi_en clock
++      - description: SoC SPI fspi clock
 +
-+	release_locality(chip, 0);
++  clock-names:
++    items:
++      - const: fspi_en
++      - const: fspi
 +
-+	return ret;
- }
- 
- /* Register the IRQ and issue a command that will cause an interrupt. If an
-@@ -929,11 +939,21 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
- 	init_waitqueue_head(&priv->read_queue);
- 	init_waitqueue_head(&priv->int_queue);
- 	if (irq != -1) {
--		/* Before doing irq testing issue a command to the TPM in polling mode
-+		/*
-+		 * Before doing irq testing issue a command to the TPM in polling mode
- 		 * to make sure it works. May as well use that command to set the
- 		 * proper timeouts for the driver.
- 		 */
--		if (tpm_get_timeouts(chip)) {
++required:
++  - compatible
++  - reg
++  - reg-names
++  - interrupts
++  - clocks
++  - clock-names
 +
-+		rc = request_locality(chip, 0);
-+		if (rc < 0)
-+			goto out_err;
++unevaluatedProperties: false
 +
-+		rc = tpm_get_timeouts(chip);
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/fsl,qoriq-clockgen.h>
 +
-+		release_locality(chip, 0);
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
 +
-+		if (rc) {
- 			dev_err(dev, "Could not get TPM timeouts and durations\n");
- 			rc = -ENODEV;
- 			goto out_err;
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-index 700e26b69abc..a9a81e55777b 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-@@ -240,7 +240,7 @@ static ssize_t amdgpu_debugfs_regs_pcie_read(struct file *f, char __user *buf,
- 	while (size) {
- 		uint32_t value;
- 
--		value = RREG32_PCIE(*pos >> 2);
-+		value = RREG32_PCIE(*pos);
- 		r = put_user(value, (uint32_t *)buf);
- 		if (r)
- 			return r;
-@@ -283,7 +283,7 @@ static ssize_t amdgpu_debugfs_regs_pcie_write(struct file *f, const char __user
- 		if (r)
- 			return r;
- 
--		WREG32_PCIE(*pos >> 2, value);
-+		WREG32_PCIE(*pos, value);
- 
- 		result += 4;
- 		buf += 4;
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 4d6f25fdcc0e..664e0f374ac0 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -2022,8 +2022,10 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_SUBSCRIBE_EVENT)(
- 
- 		num_alloc_xa_entries++;
- 		event_sub = kzalloc(sizeof(*event_sub), GFP_KERNEL);
--		if (!event_sub)
-+		if (!event_sub) {
-+			err = -ENOMEM;
- 			goto err;
-+		}
- 
- 		list_add_tail(&event_sub->event_list, &sub_list);
- 		if (use_eventfd) {
-diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
-index 71a773f607bb..0e8f1d05dfb2 100644
---- a/drivers/infiniband/sw/rxe/Kconfig
-+++ b/drivers/infiniband/sw/rxe/Kconfig
-@@ -4,6 +4,7 @@ config RDMA_RXE
- 	depends on INET && PCI && INFINIBAND
- 	depends on INFINIBAND_VIRT_DMA
- 	select NET_UDP_TUNNEL
-+	select CRYPTO
- 	select CRYPTO_CRC32
- 	select DMA_VIRT_OPS
- 	---help---
-diff --git a/drivers/md/dm-bufio.c b/drivers/md/dm-bufio.c
-index a9529dc2b26e..e8c37d9a652d 100644
---- a/drivers/md/dm-bufio.c
-+++ b/drivers/md/dm-bufio.c
-@@ -1438,6 +1438,10 @@ EXPORT_SYMBOL_GPL(dm_bufio_get_block_size);
- sector_t dm_bufio_get_device_size(struct dm_bufio_client *c)
- {
- 	sector_t s = i_size_read(c->bdev->bd_inode) >> SECTOR_SHIFT;
-+	if (s >= c->start)
-+		s -= c->start;
-+	else
-+		s = 0;
- 	if (likely(c->sectors_per_block_bits >= 0))
- 		s >>= c->sectors_per_block_bits;
- 	else
-diff --git a/drivers/md/dm-verity-fec.c b/drivers/md/dm-verity-fec.c
-index fb41b4f23c48..66f4c6398f67 100644
---- a/drivers/md/dm-verity-fec.c
-+++ b/drivers/md/dm-verity-fec.c
-@@ -61,19 +61,18 @@ static int fec_decode_rs8(struct dm_verity *v, struct dm_verity_fec_io *fio,
- static u8 *fec_read_parity(struct dm_verity *v, u64 rsb, int index,
- 			   unsigned *offset, struct dm_buffer **buf)
- {
--	u64 position, block;
-+	u64 position, block, rem;
- 	u8 *res;
- 
- 	position = (index + rsb) * v->fec->roots;
--	block = position >> v->data_dev_block_bits;
--	*offset = (unsigned)(position - (block << v->data_dev_block_bits));
-+	block = div64_u64_rem(position, v->fec->roots << SECTOR_SHIFT, &rem);
-+	*offset = (unsigned)rem;
- 
--	res = dm_bufio_read(v->fec->bufio, v->fec->start + block, buf);
-+	res = dm_bufio_read(v->fec->bufio, block, buf);
- 	if (IS_ERR(res)) {
- 		DMERR("%s: FEC %llu: parity read failed (block %llu): %ld",
- 		      v->data_dev->name, (unsigned long long)rsb,
--		      (unsigned long long)(v->fec->start + block),
--		      PTR_ERR(res));
-+		      (unsigned long long)block, PTR_ERR(res));
- 		*buf = NULL;
- 	}
- 
-@@ -155,7 +154,7 @@ static int fec_decode_bufs(struct dm_verity *v, struct dm_verity_fec_io *fio,
- 
- 		/* read the next block when we run out of parity bytes */
- 		offset += v->fec->roots;
--		if (offset >= 1 << v->data_dev_block_bits) {
-+		if (offset >= v->fec->roots << SECTOR_SHIFT) {
- 			dm_bufio_release(buf);
- 
- 			par = fec_read_parity(v, rsb, block_offset, &offset, &buf);
-@@ -674,7 +673,7 @@ int verity_fec_ctr(struct dm_verity *v)
- {
- 	struct dm_verity_fec *f = v->fec;
- 	struct dm_target *ti = v->ti;
--	u64 hash_blocks;
-+	u64 hash_blocks, fec_blocks;
- 	int ret;
- 
- 	if (!verity_fec_is_enabled(v)) {
-@@ -744,15 +743,17 @@ int verity_fec_ctr(struct dm_verity *v)
- 	}
- 
- 	f->bufio = dm_bufio_client_create(f->dev->bdev,
--					  1 << v->data_dev_block_bits,
-+					  f->roots << SECTOR_SHIFT,
- 					  1, 0, NULL, NULL);
- 	if (IS_ERR(f->bufio)) {
- 		ti->error = "Cannot initialize FEC bufio client";
- 		return PTR_ERR(f->bufio);
- 	}
- 
--	if (dm_bufio_get_device_size(f->bufio) <
--	    ((f->start + f->rounds * f->roots) >> v->data_dev_block_bits)) {
-+	dm_bufio_set_sector_offset(f->bufio, f->start << (v->data_dev_block_bits - SECTOR_SHIFT));
++        spi@20c0000 {
++            compatible = "nxp,lx2160a-fspi";
++            reg = <0x0 0x20c0000 0x0 0x100000>,
++                  <0x0 0x20000000 0x0 0x10000000>;
++            reg-names = "fspi_base", "fspi_mmap";
++            interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(4)>,
++                     <&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(4)>;
++            clock-names = "fspi_en", "fspi";
++            #address-cells = <1>;
++            #size-cells = <0>;
 +
-+	fec_blocks = div64_u64(f->rounds * f->roots, v->fec->roots << SECTOR_SHIFT);
-+	if (dm_bufio_get_device_size(f->bufio) < fec_blocks) {
- 		ti->error = "FEC device is too small";
- 		return -E2BIG;
- 	}
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 131be1fa770c..bd8decc54b87 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -3959,6 +3959,7 @@ static void rtl_pll_power_down(struct rtl8169_private *tp)
- 
- 	switch (tp->mac_version) {
- 	case RTL_GIGA_MAC_VER_25 ... RTL_GIGA_MAC_VER_26:
-+	case RTL_GIGA_MAC_VER_29 ... RTL_GIGA_MAC_VER_30:
- 	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_33:
- 	case RTL_GIGA_MAC_VER_37:
- 	case RTL_GIGA_MAC_VER_39:
-@@ -3989,6 +3990,7 @@ static void rtl_pll_power_up(struct rtl8169_private *tp)
- {
- 	switch (tp->mac_version) {
- 	case RTL_GIGA_MAC_VER_25 ... RTL_GIGA_MAC_VER_26:
-+	case RTL_GIGA_MAC_VER_29 ... RTL_GIGA_MAC_VER_30:
- 	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_33:
- 	case RTL_GIGA_MAC_VER_37:
- 	case RTL_GIGA_MAC_VER_39:
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index bef62b01824d..7dad8794ee38 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -649,7 +649,7 @@ static int btrfs_delayed_inode_reserve_metadata(
- 						      btrfs_ino(inode),
- 						      num_bytes, 1);
- 		} else {
--			btrfs_qgroup_free_meta_prealloc(root, fs_info->nodesize);
-+			btrfs_qgroup_free_meta_prealloc(root, num_bytes);
- 		}
- 		return ret;
- 	}
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 4126513e2429..f8e5c47b95e4 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3151,8 +3151,11 @@ static int btrfs_zero_range(struct inode *inode,
- 			goto out;
- 		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
- 						alloc_start, bytes_to_reserve);
--		if (ret)
-+		if (ret) {
-+			unlock_extent_cached(&BTRFS_I(inode)->io_tree, lockstart,
-+					     lockend, &cached_state);
- 			goto out;
-+		}
- 		ret = btrfs_prealloc_file_range(inode, mode, alloc_start,
- 						alloc_end - alloc_start,
- 						i_blocksize(inode),
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 8ed71b3b2546..4bbd4b09fb96 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1907,7 +1907,10 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
- 	if (vol_args->flags & BTRFS_SUBVOL_RDONLY)
- 		readonly = true;
- 	if (vol_args->flags & BTRFS_SUBVOL_QGROUP_INHERIT) {
--		if (vol_args->size > PAGE_SIZE) {
-+		u64 nums;
-+
-+		if (vol_args->size < sizeof(*inherit) ||
-+		    vol_args->size > PAGE_SIZE) {
- 			ret = -EINVAL;
- 			goto free_args;
- 		}
-@@ -1916,6 +1919,20 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
- 			ret = PTR_ERR(inherit);
- 			goto free_args;
- 		}
-+
-+		if (inherit->num_qgroups > PAGE_SIZE ||
-+		    inherit->num_ref_copies > PAGE_SIZE ||
-+		    inherit->num_excl_copies > PAGE_SIZE) {
-+			ret = -EINVAL;
-+			goto free_inherit;
-+		}
-+
-+		nums = inherit->num_qgroups + 2 * inherit->num_ref_copies +
-+		       2 * inherit->num_excl_copies;
-+		if (vol_args->size != struct_size(inherit, qgroups, nums)) {
-+			ret = -EINVAL;
-+			goto free_inherit;
-+		}
- 	}
- 
- 	ret = btrfs_ioctl_snap_create_transid(file, vol_args->name,
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 8f47a85944eb..7ac679ed2b6c 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -1198,22 +1198,19 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
- 	int nr_data = rbio->nr_data;
- 	int stripe;
- 	int pagenr;
--	int p_stripe = -1;
--	int q_stripe = -1;
-+	bool has_qstripe;
- 	struct bio_list bio_list;
- 	struct bio *bio;
- 	int ret;
- 
- 	bio_list_init(&bio_list);
- 
--	if (rbio->real_stripes - rbio->nr_data == 1) {
--		p_stripe = rbio->real_stripes - 1;
--	} else if (rbio->real_stripes - rbio->nr_data == 2) {
--		p_stripe = rbio->real_stripes - 2;
--		q_stripe = rbio->real_stripes - 1;
--	} else {
-+	if (rbio->real_stripes - rbio->nr_data == 1)
-+		has_qstripe = false;
-+	else if (rbio->real_stripes - rbio->nr_data == 2)
-+		has_qstripe = true;
-+	else
- 		BUG();
--	}
- 
- 	/* at this point we either have a full stripe,
- 	 * or we've read the full stripe from the drive.
-@@ -1257,7 +1254,7 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
- 		SetPageUptodate(p);
- 		pointers[stripe++] = kmap(p);
- 
--		if (q_stripe != -1) {
-+		if (has_qstripe) {
- 
- 			/*
- 			 * raid6, add the qstripe and call the
-@@ -2355,8 +2352,7 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
- 	int nr_data = rbio->nr_data;
- 	int stripe;
- 	int pagenr;
--	int p_stripe = -1;
--	int q_stripe = -1;
-+	bool has_qstripe;
- 	struct page *p_page = NULL;
- 	struct page *q_page = NULL;
- 	struct bio_list bio_list;
-@@ -2366,14 +2362,12 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
- 
- 	bio_list_init(&bio_list);
- 
--	if (rbio->real_stripes - rbio->nr_data == 1) {
--		p_stripe = rbio->real_stripes - 1;
--	} else if (rbio->real_stripes - rbio->nr_data == 2) {
--		p_stripe = rbio->real_stripes - 2;
--		q_stripe = rbio->real_stripes - 1;
--	} else {
-+	if (rbio->real_stripes - rbio->nr_data == 1)
-+		has_qstripe = false;
-+	else if (rbio->real_stripes - rbio->nr_data == 2)
-+		has_qstripe = true;
-+	else
- 		BUG();
--	}
- 
- 	if (bbio->num_tgtdevs && bbio->tgtdev_map[rbio->scrubp]) {
- 		is_replace = 1;
-@@ -2395,17 +2389,22 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
- 		goto cleanup;
- 	SetPageUptodate(p_page);
- 
--	if (q_stripe != -1) {
-+	if (has_qstripe) {
-+		/* RAID6, allocate and map temp space for the Q stripe */
- 		q_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
- 		if (!q_page) {
- 			__free_page(p_page);
- 			goto cleanup;
- 		}
- 		SetPageUptodate(q_page);
-+		pointers[rbio->real_stripes - 1] = kmap(q_page);
- 	}
- 
- 	atomic_set(&rbio->error, 0);
- 
-+	/* Map the parity stripe just once */
-+	pointers[nr_data] = kmap(p_page);
-+
- 	for_each_set_bit(pagenr, rbio->dbitmap, rbio->stripe_npages) {
- 		struct page *p;
- 		void *parity;
-@@ -2415,17 +2414,8 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
- 			pointers[stripe] = kmap(p);
- 		}
- 
--		/* then add the parity stripe */
--		pointers[stripe++] = kmap(p_page);
++            flash@0 {
++                compatible = "jedec,spi-nor";
++                spi-max-frequency = <50000000>;
++                reg = <0>;
++                spi-rx-bus-width = <8>;
++                spi-tx-bus-width = <8>;
++            };
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+deleted file mode 100644
+index df178d1b62e6..000000000000
+--- a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
++++ /dev/null
+@@ -1,43 +0,0 @@
+-* NXP Flex Serial Peripheral Interface (FSPI)
 -
--		if (q_stripe != -1) {
+-Required properties:
+-  - compatible : Should be "nxp,lx2160a-fspi"
+-			    "nxp,imx8qxp-fspi"
+-			    "nxp,imx8mm-fspi"
+-			    "nxp,imx8dxl-fspi"
 -
--			/*
--			 * raid6, add the qstripe and call the
--			 * library function to fill in our p/q
--			 */
--			pointers[stripe++] = kmap(q_page);
+-  - reg :        First contains the register location and length,
+-                 Second contains the memory mapping address and length
+-  - reg-names :  Should contain the resource reg names:
+-	         - fspi_base: configuration register address space
+-                 - fspi_mmap: memory mapped address space
+-  - interrupts : Should contain the interrupt for the device
 -
-+		if (has_qstripe) {
-+			/* RAID6, call the library function to fill in our P/Q */
- 			raid6_call.gen_syndrome(rbio->real_stripes, PAGE_SIZE,
- 						pointers);
- 		} else {
-@@ -2446,12 +2436,14 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+-Required SPI slave node properties:
+-  - reg :        There are two buses (A and B) with two chip selects each.
+-                 This encodes to which bus and CS the flash is connected:
+-                 - <0>: Bus A, CS 0
+-                 - <1>: Bus A, CS 1
+-                 - <2>: Bus B, CS 0
+-                 - <3>: Bus B, CS 1
+-
+-Example showing the usage of two SPI NOR slave devices on bus A:
+-
+-fspi0: spi@20c0000 {
+-	compatible = "nxp,lx2160a-fspi";
+-	reg = <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0 0x10000000>;
+-	reg-names = "fspi_base", "fspi_mmap";
+-	interrupts = <0 25 0x4>; /* Level high type */
+-	clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+-	clock-names = "fspi_en", "fspi";
+-
+-	mt35xu512aba0: flash@0 {
+-		reg = <0>;
+-		....
+-	};
+-
+-	mt35xu512aba1: flash@1 {
+-		reg = <1>;
+-		....
+-	};
+-};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d92f85ca831d..8729f7b50945 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12832,7 +12832,7 @@ M:	Ashish Kumar <ashish.kumar@nxp.com>
+ R:	Yogesh Gaur <yogeshgaur.83@gmail.com>
+ L:	linux-spi@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
++F:	Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+ F:	drivers/spi/spi-nxp-fspi.c
  
- 		for (stripe = 0; stripe < nr_data; stripe++)
- 			kunmap(page_in_rbio(rbio, stripe, pagenr, 0));
--		kunmap(p_page);
- 	}
- 
-+	kunmap(p_page);
- 	__free_page(p_page);
--	if (q_page)
-+	if (q_page) {
-+		kunmap(q_page);
- 		__free_page(q_page);
-+	}
- 
- writeback:
- 	/*
-diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-index 95d9aebff2c4..48858510739b 100644
---- a/fs/btrfs/xattr.c
-+++ b/fs/btrfs/xattr.c
-@@ -227,11 +227,33 @@ int btrfs_setxattr_trans(struct inode *inode, const char *name,
- {
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
- 	struct btrfs_trans_handle *trans;
-+	const bool start_trans = (current->journal_info == NULL);
- 	int ret;
- 
--	trans = btrfs_start_transaction(root, 2);
--	if (IS_ERR(trans))
--		return PTR_ERR(trans);
-+	if (start_trans) {
-+		/*
-+		 * 1 unit for inserting/updating/deleting the xattr
-+		 * 1 unit for the inode item update
-+		 */
-+		trans = btrfs_start_transaction(root, 2);
-+		if (IS_ERR(trans))
-+			return PTR_ERR(trans);
-+	} else {
-+		/*
-+		 * This can happen when smack is enabled and a directory is being
-+		 * created. It happens through d_instantiate_new(), which calls
-+		 * smack_d_instantiate(), which in turn calls __vfs_setxattr() to
-+		 * set the transmute xattr (XATTR_NAME_SMACKTRANSMUTE) on the
-+		 * inode. We have already reserved space for the xattr and inode
-+		 * update at btrfs_mkdir(), so just use the transaction handle.
-+		 * We don't join or start a transaction, as that will reset the
-+		 * block_rsv of the handle and trigger a warning for the start
-+		 * case.
-+		 */
-+		ASSERT(strncmp(name, XATTR_SECURITY_PREFIX,
-+			       XATTR_SECURITY_PREFIX_LEN) == 0);
-+		trans = current->journal_info;
-+	}
- 
- 	ret = btrfs_setxattr(trans, inode, name, value, size, flags);
- 	if (ret)
-@@ -242,7 +264,8 @@ int btrfs_setxattr_trans(struct inode *inode, const char *name,
- 	ret = btrfs_update_inode(trans, root, inode);
- 	BUG_ON(ret);
- out:
--	btrfs_end_transaction(trans);
-+	if (start_trans)
-+		btrfs_end_transaction(trans);
- 	return ret;
- }
- 
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index d52b95b75ae4..84e9f2380edf 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -141,7 +141,7 @@ struct ahash_alg {
- 
- struct shash_desc {
- 	struct crypto_shash *tfm;
--	void *__ctx[] CRYPTO_MINALIGN_ATTR;
-+	void *__ctx[] __aligned(ARCH_SLAB_MINALIGN);
- };
- 
- #define HASH_MAX_DIGESTSIZE	 64
-@@ -154,9 +154,9 @@ struct shash_desc {
- 
- #define HASH_MAX_STATESIZE	512
- 
--#define SHASH_DESC_ON_STACK(shash, ctx)				  \
--	char __##shash##_desc[sizeof(struct shash_desc) +	  \
--		HASH_MAX_DESCSIZE] CRYPTO_MINALIGN_ATTR; \
-+#define SHASH_DESC_ON_STACK(shash, ctx)					     \
-+	char __##shash##_desc[sizeof(struct shash_desc) + HASH_MAX_DESCSIZE] \
-+		__aligned(__alignof__(struct shash_desc));		     \
- 	struct shash_desc *shash = (struct shash_desc *)__##shash##_desc
- 
- /**
-diff --git a/include/linux/crypto.h b/include/linux/crypto.h
-index 19ea3a371d7b..0c720a2982ae 100644
---- a/include/linux/crypto.h
-+++ b/include/linux/crypto.h
-@@ -130,9 +130,12 @@
-  * The macro CRYPTO_MINALIGN_ATTR (along with the void * type in the actual
-  * declaration) is used to ensure that the crypto_tfm context structure is
-  * aligned correctly for the given architecture so that there are no alignment
-- * faults for C data types.  In particular, this is required on platforms such
-- * as arm where pointers are 32-bit aligned but there are data types such as
-- * u64 which require 64-bit alignment.
-+ * faults for C data types.  On architectures that support non-cache coherent
-+ * DMA, such as ARM or arm64, it also takes into account the minimal alignment
-+ * that is required to ensure that the context struct member does not share any
-+ * cachelines with the rest of the struct. This is needed to ensure that cache
-+ * maintenance for non-coherent DMA (cache invalidation in particular) does not
-+ * affect data that may be accessed by the CPU concurrently.
-  */
- #define CRYPTO_MINALIGN ARCH_KMALLOC_MINALIGN
- 
-diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
-index f657fd8fc0ad..f38947b9a1b9 100644
---- a/include/sound/intel-nhlt.h
-+++ b/include/sound/intel-nhlt.h
-@@ -112,6 +112,11 @@ struct nhlt_vendor_dmic_array_config {
- 	/* TODO add vendor mic config */
- } __packed;
- 
-+enum {
-+	NHLT_CONFIG_TYPE_GENERIC = 0,
-+	NHLT_CONFIG_TYPE_MIC_ARRAY = 1
-+};
-+
- enum {
- 	NHLT_MIC_ARRAY_2CH_SMALL = 0xa,
- 	NHLT_MIC_ARRAY_2CH_BIG = 0xb,
-diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
-index b9c2ee7ab43f..cce12e1971d8 100644
---- a/scripts/recordmcount.c
-+++ b/scripts/recordmcount.c
-@@ -438,7 +438,7 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
- 
- static int arm64_is_fake_mcount(Elf64_Rel const *rp)
- {
--	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
-+	return ELF64_R_TYPE(w8(rp->r_info)) != R_AARCH64_CALL26;
- }
- 
- /* 64-bit EM_MIPS has weird ELF64_Rela.r_info.
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index daede96f28ee..baeda6c9716a 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -64,18 +64,44 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 	struct nhlt_endpoint *epnt;
- 	struct nhlt_dmic_array_config *cfg;
- 	struct nhlt_vendor_dmic_array_config *cfg_vendor;
-+	struct nhlt_fmt *fmt_configs;
- 	unsigned int dmic_geo = 0;
--	u8 j;
-+	u16 max_ch = 0;
-+	u8 i, j;
- 
- 	if (!nhlt)
- 		return 0;
- 
--	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+	for (j = 0, epnt = nhlt->desc; j < nhlt->endpoint_count; j++,
-+	     epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length)) {
- 
--	for (j = 0; j < nhlt->endpoint_count; j++) {
--		if (epnt->linktype == NHLT_LINK_DMIC) {
--			cfg = (struct nhlt_dmic_array_config  *)
--					(epnt->config.caps);
-+		if (epnt->linktype != NHLT_LINK_DMIC)
-+			continue;
-+
-+		cfg = (struct nhlt_dmic_array_config  *)(epnt->config.caps);
-+		fmt_configs = (struct nhlt_fmt *)(epnt->config.caps + epnt->config.size);
-+
-+		/* find max number of channels based on format_configuration */
-+		if (fmt_configs->fmt_count) {
-+			dev_dbg(dev, "%s: found %d format definitions\n",
-+				__func__, fmt_configs->fmt_count);
-+
-+			for (i = 0; i < fmt_configs->fmt_count; i++) {
-+				struct wav_fmt_ext *fmt_ext;
-+
-+				fmt_ext = &fmt_configs->fmt_config[i].fmt_ext;
-+
-+				if (fmt_ext->fmt.channels > max_ch)
-+					max_ch = fmt_ext->fmt.channels;
-+			}
-+			dev_dbg(dev, "%s: max channels found %d\n", __func__, max_ch);
-+		} else {
-+			dev_dbg(dev, "%s: No format information found\n", __func__);
-+		}
-+
-+		if (cfg->device_config.config_type != NHLT_CONFIG_TYPE_MIC_ARRAY) {
-+			dmic_geo = max_ch;
-+		} else {
- 			switch (cfg->array_type) {
- 			case NHLT_MIC_ARRAY_2CH_SMALL:
- 			case NHLT_MIC_ARRAY_2CH_BIG:
-@@ -92,13 +118,23 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 				dmic_geo = cfg_vendor->nb_mics;
- 				break;
- 			default:
--				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
--					 cfg->array_type);
-+				dev_warn(dev, "%s: undefined DMIC array_type 0x%0x\n",
-+					 __func__, cfg->array_type);
-+			}
-+
-+			if (dmic_geo > 0) {
-+				dev_dbg(dev, "%s: Array with %d dmics\n", __func__, dmic_geo);
-+			}
-+			if (max_ch > dmic_geo) {
-+				dev_dbg(dev, "%s: max channels %d exceed dmic number %d\n",
-+					__func__, max_ch, dmic_geo);
- 			}
- 		}
--		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
- 	}
- 
-+	dev_dbg(dev, "%s: dmic number %d max_ch %d\n",
-+		__func__, dmic_geo, max_ch);
-+
- 	return dmic_geo;
- }
- EXPORT_SYMBOL_GPL(intel_nhlt_get_dmic_geo);
-diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
-index 3cd4b7dad945..b1cc4cdc6c41 100644
---- a/sound/pci/ctxfi/cthw20k2.c
-+++ b/sound/pci/ctxfi/cthw20k2.c
-@@ -991,7 +991,7 @@ static int daio_mgr_dao_init(void *blk, unsigned int idx, unsigned int conf)
- 
- 	if (idx < 4) {
- 		/* S/PDIF output */
--		switch ((conf & 0x7)) {
-+		switch ((conf & 0xf)) {
- 		case 1:
- 			set_field(&ctl->txctl[idx], ATXCTL_NUC, 0);
- 			break;
-diff --git a/tools/usb/usbip/libsrc/usbip_host_common.c b/tools/usb/usbip/libsrc/usbip_host_common.c
-index d1d8ba2a4a40..ca78aa368476 100644
---- a/tools/usb/usbip/libsrc/usbip_host_common.c
-+++ b/tools/usb/usbip/libsrc/usbip_host_common.c
-@@ -23,7 +23,7 @@
- #include "list.h"
- #include "sysfs_utils.h"
- 
--struct udev *udev_context;
-+extern struct udev *udev_context;
- 
- static int32_t read_attr_usbip_status(struct usbip_usb_device *udev)
- {
+ NXP FXAS21002C DRIVER
+-- 
+2.25.1
+
