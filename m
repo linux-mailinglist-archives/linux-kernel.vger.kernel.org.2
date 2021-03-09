@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B89331B8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D7C331B94
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbhCIATj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 19:19:39 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:51429 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231969AbhCIATI (ORCPT
+        id S232071AbhCIAUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 19:20:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhCIATu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 19:19:08 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lJQ5a-0044oU-Hy; Tue, 09 Mar 2021 01:19:06 +0100
-Received: from p57bd9fdc.dip0.t-ipconnect.de ([87.189.159.220] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lJQ5a-003dbK-B4; Tue, 09 Mar 2021 01:19:06 +0100
-Subject: Re: [GIT] SPARC
-To:     David Miller <davem@davemloft.net>, torvalds@linux-foundation.org
-Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210308.154619.729170517586257571.davem@davemloft.net>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <37859f29-dc59-d6c2-6f92-abaae32ee4ab@physik.fu-berlin.de>
-Date:   Tue, 9 Mar 2021 01:19:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 8 Mar 2021 19:19:50 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C311C06174A;
+        Mon,  8 Mar 2021 16:19:50 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id E8E6231A;
+        Tue,  9 Mar 2021 00:19:49 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E8E6231A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1615249190; bh=T4xWyxHpUqwiXaFkeoxDy/DZL6aBJz4AVIJoA7yp9OY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=q2ad1gQVW08cNOw6C/8T1MyNt9GrekRvDqbVWDoRXmxOUWEXvQT75EJX8vkBESpzM
+         XeSU/zZ+wmpbPCicbX0mHoIg8JpJiw6bFFPth4sPzLBlg10EcJwTvbjgKzO7684+k4
+         5wKcucjGNP0/qW02BzQqGZDxUeVhvQktgZ3P7Gsf88gvWS6ZHTwDRF7acLWJ6qiVM9
+         uOtQM7EOnMMAMUGKef8D8X4gtUC338FLP6/XS4TU+817YGgh5vPayf3tHVCuUf07Or
+         7lIwUeIb6+PjIkStlrxPfJWQca2nIL71N6eHoovM4acgKQAeo+KaFl3RjbnmiJgOcG
+         1pwVYlRMJ7+QA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Barry Song <song.bao.hua@hisilicon.com>, linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] Documentation/admin-guide: kernel-parameters: correct
+ the architectures for numa_balancing
+In-Reply-To: <20210302084159.33688-1-song.bao.hua@hisilicon.com>
+References: <20210302084159.33688-1-song.bao.hua@hisilicon.com>
+Date:   Mon, 08 Mar 2021 17:19:49 -0700
+Message-ID: <87sg5541qy.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <20210308.154619.729170517586257571.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.159.220
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave!
+Barry Song <song.bao.hua@hisilicon.com> writes:
 
-On 3/9/21 12:46 AM, David Miller wrote:
-> Just some more random bits from Al,  including a conversion over to generic exytables.
+> X86 isn't the only architecture supporting NUMA_BALANCING. ARM64, PPC,
+> S390 and RISCV also support it:
 
-Is there a chance we could include this important fix by Rob Gardner for 5.12 as well?
+Applied, thanks.
 
-> https://marc.info/?l=linux-sparc&m=161457847223456&w=2
-
-It fixes a hard kernel crash under certain loads which we have seen in Debian quite frequently.
-
-Thanks,
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+jon
