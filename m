@@ -2,155 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73D9331BB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A71331BB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhCIAeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 19:34:18 -0500
-Received: from mail-dm6nam11on2088.outbound.protection.outlook.com ([40.107.223.88]:12800
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230116AbhCIAdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 19:33:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k4GYrrvVWnE+k4ffAK72RHWklenMCDC/NpilH2H48AqBAgINqhLzl1DrBYlEPxp0IuryQSpxsXV6qCNu+IYtGVw1qa4vUkB586DB1hGeoEST6R21snrZE8Salboz36oGme5piSmh8+opT4TOMyPlPTvS+LGyM6Tum1wapDee6Ua3RaD3z8FOrao9TTvox5vonNre2dJvWIn/2J8csBIGANN1NMA0TuH4xT07+c3sOpvC23jJXKqAJUZ3jcIHNrL3Zggpj97KS8d0PKjqMxZ0oRPue0EPUokTId3QdTwZpPS2eZP32pOYy0xaU776vVvqrUj8/ID9bwbikW2xsHx4Wg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uXiTrBxrgdckf0pEDi0Z3ly2qYbvhUTHRt0sfq0UXSI=;
- b=LW0GRNvPtM6lIu9erO1jjH+uRGp2RrpSsgJX05GMn0tLAxkqiKFh8eb9B8RRdnJUGHqR5g8dYQ7UhtK8S/+KIZm5UTJKAn82PA34NEPZ0XZ87oKZ4NN3OWNrMOVG8agcM6ZVMnR/tjMK0x+Qp8g7mYv+dxHy+FGopWYQ7c/zZE4PsSlaRNlnCg0GTv9XtPViXYsmcwvgvGCXcPo79MqSrZlrzsBO+Cg5Dc+ZBnUjpic5prlKT0DuaRlRMy+UjoVH+YkooULP72f9aVJya+1GtC2teo8S+FP2o+nzBT4p2xSeHRLGbwQMHhIdC3BOfgB5XaK4/s3okH7iqsEdNrtIbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uXiTrBxrgdckf0pEDi0Z3ly2qYbvhUTHRt0sfq0UXSI=;
- b=vTNFHJFdYGbOiRXgbKKNr+CJ9cAiT7VSriTruoUvzQLPYfKlEUEDXmFzLAqT6R6Rz5/TYRr8Q5dzivi/dvNueHf7tFBa2QBcXj3cfIc18sFUC7CCjNhDP+S7dtWAukJ7FH48EcBCa80qpEZ7dxMW81asS6SzTGVfrSIcTMSHjrI=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1754.namprd12.prod.outlook.com (2603:10b6:3:10f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26; Tue, 9 Mar
- 2021 00:33:46 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3912.027; Tue, 9 Mar 2021
- 00:33:45 +0000
-Date:   Mon, 8 Mar 2021 20:33:44 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, peterx@redhat.com
-Subject: Re: [PATCH v1 06/14] vfio: Add vma to pfn callback
-Message-ID: <20210309003344.GC4247@nvidia.com>
-References: <161523878883.3480.12103845207889888280.stgit@gimli.home>
- <161524009646.3480.6519905534709638083.stgit@gimli.home>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161524009646.3480.6519905534709638083.stgit@gimli.home>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR18CA0012.namprd18.prod.outlook.com
- (2603:10b6:208:23c::17) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231984AbhCIAet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 19:34:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231307AbhCIAek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 19:34:40 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC796C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 16:34:39 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id dm26so17396595edb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 16:34:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cp7qMCjc2xgkX6aRExzrosLgD3gOn5u4crCHK1UDNrM=;
+        b=HkT+rNSmwlnN6EBCNnHW0TXuGi/VyIJX1hm3AatXBDqjv2sri17StykdMQyf6MfV2K
+         n26PBQgkn+GO/5D9SQC5XobHKmtI2FcAOr0gtCidKHRuGcTmYIi0o6wDkbr4e5HyekBv
+         mfVaAecLB/hxLiyIUIbYWtzJ6sbWfbJDM9QEeAUcVo+dHa3x+Fut8ah4fEkYFUxz6fHH
+         9JXNv53Cn0C+DGXXRis6n+cPtellaRyELHwkm04pY68wXUDbwFerVuTVxuP6rpv66nCP
+         I/Z+e/LKj/xWUtOrf1nkdMRHmezSiSTRFViawJZsw94UnBsfX25M38ICmZGKFic4RMYf
+         JBKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cp7qMCjc2xgkX6aRExzrosLgD3gOn5u4crCHK1UDNrM=;
+        b=g02SkY2r4Lgnx88r+kZXUzHudzNEXVrI2LcP9fnEIWds4IZ2nVDcdWQqd9TT/xsisg
+         rKV3MGyTmUUk/UAlGhTf965lImpe9LKbzKwuvyylOdWGgqkfCFXpmbOSPOO0AnleOSxV
+         3O7sCyPCTrdFzWBqWagD0Da1Uh8XztJALNEnXv+ig+SdnT/viuE3wRgAO6VNpMbfSTmW
+         RrUxJ3Bn1/8+T8UoHQBusYbatB9mztHfyOWxOv3t+vBXw5dgp+oMfDq5jh1TQMzudEJf
+         1tz8/0uhQS/7AqGoEhqPi542+rZIRLG0vcxDZszXOn8Jqt2lCBQRLczjjqMXrSfsVdj8
+         2oIQ==
+X-Gm-Message-State: AOAM5315T7Jyh0hqsk9oKfX01aiMu0HRchH9pdDc9A1dfucc3mxT7G3X
+        yXIvvHuvl7LqcqiBCNtJf+HZx0VKze3twqfJ458=
+X-Google-Smtp-Source: ABdhPJz7MWWAXyREtaIYL3wVVH+Wd37oGVcxQIif1MGcrBySgecDkTruQjRfazf82RzUjX7IJyHRZOzsfzF7wk6Yqk8=
+X-Received: by 2002:aa7:cc03:: with SMTP id q3mr1168103edt.366.1615250078442;
+ Mon, 08 Mar 2021 16:34:38 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR18CA0012.namprd18.prod.outlook.com (2603:10b6:208:23c::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 00:33:45 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lJQJk-009sWK-If; Mon, 08 Mar 2021 20:33:44 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 33dd2ead-33e5-4973-8bf8-08d8e292ffbf
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1754:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1754C6D817D088EC44531DEEC2929@DM5PR12MB1754.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2NXwoi1dCzotFcMmGNMnC/3fLJ8I4voPPkuwlyWV99+tLginV1QwcWwoEyIwEkHV8ayG3zPHI4YbUtMQ6OlpIcvkaambWJOUg/Q6t77MC8tJYy8jpwdZellkOGKCXm40cDxASjU4p4jYvOI8ky9ghKC3/LyDiB8P2nUcEMHs32sBaxjwE+6xlxykmKneDwm3LQmUBjbO8+9dJrfNFIwEE0IC1xkJkBNejw6IYuLjm+Lgzhsb6n0EteLGCaFolUrUI4wXtTuhMeX+6dXj2Ag7b/4koio7bZ4+U94gjDrryBExxgavSAxrvtTrplxGTcuqUT+tDthARFuc6oA/S5uy/LVZRzHeJCq6i0CNLw0yVWVIy4Em6AC6GVj0Yf0L0A+Hz14dYqRE2gpxesmvg+zucn0FQvnwm+ZRSULvQIVmkKizoEYLjkAU6GycItPQTqfAy2Gu8TtvHnep1QIlkdoZYtBGPZhI9aKfY+OZwRYym+Ak0EuLOvsdtT+k3acsCZsbY6YtzDFenSOucLL6xfVrkA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(39860400002)(366004)(316002)(8936002)(8676002)(2906002)(9786002)(478600001)(9746002)(83380400001)(66476007)(66556008)(2616005)(6916009)(4326008)(426003)(66946007)(86362001)(186003)(26005)(1076003)(36756003)(33656002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?p7D/zm03YDHMmDkmBBJUTHZdomYzLdStQlQjoemcmr7Yts3HHVdFDlL/sIO3?=
- =?us-ascii?Q?1z8cIJh3jt32ikXiHI79993PZOhVO06/YVSkVZfJAgekmSqAGMSxyznDEMSb?=
- =?us-ascii?Q?6lDAC3x50/MQGwllHGPAz/AL953M7ZMMj9BJhP7mOJFRwZb2BfyqyO3ohF1d?=
- =?us-ascii?Q?7yPtpSlqkFv6hCDDNf5oihouFIEsfWDT/KNul8L8TLOCWbd1e0T5bkzSvmXP?=
- =?us-ascii?Q?5TBUGo+trMt30/rykUlUN0QB3KGqhjO+PrlgrJp4MuERDz/LZec7RRR7z37k?=
- =?us-ascii?Q?0So2R61d2z7NkX9aZU7dLrk1ROaq5Mb/qzp4FgT5qV14pmPt38S+ZwLHSTAQ?=
- =?us-ascii?Q?ZmqjrOShaa4st7/JKQ+vshw93o+N4vyrWERkBj3ZOKV7CgJI9et0TupRhCFO?=
- =?us-ascii?Q?kd9wTG26ygpOje12GmnEFsFQLFAlEOg/JhWYqtKy9/M+DbR+I2n8xWpdAqNB?=
- =?us-ascii?Q?O6x9S3lS0Diy/bDqv5OLKL9EKVN4Gts2AppbjraN01R/nb/ntHT/YKtq0IJ1?=
- =?us-ascii?Q?VfR2RXKKoR2f3rBm7YUyJXG8FNFngMvxnwT1U3ImLvzd7b3l1n2/bEQvIJYS?=
- =?us-ascii?Q?Sn9HdbotDw3wJ9uS6/TsRFxCNJ4gTSh2GPWVvyNcTxEApdUapmSTyQwqlLmU?=
- =?us-ascii?Q?He1uiCyTPWaedkWUwAnpIVTlUvJVdsT77w972n4jcxwOCakaeTnyQf8er4qF?=
- =?us-ascii?Q?rBimaYMvc5hMDZ0AnyaXKkPmEA9lImCnLQJ4M22xZQQgtCJb4GOu6iIfEHM1?=
- =?us-ascii?Q?10OM3LpUQFYaTFE3bN1ZZV8htBmZcEL0PEIT0UaJvSYhQYBj3YK9XE+4+cJl?=
- =?us-ascii?Q?QMT2R5VBpeFn3RD+guenej1G21Rgt5u5k0I9CoRMpeaP9fuLRoR2zuFGnxaP?=
- =?us-ascii?Q?Njy1nw0mRmrSUT7j3uDnTgevPn9F/BeopG0a4K4KzmBUvzXLRBvLsKHWNlke?=
- =?us-ascii?Q?NZY4r9Ax26WdIu9hGgI4VeZqAs0jbSqXRF6idmZ7sAW9zKgg5BbwKNNx2jfx?=
- =?us-ascii?Q?mQES/egedrWUvfV3sbasiEPgvJA34hDxRpoSN27mWzSSxv7OYfWfTbBCuvZe?=
- =?us-ascii?Q?ayASqJMBP/82OTwODgEpsgtzKMkOoVNTKezZl1IyboYn72uopYaefAup4bpj?=
- =?us-ascii?Q?jlCNdC+rzDtYmYcHd14+BqIPqz0V/Ma/2JPV9oA9/oHypzY0CtXcn5MzzfA7?=
- =?us-ascii?Q?+4gm9jbu+KVH//tJi98thbZWwLnQiUg/Geh+kAz6hIF2sgAb+g800D8KaiwP?=
- =?us-ascii?Q?XdnBgpSLpRw462J07qI4cccTqXOalKWdnHV0T2HbjClfOiT451TNiGmyDLlk?=
- =?us-ascii?Q?E4FDGcUAjnj6nutZYlmAboqx5h6cAXLUOtX/KdfNOefiBg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33dd2ead-33e5-4973-8bf8-08d8e292ffbf
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 00:33:45.9159
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: phUqUO76KW81aDoNosMyAB8lYDq9z8bwtRdkQHutasnWOWvNhYKiOkFjd1/SAEB/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1754
+References: <20210304235949.7922C1C3@viggo.jf.intel.com>
+In-Reply-To: <20210304235949.7922C1C3@viggo.jf.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 8 Mar 2021 16:34:26 -0800
+Message-ID: <CAHbLzkofXg0CnCBYdtWf3cE8Do=B35ZsupV01EmR1SX5=7BHjw@mail.gmail.com>
+Subject: Re: [PATCH 00/10] [v6] Migrate Pages in lieu of discard
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 02:48:16PM -0700, Alex Williamson wrote:
-> Add a new vfio_device_ops callback to allow the bus driver to
-> translate a vma mapping of a vfio device fd to a pfn.  Plumb through
-> vfio-core.  Implemented for vfio-pci.
-> 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
->  drivers/vfio/pci/vfio_pci.c |    1 +
->  drivers/vfio/vfio.c         |   16 ++++++++++++++++
->  include/linux/vfio.h        |    3 +++
->  3 files changed, 20 insertions(+)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> index 415b5109da9b..585895970e9c 100644
-> +++ b/drivers/vfio/pci/vfio_pci.c
-> @@ -1756,6 +1756,7 @@ static const struct vfio_device_ops vfio_pci_ops = {
->  	.mmap		= vfio_pci_mmap,
->  	.request	= vfio_pci_request,
->  	.match		= vfio_pci_match,
-> +	.vma_to_pfn	= vfio_pci_bar_vma_to_pfn,
->  };
->  
->  static int vfio_pci_reflck_attach(struct vfio_pci_device *vdev);
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index 3a3e85a0dc3e..c47895539a1a 100644
-> +++ b/drivers/vfio/vfio.c
-> @@ -944,6 +944,22 @@ struct vfio_device *vfio_device_get_from_vma(struct vm_area_struct *vma)
->  }
->  EXPORT_SYMBOL_GPL(vfio_device_get_from_vma);
->  
-> +int vfio_vma_to_pfn(struct vm_area_struct *vma, unsigned long *pfn)
-> +{
-> +	struct vfio_device *device;
-> +
-> +	if (!vma->vm_file || vma->vm_file->f_op != &vfio_device_fops)
-> +		return -EINVAL;
-> +
-> +	device = vma->vm_file->private_data;
+On Thu, Mar 4, 2021 at 4:00 PM Dave Hansen <dave.hansen@linux.intel.com> wrote:
+>
+>
+> The full series is also available here:
+>
+>         https://github.com/hansendc/linux/tree/automigrate-20210304
+>
+> which also inclues some vm.zone_reclaim_mode sysctl ABI fixup
+> prerequisites.
+>
+> The meat of this patch is in:
+>
+>         [PATCH 05/10] mm/migrate: demote pages during reclaim
+>
+> Which also has the most changes since the last post.  This version is
+> mostly to address review comments from Yang Shi and Oscar Salvador.
+> Review comments are documented in the individual patch changelogs.
+>
+> This also contains a few prerequisite patches that fix up an issue
+> with the vm.zone_reclaim_mode sysctl ABI.
+>
+> Changes since (automigrate-20210122):
+>  * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE since pages *are*
+>    movable.
+>  * Separate out helpers that check for being able to relaim anonymous
+>    pages versus being able to meaningfully scan the anon LRU.
+>
+> --
+>
+> We're starting to see systems with more and more kinds of memory such
+> as Intel's implementation of persistent memory.
+>
+> Let's say you have a system with some DRAM and some persistent memory.
+> Today, once DRAM fills up, reclaim will start and some of the DRAM
+> contents will be thrown out.  Allocations will, at some point, start
+> falling over to the slower persistent memory.
+>
+> That has two nasty properties.  First, the newer allocations can end
+> up in the slower persistent memory.  Second, reclaimed data in DRAM
+> are just discarded even if there are gobs of space in persistent
+> memory that could be used.
+>
+> This set implements a solution to these problems.  At the end of the
+> reclaim process in shrink_page_list() just before the last page
+> refcount is dropped, the page is migrated to persistent memory instead
+> of being dropped.
+>
+> While I've talked about a DRAM/PMEM pairing, this approach would
+> function in any environment where memory tiers exist.
+>
+> This is not perfect.  It "strands" pages in slower memory and never
+> brings them back to fast DRAM.  Other things need to be built to
+> promote hot pages back to DRAM.
+>
+> This is also all based on an upstream mechanism that allows
+> persistent memory to be onlined and used as if it were volatile:
+>
+>         http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
+>
+> == Open Issues ==
+>
+>  * For cpusets and memory policies that restrict allocations
+>    to PMEM, is it OK to demote to PMEM?  Do we need a cgroup-
+>    level API to opt-in or opt-out of these migrations?
 
-Since the caller has the vfio_device already I would pass in the
-vfio_device here rather than look it up again.
+I'm wondering if such usecases, which don't want to have memory
+allocate on pmem, will allow memory swapped out or reclaimed? If swap
+is allowed then I failed to see why migrating to pmem should be
+disallowed. If swap is not allowed, they should call mlock, then the
+memory won't be migrated to pmem as well.
 
-If you are really worried about API mis-use then use a protective
-assertion like this:
+>  * Could be more aggressive about where anon LRU scanning occurs
+>    since it no longer necessarily involves I/O.  get_scan_count()
+>    for instance says: "If we have no swap space, do not bother
+>    scanning anon pages"
 
-  if (WARN_ON(vma->vm_file->private_data != device))
-        return -EINVAL;
+Yes, I agree. Johannes's patchset
+(https://lore.kernel.org/linux-mm/20200520232525.798933-1-hannes@cmpxchg.org/#r)
+has lifted the swappiness to 200 so anonymous lru could be scanned
+more aggressively. We definitely could tweak this if needed.
 
-Jason
+>
+> --
+>
+>  Documentation/admin-guide/sysctl/vm.rst |    9
+>  include/linux/migrate.h                 |   20 +
+>  include/linux/swap.h                    |    3
+>  include/linux/vm_event_item.h           |    2
+>  include/trace/events/migrate.h          |    3
+>  include/uapi/linux/mempolicy.h          |    1
+>  mm/compaction.c                         |    3
+>  mm/gup.c                                |    4
+>  mm/internal.h                           |    5
+>  mm/memory-failure.c                     |    4
+>  mm/memory_hotplug.c                     |    4
+>  mm/mempolicy.c                          |    8
+>  mm/migrate.c                            |  369 +++++++++++++++++++++++++++++---
+>  mm/page_alloc.c                         |   13 -
+>  mm/vmscan.c                             |  173 +++++++++++++--
+>  mm/vmstat.c                             |    2
+>  16 files changed, 560 insertions(+), 63 deletions(-)
+>
+> --
+>
+> Changes since (automigrate-20200818):
+>  * Fall back to normal reclaim when demotion fails
+>  * Fix some compile issues, when page migration and NUMA are off
+>
+> Changes since (automigrate-20201007):
+>  * separate out checks for "can scan anon LRU" from "can actually
+>    swap anon pages right now".  Previous series conflated them
+>    and may have been overly aggressive scanning LRU
+>  * add MR_DEMOTION to tracepoint header
+>  * remove unnecessary hugetlb page check
+>
+> Changes since (https://lwn.net/Articles/824830/):
+>  * Use higher-level migrate_pages() API approach from Yang Shi's
+>    earlier patches.
+>  * made sure to actually check node_reclaim_mode's new bit
+>  * disabled migration entirely before introducing RECLAIM_MIGRATE
+>  * Replace GFP_NOWAIT with explicit __GFP_KSWAPD_RECLAIM and
+>    comment why we want that.
+>  * Comment on effects of that keep multiple source nodes from
+>    sharing target nodes
+>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: osalvador <osalvador@suse.de>
+> Cc: Huang Ying <ying.huang@intel.com>
+>
+>
