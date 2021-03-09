@@ -2,162 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D123324F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 844243324F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhCIMKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 07:10:54 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:32563 "EHLO pegase1.c-s.fr"
+        id S231484AbhCIMK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 07:10:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230386AbhCIMKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 07:10:03 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DvvCr612Lz9tyjG;
-        Tue,  9 Mar 2021 13:10:00 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 4neeM-mSWtBk; Tue,  9 Mar 2021 13:10:00 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DvvCr4s9Rz9tyjF;
-        Tue,  9 Mar 2021 13:10:00 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0E0938B804;
-        Tue,  9 Mar 2021 13:10:02 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id BZ3U-qv3xUF6; Tue,  9 Mar 2021 13:10:01 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4ED748B803;
-        Tue,  9 Mar 2021 13:10:01 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id CDE5E67555; Tue,  9 Mar 2021 12:10:00 +0000 (UTC)
-Message-Id: <d8358337997c5869723e3dbf2d2f8d8a7d17f647.1615291474.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1615291471.git.christophe.leroy@csgroup.eu>
-References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 34/43] powerpc/32: Refactor saving of volatile registers in
- exception prologs
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue,  9 Mar 2021 12:10:00 +0000 (UTC)
+        id S230437AbhCIMKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 07:10:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 979846522B;
+        Tue,  9 Mar 2021 12:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615291803;
+        bh=5H0ofGIXCbizaDWx7RqmfTZXx4TbcZuHEwJsCBpIim8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=abIERcnMnkQoqYKMIf12tNCIn54cSlOsRY67TXg0yk+79rIH4FVQosWFBeNOVKNLn
+         421XThUOWngEP4y5B10BRFENBh9uuQnV1WRT424tG2+l6TPsCgeaczjRAK7BgGRhaW
+         Wy5MvpRNalMHpL/HTtjzf7P/TX9AoIT+ynlwZ5m4q6jPjoqkAo94mmM47ZLcC6/xeZ
+         ov/q+7j8URut00UWV2xUx5otcRdxhfEDagm9VHu80r/3FK5Ta6I5MXIVekJ+Oh8SFM
+         s5YSTqXbNfPCJhzONtoo7DlMF02dKMKJhzJGSa+R9ulXJWn5PYA8vWtS8UwKhHJdUB
+         XOOCiQTauQIxw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8786240647; Tue,  9 Mar 2021 09:10:01 -0300 (-03)
+Date:   Tue, 9 Mar 2021 09:10:01 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf machine: Assign boolean values to a bool variable
+Message-ID: <YEdlmcl+lPxsPJzs@kernel.org>
+References: <1615284669-82139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615284669-82139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exception prologs all do the same at the end:
-- Save trapno in stack
-- Mark stack with exception marker
-- Save r0
-- Save r3 to r8
+Em Tue, Mar 09, 2021 at 06:11:09PM +0800, Jiapeng Chong escreveu:
+> Fix the following coccicheck warnings:
+> 
+> ./tools/perf/util/machine.c:2041:9-10: WARNING: return of 0/1 in
+> function 'symbol__match_regex' with return type bool.
 
-Refactor that into a COMMON_EXCEPTION_PROLOG_END macro.
-At the same time use r1 instead of r11.
+Thanks, applied.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/head_32.h    | 16 ++++++++++------
- arch/powerpc/kernel/head_40x.S   |  9 +--------
- arch/powerpc/kernel/head_booke.h | 26 +++++++++++++-------------
- 3 files changed, 24 insertions(+), 27 deletions(-)
+- Arnaldo
 
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 84e6251622e8..ba20bfabdf63 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -104,15 +104,19 @@
- 	li	r10, MSR_KERNEL		/* can take exceptions */
- 	mtmsr	r10			/* (except for mach check in rtas) */
- #endif
--	stw	r0,GPR0(r11)
-+	COMMON_EXCEPTION_PROLOG_END \trapno
-+_ASM_NOKPROBE_SYMBOL(\name\()_virt)
-+.endm
-+
-+.macro COMMON_EXCEPTION_PROLOG_END trapno
-+	stw	r0,GPR0(r1)
- 	lis	r10,STACK_FRAME_REGS_MARKER@ha /* exception frame marker */
- 	addi	r10,r10,STACK_FRAME_REGS_MARKER@l
--	stw	r10,8(r11)
-+	stw	r10,8(r1)
- 	li	r10, \trapno
--	stw	r10,_TRAP(r11)
--	SAVE_4GPRS(3, r11)
--	SAVE_2GPRS(7, r11)
--_ASM_NOKPROBE_SYMBOL(\name\()_virt)
-+	stw	r10,_TRAP(r1)
-+	SAVE_4GPRS(3, r1)
-+	SAVE_2GPRS(7, r1)
- .endm
  
- .macro prepare_transfer_to_handler
-diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
-index 52b40bf529c6..e1360b88b6cb 100644
---- a/arch/powerpc/kernel/head_40x.S
-+++ b/arch/powerpc/kernel/head_40x.S
-@@ -157,14 +157,7 @@ _ENTRY(crit_esr)
- 	mfspr	r12,SPRN_SRR2
- 	mfspr	r9,SPRN_SRR3
- 	rlwinm	r9,r9,0,14,12		/* clear MSR_WE (necessary?)	   */
--	stw	r0,GPR0(r11)
--	lis	r10, STACK_FRAME_REGS_MARKER@ha /* exception frame marker */
--	addi	r10, r10, STACK_FRAME_REGS_MARKER@l
--	stw	r10, 8(r11)
--	li	r10, \trapno + 2
--	stw	r10,_TRAP(r11)
--	SAVE_4GPRS(3, r11)
--	SAVE_2GPRS(7, r11)
-+	COMMON_EXCEPTION_PROLOG_END \trapno + 2
- _ASM_NOKPROBE_SYMBOL(\name\()_virt)
- .endm
- 
-diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
-index fa566e89f18b..4d583fbef0b6 100644
---- a/arch/powerpc/kernel/head_booke.h
-+++ b/arch/powerpc/kernel/head_booke.h
-@@ -78,14 +78,18 @@ END_BTB_FLUSH_SECTION
- 	stw	r1, 0(r11);						     \
- 	mr	r1, r11;						     \
- 	rlwinm	r9,r9,0,14,12;		/* clear MSR_WE (necessary?)	   */\
--	stw	r0,GPR0(r11);						     \
--	lis	r10, STACK_FRAME_REGS_MARKER@ha;/* exception frame marker */ \
--	addi	r10, r10, STACK_FRAME_REGS_MARKER@l;			     \
--	stw	r10, 8(r11);						     \
--	li	r10, trapno;						     \
--	stw	r10,_TRAP(r11);						     \
--	SAVE_4GPRS(3, r11);						     \
--	SAVE_2GPRS(7, r11)
-+	COMMON_EXCEPTION_PROLOG_END trapno
-+
-+.macro COMMON_EXCEPTION_PROLOG_END trapno
-+	stw	r0,GPR0(r1)
-+	lis	r10, STACK_FRAME_REGS_MARKER@ha	/* exception frame marker */
-+	addi	r10, r10, STACK_FRAME_REGS_MARKER@l
-+	stw	r10, 8(r1)
-+	li	r10, \trapno
-+	stw	r10,_TRAP(r1)
-+	SAVE_4GPRS(3, r1)
-+	SAVE_2GPRS(7, r1)
-+.endm
- 
- .macro prepare_transfer_to_handler
- 	bl	prepare_transfer_to_handler
-@@ -231,11 +235,7 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
- 	stw	r1,0(r11);						     \
- 	mr	r1,r11;							     \
- 	rlwinm	r9,r9,0,14,12;		/* clear MSR_WE (necessary?)	   */\
--	li	r10, trapno;						     \
--	stw	r10,_TRAP(r11);						     \
--	stw	r0,GPR0(r11);						     \
--	SAVE_4GPRS(3, r11);						     \
--	SAVE_2GPRS(7, r11)
-+	COMMON_EXCEPTION_PROLOG_END trapno
- 
- #define SAVE_xSRR(xSRR)			\
- 	mfspr	r0,SPRN_##xSRR##0;	\
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  tools/perf/util/machine.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index b5c2d8b..435771e 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -2038,8 +2038,8 @@ int machine__process_event(struct machine *machine, union perf_event *event,
+>  static bool symbol__match_regex(struct symbol *sym, regex_t *regex)
+>  {
+>  	if (!regexec(regex, sym->name, 0, NULL, 0))
+> -		return 1;
+> -	return 0;
+> +		return true;
+> +	return false;
+>  }
+>  
+>  static void ip__resolve_ams(struct thread *thread,
+> -- 
+> 1.8.3.1
+> 
+
 -- 
-2.25.0
 
+- Arnaldo
