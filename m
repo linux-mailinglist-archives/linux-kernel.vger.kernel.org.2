@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E5633275D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACECF332761
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhCINkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:40:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47756 "EHLO
+        id S231255AbhCINks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:40:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhCINkG (ORCPT
+        with ESMTP id S231197AbhCINkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:40:06 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D705C06174A;
-        Tue,  9 Mar 2021 05:40:06 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id i14so907287pjz.4;
-        Tue, 09 Mar 2021 05:40:06 -0800 (PST)
+        Tue, 9 Mar 2021 08:40:17 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D4FC06174A;
+        Tue,  9 Mar 2021 05:40:17 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id x135so10450185oia.9;
+        Tue, 09 Mar 2021 05:40:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=EfRNWzuGNBnhyAcRR8YiG4gPJSCXyRxbY59iKyGieEM=;
-        b=bSFj4cVXRH4Uyt5PbRaBkRomb40p5oImg8LwuuirDjxXJmQHkTAyE+D4Zv+smEGHdz
-         PssQ7BOd9f4hUiIcznzaMuwGkSWzFSx3KD4Yk2G33yYpEzm3G9G+5sXWzRV+oO4HwrZW
-         NsPWKnV7RCXSNwc2xXO4DSSzOg8EfFlYtpIUi13ZgvSGPB4eqtSap6bLju3Y0luYCUUZ
-         Ia0EnfFir8/NdfyPsqjB8IOwMTZ/edObR5YpDrH21myII8nF6uUKmIPbp9R708wUTXsO
-         2iWoWBdE2jhbSPTK/wi6pR2TiT5EYNoNzel9zAnruWghJTRIjKG3xdy46dQqCmrSAsW6
-         bVrw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cjli9VTdeq1MHBIa7+/aJFhlvAvBCO+ZUMujE9XxcMY=;
+        b=OxTf9zIel19a81G5L5Eri7/vPF/0G0bCp8oJgnflFGL63bWcealBg5P9bzfErt8Lr6
+         HN4ScNJ3KPP1X8XR/YQYx2yu7QaFEzRZalIxkd1keWF3piaIL+CLzD1371My31gm2vfr
+         guISn4sLm9Ta5uSihq9LkJfufNRzxlAVQMdNcAvI++T+tWQ+Egt8GhVPsVbypB1qmsD1
+         U5DdKko//6RKB2uOsVnQ/X2f5SBGo3zMlZoknF9gRr6Cy76spFWdM09M3uyzWShKEndx
+         KKST07V9ObGiPYwsfmHc/mjJ+JA/rf3WQ0H/lynM1UHnx6jt5bJbG9hqMToy8Dg8q9T2
+         MPmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=EfRNWzuGNBnhyAcRR8YiG4gPJSCXyRxbY59iKyGieEM=;
-        b=FiAt3thewtbav/bGA5QLdUhF8HtMREy2hEWBDP9BZll6FSqlmXEGp9e0JmpBE/8sLM
-         Dz0w79AIibXlZ3CpDLd9ihqKztjXFtuERYJCMgtfvGoqH7O0wGeZuBV3w/v5nq3z76dN
-         UWx26pR7Lf9IIu6m96YE4VtcjqscUyQvNxrm2utUg+Z8T8TTc+mOHL8opIGrEYExxr8X
-         yqpibrIlwJ4jue3sg2hF/RKshCWmOcuysq4PkfJcLgH9fm14K+o/D0UaxX4Q+Xc7f/NE
-         TW2ILVsBqD4VR0CVZ9NSVgefqJNWfjBhUa7Q9ulLdx58uYEot1fuA97Md1wLulser8/w
-         geFw==
-X-Gm-Message-State: AOAM530SLRc4bHIGruZAV2cTh9VUK/b2LILiEKpoaAjbt1F8ti7LhBsZ
-        AU+MTSsiKxzTC+YWRonceKAq70CAcdD6CYo9
-X-Google-Smtp-Source: ABdhPJzF2Ju5j0GoVlbGzuoBxEXHnAx21+9hbPmDpXfy80CvN8i+0OlsDH7E74ICSInCNjA80Wte6g==
-X-Received: by 2002:a17:902:b70d:b029:e3:6c97:d180 with SMTP id d13-20020a170902b70db02900e36c97d180mr25954776pls.40.1615297205578;
-        Tue, 09 Mar 2021 05:40:05 -0800 (PST)
-Received: from [10.160.0.34] ([45.135.186.124])
-        by smtp.gmail.com with ESMTPSA id y1sm2567169pjr.3.2021.03.09.05.40.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 05:40:05 -0800 (PST)
-Subject: Re: [BUG] memstick: core: missing error return code in msb_resume()
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>, trix@redhat.com,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <473ecf21-f0d3-9024-161e-72093004971f@gmail.com>
- <CAPDyKFp61gV_irmqCuTuERDgA8KqogS_nhtvoOQJpFB0XEmvrQ@mail.gmail.com>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <7c55dc0f-b6a5-d35e-79de-6f3b5d8d66c2@gmail.com>
-Date:   Tue, 9 Mar 2021 21:40:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cjli9VTdeq1MHBIa7+/aJFhlvAvBCO+ZUMujE9XxcMY=;
+        b=ryJnLWGJ+lCJePSduBjbGTkZpYLeP2aBDSLj10zaB36MPCLZz4cFowRKbuvgC6bt+w
+         4kOIMmIY1EgQYYgQgc4ssqJObKoP/ejewPG8UvhiRfW/PrSPX//82UdPfc+m2FcoLCe0
+         i+35Lu+7VkHntq1lOP9JFLzhEABKsXVGK3LfAAxbF/d8iCtAgCUoRcBaYtRVPWrwiPQ2
+         YmaPjoz5w9OF+f+mLSeO5rr5F8qiiT53c7fGEcZnnEspPSv6nN8iWYAZo3VyveLl81ZE
+         nfq0VSnyeMVlpJncKLAkk8I+uyMcVoKieBpJ3Bxz9uYLsDZb8KMlSEpp5ldnesmA2/Ec
+         krTA==
+X-Gm-Message-State: AOAM533eWy90F7+0lkAiPDTCwl+Sr2yIPYurrPLeiZtIm30z/9Qy0LEL
+        44W58b0JhARkzC8XJkudUISUMQfR4m4+uH+zwG8=
+X-Google-Smtp-Source: ABdhPJzpWnBeI8JNju63ZqLrfMEwGSCPE5hb9/9S8BFE/siwMRlDk/QkAw2ATsh10255EmJqnoLg1w0+OAjQlm0cUa4=
+X-Received: by 2002:aca:ab86:: with SMTP id u128mr2985140oie.47.1615297216832;
+ Tue, 09 Mar 2021 05:40:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFp61gV_irmqCuTuERDgA8KqogS_nhtvoOQJpFB0XEmvrQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com> <1613750416-11901-6-git-send-email-abel.vesa@nxp.com>
+In-Reply-To: <1613750416-11901-6-git-send-email-abel.vesa@nxp.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Tue, 9 Mar 2021 21:40:17 +0800
+Message-ID: <CAA+hA=TE+=uiVi1QGijO9icYwHOwwXYSXTrs=NYKfBjyCq4cTw@mail.gmail.com>
+Subject: Re: [RFC 05/19] devfreq: imx8m-ddrc: Change governor to powersave
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Martin Kepplinger <martink@posteo.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/3/9 16:44, Ulf Hansson wrote:
-> On Fri, 5 Mar 2021 at 03:45, Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
->> My static analysis tool reports that no error return code is assigned in
->> error handling code of msb_resume().
->> However, many other drivers assign error return code in xxx_resume(),
->> such as sky2_resume() and e1000_resume().
->> I wonder whether this is intentional?
-> It's for sure intentional, but it really doesn't matter that much as
-> we are probably in rather dodgy state anyways.
+On Sat, Feb 20, 2021 at 12:03 AM Abel Vesa <abel.vesa@nxp.com> wrote:
 >
-> Of course, propagating error codes upwards in the stack is always good
-> practise, so feel free to add it.
+> By switching to powersave governor, we allow the imx8m-ddrc to always
+> run at minimum rate needed by all the running masters.
 >
+> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
 
-Thanks for the reply!
-I will find time to add error return code in this function :)
+Would you please help clarify a bit more why need use powersave by default?
 
+Regards
+Aisheng
 
-Best wishes,
-Jia-Ju Bai
+> ---
+>  drivers/devfreq/imx8m-ddrc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
+> index bc82d3653bff..3a6c04ba4f2e 100644
+> --- a/drivers/devfreq/imx8m-ddrc.c
+> +++ b/drivers/devfreq/imx8m-ddrc.c
+> @@ -379,7 +379,7 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
+>  {
+>         struct device *dev = &pdev->dev;
+>         struct imx8m_ddrc *priv;
+> -       const char *gov = DEVFREQ_GOV_USERSPACE;
+> +       const char *gov = DEVFREQ_GOV_POWERSAVE;
+>         int ret;
+>
+>         priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> --
+> 2.29.2
+>
