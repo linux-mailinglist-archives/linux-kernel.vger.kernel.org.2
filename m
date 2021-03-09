@@ -2,167 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1C8332CEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E612332CF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhCIRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:10:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhCIRK1 (ORCPT
+        id S231504AbhCIRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:11:58 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:38104 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231631AbhCIRLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:10:27 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CDAC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:10:27 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id u1so17863420ybu.14
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:10:27 -0800 (PST)
+        Tue, 9 Mar 2021 12:11:43 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 129H5Eot042438;
+        Tue, 9 Mar 2021 17:11:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=Z2I636NOf6k5ECxbObixp906Gp9FvF1jjNJ2XhzpjiA=;
+ b=wE51kG9TBYH4iOIHv97rI5WB27uIvfOaVHb8DfIhCP3qXWFITX43ZK9DSmrvSmufhqrk
+ nh249ZA0wDrg+LctbrL5jPIsxvB0h8Q7ApXf6SZK/fkahTSPpkurc6HMjq4z10WYV/Nh
+ GJjT8U5MgMS78PX3vLLvpg2MCVkEtAR6xhts3XKbC8fTf22I10q0akUEg7n1lcrRzLu7
+ S1SoFNSO0p4lqNL6zp7YOkYGpBM4EABc5IseA0noeMLOj6h1L+PysT+oSp/NRJwAI0Wg
+ sSdxaBnxXSi6DdciG9bsP4kXkinaY43xgkapdsAGOoXG8Ayg7VZEsTV3rMGiBWRaUCUW nQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 3742cn83rp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 09 Mar 2021 17:11:19 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 129H5WWS118416;
+        Tue, 9 Mar 2021 17:11:19 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by aserp3020.oracle.com with ESMTP id 374kmyrfdh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 09 Mar 2021 17:11:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D7IP0HmVN1hMCtsmiUxdSEOYc68066XvIWXgiQKbRzIe+QZcMFZTyiEj4pb7RoZRdFoWYrkXYLOUgNzg9aDC8XBUWfMkSZ5cMy17WDhIf7mG1SaZQFZ5jm0qLrN8P+1sEHcsBldp2UDgP7orGAMad0J2hiCf2e+1IiJuMREp6QOO7SxpLyacXnkGkWRfMquP8FrqTPl4XMXKanQVXx3CLrVq5xfDCEhXJjseIufqRO5wskeXhUkVP6BhMJWiFLgqTQUuu4La/M5kyBFYHH6msBGYElALtDWNVmsV/JQZtiYl18FibNv/TozkGs34DjHearX1OSSzrenxPPOayO+e8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z2I636NOf6k5ECxbObixp906Gp9FvF1jjNJ2XhzpjiA=;
+ b=dHzbb77aNG1Y5E0zA6qBeJx66Fwfbor0Qj1wmpmNrKXepKQJTHCp7JCLvaGHJ6ilBs4LFCU3/vCBEdIKcW+1acSu9dDUAyn1VxzxhglrI1sg+QLtRS3ccxj2xQ/Mu21nhJlDgU5uVgJ9V+8AyZYGEHY2mIM11XUJhd31jBQlb4fMSRCJxSkmJywuucG9DiuqzT7q0jd+fAT5tOeNoBsipUMP530O2TyswPRxFTY7KmptY3X2SP5S6zzMvW0L/Lj/tXXzJI3kn0be+nv/ce2gcAYZSI6KbXIzEo3RLL15ODp7mBcULAQCLGqhOoSktTnRRK4xV0DFJgCwmSLldu7uTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=DoRgiyLjNklM6rtntPUZIImM3ULIR10XzAP+GnWM3ms=;
-        b=jFhPiOfq/F44oTP4XYhhXZGvFEC5azXnCZH7dJWpHw1NutprxD5MKr8aXhx4dZgsfp
-         N8aNwN1P6Hh2br5dchmerKJXmsuj3c1YFzX7ftRqXdUngf1SrqNsYwTxKAYyFKtyz9Zb
-         lHTE3jdBXC6amjPxtjswpxEpXAjvcdT8Ly3tpMhLMhBfS5q+GuPjkOjf+99KuN2HKi0q
-         3FyQs0KHmAWGrj6BSngs6oc3g2AAlXJC7dS+uROeBAcRxrrg4epyk5nNsAnRtUaEk8AP
-         FurA1Lbd1Yi5LjuwFE5i+465qyid0YtqpWB4FGswR9T69qa1Sjid82hs7vKawfOUOlS3
-         Iaqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=DoRgiyLjNklM6rtntPUZIImM3ULIR10XzAP+GnWM3ms=;
-        b=WXWdxjIkl0GSQSSQiHPp4rf3u/lMNGjxouia/24Az48PA3fO5W/hnW5RF7+KnND6/N
-         GP/dlBQYPFCDxP9SRhqVOhTsO+bZEppFUJxPAyj/umkEmo1ymj9rMZLxGEyz4P7q4GeY
-         IElRRKWs0OQkhR4QjnifgBiBzxpssoBGX2hhw0do6p/wFCOUtBmsbeZKxjAxr1WVpiN5
-         VliWyl8Uo/dpnYEDK7Kc1BjsB4N5Q/3cJL61HNo6B3jEiKtOW/567XWQ034dIQ3TwoYN
-         XhMHlS6LZ4marEWSb+mGZ632ULoLhDcKfathXCfenHIKO8jDqbnRql/Ka+HAA/8P9Paw
-         oYgA==
-X-Gm-Message-State: AOAM531gV3aV/eO0fRvAVNzfiSpB1O7/h63PXYiBnnK5gRvls4aUn/ZB
-        7+odivK7Ggdmt+y3xxInAvYBxhtH5tk=
-X-Google-Smtp-Source: ABdhPJyDJdVqKyWdxn0RWpoIwEArWFLUrCd9SVeGL7GSkVtsoUdPxf3VAk2FbtSI6aq3FCMSiY26zWBtKhU=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
- (user=seanjc job=sendgmr) by 2002:a25:bfc1:: with SMTP id q1mr39194688ybm.89.1615309826442;
- Tue, 09 Mar 2021 09:10:26 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  9 Mar 2021 09:10:19 -0800
-Message-Id: <20210309171019.1125243-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v2] x86/perf: Use RET0 as default for guest_get_msrs to handle
- "no PMU" case
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Like Xu <like.xu@linux.intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z2I636NOf6k5ECxbObixp906Gp9FvF1jjNJ2XhzpjiA=;
+ b=pb5y/eSBg1A7vtyf8hqOaAApSWXAApzXkZnjcUzyleMfMe5DJ8irIDzOmbcg2BU1E6/jFs/Qs2yBKHBUxjJECTmefLAB+LDVFDJc7FKJuaL/Rt5mVY75IH85zmgbfRXPyFJpIVVgpsbygHEAIvRBblUU+jHuUqj2Hjzxh0L27Ik=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BY5PR10MB3971.namprd10.prod.outlook.com (2603:10b6:a03:1f6::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23; Tue, 9 Mar
+ 2021 17:11:13 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee%7]) with mapi id 15.20.3912.029; Tue, 9 Mar 2021
+ 17:11:13 +0000
+Subject: Re: [RFC PATCH 0/3] hugetlb: add demote/split page functionality
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
+        Zi Yan <ziy@nvidia.com>, David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210309001855.142453-1-mike.kravetz@oracle.com>
+ <29cb78c5-4fca-0f0a-c603-0c75f9f50d05@redhat.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <ebb19eb5-ae9e-22f1-4e19-e5fce32c695c@oracle.com>
+Date:   Tue, 9 Mar 2021 09:11:11 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <29cb78c5-4fca-0f0a-c603-0c75f9f50d05@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MWHPR18CA0055.namprd18.prod.outlook.com
+ (2603:10b6:300:39::17) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MWHPR18CA0055.namprd18.prod.outlook.com (2603:10b6:300:39::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 17:11:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 06792f24-d64e-4350-8b37-08d8e31e57e6
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3971:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB39711F69D08D12449A54C439E2929@BY5PR10MB3971.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 92hJv/8spAwAhMPKa/8tt9bkvYs81bcx1EiktUsxNkFjrAXVA6rPyjIbr/aLJkFyNKvSH7UJCEAmNm95RWBInw7M+/LltA0eCzzE/x4u+CvR+IQzH0voVoI22nrl7GIUMBvAMquxp7eFJn7FOe/nmheDWedvEK+wjC3JpvKiUvZc+G/qfUww0Cggyz6DseA3mlKdLEjezkh7Rno84j7DZQwfB/Gaj8o22PmI8J7a17LXK4rMqUbprdhWj21g5Lb/JsHWvBQCkuaaT4gKSkTVk7FV7lMQdeKn+xDfdp6UP8v5y2LLmZnJfkfSyhIjzKDajLMWNTfzVHZRInKE+6nOyg/p8KR1F95AMFmwavPnbMZUbgp4omDDQRhpu6bgN8bO9Bh+scoCGutamNBkt88lc3WXHdeqt7VDHgLPzmRjHMLgzkUXcC5uV+h8PU6a0jwXaOCUUyRulyrCSZujIQjBzh1uUaRYN5D+7k9TT4dEPULHMxZGVoIJ3EMTYfarTjcbaTb7JButEurNHSr0LEn2x6HixmLaAGr+zuM8wM89y5ZFFSNk1YBra0AkyF/3mn4/5PRDMsfcCHprp1+2WMVCh6ZX28u24fOfpIpCWRew/7Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(376002)(39860400002)(396003)(8936002)(86362001)(44832011)(66476007)(36756003)(16526019)(66946007)(66556008)(8676002)(31696002)(478600001)(52116002)(2906002)(53546011)(316002)(54906003)(31686004)(16576012)(83380400001)(956004)(6486002)(26005)(2616005)(5660300002)(186003)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Z3hNc2lIRTlCZ1RwdnIrayt4UFFvQk5XWUNkeEprOFZQK0ZkSkJkcnFpc1d6?=
+ =?utf-8?B?VFAvd093NG1tcUpqZUVKWUk0SXhuZWdoVHkzaVlUSDN0VnQ0TGZiYURtc3E0?=
+ =?utf-8?B?WDJnWU9XSFFWUDlZMWIyUjlWazlJYU0vWWxTOGR0MkFpcWRMQWovbHJEaFJZ?=
+ =?utf-8?B?eFZxalluYnlFalFuU3U0aUp2UTVZenB4K1IvU2k3MDlCUElOOXdEakJwR0p5?=
+ =?utf-8?B?bzBpUG1MTThyNGhKQmRQQ1BEcjdOT1dKSUw1dTdiR2xidDE0Z0ROaWs1L2Ew?=
+ =?utf-8?B?WHJncEw3SE5CT3BRT1hkSU9KYTdsTU9HN3FzTDI4cGJSY3gyekZlQ1dzMXdT?=
+ =?utf-8?B?UWR6VnB4UysvNzVyL3BrVEcvM0E0Z2grRElSY3lUVksxMWdvQ1JiMFFuR3FZ?=
+ =?utf-8?B?aDZENzVacS95YXVYR3UrSHpiYW1kazF1RWdPK2FCbVZ6dkJtNWtDR21DcHlM?=
+ =?utf-8?B?dG9xM0ZmNmdQV0ZPb0pIUUJFVHFzbFhsR2NWRFR4SCtaTmZoRGlHTG1aYkNw?=
+ =?utf-8?B?cmlqSmRrb3ZtVDQvdnJqRnhuU3NKckJPbDlockdvVmhVTk5mTnRROURPWDlr?=
+ =?utf-8?B?ZEQ2MmFpSXVFV0JlSGZNSi8zaWNGWjFlNnM1TVdic1NwM3BkTGt2dXE4bTNU?=
+ =?utf-8?B?MXpwNlpKa3ZCTWFEcVB6bUtkZHpvalNaWjVaQVpjTGlJOXlsM3djOVR2NDFy?=
+ =?utf-8?B?MlFUeUQwTmtCcGtacFB6YjBKbkY3Q0tTaDFITkJINTZLVzlHL1M5RzNoOGJN?=
+ =?utf-8?B?NFNpaXhuOFEzWjhBY01FUWR2dUJZVzdmditSdldiajFpRGdYMUdFanpzcG12?=
+ =?utf-8?B?dzZHc2JWTzJDVVhqMlM4aEYyMXEvKzNFcnZTU1lwblAzQVlVVTY5U0Y1L1pV?=
+ =?utf-8?B?b2RkR3BpS3V2ZmFtRmRkYVZpNGoxd2lsZ01HOSttZmhwVnlSVFRJeWxoalJ0?=
+ =?utf-8?B?dEpqNTdVdDNDb2Y0M0N1TWhQVFpFV0R6eTNuRy9TaXEwZnNyTjdXcWNFZ21q?=
+ =?utf-8?B?WTBXaElIY25qZzR0c3ptOU05bm1uTmxadDk3ZFBEL2l4bjB1Q3JsZlIrNzZY?=
+ =?utf-8?B?dnNUcVcvdk9aUnVJWDBWWjJpRHVSL2JXZXBibzVyM2g3bUs1OXJ5RkhqckR0?=
+ =?utf-8?B?bWx6TnlMeWZPYXZRQnRNT01VTStWSjBkOHNPdFNRS3FRNjVaL3VYMm4raG5v?=
+ =?utf-8?B?Y1dsNHJVQ2xONHNmYy9aUTdEd1pUcmlBMzY1anc4QjZMYWFIbVl0RWNpait5?=
+ =?utf-8?B?YzlUYnljQkZsSC9yNDJBQkFtUkpKM25kR0gwQTAvNjdhOXk4WXNxQk5JZ2Zl?=
+ =?utf-8?B?YVUyYUxDV2pybm5ON01TajRydFAvbkNFam83emdRRHpySWR6R3lnNUFsV2VW?=
+ =?utf-8?B?cmY2RUZRYmllVjQyS3pZU1Q2RWZJdmxGamd1OEg2ZjZJT3lTU1h6N1l3MnFa?=
+ =?utf-8?B?S2FOQzVVVWlLdFI1cG5SZ2xtZW1McTYyWEdNc2IzaEluQzJuaUczUitNQUNV?=
+ =?utf-8?B?Skt2N2hReXNxQUV5eXkwd2RzWUxtWTBmcHA4eXJOcStpRXZHYnJwdGNKQUhx?=
+ =?utf-8?B?b0U5aU40VXZneWFSbkd0cU14b0tkSFdNcm5iYmI4bWE4TEFkTklTVjZJZDJ0?=
+ =?utf-8?B?dnZ6dlJTYWY0L05XS1AzV05MUE1DSEtSZXh1aWd6S1FzWkpqQnJwRlhMbTEv?=
+ =?utf-8?B?ODJjUWJYdEEvR1VlcGwzSElURTU3YW40dFJuS0FJQXJyNWhzNzJJVHE1ZnBU?=
+ =?utf-8?Q?WydS22+XJ5Don0v5eKzQpVL7xb46Sipt6OKlOCK?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06792f24-d64e-4350-8b37-08d8e31e57e6
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 17:11:13.7868
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kCqbPyqayLBqobXFot9omxf39BqJygrC63wJzgcWVzzhm+A62v8XllSE0XJ97shU/SgngJYY6nZGFiGmE3Tk2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3971
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9918 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103090083
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9918 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ clxscore=1015 phishscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 mlxscore=0 impostorscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103090083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize x86_pmu.guest_get_msrs to return 0/NULL to handle the "nop"
-case.  Patching in perf_guest_get_msrs_nop() during setup does not work
-if there is no PMU, as setup bails before updating the static calls,
-leaving x86_pmu.guest_get_msrs NULL and thus a complete nop.  Ultimately,
-this causes VMX abort on VM-Exit due to KVM putting random garbage from
-the stack into the MSR load list.
+On 3/9/21 1:01 AM, David Hildenbrand wrote:
+> On 09.03.21 01:18, Mike Kravetz wrote:
+>> To address these issues, introduce the concept of hugetlb page demotion.
+>> Demotion provides a means of 'in place' splitting a hugetlb page to
+>> pages of a smaller size.  For example, on x86 one 1G page can be
+>> demoted to 512 2M pages.  Page demotion is controlled via sysfs files.
+>> - demote_size    Read only target page size for demotion
+>> - demote    Writable number of hugetlb pages to be demoted
+>>
+>> Only hugetlb pages which are free at the time of the request can be demoted.
+>> Demotion does not add to the complexity surplus pages.  Demotion also honors
+>> reserved huge pages.  Therefore, when a value is written to the sysfs demote
+>> file that value is only the maximum number of pages which will be demoted.
+>> It is possible fewer will actually be demoted.
+>>
+>> If demote_size is PAGESIZE, demote will simply free pages to the buddy
+>> allocator.
+> 
+> With the vmemmap optimizations you will have to rework the vmemmap layout. How is that handled? Couldn't it happen that you are half-way through splitting a PUD into PMDs when you realize that you cannot allocate vmemmap pages for properly handling the remaining PMDs? What would happen then?
+> 
+> Or are you planning on making both features mutually exclusive?
+> 
+> Of course, one approach would be first completely restoring the vmemmap for the whole PUD (allocating more pages than necessary in the end) and then freeing individual pages again when optimizing the layout per PMD.
+> 
 
-Add a comment in KVM to note that nr_msrs is valid if and only if the
-return value is non-NULL.
+You are right about the need to address this issue.  Patch 3 has the
+comment:
 
-Fixes: abd562df94d1 ("x86/perf: Use static_call for x86_pmu.guest_get_msrs")
-Cc: Like Xu <like.xu@linux.intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Jim Mattson <jmattson@google.com>
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Reported-by: syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
++	/*
++	 * Note for future:
++	 * When support for reducing vmemmap of huge pages is added, we
++	 * will need to allocate vmemmap pages here and could fail.
++	 */
 
-v2:
- - Use __static_call_return0 to return NULL instead of manually checking
-   the hook at invocation.  [Peter]
- - Rebase to tip/sched/core, commit 4117cebf1a9f ("psi: Optimize task
-   switch inside shared cgroups").
+The simplest approach would be to restore the entire vmemmmap for the
+larger page and then delete for smaller pages after the split.  We could
+hook into the existing vmemmmap reduction code with just a few calls.
+This would fail to demote/split, if the allocation fails.  However, this
+is not optimal.
 
+Ideally, the code would compute how many pages for vmemmmap are needed
+after the split, allocate those and then construct vmmemmap
+appropriately when creating the smaller pages.
 
- arch/x86/events/core.c | 16 +++++-----------
- arch/x86/kvm/vmx/vmx.c |  2 +-
- 2 files changed, 6 insertions(+), 12 deletions(-)
+I think we would want to always do the allocation of vmmemmap pages up
+front and not even start the split process if the allocation fails.  No
+sense starting something we may not be able to finish.
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 6ddeed3cd2ac..7bb056151ecc 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -81,7 +81,11 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_swap_task_ctx, *x86_pmu.swap_task_ctx);
- DEFINE_STATIC_CALL_NULL(x86_pmu_drain_pebs,   *x86_pmu.drain_pebs);
- DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
- 
--DEFINE_STATIC_CALL_NULL(x86_pmu_guest_get_msrs,  *x86_pmu.guest_get_msrs);
-+/*
-+ * This one is magic, it will get called even when PMU init fails (because
-+ * there is no PMU), in which case it should simply return NULL.
-+ */
-+DEFINE_STATIC_CALL_RET0(x86_pmu_guest_get_msrs, *x86_pmu.guest_get_msrs);
- 
- u64 __read_mostly hw_cache_event_ids
- 				[PERF_COUNT_HW_CACHE_MAX]
-@@ -1944,13 +1948,6 @@ static void _x86_pmu_read(struct perf_event *event)
- 	x86_perf_event_update(event);
- }
- 
--static inline struct perf_guest_switch_msr *
--perf_guest_get_msrs_nop(int *nr)
--{
--	*nr = 0;
--	return NULL;
--}
--
- static int __init init_hw_perf_events(void)
- {
- 	struct x86_pmu_quirk *quirk;
-@@ -2024,9 +2021,6 @@ static int __init init_hw_perf_events(void)
- 	if (!x86_pmu.read)
- 		x86_pmu.read = _x86_pmu_read;
- 
--	if (!x86_pmu.guest_get_msrs)
--		x86_pmu.guest_get_msrs = perf_guest_get_msrs_nop;
--
- 	x86_pmu_static_call_update();
- 
- 	/*
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 50810d471462..32cf8287d4a7 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6580,8 +6580,8 @@ static void atomic_switch_perf_msrs(struct vcpu_vmx *vmx)
- 	int i, nr_msrs;
- 	struct perf_guest_switch_msr *msrs;
- 
-+	/* Note, nr_msrs may be garbage if perf_guest_get_msrs() returns NULL. */
- 	msrs = perf_guest_get_msrs(&nr_msrs);
--
- 	if (!msrs)
- 		return;
- 
+I purposely did not address that here as first I wanted to get feedback
+on the usefulness demote functionality.
 -- 
-2.30.1.766.gb4fecdf3b7-goog
-
+Mike Kravetz
