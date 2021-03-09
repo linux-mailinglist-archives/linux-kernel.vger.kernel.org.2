@@ -2,169 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B8D332A48
+	by mail.lfdr.de (Postfix) with ESMTP id ED447332A4A
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhCIPWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:22:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        id S231998AbhCIPWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:22:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231926AbhCIPWK (ORCPT
+        with ESMTP id S231539AbhCIPWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:22:10 -0500
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C2EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:22:10 -0800 (PST)
-Received: by mail-oo1-xc36.google.com with SMTP id x10so3131171oor.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:22:10 -0800 (PST)
+        Tue, 9 Mar 2021 10:22:32 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01583C06174A;
+        Tue,  9 Mar 2021 07:22:32 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id y131so12431766oia.8;
+        Tue, 09 Mar 2021 07:22:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aoPQVAsO1/BRWQi43DglY9jwq7xcpyNkrO9LH7otNqI=;
-        b=KAKFia4hzKePc8UqdDn3dmtVS0e7iUN+b186Sq6q5mDQat7Y++4d9kevhDvMnUBptJ
-         xIUwfRuG6i75+UR4mvlLzcknPZKaTtvzNltRynsnNw4DGdniaB9tKXBC3Szp41ts1xPM
-         tFHuQniceQfgtPec69BXvT9tW0TBkeldxwuHg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=aoPQVAsO1/BRWQi43DglY9jwq7xcpyNkrO9LH7otNqI=;
-        b=X7ozGYmYBE6ISBgls6zn45j92t4dXXbAe8y/lu1sBGYT8jSdgkQjgjmBKdyuYa1tgh
-         GfJQE64b5xOdOiJdH7H3F6MxUshrqw5puUXQiHONleDFtyNbfRC7+dm8gQA8xAVDHQiK
-         mySW4dn1qI65iexlA1Kd4NieezfbFnDWS5cnApL/NCGKigzlHdBGi9xHdOQ6UaxI0OVu
-         feNl/TdXmijiCq3xF/4VpALvCx4SG08GNaKayPvGUb+vC/hIc5EBhdRwRTRezXO8T0Hn
-         oyVUDE7fc7g4Su9bLyrUxLsnXlwgF8/H2liZY+wmBvWbZtFrmG2iXVFxzbe7/VaeFqsg
-         juaQ==
-X-Gm-Message-State: AOAM533W/zYqn9W6rJqmYGHPwzUzN60UKUr27cm7f6pXKeh6rGPyS1b+
-        VgtnFQL5VLnYXjMlys6e2kYTfg==
-X-Google-Smtp-Source: ABdhPJw8homz7geYVFxGqPxohdWt9Rf3oNCuI49U55qoeHKW1BOctm1PX3t6wZS/BBFZXjhpowmTZg==
-X-Received: by 2002:a4a:d88a:: with SMTP id b10mr22435740oov.29.1615303329581;
-        Tue, 09 Mar 2021 07:22:09 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z8sm2165142otp.14.2021.03.09.07.22.08
+        bh=EtHomTVspR07IV8b/4l9dOODkuDLjrBPgQ+KxU14Jyo=;
+        b=looSU4kCO7lnZ8qNcF26UVkoNrpWa+j5Vuf+34HbRgwah8JztFHNUu1Ulh4lckFWkC
+         5bu4rUpENW5DJsTWusAYwNgtR1NaTBQvdG6dKtljyXPVSSD8YO+8jAw0T69cda7LmHgw
+         xSerBQoqknzA+rifPav6D1PQnCOuUVVgCl4Dmdm9GRsUxbHIuH5BKuLHxo1qITs0tKl3
+         sutk6vc2Sq7IiafxEc+IB1oU7mWY0/v74kzMXE3UviX1WeC2qs1Yh4f/laA922USpbJT
+         ljKXtPao+huGAITr81DA4etG0d6w8cAIDpovPdNZ32Xo7RGL0qvRDhJdriAfYKC6+bHA
+         N7TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=EtHomTVspR07IV8b/4l9dOODkuDLjrBPgQ+KxU14Jyo=;
+        b=GHHY1YTovyoOS0RryD/nMfCf6QLr1br403ohbjrVYTge7+uhjbu40rDqvzEpDLKM2G
+         h2ZX/uHPstNBJwTHOYuMAyg+xMRIV8zyAopnyfNps5C+8b95vxk42mYEgx9U1BGJWU8f
+         5N/nLAwSLa2uupY3Z9/hX/p7PHPOQICWO48sfYqmV5E+RquwjRH9GdMloso/hd2QTV32
+         NRZNEkCo+HevEMfvtxN/GFAovy4s+cHWQ2gkQyyM5Xyom/QjkxkK+4HGdbL9ctwBn1xD
+         L4nXhEwjb4YBy8YRFhG5FgqnCQI8h5Mn9nYXCdnTdDfJRM0SddZAatd7Zp5c0oRjDnLP
+         +4dQ==
+X-Gm-Message-State: AOAM532IjsFkCMeeMeC1NVy4f2/Y8+f/UrroSSful0AD0V7xjC+SbAiY
+        hObvuZbgbIvCdm++fCj0WZk=
+X-Google-Smtp-Source: ABdhPJzKou9Rz9fmPGAiHJaqtvmeMgi4tPpHqjnVaR3p2dK4+Th8joBlJVlCc7tkk7kP0nbpmFmIqw==
+X-Received: by 2002:aca:39d5:: with SMTP id g204mr3347242oia.63.1615303351387;
+        Tue, 09 Mar 2021 07:22:31 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l191sm1928400oih.16.2021.03.09.07.22.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 07:22:09 -0800 (PST)
-Subject: Re: [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races
- leading to gpf
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        shuah@kernel.org, valentina.manea.m@gmail.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1615171203.git.skhan@linuxfoundation.org>
- <268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org>
- <05aed75a-4a81-ef59-fc4f-6007f18e7839@i-love.sakura.ne.jp>
- <5df3d221-9e78-4cbe-826b-81cbfc4d5888@i-love.sakura.ne.jp>
- <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3d5c78b3-36cd-065f-4a55-728d6210a25d@linuxfoundation.org>
-Date:   Tue, 9 Mar 2021 08:22:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 09 Mar 2021 07:22:30 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v1 0/2] Watchdog Core Global Parameters
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <20210308112151.716315-1-f.suligoi@asem.it>
+ <d47fcc00-58fa-5850-7599-74644b34e39f@roeck-us.net>
+ <984953abc23c4cd6a4a6a5b77ae72e66@asem.it>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <1500d5fe-5228-1671-2008-4b7e30e856ea@roeck-us.net>
+Date:   Tue, 9 Mar 2021 07:22:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <984953abc23c4cd6a4a6a5b77ae72e66@asem.it>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 9:27 AM, Shuah Khan wrote:
-> On 3/8/21 3:10 AM, Tetsuo Handa wrote:
->> On 2021/03/08 16:35, Tetsuo Handa wrote:
->>> On 2021/03/08 12:53, Shuah Khan wrote:
->>>> Fix the above problems:
->>>> - Stop using kthread_get_run() macro to create/start threads.
->>>> - Create threads and get task struct reference.
->>>> - Add kthread_create() failure handling and bail out.
->>>> - Hold usbip_device lock to update local and shared states after
->>>>    creating rx and tx threads.
->>>> - Update usbip_device status to SDEV_ST_USED.
->>>> - Update usbip_device tcp_socket, sockfd, tcp_rx, and tcp_tx
->>>> - Start threads after usbip_device (tcp_socket, sockfd, tcp_rx, tcp_tx,
->>>>    and status) is complete.
->>>
->>> No, the whole usbip_sockfd_store() etc. should be serialized using a 
->>> mutex,
->>> for two different threads can open same file and write the same 
->>> content at
->>> the same moment. This results in seeing SDEV_ST_AVAILABLE and 
->>> creating two
->>> threads and overwiting global variables and setting SDEV_ST_USED and 
->>> starting
->>> two threads by each of two thread, which will later fail to call 
->>> kthread_stop()
->>> on one of two thread because global variables are overwritten.
->>>
->>> kthread_crate() (which involves GFP_KERNEL allocation) can take long 
->>> time
->>> enough to hit
->>>
->>>    usbip_sockfd_store() must perform
->>>
->>>        if (sdev->ud.status != SDEV_ST_AVAILABLE) {
->>
->> Oops. This is
->>
->>     if (sdev->ud.status == SDEV_ST_AVAILABLE) {
->>
->> of course.
->>
->>>          /* misc assignments for attach operation */
->>>          sdev->ud.status = SDEV_ST_USED;
->>>        }
->>>
->>>    under a lock, or multiple ud->tcp_{tx,rx} are created (which will 
->>> later
->>>    cause a crash like [1]) and refcount on ud->tcp_socket is leaked when
->>>    usbip_sockfd_store() is concurrently called.
->>>
->>> problem. That's why my patch introduced usbip_event_mutex lock.
+On 3/9/21 2:26 AM, Flavio Suligoi wrote:
+> Hi Guenter,
+> 
+>>> Instead of adding this kind of module parameters independently to each
+>>> driver, the best solution is declaring each feature only once, in the
+>>> watchdog core.
 >>>
 >>
->> And I think that same serialization is required between 
->> "rh_port_connect() from attach_store()" and
->> "rh_port_disconnect() from vhci_shutdown_connection() via 
->> usbip_event_add(&vdev->ud, VDEV_EVENT_DOWN)
->>   from vhci_port_disconnect() from detach_store()", for both 
->> vhci_rx_pdu() from vhci_rx_loop() and
->> vhci_port_disconnect() from detach_store() can queue VDEV_EVENT_DOWN 
->> event which can be processed
->> without waiting for attach_store() to complete.
+>> I agree to and like the idea, but I don't see the point of letting drivers opt in
+>> or opt out. This adds a lot of complexity for little if any gain.
+> 
+> Do you mean that all the support for this "global parameters" should be done
+> in the watchdog-core only, without write any code in each single
+> "hardware" driver?
+
+Correct. It should not be up to the driver author to decide if they
+want to opt out from global parameters or not. It should be up to
+users, and users can opt out by not providing the parameters.
+
+Guenter
+
 >>
+>> Guenter
 > 
-> Yes. We might need synchronization between events, threads, and shutdown
-> in usbip_host side and in connection polling and threads in vhci.
+> Regards,
 > 
-> I am also looking at the shutdown sequences closely as well since the
-> local state is referenced without usbip_device lock in these paths.
+> Flavio
 > 
-> I am approaching these problems as peeling the onion an expression so
-> we can limit the changes and take a spot fix approach. We have the
-> goal to address these crashes and not introduce regressions.
-> 
-> I don't seem to be able to reproduce these problems consistently in my
-> env. with the reproducer. I couldn't reproduce them in normal case at
-> all. Hence, the this cautious approach that reduces the chance of
-> regressions and if we see regressions, they can fixed easily.
-> 
-> https://syzkaller.appspot.com/text?tag=ReproC&x=14801034d00000
-> 
-> If this patch series fixes the problems you are seeing, I would like
-> get these fixes in and address the other two potential race conditions
-> in another round of patches. I also want to soak these in the next
-> for a few weeks.
-> 
-> Please let me know if these patches fix the problems you are seeing in 
-> your env.
+>>
+>>> Additionally, I added a implementation example of this "global"
+>>> parameters using the module "wdat_wdt"
+>>>
+>>> In details:
+>>>
+>>> ===============================
+>>> Watchdog Core Global Parameters
+>>> ===============================
+>>>
+>>> Information for watchdog kernel modules developers.
+>>>
+>>> Introduction
+>>> ============
+>>>
+>>> Different watchdog modules frequently require the same type of
+>>> parameters (for example: *timeout*, *nowayout* feature,
+>>> *start_enabled* to start the watchdog on module insertion, etc.).
+>>> Instead of adding this kind of module parameters independently to each
+>>> driver, the best solution is declaring each feature only once, in the
+>>> watchdog core.
+>>>
+>>> In this way, each driver can read these "global" parameters and then,
+>>> if needed, can implement them, according to the particular hw watchdog
+>>> characteristic.
+>>>
+>>> Using this approach, it is possible reduce some duplicate code in the
+>>> *new* watchdog drivers and simplify the code maintenance.  Moreover,
+>>> the code will be clearer, since the same kind of parameters are often
+>>> called with different names (see Documentation/watchdog/watchdog-
+>> parameters.rst).
+>>> Obviously, for compatibility reasons, we cannot remove the already
+>>> existing parameters from the code of the various watchdog modules, but
+>>> we can use this "global" approach for the new watchdog drivers.
+>>>
+>>>
+>>> Global parameters declaration
+>>> ==============================
+>>>
+>>> The global parameters data structure is declared in
+>>> include/linux/watchdog.h, as::
+>>>
+>>> 	struct watchdog_global_parameters_struct {
+>>> 		int timeout;
+>>> 		int ioport;
+>>> 		int irq;
+>>> 		unsigned long features;
+>>> 		/* Bit numbers for features flags */
+>>> 		#define WDOG_GLOBAL_PARAM_VERBOSE	0
+>>> 		#define WDOG_GLOBAL_PARAM_TEST_MODE	1
+>>> 		#define WDOG_GLOBAL_PARAM_START_ENABLED	2
+>>> 		#define WDOG_GLOBAL_PARAM_NOWAYOUT	3
+>>> 	};
+>>>
+>>> The variable "feature" is a bitwise flags container, to store boolean
+>>> features, such as:
+>>>
+>>> * nowayout
+>>> * start_enable
+>>> * etc...
+>>>
+>>> Other variables can be added, to store some numerical values and other
+>>> data required.
+>>>
+>>> The global parameters are declared (as usual for the module
+>>> parameters) in the first part of drivers/watchdog/watchdog_core.c file.
+>>> The above global data structure is then managed by the function *void
+>>> global_parameters_init()*, in the same file.
+>>>
+>>> Global parameters use
+>>> =====================
+>>>
+>>> Each watchdog driver, to check if one of the global parameters is
+>>> enabled, can use the corresponding in-line function declared in
+>>> include/linux/watchdog.h.
+>>> At the moment the following functions are ready to use:
+>>>
+>>> * watchdog_global_param_verbose_enabled()
+>>> * watchdog_global_param_test_mode_enabled()
+>>> * watchdog_global_param_start_enabled()
+>>> * watchdog_global_param_nowayout_enabled()
+>>>
+>>>
+>>>
+>>> Flavio Suligoi (2):
+>>>   watchdog: add global watchdog kernel module parameters structure
+>>>   watchdog: wdat: add start_enable global parameter
+>>>
+>>>  Documentation/watchdog/index.rst              |  1 +
+>>>  .../watchdog-core-global-parameters.rst       | 74 +++++++++++++++++++
+>>>  drivers/watchdog/watchdog_core.c              | 74 +++++++++++++++++++
+>>>  drivers/watchdog/wdat_wdt.c                   |  2 +
+>>>  include/linux/watchdog.h                      | 42 +++++++++++
+>>>  5 files changed, 193 insertions(+)
+>>>  create mode 100644
+>>> Documentation/watchdog/watchdog-core-global-parameters.rst
+>>>
 > 
 
-Can you verify these patches in your environment and see if you are
-seeing any problems? I want to first see where we are with these
-fixes.
-
-thanks,
--- Shuah
