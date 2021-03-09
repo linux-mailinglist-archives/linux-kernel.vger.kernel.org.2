@@ -2,83 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FDE332294
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AAC3322A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhCIKHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 05:07:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbhCIKHc (ORCPT
+        id S230399AbhCIKKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 05:10:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28308 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230084AbhCIKJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 05:07:32 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DD7C06174A;
-        Tue,  9 Mar 2021 02:07:32 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id ci14so26170324ejc.7;
-        Tue, 09 Mar 2021 02:07:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=zQQLnrfmFYyRxQbeO0Z9BFMti7UWADJY5NT45xDzPA0=;
-        b=qxc7Yh/FkO/28Gdh3p+cFdihgDn8yV4jcF00RJpvd3hg06n2ufVjJDH9A5dFy9m0de
-         qg5DNJFZ2mAjvuGZ3sGWrV5MX74zp1bXvCcRrKP/b57IEtv1i932RbHlPsBj6H36AdCG
-         6AE4uT50XGSeyLHBOdibNnoSxylzltbigOo4XXMa8eLxBQVnvZfSUcsmFI9nOHlo30mt
-         9j3L7VwrE5CjJDkc79Fclksi7tdTHzxdqZ2yysXUZSJjn4gZ6AVg6Ck9e8FYSTIYjvOj
-         yhJyopLKyigw3eQbGRXveVj5niYl1RLrHtC9W1xB4J8iGwp4CFy3Qcru3CjIbbbOufxm
-         IgTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=zQQLnrfmFYyRxQbeO0Z9BFMti7UWADJY5NT45xDzPA0=;
-        b=awN21lPnGKC1FNXthG2CVVTvrUwGZaYBt3hZoOnuOq+cYXCEKI+R6nVmgSly+2JvJM
-         Ll4XV8/+fsKL+zJL8Vjap9RlVsz1Ukb81xYfMqEORLhUASdIW9mqk0C1O4BZ4NyG4JOV
-         QkUo8eSwzaAgN0EaI7pWAcDo18jULWGX4h0TRbRh8OF+uNVVUIqsQBvsVtowW/BHza0D
-         cBbbpgdHPZi6HvoqDF35m2XPhcj0etEL/h6QUZjXO6VtCylqy9fxWh299G0u9wLhQeht
-         F52rgkO0I/0kO7JMJGI72xk+VJXQv/nbz7XsNZbuSezIOTAw4sBrNdlACbL3+VTFRyUU
-         93rw==
-X-Gm-Message-State: AOAM531dI8zUZ28gXDc+AO0PjLemglTpp8EP/JSE0Jt4U9eVU/aAIDFf
-        bYtWHtdCr0sqW8kCHndhryE=
-X-Google-Smtp-Source: ABdhPJwLpaovU6jEYp4H3TkfHeAJz5PnepLV4ZyLrsc7OL5ZgUYXRnvAXVp5jlqBD36A8kOlWvJZag==
-X-Received: by 2002:a17:906:68c1:: with SMTP id y1mr19352126ejr.289.1615284451049;
-        Tue, 09 Mar 2021 02:07:31 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id c20sm8053367eja.22.2021.03.09.02.07.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 02:07:30 -0800 (PST)
-Message-ID: <134e4d8df284cfd0fed911bce6e43a52c0a965bc.camel@gmail.com>
-Subject: Re: [PATCH] scsi:ufs: remove duplicate include in ufshcd
-From:   Bean Huo <huobean@gmail.com>
-To:     menglong8.dong@gmail.com, cang@codeaurora.org
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Date:   Tue, 09 Mar 2021 11:07:29 +0100
-In-Reply-To: <20210306114706.217873-1-zhang.yunkai@zte.com.cn>
-References: <20210306114706.217873-1-zhang.yunkai@zte.com.cn>
+        Tue, 9 Mar 2021 05:09:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615284589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E7+PqvKTFHdaKCmM0AiAKUNzRu+ZOxj1wno09Cr/Az0=;
+        b=EafcPI/op90kkAEWnqO5qUK04T8DRdXfLZ25Mn7dzuykRSN8rxl8l4giBTO60DRkhZ9A8t
+        3dVs/nOTSD2QP8OXYdsb5Em4/pgZzRxOCmzLmrFR7Jv9SAwaUL9ZvPf8PPyn9M52zN1yHO
+        E/TsT002iY851k0NSnmttVmJXrVK8K8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-BGkCS5InMzyjBBKcXi9jAA-1; Tue, 09 Mar 2021 05:09:47 -0500
+X-MC-Unique: BGkCS5InMzyjBBKcXi9jAA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59DB11005D45;
+        Tue,  9 Mar 2021 10:09:46 +0000 (UTC)
+Received: from starship (unknown [10.35.206.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DB0935D6D7;
+        Tue,  9 Mar 2021 10:09:43 +0000 (UTC)
+Message-ID: <785c17c307e66b9d7b422cc577499d284cfb6e7b.camel@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: x86/mmu: Exclude the MMU_PRESENT bit from MMIO
+ SPTE's generation
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Date:   Tue, 09 Mar 2021 12:09:41 +0200
+In-Reply-To: <20210309021900.1001843-3-seanjc@google.com>
+References: <20210309021900.1001843-1-seanjc@google.com>
+         <20210309021900.1001843-3-seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-03-06 at 03:47 -0800, menglong8.dong@gmail.com wrote:
-> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+On Mon, 2021-03-08 at 18:19 -0800, Sean Christopherson wrote:
+> Drop bit 11, used for the MMU_PRESENT flag, from the set of bits used to
+> store the generation number in MMIO SPTEs.  MMIO SPTEs with bit 11 set,
+> which occurs when userspace creates 128+ memslots in an address space,
+> get false positives for is_shadow_present_spte(), which lead to a variety
+> of fireworks, crashes KVM, and likely hangs the host kernel.
 > 
+> Fixes: b14e28f37e9b ("KVM: x86/mmu: Use a dedicated bit to track shadow/MMU-present SPTEs")
+> Reported-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Reported-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/mmu/spte.h | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 > 
-> 
-> 'blkdev.h' included in 'ufshcd.c' is duplicated.
-> 
-> It is also included in the 18th line.
-> 
-> 
-> 
-> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Reviewed-by: Bean Huo <beanhuo@micron.com>
+> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+> index b53036d9ddf3..bca0ba11cccf 100644
+> --- a/arch/x86/kvm/mmu/spte.h
+> +++ b/arch/x86/kvm/mmu/spte.h
+> @@ -101,11 +101,11 @@ static_assert(!(EPT_SPTE_MMU_WRITABLE & SHADOW_ACC_TRACK_SAVED_MASK));
+>  #undef SHADOW_ACC_TRACK_SAVED_MASK
+>  
+>  /*
+> - * Due to limited space in PTEs, the MMIO generation is a 20 bit subset of
+> + * Due to limited space in PTEs, the MMIO generation is a 19 bit subset of
+>   * the memslots generation and is derived as follows:
+>   *
+> - * Bits 0-8 of the MMIO generation are propagated to spte bits 3-11
+> - * Bits 9-19 of the MMIO generation are propagated to spte bits 52-62
+> + * Bits 0-7 of the MMIO generation are propagated to spte bits 3-10
+> + * Bits 8-18 of the MMIO generation are propagated to spte bits 52-62
+>   *
+>   * The KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS flag is intentionally not included in
+>   * the MMIO generation number, as doing so would require stealing a bit from
+> @@ -116,7 +116,7 @@ static_assert(!(EPT_SPTE_MMU_WRITABLE & SHADOW_ACC_TRACK_SAVED_MASK));
+>   */
+>  
+>  #define MMIO_SPTE_GEN_LOW_START		3
+> -#define MMIO_SPTE_GEN_LOW_END		11
+> +#define MMIO_SPTE_GEN_LOW_END		10
+>  
+>  #define MMIO_SPTE_GEN_HIGH_START	52
+>  #define MMIO_SPTE_GEN_HIGH_END		62
+> @@ -125,12 +125,14 @@ static_assert(!(EPT_SPTE_MMU_WRITABLE & SHADOW_ACC_TRACK_SAVED_MASK));
+>  						    MMIO_SPTE_GEN_LOW_START)
+>  #define MMIO_SPTE_GEN_HIGH_MASK		GENMASK_ULL(MMIO_SPTE_GEN_HIGH_END, \
+>  						    MMIO_SPTE_GEN_HIGH_START)
+> +static_assert(!(SPTE_MMU_PRESENT_MASK &
+> +		(MMIO_SPTE_GEN_LOW_MASK | MMIO_SPTE_GEN_HIGH_MASK)));
+>  
+>  #define MMIO_SPTE_GEN_LOW_BITS		(MMIO_SPTE_GEN_LOW_END - MMIO_SPTE_GEN_LOW_START + 1)
+>  #define MMIO_SPTE_GEN_HIGH_BITS		(MMIO_SPTE_GEN_HIGH_END - MMIO_SPTE_GEN_HIGH_START + 1)
+>  
+>  /* remember to adjust the comment above as well if you change these */
+> -static_assert(MMIO_SPTE_GEN_LOW_BITS == 9 && MMIO_SPTE_GEN_HIGH_BITS == 11);
+> +static_assert(MMIO_SPTE_GEN_LOW_BITS == 8 && MMIO_SPTE_GEN_HIGH_BITS == 11);
+>  
+>  #define MMIO_SPTE_GEN_LOW_SHIFT		(MMIO_SPTE_GEN_LOW_START - 0)
+>  #define MMIO_SPTE_GEN_HIGH_SHIFT	(MMIO_SPTE_GEN_HIGH_START - MMIO_SPTE_GEN_LOW_BITS)
+I bisected this and I reached the same conclusion that bit 11 has to be removed from mmio generation mask.
+
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+ 
+I do wonder, why do we need 19 (and now 18 bits) for the mmio generation:
+
+What happens if mmio generation overflows (e.g if userspace keeps on updating the memslots)? 
+In theory if we have a SPTE with a stale generation, it can became valid, no?
+
+I think that we should in the case of the overflow zap all mmio sptes.
+What do you think?
+
+Best regards,
+	Maxim Levitsky
 
