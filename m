@@ -2,147 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC673323D5
+	by mail.lfdr.de (Postfix) with ESMTP id 616633323D4
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhCILWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:22:24 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64230 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229837AbhCILWM (ORCPT
+        id S229950AbhCILWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:22:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhCILV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:22:12 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129B3hVr112130;
-        Tue, 9 Mar 2021 06:21:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=33MSJeKOJi4+jaAUNsH0vSXR7A3trD0q3srKz5Tj/ok=;
- b=hEJzA/ph2QFwapCbBviSSkLZguu55d0WTFdUgAySnXKXXfFwO8NFJHwCI3ID1KQGvOIT
- jMrNPBzK0pLP6BtO2JxGvTw0kLSUsDk2NhOywymq6ed7Ny3yjgCghLSymWUfb+jygdxv
- Ncu9gQphkeaD73x2gdxvoapqAgCEOz4r8GQEFV0117LH3PkehLVpSXvuJ7STgjYve92F
- dBlSZ8+9ELQ1qf+pO9Gg77tI0NEFWWIL0z/v7/ZGI3aZAqGneZas/JCUMUQmIr3/NxzG
- zGcb8BTcoLaJQLcaXErWxBTI7s9qhDt/GvteYeOwBbcQgu42VWCRu4WT7R3WG7FXfH5M CQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 375wesyqhx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 06:21:24 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 129B3mjq112563;
-        Tue, 9 Mar 2021 06:21:24 -0500
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 375wesyqgm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 06:21:24 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 129AwPua010276;
-        Tue, 9 Mar 2021 11:21:21 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma01fra.de.ibm.com with ESMTP id 3741c81dc5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 11:21:21 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 129BLIGZ56099188
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Mar 2021 11:21:18 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 815FBA4057;
-        Tue,  9 Mar 2021 11:21:18 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BDC4A404D;
-        Tue,  9 Mar 2021 11:21:18 +0000 (GMT)
-Received: from localhost (unknown [9.85.103.166])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  9 Mar 2021 11:21:17 +0000 (GMT)
-Date:   Tue, 9 Mar 2021 16:51:15 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>, oleg@redhat.com,
-        rostedt@goodmis.org, paulus@samba.org, jniethe5@gmail.com,
-        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        christophe.leroy@csgroup.eu
-Subject: Re: [PATCH v4] powerpc/uprobes: Validation for prefixed instruction
-Message-ID: <20210309112115.GG145@DESKTOP-TDPLP67.localdomain>
-References: <20210305115433.140769-1-ravi.bangoria@linux.ibm.com>
- <87ft14r6sa.fsf@mpe.ellerman.id.au>
+        Tue, 9 Mar 2021 06:21:56 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461EAC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 03:21:53 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:cc57:dd66:c63b:c8e4])
+        by baptiste.telenet-ops.be with bizsmtp
+        id eBMr2400e1C546401BMs41; Tue, 09 Mar 2021 12:21:52 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lJaQx-006Gg4-J8; Tue, 09 Mar 2021 12:21:51 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lJaQx-009giZ-50; Tue, 09 Mar 2021 12:21:51 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] [RFC] dt-bindings: Consider DT_SCHEMA_FILES when finding all json-schema
+Date:   Tue,  9 Mar 2021 12:21:48 +0100
+Message-Id: <20210309112148.2309116-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ft14r6sa.fsf@mpe.ellerman.id.au>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-09_09:2021-03-08,2021-03-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- spamscore=0 bulkscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090053
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/09 08:54PM, Michael Ellerman wrote:
-> Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
-> > As per ISA 3.1, prefixed instruction should not cross 64-byte
-> > boundary. So don't allow Uprobe on such prefixed instruction.
-> >
-> > There are two ways probed instruction is changed in mapped pages.
-> > First, when Uprobe is activated, it searches for all the relevant
-> > pages and replace instruction in them. In this case, if that probe
-> > is on the 64-byte unaligned prefixed instruction, error out
-> > directly. Second, when Uprobe is already active and user maps a
-> > relevant page via mmap(), instruction is replaced via mmap() code
-> > path. But because Uprobe is invalid, entire mmap() operation can
-> > not be stopped. In this case just print an error and continue.
-> >
-> > Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-> > Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> 
-> Do we have a Fixes: tag for this?
+Setting DT_SCHEMA_FILES allows the user to restrict the
+"dt_binding_check" make target to a specified set of DT binding files.
+However, yamllint is still run on all available files, which can take
+quite some time.
 
-Since this is an additional check we are adding, I don't think we should 
-add a Fixes: tag. Nothing is broken per-se -- we're just adding more 
-checks to catch simple mistakes. Also, like Oleg pointed out, there are 
-still many other ways for users to shoot themselves in the foot with 
-uprobes and prefixed instructions, if they so desire.
+Fix this by changing "find_cmd" to only return the specified files.
+Note that this also affects the "cmd_chk_bindings" and "cmd_mk_schema"
+rules.
 
-However, if you still think we should add a Fixes: tag, we can perhaps 
-use the below commit since I didn't see any specific commit adding 
-support for prefixed instructions for uprobes:
+This reduces the execution time of
 
-Fixes: 650b55b707fdfa ("powerpc: Add prefixed instructions to 
-instruction data type")
+    make dt_binding_check DT_SCHEMA_FILES=/path/to/json/schema/file
 
-> 
-> > ---
-> > v3: https://lore.kernel.org/r/20210304050529.59391-1-ravi.bangoria@linux.ibm.com
-> > v3->v4:
-> >   - CONFIG_PPC64 check was not required, remove it.
-> >   - Use SZ_ macros instead of hardcoded numbers.
-> >
-> >  arch/powerpc/kernel/uprobes.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
-> > index e8a63713e655..4cbfff6e94a3 100644
-> > --- a/arch/powerpc/kernel/uprobes.c
-> > +++ b/arch/powerpc/kernel/uprobes.c
-> > @@ -41,6 +41,13 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
-> >  	if (addr & 0x03)
-> >  		return -EINVAL;
-> >  
-> > +	if (cpu_has_feature(CPU_FTR_ARCH_31) &&
-> > +	    ppc_inst_prefixed(auprobe->insn) &&
-> > +	    (addr & (SZ_64 - 4)) == SZ_64 - 4) {
-> > +		pr_info_ratelimited("Cannot register a uprobe on 64 byte unaligned prefixed instruction\n");
-> > +		return -EINVAL;
-> 
-> I realise we already did the 0x03 check above, but I still think this
-> would be clearer simply as:
-> 
-> 	    (addr & 0x3f == 60)
+from ca. 22 to less than 2 seconds on an i7-8700K.
 
-Indeed, I like the use of `60' there -- hex is overrated ;)
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Should this be restricted to cmd_yamllint?
+I'm not sure which users of find_cmd do and do not need all files.
+---
+ Documentation/devicetree/bindings/Makefile | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-- Naveen
+diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
+index 780e5618ec0ae2fc..60ac03bade2da0ad 100644
+--- a/Documentation/devicetree/bindings/Makefile
++++ b/Documentation/devicetree/bindings/Makefile
+@@ -22,10 +22,18 @@ $(obj)/%.example.dts: $(src)/%.yaml check_dtschema_version FORCE
+ # Use full schemas when checking %.example.dts
+ DT_TMP_SCHEMA := $(obj)/processed-schema-examples.json
+ 
++ifeq ($(DT_SCHEMA_FILES),)
++
+ find_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
+ 		-name 'processed-schema*' ! \
+ 		-name '*.example.dt.yaml' \)
+ 
++else
++
++find_cmd = echo $(addprefix $(srctree)/, $(DT_SCHEMA_FILES))
++
++endif
++
+ quiet_cmd_yamllint = LINT    $(src)
+       cmd_yamllint = ($(find_cmd) | \
+                      xargs $(DT_SCHEMA_LINT) -f parsable -c $(srctree)/$(src)/.yamllint) || true
+-- 
+2.25.1
+
