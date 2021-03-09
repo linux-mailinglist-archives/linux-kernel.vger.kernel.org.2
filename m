@@ -2,199 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187693324F8
+	by mail.lfdr.de (Postfix) with ESMTP id 649B53324F9
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhCIMLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 07:11:08 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:35679 "EHLO pegase1.c-s.fr"
+        id S231905AbhCIMLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 07:11:10 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:22719 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230494AbhCIMKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 07:10:09 -0500
+        id S229900AbhCIMKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 07:10:10 -0500
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DvvCy2Csnz9tyjN;
-        Tue,  9 Mar 2021 13:10:06 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4DvvCz5rSyz9tyjF;
+        Tue,  9 Mar 2021 13:10:07 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id KBJRvL0spxMn; Tue,  9 Mar 2021 13:10:06 +0100 (CET)
+        with ESMTP id RnNDPD0RxgeU; Tue,  9 Mar 2021 13:10:07 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DvvCy1LDDz9tyjM;
-        Tue,  9 Mar 2021 13:10:06 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 74BB68B7FC;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DvvCz3szWz9tyjG;
         Tue,  9 Mar 2021 13:10:07 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C7A808B802;
+        Tue,  9 Mar 2021 13:10:08 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id xgo2vd2HO6dk; Tue,  9 Mar 2021 13:10:07 +0100 (CET)
+        with ESMTP id m4J8kgqfh4pB; Tue,  9 Mar 2021 13:10:08 +0100 (CET)
 Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2AF608B800;
-        Tue,  9 Mar 2021 13:10:07 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7552F8B7FC;
+        Tue,  9 Mar 2021 13:10:08 +0100 (CET)
 Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 061CD67555; Tue,  9 Mar 2021 12:10:07 +0000 (UTC)
-Message-Id: <7167aef44fb816f6df17f65d540ac07ca98c4af9.1615291474.git.christophe.leroy@csgroup.eu>
+        id 2E8C167555; Tue,  9 Mar 2021 12:10:08 +0000 (UTC)
+Message-Id: <9fb33f485e9029b06502b5524c9ce3b6075951da.1615291474.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1615291471.git.christophe.leroy@csgroup.eu>
 References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 40/43] powerpc/64s: Make kuap_check_amr() and
- kuap_get_and_check_amr() generic
+Subject: [PATCH v2 41/43] powerpc/32s: Create C version of kuap
+ save/restore/check helpers
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue,  9 Mar 2021 12:10:07 +0000 (UTC)
+Date:   Tue,  9 Mar 2021 12:10:08 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation of porting powerpc32 to C syscall entry/exit,
-rename kuap_check_amr() and kuap_get_and_check_amr() as kuap_check()
-and kuap_get_and_check(), and move in the generic asm/kup.h the stub
-for when CONFIG_PPC_KUAP is not selected.
+In preparation of porting PPC32 to C syscall entry/exit,
+create C version of kuap_save_and_lock() and kuap_user_restore() and
+kuap_kernel_restore() and kuap_check() and kuap_get_and_check()
+on book3s/32.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/include/asm/book3s/64/kup.h | 24 ++----------------------
- arch/powerpc/include/asm/kup.h           | 10 +++++++++-
- arch/powerpc/kernel/interrupt.c          | 12 ++++++------
- arch/powerpc/kernel/irq.c                |  2 +-
- 4 files changed, 18 insertions(+), 30 deletions(-)
+ arch/powerpc/include/asm/book3s/32/kup.h | 45 ++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/kup.h b/arch/powerpc/include/asm/book3s/64/kup.h
-index 8bd905050896..d9b07e9998be 100644
---- a/arch/powerpc/include/asm/book3s/64/kup.h
-+++ b/arch/powerpc/include/asm/book3s/64/kup.h
-@@ -287,7 +287,7 @@ static inline void kuap_kernel_restore(struct pt_regs *regs,
- 	 */
+diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
+index b97ea60f6fa3..c9d6c28bcd10 100644
+--- a/arch/powerpc/include/asm/book3s/32/kup.h
++++ b/arch/powerpc/include/asm/book3s/32/kup.h
+@@ -72,6 +72,51 @@ static inline void kuap_update_sr(u32 sr, u32 addr, u32 end)
+ 	isync();	/* Context sync required after mtsr() */
  }
  
--static inline unsigned long kuap_get_and_check_amr(void)
-+static inline unsigned long kuap_get_and_check(void)
- {
- 	if (mmu_has_feature(MMU_FTR_BOOK3S_KUAP)) {
- 		unsigned long amr = mfspr(SPRN_AMR);
-@@ -298,27 +298,7 @@ static inline unsigned long kuap_get_and_check_amr(void)
- 	return 0;
- }
- 
--#else /* CONFIG_PPC_PKEY */
--
--static inline void kuap_user_restore(struct pt_regs *regs)
--{
--}
--
--static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long amr)
--{
--}
--
--static inline unsigned long kuap_get_and_check_amr(void)
--{
--	return 0;
--}
--
--#endif /* CONFIG_PPC_PKEY */
--
--
--#ifdef CONFIG_PPC_KUAP
--
--static inline void kuap_check_amr(void)
-+static inline void kuap_check(void)
- {
- 	if (IS_ENABLED(CONFIG_PPC_KUAP_DEBUG) && mmu_has_feature(MMU_FTR_BOOK3S_KUAP))
- 		WARN_ON_ONCE(mfspr(SPRN_AMR) != AMR_KUAP_BLOCKED);
-diff --git a/arch/powerpc/include/asm/kup.h b/arch/powerpc/include/asm/kup.h
-index 25671f711ec2..b7efa46b3109 100644
---- a/arch/powerpc/include/asm/kup.h
-+++ b/arch/powerpc/include/asm/kup.h
-@@ -74,7 +74,15 @@ bad_kuap_fault(struct pt_regs *regs, unsigned long address, bool is_write)
- 	return false;
- }
- 
--static inline void kuap_check_amr(void) { }
-+static inline void kuap_check(void) { }
-+static inline void kuap_save_and_lock(struct pt_regs *regs) { }
-+static inline void kuap_user_restore(struct pt_regs *regs) { }
-+static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long amr) { }
++static inline void kuap_save_and_lock(struct pt_regs *regs)
++{
++	unsigned long kuap = current->thread.kuap;
++	u32 addr = kuap & 0xf0000000;
++	u32 end = kuap << 28;
++
++	regs->kuap = kuap;
++	if (unlikely(!kuap))
++		return;
++
++	current->thread.kuap = 0;
++	kuap_update_sr(mfsr(addr) | SR_KS, addr, end);	/* Set Ks */
++}
++
++static inline void kuap_user_restore(struct pt_regs *regs)
++{
++}
++
++static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long kuap)
++{
++	u32 addr = regs->kuap & 0xf0000000;
++	u32 end = regs->kuap << 28;
++
++	current->thread.kuap = regs->kuap;
++
++	if (unlikely(regs->kuap == kuap))
++		return;
++
++	kuap_update_sr(mfsr(addr) & ~SR_KS, addr, end);	/* Clear Ks */
++}
 +
 +static inline unsigned long kuap_get_and_check(void)
 +{
-+	return 0;
++	unsigned long kuap = current->thread.kuap;
++
++	WARN_ON_ONCE(IS_ENABLED(CONFIG_PPC_KUAP_DEBUG) && kuap != 0);
++
++	return kuap;
 +}
- 
- /*
-  * book3s/64/kup-radix.h defines these functions for the !KUAP case to flush
-diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-index 727b7848c9cc..40ed55064e54 100644
---- a/arch/powerpc/kernel/interrupt.c
-+++ b/arch/powerpc/kernel/interrupt.c
-@@ -76,7 +76,7 @@ notrace long system_call_exception(long r3, long r4, long r5,
- 	} else
- #endif
- #ifdef CONFIG_PPC64
--		kuap_check_amr();
-+		kuap_check();
- #endif
- 
- 	booke_restore_dbcr0();
-@@ -254,7 +254,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- 	CT_WARN_ON(ct_state() == CONTEXT_USER);
- 
- #ifdef CONFIG_PPC64
--	kuap_check_amr();
-+	kuap_check();
- #endif
- 
- 	regs->result = r3;
-@@ -380,7 +380,7 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned
- 	 * AMR can only have been unlocked if we interrupted the kernel.
- 	 */
- #ifdef CONFIG_PPC64
--	kuap_check_amr();
-+	kuap_check();
- #endif
- 
- 	local_irq_save(flags);
-@@ -451,7 +451,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
- 	unsigned long flags;
- 	unsigned long ret = 0;
- #ifdef CONFIG_PPC64
--	unsigned long amr;
-+	unsigned long kuap;
- #endif
- 
- 	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x) &&
-@@ -467,7 +467,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
- 		CT_WARN_ON(ct_state() == CONTEXT_USER);
- 
- #ifdef CONFIG_PPC64
--	amr = kuap_get_and_check_amr();
-+	kuap = kuap_get_and_check();
- #endif
- 
- 	if (unlikely(current_thread_info()->flags & _TIF_EMULATE_STACK_STORE)) {
-@@ -511,7 +511,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
- 	 * value from the check above.
- 	 */
- #ifdef CONFIG_PPC64
--	kuap_kernel_restore(regs, amr);
-+	kuap_kernel_restore(regs, kuap);
- #endif
- 
- 	return ret;
-diff --git a/arch/powerpc/kernel/irq.c b/arch/powerpc/kernel/irq.c
-index d71fd10a1dd4..3b18d2b2c702 100644
---- a/arch/powerpc/kernel/irq.c
-+++ b/arch/powerpc/kernel/irq.c
-@@ -282,7 +282,7 @@ static inline void replay_soft_interrupts_irqrestore(void)
- 	 * and re-locking AMR but we shouldn't get here in the first place,
- 	 * hence the warning.
- 	 */
--	kuap_check_amr();
-+	kuap_check();
- 
- 	if (kuap_state != AMR_KUAP_BLOCKED)
- 		set_kuap(AMR_KUAP_BLOCKED);
++
++static inline void kuap_check(void)
++{
++	kuap_get_and_check();
++}
++
+ static __always_inline void allow_user_access(void __user *to, const void __user *from,
+ 					      u32 size, unsigned long dir)
+ {
 -- 
 2.25.0
 
