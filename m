@@ -2,91 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BA733222A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCCE332230
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhCIJiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:38:07 -0500
-Received: from mga12.intel.com ([192.55.52.136]:30733 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229641AbhCIJho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:37:44 -0500
-IronPort-SDR: unY5L+1d+ukZl9VtHQJISRnFxN8YRvY/hphjuV2C08IGt5kX190+rDZMv/CbXtFrRPWR1lNnu4
- DtcIRTOEk9eQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="167466266"
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="167466266"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:37:44 -0800
-IronPort-SDR: VRIaFDlaMgPRCo8zHzNCl4Wl0Bm73Al2x9WB6eB1xTIXoAMiX2zGtCpdeogxYDt5BF0frb2YXS
- Y7FD6ztq4+iA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="430694114"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Mar 2021 01:37:41 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 957AD5D2; Tue,  9 Mar 2021 11:37:38 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org
-Cc:     Marc Zyngier <maz@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v6 6/6] gpiolib: Fold conditionals into a simple ternary operator
-Date:   Tue,  9 Mar 2021 11:37:36 +0200
-Message-Id: <20210309093736.67925-7-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210309093736.67925-1-andriy.shevchenko@linux.intel.com>
-References: <20210309093736.67925-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230394AbhCIJif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:38:35 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:50979 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230047AbhCIJiB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:38:01 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UR53sNl_1615282671;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UR53sNl_1615282671)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 09 Mar 2021 17:37:57 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: csiostor: Assign boolean values to a bool variable
+Date:   Tue,  9 Mar 2021 17:37:48 +0800
+Message-Id: <1615282668-36935-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's quite spread code to initialize IRQ domain options.
-Let's fold it into a simple oneliner.
+Fix the following coccicheck warnings:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+./drivers/scsi/csiostor/csio_scsi.c:150:9-10: WARNING: return of 0/1 in
+function 'csio_scsi_itnexus_loss_error' with return type bool.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/gpio/gpiolib.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/scsi/csiostor/csio_scsi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index afee48e7dd41..cee4333f8ac7 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -1458,7 +1458,6 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
- {
- 	struct fwnode_handle *fwnode = dev_fwnode(&gc->gpiodev->dev);
- 	struct irq_chip *irqchip = gc->irq.chip;
--	const struct irq_domain_ops *ops = NULL;
- 	unsigned int type;
- 	unsigned int i;
- 
-@@ -1496,15 +1495,11 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
- 			return ret;
- 	} else {
- 		/* Some drivers provide custom irqdomain ops */
--		if (gc->irq.domain_ops)
--			ops = gc->irq.domain_ops;
--
--		if (!ops)
--			ops = &gpiochip_domain_ops;
- 		gc->irq.domain = irq_domain_create_simple(fwnode,
- 			gc->ngpio,
- 			gc->irq.first,
--			ops, gc);
-+			gc->irq.domain_ops ?: &gpiochip_domain_ops,
-+			gc);
- 		if (!gc->irq.domain)
- 			return -EINVAL;
+diff --git a/drivers/scsi/csiostor/csio_scsi.c b/drivers/scsi/csiostor/csio_scsi.c
+index 55e74da..56b9ad0 100644
+--- a/drivers/scsi/csiostor/csio_scsi.c
++++ b/drivers/scsi/csiostor/csio_scsi.c
+@@ -147,9 +147,9 @@ static int csio_do_abrt_cls(struct csio_hw *,
+ 	case FW_ERR_RDEV_LOST:
+ 	case FW_ERR_RDEV_LOGO:
+ 	case FW_ERR_RDEV_IMPL_LOGO:
+-		return 1;
++		return true;
  	}
+-	return 0;
++	return false;
+ }
+ 
+ /*
 -- 
-2.30.1
+1.8.3.1
 
