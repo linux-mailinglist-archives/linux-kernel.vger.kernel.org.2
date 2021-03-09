@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F29C332AB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 829BE332AC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbhCIPj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:39:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        id S231856AbhCIPk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:40:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhCIPjU (ORCPT
+        with ESMTP id S231905AbhCIPkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:39:20 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE7DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:39:20 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id a7so14321893iok.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:39:20 -0800 (PST)
+        Tue, 9 Mar 2021 10:40:22 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799C2C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:40:21 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id h4so21241155ljl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:40:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=8ahT1PfmDE5o7sxez2PrjQRyN6HCfBh0U/WBlIaifEY=;
-        b=is4XMq14wQnEZoZ1sQQuEPyxAjwLmCXXbiycEW4ZMEBxchWyFfmpiYjHzqP1apjxxH
-         DlvwC/w6K01awlEJwfuHRu10l43oqKPwJ/UiDnGESLSaeVDBGKd0ow/1awFgJFKveIm9
-         hdASjtyeNi/ar1TgOnURHyyg5nx+Ak1hAcq26EB4C2b4ipk6MZiAa2cp0A5Gri4mOaCk
-         T+5oaQtVidPVeR/0nv6tZSObXzzvt24pQ8yam06+af8+UmCgKEgN5QWFew1JJ72w6+Lm
-         ApU9loSa/bx3pfn4+ihS576Te9LiVrhEnIadxI6PmenyFm84sAMY/VIOuNKd0If4cEWl
-         BWcA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lu+kK3nSAEUTNwnDM4pW2WC6uWJJmrapOL1I+PVvtnU=;
+        b=RGZPUNMxbSls/6ut21Ur6KbghdWogF4sL+NXMIA9cKyeKwNKL0Hz0mhyFsSXv/OBtb
+         jnTPF5TJwRfP2h3ns1CWqPwbvZ4FlR8eSaemHeyxekynGvXftNVUqM65k0VzJehBmDiy
+         owGLAG6He59RMMoToMWvTXpswEBmJpDEWhPBCvrtWjGEFW10PpYT6vEhruku3/ccszps
+         RiZ0KG+sggU/vWnMvLxnqun6CIJ+9PI9QkRuasLDeWjdRis4tG9zoBRBzMgZyJc7uNlS
+         tDF2cw3jmG11uhRjhoVDbmrssDArdZ/i28IYjqFlv8rJaqbzR0I9MClkeGzwb4zyqUyh
+         kn4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8ahT1PfmDE5o7sxez2PrjQRyN6HCfBh0U/WBlIaifEY=;
-        b=HpLwvfYy4fi206atKcQHYRn24YvURgmA5rqOgwf4LH9wCBf8jdhXV70o2apejCxeHJ
-         IlTrJr3tt+X0Op76+oyn7VUuzMXK1102boE6y+YFzEOJ0bK0VTbKurUcCiK2mm9JzC4F
-         3v+EF3O1aR0/GdMTJmjsRpL1YL2sDlSAO7lAAKl0tJGtYvBRAPmnvLaddnvXsG+RWxqF
-         0ppFw/Zew0XseEWdcrela52xIzOWh4EwHXC4N8R+gQkyuQrky0IpIcWlZ6c2ZhkB+8wU
-         MUy2Pu+0CXybsFKB3S9awGsQi3Efz+TXJXhAucr7a/596ABHflPpj1MIojwEiLyJ1Ncu
-         +lLA==
-X-Gm-Message-State: AOAM530nYVrFzo68rwb8FBc01UNjk2dIIpyKC/J6ymsmxMSXsRHADgCV
-        h1prEquqyb1EFeLJJLIqz778IQ==
-X-Google-Smtp-Source: ABdhPJwB5iVYyt6Y+B1/LN/TAhVkcMwklZnJx7bSWXAaLZ8WUvKFGeM4shcpQIbwjR9DwOsBPGsnHg==
-X-Received: by 2002:a05:6638:210d:: with SMTP id n13mr29682849jaj.74.1615304359555;
-        Tue, 09 Mar 2021 07:39:19 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id r15sm7777746iot.5.2021.03.09.07.39.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 07:39:19 -0800 (PST)
-Subject: Re: [syzbot] WARNING in io_wq_put
-To:     syzbot <syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000020922505bd1c4500@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f6aa960c-9c7e-b0f6-9931-1f563ead539f@kernel.dk>
-Date:   Tue, 9 Mar 2021 08:39:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lu+kK3nSAEUTNwnDM4pW2WC6uWJJmrapOL1I+PVvtnU=;
+        b=YVqSanp0Lk0IM09Zlo5ADhfB86xAb/4k7r8c8jr8QRYOGWskDxa/pwB4S0PwEe0zPb
+         Ltzw/0Xft2LiMUhQk1MLqLuNPWQWT4tWAW4UqdQcuGjKNysXN7Ue88/ZHU7F8FQ0OJmg
+         GRKvyl1MeKTofo+P+KU5Jbt6z+GueIjb/TCmPDEnvVxxFQoeP2JIf6hfjuS0qJ7azKPA
+         ePP79mgpmgFtgVC/aCaxPyrX/bjXSaUvpOWWIW0Zmp3GAxIoGJp/Fo2la8ns56lvNzOA
+         slnJaBXD3vrBz+LJS/pfxNmWgk3O7XIMyKWP+fRKwOMXaT3z+yjctoXumanXTSx1J0vf
+         owYA==
+X-Gm-Message-State: AOAM532qeWydCN0RjA9BJVwmgDPy5hAtZCrgTggZ3q4mHl2XeRyEEJbf
+        oxln3hI20f6NeYSO0uP7rZu/CiMFvDCB3MItFJlTAg==
+X-Google-Smtp-Source: ABdhPJwEI7sL2ZOe/ozOi+pJFvTfLuJFts7EVCGgPZapWZODVntgxp5IN5ZQc/HGdbEc0f45tW7JoT/HzKQUQHQUuLQ=
+X-Received: by 2002:a2e:864a:: with SMTP id i10mr16814623ljj.467.1615304420049;
+ Tue, 09 Mar 2021 07:40:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <00000000000020922505bd1c4500@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
+ <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
+ <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st> <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
+ <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
+ <CAK8P3a0_GBB-VYFO5NaySyBJDN2Ra-WMH4WfFrnzgOejmJVG8g@mail.gmail.com>
+ <20210308211306.GA2920998@robh.at.kernel.org> <CACRpkdZd_PU-W37szfGL7J2RYWhZzXdX342vt93H7mWXdh5iHA@mail.gmail.com>
+ <CAK8P3a104VXhPHuWaJVEw3uMEp3rSEHsFJ6w2sW4FhNjiQ2VQQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a104VXhPHuWaJVEw3uMEp3rSEHsFJ6w2sW4FhNjiQ2VQQ@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Mar 2021 16:40:09 +0100
+Message-ID: <CACRpkdYSFGF1crqDnwB_UbEXV8q5xqx7n8VHCyKYjCpy1PMK8A@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
+ MMIO as non-posted
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 8:33 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    a38fd874 Linux 5.12-rc2
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1276fd0ad00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9008fb06fa15d749
-> dashboard link: https://syzkaller.appspot.com/bug?extid=77a738a6bc947bf639ca
-> compiler:       Debian clang version 11.0.1-2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
+On Tue, Mar 9, 2021 at 1:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-Should be fixed in io_uring-5.12 as well.
+> - A driver writer may want to choose between posted and
+>   nonposted mmio based on performance considerations:
+>   if writes are never serialized, posted writes should always
+>   be faster. However, if the driver uses a spinlock to serialize
+>   writes, then a nonposted write is likely faster than a posted
+>   write followed by a read that serializes the spin_unlock.
+>   In this case we want the driver to explicitly pick one over
+>   the other, and not have rely on bus specific magic.
 
--- 
-Jens Axboe
+OK then I am all for having drivers explicitly choose access
+method. Openness to speed optimization is a well established
+Linux kernel design principle.
 
+Yours,
+Linus Walleij
