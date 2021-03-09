@@ -2,100 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569AD333187
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 445D733319B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbhCIWaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 17:30:25 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:49647 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231992AbhCIWaV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 17:30:21 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 9EC5D2223A;
-        Tue,  9 Mar 2021 23:30:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615329018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hd2LMGNdbPy56tyf0yjAuAUyGKnyIDHM2Ywt14xCuRI=;
-        b=sFwZIOc4jVQsnrU/IpsFHUvES+v/WU9a6X0fpFw+fV9cJ+ypQyetm5o8RxYUHXYvEgrE73
-        2f7r39G59iKuo2YJYarJW9iR83Cy1zEA/I2tKdhpoDqA14pE3yAukYE3qGBBaj7hEgrLwp
-        pOkNBuLWgTuo5kH8kqvpySYtTeL2VU4=
+        id S231960AbhCIWjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 17:39:07 -0500
+Received: from mail-bn8nam12on2046.outbound.protection.outlook.com ([40.107.237.46]:31425
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230086AbhCIWil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 17:38:41 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Uu5np9HMa+aeEQOhJ4LUVL3v/X7YAYiazWTOSgMzbGNm7L19ywU4wSDqNOzPCTBun2Z13up3QVXfu6Hb08/5qHPGAVGGDvGfnTLsmeDBNEv59XbIPMj2jVIn2Y1YKKIknMv8C44E21ukjUMHSYzBgZYwXDcR47ksytbbzoceaHZc6RImHEYSzyCsL7lq/Zpu/EOJfzg4MIkHAkCV4uRgcSl65nWXmp6iGuVs2yaLDE5amWiWayuiinaHDqaGnXL8VWcbfmSBwLkDRohv5QQ6c6mV6KMB1mDnb6/qXppQoDyM+Ya9CxLqL22hITCss6VoU8XgwU8TJTmPe8pU6r8QIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vjmm3izY2BFjD/mNXDCW0CyvtiJ9fItFsvR23ZEDbHc=;
+ b=mjQK8PSwm3EY9TXhVZPyoOvEj/qLaDqyFeRyXloiphuqrxu34X4IQW3OU9eOs4k+QjQpVF95+Gtb2vHwMXjkyWB+Y2LZKKjPlRK3/X1MgREYr0ZxuAprTmi0/QefUiogGiMEIfhcheo4USV8hvDXIYqXcqchbaRncpW8KhSLOi22zAb17E7PiDahYv7r7xzcGeWSP++5rXJP3lYPKakogI2gQM+c0MNRi31tCxx+MxOUBfL6GD2zsdhhamT+TVnbDZ7Am0ovXNVZsa2oIP4uKD8XBFqjqLyj2MeyTjA51nznZU+zP+3Co3qWBUWMOJ1XJlhjv5kzmEwx+dxpgntUAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vjmm3izY2BFjD/mNXDCW0CyvtiJ9fItFsvR23ZEDbHc=;
+ b=Q/JZ+bZUBlRSbPJwSACjXqK/zvloxfyAKgCBwaZJtJ6AqVu3GfXBEloo19RkZou5egC6RM8DSXApIVFt46Md1y6p0QRzKW8A44dUB/XvCKdnzzipMYRh6d7XaMqFUKEwNKpLfvviLCPE56ZmJQbKIVLz/4cO7D1l+qu1M9RXZdCpe8gntiqV6NRWUTvvvEJbaI8bbBPAZ5+ZaIUayhyqpziSJ+v88fizisBIUhrGHfBBHchNPoUr0e+bPJjzbUeSH4lDkUOb5DIrfS+4WlJd2pnKl+oxW5gax9Jhz3tGhGE9mRx5WTF2IrPist3drgWBgGkatM+XSzwU4fTPf/gkQg==
+Received: from DM5PR19CA0013.namprd19.prod.outlook.com (2603:10b6:3:151::23)
+ by DM5PR1201MB0218.namprd12.prod.outlook.com (2603:10b6:4:4d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Tue, 9 Mar
+ 2021 22:38:39 +0000
+Received: from DM6NAM11FT040.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:151:cafe::5f) by DM5PR19CA0013.outlook.office365.com
+ (2603:10b6:3:151::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
+ Transport; Tue, 9 Mar 2021 22:38:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT040.mail.protection.outlook.com (10.13.173.133) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 22:38:39 +0000
+Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Mar
+ 2021 22:38:38 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
+        <jglisse@redhat.com>, "Alistair Popple" <apopple@nvidia.com>
+Subject: [PATCH v5 7/8] nouveau/svm: Refactor nouveau_range_fault
+Date:   Wed, 10 Mar 2021 09:38:27 +1100
+Message-ID: <20210309223827.24541-1-apopple@nvidia.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210309121505.23608-1-apopple@nvidia.com>
+References: <20210309121505.23608-1-apopple@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 09 Mar 2021 23:30:16 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     alsa-devel@alsa-project.org, broonie@kernel.org,
-        devicetree@vger.kernel.org, jonathanh@nvidia.com,
-        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
-        thierry.reding@gmail.com
-Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
-In-Reply-To: <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
-References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
- <20210309144156.18887-1-michael@walle.cc>
- <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 287d2c0d-a50b-41ba-6c6b-08d8e34c15e4
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0218:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB02188E33BEE0A9729A1337C0DF929@DM5PR1201MB0218.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2T/1RBuiaFZGRwn2pe+47qfpbmm1GceaTlvwFE/xNXvq1Yq7Kpo/HpDmXAwnkMKVbYE3Lxi2gFjIceXlyFd07hFV5iedmz3cSPnbpXB/MTD4l2Iivycc2/MXpWF/UnHcb6l477+IR5gYco+FHUKooCsoGxS48CUoE9qvtSuW+C/Qco5got5bd1SdwiM5+0jOR/v3NOEezpKN3QKkvW5G8+DxjLZUuDYQ6PNcoThevvizOUKitDWe1hDAtm+RHhKlwjumy7bcUBiXslHRiZpZCxvsI20Nll1qPmoS8S+9dr5ojjXhpHFJKtS5zp7RlFKeT4tgNcq9cHKLy/dIJCAPdToyYHQSrfu0ZQ1nvDb5mWZJ+3SX0lk7c680QLaJSjvERnYnjACFB6O+hF4zryfEfILQsGbSd0S3P+kYD8OHfMMnwrCPj/bu95crw+6eKO0V9IpeIdPr/gDw85dluhx/6vMFIHuiULHk8nvoLdL225ld9BVfOTHJid1RjqMtdsIIspopytHpsMFi0wRpQ9hOf+sMTRDMk6Hdk2U/N+Hw7I1elMrvDr5q8cK+FBmngYP/lcR2cAjJRd4R5nazjIaQnRSab5kqPXL8pOkagh2EcAufEagqZAuMXrORhV2Qz+Q8CtNzt79WTe8U1CQUHm5jM2Eh86PDuaxm/yqLjU89dXOM0+zGlqRmMrPMEh8Br7uX
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(39860400002)(376002)(36840700001)(46966006)(36756003)(8936002)(2906002)(110136005)(316002)(356005)(7636003)(4326008)(54906003)(426003)(83380400001)(107886003)(82740400003)(8676002)(2616005)(82310400003)(36906005)(70586007)(5660300002)(336012)(478600001)(70206006)(36860700001)(186003)(6666004)(1076003)(47076005)(26005)(86362001)(34020700004)(16526019);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 22:38:39.6077
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 287d2c0d-a50b-41ba-6c6b-08d8e34c15e4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT040.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0218
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sameer,
+Call mmu_interval_notifier_insert() as part of nouveau_range_fault().
+This doesn't introduce any functional change but makes it easier for a
+subsequent patch to alter the behaviour of nouveau_range_fault() to
+support GPU atomic operations.
 
-Am 2021-03-09 17:27, schrieb Sameer Pujar:
-> On 3/9/2021 8:11 PM, Michael Walle wrote:
->>> If "clocks = <&xxx>" is specified from the CPU or Codec component
->>> device node, the clock is not getting enabled. Thus audio playback
->>> or capture fails.
->>> 
->>> Fix this by populating "simple_dai->clk" field when clocks property
->>> is specified from device node as well. Also tidy up by re-organising
->>> conditional statements of parsing logic.
->>> 
->>> Fixes: bb6fc620c2ed ("ASoC: simple-card-utils: add 
->>> asoc_simple_card_parse_clk()")
->>> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> 
->> This actually breaks sound on my board
->> (arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts).
->> The codec on this board (wm8904) has a fixed clock input (only 
->> distinct
->> frequencies are supported) and uses the FLL of the codec to generate 
->> the
->> desired sample rate.
->> 
->> It seems that after this patch the clock rate of the codecs clock 
->> (rather
->> than the FLL) is tried to be changed. Which fails, because it doesn't
->> support arbitrary frequencies.
-> 
-> Yes, after the given change the clock will be updated if "*mclk-fs"
-> property is specified.
-> 
-> DT you mentioned has property "simple-audio-card,mclk-fs = <256>",
-> which means you need a clock that is a function of sample rate. But as
-> per above you want a fixed clock for MCLK. I think if you drop this
-> property, the clock updates won't happen. Earlier for your case, this
-> property was not used at all because the clock handle was not
-> populated.
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_svm.c | 34 ++++++++++++++++-----------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
-You mean to drop the mclk-fs property? I can't do that because I
-actually need a frequency of 256 * sample rate. But that doesn't
-necessarily need to be the MCLK, because the codec itself has a
-FLL/PLL which can be used to generate any frequency for a given
-MCLK. So that is a valid scenario. See also commit 13409d27cb39
-("ASoC: wm8904: configure sysclk/FLL automatically").
+diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
+index f18bd53da052..cd7b47c946cf 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_svm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+@@ -567,18 +567,27 @@ static int nouveau_range_fault(struct nouveau_svmm *svmm,
+ 	unsigned long hmm_pfns[1];
+ 	struct hmm_range range = {
+ 		.notifier = &notifier->notifier,
+-		.start = notifier->notifier.interval_tree.start,
+-		.end = notifier->notifier.interval_tree.last + 1,
+ 		.default_flags = hmm_flags,
+ 		.hmm_pfns = hmm_pfns,
+ 		.dev_private_owner = drm->dev,
+ 	};
+-	struct mm_struct *mm = notifier->notifier.mm;
++	struct mm_struct *mm = svmm->notifier.mm;
+ 	int ret;
+ 
++	ret = mmu_interval_notifier_insert(&notifier->notifier, mm,
++					args->p.addr, args->p.size,
++					&nouveau_svm_mni_ops);
++	if (ret)
++		return ret;
++
++	range.start = notifier->notifier.interval_tree.start;
++	range.end = notifier->notifier.interval_tree.last + 1;
++
+ 	while (true) {
+-		if (time_after(jiffies, timeout))
+-			return -EBUSY;
++		if (time_after(jiffies, timeout)) {
++			ret = -EBUSY;
++			goto out;
++		}
+ 
+ 		range.notifier_seq = mmu_interval_read_begin(range.notifier);
+ 		mmap_read_lock(mm);
+@@ -587,7 +596,7 @@ static int nouveau_range_fault(struct nouveau_svmm *svmm,
+ 		if (ret) {
+ 			if (ret == -EBUSY)
+ 				continue;
+-			return ret;
++			goto out;
+ 		}
+ 
+ 		mutex_lock(&svmm->mutex);
+@@ -606,6 +615,9 @@ static int nouveau_range_fault(struct nouveau_svmm *svmm,
+ 	svmm->vmm->vmm.object.client->super = false;
+ 	mutex_unlock(&svmm->mutex);
+ 
++out:
++	mmu_interval_notifier_remove(&notifier->notifier);
++
+ 	return ret;
+ }
+ 
+@@ -727,14 +739,8 @@ nouveau_svm_fault(struct nvif_notify *notify)
+ 		}
+ 
+ 		notifier.svmm = svmm;
+-		ret = mmu_interval_notifier_insert(&notifier.notifier, mm,
+-						   args.i.p.addr, args.i.p.size,
+-						   &nouveau_svm_mni_ops);
+-		if (!ret) {
+-			ret = nouveau_range_fault(svmm, svm->drm, &args.i,
+-				sizeof(args), hmm_flags, &notifier);
+-			mmu_interval_notifier_remove(&notifier.notifier);
+-		}
++		ret = nouveau_range_fault(svmm, svm->drm, &args.i,
++					sizeof(args), hmm_flags, &notifier);
+ 		mmput(mm);
+ 
+ 		limit = args.i.p.addr + args.i.p.size;
+-- 
+2.20.1
 
--michael
