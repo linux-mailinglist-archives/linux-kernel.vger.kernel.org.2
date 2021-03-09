@@ -2,94 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAEF332945
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84ACF33293C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhCIOys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 09:54:48 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:27039 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhCIOyX (ORCPT
+        id S231719AbhCIOyO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Mar 2021 09:54:14 -0500
+Received: from emcscan.emc.com.tw ([192.72.220.5]:51513 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231510AbhCIOxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 09:54:23 -0500
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 129ErwVA022937
-        for <linux-kernel@vger.kernel.org>; Tue, 9 Mar 2021 23:53:59 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 129ErwVA022937
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615301639;
-        bh=9dbxmmCJGIIcZtYkRaA26NTON8amq3oSId7Jc5fjq4k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=d1H+YIWJuaC4U8hgqez+zfnpFHK9q7e251hhGcd6qhJPC15YvORcG+aSzfx0Z0WfA
-         LW0K6vg18es8jKnrXZ2sDL0DD7amIITsRFsmfXFyUlw+LiEVwyR4G1LfzlwkuHF6Sf
-         cdePbBKqjWnxQKDGz5KqTTeLTbb8niXVGU2eyki60hMwwV8xNpUjo/sdlx2NFTg2Tj
-         EKF1NTEtfaE59vrxlGHdE7toRkAbj0i+9K0kf2cGnzwiDflH1ND6/d9R1qS/wsGDa0
-         JJGPenYXLCZjm88gaU1BbUfYxrgUAHHP97tGZNfIJk1D7xQ9rodxXRJ6PKseLY4/JN
-         meTjE9wSQGPiQ==
-X-Nifty-SrcIP: [209.85.210.171]
-Received: by mail-pf1-f171.google.com with SMTP id a188so9640722pfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 06:53:58 -0800 (PST)
-X-Gm-Message-State: AOAM533TFFpOtgQWkxxMZjTscNZuRz5p2T/KZ9YbiGbahJ8z4Fi+hhI9
-        BoJjIvR7pqxmHD8L3M+gULBAgrtUq9lIoebXqZo=
-X-Google-Smtp-Source: ABdhPJw7fnUA542cPIjJRyzOi8rbyugp7wC2kou7h9Q/JGVx4YTVqkaBMgURTjnjT/c6z2lC6HGVVRAFHyVWYthHLu8=
-X-Received: by 2002:a65:41c6:: with SMTP id b6mr24925857pgq.7.1615301638088;
- Tue, 09 Mar 2021 06:53:58 -0800 (PST)
+        Tue, 9 Mar 2021 09:53:45 -0500
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="39719640"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 09 Mar 2021 22:53:35 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(9028:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Tue, 09 Mar 2021 22:53:35 +0800 (CST)
+Received: By OpenMail Mailer;Tue, 09 Mar 2021 22:53:34 +0800 (CST)
+From:   "jingle.wu" <jingle.wu@emc.com.tw>
+Reply-To: "jingle.wu" <jingle.wu@emc.com.tw>
+Subject: RE: [PATCH] Input: elan_i2c - Reduce the resume time for new dev
+         ices
+Message-ID: <1615301614.16870.jingle.wu@emc.com.tw>
+In-Reply-To: <00ce01d714ef$2598f740$70cae5c0$@emc.com.tw>
+References: <20210226073537.4926-1-jingle.wu@emc.com.tw>
+        <YDx8M4Rhdi8hW4EO@google.com>
+        <1614647097.9201.jingle.wu@emc.com.tw>
+        <YEGBeWHRfL4gN9pX@google.com>
+        <004f01d7115e$3ba005e0$b2e011a0$@emc.com.tw>
+        <YEGJ7z479pqyBW1w@google.com>
+        <005401d71161$ef9b20e0$ced162a0$@emc.com.tw>
+        <YEWXcV62YpxbBp9P@google.com>
+        <005d01d713f8$e4b715a0$ae2540e0$@emc.com.tw>
+        <YEbRazfF0iTreYYz@google.com>
+        <00ce01d714ef$2598f740$70cae5c0$@emc.com.tw>
+To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
+Cc:     "'linux-kernel'" <linux-kernel@vger.kernel.org>,
+        "linux-input" <linux-input@vger.kernel.org>,
+        "'phoenix'" <phoenix@emc.com.tw>,
+        "dave.wang" <dave.wang@emc.com.tw>,
+        "'josh.chen'" <josh.chen@emc.com.tw>
+Date:   Tue, 09 Mar 2021 22:53:34 +0800 (CST)
 MIME-Version: 1.0
-References: <20210309123544.14040-1-msuchanek@suse.de> <CAK7LNAT+8mGunqXSPLHxhF1FTXQEzbAoKPY=48pBgtLbhcB0jg@mail.gmail.com>
- <20210309133523.GX6564@kitsune.suse.cz>
-In-Reply-To: <20210309133523.GX6564@kitsune.suse.cz>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 9 Mar 2021 23:53:21 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARVPYBWvaA+MCjVic+qLay1AR-+UZuyC+_FRGShL=gahg@mail.gmail.com>
-Message-ID: <CAK7LNARVPYBWvaA+MCjVic+qLay1AR-+UZuyC+_FRGShL=gahg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: make STACKPROTECTOR_PER_TASK configurable.
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=big5
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 10:35 PM Michal Such=C3=A1nek <msuchanek@suse.de> wr=
-ote:
->
-> On Tue, Mar 09, 2021 at 10:22:36PM +0900, Masahiro Yamada wrote:
-> > On Tue, Mar 9, 2021 at 9:35 PM Michal Suchanek <msuchanek@suse.de> wrot=
-e:
-> > >
-> > > When using dummy-tools STACKPROTECTOR_PER_TASK is unconditionally
-> > > selected. This defeats the purpose of the all-enabled tool.
-> > >
-> > > Description copied from arm
-> > >
-> > > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> >
-> >
-> > Could you explain what problem
-> > this patch is trying to solve?
->
-> The option cannot be disabled when compiler has the required capability.
+Hi Dmitry:
 
+Was this the only issue with the updated patch? Did it work for you
+otherwise?
+-> Yes, the updated patch can work successfully after fix this issue.
 
-Yes.
-Currently, this symbol claims "def_bool y",
-so there is no way to disable it.
+THANKS
+JINGLE
 
-But, it comes from the nature of Kconfig in general.
+-----Original Message-----
+From: 'Dmitry Torokhov' [mailto:dmitry.torokhov@gmail.com] 
+Sent: Tuesday, March 09, 2021 9:38 AM
+To: jingle
+Cc: 'linux-kernel'; 'linux-input'; 'phoenix'; 'dave.wang'; 'josh.chen'
+Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for new dev
+ices
 
-dummy-tools is completely unrelated here.
+Hi Jingle,
 
+On Mon, Mar 08, 2021 at 04:56:14PM +0800, jingle wrote:
+> Hi Dmitry:
+> 
+> 1. missing "i<" 
+> +	u32 quirks = 0;
+> +	int i;
+> +
+> +	for (i = 0; ARRAY_SIZE(elan_i2c_quirks); i++) {
+> 
+> -> for (i = 0; i<ARRAY_SIZE(elan_i2c_quirks); i++) {
 
+Yes, you are right of course. Was this the only issue with the updated
+patch? Did it work for you otherwise?
 
+> 
+> 2. elan_resume () funtion are different with at Chromeos driver.
+> @@ -1384,7 +1422,7 @@ static int __maybe_unused elan_resume(struct 
+> device
+> *dev)
+>  		goto err;
+>  	}
+>  
+> -	error = elan_initialize(data);
+> +	error = elan_initialize(data, data->quirks &
+> ETP_QUIRK_QUICK_WAKEUP);
+>  	if (error)
+>  		dev_err(dev, "initialize when resuming failed: %d\n",
+error);
+> 
+> -> https://chromium.googlesource.com/chromiumos/third_party/kernel/+/r
+> -> ef
+> -> s/heads/chromeos-5.4/drivers/input/mouse/elan_i2c_core.c#1434
+> -> error = elan_initialize(data);  this code is in elan_reactivate()
+> function at Chromeos driver.
+> -> Will this change affect cherrypick from linux kernel to chromeos?
 
+Yes, we would need to adjust the patch for Chrome OS and have
+elan_reactivate() to call elan_initialize() with appropriate argument.
 
+Thanks.
 
+--
+Dmitry
 
---=20
-Best Regards
-Masahiro Yamada
