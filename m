@@ -2,155 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6778332C7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3990332C81
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhCIQpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:45:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbhCIQpJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:45:09 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD40C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:45:09 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id u16so16946918wrt.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 08:45:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HQAapd2VYff0FVMH+At0UuE1zM/4LNj6vNP0aGstbj4=;
-        b=f7i6/zFL5uCo6uPBWoKGpNHNJRsNwgOhsJ8NP0zJqHE/fIYYt7SzSCqGlzOChkykzL
-         rEh+Vix2cdfJL5JqvUXCB91eeqObk4nSKwOhx7CpRliLDuE3hrr+g2mfkOtKpzdIJOZy
-         J6dycplUlG4YnjIigvDTQ0qWsrDAmDW0BNDPjrDicjkWDn25UODM7uW0iEQRUzxEl9tc
-         Xwddm4Q+wljabinj9dJyQIfQ0WDO4jdzGDk9hGl2oiOkSlFE8jgd1LL2CIEnxN9OYZEg
-         pWahPXl+XiV8ERvLl/qz+F3NFKC9+Q0RXVVCa2SmWG7gUaQnSgmVU/kgqlogCjqBBZP0
-         mN6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HQAapd2VYff0FVMH+At0UuE1zM/4LNj6vNP0aGstbj4=;
-        b=QE0/Fx2HNKqv/OY3eWcwObS1c5GznrMXeW04OuJTx4FsyieM5tcpdTf5t39DmFsz64
-         sDa6zisVfZFlCUwxm1h5NVNr4vyRl4okkncnR1FZBQO1dV3h0JSRi/XDr7uE99sAW92G
-         HGNgTJpqrWO5ivBJ7/vOEwBy0k9QCjFLO/FtrbNeGdWRXuEnNzwIUhbcrJn/HN7PmRFC
-         JhG+HTZfHj82q95I/dWBkcIIOAwRIxN24ZnZjymw6KLB4EI3vKZ+7tH5PRcO2o5FKVz0
-         PrbZ2sfDMA2kfkhYGgIAjEnUSmXRRVB2oO6y30EUH5QGIlSAXxK0HWqlPHJJVKpGNgYR
-         I6cg==
-X-Gm-Message-State: AOAM530o4N4RT69NJetXUS9Xk275VxacQ1Q0FPCvJg77eesDSj1RNCti
-        PikiMhzkfbyUdonBp27o8Pa7S/f644etLQ==
-X-Google-Smtp-Source: ABdhPJwDMP0K8mu7QTzWcY95OMns2CzLD9V4ndIZmXoVoRCvUj1IsCW1jpwW4Fn0nQRg0y8YkoPfgQ==
-X-Received: by 2002:a05:6000:221:: with SMTP id l1mr29124435wrz.370.1615308308069;
-        Tue, 09 Mar 2021 08:45:08 -0800 (PST)
-Received: from dell ([91.110.221.192])
-        by smtp.gmail.com with ESMTPSA id u23sm4908290wmn.26.2021.03.09.08.45.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 08:45:07 -0800 (PST)
-Date:   Tue, 9 Mar 2021 16:45:05 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 2/2 V2] MFD: intel_pmt: Add support for DG1
-Message-ID: <20210309164505.GS4931@dell>
-References: <20210128172846.99352-1-david.e.box@linux.intel.com>
- <20210224201005.1034005-2-david.e.box@linux.intel.com>
+        id S230328AbhCIQrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:47:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230465AbhCIQqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:46:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2603A6523C;
+        Tue,  9 Mar 2021 16:46:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615308404;
+        bh=RMuhxlWDr/r4WRIMBjUfGXkdUAHrO0I8oA8IyU3VFFE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ARjXIRzW1QTmrBj4oKD8skJteEymA+z/2M7i8AfLGwdsFqzQ7G1/ziAc+LX4BxVKk
+         AkzSp4ZpHyIVYodLKh9oZAw/WPGyOvj9EyuFGaIhZxnRRzMfwo+u27hLIcEn4Ex8Qy
+         FGdcxm0JsYuadm3V7eaJoH9b6Sm49jlWdBtg4Cphszrt6nHWHYR8/U52cVZsb6KA9q
+         OsWwmatkgmcMqCwmTMBVn3gs6iQTlF0A5Ea9o9uB2lDr7m2BY5kM3sLkeCVO5n+owx
+         t+BLwi2eQUx4iR6ktE0/iHOyYFWBsvGJ7SAIrZ8vwjA62DRNfSfhvFS66nXSVmnWuU
+         YwmSP581kulFg==
+Received: by mail-ed1-f44.google.com with SMTP id b13so21578666edx.1;
+        Tue, 09 Mar 2021 08:46:44 -0800 (PST)
+X-Gm-Message-State: AOAM533/BAE5JtfuN5BOzCHTGZ+bYD9nMBpxlDpiClRHJ7XJL8Hax9tH
+        6DFojF9aPu8dRrBvPnY8WxjHngZT/H86v6/GsA==
+X-Google-Smtp-Source: ABdhPJyEb71X8b4Z+MqyVeM6DPC6hgj3zw9kIgCbE/MTLqqs0cnJzMorzefBS1R28UIUW2kwGB6bbNEoNb9+T3Y7jEs=
+X-Received: by 2002:a05:6402:c88:: with SMTP id cm8mr5184509edb.62.1615308402777;
+ Tue, 09 Mar 2021 08:46:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210224201005.1034005-2-david.e.box@linux.intel.com>
+References: <20210309073142.13219-1-nadeem@cadence.com> <20210309073142.13219-2-nadeem@cadence.com>
+In-Reply-To: <20210309073142.13219-2-nadeem@cadence.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 9 Mar 2021 09:46:30 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqJf1JHNEygoSPOqFocXL4F4M7p-MB-UxOp=D--NKnvTZw@mail.gmail.com>
+Message-ID: <CAL_JsqJf1JHNEygoSPOqFocXL4F4M7p-MB-UxOp=D--NKnvTZw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings:pci: Set LTSSM Detect.Quiet state delay.
+To:     Nadeem Athani <nadeem@cadence.com>
+Cc:     Tom Joseph <tjoseph@cadence.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021, David E. Box wrote:
+On Tue, Mar 9, 2021 at 12:31 AM Nadeem Athani <nadeem@cadence.com> wrote:
+>
+> The parameter detect-quiet-min-delay can be used to program the minimum
+> time that LTSSM waits on entering Detect.Quiet state.
+> 00 : 0us minimum wait time in Detect.Quiet state.
+> 01 : 100us minimum wait time in Detect.Quiet state.
+> 10 : 1000us minimum wait time in Detect.Quiet state.
+> 11 : 2000us minimum wait time in Detect.Quiet state.
 
-> Adds PMT Telemetry aggregator support for the DG1 graphics PCIe card. The
-> device does not have the DVSEC region in its PCI config space so hard
-> code the discovery table data in the driver. Also requires a fix for DG1
-> in the Telemetry driver for how the ACCESS_TYPE field is used.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+What determines this setting? Is it per board or SoC? Is this a
+standard PCI timing thing? Why does this need to be tuned per
+platform?
+
+> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
 > ---
-> Based on 5.11-rc1 review-hans branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-> 
-> Changes from V1:
-> 
-> 	- New patch
-> 
->  drivers/mfd/intel_pmt.c                    | 101 +++++++++++++++------
->  drivers/platform/x86/intel_pmt_class.c     |  46 ++++++++++
->  drivers/platform/x86/intel_pmt_class.h     |   1 +
->  drivers/platform/x86/intel_pmt_telemetry.c |  20 ----
->  4 files changed, 119 insertions(+), 49 deletions(-)
-> 
-> diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
-> index 65da2b17a204..dd7eb614c28e 100644
-> --- a/drivers/mfd/intel_pmt.c
-> +++ b/drivers/mfd/intel_pmt.c
-> @@ -49,10 +49,14 @@ enum pmt_quirks {
->  
->  	/* Use shift instead of mask to read discovery table offset */
->  	PMT_QUIRK_TABLE_SHIFT	= BIT(2),
+>  .../devicetree/bindings/pci/cdns,cdns-pcie-host.yaml        | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> index 293b8ec318bc..a1d56e0be419 100644
+> --- a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> +++ b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> @@ -27,6 +27,18 @@ properties:
+>
+>    msi-parent: true
+>
+> +  detect-quiet-min-delay:
+> +    description:
+> +      LTSSM Detect.Quiet state minimum delay.
+> +      00 : 0us minimum wait time
+> +      01 : 100us minimum wait time
+> +      10 : 1000us minimum wait time
+> +      11 : 2000us minimum wait time
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 3
+> +    default: 0
 > +
-> +	/* DVSEC not present (provided in driver data) */
-> +	PMT_QUIRK_NO_DVSEC	= BIT(3),
->  };
->  
->  struct pmt_platform_info {
->  	unsigned long quirks;
-> +	struct intel_dvsec_header **capabilities;
->  };
->  
->  static const struct pmt_platform_info tgl_info = {
-> @@ -60,6 +64,26 @@ static const struct pmt_platform_info tgl_info = {
->  		  PMT_QUIRK_TABLE_SHIFT,
->  };
->  
-> +/* DG1 Platform with DVSEC quirk*/
-> +static struct intel_dvsec_header dg1_telemetry = {
-> +	.length = 0x10,
-> +	.id = 2,
-> +	.num_entries = 1,
-> +	.entry_size = 3,
-> +	.tbir = 0,
-> +	.offset = 0x466000,
-> +};
-> +
-> +static struct intel_dvsec_header *dg1_capabilities[] = {
-> +	&dg1_telemetry,
-> +	NULL
-> +};
-> +
-> +static const struct pmt_platform_info dg1_info = {
-> +	.quirks = PMT_QUIRK_NO_DVSEC,
-> +	.capabilities = dg1_capabilities,
-> +};
-> +
->  static int pmt_add_dev(struct pci_dev *pdev, struct intel_dvsec_header *header,
->  		       unsigned long quirks)
->  {
-> @@ -147,37 +171,54 @@ static int pmt_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	if (info)
->  		quirks = info->quirks;
->  
-> -	do {
-> -		struct intel_dvsec_header header;
-> -		u32 table;
-> -		u16 vid;
-> +	if (info && (info->quirks & PMT_QUIRK_NO_DVSEC)) {
-
-Nit: Why not use 'quirks' from a few lines above?
-
-> +		struct intel_dvsec_header **header;
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>  required:
+>    - reg
+>    - reg-names
+> @@ -48,6 +60,7 @@ examples:
+>              linux,pci-domain = <0>;
+>              vendor-id = <0x17cd>;
+>              device-id = <0x0200>;
+> +            detect-quiet-min-delay = <0>;
+>
+>              reg = <0x0 0xfb000000  0x0 0x01000000>,
+>                    <0x0 0x41000000  0x0 0x00001000>;
+> --
+> 2.15.0
+>
