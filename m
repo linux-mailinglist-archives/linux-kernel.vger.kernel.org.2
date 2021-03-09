@@ -2,121 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924BF333018
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6810533301A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbhCIUkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:40:17 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55268 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231804AbhCIUj6 (ORCPT
+        id S231905AbhCIUkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:40:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231807AbhCIUkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:39:58 -0500
-Date:   Tue, 9 Mar 2021 21:39:56 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615322397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=3Xmr7Bhm0yYCHVKJX9GMtPw2hz01AiXv05IR/hPgmaU=;
-        b=XSOmexd5PnwwcdDTHsdnG6UIp+m9ICNnwmCxtVDvuMuJYWIb8amjFibDOUGdmUKlChSUb3
-        ql/8qfc/qV7Lm52QP5upOOQD7sbC2o+9Xc4oZxee8KDVzdR1XTiYfrtA7IIz/Jij2dojRl
-        whsLNxI24cGs1DBky4x/W46hU08u4FqzQGdsOOS9FGThx1MR2kRdLWMhltI18TNsriI903
-        TgP9x2CglwAg2GMwc1tc8DMCsAEa0VQ67PRlGi8j1Um1v1pYdnqyviF4o3Fx+HSEwa39B7
-        LTWsozGXmsVuGbes3z5uCG0kP1Ukom3+73eySbXRBt/hAB5VY2fVq4Ud5M8T6w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615322397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=3Xmr7Bhm0yYCHVKJX9GMtPw2hz01AiXv05IR/hPgmaU=;
-        b=uxvAFBor5NSvzfxQoajagsFkWhQoR0TF7qmu+owkEQ5a3Db/LUQ2v35zvedsHq273KY4uI
-        FdhGaE3ownLQmLDQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.11.4-rt11
-Message-ID: <20210309203956.lt5sp3l633xx5nl5@linutronix.de>
+        Tue, 9 Mar 2021 15:40:13 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EC5C06174A;
+        Tue,  9 Mar 2021 12:40:12 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id v2so16518575lft.9;
+        Tue, 09 Mar 2021 12:40:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0xx82RtkNjKUidXeOgDKcY7HvxO1Hnef7TiNr4pRn4Q=;
+        b=KY0hdqLqthB5dH+OJucInorKfaNUZqtsMeGjI79ZJcssu/6Uwxf/34unEcRveOdOLH
+         XPvexut7erm5Run7sxmtRmRaMW5SHEMKWUsKg37LEfKuB+m6cUGKSbOVA8Yvj/yt0nRF
+         eDxSE/CCTllk3oAT60FVEVDTHS/xmNo8CR4Y7ZJso80IPVfNznNG6NdN++7Wgg13KLQQ
+         vI7yKMtWoCwX/H1iIJzlFs+xdGdqmf3aF1Mbut3RrkIf9Qw5LG9LDXjYU5J4Urge9CbM
+         3xuh1Yz7BkmSf65CbUnMOZcncaaQxFoNj/7KZ1tP2T2+bH+CeAacgTxrsqAQqNoJ29Qz
+         if+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0xx82RtkNjKUidXeOgDKcY7HvxO1Hnef7TiNr4pRn4Q=;
+        b=DRhs14HaY1Rkvsbj/mOLGGeRoWcYGDJY7AyHEZhmxG6P21acVWC4e9EWAmKiz0rZGP
+         MuyKQA+NojSDs+yjTWFIu/MpvTnzIqdldu2H6yJgY5SJg7aT9W7iSGFRIeUG2rRonK1L
+         towSVqKJOFsS4zDfSdGC54yPWNIHg8eDfXk+ZiiXPnxs1AsqX/OACboA/9wo2tMM13b9
+         czWSOwIqLn4D1CGfZUFYVF/4crOnfFhhWzrjkMjmH3Fc8yTbsQcgB63VvGr/V9/kmZ77
+         jL/vv7031eMveOeEwfs6VwvQTrluVTT6Qf68bnvlXHqIYIiStnh0HInTWDX48OC6iy4+
+         sSKQ==
+X-Gm-Message-State: AOAM533C2HhuA28lA9z1mSdtRI4RLFh9xChOue1weJ/pksghR8YvGKvU
+        0vUzyFG7JPac1qmJBMtfQ9zyXWXMNf7BLsOTZc4=
+X-Google-Smtp-Source: ABdhPJxfrYj3coUqt82BUSqFQO2q2Kpjt7phXIuqG8JkXYBbSiqkWmpTstcRkHZZLj/g8GmaXszIeG7dbrBG2L3MvhI=
+X-Received: by 2002:a05:6512:2254:: with SMTP id i20mr18809952lfu.534.1615322411488;
+ Tue, 09 Mar 2021 12:40:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
+ <20210309124011.709c6cd3@gandalf.local.home> <5fda3ef7-d760-df4f-e076-23b635f6c758@gmail.com>
+ <20210309150227.48281a18@gandalf.local.home> <fffda629-0028-2824-2344-3507b75d9188@gmail.com>
+ <20210309153504.0b06ded1@gandalf.local.home>
+In-Reply-To: <20210309153504.0b06ded1@gandalf.local.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 9 Mar 2021 12:39:59 -0800
+Message-ID: <CAADnVQJe7GQjYvdBYvG3opeAdaY2EY2vtRafSp0zZ+Pe=Nnsdg@mail.gmail.com>
+Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     David Ahern <dsahern@gmail.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Tue, Mar 9, 2021 at 12:37 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> The size of the fields and order changes all the time in various events. I
+> recommend doing so *all the time*. If you upgrade a kernel, then all the bpf
+> programs you have for that kernel should also be updated. You can't rely on
+> fields being the same, size or order. The best you can do is expect the
+> field to continue to exist, and that's not even a guarantee.
 
-I'm pleased to announce the v5.11.4-rt11 patch set. 
-
-Changes since v5.11.4-rt10:
-
-  - Update the softirq/tasklet patches to the latest version posted to
-    the list.
-
-Known issues
-     - kdb/kgdb can easily deadlock.
-     - netconsole triggers WARN.
-
-The delta patch against v5.11.4-rt10 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.11/incr/patch-5.11.4-rt10-rt11.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.11.4-rt11
-
-The RT patch against v5.11.4 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.11/older/patch-5.11.4-rt11.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.11/older/patches-5.11.4-rt11.tar.xz
-
-Sebastian
-
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index ed6e49bceff1a..272ffd12cf756 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -672,6 +672,7 @@ static inline int tasklet_trylock(struct tasklet_struct *t)
- void tasklet_unlock(struct tasklet_struct *t);
- void tasklet_unlock_wait(struct tasklet_struct *t);
- void tasklet_unlock_spin_wait(struct tasklet_struct *t);
-+
- #else
- static inline int tasklet_trylock(struct tasklet_struct *t) { return 1; }
- static inline void tasklet_unlock(struct tasklet_struct *t) { }
-@@ -702,8 +703,8 @@ static inline void tasklet_disable_nosync(struct tasklet_struct *t)
- }
- 
- /*
-- * Do not use in new code. There is no real reason to invoke this from
-- * atomic contexts.
-+ * Do not use in new code. Disabling tasklets from atomic contexts is
-+ * error prone and should be avoided.
-  */
- static inline void tasklet_disable_in_atomic(struct tasklet_struct *t)
- {
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index a9b66aa086366..27551db2b3ccc 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -830,8 +830,8 @@ EXPORT_SYMBOL(tasklet_init);
- 
- #if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
- /*
-- * Do not use in new code. There is no real reason to invoke this from
-- * atomic contexts.
-+ * Do not use in new code. Waiting for tasklets from atomic contexts is
-+ * error prone and should be avoided.
-  */
- void tasklet_unlock_spin_wait(struct tasklet_struct *t)
- {
-diff --git a/localversion-rt b/localversion-rt
-index d79dde624aaac..05c35cb580779 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt10
-+-rt11
++1. Tracing bpf progs already do that.
+Old style tracing progs do it based on the kernel version.
+New style is using CO-RE.
