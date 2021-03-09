@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FFF33216B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 372EA33216C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhCII6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:58:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43082 "EHLO
+        id S230058AbhCII6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:58:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhCII5m (ORCPT
+        with ESMTP id S229637AbhCII5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:57:42 -0500
+        Tue, 9 Mar 2021 03:57:43 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEF4C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 00:57:42 -0800 (PST)
-Message-Id: <20210309085726.983627589@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A8CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 00:57:43 -0800 (PST)
+Message-Id: <20210309085727.153926793@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615280261;
+        s=2020; t=1615280262;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=crrIwHdUp5M7Eps2xi3CS3/8bja3Lpo5VaPQvRN81LI=;
-        b=vRtxCuwI2AHFET5cqravUfD55jv8rjjGlJli3mOOBsYxtDTjPUBAkE6Mw+LA8rd6DGWzS/
-        uOVIx97xtjQrsjXxE60l7RVdJXL7UZexxJ2eAlHQowSExCeDUYIc5PhID40toshRMeK3iL
-        DQkD0SmnpmibJLBRFLLSup2mnmA0CI76OiQPGgkgxt5QBSVOPn5SNq2QvKufPXzGxTKxUK
-        Ahfy0GNT+z0SQkh7LMlRaJrutGGl9ofQE9T/qCGqsfTMgqU0L1+CqypJEw3zMCsO1l4Kd8
-        xD7R4wGUx7cMpKLACpBVue7LnStmHxE5yS9o1jDUYZW4gwWJuO/Z4WK2akmdAQ==
+        bh=Ei+LHhf+MGw/l3MD6uQTxIWOC8U0z4z/OUf5lB4CD/Q=;
+        b=N155eboODdBbEcn/Q5zSi8Mgpr3N4dQ4HDQo3/Zry+IS3HdsefZQj+3+0nm5lzFP44F2fg
+        BKfUs7ZuI0BbwgNELXwVfUS7rQOCftw0gId3xmXlWuRk7MU+XfMNPHqqn+mMvZnh8Fsy9R
+        qptU04o2H7F8MJ3bGnxioKjhiU/aRMNiw9q6XhprzMw8JEn8XCLnhXiJKuIBnTNGBXFYZ9
+        Odr7rEfI18A8QA1g7dxzcaUvvzkZc93FXMuQ6Kr7ZVER0KPORL/9wWzVh8ETq3C6JvpQ4V
+        qpRjXAQuz8M3Of8H4MVm8R7s/fwUOBlG5ThCGyp4o85yUNpMipeqVwN1HemU6Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615280261;
+        s=2020e; t=1615280262;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=crrIwHdUp5M7Eps2xi3CS3/8bja3Lpo5VaPQvRN81LI=;
-        b=5qBmIMCPYFhNqbfnMa8NUvTLGY8TYUOW0gPOFRB1KDARuwivcXqQEyjeRGGMWLmr6xZDdf
-        e4H+hfm50xMDkfCA==
-Date:   Tue, 09 Mar 2021 09:55:53 +0100
+        bh=Ei+LHhf+MGw/l3MD6uQTxIWOC8U0z4z/OUf5lB4CD/Q=;
+        b=cLR+S19wfwQdc0LYjzib0ivPKy38/XK2WNgr2eR0t9irAIvM3iKMV/oJpdgmVlNtm7tyvm
+        5sxzJQdoX/tz1ABQ==
+Date:   Tue, 09 Mar 2021 09:55:54 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Paul McKenney <paulmck@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [patch V3 1/6] softirq: Add RT specific softirq accounting
+Subject: [patch V3 2/6] irqtime: Make accounting correct on RT
 References: <20210309085552.815026890@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,63 +51,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RT requires the softirq processing and local bottomhalf disabled regions to
-be preemptible. Using the normal preempt count based serialization is
-therefore not possible because this implicitely disables preemption.
+vtime_account_irq and irqtime_account_irq() base checks on preempt_count()
+which fails on RT because preempt_count() does not contain the softirq
+accounting which is seperate on RT.
 
-RT kernels use a per CPU local lock to serialize bottomhalfs. As
-local_bh_disable() can nest the lock can only be acquired on the outermost
-invocation of local_bh_disable() and released when the nest count becomes
-zero. Tasks which hold the local lock can be preempted so its required to
-keep track of the nest count per task.
+These checks do not need the full preempt count as they only operate on the
+hard and softirq sections.
 
-Add a RT only counter to task struct and adjust the relevant macros in
-preempt.h.
+Use irq_count() instead which provides the correct value on both RT and non
+RT kernels. The compiler is clever enough to fold the masking for !RT:
 
+       99b:	65 8b 05 00 00 00 00 	mov    %gs:0x0(%rip),%eax
+ -     9a2:	25 ff ff ff 7f       	and    $0x7fffffff,%eax
+ +     9a2:	25 00 ff ff 00       	and    $0xffff00,%eax
+
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/hardirq.h |    1 +
- include/linux/preempt.h |    6 +++++-
- include/linux/sched.h   |    3 +++
- 3 files changed, 9 insertions(+), 1 deletion(-)
+ kernel/sched/cputime.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -6,6 +6,7 @@
- #include <linux/preempt.h>
- #include <linux/lockdep.h>
- #include <linux/ftrace_irq.h>
-+#include <linux/sched.h>
- #include <linux/vtime.h>
- #include <asm/hardirq.h>
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -60,7 +60,7 @@ void irqtime_account_irq(struct task_str
+ 	cpu = smp_processor_id();
+ 	delta = sched_clock_cpu(cpu) - irqtime->irq_start_time;
+ 	irqtime->irq_start_time += delta;
+-	pc = preempt_count() - offset;
++	pc = irq_count() - offset;
  
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -79,7 +79,11 @@
+ 	/*
+ 	 * We do not account for softirq time from ksoftirqd here.
+@@ -421,7 +421,7 @@ void vtime_task_switch(struct task_struc
  
- #define nmi_count()	(preempt_count() & NMI_MASK)
- #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
--#define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
-+#ifdef CONFIG_PREEMPT_RT
-+# define softirq_count()	(current->softirq_disable_cnt & SOFTIRQ_MASK)
-+#else
-+# define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
-+#endif
- #define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+ void vtime_account_irq(struct task_struct *tsk, unsigned int offset)
+ {
+-	unsigned int pc = preempt_count() - offset;
++	unsigned int pc = irq_count() - offset;
  
- /*
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1044,6 +1044,9 @@ struct task_struct {
- 	int				softirq_context;
- 	int				irq_config;
- #endif
-+#ifdef CONFIG_PREEMPT_RT
-+	int				softirq_disable_cnt;
-+#endif
- 
- #ifdef CONFIG_LOCKDEP
- # define MAX_LOCK_DEPTH			48UL
+ 	if (pc & HARDIRQ_OFFSET) {
+ 		vtime_account_hardirq(tsk);
 
