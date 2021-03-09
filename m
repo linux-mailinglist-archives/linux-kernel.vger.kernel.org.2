@@ -2,75 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97C1331D0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 514EF331D0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhCIClH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 21:41:07 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13453 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhCICk3 (ORCPT
+        id S229764AbhCICmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 21:42:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29127 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229793AbhCICmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 21:40:29 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DvfXy0G6czjVVZ;
-        Tue,  9 Mar 2021 10:38:58 +0800 (CST)
-Received: from huawei.com (10.175.112.227) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Mar 2021
- 10:40:16 +0800
-From:   Xiangyang Yu <yuxiangyang4@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <peterz@infradead.org>,
-        <dvhart@infradead.org>
-CC:     <linux-kernel@vger.kernel.org>, <yuxiangyang4@Huawei.com>
-Subject: [PATCH] kernel/futex: Change pi_state_update_owner() to an inline function
-Date:   Tue, 9 Mar 2021 10:40:12 +0800
-Message-ID: <20210309024012.1391035-1-yuxiangyang4@huawei.com>
-X-Mailer: git-send-email 2.23.0
+        Mon, 8 Mar 2021 21:42:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615257731;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B3NcIctlEacedKnvWxLBPKXMEmj3VYiIJnpjJRUyQZE=;
+        b=Y440atiw9hsYBdv9mKWAvhDbMhPubhPja/G1LmlsYlpBUFBhvo/xZSRNRq4XhTuis9mLh6
+        hb8q1hcLB+bdiwZO2reXUfixirbpd0B8K78+JRS+ZP1b6qOMiZtfaXsw9iVouOTS93rKX9
+        X3A+q3vvM2TGENvUkz3R1UmOufXBWSc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-o4boJwIyOoqeBNKvt6YJ-g-1; Mon, 08 Mar 2021 21:42:10 -0500
+X-MC-Unique: o4boJwIyOoqeBNKvt6YJ-g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DB1B814313;
+        Tue,  9 Mar 2021 02:42:09 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-202.pek2.redhat.com [10.72.13.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B23C5D6D7;
+        Tue,  9 Mar 2021 02:42:03 +0000 (UTC)
+Subject: Re: [PATCH V2 2/4] vDPA/ifcvf: enable Intel C5000X-PL virtio-net for
+ vDPA
+To:     "Zhu, Lingshan" <lingshan.zhu@intel.com>, mst@redhat.com,
+        lulu@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210308083525.382514-1-lingshan.zhu@intel.com>
+ <20210308083525.382514-3-lingshan.zhu@intel.com>
+ <d37ea3f4-1c18-087b-a444-0d4e1ebbe417@redhat.com>
+ <93aabf0c-3ea0-72d7-e7d7-1d503fe6cc75@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <91c08fdd-0a36-ddca-5b8c-ef2eef7cddc2@redhat.com>
+Date:   Tue, 9 Mar 2021 10:42:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.227]
-X-CFilter-Loop: Reflected
+In-Reply-To: <93aabf0c-3ea0-72d7-e7d7-1d503fe6cc75@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In our performance tests, we find that the performance of
-sysbench is descend. Function call consumes too many instructions,
-change pi_state_update_owner() to an inline function.
 
-Test environment:
-CPU: Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz * 2
-MEM: 312G
+On 2021/3/9 10:28 上午, Zhu, Lingshan wrote:
+>
+>
+> On 3/9/2021 10:23 AM, Jason Wang wrote:
+>>
+>> On 2021/3/8 4:35 下午, Zhu Lingshan wrote:
+>>> This commit enabled Intel FPGA SmartNIC C5000X-PL virtio-net
+>>> for vDPA
+>>>
+>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>>> ---
+>>>   drivers/vdpa/ifcvf/ifcvf_base.h | 5 +++++
+>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 +++++
+>>>   2 files changed, 10 insertions(+)
+>>>
+>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
+>>> b/drivers/vdpa/ifcvf/ifcvf_base.h
+>>> index 64696d63fe07..75d9a8052039 100644
+>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
+>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
+>>> @@ -23,6 +23,11 @@
+>>>   #define IFCVF_SUBSYS_VENDOR_ID    0x8086
+>>>   #define IFCVF_SUBSYS_DEVICE_ID    0x001A
+>>>   +#define C5000X_PL_VENDOR_ID        0x1AF4
+>>> +#define C5000X_PL_DEVICE_ID        0x1000
+>>> +#define C5000X_PL_SUBSYS_VENDOR_ID    0x8086
+>>> +#define C5000X_PL_SUBSYS_DEVICE_ID    0x0001
+>>
+>>
+>> I just notice that the device is a transtitional one. Any reason for 
+>> doing this?
+>>
+>> Note that IFCVF is a moden device anyhow (0x1041). Supporting legacy 
+>> drive may bring many issues (e.g the definition is non-nomartive). 
+>> One example is the support of VIRTIO_F_IOMMU_PLATFORM, legacy driver 
+>> may assume the device can bypass IOMMU.
+>>
+>> Thanks
+> Hi Jason,
+>
+> This device will support virtio1.0 by default, so has 
+> VIRTIO_F_IOMMU_PLATFORM by default.
 
-Test case: https://github.com/akopytov/sysbench
-Test cmd: ./sysbench --test=threads --num-threads=$thr
-              --thread-yields=100 --thread-locks=2 run
 
-$thr    stock   non-inline   inline
-256    0.8511     0.9254     0.8588
-512    0.8489     0.9232     0.8503
-1024   0.8347     0.9248     0.8495
-2048   0.8338     0.9575     0.8402
+If you device want to force VIRTIO_F_IOMMU_PLATFORM you probably need to 
+do what has been done by mlx5 (verify_min_features).
 
-Signed-off-by: Xiangyang Yu <yuxiangyang4@huawei.com>
----
- kernel/futex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+According to the spec, if VIRTIO_F_IOMMU_PLATFORM is not mandatory, when 
+it's not negotiated, device needs to disable or bypass IOMMU:
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index e68db7745039..570dee4e9e6f 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -763,7 +763,7 @@ static struct futex_pi_state *alloc_pi_state(void)
- 	return pi_state;
- }
- 
--static void pi_state_update_owner(struct futex_pi_state *pi_state,
-+static inline void pi_state_update_owner(struct futex_pi_state *pi_state,
- 				  struct task_struct *new_owner)
- {
- 	struct task_struct *old_owner = pi_state->owner;
--- 
-2.23.0
+
+"
+
+If this feature bit is set to 0, then the device has same access to 
+memory addresses supplied to it as the driver has. In particular, the 
+device will always use physical addresses matching addresses used by the 
+driver (typically meaning physical addresses used by the CPU) and not 
+translated further, and can access any address supplied to it by the driver.
+
+"
+
+
+> Transitional device gives the software a chance to fall back to virtio 
+> 0.95.
+
+
+This only applies if you want to passthrough the card to guest directly 
+without the help of vDPA.
+
+If we go with vDPA, it doesn't hlep. For virtio-vdpa, we know it will 
+negotiated IOMMU_PLATFORM. For vhost-vdpa, Qemu can provide a legacy or 
+transitional device on top of a modern vDPA device.
+
+Thanks
+
+
+> ifcvf drives this device in virtio 1.0 mode, set features 
+> VIRTIO_F_IOMMU_PLATFORM successfully.
+>
+> Thanks,
+> Zhu Lingshan
+>>
+>>
+>>> +
+>>>   #define IFCVF_SUPPORTED_FEATURES \
+>>>           ((1ULL << VIRTIO_NET_F_MAC)            | \
+>>>            (1ULL << VIRTIO_F_ANY_LAYOUT)            | \
+>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
+>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>> index e501ee07de17..26a2dab7ca66 100644
+>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>> @@ -484,6 +484,11 @@ static struct pci_device_id ifcvf_pci_ids[] = {
+>>>           IFCVF_DEVICE_ID,
+>>>           IFCVF_SUBSYS_VENDOR_ID,
+>>>           IFCVF_SUBSYS_DEVICE_ID) },
+>>> +    { PCI_DEVICE_SUB(C5000X_PL_VENDOR_ID,
+>>> +             C5000X_PL_DEVICE_ID,
+>>> +             C5000X_PL_SUBSYS_VENDOR_ID,
+>>> +             C5000X_PL_SUBSYS_DEVICE_ID) },
+>>> +
+>>>       { 0 },
+>>>   };
+>>>   MODULE_DEVICE_TABLE(pci, ifcvf_pci_ids);
+>>
+>
 
