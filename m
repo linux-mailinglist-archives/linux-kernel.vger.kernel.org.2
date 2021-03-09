@@ -2,80 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF65333023
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C25F33302A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbhCIUmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:42:25 -0500
-Received: from mx1.riseup.net ([198.252.153.129]:43536 "EHLO mx1.riseup.net"
+        id S231694AbhCIUoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:44:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:59886 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231864AbhCIUmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:42:03 -0500
-Received: from fews2.riseup.net (fews2-pn.riseup.net [10.0.1.84])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4Dw6Zg43B6zDxYR;
-        Tue,  9 Mar 2021 12:42:03 -0800 (PST)
-X-Riseup-User-ID: 6E80CF5FC8EBBAAF70C42356D782147E33F6E50F79F7ED969E5F47FC70B30D58
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews2.riseup.net (Postfix) with ESMTPSA id 4Dw6Zf6Zppz1y6Q;
-        Tue,  9 Mar 2021 12:42:02 -0800 (PST)
-Subject: Re: [PATCH v2] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org
-References: <20210309161548.18786-1-jnewsome@torproject.org>
- <20210309171539.GA32475@redhat.com>
-From:   Jim Newsome <jnewsome@torproject.org>
-Organization: The Tor Project
-Message-ID: <7f5508ef-dbaa-fe5c-9826-cce0122eb2f8@torproject.org>
-Date:   Tue, 9 Mar 2021 14:42:00 -0600
+        id S231510AbhCIUoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:44:21 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0360A1FB;
+        Tue,  9 Mar 2021 12:44:21 -0800 (PST)
+Received: from [10.57.15.199] (unknown [10.57.15.199])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED06E3F73C;
+        Tue,  9 Mar 2021 12:44:19 -0800 (PST)
+Subject: Re: [PATCH 5/5] powercap/drivers/dtpm: Scale the power with the load
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210301212149.22877-1-daniel.lezcano@linaro.org>
+ <20210301212149.22877-5-daniel.lezcano@linaro.org>
+ <c30701f5-c1f8-cb5c-8791-f4068fb1bc14@arm.com>
+ <e1dac038-2100-abdb-2ffe-d0d93952ca21@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <a9275548-1555-ce96-51c8-67942d757119@arm.com>
+Date:   Tue, 9 Mar 2021 20:44:17 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210309171539.GA32475@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <e1dac038-2100-abdb-2ffe-d0d93952ca21@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 11:15, Oleg Nesterov wrote:
-> Jim,
->
-> Thanks, the patch looks good to me. Yet I think you need to send V3 even
-> if I personally do not care ;) Please consider ./scripts/checkpatch.pl,
-> it reports all the coding-style problems I was going to mention.
 
-Thanks! I'd thought clang-format with the included configuration would
-be sufficient, but apparently not :)
 
-> Both if's use "int retval", to me it would be better to declare this variable
-> at the start of do_wait_pid(). But again, I won't insist this is up to you.
-My usual inclination is to avoid uninitialized variables and prefer
-putting them in tighter scopes. I don't think it's really much of an
-issue in this relatively short function though; happy to go with the
-prevailing style.
-> I am wondering if something like
->
-> 	static inline bool is_parent(struct task_struct *tsk, struct task_struct *p, int flags)
-> 	{
-> 		return	tsk == p || !(flags & __WNOTHREAD)) && same_thread_group(tsk, p);
-> 	}
->
-> makes any sense to make do_wait_pid() more clear... probably not.
+On 3/9/21 7:03 PM, Daniel Lezcano wrote:
+> 
+> Hi Lukasz,
+> 
+> thanks for your comments, one question below.
+> 
+> On 09/03/2021 11:01, Lukasz Luba wrote:
+> 
+> [ ... ]
+> 
+>>>    +static u64 scale_pd_power_uw(struct cpumask *cpus, u64 power)
+>>
+>> renamed 'cpus' into 'pd_mask', see below
+>>
+>>> +{
+>>> +    unsigned long max, util;
+>>> +    int cpu, load = 0;
+>>
+>> IMHO 'int load' looks odd when used with 'util' and 'max'.
+>> I would put in the line above to have them all the same type and
+>> renamed to 'sum_util'.
+>>
+>>> +
+>>> +    for_each_cpu(cpu, cpus) {
+>>
+>> I would avoid the temporary CPU mask in the get_pd_power_uw()
+>> with this modified loop:
+>>
+>> for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
+>>
+>>
+>>> +        max = arch_scale_cpu_capacity(cpu);
+>>> +        util = sched_cpu_util(cpu, max);
+>>> +        load += ((util * 100) / max);
+>>
+>> Below you can find 3 optimizations. Since we are not in the hot
+>> path here, it's up to if you would like to use all/some of them
+>> or just ignore.
+>>
+>> 1st optimization.
+>> If we use 'load += (util << 10) / max' in the loop, then
+>> we could avoid div by 100 and use a right shift:
+>> (power * load) >> 10
+>>
+>> 2nd optimization.
+>> Since we use EM CPU mask, which span all CPUs with the same
+>> arch_scale_cpu_capacity(), you can avoid N divs inside the loop
+>> and do it once, below the loop.
+>>
+>> 3rd optimization.
+>> If we just simply add all 'util' into 'sum_util' (no mul or div in
+>> the loop), then we might just have simple macro
+>>
+>> #define CALC_POWER_USAGE(power, sum_util, max) \
+>>      (((power * (sum_util << 10)) / max) >> 10)
+> 
+> I don't understand the 'max' division, I was expecting here something
+> like: ((sum_util << 10) / sum_max) >> 10)
+> 
+> no ?
+> 
 
-Yeah, I lean slightly towards the extra level of indirection not being
-worth the deduplication.
+No, it should be single 'max', which is in range 0..1024.
+We would like to calculate the power for the whole perf domain, e.g.
+4 CPUs almost fully utilized would have util ~1000, then total power
+should be around ~4 * EM_table[i].power. This '~4' is coming from
+4 utils divided by one max util
+4000 / 1024
 
-I made a couple other small changes as well:
 
-* No need for do_wait_pid to take the parameter `tsk` since it's only
-ever called with `current`
+The 'max' in the equation can be put before the bracket, as well as
+'power'.
 
-* With that change, the declaration of `tsk` in `do_wait` can be moved
-into a tighter scope of where it's used in the loop.
+If we had floating point number, simple power for cpu1, cpu2, cpuN
+would be just:
+power_1 = power * util_1 / max
+power_2 = power * util_2 / max
+power_N = power * util_N / max
+(since they have the same 'max' capacity and the same EM 'power')
 
-v3: https://lkml.org/lkml/2021/3/9/1134
+The total domain power would be:
+total_power = power_1 + power_2 + ... + power_N
+which is:
+total_power = (power * util_1 / max) + (power * util_2 / max) + ... +
+               + (power * util_N / max)
+
+put the 'power' and 'max' before the bracket:
+total_power = power * (util_1 + util_2 + ... + util_N) * (1/max)
+
+introduce the 'sum_util':
+sum_util = util_1 + util_2 + ... + util_N
+then:
+total_power = power * sum_util / max
+
+Unfortunately, we don't use floating point, so temporary fixed point
+tricks, thus the '<< 10' and '>> 10' avoid some errors
+
+
 
