@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCCE332230
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03113332232
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhCIJif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:38:35 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:50979 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230047AbhCIJiB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:38:01 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UR53sNl_1615282671;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UR53sNl_1615282671)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 09 Mar 2021 17:37:57 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] scsi: csiostor: Assign boolean values to a bool variable
-Date:   Tue,  9 Mar 2021 17:37:48 +0800
-Message-Id: <1615282668-36935-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S229799AbhCIJji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:39:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48242 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230086AbhCIJjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:39:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C85F4AB8C;
+        Tue,  9 Mar 2021 09:39:13 +0000 (UTC)
+Date:   Tue, 9 Mar 2021 10:39:12 +0100
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     npiggin@gmail.com, Davidlohr Bueso <dbueso@suse.de>,
+        peterz@infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, paulus@samba.org,
+        longman@redhat.com, will@kernel.org
+Subject: Re: [PATCH 3/3] powerpc/qspinlock: Use generic smp_cond_load_relaxed
+Message-ID: <20210309093912.GW6564@kitsune.suse.cz>
+References: <20210309015950.27688-1-dave@stgolabs.net>
+ <20210309015950.27688-4-dave@stgolabs.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309015950.27688-4-dave@stgolabs.net>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On Mon, Mar 08, 2021 at 05:59:50PM -0800, Davidlohr Bueso wrote:
+> 49a7d46a06c3 (powerpc: Implement smp_cond_load_relaxed()) added
+> busy-waiting pausing with a preferred SMT priority pattern, lowering
+> the priority (reducing decode cycles) during the whole loop slowpath.
+> 
+> However, data shows that while this pattern works well with simple
+                                              ^^^^^^^^^^^^^^^^^^^^^^
+> spinlocks, queued spinlocks benefit more being kept in medium priority,
+> with a cpu_relax() instead, being a low+medium combo on powerpc.
+...
+> 
+> diff --git a/arch/powerpc/include/asm/barrier.h b/arch/powerpc/include/asm/barrier.h
+> index aecfde829d5d..7ae29cfb06c0 100644
+> --- a/arch/powerpc/include/asm/barrier.h
+> +++ b/arch/powerpc/include/asm/barrier.h
+> @@ -80,22 +80,6 @@ do {									\
+>  	___p1;								\
+>  })
+>  
+> -#ifdef CONFIG_PPC64
+Maybe it should be kept for the simple spinlock case then?
 
-./drivers/scsi/csiostor/csio_scsi.c:150:9-10: WARNING: return of 0/1 in
-function 'csio_scsi_itnexus_loss_error' with return type bool.
+Thanks
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/scsi/csiostor/csio_scsi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/scsi/csiostor/csio_scsi.c b/drivers/scsi/csiostor/csio_scsi.c
-index 55e74da..56b9ad0 100644
---- a/drivers/scsi/csiostor/csio_scsi.c
-+++ b/drivers/scsi/csiostor/csio_scsi.c
-@@ -147,9 +147,9 @@ static int csio_do_abrt_cls(struct csio_hw *,
- 	case FW_ERR_RDEV_LOST:
- 	case FW_ERR_RDEV_LOGO:
- 	case FW_ERR_RDEV_IMPL_LOGO:
--		return 1;
-+		return true;
- 	}
--	return 0;
-+	return false;
- }
- 
- /*
--- 
-1.8.3.1
-
+Michal
+> -#define smp_cond_load_relaxed(ptr, cond_expr) ({		\
+> -	typeof(ptr) __PTR = (ptr);				\
+> -	__unqual_scalar_typeof(*ptr) VAL;			\
+> -	VAL = READ_ONCE(*__PTR);				\
+> -	if (unlikely(!(cond_expr))) {				\
+> -		spin_begin();					\
+> -		do {						\
+> -			VAL = READ_ONCE(*__PTR);		\
+> -		} while (!(cond_expr));				\
+> -		spin_end();					\
+> -	}							\
+> -	(typeof(*ptr))VAL;					\
+> -})
+> -#endif
+> -
+>  #ifdef CONFIG_PPC_BOOK3S_64
+>  #define NOSPEC_BARRIER_SLOT   nop
+>  #elif defined(CONFIG_PPC_FSL_BOOK3E)
+> -- 
+> 2.26.2
+> 
