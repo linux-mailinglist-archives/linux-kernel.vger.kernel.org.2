@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89352332A78
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE46E332A7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhCIPbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:31:19 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:54958 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbhCIPbN (ORCPT
+        id S231670AbhCIPcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:32:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231673AbhCIPbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:31:13 -0500
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 129FUcdn018321;
-        Wed, 10 Mar 2021 00:30:38 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 129FUcdn018321
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615303838;
-        bh=duaVjO6ZT9w3WdK0Ejkic79qcK1IWR5fB/TZDf76FGA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qgM9NFwMiLY47ay6AZVLPl12PZ16k7tMoEC4jOirg2Q556CR9IVNEayLHEsX96iHg
-         z2vIdkeX66iopgC/rKnB/V3drNeqJMZ02q7ZdkOykQwXe1fmQJdptphUd5U/FOzP8f
-         O+SYC5sgdCw7huTniJEp5fWce79kEb8eocxZnzMYaISEj85T8uA5dzNvmLBQ15TSOe
-         CrRyBA7GzDRGJc+gyebsJ+uYgmnSs3HYphNge77KDioK3/y4QIbeg2ygDcr6UznoZH
-         wYKUVlcPe+dNIf/Y/B7Gtk5Hm4wcxJoOda3bfJWNQi149t5XuLzyGz+3HF5Py547JE
-         RrAGzO0hDuGcg==
-X-Nifty-SrcIP: [209.85.210.177]
-Received: by mail-pf1-f177.google.com with SMTP id t85so4409241pfc.13;
-        Tue, 09 Mar 2021 07:30:38 -0800 (PST)
-X-Gm-Message-State: AOAM532P79lgEG4iqDUotU4Y/A8TaqvEr/R/H/UJ7p+5jBQzSRVkg6XY
-        dgXZxdG/VdHO7D1H00xEsRtRaiqkn4n1A64m4/I=
-X-Google-Smtp-Source: ABdhPJyLsPDnmD2y2htemNUFNTD3CKccrm7a07/ky8tR1jO6hHrNhdi3f+3km8/+c3tYh8GKZEI34XL1WNiXXYuYd64=
-X-Received: by 2002:aa7:8d84:0:b029:1f8:3449:1bc6 with SMTP id
- i4-20020aa78d840000b02901f834491bc6mr6900507pfr.76.1615303835416; Tue, 09 Mar
- 2021 07:30:35 -0800 (PST)
+        Tue, 9 Mar 2021 10:31:52 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BA3C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:31:52 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id u4so27772571lfs.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:31:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ytPSd3A3o1b3+2MlI23BkWVwBk2Qohz+v6T0uxCz9RU=;
+        b=ZsDiIRRw+LQemQRHuo0zPr0x7lYYY1RnmWzkwLTDWTgoiy/WPSeXg/JaqaTrpgMG3q
+         ikEXZC1G7CHl5BS1bfjXkICij2hiQ6WpSSM+Metl62wF5PagNLwgLpOJJ0GyWXw+7Mq0
+         yZGh8DBCJF4pOgqHWr5Fwp+ga3e5eloGHFvzTJjeok0tMOwbfseR1tixEGwIuy/E2mEO
+         REWCX0BsJOOBHq5W1AlXu+5NKi0y/LPYDmdZ4KJZ4sYnjc9oO3tmpALL7C4AQpar3ng8
+         5dVI2dneZPzIGcGroTAYeGXc8nPkUdXN4CCe30O7y30/+9hokigEsxJTr7Vkhw7VftM8
+         RYSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ytPSd3A3o1b3+2MlI23BkWVwBk2Qohz+v6T0uxCz9RU=;
+        b=VaJJtLLKPkf0Apin5yLviYw+VH4IS/eykDuY1zsqLWVOEUMxemWZxE+B7QPOfotuGC
+         DjLApkphjrA03WSif7Uxe9J8VeIpY3WAD6SBXfM77pGDYcKHhy3OXmfEWkX6eGgi/ANa
+         AHLbeVz0KxTQ3rONsODjRd6lFJzYLJT10HZyxtdTkwfJGaAU8BKgAM6CJ1S6qMjMbVEm
+         jn/UfK3nKU9S/a8ZVKIxgpv+cYbrvDc/Xu6AcvRscwwCUBb+VR4zbKjcUgLKgcVFqzUG
+         Zv6xcbDGSCdoA76ur0+PkxDSFMi1XxFLM1BXO3wWHBGBbyf1Qtp0uM/CGptvJcK6W86x
+         uK/Q==
+X-Gm-Message-State: AOAM533VDdcFVennmbM6ffRS/eCvrTx/iKXrG1mwlJw6waQhImUD/tec
+        iUywWXpbUP8bKHFjqFzL6spltJa7zwORvyb9TPqYmA==
+X-Google-Smtp-Source: ABdhPJw06MbLp34uxhYaAr5Kj9oirKrQg5zi5+BhFUpssWilBUXjFuULwcGEpI0qogMy5JAEwzC+K56ofZWkxv+pUqE=
+X-Received: by 2002:a05:6512:10d1:: with SMTP id k17mr17314789lfg.649.1615303910617;
+ Tue, 09 Mar 2021 07:31:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210302142614.505888-1-masahiroy@kernel.org>
-In-Reply-To: <20210302142614.505888-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 10 Mar 2021 00:29:57 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARcrGJnoBuzC8mSJqAXPQjdTt-bC8EZEwNBTCTb=o3yQA@mail.gmail.com>
-Message-ID: <CAK7LNARcrGJnoBuzC8mSJqAXPQjdTt-bC8EZEwNBTCTb=o3yQA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: show warning for 'make headers_check'
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
+References: <20210309093736.67925-1-andriy.shevchenko@linux.intel.com> <20210309093736.67925-7-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210309093736.67925-7-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Mar 2021 16:31:39 +0100
+Message-ID: <CACRpkdZaFv7c-mdxF+0T7ceU7ucjtE9-70nBune1iNj54moHXw@mail.gmail.com>
+Subject: Re: [PATCH v6 6/6] gpiolib: Fold conditionals into a simple ternary operator
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 11:26 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Since commit 7ecaf069da52 ("kbuild: move headers_check rule to
-> usr/include/Makefile"), the headers_check target is no-op.
->
-> This stub target is remaining here in case some scripts still invoke
-> 'make headers_check'. In order to prompt people to remove stale code,
-> show a noisy warning message if used. The stub will be really removed
-> after the Linux 5.15 release.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+On Tue, Mar 9, 2021 at 10:37 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Applied to linux-kbuild.
-
-
-
+> It's quite spread code to initialize IRQ domain options.
+> Let's fold it into a simple oneliner.
 >
->  Makefile | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index f9b54da2fca0..a3336d9b4a22 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1339,7 +1339,11 @@ headers: $(version_h) scripts_unifdef uapi-asm-generic archheaders archscripts
->  # Deprecated. It is no-op now.
->  PHONY += headers_check
->  headers_check:
-> -       @:
-> +       @echo >&2 "=================== WARNING ==================="
-> +       @echo >&2 "Since Linux 5.5, 'make headers_check' is no-op,"
-> +       @echo >&2 "and will be removed after Linux 5.15 release."
-> +       @echo >&2 "Please remove headers_check from your scripts."
-> +       @echo >&2 "==============================================="
->
->  ifdef CONFIG_HEADERS_INSTALL
->  prepare: headers
-> --
-> 2.27.0
->
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+Definitely due to my coding style. (Not so fond of the ternary operator.)
+Allright, it is so much more compact.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
--- 
-Best Regards
-Masahiro Yamada
+Yours,
+Linus Walleij
