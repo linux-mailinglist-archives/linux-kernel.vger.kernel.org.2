@@ -2,121 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4DD332894
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CC0332896
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhCIO11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 09:27:27 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61094 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229875AbhCIO1W (ORCPT
+        id S231373AbhCIO17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 09:27:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230465AbhCIO1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 09:27:22 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129E30h1169765;
-        Tue, 9 Mar 2021 09:27:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=OgNUMatW/65nKbb9FFG35QRck11HRDtc9fjMst/eTYg=;
- b=H8qsiqL+C/HPv9fWa8rpFPPbEBg1GCI89iXER5fmRLSrMwe5P7w7ndar7xzxaFDU7Vmu
- jU73Sr49lVYEIheBezGMjiSn4KQsoDHkpUQgghKBhKmHF9tYIvEUxT+GpVggDawCWrJR
- UEKdm1dAEa4tQhGD9Yooraob1fIpN3/XxfcAfeNcpLLm05MQVvuSmAtmQAz+7UsI1O7j
- l3Cyapc+61blyR2mWs05uJxpYn3vNARqs/jpYMEviSWs8VmXMGO9xIQBaA0ACrW9ppZ4
- FwR2cVg7Hf1pOVYtGUDZZsFBD+MM3COtpUFDtqDM5hITl2AoDuVAZlQD4UsTVuv34Ayb wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 375whqw58g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 09:27:21 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 129E4Ggo183263;
-        Tue, 9 Mar 2021 09:27:21 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 375whqw582-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 09:27:21 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 129EMnPX002983;
-        Tue, 9 Mar 2021 14:27:20 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma03dal.us.ibm.com with ESMTP id 3768s1s2hp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 14:27:20 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 129ERJ0Q25493762
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Mar 2021 14:27:19 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 42322AE06A;
-        Tue,  9 Mar 2021 14:27:19 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6C38CAE060;
-        Tue,  9 Mar 2021 14:27:18 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.150.254])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  9 Mar 2021 14:27:18 +0000 (GMT)
-Subject: Re: [PATCH v3 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
-        pbonzini@redhat.com, alex.williamson@redhat.com,
-        pasic@linux.vnet.ibm.com
-References: <20210302204322.24441-1-akrowiak@linux.ibm.com>
- <20210302204322.24441-2-akrowiak@linux.ibm.com>
- <20210303162332.4d227dbe.pasic@linux.ibm.com>
- <14665bcf-2224-e313-43ff-357cadd177cf@linux.ibm.com>
- <20210303204706.0538e84f.pasic@linux.ibm.com>
- <8f5ab6fa-8fd3-27d8-8561-d03ff457df16@linux.ibm.com>
- <20210309112313.4c6e3347.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <64afa72c-2d6a-2ca1-e576-34e15fa579ed@linux.ibm.com>
-Date:   Tue, 9 Mar 2021 09:27:18 -0500
+        Tue, 9 Mar 2021 09:27:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615300052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uefc69ZAVo40Lyi9qS15enKlYyR1TmA5w4KWE/8N6f0=;
+        b=PuyDInNYr5ULLqQ8bw0cWs7NjWDziWL8swKrhPvEWDCxvH1NIwKZ2j5lP/V5n+xBZW3bnm
+        bQ7U1xG2jM6BG0B5g9IeXhUZWY/XrRKVfj50VNPfevrJ5GR/NFiH1IFfTWv8o6D9zC5h9a
+        sXA/YJX2gZsoZ3YY0P8B2rsaCEW9E0Q=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-y0Tq0pG4P5qY0v_aOucPkg-1; Tue, 09 Mar 2021 09:27:29 -0500
+X-MC-Unique: y0Tq0pG4P5qY0v_aOucPkg-1
+Received: by mail-wr1-f72.google.com with SMTP id g2so6503776wrx.20
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 06:27:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uefc69ZAVo40Lyi9qS15enKlYyR1TmA5w4KWE/8N6f0=;
+        b=qEa+8DFBLoFTRpFqt1PD2rg5eR5SHHgqACAqppm+qfqmRNoOa8SzZWNTjUxIONI0PC
+         v954Cs8TLtVe4uePkqLfbku0zfmrpQdj6V091DZKEEELryV3iVL54J99mAWUV0nlogQc
+         CCmXbVbcYdN8w45izrIESQBkZUgeKEBnL7XCLZCRDMrsSLlQWMxpx9EKlHkPKxbxJLGQ
+         Q8smD7lo1d87vrDBFuTtnAbfFPVQEjuDkRFhcvZHQrLS4p5Z51GolKdixCBBROlqHWPr
+         KUMjGVtoDG0D6zj5tT3CskI3hazD/DKLgVBXCZgMeJ6OAiFL6gHA4gVNk+rLSBSr6YxF
+         fLPg==
+X-Gm-Message-State: AOAM530oiNf/JmP6CIpF212rogZBnkhVG11WXplISix+mUNqYa3NNLvz
+        kU+Ywuh4Tq1Hw58QPiny4Wkfe9rtbQrgVN9GGrfRrzdinLxM0SF7LL5A9526kjkRpsNZwK2MeFg
+        Dwrqgsh232zcYY8++GrLWQC9H
+X-Received: by 2002:a1c:a5c7:: with SMTP id o190mr4437928wme.172.1615300048123;
+        Tue, 09 Mar 2021 06:27:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJziYLcxKgKhST0pV5HkhnHk/u+COVI1jyY3xXYJj71+XW5C6Uppli/1zbPdoQUMgPjx5kTHHw==
+X-Received: by 2002:a1c:a5c7:: with SMTP id o190mr4437912wme.172.1615300047976;
+        Tue, 09 Mar 2021 06:27:27 -0800 (PST)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id o7sm23869752wrs.16.2021.03.09.06.27.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 06:27:27 -0800 (PST)
+Subject: Re: [RFC PATCH v2 00/13] objtool: add base support for arm64
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, ycote@redhat.com,
+        Fangrui Song <maskray@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Pete Swain <swine@google.com>,
+        Yonghyun Hwang <yonghyun@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210303170932.1838634-1-jthierry@redhat.com>
+ <20210305235102.384950-1-ndesaulniers@google.com>
+ <CAKwvOdmgRAJXVdaHAnZoYm-Y4Dt01CYxvsnJC6zaSwr5amRWBg@mail.gmail.com>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <47cb7299-a361-6036-fc6e-860bbcfc2476@redhat.com>
+Date:   Tue, 9 Mar 2021 15:27:25 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210309112313.4c6e3347.pasic@linux.ibm.com>
+In-Reply-To: <CAKwvOdmgRAJXVdaHAnZoYm-Y4Dt01CYxvsnJC6zaSwr5amRWBg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-09_11:2021-03-08,2021-03-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0
- suspectscore=0 mlxlogscore=832 spamscore=0 impostorscore=0 malwarescore=0
- mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090071
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 3/9/21 5:23 AM, Halil Pasic wrote:
-> On Thu, 4 Mar 2021 12:43:44 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> On the other hand, if we don't have ->kvm because something broke,
->> then we may be out of luck anyway. There will certainly be no
->> way to unregister the GISC; however, it may still be possible
->> to unpin the pages if we still have q->saved_pfn.
+On 3/6/21 1:04 AM, Nick Desaulniers wrote:
+> On Fri, Mar 5, 2021 at 3:51 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
 >>
->> The point is, if the queue is bound to vfio_ap, it can be reset. If we can't
->> clean up the IRQ resources because something is broken, then there
->> is nothing we can do about that.
-> Especially since the recently added WARN_ONCE macros calling reset_queues
-> unconditionally ain't that bad: we would at least see if there is a
-> problem with cleaning up the IRQ resources.
->
-> Let's make it unconditional again and observe. Can you send out a v4 with
-> this and the other issue fixed.
+>> (in response to
+>> https://lore.kernel.org/linux-arm-kernel/20210303170932.1838634-1-jthierry@redhat.com/
+>> from the command line)
+>>
+>>> Changes since v1[2]:
+>>> - Drop gcc plugin in favor of -fno-jump-tables
+>>
+>> Thank you for this!  I built+booted(under emulation) arm64 defconfig and built
+>> arm64 allmodconfig with LLVM=1 with this series applied.
+>>
+>> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+>>
+>> One thing I noticed was a spew of warnings for allmodconfig, like:
+>> init/main.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+>> init/main.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+>>
+>> I assume those are from the KASAN constructors. See also:
+>> https://github.com/ClangBuiltLinux/linux/issues/1238
+>>
+>> Can we disable HAVE_STACK_PROTECTOR if CC_IS_CLANG and CONFIG_KASAN is set,
+>> until we can resolve the above issue?
 
-I agree and I can do that.
+So that concerns objtool for all arches, right?
 
->   
->
-> Regards,
-> Halil
+> 
+> Ah, filtering the logs more, it looks like GCOV is has the same issue
+> KASAN does (known issue).  Here's a filtered log:
+> https://gist.github.com/nickdesaulniers/01358015b33bd16ccd7d951c4a8c44e7
+> 
+> I'm curious about the failure to decode certain instructions?
+> 
+
+This is probably related to data constants present in code sections. To 
+fix this, objtool needs to handle SYM_DATA_* annotations [1] and then 
+the relevant bytes need to be annotated in the kernel sources (e.g. [2], 
+but there are multiple parts in arm64 assembler needing this). I have 
+not submitted those yet because I didn't want the amount of patches to 
+become overwhelming and mixing objtool + kernel sources.
+
+[1] 
+https://github.com/julien-thierry/linux/commit/9005e9f3bb10aac663c42bb87d337b7a1aae5a67
+
+[2] 
+https://github.com/julien-thierry/linux/commit/ad132b032b4141c7ffce95d784b5254120e5bf65
+
+> The stack state mismatches are what are valuable to me; we'll need
+> some help digging into those at some point.  The logs from defconfig
+> are clean.
+> 
+
+I think at the moment this is mostly a limitation of objtool to track 
+code flow. aarch64 code tends to do a lot more register load/store 
+inside a function than x86, and objtool doesn't track multiple register 
+states (e.g. a registered stored at some offset on the stack at the 
+beginning of the function, and later at some other stack offset). 
+Although, when looking at the disassembled code, I'm not 100% I 
+understand why there are so many intermediary store/load for these 
+registers since it doesn't look like those values are actually used (I 
+don't know whether this is caused by kasan/probes instrumentation).
+
+But I'd need to investigate a bit more.
+
+-- 
+Julien Thierry
 
