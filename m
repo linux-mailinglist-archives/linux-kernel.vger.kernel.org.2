@@ -2,127 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C110332EDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C68A332EDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhCITRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:17:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36502 "EHLO
+        id S231302AbhCITSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:18:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbhCITRF (ORCPT
+        with ESMTP id S231313AbhCITSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:17:05 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E34C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:17:05 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so4703574wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:17:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=eMS1D50aqSjlBFSA6N/+/il0CK6ForkgIZokW5VsYpo=;
-        b=pOM60gEHFmfEf9W1RbFaJinf5omi/g1aiS347f2o9irh9AXRBVc1RYC3mxPW2RdTOW
-         6G7p+HwbYj1bERao9NKlAuzTZukJ5p8HAf6W59uYSScAsnjv1M/YkhoR8w1+dkJ3ldkr
-         IfPD7uFeLp23cvhGGyr8Hkr03FhqagoRSXhOAqYegtHD8fT0STvbi+1ofLpdydeNYUPu
-         G7qz/dh0UTzdR+wpOS8f6Q7EOUrXFc+28TKBYzMCnCxXk3XaaUOr8ndJhn9N9zBz9Tdx
-         +pE5VmyY4uApd3guddyI40hb6fqSNYR4uVCdfqfKPg++wRJMCkHEdKhd4fXQcRc8ECBN
-         44pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=eMS1D50aqSjlBFSA6N/+/il0CK6ForkgIZokW5VsYpo=;
-        b=LnKXSINXpuL4EL8WNoi0sGEHYI7TdSB+Ez+Jv4gfe5OBqwpwfKEJoTzde7Ezj47tl/
-         C3DpGSjdl8LRGqTss5LLO5kRS57Ypx8GYOLF56WNMahgJwTJ8PlzGQUNayK+F90bJ/sB
-         DPn9Gc1fqSuLLx+NGCkqE017Hp1wEVoGyEuTCw25UW3s2z0ZnMBEw9x81xfqO/lmMmup
-         MYHXL8DMaKJez1ZvbEx2nBOOjvLAPXivggpN3aBDVuZnLLhMVkIlAdc6x617JOGlaXeG
-         7KD/Kp8vqtDD7Q0vz+pMk1QKLg4Mww4wdVJGgDtlbyP7rpI21kCK3aroILogdURhFQVi
-         C+6Q==
-X-Gm-Message-State: AOAM531/5C5UTzh4RkB4GPyZGR9k2vPV34l3GFyedt/qnU3+2sesRjTE
-        odUy2oadg5fFkrVbYpWldPAHoQ==
-X-Google-Smtp-Source: ABdhPJz1xfmX7KUevchmJBcX85uXBXT2tSS+52QnaWp8jpSNa4PlShPqKoDcJPdhseLynqlkLEwhDA==
-X-Received: by 2002:a7b:c0c4:: with SMTP id s4mr5822060wmh.9.1615317423661;
-        Tue, 09 Mar 2021 11:17:03 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id y8sm5381418wmi.46.2021.03.09.11.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 11:17:02 -0800 (PST)
-Date:   Tue, 9 Mar 2021 19:17:01 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        mgross@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [GIT PULL] Immutable branch between MFD and Platform/X86 due for
- the v5.13 merge window
-Message-ID: <20210309191701.GY4931@dell>
-References: <20210128172846.99352-1-david.e.box@linux.intel.com>
- <20210224201005.1034005-1-david.e.box@linux.intel.com>
- <20210309181206.GT4931@dell>
- <4b282693-95c5-a738-e114-ae07f6e113fc@redhat.com>
+        Tue, 9 Mar 2021 14:18:01 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9409C06174A;
+        Tue,  9 Mar 2021 11:18:00 -0800 (PST)
+Date:   Tue, 09 Mar 2021 19:17:56 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615317477;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oEQRIx4Tp61Rw9DpX02YB5M4wS7iCoRRmKL6avj3b4Q=;
+        b=LCtdNgIjD2lHd2Qk0FES3WqwXLY1E3v+1w+egh3WS0Pt4XZlU/LhvcxgKKdT9ot0HZE+DI
+        xM1TqiGh5gXiD1q5RMtvzkjVyh3taZD2r/H3QX4GVmk4mudksBsjLYcAlaGsbd0+tiurUU
+        VXJwkrQG6GzyqNcMoBov3Qqj9HpsxfgSsduEWhzap64twi2i+L+kWLcK+7fF+kRi8Hy44F
+        LhQj80ri+ILUuBZTWWSSZWCr0Se252I7ke8U5iGoE4v2Hnnhvxtk5yVsqiQLvgOlEfktoq
+        51wwDIH/pcw4JHLFOcpZMczmXcbCHKKkyH/IFU4r3OnBAnd/6mGNHwquDszCYw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615317477;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oEQRIx4Tp61Rw9DpX02YB5M4wS7iCoRRmKL6avj3b4Q=;
+        b=U6gbdytwlWVkeCtqOXou3Oemsx5S1dlXdMGdNcMMgsbDgpZ2N1+/bzNFYef7hEn5iFm7jP
+        PBh2Dg5h7qmwKVDA==
+From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/alternatives] x86/alternative: Drop unused feature
+ parameter from ALTINSTR_REPLACEMENT()
+Cc:     Juergen Gross <jgross@suse.com>, Borislav Petkov <bp@suse.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210309134813.23912-4-jgross@suse.com>
+References: <20210309134813.23912-4-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4b282693-95c5-a738-e114-ae07f6e113fc@redhat.com>
+Message-ID: <161531747613.398.15873261570688926312.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Mar 2021, Hans de Goede wrote:
+The following commit has been merged into the x86/alternatives branch of tip:
 
-> Hi Lee,
-> 
-> On 3/9/21 7:12 PM, Lee Jones wrote:
-> > Enjoy!
-> > 
-> > The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
-> > 
-> >   Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
-> 
-> I thought we were supposed to avoid using 5.12-rc1 as a base to avoid people
-> hitting the swapfile related disk-corruption when bisecting?
-> 
-> See: https://lwn.net/Articles/848431/
+Commit-ID:     db16e07269c2b4346e4332e43f04e447ef14fd2f
+Gitweb:        https://git.kernel.org/tip/db16e07269c2b4346e4332e43f04e447ef14fd2f
+Author:        Juergen Gross <jgross@suse.com>
+AuthorDate:    Tue, 09 Mar 2021 14:48:04 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 09 Mar 2021 20:08:28 +01:00
 
-Interesting.  First I'd heard of it.
+x86/alternative: Drop unused feature parameter from ALTINSTR_REPLACEMENT()
 
-> So it might be better to redo this branch with 5.12-rc2 as a base ?
+The macro ALTINSTR_REPLACEMENT() doesn't make use of the feature
+parameter, so drop it.
 
-I already have 3 immutable branches based on -rc1.
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210309134813.23912-4-jgross@suse.com
+---
+ arch/x86/include/asm/alternative.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Will need to look further into this to see what I can do.
-
-Please bear with me.
-
-> > are available in the Git repository at:
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-platform-x86-v5.13
-> > 
-> > for you to fetch changes up to ccafe3126ad3f48ea1cd9ae460c69d1ba879fb65:
-> > 
-> >   mfd: intel_pmt: Add support for DG1 (2021-03-09 17:05:25 +0000)
-> > 
-> > ----------------------------------------------------------------
-> > Immutable branch between MFD and Platform/X86 due for the v5.13 merge window
-> > 
-> > ----------------------------------------------------------------
-> > David E. Box (2):
-> >       mfd: intel_pmt: Fix nuisance messages and handling of disabled capabilities
-> >       mfd: intel_pmt: Add support for DG1
-> > 
-> >  drivers/mfd/intel_pmt.c                    | 112 +++++++++++++++++++----------
-> >  drivers/platform/x86/intel_pmt_class.c     |  46 ++++++++++++
-> >  drivers/platform/x86/intel_pmt_class.h     |   1 +
-> >  drivers/platform/x86/intel_pmt_telemetry.c |  20 ------
-> >  4 files changed, 122 insertions(+), 57 deletions(-)
-> > 
-> 
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
+index 13adca3..5753fb2 100644
+--- a/arch/x86/include/asm/alternative.h
++++ b/arch/x86/include/asm/alternative.h
+@@ -150,7 +150,7 @@ static inline int alternatives_text_reserved(void *start, void *end)
+ 	" .byte " alt_rlen(num) "\n"			/* replacement len */ \
+ 	" .byte " alt_pad_len "\n"			/* pad len */
+ 
+-#define ALTINSTR_REPLACEMENT(newinstr, feature, num)	/* replacement */	\
++#define ALTINSTR_REPLACEMENT(newinstr, num)		/* replacement */	\
+ 	"# ALT: replacement " #num "\n"						\
+ 	b_replacement(num)":\n\t" newinstr "\n" e_replacement(num) ":\n"
+ 
+@@ -161,7 +161,7 @@ static inline int alternatives_text_reserved(void *start, void *end)
+ 	ALTINSTR_ENTRY(feature, 1)					\
+ 	".popsection\n"							\
+ 	".pushsection .altinstr_replacement, \"ax\"\n"			\
+-	ALTINSTR_REPLACEMENT(newinstr, feature, 1)			\
++	ALTINSTR_REPLACEMENT(newinstr, 1)				\
+ 	".popsection\n"
+ 
+ #define ALTERNATIVE_2(oldinstr, newinstr1, feature1, newinstr2, feature2)\
+@@ -171,8 +171,8 @@ static inline int alternatives_text_reserved(void *start, void *end)
+ 	ALTINSTR_ENTRY(feature2, 2)					\
+ 	".popsection\n"							\
+ 	".pushsection .altinstr_replacement, \"ax\"\n"			\
+-	ALTINSTR_REPLACEMENT(newinstr1, feature1, 1)			\
+-	ALTINSTR_REPLACEMENT(newinstr2, feature2, 2)			\
++	ALTINSTR_REPLACEMENT(newinstr1, 1)				\
++	ALTINSTR_REPLACEMENT(newinstr2, 2)				\
+ 	".popsection\n"
+ 
+ #define ALTERNATIVE_3(oldinsn, newinsn1, feat1, newinsn2, feat2, newinsn3, feat3) \
+@@ -183,9 +183,9 @@ static inline int alternatives_text_reserved(void *start, void *end)
+ 	ALTINSTR_ENTRY(feat3, 3)						\
+ 	".popsection\n"								\
+ 	".pushsection .altinstr_replacement, \"ax\"\n"				\
+-	ALTINSTR_REPLACEMENT(newinsn1, feat1, 1)				\
+-	ALTINSTR_REPLACEMENT(newinsn2, feat2, 2)				\
+-	ALTINSTR_REPLACEMENT(newinsn3, feat3, 3)				\
++	ALTINSTR_REPLACEMENT(newinsn1, 1)					\
++	ALTINSTR_REPLACEMENT(newinsn2, 2)					\
++	ALTINSTR_REPLACEMENT(newinsn3, 3)					\
+ 	".popsection\n"
+ 
+ /*
