@@ -2,130 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79796331C43
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B2C331C4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhCIBUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 20:20:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37587 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230137AbhCIBT5 (ORCPT
+        id S230084AbhCIBWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 20:22:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhCIBWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 20:19:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615252796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SX0KsRiYuzC72l142vDNhmy20ZK9cAQv1r2439KRtVY=;
-        b=OJM+eDjMLhUXcY6f5WiaR+AIEl815GPwWOtL5m/XBhl8o7UBUWIT/ytC5nboIv8nEbkxyL
-        b+2duzcXTckb05IxxXQsKeSwuoV+UEoTpICDAcoptPu30ZrTuEKOKwHS5ZrFNgOqC2Pti4
-        0Xfa3uxZKxhAtIoLtULDKOyHfhIa9kQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-vD4eWFTcMfm0vawrnMTuYA-1; Mon, 08 Mar 2021 20:19:53 -0500
-X-MC-Unique: vD4eWFTcMfm0vawrnMTuYA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC1311005D4F;
-        Tue,  9 Mar 2021 01:19:50 +0000 (UTC)
-Received: from treble (ovpn-112-136.rdu2.redhat.com [10.10.112.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1A9AE5D9D3;
-        Tue,  9 Mar 2021 01:19:47 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 19:19:45 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-ID: <20210309011945.ky7v3pnbdpxhmxkh@treble>
-References: <161495873696.346821.10161501768906432924.stgit@devnote2>
- <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
- <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
- <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
- <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Mon, 8 Mar 2021 20:22:13 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2CBC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 17:22:02 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id m11so18522855lji.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 17:22:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=wirenboard-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=u72o1/hVsLzd4qHsvaFn3xtZxvDhEZWMFBnIIAXY3PE=;
+        b=KAYnSojp13AUBi8npUZKXjWi3sakeQk4nSGke+MRxXW9yU4r7g5sZwgCgMb57esmt+
+         y65/hK+vlDiPyQwsLuSNAfYfTW1nm7mDcnB+rW4voTl79f4uNKboBLcnzjpyNuptlec7
+         90gm7x5WrqAbUj5U9wJaM78WtBWHDX1OJUV7pp8Mo/X16ny1liHgqgxov9E9UjgPiIzP
+         9cZJdUR66DPmTsrczS/yRpfNphberQZyN3snXUpTTjmo96jW+Du6Ju2MoGI6VfGqdveu
+         amJQsDo+Ar08IlCPO545NRRfhUmwANell1NXKZBI06ZoJGowKBKv84QeGqtiPjNI2e2e
+         sr5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=u72o1/hVsLzd4qHsvaFn3xtZxvDhEZWMFBnIIAXY3PE=;
+        b=McCe5eRNHDK+V0J6VHb5oF7ftskEe+6Sxy4HuhJ4iU2ng0AZ4FWNi4se7w95MV4oJO
+         lzHvZmmJDyo/xOMUYtQdnzrJu3r8+b4gCB7S0KW2z+APzTz+XRNel0jGXWr9sRsIfjhP
+         H62xuD8SIRwZdlI5/+BypG1Ntu7OmE5chyuoZRsCjucEUfZwsZiDM1tJYNJPW4vP/KCL
+         tC4cx9eUQAgakYBMbbKiTWvE6QMbUZZ5ila+y9ifqWT++jUBXTkgSPejqtu1oe2Kk93w
+         Ci6etxUlqz8/mkZMGnbq+8caqhV+yAKwQ9qLLOqVgPV+ELyQnp9MYzr3xf5pU6q29L1E
+         Wpkg==
+X-Gm-Message-State: AOAM530YdPIyNTYcl4SCmgfNKGNav2mmTJC16HhU+Y0W3Pq1UTnrU6Mn
+        5w2sM+XSBt2GULYEB0t/y+0nVA==
+X-Google-Smtp-Source: ABdhPJy2BXo+Pt/hZX3NuUDcSGuVoIYkjZKlJOv2K14Kcco8BLlu2vrSOzG5LpPQBMwXtVPvvE9BKA==
+X-Received: by 2002:a2e:809a:: with SMTP id i26mr15201430ljg.357.1615252920919;
+        Mon, 08 Mar 2021 17:22:00 -0800 (PST)
+Received: from boger-laptop.lan (81.5.99.6.dhcp.mipt-telecom.ru. [81.5.99.6])
+        by smtp.gmail.com with ESMTPSA id o11sm1538395lfu.157.2021.03.08.17.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 17:22:00 -0800 (PST)
+From:   Evgeny Boger <boger@wirenboard.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Evgeny Boger <boger@wirenboard.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v2 0/2] sun8i: r40: second ethernet support
+Date:   Tue,  9 Mar 2021 04:21:14 +0300
+Message-Id: <20210309012116.2944-1-boger@wirenboard.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 11:52:10AM +0900, Masami Hiramatsu wrote:
-> So at the kretprobe handler, we have 2 issues.
-> 1) the return address (caller_func+0x15) is not on the stack.
->    this can be solved by searching from current->kretprobe_instances.
-> 2) the stack frame size of kretprobe_trampoline is unknown
->    Since the stackframe is fixed, the fixed number (0x98) can be used.
-> 
-> However, those solutions are only for the kretprobe handler. The stacktrace
-> from interrupt handler hit in the kretprobe_trampoline still doesn't work.
-> 
-> So, here is my idea;
-> 
-> 1) Change the trampline code to prepare stack frame at first and save
->    registers on it, instead of "push". This will makes ORC easy to setup
->    stackframe information for this code.
-> 2) change the return addres fixup timing. Instead of using return value
->    of trampoline handler, before removing the real return address from
->    current->kretprobe_instances.
-> 3) Then, if orc_find() finds the ip is in the kretprobe_trampoline, it
->    checks the contents of the end of stackframe (at the place of regs->sp)
->    is same as the address of it. If it is, it can find the correct address
->    from current->kretprobe_instances. If not, there is a correct address.
-> 
-> I need to find how the ORC info is prepared for 1), maybe UNWIND_HINT macro
-> may help?
+This patch series adds support for two Ethernet ports on Allwinner R40.
 
-Hi Masami,
+R40 (aka V40,A40i,T3) has two different Ethernet IPs called EMAC and GMAC.
+EMAC only support 10/100 Mbit in MII mode, while GMAC support both 10/100
+(MII) and 10/100/1000 (RGMII).
 
-If I understand correctly, for #1 you need an unwind hint which treats
-the instruction *after* the "pushq %rsp" as the beginning of the
-function.
+In contrast to A10/A20 where GMAC and EMAC share the same pins making EMAC
+somewhat pointless, on R40 EMAC can be routed to port H.
+Both EMAC (on port H) and GMAC (on port A) can be then enabled at the same 
+time, allowing for two ethernet ports.
 
-I'm thinking this should work:
+Tested on custom A40i board with two IP101GRI PHYs in MII mode.
+
+Changes in v2:
+ - EMAC reset is no longer optional on R40
+ - Add a new DT compatible string for R40 EMAC
+ - Deassert reset line before enabling the clock
+ - minor fixes: formatting, DT node order, leftover pinctrl props
 
 
-diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
-index 8e574c0afef8..8b33674288ea 100644
---- a/arch/x86/include/asm/unwind_hints.h
-+++ b/arch/x86/include/asm/unwind_hints.h
-@@ -52,6 +52,11 @@
- 	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=8 type=UNWIND_HINT_TYPE_FUNC
- .endm
- 
-+#else
-+
-+#define UNWIND_HINT_FUNC \
-+	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_X86_UNWIND_HINTS_H */
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index df776cdca327..38ff1387f95d 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -767,6 +767,7 @@ asm(
- 	/* We don't bother saving the ss register */
- #ifdef CONFIG_X86_64
- 	"	pushq %rsp\n"
-+	UNWIND_HINT_FUNC
- 	"	pushfq\n"
- 	SAVE_REGS_STRING
- 	"	movq %rsp, %rdi\n"
-@@ -790,7 +791,6 @@ asm(
- 	".size kretprobe_trampoline, .-kretprobe_trampoline\n"
- );
- NOKPROBE_SYMBOL(kretprobe_trampoline);
--STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
- 
- 
- /*
+Evgeny Boger (2):
+  net: allwinner: reset control support
+  dts: r40: add second ethernet support
+
+ .../net/allwinner,sun4i-a10-emac.yaml         | 11 +++-
+ arch/arm/boot/dts/sun8i-r40.dtsi              | 59 +++++++++++++++++
+ drivers/net/ethernet/allwinner/sun4i-emac.c   | 65 +++++++++++++++++--
+ 3 files changed, 129 insertions(+), 6 deletions(-)
+
+-- 
+2.17.1
 
