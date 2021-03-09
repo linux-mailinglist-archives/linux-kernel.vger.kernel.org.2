@@ -2,55 +2,1057 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B9E332CB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54876332CB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhCIQ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:58:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34710 "EHLO
+        id S231133AbhCIQ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:59:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbhCIQ6q (ORCPT
+        with ESMTP id S230150AbhCIQ7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:58:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56616C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:58:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=qKoGol5i8+369WDG2dfWRUQDWOaqn8UMCBv4N+kp+ko=; b=eDxqP58GHbzY/vY2ZOPo1SVUkZ
-        4xsKyRkP/R2gszd0fMN1dv+SBtyNNGPcH6AMfWJzL8ZSE+Ziqpt5ypAr6i9HbowdSyzxk9afEy6W4
-        gkf+07TCUJ2aQJnQ5lDkc2hPjLq7BVvQhPlS+9nJX86SPn3Pxoe9775PL57ICGL4aqMoleKRhA26n
-        gIGf8Ru2valdi3QqqewWKS87lmgRUwwiGkAeoautnyKslvhlCVyPr3kxStyHHR88r5s7Qz8odJbj0
-        AVdHeh0rlGBWaJScjoKnqgVNyklhfz0QJD9TphmJzUGxfeIIdlBM4hMvFXmeW4n4AXthQ0vObjv5E
-        974Tecqw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJfgZ-000p8s-C0; Tue, 09 Mar 2021 16:58:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 532B4300238;
-        Tue,  9 Mar 2021 17:58:18 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0B9B62077BB0D; Tue,  9 Mar 2021 17:58:18 +0100 (CET)
-Date:   Tue, 9 Mar 2021 17:58:17 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Tue, 9 Mar 2021 11:59:22 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C89DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:59:22 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id l14so7975280qtr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 08:59:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gvx5ZlINiggnjMaJNx/5VgYJmUYriGBAiet71ohF0OI=;
+        b=YHQKdwLmjhI4bUThjeq0vc7mavvJXx03AdAIL6JB+QN9Nkt804HOFOxwfwKtMud7bx
+         pzeKHPD/t4TlKGHAurJbGIOrxzhJk4lUEzFktKJOtmlOmQLh4U8HOYxT8skAgAJsG1al
+         hyi2nwA77GG7f3QxV4FoiGCL4JNP9fZ2d1lIeKz1DuuKo9/HdeD4tPkJkJlzsSofyJjw
+         sEt+/Mkw2y1KaptvvHtifkKINfY5WfwWCVzKP5iGfD9myAr/hEi4M+0AKlE9VCXtNexS
+         Qbv7urcsm4AJu8a2bCkRkSR1xE2/AP6e8IAbsuGUrGGIMUja7c38mR1DAuk7+E5aBw+U
+         CK2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gvx5ZlINiggnjMaJNx/5VgYJmUYriGBAiet71ohF0OI=;
+        b=f7g0o2kvTgi13sgurwf0ZYyC7zHlp6wgjcj/haSUnSntnhrGa3dRkCRZC3Ag/B3MNz
+         fCBWt3Vrd2YkYh9hmUeh4emfdepQBThJBOOCRnyPbyF7zc4HotRO4lmIXMfIkaQSaDrt
+         YbsQE2zEvLiUpxc7XURYIpc0C/hPTy4g3rQP3ISYE9Gh8R8UNZEneMUCekOHK7c04BeU
+         1lMe2zSmYQ2UQsZKx3rJgTYhT9Brigw8JjkzibBC2U5vS7DhFnsU/WK3ZGVqSp10tfwq
+         7u8zToMWAuaZTzZC3/B9zEuV3fcbh40gb99M5p4jtjzhp8/cJPG6s4zwqF4hqHSMueWT
+         fOjA==
+X-Gm-Message-State: AOAM530MDCiJKxiQM4uzRFcISSmcWsJs6hGUUFnfXpNn5DWqVLrb55rP
+        8yWYRDgiO/z5DYosdphyfQ==
+X-Google-Smtp-Source: ABdhPJwaaLI9EIYOikL82x6W63qDSoCQ5gTSfS7lPD84tlFj/eUJNJ9/ixRTOg1shv0Rmf1+Pf5xeA==
+X-Received: by 2002:ac8:5a96:: with SMTP id c22mr26170657qtc.370.1615309160856;
+        Tue, 09 Mar 2021 08:59:20 -0800 (PST)
+Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
+        by smtp.gmail.com with ESMTPSA id v17sm10409779qtq.41.2021.03.09.08.59.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 08:59:20 -0800 (PST)
+Date:   Tue, 9 Mar 2021 11:59:18 -0500
+From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
+To:     Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+Cc:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: The killing of ideal_nops[]
-Message-ID: <YEepKVHc5kkDybu6@hirez.programming.kicks-ass.net>
+Subject: Re: [PATCH v9 2/2] perf vendor events arm64: Add Fujitsu A64FX pmu
+ event
+Message-ID: <20210309165918.ienfh5obqtss356m@gabell>
+References: <20210308105342.746940-1-nakamura.shun@fujitsu.com>
+ <20210308105342.746940-3-nakamura.shun@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210308105342.746940-3-nakamura.shun@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Mar 08, 2021 at 07:53:41PM +0900, Shunsuke Nakamura wrote:
+> Add pmu events for A64FX.
+> 
+> Documentation source:
+> https://github.com/fujitsu/A64FX/blob/master/doc/A64FX_PMU_Events_v1.2.pdf
 
-AFAICT everything made in the past 10 years ends up using p6_nops. Is it
-time to kill off ideal_nops[] and simplify life?
+The PMU events described in above document seems to work well
+with this patch!
+Please feel free to add:
 
+Tested-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
 
+Thanks!
+Masa
+
+> 
+> Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+> Reviewed-by: John Garry <john.garry@huawei.com>
+> ---
+>  .../arch/arm64/fujitsu/a64fx/branch.json      |   8 +
+>  .../arch/arm64/fujitsu/a64fx/bus.json         |  62 ++++++
+>  .../arch/arm64/fujitsu/a64fx/cache.json       | 128 ++++++++++++
+>  .../arch/arm64/fujitsu/a64fx/cycle.json       |   5 +
+>  .../arch/arm64/fujitsu/a64fx/exception.json   |  29 +++
+>  .../arch/arm64/fujitsu/a64fx/instruction.json | 131 ++++++++++++
+>  .../arch/arm64/fujitsu/a64fx/memory.json      |   8 +
+>  .../arch/arm64/fujitsu/a64fx/other.json       | 188 +++++++++++++++++
+>  .../arch/arm64/fujitsu/a64fx/pipeline.json    | 194 ++++++++++++++++++
+>  .../arch/arm64/fujitsu/a64fx/sve.json         | 110 ++++++++++
+>  tools/perf/pmu-events/arch/arm64/mapfile.csv  |   1 +
+>  11 files changed, 864 insertions(+)
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
+> 
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
+> new file mode 100644
+> index 000000000000..b011af11bf94
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
+> @@ -0,0 +1,8 @@
+> +[
+> +  {
+> +    "ArchStdEvent": "BR_MIS_PRED"
+> +  },
+> +  {
+> +    "ArchStdEvent": "BR_PRED"
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
+> new file mode 100644
+> index 000000000000..084e88d7df73
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
+> @@ -0,0 +1,62 @@
+> +[
+> +  {
+> +    "PublicDescription": "This event counts read transactions from tofu controller to measured CMG.",
+> +    "EventCode": "0x314",
+> +    "EventName": "BUS_READ_TOTAL_TOFU",
+> +    "BriefDescription": "This event counts read transactions from tofu controller to measured CMG."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts read transactions from PCI controller to measured CMG.",
+> +    "EventCode": "0x315",
+> +    "EventName": "BUS_READ_TOTAL_PCI",
+> +    "BriefDescription": "This event counts read transactions from PCI controller to measured CMG."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts read transactions from measured CMG local memory to measured CMG.",
+> +    "EventCode": "0x316",
+> +    "EventName": "BUS_READ_TOTAL_MEM",
+> +    "BriefDescription": "This event counts read transactions from measured CMG local memory to measured CMG."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts write transactions from measured CMG to CMG0, if measured CMG is not CMG0.",
+> +    "EventCode": "0x318",
+> +    "EventName": "BUS_WRITE_TOTAL_CMG0",
+> +    "BriefDescription": "This event counts write transactions from measured CMG to CMG0, if measured CMG is not CMG0."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts write transactions from measured CMG to CMG1, if measured CMG is not CMG1.",
+> +    "EventCode": "0x319",
+> +    "EventName": "BUS_WRITE_TOTAL_CMG1",
+> +    "BriefDescription": "This event counts write transactions from measured CMG to CMG1, if measured CMG is not CMG1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts write transactions from measured CMG to CMG2, if measured CMG is not CMG2.",
+> +    "EventCode": "0x31A",
+> +    "EventName": "BUS_WRITE_TOTAL_CMG2",
+> +    "BriefDescription": "This event counts write transactions from measured CMG to CMG2, if measured CMG is not CMG2."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts write transactions from measured CMG to CMG3, if measured CMG is not CMG3.",
+> +    "EventCode": "0x31B",
+> +    "EventName": "BUS_WRITE_TOTAL_CMG3",
+> +    "BriefDescription": "This event counts write transactions from measured CMG to CMG3, if measured CMG is not CMG3."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts write transactions from measured CMG to tofu controller.",
+> +    "EventCode": "0x31C",
+> +    "EventName": "BUS_WRITE_TOTAL_TOFU",
+> +    "BriefDescription": "This event counts write transactions from measured CMG to tofu controller."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts write transactions from measured CMG to PCI controller.",
+> +    "EventCode": "0x31D",
+> +    "EventName": "BUS_WRITE_TOTAL_PCI",
+> +    "BriefDescription": "This event counts write transactions from measured CMG to PCI controller."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts write transactions from measured CMG to measured CMG local memory.",
+> +    "EventCode": "0x31E",
+> +    "EventName": "BUS_WRITE_TOTAL_MEM",
+> +    "BriefDescription": "This event counts write transactions from measured CMG to measured CMG local memory."
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
+> new file mode 100644
+> index 000000000000..2e341a951a10
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
+> @@ -0,0 +1,128 @@
+> +[
+> +  {
+> +    "ArchStdEvent": "L1I_CACHE_REFILL"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L1I_TLB_REFILL"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L1D_CACHE_REFILL"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L1D_CACHE"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L1D_TLB_REFILL"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L1I_CACHE"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L1D_CACHE_WB"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L2D_CACHE"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L2D_CACHE_REFILL"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L2D_CACHE_WB"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L2D_TLB_REFILL"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L2I_TLB_REFILL"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L2D_TLB"
+> +  },
+> +  {
+> +    "ArchStdEvent": "L2I_TLB"
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts L1D_CACHE_REFILL caused by software or hardware prefetch.",
+> +    "EventCode": "0x49",
+> +    "EventName": "L1D_CACHE_REFILL_PRF",
+> +    "BriefDescription": "This event counts L1D_CACHE_REFILL caused by software or hardware prefetch."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts L2D_CACHE_REFILL caused by software or hardware prefetch.",
+> +    "EventCode": "0x59",
+> +    "EventName": "L2D_CACHE_REFILL_PRF",
+> +    "BriefDescription": "This event counts L2D_CACHE_REFILL caused by software or hardware prefetch."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts L1D_CACHE_REFILL caused by demand access.",
+> +    "EventCode": "0x200",
+> +    "EventName": "L1D_CACHE_REFILL_DM",
+> +    "BriefDescription": "This event counts L1D_CACHE_REFILL caused by demand access."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts L1D_CACHE_REFILL caused by hardware prefetch.",
+> +    "EventCode": "0x202",
+> +    "EventName": "L1D_CACHE_REFILL_HWPRF",
+> +    "BriefDescription": "This event counts L1D_CACHE_REFILL caused by hardware prefetch."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts outstanding L1D cache miss requests per cycle.",
+> +    "EventCode": "0x208",
+> +    "EventName": "L1_MISS_WAIT",
+> +    "BriefDescription": "This event counts outstanding L1D cache miss requests per cycle."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts outstanding L1I cache miss requests per cycle.",
+> +    "EventCode": "0x209",
+> +    "EventName": "L1I_MISS_WAIT",
+> +    "BriefDescription": "This event counts outstanding L1I cache miss requests per cycle."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts L2D_CACHE_REFILL caused by demand access.",
+> +    "EventCode": "0x300",
+> +    "EventName": "L2D_CACHE_REFILL_DM",
+> +    "BriefDescription": "This event counts L2D_CACHE_REFILL caused by demand access."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts L2D_CACHE_REFILL caused by hardware prefetch.",
+> +    "EventCode": "0x302",
+> +    "EventName": "L2D_CACHE_REFILL_HWPRF",
+> +    "BriefDescription": "This event counts L2D_CACHE_REFILL caused by hardware prefetch."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts outstanding L2 cache miss requests per cycle.",
+> +    "EventCode": "0x308",
+> +    "EventName": "L2_MISS_WAIT",
+> +    "BriefDescription": "This event counts outstanding L2 cache miss requests per cycle."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the number of times of L2 cache miss.",
+> +    "EventCode": "0x309",
+> +    "EventName": "L2_MISS_COUNT",
+> +    "BriefDescription": "This event counts the number of times of L2 cache miss."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts operations where demand access hits an L2 cache refill buffer allocated by software or hardware prefetch.",
+> +    "EventCode": "0x325",
+> +    "EventName": "L2D_SWAP_DM",
+> +    "BriefDescription": "This event counts operations where demand access hits an L2 cache refill buffer allocated by software or hardware prefetch."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts operations where software or hardware prefetch hits an L2 cache refill buffer allocated by demand access.",
+> +    "EventCode": "0x326",
+> +    "EventName": "L2D_CACHE_MIBMCH_PRF",
+> +    "BriefDescription": "This event counts operations where software or hardware prefetch hits an L2 cache refill buffer allocated by demand access."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts operations where demand access hits an L2 cache refill buffer allocated by software or hardware prefetch.",
+> +    "EventCode": "0x396",
+> +    "EventName": "L2D_CACHE_SWAP_LOCAL",
+> +    "BriefDescription": "This event counts operations where demand access hits an L2 cache refill buffer allocated by software or hardware prefetch."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts energy consumption per cycle of L2 cache.",
+> +    "EventCode": "0x3E0",
+> +    "EventName": "EA_L2",
+> +    "BriefDescription": "This event counts energy consumption per cycle of L2 cache."
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
+> new file mode 100644
+> index 000000000000..b16484628290
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
+> @@ -0,0 +1,5 @@
+> +[
+> +  {
+> +    "ArchStdEvent": "CPU_CYCLES"
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
+> new file mode 100644
+> index 000000000000..348749c154c0
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
+> @@ -0,0 +1,29 @@
+> +[
+> +  {
+> +    "ArchStdEvent": "EXC_TAKEN"
+> +  },
+> +  {
+> +    "ArchStdEvent": "EXC_UNDEF"
+> +  },
+> +  {
+> +    "ArchStdEvent": "EXC_SVC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "EXC_PABORT"
+> +  },
+> +  {
+> +    "ArchStdEvent": "EXC_DABORT"
+> +  },
+> +  {
+> +    "ArchStdEvent": "EXC_IRQ"
+> +  },
+> +  {
+> +    "ArchStdEvent": "EXC_FIQ"
+> +  },
+> +  {
+> +    "ArchStdEvent": "EXC_SMC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "EXC_HVC"
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
+> new file mode 100644
+> index 000000000000..6d258b1080cf
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
+> @@ -0,0 +1,131 @@
+> +[
+> +  {
+> +    "ArchStdEvent": "SW_INCR"
+> +  },
+> +  {
+> +    "ArchStdEvent": "INST_RETIRED"
+> +  },
+> +  {
+> +    "ArchStdEvent": "EXC_RETURN"
+> +  },
+> +  {
+> +    "ArchStdEvent": "CID_WRITE_RETIRED"
+> +  },
+> +  {
+> +    "ArchStdEvent": "INST_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "LDREX_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "STREX_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "LD_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "ST_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "LDST_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "DP_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "ASE_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "VFP_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "PC_WRITE_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "CRYPTO_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "BR_IMMED_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "BR_RETURN_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "BR_INDIRECT_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "ISB_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "DSB_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "DMB_SPEC"
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed zero blocking operations due to the 'DC ZVA' instruction.",
+> +    "EventCode": "0x9F",
+> +    "EventName": "DCZVA_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed zero blocking operations due to the 'DC ZVA' instruction."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed floating-point move operations.",
+> +    "EventCode": "0x105",
+> +    "EventName": "FP_MV_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed floating-point move operations."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed operations that using predicate register.",
+> +    "EventCode": "0x108",
+> +    "EventName": "PRD_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed operations that using predicate register."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed inter-element manipulation operations.",
+> +    "EventCode": "0x109",
+> +    "EventName": "IEL_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed inter-element manipulation operations."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed inter-register manipulation operations.",
+> +    "EventCode": "0x10A",
+> +    "EventName": "IREG_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed inter-register manipulation operations."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed NOSIMD load operations that using SIMD&FP registers.",
+> +    "EventCode": "0x112",
+> +    "EventName": "FP_LD_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed NOSIMD load operations that using SIMD&FP registers."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed NOSIMD store operations that using SIMD&FP registers.",
+> +    "EventCode": "0x113",
+> +    "EventName": "FP_ST_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed NOSIMD store operations that using SIMD&FP registers."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed SIMD broadcast floating-point load operations.",
+> +    "EventCode": "0x11A",
+> +    "EventName": "BC_LD_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed SIMD broadcast floating-point load operations."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed instructions, excluding the MOVPRFX instruction.",
+> +    "EventCode": "0x121",
+> +    "EventName": "EFFECTIVE_INST_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed instructions, excluding the MOVPRFX instruction."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed operations that uses 'pre-index' as its addressing mode.",
+> +    "EventCode": "0x123",
+> +    "EventName": "PRE_INDEX_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed operations that uses 'pre-index' as its addressing mode."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts architecturally executed operations that uses 'post-index' as its addressing mode.",
+> +    "EventCode": "0x124",
+> +    "EventName": "POST_INDEX_SPEC",
+> +    "BriefDescription": "This event counts architecturally executed operations that uses 'post-index' as its addressing mode."
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
+> new file mode 100644
+> index 000000000000..c1f6479e92b4
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
+> @@ -0,0 +1,8 @@
+> +[
+> +  {
+> +    "PublicDescription": "This event counts energy consumption per cycle of CMG local memory.",
+> +    "EventCode": "0x3E8",
+> +    "EventName": "EA_MEMORY",
+> +    "BriefDescription": "This event counts energy consumption per cycle of CMG local memory."
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
+> new file mode 100644
+> index 000000000000..10c823ac26cc
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
+> @@ -0,0 +1,188 @@
+> +[
+> +  {
+> +    "PublicDescription": "This event counts the occurrence count of the micro-operation split.",
+> +    "EventCode": "0x139",
+> +    "EventName": "UOP_SPLIT",
+> +    "BriefDescription": "This event counts the occurrence count of the micro-operation split."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no operation was committed because the oldest and uncommitted load/store/prefetch operation waits for memory access.",
+> +    "EventCode": "0x180",
+> +    "EventName": "LD_COMP_WAIT_L2_MISS",
+> +    "BriefDescription": "This event counts every cycle that no operation was committed because the oldest and uncommitted load/store/prefetch operation waits for memory access."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for memory access.",
+> +    "EventCode": "0x181",
+> +    "EventName": "LD_COMP_WAIT_L2_MISS_EX",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for memory access."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted load/store/prefetch operation waits for L2 cache access.",
+> +    "EventCode": "0x182",
+> +    "EventName": "LD_COMP_WAIT_L1_MISS",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted load/store/prefetch operation waits for L2 cache access."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for L2 cache access.",
+> +    "EventCode": "0x183",
+> +    "EventName": "LD_COMP_WAIT_L1_MISS_EX",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for L2 cache access."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted load/store/prefetch operation waits for L1D cache, L2 cache and memory access.",
+> +    "EventCode": "0x184",
+> +    "EventName": "LD_COMP_WAIT",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted load/store/prefetch operation waits for L1D cache, L2 cache and memory access."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for L1D cache, L2 cache and memory access.",
+> +    "EventCode": "0x185",
+> +    "EventName": "LD_COMP_WAIT_EX",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for L1D cache, L2 cache and memory access."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed due to the lack of an available prefetch port.",
+> +    "EventCode": "0x186",
+> +    "EventName": "LD_COMP_WAIT_PFP_BUSY",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed due to the lack of an available prefetch port."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the LD_COMP_WAIT_PFP_BUSY caused by an integer load operation.",
+> +    "EventCode": "0x187",
+> +    "EventName": "LD_COMP_WAIT_PFP_BUSY_EX",
+> +    "BriefDescription": "This event counts the LD_COMP_WAIT_PFP_BUSY caused by an integer load operation."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the LD_COMP_WAIT_PFP_BUSY caused by a software prefetch instruction.",
+> +    "EventCode": "0x188",
+> +    "EventName": "LD_COMP_WAIT_PFP_BUSY_SWPF",
+> +    "BriefDescription": "This event counts the LD_COMP_WAIT_PFP_BUSY caused by a software prefetch instruction."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is an integer or floating-point/SIMD instruction.",
+> +    "EventCode": "0x189",
+> +    "EventName": "EU_COMP_WAIT",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is an integer or floating-point/SIMD instruction."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is a floating-point/SIMD instruction.",
+> +    "EventCode": "0x18A",
+> +    "EventName": "FL_COMP_WAIT",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is a floating-point/SIMD instruction."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is a branch instruction.",
+> +    "EventCode": "0x18B",
+> +    "EventName": "BR_COMP_WAIT",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is a branch instruction."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed because the CSE is empty.",
+> +    "EventCode": "0x18C",
+> +    "EventName": "ROB_EMPTY",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed because the CSE is empty."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed because the CSE is empty and the store port (SP) is full.",
+> +    "EventCode": "0x18D",
+> +    "EventName": "ROB_EMPTY_STQ_BUSY",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed because the CSE is empty and the store port (SP) is full."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that the instruction unit is halted by the WFE/WFI instruction.",
+> +    "EventCode": "0x18E",
+> +    "EventName": "WFE_WFI_CYCLE",
+> +    "BriefDescription": "This event counts every cycle that the instruction unit is halted by the WFE/WFI instruction."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that no instruction was committed, but counts at the time when commits MOVPRFX only.",
+> +    "EventCode": "0x190",
+> +    "EventName": "_0INST_COMMIT",
+> +    "BriefDescription": "This event counts every cycle that no instruction was committed, but counts at the time when commits MOVPRFX only."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that one instruction is committed.",
+> +    "EventCode": "0x191",
+> +    "EventName": "_1INST_COMMIT",
+> +    "BriefDescription": "This event counts every cycle that one instruction is committed."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that two instructions are committed.",
+> +    "EventCode": "0x192",
+> +    "EventName": "_2INST_COMMIT",
+> +    "BriefDescription": "This event counts every cycle that two instructions are committed."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that three instructions are committed.",
+> +    "EventCode": "0x193",
+> +    "EventName": "_3INST_COMMIT",
+> +    "BriefDescription": "This event counts every cycle that three instructions are committed."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that four instructions are committed.",
+> +    "EventCode": "0x194",
+> +    "EventName": "_4INST_COMMIT",
+> +    "BriefDescription": "This event counts every cycle that four instructions are committed."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that only any micro-operations are committed.",
+> +    "EventCode": "0x198",
+> +    "EventName": "UOP_ONLY_COMMIT",
+> +    "BriefDescription": "This event counts every cycle that only any micro-operations are committed."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts every cycle that only the MOVPRFX instruction is committed.",
+> +    "EventCode": "0x199",
+> +    "EventName": "SINGLE_MOVPRFX_COMMIT",
+> +    "BriefDescription": "This event counts every cycle that only the MOVPRFX instruction is committed."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts energy consumption per cycle of core.",
+> +    "EventCode": "0x1E0",
+> +    "EventName": "EA_CORE",
+> +    "BriefDescription": "This event counts energy consumption per cycle of core."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts streaming prefetch requests to L1D cache generated by hardware prefetcher.",
+> +    "EventCode": "0x230",
+> +    "EventName": "L1HWPF_STREAM_PF",
+> +    "BriefDescription": "This event counts streaming prefetch requests to L1D cache generated by hardware prefetcher."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts allocation type prefetch injection requests to L1D cache generated by hardware prefetcher.",
+> +    "EventCode": "0x231",
+> +    "EventName": "L1HWPF_INJ_ALLOC_PF",
+> +    "BriefDescription": "This event counts allocation type prefetch injection requests to L1D cache generated by hardware prefetcher."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts non-allocation type prefetch injection requests to L1D cache generated by hardware prefetcher.",
+> +    "EventCode": "0x232",
+> +    "EventName": "L1HWPF_INJ_NOALLOC_PF",
+> +    "BriefDescription": "This event counts non-allocation type prefetch injection requests to L1D cache generated by hardware prefetcher."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts streaming prefetch requests to L2 cache generated by hardware prefecher.",
+> +    "EventCode": "0x233",
+> +    "EventName": "L2HWPF_STREAM_PF",
+> +    "BriefDescription": "This event counts streaming prefetch requests to L2 cache generated by hardware prefecher."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts allocation type prefetch injection requests to L2 cache generated by hardware prefetcher.",
+> +    "EventCode": "0x234",
+> +    "EventName": "L2HWPF_INJ_ALLOC_PF",
+> +    "BriefDescription": "This event counts allocation type prefetch injection requests to L2 cache generated by hardware prefetcher."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts non-allocation type prefetch injection requests to L2 cache generated by hardware prefetcher.",
+> +    "EventCode": "0x235",
+> +    "EventName": "L2HWPF_INJ_NOALLOC_PF",
+> +    "BriefDescription": "This event counts non-allocation type prefetch injection requests to L2 cache generated by hardware prefetcher."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts prefetch requests to L2 cache generated by the other causes.",
+> +    "EventCode": "0x236",
+> +    "EventName": "L2HWPF_OTHER",
+> +    "BriefDescription": "This event counts prefetch requests to L2 cache generated by the other causes."
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
+> new file mode 100644
+> index 000000000000..dd7c97a9972b
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
+> @@ -0,0 +1,194 @@
+> +[
+> +  {
+> +    "ArchStdEvent": "STALL_FRONTEND"
+> +  },
+> +  {
+> +    "ArchStdEvent": "STALL_BACKEND"
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of EAGA pipeline.",
+> +    "EventCode": "0x1A0",
+> +    "EventName": "EAGA_VAL",
+> +    "BriefDescription": "This event counts valid cycles of EAGA pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of EAGB pipeline.",
+> +    "EventCode": "0x1A1",
+> +    "EventName": "EAGB_VAL",
+> +    "BriefDescription": "This event counts valid cycles of EAGB pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of EXA pipeline.",
+> +    "EventCode": "0x1A2",
+> +    "EventName": "EXA_VAL",
+> +    "BriefDescription": "This event counts valid cycles of EXA pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of EXB pipeline.",
+> +    "EventCode": "0x1A3",
+> +    "EventName": "EXB_VAL",
+> +    "BriefDescription": "This event counts valid cycles of EXB pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of FLA pipeline.",
+> +    "EventCode": "0x1A4",
+> +    "EventName": "FLA_VAL",
+> +    "BriefDescription": "This event counts valid cycles of FLA pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of FLB pipeline.",
+> +    "EventCode": "0x1A5",
+> +    "EventName": "FLB_VAL",
+> +    "BriefDescription": "This event counts valid cycles of FLB pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of PRX pipeline.",
+> +    "EventCode": "0x1A6",
+> +    "EventName": "PRX_VAL",
+> +    "BriefDescription": "This event counts valid cycles of PRX pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the number of 1's in the predicate bits of request in FLA pipeline, where it is corrected so that it becomes 16 when all bits are 1.",
+> +    "EventCode": "0x1B4",
+> +    "EventName": "FLA_VAL_PRD_CNT",
+> +    "BriefDescription": "This event counts the number of 1's in the predicate bits of request in FLA pipeline, where it is corrected so that it becomes 16 when all bits are 1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the number of 1's in the predicate bits of request in FLB pipeline, where it is corrected so that it becomes 16 when all bits are 1.",
+> +    "EventCode": "0x1B5",
+> +    "EventName": "FLB_VAL_PRD_CNT",
+> +    "BriefDescription": "This event counts the number of 1's in the predicate bits of request in FLB pipeline, where it is corrected so that it becomes 16 when all bits are 1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of L1D cache pipeline#0.",
+> +    "EventCode": "0x240",
+> +    "EventName": "L1_PIPE0_VAL",
+> +    "BriefDescription": "This event counts valid cycles of L1D cache pipeline#0."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of L1D cache pipeline#1.",
+> +    "EventCode": "0x241",
+> +    "EventName": "L1_PIPE1_VAL",
+> +    "BriefDescription": "This event counts valid cycles of L1D cache pipeline#1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts requests in L1D cache pipeline#0 that its sce bit of tagged address is 1.",
+> +    "EventCode": "0x250",
+> +    "EventName": "L1_PIPE0_VAL_IU_TAG_ADRS_SCE",
+> +    "BriefDescription": "This event counts requests in L1D cache pipeline#0 that its sce bit of tagged address is 1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts requests in L1D cache pipeline#0 that its pfe bit of tagged address is 1.",
+> +    "EventCode": "0x251",
+> +    "EventName": "L1_PIPE0_VAL_IU_TAG_ADRS_PFE",
+> +    "BriefDescription": "This event counts requests in L1D cache pipeline#0 that its pfe bit of tagged address is 1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts requests in L1D cache pipeline#1 that its sce bit of tagged address is 1.",
+> +    "EventCode": "0x252",
+> +    "EventName": "L1_PIPE1_VAL_IU_TAG_ADRS_SCE",
+> +    "BriefDescription": "This event counts requests in L1D cache pipeline#1 that its sce bit of tagged address is 1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts requests in L1D cache pipeline#1 that its pfe bit of tagged address is 1.",
+> +    "EventCode": "0x253",
+> +    "EventName": "L1_PIPE1_VAL_IU_TAG_ADRS_PFE",
+> +    "BriefDescription": "This event counts requests in L1D cache pipeline#1 that its pfe bit of tagged address is 1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts completed requests in L1D cache pipeline#0.",
+> +    "EventCode": "0x260",
+> +    "EventName": "L1_PIPE0_COMP",
+> +    "BriefDescription": "This event counts completed requests in L1D cache pipeline#0."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts completed requests in L1D cache pipeline#1.",
+> +    "EventCode": "0x261",
+> +    "EventName": "L1_PIPE1_COMP",
+> +    "BriefDescription": "This event counts completed requests in L1D cache pipeline#1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts completed requests in L1I cache pipeline.",
+> +    "EventCode": "0x268",
+> +    "EventName": "L1I_PIPE_COMP",
+> +    "BriefDescription": "This event counts completed requests in L1I cache pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of L1I cache pipeline.",
+> +    "EventCode": "0x269",
+> +    "EventName": "L1I_PIPE_VAL",
+> +    "BriefDescription": "This event counts valid cycles of L1I cache pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts aborted requests in L1D pipelines that due to store-load interlock.",
+> +    "EventCode": "0x274",
+> +    "EventName": "L1_PIPE_ABORT_STLD_INTLK",
+> +    "BriefDescription": "This event counts aborted requests in L1D pipelines that due to store-load interlock."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts requests in L1D cache pipeline#0 that its sector cache ID is not 0.",
+> +    "EventCode": "0x2A0",
+> +    "EventName": "L1_PIPE0_VAL_IU_NOT_SEC0",
+> +    "BriefDescription": "This event counts requests in L1D cache pipeline#0 that its sector cache ID is not 0."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts requests in L1D cache pipeline#1 that its sector cache ID is not 0.",
+> +    "EventCode": "0x2A1",
+> +    "EventName": "L1_PIPE1_VAL_IU_NOT_SEC0",
+> +    "BriefDescription": "This event counts requests in L1D cache pipeline#1 that its sector cache ID is not 0."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the number of times where 2 elements of the gather instructions became 2 flows because 2 elements could not be combined.",
+> +    "EventCode": "0x2B0",
+> +    "EventName": "L1_PIPE_COMP_GATHER_2FLOW",
+> +    "BriefDescription": "This event counts the number of times where 2 elements of the gather instructions became 2 flows because 2 elements could not be combined."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the number of times where 2 elements of the gather instructions became 1 flow because 2 elements could be combined.",
+> +    "EventCode": "0x2B1",
+> +    "EventName": "L1_PIPE_COMP_GATHER_1FLOW",
+> +    "BriefDescription": "This event counts the number of times where 2 elements of the gather instructions became 1 flow because 2 elements could be combined."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the number of times where 2 elements of the gather instructions became 0 flow because both predicate values are 0.",
+> +    "EventCode": "0x2B2",
+> +    "EventName": "L1_PIPE_COMP_GATHER_0FLOW",
+> +    "BriefDescription": "This event counts the number of times where 2 elements of the gather instructions became 0 flow because both predicate values are 0."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the number of flows of the scatter instructions.",
+> +    "EventCode": "0x2B3",
+> +    "EventName": "L1_PIPE_COMP_SCATTER_1FLOW",
+> +    "BriefDescription": "This event counts the number of flows of the scatter instructions."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the number of 1's in the predicate bits of request in L1D cache pipeline#0, where it is corrected so that it becomes 16 when all bits are 1.",
+> +    "EventCode": "0x2B8",
+> +    "EventName": "L1_PIPE0_COMP_PRD_CNT",
+> +    "BriefDescription": "This event counts the number of 1's in the predicate bits of request in L1D cache pipeline#0, where it is corrected so that it becomes 16 when all bits are 1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts the number of 1's in the predicate bits of request in L1D cache pipeline#1, where it is corrected so that it becomes 16 when all bits are 1.",
+> +    "EventCode": "0x2B9",
+> +    "EventName": "L1_PIPE1_COMP_PRD_CNT",
+> +    "BriefDescription": "This event counts the number of 1's in the predicate bits of request in L1D cache pipeline#1, where it is corrected so that it becomes 16 when all bits are 1."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts valid cycles of L2 cache pipeline.",
+> +    "EventCode": "0x330",
+> +    "EventName": "L2_PIPE_VAL",
+> +    "BriefDescription": "This event counts valid cycles of L2 cache pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts completed requests in L2 cache pipeline.",
+> +    "EventCode": "0x350",
+> +    "EventName": "L2_PIPE_COMP_ALL",
+> +    "BriefDescription": "This event counts completed requests in L2 cache pipeline."
+> +  },
+> +  {
+> +    "PublicDescription": "This event counts operations where software or hardware prefetch hits an L2 cache refill buffer allocated by demand access.",
+> +    "EventCode": "0x370",
+> +    "EventName": "L2_PIPE_COMP_PF_L2MIB_MCH",
+> +    "BriefDescription": "This event counts operations where software or hardware prefetch hits an L2 cache refill buffer allocated by demand access."
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
+> new file mode 100644
+> index 000000000000..dc1b95e42c32
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
+> @@ -0,0 +1,110 @@
+> +[
+> +  {
+> +    "ArchStdEvent": "SIMD_INST_RETIRED"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_INST_RETIRED"
+> +  },
+> +  {
+> +    "ArchStdEvent": "UOP_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_MATH_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_FMA_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_RECPE_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_CVT_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "ASE_SVE_INT_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_PRED_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_MOVPRFX_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_MOVPRFX_U_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "ASE_SVE_LD_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "ASE_SVE_ST_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "PRF_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "BASE_LD_REG_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "BASE_ST_REG_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_LDR_REG_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_STR_REG_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_LDR_PREG_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_STR_PREG_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_PRF_CONTIG_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "ASE_SVE_LD_MULTI_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "ASE_SVE_ST_MULTI_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_LD_GATHER_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_ST_SCATTER_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_PRF_GATHER_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "SVE_LDFF_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_SCALE_OPS_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_FIXED_OPS_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_HP_SCALE_OPS_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_HP_FIXED_OPS_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_SP_SCALE_OPS_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_SP_FIXED_OPS_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_DP_SCALE_OPS_SPEC"
+> +  },
+> +  {
+> +    "ArchStdEvent": "FP_DP_FIXED_OPS_SPEC"
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/arm64/mapfile.csv b/tools/perf/pmu-events/arch/arm64/mapfile.csv
+> index 0d609149b82a..c43591d831b8 100644
+> --- a/tools/perf/pmu-events/arch/arm64/mapfile.csv
+> +++ b/tools/perf/pmu-events/arch/arm64/mapfile.csv
+> @@ -20,5 +20,6 @@
+>  0x00000000410fd0c0,v1,arm/cortex-a76-n1,core
+>  0x00000000420f5160,v1,cavium/thunderx2,core
+>  0x00000000430f0af0,v1,cavium/thunderx2,core
+> +0x00000000460f0010,v1,fujitsu/a64fx,core
+>  0x00000000480fd010,v1,hisilicon/hip08,core
+>  0x00000000500f0000,v1,ampere/emag,core
+> -- 
+> 2.25.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> 
