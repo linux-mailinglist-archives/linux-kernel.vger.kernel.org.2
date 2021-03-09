@@ -2,204 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E612332CF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D747D332CF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhCIRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:11:58 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:38104 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbhCIRLn (ORCPT
+        id S231508AbhCIRMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:12:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231248AbhCIRL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:11:43 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 129H5Eot042438;
-        Tue, 9 Mar 2021 17:11:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=Z2I636NOf6k5ECxbObixp906Gp9FvF1jjNJ2XhzpjiA=;
- b=wE51kG9TBYH4iOIHv97rI5WB27uIvfOaVHb8DfIhCP3qXWFITX43ZK9DSmrvSmufhqrk
- nh249ZA0wDrg+LctbrL5jPIsxvB0h8Q7ApXf6SZK/fkahTSPpkurc6HMjq4z10WYV/Nh
- GJjT8U5MgMS78PX3vLLvpg2MCVkEtAR6xhts3XKbC8fTf22I10q0akUEg7n1lcrRzLu7
- S1SoFNSO0p4lqNL6zp7YOkYGpBM4EABc5IseA0noeMLOj6h1L+PysT+oSp/NRJwAI0Wg
- sSdxaBnxXSi6DdciG9bsP4kXkinaY43xgkapdsAGOoXG8Ayg7VZEsTV3rMGiBWRaUCUW nQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 3742cn83rp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Mar 2021 17:11:19 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 129H5WWS118416;
-        Tue, 9 Mar 2021 17:11:19 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-        by aserp3020.oracle.com with ESMTP id 374kmyrfdh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Mar 2021 17:11:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D7IP0HmVN1hMCtsmiUxdSEOYc68066XvIWXgiQKbRzIe+QZcMFZTyiEj4pb7RoZRdFoWYrkXYLOUgNzg9aDC8XBUWfMkSZ5cMy17WDhIf7mG1SaZQFZ5jm0qLrN8P+1sEHcsBldp2UDgP7orGAMad0J2hiCf2e+1IiJuMREp6QOO7SxpLyacXnkGkWRfMquP8FrqTPl4XMXKanQVXx3CLrVq5xfDCEhXJjseIufqRO5wskeXhUkVP6BhMJWiFLgqTQUuu4La/M5kyBFYHH6msBGYElALtDWNVmsV/JQZtiYl18FibNv/TozkGs34DjHearX1OSSzrenxPPOayO+e8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z2I636NOf6k5ECxbObixp906Gp9FvF1jjNJ2XhzpjiA=;
- b=dHzbb77aNG1Y5E0zA6qBeJx66Fwfbor0Qj1wmpmNrKXepKQJTHCp7JCLvaGHJ6ilBs4LFCU3/vCBEdIKcW+1acSu9dDUAyn1VxzxhglrI1sg+QLtRS3ccxj2xQ/Mu21nhJlDgU5uVgJ9V+8AyZYGEHY2mIM11XUJhd31jBQlb4fMSRCJxSkmJywuucG9DiuqzT7q0jd+fAT5tOeNoBsipUMP530O2TyswPRxFTY7KmptY3X2SP5S6zzMvW0L/Lj/tXXzJI3kn0be+nv/ce2gcAYZSI6KbXIzEo3RLL15ODp7mBcULAQCLGqhOoSktTnRRK4xV0DFJgCwmSLldu7uTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 9 Mar 2021 12:11:59 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A73DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:11:59 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id o1so10729710qta.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:11:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z2I636NOf6k5ECxbObixp906Gp9FvF1jjNJ2XhzpjiA=;
- b=pb5y/eSBg1A7vtyf8hqOaAApSWXAApzXkZnjcUzyleMfMe5DJ8irIDzOmbcg2BU1E6/jFs/Qs2yBKHBUxjJECTmefLAB+LDVFDJc7FKJuaL/Rt5mVY75IH85zmgbfRXPyFJpIVVgpsbygHEAIvRBblUU+jHuUqj2Hjzxh0L27Ik=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BY5PR10MB3971.namprd10.prod.outlook.com (2603:10b6:a03:1f6::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23; Tue, 9 Mar
- 2021 17:11:13 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee%7]) with mapi id 15.20.3912.029; Tue, 9 Mar 2021
- 17:11:13 +0000
-Subject: Re: [RFC PATCH 0/3] hugetlb: add demote/split page functionality
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
-        Zi Yan <ziy@nvidia.com>, David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210309001855.142453-1-mike.kravetz@oracle.com>
- <29cb78c5-4fca-0f0a-c603-0c75f9f50d05@redhat.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <ebb19eb5-ae9e-22f1-4e19-e5fce32c695c@oracle.com>
-Date:   Tue, 9 Mar 2021 09:11:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <29cb78c5-4fca-0f0a-c603-0c75f9f50d05@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MWHPR18CA0055.namprd18.prod.outlook.com
- (2603:10b6:300:39::17) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KwGtnz1AD/0q7YuUdh1xulZHOiAj/WnKCHjCQomSHvc=;
+        b=tLEBsAmNnjgzVhY0oxay44sVNnLiLyTAPDPmVhAX3I4HJkk5IJqSHFSoHIxsYr1al6
+         tJqMIDSIs/CagZ0l4Pm9iArBET4dxejsjH7G3eiKhacUBtq+V+9I8n2c71I5wMSsowqG
+         aAVyTJ8WWSIU7BWn5npyeCbz3vdgD8UNUJ77Eb9dpRIGF/wn85UhHtlJsj/T4EqhBnMj
+         jWOFhGTtE4PlXYz3PPGt8yxol4C1/b59DmooGooSO9hFoCTTsSLDWG5jFdfNbXjABHkS
+         e7jzzn7LLhH7mTmocqZnvbXNG/fUPEz+C24JnEpacBbGBHWcIdYQjlvd1KP+bplxuklj
+         6O7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KwGtnz1AD/0q7YuUdh1xulZHOiAj/WnKCHjCQomSHvc=;
+        b=WM+Gfo2DrOv9gBW40nDQwsPbhYL/0ly51XALl/4tZJjOxGxkZleGna2gZEtt/nk9PA
+         fKypGCBfA5vKj5NsjErlVXAfDXpMv8efuvU9Br8AL1isbFxSZNiq8tbyMu/PqyEaQX57
+         NQejtTb0Ts9gH38Ftjr2PjxHyvWs0I75WuAY4e4N+jmc8JaUHsZbTWszZ6Atb/fBsG4B
+         Ja1xW3FmXYnX2VjOtClRkUyze4lAbOMqxCr09OxI4qMJJRSGb3WKr8YvebSJdGpYq8ba
+         lnSMdFrZ+2l5fEbvraRqsG8XNUAzu8WJ4t43E11RyOEJZRQ72R1Qo+tTydo+Q7UUcHav
+         jCPQ==
+X-Gm-Message-State: AOAM5320Yorkiioe58EdIVAGPoAneSpRS3r02lqZr78h7B2QCk2jADAF
+        4G0BR3eKKxPoj4kDyCY03zYEmbV63A6BIIkmXRvoQSqYwNQWrQ==
+X-Google-Smtp-Source: ABdhPJz9DrS2jcaLWcp6f1ZOZEs5IQzb5sKGPo5b8Wk9TUHxJNGz70X9hQL8jHUcVDeQpHrHs3hEwQco0AE2fbACG/A=
+X-Received: by 2002:ac8:5908:: with SMTP id 8mr25939727qty.66.1615309917967;
+ Tue, 09 Mar 2021 09:11:57 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MWHPR18CA0055.namprd18.prod.outlook.com (2603:10b6:300:39::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 17:11:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 06792f24-d64e-4350-8b37-08d8e31e57e6
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3971:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB39711F69D08D12449A54C439E2929@BY5PR10MB3971.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 92hJv/8spAwAhMPKa/8tt9bkvYs81bcx1EiktUsxNkFjrAXVA6rPyjIbr/aLJkFyNKvSH7UJCEAmNm95RWBInw7M+/LltA0eCzzE/x4u+CvR+IQzH0voVoI22nrl7GIUMBvAMquxp7eFJn7FOe/nmheDWedvEK+wjC3JpvKiUvZc+G/qfUww0Cggyz6DseA3mlKdLEjezkh7Rno84j7DZQwfB/Gaj8o22PmI8J7a17LXK4rMqUbprdhWj21g5Lb/JsHWvBQCkuaaT4gKSkTVk7FV7lMQdeKn+xDfdp6UP8v5y2LLmZnJfkfSyhIjzKDajLMWNTfzVHZRInKE+6nOyg/p8KR1F95AMFmwavPnbMZUbgp4omDDQRhpu6bgN8bO9Bh+scoCGutamNBkt88lc3WXHdeqt7VDHgLPzmRjHMLgzkUXcC5uV+h8PU6a0jwXaOCUUyRulyrCSZujIQjBzh1uUaRYN5D+7k9TT4dEPULHMxZGVoIJ3EMTYfarTjcbaTb7JButEurNHSr0LEn2x6HixmLaAGr+zuM8wM89y5ZFFSNk1YBra0AkyF/3mn4/5PRDMsfcCHprp1+2WMVCh6ZX28u24fOfpIpCWRew/7Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(376002)(39860400002)(396003)(8936002)(86362001)(44832011)(66476007)(36756003)(16526019)(66946007)(66556008)(8676002)(31696002)(478600001)(52116002)(2906002)(53546011)(316002)(54906003)(31686004)(16576012)(83380400001)(956004)(6486002)(26005)(2616005)(5660300002)(186003)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Z3hNc2lIRTlCZ1RwdnIrayt4UFFvQk5XWUNkeEprOFZQK0ZkSkJkcnFpc1d6?=
- =?utf-8?B?VFAvd093NG1tcUpqZUVKWUk0SXhuZWdoVHkzaVlUSDN0VnQ0TGZiYURtc3E0?=
- =?utf-8?B?WDJnWU9XSFFWUDlZMWIyUjlWazlJYU0vWWxTOGR0MkFpcWRMQWovbHJEaFJZ?=
- =?utf-8?B?eFZxalluYnlFalFuU3U0aUp2UTVZenB4K1IvU2k3MDlCUElOOXdEakJwR0p5?=
- =?utf-8?B?bzBpUG1MTThyNGhKQmRQQ1BEcjdOT1dKSUw1dTdiR2xidDE0Z0ROaWs1L2Ew?=
- =?utf-8?B?WHJncEw3SE5CT3BRT1hkSU9KYTdsTU9HN3FzTDI4cGJSY3gyekZlQ1dzMXdT?=
- =?utf-8?B?UWR6VnB4UysvNzVyL3BrVEcvM0E0Z2grRElSY3lUVksxMWdvQ1JiMFFuR3FZ?=
- =?utf-8?B?aDZENzVacS95YXVYR3UrSHpiYW1kazF1RWdPK2FCbVZ6dkJtNWtDR21DcHlM?=
- =?utf-8?B?dG9xM0ZmNmdQV0ZPb0pIUUJFVHFzbFhsR2NWRFR4SCtaTmZoRGlHTG1aYkNw?=
- =?utf-8?B?cmlqSmRrb3ZtVDQvdnJqRnhuU3NKckJPbDlockdvVmhVTk5mTnRROURPWDlr?=
- =?utf-8?B?ZEQ2MmFpSXVFV0JlSGZNSi8zaWNGWjFlNnM1TVdic1NwM3BkTGt2dXE4bTNU?=
- =?utf-8?B?MXpwNlpKa3ZCTWFEcVB6bUtkZHpvalNaWjVaQVpjTGlJOXlsM3djOVR2NDFy?=
- =?utf-8?B?MlFUeUQwTmtCcGtacFB6YjBKbkY3Q0tTaDFITkJINTZLVzlHL1M5RzNoOGJN?=
- =?utf-8?B?NFNpaXhuOFEzWjhBY01FUWR2dUJZVzdmditSdldiajFpRGdYMUdFanpzcG12?=
- =?utf-8?B?dzZHc2JWTzJDVVhqMlM4aEYyMXEvKzNFcnZTU1lwblAzQVlVVTY5U0Y1L1pV?=
- =?utf-8?B?b2RkR3BpS3V2ZmFtRmRkYVZpNGoxd2lsZ01HOSttZmhwVnlSVFRJeWxoalJ0?=
- =?utf-8?B?dEpqNTdVdDNDb2Y0M0N1TWhQVFpFV0R6eTNuRy9TaXEwZnNyTjdXcWNFZ21q?=
- =?utf-8?B?WTBXaElIY25qZzR0c3ptOU05bm1uTmxadDk3ZFBEL2l4bjB1Q3JsZlIrNzZY?=
- =?utf-8?B?dnNUcVcvdk9aUnVJWDBWWjJpRHVSL2JXZXBibzVyM2g3bUs1OXJ5RkhqckR0?=
- =?utf-8?B?bWx6TnlMeWZPYXZRQnRNT01VTStWSjBkOHNPdFNRS3FRNjVaL3VYMm4raG5v?=
- =?utf-8?B?Y1dsNHJVQ2xONHNmYy9aUTdEd1pUcmlBMzY1anc4QjZMYWFIbVl0RWNpait5?=
- =?utf-8?B?YzlUYnljQkZsSC9yNDJBQkFtUkpKM25kR0gwQTAvNjdhOXk4WXNxQk5JZ2Zl?=
- =?utf-8?B?YVUyYUxDV2pybm5ON01TajRydFAvbkNFam83emdRRHpySWR6R3lnNUFsV2VW?=
- =?utf-8?B?cmY2RUZRYmllVjQyS3pZU1Q2RWZJdmxGamd1OEg2ZjZJT3lTU1h6N1l3MnFa?=
- =?utf-8?B?S2FOQzVVVWlLdFI1cG5SZ2xtZW1McTYyWEdNc2IzaEluQzJuaUczUitNQUNV?=
- =?utf-8?B?Skt2N2hReXNxQUV5eXkwd2RzWUxtWTBmcHA4eXJOcStpRXZHYnJwdGNKQUhx?=
- =?utf-8?B?b0U5aU40VXZneWFSbkd0cU14b0tkSFdNcm5iYmI4bWE4TEFkTklTVjZJZDJ0?=
- =?utf-8?B?dnZ6dlJTYWY0L05XS1AzV05MUE1DSEtSZXh1aWd6S1FzWkpqQnJwRlhMbTEv?=
- =?utf-8?B?ODJjUWJYdEEvR1VlcGwzSElURTU3YW40dFJuS0FJQXJyNWhzNzJJVHE1ZnBU?=
- =?utf-8?Q?WydS22+XJ5Don0v5eKzQpVL7xb46Sipt6OKlOCK?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 06792f24-d64e-4350-8b37-08d8e31e57e6
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 17:11:13.7868
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kCqbPyqayLBqobXFot9omxf39BqJygrC63wJzgcWVzzhm+A62v8XllSE0XJ97shU/SgngJYY6nZGFiGmE3Tk2w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3971
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9918 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103090083
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9918 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- clxscore=1015 phishscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 mlxscore=0 impostorscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103090083
+References: <CACT4Y+bNzJtwwrHsOa7Ftnaj7B+TPd35=QRLKDE-UuaPJoaDkw@mail.gmail.com>
+ <mhng-4c96338e-14e4-4583-8b9d-a99aa6c03eaf@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-4c96338e-14e4-4583-8b9d-a99aa6c03eaf@palmerdabbelt-glaptop>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 9 Mar 2021 18:11:46 +0100
+Message-ID: <CACT4Y+Z+8hUWaBp7h5YGiGFBJ2Lm3Py_tG=CrdKuUfJfEdPBCw@mail.gmail.com>
+Subject: Re: riscv+KASAN does not boot
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Alex Ghiti <alex@ghiti.fr>, Albert Ou <aou@eecs.berkeley.edu>,
+        Bjorn Topel <bjorn.topel@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
+        syzkaller <syzkaller@googlegroups.com>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 1:01 AM, David Hildenbrand wrote:
-> On 09.03.21 01:18, Mike Kravetz wrote:
->> To address these issues, introduce the concept of hugetlb page demotion.
->> Demotion provides a means of 'in place' splitting a hugetlb page to
->> pages of a smaller size.  For example, on x86 one 1G page can be
->> demoted to 512 2M pages.  Page demotion is controlled via sysfs files.
->> - demote_size    Read only target page size for demotion
->> - demote    Writable number of hugetlb pages to be demoted
->>
->> Only hugetlb pages which are free at the time of the request can be demoted.
->> Demotion does not add to the complexity surplus pages.  Demotion also honors
->> reserved huge pages.  Therefore, when a value is written to the sysfs demote
->> file that value is only the maximum number of pages which will be demoted.
->> It is possible fewer will actually be demoted.
->>
->> If demote_size is PAGESIZE, demote will simply free pages to the buddy
->> allocator.
-> 
-> With the vmemmap optimizations you will have to rework the vmemmap layout. How is that handled? Couldn't it happen that you are half-way through splitting a PUD into PMDs when you realize that you cannot allocate vmemmap pages for properly handling the remaining PMDs? What would happen then?
-> 
-> Or are you planning on making both features mutually exclusive?
-> 
-> Of course, one approach would be first completely restoring the vmemmap for the whole PUD (allocating more pages than necessary in the end) and then freeing individual pages again when optimizing the layout per PMD.
-> 
+On Fri, Feb 19, 2021 at 11:26 PM 'Palmer Dabbelt' via syzkaller
+<syzkaller@googlegroups.com> wrote:
+>
+> On Fri, 19 Feb 2021 10:53:43 PST (-0800), dvyukov@google.com wrote:
+> > On Fri, Feb 19, 2021 at 6:01 PM Alex Ghiti <alex@ghiti.fr> wrote:
+> >>
+> >> Hi Dmitry,
+> >>
+> >> Le 2/18/21 =C3=A0 6:36 AM, Dmitry Vyukov a =C3=A9crit :
+> >> > On Thu, Feb 18, 2021 at 8:54 AM Alex Ghiti <alex@ghiti.fr> wrote:
+> >> >>
+> >> >> Hi Dmitry,
+> >> >>
+> >> >>> On Wed, Feb 17, 2021 at 5:36 PM Alex Ghiti <alex@ghiti.fr> wrote:
+> >> >>>>
+> >> >>>> Le 2/16/21 =C3=A0 11:42 PM, Dmitry Vyukov a =C3=A9crit :
+> >> >>>>> On Tue, Feb 16, 2021 at 9:42 PM Alex Ghiti <alex@ghiti.fr> wrote=
+:
+> >> >>>>>>
+> >> >>>>>> Hi Dmitry,
+> >> >>>>>>
+> >> >>>>>> Le 2/16/21 =C3=A0 6:25 AM, Dmitry Vyukov a =C3=A9crit :
+> >> >>>>>>> On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google=
+.com> wrote:
+> >> >>>>>>>>
+> >> >>>>>>>> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google=
+.com> wrote:
+> >> >>>>>>>>>> I was fixing KASAN support for my sv48 patchset so I took a=
+ look at your
+> >> >>>>>>>>>> issue: I built a kernel on top of the branch riscv/fixes us=
+ing
+> >> >>>>>>>>>> https://github.com/google/syzkaller/blob/269d24e857a757d09a=
+898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
+> >> >>>>>>>>>> and Buildroot 2020.11. I have the warnings regarding the us=
+e of
+> >> >>>>>>>>>> __virt_to_phys on wrong addresses (but that's normal since =
+this function
+> >> >>>>>>>>>> is used in virt_addr_valid) but not the segfaults you descr=
+ibe.
+> >> >>>>>>>>>
+> >> >>>>>>>>> Hi Alex,
+> >> >>>>>>>>>
+> >> >>>>>>>>> Let me try to rebuild buildroot image. Maybe there was somet=
+hing wrong
+> >> >>>>>>>>> with my build, though, I did 'make clean' before doing. But =
+at the
+> >> >>>>>>>>> same time it worked back in June...
+> >> >>>>>>>>>
+> >> >>>>>>>>> Re WARNINGs, they indicate kernel bugs. I am working on sett=
+ing up a
+> >> >>>>>>>>> syzbot instance on riscv. If there a WARNING during boot the=
+n the
+> >> >>>>>>>>> kernel will be marked as broken. No further testing will hap=
+pen.
+> >> >>>>>>>>> Is it a mis-use of WARN_ON? If so, could anybody please remo=
+ve it or
+> >> >>>>>>>>> replace it with pr_err.
+> >> >>>>>>>>
+> >> >>>>>>>>
+> >> >>>>>>>> Hi,
+> >> >>>>>>>>
+> >> >>>>>>>> I've localized one issue with riscv/KASAN:
+> >> >>>>>>>> KASAN breaks VDSO and that's I think the root cause of weird =
+faults I
+> >> >>>>>>>> saw earlier. The following patch fixes it.
+> >> >>>>>>>> Could somebody please upstream this fix? I don't know how to =
+add/run
+> >> >>>>>>>> tests for this.
+> >> >>>>>>>> Thanks
+> >> >>>>>>>>
+> >> >>>>>>>> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/ker=
+nel/vdso/Makefile
+> >> >>>>>>>> index 0cfd6da784f84..cf3a383c1799d 100644
+> >> >>>>>>>> --- a/arch/riscv/kernel/vdso/Makefile
+> >> >>>>>>>> +++ b/arch/riscv/kernel/vdso/Makefile
+> >> >>>>>>>> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o =3D $(CC_FLAG=
+S_FTRACE) -Os
+> >> >>>>>>>>      # Disable gcov profiling for VDSO code
+> >> >>>>>>>>      GCOV_PROFILE :=3D n
+> >> >>>>>>>>      KCOV_INSTRUMENT :=3D n
+> >> >>>>>>>> +KASAN_SANITIZE :=3D n
+> >> >>>>>>>>
+> >> >>>>>>>>      # Force dependency
+> >> >>>>>>>>      $(obj)/vdso.o: $(obj)/vdso.so
+> >> >>>>>>
+> >> >>>>>> What's weird is that I don't have any issue without this patch =
+with the
+> >> >>>>>> following config whereas it indeed seems required for KASAN. Bu=
+t when
+> >> >>>>>> looking at the segfaults you got earlier, the segfault address =
+is 0xbb0
+> >> >>>>>> and the cause is an instruction page fault: this address is the=
+ PLT base
+> >> >>>>>> address in vdso.so and an instruction page fault would mean tha=
+t someone
+> >> >>>>>> tried to jump at this address, which is weird. At first sight, =
+that does
+> >> >>>>>> not seem related to your patch above, but clearly I may be wron=
+g.
+> >> >>>>>>
+> >> >>>>>> Tobias, did you observe the same segfaults as Dmitry ?
+> >> >>>>>
+> >> >>>>>
+> >> >>>>> I noticed that not all buildroot images use VDSO, it seems to be
+> >> >>>>> dependent on libc settings (at least I think I changed it in the
+> >> >>>>> past).
+> >> >>>>
+> >> >>>> Ok, I used uClibc but then when using glibc, I have the same segf=
+aults,
+> >> >>>> only when KASAN is enabled. And your patch fixes the problem. I w=
+ill try
+> >> >>>> to take a look later to better understand the problem.
+> >> >>>>
+> >> >>>>> I also booted an image completely successfully including dhcpd/s=
+shd
+> >> >>>>> start, but then my executable crashed in clock_gettime. The exec=
+utable
+> >> >>>>> was build on linux/amd64 host with "riscv64-linux-gnu-gcc -stati=
+c"
+> >> >>>>> (10.2.1).
+> >> >>>>>
+> >> >>>>>
+> >> >>>>>>> Second issue I am seeing seems to be related to text segment s=
+ize.
+> >> >>>>>>> I check out v5.11 and use this config:
+> >> >>>>>>> https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc91=
+78
+> >> >>>>>>
+> >> >>>>>> This config gave my laptop a hard time ! Finally I was able to =
+boot
+> >> >>>>>> correctly to userspace, but I realized I used my sv48 branch...=
+Either I
+> >> >>>>>> fixed your issue along the way or I can't reproduce it, I'll gi=
+ve it a
+> >> >>>>>> try tomorrow.
+> >> >>>>>
+> >> >>>>> Where is your branch? I could also test in my setup on your bran=
+ch.
+> >> >>>>>
+> >> >>>>
+> >> >>>> You can find my branch int/alex/riscv_kernel_end_of_address_space=
+_v2
+> >> >>>> here: https://github.com/AlexGhiti/riscv-linux.git
+> >> >>>
+> >> >>> No, it does not work for me.
+> >> >>>
+> >> >>> Source is on b61ab6c98de021398cd7734ea5fc3655e51e70f2 (HEAD,
+> >> >>> int/alex/riscv_kernel_end_of_address_space_v2)
+> >> >>> Config is https://gist.githubusercontent.com/dvyukov/6af25474d4554=
+37577a84213b0cc9178/raw/55b116522c14a8a98a7626d76df740d54f648ce5/gistfile1.=
+txt
+> >> >>>
+> >> >>> riscv64-linux-gnu-gcc -v
+> >> >>> gcc version 10.2.1 20210110 (Debian 10.2.1-6+build1)
+> >> >>>
+> >> >>> qemu-system-riscv64 --version
+> >> >>> QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
+> >> >>>
+> >> >>> qemu-system-riscv64 \
+> >> >>> -machine virt -smp 2 -m 2G \
+> >> >>> -device virtio-blk-device,drive=3Dhd0 \
+> >> >>> -drive file=3Dimage-riscv64,if=3Dnone,format=3Draw,id=3Dhd0 \
+> >> >>> -kernel arch/riscv/boot/Image \
+> >> >>> -nographic \
+> >> >>> -device virtio-rng-device,rng=3Drng0 -object
+> >> >>> rng-random,filename=3D/dev/urandom,id=3Drng0 \
+> >> >>> -netdev user,id=3Dnet0,host=3D10.0.2.10,hostfwd=3Dtcp::10022-:22 -=
+device
+> >> >>> virtio-net-device,netdev=3Dnet0 \
+> >> >>> -append "root=3D/dev/vda earlyprintk=3Dserial console=3DttyS0 oops=
+=3Dpanic
+> >> >>> panic_on_warn=3D1 panic=3D86400 earlycon"
+> >> >>
+> >> >> It still works for me but I had to disable CONFIG_DEBUG_INFO_BTF (I
+> >> >> don't think that changes anything at runtime). But your above comma=
+nd
+> >> >> line does not work for me as it appears you do not load any firmwar=
+e, if
+> >> >> I add -bios images/fw_jump.elf, it works. But then I don't know whe=
+re
+> >> >> your opensbi output below comes from...
+> >> >>
+> >> >> And regarding your issue with calling clock_gettime 'directly' comp=
+ared
+> >> >> to using the syscall, I have the same consistent output from both c=
+alls.
+> >> >>
+> >> >> I have an older gcc (9.3.0) and the same qemu. I think what is miss=
+ing
+> >> >> here is your buildroot config, so that we have the exact same
+> >> >> environment: could you post your buildroot config as well ?
+> >> >
+> >> > I don't think the image is relevant because I don't even get to kern=
+el
+> >> > code. If the kernel will complain about no init later, that's fine.
+> >> > Re bios, this version of qemu already has OpenSBI bios builtin, you
+> >> > can pass -bios default, but that's, well, the default :)
+> >> > Here are more reproducible repro instructions that capture gcc and
+> >> > qemu. I think gcc version may be potentially relevant as I suspect
+> >> > code size.
+> >> >
+> >> >
+> >> > curl https://gist.githubusercontent.com/dvyukov/6af25474d455437577a8=
+4213b0cc9178/raw/55b116522c14a8a98a7626d76df740d54f648ce5/gistfile1.txt
+> >> >> $KERNEL_SRC/.config
+> >> > docker pull gcr.io/syzkaller/syzbot
+> >> > docker run -it -v $KERNEL_SRC:/kernel gcr.io/syzkaller/syzbot
+> >> > cd /kernel
+> >> > make -j72 ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu- olddefconf=
+ig
+> >> > make -j72 ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu-
+> >> > qemu-system-riscv64 -machine virt -smp 2 -m 4G -kernel
+> >> > arch/riscv/boot/Image -nographic -append "earlycon earlyprintk=3Dser=
+ial
+> >> > console=3DttyS0"
+> >> > [this does not, only OpenSBI output]
+> >> >
+> >>
+> >> Indeed the issue was code size, please find the fix below. I will send=
+ a
+> >> proper patch once I made sure the fix is the right one, but I'm pretty
+> >> confident, there's no reason to limit the mapping size to 128MB wherea=
+s
+> >> we have a whole pgdir.
+> >
+> > Great you get to the bottom of this!
+> > Riscv kernels are going to be YUGE!
+>
+> IIRC I tried that a while ago and it didn't work.  It's possible I was ju=
+st
+> running into some other bug, but I'm just build testing allyesconfig as o=
+pposed
+> to boot testing it.
+>
+> If you've got a setup that does boot I'm happy to take a patch, though.  =
+It'll
+> at least be one step forward.
 
-You are right about the need to address this issue.  Patch 3 has the
-comment:
 
-+	/*
-+	 * Note for future:
-+	 * When support for reducing vmemmap of huge pages is added, we
-+	 * will need to allocate vmemmap pages here and could fail.
-+	 */
 
-The simplest approach would be to restore the entire vmemmmap for the
-larger page and then delete for smaller pages after the split.  We could
-hook into the existing vmemmmap reduction code with just a few calls.
-This would fail to demote/split, if the allocation fails.  However, this
-is not optimal.
+OK, it's getting better.
+The next issue is called "512 bytes should be enough for everyone!" :)
+https://elixir.bootlin.com/linux/v5.12-rc2/source/include/uapi/asm-generic/=
+setup.h#L5
+Most other arches redefine it to something bigger:
+https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/s390/include/uapi/as=
+m/setup.h#L10
+even arm32 redefines it.
+I am not sure the default is even reasonable anymore. Failure mode is
+also not nice (silent truncation).
+We are trying to pass this:
 
-Ideally, the code would compute how many pages for vmemmmap are needed
-after the split, allocate those and then construct vmmemmap
-appropriately when creating the smaller pages.
+earlyprintk=3Dserial oops=3Dpanic nmi_watchdog=3Dpanic panic=3D86400
+net.ifnames=3D0 sysctl.kernel.hung_task_all_cpu_backtrace=3D1
+ima_policy=3Dtcb kvm-intel.nested=3D1 nf-conntrack-ftp.ports=3D20000
+nf-conntrack-tftp.ports=3D20000 nf-conntrack-sip.ports=3D20000
+nf-conntrack-irc.ports=3D20000 nf-conntrack-sane.ports=3D20000
+vivid.n_devs=3D16 vivid.multiplanar=3D1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2
+netrom.nr_ndevs=3D16 rose.rose_ndevs=3D16 spec_store_bypass_disable=3Dprctl
+numa=3Dfake=3D2 nopcid dummy_hcd.num=3D8 binder.debug_mask=3D0
+rcupdate.rcu_expedited=3D1 watchdog_thresh=3D165
+workqueue.watchdog_thresh=3D420 panic_on_warn=3D1
 
-I think we would want to always do the allocation of vmmemmap pages up
-front and not even start the split process if the allocation fails.  No
-sense starting something we may not be able to finish.
+The last part gets truncated and we are getting false workqueue watchdog st=
+alls.
 
-I purposely did not address that here as first I wanted to get feedback
-on the usefulness demote functionality.
--- 
-Mike Kravetz
+Could you please increase it?
