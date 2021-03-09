@@ -2,192 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECCE331D7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F8B331D8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhCIDZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 22:25:59 -0500
-Received: from mail-mw2nam10on2062.outbound.protection.outlook.com ([40.107.94.62]:24640
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229582AbhCIDZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 22:25:59 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YQBnxEQlX55WpXi/Pb/ckxfszqRqjdxajwTk5+zeigb2DxOaZ3AgCPF49je4JMNTr/ogWDNsMqnjzSnsL6tvKTD3sWk8R/yxtszrfRSklGlZqbciHQQPaHVWNdCZov1gtL+GbB8q9zgZEQKoOEl2NpbN1cSFaodaQee446QDdeMKYDY11Nh5NEWlyu89tC/8UQp97QUgQdAkWRRBCODshboZD1RHYs2w+oqiw7EsoklyGX56kigX4E2gujjjUCGFd1rIQiuaG74Mm/zQ0bKQcWd9EXy7OtMLaNuDs2n5VCoGBpM9Z0mbNj2EVKrjmfRN4VGwNKE53ZUk9s6M8vy9Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zGC7/CZYMPjhPXs6kQFuVmUy2RcOUM78tq4/cms5l50=;
- b=ZZdzvIHYXYpYDtkJJljf4Ph/n7RYnUi5FqkiioLSZXgKGZO9RxOgQE8h/DTYZ/qzNJajZpU6WoEfqpEcEVORyFmAXaovvRCo0jCal0bjEkyLlBjGGtYcxwSAKIM5ssq0nCCYZeMcTjqVOgNHYJsGWrrsnC7e8O9Y9OSVpS1SiTiQR0U3Aj+tnZVZ54UYqTXv1aI10SnHDt368qvWjHOMygzsLdcpbMW1C1pR6ObBjlAvz13/sTwnrZADWWFVZDP8OsmYNzSBksi7Jvd1PMs9yEf4+GORKwJzvbf9DJtbS3QQCkkSVYfa5m0HZPbAyvbo4GbmHwdYmVkz3aa13kKpqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zGC7/CZYMPjhPXs6kQFuVmUy2RcOUM78tq4/cms5l50=;
- b=1+qt6VFOtWvEvqp68HBKPDS9ulpKKqNXfcOuqA3geWtctJbysP+v3V/FrPmO1HXrFEBCGFr9ZYFU0GZCKY129GYN3PG0X9v0ijZ+zgUo9fqIvdOXZUvUGgAuzYd6AUHHai9OQbOqsR5VxGUHOdJNtxkYsFzqSF2DvytET0hjGnw=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20)
- by MN2PR12MB3935.namprd12.prod.outlook.com (2603:10b6:208:168::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Tue, 9 Mar
- 2021 03:25:57 +0000
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::ec8d:851e:525d:a6ab]) by BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::ec8d:851e:525d:a6ab%9]) with mapi id 15.20.3784.031; Tue, 9 Mar 2021
- 03:25:57 +0000
-From:   Felix Kuehling <Felix.Kuehling@amd.com>
-To:     arnd@kernel.org, alexander.deucher@amd.com,
-        christian.koenig@amd.com
-Cc:     arnd@arndb.de, airlied@linux.ie, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 1/1] drm/amdkfd: fix build error with AMD_IOMMU_V2=m
-Date:   Mon,  8 Mar 2021 22:23:56 -0500
-Message-Id: <20210309032356.20800-1-Felix.Kuehling@amd.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <4c692eff-9d57-278e-8da4-36bc2c293506@amd.com>
-References: <4c692eff-9d57-278e-8da4-36bc2c293506@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.55.251]
-X-ClientProxiedBy: YT2PR01CA0010.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:38::15) To BL0PR12MB4948.namprd12.prod.outlook.com
- (2603:10b6:208:1cc::20)
+        id S229790AbhCID1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 22:27:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhCID1A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 22:27:00 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A95C06174A;
+        Mon,  8 Mar 2021 19:27:00 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id kx1so123131pjb.3;
+        Mon, 08 Mar 2021 19:27:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J1V0TYEWZIitXRQ75jvS2RULmplHPPS1DJC5SvHi8W0=;
+        b=qPTdjRvtUf3eSJzHJ4bi5xS3TEytSWU7Dja5ArV1o1yum7kgUIEir0PXQPocMy+hyZ
+         3YGkicw3jQbzQkWh99YN0I5hYaXxtGNsL5bNr0a8pS1vOkSWz0H7mMpALN53gI9+esKD
+         E1iQTVt9jSxScTWyRjC9gvzgcEsNgBoBS6xQCNLt5oaTg3lzpbMd1kUtIth0QAANfdKO
+         F2jf0qTetzp9Ez4rM3KJmOiQuQD5A1VjbfT9zTKI6OrK240dck1IsNmL+l15y8xoBCz1
+         8ApUXDUPJu8sJGjKQv18pwpm0gBryfSlLFhHG4mrrabetd5l/sAzt9XvLVoIUB1h4iV4
+         ixUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J1V0TYEWZIitXRQ75jvS2RULmplHPPS1DJC5SvHi8W0=;
+        b=reHRZw5Gtuas6bBe1laycV1wEOzIfFhVWMRQQQnun8fPMpOq+rGXhARDOgIFcn63tt
+         cWIZC+z+uZJdeZM3ftgWhfRZ3Swn+1fMkyzYymzzyue+u/ay7NXLHkjExVfeuDanH0Gt
+         vl2EU0wjIgOolc7q/oEAQeCjf0pxRQNOPrRFMmIicMmpPQfXEQ1hI5x2wz0+NByHW9zB
+         0DLLoUQsEWyfpe6DkIBCpymA4IGMBzL8FU3k0Mbsj6W0NzLv+dnfj7ZmSf1FJcEjEzM9
+         vbMCFQEomHUkxCOaWY4+SMWGxMV25cwpCoLTSW/kF6dPvQDI7O3UpBbUcqt3ZNAjFRNP
+         Ykog==
+X-Gm-Message-State: AOAM5309No1EW9J/Kw4ctWEx710adGjBGGNRM2kw70KvZB80z3c+lJWd
+        Dp5r36KKdZ1BEkJulNVuXNU=
+X-Google-Smtp-Source: ABdhPJwz89YIspgNgbV1tr2uOCFLZeaEnXQO2N0psxmSbGL4RDnza1cUp79CJGrD7gWHzSYg1hveUA==
+X-Received: by 2002:a17:90b:1105:: with SMTP id gi5mr2370437pjb.26.1615260419103;
+        Mon, 08 Mar 2021 19:26:59 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id v27sm9738335pfi.89.2021.03.08.19.26.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 19:26:58 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: xiong.zhenwu@zte.com.cn
+To:     john.johansen@canonical.com
+Cc:     jmorris@namei.org, serge@hallyn.com,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
+Subject: [PATCH] security/apparmor: fix misspellings using codespell tool
+Date:   Mon,  8 Mar 2021 19:26:52 -0800
+Message-Id: <20210309032652.274356-1-xiong.zhenwu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Harpoon.amd.com (165.204.55.251) by YT2PR01CA0010.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:38::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26 via Frontend Transport; Tue, 9 Mar 2021 03:25:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 52b148f2-6c16-4146-d178-08d8e2ab0da5
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3935:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB39359725D1CF5E10C24CFB4892929@MN2PR12MB3935.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rJGT5rS0uaznne0Oaabtm732n8RGvSewUVvcoLYD3220pLHnDmbHW4pyD84LpyrSpylcJ9/sBsHBF0lqfrcc2z5QwAzNKtYeB3EjVI9H2jixNn2Ow18CZOljzFeSc2b7z3m+RlSJi+SYOO9Q5ApiDkEYpz965Ah/XHTCwZcNmB2G8aoMoDn5Z//kyeXXCTOHe9DgF9R/gDq+tYdas42QcuYH2g8KKNUl0xYxr/T/hWgiFMdyERqzwCHiYYCZBqHyYp54k/vaBvTDBSzncZNf45yXRGOvVQYajg9AgMvxuPHGSxJ9ubStUjW5SR+gI3fA/DN2emQy2uhgjrEMtc+/jM1HRVdX9a9Vcu4ex8g+7QnCx1LEcCgiykl+oL9ZDT1bFtubr6MqeYjEDyD2YLHV4nrmg1ZE/ixAcTYHLDEG/rumAgpEd2hOgXCJnZOhnmmq7rk6jYVvBsg9kHWbidPE+EE9FG23HJPZ0sAqwzhdBqknoY1+MMegxj5bDpHiw5XtMJ28jdbgZQXHsUPIloRPTA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4948.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(39860400002)(366004)(346002)(66556008)(66476007)(66946007)(6636002)(86362001)(478600001)(6486002)(186003)(26005)(316002)(7696005)(5660300002)(52116002)(4326008)(1076003)(36756003)(8676002)(956004)(2616005)(8936002)(16526019)(83380400001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?LEO2+C9n4ukR1EHOIpPwBI66yQvLWTzBZTW0xVHqQD72Ck1kLow1TiVO2hd9?=
- =?us-ascii?Q?2HADWzmxQwxD31kESQKUdqDUMP0a6rpmwy9KZrK9u9CWu1jEynVfNDUyTWMJ?=
- =?us-ascii?Q?cGsN/v0ubKbTnDPZ2fQT1r9/MqzmpW78deAarjsRX6GSGpltnPiXZdymVlOY?=
- =?us-ascii?Q?apBIkRLtIKtrolRp74kyWgU4MJzCtS07ifu+sfG4hi4mXuCt3lMX4LQbOZGt?=
- =?us-ascii?Q?9iKXHqLTpd9SOesQKUXVwzan8FmfP1/t4Zr/hdMhN0D2YO6ybwJsPy/t8Fsk?=
- =?us-ascii?Q?eFmj3u2Div5f0Q7HQxmB5TQQ/NVgoDpwQY8ncEkzDZrwdSHRZA0GD1iN3daC?=
- =?us-ascii?Q?T6ur2S9TZcY+leIJb1CYc6cM5cgmi+Bggm3SOcLra0YSnYoFiRaJpW290XEg?=
- =?us-ascii?Q?W663gkzFX2LFRzmxTx3kaxX9vPH3PQwHQJjJZ2mxKEjVT2kEtseGE20nXfee?=
- =?us-ascii?Q?d6LEmXcdEubBBmquLWD6w6nkWAONGxbjVvc/ROJaYQYp8dSsE/FpzwuGlguW?=
- =?us-ascii?Q?lxp23apVTF50QTFcPFdvurLnw/ISknIzFr9u3eT88aFB7zsy6AXCBKVv9w4S?=
- =?us-ascii?Q?6YGV3FZODwdbVG3udoRABELFO2a6rb90QDaZEIHhadup6818Gcipku7fb5+7?=
- =?us-ascii?Q?hMtFYeS9lJsF3XxFvCt9CN04IPvpRglh9NtGpQ32eYAYL9IHjh8eigouHyQb?=
- =?us-ascii?Q?5xEBcvvjrcHcRV80vA2cwQlaTlFYPux/fas+vXyHA6MA+BqSg/sU89eeNGf+?=
- =?us-ascii?Q?wprs/C9iJI9vm9G8oEUk9yRxVRDFygyhWws1kGm1X9uQPyPLyDXgR2ktpGzi?=
- =?us-ascii?Q?ZoBBNpyr+2eliMDbUAIN+stjvUoD7G+jJignIncRBn/6Sz+LAaR8zhFdJlrh?=
- =?us-ascii?Q?YlBfjQX50b76d18arhNhjEqXy6+6CXZtQUPaN06DzuMXEMPp1ACDDyuC/i4Z?=
- =?us-ascii?Q?ujGJSP54TFKFvgqvZaTFqvAqpBZrIx1fpEVJWLQTGMZUYQryZuxetvryy+2J?=
- =?us-ascii?Q?NDXcyIzI7SUAWUeFa61U9Et6DOR8s0HV5F20iQ/0raBisfLXYVQ9ymkuur2l?=
- =?us-ascii?Q?oaqVtPXG/AWmqygrwJuwAyAj/MRoIhCwPZ2Wb+LWR54aE3ryHtYFzy8iaAvr?=
- =?us-ascii?Q?zuk4yAKGqDPQBtAJM4Vrf7xJfxJF8bpSdMIH1GMnR0awtFLgC1/fBlgypCt4?=
- =?us-ascii?Q?s65gc01x8f/789C3BpjsenomHdaamh+C5PJnDNR7218dYcvjLbcr0btz8a1W?=
- =?us-ascii?Q?uBb6FfcZ8MVlggK6HyxcfqK6baV66GTsR6vd4F+0kQzG8DrzKLi6BvaE07o+?=
- =?us-ascii?Q?u+NpKBJ6YDbK2mfkOe7ouU57?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52b148f2-6c16-4146-d178-08d8e2ab0da5
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4948.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 03:25:57.0813
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rbqdjy0fN8jsjC2snjomcPvqoPdoUSwbNsvrTCj5ATSsqzTq9ruEvEBteCZdVVps983VwOftuxCIldzanxmR1Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3935
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using 'imply AMD_IOMMU_V2' does not guarantee that the driver can link
-against the exported functions. If the GPU driver is built-in but the
-IOMMU driver is a loadable module, the kfd_iommu.c file is indeed
-built but does not work:
+From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
 
-x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_bind_process_to_device':
-kfd_iommu.c:(.text+0x516): undefined reference to `amd_iommu_bind_pasid'
-x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_unbind_process':
-kfd_iommu.c:(.text+0x691): undefined reference to `amd_iommu_unbind_pasid'
-x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_suspend':
-kfd_iommu.c:(.text+0x966): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0x97f): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0x9a4): undefined reference to `amd_iommu_free_device'
-x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_resume':
-kfd_iommu.c:(.text+0xa9a): undefined reference to `amd_iommu_init_device'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xadc): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xaff): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xc72): undefined reference to `amd_iommu_bind_pasid'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xe08): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xe26): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xe42): undefined reference to `amd_iommu_free_device'
+A typo is found out by codespell tool in 204th line of apparmorfs.c:
 
-Use IS_REACHABLE to only build IOMMU-V2 support if the amd_iommu symbols
-are reachable by the amdkfd driver. Output a warning if they are not,
-because that may not be what the user was expecting.
+$ codespell ./security/apparmor/
+./apparmorfs.c:204: seting  ==> setting
 
-Fixes: 64d1c3a43a6f ("drm/amdkfd: Centralize IOMMUv2 code and make it conditional")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Fix a typo found by codespell.
+
+Signed-off-by: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_iommu.c | 10 ++++++++++
- drivers/gpu/drm/amd/amdkfd/kfd_iommu.h |  6 ++++--
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ security/apparmor/apparmorfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
-index 66bbca61e3ef..7199eb833f66 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
-@@ -20,6 +20,10 @@
-  * OTHER DEALINGS IN THE SOFTWARE.
-  */
- 
-+#include <linux/kconfig.h>
-+
-+#if IS_REACHABLE(CONFIG_AMD_IOMMU_V2)
-+
- #include <linux/printk.h>
- #include <linux/device.h>
- #include <linux/slab.h>
-@@ -355,3 +359,9 @@ int kfd_iommu_add_perf_counters(struct kfd_topology_device *kdev)
- 
- 	return 0;
- }
-+
-+#else
-+
-+#warning "Moldular IOMMU-V2 is not usable by built-in KFD"
-+
-+#endif
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
-index dd23d9fdf6a8..b25365fc2c4e 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
-@@ -23,7 +23,9 @@
- #ifndef __KFD_IOMMU_H__
- #define __KFD_IOMMU_H__
- 
--#if defined(CONFIG_AMD_IOMMU_V2_MODULE) || defined(CONFIG_AMD_IOMMU_V2)
-+#include <linux/kconfig.h>
-+
-+#if IS_REACHABLE(CONFIG_AMD_IOMMU_V2)
- 
- #define KFD_SUPPORT_IOMMU_V2
- 
-@@ -73,6 +75,6 @@ static inline int kfd_iommu_add_perf_counters(struct kfd_topology_device *kdev)
- 	return 0;
- }
- 
--#endif /* defined(CONFIG_AMD_IOMMU_V2) */
-+#endif /* IS_REACHABLE(CONFIG_AMD_IOMMU_V2) */
- 
- #endif /* __KFD_IOMMU_H__ */
+diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
+index 2ee3b3d29f10..79591fc131b0 100644
+--- a/security/apparmor/apparmorfs.c
++++ b/security/apparmor/apparmorfs.c
+@@ -201,7 +201,7 @@ static struct file_system_type aafs_ops = {
+ /**
+  * __aafs_setup_d_inode - basic inode setup for apparmorfs
+  * @dir: parent directory for the dentry
+- * @dentry: dentry we are seting the inode up for
++ * @dentry: dentry we are setting the inode up for
+  * @mode: permissions the file should have
+  * @data: data to store on inode.i_private, available in open()
+  * @link: if symlink, symlink target string
 -- 
-2.30.0
+2.25.1
 
