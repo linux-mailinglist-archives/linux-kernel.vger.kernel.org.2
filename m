@@ -2,79 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C878933200D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 08:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4583033200E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 08:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhCIHrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 02:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhCIHrT (ORCPT
+        id S229799AbhCIHrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 02:47:37 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:37182 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhCIHrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 02:47:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D0DC06174A;
-        Mon,  8 Mar 2021 23:47:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RPwvJ0Jon3MBhA2x2dbU/aIzqjciZdMt7fGLLK+Bmg4=; b=X30w+6Wvc01lmwIjNzZTrvnThG
-        lripCyh+tEcuH81V/Xfz5k3pAOZlnGor/U2AYHEmn1ugWPWTZZ9qbPhDmlvpoW6rxXKApgLEMUxjB
-        QOj05UyBosnZD9f8HlsT3VsIYJrpT1A2F7Y2eQtXqqO1bJLZ77zD8cZMBbAACTUpCDj2fiZUdtTsU
-        d0VloWCdSROPAJF5sMBjFlV+5H7/cWPppShULjG7GQ5fqX+HywxcCfLegZIEWIBpZCWICT/2VW6Jz
-        BHPizM5tXbdkbcXBbgi+rC6gMY0vYPxZyF7OPR1nEhK6t54Lf6BZyKfmtNkPR4dLKetKXMxzJpUSO
-        sjUwRDlA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJX4s-000CUQ-Jk; Tue, 09 Mar 2021 07:46:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B7AE33010CF;
-        Tue,  9 Mar 2021 08:46:49 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9BF992D3E9B35; Tue,  9 Mar 2021 08:46:49 +0100 (CET)
-Date:   Tue, 9 Mar 2021 08:46:49 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Xu, Like" <like.xu@intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        "Thomas Gleixner
-        (x86/pti/timer/core/smp/irq/perf/efi/locking/ras/objtool)
-        (x86@kernel.org)" <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH] x86/perf: Fix guest_get_msrs static call if there is no
- PMU
-Message-ID: <YEcn6bGYxdgrp0Ik@hirez.programming.kicks-ass.net>
-References: <20210305223331.4173565-1-seanjc@google.com>
- <053d0a22-394d-90d0-8d3b-3cd37ca3f378@intel.com>
- <YEXmILSHDNDuMk/N@hirez.programming.kicks-ass.net>
- <YEaLzKWd0wAmdqvs@google.com>
+        Tue, 9 Mar 2021 02:47:18 -0500
+Date:   Tue, 09 Mar 2021 07:47:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1615276032;
+        bh=+ZlcTZnrhrZ8o7M1JrptlxBInGQYHsPbgf1Nr0uMsQ0=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=TxKn1Jcnp1F8jZez32EQsOrCPDgvTGtkRoJCDS1vmcYP8iX4xUP5r12Mf323ZS9re
+         uZQS704MUiB1voO6Gn4s/ELYUmkOa5o5uXmSkQ+Q/Omc8gy0yb6MB800FMdSa3dSBv
+         Za0jyyJxQK/td48v87cqCAZOUCd7oqnV49DUDD7w=
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+From:   Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org
+Reply-To: Timon Baetz <timon.baetz@protonmail.com>
+Subject: Re: [PATCH 3/3] power: supply: max8997_charger: Switch to new binding
+Message-ID: <20210309084658.4a140b92@focal-fossa>
+In-Reply-To: <20210201180335.rrsqfvbcmxvx64gf@kozik-lap>
+References: <20210130172747.2022977-1-timon.baetz@protonmail.com> <20210130172747.2022977-4-timon.baetz@protonmail.com> <20210131172840.fxaadhhsafa4aeex@kozik-lap> <20210201083128.18499ffd.timon.baetz@protonmail.com> <20210201180335.rrsqfvbcmxvx64gf@kozik-lap>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEaLzKWd0wAmdqvs@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 12:40:44PM -0800, Sean Christopherson wrote:
-> On Mon, Mar 08, 2021, Peter Zijlstra wrote:
+On Mon, 1 Feb 2021 19:03:35 +0100, Krzysztof Kozlowski wrote:
+> On Mon, Feb 01, 2021 at 09:26:42AM +0000, Timon Baetz wrote:
+> > On Sun, 31 Jan 2021 18:28:40 +0100, Krzysztof Kozlowski wrote:
+> > > On Sat, Jan 30, 2021 at 05:30:14PM +0000, Timon Baetz wrote:
+> > > > Get regulator from parent device's node and extcon by name.
+> > > >
+> > > > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> > > > ---
+> > > >  drivers/power/supply/max8997_charger.c | 12 ++++++++----
+> > > >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power=
+/supply/max8997_charger.c
+> > > > index 321bd6b8ee41..625d8cc4312a 100644
+> > > > --- a/drivers/power/supply/max8997_charger.c
+> > > > +++ b/drivers/power/supply/max8997_charger.c
+> > > > @@ -168,6 +168,7 @@ static int max8997_battery_probe(struct platfor=
+m_device *pdev)
+> > > >  =09int ret =3D 0;
+> > > >  =09struct charger_data *charger;
+> > > >  =09struct max8997_dev *iodev =3D dev_get_drvdata(pdev->dev.parent)=
+;
+> > > > +=09struct device_node *np =3D pdev->dev.of_node;
+> > > >  =09struct i2c_client *i2c =3D iodev->i2c;
+> > > >  =09struct max8997_platform_data *pdata =3D iodev->pdata;
+> > > >  =09struct power_supply_config psy_cfg =3D {};
+> > > > @@ -237,20 +238,23 @@ static int max8997_battery_probe(struct platf=
+orm_device *pdev)
+> > > >  =09=09return PTR_ERR(charger->battery);
+> > > >  =09}
+> > > >
+> > > > +=09// grab regulator from parent device's node
+> > > > +=09pdev->dev.of_node =3D iodev->dev->of_node;
+> > > >  =09charger->reg =3D devm_regulator_get_optional(&pdev->dev, "charg=
+er");
+> > > > +=09pdev->dev.of_node =3D np;
+> > >
+> > > I think the device does not have its own node anymore. Or did I miss
+> > > something?
+> >
+> > The idea is to reset of_node to whatever it was before (NULL) and basic=
+ally
+> > leave the device unchanged. Probe might run again because of deferral.
+>
+> Good point.
+>
+> >
+> > > >  =09if (IS_ERR(charger->reg)) {
+> > > >  =09=09if (PTR_ERR(charger->reg) =3D=3D -EPROBE_DEFER)
+> > > >  =09=09=09return -EPROBE_DEFER;
+> > > >  =09=09dev_info(&pdev->dev, "couldn't get charger regulator\n");
+> > > >  =09}
+> > > > -=09charger->edev =3D extcon_get_edev_by_phandle(&pdev->dev, 0);
+> > > > -=09if (IS_ERR(charger->edev)) {
+> > > > -=09=09if (PTR_ERR(charger->edev) =3D=3D -EPROBE_DEFER)
+> > > > +=09charger->edev =3D extcon_get_extcon_dev("max8997-muic");
+> > > > +=09if (IS_ERR_OR_NULL(charger->edev)) {
+> > > > +=09=09if (!charger->edev)
+> > >
+> > > Isn't NULL returned when there is simply no extcon? It's different th=
+an
+> > > deferred probe. Returning here EPROBE_DEFER might lead to infinite pr=
+obe
+> > > tries (on every new device probe) instead of just failing it.
+> >
+> > extcon_get_extcon_dev() just loops through all registered extcon device=
+s
+> > and compared names. It will return NULL when "max8997-muic" isn't
+> > registered yet. extcon_get_extcon_dev() never returns EPROBE_DEFER so
+> > checking for NULL seems to be the only way. Other drivers using that
+> > function also do NULL check and return EPROBE_DEFER.
+>
+> Indeed, thanks for clarification. Looks good:
+>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> > Given the one user in atomic_switch_perf_msrs() that should work because
-> > it doesn't seem to care about nr_msrs when !msrs.
-> 
-> Uh, that commit quite cleary says:
+Is something blocking this from being accepted?
 
-D0h! I got static_call_cond() and __static_call_return0 mixed up.
-Anyway, let me see if I can make something work here.
+Timon
+
+
