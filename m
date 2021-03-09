@@ -2,238 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60D9332C37
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564E6332C46
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbhCIQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:35:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230491AbhCIQfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:35:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D337C651BB;
-        Tue,  9 Mar 2021 16:35:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615307733;
-        bh=grr/P7NPP84yLHqtN3qxlbFVwjldJuBPEeFJE3cAnfk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M68JjTx3ETj0c7QF1rI/9FBAQCY3vTzxziVbGFb9SOfUTvfddVm1/E23rjASznp+f
-         bpg1fgQCNH4JLujFO6/FhAP7zGmrOrcachiMXI+gk7HCPo7NpYm4RJb+rMFD9t/Wnk
-         fkVcObMZ4GnRATSqv7//wEf3KiI8SfaNf+WBC4ws=
-Date:   Tue, 9 Mar 2021 17:35:30 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        open list <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hemant Kumar <hemantk@codeaurora.org>
-Subject: Re: [PATCH net-next v3] net: Add Qcom WWAN control driver
-Message-ID: <YEej0uAjjMqb0VVW@kroah.com>
-References: <1615279336-27227-1-git-send-email-loic.poulain@linaro.org>
- <YEdBfHAYkTGI8sE4@kroah.com>
- <CAMZdPi9dCzH9ufSoRK_szOaVnSsySk-kC5fu2Rb+wy-6snow0Q@mail.gmail.com>
- <YEdO47NAWpO886DC@kroah.com>
- <69126b2b-8138-60a3-1383-d06c30671499@codeaurora.org>
+        id S231352AbhCIQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:37:53 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2672 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229799AbhCIQho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:37:44 -0500
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dw11t0Hb8z67x38;
+        Wed, 10 Mar 2021 00:31:46 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 9 Mar 2021 17:37:42 +0100
+Received: from [10.210.172.22] (10.210.172.22) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 9 Mar 2021 16:37:41 +0000
+Subject: Re: [PATCH v1] scsi: storvsc: Cap cmd_per_lun at can_queue
+To:     Michael Kelley <mikelley@microsoft.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "andres@anarazel.de" <andres@anarazel.de>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>
+References: <20210305232151.1531-1-melanieplageman@gmail.com>
+ <MWHPR21MB1593078007256C5155ED5A86D7939@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210308175618.GA2376@goldwasser>
+ <01aa44d0-f0a5-6de6-6778-a1658a3d8a8f@huawei.com>
+ <MWHPR21MB1593A9670EFF745B2FB96C1BD7929@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <343cce4d-58f6-a1f2-ca4f-e32ff1eddf65@huawei.com>
+Date:   Tue, 9 Mar 2021 16:35:39 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <69126b2b-8138-60a3-1383-d06c30671499@codeaurora.org>
+In-Reply-To: <MWHPR21MB1593A9670EFF745B2FB96C1BD7929@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.172.22]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:01:11AM -0700, Jeffrey Hugo wrote:
-> On 3/9/2021 3:33 AM, Greg KH wrote:
-> > On Tue, Mar 09, 2021 at 11:28:49AM +0100, Loic Poulain wrote:
-> > > Hi Greg,
-> > > 
-> > > On Tue, 9 Mar 2021 at 10:35, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > 
-> > > > On Tue, Mar 09, 2021 at 09:42:16AM +0100, Loic Poulain wrote:
-> > > > > The MHI WWWAN control driver allows MHI Qcom based modems to expose
-> > > > > different modem control protocols/ports to userspace, so that userspace
-> > > > > modem tools or daemon (e.g. ModemManager) can control WWAN config
-> > > > > and state (APN config, SMS, provider selection...). A Qcom based
-> > > > > modem can expose one or several of the following protocols:
-> > > > > - AT: Well known AT commands interactive protocol (microcom, minicom...)
-> > > > > - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
-> > > > > - QMI: Qcom MSM/Modem Interface (libqmi, qmicli)
-> > > > > - QCDM: Qcom Modem diagnostic interface (libqcdm)
-> > > > > - FIREHOSE: XML-based protocol for Modem firmware management
-> > > > >          (qmi-firmware-update)
-> > > > > 
-> > > > > The different interfaces are exposed as character devices, in the same
-> > > > > way as for USB modem variants (known as modem 'ports').
-> > > > > 
-> > > > > Note that this patch is mostly a rework of the earlier MHI UCI
-> > > > > tentative that was a generic interface for accessing MHI bus from
-> > > > > userspace. As suggested, this new version is WWAN specific and is
-> > > > > dedicated to only expose channels used for controlling a modem, and
-> > > > > for which related opensource user support exist. Other MHI channels
-> > > > > not fitting the requirements will request either to be plugged to
-> > > > > the right Linux subsystem (when available) or to be discussed as a
-> > > > > new MHI driver (e.g AI accelerator, WiFi debug channels, etc...).
-> > > > > 
-> > > > > This change introduces a new drivers/net/wwan directory, aiming to
-> > > > > be the common place for WWAN drivers.
-> > > > > 
-> > > > > Co-developed-by: Hemant Kumar <hemantk@codeaurora.org>
-> > > > > Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> > > > > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> > > > > ---
-> > > > >   v2: update copyright (2021)
-> > > > >   v3: Move driver to dedicated drivers/net/wwan directory
-> > > > > 
-> > > > >   drivers/net/Kconfig              |   2 +
-> > > > >   drivers/net/Makefile             |   1 +
-> > > > >   drivers/net/wwan/Kconfig         |  26 ++
-> > > > >   drivers/net/wwan/Makefile        |   6 +
-> > > > >   drivers/net/wwan/mhi_wwan_ctrl.c | 559 +++++++++++++++++++++++++++++++++++++++
-> > > > >   5 files changed, 594 insertions(+)
-> > > > >   create mode 100644 drivers/net/wwan/Kconfig
-> > > > >   create mode 100644 drivers/net/wwan/Makefile
-> > > > >   create mode 100644 drivers/net/wwan/mhi_wwan_ctrl.c
-> > > > > 
-> > > > > diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-> > > > > index 1ebb4b9..28b18f2 100644
-> > > > > --- a/drivers/net/Kconfig
-> > > > > +++ b/drivers/net/Kconfig
-> > > > > @@ -501,6 +501,8 @@ source "drivers/net/wan/Kconfig"
-> > > > > 
-> > > > >   source "drivers/net/ieee802154/Kconfig"
-> > > > > 
-> > > > > +source "drivers/net/wwan/Kconfig"
-> > > > > +
-> > > > >   config XEN_NETDEV_FRONTEND
-> > > > >        tristate "Xen network device frontend driver"
-> > > > >        depends on XEN
-> > > > > diff --git a/drivers/net/Makefile b/drivers/net/Makefile
-> > > > > index f4990ff..5da6424 100644
-> > > > > --- a/drivers/net/Makefile
-> > > > > +++ b/drivers/net/Makefile
-> > > > > @@ -68,6 +68,7 @@ obj-$(CONFIG_SUNGEM_PHY) += sungem_phy.o
-> > > > >   obj-$(CONFIG_WAN) += wan/
-> > > > >   obj-$(CONFIG_WLAN) += wireless/
-> > > > >   obj-$(CONFIG_IEEE802154) += ieee802154/
-> > > > > +obj-$(CONFIG_WWAN) += wwan/
-> > > > > 
-> > > > >   obj-$(CONFIG_VMXNET3) += vmxnet3/
-> > > > >   obj-$(CONFIG_XEN_NETDEV_FRONTEND) += xen-netfront.o
-> > > > > diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
-> > > > > new file mode 100644
-> > > > > index 0000000..643aa10
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/net/wwan/Kconfig
-> > > > > @@ -0,0 +1,26 @@
-> > > > > +# SPDX-License-Identifier: GPL-2.0-only
-> > > > > +#
-> > > > > +# Wireless WAN device configuration
-> > > > > +#
-> > > > > +
-> > > > > +menuconfig WWAN
-> > > > > +       bool "Wireless WAN"
-> > > > > +       help
-> > > > > +         This section contains Wireless WAN driver configurations.
-> > > > > +
-> > > > > +if WWAN
-> > > > > +
-> > > > > +config MHI_WWAN_CTRL
-> > > > > +     tristate "MHI WWAN control driver for QCOM based PCIe modems"
-> > > > > +     depends on MHI_BUS
-> > > > > +     help
-> > > > > +       MHI WWAN CTRL allow QCOM based PCIe modems to expose different modem
-> > > > > +       control protocols/ports to userspace, including AT, MBIM, QMI, DIAG
-> > > > > +       and FIREHOSE. These protocols can be accessed directly from userspace
-> > > > > +       (e.g. AT commands) or via libraries/tools (e.g. libmbim, libqmi,
-> > > > > +       libqcdm...).
-> > > > > +
-> > > > > +       To compile this driver as a module, choose M here: the module will be
-> > > > > +       called mhi_wwan_ctrl.
-> > > > > +
-> > > > > +endif # WWAN
-> > > > > diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
-> > > > > new file mode 100644
-> > > > > index 0000000..994a80b
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/net/wwan/Makefile
-> > > > > @@ -0,0 +1,6 @@
-> > > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > > +#
-> > > > > +# Makefile for the Linux WWAN device drivers.
-> > > > > +#
-> > > > > +
-> > > > > +obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
-> > > > > diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
-> > > > > new file mode 100644
-> > > > > index 0000000..3904cd0
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
-> > > > > @@ -0,0 +1,559 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > +/* Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.*/
-> > > > > +
-> > > > > +#include <linux/kernel.h>
-> > > > > +#include <linux/mhi.h>
-> > > > > +#include <linux/mod_devicetable.h>
-> > > > > +#include <linux/module.h>
-> > > > > +#include <linux/poll.h>
-> > > > > +
-> > > > > +#define MHI_WWAN_CTRL_DRIVER_NAME "mhi_wwan_ctrl"
-> > > > 
-> > > > So a driver name is the same as the class that is being created?
-> > > > 
-> > > > That feels wrong, shouldn't the "class" be wwan?
-> > > 
-> > > The driver does not aim to be THE wwan implementation, given the
-> > > heterogeneity of WWAN interfaces, so 'wwan' is probably too generic
-> > > for this bus/vendor specific driver. But since we create a new wwan
-> > > subdir, maybe we should create a minimal wwan_sysfs.c, that would
-> > > initially just offer a common class for all WWAN devices (wwan or
-> > > wwan-ports), as a first step to if not standardize, at least group
-> > > such devices under the same hat. Otherwise, we can just use the misc
-> > > class... Any thoughts?
-> > 
-> > Why isn't this a good api for all wwan devices?  Do you think that this
-> > will not work for others?
-> > 
-> > A common class would be good, if they all work the same with regards to
-> > a user/kernel api, otherwise it's pointless and not needed :)
-> > 
-> > And if we are back to the "custom user/kernel api just for this one
-> > driver", then yes, the misc api is the easiest and simplest to use, but
-> > I would wish for better than that for the first wwan driver...
+On 09/03/2021 15:57, Michael Kelley wrote:
+> From: John Garry <john.garry@huawei.com> Sent: Tuesday, March 9, 2021 2:10 AM
+>>
+>> On 08/03/2021 17:56, Melanie Plageman wrote:
+>>> On Mon, Mar 08, 2021 at 02:37:40PM +0000, Michael Kelley wrote:
+>>>> From: Melanie Plageman (Microsoft) <melanieplageman@gmail.com> Sent: Friday,
+>> March 5, 2021 3:22 PM
+>>>>>
+>>>>> The scsi_device->queue_depth is set to Scsi_Host->cmd_per_lun during
+>>>>> allocation.
+>>>>>
+>>>>> Cap cmd_per_lun at can_queue to avoid dispatch errors.
+>>>>>
+>>>>> Signed-off-by: Melanie Plageman (Microsoft) <melanieplageman@gmail.com>
+>>>>> ---
+>>>>>    drivers/scsi/storvsc_drv.c | 2 ++
+>>>>>    1 file changed, 2 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+>>>>> index 6bc5453cea8a..d7953a6e00e6 100644
+>>>>> --- a/drivers/scsi/storvsc_drv.c
+>>>>> +++ b/drivers/scsi/storvsc_drv.c
+>>>>> @@ -1946,6 +1946,8 @@ static int storvsc_probe(struct hv_device *device,
+>>>>>    				(max_sub_channels + 1) *
+>>>>>    				(100 - ring_avail_percent_lowater) / 100;
+>>>>>
+>>>>> +	scsi_driver.cmd_per_lun = min_t(u32, scsi_driver.cmd_per_lun,
+>> scsi_driver.can_queue);
+>>>>> +
+>>>>
+>>>> I'm not sure what you mean by "avoid dispatch errors".  Can you elaborate?
+>>>
+>>> The scsi_driver.cmd_per_lun is set to 2048. Which is then used to set
+>>> Scsi_Host->cmd_per_lun in storvsc_probe().
+>>>
+>>> In storvsc_probe(), when doing scsi_scan_host(), scsi_alloc_sdev() is
+>>> called and sets the scsi_device->queue_depth to the Scsi_Host's
+>>> cmd_per_lun with this code:
+>>>
+>>> scsi_change_queue_depth(sdev, sdev->host->cmd_per_lun ?
+>>>                                           sdev->host->cmd_per_lun : 1);
+>>>
+>>> During dispatch, the scsi_device->queue_depth is used in
+>>> scsi_dev_queue_ready(), called by scsi_mq_get_budget() to determine
+>>> whether or not the device can queue another command.
+>>>
+>>> On some machines, with the 2048 value of cmd_per_lun that was used to
+>>> set the initial scsi_device->queue_depth, commands can be queued that
+>>> are later not able to be dispatched after running out of space in the
+>>> ringbuffer.
+>>>
+>>> On an 8 core Azure VM with 16GB of memory with a single 1 TiB SSD
+>>> (running an fio workload that I can provide if needed), storvsc_do_io()
+>>> ends up often returning SCSI_MLQUEUE_DEVICE_BUSY.
+>>>
+>>> This is the call stack:
+>>>
+>>> hv_get_bytes_to_write
+>>> hv_ringbuffer_write
+>>> vmbus_send_packet
+>>> storvsc_dio_io
+>>> storvsc_queuecommand
+>>> scsi_dispatch_cmd
+>>> scsi_queue_rq
+>>> dispatch_rq_list
+>>>
+>>>> Be aware that the calculation of "can_queue" in this driver is somewhat
+>>>> flawed -- it should not be based on the size of the ring buffer, but instead on
+>>>> the maximum number of requests Hyper-V will queue.  And even then,
+>>>> can_queue doesn't provide the cap you might expect because the blk-mq layer
+>>>> allocates can_queue tags for each HW queue, not as a total.
+>>>
+>>>
+>>> The docs for scsi_mid_low_api document Scsi_Host can_queue this way:
+>>>
+>>>     can_queue
+>>>     - must be greater than 0; do not send more than can_queue
+>>>       commands to the adapter.
+>>>
+>>> I did notice that in scsi_host.h, the comment for can_queue does say
+>>> can_queue is the "maximum number of simultaneous commands a single hw
+>>> queue in HBA will accept." However, I don't see it being used this way
+>>> in the code.
+>>>
+>>
+>> JFYI, the block layer ensures that no more than can_queue requests are
+>> sent to the host. See scsi_mq_setup_tags(), and how the tagset queue
+>> depth is set to shost->can_queue.
+>>
+>> Thanks,
+>> John
 > 
-> I'm thinking this doesn't fit with the misc api due to the number of device
-> minors that could be expected to be consumed.
+> Agree on what's in scsi_mq_setup_tags().  But scsi_mq_setup_tags() calls
+> blk_mq_alloc_tag_set(), which in turn calls blk_mq_alloc_map_and_requests(),
+> which calls __blk_mq_alloc_rq_maps() repeatedly, reducing the tag
+> set queue_depth as needed until it succeeds.
+> 
+> The key thing is that __blk_mq_alloc_rq_maps() iterates over the
+> number of HW queues calling __blk_mq_alloc_map_and_request().
+> The latter function allocates the map and the requests with a count
+> of the tag set's queue_depth.   There's no logic to apportion the
+> can_queue value across multiple HW queues. So each HW queue gets
+> can_queue tags allocated, and the SCSI host driver may see up to
+> (can_queue * # HW queues) simultaneous requests.
+> 
+> I'm certainly not an expert in this area, but that's what I see in the
+> code.  We've run live experiments, and can see the number
+> simultaneous requests sent to the storvsc driver be greater than
+> can_queue when the # of HW queues is greater than 1, which seems
+> to be consistent with the code.
 
-That's why I asked how many minors do you need :)
+ah, ok. I assumed that # of HW queues = 1 here. So you're describing a 
+problem similar to 
+https://lore.kernel.org/linux-scsi/b3e4e597-779b-7c1e-0d3c-07bc3dab1bb5@huawei.com/
 
-> Each device supported by this driver is going to create 2-5 chardevs. Having
-> two devices in a system is common for "endusers".  Development,
-> manufacturing, and test (including the community, not just talking Qualcomm
-> here) commonly have 12+ of these devices in a system.  12 * 5 = 60.  Thats a
-> lot of misc minor numbers to chew up just from one driver given that the
-> limit of dynamic minors is 128.  Looking at a random x86 server that I have
-> which could be used for such a usecase already has 30 misc minor numbers
-> used, and this particular server has a fresh distro install on it.  I would
-> expect that number to go up as it gets provisioned for use.
+So if you check nr_hw_queues comment in include/scsi/scsi_host.h, it reads:
+the total queue depth per host is nr_hw_queues * can_queue. However, for 
+when host_tagset is set, the total queue depth is can_queue.
 
-Look at a phone these days, I see way more misc devices used than just
-"30" :(
+Setting .host_tagset will ensure at most can_queue requests will be sent 
+over all HW queues at any given time. A few SCSI MQ drivers set this now.
 
-> I guess, the question to you is, how many misc minor numbers is "too much"
-> for a single driver to expect to consume?
+Thanks,
+John
 
-If you expect more than 10, I would say to use a real major number.  But
-be explicit as to what you are expecting here, it was not obvious at
-all.
+> 
+> Michael
+> 
+>>
+>>
+>>> During dispatch, In scsi_target_queue_ready(), there is this code:
+>>>
+>>>           if (busy >= starget->can_queue)
+>>>                   goto starved;
+>>>
+>>> And the scsi_target->can_queue value should be coming from Scsi_host as
+>>> mentioned in the scsi_target definition in scsi_device.h
+>>>       /*
+>>>         * LLDs should set this in the slave_alloc host template callout.
+>>>         * If set to zero then there is not limit.
+>>>         */
+>>>       unsigned int            can_queue;
+>>>
+>>> So, I don't really see how this would be per hardware queue.
+>>>
+>>>>
+>>>> I agree that the cmd_per_lun setting is also too big, but we should fix that in
+>>>> the context of getting all of these different settings working together correctly,
+>>>> and not piecemeal.
+>>>>
+>>>
+>>> Capping Scsi_Host->cmd_per_lun to scsi_driver.can_queue during probe
+>>> will also prevent the LUN queue_depth from being set to a value that is
+>>> higher than it can ever be set to again by the user when
+>>> storvsc_change_queue_depth() is invoked.
+>>>
+>>> Also in scsi_sysfs sdev_store_queue_depth() there is this check:
+>>>
+>>>             if (depth < 1 || depth > sdev->host->can_queue)
+>>>                   return -EINVAL;
+>>>
+>>> I would also note that VirtIO SCSI in virtscsi_probe(), Scsi_Host->cmd_per_lun
+>>> is set to the min of the configured cmd_per_lun and
+>>> Scsi_Host->can_queue:
+>>>
+>>>       shost->cmd_per_lun = min_t(u32, cmd_per_lun, shost->can_queue);
+>>>
+>>> Best,
+>>> Melanie
+>>> .
+>>>
+> 
 
-thanks,
-
-greg k-h
