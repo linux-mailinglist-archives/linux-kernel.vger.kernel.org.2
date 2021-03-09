@@ -2,160 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CF9332A33
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9889B332A3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbhCIPT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:19:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhCIPTI (ORCPT
+        id S231822AbhCIPUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:20:32 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:53711 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231897AbhCIPUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:19:08 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8712AC06174A;
-        Tue,  9 Mar 2021 07:19:08 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id w7so3238535pll.8;
-        Tue, 09 Mar 2021 07:19:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ujBTFVqKiDtMsUz1Y0DEYGU/7qEPuVXJSfA0pereZLY=;
-        b=c53w5nrfKxvb2DDwLr3DBdM9MTuZgwdsu8HMnTSiXeMxIJj2H+4SegPXbFi0cA5TQ8
-         Seu8vVQ3bchm2KzWnoa157oEZ85aHJS4Y+CwBDkxKvR5mXa+kWSGAjYNUnVotux4KNAY
-         finnpT5TS2IdHs4oBuqB7wh7CMAa1fzlWApl68pFap3m06UOpDyJWUuAz7z45zDNMNrx
-         54qh5eHuw7McWKPJMqeKzQKn9SWmIammYDa3t6cSLLr48RjThvrJ2HbHaycJrK9SC86s
-         0c+QUPPDvF98DepaRomcFH8oSAlgiNRkRODf5qEcCFFq7bfYiHOkkUXV3b7XbBMyipQ/
-         ZH5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ujBTFVqKiDtMsUz1Y0DEYGU/7qEPuVXJSfA0pereZLY=;
-        b=ICXSb8NYmz8DmoXKwfLRatPq0H91TK7VhGhavCIPl8zKE3dv9MVCDz9XAEE8nkr3yv
-         Txq0KTR4b+qA5J1NUVL2OyLCCyrYEYcS4inTIRi4qElKFjMK316wDX1+YDV00mkaoeaJ
-         Y/NnAbGUx0/yUy5cnnvaOxalCOsNH+r8eBiCQq6aWTzYt942xL7rI+Xrc8fD1Qu4wmnj
-         3N7bkRdOx+IH3+EmULRMxgrjTyR6OqcohTF8Hdlk95lqlbVN7ECrRlp9EI1I+5ruqK4G
-         27ypBLdH4o/PFLSl4JrGXXt79YBSv4LGsdx0cycYYDss5YdYhZRriiGEYoD05bbVSvhh
-         zEPw==
-X-Gm-Message-State: AOAM530kmmwJ2V4QgGZrx/CXGsFKI/nH55YdMKD/v+J/fYBElz6nGNpk
-        lq1k7AbyNsdIPM9KlVymRmA=
-X-Google-Smtp-Source: ABdhPJz3zP6V8okVdtrz9ho5DNj/SEHMrN601qx5CxtDRoU04ONYGH92HFcWejxNI4dEciwuzBKNzA==
-X-Received: by 2002:a17:90a:29a3:: with SMTP id h32mr5386815pjd.209.1615303148070;
-        Tue, 09 Mar 2021 07:19:08 -0800 (PST)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id y15sm15835282pgi.31.2021.03.09.07.19.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 07:19:07 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     kuba@kernel.org
-Cc:     davem@davemloft.net, mkubecek@suse.cz, dsahern@kernel.org,
-        zhudi21@huawei.com, johannes.berg@intel.com,
-        marcelo.leitner@gmail.com, dong.menglong@zte.com.cn,
-        ast@kernel.org, yhs@fb.com, rdunlap@infradead.org,
-        yangyingliang@huawei.com, 0x7f454c46@gmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next] net: netlink: remove netlink_broadcast_filtered
-Date:   Tue,  9 Mar 2021 23:18:34 +0800
-Message-Id: <20210309151834.58675-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.30.1
+        Tue, 9 Mar 2021 10:20:00 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MjjGV-1m2vKe0G5r-00lDYJ; Tue, 09 Mar 2021 16:19:59 +0100
+Received: by mail-oi1-f177.google.com with SMTP id y131so12422022oia.8;
+        Tue, 09 Mar 2021 07:19:58 -0800 (PST)
+X-Gm-Message-State: AOAM5339a4r5qZ9D2qwrSyyYr1vzMdRsvGqQE1zUvvpmnJ7rDdDDXoVg
+        d6q+vICPyAYuHMkJ6kdB7Tq+pev6MBeRNXXOsKo=
+X-Google-Smtp-Source: ABdhPJzLaYkFBQxeenML1CtvrMiCXYHwEhB7UewHLGYWzvuz3PZ33xGUA54iow9OSLWqVDbvpKTVkJjaZNVQIbBYtnE=
+X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr3319660oie.4.1615303197754;
+ Tue, 09 Mar 2021 07:19:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210308174824.278372-1-krzysztof.kozlowski@canonical.com>
+ <776e0c26-4f05-2a3c-1536-f730b9109b1b@kernel.org> <7462eeec-5c4e-b4d5-cf94-9945042fc1d1@canonical.com>
+ <73dafebf-5c47-5d90-e29e-e1811f370a54@kernel.org>
+In-Reply-To: <73dafebf-5c47-5d90-e29e-e1811f370a54@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 9 Mar 2021 16:19:38 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a36-6yjVLSdJiUWPEz0_i_DWbPasQ8RZWHyxth-4D62+w@mail.gmail.com>
+Message-ID: <CAK8P3a36-6yjVLSdJiUWPEz0_i_DWbPasQ8RZWHyxth-4D62+w@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: defconfig: enable Intel's eASIC N5X SoCFPGA and
+ Keem Bay SoC
+To:     Dinh Nguyen <dinguyen@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "Paul J. Murphy" <paul.j.murphy@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:0VNQWv4CJMORYfYt384S4Cwbt/RyMCjriXy/gnf+9pzZTRQjku1
+ sczWe+TvzeqhfJIKWv/mRywefscDgEutjIEKcxSMq52vWYDDFg0OELBcYu0HIuCQdrUju23
+ NX/nRAiiatSNB/Cmn6kmwxx4C7aaQDlZrs0V3/hYdmcez5rgi/9vPYTicKkEyB++00avYkQ
+ sb32KMH3TfEjFdU15Lq1g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:x44rUkFs4VI=:YhiqcnipD+ehvEIQeO2MU8
+ AkumpthI3Lcz4Jk0tKamLpgHHjAmyKlU87gSD8UoH/7Ag4oedLtbUbF1M7uhxXcgL+rd3wi5W
+ qLrbq5/0/Zqtr7/sVPxbBX8PixyEQnWNBX/Xzv+UOpb6pSOBTI09PzAQa5tuz2kyogEZMtk8m
+ kuHKafjx4/fkaKR08aOHZ2gpKYzMwQoUTWGbGrTFtjH58IViEzXkLPyGgd2UzxNwlZQxK5SxJ
+ Wu2LkUOpOi1xY5Ly1t8Sbk3enqxFf6Jegnz2gPwZi0ucPeTnzlpIuFhSI+RNw5NTqCuWSeY7R
+ sGJ8B4PJVkKReQo2Nx+cMXc7mHv54MNY/meua/t6w//fgsuul1JfyVdSskQQ5ZYNXEEBD8Yiw
+ s5OXbPUx8OGMhnm27uu1yc53B/7PlPedEZ5fGg/dB6SYvzz/r+vTkZpKkRX40tpIf1vRKfA6d
+ K4N84QVt9lS4Fqq/upzHh2VZ573EhvzZdJii8wItKxrDzi4emj9TJD5jlraLLsg5aIFR2lTdC
+ RHA4GknC6XLynf17Di6tDY8Wj4WFFGbPhDWMKFJdS8QoBLlsa0YIa9DOssA6mx4GA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Tue, Mar 9, 2021 at 2:26 PM Dinh Nguyen <dinguyen@kernel.org> wrote:
+> On 3/9/21 3:29 AM, Krzysztof Kozlowski wrote:
+> > On 08/03/2021 20:07, Dinh Nguyen wrote:
+> >>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> >>> index d612f633b771..9f9adcb8b0e9 100644
+> >>> --- a/arch/arm64/configs/defconfig
+> >>> +++ b/arch/arm64/configs/defconfig
+> >>> @@ -29,6 +29,7 @@ CONFIG_KALLSYMS_ALL=y
+> >>>    CONFIG_PROFILING=y
+> >>>    CONFIG_ARCH_ACTIONS=y
+> >>>    CONFIG_ARCH_AGILEX=y
+> >>> +CONFIG_ARCH_N5X=y
+> >>
+> >> I just submitted a patch for this as well. From the looks of the
+> >> defconfig file, it looks like the platforms are in alphabetical order,
+> >> but then I see that ARCH_SUNXI is not in it's correct spot if there is a
+> >> rule for keeping things in alphabetical order.
+> >>
+> >
+> > The rule is that order comes from savedefconfig, not alphabetical. This
+> > way you avoid reshuffling of symbols on any future savedefconfig.
+> >
+>
+> Got it. But I've done savedefconfig in the past and Arnd adviced against
+> that because what if multiple patches come in with savedefconfig,
+> wouldn't that cause a messy merge?
 
-It seems that 'netlink_broadcast_filtered()' is not used anywhere
-besides 'netlink_broadcast()'. In order to reduce function calls,
-just remove it.
+To clarify: you should not send the result of 'make savedefconfig'
+if it changes the contents of the file in another way, but Krzysztof's
+recommendation of adding new lines where savedefconfig would
+put them is best.
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- include/linux/netlink.h  |  4 ----
- net/netlink/af_netlink.c | 22 ++--------------------
- 2 files changed, 2 insertions(+), 24 deletions(-)
-
-diff --git a/include/linux/netlink.h b/include/linux/netlink.h
-index 0bcf98098c5a..277f33e64bb3 100644
---- a/include/linux/netlink.h
-+++ b/include/linux/netlink.h
-@@ -160,10 +160,6 @@ bool netlink_strict_get_check(struct sk_buff *skb);
- int netlink_unicast(struct sock *ssk, struct sk_buff *skb, __u32 portid, int nonblock);
- int netlink_broadcast(struct sock *ssk, struct sk_buff *skb, __u32 portid,
- 		      __u32 group, gfp_t allocation);
--int netlink_broadcast_filtered(struct sock *ssk, struct sk_buff *skb,
--			       __u32 portid, __u32 group, gfp_t allocation,
--			       int (*filter)(struct sock *dsk, struct sk_buff *skb, void *data),
--			       void *filter_data);
- int netlink_set_err(struct sock *ssk, __u32 portid, __u32 group, int code);
- int netlink_register_notifier(struct notifier_block *nb);
- int netlink_unregister_notifier(struct notifier_block *nb);
-diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index dd488938447f..b462fdc87e9b 100644
---- a/net/netlink/af_netlink.c
-+++ b/net/netlink/af_netlink.c
-@@ -1405,8 +1405,6 @@ struct netlink_broadcast_data {
- 	int delivered;
- 	gfp_t allocation;
- 	struct sk_buff *skb, *skb2;
--	int (*tx_filter)(struct sock *dsk, struct sk_buff *skb, void *data);
--	void *tx_data;
- };
- 
- static void do_one_broadcast(struct sock *sk,
-@@ -1460,11 +1458,6 @@ static void do_one_broadcast(struct sock *sk,
- 			p->delivery_failure = 1;
- 		goto out;
- 	}
--	if (p->tx_filter && p->tx_filter(sk, p->skb2, p->tx_data)) {
--		kfree_skb(p->skb2);
--		p->skb2 = NULL;
--		goto out;
--	}
- 	if (sk_filter(sk, p->skb2)) {
- 		kfree_skb(p->skb2);
- 		p->skb2 = NULL;
-@@ -1487,10 +1480,8 @@ static void do_one_broadcast(struct sock *sk,
- 	sock_put(sk);
- }
- 
--int netlink_broadcast_filtered(struct sock *ssk, struct sk_buff *skb, u32 portid,
--	u32 group, gfp_t allocation,
--	int (*filter)(struct sock *dsk, struct sk_buff *skb, void *data),
--	void *filter_data)
-+int netlink_broadcast(struct sock *ssk, struct sk_buff *skb, u32 portid,
-+		      u32 group, gfp_t allocation)
- {
- 	struct net *net = sock_net(ssk);
- 	struct netlink_broadcast_data info;
-@@ -1509,8 +1500,6 @@ int netlink_broadcast_filtered(struct sock *ssk, struct sk_buff *skb, u32 portid
- 	info.allocation = allocation;
- 	info.skb = skb;
- 	info.skb2 = NULL;
--	info.tx_filter = filter;
--	info.tx_data = filter_data;
- 
- 	/* While we sleep in clone, do not allow to change socket list */
- 
-@@ -1536,14 +1525,7 @@ int netlink_broadcast_filtered(struct sock *ssk, struct sk_buff *skb, u32 portid
- 	}
- 	return -ESRCH;
- }
--EXPORT_SYMBOL(netlink_broadcast_filtered);
- 
--int netlink_broadcast(struct sock *ssk, struct sk_buff *skb, u32 portid,
--		      u32 group, gfp_t allocation)
--{
--	return netlink_broadcast_filtered(ssk, skb, portid, group, allocation,
--		NULL, NULL);
--}
- EXPORT_SYMBOL(netlink_broadcast);
- 
- struct netlink_set_err_data {
--- 
-2.30.1
-
+        Arnd
