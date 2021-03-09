@@ -2,119 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7F333207A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2872F332099
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhCIIZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:25:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhCIIYs (ORCPT
+        id S230075AbhCIIcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:32:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53571 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229793AbhCIIbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:24:48 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C80C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 00:24:48 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id j12so8851823pfj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 00:24:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=133xFANkNnvXsS/Gcj7xoFzGV1TFyuCxTpiSDGedfLQ=;
-        b=bhBxe3eGIKx2n1tXLkj/kt4qLfcPr8e+Lh8ddardt+U/dQY5KOMT8UpMHyARVTVGVQ
-         LglQLDxlJ5WsCIFQaFAG91rp3avAZmYwSdUUkR+fLHZZq5yAAUbpZ0u1Cpw7zFaGKcNA
-         D+FFmgFHhFpSTMrGZF9Lnds6DZmQzzH47WZWlyXUREM54sWxViJrSwUYJQyF77NTHje2
-         cQibfnUUzWGV6tiABIkOOFoJ+Oc3WS1yudZSKYK8Xa0haQw5SkVawB+zovGSAMtX5Yac
-         ziNW0VBuXttb3kwimxU3fQ2bQStF8hVgXGHfGOcL9jXi50bfrPiNO3/22Vonolaz3qxd
-         P85A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=133xFANkNnvXsS/Gcj7xoFzGV1TFyuCxTpiSDGedfLQ=;
-        b=TQSimGnJZiEasa0e6NLqabXRUhiD5oftyUblMA7K4BE45J2E/frMV5xcETo7z+rzPA
-         mIkpsPG6U3BMYXMXdmlMXqrPd/PD3cd2MPOfOIqLfWMQb7vpbBCjHD9OLi6e75IH5AMw
-         jN40qeRcssR2Ffq0WFQzKMXadv0uHshK8Bv7sZ8gNlqeNrgX/NjqUb1Kc6iWuCtrAOjt
-         heNBrH1NEJo2siA6+FAgZSlTyrsafONgJXSbvvfAby+UYB+7xTotOO9Dt3ecImfB6flX
-         nAVwEMV2QHYPTsE8FQnKBweiwBIEyyv+VKZQn4dTOxwMG5y5+ZSgoaG+rWvjqCRYUXP7
-         rNOQ==
-X-Gm-Message-State: AOAM531BMQEtES2hy+8tVHsogHJCXPfZFyQ2lG3fJ5H0pGzH8UIydLgj
-        maw9v8JgBC8AeF/f9imuLmiTgz2dKB+3f18ceV1qp5g+7+vo1w==
-X-Google-Smtp-Source: ABdhPJxJZT+QQX3Qi/RyHF/HLj4uXQeq8a86sg9PH5SuEdoEnUxOLdvvEGc83GXcAwk/DmN5njH1BgFqqX0gNRJO9cA=
-X-Received: by 2002:a63:2262:: with SMTP id t34mr24607341pgm.303.1615278288204;
- Tue, 09 Mar 2021 00:24:48 -0800 (PST)
+        Tue, 9 Mar 2021 03:31:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615278698;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GfRwAlMZCg89ixlFNqb8ULyiVLWTEnJ0ZTo2SVvckic=;
+        b=CH+i4QPkunJX/NZXYNqQi4Ubq96hhT7rM+LYoka3gH0+in8L9h386UxGMiw48WNKcTZstj
+        sm7tvwHV+B8TIIUQg1ej5OMweDxFO2aFxwB9fSU0nk00/t/AoRRh174tJ/56+pHKKwg2I+
+        PqL9ef12+fAGVx/Ce+zIS020+LIErNs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-MC5HpSYcPlGBNWdwQsIzjw-1; Tue, 09 Mar 2021 03:31:34 -0500
+X-MC-Unique: MC5HpSYcPlGBNWdwQsIzjw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B8C580432D;
+        Tue,  9 Mar 2021 08:31:30 +0000 (UTC)
+Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D1BF6062F;
+        Tue,  9 Mar 2021 08:31:14 +0000 (UTC)
+Subject: Re: [PATCH RFCv2] mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to
+ prefault/prealloc memory
+To:     Rolf Eike Beer <eike-kernel@sf-tec.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>
+References: <20210308164520.18323-1-david@redhat.com>
+ <6ecd754406fffe851be6543025203b6b@sf-tec.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <00fcfc37-e288-8ffe-a443-c2f5054deee9@redhat.com>
+Date:   Tue, 9 Mar 2021 09:31:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <1615237167-19969-1-git-send-email-loic.poulain@linaro.org> <YEcvksXq1Rt0wCxb@kroah.com>
-In-Reply-To: <YEcvksXq1Rt0wCxb@kroah.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Tue, 9 Mar 2021 09:32:39 +0100
-Message-ID: <CAMZdPi-oYpSjFAP+_7bbK96Zv=otVSYHYBY2ePKjX0W5-n5uOw@mail.gmail.com>
-Subject: Re: [PATCH v2] bus: mhi: Add Qcom WWAN control driver
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6ecd754406fffe851be6543025203b6b@sf-tec.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021 at 09:19, Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Mar 08, 2021 at 09:59:27PM +0100, Loic Poulain wrote:
-> > The MHI WWWAN control driver allows MHI Qcom based modems to expose
-> > different modem control protocols to userspace, so that userspace
-> > modem tools or daemon (e.g. ModemManager) can control WWAN config
-> > and state (APN config, SMS, provider selection...). A Qcom based
-> > modem can expose one or several of the following protocols:
-> > - AT: Well known AT commands interactive protocol (microcom, minicom...)
-> > - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
-> > - QMI: Qcom MSM/Modem Interface (libqmi, qmicli)
-> > - QCDM: Qcom Modem diagnostic interface (libqcdm)
-> > - FIREHOSE: XML-based protocol for Modem firmware management
-> >           (qmi-firmware-update)
-> >
-> > The different interfaces are exposed as character devices, in the same
-> > way as for USB modem variants.
-> >
-> > Note that this patch is mostly a rework of the earlier MHI UCI
-> > tentative that was a generic interface for accessing MHI bus from
-> > userspace. As suggested, this new version is WWAN specific and is
-> > dedicated to only expose channels used for controlling a modem, and
-> > for which related opensource user support exist. Other MHI channels
-> > not fitting the requirements will request either to be plugged to
-> > the right Linux subsystem (when available) or to be discussed as a
-> > new MHI driver (e.g AI accelerator, WiFi debug channels, etc...).
-> >
-> > Co-developed-by: Hemant Kumar <hemantk@codeaurora.org>
-> > Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> > ---
-> >  v2: update copyright (2021)
-> >
-> >  drivers/bus/mhi/Kconfig     |  12 +
-> >  drivers/bus/mhi/Makefile    |   3 +
-> >  drivers/bus/mhi/wwan_ctrl.c | 559 ++++++++++++++++++++++++++++++++++++++++++++
->
-> As Jakub said, why is this file in this directory?
->
-> Flat out ignoring review comments is a sure way to always get pushed to
-> the bottom of the list of things anyone wants to ever look at...
+On 09.03.21 08:35, Rolf Eike Beer wrote:
+>> diff --git a/mm/internal.h b/mm/internal.h
+>> index 9902648f2206..a5c4ed23b1db 100644
+>> --- a/mm/internal.h
+>> +++ b/mm/internal.h
+>> @@ -340,6 +340,9 @@ void __vma_unlink_list(struct mm_struct *mm,
+>> struct vm_area_struct *vma);
+>>   #ifdef CONFIG_MMU
+>>   extern long populate_vma_page_range(struct vm_area_struct *vma,
+>>   		unsigned long start, unsigned long end, int *nonblocking);
+>> +extern long faultin_vma_page_range(struct vm_area_struct *vma,
+>> +				   unsigned long start, unsigned long end,
+>> +				   bool write, int *nonblocking);
+>>   extern void munlock_vma_pages_range(struct vm_area_struct *vma,
+>>   			unsigned long start, unsigned long end);
+>>   static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
+> 
+> The parameter name does not match the one in the implementation.
+> 
+> Otherwise the implementation looks fine AFAICT.
 
-Yes, it's a legacy of the previous driver that was kind of a generic a
-mhi bus accessor.
-I'm going to move it inside network since it's about WWAN.
+Hehe, you can tell how I copy-pasted from populate_vma_page_range(), 
+because there, the variable names are messed up, too :)
 
+Will fix (most probably populate_vma_page_range() as well in a cleanup 
+patch), thanks!
+
+-- 
 Thanks,
-Loic
 
+David / dhildenb
 
->
-> greg k-h
