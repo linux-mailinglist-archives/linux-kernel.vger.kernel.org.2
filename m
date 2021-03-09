@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC56332301
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5673322E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhCIK12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 05:27:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40682 "EHLO mail.kernel.org"
+        id S230159AbhCIKWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 05:22:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:51000 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229775AbhCIK0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 05:26:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86DCD6527B;
-        Tue,  9 Mar 2021 10:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615285615;
-        bh=auKO5HGDnHB6VehnJcnZhO1vO68xDUuBm+zLXacy0bw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D8AEZ/uyIydVdzm5Rhsrw3x0w8aAWABmbdiXrkzsx5u1q82uyFjw9br452/vrELEW
-         SIOoW3rjilJoy48Rue+2h28uU4c9UpsEIA8uG8SPeyHSAahpUXDVxP2HjdBMkSwn5a
-         YBtUXMXGdrMWNDt1j1Gp06XsvJuvyMeQhwUe64Sk=
-Date:   Tue, 9 Mar 2021 11:26:52 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        id S230266AbhCIKWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 05:22:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A70FA31B;
+        Tue,  9 Mar 2021 02:22:32 -0800 (PST)
+Received: from [10.37.8.8] (unknown [10.37.8.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 91BBD3F71B;
+        Tue,  9 Mar 2021 02:22:29 -0800 (PST)
+Subject: Re: [PATCH v14 5/8] arm64: mte: Enable TCO in functions that can read
+ beyond buffer limits
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
         Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.11 00/44] 5.11.5-rc1 review
-Message-ID: <YEdNbCWafpSCBMhL@kroah.com>
-References: <20210308122718.586629218@linuxfoundation.org>
- <CA+G9fYs+sw5R0wE2YmeYpu+9b5tR=VgfFCk3Aw_ey6iDv13RQw@mail.gmail.com>
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210308161434.33424-1-vincenzo.frascino@arm.com>
+ <20210308161434.33424-6-vincenzo.frascino@arm.com>
+ <20210308180910.GB17002@C02TD0UTHF1T.local>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <42b39ecc-4f97-63bf-cdab-2ba4817b8610@arm.com>
+Date:   Tue, 9 Mar 2021 10:26:54 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210308180910.GB17002@C02TD0UTHF1T.local>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYs+sw5R0wE2YmeYpu+9b5tR=VgfFCk3Aw_ey6iDv13RQw@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:52:04AM +0530, Naresh Kamboju wrote:
-> On Mon, 8 Mar 2021 at 18:06, <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> > This is the start of the stable review cycle for the 5.11.5 release.
-> > There are 44 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.5-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+On 3/8/21 6:09 PM, Mark Rutland wrote:
+>> +DECLARE_STATIC_KEY_FALSE(mte_async_mode);
+> Can we please hide this behind something like:
 > 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
+> static inline bool system_uses_mte_async_mode(void)
+> {
+> 	return IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&
+> 		static_branch_unlikely(&mte_async_mode);
+> }
 > 
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> ... like we do for system_uses_ttbr0_pan()?
+>
 
-thanks for testing them all and letting me know.
+I agree, it is a cleaner solution. I will add it to v15.
 
-greg k-h
+> That way the callers are easier to read, and kernels built without
+> CONFIG_KASAN_HW_TAGS don't have the static branch at all. I reckon you
+> can put that in one of hte mte headers and include it where needed.
+
+-- 
+Regards,
+Vincenzo
