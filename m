@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC28332CFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B67332CF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhCIRNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:13:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231522AbhCIRNJ (ORCPT
+        id S231627AbhCIRNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:13:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51811 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231278AbhCIRMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:13:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBEAC06174A;
-        Tue,  9 Mar 2021 09:13:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5U491TQdNsjhbIYsUSmgNKAf6MVmCm1WHLEIdhpS/JU=; b=gPUvkAbBbisJ6IK3aBstPSkfYW
-        LukBQjq/CPDnD0C7fLKVYWPdq9Iiad/BOrw2QSQfrb6a4muKVZ7KrqbRUBTR+lMUA+KCNg3xdtlQt
-        sAGf6WDADgoDIcO5wmX6UkX1Vtz2XQLXRFYZef49Hn4NcdwbVdoz428WnEGx+0zTA6zvcLTpbvHjG
-        JJHVj+uGRN8OrHg62WGpB64yAOFpCqCyhmX2wvRrNOMuWd4IqrETREBWRWrMGnYY5TilXWe3EhFwK
-        goyU/0YkSUWwsxfFfzhkhX6/4xLVqLCC2FMOQ8KfyjAGZ0OS7LGeC2XNoorKDvehK520r4/YMpWxB
-        UAOpD0Yg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJfuI-000q0x-T5; Tue, 09 Mar 2021 17:12:39 +0000
-Date:   Tue, 9 Mar 2021 17:12:30 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210309171230.GA198878@infradead.org>
-References: <20210301161200.18852-1-mgorman@techsingularity.net>
- <20210301161200.18852-3-mgorman@techsingularity.net>
+        Tue, 9 Mar 2021 12:12:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615309972;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QDiWkJUtFaM48IgTP2YitIoq9fuTHCd8wn8lOzbyjb4=;
+        b=RayUiSiRsJFPplRbiBomo9rku2a1YBHGapixbyHazxyiY/44KVGj4BOQjzT2Prn6mcLkUv
+        s/eAyfuqavpsWMHQ7iTXp94uHjW4TV2sjI2HFlMQAGlZm4XzTxP+OPe5r1JW7Om91QWYKN
+        zbQw91vrxfWjyD4H5s33GkNq5UQJ4y0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-rOiZa9gJOXOA9wVIVbv71w-1; Tue, 09 Mar 2021 12:12:49 -0500
+X-MC-Unique: rOiZa9gJOXOA9wVIVbv71w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C77784BA40;
+        Tue,  9 Mar 2021 17:12:46 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E13F5D6D7;
+        Tue,  9 Mar 2021 17:12:42 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
+References: <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com> <20210303135500.24673-1-alex.bennee@linaro.org> <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com> <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     dhowells@redhat.com, Arnd Bergmann <arnd@linaro.org>,
+        keyrings@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        ruchika.gupta@linaro.org,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>,
+        Hector Martin <marcan@marcan.st>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301161200.18852-3-mgorman@techsingularity.net>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <178478.1615309961.1@warthog.procyon.org.uk>
+Date:   Tue, 09 Mar 2021 17:12:41 +0000
+Message-ID: <178479.1615309961@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Would vmalloc be another good user of this API? 
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
-> +	if (!prepare_alloc_pages(gfp_mask, 0, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
+> As it seems neither Microsoft nor Apple is paying it much attention
+> (+/- new facts) it will be up to the community to define use cases
+> for RPMB. I don't know what would make most sense, but the
+> kernel keyring seems to make a bit of sense as it is a well maintained
+> keyring project.
 
-This crazy long line is really hard to follow.
+I'm afraid I don't know a whole lot about the RPMB.  I've just been and read
+https://lwn.net/Articles/682276/ about it.
 
-> +		return 0;
-> +	gfp_mask = alloc_mask;
-> +
-> +	/* Find an allowed local zone that meets the high watermark. */
-> +	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
+What is it you envision the keyring API doing with regard to this?  Being used
+to represent the key needed to access the RPMB or being used to represent an
+RPMB entry (does it have entries?)?
 
-Same here.
+David
 
-> +		unsigned long mark;
-> +
-> +		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
-> +		    !__cpuset_zone_allowed(zone, gfp_mask)) {
-> +			continue;
-> +		}
-
-No need for the curly braces.
-
->  	}
->  
-> -	gfp_mask &= gfp_allowed_mask;
-> -	alloc_mask = gfp_mask;
-
-Is this change intentional?
