@@ -2,280 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A84332A8B
+	by mail.lfdr.de (Postfix) with ESMTP id BE591332A8C
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbhCIPd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:33:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhCIPdQ (ORCPT
+        id S231428AbhCIPd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:33:29 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:52222 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229815AbhCIPdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:33:16 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BA3C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:33:16 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id e20so2109185ljn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:33:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GueXWEXYhGgyYi6RS/iDIZfnWgS+3C26tBBCX7qsJZ4=;
-        b=z2Y+Gz1eD/yQaUstRQIfbWCXO4frrvNYGP64q9xoN7I+ftNHuKnfMiLaKKarVDldsr
-         ksiKhYOs+YQAIA+o7mJ4jo8GQ3ExfzIIg2l7auI14Eo1bTAYTdD8FGTDlse27T9hpgW3
-         r/uDAZb2mUztArRDC42qzZCFznzG2qD7HORJhDjB32RqT475lwOXdMqJAf6RQDx6slQh
-         jF2KVKvMvHjcCDxtchWOYHF6SPUQRp9HFC/x5N2COkqY82uIt8oSXChvNwZVL0LOR+hj
-         dt2Vh8cub/3nTsv9Oi29tgWHzrWg6vLoopEEaa/DlvzR6vGCJst059Ye6a8RFS9Zyn1i
-         /J5w==
+        Tue, 9 Mar 2021 10:33:20 -0500
+Received: by mail-il1-f199.google.com with SMTP id y11so10439430ilc.18
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:33:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GueXWEXYhGgyYi6RS/iDIZfnWgS+3C26tBBCX7qsJZ4=;
-        b=WzSFEky/HbEQVQwqiSVEyQtQ2fKIEW38RGjF9tzhxtyTPF0TSt1nB2w4mCcN/hES5s
-         I9TFRxjT2p91UW7/irf+rtPSDi1VMYeNECNSekHdK2/BA7ZNlOBbKwDnGHbfEt5cqnlt
-         Bnrd0emlBLK8V1kYw2hEQL3axEfpaV6SYHpJC7ZHjnc6py6pBU+BzzxOKHv8kBLzlUdm
-         LOI6NB9M8owJqYMmXtVO57OAeAJGWk1x8ZYk21hSIe7CZiS7kNmSpngDK6vrzT0jlVtR
-         hwE9h7+eJZDjrSYP4FgqyZ0ZPseZSV4l0bbAKTuvEJEqlLCbwq3E7QAlRPLScvGlhEPC
-         BiZw==
-X-Gm-Message-State: AOAM532tUcBt66iSwMgzlTwBJy84NC/q2/N73Y75cT8XtsBV3Tx5pWPk
-        FDBJzsWVLF42fAhwjoLdXBst4/SOfUlc/CtZ/pNtPw==
-X-Google-Smtp-Source: ABdhPJwdiYjJdqBFXdRtFhpC8nmjCUSyb8p3FKa6ytdypXh//VwloAzsouYK1AjcyrQSDABBs6/mkeh/pmupWOxegwo=
-X-Received: by 2002:a05:651c:124b:: with SMTP id h11mr17357819ljh.401.1615303994941;
- Tue, 09 Mar 2021 07:33:14 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=i3bJh0n/iRCHRnQEcfouspzVyDO7m+fcgDKM8Pc2v7U=;
+        b=sgf7V0dWjJtjRo1GQajcYgaxdhBhbVeCnYU7jxJWKqy/NKuJO3Wm1tT2A6Y6OjRN8p
+         lB6xLBVUYxjhlfKtG+woKcY18hi+k1cyqZjN+Mw5juSELz0LCXMu85d1iAquHuu2F1tl
+         sSQBh10I27KnDLVyDZ6CJQVEY0jZwCWvPIdhzGjhjfK2XPjSqEQfBZKBkpZiFCHj0/91
+         K97Rz+KpHDxdaDNkqnDUNQVaFNrwYDUlrSzd4Zj6UMsdBEtAEeAj9wNVTf5hbtBuA7He
+         973qTvG0tR/LkqieZro+JL0LRavyl9yIwy/hZtzXVlB++zXn1DDON+Jq9c9EAV/rClF1
+         qwrg==
+X-Gm-Message-State: AOAM532WqDSqu+Z+GAgXjvdFWulO4+J1TlTK9zJ8AVuG4MQw5mJKtFJx
+        dT4s62bvJltc0104pz4tgqea2xpeMp5daLHCYI9k6K0guJMa
+X-Google-Smtp-Source: ABdhPJzFQ/OkQDLzxvBgiV0KstiLfQVTAddPbnHcGgIErwJfRp8tZVdKiw1FIi/VRKn9Ja5QsIoB+Zrz4ltOIRgbISgaZuyDHadg
 MIME-Version: 1.0
-References: <cover.1614580695.git.viresh.kumar@linaro.org> <f72383d451710fc4bc36e7e3015deba40fbe28f3.1614580695.git.viresh.kumar@linaro.org>
- <20210309151017.GA25243@arm.com>
-In-Reply-To: <20210309151017.GA25243@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 9 Mar 2021 16:33:03 +0100
-Message-ID: <CAKfTPtBQ2Y249LMQOep5HdfmkOQknP0jom=6RpDOFv_TajZLWQ@mail.gmail.com>
-Subject: Re: [PATCH V5 2/2] cpufreq: CPPC: Add support for frequency invariance
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a92:c5cf:: with SMTP id s15mr24966046ilt.149.1615303999562;
+ Tue, 09 Mar 2021 07:33:19 -0800 (PST)
+Date:   Tue, 09 Mar 2021 07:33:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000192a2105bd1c45b3@google.com>
+Subject: [syzbot] WARNING in __hrtimer_run_queues
+From:   syzbot <syzbot+b0b2da1e0f732c818975@syzkaller.appspotmail.com>
+To:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        hamohammed.sa@gmail.com, linux-kernel@vger.kernel.org,
+        melissa.srw@gmail.com, rodrigosiqueiramelo@gmail.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021 at 16:10, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
->
-> Hey,
->
-> On Monday 01 Mar 2021 at 12:21:18 (+0530), Viresh Kumar wrote:
-> > The Frequency Invariance Engine (FIE) is providing a frequency scaling
-> > correction factor that helps achieve more accurate load-tracking.
-> >
-> > Normally, this scaling factor can be obtained directly with the help of
-> > the cpufreq drivers as they know the exact frequency the hardware is
-> > running at. But that isn't the case for CPPC cpufreq driver.
-> >
-> > Another way of obtaining that is using the arch specific counter
-> > support, which is already present in kernel, but that hardware is
-> > optional for platforms.
-> >
-> > This patch updates the CPPC driver to register itself with the topology
-> > core to provide its own implementation (cppc_scale_freq_tick()) of
-> > topology_scale_freq_tick() which gets called by the scheduler on every
-> > tick. Note that the arch specific counters have higher priority than
-> > CPPC counters, if available, though the CPPC driver doesn't need to have
-> > any special handling for that.
-> >
-> > On an invocation of cppc_scale_freq_tick(), we schedule an irq work
-> > (since we reach here from hard-irq context), which then schedules a
-> > normal work item and cppc_scale_freq_workfn() updates the per_cpu
-> > freq_scale variable based on the counter updates since the last tick.
-> >
-> > To allow platforms to disable frequency invariance support if they want,
->                                ^
->                                this CPPC counter-based frequency invariance
->                                support..
->
-> (disabling this config will not disable cpufreq or arch counter-based FIE)
->
-> > this is all done under CONFIG_ACPI_CPPC_CPUFREQ_FIE, which is enabled by
-> > default.
-> >
-> > This also exports sched_setattr_nocheck() as the CPPC driver can be
-> > built as a module.
-> >
-> > Cc: Ionela Voinescu <ionela.voinescu@arm.com>
-> > Cc: linux-acpi@vger.kernel.org
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >  drivers/cpufreq/Kconfig.arm    |   9 ++
-> >  drivers/cpufreq/cppc_cpufreq.c | 244 +++++++++++++++++++++++++++++++--
-> >  include/linux/arch_topology.h  |   1 +
-> >  kernel/sched/core.c            |   1 +
-> >  4 files changed, 243 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-> > index e65e0a43be64..a3e2d6dfea70 100644
-> > --- a/drivers/cpufreq/Kconfig.arm
-> > +++ b/drivers/cpufreq/Kconfig.arm
-> > @@ -19,6 +19,15 @@ config ACPI_CPPC_CPUFREQ
-> >
-> >         If in doubt, say N.
-> >
-> > +config ACPI_CPPC_CPUFREQ_FIE
-> > +     bool "Frequency Invariance support for CPPC cpufreq driver"
-> > +     depends on ACPI_CPPC_CPUFREQ
->
-> It also depends on GENERIC_ARCH_TOPOLOGY.
->
-> > +     default y
-> > +     help
-> > +       This enables frequency invariance support for CPPC cpufreq driver.
->                                                     ^^^^^^^^^^^^^^^^^^^^^^^^
->                                                     s//based on CPPC counters.
->
-> .. or more detailed: This extends frequency invariance support in the
-> CPPC cpufreq driver, by using CPPC delivered and reference performance
-> counters.
->
-> > +
-> > +       If in doubt, say N.
-> > +
-> >  config ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM
-> >       tristate "Allwinner nvmem based SUN50I CPUFreq driver"
-> >       depends on ARCH_SUNXI
-> > diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> > index 8a482c434ea6..c4580a37a1b1 100644
-> > --- a/drivers/cpufreq/cppc_cpufreq.c
-> > +++ b/drivers/cpufreq/cppc_cpufreq.c
-> [..]
-> > +static void cppc_freq_invariance_policy_init(struct cpufreq_policy *policy,
-> > +                                          struct cppc_cpudata *cpu_data)
-> > +{
-> > +     struct cppc_freq_invariance *cppc_fi;
-> > +     int i;
-> > +
-> > +     if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> > +             return;
-> > +
-> > +     for_each_cpu(i, policy->cpus) {
-> > +             cppc_fi = &per_cpu(cppc_freq_inv, i);
-> > +             cppc_fi->cpu = i;
-> > +             cppc_fi->cpu_data = cpu_data;
-> > +             kthread_init_work(&cppc_fi->work, cppc_scale_freq_workfn);
-> > +             init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
-> > +     }
-> > +}
-> > +
-> > +static void cppc_freq_invariance_exit(void)
-> > +{
-> > +     struct cppc_freq_invariance *cppc_fi;
-> > +     int i;
-> > +
-> > +     if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> > +             return;
-> > +
-> > +     topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, cpu_present_mask);
-> > +
-> > +     for_each_possible_cpu(i) {
-> > +             cppc_fi = &per_cpu(cppc_freq_inv, i);
-> > +             irq_work_sync(&cppc_fi->irq_work);
-> > +     }
-> > +
-> > +     kthread_destroy_worker(kworker_fie);
-> > +     kworker_fie = NULL;
-> > +}
-> > +
-> > +static void __init cppc_freq_invariance_init(void)
-> > +{
-> > +     struct cppc_perf_fb_ctrs fb_ctrs = {0};
-> > +     struct cppc_freq_invariance *cppc_fi;
-> > +     struct sched_attr attr = {
-> > +             .size           = sizeof(struct sched_attr),
-> > +             .sched_policy   = SCHED_DEADLINE,
-> > +             .sched_nice     = 0,
-> > +             .sched_priority = 0,
-> > +             /*
-> > +              * Fake (unused) bandwidth; workaround to "fix"
-> > +              * priority inheritance.
-> > +              */
-> > +             .sched_runtime  = 1000000,
-> > +             .sched_deadline = 10000000,
-> > +             .sched_period   = 10000000,
-> > +     };
-> > +     int i, ret;
-> > +
-> > +     if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> > +             return;
-> > +
-> > +     kworker_fie = kthread_create_worker(0, "cppc_fie");
-> > +     if (IS_ERR(kworker_fie))
-> > +             return;
-> > +
-> > +     ret = sched_setattr_nocheck(kworker_fie->task, &attr);
-> > +     if (ret) {
-> > +             pr_warn("%s: failed to set SCHED_DEADLINE: %d\n", __func__,
-> > +                     ret);
-> > +             kthread_destroy_worker(kworker_fie);
-> > +             return;
-> > +     }
-> > +
->
-> Nit: to me it makes more sense to move the code below to
-> cppc_freq_invariance_policy_init(). It seems a bit strange to do part of
-> the initialization of the per-cpu information there, and part here. But
-> I do understand the reasons for it. Moving the code below would also
-> save some cycles going through the CPUs again and will mimic the
-> frequency invariance setup process in the arm64 topology, where we do
-> amu_fie_setup() at policy creation time.
->
-> It's not a big deal so I'll leave it up to you.
->
-> > +     for_each_possible_cpu(i) {
-> > +             cppc_fi = &per_cpu(cppc_freq_inv, i);
-> > +
-> > +             /* A policy failed to initialize, abort */
-> > +             if (unlikely(!cppc_fi->cpu_data))
-> > +                     return cppc_freq_invariance_exit();
-> > +
-> > +             ret = cppc_get_perf_ctrs(i, &fb_ctrs);
-> > +             if (ret) {
-> > +                     pr_warn("%s: failed to read perf counters: %d\n",
-> > +                             __func__, ret);
-> > +                     return cppc_freq_invariance_exit();
-> > +             }
-> > +
-> > +             cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
-> > +     }
-> > +
-> > +     /* Register for freq-invariance */
-> > +     topology_set_scale_freq_source(&cppc_sftd, cpu_present_mask);
-> > +}
->
-> After another very quick round of testing:
->
-> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
->
-> I did not get the chance to test on ThunderX2 yet, but if you are happy
-> with your testing on it, I won't delay this any further.
+Hello,
 
-I have just run some functional  tests on thx2 with rt-app: I have run
-a periodic task (6ms running / 30ms periods) at different frequencies
-(2.5Ghz, 2Ghz, 1.5Ghz, 1.333Ghz, 1Ghz) and the PELT signals stays the
-same for all frequencies.
+syzbot found the following issue on:
 
-Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
+HEAD commit:    144c79ef Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07'..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16972ea2d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9008fb06fa15d749
+dashboard link: https://syzkaller.appspot.com/bug?extid=b0b2da1e0f732c818975
+compiler:       Debian clang version 11.0.1-2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b0b2da1e0f732c818975@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+raw_local_irq_restore() called with IRQs enabled
+WARNING: CPU: 1 PID: 10032 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1f/0x30 kernel/locking/irqflag-debug.c:10
+Modules linked in:
+CPU: 1 PID: 10032 Comm: syz-executor.2 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:warn_bogus_irq_restore+0x1f/0x30 kernel/locking/irqflag-debug.c:10
+Code: cc cc cc cc cc cc cc cc cc cc cc 80 3d 73 49 54 04 00 74 01 c3 c6 05 69 49 54 04 01 48 c7 c7 60 5d ae 89 31 c0 e8 41 1f fa f7 <0f> 0b c3 cc cc cc cc cc cc cc cc cc cc cc cc cc cc 41 56 53 48 83
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 10032 at drivers/gpu/drm/vkms/vkms_crtc.c:21 vkms_vblank_simulate+0x2c1/0x320 drivers/gpu/drm/vkms/vkms_crtc.c:21
+Modules linked in:
+CPU: 1 PID: 10032 Comm: syz-executor.2 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:vkms_vblank_simulate+0x2c1/0x320 drivers/gpu/drm/vkms/vkms_crtc.c:21
+Code: 00 00 00 48 c7 c6 a0 28 28 8a 31 c0 e8 18 71 ef ff b8 01 00 00 00 48 83 c4 18 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 df e0 13 fd <0f> 0b e9 e8 fd ff ff 89 d9 80 e1 07 38 c1 0f 8c 5c fe ff ff 48 89
+RSP: 0018:ffffc90000dc04a8 EFLAGS: 00010046
+RAX: ffffffff8464ccc1 RBX: 0000000000000002 RCX: ffff8880155bb780
+RDX: 0000000000010103 RSI: 0000000000000002 RDI: 0000000000000001
+RBP: ffff8880b9d26260 R08: ffffffff8464caa1 R09: fffffbfff1b6a1e6
+R10: fffffbfff1b6a1e6 R11: 0000000000000000 R12: dffffc0000000000
+R13: 1ffff110033593d2 R14: 0000000000fe4c00 R15: ffff888019ac8d30
+FS:  0000000001b6c400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000002e97708 CR3: 000000001ba55000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x4c9/0xa00 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x393/0xf70 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
+ __sysvec_apic_timer_interrupt+0xf9/0x270 arch/x86/kernel/apic/apic.c:1106
+ sysvec_apic_timer_interrupt+0x3e/0xb0 arch/x86/kernel/apic/apic.c:1100
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
+RIP: 0010:console_unlock+0xaab/0xe00 kernel/printk/printk.c:2586
+Code: 84 5a f7 ff ff eb 29 e8 73 53 18 00 e8 2e 68 ed 07 4d 85 f6 74 df 66 0f 1f 84 00 00 00 00 00 e8 5b 53 18 00 fb f6 44 24 0f 01 <0f> 84 2f f7 ff ff e8 4a 53 18 00 48 c7 c7 b4 4d 6f 8b be 1b 0a 00
+RSP: 0018:ffffc90000dc0800 EFLAGS: 00000246
+RAX: ffffffff81605a45 RBX: 0000000000000000 RCX: ffff8880155bb780
+RDX: 0000000000000103 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90000dc0918 R08: ffffffff81605a02 R09: fffffbfff1f27aa9
+R10: fffffbfff1f27aa9 R11: 0000000000000000 R12: dffffc0000000000
+R13: 1ffffffff19ed295 R14: 0000000000000200 R15: 1ffffffff19ed28e
+ vprintk_emit+0x1ab/0x270 kernel/printk/printk.c:2098
+ printk+0x62/0x83 kernel/printk/printk.c:2146
+ show_opcodes+0xc1/0xe0 arch/x86/kernel/dumpstack.c:129
+ show_ip arch/x86/kernel/dumpstack.c:150 [inline]
+ show_iret_regs+0x2f/0x60 arch/x86/kernel/dumpstack.c:155
+ __show_regs+0x29/0x580 arch/x86/kernel/process_64.c:73
+ show_regs+0x35/0x60 arch/x86/kernel/dumpstack.c:469
+ __warn+0x12f/0x270 kernel/panic.c:595
+ report_bug+0x1b1/0x2e0 lib/bug.c:195
+ handle_bug+0x3d/0x70 arch/x86/kernel/traps.c:239
+ exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:259
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:575
+RIP: 0010:warn_bogus_irq_restore+0x1f/0x30 kernel/locking/irqflag-debug.c:10
+Code: cc cc cc cc cc cc cc cc cc cc cc 80 3d 73 49 54 04 00 74 01 c3 c6 05 69 49 54 04 01 48 c7 c7 60 5d ae 89 31 c0 e8 41 1f fa f7 <0f> 0b c3 cc cc cc cc cc cc cc cc cc cc cc cc cc cc 41 56 53 48 83
+RSP: 0018:ffffc90000dc0c78 EFLAGS: 00010246
+RAX: 74fd7735e664bd00 RBX: ffff888019090088 RCX: ffff8880155bb780
+RDX: 0000000000000102 RSI: 0000000000000102 RDI: 0000000000000000
+RBP: 1ffff920001b8190 R08: ffffffff81605e52 R09: ffffed10173a3f1c
+R10: ffffed10173a3f1c R11: 0000000000000000 R12: 0000000000000003
+R13: ffff88823ffe6dc0 R14: 0000000000000246 R15: dffffc0000000000
+ kvm_wait+0x10e/0x160 arch/x86/kernel/kvm.c:860
+ pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
+ pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
+ __pv_queued_spin_lock_slowpath+0x6b5/0xb90 kernel/locking/qspinlock.c:508
+ pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
+ queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+ queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
+ do_raw_spin_lock+0x430/0x810 kernel/locking/spinlock_debug.c:113
+ spin_lock include/linux/spinlock.h:354 [inline]
+ tcp_tsq_handler+0x20/0x1f0 net/ipv4/tcp_output.c:1029
+ tcp_tasklet_func+0x403/0x450 net/ipv4/tcp_output.c:1063
+ tasklet_action_common+0x11c/0x3f0 kernel/softirq.c:557
+ __do_softirq+0x318/0x714 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu+0x1d8/0x200 kernel/softirq.c:422
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:434
+ common_interrupt+0xa1/0xc0 arch/x86/kernel/irq.c:240
+ </IRQ>
+ asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:623
+RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+RIP: 0010:_raw_spin_unlock_irqrestore+0x7a/0xc0 kernel/locking/spinlock.c:191
+Code: 00 fc ff df 80 3c 08 00 74 08 48 89 e7 e8 0e f9 6c f8 f7 04 24 00 02 00 00 75 37 41 f7 c6 00 02 00 00 74 01 fb bf 01 00 00 00 <e8> 81 7f 02 f8 65 8b 05 a2 e4 b1 76 85 c0 74 28 65 48 8b 04 25 28
+RSP: 0018:ffffc90016f27d88 EFLAGS: 00000206
+RAX: 1ffff92002de4fb1 RBX: ffff8880b9d26180 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+RBP: 0000000000000000 R08: ffffffff817eade0 R09: ffffed10173a4c31
+R10: ffffed10173a4c31 R11: 0000000000000000 R12: ffffc90016f27e58
+R13: 00000000000f4240 R14: 0000000000000286 R15: 0000000000000001
+ hrtimer_start_expires include/linux/hrtimer.h:436 [inline]
+ hrtimer_sleeper_start_expires kernel/time/hrtimer.c:1799 [inline]
+ do_nanosleep+0x17c/0x740 kernel/time/hrtimer.c:1875
+ hrtimer_nanosleep+0x1b9/0x350 kernel/time/hrtimer.c:1931
+ __do_sys_clock_nanosleep kernel/time/posix-timers.c:1267 [inline]
+ __se_sys_clock_nanosleep kernel/time/posix-timers.c:1245 [inline]
+ __x64_sys_clock_nanosleep+0x2f6/0x340 kernel/time/posix-timers.c:1245
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x48a631
+Code: 24 0c 89 3c 24 48 89 4c 24 18 e8 aa e2 ff ff 4c 8b 54 24 18 48 8b 54 24 10 41 89 c0 8b 74 24 0c 8b 3c 24 b8 e6 00 00 00 0f 05 <44> 89 c7 48 89 04 24 e8 e3 e2 ff ff 48 8b 04 24 eb 97 66 2e 0f 1f
+RSP: 002b:00007ffee856c320 EFLAGS: 00000293 ORIG_RAX: 00000000000000e6
+RAX: ffffffffffffffda RBX: 000000000002189a RCX: 000000000048a631
+RDX: 00007ffee856c360 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000010
+R10: 0000000000000000 R11: 0000000000000293 R12: 000000000056bf60
+R13: 000000000056c9e0 R14: 000000000056bf60 R15: 0000000000021559
 
 
->
-> Thanks,
-> Ionela.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
