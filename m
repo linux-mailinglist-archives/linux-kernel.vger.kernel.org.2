@@ -2,105 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8854332B63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8683332B69
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbhCIQCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:02:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhCIQCe (ORCPT
+        id S232011AbhCIQDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:03:52 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:54496 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232067AbhCIQDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:02:34 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485ACC06174A;
-        Tue,  9 Mar 2021 08:02:34 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id ba1so6811497plb.1;
-        Tue, 09 Mar 2021 08:02:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=u/zo2jfoF6PwZ9TXZrzdcWMw/MqCL+4M9acRioKN5rc=;
-        b=hGc1sc9Zin0NGlvn8UZ3ktU9arWOLbXIZq3+A8CoH3V2/H/PmWhrFCMyXjXjtPvtAI
-         +Wxtnu/GGNsv0lUC+sdFCzNApr22GGZNq+gXVG/HlJGQU4Mza+7MjTVRTAxGc28GCjKE
-         hapAcGKKW8YB90Xnj45SXIMO7IuHBw7NHFTykzsxiE29+GCrbhTWV4hrnoZNIepV5bOf
-         g4yC/xg/McAFp/qkVFnRtoOLAwl+PKI3IvKXDVrORrQGnLw7QohlXx8MOxAqJCI+oAFr
-         hPsxTPAxQv4GRc/6XoUZqOGNXLl4uTjnrK6Nu0YPXDwm5oczLxlrvakJTz9U22sDrqCU
-         qJnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u/zo2jfoF6PwZ9TXZrzdcWMw/MqCL+4M9acRioKN5rc=;
-        b=Rmw6DbBebjRXb5tYFaP7mlBe+t1JVNP/LL+MK6WMWAC9rAKPXyF16cm6aQFUHqaIoC
-         fwqONeHSsFdKlkwzDE+d5lk4q2Er/bOjHaUDBzbo491F72aZuuTnRlUVB1Ph4Oz4meXV
-         fA2F4JWPBfijBHyID9KcQGsKFxwchtpunJgiZt0jNf7HXLymaXix/J4FMP4XQTb21ecR
-         P/Q0wkKtldG+FQVGueEjBzt9vsYNyRUp60MY6KOIsBGvl2SwmK+Iq6Lo1oHb0qUhg+8g
-         eidBSXgZCYLILC4xdjiOdRwVDhTKLWus3q/rKhOHczXxZqZsXlTobRpQK+sBDy4n7hI7
-         o49w==
-X-Gm-Message-State: AOAM530AZ1zydDHdFKTT9R48JMTxOPpVaC+mJ68kY3fuTd0K5vEp615u
-        rdGO9/JVaGcGyjFvRd3EzRA=
-X-Google-Smtp-Source: ABdhPJxIU5SiZTXIDieOgpkzSZECuHkiBOixDLlYNAcoh6C3BBtVCOUOMI2OneoxF56SgTzabizELA==
-X-Received: by 2002:a17:90a:ce03:: with SMTP id f3mr5347330pju.195.1615305753784;
-        Tue, 09 Mar 2021 08:02:33 -0800 (PST)
-Received: from [172.30.1.19] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id t19sm13127374pgj.8.2021.03.09.08.02.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 08:02:32 -0800 (PST)
-Subject: Re: [PATCH 08/11] PM / devfreq: check get_dev_status in
- devfreq_update_stats
-To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, abel.vesa@nxp.com
-References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
- <1615294733-22761-9-git-send-email-aisheng.dong@nxp.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <819323f6-3b2e-403b-3068-06d4c09af354@gmail.com>
-Date:   Wed, 10 Mar 2021 01:02:25 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 9 Mar 2021 11:03:19 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129G3Beh028524;
+        Tue, 9 Mar 2021 10:03:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615305791;
+        bh=4hhxkjA1GUSlJ4fSgkfLzUPVRyyLISlExfEv+Ir5Io8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=AfLciXCwbMveen/74cVeBKXZFPADkQOrSVZqdxUAmGdYhxt6pvyZ6OdsgG8IEMI4c
+         0VPNhcigEIPGZe0ffGsusCHYWyJJUxBD2kvG0lhj+8M4VLQNNiuG4Ouo4NHaMS7CVS
+         GN/qDaPqh05Xu5rJ23bFnJReCMUwrxdxYJPCxwOU=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129G3B0a058254
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Mar 2021 10:03:11 -0600
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
+ 2021 10:03:11 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 9 Mar 2021 10:03:11 -0600
+Received: from [10.250.234.4] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129G37V6027939;
+        Tue, 9 Mar 2021 10:03:08 -0600
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-j721e-main: Update the speed modes
+ supported and their itap delay values for MMCSD subsystems
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Sekhar Nori <nsekhar@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210305054104.10153-1-a-govindraju@ti.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <065ad1b1-97a6-bb30-26c8-a488d3918e26@ti.com>
+Date:   Tue, 9 Mar 2021 21:33:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1615294733-22761-9-git-send-email-aisheng.dong@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210305054104.10153-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
-> Check .get_dev_status() in devfreq_update_stats in case it's abused
-> when a device does not provide it.
+
+
+On 05/03/21 11:11 am, Aswath Govindraju wrote:
+> According to latest errata of J721e [1], HS400 mode is not supported
+> in MMCSD0 subsystem (i2024) and SDR104 mode is not supported in MMCSD1/2
+> subsystems (i2090). Therefore, replace mmc-hs400-1_8v with mmc-hs200-1_8v
+> in MMCSD0 subsystem and add a sdhci mask to disable SDR104 speed mode.
 > 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> Also, update the itap delay values for all the MMCSD subsystems according
+> the latest J721e data sheet[2]
+> 
+> [1] - https://www.ti.com/lit/er/sprz455/sprz455.pdf
+> [2] - https://www.ti.com/lit/ds/symlink/tda4vm.pdf
+> 
+> Fixes: cd48ce86a4d0 ("arm64: dts: ti: k3-j721e-common-proc-board: Add support for SD card UHS modes")
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+
+Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
 > ---
->   drivers/devfreq/governor.h | 3 +++
->   1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
-> index 31af6d072a10..67a6dbdd5d23 100644
-> --- a/drivers/devfreq/governor.h
-> +++ b/drivers/devfreq/governor.h
-> @@ -89,6 +89,9 @@ int devfreq_update_target(struct devfreq *devfreq, unsigned long freq);
->   
->   static inline int devfreq_update_stats(struct devfreq *df)
->   {
-> +	if (!df->profile->get_dev_status)
-> +		return -EINVAL;
-> +
->   	return df->profile->get_dev_status(df->dev.parent, &df->last_status);
->   }
->   #endif /* _GOVERNOR_H */
+> Changes since v1:
+> - Corrected the fixes tag to latest commit that makes changes to the
+>   sdhci DT nodes.
 > 
-
-Applied it. Thanks.
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> index 8c84dafb7125..f1e7da3dfa27 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> @@ -1042,13 +1042,16 @@
+>  		assigned-clocks = <&k3_clks 91 1>;
+>  		assigned-clock-parents = <&k3_clks 91 2>;
+>  		bus-width = <8>;
+> -		mmc-hs400-1_8v;
+> +		mmc-hs200-1_8v;
+>  		mmc-ddr-1_8v;
+>  		ti,otap-del-sel-legacy = <0xf>;
+>  		ti,otap-del-sel-mmc-hs = <0xf>;
+>  		ti,otap-del-sel-ddr52 = <0x5>;
+>  		ti,otap-del-sel-hs200 = <0x6>;
+>  		ti,otap-del-sel-hs400 = <0x0>;
+> +		ti,itap-del-sel-legacy = <0x10>;
+> +		ti,itap-del-sel-mmc-hs = <0xa>;
+> +		ti,itap-del-sel-ddr52 = <0x3>;
+>  		ti,trm-icp = <0x8>;
+>  		ti,strobe-sel = <0x77>;
+>  		dma-coherent;
+> @@ -1069,9 +1072,15 @@
+>  		ti,otap-del-sel-sdr25 = <0xf>;
+>  		ti,otap-del-sel-sdr50 = <0xc>;
+>  		ti,otap-del-sel-ddr50 = <0xc>;
+> +		ti,itap-del-sel-legacy = <0x0>;
+> +		ti,itap-del-sel-sd-hs = <0x0>;
+> +		ti,itap-del-sel-sdr12 = <0x0>;
+> +		ti,itap-del-sel-sdr25 = <0x0>;
+> +		ti,itap-del-sel-ddr50 = <0x2>;
+>  		ti,trm-icp = <0x8>;
+>  		ti,clkbuf-sel = <0x7>;
+>  		dma-coherent;
+> +		sdhci-caps-mask = <0x2 0x0>;
+>  	};
+>  
+>  	main_sdhci2: mmc@4f98000 {
+> @@ -1089,9 +1098,15 @@
+>  		ti,otap-del-sel-sdr25 = <0xf>;
+>  		ti,otap-del-sel-sdr50 = <0xc>;
+>  		ti,otap-del-sel-ddr50 = <0xc>;
+> +		ti,itap-del-sel-legacy = <0x0>;
+> +		ti,itap-del-sel-sd-hs = <0x0>;
+> +		ti,itap-del-sel-sdr12 = <0x0>;
+> +		ti,itap-del-sel-sdr25 = <0x0>;
+> +		ti,itap-del-sel-ddr50 = <0x2>;
+>  		ti,trm-icp = <0x8>;
+>  		ti,clkbuf-sel = <0x7>;
+>  		dma-coherent;
+> +		sdhci-caps-mask = <0x2 0x0>;
+>  	};
+>  
+>  	usbss0: cdns-usb@4104000 {
+> 
