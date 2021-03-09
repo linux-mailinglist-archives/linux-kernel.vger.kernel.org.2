@@ -2,321 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3A5332F6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F2C332F72
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbhCIT6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:58:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
+        id S231522AbhCIT65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:58:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231559AbhCIT6E (ORCPT
+        with ESMTP id S231366AbhCIT6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:58:04 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6DBC061760
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:58:03 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id p10so13304490ils.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:58:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=E3EULr6DvczRPFIruCZafwpzbVJHUineMzXORqlcchQ=;
-        b=AmitSmdh/V2mw5Yx89HuI1Zq+N3q8QBASWKZCt0sbt3F5/6nVjBACQwMNjgBQym3Hf
-         0B7dtbRdzAUR1hIDa7+DzHiCD3NV0/FPbPkLK4d1QLy8sBtfB9I88MZSKrVsDnU8fpoG
-         5/FTWeqEB6uQp8dQanKUK5V452UeMcZRUDRSEgSg9bkQSaXcbub8grk58rsQ94TKtv5M
-         fU1m99DEzED3Cq7im8oRtui5aN4cxAE21qZc8T8+nfu++Xu7WZCQpsmoz0tI3fEPoZgQ
-         ekjBxXOtnnZwKk1bXqkLfpyLADqoy1BLnZEOGTZkpV+eTwR9kDCaDwGNvraPZlClZbcu
-         7AUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=E3EULr6DvczRPFIruCZafwpzbVJHUineMzXORqlcchQ=;
-        b=Qvc9qZg1X3kjiCjZETVoi50rQO324m3Xih16jtwMRR2fEr+pXcoD6aM0vX24ejAgrh
-         O78uO6c+qA5l+DEZezVAIVWun+4K8lQcxqt6ZLcH4HujjdCILzqhiND10uedTQUe9CB2
-         M5InBWBRO78aIBJfirRRFTfic658ehJBwHh4J3wkZTp4JjGeLBWpIteuF/K+aiTRqL3M
-         SIgFAEFUYtKJOJR7Tu87G69NzhcHrGAbc2Y70Cnf9cxHIhFCxo2jWdNU9gh2dpHMNhW/
-         s69oY8Wi8UaKaiJAY2HrecWXmvRXBJQ869s4oaNsAGRA0cRm7kW8zS5WCSz9ACfygGTp
-         hQiw==
-X-Gm-Message-State: AOAM532rHJrpIYVsixz6GDO0Y6kI2qsvPFvLSZXZkLNrog5bByE+ji64
-        hTKfhvZ/gBD83kp62Imc45gOJaX+/KoHw0RzK/1BDw==
-X-Google-Smtp-Source: ABdhPJxj7kBpd2DRoLvs8wrf2H+fISF4BDTMGksQYSZt+kpke54saNcwvy57UiJ0RI97BbmSKtvnnbDMHoyUqSk6Njk=
-X-Received: by 2002:a05:6e02:194a:: with SMTP id x10mr26158846ilu.165.1615319882972;
- Tue, 09 Mar 2021 11:58:02 -0800 (PST)
+        Tue, 9 Mar 2021 14:58:30 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471E5C06174A;
+        Tue,  9 Mar 2021 11:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=RGjaGTfkSxj6Autv9FlufontkwdJU9wp0hD2xAby0Vk=; b=HniCgkZiRZw/fimxF5B4BgBAnw
+        daSqwlIyut8hHJqoP5oXZFUQ0MF/Mpy9+mFq0EuPBIR+of1znBQDFc1pQ9X5qyOONnyvOAOMKUMfh
+        ADMLHqb5hK/03a4N8OVc9fzdooAaoBFcz+Dd/97IpzSblliTwSK8s7ZgcjIqvSUtp/n33rFfhRGMU
+        rIWDE+uNIaOW8EWrjZNcwWCeHTFQ4lnIlhFdIwnAiVKq8IAUQHB3ZtKFXMJHpKqzQOQ1pMXcUlMcM
+        CS4wbc2Wy6ddHkpRGka+4ECJxtj8WBGGM+YggeIEtpv9EiFp+t3p0iFK0xOqsT8IjnFwvrXordar/
+        b0YGk1NQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJiUG-001Bq5-D4; Tue, 09 Mar 2021 19:57:53 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-bcache@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH v2] include: Remove pagemap.h from blkdev.h
+Date:   Tue,  9 Mar 2021 19:57:47 +0000
+Message-Id: <20210309195747.283796-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210302000133.272579-1-axelrasmussen@google.com>
- <20210302000133.272579-2-axelrasmussen@google.com> <04697A35-AEC7-43F1-8462-1CD39648544A@nvidia.com>
-In-Reply-To: <04697A35-AEC7-43F1-8462-1CD39648544A@nvidia.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Tue, 9 Mar 2021 11:57:26 -0800
-Message-ID: <CAJHvVcjjX8FEsdngUTH+0c3C17T0ud-FXj=GJf90R8hn8PKekA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] userfaultfd: support minor fault handling for shmem
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>, Wang Qing <wangqing@vivo.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 11:52 AM Zi Yan <ziy@nvidia.com> wrote:
->
-> On 1 Mar 2021, at 19:01, Axel Rasmussen wrote:
->
-> > Modify the userfaultfd register API to allow registering shmem VMAs in
-> > minor mode. Modify the shmem mcopy implementation to support
-> > UFFDIO_CONTINUE in order to resolve such faults.
-> >
-> > Combine the shmem mcopy handler functions into a single
-> > shmem_mcopy_atomic_pte, which takes a mode parameter. This matches how
-> > the hugetlbfs implementation is structured, and lets us remove a good
-> > chunk of boilerplate.
-> >
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > ---
-> >  fs/userfaultfd.c                 |  6 +--
-> >  include/linux/shmem_fs.h         | 26 ++++-----
-> >  include/uapi/linux/userfaultfd.h |  4 +-
-> >  mm/memory.c                      |  8 +--
-> >  mm/shmem.c                       | 92 +++++++++++++++-----------------
-> >  mm/userfaultfd.c                 | 27 +++++-----
-> >  6 files changed, 79 insertions(+), 84 deletions(-)
-> >
-> > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> > index 14f92285d04f..9f3b8684cf3c 100644
-> > --- a/fs/userfaultfd.c
-> > +++ b/fs/userfaultfd.c
-> > @@ -1267,8 +1267,7 @@ static inline bool vma_can_userfault(struct vm_ar=
-ea_struct *vma,
-> >       }
-> >
-> >       if (vm_flags & VM_UFFD_MINOR) {
-> > -             /* FIXME: Add minor fault interception for shmem. */
-> > -             if (!is_vm_hugetlb_page(vma))
-> > +             if (!(is_vm_hugetlb_page(vma) || vma_is_shmem(vma)))
-> >                       return false;
-> >       }
-> >
-> > @@ -1941,7 +1940,8 @@ static int userfaultfd_api(struct userfaultfd_ctx=
- *ctx,
-> >       /* report all available features and ioctls to userland */
-> >       uffdio_api.features =3D UFFD_API_FEATURES;
-> >  #ifndef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
-> > -     uffdio_api.features &=3D ~UFFD_FEATURE_MINOR_HUGETLBFS;
-> > +     uffdio_api.features &=3D
-> > +             ~(UFFD_FEATURE_MINOR_HUGETLBFS | UFFD_FEATURE_MINOR_SHMEM=
-);
-> >  #endif
-> >       uffdio_api.ioctls =3D UFFD_API_IOCTLS;
-> >       ret =3D -EFAULT;
-> > diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-> > index d82b6f396588..f0919c3722e7 100644
-> > --- a/include/linux/shmem_fs.h
-> > +++ b/include/linux/shmem_fs.h
-> > @@ -9,6 +9,7 @@
-> >  #include <linux/percpu_counter.h>
-> >  #include <linux/xattr.h>
-> >  #include <linux/fs_parser.h>
-> > +#include <linux/userfaultfd_k.h>
-> >
-> >  /* inode in-kernel data */
-> >
-> > @@ -122,21 +123,16 @@ static inline bool shmem_file(struct file *file)
-> >  extern bool shmem_charge(struct inode *inode, long pages);
-> >  extern void shmem_uncharge(struct inode *inode, long pages);
-> >
-> > +#ifdef CONFIG_USERFAULTFD
-> >  #ifdef CONFIG_SHMEM
-> > -extern int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst=
-_pmd,
-> > -                               struct vm_area_struct *dst_vma,
-> > -                               unsigned long dst_addr,
-> > -                               unsigned long src_addr,
-> > -                               struct page **pagep);
-> > -extern int shmem_mfill_zeropage_pte(struct mm_struct *dst_mm,
-> > -                                 pmd_t *dst_pmd,
-> > -                                 struct vm_area_struct *dst_vma,
-> > -                                 unsigned long dst_addr);
-> > -#else
-> > -#define shmem_mcopy_atomic_pte(dst_mm, dst_pte, dst_vma, dst_addr, \
-> > -                            src_addr, pagep)        ({ BUG(); 0; })
-> > -#define shmem_mfill_zeropage_pte(dst_mm, dst_pmd, dst_vma, \
-> > -                              dst_addr)      ({ BUG(); 0; })
-> > -#endif
-> > +int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
-> > +                        struct vm_area_struct *dst_vma,
-> > +                        unsigned long dst_addr, unsigned long src_addr=
-,
-> > +                        enum mcopy_atomic_mode mode, struct page **pag=
-ep);
-> > +#else /* !CONFIG_SHMEM */
-> > +#define shmem_mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma, dst_addr, \
-> > +                            src_addr, mode, pagep)        ({ BUG(); 0;=
- })
-> > +#endif /* CONFIG_SHMEM */
-> > +#endif /* CONFIG_USERFAULTFD */
-> >
-> >  #endif
-> > diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/user=
-faultfd.h
-> > index bafbeb1a2624..47d9790d863d 100644
-> > --- a/include/uapi/linux/userfaultfd.h
-> > +++ b/include/uapi/linux/userfaultfd.h
-> > @@ -31,7 +31,8 @@
-> >                          UFFD_FEATURE_MISSING_SHMEM |         \
-> >                          UFFD_FEATURE_SIGBUS |                \
-> >                          UFFD_FEATURE_THREAD_ID |             \
-> > -                        UFFD_FEATURE_MINOR_HUGETLBFS)
-> > +                        UFFD_FEATURE_MINOR_HUGETLBFS |       \
-> > +                        UFFD_FEATURE_MINOR_SHMEM)
-> >  #define UFFD_API_IOCTLS                              \
-> >       ((__u64)1 << _UFFDIO_REGISTER |         \
-> >        (__u64)1 << _UFFDIO_UNREGISTER |       \
-> > @@ -196,6 +197,7 @@ struct uffdio_api {
-> >  #define UFFD_FEATURE_SIGBUS                  (1<<7)
-> >  #define UFFD_FEATURE_THREAD_ID                       (1<<8)
-> >  #define UFFD_FEATURE_MINOR_HUGETLBFS         (1<<9)
-> > +#define UFFD_FEATURE_MINOR_SHMEM             (1<<10)
-> >       __u64 features;
-> >
-> >       __u64 ioctls;
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index c8e357627318..a1e5ff55027e 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -3929,9 +3929,11 @@ static vm_fault_t do_read_fault(struct vm_fault =
-*vmf)
-> >        * something).
-> >        */
-> >       if (vma->vm_ops->map_pages && fault_around_bytes >> PAGE_SHIFT > =
-1) {
-> > -             ret =3D do_fault_around(vmf);
-> > -             if (ret)
-> > -                     return ret;
-> > +             if (likely(!userfaultfd_minor(vmf->vma))) {
-> > +                     ret =3D do_fault_around(vmf);
-> > +                     if (ret)
-> > +                             return ret;
-> > +             }
-> >       }
-> >
-> >       ret =3D __do_fault(vmf);
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index b2db4ed0fbc7..6f81259fabb3 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -77,7 +77,6 @@ static struct vfsmount *shm_mnt;
-> >  #include <linux/syscalls.h>
-> >  #include <linux/fcntl.h>
-> >  #include <uapi/linux/memfd.h>
-> > -#include <linux/userfaultfd_k.h>
-> >  #include <linux/rmap.h>
-> >  #include <linux/uuid.h>
-> >
-> > @@ -1785,8 +1784,8 @@ static int shmem_swapin_page(struct inode *inode,=
- pgoff_t index,
-> >   * vm. If we swap it in we mark it dirty since we also free the swap
-> >   * entry since a page cannot live in both the swap and page cache.
-> >   *
-> > - * vmf and fault_type are only supplied by shmem_fault:
-> > - * otherwise they are NULL.
-> > + * vma, vmf, and fault_type are only supplied by shmem_fault: otherwis=
-e they
-> > + * are NULL.
-> >   */
-> >  static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
-> >       struct page **pagep, enum sgp_type sgp, gfp_t gfp,
-> > @@ -1830,6 +1829,12 @@ static int shmem_getpage_gfp(struct inode *inode=
-, pgoff_t index,
-> >               return error;
-> >       }
-> >
-> > +     if (page && vma && userfaultfd_minor(vma)) {
-> > +             unlock_page(page);
-> > +             *fault_type =3D handle_userfault(vmf, VM_UFFD_MINOR);
-> > +             return 0;
-> > +     }
-> > +
-> >       if (page)
-> >               hindex =3D page->index;
-> >       if (page && sgp =3D=3D SGP_WRITE)
-> > @@ -2354,14 +2359,12 @@ static struct inode *shmem_get_inode(struct sup=
-er_block *sb, const struct inode
-> >       return inode;
-> >  }
-> >
-> > -static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
-> > -                               pmd_t *dst_pmd,
-> > -                               struct vm_area_struct *dst_vma,
-> > -                               unsigned long dst_addr,
-> > -                               unsigned long src_addr,
-> > -                               bool zeropage,
-> > -                               struct page **pagep)
-> > +int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
-> > +                        struct vm_area_struct *dst_vma,
-> > +                        unsigned long dst_addr, unsigned long src_addr=
-,
-> > +                        enum mcopy_atomic_mode mode, struct page **pag=
-ep)
-> >  {
-> > +     bool is_continue =3D (mode =3D=3D MCOPY_ATOMIC_CONTINUE);
-> >       struct inode *inode =3D file_inode(dst_vma->vm_file);
-> >       struct shmem_inode_info *info =3D SHMEM_I(inode);
-> >       struct address_space *mapping =3D inode->i_mapping;
-> > @@ -2378,12 +2381,17 @@ static int shmem_mfill_atomic_pte(struct mm_str=
-uct *dst_mm,
-> >       if (!shmem_inode_acct_block(inode, 1))
-> >               goto out;
-> >
-> > -     if (!*pagep) {
-> > +     if (is_continue) {
-> > +             ret =3D -EFAULT;
-> > +             page =3D find_lock_page(mapping, pgoff);
-> > +             if (!page)
-> > +                     goto out_unacct_blocks;
-> > +     } else if (!*pagep) {
-> >               page =3D shmem_alloc_page(gfp, info, pgoff);
-> >               if (!page)
-> >                       goto out_unacct_blocks;
-> >
-> > -             if (!zeropage) {        /* mcopy_atomic */
-> > +             if (mode =3D=3D MCOPY_ATOMIC_NORMAL) {      /* mcopy_atom=
-ic */
-> >                       page_kaddr =3D kmap_atomic(page);
-> >                       ret =3D copy_from_user(page_kaddr,
-> >                                            (const void __user *)src_add=
-r,
->
-> Hi Axel,
->
-> shmem_mcopy_atomic_pte is not guarded by CONFIG_USERFAULTFD, thus it is
-> causing compilation errors due to the use of enum mcopy_atomic_mode mode,
-> when CONFIG_USERFAULTFD is not set.
+My UEK-derived config has 1030 files depending on pagemap.h before
+this change.  Afterwards, just 326 files need to be rebuilt when I
+touch pagemap.h.  I think blkdev.h is probably included too widely,
+but untangling that dependency is harder and this solves my problem.
+x86 allmodconfig builds, but there may be implicit include problems
+on other architectures.
 
-Ah, my apologies, I guarded it in the header but forgot to do so in
-shmem.c. I'll send an updated patch today.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+v2: Fix CONFIG_SWAP=n implicit use of pagemap.h by swap.h.  Increases
+    the number of files from 240, but that's still a big win -- 68%
+    reduction instead of 77%.
 
->
->
-> =E2=80=94
-> Best Regards,
-> Yan Zi
+ block/blk-settings.c      | 1 +
+ drivers/block/brd.c       | 1 +
+ drivers/block/loop.c      | 1 +
+ drivers/md/bcache/super.c | 1 +
+ drivers/nvdimm/btt.c      | 1 +
+ drivers/nvdimm/pmem.c     | 1 +
+ drivers/scsi/scsicam.c    | 1 +
+ include/linux/blkdev.h    | 1 -
+ include/linux/swap.h      | 1 +
+ 9 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index b4aa2f37fab6..976085a44fb8 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -7,6 +7,7 @@
+ #include <linux/init.h>
+ #include <linux/bio.h>
+ #include <linux/blkdev.h>
++#include <linux/pagemap.h>
+ #include <linux/memblock.h>	/* for max_pfn/max_low_pfn */
+ #include <linux/gcd.h>
+ #include <linux/lcm.h>
+diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+index 18bf99906662..2a5a1933826b 100644
+--- a/drivers/block/brd.c
++++ b/drivers/block/brd.c
+@@ -18,6 +18,7 @@
+ #include <linux/bio.h>
+ #include <linux/highmem.h>
+ #include <linux/mutex.h>
++#include <linux/pagemap.h>
+ #include <linux/radix-tree.h>
+ #include <linux/fs.h>
+ #include <linux/slab.h>
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index a370cde3ddd4..d58d68f3c7cd 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -53,6 +53,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/sched.h>
+ #include <linux/fs.h>
++#include <linux/pagemap.h>
+ #include <linux/file.h>
+ #include <linux/stat.h>
+ #include <linux/errno.h>
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 71691f32959b..f154c89d1326 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -16,6 +16,7 @@
+ #include "features.h"
+ 
+ #include <linux/blkdev.h>
++#include <linux/pagemap.h>
+ #include <linux/debugfs.h>
+ #include <linux/genhd.h>
+ #include <linux/idr.h>
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index 41aa1f01fc07..18a267d5073f 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -6,6 +6,7 @@
+ #include <linux/highmem.h>
+ #include <linux/debugfs.h>
+ #include <linux/blkdev.h>
++#include <linux/pagemap.h>
+ #include <linux/module.h>
+ #include <linux/device.h>
+ #include <linux/mutex.h>
+diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+index b8a85bfb2e95..16760b237229 100644
+--- a/drivers/nvdimm/pmem.c
++++ b/drivers/nvdimm/pmem.c
+@@ -8,6 +8,7 @@
+  */
+ 
+ #include <linux/blkdev.h>
++#include <linux/pagemap.h>
+ #include <linux/hdreg.h>
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/scsi/scsicam.c b/drivers/scsi/scsicam.c
+index f1553a453616..0ffdb8f2995f 100644
+--- a/drivers/scsi/scsicam.c
++++ b/drivers/scsi/scsicam.c
+@@ -17,6 +17,7 @@
+ #include <linux/genhd.h>
+ #include <linux/kernel.h>
+ #include <linux/blkdev.h>
++#include <linux/pagemap.h>
+ #include <linux/msdos_partition.h>
+ #include <asm/unaligned.h>
+ 
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index c032cfe133c7..1e2a95599390 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -11,7 +11,6 @@
+ #include <linux/minmax.h>
+ #include <linux/timer.h>
+ #include <linux/workqueue.h>
+-#include <linux/pagemap.h>
+ #include <linux/backing-dev-defs.h>
+ #include <linux/wait.h>
+ #include <linux/mempool.h>
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 4cc6ec3bf0ab..ae194bb7ddb4 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -10,6 +10,7 @@
+ #include <linux/sched.h>
+ #include <linux/node.h>
+ #include <linux/fs.h>
++#include <linux/pagemap.h>
+ #include <linux/atomic.h>
+ #include <linux/page-flags.h>
+ #include <asm/page.h>
+-- 
+2.30.0
+
