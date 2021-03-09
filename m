@@ -2,76 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA58332E12
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE99F332E15
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhCISSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:18:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38190 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231131AbhCISSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:18:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B503FAEC4;
-        Tue,  9 Mar 2021 18:18:33 +0000 (UTC)
-Subject: Re: [PATCH] mm/slub: Add slub_debug option to panic on memory
- corruption
-To:     Georgi Djakov <georgi.djakov@linaro.org>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com
-Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-References: <20210309134720.29052-1-georgi.djakov@linaro.org>
- <390d8a2f-ead9-48a9-99eb-65c73bd18422@suse.cz>
- <6bfebf01-5f52-49bd-380b-04785c474c81@linaro.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <8fd43de6-71e4-cfe7-8208-32753cf1c363@suse.cz>
-Date:   Tue, 9 Mar 2021 19:18:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230401AbhCISTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:19:08 -0500
+Received: from mail-yb1-f178.google.com ([209.85.219.178]:35499 "EHLO
+        mail-yb1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230490AbhCISTF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 13:19:05 -0500
+Received: by mail-yb1-f178.google.com with SMTP id p186so14984363ybg.2;
+        Tue, 09 Mar 2021 10:19:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a5e+TdSdVNPIU4ahZflol/g+wKmqi90+UgljIBVqbKQ=;
+        b=RuwMETu+HHPOC4sOzIE7AAgsiZwEvWW92kyEwHMrfMKhj6cPQceu0L5pFtyNNgT9FU
+         PaJDOqQMy72cIFsYmdVzzPfzBaG310bV9kTP7vyxcHKhxWh58lhNIm/mFq2nPELEWuo9
+         DH6BUuoehK0zz1k9IGiEaRAX54TB6wsXj84HjX6UA97p06hPUqyBxfV9QS9sTCPJzkWd
+         kynaFaBn+Bf4uPM2mMG6Zm81wA0TiLrKLkfGB2mcjNmbTC6McffMZdcomDlSdS/qgdDF
+         0FvWK6izsViICfjGcvYfgiRVJMQQrGquyH6jVjSz+TBh3jAU14Y9PrgpIWwmnFpMLURF
+         en0g==
+X-Gm-Message-State: AOAM533t0141kWh5miw+0C5sA2HRBHjln/5Q00W3mIFjc7pIcmAoeItw
+        HGXHCEfvQ3aeT2MZaiH29LJwToxyhS72uhSqDKA=
+X-Google-Smtp-Source: ABdhPJwADrymzS32Y4E2MTY/fV5tFgeE/xb8q0dhQZw5aN48jd58+Z+6W9vaPY2VkCWyXa5oWxZdNYGdDwJIct8Z0VA=
+X-Received: by 2002:a25:2c96:: with SMTP id s144mr25507702ybs.487.1615313944659;
+ Tue, 09 Mar 2021 10:19:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <6bfebf01-5f52-49bd-380b-04785c474c81@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210309120946.1640-1-mailhol.vincent@wanadoo.fr>
+ <20210309120946.1640-2-mailhol.vincent@wanadoo.fr> <45c0b0cc-bfd6-5180-7ad9-51eebc9de3c9@gmail.com>
+ <CAMZ6RqJ8j0yqw1Sa1dbLpakBSuKie5xpYMpg6oQFG_MuE3sWkw@mail.gmail.com>
+In-Reply-To: <CAMZ6RqJ8j0yqw1Sa1dbLpakBSuKie5xpYMpg6oQFG_MuE3sWkw@mail.gmail.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Wed, 10 Mar 2021 03:18:53 +0900
+Message-ID: <CAMZ6Rq+xJv+NVHAUYjT+-MLeO+Owoo03T2hzaA9tOKLstxU0uA@mail.gmail.com>
+Subject: Re: [RESEND v12] can: usb: etas_es58X: add support for ETAS ES58X CAN
+ USB interfaces
+To:     Jimmy Assarsson <jimmyassarsson@gmail.com>
+Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 7:14 PM, Georgi Djakov wrote:
-> Hi Vlastimil,
-> 
-> Thanks for the comment!
-> 
-> On 3/9/21 17:09, Vlastimil Babka wrote:
->> On 3/9/21 2:47 PM, Georgi Djakov wrote:
->>> Being able to stop the system immediately when a memory corruption
->>> is detected is crucial to finding the source of it. This is very
->>> useful when the memory can be inspected with kdump or other tools.
->>
->> Is this in some testing scenarios where you would also use e.g. panic_on_warn?
->> We could hook to that. If not, we could introduce a new
->> panic_on_memory_corruption that would apply also for debug_pagealloc and whatnot?
-> 
-> I would prefer that we not tie it with panic_on_warn - there might be lots of
-> new code in multiple subsystems, so hitting some WARNing while testing is not
-> something unexpected.
-> 
-> Introducing an additional panic_on_memory_corruption would work, but i noticed
-> that we already have slub_debug and thought to re-use that. But indeed, аdding
-> an option to panic in for example bad_page() sounds also useful, if that's what
-> you suggest.
+On Wed. 10 Mar 2021 at 03:11, Vincent MAILHOL
+<mailhol.vincent@wanadoo.fr> wrote:
+>
+> On Wed. 10 Mar 2021 at 02:27, Jimmy Assarsson <jimmyassarsson@gmail.com> wrote:
+> >
+> > Hi Vincent,
+> >
+> > On 2021-03-09 13:09, Vincent Mailhol wrote:
+> > > This driver supports the ES581.4, ES582.1 and ES584.1 interfaces from
+> > > ETAS GmbH (https://www.etas.com/en/products/es58x.php).
+> > ...
+> > > diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+> > > new file mode 100644
+> > > index 000000000000..31f907a7b75f
+> > > --- /dev/null
+> > > +++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+> > ...
+> > > +/**
+> > > + * es58x_add_skb_idx() - Increment an index of the loopback FIFO.
+> > > + * @priv: ES58X private parameters related to the network device.
+> > > + * @idx: address of the index to be incremented.
+> > > + * @a: the increment. Must be positive and less or equal to
+> > > + *   @priv->can.echo_skb_max.
+> > > + *
+> > > + * Do a modulus addition: set *@idx to (*@idx + @a) %
+> > > + * @priv->can.echo_skb_max.
+> > > + *
+> > > + * Rationale: the modulus operator % takes a decent amount of CPU
+> > > + * cycles (c.f. other division functions such as
+> > > + * include/linux/math64.h:iter_div_u64_rem()).
+> > > + */
+> > > +static __always_inline void es58x_add_skb_idx(struct es58x_priv *priv,
+> > > +                                           u16 *idx, u16 a)
+> >
+> > Never used?
+>
+> Indeed, this is a leftover. Should have been removed in v11 when I
+> made the device FIFO size a power of two.
+> I was not warned by the compiler, probably because this is an inline function.
+>
+> > ...
+> > > +/**
+> > > + * es58x_get_product_info() - Get the product information and print them.
+> > > + * @es58x_dev: ES58X device.
+> > > + *
+> > > + * Do a synchronous call to get the product information.
+> > > + *
+> > > + * Return: zero on success, errno when any error occurs.
+> > > + */
+> > > +static int es58x_get_product_info(struct es58x_device *es58x_dev)
+> > > +{
+> > > +     struct usb_device *udev = es58x_dev->udev;
+> > > +     const int es58x_prod_info_idx = 6;
+> > > +     /* Empirical tests show a prod_info length of maximum 83,
+> > > +      * below should be more than enough.
+> > > +      */
+> > > +     const size_t prod_info_len = 127;
+> > > +     char *prod_info;
+> > > +     int ret;
+> > > +
+> > > +     prod_info = kmalloc(prod_info_len, GFP_KERNEL);
+> > > +     if (!prod_info)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     ret = usb_string(udev, es58x_prod_info_idx, prod_info, prod_info_len);
+> > > +     if (ret < 0) {
+> > > +             dev_err(es58x_dev->dev,
+> > > +                     "%s: Could not read the product info: %pe\n",
+> > > +                     __func__, ERR_PTR(ret));
+> >
+> > Missing free
+>
+> Absolutely!
+>
+> > > +             return ret;
+> > > +     } else if (ret >= prod_info_len - 1) {
+> > > +             dev_warn(es58x_dev->dev,
+> > > +                      "%s: Buffer is too small, result might be truncated\n",
+> > > +                      __func__);
+> > > +     }
+> > > +     dev_info(es58x_dev->dev, "Product info: %s\n", prod_info);
+> > > +     kfree(prod_info);
+> > > +
+> > > +     return 0;
+> > > +}
+>
+> Thanks for the two findings, both will be fixed in v13.
 
-Yes, that would be another example.
-Also CCing Kees for input, as besides the "kdump ASAP for debugging" case, I can
-imagine security hardening folks could be interested in the "somebody might have
-just failed to pwn the kernel, better panic than let them continue" angle. But
-I'm naive wrt security, so it might be a stupid idea :)
-
-Vlastimil
-
-
-> Thanks,
-> Georgi
-
+Out of curiosity, did you find the two issues throughout a code
+review or did you use any kind of static analysis tool?
