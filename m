@@ -2,129 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4119C332B55
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 255B6332B59
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhCIP7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:59:03 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52362 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbhCIP65 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:58:57 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129Fwpau025678;
-        Tue, 9 Mar 2021 09:58:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615305531;
-        bh=BV8/rpExm5BWu2SNJlrTfVmgWccLMXLmXBTkkOWPwlk=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=h06LAQaoPzpZ2xkw2njAFEO5CJuiOyNvFKL9G+X6Nn4FakzOcSSymzihJ6qy4EU1r
-         C7JnWkXTtcO43x9HQOgUersjmg3yhHZaiV3FA9etirIwicxTbw6L7bU0Yr5qmcJxnq
-         svUpy5BCeLXjxXYkzs4gsrZXbXHx0Hca7sj5q/Y0=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129FwpWh045054
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Mar 2021 09:58:51 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
- 2021 09:58:50 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 9 Mar 2021 09:58:50 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129FwoUG106375;
-        Tue, 9 Mar 2021 09:58:50 -0600
-Date:   Tue, 9 Mar 2021 09:58:50 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/2] AM64: Add support for GPIO
-Message-ID: <20210309155850.auyuxkrv5p3gkxcd@speed>
-References: <20210304112924.12470-1-a-govindraju@ti.com>
- <20210309144333.6ko6olztldslj3fo@paralegal>
- <9ba5e86d-7a60-a35b-0fb4-ddc3052eecee@ti.com>
+        id S232006AbhCIP7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:59:33 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:37944 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231985AbhCIP7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:59:19 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dw0JM427nz9tyZL;
+        Tue,  9 Mar 2021 16:59:15 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id LbsjBpuTUjHU; Tue,  9 Mar 2021 16:59:15 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dw0JM2k5Gz9tyZK;
+        Tue,  9 Mar 2021 16:59:15 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 00EEB8B810;
+        Tue,  9 Mar 2021 16:59:16 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id E4E224d9ub0a; Tue,  9 Mar 2021 16:59:15 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5448B8B84C;
+        Tue,  9 Mar 2021 16:59:10 +0100 (CET)
+Subject: Re: [PATCH v3] powerpc/32: remove bogus ppc_select syscall
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <f08ef2b6f339ba19987cfef4307a4dd26b2faf97.1614933479.git.christophe.leroy@csgroup.eu>
+ <CAK8P3a2b+u+8smkKWB-V2Non+nnZmNG4dNi6cGpM8weYuY5j6A@mail.gmail.com>
+ <5811950d-ef14-d416-35e6-d694ef920a7d@csgroup.eu>
+ <CAK8P3a34cnCk4=Xyxvib57JLN-ck4T0-FUZRAQT_L6MDKjE+-w@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <13737de5-0eb7-e881-9af0-163b0d29a1a0@csgroup.eu>
+Date:   Tue, 9 Mar 2021 16:59:04 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <9ba5e86d-7a60-a35b-0fb4-ddc3052eecee@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAK8P3a34cnCk4=Xyxvib57JLN-ck4T0-FUZRAQT_L6MDKjE+-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21:20-20210309, Aswath Govindraju wrote:
-> Hi Nishanth,
+
+
+Le 05/03/2021 à 13:03, Arnd Bergmann a écrit :
+> On Fri, Mar 5, 2021 at 11:15 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>> Le 05/03/2021 à 11:06, Arnd Bergmann a écrit :
+>>> On Fri, Mar 5, 2021 at 9:40 AM Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+>>> - glibc support for ppc32 gets merged during the linux-2.5 days, supporting
+>>>     only #142 with the new behavior.
 > 
-> On 09/03/21 8:13 pm, Nishanth Menon wrote:
-> > On 16:59-20210304, Aswath Govindraju wrote:
-> >> The following series of patches adds support for gpio on AM642 evm/sk.
-> >>
-> >> Changes since v1:
-> >> - Added DT for gpio subsystem present in MCU domain
-> >> - reserved the mcu gpio for firmware usage
-> >>
-> >> This series of patches depend on,
-> >> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439039
-> >> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439153
-> >>
-> >>
-> >> Aswath Govindraju (2):
-> >>   arm64: dts: ti: k3-am64: Add GPIO DT nodes
-> >>   arm64: dts: ti: k3-am642: reserve gpio in mcu domain for firmware
-> >>     usage
-> >>
-> >>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 45 ++++++++++++++++++++++++
-> >>  arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi  | 27 ++++++++++++++
-> >>  arch/arm64/boot/dts/ti/k3-am642-evm.dts  |  5 +++
-> >>  arch/arm64/boot/dts/ti/k3-am642-sk.dts   |  5 +++
-> >>  4 files changed, 82 insertions(+)
-> >>
-> >> -- 
-> >> 2.17.1
-> >>
-> > 
-> > 
-> > Based on your offline comment:
-> > -----
-> > 
-> > On going through the bootlogs before posting for I found the following
-> > errors,
-> > 
-> > [    1.091117] davinci_gpio 601000.gpio: IRQ index 2 not found
-> > [    1.101522] davinci_gpio 601000.gpio: error -ENXIO: IRQ not populated
-> > 
-> > Some issues in allocating interrupts in case of main_gpio1. I
-> > accumulated the gpio with interrupt numbers. I'll try to debug the
-> > reason behind it and update you with its status. (bootlogs of ti-sdk,
-> > also have this error).
-> > 
-> > -----
-> > 
-> > I am going to drop this off my queue, please update if the fixup is some
-> > system configuration error or repost with fix.
-> > 
+> It turns out to be older than I said. This was actually in glibc-1.94
+> from 1997, so during
+> the linux-2.1 days, not 2.5!
 > 
-> This is expected to be a fixup in the system configuration and not a bug
-> in the patch series. So, can you please have these patches in your queue
-> ? I'll soon post the test results indicating the functioning of GPIOs.
+>> Whaou, nice archeology, thanks. Do you mind if I copy the history you established ?
+> 
+> That's fine, please copy it.
+> 
+>> In your commit, you said 2.3.48. Here in the history you say 2.1.48. Which one is correct ?
+> 
+> 2.1.48 is correct.
+> 
+>> Regardless of whethere binaries are broken or not for other reason, is that worth expecting an
+>> almost 25 yr old binary to run on future kernels ? If one is able to put the necessary effort to
+>> port you hardware to the latest kernel, can't he really port the binary as well ?
+> 
+> I think the questions of supporting old hardware with new software and
+> supporting old
+> binaries on modern kernels are largely orthogonal. The policy we have
+> is that we don't
+> break existing user setups, and it really seems unlikely that anyone
+> still uses pre-1997
+> executables for anything that requires a modern kernel!
+> 
+> I now checked the oldest mklinux I could find (DR2.1 from 1997), and
+> even has the
+> modern glibc and linux-2.0.28 kernel patched to provide the modern semantics at
+> syscall #142 for glibc, with the same (already unused) compatibility hack at #82
+> that we still have for ppc32 today. This made mklinux DR2.1 binaries
+> incompatible
+> with mainline linux-2.0 kernels, but they might still work with modern kernels,
+> regardless of whether we remove support for binaries that worked with mainline
+> linux-2.0.
 
 
-Thanks for clarifying. I will wait till the test results are posted.
-Thanks in advance for digging into this and detailed testing.
+I had another look. In fact x86, arm and m68k still have the #82 syscall, but they don't have the 
+hack we have on powerpc to "guess" that something is calling the old select with the arguments of 
+the new select.
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+As part of my series of user accesses cleanup, I'll replace the open coded stuff by a call to 
+sys_old_select(), see below.
+
+Maybe at the end we should keep the #82 syscall, but do we need to keep the powerpc hack really ? 
+Maybe the best is to drop ppc_select() function but mention sys_old_select() instead of ni_syscall 
+for entry #82 in the syscall table ?
+
+Christophe
+---
+diff --git a/arch/powerpc/include/asm/unistd.h b/arch/powerpc/include/asm/unistd.h
+index 700fcdac2e3c..b541c690a31c 100644
+--- a/arch/powerpc/include/asm/unistd.h
++++ b/arch/powerpc/include/asm/unistd.h
+@@ -40,6 +40,7 @@
+  #define __ARCH_WANT_SYS_SIGPROCMASK
+  #ifdef CONFIG_PPC32
+  #define __ARCH_WANT_OLD_STAT
++#define __ARCH_WANT_SYS_OLD_SELECT
+  #endif
+  #ifdef CONFIG_PPC64
+  #define __ARCH_WANT_SYS_TIME
+diff --git a/arch/powerpc/kernel/syscalls.c b/arch/powerpc/kernel/syscalls.c
+index 078608ec2e92..a552c9e68d7e 100644
+--- a/arch/powerpc/kernel/syscalls.c
++++ b/arch/powerpc/kernel/syscalls.c
+@@ -82,16 +82,8 @@ int
+  ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, struct 
+__kernel_old_timeval __user *tvp)
+  {
+  	if ( (unsigned long)n >= 4096 )
+-	{
+-		unsigned long __user *buffer = (unsigned long __user *)n;
+-		if (!access_ok(buffer, 5*sizeof(unsigned long))
+-		    || __get_user(n, buffer)
+-		    || __get_user(inp, ((fd_set __user * __user *)(buffer+1)))
+-		    || __get_user(outp, ((fd_set  __user * __user *)(buffer+2)))
+-		    || __get_user(exp, ((fd_set  __user * __user *)(buffer+3)))
+-		    || __get_user(tvp, ((struct __kernel_old_timeval  __user * __user *)(buffer+4))))
+-			return -EFAULT;
+-	}
++		return sys_old_select((void __user *)n);
++
+  	return sys_select(n, inp, outp, exp, tvp);
+  }
+  #endif
