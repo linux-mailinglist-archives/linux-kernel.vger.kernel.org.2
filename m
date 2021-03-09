@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8E73320EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F08273320FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbhCIImW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:42:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
+        id S230301AbhCIIpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhCIImJ (ORCPT
+        with ESMTP id S229689AbhCIIpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:42:09 -0500
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60085C06174A;
-        Tue,  9 Mar 2021 00:42:09 -0800 (PST)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Dvpbz4MBGz1ryp6;
-        Tue,  9 Mar 2021 09:42:07 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Dvpbz1glSz1qqkd;
-        Tue,  9 Mar 2021 09:42:07 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id f1TKAr_iO-dG; Tue,  9 Mar 2021 09:42:02 +0100 (CET)
-X-Auth-Info: 5s+9mdwj1GaReZCA+LKM+vFVsZgjR99lUBERTNsM+a0=
-Received: from [192.168.1.107] (92-52-238-184.pool.digikabel.hu [92.52.238.184])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Tue,  9 Mar 2021 09:42:02 +0100 (CET)
-Reply-To: hs@denx.de
-Subject: Re: [PATCH v2 0/4] enable flexspi support on imx8mp
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Alice Guo <alice.guo@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>, Li Jun <jun.li@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Teresa Remmet <t.remmet@phytec.de>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-References: <20210309053116.1486347-1-hs@denx.de>
- <20210309081926.aer6dgum7nljoc57@pengutronix.de>
-From:   Heiko Schocher <hs@denx.de>
-Message-ID: <9a7812b6-e2fb-df00-833e-dff997105858@denx.de>
-Date:   Tue, 9 Mar 2021 09:41:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 9 Mar 2021 03:45:32 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E48C06174A;
+        Tue,  9 Mar 2021 00:45:32 -0800 (PST)
+Message-Id: <20210309084203.995862150@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615279528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mZxOEHDPd7/Yp3jcQ6vX00DvouRsaIVMYYEagknQzH4=;
+        b=Pem8P80FNqHdBxpXQLkPBDFYuiHjeDymKfehbwsz/b1kGrF8hxRZHjcB0BhbEi0tYFK3w/
+        BvNAqsOu+EnaeExoSwWbeBeauy2mlnaXuFGPa7JcLx2A9v/k4eCe6RRM+U0+r7S06BNwQx
+        wUsQPMPUp19sXB+xZ121zRjjElwqfff7Z2/PiVvr047M3uP9RlloCoXzjrmHJfqiqW+avM
+        pvX/W6cykYbmm0w34eTR4Df24lH+ibfjDqUFX7etZybTsYGnIuHufnDnv+rQttkR7bqNPb
+        5Z8XsGmKkjpCta/WCKgUVCL2cGyobxfPP4i9UE3C2nlW5Qmi1idzLoQ+AE0/7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615279528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mZxOEHDPd7/Yp3jcQ6vX00DvouRsaIVMYYEagknQzH4=;
+        b=NgBOeQII7dm+zP1gHyz4eJT6xN4otLYu1EkP7jvNbsyhCMaNZ4c2OHSt4hh2ZU9hqPBolR
+        Rk7BixzutQhr0UCA==
+Date:   Tue, 09 Mar 2021 09:42:03 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Denis Kirjanov <kda@linux-powerpc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        ath9k-devel@qca.qualcomm.com, Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net
+Subject: [patch 00/14] tasklets: Replace the spin wait loops and make it RT safe
 MIME-Version: 1.0
-In-Reply-To: <20210309081926.aer6dgum7nljoc57@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Marco,
-
-On 09.03.21 09:19, Marco Felsch wrote:
-> Hi Heiko,
-> 
-> On 21-03-09 06:31, Heiko Schocher wrote:
->>
->> This series enables support for the SPI NOR on the
->> imx8mp based phyboard-pollux-rdk board.
->>
->> Patches new in v2:
->> "spi: fspi: enable fspi driver for on imx8mp"
->> which adds own compatible entry for imx8mp
->>
->> and seperate in own patch the documentation entry in
->> patch "dt-bindings: spi: add compatible entry for imx8mp in FlexSPI controller"
->> as checkpatch says:
->>
->> warning: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
-> 
-> Thanks for picking up the comments :) Did you missed to send them or did
-> you used an other Cc: and To: for the new patches?
-
-Damn, I use patman tool from u-boot source whoch generates cc list
-and missed to add you explicitely to Cc... sorry
-
-They are all on linux-arm-kernel:
-
-http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643290.html
-http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643291.html
-http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643292.html
-http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643293.html
-
-bye,
-Heiko
--- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+VGhpcyBpcyBhIGZvbGxvdyB1cCB0byB0aGUgcmV2aWV3IGNvbW1lbnRzIG9mIHRoZSBzZXJpZXMg
+d2hpY2ggbWFrZXMKc29mdGlycSBwcm9jZXNzaW5nIFBSRUVNUFRfUlQgc2FmZToKCiBodHRwczov
+L2xvcmUua2VybmVsLm9yZy9yLzIwMjAxMjA3MTE0NzQzLkdLMzA0MEBoaXJlei5wcm9ncmFtbWlu
+Zy5raWNrcy1hc3MubmV0CgpQZXRlciBzdWdnZXN0ZWQgdG8gcmVwbGFjZSB0aGUgc3BpbiB3YWl0
+aW5nIGluIHRhc2tsZXRfZGlzYWJsZSgpIGFuZAp0YXNrbGV0X2tpbGwoKSB3aXRoIHdhaXRfZXZl
+bnQoKS4gVGhpcyBhbHNvIGdldHMgcmlkIG9mIHRoZSBpbGwgZGVmaW5lZApzY2hlZF95aWVsZCgp
+IGluIHRhc2tsZXRfa2lsbCgpLgoKQW5hbHl6aW5nIGFsbCB1c2FnZSBzaXRlcyBvZiB0YXNrbGV0
+X2Rpc2FibGUoKSBhbmQgdGFza2xldF91bmxvY2tfd2FpdCgpIHdlCmZvdW5kIHRoYXQgbW9zdCBv
+ZiB0aGVtIGFyZSBzYWZlIHRvIGJlIGNvbnZlcnRlZCB0byBhIHNsZWVwaW5nIHdhaXQuCgpPbmx5
+IGEgZmV3IGluc3RhbmNlcyBpbnZva2UgdGFza2xldF9kaXNhYmxlKCkgZnJvbSBhdG9taWMgY29u
+dGV4dC4gQSBmZXcKYnVncyB3aGljaCBoYXZlIGJlZW4gZm91bmQgaW4gY291cnNlIG9mIHRoaXMg
+YW5hbHlzaXMgaGF2ZSBiZWVuIGFscmVhZHkKYWRkcmVzc2VkIHNlcGVyYXRlbHkuCgpUaGUgZm9s
+bG93aW5nIHNlcmllcyB0YWtlcyB0aGUgZm9sbG93aW5nIGFwcHJvYWNoOgoKICAgIDEpIFByb3Zp
+ZGUgYSB2YXJpYW50IG9mIHRhc2tsZXRfZGlzYWJsZSgpIHdoaWNoIGNhbiBiZSBpbnZva2VkIGZy
+b20KICAgICAgIGF0b21pYyBjb250ZXh0cwoKICAgIDIpIENvbnZlcnQgdGhlIHVzYWdlIHNpdGVz
+IHdoaWNoIGNhbm5vdCBiZSBlYXNpbHkgY2hhbmdlZCB0byBhCiAgICAgICBzbGVlcGFibGUgd2Fp
+dCB0byB1c2UgdGhpcyBuZXcgZnVuY3Rpb24KCiAgICAzKSBSZXBsYWNlIHRoZSBzcGluIHdhaXRz
+IGluIHRhc2tsZXRfZGlzYWJsZSgpIGFuZCB0YXNrbGV0X2tpbGwoKSB3aXRoCiAgICAgICBzbGVl
+cGFibGUgdmFyaWFudHMuCgpJZiB0aGlzIGlzIGFncmVlZCBvbiB0aGVuIHRoZSBtZXJnaW5nIGNh
+biBiZSBlaXRoZXIgZG9uZSBpbiBidWxrIG9yIHRoZQpmaXJzdCA0IHBhdGNoZXMgY291bGQgYmUg
+YXBwbGllZCBvbiB0b3Agb2YgcmMyIGFuZCB0YWdnZWQgZm9yIGNvbnN1bXB0aW9uCmluIHRoZSBy
+ZWxldmFudCBzdWJzeXN0ZW0gdHJlZXMgKG5ldHdvcmtpbmcsIHBjaSwgZmlyZXdpcmUpLiBJbiB0
+aGlzIGNhc2UKdGhlIGxhc3QgcGF0Y2ggd2hpY2ggY2hhbmdlcyB0aGUgaW1wbGVtZW50YXRpb24g
+b2YgdGFza2xldF9kaXNhYmxlKCkgaGFzIHRvCmJlIHBvc3QtcG9uZWQgdW50aWwgYWxsIG90aGVy
+IGNoYW5nZXMgaGF2ZSByZWFjaGVkIG1haW5saW5lLgoKVGhlIHNlcmllcyBpcyBhbHNvIGF2YWls
+YWJsZSBmcm9tIGdpdDoKCiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJu
+ZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IHRhc2tsZXQtMjAyMS0wMy0wOQoKVGhhbmtzLAoKCXRnbHgK
+Cgo=
