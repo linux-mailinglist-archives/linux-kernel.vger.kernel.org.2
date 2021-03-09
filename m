@@ -2,175 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F1D33244C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195FE332452
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhCILm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:42:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbhCILmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:42:45 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3AB6C06174A;
-        Tue,  9 Mar 2021 03:42:44 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id p1so19428211edy.2;
-        Tue, 09 Mar 2021 03:42:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=A6bIv+p3szTuEIXXM2XphhkvFikVXUeMFjbmhdY08N8=;
-        b=seKe5sEbHQa2kiM0aglI977bXPLc7n2L9EqPWPTJOMEnPVhhuyIHSFyPYkIdVfACDn
-         x3mN+QytQkoPj5UiQVGQ2pRd6re8ZDWsyMZDWmEJjYZZbDdm9r/SiArFBrwMrtDPiZ9C
-         NzLI/p4c856hviBTwjM5QeoxaovTdWN38ihnqEeqvvxo8W3baQdCRWtP4OROgLu4iNlY
-         d5AWq26xMBjIvnfHHDuox2HdbaxCbS4upaUh2jdEhnhGom4IlOuNoBoAMnML8x0Rit6+
-         tiyQegUOWvCqZ+YHsX/lEcEAKAfym5Tn0hl+EWuqnUB5KqRGcq1K7aHA6ZI7wR0D9rr5
-         KIPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A6bIv+p3szTuEIXXM2XphhkvFikVXUeMFjbmhdY08N8=;
-        b=UZpJ6XSiGRpaOYqelqyADU6QdL9II1S0Hm/tv6VzeeH8TMHxn5M5GqSacBu7kmVv8p
-         +1oZYWXzZ567sBo5evgqfp6TAqt1FEWDhZvF0utyZsd4Qmzy6NYpbBlUnxBbRMahi1HB
-         pWEWHDwuVLp9omzKtMyrJ8kqn+ceUMsC5d9dFMQBErMXUT49t/zh1XliUt/D6TDww7KO
-         y25nOCo45tE3yldU++QyO/7wVJaDFX6ZxEGeNz3x+cppDETS04tg6u/iiiH9dvPWXZG0
-         RzvxpFqX18hKQPY0KwyXEJC6pv0cnQ8Qu+fBueh6dCyfW5Dj1oVqTlb+Fio2IsHWhkGY
-         SqlA==
-X-Gm-Message-State: AOAM530bBvnrDs92V1kldsAuHn4ePfa0yUOdSTWY0sxBIKBhNmALccqY
-        Txee97RzS5d2vIITBOmvX0lGmullvzLh5Q==
-X-Google-Smtp-Source: ABdhPJxZEHCNsHJ/oZO4KUI9IfkOvyl87o8wDz3iKGCTcntvjFUWE1J5tlAp4nXyDD67Iv0XoGbqUQ==
-X-Received: by 2002:a05:6402:12cf:: with SMTP id k15mr3458170edx.192.1615290163721;
-        Tue, 09 Mar 2021 03:42:43 -0800 (PST)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id a22sm8397139ejr.89.2021.03.09.03.42.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 03:42:43 -0800 (PST)
-Subject: Re: [RESEND PATCH v5 2/4] arm64: dts: rk3399: Add dfi and dmc nodes.
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, heiko@sntech.de
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, Lin Huang <hl@rock-chips.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Ga=c3=abl_PORTAY?= <gael.portay@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jacob Chen <jacob2.chen@rock-chips.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210308233858.24741-1-daniel.lezcano@linaro.org>
- <20210308233858.24741-2-daniel.lezcano@linaro.org>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <9c36893a-6ca8-dade-e203-890a4071bf50@gmail.com>
-Date:   Tue, 9 Mar 2021 12:42:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S229881AbhCILoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:44:02 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:44138 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229691AbhCILne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 06:43:34 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 372851A0FB9;
+        Tue,  9 Mar 2021 12:43:33 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1EAB91A00E2;
+        Tue,  9 Mar 2021 12:43:33 +0100 (CET)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 07708203C5;
+        Tue,  9 Mar 2021 12:43:32 +0100 (CET)
+Date:   Tue, 9 Mar 2021 13:43:32 +0200
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Martin Kepplinger <martink@posteo.de>
+Cc:     Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "kernel@puri.sm" <kernel@puri.sm>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [RFC 00/19] Rework support for i.MX8MQ interconnect with devfreq
+Message-ID: <20210309114332.5ozhjgoiz7a3xcut@fsr-ub1664-175>
+References: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
+ <a2b651de-77a7-2a40-7e51-d0098e4b804b@posteo.de>
+ <20210223172013.tsip6uiuwtfnmqav@fsr-ub1664-175>
+ <315c1ad8-6274-3654-a410-5d78e35a90fe@posteo.de>
 MIME-Version: 1.0
-In-Reply-To: <20210308233858.24741-2-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <315c1ad8-6274-3654-a410-5d78e35a90fe@posteo.de>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
-
-Some comments. Have a look if it's useful or that you disagree with.
-
-New nodes should be verifiable if possible.
-Especially with so many properties.
-Could you convert rockchip-dfi.txt and rk3399_dmc.txt to yaml instead of
-changing old txt documents?
-Add rockchip-dfi.yaml and rk3399_dmc.yaml before this patch in version 6.
-
-Nodes and properties have a sort order. Please fix.
-Some goes for [RESEND PATCH v5 3/4].
-
-(This is a generic dtsi. How about cooling and dmc ??)
-
-----
-Heiko rules:
-
-compatible
-reg
-interrupts
-[alphabetical]
-status [if needed]
-
-----
-My incomplete list:
-
-For nodes:
-If exists on top: model, compatible and chosen.
-Sort things without reg alphabetical first,
-then sort the rest by reg address.
-
-Inside nodes:
-If exists on top: compatible, reg and interrupts.
-In alphabetical order the required properties.
-Then in alphabetical order the other properties.
-And as last things that start with '#' in alphabetical order.
-Add status below all other properties for soc internal components with
-any board-specifics.
-Keep an empty line between properties and nodes.
-
-Exceptions:
-Sort pinctrl-0 above pinctrl-names, so it stays in line with clock-names
-and dma-names.
-Sort simple-audio-card,name above other simple-audio-card properties.
-Sort regulator-name above other regulator properties.
-Sort regulator-min-microvolt above regulator-max-microvolt.
-
-On 3/9/21 12:38 AM, Daniel Lezcano wrote:
-> From: Lin Huang <hl@rock-chips.com>
+On 21-02-25 13:13:17, Martin Kepplinger wrote:
+> On 23.02.21 18:20, Abel Vesa wrote:
+> > On 21-02-22 17:03:13, Martin Kepplinger wrote:
+> > > On 19.02.21 16:59, Abel Vesa wrote:
+> > > > This has been on my queue for quite some time now. It is more of a
+> > > > proof-of-concept.
+> > > > 
+> > > > This rework is done with the compatibility of future i.MX platforms in
+> > > > mind. For example, the i.MX8MP platform has multiple NoCs. This
+> > > > patchsets prepares the imx interconnect and imx devfreq for that too.
+> > > > 
+> > > > As of now, none of the drivers involved are being used and there is no
+> > > > icc consumer on any off the i.MX platforms.
+> > > > 
+> > > > Basically, the steps taken here are the following:
+> > > > 
+> > > > 1. Make the dram_apb clock "reparantable" from kernel.
+> > > > This is needed in order to keep track of the actual parent of the
+> > > > dram_apb clock in the kernel clock hierarchy. Note that the actual
+> > > > switch is done EL3 (TF-A).
+> > > > 
+> > > > 2. Rework the imx-bus so the actual link between the icc and the
+> > > > NoCs or the pl301s is not tightly coupled. This allows us to have
+> > > > as many NoCs as necessary but also allows as to use the same driver
+> > > > for the pl301s. The pl301s have their own clocks too, so we need to
+> > > > reduce their rates too.
+> > > > 
+> > > > 3. Rework the imx8m-ddrc driver. Remove the support for dts defined
+> > > > OPPs. The EL3 provides those. So instead of havingi to keep the OPP table in
+> > > > both EL3 and kernel in sync, we rely on what the EL3 gives us.
+> > > > Also, when the platform suspends, the bus needs to be running at highest
+> > > > rate, otherwise there is a chance it might not resume anymore.
+> > > > By adding the late system sleep PM ops we can handle that easily.
+> > > > 
+> > > > 4. Rework the imx interconnect driver to use the fsl,icc-id instead
+> > > > of the robust imx_icc_node_adj_desc for linking with the target node.
+> > > > By adding the fsl,icc-id property to all the NoC and pl301 dts nodes,
+> > > > we can link each icc node to their corresponding NoC, pl301 or dram.
+> > > > Basically, when the imx interconnect platform specific driver probes,
+> > > > it will take each node defined for that platform and look-up the
+> > > > corresponding dts node based on the id and add that as the qos device.
+> > > > 
+> > > > 5. Added the fec and usdhc as icc consumers. This is just as an example.
+> > > > All the other consumers can be added later. Basically, each consumer
+> > > > will add a path to their device node and in the driver will have to
+> > > > handle that icc path accordingly.
+> > > > 
+> > > 
+> > > thanks for working on this Abel,
+> > > 
+> > > It looks like the icc path requests don't work for me:
+> > > 
+> > > when applying this onto v5.11 (without any other workaround in that area,
+> > > but some out-of-tree icc-requests like in mxsfb) my rootfs isn't being
+> > > mounted anymore. Since you add icc requests to the usdhc driver, there could
+> > > be something wrong.
+> > > 
+> > > So I revert 19/19 ("mmc: sdhci-esdhc-imx: Add interconnect support") and
+> > > then my imx8mq (Librem 5) rootfs system boots, but all frequencies stay at
+> > > the minimum (despite the icc request like this:
+> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsource.puri.sm%2Fmartin.kepplinger%2Flinux-next%2F-%2Fcommit%2F1692de27d1475c53574dd7359c68ba613e0fea10&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7C9e5a3fe7a3af4aabb84f08d8d986c042%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637498520072719555%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=9ItFarG22Tr%2Bj5MPmZU5xnMc%2B1Sx0o3563L5gdceIi4%3D&amp;reserved=0
+> > > so I can't use the display).
+> > > 
+> > > What could be missing? As I said I'm trying on top of v5.11, (at least I
+> > > have the NOC node described:
+> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsource.puri.sm%2Fmartin.kepplinger%2Flinux-next%2F-%2Fcommit%2F1d74a24c9944d1bf618abdd57d24101368cc8df0&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7C9e5a3fe7a3af4aabb84f08d8d986c042%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637498520072719555%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=dX%2BM7jyyg3SzhtE3Q1QUfVkmbbzg70A57DHndDQ4KcI%3D&amp;reserved=0
+> > > and (with the revert from
+> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flinux-arm-kernel%2F20210104120512.gmi2zjz7dzhjussp%40fsr-ub1664-175%2F&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7C9e5a3fe7a3af4aabb84f08d8d986c042%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637498520072719555%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=HBVSYJHqLEheNckGyNRf2kDVfVCRoX9zs%2BXO9si8WMw%3D&amp;reserved=0
+> > > devfreq works without your patchset ) Is there anything I'm missing that is
+> > > not yet merged in v5.11?
+> > > 
+> > > Can I test anything else that would help?
+> > > 
+> > 
+> > Sorry about this, I messed up the usdhc change.
+> > I tested mostly with nfs rootfs.
+> > 
+> > I'll just paste here the things that are missing in order for the USHCs to work.
+> > I'll fold them in the next version of this patch set.
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > index 43760316052f..90398408b55e 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > @@ -1637,6 +1637,25 @@ opp-133M {
+> >                          };
+> >                  };
+> > +               pl301_per_m: pl301@9 {
+> > +                       compatible = "fsl,imx8m-nic";
+> > +                       clocks = <&clk IMX8MQ_CLK_NAND_USDHC_BUS>;
+> > +                       operating-points-v2 = <&pl301_per_m_opp_table>;
+> > +                       #interconnect-cells = <0>;
+> > +                       fsl,icc-id = <IMX8MQ_ICN_PER_M>;
+> > +
+> > +                       pl301_per_m_opp_table: opp-table {
+> > +                               compatible = "operating-points-v2";
+> > +
+> > +                               opp-25M {
+> > +                                       opp-hz = /bits/ 64 <25000000>;
+> > +                               };
+> > +                               opp-133M {
+> > +                                       opp-hz = /bits/ 64 <133333333>;
+> > +                               };
+> > +                       };
+> > +               };
+> > +
+> >                  icc: interconnect@0 {
+> >                          compatible = "fsl,imx8mq-icc", "fsl,imx8m-icc";
+> >                          #interconnect-cells = <1>;
+> > diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
+> > index 65c5caf82e0c..cb8d341faf71 100644
+> > --- a/drivers/mmc/host/sdhci-esdhc-imx.c
+> > +++ b/drivers/mmc/host/sdhci-esdhc-imx.c
+> > @@ -1545,7 +1545,8 @@ static int sdhci_esdhc_imx_probe(struct platform_device *pdev)
+> >          imx_data->bus_path = devm_of_icc_get(&pdev->dev, "path");
+> >          if (IS_ERR(imx_data->bus_path)) {
+> > -               return PTR_ERR(imx_data->bus_path);
+> > +               err = PTR_ERR(imx_data->bus_path);
+> > +               goto free_sdhci;
+> >          } else if (imx_data->bus_path) {
+> >                  if (of_property_read_u32(pdev->dev.of_node, "fsl,icc-rate", &imx_data->bus_rate)) {
+> >                          dev_err(&pdev->dev, "icc-rate missing\n");
+> > 
 > 
-> These are required to support DDR DVFS on rk3399 platform.
+> when simply booting with this instead of my revert, turning on *all* kernel
+> debug output, startup stops here:
 > 
-> Signed-off-by: Lin Huang <hl@rock-chips.com>
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Signed-off-by: Gaël PORTAY <gael.portay@collabora.com>
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+> [  191.157686] devices_kset: Moving 30b50000.mmc to end of list
+> [  191.163388] PM: Moving platform:30b50000.mmc to end of list
+> [  191.169003] platform 30b50000.mmc: Retrying from deferred list
+> [  191.175305] platform 30b50000.mmc: scheduling asynchronous probe
+> [  191.181394] devices_kset: Moving 30b40000.mmc to end of list
+> [  191.181493] bus: 'platform': driver_probe_device: matched device
+> 30b50000.mmc with driver sdhci-esdhc-imx
+> [  191.187096] PM: Moving platform:30b40000.mmc to end of list
+> [  191.196706] bus: 'platform': really_probe: probing driver sdhci-esdhc-imx
+> with device 30b50000.mmc
+> [  191.202270] platform 30b40000.mmc: Retrying from deferred list
+> [  191.211361] imx8mq-pinctrl 30330000.pinctrl: maps: function pinctrl group
+> usdhc2grp num 9
+> [  191.217169] platform 30b40000.mmc: scheduling asynchronous probe
+> [  191.225259] pinctrl core: add 9 pinctrl maps
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> index edbbf35fe19e..6f23d99236fe 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> @@ -1937,6 +1937,25 @@
->  		status = "disabled";
->  	};
->  
-> +	dfi: dfi@ff630000 {
-> +		reg = <0x00 0xff630000 0x00 0x4000>;
-> +		compatible = "rockchip,rk3399-dfi";
-> +		rockchip,pmu = <&pmugrf>;
-> +		interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH 0>;
-> +		clocks = <&cru PCLK_DDR_MON>;
-> +		clock-names = "pclk_ddr_mon";
-> +		status = "disabled";
-> +	};
-> +
-> +	dmc: dmc {
-> +		compatible = "rockchip,rk3399-dmc";
-> +		rockchip,pmu = <&pmugrf>;
-> +		devfreq-events = <&dfi>;
-> +		clocks = <&cru SCLK_DDRC>;
-> +		clock-names = "dmc_clk";
-> +		status = "disabled";
-> +	};
-> +
->  	pinctrl: pinctrl {
->  		compatible = "rockchip,rk3399-pinctrl";
->  		rockchip,grf = <&grf>;
+> or here:
 > 
+> [  185.726775] devices_kset: Moving 30b40000.mmc to end of list
+> [  185.732476] PM: Moving platform:30b40000.mmc to end of list
+> [  185.738090] platform 30b40000.mmc: Retrying from deferred list
+> [  185.744453] platform 30b40000.mmc: scheduling asynchronous probe
+> [  185.750541] devices_kset: Moving leds to end of list
+> [  185.750660] bus: 'platform': driver_probe_device: matched device
+> 30b40000.mmc with driver sdhci-esdhc-imx
+> [  185.755556] PM: Moving platform:leds to end of list
+> [  185.755575] platform leds: Retrying from deferred list
+> [  185.765180] bus: 'platform': really_probe: probing driver sdhci-esdhc-imx
+> with device 30b40000.mmc
+> [  185.770120] bus: 'platform': driver_probe_device: matched device leds
+> with driver leds-gpio
+> [  185.775525] imx8mq-pinctrl 30330000.pinctrl: maps: function pinctrl group
+> usdhc1grp num 13
+> [  185.784200] bus: 'platform': really_probe: probing driver leds-gpio with
+> device leds
+> [  185.792619] pinctrl core: add 13 pinctrl maps
+> [  185.800915] imx8mq-pinctrl 30330000.pinctrl: maps: function pinctrl group
+> hubnresetgrp num 2
+> [  185.808672] imx8mq-pinctrl 30330000.pinctrl: maps: function pinctrl group
+> usdhc1grp100mhz num 13
+> [  185.813001] pinctrl core: add 2 pinctrl maps
+> [  185.821471] pinctrl core: add 13 pinctrl maps
+> [  185.830275] imx8mq-pinctrl 30330000.pinctrl: maps: function pinctrl group
+> sdpwrgrp num 2
+> [  185.834578] imx8mq-pinctrl 30330000.pinctrl: maps: function pinctrl group
+> usdhc1grp200mhz num 13
+> [  185.838942] pinctrl core: add 2 pinctrl maps
+> [  185.847080] pinctrl core: add 13 pinctrl maps
+> [  185.855854] imx8mq-pinctrl 30330000.pinctrl: maps: function pinctrl group
+> chargergrp num 2
+> [  185.860154] imx8mq-pinctrl 30330000.pinctrl: found group selector 50 for
+> usdhc1grp
+> [  185.864480] pinctrl core: add 2 pinctrl maps
+> [  185.872864] imx8mq-pinctrl 30330000.pinctrl: found group selector 51 for
+> usdhc1grp100mhz
+> [  185.887696] thermal thermal_zone0:
+> Trip0[type=1,temp=50000]:trend=0,throttle=1
+> [  185.892835] imx8mq-pinctrl 30330000.pinctrl: found group selector 52 for
+> usdhc1grp200mhz
+> [  185.899966] thermal cooling_device5: cur_state=1
+> [  185.908180] sdhci-esdhc-imx 30b40000.mmc: no init pinctrl state
+> [  185.908208] imx8mq-pinctrl 30330000.pinctrl: maps: function pinctrl group
+> smcgrp num 2
+> 
+
+Give this one a try:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git/log/?h=imx8mq/icc_devfreq
 
