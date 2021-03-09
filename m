@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A835D333090
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BED533306F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhCIVA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 16:00:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231906AbhCIU74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:59:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A643365244;
-        Tue,  9 Mar 2021 20:59:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615323596;
-        bh=TYc2sxF9jlelu+yoQjVMheyf4gRhjMbLomqGl2trdgk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lkve6UV0CSpybHVH2mF9r3f2goFOa59edwGzdalytdMeMwEt0HzOX601f4/jI/7nj
-         b1U+puVzO9Bv8VT3u3oJgFmuVyL2Xsi6JvATd4cacUhLFVlhoS+uxQsZMRV/uRUQke
-         gDBe8dEdUks5VEtVsW7RXowmas2i4SjFrfBLjC40BZ/BAk/F7O37iI73yiQK6gx1sL
-         MySbqwPpbzxu3bahYUI79VSr4/YC+BGUKYnWeSwP26QK7T8n3uf/uwoZ2gPZ16G9b6
-         Bi2OveewphjKRofUY6cmMG6+HisneW7GftmP0FML1Crp7EkoeOHnwGgj/61jZ+1KGV
-         oUkcSwUTDOxLw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH v2 2/2] Makefile: Only specify '--prefix=' when building with clang + GNU as
-Date:   Tue,  9 Mar 2021 13:59:15 -0700
-Message-Id: <20210309205915.2340265-2-nathan@kernel.org>
-X-Mailer: git-send-email 2.31.0.rc1
-In-Reply-To: <20210309205915.2340265-1-nathan@kernel.org>
-References: <20210302210646.3044738-1-nathan@kernel.org>
- <20210309205915.2340265-1-nathan@kernel.org>
+        id S231937AbhCIU7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:59:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231226AbhCIU7S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:59:18 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A67C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:59:18 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id g9so13469766ilc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:59:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hIzrQXT4h4W7AAe4jB29ri4tAfpUHw+wk/thHCyaZW8=;
+        b=0PynGrDnEoidiWaGP32JQlA4a5VjaKkR4KQKhqeG77Fqs8yD8G7u99UoKt8GalCtyr
+         TqL7WMhubuDC6guqo+zx+QQiRXrUy3UoQoZq6GnxoFv+CzUb3C7wCX8sySwmDY9bEn0I
+         TL7sY5nhJo6IbgDzvcPo3qHI/ZxMgful41e/1caGki+V6vmEJuVIrxDV7wu5ZzAnAFU6
+         j3xDxnAVozU8PD/meTNgkQQFmLFT7NkjPD/++eCvA08Wb0YlR080pVb466SYQTCXDEIY
+         YP/1wX9/CVb3+DFxWBIOy6jI2gWuB7zfUr+as+/UcomSiYO/KQFqN3c0LR6uB4u/0x+H
+         WBWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hIzrQXT4h4W7AAe4jB29ri4tAfpUHw+wk/thHCyaZW8=;
+        b=CbPjywVDe3NLnTBlTDTNQ4rucWaE3PEqUQXOOSJsOqTPtRJi+Z/5hqh4Z55UO9xT0j
+         O3Zy+VkHOHcXTGUYO3daMkUv+gZgeVLSJaz2Kcf7uuDPDwaWbsuzFFrryBsgqNxoPmCN
+         njRdkNtgW8YRwPeG/DIh0XCWWzJ0+Ynif9MjS8Fnd/P2XrcTsYvGmsBzUWx0+o9YVmyr
+         G9rPBRhKKvWiiJQuNra3FqhCK6YJIOlvxZElbzhLBCBmRePg7bWOHG/t8uyb/cDisPez
+         T9k4Lixq6Ry3jRkHpZcIscd+TKwgrzjFgVwX09B0s/Tf44nA/tdtSHBYWGSJIZz44BGZ
+         +zFQ==
+X-Gm-Message-State: AOAM5317JDp3Vas8xqBpCilLZAreUGMiTYnFpVFu3CoEjarIan0e32Ur
+        Si5vM4Ju6HHo0liWtcOVdy1pME7ZCy1cFQ==
+X-Google-Smtp-Source: ABdhPJx6YWGVJo0YZArjr64qms/FJr2bXrrXCNjG3kmjLDReMWKK0JV3kBMtCHPy/70KnggJjKw+AA==
+X-Received: by 2002:a92:b003:: with SMTP id x3mr43220ilh.15.1615323557300;
+        Tue, 09 Mar 2021 12:59:17 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id i8sm7865845ilv.57.2021.03.09.12.59.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 12:59:16 -0800 (PST)
+Subject: Re: [PATCH] block: rsxx: fix error return code of rsxx_pci_probe()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>, josh.h.morris@us.ibm.com,
+        pjk1939@linux.ibm.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210308100554.10375-1-baijiaju1990@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <cf2dd66c-0e1e-944e-f4c5-542095f6c9d7@kernel.dk>
+Date:   Tue, 9 Mar 2021 13:59:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210308100554.10375-1-baijiaju1990@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with LLVM_IAS=1, there is no point to specifying
-'--prefix=' because that flag is only used to find GNU cross tools,
-which will not be used indirectly when using the integrated assembler.
-All of the tools are invoked directly from PATH or a full path specified
-via the command line, which does not depend on the value of '--prefix='.
+On 3/8/21 3:05 AM, Jia-Ju Bai wrote:
+> Some error handling segments of rsxx_pci_probe() do not return error code, 
+> so add error code for these segments.
+> 
+> Fixes: 8722ff8cdbfa ("block: IBM RamSan 70/80 device driver")
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> ---
+>  drivers/block/rsxx/core.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
+> index 63f549889f87..6b3b9b31a3e8 100644
+> --- a/drivers/block/rsxx/core.c
+> +++ b/drivers/block/rsxx/core.c
+> @@ -760,13 +760,17 @@ static int rsxx_pci_probe(struct pci_dev *dev,
+>  	pci_set_drvdata(dev, card);
+>  
+>  	st = ida_alloc(&rsxx_disk_ida, GFP_KERNEL);
+> -	if (st < 0)
+> +	if (st < 0) {
+> +		st = -ENOMEM;
+>  		goto failed_ida_get;
+> +	}
+>  	card->disk_id = st;
+>  
+>  	st = pci_enable_device(dev);
+> -	if (st)
+> +	if (st) {
+> +		st = -EIO;
+>  		goto failed_enable;
+> +	}
+>  
+>  	pci_set_master(dev);
 
-Sharing commands to reproduce issues becomes a little bit easier without
-a '--prefix=' value because that '--prefix=' value is specific to a
-user's machine due to it being an absolute path.
+Maybe there are some valid parts to the patch, but the two above at
+least make no sense - we're returning the error here as passed from
+ida_alloc or pci_enable_device, why are you overriding them?
 
-Some further notes from Fangrui Song:
-
-  clang can spawn GNU as (if -f?no-integrated-as is specified) and GNU
-  objcopy (-f?no-integrated-as and -gsplit-dwarf and -g[123]).
-  objcopy is only used for GNU as assembled object files.
-  With integrated assembler, the object file streamer creates .o and
-  .dwo simultaneously.
-  With GNU as, two objcopy commands are needed to extract .debug*.dwo to
-  .dwo files && another command to remove .debug*.dwo sections.
-
-A small consequence of this change (to keep things simple) is that
-'--prefix=' will always be specified now, even with a native build, when
-it was not before. This should not be an issue due to the way that the
-Makefile searches for the prefix (based on elfedit's location). This
-ends up improving the experience for host builds because PATH is better
-respected and matches GCC's behavior more closely. See the below thread
-for more details:
-
-https://lore.kernel.org/r/20210205213651.GA16907@Ryzen-5-4500U.localdomain/
-
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
-
-v1 -> v2:
-
-* Fix position of -no-integrated-as flag to fix native build (thanks to
-  Masahiro for catching it and sorry for the breakage).
-
-* Add Fangrui's comments about what GNU binaries clang can spawn at
-  Masahiro's request.
-
-* Reword commit message.
-
-I did not carry tags forward so that people could re-review and test.
-
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 182e93d91198..15292a6d63f5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -566,11 +566,11 @@ CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g
- ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
- ifneq ($(CROSS_COMPILE),)
- CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
--GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
--CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
- endif
- ifneq ($(LLVM_IAS),1)
- CLANG_FLAGS	+= -no-integrated-as
-+GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-+CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
- endif
- CLANG_FLAGS	+= -Werror=unknown-warning-option
- KBUILD_CFLAGS	+= $(CLANG_FLAGS)
 -- 
-2.31.0.rc1
+Jens Axboe
 
