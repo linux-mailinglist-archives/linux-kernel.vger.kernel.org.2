@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB43332CCB
+	by mail.lfdr.de (Postfix) with ESMTP id CF299332CCC
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhCIRFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:05:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
+        id S231255AbhCIRFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:05:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhCIRFI (ORCPT
+        with ESMTP id S230425AbhCIRFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:05:08 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B1CC06175F
+        Tue, 9 Mar 2021 12:05:09 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90F1C061760
         for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:05:08 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id j6so6894831plx.6
+Received: by mail-lf1-x12d.google.com with SMTP id f1so28263966lfu.3
         for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:05:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tQCrZGAl0b60/4Ggr0xLToEhk1KYEANewuulT6STebg=;
-        b=B8PvmorMpqrWVpxlNrzzWceE/e3T4Q2YCqZ8sVuCFzH46o80eZ81cDA5moe5lAaNzp
-         P918sQFhr+LkMw3+2ZHLxO5f084u1jcdJUg3VTMSsWxcn//w8zMEvR/7AIZoGA62exnO
-         hvcJ3ahs5+mNk+p2SAUSMgcloq84rVlaGSQRNJF52IkKc+0hfiLSV/Yv/qHM2/URlV3C
-         pJutN/rEKfAjfNFxZcgtFTvJ3YJ+vos6W1OGWu8tbRyj7Wgi4Zuvu91Sv4g2lLs3i0it
-         LGFuvqx+uINrsfGh6egqCmVeoI+UQEzxgbxwA5IhYqENUko/OT0fMcGQBHAA4AemfDDY
-         OycQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=mE0qq7XWVraqToRnsf3TWr4SmhFzw0GeG0Z8j3nI9qk=;
+        b=RF0XJTHsGZt8YwSWIY/2+2L1Kg/lvZUqTc9N8rUmyJxLjVeP8dHjBmarbWM1LcRz3C
+         VRSNQl4EuL8RUpwjlmI1JReg2+dCsgNxYGTsuSmW41ysQ/0LDPMC20N/4WlIlV5MiMi4
+         ECjte96LZx7gX6FHP8FzCMmClWwg9pWH1gIjNTJfyak+bvCGgAkhZWlUiaoQh6JUtJJ+
+         atxoV6A1wGVLpNQ0MB46EVHEaHET0i4AQPhoUbMGh3qioaCJFTbYTuAepRP5hoqEl/Po
+         3MbAa+BcrE0ZZSPiAY7rV5pUS4ud9M0oXhbG5+Ehb6iJG+nrrYc64bFwmIqu5sOCfdDd
+         IyHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tQCrZGAl0b60/4Ggr0xLToEhk1KYEANewuulT6STebg=;
-        b=AxnjX+9zEP53ZlPWIftO6ZbME8gbON1pUCqiAA4l2b73xoxW1MqXKozge6WS71/Oxj
-         r8seLSyEueFlPnVOcilXlj3d6PQ8/XtZSE+5lg1ALec6hGcX7Ddk3JtgkZHdLWsMspMr
-         ignDOrBuvJOjEjkYP0yeSsPiN/slZdBLc0X1j1g2nicVP6KIvAlFdLy/G7zmUCMu1OKC
-         x3DznQsIS9g4MWBKm03ChS1F9An15Ka3grGd8HTTHswq88uXrAAFEy7dnYDl5Ccfns10
-         y7lvbaFn8hWU5lCFMNL2pgmGUUsSCR2sck42M1TXj9Re8KMOhJen6EeUeTd/KM3VKFgw
-         xLyA==
-X-Gm-Message-State: AOAM532XPc3v2kvxYR5gNtN1V8qbRzoNgvGDdtF9MQhnJHzAf19FlqJR
-        nB4UvfKvRf9uzTXOUtUuGmmWQQ==
-X-Google-Smtp-Source: ABdhPJwW0J3xWZ6EcBpG5tri8DTiYIZJan3TWKiHbWHKoPqfXeewUF1+YEDKwm9IrNm/jBQ7uQYpmA==
-X-Received: by 2002:a17:90a:f190:: with SMTP id bv16mr5526843pjb.187.1615309507956;
-        Tue, 09 Mar 2021 09:05:07 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
-        by smtp.gmail.com with ESMTPSA id v16sm13253080pfu.76.2021.03.09.09.05.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 09:05:06 -0800 (PST)
-Date:   Tue, 9 Mar 2021 09:05:00 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Xu, Like" <like.xu@intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        "Thomas Gleixner
-        (x86/pti/timer/core/smp/irq/perf/efi/locking/ras/objtool)
-        (x86@kernel.org)" <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH] x86/perf: Fix guest_get_msrs static call if there is no
- PMU
-Message-ID: <YEeqvC4QmJcj+pkC@google.com>
-References: <20210305223331.4173565-1-seanjc@google.com>
- <053d0a22-394d-90d0-8d3b-3cd37ca3f378@intel.com>
- <YEXmILSHDNDuMk/N@hirez.programming.kicks-ass.net>
- <YEaLzKWd0wAmdqvs@google.com>
- <YEcn6bGYxdgrp0Ik@hirez.programming.kicks-ass.net>
- <YEc1mFkaILfF37At@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mE0qq7XWVraqToRnsf3TWr4SmhFzw0GeG0Z8j3nI9qk=;
+        b=WCUfnehK05IhEmAMKyXAcYpXVnIlI1DLHuQNkW0MZjHxQBmM19D/+vzhIe4A98BlVm
+         WpJL0dsjRyn93JS8JVWLv/LpJ2GYv3JMt66kUkADJLw9WBV/U/tTRycFiF+FfFf0Wfv+
+         d++RKGa66yMVluy67QNsm2oqi1Jni+uEwBwFQsxkjqCT8u7U4GIOgmYJm9bZE8fy9787
+         C/+IuaZbcQ2Q3DEKWKjsQoJQNP+u1YuSA7xHcEYcS1FCmH7W0wtxHbBBfDoiP2aRIgcc
+         FyaF3uK2rnjHUxYyLh1C26KdEs6gYZgINKCrxhEOv8IzkrClzFg2JlH6sp+ZICtp3X1O
+         4JNw==
+X-Gm-Message-State: AOAM533z8gaLJoAf1jZd42Sh2h12vdg9Gqe4DDLvROTF0a26cgGfOvRU
+        Cu8Am0Tw07ktuTfKRsc4TgFlIT+vkmo=
+X-Google-Smtp-Source: ABdhPJwUWqWWQW8jmhGdxVsNALyN05motUXwh2kAtGHjxhQ4p/U0kevgq11J+ob+i3Bh4PRTI89wPA==
+X-Received: by 2002:a05:6512:a8e:: with SMTP id m14mr18226138lfu.641.1615309501730;
+        Tue, 09 Mar 2021 09:05:01 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id h28sm1847449lfp.155.2021.03.09.09.05.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 09:05:01 -0800 (PST)
+Subject: Re: [RFC] reset: add reset_control_bulk API
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+References: <20210303121000.26072-1-p.zabel@pengutronix.de>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b1704d04-14bf-9950-5bae-d97e357d6832@gmail.com>
+Date:   Tue, 9 Mar 2021 20:05:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEc1mFkaILfF37At@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210303121000.26072-1-p.zabel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021, Peter Zijlstra wrote:
-> On Tue, Mar 09, 2021 at 08:46:49AM +0100, Peter Zijlstra wrote:
-> > On Mon, Mar 08, 2021 at 12:40:44PM -0800, Sean Christopherson wrote:
-> > > On Mon, Mar 08, 2021, Peter Zijlstra wrote:
-> > 
-> > > > Given the one user in atomic_switch_perf_msrs() that should work because
-> > > > it doesn't seem to care about nr_msrs when !msrs.
-> > > 
-> > > Uh, that commit quite cleary says:
-> > 
-> > D0h! I got static_call_cond() and __static_call_return0 mixed up.
-> > Anyway, let me see if I can make something work here.
+03.03.2021 15:10, Philipp Zabel пишет:
+> Follow the clock and regulator subsystems' lead and add a bulk API
+> for reset controls.
 > 
-> Does this work? I can never seem to start a VM, and if I do accidentally
-> manage, then it never contains the things I need :/
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> ---
 
-Yep, once I found the dependencies in tip/sched/core (thank tip-bot!).  I'll
-send v2 your way.
+Hello Philipp,
+
+The patch is almost okay to me. I'll fix the minor issues and include it
+in the next version of the Tegra audio patches. Thanks!
+
+> +/**
+> + * reset_control_bulk_deassert - asserts the reset lines in order
+
+I'll correct this comment
+
+> + * @num_rstcs: number of entries in rstcs array
+> + * @rstcs: array of struct reset_control_bulk_data with reset controls set
+> + *
+> + * Deassert the reset lines for all provided reset controls, in order.
+> + * If a deassertion fails, already deasserted resets are asserted again.
+> + *
+> + * See also: reset_control_assert()
+> + */
+> +int reset_control_bulk_deassert(int num_rstcs,
+> +				struct reset_control_bulk_data *rstcs)
+> +{
+> +	int ret, i;
+> +
+> +	for (i = 0; i < num_rstcs; i++) {
+> +		ret = reset_control_deassert(rstcs[i].rstc);
+> +		if (ret)
+> +			goto err;
+> +	}
+> +
+> +	return 0;
+> +
+> +err:
+> +	while (i--)
+> +		reset_control_assert(rstcs[i].rstc);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(reset_control_bulk_deassert);
+
+and change the bulk_deassert to use the reverse order
+
+...
+> +int __reset_control_bulk_get(struct device *dev, int num_rstcs,
+> +			     struct reset_control_bulk_data *rstcs,
+> +			     bool shared, bool optional, bool acquired)
+> +{
+> +	int i, ret;
+> +
+> +	for (i = 0; i < num_rstcs; i++) {
+> +		rstcs[i].rstc = __reset_control_get(dev, rstcs[i].id, 0,
+> +						    shared, optional, acquired);
+> +		if (IS_ERR(rstcs[i].rstc)) {
+> +			ret = PTR_ERR(rstcs[i].rstc);
+> +			goto err;
+> +		}
+> +	}
+> +
+
+and add the missing "return 0" here.
+
+> +err:
+> +	mutex_lock(&reset_list_mutex);
+> +	while (i--)
+> +		__reset_control_put_internal(rstcs[i].rstc);
+> +	mutex_unlock(&reset_list_mutex);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(__reset_control_bulk_get);
+...
+
