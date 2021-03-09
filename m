@@ -2,369 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A728A3328FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C57332908
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhCIOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 09:47:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:54702 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231623AbhCIOqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 09:46:51 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05C4931B;
-        Tue,  9 Mar 2021 06:46:51 -0800 (PST)
-Received: from [10.57.15.199] (unknown [10.57.15.199])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EAFFD3F71B;
-        Tue,  9 Mar 2021 06:46:49 -0800 (PST)
-Subject: Re: [PATCH 2/5] powercap/drivers/dtpm: Create a registering system
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210301212149.22877-1-daniel.lezcano@linaro.org>
- <20210301212149.22877-2-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d3c7dde1-39c9-97e0-4242-329a74602ce0@arm.com>
-Date:   Tue, 9 Mar 2021 14:46:48 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231526AbhCIOsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 09:48:51 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58538 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231627AbhCIOsh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 09:48:37 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129EmTDG047584;
+        Tue, 9 Mar 2021 08:48:29 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615301309;
+        bh=RnKTV/HmCN+5O7V5x4KcZ6umMSs0+SXNmCKFKgTGRzQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=aTJ9hhAR/eQNyujyUuVs0yu5JLm//hxzUP4f24Bx8k4WmO+Kkdvyv1ZTjOTLba4i4
+         UzmZXs+3gzfXQAZq6W62UTUhMbWm+fdbvPzPp2ZnoMm5oA2A/5aLFAun+t+LeQJN+6
+         mWyB6uagQvVsy/IrvBad/g2KK16eyMYU7f+/HOvY=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129EmSat076219
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Mar 2021 08:48:28 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
+ 2021 08:48:28 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 9 Mar 2021 08:48:28 -0600
+Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129EmPZr004052;
+        Tue, 9 Mar 2021 08:48:26 -0600
+Subject: Re: [PATCH] arm64: dts: ti: k3-am642-evm: Add support for SPI EEPROM
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210301060518.19550-1-a-govindraju@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <c06a39c5-88eb-1e6d-4ae2-796981db1e71@ti.com>
+Date:   Tue, 9 Mar 2021 20:18:24 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210301212149.22877-2-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210301060518.19550-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 3/1/21 9:21 PM, Daniel Lezcano wrote:
-> A SoC can be differently structured depending on the platform and the
-> kernel can not be aware of all the combinations, as well as the
-> specific tweaks for a particular board.
+On 3/1/21 11:35 AM, Aswath Govindraju wrote:
+> Add pinmux details and device tree node for the EEPROM attached to SPI0
+> module in main domain.
 > 
-> The creation of the hierarchy must be delegated to userspace.
-> 
-> These changes provide a registering mechanism where the different
-> subsystems will initialize their dtpm backends and register with a
-> name the dtpm node in a list.
-> 
-> The next changes will provide an userspace interface to create
-> hierachically the different nodes. Those will be created by name and
-> found via the list filled by the different subsystem.
-> 
-> If a specified name is not found in the list, it is assumed to be a
-> virtual node which will have children and the default is to allocate
-> such node.
-> 
-> When the node register in the list, the function will be dtpm_register
-> where the previous semantic was to create the node. Thus, the
-> functions are renamed to reflect their purpose.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 > ---
->   drivers/powercap/dtpm.c     | 158 ++++++++++++++++++++++++++++++++++--
->   drivers/powercap/dtpm_cpu.c |   4 +-
->   include/linux/dtpm.h        |  12 ++-
->   3 files changed, 161 insertions(+), 13 deletions(-)
+
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+Regards
+Vignesh
+
 > 
-> diff --git a/drivers/powercap/dtpm.c b/drivers/powercap/dtpm.c
-> index 1085dccf9c58..20728a28ff0d 100644
-> --- a/drivers/powercap/dtpm.c
-> +++ b/drivers/powercap/dtpm.c
-> @@ -20,6 +20,7 @@
->   #include <linux/dtpm.h>
->   #include <linux/init.h>
->   #include <linux/kernel.h>
-> +#include <linux/kref.h>
->   #include <linux/powercap.h>
->   #include <linux/slab.h>
->   #include <linux/mutex.h>
-> @@ -34,6 +35,14 @@ static DEFINE_MUTEX(dtpm_lock);
->   static struct powercap_control_type *pct;
->   static struct dtpm *root;
->   
-> +struct dtpm_node {
-> +	const char *name;
-> +	struct dtpm *dtpm;
-> +	struct list_head node;
+> This patch depends on,
+> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210301055109.17626-3-a-govindraju@ti.com/
+> 
+>  arch/arm64/boot/dts/ti/k3-am642-evm.dts | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> index bfd849a29655..bc5bd7f896ab 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> @@ -139,6 +139,15 @@
+>  			AM64X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (E19) USB0_DRVVBUS */
+>  		>;
+>  	};
+> +
+> +	main_spi0_pins_default: main-spi0-pins-default {
+> +		pinctrl-single,pins = <
+> +			AM64X_IOPAD(0x0210, PIN_INPUT, 0) /* (D13) SPI0_CLK */
+> +			AM64X_IOPAD(0x0208, PIN_OUTPUT, 0) /* (D12) SPI0_CS0 */
+> +			AM64X_IOPAD(0x0214, PIN_OUTPUT, 0) /* (A13) SPI0_D0 */
+> +			AM64X_IOPAD(0x0218, PIN_INPUT, 0) /* (A14) SPI0_D1 */
+> +		>;
+> +	};
+>  };
+>  
+>  &main_uart0 {
+> @@ -245,6 +254,19 @@
+>  	pinctrl-0 = <&main_usb0_pins_default>;
+>  };
+>  
+> +&main_spi0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_spi0_pins_default>;
+> +	ti,pindir-d0-out-d1-in = <1>;
+> +	eeprom@0 {
+> +		compatible = "microchip,93lc46b";
+> +		reg = <0>;
+> +		spi-max-frequency = <1000000>;
+> +		spi-cs-high;
+> +		data-size = <16>;
+> +	};
 > +};
 > +
-> +static LIST_HEAD(dtpm_list);
-> +
->   static int get_time_window_us(struct powercap_zone *pcz, int cid, u64 *window)
->   {
->   	return -ENOSYS;
-> @@ -152,6 +161,135 @@ static int __dtpm_update_power(struct dtpm *dtpm)
->   	return ret;
->   }
->   
-> +static struct dtpm *__dtpm_lookup(const char *name)
-> +{
-> +	struct dtpm_node *node;
-> +
-> +	list_for_each_entry(node, &dtpm_list, node) {
-> +		if (!strcmp(name, node->name))
-> +			return node->dtpm;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +/**
-> + * dtpm_get - Get a reference to a dtpm structure
-> + * @name: the name of the dtpm device
-> + *
-> + * The function looks up in the list of the registered dtpm
-> + * devices. If the dtpm device is not found, a virtual one is
-> + * allocated. This function must be called to create a dtpm node in
-> + * the powercap hierarchy.
-> + *
-> + * Return: a pointer to a dtpm structure, NULL if there is not enough
-> + * memory
-> + */
-> +struct dtpm *dtpm_get(const char *name)
-> +{
-> +	struct dtpm *dtpm;
-> +
-> +	mutex_lock(&dtpm_lock);
-> +	dtpm = __dtpm_lookup(name);
-> +	if (!dtpm)
-> +		dtpm = dtpm_alloc(NULL);
-> +	else
-> +		kref_get(&dtpm->kref);
-> +	mutex_unlock(&dtpm_lock);
-> +
-> +	return dtpm;
-> +}
-> +
-> +static void dtpm_release(struct kref *kref)
-> +{
-> +	struct dtpm *dtpm = container_of(kref, struct dtpm, kref);
-> +
-> +	kfree(dtpm);
-> +}
-> +
-> +/**
-> + * dtpm_put - Release a reference on a dtpm device
-> + * @dtpm: a pointer to a dtpm structure
-> + *
-> + * Release the reference on the specified dtpm device. The last
-> + * reference leads to a memory release.
-> + */
-> +void dtpm_put(struct dtpm *dtpm)
-> +{
-> +	kref_put(&dtpm->kref, dtpm_release);
-> +}
-> +
-> +/**
-> + * dtpm_register - Register the dtpm in the dtpm list
-> + * @name: a name used as an identifier
-> + * @dtpm: the dtpm node to be registered
-> + *
-> + * Stores the dtpm device in a list.
-> + *
-> + * Return: 0 on success, -EEXIST if the device name is already present
-> + * in the list, -ENOMEM in case of memory allocation failure.
-> + */
-> +int dtpm_register(const char *name, struct dtpm *dtpm)
-> +{
-> +	struct dtpm_node *node;
-> +
-> +	mutex_lock(&dtpm_lock);
-> +
-> +	if (__dtpm_lookup(name)) {
-> +		mutex_unlock(&dtpm_lock);
-> +		return -EEXIST;
-> +	}
-> +
-> +	node = kzalloc(sizeof(*node), GFP_KERNEL);
-> +	if (!node)
-
-mutex_unlock()
-
-> +		return -ENOMEM;
-> +
-> +	node->name = kstrdup(name, GFP_KERNEL);
-> +	if (!node->name) {
-> +		kfree(node);
-
-mutex_unlock()
-
-> +		return -ENOMEM;
-> +	}
-> +
-> +	node->dtpm = dtpm;
-> +
-> +	list_add(&node->node, &dtpm_list);
-> +
-> +	pr_info("Registered %s\n", name);
-> +
-> +	mutex_unlock(&dtpm_lock);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * dtpm_unregister - Remove the dtpm device from the list
-> + * @name: the dtpm device name to be removed
-> + *
-> + * Remove the dtpm device from the list of the registered devices.
-> + */
-> +void dtpm_unregister(const char *name)
-> +{
-> +	struct dtpm_node *node;
-> +
-> +	mutex_lock(&dtpm_lock);
-> +
-> +	list_for_each_entry(node, &dtpm_list, node) {
-
-At first glance list_for_each_entry_safe() is needed here, but
-this code is safe. The node is remove and the loop stops.
-
-> +
-> +		if (strcmp(name, node->name))
-> +			continue;
-> +
-> +		list_del(&node->node);
-> +		kfree(node->name);
-> +		kfree(node);
-> +
-> +		pr_info("Unregistered %s\n", name);
-> +
-> +		break;
-> +	}
-> +
-> +	mutex_unlock(&dtpm_lock);
-> +}
-> +
->   /**
->    * dtpm_update_power - Update the power on the dtpm
->    * @dtpm: a pointer to a dtpm structure to update
-> @@ -208,7 +346,7 @@ int dtpm_release_zone(struct powercap_zone *pcz)
->   	if (root == dtpm)
->   		root = NULL;
->   
-> -	kfree(dtpm);
-> +	dtpm_put(dtpm);
->   
->   	return 0;
->   }
-> @@ -370,6 +508,7 @@ struct dtpm *dtpm_alloc(struct dtpm_ops *ops)
->   	if (dtpm) {
->   		INIT_LIST_HEAD(&dtpm->children);
->   		INIT_LIST_HEAD(&dtpm->sibling);
-> +		kref_init(&dtpm->kref);
->   		dtpm->weight = 1024;
->   		dtpm->ops = ops;
->   	}
-> @@ -378,28 +517,29 @@ struct dtpm *dtpm_alloc(struct dtpm_ops *ops)
->   }
->   
->   /**
-> - * dtpm_unregister - Unregister a dtpm node from the hierarchy tree
-> - * @dtpm: a pointer to a dtpm structure corresponding to the node to be removed
-> + * dtpm_destroy - Destroy a dtpm node from the hierarchy tree
-> + * @dtpm: a pointer to a dtpm structure corresponding to the node to be
-> + *	  removed and destroyed
->    *
->    * Call the underlying powercap unregister function. That will call
->    * the release callback of the powercap zone.
->    */
-> -void dtpm_unregister(struct dtpm *dtpm)
-> +void dtpm_destroy(struct dtpm *dtpm)
->   {
->   	powercap_unregister_zone(pct, &dtpm->zone);
->   
-> -	pr_info("Unregistered dtpm node '%s'\n", dtpm->zone.name);
-> +	pr_info("Destroyed dtpm node '%s'\n", dtpm->zone.name);
->   }
->   
->   /**
-> - * dtpm_register - Register a dtpm node in the hierarchy tree
-> + * dtpm_create - Create a dtpm node in the hierarchy tree
->    * @name: a string specifying the name of the node
->    * @dtpm: a pointer to a dtpm structure corresponding to the new node
->    * @parent: a pointer to a dtpm structure corresponding to the parent node
->    *
->    * Create a dtpm node in the tree. If no parent is specified, the node
->    * is the root node of the hierarchy. If the root node already exists,
-> - * then the registration will fail. The powercap controller must be
-> + * then the creation will fail. The powercap controller must be
->    * initialized before calling this function.
->    *
->    * The dtpm structure must be initialized with the power numbers
-> @@ -413,7 +553,7 @@ void dtpm_unregister(struct dtpm *dtpm)
->    *           * parent have ops which are reserved for leaves
->    *   Other negative values are reported back from the powercap framework
->    */
-> -int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent)
-> +int dtpm_create(const char *name, struct dtpm *dtpm, struct dtpm *parent)
->   {
->   	struct powercap_zone *pcz;
->   
-> @@ -457,7 +597,7 @@ int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent)
->   	if (dtpm->ops && !dtpm->ops->upt_power_uw(dtpm))
->   		__dtpm_add_power(dtpm);
->   
-> -	pr_info("Registered dtpm node '%s' / %llu-%llu uW, \n",
-> +	pr_info("Created dtpm node '%s' / %llu-%llu uW, \n",
->   		dtpm->zone.name, dtpm->power_min, dtpm->power_max);
->   
->   	mutex_unlock(&dtpm_lock);
-> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-> index aff79c649345..1a10537c4434 100644
-> --- a/drivers/powercap/dtpm_cpu.c
-> +++ b/drivers/powercap/dtpm_cpu.c
-> @@ -180,7 +180,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
->   
->   	sprintf(name, "cpu%d-cpufreq", dtpm_cpu->cpu);
->   
-> -	ret = dtpm_register(name, dtpm, NULL);
-> +	ret = dtpm_register(name, dtpm);
->   	if (ret)
->   		goto out_kfree_dtpm_cpu;
->   
-> @@ -193,7 +193,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
->   	return 0;
->   
->   out_dtpm_unregister:
-> -	dtpm_unregister(dtpm);
-> +	dtpm_unregister(name);
->   	dtpm_cpu = NULL;
->   	dtpm = NULL;
->   
-> diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
-> index d29be6a0e513..447ea6c60b59 100644
-> --- a/include/linux/dtpm.h
-> +++ b/include/linux/dtpm.h
-> @@ -14,6 +14,7 @@
->   
->   struct dtpm {
->   	struct powercap_zone zone;
-> +	struct kref kref;
->   	struct dtpm *parent;
->   	struct list_head sibling;
->   	struct list_head children;
-> @@ -69,10 +70,17 @@ int dtpm_release_zone(struct powercap_zone *pcz);
->   
->   struct dtpm *dtpm_alloc(struct dtpm_ops *ops);
->   
-> -void dtpm_unregister(struct dtpm *dtpm);
-> +void dtpm_destroy(struct dtpm *dtpm);
->   
-> -int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent);
-> +int dtpm_create(const char *name, struct dtpm *dtpm, struct dtpm *parent);
->   
->   int dtpm_register_cpu(struct dtpm *parent);
->   
-> +int dtpm_register(const char *name, struct dtpm *dtpm);
-> +
-> +void dtpm_unregister(const char *name);
-> +
-> +struct dtpm *dtpm_get(const char *name);
-> +
-> +void dtpm_put(struct dtpm *dtpm);
->   #endif
+>  &sdhci0 {
+>  	/* emmc */
+>  	bus-width = <8>;
 > 
