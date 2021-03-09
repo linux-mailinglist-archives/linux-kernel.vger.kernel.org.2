@@ -2,139 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3697332F86
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F97332F8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbhCIUEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S231628AbhCIUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:05:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231387AbhCIUEV (ORCPT
+        with ESMTP id S231653AbhCIUFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:04:21 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68010C061761
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:04:21 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso7814172wmi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:04:21 -0800 (PST)
+        Tue, 9 Mar 2021 15:05:18 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD968C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:05:17 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id e20so3358766ljn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:05:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=th+pFGsKV4oACuzSEJwxa21qiSSHxcmfhJ8lnbdpJ3I=;
-        b=IkTZLESOhO3dhEUmEIFDXKWmjDhnOH/2/TsnOofR60AvPlmL995rGCwM18ScprpzuN
-         qKTBL0S5ILbpPgiJbbv8PFswofpDQDdBxW2zy711I3vgqJGADOZKzIwNPYnH1vGQnw7P
-         sGQDPwbJFBcJKbNN6jgmMBZIKTCsX3g8mVbfhii6obFESct2hXyjigZa1bVkLpdDJM9j
-         WmirkBTXoqYMdyYFITgFuuV6x+Gn6gP7sLkShYIjMWK+ESdjIL96Elq1txzvx/ijJ8Wq
-         dPUGEQGg+GMVUsQ3BRoHjHRLXJ1XFLql1kib4mT2G7Sc7rAssM6G3M6bhH1RLTWTIgkh
-         kbCg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kohwRGgEQaCo3tkVZ/WeefWjMw7rUpI7M2Guk4ayfeY=;
+        b=S13/iT8hpP3g4wvVRrgM3z+9NAV7Zn2ysUe5VpbU2RnXwT1e/Sw+vKdkSklZmdAUHL
+         f/moaaV4N359aLcYjVPvLeF/igF3xPAQ1mpjjLQ2OabAW2f4RbnjdUEnrNVg3pua6/D7
+         W6MegJ3ZDJ/ebxGGMA69l8lCNgL8k8g3/dMV4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=th+pFGsKV4oACuzSEJwxa21qiSSHxcmfhJ8lnbdpJ3I=;
-        b=Bpmeq77dgxUInRrYxKT/14gpkVkmGmFIcm/PhMCQJGVJPbKuliM0VJ35gytcmDLAtM
-         acUUjUTleIgo1FdAs5/RlrcvoPDbBvvVyAeDqgElh9F+SkC3pqqs0GIMIXb9O0VYCifU
-         9xbZs1Ecvw6kcwPZC62l1ZoyY67DC8fDCGcgo3UN8foXCRH0qtiwmMwlt88Kocbd3T/6
-         +M7gmI1Jh3FA77FbwDg6DLhXQEbKY42BJSVLeoWVh2IrhCrzR9cFJ2eZmYRL36Q2D/ap
-         V8gjgtqQNJNEMHs9uk9hSjYoyVyuMcu+LCRmoGD/mU8Qw2VKcl0xkGa1vk18LhC2giJL
-         sP/g==
-X-Gm-Message-State: AOAM533TL5M72gFl9s9XNBQHdgpHLDqMGQalptCJ4gCwOSziPApW/1y3
-        yVqGK2S4Gt0vPsw5mibwyoCTpw==
-X-Google-Smtp-Source: ABdhPJzsA/giZodWpMf/MSCDx29xhRcNuXOsnjxVJqqjtET7bDyrxhp5eAHRqgpo3e5982jWMYZGAA==
-X-Received: by 2002:a05:600c:47d7:: with SMTP id l23mr5900872wmo.155.1615320259949;
-        Tue, 09 Mar 2021 12:04:19 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id h22sm6008483wmb.36.2021.03.09.12.04.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 12:04:19 -0800 (PST)
-Date:   Tue, 9 Mar 2021 20:04:17 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [GIT PULL] Immutable branch between MFD and Input due for the
- v5.13 merge window
-Message-ID: <20210309200417.GZ4931@dell>
-References: <cover.1611653995.git.cristian.ciocaltea@gmail.com>
- <20210309135302.GP4931@dell>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kohwRGgEQaCo3tkVZ/WeefWjMw7rUpI7M2Guk4ayfeY=;
+        b=Y0LtQtcFgQyDZ20UzEC2cVHsbQRf19eihjVCeBEKhXgwhZZjeCsL4D+L/fo8XwJnJY
+         jDApGGG1wKuktDF29fQwcFtMk3FRTMJx+dNqBRYET7RORc+4faGx4ICrbp0APBY5nPjM
+         MornyGCsrP+GQeuRfhtWO+NhEbXbFFeL6MxXs714QUXh0h2/xpxKC7IobGsw6EuuuZHF
+         mLOpPUcF1sxixaPBxULMIerAIKl+hfTAS8p1QuOQpx1to33PmAd1gKeePOf9C73J6VtO
+         5L9q3inz4dU1rTOtWsgRTp32yAJ497CrmDc22AIz5Hu0k+qg0h2DjixzfWzSyxPN2J7H
+         rWbQ==
+X-Gm-Message-State: AOAM532BvOOmgB14zQQKV8OlVvioWQpWvTddOD30f9RnKJyOuohrY0wz
+        TLEJ1mtBYyRgvjbwJPqOGFarK/UoqOlAug==
+X-Google-Smtp-Source: ABdhPJyXFB8XTk1ocmu5HSLvIonz6dZ+7NC+te0FH/Vt3SgccaB9F37jm1Ro4Xuke/kWLcKPt1GXRg==
+X-Received: by 2002:a2e:8987:: with SMTP id c7mr18203141lji.185.1615320315898;
+        Tue, 09 Mar 2021 12:05:15 -0800 (PST)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id f25sm2094563lfh.226.2021.03.09.12.05.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 12:05:14 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id q25so29308001lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:05:14 -0800 (PST)
+X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr17726280lfu.40.1615320314276;
+ Tue, 09 Mar 2021 12:05:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210309135302.GP4931@dell>
+References: <20210309153443.16647-1-brgl@bgdev.pl> <CAMRc=MfO7J1z8oGy+OiRR000dJAYg1LTynz33Kh6BMb1hUrg5g@mail.gmail.com>
+In-Reply-To: <CAMRc=MfO7J1z8oGy+OiRR000dJAYg1LTynz33Kh6BMb1hUrg5g@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 9 Mar 2021 12:04:58 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiiuSPZGh1ai_NuV8BHgXO36H_aQ28Bx1u82gE23S1u0g@mail.gmail.com>
+Message-ID: <CAHk-=wiiuSPZGh1ai_NuV8BHgXO36H_aQ28Bx1u82gE23S1u0g@mail.gmail.com>
+Subject: Re: [GIT PULL] gpio: fixes for v5.12-rc3
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Mar 2021, Lee Jones wrote:
+On Tue, Mar 9, 2021 at 7:43 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> I realized only after I sent out this PR that I had rebased the branch
+> on top of v5.12-rc2 (because of the v5.12-rc1 situation) without
+> --rebase-merges and this caused git to drop the merge commit for
+> Andy's pull-request. Please let me know if you can pull this as is or
+> if I should rebuild my branch and resend.
 
-> Enjoy!
-> 
-> The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
-> 
->   Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-input-v5.13
-> 
-> for you to fetch changes up to b58c808ca46c163c1924ec5d3285e67e9217ec74:
-> 
->   MAINTAINERS: Add entry for ATC260x PMIC (2021-03-09 13:50:39 +0000)
-> 
-> ----------------------------------------------------------------
-> Immutable branch between MFD and Input due for the v5.13 merge window
-> 
-> ----------------------------------------------------------------
-> Cristian Ciocaltea (4):
->       dt-bindings: input: Add reset-time-sec common property
->       dt-bindings: mfd: Add Actions Semi ATC260x PMIC binding
->       mfd: Add MFD driver for ATC260x PMICs
->       input: atc260x: Add onkey driver for ATC260x PMICs
-> 
-> Manivannan Sadhasivam (1):
->       MAINTAINERS: Add entry for ATC260x PMIC
-> 
->  Documentation/devicetree/bindings/input/input.yaml |   7 +
->  .../devicetree/bindings/mfd/actions,atc260x.yaml   | 183 ++++++++++++
->  MAINTAINERS                                        |  12 +
->  drivers/input/misc/Kconfig                         |  11 +
->  drivers/input/misc/Makefile                        |   2 +-
->  drivers/input/misc/atc260x-onkey.c                 | 305 ++++++++++++++++++++
->  drivers/mfd/Kconfig                                |  18 ++
->  drivers/mfd/Makefile                               |   3 +
->  drivers/mfd/atc260x-core.c                         | 310 +++++++++++++++++++++
->  drivers/mfd/atc260x-i2c.c                          |  64 +++++
->  include/linux/mfd/atc260x/atc2603c.h               | 281 +++++++++++++++++++
->  include/linux/mfd/atc260x/atc2609a.h               | 308 ++++++++++++++++++++
->  include/linux/mfd/atc260x/core.h                   |  58 ++++
->  13 files changed, 1561 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
->  create mode 100644 drivers/input/misc/atc260x-onkey.c
->  create mode 100644 drivers/mfd/atc260x-core.c
->  create mode 100644 drivers/mfd/atc260x-i2c.c
->  create mode 100644 include/linux/mfd/atc260x/atc2603c.h
->  create mode 100644 include/linux/mfd/atc260x/atc2609a.h
->  create mode 100644 include/linux/mfd/atc260x/core.h
+This is fine - it's small, it's a one-time pain, and there's that reason for it.
 
-FYI, if anyone has pulled this, they should probably rebase it onto
-v5.12-rc2 and delete the v5.12-rc1 tag from their tree:
+So as long as Andy is aware of how his patches got rebased and don't
+match his branch any more, I think it's not a big deal, and I've
+pulled it as-is.
 
- https://lwn.net/Articles/848431/
-  
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+                    Linus
