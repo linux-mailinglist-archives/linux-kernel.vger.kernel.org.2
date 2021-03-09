@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6D3332DBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D99FB332DBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhCISBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:01:25 -0500
-Received: from mail-yb1-f170.google.com ([209.85.219.170]:35722 "EHLO
-        mail-yb1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbhCISAy (ORCPT
+        id S231490AbhCISDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:03:36 -0500
+Received: from pb-smtp20.pobox.com ([173.228.157.52]:58460 "EHLO
+        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhCISDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:00:54 -0500
-Received: by mail-yb1-f170.google.com with SMTP id p186so14921977ybg.2;
-        Tue, 09 Mar 2021 10:00:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d09tCXoDPz/gPvVq2LzHz5z3xcmuD/lr6SC5zub3HT8=;
-        b=rygDn7jEP/jVCCdNu/wZ8/oQvZB9aip92Ajz55aoRRyNGnMB2RcJWDLorpFOHNFJn3
-         dGh+a8A18TyyWtUQNkPTb9D3pqJiKEuGYaDLuIct10u/4cZdTtFOVoq+wL4xyvWpRmxl
-         M9gWbmq4S1g9ZwNvZNPguBF86lazVLSTGeGLp25S2cLaX3p5R9EqEDQOe3hQ7Tsn9oQ9
-         0p1HLnuQSo7bq3Yfbhvf0uvWSLLNWASi3c+gR53YtvhsSCgkFOG+yy/DkWNNCwXC3jTA
-         0y/bwA53xiVQ8msCM8iiZaCR6uz9rbs7/oiNSOABje3D6CChw2ihH3DlEEIHjn7CWAEE
-         wNOg==
-X-Gm-Message-State: AOAM531NxcQpUAFfgpf/X4CnggYxjq/ImQPVp0VVAYDhu31IzKEZBQkx
-        4Wt82DqcEjbvj72jIws+Mp9EVXrznfB2gL0OIYo=
-X-Google-Smtp-Source: ABdhPJxnh4XwyORoIaJFyZrpzJ3MnNuNx8SJSawU6P0DnrxP2BS6a2mjJjwPIDMt5lVtM+jf44yiDTHpTy1kCwpD0co=
-X-Received: by 2002:a25:3853:: with SMTP id f80mr41403299yba.514.1615312853886;
- Tue, 09 Mar 2021 10:00:53 -0800 (PST)
+        Tue, 9 Mar 2021 13:03:11 -0500
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 05E3A10EE69;
+        Tue,  9 Mar 2021 13:03:11 -0500 (EST)
+        (envelope-from junio@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=from:to
+        :subject:date:message-id:mime-version:content-type; s=sasl; bh=l
+        92APgVQ9wHzh0Z/W9PJFpdHiP4=; b=DE31Nv5FRVd9eQNhlqCU64DBkQbU/1tEB
+        eDj/fUAGAdZ7k4M+LxQ1lG3JvbomL7uniBastNZPNp+yDidzuznZBhVq51qi2MeY
+        5tfLXzRZ24ifyFlwoRg8YRckq8sK16dxpKJvF+OW9+rTsxooRF3ZqCwytN+AlpDJ
+        ltd+5AQlSk=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=from:to:subject
+        :date:message-id:mime-version:content-type; q=dns; s=sasl; b=bc1
+        mphhvhk0D/KFWLF9WHVAJkQdCrQiN6QnYQ090tEjEDQ+U3wIagNNoAIiJj2Y8CsX
+        vzDm6Bdu+aXdUlDDwKDF91dSt+O6vv1ACZmLROcvvhCMBkxWsLjGvTPJzyd08+iF
+        chXs/ZwHVxyFAPRWIFq0sBpHw1uAFLDwNWJtY5X8=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id DDB4210EE67;
+        Tue,  9 Mar 2021 13:03:10 -0500 (EST)
+        (envelope-from junio@pobox.com)
+Received: from pobox.com (unknown [35.243.138.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 1F7A310EE64;
+        Tue,  9 Mar 2021 13:03:08 -0500 (EST)
+        (envelope-from junio@pobox.com)
+From:   Junio C Hamano <gitster@pobox.com>
+To:     git@vger.kernel.org
+Subject: [ANNOUNCE] Git v2.30.2 and below for CVE-2021-21300
+Date:   Tue, 09 Mar 2021 10:03:06 -0800
+Message-ID: <xmqqim6019yd.fsf@gitster.c.googlers.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.90 (gnu/linux)
 MIME-Version: 1.0
-References: <20210309152354.95309-1-mailhol.vincent@wanadoo.fr> <20210309152354.95309-2-mailhol.vincent@wanadoo.fr>
-In-Reply-To: <20210309152354.95309-2-mailhol.vincent@wanadoo.fr>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 10 Mar 2021 03:00:43 +0900
-Message-ID: <CAMZ6RqJ8e0sQPvaT_6dVOwisnHj6m+STgdnmLmmQxzV0+uHbvw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] dql: add dql_set_min_limit()
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Tom Herbert <therbert@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Pobox-Relay-ID: B419642C-8101-11EB-BAB4-E43E2BB96649-77302942!pb-smtp20.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed. 10 Mar 2021 at 00:23, Vincent Mailhol
-<mailhol.vincent@wanadoo.fr> wrote:
->
-> Add a function to set the dynamic queue limit minimum value.
->
-> This function is to be used by network drivers which are able to
-> prove, at least through empirical tests, that they reach better
-> performances with a specific predefined dql.min_limit value.
->
-> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> ---
->  include/linux/dynamic_queue_limits.h | 3 +++
->  lib/dynamic_queue_limits.c           | 8 ++++++++
->  2 files changed, 11 insertions(+)
->
-> diff --git a/include/linux/dynamic_queue_limits.h b/include/linux/dynamic_queue_limits.h
-> index 407c2f281b64..32437f168a35 100644
-> --- a/include/linux/dynamic_queue_limits.h
-> +++ b/include/linux/dynamic_queue_limits.h
-> @@ -103,6 +103,9 @@ void dql_reset(struct dql *dql);
->  /* Initialize dql state */
->  void dql_init(struct dql *dql, unsigned int hold_time);
->
-> +/* Set the dql minimum limit */
-> +void dql_set_min_limit(struct dql *dql, unsigned int min_limit);
-> +
->  #endif /* _KERNEL_ */
->
->  #endif /* _LINUX_DQL_H */
-> diff --git a/lib/dynamic_queue_limits.c b/lib/dynamic_queue_limits.c
-> index fde0aa244148..8b6ad1e0a2e3 100644
-> --- a/lib/dynamic_queue_limits.c
-> +++ b/lib/dynamic_queue_limits.c
-> @@ -136,3 +136,11 @@ void dql_init(struct dql *dql, unsigned int hold_time)
->         dql_reset(dql);
->  }
->  EXPORT_SYMBOL(dql_init);
-> +
-> +void dql_set_min_limit(struct dql *dql, unsigned int min_limit)
-> +{
-> +#ifdef CONFIG_BQL
-> +       dql->min_limit = min_limit;
-> +#endif
+The latest maintenance release Git v2.30.2, together with releases
+for older maintenance tracks v2.17.6, v2.18.5, v2.19.6, v2.20.5,
+v2.21.4, v2.22.5, v2.23.4, v2.24.4, v2.25.5, v2.26.3, v2.27.1,
+v2.28.1 and v2.29.3, is now available at the usual places.
 
-Marc pointed some issue on the #ifdef in a separate thread:
-https://lore.kernel.org/linux-can/20210309153547.q7zspf46k6terxqv@pengutronix.de/
+These maintenance releases are to addresses the security issues
+CVE-2021-21300.  Please update.
 
-I will come back with a v2 tomorrow.
+The credit for these releases all goes to Matheus Tavares and
+Johannes Schindelin.  I didn't have to do anything but tagging their
+result, cutting releases, and sending out this announcement.
 
-> +}
-> +EXPORT_SYMBOL(dql_set_min_limit);
+The tarballs are found at:
+
+    https://www.kernel.org/pub/software/scm/git/
+
+The following public repositories all have a copy of the 'v2.30.2'
+tag and the 'maint' branch that the tag points at:
+
+  url = https://kernel.googlesource.com/pub/scm/git/git
+  url = git://repo.or.cz/alt-git.git
+  url = https://github.com/gitster/git
+
+----------------------------------------------------------------
+
+Git v2.30.2 Release Notes
+=========================
+
+This release merges up the fixes that appear in v2.17.6, v2.18.5,
+v2.19.6, v2.20.5, v2.21.4, v2.22.5, v2.23.4, v2.24.4, v2.25.5,
+v2.26.3, v2.27.1, v2.28.1 and v2.29.3 to address the security
+issue CVE-2021-21300; see the release notes for these versions
+for details.
+
+----------------------------------------------------------------
+
+Git v2.17.6 Release Notes
+=========================
+
+This release addresses the security issues CVE-2021-21300.
+
+Fixes since v2.17.5
+-------------------
+
+ * CVE-2021-21300:
+   On case-insensitive file systems with support for symbolic links,
+   if Git is configured globally to apply delay-capable clean/smudge
+   filters (such as Git LFS), Git could be fooled into running
+   remote code during a clone.
+
+Credit for finding and fixing this vulnerability goes to Matheus
+Tavares, helped by Johannes Schindelin.
