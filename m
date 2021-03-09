@@ -2,229 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59873331E3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3FF331E42
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhCIFOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 00:14:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34476 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229475AbhCIFOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 00:14:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615266856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BwvCGl4RerrOMc9D3VhJpaldx+CpAEoVSAb7RV+Msz0=;
-        b=PsjkzlUmjyNWLXREWyB7xNn47Lt1T1qcBVj929+SN9We23f06yjU0Cdu7T57DwVa+Y/JXI
-        00xxr6+6cdKI9bHU8uj/gH2FdCy7mfpjJLrhgFlpHw9pHjHi80qZlMWH3ngOq+8pI2FxM+
-        jY5DMrrzbd8QAXRkVn4CzPpCUJ5qojc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D2610AB8C;
-        Tue,  9 Mar 2021 05:14:15 +0000 (UTC)
-Subject: Re: [PATCH v4 2/3] xen/events: don't unmask an event channel when an
- eoi is pending
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        ross.lagerwall@citrix.com
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org, Julien Grall <julien@xen.org>,
-        Julien Grall <jgrall@amazon.com>
-References: <20210306161833.4552-1-jgross@suse.com>
- <20210306161833.4552-3-jgross@suse.com>
- <ff9fb99f-12ca-c04e-e4bc-1b1c67381cc2@oracle.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <d6a1ab2e-4b77-7b14-e397-74aa71efb70d@suse.com>
-Date:   Tue, 9 Mar 2021 06:14:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229649AbhCIFQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 00:16:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhCIFQe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 00:16:34 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01FCC06174A;
+        Mon,  8 Mar 2021 21:16:33 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso4508636pjb.4;
+        Mon, 08 Mar 2021 21:16:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4V4MZz42xx1VLoP7TP10uY71kWCxhoB48xeGZheZ9nc=;
+        b=tfxsVUrwWlUxMEfunHfoS0YSUrrnZDVA/XHNPDt1qz70CQKD4qKdBIZkPVzK7/JhrA
+         YRBkYB8/2QBcOZUnUOg8MSY1TGxjp4SYtDSJ4+IhbsxYHhVGE7uGN2V/DDSdiZhm0708
+         /45j/oYpq//uFU8V9iwvT2BXQR5cdDCO7UfjV7kxhNCUVDVLiY5e58/PZAVQtT0kYYVL
+         y8qkjg7i0s+lYW040l6+DR0RhYMV4lOXnuKNCCN/iQMQhGVdqmH3BTjwnElojoc15CFc
+         N8cgJmwvyZLLKSkM2u9WDum1SH8Y3L2kMsdJe9KjtKsrytWxyk6P5kmjW22uVoRYyaBT
+         Kahg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=4V4MZz42xx1VLoP7TP10uY71kWCxhoB48xeGZheZ9nc=;
+        b=EWlgH+0XZ1OUkq5M727+3vbCSA/QbAWvfHobCIqDeqDzPO3HpnZTts8He4EXpWGYZ3
+         yyI/K0EftkSfUjF7Bzyenw7aerUM/3Z+q7bDZabMG4s+RvvREjBUW8g4m+zW3kcml/rl
+         oHhUq3lWQEZYAD8tZvCkHU5fP9IcU2In75IMqEq5FHVu8JmWYfL9BAplf6tvM5Ad1IBp
+         1j5M/4Q05Xn3tLJbrNpq5jGehRZO9R7+eac4m3q19GR4v4NoRrveugEcWdSuk4yEL3cv
+         pAjRaijMjvkAwWSe8jd8A6J96Pgl7ydX4P7fW8WKYSky7neJSHQ7QYYTSNGsyb77mo6k
+         9FOw==
+X-Gm-Message-State: AOAM533tI6VNehSZltRDmAUe5ivQDSeTTwltf9zA4G4mpqTHh+0iB0rt
+        +iH9kwu1iw8QTH4C9BShdbo=
+X-Google-Smtp-Source: ABdhPJxQqdUv5sskQWjEWKWv529xmH6AU0zMc288xT3dmzwNiQT0O5UbGGP0L8x0CteBeZxnu9ssHQ==
+X-Received: by 2002:a17:902:9897:b029:e6:3e0a:b44a with SMTP id s23-20020a1709029897b02900e63e0ab44amr2315268plp.30.1615266993403;
+        Mon, 08 Mar 2021 21:16:33 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:4ccc:acdd:25da:14d1])
+        by smtp.gmail.com with ESMTPSA id b14sm1166576pji.14.2021.03.08.21.16.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 21:16:32 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
+        willy@infradead.org, mhocko@suse.com, david@redhat.com,
+        vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH v2 1/2] mm: disable LRU pagevec during the migration temporarily
+Date:   Mon,  8 Mar 2021 21:16:27 -0800
+Message-Id: <20210309051628.3105973-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-In-Reply-To: <ff9fb99f-12ca-c04e-e4bc-1b1c67381cc2@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="q01kZynA2QJbHdjvIabMM3OzYodc49c7C"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---q01kZynA2QJbHdjvIabMM3OzYodc49c7C
-Content-Type: multipart/mixed; boundary="tNpc0ydQx80iYjL3FMABQniegUgVN9sys";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
- ross.lagerwall@citrix.com
-Cc: Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org,
- Julien Grall <julien@xen.org>, Julien Grall <jgrall@amazon.com>
-Message-ID: <d6a1ab2e-4b77-7b14-e397-74aa71efb70d@suse.com>
-Subject: Re: [PATCH v4 2/3] xen/events: don't unmask an event channel when an
- eoi is pending
-References: <20210306161833.4552-1-jgross@suse.com>
- <20210306161833.4552-3-jgross@suse.com>
- <ff9fb99f-12ca-c04e-e4bc-1b1c67381cc2@oracle.com>
-In-Reply-To: <ff9fb99f-12ca-c04e-e4bc-1b1c67381cc2@oracle.com>
+LRU pagevec holds refcount of pages until the pagevec are drained.
+It could prevent migration since the refcount of the page is greater
+than the expection in migration logic. To mitigate the issue,
+callers of migrate_pages drains LRU pagevec via migrate_prep or
+lru_add_drain_all before migrate_pages call.
 
---tNpc0ydQx80iYjL3FMABQniegUgVN9sys
-Content-Type: multipart/mixed;
- boundary="------------BE5ED103C411FDF22705A2DF"
-Content-Language: en-US
+However, it's not enough because pages coming into pagevec after the
+draining call still could stay at the pagevec so it could keep
+preventing page migration. Since some callers of migrate_pages have
+retrial logic with LRU draining, the page would migrate at next trail
+but it is still fragile in that it doesn't close the fundamental race
+between upcoming LRU pages into pagvec and migration so the migration
+failure could cause contiguous memory allocation failure in the end.
 
-This is a multi-part message in MIME format.
---------------BE5ED103C411FDF22705A2DF
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+To close the race, this patch disables lru caches(i.e, pagevec)
+during ongoing migration until migrate is done.
 
-On 08.03.21 21:33, Boris Ostrovsky wrote:
->=20
-> On 3/6/21 11:18 AM, Juergen Gross wrote:
->> An event channel should be kept masked when an eoi is pending for it.
->> When being migrated to another cpu it might be unmasked, though.
->>
->> In order to avoid this keep three different flags for each event chann=
-el
->> to be able to distinguish "normal" masking/unmasking from eoi related
->> masking/unmasking and temporary masking. The event channel should only=
+Since it's really hard to reproduce, I measured how many times
+migrate_pages retried with force mode below debug code.
 
->> be able to generate an interrupt if all flags are cleared.
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 54c9de89895e0a36047 ("xen/events: add a new late EOI evtchn fra=
-mework")
->> Reported-by: Julien Grall <julien@xen.org>
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->> Reviewed-by: Julien Grall <jgrall@amazon.com>
->> ---
->> V2:
->> - introduce a lock around masking/unmasking
->> - merge patch 3 into this one (Jan Beulich)
->> V4:
->> - don't set eoi masking flag in lateeoi_mask_ack_dynirq()
->=20
->=20
-> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
->=20
->=20
-> Ross, are you planning to test this?
+int migrate_pages(struct list_head *from, new_page_t get_new_page,
+			..
+			..
 
-Just as another data point: With the previous version of the patches
-a reboot loop of a guest needed max 33 reboots to loose network in
-my tests (those were IIRC 6 test runs). With this patch version I
-stopped the test after about 1300 reboots without having seen any
-problems.
+if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
+       printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), rc);
+       dump_page(page, "fail to migrate");
+}
 
-Juergen
+The test was repeating android apps launching with cma allocation
+in background every five seconds. Total cma allocation count was
+about 500 during the testing. With this patch, the dump_page count
+was reduced from 400 to 30.
 
---------------BE5ED103C411FDF22705A2DF
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+It would be also useful for memory-hotplug.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+* from v1 - https://lore.kernel.org/lkml/20210302210949.2440120-1-minchan@kernel.org/
+  * introduce __lru_add_drain_all to minimize changes - mhocko
+  * use lru_cache_disable for memory-hotplug
+  * schedule for every cpu at force_all_cpus
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+* from RFC - http://lore.kernel.org/linux-mm/20210216170348.1513483-1-minchan@kernel.org
+  * use atomic and lru_add_drain_all for strict ordering - mhocko
+  * lru_cache_disable/enable - mhocko
 
---------------BE5ED103C411FDF22705A2DF--
+ include/linux/migrate.h |  6 ++-
+ include/linux/swap.h    |  2 +
+ mm/memory_hotplug.c     |  3 +-
+ mm/mempolicy.c          |  6 +++
+ mm/migrate.c            | 13 ++++---
+ mm/page_alloc.c         |  3 ++
+ mm/swap.c               | 82 +++++++++++++++++++++++++++++++++--------
+ 7 files changed, 91 insertions(+), 24 deletions(-)
 
---tNpc0ydQx80iYjL3FMABQniegUgVN9sys--
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index 3a389633b68f..6a23174ea081 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -47,6 +47,7 @@ extern void putback_movable_page(struct page *page);
+ 
+ extern void migrate_prep(void);
+ extern void migrate_prep_local(void);
++extern void migrate_finish(void);
+ extern void migrate_page_states(struct page *newpage, struct page *page);
+ extern void migrate_page_copy(struct page *newpage, struct page *page);
+ extern int migrate_huge_page_move_mapping(struct address_space *mapping,
+@@ -66,8 +67,9 @@ static inline struct page *alloc_migration_target(struct page *page,
+ static inline int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	{ return -EBUSY; }
+ 
+-static inline int migrate_prep(void) { return -ENOSYS; }
+-static inline int migrate_prep_local(void) { return -ENOSYS; }
++static inline void migrate_prep(void) { return -ENOSYS; }
++static inline void migrate_prep_local(void) { return -ENOSYS; }
++static inline void migrate_done(void) {}
+ 
+ static inline void migrate_page_states(struct page *newpage, struct page *page)
+ {
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 71166bc10d17..aaa6b9cc3f8a 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -339,6 +339,8 @@ extern void lru_note_cost(struct lruvec *lruvec, bool file,
+ extern void lru_note_cost_page(struct page *);
+ extern void lru_cache_add(struct page *);
+ extern void mark_page_accessed(struct page *);
++extern void lru_cache_disable(void);
++extern void lru_cache_enable(void);
+ extern void lru_add_drain(void);
+ extern void lru_add_drain_cpu(int cpu);
+ extern void lru_add_drain_cpu_zone(struct zone *zone);
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index a969463bdda4..9a5af00802f9 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1571,6 +1571,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ 	 * in a way that pages from isolated pageblock are left on pcplists.
+ 	 */
+ 	zone_pcp_disable(zone);
++	lru_cache_disable();
+ 
+ 	/* set above range as isolated */
+ 	ret = start_isolate_page_range(start_pfn, end_pfn,
+@@ -1602,7 +1603,6 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ 			}
+ 
+ 			cond_resched();
+-			lru_add_drain_all();
+ 
+ 			ret = scan_movable_pages(pfn, end_pfn, &pfn);
+ 			if (!ret) {
+@@ -1647,6 +1647,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ 	zone->nr_isolate_pageblock -= nr_pages / pageblock_nr_pages;
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+ 
++	lru_cache_enable();
+ 	zone_pcp_enable(zone);
+ 
+ 	/* removal success */
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 6961238c7ef5..46d9986c7bf0 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1208,6 +1208,8 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
+ 			break;
+ 	}
+ 	mmap_read_unlock(mm);
++	migrate_finish();
++
+ 	if (err < 0)
+ 		return err;
+ 	return busy;
+@@ -1371,6 +1373,10 @@ static long do_mbind(unsigned long start, unsigned long len,
+ 	mmap_write_unlock(mm);
+ mpol_out:
+ 	mpol_put(new);
++
++	if (flags & (MPOL_MF_MOVE | MPOL_MF_MOVE_ALL))
++		migrate_finish();
++
+ 	return err;
+ }
+ 
+diff --git a/mm/migrate.c b/mm/migrate.c
+index a69da8aaeccd..3de67c5f70bc 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -65,12 +65,9 @@
+ void migrate_prep(void)
+ {
+ 	/*
+-	 * Clear the LRU lists so pages can be isolated.
+-	 * Note that pages may be moved off the LRU after we have
+-	 * drained them. Those pages will fail to migrate like other
+-	 * pages that may be busy.
++	 * Clear the LRU pcp lists so pages can be isolated.
+ 	 */
+-	lru_add_drain_all();
++	lru_cache_disable();
+ }
+ 
+ /* Do the necessary work of migrate_prep but not if it involves other CPUs */
+@@ -79,6 +76,11 @@ void migrate_prep_local(void)
+ 	lru_add_drain();
+ }
+ 
++void migrate_finish(void)
++{
++	lru_cache_enable();
++}
++
+ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ {
+ 	struct address_space *mapping;
+@@ -1837,6 +1839,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+ 	if (err >= 0)
+ 		err = err1;
+ out:
++	migrate_finish();
+ 	return err;
+ }
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 9811663fcf0b..6c0b5c6a4779 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8491,6 +8491,9 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
+ 				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+ 	}
++
++	migrate_finish();
++
+ 	if (ret < 0) {
+ 		putback_movable_pages(&cc->migratepages);
+ 		return ret;
+diff --git a/mm/swap.c b/mm/swap.c
+index 31b844d4ed94..fc8acccb882b 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -235,6 +235,18 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
+ 	}
+ }
+ 
++/* return true if pagevec needs to drain */
++static bool pagevec_add_and_need_flush(struct pagevec *pvec, struct page *page)
++{
++	bool ret = false;
++
++	if (!pagevec_add(pvec, page) || PageCompound(page) ||
++			lru_cache_disabled())
++		ret = true;
++
++	return ret;
++}
++
+ /*
+  * Writeback is about to end against a page which has been marked for immediate
+  * reclaim.  If it still appears to be reclaimable, move it to the tail of the
+@@ -252,7 +264,7 @@ void rotate_reclaimable_page(struct page *page)
+ 		get_page(page);
+ 		local_lock_irqsave(&lru_rotate.lock, flags);
+ 		pvec = this_cpu_ptr(&lru_rotate.pvec);
+-		if (!pagevec_add(pvec, page) || PageCompound(page))
++		if (pagevec_add_and_need_flush(pvec, page))
+ 			pagevec_lru_move_fn(pvec, pagevec_move_tail_fn);
+ 		local_unlock_irqrestore(&lru_rotate.lock, flags);
+ 	}
+@@ -343,7 +355,7 @@ static void activate_page(struct page *page)
+ 		local_lock(&lru_pvecs.lock);
+ 		pvec = this_cpu_ptr(&lru_pvecs.activate_page);
+ 		get_page(page);
+-		if (!pagevec_add(pvec, page) || PageCompound(page))
++		if (pagevec_add_and_need_flush(pvec, page))
+ 			pagevec_lru_move_fn(pvec, __activate_page);
+ 		local_unlock(&lru_pvecs.lock);
+ 	}
+@@ -458,7 +470,7 @@ void lru_cache_add(struct page *page)
+ 	get_page(page);
+ 	local_lock(&lru_pvecs.lock);
+ 	pvec = this_cpu_ptr(&lru_pvecs.lru_add);
+-	if (!pagevec_add(pvec, page) || PageCompound(page))
++	if (pagevec_add_and_need_flush(pvec, page))
+ 		__pagevec_lru_add(pvec);
+ 	local_unlock(&lru_pvecs.lock);
+ }
+@@ -654,7 +666,7 @@ void deactivate_file_page(struct page *page)
+ 		local_lock(&lru_pvecs.lock);
+ 		pvec = this_cpu_ptr(&lru_pvecs.lru_deactivate_file);
+ 
+-		if (!pagevec_add(pvec, page) || PageCompound(page))
++		if (pagevec_add_and_need_flush(pvec, page))
+ 			pagevec_lru_move_fn(pvec, lru_deactivate_file_fn);
+ 		local_unlock(&lru_pvecs.lock);
+ 	}
+@@ -676,7 +688,7 @@ void deactivate_page(struct page *page)
+ 		local_lock(&lru_pvecs.lock);
+ 		pvec = this_cpu_ptr(&lru_pvecs.lru_deactivate);
+ 		get_page(page);
+-		if (!pagevec_add(pvec, page) || PageCompound(page))
++		if (pagevec_add_and_need_flush(pvec, page))
+ 			pagevec_lru_move_fn(pvec, lru_deactivate_fn);
+ 		local_unlock(&lru_pvecs.lock);
+ 	}
+@@ -698,7 +710,7 @@ void mark_page_lazyfree(struct page *page)
+ 		local_lock(&lru_pvecs.lock);
+ 		pvec = this_cpu_ptr(&lru_pvecs.lru_lazyfree);
+ 		get_page(page);
+-		if (!pagevec_add(pvec, page) || PageCompound(page))
++		if (pagevec_add_and_need_flush(pvec, page))
+ 			pagevec_lru_move_fn(pvec, lru_lazyfree_fn);
+ 		local_unlock(&lru_pvecs.lock);
+ 	}
+@@ -728,14 +740,7 @@ static void lru_add_drain_per_cpu(struct work_struct *dummy)
+ 	lru_add_drain();
+ }
+ 
+-/*
+- * Doesn't need any cpu hotplug locking because we do rely on per-cpu
+- * kworkers being shut down before our page_alloc_cpu_dead callback is
+- * executed on the offlined cpu.
+- * Calling this function with cpu hotplug locks held can actually lead
+- * to obscure indirect dependencies via WQ context.
+- */
+-void lru_add_drain_all(void)
++void __lru_add_drain_all(bool force_all_cpus)
+ {
+ 	/*
+ 	 * lru_drain_gen - Global pages generation number
+@@ -780,7 +785,7 @@ void lru_add_drain_all(void)
+ 	 * (C) Exit the draining operation if a newer generation, from another
+ 	 * lru_add_drain_all(), was already scheduled for draining. Check (A).
+ 	 */
+-	if (unlikely(this_gen != lru_drain_gen))
++	if (unlikely(this_gen != lru_drain_gen && !force_all_cpus))
+ 		goto done;
+ 
+ 	/*
+@@ -810,7 +815,8 @@ void lru_add_drain_all(void)
+ 	for_each_online_cpu(cpu) {
+ 		struct work_struct *work = &per_cpu(lru_add_drain_work, cpu);
+ 
+-		if (pagevec_count(&per_cpu(lru_pvecs.lru_add, cpu)) ||
++		if (force_all_cpus ||
++		    pagevec_count(&per_cpu(lru_pvecs.lru_add, cpu)) ||
+ 		    data_race(pagevec_count(&per_cpu(lru_rotate.pvec, cpu))) ||
+ 		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate_file, cpu)) ||
+ 		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate, cpu)) ||
+@@ -828,6 +834,18 @@ void lru_add_drain_all(void)
+ done:
+ 	mutex_unlock(&lock);
+ }
++
++/*
++ * Doesn't need any cpu hotplug locking because we do rely on per-cpu
++ * kworkers being shut down before our page_alloc_cpu_dead callback is
++ * executed on the offlined cpu.
++ * Calling this function with cpu hotplug locks held can actually lead
++ * to obscure indirect dependencies via WQ context.
++ */
++void lru_add_drain_all(void)
++{
++	__lru_add_drain_all(false);
++}
+ #else
+ void lru_add_drain_all(void)
+ {
+@@ -835,6 +853,38 @@ void lru_add_drain_all(void)
+ }
+ #endif /* CONFIG_SMP */
+ 
++static atomic_t lru_disable_count = ATOMIC_INIT(0);
++
++bool lru_cache_disabled(void)
++{
++	return atomic_read(&lru_disable_count);
++}
++
++void lru_cache_enable(void)
++{
++	atomic_dec(&lru_disable_count);
++}
++/*
++ * Clear the LRU lists so pages can be isolated.
++ */
++void lru_cache_disable(void)
++{
++	atomic_inc(&lru_disable_count);
++#ifdef CONFIG_SMP
++	/*
++	 * lru_add_drain_all in the force mode will schedule draining on
++	 * all online CPUs so any calls of lru_cache_disabled wrapped by
++	 * local_lock or preemption disabled would be ordered by that.
++	 * The atomic operation doesn't need to have stronger ordering
++	 * requirements because that is enforeced by the scheduling
++	 * guarantees.
++	 */
++	__lru_add_drain_all(true);
++#else
++	lru_add_drain();
++#endif
++}
++
+ /**
+  * release_pages - batched put_page()
+  * @pages: array of pages to release
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
---q01kZynA2QJbHdjvIabMM3OzYodc49c7C
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmBHBCYFAwAAAAAACgkQsN6d1ii/Ey/A
-eQf/QH0znaB3+GMsnTj6zXH3Lw1t8QxjO7acZvpKciqqjxU6LRgnSY7h37Zu/SWPvf8tjantQM0z
-aSbxaifZ8dmJOAICQ/djKo4WL/Ib26xkPool0Y56dqm/MdUrLBRz7Mr83SGajlO+hIsgs0Jfk9R8
-whnC7ogsGZ1iFjGWVHhsEQyXdVTVgplWjf4NDFptDpRTYPT+5QOu4AL++SG0auWnFCNcN7LXv7g3
-aKMxs4iyA1jtN16kXvqLI7EHFHDKp/ETHvKBLpLq4ZfsNt23VVPxE95PK7HrDNTq4NhDsxntOF6T
-n3U0HgH407F+rwqhpuF5a+HAD9Z2Qb+jR8OwuNQxww==
-=9CG/
------END PGP SIGNATURE-----
-
---q01kZynA2QJbHdjvIabMM3OzYodc49c7C--
