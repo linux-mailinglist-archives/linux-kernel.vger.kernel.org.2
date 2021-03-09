@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536AA332E86
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A80F6332E8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhCISuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:50:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48074 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230035AbhCIStv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:49:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615315791;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m9Xym80t0AfeRZOHjiWsVqVWWv3spvSFZ9P4PZSjvAg=;
-        b=O7DG2O1ZuaFb7o/C3fA5F+cdG8pXgcpdyM20cg8jM/5vzjFbMKZ4mIMpKcjSjcp+7D7f2D
-        sT/lj9yub13ipCqOz8CtvcSlWMReib3SHy/lIWA68j6167EatjO/ZmW7WHqVLoJAFyed/x
-        BmG+0NpWz4nWd0GIDC/sZjS+N0phdU8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-Puy1zNhwNhukt9P_bDC-yA-1; Tue, 09 Mar 2021 13:49:49 -0500
-X-MC-Unique: Puy1zNhwNhukt9P_bDC-yA-1
-Received: by mail-wm1-f72.google.com with SMTP id z26so1541782wml.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 10:49:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m9Xym80t0AfeRZOHjiWsVqVWWv3spvSFZ9P4PZSjvAg=;
-        b=hhkI0boTG/xdzGxkI1yyNxtQy0XH3rz8JJORyzoZEUv8mtrs8hsXDEn7p0gAxbE4Ak
-         KcgfzMHjLY6ZcVnm4TJSfqmz/Ft6UhdB/InHVs8hk/aly6w8S+m1Y0rObAxNQhE3aZBP
-         eO1Vy3jGZM8QGgQLDhY4sywZg5gji67Xnqt3mCCk2bnUcxbG+2DAPUxT9Y4j1AUgJ3Hb
-         XDeO5jWH3PppIWtF7bH4zr1fBaDfU0OudQiGYq3jHtt/pePhsVPD4Jn3zfSSSkrpWycI
-         BpIgmfMRsbGgXuXSRbsQodkG7YjUCVjVVBmWXrBZ2NNcSde12ILPp3gIKcc49fHE3Q2r
-         ZcGQ==
-X-Gm-Message-State: AOAM5322gbDOZhhVTbz5ac+R/vT14aosQjY6iuoCHR23+/C8TfiFw/hu
-        GEB6lmd9CJQk34w1NgaEe0tHp2s94ABVfn2sJ3xGGW8ccgNXneDOuD10JKfEEDrYWRq/13Gt3TS
-        La+JccNv7jsar+jw9MDDKHMTo
-X-Received: by 2002:a05:6000:1a8c:: with SMTP id f12mr29860099wry.173.1615315788524;
-        Tue, 09 Mar 2021 10:49:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxLvc9I8lVKzz6AHteBnYBDwX8zS4xde1F0yjVbAXTx+neuz8trrr19wOyyEGbfiZBgdAWiUw==
-X-Received: by 2002:a05:6000:1a8c:: with SMTP id f12mr29860076wry.173.1615315788359;
-        Tue, 09 Mar 2021 10:49:48 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id n66sm5211597wmn.25.2021.03.09.10.49.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 10:49:47 -0800 (PST)
-Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
-To:     Borislav Petkov <bp@alien8.de>, Kai Huang <kai.huang@intel.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, jethro@fortanix.com, b.thiel@posteo.de,
-        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, corbet@lwn.net
-References: <cover.1615250634.git.kai.huang@intel.com>
- <20210309093037.GA699@zn.tnic>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <51ebf191-e83a-657a-1030-4ccdc32f0f33@redhat.com>
-Date:   Tue, 9 Mar 2021 19:49:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231156AbhCISvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:51:15 -0500
+Received: from mga02.intel.com ([134.134.136.20]:11126 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230084AbhCISvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 13:51:00 -0500
+IronPort-SDR: gDCWWtOPpE+vVf47ux871p8BNWCUKiRz3FCjR6YTgh6E3BXkIdYmm8iv/4XIysF8Gjm4MMpwqg
+ SC03UiF6XdtA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175408886"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="175408886"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 10:50:52 -0800
+IronPort-SDR: jq9RvfGrED3KnBnzQTdkG3xILFiKGrCLwXc+thSueGevm/dLd8QTz+TDEGWbUK8gMQLYHo0IVX
+ mtZuoWJ9LRkg==
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="447604230"
+Received: from jcchan4-mobl.amr.corp.intel.com (HELO [10.212.217.30]) ([10.212.217.30])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 10:50:52 -0800
+Subject: Re: [PATCH v5 4/4] x86/vmemmap: Optimize for consecutive sections in
+ partial populated PMDs
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210309174113.5597-1-osalvador@suse.de>
+ <20210309174113.5597-5-osalvador@suse.de>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <f8a1fc19-91bb-7f85-301f-6a68ea22b594@intel.com>
+Date:   Tue, 9 Mar 2021 10:50:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210309093037.GA699@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210309174113.5597-5-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/03/21 10:30, Borislav Petkov wrote:
-> On Tue, Mar 09, 2021 at 02:38:49PM +1300, Kai Huang wrote:
->> This series adds KVM SGX virtualization support. The first 14 patches starting
->> with x86/sgx or x86/cpu.. are necessary changes to x86 and SGX core/driver to
->> support KVM SGX virtualization, while the rest are patches to KVM subsystem.
+On 3/9/21 9:41 AM, Oscar Salvador wrote:
+> We can optimize in the case we are adding consecutive sections, so no
+> memset(PAGE_UNUSED) is needed.
+> In that case, let us keep track where the unused range of the previous
+> memory range begins, so we can compare it with start of the range to be
+> added.
+> If they are equal, we know sections are added consecutively.
 > 
-> Ok, I guess I'll queue 1-14 once Sean doesn't find anything
-> objectionable then give Paolo an immutable commit to base the KVM stuff
-> ontop.
+> For that purpose, let us introduce 'unused_pmd_start', which always holds
+> the beginning of the unused memory range.
+> 
+> In the case a section does not contiguously follow the previous one, we
+> know we can memset [unused_pmd_start, PMD_BOUNDARY) with PAGE_UNUSE.
+> 
+> This patch is based on a similar patch by David Hildenbrand:
+> 
+> https://lore.kernel.org/linux-mm/20200722094558.9828-10-david@redhat.com/
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
-Sounds great.
+This is much more clear now.  Thanks!
 
-Paolo
-
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
