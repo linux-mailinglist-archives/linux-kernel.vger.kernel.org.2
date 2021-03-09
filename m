@@ -2,256 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2EC331E07
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05302331E0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhCIEnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 23:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhCIEnk (ORCPT
+        id S230131AbhCIEpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 23:45:31 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:51694 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230058AbhCIEpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 23:43:40 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059CCC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:43:40 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id mm21so24830191ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:43:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=h53NPiOJ9hX8bXjlAIC4CS9wGdO6ZbZbLlf/R8bwdUQ=;
-        b=mpjAYyq672Mj2enPjZz4Bifull4/DHrB1mKl2/6HoT/ucMqppn03Ax7M3/SLJKcj3O
-         fimFdOtQMAAi2miTFZIkUUwp0Vhhu3Y2bIAw8Lm4Bu/C/y3LYKlnG9g1zhWsJJqnK3D3
-         pvDmS8BPjDPBcXorNDkgFCZh1No+nuba01RmTN6E6yOdmdz+g0HLARISKkMAH1uvLoNI
-         0EHjHiF+ZclGB799gMLwnvgf7Q29krBwO+uue2OJKPtylfNqwZOOqT/QcYp7iwUnj1sP
-         6M3PvYuM0ReBGrGOddgiH7x9/9WQ//KDEtKacrrJDp1R0+dgesnvN7b65NAd5UB/PyJ6
-         bKUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=h53NPiOJ9hX8bXjlAIC4CS9wGdO6ZbZbLlf/R8bwdUQ=;
-        b=gCV2WEAcoyj2ey8x/G43GZ974jTGd8lIXQufCLqgKJcujBiN30PJ/CSoipyVXNZJy9
-         ZYCrOsf+55jz3WfuG8ZqfnK2Yyk8B+8eAxs1lH/vUV2OUh+3WpKxt2gukKhq97wxI94B
-         itMX5O/HQJqGTSnGy5SXF1MhT0v/U71mM1N8Mx/CwljdUw494Ry2O/8AEU3DsuccV6dr
-         NxwYN4AB2AHOQDI5vXj5E/CUGhFjmx8nqQ5i8fkk/0CTqoIvUZhi92Y0yuo3sSf3X5xs
-         3y0fzwxTeDlJle3RNUiCP3QVPNkYn6ow3G9gszmxampxnT5B36ulkPkQZasiM9ogoP1V
-         zV8g==
-X-Gm-Message-State: AOAM531q67qRo/l6B3Q5FmEfeABtgbJ85St2afG0PMRHYhL3/T0zM+q0
-        mVDdJnVDVR79AwU3HgaPWUfbh4GHsjG/3vcl7TKCRQ==
-X-Google-Smtp-Source: ABdhPJxNxMZh710hWWMykxmEJsNPt0JYbmezwJe6PTMGZFCsropOkMmXatY3KzrccSGjn8ONe01b1bdQ9rR1HQWchVM=
-X-Received: by 2002:a17:906:444d:: with SMTP id i13mr17789458ejp.170.1615265018691;
- Mon, 08 Mar 2021 20:43:38 -0800 (PST)
+        Mon, 8 Mar 2021 23:45:21 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UR1RlrC_1615265117;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0UR1RlrC_1615265117)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 09 Mar 2021 12:45:17 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     davem@davemloft.net, rostedt@goodmis.org, mingo@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: add net namespace inode for all net_dev events
+Date:   Tue,  9 Mar 2021 12:43:50 +0800
+Message-Id: <20210309044349.6605-1-tonylu@linux.alibaba.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210308122718.120213856@linuxfoundation.org>
-In-Reply-To: <20210308122718.120213856@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 9 Mar 2021 10:13:27 +0530
-Message-ID: <CA+G9fYu5L90w3f4p30uTRn-KT03ZVzg4a8cfJa-01JXGwtG8Sw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/42] 5.10.22-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 at 18:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.22 release.
-> There are 42 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.22-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+There are lots of net namespaces on the host runs containers like k8s.
+It is very common to see the same interface names among different net
+namespaces, such as eth0. It is not possible to distinguish them without
+net namespace inode.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+This adds net namespace inode for all net_dev events, help us
+distinguish between different net devices.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Output:
+  <idle>-0       [006] ..s.   133.306989: net_dev_xmit: net_inum=4026531992 dev=eth0 skbaddr=0000000011a87c68 len=54 rc=0
 
-Summary
-------------------------------------------------------------------------
+Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
+---
+ include/trace/events/net.h | 35 +++++++++++++++++++++++++----------
+ 1 file changed, 25 insertions(+), 10 deletions(-)
 
-kernel: 5.10.22-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.10.y
-git commit: 9226165b6cc7667b147e1de52090d1b6a17af336
-git describe: v5.10.21-43-g9226165b6cc7
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
-.y/build/v5.10.21-43-g9226165b6cc7
+diff --git a/include/trace/events/net.h b/include/trace/events/net.h
+index 2399073c3afc..a52f90d83411 100644
+--- a/include/trace/events/net.h
++++ b/include/trace/events/net.h
+@@ -35,6 +35,7 @@ TRACE_EVENT(net_dev_start_xmit,
+ 		__field(	u16,			gso_size	)
+ 		__field(	u16,			gso_segs	)
+ 		__field(	u16,			gso_type	)
++		__field(	unsigned int,		net_inum	)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -56,10 +57,12 @@ TRACE_EVENT(net_dev_start_xmit,
+ 		__entry->gso_size = skb_shinfo(skb)->gso_size;
+ 		__entry->gso_segs = skb_shinfo(skb)->gso_segs;
+ 		__entry->gso_type = skb_shinfo(skb)->gso_type;
++		__entry->net_inum = dev_net(skb->dev)->ns.inum;
+ 	),
+ 
+-	TP_printk("dev=%s queue_mapping=%u skbaddr=%p vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d len=%u data_len=%u network_offset=%d transport_offset_valid=%d transport_offset=%d tx_flags=%d gso_size=%d gso_segs=%d gso_type=%#x",
+-		  __get_str(name), __entry->queue_mapping, __entry->skbaddr,
++	TP_printk("net_inum=%u dev=%s queue_mapping=%u skbaddr=%p vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d len=%u data_len=%u network_offset=%d transport_offset_valid=%d transport_offset=%d tx_flags=%d gso_size=%d gso_segs=%d gso_type=%#x",
++		  __entry->net_inum, __get_str(name), __entry->queue_mapping,
++		  __entry->skbaddr,
+ 		  __entry->vlan_tagged, __entry->vlan_proto, __entry->vlan_tci,
+ 		  __entry->protocol, __entry->ip_summed, __entry->len,
+ 		  __entry->data_len,
+@@ -82,6 +85,7 @@ TRACE_EVENT(net_dev_xmit,
+ 		__field(	unsigned int,	len		)
+ 		__field(	int,		rc		)
+ 		__string(	name,		dev->name	)
++		__field(	unsigned int,	net_inum	)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -89,10 +93,12 @@ TRACE_EVENT(net_dev_xmit,
+ 		__entry->len = skb_len;
+ 		__entry->rc = rc;
+ 		__assign_str(name, dev->name);
++		__entry->net_inum = dev_net(skb->dev)->ns.inum;
+ 	),
+ 
+-	TP_printk("dev=%s skbaddr=%p len=%u rc=%d",
+-		__get_str(name), __entry->skbaddr, __entry->len, __entry->rc)
++	TP_printk("net_inum=%u dev=%s skbaddr=%p len=%u rc=%d",
++		__entry->net_inum, __get_str(name), __entry->skbaddr,
++		__entry->len, __entry->rc)
+ );
+ 
+ TRACE_EVENT(net_dev_xmit_timeout,
+@@ -106,16 +112,19 @@ TRACE_EVENT(net_dev_xmit_timeout,
+ 		__string(	name,		dev->name	)
+ 		__string(	driver,		netdev_drivername(dev))
+ 		__field(	int,		queue_index	)
++		__field(	unsigned int,	net_inum	)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__assign_str(name, dev->name);
+ 		__assign_str(driver, netdev_drivername(dev));
+ 		__entry->queue_index = queue_index;
++		__entry->net_inum = dev_net(dev)->ns.inum;
+ 	),
+ 
+-	TP_printk("dev=%s driver=%s queue=%d",
+-		__get_str(name), __get_str(driver), __entry->queue_index)
++	TP_printk("net_inum=%u dev=%s driver=%s queue=%d",
++		__entry->net_inum, __get_str(name), __get_str(driver),
++		__entry->queue_index)
+ );
+ 
+ DECLARE_EVENT_CLASS(net_dev_template,
+@@ -128,16 +137,19 @@ DECLARE_EVENT_CLASS(net_dev_template,
+ 		__field(	void *,		skbaddr		)
+ 		__field(	unsigned int,	len		)
+ 		__string(	name,		skb->dev->name	)
++		__field(	unsigned int,	net_inum	)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->skbaddr = skb;
+ 		__entry->len = skb->len;
+ 		__assign_str(name, skb->dev->name);
++		__entry->net_inum = dev_net(skb->dev)->ns.inum;
+ 	),
+ 
+-	TP_printk("dev=%s skbaddr=%p len=%u",
+-		__get_str(name), __entry->skbaddr, __entry->len)
++	TP_printk("net_inum=%u dev=%s skbaddr=%p len=%u",
++		__entry->net_inum, __get_str(name), __entry->skbaddr,
++		__entry->len)
+ )
+ 
+ DEFINE_EVENT(net_dev_template, net_dev_queue,
+@@ -187,6 +199,7 @@ DECLARE_EVENT_CLASS(net_dev_rx_verbose_template,
+ 		__field(	unsigned char,		nr_frags	)
+ 		__field(	u16,			gso_size	)
+ 		__field(	u16,			gso_type	)
++		__field(	unsigned int,		net_inum	)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -213,10 +226,12 @@ DECLARE_EVENT_CLASS(net_dev_rx_verbose_template,
+ 		__entry->nr_frags = skb_shinfo(skb)->nr_frags;
+ 		__entry->gso_size = skb_shinfo(skb)->gso_size;
+ 		__entry->gso_type = skb_shinfo(skb)->gso_type;
++		__entry->net_inum = dev_net(skb->dev)->ns.inum;
+ 	),
+ 
+-	TP_printk("dev=%s napi_id=%#x queue_mapping=%u skbaddr=%p vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d hash=0x%08x l4_hash=%d len=%u data_len=%u truesize=%u mac_header_valid=%d mac_header=%d nr_frags=%d gso_size=%d gso_type=%#x",
+-		  __get_str(name), __entry->napi_id, __entry->queue_mapping,
++	TP_printk("net_inum=%u dev=%s napi_id=%#x queue_mapping=%u skbaddr=%p vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d hash=0x%08x l4_hash=%d len=%u data_len=%u truesize=%u mac_header_valid=%d mac_header=%d nr_frags=%d gso_size=%d gso_type=%#x",
++		  __entry->net_inum, __get_str(name), __entry->napi_id,
++		  __entry->queue_mapping,
+ 		  __entry->skbaddr, __entry->vlan_tagged, __entry->vlan_proto,
+ 		  __entry->vlan_tci, __entry->protocol, __entry->ip_summed,
+ 		  __entry->hash, __entry->l4_hash, __entry->len,
+-- 
+2.19.1.6.gb485710b
 
-No regressions (compared to build v5.10.21)
-
-No fixes (compared to build v5.10.21)
-
-
-Ran 56945 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-livepatch
-* kselftest-ptrace
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-sched-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-
-* kselftest-kvm
-* kselftest-lib
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* ltp-commands-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* kselftest-bpf
-* kselftest-kexec
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-tc-testing
-* kselftest-vm
-* kselftest-x86
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* kunit
-* rcutorture
-* ssuite
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
