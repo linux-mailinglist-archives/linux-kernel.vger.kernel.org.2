@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9BA332B04
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36CC332B0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhCIPsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:48:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230478AbhCIPsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:48:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83B2F6525F;
-        Tue,  9 Mar 2021 15:48:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615304910;
-        bh=BHEDDhLgphZzaj7IBNRHUe5wpWfdaAtzCDRMEm59Td4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WV8BkwWZHuegaK421aKCzu65nlfF3NR1LiCQEch1R/BhBMgYtEAKwqpqZ0oAa0FKU
-         Vqnu4Lz1RgfkGn+3MfHh1WU1PopTrZjaEjtv68Ryzzkf0H2cJuwcLBomHX4MCrsLNi
-         Lpi1WH1M6jxsHhhih0memdEl5dnmxjx/ffZJGrYTxDeK8DIetC14jnHXQNGbrntNC4
-         uTU1k+WXl9F4whkRJxEj5pqibQKgz9Q4/T9TcnVILkLUDkWciHGdYl+tkL0x392xml
-         uMblIyAk3vLeG1w/tHr+xlhyHF6qT+PYGYh9Ravu3dih1d3RAnDrIV9imALbVrDSKN
-         W+73kDyiaZI3A==
-Received: by mail-ed1-f48.google.com with SMTP id dm26so21029195edb.12;
-        Tue, 09 Mar 2021 07:48:30 -0800 (PST)
-X-Gm-Message-State: AOAM532Z53VYnE0rCbCVfuxALHWJi7FvBYrIkKbiH0Ar1Y81PrScTMbU
-        DKCNeLJkeaH897DPdhciT1bZJxEFIUzZL+wv3w==
-X-Google-Smtp-Source: ABdhPJxV5XCnS45TAr4+B2+ig1cxhxtG4MMbYqVXoYfVd4hAqlaPl8H/s/yCm4qWvnmTnSV0ZHH3LccBzcWQZpWr2JY=
-X-Received: by 2002:a05:6402:c88:: with SMTP id cm8mr4880507edb.62.1615304909030;
- Tue, 09 Mar 2021 07:48:29 -0800 (PST)
+        id S231515AbhCIPvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:51:23 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:48196 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231200AbhCIPvD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:51:03 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129FovTR075264;
+        Tue, 9 Mar 2021 09:50:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615305057;
+        bh=f6ZNtjDoKQyQddsQ9O3LGJGZKVZq4b7dQx6K3P+l204=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=pKpdBDpKWXkXBBD2GEc0sepgfNBNPOS9DO6GifIFCRKUA8pPBkans0eHDumwlCJhR
+         A68x3KkwaPA7Xo2jOE7rV0IBRvcGCFC1ci6Nc/Muty3eq1BIF9PHiKqpp9qMrVA0on
+         gVZiDr2Za+RjtUNfO4VftVwcrgM5ciX2kYDOvDOc=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129FovbH031419
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Mar 2021 09:50:57 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
+ 2021 09:50:56 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 9 Mar 2021 09:50:56 -0600
+Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129FoqJN005180;
+        Tue, 9 Mar 2021 09:50:53 -0600
+Subject: Re: [PATCH v2 0/2] AM64: Add support for GPIO
+To:     Nishanth Menon <nm@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210304112924.12470-1-a-govindraju@ti.com>
+ <20210309144333.6ko6olztldslj3fo@paralegal>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <9ba5e86d-7a60-a35b-0fb4-ddc3052eecee@ti.com>
+Date:   Tue, 9 Mar 2021 21:20:51 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
- <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
- <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st> <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
- <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
- <CAK8P3a0_GBB-VYFO5NaySyBJDN2Ra-WMH4WfFrnzgOejmJVG8g@mail.gmail.com>
- <20210308211306.GA2920998@robh.at.kernel.org> <CAK8P3a2GfzUevuQNZeQarJ4GNFsuDj0g7oFuN940Hdaw06YJbA@mail.gmail.com>
-In-Reply-To: <CAK8P3a2GfzUevuQNZeQarJ4GNFsuDj0g7oFuN940Hdaw06YJbA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 9 Mar 2021 08:48:17 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqK8FagJyQVyG5DAocUjLGZT91b6NzDm_DNMW1hdCz51Xg@mail.gmail.com>
-Message-ID: <CAL_JsqK8FagJyQVyG5DAocUjLGZT91b6NzDm_DNMW1hdCz51Xg@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
- MMIO as non-posted
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210309144333.6ko6olztldslj3fo@paralegal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 2:56 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Mon, Mar 8, 2021 at 10:14 PM Rob Herring <robh@kernel.org> wrote:
-> > On Mon, Mar 08, 2021 at 09:29:54PM +0100, Arnd Bergmann wrote:
-> > > On Mon, Mar 8, 2021 at 4:56 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > Let's just stick with 'nonposted-mmio', but drop 'posted-mmio'. I'd
-> > rather know if and when we need 'posted-mmio'. It does need to be added
-> > to the DT spec[1] and schema[2] though (GH PRs are fine for both).
->
-> I think the reason for having "posted-mmio" is that you cannot properly
-> define the PCI host controller nodes on the M1 without that: Since
-> nonposted-mmio applies to all child nodes, this would mean the PCI
-> memory space gets declared as nonposted by the DT, but the hardware
-> requires it to be mapped as posted.
+Hi Nishanth,
 
-I don't think so. PCI devices wouldn't use any of the code paths in
-this patch. They would map their memory space with plain ioremap()
-which is posted.
+On 09/03/21 8:13 pm, Nishanth Menon wrote:
+> On 16:59-20210304, Aswath Govindraju wrote:
+>> The following series of patches adds support for gpio on AM642 evm/sk.
+>>
+>> Changes since v1:
+>> - Added DT for gpio subsystem present in MCU domain
+>> - reserved the mcu gpio for firmware usage
+>>
+>> This series of patches depend on,
+>> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439039
+>> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439153
+>>
+>>
+>> Aswath Govindraju (2):
+>>   arm64: dts: ti: k3-am64: Add GPIO DT nodes
+>>   arm64: dts: ti: k3-am642: reserve gpio in mcu domain for firmware
+>>     usage
+>>
+>>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 45 ++++++++++++++++++++++++
+>>  arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi  | 27 ++++++++++++++
+>>  arch/arm64/boot/dts/ti/k3-am642-evm.dts  |  5 +++
+>>  arch/arm64/boot/dts/ti/k3-am642-sk.dts   |  5 +++
+>>  4 files changed, 82 insertions(+)
+>>
+>> -- 
+>> 2.17.1
+>>
+> 
+> 
+> Based on your offline comment:
+> -----
+> 
+> On going through the bootlogs before posting for I found the following
+> errors,
+> 
+> [    1.091117] davinci_gpio 601000.gpio: IRQ index 2 not found
+> [    1.101522] davinci_gpio 601000.gpio: error -ENXIO: IRQ not populated
+> 
+> Some issues in allocating interrupts in case of main_gpio1. I
+> accumulated the gpio with interrupt numbers. I'll try to debug the
+> reason behind it and update you with its status. (bootlogs of ti-sdk,
+> also have this error).
+> 
+> -----
+> 
+> I am going to drop this off my queue, please update if the fixup is some
+> system configuration error or repost with fix.
+> 
 
-Rob
+This is expected to be a fixup in the system configuration and not a bug
+in the patch series. So, can you please have these patches in your queue
+? I'll soon post the test results indicating the functioning of GPIOs.
+
+Thanks,
+Aswath
