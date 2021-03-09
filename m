@@ -2,244 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CB93329DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AA93329DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbhCIPKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:10:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:55034 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231816AbhCIPKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:10:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6C2C1042;
-        Tue,  9 Mar 2021 07:10:19 -0800 (PST)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 753833F71B;
-        Tue,  9 Mar 2021 07:10:19 -0800 (PST)
-Date:   Tue, 9 Mar 2021 15:10:17 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5 2/2] cpufreq: CPPC: Add support for frequency
- invariance
-Message-ID: <20210309151017.GA25243@arm.com>
-References: <cover.1614580695.git.viresh.kumar@linaro.org>
- <f72383d451710fc4bc36e7e3015deba40fbe28f3.1614580695.git.viresh.kumar@linaro.org>
+        id S231859AbhCIPLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:11:25 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38668 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231673AbhCIPLG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:11:06 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129FAJ6S004410;
+        Tue, 9 Mar 2021 09:10:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615302619;
+        bh=pARYfzVWJ+R5NmwtmFJMmgifXA+woU8wgY6HMNSiu7U=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=Y0SzlcILL+rYnwxpUCWryWtGDRjaZYnD2m4/3ghuBkKLOVrLc3tAOBGZM82v70+NG
+         Ws8UcU9bNFzu+WdAtMYNowYfb1fmiRzN2UTkTo/AMF6Q8xHsf6eQhyALhIg4oXP5Tt
+         3kIz4XIVjC0f6zkUCIZ9ruVrYBEXoeF0IBPokILs=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129FAJuh078771
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Mar 2021 09:10:19 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
+ 2021 09:10:19 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 9 Mar 2021 09:10:19 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129FAJKX002768;
+        Tue, 9 Mar 2021 09:10:19 -0600
+Date:   Tue, 9 Mar 2021 09:10:19 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        Bao Cheng Su <baocheng.su@siemens.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Le Jin <le.jin@siemens.com>
+Subject: Re: [PATCH v3 3/4] arm64: dts: ti: Add support for Siemens IOT2050
+ boards
+Message-ID: <20210309151019.kbay4ragt6ctyhmx@remote>
+References: <cover.1613071976.git.jan.kiszka@siemens.com>
+ <0c64b6ad43e7a691c1547524da4a9fd33e61c70c.1613071976.git.jan.kiszka@siemens.com>
+ <95e4231c-6bee-ba64-412f-87d257df61c4@ti.com>
+ <0561ad0d-7297-35ad-a3a9-49dc9a6bacd3@siemens.com>
+ <aecad46d-bce6-5caf-254e-e6385ce8f44b@siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <f72383d451710fc4bc36e7e3015deba40fbe28f3.1614580695.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <aecad46d-bce6-5caf-254e-e6385ce8f44b@siemens.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
-
-On Monday 01 Mar 2021 at 12:21:18 (+0530), Viresh Kumar wrote:
-> The Frequency Invariance Engine (FIE) is providing a frequency scaling
-> correction factor that helps achieve more accurate load-tracking.
+On 09:38-20210309, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
 > 
-> Normally, this scaling factor can be obtained directly with the help of
-> the cpufreq drivers as they know the exact frequency the hardware is
-> running at. But that isn't the case for CPPC cpufreq driver.
+> Add support for two Siemens SIMATIC IOT2050 variants, Basic and
+> Advanced. They are based on the TI AM6528 GP and AM6548 SOCs HS, thus
+> differ in their number of cores and availability of security features.
+> Furthermore the Advanced version comes with more RAM, an eMMC and a few
+> internal differences.
 > 
-> Another way of obtaining that is using the arch specific counter
-> support, which is already present in kernel, but that hardware is
-> optional for platforms.
+> Based on original version by Le Jin.
 > 
-> This patch updates the CPPC driver to register itself with the topology
-> core to provide its own implementation (cppc_scale_freq_tick()) of
-> topology_scale_freq_tick() which gets called by the scheduler on every
-> tick. Note that the arch specific counters have higher priority than
-> CPPC counters, if available, though the CPPC driver doesn't need to have
-> any special handling for that.
-> 
-> On an invocation of cppc_scale_freq_tick(), we schedule an irq work
-> (since we reach here from hard-irq context), which then schedules a
-> normal work item and cppc_scale_freq_workfn() updates the per_cpu
-> freq_scale variable based on the counter updates since the last tick.
-> 
-> To allow platforms to disable frequency invariance support if they want,
-                               ^
-			       this CPPC counter-based frequency invariance
-			       support..
-
-(disabling this config will not disable cpufreq or arch counter-based FIE)
-
-> this is all done under CONFIG_ACPI_CPPC_CPUFREQ_FIE, which is enabled by
-> default.
-> 
-> This also exports sched_setattr_nocheck() as the CPPC driver can be
-> built as a module.
-> 
-> Cc: Ionela Voinescu <ionela.voinescu@arm.com>
-> Cc: linux-acpi@vger.kernel.org
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Link: https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
+> Link: https://github.com/siemens/meta-iot2050
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 > ---
->  drivers/cpufreq/Kconfig.arm    |   9 ++
->  drivers/cpufreq/cppc_cpufreq.c | 244 +++++++++++++++++++++++++++++++--
->  include/linux/arch_topology.h  |   1 +
->  kernel/sched/core.c            |   1 +
->  4 files changed, 243 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-> index e65e0a43be64..a3e2d6dfea70 100644
-> --- a/drivers/cpufreq/Kconfig.arm
-> +++ b/drivers/cpufreq/Kconfig.arm
-> @@ -19,6 +19,15 @@ config ACPI_CPPC_CPUFREQ
->  
->  	  If in doubt, say N.
->  
-> +config ACPI_CPPC_CPUFREQ_FIE
-> +	bool "Frequency Invariance support for CPPC cpufreq driver"
-> +	depends on ACPI_CPPC_CPUFREQ
 
-It also depends on GENERIC_ARCH_TOPOLOGY.
+Jan,
 
-> +	default y
-> +	help
-> +	  This enables frequency invariance support for CPPC cpufreq driver.
-                                                    ^^^^^^^^^^^^^^^^^^^^^^^^
-						    s//based on CPPC counters.
+I am not sure if
+https://lore.kernel.org/linux-arm-kernel/20210304160712.8452-2-s-anna@ti.com/
+is going to impact your platform. I am planning on picking that series up today.
+might be good to test against tomorrow's next - running through my basic
+tests right now before committing to the ICSS-G nodes being picked up.
 
-.. or more detailed: This extends frequency invariance support in the
-CPPC cpufreq driver, by using CPPC delivered and reference performance
-counters.
+If you could repost after testing against tomorrow's next, it will
+probably be better.
 
-> +
-> +	  If in doubt, say N.
-> +
->  config ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM
->  	tristate "Allwinner nvmem based SUN50I CPUFreq driver"
->  	depends on ARCH_SUNXI
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 8a482c434ea6..c4580a37a1b1 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-[..]
-> +static void cppc_freq_invariance_policy_init(struct cpufreq_policy *policy,
-> +					     struct cppc_cpudata *cpu_data)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi;
-> +	int i;
-> +
-> +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> +		return;
-> +
-> +	for_each_cpu(i, policy->cpus) {
-> +		cppc_fi = &per_cpu(cppc_freq_inv, i);
-> +		cppc_fi->cpu = i;
-> +		cppc_fi->cpu_data = cpu_data;
-> +		kthread_init_work(&cppc_fi->work, cppc_scale_freq_workfn);
-> +		init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
-> +	}
-> +}
-> +
-> +static void cppc_freq_invariance_exit(void)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi;
-> +	int i;
-> +
-> +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> +		return;
-> +
-> +	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, cpu_present_mask);
-> +
-> +	for_each_possible_cpu(i) {
-> +		cppc_fi = &per_cpu(cppc_freq_inv, i);
-> +		irq_work_sync(&cppc_fi->irq_work);
-> +	}
-> +
-> +	kthread_destroy_worker(kworker_fie);
-> +	kworker_fie = NULL;
-> +}
-> +
-> +static void __init cppc_freq_invariance_init(void)
-> +{
-> +	struct cppc_perf_fb_ctrs fb_ctrs = {0};
-> +	struct cppc_freq_invariance *cppc_fi;
-> +	struct sched_attr attr = {
-> +		.size		= sizeof(struct sched_attr),
-> +		.sched_policy	= SCHED_DEADLINE,
-> +		.sched_nice	= 0,
-> +		.sched_priority	= 0,
-> +		/*
-> +		 * Fake (unused) bandwidth; workaround to "fix"
-> +		 * priority inheritance.
-> +		 */
-> +		.sched_runtime	= 1000000,
-> +		.sched_deadline = 10000000,
-> +		.sched_period	= 10000000,
-> +	};
-> +	int i, ret;
-> +
-> +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> +		return;
-> +
-> +	kworker_fie = kthread_create_worker(0, "cppc_fie");
-> +	if (IS_ERR(kworker_fie))
-> +		return;
-> +
-> +	ret = sched_setattr_nocheck(kworker_fie->task, &attr);
-> +	if (ret) {
-> +		pr_warn("%s: failed to set SCHED_DEADLINE: %d\n", __func__,
-> +			ret);
-> +		kthread_destroy_worker(kworker_fie);
-> +		return;
-> +	}
-> +
-
-Nit: to me it makes more sense to move the code below to 
-cppc_freq_invariance_policy_init(). It seems a bit strange to do part of
-the initialization of the per-cpu information there, and part here. But
-I do understand the reasons for it. Moving the code below would also
-save some cycles going through the CPUs again and will mimic the
-frequency invariance setup process in the arm64 topology, where we do
-amu_fie_setup() at policy creation time.
-
-It's not a big deal so I'll leave it up to you.
-
-> +	for_each_possible_cpu(i) {
-> +		cppc_fi = &per_cpu(cppc_freq_inv, i);
-> +
-> +		/* A policy failed to initialize, abort */
-> +		if (unlikely(!cppc_fi->cpu_data))
-> +			return cppc_freq_invariance_exit();
-> +
-> +		ret = cppc_get_perf_ctrs(i, &fb_ctrs);
-> +		if (ret) {
-> +			pr_warn("%s: failed to read perf counters: %d\n",
-> +				__func__, ret);
-> +			return cppc_freq_invariance_exit();
-> +		}
-> +
-> +		cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
-> +	}
-> +
-> +	/* Register for freq-invariance */
-> +	topology_set_scale_freq_source(&cppc_sftd, cpu_present_mask);
-> +}
-
-After another very quick round of testing:
-
-Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
-
-I did not get the chance to test on ThunderX2 yet, but if you are happy
-with your testing on it, I won't delay this any further.
-
-Thanks,
-Ionela.
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
