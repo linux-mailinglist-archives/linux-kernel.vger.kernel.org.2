@@ -2,148 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234ED331EBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCAF331EC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhCIFlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 00:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhCIFk4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 00:40:56 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1680FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 21:40:56 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id l4so11954444qkl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 21:40:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F2pg62KGehrqsHKKHylo86TzSMeOWcT7I/djv52P6NU=;
-        b=ewEqip9hNBVzjP1ke9BqOa77pur36UIAbN2e2FwQrYVL5hKhema/QoiLda5z4eCBQ2
-         VfmwSwDosVC6jrLnZixV76SdwEDwdG2TfRdG60p4iTiQunIdXU0dzeuxc0fNLZlkL+fM
-         +nJTmvvHQRP3sWIORgDy7sH2/iP+asQ6vnR6dlqkJaymxHhaYYCsjFruisvFqvfomwKq
-         OWoU5pZTXmmCvOv7uunAppxnNJ9Ibymh/kVDXRtPdTABX8V83rPWLDvD2jDyV+V4fbYU
-         +Fw1wWtoq0gn4EjpwJXLKl/RbrJxyNgqdEI+MBtLkU+9qEcmm5vCzqnLedpFCmXdKIdO
-         DUBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=F2pg62KGehrqsHKKHylo86TzSMeOWcT7I/djv52P6NU=;
-        b=NsAWvtEOj9cbrzr1ZET3Aadhxjzrww0mfN6kVBva00IVChB6dSFhosHtzULe/8qPh/
-         Cbp3D/01yyH236r+ALTOnGm1S8P78JoHLXtspyCYq8FQIYd69WIvlgkLMKKQfpb3gGB7
-         HGVFFJW3nBxO2MgTavcY+xkUeerrpL9iCh6jp01HTfhh/oJYsSGRpaFOXPjkebQKv4a9
-         nZI3aOywoXRpo/DW4hWjoBPYLlZFCqoeccUBNFAxhrmnLcqp0JDjczcsdlnqxvlNpgBy
-         K7ukcefFxVQYId3xxn5eo/R6owJ8cPwmpxq7Z6uNzry4uq/hv//zrLU58/HvqSdMawg7
-         TnwQ==
-X-Gm-Message-State: AOAM533h6XuQCljzwmsB+/RdTpcBmc6IUgDVMl9W9xuUeqeIp1WwA2iX
-        P/G7CrSq2wXjei98fEIC+sQ=
-X-Google-Smtp-Source: ABdhPJx8tuQe/HFoRYTXdiBXBFmIjm85iymhSAwkl3k7dyMOyxY/crt444senj1YtZgzZmOSCw9cSQ==
-X-Received: by 2002:a37:dcb:: with SMTP id 194mr16872117qkn.4.1615268455050;
-        Mon, 08 Mar 2021 21:40:55 -0800 (PST)
-Received: from ArchLinux ([156.146.37.204])
-        by smtp.gmail.com with ESMTPSA id v2sm9180127qkp.119.2021.03.08.21.40.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 21:40:54 -0800 (PST)
-Date:   Tue, 9 Mar 2021 11:10:44 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, keescook@chromium.org, jpoimboe@redhat.com,
-        jroedel@suse.de, hjl.tools@gmail.com, nivedita@alum.mit.edu,
-        inglorion@google.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch: x86: kernel: Adjust the words to suit sentences in
- the file vmlinux.lds.S
-Message-ID: <YEcKXEO2/oz4Y/S0@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        keescook@chromium.org, jpoimboe@redhat.com, jroedel@suse.de,
-        hjl.tools@gmail.com, nivedita@alum.mit.edu, inglorion@google.com,
-        linux-kernel@vger.kernel.org
-References: <20210309034144.3283899-1-unixbhaskar@gmail.com>
- <5bed08e7-ce2b-438a-5ba1-37ee27078be8@infradead.org>
+        id S229704AbhCIFvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 00:51:04 -0500
+Received: from mga03.intel.com ([134.134.136.65]:26342 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229481AbhCIFup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 00:50:45 -0500
+IronPort-SDR: zTsIF8QdPj/DEcmjbc4Grobmt5IhBDiQ2eMDYURy43MZ48yW6Ha2K1qu4/bvozjGyUGa8c/oQz
+ 8EJxKuRjQuQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188211755"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="188211755"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 21:50:44 -0800
+IronPort-SDR: eBfZNne6GFYr0HVLC5ATPoAVGAgEzKJ8YYJ4noZ2rarbc2fN4gbwEvvNKaVjtkHN9azhPg4kKw
+ 0rxeOXHMlf0A==
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="447383043"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.255.31.165]) ([10.255.31.165])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 21:50:42 -0800
+Subject: Re: [PATCH V2 2/4] vDPA/ifcvf: enable Intel C5000X-PL virtio-net for
+ vDPA
+To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com, lulu@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210308083525.382514-1-lingshan.zhu@intel.com>
+ <20210308083525.382514-3-lingshan.zhu@intel.com>
+ <d37ea3f4-1c18-087b-a444-0d4e1ebbe417@redhat.com>
+ <93aabf0c-3ea0-72d7-e7d7-1d503fe6cc75@intel.com>
+ <91c08fdd-0a36-ddca-5b8c-ef2eef7cddc2@redhat.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Message-ID: <0e72009d-60af-980d-a43e-495733f6f6f7@intel.com>
+Date:   Tue, 9 Mar 2021 13:50:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GJDu0JN7h44LNZxN"
-Content-Disposition: inline
-In-Reply-To: <5bed08e7-ce2b-438a-5ba1-37ee27078be8@infradead.org>
+In-Reply-To: <91c08fdd-0a36-ddca-5b8c-ef2eef7cddc2@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---GJDu0JN7h44LNZxN
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
 
-On 21:10 Mon 08 Mar 2021, Randy Dunlap wrote:
->On 3/8/21 7:41 PM, Bhaskar Chowdhury wrote:
+On 3/9/2021 10:42 AM, Jason Wang wrote:
+>
+> On 2021/3/9 10:28 上午, Zhu, Lingshan wrote:
 >>
 >>
->> s/percpu/per CPU/
->> s/baremetal/bare metal/
+>> On 3/9/2021 10:23 AM, Jason Wang wrote:
+>>>
+>>> On 2021/3/8 4:35 下午, Zhu Lingshan wrote:
+>>>> This commit enabled Intel FPGA SmartNIC C5000X-PL virtio-net
+>>>> for vDPA
+>>>>
+>>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>>>> ---
+>>>>   drivers/vdpa/ifcvf/ifcvf_base.h | 5 +++++
+>>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 +++++
+>>>>   2 files changed, 10 insertions(+)
+>>>>
+>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
+>>>> b/drivers/vdpa/ifcvf/ifcvf_base.h
+>>>> index 64696d63fe07..75d9a8052039 100644
+>>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
+>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
+>>>> @@ -23,6 +23,11 @@
+>>>>   #define IFCVF_SUBSYS_VENDOR_ID    0x8086
+>>>>   #define IFCVF_SUBSYS_DEVICE_ID    0x001A
+>>>>   +#define C5000X_PL_VENDOR_ID        0x1AF4
+>>>> +#define C5000X_PL_DEVICE_ID        0x1000
+>>>> +#define C5000X_PL_SUBSYS_VENDOR_ID    0x8086
+>>>> +#define C5000X_PL_SUBSYS_DEVICE_ID    0x0001
+>>>
+>>>
+>>> I just notice that the device is a transtitional one. Any reason for 
+>>> doing this?
+>>>
+>>> Note that IFCVF is a moden device anyhow (0x1041). Supporting legacy 
+>>> drive may bring many issues (e.g the definition is non-nomartive). 
+>>> One example is the support of VIRTIO_F_IOMMU_PLATFORM, legacy driver 
+>>> may assume the device can bypass IOMMU.
+>>>
+>>> Thanks
+>> Hi Jason,
 >>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> This device will support virtio1.0 by default, so has 
+>> VIRTIO_F_IOMMU_PLATFORM by default.
 >
->Yeah, "bare metal" is a little better than "baremetal".
 >
->OTOH, "percpu" is a kernel construct's name. It doesn't have to
->be proper English IMHO. (2 cents worth)
+> If you device want to force VIRTIO_F_IOMMU_PLATFORM you probably need 
+> to do what has been done by mlx5 (verify_min_features).
 >
+> According to the spec, if VIRTIO_F_IOMMU_PLATFORM is not mandatory, 
+> when it's not negotiated, device needs to disable or bypass IOMMU:
+>
+>
+> "
+>
+> If this feature bit is set to 0, then the device has same access to 
+> memory addresses supplied to it as the driver has. In particular, the 
+> device will always use physical addresses matching addresses used by 
+> the driver (typically meaning physical addresses used by the CPU) and 
+> not translated further, and can access any address supplied to it by 
+> the driver.
+>
+> "
+sure, I can implement code to check the feature bits.
+>
+>
+>> Transitional device gives the software a chance to fall back to 
+>> virtio 0.95.
+>
+>
+> This only applies if you want to passthrough the card to guest 
+> directly without the help of vDPA.
+>
+> If we go with vDPA, it doesn't hlep. For virtio-vdpa, we know it will 
+> negotiated IOMMU_PLATFORM. For vhost-vdpa, Qemu can provide a legacy 
+> or transitional device on top of a modern vDPA device.
+>
+> Thanks
+For some cases, users may run quite out of date OS does not have vDPA 
+nor virtio 1.0 support, transitional characters give them a chance to 
+use the devices.
 
-My bad ....disregard...pls...will be careful ...
-
->> ---
->>  arch/x86/kernel/vmlinux.lds.S | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks
+Zhu Lingshan
+>
+>
+>> ifcvf drives this device in virtio 1.0 mode, set features 
+>> VIRTIO_F_IOMMU_PLATFORM successfully.
 >>
->> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
->> index efd9e9ea17f2..592a44ad13b1 100644
->> --- a/arch/x86/kernel/vmlinux.lds.S
->> +++ b/arch/x86/kernel/vmlinux.lds.S
->> @@ -217,7 +217,7 @@ SECTIONS
+>> Thanks,
+>> Zhu Lingshan
+>>>
+>>>
+>>>> +
+>>>>   #define IFCVF_SUPPORTED_FEATURES \
+>>>>           ((1ULL << VIRTIO_NET_F_MAC)            | \
+>>>>            (1ULL << VIRTIO_F_ANY_LAYOUT) | \
+>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
+>>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>> index e501ee07de17..26a2dab7ca66 100644
+>>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>> @@ -484,6 +484,11 @@ static struct pci_device_id ifcvf_pci_ids[] = {
+>>>>           IFCVF_DEVICE_ID,
+>>>>           IFCVF_SUBSYS_VENDOR_ID,
+>>>>           IFCVF_SUBSYS_DEVICE_ID) },
+>>>> +    { PCI_DEVICE_SUB(C5000X_PL_VENDOR_ID,
+>>>> +             C5000X_PL_DEVICE_ID,
+>>>> +             C5000X_PL_SUBSYS_VENDOR_ID,
+>>>> +             C5000X_PL_SUBSYS_DEVICE_ID) },
+>>>> +
+>>>>       { 0 },
+>>>>   };
+>>>>   MODULE_DEVICE_TABLE(pci, ifcvf_pci_ids);
+>>>
 >>
->>  #if defined(CONFIG_X86_64) && defined(CONFIG_SMP)
->>  	/*
->> -	 * percpu offsets are zero-based on SMP.  PERCPU_VADDR() changes the
->> +	 * per CPU offsets are zero-based on SMP.  PERCPU_VADDR() changes the
->>  	 * output PHDR, so the next output section - .init.text - should
->>  	 * start another segment - init.
->>  	 */
->> @@ -262,7 +262,7 @@ SECTIONS
->>  	/*
->>  	 * start address and size of operations which during runtime
->>  	 * can be patched with virtualization friendly instructions or
->> -	 * baremetal native ones. Think page table operations.
->> +	 * bare metal native ones. Think page table operations.
->>  	 * Details in paravirt_types.h
->>  	 */
->>  	. = ALIGN(8);
->> --
->
->
->--
->~Randy
 >
 
---GJDu0JN7h44LNZxN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBHClUACgkQsjqdtxFL
-KRX/ggf/ahl0BBZjasMLjuKA4IKtLsORlH84dH4DrPDFsyYwiNUSjmpI+mEYQF8+
-QIxsn89tQomCIT5I8ifG9Ek+TGJ6ZkwYQ0wTUmiuy2ZkHeyzN4FIkP17iFYLb5n+
-LQ5WPK+of6Hdm9ginx6rf+ZDixKnYhPDJmEt0NlWpgcl8gPr3iOVs5v8MGoiiEoC
-XjdyVSXhm+WdGcylelVCrOQQTib7yDhfY6smZyAR4+jPNpZ3bqpXuHT2q5M93Q8Y
-6a4ZmeVuuy398sFbib0ER9BpG60MPJJ8+Sj2V5yLO9+NXbyv84+lYDp/H40LMV9C
-d0NV23Sv4X2ABd8zSAddevJyvDZNyA==
-=T8tL
------END PGP SIGNATURE-----
-
---GJDu0JN7h44LNZxN--
