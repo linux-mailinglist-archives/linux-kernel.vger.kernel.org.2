@@ -2,111 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17429332A8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDDE332A98
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhCIPda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:33:30 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:39625 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhCIPdU (ORCPT
+        id S231864AbhCIPfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:35:08 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:58560 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhCIPfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:33:20 -0500
-Received: by mail-io1-f72.google.com with SMTP id x6so10494920ioj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:33:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=dx71GG595U3crIwUELL4NgEeNwGkUwYWZRfrBmC/+Jk=;
-        b=HX5QuFK3WgY+/6aiq3oCzenc5Pj4ZjwwfuIHkv8VX95VZ9XXjagX92lLoe+OAJvW8A
-         wbDzZOnHRxqLshJVh0igExYl8HxCyYxB393TY3JI/76X6OcuTjxNyw7Dxb4sPpgEEyEe
-         QhJMUcRKLxZFISF7M3dWu4OjDp0RWwTawSlwusQL6sMlGuyOrhqNeWWKNcTNgMYcXDoO
-         E3ShO+E5FK/HrXEgEy/DTqEDS+uKgpSA5nxdE/Pnh7GRJXDVxNgEEwBcAj9M1yiu266E
-         /riCUNCdTFAgZYs4qE1vtKSsOz7rBMRBThuqd2TQru4A9aktHKJWtjNHstRJHFdBCwhZ
-         xLkQ==
-X-Gm-Message-State: AOAM532wGLI86uUG3no0/rTTrHu+FpIXzjr3wP2OBxNQLggvY7PMQxTr
-        xdejXOQJxefswzQtOMVaTzSHTcmFede64fLqfW2H1MO6lJzQ
-X-Google-Smtp-Source: ABdhPJzUU/xAsizsFO/L8HF+wBNZQfrpEKRngVqCtIUY9/dtXFZKqMDD3KtZLk071961GEbLWbyDQc7jGbOB74fW7b4iQQ7XvNQK
+        Tue, 9 Mar 2021 10:35:05 -0500
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 129FYSbl016202;
+        Wed, 10 Mar 2021 00:34:29 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 129FYSbl016202
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615304069;
+        bh=zIB1c5hEd1cXXpxWSOfZU5o4T77yG0IZKzbiDL/hDfo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XhvjdxJ5Li1qJUNNSsS300Lr8Iv9wvvb37LG4LF7xAM7BD8T606JxKkXD2GZl7jOz
+         Z5GmbWhT3s+qyma5onANl5xW/58ktqFwdGOKTG9/4fXjAFRRQVp16KU4fjAq54Uel3
+         6vvN0xGBX5YoUTXmsuFhv5wC5KVY1QaJe4LvJHE9eYYWNwQnhRAQ8fPWBiv0PYQJPV
+         1HEcy30W1NHdWszgOPZLDG77EXheWKjDryrWNhevlUOJJdB6n/kbAqBwvh68UBdPFG
+         2D2p7eDrkxMofR1QUuAVFMmSLS3urJW8Q0Op8qt9jpdizowmW62Q/Ai4YjBQZ1JkCA
+         6TNJUMopIm7mg==
+X-Nifty-SrcIP: [209.85.215.177]
+Received: by mail-pg1-f177.google.com with SMTP id a4so9009765pgc.11;
+        Tue, 09 Mar 2021 07:34:29 -0800 (PST)
+X-Gm-Message-State: AOAM5330WP94m8tt6fpTBdHeE8kdqIU+sTgWoDPcLuCNya2K7jv/gj7S
+        wsuV7vrSJU1T8laZ3b0hP7/pMMTr67dLwd2DpiE=
+X-Google-Smtp-Source: ABdhPJy8oJqe2Bz1jzTqDXueXHdTTWQSaS9b8Ua5bhwFbShoYMVzuEJQPEesQD/ofWZBQUpbJNcvifflTTqXNZ6hbMc=
+X-Received: by 2002:a65:428b:: with SMTP id j11mr25609321pgp.47.1615304068324;
+ Tue, 09 Mar 2021 07:34:28 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:cd39:: with SMTP id h25mr20503519jaq.49.1615304000048;
- Tue, 09 Mar 2021 07:33:20 -0800 (PST)
-Date:   Tue, 09 Mar 2021 07:33:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000020922505bd1c4500@google.com>
-Subject: [syzbot] WARNING in io_wq_put
-From:   syzbot <syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20210306061121.2023529-1-masahiroy@kernel.org>
+In-Reply-To: <20210306061121.2023529-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 10 Mar 2021 00:33:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQojkdz7w2iQtUfiu9bX0XPtNgoSfZMF2jX_QT4_xstNg@mail.gmail.com>
+Message-ID: <CAK7LNAQojkdz7w2iQtUfiu9bX0XPtNgoSfZMF2jX_QT4_xstNg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kbuild: rename multi-used-* to multi-obj-*
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Mar 6, 2021 at 3:11 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> I think multi-obj-* is clearer, and more consisten with real-obj-*.
+>
+> Rename as follows:
+>
+>   multi-used-y  ->  multi-obj-y
+>   multi-used-m  ->  multi-obj-m
+>   multi-used    ->  multi-obj-ym
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-syzbot found the following issue on:
-
-HEAD commit:    a38fd874 Linux 5.12-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1276fd0ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9008fb06fa15d749
-dashboard link: https://syzkaller.appspot.com/bug?extid=77a738a6bc947bf639ca
-compiler:       Debian clang version 11.0.1-2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 12346 at fs/io-wq.c:1061 io_wq_destroy fs/io-wq.c:1061 [inline]
-WARNING: CPU: 1 PID: 12346 at fs/io-wq.c:1061 io_wq_put+0x153/0x260 fs/io-wq.c:1072
-Modules linked in:
-CPU: 1 PID: 12346 Comm: syz-executor.5 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_wq_destroy fs/io-wq.c:1061 [inline]
-RIP: 0010:io_wq_put+0x153/0x260 fs/io-wq.c:1072
-Code: 8d e8 71 90 ea 01 49 89 c4 41 83 fc 40 7d 4f e8 33 4d 97 ff 42 80 7c 2d 00 00 0f 85 77 ff ff ff e9 7a ff ff ff e8 1d 4d 97 ff <0f> 0b eb b9 8d 6b ff 89 ee 09 de bf ff ff ff ff e8 18 51 97 ff 09
-RSP: 0018:ffffc90001ebfb08 EFLAGS: 00010293
-RAX: ffffffff81e16083 RBX: ffff888019038040 RCX: ffff88801e86b780
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000040
-RBP: 1ffff1100b2f8a80 R08: ffffffff81e15fce R09: ffffed100b2f8a82
-R10: ffffed100b2f8a82 R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: ffff8880597c5400 R15: ffff888019038000
-FS:  00007f8dcd89c700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055e9a054e160 CR3: 000000001dfb8000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_uring_clean_tctx+0x1b7/0x210 fs/io_uring.c:8802
- __io_uring_files_cancel+0x13c/0x170 fs/io_uring.c:8820
- io_uring_files_cancel include/linux/io_uring.h:47 [inline]
- do_exit+0x258/0x2340 kernel/exit.c:780
- do_group_exit+0x168/0x2d0 kernel/exit.c:922
- get_signal+0x1734/0x1ef0 kernel/signal.c:2773
- arch_do_signal_or_restart+0x3c/0x610 arch/x86/kernel/signal.c:811
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0xac/0x1e0 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x48/0x180 kernel/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x465f69
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8dcd89c188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: 0000000000000302 RBX: 000000000056bf60 RCX: 0000000000465f69
-RDX: 0000000000000000 RSI: 0000000000000302 RDI: 0000000000000005
-RBP: 00000000004bfa67 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007ffd520357bf R14: 00007f8dcd89c300 R15: 0000000000022000
+Fixed the typo "consisten" to "consistent",
+and applied to linux-kbuild.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+> ---
+>
+>  scripts/Makefile.build |  6 +++---
+>  scripts/Makefile.lib   | 10 +++++-----
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 1b6094a13034..56cf8eb475cf 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -444,11 +444,11 @@ quiet_cmd_link_multi-m = LD [M]  $@
+>        cmd_link_multi-m = $(LD) $(ld_flags) -r -o $@ $(filter %.o,$^)
+>  endif
+>
+> -$(multi-used-m): FORCE
+> +$(multi-obj-m): FORCE
+>         $(call if_changed,link_multi-m)
+> -$(call multi_depend, $(multi-used-m), .o, -objs -y -m)
+> +$(call multi_depend, $(multi-obj-m), .o, -objs -y -m)
+>
+> -targets += $(multi-used-m)
+> +targets += $(multi-obj-m)
+>  targets := $(filter-out $(PHONY), $(targets))
+>
+>  # Add intermediate targets:
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index eee59184de64..e60be0bddda2 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -48,9 +48,9 @@ endif
+>  suffix-search = $(foreach s,$(2),$($(1:.o=$s)))
+>  # If $(foo-objs), $(foo-y), $(foo-m), or $(foo-) exists, foo.o is a composite object
+>  multi-search = $(sort $(foreach m,$(1), $(if $(strip $(call suffix-search,$(m),$(2) -)), $(m))))
+> -multi-used-y := $(call multi-search,$(obj-y),-objs -y)
+> -multi-used-m := $(call multi-search,$(obj-m),-objs -y -m)
+> -multi-used   := $(multi-used-y) $(multi-used-m)
+> +multi-obj-y := $(call multi-search,$(obj-y),-objs -y)
+> +multi-obj-m := $(call multi-search,$(obj-m),-objs -y -m)
+> +multi-obj-ym := $(multi-obj-y) $(multi-obj-m)
+>
+>  # Replace multi-part objects by their individual parts,
+>  # including built-in.a from subdirectories
+> @@ -92,12 +92,12 @@ obj-m               := $(addprefix $(obj)/,$(obj-m))
+>  lib-y          := $(addprefix $(obj)/,$(lib-y))
+>  real-obj-y     := $(addprefix $(obj)/,$(real-obj-y))
+>  real-obj-m     := $(addprefix $(obj)/,$(real-obj-m))
+> -multi-used-m   := $(addprefix $(obj)/,$(multi-used-m))
+> +multi-obj-m    := $(addprefix $(obj)/, $(multi-obj-m))
+>  subdir-ym      := $(addprefix $(obj)/,$(subdir-ym))
+>
+>  # Finds the multi-part object the current object will be linked into.
+>  # If the object belongs to two or more multi-part objects, list them all.
+> -modname-multi = $(sort $(foreach m,$(multi-used),\
+> +modname-multi = $(sort $(foreach m,$(multi-obj-ym),\
+>                 $(if $(filter $*.o, $($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-m))),$(m:.o=))))
+>
+>  __modname = $(if $(modname-multi),$(modname-multi),$(basetarget))
+> --
+> 2.27.0
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
