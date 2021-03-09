@@ -2,152 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C718332F82
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A303D332F7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhCIUCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:02:44 -0500
-Received: from mga06.intel.com ([134.134.136.31]:54049 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhCIUCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:02:14 -0500
-IronPort-SDR: D1TZGDz4UaEKYUkDgfMlERaVHFp4Ses2/oPMp/J5IWrx8WfCrMI9R2QDX6d8o0rPsDVfWkWAXK
- teC7q9eGlMmg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="249686756"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="249686756"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 12:01:43 -0800
-IronPort-SDR: NhNs0Xd7zkvM23qzhF1oGLCUwafaloRuA3rbX3Hvdd9GTXnU3hJ1JuGRgunl/FeD4sV2AqvV+U
- YGk2NIVElQCQ==
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="409879533"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 12:01:43 -0800
-Date:   Tue, 9 Mar 2021 12:01:40 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>
-Cc:     Aili Yao <yaoaili@kingsoft.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-Subject: Re: [PATCH v2] mm,hwpoison: return -EBUSY when page already poisoned
-Message-ID: <20210309200140.GA237657@agluck-desk2.amr.corp.intel.com>
-References: <20210305093656.6c262b19@alex-virtual-machine>
- <20210305221143.GA220893@agluck-desk2.amr.corp.intel.com>
- <20210308064558.GA3617@hori.linux.bs1.fc.nec.co.jp>
- <3690ece2101d428fb9067fcd2a423ff8@intel.com>
- <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
- <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
- <20210309100421.3d09b6b1@alex-virtual-machine>
- <20210309060440.GA29668@hori.linux.bs1.fc.nec.co.jp>
- <20210309143534.6c1a8ec5@alex-virtual-machine>
- <20210309082824.GA1793@hori.linux.bs1.fc.nec.co.jp>
+        id S231264AbhCIUCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:02:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231526AbhCIUCF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:02:05 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A184C061761
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:02:05 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id t16so14055946ott.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:02:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0AqNLeuvsdC9mTzNaR149wW23xC90Lwttj969e6DLNc=;
+        b=Hylpbe4o8Tv2NHxSKoAEUNd+9G7rJY8plbBUqHO80suf+rVkUJ3tpOHXL12Xgg2zv9
+         LOu4M17McFc4f+qbuI95YKev5VwHb1vSA0fgVUtB7zEb8V62qgKjOnDuw/S7BZvrLHIM
+         tla7cwfMZpwCQzEwPyvKerWYMtzI+fzCGvRDjtwtZSaNit1MuDtLU3XH9ymXXo3qLX7h
+         UKNL9++VzO20sBoNUO2oHGF1ByFUHsxEKeXht+iy0Nca0GSqYAXSdoRMT3m11ZMFl3zG
+         G0kQrJlmVXbfAq3XYQBQmryimZLO76MY3JfUdZWsyPLXfzR9UIGR0NGJbvcVzeHHlc3L
+         0/CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0AqNLeuvsdC9mTzNaR149wW23xC90Lwttj969e6DLNc=;
+        b=KfsP7GqnG/a11sxO4eslZspOYg8PNsYx1QPrdGB8ihvvEO5n0eMOU6HnM5yQmo8EAZ
+         OQNnA2HkqB+vF+c0EYyLiAFUnLx90qLIWbDqZWG/xL3JXKZsj9gtAduAGGPVcy6Zvp3E
+         6s+gNRKKrCXv5ZzbsfY3khZNwqY1qrnHOCXWsIn4LADCeBh031+7XpayuQaVQLKaaE3U
+         Ll06/e3pBGOcof6A7K0guFOi4CC61+BzD91bUl3dyUErqNNEW2UASZJAa+VR/h2+Tbur
+         tx5JroG+Gor2RrzEYMl4mW3t5Vs5su5pjmydf9OkOum1dhsIgocDZVrS3MrDAul1qD6Z
+         B6kQ==
+X-Gm-Message-State: AOAM530cMZDCwAzb3gU/VpV+v2WxB5Ii0M6WNjhKqfyVhnOBdubKUUZL
+        adBsSceJADuwPdM4Qx0azoW3ng==
+X-Google-Smtp-Source: ABdhPJxVeIZCZJCkNLhQXhzNR6uBYypaM1ivYPvyQ6M1JyRer0SJf+GDm6PhTpXmylHyET1Q7TwP8g==
+X-Received: by 2002:a9d:4d96:: with SMTP id u22mr16519135otk.106.1615320124618;
+        Tue, 09 Mar 2021 12:02:04 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j35sm3368460ota.54.2021.03.09.12.02.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 12:02:04 -0800 (PST)
+Date:   Tue, 9 Mar 2021 14:02:02 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, sartgarg@codeaurora.org,
+        asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
+        cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org
+Subject: Re: [PATCH V1] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
+ card
+Message-ID: <YEfUOljmaxpkxqZq@builder.lan>
+References: <1615317483-23780-1-git-send-email-sbhanu@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210309082824.GA1793@hori.linux.bs1.fc.nec.co.jp>
+In-Reply-To: <1615317483-23780-1-git-send-email-sbhanu@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 08:28:24AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
-> On Tue, Mar 09, 2021 at 02:35:34PM +0800, Aili Yao wrote:
-> > When the page is already poisoned, another memory_failure() call in the
-> > same page now return 0, meaning OK. For nested memory mce handling, this
-> > behavior may lead to mce looping, Example:
-> > 
-> > 1.When LCME is enabled, and there are two processes A && B running on
-> > different core X && Y separately, which will access one same page, then
-> > the page corrupted when process A access it, a MCE will be rasied to
-> > core X and the error process is just underway.
-> > 
-> > 2.Then B access the page and trigger another MCE to core Y, it will also
-> > do error process, it will see TestSetPageHWPoison be true, and 0 is
-> > returned.
-> > 
-> > 3.The kill_me_maybe will check the return:
-> > 
-> > 1244 static void kill_me_maybe(struct callback_head *cb)
-> > 1245 {
-> > 
-> > 1254         if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
-> > 1255             !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
-> > 1256                 set_mce_nospec(p->mce_addr >> PAGE_SHIFT,
-> > p->mce_whole_page);
-> > 1257                 sync_core();
-> > 1258                 return;
-> > 1259         }
-> > 
-> > 1267 }
-> > 
-> > 4. The error process for B will end, and may nothing happened if
-> > kill-early is not set, The process B will re-excute instruction and get
-> > into mce again and then loop happens. And also the set_mce_nospec()
-> > here is not proper, may refer to commit fd0e786d9d09 ("x86/mm,
-> > mm/hwpoison: Don't unconditionally unmap kernel 1:1 pages").
-> > 
-> > For other cases which care the return value of memory_failure() should
-> > check why they want to process a memory error which have already been
-> > processed. This behavior seems reasonable.
+On Tue 09 Mar 13:18 CST 2021, Shaik Sajida Bhanu wrote:
+
+> Add nodes for eMMC and SD card on sc7280.
 > 
-> Other reviewers shared ideas about the returned value, but actually
-> I'm not sure which the best one is (EBUSY is not that bad).
-> What we need to fix the reported issue is to return non-zero value
-> for "already poisoned" case (the value itself is not so important). 
+> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
 > 
-> Other callers of memory_failure() (mostly test programs) could see
-> the change of return value, but they can already see EBUSY now and
-> anyway they should check dmesg for more detail about why failed,
-> so the impact of the change is not so big.
+> ---
+> This change is depends on the below patch series:
+> https://lore.kernel.org/lkml/1613114930-1661-1-git-send-email-rnayak@codeaurora.org/
+> https://lore.kernel.org/patchwork/project/lkml/list/?series=&submitter=28035&state=&q=&archive=&delegate=
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  26 +++++
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 170 ++++++++++++++++++++++++++++++++
+>  2 files changed, 196 insertions(+)
 > 
-> > 
-> > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index ac79420..6abb2aa 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -8,6 +8,7 @@
+>  /dts-v1/;
+>  
+>  #include "sc7280.dtsi"
+> +#include <dt-bindings/gpio/gpio.h>
+>  
+>  / {
+>  	model = "Qualcomm Technologies, Inc. SC7280 IDP platform";
+> @@ -256,3 +257,28 @@
+>  		bias-pull-up;
+>  	};
+>  };
+> +
+> +&sdhc_1 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&sdc1_on>;
+> +	pinctrl-1 = <&sdc1_off>;
+> +
+> +	vmmc-supply = <&vreg_l7b_2p9>;
+> +	vqmmc-supply = <&vreg_l19b_1p8>;
+> +
+> +};
+> +
+> +&sdhc_2 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default","sleep";
+> +	pinctrl-0 = <&sdc2_on>;
+> +	pinctrl-1 = <&sdc2_off>;
+> +
+> +	vmmc-supply = <&vreg_l9c_2p9>;
+> +	vqmmc-supply = <&vreg_l6c_2p9>;
+> +
+> +	cd-gpios = <&tlmm 91 GPIO_ACTIVE_LOW>;
+
+Please add these nodes above the comment that says "PINCTRL -
+additions..." and please include the pinctrl state for gpio 91.
+
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 3b86052..91fb18a 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -18,6 +18,11 @@
+>  
+>  	chosen { };
+>  
+> +	aliases {
+> +		mmc1 = &sdhc_1;
+> +		mmc2 = &sdhc_2;
+> +	};
+> +
+>  	clocks {
+>  		xo_board: xo-board {
+>  			compatible = "fixed-clock";
+> @@ -315,6 +320,69 @@
+>  			#power-domain-cells = <1>;
+>  		};
+>  
+> +		sdhc_1: sdhci@7c4000 {
+> +			compatible = "qcom,sdhci-msm-v5";
+> +			reg = <0 0x7c4000 0 0x1000>,
+> +					<0 0x7c5000 0 0x1000>;
+> +			reg-names = "hc", "cqhci";
+> +
+> +			iommus = <&apps_smmu 0xC0 0x0>;
+> +			interrupts = <GIC_SPI 652 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 656 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "hc_irq", "pwr_irq";
+> +
+> +			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
+> +					<&gcc GCC_SDCC1_AHB_CLK>,
+> +					<&rpmhcc RPMH_CXO_CLK>;
+> +			clock-names = "core", "iface", "xo";
+> +
+> +			bus-width = <8>;
+> +			non-removable;
+> +			supports-cqe;
+> +			no-sd;
+> +			no-sdio;
+> +
+> +			max-frequency = <192000000>;
+> +
+> +			qcom,dll-config = <0x0007642c>;
+> +			qcom,ddr-config = <0x80040868>;
+> +
+> +			mmc-ddr-1_8v;
+> +			mmc-hs200-1_8v;
+> +			mmc-hs400-1_8v;
+> +			mmc-hs400-enhanced-strobe;
+> +
+> +			status = "disabled";
+> +
+> +		};
+> +
+> +		sdhc_2: sdhci@8804000 {
+> +			compatible = "qcom,sdhci-msm-v5";
+> +			reg = <0 0x08804000 0 0x1000>;
+> +
+> +			iommus = <&apps_smmu 0x100 0x0>;
+> +			interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "hc_irq", "pwr_irq";
+> +
+> +			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
+> +					<&gcc GCC_SDCC2_AHB_CLK>,
+> +					<&rpmhcc RPMH_CXO_CLK>;
+> +			clock-names = "core", "iface", "xo";
+> +
+> +			bus-width = <4>;
+> +
+> +			no-mmc;
+> +			no-sdio;
+> +
+> +			max-frequency = <202000000>;
+> +
+> +			qcom,dll-config = <0x0007642c>;
+> +
+> +			status = "disabled";
+> +
+> +		};
+> +
+>  		qupv3_id_0: geniqup@9c0000 {
+>  			compatible = "qcom,geni-se-qup";
+>  			reg = <0 0x009c0000 0 0x2000>;
+> @@ -385,6 +453,108 @@
+>  				pins = "gpio46", "gpio47";
+>  				function = "qup13";
+>  			};
+> +
+> +			sdc1_on: sdc1-on {
+> +				pinconf-clk {
+
+The "pinconf-" prefix does not provide any value here. Can you please
+drop it?
+
+Regards,
+Bjorn
+
+> +					pins = "sdc1_clk";
+> +					bias-disable;
+> +					drive-strength = <16>;
+> +				};
+> +
+> +				pinconf-cmd {
+> +					pins = "sdc1_cmd";
+> +					bias-pull-up;
+> +					drive-strength = <10>;
+> +				};
+> +
+> +				pinconf-data {
+> +					pins = "sdc1_data";
+> +					bias-pull-up;
+> +					drive-strength = <10>;
+> +				};
+> +
+> +				pinconf-rclk {
+> +					pins = "sdc1_rclk";
+> +					bias-pull-down;
+> +				};
+> +			};
+> +
+> +			sdc1_off: sdc1-off {
+> +				pinconf-clk {
+> +					pins = "sdc1_clk";
+> +					bias-disable;
+> +					drive-strength = <2>;
+> +				};
+> +
+> +				pinconf-cmd {
+> +					pins = "sdc1_cmd";
+> +					bias-pull-up;
+> +					drive-strength = <2>;
+> +				};
+> +
+> +				pinconf-data {
+> +					pins = "sdc1_data";
+> +					bias-pull-up;
+> +					drive-strength = <2>;
+> +				};
+> +
+> +				pinconf-rclk {
+> +					pins = "sdc1_rclk";
+> +					bias-pull-down;
+> +				};
+> +			};
+> +
+> +			sdc2_on: sdc2-on {
+> +				pinconf-clk {
+> +					pins = "sdc2_clk";
+> +					bias-disable;
+> +					drive-strength = <16>;
+> +				};
+> +
+> +				pinconf-cmd {
+> +					pins = "sdc2_cmd";
+> +					bias-pull-up;
+> +					drive-strength = <10>;
+> +				};
+> +
+> +				pinconf-data {
+> +					pins = "sdc2_data";
+> +					bias-pull-up;
+> +					drive-strength = <10>;
+> +				};
+> +
+> +				pinconf-sd-cd {
+> +					pins = "gpio91";
+> +					bias-pull-up;
+> +					drive-strength = <2>;
+> +				};
+> +			};
+> +
+> +			sdc2_off: sdc2-off {
+> +				pinconf-clk {
+> +					pins = "sdc2_clk";
+> +					bias-disable;
+> +					drive-strength = <2>;
+> +				};
+> +
+> +				pinconf-cmd {
+> +					pins = "sdc2_cmd";
+> +					bias-pull-up;
+> +					drive-strength = <2>;
+> +				};
+> +
+> +				pinconf-data {
+> +					pins = "sdc2_data";
+> +					bias-pull-up;
+> +					drive-strength = <2>;
+> +				};
+> +
+> +				pinconf-sd-cd {
+> +					pins = "gpio91";
+> +					bias-disable;
+> +					drive-strength = <2>;
+> +				};
+> +			};
+>  		};
+>  
+>  		apps_smmu: iommu@15000000 {
+> -- 
+> 2.7.4
 > 
-> Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-
-I think that both this and my "add a mutex" patch are both
-too simplistic for this complex problem :-(
-
-When multiple CPUs race to call memory_failure() for the same
-page we need the following results:
-
-1) Poison page should be marked not-present in all tasks
-	I think the mutex patch achieves this as long as
-	memory_failure() doesn't hit an error[1].
-
-2) All tasks that were executing an instruction that was accessing
-   the poison location should see a SIGBUS with virtual address and
-   BUS_MCEERR_AR signature in siginfo.
-	Neither solution achieves this. The -EBUSY return ensures
-	that there is a SIGBUS for the tasks that get the -EBUSY
-	return, but no siginfo details.
-	Just the mutex patch *might* have BUS_MCEERR_AO signature
-	to the race losing tasks, but only if they have PF_MCE_EARLY
-	set (so says the comment in kill_proc() ... but I don't
-	see the code checking for that bit).
-
-#2 seems hard to achieve ... there are inherent races that mean the
-AO SIGBUS could have been queued to the task before it even hits
-the poison.
-
-Maybe should include a non-action:
-
-3) A task should only see one SIGBUS per poison?
-	Not sure if this is achievable either ... what if the task
-	has the same page mapped multiple times?
-
--Tony
-
-[1] still looking at why my futex injection test ends with a "reserved
-kernel page still referenced by 1 users"
