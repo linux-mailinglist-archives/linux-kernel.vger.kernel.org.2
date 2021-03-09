@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B31B332E35
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0768E332E43
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhCISXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        id S229875AbhCIS1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:27:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhCISXT (ORCPT
+        with ESMTP id S229691AbhCIS0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:23:19 -0500
-Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90BDC06174A;
-        Tue,  9 Mar 2021 10:23:18 -0800 (PST)
-Received: from iva8-d077482f1536.qloud-c.yandex.net (iva8-d077482f1536.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f26:0:640:d077:482f])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id B90F22E155F;
-        Tue,  9 Mar 2021 21:23:16 +0300 (MSK)
-Received: from iva4-f06c35e68a0a.qloud-c.yandex.net (iva4-f06c35e68a0a.qloud-c.yandex.net [2a02:6b8:c0c:152e:0:640:f06c:35e6])
-        by iva8-d077482f1536.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id nGrNUzJpes-NGJiWD5g;
-        Tue, 09 Mar 2021 21:23:16 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
-        t=1615314196; bh=0Vl1UL44z/aTdn8OLiHHiAq4xAI007KFGxxjlakr82Y=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=zVRWLv8PUuRRFwFJlAU3O+Lf/NsLmTMhxM7QY9k+4X+UveL1+1hbYt7ExTJ4Mj4AS
-         iIeYStOUXmGM6oR4KwwY9buMkth7RXYR125Dk7QYiqdgHCnhs1c8zKfnyphXm6rtJ4
-         9RKPJpoKsfwwAuJWJxmaKnYWggFKdeh/iLiGUIbA=
-Authentication-Results: iva8-d077482f1536.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:203::1:15])
-        by iva4-f06c35e68a0a.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id T5bJwzP5HK-NGnW4HcN;
-        Tue, 09 Mar 2021 21:23:16 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Andrey Ryabinin <arbn@yandex-team.com>
-To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
-Cc:     jroedel@suse.de, will@kernel.org, linux-kernel@vger.kernel.org,
-        Andrey Ryabinin <arbn@yandex-team.com>
-Subject: [PATCH stable 5.4] iommu/amd: Fix sleeping in atomic in increase_address_space()
-Date:   Tue,  9 Mar 2021 21:24:30 +0300
-Message-Id: <20210309182430.18849-4-arbn@yandex-team.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210309182430.18849-1-arbn@yandex-team.com>
-References: <161512522533161@kroah.com>
- <20210309182430.18849-1-arbn@yandex-team.com>
+        Tue, 9 Mar 2021 13:26:50 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56731C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 10:26:50 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id d20so15978717oiw.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 10:26:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aA39NALH0TyAKu/mVeAb+Hf6XqKon/lgpyQHkCA2b/s=;
+        b=Oj2xkiT3AZrHJGVbcWUElH9kYBD3g5/BxJeoEniFwxOzd9NsKyvfl78BWMj0qFw/vf
+         HKyc6JZUU0BKNbo5d3AatS/wqGOdVWghthNo81J+TOUZbu5LWzrIfZJr6uqYPxrfBets
+         iDBaf2+bTdC+V+e+Mn92heLFMoT9jo0bHAKKx+vH3NxRVBvjd4Z5epnMec/J8XwPDul+
+         L8/MrWlTMM1bFyrNoK1AHlhwASTfnw+ooUjnOGLpCC4k8JFz1pzZM2gEnjAxdizXjv5O
+         Yk8NV7p4w6YN7C38Znh/5zcpGY2Bj1wHkzfnGvKfX2zNiYUyJIFBFUlDqohXbsx3gNev
+         v8Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aA39NALH0TyAKu/mVeAb+Hf6XqKon/lgpyQHkCA2b/s=;
+        b=SM3vHhwNnTUyUFBL1uuiN11S5m67Vvqpb8OjRC4hRmetNBkrq0MMTJj7WyCeOBczMk
+         AWnmxH4NHDZs2HbXTaC7bIZU/Y6ySymjiUbdPkWbuLWlG1iyqwpWHF8zBEBy7q2ka3s5
+         eA+mwjX/B5yLENpdMc1cH+x+XFp0kWkWlZJaYWdKHUvRbDgOnZA8s5eiKTMm6gGmR/W0
+         jDJb4exUcD4l/zgRfUSYwhmTjkmF4EuYGml9sbEBfuBT873d3dR3rgIqNtZzq2xLAOs7
+         EsvPO91rgJW9xc+2jfB5xwbc9iDvb4Q4LZ0jSledtLup/18uSDN2BYQ6yhnPFDjiwtgt
+         rYKg==
+X-Gm-Message-State: AOAM532eS0buL/OqV4bXopHYCQzm8ZVVmDgTrHhyPZ//QH4xJmBlyAjh
+        TEhJ+XFqW3pWUdmcfLtrrc4rsCfeCG77eE0JtGxPWQ==
+X-Google-Smtp-Source: ABdhPJw56yVgQmF8+OzteYQZh54ZMqLc17XK6NQjBauRe6wk6irf/rtD1PTQqeTsb9QIJdjiT8BD5U6/Oq42vXHgCLI=
+X-Received: by 2002:aca:acc2:: with SMTP id v185mr3774689oie.28.1615314409351;
+ Tue, 09 Mar 2021 10:26:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210309171019.1125243-1-seanjc@google.com>
+In-Reply-To: <20210309171019.1125243-1-seanjc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 9 Mar 2021 10:26:38 -0800
+Message-ID: <CALMp9eRmxLTXdVoweUpZPaSyY7O4HK=KcLT243TbV4MpE8Dttg@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/perf: Use RET0 as default for guest_get_msrs to
+ handle "no PMU" case
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Like Xu <like.xu@linux.intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 140456f994195b568ecd7fc2287a34eadffef3ca upstream.
+On Tue, Mar 9, 2021 at 9:10 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Initialize x86_pmu.guest_get_msrs to return 0/NULL to handle the "nop"
+> case.  Patching in perf_guest_get_msrs_nop() during setup does not work
+> if there is no PMU, as setup bails before updating the static calls,
+> leaving x86_pmu.guest_get_msrs NULL and thus a complete nop.  Ultimately,
+> this causes VMX abort on VM-Exit due to KVM putting random garbage from
+> the stack into the MSR load list.
+>
+> Add a comment in KVM to note that nr_msrs is valid if and only if the
+> return value is non-NULL.
+>
+> Fixes: abd562df94d1 ("x86/perf: Use static_call for x86_pmu.guest_get_msrs")
+> Cc: Like Xu <like.xu@linux.intel.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> Reported-by: syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>
+> v2:
+>  - Use __static_call_return0 to return NULL instead of manually checking
+>    the hook at invocation.  [Peter]
+>  - Rebase to tip/sched/core, commit 4117cebf1a9f ("psi: Optimize task
+>    switch inside shared cgroups").
+>
+...
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 50810d471462..32cf8287d4a7 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6580,8 +6580,8 @@ static void atomic_switch_perf_msrs(struct vcpu_vmx *vmx)
+>         int i, nr_msrs;
+>         struct perf_guest_switch_msr *msrs;
+>
+> +       /* Note, nr_msrs may be garbage if perf_guest_get_msrs() returns NULL. */
 
-increase_address_space() calls get_zeroed_page(gfp) under spin_lock with
-disabled interrupts. gfp flags passed to increase_address_space() may allow
-sleeping, so it comes to this:
+You could drop the scary comment with a profligate initialization of
+nr_msrs to 0.
 
- BUG: sleeping function called from invalid context at mm/page_alloc.c:4342
- in_atomic(): 1, irqs_disabled(): 1, pid: 21555, name: epdcbbf1qnhbsd8
-
- Call Trace:
-  dump_stack+0x66/0x8b
-  ___might_sleep+0xec/0x110
-  __alloc_pages_nodemask+0x104/0x300
-  get_zeroed_page+0x15/0x40
-  iommu_map_page+0xdd/0x3e0
-  amd_iommu_map+0x50/0x70
-  iommu_map+0x106/0x220
-  vfio_iommu_type1_ioctl+0x76e/0x950 [vfio_iommu_type1]
-  do_vfs_ioctl+0xa3/0x6f0
-  ksys_ioctl+0x66/0x70
-  __x64_sys_ioctl+0x16/0x20
-  do_syscall_64+0x4e/0x100
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Fix this by moving get_zeroed_page() out of spin_lock/unlock section.
-
-Fixes: 754265bcab ("iommu/amd: Fix race in increase_address_space()")
-Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
-Acked-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20210217143004.19165-1-arbn@yandex-team.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
----
- drivers/iommu/amd_iommu.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
-index 7b724f7b27a99..c392930253a30 100644
---- a/drivers/iommu/amd_iommu.c
-+++ b/drivers/iommu/amd_iommu.c
-@@ -1469,25 +1469,27 @@ static bool increase_address_space(struct protection_domain *domain,
- 	bool ret = false;
- 	u64 *pte;
- 
-+	pte = (void *)get_zeroed_page(gfp);
-+	if (!pte)
-+		return false;
-+
- 	spin_lock_irqsave(&domain->lock, flags);
- 
- 	if (address <= PM_LEVEL_SIZE(domain->mode) ||
- 	    WARN_ON_ONCE(domain->mode == PAGE_MODE_6_LEVEL))
- 		goto out;
- 
--	pte = (void *)get_zeroed_page(gfp);
--	if (!pte)
--		goto out;
--
- 	*pte             = PM_LEVEL_PDE(domain->mode,
- 					iommu_virt_to_phys(domain->pt_root));
- 	domain->pt_root  = pte;
- 	domain->mode    += 1;
- 
-+	pte = NULL;
- 	ret = true;
- 
- out:
- 	spin_unlock_irqrestore(&domain->lock, flags);
-+	free_page((unsigned long)pte);
- 
- 	return ret;
- }
--- 
-2.26.2
-
+[Apologies to those seeing this twice. I blame gmail.]
