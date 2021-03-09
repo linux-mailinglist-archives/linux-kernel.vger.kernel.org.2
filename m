@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C7F3331A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C1D3331A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhCIWmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 17:42:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+        id S232136AbhCIWmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 17:42:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232096AbhCIWmO (ORCPT
+        with ESMTP id S232099AbhCIWmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 17:42:14 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0583C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 14:42:14 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id y7so18895436ybh.20
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 14:42:14 -0800 (PST)
+        Tue, 9 Mar 2021 17:42:17 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D307FC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 14:42:16 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id e6so11575994qte.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 14:42:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=7aKMO2SpBi/2Jz5ddHg49VoZBghMh9FLvFL9AICAYkg=;
-        b=HqQeKzbp5rUdScMKxM5d8PuM/rJvjSiWPy0g9UPtNBCZwfsKdi69aYTzYIb1/qfg4C
-         /a5CaBtfkCxqwZxJrA9EGSil4/G7r/ODBT2YTsZqWQRRgWj0MMW1JDs/UqyjfLWfB2CP
-         ZsHcq2s6a8CWilWWBOn8IiaIoySs8PofJLR23ejm+emMMkzpqx5Xr+GNbXYFgej8n6fq
-         9weleJ3jdffP0YIv98g/Ts3a3O635s85Rc3T2fg1z0NY9wfK55LdHtYatRdvh679sqZz
-         RMrcVaswESabOtP0DaN5bceak8Jrp2sGZ1/w5A9aiH8tKBZuwShzHpCZTepgoI50nRB8
-         WuDg==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=jqjq7puvtL0+ga0HuFQpzwZNP4hDc6vknhUQK/X+oMw=;
+        b=I0eo+9L92BVeyfv6dDH7KjilCQ4pfCjUMQHAfM5t8DT+rxH8lYDLUma2uZVpo2Br97
+         7p7DtEumdV6Tmo+usLGGhysXjKj6dRROfrOYx+b15g54qb42SaQqwB/wcP+eV7TFghU9
+         bTM0Gura1XQVSv7L5/xTQf/u4kQyqRI+1OvG5TsLh9mhwT+fKRMYL7yxTeYZDdCgz0j2
+         f8+ceYieNVEM1BMTYu2x1nAkiMGuxC8LCuoegDLlGrYbhVXz+11U6Lr66dpyiU6aR0MM
+         nQah7i1eTWSkctvdaop1gcfQ7Te9gnZaQ1BBonICq2HkuEVeudCJp9JbQA7HErhb62Q9
+         hzGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=7aKMO2SpBi/2Jz5ddHg49VoZBghMh9FLvFL9AICAYkg=;
-        b=RIgE2r4eeqDWtaTgSpsL9jZgxO7uUNa9m3X7eVRnIoFhLB4mj98AW1v/MQe+bbGXUe
-         mDxleH64RnWYrDK8I8ppG7DuRAn+a6H6k2IPhOTgDkkKFQnf335SRH8jJjEQIcGrqXpA
-         6T3hDrame3Pp4bq1pXkXrikIjpYz28TEF6I/mxvtO09BFDkly2SYaAIzVhZeGQ5St9LE
-         t8x+6SqX2kYVNDadVl0Db3w4jUMiAxhXvzL9Ky3SVxZY4K1OADxW3JwgjJUdCdRtfvvQ
-         U/V2ydVmjAgk+TU34DlOloXFflk50zMKfq1QzI1l7LfS71sP8O2iSsYGpHyJcRoyn5Bj
-         LpvQ==
-X-Gm-Message-State: AOAM530AnJD5Zq+G6UWTENW9CPvgh3h5mXWF367Y4msxATKzki79bulU
-        q1Cg7ndd0o6dbhXuLDSVZIHdBg8NBYQ=
-X-Google-Smtp-Source: ABdhPJx3sXyVswQOYX3CiUvIyjRJH0JBj2aUh6zpV8P1spFgKD9Bxb6y2Vr+NUvEN0oDWXlJkM4KFFuYlR4=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=jqjq7puvtL0+ga0HuFQpzwZNP4hDc6vknhUQK/X+oMw=;
+        b=Z3mjOguohKGb1tc6VUb+M752tC344kjrP3ACgWa41VoCiRhP0+HCSRpq+wDOjfsyTh
+         S1IKiskZSjqgExVS88F/NJ6az9Qp8ofdg4EZIe9cWTkhFtnEah5u9zRXY68i0/7BfZIC
+         yIYMOA1DFBIBJsBUCdh7BfMZMzxym0iPELJlvcwbB+2kzJYxvrQxBuPTNajQZIeOu4JH
+         bPDP1qLpRZSTrzUsMrqlH4hcOY6Wcw0vVfPM7pfkrcnix0sJx2mwZ6FZNl9iseRUIi23
+         rcnUWaLLGdPzoBM23jIl113MHYlf1JvFO8gH0IdcOmHC2kBJpMM6UIOIbF2/1SJVb55L
+         2kIQ==
+X-Gm-Message-State: AOAM533GEjFeiqh8N9lNLN09rgLtnDXD1VK2FnaXDA3ibKPvL70+t2IP
+        vcCyKegFY6ZC3d1DAeadWUpq4qUSO/k=
+X-Google-Smtp-Source: ABdhPJwllIw+8NYZW3YKP9LbR1K0QGHsG4bfAG2l3fxbO2x2sl1+nVYjajHPSfEmZX67pEmhYIhAz+ospwA=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
- (user=seanjc job=sendgmr) by 2002:a25:4dc4:: with SMTP id a187mr162417ybb.78.1615329733767;
- Tue, 09 Mar 2021 14:42:13 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:1744:: with SMTP id
+ dc4mr351626qvb.40.1615329736032; Tue, 09 Mar 2021 14:42:16 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  9 Mar 2021 14:42:03 -0800
-Message-Id: <20210309224207.1218275-1-seanjc@google.com>
+Date:   Tue,  9 Mar 2021 14:42:04 -0800
+In-Reply-To: <20210309224207.1218275-1-seanjc@google.com>
+Message-Id: <20210309224207.1218275-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210309224207.1218275-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v2 0/4] KVM: x86: Fixups and PAE+SME fixes
+Subject: [PATCH v2 1/4] KVM: x86: Fixup "Get active PCID only when writing a
+ CR3 value"
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -66,30 +70,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few stragglers bundled together to hopefully avoid more messy conflicts.
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-v2 (relative to the fixup mini-series):
-  - Moved SME fixes from "PCID fixup" to its correct location, in "Mark
-    PAE roots decrypted".
-  - Collected Reviewed/Tested-by tags for MMU_PRESENT+MMIO snafu, though
-    I expect they'll get squashed away.
-  - Added the PAE patches from the SME shadow paging fixes to avoid
-    spreading out the dependencies.
+Fix a merge conflict gone bad.
 
-Sean Christopherson (4):
-  KVM: x86: Fixup "Get active PCID only when writing a CR3 value"
-  KVM: x86/mmu: Exclude the MMU_PRESENT bit from MMIO SPTE's generation
-  KVM: x86/mmu: Use '0' as the one and only value for an invalid PAE
-    root
-  KVM: x86/mmu: Mark the PAE roots as decrypted for shadow paging
+Fixes: a16241ae56fa ("KVM: x86: Get active PCID only when writing a CR3 value")
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/svm/svm.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
- arch/x86/kvm/mmu/mmu.c          | 46 ++++++++++++++++++++++++---------
- arch/x86/kvm/mmu/mmu_audit.c    |  2 +-
- arch/x86/kvm/mmu/mmu_internal.h | 10 +++++++
- arch/x86/kvm/mmu/spte.h         | 12 +++++----
- arch/x86/kvm/svm/svm.c          |  9 +++++--
- 5 files changed, 59 insertions(+), 20 deletions(-)
-
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 7876ddf896b8..58f4dc0e7864 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3907,7 +3907,7 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+ 	unsigned long cr3;
+ 
+-	cr3 = __sme_set(root_hpa);
++	root_hpa = __sme_set(root_hpa);
+ 	if (npt_enabled) {
+ 		svm->vmcb->control.nested_cr3 = root_hpa;
+ 		vmcb_mark_dirty(svm->vmcb, VMCB_NPT);
+@@ -3916,6 +3916,12 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
+ 		if (!test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
+ 			return;
+ 		cr3 = vcpu->arch.cr3;
++	} else if (vcpu->arch.mmu->shadow_root_level >= PT64_ROOT_4LEVEL) {
++		cr3 = root_hpa | kvm_get_active_pcid(vcpu);
++	} else {
++		/* PCID in the guest should be impossible with a 32-bit MMU. */
++		WARN_ON_ONCE(kvm_get_active_pcid(vcpu));
++		cr3 = root_hpa;
+ 	}
+ 
+ 	svm->vmcb->save.cr3 = cr3;
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
