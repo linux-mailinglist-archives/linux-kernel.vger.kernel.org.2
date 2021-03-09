@@ -2,150 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB25331CB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBB9331CBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhCICAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 21:00:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41506 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhCICAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 21:00:11 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 51F12AC17;
-        Tue,  9 Mar 2021 02:00:10 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     npiggin@gmail.com
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, dave@stgolabs.net,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH 3/3] powerpc/qspinlock: Use generic smp_cond_load_relaxed
-Date:   Mon,  8 Mar 2021 17:59:50 -0800
-Message-Id: <20210309015950.27688-4-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210309015950.27688-1-dave@stgolabs.net>
-References: <20210309015950.27688-1-dave@stgolabs.net>
+        id S229875AbhCICEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 21:04:45 -0500
+Received: from mail.kingsoft.com ([114.255.44.145]:13953 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229694AbhCICEd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 21:04:33 -0500
+X-AuditID: 0a580155-1f5ff7000005482e-02-6046d0376853
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id EC.50.18478.730D6406; Tue,  9 Mar 2021 09:32:39 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 9 Mar 2021
+ 10:04:27 +0800
+Date:   Tue, 9 Mar 2021 10:04:21 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        <yaoaili@kingsoft.com>
+Subject: Re: [PATCH] mm/memory-failure: Use a mutex to avoid
+ memory_failure() races
+Message-ID: <20210309100421.3d09b6b1@alex-virtual-machine>
+In-Reply-To: <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
+References: <20210304101653.546a9da1@alex-virtual-machine>
+        <20210304121941.667047c3@alex-virtual-machine>
+        <20210304144524.795872d7@alex-virtual-machine>
+        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
+        <20210305093016.40c87375@alex-virtual-machine>
+        <20210305093656.6c262b19@alex-virtual-machine>
+        <20210305221143.GA220893@agluck-desk2.amr.corp.intel.com>
+        <20210308064558.GA3617@hori.linux.bs1.fc.nec.co.jp>
+        <3690ece2101d428fb9067fcd2a423ff8@intel.com>
+        <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
+        <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsXCFcGooGt+wS3BYHe/msWc9WvYLD5v+Mdm
+        8XX9L2aLaRvFLS6camCyuLxrDpvFvTX/WS0uHVjAZHGx8QCjxZlpRRabN01ltnhz4R6LxY8N
+        j1kdeD2+t/axeCze85LJY9OqTjaPTZ8msXu8O3eO3ePEjN8sHi+ubmTxeL/vKpvH5tPVHp83
+        yXmcaPnCGsAdxWWTkpqTWZZapG+XwJUxZeEmtoJe+Ypbb14wNjDulehi5OSQEDCR6P/8nrmL
+        kYtDSGA6k8T6eyfYIJyXjBL7lpwEcjg4WARUJF4tqAJpYBNQldh1bxYriC0ioCZxafEDsGZm
+        gdmsEqcmn2UGSQgLhEoc3PGPBcTmFbCSeLJlLyOIzSngJrFpwi+oBedYJNa8nQA2iV9ATKL3
+        yn8miJPsJdq2LGKEaBaUODnzCdggZgEdiROrjjFD2PIS29/OAbOFBBQlDi/5xQ7RqyRxpHsG
+        G4QdK7Fs3ivWCYzCs5CMmoVk1CwkoxYwMq9iZCnOTTfaxAiJwNAdjDOaPuodYmTiYDzEKMHB
+        rCTC63fcLUGINyWxsiq1KD++qDQntfgQozQHi5I4795jrglCAumJJanZqakFqUUwWSYOTqkG
+        puxzmd2SXl8n59Sc0fI1t8q881OOa72R6X6eSK45qdov6tg9VjW8ySr64mrDXyW2Yekxw+vT
+        Klm3+1suj3z814oj4td3XcGHxe1X2eYzZhgYRFZdjJurIbxod+iClc5lUVPMbpU57X/lmPTh
+        6/LXqYtcFpapPZ3OoOnyLfWlyK9jkmec5DSbVplWJx07MOHjWxHeU8t5r9rUnzcO+3y9xetc
+        opdD9u3XC/3M8xtcL4pWHOK75VWbKzfztgK3nnjsitd6yj56s8Kb/t2qr2I0i/3gHfTS8kj2
+        4ZLF3/zuil04/YVBq2ERK9dbmcRcw8Clp+w19r1S+X7OrWvBg9mN9rtvF/61nukb8Gjd54sP
+        lFiKMxINtZiLihMBaYcR1C8DAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-49a7d46a06c3 (powerpc: Implement smp_cond_load_relaxed()) added
-busy-waiting pausing with a preferred SMT priority pattern, lowering
-the priority (reducing decode cycles) during the whole loop slowpath.
+On Mon, 8 Mar 2021 14:55:04 -0800
+"Luck, Tony" <tony.luck@intel.com> wrote:
 
-However, data shows that while this pattern works well with simple
-spinlocks, queued spinlocks benefit more being kept in medium priority,
-with a cpu_relax() instead, being a low+medium combo on powerpc.
+> There can be races when multiple CPUs consume poison from the same
+> page. The first into memory_failure() atomically sets the HWPoison
+> page flag and begins hunting for tasks that map this page. Eventually
+> it invalidates those mappings and may send a SIGBUS to the affected
+> tasks.
+> 
+> But while all that work is going on, other CPUs see a "success"
+> return code from memory_failure() and so they believe the error
+> has been handled and continue executing.
+> 
+> Fix by wrapping most of the internal parts of memory_failure() in
+> a mutex.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  mm/memory-failure.c | 19 +++++++++++++++++--
+>  1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 24210c9bd843..c1509f4b565e 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -1381,6 +1381,8 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>  	return rc;
+>  }
+>  
+> +static DEFINE_MUTEX(mf_mutex);
+> +
+>  /**
+>   * memory_failure - Handle memory failure of a page.
+>   * @pfn: Page Number of the corrupted page
+> @@ -1424,12 +1426,18 @@ int memory_failure(unsigned long pfn, int flags)
+>  		return -ENXIO;
+>  	}
+>  
+> +	mutex_lock(&mf_mutex);
+> +
+>  try_again:
+> -	if (PageHuge(p))
+> -		return memory_failure_hugetlb(pfn, flags);
+> +	if (PageHuge(p)) {
+> +		res = memory_failure_hugetlb(pfn, flags);
+> +		goto out2;
+> +	}
+> +
+>  	if (TestSetPageHWPoison(p)) {
+>  		pr_err("Memory failure: %#lx: already hardware poisoned\n",
+>  			pfn);
+> +		mutex_unlock(&mf_mutex);
+>  		return 0;
+>  	}
+>  
+> @@ -1463,9 +1471,11 @@ int memory_failure(unsigned long pfn, int flags)
+>  				res = MF_FAILED;
+>  			}
+>  			action_result(pfn, MF_MSG_BUDDY, res);
+> +			mutex_unlock(&mf_mutex);
+>  			return res == MF_RECOVERED ? 0 : -EBUSY;
+>  		} else {
+>  			action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
+> +			mutex_unlock(&mf_mutex);
+>  			return -EBUSY;
+>  		}
+>  	}
+> @@ -1473,6 +1483,7 @@ int memory_failure(unsigned long pfn, int flags)
+>  	if (PageTransHuge(hpage)) {
+>  		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
+>  			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
+> +			mutex_unlock(&mf_mutex);
+>  			return -EBUSY;
+>  		}
+>  		VM_BUG_ON_PAGE(!page_count(p), p);
+> @@ -1517,6 +1528,7 @@ int memory_failure(unsigned long pfn, int flags)
+>  		num_poisoned_pages_dec();
+>  		unlock_page(p);
+>  		put_page(p);
+> +		mutex_unlock(&mf_mutex);
+>  		return 0;
+>  	}
+>  	if (hwpoison_filter(p)) {
+> @@ -1524,6 +1536,7 @@ int memory_failure(unsigned long pfn, int flags)
+>  			num_poisoned_pages_dec();
+>  		unlock_page(p);
+>  		put_page(p);
+> +		mutex_unlock(&mf_mutex);
+>  		return 0;
+>  	}
+>  
+> @@ -1559,6 +1572,8 @@ int memory_failure(unsigned long pfn, int flags)
+>  	res = identify_page_state(pfn, p, page_flags);
+>  out:
+>  	unlock_page(p);
+> +out2:
+> +	mutex_unlock(&mf_mutex);
+>  	return res;
+>  }
+>  EXPORT_SYMBOL_GPL(memory_failure);
 
-Data is from three benchmarks on a Power9: 9008-22L 64 CPUs with
-2 sockets and 8 threads per core.
+If others are OK with this method, then I am OK too.
+But I have two concerns, May you take into account:
 
-1. locktorture.
+1. The memory_failure with 0 return code for race condition, then the kill_me_maybe() goes into branch:
+	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
+	    !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
+		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
+		sync_core();
+		return;
+	}
 
-This is data for the lowest and most artificial/pathological level,
-with increasing thread counts pounding on the lock. Metrics are total
-ops/minute. Despite some small hits in the 4-8 range, scenarios are
-either neutral or favorable to this patch.
+while we place set_mce_nospec() here is for a reason, please see commit fd0e786d9d09024f67b.
 
-+=========+==========+==========+=======+
-| # tasks | vanilla  | dirty    | %diff |
-+=========+==========+==========+=======+
-| 2       | 46718565 | 48751350 | 4.35  |
-+---------+----------+----------+-------+
-| 4       | 51740198 | 50369082 | -2.65 |
-+---------+----------+----------+-------+
-| 8       | 63756510 | 62568821 | -1.86 |
-+---------+----------+----------+-------+
-| 16      | 67824531 | 70966546 | 4.63  |
-+---------+----------+----------+-------+
-| 32      | 53843519 | 61155508 | 13.58 |
-+---------+----------+----------+-------+
-| 64      | 53005778 | 53104412 | 0.18  |
-+---------+----------+----------+-------+
-| 128     | 53331980 | 54606910 | 2.39  |
-+=========+==========+==========+=======+
+2. When memory_failure return 0 and maybe return to user process, and it may re-execute the instruction triggering previous fault, this behavior
+assume an implicit dependence that the related pte has been correctly set. or if not correctlily set, it will lead to infinite loop again.
 
-2. sockperf (tcp throughput)
-
-Here a client will do one-way throughput tests to a localhost server, with
-increasing message sizes, dealing with the sk_lock. This patch shows to put
-the performance of the qspinlock back to par with that of the simple lock:
-
-		     simple-spinlock           vanilla			dirty
-Hmean     14        73.50 (   0.00%)       54.44 * -25.93%*       73.45 * -0.07%*
-Hmean     100      654.47 (   0.00%)      385.61 * -41.08%*      771.43 * 17.87%*
-Hmean     300     2719.39 (   0.00%)     2181.67 * -19.77%*     2666.50 * -1.94%*
-Hmean     500     4400.59 (   0.00%)     3390.77 * -22.95%*     4322.14 * -1.78%*
-Hmean     850     6726.21 (   0.00%)     5264.03 * -21.74%*     6863.12 * 2.04%*
-
-3. dbench (tmpfs)
-
-Configured to run with up to ncpusx8 clients, it shows both latency and
-throughput metrics. For the latency, with the exception of the 64 case,
-there is really nothing to go by:
-				     vanilla                dirty
-Amean     latency-1          1.67 (   0.00%)        1.67 *   0.09%*
-Amean     latency-2          2.15 (   0.00%)        2.08 *   3.36%*
-Amean     latency-4          2.50 (   0.00%)        2.56 *  -2.27%*
-Amean     latency-8          2.49 (   0.00%)        2.48 *   0.31%*
-Amean     latency-16         2.69 (   0.00%)        2.72 *  -1.37%*
-Amean     latency-32         2.96 (   0.00%)        3.04 *  -2.60%*
-Amean     latency-64         7.78 (   0.00%)        8.17 *  -5.07%*
-Amean     latency-512      186.91 (   0.00%)      186.41 *   0.27%*
-
-For the dbench4 Throughput (misleading but traditional) there's a small
-but rather constant improvement:
-
-			     vanilla                dirty
-Hmean     1        849.13 (   0.00%)      851.51 *   0.28%*
-Hmean     2       1664.03 (   0.00%)     1663.94 *  -0.01%*
-Hmean     4       3073.70 (   0.00%)     3104.29 *   1.00%*
-Hmean     8       5624.02 (   0.00%)     5694.16 *   1.25%*
-Hmean     16      9169.49 (   0.00%)     9324.43 *   1.69%*
-Hmean     32     11969.37 (   0.00%)    12127.09 *   1.32%*
-Hmean     64     15021.12 (   0.00%)    15243.14 *   1.48%*
-Hmean     512    14891.27 (   0.00%)    15162.11 *   1.82%*
-
-Measuring the dbench4 Per-VFS Operation latency, shows some very minor
-differences within the noise level, around the 0-1% ranges.
-
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- arch/powerpc/include/asm/barrier.h | 16 ----------------
- 1 file changed, 16 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/barrier.h b/arch/powerpc/include/asm/barrier.h
-index aecfde829d5d..7ae29cfb06c0 100644
---- a/arch/powerpc/include/asm/barrier.h
-+++ b/arch/powerpc/include/asm/barrier.h
-@@ -80,22 +80,6 @@ do {									\
- 	___p1;								\
- })
- 
--#ifdef CONFIG_PPC64
--#define smp_cond_load_relaxed(ptr, cond_expr) ({		\
--	typeof(ptr) __PTR = (ptr);				\
--	__unqual_scalar_typeof(*ptr) VAL;			\
--	VAL = READ_ONCE(*__PTR);				\
--	if (unlikely(!(cond_expr))) {				\
--		spin_begin();					\
--		do {						\
--			VAL = READ_ONCE(*__PTR);		\
--		} while (!(cond_expr));				\
--		spin_end();					\
--	}							\
--	(typeof(*ptr))VAL;					\
--})
--#endif
--
- #ifdef CONFIG_PPC_BOOK3S_64
- #define NOSPEC_BARRIER_SLOT   nop
- #elif defined(CONFIG_PPC_FSL_BOOK3E)
 -- 
-2.26.2
-
+Thanks!
+Aili Yao
