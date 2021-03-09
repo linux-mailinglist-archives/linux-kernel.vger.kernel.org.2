@@ -2,151 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C109332D1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 184C8332D27
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhCIRUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:20:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
+        id S231187AbhCIRWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:22:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbhCIRUQ (ORCPT
+        with ESMTP id S230386AbhCIRWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:20:16 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F93C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:20:16 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so5566833pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:20:16 -0800 (PST)
+        Tue, 9 Mar 2021 12:22:31 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05ABBC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:22:31 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id w11so17222687wrr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:22:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wiCMuEXc4Jxy1A0Iee9Q+lJfroVuqKy0Zz9moUVqcMY=;
-        b=SoF1Qe1rjZJYmhqkrQLF1+i+UBJNyib4lNJYtbB1fYA80rRpZ3yCJ4eEtXK8GRFt84
-         zFK0lI5Cjd8HOLyjCJSIKd41glMBEIjcVcWS46lQUYY3hcoRxqthxsXxoMhoKRQgQ030
-         k0Z5wtZbea8uAgasRe9X+H8G5VbmwUUt/5cKA=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=62Pu5sBR5nx/jUzaP/qRm1YBEm5frpGuQUSWypR3GX8=;
+        b=U6fXiHEPH3L4q0wNrcCtUSPM+4WKrol1Mytk36zpQNWtBDBc2nYz0xgv3vvrk+ivsv
+         iSeH2W32SP9Ey1qRWxXoU3cnCvdJf/wd7oVJip97+D/qmQ3rR58ruTCUQLQxyN0C7iyP
+         TOCrKF8HN1Rf2zEl3iaJDKbs4G+veyMQH/sE4UZHQ7R7jSII0I6SoZxv8hWiixb3aP7y
+         hOmn+UrXSwVV2nocf3o0H6KD6piSIo+DZ8nJlAQIN6Dbh5bZOO4zXoikiXi703A3UiWt
+         8eU0E1hxnlQJvM+K0GYcwCN3njsIeDWPCNnPRa4XNzRg/CG5eyBtPi8ql6QKt2oWT4J2
+         Y+7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wiCMuEXc4Jxy1A0Iee9Q+lJfroVuqKy0Zz9moUVqcMY=;
-        b=Xf4mUVeq0jKJNMReR5X0ScQZTWsNpZaONIkSGiz8R3DDPtOSA1VyycqPo5g4dWYX/V
-         qcACQr8CSAh9aUFof/6hVQw9s6HwWJvnjWH+a/XYdlV13yJJTXbxFi+YSXAh/bp/AEbs
-         npyzxvWJL/h2jL/CYBgdtVEKdjlUa47NQW5BR4oDdYluQ63G5HxsPiStlT7jXoVbRQKY
-         T3FPS6qJDemc225ffsYTUiM4nrm5INcQAzcxBUA/yk5h7DINPIVjjVtV4OWTX4r0OrbP
-         KP6trhUWjOn52mRhqAy44c5VrtWGPyIO7eBbEmOiC8LNFnUdsvx0JX7vGJQRcE7B8M+b
-         MycA==
-X-Gm-Message-State: AOAM530OKuJm2PDHYRAbquhezbhI9ztG25RQIODVLqn3T6q4zG/7farU
-        U/cLILyIhd8i89WC9gqqHnSWrg==
-X-Google-Smtp-Source: ABdhPJzJ8OJ/ZAI78DQ2qpohpiWkEKZmPUDijaI4AYJjCbHuNfVUEPgqfR5/rtEEGtrV1wkXE5YXLA==
-X-Received: by 2002:a17:90b:4c0a:: with SMTP id na10mr5911634pjb.227.1615310415763;
-        Tue, 09 Mar 2021 09:20:15 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:8596:1e26:eb88:66f6])
-        by smtp.gmail.com with UTF8SMTPSA id 35sm13162838pgr.14.2021.03.09.09.20.14
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=62Pu5sBR5nx/jUzaP/qRm1YBEm5frpGuQUSWypR3GX8=;
+        b=Xcjc8YvpOHxa0a5CkNJXrrQExazltS7bv3HQ6FQoJvg8vI8iUxgnRlzRKR2gFBGedW
+         o9/yy1wT6IMPzaXopZ33iBiKgbHQVI73mKPRsJuCRjViY/Cj3pqnh0yJ2UN5I+c61Jx/
+         CDjBsSm6wv++oaiU3yCnB84zpCt1agl44KFqRK3F5Ww/oBdgUtImuBEwr4KEBbrmeI2X
+         WJaf5yjVB7ycm/jBz5og9rVY62eHc5X8Stcdf+FcaxsLvCOE47cyHEnXjjqyFbGwh3jM
+         I04rCmi06vPpaVTgF+UTpq68sKbPuRDbTwmMla2+ksbjeWq2UpA4XY9XxZel/p7Sikgn
+         /v4Q==
+X-Gm-Message-State: AOAM5315T8cCqhqNFtU36MlYayCVoiAq77P3/5BxLzYNuZx0tQ3cEB9t
+        NEvP+CKD6SSk30gmnu2yLpfBRA==
+X-Google-Smtp-Source: ABdhPJygrvsfBS/M4/vYZIOU5zvFy6kVfrjO6bL33p23bli+tiWmx4lQSag9GI6fhzBhpLNyE+ZAAw==
+X-Received: by 2002:a5d:638f:: with SMTP id p15mr29029496wru.220.1615310549582;
+        Tue, 09 Mar 2021 09:22:29 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:90c:e290:74c5:b3db:b181:e284? ([2a01:e0a:90c:e290:74c5:b3db:b181:e284])
+        by smtp.gmail.com with ESMTPSA id b15sm5378450wmd.41.2021.03.09.09.22.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 09:20:15 -0800 (PST)
-Date:   Tue, 9 Mar 2021 09:20:12 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
-        linux-usb@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v6 3/5] of/platform: Add stubs for
- of_platform_device_create/destroy()
-Message-ID: <YEeuTBsU145OTSCk@google.com>
-References: <20210305193853.2040456-1-mka@chromium.org>
- <20210305113832.v6.3.I08fd2e1c775af04f663730e9fb4d00e6bbb38541@changeid>
- <20210308223251.GA3067045@robh.at.kernel.org>
+        Tue, 09 Mar 2021 09:22:29 -0800 (PST)
+Subject: Re: [PATCH] drm: meson_drv add shutdown function
+To:     Kevin Hilman <khilman@baylibre.com>,
+        Artem Lapkin <email2tema@gmail.com>
+Cc:     jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        christianshewitt@gmail.com, art@khadas.com, nick@khadas.com,
+        gouwa@khadas.com
+References: <20210302042202.3728113-1-art@khadas.com>
+ <e033540e-3a4f-3dd7-a1b0-d5a0241e845a@baylibre.com>
+ <7h35x42qtt.fsf@baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ ZaTUOEkgIor5losDrePdPgE=
+Organization: Baylibre
+Message-ID: <875c606f-baf9-f92a-4820-39d3d7312607@baylibre.com>
+Date:   Tue, 9 Mar 2021 18:22:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <7h35x42qtt.fsf@baylibre.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210308223251.GA3067045@robh.at.kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 03:32:51PM -0700, Rob Herring wrote:
-> On Fri, Mar 05, 2021 at 11:38:51AM -0800, Matthias Kaehlcke wrote:
-> > Code for platform_device_create() and of_platform_device_create() is
+On 09/03/2021 18:13, Kevin Hilman wrote:
+> Hi Neil,
 > 
-> You mean of_platform_device_create and of_platform_device_destroy?
+> Neil Armstrong <narmstrong@baylibre.com> writes:
 > 
-> Does of_platform_populate not work in your usecase?
+>> On 02/03/2021 05:22, Artem Lapkin wrote:
+>>> Problem: random stucks on reboot stage about 1/20 stuck/reboots
+>>> // debug kernel log
+>>> [    4.496660] reboot: kernel restart prepare CMD:(null)
+>>> [    4.498114] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
+>>> [    4.503949] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
+>>> ...STUCK...
+>>>
+>>> Solution: add shutdown function to meson_drm driver 
+>>> // debug kernel log
+>>> [    5.231896] reboot: kernel restart prepare CMD:(null)
+>>> [    5.246135] [drm:meson_drv_shutdown]
+>>> ...
+>>> [    5.259271] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
+>>> [    5.274688] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
+>>> [    5.338331] reboot: Restarting system
+>>> [    5.358293] psci: PSCI_0_2_FN_SYSTEM_RESET reboot_mode:0 cmd:(null)
+>>> bl31 reboot reason: 0xd
+>>> bl31 reboot reason: 0x0
+>>> system cmd  1.
+>>> ...REBOOT...
+>>>
+>>> Tested: on VIM1 VIM2 VIM3 VIM3L khadas sbcs - 1000+ successful reboots
+>>> and Odroid boards, WeTek Play2 (GXBB)
+>>>
+>>> Tested-by: Christian Hewitt <christianshewitt@gmail.com>
+>>> Signed-off-by: Artem Lapkin <art@khadas.com>
+>>>
+>>> ---
+>>>  drivers/gpu/drm/meson/meson_drv.c | 11 +++++++++++
+>>>  1 file changed, 11 insertions(+)
+>>>
+>>> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+>>> index 42c5d3246..693bb1293 100644
+>>> --- a/drivers/gpu/drm/meson/meson_drv.c
+>>> +++ b/drivers/gpu/drm/meson/meson_drv.c
+>>> @@ -482,6 +482,16 @@ static int meson_probe_remote(struct platform_device *pdev,
+>>>  	return count;
+>>>  }
+>>>  
+>>> +static void meson_drv_shutdown(struct platform_device *pdev)
+>>> +{
+>>> +	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
+>>> +	struct drm_device *drm = priv->drm;
+>>> +
+>>> +	DRM_DEBUG_DRIVER("\n");
+>>> +	drm_kms_helper_poll_fini(drm);
+>>> +	drm_atomic_helper_shutdown(drm);
+>>> +}
+>>> +
+>>>  static int meson_drv_probe(struct platform_device *pdev)
+>>>  {
+>>>  	struct component_match *match = NULL;
+>>> @@ -553,6 +563,7 @@ static const struct dev_pm_ops meson_drv_pm_ops = {
+>>>  
+>>>  static struct platform_driver meson_drm_platform_driver = {
+>>>  	.probe      = meson_drv_probe,
+>>> +	.shutdown   = meson_drv_shutdown,
+>>>  	.driver     = {
+>>>  		.name	= "meson-drm",
+>>>  		.of_match_table = dt_match,
+>>>
+>>
+>> Applied to drm-misc-fixes,
+> 
+> Could you submit this as a fix to stable (v5.10+) also?
 
-of_platform_populate() would create a platform device for every node
-under the USB controller or hub. While this could be restricted with
-the 'matches' parameter it would still create two platform devices for
-a hub controller that provides separate USB 2 and USB 3 hubs.
+It should be done automagically since I added the Fixes tag
 
-When of_platform_device_create() is used the onboard hub driver can
-help to decide for which node the platform device should be created.
+neil
 
-> > only generated if CONFIG_OF_ADDRESS=y. Add stubs to avoid unresolved
-> > symbols when CONFIG_OF_ADDRESS is not set.
-> > 
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > ---
-> > 
-> > Changes in v6:
-> > - patch added to the series
-> > 
-> >  include/linux/of_platform.h | 22 ++++++++++++++++++----
-> >  1 file changed, 18 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/include/linux/of_platform.h b/include/linux/of_platform.h
-> > index 84a966623e78..d15b6cd5e1c3 100644
-> > --- a/include/linux/of_platform.h
-> > +++ b/include/linux/of_platform.h
-> > @@ -61,16 +61,18 @@ static inline struct platform_device *of_find_device_by_node(struct device_node
-> >  }
-> >  #endif
-> >  
-> > +extern int of_platform_bus_probe(struct device_node *root,
-> > +				 const struct of_device_id *matches,
-> > +				 struct device *parent);
-> > +
-> > +#ifdef CONFIG_OF_ADDRESS
-> >  /* Platform devices and busses creation */
-> >  extern struct platform_device *of_platform_device_create(struct device_node *np,
-> >  						   const char *bus_id,
-> >  						   struct device *parent);
-> >  
-> >  extern int of_platform_device_destroy(struct device *dev, void *data);
-> > -extern int of_platform_bus_probe(struct device_node *root,
-> > -				 const struct of_device_id *matches,
-> > -				 struct device *parent);
-> > -#ifdef CONFIG_OF_ADDRESS
-> > +
-> >  extern int of_platform_populate(struct device_node *root,
-> >  				const struct of_device_id *matches,
-> >  				const struct of_dev_auxdata *lookup,
-> > @@ -84,6 +86,18 @@ extern int devm_of_platform_populate(struct device *dev);
-> >  
-> >  extern void devm_of_platform_depopulate(struct device *dev);
-> >  #else
-> > +/* Platform devices and busses creation */
-> > +static inline struct platform_device *of_platform_device_create(struct device_node *np,
-> > +								const char *bus_id,
-> > +								struct device *parent)
-> > +{
-> > +	return NULL;
-> > +}
-> > +static inline int of_platform_device_destroy(struct device *dev, void *data)
-> > +{
-> > +	return -ENODEV;
-> > +}
-> > +
-> >  static inline int of_platform_populate(struct device_node *root,
-> >  					const struct of_device_id *matches,
-> >  					const struct of_dev_auxdata *lookup,
-> > -- 
-> > 2.30.1.766.gb4fecdf3b7-goog
-> > 
+> 
+> Thanks,
+> 
+> Kevin
+> 
+
