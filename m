@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E2433315F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5258D33316E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhCIWI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 17:08:27 -0500
-Received: from mga03.intel.com ([134.134.136.65]:41358 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230173AbhCIWHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 17:07:55 -0500
-IronPort-SDR: s3NW4qIL1IRvylxAfFo+d+FyrmVOo414CXEEhQQGEIJqF2pN7Kp6I6A1+JnaM+kCC3aolf6v4p
- Sww8Hg1lSZUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188374906"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="188374906"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 14:07:45 -0800
-IronPort-SDR: a4pra8I11xMU1mirj04YcFkc18VLXLn3WhsLjs0aWtWUtXNMUKtv0DZW3EeAAJhQKS6UoRx4G9
- 0PNBCA+RHnzA==
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="447662582"
-Received: from jcchan4-mobl.amr.corp.intel.com (HELO [10.212.217.30]) ([10.212.217.30])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 14:07:44 -0800
-Subject: Re: [PATCH 03/10] mm/migrate: update node demotion order during on
- hotplug events
-To:     Yang Shi <shy828301@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20210304235949.7922C1C3@viggo.jf.intel.com>
- <20210304235955.05514241@viggo.jf.intel.com>
- <CAHbLzkqHHh2BK6BYW2kKnBjZcVKdmM+z-+0ij9HS0t73Xi8r1w@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <aafc39d0-a002-f851-7da8-cf768ebe691d@intel.com>
-Date:   Tue, 9 Mar 2021 14:07:44 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231221AbhCIWRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 17:17:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231910AbhCIWQy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 17:16:54 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC012C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 14:16:53 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id e20so3818995ljn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 14:16:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sTpm9iCrhHx5qhHqqdwnHB9UkiKkjNMhFzqoJDcE6mw=;
+        b=UuQvh/U/otoDbmtBPbgzKFcO/S87mNzvoBlapc6yS0OCfhumkCQm92511oZsriYF0O
+         DBK/6dpSK3wVNLOZdHPuucypwYmOq7kahceyEJNCD9cIihTYIociel7zlwRFD6jFDXFP
+         jWZ3YT+RgICuBw3LiaBZboHHqsFx+3Cisx13g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sTpm9iCrhHx5qhHqqdwnHB9UkiKkjNMhFzqoJDcE6mw=;
+        b=KmBAGyaYkyZU6N4iqhANcffzm13rWeuMhUghwWh8S6c/E4u1z5tDZWn9sTYovKJfYo
+         Cl4zUHgJSl+iPUZAOHf6C3HXe1qPG8ohJTpEizxHWxQAnqLwnAUGT34LwLIMVNa1W6gG
+         6dIqkXO8JAaPBDZNE1wcaDlEznckmsSxUsjzGDr+Wo8Pbm8o/5nonmzxx6t8Ek4I8GBF
+         5IPwVcZPhkZqTZah0sO93yE7oPYbF0uDng7c7zmSs5ApEodufGMk1WvMiHoSlrdZItqd
+         l8yURfFjwk6Vl3yf9evMNtbBd1ZAf/dlOTrrw9rLI/uT2dB/jMa0fAnCiIwWduuQn3Kc
+         hTuQ==
+X-Gm-Message-State: AOAM531JCUrr8023/kvZPlVMeZcd2e+WOI1T8z4ezltgXpWfV4yJd0Im
+        V6ek04RatlAYkImVmKrAfkG9hrBOZ7Mtyg==
+X-Google-Smtp-Source: ABdhPJwf33ldbzrkNmJxV3kt3a+npIq1E5RJcv6VOVa6HoIROj+cV7CsQrEpNFYSQCmK1AvIq8/lhQ==
+X-Received: by 2002:a2e:968c:: with SMTP id q12mr17764932lji.317.1615328211942;
+        Tue, 09 Mar 2021 14:16:51 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id m16sm2208293lfh.109.2021.03.09.14.16.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 14:16:51 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id q25so29917708lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 14:16:51 -0800 (PST)
+X-Received: by 2002:a05:6512:33cc:: with SMTP id d12mr75176lfg.487.1615328210832;
+ Tue, 09 Mar 2021 14:16:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkqHHh2BK6BYW2kKnBjZcVKdmM+z-+0ij9HS0t73Xi8r1w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210224142909.2092914-1-linux@rasmusvillemoes.dk>
+ <20210309211700.2011017-1-linux@rasmusvillemoes.dk> <20210309211700.2011017-2-linux@rasmusvillemoes.dk>
+In-Reply-To: <20210309211700.2011017-2-linux@rasmusvillemoes.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 9 Mar 2021 14:16:35 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgfMQyYSkdRkCuHOQEcvoyw=fN7q+0cU-s9dNqDHkSmrw@mail.gmail.com>
+Message-ID: <CAHk-=wgfMQyYSkdRkCuHOQEcvoyw=fN7q+0cU-s9dNqDHkSmrw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] init/initramfs.c: allow asynchronous unpacking
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 4:03 PM, Yang Shi wrote:
->> +static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
->> +                                                unsigned long action, void *arg)
->> +{
->> +       switch (action) {
->> +       case MEM_GOING_OFFLINE:
->> +               /*
->> +                * Make sure there are not transient states where
->> +                * an offline node is a migration target.  This
->> +                * will leave migration disabled until the offline
->> +                * completes and the MEM_OFFLINE case below runs.
->> +                */
->> +               disable_all_migrate_targets();
->> +
->> +               /*
->> +                * Ensure the disable operation is globally visible.
->> +                * This avoids readers ever being able to
->> +                * simultaneously observe the old (pre-hotplug) and
->> +                * new (post-hotplug) migration targets.
->> +                */
->> +               synchronize_rcu();
-> It seems disable_all_migrate_targets() already has synchronize_rcu()
-> called. We don't need to call it twice. Otherwise, it looks good to
-> me. Reviewed-by: Yang Shi <shy828301@gmail.com>
+On Tue, Mar 9, 2021 at 1:17 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> So add an initramfs_async= kernel parameter, allowing the main init
+> process to proceed to handling device_initcall()s without waiting for
+> populate_rootfs() to finish.
 
-Thanks for noticing that.  I've fixed it up.
+Oh, and a completely unrelated second comment about this: some of the
+initramfs population code seems to be actively written to be slow.
 
+For example, I'm not sure why that write_buffer() function uses an
+array of indirect function pointer actions. Even ignoring the whole
+"speculation protections make that really slow" issue that came later,
+it seems to always have been actively (a) slower and (b) more complex.
 
+The normal way to do that is with a simple switch() statement, which
+makes the compiler able to do a much better job. Not just for the
+state selector - maybe it picks that function pointer approach, but
+probably these days just direct comparisons - but simply to do things
+like inline all those "it's used in one place" cases entirely. In
+fact, at that point, a lot of the state machine changes may end up
+turning into pure goto's - compilers are sometimes good at that
+(because state machines have often been very timing-critical).
+
+Is that likely to be a big part of the costs? No. I assume it's the
+decompression and the actual VFS operations. But when the series is
+about how this all takes a long time, and I go "that code really looks
+actively pessimally written", maybe it would be a good thing to look
+into it?
+
+           Linus
