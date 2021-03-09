@@ -2,112 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBAD3331DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 00:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422703331DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 00:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhCIXIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 18:08:31 -0500
-Received: from mga04.intel.com ([192.55.52.120]:43358 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbhCIXIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 18:08:23 -0500
-IronPort-SDR: m9PSQJpodMpGLaqIYAToXB3kO86tnETvUlva98qporB0WHpLq9P4aSy7vLgkYChFuhOIEu9Oq3
- n2VEUYMWfKEQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="185957792"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="185957792"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 15:08:22 -0800
-IronPort-SDR: 2qmK0mHbPEsyDUuRE2Y8BhAesm6yWGidnA6CSJ8EzUbcYDnmJ5LPN2WhNT0ECHaGG/dJjWDEfE
- o4sWtgKNkw4w==
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="447680158"
-Received: from jcchan4-mobl.amr.corp.intel.com (HELO [10.212.217.30]) ([10.212.217.30])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 15:08:22 -0800
-Subject: Re: [PATCH 08/10] mm/vmscan: Consider anonymous pages without swap
-To:     Yang Shi <shy828301@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, kbusch@kernel.org,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20210304235949.7922C1C3@viggo.jf.intel.com>
- <20210305000004.20A8D23F@viggo.jf.intel.com>
- <CAHbLzkpL8=x2kPq=B19xSf+8qEKt8LKek2vw3yjseXUP+VoTPw@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <3aad5d6d-7a80-3b27-277e-02c89c684590@intel.com>
-Date:   Tue, 9 Mar 2021 15:08:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAHbLzkpL8=x2kPq=B19xSf+8qEKt8LKek2vw3yjseXUP+VoTPw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S232118AbhCIXNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 18:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230473AbhCIXNE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 18:13:04 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CB0C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 15:13:04 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id o9so18919939yba.18
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 15:13:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=CQRMAIOvqBs8kZZqo+ZLWXcUVnOj5R3ECqdWM5F4gPE=;
+        b=UYNyZvVncul7Pst5XhlG8JZRtQZq7IMynBgZ+sQoPXaZmfjWQMLRwKLmDaeCYZFaoT
+         QkzRGaBVXGCoW4vl8vdDADcS+LbZjxg6ANCU0g/REbx2s5NFQg/ZocI886W3ojQXjl/9
+         6fzla7DZuo9OaetwEGm/lxQ/RjrOnAx+9NcLFORHzy+rR616uUk4Gu0HYNswZjx6SOqg
+         TnNK6tfeg19t9QgKaIqLA7l0mGjdxCyfAovzUlsjJAhfpT+xQ8cc9i+0UqsDd8vQuMZE
+         6HRxeTOROeqz3BEnEahU5/hJxbZ5S5OFJBwoleCw0qY1t4TxFWGQdWnlhw9eoMvKpbRW
+         EveQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=CQRMAIOvqBs8kZZqo+ZLWXcUVnOj5R3ECqdWM5F4gPE=;
+        b=AFYpG7MJO49Am4ANMZ9xUYiVFqH7hjJ6dAprkfYUyMmUzPqy16aMzmW6EIx7BXxiJI
+         Wgxz2ZejnREftZuKhnp4M4WO+/GeDavYHfOcmG+Okf7ZJJuMYHkpvAsqBhnnS3fJynlS
+         Kr+cLbwImYi41N8ZSLFadEbclEFudkt45/Ds1+UXrsybUJcEBpxAAF8Acq7esafXc1n9
+         tep3F6cHDBFBAkdS7tMojrcfC3Tg+vDRAKBNWujOYtz8GvIu4Qrjod0FAaJl1P46/a2g
+         ugrDgLl2Lfc2qgdoCk4BJxClsic2T61HcTEYlE6ilJ+XaskgwTkyLkwzuf4hkW9ygnTp
+         PEPA==
+X-Gm-Message-State: AOAM53107qJZZMOhS6iToMssskYs58Mudchh7/Ml9XXZeTcVvMDUIpSZ
+        DB89KfDCimst9mvsPPyzl556edcOZ916RQ==
+X-Google-Smtp-Source: ABdhPJyom18/0zK9WNwCYjHt1hZhXoYjht7+1+zYLO36Lcf+Pp+g0TDWQB6G7imCWLO1HjcUlqIyldrEDNyepg==
+X-Received: from jbhayana.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:42b2])
+ (user=jbhayana job=sendgmr) by 2002:a25:ace7:: with SMTP id
+ x39mr271843ybd.400.1615331583814; Tue, 09 Mar 2021 15:13:03 -0800 (PST)
+Date:   Tue,  9 Mar 2021 23:12:58 +0000
+Message-Id: <20210309231259.78050-1-jbhayana@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH v7 0/1] Adding support for IIO SCMI based sensors
+From:   Jyoti Bhayana <jbhayana@google.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jyoti Bhayana <jbhayana@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        cristian.marussi@arm.com, sudeep.holla@arm.com,
+        egranata@google.com, mikhail.golubev@opensynergy.com,
+        Igor.Skalkin@opensynergy.com, Peter.hilber@opensynergy.com,
+        ankitarora@google.com, gurunagarajan@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 4:17 PM, Yang Shi wrote:
->> Reclaim anonymous pages if a migration path is available now that
->> demotion provides a non-swap recourse for reclaiming anon pages.
->>
->> Note that this check is subtly different from the
->> anon_should_be_aged() checks.  This mechanism checks whether a
->> specific page in a specific context *can* actually be reclaimed, given
->> current swap space and cgroup limits
->>
->> anon_should_be_aged() is a much simpler and more prelimiary check
-> Just a typo, s/prelimiary/preliminary
+Hi,
 
-Got it.
+This series adds support for ARM SCMI Protocol based IIO Device.
 
-Thanks for the continued review, and the review tags!  I'll hopefully
-get a new version of this out the door next week.
+This driver provides support for Accelerometer and Gyroscope sensor using
+SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification,
+which is available at 
+
+https://developer.arm.com/documentation/den0056/c/
+
+This version of the patch series has been tested using 
+version 5.4.21 branch of Android common kernel.
+
+Any feedback welcome,
+
+Thanks,
+
+Jyoti Bhayana
+
+v6 --> v7
+- Fixed the error reported by kernel test robot
+
+v5 --> v6
+- Fixed the warning by kernel test robot
+- Incorporated the feedback comments from v5
+- Fixed the bug found in scmi_iio_set_odr_val
+  for calculating the multiplier
+
+v4 --> v5
+- Dropped the RFC tag
+- Added channel ext_info for raw_available
+- Incorporated the feedback comments from v4 review of the patch
+
+v3 --> v4
+- Incorporated the feedback comments from v3 review of the patch
+
+v2 --> v3
+- Incorporated the feedback comments from v2 review of the patch
+
+v1 --> v2
+- Incorporated the feedback comments from v1 review of the patch
+- Regarding the new ABI for sensor_power,sensor_max_range,
+and sensor_resolution, these are some of the sensor attributes
+which Android passes to the apps. If there is any other way of getting
+those values, please let us know
+
+
+Jyoti Bhayana (1):
+  iio/scmi: Adding support for IIO SCMI Based Sensors
+
+ MAINTAINERS                                |   6 +
+ drivers/firmware/arm_scmi/driver.c         |   2 +-
+ drivers/iio/common/Kconfig                 |   1 +
+ drivers/iio/common/Makefile                |   1 +
+ drivers/iio/common/scmi_sensors/Kconfig    |  18 +
+ drivers/iio/common/scmi_sensors/Makefile   |   5 +
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 683 +++++++++++++++++++++
+ 7 files changed, 715 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
+ create mode 100644 drivers/iio/common/scmi_sensors/Makefile
+ create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
+
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
