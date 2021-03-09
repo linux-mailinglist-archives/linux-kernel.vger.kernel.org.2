@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF98332EED
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C39332EF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhCITWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:22:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230173AbhCITWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:22:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 108DA65237;
-        Tue,  9 Mar 2021 19:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615317724;
-        bh=AaO+UbGAEZUo3o9QYbxnPDFnaxXOUUGrUBCbEaRrUqw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m/dBrQ1+uo1RqzGpHsIWLJzqjcWhuOoEE+iuSSc0rR/xOug/QrPbbotHfKKqcbjM5
-         RIHFVUQWrZyKqyyASEB1jntulVnFyl9pzmNYIIe305SZw4SwbHBjITgWQlzyrd/rnR
-         aCgXnVHLmLwASYzuNuOvsJFrqfCBbYLWOjP1GEESnuPQxZEpxEHRUEGfB9hGfhvJsJ
-         ebJpuhVzZvKwQTsjQIyV/r7jken4639UrWYTKVJ0PvyBqcCEPuPr+U+q42XvEcPTV2
-         oz68rihY5v8t1st/NWKI3vMgOF9Tlo7UV5503VAiqn3dzCWmjEQWqytPKEV3bKRrLh
-         VAbujl3ZqVhiQ==
-Received: by mail-ej1-f46.google.com with SMTP id jt13so30968284ejb.0;
-        Tue, 09 Mar 2021 11:22:03 -0800 (PST)
-X-Gm-Message-State: AOAM532fW5fUcFqBnb4qvjG8aWy3PxLa0cYsfSYbHdrKnhBplXPgliZC
-        olvBCwn+AMLfwW++b1QheCmz4DOoUB/dqnKavQ==
-X-Google-Smtp-Source: ABdhPJx9xoFco5obxQqg/gaAD5xU1Y8MOt0uO1HqmPol3JnaNkH/1zNviaIH/UHGYG9X+yHYVwGlwdD9FZ8o5qG5wjQ=
-X-Received: by 2002:a17:906:7f84:: with SMTP id f4mr21383291ejr.525.1615317722613;
- Tue, 09 Mar 2021 11:22:02 -0800 (PST)
+        id S231464AbhCITXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:23:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230425AbhCITWj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 14:22:39 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3146CC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:22:39 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id e7so29116784lft.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:22:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N0kD1kcQzrvfpd7nSYUcOVqOYr5j7K/WTSKvEa5U8Nw=;
+        b=b2afgc4asAMQ4tNI3JUz7MaXQr73HLzo+ocjYLblcejIHnSr0vKUZ8Je8qjekn/P/0
+         0gLUd5hIiQsD88j+HURA9mboJtzEAs19IJEg+qayVHgs80plLdPj2NXk024L+MW63Qt6
+         IzVnYn4ekXksrdlZmgI5lP1w/bJmMu/qMTNJ409y+O1eOycyovxNqR9p5lI9he/9GKfu
+         IVC4wtl0st6VJjQg6bW74DvHuqibavvOxmCUjJ+VfrlTRACceF3qUvM9EO4pgHn4/Gct
+         sbupjpZVYW6G0GFMj3QJo4V7ukPLgiU0QG/tsakA3vxuk/1g8s+jLK5XHJcgp2GCi4Xy
+         YdQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N0kD1kcQzrvfpd7nSYUcOVqOYr5j7K/WTSKvEa5U8Nw=;
+        b=C1R43HOjhwF+BHk5HfJ+0VZFL/Zlaw3M0dAsNeFMBqurMaGHO0pHckCCbeq9oQU3mk
+         yS1qwbJgZgzitNvCUfsn2G7DeQ3aB8Vt0VYMBHjoMjS11bLZOhO0QjunHsGgyN1bPXqt
+         u8lDl3yl8kL6LsefYgySt4SVT/Q3sRoaMqliNB7hQAWaDiNuGk6mVSfvhIQoHNyHoq6V
+         C9Oi3Cgb+rZn+IOfKcDHThr6aYyRKLjDAl6xHo+M+mLGH3T+HgfzQP29r0PTr7ayeG6m
+         axRwyavVn8SJeBDk871eEU9j3vJPmR6AQEaHcdJIilgLUf9IVCYSJbMsEop4aAy6mcMg
+         /W9w==
+X-Gm-Message-State: AOAM532Pfbxp/LVli4RKjQRyW6KmTBYPtGT1wguTPwjQVQWyfyYM98+3
+        MTctzda6+d9b0fxk/UVy29QOIXnSMTR4vg7QCN6l0w==
+X-Google-Smtp-Source: ABdhPJycU3ZIgvK1ZdCEFpdjc8wc5b2x2xjo9AZl4B+IO1f7kzu5c1/R9vn2tDQIHS7lptmmFvi5zmnqmH8bT89L6Gk=
+X-Received: by 2002:a19:f508:: with SMTP id j8mr17538557lfb.153.1615317757491;
+ Tue, 09 Mar 2021 11:22:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225194201.17001-1-noltari@gmail.com> <20210225194201.17001-3-noltari@gmail.com>
- <20210306211731.GA1217377@robh.at.kernel.org> <f60cc3a8-9629-3659-c3e5-4a42a588b63e@gmail.com>
-In-Reply-To: <f60cc3a8-9629-3659-c3e5-4a42a588b63e@gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 9 Mar 2021 12:21:50 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqLk5LWKarMxfnXhJ5VJZMvWEYnCnhP2qQ+LgOfUZALiyA@mail.gmail.com>
-Message-ID: <CAL_JsqLk5LWKarMxfnXhJ5VJZMvWEYnCnhP2qQ+LgOfUZALiyA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] mips: bmips: add BCM63268 timer reset definitions
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210206023118.1521194-1-rkir@google.com>
+In-Reply-To: <20210206023118.1521194-1-rkir@google.com>
+From:   Roman Kiryanov <rkir@google.com>
+Date:   Tue, 9 Mar 2021 11:22:26 -0800
+Message-ID: <CAOGAQep2y2SM3quAcXSghBM3MHak4wtPGzWpZoYcza1ckosX5Q@mail.gmail.com>
+Subject: Re: [PATCH] Remove the GOLDFISH dependency from BATTERY_GOLDFISH
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Lingfeng Yang <lfy@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 7, 2021 at 3:08 AM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
-ail.com> wrote:
+On Fri, Feb 5, 2021 at 6:31 PM <rkir@google.com> wrote:
 >
-> Hi Rob,
+> From: Roman Kiryanov <rkir@google.com>
 >
-> El 06/03/2021 a las 22:17, Rob Herring escribi=C3=B3:
-> > On Thu, Feb 25, 2021 at 08:41:59PM +0100, =C3=81lvaro Fern=C3=A1ndez Ro=
-jas wrote:
-> >> Add missing timer reset definitions for BCM63268.
-> >>
-> >> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
-> >> ---
-> >>   include/dt-bindings/reset/bcm63268-reset.h | 4 ++++
-> >>   1 file changed, 4 insertions(+)
-> >>
-> >> diff --git a/include/dt-bindings/reset/bcm63268-reset.h b/include/dt-b=
-indings/reset/bcm63268-reset.h
-> >> index 6a6403a4c2d5..d87a7882782a 100644
-> >> --- a/include/dt-bindings/reset/bcm63268-reset.h
-> >> +++ b/include/dt-bindings/reset/bcm63268-reset.h
-> >> @@ -23,4 +23,8 @@
-> >>   #define BCM63268_RST_PCIE_HARD     17
-> >>   #define BCM63268_RST_GPHY  18
-> >>
-> >> +#define BCM63268_TRST_SW    29
-> >> +#define BCM63268_TRST_HW    30
-> >> +#define BCM63268_TRST_POR   31
-> >
-> > Numbering should be local to the provider, so shouldn't this be 0-2?
-> > Unless these numbers correspond to something in the h/w (bit positions
-> > for example).
->
-> Numbering corresponds to bit positions in the HW:
+> This will allow to use the BATTERY_GOLDFISH driver
+> without enabling GOLDFISH.
 
-Okay, good.
+Hi Sebastian, could you please take a look at my patch?
 
-Acked-by: Rob Herring <robh@kernel.org>
+Thank you.
