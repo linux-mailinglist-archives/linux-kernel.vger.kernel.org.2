@@ -2,262 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83AC3349DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B625B3349DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhCJVb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:31:29 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:58085 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhCJVbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:31:12 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615411872; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=Ck7/GXkHmms5j9pb0FrNRlyu0DwdCkV4LmdoKje7Jk0=; b=SHys6u2GvJMVstBPesRiar6ajMXpGKxe898/gPZNvNjSLAjTaL9GcmbgbZN3eHcVYiMXzF/o
- 50SjYpgS91H4HpNQr2C9Rws7MMCcEEphe/ktL9aiulM7vtL7+GfTeZI+jU+6pYu8Nh9a14Sv
- y4InVJsunb8vER9CHslSWXM0DL0=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60493a9baf1d9a68ad4d656d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 21:31:07
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9CF8CC433C6; Wed, 10 Mar 2021 21:31:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D0218C433CA;
-        Wed, 10 Mar 2021 21:31:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D0218C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH v3] bus: mhi: core: Sanity check values from remote device before use
-Date:   Wed, 10 Mar 2021 14:30:55 -0700
-Message-Id: <1615411855-15053-1-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S231808AbhCJVcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:32:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231584AbhCJVbe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:31:34 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD759C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:31:27 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id y7so22816707ybh.20
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:31:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=6zFz1na/xQ1K4cFFaYIhngDFvy1L6Rfcvb/ohgSzv34=;
+        b=ZpacngMpkTe50hu+4MmmZ9mDxTjiKTOau858QXWt9fGgl9XI0CVhFcWlsfFk2rcjji
+         Y2N+nza3ZlGHA6BcotE31mzQQikWGpvEq1Q1SN+/ZBZvglHUm0SrDkty+gV/DgETLZzy
+         Gv3prnDZZNR+3Jj3MRJg+ycmKe5XAiH3Gepck4sJ2xOij3z18tRJg/+Ukz/AWSZPIsvf
+         Gj/BG6DgqJs98mNUQmf/pDBYnYPiyBUehAusrqDBpfhoDtTdVhWOSN7U0j5CVF6p8ZJA
+         nh7kf+zGgz3wvwGCfhgAy7nDml0NU5uGzrT3N+NVf9uED0sVjXxpebvwIL8kSHI84es1
+         /oig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc:content-transfer-encoding;
+        bh=6zFz1na/xQ1K4cFFaYIhngDFvy1L6Rfcvb/ohgSzv34=;
+        b=OlIh56JN29AxchRLZJvy9av1i2mYT27bm+xP03yt5Sj4Mm+RnkVc8rxvEa3qxK9kEf
+         eJes8p3lmOQtQt7hDw9N8LS5L/H/3ubwyVlIoIAbZYbwjgC3l4gKJOHIBcuxVXMAmeCO
+         sFL0/BpVX8nLQFEuB3c2vYAfBo+VVv58SdcYSKP2uAJa4InfklljbehLd5fkuWO/rlwv
+         xr7t9YfWcrGMYJUBGmd7Z/8jLNqEd1LjxvyZ9Eikl93ZbtxPvqGpKiXYcIegrH8peo0/
+         4oTW2Uo+DlxBYwacHsygvU4EHOyR7spmIxHWUXTgYdB2rs1tzhk17h2EyethXp7xZYCn
+         ZEBQ==
+X-Gm-Message-State: AOAM531aq3z7dRp88lEs6DghNZjhjkWm+diDAkSES0Qxth8qYqeM+OW8
+        Ahnb+xiQ8zSLgyNg7tspazTsBxWfdKo=
+X-Google-Smtp-Source: ABdhPJz4oo0IZDanHo1iwUxfV6RdFiPpFC+E/fradMAqbkrsr5TR349ePu7+xhg92qQXD/a2oL7cT2Nu0pU=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
+ (user=seanjc job=sendgmr) by 2002:a25:a002:: with SMTP id x2mr7418118ybh.13.1615411886828;
+ Wed, 10 Mar 2021 13:31:26 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 10 Mar 2021 13:31:17 -0800
+Message-Id: <20210310213117.1444147-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH] mm/oom_kill: Ensure MMU notifier range_end() is paired with range_start()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Rientjes <rientjes@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Michal Hocko <mhocko@suse.com>,
+        "=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?=" <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When parsing the structures in the shared memory, there are values which
-come from the remote device.  For example, a transfer completion event
-will have a pointer to the tre in the relevant channel's transfer ring.
-As another example, event ring elements may specify a channel in which
-the event occurred, however the specified channel value may not be valid
-as no channel is defined at that index even though the index may be less
-than the maximum allowed index.  Such values should be considered to be
-untrusted, and validated before use.  If we blindly use such values, we
-may access invalid data or crash if the values are corrupted.
+Invoke the MMU notifier's .invalidate_range_end() callbacks even if one
+of the .invalidate_range_start() callbacks failed.  If there are multiple
+notifiers, the notifier that did not fail may have performed actions in
+its ...start() that it expects to unwind via ...end().  Per the
+mmu_notifier_ops documentation, ...start() and ...end() must be paired.
 
-If validation fails, drop the relevant event.
+The only in-kernel usage that is fatally broken is the SGI UV GRU driver,
+which effectively blocks and sleeps fault handlers during ...start(), and
+unblocks/wakes the handlers during ...end().  But, the only users that
+can fail ...start() are the i915 and Nouveau drivers, which are unlikely
+to collide with the SGI driver.
 
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+KVM is the only other user of ...end(), and while KVM also blocks fault
+handlers in ...start(), the fault handlers do not sleep and originate in
+killable ioctl() calls.  So while it's possible for the i915 and Nouveau
+drivers to collide with KVM, the bug is benign for KVM since the process
+is dying and KVM's guest is about to be terminated.
+
+So, as of today, the bug is likely benign.  But, that may not always be
+true, e.g. there is a potential use case for blocking memslot updates in
+KVM while an invalidation is in-progress, and failure to unblock would
+result in said updates being blocked indefinitely and hanging.
+
+Found by inspection.  Verified by adding a second notifier in KVM that
+periodically returns -EAGAIN on non-blockable ranges, triggering OOM,
+and observing that KVM exits with an elevated notifier count.
+
+Fixes: 93065ac753e4 ("mm, oom: distinguish blockable mode for mmu notifiers=
+")
+Cc: stable@vger.kernel.org
+Cc: David Rientjes <rientjes@google.com>
+Cc: Ben Gardon <bgardon@google.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
+ mm/oom_kill.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-v3: Add the channel validation example to commit text
-v2: Fix subject
-
- drivers/bus/mhi/core/main.c | 81 +++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 74 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index a7811fb..6c0e05d 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -242,6 +242,11 @@ static void mhi_del_ring_element(struct mhi_controller *mhi_cntrl,
- 	smp_wmb();
- }
- 
-+static bool is_valid_ring_ptr(struct mhi_ring *ring, dma_addr_t addr)
-+{
-+	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len;
-+}
-+
- int mhi_destroy_device(struct device *dev, void *data)
- {
- 	struct mhi_chan *ul_chan, *dl_chan;
-@@ -404,7 +409,16 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
- 	struct mhi_event_ctxt *er_ctxt =
- 		&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
- 	struct mhi_ring *ev_ring = &mhi_event->ring;
--	void *dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+	dma_addr_t ptr = er_ctxt->rp;
-+	void *dev_rp;
-+
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		return IRQ_HANDLED;
-+	}
-+
-+	dev_rp = mhi_to_virtual(ev_ring, ptr);
- 
- 	/* Only proceed if event ring has pending events */
- 	if (ev_ring->rp == dev_rp)
-@@ -560,6 +574,11 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
- 		struct mhi_buf_info *buf_info;
- 		u16 xfer_len;
- 
-+		if (!is_valid_ring_ptr(tre_ring, ptr)) {
-+			dev_err(&mhi_cntrl->mhi_dev->dev,
-+				"Event element points outside of the tre ring\n");
-+			break;
-+		}
- 		/* Get the TRB this event points to */
- 		ev_tre = mhi_to_virtual(tre_ring, ptr);
- 
-@@ -719,6 +738,12 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
- 	struct mhi_chan *mhi_chan;
- 	u32 chan;
- 
-+	if (!is_valid_ring_ptr(mhi_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event element points outside of the cmd ring\n");
-+		return;
-+	}
-+
- 	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
- 
- 	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
-@@ -743,6 +768,7 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	u32 chan;
- 	int count = 0;
-+	dma_addr_t ptr = er_ctxt->rp;
- 
- 	/*
- 	 * This is a quick check to avoid unnecessary event processing
-@@ -752,7 +778,13 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 	if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
- 		return -EIO;
- 
--	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		return -EIO;
-+	}
-+
-+	dev_rp = mhi_to_virtual(ev_ring, ptr);
- 	local_rp = ev_ring->rp;
- 
- 	while (dev_rp != local_rp) {
-@@ -858,6 +890,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 			 */
- 			if (chan < mhi_cntrl->max_chan) {
- 				mhi_chan = &mhi_cntrl->mhi_chan[chan];
-+				if (!mhi_chan->configured)
-+					break;
- 				parse_xfer_event(mhi_cntrl, local_rp, mhi_chan);
- 				event_quota--;
- 			}
-@@ -869,7 +903,15 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 
- 		mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
- 		local_rp = ev_ring->rp;
--		dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+
-+		ptr = er_ctxt->rp;
-+		if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+			dev_err(&mhi_cntrl->mhi_dev->dev,
-+				"Event ring rp points outside of the event ring\n");
-+			return -EIO;
-+		}
-+
-+		dev_rp = mhi_to_virtual(ev_ring, ptr);
- 		count++;
- 	}
- 
-@@ -892,11 +934,18 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 	int count = 0;
- 	u32 chan;
- 	struct mhi_chan *mhi_chan;
-+	dma_addr_t ptr = er_ctxt->rp;
- 
- 	if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
- 		return -EIO;
- 
--	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		return -EIO;
-+	}
-+
-+	dev_rp = mhi_to_virtual(ev_ring, ptr);
- 	local_rp = ev_ring->rp;
- 
- 	while (dev_rp != local_rp && event_quota > 0) {
-@@ -910,7 +959,8 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 		 * Only process the event ring elements whose channel
- 		 * ID is within the maximum supported range.
- 		 */
--		if (chan < mhi_cntrl->max_chan) {
-+		if (chan < mhi_cntrl->max_chan &&
-+		    mhi_cntrl->mhi_chan[chan].configured) {
- 			mhi_chan = &mhi_cntrl->mhi_chan[chan];
- 
- 			if (likely(type == MHI_PKT_TYPE_TX_EVENT)) {
-@@ -924,7 +974,15 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 
- 		mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
- 		local_rp = ev_ring->rp;
--		dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+
-+		ptr = er_ctxt->rp;
-+		if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+			dev_err(&mhi_cntrl->mhi_dev->dev,
-+				"Event ring rp points outside of the event ring\n");
-+			return -EIO;
-+		}
-+
-+		dev_rp = mhi_to_virtual(ev_ring, ptr);
- 		count++;
- 	}
- 	read_lock_bh(&mhi_cntrl->pm_lock);
-@@ -1385,6 +1443,7 @@ static void mhi_mark_stale_events(struct mhi_controller *mhi_cntrl,
- 	struct mhi_ring *ev_ring;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	unsigned long flags;
-+	dma_addr_t ptr;
- 
- 	dev_dbg(dev, "Marking all events for chan: %d as stale\n", chan);
- 
-@@ -1392,7 +1451,15 @@ static void mhi_mark_stale_events(struct mhi_controller *mhi_cntrl,
- 
- 	/* mark all stale events related to channel as STALE event */
- 	spin_lock_irqsave(&mhi_event->lock, flags);
--	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+
-+	ptr = er_ctxt->rp;
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		dev_rp = ev_ring->rp;
-+	} else {
-+		dev_rp = mhi_to_virtual(ev_ring, ptr);
-+	}
- 
- 	local_rp = ev_ring->rp;
- 	while (dev_rp != local_rp) {
--- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index bc65ba4f5192..acc3ba8b2ed7 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -546,12 +546,10 @@ bool __oom_reap_task_mm(struct mm_struct *mm)
+ 						vma, mm, vma->vm_start,
+ 						vma->vm_end);
+ 			tlb_gather_mmu(&tlb, mm);
+-			if (mmu_notifier_invalidate_range_start_nonblock(&range)) {
+-				tlb_finish_mmu(&tlb);
++			if (!mmu_notifier_invalidate_range_start_nonblock(&range))
++				unmap_page_range(&tlb, vma, range.start, range.end, NULL);
++			else
+ 				ret =3D false;
+-				continue;
+-			}
+-			unmap_page_range(&tlb, vma, range.start, range.end, NULL);
+ 			mmu_notifier_invalidate_range_end(&range);
+ 			tlb_finish_mmu(&tlb);
+ 		}
+--=20
+2.30.1.766.gb4fecdf3b7-goog
 
