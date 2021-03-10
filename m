@@ -2,62 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002CD333759
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6F633375F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhCJIdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:33:11 -0500
-Received: from verein.lst.de ([213.95.11.211]:35121 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhCJIcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:32:35 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C9A8168B05; Wed, 10 Mar 2021 09:32:31 +0100 (CET)
-Date:   Wed, 10 Mar 2021 09:32:31 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>, Nadav Amit <namit@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: make alloc_anon_inode more useful
-Message-ID: <20210310083231.GB5217@lst.de>
-References: <20210309155348.974875-1-hch@lst.de> <20210309165452.GL2356281@nvidia.com>
+        id S229632AbhCJIeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:34:06 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:41005 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230489AbhCJIdd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:33:33 -0500
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lJuHb-0003GJ-Bh
+        for linux-kernel@vger.kernel.org; Wed, 10 Mar 2021 08:33:31 +0000
+Received: by mail-wr1-f69.google.com with SMTP id h21so7586764wrc.19
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:33:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RZxvgYZhRwx3vtBKrExOY7yB1Rao/D3y6ddDmt53T8k=;
+        b=Uhj6q80MsMU5Nnq0vuNrr7vRtjNGdsBEYaZYEwJwVDZbutHtnQi2yqJqahzqTO2KqG
+         wbxvnQuqGnM1vnHHsrLKc7ttstSJNLjOBxYfxLC9ii20IQYNt6F7YUeyC9Y6h513KH5V
+         35TXZcHckwZ8kpg97bs9gXfNp782dffONGkR5Bxmx76wY/pm+kNmjrRbvc2ERB/xLjVt
+         Sk3wOEYmol62bTc6PcAy2eMygW0TSsWDW1YwvZFSi6si9zXm2ySQNtfpgUOtjjO5l3K8
+         nGiMrmz7ouU7fP/2mcInmYRmbLfoB0LuNHdPx5XrgGWbm8s7adPv8kAhoc+XVUHzqJ0V
+         +NuA==
+X-Gm-Message-State: AOAM531P3ozTtDNKMRgDPQw1DZzlsae3ooNy7Tbi6KURN3lbXPzqdPHe
+        P9P/2e1/FVhGZ8Ud1u/TV4MgrrgpDMMXeQc9YuxNd2Sta2llWO9wRNCPm1BU3R4b/dQ9ZaJTh6P
+        K7NmmZrHA4Ui5QOUzko7jjfPMb1EAXzGZOcGpSWjBBw==
+X-Received: by 2002:a1c:f406:: with SMTP id z6mr2225373wma.24.1615365211048;
+        Wed, 10 Mar 2021 00:33:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx+uPRMBgFfoVCHx5kur24yVECBMZDDtyDQfyluEn8gAohH3gku3X1wAI4MIWrYIO0FNDk1jQ==
+X-Received: by 2002:a1c:f406:: with SMTP id z6mr2225348wma.24.1615365210807;
+        Wed, 10 Mar 2021 00:33:30 -0800 (PST)
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id m17sm28675495wrx.92.2021.03.10.00.33.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 00:33:30 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-fpga@vger.kernel.org,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        arm@kernel.org, soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [RFC v2 0/5] arm64 / clk: socfpga: simplifying, cleanups and compile testing
+Date:   Wed, 10 Mar 2021 09:33:22 +0100
+Message-Id: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309165452.GL2356281@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 12:54:52PM -0400, Jason Gunthorpe wrote:
-> On Tue, Mar 09, 2021 at 04:53:39PM +0100, Christoph Hellwig wrote:
-> > Hi all,
-> > 
-> > this series first renames the existing alloc_anon_inode to
-> > alloc_anon_inode_sb to clearly mark it as requiring a superblock.
-> > 
-> > It then adds a new alloc_anon_inode that works on the anon_inode
-> > file system super block, thus removing tons of boilerplate code.
-> > 
-> > The few remainig callers of alloc_anon_inode_sb all use alloc_file_pseudo
-> > later, but might also be ripe for some cleanup.
-> 
-> I like it
-> 
-> For a submission plan can we have this on a git branch please? I will
-> need a copy for RDMA and Alex will need one for vfio..
+Hi,
 
-anon_inode.c stuff seems to mostly go through Al's tree, but also various
-others.  So best would be if Al has a branch, but I could also set one up.
+All three Intel arm64 SoCFPGA architectures (Agilex, N5X and Stratix 10)
+are basically flavors/platforms of the same architecture.  At least from
+the Linux point of view.  Up to a point that N5X and Agilex share DTSI.
+Having three top-level architectures for the same one barely makes
+sense and complicates driver selection.
+
+Try to unify them.
+
+Changes since v1:
+=================
+1. New patch 3/5: arm64: socfpga: rename ARCH_STRATIX10 to ARCH_SOCFPGA64
+2. New patch 4/5: arm64: intel: merge Agilex and N5X into ARCH_SOCFPGA64
+3. Fix build issue reported by kernel test robot (with ARCH_STRATIX10
+   and COMPILE_TEST but without selecting some of the clocks).
+
+I tested compile builds on few configurations, so I hope kbuild 0-day
+will check more options (please give it few days on the lists).
+
+Best regards,
+Krzysztof
+
+
+Krzysztof Kozlowski (5):
+  clk: socfpga: allow building N5X clocks with ARCH_N5X
+  clk: socfpga: build together Stratix 10, Agilex and N5X clock drivers
+  arm64: socfpga: rename ARCH_STRATIX10 to ARCH_SOCFPGA64
+  arm64: intel: merge Agilex and N5X into ARCH_SOCFPGA64
+  clk: socfpga: allow compile testing of Stratix 10 / Agilex clocks
+
+ arch/arm64/Kconfig.platforms                | 17 ++++-------------
+ arch/arm64/boot/dts/altera/Makefile         |  2 +-
+ arch/arm64/boot/dts/intel/Makefile          |  6 +++---
+ arch/arm64/configs/defconfig                |  3 +--
+ drivers/clk/Kconfig                         |  1 +
+ drivers/clk/Makefile                        |  4 +---
+ drivers/clk/socfpga/Kconfig                 | 17 +++++++++++++++++
+ drivers/clk/socfpga/Makefile                |  7 +++----
+ drivers/edac/Kconfig                        |  2 +-
+ drivers/edac/altera_edac.c                  | 10 +++++-----
+ drivers/firmware/Kconfig                    |  2 +-
+ drivers/fpga/Kconfig                        |  2 +-
+ drivers/mfd/Kconfig                         |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/Kconfig |  4 ++--
+ drivers/reset/Kconfig                       |  2 +-
+ 15 files changed, 43 insertions(+), 38 deletions(-)
+ create mode 100644 drivers/clk/socfpga/Kconfig
+
+-- 
+2.25.1
+
