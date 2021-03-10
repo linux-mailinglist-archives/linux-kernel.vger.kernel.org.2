@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB8D33424D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2E933424F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbhCJP7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:59:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37494 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232191AbhCJP7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:59:02 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 19E5AAC1F;
-        Wed, 10 Mar 2021 15:59:01 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 16:58:58 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        id S232952AbhCJQAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232130AbhCJP7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:59:38 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77FE8C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:59:38 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so328580pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:59:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XYIw53FG6Pi0idyEbOGAM+kfG1SQqpJslcWfjDqB6js=;
+        b=prYQIQ3qyXWCVibRtNvRq4flpOmaMd4lkcnSgz/w7bz6BKppSS0icpG1u485cofcxh
+         l6GchQXDHIrUAS8oQUK55YNP3CeIQtaA6ZUGvtzehNMplVm2wt5zNf9nG2Osy6bhY9MC
+         D/izinGXARDF/6KJv9HJ8k0h23vy9PBKh5N88D7D42lbhQngCpsUqVQmpvcdgzfQEyw5
+         83yGT0xVrOVCbmQyXJxSbP553TQ0OwMmMAzUGXdLB6brA9hIsRNQv9MCbCFANc08hoRC
+         IsExRfEvwiRtA9yHu8cgAbFBsLuUMvN8KQpKffzhU+PX/d2cm0vg0s05HP1H6R5Gk3mI
+         MOfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XYIw53FG6Pi0idyEbOGAM+kfG1SQqpJslcWfjDqB6js=;
+        b=tHdFk1O89NAjWDD8t8jMFELsr+Wmqp7v/3gMFnBqYBDj+GoCOMVktoCwB61DbbzX5n
+         xSUtnwE8hhgtQYB2Z7BlDcw4aUBX9+cf21ZrmaoOYY3YUqYs8j+4x14WoufLaxw7oQLW
+         EBYBoCYrbjir76bLhijlgsgw2YkqCAJsEuMgY2MeXIxyO1Q0b5Kit023OsbPaBOkHyuM
+         cNY/CC0oTQ/FxicT5sA33cUCDyhHmUAP4jbpTsWnvticssdPzqHTAnXimJKubEADColq
+         vpIIUzarqFZXDgNZd3fYoSrxFzTfZWw85vZ6MIxNPcL234BckWQq+qCFNcDONi7fhQBD
+         Pz9w==
+X-Gm-Message-State: AOAM530SasHMVF1aU9VHk2wHTiPJiVkkoh7A3pV4fDe0FYaBb3y6XlNJ
+        ne8/1ITF0gbfKdDdpVxfxFQ=
+X-Google-Smtp-Source: ABdhPJyoegNIOLarzPhAC3f6wVIE5ZPCpUJZiCanxiVr5Qw4WCeU0M8Sur02hLDMi1tBXT3I8ePCRg==
+X-Received: by 2002:a17:902:d2c7:b029:e6:34e2:7a83 with SMTP id n7-20020a170902d2c7b02900e634e27a83mr3759493plc.60.1615391977985;
+        Wed, 10 Mar 2021 07:59:37 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
+        by smtp.gmail.com with ESMTPSA id c193sm17971105pfc.180.2021.03.10.07.59.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 07:59:36 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 10 Mar 2021 07:59:34 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Dias <joaodias@google.com>,
         David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 0/3] hugetlb: add demote/split page functionality
-Message-ID: <20210310155843.GA14328@linux>
-References: <20210309001855.142453-1-mike.kravetz@oracle.com>
+        Jason Baron <jbaron@akamai.com>
+Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
+Message-ID: <YEjs5vxO/FRLUHhl@google.com>
+References: <20210308202047.1903802-1-minchan@kernel.org>
+ <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
+ <YEefLYiX6rF3Uk4E@google.com>
+ <YEejCP5tzUtrAjcw@dhcp22.suse.cz>
+ <YEewF8c1ydu2pU0A@google.com>
+ <YEjD91BprqJMZUah@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210309001855.142453-1-mike.kravetz@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YEjD91BprqJMZUah@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:18:52PM -0800, Mike Kravetz wrote:
-> The concurrent use of multiple hugetlb page sizes on a single system
-> is becoming more common.  One of the reasons is better TLB support for
-> gigantic page sizes on x86 hardware.  In addition, hugetlb pages are
-> being used to back VMs in hosting environments.
+On Wed, Mar 10, 2021 at 02:04:55PM +0100, Michal Hocko wrote:
+
+< snip >
+
+> > > Also are all those CONFIG_DYNAMIC_DEBUG* ifdefs necessary?  Can we
+> > > simply enable DYNAMIC_DEBUG for page_alloc as I've suggested above?
+> > 
+> > They are different usecases.
+> > 
+> > With DYNAMIC_DEBUG_MODULE with CONFIG_DYNAMIC_DEBUG_CORE,
+> > it works for only specific compile flags as you suggested.
+> > (CONFIG_DYNAMIC_DEBUG_CORE is requirement to work DYNAMIC_DEBUG_MODULE.
+> > 
+> > With CONFIG_DYNAMIC_DEBUG, user could enable/disable every dynamic
+> > debug places without needing DYNAMIC_DEBUG_MODULE flags for source
+> > files.
+> > 
+> > Both usecase makes sense to me.
 > 
-> When using hugetlb pages to back VMs in such environments, it is
-> sometimes desirable to preallocate hugetlb pools.  This avoids the delay
-> and uncertainty of allocating hugetlb pages at VM startup.  In addition,
-> preallocating huge pages minimizes the issue of memory fragmentation that
-> increases the longer the system is up and running.
-> 
-> In such environments, a combination of larger and smaller hugetlb pages
-> are preallocated in anticipation of backing VMs of various sizes.  Over
-> time, the preallocated pool of smaller hugetlb pages may become
-> depleted while larger hugetlb pages still remain.  In such situations,
-> it may be desirable to convert larger hugetlb pages to smaller hugetlb
-> pages.
+> Well, this is more of a question for dynamic debugging maintainers. But
+> it would be really great to reduce the ifdefery as much as possible.
 
-Hi Mike,
-
-The usecase sounds neat.
-
-> 
-> Converting larger to smaller hugetlb pages can be accomplished today by
-> first freeing the larger page to the buddy allocator and then allocating
-> the smaller pages.  However, there are two issues with this approach:
-> 1) This process can take quite some time, especially if allocation of
->    the smaller pages is not immediate and requires migration/compaction.
-> 2) There is no guarantee that the total size of smaller pages allocated
->    will match the size of the larger page which was freed.  This is
->    because the area freed by the larger page could quickly be
->    fragmented.
-> 
-> To address these issues, introduce the concept of hugetlb page demotion.
-> Demotion provides a means of 'in place' splitting a hugetlb page to
-> pages of a smaller size.  For example, on x86 one 1G page can be
-> demoted to 512 2M pages.  Page demotion is controlled via sysfs files.
-> - demote_size	Read only target page size for demotion
-
-What about those archs where we have more than two hugetlb sizes?
-IIRC, in powerpc you can have that, right?
-If so, would it make sense for demote_size to be writable so you can pick
-the size? 
-
-
-> - demote	Writable number of hugetlb pages to be demoted
-
-Below you mention that due to reservation, the amount of demoted pages can
-be less than what the admin specified.
-Would it make sense to have a place where someone can check how many pages got
-actually demoted?
-Or will this follow nr_hugepages' scheme and will always reflect the number of
-current demoted pages?
-
-> Only hugetlb pages which are free at the time of the request can be demoted.
-> Demotion does not add to the complexity surplus pages.  Demotion also honors
-> reserved huge pages.  Therefore, when a value is written to the sysfs demote
-> file that value is only the maximum number of pages which will be demoted.
-> It is possible fewer will actually be demoted.
-> 
-> If demote_size is PAGESIZE, demote will simply free pages to the buddy
-> allocator.
-
-Wrt. vmemmap discussion with David.
-I also think we could compute how many vmemmap pages we are going to need to
-re-shape the vmemmap layout and allocate those upfront.
-And I think this approach would be just more simple.
-
-I plan to have a look at the patches later today or tomorrow.
-
-Thanks
-
--- 
-Oscar Salvador
-SUSE L3
+I don't understand why this is something particular case which is okay
+to lose either way to make dyndbg dynamic.
