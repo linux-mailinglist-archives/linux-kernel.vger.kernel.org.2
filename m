@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0DF333F20
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8354333F0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234354AbhCJNaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:30:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48606 "EHLO mail.kernel.org"
+        id S232761AbhCJN3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:29:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233464AbhCJNZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AA3E64FDC;
-        Wed, 10 Mar 2021 13:25:37 +0000 (UTC)
+        id S233314AbhCJNZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B818765035;
+        Wed, 10 Mar 2021 13:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382739;
-        bh=+/ZzfQ/JXaZpSfUnsydoionsc8T6OlRzeKhHnXytRko=;
+        s=korg; t=1615382720;
+        bh=haZbKY+LwdlMAR+Cpno/oRDsvFKF4Y+ZR+68lTwbYBs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zeKXwE5Eoe/sQ5YedbMlosSTEflqCJbZX368KgfdDj3ycTSxU2cUd1YLVFz1DV9hg
-         leTvdLAHQ1rHdiOYfqXvSUhTIQ3ACKR8WJr0jD5V5kaQBa4IvF5Vmq0cnEZdGaqtw+
-         7RPq2LBI+g+Kh3W0Tf+da5tqAdAj2txiTIYIzuwg=
+        b=X2WBWdCah9GAVF3mnPlkVLzIBTnspYDTdascj9rUwNfXxvF9/7PNZMfNX2NCvZSv6
+         ZjOXXUkq/DJlY8CrN0sNqq0veHe5oDf9prHoHmEMaK+oF9IARkmXi0JktEJFLY+604
+         zNI6W0UGvUV22h2Wk4bzu7/B8Q2Jn8PWYd2oUO28=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 27/39] platform/x86: acer-wmi: Cleanup ACER_CAP_FOO defines
-Date:   Wed, 10 Mar 2021 14:24:35 +0100
-Message-Id: <20210310132320.567388160@linuxfoundation.org>
+        stable@vger.kernel.org, Pascal Terjan <pterjan@google.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 24/24] nvme-pci: add quirks for Lexar 256GB SSD
+Date:   Wed, 10 Mar 2021 14:24:36 +0100
+Message-Id: <20210310132321.289988326@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
-References: <20210310132319.708237392@linuxfoundation.org>
+In-Reply-To: <20210310132320.550932445@linuxfoundation.org>
+References: <20210310132320.550932445@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,60 +41,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Pascal Terjan <pterjan@google.com>
 
-[ Upstream commit 7c936d8d26afbc74deac0651d613dead2f76e81c ]
+[ Upstream commit 6e6a6828c517fb6819479bf5187df5f39084eb9e ]
 
-Cleanup the ACER_CAP_FOO defines:
--Switch to using BIT() macro.
--The ACER_CAP_RFBTN flag is set, but it is never checked anywhere, drop it.
--Drop the unused ACER_CAP_ANY define.
+Add the NVME_QUIRK_NO_NS_DESC_LIST and NVME_QUIRK_IGNORE_DEV_SUBNQN
+quirks for this buggy device.
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20201019185628.264473-2-hdegoede@redhat.com
+Reported and tested in https://bugs.mageia.org/show_bug.cgi?id=28417
+
+Signed-off-by: Pascal Terjan <pterjan@google.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/acer-wmi.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ drivers/nvme/host/pci.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index 92400abe3552..8d06454f5915 100644
---- a/drivers/platform/x86/acer-wmi.c
-+++ b/drivers/platform/x86/acer-wmi.c
-@@ -219,14 +219,12 @@ struct hotkey_function_type_aa {
- /*
-  * Interface capability flags
-  */
--#define ACER_CAP_MAILLED		(1<<0)
--#define ACER_CAP_WIRELESS		(1<<1)
--#define ACER_CAP_BLUETOOTH		(1<<2)
--#define ACER_CAP_BRIGHTNESS		(1<<3)
--#define ACER_CAP_THREEG			(1<<4)
--#define ACER_CAP_ACCEL			(1<<5)
--#define ACER_CAP_RFBTN			(1<<6)
--#define ACER_CAP_ANY			(0xFFFFFFFF)
-+#define ACER_CAP_MAILLED		BIT(0)
-+#define ACER_CAP_WIRELESS		BIT(1)
-+#define ACER_CAP_BLUETOOTH		BIT(2)
-+#define ACER_CAP_BRIGHTNESS		BIT(3)
-+#define ACER_CAP_THREEG			BIT(4)
-+#define ACER_CAP_ACCEL			BIT(5)
- 
- /*
-  * Interface type flags
-@@ -1266,10 +1264,8 @@ static void __init type_aa_dmi_decode(const struct dmi_header *header, void *d)
- 		interface->capability |= ACER_CAP_THREEG;
- 	if (type_aa->commun_func_bitmap & ACER_WMID3_GDS_BLUETOOTH)
- 		interface->capability |= ACER_CAP_BLUETOOTH;
--	if (type_aa->commun_func_bitmap & ACER_WMID3_GDS_RFBTN) {
--		interface->capability |= ACER_CAP_RFBTN;
-+	if (type_aa->commun_func_bitmap & ACER_WMID3_GDS_RFBTN)
- 		commun_func_bitmap &= ~ACER_WMID3_GDS_RFBTN;
--	}
- 
- 	commun_fn_key_number = type_aa->commun_fn_key_number;
- }
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 197a5cd253c3..fc18738dcf8f 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3179,6 +3179,9 @@ static const struct pci_device_id nvme_id_table[] = {
+ 				NVME_QUIRK_IGNORE_DEV_SUBNQN, },
+ 	{ PCI_DEVICE(0x1987, 0x5016),	/* Phison E16 */
+ 		.driver_data = NVME_QUIRK_IGNORE_DEV_SUBNQN, },
++	{ PCI_DEVICE(0x1b4b, 0x1092),	/* Lexar 256 GB SSD */
++		.driver_data = NVME_QUIRK_NO_NS_DESC_LIST |
++				NVME_QUIRK_IGNORE_DEV_SUBNQN, },
+ 	{ PCI_DEVICE(0x1d1d, 0x1f1f),	/* LighNVM qemu device */
+ 		.driver_data = NVME_QUIRK_LIGHTNVM, },
+ 	{ PCI_DEVICE(0x1d1d, 0x2807),	/* CNEX WL */
 -- 
 2.30.1
 
