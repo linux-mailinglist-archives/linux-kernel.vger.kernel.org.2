@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F9B333F42
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A304333EF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234419AbhCJNba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:31:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49570 "EHLO mail.kernel.org"
+        id S233997AbhCJN2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:28:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233584AbhCJNZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44E1B650BC;
-        Wed, 10 Mar 2021 13:25:54 +0000 (UTC)
+        id S233269AbhCJNZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E02E4650AF;
+        Wed, 10 Mar 2021 13:25:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382755;
-        bh=QuIE/8gat3DlUzFnfClcOJOyVzQPnUi+MNVK+O0sf/8=;
+        s=korg; t=1615382714;
+        bh=90KuyW1K61YqK2yYp/VkaKmdnMmrW3b+Qz3/oA9/1FY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sNi33VRD33RrzZENcJU85SEijlJLdQbqBCezLri93YcRMsCjzU92yF6718oP0lvKL
-         iu8eeA2rzcwIWkgeuhVXj/wi/Y9/kBxkl2FAfOpBn2AxydI0izrSh77II7JNH3tIuV
-         flxH54jaySRCnA2AGlrFAHCkSqfqvxr4oVqz2ctc=
+        b=ilMTkIJRpnDqXd/8BooqR3pPJ3a7oIyCJqwY+0J7GA6n7PzRK10GjLN30qErWwXC1
+         w3VdgR+3YxrjRXPgWudLnouEjjuoByW9wl/c+q0ZxqKaDhEsFhyeTogPNkUhpGPezr
+         mWLl21z1rgaeIbx2YsmFyy/4uDSZT3A02vkdJShs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        John Smith <LK7S2ED64JHGLKj75shg9klejHWG49h5hk@protonmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 36/39] PCI: Add function 1 DMA alias quirk for Marvell 9215 SATA controller
-Date:   Wed, 10 Mar 2021 14:24:44 +0100
-Message-Id: <20210310132320.838379187@linuxfoundation.org>
+        stable@vger.kernel.org, Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.14 08/20] dm table: fix DAX iterate_devices based device capability checks
+Date:   Wed, 10 Mar 2021 14:24:45 +0100
+Message-Id: <20210310132320.788435114@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
-References: <20210310132319.708237392@linuxfoundation.org>
+In-Reply-To: <20210310132320.512307035@linuxfoundation.org>
+References: <20210310132320.512307035@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +41,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: Jeffle Xu <jefflexu@linux.alibaba.com>
 
-[ Upstream commit 059983790a4c963d92943e55a61fca55be427d55 ]
+commit 5b0fab508992c2e120971da658ce80027acbc405 upstream.
 
-Add function 1 DMA alias quirk for Marvell 88SS9215 PCIe SSD Controller.
+Fix dm_table_supports_dax() and invert logic of both
+iterate_devices_callout_fn so that all devices' DAX capabilities are
+properly checked.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=42679#c135
-Link: https://lore.kernel.org/r/20201110220516.697934-1-helgaas@kernel.org
-Reported-by: John Smith <LK7S2ED64JHGLKj75shg9klejHWG49h5hk@protonmail.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 545ed20e6df6 ("dm: add infrastructure for DAX support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+[jeffle: no dax synchronous]
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/quirks.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/md/dm-table.c |   25 ++++---------------------
+ 1 file changed, 4 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index af2149632102..70f05595da60 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3961,6 +3961,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9183,
- /* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c46 */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x91a0,
- 			 quirk_dma_func1_alias);
-+/* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c135 */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9215,
-+			 quirk_dma_func1_alias);
- /* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c127 */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9220,
- 			 quirk_dma_func1_alias);
--- 
-2.30.1
-
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -889,10 +889,10 @@ void dm_table_set_type(struct dm_table *
+ }
+ EXPORT_SYMBOL_GPL(dm_table_set_type);
+ 
+-static int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
++static int device_not_dax_capable(struct dm_target *ti, struct dm_dev *dev,
+ 			       sector_t start, sector_t len, void *data)
+ {
+-	return bdev_dax_supported(dev->bdev, PAGE_SIZE);
++	return !bdev_dax_supported(dev->bdev, PAGE_SIZE);
+ }
+ 
+ static bool dm_table_supports_dax(struct dm_table *t)
+@@ -908,7 +908,7 @@ static bool dm_table_supports_dax(struct
+ 			return false;
+ 
+ 		if (!ti->type->iterate_devices ||
+-		    !ti->type->iterate_devices(ti, device_supports_dax, NULL))
++		    ti->type->iterate_devices(ti, device_not_dax_capable, NULL))
+ 			return false;
+ 	}
+ 
+@@ -1690,23 +1690,6 @@ static int device_dax_write_cache_enable
+ 	return false;
+ }
+ 
+-static int dm_table_supports_dax_write_cache(struct dm_table *t)
+-{
+-	struct dm_target *ti;
+-	unsigned i;
+-
+-	for (i = 0; i < dm_table_get_num_targets(t); i++) {
+-		ti = dm_table_get_target(t, i);
+-
+-		if (ti->type->iterate_devices &&
+-		    ti->type->iterate_devices(ti,
+-				device_dax_write_cache_enabled, NULL))
+-			return true;
+-	}
+-
+-	return false;
+-}
+-
+ static int device_is_rotational(struct dm_target *ti, struct dm_dev *dev,
+ 				sector_t start, sector_t len, void *data)
+ {
+@@ -1854,7 +1837,7 @@ void dm_table_set_restrictions(struct dm
+ 	else
+ 		queue_flag_clear_unlocked(QUEUE_FLAG_DAX, q);
+ 
+-	if (dm_table_supports_dax_write_cache(t))
++	if (dm_table_any_dev_attr(t, device_dax_write_cache_enabled))
+ 		dax_write_cache(t->md->dax_dev, true);
+ 
+ 	/* Ensure that all underlying devices are non-rotational. */
 
 
