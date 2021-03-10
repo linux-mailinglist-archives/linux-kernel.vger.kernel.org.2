@@ -2,101 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D234D3348AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:11:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B463348AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhCJUK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:10:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
+        id S231373AbhCJUMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:12:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbhCJUKg (ORCPT
+        with ESMTP id S229602AbhCJUMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:10:36 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F03BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:10:36 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id p7so29908567eju.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:10:36 -0800 (PST)
+        Wed, 10 Mar 2021 15:12:13 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFFFC061574;
+        Wed, 10 Mar 2021 12:12:13 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id p186so19236794ybg.2;
+        Wed, 10 Mar 2021 12:12:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hTbCJHtwtuolz+tOq3o62RiWHGJjrBuIZnsgWAGcF8A=;
-        b=nmOdArVArmZulQ2idWnG/l9dcCTGNPeLoj9kZ/aLB6RP2cQNRQNqB4a15QyoVNIh9Q
-         4TXDFHXkhf6M8TzzcS49E8KBFVS9FSxGg+ESwUaYHGXNHMqxmH9jMdUtZsLdO2ztLQ08
-         yHgDEeJLmJpAfBq9Pih0yzBvCOvOH/H6woTNFmCxaaeLj89gLi30bJrEwAYeFJNXUuc1
-         SzpCar8Dpd+nXETu+rvkJd8FJlrJQL8QB70LEx8jXBckWOTgVXt/mtZt8H/m3tKyZ6mV
-         xYjfyP9Vxl/qDIwvyn6axBigNozmleVkVSAgyf2cGHkx2jJsavW0VXeoov3A8adBoF32
-         2qGg==
+        bh=pihHqUGkeLP/6oZR4Iyg7AQM5wagbDJR64aCR265tK4=;
+        b=KPU5zMjNcUzrPM1Na1tezMBfiEvMjdNMl/+9I3JdCcsvrV+Fadi5A7PhA8FRoD8X6g
+         FXTZWPSyMegJCbujz5a/WFwxfpWjy/YcvlYNnkki6t1DUZ4CeFkGJVG/lub0NXTioQIy
+         TraAyv5plc9uJWKN10JYKE6H+5xnDTghwpIIBh9+/FEESAMC/zoPArNN0EH4hGEXZdgP
+         //QmutPyXnBY+98mUikIlrM3ve6ofl97byjoRLeyBqX9ACsni6lG9mF230n/0ZJwqgxM
+         v9YQTMUoXJAz72fRE1rmkJ5sbdLdPP6drlLMtNSY/MJ81VJTFXzI2zzYlHrB83HbnNmy
+         ez4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hTbCJHtwtuolz+tOq3o62RiWHGJjrBuIZnsgWAGcF8A=;
-        b=SZZZkNOCbZJP/JDu7jBdfb3Mg5cQNt0ak4Qqc24TAwy7jmHM+EkZUljHZxcwjITxkq
-         aJa6lwIqiTlrppPp2GfnB8BeK6TYZRUuXgLcqglLeiSWI2w8+tSQmJmD0TZ8NTklJfcF
-         haddn7bFY+DU/TNQE31mrHnc81ORQDcRX3faFbjpwd9QtkL3fMg4hUiOIwfF385TuyHJ
-         OAsdyFvCOvgrdXO8mqgXMPimMjtydAUMynXNYXgCGiS539s6nmujmK7VieDeZaLq39Ft
-         SJt2eGt3xM0Q9POWzbtaGo/MhkOUXwbAptEMeww3/fNy9z8EU5dm8axcRXlBOFo774Hq
-         sszQ==
-X-Gm-Message-State: AOAM533FbuqJfK3jNBSsUUgQ41Kp/6YaB6XpKfUsjbK/yRKoCSLt7cZZ
-        m4XSX9yG8fuJNmwljgJEA84GeyywwRob1r67Tn4SCg==
-X-Google-Smtp-Source: ABdhPJyNJJUC5nAbkdRGmuN4zGKXMP/Hv9SfaNPgYNPLCxBPN/K1OnZi3Txh2La3o7pFxsPgj8GyP8wOeRi0Y2gXFcA=
-X-Received: by 2002:a17:906:1bf2:: with SMTP id t18mr166546ejg.418.1615407035090;
- Wed, 10 Mar 2021 12:10:35 -0800 (PST)
+        bh=pihHqUGkeLP/6oZR4Iyg7AQM5wagbDJR64aCR265tK4=;
+        b=sAVMEJ9YrAeUg4K4WhLm3hlBkHcndVjRwTDe+nskuMmgiapOXBt0zgQLO26ckuH7jL
+         K7yispDmR1YAbzTSi01TlrUYPdn1ovPFFuDArO38XVwJrYOdG0lxIB3W/I5D9ynE0ojj
+         JTF7JvlZB0D0cgMVTFUefBET9JgvrsTteC+uQSJAS1bKNb0xwbGkd11Bv18betOyEIby
+         rDpzRtjXMSk4j1W1nHJcPNw0TW0RwKLh7WOmRV0FXWB0q4S3NuqVgpheG60WWMOLk4oT
+         +YB237Za3rPdKxqaZsbBzJP0FP9gFVlNAhjrqtXnAegzLfgN2ZEHgdVzqKHPO/LHxO2s
+         Njtw==
+X-Gm-Message-State: AOAM532Z6hQKoZoUmITrFbVMbL9tGidpYJhAO8n1beYqUHf9BgCi83VU
+        sLS3lHjzn+HXVDt1NWpjDcNjZ0+lYh+Qi2dgAVNW8XY/EgA=
+X-Google-Smtp-Source: ABdhPJxs6xZj6BeYVgtxyqUpJ2X1/rrLxizB3p0bFBC99+JiaScB1GnFkh5QmymRDZ0Hda/m4nIOnH+uYQ17tLgV1KI=
+X-Received: by 2002:a25:cc13:: with SMTP id l19mr6571615ybf.260.1615407132740;
+ Wed, 10 Mar 2021 12:12:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20210127225641.1342-1-mike.ximing.chen@intel.com>
- <20210127225641.1342-2-mike.ximing.chen@intel.com> <YCKP5ZUL1/wMzmf4@kroah.com>
- <CAPcyv4hC2dJGAXbG2ogO=2THuDUHjgYekkNy4K_zwEmQcXLcjA@mail.gmail.com>
- <BYAPR11MB3095C54BA878D8A5502CA891D9939@BYAPR11MB3095.namprd11.prod.outlook.com>
- <YEaFbyUM0Fu763vm@kroah.com> <BYAPR11MB3095534A3B62757F5AD63063D9929@BYAPR11MB3095.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB3095534A3B62757F5AD63063D9929@BYAPR11MB3095.namprd11.prod.outlook.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 10 Mar 2021 12:10:23 -0800
-Message-ID: <CAPcyv4jHV1fF+P3H6qiK3JGRZ1k+=QSymt1ZFg1RN4wAcEoUqg@mail.gmail.com>
-Subject: Re: [PATCH v10 01/20] dlb: add skeleton for DLB driver
-To:     "Chen, Mike Ximing" <mike.ximing.chen@intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Laatz, Kevin" <kevin.laatz@intel.com>,
-        "maximmi@mellanox.com" <maximmi@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20210310015455.1095207-1-revest@chromium.org> <f5cfb3d0-fab4-ee07-70de-ad5589db1244@fb.com>
+ <eb0a8485-9624-1727-6913-e4520c9d8c04@fb.com> <CABRcYmK8m21sb8dHbr1wLT_oTCBpvr2Zg-8KHwKuJ2Ak0iTZ_A@mail.gmail.com>
+ <454d2e4b-f842-624c-a89e-441830c98e99@fb.com>
+In-Reply-To: <454d2e4b-f842-624c-a89e-441830c98e99@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Mar 2021 12:12:01 -0800
+Message-ID: <CAEf4BzY8kRBM578iV+xMZZxT7gKazMFGp5CZjvc1ueyd9vf3KA@mail.gmail.com>
+Subject: Re: [BUG] One-liner array initialization with two pointers in BPF
+ results in NULLs
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 8:53 PM Chen, Mike Ximing
-<mike.ximing.chen@intel.com> wrote:
+On Wed, Mar 10, 2021 at 8:59 AM Yonghong Song <yhs@fb.com> wrote:
 >
 >
-> > -----Original Message-----
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > On Mon, Mar 08, 2021 at 08:00:00PM +0000, Chen, Mike Ximing wrote:
-> > >
-> > > Hi Greg,
-> > >
-> > > While waiting for the feedback from the networking maintainers, I am
-> > > wondering if you have any other comments/suggestions that I  should address
-> > > in parallel.
+>
+> On 3/10/21 3:48 AM, Florent Revest wrote:
+> > On Wed, Mar 10, 2021 at 6:16 AM Yonghong Song <yhs@fb.com> wrote:
+> >> On 3/9/21 7:43 PM, Yonghong Song wrote:
+> >>> On 3/9/21 5:54 PM, Florent Revest wrote:
+> >>>> I noticed that initializing an array of pointers using this syntax:
+> >>>> __u64 array[] = { (__u64)&var1, (__u64)&var2 };
+> >>>> (which is a fairly common operation with macros such as BPF_SEQ_PRINTF)
+> >>>> always results in array[0] and array[1] being NULL.
+> >>>>
+> >>>> Interestingly, if the array is only initialized with one pointer, ex:
+> >>>> __u64 array[] = { (__u64)&var1 };
+> >>>> Then array[0] will not be NULL.
+> >>>>
+> >>>> Or if the array is initialized field by field, ex:
+> >>>> __u64 array[2];
+> >>>> array[0] = (__u64)&var1;
+> >>>> array[1] = (__u64)&var2;
+> >>>> Then array[0] and array[1] will not be NULL either.
+> >>>>
+> >>>> I'm assuming that this should have something to do with relocations
+> >>>> and might be a bug in clang or in libbpf but because I don't know much
+> >>>> about these, I thought that reporting could be a good first step. :)
+> >>>
+> >>> Thanks for reporting. What you guess is correct, this is due to
+> >>> relocations :-(
+> >>>
+> >>> The compiler notoriously tend to put complex initial values into
+> >>> rodata section. For example, for
+> >>>      __u64 array[] = { (__u64)&var1, (__u64)&var2 };
+> >>> the compiler will put
+> >>>      { (__u64)&var1, (__u64)&var2 }
+> >>> into rodata section.
+> >>>
+> >>> But &var1 and &var2 themselves need relocation since they are
+> >>> address of static variables which will sit inside .data section.
+> >>>
+> >>> So in the elf file, you will see the following relocations:
+> >>>
+> >>> RELOCATION RECORDS FOR [.rodata]:
+> >>> OFFSET           TYPE                     VALUE
+> >>> 0000000000000018 R_BPF_64_64              .data
+> >>> 0000000000000020 R_BPF_64_64              .data
 > >
-> > It's in my "to-review" queue, which is huge at the moment.  But the
-> > networking developers review will determine how this should go forward,
-> > so I'll just wait for them to get to it.
+> > Right :) Thank you for the explanations Yonghong!
 > >
+> >>> Currently, libbpf does not handle relocation inside .rodata
+> >>> section, so they content remains 0.
+> >
+> > Just for my own edification, why is .rodata relocation not yet handled
+> > in libbpf ? Is it because of a read-only mapping that makes it more
+> > difficult ?
 >
-> I see the status of the submission (to netdev)  is now marked as "Not Applicable"
-> at netdev's patchwork site
-> https://patchwork.kernel.org/project/netdevbpf/list/?series=&submitter=197673&state=*&q=&archive=both&delegate=
+> We don't have this use case before. In general, people do not put
+> string pointers in init code in the declaration. I think
+> bpf_seq_printf() is special about this and hence triggering
+> the issue.
 >
-> Looks like that the patch set is considered as not being networking related. (?)
+> To support relocation of rodata section, kernel needs to be
+> involved and this is actually more complicated as
 
-That's just to clean up their queue of things that need to be pulled
-into the net tree. This driver is being requested to just be acked-by
-netdev before Greg considers it for drivers/misc/.
+Exactly. It would be trivial for libbpf to support it, but it needs to
+resolve to the actual in-kernel address of a map (plus offset), which
+libbpf has no way of knowing.
+
+> the relocation is against .data section. Two issues the kernel
+> needs to deal with:
+>     - .data section will be another map in kernel, so i.e.,
+>       relocation of .rodata map value against another map.
+>     - .data section may be modified, some protection might
+>       be needed to prevent this. We may ignore this requirement
+>       since user space may have similar issue.
+>
+> This is a corner case, if we can workaround in the libbpf, in
+> this particular case, bpf_tracing.h. I think it will be
+> good enough, not adding further complexity in kernel for
+> such a corner case.
+
+Is there some way to trick compiler into thinking that those values
+are not constant? Some volatile and pointers game? Or any other magic?
+
+
+>
+> >
+> >>> That is why you see the issue with pointer as NULL.
+> >>>
+> >>> With array size of 1, compiler does not bother to put it into
+> >>> rodata section.
+> >>>
+> >>> I *guess* that it works in the macro due to some kind of heuristics,
+> >>> e.g., nested blocks, etc, and llvm did not promote the array init value
+> >>> to rodata. I will double check whether llvm can complete prevent
+> >>> such transformation.
+> >>>
+> >>> Maybe in the future libbpf is able to handle relocations for
+> >>> rodata section too. But for the time being, please just consider to use
+> >>> either macro, or the explicit array assignment.
+> >>
+> >> Digging into the compiler, the compiler tries to make *const* initial
+> >> value into rodata section if the initial value size > 64, so in
+> >> this case, macro does not work either. I think this is how you
+> >> discovered the issue.
+> >
+> > Indeed, I was using a macro similar to BPF_SEQ_PRINTF and this is how
+> > I found the bug.
+> >
+> >> The llvm does not provide target hooks to
+> >> influence this transformation.
+> >
+> > Oh, that is unfortunate :) Thanks for looking into it! I feel that the
+> > real fix would be in libbpf anyway and the rest is just workarounds.
+>
+> The real fix will need libbpf and kernel.
+>
+> >
+> >> So, there are two workarounds,
+> >> (1).    __u64 param_working[2];
+> >>           param_working[0] = (__u64)str1;
+> >>           param_working[1] = (__u64)str2;
+> >> (2). BPF_SEQ_PRINTF(seq, "%s ", str1);
+> >>        BPF_SEQ_PRINTF(seq, "%s", str2);
+> >
+> > (2) is a bit impractical for my actual usecase. I am implementing a
+> > bpf_snprintf helper (patch series Coming Soon TM) and I wanted to keep
+> > the selftest short with a few BPF_SNPRINTF() calls that exercise most
+> > format specifiers.
+> >
+> >> In practice, if you have at least one non-const format argument,
+> >> you should be fine. But if all format arguments are constant, then
+> >> none of them should be strings.
+> >
+> > Just for context, this does not only happen for strings but also for
+> > all sorts of pointers, for example, when I try to do address lookup of
+> > global __ksym variables, which is important for my selftest.
+>
+> Currently, in bpf_seq_printf(), we do memory copy for string
+> and certain ipv4/ipv6 addresses. ipv4 is not an issue as the compiler
+> less likely put it into rodata. for ipv6,
+> if it is a constant, we can just directly put it into the format
+> string. For many other sort of pointers, we just print pointer
+> values, I don't see a value to print pointer value for something like
+>      static const param[] = { &str1, &str2 };
+>      bpf_seq_printf(seq, "%px\n", param[0]);
+>
+> The global __ksym variable cannot be pointing to rodata at compile time,
+> so it should be fine.
+>
+> >
+> >> Maybe we could change marco
+> >>      unsigned long long ___param[] = { args };
+> >> to declare an array explicitly and then have a loop to
+> >> assign each array element?
+> >
+> > I think this would be a good workaround for now, indeed. :) I'll look
+> > into it today and send it as part of my bpf_snprintf series.
+>
+> If we can make it work, that will be great! thanks for working on this.
+>
+> >
+> > Thanks!
+> >
