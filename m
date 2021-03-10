@@ -2,185 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E2F333D4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A52D333D5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232638AbhCJNIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:08:31 -0500
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:36401 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhCJNIN (ORCPT
+        id S232777AbhCJNJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:09:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232710AbhCJNIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:08:13 -0500
-Received: by mail-lf1-f43.google.com with SMTP id f1so33355024lfu.3;
-        Wed, 10 Mar 2021 05:08:12 -0800 (PST)
+        Wed, 10 Mar 2021 08:08:47 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27188C061760;
+        Wed, 10 Mar 2021 05:08:47 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id 133so17764055ybd.5;
+        Wed, 10 Mar 2021 05:08:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AuIkG5mFalgNcUDwhfpUKnF07Cv7k5E48oJPkOG41VA=;
+        b=VYtNRqZ6X1ixEPGetG5UzE4NmdWJ+xCmwr86X9AhSM1nJWwpRZvdDqhxK6DX3MfIog
+         6ABMb4FuUquBo45lj1qEz/vnIo58z6QhfAuNU7DAmPf0a6Pw8WHHCCEl5Wwi12+rViVz
+         CCGErfTOIbrWVMk+4WEK6opS3ZUwC8oCYhtxR0Jn4N1mZBreYUma4aoPPTdCdKssRz0d
+         AT2eGOwqQCr6ssnwoCUUH/voPIDY0fTBo8LZ6LCcF1iazklGSTlqov9Opf8iHRsXNJeR
+         esdPHWUlidbCxaIOYcLio7mgb3coJ3tJpxCtKsb1R3emOZsm90I2S8EQxS3tH0L4NcKg
+         oFxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KrANCoS0fCxeFOR+CSK04kMbdL9AaU/jYXkEl2MWB7Q=;
-        b=Irdg9YtWxPOZpUTk8v6aI6CoHBawtE+BsG34Oh2/OWzlmrDTTbfMejFhHmxIx/1Sz+
-         xr2PJz/XwXian+RZZQtjPmZHXH4hQZzaIBBPkEEeXwE5esbi6dQK2SNi5sNRIPnEnP+b
-         44BXpNRjnWQHixTEE/uI7hvmelD9/i1MDltYkzUC+TzzOGfb6nUQir6lum/yghinsRy/
-         YAms/7k7sebtJNlURgSSUbljdiMnsjzNkJ9dzTYq6fXi2dvqwWkkCcg2ifVYhFQtzdvw
-         PD9m1X/GF6gjW88JukA0Br/0VWdbDc1LTB4oIFaIDXwNxazRpFX66AdkDEvcD/STJCIV
-         zwyA==
-X-Gm-Message-State: AOAM532zrA8wy+qgzsQZCSFSvBzhBtf9TTwVhZyYE3dE/DwvLOKTzBfg
-        asMBH74f7mSWrVkDFzW2yJg=
-X-Google-Smtp-Source: ABdhPJw94cPVW0Dg62i0SqOPGampwNMKErOs/XS2YPQK+DDeShi/3hC5lBmzU2hicdjZJAXiuz07+A==
-X-Received: by 2002:a19:6557:: with SMTP id c23mr2067164lfj.422.1615381691418;
-        Wed, 10 Mar 2021 05:08:11 -0800 (PST)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id k13sm2851156lfg.192.2021.03.10.05.08.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 05:08:10 -0800 (PST)
-Date:   Wed, 10 Mar 2021 15:08:04 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org
-Subject: [RFC PATCH v2 1/7] dt_bindings: Add protection limit properties
-Message-ID: <63a0101f2e9daf9c0f10f2b97a8468b108ce7d0b.1615367099.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1615367099.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AuIkG5mFalgNcUDwhfpUKnF07Cv7k5E48oJPkOG41VA=;
+        b=bCvX7Fa/29JjJAA16n6Xmx75qLBoSTrou5yBZ2qQCMdlzErcC4AIMJRIRDnWjoJrPe
+         mNgnQAbL0Q3Xgcn3PyGYXLhGi+SMQTGno1mwtwzRxXj9uTteBmlD2TOhsQg/bvFatYGo
+         Kcq8B39gbOxM2apaLQwuc2f6QAbUs7n3CmeapiCNkEWzsbOiA4FAujgnGtZixi6do8Og
+         yNUsXDNqEeFyrljTLvPDmf7Xhr72HYT1hsImAaLvefvMYFpNCG6kRt3g91CHAtdxQPFP
+         gVDvkw4Qo6CR8JniFtGeZrreYClXCjSHfNHsejnxxSnCxS0umAlg9JDZUQ7//RHHf9WZ
+         OlEA==
+X-Gm-Message-State: AOAM533Q5DnL7j3iJp+Wn37we96O9xRNSYX11D5wgMkPiJ2gNtMgDCFq
+        y1MzQDPQtHfYjTjB27uVluNFnU3+3rEtHMurH8s=
+X-Google-Smtp-Source: ABdhPJwjZRLi35tc7kXY5jKQJUb/vWLh3EhoN40+47KDwF4/i1niwKOwlVJhgaZTIC9yWWuyRkKjp32svOyDCF/DZvo=
+X-Received: by 2002:a25:d54:: with SMTP id 81mr3736951ybn.401.1615381726302;
+ Wed, 10 Mar 2021 05:08:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1615367099.git.matti.vaittinen@fi.rohmeurope.com>
+References: <20210310122014.28353-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210310122014.28353-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <YEi+FBRbXBJch1DM@pendragon.ideasonboard.com> <CA+V-a8vPm7EM=MoxRt1nXnvpVVL5vQvSupd79GRNaGULpxS-kQ@mail.gmail.com>
+ <YEjBc0rdAoaw+8lo@pendragon.ideasonboard.com>
+In-Reply-To: <YEjBc0rdAoaw+8lo@pendragon.ideasonboard.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 10 Mar 2021 13:08:20 +0000
+Message-ID: <CA+V-a8sSmQkXDf5CZZWKVipWWdKpE55DLLbOgktR-4VmQqmkWQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] media: i2c: imx219: Serialize during stream start/stop
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support specifying protection/error/warning limits for regulator
-over current, over temperature and over/under voltage.
+Hi Laurent,
 
-Most of the PMICs support only "protection" feature but few
-setups do also support error/warning level indications.
+On Wed, Mar 10, 2021 at 12:54 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Prabhakar,
+>
+> On Wed, Mar 10, 2021 at 12:46:39PM +0000, Lad, Prabhakar wrote:
+> > On Wed, Mar 10, 2021 at 12:40 PM Laurent Pinchart wrote:
+> > > On Wed, Mar 10, 2021 at 12:20:13PM +0000, Lad Prabhakar wrote:
+> > > > Serialize during stream start/stop in suspend/resume callbacks.
+> > >
+> > > Could you please explain why this is needed ?
+> > >
+> > The streaming variable in this driver has serialized access, but this
+> > wasn't taken care during suspend/resume callbacks.
+>
+> But nothing that touches the streaming variable can run concurrently to
+> suspend/resume, isn't it ?
+>
+You are right, we could drop this patch.
 
-On many ICs most of the protection limits can't actually be set.
-But for example the ampere limit for over-current protection on ROHM
-BD9576 can be configured - or feature can be completely disabled.
+> I'm actually even quite dubious about the need to start and stop
+> streaming during resume and suspend, the driver using the subdev should
+> start/stop the whole video pipeline at suspend/resume time.
+>
+I see, do we have any documentation on how bridge/subdevs should
+behave on suspend/resume ?
 
-Provide limit setting for all protections/errors for the sake of
-the completeness and do that using own properties for all so that
-not all users would need to set all levels when only one or few are
-supported.
+I did have a quick look at the omp3isp bridge driver and it does
+start/stop on resume/suspend callbacks.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- .../bindings/regulator/regulator.yaml         | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
+Cheers,
+Prabhakar
 
-diff --git a/Documentation/devicetree/bindings/regulator/regulator.yaml b/Documentation/devicetree/bindings/regulator/regulator.yaml
-index 6d0bc9cd4040..a6ae9ecae5cc 100644
---- a/Documentation/devicetree/bindings/regulator/regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/regulator.yaml
-@@ -117,6 +117,88 @@ properties:
-     description: Enable over current protection.
-     type: boolean
- 
-+  regulator-oc-protection-microamp:
-+    description: Set over current protection limit. This is a limit where
-+      hardware performs emergency shutdown. Zero can be passed to disable
-+      protection and value '1' indicates that protection should be enabled but
-+      limit setting can be omitted.
-+
-+  regulator-oc-error-microamp:
-+    description: Set over current error limit. This is a limit where part of
-+      the hardware propably is malfunctional and damage prevention is requested.
-+      Zero can be passed to disable error detection and value '1' indicates
-+      that detection should be enabled but limit setting can be omitted.
-+
-+  regulator-oc-warn-microamp:
-+    description: Set over current warning limit. This is a limit where hardware
-+      is assumed still to be functional but approaching limit where it gets
-+      damaged. Recovery actions should be initiated. Zero can be passed to
-+      disable detection and value '1' indicates that detection should
-+      be enabled but limit setting can be omitted.
-+
-+  regulator-ov-protection-microvolt:
-+    description: Set over voltage protection limit. This is a limit where
-+      hardware performs emergency shutdown. Zero can be passed to disable
-+      protection and value '1' indicates that protection should be enabled but
-+      limit setting can be omitted. Limit is given as microvolt offset from
-+      voltage set to regulator.
-+
-+  regulator-ov-error-microvolt:
-+    description: Set over voltage error limit. This is a limit where part of
-+      the hardware propably is malfunctional and damage prevention is requested
-+      Zero can be passed to disable error detection and value '1' indicates
-+      that detection should be enabled but limit setting can be omitted. Limit
-+      is given as microvolt offset from voltage set to regulator.
-+
-+  regulator-ov-warn-microvolt:
-+    description: Set over voltage warning limit. This is a limit where hardware
-+      is assumed still to be functional but approaching limit where it gets
-+      damaged. Recovery actions should be initiated. Zero can be passed to
-+      disable detection and value '1' indicates that detection should
-+      be enabled but limit setting can be omitted. Limit is given as microvolt
-+      offset from voltage set to regulator.
-+
-+  regulator-uv-protection-microvolt:
-+    description: Set over under voltage protection limit. This is a limit where
-+      hardware performs emergency shutdown. Zero can be passed to disable
-+      protection and value '1' indicates that protection should be enabled but
-+      limit setting can be omitted. Limit is given as microvolt offset from
-+      voltage set to regulator.
-+
-+  regulator-uv-error-microvolt:
-+    description: Set under voltage error limit. This is a limit where part of
-+      the hardware propably is malfunctional and damage prevention is requested
-+      Zero can be passed to disable error detection and value '1' indicates
-+      that detection should be enabled but limit setting can be omitted. Limit
-+      is given as microvolt offset from voltage set to regulator.
-+
-+  regulator-uv-warn-microvolt:
-+    description: Set over under voltage warning limit. This is a limit where
-+      hardware is assumed still to be functional but approaching limit where
-+      it gets damaged. Recovery actions should be initiated. Zero can be passed
-+      to disable detection and value '1' indicates that detection should
-+      be enabled but limit setting can be omitted. Limit is given as microvolt
-+      offset from voltage set to regulator.
-+
-+  regulator-temp-protection-kelvin:
-+    description: Set over temperature protection limit. This is a limit where
-+      hardware performs emergency shutdown. Zero can be passed to disable
-+      protection and value '1' indicates that protection should be enabled but
-+      limit setting can be omitted.
-+
-+  regulator-temp-error-kelvin:
-+    description: Set over temperature error limit. This is a limit where part of
-+      the hardware propably is malfunctional and damage prevention is requested
-+      Zero can be passed to disable error detection and value '1' indicates
-+      that detection should be enabled but limit setting can be omitted.
-+
-+  regulator-temp-warn-kelvin:
-+    description: Set over temperature warning limit. This is a limit where
-+      hardware is assumed still to be functional but approaching limit where it
-+      gets damaged. Recovery actions should be initiated. Zero can be passed to
-+      disable detection and value '1' indicates that detection should
-+      be enabled but limit setting can be omitted.
-+
-   regulator-active-discharge:
-     description: |
-       tristate, enable/disable active discharge of regulators. The values are:
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > ---
+> > > >  drivers/media/i2c/imx219.c | 5 +++++
+> > > >  1 file changed, 5 insertions(+)
+> > > >
+> > > > diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+> > > > index f0cf1985a4dc..87c021de1460 100644
+> > > > --- a/drivers/media/i2c/imx219.c
+> > > > +++ b/drivers/media/i2c/imx219.c
+> > > > @@ -1172,8 +1172,10 @@ static int __maybe_unused imx219_suspend(struct device *dev)
+> > > >       struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> > > >       struct imx219 *imx219 = to_imx219(sd);
+> > > >
+> > > > +     mutex_lock(&imx219->mutex);
+> > > >       if (imx219->streaming)
+> > > >               imx219_stop_streaming(imx219);
+> > > > +     mutex_unlock(&imx219->mutex);
+> > > >
+> > > >       return 0;
+> > > >  }
+> > > > @@ -1184,11 +1186,13 @@ static int __maybe_unused imx219_resume(struct device *dev)
+> > > >       struct imx219 *imx219 = to_imx219(sd);
+> > > >       int ret;
+> > > >
+> > > > +     mutex_lock(&imx219->mutex);
+> > > >       if (imx219->streaming) {
+> > > >               ret = imx219_start_streaming(imx219);
+> > > >               if (ret)
+> > > >                       goto error;
+> > > >       }
+> > > > +     mutex_unlock(&imx219->mutex);
+> > > >
+> > > >       return 0;
+> > > >
+> > > > @@ -1197,6 +1201,7 @@ static int __maybe_unused imx219_resume(struct device *dev)
+> > > >       imx219->streaming = false;
+> > > >       __v4l2_ctrl_grab(imx219->vflip, false);
+> > > >       __v4l2_ctrl_grab(imx219->hflip, false);
+> > > > +     mutex_unlock(&imx219->mutex);
+> > > >
+> > > >       return ret;
+> > > >  }
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
