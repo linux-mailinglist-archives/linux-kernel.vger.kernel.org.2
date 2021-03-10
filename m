@@ -2,231 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5533348A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D234D3348AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbhCJUIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:08:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S230183AbhCJUK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbhCJUII (ORCPT
+        with ESMTP id S230512AbhCJUKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:08:08 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3153FC061574;
-        Wed, 10 Mar 2021 12:08:08 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id e7so35702754lft.2;
-        Wed, 10 Mar 2021 12:08:08 -0800 (PST)
+        Wed, 10 Mar 2021 15:10:36 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F03BC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:10:36 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id p7so29908567eju.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:10:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=T2fV48ey9SKfN9cRCXs61fWLvq9fBk+pLOsfVuCnBEI=;
-        b=fAynUN4hH19OEI2HRySYreJB/dmqj7vhrN8UDfzPyLySiHih+iEJEGqaDk+eONFV4D
-         u/oAh38bxT3+zrSo0rfQ8FNAIZQM9yPt5LL/xSNnEeXSrJ0g4wj6hSIj7J3ZkIJBr0ml
-         HAnAc6prp0MfJDLveIyf2DRD6YR52Dh6tYd6+18I1W9MwRQ6UCZ9tYD/tX5qoxD+lEIt
-         qA+Pg+uHg1JFIXkoWnhNcq1WArFu3jt9uJssnzlCShOvnj4cc4WIaH7f+HBRbN2jvqYy
-         8QvRczbTV8fKHF5Z9QRcsEBDV4VKZuvKtqumrpmgSxLOgmCDZSIG/bLQtk3LpFzk0EOe
-         B4wg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hTbCJHtwtuolz+tOq3o62RiWHGJjrBuIZnsgWAGcF8A=;
+        b=nmOdArVArmZulQ2idWnG/l9dcCTGNPeLoj9kZ/aLB6RP2cQNRQNqB4a15QyoVNIh9Q
+         4TXDFHXkhf6M8TzzcS49E8KBFVS9FSxGg+ESwUaYHGXNHMqxmH9jMdUtZsLdO2ztLQ08
+         yHgDEeJLmJpAfBq9Pih0yzBvCOvOH/H6woTNFmCxaaeLj89gLi30bJrEwAYeFJNXUuc1
+         SzpCar8Dpd+nXETu+rvkJd8FJlrJQL8QB70LEx8jXBckWOTgVXt/mtZt8H/m3tKyZ6mV
+         xYjfyP9Vxl/qDIwvyn6axBigNozmleVkVSAgyf2cGHkx2jJsavW0VXeoov3A8adBoF32
+         2qGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=T2fV48ey9SKfN9cRCXs61fWLvq9fBk+pLOsfVuCnBEI=;
-        b=RuvVLU5nsM0XV4NGDd0gvRubChoZrFQhX1pgXu8pSbRXJW9hZwO70ysY001wBfvJMY
-         awZ2FjCUvl+/a3zj+zsdYhZd6yV4uRMhCD7UEY4BojHZxYPgHic2tna1QJ7rjplUqrb/
-         FAjWl23HpdVcl5nAgq2m/kObCgmqGSVXKnKMPcCmJzQqolXFXsYZ0jCZ/6hfblQubCYc
-         1AExCP+1waIl77iwQffDQP4OIX/LftV4pR23FCMDA2kBiJbkNwhzmtT8BLTXSe+GFxjJ
-         6Q20Xqhl7OiX6ca/k66ATsxSuk4IODbzcS5sFFsvZYLKdOGhGzRJtbLZFXanXfX/ZA/t
-         XX/w==
-X-Gm-Message-State: AOAM530uDJX5SOC5Rk8UgXzETCfz1jOiob7ia15Wagw9YW00JoN+BChB
-        PkW2pYNY2OAJCS/tJMy/3NwfbDUtNj8jqQ==
-X-Google-Smtp-Source: ABdhPJzhDerlBmh0SgDdJeFSEOmY0UeSsFI3ACm8xoUyXmN/5VcPJoCwM41P03RYBGPHIsnbMHqmsw==
-X-Received: by 2002:a05:6512:3451:: with SMTP id j17mr103864lfr.188.1615406886608;
-        Wed, 10 Mar 2021 12:08:06 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id r12sm94207lfc.79.2021.03.10.12.08.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 12:08:05 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Zhang Qiang <qiang.zhang@windriver.com>
-Subject: [PATCH v2 1/1] kvfree_rcu: Release a page cache under memory pressure
-Date:   Wed, 10 Mar 2021 21:07:57 +0100
-Message-Id: <20210310200757.32331-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hTbCJHtwtuolz+tOq3o62RiWHGJjrBuIZnsgWAGcF8A=;
+        b=SZZZkNOCbZJP/JDu7jBdfb3Mg5cQNt0ak4Qqc24TAwy7jmHM+EkZUljHZxcwjITxkq
+         aJa6lwIqiTlrppPp2GfnB8BeK6TYZRUuXgLcqglLeiSWI2w8+tSQmJmD0TZ8NTklJfcF
+         haddn7bFY+DU/TNQE31mrHnc81ORQDcRX3faFbjpwd9QtkL3fMg4hUiOIwfF385TuyHJ
+         OAsdyFvCOvgrdXO8mqgXMPimMjtydAUMynXNYXgCGiS539s6nmujmK7VieDeZaLq39Ft
+         SJt2eGt3xM0Q9POWzbtaGo/MhkOUXwbAptEMeww3/fNy9z8EU5dm8axcRXlBOFo774Hq
+         sszQ==
+X-Gm-Message-State: AOAM533FbuqJfK3jNBSsUUgQ41Kp/6YaB6XpKfUsjbK/yRKoCSLt7cZZ
+        m4XSX9yG8fuJNmwljgJEA84GeyywwRob1r67Tn4SCg==
+X-Google-Smtp-Source: ABdhPJyNJJUC5nAbkdRGmuN4zGKXMP/Hv9SfaNPgYNPLCxBPN/K1OnZi3Txh2La3o7pFxsPgj8GyP8wOeRi0Y2gXFcA=
+X-Received: by 2002:a17:906:1bf2:: with SMTP id t18mr166546ejg.418.1615407035090;
+ Wed, 10 Mar 2021 12:10:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210127225641.1342-1-mike.ximing.chen@intel.com>
+ <20210127225641.1342-2-mike.ximing.chen@intel.com> <YCKP5ZUL1/wMzmf4@kroah.com>
+ <CAPcyv4hC2dJGAXbG2ogO=2THuDUHjgYekkNy4K_zwEmQcXLcjA@mail.gmail.com>
+ <BYAPR11MB3095C54BA878D8A5502CA891D9939@BYAPR11MB3095.namprd11.prod.outlook.com>
+ <YEaFbyUM0Fu763vm@kroah.com> <BYAPR11MB3095534A3B62757F5AD63063D9929@BYAPR11MB3095.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB3095534A3B62757F5AD63063D9929@BYAPR11MB3095.namprd11.prod.outlook.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 10 Mar 2021 12:10:23 -0800
+Message-ID: <CAPcyv4jHV1fF+P3H6qiK3JGRZ1k+=QSymt1ZFg1RN4wAcEoUqg@mail.gmail.com>
+Subject: Re: [PATCH v10 01/20] dlb: add skeleton for DLB driver
+To:     "Chen, Mike Ximing" <mike.ximing.chen@intel.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Laatz, Kevin" <kevin.laatz@intel.com>,
+        "maximmi@mellanox.com" <maximmi@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+On Mon, Mar 8, 2021 at 8:53 PM Chen, Mike Ximing
+<mike.ximing.chen@intel.com> wrote:
+>
+>
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > On Mon, Mar 08, 2021 at 08:00:00PM +0000, Chen, Mike Ximing wrote:
+> > >
+> > > Hi Greg,
+> > >
+> > > While waiting for the feedback from the networking maintainers, I am
+> > > wondering if you have any other comments/suggestions that I  should address
+> > > in parallel.
+> >
+> > It's in my "to-review" queue, which is huge at the moment.  But the
+> > networking developers review will determine how this should go forward,
+> > so I'll just wait for them to get to it.
+> >
+>
+> I see the status of the submission (to netdev)  is now marked as "Not Applicable"
+> at netdev's patchwork site
+> https://patchwork.kernel.org/project/netdevbpf/list/?series=&submitter=197673&state=*&q=&archive=both&delegate=
+>
+> Looks like that the patch set is considered as not being networking related. (?)
 
-Add a drain_page_cache() function to drain a per-cpu page cache.
-The reason behind of it is a system can run into a low memory
-condition, in that case a page shrinker can ask for its users
-to free their caches in order to get extra memory available for
-other needs in a system.
-
-When a system hits such condition, a page cache is drained for
-all CPUs in a system. Apart of that a page cache work is delayed
-with 5 seconds interval until a memory pressure disappears.
-
-Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- kernel/rcu/tree.c | 59 ++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 51 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2c9cf4df942c..46b8a98ca077 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3163,7 +3163,7 @@ struct kfree_rcu_cpu {
- 	bool initialized;
- 	int count;
- 
--	struct work_struct page_cache_work;
-+	struct delayed_work page_cache_work;
- 	atomic_t work_in_progress;
- 	struct hrtimer hrtimer;
- 
-@@ -3175,6 +3175,17 @@ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
- 	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
- };
- 
-+// A page shrinker can ask for freeing extra pages
-+// to get them available for other needs in a system.
-+// Usually it happens under low memory condition, in
-+// that case hold on a bit with page cache filling.
-+static unsigned long backoff_page_cache_fill;
-+
-+// 5 seconds delay. That is long enough to reduce
-+// an interfering and racing with a shrinker where
-+// the cache is drained.
-+#define PAGE_CACHE_FILL_DELAY (5 * HZ)
-+
- static __always_inline void
- debug_rcu_bhead_unqueue(struct kvfree_rcu_bulk_data *bhead)
- {
-@@ -3229,6 +3240,26 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
- 
- }
- 
-+static int
-+drain_page_cache(struct kfree_rcu_cpu *krcp)
-+{
-+	unsigned long flags;
-+	struct llist_node *page_list, *pos, *n;
-+	int freed = 0;
-+
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
-+	page_list = llist_del_all(&krcp->bkvcache);
-+	krcp->nr_bkv_objs = 0;
-+	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+
-+	llist_for_each_safe(pos, n, page_list) {
-+		free_page((unsigned long)pos);
-+		freed++;
-+	}
-+
-+	return freed;
-+}
-+
- /*
-  * This function is invoked in workqueue context after a grace period.
-  * It frees all the objects queued on ->bhead_free or ->head_free.
-@@ -3419,7 +3450,7 @@ schedule_page_work_fn(struct hrtimer *t)
- 	struct kfree_rcu_cpu *krcp =
- 		container_of(t, struct kfree_rcu_cpu, hrtimer);
- 
--	queue_work(system_highpri_wq, &krcp->page_cache_work);
-+	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
- 	return HRTIMER_NORESTART;
- }
- 
-@@ -3428,7 +3459,7 @@ static void fill_page_cache_func(struct work_struct *work)
- 	struct kvfree_rcu_bulk_data *bnode;
- 	struct kfree_rcu_cpu *krcp =
- 		container_of(work, struct kfree_rcu_cpu,
--			page_cache_work);
-+			page_cache_work.work);
- 	unsigned long flags;
- 	bool pushed;
- 	int i;
-@@ -3457,10 +3488,14 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
- {
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
- 			!atomic_xchg(&krcp->work_in_progress, 1)) {
--		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
--			HRTIMER_MODE_REL);
--		krcp->hrtimer.function = schedule_page_work_fn;
--		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
-+		if (xchg(&backoff_page_cache_fill, 0UL)) {
-+			queue_delayed_work(system_wq,
-+				&krcp->page_cache_work, PAGE_CACHE_FILL_DELAY);
-+		} else {
-+			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+			krcp->hrtimer.function = schedule_page_work_fn;
-+			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
-+		}
- 	}
- }
- 
-@@ -3612,14 +3647,20 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
- {
- 	int cpu;
- 	unsigned long count = 0;
-+	unsigned long flags;
- 
- 	/* Snapshot count of all CPUs */
- 	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count += READ_ONCE(krcp->count);
-+
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
-+		count += krcp->nr_bkv_objs;
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- 
-+	WRITE_ONCE(backoff_page_cache_fill, 1);
- 	return count;
- }
- 
-@@ -3634,6 +3675,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count = krcp->count;
-+		count += drain_page_cache(krcp);
-+
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (krcp->monitor_todo)
- 			kfree_rcu_drain_unlock(krcp, flags);
-@@ -4608,7 +4651,7 @@ static void __init kfree_rcu_batch_init(void)
- 		}
- 
- 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
--		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
-+		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
- 		krcp->initialized = true;
- 	}
- 	if (register_shrinker(&kfree_rcu_shrinker))
--- 
-2.20.1
-
+That's just to clean up their queue of things that need to be pulled
+into the net tree. This driver is being requested to just be acked-by
+netdev before Greg considers it for drivers/misc/.
