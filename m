@@ -2,137 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1E23342C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED18C3342CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbhCJQOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:14:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        id S232356AbhCJQOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:14:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhCJQOK (ORCPT
+        with ESMTP id S231295AbhCJQOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:14:10 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AB5C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:14:10 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id 18so12375613pfo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:14:10 -0800 (PST)
+        Wed, 10 Mar 2021 11:14:35 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88FFFC061760;
+        Wed, 10 Mar 2021 08:14:35 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id o38so11698590pgm.9;
+        Wed, 10 Mar 2021 08:14:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mP0Pmg1TsfeNTMXh8LZDgwg/s3Yyn46RRnWB2NCR4B4=;
-        b=dwHC5V2O6WUyIwpcrr1eBVQZ05mOINWAm4ay/OrSBF9oWwiO4nNg7LpAsGK69NAUK3
-         bNcLOaSngVLoMQ5vhfM84B0ZZkfnu7pTNq6vNyTSRWWrwYu5Ny2vlk/MKhv8oB3ZGgGM
-         4uKQRemPyvUbLwl1IOBOIl/dT1qEXu0///Oo1XIYujXsOm0NG5oy19WVVfwXCT/f5Gil
-         LJk9+jnW4njBveo4sg9GmmwHb+5ypPmvhwfWXQnlIlDBOiqNMq645jJdXAHx/6Gf0Vhn
-         6VuO3uRTlw34/R7I8IvcU9XA0Khae4zskZId9RyT5rgyueA/uXd4Oz/KtlNNB8uecrpe
-         dstg==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=txDbp7Wx2vX6YjkhEkbwKwYgP5c1xPLVUUyDZKo4vU0=;
+        b=RqZkiJOX3AzUZI0tbgk2ZL2AhsevK4JuBLj9cn+6ODa4Ec8DKsNAVu3OOcWPsBeAn+
+         jfFLTa5qDcsP53lb9sX/+eYM2fVU+IGHtE36xW1v1HW9p1oS7ftygo5d9gmSkAFQEkwH
+         lEONCRwxPVxtQ12E6VAsz1FiN7XXoMnrqQLfOrhFjt1SSH1SQ9pzIBHgGYM94yHLVniC
+         AZ2eJSQj+5Kv9eA/ow6Qi413f+H+9qVltIPQFLCehT0dlVaTfW+ghQYvvpkK+PNo6sN8
+         L3wsMig1XfKGIdQUXxTpHWNVBcOpOHHiY2Y+Y05XABIY7UmzKRE81/UK/C3GvEoWMxEX
+         gRew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mP0Pmg1TsfeNTMXh8LZDgwg/s3Yyn46RRnWB2NCR4B4=;
-        b=gF+VVOZxi5tbjG5HI8qOJtdGnggw1qt9FqaBJh0Q9RhF+63KgFg/Fs4DXZoz6VrAIk
-         ZtHv2rwB3P/k5jPw3yS8Hsjn26dSKwp0fY5tdgvvF+UTD15ensoQ5HcBAQzobKJUGLBH
-         QUs5vpiOWE9X2kd8t/nwOwOoAYSWKUOOdkMiRt3NJmi+R5h/1uXhCLd2qDumJjW4rnY/
-         FErg0lMoG3o3hCeTGMP+UmRnOOBR1W7H/DTvii856W66IIoPkw5YahUSEL6pxNs2Yl4S
-         tEI+ENlUqoRFWPelNIYVBkijyW1wNl8+PaSAZKNOTXHTq+d/h5FSucqDQZ25nbZPtAgf
-         YDYQ==
-X-Gm-Message-State: AOAM531aO3Grxk0WXc/Z3clElaXblHG/D5yLWaxA9GogJOkdLszkCDLF
-        cTPkhZ5kbiTqAqLhsMylROw=
-X-Google-Smtp-Source: ABdhPJzVmPf2InihsFrUagBLY4eHO1VM2+gwTFhG3wS0HWMf/Olxeg9WE6GvUQ6tc8QD0Ft3RSbcJg==
-X-Received: by 2002:a63:4502:: with SMTP id s2mr3568246pga.94.1615392849731;
-        Wed, 10 Mar 2021 08:14:09 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id v27sm3681pfi.89.2021.03.10.08.14.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 08:14:09 -0800 (PST)
-Subject: Re: [PATCH v7 2/2] ARM: ftrace: Add MODULE_PLTS support
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Qais Yousef <qais.yousef@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-References: <20210127110944.41813-1-alexander.sverdlin@nokia.com>
- <20210127110944.41813-3-alexander.sverdlin@nokia.com>
- <20210307172650.uztx3sk5abybbp3f@e107158-lin.cambridge.arm.com>
- <0c122390-6e76-f773-86e9-8c085f4384f2@nokia.com>
- <20210309174201.n53za7mw33dqyleh@e107158-lin.cambridge.arm.com>
- <3eecf51d-b189-9e8b-f19d-a49d0764aae5@nokia.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <05608bc8-f44d-5f91-15ab-af00c59b53e6@gmail.com>
-Date:   Wed, 10 Mar 2021 08:14:07 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.0
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=txDbp7Wx2vX6YjkhEkbwKwYgP5c1xPLVUUyDZKo4vU0=;
+        b=gzxPG8SIkgok5IkbY/RjJ1ojZcHwsLLaVYO90bwCyCKEb7+Y5XZXGX/8hd7aFifWUK
+         8v3jbX04TmK7JuMSybFahsFzMg0LpeDQvdXou+BdMwVqpnoAY3a0Ef1/NRR7U+wKwHke
+         ai3iFQIbm8frwr+vYC6KldsTDEAbfznX8Hl/jpywPynJVKwcYGWRYPUP82MifGNwqM9P
+         YkPRwKPKaGvnCpNKSIuM8co3jc9HgrKtmg3+gv6EEXj4L5KydqoVeWGxktAPiUIhiXZK
+         4x28RuGFu7fOKC9tWb9j9YvtFuR1DwIemhIXnI4h6C4RvtKd5060Wj+22AeEETWM5thy
+         C0BQ==
+X-Gm-Message-State: AOAM5313pO73wPB9XPilh6cq3097ZWp69Rx0U+jUHeGrpBH2JOEazH1I
+        lHsHgRQGaTKxbrEWNfsn/xE=
+X-Google-Smtp-Source: ABdhPJyWcNFIgTYVyW1GyKn81RImjZdoe1yYrSeMfSwu8whqA4bM2QbmpiG4gnMx36igaAIn9kSfRQ==
+X-Received: by 2002:a65:6642:: with SMTP id z2mr3380674pgv.214.1615392875014;
+        Wed, 10 Mar 2021 08:14:35 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
+        by smtp.gmail.com with ESMTPSA id d1sm7121189pjc.24.2021.03.10.08.14.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 08:14:34 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
+        willy@infradead.org, mhocko@suse.com, david@redhat.com,
+        vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH v3 1/3] mm: replace migrate_prep with lru_add_drain_all
+Date:   Wed, 10 Mar 2021 08:14:27 -0800
+Message-Id: <20210310161429.399432-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-In-Reply-To: <3eecf51d-b189-9e8b-f19d-a49d0764aae5@nokia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently, migrate_prep is merely a wrapper of lru_cache_add_all.
+There is not much to gain from having additional abstraction.
 
+Use lru_add_drain_all instead of migrate_prep, which would be more
+descriptive.
 
-On 3/9/2021 11:23 PM, Alexander Sverdlin wrote:
-> Hi!
-> 
-> On 09/03/2021 18:42, Qais Yousef wrote:
->>>> I tried on 5.12-rc2 and 5.11 but couldn't reproduce the problem using your
->> I still can't reproduce on 5.12-rc2.
->>
->> I do have CONFIG_ARM_MODULE_PLTS=y. Do you need to do something else after
->> loading the module? I tried starting ftrace, but maybe there's a particular
->> combination required?
-> 
-> You need to load a BIG module, so big that it has no place in the modules area
-> any more and goes to vmalloc area.
+note: migrate_prep_local in compaction.c changed into lru_add_drain
+to avoid CPU schedule cost with involving many other CPUs to keep
+keep old behavior.
 
-You absolutely need a very big module maybe more than one. When I tested
-this, I could use the two proprietary modules (*sigh*) that I needed to
-exercise against and loading one but not the other was not enough to
-make the second module loading spill into vmalloc space.
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ include/linux/migrate.h |  5 -----
+ mm/compaction.c         |  3 ++-
+ mm/mempolicy.c          |  4 ++--
+ mm/migrate.c            | 24 +-----------------------
+ mm/page_alloc.c         |  2 +-
+ mm/swap.c               |  5 +++++
+ 6 files changed, 11 insertions(+), 32 deletions(-)
 
-> 
->>>> instructions on the other email. But most likely because I'm hitting another
->>>> problem that could be masking it. I'm not sure it is related or just randomly
->>>> happened to hit it.
->>>>
->>>> Did you see something similar?
->>> [...]
->>>
->>>> 	[    0.000000] [<c1b01a38>] (ftrace_bug) from [<c046316c>] (ftrace_process_locs+0x2b0/0x518)
->>>> 	[    0.000000]  r7:c3817ac4 r6:c38040c0 r5:00000a3c r4:000134e4
->>>> 	[    0.000000] [<c0462ebc>] (ftrace_process_locs) from [<c2b25240>] (ftrace_init+0xc8/0x174)
->>>> 	[    0.000000]  r10:c2ffa000 r9:c2be8a78 r8:c2c5d1fc r7:c2c0c208 r6:00000001 r5:c2d0908c
->>>> 	[    0.000000]  r4:c362f518
->>>> 	[    0.000000] [<c2b25178>] (ftrace_init) from [<c2b00e14>] (start_kernel+0x2f4/0x5b8)
->>>> 	[    0.000000]  r9:c2be8a78 r8:dbfffec0 r7:00000000 r6:c36385cc r5:c2d08f00 r4:c2ffa000
->>>> 	[    0.000000] [<c2b00b20>] (start_kernel) from [<00000000>] (0x0)
->>> This means, FTRACE has more problems with your kernel/compiler/platform, I've addressed similar issue
->>> in the past, but my patch should be long merged:
->>>
->>> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1817963.html
->>>
->>> Could it be the same problem as here:
->>> https://www.spinics.net/lists/arm-kernel/msg854022.html
->>>
->>> Seems that the size check deserves something line BUILD_BUG_ON() with FTRACE...
->> So I only see this when I convert all modules to be built-in
->>
->> 	sed -i 's/=m/=y/' .config
->>
->> FWIW, I see the problem with your patch applied too. Trying to dig more into
->> it..
-> 
-> Then it's definitely the problem explained in the second link. If you have THUMB2 kernel, maybe
-> you have to switch to ARM.
-> 
-
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index 3a389633b68f..6155d97ec76c 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -45,8 +45,6 @@ extern struct page *alloc_migration_target(struct page *page, unsigned long priv
+ extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+ extern void putback_movable_page(struct page *page);
+ 
+-extern void migrate_prep(void);
+-extern void migrate_prep_local(void);
+ extern void migrate_page_states(struct page *newpage, struct page *page);
+ extern void migrate_page_copy(struct page *newpage, struct page *page);
+ extern int migrate_huge_page_move_mapping(struct address_space *mapping,
+@@ -66,9 +64,6 @@ static inline struct page *alloc_migration_target(struct page *page,
+ static inline int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	{ return -EBUSY; }
+ 
+-static inline int migrate_prep(void) { return -ENOSYS; }
+-static inline int migrate_prep_local(void) { return -ENOSYS; }
+-
+ static inline void migrate_page_states(struct page *newpage, struct page *page)
+ {
+ }
+diff --git a/mm/compaction.c b/mm/compaction.c
+index e04f4476e68e..3be017ececc0 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2319,7 +2319,8 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+ 	trace_mm_compaction_begin(start_pfn, cc->migrate_pfn,
+ 				cc->free_pfn, end_pfn, sync);
+ 
+-	migrate_prep_local();
++	/* lru_add_drain_all could be expensive with involving other CPUs */
++	lru_add_drain();
+ 
+ 	while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
+ 		int err;
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index ab51132547b8..fc024e97be37 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1124,7 +1124,7 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
+ 	int err = 0;
+ 	nodemask_t tmp;
+ 
+-	migrate_prep();
++	lru_add_drain_all();
+ 
+ 	mmap_read_lock(mm);
+ 
+@@ -1323,7 +1323,7 @@ static long do_mbind(unsigned long start, unsigned long len,
+ 
+ 	if (flags & (MPOL_MF_MOVE | MPOL_MF_MOVE_ALL)) {
+ 
+-		migrate_prep();
++		lru_add_drain_all();
+ 	}
+ 	{
+ 		NODEMASK_SCRATCH(scratch);
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 62b81d5257aa..45f925e10f5a 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -57,28 +57,6 @@
+ 
+ #include "internal.h"
+ 
+-/*
+- * migrate_prep() needs to be called before we start compiling a list of pages
+- * to be migrated using isolate_lru_page(). If scheduling work on other CPUs is
+- * undesirable, use migrate_prep_local()
+- */
+-void migrate_prep(void)
+-{
+-	/*
+-	 * Clear the LRU lists so pages can be isolated.
+-	 * Note that pages may be moved off the LRU after we have
+-	 * drained them. Those pages will fail to migrate like other
+-	 * pages that may be busy.
+-	 */
+-	lru_add_drain_all();
+-}
+-
+-/* Do the necessary work of migrate_prep but not if it involves other CPUs */
+-void migrate_prep_local(void)
+-{
+-	lru_add_drain();
+-}
+-
+ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ {
+ 	struct address_space *mapping;
+@@ -1769,7 +1747,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+ 	int start, i;
+ 	int err = 0, err1;
+ 
+-	migrate_prep();
++	lru_add_drain_all();
+ 
+ 	for (i = start = 0; i < nr_pages; i++) {
+ 		const void __user *p;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 2e8348936df8..f05a8db741ca 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8467,7 +8467,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
+ 	};
+ 
+-	migrate_prep();
++	lru_add_drain_all();
+ 
+ 	while (pfn < end || !list_empty(&cc->migratepages)) {
+ 		if (fatal_signal_pending(current)) {
+diff --git a/mm/swap.c b/mm/swap.c
+index 31b844d4ed94..441d1ae1f285 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -729,6 +729,11 @@ static void lru_add_drain_per_cpu(struct work_struct *dummy)
+ }
+ 
+ /*
++ * lru_add_drain_all() usually needs to be called before we start compiling
++ * a list of pages to be migrated using isolate_lru_page(). Note that pages
++ * may be moved off the LRU after we have drained them. Those pages will
++ * fail to migrate like other pages that may be busy.
++ *
+  * Doesn't need any cpu hotplug locking because we do rely on per-cpu
+  * kworkers being shut down before our page_alloc_cpu_dead callback is
+  * executed on the offlined cpu.
 -- 
-Florian
+2.30.1.766.gb4fecdf3b7-goog
+
