@@ -2,246 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971CA333A9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23596333A7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232742AbhCJKqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:46:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbhCJKqc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:46:32 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65BAC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:46:32 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id j12so11662851pfj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:46:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GI0LvxVWnBHKRJ/ABECeLBRx+47qje3za2yNkc6q9Cg=;
-        b=LtcEUhKZwMqdrPOvjO+fndjQpDbIJohdvWTJfztjMC0dYw+o5S2kV2bKjwlzi9aMri
-         DTRlU6rGpg053NqYh7hUvJGVtSkq0eXOLPXaxq+imS3a+tDcPs356EiK4pt71wCRPRYY
-         ACB9gZQUIliYPeKrLUlXUkZeT40FWoBGnDy9amk/CRuh8yu/sMFvE6JCDsa5vBSp6c5c
-         /hUHk4SEUb0qrKfEDfLRhF99cEOBKV/b4mlUngBbZfwMfTIGIN1A4ISK0D1RvY/Jkmhp
-         Ojz2d9W6FevcdM9SxTBTutZZp+toQrTOPWucbkP4iawwuPY4grhc26lE1KLShjGIpgFG
-         5j7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GI0LvxVWnBHKRJ/ABECeLBRx+47qje3za2yNkc6q9Cg=;
-        b=nTTcMMW57sem2srTHPS2bOX1Y9TpBptlEucPWKA1UY8PEmLUklY84zAkMUhSTGb9ke
-         dWB59zGfhr4tuzd+VYxzlLOPHcFVt3MnSJ0Zz2fxcFYKvO5WIYQqvJ7dTLA8QXi6fkJ4
-         +QiI1uZASGzRrxdITKqpfHUA9mi/JMqFEsrkxxzzbn/5Pi9jkckTrCz+BmGg236pcGzf
-         uP9pMdMMbVEVaZVy4G/9O//rVMP5kncCYvzLgm9IKg/r1Em4BfL434MbD5uj2ajcYDzr
-         YxI7Ba4NQEFrtfkbh7zn9gKDFz+ok7z4oFP4RuDc+mdimp+w6dymbW3BHWK2i42uSW30
-         gbsA==
-X-Gm-Message-State: AOAM531AhAPsewxov3og+zJXqY5ylBAOmJXQwWE0zuz9flMoEyiR/Z4n
-        v5cpB0OYOiOBTRtBZeFBwZlpwB2jDq4=
-X-Google-Smtp-Source: ABdhPJwE1TuzTzrm74Pwem5KVwzGkDl0zgfeE2Y7fKMeHPrzRAu9gwPkYitl0WwEmd1p3q9JBYVamw==
-X-Received: by 2002:a63:c20:: with SMTP id b32mr2330288pgl.79.1615373192099;
-        Wed, 10 Mar 2021 02:46:32 -0800 (PST)
-Received: from localhost.localdomain ([171.49.209.253])
-        by smtp.gmail.com with ESMTPSA id fs9sm5959372pjb.40.2021.03.10.02.46.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 02:46:31 -0800 (PST)
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Atul Gopinathan <atulgopinathan@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8192u: ieee80211: Remove braces for single line blocks
-Date:   Wed, 10 Mar 2021 16:13:54 +0530
-Message-Id: <20210310104353.14531-1-atulgopinathan@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S232420AbhCJKob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:44:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:43610 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232459AbhCJKo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 05:44:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 350F81FB;
+        Wed, 10 Mar 2021 02:44:29 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.52.108])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 272EA3F85F;
+        Wed, 10 Mar 2021 02:44:27 -0800 (PST)
+Date:   Wed, 10 Mar 2021 10:44:21 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH] arm64: perf: Fix 64-bit event counter read truncation
+Message-ID: <20210310104348.GA19001@C02TD0UTHF1T.local>
+References: <20210310004412.1450128-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310004412.1450128-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove braces around those `if` and `for` blocks which contain a
-single line and therefore fix the Checkpatch warning of the
-following type:
+On Tue, Mar 09, 2021 at 05:44:12PM -0700, Rob Herring wrote:
+> Commit 0fdf1bb75953 ("arm64: perf: Avoid PMXEV* indirection") changed
+> armv8pmu_read_evcntr() to return a u32 instead of u64. The result is
+> silent truncation of the event counter when using 64-bit counters. Given
+> the offending commit appears to have passed thru several folks, it seems
+> likely this was a bad rebase after v8.5 PMU 64-bit counters landed.
 
-"WARNING: braces {} are not necessary for single statement blocks"
+IIRC I wrote the indirection patch first, so this does sound like an
+oversight when rebasing or reworking the patch.
 
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
----
- .../staging/rtl8192u/ieee80211/ieee80211_rx.c | 42 ++++++++-----------
- .../staging/rtl8192u/ieee80211/ieee80211_tx.c |  4 +-
- .../staging/rtl8192u/ieee80211/ieee80211_wx.c |  6 +--
- 3 files changed, 22 insertions(+), 30 deletions(-)
+Comparing against commit 0fdf1bb75953, this does appear to be the only
+point of truncation given read_pmevcntrn() directly returns the result
+of read_sysreg(), so:
 
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c
-index b6fee7230ce0..b0e01ee65f7f 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c
-@@ -612,9 +612,9 @@ static void RxReorderIndicatePacket(struct ieee80211_device *ieee,
- 		pHTInfo->RxReorderDropCounter++;
- 		{
- 			int i;
--			for (i = 0; i < prxb->nr_subframes; i++) {
-+			for (i = 0; i < prxb->nr_subframes; i++)
- 				dev_kfree_skb(prxb->subframes[i]);
--			}
-+
- 			kfree(prxb);
- 			prxb = NULL;
- 		}
-@@ -632,11 +632,11 @@ static void RxReorderIndicatePacket(struct ieee80211_device *ieee,
- 		pTS->rx_indicate_seq = (pTS->rx_indicate_seq + 1) % 4096;
- 		bMatchWinStart = true;
- 	} else if (SN_LESS(WinEnd, SeqNum)) {
--		if (SeqNum >= (WinSize - 1)) {
-+		if (SeqNum >= (WinSize - 1))
- 			pTS->rx_indicate_seq = SeqNum + 1 - WinSize;
--		} else {
-+		else
- 			pTS->rx_indicate_seq = 4095 - (WinSize - (SeqNum + 1)) + 1;
--		}
-+
- 		IEEE80211_DEBUG(IEEE80211_DL_REORDER, "Window Shift! IndicateSeq: %d, NewSeq: %d\n", pTS->rx_indicate_seq, SeqNum);
- 	}
- 
-@@ -674,9 +674,9 @@ static void RxReorderIndicatePacket(struct ieee80211_device *ieee,
- 				list_add_tail(&pReorderEntry->List, &ieee->RxReorder_Unused_List);
- 				{
- 					int i;
--					for (i = 0; i < prxb->nr_subframes; i++) {
-+					for (i = 0; i < prxb->nr_subframes; i++)
- 						dev_kfree_skb(prxb->subframes[i]);
--					}
-+
- 					kfree(prxb);
- 					prxb = NULL;
- 				}
-@@ -693,9 +693,9 @@ static void RxReorderIndicatePacket(struct ieee80211_device *ieee,
- 			IEEE80211_DEBUG(IEEE80211_DL_ERR, "RxReorderIndicatePacket(): There is no reorder entry!! Packet is dropped!!\n");
- 			{
- 				int i;
--				for (i = 0; i < prxb->nr_subframes; i++) {
-+				for (i = 0; i < prxb->nr_subframes; i++)
- 					dev_kfree_skb(prxb->subframes[i]);
--				}
-+
- 				kfree(prxb);
- 				prxb = NULL;
- 			}
-@@ -785,13 +785,12 @@ static u8 parse_subframe(struct ieee80211_device *ieee,
- 		bIsAggregateFrame = true;
- 	}
- 
--	if (IEEE80211_QOS_HAS_SEQ(fc)) {
-+	if (IEEE80211_QOS_HAS_SEQ(fc))
- 		LLCOffset += 2;
--	}
- 
--	if (rx_stats->bContainHTC) {
-+	if (rx_stats->bContainHTC)
- 		LLCOffset += HTCLNG;
--	}
-+
- 	// Null packet, don't indicate it to upper layer
- 	ChkLength = LLCOffset;/* + (Frame_WEP(frame)!=0 ?Adapter->MgntInfo.SecurityInfo.EncryptionHeadOverhead:0);*/
- 
-@@ -855,13 +854,11 @@ static u8 parse_subframe(struct ieee80211_device *ieee,
- 
- 			if (skb->len != 0) {
- 				nPadding_Length = 4 - ((nSubframe_Length + ETHERNET_HEADER_SIZE) % 4);
--				if (nPadding_Length == 4) {
-+				if (nPadding_Length == 4)
- 					nPadding_Length = 0;
--				}
- 
--				if (skb->len < nPadding_Length) {
-+				if (skb->len < nPadding_Length)
- 					return 0;
--				}
- 
- 				skb_pull(skb, nPadding_Length);
- 			}
-@@ -1248,9 +1245,8 @@ int ieee80211_rx(struct ieee80211_device *ieee, struct sk_buff *skb,
- 		TID = Frame_QoSTID(skb->data);
- 		SeqNum = WLAN_GET_SEQ_SEQ(sc);
- 		GetTs(ieee, (struct ts_common_info **)&pTS, hdr->addr2, TID, RX_DIR, true);
--		if (TID != 0 && TID != 3) {
-+		if (TID != 0 && TID != 3)
- 			ieee->bis_any_nonbepkts = true;
--		}
- 	}
- //added by amy for reorder
- 	/* skb: hdr + (possible reassembled) full plaintext payload */
-@@ -1262,9 +1258,9 @@ int ieee80211_rx(struct ieee80211_device *ieee, struct sk_buff *skb,
- 	/* qos data packets & reserved bit is 1 */
- 	if (parse_subframe(ieee, skb, rx_stats, rxb, src, dst) == 0) {
- 		/* only to free rxb, and not submit the packets to upper layer */
--		for (i = 0; i < rxb->nr_subframes; i++) {
-+		for (i = 0; i < rxb->nr_subframes; i++)
- 			dev_kfree_skb(rxb->subframes[i]);
--		}
-+
- 		kfree(rxb);
- 		rxb = NULL;
- 		goto rx_dropped;
-@@ -1523,11 +1519,9 @@ static inline void ieee80211_extract_country_ie(
- 		// some AP (e.g. Cisco 1242) don't include country IE in their
- 		// probe response frame.
- 		//
--		if (IS_EQUAL_CIE_SRC(ieee, addr2)) {
-+		if (IS_EQUAL_CIE_SRC(ieee, addr2))
- 			UPDATE_CIE_WATCHDOG(ieee);
--		}
- 	}
--
- }
- 
- int ieee80211_parse_info_param(struct ieee80211_device *ieee,
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c
-index bd8914645e95..96e6aaf859ec 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c
-@@ -301,9 +301,9 @@ static void ieee80211_tx_query_agg_cap(struct ieee80211_device *ieee,
- 	if (is_multicast_ether_addr(hdr->addr1))
- 		return;
- 	//check packet and mode later
--	if (!ieee->GetNmodeSupportBySecCfg(ieee->dev)) {
-+	if (!ieee->GetNmodeSupportBySecCfg(ieee->dev))
- 		return;
--	}
-+
- 	if (pHTInfo->bCurrentAMPDUEnable) {
- 		if (!GetTs(ieee, (struct ts_common_info **)(&pTxTs), hdr->addr1, skb->priority, TX_DIR, true)) {
- 			printk("===>can't get TS\n");
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
-index 22373c0afebc..78cc8f357bbc 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
-@@ -184,9 +184,8 @@ static inline char *rtl819x_translate_scan(struct ieee80211_device *ieee,
- 	//	printk("WPA IE\n");
- 		u8 *p = buf;
- 		p += sprintf(p, "wpa_ie=");
--		for (i = 0; i < network->wpa_ie_len; i++) {
-+		for (i = 0; i < network->wpa_ie_len; i++)
- 			p += sprintf(p, "%02x", network->wpa_ie[i]);
--		}
- 
- 		memset(&iwe, 0, sizeof(iwe));
- 		iwe.cmd = IWEVCUSTOM;
-@@ -199,9 +198,8 @@ static inline char *rtl819x_translate_scan(struct ieee80211_device *ieee,
- 
- 		u8 *p = buf;
- 		p += sprintf(p, "rsn_ie=");
--		for (i = 0; i < network->rsn_ie_len; i++) {
-+		for (i = 0; i < network->rsn_ie_len; i++)
- 			p += sprintf(p, "%02x", network->rsn_ie[i]);
--		}
- 
- 		memset(&iwe, 0, sizeof(iwe));
- 		iwe.cmd = IWEVCUSTOM;
--- 
-2.27.0
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
+Will, could you pick this up?
+
+Thanks,
+Mark.
+
+> Fixes: 0fdf1bb75953 ("arm64: perf: Avoid PMXEV* indirection")
+> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  arch/arm64/kernel/perf_event.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+> index 7d2318f80955..4658fcf88c2b 100644
+> --- a/arch/arm64/kernel/perf_event.c
+> +++ b/arch/arm64/kernel/perf_event.c
+> @@ -460,7 +460,7 @@ static inline int armv8pmu_counter_has_overflowed(u32 pmnc, int idx)
+>  	return pmnc & BIT(ARMV8_IDX_TO_COUNTER(idx));
+>  }
+>  
+> -static inline u32 armv8pmu_read_evcntr(int idx)
+> +static inline u64 armv8pmu_read_evcntr(int idx)
+>  {
+>  	u32 counter = ARMV8_IDX_TO_COUNTER(idx);
+>  
+> -- 
+> 2.27.0
+> 
