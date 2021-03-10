@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C00333DD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB330333DD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhCJNY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:24:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45502 "EHLO mail.kernel.org"
+        id S233175AbhCJNZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:25:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232797AbhCJNYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8227D64FDA;
-        Wed, 10 Mar 2021 13:24:16 +0000 (UTC)
+        id S232801AbhCJNYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35CF364FDC;
+        Wed, 10 Mar 2021 13:24:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382657;
-        bh=cfD1P8CGtyw8lKVkpK4hcIzouL4RqZsCpWZlx6d2iTM=;
+        s=korg; t=1615382659;
+        bh=MGAbaYS2VLHF+41cYp6gSoNytNrnYuD2FCGYbIVS7Ag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FlZk1W0MlmRpp2cDcIncdQaMJ62ZKa7QTeW2KXUN+oJ9uqKc7BfOr8iuE7KPejzBp
-         tFYkX+j6hYNFpcnBccmpGnb7XV5cDKadXvaUJCL9cn+86pLp++bKwdQP8DRjK1bcZZ
-         fCkwU6ZzExEuWKSWvhrVANTEQcN4pLcmFzRSE+zo=
+        b=TxOL+kHpsr7ezRCABrZye0l6p5yNd4PtHr2ZqJfwb3yTvIhk3xEBios/jKl/JxdPD
+         ypRY9VEZf7jsr7Hl2prlF3gujfioqJrWnujVlsKkYu+Vf7wN6k86WLORHY52q3oEaS
+         Hklz46tbUH5TP/bDHY+yXbZ7cfGmDDu9kL9NLG8Y=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
-        kernel test robot <lkp@intel.com>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.11 13/36] parisc: Enable -mlong-calls gcc option with CONFIG_COMPILE_TEST
-Date:   Wed, 10 Mar 2021 14:23:26 +0100
-Message-Id: <20210310132320.937139154@linuxfoundation.org>
+Subject: [PATCH 5.11 14/36] arm64: Make CPU_BIG_ENDIAN depend on ld.bfd or ld.lld 13.0.0+
+Date:   Wed, 10 Mar 2021 14:23:27 +0100
+Message-Id: <20210310132320.967051914@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
 References: <20210310132320.510840709@linuxfoundation.org>
@@ -42,52 +44,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Helge Deller <deller@gmx.de>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 778e45d7720d663811352943dd515b41f6849637 upstream
+commit e9c6deee00e9197e75cd6aa0d265d3d45bd7cc28 upstream
 
-The kernel test robot reported multiple linkage problems like this:
+Similar to commit 28187dc8ebd9 ("ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN
+depends on !LD_IS_LLD"), ld.lld prior to 13.0.0 does not properly
+support aarch64 big endian, leading to the following build error when
+CONFIG_CPU_BIG_ENDIAN is selected:
 
-    hppa64-linux-ld: init/main.o(.init.text+0x56c): cannot reach printk
-    init/main.o: in function `unknown_bootoption':
-    (.init.text+0x56c): relocation truncated to fit: R_PARISC_PCREL22F against
-	symbol `printk' defined in .text.unlikely section in kernel/printk/printk.o
+ld.lld: error: unknown emulation: aarch64linuxb
 
-There are two ways to solve it:
-a) Enable the -mlong-call compiler option (CONFIG_MLONGCALLS),
-b) Add long branch stub support in 64-bit linker.
+This has been resolved in LLVM 13. To avoid errors like this, only allow
+CONFIG_CPU_BIG_ENDIAN to be selected if using ld.bfd or ld.lld 13.0.0
+and newer.
 
-While b) is the long-term solution, this patch works around the issue by
-automatically enabling the CONFIG_MLONGCALLS option when
-CONFIG_COMPILE_TEST is set, which indicates that a non-production kernel
-(e.g. 0-day kernel) is built.
+While we are here, the indentation of this symbol used spaces since its
+introduction in commit a872013d6d03 ("arm64: kconfig: allow
+CPU_BIG_ENDIAN to be selected"). Change it to tabs to be consistent with
+kernel coding style.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 00e35f2b0e8a ("parisc: Enable -mlong-calls gcc option by default when !CONFIG_MODULES")
-Cc: stable@vger.kernel.org # v5.6+
+Link: https://github.com/ClangBuiltLinux/linux/issues/380
+Link: https://github.com/ClangBuiltLinux/linux/issues/1288
+Link: https://github.com/llvm/llvm-project/commit/7605a9a009b5fa3bdac07e3131c8d82f6d08feb7
+Link: https://github.com/llvm/llvm-project/commit/eea34aae2e74e9b6fbdd5b95f479bc7f397bf387
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20210209005719.803608-1-nathan@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/parisc/Kconfig |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/arm64/Kconfig |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -201,9 +201,12 @@ config PREFETCH
- 	def_bool y
- 	depends on PA8X00 || PA7200
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -952,8 +952,9 @@ choice
+ 	  that is selected here.
  
-+config PARISC_HUGE_KERNEL
-+	def_bool y if !MODULES || UBSAN || FTRACE || COMPILE_TEST
-+
- config MLONGCALLS
--	def_bool y if !MODULES || UBSAN || FTRACE
--	bool "Enable the -mlong-calls compiler option for big kernels" if MODULES && !UBSAN && !FTRACE
-+	def_bool y if PARISC_HUGE_KERNEL
-+	bool "Enable the -mlong-calls compiler option for big kernels" if !PARISC_HUGE_KERNEL
- 	depends on PA8X00
- 	help
- 	  If you configure the kernel to include many drivers built-in instead
+ config CPU_BIG_ENDIAN
+-       bool "Build big-endian kernel"
+-       help
++	bool "Build big-endian kernel"
++	depends on !LD_IS_LLD || LLD_VERSION >= 130000
++	help
+ 	  Say Y if you plan on running a kernel with a big-endian userspace.
+ 
+ config CPU_LITTLE_ENDIAN
 
 
