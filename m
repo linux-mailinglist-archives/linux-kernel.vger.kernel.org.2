@@ -2,226 +2,589 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405D73347AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F943347B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhCJTNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 14:13:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhCJTNq (ORCPT
+        id S233722AbhCJTO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 14:14:59 -0500
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:42891 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232788AbhCJTOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:13:46 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06571C061760;
-        Wed, 10 Mar 2021 11:13:46 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id v2so22377438lft.9;
-        Wed, 10 Mar 2021 11:13:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TGVo84MkssIIGFaMlWeB/GdWruWqeKFsQWqj4qPbSMU=;
-        b=HbsI8I4tO0QXv6SbFoersQnW7puDohAmS/pM6fJaJGkWRSDeZFhNtTCNZEeEzA6s+X
-         w2Xp3MfPGHCIZI8D3kxV8emCwmZBLGtFVt9BJbPcvCb77qeFQqHINFY39+LXwMJz7YDo
-         BH6NshzUCP5G985lVE7NGXKZQLR/bgCjoeUATpkxGHpSlnVKYealzTtrIgNiETrsJiag
-         jkc4Yvb0+n6QSSBWBu82vYWbspP7U15YPQwg5glY//VxIi9WmTWSomUZulhKKFC8HbIj
-         NGVjufjAZgw1q1Wu8EdF/QCZpEN3KeUo46kx0SdRb0bHdnsYa4uHvrBtck4Z7AHFa+Nz
-         JnjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TGVo84MkssIIGFaMlWeB/GdWruWqeKFsQWqj4qPbSMU=;
-        b=Qb4+PvqBib69YGh/yl360eSoipMUrP9xPSTjI6CiCsposYfWb9P364Z5mxxfbViXIT
-         8/Yk7krfx1AI0sxvIZ6UklKV4xt668HtQXf0p48iNRRzfuPXxFBVFgrF+oTgn0B3Xqbv
-         nehSIYJ52s/C4eu0cBv82y3IHuKt09vE07HvJUKbrHZoHULxFD3WQeh/bpfdxLX9d/32
-         OylSZY82M61WkIdBWgi8OKALErMC49yFNv7268s1yvCBOFkVP7EqC8Ed3bhIn7HsbTWk
-         jodi9NyY49SFfQprQjI2UVPS8LK3aaHdF6+wnSxscrn2iRTlSOF3Do3yrlUHngBduubZ
-         sQwg==
-X-Gm-Message-State: AOAM531vCga3e0XDSRXTD83wQNABfpTGDPTnjUza+4MzTthdoXxX+Ptw
-        Je9GKTHbzHIVBDn/VuadGsVeezFxl2A=
-X-Google-Smtp-Source: ABdhPJxAxsuCKlrBzioldvdKtUXE1MFNfDCFzDMOqQfbX+L9cAYHE5rvNAvBmQKSPjyj37EoksplAw==
-X-Received: by 2002:a05:6512:1156:: with SMTP id m22mr2808559lfg.637.1615403624284;
-        Wed, 10 Mar 2021 11:13:44 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id k6sm63089lfm.19.2021.03.10.11.13.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 11:13:43 -0800 (PST)
-Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        thierry.reding@gmail.com, will@kernel.org,
-        guillaume.tucker@collabora.com
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Wed, 10 Mar 2021 14:14:44 -0500
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from asmaa@mellanox.com)
+        with SMTP; 10 Mar 2021 21:14:40 +0200
+Received: from farm-0002.mtbu.labs.mlnx (farm-0002.mtbu.labs.mlnx [10.15.2.32])
+        by mtbu-labmailer.labs.mlnx (8.14.4/8.14.4) with ESMTP id 12AJEchk006655;
+        Wed, 10 Mar 2021 14:14:38 -0500
+Received: (from asmaa@localhost)
+        by farm-0002.mtbu.labs.mlnx (8.14.7/8.13.8/Submit) id 12AJEaUF014783;
+        Wed, 10 Mar 2021 14:14:36 -0500
+From:   Asmaa Mnebhi <Asmaa@mellanox.com>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com
+Cc:     Asmaa Mnebhi <asmaa@nvidia.com>, linux-gpio@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a8a7a0af-895f-9d79-410d-5dd03ebbd6dd@gmail.com>
-Date:   Wed, 10 Mar 2021 22:13:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <20210218220702.1962-1-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v2 1/1] gpio: Support interrupts in gpio-mlxbf2.c
+Date:   Wed, 10 Mar 2021 14:14:32 -0500
+Message-Id: <4d45ea382c7a74f7e351b7e1e1f670ce41bd65ab.1615403091.git.asmaa@nvidia.com>
+X-Mailer: git-send-email 2.1.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.02.2021 01:07, Nicolin Chen пишет:
-> Commit 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
-> removed certain hack in the tegra_smmu_probe() by relying on IOMMU core to
-> of_xlate SMMU's SID per device, so as to get rid of tegra_smmu_find() and
-> tegra_smmu_configure() that are typically done in the IOMMU core also.
-> 
-> This approach works for both existing devices that have DT nodes and other
-> devices (like PCI device) that don't exist in DT, on Tegra210 and Tegra3
-> upon testing. However, Page Fault errors are reported on tegra124-Nyan:
-> 
->   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> 	 EMEM address decode error (SMMU translation error [--S])
->   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> 	 Page fault (SMMU translation error [--S])
-> 
-> After debugging, I found that the mentioned commit changed some function
-> callback sequence of tegra-smmu's, resulting in enabling SMMU for display
-> client before display driver gets initialized. I couldn't reproduce exact
-> same issue on Tegra210 as Tegra124 (arm-32) differs at arch-level code.
-> 
-> Actually this Page Fault is a known issue, as on most of Tegra platforms,
-> display gets enabled by the bootloader for the splash screen feature, so
-> it keeps filling the framebuffer memory. A proper fix to this issue is to
-> 1:1 linear map the framebuffer memory to IOVA space so the SMMU will have
-> the same address as the physical address in its page table. Yet, Thierry
-> has been working on the solution above for a year, and it hasn't merged.
-> 
-> Therefore, let's partially revert the mentioned commit to fix the errors.
-> 
-> The reason why we do a partial revert here is that we can still set priv
-> in ->of_xlate() callback for PCI devices. Meanwhile, devices existing in
-> DT, like display, will go through tegra_smmu_configure() at the stage of
-> bus_set_iommu() when SMMU gets probed(), as what it did before we merged
-> the mentioned commit.
-> 
-> Once we have the linear map solution for framebuffer memory, this change
-> can be cleaned away.
-> 
-> [Big thank to Guillaume who reported and helped debugging/verification]
-> 
-> Fixes: 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
-> Reported-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
-> 
-> Guillaume, would you please give a "Tested-by" to this change? Thanks!
-> 
->  drivers/iommu/tegra-smmu.c | 72 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 71 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index 4a3f095a1c26..97eb62f667d2 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -798,10 +798,70 @@ static phys_addr_t tegra_smmu_iova_to_phys(struct iommu_domain *domain,
->  	return SMMU_PFN_PHYS(pfn) + SMMU_OFFSET_IN_PAGE(iova);
->  }
->  
-> +static struct tegra_smmu *tegra_smmu_find(struct device_node *np)
-> +{
-> +	struct platform_device *pdev;
-> +	struct tegra_mc *mc;
-> +
-> +	pdev = of_find_device_by_node(np);
-> +	if (!pdev)
-> +		return NULL;
-> +
-> +	mc = platform_get_drvdata(pdev);
-> +	if (!mc)
-> +		return NULL;
-> +
-> +	return mc->smmu;
-> +}
-> +
-> +static int tegra_smmu_configure(struct tegra_smmu *smmu, struct device *dev,
-> +				struct of_phandle_args *args)
-> +{
-> +	const struct iommu_ops *ops = smmu->iommu.ops;
-> +	int err;
-> +
-> +	err = iommu_fwspec_init(dev, &dev->of_node->fwnode, ops);
-> +	if (err < 0) {
-> +		dev_err(dev, "failed to initialize fwspec: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	err = ops->of_xlate(dev, args);
-> +	if (err < 0) {
-> +		dev_err(dev, "failed to parse SW group ID: %d\n", err);
-> +		iommu_fwspec_free(dev);
-> +		return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static struct iommu_device *tegra_smmu_probe_device(struct device *dev)
->  {
-> -	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
-> +	struct device_node *np = dev->of_node;
-> +	struct tegra_smmu *smmu = NULL;
-> +	struct of_phandle_args args;
-> +	unsigned int index = 0;
-> +	int err;
-> +
-> +	while (of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
-> +					  &args) == 0) {
-> +		smmu = tegra_smmu_find(args.np);
-> +		if (smmu) {
-> +			err = tegra_smmu_configure(smmu, dev, &args);
-> +			of_node_put(args.np);
->  
-> +			if (err < 0)
-> +				return ERR_PTR(err);
-> +
-> +			break;
-> +		}
-> +
-> +		of_node_put(args.np);
-> +		index++;
-> +	}
-> +
-> +	smmu = dev_iommu_priv_get(dev);
->  	if (!smmu)
->  		return ERR_PTR(-ENODEV);
->  
-> @@ -1028,6 +1088,16 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
->  	if (!smmu)
->  		return ERR_PTR(-ENOMEM);
->  
-> +	/*
-> +	 * This is a bit of a hack. Ideally we'd want to simply return this
-> +	 * value. However the IOMMU registration process will attempt to add
-> +	 * all devices to the IOMMU when bus_set_iommu() is called. In order
-> +	 * not to rely on global variables to track the IOMMU instance, we
-> +	 * set it here so that it can be looked up from the .probe_device()
-> +	 * callback via the IOMMU device's .drvdata field.
-> +	 */
-> +	mc->smmu = smmu;
-> +
->  	size = BITS_TO_LONGS(soc->num_asids) * sizeof(long);
->  
->  	smmu->asids = devm_kzalloc(dev, size, GFP_KERNEL);
-> 
+From: Asmaa Mnebhi <asmaa@nvidia.com>
 
-I found that this patch introduced a serious regression on Tegra30 using
-today's linux-next. Tegra30 has two 3d h/w blocks connected in SLI and
-only one of the blocks is now attached to IOMMU domain, meaning that GPU
-is unusable now. All 3d, 2d and display devices share the same "DRM"
-group on Tegra30.
+There are 3 possible GPIO interrupts which can be
+supported on BlueField-2 boards. Some BlueField boards support:
+1) PHY interrupt only
+2) PHY interrupt and Reset interrupt
+3) Low power interrupt only
 
-Nicolin, please let me know if have any suggestions. I may take a closer
-look a day later, for now I'll just revert this patch locally. Thanks in
-advance.
+There is one hardware line shared among all GPIOs, I2C and
+MDIO. So the interrupt controller checks whether the
+hardware interrupt is from a GPIO first. Then it checks which
+GPIO block it is for. And within the GPIO block, it checks
+which GPIO pin it is for.
+
+The "reset interrupt" and "low power interrupt" trigger a
+user space program.
+The PHY interrupt is mapped to a linux IRQ and the latter is
+passed down to a PHY driver, because the PHY driver interrupt
+should not be triggered based on the shared HW interrupt.
+
+The GPIO pin responsible for these interrupts changes across
+different boards. These GPIO interrupts are not supported
+on all boards.
+So the ACPI table contains a property which is assigned a valid
+GPIO pin number if the interrupt is supported on a particular
+BlueField-2 board. The bootloader will change that property
+based on the board id.
+
+These interrupts are enforced based on the board and should
+not be configurable by the user.
+
+This patch also fixes the logic to set the GPIO direction
+as output. There are couple of registers that allow software
+to change the direction of the GPIO. Otherwise, hardware
+controls that by default.
+
+Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
+---
+ drivers/gpio/gpio-mlxbf2.c | 375 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 367 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpio/gpio-mlxbf2.c b/drivers/gpio/gpio-mlxbf2.c
+index befa5e1..55876fa 100644
+--- a/drivers/gpio/gpio-mlxbf2.c
++++ b/drivers/gpio/gpio-mlxbf2.c
+@@ -1,9 +1,14 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only or BSD-3-Clause
++
++/*
++ *  Copyright (c) 2020-2021 NVIDIA Corporation.
++ */
+ 
+ #include <linux/acpi.h>
+ #include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/device.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/io.h>
+ #include <linux/ioport.h>
+@@ -15,14 +20,24 @@
+ #include <linux/spinlock.h>
+ #include <linux/types.h>
+ 
++#define DRV_VERSION "1.2"
++
+ /*
+  * There are 3 YU GPIO blocks:
+- * gpio[0]: HOST_GPIO0->HOST_GPIO31
+- * gpio[1]: HOST_GPIO32->HOST_GPIO63
+- * gpio[2]: HOST_GPIO64->HOST_GPIO69
++ * yu.gpio[0]: HOST_GPIO0->HOST_GPIO31
++ * yu.gpio[1]: HOST_GPIO32->HOST_GPIO63
++ * yu.gpio[2]: HOST_GPIO64->HOST_GPIO69
++ * yu.gpio[16]: HOST_GPIO70
+  */
+ #define MLXBF2_GPIO_MAX_PINS_PER_BLOCK 32
+ 
++typedef enum {
++	GPIO_BLOCK0 = 0,
++	GPIO_BLOCK1 = 1,
++	GPIO_BLOCK2 = 2,
++	GPIO_BLOCK16 = 16
++} yu_gpio_block;
++
+ /*
+  * arm_gpio_lock register:
+  * bit[31]	lock status: active if set
+@@ -35,6 +50,9 @@
+ #define YU_ARM_GPIO_LOCK_ACQUIRE	0xd42f
+ #define YU_ARM_GPIO_LOCK_RELEASE	0x0
+ 
++#define YU_CAUSE_GPIO_ADDR		0x2801530
++#define YU_CAUSE_GPIO_ADDR_SIZE		0x4
++
+ /*
+  * gpio[x] block registers and their offset
+  */
+@@ -43,10 +61,18 @@
+ #define YU_GPIO_MODE0			0x0c
+ #define YU_GPIO_DATASET			0x14
+ #define YU_GPIO_DATACLEAR		0x18
++#define YU_GPIO_FUNCTIONAL_ENABLE1	0x24
++#define YU_GPIO_FUNCTIONAL_ENABLE0	0x28
++#define YU_GPIO_CAUSE_RISE_EN		0x44
++#define YU_GPIO_CAUSE_FALL_EN		0x48
+ #define YU_GPIO_MODE1_CLEAR		0x50
+ #define YU_GPIO_MODE0_SET		0x54
+ #define YU_GPIO_MODE0_CLEAR		0x58
+ 
++#define YU_GPIO_CAUSE_OR_CAUSE_EVTEN0	0x80
++#define YU_GPIO_CAUSE_OR_EVTEN0		0x94
++#define YU_GPIO_CAUSE_OR_CLRCAUSE	0x98
++
+ #ifdef CONFIG_PM
+ struct mlxbf2_gpio_context_save_regs {
+ 	u32 gpio_mode0;
+@@ -57,10 +83,29 @@ struct mlxbf2_gpio_context_save_regs {
+ /* BlueField-2 gpio block context structure. */
+ struct mlxbf2_gpio_context {
+ 	struct gpio_chip gc;
++	struct irq_chip irq_chip;
+ 
+ 	/* YU GPIO blocks address */
+ 	void __iomem *gpio_io;
+ 
++	/* YU cause gpio arm coalesce0 address */
++	void __iomem *cause_gpio_arm_coalesce0_io;
++
++	/* YU GPIO pin responsible for low power mode */
++	unsigned long low_pwr_pin;
++
++	/* YU GPIO pin responsible for soft reset */
++	unsigned long rst_pin;
++
++	/* YU GPIO pin connected to PHY INT_N signal */
++	unsigned long phy_int_pin;
++
++	/* YU GPIO block interrupt mask */
++	u32 gpio_int_mask;
++
++	/* Worker function */
++	struct work_struct send_work;
++
+ #ifdef CONFIG_PM
+ 	struct mlxbf2_gpio_context_save_regs *csave_regs;
+ #endif
+@@ -86,6 +131,19 @@ static struct mlxbf2_gpio_param yu_arm_gpio_lock_param = {
+ 	.lock = &yu_arm_gpio_lock_mutex,
+ };
+ 
++static struct resource yu_cause_gpio_res = {
++	.start = YU_CAUSE_GPIO_ADDR,
++	.end   = YU_CAUSE_GPIO_ADDR + YU_CAUSE_GPIO_ADDR_SIZE - 1,
++	.name  = "YU_CAUSE_GPIO",
++};
++
++static DEFINE_MUTEX(yu_cause_gpio_mutex);
++
++static struct mlxbf2_gpio_param yu_cause_gpio_param = {
++	.res = &yu_cause_gpio_res,
++	.lock = &yu_cause_gpio_mutex,
++};
++
+ /* Request memory region and map yu_arm_gpio_lock resource */
+ static int mlxbf2_gpio_get_lock_res(struct platform_device *pdev)
+ {
+@@ -118,6 +176,38 @@ static int mlxbf2_gpio_get_lock_res(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++/* Request memory region and map yu cause_gpio_arm.coalesce0 resource */
++static int mlxbf2_gpio_get_yu_cause_gpio_res(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct resource *res;
++	resource_size_t size;
++	int ret = 0;
++
++	mutex_lock(yu_cause_gpio_param.lock);
++
++	/* Check if the memory map already exists */
++	if (yu_cause_gpio_param.io)
++		goto exit;
++
++	res = yu_cause_gpio_param.res;
++	size = resource_size(res);
++
++	if (!devm_request_mem_region(dev, res->start, size, res->name)) {
++		ret = -EFAULT;
++		goto exit;
++	}
++
++	yu_cause_gpio_param.io = devm_ioremap(dev, res->start, size);
++	if (!yu_cause_gpio_param.io)
++		ret = -ENOMEM;
++
++exit:
++	mutex_unlock(yu_cause_gpio_param.lock);
++
++	return ret;
++}
++
+ /*
+  * Acquire the YU arm_gpio_lock to be able to change the direction
+  * mode. If the lock_active bit is already set, return an error.
+@@ -207,6 +297,7 @@ static int mlxbf2_gpio_direction_output(struct gpio_chip *chip,
+ {
+ 	struct mlxbf2_gpio_context *gs = gpiochip_get_data(chip);
+ 	int ret = 0;
++	u32 val;
+ 
+ 	/*
+ 	 * Although the arm_gpio_lock was set in the probe function,
+@@ -220,26 +311,203 @@ static int mlxbf2_gpio_direction_output(struct gpio_chip *chip,
+ 	writel(BIT(offset), gs->gpio_io + YU_GPIO_MODE1_CLEAR);
+ 	writel(BIT(offset), gs->gpio_io + YU_GPIO_MODE0_SET);
+ 
++	/*
++	 * Set {functional_enable1,functional_enable0}={0,0}
++	 * to give control to software over these GPIOs.
++	 */
++	val = readl(gs->gpio_io + YU_GPIO_FUNCTIONAL_ENABLE1);
++	val &= ~BIT(offset);
++	writel(val, gs->gpio_io + YU_GPIO_FUNCTIONAL_ENABLE1);
++	val = readl(gs->gpio_io + YU_GPIO_FUNCTIONAL_ENABLE0);
++	val &= ~BIT(offset);
++	writel(val, gs->gpio_io + YU_GPIO_FUNCTIONAL_ENABLE0);
++
+ 	mlxbf2_gpio_lock_release(gs);
+ 
+ 	return ret;
+ }
+ 
++static void mlxbf2_gpio_send_work(struct work_struct *work)
++{
++	struct mlxbf2_gpio_context *gs;
++
++	gs = container_of(work, struct mlxbf2_gpio_context, send_work);
++
++	acpi_bus_generate_netlink_event("button/power.*", "Power Button",
++					0x80, 1);
++}
++
++static u32 mlxbf2_gpio_get_int_mask(struct mlxbf2_gpio_context *gs)
++{
++	u32 gpio_int_mask = 0;
++
++	/*
++	 * Determine bit mask within the yu gpio block.
++	 */
++	if (gs->phy_int_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK)
++		gpio_int_mask = BIT(gs->phy_int_pin);
++	if (gs->rst_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK)
++		gpio_int_mask |= BIT(gs->rst_pin);
++	if (gs->low_pwr_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK)
++		gpio_int_mask = BIT(gs->low_pwr_pin);
++
++	return gpio_int_mask;
++}
++
++static bool mlxbf2_gpio_is_acpi_event(u32 gpio_block, unsigned long gpio_pin,
++			  struct mlxbf2_gpio_context *gs)
++{
++	if (gpio_block & BIT(GPIO_BLOCK0)) {
++		if (gpio_pin & BIT(gs->rst_pin))
++			return true;
++	}
++	if (gpio_block & BIT(GPIO_BLOCK16)) {
++		if (gpio_pin & BIT(gs->low_pwr_pin))
++			return true;
++	}
++
++	return false;
++}
++
++static irqreturn_t mlxbf2_gpio_irq_handler(int irq, void *ptr)
++{
++	struct mlxbf2_gpio_context *gs = ptr;
++	unsigned long gpio_pin;
++	u32 gpio_block, val;
++	unsigned long flags;
++
++	spin_lock_irqsave(&gs->gc.bgpio_lock, flags);
++
++	/*
++	 * Determine which yu gpio block this interrupt is for.
++	 * Return if the interrupt is not for gpio block 0 or
++	 * gpio block 16.
++	 */
++	gpio_block = readl(yu_cause_gpio_param.io);
++	if (!(gpio_block & BIT(GPIO_BLOCK0)) &&
++	    !(gpio_block & BIT(GPIO_BLOCK16))) {
++		spin_unlock_irqrestore(&gs->gc.bgpio_lock, flags);
++		return IRQ_NONE;
++	}
++
++	/*
++	 * Check if the interrupt signaled by this yu gpio block is supported.
++	 */
++	gpio_pin = readl(gs->gpio_io + YU_GPIO_CAUSE_OR_CAUSE_EVTEN0);
++	if (!(gpio_pin & gs->gpio_int_mask)) {
++		spin_unlock_irqrestore(&gs->gc.bgpio_lock, flags);
++		return IRQ_NONE;
++	}
++
++	/*
++	 * Clear interrupt when done, otherwise, no further interrupt
++	 * will be triggered.
++	 */
++	val = readl(gs->gpio_io + YU_GPIO_CAUSE_OR_CLRCAUSE);
++	val |= gpio_pin;
++	writel(val, gs->gpio_io + YU_GPIO_CAUSE_OR_CLRCAUSE);
++
++	if ((gpio_block & BIT(GPIO_BLOCK0)) && (gpio_pin & BIT(gs->phy_int_pin)))
++		generic_handle_irq(irq_find_mapping(gs->gc.irq.domain, gs->phy_int_pin));
++
++	spin_unlock_irqrestore(&gs->gc.bgpio_lock, flags);
++
++	if (mlxbf2_gpio_is_acpi_event(gpio_block, gpio_pin, gs))
++		schedule_work(&gs->send_work);
++
++	return IRQ_HANDLED;
++}
++
++static void mlxbf2_gpio_irq_unmask(struct irq_data *data)
++{
++}
++
++static void mlxbf2_gpio_irq_mask(struct irq_data *data)
++{
++}
++
++static int mlxbf2_gpio_init_hw(struct gpio_chip *gc)
++{
++	struct mlxbf2_gpio_context *gs = gpiochip_get_data(gc);
++	unsigned long flags;
++	u32 val;
++
++	spin_lock_irqsave(&gs->gc.bgpio_lock, flags);
++
++	/* Clear all interrupts */
++	val = readl(gs->gpio_io + YU_GPIO_CAUSE_OR_CLRCAUSE);
++	val |= gs->gpio_int_mask;
++	writel(val, gs->gpio_io + YU_GPIO_CAUSE_OR_CLRCAUSE);
++
++	if (gs->low_pwr_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK) {
++		val = readl(gs->gpio_io + YU_GPIO_CAUSE_RISE_EN);
++		val |= gs->gpio_int_mask;
++		writel(val, gs->gpio_io + YU_GPIO_CAUSE_RISE_EN);
++	}
++
++	val = readl(gs->gpio_io + YU_GPIO_CAUSE_FALL_EN);
++	val |= gs->gpio_int_mask;
++	writel(val, gs->gpio_io + YU_GPIO_CAUSE_FALL_EN);
++
++	/*
++	 * Setting the priority for the GPIO interrupt enables the
++	 * interrupt as well
++	 */
++	val = readl(gs->gpio_io + YU_GPIO_CAUSE_OR_EVTEN0);
++	val |= gs->gpio_int_mask;
++	writel(val, gs->gpio_io + YU_GPIO_CAUSE_OR_EVTEN0);
++
++	spin_unlock_irqrestore(&gs->gc.bgpio_lock, flags);
++
++	return 0;
++}
++
++static void mlxbf2_gpio_disable_int(struct mlxbf2_gpio_context *gs)
++{
++	unsigned long flags;
++	u32 val;
++
++	spin_lock_irqsave(&gs->gc.bgpio_lock, flags);
++	val = readl(gs->gpio_io + YU_GPIO_CAUSE_OR_EVTEN0);
++	val &= ~gs->gpio_int_mask;
++	writel(val, gs->gpio_io + YU_GPIO_CAUSE_OR_EVTEN0);
++	spin_unlock_irqrestore(&gs->gc.bgpio_lock, flags);
++}
++
++static int mlxbf2_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
++{
++	struct mlxbf2_gpio_context *gs;
++
++	gs = gpiochip_get_data(chip);
++
++	return irq_create_mapping(gs->gc.irq.domain, gpio);
++}
++
+ /* BlueField-2 GPIO driver initialization routine. */
+ static int
+ mlxbf2_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct mlxbf2_gpio_context *gs;
+ 	struct device *dev = &pdev->dev;
++	struct gpio_irq_chip *girq;
++	unsigned int low_pwr_pin;
++	unsigned int phy_int_pin;
++	unsigned int rst_pin;
+ 	struct gpio_chip *gc;
+ 	struct resource *res;
+ 	unsigned int npins;
+-	int ret;
++	const char *name;
++	int ret, irq;
++
++	name = dev_name(dev);
+ 
+ 	gs = devm_kzalloc(dev, sizeof(*gs), GFP_KERNEL);
+ 	if (!gs)
+ 		return -ENOMEM;
+ 
++	spin_lock_init(&gs->gc.bgpio_lock);
++	INIT_WORK(&gs->send_work, mlxbf2_gpio_send_work);
++
+ 	/* YU GPIO block address */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res)
+@@ -255,6 +523,12 @@ mlxbf2_gpio_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	ret = mlxbf2_gpio_get_yu_cause_gpio_res(pdev);
++	if (ret) {
++		dev_err(dev, "Failed to get yu cause_gpio_arm.coalesce0 resource\n");
++		return ret;
++	}
++
+ 	if (device_property_read_u32(dev, "npins", &npins))
+ 		npins = MLXBF2_GPIO_MAX_PINS_PER_BLOCK;
+ 
+@@ -268,18 +542,101 @@ mlxbf2_gpio_probe(struct platform_device *pdev)
+ 			NULL,
+ 			0);
+ 
++	if (ret) {
++		dev_err(dev, "bgpio_init failed\n");
++		return ret;
++	}
++
+ 	gc->direction_input = mlxbf2_gpio_direction_input;
+ 	gc->direction_output = mlxbf2_gpio_direction_output;
+ 	gc->ngpio = npins;
+ 	gc->owner = THIS_MODULE;
++	gc->to_irq = mlxbf2_gpio_to_irq;
+ 
+-	platform_set_drvdata(pdev, gs);
++	/*
++	 * PHY interrupt
++	 */
++	ret = device_property_read_u32(dev, "phy-int-pin", &phy_int_pin);
++	if (ret < 0)
++		phy_int_pin = MLXBF2_GPIO_MAX_PINS_PER_BLOCK;
++
++	/*
++	 * OCP3.0 supports the low power mode interrupt.
++	 */
++	ret = device_property_read_u32(dev, "low-pwr-pin", &low_pwr_pin);
++	if (ret < 0)
++		low_pwr_pin = MLXBF2_GPIO_MAX_PINS_PER_BLOCK;
++
++	/*
++	 * BlueSphere and the PRIS boards support the reset interrupt.
++	 */
++	ret = device_property_read_u32(dev, "rst-pin", &rst_pin);
++	if (ret < 0)
++		rst_pin = MLXBF2_GPIO_MAX_PINS_PER_BLOCK;
++
++	gs->phy_int_pin = phy_int_pin;
++	gs->low_pwr_pin = low_pwr_pin;
++	gs->rst_pin = rst_pin;
++	gs->gpio_int_mask = mlxbf2_gpio_get_int_mask(gs);
++
++	if (gs->gpio_int_mask) {
++		gs->irq_chip.name = name;
++		gs->irq_chip.irq_mask = mlxbf2_gpio_irq_mask;
++		gs->irq_chip.irq_unmask = mlxbf2_gpio_irq_unmask;
++
++		girq = &gs->gc.irq;
++		girq->chip = &gs->irq_chip;
++		/* This will let us handle the parent IRQ in the driver */
++		girq->parent_handler = NULL;
++		girq->num_parents = 0;
++		girq->parents = NULL;
++		girq->default_type = IRQ_TYPE_NONE;
++		girq->handler = handle_simple_irq;
++		girq->init_hw = mlxbf2_gpio_init_hw;
++
++		irq = platform_get_irq(pdev, 0);
++		ret = devm_request_irq(dev, irq, mlxbf2_gpio_irq_handler,
++				       IRQF_ONESHOT | IRQF_SHARED, name, gs);
++		if (ret) {
++			dev_err(dev, "failed to request IRQ");
++			return ret;
++		}
++	}
+ 
+ 	ret = devm_gpiochip_add_data(dev, &gs->gc, gs);
+ 	if (ret) {
+ 		dev_err(dev, "Failed adding memory mapped gpiochip\n");
+ 		return ret;
+ 	}
++	platform_set_drvdata(pdev, gs);
++
++	if (phy_int_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK) {
++		/* Create phy irq mapping */
++		mlxbf2_gpio_to_irq(&gs->gc, phy_int_pin);
++		/* Enable sharing the irq domain with the PHY driver */
++		irq_set_default_host(gs->gc.irq.domain);
++	}
++
++	return 0;
++}
++
++static int
++mlxbf2_gpio_remove(struct platform_device *pdev)
++{
++	struct mlxbf2_gpio_context *gs;
++
++	gs = platform_get_drvdata(pdev);
++
++	if ((gs->phy_int_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK) ||
++	    (gs->low_pwr_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK) ||
++	    (gs->rst_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK)) {
++		mlxbf2_gpio_disable_int(gs);
++	}
++
++	if ((gs->low_pwr_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK) ||
++	    (gs->rst_pin != MLXBF2_GPIO_MAX_PINS_PER_BLOCK)) {
++		flush_work(&gs->send_work);
++	}
+ 
+ 	return 0;
+ }
+@@ -323,6 +680,7 @@ static struct platform_driver mlxbf2_gpio_driver = {
+ 		.acpi_match_table = ACPI_PTR(mlxbf2_gpio_acpi_match),
+ 	},
+ 	.probe    = mlxbf2_gpio_probe,
++	.remove   = mlxbf2_gpio_remove,
+ #ifdef CONFIG_PM
+ 	.suspend  = mlxbf2_gpio_suspend,
+ 	.resume   = mlxbf2_gpio_resume,
+@@ -332,5 +690,6 @@ static struct platform_driver mlxbf2_gpio_driver = {
+ module_platform_driver(mlxbf2_gpio_driver);
+ 
+ MODULE_DESCRIPTION("Mellanox BlueField-2 GPIO Driver");
+-MODULE_AUTHOR("Mellanox Technologies");
+-MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Asmaa Mnebhi <asmaa@nvidia.com>");
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_VERSION(DRV_VERSION);
+-- 
+2.1.2
+
