@@ -2,158 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A441A3343F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 905EB3343F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbhCJQz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:55:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51638 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233502AbhCJQzF (ORCPT
+        id S233544AbhCJQza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:55:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232278AbhCJQzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:55:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615395304;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3JZ+E12Bv/rbfH/p1hytCimW8jzaBIx4fcjnzeRaUec=;
-        b=VZAbmkdjtIP2z6tG5O2GqONA6SMkHbDoYpqjUVyqLHYVjgIQ5sUT24SGobUbB2FY8doDVS
-        cqxlEFp+gP+srfGP95MRqjojFF0jG6vlolKWYpccL9pSlBfqVYMZGLE4a3C5oxeTbeR/AL
-        K2Kz0zZUOEBPXa1/hgqaHftWjzl8apY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-hg6zAUlwNXOShk3xrouNGQ-1; Wed, 10 Mar 2021 11:55:02 -0500
-X-MC-Unique: hg6zAUlwNXOShk3xrouNGQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CD7E19324A9;
-        Wed, 10 Mar 2021 16:54:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 854AA6062F;
-        Wed, 10 Mar 2021 16:54:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v4 02/28] mm: Add an unlock function for
- PG_private_2/PG_fscache
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 10 Mar 2021 16:54:49 +0000
-Message-ID: <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
-References: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 10 Mar 2021 11:55:08 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681B9C061760;
+        Wed, 10 Mar 2021 08:55:08 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id a18so24086546wrc.13;
+        Wed, 10 Mar 2021 08:55:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xvXCi+ZA93XCGEQDvUcBtJfy5hMDY05M48bcNWKSXvM=;
+        b=D+10ukdYOKCe2WcZwhUbwo5dw9yLADpXBvXlHL+PsCKlgwhSGq7dC8C4z7u6feuPd+
+         IM80iWrEb6a4bed0lZ3nKWoNxmMTzazvxLJc0Dp4IDbT9dKC0AxywZXd/2cR1vWgLD7L
+         7WhtOTqOZyDZDlXKdRu/Gwk76CfhH3YS5bErqKPSLlm7uiR89Ju6rYGkPVpaDji8FT6l
+         15NcSf6hjEJmho8SQC0Vau7z+uIdNPkCLzNzKcpqHnKO3yBNRIs17RLxe+f9T9gp4Vy+
+         xWjvDfB5a+8CuMsSpoWFMDn+WZthun5Kmprj7xjJYwQJN/fu/8vMFVSfZM+tFYtPsKG8
+         oXtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xvXCi+ZA93XCGEQDvUcBtJfy5hMDY05M48bcNWKSXvM=;
+        b=l0vBxlrtapIYPWLvyu9QUkmUP4FoKvrC46Q9YL9sQMH7s7/T4yr7NctWsFMogLLgz1
+         Ya26/fQhXB/ReB5A4szGidCe80Ydc35dSbzi+oR0lG1y+fqVFLeWDnGeNkJAMzES9hcO
+         M8Dt3Ii2fAei+RW8ikfBiFzphC6ZlxMKRzE8L/+qS+fEc4eEB+Fc0r/EEMNxhwRPwV2Y
+         FLvZjDkCzUxMQVFeFLaBPEK/1N5Mhc4oeBFsWP/sMgxaN9TbGuaQT5WvrFFqcyBRBGt3
+         m8FugRAr2BQ9HJbDvMHfK73lyutvf6QvtUWuHbSUT9wLfShuLfcyBDBroph7xNKCoWmm
+         uwzQ==
+X-Gm-Message-State: AOAM5304pkKxVIdFdKENbpt5BmI0kMsFWquzBoidWsWBGh+jLzA1cj08
+        5kwpxo7VGLdNcbXMsXTLDAc=
+X-Google-Smtp-Source: ABdhPJyDipQnv/eO+BidOVnpi3D2qrisKG6WnrnRdBYTNBUpcFjOCDjdXOyMgc986rJET5m4slm+sA==
+X-Received: by 2002:adf:a3c2:: with SMTP id m2mr4471158wrb.195.1615395307139;
+        Wed, 10 Mar 2021 08:55:07 -0800 (PST)
+Received: from [192.168.1.101] ([37.171.47.61])
+        by smtp.gmail.com with ESMTPSA id h6sm56288wmi.6.2021.03.10.08.55.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 08:55:06 -0800 (PST)
+Subject: Re: [PATCH] net: bonding: fix error return code of bond_neigh_init()
+To:     Roi Dayan <roid@nvidia.com>, Jia-Ju Bai <baijiaju1990@gmail.com>,
+        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>
+References: <20210308031102.26730-1-baijiaju1990@gmail.com>
+ <e15f36f7-6421-69a3-f10a-45b83621b96f@nvidia.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <5d4cbafa-dbad-9b66-c5be-bca6ecc8e6f3@gmail.com>
+Date:   Wed, 10 Mar 2021 17:55:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <e15f36f7-6421-69a3-f10a-45b83621b96f@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a function, unlock_page_private_2(), to unlock PG_private_2 analogous
-to that of PG_lock.  Add a kerneldoc banner to that indicating the example
-usage case.
-
-A wrapper will need to be placed in the netfs header in the patch that adds
-that.
-
-[This implements a suggestion by Linus[1] to not mix the terminology of
- PG_private_2 and PG_fscache in the mm core function]
-
-Changes:
-- Remove extern from the declaration[2].
-
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-cc: Alexander Viro <viro@zeniv.linux.org.uk>
-cc: Christoph Hellwig <hch@lst.de>
-cc: linux-mm@kvack.org
-cc: linux-cachefs@redhat.com
-cc: linux-afs@lists.infradead.org
-cc: linux-nfs@vger.kernel.org
-cc: linux-cifs@vger.kernel.org
-cc: ceph-devel@vger.kernel.org
-cc: v9fs-developer@lists.sourceforge.net
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/1330473.1612974547@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/CAHk-=wjgA-74ddehziVk=XAEMTKswPu1Yw4uaro1R3ibs27ztw@mail.gmail.com/ [1]
-Link: https://lore.kernel.org/r/20210216102659.GA27714@lst.de/ [2]
-Link: https://lore.kernel.org/r/161340387944.1303470.7944159520278177652.stgit@warthog.procyon.org.uk/ # v3
----
-
- include/linux/pagemap.h |    1 +
- mm/filemap.c            |   20 ++++++++++++++++++++
- 2 files changed, 21 insertions(+)
-
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 20225b067583..ac91b33f3873 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -591,6 +591,7 @@ extern int __lock_page_async(struct page *page, struct wait_page_queue *wait);
- extern int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
- 				unsigned int flags);
- extern void unlock_page(struct page *page);
-+void unlock_page_private_2(struct page *page);
- 
- /*
-  * Return true if the page was successfully locked
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 43700480d897..925964b67583 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1432,6 +1432,26 @@ void unlock_page(struct page *page)
- }
- EXPORT_SYMBOL(unlock_page);
- 
-+/**
-+ * unlock_page_private_2 - Unlock a page that's locked with PG_private_2
-+ * @page: The page
-+ *
-+ * Unlocks a page that's locked with PG_private_2 and wakes up sleepers in
-+ * wait_on_page_private_2().
-+ *
-+ * This is, for example, used when a netfs page is being written to a local
-+ * disk cache, thereby allowing writes to the cache for the same page to be
-+ * serialised.
-+ */
-+void unlock_page_private_2(struct page *page)
-+{
-+	page = compound_head(page);
-+	VM_BUG_ON_PAGE(!PagePrivate2(page), page);
-+	clear_bit_unlock(PG_private_2, &page->flags);
-+	wake_up_page_bit(page, PG_private_2);
-+}
-+EXPORT_SYMBOL(unlock_page_private_2);
-+
- /**
-  * end_page_writeback - end writeback against a page
-  * @page: the page
 
 
+On 3/10/21 10:24 AM, Roi Dayan wrote:
+> 
+> 
+> On 2021-03-08 5:11 AM, Jia-Ju Bai wrote:
+>> When slave is NULL or slave_ops->ndo_neigh_setup is NULL, no error
+>> return code of bond_neigh_init() is assigned.
+>> To fix this bug, ret is assigned with -EINVAL in these cases.
+>>
+>> Fixes: 9e99bfefdbce ("bonding: fix bond_neigh_init()")
+>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+>> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+>> ---
+>>   drivers/net/bonding/bond_main.c | 8 ++++++--
+>>   1 file changed, 6 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>> index 74cbbb22470b..456315bef3a8 100644
+>> --- a/drivers/net/bonding/bond_main.c
+>> +++ b/drivers/net/bonding/bond_main.c
+>> @@ -3978,11 +3978,15 @@ static int bond_neigh_init(struct neighbour *n)
+>>         rcu_read_lock();
+>>       slave = bond_first_slave_rcu(bond);
+>> -    if (!slave)
+>> +    if (!slave) {
+>> +        ret = -EINVAL;
+>>           goto out;
+>> +    }
+>>       slave_ops = slave->dev->netdev_ops;
+>> -    if (!slave_ops->ndo_neigh_setup)
+>> +    if (!slave_ops->ndo_neigh_setup) {
+>> +        ret = -EINVAL;
+>>           goto out;
+>> +    }
+>>         /* TODO: find another way [1] to implement this.
+>>        * Passing a zeroed structure is fragile,
+>>
+> 
+> 
+> Hi,
+> 
+> This breaks basic functionally that always worked. A slave doesn't need
+> to exists nor to implement ndo_neigh_setup.
+> Now trying to add a neigh entry because of that fails.
+> This commit needs to be reverted.
+> 
+> Thanks,
+> Roi
+
+Agreed, this commit made no sense, please revert.
