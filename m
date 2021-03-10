@@ -2,198 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F42333358
+	by mail.lfdr.de (Postfix) with ESMTP id 6137D33335A
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhCJCvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:51:41 -0500
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:56209 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbhCJCvP (ORCPT
+        id S232256AbhCJCvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232240AbhCJCvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:51:15 -0500
-Received: by mail-pj1-f50.google.com with SMTP id bt4so737253pjb.5;
-        Tue, 09 Mar 2021 18:51:04 -0800 (PST)
+        Tue, 9 Mar 2021 21:51:24 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45915C06174A;
+        Tue,  9 Mar 2021 18:51:13 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id e45so14967028ote.9;
+        Tue, 09 Mar 2021 18:51:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JniFH/3k/PYbYXG0TKByd1M1CyWaZyyt4TIuDk3c8vA=;
+        b=IHrbJ0mjhMEjkgOXf49n9ndKRJL1sm8noxNHpJHDYbpFUIYQtxseLmU/Dndadsi89h
+         Umrr/npmmoQER33ePi+3IoiHG4aQ3gmizN3dOulTzaOhfAS5mMY+dcsJLg3tqigwLQdt
+         44DOfiNMRNVWoLcz1+WFMLaJ3RWyt9SYdO1ajwP50IrhnHV0TaC5rpqe1NmUfpaNRdLm
+         f7fNMoImtW6Gupb09Ua8I7HhKSLNi5CJYHfdVF41/Rf8crp7M26FTsifsGtr8E2L5dat
+         rEm35UsiRn2xUIzxomNwP/X2GiScQNBUoHLBcJAFwDmADi4vGO6cFq19VZKlHFpP/0Xu
+         X1Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mbwVpoz1DQIkoT/p72Ric3YKtpuiNSl2U1hzqJm79zc=;
-        b=rdmFkjvJ7EC3FTNlIaRERfWFQmcsGv9T5pjb+f2WznJ8DnIPOtIDr1cpXwn/6eqxvf
-         mHhi02yGsT2kOj6MpTbVDuaJs1sY7xQ8z3rabSgnn6QTv1qNT4o8+QTdzL0iLTpRE16b
-         z++8ADV1+X2lz+IbnI8r4x9atYzOYFiSMSz5rjEyvsLpTO1qjJzpp6W02PtE2DwbVAIY
-         9W9Twr9p4ryLI5FitbPYSV15o997jtJ1lJ/t6OOG4cI4G1WsWmbgsxgdGhtwzRx4U8q9
-         j+Q4fh4ut4VKE9a+E4BwzAj3uNFZb35To7UDnpj54G4FMw1KsjmE9eifRUknpqWTFJpN
-         j7ig==
-X-Gm-Message-State: AOAM533WVlz9im1qrMfzQbQXc4WwEhW3jWxXesdM72NGirR20YhHBGfc
-        ZJVM/UJw0A8BkOzCsso9R5eMbZ5DPbw=
-X-Google-Smtp-Source: ABdhPJz2os2vn/MnDLi0l6SYsc5QJ3MkXszvP5w4+0qMIaSJ1t02etCjhmpKi8pkR+Cf9rmahVUaAw==
-X-Received: by 2002:a17:90a:598e:: with SMTP id l14mr1067504pji.187.1615344664255;
-        Tue, 09 Mar 2021 18:51:04 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id s19sm11491096pfh.168.2021.03.09.18.51.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 18:51:03 -0800 (PST)
-Date:   Tue, 9 Mar 2021 18:51:02 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-Subject: Re: [PATCH v10 0/7] FPGA Security Manager Class Driver
-Message-ID: <YEg0FqjHk2icadah@epycbox.lan>
-References: <20210309003540.197600-1-russell.h.weight@intel.com>
- <6f891032-8f73-5926-c137-279c2dd93041@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JniFH/3k/PYbYXG0TKByd1M1CyWaZyyt4TIuDk3c8vA=;
+        b=P2Srbh7h1/mIhxrYuEEZGg7yNXlB9PfDrJhEz0c4HFm0g4pmfa/q0g/xMucaQUEkg9
+         238j+Xj5So9HdrHQVHzsyZ99BxBdk8sqELGrdlzLUi7be9SF83xn/BzWtfjoxaQ1+L0n
+         KsMzalTxi4SyzDZDfOYArTkdYUJsAYcb8Wj4fcL4hmaMI4hviEckjHQgIsYmLmLdzOLh
+         ylfy04SSJ04HhNriG/iOOpnUT6tplBHBBqs50tKEODa4fHdfW4O3bmUEZ/x+UqRddMFC
+         uymTtRMDoY2C6Yn1NzaVNE9s5r6IhfUO+3X89vH5Gqx06kA8De0S7AN0XWzH8SpdkoKC
+         DdXg==
+X-Gm-Message-State: AOAM5338Yc722bN1X1U+az1qXPZGTqEPLSXnyWjwiq/I3Ayffi5SH+y/
+        Vs7e3JJv4xlas1HCcsZ7Ezw9mB0Tj7L9Z2dyyIo=
+X-Google-Smtp-Source: ABdhPJyZ1asGGJjLJfX11lxrwv4ZPQiQ77qJFFu8hargl6jeehotVLUEkKj/pv/IORnOVJLkzbtcwe47d5w5WnkNe4k=
+X-Received: by 2002:a9d:6c8b:: with SMTP id c11mr1028652otr.52.1615344672621;
+ Tue, 09 Mar 2021 18:51:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f891032-8f73-5926-c137-279c2dd93041@redhat.com>
+References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
+ <1615294733-22761-8-git-send-email-aisheng.dong@nxp.com> <de25cd22-7f17-5902-21d3-881e3128dd31@gmail.com>
+In-Reply-To: <de25cd22-7f17-5902-21d3-881e3128dd31@gmail.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Wed, 10 Mar 2021 10:51:12 +0800
+Message-ID: <CAA+hA=SAtQnFb3zUXzc_jfk=GnWe2Z2K0gAFXh4fnnCC9mP+ag@mail.gmail.com>
+Subject: Re: [PATCH 07/11] PM / devfreq: check get_dev_status before start monitor
+To:     Chanwoo Choi <cwchoi00@gmail.com>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Abel Vesa <abel.vesa@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
-On Tue, Mar 09, 2021 at 08:03:09AM -0800, Tom Rix wrote:
-> Moritz,
-> 
-> This and the next patchset apply to today's char-misc-next.
-> 
-> However they conflicts with other in flight linux-fpga patchsets.
-> 
-> Since I believe these patchsets came first, I think they should have preference.
+On Tue, Mar 9, 2021 at 11:58 PM Chanwoo Choi <cwchoi00@gmail.com> wrote:
+>
+> On 21. 3. 9. =EC=98=A4=ED=9B=84 9:58, Dong Aisheng wrote:
+> > The devfreq monitor depends on the device to provide load information
+> > by .get_dev_status() to calculate the next target freq.
+> >
+> > And this will cause changing governor to simple ondemand fail
+> > if device can't support.
+> >
+> > Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> > ---
+> >   drivers/devfreq/devfreq.c                 | 10 +++++++---
+> >   drivers/devfreq/governor.h                |  2 +-
+> >   drivers/devfreq/governor_simpleondemand.c |  3 +--
+> >   3 files changed, 9 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> > index 7231fe6862a2..d1787b6c7d7c 100644
+> > --- a/drivers/devfreq/devfreq.c
+> > +++ b/drivers/devfreq/devfreq.c
+> > @@ -482,10 +482,13 @@ static void devfreq_monitor(struct work_struct *w=
+ork)
+> >    * to be called from governor in response to DEVFREQ_GOV_START
+> >    * event when device is added to devfreq framework.
+> >    */
+> > -void devfreq_monitor_start(struct devfreq *devfreq)
+> > +int devfreq_monitor_start(struct devfreq *devfreq)
+> >   {
+> >       if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
+> > -             return;
+> > +             return 0;
+> > +
+> > +     if (!devfreq->profile->get_dev_status)
+> > +             return -EINVAL;
+> >
+> >       switch (devfreq->profile->timer) {
+> >       case DEVFREQ_TIMER_DEFERRABLE:
+> > @@ -495,12 +498,13 @@ void devfreq_monitor_start(struct devfreq *devfre=
+q)
+> >               INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
+> >               break;
+> >       default:
+> > -             return;
+> > +             return -EINVAL;
+> >       }
+> >
+> >       if (devfreq->profile->polling_ms)
+> >               queue_delayed_work(devfreq_wq, &devfreq->work,
+> >                       msecs_to_jiffies(devfreq->profile->polling_ms));
+> > +     return 0;
+> >   }
+> >   EXPORT_SYMBOL(devfreq_monitor_start);
+> >
+> > diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
+> > index 5cee3f64fe2b..31af6d072a10 100644
+> > --- a/drivers/devfreq/governor.h
+> > +++ b/drivers/devfreq/governor.h
+> > @@ -75,7 +75,7 @@ struct devfreq_governor {
+> >                               unsigned int event, void *data);
+> >   };
+> >
+> > -void devfreq_monitor_start(struct devfreq *devfreq);
+> > +int devfreq_monitor_start(struct devfreq *devfreq);
+> >   void devfreq_monitor_stop(struct devfreq *devfreq);
+> >   void devfreq_monitor_suspend(struct devfreq *devfreq);
+> >   void devfreq_monitor_resume(struct devfreq *devfreq);
+> > diff --git a/drivers/devfreq/governor_simpleondemand.c b/drivers/devfre=
+q/governor_simpleondemand.c
+> > index d57b82a2b570..ea287b57cbf3 100644
+> > --- a/drivers/devfreq/governor_simpleondemand.c
+> > +++ b/drivers/devfreq/governor_simpleondemand.c
+> > @@ -89,8 +89,7 @@ static int devfreq_simple_ondemand_handler(struct dev=
+freq *devfreq,
+> >   {
+> >       switch (event) {
+> >       case DEVFREQ_GOV_START:
+> > -             devfreq_monitor_start(devfreq);
+> > -             break;
+> > +             return devfreq_monitor_start(devfreq);
+> >
+> >       case DEVFREQ_GOV_STOP:
+> >               devfreq_monitor_stop(devfreq);
+> >
+>
+> Need to handle the all points of devfreq_monitor_start() usage.
+> please check the tegra30-devfreq.c for this update.
+>
+> $ grep -rn "devfreq_monitor_start" drivers/
+> drivers/devfreq/governor_simpleondemand.c:92:
+> devfreq_monitor_start(devfreq);
+> drivers/devfreq/tegra30-devfreq.c:744:          devfreq_monitor_start(dev=
+freq);
 
-I'm not sure what the ask here is, do you expect me to back out the
-applied patches?
+I can add error check for tegra in the next versions.
+Thanks
 
-Conflicts will happen, it's part of working with git.
+Regards
+Aisheng
 
-> This feature of updating is needed for the basic operation of the fpga.
-> 
-> Tom
-> 
-> On 3/8/21 4:35 PM, Russ Weight wrote:
-> > The FPGA Security Manager class driver provides a common
-> > API for user-space tools to manage updates for secure FPGA
-> > devices. Device drivers that instantiate the FPGA Security
-> > Manager class driver will interact with a HW secure update
-> > engine in order to transfer new FPGA and BMC images to FLASH so
-> > that they will be automatically loaded when the FPGA card reboots.
-> >
-> > A significant difference between the FPGA Manager and the FPGA 
-> > Security Manager is that the FPGA Manager does a live update (Partial
-> > Reconfiguration) to a device whereas the FPGA Security Manager
-> > updates the FLASH images for the Static Region and the BMC so that
-> > they will be loaded the next time the FPGA card boots. Security is
-> > enforced by hardware and firmware. The security manager interacts
-> > with the firmware to initiate an update, pass in the necessary data,
-> > and collect status on the update.
-> >
-> > The n3000bmc-secure driver is the first driver to use the FPGA
-> > Security Manager. This driver was previously submitted in the same
-> > patch set, but has been split out into a separate patch set starting
-> > with V2. Future devices will also make use of this common API for
-> > secure updates.
-> >
-> > In addition to managing secure updates of the FPGA and BMC images,
-> > the FPGA Security Manager update process may also be used to
-> > program root entry hashes and cancellation keys for the FPGA static
-> > region, the FPGA partial reconfiguration region, and the BMC.
-> > The image files are self-describing, and contain a header describing
-> > the image type.
-> >
-> > Secure updates make use of the request_firmware framework, which
-> > requires that image files are accessible under /lib/firmware. A request
-> > for a secure update returns immediately, while the update itself
-> > proceeds in the context of a kernel worker thread. Sysfs files provide
-> > a means for monitoring the progress of a secure update and for
-> > retrieving error information in the event of a failure.
-> >
-> > The API includes a "name" sysfs file to export the name of the parent
-> > driver. It also includes an "update" sub-directory containing files that
-> > that can be used to instantiate and monitor a secure update.
-> >
-> > Changelog v9 -> v10:
-> >   - Rebased to 5.12-rc2 next
-> >   - Updated Date and KernelVersion in ABI documentation
-> >
-> > Changelog v8 -> v9:
-> >   - Rebased patches for 5.11-rc2
-> >   - Updated Date and KernelVersion in ABI documentation
-> >
-> > Changelog v7 -> v8:
-> >   - Fixed grammatical error in Documentation/fpga/fpga-sec-mgr.rst
-> >
-> > Changelog v6 -> v7:
-> >   - Changed dates in documentation file to December 2020
-> >   - Changed filename_store() to use kmemdup_nul() instead of
-> >     kstrndup() and changed the count to not assume a line-return.
-> >
-> > Changelog v5 -> v6:
-> >   - Removed sysfs support and documentation for the display of the
-> >     flash count, root entry hashes, and code-signing-key cancelation
-> >     vectors from the class driver. This information can vary by device
-> >     and will instead be displayed by the device-specific parent driver.
-> >
-> > Changelog v4 -> v5:
-> >   - Added the devm_fpga_sec_mgr_unregister() function, following recent
-> >     changes to the fpga_manager() implementation.
-> >   - Changed most of the *_show() functions to use sysfs_emit()
-> >     instead of sprintf(
-> >   - When checking the return values for functions of type enum
-> >     fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
-> >
-> > Changelog v3 -> v4:
-> >   - This driver is generic enough that it could be used for non Intel
-> >     FPGA devices. Changed from "Intel FPGA Security Manager" to FPGA
-> >     Security Manager" and removed unnecessary references to "Intel".
-> >   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-> >     Note that this also affects some filenames.
-> >
-> > Changelog v2 -> v3:
-> >   - Use dev_err() to report invalid progress in sec_progress()
-> >   - Use dev_err() to report invalid error code in sec_error()
-> >   - Modified sysfs handler check in check_sysfs_handler() to make
-> >     it more readable.
-> >   - Removed unnecessary "goto done"
-> >   - Added a comment to explain imgr->driver_unload in
-> >     ifpga_sec_mgr_unregister()
-> >
-> > Changelog v1 -> v2:
-> >   - Separated out the MAX10 BMC Security Engine to be submitted in
-> >     a separate patch-set.
-> >   - Bumped documentation dates and versions
-> >   - Split ifpga_sec_mgr_register() into create() and register() functions
-> >   - Added devm_ifpga_sec_mgr_create()
-> >   - Added Documentation/fpga/ifpga-sec-mgr.rst 
-> >   - Changed progress state "read_file" to "reading"
-> >   - Added sec_error() function (similar to sec_progress())
-> >   - Removed references to bmc_flash_count & smbus_flash_count (not supported)
-> >   - Removed typedefs for imgr ops
-> >   - Removed explicit value assignments in enums
-> >   - Other minor code cleanup per review comments 
-> >
-> > Russ Weight (7):
-> >   fpga: sec-mgr: fpga security manager class driver
-> >   fpga: sec-mgr: enable secure updates
-> >   fpga: sec-mgr: expose sec-mgr update status
-> >   fpga: sec-mgr: expose sec-mgr update errors
-> >   fpga: sec-mgr: expose sec-mgr update size
-> >   fpga: sec-mgr: enable cancel of secure update
-> >   fpga: sec-mgr: expose hardware error info
-> >
-> >  .../ABI/testing/sysfs-class-fpga-sec-mgr      |  81 +++
-> >  Documentation/fpga/fpga-sec-mgr.rst           |  44 ++
-> >  Documentation/fpga/index.rst                  |   1 +
-> >  MAINTAINERS                                   |   9 +
-> >  drivers/fpga/Kconfig                          |   9 +
-> >  drivers/fpga/Makefile                         |   3 +
-> >  drivers/fpga/fpga-sec-mgr.c                   | 652 ++++++++++++++++++
-> >  include/linux/fpga/fpga-sec-mgr.h             | 100 +++
-> >  8 files changed, 899 insertions(+)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-> >  create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
-> >  create mode 100644 drivers/fpga/fpga-sec-mgr.c
-> >  create mode 100644 include/linux/fpga/fpga-sec-mgr.h
-> >
-> 
+> ......
+>
+> --
+> Best Regards,
+> Samsung Electronics
+> Chanwoo Choi
