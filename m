@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FDB333F04
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEBC333F3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234077AbhCJN3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:29:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47832 "EHLO mail.kernel.org"
+        id S234244AbhCJNbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:31:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233303AbhCJNZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC92965076;
-        Wed, 10 Mar 2021 13:25:17 +0000 (UTC)
+        id S233313AbhCJNZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9ADD6504F;
+        Wed, 10 Mar 2021 13:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382719;
-        bh=sgVJ+WOVytuzFlmq7rCaFiHs9BRA/2rO2xCfhESZ41Q=;
+        s=korg; t=1615382720;
+        bh=ZjTosE1btrgNQ9yia2PYQqA6APnbfePX61NsH64nF20=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1qfKyZPbHKtqQbm2CcsvMOINMmZDhgAL0KqXP1danTfYonq7CXLWU8mmQcRQ2ZCpE
-         w6Ye4MtMB+1V4+CzHiwPpBzaygG5hjsmjXaJ8e5OIqUZZDB4bSPKOAcISKaUe6SewL
-         KFSGBM11LL1a5QBx/YD7CwLAVwUnWSq6lWw2g+eM=
+        b=HTz6+XAWwY+OHDCEUrc0+aG3WxZwDBuJWRhJfkHeDIsJr3jgsTVTefkSg109ZPePL
+         hxJKbyO6Dqswnq+PbD4imdGuyJZi4H91LzpbClCMzvDpkm0HswrSNsARUmu3oBHYqt
+         6uLeA3jhL67eVYsRFvwXlP1YYWryQuoCZSWiBW4A=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Bart Van Assche <bart.vanassche@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>
-Subject: [PATCH 4.19 15/39] virtio-blk: modernize sysfs attribute creation
-Date:   Wed, 10 Mar 2021 14:24:23 +0100
-Message-Id: <20210310132320.206766651@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 16/39] ALSA: ctxfi: cthw20k2: fix mask on conf to allow 4 bits
+Date:   Wed, 10 Mar 2021 14:24:24 +0100
+Message-Id: <20210310132320.236653992@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
 References: <20210310132319.708237392@linuxfoundation.org>
@@ -45,137 +41,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Hannes Reinecke <hare@suse.de>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit e982c4d0a29b1d61fbe7716a8dcf8984936d6730 upstream.
+[ Upstream commit 26a9630c72ebac7c564db305a6aee54a8edde70e ]
 
-Use new-style DEVICE_ATTR_RO/DEVICE_ATTR_RW to create the sysfs attributes
-and register the disk with default sysfs attribute groups.
+Currently the mask operation on variable conf is just 3 bits so
+the switch statement case value of 8 is unreachable dead code.
+The function daio_mgr_dao_init can be passed a 4 bit value,
+function dao_rsc_init calls it with conf set to:
 
-Signed-off-by: Hannes Reinecke <hare@suse.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Reviewed-by: Bart Van Assche <bart.vanassche@wdc.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+     conf = (desc->msr & 0x7) | (desc->passthru << 3);
+
+so clearly when desc->passthru is set to 1 then conf can be
+at least 8.
+
+Fix this by changing the mask to 0xf.
+
+Fixes: 8cc72361481f ("ALSA: SB X-Fi driver merge")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210227001527.1077484-1-colin.king@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/virtio_blk.c |   68 +++++++++++++++++++++++++--------------------
- 1 file changed, 39 insertions(+), 29 deletions(-)
+ sound/pci/ctxfi/cthw20k2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -423,8 +423,8 @@ static int minor_to_index(int minor)
- 	return minor >> PART_BITS;
- }
+diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
+index 3c966fafc754..6c9ab602212e 100644
+--- a/sound/pci/ctxfi/cthw20k2.c
++++ b/sound/pci/ctxfi/cthw20k2.c
+@@ -995,7 +995,7 @@ static int daio_mgr_dao_init(void *blk, unsigned int idx, unsigned int conf)
  
--static ssize_t virtblk_serial_show(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t serial_show(struct device *dev,
-+			   struct device_attribute *attr, char *buf)
- {
- 	struct gendisk *disk = dev_to_disk(dev);
- 	int err;
-@@ -443,7 +443,7 @@ static ssize_t virtblk_serial_show(struc
- 	return err;
- }
- 
--static DEVICE_ATTR(serial, 0444, virtblk_serial_show, NULL);
-+static DEVICE_ATTR_RO(serial);
- 
- /* The queue's logical block size must be set before calling this */
- static void virtblk_update_capacity(struct virtio_blk *vblk, bool resize)
-@@ -619,8 +619,8 @@ static const char *const virtblk_cache_t
- };
- 
- static ssize_t
--virtblk_cache_type_store(struct device *dev, struct device_attribute *attr,
--			 const char *buf, size_t count)
-+cache_type_store(struct device *dev, struct device_attribute *attr,
-+		 const char *buf, size_t count)
- {
- 	struct gendisk *disk = dev_to_disk(dev);
- 	struct virtio_blk *vblk = disk->private_data;
-@@ -638,8 +638,7 @@ virtblk_cache_type_store(struct device *
- }
- 
- static ssize_t
--virtblk_cache_type_show(struct device *dev, struct device_attribute *attr,
--			 char *buf)
-+cache_type_show(struct device *dev, struct device_attribute *attr, char *buf)
- {
- 	struct gendisk *disk = dev_to_disk(dev);
- 	struct virtio_blk *vblk = disk->private_data;
-@@ -649,12 +648,38 @@ virtblk_cache_type_show(struct device *d
- 	return snprintf(buf, 40, "%s\n", virtblk_cache_types[writeback]);
- }
- 
--static const struct device_attribute dev_attr_cache_type_ro =
--	__ATTR(cache_type, 0444,
--	       virtblk_cache_type_show, NULL);
--static const struct device_attribute dev_attr_cache_type_rw =
--	__ATTR(cache_type, 0644,
--	       virtblk_cache_type_show, virtblk_cache_type_store);
-+static DEVICE_ATTR_RW(cache_type);
-+
-+static struct attribute *virtblk_attrs[] = {
-+	&dev_attr_serial.attr,
-+	&dev_attr_cache_type.attr,
-+	NULL,
-+};
-+
-+static umode_t virtblk_attrs_are_visible(struct kobject *kobj,
-+		struct attribute *a, int n)
-+{
-+	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct gendisk *disk = dev_to_disk(dev);
-+	struct virtio_blk *vblk = disk->private_data;
-+	struct virtio_device *vdev = vblk->vdev;
-+
-+	if (a == &dev_attr_cache_type.attr &&
-+	    !virtio_has_feature(vdev, VIRTIO_BLK_F_CONFIG_WCE))
-+		return S_IRUGO;
-+
-+	return a->mode;
-+}
-+
-+static const struct attribute_group virtblk_attr_group = {
-+	.attrs = virtblk_attrs,
-+	.is_visible = virtblk_attrs_are_visible,
-+};
-+
-+static const struct attribute_group *virtblk_attr_groups[] = {
-+	&virtblk_attr_group,
-+	NULL,
-+};
- 
- static int virtblk_init_request(struct blk_mq_tag_set *set, struct request *rq,
- 		unsigned int hctx_idx, unsigned int numa_node)
-@@ -858,24 +883,9 @@ static int virtblk_probe(struct virtio_d
- 	virtblk_update_capacity(vblk, false);
- 	virtio_device_ready(vdev);
- 
--	device_add_disk(&vdev->dev, vblk->disk, NULL);
--	err = device_create_file(disk_to_dev(vblk->disk), &dev_attr_serial);
--	if (err)
--		goto out_del_disk;
--
--	if (virtio_has_feature(vdev, VIRTIO_BLK_F_CONFIG_WCE))
--		err = device_create_file(disk_to_dev(vblk->disk),
--					 &dev_attr_cache_type_rw);
--	else
--		err = device_create_file(disk_to_dev(vblk->disk),
--					 &dev_attr_cache_type_ro);
--	if (err)
--		goto out_del_disk;
-+	device_add_disk(&vdev->dev, vblk->disk, virtblk_attr_groups);
- 	return 0;
- 
--out_del_disk:
--	del_gendisk(vblk->disk);
--	blk_cleanup_queue(vblk->disk->queue);
- out_free_tags:
- 	blk_mq_free_tag_set(&vblk->tag_set);
- out_put_disk:
+ 	if (idx < 4) {
+ 		/* S/PDIF output */
+-		switch ((conf & 0x7)) {
++		switch ((conf & 0xf)) {
+ 		case 1:
+ 			set_field(&ctl->txctl[idx], ATXCTL_NUC, 0);
+ 			break;
+-- 
+2.30.1
+
 
 
