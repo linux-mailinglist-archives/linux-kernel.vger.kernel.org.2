@@ -2,159 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FDE333592
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B55D333598
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhCJFvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 00:51:10 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:26840 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhCJFut (ORCPT
+        id S231686AbhCJFxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 00:53:55 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4772 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232156AbhCJFxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 00:50:49 -0500
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210310055047epoutp03ead9701a4c436a371aa86a06bc1faa8f~q5TiGhPj20729507295epoutp03I
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:50:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210310055047epoutp03ead9701a4c436a371aa86a06bc1faa8f~q5TiGhPj20729507295epoutp03I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615355447;
-        bh=F6yiK3eZ5ZuvXhGR+yvTsN5lbrwcylNRqemOzFd7w64=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=c8nC9iiDqg5oxA/XyxKUMzZpeUKt5LarBnAZ3y+QTk46fSB1wVGvO1gVG9RTQwVt2
-         eQ0zlTRqmdlbOd5jDYJwjrDmntz6jztA2/ama9XHT7qY0Aut0KR9FUNThL391JJROl
-         i8tg3dXKe+L0Lc5OnWgUpahVA+a7Jr98A4sk89mI=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210310055046epcas5p1a72bf00c8765de71d1a14e21eb42f1fd~q5ThgK8e33090830908epcas5p1x;
-        Wed, 10 Mar 2021 05:50:46 +0000 (GMT)
-X-AuditID: b6c32a49-8bfff70000013d42-75-60485e3683e8
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6D.6A.15682.63E58406; Wed, 10 Mar 2021 14:50:46 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: [PATCH v2] arm: print alloc free paths for address in registers
-Reply-To: maninder1.s@samsung.com
-Sender: Maninder Singh <maninder1.s@samsung.com>
-From:   Maninder Singh <maninder1.s@samsung.com>
-To:     "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "cl@linux.com" <cl@linux.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>
-CC:     Maninder Singh <maninder1.s@samsung.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
-        Vaneet Narang <v.narang@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <1614239800-27549-1-git-send-email-maninder1.s@samsung.com>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210310055035epcms5p230de287f0daec198eb334b3348d07924@epcms5p2>
-Date:   Wed, 10 Mar 2021 11:20:35 +0530
-X-CMS-MailID: 20210310055035epcms5p230de287f0daec198eb334b3348d07924
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJKsWRmVeSWpSXmKPExsWy7bCmhq5ZnEeCwbfTyhYXd6dazFm/hs3i
-        +rc3jBYru5vZLDY9vsZqcXnXHDaLe2v+s1ocmrqX0eLw/DYWi7bP/1gt2pZsZLI4dHIuo8Xs
-        xj5GB16Py9cuMnss2FTqsWlVJ5vHpk+T2D263l5h8jgx4zeLx5Mr05k8Ni+p9+jbsorR48yC
-        I+wenzfJBXBHcdmkpOZklqUW6dslcGWc6X/DVHBVrOL//jNsDYw7hLoYOTkkBEwkJrw4zA5i
-        CwnsZpR43e7ZxcjBwSsgKPF3hzBIWFjAR+LAzBeMECWKEhdmrGEEKREWMJD4tVUDJMwmoCex
-        atceli5GLg4RgYNMErMuPANzmAV2M0nsPj+dFWIXr8SM9qcsELa0xPblW8GGcgp4SHx6M4UR
-        Ii4qcXP1W3YY+/2x+VBxEYnWe2eZIWxBiQc/d0PFZSRWb+4FWyYh0M0o8fhHM1TzHEaJH0t8
-        IGxzid0b5oEt5hXwlfje3Q12EIuAqsTyE4+hDnKReLfoGNhQZgF5ie1v5zCDfMksoCmxfpc+
-        RImsxNRT65ggSvgken8/YYL5a8c8GFtVouXmBlaYHz9//Ag13kPiTcs2RpA7hQT6GSXW/ZjL
-        PoFRYRYirGch2TwLYfMCRuZVjJKpBcW56anFpgWGeanlesWJucWleel6yfm5mxjBqU3Lcwfj
-        3Qcf9A4xMnEwHmKU4GBWEuH1O+6WIMSbklhZlVqUH19UmpNafIhRmoNFSZx3h8GDeCGB9MSS
-        1OzU1ILUIpgsEwenVAMTp8XDdwkFzJ9CE49a+syYKTlj1v93C29FXxWx0wr8t7tU78XjhHdv
-        OzXvzj2xIUJ6k7VVX9UJgdNnop50rHgs3JlsyRPu++bLH3MbxXk1zAe7Es9V/Ztw2lazVuPu
-        I6Pz4uufNJ99+d+k+5L01gMfLv562LNU9OLWs72XtDZb+K5YXpL255xgZeD/5H3Per84zZBK
-        //F6x7d506eVdKeKrVp080bB7W1ux1/pxmvX33WfIBKrxrPTrYaHgTd42duk6iUhE17vuWUh
-        YBua9F3lwJtKHy6jgEvHze8dK9Fgjt703rWAbW2E5fZfijvTyjc83BicuLaRXSD7DDf7ZtcG
-        oe4zVeeS1OsKvrj6v56sqMRSnJFoqMVcVJwIAJkNKTfcAwAA
-X-CMS-RootMailID: 20210225075653epcas5p3d9551f01177d0c851c9c37f6ae84f38d
-References: <1614239800-27549-1-git-send-email-maninder1.s@samsung.com>
-        <CGME20210225075653epcas5p3d9551f01177d0c851c9c37f6ae84f38d@epcms5p2>
+        Wed, 10 Mar 2021 00:53:32 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12A5WxUC182649;
+        Wed, 10 Mar 2021 00:52:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=9JpVg7aTOVQ4fp+YnR+/y7NKUVon7nuBy31an7KLqjI=;
+ b=WJCgLGwHcakd6h6lyr92Th9Nfr/91E83wD295NIdNs1UV5o0CDkbpCRgAFA/GfhevKP+
+ SCgoLCltV5oqfDoEPiQBbMnZgWyBIRbPRfE/+q9e8k7xhjfyERkPAER/EDZl5ClWLkxL
+ vg2ZO3RLgEpCyymji40zphNnUfdgDQ1yXzyXLFAwQ6nmSHe5xtV/nNuLznprwZlQCuz8
+ 3tlvGtqUnR5fI2RmSia3NE5QANR8o/x/cb+d3Z9oxzX7HckgyQuzyQ1uM/bqyq9QlyYV
+ H4m9/B4Yl3akV8o4vuK4T/8s+Z22wC4RruI8fjicLHQiBzCW+8Um1epdEkChKmXbvVzh 3A== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 376j2kfv0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 00:52:49 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12A5hZmk028949;
+        Wed, 10 Mar 2021 05:52:47 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 376agr09yq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 05:52:46 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12A5qiM944957984
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Mar 2021 05:52:44 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9AFBB5204F;
+        Wed, 10 Mar 2021 05:52:44 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 4D07152054;
+        Wed, 10 Mar 2021 05:52:42 +0000 (GMT)
+Date:   Wed, 10 Mar 2021 11:22:41 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: Re: [PATCH] sched/fair: Prefer idle CPU to cache affinity
+Message-ID: <20210310055241.GO2028034@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
+ <CAKfTPtA2XSmqt1L2X9WvdtdA5eqNYuhSws8jDOr1HA1xqXWfDQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtA2XSmqt1L2X9WvdtdA5eqNYuhSws8jDOr1HA1xqXWfDQ@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-10_03:2021-03-09,2021-03-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 phishscore=0 spamscore=0 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 clxscore=1015 mlxscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103100027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+* Vincent Guittot <vincent.guittot@linaro.org> [2021-03-08 14:52:39]:
 
-Any comments or updates?
+> On Fri, 26 Feb 2021 at 17:41, Srikar Dronamraju
+> <srikar@linux.vnet.ibm.com> wrote:
+> >
 
->Sender : Maninder Singh <maninder1.s@samsung.com> Engineer/Platform S/W Group /SRI-Delhi/Samsung Electronics 
->Date : 2021-02-25 13:57 (GMT+5:30)
->Title : [PATCH v2] arm: print alloc free paths for address in registers
-> 
->In case of "Use After Free" kernel OOPs, free path of object
->is required to debug futher.
->And in most of cases object address is present in one of registers.
-> 
->Thus check for register address and if it belongs to slab,
->print its alloc and free path.
-> 
->e.g. in below issue  register r6 belongs to slab, and use after free issue
->occurred on one of its derefer values:
-> 
->[  124.310386] (ptrval)
->[  124.312647] 8<--- cut here ---
->[  124.313761] Unable to handle kernel paging request at virtual address 6b6b6b6f
->[  124.315972] pgd = (ptrval)
->...
->[  124.328290] pc : [<c052fc0c>]    lr : [<c052fc00>]    psr: 60000013
->[  124.330349] sp : c8993d28  ip : 0000bff4  fp : c8ae2020
->[  124.332071] r10: 00000000  r9 : 00000001  r8 : c1804cc8
->[  124.333803] r7 : 00000000  r6 : c8ae9180  r5 : c1804a80  r4 : c8ae2008
->[  124.335936] r3 : 6b6b6b6b  r2 : 315049d6  r1 : 2d867000  r0 : c1396584
->..
->[  124.365233] register r6: c8ae9180 belongs to slab object
->[  124.366364] INFO: Allocated in meminfo_proc_show+0x3c/0x500 age=1 cpu=0 pid=69
->[  124.367545]  meminfo_proc_show+0x3c/0x500
->[  124.368271]  seq_read_iter+0x10c/0x4bc
->[  124.368994]  proc_reg_read_iter+0x74/0xa8
->[  124.369712]  generic_file_splice_read+0xe8/0x178
->[  124.370496]  splice_direct_to_actor+0xe0/0x2b8
->[  124.371261]  do_splice_direct+0xa4/0xdc
->[  124.371917]  do_sendfile+0x1c4/0x3ec
->[  124.372550]  sys_sendfile64+0x128/0x130
->[  124.373109]  ret_fast_syscall+0x0/0x54
->[  124.373664]  0xbe9a2de4
->[  124.374081] INFO: Freed in meminfo_proc_show+0x5c/0x500 age=1 cpu=0 pid=69
->[  124.374933]  meminfo_proc_show+0x5c/0x500
->[  124.375485]  seq_read_iter+0x10c/0x4bc
->[  124.376020]  proc_reg_read_iter+0x74/0xa8
->[  124.376643]  generic_file_splice_read+0xe8/0x178
->[  124.377331]  splice_direct_to_actor+0xe0/0x2b8
->[  124.378022]  do_splice_direct+0xa4/0xdc
->[  124.378633]  do_sendfile+0x1c4/0x3ec
->[  124.379220]  sys_sendfile64+0x128/0x130
->[  124.379822]  ret_fast_syscall+0x0/0x54
->[  124.380421]  0xbe9a2de4
-> 
->Co-developed-by: Vaneet Narang <v.narang@samsung.com>
->Signed-off-by: Vaneet Narang <v.narang@samsung.com>
->Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
->---
->v1 -> v2: do address sanity with virt_addr_valid
-> 
-> arch/arm/include/asm/bug.h |  1 +
-> arch/arm/kernel/process.c  | 18 ++++++++++++++++++
-> arch/arm/kernel/traps.c    |  1 +
-> include/linux/slab.h       | 14 ++++++++++++++
-> mm/slab.h                  |  7 -------
-> mm/slub.c                  | 18 ++++++++++++++++++
-> 6 files changed, 52 insertions(+), 7 deletions(-)
- 
+Thanks Vincent for your review comments.
 
-Thanks,
-Maninder Singh
+> > +static int prefer_idler_llc(int this_cpu, int prev_cpu, int sync)
+> > +{
+> > +       struct sched_domain_shared *tsds, *psds;
+> > +       int pnr_busy, pllc_size, tnr_busy, tllc_size, diff;
+> > +
+> > +       tsds = rcu_dereference(per_cpu(sd_llc_shared, this_cpu));
+> > +       tnr_busy = atomic_read(&tsds->nr_busy_cpus);
+> > +       tllc_size = per_cpu(sd_llc_size, this_cpu);
+> > +
+> > +       psds = rcu_dereference(per_cpu(sd_llc_shared, prev_cpu));
+> > +       pnr_busy = atomic_read(&psds->nr_busy_cpus);
+> > +       pllc_size = per_cpu(sd_llc_size, prev_cpu);
+> > +
+> > +       /* No need to compare, if both LLCs are fully loaded */
+> > +       if (pnr_busy == pllc_size && tnr_busy == pllc_size)
+> > +               return nr_cpumask_bits;
+> > +
+> > +       if (sched_feat(WA_WAKER) && tnr_busy < tllc_size)
+> > +               return this_cpu;
+> 
+> Why have you chosen to favor this_cpu instead of prev_cpu unlike for wake_idle ?
+
+At this point, we know the waker running on this_cpu and wakee which was
+running on prev_cpu are affine to each other and this_cpu and prev_cpu dont
+share cache. I chose to move them close to each other to benefit from the
+cache sharing. Based on feedback from Peter and Rik, I made the check more
+conservative i.e tnr_busy <= tllc_size/smt_weight (where smt_weight is the
+cpumask weight of smt domain for this_cpu) i.e if we have a free core in
+this llc domain, chose this_cpu.  select_idle_sibling() should pick an idle
+cpu/core/smt within the llc domain for this_cpu.
+
+Do you feel, this may not be the correct option?
+
+We are also experimenting with another option, were we call prefer_idler_cpu
+after wa_weight. I.e 
+1. if wake_affine_weight choses this_cpu but llc in prev_cpu has an idle
+smt/CPU but there are no idle smt/CPU in this_cpu, then chose idle smt/CPU
+in prev_cpu
+2. if wake_affine_weight choses nr_cpumask(aka prev_cpu) but llc in this_cpu
+has an idle smt/CPU but there are no idle smt/CPU in prev_cpu, then chose
+idle smt/CPU in this_cpu
+
+
+> > +
+> > +       /* For better wakeup latency, prefer idler LLC to cache affinity */
+> > +       diff = tnr_busy * pllc_size - sync - pnr_busy * tllc_size;
+> > +       if (!diff)
+> > +               return nr_cpumask_bits;
+> > +       if (diff < 0)
+> > +               return this_cpu;
+> > +
+> > +       return prev_cpu;
+> > +}
+> > +
+> >  static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+> >                        int this_cpu, int prev_cpu, int sync)
+> >  {
+> > @@ -5877,6 +5907,10 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+> >         if (sched_feat(WA_IDLE))
+> >                 target = wake_affine_idle(this_cpu, prev_cpu, sync);
+> >
+> > +       if (sched_feat(WA_IDLER_LLC) && target == nr_cpumask_bits &&
+> > +                               !cpus_share_cache(this_cpu, prev_cpu))
+> > +               target = prefer_idler_llc(this_cpu, prev_cpu, sync);
+> 
+> could you use the same naming convention as others function ?
+> wake_affine_llc as an example
+
+I guess you meant s/prefer_idler_llc/wake_affine_llc/
+Sure. I can modify.
+
+> 
+> > +
+> >         if (sched_feat(WA_WEIGHT) && target == nr_cpumask_bits)
+> >                 target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
+> >
+> > @@ -5884,8 +5918,11 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+> >         if (target == nr_cpumask_bits)
+> >                 return prev_cpu;
+> >
+> > -       schedstat_inc(sd->ttwu_move_affine);
+> > -       schedstat_inc(p->se.statistics.nr_wakeups_affine);
+> > +       if (target == this_cpu) {
+> 
+> How is this condition related to $subject ?
+
+Before this change, wake_affine_weight and wake_affine_idle would either
+return this_cpu or nr_cpumask_bits. Just before this check, we check if
+target is nr_cpumask_bits and return prev_cpu. So the stats were only
+incremented when target was this_cpu.
+
+However with prefer_idler_llc, we may return this_cpu, prev_cpu or
+nr_cpumask_bits. Now we only to update stats when we have chosen to migrate
+the task to this_cpu. Hence I had this check.
+
+If we use the slightly lazier approach which is check for wa_weight first
+before wa_idler_llc, then we may not need this change at all.
+
+-- 
+Thanks and Regards
+Srikar Dronamraju
