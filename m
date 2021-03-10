@@ -2,114 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627773335A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 07:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D223335AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 07:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbhCJGFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 01:05:52 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:36585 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229470AbhCJGFY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 01:05:24 -0500
-X-UUID: 34a4b2874e354797a80b9f074c1ae363-20210310
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=TpSFMejpETm7dL5XOwTkRbiRAvyZRSD0cuBEgmPjSQA=;
-        b=kJI9QQcXU4XVod+1Enok55dwINUYXat1hTh+tbdNvfhihxkobWEafebU2HPUGeIVU6GoN+qQKzaiwA//JvVwAP4KXNMkLc43TwcG8kZKYne/x3ZW3BoIxz0hwEdfUxI/Eq9gFcAqYIHGdbIU3DhOIS+/g2P2fc2iWIv5fymf8Vg=;
-X-UUID: 34a4b2874e354797a80b9f074c1ae363-20210310
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 956211239; Wed, 10 Mar 2021 14:05:19 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 10 Mar 2021 14:05:18 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 10 Mar 2021 14:05:18 +0800
-Message-ID: <1615356318.4818.5.camel@mtkswgap22>
-Subject: Re: [PATCH v8 3/4] arm64: dts: mediatek: add mt6765 support
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        mtk01761 <wendell.lin@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Mars Cheng <mars.cheng@mediatek.com>,
-        Sean Wang <Sean.Wang@mediatek.com>,
-        Owen Chen <owen.chen@mediatek.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Evan Green <evgreen@chromium.org>,
-        Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <jroedel@suse.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Ryder Lee <Ryder.Lee@mediatek.com>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        CC Hwang <cc.hwang@mediatek.com>,
-        Loda Chou <loda.chou@mediatek.com>,
-        Mediatek WSD Upstream <wsd_upstream@mediatek.com>
-Date:   Wed, 10 Mar 2021 14:05:18 +0800
-In-Reply-To: <CAAOTY__kSW0ci9YJjSALOfRqKxxR3ysZUQ3Mxsab77hmCO0TyA@mail.gmail.com>
-References: <1582279929-11535-1-git-send-email-macpaul.lin@mediatek.com>
-         <1582279929-11535-4-git-send-email-macpaul.lin@mediatek.com>
-         <CAAOTY__kSW0ci9YJjSALOfRqKxxR3ysZUQ3Mxsab77hmCO0TyA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S229490AbhCJGHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 01:07:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229755AbhCJGHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 01:07:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B105264FE3;
+        Wed, 10 Mar 2021 06:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615356424;
+        bh=04oIBUR6a4KB5abNXd0OCvGeyJjnBjVKCrcbAvITkJ8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pSQDjq4FaDhjPAmsqNt0VLulc16iLx51DQmIfpqyhN0prG0Pd/fZ9KPBfEMEE+Ry5
+         s39XV73OY73YtsuJl7pH66gmBceO294ivxXkdJyJC0n4D9EL18C1zTCRIsaeqzq//4
+         75BhsL66aE/PAOY8SDtEtQigZRylnXpCyuOwFd2Lbs8sSiGt59s7t+tgsLdRXnkccH
+         sWvE34h8k1zRL51D3QzVfKsHldjNRqo+V4y/4gxMG2I3nrdaljIbPjKsGgqTxkr1Bo
+         bJI43ymidvAh9KvC7Z3GIS5ziyHIyLDI6lyPQGYWUE/JZOs2fvUxv5N23wV6UF9rNR
+         edX7TxfE9YXzA==
+Date:   Wed, 10 Mar 2021 00:07:01 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Ariel Elior <aelior@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH RESEND][next] qed: Fix fall-through warnings for Clang
+Message-ID: <20210310060701.GA286866@embeddedor>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTAzLTEwIGF0IDAwOjA4ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBIaSwgTWFjcGF1bDoNCj4gDQo+IE1hY3BhdWwgTGluIDxtYWNwYXVsLmxpbkBtZWRpYXRlay5j
-b20+IOaWvCAyMDIw5bm0MuaciDIx5pelIOmAseS6lCDkuIvljYg2OjIy5a+r6YGT77yaDQo+ID4N
-Cj4gPiBGcm9tOiBNYXJzIENoZW5nIDxtYXJzLmNoZW5nQG1lZGlhdGVrLmNvbT4NCj4gPg0KPiA+
-IEFkZCBiYXNpYyBjaGlwIHN1cHBvcnQgZm9yIE1lZGlhdGVrIDY3NjUsIGluY2x1ZGUNCj4gPiB1
-YXJ0IG5vZGUgd2l0aCBjb3JyZWN0IHVhcnQgY2xvY2tzLCBwd3JhcCBkZXZpY2UNCj4gPg0KPiA+
-IEFkZCBjbG9jayBjb250cm9sbGVyIG5vZGVzLCBpbmNsdWRlIHRvcGNrZ2VuLCBpbmZyYWNmZywN
-Cj4gPiBhcG1peGVkc3lzIGFuZCBzdWJzeXN0ZW0uDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBN
-YXJzIENoZW5nIDxtYXJzLmNoZW5nQG1lZGlhdGVrLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBP
-d2VuIENoZW4gPG93ZW4uY2hlbkBtZWRpYXRlay5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogTWFj
-cGF1bCBMaW4gPG1hY3BhdWwubGluQG1lZGlhdGVrLmNvbT4NCj4gPiBBY2tlZC1ieTogTWFyYyBa
-eW5naWVyIDxtYXJjLnp5bmdpZXJAYXJtLmNvbT4NCj4gPiAtLS0NCj4gPiAgYXJjaC9hcm02NC9i
-b290L2R0cy9tZWRpYXRlay9NYWtlZmlsZSAgICAgICB8ICAgIDEgKw0KPiA+ICBhcmNoL2FybTY0
-L2Jvb3QvZHRzL21lZGlhdGVrL210Njc2NS1ldmIuZHRzIHwgICAzMyArKysrDQo+ID4gIGFyY2gv
-YXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2NzY1LmR0c2kgICAgfCAgMjUzICsrKysrKysrKysr
-KysrKysrKysrKysrKysrKw0KPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDI4NyBpbnNlcnRpb25zKCsp
-DQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210
-Njc2NS1ldmIuZHRzDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL2FybTY0L2Jvb3QvZHRz
-L21lZGlhdGVrL210Njc2NS5kdHNpDQoNCltkZWxldGVkXQ0KDQo+ID4gKw0KPiA+ICsgICAgICAg
-ICAgICAgICBtbXN5c19jb25maWc6IHN5c2NvbkAxNDAwMDAwMCB7DQo+ID4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NjUtbW1zeXMiLCAic3lzY29u
-IjsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICByZWcgPSA8MCAweDE0MDAwMDAwIDAgMHgx
-MDAwPjsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBpbnRlcnJ1cHRzID0gPEdJQ19TUEkg
-MjI3IElSUV9UWVBFX0xFVkVMX0xPVz47DQo+IA0KPiBJIGRvZXMgbm90IHNlZSBpbnRlcnJ1cHRz
-IHByb3BlcnR5IGluIGJpbmRpbmcgZG9jdW1lbnQgWzFdLCBwbGVhc2UgYWRkDQo+IHRoaXMgaW4g
-YmluZGluZyBkb2N1bWVudCBmaXJzdC4NCj4gSSdtIGN1cmlvdXMgYWJvdXQgdGhpcyBpbnRlcnJ1
-cHQuIEluIHdoaWNoIGNvbmRpdGlvbiB3b3VsZCBpdCBiZSB0cmlnZ2VyZWQ/DQo+IA0KPiBbMV0g
-aHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMv
-bGludXguZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9tZWRp
-YXRlay9tZWRpYXRlayxtbXN5cy50eHQ/aD12NS4xMi1yYzINCj4gDQo+IFJlZ2FyZHMsDQo+IENo
-dW4tS3VhbmcuDQoNClRoYW5rcyBmb3IgcmVtaW5kaW5nLg0KSSdsbCByZW1vdmUgaW50ZXJydXB0
-cyBiaW5kaW5nIGluIG5leHQgdmVyc2lvbiBhbmQgbGVhdmUgaXQgZm9yIG1tc3lzDQpkcml2ZXIg
-b3duZXIgdG8gdXBkYXRlIHdoZW4gdGhlIGNvbmZpZ3VyYXRpb24gb2YgbW1zeXMgZHJpdmVyIGlz
-DQplbmFibGVkLg0KDQpbLi4uXQ0KDQoNCj4gPiArICAgICAgICAgICAgICAgc21pX2NvbW1vbjog
-c21pX2NvbW1vbkAxNDAwMjAwMCB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0
-aWJsZSA9ICJtZWRpYXRlayxtdDY3NjUtc21pLWNvbW1vbiIsICJzeXNjb24iOw0KPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICAgIHJlZyA9IDwwIDB4MTQwMDIwMDAgMCAweDEwMDA+Ow0KPiA+ICsg
-ICAgICAgICAgICAgICB9Ow0KPiA+ICsNCg0KQFlvbmcgV3UNClRoYW5rcyBmb3IgcmV2aWV3aW5n
-IGhlcmUsIEknbGwgcmVwbGFjZSBzbWlfY29tbW9uQDE0MDAyMDAwIHRvDQpzbWlAMTQwMDIwMDAN
-Cg0KUmVnYXJkcywNCk1hY3BhdWwgTGluDQo=
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding a couple of break statements instead of
+just letting the code fall through to the next case.
+
+Link: https://github.com/KSPP/linux/issues/115
+Reviewed-by: Igor Russkikh <irusskikh@marvell.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ Changes in RESEND:
+ - None. Resending now that net-next is open.
+
+ drivers/net/ethernet/qlogic/qed/qed_l2.c    | 1 +
+ drivers/net/ethernet/qlogic/qed/qed_sriov.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_l2.c b/drivers/net/ethernet/qlogic/qed/qed_l2.c
+index 07824bf9d68d..dfaf10edfabf 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_l2.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_l2.c
+@@ -396,6 +396,7 @@ int qed_sp_eth_vport_start(struct qed_hwfn *p_hwfn,
+ 		tpa_param->tpa_ipv6_en_flg = 1;
+ 		tpa_param->tpa_pkt_split_flg = 1;
+ 		tpa_param->tpa_gro_consistent_flg = 1;
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_sriov.c b/drivers/net/ethernet/qlogic/qed/qed_sriov.c
+index b8dc5c4591ef..ed2b6fe5a78d 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_sriov.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_sriov.c
+@@ -4734,6 +4734,7 @@ void qed_inform_vf_link_state(struct qed_hwfn *hwfn)
+ 			 */
+ 			link.speed = (hwfn->cdev->num_hwfns > 1) ?
+ 				     100000 : 40000;
++			break;
+ 		default:
+ 			/* In auto mode pass PF link image to VF */
+ 			break;
+-- 
+2.27.0
 
