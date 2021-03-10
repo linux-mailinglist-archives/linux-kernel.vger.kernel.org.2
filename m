@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA83A33414F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33C4334163
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:20:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhCJPRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:17:35 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:39037 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231150AbhCJPRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:17:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615389442; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Aerd3lx8So0WPM226XYP+nP+2+pquExtYXyuv5zEwxk=;
- b=mdVnYDIvgXAmIVhswroEGnn5+glqTsWANwSPoGYMZCfdpxK0UzeHqYpFHTDGIGHbk8UqVyd8
- qCA/43EYFSRD2/qoK9koVN5f4cE32EYDrxDBbayaWNKWqc64GSCL07ABTSpnjEAp6Qsdjv13
- HctLSbEiZkxHf4UW4L4X4Np1OPs=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6048e2f0d3a53bc38fc740d5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 15:17:04
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E92C9C433ED; Wed, 10 Mar 2021 15:17:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1212DC433C6;
-        Wed, 10 Mar 2021 15:17:02 +0000 (UTC)
+        id S233179AbhCJPUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:20:18 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:28181 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233225AbhCJPUF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:20:05 -0500
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 12AFJZuf017579;
+        Thu, 11 Mar 2021 00:19:35 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 12AFJZuf017579
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615389575;
+        bh=GxApZPXoYou1fxvWGS97/MEPVr6v/IPteIgbS9v7Xog=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XT8jbNZMjyn7UHoFVpeEVsZcfc7eShjCl63TM5l2p4CvDryB5jM94E0K1WVrwizdv
+         L4x6y3u/o3SY6RRcp/gvBEdFFUrrGvQPRJkpDarx7buC3d/RI/0bs5jv4ChgZrh4pW
+         kyYHfOoghEyWJ+a0QQ8vC6V+wgHoFERmBwkgA254pbJX7UU5SE9TjEOj/FfpJXHS+v
+         AQneRKx6ItkMNlo2G+y9Lv52UPUZ+JcJmHxbYkcAOIJGPhAovY7QxMzhWyGjaigkTo
+         6LhCE/V7DtWVkRX5AFbA+72IRQiouM4+14CjuZLKGMg0HYD7VDH35g4KNAUNlS718U
+         x9qtkitR0nYsw==
+X-Nifty-SrcIP: [209.85.216.42]
+Received: by mail-pj1-f42.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so7400691pjh.1;
+        Wed, 10 Mar 2021 07:19:35 -0800 (PST)
+X-Gm-Message-State: AOAM531l+R6L9N0WTDEIntyw0TkGMAuYLh7KDSh6KUNXq0RtV8sN9zhY
+        3Vl4Xu3XzGq6B+OQ3aaE4S5EDgUyzRHeT2JzbDo=
+X-Google-Smtp-Source: ABdhPJyE+MhCrJ1nRyki5mODpYGDgERcoghQQc0HcFjo9EH3RcdMQm3lkP1vnI1fqIxu1HNWElrEMQFXVhZN9FDwTl4=
+X-Received: by 2002:a17:902:b589:b029:e6:2875:aa4c with SMTP id
+ a9-20020a170902b589b02900e62875aa4cmr3448032pls.71.1615389574861; Wed, 10 Mar
+ 2021 07:19:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 10 Mar 2021 20:47:01 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     acme@kernel.org, al.grant@arm.com,
-        alexander.shishkin@linux.intel.com, coresight@lists.linaro.org,
-        denik@chromium.org, dianders@chromium.org, jolsa@redhat.com,
-        leo.yan@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, mingo@redhat.com, mnissler@chromium.org,
-        namhyung@kernel.org, peterz@infradead.org, suzuki.poulose@arm.com,
-        swboyd@chromium.org
-Subject: Re: [PATCHv2 0/4] perf/core: Add support to exclude kernel mode PMU
- tracing
-In-Reply-To: <20210309144423.GD203350@tassilo.jf.intel.com>
-References: <87tupqu10c.fsf@linux.intel.com>
- <20210309063828.26392-1-saiprakash.ranjan@codeaurora.org>
- <20210309144423.GD203350@tassilo.jf.intel.com>
-Message-ID: <24e0d604750babd3461768897bb2ae82@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <cover.1615354376.git.viresh.kumar@linaro.org> <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+ <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+ <CAK7LNAST04XTt7Y0DnSADHgAw-zy61HUcRJSyYRvy2rGHMdn4A@mail.gmail.com> <20210310144837.hxz3nbwonvwi3j5c@vireshk-i7>
+In-Reply-To: <20210310144837.hxz3nbwonvwi3j5c@vireshk-i7>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 11 Mar 2021 00:18:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQBtrG3nF7YtuRhog+ZZpCRGg22b88VkCga7-em57NyDg@mail.gmail.com>
+Message-ID: <CAK7LNAQBtrG3nF7YtuRhog+ZZpCRGg22b88VkCga7-em57NyDg@mail.gmail.com>
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source files
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andi,
+On Wed, Mar 10, 2021 at 11:48 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 10-03-21, 20:29, Masahiro Yamada wrote:
+> > BTW, is the attached patch good for DTC?
+> >
+> > I do not know when '-O dtbo' is useful,
+> > unless I am missing something.
+>
+> It is useful if we are sending the -O option all the time (I have
+> already given more details to your patch) as outform will not be NULL.
 
-On 2021-03-09 20:14, Andi Kleen wrote:
->> The disk encryption is just one example and there might be others 
->> which
->> we might not be aware of yet and we are not suspecting there is 
->> something
->> wrong with the crypto code that needs to be fixed.
-> 
-> Then you don't have any leaks relating to branch tracing.
-> 
->> restrict an external(in the sense that its not related to crypto or 
->> any
->> other security related component) entity such as hardware assisted 
->> tracing
->> like ARM coresight and so on. I don't see why or how the crypto code 
->> needs
->> to be fixed for something that is not related to it although it is 
->> affected.
-> 
-> It's just a general property that if some code that is handling secrets
-> is data dependent it already leaks.
-> 
-> 
->> The analogy would be like of the victims and a perpetrator. Lets take 
->> coresight
->> as an example for perpetrator and crypto as the victim here. Now we 
->> can try
-> 
-> There's no victim with branch tracing, unless it is already leaky.
-> 
->> If we just know one victim (lets say crypto code here), what happens 
->> to the
->> others which we haven't identified yet? Do we just wait for someone to 
->> write
->> an exploit based on this and then scramble to fix it?
-> 
-> For a useful security mitigation you need a threat model first I would 
-> say.
-> 
-> So you need to have at least some idea how an attack with branch
-> tracing would work.
-> 
-> 
->> Initial change was to restrict this only to HW assisted instruction 
->> tracing [1]
-> 
-> I don't think it's needed for instruction tracing.
-> 
 
- From what I know, newer ARM A-profile cores doesn't allow data tracing. 
-And you
-are saying that just the instruction tracing cannot be used to infer any
-important data.
+"-O dtbo" was useful to make your buggy patch work.
 
-There are few security folks in CC who probably can give us more details 
-on how
-branch tracing can be used for an exploit. @mnissler?
+That is not justification.
 
-Thanks,
-Sai
+
+.yaml   ->  -O yaml
+.dtb    ->  -O dtb
+.dtbo   ->  -O dtb
+
+is the correct if you want to give -O explicitly.
+
+
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Best Regards
+Masahiro Yamada
