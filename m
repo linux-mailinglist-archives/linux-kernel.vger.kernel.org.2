@@ -2,146 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8280A33474A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F7133474C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbhCJS5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:57:52 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:31495 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231126AbhCJS5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:57:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615402650; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=17+EoLjmYv9h04ms2UQiOoHgGzuvEfwEX3JtQqJTGro=; b=YPkzHBFgNlVcDQEoayh1hb3R221pTLQy138FlMH5t2N5b+m92LjIdPuSDNHxjc1nxh9J+qPL
- F3IKUXveqzKfcCAHahaBEotqV14CNdbAF78h+p53G2c0F0XA/pQU//ya/3tdDqvos0w8VIF/
- wIla+q17TSm47wHOr9eZW3lcgIE=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60491691bb6300df75775108 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 18:57:21
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 67C4AC433ED; Wed, 10 Mar 2021 18:57:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S232934AbhCJS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:58:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36416 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232920AbhCJS6T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:58:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615402699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZU6Kc8uQsaX+NELkZSTr0b1PNiA71McvIaFWuScfNKY=;
+        b=VWHnPflVRPkeQZu/ZYmRf8aoHk/7CIBUaA4PhNo3rHNJKloMuKwmy7OvtAwZhzrqHyuFK2
+        +3l12zo3AFDnKbiJSsX2dyesob3ZzyyoHW9g9ZSBkgurwPC5D6ib1/aClbbwNTUraCHmbm
+        mSe74YPXRDWyjJCKtSveKLQ/8tdHdCA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-UhquQQhUN9KrgFjVbGda3A-1; Wed, 10 Mar 2021 13:58:17 -0500
+X-MC-Unique: UhquQQhUN9KrgFjVbGda3A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C96FC433C6;
-        Wed, 10 Mar 2021 18:57:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4C96FC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v3 1/3] bus: mhi: core: Introduce internal register poll
- helper function
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com
-References: <1614138270-2374-1-git-send-email-bbhatt@codeaurora.org>
- <1614138270-2374-2-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <b53a5cf8-aa25-0e89-b83f-57ec32fa7075@codeaurora.org>
-Date:   Wed, 10 Mar 2021 11:57:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC036801817;
+        Wed, 10 Mar 2021 18:58:15 +0000 (UTC)
+Received: from gimli.home (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C56D65D6D7;
+        Wed, 10 Mar 2021 18:58:07 +0000 (UTC)
+Subject: [PATCH v2] vfio/pci: Handle concurrent vma faults
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, jgg@nvidia.com,
+        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
+Date:   Wed, 10 Mar 2021 11:58:07 -0700
+Message-ID: <161540257788.10151.6284852774772157400.stgit@gimli.home>
+User-Agent: StGit/0.21-2-g8ef5
 MIME-Version: 1.0
-In-Reply-To: <1614138270-2374-2-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/23/2021 8:44 PM, Bhaumik Bhatt wrote:
-> Introduce helper function to allow MHI core driver to poll for
-> a value in a register field. This helps reach a common path to
-> read and poll register values along with a retry time interval.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->   drivers/bus/mhi/core/internal.h |  3 +++
->   drivers/bus/mhi/core/main.c     | 23 +++++++++++++++++++++++
->   2 files changed, 26 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 6f80ec3..005286b 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -643,6 +643,9 @@ int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
->   int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
->   				    void __iomem *base, u32 offset, u32 mask,
->   				    u32 shift, u32 *out);
-> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
-> +				    void __iomem *base, u32 offset, u32 mask,
-> +				    u32 shift, u32 val, u32 delayus);
->   void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
->   		   u32 offset, u32 val);
->   void mhi_write_reg_field(struct mhi_controller *mhi_cntrl, void __iomem *base,
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 4e0131b..249ae26 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -4,6 +4,7 @@
->    *
->    */
->   
-> +#include <linux/delay.h>
->   #include <linux/device.h>
->   #include <linux/dma-direction.h>
->   #include <linux/dma-mapping.h>
-> @@ -37,6 +38,28 @@ int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
->   	return 0;
->   }
->   
-> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
-> +				    void __iomem *base, u32 offset,
-> +				    u32 mask, u32 shift, u32 val, u32 delayus)
-> +{
-> +	int ret = -ENOENT;
-> +	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
-> +
-> +	while (retry--) {
-> +		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, shift,
-> +					 &out);
-> +		if (ret)
-> +			return -EIO;
+vfio_pci_mmap_fault() incorrectly makes use of io_remap_pfn_range()
+from within a vm_ops fault handler.  This function will trigger a
+BUG_ON if it encounters a populated pte within the remapped range,
+where any fault is meant to populate the entire vma.  Concurrent
+inflight faults to the same vma will therefore hit this issue,
+triggering traces such as:
 
-I generally dislike recoding return codes.  Do you believe it adds value 
-here?  I'm concerned that if I'm debugging an error, I'll get EIO, which 
-I trace to here, but then I don't know what the actual error from 
-mhi_read_reg_field() was.
+[ 1591.733256] kernel BUG at mm/memory.c:2177!
+[ 1591.739515] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+[ 1591.747381] Modules linked in: vfio_iommu_type1 vfio_pci vfio_virqfd vfio pv680_mii(O)
+[ 1591.760536] CPU: 2 PID: 227 Comm: lcore-worker-2 Tainted: G O 5.11.0-rc3+ #1
+[ 1591.770735] Hardware name:  , BIOS HixxxxFPGA 1P B600 V121-1
+[ 1591.778872] pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+[ 1591.786134] pc : remap_pfn_range+0x214/0x340
+[ 1591.793564] lr : remap_pfn_range+0x1b8/0x340
+[ 1591.799117] sp : ffff80001068bbd0
+[ 1591.803476] x29: ffff80001068bbd0 x28: 0000042eff6f0000
+[ 1591.810404] x27: 0000001100910000 x26: 0000001300910000
+[ 1591.817457] x25: 0068000000000fd3 x24: ffffa92f1338e358
+[ 1591.825144] x23: 0000001140000000 x22: 0000000000000041
+[ 1591.832506] x21: 0000001300910000 x20: ffffa92f141a4000
+[ 1591.839520] x19: 0000001100a00000 x18: 0000000000000000
+[ 1591.846108] x17: 0000000000000000 x16: ffffa92f11844540
+[ 1591.853570] x15: 0000000000000000 x14: 0000000000000000
+[ 1591.860768] x13: fffffc0000000000 x12: 0000000000000880
+[ 1591.868053] x11: ffff0821bf3d01d0 x10: ffff5ef2abd89000
+[ 1591.875932] x9 : ffffa92f12ab0064 x8 : ffffa92f136471c0
+[ 1591.883208] x7 : 0000001140910000 x6 : 0000000200000000
+[ 1591.890177] x5 : 0000000000000001 x4 : 0000000000000001
+[ 1591.896656] x3 : 0000000000000000 x2 : 0168044000000fd3
+[ 1591.903215] x1 : ffff082126261880 x0 : fffffc2084989868
+[ 1591.910234] Call trace:
+[ 1591.914837]  remap_pfn_range+0x214/0x340
+[ 1591.921765]  vfio_pci_mmap_fault+0xac/0x130 [vfio_pci]
+[ 1591.931200]  __do_fault+0x44/0x12c
+[ 1591.937031]  handle_mm_fault+0xcc8/0x1230
+[ 1591.942475]  do_page_fault+0x16c/0x484
+[ 1591.948635]  do_translation_fault+0xbc/0xd8
+[ 1591.954171]  do_mem_abort+0x4c/0xc0
+[ 1591.960316]  el0_da+0x40/0x80
+[ 1591.965585]  el0_sync_handler+0x168/0x1b0
+[ 1591.971608]  el0_sync+0x174/0x180
+[ 1591.978312] Code: eb1b027f 540000c0 f9400022 b4fffe02 (d4210000)
 
-> +
-> +		if (out == val)
-> +			return 0;
-> +
-> +		udelay(delayus);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->   void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
->   		   u32 offset, u32 val)
->   {
-> 
+Switch to using vmf_insert_pfn() to allow replacing mappings, and
+include decrypted memory protection as formerly provided by
+io_remap_pfn_range().  Tracking of vmas is also updated to
+prevent duplicate entries.
 
+Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
+Reported-by: Zeng Tao <prime.zeng@hisilicon.com>
+Suggested-by: Zeng Tao <prime.zeng@hisilicon.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+v2: Set decrypted pgprot in mmap, use non-_prot vmf_insert_pfn()
+    as suggested by Jason G.
+
+ drivers/vfio/pci/vfio_pci.c |   30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index 65e7e6b44578..73e125d73640 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -1573,6 +1573,11 @@ static int __vfio_pci_add_vma(struct vfio_pci_device *vdev,
+ {
+ 	struct vfio_pci_mmap_vma *mmap_vma;
+ 
++	list_for_each_entry(mmap_vma, &vdev->vma_list, vma_next) {
++		if (mmap_vma->vma == vma)
++			return 0; /* Swallow the error, the vma is tracked */
++	}
++
+ 	mmap_vma = kmalloc(sizeof(*mmap_vma), GFP_KERNEL);
+ 	if (!mmap_vma)
+ 		return -ENOMEM;
+@@ -1612,31 +1617,31 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+ 	struct vfio_pci_device *vdev = vma->vm_private_data;
+-	vm_fault_t ret = VM_FAULT_NOPAGE;
++	unsigned long vaddr = vma->vm_start, pfn = vma->vm_pgoff;
++	vm_fault_t ret = VM_FAULT_SIGBUS;
+ 
+ 	mutex_lock(&vdev->vma_lock);
+ 	down_read(&vdev->memory_lock);
+ 
+-	if (!__vfio_pci_memory_enabled(vdev)) {
+-		ret = VM_FAULT_SIGBUS;
+-		mutex_unlock(&vdev->vma_lock);
++	if (!__vfio_pci_memory_enabled(vdev))
+ 		goto up_out;
++
++	for (; vaddr < vma->vm_end; vaddr += PAGE_SIZE, pfn++) {
++		ret = vmf_insert_pfn(vma, vaddr, pfn);
++		if (ret != VM_FAULT_NOPAGE) {
++			zap_vma_ptes(vma, vma->vm_start, vaddr - vma->vm_start);
++			goto up_out;
++		}
+ 	}
+ 
+ 	if (__vfio_pci_add_vma(vdev, vma)) {
+ 		ret = VM_FAULT_OOM;
+-		mutex_unlock(&vdev->vma_lock);
+-		goto up_out;
++		zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);
+ 	}
+ 
+-	mutex_unlock(&vdev->vma_lock);
+-
+-	if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
+-			       vma->vm_end - vma->vm_start, vma->vm_page_prot))
+-		ret = VM_FAULT_SIGBUS;
+-
+ up_out:
+ 	up_read(&vdev->memory_lock);
++	mutex_unlock(&vdev->vma_lock);
+ 	return ret;
+ }
+ 
+@@ -1702,6 +1707,7 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
+ 
+ 	vma->vm_private_data = vdev;
+ 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
++	vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
+ 	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
+ 
+ 	/*
+
