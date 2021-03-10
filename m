@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367EA3349C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E223349CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhCJVVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:21:46 -0500
-Received: from mail-pl1-f178.google.com ([209.85.214.178]:38938 "EHLO
-        mail-pl1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhCJVVa (ORCPT
+        id S231965AbhCJVY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:24:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231207AbhCJVYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:21:30 -0500
-Received: by mail-pl1-f178.google.com with SMTP id j6so9128062plx.6;
-        Wed, 10 Mar 2021 13:21:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nx7DyCkQIr9THs33CM8Ho+zFue/EmVe3T9nz06hnrv4=;
-        b=dA2brjRzSOzUfqKGkJ3J4Q7y2jHabfCiJSMWaY8L08g2IgRYBov6Qg5gpB6cCtcm4o
-         zJyAWGFjR9FCI0jwv9QHGg+O9CH7C5TUpGjAJ1rQ/WcEAsQK6CLIFEd/XgUGHlQRTRmH
-         acMlKyMCxML3uWZxI2BWE+PgF5NZxPeLVZV1BZnHJis6AeFhsBK1DHoD8sDvI5VqC9rD
-         PXb6Cws7uCWS2oh08bFhGxmUdcZyaWDfk3WOfIZ1dVp/b/+CxREphKo9YFgNRth45Axx
-         VlSGl8F15MB95zTQItOeV8g7sbx9omVrPQ7MELrslOnoB7KYa0/POQXVcgnizVzEk/US
-         CvEA==
-X-Gm-Message-State: AOAM533OYqnK4Jk03dlPCn/bWx8W20BC3ZHc7VbL6DfwsVr3NKG9C6mZ
-        J+A8cX95rTIfdJHZgIGLDLw=
-X-Google-Smtp-Source: ABdhPJwqLduXpvIPSDt2uBaV5hqyTjGPcFiJ4ac3zg00L7BDR+V6K1CUX/NmFdDrCcihniTEruHL0w==
-X-Received: by 2002:a17:90a:8c84:: with SMTP id b4mr5369914pjo.21.1615411290037;
-        Wed, 10 Mar 2021 13:21:30 -0800 (PST)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id m7sm251819pjc.54.2021.03.10.13.21.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 13:21:29 -0800 (PST)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 15DC24024E; Wed, 10 Mar 2021 21:21:28 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 21:21:28 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, mbenes@suse.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <20210310212128.GR4332@42.do-not-panic.com>
-References: <20210306022035.11266-1-mcgrof@kernel.org>
- <20210306022035.11266-2-mcgrof@kernel.org>
- <YEbjom8FIclEgRYv@google.com>
+        Wed, 10 Mar 2021 16:24:01 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E718CC061574;
+        Wed, 10 Mar 2021 13:23:58 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwlSW1pPXz9sVw;
+        Thu, 11 Mar 2021 08:23:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615411435;
+        bh=hyy07TdsQZqq+6ZbszW2WD5wRcvxFeHpA3xz8f60kuo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FjDy3Zpfjs0FgrWMhNCmXYFbkYEFu0ey0yy5cZeEzp22IMmP4avQYmUXxPBNQOzSf
+         mq4Y40kSueU+gvRBmbFQH2knOm3FozPbAmhh8BFYjsDF0OlKlSrI7VszpKnTEISPVR
+         XONnbqwmTbktLb/81AExGp/0n/KDHJw5vNGq1BL37E2rA/qJHROTB+z1tRxeRsNmBG
+         NNCF2Gs2LRh42inHbt/YT2iHlUY/qFoGeW1MQ+BTldiyJ5/+kZ6AtUTE2mg+/Kw676
+         upsxl9m5WRuc+Mv5W0FRCDjGy1Q8pmyGe1om1mYWzo2YtQmgtcbrb06Tyrfw71dTm9
+         W7Yx1fZqj5WgA==
+Date:   Thu, 11 Mar 2021 08:23:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Xen Devel <Xen-devel@lists.xensource.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the xen-tip tree
+Message-ID: <20210311082354.0f149e1c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEbjom8FIclEgRYv@google.com>
+Content-Type: multipart/signed; boundary="Sig_/fML9M7KD_SWHiQ1yTH0NtvG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 06:55:30PM -0800, Minchan Kim wrote:
-> If I understand correctly, bugs you found were related to module
-> unloading race while the zram are still working.
+--Sig_/fML9M7KD_SWHiQ1yTH0NtvG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-No, that is a simplifcation of the issue. The issue consists of
-two separate issues:
+Hi all,
 
- a) race against module unloading in light of incorrect racty use of
-    cpu hotplug multistate support
- b) module unload race with sysfs attribute race on *any* driver which
-    has sysfs attributes which also shares the same lock as used during
-    module unload
+In commit
 
-It is important to realize that issue b) is actually a generic kernel
-issue, it would be present on *any* driver which shares a lock used on
-a sysfs attribute and module unload. I looked to implement a generic
-solution on kernfs, however we don't yet have semantics to enable this
-generically, and so for now each driver needs to deal with those races
-on their own. That sysfs race is dealt with in the second patch.
+  1103e2826a9f ("xen/events: don't unmask an event channel when an eoi is p=
+ending")
 
-The first patch only deals with the cpu hotplug races exposed at module
-unloading.
+Fixes tag
 
-  Luis
+  Fixes: 54c9de89895e0a36047 ("xen/events: add a new late EOI evtchn framew=
+ork")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/fML9M7KD_SWHiQ1yTH0NtvG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBJOOoACgkQAVBC80lX
+0GxsGgf/bklAmv7OF8puwVjmyBLICRBDo/j0zy3NFRUgHASx4IEO+HS5nJwr6R5D
+Zq+h13nNyf6kPgxdsas9o8sV8tDLAGtRrq6jq05KXd4ZOTvTyISEBhdmqEbZgUrI
+IoQB1czSn7Lq5bc3Wg8mA6zRkLu4Ce6mXWvxdy1PDIFUW6e5NLB2V349//+kIj6P
+RUmXHKkGWe+YzWHW1nE2sP2HiNwLVXlBUCDr2W2pFcVY7dyPj5QruesTZACPVY6X
+FIW64pmgYFz3nwLmMbuJe31OAUk2N5ddQ/z1C6yBKRLIca0IDdIuoBVHRFYg6DZN
+kqXVn8cm+Yn7s8KZ22ACGRjk+tAD/g==
+=bbos
+-----END PGP SIGNATURE-----
+
+--Sig_/fML9M7KD_SWHiQ1yTH0NtvG--
