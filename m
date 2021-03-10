@@ -2,134 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E0C33484A
+	by mail.lfdr.de (Postfix) with ESMTP id B528C33484B
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233749AbhCJTrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 14:47:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232828AbhCJTr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:47:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D07464F3D;
-        Wed, 10 Mar 2021 19:47:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615405648;
-        bh=6QaKgAtYloRRvL6YH9byGT9vss6DmvYiz83jBAE+D7c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E7CUHqd9pTe2+Tq+I/evX/WY2cg6iv8+5DGjl871GYXPZSY5mRUCU6+ZbCH5oWKAm
-         vMsv3nlx/XAItx2sYSmX7faut/7NTKPDP211Kbw/38mFz2KwYyiobln2uI/Ue8Isrb
-         fDbKR9ne1sjWRaU6DG415IPgtLtlLaaaVPB5IV/AtsnT4bRQ5mtsMdtiYtlc26lTrF
-         5TwhL1MmF57pOWlS0KYrP70/4tLdpziUhGCRdVKDOlOnNQufM/WVesvH+rU8vJUOC5
-         0MqBLQMdNqAps7kc5lQiIJG/RV6SVZQtQ9FFEJPqb1NWA7TVF84GJipDCRWkR5dYyC
-         45MncULytz1vg==
-Date:   Wed, 10 Mar 2021 21:47:04 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] tpm: efi: Use local variable for calculating final
- log size
-Message-ID: <YEkiONI7P32bH29i@kernel.org>
-References: <20210309031954.6232-1-stefanb@linux.ibm.com>
- <20210309031954.6232-2-stefanb@linux.ibm.com>
+        id S233816AbhCJTry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 14:47:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54112 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232901AbhCJTrt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:47:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615405668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=15J7/6/60u4JfGCD3qHIlb5hU7kTjQauSUUO0B/9ZRI=;
+        b=JHweXBPHGC71ZqsAZpUamZn9b+CC1nSzKi8qD+FGQISgkkOrzg+RGISzZNsv8h+II67rZu
+        wCCZVf2PBgwgfnDUNtyIVffpNE2SK7Ee+fHfVUfbfNnRtR76+OBoapOjxBiQ0wbGZ3aweR
+        MSTtAS1Fcd79NNB0rp7EA83ofiBDQQk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-104-D_wRruRRMOKqBTFeObd7-A-1; Wed, 10 Mar 2021 14:47:44 -0500
+X-MC-Unique: D_wRruRRMOKqBTFeObd7-A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 41D601019623;
+        Wed, 10 Mar 2021 19:47:42 +0000 (UTC)
+Received: from [10.36.112.107] (ovpn-112-107.ams2.redhat.com [10.36.112.107])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A415A59453;
+        Wed, 10 Mar 2021 19:47:38 +0000 (UTC)
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
+ <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
+ <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
+ <1ae44491-4404-6873-4ee6-6cf58c1ae6fb@redhat.com>
+ <CAJZ5v0gC+60n0-UkMw8h5JPBc6grQtD1ambSOCAHV2HLm886yQ@mail.gmail.com>
+ <CAJZ5v0g_ztenDY-ER6A0fKD-ZHhLfF3zQdRYYxQb5jSXudd8xQ@mail.gmail.com>
+ <e8593eae-40b8-bc9a-78db-529d28d2be88@redhat.com>
+ <YEkgP0G94uQBGDa9@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Message-ID: <0d05364c-4881-d78a-9721-bd15f5eb822b@redhat.com>
+Date:   Wed, 10 Mar 2021 20:47:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309031954.6232-2-stefanb@linux.ibm.com>
+In-Reply-To: <YEkgP0G94uQBGDa9@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 10:19:52PM -0500, Stefan Berger wrote:
-> When tpm_read_log_efi was called multiple times, which happens when one
-> loads and unloads a TPM2 driver multiple times, then the global variable
-> efi_tpm_final_log_size will at some point become a negative number due
-> to the subtraction of final_events_preboot_size occurring each time. Use
-> a local_efi_tpm_final_log_size to avoid this integer underflow.
+>>>>> The same could be reproduced via zone shuffling with a little luck.
+>>>>
+>>>> But nobody does that in practice.
+>>>>
+>>
+>> Dan will most certainly object. And I don't know what makes you speak in
+>> absolute words here.
+>>
+>>>> This would be relatively straightforward to address if ACPICA was not
+>>>> involved in it, but unfortunately that's not the case.
+>>>>
+>>>> Changing this part of ACPICA is risky, because such changes may affect
+>>>> other OSes using it, so that requires some serious consideration.
+>>>> Alternatively, the previous memory allocation order in Linux could be
+>>>> restored.
+>>>
+>>> Of course, long-term this needs to be addressed in the ACPI
+>>> initialization code, because it clearly is not robust enough, but in
+>>> the meantime there's practical breakage observable in the field, so
+>>> what can be done about that?
+>>
+>> *joke* enable zone shuffling.
+>>
+>> No seriously, fix the latent BUG. What again is problematic about excluding
+>> these pages from the page allcoator, for example, via memblock_reserve()?
+>>
+>> @Mike?
 > 
-> The following issue is now resolved:
+> There is some care that should be taken to make sure we get the order
+> right, but I don't see a fundamental issue here.
 > 
-> Mar  8 15:35:12 hibinst kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-> Mar  8 15:35:12 hibinst kernel: Workqueue: tpm-vtpm vtpm_proxy_work [tpm_vtpm_proxy]
-> Mar  8 15:35:12 hibinst kernel: RIP: 0010:__memcpy+0x12/0x20
-> Mar  8 15:35:12 hibinst kernel: Code: 00 b8 01 00 00 00 85 d2 74 0a c7 05 44 7b ef 00 0f 00 00 00 c3 cc cc cc 66 66 90 66 90 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4
-> Mar  8 15:35:12 hibinst kernel: RSP: 0018:ffff9ac4c0fcfde0 EFLAGS: 00010206
-> Mar  8 15:35:12 hibinst kernel: RAX: ffff88f878cefed5 RBX: ffff88f878ce9000 RCX: 1ffffffffffffe0f
-> Mar  8 15:35:12 hibinst kernel: RDX: 0000000000000003 RSI: ffff9ac4c003bff9 RDI: ffff88f878cf0e4d
-> Mar  8 15:35:12 hibinst kernel: RBP: ffff9ac4c003b000 R08: 0000000000001000 R09: 000000007e9d6073
-> Mar  8 15:35:12 hibinst kernel: R10: ffff9ac4c003b000 R11: ffff88f879ad3500 R12: 0000000000000ed5
-> Mar  8 15:35:12 hibinst kernel: R13: ffff88f878ce9760 R14: 0000000000000002 R15: ffff88f77de7f018
-> Mar  8 15:35:12 hibinst kernel: FS:  0000000000000000(0000) GS:ffff88f87bd00000(0000) knlGS:0000000000000000
-> Mar  8 15:35:12 hibinst kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> Mar  8 15:35:12 hibinst kernel: CR2: ffff9ac4c003c000 CR3: 00000001785a6004 CR4: 0000000000060ee0
-> Mar  8 15:35:12 hibinst kernel: Call Trace:
-> Mar  8 15:35:12 hibinst kernel: tpm_read_log_efi+0x152/0x1a7
-> Mar  8 15:35:12 hibinst kernel: tpm_bios_log_setup+0xc8/0x1c0
-> Mar  8 15:35:12 hibinst kernel: tpm_chip_register+0x8f/0x260
-> Mar  8 15:35:12 hibinst kernel: vtpm_proxy_work+0x16/0x60 [tpm_vtpm_proxy]
-> Mar  8 15:35:12 hibinst kernel: process_one_work+0x1b4/0x370
-> Mar  8 15:35:12 hibinst kernel: worker_thread+0x53/0x3e0
-> Mar  8 15:35:12 hibinst kernel: ? process_one_work+0x370/0x370
+> If I understand correctly, Rafael's concern is about changing the parts of
+> ACPICA that should be OS agnostic, so I think we just need another place to
+> call memblock_reserve() rather than acpi_tb_install_table_with_override().
 > 
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  drivers/char/tpm/eventlog/efi.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/eventlog/efi.c b/drivers/char/tpm/eventlog/efi.c
-> index 35229e5143ca..b6ffb5faf416 100644
-> --- a/drivers/char/tpm/eventlog/efi.c
-> +++ b/drivers/char/tpm/eventlog/efi.c
-> @@ -18,6 +18,7 @@ int tpm_read_log_efi(struct tpm_chip *chip)
->  
->  	struct efi_tcg2_final_events_table *final_tbl = NULL;
->  	struct linux_efi_tpm_eventlog *log_tbl;
-> +	int local_efi_tpm_final_log_size;
->  	struct tpm_bios_log *log;
->  	u32 log_size;
->  	u8 tpm_log_version;
-> @@ -80,10 +81,11 @@ int tpm_read_log_efi(struct tpm_chip *chip)
->  		goto out;
->  	}
->  
-> -	efi_tpm_final_log_size -= log_tbl->final_events_preboot_size;
-> +	local_efi_tpm_final_log_size = efi_tpm_final_log_size -
-> +					log_tbl->final_events_preboot_size;
-
-This starts to have so many weird locals that an inline comment here
-in plain Enlighs would be nice explaining the calculation.
-
->  
->  	tmp = krealloc(log->bios_event_log,
-> -		       log_size + efi_tpm_final_log_size,
-> +		       log_size + local_efi_tpm_final_log_size,
-
-Ditto.
-
->  		       GFP_KERNEL);
->  	if (!tmp) {
->  		kfree(log->bios_event_log);
-> @@ -100,9 +102,9 @@ int tpm_read_log_efi(struct tpm_chip *chip)
->  	 */
->  	memcpy((void *)log->bios_event_log + log_size,
->  	       final_tbl->events + log_tbl->final_events_preboot_size,
-> -	       efi_tpm_final_log_size);
-> +	       local_efi_tpm_final_log_size);
->  	log->bios_event_log_end = log->bios_event_log +
-> -		log_size + efi_tpm_final_log_size;
-> +		log_size + local_efi_tpm_final_log_size;
-
-Ditto.
-
->  
->  out:
->  	memunmap(final_tbl);
-> -- 
-> 2.29.2
-> 
+> Since the reservation should be done early in x86::setup_arch() (and
+> probably in arm64::setup_arch()) we might just have a function that parses
+> table headers and reserves them, similarly to how we parse the tables
+> during KASLR setup.
 > 
 
-I think this is good chance to improve the documentation a bit.
+FWIW, something like below would hide our latent BUG again properly (lol).
+But I guess I don't have to express how ugly and wrong that is. Not to mention
+what happens if memblock decides to allocate that memory area earlier
+for some other user (including CMA, ...).
 
-/Jarkko
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3e4b29ee2b1e..ec71b7c63dbe 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1566,6 +1566,21 @@ void __free_pages_core(struct page *page, unsigned int order)
+  
+         atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
+  
++       /*
++        * BUG ALERT: x86-64 ACPI code has latent BUGs where ACPI tables
++        * that must not get allocated/modified will get exposed to the buddy
++        * as free pages; anybody can allocate and use them once in the free
++        * lists.
++        *
++        * Instead of fixing the BUG, revert the change to the
++        * freeing/allocation order during boot that revealed it and cross
++        * fingers that everything will be fine.
++        */
++       if (system_state < SYSTEM_RUNNING) {
++               __free_pages_ok(page, order, FPI_NONE);
++               return;
++       }
++
+         /*
+          * Bypass PCP and place fresh pages right to the tail, primarily
+          * relevant for memory onlining.
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
