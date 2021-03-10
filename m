@@ -2,169 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E532A33433C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAC3334344
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhCJQiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:38:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbhCJQid (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:38:33 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F45FC061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:38:33 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id d139-20020a1c1d910000b029010b895cb6f2so11129846wmd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:38:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=sVQWlrBBeoHKwdd8D9L9gvXK0pkYdnkCO45O59sXhqE=;
-        b=q0jOQtaYZjQtMu6WQQD9tfAYd5at3q0TEHS1dUCtD72fMVVqkUYR87DPWZHJiDyy+q
-         vFZTNiFX5UjeF3jS2V2FB/TneNRx3Bd7Zx6ln/1DhisKyiOJGCEe6ZKfk2f7qNKfO6AU
-         /aXcMcx9zW3jq26E+kIs9+yMB4spWrO3tfJ465ANnCpKOy9Ov4KIV8x27u7BQdeDygqb
-         9TC6WFH2Gqm1L9KEqiK0qnm8GSII/tKMRmGDsS+l81kV/ZyAGP3Igr4KyD4TJdCVCHRJ
-         0bRf+nadEtziMOPrKBx/ZV+LM1WdQBYKGgQgZSY3klS4OBLzQMbZTf45HjaV/p8KEVPN
-         Fcmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sVQWlrBBeoHKwdd8D9L9gvXK0pkYdnkCO45O59sXhqE=;
-        b=D8NNLtQpjIog4fCrmIrM1N0SbXJqv19MSOPfV3hPlqBvZ+U0uctoXqNcZgwlSn7c/b
-         7ntb/QWqTntTUxAxWm8D1g7SAicz2xwrQre2xNHtUR8B4I+vcIuLuuoN9448273bzT4P
-         1ruTLS6+ZxrDQSGeY/fmLQkro/LyYsV8IkxPE+mT7gNr5S/mOA/ALIy7bsK72mejoZgY
-         e0EbjgTBnCMTzWEWvIB62qTlAhwzdUznGrzoBYXjWgpjuoxfh2DryzlRcXI8g/wVlh8s
-         TtfohbYrZaj0XiFhZVNiy4z59mL3iO8xpFayX6KkS8iMxZ/qnA9HoBXGUTDfCRhDCxQR
-         ymdQ==
-X-Gm-Message-State: AOAM530lVdFUODFH4AWuJrPzPyLKt57XjaDWGaCguepkKBvkgZ5xPcWa
-        GHlci6axfBkiNxSUIWZ9+2rFdQ==
-X-Google-Smtp-Source: ABdhPJwDrIR7F7SMof/RHEqmZ96cNOGJ6ObmZEUKOAayqrXrKfrobyIkYN8y7xne+Pl/tcOX6LVXLA==
-X-Received: by 2002:a1c:4c17:: with SMTP id z23mr4242467wmf.17.1615394312049;
-        Wed, 10 Mar 2021 08:38:32 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id p12sm8446541wrx.28.2021.03.10.08.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 08:38:31 -0800 (PST)
-Date:   Wed, 10 Mar 2021 16:38:29 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
-Subject: Re: [PATCH v3 06/15] mfd: Add ROHM BD71815 ID
-Message-ID: <20210310163829.GS701493@dell>
-References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
- <be0e8cd06ed75e799c942e5076ee7b56ad658467.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
- <20210310103639.GG701493@dell>
- <a631bbc3dd3bd0f02693d1c35f9a14dbaec67cc3.camel@fi.rohmeurope.com>
- <20210310111755.GN701493@dell>
- <e7bb00af76de65c60061c58a570d5b6f40961eb0.camel@fi.rohmeurope.com>
- <20210310133136.GQ701493@dell>
- <c1cb760a0bd2cf46dc5d9b21d1a08286a7671d21.camel@fi.rohmeurope.com>
+        id S231244AbhCJQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:40:26 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:14335 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232091AbhCJQkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:40:06 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615394406; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=A3hXmK2V9BzYBLeUgSG9YZi0trl61aWRPGcB/gnH5c4=; b=kR7P6PUHZdAM0yn3TdPsXHJxpR+2s0x/gA0eyBWRReB84Zx0y6VQ3jwMk2ZXWcXlqDwz8p8g
+ fRHNgTb36fcruIznomIJlzAOuKMRoLeRn6gPo3gmtU3WHuZXRFhoPH5o0zgL4OANsWZCEiki
+ XmXZQ9FRLOoxpaG/N1Xm/1FpGKI=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6048f65c0c7cf0f56c766969 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 16:39:56
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 899ABC4346D; Wed, 10 Mar 2021 16:39:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10C6EC433C6;
+        Wed, 10 Mar 2021 16:39:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 10C6EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v10 1/2] scsi: ufs: Enable power management for wlun
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, cang@codeaurora.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>,
+        Linux-PM mailing list <linux-pm@vger.kernel.org>
+References: <0576d6eae15486740c25767e2d8805f7e94eb79d.1614725302.git.asutoshd@codeaurora.org>
+ <85086647-7292-b0a2-d842-290818bd2858@intel.com>
+ <6e98724d-2e75-d1fe-188f-a7010f86c509@codeaurora.org>
+ <20210306161616.GC74411@rowland.harvard.edu>
+ <CAJZ5v0ihJe8rNjWRwNic_BQUvKbALNcjx8iiPAh5nxLhOV9duw@mail.gmail.com>
+ <CAJZ5v0iJ4yqRTt=mTCC930HULNFNTgvO4f9ToVO6pNz53kxFkw@mail.gmail.com>
+ <f1e9b21d-1722-d20b-4bae-df7e6ce50bbc@codeaurora.org>
+ <2bd90336-18a9-9acd-5abb-5b52b27fc535@codeaurora.org>
+ <20210310031438.GB203516@rowland.harvard.edu>
+ <6b985880-f23a-adb3-8b7a-7ee1b56e6fa7@codeaurora.org>
+ <20210310162730.GB221857@rowland.harvard.edu>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <a89ad647-6c0c-b45e-cff3-a205bed034cf@codeaurora.org>
+Date:   Wed, 10 Mar 2021 08:39:51 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c1cb760a0bd2cf46dc5d9b21d1a08286a7671d21.camel@fi.rohmeurope.com>
+In-Reply-To: <20210310162730.GB221857@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021, Matti Vaittinen wrote:
+On 3/10/2021 8:27 AM, Alan Stern wrote:
+> On Tue, Mar 09, 2021 at 08:04:53PM -0800, Asutosh Das (asd) wrote:
+>> On 3/9/2021 7:14 PM, Alan Stern wrote:
+>>> On Tue, Mar 09, 2021 at 07:04:34PM -0800, Asutosh Das (asd) wrote:
+>>>> Hello
+>>>> I & Can (thanks CanG) debugged this further:
+>>>>
+>>>> Looks like this issue can occur if the sd probe is asynchronous.
+>>>>
+>>>> Essentially, the sd_probe() is done asynchronously and driver_probe_device()
+>>>> invokes pm_runtime_get_suppliers() before invoking sd_probe().
+>>>>
+>>>> But scsi_probe_and_add_lun() runs in a separate context.
+>>>> So the scsi_autopm_put_device() invoked from scsi_scan_host() context
+>>>> reduces the link->rpm_active to 1. And sd_probe() invokes
+>>>> scsi_autopm_put_device() and starts a timer. And then driver_probe_device()
+>>>> invoked from __device_attach_async_helper context reduces the
+>>>> link->rpm_active to 1 thus enabling the supplier to suspend before the
+>>>> consumer suspends.
+>>>
+>>>> I don't see a way around this. Please let me know if you
+>>>> (@Alan/@Bart/@Adrian) have any thoughts on this.
+>>>
+>>> How about changing the SCSI core so that it does a runtime_get before
+>>> starting an async probe, and the async probe routine does a
+>>> runtime_put when it is finished?  In other words, don't allow a device
+>>> to go into runtime suspend while it is waiting to be probed.
+>>>
+>>> I don't think that would be too intrusive.
+>>>
+>>> Alan Stern
+>>>
+>>
+>> Hi Alan
+>> Thanks for the suggestion.
+>>
+>> Am trying to understand:
+>>
+>> Do you mean something like this:
+>>
+>> int scsi_sysfs_add_sdev(struct scsi_device *sdev)
+>> {
+>> 	
+>> 	scsi_autopm_get_device(sdev);
+>> 	pm_runtime_get_noresume(&sdev->sdev_gendev);
+>> 	[...]
+>> 	scsi_autopm_put_device(sdev);
+>> 	[...]
+>> }
+>>
+>> static int sd_probe(struct device *dev)
+>> {
+>> 	[...]
+>> 	pm_runtime_put_noidle(dev);
+>> 	scsi_autopm_put_device(sdp);
+>> 	[...]
+>> }
+>>
+>> This may work (I'm limited by my imagination in scsi layer :) ).
+> 
+> I'm not sure about this.  To be honest, I did not read the entirety of
+> your last message; it had way too much detail.  THere's a time and place
+> for that, but when you're brainstorming to figure out the underlying
+> cause of a problem and come up with a strategy to fix it, you want to
+> concentrate on the overall picture, not the details.
+> 
+> As I understand the situation, you've get a SCSI target with multiple
+> logical units, let's say A and B, and you need to make sure that A never
+> goes into runtime suspend unless B is already suspended.  In other
+> words, B always has to suspend before A and resume after A.
+> 
+> To do this, you register a device link with A as the supplier and B as
+> the consumer.  Then the PM core takes care of the ordering for you.
+> 
+> But I don't understand when you set up the device link.  If the timing
+> is wrong then, thanks to async SCSI probing, you may have a situation
+> where A is registered before B and before the link is set up.  Then
+> there's temporarily nothing to stop A from suspending before B.
+> 
+> You also need to prevent each device from suspending before it is
+> probed.  That's the easy part I was trying to address before (although
+> it may not be so easy if the drivers are in loadable modules and not
+> present in the kernel).
+> 
+> You need to think through these issues before proposing actual changes.
+> 
+>> But the pm_runtime_put_noidle() would have to be added to all registered
+>> scsi_driver{}, perhaps? Or may be I can check for sdp->type?
+> 
+> Like this; it's too early to worry about this sort of thing.
+> 
+> Alan Stern
+> 
+Hi Alan
+Thanks. Understood.
 
-> 
-> On Wed, 2021-03-10 at 13:31 +0000, Lee Jones wrote:
-> > On Wed, 10 Mar 2021, Matti Vaittinen wrote:
-> > 
-> > > On Wed, 2021-03-10 at 11:17 +0000, Lee Jones wrote:
-> > > > On Wed, 10 Mar 2021, Vaittinen, Matti wrote:
-> > > > 
-> > > > > Hello Lee,
-> > > > > 
-> > > > > On Wed, 2021-03-10 at 10:36 +0000, Lee Jones wrote:
-> > > > > > On Mon, 08 Mar 2021, Matti Vaittinen wrote:
-> > > > > > 
-> > > > > > > Add chip ID for ROHM BD71815 and PMIC so that drivers can
-> > > > > > > identify
-> > > > > > > this IC.
-> > > > > > > 
-> > > > > > > Signed-off-by: Matti Vaittinen <
-> > > > > > > matti.vaittinen@fi.rohmeurope.com>
-> > > > > > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> > > > > > > ---
-> > > > > > >  include/linux/mfd/rohm-generic.h | 1 +
-> > > > > > >  1 file changed, 1 insertion(+)
-> > > > > > > 
-> > > > > > > diff --git a/include/linux/mfd/rohm-generic.h
-> > > > > > > b/include/linux/mfd/rohm-generic.h
-> > > > > > > index 66f673c35303..e5392bcbc098 100644
-> > > > > > > --- a/include/linux/mfd/rohm-generic.h
-> > > > > > > +++ b/include/linux/mfd/rohm-generic.h
-> > > > > > > @@ -14,6 +14,7 @@ enum rohm_chip_type {
-> > > > > > >  	ROHM_CHIP_TYPE_BD71828,
-> > > > > > >  	ROHM_CHIP_TYPE_BD9571,
-> > > > > > >  	ROHM_CHIP_TYPE_BD9574,
-> > > > > > > +	ROHM_CHIP_TYPE_BD71815,
-> > > > > > 
-> > > > > > Is there a technical reason why these can't be re-ordered?
-> > > > > 
-> > > > > No, I don't think so.
-> > > > > 
-> > > > > BTW. there will probably be a (trivial) conflict here as both
-> > > > > this
-> > > > > series and the BD9576/BD9573 series add an ID here. Let me
-> > > > > guess,
-> > > > > you'd
-> > > > 
-> > > > That's fine.  I will resolve that manually.
-> > > 
-> > > Thanks :)
-> > > 
-> > > > > like to see them sorted?
-> > > > 
-> > > > Wouldn't that be nice? :)
-> > > Aesthetics is not really my cup of tea. OTOH, if amount of IDs
-> > > grow,
-> > > then sorting helps spotting whether some IC has an ID here. So yes,
-> > > it
-> > > kind of makes sense.
-> > 
-> > By 'nice' I don't mean 'pretty'.
-> > 
-> > I mean 'improving readability/maintainability would be nice'.
-> > 
-> > > Can you do sorting while resolving the conflict between series or
-> > > do
-> > > you want me to
-> > > a) do sorting if (when) I re-spin the series
-> > > b) send separate sorting patch as a part of this series
-> > > c) send sepatate sorting patch after all the pending patches
-> > > touching
-> > > these IDs have been merged?
-> > 
-> > I'll let you use your imagination.
-> > 
-> 
-> Right :)
-> 
-> I'll sort the ID enum when I respin a series which is touching it, ok?
-> Or do you want me to resend this even if there were no other changes?
-> 
-> It's just an old habit to add new enums at the bottom to maintain
-> binary compatibility - which does not matter in this case.
+I will check the details and see if I can come up with something.
+I'll propose an alternate fix otherwise and drop this change altogether.
 
-I won't let this alone hold up merging of the whole set, but it looks
-like you're still short of quite a few reviews.  I'd be surprised if
-it's this version that gets applied.
+Thanks!
+-asd
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
