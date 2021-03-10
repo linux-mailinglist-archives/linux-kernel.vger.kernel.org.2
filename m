@@ -2,158 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BA0333C79
+	by mail.lfdr.de (Postfix) with ESMTP id 7681A333C78
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhCJMSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:18:17 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:29588 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbhCJMSF (ORCPT
+        id S231901AbhCJMSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:18:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233004AbhCJMRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:18:05 -0500
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 12ACHoxE028941;
-        Wed, 10 Mar 2021 21:17:50 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 12ACHoxE028941
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615378671;
-        bh=1uzRseWND95yPdttTTlSI8iqUuJQXLvWlCES5n3lIEg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nOeVSNqCgj4eBjEMeoHSVzmDuQU8atwOWT9cDz77R9xN5Ur7R3Z187TXIKlVZBztO
-         88gyr1O1T8gN+S28Da9S1tUnAwHcTGOQ3iu85VtFuXjlZMGo2o2TnK7hfjxtcxAFlj
-         DCOX9OE4UUe4hJHrS9BCAc1oMpucTKFGZjohYRxQ8HzF0L4paN+vuWB9JIMHAIK98Y
-         pwoAo+U4XX8LygvBIfsLA3RNefAdbLovOpKqaVqkg7xl+5nk7nKZrLQj5Ghrzx+GHD
-         aWWk+UPhVrrNcv8PU/PhvbgPqOvFkXV1r20pADVU+4PsD7yefBuFJhgrjk1Vs2FYLZ
-         KtCmOfrdC3O2g==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso4879765pjb.4;
-        Wed, 10 Mar 2021 04:17:50 -0800 (PST)
-X-Gm-Message-State: AOAM533YaQrFzrwfEPc49s75AqOLnwRMygO62v078ZTgZCbDTiARKi/n
-        CaIEteZQ9A14X6gun/zLKTjyovqnSH0NJ4XNEVk=
-X-Google-Smtp-Source: ABdhPJzMkPmMW8O6bOX4zaHgWdNSG8cKICJI0tzuj1hM2k3Mtbcp/sgpCGkWKw+dV8k+oZ6SJssAesWQdjYkIzq3Fk0=
-X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr2134520pjb.87.1615378669828;
- Wed, 10 Mar 2021 04:17:49 -0800 (PST)
+        Wed, 10 Mar 2021 07:17:54 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25BBC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:17:53 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id e23so6968593wmh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:17:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gmOoh5rfSQ/bfLOfAKnidJz/mWzWfe0aQp/Ruh78YZ8=;
+        b=iDAEkCc02bjHDQ+7TwJdJ1YsEO1KdagSmFzJxK4wnZ3Mo1a2QtWSUzNAdghFp4TtgM
+         9nL1kMKyFivtbPBAPBtmTsQJ9d89hAAHNSbO3cSUFjaBlh3piJwuX+z4SseVwVhL1Wn8
+         hvbPAAvBoyHRdKGVb7DVc+j0FDNsPQ2SOaRM0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gmOoh5rfSQ/bfLOfAKnidJz/mWzWfe0aQp/Ruh78YZ8=;
+        b=iCpTZsUTvJO2prWxGOpyEJTZqWdHBA2VlixQCmqDKnw7h1KKuHu1NLIxBieqnVyYOP
+         JzqVf9Egv21/zaVA1Y0blxbxP+w97ZtN5xJ8bBDlAgccbZNZ04C3V+ni9tCjmD+ElWFI
+         /YIc93+xDcIdJIZmZK5j7VC606pwUOy+JflgbKFIpx5pE+IusS4zwZrC1JfLbV77Q4we
+         dh3LNPIINZdN+GabPL9VM5+leM8q8MU2vG0Y4/mpuP/1w4bocceF0U8fQKHaOfvWzVZ8
+         lDJ+JEIjQORrLJ6K1ZjjNfpQJ5k7GfyUlD/ISP9q6WG9mJ4OhPtw/CuKEjHZ6l8zpp5h
+         Jl0A==
+X-Gm-Message-State: AOAM5320Fb8Q35OYt+adSFE4jVX5fqgmS+iavgbpxqde6JL6Qrh0sKDA
+        j3ihaFpAtCvWi1AD/9eECbzLNg==
+X-Google-Smtp-Source: ABdhPJzan8mC9QAWOYl9atk3ciaOsKSsGNokeW0oCmAohMtlA22gkQ4TEEWeqN2AFxVYgSjup8MD2w==
+X-Received: by 2002:a1c:a74b:: with SMTP id q72mr3068415wme.158.1615378672676;
+        Wed, 10 Mar 2021 04:17:52 -0800 (PST)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id a14sm30810152wrg.84.2021.03.10.04.17.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 04:17:52 -0800 (PST)
+Date:   Wed, 10 Mar 2021 12:17:51 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+Message-ID: <YEi47xUFix0Dg1Li@chrisdown.name>
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
 MIME-Version: 1.0
-References: <20210309162545.637647-1-masahiroy@kernel.org> <87f93105-926a-d81b-3226-c5147870d62a@kernel.org>
-In-Reply-To: <87f93105-926a-d81b-3226-c5147870d62a@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 10 Mar 2021 21:17:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARV4umAMEEc2YAhrgnOJSDvXEUkyNSsmN-AyotZNATedw@mail.gmail.com>
-Message-ID: <CAK7LNARV4umAMEEc2YAhrgnOJSDvXEUkyNSsmN-AyotZNATedw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: dummy-tools: adjust to scripts/cc-version.sh
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Philipp Rudo <prudo@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YEgvR6Wc1xt0qupy@chrisdown.name>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 1:54 PM Jiri Slaby <jirislaby@kernel.org> wrote:
->
-> On 09. 03. 21, 17:25, Masahiro Yamada wrote:
-> > Commit aec6c60a01d3 ("kbuild: check the minimum compiler version in
-> > Kconfig") changed how the script detects the compiler version.
-> >
-> > Get 'make CROSS_COMPILE=scripts/dummy-tools/' back working again.
-> >
-> > Fixes: aec6c60a01d3 ("kbuild: check the minimum compiler version in Kconfig")
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> > Perhaps, Jiri may have already noticed this issue, and have a similar patch.
-> > I just checked ML, but I did not find a patch to fix this.
->
-> No, as I was making it work on 5.11 :).
->
-> BTW there is one remaining issue I came across:
-> config PAHOLE_HAS_SPLIT_BTF
->          def_bool $(success, test `$(PAHOLE) --version | sed -E
-> 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+Hey Petr,
 
+Chris Down writes:
+>    $ head -1 vmlinux; shuf -n 5 vmlinux
+>    # <level[,flags]> filename:line function "format"
+>    <5> block/blk-settings.c:661 disk_stack_limits "%s: Warning: Device %s is misaligned\n"
+>    <4> kernel/trace/trace.c:8296 trace_create_file "Could not create tracefs '%s' entry\n"
+>    <6> arch/x86/kernel/hpet.c:144 _hpet_print_config "hpet: %s(%d):\n"
+>    <6> init/do_mounts.c:605 prepare_namespace "Waiting for root device %s...\n"
+>    <6> drivers/acpi/osl.c:1410 acpi_no_auto_serialize_setup "ACPI: auto-serialization disabled\n"
 
-I think I said this somewhere, but
-PAHOLE_HAS_SPLIT_BTF should be deleted.
-Checking the pahole version in Kconfig is wrong, I believe.
+Regardless of any of the internals, how does this format look to you? I ask 
+because the sooner we agree on the format, the sooner I can provide an interim 
+version of this patch to internal customers, even if the eventual 
+implementation changes a little :-)
 
+Thanks,
 
-
->
-> and in Makefile we see:
-> PAHOLE          = pahole
->
-> and not something like:
-> PAHOLE          = $(CROSS_COMPILE)pahole
-
-I do not think $(CROSS_COMPILE)pahole
-makes sense.
-
-
-As far as I test, pahole works
-for fereing architecture objects too.
-The DWARF format is identical
-across architectures.
-
-
-
-For example, for the following code:
-
-$ cat test.c
-struct sample {
-     char a[2];
-     long l;
-     int i;
-     void *p;
-     short s;
-} sample;
-
-
-$ gcc -g -c -o test.o test.c; pahole test.o
-$ arm-linux-gnueabihf-gcc -g -c -o test.o test.c; pahole test.o
-$ aarch64-linux-gnu-gcc -g -c -o test.o test.c; pahole test.o
-
-All worked for me.
-
-
-
-
-
-
-> Any idea how to fix this?
->
-> >   scripts/dummy-tools/gcc | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
-> > index 7b10332b23ba..39e65fee59bd 100755
-> > --- a/scripts/dummy-tools/gcc
-> > +++ b/scripts/dummy-tools/gcc
-> > @@ -57,9 +57,9 @@ if arg_contain --version "$@"; then
-> >   fi
-> >
-> >   if arg_contain -E "$@"; then
-> > -     # For scripts/gcc-version.sh; This emulates GCC 20.0.0
-> > +     # For scripts/cc-version.sh; This emulates GCC 20.0.0
-> >       if arg_contain - "$@"; then
-> > -             sed 's/^__GNUC__$/20/; s/^__GNUC_MINOR__$/0/; s/^__GNUC_PATCHLEVEL__$/0/'
-> > +             sed -n '/^GCC/{s/__GNUC__/20/; s/__GNUC_MINOR__/0/; s/__GNUC_PATCHLEVEL__/0/; p;}'
-> >               exit 0
-> >       else
-> >               echo "no input files" >&2
-> >
->
->
-> --
-> js
-> suse labs
-
-
-
---
-Best Regards
-Masahiro Yamada
+Chris
