@@ -2,143 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D24333AB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6ED333AB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbhCJKvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:51:32 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:36260 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229706AbhCJKvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:51:17 -0500
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app2 (Coremail) with SMTP id by_KCgB3XomDpEhgYxkiAg--.43318S4;
-        Wed, 10 Mar 2021 18:50:48 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Hannes Reinecke <hare@suse.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: aic7xxx: aic79xx: Add missing check in ahc_handle_seqint
-Date:   Wed, 10 Mar 2021 18:50:42 +0800
-Message-Id: <20210310105042.31660-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgB3XomDpEhgYxkiAg--.43318S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrWrCFW3GrykGr43Aw1UJrb_yoW5Arykp3
-        Z7K392krs5ur4jy3y8Xw4vqa15Jr4xtasIyF1xG3s2kr43Ca45u3WIgFyaqF1kWr92qrya
-        gas09rWDJr4UWwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkq1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v
-        1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUTBlZdtSrQTAANsX
+        id S232349AbhCJKxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:53:35 -0500
+Received: from foss.arm.com ([217.140.110.172]:43812 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232041AbhCJKxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 05:53:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C0351FB;
+        Wed, 10 Mar 2021 02:53:15 -0800 (PST)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B54B3F85F;
+        Wed, 10 Mar 2021 02:53:13 -0800 (PST)
+Subject: Re: [PATCH] arm64: perf: Fix 64-bit event counter read truncation
+To:     Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+References: <20210310004412.1450128-1-robh@kernel.org>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <cad9892b-b20e-99c2-677a-4f8bed35d217@arm.com>
+Date:   Wed, 10 Mar 2021 10:53:36 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210310004412.1450128-1-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ahc_lookup_scb() may return a null pointer and further lead to
-null-pointer-dereference in case DATA_OVERRUN. Fix this by adding
-a null check.
+Hi Rob,
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/scsi/aic7xxx/aic7xxx_core.c | 72 +++++++++++++++--------------
- 1 file changed, 37 insertions(+), 35 deletions(-)
+On 3/10/21 12:44 AM, Rob Herring wrote:
+> Commit 0fdf1bb75953 ("arm64: perf: Avoid PMXEV* indirection") changed
+> armv8pmu_read_evcntr() to return a u32 instead of u64. The result is
+> silent truncation of the event counter when using 64-bit counters. Given
+> the offending commit appears to have passed thru several folks, it seems
+> likely this was a bad rebase after v8.5 PMU 64-bit counters landed.
 
-diff --git a/drivers/scsi/aic7xxx/aic7xxx_core.c b/drivers/scsi/aic7xxx/aic7xxx_core.c
-index 4b04ab8908f8..3a1cd6a0334e 100644
---- a/drivers/scsi/aic7xxx/aic7xxx_core.c
-+++ b/drivers/scsi/aic7xxx/aic7xxx_core.c
-@@ -1382,43 +1382,45 @@ ahc_handle_seqint(struct ahc_softc *ahc, u_int intstat)
- 		u_int i;
- 
- 		scb = ahc_lookup_scb(ahc, scbindex);
--		for (i = 0; i < num_phases; i++) {
--			if (lastphase == ahc_phase_table[i].phase)
--				break;
--		}
--		ahc_print_path(ahc, scb);
--		printk("data overrun detected %s."
--		       "  Tag == 0x%x.\n",
--		       ahc_phase_table[i].phasemsg,
--		       scb->hscb->tag);
--		ahc_print_path(ahc, scb);
--		printk("%s seen Data Phase.  Length = %ld.  NumSGs = %d.\n",
--		       ahc_inb(ahc, SEQ_FLAGS) & DPHASE ? "Have" : "Haven't",
--		       ahc_get_transfer_length(scb), scb->sg_count);
--		if (scb->sg_count > 0) {
--			for (i = 0; i < scb->sg_count; i++) {
--
--				printk("sg[%d] - Addr 0x%x%x : Length %d\n",
--				       i,
--				       (ahc_le32toh(scb->sg_list[i].len) >> 24
--					& SG_HIGH_ADDR_BITS),
--				       ahc_le32toh(scb->sg_list[i].addr),
--				       ahc_le32toh(scb->sg_list[i].len)
--				       & AHC_SG_LEN_MASK);
-+		if (scb != NULL) {
-+			for (i = 0; i < num_phases; i++) {
-+				if (lastphase == ahc_phase_table[i].phase)
-+					break;
- 			}
-+			ahc_print_path(ahc, scb);
-+			printk("data overrun detected %s."
-+				"  Tag == 0x%x.\n",
-+				ahc_phase_table[i].phasemsg,
-+				scb->hscb->tag);
-+			ahc_print_path(ahc, scb);
-+			printk("%s seen Data Phase.  Length = %ld.  NumSGs = %d.\n",
-+				ahc_inb(ahc, SEQ_FLAGS) & DPHASE ? "Have" : "Haven't",
-+				ahc_get_transfer_length(scb), scb->sg_count);
-+			if (scb->sg_count > 0) {
-+				for (i = 0; i < scb->sg_count; i++) {
-+
-+					printk("sg[%d] - Addr 0x%x%x : Length %d\n",
-+						i,
-+						(ahc_le32toh(scb->sg_list[i].len) >> 24
-+						& SG_HIGH_ADDR_BITS),
-+						ahc_le32toh(scb->sg_list[i].addr),
-+						ahc_le32toh(scb->sg_list[i].len)
-+						& AHC_SG_LEN_MASK);
-+				}
-+			}
-+			/*
-+			* Set this and it will take effect when the
-+			* target does a command complete.
-+			*/
-+			ahc_freeze_devq(ahc, scb);
-+			if ((scb->flags & SCB_SENSE) == 0) {
-+				ahc_set_transaction_status(scb, CAM_DATA_RUN_ERR);
-+			} else {
-+				scb->flags &= ~SCB_SENSE;
-+				ahc_set_transaction_status(scb, CAM_AUTOSENSE_FAIL);
-+			}
-+			ahc_freeze_scb(scb);
- 		}
--		/*
--		 * Set this and it will take effect when the
--		 * target does a command complete.
--		 */
--		ahc_freeze_devq(ahc, scb);
--		if ((scb->flags & SCB_SENSE) == 0) {
--			ahc_set_transaction_status(scb, CAM_DATA_RUN_ERR);
--		} else {
--			scb->flags &= ~SCB_SENSE;
--			ahc_set_transaction_status(scb, CAM_AUTOSENSE_FAIL);
--		}
--		ahc_freeze_scb(scb);
- 
- 		if ((ahc->features & AHC_ULTRA2) != 0) {
- 			/*
--- 
-2.17.1
+Thank you for the fix, it does seem that I made a mistake when rebasing the
+series. Version v4 of the PMU NMI series was sent in 2019, then patch 8673e02e5841
+("arm64: perf: Add support for ARMv8.5-PMU 64-bit counters") from March 2020
+changed the read of PMEVCNTR_EL0 to return an u64, then version v5 from June 2020
+changed it back to returning an u32.
 
+The result of read_pmvevcntr() is returned by armv8pmu_read_evcntr(), and it is an
+unsigned long which is 64bits for arm64, so the patch looks good to me:
+
+Reviewed-by: Alexandru Elisei <alexandru.elisei@arm.com>
+
+Thanks,
+
+Alex
+
+>
+> Fixes: 0fdf1bb75953 ("arm64: perf: Avoid PMXEV* indirection")
+> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  arch/arm64/kernel/perf_event.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+> index 7d2318f80955..4658fcf88c2b 100644
+> --- a/arch/arm64/kernel/perf_event.c
+> +++ b/arch/arm64/kernel/perf_event.c
+> @@ -460,7 +460,7 @@ static inline int armv8pmu_counter_has_overflowed(u32 pmnc, int idx)
+>  	return pmnc & BIT(ARMV8_IDX_TO_COUNTER(idx));
+>  }
+>  
+> -static inline u32 armv8pmu_read_evcntr(int idx)
+> +static inline u64 armv8pmu_read_evcntr(int idx)
+>  {
+>  	u32 counter = ARMV8_IDX_TO_COUNTER(idx);
+>  
