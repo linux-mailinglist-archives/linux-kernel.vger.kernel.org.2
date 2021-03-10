@@ -2,96 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0893348A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4873F3348A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbhCJUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:06:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39766 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232089AbhCJUGO (ORCPT
+        id S232089AbhCJUHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:07:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232132AbhCJUHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:06:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615406773;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MZqOerku4ka3IhMUBjG/XTRlN6lYxBxQ2MLf7EPvQE8=;
-        b=YsVScwomaOWWykcBchGPe3qU1/WmuiEM6y25aPuNOYYhURbOAWgconkgYwyFDpvKAU00qR
-        dRQV9YUN+Z4ETpWFqTrMNEu2hu/HBIKkMHZFAdzU9mnKYg8ed2mIpQ5I9uSDs9zzlUFKxu
-        s/oW1AjgKbt5a/q+q9eKjE05BYm6LAk=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-318-3bzfaoFoN6qBV-X5jo3hhA-1; Wed, 10 Mar 2021 15:06:09 -0500
-X-MC-Unique: 3bzfaoFoN6qBV-X5jo3hhA-1
-Received: by mail-qk1-f198.google.com with SMTP id x11so10469830qki.22
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:06:09 -0800 (PST)
+        Wed, 10 Mar 2021 15:07:18 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F80DC061574;
+        Wed, 10 Mar 2021 12:07:18 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id u14so24737559wri.3;
+        Wed, 10 Mar 2021 12:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wOgAelLZHWumRUZs21CTsS2zD3FZVsziPeto0jg+ZCE=;
+        b=Zhg+3XhgV6ITD4zuHBLaBmmqu/Z4JKzJbm0coqwLukLYblSBSSp/WCkVm8LkMTQNOR
+         Vj0myKVkgiOaHwpkAD5hKcBLmyaQWEYaU7rcBaFeDW/8pyHl+ePYLshU5rQM/EIvkDTm
+         9OiVlEgLERsreqh8cZrLk2HfMOoGvAyfCZ9xLo/02KC9ttdIa6z/zU4DIfzCFANyw760
+         mV4yDz4l2plcY8TtkAtiW41TpzMQlGtEHofIl5K8FiDKCX2M4ZILr+kDW3VEw8Id6UsN
+         QNi/pTVSPKd0oDFlzkdw8ZSKBGV5TW+/+WQm8twF2GN/cuY1DznkRNtSkgq05fJdfWNM
+         fdHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=MZqOerku4ka3IhMUBjG/XTRlN6lYxBxQ2MLf7EPvQE8=;
-        b=UzXgzP2y1tbMo6lu3NhOHHztiaSyQhUMaeLqcw7nHNXrEwFeWG5zpG2bstYjg20j8F
-         hy6tgtay9L1X8Obcogcmxc1G4iYITxaBX/XXvvUkh3yNHmwM9/FX3564XccdA5sWfcM5
-         CLi9XadBUQGB59QFq3uuOPTUtRCXc4Wk0wdbNmvtlboNjMUjsuc9fVuclCJ/tQQS8D5i
-         UF+5MXbtShRXY6h7NTk8rgPO+MUYSX7zgSfsZcQyScWEMk8WbplwcLioJvFEb7LIxQBX
-         G678ZyFNUZGEGF0ODHb+K7hjcNh5rPV5O9R7nFGYUXKc9uBIbIavLYZMoj9cGqLhcW0e
-         NHeA==
-X-Gm-Message-State: AOAM531bEPV7VtKVSTFBL8Ep+joDNnJUFt+X3wDSsHQhqAx7lvZgLQ3o
-        xcVFSrt7wcoBEVcczgulQUwRDkV2eeEcFSiLKFtO0Mo2S0Pz1oaoMgFTqngIO4dmwhKKW84iDnR
-        tik8Boj0vl8xVT9OgXqtueSeE
-X-Received: by 2002:aed:3741:: with SMTP id i59mr2410753qtb.303.1615406769019;
-        Wed, 10 Mar 2021 12:06:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzT3IYnqEF4ggAfCl202qrDbK8JrUuXkacUIxpIN6UHTxsbOnQgsrU2TqIx7iJ6zbkiigwpgA==
-X-Received: by 2002:aed:3741:: with SMTP id i59mr2410742qtb.303.1615406768814;
-        Wed, 10 Mar 2021 12:06:08 -0800 (PST)
-Received: from xz-x1 ([142.126.89.138])
-        by smtp.gmail.com with ESMTPSA id 131sm284373qkl.74.2021.03.10.12.06.07
+        bh=wOgAelLZHWumRUZs21CTsS2zD3FZVsziPeto0jg+ZCE=;
+        b=fW9oGvh6mvhIJsLFiqhPX/D//TzCfn6eILZZBOf/mDpzJBV9TFzio8WoF9p7FCmIcb
+         UyQFevvmgJpGb7P4+eF580GvgX28mtZr6N9ogg55mM6d1Rw4cBD3knnfeBJVy9/yJhiO
+         73gR5bsONqmlQc441j1nzMLraTu+1Y29oZqW9vksjILZXlT+iI08rzILL6Ysw3yq2F6w
+         M+AJYcWxeAcfCTo5rpZzCCLh20Ujgm9LBVgmrY1TDsMPjIARhKr5SZ8EAPs8O0PC5kbB
+         35QbhgLAB9gtSuJ1IQwGGiaf3rncqD4CFva/6nO8hZljodA+yifXqXuryBB4e8chAkTi
+         7GTg==
+X-Gm-Message-State: AOAM533c0lB9+JUKkv987oWx/NfNFFl2cXjX2DdScnINa+wO294ux9aX
+        iblBaUFgssUsWNyk7OTxhel9wiziJkmJpg==
+X-Google-Smtp-Source: ABdhPJwsH5QdZwvtuJJ0km8xhhnO57ZDdDl4ikE88zYJPHafhhROslLpWIbYqemy6BRU1UUjjbJOqQ==
+X-Received: by 2002:adf:e548:: with SMTP id z8mr5387658wrm.246.1615406837234;
+        Wed, 10 Mar 2021 12:07:17 -0800 (PST)
+Received: from example.org (ip-94-113-225-162.net.upcbroadband.cz. [94.113.225.162])
+        by smtp.gmail.com with ESMTPSA id g16sm415804wrs.76.2021.03.10.12.07.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 12:06:08 -0800 (PST)
-Date:   Wed, 10 Mar 2021 15:06:07 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, prime.zeng@hisilicon.com,
-        cohuck@redhat.com
-Subject: Re: [PATCH] vfio/pci: Handle concurrent vma faults
-Message-ID: <20210310200607.GG6530@xz-x1>
-References: <161539852724.8302.17137130175894127401.stgit@gimli.home>
- <20210310181446.GZ2356281@nvidia.com>
- <20210310113406.6f029fcf@omen.home.shazbot.org>
- <20210310184011.GA2356281@nvidia.com>
+        Wed, 10 Mar 2021 12:07:16 -0800 (PST)
+Date:   Wed, 10 Mar 2021 21:07:12 +0100
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v5 0/5] proc: Relax check of mount visibility
+Message-ID: <20210310200712.z5yuedjmbz42n2jr@example.org>
+References: <cover.1615400395.git.gladkov.alexey@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310184011.GA2356281@nvidia.com>
+In-Reply-To: <cover.1615400395.git.gladkov.alexey@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 02:40:11PM -0400, Jason Gunthorpe wrote:
-> On Wed, Mar 10, 2021 at 11:34:06AM -0700, Alex Williamson wrote:
-> 
-> > > I think after the address_space changes this should try to stick with
-> > > a normal io_rmap_pfn_range() done outside the fault handler.
-> > 
-> > I assume you're suggesting calling io_remap_pfn_range() when device
-> > memory is enabled,
-> 
-> Yes, I think I saw Peter thinking along these lines too
-> 
-> Then fault just always causes SIGBUS if it gets called
+On Wed, Mar 10, 2021 at 07:19:55PM +0100, Alexey Gladkov wrote:
+> If only the dynamic part of procfs is mounted (subset=pid), then there is no
+> need to check if procfs is fully visible to the user in the new user namespace.
 
-Indeed that looks better than looping in the fault().
+I'm sorry about that unfinished patch set. Please ignore it.
 
-But I don't know whether it'll be easy to move io_remap_pfn_range() to device
-memory enablement.  If it's a two-step thing, we can fix the BUG_ON and vma
-duplication issue first, then the full rework can be done in the bigger series
-as what be chosen as the last approach.
-
-Thanks,
+> Changelog
+> ---------
+> v4:
+> * Set SB_I_DYNAMIC only if pidonly is set.
+> * Add an error message if subset=pid is canceled during remount.
+> 
+> v3:
+> * Add 'const' to struct cred *mounter_cred (fix kernel test robot warning).
+> 
+> v2:
+> * cache the mounters credentials and make access to the net directories
+>   contingent of the permissions of the mounter of procfs.
+> 
+> --
+> 
+> Alexey Gladkov (5):
+>   docs: proc: add documentation about mount restrictions
+>   proc: Show /proc/self/net only for CAP_NET_ADMIN
+>   proc: Disable cancellation of subset=pid option
+>   proc: Relax check of mount visibility
+>   docs: proc: add documentation about relaxing visibility restrictions
+> 
+>  Documentation/filesystems/proc.rst | 18 ++++++++++++++++++
+>  fs/namespace.c                     | 27 ++++++++++++++++-----------
+>  fs/proc/proc_net.c                 |  8 ++++++++
+>  fs/proc/root.c                     | 25 +++++++++++++++++++------
+>  include/linux/fs.h                 |  1 +
+>  include/linux/proc_fs.h            |  1 +
+>  6 files changed, 63 insertions(+), 17 deletions(-)
+> 
+> -- 
+> 2.29.2
+> 
 
 -- 
-Peter Xu
+Rgrds, legion
 
