@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE63E3345AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5663345BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232815AbhCJRuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:50:46 -0500
-Received: from mga18.intel.com ([134.134.136.126]:6363 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233103AbhCJRuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:50:18 -0500
-IronPort-SDR: 5Qcxn6PBwK2fhNb15xo3SK4pCxcdHsyOYWt0KiCjX1d/B1vt1+uCbtcz/BLdBQON3fRUbXVE5W
- r+xfMaePNIVw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="176120633"
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="176120633"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 09:50:17 -0800
-IronPort-SDR: b2evOkNO/0UV6Pdj15EO+j1vjXvRxRE4shFbKJsY9eS2FoRoq5gKfFz4l6WnU3f+scbmfAzhk1
- loVURsv0Rv6w==
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="403766454"
-Received: from huiyingw-mobl.amr.corp.intel.com (HELO [10.212.214.84]) ([10.212.214.84])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 09:50:15 -0800
-Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
- present
-To:     Mark Brown <broonie@kernel.org>
-Cc:     alsa-devel@alsa-project.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
-        Bard liao <yung-chuan.liao@linux.intel.com>
-References: <20210303115526.419458-1-jonathanh@nvidia.com>
- <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
- <20210310133534.GD4746@sirena.org.uk>
- <6a2352e6-f2b7-def1-de58-52fbeb7846e5@linux.intel.com>
- <20210310161814.GA28564@sirena.org.uk> <s5hzgzbvube.wl-tiwai@suse.de>
- <9b073d01-f2fe-a99b-e53c-4a0b3f95ca05@linux.intel.com>
- <20210310165235.GD28564@sirena.org.uk>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cf03ce61-1501-e0e7-6887-d921c7d1af62@linux.intel.com>
-Date:   Wed, 10 Mar 2021 11:50:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233397AbhCJRwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:52:54 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2677 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233234AbhCJRwj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 12:52:39 -0500
+Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dwfdq1XQyz67wf3;
+        Thu, 11 Mar 2021 01:46:39 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 10 Mar 2021 18:52:37 +0100
+Received: from [10.47.10.208] (10.47.10.208) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Wed, 10 Mar
+ 2021 17:52:36 +0000
+Subject: Re: [PATCH 1/1] Revert "iommu/iova: Retry from last rb tree node if
+ iova search fails"
+From:   John Garry <john.garry@huawei.com>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Vijayanand Jitta <vjitta@codeaurora.org>,
+        Linuxarm <linuxarm@huawei.com>
+References: <20210129092120.1482-1-thunder.leizhen@huawei.com>
+ <5505b1e5-2450-d5c4-6d77-5bb21fd0b6a1@huawei.com>
+ <e8ff095f-7b7c-da38-3675-cd3c1ee84b1a@arm.com>
+ <7e18829a-3e7e-cc82-9d33-366cf2025624@huawei.com>
+ <4c634a22-7168-b51c-a012-2009fc03e6c3@arm.com>
+ <d090b869-b3ac-fecc-9efd-d870e43e0d99@huawei.com>
+ <eacd5ccd-ab5a-27fe-6542-deaefd597d11@arm.com>
+ <c58abbec-7220-b440-98d4-d1026a8feed4@huawei.com>
+Message-ID: <8b526177-758e-eee4-74ee-6aa855072e70@huawei.com>
+Date:   Wed, 10 Mar 2021 17:50:34 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20210310165235.GD28564@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <c58abbec-7220-b440-98d4-d1026a8feed4@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.10.208]
+X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/10/21 10:52 AM, Mark Brown wrote:
-> On Wed, Mar 10, 2021 at 10:41:18AM -0600, Pierre-Louis Bossart wrote:
+On 08/03/2021 16:22, John Garry wrote:
 > 
->> would this work?
+>>
+>>>> While max32_alloc_size indirectly tracks the largest*contiguous* 
+>>>> available space, one of the ideas from which it grew was to simply keep
+>>>> count of the total number of free PFNs. If you're really spending
+>>>> significant time determining that the tree is full, as opposed to just
+>>>> taking longer to eventually succeed, then it might be relatively
+>>>> innocuous to tack on that semi-redundant extra accounting as a
+>>>> self-contained quick fix for that worst case.
+>>>>
 > 
->> if (!IS_ENABLED(CONFIG_DMI))
->>      return 0;
-> 
-> Build time dependencies aren't going to help anything, arm64 (and to my
-> understanding some future x86 systems, LynxPoint IIRC) supports both DT
-> and ACPI and so you have kernels built with support for both.
+> ...
 
-well, that's what I suggested initially:
-        if (is_of_node(card->dev->fwnode))
+So since the retry means that we search through the complete pfn range 
+most of the time (due to poor success rate quoted), we should be able to 
+do a better job at maintaining an accurate max alloc size, by 
+calculating it during the failed search, and not relying on max alloc 
+failed or resetting it frequently. Hopefully that would mean that we're 
+smarter about quickly failing the allocation.
 
-I used the of_node test as a proxy for 'no DMI' since I am not aware of 
-any means to detect if DMI is enabled at run-time.
+I'll further look at that.
 
+Thanks,
+John
