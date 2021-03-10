@@ -2,174 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132533348E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57273348EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbhCJUba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:31:30 -0500
-Received: from smtp70.ord1c.emailsrvr.com ([108.166.43.70]:38572 "EHLO
-        smtp70.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229687AbhCJUbY (ORCPT
+        id S231550AbhCJUdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:33:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhCJUdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:31:24 -0500
-X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Mar 2021 15:31:23 EST
-X-Auth-ID: markh@compro.net
-Received: by smtp17.relay.ord1c.emailsrvr.com (Authenticated sender: markh-AT-compro.net) with ESMTPSA id 2735E600FD;
-        Wed, 10 Mar 2021 15:24:46 -0500 (EST)
-Reply-To: markh@compro.net
-Subject: Re: Logitech G602 wireless mouse kernel error messages in 5.10.11+
- kernels
-To:     =?UTF-8?Q?Filipe_La=c3=adns?= <lains@archlinux.org>,
-        Jiri Kosina <jkosina@suse.cz>, sashal@kernel.org,
-        Linux-kernel <linux-kernel@vger.kernel.org>
-References: <ac5dde9c-194f-ce40-5c13-2a6890fad6a9@compro.net>
- <bb840ecf8dc626a07b9f00af69b0d561fb60f75b.camel@archlinux.org>
-From:   Mark Hounschell <markh@compro.net>
-Organization: Compro Computer Svcs.
-Message-ID: <8276a207-abe7-06cc-0c25-f4eebf1a9525@compro.net>
-Date:   Wed, 10 Mar 2021 15:24:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 10 Mar 2021 15:33:24 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CABC061574;
+        Wed, 10 Mar 2021 12:33:23 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d8so9056766plg.10;
+        Wed, 10 Mar 2021 12:33:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=pUa3+6lMCh9OsEEA0VH4ygBAOSBRoM3nA1zgeCu6wVI=;
+        b=rg8UwETO4XJrE9SHJd9evgunYIpfaPDNEAniCBv52ARsPQ0Pzg1lKcjrLGwv+SxEH8
+         60M8Ve4BU9oOkAnp8kCuggBZkJKVhOaV78OsEXGgyB7D8uI9xCq3s+Y7S+gR/dHzFYMu
+         JEBEZGlRY04LFg6qKN7x2Xt8U5mFQOmAho5a2vfxqeuOfoCk2FqPFp2RkscZri/ut/hl
+         o7MBcwMVDmzA5wubrdX99sP1TM4t0hBc1FYRFA4n14drvoHKApCGrWMbOFtxjEfobja9
+         QYoCjeyVutdcLMfhce5zMma0MlzJb6nbZRyJ8aZvnJlLGosUUsl4+hca66KXCSTNBk4C
+         0h4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=pUa3+6lMCh9OsEEA0VH4ygBAOSBRoM3nA1zgeCu6wVI=;
+        b=NIZmy9CPWAt+1HLDHLjKcWFkqSV6r3Qf0nGUkmuPrMBU7aiy+RCadX/dZyvvYRuxMI
+         iq6pj4TdnKlfg25q+uvWn+cXVUaagCj8YViscJ6DW9LGuydcKiYmPya1L0XDAcExRoUL
+         lOXZCRYE7jNVlzF3L9GQBle4KpZw5cOg6hIVDA+CYeFikkCaflCoabobQK9rhI8ykN3R
+         rzI3AURSOt5vg/a7IoVvKqMAOEGmfslHxyCbSgSOnHJ3wCNaUBGJ7qqol16AyZEREAz7
+         3j2nn1B03HMUEgcSZbiiJhVg08Aw3JumG3xd6xUSVujenLqgz2wmXDcsOVlqEvXAyNpf
+         b0pA==
+X-Gm-Message-State: AOAM5314TmkulFG8EtR5FyvuVcIm2CBqOQB04LEReXMOX5rdbudH30Eg
+        xq0FiJ2YmOqlYipXhLNYAjg=
+X-Google-Smtp-Source: ABdhPJwg3mB5jAeRZERraMNPZDOvziwbLUWHkqXWMCPqlZ8Oy67Th3RiPoxnSvjqcY3v/DxVh5X/CA==
+X-Received: by 2002:a17:90a:ec15:: with SMTP id l21mr5184321pjy.164.1615408403205;
+        Wed, 10 Mar 2021 12:33:23 -0800 (PST)
+Received: from localhost ([122.179.55.249])
+        by smtp.gmail.com with ESMTPSA id o123sm376601pfb.16.2021.03.10.12.33.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Mar 2021 12:33:22 -0800 (PST)
+Date:   Thu, 11 Mar 2021 02:03:14 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, bpf@vger.kernel.org, dsahern@kernel.org,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        bkkarthik@pesu.pes.edu, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: ipv6: route.c:fix indentation
+Message-ID: <20210310203314.wk6zjxyo6ax5chbd@kewl-virtual-machine>
 MIME-Version: 1.0
-In-Reply-To: <bb840ecf8dc626a07b9f00af69b0d561fb60f75b.camel@archlinux.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Classification-ID: 494214d0-accd-474b-8f27-c6eec4513597-1-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 2:56 PM, Filipe Laíns wrote:
-> On Wed, 2021-03-10 at 13:55 -0500, Mark Hounschell wrote:
->> I have been using a Logitech wireless G602 mouse since forever. As of
->> kernel 5.10.11 I get the following kernel messages;
->>
->>
->> $dmesg | grep -i logitech
-> (snip)
->> .
->> .
->> .
->> Every mouse event seems to produce another "Unexpected input report
->> number 128" kernel message.
->>
->> The commit that started this is:
->>
->> commit 1e6fc9768ed2c3917e1fd7af26cb194dfe14f7da
->> Author: Filipe LaÃ­ns <lains@archlinux.org>
->> Date:   Mon Jan 4 20:47:17 2021 +0000
->>
->>       HID: logitech-dj: add the G602 receiver
->>
->>       [ Upstream commit e400071a805d6229223a98899e9da8c6233704a1 ]
->>
->>       Tested. The device gets correctly exported to userspace and I can see
->>       mouse and keyboard events.
->>
->>       Signed-off-by: Filipe LaÃ­ns <lains@archlinux.org>
->>       Signed-off-by: Jiri Kosina <jkosina@suse.cz>
->>       Signed-off-by: Sasha Levin <sashal@kernel.org>
->>
->> The actual patch:
->>
->> diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
->> index 1ffcfc9a1e033..45e7e0bdd382b 100644
->> --- a/drivers/hid/hid-logitech-dj.c
->> +++ b/drivers/hid/hid-logitech-dj.c
->> @@ -1869,6 +1869,10 @@ static const struct hid_device_id
->> logi_dj_receivers[] = {
->>             HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
->>                   0xc531),
->>            .driver_data = recvr_type_gaming_hidpp},
->> +       { /* Logitech G602 receiver (0xc537) */
->> +         HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
->> +               0xc537),
->> +        .driver_data = recvr_type_gaming_hidpp},
->>           { /* Logitech lightspeed receiver (0xc539) */
->>             HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
->>                   USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1),
->>
->>
->>
->> markh@harley:~> lsusb
->> Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
->> Bus 003 Device 003: ID 046d:c537 Logitech, Inc.
->> Bus 003 Device 002: ID 0424:2504 Standard Microsystems Corp. USB 2.0 Hub
->> Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
->> Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
->> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
->>
->>
->>
->> With the patch reverted:
->>
->> $dmesg | grep -i logitech
-> (snip)
->>
->> $lsusb
->> Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
->> Bus 003 Device 003: ID 046d:c537 Logitech, Inc.
->> Bus 003 Device 002: ID 0424:2504 Standard Microsystems Corp. USB 2.0 Hub
->> Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
->> Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
->> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
->>
->> With or without the patch and error messages the mouse has always worked.
->>
->> Regards
->> Mark
-> 
-> Yes, sorry about that. The following patch should fix it, can you confirm?
-> You probably didn't notice any breakage because you do not have any of your
-> buttons bound to keyboard events.
-> 
-> 
-> commit ef07c116d98772952807492bd32a61f5af172a94 (hid/for-5.11/upstream-fixes)
-> Author: Filipe Laíns <lains@riseup.net>
-> Date:   Fri Feb 5 14:34:44 2021 +0000
-> 
->      HID: logitech-dj: add support for keyboard events in eQUAD step 4 Gaming
-> 
->      In e400071a805d6229223a98899e9da8c6233704a1 I added support for the
->      receiver that comes with the G602 device, but unfortunately I screwed up
->      during testing and it seems the keyboard events were actually not being
->      sent to userspace.
->      This resulted in keyboard events being broken in userspace, please
->      backport the fix.
-> 
->      The receiver uses the normal 0x01 Logitech keyboard report descriptor,
->      as expected, so it is just a matter of flagging it as supported.
-> 
->      Reported in
->      https://github.com/libratbag/libratbag/issues/1124
-> 
->      Fixes: e400071a805d6 ("HID: logitech-dj: add the G602 receiver")
->      Cc: <stable@vger.kernel.org>
->      Signed-off-by: Filipe Laíns <lains@riseup.net>
->      Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-> 
-> diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
-> index 45e7e0bdd382..fcdc922bc973 100644
-> --- a/drivers/hid/hid-logitech-dj.c
-> +++ b/drivers/hid/hid-logitech-dj.c
-> @@ -980,6 +980,7 @@ static void logi_hidpp_recv_queue_notif(struct hid_device
-> *hdev,
->          case 0x07:
->                  device_type = "eQUAD step 4 Gaming";
->                  logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
-> +               workitem.reports_supported |= STD_KEYBOARD;
->                  break;
->          case 0x08:
->                  device_type = "eQUAD step 4 for gamepads";
-> 
-> 
+The series of space has been replaced by tab space
+wherever required.
 
-That is correct, I don't have any buttons bound to keyboard events. With 
-the original patch the G4(forward) and G5(Backward) buttons work in a 
-browser. I guess G7, G8, and G9 buttons are programmable to keyboard events?
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ net/ipv6/route.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-However this patch does not seem to fix the messages I get.
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 1536f4948e86..60058f3dcc48 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -2378,7 +2378,7 @@ u32 rt6_multipath_hash(const struct net *net, const struct flowi6 *fl6,
+ 
+ 			memset(&hash_keys, 0, sizeof(hash_keys));
+ 
+-                        if (!flkeys) {
++			if (!flkeys) {
+ 				skb_flow_dissect_flow_keys(skb, &keys, flag);
+ 				flkeys = &keys;
+ 			}
+@@ -2518,20 +2518,20 @@ struct dst_entry *ip6_route_output_flags(struct net *net,
+ 					 struct flowi6 *fl6,
+ 					 int flags)
+ {
+-        struct dst_entry *dst;
+-        struct rt6_info *rt6;
++	struct dst_entry *dst;
++	struct rt6_info *rt6;
+ 
+-        rcu_read_lock();
+-        dst = ip6_route_output_flags_noref(net, sk, fl6, flags);
+-        rt6 = (struct rt6_info *)dst;
+-        /* For dst cached in uncached_list, refcnt is already taken. */
+-        if (list_empty(&rt6->rt6i_uncached) && !dst_hold_safe(dst)) {
+-                dst = &net->ipv6.ip6_null_entry->dst;
+-                dst_hold(dst);
+-        }
+-        rcu_read_unlock();
++	rcu_read_lock();
++	dst = ip6_route_output_flags_noref(net, sk, fl6, flags);
++	rt6 = (struct rt6_info *)dst;
++	/* For dst cached in uncached_list, refcnt is already taken. */
++	if (list_empty(&rt6->rt6i_uncached) && !dst_hold_safe(dst)) {
++		dst = &net->ipv6.ip6_null_entry->dst;
++		dst_hold(dst);
++	}
++	rcu_read_unlock();
+ 
+-        return dst;
++	return dst;
+ }
+ EXPORT_SYMBOL_GPL(ip6_route_output_flags);
+ 
+-- 
+2.17.1
 
-Regards
-Mark
