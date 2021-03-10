@@ -2,90 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B5F33358C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FDE333592
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhCJFqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 00:46:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbhCJFqg (ORCPT
+        id S229931AbhCJFvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 00:51:10 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:26840 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhCJFut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 00:46:36 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99384C06174A;
-        Tue,  9 Mar 2021 21:46:36 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id z5so7936250plg.3;
-        Tue, 09 Mar 2021 21:46:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kSS5OLOoNWvPXwzh/j7X5vj/WS7ktp3KnT6xi3GJsko=;
-        b=gVJxTVFlnUD7/SNeFHlheEeJ7Xjlv4xL0QJfhIxw8lSfCoantUEPA5Q1fdtitvNWUF
-         KSvi8yftiZBH29TyT64RI00s9x33PNdNVjJyynfRZQsH3mFuKy8HEPEWh4BOGeMkFyTM
-         MEmDneM1VP8dr7FNzIU5Knqvfiv8jkzW3yvJ1/GwnzRfp92GHY+uYG+1v2Vtpn1xVlTi
-         l+sncQGT6oWRVmuBbwE/sQg0vHLJ5tYJE70OI/GffSu0wyZ/mB/Ern10k1gwgfyEhBS5
-         U7gWCXkRsuIWIT6W4QL6l1JGQUgmAeLzFXhzQD+jfxY/Mkutaf6aIHCI9Hz0vom+ZnjK
-         f06w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kSS5OLOoNWvPXwzh/j7X5vj/WS7ktp3KnT6xi3GJsko=;
-        b=qMBxf8ko3VwyFEjIRoj0FMWtimCMnoGg1cEhTh4RppbuOj7zQJSi5hFVRy6vhZwFCj
-         K0R8VKXFefLQfRdZmq8QnnHeB+C/cugF5zJUX5Zm++rGXeqeol/G1YDJPdyBz1owDhqL
-         Lw86qipbYPb/AcOzEILQ+++c//mif0e7auSPJlfBzsE+qwwwqrMZiwi/MV4XaloMGS1z
-         IFPrBP4JD1pAqGCczOG3jsFVFgM0W5MQoJjjyTRIAd60iuFufRyhKsTcxtV9PlQUUPhz
-         gwoeb1HbvdJBvogr9MCdm7F0RBtLprUeVtLD6fd2JwQFaKKboTE560/SX7Wjy7N9WWUG
-         vuUg==
-X-Gm-Message-State: AOAM532SBO7yOvzvobN51KsyGeJiAL87sz0evqAEw+6ptvD8ZpY1VA9s
-        h/yFDxSBX7BoOLXZ4gXRzM8=
-X-Google-Smtp-Source: ABdhPJzT+Lmv/Tgj/7BJnPqT7Ydy13ileA2JKpbX3XIDVJwZOf1AOj/neqCZcfMH7+874bywozpbiQ==
-X-Received: by 2002:a17:90a:8417:: with SMTP id j23mr1835846pjn.224.1615355195604;
-        Tue, 09 Mar 2021 21:46:35 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:e86b:7759:70dd:2bbf])
-        by smtp.gmail.com with ESMTPSA id j21sm7015614pfc.114.2021.03.09.21.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 21:46:34 -0800 (PST)
-Date:   Tue, 9 Mar 2021 21:46:32 -0800
-From:   'Dmitry Torokhov' <dmitry.torokhov@gmail.com>
-To:     "jingle.wu" <jingle.wu@emc.com.tw>
-Cc:     'linux-kernel' <linux-kernel@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        'phoenix' <phoenix@emc.com.tw>,
-        "dave.wang" <dave.wang@emc.com.tw>,
-        "'josh.chen'" <josh.chen@emc.com.tw>
-Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for new dev ices
-Message-ID: <YEhdODWV66v0KqeM@google.com>
-References: <1614647097.9201.jingle.wu@emc.com.tw>
- <YEGBeWHRfL4gN9pX@google.com>
- <004f01d7115e$3ba005e0$b2e011a0$@emc.com.tw>
- <YEGJ7z479pqyBW1w@google.com>
- <005401d71161$ef9b20e0$ced162a0$@emc.com.tw>
- <YEWXcV62YpxbBp9P@google.com>
- <005d01d713f8$e4b715a0$ae2540e0$@emc.com.tw>
- <YEbRazfF0iTreYYz@google.com>
- <00ce01d714ef$2598f740$70cae5c0$@emc.com.tw>
- <1615301614.16870.jingle.wu@emc.com.tw>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615301614.16870.jingle.wu@emc.com.tw>
+        Wed, 10 Mar 2021 00:50:49 -0500
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210310055047epoutp03ead9701a4c436a371aa86a06bc1faa8f~q5TiGhPj20729507295epoutp03I
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:50:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210310055047epoutp03ead9701a4c436a371aa86a06bc1faa8f~q5TiGhPj20729507295epoutp03I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1615355447;
+        bh=F6yiK3eZ5ZuvXhGR+yvTsN5lbrwcylNRqemOzFd7w64=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=c8nC9iiDqg5oxA/XyxKUMzZpeUKt5LarBnAZ3y+QTk46fSB1wVGvO1gVG9RTQwVt2
+         eQ0zlTRqmdlbOd5jDYJwjrDmntz6jztA2/ama9XHT7qY0Aut0KR9FUNThL391JJROl
+         i8tg3dXKe+L0Lc5OnWgUpahVA+a7Jr98A4sk89mI=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20210310055046epcas5p1a72bf00c8765de71d1a14e21eb42f1fd~q5ThgK8e33090830908epcas5p1x;
+        Wed, 10 Mar 2021 05:50:46 +0000 (GMT)
+X-AuditID: b6c32a49-8bfff70000013d42-75-60485e3683e8
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6D.6A.15682.63E58406; Wed, 10 Mar 2021 14:50:46 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: [PATCH v2] arm: print alloc free paths for address in registers
+Reply-To: maninder1.s@samsung.com
+Sender: Maninder Singh <maninder1.s@samsung.com>
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "cl@linux.com" <cl@linux.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "vbabka@suse.cz" <vbabka@suse.cz>
+CC:     Maninder Singh <maninder1.s@samsung.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
+        Vaneet Narang <v.narang@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <1614239800-27549-1-git-send-email-maninder1.s@samsung.com>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210310055035epcms5p230de287f0daec198eb334b3348d07924@epcms5p2>
+Date:   Wed, 10 Mar 2021 11:20:35 +0530
+X-CMS-MailID: 20210310055035epcms5p230de287f0daec198eb334b3348d07924
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJKsWRmVeSWpSXmKPExsWy7bCmhq5ZnEeCwbfTyhYXd6dazFm/hs3i
+        +rc3jBYru5vZLDY9vsZqcXnXHDaLe2v+s1ocmrqX0eLw/DYWi7bP/1gt2pZsZLI4dHIuo8Xs
+        xj5GB16Py9cuMnss2FTqsWlVJ5vHpk+T2D263l5h8jgx4zeLx5Mr05k8Ni+p9+jbsorR48yC
+        I+wenzfJBXBHcdmkpOZklqUW6dslcGWc6X/DVHBVrOL//jNsDYw7hLoYOTkkBEwkJrw4zA5i
+        CwnsZpR43e7ZxcjBwSsgKPF3hzBIWFjAR+LAzBeMECWKEhdmrGEEKREWMJD4tVUDJMwmoCex
+        atceli5GLg4RgYNMErMuPANzmAV2M0nsPj+dFWIXr8SM9qcsELa0xPblW8GGcgp4SHx6M4UR
+        Ii4qcXP1W3YY+/2x+VBxEYnWe2eZIWxBiQc/d0PFZSRWb+4FWyYh0M0o8fhHM1TzHEaJH0t8
+        IGxzid0b5oEt5hXwlfje3Q12EIuAqsTyE4+hDnKReLfoGNhQZgF5ie1v5zCDfMksoCmxfpc+
+        RImsxNRT65ggSvgken8/YYL5a8c8GFtVouXmBlaYHz9//Ag13kPiTcs2RpA7hQT6GSXW/ZjL
+        PoFRYRYirGch2TwLYfMCRuZVjJKpBcW56anFpgWGeanlesWJucWleel6yfm5mxjBqU3Lcwfj
+        3Qcf9A4xMnEwHmKU4GBWEuH1O+6WIMSbklhZlVqUH19UmpNafIhRmoNFSZx3h8GDeCGB9MSS
+        1OzU1ILUIpgsEwenVAMTp8XDdwkFzJ9CE49a+syYKTlj1v93C29FXxWx0wr8t7tU78XjhHdv
+        OzXvzj2xIUJ6k7VVX9UJgdNnop50rHgs3JlsyRPu++bLH3MbxXk1zAe7Es9V/Ztw2lazVuPu
+        I6Pz4uufNJ99+d+k+5L01gMfLv562LNU9OLWs72XtDZb+K5YXpL255xgZeD/5H3Per84zZBK
+        //F6x7d506eVdKeKrVp080bB7W1ux1/pxmvX33WfIBKrxrPTrYaHgTd42duk6iUhE17vuWUh
+        YBua9F3lwJtKHy6jgEvHze8dK9Fgjt703rWAbW2E5fZfijvTyjc83BicuLaRXSD7DDf7ZtcG
+        oe4zVeeS1OsKvrj6v56sqMRSnJFoqMVcVJwIAJkNKTfcAwAA
+X-CMS-RootMailID: 20210225075653epcas5p3d9551f01177d0c851c9c37f6ae84f38d
+References: <1614239800-27549-1-git-send-email-maninder1.s@samsung.com>
+        <CGME20210225075653epcas5p3d9551f01177d0c851c9c37f6ae84f38d@epcms5p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 10:53:34PM +0800, jingle.wu wrote:
-> Hi Dmitry:
+Hi,
+
+Any comments or updates?
+
+>Sender : Maninder Singh <maninder1.s@samsung.com> Engineer/Platform S/W Group /SRI-Delhi/Samsung Electronics 
+>Date : 2021-02-25 13:57 (GMT+5:30)
+>Title : [PATCH v2] arm: print alloc free paths for address in registers
 > 
-> Was this the only issue with the updated patch? Did it work for you
-> otherwise?
-> -> Yes, the updated patch can work successfully after fix this issue.
+>In case of "Use After Free" kernel OOPs, free path of object
+>is required to debug futher.
+>And in most of cases object address is present in one of registers.
+> 
+>Thus check for register address and if it belongs to slab,
+>print its alloc and free path.
+> 
+>e.g. in below issue  register r6 belongs to slab, and use after free issue
+>occurred on one of its derefer values:
+> 
+>[  124.310386] (ptrval)
+>[  124.312647] 8<--- cut here ---
+>[  124.313761] Unable to handle kernel paging request at virtual address 6b6b6b6f
+>[  124.315972] pgd = (ptrval)
+>...
+>[  124.328290] pc : [<c052fc0c>]    lr : [<c052fc00>]    psr: 60000013
+>[  124.330349] sp : c8993d28  ip : 0000bff4  fp : c8ae2020
+>[  124.332071] r10: 00000000  r9 : 00000001  r8 : c1804cc8
+>[  124.333803] r7 : 00000000  r6 : c8ae9180  r5 : c1804a80  r4 : c8ae2008
+>[  124.335936] r3 : 6b6b6b6b  r2 : 315049d6  r1 : 2d867000  r0 : c1396584
+>..
+>[  124.365233] register r6: c8ae9180 belongs to slab object
+>[  124.366364] INFO: Allocated in meminfo_proc_show+0x3c/0x500 age=1 cpu=0 pid=69
+>[  124.367545]  meminfo_proc_show+0x3c/0x500
+>[  124.368271]  seq_read_iter+0x10c/0x4bc
+>[  124.368994]  proc_reg_read_iter+0x74/0xa8
+>[  124.369712]  generic_file_splice_read+0xe8/0x178
+>[  124.370496]  splice_direct_to_actor+0xe0/0x2b8
+>[  124.371261]  do_splice_direct+0xa4/0xdc
+>[  124.371917]  do_sendfile+0x1c4/0x3ec
+>[  124.372550]  sys_sendfile64+0x128/0x130
+>[  124.373109]  ret_fast_syscall+0x0/0x54
+>[  124.373664]  0xbe9a2de4
+>[  124.374081] INFO: Freed in meminfo_proc_show+0x5c/0x500 age=1 cpu=0 pid=69
+>[  124.374933]  meminfo_proc_show+0x5c/0x500
+>[  124.375485]  seq_read_iter+0x10c/0x4bc
+>[  124.376020]  proc_reg_read_iter+0x74/0xa8
+>[  124.376643]  generic_file_splice_read+0xe8/0x178
+>[  124.377331]  splice_direct_to_actor+0xe0/0x2b8
+>[  124.378022]  do_splice_direct+0xa4/0xdc
+>[  124.378633]  do_sendfile+0x1c4/0x3ec
+>[  124.379220]  sys_sendfile64+0x128/0x130
+>[  124.379822]  ret_fast_syscall+0x0/0x54
+>[  124.380421]  0xbe9a2de4
+> 
+>Co-developed-by: Vaneet Narang <v.narang@samsung.com>
+>Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+>Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+>---
+>v1 -> v2: do address sanity with virt_addr_valid
+> 
+> arch/arm/include/asm/bug.h |  1 +
+> arch/arm/kernel/process.c  | 18 ++++++++++++++++++
+> arch/arm/kernel/traps.c    |  1 +
+> include/linux/slab.h       | 14 ++++++++++++++
+> mm/slab.h                  |  7 -------
+> mm/slub.c                  | 18 ++++++++++++++++++
+> 6 files changed, 52 insertions(+), 7 deletions(-)
+ 
 
-OK, great, I applied it.
-
-Thanks.
-
--- 
-Dmitry
+Thanks,
+Maninder Singh
