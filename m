@@ -2,189 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F35334A23
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C80334A27
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbhCJVux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
+        id S231805AbhCJVv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:51:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbhCJVu1 (ORCPT
+        with ESMTP id S231393AbhCJVvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:50:27 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F8BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:50:27 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id b21so8595024pfo.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:50:27 -0800 (PST)
+        Wed, 10 Mar 2021 16:51:53 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8CAC061574;
+        Wed, 10 Mar 2021 13:51:53 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id f145so3086771ybg.11;
+        Wed, 10 Mar 2021 13:51:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=2/H3hQCaHwfnzylFb005783iZv8m6Dk6xxFiFwYXl2k=;
-        b=Hyv7Yh9phqQMd9/cQHrN4FjQjTAIfhsLRQRAPalxsJHB3yJRGs2AojFWAa8BaOJkV5
-         XA8L6EvPO3gAkv2ugEKvSMnE2r2ChiYSLA9EsTr0lRlBpf8YqW1Zjc5QJ35N7ZIORxgy
-         qPnRNow7FeFO0LnedAdmGzFF2GFnginNfR+5aVDCEWQfTvJDn3sGly7P3UD69RCV3rVF
-         WoWhvBdNlO3b4cJ7r4PoIiz0QKU0D5sbQXXoYEL4aRLjD3UPlxDHrh14QXHeew+iOUcX
-         vvLPfvCXr0KMItO7NQdXkANh7gB1NT1vgMxjxMxS1siSrkXaFDHVF9gkIAoK1Zq3u5lb
-         Hyyw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hX1sbP8EszqgWKbbcRjaS3YBe+SgvuzH+C2gcwmgs6c=;
+        b=o1taLVDQR8GaLFTtrZA5sHQcS20O/8LdKvxul/3Te3g0vypKrqy+emSO5PCxduVrwo
+         ncv6rvISPRxcYnQ+0+8gzdwo+noS8WnqGpMRgR/ufzkw1Z9jZmiIGhytGGfabsLy4DaA
+         anXbBT3L9Ig1sUu7USlQZG/y+w0kY0eCyRXqoHhdZrcnnr5xItQHEv1YHBGMjOO1R9lg
+         e9O6n704eMZKC5vaNshv7CkPi+uatRR7G/X7k/hRs3EsJqvd50VG3mm+81BSM9h3aUAG
+         RxpPmAlWo4Gs0ZVuWp7tFWiB3tzkknylSRSmETkB3EkrXSwguxeyFLpw5ZawKnSS3Ksf
+         Ip2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=2/H3hQCaHwfnzylFb005783iZv8m6Dk6xxFiFwYXl2k=;
-        b=DgXL4Yhi5mPhyIsEqZLQBXBuff2ebePm87saye4IOr7UO51+b8Oix8pSliUtl+pT5E
-         80XfcxDIk6L/+3ZEpt+b6ViexTT9z+JytpEM6o6yYXRyvqY8q9mOVKf2ZDmnFPK8QsHe
-         pafhXq8/n0qpPPzX12YcYSGtRl+lEbsppdT00NP1q97QCy5kNRvf9XRRha8NTfOUwU0h
-         BBkAGjvKG8Y4qv/TuHHRmouM2zSGsbU1/EahbLCPPWgeuSpffR2Uh/LMXBnQ838gVVDK
-         QOi1pR70j4PlnOsrvSQx2CtLovoRCOfekf0Or+xENursjYvg7ewn/6/bvB7r0qYhtw5X
-         M8Sg==
-X-Gm-Message-State: AOAM530xrDvcqo6ZSkkr8LdYjLnttIP2WQNRVJcJIvdQFmsl5NwmgHIH
-        QqTDcJ2Kp4M5KWYn/Y/oe7/7+4ySl8Ng
-X-Google-Smtp-Source: ABdhPJwlSrVzqRPm69b5UEV6PXGiLUfSpKQVWYPiqhBw+JgQscqn/bQx4VAmuAjckiMbWHQlPW10jb/GZSRA
-X-Received: from bg.sfo.corp.google.com ([2620:15c:8:10:f8cb:bbee:22b1:7932])
- (user=bgeffon job=sendgmr) by 2002:aa7:8a56:0:b029:1f3:9c35:3cbb with SMTP id
- n22-20020aa78a560000b02901f39c353cbbmr4562813pfa.24.1615413027247; Wed, 10
- Mar 2021 13:50:27 -0800 (PST)
-Date:   Wed, 10 Mar 2021 13:50:23 -0800
-Message-Id: <20210310215023.4129753-1-bgeffon@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] eventfd: Introduce EFD_ZERO_ON_WAKE
-From:   Brian Geffon <bgeffon@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Brian Geffon <bgeffon@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Sonny Rao <sonnyrao@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hX1sbP8EszqgWKbbcRjaS3YBe+SgvuzH+C2gcwmgs6c=;
+        b=lUA3H6utUgEMwazOxs5A1fSxO6kq143Ip8A0iSMhd/XfEaC4LfyIodCbu5tH3N5hDt
+         siEluBlWGEC6l3KhmiSLsEH6C1Pv151bKFHjF8qLCcd86xaOPzIdrElJSak5soFFRtoO
+         UUkYp1T0fBwZmZW8REvr0stHVdaiNq7iNGIuHQIhZRBq0nx04ZwQJlY6fsjbtJZqC105
+         6fzUiqEJnnp1liRcsjqWRD0UqVOQpndR8PzBgB25NMmn+FjPpIsEn5tCFMiMMnSiGVEG
+         FT+wVEXt6aLngtn19SsOZz03W0wL/wJbRj3YqfbWhRbq0ho+iV5K+QkHkcLE54jfaJg3
+         SOjQ==
+X-Gm-Message-State: AOAM533eg34/+1sYQq1oT7TukTWd8hlAwjlZK8Ovf8zlwp96wvYiZ7QH
+        9fG+DRfdmcHHhUUFZE4cjn4anesGUOAKCi7E/mM=
+X-Google-Smtp-Source: ABdhPJxw8xO8sEKrSziLpEGWBqhQpuweTxPuEg3LJpxREwC8EvtUtDLnJbBBLzKq+BITSd8FAUO+WXHHj5ouBCTUwU4=
+X-Received: by 2002:a25:cc13:: with SMTP id l19mr7105082ybf.260.1615413112387;
+ Wed, 10 Mar 2021 13:51:52 -0800 (PST)
+MIME-Version: 1.0
+References: <20210310015455.1095207-1-revest@chromium.org> <f5cfb3d0-fab4-ee07-70de-ad5589db1244@fb.com>
+ <eb0a8485-9624-1727-6913-e4520c9d8c04@fb.com> <CABRcYmK8m21sb8dHbr1wLT_oTCBpvr2Zg-8KHwKuJ2Ak0iTZ_A@mail.gmail.com>
+ <454d2e4b-f842-624c-a89e-441830c98e99@fb.com> <CAEf4BzY8kRBM578iV+xMZZxT7gKazMFGp5CZjvc1ueyd9vf3KA@mail.gmail.com>
+In-Reply-To: <CAEf4BzY8kRBM578iV+xMZZxT7gKazMFGp5CZjvc1ueyd9vf3KA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Mar 2021 13:51:41 -0800
+Message-ID: <CAEf4BzbZ+96_WRCyHQ8LVW7gvLouf2rT95Pt6vHPFu7uGqX=WQ@mail.gmail.com>
+Subject: Re: [BUG] One-liner array initialization with two pointers in BPF
+ results in NULLs
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces a new flag to eventfd, called EFD_ZERO_ON_WAKE.
-This change is primarily introduced for use cases which do not care about
-the value stored in the eventfd itself. Such existing use cases require an
-additional read syscall to clear the count.
+On Wed, Mar 10, 2021 at 12:12 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Mar 10, 2021 at 8:59 AM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 3/10/21 3:48 AM, Florent Revest wrote:
+> > > On Wed, Mar 10, 2021 at 6:16 AM Yonghong Song <yhs@fb.com> wrote:
+> > >> On 3/9/21 7:43 PM, Yonghong Song wrote:
+> > >>> On 3/9/21 5:54 PM, Florent Revest wrote:
+> > >>>> I noticed that initializing an array of pointers using this syntax:
+> > >>>> __u64 array[] = { (__u64)&var1, (__u64)&var2 };
+> > >>>> (which is a fairly common operation with macros such as BPF_SEQ_PRINTF)
+> > >>>> always results in array[0] and array[1] being NULL.
+> > >>>>
+> > >>>> Interestingly, if the array is only initialized with one pointer, ex:
+> > >>>> __u64 array[] = { (__u64)&var1 };
+> > >>>> Then array[0] will not be NULL.
+> > >>>>
+> > >>>> Or if the array is initialized field by field, ex:
+> > >>>> __u64 array[2];
+> > >>>> array[0] = (__u64)&var1;
+> > >>>> array[1] = (__u64)&var2;
+> > >>>> Then array[0] and array[1] will not be NULL either.
+> > >>>>
+> > >>>> I'm assuming that this should have something to do with relocations
+> > >>>> and might be a bug in clang or in libbpf but because I don't know much
+> > >>>> about these, I thought that reporting could be a good first step. :)
+> > >>>
+> > >>> Thanks for reporting. What you guess is correct, this is due to
+> > >>> relocations :-(
+> > >>>
+> > >>> The compiler notoriously tend to put complex initial values into
+> > >>> rodata section. For example, for
+> > >>>      __u64 array[] = { (__u64)&var1, (__u64)&var2 };
+> > >>> the compiler will put
+> > >>>      { (__u64)&var1, (__u64)&var2 }
+> > >>> into rodata section.
+> > >>>
+> > >>> But &var1 and &var2 themselves need relocation since they are
+> > >>> address of static variables which will sit inside .data section.
+> > >>>
+> > >>> So in the elf file, you will see the following relocations:
+> > >>>
+> > >>> RELOCATION RECORDS FOR [.rodata]:
+> > >>> OFFSET           TYPE                     VALUE
+> > >>> 0000000000000018 R_BPF_64_64              .data
+> > >>> 0000000000000020 R_BPF_64_64              .data
+> > >
+> > > Right :) Thank you for the explanations Yonghong!
+> > >
+> > >>> Currently, libbpf does not handle relocation inside .rodata
+> > >>> section, so they content remains 0.
+> > >
+> > > Just for my own edification, why is .rodata relocation not yet handled
+> > > in libbpf ? Is it because of a read-only mapping that makes it more
+> > > difficult ?
+> >
+> > We don't have this use case before. In general, people do not put
+> > string pointers in init code in the declaration. I think
+> > bpf_seq_printf() is special about this and hence triggering
+> > the issue.
+> >
+> > To support relocation of rodata section, kernel needs to be
+> > involved and this is actually more complicated as
+>
+> Exactly. It would be trivial for libbpf to support it, but it needs to
+> resolve to the actual in-kernel address of a map (plus offset), which
+> libbpf has no way of knowing.
 
-This flag provides the following guarantees:
+Having said that, libbpf should probably error out when such
+relocation is present, because there is no way the application with
+such relocations is going to be correct.
 
-(1) Writes can never block or return EAGAIN.
-    The reason this is true is because we don't actually need to store the
-    value and as a result the internal value is only changed between 0 and
-    1 and back to 0. Therefore POLLERR and POLLOUT are never possible
-    outcomes. A poll with POLLOUT or a write will always immediately
-    return regardless of EFD_NONBLOCK.
-
-(2) Read / POLLIN result in the internal value being reset to 0.
-    When EFD_NONBLOCK is set reads when the internal value is 0 will
-    immediately return with EAGAIN, as it always has. Similiarly, when
-    a read is performed without EFD_NONBLOCK it will block until a write
-    occurs. In both cases after the read completes successfully the
-    internal value is reset to 0. When polling with POLLIN, upon return
-    of a POLLIN event the internal value will be reset to 0.
-
-Signed-off-by: Brian Geffon <bgeffon@google.com>
----
- fs/eventfd.c            | 39 +++++++++++++++++++++++++++++++++++++--
- include/linux/eventfd.h |  8 +++++++-
- 2 files changed, 44 insertions(+), 3 deletions(-)
-
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index e265b6dd4f34..56bf04d6461e 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -172,8 +172,21 @@ static __poll_t eventfd_poll(struct file *file, poll_table *wait)
- 	 */
- 	count = READ_ONCE(ctx->count);
- 
--	if (count > 0)
-+	if (count > 0) {
-+		if ((ctx->flags & EFD_ZERO_ON_WAKE) &&
-+				(poll_requested_events(wait) & EPOLLIN)) {
-+			/*
-+			 * We're going to cause a wake on EPOLLIN, we need to zero the count.
-+			 * We validate that EPOLLIN is a requested event because if the user
-+			 * did something odd like POLLPRI we wouldn't want to zero the count
-+			 * if no wake happens.
-+			 */
-+			spin_lock_irq(&ctx->wqh.lock);
-+			ctx->count = 0;
-+			spin_unlock_irq(&ctx->wqh.lock);
-+		}
- 		events |= EPOLLIN;
-+	}
- 	if (count == ULLONG_MAX)
- 		events |= EPOLLERR;
- 	if (ULLONG_MAX - 1 > count)
-@@ -239,8 +252,11 @@ static ssize_t eventfd_read(struct kiocb *iocb, struct iov_iter *to)
- 		__add_wait_queue(&ctx->wqh, &wait);
- 		for (;;) {
- 			set_current_state(TASK_INTERRUPTIBLE);
--			if (ctx->count)
-+			if (ctx->count) {
-+				if (ctx->flags & EFD_ZERO_ON_WAKE)
-+					ctx->count = 0;
- 				break;
-+			}
- 			if (signal_pending(current)) {
- 				__remove_wait_queue(&ctx->wqh, &wait);
- 				__set_current_state(TASK_RUNNING);
-@@ -280,6 +296,18 @@ static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t c
- 		return -EINVAL;
- 	spin_lock_irq(&ctx->wqh.lock);
- 	res = -EAGAIN;
-+
-+	/*
-+	 * In the case of EFD_ZERO_ON_WAKE the actual count is never needed, for this
-+	 * reason we only adjust it to set it from 0 to 1 or 1 to 0. This means that
-+	 * write will never return EWOULDBLOCK or block, because there is always
-+	 * going to be enough space to write as the amount we will increment could
-+	 * be at most 1 as it's clamped below. Additionally, we know that POLLERR
-+	 * cannot be returned when EFD_ZERO_ON_WAKE is used for the same reason.
-+	 */
-+	if (ctx->flags & EFD_ZERO_ON_WAKE)
-+		ucnt = (ctx->count == 0) ? 1 : 0;
-+
- 	if (ULLONG_MAX - ctx->count > ucnt)
- 		res = sizeof(ucnt);
- 	else if (!(file->f_flags & O_NONBLOCK)) {
-@@ -414,9 +442,16 @@ static int do_eventfd(unsigned int count, int flags)
- 	BUILD_BUG_ON(EFD_CLOEXEC != O_CLOEXEC);
- 	BUILD_BUG_ON(EFD_NONBLOCK != O_NONBLOCK);
- 
-+	/* O_NOFOLLOW has been repurposed as EFD_ZERO_ON_WAKE */
-+	BUILD_BUG_ON(EFD_ZERO_ON_WAKE != O_NOFOLLOW);
-+
- 	if (flags & ~EFD_FLAGS_SET)
- 		return -EINVAL;
- 
-+	/* The semaphore semantics would be lost if using EFD_ZERO_ON_WAKE */
-+	if ((flags & EFD_ZERO_ON_WAKE) && (flags & EFD_SEMAPHORE))
-+		return -EINVAL;
-+
- 	ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
-diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
-index fa0a524baed0..19cab0b654a4 100644
---- a/include/linux/eventfd.h
-+++ b/include/linux/eventfd.h
-@@ -26,8 +26,14 @@
- #define EFD_CLOEXEC O_CLOEXEC
- #define EFD_NONBLOCK O_NONBLOCK
- 
-+/*
-+ * We intentionally use the value of O_NOFOLLOW for EFD_ZERO_ON_WAKE
-+ * because O_NOFOLLOW would have no meaning with an eventfd.
-+ */
-+#define EFD_ZERO_ON_WAKE O_NOFOLLOW
-+
- #define EFD_SHARED_FCNTL_FLAGS (O_CLOEXEC | O_NONBLOCK)
--#define EFD_FLAGS_SET (EFD_SHARED_FCNTL_FLAGS | EFD_SEMAPHORE)
-+#define EFD_FLAGS_SET (EFD_SHARED_FCNTL_FLAGS | EFD_SEMAPHORE | EFD_ZERO_ON_WAKE)
- 
- struct eventfd_ctx;
- struct file;
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+>
+> > the relocation is against .data section. Two issues the kernel
+> > needs to deal with:
+> >     - .data section will be another map in kernel, so i.e.,
+> >       relocation of .rodata map value against another map.
+> >     - .data section may be modified, some protection might
+> >       be needed to prevent this. We may ignore this requirement
+> >       since user space may have similar issue.
+> >
+> > This is a corner case, if we can workaround in the libbpf, in
+> > this particular case, bpf_tracing.h. I think it will be
+> > good enough, not adding further complexity in kernel for
+> > such a corner case.
+>
+> Is there some way to trick compiler into thinking that those values
+> are not constant? Some volatile and pointers game? Or any other magic?
+>
+>
+> >
+> > >
+> > >>> That is why you see the issue with pointer as NULL.
+> > >>>
+> > >>> With array size of 1, compiler does not bother to put it into
+> > >>> rodata section.
+> > >>>
+> > >>> I *guess* that it works in the macro due to some kind of heuristics,
+> > >>> e.g., nested blocks, etc, and llvm did not promote the array init value
+> > >>> to rodata. I will double check whether llvm can complete prevent
+> > >>> such transformation.
+> > >>>
+> > >>> Maybe in the future libbpf is able to handle relocations for
+> > >>> rodata section too. But for the time being, please just consider to use
+> > >>> either macro, or the explicit array assignment.
+> > >>
+> > >> Digging into the compiler, the compiler tries to make *const* initial
+> > >> value into rodata section if the initial value size > 64, so in
+> > >> this case, macro does not work either. I think this is how you
+> > >> discovered the issue.
+> > >
+> > > Indeed, I was using a macro similar to BPF_SEQ_PRINTF and this is how
+> > > I found the bug.
+> > >
+> > >> The llvm does not provide target hooks to
+> > >> influence this transformation.
+> > >
+> > > Oh, that is unfortunate :) Thanks for looking into it! I feel that the
+> > > real fix would be in libbpf anyway and the rest is just workarounds.
+> >
+> > The real fix will need libbpf and kernel.
+> >
+> > >
+> > >> So, there are two workarounds,
+> > >> (1).    __u64 param_working[2];
+> > >>           param_working[0] = (__u64)str1;
+> > >>           param_working[1] = (__u64)str2;
+> > >> (2). BPF_SEQ_PRINTF(seq, "%s ", str1);
+> > >>        BPF_SEQ_PRINTF(seq, "%s", str2);
+> > >
+> > > (2) is a bit impractical for my actual usecase. I am implementing a
+> > > bpf_snprintf helper (patch series Coming Soon TM) and I wanted to keep
+> > > the selftest short with a few BPF_SNPRINTF() calls that exercise most
+> > > format specifiers.
+> > >
+> > >> In practice, if you have at least one non-const format argument,
+> > >> you should be fine. But if all format arguments are constant, then
+> > >> none of them should be strings.
+> > >
+> > > Just for context, this does not only happen for strings but also for
+> > > all sorts of pointers, for example, when I try to do address lookup of
+> > > global __ksym variables, which is important for my selftest.
+> >
+> > Currently, in bpf_seq_printf(), we do memory copy for string
+> > and certain ipv4/ipv6 addresses. ipv4 is not an issue as the compiler
+> > less likely put it into rodata. for ipv6,
+> > if it is a constant, we can just directly put it into the format
+> > string. For many other sort of pointers, we just print pointer
+> > values, I don't see a value to print pointer value for something like
+> >      static const param[] = { &str1, &str2 };
+> >      bpf_seq_printf(seq, "%px\n", param[0]);
+> >
+> > The global __ksym variable cannot be pointing to rodata at compile time,
+> > so it should be fine.
+> >
+> > >
+> > >> Maybe we could change marco
+> > >>      unsigned long long ___param[] = { args };
+> > >> to declare an array explicitly and then have a loop to
+> > >> assign each array element?
+> > >
+> > > I think this would be a good workaround for now, indeed. :) I'll look
+> > > into it today and send it as part of my bpf_snprintf series.
+> >
+> > If we can make it work, that will be great! thanks for working on this.
+> >
+> > >
+> > > Thanks!
+> > >
