@@ -2,428 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EA53336D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7433336D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232395AbhCJH52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:57:28 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33368 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229900AbhCJH44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:56:56 -0500
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_O3e0hg6KoXAA--.12657S9;
-        Wed, 10 Mar 2021 15:56:49 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
-Subject: [PATCH v4 7/7] MIPS: Loongson64: Add a Loongson-2K1000 default config file
-Date:   Wed, 10 Mar 2021 15:56:39 +0800
-Message-Id: <20210310075639.20372-8-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210310075639.20372-1-zhangqing@loongson.cn>
-References: <20210310075639.20372-1-zhangqing@loongson.cn>
+        id S232377AbhCJH67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:58:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232419AbhCJH6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 02:58:52 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AA1C061760
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:58:51 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id e2so14757712ilu.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:58:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dDHfNc51CgldvtatwYM1lsSynRkGjuxm5k6/u6903Hc=;
+        b=Qa2MtGNuff4eyItegNCe7pu9ngKvR9dshCz/I7c2oaf78qW2wnFYIiIdGrpy3JFSbq
+         C71/jB3QMs8q+hLb1YEDkUpH/reUoqF4wY6aTgDCyEFkmnlJK2IAtm1jkz8z/XlTp+Cu
+         CSHff+giLmF6zKKWiF4hLe1RNHitXgSL7mQ3w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dDHfNc51CgldvtatwYM1lsSynRkGjuxm5k6/u6903Hc=;
+        b=aa+9TkNCMZOYEanPUlZEqi+DX70PWWOgDrEmUpTPxABAb9SNftIkw5AC5X4q6EKLDC
+         XtEppSgLcAtC3sJFhKJCS/NawCSTpPlyNsHNKYE9YrhZr9a1Ys0YKx9hPW1j5bACd2Qq
+         whZnhdhDAsCgqgd59E+mqYJkpjFDpvK9rAbuuDQ4n+2QNf41iG3wAiEmODCBUs1r+9el
+         8QJFHgN7zBzSjqkT+j5E5UxGlKdIJd6zOPATNSKgEs9fh8Jn2c/WRQdKCitqMn0cStPa
+         mM4T/+GifoizKlXNPxb9KgOc4dxHnXpf2fSuQhXXg44HXTvi8PI0Z6dn3E/HsyzYM2x/
+         N39g==
+X-Gm-Message-State: AOAM532Cdb/tp4ohceGNB8GVoae5R4jWAvmI8V1ktJTjbUmEm+Sh65b+
+        zt1kfb3q9SS1SAS5w2ftxDoJNOag4b9AMqmZ
+X-Google-Smtp-Source: ABdhPJzHueo/Giu3pKqPY04lG84yrLsq+zvzdWemtswgqxOG4eUl4pPF5qRtzD2YBDi+SQLbC2CFAA==
+X-Received: by 2002:a92:cda4:: with SMTP id g4mr1723384ild.20.1615363130946;
+        Tue, 09 Mar 2021 23:58:50 -0800 (PST)
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com. [209.85.166.176])
+        by smtp.gmail.com with ESMTPSA id g14sm8708274ioc.38.2021.03.09.23.58.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 23:58:50 -0800 (PST)
+Received: by mail-il1-f176.google.com with SMTP id f10so14709254ilq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:58:50 -0800 (PST)
+X-Received: by 2002:a92:3648:: with SMTP id d8mr1614657ilf.69.1615363129930;
+ Tue, 09 Mar 2021 23:58:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxn_O3e0hg6KoXAA--.12657S9
-X-Coremail-Antispam: 1UD129KBjvJXoW3uw1kZr43JF4DKrWUAr1rtFb_yoWkXr17pr
-        n7GrWkJ3y8Jr17trW2yryDGr90qr1DJa9rGF17Ar1UXw1kJa13Xrn0yr1UJr1DXF1UXr48
-        X3Z3Gwn3AFn8A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
-        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMx
-        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
-        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwI
-        xGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8
-        Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0x
-        vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUvg4hUUUUU=
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+References: <20210309234317.1021588-1-ribalda@chromium.org> <YEh6AIQPa75MzP+8@pendragon.ideasonboard.com>
+In-Reply-To: <YEh6AIQPa75MzP+8@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Wed, 10 Mar 2021 08:58:39 +0100
+X-Gmail-Original-Message-ID: <CANiDSCuz76q0Ukq5UfrgeRH_JFWKQ9hCpMqZTHUtiwHxpEd4oQ@mail.gmail.com>
+Message-ID: <CANiDSCuz76q0Ukq5UfrgeRH_JFWKQ9hCpMqZTHUtiwHxpEd4oQ@mail.gmail.com>
+Subject: Re: [PATCH] media: videobuf2: Fix integer overrun in allocation
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add default config for Loongson-2K1000.
+Hi Laurent
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-Tested-by: Ming Wang <wangming01@loongson.cn>
----
+On Wed, Mar 10, 2021 at 8:49 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> Thank you for the patch.
+Thank you!
+>
+> On Wed, Mar 10, 2021 at 12:43:17AM +0100, Ricardo Ribalda wrote:
+> > The plane_length is an unsigned integer. So, if we have a size of
+> > 0xffffffff bytes we incorrectly allocate 0 bytes instead of 1 << 32.
+> >
+> > Cc: stable@vger.kernel.org
+> > Fixes: 7f8414594e47 ("[media] media: videobuf2: fix the length check for mmap")
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/common/videobuf2/videobuf2-core.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> > index 02281d13505f..543da515c761 100644
+> > --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> > +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> > @@ -223,8 +223,10 @@ static int __vb2_buf_mem_alloc(struct vb2_buffer *vb)
+> >        * NOTE: mmapped areas should be page aligned
+> >        */
+> >       for (plane = 0; plane < vb->num_planes; ++plane) {
+> > +             unsigned long size = vb->planes[plane].length;
+>
+> unsigned long is still 32-bit on 32-bit platforms.
+>
+> > +
+> >               /* Memops alloc requires size to be page aligned. */
+> > -             unsigned long size = PAGE_ALIGN(vb->planes[plane].length);
+> > +             size = PAGE_ALIGN(size);
+> >
+> >               /* Did it wrap around? */
+> >               if (size < vb->planes[plane].length)
+>
+> Doesn't this address the issue already ?
 
-v3-v4: Standard submission of information
+Yes and no. If you need to allocate 0xffffffff you are still affected
+by the underrun. The core will return an error instead of doing the
+allocation.
 
- arch/mips/configs/loongson2k_defconfig | 353 +++++++++++++++++++++++++
- 1 file changed, 353 insertions(+)
- create mode 100644 arch/mips/configs/loongson2k_defconfig
+(yes, I know it is a lot of memory for a buffer)
 
-diff --git a/arch/mips/configs/loongson2k_defconfig b/arch/mips/configs/loongson2k_defconfig
-new file mode 100644
-index 000000000000..e948ca487e2d
---- /dev/null
-+++ b/arch/mips/configs/loongson2k_defconfig
-@@ -0,0 +1,353 @@
-+# CONFIG_LOCALVERSION_AUTO is not set
-+CONFIG_KERNEL_LZMA=y
-+CONFIG_SYSVIPC=y
-+CONFIG_POSIX_MQUEUE=y
-+CONFIG_AUDIT=y
-+CONFIG_NO_HZ=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_PREEMPT=y
-+CONFIG_BSD_PROCESS_ACCT=y
-+CONFIG_BSD_PROCESS_ACCT_V3=y
-+CONFIG_TASKSTATS=y
-+CONFIG_TASK_DELAY_ACCT=y
-+CONFIG_TASK_XACCT=y
-+CONFIG_TASK_IO_ACCOUNTING=y
-+CONFIG_MEMCG=y
-+CONFIG_BLK_CGROUP=y
-+CONFIG_SCHED_AUTOGROUP=y
-+CONFIG_SYSFS_DEPRECATED=y
-+CONFIG_RELAY=y
-+CONFIG_BLK_DEV_INITRD=y
-+CONFIG_EMBEDDED=y
-+CONFIG_MACH_LOONGSON64=y
-+# CONFIG_CPU_LOONGSON3_CPUCFG_EMULATION is not set
-+CONFIG_HZ_256=y
-+CONFIG_MIPS32_O32=y
-+CONFIG_MIPS32_N32=y
-+CONFIG_MODULES=y
-+CONFIG_MODULE_FORCE_LOAD=y
-+CONFIG_MODULE_UNLOAD=y
-+CONFIG_MODULE_FORCE_UNLOAD=y
-+CONFIG_MODVERSIONS=y
-+CONFIG_PARTITION_ADVANCED=y
-+CONFIG_MQ_IOSCHED_DEADLINE=m
-+CONFIG_IOSCHED_BFQ=y
-+CONFIG_BFQ_GROUP_IOSCHED=y
-+CONFIG_BINFMT_MISC=m
-+CONFIG_KSM=y
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_UNIX=y
-+CONFIG_XFRM_USER=y
-+CONFIG_NET_KEY=y
-+CONFIG_INET=y
-+CONFIG_IP_MULTICAST=y
-+CONFIG_IP_ADVANCED_ROUTER=y
-+CONFIG_IP_MULTIPLE_TABLES=y
-+CONFIG_IP_ROUTE_MULTIPATH=y
-+CONFIG_IP_ROUTE_VERBOSE=y
-+CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_LOG=m
-+CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-+CONFIG_NETFILTER_XT_TARGET_MARK=m
-+CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
-+CONFIG_NETFILTER_XT_MATCH_COMMENT=m
-+CONFIG_NETFILTER_XT_MATCH_DCCP=m
-+CONFIG_NETFILTER_XT_MATCH_ESP=m
-+CONFIG_NETFILTER_XT_MATCH_LENGTH=m
-+CONFIG_NETFILTER_XT_MATCH_LIMIT=m
-+CONFIG_NETFILTER_XT_MATCH_MAC=m
-+CONFIG_NETFILTER_XT_MATCH_MARK=m
-+CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
-+CONFIG_NETFILTER_XT_MATCH_PKTTYPE=m
-+CONFIG_NETFILTER_XT_MATCH_QUOTA=m
-+CONFIG_NETFILTER_XT_MATCH_REALM=m
-+CONFIG_NETFILTER_XT_MATCH_STATISTIC=m
-+CONFIG_NETFILTER_XT_MATCH_STRING=m
-+CONFIG_NETFILTER_XT_MATCH_TCPMSS=m
-+CONFIG_IP_VS=m
-+CONFIG_IP_NF_IPTABLES=m
-+CONFIG_IP_NF_MATCH_AH=m
-+CONFIG_IP_NF_MATCH_ECN=m
-+CONFIG_IP_NF_MATCH_TTL=m
-+CONFIG_IP_NF_FILTER=m
-+CONFIG_IP_NF_TARGET_REJECT=m
-+CONFIG_IP_NF_MANGLE=m
-+CONFIG_IP_NF_TARGET_ECN=m
-+CONFIG_IP_NF_TARGET_TTL=m
-+CONFIG_IP_NF_RAW=m
-+CONFIG_IP_NF_ARPTABLES=m
-+CONFIG_IP_NF_ARPFILTER=m
-+CONFIG_IP_NF_ARP_MANGLE=m
-+CONFIG_IP_SCTP=m
-+CONFIG_L2TP=m
-+CONFIG_BRIDGE=m
-+CONFIG_CFG80211=m
-+CONFIG_CFG80211_WEXT=y
-+CONFIG_MAC80211=m
-+CONFIG_RFKILL=m
-+CONFIG_RFKILL_INPUT=y
-+CONFIG_PCIEPORTBUS=y
-+CONFIG_HOTPLUG_PCI_PCIE=y
-+CONFIG_PCIEASPM_PERFORMANCE=y
-+CONFIG_HOTPLUG_PCI=y
-+CONFIG_DEVTMPFS=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+CONFIG_MTD=m
-+CONFIG_BLK_DEV_LOOP=y
-+CONFIG_BLK_DEV_CRYPTOLOOP=y
-+CONFIG_BLK_DEV_RAM=y
-+CONFIG_BLK_DEV_RAM_SIZE=8192
-+CONFIG_RAID_ATTRS=m
-+CONFIG_BLK_DEV_SD=y
-+CONFIG_BLK_DEV_SR=y
-+CONFIG_CHR_DEV_SG=y
-+CONFIG_CHR_DEV_SCH=m
-+CONFIG_SCSI_CONSTANTS=y
-+CONFIG_SCSI_LOGGING=y
-+CONFIG_SCSI_SPI_ATTRS=m
-+CONFIG_SCSI_FC_ATTRS=m
-+CONFIG_ISCSI_TCP=m
-+CONFIG_MEGARAID_NEWGEN=y
-+CONFIG_MEGARAID_MM=y
-+CONFIG_MEGARAID_MAILBOX=y
-+CONFIG_MEGARAID_LEGACY=y
-+CONFIG_MEGARAID_SAS=y
-+CONFIG_ATA=y
-+CONFIG_SATA_AHCI=y
-+CONFIG_PATA_ATIIXP=y
-+CONFIG_MD=y
-+CONFIG_BLK_DEV_MD=m
-+CONFIG_MD_LINEAR=m
-+CONFIG_MD_RAID0=m
-+CONFIG_MD_RAID1=m
-+CONFIG_MD_RAID10=m
-+CONFIG_MD_RAID456=m
-+CONFIG_MD_MULTIPATH=m
-+CONFIG_BLK_DEV_DM=m
-+CONFIG_DM_CRYPT=m
-+CONFIG_DM_SNAPSHOT=m
-+CONFIG_DM_MIRROR=m
-+CONFIG_DM_ZERO=m
-+CONFIG_TARGET_CORE=m
-+CONFIG_TCM_IBLOCK=m
-+CONFIG_TCM_FILEIO=m
-+CONFIG_TCM_PSCSI=m
-+CONFIG_LOOPBACK_TARGET=m
-+CONFIG_ISCSI_TARGET=m
-+CONFIG_NETDEVICES=y
-+CONFIG_TUN=m
-+# CONFIG_NET_VENDOR_3COM is not set
-+# CONFIG_NET_VENDOR_ADAPTEC is not set
-+# CONFIG_NET_VENDOR_ALTEON is not set
-+# CONFIG_NET_VENDOR_AMD is not set
-+# CONFIG_NET_VENDOR_ARC is not set
-+# CONFIG_NET_VENDOR_ATHEROS is not set
-+# CONFIG_NET_VENDOR_BROADCOM is not set
-+# CONFIG_NET_VENDOR_BROCADE is not set
-+# CONFIG_NET_VENDOR_CHELSIO is not set
-+# CONFIG_NET_VENDOR_CIRRUS is not set
-+# CONFIG_NET_VENDOR_CISCO is not set
-+# CONFIG_NET_VENDOR_DEC is not set
-+# CONFIG_NET_VENDOR_DLINK is not set
-+# CONFIG_NET_VENDOR_EMULEX is not set
-+# CONFIG_NET_VENDOR_I825XX is not set
-+CONFIG_E1000=y
-+CONFIG_E1000E=y
-+CONFIG_IGB=y
-+CONFIG_IXGB=y
-+CONFIG_IXGBE=y
-+# CONFIG_NET_VENDOR_MARVELL is not set
-+# CONFIG_NET_VENDOR_MELLANOX is not set
-+# CONFIG_NET_VENDOR_MICREL is not set
-+# CONFIG_NET_VENDOR_MICROCHIP is not set
-+# CONFIG_NET_VENDOR_MICROSEMI is not set
-+# CONFIG_NET_VENDOR_MYRI is not set
-+# CONFIG_NET_VENDOR_NATSEMI is not set
-+# CONFIG_NET_VENDOR_NETERION is not set
-+# CONFIG_NET_VENDOR_NETRONOME is not set
-+# CONFIG_NET_VENDOR_NI is not set
-+# CONFIG_NET_VENDOR_NVIDIA is not set
-+# CONFIG_NET_VENDOR_OKI is not set
-+# CONFIG_NET_VENDOR_PACKET_ENGINES is not set
-+# CONFIG_NET_VENDOR_PENSANDO is not set
-+# CONFIG_NET_VENDOR_QLOGIC is not set
-+# CONFIG_NET_VENDOR_QUALCOMM is not set
-+# CONFIG_NET_VENDOR_RDC is not set
-+CONFIG_8139CP=y
-+CONFIG_8139TOO=y
-+# CONFIG_8139TOO_PIO is not set
-+CONFIG_R8169=y
-+# CONFIG_NET_VENDOR_RENESAS is not set
-+# CONFIG_NET_VENDOR_ROCKER is not set
-+# CONFIG_NET_VENDOR_SAMSUNG is not set
-+# CONFIG_NET_VENDOR_SEEQ is not set
-+# CONFIG_NET_VENDOR_SOLARFLARE is not set
-+# CONFIG_NET_VENDOR_SILAN is not set
-+# CONFIG_NET_VENDOR_SIS is not set
-+# CONFIG_NET_VENDOR_SMSC is not set
-+CONFIG_STMMAC_ETH=y
-+# CONFIG_NET_VENDOR_SUN is not set
-+# CONFIG_NET_VENDOR_TEHUTI is not set
-+# CONFIG_NET_VENDOR_TI is not set
-+# CONFIG_NET_VENDOR_TOSHIBA is not set
-+# CONFIG_NET_VENDOR_VIA is not set
-+# CONFIG_NET_VENDOR_WIZNET is not set
-+CONFIG_PPP=m
-+CONFIG_PPP_BSDCOMP=m
-+CONFIG_PPP_DEFLATE=m
-+CONFIG_PPP_FILTER=y
-+CONFIG_PPP_MPPE=m
-+CONFIG_PPP_MULTILINK=y
-+CONFIG_PPPOE=m
-+CONFIG_PPPOL2TP=m
-+CONFIG_PPP_ASYNC=m
-+CONFIG_PPP_SYNC_TTY=m
-+CONFIG_ATH9K=m
-+CONFIG_HOSTAP=m
-+CONFIG_INPUT_LEDS=m
-+CONFIG_INPUT_SPARSEKMAP=y
-+CONFIG_INPUT_EVDEV=y
-+# CONFIG_KEYBOARD_ATKBD is not set
-+CONFIG_KEYBOARD_XTKBD=m
-+# CONFIG_MOUSE_PS2 is not set
-+CONFIG_INPUT_MISC=y
-+CONFIG_INPUT_UINPUT=m
-+# CONFIG_SERIO_I8042 is not set
-+CONFIG_SERIO_SERPORT=m
-+CONFIG_SERIO_LIBPS2=y
-+CONFIG_SERIO_RAW=m
-+CONFIG_LEGACY_PTY_COUNT=16
-+CONFIG_SERIAL_8250=y
-+# CONFIG_SERIAL_8250_16550A_VARIANTS is not set
-+CONFIG_SERIAL_8250_CONSOLE=y
-+CONFIG_SERIAL_8250_NR_UARTS=16
-+CONFIG_SERIAL_8250_EXTENDED=y
-+CONFIG_SERIAL_8250_MANY_PORTS=y
-+CONFIG_SERIAL_8250_SHARE_IRQ=y
-+CONFIG_SERIAL_8250_RSA=y
-+CONFIG_SERIAL_OF_PLATFORM=y
-+CONFIG_SERIAL_NONSTANDARD=y
-+CONFIG_HW_RANDOM=y
-+CONFIG_RAW_DRIVER=m
-+CONFIG_I2C_CHARDEV=y
-+CONFIG_I2C_PIIX4=y
-+CONFIG_GPIO_LOONGSON=y
-+CONFIG_SENSORS_LM75=m
-+CONFIG_SENSORS_LM93=m
-+CONFIG_SENSORS_W83627HF=m
-+# CONFIG_MEDIA_CEC_SUPPORT is not set
-+CONFIG_MEDIA_SUPPORT=m
-+# CONFIG_MEDIA_CONTROLLER is not set
-+CONFIG_MEDIA_USB_SUPPORT=y
-+CONFIG_USB_VIDEO_CLASS=m
-+CONFIG_DRM=y
-+CONFIG_DRM_RADEON=y
-+CONFIG_FB_RADEON=y
-+CONFIG_LCD_CLASS_DEVICE=y
-+CONFIG_LCD_PLATFORM=m
-+# CONFIG_VGA_CONSOLE is not set
-+CONFIG_FRAMEBUFFER_CONSOLE=y
-+CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
-+CONFIG_LOGO=y
-+CONFIG_SOUND=y
-+CONFIG_SND=y
-+CONFIG_SND_VERBOSE_PRINTK=y
-+CONFIG_SND_SEQUENCER=y
-+CONFIG_SND_SEQ_DUMMY=m
-+# CONFIG_SND_ISA is not set
-+CONFIG_SND_HDA_INTEL=y
-+CONFIG_SND_HDA_HWDEP=y
-+CONFIG_SND_HDA_PATCH_LOADER=y
-+CONFIG_SND_HDA_CODEC_REALTEK=y
-+CONFIG_SND_HDA_CODEC_ANALOG=y
-+CONFIG_SND_HDA_CODEC_SIGMATEL=y
-+CONFIG_SND_HDA_CODEC_VIA=y
-+CONFIG_SND_HDA_CODEC_CONEXANT=y
-+# CONFIG_SND_USB is not set
-+CONFIG_SND_SOC=y
-+CONFIG_HID_A4TECH=m
-+CONFIG_HID_SUNPLUS=m
-+CONFIG_USB=y
-+CONFIG_USB_MON=y
-+CONFIG_USB_XHCI_HCD=y
-+CONFIG_USB_EHCI_HCD=y
-+CONFIG_USB_EHCI_ROOT_HUB_TT=y
-+CONFIG_USB_OHCI_HCD=y
-+CONFIG_USB_UHCI_HCD=m
-+CONFIG_USB_STORAGE=y
-+CONFIG_USB_SERIAL=m
-+CONFIG_USB_SERIAL_OPTION=m
-+CONFIG_RTC_CLASS=y
-+CONFIG_RTC_DRV_CMOS=y
-+CONFIG_DMADEVICES=y
-+# CONFIG_CPU_HWMON is not set
-+CONFIG_PM_DEVFREQ=y
-+CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
-+CONFIG_DEVFREQ_GOV_PERFORMANCE=y
-+CONFIG_DEVFREQ_GOV_POWERSAVE=y
-+CONFIG_DEVFREQ_GOV_USERSPACE=y
-+CONFIG_EXT2_FS=y
-+CONFIG_EXT2_FS_XATTR=y
-+CONFIG_EXT2_FS_POSIX_ACL=y
-+CONFIG_EXT2_FS_SECURITY=y
-+CONFIG_EXT3_FS=y
-+CONFIG_EXT3_FS_POSIX_ACL=y
-+CONFIG_EXT3_FS_SECURITY=y
-+CONFIG_XFS_FS=y
-+CONFIG_XFS_QUOTA=y
-+CONFIG_XFS_POSIX_ACL=y
-+CONFIG_QUOTA=y
-+# CONFIG_PRINT_QUOTA_WARNING is not set
-+CONFIG_AUTOFS4_FS=y
-+CONFIG_FUSE_FS=m
-+CONFIG_ISO9660_FS=m
-+CONFIG_JOLIET=y
-+CONFIG_MSDOS_FS=y
-+CONFIG_VFAT_FS=y
-+CONFIG_FAT_DEFAULT_CODEPAGE=936
-+CONFIG_FAT_DEFAULT_IOCHARSET="gb2312"
-+CONFIG_PROC_KCORE=y
-+CONFIG_TMPFS=y
-+CONFIG_TMPFS_POSIX_ACL=y
-+CONFIG_CONFIGFS_FS=y
-+CONFIG_CRAMFS=m
-+CONFIG_SQUASHFS=y
-+CONFIG_SQUASHFS_XATTR=y
-+CONFIG_NFS_FS=m
-+CONFIG_NFS_V3_ACL=y
-+CONFIG_NFS_V4=m
-+CONFIG_NFSD=m
-+CONFIG_NFSD_V3_ACL=y
-+CONFIG_NFSD_V4=y
-+CONFIG_CIFS=m
-+CONFIG_NLS_CODEPAGE_437=y
-+CONFIG_NLS_CODEPAGE_936=y
-+CONFIG_NLS_ASCII=y
-+CONFIG_NLS_UTF8=y
-+CONFIG_SECURITY=y
-+CONFIG_SECURITYFS=y
-+CONFIG_SECURITY_NETWORK=y
-+CONFIG_SECURITY_PATH=y
-+CONFIG_SECURITY_SELINUX=y
-+CONFIG_SECURITY_SELINUX_BOOTPARAM=y
-+CONFIG_SECURITY_SELINUX_DISABLE=y
-+CONFIG_DEFAULT_SECURITY_DAC=y
-+CONFIG_CRYPTO_SEQIV=m
-+CONFIG_CRYPTO_HMAC=y
-+CONFIG_CRYPTO_MD5=y
-+CONFIG_CRYPTO_TGR192=m
-+CONFIG_CRYPTO_WP512=m
-+CONFIG_CRYPTO_BLOWFISH=m
-+CONFIG_CRYPTO_CAST5=m
-+CONFIG_CRYPTO_CAST6=m
-+CONFIG_CRYPTO_SERPENT=m
-+CONFIG_CRYPTO_TWOFISH=m
-+CONFIG_CRYPTO_DEFLATE=m
-+CONFIG_PRINTK_TIME=y
-+CONFIG_FRAME_WARN=1024
-+CONFIG_STRIP_ASM_SYMS=y
-+CONFIG_MAGIC_SYSRQ=y
-+# CONFIG_SCHED_DEBUG is not set
-+# CONFIG_DEBUG_PREEMPT is not set
-+# CONFIG_FTRACE is not set
+>
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
+
 -- 
-2.20.1
-
+Ricardo Ribalda
