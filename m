@@ -2,103 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFA833420A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9CA33420E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhCJPsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:48:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
+        id S233000AbhCJPty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:49:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbhCJPsV (ORCPT
+        with ESMTP id S233169AbhCJPth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:48:21 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98662C061760;
-        Wed, 10 Mar 2021 07:48:21 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 18so34225697lff.6;
-        Wed, 10 Mar 2021 07:48:21 -0800 (PST)
+        Wed, 10 Mar 2021 10:49:37 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E25BC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:49:37 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so7710099pjv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:49:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O0/izLC33QT8uxDOJE1OEYsC8LaFZNZhkqwpThuvR7o=;
-        b=LiVARqif4ZgNCwWk6sy+OjpAE5GiT2jzbCJvJ4wKJS1RiNbprqgYMgQEGEbxXnbwe7
-         KME6SXtyTmhFF9daV3WhRD4PxrU2L4vyjc12VqbM6R33Iz+B5HSMZYc6eA1q6asY4JVK
-         JQMQl8cLIpgoUjLZ7whYSAmTX6T3AktcpTPyVdsFBmu6aVK0z10iaEXm1j+2A8McMFCc
-         m8u/1UFX93SXCXNpE9TapvruXPSpPAFAPBoYPAIv+wz5nUgyVXcEzlq1hUliTm0vajz7
-         hh1Carc5gg91iIMAwcFupUR2lo0HRnhzBy03x1XOWuD/Z1g/ec66MHjGxKp1FEmiFBoZ
-         8zwg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rQ93tMEwr6U526k1fsxQ9/WZUiZ2ng9jqDwoo0eooT4=;
+        b=herUCoWwqCzMUdp2VEF/vl0v0bCdyOxs5i841tz1i82yeAqnIMGWUVavassvGe5JaS
+         q69Bx0+wVVYKr1Qt4ZY8s6Sraw6q4M1vVwJZpM0WRcFEshEASOv5Li9VRs/5pkoKM2we
+         l0sXIv3wjP1C/rr138wXDLkkVTOJkWWrBWjMCUCJDfDEtoGH9or1r4zUYikuYEousYLM
+         3IUnxhLrWe9GlVwRqCNzpZnbPv8fg5XBLOXrVWNfdwk8H4rEXW9/faUqrsvDLbwY5cds
+         IKGRDGXbELux+bFuzGj5iOU6OLLuALPGXOmyNb3BCAGV4ush+T35hFOnsAdNyyWR+Ohr
+         UJSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O0/izLC33QT8uxDOJE1OEYsC8LaFZNZhkqwpThuvR7o=;
-        b=QCFEgr1vE9j2/hkYOaqjp361f1Zih6aUJmjVMcR2Cq2YeSPi7odcm97MvqeRV8DJL5
-         DIxDGDLIDr/p/Y32zExlAxZ80EI87U9zgT5gMWYUM5foqX93mWc3/bXsY1BDFkXwSTGF
-         c7egbYPebAmYR07Y7rFHDat1Nj2MevjEa6jmN1aDj3HWnvn/9JlZ3qH8eQdGmndm+4LJ
-         XaBiC2rz/d0nWQ5SgqUiRThtvdxNlbzbjhoSJ8rx3x0sj+cwb2dODIUG1An1eokJ0B1V
-         sW3XjlAjOCG+br+8uID3kUCexAXzYP5jjvTrJltffTLsA5ZStxZZNj1D3TZirWcfB8lP
-         NbcA==
-X-Gm-Message-State: AOAM531dPAIEGgwY+M9UGAguoOCAMRVz3jXhshp9Y4T1KvP/g+YcTmXW
-        KIpDs/8Ak+cJVY9mjgVGAJnwwB093Sr9kVP39yc=
-X-Google-Smtp-Source: ABdhPJx0k0Onrmoqogz+C4r9PkiCCVDeFxJ5e/UyZUi108819RV3DeGqQX2VZELkgmJtR/uVOPu/uxKmCymGfp4HAls=
-X-Received: by 2002:a05:6512:2254:: with SMTP id i20mr2420918lfu.534.1615391300045;
- Wed, 10 Mar 2021 07:48:20 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rQ93tMEwr6U526k1fsxQ9/WZUiZ2ng9jqDwoo0eooT4=;
+        b=leXqsMWHuoSYRjT3VpGFo25+pC3V0UpMVm6MPxf6hCE+UAizdFhIWniBVuQkh23nCn
+         W8d3hCSi63d9U6U3d9akaRcuSDfFPqOljYWOf4nJhRw8xmEz7QuTtWJQeW+1fXeQA5dD
+         /lxn3dR51/yvedFcVR9bkptjnmfmBPp+HGLcdigEkn7KBlohiuyGDjEgDPXXW1bCpFj6
+         mEHpN7HvmqpAyov3phi11SeNIUMOzUVBQYoqAj+i/F1LLM78JOrHhSFqay/FQReRloIM
+         LsZlwp1WEhLZrKKgP3tJgjqlcKgGoUrjeW4MbVhBbmoXt9KvoQ70MAWTYTQHGjx9cyeG
+         Lh4Q==
+X-Gm-Message-State: AOAM532EQX1tU22NNGpTrRFElWnaD8gMZ5KkJduy+qkpGW0TIJL7TVL9
+        ygF0px+eoACBWW+9bKhydhcixA==
+X-Google-Smtp-Source: ABdhPJzZu6TIEnXdFU/SB8ODEVOTSc2aZia3Rsr9rUPRVgXCW9Nh7jwnYvZUVFJ68biB8WS/mXbITw==
+X-Received: by 2002:a17:902:7d8d:b029:e6:4061:b767 with SMTP id a13-20020a1709027d8db02900e64061b767mr3690837plm.32.1615391376577;
+        Wed, 10 Mar 2021 07:49:36 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
+        by smtp.gmail.com with ESMTPSA id y9sm18620pgc.9.2021.03.10.07.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 07:49:35 -0800 (PST)
+Date:   Wed, 10 Mar 2021 07:49:29 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>, linux-sgx@vger.kernel.org,
+        stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Serge Ayoun <serge.ayoun@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] x86/sgx: Fix a resource leak in sgx_init()
+Message-ID: <YEjqieABvycpGn0h@google.com>
+References: <20210303150323.433207-1-jarkko@kernel.org>
+ <20210303150323.433207-2-jarkko@kernel.org>
+ <57b33fb5-f961-5c81-72f1-ebf5e6af671c@intel.com>
+ <YEjfEzDfRdd0fK88@kernel.org>
 MIME-Version: 1.0
-References: <YEepKVHc5kkDybu6@hirez.programming.kicks-ass.net>
- <20210309120519.7c6bbb97@gandalf.local.home> <YEfnnFUbizbJUQig@hirez.programming.kicks-ass.net>
- <362BD2A4-016D-4F6B-8974-92C84DC0DDB4@zytor.com> <YEiN+/Zp4uE/ISWD@hirez.programming.kicks-ass.net>
- <YEiS8Xws0tTFmMJp@hirez.programming.kicks-ass.net> <YEiZXtB74cnsLTx/@hirez.programming.kicks-ass.net>
- <YEid+HQnqgnt3iyY@hirez.programming.kicks-ass.net> <20210310091324.0c346d5f@oasis.local.home>
- <YEjWryS/9uB2y62O@hirez.programming.kicks-ass.net>
-In-Reply-To: <YEjWryS/9uB2y62O@hirez.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 10 Mar 2021 07:48:08 -0800
-Message-ID: <CAADnVQKMRWMuAJEJBPADactdKaGx4opg3y82m7fy59rRmA9Cog@mail.gmail.com>
-Subject: Re: The killing of ideal_nops[]
-To:     Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEjfEzDfRdd0fK88@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 6:29 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Mar 10, 2021 at 09:13:24AM -0500, Steven Rostedt wrote:
-> > On Wed, 10 Mar 2021 11:22:48 +0100
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > > After this FEATURE_NOPL is unused except for required-features for
-> > > x86_64. FEATURE_K8 is only used for PTI and FEATURE_K7 is unused.
-> > >
-> > > AFAICT this negatively affects lots of 32bit (DONTCARE) and 32bit on
-> > > 64bit CPUs (CARELESS) and early AMD (K8) which is from 2003 and almost
-> > > 2 decades old by now (SHRUG).
-> > >
-> > > Everything x86_64 since AMD K10 (2007) was using p6_nops.
-> > >
-> > > And per FEATURE_NOPL being required for x86_64, all those CPUs can use
-> > > p6_nops. So stop caring about NOPs, simplify things and get on with life
-> > > :-)
-> >
-> > Before ripping out all the ideal_nop logic, I wonder if we should just
-> > force the nops you want now (that is, don't change the selected
-> > ideal_nops, just "pretend" that the CPU wants p6_nops), and see if anyone
-> > complains. After a few releases, if there's no complaints, then we can
-> > rip out the ideal_nop logic.
->
-> Nah, just rip the entire thing out. You should be happy about
-> deterministic NOPs :-)
+On Wed, Mar 10, 2021, Jarkko Sakkinen wrote:
+> On Wed, Mar 03, 2021 at 08:56:52AM -0800, Dave Hansen wrote:
+> > On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
+> > > If sgx_page_cache_init() fails in the middle, a trivial return
+> > > statement causes unused memory and virtual address space reserved for
+> > > the EPC section, not freed. Fix this by using the same rollback, as
+> > > when sgx_page_reclaimer_init() fails.
+> > ...
+> > > @@ -708,8 +708,10 @@ static int __init sgx_init(void)
+> > >  	if (!cpu_feature_enabled(X86_FEATURE_SGX))
+> > >  		return -ENODEV;
+> > >  
+> > > -	if (!sgx_page_cache_init())
+> > > -		return -ENOMEM;
+> > > +	if (!sgx_page_cache_init()) {
+> > > +		ret = -ENOMEM;
+> > > +		goto err_page_cache;
+> > > +	}
+> > 
+> > 
+> > Currently, the only way sgx_page_cache_init() can fail is in the case
+> > that there are no sections:
+> > 
+> >         if (!sgx_nr_epc_sections) {
+> >                 pr_err("There are zero EPC sections.\n");
+> >                 return false;
+> >         }
+> > 
+> > That only happened if all sgx_setup_epc_section() calls failed.
+> > sgx_setup_epc_section() never both allocates memory with vmalloc for
+> > section->pages *and* fails.  If sgx_setup_epc_section() has a successful
+> > memremap() but a failed vmalloc(), it cleans up with memunmap().
+> > 
+> > In other words, I see how this _looks_ like a memory leak from
+> > sgx_init(), but I don't see an actual leak in practice.
+> > 
+> > Am I missing something?
+> 
+> In sgx_setup_epc_section():
+> 
+> 
+> 	section->pages = vmalloc(nr_pages * sizeof(struct sgx_epc_page));
+> 	if (!section->pages) {
+> 		memunmap(section->virt_addr);
+> 		return false;
+> 	}
+> 
+> I.e. this rollback does not happen without this fix applied:
+> 
+> 	for (i = 0; i < sgx_nr_epc_sections; i++) {
+> 		vfree(sgx_epc_sections[i].pages);
+> 		memunmap(sgx_epc_sections[i].virt_addr);
+> 	}
 
-Ack for bpf bits.
-I think the cleanup is good from the point of having one way to do things.
-Though I won't be surprised if somebody comes along with a patch
-to use different nops eventually.
-When I first looked at it years ago I was wondering why segment selector
-prefix is not used. afaik windows was using it, because having cs: ds: nop
-makes intel use only one of the instruction decoders (the big and slow one)
-which allegedly saves power, since the pipeline has bubbles.
-Things could be completely different now in modern u-arches.
+Dave is pointing out that sgx_page_cache_init() fails if and only if _all_
+sections fail sgx_setup_epc_section(), and if all sections fail then
+sgx_nr_epc_sections is '0' and the above is a nop.
+
+That behavior is by design, as we didn't want to kill SGX if a single section
+failed to initialize for whatever reason.
