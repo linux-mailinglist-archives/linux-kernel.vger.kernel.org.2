@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DD23337B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B7C3337B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232506AbhCJIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40952 "EHLO
+        id S232488AbhCJIoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:44:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231899AbhCJIn6 (ORCPT
+        with ESMTP id S231278AbhCJIn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Mar 2021 03:43:58 -0500
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4197EC061761;
-        Wed, 10 Mar 2021 00:43:54 -0800 (PST)
-Received: from cap.home.8bytes.org (p549adcf6.dip0.t-ipconnect.de [84.154.220.246])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 4FADD3A9;
-        Wed, 10 Mar 2021 09:43:52 +0100 (CET)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v2 2/7] x86/boot/compressed/64: Reload CS in startup_32
-Date:   Wed, 10 Mar 2021 09:43:20 +0100
-Message-Id: <20210310084325.12966-3-joro@8bytes.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210310084325.12966-1-joro@8bytes.org>
-References: <20210310084325.12966-1-joro@8bytes.org>
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DBBC06174A;
+        Wed, 10 Mar 2021 00:43:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vuo0YO0EmNV+mXqkprYzB4nCqf8LGaGX/f4JDhgk+/c=; b=p5AuWvLaCuU/C/3qq+kaSkAvEX
+        vKtvFB/7Pp0l8OQ3Hjlgt+Gdlmojl2GcVfJbK4oNDb9uSkjuuv+5a031m7RPru5IcZ4nDfGvAcPLP
+        /o4zZS1IoPw8SJiu9OZJ0Faw4XwOc/+hE7aaJPNXsN38Rncqkt3JkXuCv1yFBvP3t3Fnwn8PMRTSb
+        fOURb9Y8kLuFYaShP/FZCe6WHdluCvBaxzGooPslnZlVQyZzqVgJTgt6AMwprhJyZWlwvJYkLMIMC
+        d2+KDFOGqNEsTMq2HRRaKT0CRvQEdZ3/Z/YXqWFBshlfHqLYe81+af++AJslw0/Tk8BFBQVLYj/+a
+        FrK7yhRA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJuR7-002uDa-4t; Wed, 10 Mar 2021 08:43:24 +0000
+Date:   Wed, 10 Mar 2021 08:43:21 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-bcache@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v2] include: Remove pagemap.h from blkdev.h
+Message-ID: <20210310084321.GA682482@infradead.org>
+References: <20210309195747.283796-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309195747.283796-1-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On Tue, Mar 09, 2021 at 07:57:47PM +0000, Matthew Wilcox (Oracle) wrote:
+> My UEK-derived config has 1030 files depending on pagemap.h before
+> this change.  Afterwards, just 326 files need to be rebuilt when I
+> touch pagemap.h.  I think blkdev.h is probably included too widely,
+> but untangling that dependency is harder and this solves my problem.
+> x86 allmodconfig builds, but there may be implicit include problems
+> on other architectures.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+> v2: Fix CONFIG_SWAP=n implicit use of pagemap.h by swap.h.  Increases
+>     the number of files from 240, but that's still a big win -- 68%
+>     reduction instead of 77%.
 
-Exception handling in the startup_32 boot path requires the CS
-selector to be correctly set up. Reload it from the current GDT.
+Looks good.  I suspect blkdev.h also has penty of other includes that
+aren't needed either..
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/boot/compressed/head_64.S | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index e94874f4bbc1..c59c80ca546d 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -107,9 +107,16 @@ SYM_FUNC_START(startup_32)
- 	movl	%eax, %gs
- 	movl	%eax, %ss
- 
--/* setup a stack and make sure cpu supports long mode. */
-+	/* Setup a stack and load CS from current GDT */
- 	leal	rva(boot_stack_end)(%ebp), %esp
- 
-+	pushl	$__KERNEL32_CS
-+	leal	rva(1f)(%ebp), %eax
-+	pushl	%eax
-+	lretl
-+1:
-+
-+	/* Make sure cpu supports long mode. */
- 	call	verify_cpu
- 	testl	%eax, %eax
- 	jnz	.Lno_longmode
--- 
-2.30.1
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
