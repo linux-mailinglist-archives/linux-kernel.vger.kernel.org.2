@@ -2,151 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E1E334AC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F3E334A59
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhCJWB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:01:57 -0500
-Received: from mga04.intel.com ([192.55.52.120]:4738 "EHLO mga04.intel.com"
+        id S233356AbhCJWAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:00:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233699AbhCJWBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:01:16 -0500
-IronPort-SDR: KF9kYG7yGED1nXyr1DHrzo47EZhFMhLd6eR7TwhBAnpxIVWGgkZbtsxNhJ14i+Ku/Swzv49A6B
- DNLaJf+3Ij3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186193134"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="186193134"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:01:15 -0800
-IronPort-SDR: dzLhrxnnWCqFrtgCha4JCLnZfeyW1tMK5mj66/v7y7b0whNH0MTj373NFq4dndfiw1NaFyzT8U
- 6lH6bBIs13Eg==
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="403847612"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:01:15 -0800
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v22 11/28] x86/mm: Update pte_modify for _PAGE_COW
-Date:   Wed, 10 Mar 2021 14:00:29 -0800
-Message-Id: <20210310220046.15866-12-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210310220046.15866-1-yu-cheng.yu@intel.com>
-References: <20210310220046.15866-1-yu-cheng.yu@intel.com>
+        id S231759AbhCJWAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:00:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7296B64EF6;
+        Wed, 10 Mar 2021 22:00:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615413631;
+        bh=ReSp2zP54RJS1AahxWZa0ePgAMVlaJXyfLVs8JQqAT4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Lqsk+FRi+f/exKF4sZcYF4/Z31p02Sh8HKyOz/RA7OezaDfWe4iJZqIiGtGOtYQH2
+         qS9V+ceFH0war3SM2erKFzXrT2D/heVQYgCiBIjnn51Mr6idLVSyHpC5X1UHDCD5oW
+         2jXtCMyUIjLk2MM5Gb5yuJ04dkoF4jTwt3yfxq6/EViW9O0KpBt2ftOAQkA3XUVu6l
+         co1b35paBosdrQkZYh3uQ8qn5CQF0Ps0XOvDy5tliHBJ+/nFnxuoUpGys1GhykHcSV
+         2C87kq9nBLzlcPy84T6HgMrVZCRrbJJNK54Z7wIUJ+XfYvOo6IpSiyiPy2gR5reWvs
+         pAfxPRTeU2wLg==
+Date:   Wed, 10 Mar 2021 16:00:30 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
+ association
+Message-ID: <20210310220030.GA2068330@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222011717.43266-1-qiuxu.zhuo@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The read-only and Dirty PTE has been used to indicate copy-on-write pages.
-However, newer x86 processors also regard a read-only and Dirty PTE as a
-shadow stack page.  In order to separate the two, the software-defined
-_PAGE_COW is created to replace _PAGE_DIRTY for the copy-on-write case, and
-pte_*() are updated.
+On Mon, Feb 22, 2021 at 09:17:17AM +0800, Qiuxu Zhuo wrote:
+> Function rcec_assoc_rciep() incorrectly used "rciep->devfn" (a single
+> byte encoding the device and function number) as the device number to
+> check whether the corresponding bit was set in the RCiEPBitmap of the
+> RCEC (Root Complex Event Collector) while enumerating over each bit of
+> the RCiEPBitmap.
+> 
+> As per the PCI Express Base Specification, Revision 5.0, Version 1.0,
+> Section 7.9.10.2, "Association Bitmap for RCiEPs", p. 935, only needs to
+> use a device number to check whether the corresponding bit was set in
+> the RCiEPBitmap.
+> 
+> Fix rcec_assoc_rciep() using the PCI_SLOT() macro and convert the value
+> of "rciep->devfn" to a device number to ensure that the RCiEP devices
+> associated with the RCEC are linked when the RCEC is enumerated.
+> 
+> Fixes: 507b460f8144 ("PCI/ERR: Add pcie_link_rcec() to associate RCiEPs")
+> Reported-and-tested-by: Wen Jin <wen.jin@intel.com>
+> Reviewed-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-Pte_modify() changes a PTE to 'newprot', but it doesn't use the pte_*().
-Introduce fixup_dirty_pte(), which sets a dirty PTE, based on _PAGE_RW,
-to either _PAGE_DIRTY or _PAGE_COW.
+I think 507b460f8144 appeared in v5.11, so not something we broke in
+v5.12.  Applied to pci/error for v5.13, thanks!
 
-Apply the same changes to pmd_modify().
+If I understand correctly, we previously only got this right in one
+case:
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
----
- arch/x86/include/asm/pgtable.h | 37 ++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+   0 == PCI_SLOT(00.0)    # correct
+   1 == PCI_SLOT(00.1)    # incorrect
+   2 == PCI_SLOT(00.2)    # incorrect
+   ...
+   8 == PCI_SLOT(01.0)    # incorrect
+   9 == PCI_SLOT(01.1)    # incorrect
+   ...
+  31 == PCI_SLOT(03.7)    # incorrect
 
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 9c056d5815de..e1739f590ca6 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -799,6 +799,23 @@ static inline pmd_t pmd_mkinvalid(pmd_t pmd)
- 
- static inline u64 flip_protnone_guard(u64 oldval, u64 val, u64 mask);
- 
-+static inline pteval_t fixup_dirty_pte(pteval_t pteval)
-+{
-+	pte_t pte = __pte(pteval);
-+
-+	/*
-+	 * Fix up potential shadow stack page flags because the RO, Dirty
-+	 * PTE is special.
-+	 */
-+	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-+		if (pte_dirty(pte)) {
-+			pte = pte_mkclean(pte);
-+			pte = pte_mkdirty(pte);
-+		}
-+	}
-+	return pte_val(pte);
-+}
-+
- static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- {
- 	pteval_t val = pte_val(pte), oldval = val;
-@@ -809,16 +826,36 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- 	 */
- 	val &= _PAGE_CHG_MASK;
- 	val |= check_pgprot(newprot) & ~_PAGE_CHG_MASK;
-+	val = fixup_dirty_pte(val);
- 	val = flip_protnone_guard(oldval, val, PTE_PFN_MASK);
- 	return __pte(val);
- }
- 
-+static inline int pmd_write(pmd_t pmd);
-+static inline pmdval_t fixup_dirty_pmd(pmdval_t pmdval)
-+{
-+	pmd_t pmd = __pmd(pmdval);
-+
-+	/*
-+	 * Fix up potential shadow stack page flags because the RO, Dirty
-+	 * PMD is special.
-+	 */
-+	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-+		if (pmd_dirty(pmd)) {
-+			pmd = pmd_mkclean(pmd);
-+			pmd = pmd_mkdirty(pmd);
-+		}
-+	}
-+	return pmd_val(pmd);
-+}
-+
- static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
- {
- 	pmdval_t val = pmd_val(pmd), oldval = val;
- 
- 	val &= _HPAGE_CHG_MASK;
- 	val |= check_pgprot(newprot) & ~_HPAGE_CHG_MASK;
-+	val = fixup_dirty_pmd(val);
- 	val = flip_protnone_guard(oldval, val, PHYSICAL_PMD_PAGE_MASK);
- 	return __pmd(val);
- }
--- 
-2.21.0
-
+> ---
+> v2->v3:
+>  Drop "[ Krzysztof: Update commit message. ]" from the commit message
+> 
+>  drivers/pci/pcie/rcec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
+> index 2c5c552994e4..d0bcd141ac9c 100644
+> --- a/drivers/pci/pcie/rcec.c
+> +++ b/drivers/pci/pcie/rcec.c
+> @@ -32,7 +32,7 @@ static bool rcec_assoc_rciep(struct pci_dev *rcec, struct pci_dev *rciep)
+>  
+>  	/* Same bus, so check bitmap */
+>  	for_each_set_bit(devn, &bitmap, 32)
+> -		if (devn == rciep->devfn)
+> +		if (devn == PCI_SLOT(rciep->devfn))
+>  			return true;
+>  
+>  	return false;
+> -- 
+> 2.17.1
+> 
