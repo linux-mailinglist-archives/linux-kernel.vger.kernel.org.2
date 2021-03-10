@@ -2,176 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E2E333597
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3EC33359A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhCJFxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 00:53:23 -0500
-Received: from foss.arm.com ([217.140.110.172]:38512 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229712AbhCJFws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 00:52:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09A491FB;
-        Tue,  9 Mar 2021 21:52:48 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.67.114])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C791E3F70D;
-        Tue,  9 Mar 2021 21:52:43 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V2] arm64/mm: Fix __enable_mmu() for new TGRAN range values
-Date:   Wed, 10 Mar 2021 11:23:10 +0530
-Message-Id: <1615355590-21102-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S232156AbhCJFy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 00:54:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230373AbhCJFyJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 00:54:09 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14CAC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 21:54:08 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id t26so10655315pgv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 21:54:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DNEtVXt0RfVRQSwmfufZpZp3B8TMdZm9aigi4pizJ3M=;
+        b=w0HDhik5H3fyLRd3IpjZ8C5QGxvN5icg0nYUJqOml/3VBkBDXnY1o51zmZ0+k2hT2/
+         WNq/R2hUo5Pn76a9Du1sj6cGleRP4oM7brHxSmYyzKIfIMJEZ94+5TOPJygMbIbYrQ7d
+         dq78fyVU6pBrzMaGKeGRdNj7Rc61qjVSXJ90TdG6S6bQcHOSfKsYCyu3RmSjrHKBmRV7
+         eC6VFCHtl/3/kqPmCYkNHBt46SN5xQBvp12boUMmM8c6Fe1e6VY48cyvc9ib0KRRR+VF
+         LmLondC6QLagVj0ddssSbaKyQRrEszXMsh9170vDPT/TDNyTGNj94oEFsKIHgRz0kEYu
+         rj/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DNEtVXt0RfVRQSwmfufZpZp3B8TMdZm9aigi4pizJ3M=;
+        b=DUzxNJID942Z02CsKfN2YyVQc2/9SZcpqlcpFS7OyOoy2wLdaYYatp/FfCTsvxDDgG
+         IU6IVkUWdjpk1uFoeHq0d5RCAyPiwkppYQK5DuZXm4+QdCEEwGMIHXRUVKBysu96ekhf
+         Z+M3XiKEDSxICue9mHdeXOezphDiEOZAvki+eu6sTRym4bXpdHcwK8CRvZrVil9UGK49
+         7NuqRA84EJpzmYhQUAeCgn8mVebopW5GKpIbaFieLyNUsGQuJPGg15TWo2Qlv1Ep3619
+         +5zF+nmzl8i3k58pVVRdGTj242BuP70/NhaOd1SWwyCykA8sN6IS9t0uvjPvMCj2IYpB
+         EpGg==
+X-Gm-Message-State: AOAM530XXwqPCWoy0XqKAE9KTaum+HKJkv5bniNwXeen1lRiEl6bKicQ
+        e42hICRJxgC/3Z3XC6few1x9QIWUFAeoHJowx4n0eA==
+X-Google-Smtp-Source: ABdhPJyCcLgmM5W12t5hpj5zmEzxffGBDqbKEAjzUJbivm2uiBGROc3xuvtASRvN6bF6dS5YCqX4AALc9T/P5m3V29M=
+X-Received: by 2002:aa7:9e5b:0:b029:1f1:5ba4:57a2 with SMTP id
+ z27-20020aa79e5b0000b02901f15ba457a2mr1602531pfq.59.1615355648459; Tue, 09
+ Mar 2021 21:54:08 -0800 (PST)
+MIME-Version: 1.0
+References: <20210310145514.3f3743fe@canb.auug.org.au>
+In-Reply-To: <20210310145514.3f3743fe@canb.auug.org.au>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 10 Mar 2021 13:53:30 +0800
+Message-ID: <CAMZfGtURAqAqzWgTmeGcDNeQVhcNLMngPJD2QkwkXqo3R8uF6w@mail.gmail.com>
+Subject: Re: [External] linux-next: build failure after merge of the
+ akpm-current tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Morse <james.morse@arm.com>
+On Wed, Mar 10, 2021 at 11:55 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the akpm-current tree, today's linux-next build (sparc64
+> defconfig) failed like this:
+>
+> arch/sparc/mm/init_64.c:2495:4: error: implicit declaration of function 'register_page_bootmem_info_node'; did you mean 'register_page_bootmem_info'? [-Werror=implicit-function-declaration]
+>     register_page_bootmem_info_node(NODE_DATA(i));
+>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     register_page_bootmem_info
+>
+> Caused by commit
+>
+>   cd28b1a6791d ("mm: memory_hotplug: factor out bootmem core functions to bootmem_info.c")
+>
+> grep is your friend ...
+>
+> I have applied the following patch for today:
+>
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Wed, 10 Mar 2021 14:46:27 +1100
+> Subject: [PATCH] fix for "mm: memory_hotplug: factor out bootmem core
+>  functions to bootmem_info.c"
+>
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
-As per ARM ARM DDI 0487G.a, when FEAT_LPA2 is implemented, ID_AA64MMFR0_EL1
-might contain a range of values to describe supported translation granules
-(4K and 16K pages sizes in particular) instead of just enabled or disabled
-values. This changes __enable_mmu() function to handle complete acceptable
-range of values (depending on whether the field is signed or unsigned) now
-represented with ID_AA64MMFR0_TGRAN_SUPPORTED_[MIN..MAX] pair. While here,
-also fix similar situations in EFI stub and KVM as well.
+Sorry, it is my mistake. Thanks Stephen to fix this. This is the right fix.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: kvmarm@lists.cs.columbia.edu
-Cc: linux-efi@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Acked-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: James Morse <james.morse@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-Changes in V2:
 
-- Changes back to switch construct in kvm_set_ipa_limit() per Marc
-
-Changes in V1:
-
-https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=442817
-
- arch/arm64/include/asm/sysreg.h           | 20 ++++++++++++++------
- arch/arm64/kernel/head.S                  |  6 ++++--
- arch/arm64/kvm/reset.c                    | 10 ++++++----
- drivers/firmware/efi/libstub/arm64-stub.c |  2 +-
- 4 files changed, 25 insertions(+), 13 deletions(-)
-
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index dfd4edb..d4a5fca9 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -796,6 +796,11 @@
- #define ID_AA64MMFR0_PARANGE_48		0x5
- #define ID_AA64MMFR0_PARANGE_52		0x6
- 
-+#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_DEFAULT	0x0
-+#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_NONE	0x1
-+#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_MIN	0x2
-+#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_MAX	0x7
-+
- #ifdef CONFIG_ARM64_PA_BITS_52
- #define ID_AA64MMFR0_PARANGE_MAX	ID_AA64MMFR0_PARANGE_52
- #else
-@@ -961,14 +966,17 @@
- #define ID_PFR1_PROGMOD_SHIFT		0
- 
- #if defined(CONFIG_ARM64_4K_PAGES)
--#define ID_AA64MMFR0_TGRAN_SHIFT	ID_AA64MMFR0_TGRAN4_SHIFT
--#define ID_AA64MMFR0_TGRAN_SUPPORTED	ID_AA64MMFR0_TGRAN4_SUPPORTED
-+#define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN4_SHIFT
-+#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN4_SUPPORTED
-+#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
- #elif defined(CONFIG_ARM64_16K_PAGES)
--#define ID_AA64MMFR0_TGRAN_SHIFT	ID_AA64MMFR0_TGRAN16_SHIFT
--#define ID_AA64MMFR0_TGRAN_SUPPORTED	ID_AA64MMFR0_TGRAN16_SUPPORTED
-+#define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN16_SHIFT
-+#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN16_SUPPORTED
-+#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0xF
- #elif defined(CONFIG_ARM64_64K_PAGES)
--#define ID_AA64MMFR0_TGRAN_SHIFT	ID_AA64MMFR0_TGRAN64_SHIFT
--#define ID_AA64MMFR0_TGRAN_SUPPORTED	ID_AA64MMFR0_TGRAN64_SUPPORTED
-+#define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN64_SHIFT
-+#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN64_SUPPORTED
-+#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
- #endif
- 
- #define MVFR2_FPMISC_SHIFT		4
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index 66b0e0b..8b469f1 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -655,8 +655,10 @@ SYM_FUNC_END(__secondary_too_slow)
- SYM_FUNC_START(__enable_mmu)
- 	mrs	x2, ID_AA64MMFR0_EL1
- 	ubfx	x2, x2, #ID_AA64MMFR0_TGRAN_SHIFT, 4
--	cmp	x2, #ID_AA64MMFR0_TGRAN_SUPPORTED
--	b.ne	__no_granule_support
-+	cmp     x2, #ID_AA64MMFR0_TGRAN_SUPPORTED_MIN
-+	b.lt    __no_granule_support
-+	cmp     x2, #ID_AA64MMFR0_TGRAN_SUPPORTED_MAX
-+	b.gt    __no_granule_support
- 	update_early_cpu_boot_status 0, x2, x3
- 	adrp	x2, idmap_pg_dir
- 	phys_to_ttbr x1, x1
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index 47f3f03..e81c7ec 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -311,16 +311,18 @@ int kvm_set_ipa_limit(void)
- 	}
- 
- 	switch (cpuid_feature_extract_unsigned_field(mmfr0, tgran_2)) {
--	default:
--	case 1:
-+	case ID_AA64MMFR0_TGRAN_2_SUPPORTED_NONE:
- 		kvm_err("PAGE_SIZE not supported at Stage-2, giving up\n");
- 		return -EINVAL;
--	case 0:
-+	case ID_AA64MMFR0_TGRAN_2_SUPPORTED_DEFAULT:
- 		kvm_debug("PAGE_SIZE supported at Stage-2 (default)\n");
- 		break;
--	case 2:
-+	case ID_AA64MMFR0_TGRAN_2_SUPPORTED_MIN ... ID_AA64MMFR0_TGRAN_2_SUPPORTED_MAX:
- 		kvm_debug("PAGE_SIZE supported at Stage-2 (advertised)\n");
- 		break;
-+	default:
-+		kvm_err("Unsupported value for TGRAN_2, giving up\n");
-+		return -EINVAL;
- 	}
- 
- 	kvm_ipa_limit = id_aa64mmfr0_parange_to_phys_shift(parange);
-diff --git a/drivers/firmware/efi/libstub/arm64-stub.c b/drivers/firmware/efi/libstub/arm64-stub.c
-index b69d631..7bf0a7a 100644
---- a/drivers/firmware/efi/libstub/arm64-stub.c
-+++ b/drivers/firmware/efi/libstub/arm64-stub.c
-@@ -24,7 +24,7 @@ efi_status_t check_platform_features(void)
- 		return EFI_SUCCESS;
- 
- 	tg = (read_cpuid(ID_AA64MMFR0_EL1) >> ID_AA64MMFR0_TGRAN_SHIFT) & 0xf;
--	if (tg != ID_AA64MMFR0_TGRAN_SUPPORTED) {
-+	if (tg < ID_AA64MMFR0_TGRAN_SUPPORTED_MIN || tg > ID_AA64MMFR0_TGRAN_SUPPORTED_MAX) {
- 		if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
- 			efi_err("This 64 KB granular kernel is not supported by your CPU\n");
- 		else
--- 
-2.7.4
-
+> ---
+>  arch/sparc/mm/init_64.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+> index 182bb7bdaa0a..c709b72e81bf 100644
+> --- a/arch/sparc/mm/init_64.c
+> +++ b/arch/sparc/mm/init_64.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/percpu.h>
+>  #include <linux/mmzone.h>
+>  #include <linux/gfp.h>
+> +#include <linux/bootmem_info.h>
+>
+>  #include <asm/head.h>
+>  #include <asm/page.h>
+> --
+> 2.30.0
+>
+> --
+> Cheers,
+> Stephen Rothwell
