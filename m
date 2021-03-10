@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6267033466F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47766334673
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhCJSQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhCJSQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:16:09 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D170C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:16:09 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so7687873pjc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:16:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hFGuoSs/aMUt+vuoT2J/eAJ6b5vWIpYR5D/n9ZHOWqc=;
-        b=aNqu7VKy1TPjC3z/C75Zor9tecXd+bxXydROVEzPp1x66A0tlh89Rc/hakMzTZ7xGi
-         W9QM1IsyQ3KcUoQktz6dSBl7MExGda2KHVRk6DGFqv0wP3iOPu4DUwnUxy0l+0fwCiaY
-         CvfUg73/YcOhhYE4CxanRdJbVZe9ywxOlBSubR46nJfVS2aHbfEdgNZIOSr382nxM2qi
-         R7VkIjKwiFP9L4PFJY5/FJq8ln5voZmsX9hY/c36f5fUt23IwRwty76Riz9df2BYrOmM
-         AytY5zwrgdgWDpulLIHFVHVQIXLWer1CRk5pSgCb4G+s2EqPGqrY88/DLjvUg/D/OHdy
-         S9QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hFGuoSs/aMUt+vuoT2J/eAJ6b5vWIpYR5D/n9ZHOWqc=;
-        b=hildc2LC3ackQg+YkQTEPEP+LRf0aRjwTD1JY5dBOIdP/634We3jsVb4EdGzWV7mr0
-         VxACOiJAOsmD6X4/zyitlnHie8FrEzHWJejjl2p/4Zd4gr+FLz1Uu5RvE0nIEuzRTzOH
-         sopbkOOLkZjZxV4orWeVit09/NyQH/WekYWj6WRZwAW1QVode4kmX1NXabqGEMpOETtJ
-         Le2/ii9xnT3IJqafmKAM6FMUn+fno7dThPBJGmh8KFe31J/h8UhbGeox1EYVyxFujTxg
-         n2c/dHetQ0AQ9/RMt/sWpcrW+PfaDd+r5sJHBQurF2VkXzNds8sPfbCzrsSOgeWXeiKt
-         G9TQ==
-X-Gm-Message-State: AOAM530r719rfs8lysRKHVZE3ZROhpy9kdQqNdRZlr40i1cUFp4sQUGx
-        dpRi/L1X6vRgC7wVPNuZF1ERAQ==
-X-Google-Smtp-Source: ABdhPJy3NKbaRwumU2/U9+KQHmV8ce7wBDcCVlJqxs7ogrpgwj28bGTCsOi1FLFxIfBdj/JOLxI3Cg==
-X-Received: by 2002:a17:902:ec84:b029:e5:bd05:4a98 with SMTP id x4-20020a170902ec84b02900e5bd054a98mr4158188plg.76.1615400168553;
-        Wed, 10 Mar 2021 10:16:08 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
-        by smtp.gmail.com with ESMTPSA id mp19sm7390612pjb.2.2021.03.10.10.16.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 10:16:07 -0800 (PST)
-Date:   Wed, 10 Mar 2021 10:16:00 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Like Xu <like.xu@linux.intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] x86/perf: Use RET0 as default for guest_get_msrs to
- handle "no PMU" case
-Message-ID: <YEkM4HWqjMdPoXvR@google.com>
-References: <20210309171019.1125243-1-seanjc@google.com>
- <YEiA3hoCTMJbhKXO@hirez.programming.kicks-ass.net>
+        id S233520AbhCJSRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:17:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233679AbhCJSRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:17:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 066D564DC4;
+        Wed, 10 Mar 2021 18:17:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615400244;
+        bh=seX8IHJ8PXMUIRxGxRB5hNS0RqETp5JirlEF/xT6KjY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hcCOJA3udo3Mgm3NqixPmgYiFXxPg0m3SKW6TtBCx+zFNLB5iBWqXECCQvI4FsBNW
+         nMtqzstKw2DDsGCBkVMDtOhDLFoon2gpixwHm+UuanSzFlecBEHt9xS+kH/bM1Y76f
+         2cJMcZuOW0OmqmZdKlgj2odBWupbStSQrpdBSVcVJntM17Hh+Ixp9lgGpV44yJCfjJ
+         cGgj21wTcBYc05AbrNrbMGs+097PD+4xcNPtOkGPPl7omM+18OolZO/UMiaH9HWae0
+         CRvtU4j2a6jObwLc42QU/MyOMfwthRp5uu2wPVgAJ+W3noJSZQsLvngNaWGDiAzceO
+         Cz1rAxazj1ttA==
+Date:   Wed, 10 Mar 2021 18:16:11 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Bard liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
+ present
+Message-ID: <20210310181611.GE28564@sirena.org.uk>
+References: <20210303115526.419458-1-jonathanh@nvidia.com>
+ <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
+ <20210310133534.GD4746@sirena.org.uk>
+ <6a2352e6-f2b7-def1-de58-52fbeb7846e5@linux.intel.com>
+ <20210310161814.GA28564@sirena.org.uk>
+ <s5hzgzbvube.wl-tiwai@suse.de>
+ <9b073d01-f2fe-a99b-e53c-4a0b3f95ca05@linux.intel.com>
+ <20210310165235.GD28564@sirena.org.uk>
+ <cf03ce61-1501-e0e7-6887-d921c7d1af62@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TD8GDToEDw0WLGOL"
 Content-Disposition: inline
-In-Reply-To: <YEiA3hoCTMJbhKXO@hirez.programming.kicks-ass.net>
+In-Reply-To: <cf03ce61-1501-e0e7-6887-d921c7d1af62@linux.intel.com>
+X-Cookie: Yow!  Are we laid back yet?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021, Peter Zijlstra wrote:
-> On Tue, Mar 09, 2021 at 09:10:19AM -0800, Sean Christopherson wrote:
-> 
-> > @@ -2024,9 +2021,6 @@ static int __init init_hw_perf_events(void)
-> >  	if (!x86_pmu.read)
-> >  		x86_pmu.read = _x86_pmu_read;
-> >  
-> > -	if (!x86_pmu.guest_get_msrs)
-> > -		x86_pmu.guest_get_msrs = perf_guest_get_msrs_nop;
-> 
-> I suspect I might've been over eager here and we're now in trouble when
-> *_pmu_init() clears x86_pmu.guest_get_msrs (like for instance on AMD).
-> 
-> When that happens we need to restore __static_call_return0, otherwise
-> the following static_call_update() will patch in a NOP and RAX will be
-> garbage again.
-> 
-> So I've taken the liberty to update the patch as below.
 
-Doh, I managed to forget about that between v1 and v2, too.  Thanks much!
+--TD8GDToEDw0WLGOL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 10, 2021 at 11:50:13AM -0600, Pierre-Louis Bossart wrote:
+> On 3/10/21 10:52 AM, Mark Brown wrote:
+
+> > Build time dependencies aren't going to help anything, arm64 (and to my
+> > understanding some future x86 systems, LynxPoint IIRC) supports both DT
+> > and ACPI and so you have kernels built with support for both.
+
+> well, that's what I suggested initially:
+>        if (is_of_node(card->dev->fwnode))
+
+> I used the of_node test as a proxy for 'no DMI' since I am not aware of any
+> means to detect if DMI is enabled at run-time.
+
+Can we not fix the DMI code so it lets us check dmi_available either
+directly or with an accessor?  I don't understand why all the proposals
+are dancing around local bodges here.
+
+--TD8GDToEDw0WLGOL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBJDOoACgkQJNaLcl1U
+h9D+lQf/cbnPJjsJ3ygPrp1tnP/Rp54Yib+fQFY62oCWapnvaBTHjolxWqtrddTO
+wswX/BLf4uVVueVQ7AUTuaARx+aan0MAK1/xWU+lyeHcGk0fGy+mV9LFnhGUEEv5
+Rke4xQJOwGazHSMb0IBGlfILV9cIJ+G7VTh5pLWvGMrFPT+yw1T35LacGOFwQFvX
+gCCwqVqJ70jKVcKqD6BFb/YxsceAAmcp5UgzIs2+fa9UUVF5TxDxXO5EDKAh37Ru
+0bedE12aOkCKMoS/UVosteXqppBn5If4QhZGZKojq38ueWyBxZ2Mg3/ZKhHPydgo
+W+aXdVobyPhQPKWXhA9GZoFSVwoVAA==
+=NWjC
+-----END PGP SIGNATURE-----
+
+--TD8GDToEDw0WLGOL--
