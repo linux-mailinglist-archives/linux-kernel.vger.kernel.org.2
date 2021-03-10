@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3AF334B56
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C84334B72
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232845AbhCJWRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:17:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232181AbhCJWRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:17:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F52664FB9;
-        Wed, 10 Mar 2021 22:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615414625;
-        bh=uvxATqmALoLwZ5xgJ3XvB9q+ryBa5IKMCmWm/PrqUS8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ahAt+j+pAV7DmD0Z1B3oguj1fYJjKbXXGMMJmOlnqSK2gsaTPeH71RUDM7a+DpC6F
-         s6DZmBWqsvjcT7v85GFi4DiNnLYWR5LbRn6SwxzykW8hnyzU5jXYacUPxVIPdtFaVT
-         ZOh8FMZY4bhcIYyBLxCgHRts7Bv9J6+9A1cqwzlbe9FcvWmtMlKbe5gnSJo/mOeVxL
-         6FLmXK2Q6e/7DmHfvS0GMTpJseA3yuxjc/qeaCnLMwif11ImkpPvDEDH5log0Dwb40
-         zOES27c+I/2rDwh3p4bx0VoVlof6X/OqLpFNBP6kbB87AxwxyRnE6wxdUBkuDRAyB3
-         HbAn0992iqtBw==
-Date:   Wed, 10 Mar 2021 23:17:02 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Stable <stable@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 10/13] rcu/nocb: Delete bypass_timer upon nocb_gp wakeup
-Message-ID: <20210310221702.GC2949@lothringen>
-References: <20210223001011.127063-1-frederic@kernel.org>
- <20210223001011.127063-11-frederic@kernel.org>
- <20210303012456.GC20917@paulmck-ThinkPad-P72>
+        id S233493AbhCJWTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:19:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhCJWTX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:19:23 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE184C061574;
+        Wed, 10 Mar 2021 14:19:23 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id g4so12336658pgj.0;
+        Wed, 10 Mar 2021 14:19:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=E86sp18F5ikuV/UL0w2a0I3kcFs8CycFV8c4Ty6/Z+c=;
+        b=ia/Zj9LAVFb8I28l8N8lom02TthJY1cl4qOeRv6IGghY6RIuzROssWdgQVdM7VDJ6w
+         pkdWWXAWMrctdIDwnKZ7knp9SbRZimD82zY3wvGSwZV28765yRGrHCKlx00Nm3KLP6+I
+         PWVcy56Upi1PY2QzmdoUxJkcGoyHFkviDYvUFBsYovZkVINr4q/SuMyZeNOIYVcg2bcY
+         v+q4ByklnjMzT7CHiEm02v99cAduL/PB8SnCDY8k5nnePz5sd6Q6trObkOatD4IEMGpF
+         b8FwlUiIyDttX9uu75GcXxx9KxTLuOSs+qbVgMtTDnmhKd8hBfRx+Gs1zpXVgaoLsHne
+         CdKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=E86sp18F5ikuV/UL0w2a0I3kcFs8CycFV8c4Ty6/Z+c=;
+        b=YJly1qlGAiPY5q0sZv0AijyT4o8xlfC4kv28TuqbYzt6GerYVdoOQgPo4sRHbNqaTl
+         6NM08OMSXG/m+Y/rsdnc4zf4PIRILacE9TrhQ1ATG2Qco0nenOqDjQ7WNVhaJ1O/qDdz
+         8j7piPckwfv0p3+zFzHp2D5BcQQNI8WI+MAyma6fsmV66jlw1Kf9N92w2VhXxnDUkKYf
+         RiIkdgbrdzw4tAHNjX2gJubELM8rcv/X8gRylXWqo4EpSw610w2U4o0x5BWZkXZgOMop
+         2AqDp+8IRKLs5kWQmlE/6ZJSsQ1dLccJkxVPtY+2BB/vu8deEGtGN3z2tq8fYafwbAxi
+         0KvQ==
+X-Gm-Message-State: AOAM5336xy0Ns5zDBtWG0Yp/CxNRM3+n2lPO4TLGy9coWo7O+8gNNc8F
+        MY8YhNcsiWXbGOOslnKbq5E=
+X-Google-Smtp-Source: ABdhPJw6xkncCkhOlZRPyeExcrrV/AKaFEqpDfYJc3/FYXqYmxJtQ5lSAXZkyIXQKeUcS31g3+4EMA==
+X-Received: by 2002:a63:74d:: with SMTP id 74mr4536077pgh.316.1615414763327;
+        Wed, 10 Mar 2021 14:19:23 -0800 (PST)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id g21sm477675pfk.30.2021.03.10.14.19.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Mar 2021 14:19:23 -0800 (PST)
+Date:   Wed, 10 Mar 2021 14:17:07 -0800
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
+        guillaume.tucker@collabora.com, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
+Message-ID: <20210310221707.GB10431@Asurada-Nvidia>
+References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
+ <a8a7a0af-895f-9d79-410d-5dd03ebbd6dd@gmail.com>
+ <7714f272-3862-84ac-306d-86363a1c4880@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210303012456.GC20917@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7714f272-3862-84ac-306d-86363a1c4880@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 05:24:56PM -0800, Paul E. McKenney wrote:
-> On Tue, Feb 23, 2021 at 01:10:08AM +0100, Frederic Weisbecker wrote:
-> > A NOCB-gp wake up can safely delete the nocb_bypass_timer. nocb_gp_wait()
-> > is going to check again the bypass state and rearm the bypass timer if
-> > necessary.
+On Wed, Mar 10, 2021 at 11:22:57PM +0300, Dmitry Osipenko wrote:
+> 10.03.2021 22:13, Dmitry Osipenko пишет:
+> > I found that this patch introduced a serious regression on Tegra30 using
+> > today's linux-next. Tegra30 has two 3d h/w blocks connected in SLI and
+> > only one of the blocks is now attached to IOMMU domain, meaning that GPU
+> > is unusable now. All 3d, 2d and display devices share the same "DRM"
+> > group on Tegra30.
 > > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Josh Triplett <josh@joshtriplett.org>
-> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> > Cc: Boqun Feng <boqun.feng@gmail.com>
-> 
-> Give that you delete this code a couple of patches later in this series,
-> why not just leave it out entirely?  ;-)
-
-It's not exactly deleted later, it's rather merged within the
-"del_timer(&rdp_gp->nocb_timer)".
-
-The purpose of that patch is to make it clear that we explicitly cancel
-the nocb_bypass_timer here before we do it implicitly later with the
-merge of nocb_bypass_timer into nocb_timer.
-
-We could drop that patch, the resulting code in the end of the patchset
-will be the same of course but the behaviour detail described here might
-slip out of the reviewers attention :-)
-
-> 
-> 							Thanx, Paul
-> 
-> > ---
-> >  kernel/rcu/tree_plugin.h | 2 ++
-> >  1 file changed, 2 insertions(+)
+> > Nicolin, please let me know if have any suggestions. I may take a closer
+> > look a day later, for now I'll just revert this patch locally. Thanks in
+> > advance.
 > > 
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index b62ad79bbda5..9da67b0d3997 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -1711,6 +1711,8 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
-> >  		del_timer(&rdp_gp->nocb_timer);
-> >  	}
-> >  
-> > +	del_timer(&rdp_gp->nocb_bypass_timer);
-> > +
-> >  	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
-> >  		WRITE_ONCE(rdp_gp->nocb_gp_sleep, false);
-> >  		needwake = true;
+> 
+> Actually, this was easy to fix:
+> 
+> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> index 97eb62f667d2..639d5ceab60b 100644
+> --- a/drivers/iommu/tegra-smmu.c
+> +++ b/drivers/iommu/tegra-smmu.c
+> @@ -853,8 +853,6 @@ static struct iommu_device
+> *tegra_smmu_probe_device(struct device *dev)
+> 
+>  			if (err < 0)
+>  				return ERR_PTR(err);
+> -
+> -			break;
 
-Thanks.
+Hmm..I don't understand why this "break" causes problems on Tegra30.
+The older versions that used _find()+configure() had it also, e.g.:
+https://elixir.bootlin.com/linux/v5.9.16/source/drivers/iommu/tegra-smmu.c#L760
+
+Dmitry, do you have any idea?
