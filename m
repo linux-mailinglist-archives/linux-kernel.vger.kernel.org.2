@@ -2,159 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09161334C71
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AED7334C75
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233782AbhCJXWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:22:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38008 "EHLO mail.kernel.org"
+        id S233630AbhCJXWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:22:54 -0500
+Received: from mga09.intel.com ([134.134.136.24]:65011 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231964AbhCJXWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:22:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1297664FC1;
-        Wed, 10 Mar 2021 23:22:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615418528;
-        bh=Evfm0oY+kQII8STajQrZwgNaNVf5h9GRc794NeHNvSU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KFxceItnGCWtp3Vx8KcoDEykaDsQDKp+TS0QG5+xRQw+ESDssx8pWm1krtwK7t+Qe
-         NF3QOQwroFwblfVmjVNyj5UPEhrOUEIuTdJ907wnxdX1qw4WERtQh/3oGMd07BTSWX
-         U7QCihg3hYUW5h7+hQCEnMNhlM1C7bKrxGFszo7sjUdmYme78FyNP4sw/v9EGO5ETJ
-         nR4xLBhtaR/eJTG1+tEijaZJL9HDDwt8LpHtz+aqOn2HIJ/s/UludMg+0qJC9Dg8Sr
-         zdCkiuGaP46KOs1z/KZjicc4Jw6VJKPNrd7cA5gOVpzqEQH+LInk/9gV5YPoofxN4M
-         geNgYJiEy3NdQ==
-Date:   Thu, 11 Mar 2021 01:21:44 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] tpm: efi: Use local variable for calculating
- final log size
-Message-ID: <YElUiIFkyf6txZoV@kernel.org>
-References: <20210310221916.356716-1-stefanb@linux.ibm.com>
- <20210310221916.356716-2-stefanb@linux.ibm.com>
+        id S233271AbhCJXWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 18:22:47 -0500
+IronPort-SDR: V/Xx3Laz1EeK68MgBufPlwnSrDu7IaaXsJjbEO7DjSjBmuuPLnOtjpi8xKOn3ohdPhluCq7Cvn
+ YrJV5pAlws3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188680184"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="188680184"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 15:22:45 -0800
+IronPort-SDR: 0IDkoEO2HQZNiV1iZJn7oQUIDlBiMFDNIBXwwNfIe/p83TkZr4G7JQyi9y+5tOLg+e/KoeoVJ7
+ SITLPWfab66A==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="509838912"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.23.206]) ([10.209.23.206])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 15:22:42 -0800
+Subject: Re: [PATCH v22 8/8] x86/vdso: Add ENDBR64 to __vdso_sgx_enter_enclave
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210310220519.16811-1-yu-cheng.yu@intel.com>
+ <20210310220519.16811-9-yu-cheng.yu@intel.com> <YElKjT2v628tidE/@kernel.org>
+ <8b8efe44-b79f-ce29-ee28-066f88c93840@intel.com>
+ <c2bfe707-2ef6-213a-f02c-4689726a473a@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <727fed3a-f7da-a947-4221-56ab39deefe4@intel.com>
+Date:   Wed, 10 Mar 2021 15:22:41 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310221916.356716-2-stefanb@linux.ibm.com>
+In-Reply-To: <c2bfe707-2ef6-213a-f02c-4689726a473a@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:19:14PM -0500, Stefan Berger wrote:
-> When tpm_read_log_efi is called multiple times, which happens when
-> one loads and unloads a TPM2 driver multiple times, then the global
-> variable efi_tpm_final_log_size will at some point become a negative
-> number due to the subtraction of final_events_preboot_size occurring
-> each time. Use a local variable to avoid this integer underflow.
+On 3/10/2021 3:20 PM, Dave Hansen wrote:
+> On 3/10/21 2:55 PM, Yu, Yu-cheng wrote:
+>> On 3/10/2021 2:39 PM, Jarkko Sakkinen wrote:
+>>> On Wed, Mar 10, 2021 at 02:05:19PM -0800, Yu-cheng Yu wrote:
+>>>> When CET is enabled, __vdso_sgx_enter_enclave() needs an endbr64
+>>>> in the beginning of the function.
+>>>
+>>> OK.
+>>>
+>>> What you should do is to explain what it does and why it's needed.
+>>>
+>>
+>> The endbr marks a branch target.  Without the "no-track" prefix, if an
+>> indirect call/jmp reaches a non-endbr opcode, a control-protection fault
+>> is raised.  Usually endbr's are inserted by the compiler.  For assembly,
+>> these have to be put in manually.  I will add this in the commit log if
+>> there is another revision.  Thanks!
 > 
-> The following issue is now resolved:
+> This is close, but it's missing a detail or two that I think is
+> important for someone like Jarkko trying to figure out what it means for
+> his subsystem or driver.
 > 
-> Mar  8 15:35:12 hibinst kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-> Mar  8 15:35:12 hibinst kernel: Workqueue: tpm-vtpm vtpm_proxy_work [tpm_vtpm_proxy]
-> Mar  8 15:35:12 hibinst kernel: RIP: 0010:__memcpy+0x12/0x20
-> Mar  8 15:35:12 hibinst kernel: Code: 00 b8 01 00 00 00 85 d2 74 0a c7 05 44 7b ef 00 0f 00 00 00 c3 cc cc cc 66 66 90 66 90 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4
-> Mar  8 15:35:12 hibinst kernel: RSP: 0018:ffff9ac4c0fcfde0 EFLAGS: 00010206
-> Mar  8 15:35:12 hibinst kernel: RAX: ffff88f878cefed5 RBX: ffff88f878ce9000 RCX: 1ffffffffffffe0f
-> Mar  8 15:35:12 hibinst kernel: RDX: 0000000000000003 RSI: ffff9ac4c003bff9 RDI: ffff88f878cf0e4d
-> Mar  8 15:35:12 hibinst kernel: RBP: ffff9ac4c003b000 R08: 0000000000001000 R09: 000000007e9d6073
-> Mar  8 15:35:12 hibinst kernel: R10: ffff9ac4c003b000 R11: ffff88f879ad3500 R12: 0000000000000ed5
-> Mar  8 15:35:12 hibinst kernel: R13: ffff88f878ce9760 R14: 0000000000000002 R15: ffff88f77de7f018
-> Mar  8 15:35:12 hibinst kernel: FS:  0000000000000000(0000) GS:ffff88f87bd00000(0000) knlGS:0000000000000000
-> Mar  8 15:35:12 hibinst kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> Mar  8 15:35:12 hibinst kernel: CR2: ffff9ac4c003c000 CR3: 00000001785a6004 CR4: 0000000000060ee0
-> Mar  8 15:35:12 hibinst kernel: Call Trace:
-> Mar  8 15:35:12 hibinst kernel: tpm_read_log_efi+0x152/0x1a7
-> Mar  8 15:35:12 hibinst kernel: tpm_bios_log_setup+0xc8/0x1c0
-> Mar  8 15:35:12 hibinst kernel: tpm_chip_register+0x8f/0x260
-> Mar  8 15:35:12 hibinst kernel: vtpm_proxy_work+0x16/0x60 [tpm_vtpm_proxy]
-> Mar  8 15:35:12 hibinst kernel: process_one_work+0x1b4/0x370
-> Mar  8 15:35:12 hibinst kernel: worker_thread+0x53/0x3e0
-> Mar  8 15:35:12 hibinst kernel: ? process_one_work+0x370/0x370
+> I'd probably say:
 > 
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> ENDBR is a special new instruction for the Indirect Branch Tracking
+> (IBR) component of CET.  IBT prevents attacks by ensuring that (most)
+> indirect branches and function calls may only land at ENDBR
+> instructions.  Branches that don't follow the rules will result in
+> control flow (#CF) exceptions.
+> 
+> ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
+> instructions are inserted automatically by the compiler, but branch
+> targets written in assembly must have ENDBR added manually, like this one.
+> 
 
-Fixes tag for this one? 
+Ok, I will update.  Thanks!
 
-/Jarkko
-
-> ---
->  drivers/char/tpm/eventlog/efi.c | 29 +++++++++++++++++++++--------
->  1 file changed, 21 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/eventlog/efi.c b/drivers/char/tpm/eventlog/efi.c
-> index 35229e5143ca..e6cb9d525e30 100644
-> --- a/drivers/char/tpm/eventlog/efi.c
-> +++ b/drivers/char/tpm/eventlog/efi.c
-> @@ -17,6 +17,7 @@ int tpm_read_log_efi(struct tpm_chip *chip)
->  {
->  
->  	struct efi_tcg2_final_events_table *final_tbl = NULL;
-> +	int final_events_log_size = efi_tpm_final_log_size;
->  	struct linux_efi_tpm_eventlog *log_tbl;
->  	struct tpm_bios_log *log;
->  	u32 log_size;
-> @@ -66,12 +67,12 @@ int tpm_read_log_efi(struct tpm_chip *chip)
->  	ret = tpm_log_version;
->  
->  	if (efi.tpm_final_log == EFI_INVALID_TABLE_ADDR ||
-> -	    efi_tpm_final_log_size == 0 ||
-> +	    final_events_log_size == 0 ||
->  	    tpm_log_version != EFI_TCG2_EVENT_LOG_FORMAT_TCG_2)
->  		goto out;
->  
->  	final_tbl = memremap(efi.tpm_final_log,
-> -			     sizeof(*final_tbl) + efi_tpm_final_log_size,
-> +			     sizeof(*final_tbl) + final_events_log_size,
->  			     MEMREMAP_WB);
->  	if (!final_tbl) {
->  		pr_err("Could not map UEFI TPM final log\n");
-> @@ -80,10 +81,18 @@ int tpm_read_log_efi(struct tpm_chip *chip)
->  		goto out;
->  	}
->  
-> -	efi_tpm_final_log_size -= log_tbl->final_events_preboot_size;
-> +	/*
-> +	 * The 'final events log' size excludes the 'final events preboot log'
-> +	 * at its beginning.
-> +	 */
-> +	final_events_log_size -= log_tbl->final_events_preboot_size;
->  
-> +	/*
-> +	 * Allocate memory for the 'combined log' where we will append the
-> +	 * 'final events log' to.
-> +	 */
->  	tmp = krealloc(log->bios_event_log,
-> -		       log_size + efi_tpm_final_log_size,
-> +		       log_size + final_events_log_size,
->  		       GFP_KERNEL);
->  	if (!tmp) {
->  		kfree(log->bios_event_log);
-> @@ -94,15 +103,19 @@ int tpm_read_log_efi(struct tpm_chip *chip)
->  	log->bios_event_log = tmp;
->  
->  	/*
-> -	 * Copy any of the final events log that didn't also end up in the
-> -	 * main log. Events can be logged in both if events are generated
-> +	 * Append any of the 'final events log' that didn't also end up in the
-> +	 * 'main log'. Events can be logged in both if events are generated
->  	 * between GetEventLog() and ExitBootServices().
->  	 */
->  	memcpy((void *)log->bios_event_log + log_size,
->  	       final_tbl->events + log_tbl->final_events_preboot_size,
-> -	       efi_tpm_final_log_size);
-> +	       final_events_log_size);
-> +	/*
-> +	 * The size of the 'combined log' is the size of the 'main log' plus
-> +	 * the size of the 'final events log'.
-> +	 */
->  	log->bios_event_log_end = log->bios_event_log +
-> -		log_size + efi_tpm_final_log_size;
-> +		log_size + final_events_log_size;
->  
->  out:
->  	memunmap(final_tbl);
-> -- 
-> 2.29.2
-> 
-> 
+--
+Yu-cheng
