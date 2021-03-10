@@ -2,230 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD1C334AE8
+	by mail.lfdr.de (Postfix) with ESMTP id D5113334AEA
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234258AbhCJWDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:03:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45180 "EHLO
+        id S234290AbhCJWD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:03:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234208AbhCJWCm (ORCPT
+        with ESMTP id S234273AbhCJWCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:02:42 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996F5C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:32 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id j2so25018726wrx.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:32 -0800 (PST)
+        Wed, 10 Mar 2021 17:02:47 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF53C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:38 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id u18so27666906ljd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kvULu6wQqvVvCSIiS2jIB0soaoJgdRgxlx9E1MVIok4=;
-        b=kG+dofg6FiOzD4Z7qcCs1lAynZh6scqcZVq1/t9JhKvXAUtP2itqsrkWoCVzq2ZCKK
-         4qb2mmx1Fc6cmP25PLk1GBcGwELkPwTSWcVQeoXtbVEQcuRIez9BF61z1ohpeDocFJK9
-         NQMFEiS07rRtFx96nvFwXDnXe8n64k5UzQej0=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sXKxf2WheKTyVYrbgS1oaunkjJtfisdRmZ807RF1ULg=;
+        b=dbU4ABptlvOkwDfx7plNb6a5nN6D3I3kAXWL/Oeko/xOmVpIlvVeERfIF6cIirsLEv
+         nuevb/uU9rqPIsW4zwKzOoZ9h9xbXwV37dTOuoBmPxQGIVr/QPHA2GzWKOmiJB+I1xp7
+         ecrphjmPAcMl1PfEUhUBXeOdOS29Vim/ALbGZoaIQYEZCTo3fpIcrAvW5Op+St6fEUsI
+         VI9Nh2X1G7sDheoPWjf7y8Md/pyrscJEUIS3Pr2OznkRsRGmrNvBzkvBUyOihPuRZUUm
+         GjFqtqhG1zI/d6vW3rtQK9hX6kBUs+tqoyLrtA2te62P48fhoDo95rHm/ZqN+kOJthKo
+         8N4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kvULu6wQqvVvCSIiS2jIB0soaoJgdRgxlx9E1MVIok4=;
-        b=QCOP8Jh6L7a5Pz2zQDBepOGo3rfyk+TJjSSvJEKmgkTkTkxyLMFs1KalCvXQy0CTxF
-         REPFHCCuBJY8iXDoil55lOghWlwHPupUqz87lU8qIMDmaKOBjGsI5RgqHQwdRFDd6Yuq
-         acpFQjySYILxNvNHN/Jyv91thgpXaAfv9DlbqkyVgKCNd4N6wSQcYX9Z1JYJx5DUVtmP
-         utPhQbHSh2hEmF4Bd3Mqc9w2XRN9tDO4uBt6P4uvaJK9ktfHdf6bD6QpXGA4h5ev5Q1Y
-         V2+N4edXpFT1y45eIJFifZ7hY8iGjTsGtvPA1d+U5JQoJOdsXmJIzezZfhF5yezLp3m6
-         CFKw==
-X-Gm-Message-State: AOAM531mIIaynqpk8RLqEVkFLPlFIu9BedpHzZ+o20nSkuotb0oWTtja
-        3gjYAWiLQ0FC83a593lRi+9W7Q==
-X-Google-Smtp-Source: ABdhPJyeu1V5+w5viGBt4njm65B0BKluUNYql60eGXK3hOj1b/IsJgt4+NSAuEW9eY7K/wKFa7hNog==
-X-Received: by 2002:adf:e441:: with SMTP id t1mr5507996wrm.21.1615413751375;
-        Wed, 10 Mar 2021 14:02:31 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:e08c:1e90:4e6b:365a])
-        by smtp.gmail.com with ESMTPSA id y16sm699234wrh.3.2021.03.10.14.02.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 14:02:31 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, jackmanb@chromium.org,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next 5/5] selftests/bpf: Add a series of tests for bpf_snprintf
-Date:   Wed, 10 Mar 2021 23:02:11 +0100
-Message-Id: <20210310220211.1454516-6-revest@chromium.org>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-In-Reply-To: <20210310220211.1454516-1-revest@chromium.org>
-References: <20210310220211.1454516-1-revest@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sXKxf2WheKTyVYrbgS1oaunkjJtfisdRmZ807RF1ULg=;
+        b=XXBflvqoVSh4b1TZW/xrNA+yYuuLqLCeEiRaDXWy4jrkOU5iZsLbwQKoETL0h9s02o
+         Q5zl0OF4Vg8xgoBxZ92OpTHnmZvcQTzCiybijdybtfbJ2Tign+hD8LpQuY5Sq5yy6F6s
+         WMtLNGdILEjXENwRd2ITPxEk1yHNEGj5HwJytELfz6GSwiDkXcB3S7uxD9fJoFUDXadQ
+         dGLVGu3B8sRnHQ+DSP4jT1aiNcU4FSeEHDuJml9aH81SsBuxg5c/12NIiKt77RNZ/0w5
+         KylXbLNHTJnc23CE2jR/XGOVEP056EcOnyT/S/UxzDd6R8FmznldgS/Z9R7fDiyfLjNo
+         1fjQ==
+X-Gm-Message-State: AOAM533uklGdvBSxQwOrQcNd+eTsYUKNAiwF4/22KtzndXJDk20tnNom
+        qQ01l85EwiJmvgHcHi1qY60jGh+G/O9yXdtstqq0KA==
+X-Google-Smtp-Source: ABdhPJznUWbLFNZFALzU8fQ9YS1h0QQBh8Wqc/a3pb1tgbl1rRtFm+l7R02qCrm4WRhwHDcStYtCj/ZrwiScdaMDdy0=
+X-Received: by 2002:a2e:b88b:: with SMTP id r11mr2941721ljp.495.1615413756356;
+ Wed, 10 Mar 2021 14:02:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210225112122.2198845-1-arnd@kernel.org> <20210226211323.arkvjnr4hifxapqu@google.com>
+ <CAK8P3a2bLKe3js4SKeZoGp8B51+rpW6G3KvpbJ5=y83sxHSu6g@mail.gmail.com>
+ <1614559739.p25z5x88wl.astroid@bobo.none> <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
+ <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
+In-Reply-To: <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 10 Mar 2021 14:02:24 -0800
+Message-ID: <CAKwvOdk4y3Ekc_TiWuk6D2KNbH_6YHZLRK9TtAnOP=cLP6E0Rw@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+To:     kernel-toolchains@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Scull <ascull@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This exercices most of the format specifiers when things go well.
+On Wed, Mar 10, 2021 at 1:08 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Wed, Mar 10, 2021 at 9:50 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > On Mon, Mar 1, 2021 at 10:11 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+> > > Excerpts from Arnd Bergmann's message of February 27, 2021 7:49 pm:
+>
+> >
+> > masahiro@oscar:~/ref/linux$ echo  'void this_func_is_unused(void) {}'
+> > >>  kernel/cpu.c
+> > masahiro@oscar:~/ref/linux$ export
+> > CROSS_COMPILE=/home/masahiro/tools/powerpc-10.1.0/bin/powerpc-linux-
+> > masahiro@oscar:~/ref/linux$ make ARCH=powerpc  defconfig
+> > masahiro@oscar:~/ref/linux$ ./scripts/config  -e EXPERT
+> > masahiro@oscar:~/ref/linux$ ./scripts/config  -e LD_DEAD_CODE_DATA_ELIMINATION
+> > masahiro@oscar:~/ref/linux$
+> > ~/tools/powerpc-10.1.0/bin/powerpc-linux-nm -n  vmlinux | grep
+> > this_func
+> > c000000000170560 T .this_func_is_unused
+> > c000000001d8d560 D this_func_is_unused
+> > masahiro@oscar:~/ref/linux$ grep DEAD_CODE_ .config
+> > CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION=y
+> > CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
+> >
+> >
+> > If I remember correctly,
+> > LD_DEAD_CODE_DATA_ELIMINATION dropped unused functions
+> > when I tried it last time.
+> >
+> >
+> > I also tried arm64 with a HAVE_LD_DEAD_CODE_DATA_ELIMINATION hack.
+> > The result was the same.
+> >
+> >
+> >
+> > Am I missing something?
+>
+> It's possible that it only works in combination with CLANG_LTO now
+> because something broke. I definitely saw a reduction in kernel
+> size when both options are enabled, but did not try a simple test
+> case like you did.
+>
+> Maybe some other reference gets created that prevents the function
+> from being garbage-collected unless that other option is removed
+> as well?
 
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- .../selftests/bpf/prog_tests/snprintf.c       | 71 +++++++++++++++++++
- .../selftests/bpf/progs/test_snprintf.c       | 71 +++++++++++++++++++
- 2 files changed, 142 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-new file mode 100644
-index 000000000000..23af1dbd1eeb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <test_progs.h>
-+#include "test_snprintf.skel.h"
-+
-+static int duration;
-+
-+#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-+#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-+
-+#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-+#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-+
-+/* The third specifier, %pB, depends on compiler inlining so don't check it */
-+#define EXP_SYM_OUT  "schedule schedule+0x0/"
-+#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-+
-+/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-+#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-+#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-+
-+#define EXP_STR_OUT  "str1 longstr"
-+#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-+
-+#define EXP_OVER_OUT {'%', 'o', 'v', 'e', 'r'}
-+#define EXP_OVER_RET 10
-+
-+void test_snprintf(void)
-+{
-+	char exp_addr_out[] = EXP_ADDR_OUT;
-+	char exp_over_out[] = EXP_OVER_OUT;
-+	char exp_sym_out[]  = EXP_SYM_OUT;
-+	struct test_snprintf *skel;
-+	int err;
-+
-+	skel = test_snprintf__open_and_load();
-+	if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
-+		return;
-+
-+	err = test_snprintf__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(1);
-+
-+	ASSERT_STREQ(skel->bss->num_out, EXP_NUM_OUT, "num_out");
-+	ASSERT_EQ(skel->bss->num_ret, EXP_NUM_RET, "num_ret");
-+
-+	ASSERT_STREQ(skel->bss->ip_out, EXP_IP_OUT, "ip_out");
-+	ASSERT_EQ(skel->bss->ip_ret, EXP_IP_RET, "ip_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->sym_out, exp_sym_out,
-+			 sizeof(exp_sym_out) - 1), "sym_out");
-+	ASSERT_LT(MIN_SYM_RET, skel->bss->sym_ret, "sym_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->addr_out, exp_addr_out,
-+			 sizeof(exp_addr_out) - 1), "addr_out");
-+	ASSERT_EQ(skel->bss->addr_ret, EXP_ADDR_RET, "addr_ret");
-+
-+	ASSERT_STREQ(skel->bss->str_out, EXP_STR_OUT, "str_out");
-+	ASSERT_EQ(skel->bss->str_ret, EXP_STR_RET, "str_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->over_out, exp_over_out,
-+			 sizeof(exp_over_out)), "over_out");
-+	ASSERT_EQ(skel->bss->over_ret, EXP_OVER_RET, "over_ret");
-+
-+cleanup:
-+	test_snprintf__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-new file mode 100644
-index 000000000000..6c8aa4988e69
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define OUT_LEN 64
-+
-+/* Integer types */
-+static const char num_fmt[] = "%d %u %x %li %llu %lX";
-+#define NUMBERS -8, 9, 150, -424242, 1337, 0xDABBAD00
-+
-+char num_out[OUT_LEN] = {};
-+long num_ret = 0;
-+
-+/* IP addresses */
-+static const char ip_fmt[] = "%pi4 %pI6";
-+static const __u8 dummy_ipv4[] = {127, 0, 0, 1}; /* 127.0.0.1 */
-+static const __u32 dummy_ipv6[] = {0, 0, 0, bpf_htonl(1)}; /* ::1/128 */
-+#define IPS &dummy_ipv4, &dummy_ipv6
-+
-+char ip_out[OUT_LEN] = {};
-+long ip_ret = 0;
-+
-+/* Symbol lookup formatting */
-+static const char sym_fmt[] = "%ps %pS %pB";
-+extern const void schedule __ksym;
-+#define SYMBOLS &schedule, &schedule, &schedule
-+
-+char sym_out[OUT_LEN] = {};
-+long sym_ret = 0;
-+
-+/* Kernel pointers */
-+static const char addr_fmt[] = "%pK %px %p";
-+#define ADDRESSES 0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55
-+
-+char addr_out[OUT_LEN] = {};
-+long addr_ret = 0;
-+
-+/* Strings embedding */
-+static const char str_fmt[] = "%s %+05s";
-+static const char str1[] = "str1";
-+static const char longstr[] = "longstr";
-+#define STRINGS str1, longstr
-+
-+char str_out[OUT_LEN] = {};
-+long str_ret = 0;
-+
-+/* Overflow */
-+static const char over_fmt[] = "%%overflow";
-+
-+#define OVER_OUT_LEN 6
-+char over_out[OVER_OUT_LEN] = {};
-+long over_ret = 0;
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	num_ret  = BPF_SNPRINTF(num_out,  OUT_LEN, num_fmt,  NUMBERS);
-+	ip_ret   = BPF_SNPRINTF(ip_out,   OUT_LEN, ip_fmt,   IPS);
-+	sym_ret  = BPF_SNPRINTF(sym_out,  OUT_LEN, sym_fmt,  SYMBOLS);
-+	addr_ret = BPF_SNPRINTF(addr_out, OUT_LEN, addr_fmt, ADDRESSES);
-+	str_ret  = BPF_SNPRINTF(str_out,  OUT_LEN, str_fmt,  STRINGS);
-+	over_ret = BPF_SNPRINTF(over_out, OVER_OUT_LEN, over_fmt);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+I wish the linker had a debug flag that could let developers discover
+the decisions it made during --gc-sections as to why certain symbols
+were retained/kept or not.
 -- 
-2.30.1.766.gb4fecdf3b7-goog
-
+Thanks,
+~Nick Desaulniers
