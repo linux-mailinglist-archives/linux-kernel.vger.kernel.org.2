@@ -2,449 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23FD334930
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53233334928
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbhCJUxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:53:43 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:7081 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbhCJUxT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:53:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1615409599; x=1646945599;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=AWvF456SJS1J0zSd4aJXrpNBFWwvVhUG9BmVkFd52Q0=;
-  b=CYncQ0F2OPlYyAjQBq97qljmCkTfWJcorGP9n1Rlx58hD3rb6Zc8gyhC
-   FLOcCSEuEBOqZleJ1iNQ+0MJ8shpWUhk+bpXlpxVwisJW05O0pC8W+c4c
-   2G6xkN40navFWD2ExPYLSfmXw2w9g9BMUGdvHZ2D82ygzPrn8OIr1EMyf
-   Bg9e3MidGRh9Ce3q69gkngu1GQEUOOVXmFp5SuZbK86y2vt2XZCjU6jAU
-   i2HQsnGeFxizM7KFaKMGkvYh81Y14dSeQqWJQj2D1aXd/dXFuP5fQzWnm
-   c9/xz6g5ZfxEW+sWw8GSxCOUWKk7M7IMrxFO56Sb4+C9iBYSEb9BMAav8
-   Q==;
-IronPort-SDR: BiIaNvCNgdqqZZ8Ruqm5VNwuH2SCb74je2QV17q/7Dc5fIQoiHdVY1OjlZorSzkpHtruev3GcE
- Zb37ORrDHn7Jj+x8fdX8iVXcwxl8TKvQUk+J8nVLgNRWWW4TEA9sYzq0XWf4pZr+lNTpj+s2Y3
- wiPs0UapRwZewjt7RsnNtMCp86KpgS9MybnmbgluyDeIt4TT/N4U8fMxBrAdQs/k7/Is12oUwY
- 3pyPVZSia+xXHZPjDdjDwIBwFeOBuRcuC+V26Mq4ZDK6sNcSw99f02x9CEO5h9jGpc+HL8+1dr
- 7HI=
-X-IronPort-AV: E=Sophos;i="5.81,238,1610434800"; 
-   d="scan'208";a="109510053"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Mar 2021 13:53:18 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 10 Mar 2021 13:53:17 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 10 Mar 2021 13:53:15 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <vladimir.oltean@nxp.com>, <claudiu.manoil@nxp.com>,
-        <alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next] net: ocelot: Extend MRP
-Date:   Wed, 10 Mar 2021 21:51:40 +0100
-Message-ID: <20210310205140.1428791-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.30.1
+        id S231495AbhCJUwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:52:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231221AbhCJUw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:52:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21D1564FD3;
+        Wed, 10 Mar 2021 20:52:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615409546;
+        bh=Y4IMzhmR/i1bJAbgSwEeGG96iVso6yxIJraC9k8LMGc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cozP1j/I8aoiMuv2YDdfZMwfvQnR9fOloGYNzB1dOTWXhtvRovQu7ysheAQ+YlWPN
+         7neeYzxAhbhteWzGT0Zht986ZNKck2IXicsJ5UFndHYjByTvmIK+vhBNrL0vT79Qgt
+         4ZyeWG8M89UhsXBZ+ESnNm7YXuIjLVFj11k/519dDevNyEKTvkFLszcGDwKXA+63/2
+         tUOls9+v9yAFQOShfksjPsePPlARzMy111x0QGFgn6/oIW+ex3KktF6OStGH5SAVOJ
+         IRbEfIEb2icqkhDopx+wSwTBToSh6ONuNcYuPOeKZKNJMhfjKc2gDHavc4CE1I+iS3
+         I6MLsR4B78HPA==
+Received: by mail-ed1-f44.google.com with SMTP id x9so30134857edd.0;
+        Wed, 10 Mar 2021 12:52:26 -0800 (PST)
+X-Gm-Message-State: AOAM53323ShBKjmFcrlK6EcCRKRUKBv6SgCJw9qFDmQhTYl3cOytpofe
+        H/cqEbqwCgX/ejSNL2ApO+ltAUdp6qoCOnuMqA==
+X-Google-Smtp-Source: ABdhPJyqvdBSso9F9AtZeY6JBcCbY7CEai8YQatiruukELq+qfsHLH5PwrvEch/SixqjKv/wR0J3ksZ0hNrx+x537j4=
+X-Received: by 2002:a05:6402:c88:: with SMTP id cm8mr5316532edb.62.1615409544408;
+ Wed, 10 Mar 2021 12:52:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20210310125504.31886-1-noltari@gmail.com> <20210310125504.31886-5-noltari@gmail.com>
+ <CAL_JsqK4b+U7cVb04+moB4biGVFC4mr3VGx70KdQKitiCGdtnQ@mail.gmail.com>
+ <A2B4813E-4177-4969-9119-A40B39A36948@gmail.com> <CAL_JsqL+CwnhKY4bijnp7eGfYLwRpDUK+iFharVW=DWipsvZbg@mail.gmail.com>
+ <693A763C-14D1-47A2-A87E-2358E69DC993@gmail.com>
+In-Reply-To: <693A763C-14D1-47A2-A87E-2358E69DC993@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 10 Mar 2021 13:52:12 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqJzDj6bKwEfWzoa_m8HjP2VbZH21wYXXEUUEmLwHjrY_A@mail.gmail.com>
+Message-ID: <CAL_JsqJzDj6bKwEfWzoa_m8HjP2VbZH21wYXXEUUEmLwHjrY_A@mail.gmail.com>
+Subject: Re: [PATCH v6 04/15] dt-bindings: add BCM6328 pincontroller binding documentation
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends MRP support for Ocelot.  It allows to have multiple
-rings and when the node has the MRC role it forwards MRP Test frames in
-HW. For MRM there is no change.
+On Wed, Mar 10, 2021 at 12:10 PM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
+>
+> Hi Rob,
+>
+> > El 10 mar 2021, a las 19:45, Rob Herring <robh+dt@kernel.org> escribi=
+=C3=B3:
+> >
+> > On Wed, Mar 10, 2021 at 11:03 AM =C3=81lvaro Fern=C3=A1ndez Rojas
+> > <noltari@gmail.com> wrote:
+> >>
+> >> Hi Rob,
+> >>
+> >>> El 10 mar 2021, a las 18:45, Rob Herring <robh+dt@kernel.org> escribi=
+=C3=B3:
+> >>>
+> >>> On Wed, Mar 10, 2021 at 5:55 AM =C3=81lvaro Fern=C3=A1ndez Rojas
+> >>> <noltari@gmail.com> wrote:
+> >>>>
+> >>>> Add binding documentation for the pincontrol core found in BCM6328 S=
+oCs.
+> >>>>
+> >>>> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> >>>> Co-developed-by: Jonas Gorski <jonas.gorski@gmail.com>
+> >>>> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> >>>> ---
+> >>>> v6: add changes suggested by Rob Herring
+> >>>> v5: change Documentation to dt-bindings in commit title
+> >>>> v4: no changes
+> >>>> v3: add new gpio node
+> >>>> v2: remove interrupts
+> >>>>
+> >>>> .../pinctrl/brcm,bcm6328-pinctrl.yaml         | 174 ++++++++++++++++=
+++
+> >>>> 1 file changed, 174 insertions(+)
+> >>>> create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bc=
+m6328-pinctrl.yaml
+> >>>>
+> >>>> diff --git a/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-=
+pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinct=
+rl.yaml
+> >>>> new file mode 100644
+> >>>> index 000000000000..471f6efa1754
+> >>>> --- /dev/null
+> >>>> +++ b/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl=
+.yaml
+> >>>> @@ -0,0 +1,174 @@
+> >>>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> >>>> +%YAML 1.2
+> >>>> +---
+> >>>> +$id: http://devicetree.org/schemas/pinctrl/brcm,bcm6328-pinctrl.yam=
+l#
+> >>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >>>> +
+> >>>> +title: Broadcom BCM6328 pin controller
+> >>>> +
+> >>>> +maintainers:
+> >>>> +  - =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> >>>> +  - Jonas Gorski <jonas.gorski@gmail.com>
+> >>>> +
+> >>>> +description: |+
+> >>>> +  The pin controller node should be the child of a syscon node.
+> >>>> +
+> >>>> +  Refer to the the bindings described in
+> >>>> +  Documentation/devicetree/bindings/mfd/syscon.yaml
+> >>>> +
+> >>>> +properties:
+> >>>> +  compatible:
+> >>>> +    const: brcm,bcm6328-pinctrl
+> >>>> +
+> >>>> +  gpio:
+> >>>> +    type: object
+> >>>> +    properties:
+> >>>> +      compatible:
+> >>>> +        const: brcm,bcm6328-gpio
+> >>>> +
+> >>>> +      data:
+> >>>> +        $ref: /schemas/types.yaml#/definitions/uint32
+> >>>> +        description: |
+> >>>> +          Offset in the register map for the data register (in byte=
+s).
+> >>>> +
+> >>>> +      dirout:
+> >>>> +        $ref: /schemas/types.yaml#/definitions/uint32
+> >>>> +        description: |
+> >>>> +          Offset in the register map for the dirout register (in by=
+tes).
+> >>>> +
+> >>>> +      gpio-controller: true
+> >>>> +
+> >>>> +      "#gpio-cells":
+> >>>> +        const: 2
+> >>>> +
+> >>>> +      gpio-ranges:
+> >>>> +        maxItems: 1
+> >>>> +
+> >>>> +    required:
+> >>>> +      - gpio-controller
+> >>>> +      - gpio-ranges
+> >>>> +      - '#gpio-cells'
+> >>>> +
+> >>>> +    additionalProperties: false
+> >>>> +
+> >>>> +patternProperties:
+> >>>> +  '^.*-pins$':
+> >>>> +    if:
+> >>>> +      type: object
+> >>>> +    then:
+> >>>> +      properties:
+> >>>> +        function:
+> >>>> +          $ref: "pinmux-node.yaml#/properties/function"
+> >>>> +          enum: [ serial_led_data, serial_led_clk, inet_act_led, pc=
+ie_clkreq,
+> >>>> +                  led, ephy0_act_led, ephy1_act_led, ephy2_act_led,
+> >>>> +                  ephy3_act_led, hsspi_cs1, usb_device_port, usb_ho=
+st_port ]
+> >>>> +
+> >>>> +        pins:
+> >>>> +          $ref: "pinmux-node.yaml#/properties/pins"
+> >>>> +          enum: [ gpio6, gpio7, gpio11, gpio16, gpio17, gpio18, gpi=
+o19,
+> >>>> +                  gpio20, gpio25, gpio26, gpio27, gpio28, hsspi_cs1=
+,
+> >>>> +                  usb_port1 ]
+> >>>> +
+> >>>> +required:
+> >>>> +  - compatible
+> >>>> +  - gpio
+> >>>> +
+> >>>> +additionalProperties: false
+> >>>> +
+> >>>> +examples:
+> >>>> +  - |
+> >>>> +    gpio_cntl@10000080 {
+> >>>> +      compatible =3D "brcm,bcm6328-gpio-controller", "syscon", "sim=
+ple-mfd";
+> >>>
+> >>> You just added "brcm,bcm6328-gpio-controller", it would need to be do=
+cumented.
+> >>
+> >> I just added that because you requested me to do it =C2=AF\_(=E3=83=84=
+)_/=C2=AF
+> >
+> > I said 'syscon' by itself was not allowed, then asked about the multipl=
+e levels.
+>
+> Why not?
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/net/ethernet/mscc/ocelot.c     |   6 -
- drivers/net/ethernet/mscc/ocelot_mrp.c | 229 +++++++++++++++++--------
- include/soc/mscc/ocelot.h              |  10 +-
- 3 files changed, 158 insertions(+), 87 deletions(-)
+Because 'syscon' alone doesn't mean anything and doesn't describe what
+registers it contains. You need something that says this is the XYZ
+block in the ABC SoC.
 
-diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
-index 46e5c9136bac..9b79363db17f 100644
---- a/drivers/net/ethernet/mscc/ocelot.c
-+++ b/drivers/net/ethernet/mscc/ocelot.c
-@@ -772,12 +772,6 @@ int ocelot_xtr_poll_frame(struct ocelot *ocelot, int grp, struct sk_buff **nskb)
- 
- 	skb->protocol = eth_type_trans(skb, dev);
- 
--#if IS_ENABLED(CONFIG_BRIDGE_MRP)
--	if (skb->protocol == cpu_to_be16(ETH_P_MRP) &&
--	    cpuq & BIT(OCELOT_MRP_CPUQ))
--		skb->offload_fwd_mark = 0;
--#endif
--
- 	*nskb = skb;
- 
- 	return 0;
-diff --git a/drivers/net/ethernet/mscc/ocelot_mrp.c b/drivers/net/ethernet/mscc/ocelot_mrp.c
-index 683da320bfd8..86b36e5d2279 100644
---- a/drivers/net/ethernet/mscc/ocelot_mrp.c
-+++ b/drivers/net/ethernet/mscc/ocelot_mrp.c
-@@ -1,8 +1,5 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MIT)
- /* Microsemi Ocelot Switch driver
-- *
-- * This contains glue logic between the switchdev driver operations and the
-- * mscc_ocelot_switch_lib.
-  *
-  * Copyright (c) 2017, 2019 Microsemi Corporation
-  * Copyright 2020-2021 NXP Semiconductors
-@@ -15,13 +12,33 @@
- #include "ocelot.h"
- #include "ocelot_vcap.h"
- 
--static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int port)
-+static const u8 mrp_test_dmac[] = {0x01, 0x15, 0x4e, 0x00, 0x00, 0x01 };
-+static const u8 mrp_control_dmac[] = {0x01, 0x15, 0x4e, 0x00, 0x00, 0x02 };
-+
-+static int ocelot_mrp_find_port(struct ocelot *ocelot, struct ocelot_port *p)
-+{
-+	int i;
-+
-+	for (i = 0; i < ocelot->num_phys_ports; ++i) {
-+		struct ocelot_port *ocelot_port = ocelot->ports[i];
-+
-+		if (!ocelot_port || p == ocelot_port)
-+			continue;
-+
-+		if (ocelot_port->mrp_ring_id == p->mrp_ring_id)
-+			return i;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int id)
- {
- 	struct ocelot_vcap_block *block_vcap_is2;
- 	struct ocelot_vcap_filter *filter;
- 
- 	block_vcap_is2 = &ocelot->block[VCAP_IS2];
--	filter = ocelot_vcap_block_find_filter_by_id(block_vcap_is2, port,
-+	filter = ocelot_vcap_block_find_filter_by_id(block_vcap_is2, id,
- 						     false);
- 	if (!filter)
- 		return 0;
-@@ -29,6 +46,87 @@ static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int port)
- 	return ocelot_vcap_filter_del(ocelot, filter);
- }
- 
-+static int ocelot_mrp_redirect_add_vcap(struct ocelot *ocelot, int src_port,
-+					int dst_port)
-+{
-+	const u8 mrp_test_mask[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-+	struct ocelot_vcap_filter *filter;
-+	int err;
-+
-+	filter = kzalloc(sizeof(*filter), GFP_ATOMIC);
-+	if (!filter)
-+		return -ENOMEM;
-+
-+	filter->key_type = OCELOT_VCAP_KEY_ETYPE;
-+	filter->prio = 1;
-+	filter->id.cookie = src_port;
-+	filter->id.tc_offload = false;
-+	filter->block_id = VCAP_IS2;
-+	filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
-+	filter->ingress_port_mask = BIT(src_port);
-+	ether_addr_copy(filter->key.etype.dmac.value, mrp_test_dmac);
-+	ether_addr_copy(filter->key.etype.dmac.mask, mrp_test_mask);
-+	filter->action.mask_mode = OCELOT_MASK_MODE_REDIRECT;
-+	filter->action.port_mask = BIT(dst_port);
-+
-+	err = ocelot_vcap_filter_add(ocelot, filter, NULL);
-+	if (err)
-+		kfree(filter);
-+
-+	return err;
-+}
-+
-+static int ocelot_mrp_copy_add_vcap(struct ocelot *ocelot, int port,
-+				    int prio, int cookie)
-+{
-+	const u8 mrp_mask[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0x00 };
-+	struct ocelot_vcap_filter *filter;
-+	int err;
-+
-+	filter = kzalloc(sizeof(*filter), GFP_ATOMIC);
-+	if (!filter)
-+		return -ENOMEM;
-+
-+	filter->key_type = OCELOT_VCAP_KEY_ETYPE;
-+	filter->prio = prio;
-+	filter->id.cookie = cookie;
-+	filter->id.tc_offload = false;
-+	filter->block_id = VCAP_IS2;
-+	filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
-+	filter->ingress_port_mask = BIT(port);
-+	/* Here is possible to use control or test dmac because the mask
-+	 * doesn't cover the LSB
-+	 */
-+	ether_addr_copy(filter->key.etype.dmac.value, mrp_test_dmac);
-+	ether_addr_copy(filter->key.etype.dmac.mask, mrp_mask);
-+	filter->action.mask_mode = OCELOT_MASK_MODE_PERMIT_DENY;
-+	filter->action.port_mask = 0x0;
-+	filter->action.cpu_copy_ena = true;
-+	filter->action.cpu_qu_num = OCELOT_MRP_CPUQ;
-+
-+	err = ocelot_vcap_filter_add(ocelot, filter, NULL);
-+	if (err)
-+		kfree(filter);
-+
-+	return err;
-+}
-+
-+static void ocelot_mrp_save_mac(struct ocelot *ocelot,
-+				struct ocelot_port *port)
-+{
-+	ocelot_mact_learn(ocelot, PGID_MRP, mrp_test_dmac,
-+			  port->pvid_vlan.vid, ENTRYTYPE_LOCKED);
-+	ocelot_mact_learn(ocelot, PGID_MRP, mrp_control_dmac,
-+			  port->pvid_vlan.vid, ENTRYTYPE_LOCKED);
-+}
-+
-+static void ocelot_mrp_del_mac(struct ocelot *ocelot,
-+			       struct ocelot_port *port)
-+{
-+	ocelot_mact_forget(ocelot, mrp_test_dmac, port->pvid_vlan.vid);
-+	ocelot_mact_forget(ocelot, mrp_control_dmac, port->pvid_vlan.vid);
-+}
-+
- int ocelot_mrp_add(struct ocelot *ocelot, int port,
- 		   const struct switchdev_obj_mrp *mrp)
- {
-@@ -45,18 +143,7 @@ int ocelot_mrp_add(struct ocelot *ocelot, int port,
- 	if (mrp->p_port != dev && mrp->s_port != dev)
- 		return 0;
- 
--	if (ocelot->mrp_ring_id != 0 &&
--	    ocelot->mrp_s_port &&
--	    ocelot->mrp_p_port)
--		return -EINVAL;
--
--	if (mrp->p_port == dev)
--		ocelot->mrp_p_port = dev;
--
--	if (mrp->s_port == dev)
--		ocelot->mrp_s_port = dev;
--
--	ocelot->mrp_ring_id = mrp->ring_id;
-+	ocelot_port->mrp_ring_id = mrp->ring_id;
- 
- 	return 0;
- }
-@@ -66,34 +153,31 @@ int ocelot_mrp_del(struct ocelot *ocelot, int port,
- 		   const struct switchdev_obj_mrp *mrp)
- {
- 	struct ocelot_port *ocelot_port = ocelot->ports[port];
--	struct ocelot_port_private *priv;
--	struct net_device *dev;
-+	int i;
- 
- 	if (!ocelot_port)
- 		return -EOPNOTSUPP;
- 
--	priv = container_of(ocelot_port, struct ocelot_port_private, port);
--	dev = priv->dev;
--
--	if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
-+	if (ocelot_port->mrp_ring_id != mrp->ring_id)
- 		return 0;
- 
--	if (ocelot->mrp_ring_id == 0 &&
--	    !ocelot->mrp_s_port &&
--	    !ocelot->mrp_p_port)
--		return -EINVAL;
-+	ocelot_mrp_del_vcap(ocelot, port);
-+	ocelot_mrp_del_vcap(ocelot, port + ocelot->num_phys_ports);
- 
--	if (ocelot_mrp_del_vcap(ocelot, priv->chip_port))
--		return -EINVAL;
-+	ocelot_port->mrp_ring_id = 0;
- 
--	if (ocelot->mrp_p_port == dev)
--		ocelot->mrp_p_port = NULL;
-+	for (i = 0; i < ocelot->num_phys_ports; ++i) {
-+		ocelot_port = ocelot->ports[i];
- 
--	if (ocelot->mrp_s_port == dev)
--		ocelot->mrp_s_port = NULL;
-+		if (!ocelot_port)
-+			continue;
- 
--	ocelot->mrp_ring_id = 0;
-+		if (ocelot_port->mrp_ring_id != 0)
-+			goto out;
-+	}
- 
-+	ocelot_mrp_del_mac(ocelot, ocelot->ports[port]);
-+out:
- 	return 0;
- }
- EXPORT_SYMBOL(ocelot_mrp_del);
-@@ -102,49 +186,36 @@ int ocelot_mrp_add_ring_role(struct ocelot *ocelot, int port,
- 			     const struct switchdev_obj_ring_role_mrp *mrp)
- {
- 	struct ocelot_port *ocelot_port = ocelot->ports[port];
--	struct ocelot_vcap_filter *filter;
--	struct ocelot_port_private *priv;
--	struct net_device *dev;
-+	int dst_port;
- 	int err;
- 
- 	if (!ocelot_port)
- 		return -EOPNOTSUPP;
- 
--	priv = container_of(ocelot_port, struct ocelot_port_private, port);
--	dev = priv->dev;
--
--	if (ocelot->mrp_ring_id != mrp->ring_id)
--		return -EINVAL;
--
--	if (!mrp->sw_backup)
-+	if (mrp->ring_role != BR_MRP_RING_ROLE_MRC && !mrp->sw_backup)
- 		return -EOPNOTSUPP;
- 
--	if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
-+	if (ocelot_port->mrp_ring_id != mrp->ring_id)
- 		return 0;
- 
--	filter = kzalloc(sizeof(*filter), GFP_ATOMIC);
--	if (!filter)
--		return -ENOMEM;
-+	ocelot_mrp_save_mac(ocelot, ocelot_port);
- 
--	filter->key_type = OCELOT_VCAP_KEY_ETYPE;
--	filter->prio = 1;
--	filter->id.cookie = priv->chip_port;
--	filter->id.tc_offload = false;
--	filter->block_id = VCAP_IS2;
--	filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
--	filter->ingress_port_mask = BIT(priv->chip_port);
--	*(__be16 *)filter->key.etype.etype.value = htons(ETH_P_MRP);
--	*(__be16 *)filter->key.etype.etype.mask = htons(0xffff);
--	filter->action.mask_mode = OCELOT_MASK_MODE_PERMIT_DENY;
--	filter->action.port_mask = 0x0;
--	filter->action.cpu_copy_ena = true;
--	filter->action.cpu_qu_num = OCELOT_MRP_CPUQ;
-+	if (mrp->ring_role != BR_MRP_RING_ROLE_MRC)
-+		return ocelot_mrp_copy_add_vcap(ocelot, port, 1, port);
- 
--	err = ocelot_vcap_filter_add(ocelot, filter, NULL);
-+	dst_port = ocelot_mrp_find_port(ocelot, ocelot_port);
-+	err = ocelot_mrp_redirect_add_vcap(ocelot, port, dst_port);
- 	if (err)
--		kfree(filter);
-+		return err;
- 
--	return err;
-+	err = ocelot_mrp_copy_add_vcap(ocelot, port, 2,
-+				       port + ocelot->num_phys_ports);
-+	if (err) {
-+		ocelot_mrp_del_vcap(ocelot, port);
-+		return err;
-+	}
-+
-+	return 0;
- }
- EXPORT_SYMBOL(ocelot_mrp_add_ring_role);
- 
-@@ -152,24 +223,32 @@ int ocelot_mrp_del_ring_role(struct ocelot *ocelot, int port,
- 			     const struct switchdev_obj_ring_role_mrp *mrp)
- {
- 	struct ocelot_port *ocelot_port = ocelot->ports[port];
--	struct ocelot_port_private *priv;
--	struct net_device *dev;
-+	int i;
- 
- 	if (!ocelot_port)
- 		return -EOPNOTSUPP;
- 
--	priv = container_of(ocelot_port, struct ocelot_port_private, port);
--	dev = priv->dev;
--
--	if (ocelot->mrp_ring_id != mrp->ring_id)
--		return -EINVAL;
--
--	if (!mrp->sw_backup)
-+	if (mrp->ring_role != BR_MRP_RING_ROLE_MRC && !mrp->sw_backup)
- 		return -EOPNOTSUPP;
- 
--	if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
-+	if (ocelot_port->mrp_ring_id != mrp->ring_id)
- 		return 0;
- 
--	return ocelot_mrp_del_vcap(ocelot, priv->chip_port);
-+	ocelot_mrp_del_vcap(ocelot, port);
-+	ocelot_mrp_del_vcap(ocelot, port + ocelot->num_phys_ports);
-+
-+	for (i = 0; i < ocelot->num_phys_ports; ++i) {
-+		ocelot_port = ocelot->ports[i];
-+
-+		if (!ocelot_port)
-+			continue;
-+
-+		if (ocelot_port->mrp_ring_id != 0)
-+			goto out;
-+	}
-+
-+	ocelot_mrp_del_mac(ocelot, ocelot->ports[port]);
-+out:
-+	return 0;
- }
- EXPORT_SYMBOL(ocelot_mrp_del_ring_role);
-diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
-index 425ff29d9389..c41696d2e82b 100644
---- a/include/soc/mscc/ocelot.h
-+++ b/include/soc/mscc/ocelot.h
-@@ -51,6 +51,7 @@
-  */
- 
- /* Reserve some destination PGIDs at the end of the range:
-+ * PGID_MRP: used for not flooding MRP frames to CPU
-  * PGID_CPU: used for whitelisting certain MAC addresses, such as the addresses
-  *           of the switch port net devices, towards the CPU port module.
-  * PGID_UC: the flooding destinations for unknown unicast traffic.
-@@ -59,6 +60,7 @@
-  * PGID_MCIPV6: the flooding destinations for IPv6 multicast traffic.
-  * PGID_BC: the flooding destinations for broadcast traffic.
-  */
-+#define PGID_MRP			57
- #define PGID_CPU			58
- #define PGID_UC				59
- #define PGID_MC				60
-@@ -611,6 +613,8 @@ struct ocelot_port {
- 
- 	struct net_device		*bond;
- 	bool				lag_tx_active;
-+
-+	u16				mrp_ring_id;
- };
- 
- struct ocelot {
-@@ -679,12 +683,6 @@ struct ocelot {
- 	/* Protects the PTP clock */
- 	spinlock_t			ptp_clock_lock;
- 	struct ptp_pin_desc		ptp_pins[OCELOT_PTP_PINS_NUM];
--
--#if IS_ENABLED(CONFIG_BRIDGE_MRP)
--	u16				mrp_ring_id;
--	struct net_device		*mrp_p_port;
--	struct net_device		*mrp_s_port;
--#endif
- };
- 
- struct ocelot_policer {
--- 
-2.30.1
+> What if you have several controllers inside a syscon?
 
+You either just add properties (e.g. just add #clock-cells and it's a
+clock provider) or you have child nodes. Which one you do generally
+depends on if the providers have DT resources themselves.
+
+> The root should also have =E2=80=9Csomething" in it?
+>
+> >
+> >> What should I do to document it?
+> >> I still don=E2=80=99t get most of this .yaml stuff...
+> >>
+> >>>
+> >>>> +      reg =3D <0x10000080 0x80>;
+> >>>> +
+> >>>> +      pinctrl: pinctrl {
+> >>>> +        compatible =3D "brcm,bcm6328-pinctrl";
+> >>>> +
+> >>>> +        gpio {
+> >>>> +          compatible =3D "brcm,bcm6328-gpio";
+> >>>
+> >>> I'm still trying to understand why you need 3 levels of nodes here?
+> >>> The gpio controller contains a pin controller plus other undefined
+> >>> functions (because of 'syscon') and the pin controller contains a gpi=
+o
+> >>> controller?
+> >>
+> >> In previous versions the gpio controller was registered along with the=
+ pin controller, but @Linus requested me to register the gpio pin controlle=
+r ranges through device tree by using gpio-ranges and I decided to use this=
+ approach, which was already used by other pin controllers.
+> >> However, there aren=E2=80=99t any pinctrl drivers using gpio-regmap, s=
+o this is kind of new=E2=80=A6
+> >>
+> >>>
+> >>> I think "brcm,bcm6328-gpio-controller" and "brcm,bcm6328-pinctrl"
+> >>> should be a single node.
+> >>
+> >> I agree, but does it make sense to add gpio-ranges to a pinctrl node r=
+eferencing itself?
+> >
+> > It wouldn't be. I wasn't saying the pinctrl and gpio controller are
+> > the same node. My suggestion was combining syscon and pinctrl.
+>
+> But that wouldn=E2=80=99t be correct if there were more =E2=80=9Cthings=
+=E2=80=9D inside the syscon, right?
+
+Right.
+
+> >> Something like:
+> >> syscon {
+> >
+> > Again with the syscon. If pinctrl and GPIO are the only functions
+> > within this h/w block, then this is not a syscon. You are just abusing
+> > that having 'syscon' compatible means you get a regmap created
+> > automagically for you. Nothing here looks like a 'system controller'
+> > to me. A 'system controller' is a random collection of register bits
+> > with functions that don't fit anywhere else.
+>
+> pinctrl and GPIO aren=E2=80=99t the only functions within this HW block.
+> Maybe I didn=E2=80=99t document/code it properly, but I=E2=80=99m sure I=
+=E2=80=99m not abusing what a system controller is.
+
+Okay, that's the detail missing from this patch.
+
+> Please, take a look at http://www.datashed.science/misc/bcm/gpl/broadcom-=
+sdk-416L05/shared/opensource/include/bcm963xx/6328_map_part.h:
+> typedef struct GpioControl {
+>     uint32      GPIODirHi;                  /* 0 */
+>     uint32      GPIODir;                    /* 4 */
+>     uint32      GPIOioHi;                   /* 8 */
+>     uint32      GPIOio;                     /* C */
+>     uint32      unused0;                    /* 10 */
+>     uint32      SpiSlaveCfg;                /* 14 */
+>     uint32      GPIOMode;                   /* 18 */
+>     uint64      PinMuxSel;                  /* 1C */
+>     uint32      PinMuxSelOther;             /* 24 */
+>     uint32      TestControl;                /* 28 */
+>     uint32      unused2;                    /* 2C */
+>     uint32      RoboSWLEDControl;           /* 30 */
+>     uint32      RoboSWLEDLSR;               /* 34 */
+>     uint32      unused3;                    /* 38 */
+>     uint32      RoboswEphyCtrl;             /* 3C */
+>     uint32      RoboswSwitchCtrl;           /* 40 */
+>     uint32      RegFileTmCtl;               /* 44 */
+>     uint32      RingOscCtrl0;               /* 48 */
+>     uint32      RingOscCtrl1;               /* 4C */
+>     uint32      unused4[6];                 /* 50 - 64 */
+>     uint32      DieRevID;                   /* 68 */
+>     uint32      unused5;                    /* 6c */
+>     uint32      DiagSelControl;             /* 70 */
+>     uint32      DiagReadBack;               /* 74 */
+>     uint32      DiagReadBackHi;             /* 78 */
+>     uint32      DiagMiscControl;            /* 7c */
+> } GpioControl;
+>
+> So we=E2=80=99re using GPIODirHi, GPIODir, GPIOioHi and GPIOio registers =
+for GPIO regmap driver.
+> And we=E2=80=99re using GPIOMode, PinMuxSel (u64 -> x2 u32), PinMuxSelOth=
+er for pinctrl driver.
+> And this is for BCM6328, but some of the other SoCs are even more scatter=
+ed.
+
+So based on this I'd do something like this:
+
+syscon {
+  reg =3D <base 0x80>;
+  ranges =3D <0 base 0x80>;
+  pinctrl@18 {
+    reg =3D <0x18 0x10>;
+    foo-pins {};
+  gpio@0 {
+    reg =3D <0x0 0x10>;
+  };
+};
+
+If things are more scattered within gpio or pinctrl, then maybe you
+need multiple reg entries. Whether the OS uses 'reg' and mmio or a
+regmap from the syscon is up to you. That's independent of the
+binding.
+
+> >>        pinctrl: pinctrl {
+> >>                compatible =E2=80=A6
+> >>
+> >>                gpio-controller;
+> >>                gpio-ranges =3D <&pinctrl 0 0 32>;
+> >>                #gpio-cells =3D <2>;
+> >
+> > I was assuming you have multiple GPIO controllers within 1 pinctlr?
+> > The pinctrl and gpio could be a single node like above if there's only
+> > 1 GPIO controller. But I'm still somewhat guessing what the h/w looks
+> > like because I have to go searching thru the driver to decipher.
+> > Please describe the h/w in the binding.
+>
+> GPIO dirout and data rely on 2x u32 registers or a single u64 register.
+> This is can be either be implemented as a single GPIO controller, or as 2=
+ separate GPIO controllers.
+> However, since I=E2=80=99m overriding reg_mask_xlate with bcm63xx_reg_mas=
+k_xlate I can register it as a single GPIO controller, which makes more sen=
+se to me.
+
+I think 1 makes more sense.
+
+Rob
