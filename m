@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F97B333FB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20040333FB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhCJNzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:55:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55996 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231790AbhCJNy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:54:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615384498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ynb5w72NY+rJnL7ZUNtb0DAziwv6ypIpu01j5U3oDF0=;
-        b=dtf9xoa8uw+8wPnmhFPI4ktZchNiqWASPNhgFUR1Ci6SA0fkRACyCFyk6Ct5InbOsphh6n
-        Umh4jvgMUcVOyU9qJTE1HxlERdH1YllpJEmJ+NVGVgq0T0QMZSRIhOMbn3l0jL/KqhgDsk
-        n2yeETOVKtHmQyZnOreOVwE5pMiZ9k4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 69530AEE5;
-        Wed, 10 Mar 2021 13:54:58 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 14:54:57 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
-Message-ID: <YEjPsfAApvVmO4Jb@dhcp22.suse.cz>
-References: <20210308202047.1903802-1-minchan@kernel.org>
- <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
- <20210310132623.GO3479805@casper.infradead.org>
+        id S232858AbhCJNzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:55:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232925AbhCJNzi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:55:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C50C061760;
+        Wed, 10 Mar 2021 05:55:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ASkeCYNO3dhrSyJuXDJUBfebpEQzrlHM2DpTFAkPLVI=; b=Tt7ayNXNWXK2bTVKrYTcEgnkh+
+        f1XcrJPHapkQa44CIKSbezQvxwWp57snh9ZQwPdTMAk8AB48/hoKyAYsV3ZU4LGI3DP+I6nECBWbe
+        mY8h829FSnSMNv/PCAsrzVymOeG/qWx13tFKzswafFltkt9XHyX7vptRhmgxV+4sHHs8TT+u96GSL
+        4nlKgrcNvpOFZWyOF3okP7Uk5+XNkqMtBb7NgFccqDeLTOWWgoQL+VFa7b1Ix9secQvnL/Gs/rzb7
+        Aq26qRzbQFKc31DbCj6H7qdLZAgtko2Pd9+6RYYvXLu4N3eSeb9hz4Wf+6HZD9JmGcZZiCUZ26U0N
+        zLJxPIow==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJzJD-003a9C-NN; Wed, 10 Mar 2021 13:55:32 +0000
+Date:   Wed, 10 Mar 2021 13:55:31 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        darrick.wong@oracle.com, dan.j.williams@intel.com, jack@suse.cz,
+        viro@zeniv.linux.org.uk, Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, david@fromorbit.com, hch@lst.de,
+        rgoldwyn@suse.de
+Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
+Message-ID: <20210310135531.GP3479805@casper.infradead.org>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com>
+ <20210310130227.GN3479805@casper.infradead.org>
+ <CAEg-Je-F6ybPPV22-hq9=cuUCA7cw2xAA7Y-97tKhYUX1+fDwg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310132623.GO3479805@casper.infradead.org>
+In-Reply-To: <CAEg-Je-F6ybPPV22-hq9=cuUCA7cw2xAA7Y-97tKhYUX1+fDwg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10-03-21 13:26:23, Matthew Wilcox wrote:
-> On Tue, Mar 09, 2021 at 10:32:51AM +0100, Michal Hocko wrote:
-> > Apart from the above, do we have to warn for something that is a
-> > debugging aid? A similar concern wrt dump_page which uses pr_warn and
-> > page owner is using even pr_alert.
-> > Would it make sense to add a loglevel parameter both into __dump_page
-> > and dump_page_owner?
+On Wed, Mar 10, 2021 at 08:36:06AM -0500, Neal Gompa wrote:
+> On Wed, Mar 10, 2021 at 8:02 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Wed, Mar 10, 2021 at 07:30:41AM -0500, Neal Gompa wrote:
+> > > Forgive my ignorance, but is there a reason why this isn't wired up to
+> > > Btrfs at the same time? It seems weird to me that adding a feature
+> >
+> > btrfs doesn't support DAX.  only ext2, ext4, XFS and FUSE have DAX support.
+> >
+> > If you think about it, btrfs and DAX are diametrically opposite things.
+> > DAX is about giving raw access to the hardware.  btrfs is about offering
+> > extra value (RAID, checksums, ...), none of which can be done if the
+> > filesystem isn't in the read/write path.
+> >
+> > That's why there's no DAX support in btrfs.  If you want DAX, you have
+> > to give up all the features you like in btrfs.  So you may as well use
+> > a different filesystem.
 > 
-> No.  What would make sense is turning __dump_page() inside-out.
-> Something like printk("%pP\n");
-> 
-> In lib/vsprintf.c, there's a big switch statement in the function
-> pointer() that handles printing things like IPv6 addresses, dentries,
-> and function symbols.
-> 
-> Then we can do whatever we want around the new %pP, including choosing
-> the log level, adding additional information, choosing to dump the page
-> to a sysfs file, etc, etc.
+> So does that mean that DAX is incompatible with those filesystems when
+> layered on DM (e.g. through LVM)?
 
-Hmm, __dump_page has grown quite some heavy lifting over time and I am
-not sure this is a good candidate to put into printk proper (e.g. is it
-safe/reasonable to call get_kernel_nofault from printk - aka arbitrary
-context)?.
+Yes.  It might be possible to work through RAID-0 or read-only through
+RAID-1, but I'm not sure anybody's bothered to do that work.
 
-But you've got a point that such a printk format wouldn't need to be 1:1
-with the existing __dump_page. There is quite a lot to infer from page
-count, map count, flags, page type already. Then a question would be
-what is an actual advantage of %pP over dump_page_info(loglvl, p). One I
-can see is that %pP would allow to dump the state into a string and so
-it would be more versatile but I am not aware of a usecase for that
-(maybe tracing?).
--- 
-Michal Hocko
-SUSE Labs
+> Also, based on what you're saying, that means that DAX'd resources
+> would not be able to use reflinks on XFS, right? That'd put it in
+> similar territory as swap files on Btrfs, I would think.
+
+You can use DAX with reflinks because the CPU can do read-only mmaps.
+On a write fault, we break the reflink, copy the data and put in a
+writable PTE.
