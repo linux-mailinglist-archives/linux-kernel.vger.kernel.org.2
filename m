@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85792334048
+	by mail.lfdr.de (Postfix) with ESMTP id D2025334049
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhCJOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:25:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        id S233042AbhCJOZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231591AbhCJOY4 (ORCPT
+        with ESMTP id S232746AbhCJOY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:24:56 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611BBC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:24:56 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id o38so11501994pgm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:24:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ia4RFpicq2fRuAPgXhAozb2Coa1dHuagLeIfRQj8pNQ=;
-        b=MVAAnh5akGxaYjBBsx/wd8dd5mvwQkezHzzvAcU0d3DczYATYUbjWj9CxafssTwVdh
-         REID571/jUKlKRb3gGXQIlmV97PHAQyskUXSEstmL5xmEQibOXsFipYb2XnIpvfU/T9o
-         tw83tRACD2PPz3STkY9W0iyfEEMWvShwcUJhhroXzZPJa4iu4/uuJGifbuCZ1GdvUO/3
-         qAEqnVpVVKcnT+Jgqa6JsFXIGmQzsk3jlQZSKNaw+CgA2tdZkeXuIGPyeTntOeYHuNQN
-         5u99ovhof1usctC3jN4IBI++x0C5EDQWVXrvs09hQp3zP9acru0Y93MNL+ipZ8lBvpmm
-         NiLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ia4RFpicq2fRuAPgXhAozb2Coa1dHuagLeIfRQj8pNQ=;
-        b=YWoMOJPEiAlbcEKlzpg3Vu2v3VTOVIJYxXPzJnIFlOa1XQf4V++yrgT/1MyhuUKGM5
-         3zKiXwvjazJCsbeXCY49U8IIEM9KuSoS7c59MS3QDdlw/lswwHezwvHvidSQJamx/IZr
-         QVmchsXG5X1jdbyBSrG9W3Ar5RP8jv3oIcsMj4pmxsrbuuOzCohyVGyyP9YAVFcDiz/o
-         vssyQ5gjFfatOC7E9jZ1h6bVzse+GxgYFD18v96ItGZBYMyKbWxIGvcWp5uX27IrhMQc
-         QGr5i84pIY1nro7Wl1fT4FhN7NOXjA6Srngwb8vYlS4ypU1Uw6K0SYH39PAAec7HpECp
-         FkRg==
-X-Gm-Message-State: AOAM530shP7JtQMXNxmR9wyOevbUrT0ev/0YCiTEwlMjZ2pIGcfluXE9
-        rPU69qjsTl79w7B7XZt7E57KqA==
-X-Google-Smtp-Source: ABdhPJx/UEee10lhYSYD3qYfveLX/q/dS1C6S7LjHVDoMUNs4sdEMcr8xQaGtWjRqety3E84OglSew==
-X-Received: by 2002:a63:5b5d:: with SMTP id l29mr2978518pgm.272.1615386295912;
-        Wed, 10 Mar 2021 06:24:55 -0800 (PST)
-Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
-        by smtp.gmail.com with UTF8SMTPSA id j3sm3099058pjf.36.2021.03.10.06.24.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 06:24:55 -0800 (PST)
-Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor vfio_pci
- drivers
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     alex.williamson@redhat.com, cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
-        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
-        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, cjia@nvidia.com,
-        yishaih@nvidia.com, mjrosato@linux.ibm.com, hch@lst.de
-References: <20210309083357.65467-1-mgurtovoy@nvidia.com>
- <20210309083357.65467-9-mgurtovoy@nvidia.com>
- <19e73e58-c7a9-03ce-65a7-50f37d52ca15@ozlabs.ru>
- <8941cf42-0c40-776e-6c02-9227146d3d66@nvidia.com>
- <20210310130246.GW2356281@nvidia.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <3b772357-7448-5fa7-9ecc-c13c08df95c3@ozlabs.ru>
-Date:   Thu, 11 Mar 2021 01:24:47 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        Wed, 10 Mar 2021 09:24:57 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98149C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:24:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=plOvh9vyCxI+W79dsawsRUqmt5nDXxIS3jse/b6xlb8=; b=P12Z1QOJ7Ys0pmztT9aYj3qM0T
+        eeGReMBtFtdOaTIWJHIpmZN7wBuQ4L9uY02X4f9WZXO9WBMn1gsfEgg8qD0G0kgxBtF5LvLGu3C1I
+        JTtMQdQB3zqjSyrsXkHZcn2pDrSpsqInvZ3l+iaJrpz7NmjXN9BBvT0BPMY3fTBn8PFtOpqFXYCbq
+        AndpkJ/1F1qJ+sFNPrYod4TgJSvtTheoWby1wR17zcZ17UI/kir8jrYGvaHMDmAlNOFi9WzDimASd
+        94EbYe/cni19rSsGrmHwKuQ0eTAvKQvlJ3kclzDVKGhtSkoIicjKswgpPNYuLhpXoDMCVco5XNJnd
+        NUnbbLBg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJzlY-003gZB-F1; Wed, 10 Mar 2021 14:24:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4FB063011F0;
+        Wed, 10 Mar 2021 15:24:47 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 43A9C21ADDC04; Wed, 10 Mar 2021 15:24:47 +0100 (CET)
+Date:   Wed, 10 Mar 2021 15:24:47 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: The killing of ideal_nops[]
+Message-ID: <YEjWryS/9uB2y62O@hirez.programming.kicks-ass.net>
+References: <YEepKVHc5kkDybu6@hirez.programming.kicks-ass.net>
+ <20210309120519.7c6bbb97@gandalf.local.home>
+ <YEfnnFUbizbJUQig@hirez.programming.kicks-ass.net>
+ <362BD2A4-016D-4F6B-8974-92C84DC0DDB4@zytor.com>
+ <YEiN+/Zp4uE/ISWD@hirez.programming.kicks-ass.net>
+ <YEiS8Xws0tTFmMJp@hirez.programming.kicks-ass.net>
+ <YEiZXtB74cnsLTx/@hirez.programming.kicks-ass.net>
+ <YEid+HQnqgnt3iyY@hirez.programming.kicks-ass.net>
+ <20210310091324.0c346d5f@oasis.local.home>
 MIME-Version: 1.0
-In-Reply-To: <20210310130246.GW2356281@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310091324.0c346d5f@oasis.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/03/2021 00:02, Jason Gunthorpe wrote:
-> On Wed, Mar 10, 2021 at 02:57:57PM +0200, Max Gurtovoy wrote:
+On Wed, Mar 10, 2021 at 09:13:24AM -0500, Steven Rostedt wrote:
+> On Wed, 10 Mar 2021 11:22:48 +0100
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
->>>> +    .err_handler        = &vfio_pci_core_err_handlers,
->>>> +};
->>>> +
->>>> +#ifdef CONFIG_VFIO_PCI_DRIVER_COMPAT
->>>> +struct pci_driver *get_nvlink2gpu_vfio_pci_driver(struct pci_dev *pdev)
->>>> +{
->>>> +    if (pci_match_id(nvlink2gpu_vfio_pci_driver.id_table, pdev))
->>>> +        return &nvlink2gpu_vfio_pci_driver;
->>>
->>>
->>> Why do we need matching PCI ids here instead of looking at the FDT which
->>> will work better?
->>
->> what is FDT ? any is it better to use it instead of match_id ?
+> > After this FEATURE_NOPL is unused except for required-features for
+> > x86_64. FEATURE_K8 is only used for PTI and FEATURE_K7 is unused.
+> > 
+> > AFAICT this negatively affects lots of 32bit (DONTCARE) and 32bit on
+> > 64bit CPUs (CARELESS) and early AMD (K8) which is from 2003 and almost
+> > 2 decades old by now (SHRUG).
+> > 
+> > Everything x86_64 since AMD K10 (2007) was using p6_nops.
+> > 
+> > And per FEATURE_NOPL being required for x86_64, all those CPUs can use
+> > p6_nops. So stop caring about NOPs, simplify things and get on with life
+> > :-)
 > 
-> This is emulating the device_driver match for the pci_driver.
+> Before ripping out all the ideal_nop logic, I wonder if we should just
+> force the nops you want now (that is, don't change the selected
+> ideal_nops, just "pretend" that the CPU wants p6_nops), and see if anyone
+> complains. After a few releases, if there's no complaints, then we can
+> rip out the ideal_nop logic.
 
+Nah, just rip the entire thing out. You should be happy about
+deterministic NOPs :-)
 
-No it is not, it is a device tree info which lets to skip the linux PCI 
-discovery part (the firmware does it anyway) but it tells nothing about 
-which drivers to bind.
-
-
-> I don't think we can combine FDT matching with pci_driver, can we?
-
-It is a c function calling another c function, all within vfio-pci, this 
-is not called by the generic pci code.
-
-
-
--- 
-Alexey
+NOP encoding is not something CPUs should differentiate on, that's just
+bollocks.
