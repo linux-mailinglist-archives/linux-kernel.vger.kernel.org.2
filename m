@@ -2,41 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFCB33494E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188E2334953
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhCJVAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:00:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32828 "EHLO mail.kernel.org"
+        id S232695AbhCJVAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:00:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232063AbhCJVAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:00:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B011F65048;
+        id S231911AbhCJVAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:00:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1DA8B64FD0;
         Wed, 10 Mar 2021 21:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1615410013;
-        bh=LMM8v+ULduN1OG4BQtOCkDh+guUiIu1XijrRnCwdFzo=;
+        bh=HtJPighkxzhTi5SUiW2p+tXG2qjnfpO48Oh0cNOkQc4=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jaWbV1bh5N02V4B1flzRJpWpWcFwOEUftEIQg+tW2axocbVzf2iVEHeGrP6VD8jMC
-         QMjFe5mCTmhtUEV8sKYeNUdPiTvjp/3rgDEXaZxFz74bmsWiSrRqoUg+WLfp1Q0o37
-         0Vwj1ikRUgkGzAP1Rj45bKtRUeo1xJiBYfBoFfLCP5eKOvEQyvVEJoXcnWwd8q1RTs
-         GviiQQA5lyIIzAfZaR91rCIVI2wPpiWRvdjlHG77ucq8beHb3K6nZZsk907P0bcZ5e
-         SBHDDTZDDM6g4YixUtBe15zr5VH91uMlKAvYu+bhs9iBGcWJkVBoVpmHYwkOoq5wgd
-         iRwlgOsM0IQAw==
+        b=MF8A6tRfTj6Hj31AionaUju3jtjCrbTPa/Co5yc5ma+CppYq9Q4HuRVBU356fTEbl
+         tn+9jrz1CWFTjwif3OlWyI24qdJ2nRFD46oPUEubUuCiLJSjmEH8Gm3W4sfyLIWzc8
+         ZQVkv2AonfgxOj2DaLAZasg+F70zZD+Hd3mKGqsWJ5kiz6D1kpgN2M5hpORuEdNoYR
+         vVhhW0hOFnqq1+BMmYciR795HU4isrcRT6nrjPoDcmeGdh7D4ygwPhGqW4nFz4A40I
+         l8hK05dHryz9uHO+qyrHA77k7w5WjLAms9V43LGjnCvVDB8q78Wz5jrnJK7B0oa5RN
+         H0D5MyN+twm/Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A4E74609D2;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0DD46609B8;
         Wed, 10 Mar 2021 21:00:13 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] isdn: mISDN: remove unneeded variable 'ret'
+Subject: Re: [PATCH] net: ipv6: route.c:fix indentation
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161541001367.4631.14674755959607622064.git-patchwork-notify@kernel.org>
+Message-Id: <161541001305.4631.16788593573945667819.git-patchwork-notify@kernel.org>
 Date:   Wed, 10 Mar 2021 21:00:13 +0000
-References: <1615366384-12225-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1615366384-12225-1-git-send-email-yang.lee@linux.alibaba.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     isdn@linux-pingi.de, netdev@vger.kernel.org,
+References: <20210310203314.wk6zjxyo6ax5chbd@kewl-virtual-machine>
+In-Reply-To: <20210310203314.wk6zjxyo6ax5chbd@kewl-virtual-machine>
+To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, bpf@vger.kernel.org,
+        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, bkkarthik@pesu.pes.edu, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -46,19 +50,18 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 10 Mar 2021 16:53:04 +0800 you wrote:
-> Fix the following coccicheck warning:
-> ./drivers/isdn/mISDN/dsp_core.c:956:6-9: Unneeded variable: "err".
-> Return "0" on line 1001
+On Thu, 11 Mar 2021 02:03:14 +0530 you wrote:
+> The series of space has been replaced by tab space
+> wherever required.
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> 
-> [...]
+> Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+> ---
+>  net/ipv6/route.c | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
 
 Here is the summary with links:
-  - isdn: mISDN: remove unneeded variable 'ret'
-    https://git.kernel.org/netdev/net-next/c/762c1adb1c15
+  - net: ipv6: route.c:fix indentation
+    https://git.kernel.org/netdev/net-next/c/13fdb9403d9e
 
 You are awesome, thank you!
 --
