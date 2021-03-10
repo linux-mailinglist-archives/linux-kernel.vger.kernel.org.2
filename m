@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3D8333CE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4720F333CE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhCJMt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:49:29 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:33770 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhCJMtX (ORCPT
+        id S231993AbhCJMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:52:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhCJMwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:49:23 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D88C0F3;
-        Wed, 10 Mar 2021 13:49:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615380561;
-        bh=PfudLm8IB8UcKwqnvgrPKNV/7E2BOCVn2FSW4I+2Yy0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iqesv+DcwzHjhsCvShM24On6+r7/w6NtllyuF0Ay6aKG1vYizwGwkk+LUX0rhwLx4
-         iMAhNqlxcTegyD2AJnar0T24BQbyL550uq4r+BXh6Ubpf0TRKHt45iHsCWn7UyPVeB
-         vQu08wullLmN9CHRB1wEYiaFSQCK8QgPAfcEBsoc=
-Date:   Wed, 10 Mar 2021 14:48:47 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 3/3] media: i2c: imx219: Balance runtime PM use-count in
- resume callback
-Message-ID: <YEjAL22jNXvpe23W@pendragon.ideasonboard.com>
-References: <20210310122014.28353-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210310122014.28353-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Wed, 10 Mar 2021 07:52:16 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB739C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:52:16 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id x29so11350681pgk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:52:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/BK42rEfZDnxMm7tn7QJoRMRkMDyVR3i3bNbcPekdIg=;
+        b=h3fEZUkobZr1jCHE1WazBNRG4q6cvgfOa2N+PfxLN8F7RZJkzgxy8/c570n7v1gsgE
+         wSVCeFTC/83l9s7h3AlU7OrKC5RGtvsuxScUqY6IJhXjcghZQ8EL07clpakh4MTYsG7o
+         6KoC27yoGboGzxYaB+5W8my72cxKXJZYwPWTh6e8c4ZfV+hRQj3DRwvP3l72LQhNw298
+         sOkfAxTRzwbtQwEezjar0b8cKncz7NqR60/GEO5Od0xr52s3xXhE73SXrE4cXBPxJIlS
+         lmmdDl8v0ikLdUjBpWCTlgfWxaqXztaooul2c927TtNy00/RKZdi/4PbDlNVnuRV13n1
+         rroQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/BK42rEfZDnxMm7tn7QJoRMRkMDyVR3i3bNbcPekdIg=;
+        b=ThWfts9PhBHey9dOYlCjETDwRs6txslNk4taATsm27nJpeuwJEGonCfT+CauK2uAgB
+         srnLqYUTK1a/Av1Gp3QzAk4ayosC87ZE0QuUYsjOnu8R7vafUH02JczeylxlcBvSNVQg
+         p8KVFg/6TYhYtTG5hSUhWuVltEbKejcJ2Cg8p+Q/lPcuw1KKgIgxBYEbUdymELj+JLUr
+         s0wMaC72QFJKPFcHsROu+Gd1YtYu5l1tHIVoWNlA6woxNi6sqglWufAeKFFWtIxs02fz
+         H+HK93BLGFM7n/fJ6lA0poR2Gn90GOK7MKwMXZ0R6cpQSRE86/HKhlPJJ1BouYlR3NMF
+         JyMA==
+X-Gm-Message-State: AOAM530JBVps0mgSKWk85jxolCtJ58SJGQbXqJcIR7ottvrST3gJP8lW
+        TSA/u+PaVG+9wBoHYFMyRWUdXrLqHOeyh5CDvksG4A==
+X-Google-Smtp-Source: ABdhPJz6Al6cQ9o2Jkic0AM6aT+uI8HXaIO3FGRdEqDpDV6bZgYd+QRynVKdHFUIi1JAN2QCB/oYogOY84k0cBj6NyQ=
+X-Received: by 2002:a63:455d:: with SMTP id u29mr2647321pgk.286.1615380735994;
+ Wed, 10 Mar 2021 04:52:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210310122014.28353-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210309214301.678739-1-keescook@chromium.org> <20210309214301.678739-4-keescook@chromium.org>
+In-Reply-To: <20210309214301.678739-4-keescook@chromium.org>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 10 Mar 2021 13:52:04 +0100
+Message-ID: <CAAeHK+xog8-DP1o=1qqKgSP7Hii2Yjah6oyowNE3zSNVW5pRSw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/7] init_on_alloc: Unpessimize default-on builds
+To:     Kees Cook <keescook@chromium.org>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
-
-Thank you for the patch.
-
-On Wed, Mar 10, 2021 at 12:20:14PM +0000, Lad Prabhakar wrote:
-> The runtime PM use-count gets incremented in imx219_set_stream() call
-> when streaming is started this needs to be balanced by calling
-> pm_runtime_put() upon failure to start stream in resume callback.
-> 
-> Fixes: 1283b3b8f82b9 ("media: i2c: Add driver for Sony IMX219 sensor")
-> Reported-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Tue, Mar 9, 2021 at 10:43 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> Right now, the state of CONFIG_INIT_ON_ALLOC_DEFAULT_ON (and
+> ...ON_FREE...) did not change the assembly ordering of the static branch
+> tests. Use the new jump_label macro to check CONFIG settings to default
+> to the "expected" state, unpessimizes the resulting assembly code.
+>
+> Reviewed-by: Alexander Potapenko <glider@google.com>
+> Link: https://lore.kernel.org/lkml/CAG_fn=X0DVwqLaHJTO6Jw7TGcMSm77GKHinrd0m_6y0SzWOrFA@mail.gmail.com/
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  drivers/media/i2c/imx219.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
-> index 87c021de1460..afffc85cd265 100644
-> --- a/drivers/media/i2c/imx219.c
-> +++ b/drivers/media/i2c/imx219.c
-> @@ -1184,6 +1184,7 @@ static int __maybe_unused imx219_resume(struct device *dev)
+>  include/linux/mm.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index bf341a9bfe46..2ccd856ac0d1 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2874,7 +2874,8 @@ static inline void kernel_unpoison_pages(struct page *page, int numpages) { }
+>  DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, init_on_alloc);
+>  static inline bool want_init_on_alloc(gfp_t flags)
 >  {
->  	struct v4l2_subdev *sd = dev_get_drvdata(dev);
->  	struct imx219 *imx219 = to_imx219(sd);
-> +	struct i2c_client *client;
->  	int ret;
->  
->  	mutex_lock(&imx219->mutex);
-> @@ -1197,7 +1198,9 @@ static int __maybe_unused imx219_resume(struct device *dev)
->  	return 0;
->  
->  error:
-> +	client = v4l2_get_subdevdata(&imx219->sd);
->  	imx219_stop_streaming(imx219);
-> +	pm_runtime_put(&client->dev);
->  	imx219->streaming = false;
->  	__v4l2_ctrl_grab(imx219->vflip, false);
->  	__v4l2_ctrl_grab(imx219->hflip, false);
+> -       if (static_branch_unlikely(&init_on_alloc))
+> +       if (static_branch_maybe(CONFIG_INIT_ON_ALLOC_DEFAULT_ON,
+> +                               &init_on_alloc))
+>                 return true;
+>         return flags & __GFP_ZERO;
+>  }
+> @@ -2882,7 +2883,8 @@ static inline bool want_init_on_alloc(gfp_t flags)
+>  DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_FREE_DEFAULT_ON, init_on_free);
+>  static inline bool want_init_on_free(void)
+>  {
+> -       return static_branch_unlikely(&init_on_free);
+> +       return static_branch_maybe(CONFIG_INIT_ON_FREE_DEFAULT_ON,
+> +                                  &init_on_free);
+>  }
+>
+>  extern bool _debug_pagealloc_enabled_early;
 
-Similarly to the __v4l2_ctrl_grab(), it could be better to move
-pm_runtime_put() to imx219_stop_streaming().
-
--- 
-Regards,
-
-Laurent Pinchart
+Should we also update slab_want_init_on_alloc() and slab_want_init_on_free()?
