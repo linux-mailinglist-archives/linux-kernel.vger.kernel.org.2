@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F244333957
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E5833395B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhCJKA2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 05:00:28 -0500
-Received: from mout.kundenserver.de ([212.227.17.13]:43553 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhCJKAZ (ORCPT
+        id S232085AbhCJKCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:02:07 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:45271 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231897AbhCJKBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:00:25 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MY6TD-1lEmqH2peH-00YUhe for <linux-kernel@vger.kernel.org>; Wed, 10 Mar
- 2021 11:00:20 +0100
-Received: by mail-oi1-f177.google.com with SMTP id x78so18494319oix.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:00:20 -0800 (PST)
-X-Gm-Message-State: AOAM5310p15iC8s1AIoxkq9WmZCpOk9Q7+5dDn2tEmYVyhSpfbJuP9zA
-        IHosXvBaqVkDL4jrr7zvxrKFrSPSV+CNYRcCXQA=
-X-Google-Smtp-Source: ABdhPJz57LKzxKPOX8uFg4l8cQDX68aMXQSUFxgEEkBEVQzSWLTS5wn+SJ00u096OqMsz2UiKEGrsCkrnzqbLH7kTeM=
-X-Received: by 2002:aca:bf44:: with SMTP id p65mr1764631oif.11.1615370419432;
- Wed, 10 Mar 2021 02:00:19 -0800 (PST)
+        Wed, 10 Mar 2021 05:01:46 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 098A25C0143;
+        Wed, 10 Mar 2021 05:01:46 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 10 Mar 2021 05:01:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ieduxa
+        tBKUrPjGdVkc7/0qqVIY7beKmebjG/5/jERa8=; b=dO0JUpSGJXBbbbKeyFDNJO
+        OF49Q3BEsMvY1T4Mg+W7Z9nRdIZITv641ZagxW/sCg2toMIWCOnlnLRwQK7eAMqJ
+        w8ngeTvXxGpaRqClzFBIs2XypUISFVyFaAMC7+TGAsEhtuDduofVgUSW25jme9ml
+        FX1CbbaQSKeuFIt2Qj7a5MxYLTugfGBbAc6yceF49NeKbw0EOI/aXOewU1aNWauk
+        SwENz3P2K37PXTsC4y5U9AscTAEP00VCAuRuoCCLe9t1y/Nu46HTViNpICJPH6gX
+        kPsK7YPUGlsdL7Mr4IfcPxjkgSOnVPYdVCzqy0GcyeXczUdnGul5XJ1ISLDVocSg
+        ==
+X-ME-Sender: <xms:CZlIYNBSo4kJXtCD7T364ycTyGY8OskY72VOiN7oEBQ5Za-SlkcRZw>
+    <xme:CZlIYLg-p1YvLiJmUTzzXULVpFIo-CPAA_KxbpZ73M5MHNxGVceQsrf5TwwZNUdM3
+    xzxC0q1Arbnc0w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddukedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
+    teenucfkphepkeegrddvvdelrdduheefrdeggeenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:CZlIYIlcj4DkGkc6FcXbn2gpk8VMqS5-H7X1fObxFuyV67Py0Fr66w>
+    <xmx:CZlIYHzoXOuO-YbWpF7m4HDBdB8uvc3qh28mYJAsLgnoxm94VAdTRQ>
+    <xmx:CZlIYCQpAsZ1AOdRXAEsngBf9Uca9sxDOhbeD3FFXPFFuDebcym5pQ>
+    <xmx:CplIYFIHosTDgYzxS01ec2weHFNKcKOrr1zmXpDBpImU5i9O0X1F2Q>
+Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BF4411080064;
+        Wed, 10 Mar 2021 05:01:44 -0500 (EST)
+Date:   Wed, 10 Mar 2021 12:01:41 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] netdevsim: fib: Remove redundant code
+Message-ID: <YEiZBYmEu2xK8V7i@shredder.lan>
+References: <1615343727-96723-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-References: <f08ef2b6f339ba19987cfef4307a4dd26b2faf97.1614933479.git.christophe.leroy@csgroup.eu>
- <CAK8P3a2b+u+8smkKWB-V2Non+nnZmNG4dNi6cGpM8weYuY5j6A@mail.gmail.com>
- <5811950d-ef14-d416-35e6-d694ef920a7d@csgroup.eu> <CAK8P3a34cnCk4=Xyxvib57JLN-ck4T0-FUZRAQT_L6MDKjE+-w@mail.gmail.com>
- <13737de5-0eb7-e881-9af0-163b0d29a1a0@csgroup.eu>
-In-Reply-To: <13737de5-0eb7-e881-9af0-163b0d29a1a0@csgroup.eu>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 10 Mar 2021 11:00:03 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2W9H7k2S3Bk1323Ro2F=_m48wBy-tENd-MyNe3Z3azyQ@mail.gmail.com>
-Message-ID: <CAK8P3a2W9H7k2S3Bk1323Ro2F=_m48wBy-tENd-MyNe3Z3azyQ@mail.gmail.com>
-Subject: Re: [PATCH v3] powerpc/32: remove bogus ppc_select syscall
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:sPJOo4DBBvWyK+92IblkqpJ137qmDVRR83bo5EFIemUqstR7Czg
- ubmiaCSMpMA4xn8Ghbrt4QYTrZWvuG7fk3kOtNKv5naET+GxH7MF0+EIIxz6ZI5SLUNTiuY
- gu574yzFmQYVYlTUPPuSYbWmeyTXAJD+hvcHkQCbbZA8OCSy9WOaxKDPyC9jCR62r4/9fbs
- b+L4KyUfvq3nnnaxlnKWw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YkQ8qYAlAKE=:UtU4b8fZsJKDYHend6r4kq
- FcTQIN/EJ99gxRdhTAIn3VWFwiyohmJ9h+qVbQqQE53LPxSkEXLcKsH4IU8fEk+79kwf4deN9
- Dxh+Q9XRK0D7oAThpytHzdUzMYLa7Rv4gjVh0mTGQKWcPj8n48qO3LIUKwMeowFXFKESalr4L
- b2/lxUTjJx2eFKewayGTONMoF7sm7z2gSZye9CmU0IrjA9HAvOkUCJVcr27KLrWAec2UQc8TG
- xnQOzuxg1mQje/imkStUBcFxobJOmOEBpuGql8mQQGt9LR07Rb+oZQdNgEhR23h1WxzkpYkUg
- 4UMJlKP8Ky8BWdWKKlVJnL9U2o3Sg5bOBfYpZd9E+RcSxeBL13pAZEK5ZbJpHpuiG38vk3wOh
- cpVimMyZoLfi6FFMHx1ZxcGQV1ILuyV+VOerUQWo/6miflEr7WaxLufY7bNYgOXMcL+zQIs+t
- o0iju4+LCefh/Iv/GuqmYwlCSYp1OLe86WNX16SI/++xFFG29pvT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615343727-96723-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 4:59 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> Le 05/03/2021 à 13:03, Arnd Bergmann a écrit :
-> > On Fri, Mar 5, 2021 at 11:15 AM Christophe Leroy
-> > <christophe.leroy@csgroup.eu> wrote:
-> >> Le 05/03/2021 à 11:06, Arnd Bergmann a écrit :
->
-> I had another look. In fact x86, arm and m68k still have the #82 syscall, but they don't have the
-> hack we have on powerpc to "guess" that something is calling the old select with the arguments of
-> the new select.
+On Wed, Mar 10, 2021 at 10:35:27AM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./drivers/net/netdevsim/fib.c:874:5-8: Unneeded variable: "err". Return
+> "0" on line 889.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/net/netdevsim/fib.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/netdevsim/fib.c b/drivers/net/netdevsim/fib.c
+> index 46fb414..db794f9 100644
+> --- a/drivers/net/netdevsim/fib.c
+> +++ b/drivers/net/netdevsim/fib.c
+> @@ -871,8 +871,6 @@ static int nsim_fib6_event(struct nsim_fib_data *data,
+>  
+>  static int nsim_fib_event(struct nsim_fib_event *fib_event)
 
-Makes sense. At least for x86, there are probably still some pre-glibc
-binaries around
-that would use the old select.
+Can you change to 'static void' ?
 
-> As part of my series of user accesses cleanup, I'll replace the open coded stuff by a call to
-> sys_old_select(), see below.
-
-Nice!
-
-> Maybe at the end we should keep the #82 syscall, but do we need to keep the powerpc hack really ?
-> Maybe the best is to drop ppc_select() function but mention sys_old_select() instead of ni_syscall
-> for entry #82 in the syscall table ?
-
-I'd say we should either keep the powerpc hack intact (with your cleanup),
-or remove the syscall entirely. I have been unable to find any indication of
-who might have called the #82 syscall prior to mklinux DR2.1 and linuxppc R4,
-so there is no way of knowing which of the two ABIs they were using either.
-
-It was definitely ambiguous since the ancient kernels only had sys_select()
-semantics at #82, but the existence of the hack tells us that there were at
-least some binaries that wanted the sys_oldselect() semantics.
-
-       Arnd
+>  {
+> -	int err = 0;
+> -
+>  	switch (fib_event->family) {
+>  	case AF_INET:
+>  		nsim_fib4_event(fib_event->data, &fib_event->fen_info,
+> @@ -886,7 +884,7 @@ static int nsim_fib_event(struct nsim_fib_event *fib_event)
+>  		break;
+>  	}
+>  
+> -	return err;
+> +	return 0;
+>  }
+>  
+>  static int nsim_fib4_prepare_event(struct fib_notifier_info *info,
+> -- 
+> 1.8.3.1
+> 
