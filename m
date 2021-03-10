@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562AC334980
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03386334984
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhCJVIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:08:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
+        id S232329AbhCJVK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:10:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbhCJVIi (ORCPT
+        with ESMTP id S231776AbhCJVK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:08:38 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD161C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:08:37 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id e2so27466057ljo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:08:37 -0800 (PST)
+        Wed, 10 Mar 2021 16:10:28 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2585EC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:10:28 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id s7so9116910plg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:10:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cACQQWqG6uSUB0AGVgSEUJ4B4wJ68O5aodDpa+9zBtE=;
-        b=TD528uq6ivKl36WWTHHJw/09uqZOROwIWdNmdS7C/SQIUBmkTfKhrO3WhbTLpi33Yd
-         vuzVI3zn01/vbNvVSS7s3JCGNhdSLUnX4pS92ZzArfy2HjSDolAGYai4Jowj8xedrtfs
-         eitt16XYmZB2QuyFScmS+Csnw4EKgfOJHbj1r3zXYVHmlKWe1KBfJuluPCM6x6k7jZeq
-         lgJmr+miho41dvdhpIhRa74hCa1QCr43YSd3z2Y3mnLiQwIidUERKBWZ+yb/ADP6nUrs
-         wAcohDBJp8TJG4bfM3LEzMEhLB6H+lFG2/I4WxbkON4RTUt5666MAekU7kQdmpUNO6Yp
-         nhyA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O30AauLLCCWTiPzSso6IXev67cYW6S1/IqV74YHyhWQ=;
+        b=FriG3dvtnkFMjLm8sZa8Oy0H4+IJZKzMN2i5TDzv3wnwRbG5qEUL5LWRJ+nUqu1crD
+         gAabEJXuCjclUlvnm6CKTratENHDMeCpOXDPFY21F9kuEl9KR22S9Dlen8aJfLovVJB2
+         GgDI5GLcXg8RUT/EgPnnBJk2KiH6Iv7ij+0HpAa8NKkeKmlFvec6BKB6KvsiSYYvvY6a
+         KJmGWwDCbCXfMF6pGVXZLxcVJAnFS/i8SR0dPsrgClKULwnJ4Zo7SGY7OaGFqgH3OTjx
+         m5+8EJjfv9uJ93aPMOVIRObo2c/bKqQ9KTYR/ObcYBK4hIIsDthRK/FAIlDn85EJ78r4
+         mBkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cACQQWqG6uSUB0AGVgSEUJ4B4wJ68O5aodDpa+9zBtE=;
-        b=O0rEj0ad5c+1LWso/j01E3WCKjhtH1uFVZOnujFdDK8sn/cY1i9tO4oGeTuaI4588i
-         Ivdu5svvFctSSEoPcVoPK3PLLz/bJA/ubcoXEjzlOUnlouvdplZZsisJ1IQikFcXzwzQ
-         o2MhAiUHR4R7mFxrYC8AO6BMxYf/VgS8pW46oGEYW3lSuMNlN4j6INz4P5EFuCMLY6vu
-         lwRUs6YjT+LTRPuHQG7qZuCMw5fDmeMn9rpdup0/Ro4jwo74MkvlUdiJ4gZBIIlmA7PB
-         DP8zpl42J5waqM3wKtA1zTYvmatj1QQzT/+tnECGj/dp9AIMp1gX7F+L/wb4x5N8BMeR
-         97Ug==
-X-Gm-Message-State: AOAM531W5o2TQ23tkazczVSk5yVY6km1IJPv2/Ah0rrE9B8C8RqyMrkg
-        cXKOVkExB88AicLIt8ftWYVKqqKww5O74oeDhsrs7Q==
-X-Google-Smtp-Source: ABdhPJziZrjBJ9Z8nbqy4riATwMtJzR2H3vO3xCUy6/+X/e3KusmZB2RF4BFcfabm3GgOq/lDz2ZuH4ze1WXtxxMN9U=
-X-Received: by 2002:a2e:8984:: with SMTP id c4mr2796500lji.456.1615410516228;
- Wed, 10 Mar 2021 13:08:36 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O30AauLLCCWTiPzSso6IXev67cYW6S1/IqV74YHyhWQ=;
+        b=VywiSB6prE9Ko5T0pq0/UlM77nwtz7/BDdgysNAbcR3BMp9Ql8x/dOZMnaVgvwN56Z
+         a5GWEMnYPOj2dBLNA15rVdCN0sP6L6+AOERj740AJeCQSD2FGomkroIjsXof3VM3fDAP
+         /H6/2oGnyYf2Llxb3RCXLT++gxVnAWXk9o4ti6bn78rXmOK5ZuDCzTXFf250aUsx9GhR
+         WRQku+xOiWWGscIAZwhJeCb3LMzqopzxBCu/EEl1AWZo/sj3Ff6h+Zfj36P6sdL+vCKF
+         BlaPjb6uuXve6FjYwRfTiSKiHAgTaH+QQALZOah6rPQD62QvRr790MM0S5NSAOrLDR9u
+         n8SA==
+X-Gm-Message-State: AOAM532Z0rmW0r3USFomrUawpTX7qLUKlXBtkfxs0cD54FGcuVliCJHq
+        PpzGBqdJuDuCqn8PEIvC8z2erA==
+X-Google-Smtp-Source: ABdhPJwzBTPelGYUKqKxucbpmDS8MIjmdhCIWUnH1q2YfqvTIX/zU2DFb2Q6rmajFgiuydqlckaZgQ==
+X-Received: by 2002:a17:90b:4d0f:: with SMTP id mw15mr5468392pjb.92.1615410627547;
+        Wed, 10 Mar 2021 13:10:27 -0800 (PST)
+Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id j21sm371508pfc.114.2021.03.10.13.10.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 13:10:26 -0800 (PST)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org
+Cc:     arnaud.pouliquen@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v7 00/17] remoteproc: Add support for detaching a remote processor 
+Date:   Wed, 10 Mar 2021 14:10:08 -0700
+Message-Id: <20210310211025.1084636-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210310174603.5093-1-shy828301@gmail.com> <20210310174603.5093-14-shy828301@gmail.com>
- <CALvZod5q5LDEfUMuvO7V2hTf+oCsBGXKZn3tBByOXL952wqbRw@mail.gmail.com> <CAHbLzkpX0h2_FpeOWfrK3AO8RY4GE=wDqgSwFt69vn+roo6U3A@mail.gmail.com>
-In-Reply-To: <CAHbLzkpX0h2_FpeOWfrK3AO8RY4GE=wDqgSwFt69vn+roo6U3A@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 10 Mar 2021 13:08:24 -0800
-Message-ID: <CALvZod4hSCBsXPisPT_Tai3kHW1Oo5k8z2ihbSgmLsMTAqWGHg@mail.gmail.com>
-Subject: Re: [v9 PATCH 13/13] mm: vmscan: shrink deferred objects proportional
- to priority
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 10:54 AM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Wed, Mar 10, 2021 at 10:24 AM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Wed, Mar 10, 2021 at 9:46 AM Yang Shi <shy828301@gmail.com> wrote:
-> > >
-> > > The number of deferred objects might get windup to an absurd number, and it
-> > > results in clamp of slab objects.  It is undesirable for sustaining workingset.
-> > >
-> > > So shrink deferred objects proportional to priority and cap nr_deferred to twice
-> > > of cache items.
-> > >
-> > > The idea is borrowed from Dave Chinner's patch:
-> > > https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
-> > >
-> > > Tested with kernel build and vfs metadata heavy workload in our production
-> > > environment, no regression is spotted so far.
-> >
-> > Did you run both of these workloads in the same cgroup or separate cgroups?
->
-> Both are covered.
->
+This set provides support for the remoteproc core to release resources
+associated with a remote processor without having to switch it off. That
+way a platform driver can be removed or the application processor power
+cycled while the remote processor is still operating.
 
-Have you tried just this patch i.e. without the first 12 patches?
+The main difference in this revision is patch 11/16 (in V6).  It was split
+split in two part in order to simplify handling of the resource table when
+the remote processor is detached or stopped.  Other modifications are
+detailed in the changelog of each patch.
+
+Applies cleanly on v5.12-rc2.
+
+Thanks,
+Mathieu
+
+Arnaud POULIQUEN (1):
+  remoteproc: stm32: Move memory parsing to rproc_ops
+
+Mathieu Poirier (16):
+  remoteproc: Remove useless check in rproc_del()
+  remoteproc: Rename function rproc_actuate()
+  remoteproc: Add new RPROC_ATTACHED state
+  remoteproc: Properly represent the attached state
+  remoteproc: Add new get_loaded_rsc_table() to rproc_ops
+  remoteproc: stm32: Move resource table setup to rproc_ops
+  remoteproc: Add new detach() remoteproc operation
+  remoteproc: Introduce function __rproc_detach()
+  remoteproc: Introduce function rproc_detach()
+  remoteproc: Properly deal with the resource table when detaching
+  remoteproc: Properly deal with the resource table when stopping
+  remoteproc: Properly deal with a kernel panic when attached
+  remoteproc: Properly deal with a start request when attached
+  remoteproc: Properly deal with a stop request when attached
+  remoteproc: Properly deal with a detach request when attached
+  remoteproc: Refactor function rproc_cdev_release()
+
+ drivers/remoteproc/remoteproc_cdev.c     |  21 +-
+ drivers/remoteproc/remoteproc_core.c     | 302 ++++++++++++++++++++---
+ drivers/remoteproc/remoteproc_internal.h |  10 +
+ drivers/remoteproc/remoteproc_sysfs.c    |  17 +-
+ drivers/remoteproc/stm32_rproc.c         | 168 ++++++-------
+ include/linux/remoteproc.h               |  21 +-
+ 6 files changed, 401 insertions(+), 138 deletions(-)
+
+-- 
+2.25.1
+
