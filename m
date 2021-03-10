@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC1B333F61
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A881C333F72
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233511AbhCJNgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:36:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        id S233241AbhCJNkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:40:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233422AbhCJNgn (ORCPT
+        with ESMTP id S232823AbhCJNkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:36:43 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D120C061760;
-        Wed, 10 Mar 2021 05:36:43 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id b10so17876348ybn.3;
-        Wed, 10 Mar 2021 05:36:43 -0800 (PST)
+        Wed, 10 Mar 2021 08:40:31 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7771DC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:40:31 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id i9so7141545wml.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:40:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2aYptJ+Gov2C+oARQmlRLopxW2URRuwXw1AKwLGZv1E=;
-        b=lpoFJtg+RfBaF3k+0slfbJr1UD9yvARkoMbBl9MWr5rmcJvOHNz8P65bPDF0DzSKLZ
-         A3QopQpfSEcP9hG6NFxwAymzBtPvh9QtuREgkj9DQjN9L8S9GwxojaVH5XTEDnVF4bQA
-         sMnKkKxuoVoJRr9q12QkvPO1QPeOriCBtg4BBD7uVIji+3DiHwzqJJj7m+b17VLR6Y0I
-         q9ykpG9dwvTB05YeMwCb59uPHELbo+jaZKbPrWda81m5JAPQL+ZZ1OluKZ7IDbefl91g
-         9ceIqeicNGysV//j//GKZJRSGU2l1tIS6W2s+tKKgHsfQeKrQgjbRQJws2xtrkEhX9Kt
-         ZXxg==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iKsE0EavC1CLlzfIfD/fKBxBbrFrxqX+26sqGfTHMV8=;
+        b=leMYdBbDQlGXgyyavvR95hKrY0+7odc90shjgJ+CMR0SvBi1BW9gy6+rRC3yxjISq+
+         1zJQNl+pZo52vxXtZHP2kT4NV8PP/qzZu/Us3N2vZsVViCMz7Dmlv2FcqcBmAygx5HBt
+         h5a8sze9WbM1vnoq816rd3jREVYbslDmMqQeOPHgoBGxhwyf4z0pBXYRmRgYD9btqnJr
+         ZGXOjq+r0HzKiu6WW/uCyAJ4f20kgWHEkHewh9aLfCsGu20NIWRWgPIOvSOtwjz9ybqv
+         TVPdYWzHcHD1eFUilNWICv4u5LVpQHOKxu6YYSAeOKn24we690BNnpq+UlQs/1Dv0CbI
+         Nwmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2aYptJ+Gov2C+oARQmlRLopxW2URRuwXw1AKwLGZv1E=;
-        b=nZOWR/QPiTGVea/EBlLrzpvp8b9/nkppZ1c5SnlM5WJI0cIfCNvgqeYezlgKCMfNus
-         I2kXb2Ut4St+Ki/UtQo8YZ5Qwq5a2p8Gf/R7ST4xIrWCozXaVN20EOhX/BOpk3BNwC3U
-         JpowUd0RKAqW7Tbssj4PnHJztcfNMIFafH8U+vMufSAxIXMnnMBExWw4iHRI9Ysuqyy0
-         +5F0SMAUQKXroPVBtif9/jG2/3hxstPpnLmDZVj+LjcOSft5q9Xs8OYqqOyQdsOK2meT
-         19TAe1poSv6kdo7dBZAVeNiZSxohylGuANybLT2uudSfggChTnhlKu0raRxVPno32HD2
-         v17A==
-X-Gm-Message-State: AOAM532OTJYJQsn+4NkpqmRs8ikkg8UCGzdZ1Yz5t8/t2UFaRdku/IWA
-        oz8D7doCwB/kvoiPOOKfoICakkQAZEDzC1EuBzE=
-X-Google-Smtp-Source: ABdhPJz1jxdINaxIIQwiE1/7TJj4kvjkB1loYv97hj60cdpiwpI1AFhO8/qRMCL4/0SP4ps/aG+kQlYilaoS6/0nAb8=
-X-Received: by 2002:a25:d8f:: with SMTP id 137mr1981743ybn.47.1615383402310;
- Wed, 10 Mar 2021 05:36:42 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iKsE0EavC1CLlzfIfD/fKBxBbrFrxqX+26sqGfTHMV8=;
+        b=cf8KGnTj9J1nEsvTfOZpIJQmdJGBpcY/8aQZjFDxXA6AxHW3Vaeru96dT850nd2Kmd
+         9BnGXk44z7PDI8emFIivPS0wXka3mOEAvwnMDKrqTqnpyjdnS/8q7gTZuu4JSl3yQdAW
+         e+tTJ2QXAkr9cR7wKSp9ZNOHPekso44MNAb7zzmc9ZqJNlMTiir9cc8H5ii/0K7q8L74
+         KYUMXARJ4XB57POyQOnhWZ9XwuG+rqXljdxi7ZtsroEGydybdnE4WGlzyKzroArbeGil
+         DiI/1HKt5nJD88/fS6EsDkJ8wNWkHXLfme2OwqJkQrWXv5rJLNwN/bki3d+Mmlq6ipKJ
+         Uj/g==
+X-Gm-Message-State: AOAM533dtJ3j7vGJ1SjDNAfZY/BUMT171k653Kiza4ujaeDrmfsvayvE
+        IeZ1ij7Nyo6OB6Ad2LzuxUbtiJnzmr6Gbw==
+X-Google-Smtp-Source: ABdhPJw07Ohry8VNeu8htAp3nJyjbkw5TzsikJvbyRHKOvmZOE/of10qitCSXCG1DbQgZK+HK2agcw==
+X-Received: by 2002:a1c:600a:: with SMTP id u10mr2818048wmb.139.1615383630025;
+        Wed, 10 Mar 2021 05:40:30 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8018:efa9:4421:9140? ([2a01:e34:ed2f:f020:8018:efa9:4421:9140])
+        by smtp.googlemail.com with ESMTPSA id j14sm27563708wrw.69.2021.03.10.05.40.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 05:40:29 -0800 (PST)
+Subject: Re: [PATCH v10 0/8] Add support for ipq8064 tsens
+To:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210217194011.22649-1-ansuelsmth@gmail.com>
+ <f0ab094e-440d-993c-6618-bf80fd05d484@linaro.org>
+ <44c7919c-0ed4-abba-21e0-226bb553aad3@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <72427874-244b-6344-411c-ea53770bc1f0@linaro.org>
+Date:   Wed, 10 Mar 2021 14:40:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
- <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com> <20210310130227.GN3479805@casper.infradead.org>
-In-Reply-To: <20210310130227.GN3479805@casper.infradead.org>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Wed, 10 Mar 2021 08:36:06 -0500
-Message-ID: <CAEg-Je-F6ybPPV22-hq9=cuUCA7cw2xAA7Y-97tKhYUX1+fDwg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        darrick.wong@oracle.com, dan.j.williams@intel.com, jack@suse.cz,
-        viro@zeniv.linux.org.uk, Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <44c7919c-0ed4-abba-21e0-226bb553aad3@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 8:02 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Mar 10, 2021 at 07:30:41AM -0500, Neal Gompa wrote:
-> > Forgive my ignorance, but is there a reason why this isn't wired up to
-> > Btrfs at the same time? It seems weird to me that adding a feature
->
-> btrfs doesn't support DAX.  only ext2, ext4, XFS and FUSE have DAX suppor=
-t.
->
-> If you think about it, btrfs and DAX are diametrically opposite things.
-> DAX is about giving raw access to the hardware.  btrfs is about offering
-> extra value (RAID, checksums, ...), none of which can be done if the
-> filesystem isn't in the read/write path.
->
-> That's why there's no DAX support in btrfs.  If you want DAX, you have
-> to give up all the features you like in btrfs.  So you may as well use
-> a different filesystem.
+On 10/03/2021 14:32, Thara Gopinath wrote:
+> 
+> 
+> On 3/10/21 7:19 AM, Daniel Lezcano wrote:
+>>
+>> Hi Ansuel,
+>>
+>> On 17/02/2021 20:40, Ansuel Smith wrote:
+>>> This patchset convert msm8960 to reg_filed, use int_common instead
+>>> of a custom function and fix wrong tsens get_temp function for msm8960.
+>>> Ipq8064 SoCs tsens driver is based on 8960 tsens driver. Ipq8064 needs
+>>> to be registered as a gcc child as the tsens regs on this platform are
+>>> shared with the controller.
+>>> This is based on work and code here
+>>> https://git.linaro.org/people/amit.kucheria/kernel.git/log/?h=wrk3/tsens-8960-breakage
+>>>
+>>
+>> I don't have major concerns with the series except there is no comment
+>> from the maintainer / reviewer of the sensor.
+>>
+>> Given it is based on Amit's work, I can assume they are correct.
+>>
+>> I added Thara in Cc hoping she has time to review the changes. If nobody
+>> complains with the series, I'll merge them in the next days
+> 
+> Hi Ansuel/Daniel,
+> 
+> Just wanted to let you know that I have started looking into this and
+> review this within next week or two.
 
-So does that mean that DAX is incompatible with those filesystems when
-layered on DM (e.g. through LVM)?
-
-Also, based on what you're saying, that means that DAX'd resources
-would not be able to use reflinks on XFS, right? That'd put it in
-similar territory as swap files on Btrfs, I would think.
+Great, thank you
 
 
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
