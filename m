@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA59333360
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4607333365
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhCJCyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:54:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        id S232193AbhCJCz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:55:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbhCJCyl (ORCPT
+        with ESMTP id S232004AbhCJCyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:54:41 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B21CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 18:54:30 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id y67so11107079pfb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 18:54:30 -0800 (PST)
+        Tue, 9 Mar 2021 21:54:53 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB12C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 18:54:53 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id p21so10397253pgl.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 18:54:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YBxARwCSnvP/MPs48fuZLZiuQ0mo/90Nc+1kxldAXvY=;
-        b=mgPjitELPEW/P5qmpcLVfVoA0D6sHZbihRmkHn2T6K9SBG4Ha/LJO/otu10peacMhr
-         LuL0fRZdQLwP7M9wEDrTpBtLj8K8tudZNldX6kZxxwpgoOUxKITkywSl2jzbDDQ+LlzB
-         pAfWpubnARGarXUbdueVAOGEZZwgdwg38kjUrvpm8UlRyhUcHqhOLh/KTMLubon7Kb4n
-         SDBddPEB0kPjpJ49JkLLyjwoA35CMpN5HTgdd0VAg06YzUz21lg3gZ8E6/aU6kC48WxF
-         Iv+Fz7wjENWwmVReUBuT2iyV4vRqfYBaKfQMpvTe0Mkt1040FtnGxaGlyV9nF1Rgq6o4
-         4rKA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=F7L2rfwUmYIB7S+xDvEKqrJHTr/uik/Q3th44+Fbt0s=;
+        b=CzYw2jEQodgFUJkFkDCkjqeMhkZ/maXPSsR6uL5nluiwEGymjIwN6FaDnhBr6C8qZX
+         QnnK1649X6ZSZEjfjSM096wR1FImuJXXS0L0LpF/kViYWtWBHPrKsWb5p/b9iVB91TQX
+         /1PZQh5T/WjCzTDF4QmHBVP+Ch6cLXz6dcC9P3dMitAXW9POtDU/eR/MrcjpGsNmPESp
+         8S6UUzmZLu9xJdMztduwcTIeZrTUAYOC6puynMFFQO/vDRQXFWbsQfoFYqHevvDQEHLD
+         IqHuULYzeBYvJ1O3KoapWQ2Mzd6P563s4SM+HCJ2DoFduuwRVaNU3ZB0EkUhsdF9OLth
+         MsUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=YBxARwCSnvP/MPs48fuZLZiuQ0mo/90Nc+1kxldAXvY=;
-        b=YBCOlLKTsHC9aCtfHGP9Iz6n5zTEH/pqe1/BoWAT/MIy9gz/t6Tj1+vXUzlSUABfuG
-         gy3EWB2Rfam/wuy5VGe9hEeu3QoK9hD/P26dhrfp2di4zoo+l0uKzLDCNwQPOJv/sFE7
-         Hw+wau+rRHXg4aQnISDoUDJRNvUUpHxEv4CijbRCKiXMqjNreF+UTDvXgoLisz7qAwRN
-         D2RYQIM0UmtEAPON4XaSU8dbv7WJyoIty4r8CIndz8X1loKjM+EhJigqvBncuT+ZrHaK
-         F6Mx57C4cVek7/lk3JXOFxD/iqJqFcBg+yTzmE/wH+XVUk9q/9OIQkjSKslJ7i0HybNT
-         MhtQ==
-X-Gm-Message-State: AOAM533KXIlWM1AsfN1jwZiCbvwCxcvaNq0N9Y7jjkwuagnTAhPsuhq4
-        ITDBjdoHj8Gv1T/UcGA6uaukYw==
-X-Google-Smtp-Source: ABdhPJw9djyUJKGf+CL7k+IvlqXvhXmzFMbBeiDmFCthoAskqXlsDt4pmgMsgrh8nJwik7OuxQCByg==
-X-Received: by 2002:a62:b410:0:b029:1a4:7868:7e4e with SMTP id h16-20020a62b4100000b02901a478687e4emr891769pfn.62.1615344869693;
-        Tue, 09 Mar 2021 18:54:29 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id v1sm4250210pjt.1.2021.03.09.18.54.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 18:54:28 -0800 (PST)
-Date:   Tue, 09 Mar 2021 18:54:28 -0800 (PST)
-X-Google-Original-Date: Tue, 09 Mar 2021 18:54:03 PST (-0800)
-Subject:     Re: [PATCH 0/3] Move kernel mapping outside the linear mapping
-In-Reply-To: <20210225080453.1314-1-alex@ghiti.fr>
-CC:     corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
-        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org, alex@ghiti.fr
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-cf5d29ec-e941-4579-8c42-2c11799a8f2f@penguin>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=F7L2rfwUmYIB7S+xDvEKqrJHTr/uik/Q3th44+Fbt0s=;
+        b=J5wGY2mm52bgxX/Fiihll3GsRAi5uPWqRA02CI2DWqUDCc2eNG18kZCosTACQtkZ3F
+         7cuBvdd1aracfwi6LA/rc2LVPGwwGf+lzqI1UDwoQHhhmzk2heke4fM5dpCJseSzk/He
+         Stv33GeTDVyAhmGHtU4oLsEGuyzuH5ao1NWA35AMA3ip1VoPqAbopeK3OykQqBa/NYmn
+         Kns/E+r4ckIIvLUxAF0lFki1wRBEeqrsqloXjYGvRaiXnfi/Hi+E42/m1VrwwBYbQS9m
+         9wiyQOkE6Xkf6Mxyc1s3xaGWcLi83EJk7T/XVNjlxk87iSzluTitTno6xGpXCruXA5k5
+         /L9g==
+X-Gm-Message-State: AOAM531WpWnK6iCyUXYiNZEkm3iIN+POZk1S3Wcxv+57Nprmg4b9bQTi
+        dWltBoVMwexspGt40E9tViBvcUd416/c3A==
+X-Google-Smtp-Source: ABdhPJxy3zQnKdDxFnFa4MAF0F/2s0x0egEHF+1b/xyt2pTLAUFBzQ5G1nVeO1qogvOJVDwEg+/8WA==
+X-Received: by 2002:a62:1911:0:b029:1ed:b722:3b50 with SMTP id 17-20020a6219110000b02901edb7223b50mr1094613pfz.70.1615344893238;
+        Tue, 09 Mar 2021 18:54:53 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id fa21sm4034926pjb.25.2021.03.09.18.54.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Mar 2021 18:54:52 -0800 (PST)
+Date:   Wed, 10 Mar 2021 08:24:50 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V5 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210310025450.plggnrhbsrpycteq@vireshk-i7>
+References: <cover.1614580695.git.viresh.kumar@linaro.org>
+ <a34f549bc75eecd4804aebb7b7794b45769eccf0.1614580695.git.viresh.kumar@linaro.org>
+ <20210309151157.GB25243@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309151157.GB25243@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 00:04:50 PST (-0800), alex@ghiti.fr wrote:
-> I decided to split sv48 support in small series to ease the review.
->
-> This patchset pushes the kernel mapping (modules and BPF too) to the last
-> 4GB of the 64bit address space, this allows to:
-> - implement relocatable kernel (that will come later in another
->   patchset) that requires to move the kernel mapping out of the linear
->   mapping to avoid to copy the kernel at a different physical address.
-> - have a single kernel that is not relocatable (and then that avoids the
->   performance penalty imposed by PIC kernel) for both sv39 and sv48.
->
-> The first patch implements this behaviour, the second patch introduces a
-> documentation that describes the virtual address space layout of the 64bit
-> kernel and the last patch is taken from my sv48 series where I simply added
-> the dump of the modules/kernel/BPF mapping.
->
-> I removed the Reviewed-by on the first patch since it changed enough from
-> last time and deserves a second look.
->
-> Alexandre Ghiti (3):
->   riscv: Move kernel mapping outside of linear mapping
->   Documentation: riscv: Add documentation that describes the VM layout
->   riscv: Prepare ptdump for vm layout dynamic addresses
->
->  Documentation/riscv/index.rst       |  1 +
->  Documentation/riscv/vm-layout.rst   | 61 ++++++++++++++++++++++
->  arch/riscv/boot/loader.lds.S        |  3 +-
->  arch/riscv/include/asm/page.h       | 18 ++++++-
->  arch/riscv/include/asm/pgtable.h    | 37 +++++++++----
->  arch/riscv/include/asm/set_memory.h |  1 +
->  arch/riscv/kernel/head.S            |  3 +-
->  arch/riscv/kernel/module.c          |  6 +--
->  arch/riscv/kernel/setup.c           |  3 ++
->  arch/riscv/kernel/vmlinux.lds.S     |  3 +-
->  arch/riscv/mm/fault.c               | 13 +++++
->  arch/riscv/mm/init.c                | 81 +++++++++++++++++++++++------
->  arch/riscv/mm/kasan_init.c          |  9 ++++
->  arch/riscv/mm/physaddr.c            |  2 +-
->  arch/riscv/mm/ptdump.c              | 67 +++++++++++++++++++-----
->  15 files changed, 258 insertions(+), 50 deletions(-)
->  create mode 100644 Documentation/riscv/vm-layout.rst
+On 09-03-21, 15:11, Ionela Voinescu wrote:
+> On Monday 01 Mar 2021 at 12:21:17 (+0530), Viresh Kumar wrote:
+> > diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+> > index 0f6cd6b73a61..3bcfba5c21a7 100644
+> > --- a/include/linux/arch_topology.h
+> > +++ b/include/linux/arch_topology.h
+> > @@ -34,7 +34,19 @@ void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
+> >  			     unsigned long max_freq);
+> >  bool topology_scale_freq_invariant(void);
 
-This generally looks good, but I'm getting a bunch of checkpatch warnings and 
-some conflicts, do you mind fixing those up (and including your other kasan 
-patch, as that's likely to conflict)?
+We don't normally add blank lines between declarations (variables or
+function), like what's done here.
+
+> >  
+> > -bool arch_freq_counters_available(const struct cpumask *cpus);
+> > +enum scale_freq_source {
+> > +	SCALE_FREQ_SOURCE_CPUFREQ = 0,
+> > +	SCALE_FREQ_SOURCE_ARCH,
+> > +};
+> > +
+> > +struct scale_freq_data {
+> > +	enum scale_freq_source source;
+> > +	void (*set_freq_scale)(void);
+> > +};
+> > +
+> > +void topology_scale_freq_tick(void);
+> > +void topology_set_scale_freq_source(struct scale_freq_data *data, const struct cpumask *cpus);
+> > +void topology_clear_scale_freq_source(enum scale_freq_source source, const struct cpumask *cpus);
+> 
+> Nit: can you split these lines?
+
+And so in order to be consistent across the file, I haven't added one
+here.
+
+-- 
+viresh
