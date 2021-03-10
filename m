@@ -2,156 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F43333CC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56F0333CC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbhCJMl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:41:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230122AbhCJMl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:41:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D99464FE5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615380088;
-        bh=f+YgqVr0L2oHebaFxvBEhuo3MZHnaLfKLLHAywKNOqk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KYtSSwhfRR0rAYrzA5MdZ8VmX0tWHJ5q5cTvaqlIolJi+V0MffxiNQXeSDzl12BsS
-         RZfRx4r1ZAVex8p71QB7ase+IMaa/OIPxvmwsyHDuUL+wgXSdKys9eloPUOhiKaVfw
-         yfi4XIDmtJE73UKaOvBZjtuuab3pzGzJTdBxA+mDCG2PhcqNoA6IJ1g3Ut05cj6pQQ
-         crmNnwNUM1z2JA/aweFrk04E9DZmIcer7kw19xdLhgGAKQ4l6/bqBN9HmIcWGLv1QA
-         SRMj6XEuKpR4EnSPEvYFX4goV79sAwgCsB4lw7ur5inTXpxmbCuEUTKLHiEc9LY0nl
-         x71a0vh4A6tcA==
-Received: by mail-ot1-f41.google.com with SMTP id f8so11172519otp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:41:28 -0800 (PST)
-X-Gm-Message-State: AOAM533zl15ch510mjx18L0js15xrNVX1KOMBKJx1QzSzh0/Z7xBHs+W
-        h2fxOOzYNfuiIhxnU3uIQRItGVUmCgXElcgVmbU=
-X-Google-Smtp-Source: ABdhPJxODq5RDbRk0wzzsh+DKisSMdeikcI11xOweFvStxpZcJUP8Ncwcll4zJe7bxValgoczajqpU/fXB6fxBakimQ=
-X-Received: by 2002:a9d:6e15:: with SMTP id e21mr1398007otr.77.1615380087833;
- Wed, 10 Mar 2021 04:41:27 -0800 (PST)
+        id S232644AbhCJMma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:42:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231909AbhCJMmK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 07:42:10 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91DCC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:42:09 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id l12so23132382wry.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:42:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hY0Jhu8wT7V8ZQXnYvLhJQTUPLVmTFuidvQylpZANlI=;
+        b=LaCPxpPRFfgxla0eGWzfrNKvk/MWez1ih7ahc7n8iSHcGYJlA4MX4JCY1liBFJBWM4
+         ih2xdFuXbZX+w27Cm2KpOiYamMmiVhSuyVbfZ7zr/9P8zi+bssPQFckKOREb8fr/j37V
+         ZYjl60c0giHzX8qI9ioMTmHpWfvn7JaJ+HePyXP4Az+JFNdirUS2wSYn3Wn3vjyd+xWZ
+         qtIz1CRmRlRHcBURYfoAjCLT4VnpTRnq9xMq50/TL98nr5ZE/5Dcl5Ghn+Xr4yqorIwa
+         zp2VxLYBbw0dIZT4bl6HO2j6X7gVvhIWY8rN3Ja3eEpcTzLB4JZqF7IXBT1KTubpMGAL
+         lDlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hY0Jhu8wT7V8ZQXnYvLhJQTUPLVmTFuidvQylpZANlI=;
+        b=SR/oXCY9b+BUnjVM2YKTDDlhtYdzdkhqbe9nW4pmyrloNLFrv4Zl9BaA8igmZkkFrf
+         IKFOL7tQTsZJUKOX11j6wx8WjtmOxatXTgg4bjJc7w7FGqYpg+KXn2z3JR6WHvdxtXPl
+         wR+Hlkhx3evwf0zv5oqi/9LpI4js9PPAhOQcQy3WNGNuSeBcJzyD0ttHKfRTH9SskQrz
+         eAGNNTGYw3dV1yElppjDmazZQDAC971qscpoG5EwUIG1hR/s7pYHbiYUxEN4mIDk/p5q
+         HQuWEPPW7Hg75Cpzfa8cBc///OAb9l614gvNU13MHYLBlpwP12Ulxzv0maMa7N01y/i4
+         KTWQ==
+X-Gm-Message-State: AOAM533n9l/XvLEz1DWb6w3tPEmico1FPWOX616lm2kBcH/zfeLDr3mU
+        z5EvYIEa5s9mdjzigYHaHHaxcJV7A60CPA==
+X-Google-Smtp-Source: ABdhPJxoxQR4GvIWoJVNiaP/ojkeJ6Dy26wSDJUoajoGdG3/DHN8BM0jq36K8XsS8f/eYzBks680mg==
+X-Received: by 2002:a5d:6ca6:: with SMTP id a6mr3296016wra.179.1615380128613;
+        Wed, 10 Mar 2021 04:42:08 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8018:efa9:4421:9140? ([2a01:e34:ed2f:f020:8018:efa9:4421:9140])
+        by smtp.googlemail.com with ESMTPSA id h20sm8670290wmb.1.2021.03.10.04.42.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 04:42:08 -0800 (PST)
+Subject: Re: [PATCH v2] thermal: thermal_of: fix error return code of
+ thermal_of_populate_bind_params()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>, rui.zhang@intel.com,
+        amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210310122423.3266-1-baijiaju1990@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <bd1fde82-7e4d-9a3e-4054-60c7ee486b11@linaro.org>
+Date:   Wed, 10 Mar 2021 13:42:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210310003216.410037-1-msalter@redhat.com> <20210310111649.GA29413@willie-the-truck>
-In-Reply-To: <20210310111649.GA29413@willie-the-truck>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 10 Mar 2021 13:41:16 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH52Y7YAzVfMGbOntXcDP4S=P7kLuvwA0Twh7odbdgyoQ@mail.gmail.com>
-Message-ID: <CAMj1kXH52Y7YAzVfMGbOntXcDP4S=P7kLuvwA0Twh7odbdgyoQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: mm: fix runtime fallback to 48-bt VA when 52-bit
- VA is enabled
-To:     Will Deacon <will@kernel.org>
-Cc:     Mark Salter <msalter@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210310122423.3266-1-baijiaju1990@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 at 12:18, Will Deacon <will@kernel.org> wrote:
->
-> On Tue, Mar 09, 2021 at 07:32:16PM -0500, Mark Salter wrote:
-> > I ran into an early boot soft lockup on a Qualcomm Amberwing using a v5.11
-> > kernel configured for 52-bit VA. This turned into a panic with a v5.12-rc2
-> > kernel.
-> >
-> > The problem is that when we fall back to 48-bit VA, idmap_t0sz is not
-> > updated. Later, the kvm hypervisor uses idmap_t0sz to set its tcr_el2 and
-> > hangs (v5.11). After commit 1401bef703a4 ("arm64: mm: Always update TCR_EL1
-> > from __cpu_set_tcr_t0sz()"), the kernel panics when trying to use the idmap
-> > to call idmap_cpu_replace_ttbr1().
-> >
-> > Oddly, other systems (thunderX2 and Ampere eMag) which don't support 52-bit
-> > VA seem to handle the setting of an unsupported t0sz without any apparent
-> > problems. Indeed, if one reads back the tcr written with t0sz==12, the
-> > value read has t0sz==16. Not so with Amberwing.
->
-> Nice, you have one of those elusive platforms!
->
-> > Fixes: 90ec95cda91a ("arm64: mm: Introduce VA_BITS_MIN")
-> > Signed-off-by: Mark Salter <msalter@redhat.com>
-> > ---
-> >  arch/arm64/kernel/head.S | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> > index 66b0e0b66e31..2bcbbb26292e 100644
-> > --- a/arch/arm64/kernel/head.S
-> > +++ b/arch/arm64/kernel/head.S
-> > @@ -291,6 +291,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
-> >        */
-> >       adrp    x0, idmap_pg_dir
-> >       adrp    x3, __idmap_text_start          // __pa(__idmap_text_start)
-> > +     mov     x4, TCR_T0SZ(VA_BITS)
-> >
-> >  #ifdef CONFIG_ARM64_VA_BITS_52
-> >       mrs_s   x6, SYS_ID_AA64MMFR2_EL1
-> > @@ -299,6 +300,13 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
-> >       cbnz    x6, 1f
-> >  #endif
-> >       mov     x5, #VA_BITS_MIN
-> > +#ifdef CONFIG_ARM64_VA_BITS_52
-> > +     mov     x4, TCR_T0SZ(VA_BITS_MIN)
-> > +     adr_l   x6, idmap_t0sz
-> > +     str     x4, [x6]
-> > +     dmb     sy
-> > +     dc      ivac, x6                // Invalidate potentially stale cache line
-> > +#endif
-> >  1:
-> >       adr_l   x6, vabits_actual
-> >       str     x5, [x6]
-> > @@ -319,7 +327,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
-> >        */
-> >       adrp    x5, __idmap_text_end
-> >       clz     x5, x5
-> > -     cmp     x5, TCR_T0SZ(VA_BITS)   // default T0SZ small enough?
-> > +     cmp     x5, x4                  // default T0SZ small enough?
-> >       b.ge    1f                      // .. then skip VA range extension
->
-> Could we instead have the default value be 48-bit, and then avoid having
-> to update the variable in both cases? e.g. something along the lines of
-> the entirely untested diff below?
->
+On 10/03/2021 13:24, Jia-Ju Bai wrote:
+> When kcalloc() returns NULL to __tcbp or of_count_phandle_with_args() 
+> returns zero or -ENOENT to count, no error return code of
+> thermal_of_populate_bind_params() is assigned.
+> To fix these bugs, ret is assigned with -ENOMEM and -ENOENT in these
+> cases, respectively.
+> 
+> Fixes: a92bab8919e3 ("of: thermal: Allow multiple devices to share cooling map")
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-There is one other occurrence that needs to be updated. I will have a
-stab at fixing this along these lines, and there are a couple of other
-things that need cleaning up.
+Thanks, applied.
 
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-
-> --->8
->
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index 66b0e0b66e31..fb795123896f 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -319,7 +319,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->          */
->         adrp    x5, __idmap_text_end
->         clz     x5, x5
-> -       cmp     x5, TCR_T0SZ(VA_BITS)   // default T0SZ small enough?
-> +       cmp     x5, TCR_T0SZ(VA_BITS_MIN)       // default T0SZ small enough?
->         b.ge    1f                      // .. then skip VA range extension
->
->         adr_l   x6, idmap_t0sz
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index 3802cfbdd20d..4c5603c41870 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -40,7 +40,7 @@
->  #define NO_BLOCK_MAPPINGS      BIT(0)
->  #define NO_CONT_MAPPINGS       BIT(1)
->
-> -u64 idmap_t0sz = TCR_T0SZ(VA_BITS);
-> +u64 idmap_t0sz = TCR_T0SZ(VA_BITS_MIN);
->  u64 idmap_ptrs_per_pgd = PTRS_PER_PGD;
->
->  u64 __section(".mmuoff.data.write") vabits_actual;
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
