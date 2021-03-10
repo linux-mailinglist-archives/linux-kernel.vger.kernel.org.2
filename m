@@ -2,131 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BA9334C49
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFEB334C4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233519AbhCJXOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:14:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232181AbhCJXNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:13:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0222264FC1;
-        Wed, 10 Mar 2021 23:13:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615418035;
-        bh=9tF20wf+zLJcX7h7mHIULvFDAmy09SQE7kJ+VmzQ9kE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G2bcNmRwZmhiPBUzM6e3vBhO4HkeTA4r10O6E812v9b+JggFD65FAoskjfbdebvaA
-         6obZDMnNFIs4QgNAxxEGoKxcmdxZuEeUWDrV3G8qBi1rqCoKNosGoGrONkVnWA+KMc
-         Yr8XXMSz5gMCR1Wb5his6LtP308VT7RsLxO7uf45d7DAYgNezlYn4C96x+1Xdv+BxU
-         jpoN8CwRsorVWRg2LwZOc6AvqPNpQHhFBgjuiMHiapgR4w0uVBDcghj11xG6HuJqkL
-         0bg0y/PT8ftnI3ePWCLosK1d8gwh34206dJjOprt88QgtOXBTpP7/3SnUcEMhE8sxb
-         c4t4FxcXY2Wyg==
-Date:   Thu, 11 Mar 2021 01:13:31 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] tpm: acpi: Check eventlog signature before using
- it
-Message-ID: <YElSm4UchdU+W7D7@kernel.org>
-References: <20210310221916.356716-1-stefanb@linux.ibm.com>
- <20210310221916.356716-3-stefanb@linux.ibm.com>
+        id S233595AbhCJXOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:14:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232933AbhCJXOK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 18:14:10 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AADC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:14:09 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id m11so27821137lji.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:14:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gKBkQ4taidvPT+w4EteeOYBoZyJgs8TNZ1BWL29YzFc=;
+        b=Na0VWH/+PqDpdj52pR54r6QKfmjl0otFfewiwoGPWY7bV4Z9bvdJxvB0OkE/p4WqfJ
+         1v7GHpj/rojgQYPqHow4vDV3l3nt0JFX5yhWqzjg/+CmMAJTE1+OIGfQmUwMKOHf+6KZ
+         UtrlflzGefkZwhelEQPKARaUYugjC6Rnvcx5SY1T9Q/OL5di0DReCY2AyCXL4ZMyy51Q
+         5MNweZBaJvl7t7l//uP/i/O3bPOv2i3I16HRVT3FLBFaD0O64okVhKuzaTe6+RhoS7uD
+         fyXOmvauudfuSfA0bfgNXDanTiFL0dR+742do0LbDv3FlNJtyhGDKw3cDZWQ8fr+MWba
+         FFaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gKBkQ4taidvPT+w4EteeOYBoZyJgs8TNZ1BWL29YzFc=;
+        b=IlDZvLz/oNt6iDyeu19MnzzJf/4Q45l+b6NNKELCIpCQzpkvzOe1Lbwsf5l7Z0Rx6X
+         TrMP7AwUa6x2DiY/2NdLD6BTbm383NNy8UJ9krLr5g/IhF2+XjCXoxfzewYkjr8YtzK/
+         m0jCFSxraTTUdnOF8Be7h1qB2vqzyJ1E7yyivFnLASHzMXM6otpkdr1v6ZuMY+sOF1oT
+         gOFrR2YbunRWxo7AQFrnBdX2ZlTu22vvpxa8+ZVQeLyG1dOotgsjALAQawEonq3jYYyl
+         ETGzCFvNBl1GsSRbcrCEmk4cXjCqfnaaO6Jm73D8azJ42bGJ9Q/aRqXa+uTn4GS3Curu
+         wzQw==
+X-Gm-Message-State: AOAM530Iik8qF7/QEnsEkjjBy4zphmabPzjGxtoTH8n+gxqacn42dC5p
+        4xMqTaUnhdwc97xWWdtrn5lhBOdx4xgOBRTSlfTxag==
+X-Google-Smtp-Source: ABdhPJzoH1id55M9n/ktJsN7lcUfkG9Te/mK125L6n6433wa+UhQcuZo680G99PeyNnE2FxpoNANEDpH4kd79XP6jRM=
+X-Received: by 2002:a2e:9cb:: with SMTP id 194mr3110524ljj.438.1615418048231;
+ Wed, 10 Mar 2021 15:14:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310221916.356716-3-stefanb@linux.ibm.com>
+References: <20210304194816.3843-1-jonathan@marek.ca>
+In-Reply-To: <20210304194816.3843-1-jonathan@marek.ca>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Mar 2021 00:13:57 +0100
+Message-ID: <CACRpkdYn5sau7f4R3uNJe44nB3704pCQqnp0DysDinW1V=ZR-g@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: lpass lpi: use default pullup/strength values
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:19:15PM -0500, Stefan Berger wrote:
-> Check the eventlog signature before using it. This avoids using an
-> empty log, as may be the case when QEMU created the ACPI tables,
-> rather than probing the EFI log next. This resolves an issue where
-> the EFI log was empty since an empty ACPI log was used.
-> 
-> Fixes: 85467f63a05c ("tpm: Add support for event log pointer found in TPM2 ACPI table")
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  drivers/char/tpm/eventlog/acpi.c | 33 +++++++++++++++++++++++++++++++-
->  1 file changed, 32 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/char/tpm/eventlog/acpi.c b/drivers/char/tpm/eventlog/acpi.c
-> index 3633ed70f48f..1b18ce5ebab1 100644
-> --- a/drivers/char/tpm/eventlog/acpi.c
-> +++ b/drivers/char/tpm/eventlog/acpi.c
-> @@ -41,6 +41,27 @@ struct acpi_tcpa {
->  	};
->  };
->  
-> +/* Check that the given log is indeed a TPM2 log. */
-> +static bool tpm_is_tpm2_log(void *bios_event_log, u64 len)
-> +{
-> +	struct tcg_efi_specid_event_head *efispecid;
-> +	struct tcg_pcr_event *event_header;
-> +	int n;
-> +
-> +	if (len < sizeof(*event_header))
-> +		return false;
-> +	len -= sizeof(*event_header);
-> +	event_header = bios_event_log;
-> +
-> +	if (len < sizeof(*efispecid))
-> +		return false;
-> +	efispecid = (struct tcg_efi_specid_event_head *)event_header->event;
-> +
-> +	n = memcmp(efispecid->signature, TCG_SPECID_SIG,
-> +		   sizeof(TCG_SPECID_SIG));
-> +	return n == 0;
-> +}
-> +
->  /* read binary bios log */
->  int tpm_read_log_acpi(struct tpm_chip *chip)
->  {
-> @@ -52,6 +73,7 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
->  	struct acpi_table_tpm2 *tbl;
->  	struct acpi_tpm2_phy *tpm2_phy;
->  	int format;
-> +	int ret;
->  
->  	log = &chip->log;
->  
-> @@ -112,6 +134,7 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
->  
->  	log->bios_event_log_end = log->bios_event_log + len;
->  
-> +	ret = -EIO;
->  	virt = acpi_os_map_iomem(start, len);
->  	if (!virt)
->  		goto err;
-> @@ -119,11 +142,19 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
->  	memcpy_fromio(log->bios_event_log, virt, len);
->  
->  	acpi_os_unmap_iomem(virt, len);
-> +
-> +	if (chip->flags & TPM_CHIP_FLAG_TPM2 &&
-> +	    !tpm_is_tpm2_log(log->bios_event_log, len)) {
-> +		/* try EFI log next */
-> +		ret = -ENODEV;
-> +		goto err;
-> +	}
-> +
->  	return format;
->  
->  err:
->  	kfree(log->bios_event_log);
->  	log->bios_event_log = NULL;
-> -	return -EIO;
-> +	return ret;
->  
->  }
-> -- 
-> 2.29.2
-> 
-> 
+On Thu, Mar 4, 2021 at 8:49 PM Jonathan Marek <jonathan@marek.ca> wrote:
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> If these fields are not set in dts, the driver will use these variables
+> uninitialized to set the fields. Not only will it set garbage values for
+> these fields, but it can overflow into other fields and break those.
+>
+> In the current sm8250 dts, the dmic01 entries do not have a pullup setting,
+> and might not work without this change.
+>
+> Fixes: 6e261d1090d6 ("pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver")
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 
-/Jarkko
+Patch applied for fixes!
+
+Yours,
+Linus Walleij
