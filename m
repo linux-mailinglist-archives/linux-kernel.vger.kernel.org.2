@@ -2,205 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0DC334BF6
+	by mail.lfdr.de (Postfix) with ESMTP id 7E441334BF7
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbhCJWxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:53:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230499AbhCJWwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:52:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A57D64FAD;
-        Wed, 10 Mar 2021 22:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615416765;
-        bh=MkCN1VAfUgADubYsZbTmw2H9+u5F7zEXUUWpNKMGZNM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GSGF1V+ne/C/fthu1GGCeyHir1chRImToauZkZl9ZaYFfij1PdPFJ+xHCz4mohPdr
-         +XehbGV4BFsEYxRoZsgL2bTAMUrww8F4CINhBjeEn9sdiFGk4mLe7VI0CykAPBEDBq
-         5n8g2ZEssQu5Yl9tJ8Sx6fpEw3Omik02t2L9E1H9C/B78J9qzJN77u2dUwjx6OL+nW
-         lS/zru8KCKk97jSG7K9Ix67urj18Eg4uvnflTe5xlkGUTPTRdw+plcKKbe54ZreFDL
-         EkrOK0L7i/Q/H4ZXGWBS5cFUD6S9C1J+kGO1AUkCtsx8P5Pl8XCN5TAbfdXhYU663o
-         emVEZHnZpAUtQ==
-Date:   Wed, 10 Mar 2021 15:52:40 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: -Walign-mismatch in block/blk-mq.c
-Message-ID: <20210310225240.4epj2mdmzt4vurr3@archlinux-ax161>
-References: <20210310182307.zzcbi5w5jrmveld4@archlinux-ax161>
- <99cf90ea-81c0-e110-4815-dd1f7df36cb4@kernel.dk>
- <20210310203323.35w2q7tlnxe23ukg@Ryzen-9-3900X.localdomain>
- <e43dba61-8c74-757d-862d-99d23559cf50@kernel.dk>
- <20210310205250.hpe4wcgn4yh3rjqz@archlinux-ax161>
- <9834f7fc-f4d2-2230-7e1f-9b607ea782de@kernel.dk>
+        id S233535AbhCJWxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:53:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231880AbhCJWwy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:52:54 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227CFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:52:54 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id q2-20020a17090a2e02b02900bee668844dso8066173pjd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:52:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xceL2rrz5muxxXaFpXKbAe7z2y2J/Hz3q5dv+FSBpyg=;
+        b=hS8aIW+Yt/OFEMTo4xIu6Tvk1YCBuq127Ex1VhmNXR+TaOpmB5tCs5UGwsvuzoexHQ
+         UWuClhqUrTHb5mNaZlox6Ht8wZgpW98eIB4wBE3IrObOif/XbeGoI3m2aFa5ukFWiLtm
+         swDj+r0/8dIhdku09dEqShdqYG/ScIzLPLqug=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xceL2rrz5muxxXaFpXKbAe7z2y2J/Hz3q5dv+FSBpyg=;
+        b=HMlga+LMwQs+BFqVOyzVlgb9MhaI4CBnRnv6Eoech1EdXUoZf0vB9XqYNXkeAvQWzO
+         H/YgqYVVXsL7Iqur/nSTLipBa9nxl5TtXsOgCtps+pRvmo3KQOYHJvQL2P1EhyBtrCrt
+         Z5S/sSEW3erMe7yPEObEW5K/Lmm8nEwONa7fIkbH/gILrX3apxVlsrHsswsMPUrN6XyS
+         MtDAgee2XHBqlPartC4w9tV0DUEgFb6sgustcJC7JZfptCfPsK8euMt8K0qM1W8SFvem
+         TR+K2LYECwFsnZbbwUdyOvWyCdiQsgcf0PHmkW/7SERnx7V10W19nPY2jNgflezE2ax7
+         hd1Q==
+X-Gm-Message-State: AOAM531t15+99z7eT2vxvMYV5M2M4eG6lTWeqp2B6fePxiCUecGEWMm1
+        CvZJIY7LdrXaA1JU9vY7AGRn5Q==
+X-Google-Smtp-Source: ABdhPJztd6S7CLxtE4/aHpkKlretTOkcV598udASVtD7x6Jq37Ei7re5BnZbxujJLo5zhHf4dyKQBA==
+X-Received: by 2002:a17:90b:e18:: with SMTP id ge24mr5804981pjb.199.1615416773769;
+        Wed, 10 Mar 2021 14:52:53 -0800 (PST)
+Received: from li-cloudtop.c.googlers.com.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id t22sm353384pjo.45.2021.03.10.14.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 14:52:53 -0800 (PST)
+From:   Li Li <dualli@chromium.org>
+To:     dualli@google.com, tkjos@google.com, gregkh@linuxfoundation.org,
+        christian@brauner.io, arve@android.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
+        surenb@google.com
+Cc:     joel@joelfernandes.org, kernel-team@android.com
+Subject: [PATCH v1 0/3] Binder: Enable App Freezing Capability
+Date:   Wed, 10 Mar 2021 14:52:48 -0800
+Message-Id: <20210310225251.2577580-1-dualli@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc1.246.gcd05c9c855-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9834f7fc-f4d2-2230-7e1f-9b607ea782de@kernel.dk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 02:03:56PM -0700, Jens Axboe wrote:
-> On 3/10/21 1:52 PM, Nathan Chancellor wrote:
-> > On Wed, Mar 10, 2021 at 01:40:25PM -0700, Jens Axboe wrote:
-> >> On 3/10/21 1:33 PM, Nathan Chancellor wrote:
-> >>> On Wed, Mar 10, 2021 at 01:21:52PM -0700, Jens Axboe wrote:
-> >>>> On 3/10/21 11:23 AM, Nathan Chancellor wrote:
-> >>>>> Hi Jens,
-> >>>>>
-> >>>>> There is a new clang warning added in the development branch,
-> >>>>> -Walign-mismatch, which shows an instance in block/blk-mq.c:
-> >>>>>
-> >>>>> block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to
-> >>>>> 32-byte aligned parameter 2 of 'smp_call_function_single_async' may
-> >>>>> result in an unaligned pointer access [-Walign-mismatch]
-> >>>>>                 smp_call_function_single_async(cpu, &rq->csd);
-> >>>>>                                                     ^
-> >>>>> 1 warning generated.
-> >>>>>
-> >>>>> There appears to be some history here as I can see that this member was
-> >>>>> purposefully unaligned in commit 4ccafe032005 ("block: unalign
-> >>>>> call_single_data in struct request"). However, I later see a change in
-> >>>>> commit 7c3fb70f0341 ("block: rearrange a few request fields for better
-> >>>>> cache layout") that seems somewhat related. Is it possible to get back
-> >>>>> the alignment by rearranging the structure again? This seems to be the
-> >>>>> only solution for the warning aside from just outright disabling it,
-> >>>>> which would be a shame since it seems like it could be useful for
-> >>>>> architectures that cannot handle unaligned accesses well, unless I am
-> >>>>> missing something obvious :)
-> >>>>
-> >>>> It should not be hard to ensure that alignment without re-introducing
-> >>>> the bloat. Is there some background on why 32-byte alignment is
-> >>>> required?
-> >>>>
-> >>>
-> >>> This alignment requirement was introduced in commit 966a967116e6 ("smp:
-> >>> Avoid using two cache lines for struct call_single_data") and it looks
-> >>> like there was a thread between you and Peter Zijlstra that has some
-> >>> more information on this:
-> >>> https://lore.kernel.org/r/a9beb452-7344-9e2d-fc80-094d8f5a0394@kernel.dk/
-> >>
-> >> Ah now I remember - so it's not that it _needs_ to be 32-byte aligned,
-> >> it's just a handy way to ensure that it doesn't straddle two cachelines.
-> >> In fact, there's no real alignment concern, outside of performance
-> >> reasons we don't want it touching two cachelines.
-> >>
-> >> So... what exactly is your concern? Just silencing that warning? Because
-> > 
-> > Yes, dealing with the warning in some way is my only motivation. My
-> > apologies, I should have led with that. I had assumed that this would
-> > potentially be an issue due to the warning's text and that rearranging
-> > the structure might allow the alignment to be added back but if there is
-> > not actually a problem, then the warning should be silenced in some way.
-> 
-> Right, that's what I was getting at, but I needed to page that context
-> back in, it had long since been purged :-)
-> 
-> > I am not sure if there is a preferred way to silence it (CFLAGS_... or
-> > some of the __diag() infrastructure in include/linux/compiler_types.h).
-> 
-> That's a good question, I'm not sure what the best approach here would
-> be. Funnily enough, on my build, it just so happens to be 32-byte
-> aligned anyway, but that's by mere chance.
+From: Li Li <dualli@google.com>
 
-As far as I can tell, there are two options.
+To improve the user experience when switching between recently used
+applications, the background applications which are not currently needed
+are cached in the memory. Normally, a well designed application will not
+consume valuable CPU resources in the background. However, it's possible
+some applications are not able or willing to behave as expected, wasting
+energy even after being cached.
 
-1. Objectively smallest option is to just disable -Walign-mismatch for
-   the whole translation unit. The benefit of this route is one small
-   and simple patch. The downside is that if there are any more
-   instances of this added in the future, they won't be caught. May or
-   may not actually happen or be a big deal.
+It is a good idea to freeze those applications when they're only being
+kept alive for the sake of faster startup and energy saving. These kernel
+patches will provide the necessary infrastructure for user space framework
+to freeze and thaw a cached process, check the current freezing status and
+correctly deal with outstanding binder transactions to frozen processes.
 
-diff --git a/block/Makefile b/block/Makefile
-index 8d841f5f986f..432d0329fb58 100644
---- a/block/Makefile
-+++ b/block/Makefile
-@@ -9,6 +9,7 @@ obj-$(CONFIG_BLOCK) := bio.o elevator.o blk-core.o blk-sysfs.o \
- 			blk-lib.o blk-mq.o blk-mq-tag.o blk-stat.o \
- 			blk-mq-sysfs.o blk-mq-cpumap.o blk-mq-sched.o ioctl.o \
- 			genhd.o ioprio.o badblocks.o partitions/ blk-rq-qos.o
-+CFLAGS_blk-mq.o := $(call cc-disable-warning, align-mismatch)
- 
- obj-$(CONFIG_BOUNCE)		+= bounce.o
- obj-$(CONFIG_BLK_SCSI_REQUEST)	+= scsi_ioctl.o
+Marco Ballesio (3):
+  binder: BINDER_FREEZE ioctl
+  binder: use EINTR for interrupted wait for work
+  binder: BINDER_GET_FROZEN_INFO ioctl
 
-2. Use the __diag() infrastructure, which would allow us to locally
-   disable the warning while adding a comment. The benefit of this
-   approach is that the warning is only disabled for the problematic
-   line so other instances can be caught. The downside is there is a
-   little churn as it will involve a patch for the initial __diag()
-   support for clang (as it has not needed it yet) and a few more lines
-   in block/blk-mq.c. Additionally, the reason for the warning can be
-   documented (the comment can obviously be improved).
+ drivers/android/binder.c            | 196 ++++++++++++++++++++++++++--
+ drivers/android/binder_internal.h   |  18 +++
+ include/uapi/linux/android/binder.h |  20 +++
+ 3 files changed, 222 insertions(+), 12 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index d4d7c1caa439..2781c04d06bc 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -627,7 +627,10 @@ static void blk_mq_complete_send_ipi(struct request *rq)
- 	list = &per_cpu(blk_cpu_done, cpu);
- 	if (llist_add(&rq->ipi_list, list)) {
- 		INIT_CSD(&rq->csd, __blk_mq_complete_request_remote, rq);
-+		__diag_push();
-+		__diag_ignore(clang, 13, "-Walign-mismatch", "There is no issue with misalignment here");
- 		smp_call_function_single_async(cpu, &rq->csd);
-+		__diag_pop();
- 	}
- }
- 
-diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-index 04c0a5a717f7..0a20fddc1c30 100644
---- a/include/linux/compiler-clang.h
-+++ b/include/linux/compiler-clang.h
-@@ -55,3 +55,25 @@
- #if __has_feature(shadow_call_stack)
- # define __noscs	__attribute__((__no_sanitize__("shadow-call-stack")))
- #endif
-+
-+/*
-+ *  * Turn individual warnings and errors on and off locally, depending
-+ *   * on version.
-+ *    */
-+#define __diag_clang(version, severity, s) \
-+		__diag_clang_ ## version(__diag_clang_ ## severity s)
-+
-+/* Severity used in pragma directives */
-+#define __diag_clang_ignore	ignored
-+#define __diag_clang_warn	warning
-+#define __diag_clang_error	error
-+
-+#define __diag_str1(s)		#s
-+#define __diag_str(s)		__diag_str1(s)
-+#define __diag(s)		_Pragma(__diag_str(clang diagnostic s))
-+
-+#if CONFIG_CLANG_VERSION >= 130000
-+#define __diag_clang_13(s)		__diag(s)
-+#else
-+#define __diag_clang_13(s)
-+#endif
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index e5dd5a4ae946..a505d8a4302d 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -328,6 +328,10 @@ struct ftrace_likely_data {
- #define __diag(string)
- #endif
- 
-+#ifndef __diag_clang
-+#define __diag_clang(version, severity, string)
-+#endif
-+
- #ifndef __diag_GCC
- #define __diag_GCC(version, severity, string)
- #endif
+-- 
+2.31.0.rc1.246.gcd05c9c855-goog
 
-I would say the preference is ultimately up to the maintainer, unless my
-fellow ClangBuiltLinux maintainers/contributors have any further
-comments/objections.
-
-Cheers,
-Nathan
