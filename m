@@ -2,723 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA69A33446C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA26B334474
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhCJQ7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:59:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49056 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233348AbhCJQ72 (ORCPT
+        id S233785AbhCJRAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:00:14 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37240 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233783AbhCJQ7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:59:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615395567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=23/uau4IKv0ZIDU3TV8ZbfKGSR3Dzt3o5ODM+F77Hxs=;
-        b=C7vCFRaTqlqw4WNVPmHekXvsvcKjwzl7HoWSukYWU2IBwQgs17sKZFOx9YLWJ2wtcWfmWh
-        xrqdcO6cOHWCeJHKqsfruO817q6noNzSRBJ+mghF/SvPVbJFDbFG0zU/D04TYPE5SZjw6f
-        9BQpaBCPE+2bH2IuY0Jf8YJ3K4pT43w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-CgcrjcsTN3KP4V5ZM2sWXg-1; Wed, 10 Mar 2021 11:59:25 -0500
-X-MC-Unique: CgcrjcsTN3KP4V5ZM2sWXg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A53A0802B62;
-        Wed, 10 Mar 2021 16:59:23 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5BA745B6A8;
-        Wed, 10 Mar 2021 16:59:16 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v4 22/28] afs: Use ITER_XARRAY for writing
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 10 Mar 2021 16:59:16 +0000
-Message-ID: <161539555629.286939.5241869986617154517.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
-References: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+        Wed, 10 Mar 2021 11:59:39 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12AGfj5L001216;
+        Wed, 10 Mar 2021 08:59:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=7xNgyOVIKeay23LTQDLZqmGHNkrh2pialKkiJp6JHMo=;
+ b=RjzDGZ6DzLYoWRv1tUdODPh3zs+G7DgQGPIDxtFiUX+UtJcIdV21DK/rz/guPm0Y4c2q
+ gJYx8qQI4D8LKN/2u9F2rjZhQQPndVsj11CXKU4Dz3XnGSIA/uQPDJpYNgjwMXMAWfcK
+ xeaDOvMPHpyy2cmST1NturXdWKGevUt6ZUo= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 376c07ptvn-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 10 Mar 2021 08:59:24 -0800
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 10 Mar 2021 08:59:23 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HXVrd89nUeyX/4PRjZQsW9NtML7+wm1lL9teasU0RZlAkz4Wtv14vF5XPwgoUqIRv7otTkbQ2WFiJ0xVSq/8JJrVV2vkkiTlakQAO5NV0THDh7j46D/hKNBdFx1kt8Li7F3txIKwoFdh0POP26rysiPY/t5z5y7+7Jx0Z3NqN/t3KHgs2/9giJSvo+oVkqVWUjG3tu3+piai5OLwLEgUIUFadSqiA1L1NQKksSUHW92z2TWDajgS2YFXWn7STvDf/KyH5xGtOoe32J9aTrbTzILTgMBy2R37wN9cfJoaQ5hYNIdLFaZdPeWiZSwrA4wINTBTqPVRPZotCswpMDxAqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7xNgyOVIKeay23LTQDLZqmGHNkrh2pialKkiJp6JHMo=;
+ b=SouhYtR9r9hSUXRJJgJ1iTJPwERgPg1UDmvYNdRiG6KyxcuPGlMYctD6e0NcyHTSHJIoegV2YK+aG9ZIQhmBZsfBetc/TnDaokugdlSGxXlFnhYibqtf+GlleKPTzQwA/9JPi+HF5dyenjdnioJPTHhu8NpFiF8PfRVjOCciAOe5ZlOeGq2kK0kX68FI2TLH9uBLU8Gj5mzpECAZYBFhxqSoqabZlVBguYGrgvJzP8d1PazGWUNnICPhZ6VnNPfSs4wTUtbyOmD25tUrK3tb7u5R+dNKJN2ZiUHrAg2u5fm8VN+5borqk1wQ0TTWNxuTCctl35H08qDvm1noon0gFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR1501MB1968.namprd15.prod.outlook.com (2603:10b6:805:e::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Wed, 10 Mar
+ 2021 16:59:23 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3890.039; Wed, 10 Mar 2021
+ 16:59:22 +0000
+Subject: Re: [BUG] One-liner array initialization with two pointers in BPF
+ results in NULLs
+To:     Florent Revest <revest@chromium.org>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210310015455.1095207-1-revest@chromium.org>
+ <f5cfb3d0-fab4-ee07-70de-ad5589db1244@fb.com>
+ <eb0a8485-9624-1727-6913-e4520c9d8c04@fb.com>
+ <CABRcYmK8m21sb8dHbr1wLT_oTCBpvr2Zg-8KHwKuJ2Ak0iTZ_A@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <454d2e4b-f842-624c-a89e-441830c98e99@fb.com>
+Date:   Wed, 10 Mar 2021 08:59:18 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
+In-Reply-To: <CABRcYmK8m21sb8dHbr1wLT_oTCBpvr2Zg-8KHwKuJ2Ak0iTZ_A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Originating-IP: [2620:10d:c090:400::5:9c2d]
+X-ClientProxiedBy: MW4PR03CA0167.namprd03.prod.outlook.com
+ (2603:10b6:303:8d::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::1111] (2620:10d:c090:400::5:9c2d) by MW4PR03CA0167.namprd03.prod.outlook.com (2603:10b6:303:8d::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Wed, 10 Mar 2021 16:59:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0dcea82c-7ad8-47f5-30bc-08d8e3e5da86
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB1968:
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB1968430001572877BF1BEB9BD3919@SN6PR1501MB1968.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dw7VO2fMuGYLaHZahJn+nQinnhU25zQP37fhMXDC3grC69nmZ61n5wgTZk+IvaOW3nE/fDlMkk71ZPMYljRgLjit5qYl3Qj6kFdPVlK6oDmYNv5Z5o6adHcUH3kgULIMj3HAd7ne6DYyxlJQd/1ppaBW+AATkv9W7WByUg2SWAK2ZoNiluUEHwq8Ub3ZHPe6/+FwJsf/pAjjbnRz4pMzDX+IDETOe+9zv7YySaWlf3LsQTjdMYPsiC59sXseoGyJPD7mHotgFMFXAympzVZ8tmSho/9X40JsX8EsNFYRrZzlZwHYNfcCR6vHZ9wa3hpIeu8RH4H2hbDlW3A6P6iWVC6fcbWSmaNbm0Gf7PV7bOH0YNcsw65WEQA1+QoNzG9aBcJLMa+71jnMwTwsWE/bRPHMn1/yHi2HA32/rjv7/zSwZRobN0UT7pnCLc33W+UZqsXb8Nbxu+Z7K3eBeWRb1bySiMCE0ifSou8BkcOiO5nHqEVRm5e1ovbT8lJFSjS1qaWW7pWNKDIWllKy2Hx3Owbn+euiH7GuV2pTpAkzSecoNp+OfcTF8GORz2lL4YqrcnPSGoA2FkOjBvumRkNI6+kKrOPEE4WHpwYjSdAEHAo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(136003)(346002)(396003)(376002)(4326008)(31686004)(66946007)(53546011)(478600001)(54906003)(6486002)(83380400001)(52116002)(31696002)(6916009)(5660300002)(186003)(2906002)(36756003)(16526019)(66556008)(316002)(8676002)(6666004)(66476007)(8936002)(2616005)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RnZyRXM2TUlsUGhpWWtIZkF3T3JTTG1ab1R6c1FWcE5BdmNqakJSd2tZNmZj?=
+ =?utf-8?B?TzAxZzVpY0tNd3d1d2IvWUlHTnpTNGhJOEpUa0o5Nko2OTduUk9DU0NCenB6?=
+ =?utf-8?B?QVpSb1IxRytEZTV2T1crSnE0UUM1TCtJVVhyYUJma3BCY3ZWcDhtZFNJTVBN?=
+ =?utf-8?B?MWcvSDRjMW11R0V6cFZhMUhhNDZua0RKUGlhWWQxOXlkMDRQM2RxK0dxUmIz?=
+ =?utf-8?B?MURTRlVMRTBIS2JaS0w1RXF3SzFZNG1nNmJ6eFgrMElETHRSdHpmTGdjbTl6?=
+ =?utf-8?B?aFEvckZVM1F6OEZ0UEZhMWNibXFQK1BjSDBTaHlrZnNGRHBHQ0MwbTB0ejVq?=
+ =?utf-8?B?amNOamVMdmVNdWsyUVVDZGZNVUVaTUoyb0c2a2E3QmpNOFY0Tlo2U0FxWDRE?=
+ =?utf-8?B?RHFaMFM1MDlpTGltRWw2TmRSWFpKU2RiWkpHWnYybHVyUy9naTZaeE95bmRi?=
+ =?utf-8?B?NkZva1UwS0tFQnVCVVRzSTJ1bnVnZWNwMmpkWGFLbTc2bUR2SHRDdURZQVlK?=
+ =?utf-8?B?NTJRUHVDaU5IcHRnVXE0Rlh4dVpETkxEVWRmY1IzUnVtT0J2ZVBPQmM1QzFp?=
+ =?utf-8?B?ZFFWc05CKzBIT25TUjBYSnoxaTFSRFluTVA1ZDhSV0s0aENjbzdCZit1R0Uz?=
+ =?utf-8?B?M2FHR3FrZmc3cHQvMVgzOHRHb2t6YWRDNi9BNEZrZ0dyMVN1N0VUZlE3L0tP?=
+ =?utf-8?B?alE5UHNkUVA3emdUREc1QUpUMklxVWt1SHNEZjlnYmNrRnBxcEhoUXRBWEJN?=
+ =?utf-8?B?ZUVTVWxvcmRWbVp4KzY2ZFpoWUcyZWU5eVhaOXNMOUd3ei9ENGFjbFUxbEpZ?=
+ =?utf-8?B?Sm03NlM1ZEE1c2l2dmkxeDE2NjM2RFBnRk85YXhqVmUwc1oxZUZnanZqblFJ?=
+ =?utf-8?B?aVNDdXR2eGVQS1N4YmxjcE92QTZPTXl5NkFlOE5uRkQ3YU1MMmhjczZiRU5j?=
+ =?utf-8?B?UEFyVjBqd0RRcmRra3pjdzVTbjI1dVJkVG1uOGFHUVRSYitOc0VsY3RBeFBG?=
+ =?utf-8?B?ZDdGVnpDQnNqS0g2TlZxRTZDa0ZhaElTZWp5OTFWbSt1NEZXSXJHRG9Uc0VS?=
+ =?utf-8?B?b0xxVUJpUWZJc3JHVEJnRXdBbUIzeHRTOU9PMmVtQlA5OUtZelBicWxKRWZn?=
+ =?utf-8?B?bjcySy9sT0czL0x6bDFmaDFWdlg2OHVTSkI4MVd3TkdrbS9CYUFoVFhLWHM4?=
+ =?utf-8?B?S0NiYWhZcG5Belp4ZlZoL1VnemEvNDN6VVRYaE9ycGxuK2VkRklidHQ5Qkk3?=
+ =?utf-8?B?TTFQYStNMXZoWGZXZ3o2N0UzTXFiYVB3b0h4REh2NXhoTDdqVWtqNkhvNmlE?=
+ =?utf-8?B?b0s3d0JkYmltbXQrUnVVbXIzQzdWRHRpQjMxb1BzbzU0RUk5cU1xdlZ3U21E?=
+ =?utf-8?B?RTFDZU85RDNPNzFSOFdXVTFnT1JjY1BUQVZ5dHNwOTZHZkMyZ0lHOXN1UzJp?=
+ =?utf-8?B?RmlXeExCM0c4TGJUM2xYRlNWQytGR21XM2ZneDZXTzEyalg0NmV2UHhKOEhx?=
+ =?utf-8?B?K3hpa1UzeW5yQmRiVENWRmJiWENGeFFRWjU4WklWaDJxOHhId3hXai8zUHlS?=
+ =?utf-8?B?R3FRVCtxWmplTHY1TjJDVCtzQ25mTVZPWHVxRzBoME5PQ2dzTWRkRWNQTjBp?=
+ =?utf-8?B?aGZlWVN4WXdkVDJvRFZVOXBWUFJ4cXVHNWJuMGkxajJVbWYxc3ZtZGkvcXZG?=
+ =?utf-8?B?M3Z6SmpHZzR1bHRTOFhWb2w0RE4zWTZKVFVWK1FVZGhnUFp1VGdpS1NYaWNu?=
+ =?utf-8?B?em1GNkx6dHpBZ1M1dWQ2OHZLd2ZyRW5LU294d3A1WnFGQUpoYVhUNFJWKzlm?=
+ =?utf-8?B?WkdETkd1UDh1S2Q3QVlQZz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0dcea82c-7ad8-47f5-30bc-08d8e3e5da86
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2021 16:59:22.8547
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: B9unaWXY9qwm7DF5BijHiQSQSiiM/inVNn9nYkis+nza6UDxAufKJwxKy8qRAL3f
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB1968
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-10_10:2021-03-10,2021-03-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ mlxscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0 suspectscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 spamscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103100082
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a single ITER_XARRAY iterator to describe the portion of a file to be
-transmitted to the server rather than generating a series of small
-ITER_BVEC iterators on the fly.  This will make it easier to implement AIO
-in afs.
-
-In theory we could maybe use one giant ITER_BVEC, but that means
-potentially allocating a huge array of bio_vec structs (max 256 per page)
-when in fact the pagecache already has a structure listing all the relevant
-pages (radix_tree/xarray) that can be walked over.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/153685395197.14766.16289516750731233933.stgit@warthog.procyon.org.uk/
-Link: https://lore.kernel.org/r/158861251312.340223.17924900795425422532.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/159465828607.1377938.6903132788463419368.stgit@warthog.procyon.org.uk/
-Link: https://lore.kernel.org/r/160588535018.3465195.14509994354240338307.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161118152415.1232039.6452879415814850025.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161161048194.2537118.13763612220937637316.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/161340411602.1303470.4661108879482218408.stgit@warthog.procyon.org.uk/ # v3
----
-
- fs/afs/fsclient.c          |   50 +++++++++------------
- fs/afs/internal.h          |   15 +++---
- fs/afs/rxrpc.c             |  103 ++++++--------------------------------------
- fs/afs/write.c             |  100 ++++++++++++++++++++++++-------------------
- fs/afs/yfsclient.c         |   25 +++--------
- include/trace/events/afs.h |   51 ++++++++--------------
- 6 files changed, 126 insertions(+), 218 deletions(-)
-
-diff --git a/fs/afs/fsclient.c b/fs/afs/fsclient.c
-index 897b37301851..31e6b3635541 100644
---- a/fs/afs/fsclient.c
-+++ b/fs/afs/fsclient.c
-@@ -1055,8 +1055,7 @@ static const struct afs_call_type afs_RXFSStoreData64 = {
- /*
-  * store a set of pages to a very large file
-  */
--static void afs_fs_store_data64(struct afs_operation *op,
--				loff_t pos, loff_t size, loff_t i_size)
-+static void afs_fs_store_data64(struct afs_operation *op)
- {
- 	struct afs_vnode_param *vp = &op->file[0];
- 	struct afs_call *call;
-@@ -1071,7 +1070,7 @@ static void afs_fs_store_data64(struct afs_operation *op,
- 	if (!call)
- 		return afs_op_nomem(op);
- 
--	call->send_pages = true;
-+	call->write_iter = op->store.write_iter;
- 
- 	/* marshall the parameters */
- 	bp = call->request;
-@@ -1087,47 +1086,38 @@ static void afs_fs_store_data64(struct afs_operation *op,
- 	*bp++ = 0; /* unix mode */
- 	*bp++ = 0; /* segment size */
- 
--	*bp++ = htonl(upper_32_bits(pos));
--	*bp++ = htonl(lower_32_bits(pos));
--	*bp++ = htonl(upper_32_bits(size));
--	*bp++ = htonl(lower_32_bits(size));
--	*bp++ = htonl(upper_32_bits(i_size));
--	*bp++ = htonl(lower_32_bits(i_size));
-+	*bp++ = htonl(upper_32_bits(op->store.pos));
-+	*bp++ = htonl(lower_32_bits(op->store.pos));
-+	*bp++ = htonl(upper_32_bits(op->store.size));
-+	*bp++ = htonl(lower_32_bits(op->store.size));
-+	*bp++ = htonl(upper_32_bits(op->store.i_size));
-+	*bp++ = htonl(lower_32_bits(op->store.i_size));
- 
- 	trace_afs_make_fs_call(call, &vp->fid);
- 	afs_make_op_call(op, call, GFP_NOFS);
- }
- 
- /*
-- * store a set of pages
-+ * Write data to a file on the server.
-  */
- void afs_fs_store_data(struct afs_operation *op)
- {
- 	struct afs_vnode_param *vp = &op->file[0];
- 	struct afs_call *call;
--	loff_t size, pos, i_size;
- 	__be32 *bp;
- 
- 	_enter(",%x,{%llx:%llu},,",
- 	       key_serial(op->key), vp->fid.vid, vp->fid.vnode);
- 
--	size = (loff_t)op->store.last_to - (loff_t)op->store.first_offset;
--	if (op->store.first != op->store.last)
--		size += (loff_t)(op->store.last - op->store.first) << PAGE_SHIFT;
--	pos = (loff_t)op->store.first << PAGE_SHIFT;
--	pos += op->store.first_offset;
--
--	i_size = i_size_read(&vp->vnode->vfs_inode);
--	if (pos + size > i_size)
--		i_size = size + pos;
--
- 	_debug("size %llx, at %llx, i_size %llx",
--	       (unsigned long long) size, (unsigned long long) pos,
--	       (unsigned long long) i_size);
-+	       (unsigned long long)op->store.size,
-+	       (unsigned long long)op->store.pos,
-+	       (unsigned long long)op->store.i_size);
- 
--	if (upper_32_bits(pos) || upper_32_bits(i_size) || upper_32_bits(size) ||
--	    upper_32_bits(pos + size))
--		return afs_fs_store_data64(op, pos, size, i_size);
-+	if (upper_32_bits(op->store.pos) ||
-+	    upper_32_bits(op->store.size) ||
-+	    upper_32_bits(op->store.i_size))
-+		return afs_fs_store_data64(op);
- 
- 	call = afs_alloc_flat_call(op->net, &afs_RXFSStoreData,
- 				   (4 + 6 + 3) * 4,
-@@ -1135,7 +1125,7 @@ void afs_fs_store_data(struct afs_operation *op)
- 	if (!call)
- 		return afs_op_nomem(op);
- 
--	call->send_pages = true;
-+	call->write_iter = op->store.write_iter;
- 
- 	/* marshall the parameters */
- 	bp = call->request;
-@@ -1151,9 +1141,9 @@ void afs_fs_store_data(struct afs_operation *op)
- 	*bp++ = 0; /* unix mode */
- 	*bp++ = 0; /* segment size */
- 
--	*bp++ = htonl(lower_32_bits(pos));
--	*bp++ = htonl(lower_32_bits(size));
--	*bp++ = htonl(lower_32_bits(i_size));
-+	*bp++ = htonl(lower_32_bits(op->store.pos));
-+	*bp++ = htonl(lower_32_bits(op->store.size));
-+	*bp++ = htonl(lower_32_bits(op->store.i_size));
- 
- 	trace_afs_make_fs_call(call, &vp->fid);
- 	afs_make_op_call(op, call, GFP_NOFS);
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 0ed1793949dd..4076c6ba43eb 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -107,6 +107,7 @@ struct afs_call {
- 	void			*request;	/* request data (first part) */
- 	size_t			iov_len;	/* Size of *iter to be used */
- 	struct iov_iter		def_iter;	/* Default buffer/data iterator */
-+	struct iov_iter		*write_iter;	/* Iterator defining write to be made */
- 	struct iov_iter		*iter;		/* Iterator currently in use */
- 	union {	/* Convenience for ->def_iter */
- 		struct kvec	kvec[1];
-@@ -133,7 +134,6 @@ struct afs_call {
- 	unsigned char		unmarshall;	/* unmarshalling phase */
- 	unsigned char		addr_ix;	/* Address in ->alist */
- 	bool			drop_ref;	/* T if need to drop ref for incoming call */
--	bool			send_pages;	/* T if data from mapping should be sent */
- 	bool			need_attention;	/* T if RxRPC poked us */
- 	bool			async;		/* T if asynchronous */
- 	bool			upgrade;	/* T to request service upgrade */
-@@ -811,12 +811,13 @@ struct afs_operation {
- 			afs_lock_type_t type;
- 		} lock;
- 		struct {
--			struct address_space *mapping;	/* Pages being written from */
--			pgoff_t		first;		/* first page in mapping to deal with */
--			pgoff_t		last;		/* last page in mapping to deal with */
--			unsigned	first_offset;	/* offset into mapping[first] */
--			unsigned	last_to;	/* amount of mapping[last] */
--			bool		laundering;	/* Laundering page, PG_writeback not set */
-+			struct iov_iter	*write_iter;
-+			loff_t	pos;
-+			loff_t	size;
-+			loff_t	i_size;
-+			pgoff_t	first;		/* first page in mapping to deal with */
-+			pgoff_t	last;		/* last page in mapping to deal with */
-+			bool	laundering;	/* Laundering page, PG_writeback not set */
- 		} store;
- 		struct {
- 			struct iattr	*attr;
-diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
-index ae68576f822f..23a1a92d64bb 100644
---- a/fs/afs/rxrpc.c
-+++ b/fs/afs/rxrpc.c
-@@ -271,40 +271,6 @@ void afs_flat_call_destructor(struct afs_call *call)
- 	call->buffer = NULL;
- }
- 
--#define AFS_BVEC_MAX 8
--
--/*
-- * Load the given bvec with the next few pages.
-- */
--static void afs_load_bvec(struct afs_call *call, struct msghdr *msg,
--			  struct bio_vec *bv, pgoff_t first, pgoff_t last,
--			  unsigned offset)
--{
--	struct afs_operation *op = call->op;
--	struct page *pages[AFS_BVEC_MAX];
--	unsigned int nr, n, i, to, bytes = 0;
--
--	nr = min_t(pgoff_t, last - first + 1, AFS_BVEC_MAX);
--	n = find_get_pages_contig(op->store.mapping, first, nr, pages);
--	ASSERTCMP(n, ==, nr);
--
--	msg->msg_flags |= MSG_MORE;
--	for (i = 0; i < nr; i++) {
--		to = PAGE_SIZE;
--		if (first + i >= last) {
--			to = op->store.last_to;
--			msg->msg_flags &= ~MSG_MORE;
--		}
--		bv[i].bv_page = pages[i];
--		bv[i].bv_len = to - offset;
--		bv[i].bv_offset = offset;
--		bytes += to - offset;
--		offset = 0;
--	}
--
--	iov_iter_bvec(&msg->msg_iter, WRITE, bv, nr, bytes);
--}
--
- /*
-  * Advance the AFS call state when the RxRPC call ends the transmit phase.
-  */
-@@ -317,42 +283,6 @@ static void afs_notify_end_request_tx(struct sock *sock,
- 	afs_set_call_state(call, AFS_CALL_CL_REQUESTING, AFS_CALL_CL_AWAIT_REPLY);
- }
- 
--/*
-- * attach the data from a bunch of pages on an inode to a call
-- */
--static int afs_send_pages(struct afs_call *call, struct msghdr *msg)
--{
--	struct afs_operation *op = call->op;
--	struct bio_vec bv[AFS_BVEC_MAX];
--	unsigned int bytes, nr, loop, offset;
--	pgoff_t first = op->store.first, last = op->store.last;
--	int ret;
--
--	offset = op->store.first_offset;
--	op->store.first_offset = 0;
--
--	do {
--		afs_load_bvec(call, msg, bv, first, last, offset);
--		trace_afs_send_pages(call, msg, first, last, offset);
--
--		offset = 0;
--		bytes = msg->msg_iter.count;
--		nr = msg->msg_iter.nr_segs;
--
--		ret = rxrpc_kernel_send_data(op->net->socket, call->rxcall, msg,
--					     bytes, afs_notify_end_request_tx);
--		for (loop = 0; loop < nr; loop++)
--			put_page(bv[loop].bv_page);
--		if (ret < 0)
--			break;
--
--		first += nr;
--	} while (first <= last);
--
--	trace_afs_sent_pages(call, op->store.first, last, first, ret);
--	return ret;
--}
--
- /*
-  * Initiate a call and synchronously queue up the parameters for dispatch.  Any
-  * error is stored into the call struct, which the caller must check for.
-@@ -384,21 +314,8 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- 	 * after the initial fixed part.
- 	 */
- 	tx_total_len = call->request_size;
--	if (call->send_pages) {
--		struct afs_operation *op = call->op;
--
--		if (op->store.last == op->store.first) {
--			tx_total_len += op->store.last_to - op->store.first_offset;
--		} else {
--			/* It looks mathematically like you should be able to
--			 * combine the following lines with the ones above, but
--			 * unsigned arithmetic is fun when it wraps...
--			 */
--			tx_total_len += PAGE_SIZE - op->store.first_offset;
--			tx_total_len += op->store.last_to;
--			tx_total_len += (op->store.last - op->store.first - 1) * PAGE_SIZE;
--		}
--	}
-+	if (call->write_iter)
-+		tx_total_len += iov_iter_count(call->write_iter);
- 
- 	/* If the call is going to be asynchronous, we need an extra ref for
- 	 * the call to hold itself so the caller need not hang on to its ref.
-@@ -440,7 +357,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- 	iov_iter_kvec(&msg.msg_iter, WRITE, iov, 1, call->request_size);
- 	msg.msg_control		= NULL;
- 	msg.msg_controllen	= 0;
--	msg.msg_flags		= MSG_WAITALL | (call->send_pages ? MSG_MORE : 0);
-+	msg.msg_flags		= MSG_WAITALL | (call->write_iter ? MSG_MORE : 0);
- 
- 	ret = rxrpc_kernel_send_data(call->net->socket, rxcall,
- 				     &msg, call->request_size,
-@@ -448,8 +365,18 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- 	if (ret < 0)
- 		goto error_do_abort;
- 
--	if (call->send_pages) {
--		ret = afs_send_pages(call, &msg);
-+	if (call->write_iter) {
-+		msg.msg_iter = *call->write_iter;
-+		msg.msg_flags &= ~MSG_MORE;
-+		trace_afs_send_data(call, &msg);
-+
-+		ret = rxrpc_kernel_send_data(call->net->socket,
-+					     call->rxcall, &msg,
-+					     iov_iter_count(&msg.msg_iter),
-+					     afs_notify_end_request_tx);
-+		*call->write_iter = msg.msg_iter;
-+
-+		trace_afs_sent_data(call, &msg, ret);
- 		if (ret < 0)
- 			goto error_do_abort;
- 	}
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index e78a9bc3b02d..dd4dc1c868b5 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -325,36 +325,27 @@ static void afs_redirty_pages(struct writeback_control *wbc,
- /*
-  * completion of write to server
-  */
--static void afs_pages_written_back(struct afs_vnode *vnode,
--				   pgoff_t first, pgoff_t last)
-+static void afs_pages_written_back(struct afs_vnode *vnode, pgoff_t start, pgoff_t last)
- {
--	struct pagevec pv;
--	unsigned count, loop;
-+	struct address_space *mapping = vnode->vfs_inode.i_mapping;
-+	struct page *page;
-+
-+	XA_STATE(xas, &mapping->i_pages, start);
- 
- 	_enter("{%llx:%llu},{%lx-%lx}",
--	       vnode->fid.vid, vnode->fid.vnode, first, last);
-+	       vnode->fid.vid, vnode->fid.vnode, start, last);
- 
--	pagevec_init(&pv);
-+	rcu_read_lock();
- 
--	do {
--		_debug("done %lx-%lx", first, last);
-+	xas_for_each(&xas, page, last) {
-+		ASSERT(PageWriteback(page));
- 
--		count = last - first + 1;
--		if (count > PAGEVEC_SIZE)
--			count = PAGEVEC_SIZE;
--		pv.nr = find_get_pages_contig(vnode->vfs_inode.i_mapping,
--					      first, count, pv.pages);
--		ASSERTCMP(pv.nr, ==, count);
-+		detach_page_private(page);
-+		trace_afs_page_dirty(vnode, tracepoint_string("clear"), page);
-+		page_endio(page, true, 0);
-+	}
- 
--		for (loop = 0; loop < count; loop++) {
--			detach_page_private(pv.pages[loop]);
--			trace_afs_page_dirty(vnode, tracepoint_string("clear"),
--					     pv.pages[loop]);
--			end_page_writeback(pv.pages[loop]);
--		}
--		first += count;
--		__pagevec_release(&pv);
--	} while (first <= last);
-+	rcu_read_unlock();
- 
- 	afs_prune_wb_keys(vnode);
- 	_leave("");
-@@ -411,9 +402,7 @@ static void afs_store_data_success(struct afs_operation *op)
- 		if (!op->store.laundering)
- 			afs_pages_written_back(vnode, op->store.first, op->store.last);
- 		afs_stat_v(vnode, n_stores);
--		atomic_long_add((op->store.last * PAGE_SIZE + op->store.last_to) -
--				(op->store.first * PAGE_SIZE + op->store.first_offset),
--				&afs_v2net(vnode)->n_store_bytes);
-+		atomic_long_add(op->store.size, &afs_v2net(vnode)->n_store_bytes);
- 	}
- }
- 
-@@ -426,21 +415,21 @@ static const struct afs_operation_ops afs_store_data_operation = {
- /*
-  * write to a file
-  */
--static int afs_store_data(struct address_space *mapping,
--			  pgoff_t first, pgoff_t last,
--			  unsigned offset, unsigned to, bool laundering)
-+static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter,
-+			  loff_t pos, pgoff_t first, pgoff_t last,
-+			  bool laundering)
- {
--	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
- 	struct afs_operation *op;
- 	struct afs_wb_key *wbk = NULL;
--	int ret;
-+	loff_t size = iov_iter_count(iter), i_size;
-+	int ret = -ENOKEY;
- 
--	_enter("%s{%llx:%llu.%u},%lx,%lx,%x,%x",
-+	_enter("%s{%llx:%llu.%u},%llx,%llx",
- 	       vnode->volume->name,
- 	       vnode->fid.vid,
- 	       vnode->fid.vnode,
- 	       vnode->fid.unique,
--	       first, last, offset, to);
-+	       size, pos);
- 
- 	ret = afs_get_writeback_key(vnode, &wbk);
- 	if (ret) {
-@@ -454,13 +443,16 @@ static int afs_store_data(struct address_space *mapping,
- 		return -ENOMEM;
- 	}
- 
-+	i_size = i_size_read(&vnode->vfs_inode);
-+
- 	afs_op_set_vnode(op, 0, vnode);
- 	op->file[0].dv_delta = 1;
--	op->store.mapping = mapping;
-+	op->store.write_iter = iter;
-+	op->store.pos = pos;
- 	op->store.first = first;
- 	op->store.last = last;
--	op->store.first_offset = offset;
--	op->store.last_to = to;
-+	op->store.size = size;
-+	op->store.i_size = max(pos + size, i_size);
- 	op->store.laundering = laundering;
- 	op->mtime = vnode->vfs_inode.i_mtime;
- 	op->flags |= AFS_OPERATION_UNINTR;
-@@ -503,11 +495,12 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 					   pgoff_t final_page)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
-+	struct iov_iter iter;
- 	struct page *pages[8], *page;
- 	unsigned long count, priv;
- 	unsigned n, offset, to, f, t;
- 	pgoff_t start, first, last;
--	loff_t i_size, end;
-+	loff_t i_size, pos, end;
- 	int loop, ret;
- 
- 	_enter(",%lx", primary_page->index);
-@@ -604,15 +597,28 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 
- 	first = primary_page->index;
- 	last = first + count - 1;
-+	_debug("write back %lx[%u..] to %lx[..%u]", first, offset, last, to);
- 
--	end = (loff_t)last * PAGE_SIZE + to;
--	i_size = i_size_read(&vnode->vfs_inode);
-+	pos = first;
-+	pos <<= PAGE_SHIFT;
-+	pos += offset;
-+	end = last;
-+	end <<= PAGE_SHIFT;
-+	end += to;
- 
--	_debug("write back %lx[%u..] to %lx[..%u]", first, offset, last, to);
-+	/* Trim the actual write down to the EOF */
-+	i_size = i_size_read(&vnode->vfs_inode);
- 	if (end > i_size)
--		to = i_size & ~PAGE_MASK;
-+		end = i_size;
-+
-+	if (pos < i_size) {
-+		iov_iter_xarray(&iter, WRITE, &mapping->i_pages, pos, end - pos);
-+		ret = afs_store_data(vnode, &iter, pos, first, last, false);
-+	} else {
-+		/* The dirty region was entirely beyond the EOF. */
-+		ret = 0;
-+	}
- 
--	ret = afs_store_data(mapping, first, last, offset, to, false);
- 	switch (ret) {
- 	case 0:
- 		ret = count;
-@@ -913,6 +919,8 @@ int afs_launder_page(struct page *page)
- {
- 	struct address_space *mapping = page->mapping;
- 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
-+	struct iov_iter iter;
-+	struct bio_vec bv[1];
- 	unsigned long priv;
- 	unsigned int f, t;
- 	int ret = 0;
-@@ -928,8 +936,14 @@ int afs_launder_page(struct page *page)
- 			t = afs_page_dirty_to(page, priv);
- 		}
- 
-+		bv[0].bv_page = page;
-+		bv[0].bv_offset = f;
-+		bv[0].bv_len = t - f;
-+		iov_iter_bvec(&iter, WRITE, bv, 1, bv[0].bv_len);
-+
- 		trace_afs_page_dirty(vnode, tracepoint_string("launder"), page);
--		ret = afs_store_data(mapping, page->index, page->index, t, f, true);
-+		ret = afs_store_data(vnode, &iter, (loff_t)page->index << PAGE_SHIFT,
-+				     page->index, page->index, true);
- 	}
- 
- 	detach_page_private(page);
-diff --git a/fs/afs/yfsclient.c b/fs/afs/yfsclient.c
-index abcec145db4b..363d6dd276c0 100644
---- a/fs/afs/yfsclient.c
-+++ b/fs/afs/yfsclient.c
-@@ -1078,25 +1078,15 @@ void yfs_fs_store_data(struct afs_operation *op)
- {
- 	struct afs_vnode_param *vp = &op->file[0];
- 	struct afs_call *call;
--	loff_t size, pos, i_size;
- 	__be32 *bp;
- 
- 	_enter(",%x,{%llx:%llu},,",
- 	       key_serial(op->key), vp->fid.vid, vp->fid.vnode);
- 
--	size = (loff_t)op->store.last_to - (loff_t)op->store.first_offset;
--	if (op->store.first != op->store.last)
--		size += (loff_t)(op->store.last - op->store.first) << PAGE_SHIFT;
--	pos = (loff_t)op->store.first << PAGE_SHIFT;
--	pos += op->store.first_offset;
--
--	i_size = i_size_read(&vp->vnode->vfs_inode);
--	if (pos + size > i_size)
--		i_size = size + pos;
--
- 	_debug("size %llx, at %llx, i_size %llx",
--	       (unsigned long long)size, (unsigned long long)pos,
--	       (unsigned long long)i_size);
-+	       (unsigned long long)op->store.size,
-+	       (unsigned long long)op->store.pos,
-+	       (unsigned long long)op->store.i_size);
- 
- 	call = afs_alloc_flat_call(op->net, &yfs_RXYFSStoreData64,
- 				   sizeof(__be32) +
-@@ -1109,8 +1099,7 @@ void yfs_fs_store_data(struct afs_operation *op)
- 	if (!call)
- 		return afs_op_nomem(op);
- 
--	call->key = op->key;
--	call->send_pages = true;
-+	call->write_iter = op->store.write_iter;
- 
- 	/* marshall the parameters */
- 	bp = call->request;
-@@ -1118,9 +1107,9 @@ void yfs_fs_store_data(struct afs_operation *op)
- 	bp = xdr_encode_u32(bp, 0); /* RPC flags */
- 	bp = xdr_encode_YFSFid(bp, &vp->fid);
- 	bp = xdr_encode_YFSStoreStatus_mtime(bp, &op->mtime);
--	bp = xdr_encode_u64(bp, pos);
--	bp = xdr_encode_u64(bp, size);
--	bp = xdr_encode_u64(bp, i_size);
-+	bp = xdr_encode_u64(bp, op->store.pos);
-+	bp = xdr_encode_u64(bp, op->store.size);
-+	bp = xdr_encode_u64(bp, op->store.i_size);
- 	yfs_check_req(call, bp);
- 
- 	trace_afs_make_fs_call(call, &vp->fid);
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index 9203cf6a8c53..3ccf591b2374 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -886,65 +886,52 @@ TRACE_EVENT(afs_call_done,
- 		      __entry->rx_call)
- 	    );
- 
--TRACE_EVENT(afs_send_pages,
--	    TP_PROTO(struct afs_call *call, struct msghdr *msg,
--		     pgoff_t first, pgoff_t last, unsigned int offset),
-+TRACE_EVENT(afs_send_data,
-+	    TP_PROTO(struct afs_call *call, struct msghdr *msg),
- 
--	    TP_ARGS(call, msg, first, last, offset),
-+	    TP_ARGS(call, msg),
- 
- 	    TP_STRUCT__entry(
- 		    __field(unsigned int,		call		)
--		    __field(pgoff_t,			first		)
--		    __field(pgoff_t,			last		)
--		    __field(unsigned int,		nr		)
--		    __field(unsigned int,		bytes		)
--		    __field(unsigned int,		offset		)
- 		    __field(unsigned int,		flags		)
-+		    __field(loff_t,			offset		)
-+		    __field(loff_t,			count		)
- 			     ),
- 
- 	    TP_fast_assign(
- 		    __entry->call = call->debug_id;
--		    __entry->first = first;
--		    __entry->last = last;
--		    __entry->nr = msg->msg_iter.nr_segs;
--		    __entry->bytes = msg->msg_iter.count;
--		    __entry->offset = offset;
- 		    __entry->flags = msg->msg_flags;
-+		    __entry->offset = msg->msg_iter.xarray_start + msg->msg_iter.iov_offset;
-+		    __entry->count = iov_iter_count(&msg->msg_iter);
- 			   ),
- 
--	    TP_printk(" c=%08x %lx-%lx-%lx b=%x o=%x f=%x",
--		      __entry->call,
--		      __entry->first, __entry->first + __entry->nr - 1, __entry->last,
--		      __entry->bytes, __entry->offset,
-+	    TP_printk(" c=%08x o=%llx n=%llx f=%x",
-+		      __entry->call, __entry->offset, __entry->count,
- 		      __entry->flags)
- 	    );
- 
--TRACE_EVENT(afs_sent_pages,
--	    TP_PROTO(struct afs_call *call, pgoff_t first, pgoff_t last,
--		     pgoff_t cursor, int ret),
-+TRACE_EVENT(afs_sent_data,
-+	    TP_PROTO(struct afs_call *call, struct msghdr *msg, int ret),
- 
--	    TP_ARGS(call, first, last, cursor, ret),
-+	    TP_ARGS(call, msg, ret),
- 
- 	    TP_STRUCT__entry(
- 		    __field(unsigned int,		call		)
--		    __field(pgoff_t,			first		)
--		    __field(pgoff_t,			last		)
--		    __field(pgoff_t,			cursor		)
- 		    __field(int,			ret		)
-+		    __field(loff_t,			offset		)
-+		    __field(loff_t,			count		)
- 			     ),
- 
- 	    TP_fast_assign(
- 		    __entry->call = call->debug_id;
--		    __entry->first = first;
--		    __entry->last = last;
--		    __entry->cursor = cursor;
- 		    __entry->ret = ret;
-+		    __entry->offset = msg->msg_iter.xarray_start + msg->msg_iter.iov_offset;
-+		    __entry->count = iov_iter_count(&msg->msg_iter);
- 			   ),
- 
--	    TP_printk(" c=%08x %lx-%lx c=%lx r=%d",
--		      __entry->call,
--		      __entry->first, __entry->last,
--		      __entry->cursor, __entry->ret)
-+	    TP_printk(" c=%08x o=%llx n=%llx r=%x",
-+		      __entry->call, __entry->offset, __entry->count,
-+		      __entry->ret)
- 	    );
- 
- TRACE_EVENT(afs_dir_check_failed,
 
 
+On 3/10/21 3:48 AM, Florent Revest wrote:
+> On Wed, Mar 10, 2021 at 6:16 AM Yonghong Song <yhs@fb.com> wrote:
+>> On 3/9/21 7:43 PM, Yonghong Song wrote:
+>>> On 3/9/21 5:54 PM, Florent Revest wrote:
+>>>> I noticed that initializing an array of pointers using this syntax:
+>>>> __u64 array[] = { (__u64)&var1, (__u64)&var2 };
+>>>> (which is a fairly common operation with macros such as BPF_SEQ_PRINTF)
+>>>> always results in array[0] and array[1] being NULL.
+>>>>
+>>>> Interestingly, if the array is only initialized with one pointer, ex:
+>>>> __u64 array[] = { (__u64)&var1 };
+>>>> Then array[0] will not be NULL.
+>>>>
+>>>> Or if the array is initialized field by field, ex:
+>>>> __u64 array[2];
+>>>> array[0] = (__u64)&var1;
+>>>> array[1] = (__u64)&var2;
+>>>> Then array[0] and array[1] will not be NULL either.
+>>>>
+>>>> I'm assuming that this should have something to do with relocations
+>>>> and might be a bug in clang or in libbpf but because I don't know much
+>>>> about these, I thought that reporting could be a good first step. :)
+>>>
+>>> Thanks for reporting. What you guess is correct, this is due to
+>>> relocations :-(
+>>>
+>>> The compiler notoriously tend to put complex initial values into
+>>> rodata section. For example, for
+>>>      __u64 array[] = { (__u64)&var1, (__u64)&var2 };
+>>> the compiler will put
+>>>      { (__u64)&var1, (__u64)&var2 }
+>>> into rodata section.
+>>>
+>>> But &var1 and &var2 themselves need relocation since they are
+>>> address of static variables which will sit inside .data section.
+>>>
+>>> So in the elf file, you will see the following relocations:
+>>>
+>>> RELOCATION RECORDS FOR [.rodata]:
+>>> OFFSET           TYPE                     VALUE
+>>> 0000000000000018 R_BPF_64_64              .data
+>>> 0000000000000020 R_BPF_64_64              .data
+> 
+> Right :) Thank you for the explanations Yonghong!
+> 
+>>> Currently, libbpf does not handle relocation inside .rodata
+>>> section, so they content remains 0.
+> 
+> Just for my own edification, why is .rodata relocation not yet handled
+> in libbpf ? Is it because of a read-only mapping that makes it more
+> difficult ?
+
+We don't have this use case before. In general, people do not put
+string pointers in init code in the declaration. I think 
+bpf_seq_printf() is special about this and hence triggering
+the issue.
+
+To support relocation of rodata section, kernel needs to be
+involved and this is actually more complicated as
+the relocation is against .data section. Two issues the kernel
+needs to deal with:
+    - .data section will be another map in kernel, so i.e.,
+      relocation of .rodata map value against another map.
+    - .data section may be modified, some protection might
+      be needed to prevent this. We may ignore this requirement
+      since user space may have similar issue.
+
+This is a corner case, if we can workaround in the libbpf, in
+this particular case, bpf_tracing.h. I think it will be
+good enough, not adding further complexity in kernel for
+such a corner case.
+
+> 
+>>> That is why you see the issue with pointer as NULL.
+>>>
+>>> With array size of 1, compiler does not bother to put it into
+>>> rodata section.
+>>>
+>>> I *guess* that it works in the macro due to some kind of heuristics,
+>>> e.g., nested blocks, etc, and llvm did not promote the array init value
+>>> to rodata. I will double check whether llvm can complete prevent
+>>> such transformation.
+>>>
+>>> Maybe in the future libbpf is able to handle relocations for
+>>> rodata section too. But for the time being, please just consider to use
+>>> either macro, or the explicit array assignment.
+>>
+>> Digging into the compiler, the compiler tries to make *const* initial
+>> value into rodata section if the initial value size > 64, so in
+>> this case, macro does not work either. I think this is how you
+>> discovered the issue.
+> 
+> Indeed, I was using a macro similar to BPF_SEQ_PRINTF and this is how
+> I found the bug.
+> 
+>> The llvm does not provide target hooks to
+>> influence this transformation.
+> 
+> Oh, that is unfortunate :) Thanks for looking into it! I feel that the
+> real fix would be in libbpf anyway and the rest is just workarounds.
+
+The real fix will need libbpf and kernel.
+
+> 
+>> So, there are two workarounds,
+>> (1).    __u64 param_working[2];
+>>           param_working[0] = (__u64)str1;
+>>           param_working[1] = (__u64)str2;
+>> (2). BPF_SEQ_PRINTF(seq, "%s ", str1);
+>>        BPF_SEQ_PRINTF(seq, "%s", str2);
+> 
+> (2) is a bit impractical for my actual usecase. I am implementing a
+> bpf_snprintf helper (patch series Coming Soon TM) and I wanted to keep
+> the selftest short with a few BPF_SNPRINTF() calls that exercise most
+> format specifiers.
+> 
+>> In practice, if you have at least one non-const format argument,
+>> you should be fine. But if all format arguments are constant, then
+>> none of them should be strings.
+> 
+> Just for context, this does not only happen for strings but also for
+> all sorts of pointers, for example, when I try to do address lookup of
+> global __ksym variables, which is important for my selftest.
+
+Currently, in bpf_seq_printf(), we do memory copy for string
+and certain ipv4/ipv6 addresses. ipv4 is not an issue as the compiler 
+less likely put it into rodata. for ipv6,
+if it is a constant, we can just directly put it into the format
+string. For many other sort of pointers, we just print pointer
+values, I don't see a value to print pointer value for something like
+     static const param[] = { &str1, &str2 };
+     bpf_seq_printf(seq, "%px\n", param[0]);
+
+The global __ksym variable cannot be pointing to rodata at compile time,
+so it should be fine.
+
+> 
+>> Maybe we could change marco
+>>      unsigned long long ___param[] = { args };
+>> to declare an array explicitly and then have a loop to
+>> assign each array element?
+> 
+> I think this would be a good workaround for now, indeed. :) I'll look
+> into it today and send it as part of my bpf_snprintf series.
+
+If we can make it work, that will be great! thanks for working on this.
+
+> 
+> Thanks!
+> 
