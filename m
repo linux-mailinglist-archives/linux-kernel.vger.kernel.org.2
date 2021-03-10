@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11121333E35
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C1C333E3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233477AbhCJNZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:25:41 -0500
+        id S233267AbhCJNZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:25:45 -0500
 Received: from mail.kernel.org ([198.145.29.99]:45716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232840AbhCJNYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1196564FDC;
-        Wed, 10 Mar 2021 13:24:32 +0000 (UTC)
+        id S232842AbhCJNYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C726764FE0;
+        Wed, 10 Mar 2021 13:24:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382674;
-        bh=VBBtXgNqdF9iNjBKKGSmHIW+yN5i8KFxP1cLRxPc5HI=;
+        s=korg; t=1615382676;
+        bh=0lGay3kbSb0GML60b8oBt3SVJAyqTNKQKZ4XAKAL1kY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xyAjM7U0ExVSD012/nb5rRJh8vssijJfSOaIgTN2kFIhYuLqFGeS5GdPbeRycuO5g
-         VRJIqf2MBAH7jh7333DsWDm/wy0l8kkcI7qdof/3qxBouPPI7BjI0EOlJJhtxI1Uwr
-         Abl79XcQF0Xf3vb+Uslsx4a97uifYCoKwqtY/8EY=
+        b=L4KOouzAwb+jyc3DjAlXUtisnY5KwpSR9fcjfroyCKqKv+Zwur2F+lL0q9OmWnvXA
+         4MMMFiRtTy43irxh3KFFjKUaKQ2mjMSlYkK84PFkvoGL4zU6hSBYYTaiU6W3m8DK+j
+         XYZxSIb2r0SgcVfYOryISF+0nD9oflZvGiVRm/Xo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kiwoong Kim <kwmad.kim@samsung.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 22/36] scsi: ufs: ufs-exynos: Apply vendor-specific values for three timeouts
-Date:   Wed, 10 Mar 2021 14:23:35 +0100
-Message-Id: <20210310132321.205838523@linuxfoundation.org>
+Subject: [PATCH 5.11 23/36] scsi: ufs: ufs-exynos: Use UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE
+Date:   Wed, 10 Mar 2021 14:23:36 +0100
+Message-Id: <20210310132321.235200307@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
 References: <20210310132320.510840709@linuxfoundation.org>
@@ -44,47 +44,31 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Kiwoong Kim <kwmad.kim@samsung.com>
 
-[ Upstream commit a967ddb22d94eb476ccef983b5f2730fa4d184d0 ]
+[ Upstream commit f1ef9047aaab036edb39261b0a7a6bdcf3010b87 ]
 
-Set optimized values for the following timeouts:
+Exynos needs scatterlist entries aligned to page size because it isn't
+capable of transferring data contained in one DATA IN operation to seversal
+areas in memory.
 
- - FC0_PROTECTION_TIMER
- - TC0_REPLAY_TIMER
- - AFC0_REQUEST_TIMER
-
-Exynos doesn't yet use traffic class #1.
-
-Link: https://lore.kernel.org/r/a0ff44f665a4f31d2f945fd71de03571204c576c.1608513782.git.kwmad.kim@samsung.com
+Link: https://lore.kernel.org/r/80d7e27d6ec537e650a6bd74897b6c60618efcdc.1611026909.git.kwmad.kim@samsung.com
 Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufs-exynos.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufs-exynos.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/scsi/ufs/ufs-exynos.c b/drivers/scsi/ufs/ufs-exynos.c
-index a8770ff14588..5ca21d1550df 100644
+index 5ca21d1550df..267943a13a94 100644
 --- a/drivers/scsi/ufs/ufs-exynos.c
 +++ b/drivers/scsi/ufs/ufs-exynos.c
-@@ -640,6 +640,11 @@ static int exynos_ufs_pre_pwr_mode(struct ufs_hba *hba,
- 		}
- 	}
- 
-+	/* setting for three timeout values for traffic class #0 */
-+	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA0), 8064);
-+	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA1), 28224);
-+	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA2), 20160);
-+
- 	return 0;
- out:
- 	return ret;
-@@ -1236,7 +1241,8 @@ struct exynos_ufs_drv_data exynos_ufs_drvs = {
- 				  UFSHCI_QUIRK_BROKEN_HCE |
+@@ -1242,7 +1242,8 @@ struct exynos_ufs_drv_data exynos_ufs_drvs = {
  				  UFSHCI_QUIRK_SKIP_RESET_INTR_AGGR |
  				  UFSHCD_QUIRK_BROKEN_OCS_FATAL_ERROR |
--				  UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL,
-+				  UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL |
-+				  UFSHCD_QUIRK_SKIP_DEF_UNIPRO_TIMEOUT_SETTING,
+ 				  UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL |
+-				  UFSHCD_QUIRK_SKIP_DEF_UNIPRO_TIMEOUT_SETTING,
++				  UFSHCD_QUIRK_SKIP_DEF_UNIPRO_TIMEOUT_SETTING |
++				  UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE,
  	.opts			= EXYNOS_UFS_OPT_HAS_APB_CLK_CTRL |
  				  EXYNOS_UFS_OPT_BROKEN_AUTO_CLK_CTRL |
  				  EXYNOS_UFS_OPT_BROKEN_RX_SEL_IDX |
