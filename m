@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E625333232
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 01:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E21333237
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 01:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhCJANj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 19:13:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44250 "EHLO
+        id S229641AbhCJARB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 19:17:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhCJANS (ORCPT
+        with ESMTP id S230122AbhCJAQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 19:13:18 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9715C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 16:13:18 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id n14so16015511iog.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 16:13:18 -0800 (PST)
+        Tue, 9 Mar 2021 19:16:49 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6EFC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 16:16:49 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id r17so33270950ejy.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 16:16:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oJsimWQGv+nfxwJDcSHm6XWSpSKmLLqWw1knhzFY0+I=;
-        b=hpDGePcJHeIO2+zoYEJui6H5jSM+l6RyrqjBSr9A7PrVNLB7AySkl0dhjyxxmbiCzI
-         qMhkNBpFAAUEPNRUhZEs7q9iIh2yx6tSHKaVpeSwCDcPt2DwYrUFO4k+XoTOIELhOCw6
-         pKxLewzr93w2+DTmxcCjQ97s07devVrRi2PxVuXYrmUL+uZea8rfkV3ZvmOLPpERxvOT
-         tQaBjDU8eLoa8K0iaTeEYqJ223kwR3LCjJF9trTh83Rl8a77u8rgK6MgqICNMrv8Hsc9
-         S1SoWaOCtqH7qSy8C2qhQJGiRfMGpVsn1xl+L2GzMkgXKwCGQ+2e04W3ZhnYzmli3wSh
-         nadw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/Nutp93mDHb5cEjtktNc7hYpoY2Gb6DtS9YFtOrP0KY=;
+        b=At/Kbc5OmUHxC0v9+TomGng358WQaPZWCCQ7AdMFWYZEJBf+ixxuUmvy35hCUIby+u
+         695IqXsuYyK8aBBJYncBfDOl4kdA+fj6wGJ1cUYHjG2OVuLVgD82cMZ6UPK7/feZU7S0
+         bW1E+hqmLJPX62zZ6mLk6jlMe+8idlwl3VInU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=oJsimWQGv+nfxwJDcSHm6XWSpSKmLLqWw1knhzFY0+I=;
-        b=GrMJajkiXpVuG9u46nsoLb3hL5NIysuM8vKBgfauL/G+u6YWjz0zE8UW5ChmVEx9EY
-         iA5jZAJLD+IJQ4fF76krSeb8kFgiQ4MK68XPS+BiIxEmzX91i5Hl6iNe7a3WgoR3p83f
-         q+O/aopOmBiUHXN3/ZdEgBbU1ylLY/OpQ/Dhu6hc6MBL06DjWyI8wC38zycJhTRN8VTo
-         6nSku95ozM/KqGunIX0AbnF3lm+vr1LWlwj4fofGfiOuTO6OhkZH7JflbP6RD5nc6oWx
-         jF3A8Ge7iUi5e62115keBudhVLp8ue+xjobVREjFiODLhMUsLruH/kuAvyIKETzYdlED
-         Q2Og==
-X-Gm-Message-State: AOAM531AMGuDVlMSexaycG3ElWC88M/yjIVTE0h5djPh4n59OZPJkxb5
-        LyuISvFOqUc7H8I5xW3s1AR/BWvDZOTO4A==
-X-Google-Smtp-Source: ABdhPJxPhLWA9b0o8Cp2L2/0E0XyrzO2t12cXRkOhnBLB0EFYKshKgK03H+2x5YneNbJnx1ZC/E3Sg==
-X-Received: by 2002:a6b:6618:: with SMTP id a24mr580607ioc.100.1615335197895;
-        Tue, 09 Mar 2021 16:13:17 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id e195sm8269790iof.51.2021.03.09.16.13.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 16:13:17 -0800 (PST)
-Subject: Re: [PATCH net-next v3 5/6] net: qualcomm: rmnet: don't use C
- bit-fields in rmnet checksum trailer
-From:   Alex Elder <elder@linaro.org>
-To:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        David.Laight@ACULAB.COM, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210309124848.238327-1-elder@linaro.org>
- <20210309124848.238327-6-elder@linaro.org>
-Message-ID: <ad9a6bf4-a850-69d2-ec20-cbafcfa5b22b@linaro.org>
-Date:   Tue, 9 Mar 2021 18:13:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=/Nutp93mDHb5cEjtktNc7hYpoY2Gb6DtS9YFtOrP0KY=;
+        b=V5DwrPbjNJzHLwgmik0v6Q5TsNLi+yNCQwkZ6XPWpFhjnuawbxnNuozAL99ZIVFhWS
+         S7CaJgGuV1I63D2Oz2/piW6VhaHwJC2H/jD5TBdWnp3xU+02Cj8uNT/sXEZRNSOFuZ/1
+         r4udzEHy6cX12xC4EtUQlVBCx8sooMvMA5DE8a08R5xeVcbqQnkTUG7sX+1o5NDKfQhT
+         dEE8d0G4fTdA3WA1cxjKbbuaUAiW+Aglq34Ij723uSn47BcMocKkeaoiHL1zjA2100jJ
+         GZ44QtSfz7YcTWsLZrbgivGTCC4j8fWGWu/1H+SiBDX4AqcekrdBZXeLRDAhTBHULCfU
+         cPcw==
+X-Gm-Message-State: AOAM530LAOL1yFgezHE9HsL6OwDZd+HD3r64gWJ5+f84MXUERiooFul1
+        j1b/nxBi2T8LRBR+m7+Woack0A==
+X-Google-Smtp-Source: ABdhPJykuK1NwgMON/87WWXZOt+SX7jB3tSF1UdYKODRl1jNMCe9zB5Wjjaj6n2s6XeGl/hsUchbHg==
+X-Received: by 2002:a17:907:7651:: with SMTP id kj17mr648621ejc.127.1615335408007;
+        Tue, 09 Mar 2021 16:16:48 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id o1sm9991202eds.26.2021.03.09.16.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 16:16:47 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>, stable@vger.kernel.org
+Subject: [PATCH] media: staging/intel-ipu3: Fix set_fmt error handling
+Date:   Wed, 10 Mar 2021 01:16:46 +0100
+Message-Id: <20210310001646.1026557-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-In-Reply-To: <20210309124848.238327-6-elder@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 6:48 AM, Alex Elder wrote:
-> Replace the use of C bit-fields in the rmnet_map_dl_csum_trailer
-> structure with a single one-byte field, using constant field masks
-> to encode or get at embedded values.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> v3: Use BIT(x) and don't use u8_get_bits() for the checksum valid flag
-> 
->   .../ethernet/qualcomm/rmnet/rmnet_map_data.c    |  2 +-
->   include/linux/if_rmnet.h                        | 17 +++++++----------
->   2 files changed, 8 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> index 3291f252d81b0..72dbbe2c27bd7 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> @@ -365,7 +365,7 @@ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len)
->   
->   	csum_trailer = (struct rmnet_map_dl_csum_trailer *)(skb->data + len);
->   
-> -	if (!csum_trailer->valid) {
-> +	if (csum_trailer->flags & MAP_CSUM_DL_VALID_FLAG) {
+If there in an error during a set_fmt, do not overwrite the previous
+sizes with the invalid config.
 
-This was the actual problem.  The result of the new
-test is the reverse of what it should be.
+Without this patch, v4l2-compliance ends up allocating 4GiB of RAM and
+causing the following OOPs
 
-In any case, I'm taking a break from this for a while.
+[   38.662975] ipu3-imgu 0000:00:05.0: swiotlb buffer is full (sz: 4096 bytes)
+[   38.662980] DMA: Out of SW-IOMMU space for 4096 bytes at device 0000:00:05.0
+[   38.663010] general protection fault: 0000 [#1] PREEMPT SMP
 
-					-Alex
+Cc: stable@vger.kernel.org
+Fixes: 6d5f26f2e045 ("media: staging/intel-ipu3-v4l: reduce kernel stack usage")
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+ drivers/staging/media/ipu3/ipu3-v4l2.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
->   		priv->stats.csum_valid_unset++;
->   		return -EINVAL;
->   	}
-> diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
-> index 22ccc89bb5d8e..a848bb2e0dad0 100644
-> --- a/include/linux/if_rmnet.h
-> +++ b/include/linux/if_rmnet.h
-> @@ -19,21 +19,18 @@ struct rmnet_map_header {
->   #define MAP_PAD_LEN_FMASK		GENMASK(5, 0)
->   
->   struct rmnet_map_dl_csum_trailer {
-> -	u8  reserved1;
-> -#if defined(__LITTLE_ENDIAN_BITFIELD)
-> -	u8  valid:1;
-> -	u8  reserved2:7;
-> -#elif defined (__BIG_ENDIAN_BITFIELD)
-> -	u8  reserved2:7;
-> -	u8  valid:1;
-> -#else
-> -#error	"Please fix <asm/byteorder.h>"
-> -#endif
-> +	u8 reserved1;
-> +	u8 flags;			/* MAP_CSUM_DL_*_FMASK */
->   	__be16 csum_start_offset;
->   	__be16 csum_length;
->   	__be16 csum_value;
->   } __aligned(1);
->   
-> +/* rmnet_map_dl_csum_trailer flags field:
-> + *  VALID:	1 = checksum and length valid; 0 = ignore them
-> + */
-> +#define MAP_CSUM_DL_VALID_FLAG		BIT(0)
-> +
->   struct rmnet_map_ul_csum_header {
->   	__be16 csum_start_offset;
->   #if defined(__LITTLE_ENDIAN_BITFIELD)
-> 
+diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
+index 60aa02eb7d2a..e8944e489c56 100644
+--- a/drivers/staging/media/ipu3/ipu3-v4l2.c
++++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
+@@ -669,6 +669,7 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
+ 	struct imgu_css_pipe *css_pipe = &imgu->css.pipes[pipe];
+ 	struct imgu_media_pipe *imgu_pipe = &imgu->imgu_pipe[pipe];
+ 	struct imgu_v4l2_subdev *imgu_sd = &imgu_pipe->imgu_sd;
++	struct v4l2_pix_format_mplane fmt_backup;
+ 
+ 	dev_dbg(dev, "set fmt node [%u][%u](try = %u)", pipe, node, try);
+ 
+@@ -734,6 +735,7 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
++	fmt_backup = *fmts[css_q];
+ 	*fmts[css_q] = f->fmt.pix_mp;
+ 
+ 	if (try)
+@@ -741,6 +743,9 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
+ 	else
+ 		ret = imgu_css_fmt_set(&imgu->css, fmts, rects, pipe);
+ 
++	if (try || ret < 0)
++		*fmts[css_q] = fmt_backup;
++
+ 	/* ret is the binary number in the firmware blob */
+ 	if (ret < 0)
+ 		goto out;
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
