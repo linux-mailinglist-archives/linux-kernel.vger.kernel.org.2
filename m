@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E85A3346DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB163346E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbhCJSdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:33:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhCJSdh (ORCPT
+        id S232943AbhCJSep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:34:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22058 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232790AbhCJSeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:33:37 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692D6C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:33:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=LfVlUlw5suK4W8vYwc+2GNun5VrRntz8pvlKBIYi2Kw=; b=yZN3F8NNy4k/sX42ljAYq1kB6D
-        gZ+4CdOERAit6VrckPxwZQCwVL3IunN+jj6eB8MZ5UmtpqZTZVH+PIgUbTaGgsJxd49GCa+rl/4dv
-        SMB8ndi75P4Jz5tf4GlEFPiHL2wE6q1aj8XyiCfLwwSKXLp58m65tKGTCWw1gx9qEN28J8RRkfe1b
-        Ov8lYlasgKi64b4JCWwOEMy/yiHnkBodQLXgXDmRtTjCon4cA2/vO6PPQrwGOYCxktpC9SewSGfLx
-        7o0C2PhyHx1SSXVN+ikG4Q1w6k8DBzjvJIkY0EZ3InNoW+YA7QuRA5E4HvDxswfEVj7hJDM2406Gt
-        lqsq4OKw==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lK3eG-000q51-7u; Wed, 10 Mar 2021 18:33:32 +0000
-Subject: Re: [PATCH] docs: don't include Documentation/Kconfig twice
-To:     Sergei Trofimovich <slyfox@gentoo.org>,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>
-References: <20210307140018.757576-1-slyfox@gentoo.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fc2a235f-01bd-e00b-5459-d903e03b3ed8@infradead.org>
-Date:   Wed, 10 Mar 2021 10:33:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 10 Mar 2021 13:34:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615401255;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2zg5A9GRmmUbhQTpSccn6Zg6U2kdiSb2CT/WezBnaxU=;
+        b=cQEjw2bPS9KrMOT9vaRF9ISfTGonCMXMlbF8GfPIkheuPhIw0L71kdwD7SQucHZX0mvbML
+        IPG959ado/SVgHEhKfmtZvwTB8as830TaB6Zxu5j3pPq8ZnVvC+qOMq1Vvs/iVGADI1KZR
+        NPT/hR1ugd9exykRq97mRWifoc3UNWo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-142-9tpFA-piNeewkWb8-_F1Gg-1; Wed, 10 Mar 2021 13:34:14 -0500
+X-MC-Unique: 9tpFA-piNeewkWb8-_F1Gg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DFEA69738;
+        Wed, 10 Mar 2021 18:34:12 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2C59D62461;
+        Wed, 10 Mar 2021 18:34:07 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 11:34:06 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
+Subject: Re: [PATCH] vfio/pci: Handle concurrent vma faults
+Message-ID: <20210310113406.6f029fcf@omen.home.shazbot.org>
+In-Reply-To: <20210310181446.GZ2356281@nvidia.com>
+References: <161539852724.8302.17137130175894127401.stgit@gimli.home>
+        <20210310181446.GZ2356281@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210307140018.757576-1-slyfox@gentoo.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/7/21 6:00 AM, Sergei Trofimovich wrote:
-> Before the change there were two inclusions of Documentation/Kconfig:
->     lib/Kconfig.debug:source "Documentation/Kconfig"
->     Kconfig: source "Documentation/Kconfig"
+On Wed, 10 Mar 2021 14:14:46 -0400
+Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> On Wed, Mar 10, 2021 at 10:53:29AM -0700, Alex Williamson wrote:
 > 
-> Kconfig also included 'source "lib/Kconfig.debug"'.
+> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> > index 65e7e6b44578..ae723808e08b 100644
+> > +++ b/drivers/vfio/pci/vfio_pci.c
+> > @@ -1573,6 +1573,11 @@ static int __vfio_pci_add_vma(struct vfio_pci_device *vdev,
+> >  {
+> >  	struct vfio_pci_mmap_vma *mmap_vma;
+> >  
+> > +	list_for_each_entry(mmap_vma, &vdev->vma_list, vma_next) {
+> > +		if (mmap_vma->vma == vma)
+> > +			return 0; /* Swallow the error, the vma is tracked */
+> > +	}
+> > +
+> >  	mmap_vma = kmalloc(sizeof(*mmap_vma), GFP_KERNEL);
+> >  	if (!mmap_vma)
+> >  		return -ENOMEM;
+> > @@ -1612,31 +1617,32 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
+> >  {
+> >  	struct vm_area_struct *vma = vmf->vma;
+> >  	struct vfio_pci_device *vdev = vma->vm_private_data;
+> > -	vm_fault_t ret = VM_FAULT_NOPAGE;
+> > +	unsigned long vaddr = vma->vm_start, pfn = vma->vm_pgoff;
+> > +	vm_fault_t ret = VM_FAULT_SIGBUS;
+> >  
+> >  	mutex_lock(&vdev->vma_lock);
+> >  	down_read(&vdev->memory_lock);
+> >  
+> > -	if (!__vfio_pci_memory_enabled(vdev)) {
+> > -		ret = VM_FAULT_SIGBUS;
+> > -		mutex_unlock(&vdev->vma_lock);
+> > +	if (!__vfio_pci_memory_enabled(vdev))
+> >  		goto up_out;
+> > +
+> > +	for (; vaddr < vma->vm_end; vaddr += PAGE_SIZE, pfn++) {
+> > +		ret = vmf_insert_pfn_prot(vma, vaddr, pfn,
+> > +					  pgprot_decrypted(vma->vm_page_prot));  
 > 
-> Noticed as two 'make menuconfig' entries in both top level menu
-> and in 'Kernel hacking' menu. The patch keeps entries only in
-> 'Kernel hacking'.
+> I investigated this, I think the above pgprot_decrypted() should be
+> moved here:
 > 
-> CC: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> CC: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-
-Hi,
-OK, it shouldn't be there in 2 places.
-
-The current usage is good under Kernel Hacking (development),
-but I can easily foresee cases where we would want user-selectable
-Documentation/Kconfig options, so IMO it would be better to be
-more independent (i.e., not in lib/Kconfig.debug).
-
-Anyway, for either way that it's fixed:
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-> ---
->  Kconfig | 2 --
->  1 file changed, 2 deletions(-)
+> static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
+> {
+>         vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> +       vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
 > 
-> diff --git a/Kconfig b/Kconfig
-> index 745bc773f567..97ed6389c921 100644
-> --- a/Kconfig
-> +++ b/Kconfig
-> @@ -28,5 +28,3 @@ source "crypto/Kconfig"
->  source "lib/Kconfig"
->  
->  source "lib/Kconfig.debug"
-> -
-> -source "Documentation/Kconfig"
 > 
+> And since:
+> 
+> vm_fault_t vmf_insert_pfn(struct vm_area_struct *vma, unsigned long addr,
+> 			unsigned long pfn)
+> {
+> 	return vmf_insert_pfn_prot(vma, addr, pfn, vma->vm_page_prot);
+> 
+> The above can just use vfm_insert_pfn()
 
-thanks.
--- 
-~Randy
+Cool, easy enough.  Thanks for looking.
+ 
+> The only thing that makes me nervous about this arrangment is loosing
+> the track_pfn_remap() which was in remap_pfn_range() - I think it
+> means we miss out on certain PAT manipulations.. I *suspect* this is
+> not a problem for VFIO because it will rely on the MTRRs generally on
+> x86 - but I also don't know this mechanim too well.
+
+Yeah, for VM use cases the MTRRs generally override.
+
+> I think after the address_space changes this should try to stick with
+> a normal io_rmap_pfn_range() done outside the fault handler.
+
+I assume you're suggesting calling io_remap_pfn_range() when device
+memory is enabled, do you mean using vma_interval_tree_foreach() like
+unmap_mapping_range() does to avoid re-adding a vma list?  Thanks,
+
+Alex
 
