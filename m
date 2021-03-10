@@ -2,118 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0057334842
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CC7334845
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233789AbhCJTqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 14:46:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233818AbhCJTqA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:46:00 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9791C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 11:45:59 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id t85so7544984pfc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 11:45:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BJYD8kGOE3d4gG0u9+B19YeSgl7l3H9zK5f/9NcjXMk=;
-        b=bZBjBaNsv0TDWwx/QRnncqUY8oYcDKqxppArNwD41l8lNZi7Bj4tLmVLso31iED2JD
-         zVvHI18T1ucr+t+2BQvHyfqKw3p4NqG1OlKdcIyjxtN9jt2Q7dLafHqEAJk52zuzq6wD
-         M97srajC/uUzLEpVnpUdpFCnOqxLweO+Hhb9o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BJYD8kGOE3d4gG0u9+B19YeSgl7l3H9zK5f/9NcjXMk=;
-        b=QCeX/eVgVS48QUuAYKNEGTN8ZWx1NQN/lDGusvGSEggEynvLmKhUAv0vwR2SdXL/PU
-         r3m7jTQ3607ax/SLMj0B8V8jj+/F+VPD63bJpf+qumZj7Tw8HOl8mxCHxLcUi18jU4rd
-         Qu0tYW64HA1tgD00TyAX9/1cu3MA9iXZ2pzg+mtxCXx8P2c7L6s10f9C9w9Q5CfgYgOC
-         5JpRCyZ2r3Jy5ESwdo+5/pf6xuXC+BTF3L8LQNcbxtmp7ewKhrhRnasBVt+iPIoS8Rf8
-         ss0obdtxtD3nsQlFFMR8wQVY8pE4d+3lzIPhtiV2h/jHTtSllDig7eZ5m8HKFcY1CPXq
-         SD1w==
-X-Gm-Message-State: AOAM5306j9UrN+jA8GnbGNy7crORmZSDKEJuneEP5hONosmxr5cVda7J
-        9j/bSoSFedfFwH3qEvrJy+KOoQ==
-X-Google-Smtp-Source: ABdhPJyCAQutIIaU3PRV2tWklYgHuvTXH7vAfzv3Byy9gARLippJaGEpfYPJspq4LoAf4jfIu8Dm9A==
-X-Received: by 2002:aa7:96ab:0:b029:1f6:2d3:3c91 with SMTP id g11-20020aa796ab0000b02901f602d33c91mr4600355pfk.10.1615405559514;
-        Wed, 10 Mar 2021 11:45:59 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u7sm273628pfh.150.2021.03.10.11.45.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 11:45:58 -0800 (PST)
-Date:   Wed, 10 Mar 2021 11:45:57 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Jes Sorensen <jes.sorensen@gmail.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for
- Clang
-Message-ID: <202103101141.92165AE@keescook>
-References: <20210305094850.GA141221@embeddedor>
- <871rct67n2.fsf@codeaurora.org>
- <202103101107.BE8B6AF2@keescook>
- <2e425bd8-2722-b8a8-3745-4a3f77771906@gmail.com>
+        id S230081AbhCJTrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 14:47:20 -0500
+Received: from mga09.intel.com ([134.134.136.24]:48818 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233659AbhCJTrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:47:04 -0500
+IronPort-SDR: kg3MYwHw/fFW83zCk7hbPjc2YkqKs4BlYXEJOeVIDqQkiizX94K9VrLKQjV2uo1Zfgcca8pDkT
+ F7k98TgwUAvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188648904"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="188648904"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 11:47:04 -0800
+IronPort-SDR: Q5lcKJC4ou1WSE4Aso0a7QJqHUzCpOseCl7OaifJ1nRy0sCO513dGhZbvpd4VXx2apLUhCVwAi
+ I8Ti0AtqyAUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="410326573"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga008.jf.intel.com with ESMTP; 10 Mar 2021 11:47:03 -0800
+Date:   Wed, 10 Mar 2021 11:46:44 -0800
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, acme@kernel.org, tglx@linutronix.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
+        adrian.hunter@intel.com,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH V2 1/25] x86/cpufeatures: Enumerate Intel Hybrid
+ Technology feature bit
+Message-ID: <20210310194644.GA1218@ranerica-svr.sc.intel.com>
+References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+ <1615394281-68214-2-git-send-email-kan.liang@linux.intel.com>
+ <20210310165358.GI23521@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2e425bd8-2722-b8a8-3745-4a3f77771906@gmail.com>
+In-Reply-To: <20210310165358.GI23521@zn.tnic>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 02:31:57PM -0500, Jes Sorensen wrote:
-> On 3/10/21 2:14 PM, Kees Cook wrote:
-> > On Fri, Mar 05, 2021 at 03:40:33PM +0200, Kalle Valo wrote:
-> >> "Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
-> >>
-> >>> In preparation to enable -Wimplicit-fallthrough for Clang, fix
-> >>> multiple warnings by replacing /* fall through */ comments with
-> >>> the new pseudo-keyword macro fallthrough; instead of letting the
-> >>> code fall through to the next case.
-> >>>
-> >>> Notice that Clang doesn't recognize /* fall through */ comments as
-> >>> implicit fall-through markings.
-> >>>
-> >>> Link: https://github.com/KSPP/linux/issues/115
-> >>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> >>
-> >> It's not cool that you ignore the comments you got in [1], then after a
-> >> while mark the patch as "RESEND" and not even include a changelog why it
-> >> was resent.
-> >>
-> >> [1] https://patchwork.kernel.org/project/linux-wireless/patch/d522f387b2d0dde774785c7169c1f25aa529989d.1605896060.git.gustavoars@kernel.org/
+On Wed, Mar 10, 2021 at 05:53:58PM +0100, Borislav Petkov wrote:
+> On Wed, Mar 10, 2021 at 08:37:37AM -0800, kan.liang@linux.intel.com wrote:
+> > From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 > > 
-> > Hm, this conversation looks like a miscommunication, mainly? I see
-> > Gustavo, as requested by many others[1], replacing the fallthrough
-> > comments with the "fallthrough" statement. (This is more than just a
-> > "Clang doesn't parse comments" issue.)
+> > Add feature enumeration to identify a processor with Intel Hybrid
+> > Technology: one in which CPUs of more than one type are the same package.
+> > On a hybrid processor, all CPUs support the same homogeneous (i.e.,
+> > symmetric) instruction set. All CPUs enumerate the same features in CPUID.
+> > Thus, software (user space and kernel) can run and migrate to any CPU in
+> > the system as well as utilize any of the enumerated features without any
+> > change or special provisions. The main difference among CPUs in a hybrid
+> > processor are power and performance properties.
 > > 
-> > This could be a tree-wide patch and not bother you, but Greg KH has
-> > generally advised us to send these changes broken out. Anyway, this
-> > change still needs to land, so what would be the preferred path? I think
-> > Gustavo could just carry it for Linus to merge without bothering you if
-> > that'd be preferred?
+> > Cc: Andi Kleen <ak@linux.intel.com>
+> > Cc: Kan Liang <kan.liang@linux.intel.com>
+> > Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> > Cc: "Ravi V. Shankar" <ravi.v.shankar@intel.com>
+> > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> > Cc: linux-kernel@vger.kernel.org
+> > Reviewed-by: Len Brown <len.brown@intel.com>
+> > Reviewed-by: Tony Luck <tony.luck@intel.com>
+> > Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> > ---
+> > Changes since v1 (as part of patchset for perf change for Alderlake)
+> >  * None
+> > 
+> > Changes since v1 (in a separate posting):
+> >  * Reworded commit message to clearly state what is Intel Hybrid
+> >    Technology. Stress that all CPUs can run the same instruction
+> >    set and support the same features.
+> > ---
+> >  arch/x86/include/asm/cpufeatures.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> > index cc96e26d69f7..e7cfc9eedf8d 100644
+> > --- a/arch/x86/include/asm/cpufeatures.h
+> > +++ b/arch/x86/include/asm/cpufeatures.h
+> > @@ -374,6 +374,7 @@
+> >  #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
+> >  #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
+> >  #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
+> > +#define X86_FEATURE_HYBRID_CPU		(18*32+15) /* This part has CPUs of more than one type */
 > 
-> I'll respond with the same I did last time, fallthrough is not C and
-> it's ugly.
+> 							  /* "" This ...
+> 
+> unless you have a valid use case for "hybrid_cpu" being present there.
 
-I understand your point of view, but this is not the consensus[1] of
-the community. "fallthrough" is a macro, using the GCC fallthrough
-attribute, with the expectation that we can move to the C17/C18
-"[[fallthrough]]" statement once it is finalized by the C standards
-body.
+But this series provides the use case, right? Kan's patches handle PMU counters
+that may differ cross types of CPUs. In patch 2, get_hybrid_params()
+needs to check first if X86_FEATURE_HYBRID_CPU is enabled before
+querying the hybrid parameters. Otherwise, we would need to rely on the
+maximum level of CPUID, which may not be reliable.
 
--Kees
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#implicit-switch-case-fall-through
-
--- 
-Kees Cook
+Thanks and BR,
+Ricardo
