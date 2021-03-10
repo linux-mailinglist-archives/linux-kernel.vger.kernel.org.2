@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CBC334193
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F27334196
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbhCJPdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:33:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233093AbhCJPc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:32:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1517464F98;
-        Wed, 10 Mar 2021 15:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615390377;
-        bh=mVVLhBBsU5qZlMYB4KOflh2qpOSUHlTOvz5Dlwno1ug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jZkzMnhpI+2gyubsbPr2NOX9QtAZXPK9kgOuMlbNt86zORB4LL6vMzPMQQLvSOh0t
-         xPcv3bUWT+fRdcpuL4PRH3cL2CnoEnrUA7OCDI5v/atsX/tzR8TLsw4x3oEUBD6UNc
-         /Lj7COY/OJoglSC4NVqtSPt75dHj9TFYwrTsXmXNhe9R8favdVqDbgv2p+pey8v+50
-         DzryozBL+VuzUPHYesPMVmiDpv8Dpkn6J9d4XXXbl9MsGiIyPThMvmQ4OQDBv8IuIL
-         /4C2LhXVjqXTCH4fA4VoNi1supv4muL1FtVwKiXwDyGTFNjM73c5IpehWAATm6D181
-         OSH4jMcmUS9RQ==
-Date:   Wed, 10 Mar 2021 17:32:33 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
-        b.thiel@posteo.de
-Subject: Re: [PATCH 06/25] x86/cpu/intel: Allow SGX virtualization without
- Launch Control support
-Message-ID: <YEjmkadk7azp53f4@kernel.org>
-References: <cover.1614590788.git.kai.huang@intel.com>
- <12541888ae9ac7f517582aa64d9153feede7aed4.1614590788.git.kai.huang@intel.com>
- <20210305172957.GE2685@zn.tnic>
+        id S232975AbhCJPdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:33:50 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:47112 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232965AbhCJPdo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:33:44 -0500
+Date:   Wed, 10 Mar 2021 15:33:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1615390420;
+        bh=xIbVmZTNCK7NxoQif0UR7b5khjYZuE9aBt1T+sqg4TA=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=Qi9eXAJJiC2p6vv8kRNMGX3hSUO1dbqGFRKhTn2K72HtfyBIFCtKEZ2aCavDCpKiN
+         kN/bfVuB0K6elcBV57Zozz3QjKAMqigbcTTwBJfrlHaW0AIir78r9tlOIO1eyoOIjP
+         a4oo7LItdMpZeza3ZE73PLu4KUTY5RnPH1ZbtDQs=
+To:     caleb@connolly.tech
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, ejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        cang@codeaurora.org, beanhuo@micron.com, jaegeuk@kernel.org,
+        asutoshd@codeaurora.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: v3: scsi: ufshcd: use a macro for UFS versions
+Message-ID: <20210310153215.371227-1-caleb@connolly.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305172957.GE2685@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 06:29:57PM +0100, Borislav Petkov wrote:
-> On Mon, Mar 01, 2021 at 10:45:02PM +1300, Kai Huang wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > The kernel will currently disable all SGX support if the hardware does
-> > not support launch control.  Make it more permissive to allow SGX
-> > virtualization on systems without Launch Control support.  This will
-> > allow KVM to expose SGX to guests that have less-strict requirements on
-> > the availability of flexible launch control.
-> > 
-> > Improve error message to distinguish between three cases.  There are two
-> > cases where SGX support is completely disabled:
-> > 1) SGX has been disabled completely by the BIOS
-> > 2) SGX LC is locked by the BIOS.  Bare-metal support is disabled because
-> >    of LC unavailability.  SGX virtualization is unavailable (because of
-> >    Kconfig).
-> > One where it is partially available:
-> > 3) SGX LC is locked by the BIOS.  Bare-metal support is disabled because
-> >    of LC unavailability.  SGX virtualization is supported.
-> > 
-> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Co-developed-by: Kai Huang <kai.huang@intel.com>
-> > Acked-by: Dave Hansen <dave.hansen@intel.com>
-> > Signed-off-by: Kai Huang <kai.huang@intel.com>
-> > ---
-> >  arch/x86/kernel/cpu/feat_ctl.c | 57 ++++++++++++++++++++++++++--------
-> >  1 file changed, 44 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
-> > index 27533a6e04fa..96c370284913 100644
-> > --- a/arch/x86/kernel/cpu/feat_ctl.c
-> > +++ b/arch/x86/kernel/cpu/feat_ctl.c
-> > @@ -105,7 +105,8 @@ early_param("nosgx", nosgx);
-> >  void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
-> >  {
-> >  	bool tboot = tboot_enabled();
-> > -	bool enable_sgx;
-> > +	bool enable_sgx_any, enable_sgx_kvm, enable_sgx_driver;
-> > +	bool enable_vmx;
-> >  	u64 msr;
-> 
-> The preferred ordering of variable declarations at the beginning of a
-> function is reverse fir tree order::
-> 
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned long foo, bar;
-> 	unsigned int tmp;
-> 	int ret;
+When using a device with UFS > 2.1 the error "invalid UFS version" is
+misleadingly printed. There was a patch for this almost a year
+ago to which this solution was suggested.
 
-IMHO here declaring separate lines would make also sense, given
-how long the local variable names are.
+This series replaces the use of the growing UFSHCI_VERSION_xy macros with
+an inline function to encode a major and minor version into the scheme
+used on devices, that being:
 
- /Jarkko
+        (major << 8) + (minor << 4)
+
+I dealt with the different encoding used for UFS 1.x by converting it
+to match the newer versions in ufshcd_get_ufs_version(). That means it's
+possible to use comparisons for version checks, e.g.
+
+        if (hba->ufs_version < ufshci_version(3, 0))
+                ...
+
+I've also dropped the "invalid UFS version" check entirely as it seems to
+be more misleading than useful, and hasn't been accurate for a long time.
+
+This has been tested on a device with UFS 3.0 and a device with UFS 2.1,
+however I don't own any older devices to test with.
+
+        Caleb
+---
+Changes since v1:
+ * Switch from macro to static inline function
+ * Address Christoph's formatting comments
+ * Add Nitin's signoff on patch 3 ("scsi: ufshcd: remove version check")
+Resend:
+ * Fix patches 1/3 referencing the macro from v1
+   instead of the new inline function
+Changes since v2:
+ * Remove excessive parentheses from ufshci_version()
+ * Pick up Christoph's Reviewed-by
+
+Caleb Connolly (3):
+      scsi: ufshcd: use a function to calculate versions
+      scsi: ufs: qcom: use ufshci_version function
+      scsi: ufshcd: remove version check
+
+ drivers/scsi/ufs/ufs-qcom.c |  4 +--
+ drivers/scsi/ufs/ufshcd.c   | 66 ++++++++++++++++++-----------------------=
+----
+ drivers/scsi/ufs/ufshci.h   | 17 +++++++-----
+ 3 files changed, 38 insertions(+), 49 deletions(-)
+
+
