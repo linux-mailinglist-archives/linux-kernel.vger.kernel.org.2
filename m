@@ -2,103 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193D03333BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 798493333BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhCJDQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 22:16:25 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:38717 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230458AbhCJDQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 22:16:09 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwHKM2w0vz9sVS;
-        Wed, 10 Mar 2021 14:16:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615346167;
-        bh=fH8d75kMKDuL+wTwiHzzw8rRtEl4DPmfTt6KY51I6FA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gtChtimYrCAawvP7MZpYbcTI/qw/sNQAk6fB5eeS6/pYxuy89f435EzjIo+15FyYN
-         iUQz9zGZG6EmlNXdnERDiG91un8TfK+ghWOqrxPZhsFKtKosET84nuv/WvppbwPRvI
-         h3dXDQOqhYEkNjCkuVvT73/1q6T2KM0arDKpz3mqNYb1gLx2KSUrE6CtMsQdGEGy+R
-         gAiIgMlru4Yy+iA9049C1YUb3qaVgTXgEceVkvEgKLplzIr3vG9AaHFGpF8wYNvMBO
-         au3eenT/3pZzsGod/mCQ8Q6cYm24j39EAluDeIC28yrasBm9+6fbvr2RP+ZOxA73O0
-         px1o661NdLvew==
-Date:   Wed, 10 Mar 2021 14:16:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20210310141606.75e990d2@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/c3HZeuph4x_ZDng=57vtXe.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S231367AbhCJDQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 22:16:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230458AbhCJDQq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 22:16:46 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7FDC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 19:16:46 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so6691882pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 19:16:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g849COPJpVQXUSUGkGGzyJ03IUihWlADowoP4ZsZZjo=;
+        b=XTgAcImCQEDi9o/6iMJ0uuQkXXZGO5pQkzSgLuyefIRa81qt5C89nLzwpZbgFfGQZW
+         3LrvsJcvAyyJZ6mAPOKECVW7uj9N4sMH2Hg4oY1FLF40gWk3ibpTlJkjTDu/kPyKJT9n
+         CyYjtd0XAYDwkSQ8QTPPjcFYoctA+bakCv1EmYzjFkoOMtzb9nnawc9PvdokiaGkaoOR
+         iATAnLFTX/+CPYQMuITrwwApMi57g1lYG4vjCxTC27egQTpWe2fZ5CIdnInUT729gNby
+         p8LoBRM14Fnm3ai06RHwRe3RBPDXjLDSrXLXvYMNeGiLP/NyQILd0HXiVDf7w8MtfJc/
+         59Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=g849COPJpVQXUSUGkGGzyJ03IUihWlADowoP4ZsZZjo=;
+        b=D/Q4PZ3w/wn/tZVEu7YblK0TbpinNh7R4a6YNm3IFwg7mzrDWqHPOeBIpbxJ/rzvD9
+         PLpWupq8YY3zEtMxmDj0nWaEqrDrkevZ4EyEqne6R0ufPa2iQstqBRKQBgh4wCI2ypQW
+         1Vpnlnp+y1poi1ZGjV9wjKps57Tb3Kf4YgX8sW+tR6GW166rEWFXdFKXZh/Car5sFBGg
+         5gAZptD6Pq0q5tNRP/ygxfnqHLuL6mo/bPXckT8gACUXx3mL5r4FEe3P57RaQKIv95a/
+         tR6hKLjjigCIatfnCICiw1es56t/5w/bsLarWdpcAeQP2s3PoZGy3fPV9yUIUJ90X3cq
+         AoeQ==
+X-Gm-Message-State: AOAM532q8Z1iATFCLGn19WTF/JxJkby3Lt7zlzJtJ0W1aaTl77sDOIvK
+        wxz6gUNdPtPX8mg241bbOvDbeg==
+X-Google-Smtp-Source: ABdhPJzrGSSjx1UUPNqyEE3R9KG5SsHStFXW4PWc7T2nYdCEDKinfnS5OwydQtCU9RfN38Cn/AdiUw==
+X-Received: by 2002:a17:902:b210:b029:e6:5f:62e with SMTP id t16-20020a170902b210b02900e6005f062emr1187005plr.48.1615346205858;
+        Tue, 09 Mar 2021 19:16:45 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id g12sm1556605pfh.153.2021.03.09.19.16.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 19:16:45 -0800 (PST)
+Date:   Tue, 09 Mar 2021 19:16:45 -0800 (PST)
+X-Google-Original-Date: Tue, 09 Mar 2021 19:15:36 PST (-0800)
+Subject:     Re: [PATCH v2] riscv: Return -EFAULT if copy_{to,from}_user() failed in signal.c
+In-Reply-To: <1615017149-24843-1-git-send-email-yangtiezhu@loongson.cn>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     yangtiezhu@loongson.cn
+Message-ID: <mhng-33c9663e-90b5-48a8-b089-54f16f6b494a@penguin>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/c3HZeuph4x_ZDng=57vtXe.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, 05 Mar 2021 23:52:29 PST (-0800), yangtiezhu@loongson.cn wrote:
+> copy_{to,from}_user() returns the amount left to copy, it should return
+> -EFAULT error code if copy {to,from} user failed, just like the return
+> value is an error code when {put,get}_user() failed, this is to make the
+> return value consistent, no function change.
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/riscv/kernel/signal.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
+> index 65942b3..c76d877 100644
+> --- a/arch/riscv/kernel/signal.c
+> +++ b/arch/riscv/kernel/signal.c
+> @@ -39,7 +39,7 @@ static long restore_fp_state(struct pt_regs *regs,
+>
+>  	err = __copy_from_user(&current->thread.fstate, state, sizeof(*state));
+>  	if (unlikely(err))
+> -		return err;
+> +		return -EFAULT;
+>
+>  	fstate_restore(current, regs);
+>
+> @@ -67,7 +67,7 @@ static long save_fp_state(struct pt_regs *regs,
+>  	fstate_save(current, regs);
+>  	err = __copy_to_user(state, &current->thread.fstate, sizeof(*state));
+>  	if (unlikely(err))
+> -		return err;
+> +		return -EFAULT;
+>
+>  	/* We support no other extension state at this time. */
+>  	for (i = 0; i < ARRAY_SIZE(sc_fpregs->q.reserved); i++) {
+> @@ -87,8 +87,12 @@ static long restore_sigcontext(struct pt_regs *regs,
+>  	struct sigcontext __user *sc)
+>  {
+>  	long err;
+> +
+>  	/* sc_regs is structured the same as the start of pt_regs */
+>  	err = __copy_from_user(regs, &sc->sc_regs, sizeof(sc->sc_regs));
+> +	if (unlikely(err))
+> +		return -EFAULT;
+> +
+>  	/* Restore the floating-point state. */
+>  	if (has_fpu)
+>  		err |= restore_fp_state(regs, &sc->sc_fpregs);
+> @@ -140,8 +144,12 @@ static long setup_sigcontext(struct rt_sigframe __user *frame,
+>  {
+>  	struct sigcontext __user *sc = &frame->uc.uc_mcontext;
+>  	long err;
+> +
+>  	/* sc_regs is structured the same as the start of pt_regs */
+>  	err = __copy_to_user(&sc->sc_regs, regs, sizeof(sc->sc_regs));
+> +	if (unlikely(err))
+> +		return -EFAULT;
+> +
+>  	/* Save the floating-point state. */
+>  	if (has_fpu)
+>  		err |= save_fp_state(regs, &sc->sc_fpregs);
 
-Hi all,
+I don't really see any benefit to this way of doing it over what's there: these 
+are only used within this file, and the caller is just doing this return 
+conversion already.  If anything I find the current code easier to understand, 
+as error juggling is always one of the trickier things to get right and I 
+always find it easier to reason about code that's just passing through errors.
 
-After merging the akpm-current tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
-
-mm/shmem.c:2365:12: warning: 'enum mcopy_atomic_mode' declared inside param=
-eter list will not be visible outside of this definition or declaration
- 2365 |       enum mcopy_atomic_mode mode, struct page **pagep)
-      |            ^~~~~~~~~~~~~~~~~
-mm/shmem.c:2365:30: error: parameter 6 ('mode') has incomplete type
- 2365 |       enum mcopy_atomic_mode mode, struct page **pagep)
-      |       ~~~~~~~~~~~~~~~~~~~~~~~^~~~
-mm/shmem.c:2362:5: error: function declaration isn't a prototype [-Werror=
-=3Dstrict-prototypes]
- 2362 | int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
-      |     ^~~~~~~~~~~~~~~~~~~~~~
-mm/shmem.c: In function 'shmem_mcopy_atomic_pte':
-mm/shmem.c:2367:30: error: 'MCOPY_ATOMIC_CONTINUE' undeclared (first use in=
- this function)
- 2367 |  bool is_continue =3D (mode =3D=3D MCOPY_ATOMIC_CONTINUE);
-      |                              ^~~~~~~~~~~~~~~~~~~~~
-mm/shmem.c:2367:30: note: each undeclared identifier is reported only once =
-for each function it appears in
-mm/shmem.c:2394:15: error: 'MCOPY_ATOMIC_NORMAL' undeclared (first use in t=
-his function)
- 2394 |   if (mode =3D=3D MCOPY_ATOMIC_NORMAL) { /* mcopy_atomic */
-      |               ^~~~~~~~~~~~~~~~~~~
-
-Caused by commit
-
-  3407bec05d6d ("userfaultfd: support minor fault handling for shmem")
-
-# CONFIG_USERFAULTFD is not set
-
-I have reverted that commit (and the following 4 as well).
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/c3HZeuph4x_ZDng=57vtXe.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBIOfYACgkQAVBC80lX
-0GyeNAf/atQ7fN6HN+er47OPnt/eOqRzzDhzr3Ln1CWnNUMmg5ZthHCnL5rSLY0P
-yKiZxXG/agYemxIB8DvtjWtih7cN4Zztn4v5eTOol2e1B/VUmCS3mMj1yQA3NWQF
-tUgZa/segYSYEzYrZNCoUOm6D3fulji+dkohL0RjlwfsYlDAqwluNAKwBJ6iDJcQ
-TFgc+Uwj7yhwp/4DhA4prxBxX4csRcpoOvWiIoGLFbq5AJ/pCndNIckp6WtF6bTR
-M7nHPieVe+rxsxiPghLDLlZiJ5iALG+S36wgUxrPjTq3vvPxQa6+wmpumN0c+mkZ
-y7I+EVoVyJ3Lf1fTTVhDixdP90Fe4A==
-=jxbS
------END PGP SIGNATURE-----
-
---Sig_/c3HZeuph4x_ZDng=57vtXe.--
+If you have some new user of this code where it makes more sense to do it this 
+way then I'd be happy to take a look, but this as it stands doesn't really look 
+better.
