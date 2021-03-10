@@ -2,135 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B625B3349DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B9D3349E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhCJVcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbhCJVbe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:31:34 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD759C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:31:27 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id y7so22816707ybh.20
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:31:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=6zFz1na/xQ1K4cFFaYIhngDFvy1L6Rfcvb/ohgSzv34=;
-        b=ZpacngMpkTe50hu+4MmmZ9mDxTjiKTOau858QXWt9fGgl9XI0CVhFcWlsfFk2rcjji
-         Y2N+nza3ZlGHA6BcotE31mzQQikWGpvEq1Q1SN+/ZBZvglHUm0SrDkty+gV/DgETLZzy
-         Gv3prnDZZNR+3Jj3MRJg+ycmKe5XAiH3Gepck4sJ2xOij3z18tRJg/+Ukz/AWSZPIsvf
-         Gj/BG6DgqJs98mNUQmf/pDBYnYPiyBUehAusrqDBpfhoDtTdVhWOSN7U0j5CVF6p8ZJA
-         nh7kf+zGgz3wvwGCfhgAy7nDml0NU5uGzrT3N+NVf9uED0sVjXxpebvwIL8kSHI84es1
-         /oig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc:content-transfer-encoding;
-        bh=6zFz1na/xQ1K4cFFaYIhngDFvy1L6Rfcvb/ohgSzv34=;
-        b=OlIh56JN29AxchRLZJvy9av1i2mYT27bm+xP03yt5Sj4Mm+RnkVc8rxvEa3qxK9kEf
-         eJes8p3lmOQtQt7hDw9N8LS5L/H/3ubwyVlIoIAbZYbwjgC3l4gKJOHIBcuxVXMAmeCO
-         sFL0/BpVX8nLQFEuB3c2vYAfBo+VVv58SdcYSKP2uAJa4InfklljbehLd5fkuWO/rlwv
-         xr7t9YfWcrGMYJUBGmd7Z/8jLNqEd1LjxvyZ9Eikl93ZbtxPvqGpKiXYcIegrH8peo0/
-         4oTW2Uo+DlxBYwacHsygvU4EHOyR7spmIxHWUXTgYdB2rs1tzhk17h2EyethXp7xZYCn
-         ZEBQ==
-X-Gm-Message-State: AOAM531aq3z7dRp88lEs6DghNZjhjkWm+diDAkSES0Qxth8qYqeM+OW8
-        Ahnb+xiQ8zSLgyNg7tspazTsBxWfdKo=
-X-Google-Smtp-Source: ABdhPJz4oo0IZDanHo1iwUxfV6RdFiPpFC+E/fradMAqbkrsr5TR349ePu7+xhg92qQXD/a2oL7cT2Nu0pU=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
- (user=seanjc job=sendgmr) by 2002:a25:a002:: with SMTP id x2mr7418118ybh.13.1615411886828;
- Wed, 10 Mar 2021 13:31:26 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 10 Mar 2021 13:31:17 -0800
-Message-Id: <20210310213117.1444147-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] mm/oom_kill: Ensure MMU notifier range_end() is paired with range_start()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Michal Hocko <mhocko@suse.com>,
-        "=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?=" <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S231231AbhCJVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:40:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229563AbhCJVjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:39:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D14864FC4;
+        Wed, 10 Mar 2021 21:39:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615412375;
+        bh=UdFxVt64TzjKasA+NMSYVTgOVpISnwKFURrW8ppuVck=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=El7iw81ezSJi4ARA7ejwk5ECH5c2j22Aay12Zi77N7B5T7/Fdw7c3wOJk35JlyBBW
+         H8WtGS3rFYrYVYZcXQBFzQXDoeYjMeQ0/ElxndxpDnp1HpkvBz4CVjJ5952mcg7tgn
+         LFZ9hXoZuTr4QdTJU7dhoKWkgOR2hOpRdFhAu/XGuywTu87XwgQhE7/37TEDLe92/Y
+         +W762Xh/CO/ZL4zcdqk7e6VMUgL2uy4RpzpNeeVfTVLHhuh5UcUUNTSH1RGuoyMweZ
+         sDCpsIkSFxOruGMEWq92/6GdUo/G748CQ/UqHa06QogWLJ/SqVhsm3M93XDkKmBOMJ
+         vODf01DZHbIog==
+Date:   Wed, 10 Mar 2021 23:39:11 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jia Zhang <zhang.jia@linux.alibaba.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
+ SGX_INVALID_SIGNATURE
+Message-ID: <YEk8f/29icpsUhas@kernel.org>
+References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
+ <YDy51R2Wva7s+k/x@kernel.org>
+ <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
+ <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
+ <YD5B7P++T6jLoWBR@kernel.org>
+ <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Invoke the MMU notifier's .invalidate_range_end() callbacks even if one
-of the .invalidate_range_start() callbacks failed.  If there are multiple
-notifiers, the notifier that did not fail may have performed actions in
-its ...start() that it expects to unwind via ...end().  Per the
-mmu_notifier_ops documentation, ...start() and ...end() must be paired.
+On Wed, Mar 10, 2021 at 08:44:44PM +0800, Jia Zhang wrote:
+> 
+> 
+> On 2021/3/2 下午9:47, Jarkko Sakkinen wrote:
+> > On Mon, Mar 01, 2021 at 09:54:37PM -0800, Andy Lutomirski wrote:
+> >> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
+> >> <tianjia.zhang@linux.alibaba.com> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
+> >>>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
+> >>>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
+> >>>>
+> >>>> What does determine this?
+> >>>>
+> >>>>> In this case, the valid portion of q2 is reordered reversely for
+> >>>>> little endian order, and the remaining portion is filled with zero.
+> >>>>
+> >>>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
+> >>>>
+> >>>> I'm lacking these details:
+> >>>>
+> >>>> 1. Why the length of Q2 can vary?
+> >>>> 2. Why reversing the bytes is the correct measure to counter-measure
+> >>>>     this variation?
+> >>>>
+> >>>> /Jarkko
+> >>>>
+> >>>
+> >>> When use openssl to generate a key instead of using the built-in
+> >>> sign_key.pem, there is a probability that will encounter this problem.
+> >>>
+> >>> Here is a problematic key I encountered. The calculated q1 and q2 of
+> >>> this key are both 383 bytes, If the length is not processed, the
+> >>> hardware signature will fail.
+> >>
+> >> Presumably the issue is that some keys have parameters that have
+> >> enough leading 0 bits to be effectively shorter.  The openssl API
+> >> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
+> >> variable-size integers.
+> > 
+> > But the test uses a static key. It used to generate a key on fly but
+> 
+> IMO even though the test code, it comes from the linux kernel, meaning
+> that its quality has a certain guarantee and it is a good reference, so
+> the test code still needs to ensure its correctness.
 
-The only in-kernel usage that is fatally broken is the SGI UV GRU driver,
-which effectively blocks and sleeps fault handlers during ...start(), and
-unblocks/wakes the handlers during ...end().  But, the only users that
-can fail ...start() are the i915 and Nouveau drivers, which are unlikely
-to collide with the SGI driver.
+Hmm... what is working incorrectly then?
 
-KVM is the only other user of ...end(), and while KVM also blocks fault
-handlers in ...start(), the fault handlers do not sleep and originate in
-killable ioctl() calls.  So while it's possible for the i915 and Nouveau
-drivers to collide with KVM, the bug is benign for KVM since the process
-is dying and KVM's guest is about to be terminated.
-
-So, as of today, the bug is likely benign.  But, that may not always be
-true, e.g. there is a potential use case for blocking memslot updates in
-KVM while an invalidation is in-progress, and failure to unblock would
-result in said updates being blocked indefinitely and hanging.
-
-Found by inspection.  Verified by adding a second notifier in KVM that
-periodically returns -EAGAIN on non-blockable ranges, triggering OOM,
-and observing that KVM exits with an elevated notifier count.
-
-Fixes: 93065ac753e4 ("mm, oom: distinguish blockable mode for mmu notifiers=
-")
-Cc: stable@vger.kernel.org
-Cc: David Rientjes <rientjes@google.com>
-Cc: Ben Gardon <bgardon@google.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- mm/oom_kill.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index bc65ba4f5192..acc3ba8b2ed7 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -546,12 +546,10 @@ bool __oom_reap_task_mm(struct mm_struct *mm)
- 						vma, mm, vma->vm_start,
- 						vma->vm_end);
- 			tlb_gather_mmu(&tlb, mm);
--			if (mmu_notifier_invalidate_range_start_nonblock(&range)) {
--				tlb_finish_mmu(&tlb);
-+			if (!mmu_notifier_invalidate_range_start_nonblock(&range))
-+				unmap_page_range(&tlb, vma, range.start, range.end, NULL);
-+			else
- 				ret =3D false;
--				continue;
--			}
--			unmap_page_range(&tlb, vma, range.start, range.end, NULL);
- 			mmu_notifier_invalidate_range_end(&range);
- 			tlb_finish_mmu(&tlb);
- 		}
---=20
-2.30.1.766.gb4fecdf3b7-goog
-
+/Jarkko
