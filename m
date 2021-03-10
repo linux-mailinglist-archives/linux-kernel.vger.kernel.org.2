@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F5533497D
+	by mail.lfdr.de (Postfix) with ESMTP id D929533497F
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhCJVIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:08:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
+        id S232067AbhCJVIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:08:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbhCJVIX (ORCPT
+        with ESMTP id S231478AbhCJVI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:08:23 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77A2C061574;
-        Wed, 10 Mar 2021 13:08:22 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id p7so30228874eju.6;
-        Wed, 10 Mar 2021 13:08:22 -0800 (PST)
+        Wed, 10 Mar 2021 16:08:29 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00B2C061574;
+        Wed, 10 Mar 2021 13:08:28 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id p8so41572179ejb.10;
+        Wed, 10 Mar 2021 13:08:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xFPq8+0A2tlhUqOfS/rUAsa/NrqBUr4EOZh4j7x/kE8=;
-        b=JbnVyzZa1vdrvsdVaMOgex/cASkTjl1o4wSqdy14c7b1cs35dkpyoTqPxMe1iZ9xIW
-         ozDMZGxem6kIz3SrNxj/XwIj6Oz+YQerhEm1fq7m2uOXwXBbePy7gZB5Yxoyd8/5/9Y9
-         WRGJthxCeqLJNNJYOhHbxxt5qD19bXL7h17RbTDMGo8Mo3L0CGueOfFhhUYFmyidoSS0
-         vpqpXTT4fLoH5li48+5BHthS0qw75PWV+te4UCj1EuPSODlJ6ezWXyMHEsIW8mq5XtIo
-         TV1TMxDIxZrwx0/vXmU6Kfwkt2slS7+cD1JhxiY9CV68Ve4mFC15ddlmWkI4x/BiUrPz
-         US1g==
+        bh=0SX53bYeJpoRn/Rj8EJYnn/yWlrMIeX4TZ6gWcrZofc=;
+        b=bmC+GZuRpPw22iaH2nG9joxOZVNCyQ1ZEe+2lEU2JOh9Ei2AeeP+twZLnzoNb+/5lh
+         L7hfz8o+uo0vLTKt6cNNlMNcKCgiRDRjxe/4VpEzHbT3iE8UvfKfbaFHwfF8PGSe1weY
+         GE5UKQPgrg2Rf1VmwyWeMutLitQET78oyCiG36084I0rZSY9/upOTWWo/jSQKBrYQL0e
+         CdtbQrHk2m/Yl3Wlqb877oxESdLiFMo9aVGaARam8/XrsmirLW4vRakHHcmbHOAFJVGi
+         KQ+uioCVj1UhAjc8UofeeIUP+7ZNTmfNmfPsayy8d5azv0LUg96EQbb31mL0sxcNXj8T
+         tiIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xFPq8+0A2tlhUqOfS/rUAsa/NrqBUr4EOZh4j7x/kE8=;
-        b=b/zvrDhZBVTiWtlvbB3LcqnL0xgEGZGl1mcViyzIZ4AY8PuKUswT1j43N5kxIleay5
-         unfAm5FR35QuqoxjC+TjCl42JH8m+quBK3876wVTKSbp4+f2obmt3wL8IqTdBsyKyzaw
-         SbXNQ+xKq8l9O/tv7/XyMePjWcRPiYJTWLndAA86ukGNT9QG7ELFk6W9BkVY1TV7E+Qz
-         QxvyjeHS/DcKMTMZ4HO2bn+3bfD/AUE5a+qJ3q5aAeBDV0zthpcniL6WVHS0ov63GaDG
-         tPGRCrR/KmfkCLYv97odrJlWewKw10rpZLTujSzAgmQnAQjffrLgoXiALdcYDUGsFN4Y
-         l8Fg==
-X-Gm-Message-State: AOAM5308k3U4dZ4lVX/tB43KxWavgQ2MNCutTVJb+Xd8nHAYF0BlxLVi
-        6cNnfY5GrU7Md2nH9KRWxgs=
-X-Google-Smtp-Source: ABdhPJxMhxvqt2uc/XnQM5SDA5v8uHHMAXEtGaa7sBmASydWA4ifJqbigVy0BKUn8EKN7vpqd7KmOQ==
-X-Received: by 2002:a17:906:688:: with SMTP id u8mr360665ejb.38.1615410501645;
-        Wed, 10 Mar 2021 13:08:21 -0800 (PST)
+        bh=0SX53bYeJpoRn/Rj8EJYnn/yWlrMIeX4TZ6gWcrZofc=;
+        b=PsTY3JJaJtrNzsiqAvE6LOIz4CTIRMWbiI0sUYJbdw82C6JV5O9MuhvSqNU74TPgbn
+         DxcgULEueOBnrBhdc6RyJSxig6+a9Wb0YbznqLNaFQJVdnLI/wetwyFIUoLwAMY8szOD
+         t369D9KwOazxvOHvYsrq4Q6R0m6+BKSzbnfcvf7x/sktX3dhCkV7qUpoCfrc4mRLkvEc
+         0aSX0/ho6McxmhF4dtATePzdfO802vC28wxbSI99COqsLG7OU0otgEBpMUSdGCifHokr
+         unLfPPY3dLEHo2gGKr6hPaD4ZrGtS1zF0EWk75xZEvTSAESCV2XpGxW9o4e/lchVSxmz
+         N4SQ==
+X-Gm-Message-State: AOAM533x3DoqVOD9K6GPujUOhujWzKqZutXpG+3LcocQKj3vIYPmpYge
+        eLzlcim+l2I34pWCxuP7ywE=
+X-Google-Smtp-Source: ABdhPJzKCqWitK4itgJF5gOPWZ9BHxznB01QDhOfG6tEDyip2Frv/S1yKF7GrTdEgH6a7nWKme2yTA==
+X-Received: by 2002:a17:906:f1c8:: with SMTP id gx8mr334710ejb.385.1615410506866;
+        Wed, 10 Mar 2021 13:08:26 -0800 (PST)
 Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.googlemail.com with ESMTPSA id f19sm252947edu.12.2021.03.10.13.08.20
+        by smtp.googlemail.com with ESMTPSA id f19sm252947edu.12.2021.03.10.13.08.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 13:08:21 -0800 (PST)
+        Wed, 10 Mar 2021 13:08:26 -0800 (PST)
 From:   Ansuel Smith <ansuelsmth@gmail.com>
 To:     Rob Herring <robh@kernel.org>
 Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/3] dt-bindings: mtd: Document use of nvmem-cells compatible
-Date:   Wed, 10 Mar 2021 22:08:02 +0100
-Message-Id: <20210310210812.8880-2-ansuelsmth@gmail.com>
+Subject: [PATCH v4 3/3] devicetree: nvmem: nvmem: drop $nodename restriction
+Date:   Wed, 10 Mar 2021 22:08:03 +0100
+Message-Id: <20210310210812.8880-3-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210310210812.8880-1-ansuelsmth@gmail.com>
 References: <20210310210812.8880-1-ansuelsmth@gmail.com>
@@ -70,117 +70,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document nvmem-cells compatible used to treat mtd partitions as a
+Drop $nodename restriction as now mtd partition can also be used as
 nvmem provider.
 
 Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 ---
- .../bindings/mtd/partitions/nvmem-cells.yaml  | 96 +++++++++++++++++++
- 1 file changed, 96 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+ Documentation/devicetree/bindings/nvmem/nvmem.yaml | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
-new file mode 100644
-index 000000000000..f70d7597a6b0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
-@@ -0,0 +1,96 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/nvmem-cells.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Nvmem cells
-+
-+description: |
-+  Any partition containing the compatible "nvmem-cells" will register as a
-+  nvmem provider.
-+  Each direct subnodes represents a nvmem cell following the nvmem binding.
-+  Nvmem binding to declare nvmem-cells can be found in:
-+  Documentation/devicetree/bindings/nvmem/nvmem.yaml
-+
-+maintainers:
-+  - Ansuel Smith <ansuelsmth@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: nvmem-cells
-+
-+required:
-+  - compatible
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    partitions {
-+      compatible = "fixed-partitions";
-+      #address-cells = <1>;
-+      #size-cells = <1>;
-+
-+      /* ... */
-+
-+      };
-+      art: art@1200000 {
-+        compatible = "nvmem-cells";
-+        reg = <0x1200000 0x0140000>;
-+        label = "art";
-+        read-only;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        macaddr_gmac1: macaddr_gmac1@0 {
-+          reg = <0x0 0x6>;
-+        };
-+
-+        macaddr_gmac2: macaddr_gmac2@6 {
-+          reg = <0x6 0x6>;
-+        };
-+
-+        pre_cal_24g: pre_cal_24g@1000 {
-+          reg = <0x1000 0x2f20>;
-+        };
-+
-+        pre_cal_5g: pre_cal_5g@5000{
-+          reg = <0x5000 0x2f20>;
-+        };
-+      };
-+  - |
-+    partitions {
-+        compatible = "fixed-partitions";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition@0 {
-+            label = "bootloader";
-+            reg = <0x000000 0x100000>;
-+            read-only;
-+        };
-+
-+        firmware@100000 {
-+            compatible = "brcm,trx";
-+            label = "firmware";
-+            reg = <0x100000 0xe00000>;
-+        };
-+
-+        calibration@f00000 {
-+            compatible = "nvmem-cells";
-+            label = "calibration";
-+            reg = <0xf00000 0x100000>;
-+            ranges = <0 0xf00000 0x100000>;
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+
-+            wifi0@0 {
-+                reg = <0x000000 0x080000>;
-+            };
-+
-+            wifi1@80000 {
-+                reg = <0x080000 0x080000>;
-+            };
-+        };
-+    };
+diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+index 7481a9e48f19..b8dc3d2b6e92 100644
+--- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
++++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+@@ -20,9 +20,6 @@ description: |
+   storage device.
+ 
+ properties:
+-  $nodename:
+-    pattern: "^(eeprom|efuse|nvram)(@.*|-[0-9a-f])*$"
+-
+   "#address-cells":
+     const: 1
+ 
 -- 
 2.30.0
 
