@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC261333324
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6ED333327
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhCJCbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:31:35 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:44204 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231835AbhCJCbF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:31:05 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 60413208CF3F;
-        Tue,  9 Mar 2021 18:31:05 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 60413208CF3F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1615343465;
-        bh=zyAxx9X7db3xy7R9k6SWK3OhsYY9Ys/qYCIMIrLY89E=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=JfvW/B6Ap41tfrrlv+LoSg0oGUs//FcsYMmOIlOHbyKRKcIRKhmr1aGlZtWTwMeng
-         nwBXYR51wSX2e9X3Woow1jwfWw8WzLLmLNKexwZiE5WKjMz3j8S6O0hw5/Wfq640km
-         lUQdoGC6XBVovEBLOGZJdldX/8TQUB3+jD719qm8=
-Subject: Re: [PATCH v2] powerpc/kexec_file: Restore FDT size estimation for
- kdump kernel
-To:     Rob Herring <robh@kernel.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        kexec@lists.infradead.org, Hari Bathini <hbathini@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210220005204.1417200-1-bauerman@linux.ibm.com>
- <CAL_JsqJatxTwSbM8a0PB2ievO_fRFeYJ8ZtBN0pRfnEjSXyUkg@mail.gmail.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <7d0c6062-ca73-f183-110d-f5b75ae91d10@linux.microsoft.com>
-Date:   Tue, 9 Mar 2021 18:31:04 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232139AbhCJCdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:33:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231235AbhCJCcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 21:32:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BFF364F84;
+        Wed, 10 Mar 2021 02:32:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615343561;
+        bh=69DUFNK2JB2JKzdkRdZ/XlWLEjG3ef1b4VxLgCOxoqw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f8gpp9VdmwuPyoTT2fK7F+6mxLEzG+ejIftSJP3u2iiOdZhqnv8BsLbw6mvVTySiQ
+         v82H9IFxBO06JOWtZwGPAQhXGmOFVszRwG8/3uCMNhie0bfuRfrjhuYGpXpQRJ5hR+
+         Ay0ZeVv0/neMnICME4IC0vcWL9w9fdaGw8PGYCEupzWSepPFUjQ1do6ySHq/0S10Bh
+         4h2L6PpngO7nw98bmzThF3id5nwvfyCKNT81qEwhOfqUI3bU3X/5g3bN2x7C5jnTLR
+         EL+eljAwZ0NqjJcBWJu0z/YNVej/jEgpVR1XtlTX9+H5AC+jkSFCthAHtKhXqsnAQO
+         EhMwHzTEgpUxA==
+Received: by mail-ed1-f48.google.com with SMTP id m9so24949298edd.5;
+        Tue, 09 Mar 2021 18:32:41 -0800 (PST)
+X-Gm-Message-State: AOAM530VXa8s3FdBzPDQNHk1yc/9DLWibKa+T9jdPtQ1WJaLZ8iykRUF
+        CAzqztTov9qTwRSgn5msC0GlIPlZeXAQPFSA9Q==
+X-Google-Smtp-Source: ABdhPJwHjeFbPXpi7Hx1kJl/4EAmKe+MyBlw8ijIqRC+kYtRQvVW/TFyZN4qAshKdQQHueTyJWZ6Stlr1V0uk9El3Ag=
+X-Received: by 2002:a05:6402:c88:: with SMTP id cm8mr699106edb.62.1615343560077;
+ Tue, 09 Mar 2021 18:32:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJatxTwSbM8a0PB2ievO_fRFeYJ8ZtBN0pRfnEjSXyUkg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
+ <20210222120259.94465-3-manivannan.sadhasivam@linaro.org> <20210305233657.GA839767@robh.at.kernel.org>
+ <20210308053140.GA5457@thinkpad>
+In-Reply-To: <20210308053140.GA5457@thinkpad>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 9 Mar 2021 19:32:28 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqKOfQ8v=Adp_3k64-WW-YXan_1kCG9mab6rE62VkSwmhQ@mail.gmail.com>
+Message-ID: <CAL_JsqKOfQ8v=Adp_3k64-WW-YXan_1kCG9mab6rE62VkSwmhQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
+ regions in Qcom NANDc
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh R <vigneshr@ti.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 6:08 PM, Rob Herring wrote:
+On Sun, Mar 7, 2021 at 10:31 PM Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> On Fri, Mar 05, 2021 at 05:36:57PM -0600, Rob Herring wrote:
+> > On Mon, Feb 22, 2021 at 05:32:58PM +0530, Manivannan Sadhasivam wrote:
+> > > On a typical end product, a vendor may choose to secure some regions in
+> > > the NAND memory which are supposed to stay intact between FW upgrades.
+> > > The access to those regions will be blocked by a secure element like
+> > > Trustzone. So the normal world software like Linux kernel should not
+> > > touch these regions (including reading).
+> > >
+> > > So let's add a property for declaring such secure regions so that the
+> > > driver can skip touching them.
+> > >
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  Documentation/devicetree/bindings/mtd/qcom,nandc.yaml | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > > index 84ad7ff30121..7500e20da9c1 100644
+> > > --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > > +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > > @@ -48,6 +48,13 @@ patternProperties:
+> > >          enum:
+> > >            - 512
+> > >
+> > > +      qcom,secure-regions:
+> > > +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> >
+> > Don't you need 64-bit regions potentially? Though 4GB should be enough
+> > for anyone.
+> >
+>
+> Yes, given the size of current NAND based systems around, I thought 32 bit is
+> enough.
 
-Hi Rob,
+Huh!? I was joking. 4GB is small nowadays. Make this 64-bit.
 
-> On Fri, Feb 19, 2021 at 6:52 PM Thiago Jung Bauermann
-> <bauerman@linux.ibm.com> wrote:
->>
->> Commit 2377c92e37fe ("powerpc/kexec_file: fix FDT size estimation for kdump
->> kernel") fixed how elf64_load() estimates the FDT size needed by the
->> crashdump kernel.
->>
->> At the same time, commit 130b2d59cec0 ("powerpc: Use common
->> of_kexec_alloc_and_setup_fdt()") changed the same code to use the generic
->> function of_kexec_alloc_and_setup_fdt() to calculate the FDT size. That
->> change made the code overestimate it a bit by counting twice the space
->> required for the kernel command line and /chosen properties.
->>
->> Therefore change kexec_fdt_totalsize_ppc64() to calculate just the extra
->> space needed by the kdump kernel, and change the function name so that it
->> better reflects what the function is now doing.
->>
->> Signed-off-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
->> Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->> ---
->>   arch/powerpc/include/asm/kexec.h  |  2 +-
->>   arch/powerpc/kexec/elf_64.c       |  2 +-
->>   arch/powerpc/kexec/file_load_64.c | 26 ++++++++------------------
->>   3 files changed, 10 insertions(+), 20 deletions(-)
-> 
-> I ended up delaying the referenced series til 5.13, but have applied
-> it now. Can I get an ack from the powerpc maintainers on this one?
-> I'll fixup the commit log to make sense given the commit id's aren't
-> valid.
-
-I checked the change applied in linux-next branch and also Device Tree's 
-for-next branch - it looks like v1 of Thiago's patch has been applied. 
-Could you please pick up the v2 patch?
-
-thanks,
-  -lakshmi
-
-
+Rob
