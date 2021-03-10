@@ -2,93 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BC33341BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8DB3341B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhCJPkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:40:16 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:41737 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhCJPj6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:39:58 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MD5fd-1lT3Ur2NWL-0096PB; Wed, 10 Mar 2021 16:39:56 +0100
-Received: by mail-ot1-f41.google.com with SMTP id a17so16786190oto.5;
-        Wed, 10 Mar 2021 07:39:55 -0800 (PST)
-X-Gm-Message-State: AOAM530bizGt1XwmpPpxiZZ/xaGxr585XYhDYH8XY0JzMYFDEJwMPjDc
-        BnmT2xqlS9ZNEKhsfaO6RjjOVwSpazXZgc1Mr28=
-X-Google-Smtp-Source: ABdhPJyz+OU7gvgIrSIrSop4e8azU44xAIwSKa5HpTc5C9P44C7QC3z/u5GcCJR7jvFrP3vF9cowRntGlUhuRjPALp4=
-X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr2985547otq.305.1615390794792;
- Wed, 10 Mar 2021 07:39:54 -0800 (PST)
+        id S232781AbhCJPkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:40:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52756 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231150AbhCJPjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:39:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615390791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mg9ts1yU6xrUwnU8b/NkRK6/aMveNTB6Z6AHbEN9iNQ=;
+        b=O3VenPPRDcQspUbMJp96sOidOexUFuSZLT3J2eFfkgiS9S0zUM4/Ivo6j+CWSVWuxXxywQ
+        vFhkaQ7Is3b0Sk+fRXqyCeO5x7eg6ZV1YZTnr3Rvl59lopZ/UJKxr8/xrHDk+ygmv/Wf3X
+        Ooo2dfHy0yT4iv9q1ZkGcn3i8LhhogA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 194BAAD72;
+        Wed, 10 Mar 2021 15:39:51 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 16:39:48 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: Re: [PATCH v18 8/9] mm: hugetlb: gather discrete indexes of tail page
+Message-ID: <YEjoRBKakozoscVk@dhcp22.suse.cz>
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-9-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
- <20210310083840.481615-1-krzysztof.kozlowski@canonical.com>
- <20210310094527.GA701493@dell> <35c39c81-08e4-24c8-f683-2fa7a7ea71de@redhat.com>
- <1c06cb74-f0b0-66e5-a594-ed1ee9bc876e@canonical.com>
-In-Reply-To: <1c06cb74-f0b0-66e5-a594-ed1ee9bc876e@canonical.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 10 Mar 2021 16:39:37 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1CCQwbeH4KiUgif+-HdubVjjZBkMXimEjYkgeh4eJ7cg@mail.gmail.com>
-Message-ID: <CAK8P3a1CCQwbeH4KiUgif+-HdubVjjZBkMXimEjYkgeh4eJ7cg@mail.gmail.com>
-Subject: Re: [RFC v2 3/5] arm64: socfpga: rename ARCH_STRATIX10 to ARCH_SOCFPGA64
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Tom Rix <trix@redhat.com>, Lee Jones <lee.jones@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-edac@vger.kernel.org, linux-fpga@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com, arm-soc <arm@kernel.org>,
-        SoC Team <soc@kernel.org>, Olof Johansson <olof@lixom.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:QuxxoViFqMbIcHIb8w99YreoXmfBiRqTKjDeRQuZ1EIzQbW48uR
- XURGz5Z6bEHJF80Qq2RuH+k6iYym+jvmHAIeZz0dEs+iCs3ej/vSMIL0xqMEqoVyHObfzJV
- RY8PF/3byan60umtzRs7qQbCONk1+ki2GAEoscvoUmQ3MqiDfAedEDmPeCOrlpYSkdyoZBQ
- 3rHa4qCq8M1Ke4bWsjj4w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cKEqFz4Ztjg=:l2G4YYzG6B1M6ffbG3dvjl
- GdhjcCZD5IyxBesKT1VCIVbdSN4L9nEKpInyckrxnasm4CFwrcwRWlBNXJRemh9SMElZ1jZDs
- 1dViagxvR0p0I1T2tM8NsFToRrhInuStbkq2kn6ztCtAnxS+0QPRHJTelJ5x31SgoxEx/DuvS
- o/0ppoi8iwHMeMoTAFq9wHZGbGh9Ukv1B9v+thOa6LROh6jKmaIhW3HScvcOtNVl1Vm2Ws1CH
- ip9u6Eu0rjH5jRpXVdKAEwoIYErH66LvKlNvb4eC8StFeIXyI5Lon763ic/p1wDm8KemGPoia
- sDGFLZt8XWgpF+XIXOTmLElQwhjsUFNASQ1iZrVioHcZhq+qs7ErI54yAxOHcEFgpeZXgIk/l
- 3UsEYXgo+5CyE2NCpKcI5XA+se+Q8DANdZnQhLKLDf3F/3orgLKpxNMXpaaHb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308102807.59745-9-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 4:06 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
-> On 10/03/2021 15:45, Tom Rix wrote:
-> > On 3/10/21 1:45 AM, Lee Jones wrote:
->
-> Many other architectures do not have vendor prefix (TEGRA, EXYNOS,
-> ZYNQMP etc). I would call it the same as in ARMv7 - ARCH_SOCFPGA - but
-> the Altera EDAC driver depends on these symbols to be different.
-> Anyway, I don't mind using something else for the name.
+On Mon 08-03-21 18:28:06, Muchun Song wrote:
+> For HugeTLB page, there are more metadata to save in the struct page.
+> But the head struct page cannot meet our needs, so we have to abuse
+> other tail struct page to store the metadata. In order to avoid
+> conflicts caused by subsequent use of more tail struct pages, we can
+> gather these discrete indexes of tail struct page. In this case, it
+> will be easier to add a new tail page index later.
+> 
+> There are only (RESERVE_VMEMMAP_SIZE / sizeof(struct page)) struct
+> page structs that can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP,
+> so add a BUILD_BUG_ON to catch invalid usage of the tail struct page.
 
-I agree the name SOCFPGA is confusing, since it is really a class of
-device that is made by multiple manufacturers rather than a brand name,
-but renaming that now would be equally confusing. If the Intel folks
-could suggest a better name that describes all products in the platform
-and is less ambiguous, we could rename it to that. I think ARCH_ALTERA
-would make sense, but I don't know if that is a name that is getting
-phased out. (We once renamed the Marvell Orion platform to ARCH_MVEBU,
-but shortly afterwards, Marvell renamed their embedded business unit (EBU)
-and the name has no longer made sense since).
+OK, so this is what I have asked in an earlier patch. Good. I would
+reorder and make this patch prior to the one relying on the fact though.
+ 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+> Tested-by: Chen Huang <chenhuang5@huawei.com>
+> Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
 
-Regardless of what name we end up with, I do think we should have the
-same name for 32-bit and 64-bit and instead fix the edac driver to do
-runtime detection based on the compatible string.
+Acked-by: Michal Hocko <mhocko@suse.com>
+> ---
+>  include/linux/hugetlb.h        | 24 ++++++++++++++++++++++--
+>  include/linux/hugetlb_cgroup.h | 19 +++++++++++--------
+>  mm/hugetlb.c                   |  6 +++---
+>  mm/hugetlb_vmemmap.c           |  8 ++++++++
+>  4 files changed, 44 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index a4d80f7263fc..c70421e26189 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -28,6 +28,26 @@ typedef struct { unsigned long pd; } hugepd_t;
+>  #include <linux/shm.h>
+>  #include <asm/tlbflush.h>
+>  
+> +/*
+> + * For HugeTLB page, there are more metadata to save in the struct page. But
+> + * the head struct page cannot meet our needs, so we have to abuse other tail
+> + * struct page to store the metadata. In order to avoid conflicts caused by
+> + * subsequent use of more tail struct pages, we gather these discrete indexes
+> + * of tail struct page here.
+> + */
+> +enum {
+> +	SUBPAGE_INDEX_SUBPOOL = 1,	/* reuse page->private */
+> +#ifdef CONFIG_CGROUP_HUGETLB
+> +	SUBPAGE_INDEX_CGROUP,		/* reuse page->private */
+> +	SUBPAGE_INDEX_CGROUP_RSVD,	/* reuse page->private */
+> +	__MAX_CGROUP_SUBPAGE_INDEX = SUBPAGE_INDEX_CGROUP_RSVD,
+> +#endif
+> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> +	SUBPAGE_INDEX_HWPOISON,		/* reuse page->private */
+> +#endif
+> +	__NR_USED_SUBPAGE,
+> +};
+> +
+>  struct hugepage_subpool {
+>  	spinlock_t lock;
+>  	long count;
+> @@ -607,13 +627,13 @@ extern unsigned int default_hstate_idx;
+>   */
+>  static inline struct hugepage_subpool *hugetlb_page_subpool(struct page *hpage)
+>  {
+> -	return (struct hugepage_subpool *)(hpage+1)->private;
+> +	return (void *)page_private(hpage + SUBPAGE_INDEX_SUBPOOL);
+>  }
+>  
+>  static inline void hugetlb_set_page_subpool(struct page *hpage,
+>  					struct hugepage_subpool *subpool)
+>  {
+> -	set_page_private(hpage+1, (unsigned long)subpool);
+> +	set_page_private(hpage + SUBPAGE_INDEX_SUBPOOL, (unsigned long)subpool);
+>  }
+>  
+>  static inline struct hstate *hstate_file(struct file *f)
+> diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.h
+> index 2ad6e92f124a..54ec689e3c9c 100644
+> --- a/include/linux/hugetlb_cgroup.h
+> +++ b/include/linux/hugetlb_cgroup.h
+> @@ -21,15 +21,16 @@ struct hugetlb_cgroup;
+>  struct resv_map;
+>  struct file_region;
+>  
+> +#ifdef CONFIG_CGROUP_HUGETLB
+>  /*
+>   * Minimum page order trackable by hugetlb cgroup.
+>   * At least 4 pages are necessary for all the tracking information.
+> - * The second tail page (hpage[2]) is the fault usage cgroup.
+> - * The third tail page (hpage[3]) is the reservation usage cgroup.
+> + * The second tail page (hpage[SUBPAGE_INDEX_CGROUP]) is the fault
+> + * usage cgroup. The third tail page (hpage[SUBPAGE_INDEX_CGROUP_RSVD])
+> + * is the reservation usage cgroup.
+>   */
+> -#define HUGETLB_CGROUP_MIN_ORDER	2
+> +#define HUGETLB_CGROUP_MIN_ORDER order_base_2(__MAX_CGROUP_SUBPAGE_INDEX + 1)
+>  
+> -#ifdef CONFIG_CGROUP_HUGETLB
+>  enum hugetlb_memory_event {
+>  	HUGETLB_MAX,
+>  	HUGETLB_NR_MEMORY_EVENTS,
+> @@ -66,9 +67,9 @@ __hugetlb_cgroup_from_page(struct page *page, bool rsvd)
+>  	if (compound_order(page) < HUGETLB_CGROUP_MIN_ORDER)
+>  		return NULL;
+>  	if (rsvd)
+> -		return (struct hugetlb_cgroup *)page[3].private;
+> +		return (void *)page_private(page + SUBPAGE_INDEX_CGROUP_RSVD);
+>  	else
+> -		return (struct hugetlb_cgroup *)page[2].private;
+> +		return (void *)page_private(page + SUBPAGE_INDEX_CGROUP);
+>  }
+>  
+>  static inline struct hugetlb_cgroup *hugetlb_cgroup_from_page(struct page *page)
+> @@ -90,9 +91,11 @@ static inline int __set_hugetlb_cgroup(struct page *page,
+>  	if (compound_order(page) < HUGETLB_CGROUP_MIN_ORDER)
+>  		return -1;
+>  	if (rsvd)
+> -		page[3].private = (unsigned long)h_cg;
+> +		set_page_private(page + SUBPAGE_INDEX_CGROUP_RSVD,
+> +				 (unsigned long)h_cg);
+>  	else
+> -		page[2].private = (unsigned long)h_cg;
+> +		set_page_private(page + SUBPAGE_INDEX_CGROUP,
+> +				 (unsigned long)h_cg);
+>  	return 0;
+>  }
+>  
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index c221b937be17..4956880a7861 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1312,7 +1312,7 @@ static inline void hwpoison_subpage_deliver(struct hstate *h, struct page *head)
+>  	if (!PageHWPoison(head) || !free_vmemmap_pages_per_hpage(h))
+>  		return;
+>  
+> -	page = head + page_private(head + 4);
+> +	page = head + page_private(head + SUBPAGE_INDEX_HWPOISON);
+>  
+>  	/*
+>  	 * Move PageHWPoison flag from head page to the raw error page,
+> @@ -1331,7 +1331,7 @@ static inline void hwpoison_subpage_set(struct hstate *h, struct page *head,
+>  		return;
+>  
+>  	if (free_vmemmap_pages_per_hpage(h)) {
+> -		set_page_private(head + 4, page - head);
+> +		set_page_private(head + SUBPAGE_INDEX_HWPOISON, page - head);
+>  	} else if (page != head) {
+>  		/*
+>  		 * Move PageHWPoison flag from head page to the raw error page,
+> @@ -1347,7 +1347,7 @@ static inline void hwpoison_subpage_clear(struct hstate *h, struct page *head)
+>  	if (!PageHWPoison(head) || !free_vmemmap_pages_per_hpage(h))
+>  		return;
+>  
+> -	set_page_private(head + 4, 0);
+> +	set_page_private(head + SUBPAGE_INDEX_HWPOISON, 0);
+>  }
+>  #else
+>  static inline void hwpoison_subpage_deliver(struct hstate *h, struct page *head)
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index b65f0d5189bd..33e42678abe3 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -257,6 +257,14 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
+>  	unsigned int nr_pages = pages_per_huge_page(h);
+>  	unsigned int vmemmap_pages;
+>  
+> +	/*
+> +	 * There are only (RESERVE_VMEMMAP_SIZE / sizeof(struct page)) struct
+> +	 * page structs that can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP,
+> +	 * so add a BUILD_BUG_ON to catch invalid usage of the tail struct page.
+> +	 */
+> +	BUILD_BUG_ON(__NR_USED_SUBPAGE >=
+> +		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
+> +
+>  	if (!hugetlb_free_vmemmap_enabled)
+>  		return;
+>  
+> -- 
+> 2.11.0
+> 
 
-        Arnd
+-- 
+Michal Hocko
+SUSE Labs
