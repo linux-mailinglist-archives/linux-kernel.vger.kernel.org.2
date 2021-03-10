@@ -2,107 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455C7333747
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B4A333750
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhCJI2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:28:42 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13080 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhCJI23 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:28:29 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DwQC23BPhzMknJ;
-        Wed, 10 Mar 2021 16:26:06 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 10 Mar 2021 16:28:14 +0800
-From:   l00371289 <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <alobakin@pm.me>, <jonathan.lemon@gmail.com>, <willemb@google.com>,
-        <linmiaohe@huawei.com>, <gnault@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH net-next] skbuff: remove some unnecessary operation in skb_segment_list()
-Date:   Wed, 10 Mar 2021 16:28:58 +0800
-Message-ID: <1615364938-52943-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S232276AbhCJIbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:31:24 -0500
+Received: from mga17.intel.com ([192.55.52.151]:52953 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232302AbhCJIbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:31:05 -0500
+IronPort-SDR: N2qV+GmX0zW0w82KYrf7lQu+wCYfmTa1mjn1W0hs1AjRktEjrjvJvnLv5KmYLrQkNGTFP7HZAl
+ toBlUbL8tp5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="168330314"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="168330314"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 00:31:05 -0800
+IronPort-SDR: +DjJWg1zyMGZgiMLXACZNsNNW6VG8rXY1mjYWMCgifDiPTJkM0/9boXq+uVua2TtDFNE4V99au
+ HBPD0PAWkxiQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="588758202"
+Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 10 Mar 2021 00:31:03 -0800
+Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lJuFC-00003B-OH; Wed, 10 Mar 2021 08:31:02 +0000
+Date:   Wed, 10 Mar 2021 16:30:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/alternatives] BUILD SUCCESS
+ db16e07269c2b4346e4332e43f04e447ef14fd2f
+Message-ID: <60488391.CWrofJOlOJ6jaLy0%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/alternatives
+branch HEAD: db16e07269c2b4346e4332e43f04e447ef14fd2f  x86/alternative: Drop unused feature parameter from ALTINSTR_REPLACEMENT()
 
-gro list uses skb_shinfo(skb)->frag_list to link two skb together,
-and NAPI_GRO_CB(p)->last->next is used when there are more skb,
-see skb_gro_receive_list(). gso expects that each segmented skb is
-linked together using skb->next, so only the first skb->next need
-to set to skb_shinfo(skb)-> frag_list when doing gso list segment.
+elapsed time: 721m
 
-It is the same reason that nskb->next does not need to be set to
-list_skb before goto the error handling, because nskb->next already
-pointers to list_skb.
+configs tested: 116
+configs skipped: 62
 
-And nskb is also the last skb at the end of loop, so remove tail
-variable and use nskb instead.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sparc                            allyesconfig
+mips                         db1xxx_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                      ppc44x_defconfig
+arm                            zeus_defconfig
+powerpc                          allyesconfig
+arc                         haps_hs_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                             mxs_defconfig
+sh                         microdev_defconfig
+mips                       capcella_defconfig
+arm                        mvebu_v7_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                     tqm8541_defconfig
+sh                          urquell_defconfig
+arc                    vdk_hs38_smp_defconfig
+m68k                       bvme6000_defconfig
+x86_64                              defconfig
+arm                        spear3xx_defconfig
+arc                      axs103_smp_defconfig
+riscv                            alldefconfig
+m68k                       m5249evb_defconfig
+mips                        omega2p_defconfig
+h8300                               defconfig
+ia64                      gensparse_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210308
+x86_64               randconfig-a001-20210308
+x86_64               randconfig-a004-20210308
+x86_64               randconfig-a002-20210308
+x86_64               randconfig-a005-20210308
+x86_64               randconfig-a003-20210308
+i386                 randconfig-a005-20210309
+i386                 randconfig-a003-20210309
+i386                 randconfig-a002-20210309
+i386                 randconfig-a006-20210309
+i386                 randconfig-a004-20210309
+i386                 randconfig-a001-20210309
+i386                 randconfig-a005-20210308
+i386                 randconfig-a003-20210308
+i386                 randconfig-a002-20210308
+i386                 randconfig-a006-20210308
+i386                 randconfig-a004-20210308
+i386                 randconfig-a001-20210308
+x86_64               randconfig-a013-20210309
+x86_64               randconfig-a016-20210309
+x86_64               randconfig-a015-20210309
+x86_64               randconfig-a014-20210309
+x86_64               randconfig-a011-20210309
+x86_64               randconfig-a012-20210309
+i386                 randconfig-a016-20210309
+i386                 randconfig-a012-20210309
+i386                 randconfig-a014-20210309
+i386                 randconfig-a013-20210309
+i386                 randconfig-a011-20210309
+i386                 randconfig-a015-20210309
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210309
+x86_64               randconfig-a001-20210309
+x86_64               randconfig-a004-20210309
+x86_64               randconfig-a002-20210309
+x86_64               randconfig-a005-20210309
+x86_64               randconfig-a003-20210309
+x86_64               randconfig-a013-20210308
+x86_64               randconfig-a016-20210308
+x86_64               randconfig-a015-20210308
+x86_64               randconfig-a014-20210308
+x86_64               randconfig-a011-20210308
+x86_64               randconfig-a012-20210308
+
 ---
- net/core/skbuff.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
-
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index c421c8f..e8320b5 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -3732,13 +3732,13 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
- 	unsigned int tnl_hlen = skb_tnl_header_len(skb);
- 	unsigned int delta_truesize = 0;
- 	unsigned int delta_len = 0;
--	struct sk_buff *tail = NULL;
- 	struct sk_buff *nskb, *tmp;
- 	int err;
- 
- 	skb_push(skb, -skb_network_offset(skb) + offset);
- 
- 	skb_shinfo(skb)->frag_list = NULL;
-+	skb->next = list_skb;
- 
- 	do {
- 		nskb = list_skb;
-@@ -3756,17 +3756,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
- 			}
- 		}
- 
--		if (!tail)
--			skb->next = nskb;
--		else
--			tail->next = nskb;
--
--		if (unlikely(err)) {
--			nskb->next = list_skb;
-+		if (unlikely(err))
- 			goto err_linearize;
--		}
--
--		tail = nskb;
- 
- 		delta_len += nskb->len;
- 		delta_truesize += nskb->truesize;
-@@ -3793,7 +3784,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
- 
- 	skb_gso_reset(skb);
- 
--	skb->prev = tail;
-+	skb->prev = nskb;
- 
- 	if (skb_needs_linearize(skb, features) &&
- 	    __skb_linearize(skb))
--- 
-2.7.4
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
