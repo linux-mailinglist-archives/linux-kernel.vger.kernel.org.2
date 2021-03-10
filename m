@@ -2,101 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CD9333A24
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDEA333A26
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbhCJKg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
+        id S232415AbhCJKhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:37:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbhCJKgo (ORCPT
+        with ESMTP id S232154AbhCJKhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:36:44 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE064C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:36:42 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id b18so22721477wrn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:36:42 -0800 (PST)
+        Wed, 10 Mar 2021 05:37:20 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8ECC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:37:19 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id d139-20020a1c1d910000b029010b895cb6f2so10382925wmd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:37:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Jb7ZelfORH1QHJnFWCjShP1okoL5Fzbc3XNjssblVDM=;
-        b=Wtl+/BWmYdVQ1eCD7d/+zWRstywW8SSDLChG2No8Nt659lCdvZ1AH6TF9QhRKJfJfJ
-         elWDFxQJHuG/54mKawxKkPBWZdKweaH2UfMrGgDmWg5wsIRALmZbsWcI51/06wquWogj
-         1ikDFcfaOfCDthMi0nY9erfPIqnIDOMToHoakc2XbndZgaxBgvssewb0ZC/USXxJ+60E
-         rv3NyN8XbPueJGxjNsB3vi/SeKJCjFBlc4kOWZsnSjYgIGz8rGjVHlqDiCzQHYFfwxWa
-         p7aUw8ynGbHTXaEL8uHwJc/HX1f1Iu+QJJbKzOAI2WmatTLrls4wgrbNcd73tOLQes/f
-         yXow==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=B8Z9rvCBiY15UvdVVjvfLubumMo7++dKg9/r1aZGGMs=;
+        b=TacreJcO5kLw9VASNDp9dAziTJFlTXQVCpzcfYxuKfKM5/HidMWaBVMRxdJUS5s/FB
+         Pho1KMUHpVrgH1xOdiqJa+YCFFbyJu52dop4LNZRenFOkrOkfp5IbpJ3fBCtK8/ifBH9
+         Go+HSF4/Z+JhtpSVu0zZNJXV2TdpTHJatChX2crs8tM/F+kzY5eUBFwqSkIi4QwPygIt
+         npFDnLzgdm1Kng/XkCQwk9/F3kPCeUzrMX73rKSatY1lKHpgk8yvimh5kKgky4kRh39a
+         QIhd2dv6S7Wyvy2SzvVgSZc4G4nU2JrP4CYRxiGuRvQ6xmx6EFe218tGkFgniqKCpQVx
+         9hhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Jb7ZelfORH1QHJnFWCjShP1okoL5Fzbc3XNjssblVDM=;
-        b=iZmaDTwJqL0cxHDsZl7Lipk/hN+UIMx2DzHcyfHsmGtVUm+yJL6k4yI7ypM/Eb7wBk
-         tJRpnAmWgYcPqe70PKb4xzSE++U6JLImQ/Mc1MLk2GRmwpbwCDzJKK01DE/TZUtxGT54
-         6ME3AXUpS+VFV7iLabDR/FUCemW1KBuPehTq3rY6H3PU1+/AWWMkV14rV7PXcbzAfYip
-         uvHThE5dSf7MiGHqXzqxsKkQvjdF7XrHR4DaDu63dLiFd5P0uY8KBG4tHHUwrVgVmCd1
-         L1BIBfDTuwIe23Mrq85Iuq6x8rrrCDO0Mhem1RpH8arEClkg+OcgTPyTmxZzx7jvmngr
-         9xQw==
-X-Gm-Message-State: AOAM530lsz5aDjaDEA2btlmIlMk7MYJiSgrSqC6wUol8hrUw94XNdhSa
-        kH1F+k7z/UyFELy8rd/oqvGw2Q==
-X-Google-Smtp-Source: ABdhPJwWYgVLki6B90CCw0UsfdKlqtXBlodzOFwgFzBQoo1El4DPbwMQZWGcm7Uz/h6ROKgdbsyCkA==
-X-Received: by 2002:adf:e482:: with SMTP id i2mr2787952wrm.392.1615372601570;
-        Wed, 10 Mar 2021 02:36:41 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id u63sm8634794wmg.24.2021.03.10.02.36.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 02:36:41 -0800 (PST)
-Date:   Wed, 10 Mar 2021 10:36:39 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v3 06/15] mfd: Add ROHM BD71815 ID
-Message-ID: <20210310103639.GG701493@dell>
-References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
- <be0e8cd06ed75e799c942e5076ee7b56ad658467.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B8Z9rvCBiY15UvdVVjvfLubumMo7++dKg9/r1aZGGMs=;
+        b=H4VSSVVDiGNARAR5PPIsxcBH2DFHqwGpRXY559wW+S2o+JfNIgryjiBqFXWVxo2dNf
+         T5UfKgabiTkvOxstN9b84X1mGv107/7sMqq9Pj4VJ5I//ejC5LuUTIsJMoe2SsJgt5/S
+         PciMvMn4y1LP+yFpkVwe6qEdY5TjadEUoN/KxA6lUEose9Nkg6n3DtSpip6kd1FJY49/
+         JB0hktc5HvQB4YXiK75FQ5mXsFuan9iB91obKVFHNEfwYDZU8MpWymJlyeUOMEUzxyxY
+         xCtlMYWWIFDqmNBAxQq8j2B7N1z/iSViF7Nv8zHR+fsEWqFBknP4wCI4AOL0Tg7rfA/d
+         N7zA==
+X-Gm-Message-State: AOAM532Lr5525Lhgvp8EaY1ANSZSJscvwYpcixVAHovLa372WyKU7IWr
+        XFVwfia2ZofqjUrkP9aga7xdzmHJjFFa9g==
+X-Google-Smtp-Source: ABdhPJxw0SILOBY28/u/sAJusya8TGRrZcAl0HQy/kAhaurmYidjJwbws0SLAe0/SLw4usRAsAAMPg==
+X-Received: by 2002:a1c:9a47:: with SMTP id c68mr2636620wme.63.1615372638400;
+        Wed, 10 Mar 2021 02:37:18 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id h20sm8367429wmm.19.2021.03.10.02.37.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Mar 2021 02:37:17 -0800 (PST)
+Subject: Re: [PATCH 1/3] nvmem: core: Add functions to make number reading
+ easy
+To:     Douglas Anderson <dianders@chromium.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+References: <20210305162546.1.I323dad4343256b48af2be160b84b1e87985cc9be@changeid>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <8e274cc7-0c9e-b983-7dd9-c501c159e95a@linaro.org>
+Date:   Wed, 10 Mar 2021 10:37:16 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <be0e8cd06ed75e799c942e5076ee7b56ad658467.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210305162546.1.I323dad4343256b48af2be160b84b1e87985cc9be@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021, Matti Vaittinen wrote:
 
-> Add chip ID for ROHM BD71815 and PMIC so that drivers can identify
-> this IC.
+
+On 06/03/2021 00:26, Douglas Anderson wrote:
+> Sometimes the clients of nvmem just want to get a number out of
+> nvmem. They don't want to think about exactly how many bytes the nvmem
+> cell took up. They just want the number. Let's make it easy.
 > 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> In general this concept is useful because nvmem space is precious and
+> usually the fewest bits are allocated that will hold a given value on
+> a given system. However, even though small numbers might be fine on
+> one system that doesn't mean that logically the number couldn't be
+> bigger. Imagine nvmem containing a max frequency for a component. On
+> one system perhaps that fits in 16 bits. On another system it might
+> fit in 32 bits. The code reading this number doesn't care--it just
+> wants the number.
+> 
+> We'll provide two functions: nvmem_cell_read_variable_le_u32() and
+> nvmem_cell_read_variable_le_u64().
+> 
+> Comparing these to the existing functions like nvmem_cell_read_u32():
+> * These new functions have no problems if the value was stored in
+>    nvmem in fewer bytes. It's OK to use these function as long as the
+>    value stored will fit in 32-bits (or 64-bits).
+> * These functions avoid problems that the earlier APIs had with bit
+>    offsets. For instance, you can't use nvmem_cell_read_u32() to read a
+>    value has nbits=32 and bit_offset=4 because the nvmem cell must be
+>    at least 5 bytes big to hold this value. The new API accounts for
+>    this and works fine.
+> * These functions make it very explicit that they assume that the
+>    number was stored in little endian format. The old functions made
+>    this assumption whenever bit_offset was non-zero (see
+>    nvmem_shift_read_buffer_in_place()) but didn't whenever the
+>    bit_offset was zero.
+> 
+> NOTE: it's assumed that we don't need an 8-bit or 16-bit version of
+> this function. The 32-bit version of the function can be used to read
+> 8-bit or 16-bit data.
+> 
+> At the moment, I'm only adding the "unsigned" versions of these
+> functions, but if it ends up being useful someone could add a "signed"
+> version that did 2's complement sign extension.
+> 
+> At the moment, I'm only adding the "little endian" versions of these
+> functions. Adding the "big endian" version would require adding "big
+> endian" support to nvmem_shift_read_buffer_in_place().
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  include/linux/mfd/rohm-generic.h | 1 +
->  1 file changed, 1 insertion(+)
+> This is a logical follow-up to:
+>    https://lore.kernel.org/r/20210227002603.3260599-1-dianders@chromium.org/
+> ...but since it doesn't really share any of the same patches I'm not
+> marking it as a v2.
 > 
-> diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
-> index 66f673c35303..e5392bcbc098 100644
-> --- a/include/linux/mfd/rohm-generic.h
-> +++ b/include/linux/mfd/rohm-generic.h
-> @@ -14,6 +14,7 @@ enum rohm_chip_type {
->  	ROHM_CHIP_TYPE_BD71828,
->  	ROHM_CHIP_TYPE_BD9571,
->  	ROHM_CHIP_TYPE_BD9574,
-> +	ROHM_CHIP_TYPE_BD71815,
+>   drivers/nvmem/core.c           | 95 ++++++++++++++++++++++++++++++++++
+>   include/linux/nvmem-consumer.h |  4 ++
+>   2 files changed, 99 insertions(+)
+> 
 
-Is there a technical reason why these can't be re-ordered?
+This patch as it is LGTM.
 
->  	ROHM_CHIP_TYPE_AMOUNT
->  };
->  
+If you plan to take this via other trees, here is
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+--srini
+
+> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> index a5ab1e0c74cf..635e3131eb5f 100644
+> --- a/drivers/nvmem/core.c
+> +++ b/drivers/nvmem/core.c
+> @@ -1606,6 +1606,101 @@ int nvmem_cell_read_u64(struct device *dev, const char *cell_id, u64 *val)
+>   }
+>   EXPORT_SYMBOL_GPL(nvmem_cell_read_u64);
+>   
+> +static void *nvmem_cell_read_variable_common(struct device *dev,
+> +					     const char *cell_id,
+> +					     size_t max_len, size_t *len)
+> +{
+> +	struct nvmem_cell *cell;
+> +	int nbits;
+> +	void *buf;
+> +
+> +	cell = nvmem_cell_get(dev, cell_id);
+> +	if (IS_ERR(cell))
+> +		return cell;
+> +
+> +	nbits = cell->nbits;
+> +	buf = nvmem_cell_read(cell, len);
+> +	nvmem_cell_put(cell);
+> +	if (IS_ERR(buf))
+> +		return buf;
+> +
+> +	/*
+> +	 * If nbits is set then nvmem_cell_read() can significantly exaggerate
+> +	 * the length of the real data. Throw away the extra junk.
+> +	 */
+> +	if (nbits)
+> +		*len = DIV_ROUND_UP(nbits, 8);
+> +
+> +	if (*len > max_len) {
+> +		kfree(buf);
+> +		return ERR_PTR(-ERANGE);
+> +	}
+> +
+> +	return buf;
+> +}
+> +
+> +/**
+> + * nvmem_cell_read_variable_le_u32() - Read up to 32-bits of data as a little endian number.
+> + *
+> + * @dev: Device that requests the nvmem cell.
+> + * @cell_id: Name of nvmem cell to read.
+> + * @val: pointer to output value.
+> + *
+> + * Return: 0 on success or negative errno.
+> + */
+> +int nvmem_cell_read_variable_le_u32(struct device *dev, const char *cell_id,
+> +				    u32 *val)
+> +{
+> +	size_t len;
+> +	u8 *buf;
+> +	int i;
+> +
+> +	buf = nvmem_cell_read_variable_common(dev, cell_id, sizeof(*val), &len);
+> +	if (IS_ERR(buf))
+> +		return PTR_ERR(buf);
+> +
+> +	/* Copy w/ implicit endian conversion */
+> +	*val = 0;
+> +	for (i = 0; i < len; i++)
+> +		*val |= buf[i] << (8 * i);
+> +
+> +	kfree(buf);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(nvmem_cell_read_variable_le_u32);
+> +
+> +/**
+> + * nvmem_cell_read_variable_le_u64() - Read up to 64-bits of data as a little endian number.
+> + *
+> + * @dev: Device that requests the nvmem cell.
+> + * @cell_id: Name of nvmem cell to read.
+> + * @val: pointer to output value.
+> + *
+> + * Return: 0 on success or negative errno.
+> + */
+> +int nvmem_cell_read_variable_le_u64(struct device *dev, const char *cell_id,
+> +				    u64 *val)
+> +{
+> +	size_t len;
+> +	u8 *buf;
+> +	int i;
+> +
+> +	buf = nvmem_cell_read_variable_common(dev, cell_id, sizeof(*val), &len);
+> +	if (IS_ERR(buf))
+> +		return PTR_ERR(buf);
+> +
+> +	/* Copy w/ implicit endian conversion */
+> +	*val = 0;
+> +	for (i = 0; i < len; i++)
+> +		*val |= buf[i] << (8 * i);
+> +
+> +	kfree(buf);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(nvmem_cell_read_variable_le_u64);
+> +
+>   /**
+>    * nvmem_device_cell_read() - Read a given nvmem device and cell
+>    *
+> diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
+> index 052293f4cbdb..923dada24eb4 100644
+> --- a/include/linux/nvmem-consumer.h
+> +++ b/include/linux/nvmem-consumer.h
+> @@ -65,6 +65,10 @@ int nvmem_cell_read_u8(struct device *dev, const char *cell_id, u8 *val);
+>   int nvmem_cell_read_u16(struct device *dev, const char *cell_id, u16 *val);
+>   int nvmem_cell_read_u32(struct device *dev, const char *cell_id, u32 *val);
+>   int nvmem_cell_read_u64(struct device *dev, const char *cell_id, u64 *val);
+> +int nvmem_cell_read_variable_le_u32(struct device *dev, const char *cell_id,
+> +				    u32 *val);
+> +int nvmem_cell_read_variable_le_u64(struct device *dev, const char *cell_id,
+> +				    u64 *val);
+>   
+>   /* direct nvmem device read/write interface */
+>   struct nvmem_device *nvmem_device_get(struct device *dev, const char *name);
+> 
