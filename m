@@ -2,133 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF343346B5
+	by mail.lfdr.de (Postfix) with ESMTP id B7B903346B6
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233459AbhCJS2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:28:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbhCJS1r (ORCPT
+        id S233536AbhCJS2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:28:22 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:49522 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232828AbhCJS2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:27:47 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58455C061760;
-        Wed, 10 Mar 2021 10:27:47 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id DCB7022173;
-        Wed, 10 Mar 2021 19:27:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615400865;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F8vDNH8421RXKDc4eht9KA1gFC2SxxBRRDukiV+MMMM=;
-        b=CxkAO/k0r91N18hLq9c3RkDcy0oyNTMGFDRDx5ThQEr1MkpWhN6rpju8l7at0IUwvQKiUV
-        wuXhMJjctMculrdUrAqkPCuh8ropI+x19oA8SXNRFjMruo0Lu1Pn2VU5eBWpOCMuZuLpcU
-        Wmv3COHMuaGqqDdfkKrL411UEoS/H1M=
+        Wed, 10 Mar 2021 13:28:16 -0500
+Received: by mail-io1-f70.google.com with SMTP id d4so13436116ioc.16
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:28:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dWnpxusVnWPr+rcJeULtT4fXHPYoawfba2p1aaq6XSA=;
+        b=WcawbuQAOMhUQxu15BTAJkix+i7OOON95dFtlLNow3IiLfpA9ANvbsTdy5bKD0yKgQ
+         ykueLjEl5sGnpYXbhlzXU/B2UU9koZc7d85fy8o0wVb9A1TFWLt17T3T56nUpmaCPCQK
+         sP4niXR4JskkQu+hOPMaPwe09nO08lgrbSbbPiyTdYW6rR1S4Xzekuz6cgjHv585GAcC
+         zxfBIEIy/8TQAZnd9TuAohMRd5NwUR81RMRbTyCdiXaJEnxo77jz+aw8egPk1DQz+MeB
+         zMxVoL4TgtRS6OZ7ZsXjTVXIzAxqlEFU6GzrB6yJLjbGnn5n+dsETpQHdjzlyyRI8FgZ
+         NEeQ==
+X-Gm-Message-State: AOAM533DKsMUCw4kn4zVLl9hXALbMJgYbaeZ346fCoTaMzc6CD3L/Af+
+        qfKX2MHUXTciEVCyA77qv/FBmSrYeS+uplw3ulVXSk26VOGP
+X-Google-Smtp-Source: ABdhPJx/W+DGdwc0MBak58Y2XiC1RAxBcNNIPGImIFRLConkbFmwYSAHDTVxc4h21wvES82j7S8emtvKEcCMLvwIVXdkzgh9C01b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 10 Mar 2021 19:27:44 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 02/15] gpio: regmap: set gpio_chip of_node
-In-Reply-To: <20210310125504.31886-3-noltari@gmail.com>
-References: <20210310125504.31886-1-noltari@gmail.com>
- <20210310125504.31886-3-noltari@gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <7e35bfd395f3ae40029b0f3cb2bc8f70@walle.cc>
-X-Sender: michael@walle.cc
+X-Received: by 2002:a5d:9693:: with SMTP id m19mr3153243ion.46.1615400896209;
+ Wed, 10 Mar 2021 10:28:16 -0800 (PST)
+Date:   Wed, 10 Mar 2021 10:28:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000096cdaa05bd32d46f@google.com>
+Subject: [syzbot] BUG: unable to handle kernel access to user memory in sock_ioctl
+From:   syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-10 13:54, schrieb Álvaro Fernández Rojas:
-> This is needed for properly registering GPIO regmap as a child of a 
-> regmap
-> pin controller.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> Reviewed-by: Michael Walle <michael@walle.cc>
-> ---
->  v6: add comment and simplify of_node assignment
+Hello,
 
-Ah, I see you add the comment for the documentation. Nice. But I'd
-like to see it in the code, too. See below.
+syzbot found the following issue on:
 
->  v5: switch to fwnode
->  v4: fix documentation
->  v3: introduce patch needed for properly parsing gpio-range
-> 
->  drivers/gpio/gpio-regmap.c  | 1 +
->  include/linux/gpio/regmap.h | 4 ++++
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
-> index 5412cb3b0b2a..d4fc656e70b0 100644
-> --- a/drivers/gpio/gpio-regmap.c
-> +++ b/drivers/gpio/gpio-regmap.c
-> @@ -249,6 +249,7 @@ struct gpio_regmap *gpio_regmap_register(const
-> struct gpio_regmap_config *config
-> 
->  	chip = &gpio->gpio_chip;
->  	chip->parent = config->parent;
+HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
+userspace arch: riscv64
 
-If there will be a new version, please add the following comment:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-/* gpiolib will use of_node of the parent if chip->of_node is NULL */
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
 
->> +       chip->of_node = to_of_node(config->fwnode);
+Unable to handle kernel access to user memory without uaccess routines at virtual address 0000000020000300
+Oops [#1]
+Modules linked in:
+CPU: 1 PID: 4488 Comm: syz-executor.0 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+Hardware name: riscv-virtio,qemu (DT)
+epc : sock_ioctl+0x424/0x6ac net/socket.c:1124
+ ra : sock_ioctl+0x424/0x6ac net/socket.c:1124
+epc : ffffffe002aeeb3e ra : ffffffe002aeeb3e sp : ffffffe023867da0
+ gp : ffffffe005d25378 tp : ffffffe007e116c0 t0 : 0000000000000000
+ t1 : 0000000000000001 t2 : 0000003fb8035e44 s0 : ffffffe023867e30
+ s1 : 0000000000040000 a0 : 0000000000000000 a1 : 0000000000000007
+ a2 : 1ffffffc00fc22d8 a3 : ffffffe003bc1d02 a4 : 0000000000000000
+ a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
+ s2 : 0000000000000000 s3 : 0000000000008902 s4 : 0000000020000300
+ s5 : ffffffe005d2b0d0 s6 : ffffffe010facfc0 s7 : ffffffe008e00000
+ s8 : 0000000000008903 s9 : ffffffe010fad080 s10: 0000000000000000
+ s11: 0000000000020000 t3 : 982de389919f6300 t4 : ffffffc401175688
+ t5 : ffffffc401175691 t6 : 0000000000000007
+status: 0000000000000120 badaddr: 0000000020000300 cause: 000000000000000f
+Call Trace:
+[<ffffffe002aeeb3e>] sock_ioctl+0x424/0x6ac net/socket.c:1124
+[<ffffffe0003fdb6a>] vfs_ioctl fs/ioctl.c:48 [inline]
+[<ffffffe0003fdb6a>] __do_sys_ioctl fs/ioctl.c:753 [inline]
+[<ffffffe0003fdb6a>] sys_ioctl+0x5c2/0xd56 fs/ioctl.c:739
+[<ffffffe000005562>] ret_from_syscall+0x0/0x2
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace a5f91e70f37b907b ]---
 
-Otherwise, it is not obvious that config->fwnode is optional.
 
--michael
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> +	chip->of_node = to_of_node(config->fwnode);
->  	chip->base = -1;
->  	chip->ngpio = config->ngpio;
->  	chip->names = config->names;
-> diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
-> index ad76f3d0a6ba..334dd928042b 100644
-> --- a/include/linux/gpio/regmap.h
-> +++ b/include/linux/gpio/regmap.h
-> @@ -4,6 +4,7 @@
->  #define _LINUX_GPIO_REGMAP_H
-> 
->  struct device;
-> +struct fwnode_handle;
->  struct gpio_regmap;
->  struct irq_domain;
->  struct regmap;
-> @@ -16,6 +17,8 @@ struct regmap;
->   * @parent:		The parent device
->   * @regmap:		The regmap used to access the registers
->   *			given, the name of the device is used
-> + * @fwnode:		(Optional) The firmware node.
-> + *			If not given, the fwnode of the parent is used.
->   * @label:		(Optional) Descriptive name for GPIO controller.
->   *			If not given, the name of the device is used.
->   * @ngpio:		Number of GPIOs
-> @@ -57,6 +60,7 @@ struct regmap;
->  struct gpio_regmap_config {
->  	struct device *parent;
->  	struct regmap *regmap;
-> +	struct fwnode_handle *fwnode;
-> 
->  	const char *label;
->  	int ngpio;
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
