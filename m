@@ -2,120 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953A6334758
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CBA33475A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbhCJTCm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 14:02:42 -0500
-Received: from aposti.net ([89.234.176.197]:54112 "EHLO aposti.net"
+        id S233589AbhCJTDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 14:03:13 -0500
+Received: from mga06.intel.com ([134.134.136.31]:37166 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhCJTCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:02:35 -0500
-Date:   Wed, 10 Mar 2021 19:02:22 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 0/5] Add option to mmap GEM buffers cached
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Message-Id: <YVORPQ.MCVK409VD57J2@crapouillou.net>
-In-Reply-To: <ab488f52-f93d-ff50-efc5-bbdceec99ecb@suse.de>
-References: <20210307202835.253907-1-paul@crapouillou.net>
-        <ab488f52-f93d-ff50-efc5-bbdceec99ecb@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+        id S233539AbhCJTCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:02:47 -0500
+IronPort-SDR: t/t4x5FXNghGSjHOhF+22juQriJRMs/HmGJCJfEYLo2gEWjUfdkYGThPrp23lbWaO0MLMmos05
+ MWxcpLungouQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="249910223"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="249910223"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 11:02:46 -0800
+IronPort-SDR: BU7XaEgN3AvibvQvUlCuCFib33K7LF6ziMiD+10/lgNgnMBVJXgCC4VG+2C1s6ZxAbyEUIu4tW
+ 3GHNlFurYM6A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="372055273"
+Received: from alison-desk.jf.intel.com (HELO alison-desk) ([10.54.74.53])
+  by orsmga006.jf.intel.com with ESMTP; 10 Mar 2021 11:02:46 -0800
+From:   Alison Schofield <alison.schofield@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>
+Cc:     Alison Schofield <alison.schofield@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Prarit Bhargava <prarit@redhat.com>, brice.goglin@gmail.com
+Subject: [PATCH v3] x86, sched: Treat Intel SNC topology as default, COD as exception
+Date:   Wed, 10 Mar 2021 11:02:33 -0800
+Message-Id: <20210310190233.31752-1-alison.schofield@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Commit 1340ccfa9a9a ("x86,sched: Allow topologies where NUMA nodes
+share an LLC") added a vendor and model specific check to never
+call topology_sane() for Intel Skylake Server systems where NUMA
+nodes share an LLC.
 
-Le lun. 8 mars 2021 à 9:41, Thomas Zimmermann <tzimmermann@suse.de> a 
-écrit :
-> Hi Paul,
-> 
-> having individual functions for each mode only makes sense if the 
-> decision is at compile time. But in patch 5, you're working around 
-> your earlier design by introducing in-driver helpers that select the 
-> correct CMA function.
-> 
-> In SHMEM helpers we have the flag map_wc in the GEM structure that 
-> selects the pages caching mode (wc vs uncached). I think CMA should 
-> use this design as well. Have a map_noncoherent flag in the CMA GEM 
-> object and set it from the driver's implementation of 
-> gem_create_object.
+Intel Ice Lake and Sapphire Rapids CPUs also enumerate an LLC that is
+shared by multiple NUMA nodes. The LLC on these CPUs is shared for
+off-package data access but private to the NUMA node for on-package
+access. Rather than managing a list of allowable SNC topologies, make
+this SNC topology the default, and treat Intel's Cluster-On-Die (COD)
+topology as the exception.
 
-Is that a new addition? That severely reduces the patchset size, which 
-is perfect.
+In SNC mode, Sky Lake, Ice Lake, and Sapphire Rapids servers do not
+emit this warning:
 
-I'll send a V3 then.
+sched: CPU #3's llc-sibling CPU #0 is not on the same node! [node: 1 != 0]. Ignoring dependency.
 
-Cheers,
--Paul
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Alison Schofield <alison.schofield@intel.com>
+Cc: stable@vger.kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@linux.intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Igor Mammedov <imammedo@redhat.com>
+Cc: Prarit Bhargava <prarit@redhat.com>
+Cc: brice.goglin@gmail.com
+---
 
-> And in the long run, we could try to consolidate all drivers/helpers 
-> mapping flags in struct drm_gem_object.
-> 
-> Best regards
-> Thomas
-> 
-> Am 07.03.21 um 21:28 schrieb Paul Cercueil:
->> Rework of my previous patchset which added support for GEM buffers
->> backed by non-coherent memory to the ingenic-drm driver.
->> 
->> Having GEM buffers backed by non-coherent memory is interesting in
->> the particular case where it is faster to render to a non-coherent
->> buffer then sync the data cache, than to render to a write-combine
->> buffer, and (by extension) much faster than using a shadow buffer.
->> This is true for instance on some Ingenic SoCs, where even simple
->> blits (e.g. memcpy) are about three times faster using this method.
->> 
->> For the record, the previous patchset was accepted for 5.10 then had
->> to be reverted, as it conflicted with some changes made to the DMA 
->> API.
->> 
->> This new patchset is pretty different as it adds the functionality to
->> the DRM core. The first three patches add variants to existing 
->> functions
->> but with the "non-coherent memory" twist, exported as GPL symbols. 
->> The
->> fourth patch adds a function to be used with the damage helpers.
->> Finally, the last patch adds support for non-coherent GEM buffers to 
->> the
->> ingenic-drm driver. The functionality is enabled through a module
->> parameter, and is disabled by default.
->> 
->> Cheers,
->> -Paul
->> 
->> Paul Cercueil (5):
->>    drm: Add and export function drm_gem_cma_create_noncoherent
->>    drm: Add and export function drm_gem_cma_dumb_create_noncoherent
->>    drm: Add and export function drm_gem_cma_mmap_noncoherent
->>    drm: Add and export function drm_gem_cma_sync_data
->>    drm/ingenic: Add option to alloc cached GEM buffers
->> 
->>   drivers/gpu/drm/drm_gem_cma_helper.c      | 223 
->> +++++++++++++++++++---
->>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c |  49 ++++-
->>   drivers/gpu/drm/ingenic/ingenic-drm.h     |   4 +
->>   drivers/gpu/drm/ingenic/ingenic-ipu.c     |  14 +-
->>   include/drm/drm_gem_cma_helper.h          |  13 ++
->>   5 files changed, 273 insertions(+), 30 deletions(-)
->> 
-> 
-> --
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 Nürnberg, Germany
-> (HRB 36809, AG Nürnberg)
-> Geschäftsführer: Felix Imendörffer
-> 
+Changes v2->v3:
+- This is a v3 of this patch: https://lore.kernel.org/lkml/20210216195804.24204-1-alison.schofield@intel.com/
+- Implemented PeterZ suggestion, and his code, to check for COD instead
+  of SNC.
+- Updated commit message and log.
+- Added 'Cc stable.
 
+Changes v1->v2:
+- Implemented the minimal required change of adding the new models to
+  the existing vendor and model specific check.
+
+- Side effect of going minimalist: no longer labelled an X86_BUG (TonyL)
+
+- Considered PeterZ suggestion of checking for COD CPUs, rather than
+  SNC CPUs. That meant this snc_cpu list would go away, and so it never
+  needs updating. That ups the stakes for this patch wrt LOC changed
+  and testing needed. It actually drove me back to this simplest soln.
+
+- Considered DaveH suggestion to remove the check altogether and recognize
+  these topologies as sane. Not running with that further here. This patch
+  is what is needed now. The broader discussion of sane topologies can
+  carry on independent of this update.
+
+- Updated commit message and log.
+
+
+ arch/x86/kernel/smpboot.c | 90 ++++++++++++++++++++-------------------
+ 1 file changed, 46 insertions(+), 44 deletions(-)
+
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 02813a7f3a7c..147b2f3a2a09 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -458,29 +458,52 @@ static bool match_smt(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ 	return false;
+ }
+ 
++static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
++{
++	if (c->phys_proc_id == o->phys_proc_id &&
++	    c->cpu_die_id == o->cpu_die_id)
++		return true;
++	return false;
++}
++
++/*
++ * Unlike the other levels, we do not enforce keeping a
++ * multicore group inside a NUMA node.  If this happens, we will
++ * discard the MC level of the topology later.
++ */
++static bool match_pkg(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
++{
++	if (c->phys_proc_id == o->phys_proc_id)
++		return true;
++	return false;
++}
++
+ /*
+- * Define snc_cpu[] for SNC (Sub-NUMA Cluster) CPUs.
++ * Define intel_cod_cpu[] for Intel COD (Cluster-on-Die) CPUs.
+  *
+- * These are Intel CPUs that enumerate an LLC that is shared by
+- * multiple NUMA nodes. The LLC on these systems is shared for
+- * off-package data access but private to the NUMA node (half
+- * of the package) for on-package access.
++ * Any Intel CPU that has multiple nodes per package and does not
++ * match intel_cod_cpu[] has the SNC (Sub-NUMA Cluster) topology.
+  *
+- * CPUID (the source of the information about the LLC) can only
+- * enumerate the cache as being shared *or* unshared, but not
+- * this particular configuration. The CPU in this case enumerates
+- * the cache to be shared across the entire package (spanning both
+- * NUMA nodes).
++ * When in SNC mode, these CPUs enumerate an LLC that is shared
++ * by multiple NUMA nodes. The LLC is shared for off-package data
++ * access but private to the NUMA node (half of the package) for
++ * on-package access. CPUID (the source of the information about
++ * the LLC) can only enumerate the cache as shared or unshared,
++ * but not this particular configuration.
+  */
+ 
+-static const struct x86_cpu_id snc_cpu[] = {
+-	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X, NULL),
++static const struct x86_cpu_id intel_cod_cpu[] = {
++	X86_MATCH_INTEL_FAM6_MODEL(HASWELL_X, 0),	/* COD */
++	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_X, 0),	/* COD */
++	X86_MATCH_INTEL_FAM6_MODEL(ANY, 1),		/* SNC */
+ 	{}
+ };
+ 
+ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ {
++	const struct x86_cpu_id *id = x86_match_cpu(intel_cod_cpu);
+ 	int cpu1 = c->cpu_index, cpu2 = o->cpu_index;
++	bool intel_snc = id && id->driver_data;
+ 
+ 	/* Do not match if we do not have a valid APICID for cpu: */
+ 	if (per_cpu(cpu_llc_id, cpu1) == BAD_APICID)
+@@ -495,32 +518,12 @@ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ 	 * means 'c' does not share the LLC of 'o'. This will be
+ 	 * reflected to userspace.
+ 	 */
+-	if (!topology_same_node(c, o) && x86_match_cpu(snc_cpu))
++	if (match_pkg(c, o) && !topology_same_node(c, o) && intel_snc)
+ 		return false;
+ 
+ 	return topology_sane(c, o, "llc");
+ }
+ 
+-/*
+- * Unlike the other levels, we do not enforce keeping a
+- * multicore group inside a NUMA node.  If this happens, we will
+- * discard the MC level of the topology later.
+- */
+-static bool match_pkg(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+-{
+-	if (c->phys_proc_id == o->phys_proc_id)
+-		return true;
+-	return false;
+-}
+-
+-static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+-{
+-	if ((c->phys_proc_id == o->phys_proc_id) &&
+-		(c->cpu_die_id == o->cpu_die_id))
+-		return true;
+-	return false;
+-}
+-
+ 
+ #if defined(CONFIG_SCHED_SMT) || defined(CONFIG_SCHED_MC)
+ static inline int x86_sched_itmt_flags(void)
+@@ -592,14 +595,23 @@ void set_cpu_sibling_map(int cpu)
+ 	for_each_cpu(i, cpu_sibling_setup_mask) {
+ 		o = &cpu_data(i);
+ 
++		if (match_pkg(c, o) && !topology_same_node(c, o))
++			x86_has_numa_in_package = true;
++
+ 		if ((i == cpu) || (has_smt && match_smt(c, o)))
+ 			link_mask(topology_sibling_cpumask, cpu, i);
+ 
+ 		if ((i == cpu) || (has_mp && match_llc(c, o)))
+ 			link_mask(cpu_llc_shared_mask, cpu, i);
+ 
++		if ((i == cpu) || (has_mp && match_die(c, o)))
++			link_mask(topology_die_cpumask, cpu, i);
+ 	}
+ 
++	threads = cpumask_weight(topology_sibling_cpumask(cpu));
++	if (threads > __max_smt_threads)
++		__max_smt_threads = threads;
++
+ 	/*
+ 	 * This needs a separate iteration over the cpus because we rely on all
+ 	 * topology_sibling_cpumask links to be set-up.
+@@ -613,8 +625,7 @@ void set_cpu_sibling_map(int cpu)
+ 			/*
+ 			 *  Does this new cpu bringup a new core?
+ 			 */
+-			if (cpumask_weight(
+-			    topology_sibling_cpumask(cpu)) == 1) {
++			if (threads == 1) {
+ 				/*
+ 				 * for each core in package, increment
+ 				 * the booted_cores for this new cpu
+@@ -631,16 +642,7 @@ void set_cpu_sibling_map(int cpu)
+ 			} else if (i != cpu && !c->booted_cores)
+ 				c->booted_cores = cpu_data(i).booted_cores;
+ 		}
+-		if (match_pkg(c, o) && !topology_same_node(c, o))
+-			x86_has_numa_in_package = true;
+-
+-		if ((i == cpu) || (has_mp && match_die(c, o)))
+-			link_mask(topology_die_cpumask, cpu, i);
+ 	}
+-
+-	threads = cpumask_weight(topology_sibling_cpumask(cpu));
+-	if (threads > __max_smt_threads)
+-		__max_smt_threads = threads;
+ }
+ 
+ /* maps the cpu to the sched domain representing multi-core */
+-- 
+2.20.1
 
