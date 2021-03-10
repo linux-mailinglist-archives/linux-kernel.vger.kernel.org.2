@@ -2,47 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174ED3338C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EFD3338D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhCJJcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:32:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232289AbhCJJcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:32:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACC6C64FF2;
-        Wed, 10 Mar 2021 09:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615368763;
-        bh=XuUqYzN0S1TWPUlavxjWKpwjtiGA2Swm3zbnW9JOt4w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=plo9EBf3SBseNOoLY70uww5QQUNpQTNBsKE/Q+yEyrY9kGwg8i1at2PYYigupkGvR
-         f+KqVA/ZddqS/qdOUe5kvxrD8ha9uWyr5w3H7w8W3+AulCUN/vJ9iqJOj5qzpBzjBv
-         Wh4zZ7GUwPLe+Z2X6QkVuka0ad3ADU0ja4PSZcek=
-Date:   Wed, 10 Mar 2021 10:32:40 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     johan@kernel.org, elder@kernel.org, greybus-dev@lists.linaro.org,
+        id S232516AbhCJJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:33:54 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:58361 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232433AbhCJJdd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 04:33:33 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0URGK1KC_1615368810;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0URGK1KC_1615368810)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 10 Mar 2021 17:33:30 +0800
+Date:   Wed, 10 Mar 2021 17:33:29 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     davem@davemloft.net, rostedt@goodmis.org, mingo@redhat.com,
+        Lorenz Bauer <lmb@cloudflare.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] greybus/operation: Drop reference when message has been
- set
-Message-ID: <YEiSOB05c0iyOFFj@kroah.com>
-References: <20210310091014.6407-1-lyl2019@mail.ustc.edu.cn>
+Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
+Message-ID: <YEiSaR/8MEBEHNzQ@TonyMac-Alibaba>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
+ <203c49a3-6dd8-105e-e12a-0e15da0d4df7@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310091014.6407-1-lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <203c49a3-6dd8-105e-e12a-0e15da0d4df7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 01:10:14AM -0800, Lv Yunlong wrote:
-> In gb_operation_response_send, get an extra reference
-> before gb_message_send() with this comment "/* Reference will
-> be dropped when message has been sent. */". Therefore, we
-> should drop the got reference not only in the error branch,
-> but also in the complete branch.
+On Tue, Mar 09, 2021 at 09:12:45PM +0100, Eric Dumazet wrote:
+> 
+> 
+> On 3/9/21 5:43 AM, Tony Lu wrote:
+> > There are lots of net namespaces on the host runs containers like k8s.
+> > It is very common to see the same interface names among different net
+> > namespaces, such as eth0. It is not possible to distinguish them without
+> > net namespace inode.
+> > 
+> > This adds net namespace inode for all net_dev events, help us
+> > distinguish between different net devices.
+> > 
+> > Output:
+> >   <idle>-0       [006] ..s.   133.306989: net_dev_xmit: net_inum=4026531992 dev=eth0 skbaddr=0000000011a87c68 len=54 rc=0
+> > 
+> > Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
+> > ---
+> >
+> 
+> There was a proposal from Lorenz to use netns cookies (SO_NETNS_COOKIE) instead.
+> 
+> They have a guarantee of being not reused.
+> 
+> After 3d368ab87cf6681f9 ("net: initialize net->net_cookie at netns setup")
+> net->net_cookie is directly available.
 
-That's not what your patch does at all :(
+It looks better to identify ns with net_cookie rather than inode, and
+get the value with NS_GET_COOKIE. I will switch net_inum to net_cookie
+in the next patch.
 
+
+Cheers,
+Tony Lu
+
+> 
