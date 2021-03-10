@@ -2,194 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1AF334C83
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A574334C87
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhCJX2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232933AbhCJX2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:28:49 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC7EC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:28:49 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id a17so18221965oto.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:28:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CcpjnFhs+hD8NIsHxenerG7IM+48zY0/1AwqAoJFhWQ=;
-        b=bKne5DjbZE9XY5B/uBertZFJs2UrcfISuG2Z5FAP3+P4BEi8k0hijfCeLcQT4EOmM3
-         hD0sukxdht/nOTSaCOmDUJ3aYZElo+UBaqA5JmmA76TDHs2O4fXRP5XaHNzYO2pocp8K
-         cS2e4pHyf9tHqtF1OSQQTgBHvp/8UovsFmwXnK0Ob8+bO65/QhaII/fTFMK8e+SgeQPr
-         hROoy/oKmFS/J6oFxe+Gu1CN8MaQdiKokHTgcw02pKhWGE4OK3hmvaVVPwhxBmQFodS9
-         uoYu0OOKh4XiHQPMXAOgbrGaK7hfd6ybeVDXmOkuQE+fjIUyfZnz9ArTIUtilhjl+BFJ
-         j/Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CcpjnFhs+hD8NIsHxenerG7IM+48zY0/1AwqAoJFhWQ=;
-        b=o+xN9JmZ0hRQIwRCuFxKpfwEWbXqNSDMgp2CAbisNIBradOXYPzjQQh/j3xLUmfvUj
-         /Slp5PwBU8H1jtAaSlHtpKl/hPSbWZeKRcQKlfqSTy2G21wgiuXVrLmmmEX6CgQAlyWr
-         VBbOIyAannEvtSp7FakPpCx6ypW0otavqgSEkh1o42FUw9pL2mM7ktppZNr34GuCxjfo
-         geJvt1jQqYfy46IUY3nmwXS/L2AX0ugs1YdEHeWCvTbX44uupkygfy56N41c/VlMhN4z
-         7r2nolcl3Ax8Hj0GRL/3qqnMkKNvvlegLWGbWfdkaOhHiavwaasAQL/Gn40E8ne/0kxD
-         1qLQ==
-X-Gm-Message-State: AOAM530MARRvA9W7U2ZkfoDYQ6iAqEsRSWepvaPUJZjCVoiRnfapwrUK
-        becjDXAGgEGzjrnG88P+2BMQ+Q==
-X-Google-Smtp-Source: ABdhPJz52c30YvfDi3Kw8yjoSTmqG5ij8W6ebHqwnKKKCm0AFJvEKyzkQvQrGgaK4stz861b2WS8KA==
-X-Received: by 2002:a9d:6a50:: with SMTP id h16mr4504158otn.67.1615418929055;
-        Wed, 10 Mar 2021 15:28:49 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g21sm183373ooa.15.2021.03.10.15.28.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 15:28:48 -0800 (PST)
-Date:   Wed, 10 Mar 2021 17:28:46 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Souradeep Chowdhury <schowdhu@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        sibis@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
-Subject: Re: [PATCH V1 4/6] DCC: Added the sysfs entries for DCC(Data Capture
- and Compare) driver
-Message-ID: <YElWLqemavtXGlPd@builder.lan>
-References: <cover.1615393454.git.schowdhu@codeaurora.org>
- <332477ea39088fca5879af1a5278c289e1602f6d.1615393454.git.schowdhu@codeaurora.org>
+        id S233799AbhCJX31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:29:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232181AbhCJX2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 18:28:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6670C64DDA;
+        Wed, 10 Mar 2021 23:28:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615418931;
+        bh=UfbEKg7ZAq2wNBsMx+afAVr4IIua3XrGFwGBZrz0vpc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Pxqrud2EzPMQj3J7ZkeyPjCaBiCrgraTkfbmZGAwJubVY1cLHgx8BduRi5fBh+j56
+         7BfBHxONDXEVCkll5nk55pDsGkZ3a0GF2j4+yzMWcYxaz5oHG60MVQD7xg9XQijCMz
+         W8W4gyVk2zIJhAPWJqiVr/JEgEmZse+XmzxOTzZW5r8/j0JOjrJiL+H4Ymz22m4YfX
+         vqa8zY1+OR+jinBdJ3m1to4lLBILfdN093WjOXqzvS0mVVfVHLDFZr1xlG9BVW9ao3
+         3FkQH8z9lWG++YK6XzPIK8jwsKgqrF0PEBiZZeiO8zjiUiRZPuDDaLUBLUSCi5K6XX
+         iD+lNI2RB4Nkw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 285C6352261C; Wed, 10 Mar 2021 15:28:51 -0800 (PST)
+Date:   Wed, 10 Mar 2021 15:28:51 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+Message-ID: <20210310232851.GZ2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-5-songmuchun@bytedance.com>
+ <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
+ <f9f19d38-f1a7-ac8c-6ba8-3ce0bcc1e6a0@oracle.com>
+ <YEk1+mDZ4u85RKL3@dhcp22.suse.cz>
+ <20210310214909.GY2696@paulmck-ThinkPad-P72>
+ <68bc8cc9-a15b-2e97-9a2a-282fe6e9bd3f@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <332477ea39088fca5879af1a5278c289e1602f6d.1615393454.git.schowdhu@codeaurora.org>
+In-Reply-To: <68bc8cc9-a15b-2e97-9a2a-282fe6e9bd3f@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10 Mar 10:46 CST 2021, Souradeep Chowdhury wrote:
-
-> The DCC is a DMA engine designed to store register values either in
-> case of a system crash or in case of software triggers manually done
-> by the user. Using DCC hardware and the sysfs interface of the driver
-> the user can exploit various functionalities of DCC. The user can specify
-> the register addresses, the values of which is stored by DCC in it's
-> dedicated SRAM. The register addresses can be used either to read from,
-> write to, first read and store value and then write or to loop. All these
-> options can be exploited using the sysfs interface given to the user.
-> Following are the sysfs interfaces exposed in DCC driver which are
-> documented
-> 1)trigger
-> 2)config
-> 3)config_write
-> 4)config_reset
-> 5)enable
-> 6)rd_mod_wr
-> 7)loop
+On Wed, Mar 10, 2021 at 02:10:12PM -0800, Mike Kravetz wrote:
+> On 3/10/21 1:49 PM, Paul E. McKenney wrote:
+> > On Wed, Mar 10, 2021 at 10:11:22PM +0100, Michal Hocko wrote:
+> >> On Wed 10-03-21 10:56:08, Mike Kravetz wrote:
+> >>> On 3/10/21 7:19 AM, Michal Hocko wrote:
+> >>>> On Mon 08-03-21 18:28:02, Muchun Song wrote:
+> >>>> [...]
+> >>>>> @@ -1447,7 +1486,7 @@ void free_huge_page(struct page *page)
+> >>>>>  	/*
+> >>>>>  	 * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
+> >>>>>  	 */
+> >>>>> -	if (!in_task()) {
+> >>>>> +	if (in_atomic()) {
+> >>>>
+> >>>> As I've said elsewhere in_atomic doesn't work for CONFIG_PREEMPT_COUNT=n.
+> >>>> We need this change for other reasons and so it would be better to pull
+> >>>> it out into a separate patch which also makes HUGETLB depend on
+> >>>> PREEMPT_COUNT.
+> >>>
+> >>> Yes, the issue of calling put_page for hugetlb pages from any context
+> >>> still needs work.  IMO, that is outside the scope of this series.  We
+> >>> already have code in this path which blocks/sleeps.
+> >>>
+> >>> Making HUGETLB depend on PREEMPT_COUNT is too restrictive.  IIUC,
+> >>> PREEMPT_COUNT will only be enabled if we enable:
+> >>> PREEMPT "Preemptible Kernel (Low-Latency Desktop)"
+> >>> PREEMPT_RT "Fully Preemptible Kernel (Real-Time)"
+> >>> or, other 'debug' options.  These are not enabled in 'more common'
+> >>> kernels.  Of course, we do not want to disable HUGETLB in common
+> >>> configurations.
+> >>
+> >> I haven't tried that but PREEMPT_COUNT should be selectable even without
+> >> any change to the preemption model (e.g. !PREEMPT).
+> > 
+> > It works reliably for me, for example as in the diff below.  So,
+> > as Michal says, you should be able to add "select PREEMPT_COUNT" to
+> > whatever Kconfig option you need to.
+> > 
 > 
-> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
-> ---
->  Documentation/ABI/testing/sysfs-driver-dcc | 74 ++++++++++++++++++++++++++++++
->  1 file changed, 74 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-dcc
+> Thanks Paul.
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-dcc b/Documentation/ABI/testing/sysfs-driver-dcc
-> new file mode 100644
-> index 0000000..7a855ca
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-driver-dcc
-> @@ -0,0 +1,74 @@
-> +What:           /sys/bus/platform/devices/.../trigger
-> +Date:           February 2021
-> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
-> +Description:
-> +		This file allows the software trigger to be enabled
-> +		by the user through the sysfs interface.Through this
-> +		interface the user can manually start a software trigger
-> +		in dcc where by the dcc driver stores the current status
-> +		of the specified registers in dcc sram.
-> +
-> +What:           /sys/bus/platform/devices/.../enable
-> +Date:           February 2021
-> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
-> +Description:
-> +		This file allows the user to manually enable or
-> +		disable dcc driver.The dcc hardware needs to be
-> +		enabled before use.
-> +
-> +What:           /sys/bus/platform/devices/.../config
-> +Date:           February 2021
-> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
-> +Description:
-> +		This file allows user to configure the register values
-> +		along with addresses to the dcc driver.This register
-> +		addresses are used to read from,write or loop through.
-> +		To enable all these options separate sysfs files have
-> +		are created.
+> I may have been misreading Michal's suggestion of "make HUGETLB depend on
+> PREEMPT_COUNT".  We could "select PREEMPT_COUNT" if HUGETLB is enabled.
+> However, since HUGETLB is enabled in most configs, then this would
+> result in PREEMPT_COUNT also being enabled in most configs.  I honestly
+> do not know how much this will cost us?  I assume that if it was free or
+> really cheap it would already be always on?
 
-Please describe the expected content of this file.
+There are a -lot- of configs out there, so are you sure that HUGETLB is
+really enabled in most of them?  ;-)
 
-> +
-> +What:           /sys/bus/platform/devices/.../config_write
-> +Date:           February 2021
-> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
-> +Description:
-> +		This file allows user to write a value to the register
-> +		address given as argument.The values are entered in the
-> +		form of <register_address> <value>.
+More seriously, I was going by earlier emails in this and related threads
+plus Michal's "PREEMPT_COUNT should be selectable".  But there are other
+situations that would like PREEMPT_COUNT.  And to your point, some who
+would rather PREEMPT_COUNT not be universally enabled.  I haven't seen
+any performance or kernel-size numbers from any of them, however.
 
-So it's just a generic 'write some user defined data to some user
-defined register'? This doesn't sound like the typical way things are
-exposed in sysfs.
-
-> +
-> +What:           /sys/bus/platform/devices/.../config_reset
-> +Date:           February 2021
-> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
-> +Description:
-> +		This file is used to reset the configuration of
-> +		a dcc driver to the default configuration.
-> +
-> +What:           /sys/bus/platform/devices/.../loop
-> +Date:           February 2021
-> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
-> +Description:
-> +		This file is used to enter the loop count as dcc
-> +		driver gives the option to loop multiple times on
-> +		the same register and store the values for each
-> +		loop.
-> +
-> +What:           /sys/bus/platform/devices/.../rd_mod_wr
-> +Date:           February 2021
-> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
-> +Description:
-> +		This file is used to read the value of the register
-> +		and then write the value given as an argument to the
-> +		register address in config.The address argument should
-> +		be given of the form <mask> <value>.
-> +
-> +What:           /sys/bus/platform/devices/.../ready
-> +Date:           February 2021
-> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
-> +Description:
-> +		This file is used to check the status of the dcc
-> +		hardware if it's ready to take the inputs.
-> +
-> +What:		/sys/bus/platform/devices/.../curr_list
-> +Date:		February 2021
-> +Contact:	Souradeep Chowdhury <schowdhu@codeaurora.org>
-> +Description:
-> +		This file is used to configure the linkedlist data
-> +		to be used while configuring addresses.
-
-Please describe the format of this attr. Is it read/write?
-
-Regards,
-Bjorn
+							Thanx, Paul
 
 > -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+> Mike Kravetz
 > 
+> > 							Thanx, Paul
+> > 
+> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > index 3128b7c..7d9f989 100644
+> > --- a/kernel/rcu/Kconfig
+> > +++ b/kernel/rcu/Kconfig
+> > @@ -8,6 +8,7 @@ menu "RCU Subsystem"
+> >  config TREE_RCU
+> >  	bool
+> >  	default y if SMP
+> > +	select PREEMPT_COUNT
+> >  	help
+> >  	  This option selects the RCU implementation that is
+> >  	  designed for very large SMP system with hundreds or
+> > 
