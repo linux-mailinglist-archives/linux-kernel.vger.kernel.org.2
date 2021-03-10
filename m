@@ -2,93 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5389C333753
+	by mail.lfdr.de (Postfix) with ESMTP id 081D9333752
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhCJIcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
+        id S231815AbhCJIcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:32:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbhCJIbx (ORCPT
+        with ESMTP id S231899AbhCJIbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:31:53 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B3726C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:31:41 -0800 (PST)
+        Wed, 10 Mar 2021 03:31:51 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69527C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:31:51 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id w7so6445257wmb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:31:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=nnm8ucZ5LQ
-        cGGIu3zt2kPvo+8H0RoC4x7aUGkFHxz0A=; b=SlfJWZkF4adwpYWN9axoLqr2o3
-        By0SRWHgTpZA1GUeJgzH0zOv9cvn2oQ9GD6qC3Ust9EVGqkep4eqlXSW0C5PiPLE
-        Gc+VPuSGWxr1oou65pqpjg8GEYPS4ft4u8sosEoLMIHdWieme6Qjj/5TMSBsl1Vo
-        PYvdJIbAI2FlUCOMo=
-Received: from ubuntu.localdomain (unknown [114.214.224.243])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBXRGHpg0hgL7ECAA--.3682S4;
-        Wed, 10 Mar 2021 16:31:37 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     ardb@kernel.org, jonathan.richardson@broadcom.com
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] firmware/efi: Fix a use after bug in efi_mem_reserve_persistent
-Date:   Wed, 10 Mar 2021 00:31:27 -0800
-Message-Id: <20210310083127.5784-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Sj8e5MiwjfbaNO1hl9TtGhsrboFs9HRB7VfyvIwePCc=;
+        b=nU/IKuSFzdwd+QmYYXkZZ+vN81pfA34gPWij+EI8KMXiGbxpisdi7TY/wjTX+oAe7z
+         XVZFV0xmSjVfcnng+k1eQ37DGyGkkldAiAmePRD4epCryl1wmRBBC3LMWce6VF42Yx7U
+         t4YHlyJSvf073ot4niqgaCHzTg79l41JrTzF0/lhOJUsj4b7iXNI24if9ozVUcsLhoP8
+         esiTbeOo13WHxwlpAbHPwXMcIugiiUhD05T4MKw+UP3vR3NDjtDx5LNhH8UZqcYeCynA
+         9mSxpTZb52CUB4fVI9uxE6eKzjYHf0XjbJJbOjYYum/pEPjZjgwkLphjum3G55UB54OD
+         A6fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Sj8e5MiwjfbaNO1hl9TtGhsrboFs9HRB7VfyvIwePCc=;
+        b=GzNcnYqhkrhwyXx6YyPfOimlTV8tLVPdw7IDt+FhKXQCNJctBsdRMzwUU6I63Mn0Nk
+         C6qQgzG4ElEoNMsC/HYKBbZPkiWKnw8kEsUoXhf9ESWn1rf+9vGYm3Zh3RkspJ0UMQZJ
+         +iOgN8qqEKk37KqLqZoxwMJZQLjuFCVCMbY4l6UKx4AHYouMu/yqzfb2Ceu3m/1Mq4HX
+         ry9R0xATZVLjoteo1oJsGsTANHOYNj3mq5ebJOj6AFSDAmzfNOSMQ82Jz0CufF/zhvbb
+         eUYBPm6yB8SKEoTx+iNXIfn59+k5e1aHCdyzpEZs0esWFu5dMMka0EeuPV3nkyKNQTs9
+         fe9g==
+X-Gm-Message-State: AOAM531ag8S3kUfYyhJXME1Bl06rPU6bOWMdjWfQcdzB3jnw2iMuL9BX
+        QdXE0r5PJS5Cd98agjgXyhdO6A==
+X-Google-Smtp-Source: ABdhPJwtfr/HY+Yr7xTL22dXUEFQlv4E4LXAbzMP2MXghITjri7+9344u+8IFT8AgE+jhAEgi0RqZg==
+X-Received: by 2002:a1c:4d09:: with SMTP id o9mr2130506wmh.15.1615365110143;
+        Wed, 10 Mar 2021 00:31:50 -0800 (PST)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id l15sm7950290wme.43.2021.03.10.00.31.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 00:31:49 -0800 (PST)
+Date:   Wed, 10 Mar 2021 08:31:48 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Li, Meng" <Meng.Li@windriver.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "Hao, Kexin" <Kexin.Hao@windriver.com>
+Subject: Re: [v2][PATCH] Revert "mfd: syscon: Don't free allocated name for
+ regmap_config"
+Message-ID: <20210310083148.GD4931@dell>
+References: <20210115015050.26657-1-meng.li@windriver.com>
+ <CO1PR11MB48497CB7B11EDA65A3941FDCF1819@CO1PR11MB4849.namprd11.prod.outlook.com>
+ <36cc2d810d90237947ad953ebd6b9fb7@kernel.org>
+ <20210222092114.GE376568@dell>
+ <CO1PR11MB48499549EB56C7EE119E175DF1819@CO1PR11MB4849.namprd11.prod.outlook.com>
+ <20210309094310.GO4931@dell>
+ <PH0PR11MB5191EA634E57B8A5FF0DE991F1929@PH0PR11MB5191.namprd11.prod.outlook.com>
+ <20210309181524.GW4931@dell>
+ <PH0PR11MB5191FEF69470B3DD61504DCEF1919@PH0PR11MB5191.namprd11.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygBXRGHpg0hgL7ECAA--.3682S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Wr1UZr47GryUuF4xAF4rAFb_yoWkKFcEkr
-        4rJ395K3yUKrW2vanFyrsa9asayayDXw109FnFya4fC39rAFy3ZrWkur1ktF47Cwn7Kryr
-        CF48tw4Ykw1xGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0D
-        UUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+In-Reply-To: <PH0PR11MB5191FEF69470B3DD61504DCEF1919@PH0PR11MB5191.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the for loop in efi_mem_reserve_persistent(), prsv = rsv->next
-use the unmapped rsv. Use the unmapped pages will cause segment
-fault.
+On Wed, 10 Mar 2021, Li, Meng wrote:
 
-Fixes: 18df7577adae6 ("efi/memreserve: deal with memreserve entries in unmapped memory")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/firmware/efi/efi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> 
+> > -----Original Message-----
+> > From: Lee Jones <lee.jones@linaro.org>
+> > Sent: Wednesday, March 10, 2021 2:15 AM
+> > To: Li, Meng <Meng.Li@windriver.com>
+> > Cc: Marc Zyngier <maz@kernel.org>; linux-kernel@vger.kernel.org;
+> > arnd@arndb.de; Hao, Kexin <Kexin.Hao@windriver.com>
+> > Subject: Re: [v2][PATCH] Revert "mfd: syscon: Don't free allocated name for
+> > regmap_config"
+> > 
+> > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > 
+> > On Tue, 09 Mar 2021, Li, Meng wrote:
+> > 
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Lee Jones <lee.jones@linaro.org>
+> > > > Sent: Tuesday, March 9, 2021 5:43 PM
+> > > > To: Li, Meng <Meng.Li@windriver.com>
+> > > > Cc: Marc Zyngier <maz@kernel.org>; linux-kernel@vger.kernel.org;
+> > > > arnd@arndb.de; Hao, Kexin <Kexin.Hao@windriver.com>
+> > > > Subject: Re: [v2][PATCH] Revert "mfd: syscon: Don't free allocated
+> > > > name for regmap_config"
+> > > >
+> > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > >
+> > > > On Mon, 22 Feb 2021, Li, Meng wrote:
+> > > > > > -----Original Message-----
+> > > > > > From: Lee Jones <lee.jones@linaro.org>
+> > > > > > Sent: Monday, February 22, 2021 5:21 PM
+> > > > > > To: Marc Zyngier <maz@kernel.org>
+> > > > > > Cc: Li, Meng <Meng.Li@windriver.com>;
+> > > > > > linux-kernel@vger.kernel.org; arnd@arndb.de; Hao, Kexin
+> > > > > > <Kexin.Hao@windriver.com>
+> > > > > > Subject: Re: [v2][PATCH] Revert "mfd: syscon: Don't free
+> > > > > > allocated name for regmap_config"
+> > > > > >
+> > > > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > > > >
+> > > > > > On Mon, 22 Feb 2021, Marc Zyngier wrote:
+> > > > > >
+> > > > > > > Hi Limeng,
+> > > > > > >
+> > > > > > > On 2021-02-22 03:45, Li, Meng wrote:
+> > > > > > > > Hi Marc&Lee,
+> > > > > > > >
+> > > > > > > > Is there any comment on this patch?
+> > > > > > > > Could you please help to review this patch so that I can
+> > > > > > > > improve it if it still has weakness?
+> > > > > > >
+> > > > > > > If you are confident that the root issue has been fixed, no
+> > > > > > > objection from me, but I'm not in a position to test it at the
+> > > > > > > moment (the board I found the problem on is in a bit of a state).
+> > > > > >
+> > > > > > I'm not keen on flip-flopping this patch in and out of the kernel.
+> > > > > > Someone really needs to spend some time to map out the full
+> > > > > > life-cycle and propose a (possibly cross-subsystem) solution.
+> > > > > >
+> > > > > Thanks for all of your comments.
+> > > >
+> > > > Have you looked into this further at all?
+> > > >
+> > >
+> > > No.
+> > > Maintainer expects better solution to solve this issue from frame level, and
+> > consider cross-subsystem.
+> > 
+> > Yes, I do.  Does that mean you're going to drop it?
+> > 
+> 
+> Thanks for fixing this issue. 
+> Please discard my patch, I will not do further effort and drop it.
 
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index df3f9bcab581..4b7ee3fa9224 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -927,7 +927,7 @@ int __ref efi_mem_reserve_persistent(phys_addr_t addr, u64 size)
- 	}
- 
- 	/* first try to find a slot in an existing linked list entry */
--	for (prsv = efi_memreserve_root->next; prsv; prsv = rsv->next) {
-+	for (prsv = efi_memreserve_root->next; prsv; ) {
- 		rsv = memremap(prsv, sizeof(*rsv), MEMREMAP_WB);
- 		index = atomic_fetch_add_unless(&rsv->count, 1, rsv->size);
- 		if (index < rsv->size) {
-@@ -937,6 +937,7 @@ int __ref efi_mem_reserve_persistent(phys_addr_t addr, u64 size)
- 			memunmap(rsv);
- 			return efi_mem_reserve_iomem(addr, size);
- 		}
-+		prsv = rsv->next;
- 		memunmap(rsv);
- 	}
- 
+For the record, this has not been fixed.
+
+Someone still needs to work on a suitable fix for this issue.
+
 -- 
-2.25.1
-
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
