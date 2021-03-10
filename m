@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23680333D69
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C33333D6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhCJNKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:10:40 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:41158 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhCJNKT (ORCPT
+        id S232088AbhCJNLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232091AbhCJNLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:10:19 -0500
-Received: by mail-lf1-f51.google.com with SMTP id q25so33321420lfc.8;
-        Wed, 10 Mar 2021 05:10:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gfYybxcRph0XPZrwQqwjANBJ8eBSiLuK7VUr2fLxF5k=;
-        b=hkOGu6/8H4GYRARVQTQLi4k7RgdLK0u7J5RsLCCR7xuhEJD2I9W1zRuh09ds2qq0YX
-         uq7Nf52aGrdCst9qsE4w/yz/SaOuW0WlxALarogvuTiBf8kmcCC5DhxiXjfo9eIRnWMl
-         dMfAiZALWj7ifpASC5KO7UUU4ONTWh0MH25Fzcvrg/NtiYEwPNIl5aPzw/DH+DkacgF6
-         rC6lgSa/NI+1kv0xp2jBLUQDOKh4Xn2719fdKJWocvr5NlpTLHGHnYmUD+BFAOA2fAIZ
-         2xNE9feFFTkW5EaFEXYurJBIawGzQemOg5OQOFWNFXc4jTnsZhU3dTK20UZFhni/vmYs
-         pEBQ==
-X-Gm-Message-State: AOAM531hwLANdee8nXXxoAjbYT6sPP7s491RRf7GGmgyXO61FkrclKYx
-        5EAZVcuxIxmDlZS2XS37oDM=
-X-Google-Smtp-Source: ABdhPJxMZoXMaKLjD//h+YnLj1oNfYmntG66289PKj6bRvpzW7J+fOhrGfO0NUk8ps/dkwrnKMY8MA==
-X-Received: by 2002:a05:6512:3047:: with SMTP id b7mr2091434lfb.279.1615381818210;
-        Wed, 10 Mar 2021 05:10:18 -0800 (PST)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id i18sm2852569lfe.177.2021.03.10.05.10.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 05:10:17 -0800 (PST)
-Date:   Wed, 10 Mar 2021 15:10:11 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org
-Subject: [RFC PATCH v2 7/7] regulator: bd9576: Fix the driver name in id table
-Message-ID: <e2f9d9e8fda9e3ae72af927097cfd3c987dce7e9.1615367099.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1615367099.git.matti.vaittinen@fi.rohmeurope.com>
+        Wed, 10 Mar 2021 08:11:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41700C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:11:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bcNBBAlW5/JNcYoIITrENNhoDL7w1CSQllDiwTdQ788=; b=hUFLYbjpfFVHzIBvCBfMpYN86l
+        WRSTHeLeass4Lv4YeOvgzi6ODhezwsExnwGBZzdcfcd4kJ8qPQvNml1qz7THBYCmyk9wW0H+qqW2J
+        d7r6vlrJGWPMLvrSW8Jz+P/YcCcoOiUQ8Jr1jNkAH03bKpCCcznwBUroIi9XAKcbMjRlmYqlMXF2E
+        v1rPBLqxhyZnIb2JGlizl+j3IkEQLWyAWdWzO5vuGhyDv2SSyzmLqCTGxc3IooJnrW0g+7bEA7H+/
+        UuMrFcgq2YbRXuUOppiufMlfDZTjGjao20Bl/aQTeACKe6WECMc+XjXnCq54j3OotU270Z/J8+csZ
+        j/iMc7hA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJycI-003V66-Hg; Wed, 10 Mar 2021 13:11:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EE2EA3059C0;
+        Wed, 10 Mar 2021 14:10:56 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D000B20D7207B; Wed, 10 Mar 2021 14:10:56 +0100 (CET)
+Date:   Wed, 10 Mar 2021 14:10:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
+        pauld@redhead.com, pjt@google.com, rostedt@goodmis.org,
+        shanpeic@linux.alibaba.com, vincent.guittot@linaro.org,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v3 3/4] sched/fair: Add cfs bandwidth burst statistics
+Message-ID: <YEjFYAnvL+gFf+Ar@hirez.programming.kicks-ass.net>
+References: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
+ <20210121110453.18899-4-changhuaixin@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1615367099.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210121110453.18899-4-changhuaixin@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver name was changed in MFD cell:
-https://lore.kernel.org/lkml/560b9748094392493ebf7af11b6cc558776c4fd5.1613031055.git.matti.vaittinen@fi.rohmeurope.com/
-Fix the ID table to match this.
+On Thu, Jan 21, 2021 at 07:04:52PM +0800, Huaixin Chang wrote:
+> Introduce statistics exports for the burstable cfs bandwidth
+> controller.
+> 
+> The following exports are included:
+> 
+> current_bw: current runtime in global pool
+> nr_burst:   number of periods bandwidth burst occurs
+> burst_time: cumulative wall-time that any cpus has
+> 	    used above quota in respective periods
+> 
+> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
+> Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/regulator/bd9576-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Consistently fail.
 
-diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd9576-regulator.c
-index d628bd3bbd74..efe0e204f38d 100644
---- a/drivers/regulator/bd9576-regulator.c
-+++ b/drivers/regulator/bd9576-regulator.c
-@@ -1098,8 +1098,8 @@ static int bd957x_probe(struct platform_device *pdev)
- }
- 
- static const struct platform_device_id bd957x_pmic_id[] = {
--	{ "bd9573-pmic", ROHM_CHIP_TYPE_BD9573 },
--	{ "bd9576-pmic", ROHM_CHIP_TYPE_BD9576 },
-+	{ "bd9573-regulator", ROHM_CHIP_TYPE_BD9573 },
-+	{ "bd9576-regulator", ROHM_CHIP_TYPE_BD9576 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(platform, bd957x_pmic_id);
--- 
-2.25.4
+> ---
+>  kernel/sched/core.c  |  6 ++++++
+>  kernel/sched/fair.c  | 12 +++++++++++-
+>  kernel/sched/sched.h |  3 +++
+>  3 files changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index fecf0f05ef0c..80ca763ca492 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -7986,6 +7986,8 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
+>  		cfs_b->runtime = min(max_cfs_runtime, cfs_b->runtime);
+>  	}
+>  
+> +	cfs_b->previous_runtime = cfs_b->runtime;
+> +
+>  	/* Restart the period timer (if active) to handle new period expiry: */
+>  	if (runtime_enabled)
+>  		start_cfs_bandwidth(cfs_b, 1);
+> @@ -8234,6 +8236,10 @@ static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
+>  		seq_printf(sf, "wait_sum %llu\n", ws);
+>  	}
+>  
+> +	seq_printf(sf, "current_bw %llu\n", cfs_b->runtime);
+> +	seq_printf(sf, "nr_burst %d\n", cfs_b->nr_burst);
+> +	seq_printf(sf, "burst_time %llu\n", cfs_b->burst_time);
+> +
+>  	return 0;
+>  }
+>  #endif /* CONFIG_CFS_BANDWIDTH */
 
+This is ABI; and the Changelog has no justification what so ever...
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
