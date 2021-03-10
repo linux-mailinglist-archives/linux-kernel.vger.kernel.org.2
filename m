@@ -2,117 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF463347FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9FC334800
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhCJTcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 14:32:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233918AbhCJTcA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:32:00 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC6CC061760;
-        Wed, 10 Mar 2021 11:31:59 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id h13so1380977qvu.6;
-        Wed, 10 Mar 2021 11:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6v601w2whp5h3eZk9WOM8NIBFfSAfNFUUoB88kQgXr0=;
-        b=m0m0c6+nmNoh/5E084U7CL0XYtkCOKaR0cyPKbATQpSTBG91EOdhfyjFq2571ZLDXk
-         3ZksiUrEPa9dKiX9JvtfJRARNzSla/M0jCckVdQJikTwu+SewcLjjjec+aAN6wDG50K7
-         448fvgmyvt5iMk7fWhcH5V5mtyjF4sCqfvQFUOCiUwqLVOJw5F5z7izWmVVaQ3TCH47j
-         Yqg/D0jyrzy24rNmuy9/G/FyuaJ0SP2h/Zv1lZY4ZkAEBgKp5PF8kuEpMS0fn3+mgPGk
-         keetPZ2Y1Y3N2XMMxObtpHVLdUs4UumEE+Dh7r5sqcG9MWv+8Kok4RNxZUAdghJeSmiA
-         ERrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6v601w2whp5h3eZk9WOM8NIBFfSAfNFUUoB88kQgXr0=;
-        b=B4ZVuu8uNBWSd6KBh/ilnSG2KymUf8oiYOu7pDgZGk2UN8FW727UTk/OEcdhv/EuP9
-         qZ73Sjg+/jgFqYBesXE7gyTp8WuhMxBG+cPQs+nKLqJ0AYHgpfsi93oMfojdzpSEyMAJ
-         v+zSkxj4xxMBVbmFGr4QZbSGG8yXXbY2YfLhuoEeQXjq2/gOA4CfdWM+Ea4FAdtBJd3Z
-         Mas9kUTweMfyuMQ02jl7g07Uq4qOAUpSAx9Yz/cYYSizAHHETo4AuvFokb6MjJj2Vw/m
-         AItlxbWEGHvEOPUF78BHOWXYoMP1EIG/SIsO4iQftNq4HDZ9loV/vKQ2o5M0GAwbaK90
-         KX3g==
-X-Gm-Message-State: AOAM530nfU3qcFiAE4XqgTbE6JRNfw6R9xBv+BrNT3yYoTDFXIXjDYAJ
-        wuOLl2c/5IF2DGMr4rbNiOq64Y9OKgA=
-X-Google-Smtp-Source: ABdhPJzCVq094LFpkCsHo3gKTWg994vqiG47QfWkySbVU4QzPTLwBOZiQqKJXURUHDhVaMKDO1P09w==
-X-Received: by 2002:a05:6214:1a4a:: with SMTP id fi10mr4379189qvb.5.1615404719065;
-        Wed, 10 Mar 2021 11:31:59 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102::1844? ([2620:10d:c091:480::1:d0a0])
-        by smtp.gmail.com with ESMTPSA id l6sm218540qke.34.2021.03.10.11.31.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 11:31:58 -0800 (PST)
-From:   Jes Sorensen <jes.sorensen@gmail.com>
-X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
-Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for
- Clang
-To:     Kees Cook <keescook@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210305094850.GA141221@embeddedor>
- <871rct67n2.fsf@codeaurora.org> <202103101107.BE8B6AF2@keescook>
-Message-ID: <2e425bd8-2722-b8a8-3745-4a3f77771906@gmail.com>
-Date:   Wed, 10 Mar 2021 14:31:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S233932AbhCJTcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 14:32:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233992AbhCJTcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:32:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33EEF64FB2;
+        Wed, 10 Mar 2021 19:32:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615404768;
+        bh=f5/lUJllLGXsUxKTawCkR3n1Ver3P//PbBnMTRmYk/o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=fUbYZ64I87gmzgnsW41cv2cHvR1Ba5VaKcad5Du7xG5eVNOyr715DL+39NQuGyE02
+         QcI3yJOBiah1yKhatbZOpU4WUOjQv85YQXB726vwjqgB+/EB0fSpVZx96oHkkSsM9I
+         m8rv2HkKtGUhf1wrvkPvfrTWQxbLqlXJakLmPUx0L5zRd6fkp7s7mss8K7rAin3chl
+         XgKlvGRwIpf7cXK5aLu+ddEEGinavXXwLmnBGK0RIKBeilic6qfpjhbyqN9I5527b5
+         gk89tI+MGJ9iX8ote//aWqqqD0Eewn3Gro8vC4LZG4+Ky4eJm+FFaqOUJqVQ0cGpkV
+         3nT7vmIcMmEVg==
+Date:   Wed, 10 Mar 2021 13:32:46 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] PCI: controller: al: select CONFIG_PCI_ECAM
+Message-ID: <20210310193246.GA2033984@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <202103101107.BE8B6AF2@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308152501.2135937-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 2:14 PM, Kees Cook wrote:
-> On Fri, Mar 05, 2021 at 03:40:33PM +0200, Kalle Valo wrote:
->> "Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
->>
->>> In preparation to enable -Wimplicit-fallthrough for Clang, fix
->>> multiple warnings by replacing /* fall through */ comments with
->>> the new pseudo-keyword macro fallthrough; instead of letting the
->>> code fall through to the next case.
->>>
->>> Notice that Clang doesn't recognize /* fall through */ comments as
->>> implicit fall-through markings.
->>>
->>> Link: https://github.com/KSPP/linux/issues/115
->>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>
->> It's not cool that you ignore the comments you got in [1], then after a
->> while mark the patch as "RESEND" and not even include a changelog why it
->> was resent.
->>
->> [1] https://patchwork.kernel.org/project/linux-wireless/patch/d522f387b2d0dde774785c7169c1f25aa529989d.1605896060.git.gustavoars@kernel.org/
+On Mon, Mar 08, 2021 at 04:24:46PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Hm, this conversation looks like a miscommunication, mainly? I see
-> Gustavo, as requested by many others[1], replacing the fallthrough
-> comments with the "fallthrough" statement. (This is more than just a
-> "Clang doesn't parse comments" issue.)
+> Compile-testing this driver without ECAM support results in a link
+> failure:
 > 
-> This could be a tree-wide patch and not bother you, but Greg KH has
-> generally advised us to send these changes broken out. Anyway, this
-> change still needs to land, so what would be the preferred path? I think
-> Gustavo could just carry it for Linus to merge without bothering you if
-> that'd be preferred?
+> ld.lld: error: undefined symbol: pci_ecam_map_bus
+> >>> referenced by pcie-al.c
+> >>>               pci/controller/dwc/pcie-al.o:(al_pcie_map_bus) in archive drivers/built-in.a
+> 
+> Select CONFIG_ECAM like the other drivers do.
 
-I'll respond with the same I did last time, fallthrough is not C and
-it's ugly.
+Did we add these compile issues in the v5.12-rc1?  I.e., are the fixes
+candidates for v5.12?
 
-Instead of mutilating the kernel, Gustavo should invest in fixing the
-broken clang compiler.
-
-Thanks,
-Jes
-
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/pci/controller/dwc/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+> index 5a3032d9b844..d981a0eba99f 100644
+> --- a/drivers/pci/controller/dwc/Kconfig
+> +++ b/drivers/pci/controller/dwc/Kconfig
+> @@ -311,6 +311,7 @@ config PCIE_AL
+>  	depends on OF && (ARM64 || COMPILE_TEST)
+>  	depends on PCI_MSI_IRQ_DOMAIN
+>  	select PCIE_DW_HOST
+> +	select PCI_ECAM
+>  	help
+>  	  Say Y here to enable support of the Amazon's Annapurna Labs PCIe
+>  	  controller IP on Amazon SoCs. The PCIe controller uses the DesignWare
+> -- 
+> 2.29.2
+> 
