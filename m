@@ -2,218 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67654334A33
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6AF334A3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbhCJV4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbhCJV4m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:56:42 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A318FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:56:42 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id v13so28268edw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:56:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VVOVwyMyJPWIYMuGyr0Sa4Arv7cvqZ/k7O8fTb2RCLw=;
-        b=mAjciraf9aHmyBGLHUr8xDsXYJ3b2pHUUvFGKdF2VYNnx6Z9/1KtmdkueR5Ex+j6dR
-         QfDDSyAxWRMuafdRAVATK6+sTaW/L7MeL2ZgDskILEM2mBTHuR1uK1jTd+mQl1qP4ZwF
-         Wt3teC221TYejdipPs7vTpX/3l7uOTlHTsKrHuju6PO/+2mLStMUy9BK5sJ7o1U6aVeC
-         YBmC2gticm4D5VAcao7UsuMSRg32egPZ8V0aAWN2SP53cuFtB/cHEEFdPC09YNot2C3Q
-         dGhQL4Foay0FfvGOkNWUcyB9z4fw8NOkU5pk0aKycKJj7GcyQGtv6qQiF8oA0p1eJxP2
-         xNPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VVOVwyMyJPWIYMuGyr0Sa4Arv7cvqZ/k7O8fTb2RCLw=;
-        b=P9kfb36GFfkPKnLfNhkmhUo7l1osG2r+CO4KMinvcGNBF0Tzqb2OPqZkMK1fa7sgDW
-         mna5kd6okIoPwWJB8/98snwKhd9ylH57hAAK8PgPAIH5/I0WRryPyoH7RP5dG5zAdYOp
-         B1RZTM3isLG7EUSakb2senryLoB9GGP5fc2qEuhqFonWgvbH5NHMtzC5hsoglGBeQd+N
-         dCmeQkWfUulbai/+pSrO0K7X78fjRyvMz47nGJEM5b/Q+QatJ78ZJwAmLHhdRcoJYyoG
-         krBD+zp8EEWQvceMm4J7ERlSftA2DIrLTblOTQxaRViVSzb44sw29r1U5E8wvkBCkt0o
-         EHsw==
-X-Gm-Message-State: AOAM532ZDcOA5njEFgL9/szH2ZYXFVP+zkqb2rK+tI/s3v+mWKFVso7r
-        NaITcGnt5evM3kaLy28YJNpwx4CKQDt1iZQ2LZhj8A==
-X-Google-Smtp-Source: ABdhPJzGat1mD9Xsk4PPqruPJht8J8OJU6Q7XCXUz0lOaJYDlaAfPYhnlGLYeGjBQ8N/5hduJwp1Wq+B1j4J3Cyu754=
-X-Received: by 2002:aa7:c815:: with SMTP id a21mr5662366edt.38.1615413400913;
- Wed, 10 Mar 2021 13:56:40 -0800 (PST)
+        id S232206AbhCJV5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:57:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231935AbhCJV44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:56:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B69164FC4;
+        Wed, 10 Mar 2021 21:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615413416;
+        bh=tP/5Qrb7ICdaCHD18+vh3j4mu8gOrW1enp0pS0/Z3gw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s6E7aohD8ra4z7/zLUBgXBX/WYF8At7b9oycxE0a/Z+F05SKTvCeSvle2AdtAavZo
+         nLyuNZcDvL4Zl7fv2SKaS3mo7IkXDDLxkfXr78ZRFhcyNFMxLQYbpEZNhj/Cbm+rQy
+         chPWmeZxTBKhu1G2fXXOgjylHkoz8AO2LoR76sUrKfj0InQIkpygCfUjgdCMOjkJSH
+         RA+OSfALJ5PDjMmKN99U+m1X6k8+Ml2F1fogFcjuPT8BiIctzlVYXZZRCCD01WrTsO
+         HT0XcZAyLMSJobnalBPIqvK6n7kgHLTFgpXuyCORvwY2VQT5JuQuexlq9fpp39hajT
+         KiTERRsAbS8nA==
+Date:   Wed, 10 Mar 2021 23:56:31 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] x86/sgx: Use sgx_free_epc_page() in
+ sgx_reclaim_pages()
+Message-ID: <YElAj2zgismExjjM@kernel.org>
+References: <20210303150323.433207-1-jarkko@kernel.org>
+ <20210303150323.433207-3-jarkko@kernel.org>
+ <b223ea92-8b20-def3-7bd0-2cc44474bd78@intel.com>
+ <YEjhjhBpYJ6i6EFD@kernel.org>
+ <b1b11501-805d-fcfd-4978-18d4b252510a@intel.com>
 MIME-Version: 1.0
-References: <20201202123420.g3ivr5le4imcrdsa@DESKTOP-E1NTVVP.localdomain> <20201221201019.2897731-1-lpy@google.com>
-In-Reply-To: <20201221201019.2897731-1-lpy@google.com>
-From:   Peiyong Lin <lpy@google.com>
-Date:   Wed, 10 Mar 2021 13:56:29 -0800
-Message-ID: <CA+0soAnXOknfWBbuHiq4VG8byoQ89u8NdYBtq-n-JMURPUOhUw@mail.gmail.com>
-Subject: Re: [PATCH v5] Add power/gpu_frequency tracepoint.
-To:     Brian Starkey <brian.starkey@arm.com>
-Cc:     alexdeucher@gmail.com, android-kernel@google.com,
-        dri-devel@lists.freedesktop.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        nd@arm.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Prahlad Kilambi <prahladk@google.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sidath Senanayake <sidaths@google.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        zzyiwei@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1b11501-805d-fcfd-4978-18d4b252510a@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 12:10 PM Peiyong Lin <lpy@google.com> wrote:
->
-> Historically there is no common trace event for GPU frequency, in
-> downstream Android each different hardware vendor implements their own
-> way to expose GPU frequency, for example as a debugfs node.  This patch
-> standardize it as a common trace event in upstream linux kernel to help
-> the ecosystem have a common implementation across hardware vendors.
-> Toolings in the Linux ecosystem will benefit from this especially in the
-> downstream Android, where this information is critical to graphics
-> developers.
->
-> Signed-off-by: Peiyong Lin <lpy@google.com>
-> ---
->
-> Changelog since v4:
->  - Explicitly use class id and instance id to identify a GPU instance.
->  - Change gpu_id to clock_id to call out its the clock domain in
->    the GPU instance.
->
-> Changelog since v3:
->  - Correct copyright title.
->
-> Changelog since v2:
->  - Add more comments to indicate when the event should be emitted.
->  - Change state to frequency.
->
-> Changelog since v1:
->  - Use %u in TP_printk
->
->  drivers/gpu/Makefile                    |  1 +
->  drivers/gpu/trace/Kconfig               |  3 ++
->  drivers/gpu/trace/Makefile              |  1 +
->  drivers/gpu/trace/trace_gpu_frequency.c | 13 ++++++++
->  include/trace/events/power.h            | 41 +++++++++++++++++++++++++
->  5 files changed, 59 insertions(+)
->  create mode 100644 drivers/gpu/trace/trace_gpu_frequency.c
->
-> diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
-> index 835c88318cec..f289a47eb031 100644
-> --- a/drivers/gpu/Makefile
-> +++ b/drivers/gpu/Makefile
-> @@ -6,3 +6,4 @@ obj-$(CONFIG_TEGRA_HOST1X)      += host1x/
->  obj-y                  += drm/ vga/
->  obj-$(CONFIG_IMX_IPUV3_CORE)   += ipu-v3/
->  obj-$(CONFIG_TRACE_GPU_MEM)            += trace/
-> +obj-$(CONFIG_TRACE_GPU_FREQUENCY)              += trace/
-> diff --git a/drivers/gpu/trace/Kconfig b/drivers/gpu/trace/Kconfig
-> index c24e9edd022e..ac4aec8d5845 100644
-> --- a/drivers/gpu/trace/Kconfig
-> +++ b/drivers/gpu/trace/Kconfig
-> @@ -2,3 +2,6 @@
->
->  config TRACE_GPU_MEM
->         bool
-> +
-> +config TRACE_GPU_FREQUENCY
-> +       bool
-> diff --git a/drivers/gpu/trace/Makefile b/drivers/gpu/trace/Makefile
-> index b70fbdc5847f..2b7ae69327d6 100644
-> --- a/drivers/gpu/trace/Makefile
-> +++ b/drivers/gpu/trace/Makefile
-> @@ -1,3 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0
->
->  obj-$(CONFIG_TRACE_GPU_MEM) += trace_gpu_mem.o
-> +obj-$(CONFIG_TRACE_GPU_FREQUENCY) += trace_gpu_frequency.o
-> diff --git a/drivers/gpu/trace/trace_gpu_frequency.c b/drivers/gpu/trace/trace_gpu_frequency.c
-> new file mode 100644
-> index 000000000000..668fabd6b77a
-> --- /dev/null
-> +++ b/drivers/gpu/trace/trace_gpu_frequency.c
-> @@ -0,0 +1,13 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * GPU frequency trace points
-> + *
-> + * Copyright (C) 2020 Google LLC
-> + */
-> +
-> +#include <linux/module.h>
-> +
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/power.h>
-> +
-> +EXPORT_TRACEPOINT_SYMBOL(gpu_frequency);
-> diff --git a/include/trace/events/power.h b/include/trace/events/power.h
-> index af5018aa9517..590e16169dd1 100644
-> --- a/include/trace/events/power.h
-> +++ b/include/trace/events/power.h
-> @@ -500,6 +500,47 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
->
->         TP_ARGS(name, type, new_value)
->  );
-> +
-> +/**
-> + * gpu_frequency - Reports the GPU frequency in GPU clock domains.
-> + *
-> + * This event should be emitted whenever there's a GPU frequency change happens,
-> + * or a GPU goes from idle state to active state, or vice versa.
-> + *
-> + * When the GPU goes from idle state to active state, this event should report
-> + * the GPU frequency of the active state. When the GPU goes from active state to
-> + * idle state, this event should report a zero frequency value.
-> + *
-> + * @frequency:  New frequency (in KHz)
-> + * @gpu_class_id: Id representing the class of the GPU
-> + * @gpu_instance_id: Id representing the instance of class &gpu_class_id
-> + * @clock_id: Id for the clock domain in &gpu_instance_id running at &frequency
-> + */
-> +TRACE_EVENT(gpu_frequency,
-> +
-> +       TP_PROTO(unsigned int frequency, unsigned int gpu_class_id,
-> +                unsigned int gpu_instance_id, unsigned int clock_id),
-> +
-> +       TP_ARGS(frequency, gpu_class_id, gpu_instance_id, clock_id),
-> +
-> +       TP_STRUCT__entry(
-> +               __field(unsigned int, frequency)
-> +               __field(unsigned int, gpu_class_id)
-> +               __field(unsigned int, gpu_instance_id)
-> +               __field(unsigned int, clock_id)
-> +       ),
-> +
-> +       TP_fast_assign(
-> +               __entry->frequency = frequency;
-> +               __entry->gpu_class_id = gpu_class_id;
-> +               __entry->gpu_instance_id = gpu_instance_id;
-> +               __entry->clock_id = clock_id;
-> +       ),
-> +
-> +       TP_printk("frequency=%u gpu_class_id=%u gpu_instance_id=%u clock_id=%u",
-> +               __entry->frequency, __entry->gpu_class_id,
-> +               __entry->gpu_instance_id, __entry->clock_id)
-> +);
->  #endif /* _TRACE_POWER_H */
->
->  /* This part must be outside protection */
-> --
-> 2.29.2.684.gfbc64c5ab5-goog
->
+On Wed, Mar 10, 2021 at 07:55:35AM -0800, Dave Hansen wrote:
+> On 3/10/21 7:11 AM, Jarkko Sakkinen wrote:
+> >>> -		section = &sgx_epc_sections[epc_page->section];
+> >>> -		spin_lock(&section->lock);
+> >>> -		list_add_tail(&epc_page->list, &section->page_list);
+> >>> -		section->free_cnt++;
+> >>> -		spin_unlock(&section->lock);
+> >>> +		sgx_free_epc_page(epc_page);
+> >>>  	}
+> >>>  }
+> >> In current upstream (3fb6d0e00e), sgx_free_epc_page() calls __eremove().
+> >>  This code does not call __eremove().  That seems to be changing
+> >> behavior where none was intended.
+> > EREMOVE does not matter here, as it doesn't in almost all most of the sites
+> > where sgx_free_epc_page() is used in the driver. It does nothing to an
+> > uninitialized pages.
+> > 
+> > The two patches that I posted originally for Kai's series took EREMOVE out
+> > of sgx_free_epc_page() and put an explicit EREMOVE where it is actually
+> > needed, but for reasons unknown to me, that change is gone.
+> > 
+> > Replacing the ad-hoc code with sgx_free_epc_page() is absolutely the right
+> > action to take because it follows the pattern how sgx_free_epc_page() is
+> > used in the driver.
+> 
+> That sounds generally fine.  But, this is a functional change.  Where
+> there are functional changes, I always hope to see some mention of the
+> change in the changelog.
+> 
+> Could you add some of this to the next changelog, please?
 
-Hi there,
+This appears for the first time in this patch set version, which means that
+there is no patch changelog for this.
 
-Could you please take a look at this patch?
+Maybe a better idea would be to explain the functional change in the commit
+message (which of course implies also entry to the patch change log)?
 
-Thanks,
-Peiyong
+/Jarkko
