@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A136334A51
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075F1334A58
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbhCJWAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:00:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232907AbhCJWAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:00:09 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C1BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:00:09 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id g27so19683506iox.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:00:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dm/C6XQ32zAZrLyNDRsfaU+O/spR8lL3llpiTvdmEm4=;
-        b=Rei+kDchY650JNAD/uHdfIUeifbLHjwrLn/0oN9rum0G3Cf1/L9zRHMPIMpvOgSUOB
-         S8PGoPeTvEF/YXTDuihv7R/BU8vimxyMnlJjM17qo7Zi/UG9TvMT2AmONvTmtzjkv5Iz
-         cOpsOLzAl++tmycjLijeIdVoO0jN5RE6rfsOo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dm/C6XQ32zAZrLyNDRsfaU+O/spR8lL3llpiTvdmEm4=;
-        b=lkFu4PC4WG0nWgmpmXWpAbb7WLEqDM5PhIKzjn8FEPv0d76GarcEmt7Ikiz/XzGMrA
-         VzLgLZXw9dOvddmWnWQwIj2ZyqSJjXoFEP5X/AEAFh+grwjvMopQXyVWsKENmNCZPhpr
-         PE3YIZ3A+69g8uEweIypBNyps/HHBm1ZE15WjUt990VzWTY8bAwhSFY7e2w9YFy6itew
-         gwVem3pfyY/52Q6XKi1j5kjH5F0mes92Wm8Glqc3U/8/MzQdVgtbVbse0r1XvRIMeWcP
-         zllK8SAgiPxHT+vHErR8uL6vzYf/al/NC3z5wcNSJ94AGfeCC/w7YEcNrbqRHildIFD5
-         kqOQ==
-X-Gm-Message-State: AOAM530AxhrASJ5Si8ysGjOZz3twrbpSLkciNcWnrXHNPvuZ1WnYMYPp
-        8LzBh+AT0vPGwg2YTG6xkuYHaw==
-X-Google-Smtp-Source: ABdhPJx6hr8hFj10U9L/ZvYXEVo7Oh3s3837pFjDs6dF7Yjdh5sck97bZABMjahmpXn6/jNhOlVWRQ==
-X-Received: by 2002:a5d:9285:: with SMTP id s5mr3966188iom.139.1615413608845;
-        Wed, 10 Mar 2021 14:00:08 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id b9sm390260ioz.49.2021.03.10.14.00.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 14:00:08 -0800 (PST)
-Subject: Re: [PATCH 5.4 00/24] 5.4.105-rc1 review
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210310132320.550932445@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <a541f05c-60c6-1d9d-87f9-762599fa6295@linuxfoundation.org>
-Date:   Wed, 10 Mar 2021 15:00:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233290AbhCJWAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:00:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232828AbhCJWAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:00:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7E5E964FAB;
+        Wed, 10 Mar 2021 22:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615413608;
+        bh=UWOVUMz5Uk7kxc5dvofPgSuVGCnhJuzzkLv8jMm0274=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=CcDGcr4NhOOzcBlymYUruvhmBPdC0Y7zm2Mu70j5hxQCVf02qnVyz5NQ8cNptGjn3
+         egto9f4YPaAtyx9Bg0CYn3f5hiLxBZRqqqu5r0RO3R8J3+AdY1kG6zjxpWkt6eFPm/
+         Ga/0RY9GE5XYFK9leBgBtB+pXlLWX9NmUuCNYcX+7LogGyXdP3rxbA1ZYbhG7KCe/Q
+         vPsvwI+uVmkofw6ywCNadJjba7uNsNgr4WgOeGgydd5ifrXyQEgp3TADEm0RFMhCJw
+         sEKJ8rfrLQqlwzyFdd/eARdYdseLXtXu5b5AcAUHLf8ZuIYJAJlcBMdJx1utJ9SbM2
+         C2XsEiE4l5k9Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 76036609B8;
+        Wed, 10 Mar 2021 22:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210310132320.550932445@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bpf: fix warning comparing pointer to 0
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161541360847.31690.18054636918318010302.git-patchwork-notify@kernel.org>
+Date:   Wed, 10 Mar 2021 22:00:08 +0000
+References: <1615360714-30381-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1615360714-30381-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 6:24 AM, gregkh@linuxfoundation.org wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> This is the start of the stable review cycle for the 5.4.105 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.105-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hello:
 
-Compiled and booted on my test system. No dmesg regressions.
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+On Wed, 10 Mar 2021 15:18:34 +0800 you wrote:
+> Fix the following coccicheck warning:
+> 
+> ./tools/testing/selftests/bpf/progs/fentry_test.c:67:12-13: WARNING
+> comparing pointer to 0.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> 
+> [...]
 
-thanks,
--- Shuah
+Here is the summary with links:
+  - bpf: fix warning comparing pointer to 0
+    https://git.kernel.org/bpf/bpf-next/c/a9c80b03e586
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
