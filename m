@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E44333436A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3157933436C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233445AbhCJQou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:44:50 -0500
+        id S233472AbhCJQoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:44:54 -0500
 Received: from mga03.intel.com ([134.134.136.65]:37313 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232934AbhCJQoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:44:11 -0500
-IronPort-SDR: 97EPE4afFg46Grz5k6HiCupDJvuR9ETn4ZC46RZVfCTvx3uGHPoDjUUbogGrtyi0Y8XyWld7jq
- YceBsFD8DHAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188546526"
+        id S233060AbhCJQoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:44:13 -0500
+IronPort-SDR: o6w4Lz+M+4SO0Fngc3Vx5V5ULZiUgYu8Q+nwsWQb/johq0h7FMBCi8buTu57sMrnX+Gt8uy2ov
+ 8UALtbQHj49A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188546529"
 X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="188546526"
+   d="scan'208";a="188546529"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:44:11 -0800
-IronPort-SDR: 9d5Wzg6HkDgSCiGf3p6sH3UlbP5yUNGCclMu3hmJNlforcDRTvlYMTS/RESx7xbNpZhZzOyF4y
- P+TVmLjbdW+g==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:44:12 -0800
+IronPort-SDR: /62qPF2Ca2xdinkcxsAsu/74gI9dV2Hm7hfdNZnfjKZ3m+aqF/1om3ofnwk8w6YTM5uuZ/qJV3
+ RiYnh0UFUJZw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="509729357"
+   d="scan'208";a="509729366"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 08:44:11 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 08:44:12 -0800
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
@@ -32,9 +32,9 @@ Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
         namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
         yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V2 21/25] perf: Introduce PERF_TYPE_HARDWARE_PMU and PERF_TYPE_HW_CACHE_PMU
-Date:   Wed, 10 Mar 2021 08:37:57 -0800
-Message-Id: <1615394281-68214-22-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V2 22/25] perf/x86/intel/uncore: Add Alder Lake support
+Date:   Wed, 10 Mar 2021 08:37:58 -0800
+Message-Id: <1615394281-68214-23-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
 References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
@@ -44,138 +44,229 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Current Hardware events and Hardware cache events have special perf
-types, PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE. The two types don't
-pass the PMU type in the user interface. For a hybrid system, the perf
-subsystem doesn't know which PMU the events belong to. The first capable
-PMU will always be assigned to the events. The events never get a chance
-to run on the other capable PMUs.
+The uncore subsystem for Alder Lake is similar to the previous Tiger
+Lake.
 
-Add a PMU aware version PERF_TYPE_HARDWARE_PMU and
-PERF_TYPE_HW_CACHE_PMU. The PMU type ID is stored at attr.config[40:32].
-Support the new types for X86.
+The difference includes:
+- New MSR addresses for global control, fixed counters, CBOX and ARB.
+  Add a new adl_uncore_msr_ops for uncore operations.
+- Add a new threshold field for CBOX.
+- New PCIIDs for IMC devices.
 
-Suggested-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/core.c          | 10 ++++++++--
- include/uapi/linux/perf_event.h | 26 ++++++++++++++++++++++++++
- kernel/events/core.c            | 14 +++++++++++++-
- 3 files changed, 47 insertions(+), 3 deletions(-)
+ arch/x86/events/intel/uncore.c     |   7 ++
+ arch/x86/events/intel/uncore.h     |   1 +
+ arch/x86/events/intel/uncore_snb.c | 131 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 139 insertions(+)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index b675283..f031d00 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -484,7 +484,7 @@ int x86_setup_perfctr(struct perf_event *event)
- 	if (attr->type == event->pmu->type)
- 		return x86_pmu_extra_regs(event->attr.config, event);
- 
--	if (attr->type == PERF_TYPE_HW_CACHE)
-+	if ((attr->type == PERF_TYPE_HW_CACHE) || (attr->type == PERF_TYPE_HW_CACHE_PMU))
- 		return set_ext_hw_attr(hwc, event);
- 
- 	if (attr->config >= x86_pmu.max_events)
-@@ -2427,9 +2427,15 @@ static int x86_pmu_event_init(struct perf_event *event)
- 
- 	if ((event->attr.type != event->pmu->type) &&
- 	    (event->attr.type != PERF_TYPE_HARDWARE) &&
--	    (event->attr.type != PERF_TYPE_HW_CACHE))
-+	    (event->attr.type != PERF_TYPE_HW_CACHE) &&
-+	    (event->attr.type != PERF_TYPE_HARDWARE_PMU) &&
-+	    (event->attr.type != PERF_TYPE_HW_CACHE_PMU))
- 		return -ENOENT;
- 
-+	if ((event->attr.type == PERF_TYPE_HARDWARE_PMU) ||
-+	    (event->attr.type == PERF_TYPE_HW_CACHE_PMU))
-+		event->attr.config &= PERF_HW_CACHE_EVENT_MASK;
-+
- 	if (is_hybrid() && (event->cpu != -1)) {
- 		pmu = hybrid_pmu(event->pmu);
- 		if (!cpumask_test_cpu(event->cpu, &pmu->supported_cpus))
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index ad15e40..c0a511e 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -33,6 +33,8 @@ enum perf_type_id {
- 	PERF_TYPE_HW_CACHE			= 3,
- 	PERF_TYPE_RAW				= 4,
- 	PERF_TYPE_BREAKPOINT			= 5,
-+	PERF_TYPE_HARDWARE_PMU			= 6,
-+	PERF_TYPE_HW_CACHE_PMU			= 7,
- 
- 	PERF_TYPE_MAX,				/* non-ABI */
- };
-@@ -95,6 +97,30 @@ enum perf_hw_cache_op_result_id {
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index 33c8180..3ad5df2 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -1625,6 +1625,11 @@ static const struct intel_uncore_init_fun rkl_uncore_init __initconst = {
+ 	.pci_init = skl_uncore_pci_init,
  };
  
- /*
-+ * attr.config layout for type PERF_TYPE_HARDWARE* and PERF_TYPE_HW_CACHE*
-+ * PERF_TYPE_HARDWARE:		0xAA
-+ *				AA: hardware event ID
-+ * PERF_TYPE_HW_CACHE:		0xCCBBAA
-+ *				AA: hardware cache ID
-+ *				BB: hardware cache op ID
-+ *				CC: hardware cache op result ID
-+ * PERF_TYPE_HARDWARE_PMU:	0xDD000000AA
-+ *				AA: hardware event ID
-+ *				DD: PMU type ID
-+ * PERF_TYPE_HW_CACHE_PMU:	0xDD00CCBBAA
-+ *				AA: hardware cache ID
-+ *				BB: hardware cache op ID
-+ *				CC: hardware cache op result ID
-+ *				DD: PMU type ID
-+ */
-+#define PERF_HW_CACHE_ID_SHIFT			0
-+#define PERF_HW_CACHE_OP_ID_SHIFT		8
-+#define PERF_HW_CACHE_OP_RESULT_ID_SHIFT	16
-+#define PERF_HW_CACHE_EVENT_MASK		0xffffff
++static const struct intel_uncore_init_fun adl_uncore_init __initconst = {
++	.cpu_init = adl_uncore_cpu_init,
++	.mmio_init = tgl_uncore_mmio_init,
++};
 +
-+#define PERF_PMU_TYPE_SHIFT			32
+ static const struct intel_uncore_init_fun icx_uncore_init __initconst = {
+ 	.cpu_init = icx_uncore_cpu_init,
+ 	.pci_init = icx_uncore_pci_init,
+@@ -1673,6 +1678,8 @@ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		&tgl_l_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		&tgl_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE,		&rkl_uncore_init),
++	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&adl_uncore_init),
++	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&adl_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	&snr_uncore_init),
+ 	{},
+ };
+diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
+index a3c6e16..30e6557 100644
+--- a/arch/x86/events/intel/uncore.h
++++ b/arch/x86/events/intel/uncore.h
+@@ -567,6 +567,7 @@ void snb_uncore_cpu_init(void);
+ void nhm_uncore_cpu_init(void);
+ void skl_uncore_cpu_init(void);
+ void icl_uncore_cpu_init(void);
++void adl_uncore_cpu_init(void);
+ void tgl_uncore_cpu_init(void);
+ void tgl_uncore_mmio_init(void);
+ void tgl_l_uncore_mmio_init(void);
+diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
+index 5127128..0f63706 100644
+--- a/arch/x86/events/intel/uncore_snb.c
++++ b/arch/x86/events/intel/uncore_snb.c
+@@ -62,6 +62,8 @@
+ #define PCI_DEVICE_ID_INTEL_TGL_H_IMC		0x9a36
+ #define PCI_DEVICE_ID_INTEL_RKL_1_IMC		0x4c43
+ #define PCI_DEVICE_ID_INTEL_RKL_2_IMC		0x4c53
++#define PCI_DEVICE_ID_INTEL_ADL_1_IMC		0x4660
++#define PCI_DEVICE_ID_INTEL_ADL_2_IMC		0x4641
+ 
+ /* SNB event control */
+ #define SNB_UNC_CTL_EV_SEL_MASK			0x000000ff
+@@ -131,12 +133,33 @@
+ #define ICL_UNC_ARB_PER_CTR			0x3b1
+ #define ICL_UNC_ARB_PERFEVTSEL			0x3b3
+ 
++/* ADL uncore global control */
++#define ADL_UNC_PERF_GLOBAL_CTL			0x2ff0
++#define ADL_UNC_FIXED_CTR_CTRL                  0x2fde
++#define ADL_UNC_FIXED_CTR                       0x2fdf
 +
-+/*
-  * Special "software" events provided by the kernel, even if the hardware
-  * does not support performance events. These events measure various
-  * physical and sw events of the kernel (and allow the profiling of them as
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 0aeca5f..6d7524e 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -11059,6 +11059,14 @@ static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
- 	return ret;
++/* ADL Cbo register */
++#define ADL_UNC_CBO_0_PER_CTR0			0x2002
++#define ADL_UNC_CBO_0_PERFEVTSEL0		0x2000
++#define ADL_UNC_CTL_THRESHOLD			0x3f000000
++#define ADL_UNC_RAW_EVENT_MASK			(SNB_UNC_CTL_EV_SEL_MASK | \
++						 SNB_UNC_CTL_UMASK_MASK | \
++						 SNB_UNC_CTL_EDGE_DET | \
++						 SNB_UNC_CTL_INVERT | \
++						 ADL_UNC_CTL_THRESHOLD)
++
++/* ADL ARB register */
++#define ADL_UNC_ARB_PER_CTR0			0x2FD2
++#define ADL_UNC_ARB_PERFEVTSEL0			0x2FD0
++#define ADL_UNC_ARB_MSR_OFFSET			0x8
++
+ DEFINE_UNCORE_FORMAT_ATTR(event, event, "config:0-7");
+ DEFINE_UNCORE_FORMAT_ATTR(umask, umask, "config:8-15");
+ DEFINE_UNCORE_FORMAT_ATTR(edge, edge, "config:18");
+ DEFINE_UNCORE_FORMAT_ATTR(inv, inv, "config:23");
+ DEFINE_UNCORE_FORMAT_ATTR(cmask5, cmask, "config:24-28");
+ DEFINE_UNCORE_FORMAT_ATTR(cmask8, cmask, "config:24-31");
++DEFINE_UNCORE_FORMAT_ATTR(threshold, threshold, "config:24-29");
+ 
+ /* Sandy Bridge uncore support */
+ static void snb_uncore_msr_enable_event(struct intel_uncore_box *box, struct perf_event *event)
+@@ -422,6 +445,106 @@ void tgl_uncore_cpu_init(void)
+ 	skl_uncore_msr_ops.init_box = rkl_uncore_msr_init_box;
  }
  
-+static bool perf_event_is_hw_pmu_type(struct perf_event *event)
++static void adl_uncore_msr_init_box(struct intel_uncore_box *box)
 +{
-+	int type = event->attr.type;
-+
-+	return type == PERF_TYPE_HARDWARE_PMU ||
-+	       type == PERF_TYPE_HW_CACHE_PMU;
++	if (box->pmu->pmu_idx == 0)
++		wrmsrl(ADL_UNC_PERF_GLOBAL_CTL, SNB_UNC_GLOBAL_CTL_EN);
 +}
 +
- static struct pmu *perf_init_event(struct perf_event *event)
- {
- 	int idx, type, ret;
-@@ -11082,13 +11090,17 @@ static struct pmu *perf_init_event(struct perf_event *event)
- 	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE)
- 		type = PERF_TYPE_RAW;
- 
-+	if (perf_event_is_hw_pmu_type(event))
-+		type = event->attr.config >> PERF_PMU_TYPE_SHIFT;
++static void adl_uncore_msr_enable_box(struct intel_uncore_box *box)
++{
++	wrmsrl(ADL_UNC_PERF_GLOBAL_CTL, SNB_UNC_GLOBAL_CTL_EN);
++}
 +
- again:
- 	rcu_read_lock();
- 	pmu = idr_find(&pmu_idr, type);
- 	rcu_read_unlock();
- 	if (pmu) {
- 		ret = perf_try_init_event(pmu, event);
--		if (ret == -ENOENT && event->attr.type != type) {
-+		if (ret == -ENOENT && event->attr.type != type &&
-+		    !perf_event_is_hw_pmu_type(event)) {
- 			type = event->attr.type;
- 			goto again;
- 		}
++static void adl_uncore_msr_disable_box(struct intel_uncore_box *box)
++{
++	if (box->pmu->pmu_idx == 0)
++		wrmsrl(ADL_UNC_PERF_GLOBAL_CTL, 0);
++}
++
++static void adl_uncore_msr_exit_box(struct intel_uncore_box *box)
++{
++	if (box->pmu->pmu_idx == 0)
++		wrmsrl(ADL_UNC_PERF_GLOBAL_CTL, 0);
++}
++
++static struct intel_uncore_ops adl_uncore_msr_ops = {
++	.init_box	= adl_uncore_msr_init_box,
++	.enable_box	= adl_uncore_msr_enable_box,
++	.disable_box	= adl_uncore_msr_disable_box,
++	.exit_box	= adl_uncore_msr_exit_box,
++	.disable_event	= snb_uncore_msr_disable_event,
++	.enable_event	= snb_uncore_msr_enable_event,
++	.read_counter	= uncore_msr_read_counter,
++};
++
++static struct attribute *adl_uncore_formats_attr[] = {
++	&format_attr_event.attr,
++	&format_attr_umask.attr,
++	&format_attr_edge.attr,
++	&format_attr_inv.attr,
++	&format_attr_threshold.attr,
++	NULL,
++};
++
++static const struct attribute_group adl_uncore_format_group = {
++	.name		= "format",
++	.attrs		= adl_uncore_formats_attr,
++};
++
++static struct intel_uncore_type adl_uncore_cbox = {
++	.name		= "cbox",
++	.num_counters   = 2,
++	.perf_ctr_bits	= 44,
++	.perf_ctr	= ADL_UNC_CBO_0_PER_CTR0,
++	.event_ctl	= ADL_UNC_CBO_0_PERFEVTSEL0,
++	.event_mask	= ADL_UNC_RAW_EVENT_MASK,
++	.msr_offset	= ICL_UNC_CBO_MSR_OFFSET,
++	.ops		= &adl_uncore_msr_ops,
++	.format_group	= &adl_uncore_format_group,
++};
++
++static struct intel_uncore_type adl_uncore_arb = {
++	.name		= "arb",
++	.num_counters   = 2,
++	.num_boxes	= 2,
++	.perf_ctr_bits	= 44,
++	.perf_ctr	= ADL_UNC_ARB_PER_CTR0,
++	.event_ctl	= ADL_UNC_ARB_PERFEVTSEL0,
++	.event_mask	= SNB_UNC_RAW_EVENT_MASK,
++	.msr_offset	= ADL_UNC_ARB_MSR_OFFSET,
++	.constraints	= snb_uncore_arb_constraints,
++	.ops		= &adl_uncore_msr_ops,
++	.format_group	= &snb_uncore_format_group,
++};
++
++static struct intel_uncore_type adl_uncore_clockbox = {
++	.name		= "clock",
++	.num_counters	= 1,
++	.num_boxes	= 1,
++	.fixed_ctr_bits	= 48,
++	.fixed_ctr	= ADL_UNC_FIXED_CTR,
++	.fixed_ctl	= ADL_UNC_FIXED_CTR_CTRL,
++	.single_fixed	= 1,
++	.event_mask	= SNB_UNC_CTL_EV_SEL_MASK,
++	.format_group	= &icl_uncore_clock_format_group,
++	.ops		= &adl_uncore_msr_ops,
++	.event_descs	= icl_uncore_events,
++};
++
++static struct intel_uncore_type *adl_msr_uncores[] = {
++	&adl_uncore_cbox,
++	&adl_uncore_arb,
++	&adl_uncore_clockbox,
++	NULL,
++};
++
++void adl_uncore_cpu_init(void)
++{
++	adl_uncore_cbox.num_boxes = icl_get_cbox_num();
++	uncore_msr_uncores = adl_msr_uncores;
++}
++
+ enum {
+ 	SNB_PCI_UNCORE_IMC,
+ };
+@@ -1203,6 +1326,14 @@ static const struct pci_device_id tgl_uncore_pci_ids[] = {
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_TGL_H_IMC),
+ 		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
+ 	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ADL_1_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ADL_2_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
+ 	{ /* end: all zeroes */ }
+ };
+ 
 -- 
 2.7.4
 
