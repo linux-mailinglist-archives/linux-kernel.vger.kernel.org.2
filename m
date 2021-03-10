@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDB7333CC0
+	by mail.lfdr.de (Postfix) with ESMTP id 89CB0333CC1
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhCJMkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:40:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        id S232428AbhCJMkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:40:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhCJMkY (ORCPT
+        with ESMTP id S231272AbhCJMkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:40:24 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDB8C061760;
-        Wed, 10 Mar 2021 04:40:23 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 07FCBF3;
-        Wed, 10 Mar 2021 13:40:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615380021;
-        bh=L1Qfhi4dDxGV3PGZ3CwD9ZsY/EKffY6u6Z68u5bbnLo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gPNnaBR79mVacN8LMMQICbM2FlbqYsa0kYRZKfqnpUyWh4q6cwzeSdm35F92pzwr6
-         rah1HfARz0A45uDlgqcZ4TcOWE1sHds6pOD3yiUgLg4daxHTw/nY1/LowuPQ8uYiGP
-         /Ht1mRVvyI7UyHUn75cnQKoDOerwx51XWbl25NMo=
-Date:   Wed, 10 Mar 2021 14:39:48 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 2/3] media: i2c: imx219: Serialize during stream
- start/stop
-Message-ID: <YEi+FBRbXBJch1DM@pendragon.ideasonboard.com>
-References: <20210310122014.28353-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210310122014.28353-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Wed, 10 Mar 2021 07:40:42 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D84C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:40:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YXLSNz/4WtUmU/lneglWll+uILsFH1Ed7/OVzx0cvHA=; b=Lz4WnUTw+n2jLhOUshnVqFNQYm
+        5Ht8WsNNrizMH2TUjihR32IxK4gNWEZaD5i7M9FTEcsN/B6cHyjsG0W4hkUvmr3EFXtEO31n5TH9C
+        7/NJ5Ipl3eEvG6JSMyCilLj672MJ4w+LsXGg29jwv84ygPn53z+ZXP4pHuKPNfqKvJvO/R/Mj0MgJ
+        DDtuHsYShlafszsIjEMe00I4DVfbEwCAgqGzRPGM+00XUBXusVoSHiXQC3AI79XCDSvYLqAPEIEqV
+        IYxtE9Wzu6nKwRhof35XLzWBPt5T1WkZos8g/O6ulpV8HbiAGzUe0sbx0DfbvpRPCF2mVy/BIpLvW
+        v6Cw/rPg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJy88-003P0t-8A; Wed, 10 Mar 2021 12:40:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E74F03011F0;
+        Wed, 10 Mar 2021 13:39:49 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B016920D72075; Wed, 10 Mar 2021 13:39:49 +0100 (CET)
+Date:   Wed, 10 Mar 2021 13:39:49 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
+        pauld@redhead.com, pjt@google.com, rostedt@goodmis.org,
+        shanpeic@linux.alibaba.com, vincent.guittot@linaro.org,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v3 1/4] sched/fair: Introduce primitives for CFS
+ bandwidth burst
+Message-ID: <YEi+FVH5ovbC5uDh@hirez.programming.kicks-ass.net>
+References: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
+ <20210121110453.18899-2-changhuaixin@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310122014.28353-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210121110453.18899-2-changhuaixin@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
-
-Thank you for the patch.
-
-On Wed, Mar 10, 2021 at 12:20:13PM +0000, Lad Prabhakar wrote:
-> Serialize during stream start/stop in suspend/resume callbacks.
-
-Could you please explain why this is needed ?
-
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  drivers/media/i2c/imx219.c | 5 +++++
->  1 file changed, 5 insertions(+)
+On Thu, Jan 21, 2021 at 07:04:50PM +0800, Huaixin Chang wrote:
+> In this patch, we introduce the notion of CFS bandwidth burst. Unused
+> "quota" from pervious "periods" might be accumulated and used in the
+> following "periods". The maximum amount of accumulated bandwidth is
+> bounded by "burst". And the maximun amount of CPU a group can consume in
+> a given period is "buffer" which is equivalent to "quota" + "burst in
+> case that this group has done enough accumulation.
 > 
-> diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
-> index f0cf1985a4dc..87c021de1460 100644
-> --- a/drivers/media/i2c/imx219.c
-> +++ b/drivers/media/i2c/imx219.c
-> @@ -1172,8 +1172,10 @@ static int __maybe_unused imx219_suspend(struct device *dev)
->  	struct v4l2_subdev *sd = dev_get_drvdata(dev);
->  	struct imx219 *imx219 = to_imx219(sd);
->  
-> +	mutex_lock(&imx219->mutex);
->  	if (imx219->streaming)
->  		imx219_stop_streaming(imx219);
-> +	mutex_unlock(&imx219->mutex);
->  
->  	return 0;
->  }
-> @@ -1184,11 +1186,13 @@ static int __maybe_unused imx219_resume(struct device *dev)
->  	struct imx219 *imx219 = to_imx219(sd);
->  	int ret;
->  
-> +	mutex_lock(&imx219->mutex);
->  	if (imx219->streaming) {
->  		ret = imx219_start_streaming(imx219);
->  		if (ret)
->  			goto error;
->  	}
-> +	mutex_unlock(&imx219->mutex);
->  
->  	return 0;
->  
-> @@ -1197,6 +1201,7 @@ static int __maybe_unused imx219_resume(struct device *dev)
->  	imx219->streaming = false;
->  	__v4l2_ctrl_grab(imx219->vflip, false);
->  	__v4l2_ctrl_grab(imx219->hflip, false);
-> +	mutex_unlock(&imx219->mutex);
->  
->  	return ret;
->  }
+> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
+> Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
 
--- 
-Regards,
+Not a valid SoB chain.
 
-Laurent Pinchart
+> ---
+>  kernel/sched/core.c  | 91 ++++++++++++++++++++++++++++++++++++++++++++--------
+>  kernel/sched/fair.c  |  2 ++
+>  kernel/sched/sched.h |  2 ++
+>  3 files changed, 82 insertions(+), 13 deletions(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index e7e453492cff..48d3bad12be2 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -7895,10 +7895,12 @@ static const u64 max_cfs_runtime = MAX_BW * NSEC_PER_USEC;
+>  
+>  static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
+>  
+> -static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+> +static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
+> +							u64 burst)
+
+Non standard indentation.
+
+>  {
+>  	int i, ret = 0, runtime_enabled, runtime_was_enabled;
+>  	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+> +	u64 buffer;
+>  
+>  	if (tg == &root_task_group)
+>  		return -EINVAL;
+> @@ -7925,6 +7927,16 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+>  	if (quota != RUNTIME_INF && quota > max_cfs_runtime)
+>  		return -EINVAL;
+>  
+> +	/*
+> +	 * Bound burst to defend burst against overflow during bandwidth shift.
+> +	 */
+> +	if (burst > max_cfs_runtime)
+> +		return -EINVAL;
+> +
+> +	if (quota == RUNTIME_INF)
+> +		buffer = RUNTIME_INF;
+> +	else
+> +		buffer = min(max_cfs_runtime, quota + burst);
+
+Why do we care about buffer when RUNTIME_INF?
