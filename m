@@ -2,150 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C32334BA3
+	by mail.lfdr.de (Postfix) with ESMTP id C2525334BA4
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhCJWfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:35:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229563AbhCJWfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:35:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6521864FC3;
-        Wed, 10 Mar 2021 22:35:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615415740;
-        bh=ZgnCH1hQWC6Z4R3JUtthPrDcwUI2uj8mw7mKd5ALw2s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Uq6JUK86B4S4OSxPsgbaFcpjkXW2py8Zbl+jiPXXv3wukWEV/FmtQUeHWWj/iztfE
-         LB65fWlLD42ka4RHzrXEqszaQDliCsrw3WlFqA1uXX9LpNINbgTYErkzYBZrkNyNnf
-         QKi7+9w0cY5wKcmpcwgsYipLzx7DSwwMhGKbOI0qOLVnIKCNfNxpBzCVZPHX+Cadu5
-         7YX4Ht1bthQq651QcRMVXEFhiuuY4utA6DOENXrHbqn8jY/uQo+aAbHv972uzzdGeQ
-         L9AR4spSJRJfcs8gPiWkVmFXxHHS/4U33Jh3fjpzPU7HCubYa+ok2E+YjmNYUXQfRg
-         gnfRz/PsKDbpA==
-Date:   Thu, 11 Mar 2021 00:35:16 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] x86/sgx: Use sgx_free_epc_page() in
- sgx_reclaim_pages()
-Message-ID: <YElJpEQ8KLa/HlLD@kernel.org>
-References: <20210303150323.433207-1-jarkko@kernel.org>
- <20210303150323.433207-3-jarkko@kernel.org>
- <b223ea92-8b20-def3-7bd0-2cc44474bd78@intel.com>
- <YEjhjhBpYJ6i6EFD@kernel.org>
- <d8e55c583c4d76f3c9e9722e73f35c0618e40623.camel@intel.com>
- <YElD7orORGElfMdZ@kernel.org>
- <YElEQXZlzdrElovv@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YElEQXZlzdrElovv@kernel.org>
+        id S232767AbhCJWf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231207AbhCJWfm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:35:42 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFDDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:35:42 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id p136so23290707ybc.21
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:35:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=jKCctkp41npEmYGaMid+GoHQ1jboW5jXBjadu8S78Eg=;
+        b=LNGAhwSaw+X7d35VBWAjBBhYgWQxaoIreiUusF3wljDUXwaQSD3Kdh2rOH6ugzGF1E
+         2N5Lfbn2T4/c+IZP00FN0s1qE/6royVKd9Qdad8D8sUgaI9xO6zjtqwK3/2Uvk132Fa6
+         7qBjUIRMUiTbzSAx66IAmEWwuPrQe8gAdeu8F6n1MiIU4LrqioS1vebuBPcK0fj6RS3y
+         NUnvBa9VgJa1lEVFD3LyDBWOTRVcUh2fUyhAnfSfVEu2rMu+0iurdu/QMK83xiibq78H
+         G26419f/Snj4St0ElyzYbG6VYnkyo6MkTLdG/mD6ZIYNqoQ/rePRQdavVqENgthCzKp+
+         HJXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=jKCctkp41npEmYGaMid+GoHQ1jboW5jXBjadu8S78Eg=;
+        b=qXKUG+aVp9vjJLT1yOXm5+miBO64yHYLsQTjX87a55O6mveXfw6/LoN4gc8rwkOJz8
+         BBoL/RKoeYG1b8/CJcsrX4i5HVeMgw4l0uRvcaSusNmgQe4R47+5DtwwewiOe7diLhDo
+         +sPNnx6I04k7iXOdIY+wM4IHKZyIln5svbNAbgCyVelq+LR9ZsahnF/Xd8wHkuPeQSaU
+         8qB0n8njyqcUi/lUL9FLY8j4uM/doC08pzf3oW18ZWFcMOmMnSIuNVp3PIoJTmJlYEpL
+         tRwuH+9O9DH93hBZZeimSttc+Fw6sM+u0/xhuIl+WSZH+XUt8KjbHtGujeFK2jCWeJJo
+         6xKA==
+X-Gm-Message-State: AOAM530HtDnzuz3YO333aMnOSti0pQo7g20e26h7DcSrmSwGAyBU3ZYH
+        oG56Rhyt2zhyZGaF8MbUdUuuVs3JS3Y=
+X-Google-Smtp-Source: ABdhPJyQ7u+fzmbXi6rfMy5j8lYrt73ZjOUT0h2uqvs591Ag0EQiSa4ISiokH8Sa5djFnlC8GlEoFqJip/Y=
+X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:2879:299f:c377:83c9])
+ (user=badhri job=sendgmr) by 2002:a25:d1ca:: with SMTP id i193mr5335984ybg.355.1615415741693;
+ Wed, 10 Mar 2021 14:35:41 -0800 (PST)
+Date:   Wed, 10 Mar 2021 14:35:36 -0800
+Message-Id: <20210310223536.3471243-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc1.246.gcd05c9c855-goog
+Subject: [PATCH v1] usb: typec: tcpci: Refactor tcpc_presenting_cc1_rd macro
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:12:17AM +0200, Jarkko Sakkinen wrote:
-> On Thu, Mar 11, 2021 at 12:10:56AM +0200, Jarkko Sakkinen wrote:
-> > On Thu, Mar 11, 2021 at 09:36:15AM +1300, Kai Huang wrote:
-> > > On Wed, 2021-03-10 at 17:11 +0200, Jarkko Sakkinen wrote:
-> > > > On Wed, Mar 03, 2021 at 08:59:17AM -0800, Dave Hansen wrote:
-> > > > > On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
-> > > > > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > > > > > index 52d070fb4c9a..ed99c60024dc 100644
-> > > > > > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > > > > > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > > > > > @@ -305,7 +305,6 @@ static void sgx_reclaim_pages(void)
-> > > > > >  {
-> > > > > >  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
-> > > > > >  	struct sgx_backing backing[SGX_NR_TO_SCAN];
-> > > > > > -	struct sgx_epc_section *section;
-> > > > > >  	struct sgx_encl_page *encl_page;
-> > > > > >  	struct sgx_epc_page *epc_page;
-> > > > > >  	pgoff_t page_index;
-> > > > > > @@ -378,11 +377,7 @@ static void sgx_reclaim_pages(void)
-> > > > > >  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
-> > > > > >  		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-> > > > > >  
-> > > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > > -		section = &sgx_epc_sections[epc_page->section];
-> > > > > > -		spin_lock(&section->lock);
-> > > > > > -		list_add_tail(&epc_page->list, &section->page_list);
-> > > > > > -		section->free_cnt++;
-> > > > > > -		spin_unlock(&section->lock);
-> > > > > > +		sgx_free_epc_page(epc_page);
-> > > > > >  	}
-> > > > > >  }
-> > > > > 
-> > > > > In current upstream (3fb6d0e00e), sgx_free_epc_page() calls __eremove().
-> > > > >  This code does not call __eremove().  That seems to be changing
-> > > > > behavior where none was intended.
-> > > > 
-> > > > EREMOVE does not matter here, as it doesn't in almost all most of the sites
-> > > > where sgx_free_epc_page() is used in the driver. It does nothing to an
-> > > > uninitialized pages.
-> > > 
-> > > Right. EREMOVE on uninitialized pages does nothing, so a more reasonable way is to
-> > > just NOT call EREMOVE (your original code), since it is absolutely unnecessary.
-> > > 
-> > > I don't see ANY reason we should call EREMOVE here. 
-> > > 
-> > > Actually w/o my patch to split EREMOVE out of sgx_free_epc_page(), it then makes
-> > > perfect sense to have new sgx_free_epc_page() here.
-> > > 
-> > > > 
-> > > > The two patches that I posted originally for Kai's series took EREMOVE out
-> > > > of sgx_free_epc_page() and put an explicit EREMOVE where it is actually
-> > > > needed, but for reasons unknown to me, that change is gone.
-> > > > 
-> > > 
-> > > It's not gone. It goes into a new sgx_encl_free_epc_page(), which is exactly the same
-> > > as current sgx_free_epc_page() which as EREMOVE, instead of putting EREMOVE into a
-> > > dedicated sgx_reset_epc_page(), as you did in your series:
-> > > 
-> > > https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
-> > > 
-> > > However, your change has side effort: it always put page back into free pool, even
-> > > EREMOVE fails. To make your change w/o having any functional change, it has to be:
-> > > 
-> > > 	if(!sgx_reset_epc_page())
-> > > 		sgx_free_epc_page();
-> > 
-> > OK, great, your patch set uses the wrapper only in the necessary call
-> > sites. Sorry, I overlooked this part.
-> > 
-> > Anyway, it knowingly does that. I considered either as equally harmful
-> > side-ffects when I implemented. Either can only trigger, when there is a
-> > bug in the kernel code.
-> > 
-> > It *could* do what that snippet suggest but it's like "out of the frying pan,
-> > into the fire" kind of change.
-> > 
-> > Since NUMA patch set anyway requires to have a global dirty list, I think
-> > the better way to deal with this, would be to declare a new global in the
-> > patch under discussion:
-> > 
-> > static struct list_head sgx_dirty_list;
-> 
-> sgx_dirty_page_list
+Defining one macro instead of two for tcpc_presenting_*_rd.
+This is a follow up of the comment left by Heikki Krogerus.
 
-Actually, I think it is good as it is now. Please do nothing :-)
+https://patchwork.kernel.org/project/linux-usb/patch/
+20210304070931.1947316-1-badhri@google.com/
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+---
+ drivers/usb/typec/tcpm/tcpci.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-I can continue from that and improve the fallback further. Not perfect, but
-good enough.
+diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+index 027afd7dfdce..25b480752266 100644
+--- a/drivers/usb/typec/tcpm/tcpci.c
++++ b/drivers/usb/typec/tcpm/tcpci.c
+@@ -24,14 +24,10 @@
+ #define	AUTO_DISCHARGE_PD_HEADROOM_MV		850
+ #define	AUTO_DISCHARGE_PPS_HEADROOM_MV		1250
+ 
+-#define tcpc_presenting_cc1_rd(reg) \
++#define tcpc_presenting_rd(reg, cc) \
+ 	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
+-	 (((reg) & (TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT)) == \
+-	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC1_SHIFT)))
+-#define tcpc_presenting_cc2_rd(reg) \
+-	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
+-	 (((reg) & (TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT)) == \
+-	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC2_SHIFT)))
++	 (((reg) & (TCPC_ROLE_CTRL_## cc ##_MASK << TCPC_ROLE_CTRL_## cc ##_SHIFT)) == \
++	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_## cc ##_SHIFT)))
+ 
+ struct tcpci {
+ 	struct device *dev;
+@@ -201,11 +197,11 @@ static int tcpci_get_cc(struct tcpc_dev *tcpc,
+ 	*cc1 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC1_SHIFT) &
+ 				 TCPC_CC_STATUS_CC1_MASK,
+ 				 reg & TCPC_CC_STATUS_TERM ||
+-				 tcpc_presenting_cc1_rd(role_control));
++				 tcpc_presenting_rd(role_control, CC1));
+ 	*cc2 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC2_SHIFT) &
+ 				 TCPC_CC_STATUS_CC2_MASK,
+ 				 reg & TCPC_CC_STATUS_TERM ||
+-				 tcpc_presenting_cc2_rd(role_control));
++				 tcpc_presenting_rd(role_control, CC2));
+ 
+ 	return 0;
+ }
+-- 
+2.31.0.rc1.246.gcd05c9c855-goog
 
-/Jarkko
