@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525EF333318
+	by mail.lfdr.de (Postfix) with ESMTP id C2CE3333319
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhCJCW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:22:56 -0500
-Received: from mail-il1-f176.google.com ([209.85.166.176]:39697 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhCJCWd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:22:33 -0500
-Received: by mail-il1-f176.google.com with SMTP id d5so14117255iln.6;
-        Tue, 09 Mar 2021 18:22:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=voc/X78q1Cd5mXSfJ2m05folBsGa52Gk3s2/x35kFuk=;
-        b=ZeJySklH10WnYLNScs23EE0Q3N6F2Jfj2JUs6XJbkmE4VSxoC3Ghma3Lzj6oRC+mu6
-         FyE3/tEKRIJV9ti4wuAoFLVYBWAgW6Ch3jAOIgTHCuYiKSOI2QhGl99dvz4vlQws8JeV
-         9vD4MK1Ph/WDeb1sGuVCGyJd05ehiIqN7UdMhO8oof+Rj5unI91ciEAhk2BZnEZO/O92
-         zI/ZqMmzCUzqCMVITI+4vmexuC7Zcqk1Saea3MR1EKfs+dh+8oSZvXYvOY7jFt/sBoxZ
-         2LJrRLWsX4+lZijegr2JLClNgCmp/GrfA5wDwrEf4bfq1mMUC3Zd4qE7g242MPyrAXOT
-         4/cQ==
-X-Gm-Message-State: AOAM530/mQlk4kGVyyTNzBpOpwpJxzIVT3dPD5NtNo3+JhMfRuftupZH
-        2GY1hGVaVm4a/r5uyICO9w==
-X-Google-Smtp-Source: ABdhPJzumPxjm3c/tKAxEqoTsUNFSmAT4HjT32krev6w0RJbztOm5m+HYFNgk9poe0kBJTLCYH19Qw==
-X-Received: by 2002:a92:d80f:: with SMTP id y15mr1000656ilm.96.1615342952755;
-        Tue, 09 Mar 2021 18:22:32 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id k4sm8500015ion.29.2021.03.09.18.22.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 18:22:32 -0800 (PST)
-Received: (nullmailer pid 1604756 invoked by uid 1000);
-        Wed, 10 Mar 2021 02:22:28 -0000
-Date:   Tue, 9 Mar 2021 19:22:28 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH V10 4/5] of: unittest: Create overlay_common.dtsi and
- testcases_common.dtsi
-Message-ID: <20210310022228.GA1603543@robh.at.kernel.org>
-References: <cover.1615199908.git.viresh.kumar@linaro.org>
- <46c3ec10db6e7bab87fd1a98236a3fdba6a02ec9.1615199908.git.viresh.kumar@linaro.org>
+        id S232135AbhCJCW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:22:57 -0500
+Received: from mga18.intel.com ([134.134.136.126]:11702 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231299AbhCJCWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 21:22:37 -0500
+IronPort-SDR: LEY/aue7aBdfJgQIgJ5ZIpx/REIfSOgk1zN5RW5Xwomlu3hMab3uP7VSx/Zkai076lidHnMlpp
+ POKb0uhepJyw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175966622"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="175966622"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 18:22:35 -0800
+IronPort-SDR: 4hb4GTO/VCURjcsMMoLIhUgrPjxB6ULiRRKXoeTZE+siy3Iy3gYkSIer46ao1JOZ1k65tnpHD7
+ gglQM2RcKfaw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="376770074"
+Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
+  by fmsmga007.fm.intel.com with ESMTP; 09 Mar 2021 18:22:30 -0800
+Subject: Re: [PATCH v6] i2c: virtio: add a virtio i2c frontend driver
+To:     Jason Wang <jasowang@redhat.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, wsa@kernel.org, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com, pbonzini@redhat.com
+References: <9a2086f37c0a62069b67c39a3f75941b78a0039c.1614749417.git.jie.deng@intel.com>
+ <43b0842b-8b0f-1979-ed07-d6124e3a6b79@redhat.com>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <db9350b3-b847-8f54-546f-9a0bdec425d4@intel.com>
+Date:   Wed, 10 Mar 2021 10:22:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46c3ec10db6e7bab87fd1a98236a3fdba6a02ec9.1615199908.git.viresh.kumar@linaro.org>
+In-Reply-To: <43b0842b-8b0f-1979-ed07-d6124e3a6b79@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:15:09PM +0530, Viresh Kumar wrote:
-> In order to build-test the same unit-test files using fdtoverlay tool,
-> move the device nodes from the existing overlay_base.dts and
-> testcases_common.dts files to .dtsi counterparts. The .dts files now
-> include the new .dtsi files, resulting in exactly the same behavior as
-> earlier.
-> 
-> The .dtsi files can now be reused for compile time tests using
-> fdtoverlay (will be done by a later commit).
-> 
-> This is required because the base files passed to fdtoverlay tool
-> shouldn't be overlays themselves (i.e. shouldn't have the /plugin/;
-> tag).
-> 
-> Note that this commit also moves "testcase-device2" node to
-> testcases.dts from tests-interrupts.dtsi, as this node has a deliberate
-> error in it and is only relevant for runtime testing done with
-> unittest.c.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
->  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
->  drivers/of/unittest-data/testcases.dts        | 23 ++---
->  .../of/unittest-data/testcases_common.dtsi    | 19 ++++
->  .../of/unittest-data/tests-interrupts.dtsi    | 11 +--
->  5 files changed, 128 insertions(+), 106 deletions(-)
->  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
->  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
 
-checkpatch complains about spaces instead of tabs.
+On 2021/3/4 17:15, Jason Wang wrote:
+>
+>
+>> +        }
+>> +
+>> +        if (msgs[i].flags & I2C_M_RD)
+>> +            memcpy(msgs[i].buf, req->buf, msgs[i].len);
+>
+>
+> Sorry if I had asked this before but any rason not to use msg[i].buf 
+> directly?
+>
+>
+The msg[i].buf is passed by the I2C core. I just noticed that these bufs 
+are not
+always allocated by kmalloc. They may come from the stack, which may cause
+the check "sg_init_one -> sg_set_buf -> virt_addr_valid"  to fail. 
+Therefore the
+msg[i].buf is not suitable for direct use here.
 
-Rob
+Regards.
+
