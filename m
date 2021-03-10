@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5E63332A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9033332A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbhCJBML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 20:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
+        id S231341AbhCJBN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 20:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbhCJBLz (ORCPT
+        with ESMTP id S229875AbhCJBNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 20:11:55 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE7AC06174A;
-        Tue,  9 Mar 2021 17:11:55 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d23so4422370plq.2;
-        Tue, 09 Mar 2021 17:11:55 -0800 (PST)
+        Tue, 9 Mar 2021 20:13:46 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EAAC06174A;
+        Tue,  9 Mar 2021 17:13:46 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id a4so10251547pgc.11;
+        Tue, 09 Mar 2021 17:13:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=FGISyVhw3ySIweJMtXxSOZtXnd+xKsePHBEX5Ypjhtg=;
-        b=pVJ4osi3mGeryeQFhpdkIj0PuunPA50aH6IsziowPUzUJUh8bzJCJfKsM1SLc6752/
-         qAPNrqaIn58Fv8BrEnrmas/pnFX7tEtzoy38itp39px+/Olpcu6TOtaLuO41voI5FZpH
-         vdDzXzPP41woedr3QHwiA7GVV9Cjw8ha4cZe6QTZxDe1335weNMyMsKwHCd0eu++sWvU
-         DH1ZbgrdgsTg4h8FPPhgYTGfcH784Rzfr/9Wy3h0La8eosKbPd0Eu9+5NCZUUCQErVek
-         Ur2MEE29R80YviR3EKi+Lx5K9W1NTr+5tzAEg2jwgwD6XeNqpyxt4GeXUSDhnaJYjVf9
-         GDEQ==
+        bh=HAvrErAtPddyjYyJYAyf788CsMnyM1RI7DtELqfq+ic=;
+        b=RV+aERCThFCVgscdZboFZd7Uq+eloAhBXvO9Xw8cETG9WOBDmcUXxdna+bRNwZzXco
+         d25hyE6VQJRqwsvsErDGzftMheK8lZkdl7xUVC81IFN6FKLHN5rukiTIYGmGqbwLSGaj
+         lRxv87zD6w+W+5U9BDHbioH3ExjdLWzyBxZldHquLWG/1LAa4x1NTre6GH57uhSXmiNv
+         Afhw+9H8GmfFJri4NmOCEZqkWpQU8MqJrlQS62XoIOUCcui4ihhAz9a6edkYWuBGgi82
+         aXLD91kyXanfntaYGvGEokLEKtu9Po/sPRs2NgUcDFZA//Y6EdCITBsbOqs/LSVPAoAN
+         5kaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=FGISyVhw3ySIweJMtXxSOZtXnd+xKsePHBEX5Ypjhtg=;
-        b=fIfXTR8n+kdVfjntnwNBk81Z+0tDtBVCuwFC8JhAZZEQ6sOQhIlieVmXwiaoy1XdyE
-         of7DjL1vhZk13ym2MByKYFSlueIxkuBBhWSTBfmb2na1JicOlK8KsNKvTSaeJ194i/uo
-         DfW0LWhqJ5+rTaz+tgCEMHAjpIAUR4ieHUlwXzvXXhslVojFZVD1d0LuISfp6hoYAIbo
-         f/dnLWX5w4yOQaRMuXbToiGM+51rZenFXbe2FpCVeSAENJHv2ublBqtTdrNURLd7BAvz
-         t9CtQvsPP2eVyRM0WF5yyuRazB1dCZgiMT7T9RYYr4B/3LjwZg4RPDql2EzGvBQMmTga
-         fxoA==
-X-Gm-Message-State: AOAM533j8gaKFE9m5itaD3kWAB1MpP6MjFrndD5/LaxRM+F/40QkVKUo
-        x6q7YUqKMk+wupGs+y4XrgXXc40LMajReI/I
-X-Google-Smtp-Source: ABdhPJzsJ0ZbHxlWXGRKXgJ/YFWd5raaHXnbHeehvx2+VexZ+mR8kdnEKYMvccQtp633uGJee7aVLw==
-X-Received: by 2002:a17:90a:d90a:: with SMTP id c10mr729901pjv.13.1615338714133;
-        Tue, 09 Mar 2021 17:11:54 -0800 (PST)
+        bh=HAvrErAtPddyjYyJYAyf788CsMnyM1RI7DtELqfq+ic=;
+        b=HKOa77o7SZD/qDbFfO1cPAkZLyDi+95mADbvFWeUuzGo/AVNcZC7fNF3smn65kzd5z
+         gKzqQRaM2lN6zdDejj+fNFI8+i6JNn22H7LB/1wMZXTvcQPjxhc9bCc4uvN4C18nsGtq
+         uU/qUeV+mpLHRRi8NPOGrKBUnJC6zte0DBBFx9lhJNJg1BJaSxwqj4FHbDm0u68Q6voS
+         mEIYuIJ+r8hckds2YfrvpXrwLpwSDHMoKPVi3s4q59hxq59hf6RW/ShrK//NDcTgOafL
+         /HEv966WU8elkOBQVEdSXFvDYkB1ZxUnkHvYRiCtpPHCda3kPyOTYOPFJohCdK8foX6e
+         P//w==
+X-Gm-Message-State: AOAM5328xBMBeanQw+VH6JbZwOEA2w1Xw91bKQYbyBzZZAm5Ruui54PV
+        Wy8drvjoEJAUNnL3BEmZevW/+dnwLM5+nZhb
+X-Google-Smtp-Source: ABdhPJwGBk0Dixui9JMCtm7RGKjxDs5DtOcvorAnSHG6EIX9f+zAin4cuiqNJaMEBLXmUsu7Ob98Kw==
+X-Received: by 2002:a63:ab05:: with SMTP id p5mr516446pgf.149.1615338825867;
+        Tue, 09 Mar 2021 17:13:45 -0800 (PST)
 Received: from [10.38.0.14] ([45.135.186.59])
-        by smtp.gmail.com with ESMTPSA id l4sm11038491pgi.19.2021.03.09.17.11.50
+        by smtp.gmail.com with ESMTPSA id s28sm14629138pfd.155.2021.03.09.17.13.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 17:11:53 -0800 (PST)
-Subject: Re: [PATCH] fs: proc: fix error return code of
- proc_map_files_readdir()
-To:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     christian@brauner.io, ebiederm@xmission.com,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        gladkov.alexey@gmail.com, walken@google.com,
-        bernd.edlinger@hotmail.de, avagin@gmail.com, deller@gmx.de,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20210309095527.27969-1-baijiaju1990@gmail.com>
- <YEe+v+ywMrxgmj05@gmail.com> <YEfG54xMM7OtPEE5@localhost.localdomain>
+        Tue, 09 Mar 2021 17:13:45 -0800 (PST)
+Subject: Re: [PATCH] block: rsxx: fix error return code of rsxx_pci_probe()
+To:     Jens Axboe <axboe@kernel.dk>, josh.h.morris@us.ibm.com,
+        pjk1939@linux.ibm.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210308100554.10375-1-baijiaju1990@gmail.com>
+ <cf2dd66c-0e1e-944e-f4c5-542095f6c9d7@kernel.dk>
 From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <86f9dae2-7bb1-4555-44a4-24045260916b@gmail.com>
-Date:   Wed, 10 Mar 2021 09:11:50 +0800
+Message-ID: <0a0a6160-f469-9be8-a9e2-3067c02f0b57@gmail.com>
+Date:   Wed, 10 Mar 2021 09:13:43 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <YEfG54xMM7OtPEE5@localhost.localdomain>
+In-Reply-To: <cf2dd66c-0e1e-944e-f4c5-542095f6c9d7@kernel.dk>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -76,30 +71,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/3/10 3:05, Alexey Dobriyan wrote:
-> On Tue, Mar 09, 2021 at 10:30:23AM -0800, Eric Biggers wrote:
+On 2021/3/10 4:59, Jens Axboe wrote:
+> On 3/8/21 3:05 AM, Jia-Ju Bai wrote:
+>> Some error handling segments of rsxx_pci_probe() do not return error code,
+>> so add error code for these segments.
+>>
+>> Fixes: 8722ff8cdbfa ("block: IBM RamSan 70/80 device driver")
+>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+>> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+>> ---
+>>   drivers/block/rsxx/core.c | 18 +++++++++++++++---
+>>   1 file changed, 15 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
+>> index 63f549889f87..6b3b9b31a3e8 100644
+>> --- a/drivers/block/rsxx/core.c
+>> +++ b/drivers/block/rsxx/core.c
+>> @@ -760,13 +760,17 @@ static int rsxx_pci_probe(struct pci_dev *dev,
+>>   	pci_set_drvdata(dev, card);
+>>   
+>>   	st = ida_alloc(&rsxx_disk_ida, GFP_KERNEL);
+>> -	if (st < 0)
+>> +	if (st < 0) {
+>> +		st = -ENOMEM;
+>>   		goto failed_ida_get;
+>> +	}
+>>   	card->disk_id = st;
+>>   
+>>   	st = pci_enable_device(dev);
+>> -	if (st)
+>> +	if (st) {
+>> +		st = -EIO;
+>>   		goto failed_enable;
+>> +	}
+>>   
+>>   	pci_set_master(dev);
+> Maybe there are some valid parts to the patch, but the two above at
+> least make no sense - we're returning the error here as passed from
+> ida_alloc or pci_enable_device, why are you overriding them?
 >
->>> --- a/fs/proc/base.c
->>> +++ b/fs/proc/base.c
->>> @@ -2332,8 +2332,10 @@ proc_map_files_readdir(struct file *file, struct dir_context *ctx)
->>>   		goto out_put_task;
->>>   
->>>   	mm = get_task_mm(task);
->>> -	if (!mm)
->>> +	if (!mm) {
->>> +		ret = -ENOENT;
->>>   		goto out_put_task;
->>> +	}
->>>   
->>>   	ret = mmap_read_lock_killable(mm);
->> Is there something in particular that makes you think that returning ENOENT is
->> the correct behavior in this case?  Try 'ls /proc/$pid/map_files' where pid is a
->> kernel thread; it's an empty directory, which is probably intentional.  Your
->> patch would change reading the directory to fail with ENOENT.
-> Yes. 0 from readdir means "no more stuff", not an error.
 
-Thanks for your reply and explanation.
-I am sorry for the false report...
+Ah, sorry for these incorrect parts...
+I will send a new patch.
 
 
 Best wishes,
