@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7255334C59
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B510334C5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbhCJXSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:18:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        id S233767AbhCJXSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:18:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbhCJXRj (ORCPT
+        with ESMTP id S233603AbhCJXS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:17:39 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982C9C061574;
-        Wed, 10 Mar 2021 15:17:39 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0a9900a924d5d6558379cc.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:9900:a924:d5d6:5583:79cc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 189CE1EC0324;
-        Thu, 11 Mar 2021 00:17:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615418258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=vdW4jHtU0yP5nIiN9iN5QIKuVvJT42tBZF1aEM+pmEU=;
-        b=OIreb/Q1GnNA6DuKQAQYJMdcbxOaH0NUHkN7M6Kf7IKhYmFJauv7y+XrlTqSsWEr8X4gRT
-        tGYSQZjwQOLCA3nRyXqewrox7hN5tB5czxuo3XLI+/sA+g7CQ21vsIeygf++0qYcRxtQY3
-        jrI28tGi2TEAPSYH5No08OdnBG/xI+8=
-Date:   Thu, 11 Mar 2021 00:17:31 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v22 8/8] x86/vdso: Add ENDBR64 to __vdso_sgx_enter_enclave
-Message-ID: <20210310231731.GK23521@zn.tnic>
-References: <20210310220519.16811-1-yu-cheng.yu@intel.com>
- <20210310220519.16811-9-yu-cheng.yu@intel.com>
- <YElKjT2v628tidE/@kernel.org>
- <8b8efe44-b79f-ce29-ee28-066f88c93840@intel.com>
+        Wed, 10 Mar 2021 18:18:26 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CB2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:18:26 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id n16so36528623lfb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:18:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ETYOYkWWuwEOmh8g1BpUkeMpw9R/2k0WlMIbJjFgbe0=;
+        b=mywdMmMNJWXNOvpzRYKiSkJnDeJYqEEFyJbe/D/1vTty0KMngDXw1kVVCfQiNgixNp
+         XjR6pFSE91kpGFqSKsZ04/LU40yddLUSHofebFzU0prJ4DMhiSHnUo+tqLTLqbSaWGwa
+         XGcnB3+gHEtr8Z/o/Dygi76jE3pgQdew6mAhbclLOcxWeBa7qw+3Os8OeaHDhAYJALFd
+         aNERZfBzwon883KcCGibf2Xa1cRLUKXI/SVbL3O/aANTfhh7ZlIHP1VMSnFGOTeaU/kk
+         MjLDyqPf9nkDvQdELIJGpZpGTB5lQk4kWH0b1uG98uvoply2zwp59obknZGLFl9wPP2P
+         shvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ETYOYkWWuwEOmh8g1BpUkeMpw9R/2k0WlMIbJjFgbe0=;
+        b=IeYCBSg14XL9xBsOeHrNKokMI9kqeiX1bXoxrAd1mZe+sllG+KECVvvwlVqIuH13U8
+         xMljqKY2Wg/iAL0soyYVw24nDcoq0Vo6bWJKRPqZ59hayZjGFyYRQEEjqroUJ/2Gn+IJ
+         V6ytyvokvmKIpkfbhxo/lEeFiks8NoT5kO+xNuKjsdV7+7uisTF2Qhbp04IydvOOb9Su
+         icMA6f4HS+g98ClGbt1p1hUqJ7LArvE9liSLNX6y0BpENL5wGLeJ3/JlW9d2s50IWbAf
+         G/gaVNg/3oAzvQneK85Z5tUi54CCukK7C1ayPf4eKsi3et1KkshlMOaRO87UupoLiCl8
+         ZFCA==
+X-Gm-Message-State: AOAM5300UYEmOInappKMtUMW9VIHfcO3KU8qcQxB8G7X8BF1y5hp9UdU
+        ZO+/jRREGCDa/zcMrvWEJa48uHsWQ/ORD0FvpAFAVQ==
+X-Google-Smtp-Source: ABdhPJwmNWGQITUCTc5qmeWRhSOQqyfgdyu7l7/Uv7dVvTj6QBJ8VXjebkqy9nB3G5/ztId3MDTZN+9ZZg9bIijjy98=
+X-Received: by 2002:a05:6512:243:: with SMTP id b3mr498944lfo.529.1615418304736;
+ Wed, 10 Mar 2021 15:18:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8b8efe44-b79f-ce29-ee28-066f88c93840@intel.com>
+References: <20210305153815.126937-1-vincent.knecht@mailoo.org> <20210305153815.126937-2-vincent.knecht@mailoo.org>
+In-Reply-To: <20210305153815.126937-2-vincent.knecht@mailoo.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Mar 2021 00:18:13 +0100
+Message-ID: <CACRpkdbtwjVjgv-sXG9_-j7+wSiqP_K_=4dS80JhN-F5SDV_Qw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] Input: add MStar MSG2638 touchscreen driver
+To:     Vincent Knecht <vincent.knecht@mailoo.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Michael Srba <Michael.Srba@seznam.cz>,
+        Linux Input <linux-input@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 02:55:55PM -0800, Yu, Yu-cheng wrote:
-> > > @@ -27,6 +27,9 @@
-> > >   SYM_FUNC_START(__vdso_sgx_enter_enclave)
-> > >   	/* Prolog */
-> > >   	.cfi_startproc
-> > > +#ifdef CONFIG_X86_CET
-> > > +	endbr64
-> > > +#endif
+On Fri, Mar 5, 2021 at 4:38 PM Vincent Knecht <vincent.knecht@mailoo.org> wrote:
 
-You can hide this ifdeffery in a macro and have
+> Add support for the msg2638 touchscreen IC from MStar.
+> Firmware handling, wakeup gestures and other specialties are not supported.
+> This driver reuses zinitix.c structure, while the checksum and irq handler
+> functions are based on out-of-tree driver for Alcatel Idol 3 (4.7").
+>
+> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+> ---
+> Changed in v6:
 
-	ENDBR64
+Looks good to me:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-at the callsite and define
-
-.macro ENDBR64
-#ifdef CONFIG_X86_CET
-	endbr64
-#endif
-.endm
-
-or so, perhaps. Ditto for endbr32.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yours,
+Linus Walleij
