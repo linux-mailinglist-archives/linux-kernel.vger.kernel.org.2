@@ -2,239 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAEA333F48
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7C9333F49
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhCJNbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:31:39 -0500
-Received: from mout.gmx.net ([212.227.17.21]:41921 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232898AbhCJN1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:27:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1615382820;
-        bh=pp0VmHnVkKH81usf4fvgy+XxSQVUMpzj42YCLwf4NGA=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Bv97yvOMJtihwj72A1OYSCDXtE8iKfsGj002G7CYgWJWLIB8QnfF1pyKLmwfLYRL4
-         ITaWwmSq9+7CCpyoUm4Q3N6Gmdc34DxWH+2IuXqYWCtiOoWep1wcEZKYMMiH+wzsT0
-         7BDikapuVEZV2ebUbkltY469bUGCnSTanGWD5jJ4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.55] ([95.91.192.147]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MgNh1-1lxBEp29pn-00hyS4; Wed, 10
- Mar 2021 14:27:00 +0100
-Subject: Re: [PATCH v4 2/7] MIPS: Loongson64: Distinguish firmware
- dependencies DTB/LEFI
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Ming Wang <wangming01@loongson.cn>
-References: <20210310075639.20372-1-zhangqing@loongson.cn>
- <20210310075639.20372-3-zhangqing@loongson.cn>
- <2484af69-13d1-09ff-3785-6c89cac4ffbd@rempel-privat.de>
- <49ddbef4-3d2a-4adb-8fd0-37bba0530c4c@www.fastmail.com>
-From:   Oleksij Rempel <linux@rempel-privat.de>
-Message-ID: <7f26fc67-e7b1-d305-90e7-0cfedcc822ca@rempel-privat.de>
-Date:   Wed, 10 Mar 2021 14:26:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234490AbhCJNbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:31:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234078AbhCJN2F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:28:05 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B5FC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:28:05 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id d15so23332381wrv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:28:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Ud5GV8jteIAfR0+OIo+yJBwr2As0MS7U/ZgI9Fa6uR8=;
+        b=pqFzZKpHYtR0sVsG29K4pZpYbRkWS6JnGHGtP6DR3e6n0hPf6n1YJ3kVFvP7roE9BF
+         mawJ9qTwiJpWb+agYCEr5M7c6cpRpDJxVampnJQPT9vFDk54T8Dq0mTxTWnI0Vycg/fe
+         oRzyMt6o+HooT6ogwd2LlWbgtd7vIPCzYYvm0ueYohFbo2F5IswQ3ZZyHz3J6yqHZwXk
+         eTUpyXx2iu01GvATn+zmVsPamXTLYpF5bIM3TZN1+DfrgypcfatkDBzj2ebuc9VkcpmG
+         Qxv+t7Siooo5r+n5B3ZbdEztNh0kZCVj4jNRhoPcG6qsqnPTTBPQHlvaJAen7GnBQ0Hz
+         ssLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Ud5GV8jteIAfR0+OIo+yJBwr2As0MS7U/ZgI9Fa6uR8=;
+        b=bJKIS7xuUmYPJfjvSv3v381W1qlzV61K2CsWuJiLF9Ko2xO46PJj8cyIfGNZ6lEzmu
+         3UfMep6C7AgodVZDc13+qRIe0WxuOv/YkjqjJBwpGgIZyoNcGtsPDL2KRyBGv8C0I9CD
+         hhWvczB9QiYnfppXC6qBS/OsFrYK++w6PLO81QrBB/A95eGV13H4Hjku5xM5ieZBpA64
+         rOpHhcPJU433phSeWIETGMYKOSlVtAu5j2s2oFlOp6wIde8GeDrhmz3qpTyjDAq7CCiq
+         7GR/dE3tsA7TaoJSw68iWcIBvkkH4CHumSrw1mqFdNHdi+8FvH9+FY9jJAc1wVVteYbi
+         JtJw==
+X-Gm-Message-State: AOAM5309YuWKEClAaE8d32nbo/91LJx5/t8YCrJmI1Mgrk5pLAAEpkjT
+        +IJsIRqVHyT4l+vg5YV5RbFgLg==
+X-Google-Smtp-Source: ABdhPJyai3lwYkvYs3UUHDPoPfmSh3Fud+xWK7Gs+5D1UXMbnrPD5cJe556wXX4ouZAHUyRnwLF3xg==
+X-Received: by 2002:a5d:6989:: with SMTP id g9mr3748288wru.198.1615382884189;
+        Wed, 10 Mar 2021 05:28:04 -0800 (PST)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id p27sm9815467wmi.12.2021.03.10.05.28.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 05:28:03 -0800 (PST)
+Date:   Wed, 10 Mar 2021 13:28:02 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Zheng Yejian <zhengyejian1@huawei.com>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        cj.chengjian@huawei.com, judy.chenhui@huawei.com,
+        zhangjinhao2@huawei.com, nixiaoming@huawei.com
+Subject: Re: [PATCH 4.4 3/3] futex: fix dead code in attach_to_pi_owner()
+Message-ID: <20210310132802.GP701493@dell>
+References: <20210309030605.3295183-1-zhengyejian1@huawei.com>
+ <20210309030605.3295183-4-zhengyejian1@huawei.com>
+ <YEdQoy6j7eOne+8h@kroah.com>
+ <20210309181437.GV4931@dell>
+ <YEi08Dr3cgNp0KlP@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <49ddbef4-3d2a-4adb-8fd0-37bba0530c4c@www.fastmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5D+UVeipRKNhZqgNEc5ybjhJZjHnpu1ZugPFt41sOk2uFETwoec
- 2aQCw4o51YD/czHcSkD/sAiGyQv9Ub3rHOmjb8mloH6ESLG/0CW974lNtWerntM1UsXdTI3
- rT0hfPqTkRmIVUMWUJeYpjtDxDoEIHA6TEEI3mpLRHpF8D4Z7tQsXLpb80wnt8bSWeFQcv3
- I/1IkVh0wcuEMzQS9w2Ow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:r9aKnxEft44=:Bszziqi4h9B5rQ9WAPExoU
- L9ZOIzAQLqyH5mnO0/ITIZZFpRePLM3ynMElTTI+i3yXgg4SVsH2eEpySn+4YzGop4U3waUNk
- m9cR2yDaL4//vTjSZSUAni7YtgA3UcRYlZp4ujh9DM+EuMZSUkEKGb8/7WrpURc5JoKLrIZ1R
- W8bGl8hmnB5wlYRrv7slYzg6qdaWKto5QR6BT1LlQt3Gm5APJ/KJL8QQvvjyXnnj6jpcNxhxq
- tF6bGJjfkgAWTAbJYeuf+7oZ5GGOq45dwled6mXoq3I5XuQ8zC1weoBj0wg/9HeiTYRUm65Ox
- TxX+qk5oJTyBYD/0/sGfNr2/EUQMqaXqn3dr+ksY5a25XjhmhtDmYeurzRJd6w0uyM0ISq+Jd
- s8vxxg517LghxjKEobHhR2EgckT2yapY71kS0UA1Ay6Fag+o8WjTFum30p40fXaJtlHZ4/XPc
- 9i9GjipCOjHE8uaLelHl6x+drXDoXbAYwROjWkJC0LPhJUDjXPhDhHiXayUoTKA6iL53vpzoj
- GBLllPN2Vu+QDHHSn3aDYIyoZ3CxHA5UpChY718mahwNO3OAcxE2WRVkZFjlfuGDraPwyZ/ts
- uHh0PqkC57/45t5GEE92BVDxaGTiOKZe4H+AS6msURIh7TAtgPGiZoISzytvA2tjAJukQuk8s
- PV9lQm5Op8Gz4AIGHfVZVPOhXNpOvYZNWzHe1imZbVVsS/s9QRGlY1TKKDqpfh594wb9vM+n3
- /eGidr/poPFLFot7hsBD/17qyFS11VZVNxAbgjDXSBAq/b3mxyHQQvwBUVskDrbooqIepx02I
- NYFxu1F34tAD5c2hUuw9rjJP8C3vSqhkScKITbN5blrBJHsSDT7seZhjSRFsiXPjRe1fjGTR+
- DmkHDZiwozg+N4xpTciw==
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YEi08Dr3cgNp0KlP@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 10.03.21 um 13:12 schrieb Jiaxun Yang:
->
->
-> On Wed, Mar 10, 2021, at 6:57 PM, Oleksij Rempel wrote:
->> Hi,
->>
->> Am 10.03.21 um 08:56 schrieb Qing Zhang:
->>> Add DTB boot support, only support Loongson-2K1000 processor
->>> for now, determine whether to use the built-in DTB or the DTB
->>> from the firmware by checking the range of CKSEG0 and XKPHYS.
->>> loongson_fw_interface will be used in the future.
->>>
->>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->>> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
->>> Tested-by: Ming Wang <wangming01@loongson.cn>
->>> ---
->>>
->>> v3-v4: Standard submission of information
->>>        Fix error handling
->>>
->>>  .../include/asm/mach-loongson64/boot_param.h     |  6 ++++++
->>>  arch/mips/include/asm/mach-loongson64/loongson.h |  3 ++-
->>>  arch/mips/loongson64/env.c                       | 13 ++++++++++++-
->>>  arch/mips/loongson64/init.c                      | 16 ++++++++++++++-=
--
->>>  4 files changed, 34 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch=
-/mips/include/asm/mach-loongson64/boot_param.h
->>> index 4592841b6b0c..43737401dc06 100644
->>> --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
->>> +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
->>> @@ -198,7 +198,13 @@ enum loongson_bridge_type {
->>>  	VIRTUAL =3D 3
->>>  };
->>>
->>> +enum loongson_fw_interface {
->>> +	LOONGSON_LEFI,
->>> +	LOONGSON_DTB,
->>> +};
->>> +
->>>  struct loongson_system_configuration {
->>> +	enum loongson_fw_interface fw_interface;
->>>  	u32 nr_cpus;
->>>  	u32 nr_nodes;
->>>  	int cores_per_node;
->>> diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/m=
-ips/include/asm/mach-loongson64/loongson.h
->>> index ac1c20e172a2..3f885fa26ba6 100644
->>> --- a/arch/mips/include/asm/mach-loongson64/loongson.h
->>> +++ b/arch/mips/include/asm/mach-loongson64/loongson.h
->>> @@ -23,7 +23,8 @@ extern u32 memsize, highmemsize;
->>>  extern const struct plat_smp_ops loongson3_smp_ops;
->>>
->>>  /* loongson-specific command line, env and memory initialization */
->>> -extern void __init prom_init_env(void);
->>> +extern void __init prom_dtb_init_env(void);
->>> +extern void __init prom_lefi_init_env(void);
->>>  extern void __init szmem(unsigned int node);
->>>  extern void *loongson_fdt_blob;
->>>
->>> diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
->>> index 51a5d050a94c..e7d3a06175e3 100644
->>> --- a/arch/mips/loongson64/env.c
->>> +++ b/arch/mips/loongson64/env.c
->>> @@ -43,7 +43,18 @@ const char *get_system_type(void)
->>>  	return "Generic Loongson64 System";
->>>  }
->>>
->>> -void __init prom_init_env(void)
->>> +
->>> +void __init prom_dtb_init_env(void)
->>> +{
->>> +	if ((fw_arg2 < CKSEG0 || fw_arg2 > CKSEG1)
->>> +		&& (fw_arg2 < XKPHYS || fw_arg2 > XKSEG))
->>> +
->>> +		loongson_fdt_blob =3D __dtb_loongson64_2core_2k1000_begin;
->>> +	else
->>> +		loongson_fdt_blob =3D (void *)fw_arg2;
->>> +}
->>> +
->>> +void __init prom_lefi_init_env(void)
->>>  {
->>>  	struct boot_params *boot_p;
->>>  	struct loongson_params *loongson_p;
->>> diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
->>> index cfa788bca871..ed280b73bf89 100644
->>> --- a/arch/mips/loongson64/init.c
->>> +++ b/arch/mips/loongson64/init.c
->>> @@ -52,6 +52,10 @@ void __init szmem(unsigned int node)
->>>  	static unsigned long num_physpages;
->>>  	u64 node_id, node_psize, start_pfn, end_pfn, mem_start, mem_size;
->>>
->>> +	/* Otherwise come from DTB */
->>> +	if (loongson_sysconf.fw_interface !=3D LOONGSON_LEFI)
->>> +		return;
->>> +
->>>  	/* Parse memory information and activate */
->>>  	for (i =3D 0; i < loongson_memmap->nr_map; i++) {
->>>  		node_id =3D loongson_memmap->map[i].node_id;
->>> @@ -94,12 +98,20 @@ static void __init prom_init_memory(void)
->>>  void __init prom_init(void)
->>>  {
->>>  	fw_init_cmdline();
->>> -	prom_init_env();
->>> +
->>> +	if (fw_arg2 =3D=3D 0 || (fdt_magic(fw_arg2) =3D=3D FDT_MAGIC)) {
->>> +		loongson_sysconf.fw_interface =3D LOONGSON_DTB;
->>> +		prom_dtb_init_env();
->>> +	} else {
->>> +		loongson_sysconf.fw_interface =3D LOONGSON_LEFI;
->>> +		prom_lefi_init_env();
->>> +	}
->>
->> Is it possible to make it compatible with MIPS UHI boot protocol? So
->> boot loaders will be able to
->> handle Loongson kernel images as any other MIPS kernel images?
->
-> Hmm, as Loongson did many stuff in non-generic manner it's almost imposs=
-ible :-(
-> Also their are many devices shipped with current boot protocol.
+On Wed, 10 Mar 2021, Greg KH wrote:
 
-I would like to understand, why it is impossible. Do fw_arg0 provide memor=
-y address or some kind of
-count/size? Can it be negative?
+> On Tue, Mar 09, 2021 at 06:14:37PM +0000, Lee Jones wrote:
+> > On Tue, 09 Mar 2021, Greg KH wrote:
+> > 
+> > > On Tue, Mar 09, 2021 at 11:06:05AM +0800, Zheng Yejian wrote:
+> > > > From: Thomas Gleixner <tglx@linutronix.de>
+> > > > 
+> > > > The handle_exit_race() function is defined in commit 9c3f39860367
+> > > >  ("futex: Cure exit race"), which never returns -EBUSY. This results
+> > > > in a small piece of dead code in the attach_to_pi_owner() function:
+> > > > 
+> > > > 	int ret = handle_exit_race(uaddr, uval, p); /* Never return -EBUSY */
+> > > > 	...
+> > > > 	if (ret == -EBUSY)
+> > > > 		*exiting = p; /* dead code */
+> > > > 
+> > > > The return value -EBUSY is added to handle_exit_race() in upsteam
+> > > > commit ac31c7ff8624409 ("futex: Provide distinct return value when
+> > > > owner is exiting"). This commit was incorporated into v4.9.255, before
+> > > > the function handle_exit_race() was introduced, whitout Modify
+> > > > handle_exit_race().
+> > > > 
+> > > > To fix dead code, extract the change of handle_exit_race() from
+> > > > commit ac31c7ff8624409 ("futex: Provide distinct return value when owner
+> > > >  is exiting"), re-incorporated.
+> > > > 
+> > > > Lee writes:
+> > > > 
+> > > > This commit takes the remaining functional snippet of:
+> > > > 
+> > > >  ac31c7ff8624409 ("futex: Provide distinct return value when owner is exiting")
+> > > > 
+> > > > ... and is the correct fix for this issue.
+> > > > 
+> > > > Fixes: 9c3f39860367 ("futex: Cure exit race")
+> > > > Cc: stable@vger.kernel.org # v4.9.258
+> > > > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> > > > Reviewed-by: Lee Jones <lee.jones@linaro.org>
+> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> > > > ---
+> > > >  kernel/futex.c | 6 +++---
+> > > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > Same here, what is the upstream git id?
+> > 
+> > It doesn't have one as such - it's a part-patch:
+> > 
+> > > > This commit takes the remaining functional snippet of:
+> > > > 
+> > > >  ac31c7ff8624409 ("futex: Provide distinct return value when owner is exiting")
+> 
+> That wasn't obvious :(
 
-We already had same situation with ARM and it was fixed. Why this can't be=
- done for MIPS or LS?
+This was also my thinking, which is why I replied to the original
+patch in an attempt to clarify what I thought was happening.
 
->
->>
->> This protocol is described here on page 15, "3. Boot protocols"
->> https://docplayer.net/62444141-Unified-hosting-interface-md01069-refere=
-nce-manual.html
->>
->> According to this protocol, you should have:
->> fw_arg0 =3D -2
->> fw_arg1 =3D Virtual (kseg0) address of Device Tree Blob
->>
->> This would made LS a first grade resident for many boot loaders and
->> save a lot of needles headaches.
->
-> Loongson is stepping away from MIPS and it seems like they're going to u=
-se EDK-II for their Loongarch.
+> Is this a backport of another patch in the stable tree somewhere?
 
-It seems to be UEFI related, it seems to be not related to the CPU arch, o=
-r do i'm missing something?
+Yes, it looks like it.
 
-In any case, if this is true, then it means, that Loongsoon is about to dr=
-op support for old boot
-loaders (PMON?) and do new thing (one more boot protocol?). So argumentati=
-on, we upstream old own
-protocol, but will drop it to make some thing new is not really good examp=
-le :)
+The full patch was back-ported to v4.14 as:
 
-> TBH I've checked Loongson's PMON code and realized it can't be ported to=
- other projects easily.
-> Tons of unregonized assembly code.
+  e6e00df182908f34360c3c9f2d13cc719362e9c0
 
-No need to port it. Here is example of working clean code:
-https://git.pengutronix.de/cgit/barebox/tree/arch/mips/boards/loongson-ls1=
-b/lowlevel.S
-
-And this boot loader would boot any
-
-=2D-
-Regards,
-Oleksij
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
