@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268C7333402
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB893333FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhCJDzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 22:55:38 -0500
-Received: from ozlabs.org ([203.11.71.1]:33605 "EHLO ozlabs.org"
+        id S232166AbhCJDyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 22:54:33 -0500
+Received: from mga06.intel.com ([134.134.136.31]:24151 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhCJDzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 22:55:18 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwJBX3QZdz9sS8;
-        Wed, 10 Mar 2021 14:55:16 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615348516;
-        bh=zakbNknFIYHQMnNYG/AvbkGPJr+9qudfsH1E2Asq/Jo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AQBHURfjEbKx9y+OT+D0YI3oiH8tZHjACFmTGsOpB5ncUF2mGEAoeLlEIxY1k67jI
-         Hrh74Wm4AWg7jYuIFJxGk2UVa7Q4pGtUibtENcmnb6rApcZE2bpLTlu5ZvvaGuWHSV
-         5/VA2HuiI2UmMb2CM0foZYn+Pe9DBKI/8vJtGta8D0GXf9BzdxwiE+bLYOH7VQk1pD
-         xPTknZrpvXU0jFqB1e+IqTnfnafYUVVplvXdmpGgkg5d6r5GLv+VD+4/lqnIBD8D3C
-         TMsOwT6tYL1NdLP5Rx6atGz1ZdEpk96hP+LpvwyChC3+y8P2e4laLX0IBOFqJyWb+w
-         8k5JuYYyNzOwg==
-Date:   Wed, 10 Mar 2021 14:55:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20210310145514.3f3743fe@canb.auug.org.au>
+        id S230490AbhCJDyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 22:54:03 -0500
+IronPort-SDR: hStkhkf7GJYsFwOd8Fu/qIiV699gIVm6ZVeL7XppthgJFXRX0D31bl3reSElQcnVC+OoXC/LsX
+ qnuHQP0PaNkQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="249748576"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="249748576"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 19:54:02 -0800
+IronPort-SDR: RQlRl0VRyHn4PBQXV3ZWUtxjQ3xYKNUd7OZLWbyyUUSj7AJmZCGsJ1eaaI+W2JhRaSPEwvIhtg
+ kuljbo25p2BQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="602908986"
+Received: from host.sh.intel.com (HELO host) ([10.239.154.115])
+  by fmsmga005.fm.intel.com with ESMTP; 09 Mar 2021 19:54:00 -0800
+Date:   Wed, 10 Mar 2021 11:56:04 +0800
+From:   "Ye, Xiang" <xiang.ye@intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Jiri Kosina <jikos@kernel.org>, jic23@kernel.org,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xu@host, Even <even.xu@intel.com>,
+        "Ye, Xiang" <xiang.ye@intel.com>
+Subject: Re: [PATCH] HID: intel_ish-hid: HBM: Use connected standby state bit
+ during suspend/resume
+Message-ID: <20210310035604.GA28978@host>
+References: <20210303062825.7724-1-xiang.ye@intel.com>
+ <nycvar.YFH.7.76.2103081125380.12405@cbobk.fhfr.pm>
+ <00ad0906b90a290e9737b7bf7d8c5ab9c6ed61e6.camel@linux.intel.com>
+ <20210309034742.GA18299@host>
+ <69475ef69096587be23f632e79efce5711c82cf1.camel@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/aB+SV+Ej78fYNqsARToCj6N";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <69475ef69096587be23f632e79efce5711c82cf1.camel@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/aB+SV+Ej78fYNqsARToCj6N
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Srinivas
 
-Hi all,
+Thanks for the review.
 
-After merging the akpm-current tree, today's linux-next build (sparc64
-defconfig) failed like this:
+On Tue, Mar 09, 2021 at 08:08:36AM -0800, Srinivas Pandruvada wrote:
+> On Tue, 2021-03-09 at 11:47 +0800, Ye, Xiang wrote:
+> > Hi Srinivas, Jiri
+> > 
+> > On Mon, Mar 08, 2021 at 08:00:41AM -0800, Srinivas Pandruvada wrote:
+> > > On Mon, 2021-03-08 at 11:26 +0100, Jiri Kosina wrote:
+> > > > On Wed, 3 Mar 2021, Ye Xiang wrote:
+> > > > 
+> > > > > ISH firmware uses connected standby state bit
+> > > > > (CONNECTED_STANDBY_STATE_BIT bit 1)
+> > > > > to notify current power state to sensors instead of suspend
+> > > > > state
+> > > > > bit (bit 0).
+> > > > > So send both SUSPEND_STATE_BIT and CONNECTED_STANDBY_STATE_BIT
+> > > > > to
+> > > > > firmware
+> > > > > to be compatible with the previous version.
+> > > > 
+> > > > Could you please make the changelog more verbose -- namely what 
+> > > > user-visible issue this is fixing?
+> > > Xiang,
+> > > 
+> > > I think this change is for related to Elkhart Lake for support of
+> > > connected standby (keep listening for sensor events during Linux
+> > > suspend for some sensors). In this way some sensor can wake up the
+> > > system.
+> > This change is for all ISH platform. Currently, ISH firmware use
+> > both SUSPEND_STATE_BIT and CONNECTED_STANDBY_STATE_BIT to identify
+> > system state. It is related to system wake up by ISH and it enable
+> > each
+> > sensor in ISH to be notified the current system state, when system
+> > state
+> > change.
+> What will sensors do with this additional information?
+> I think the individual sensors in ISH can decide whether to power OFF
+> or ON based on this information to save power during system suspend to
+> idle.
+Currently, In ISH firmware, we are using CONNECTED_STANDBY_STATE_BIT
+(To be compatible with Windows os which are using CONNECTED_STANDBY_STATE_BIT) to
+notify sensor system power state. Then some sensor(such as hinge sensor)
+can power On/Off itself according to current system power state.
 
-arch/sparc/mm/init_64.c:2495:4: error: implicit declaration of function 're=
-gister_page_bootmem_info_node'; did you mean 'register_page_bootmem_info'? =
-[-Werror=3Dimplicit-function-declaration]
-    register_page_bootmem_info_node(NODE_DATA(i));
-    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    register_page_bootmem_info
+Thanks
+Ye Xiang
 
-Caused by commit
-
-  cd28b1a6791d ("mm: memory_hotplug: factor out bootmem core functions to b=
-ootmem_info.c")
-
-grep is your friend ...
-
-I have applied the following patch for today:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 10 Mar 2021 14:46:27 +1100
-Subject: [PATCH] fix for "mm: memory_hotplug: factor out bootmem core
- functions to bootmem_info.c"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/sparc/mm/init_64.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 182bb7bdaa0a..c709b72e81bf 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -27,6 +27,7 @@
- #include <linux/percpu.h>
- #include <linux/mmzone.h>
- #include <linux/gfp.h>
-+#include <linux/bootmem_info.h>
-=20
- #include <asm/head.h>
- #include <asm/page.h>
---=20
-2.30.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/aB+SV+Ej78fYNqsARToCj6N
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBIQyIACgkQAVBC80lX
-0GyH5wf+Jq2n5QO2uTmKb85sE+HTwp9Wk5NUI8f0bX1B7uabf6c1JdxZ96fV+NLV
-vaUT3uikDRkqLmc9AN4D3IXJ360zgXpkfA3col+5v2xexmATGC9lkme0al9TzLPn
-tpnLwOe+3o/9A8ThG7DXczbISRbSGxXE0GQ+4KJewqy26DXfH+4WVyyY6460hO+Z
-kXo39PFvhSbNq9RUvKEpbrfCbBS1GO/9WdzRGWfkj+zkNT39fjeIcOkYaWfRBqyS
-6ldiNtnq0MZHSZZiEmY8YorTxkVoQC8MSdhmqQavZYfp3E0PqWW1i6P/0SN6C+xl
-D0bzTvUYkCUEhb2EAW2SdWQ3Pzg8nA==
-=mu6D
------END PGP SIGNATURE-----
-
---Sig_/aB+SV+Ej78fYNqsARToCj6N--
