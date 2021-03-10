@@ -2,187 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A833334BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7303334C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbhCJFMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 00:12:19 -0500
-Received: from mga18.intel.com ([134.134.136.126]:50276 "EHLO mga18.intel.com"
+        id S229614AbhCJFO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 00:14:27 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57347 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229476AbhCJFMD (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 00:12:03 -0500
-IronPort-SDR: RB3BhizsX3IraSnZVj+DBgXaBKaDDxGskH3Jf0EiBUsSYQxgTBUKgkSd/EsQwn7UArxuKgNLwg
- X7xXJjsQnP9w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175986255"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="175986255"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 21:12:02 -0800
-IronPort-SDR: xJNOPGTXdMQU7bFFcUM/kYwREaFQUlWeSruOezUR/03oCjA3HfjH3Sp09R13jfr1Gg7r+V/BwC
- 3I49PZPmCBpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="431066039"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Mar 2021 21:12:00 -0800
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v4] perf pmu: Validate raw event with sysfs exported format bits
-Date:   Wed, 10 Mar 2021 13:11:38 +0800
-Message-Id: <20210310051138.12154-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S229441AbhCJFN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 00:13:57 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwKxD3YWwz9sVt;
+        Wed, 10 Mar 2021 16:13:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1615353236;
+        bh=PTvR9yy+hFS1JwrAkv1oOXKRmXp2wT57fM05CuMq9n4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=gAAezJ3g1I+qwK2XJLKpN8fLHuQhJUtk5xtwGLQCWS+YNib0C/xLeB/2wRr127ta0
+         2KyjMDPt2zX6vAv7dKlir7kRhUjjlfgU83c16TkZmOqGc9UDK2E6rzXCkh+9zhBCZs
+         RPBhBchbTPSnu1iqRA5vaJ+m/kcB/AfwfNdvArtrudzO9yvhgbI0TQRdDpffhn6hdU
+         EMdj1VITVWjR6sFBNDHAqI6ZIyPjlK7ewcXMa9n55DV4HWNGjD/btkMREYD/6eUW4/
+         pgcvzG0nEtt+IHOHN57E8cT2wXq+bynGya0XurUDnx9BuBKaQHaG18JU+6+g0s9lb6
+         tkTfVAt/9KW1g==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     oleg@redhat.com, rostedt@goodmis.org, paulus@samba.org,
+        jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, christophe.leroy@csgroup.eu,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Subject: Re: [PATCH v4] powerpc/uprobes: Validation for prefixed instruction
+In-Reply-To: <1a080cb5-af98-6b6e-352d-772a90cfa902@linux.ibm.com>
+References: <20210305115433.140769-1-ravi.bangoria@linux.ibm.com>
+ <87ft14r6sa.fsf@mpe.ellerman.id.au>
+ <20210309112115.GG145@DESKTOP-TDPLP67.localdomain>
+ <1a080cb5-af98-6b6e-352d-772a90cfa902@linux.ibm.com>
+Date:   Wed, 10 Mar 2021 16:13:51 +1100
+Message-ID: <877dmfr3ow.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A raw PMU event (eventsel+umask) in the form of rNNN is supported
-by perf but lacks of checking for the validity of raw encoding.
+Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
+> On 3/9/21 4:51 PM, Naveen N. Rao wrote:
+>> On 2021/03/09 08:54PM, Michael Ellerman wrote:
+>>> Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
+>>>> As per ISA 3.1, prefixed instruction should not cross 64-byte
+>>>> boundary. So don't allow Uprobe on such prefixed instruction.
+>>>>
+>>>> There are two ways probed instruction is changed in mapped pages.
+>>>> First, when Uprobe is activated, it searches for all the relevant
+>>>> pages and replace instruction in them. In this case, if that probe
+>>>> is on the 64-byte unaligned prefixed instruction, error out
+>>>> directly. Second, when Uprobe is already active and user maps a
+>>>> relevant page via mmap(), instruction is replaced via mmap() code
+>>>> path. But because Uprobe is invalid, entire mmap() operation can
+>>>> not be stopped. In this case just print an error and continue.
+>>>>
+>>>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>>>> Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>>>
+>>> Do we have a Fixes: tag for this?
+>> 
+>> Since this is an additional check we are adding, I don't think we should
+>> add a Fixes: tag. Nothing is broken per-se -- we're just adding more
+>> checks to catch simple mistakes. Also, like Oleg pointed out, there are
+>> still many other ways for users to shoot themselves in the foot with
+>> uprobes and prefixed instructions, if they so desire.
+>> 
+>> However, if you still think we should add a Fixes: tag, we can perhaps
+>> use the below commit since I didn't see any specific commit adding
+>> support for prefixed instructions for uprobes:
+>> 
+>> Fixes: 650b55b707fdfa ("powerpc: Add prefixed instructions to
+>> instruction data type")
+>
+> True. IMO, It doesn't really need any Fixes tag.
 
-For example, bit 16 and bit 17 are not valid on KBL but perf doesn't
-report warning when encoding with these bits.
+Yep OK, I'm happy without a Fixes tag based on that explanation.
 
-Before:
+>>>> diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+>>>> index e8a63713e655..4cbfff6e94a3 100644
+>>>> --- a/arch/powerpc/kernel/uprobes.c
+>>>> +++ b/arch/powerpc/kernel/uprobes.c
+>>>> @@ -41,6 +41,13 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
+>>>>   	if (addr & 0x03)
+>>>>   		return -EINVAL;
+>>>>   
+>>>> +	if (cpu_has_feature(CPU_FTR_ARCH_31) &&
+>>>> +	    ppc_inst_prefixed(auprobe->insn) &&
+>>>> +	    (addr & (SZ_64 - 4)) == SZ_64 - 4) {
+>>>> +		pr_info_ratelimited("Cannot register a uprobe on 64 byte unaligned prefixed instruction\n");
+>>>> +		return -EINVAL;
+>>>
+>>> I realise we already did the 0x03 check above, but I still think this
+>>> would be clearer simply as:
+>>>
+>>> 	    (addr & 0x3f == 60)
+>> 
+>> Indeed, I like the use of `60' there -- hex is overrated ;)
+>
+> Sure. Will resend.
 
-  # ./perf stat -e cpu/r031234/ -a -- sleep 1
+Thanks.
 
-   Performance counter stats for 'system wide':
-
-                   0      cpu/r031234/
-
-         1.003798924 seconds time elapsed
-
-It may silently measure the wrong event!
-
-The kernel supported bits have been exported through
-/sys/devices/<pmu>/format/. Perf collects the information to
-'struct perf_pmu_format' and links it to 'pmu->format' list.
-
-The 'struct perf_pmu_format' has a bitmap which records the
-valid bits for this format. For example,
-
-  root@kbl-ppc:/sys/devices/cpu/format# cat umask
-  config:8-15
-
-The valid bits (bit8-bit15) are recorded in bitmap of format 'umask'.
-
-We collect total valid bits of all formats, save to a local variable
-'masks' and reverse it. Now '~masks' represents total invalid bits.
-
-bits = config & ~masks;
-
-The set bits in 'bits' indicate the invalid bits used in config.
-Finally we use bitmap_scnprintf to report the invalid bits.
-
-Some architectures may not export supported bits through sysfs,
-so if masks is 0, perf_pmu__warn_invalid_config directly returns.
-
-After:
-
-Single event without name:
-
-  # ./perf stat -e cpu/r031234/ -a -- sleep 1
-  WARNING: event 'N/A' not valid (bits 16-17 of config '31234' not supported by kernel)!
-
-   Performance counter stats for 'system wide':
-
-                   0      cpu/r031234/
-
-         1.001597373 seconds time elapsed
-
-Multiple events with names:
-
-  # ./perf stat -e cpu/rf01234,name=aaa/,cpu/r031234,name=bbb/ -a -- sleep 1
-  WARNING: event 'aaa' not valid (bits 20,22 of config 'f01234' not supported by kernel)!
-  WARNING: event 'bbb' not valid (bits 16-17 of config '31234' not supported by kernel)!
-
-   Performance counter stats for 'system wide':
-
-                   0      aaa
-                   0      bbb
-
-         1.001573787 seconds time elapsed
-
-Warnings are reported for invalid bits.
-
-Co-developed-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/parse-events.c |  3 +++
- tools/perf/util/pmu.c          | 33 +++++++++++++++++++++++++++++++++
- tools/perf/util/pmu.h          |  3 +++
- 3 files changed, 39 insertions(+)
-
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 42c84adeb2fb..c0c0fab22cb8 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -356,6 +356,9 @@ __add_event(struct list_head *list, int *idx,
- 	struct perf_cpu_map *cpus = pmu ? perf_cpu_map__get(pmu->cpus) :
- 			       cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
- 
-+	if (pmu && attr->type == PERF_TYPE_RAW)
-+		perf_pmu__warn_invalid_config(pmu, attr->config, name);
-+
- 	if (init_attr)
- 		event_attr_init(attr);
- 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 44ef28302fc7..46fd0f998484 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1812,3 +1812,36 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
- 
- 	return nr_caps;
- }
-+
-+void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
-+				   char *name)
-+{
-+	struct perf_pmu_format *format;
-+	__u64 masks = 0, bits;
-+	char buf[100];
-+	unsigned int i;
-+
-+	list_for_each_entry(format, &pmu->format, list)	{
-+		if (format->value != PERF_PMU_FORMAT_VALUE_CONFIG)
-+			continue;
-+
-+		for_each_set_bit(i, format->bits, PERF_PMU_FORMAT_BITS)
-+			masks |= 1ULL << i;
-+	}
-+
-+	/*
-+	 * Kernel doesn't export any valid format bits.
-+	 */
-+	if (masks == 0)
-+		return;
-+
-+	bits = config & ~masks;
-+	if (bits == 0)
-+		return;
-+
-+	bitmap_scnprintf((unsigned long *)&bits, sizeof(bits) * 8, buf, sizeof(buf));
-+
-+	pr_warning("WARNING: event '%s' not valid (bits %s of config "
-+		   "'%llx' not supported by kernel)!\n",
-+		   name ?: "N/A", buf, config);
-+}
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 8164388478c6..160b0f561771 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -123,4 +123,7 @@ int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
- 
- int perf_pmu__caps_parse(struct perf_pmu *pmu);
- 
-+void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
-+				   char *name);
-+
- #endif /* __PMU_H */
--- 
-2.17.1
-
+cheers
