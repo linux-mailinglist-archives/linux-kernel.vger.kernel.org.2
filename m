@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABC7333E4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBCA333EC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhCJNZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:25:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45702 "EHLO mail.kernel.org"
+        id S233865AbhCJN1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:27:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232921AbhCJNYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF35364FE0;
-        Wed, 10 Mar 2021 13:24:39 +0000 (UTC)
+        id S233148AbhCJNY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6030664FEE;
+        Wed, 10 Mar 2021 13:24:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382681;
-        bh=vy1o8xVd1LaQqflL97senOzoPjiGpvAcuTkfizoO0mo=;
+        s=korg; t=1615382698;
+        bh=UaOIH5WNpoHhoRB8rH/W+ICT3OWJCYYFpAV2tQZuKs8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LJfbmmkwLvptp/adI8zuLxNqx6NB7KxJ6PYldv+u2wVGMOxeB1PSsJgW3vAyfo0EP
-         FHm74vHqMqYVLr3+cMNEvYPuFRrPUmrpkpsiEmgork4V+HnHB1F7RmNo8DYhsISnp3
-         kiE14XZEHFWAXGQxbM2F1L3SPE8H4sR0BWfPgXRU=
+        b=BYGrn1KaKG3Bb+tRgcCN0FhwUd9Y4VxQQ5DxK5C1kDzrRRfeQpXRJ8RW5pmr/484Z
+         rqWfVbnMzq4XdLiJKrQsKXtRiqWYmCc8CDZKBVOFQ5SL4Ews/tWKGFHYA0R4jsI10S
+         83Sgiwl2Nn+ew1PzjrFXKPanQbzMhtj2VgQAGMbM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 26/36] HID: i2c-hid: Add I2C_HID_QUIRK_NO_IRQ_AFTER_RESET for ITE8568 EC on Voyo Winpad A15
-Date:   Wed, 10 Mar 2021 14:23:39 +0100
-Message-Id: <20210310132321.321123684@linuxfoundation.org>
+        stable@vger.kernel.org,
+        John Smith <LK7S2ED64JHGLKj75shg9klejHWG49h5hk@protonmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 29/49] PCI: Add function 1 DMA alias quirk for Marvell 9215 SATA controller
+Date:   Wed, 10 Mar 2021 14:23:40 +0100
+Message-Id: <20210310132322.865219441@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
-References: <20210310132320.510840709@linuxfoundation.org>
+In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
+References: <20210310132321.948258062@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +43,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-[ Upstream commit fc6a31b00739356809dd566e16f2c4325a63285d ]
+[ Upstream commit 059983790a4c963d92943e55a61fca55be427d55 ]
 
-The ITE8568 EC on the Voyo Winpad A15 presents itself as an I2C-HID
-attached keyboard and mouse (which seems to never send any events).
+Add function 1 DMA alias quirk for Marvell 88SS9215 PCIe SSD Controller.
 
-This needs the I2C_HID_QUIRK_NO_IRQ_AFTER_RESET quirk, otherwise we get
-the following errors:
-
-[ 3688.770850] i2c_hid i2c-ITE8568:00: failed to reset device.
-[ 3694.915865] i2c_hid i2c-ITE8568:00: failed to reset device.
-[ 3701.059717] i2c_hid i2c-ITE8568:00: failed to reset device.
-[ 3707.205944] i2c_hid i2c-ITE8568:00: failed to reset device.
-[ 3708.227940] i2c_hid i2c-ITE8568:00: can't add hid device: -61
-[ 3708.236518] i2c_hid: probe of i2c-ITE8568:00 failed with error -61
-
-Which leads to a significant boot delay.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=42679#c135
+Link: https://lore.kernel.org/r/20201110220516.697934-1-helgaas@kernel.org
+Reported-by: John Smith <LK7S2ED64JHGLKj75shg9klejHWG49h5hk@protonmail.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h              | 2 ++
- drivers/hid/i2c-hid/i2c-hid-core.c | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/pci/quirks.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 5ba0aa1d2335..b60279aaed43 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -641,6 +641,8 @@
- #define USB_DEVICE_ID_INNEX_GENESIS_ATARI	0x4745
- 
- #define USB_VENDOR_ID_ITE               0x048d
-+#define I2C_VENDOR_ID_ITE		0x103c
-+#define I2C_DEVICE_ID_ITE_VOYO_WINPAD_A15	0x184f
- #define USB_DEVICE_ID_ITE_LENOVO_YOGA   0x8386
- #define USB_DEVICE_ID_ITE_LENOVO_YOGA2  0x8350
- #define I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720	0x837a
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index bfe716d7ea44..c586acf2fc0b 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -171,6 +171,8 @@ static const struct i2c_hid_quirks {
- 		I2C_HID_QUIRK_SET_PWR_WAKEUP_DEV },
- 	{ I2C_VENDOR_ID_HANTICK, I2C_PRODUCT_ID_HANTICK_5288,
- 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
-+	{ I2C_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_VOYO_WINPAD_A15,
-+		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
- 	{ I2C_VENDOR_ID_RAYDIUM, I2C_PRODUCT_ID_RAYDIUM_3118,
- 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
- 	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index fb1dc11e7cc5..b570f297e3ec 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3998,6 +3998,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9183,
+ /* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c46 */
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x91a0,
+ 			 quirk_dma_func1_alias);
++/* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c135 */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9215,
++			 quirk_dma_func1_alias);
+ /* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c127 */
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9220,
+ 			 quirk_dma_func1_alias);
 -- 
 2.30.1
 
