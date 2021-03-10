@@ -2,51 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC844334282
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD3A334287
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhCJQI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:08:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58434 "EHLO mail.kernel.org"
+        id S232821AbhCJQJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:09:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231816AbhCJQIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:08:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A39864F4C;
-        Wed, 10 Mar 2021 16:08:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615392528;
-        bh=+jeM5mTF0DWL/FFvXq5PQzjSG6jE96CmIpkZ2rxyrDg=;
+        id S231816AbhCJQI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:08:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C12CD64F02;
+        Wed, 10 Mar 2021 16:08:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615392538;
+        bh=Ow/CgKkE/PJ+8hOp5NJf/Xonmpc0AENmeHEZXVudxf8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v/AozybfyhVfCTT6ZzdtslXkas+V4mi9DEqe49ZuDUs1nT3nMQIBN5LEmbyq4sajr
-         09+56Z9bl+RljCi0vHkTOu0VpN35lRaIb49/OBJDRf8EvQGIChwIX/QU5i+60Ect3t
-         MnBLZCtHfDOaV5w8U6K+EyTjQBE3obHvvC8rCmm0=
-Date:   Wed, 10 Mar 2021 17:08:46 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mihai Carabas <mihai.carabas@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de, rdunlap@infradead.org,
-        bobo.shaobowang@huawei.com
-Subject: Re: [PATCH v4] add support for pci in the pvpanic driver
-Message-ID: <YEjvDnK4E0anCrqO@kroah.com>
-References: <1613245447-21495-1-git-send-email-mihai.carabas@oracle.com>
- <d35f5afd-6067-313e-ac1f-0d1b23fcb531@oracle.com>
+        b=BKH2QpYz/iP8qF4/rkQqvys4jBM6BxAGJysnaKXo8lmUsnSK7uyPr+2oly22VsfXf
+         sTmX89b+PEG5mIhoK/teQ+B/7kXkpnIbtKBpCjXyi5D+glZJ1ICrsmnKay77Pok94X
+         59+TPSm6iR690cu4LdhGZlGTPpUrRXXc4deVotJJoDecdoD8GtWd6mRyYyJjXYbKhR
+         yi+x3K/8fG33ETPhz8wyhQl4BcLOgIQW/Tg3dSSoHPVqank7rfemmJNd7hd31To1bl
+         G4mbfALiB+wOS149g0vQea40h0E0ipcsOKXO6d9HrVcvauSCe1ssCEc7uWzAuAMaif
+         D9IoQDr4iP7CQ==
+Date:   Wed, 10 Mar 2021 17:08:51 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c: i2c-scmi: Drop unused ACPI_MODULE_NAME definition
+Message-ID: <20210310160851.GA331077@ninjato>
+References: <6660750.UgobAMfxrE@kreacher>
+ <CAJZ5v0gCobMbDGt80exScjpGgjnbo+5kMtB6qsx1wfOf6QyiJQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
 Content-Disposition: inline
-In-Reply-To: <d35f5afd-6067-313e-ac1f-0d1b23fcb531@oracle.com>
+In-Reply-To: <CAJZ5v0gCobMbDGt80exScjpGgjnbo+5kMtB6qsx1wfOf6QyiJQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 08:39:29PM +0200, Mihai Carabas wrote:
-> Hello,
-> 
-> Any feedback on this last series?
 
-Other than the "this breaks the build according to the kernel test
-robot"?
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think that needs to be fixed before we can do anything here...
+On Wed, Mar 10, 2021 at 03:47:10PM +0100, Rafael J. Wysocki wrote:
+> On Fri, Mar 5, 2021 at 7:29 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrot=
+e:
+> >
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > The ACPI_MODULE_NAME() definition is only used by the message
+> > printing macros from ACPICA that are not used by the code in
+> > question, so it is redundant.  Drop it.
+> >
+> > No functional impact.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>=20
+> If there are no concerns regarding this, I'll queue it up for 5.13 in
+> the ACPI tree, thanks!
 
-thnaks,
+I'd prefer the I2C tree a tad to avoid conflicts. Any reason for the
+ACPI tree?
 
-greg k-h
+
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBI7w8ACgkQFA3kzBSg
+Kba+gQ/7B6Ia7moxCI0lBWcGBWMpcnSzTXJIZtoonghrWryWNJTlJ7yYyVzJKPDz
+ddelDKPX2dtiKquTZwWRq/21aJL0PSt3sPb7LnI1ykcy/Ipe2Nbgj2OhviRuJqtb
+nX++egBWiyqC4qySeSmVdSnyIXo+F7L2elNs6AbCZLKeWjzT5gFo7HpzMnsrNMyO
+j3dXCecCq/DCrZan2jHUAkplbW3V+OBPLQ90HE8R02U692LN2cP2nvGmr++01pnh
+OeFt4pJkguT2BV0S4Je2FiprNBMDkurwSVlrYdrbroJdZNsGd0CRFvQuloO//BGq
+lA+tQUZ35/vSs7QsbGjXGJRQWf8pUmAOwBPyBtEQMI7pJ33OK9sPG5uShVtAL9Zn
+EMA9y8/aS0Q6kjP1jqwMzEa7W4shVhgK4ExjtWSO8Fku94IRnH5eBd0qYI0U5ELZ
+lpfPigQTLnxduq/hC6Q0skx1kj4SRVAYT3dS6Dy+575sXuV7dE1HGGmkZuq/tmH2
+n+bYvTsaJT2dE/J0AST9JCw0FvwziPsIB5nesc8cL9eGP+PXM3jdE87fS5vaJ8Mb
+qk1ZCOCocNeqHPbkZOD+6VxA0ge3blRvo9GBF2R9SLyFQS7OzubMuNJTSOJ/VHf1
+SEuymiMXzjCq9yGz82cYwSQXNV2DrtsfvUiDkGYlCdI2Z9OBlRo=
+=5s3T
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
