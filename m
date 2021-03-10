@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15645334358
+	by mail.lfdr.de (Postfix) with ESMTP id 60DBB334359
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbhCJQoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:44:14 -0500
+        id S233125AbhCJQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:44:15 -0500
 Received: from mga03.intel.com ([134.134.136.65]:37313 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231857AbhCJQns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:43:48 -0500
-IronPort-SDR: QedT8DvOda54d3QquCwNHPUN1H2YIp93mh/CRFbRC1QNacXadxmc8uVfkUS+J1xDhpQ5HK1b5P
- 2hLWtTAnjscQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188546426"
+        id S232265AbhCJQnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:43:49 -0500
+IronPort-SDR: B6vtvCLFKV9ACjucZMOwL12cOuPaSbJLPhC34kGfF4LE3Kw+eE3oV3bnb+2zRB9qS9Z48TxSZ4
+ ntIM9IOqMJHw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188546432"
 X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="188546426"
+   d="scan'208";a="188546432"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:43:47 -0800
-IronPort-SDR: Z8x064ODw6MYv3XF8rHmIQ+9dhcNJ2ROCW2oy87GL9MGf69IgaaHShp6YrKIp1i6EgzPdIwOlC
- S8Ntpxtv4QsA==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:43:49 -0800
+IronPort-SDR: tXF1hIORfZKBsi3qxeOse8JeySdf0ZMWhHanyeW/1M6F7iGB7RYMHPzHwlytZWJtXw7mEDpYC6
+ 6rvBIgTbNDBQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="509729062"
+   d="scan'208";a="509729070"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 08:43:47 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 08:43:48 -0800
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
@@ -32,9 +32,9 @@ Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
         namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
         yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V2 03/25] perf/x86: Track pmu in per-CPU cpu_hw_events
-Date:   Wed, 10 Mar 2021 08:37:39 -0800
-Message-Id: <1615394281-68214-4-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V2 04/25] perf/x86/intel: Hybrid PMU support for perf capabilities
+Date:   Wed, 10 Mar 2021 08:37:40 -0800
+Message-Id: <1615394281-68214-5-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
 References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
@@ -44,183 +44,215 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Some platforms, e.g. Alder Lake, have hybrid architecture. In the same
-package, there may be more than one type of CPU. The PMU capabilities
-are different among different types of CPU. Perf will register a
-dedicated PMU for each type of CPU.
+Some platforms, e.g. Alder Lake, have hybrid architecture. Although most
+PMU capabilities are the same, there are still some unique PMU
+capabilities for different hybrid PMUs. Perf should register a dedicated
+pmu for each hybrid PMU.
 
-Add a 'pmu' variable in the struct cpu_hw_events to track the dedicated
-PMU of the current CPU.
+Add a new struct x86_hybrid_pmu, which saves the dedicated pmu and
+capabilities for each hybrid PMU.
 
-Current x86_get_pmu() use the global 'pmu', which will be broken on a
-hybrid platform. Modify it to apply the 'pmu' of the specific CPU.
+The architecture MSR, MSR_IA32_PERF_CAPABILITIES, only indicates the
+architecture features which are available on all hybrid PMUs. The
+architecture features are stored in the global x86_pmu.intel_cap.
 
-Initialize the per-CPU 'pmu' variable with the global 'pmu'. There is
-nothing changed for the non-hybrid platforms.
-
-The is_x86_event() will be updated in the later patch ("perf/x86:
-Register hybrid PMUs") for hybrid platforms. For the non-hybrid
-platforms, nothing is changed here.
+For Alder Lake, the model-specific features are perf metrics and
+PEBS-via-PT. The corresponding bits of the global x86_pmu.intel_cap
+should be 0 for these two features. Perf should not use the global
+intel_cap to check the features on a hybrid system.
+Add a dedicated intel_cap in the x86_hybrid_pmu to store the
+model-specific capabilities. Use the dedicated intel_cap to replace
+the global intel_cap for thse two features. The dedicated intel_cap
+will be set in the following "Add Alder Lake Hybrid support" patch.
 
 Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/core.c       | 17 +++++++++++++----
- arch/x86/events/intel/core.c |  2 +-
- arch/x86/events/intel/ds.c   |  4 ++--
- arch/x86/events/intel/lbr.c  |  9 +++++----
- arch/x86/events/perf_event.h |  4 +++-
- 5 files changed, 24 insertions(+), 12 deletions(-)
+ arch/x86/events/core.c           |  6 ++++--
+ arch/x86/events/intel/core.c     | 27 ++++++++++++++++++++++-----
+ arch/x86/events/intel/ds.c       |  2 +-
+ arch/x86/events/perf_event.h     | 35 +++++++++++++++++++++++++++++++++++
+ arch/x86/include/asm/msr-index.h |  3 +++
+ 5 files changed, 65 insertions(+), 8 deletions(-)
 
 diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 6ddeed3..4873e40 100644
+index 4873e40..316efb1 100644
 --- a/arch/x86/events/core.c
 +++ b/arch/x86/events/core.c
-@@ -45,9 +45,11 @@
- #include "perf_event.h"
- 
- struct x86_pmu x86_pmu __read_mostly;
-+static struct pmu pmu;
- 
- DEFINE_PER_CPU(struct cpu_hw_events, cpu_hw_events) = {
- 	.enabled = 1,
-+	.pmu = &pmu,
- };
- 
- DEFINE_STATIC_KEY_FALSE(rdpmc_never_available_key);
-@@ -720,16 +722,23 @@ void x86_pmu_enable_all(int added)
- 	}
- }
- 
--static struct pmu pmu;
--
- static inline int is_x86_event(struct perf_event *event)
+@@ -1101,8 +1101,9 @@ static void del_nr_metric_event(struct cpu_hw_events *cpuc,
+ static int collect_event(struct cpu_hw_events *cpuc, struct perf_event *event,
+ 			 int max_count, int n)
  {
- 	return event->pmu == &pmu;
- }
++	union perf_capabilities intel_cap = hybrid(cpuc->pmu, intel_cap);
  
--struct pmu *x86_get_pmu(void)
-+struct pmu *x86_get_pmu(unsigned int cpu)
+-	if (x86_pmu.intel_cap.perf_metrics && add_nr_metric_event(cpuc, event))
++	if (intel_cap.perf_metrics && add_nr_metric_event(cpuc, event))
+ 		return -EINVAL;
+ 
+ 	if (n >= max_count + cpuc->n_metric)
+@@ -1578,6 +1579,7 @@ void x86_pmu_stop(struct perf_event *event, int flags)
+ static void x86_pmu_del(struct perf_event *event, int flags)
  {
--	return &pmu;
-+	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
-+
-+	/*
-+	 * All CPUs of the hybrid type have been offline.
-+	 * The x86_get_pmu() should not be invoked.
-+	 */
-+	if (WARN_ON_ONCE(!cpuc->pmu))
-+		return &pmu;
-+
-+	return cpuc->pmu;
- }
- /*
-  * Event scheduler state:
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 5bac48d..6a4d6b2 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -4873,7 +4873,7 @@ static void update_tfa_sched(void *ignored)
- 	 * and if so force schedule out for all event types all contexts
- 	 */
- 	if (test_bit(3, cpuc->active_mask))
--		perf_pmu_resched(x86_get_pmu());
-+		perf_pmu_resched(x86_get_pmu(smp_processor_id()));
- }
- 
- static ssize_t show_sysctl_tfa(struct device *cdev,
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 7ebae18..1bfea8c 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -2192,7 +2192,7 @@ void __init intel_ds_init(void)
- 					PERF_SAMPLE_TIME;
- 				x86_pmu.flags |= PMU_FL_PEBS_ALL;
- 				pebs_qual = "-baseline";
--				x86_get_pmu()->capabilities |= PERF_PMU_CAP_EXTENDED_REGS;
-+				x86_get_pmu(smp_processor_id())->capabilities |= PERF_PMU_CAP_EXTENDED_REGS;
- 			} else {
- 				/* Only basic record supported */
- 				x86_pmu.large_pebs_flags &=
-@@ -2207,7 +2207,7 @@ void __init intel_ds_init(void)
- 
- 			if (x86_pmu.intel_cap.pebs_output_pt_available) {
- 				pr_cont("PEBS-via-PT, ");
--				x86_get_pmu()->capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
-+				x86_get_pmu(smp_processor_id())->capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
- 			}
- 
- 			break;
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index 21890da..bb4486c 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -705,7 +705,7 @@ void intel_pmu_lbr_add(struct perf_event *event)
- 
- void release_lbr_buffers(void)
- {
--	struct kmem_cache *kmem_cache = x86_get_pmu()->task_ctx_cache;
-+	struct kmem_cache *kmem_cache;
- 	struct cpu_hw_events *cpuc;
- 	int cpu;
- 
-@@ -714,6 +714,7 @@ void release_lbr_buffers(void)
- 
- 	for_each_possible_cpu(cpu) {
- 		cpuc = per_cpu_ptr(&cpu_hw_events, cpu);
-+		kmem_cache = x86_get_pmu(cpu)->task_ctx_cache;
- 		if (kmem_cache && cpuc->lbr_xsave) {
- 			kmem_cache_free(kmem_cache, cpuc->lbr_xsave);
- 			cpuc->lbr_xsave = NULL;
-@@ -1609,7 +1610,7 @@ void intel_pmu_lbr_init_hsw(void)
- 	x86_pmu.lbr_sel_mask = LBR_SEL_MASK;
- 	x86_pmu.lbr_sel_map  = hsw_lbr_sel_map;
- 
--	x86_get_pmu()->task_ctx_cache = create_lbr_kmem_cache(size, 0);
-+	x86_get_pmu(smp_processor_id())->task_ctx_cache = create_lbr_kmem_cache(size, 0);
- 
- 	if (lbr_from_signext_quirk_needed())
- 		static_branch_enable(&lbr_from_quirk_key);
-@@ -1629,7 +1630,7 @@ __init void intel_pmu_lbr_init_skl(void)
- 	x86_pmu.lbr_sel_mask = LBR_SEL_MASK;
- 	x86_pmu.lbr_sel_map  = hsw_lbr_sel_map;
- 
--	x86_get_pmu()->task_ctx_cache = create_lbr_kmem_cache(size, 0);
-+	x86_get_pmu(smp_processor_id())->task_ctx_cache = create_lbr_kmem_cache(size, 0);
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++	union perf_capabilities intel_cap = hybrid(cpuc->pmu, intel_cap);
+ 	int i;
  
  	/*
- 	 * SW branch filter usage:
-@@ -1726,7 +1727,7 @@ static bool is_arch_lbr_xsave_available(void)
+@@ -1617,7 +1619,7 @@ static void x86_pmu_del(struct perf_event *event, int flags)
+ 	}
+ 	cpuc->event_constraint[i-1] = NULL;
+ 	--cpuc->n_events;
+-	if (x86_pmu.intel_cap.perf_metrics)
++	if (intel_cap.perf_metrics)
+ 		del_nr_metric_event(cpuc, event);
  
- void __init intel_pmu_arch_lbr_init(void)
- {
--	struct pmu *pmu = x86_get_pmu();
-+	struct pmu *pmu = x86_get_pmu(smp_processor_id());
- 	union cpuid28_eax eax;
- 	union cpuid28_ebx ebx;
- 	union cpuid28_ecx ecx;
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 53b2b5f..a4c2f65 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -327,6 +327,8 @@ struct cpu_hw_events {
- 	int				n_pair; /* Large increment events */
- 
- 	void				*kfree_on_online[X86_PERF_KFREE_MAX];
-+
-+	struct pmu			*pmu;
- };
- 
- #define __EVENT_CONSTRAINT_RANGE(c, e, n, m, w, o, f) {	\
-@@ -905,7 +907,7 @@ static struct perf_pmu_events_ht_attr event_attr_##v = {		\
- 	.event_str_ht	= ht,						\
+ 	perf_event_update_userpage(event);
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 6a4d6b2..e466a49 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3646,6 +3646,15 @@ static inline bool is_mem_loads_aux_event(struct perf_event *event)
+ 	return (event->attr.config & INTEL_ARCH_EVENT_MASK) == X86_CONFIG(.event=0x03, .umask=0x82);
  }
  
--struct pmu *x86_get_pmu(void);
-+struct pmu *x86_get_pmu(unsigned int cpu);
- extern struct x86_pmu x86_pmu __read_mostly;
++static inline bool intel_pmu_has_cap(struct perf_event *event, int idx)
++{
++	union perf_capabilities *intel_cap;
++
++	intel_cap = is_hybrid() ? &hybrid_pmu(event->pmu)->intel_cap :
++				  &x86_pmu.intel_cap;
++
++	return test_bit(idx, (unsigned long *)&intel_cap->capabilities);
++}
  
- static __always_inline struct x86_perf_task_context_opt *task_context_opt(void *ctx)
+ static int intel_pmu_hw_config(struct perf_event *event)
+ {
+@@ -3709,7 +3718,7 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 	 * with a slots event as group leader. When the slots event
+ 	 * is used in a metrics group, it too cannot support sampling.
+ 	 */
+-	if (x86_pmu.intel_cap.perf_metrics && is_topdown_event(event)) {
++	if (intel_pmu_has_cap(event, PERF_CAP_METRICS_IDX) && is_topdown_event(event)) {
+ 		if (event->attr.config1 || event->attr.config2)
+ 			return -EINVAL;
+ 
+@@ -4216,8 +4225,16 @@ static void intel_pmu_cpu_starting(int cpu)
+ 	if (x86_pmu.version > 1)
+ 		flip_smm_bit(&x86_pmu.attr_freeze_on_smi);
+ 
+-	/* Disable perf metrics if any added CPU doesn't support it. */
+-	if (x86_pmu.intel_cap.perf_metrics) {
++	/*
++	 * Disable perf metrics if any added CPU doesn't support it.
++	 *
++	 * Turn off the check for a hybrid architecture, because the
++	 * architecture MSR, MSR_IA32_PERF_CAPABILITIES, only indicate
++	 * the architecture features. The perf metrics is a model-specific
++	 * feature for now. The corresponding bit should always be 0 on
++	 * a hybrid platform, e.g., Alder Lake.
++	 */
++	if (!is_hybrid() && x86_pmu.intel_cap.perf_metrics) {
+ 		union perf_capabilities perf_cap;
+ 
+ 		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap.capabilities);
+@@ -4327,7 +4344,7 @@ static int intel_pmu_check_period(struct perf_event *event, u64 value)
+ 
+ static int intel_pmu_aux_output_match(struct perf_event *event)
+ {
+-	if (!x86_pmu.intel_cap.pebs_output_pt_available)
++	if (!intel_pmu_has_cap(event, PERF_CAP_PT_IDX))
+ 		return 0;
+ 
+ 	return is_intel_pt_event(event);
+@@ -5767,7 +5784,7 @@ __init int intel_pmu_init(void)
+ 		pr_cont("full-width counters, ");
+ 	}
+ 
+-	if (x86_pmu.intel_cap.perf_metrics)
++	if (!is_hybrid() && x86_pmu.intel_cap.perf_metrics)
+ 		x86_pmu.intel_ctrl |= 1ULL << GLOBAL_CTRL_EN_PERF_METRICS;
+ 
+ 	return 0;
+diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+index 1bfea8c..9328aa1 100644
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -2205,7 +2205,7 @@ void __init intel_ds_init(void)
+ 			}
+ 			pr_cont("PEBS fmt4%c%s, ", pebs_type, pebs_qual);
+ 
+-			if (x86_pmu.intel_cap.pebs_output_pt_available) {
++			if (!is_hybrid() && x86_pmu.intel_cap.pebs_output_pt_available) {
+ 				pr_cont("PEBS-via-PT, ");
+ 				x86_get_pmu(smp_processor_id())->capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
+ 			}
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index a4c2f65..aa7cc88 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -632,6 +632,31 @@ enum {
+ 	x86_lbr_exclusive_max,
+ };
+ 
++struct x86_hybrid_pmu {
++	struct pmu			pmu;
++	union perf_capabilities		intel_cap;
++};
++
++static __always_inline bool is_hybrid(void)
++{
++	return unlikely(cpu_feature_enabled(X86_FEATURE_HYBRID_CPU));
++}
++
++static __always_inline struct x86_hybrid_pmu *hybrid_pmu(struct pmu *pmu)
++{
++	return container_of(pmu, struct x86_hybrid_pmu, pmu);
++}
++
++#define hybrid(_pmu, _field)				\
++({							\
++	typeof(x86_pmu._field) __F = x86_pmu._field;	\
++							\
++	if (is_hybrid() && (_pmu))			\
++		__F = hybrid_pmu(_pmu)->_field;		\
++							\
++	__F;						\
++})
++
+ /*
+  * struct x86_pmu - generic x86 pmu
+  */
+@@ -818,6 +843,16 @@ struct x86_pmu {
+ 	int (*check_period) (struct perf_event *event, u64 period);
+ 
+ 	int (*aux_output_match) (struct perf_event *event);
++
++	/*
++	 * Hybrid support
++	 *
++	 * Most PMU capabilities are the same among different hybrid PMUs.
++	 * The global x86_pmu saves the architecture capabilities, which
++	 * are available for all PMUs. The hybrid_pmu only includes the
++	 * unique capabilities.
++	 */
++	struct x86_hybrid_pmu		*hybrid_pmu;
+ };
+ 
+ struct x86_perf_task_context_opt {
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 546d6ec..163f5d2 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -185,6 +185,9 @@
+ #define MSR_PEBS_DATA_CFG		0x000003f2
+ #define MSR_IA32_DS_AREA		0x00000600
+ #define MSR_IA32_PERF_CAPABILITIES	0x00000345
++#define PERF_CAP_METRICS_IDX		15
++#define PERF_CAP_PT_IDX			16
++
+ #define MSR_PEBS_LD_LAT_THRESHOLD	0x000003f6
+ 
+ #define MSR_IA32_RTIT_CTL		0x00000570
 -- 
 2.7.4
 
