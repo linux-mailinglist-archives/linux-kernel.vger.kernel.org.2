@@ -2,143 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36267334092
+	by mail.lfdr.de (Postfix) with ESMTP id 85761334093
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhCJOl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:41:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCJOl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:41:27 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F30AC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:41:25 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id v14so4613370pgq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:41:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MpYPf5URi+XzdCPoi7Hk/RdtfT35iqZ3pIAtWBbl0ZM=;
-        b=QcDExb6/hnzi+IPoqek/bGQ0szY+Qmndh5owKY+RX+djFLzP5dcUcZ/nax7kdNGCSg
-         bJFEAAMlXi9fCq9iHBYaD0Yimz/lOhOwerbnk3s2vYCzFU93bDcOCJ8z/raJ5VqF3/W0
-         /2U/uYxjDlMko4NHB5YaXibiWs9/7KiuEhK1Xj2cH6EATOu5RDSi8Jax5NrZY4QUcKqt
-         IgdS0MUPfgVYLNydMouP1+Su1dzuOQqKncTM14bvNbpD2d0uhqlvteReUrehX/aOtTLA
-         x5+ryjHOloG9i5oaatDdysYG/3/z9e3rGG+DKXU0mLXDjtWGUAWzKBani6tkDdp7LQtP
-         6r/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MpYPf5URi+XzdCPoi7Hk/RdtfT35iqZ3pIAtWBbl0ZM=;
-        b=qQa/1D0r4a+7K/0yQo4lsIZCiPt3yY0VjOQuMkZNbSYZQHoy3nhGlC4kc+b8oMBGsm
-         jjsemhO9mLUQ0s10hLVbxtNaQWOS787/TrdT1JyJABMd3PUzuIJ22pviq0SN7cxD3qTi
-         kICkMvfmK7w1vF+dSoRnpCk5Idsu89E3fImLPnKWshGhWhzsM2JnM6USGOrZeF3AwYCa
-         2tw/qZyjsb4WGns6uMHqRLjB6s+/zD6rW+O+XdjcPB8g4YWBhpEBgMHL7FKlDboRN8RZ
-         QXFJSF953oPUIS0qYSYyovn/WvPcagRYIyk9h+M71+NBUgw6mKV1O7w5V8E0HehwDKbk
-         xXEA==
-X-Gm-Message-State: AOAM532Yr7z5UkdVJbm99C/80sgbiagvaxn8GUQ0kGO82Awqhk6LGXyX
-        013CYeMgA5R9aVpivaoLO86OEg==
-X-Google-Smtp-Source: ABdhPJzZtOzSs1iQ8tl8JfRkmt3EnobTlhFe5KUsIfekTx9eENenEYIa5oIzqS/ActzM8HKyR+wRIw==
-X-Received: by 2002:a63:e5d:: with SMTP id 29mr3040673pgo.450.1615387285094;
-        Wed, 10 Mar 2021 06:41:25 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id a204sm5576854pfd.106.2021.03.10.06.41.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Mar 2021 06:41:24 -0800 (PST)
-Date:   Wed, 10 Mar 2021 20:11:21 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>, robh+dt@kernel.org
-Cc:     linux-kbuild@vger.kernel.org, devicetree@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: remove unneeded -O option to dtc
-Message-ID: <20210310144121.74mawocx2ydgabx2@vireshk-i7>
-References: <20210310110824.782209-1-masahiroy@kernel.org>
+        id S232888AbhCJOmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:42:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39948 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230373AbhCJOld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 09:41:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615387292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PxSzjwfPtvxXb2e4g0NgV1xOXyHoFy/VgBr2tQy2sJ8=;
+        b=uMrDDZBOhcqgN2YYKOWhP0FNQL25jnl9AcXB6h4jLHnLqUYIuZvshNqiKWh3WHLP8r3+Uz
+        qfztL8wtXVrWatxonKGtCvKwocRUx2WUqt5wPlxZ5whM9qb5LrrOaeVPcpUOFu+KJFRepi
+        AMBSQsU4Gb45X4zJBibKpsWI/05ovpA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 639C9AE78;
+        Wed, 10 Mar 2021 14:41:32 +0000 (UTC)
+Subject: Re: [PATCH v6 04/12] x86/alternative: support not-feature
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20210309134813.23912-1-jgross@suse.com>
+ <20210309134813.23912-5-jgross@suse.com> <20210310060705.GB23521@zn.tnic>
+ <1b95376a-56e1-ab3e-aa85-73a9d38aaaf7@suse.com>
+ <20210310141510.GG23521@zn.tnic>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <4b7ba26f-af23-7208-db29-4bda7be79cc6@suse.com>
+Date:   Wed, 10 Mar 2021 15:41:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310110824.782209-1-masahiroy@kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210310141510.GG23521@zn.tnic>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="WYWrC1aRj0Zkmr1uiOKvfduKDw2zXLA5r"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-03-21, 20:08, Masahiro Yamada wrote:
-> This piece of code converts the target suffix to the dtc -O option:
-> 
->     *.dtb      ->  -O dtb
->     *.dt.yaml  ->  -O yaml
-> 
-> Commit ce88c9c79455 ("kbuild: Add support to build overlays (%.dtbo)")
-> added the third case:
-> 
->     *.dtbo     ->  -O dtbo
-> 
-> This works thanks to commit 163f0469bf2e ("dtc: Allow overlays to have
-> .dtbo extension") in the upstream DTC, which has already been pulled in
-> the kernel.
-> 
-> However, I think it is a bit odd because "dtbo" is not a format name.
-> At least, it does not show up in the help message of dtc.
-> 
-> $ scripts/dtc/dtc --help
->   [ snip ]
->   -O, --out-format <arg>
->         Output formats are:
->                 dts - device tree source text
->                 dtb - device tree blob
->                 yaml - device tree encoded as YAML
->                 asm - assembler source
-> 
-> So, I am not a big fan of the second hunk of that change:
-> 
->         } else if (streq(outform, "dtbo")) {
->                 dt_to_blob(outf, dti, outversion);
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--WYWrC1aRj0Zkmr1uiOKvfduKDw2zXLA5r
+Content-Type: multipart/mixed; boundary="ByzS5gGquCchlGt9EfY4LEzkHqKv4UB7r";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: xen-devel@lists.xenproject.org, x86@kernel.org,
+ linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <4b7ba26f-af23-7208-db29-4bda7be79cc6@suse.com>
+Subject: Re: [PATCH v6 04/12] x86/alternative: support not-feature
+References: <20210309134813.23912-1-jgross@suse.com>
+ <20210309134813.23912-5-jgross@suse.com> <20210310060705.GB23521@zn.tnic>
+ <1b95376a-56e1-ab3e-aa85-73a9d38aaaf7@suse.com>
+ <20210310141510.GG23521@zn.tnic>
+In-Reply-To: <20210310141510.GG23521@zn.tnic>
 
-Looking at the very first version of the patch I sent,
+--ByzS5gGquCchlGt9EfY4LEzkHqKv4UB7r
+Content-Type: multipart/mixed;
+ boundary="------------04BCC31FF0EE4F36BAA41F64"
+Content-Language: en-US
 
-https://lore.kernel.org/lkml/7aa70809eff3f32d821761d2a763e4fb72ecc8fb.1609844956.git.viresh.kumar@linaro.org/
+This is a multi-part message in MIME format.
+--------------04BCC31FF0EE4F36BAA41F64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-this change was the only thing that was required to make it work.
+On 10.03.21 15:15, Borislav Petkov wrote:
+> On Wed, Mar 10, 2021 at 08:52:40AM +0100, J=C3=BCrgen Gro=C3=9F wrote:
+>> Did you look at patch 13? :-)
+>=20
+> Well, I usually review in increasing patch order. :-P
+>=20
+> But make that change here pls because otherwise unnecessary churn.
 
-I think the reason was that "outform != NULL" as -O option was passed
-by the kernel.
+Okay.
 
-> Anyway, we did not need to do this in Makefile in the first place.
-> 
-> guess_type_by_name() had already understood ".yaml" before commit
-> 4f0e3a57d6eb ("kbuild: Add support for DT binding schema checks"),
-> and now does ".dtbo" as well.
-> 
-> Makefile does not need to duplicate the same logic. Let's leave it
-> to dtc.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  scripts/Makefile.lib | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index eee59184de64..90a4e04cd8f5 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -327,7 +327,7 @@ $(obj)/%.dtb.S: $(obj)/%.dtb FORCE
->  
->  quiet_cmd_dtc = DTC     $@
->  cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
-> -	$(DTC) -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
-> +	$(DTC) -o $@ -b 0 \
->  		$(addprefix -i,$(dir $<) $(DTC_INCLUDE)) $(DTC_FLAGS) \
->  		-d $(depfile).dtc.tmp $(dtc-tmp) ; \
->  	cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
 
-LGTM.
+Juergen
 
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
 
--- 
-viresh
+--------------04BCC31FF0EE4F36BAA41F64
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------04BCC31FF0EE4F36BAA41F64--
+
+--ByzS5gGquCchlGt9EfY4LEzkHqKv4UB7r--
+
+--WYWrC1aRj0Zkmr1uiOKvfduKDw2zXLA5r
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmBI2psFAwAAAAAACgkQsN6d1ii/Ey9i
+Pwf/a29ypr3sr3STd919ouf1cx7Zi/mYSiScQ3qCIB3O+OWmwxCLmBqMAyQHjK6ssyMt3VQuG8KL
+iL/s/T0iv8KYFrRTFcKUvLkDRjVBjAEweCJn9famgSJ/kwEaEoJOzl36DHoYMjHs4Ks+QRTZp4U9
+X1WaMjFWYSbPN8ZeAxCWnm2BIed4khopHCk7PZxQXihZX/pwJ+Z8zGiBKyLjTwhvNrwXiAxug8Rb
+Ae6PXn+ZeHuP2MHSIMlOuVeM5xfh1vTrtqFXMT5OrKgDpYBaV9/4IzG9+iz/7JPR8h9B2B/6ejN+
+IZTJIfjT5fTQiI7mWU0wIwmpSUBq0JRVvq1+9aZaUg==
+=LjTz
+-----END PGP SIGNATURE-----
+
+--WYWrC1aRj0Zkmr1uiOKvfduKDw2zXLA5r--
