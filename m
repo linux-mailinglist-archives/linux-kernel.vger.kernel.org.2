@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E7B334622
+	by mail.lfdr.de (Postfix) with ESMTP id 6C99B334623
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbhCJR7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:59:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
+        id S233768AbhCJR7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:59:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233723AbhCJR6t (ORCPT
+        with ESMTP id S233726AbhCJR6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:58:49 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EC4C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:58:49 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id h5so8295503wrr.17
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:58:49 -0800 (PST)
+        Wed, 10 Mar 2021 12:58:51 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00686C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:58:50 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id d26so13243867qve.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:58:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=nO+Dw20r7SUumZfYakzeexkud+udjeRUH05spovGIBc=;
-        b=q98vijkRUeBOdzAWoY6jRSeh2vMwodAX3jBub6VuJmeqX1nog5ludU2AjzqL8PAyuq
-         3cPVvj3cnJOPB8MRhg4r4XPGpnVaB3OyXeAowiksQMcBVNgSPw1LkT2uJGYyKIgFxcij
-         M/JowpIjqjiIs5oXD3XYIS+g6gTCrKX6YM5/vQZkGhwkzjsiNiVrklSK8eGZPwXSALI6
-         mjfYDEg94yHnnmrjLyFv4KW5o/KxZZAxhFmGgZWX80bSgINRDmOqSImA4+eg8cM0yeQl
-         VKWh5T18d3rrEZMMW5p0AAVlXtJD4jrKvoyWlmZ1E7RkfQg7ecYwBLpIYjCgOV4lU9Tu
-         jHrQ==
+        bh=mIqe1MGSlcb95mMvYxk2H+NidebDAWpSvKZgF+GIUJ4=;
+        b=vx1GePNKXUsy3lm2tRdqorO6elSbn6hExBP9oaHOyHkER8tNbdC4pg+nDr9AGdaxu/
+         3Pewgjk9+slL6lrKsPYNW1OpM3lhTxz2lcsvqeup2Wyxbzq2NXQaVBftczldIThhz7Yp
+         /HAcyfzAp3RoP8J9843KokXr36i92XcvOZWvZo93MZts7mNB1shqN4YA+qaTXAvDoTS6
+         28UBYIp8LKmk/A0xaarxs0aZTp/RH/iKCJj4GooZLOJUopksawDWvdVuHDx/lrG+zeV5
+         gDMOvGL4kjJ01oz0/cO/LrK5/pM+kPniLilZvJxb6+MyXtgKLpLtfI2U/M6uuxfIEjR/
+         72Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=nO+Dw20r7SUumZfYakzeexkud+udjeRUH05spovGIBc=;
-        b=En6cFF6K/5neYSXpxRPiONAdWAzRnUBFGGVC56T5Y/azV2egi9Km1kdM/u+ogV2ydO
-         CAFxaplOjQvG4/QFQVS6vsh8IHXmfpzfieY98Zk3vfs40dDMql+A5EjdOfey9FRkGSWN
-         +xpvRIyW63j+GbBqDv7KRTToerIAierh2ZioZ7pBo5ceQ2qGLieRz1pov166DtV24sn3
-         wNBdkE2Qw/gQJHb9n66VukJIKsWroiAEIjZL8AuNf1Fi6nCjATA0KQ5g3RF4cMNoRCR/
-         pVcBnCaeqw5iggpjGhSMUd+/6Wco8jYFfUvfRy9SKKnNOVR2UFFkaMdJ+DAYOURULNlA
-         VY/Q==
-X-Gm-Message-State: AOAM530ZdFE0YFkeQB3mFyyFnUdHKi68HdKJsMiAdk0NzB/J7maGuEKF
-        F9WMaVg/coMlmRitYgdi8FPBINFCsU5p
-X-Google-Smtp-Source: ABdhPJwVhnSLfeKiraD5idqzHXTWJrPR2Q57MoB1wpdcj8fUwYlAEfZZUCvSXNNkTOyW9ggJRQmLFzB6VaEi
+        bh=mIqe1MGSlcb95mMvYxk2H+NidebDAWpSvKZgF+GIUJ4=;
+        b=HX16mTzE2MyjjASFpHoxV0xCy2LY0iJ6pzLnYQeywp+IXDHi7FiRFVMww9/l2IJVTU
+         IzmB2wWbg3Es4itT4dPTBwcLUbvw5czPJS7dmxFjzajWgzqIC6v77apVsiJN1931YGpU
+         l7PH5a0sFG+zvVLcM9cElGljrohnCkcsrEzEPjI+qSNeFb3J7n8GxHFGUFAjwXHm/ffn
+         8PtcV13d019dSisegNjyU5hcHkewLEnVy2Bmq1q1gXGEsrYneb+UrSVR08mhizG7Zx7H
+         DQBC0mR8ewZ1WPZ+jc5Uh2zfjH5h4zp4WzWl4OsZM5GnMiy4EfJ/OeEQh/Tw5KHvOWAx
+         GeuA==
+X-Gm-Message-State: AOAM5337cwNChEv2TdYotzyo+mIHimTxnG6DPp8czDjX2i9CuQ7NxuJ2
+        uP1Y/Ua+IwLDKHNhKpni0Dt3MzffNKpT
+X-Google-Smtp-Source: ABdhPJy2ywA58O3Ivcmfuywfr7DLLO/RhF30F1qBje3/94+cZdCa6U9wIlM0XrJdUI5Hekvh7JWZdZjaP3b/
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a7b:cf16:: with SMTP id
- l22mr4421313wmg.26.1615399128195; Wed, 10 Mar 2021 09:58:48 -0800 (PST)
-Date:   Wed, 10 Mar 2021 17:57:41 +0000
+ (user=qperret job=sendgmr) by 2002:a0c:bec3:: with SMTP id
+ f3mr3180215qvj.49.1615399130193; Wed, 10 Mar 2021 09:58:50 -0800 (PST)
+Date:   Wed, 10 Mar 2021 17:57:42 +0000
 In-Reply-To: <20210310175751.3320106-1-qperret@google.com>
-Message-Id: <20210310175751.3320106-25-qperret@google.com>
+Message-Id: <20210310175751.3320106-26-qperret@google.com>
 Mime-Version: 1.0
 References: <20210310175751.3320106-1-qperret@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v4 24/34] KVM: arm64: Make memcache anonymous in pgtable allocator
+Subject: [PATCH v4 25/34] KVM: arm64: Reserve memory for host stage 2
 From:   Quentin Perret <qperret@google.com>
 To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
         james.morse@arm.com, julien.thierry.kdev@gmail.com,
@@ -67,65 +67,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current stage2 page-table allocator uses a memcache to get
-pre-allocated pages when it needs any. To allow re-using this code at
-EL2 which uses a concept of memory pools, make the memcache argument of
-kvm_pgtable_stage2_map() anonymous, and let the mm_ops zalloc_page()
-callbacks use it the way they need to.
+Extend the memory pool allocated for the hypervisor to include enough
+pages to map all of memory at page granularity for the host stage 2.
+While at it, also reserve some memory for device mappings.
 
 Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/include/asm/kvm_pgtable.h | 6 +++---
- arch/arm64/kvm/hyp/pgtable.c         | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ arch/arm64/kvm/hyp/include/nvhe/mm.h | 27 ++++++++++++++++++++++++++-
+ arch/arm64/kvm/hyp/nvhe/setup.c      | 12 ++++++++++++
+ arch/arm64/kvm/hyp/reserved_mem.c    |  2 ++
+ 3 files changed, 40 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-index 9cdc198ea6b4..4ae19247837b 100644
---- a/arch/arm64/include/asm/kvm_pgtable.h
-+++ b/arch/arm64/include/asm/kvm_pgtable.h
-@@ -213,8 +213,8 @@ void kvm_pgtable_stage2_destroy(struct kvm_pgtable *pgt);
-  * @size:	Size of the mapping.
-  * @phys:	Physical address of the memory to map.
-  * @prot:	Permissions and attributes for the mapping.
-- * @mc:		Cache of pre-allocated GFP_PGTABLE_USER memory from which to
-- *		allocate page-table pages.
-+ * @mc:		Cache of pre-allocated and zeroed memory from which to allocate
-+ *		page-table pages.
-  *
-  * The offset of @addr within a page is ignored, @size is rounded-up to
-  * the next page boundary and @phys is rounded-down to the previous page
-@@ -236,7 +236,7 @@ void kvm_pgtable_stage2_destroy(struct kvm_pgtable *pgt);
-  */
- int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
- 			   u64 phys, enum kvm_pgtable_prot prot,
--			   struct kvm_mmu_memory_cache *mc);
-+			   void *mc);
+diff --git a/arch/arm64/kvm/hyp/include/nvhe/mm.h b/arch/arm64/kvm/hyp/include/nvhe/mm.h
+index ac0f7fcffd08..0095f6289742 100644
+--- a/arch/arm64/kvm/hyp/include/nvhe/mm.h
++++ b/arch/arm64/kvm/hyp/include/nvhe/mm.h
+@@ -53,7 +53,7 @@ static inline unsigned long __hyp_pgtable_max_pages(unsigned long nr_pages)
+ 	return total;
+ }
  
- /**
-  * kvm_pgtable_stage2_unmap() - Remove a mapping from a guest stage-2 page-table.
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index 296675e5600d..bdd6e3d4eeb6 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -445,7 +445,7 @@ struct stage2_map_data {
- 	kvm_pte_t			*anchor;
- 
- 	struct kvm_s2_mmu		*mmu;
--	struct kvm_mmu_memory_cache	*memcache;
-+	void				*memcache;
- 
- 	struct kvm_pgtable_mm_ops	*mm_ops;
- };
-@@ -669,7 +669,7 @@ static int stage2_map_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 
- int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
- 			   u64 phys, enum kvm_pgtable_prot prot,
--			   struct kvm_mmu_memory_cache *mc)
-+			   void *mc)
+-static inline unsigned long hyp_s1_pgtable_pages(void)
++static inline unsigned long __hyp_pgtable_total_pages(void)
  {
- 	int ret;
- 	struct stage2_map_data map_data = {
+ 	unsigned long res = 0, i;
+ 
+@@ -63,9 +63,34 @@ static inline unsigned long hyp_s1_pgtable_pages(void)
+ 		res += __hyp_pgtable_max_pages(reg->size >> PAGE_SHIFT);
+ 	}
+ 
++	return res;
++}
++
++static inline unsigned long hyp_s1_pgtable_pages(void)
++{
++	unsigned long res;
++
++	res = __hyp_pgtable_total_pages();
++
+ 	/* Allow 1 GiB for private mappings */
+ 	res += __hyp_pgtable_max_pages(SZ_1G >> PAGE_SHIFT);
+ 
+ 	return res;
+ }
++
++static inline unsigned long host_s2_mem_pgtable_pages(void)
++{
++	/*
++	 * Include an extra 16 pages to safely upper-bound the worst case of
++	 * concatenated pgds.
++	 */
++	return __hyp_pgtable_total_pages() + 16;
++}
++
++static inline unsigned long host_s2_dev_pgtable_pages(void)
++{
++	/* Allow 1 GiB for MMIO mappings */
++	return __hyp_pgtable_max_pages(SZ_1G >> PAGE_SHIFT);
++}
++
+ #endif /* __KVM_HYP_MM_H */
+diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
+index 1e8bcd8b0299..c1a3e7e0ebbc 100644
+--- a/arch/arm64/kvm/hyp/nvhe/setup.c
++++ b/arch/arm64/kvm/hyp/nvhe/setup.c
+@@ -24,6 +24,8 @@ unsigned long hyp_nr_cpus;
+ 
+ static void *vmemmap_base;
+ static void *hyp_pgt_base;
++static void *host_s2_mem_pgt_base;
++static void *host_s2_dev_pgt_base;
+ 
+ static int divide_memory_pool(void *virt, unsigned long size)
+ {
+@@ -42,6 +44,16 @@ static int divide_memory_pool(void *virt, unsigned long size)
+ 	if (!hyp_pgt_base)
+ 		return -ENOMEM;
+ 
++	nr_pages = host_s2_mem_pgtable_pages();
++	host_s2_mem_pgt_base = hyp_early_alloc_contig(nr_pages);
++	if (!host_s2_mem_pgt_base)
++		return -ENOMEM;
++
++	nr_pages = host_s2_dev_pgtable_pages();
++	host_s2_dev_pgt_base = hyp_early_alloc_contig(nr_pages);
++	if (!host_s2_dev_pgt_base)
++		return -ENOMEM;
++
+ 	return 0;
+ }
+ 
+diff --git a/arch/arm64/kvm/hyp/reserved_mem.c b/arch/arm64/kvm/hyp/reserved_mem.c
+index 9bc6a6d27904..fd42705a3c26 100644
+--- a/arch/arm64/kvm/hyp/reserved_mem.c
++++ b/arch/arm64/kvm/hyp/reserved_mem.c
+@@ -52,6 +52,8 @@ void __init kvm_hyp_reserve(void)
+ 	}
+ 
+ 	hyp_mem_pages += hyp_s1_pgtable_pages();
++	hyp_mem_pages += host_s2_mem_pgtable_pages();
++	hyp_mem_pages += host_s2_dev_pgtable_pages();
+ 
+ 	/*
+ 	 * The hyp_vmemmap needs to be backed by pages, but these pages
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
