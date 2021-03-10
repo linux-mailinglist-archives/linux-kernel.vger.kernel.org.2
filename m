@@ -2,88 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA49C3336DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6953336E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhCJICO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:02:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbhCJICF (ORCPT
+        id S231256AbhCJIEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:04:41 -0500
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:38713 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231837AbhCJIDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:02:05 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFBDC06174A;
-        Wed, 10 Mar 2021 00:02:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=N8UCzR98Jt6vJfa17f+pjJWD3SJzTxoX5SicoIFhTp0=; b=cMmOgGhXrV4yOKYPxsK+qohPUM
-        g0O1CVepJCqWPMhHA6YJDvQXdutVWG+8fY5F/+jM55VmxveFTEGAV+nKfQWAWEm9uIGBKs/ZIFle3
-        Fcvi/FWL4ykwXTpX2t86u5DpzbmV2cb4SDg/80Nib143ygZBaBNaql4qK4hpAzxpkofGFSJiMzJMP
-        hU3QxHtp5RcCXptnJGe+VZmuB1ia6kBu8Yye9+VrJmeCG1CGDlJ26P9OMakeKG35vrnkZF0gg3Ish
-        NTHehMbdFYO48Tmtkf5O2igej0TzV+VMOW+bBMyfUxohJYKqSDigcymXyEynqGLCK6Qulalyr/DOE
-        98l2CwDA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJtmv-002oEV-H2; Wed, 10 Mar 2021 08:01:52 +0000
-Date:   Wed, 10 Mar 2021 08:01:49 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
-Subject: Re: [PATCH v1 09/14] vfio/type1: Refactor pfn_list clearing
-Message-ID: <20210310080149.GC662265@infradead.org>
-References: <161523878883.3480.12103845207889888280.stgit@gimli.home>
- <161524013398.3480.17180657517567370372.stgit@gimli.home>
+        Wed, 10 Mar 2021 03:03:38 -0500
+Received: by mail-lf1-f47.google.com with SMTP id m22so31920471lfg.5;
+        Wed, 10 Mar 2021 00:03:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=9neQuQcCRkWdtmxVlPcgyoaGEau3r59VmHEXSLbS1QA=;
+        b=UGvYL0D2abWpiYTirBQMh7gTdh73p0BCke0kEfZdTXcakzObSupaBtHr0TX+DXSKgo
+         sjJFHdB6R/hSV8oKz0XlI80IOhfikabEPxOGebPiPACX7wFZDxEmyNCk8X0AbS+k4vVE
+         KtYBt6a22CRUnQKcO4hdhiYnzqsJZ9gDSz5G6ob45+ORSlXj+5OzEUHTIFrvwAujWq+m
+         XdOL0zQqHdfU/6djXFCxQRDurfHmYwyrbzde0eXfhzGWt6qr/EnLHAAKriDR9BFe6gZW
+         lTnWVj1Nj5gfa2Ip7dE2t5WkS1xnU3KEnHI409LgLu6Q+k2SYU0+UunJlQAC++kroAVq
+         OXSQ==
+X-Gm-Message-State: AOAM530ai6OI8UbuQQ6KAWwSZ7lxWlkWEt8bS1xmAdEKMaF6NUDVXAJF
+        k8j9oHwAMdQvRenIqHbl+ha8jGo4q+Y=
+X-Google-Smtp-Source: ABdhPJzkElfZtzI8QYQp80x3Rt54SrpKes6677h8tcUnsGYrUHeJMRBTEBMGVCpyP6VnDCSIZXbGFA==
+X-Received: by 2002:a05:6512:695:: with SMTP id t21mr1272734lfe.61.1615363417270;
+        Wed, 10 Mar 2021 00:03:37 -0800 (PST)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id p18sm2891316ljo.75.2021.03.10.00.03.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 00:03:36 -0800 (PST)
+Date:   Wed, 10 Mar 2021 10:02:58 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v9 0/6] Support ROHM BD9576MUF and BD9573MUF PMICs
+Message-ID: <cover.1615219345.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161524013398.3480.17180657517567370372.stgit@gimli.home>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/* Return 1 if iommu->lock dropped and notified, 0 if done */
+Initial support for ROHM BD9576MUF and BD9573MUF PMICs.
 
-A bool would be more useful for that pattern.
+These PMICs are primarily intended to be used to power the R-Car family
+processors. BD9576MUF includes some additional safety features the
+BD9573MUF does not have. This initial version of drivers provides
+temperature, over voltage and under voltage warnings is IRQ information
+is passed via DT.
 
-> +static int unmap_dma_pfn_list(struct vfio_iommu *iommu, struct vfio_dma *dma,
-> +			      struct vfio_dma **dma_last, int *retries)
-> +{
-> +	if (!RB_EMPTY_ROOT(&dma->pfn_list)) {
+This patch series includes MFD and watchdog drivers. Regulator part was
+already applied.
 
-Just return early when it is empty to remove a level of indentation for
-the whole function?
+This series brings in the IRQ support which will be utilized by the
+regulator driver(s). The regulator part was splitted in own series.
 
-> +		struct vfio_iommu_type1_dma_unmap nb_unmap;
-> +
-> +		if (*dma_last == dma) {
-> +			BUG_ON(++(*retries) > 10);
-> +		} else {
-> +			*dma_last = dma;
-> +			*retries = 0;
-> +		}
-> +
-> +		nb_unmap.iova = dma->iova;
-> +		nb_unmap.size = dma->size;
-> +
-> +		/*
-> +		 * Notify anyone (mdev vendor drivers) to invalidate and
-> +		 * unmap iovas within the range we're about to unmap.
-> +		 * Vendor drivers MUST unpin pages in response to an
-> +		 * invalidation.
-> +		 */
-> +		mutex_unlock(&iommu->lock);
-> +		blocking_notifier_call_chain(&iommu->notifier,
-> +					     VFIO_IOMMU_NOTIFY_DMA_UNMAP,
-> +					     &nb_unmap);
-> +		return 1;
+WDG supports
+- Enabling and pinging the watchdog
+- configuring watchog timeout / window from device-tree
 
-Conditional locking is a horrible pattern.  I'd rather only factor the
-code until before the unlock into the helper, and then leave the
-unlock and notify to the caller to avoid that anti-pattern.
+Please note that not all of the boards are expected to be utilizing the
+warning IRQs. Thus populating the IRQ information from DT is optional.
 
-Also vendor driver isn't really Linux terminology for a subdriver,
-so I'd suggest to switch to something else while you're at it.
+Changelog v9: (Changes suggested by Lee)
+  - MFD: Update copyrights
+  - MFD: use designated initializers in MFD cell arrays.
+  - MFD: styling
+
+Changelog v8:
+  - Drop regulator driver changes which are covered by the separate RFC series.
+  - Renamed regulator driver cell. Regulator driver change will be
+    brought in in the RFC series to avoid conflicts.
+  - Add patch introducing register definitions required by the regulator RFC
+    series.
+  - Cleaned comments at MFD as was suggested by Lee
+  - Do not abort MFD probe if IRQ information for BD9573 is populated
+  - MFD driver/header styling
+
+Changelog v7:
+  - Added interrupt handling
+  - Added notifications and error_flag getter to regulators
+
+Changelog v6:
+  - Fixed watchdog timeout
+
+Changelog v5:
+  - rebased on top of v5.10-rc2
+  - few styling fixes in MFD as suggested by Lee
+
+Changelog v4:
+  - rebased on top of 5.10-rc1
+  - Fix typo (repeated word maximum) from the DT binding doc
+
+Changelog v3:
+  - use only one binding to specify watchdog time-out window.
+
+Changelog v2:
+  - dropped already applied regulator part
+  - dt_bindings: Fix case for regulator-names in the example
+  - watchdog: unify probe error check and revise includes
+
+---
+
+Matti Vaittinen (6):
+  dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF PMICs
+  mfd: Support ROHM BD9576MUF and BD9573MUF
+  mfd: bd9576: Add IRQ support
+  wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
+  MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
+  mfd: bd9576: Add safety limit/monitoring registers
+
+ .../bindings/mfd/rohm,bd9576-pmic.yaml        | 123 ++++++++
+ MAINTAINERS                                   |   4 +
+ drivers/mfd/Kconfig                           |  11 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/rohm-bd9576.c                     | 189 ++++++++++++
+ drivers/watchdog/Kconfig                      |  13 +
+ drivers/watchdog/Makefile                     |   1 +
+ drivers/watchdog/bd9576_wdt.c                 | 291 ++++++++++++++++++
+ include/linux/mfd/rohm-bd957x.h               | 140 +++++++++
+ include/linux/mfd/rohm-generic.h              |   2 +
+ 10 files changed, 775 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
+ create mode 100644 drivers/mfd/rohm-bd9576.c
+ create mode 100644 drivers/watchdog/bd9576_wdt.c
+ create mode 100644 include/linux/mfd/rohm-bd957x.h
+
+
+base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
