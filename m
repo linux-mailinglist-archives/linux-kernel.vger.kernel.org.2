@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD65333719
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A4233371C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhCJIPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:15:02 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:8101 "EHLO pegase1.c-s.fr"
+        id S231838AbhCJIPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:15:34 -0500
+Received: from verein.lst.de ([213.95.11.211]:35068 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229643AbhCJIOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:14:31 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DwPxX24hjz9tyNS;
-        Wed, 10 Mar 2021 09:14:24 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id tNNusIgIeCpa; Wed, 10 Mar 2021 09:14:24 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DwPxX17kXz9tyNR;
-        Wed, 10 Mar 2021 09:14:24 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 249A98B783;
-        Wed, 10 Mar 2021 09:14:25 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id aH2RPuDK2FLr; Wed, 10 Mar 2021 09:14:25 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9CA0F8B77E;
-        Wed, 10 Mar 2021 09:14:24 +0100 (CET)
-Subject: Re: [PATCH v1 01/15] powerpc/uaccess: Remove __get_user_allowed() and
- unsafe_op_wrap()
-To:     Daniel Axtens <dja@axtens.net>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <cover.1614275314.git.christophe.leroy@csgroup.eu>
- <e0538c71167bd90224a8727fea9ed5b75612e2d7.1614275314.git.christophe.leroy@csgroup.eu>
- <87im6ao7ld.fsf@dja-thinkpad.axtens.net>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <e57ae14b-806e-854d-d43b-e6278b89ae04@csgroup.eu>
-Date:   Wed, 10 Mar 2021 09:14:23 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229904AbhCJIPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:15:14 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C83AB68B05; Wed, 10 Mar 2021 09:15:09 +0100 (CET)
+Date:   Wed, 10 Mar 2021 09:15:08 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     jgg@nvidia.com, alex.williamson@redhat.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
+        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
+        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
+        mjrosato@linux.ibm.com, aik@ozlabs.ru, hch@lst.de
+Subject: Re: [PATCH 9/9] vfio/pci: export igd support into vendor vfio_pci
+ driver
+Message-ID: <20210310081508.GB4364@lst.de>
+References: <20210309083357.65467-1-mgurtovoy@nvidia.com> <20210309083357.65467-10-mgurtovoy@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <87im6ao7ld.fsf@dja-thinkpad.axtens.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309083357.65467-10-mgurtovoy@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The terminology is all weird here.  You don't export functionality
+you move it.  And this is not a "vendor" driver, but just a device
+specific one.
 
+> +struct igd_vfio_pci_device {
+> +	struct vfio_pci_core_device	vdev;
+> +};
 
-Le 01/03/2021 à 23:02, Daniel Axtens a écrit :
-> 
-> 
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> 
->> Those two macros have only one user which is unsafe_get_user().
->>
->> Put everything in one place and remove them.
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   arch/powerpc/include/asm/uaccess.h | 10 +++++-----
->>   1 file changed, 5 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
->> index 78e2a3990eab..8cbf3e3874f1 100644
->> --- a/arch/powerpc/include/asm/uaccess.h
->> +++ b/arch/powerpc/include/asm/uaccess.h
->> @@ -53,9 +53,6 @@ static inline bool __access_ok(unsigned long addr, unsigned long size)
->>   #define __put_user(x, ptr) \
->>   	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
->>   
->> -#define __get_user_allowed(x, ptr) \
->> -	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), false)
->> -
->>   #define __get_user_inatomic(x, ptr) \
->>   	__get_user_nosleep((x), (ptr), sizeof(*(ptr)))
->>   #define __put_user_inatomic(x, ptr) \
->> @@ -482,8 +479,11 @@ user_write_access_begin(const void __user *ptr, size_t len)
->>   #define user_write_access_begin	user_write_access_begin
->>   #define user_write_access_end		prevent_current_write_to_user
->>   
->> -#define unsafe_op_wrap(op, err) do { if (unlikely(op)) goto err; } while (0)
->> -#define unsafe_get_user(x, p, e) unsafe_op_wrap(__get_user_allowed(x, p), e)
->> +#define unsafe_get_user(x, p, e) do {					\
->> +	if (unlikely(__get_user_nocheck((x), (p), sizeof(*(p)), false)))\
->> +		goto e;							\
->> +} while (0)
->> +
-> 
-> This seems correct to me.
-> 
-> Checkpatch does have one check that is relevant:
-> 
-> CHECK: Macro argument reuse 'p' - possible side-effects?
-> #36: FILE: arch/powerpc/include/asm/uaccess.h:482:
-> +#define unsafe_get_user(x, p, e) do {					\
-> +	if (unlikely(__get_user_nocheck((x), (p), sizeof(*(p)), false)))\
-> +		goto e;							\
-> +} while (0)
-> 
-> Given that we are already creating a new block, should we do something
-> like this (completely untested):
-> 
-> #define unsafe_get_user(x, p, e) do {					\
->          __typeof__(p) __p = (p);
-> 	if (unlikely(__get_user_nocheck((x), (__p), sizeof(*(__p)), false)))\
-> 		goto e;							\
-> } while (0)
-> 
+Why do you need this separate structure?  You could just use
+vfio_pci_core_device directly.
 
-As mentioned by Segher, this is not needed, sizeof(p) doesn't evaluate (p) so (p) is only evaluated 
-once in the macro, so no risk of side-effects with that.
+> +static void igd_vfio_pci_release(void *device_data)
+> +{
+> +	struct vfio_pci_core_device *vdev = device_data;
+> +
+> +	mutex_lock(&vdev->reflck->lock);
+> +	if (!(--vdev->refcnt)) {
 
-Christophe
+No need for the braces here.
+
+> +		vfio_pci_vf_token_user_add(vdev, -1);
+> +		vfio_pci_core_spapr_eeh_release(vdev);
+> +		vfio_pci_core_disable(vdev);
+> +	}
+> +	mutex_unlock(&vdev->reflck->lock);
+
+But more importantly all this code should be in a helper exported
+from the core code.
+
+> +
+> +	module_put(THIS_MODULE);
+
+This looks bogus - the module reference is now gone while
+igd_vfio_pci_release is still running.  Module refcounting always
+need to be done by the caller, not the individual driver.
+
+> +static int igd_vfio_pci_open(void *device_data)
+> +{
+> +	struct vfio_pci_core_device *vdev = device_data;
+> +	int ret = 0;
+> +
+> +	if (!try_module_get(THIS_MODULE))
+> +		return -ENODEV;
+
+Same here - thi is something the caller needs to do.
+
+> +	mutex_lock(&vdev->reflck->lock);
+> +
+> +	if (!vdev->refcnt) {
+> +		ret = vfio_pci_core_enable(vdev);
+> +		if (ret)
+> +			goto error;
+> +
+> +		ret = vfio_pci_igd_init(vdev);
+> +		if (ret && ret != -ENODEV) {
+> +			pci_warn(vdev->pdev, "Failed to setup Intel IGD regions\n");
+> +			vfio_pci_core_disable(vdev);
+> +			goto error;
+> +		}
+> +		ret = 0;
+> +		vfio_pci_probe_mmaps(vdev);
+> +		vfio_pci_core_spapr_eeh_open(vdev);
+> +		vfio_pci_vf_token_user_add(vdev, 1);
+
+Way to much boilerplate.  Why doesn't the core only call a function
+that does the vfio_pci_igd_init?
+
+> +static const struct pci_device_id igd_vfio_pci_table[] = {
+> +	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_DISPLAY_VGA << 8, 0xff0000, 0 },
+
+Please avoid the overly long line.  And a match as big as any Intel
+graphics at very least needs a comment documenting why this is safe
+and will perpetually remain safe.
+
+> +#ifdef CONFIG_VFIO_PCI_DRIVER_COMPAT
+> +struct pci_driver *get_igd_vfio_pci_driver(struct pci_dev *pdev)
+> +{
+> +	if (pci_match_id(igd_vfio_pci_driver.id_table, pdev))
+> +		return &igd_vfio_pci_driver;
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(get_igd_vfio_pci_driver);
+> +#endif
+
+> +	case PCI_VENDOR_ID_INTEL:
+> +		if (pdev->class == PCI_CLASS_DISPLAY_VGA << 8)
+> +			return get_igd_vfio_pci_driver(pdev);
+
+And this now means that the core code has a dependency on the igd
+one, making the whole split rather pointless.
