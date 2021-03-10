@@ -2,172 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 842633343AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3513343AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbhCJQuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:50:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbhCJQuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:50:00 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6383C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:49:52 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id u62so3982083oib.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:49:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z/DYckm5AO4Of80/fuBtgsikptSb+jDkP3yKf0ms0iQ=;
-        b=DaWTxt5/3qdNzADPXYLnqtnX2amtuyxvMDgnMiVGFcyPjEKNJfbD4N+8e8hpVLjwJM
-         UGv9riw8E9WNz9pQWbFz5dl0cF8dSaWn16k93wUpigsQrGAqaMNTi4JfK7OJ6Bv2xhTN
-         Odh458hzvhoxZgMcCUmu/HtZBrq7XpsVzPSPdazHMZ+rLVQeuIqFN8pyWg+opd1EnQTD
-         VbqBjeMl0QM7ovU73hsa9gp3VW0r3ehqkT1fgh7ecjd3EUpd7KT5DJ4M4tplrnTQcD5q
-         8ZqX0+5J67MhSGX5opmnXMsx8dssiPCkcJYSCCLhE+BmePPyIf1xgf5gVsvYgMn1KB2L
-         NVrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z/DYckm5AO4Of80/fuBtgsikptSb+jDkP3yKf0ms0iQ=;
-        b=SyuvQpLz/XI6uLVjNaKsGhNLci9OZHJvuIQsMnWoewRk8OfysoWKH3Uja40tLEKOKo
-         KU7QsniIqVHbBE6e179esieb1+YLHdRzB3qZVOOv6Zf77wgHt1Krawuqqh1HOb7Q6wog
-         PWdAr1z59YjUGxhjpCGVcu+ITQWSz7tmcnsr2yHKCRxG1SrzAGd/lkrIZU1It4pWSuBG
-         V+BNQuVy6FTtBD5WNVJJM/+oPM1r7KYaBBTqK2djDhJhtcigsc87h8D9AT/zbwMOJLCN
-         BogzaZhXknwLhg/NtJDNM9iAIqNewzSJxOoAAwbF0GyMSd3bb784aL2JR2bNW7C6y1m8
-         sEkg==
-X-Gm-Message-State: AOAM532Mx4Tx//gORoADM2IosyQJiPFcot6GLy555m5AVBiNq8WNEFPZ
-        Xxh2EuxLhE3SS4trdz2Q+ZU2Kw==
-X-Google-Smtp-Source: ABdhPJx44wtpcXY49u+vSpj+s3jxO6CX63sa6iUMPfMt3faya84cR50IshGuCFEzc5DOsx9EndMHow==
-X-Received: by 2002:aca:4e55:: with SMTP id c82mr2959809oib.43.1615394991194;
-        Wed, 10 Mar 2021 08:49:51 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j72sm2575320oih.46.2021.03.10.08.49.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 08:49:50 -0800 (PST)
-Date:   Wed, 10 Mar 2021 10:49:49 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org, sibis@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        id S233378AbhCJQue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:50:34 -0500
+Received: from mga04.intel.com ([192.55.52.120]:42702 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233135AbhCJQuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:50:15 -0500
+IronPort-SDR: COY+D1jAQ23QKAABkPhF5T26ytySGhXXv8ScVtG/ofQUnqNCJoYoa/NK0MOn2vQ2AszUujeI7u
+ 2g49MJLKvCUQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186132288"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="186132288"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:50:08 -0800
+IronPort-SDR: Mrbw2ibK0dfP+/9hNkJEaFNeK5ajW8dmrFCGWLi9Pb1OxZTKy4J7zSIrXmZSNy5L/FDta8p8nl
+ TGETxF8Ul22A==
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="431280369"
+Received: from umalluga-mobl.amr.corp.intel.com (HELO [10.209.90.191]) ([10.209.90.191])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:50:07 -0800
+Subject: Re: [PATCH V2 16/25] perf/x86: Register hybrid PMUs
+To:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
-Message-ID: <YEj4rZXGlaO+a4kg@builder.lan>
-References: <1615361829-22370-1-git-send-email-pillair@codeaurora.org>
+Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
+        adrian.hunter@intel.com
+References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+ <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <a1adb737-f126-ecec-9bca-a1b5bdb76156@intel.com>
+Date:   Wed, 10 Mar 2021 08:50:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615361829-22370-1-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10 Mar 01:37 CST 2021, Rakesh Pillai wrote:
+On 3/10/21 8:37 AM, kan.liang@linux.intel.com wrote:
+> -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> -	if (err)
+> -		goto out2;
+> +	if (!is_hybrid()) {
+> +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> +		if (err)
+> +			goto out2;
+> +	} else {
+> +		u8 cpu_type = get_hybrid_cpu_type(smp_processor_id());
+> +		struct x86_hybrid_pmu *hybrid_pmu;
+> +		int i;
 
-> Add the WPSS remoteproc node in dts for
-> PIL loading.
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
-> - This change is dependent on the below patch series
-> 1) https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
-> 2) https://lore.kernel.org/patchwork/project/lkml/list/?series=488365
-> ---
->  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  4 +++
->  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 47 +++++++++++++++++++++++++++++++++
->  2 files changed, 51 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> index 950ecb2..603f56b 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> @@ -26,6 +26,10 @@
->  	status = "okay";
->  };
->  
-> +&remoteproc_wpss {
-> +	status = "okay";
-> +};
-> +
->  &uart5 {
->  	status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 8af6d77..26dd466 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -53,6 +53,16 @@
->  			no-map;
->  			reg = <0x0 0x80b00000 0x0 0x100000>;
->  		};
-> +
-> +		wlan_fw_mem: memory@80c00000 {
-> +			no-map;
-> +			reg = <0x0 0x80c00000 0x0 0xc00000>;
-> +		};
-> +
-> +		wpss_mem: memory@9ae00000 {
-> +			no-map;
-> +			reg = <0x0 0x9ae00000 0x0 0x1900000>;
-> +		};
->  	};
->  
->  	cpus {
-> @@ -305,6 +315,43 @@
->  			};
->  		};
->  
-> +		remoteproc_wpss: remoteproc@8a00000 {
-> +			compatible = "qcom,sc7280-wpss-pil";
-> +			reg = <0 0x08a00000 0 0x10000>;
-> +
-> +			interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
-> +					      <&wpss_smp2p_in 0 0>,
+Where's the preempt_disable()?
 
-IRQ_TYPE_NONE?
+> +static void init_hybrid_pmu(int cpu)
+> +{
+> +	unsigned int fixed_mask, unused_eax, unused_ebx, unused_edx;
+> +	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
+> +	u8 cpu_type = get_hybrid_cpu_type(cpu);
+> +	struct x86_hybrid_pmu *pmu = NULL;
+> +	struct perf_cpu_context *cpuctx;
+> +	int i;
 
-Apart from that this looks good.
+Ditto.
 
-Regards,
-Bjorn
-
-> +					      <&wpss_smp2p_in 1 0>,
-> +					      <&wpss_smp2p_in 2 0>,
-> +					      <&wpss_smp2p_in 3 0>,
-> +					      <&wpss_smp2p_in 7 0>;
-> +			interrupt-names = "wdog", "fatal", "ready", "handover",
-> +					  "stop-ack", "shutdown-ack";
-> +
-> +			memory-region = <&wpss_mem>;
-> +
-> +			qcom,smem-states = <&wpss_smp2p_out 0>;
-> +			qcom,smem-state-names = "stop";
-> +
-> +			resets = <&aoss_reset AOSS_CC_WCSS_RESTART>;
-> +			reset-names = "restart";
-> +
-> +			qcom,halt-regs = <&tcsr_mutex_regs 0x37000>;
-> +
-> +			status = "disabled";
-> +
-> +			glink-edge {
-> +				interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
-> +							     IPCC_MPROC_SIGNAL_GLINK_QMP
-> +							     IRQ_TYPE_EDGE_RISING>;
-> +				mboxes = <&ipcc IPCC_CLIENT_WPSS
-> +						IPCC_MPROC_SIGNAL_GLINK_QMP>;
-> +
-> +				label = "wpss";
-> +				qcom,remote-pid = <13>;
-> +			};
-> +		};
-> +
->  		pdc: interrupt-controller@b220000 {
->  			compatible = "qcom,sc7280-pdc", "qcom,pdc";
->  			reg = <0 0x0b220000 0 0x30000>;
-> -- 
-> 2.7.4
-> 
+Are we really sure the IPIs are worth the trouble?  Why don't we just
+cache the leaf when we bring the CPU up like just about every other
+thing we read from CPUID?
