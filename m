@@ -2,119 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8973E333646
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B001D33363D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhCJHT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
+        id S229599AbhCJHRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbhCJHS4 (ORCPT
+        with ESMTP id S229499AbhCJHRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:18:56 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69C6C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:18:55 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id w8so1085954pjf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:18:55 -0800 (PST)
+        Wed, 10 Mar 2021 02:17:06 -0500
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D528FC061760
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:17:03 -0800 (PST)
+Received: by mail-vs1-xe29.google.com with SMTP id a15so8217526vsi.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:17:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hIA/QB2KU+rrzZfq152LcTIhO8HMik78jGjN3khGL2w=;
-        b=vz2ANmllNrB/6zQ9cHOSxTTl8EVWr8HiijV1nbwR/L0G7Z1gsPxSgS5CY2R9mA1izi
-         MWZuURk1fl7leO2hdYc3lGNOTHROW53XdZCojj80ctOKedD0uJuEX/uzOb1GPlah9DEK
-         FC5eiKETAaCYD0sFveY1tzmALg3F9ux6F+nd790OK3crxRek97CJQ7CFiZiKRioARWRk
-         v/XXyyx10LsMyZ6DQjx/6Rs6b3rxfXoZJbo7isYy/d2bvxafS4y7ZuhvRyDI53qoBKkv
-         zossrebZe9rEq6Ym8OP54i0Qvt5nui64C8yKdBnVYMXE9d/MgkN5eA87yqfl84Xq5WRJ
-         kq7A==
+        d=deviqon.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5O4bWXBCQeQuk0BdQom2dNS7Jmj8ph1wsbHk08MJAMo=;
+        b=h1lBv7HHj122ZOQj79sUyMEcd0w5tZ5oV+JyqbEAP6IjncbQiGVy8O14kGSopZ/RBx
+         9v2gMNrpI9dt04NG+QIN/gmmZWg3fVjIn1tcv81o1Zn57C+4gpo/i+K6DDJGIjAYDD1d
+         KZbwTuKJwz1WrxDTxcAVijM/GojWEq9d8mJct7JWW7QAaNeF1syI/sRvDtbi+HPObcfq
+         5uHQyTctmvjfVGPbz5aASZ00uqwQaJVO9XeaiinwzqpdY68XcFk8CFpmzqPAMAbdjUeH
+         vuZGlGdUJgO/m0f2Ul4b4DUBi6I43LHxDjtkfkGsgWwGw6cEOKY5wfKkRuGxJLBAuKXt
+         OI4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hIA/QB2KU+rrzZfq152LcTIhO8HMik78jGjN3khGL2w=;
-        b=eTgySdIsBdiGJVDCMHXDwW1hvFWG5WT3pJ5y8j/ST02uolrkQ77yJTnm/q7VaKOTfa
-         kjrX+kcLlJZYdXU2lP1iYEaSdRrFS11cvzW32V1aUiESNU68SPvLWTUPjfnjv97b4l2m
-         8z5Lq35GK4rmFVyFmPXn2cXoXgJTygVeoqVHV4K1X2ZaIWMrkTdKQDlMLXDdrAdQaBH5
-         bMvVmH4FO+aTHOv7n5+/aH3G4qfcJYyI8FdV4In+XY7npx40HJiO7Z7uKI4YD3TfBQb+
-         bvD3XxinswyJxAW0FFvsu/tT/5JNPp8scXJCdvypHw4eIHwRlI9mOZ7BBtrxkphyKDKc
-         MVBA==
-X-Gm-Message-State: AOAM531tDo2u/mXky3C7Ufjg+R3LIC2HHOS5UnyETTZPGnijNDlpJOwx
-        YPqYkvNSmyuti0lGHOs964p/vQ==
-X-Google-Smtp-Source: ABdhPJwowWjHya3/6Nc15zurktLPm17MKjE9NrlSzAz5tNvj1VTRUBM73Bxtm4hu/RA+iDjyEo8a6Q==
-X-Received: by 2002:a17:90a:6e44:: with SMTP id s4mr2058884pjm.112.1615360735426;
-        Tue, 09 Mar 2021 23:18:55 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id h15sm2828868pfo.20.2021.03.09.23.18.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Mar 2021 23:18:55 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     will@kernel.org, akpm@linux-foundation.org, david@redhat.com,
-        bodeddub@amazon.com, osalvador@suse.de, mike.kravetz@oracle.com,
-        rientjes@google.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, duanxiongchun@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 3/3] arm64: mm: hugetlb: add support for free vmemmap pages of HugeTLB
-Date:   Wed, 10 Mar 2021 15:15:35 +0800
-Message-Id: <20210310071535.35245-4-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210310071535.35245-1-songmuchun@bytedance.com>
-References: <20210310071535.35245-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5O4bWXBCQeQuk0BdQom2dNS7Jmj8ph1wsbHk08MJAMo=;
+        b=dsk9D/FzBmSXhuRzKF57y40ZoXKY5CBQVy84FVkvOpGKQL2cqFm/cYlm1A4wD3qZOZ
+         YCBWBOXflPZz0qdOfpYmQ4rDs+Bp0S1LrRy6mQA9rmvqNaukbR28xJ+s1OHQvuCVoQI7
+         xltpx3HqWx1oS8eqogAOcUxgopUXxDXrb9N6Tj2AH394YU1svuZpK2Z/pI9FQg9ZvHUq
+         iJMRyoOi65NBOxkN9OE8+NG4uup1lgra/I306QYdqdoq3veOFsz/Fc69lfvYuJ/ZFh4g
+         ue4aE8wfc95kNuv0M1U8+KQe01/BpQXz7DlOL+aRQoKwNZW2T4SXPg2P+6t1csaYZOu1
+         TFoA==
+X-Gm-Message-State: AOAM532aQjzcObQhiRI/Wm/7cfgodn4xjaqDJ+7r8A8g75vYKZxKqrEY
+        6FE7LjuxKMhjh4DlpdXHrZcDrsHh+VsQTN7fBcS8Yg==
+X-Google-Smtp-Source: ABdhPJytTW7QIOLB8UPImbCUal1chmTmNyv6Z6uRJmeRfc+N68L2N1shNta5YcuAAXSn3Da5NzDEfquDQar0GSWxbDA=
+X-Received: by 2002:a67:31d1:: with SMTP id x200mr972514vsx.16.1615360622918;
+ Tue, 09 Mar 2021 23:17:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210308145502.1075689-1-aardelean@deviqon.com>
+ <20210308145502.1075689-2-aardelean@deviqon.com> <8a6ec9a1-71f8-ce1d-600a-66eba9244a54@metafoo.de>
+In-Reply-To: <8a6ec9a1-71f8-ce1d-600a-66eba9244a54@metafoo.de>
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+Date:   Wed, 10 Mar 2021 09:16:51 +0200
+Message-ID: <CAASAkoZ+3T27KK0HN6YikKczUFS15xSpOssaOmx4NtDQKiKvHQ@mail.gmail.com>
+Subject: Re: [PATCH 01/10] spi: spi-axi-spi-engine: remove usage of delay_usecs
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-tegra@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        broonie@kernel.org, gregkh@linuxfoundation.org, elder@kernel.org,
+        johan@kernel.org, vireshk@kernel.org, rmfrfs@gmail.com,
+        f.fainelli@gmail.com, ldewangan@nvidia.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, linux@deviqon.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The preparation of supporting freeing vmemmap associated with each
-infrastructure is ready, so now we can support it for arm64.
+On Mon, 8 Mar 2021 at 18:42, Lars-Peter Clausen <lars@metafoo.de> wrote:
+>
+> On 3/8/21 3:54 PM, Alexandru Ardelean wrote:
+> > The 'delay_usecs' field was handled for backwards compatibility in case
+> > there were some users that still configured SPI delay transfers with
+> > this field.
+> >
+> > They should all be removed by now.
+> >
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> > ---
+> >   drivers/spi/spi-axi-spi-engine.c | 12 ++++--------
+> >   1 file changed, 4 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/spi/spi-axi-spi-engine.c b/drivers/spi/spi-axi-spi-engine.c
+> > index af86e6d6e16b..80c3e38f5c1b 100644
+> > --- a/drivers/spi/spi-axi-spi-engine.c
+> > +++ b/drivers/spi/spi-axi-spi-engine.c
+> > @@ -170,14 +170,10 @@ static void spi_engine_gen_sleep(struct spi_engine_program *p, bool dry,
+> >       unsigned int t;
+> >       int delay;
+> >
+> > -     if (xfer->delay_usecs) {
+> > -             delay = xfer->delay_usecs;
+> > -     } else {
+> > -             delay = spi_delay_to_ns(&xfer->delay, xfer);
+> > -             if (delay < 0)
+> > -                     return;
+> > -             delay /= 1000;
+> > -     }
+> > +     delay = spi_delay_to_ns(&xfer->delay, xfer);
+> > +     if (delay < 0)
+> > +             return;
+>
+> Bit of a nit, but this could be `delay <= 0` and then drop the check for
+> `delay == 0` below.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- arch/arm64/mm/mmu.c | 5 +++++
- fs/Kconfig          | 4 ++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+hmm, that's a bit debatable, because the `delay == 0` check comes
+after `delay /= 1000` ;
+to do what you're suggesting, it would probably need a
+DIV_ROUND_UP(delay, 1000) to make sure that even sub-microsecond
+delays don't become zero;
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 3802cfbdd20d..6051a120c906 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -22,6 +22,7 @@
- #include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/vmalloc.h>
-+#include <linux/hugetlb.h>
- 
- #include <asm/barrier.h>
- #include <asm/cputype.h>
-@@ -1109,6 +1110,10 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 	pmd_t *pmdp;
- 
- 	WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
-+
-+	if (is_hugetlb_free_vmemmap_enabled() && !altmap)
-+		return vmemmap_populate_basepages(start, end, node, altmap);
-+
- 	do {
- 		next = pmd_addr_end(addr, end);
- 
-diff --git a/fs/Kconfig b/fs/Kconfig
-index b5dcc68aab25..d90860135844 100644
---- a/fs/Kconfig
-+++ b/fs/Kconfig
-@@ -239,9 +239,9 @@ config HUGETLB_PAGE
- 
- config HUGETLB_PAGE_FREE_VMEMMAP
- 	def_bool HUGETLB_PAGE
--	depends on X86_64
-+	select HAVE_BOOTMEM_INFO_NODE if X86_64
- 	depends on SPARSEMEM_VMEMMAP
--	depends on HAVE_BOOTMEM_INFO_NODE
-+	depends on X86_64 || ARM64
- 
- config MEMFD_CREATE
- 	def_bool TMPFS || HUGETLBFS
--- 
-2.11.0
+if you're acking this suggestion i'll implement it;
+i'll wait a few more days to see if there are any other acks or
+complaints on the set before sending a V2;
 
+btw: this new spi_delay struct supports delays in microseconds,
+nanoseconds and clock cycles;
+at some point it may be interesting to use a
+`spi_delay_to_clk_cycles()` for this driver and other similar;
+
+>
+> > +     delay /= 1000;
+> >
+> >       if (delay == 0)
+> >               return;
+>
+>
