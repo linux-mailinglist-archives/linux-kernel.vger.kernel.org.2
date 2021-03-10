@@ -2,61 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B175334188
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 060E833418C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhCJP33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:29:29 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:48889 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233145AbhCJP3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:29:08 -0500
-Received: by mail-il1-f197.google.com with SMTP id n12so13123182ili.15
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:29:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=K6Wm1ki0OuY/h4OHfpHCmRiUcTgPHLwbneYsELCaWwg=;
-        b=pXZX9y/4cYBAe2cKfd2k+jCloQfM7oJb3W1UGyOHk0+c3AKTFjR4yIN28RGNuNgvpC
-         7HhcB71u0zTSqbcq+Fa6qv7UxnjQRgJuuUeXqYp+4rGgThCeK+kcHsv0QFsCbCxsG/6U
-         CcKUbLAD6HB3uWTrKDtYMhK8jHoNtSsRzUD/gUNd1htKvNRLn0OPbGEOYcVaZY04vMrP
-         8s4NVuq8BhmkLo88ILolpp1qDMTaGXVm0tPpfac4Qxl04heAMk4w2GsSaj4eNjJsqu0G
-         uedLo3/RCmRnmd3TTyXMG/UPrxhEIxF9c2QZPg0qDFjiEFzk00HRiqFOutL5VZo5imaG
-         SwRA==
-X-Gm-Message-State: AOAM530yP0Z3RtcCFrk2XTgMxu2mXZf2wT2XNO5nQb7JfAh2/Yg2j7Ln
-        xZbdRlHUHavstx/g0VHDZ+Fj3bpZ5EdhePbOdbH73duNruVr
-X-Google-Smtp-Source: ABdhPJxkmz59adw2FmI+wtjU9F8hGi5CsBgfa+Lt2Ud8V9Yi1BwLSSQKFpesfuxmMpT07ysaEjv62L0NUSLB5mdzmPeiCU6m/InK
+        id S232303AbhCJPah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:30:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232408AbhCJPae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:30:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA67964F95;
+        Wed, 10 Mar 2021 15:30:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615390234;
+        bh=bLPrYJC1BcpB13zDjdG1OkrEvZsw6ZD+RF8inzAoyb0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rS8nxjbC7V0QP/QlY8hu9UamkqcjcKZOGcI+RsvFq4L2b4qyKIKKJcxnLlNcK6Gko
+         5dmG9WbzRb02cpPpTZ2uedXsKUb05mmuGEctHq8yBU8f1mKBziEgeIJ6yEPGk48OGz
+         dxGh1qNy+on5/Og3UmM9cw3HPmU8xk1OfbZciEEn3XJRnySKSkaED2UFp8U4Ig+JHM
+         7FYrxP1GcFm9MKimBYFTEx4ny7DxCXbjdn+CaBqQpJKvtdWIAx5vMVQopPmFepNawX
+         mdvEYGD2Toy8bC19dhfF0w2Y3eSUaWE9vINBAafpTzDxdluVJhtgAYLTs3ct/J4Uuq
+         T81Lv7/KORdwQ==
+Date:   Wed, 10 Mar 2021 17:30:09 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
+        rick.p.edgecombe@intel.com, haitao.huang@intel.com,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com
+Subject: Re: [PATCH 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
+Message-ID: <YEjmARc/e/TQoGAg@kernel.org>
+References: <20210301100037.GA6699@zn.tnic>
+ <3fce1dd2abd42597bde7ae9496bde7b9596b2797.camel@intel.com>
+ <20210301103043.GB6699@zn.tnic>
+ <7603ef673997b6674f785d333a4f263c749d2cf3.camel@intel.com>
+ <20210301105346.GC6699@zn.tnic>
+ <e509c6c1e3644861edafb18e4045b813f9f344b3.camel@intel.com>
+ <20210301113257.GD6699@zn.tnic>
+ <0adc41774945bf9d6e6a72a93b83c80aa8c59544.camel@intel.com>
+ <op.0zmwm1ogwjvjmi@arkane-mobl1.gar.corp.intel.com>
+ <22f8a4be-b0ec-dfc5-cf05-a2586ce7557c@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cda2:: with SMTP id g2mr3026959ild.297.1615390148344;
- Wed, 10 Mar 2021 07:29:08 -0800 (PST)
-Date:   Wed, 10 Mar 2021 07:29:08 -0800
-In-Reply-To: <82aa1cb7-9ac4-6c7f-f6c6-baeca226365f@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f7411105bd30538c@google.com>
-Subject: Re: [syzbot] possible deadlock in io_sq_thread_finish
-From:   syzbot <syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22f8a4be-b0ec-dfc5-cf05-a2586ce7557c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Mar 02, 2021 at 07:58:37AM -0800, Dave Hansen wrote:
+> On 3/2/21 7:48 AM, Haitao Huang wrote:
+> > 
+> > Hi Haitao, Jarkko,
+> > 
+> > Do you have more concrete use case of needing "sgx2" in /proc/cpuinfo?
+> 
+> Kai, please remove it from your series.  I'm not hearing any arguments
+> remotely close enough to what Boris would require in order to keep it.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Agreed.
 
-Reported-and-tested-by: syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         7d41e854 io_uring: remove indirect ctx into sqo injection
-git tree:       git://git.kernel.dk/linux-block io_uring-5.12
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b3c6cab008c50864
-dashboard link: https://syzkaller.appspot.com/bug?extid=ac39856cb1b332dbbdda
-compiler:       
-
-Note: testing is done by a robot and is best-effort only.
+/Jarkko
