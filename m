@@ -2,84 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358BC33334B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C87333352
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbhCJCth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:49:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231992AbhCJCt0 (ORCPT
+        id S232200AbhCJCuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:50:39 -0500
+Received: from mail-io1-f52.google.com ([209.85.166.52]:35963 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231703AbhCJCue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:49:26 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F174C06174A;
-        Tue,  9 Mar 2021 18:49:24 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwGkR4kxmz9sSC;
-        Wed, 10 Mar 2021 13:49:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615344561;
-        bh=U83wnt1o6g2sY398nuJhHC983wVTXkhHWKlBjrg5NNA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=t0VVDVboa3vxeILYA2NiVJp3jjFSl58CVoVmYkivmKeTJ605mvb4H2e1LEZGubLfT
-         NKSK/KQk+It8JkLvt+nXGAR5QUYFHj5jEdmunEJjo6/FlStSlco8dZlwp47SQHrQ+n
-         xCmslaXHnGgz+av8pXkrP0v5tSPVNoaobMDOUVVQId0JTFw3KmTpNJWI9pXWJImv7K
-         bicShT+jkK1+LTTylFlY7Qp+1Trrhz1+sm6m0fvrtOnStamEDqlvJCuQWtFL8Ec7Lu
-         ttxKaDSDy4rOj7kXp66lLH25gfvSRds85PNZPDGyDf+RCuiem7fw5W55wZQXd2cF/c
-         uVNAs87yneVPQ==
-Date:   Wed, 10 Mar 2021 13:49:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the usb tree
-Message-ID: <20210310134916.367c96b5@canb.auug.org.au>
+        Tue, 9 Mar 2021 21:50:34 -0500
+Received: by mail-io1-f52.google.com with SMTP id n14so16334709iog.3;
+        Tue, 09 Mar 2021 18:50:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qGkhmyvB04/++GcI6nNGGGhJTLlh0dJy/BDKFiCIA44=;
+        b=skuOGICKHk9aWyOUoE+fveG1LE7gVP5Q0SF78bTgXylS4Ft6U947Qn+QK7DF4+oa/O
+         KyAKrJ0l0UKS1xaLIZdei2z/D1ueAPkOncphSl2OryPvzIYqRsvCALdBcm9II28JbCLY
+         UkVudliu/0hAcVRAqy8UnS+Qxu8o3S+Io1iwe0ynwUM9re+Q3bXH9VKw3XCQpz3IegrN
+         DdQst39WSSNQLcknrQY52pr7DtqNlsBroGz8HAl/qqF6fjsyOQKYgEklXcB14GJzuTBD
+         g2tPJ00vru+75M+xLacCaZBZVyb1aJepW5iFFsIYb4u8ydsTSfwdBIkDGEhSGvAX+oFL
+         +6ZQ==
+X-Gm-Message-State: AOAM530f+HC9/t+LTJM9J1vR+sl3Qoh/HKIFFSItvNsMDlOM+kQ3wOdL
+        C05DfRvC/oVsB7TZNSNJ/g==
+X-Google-Smtp-Source: ABdhPJwmlsy2Cjw0y3wmn+ItEQ3eGdZ0VIhmu+UkmB+AUjgJsc1KgVxKNoaMvsyuyx2Kk5n+k7eTew==
+X-Received: by 2002:a02:6c8d:: with SMTP id w135mr1144154jab.125.1615344633132;
+        Tue, 09 Mar 2021 18:50:33 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id g5sm8128792ild.25.2021.03.09.18.50.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 18:50:32 -0800 (PST)
+Received: (nullmailer pid 1648376 invoked by uid 1000);
+        Wed, 10 Mar 2021 02:50:30 -0000
+Date:   Tue, 9 Mar 2021 19:50:30 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Al Cooper <alcooperx@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v4 1/2] dt-bindings: Add support for the Broadcom UART
+ driver
+Message-ID: <20210310025030.GA1645614@robh.at.kernel.org>
+References: <20210308170522.4272-1-alcooperx@gmail.com>
+ <20210308170522.4272-2-alcooperx@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/P.Q6tggEOgNdsPTQBenKwye";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308170522.4272-2-alcooperx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/P.Q6tggEOgNdsPTQBenKwye
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Mar 08, 2021 at 12:05:21PM -0500, Al Cooper wrote:
+> Add DT bindings for the Broadcom 8250 based UART driver. This
+> UART is based on an 8250 but adds additional functionality. The
+> additional features include the ability to use DMA for transfers and
+> a baud rate clock system that is more accurate at high baud rates.
+> This UART is backward compatible with the standard 8250 UART.
 
-Hi all,
+My comments on the previous v4 still apply.
 
-After merging the usb tree, today's linux-next build (htmldocs) produced
-this warning:
-
-include/linux/usb/ch9.h:1: warning: no structured comments found
-
-Introduced by commit
-
-  855b35ea96c4 ("usb: common: move function's kerneldoc next to its definit=
-ion")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/P.Q6tggEOgNdsPTQBenKwye
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBIM6wACgkQAVBC80lX
-0GxcIwf/b/FgUwC0MZIopo7FCPdbJQbW03Vd+ZrvP0MpNCApBt9tnIdj4XNCIsWQ
-NAK4c0qxzqPvlmdC+QMxVMjlXJmIR+cSIcdp+G0KC9jDkv3P9T3fkKKokn2BYFoa
-UP8WdSehb0qj/AYj9OcFs2Vkh0+/vgi35gXpXXnJXBr4Akvct5IA2pLNKJGphhhP
-Ci4YfD7tG9TqjFdX+LBRLDwDDkdAt9m9a8T/X/FyjqlP6Nioha7nRaISLxWNlEmG
-e26C23AuQsis7jMIfcuf+H4JQy9bdoViOfwgE98FjjY8r79OVZPv9kDkPcZY9HuP
-TXEZC3wwyzklKW667zi1ERcK+uhuDg==
-=Ucjn
------END PGP SIGNATURE-----
-
---Sig_/P.Q6tggEOgNdsPTQBenKwye--
+> 
+> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+> ---
+>  .../bindings/serial/brcm,bcm7271-uart.yaml    | 96 +++++++++++++++++++
+>  1 file changed, 96 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml b/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+> new file mode 100644
+> index 000000000000..f3d58e613480
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+> @@ -0,0 +1,96 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/serial/brcm,bcm7271-uart.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Broadcom 8250 based serial port devicetree bindings
+> +
+> +maintainers:
+> +  - Al Cooper <alcooperx@gmail.com>
+> +
+> +description: |+
+> +  The Broadcom UART is based on the basic 8250 UART but with
+> +  enhancements for more accurate high speed baud rates and support
+> +  for DMA.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^serial@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - brcm,bcm7271-uart
+> +          - brcm,bcm7278-uart
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 5
+> +
+> +  reg-names:
+> +    description: The UART register block and optionally the DMA register blocks.
+> +    oneOf:
+> +      - items:
+> +          - const: uart
+> +      - items:
+> +          - const: uart
+> +          - const: dma_arb
+> +          - const: dma_rx
+> +          - const: dma_tx
+> +          - const: dma_intr2
+> +
+> +  clocks:
+> +    minItems: 1
+> +
+> +  clock-names:
+> +    const: sw_baud
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  interrupt-names:
+> +    description: The UART interrupt and optionally the DMA interrupt.
+> +    oneOf:
+> +      - items:
+> +          - const: uart
+> +      - items:
+> +          - const: uart
+> +          - const: dma
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +  - interrupt-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    serial@840d000 {
+> +        compatible = "brcm,bcm7271-uart";
+> +        reg = <0x840d000 0x20>;
+> +        reg-names = "uart";
+> +        interrupts = <0x0 0x62 0x4>;
+> +        interrupt-names = "uart";
+> +        clocks = <&scmi_clk 190>;
+> +        clock-names = "sw_baud";
+> +    };
+> +
+> +    serial@840e000 {
+> +        compatible = "brcm,bcm7271-uart";
+> +        reg = <0x840e000 0x20>,
+> +              <0x840e080 0x8>,
+> +              <0x840e100 0xa8>,
+> +              <0x840e200 0x4c>,
+> +              <0x840e300 0x30>;
+> +        reg-names = "uart", "dma_arb", "dma_rx", "dma_tx", "dma_intr2";
+> +        interrupts = <0x0 0x62 0x4>, <0x0 0x75 0x4>;
+> +        interrupt-names = "uart", "dma";
+> +        clocks = <&scmi_clk 190>;
+> +        clock-names = "sw_baud";
+> +    };
+> -- 
+> 2.17.1
+> 
