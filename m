@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700C5333EE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B49333F3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhCJN15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:27:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46690 "EHLO mail.kernel.org"
+        id S233854AbhCJNbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:31:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233227AbhCJNZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2AD464FD8;
-        Wed, 10 Mar 2021 13:25:05 +0000 (UTC)
+        id S233520AbhCJNZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BE9E64FDA;
+        Wed, 10 Mar 2021 13:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382707;
-        bh=8O5WTqJe4DAwwRP33UWo+XAsbxy43DK2gxOzBEpyR74=;
+        s=korg; t=1615382750;
+        bh=nDf8v/NkMj2iRCXOH9WW+ZvaX1z+KuY45HJfFiNlMOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i9g6TfCGBHOTedRMCXcAUNaMO3cyDleht/9wVd+vFKM6d2zsHqhI/8EwKSFOhdfvf
-         9jD8L8XFijkc6BA428enAF5S/8M3qRULyQJDXGqfKZ29uMTyaB3+yZNCRpLAoKnYfM
-         a4Oqg1Ms3b3sou+r4l0jk9GmEnd/A4ixpiCdvyb0=
+        b=W7wavN09Gadbux8rJRVUQIm3V7e0wG4uAKnkcWzOHnPEe/D6L59OL9BopFDF2Yrp9
+         P3gmfvdBb6tBnD1Ey3d1GS5NIquwAKtv/6GrsZFm3rocTQhiK4RQOJtX99tJMhPtiy
+         gU6g2SUIduEA26V5TrforZ4GxEi5Dn6G8Ssql+N4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Elaine Zhang <zhangiqng@rock-chips.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.14 03/20] PM: runtime: Update device status before letting suppliers suspend
-Date:   Wed, 10 Mar 2021 14:24:40 +0100
-Message-Id: <20210310132320.624261268@linuxfoundation.org>
+        stable@vger.kernel.org, Ethan Warth <redyoshi49q@gmail.com>,
+        "Wladimir J. van der Laan" <laanwj@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 33/39] HID: mf: add support for 0079:1846 Mayflash/Dragonrise USB Gamecube Adapter
+Date:   Wed, 10 Mar 2021 14:24:41 +0100
+Message-Id: <20210310132320.749973503@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.512307035@linuxfoundation.org>
-References: <20210310132320.512307035@linuxfoundation.org>
+In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
+References: <20210310132319.708237392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,122 +42,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Ethan Warth <redyoshi49q@gmail.com>
 
-commit 44cc89f764646b2f1f2ea5d1a08b230131707851 upstream.
+[ Upstream commit 1008230f2abeb624f6d71b2e1c424fa4eeebbf84 ]
 
-Because the PM-runtime status of the device is not updated in
-__rpm_callback(), attempts to suspend the suppliers of the given
-device triggered by rpm_put_suppliers() called by it may fail.
+Mayflash/Dragonrise seems to have yet another device ID for one of their
+Gamecube controller adapters.  Previous to this commit, the adapter
+registered only one /dev/input/js* device, and all controller inputs (from
+any controller) were mapped to this device.  This patch defines the 1846
+USB device ID and enables the HID_QUIRK_MULTI_INPUT quirk for it, which
+fixes that (with the patch, four /dev/input/js* devices are created, one
+for each of the four controller ports).
 
-Fix this by making __rpm_callback() update the device's status to
-RPM_SUSPENDED before calling rpm_put_suppliers() if the current
-status of the device is RPM_SUSPENDING and the callback just invoked
-by it has returned 0 (success).
-
-While at it, modify the code in __rpm_callback() to always check
-the device's PM-runtime status under its PM lock.
-
-Link: https://lore.kernel.org/linux-pm/CAPDyKFqm06KDw_p8WXsM4dijDbho4bb6T4k50UqqvR1_COsp8g@mail.gmail.com/
-Fixes: 21d5c57b3726 ("PM / runtime: Use device links")
-Reported-by: Elaine Zhang <zhangqing@rock-chips.com>
-Diagnosed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Elaine Zhang <zhangiqng@rock-chips.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ethan Warth <redyoshi49q@gmail.com>
+Tested-by: Wladimir J. van der Laan <laanwj@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/power/runtime.c |   62 +++++++++++++++++++++++++------------------
- 1 file changed, 37 insertions(+), 25 deletions(-)
+ drivers/hid/hid-ids.h    | 1 +
+ drivers/hid/hid-mf.c     | 2 ++
+ drivers/hid/hid-quirks.c | 2 ++
+ 3 files changed, 5 insertions(+)
 
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -306,22 +306,22 @@ static void rpm_put_suppliers(struct dev
- static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
- 	__releases(&dev->power.lock) __acquires(&dev->power.lock)
- {
--	int retval, idx;
- 	bool use_links = dev->power.links_count > 0;
-+	bool get = false;
-+	int retval, idx;
-+	bool put;
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index ab2be7a115d8..2f1516b32837 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -358,6 +358,7 @@
+ #define USB_DEVICE_ID_DRAGONRISE_DOLPHINBAR	0x1803
+ #define USB_DEVICE_ID_DRAGONRISE_GAMECUBE1	0x1843
+ #define USB_DEVICE_ID_DRAGONRISE_GAMECUBE2	0x1844
++#define USB_DEVICE_ID_DRAGONRISE_GAMECUBE3	0x1846
  
- 	if (dev->power.irq_safe) {
- 		spin_unlock(&dev->power.lock);
-+	} else if (!use_links) {
-+		spin_unlock_irq(&dev->power.lock);
- 	} else {
-+		get = dev->power.runtime_status == RPM_RESUMING;
-+
- 		spin_unlock_irq(&dev->power.lock);
- 
--		/*
--		 * Resume suppliers if necessary.
--		 *
--		 * The device's runtime PM status cannot change until this
--		 * routine returns, so it is safe to read the status outside of
--		 * the lock.
--		 */
--		if (use_links && dev->power.runtime_status == RPM_RESUMING) {
-+		/* Resume suppliers if necessary. */
-+		if (get) {
- 			idx = device_links_read_lock();
- 
- 			retval = rpm_get_suppliers(dev);
-@@ -336,24 +336,36 @@ static int __rpm_callback(int (*cb)(stru
- 
- 	if (dev->power.irq_safe) {
- 		spin_lock(&dev->power.lock);
--	} else {
--		/*
--		 * If the device is suspending and the callback has returned
--		 * success, drop the usage counters of the suppliers that have
--		 * been reference counted on its resume.
--		 *
--		 * Do that if resume fails too.
--		 */
--		if (use_links
--		    && ((dev->power.runtime_status == RPM_SUSPENDING && !retval)
--		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
--			idx = device_links_read_lock();
-+		return retval;
-+	}
- 
-- fail:
--			rpm_put_suppliers(dev);
-+	spin_lock_irq(&dev->power.lock);
- 
--			device_links_read_unlock(idx);
--		}
-+	if (!use_links)
-+		return retval;
-+
-+	/*
-+	 * If the device is suspending and the callback has returned success,
-+	 * drop the usage counters of the suppliers that have been reference
-+	 * counted on its resume.
-+	 *
-+	 * Do that if the resume fails too.
-+	 */
-+	put = dev->power.runtime_status == RPM_SUSPENDING && !retval;
-+	if (put)
-+		__update_runtime_status(dev, RPM_SUSPENDED);
-+	else
-+		put = get && retval;
-+
-+	if (put) {
-+		spin_unlock_irq(&dev->power.lock);
-+
-+		idx = device_links_read_lock();
-+
-+fail:
-+		rpm_put_suppliers(dev);
-+
-+		device_links_read_unlock(idx);
- 
- 		spin_lock_irq(&dev->power.lock);
- 	}
+ #define USB_VENDOR_ID_DWAV		0x0eef
+ #define USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER	0x0001
+diff --git a/drivers/hid/hid-mf.c b/drivers/hid/hid-mf.c
+index 03f10516131d..a41202d38509 100644
+--- a/drivers/hid/hid-mf.c
++++ b/drivers/hid/hid-mf.c
+@@ -161,6 +161,8 @@ static const struct hid_device_id mf_devices[] = {
+ 		.driver_data = HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE2),
+ 		.driver_data = 0 }, /* No quirk required */
++	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE3),
++		.driver_data = HID_QUIRK_MULTI_INPUT },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(hid, mf_devices);
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index 10cb42a00fe8..8fbe7b9cd84a 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -74,6 +74,7 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_REDRAGON_SEYMUR2), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_DOLPHINBAR), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE1), HID_QUIRK_MULTI_INPUT },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE3), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_PS3), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_WIIU), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DWAV, USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER), HID_QUIRK_MULTI_INPUT | HID_QUIRK_NOGET },
+@@ -498,6 +499,7 @@ static const struct hid_device_id hid_have_special_driver[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_DOLPHINBAR) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE1) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE2) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE3) },
+ #endif
+ #if IS_ENABLED(CONFIG_HID_MICROSOFT)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_COMFORT_MOUSE_4500) },
+-- 
+2.30.1
+
 
 
