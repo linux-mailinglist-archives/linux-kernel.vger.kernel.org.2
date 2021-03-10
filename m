@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12CC333840
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF74333849
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232572AbhCJJHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:07:11 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13490 "EHLO
+        id S232817AbhCJJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:07:29 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13495 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232543AbhCJJGw (ORCPT
+        with ESMTP id S232673AbhCJJGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:06:52 -0500
+        Wed, 10 Mar 2021 04:06:54 -0500
 Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DwR3z0FyyzrTKc;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DwR3z0lTdzrTKk;
         Wed, 10 Mar 2021 17:05:03 +0800 (CST)
 Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 10 Mar 2021 17:06:17 +0800
+ 14.3.498.0; Wed, 10 Mar 2021 17:06:19 +0800
 From:   Keqian Zhu <zhukeqian1@huawei.com>
 To:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
@@ -34,118 +34,174 @@ CC:     Kirti Wankhede <kwankhede@nvidia.com>,
         James Morse <james.morse@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-Subject: [PATCH v2 00/11] vfio/iommu_type1: Implement dirty log tracking based on smmuv3 HTTU
-Date:   Wed, 10 Mar 2021 17:06:03 +0800
-Message-ID: <20210310090614.26668-1-zhukeqian1@huawei.com>
+        <yuzenghui@huawei.com>, <lushenming@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH v2 01/11] iommu/arm-smmu-v3: Add support for Hardware Translation Table Update
+Date:   Wed, 10 Mar 2021 17:06:04 +0800
+Message-ID: <20210310090614.26668-2-zhukeqian1@huawei.com>
 X-Mailer: git-send-email 2.8.4.windows.1
+In-Reply-To: <20210310090614.26668-1-zhukeqian1@huawei.com>
+References: <20210310090614.26668-1-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.174.184.42]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+From: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
-This patch series implement vfio dma dirty log tracking based on smmuv3 HTTU.
+If the SMMU supports it and the kernel was built with HTTU support,
+enable hardware update of access and dirty flags. This is essential for
+shared page tables, to reduce the number of access faults on the fault
+queue. Normal DMA with io-pgtables doesn't currently use the access or
+dirty flags.
 
-changelog:
+We can enable HTTU even if CPUs don't support it, because the kernel
+always checks for HW dirty bit and updates the PTE flags atomically.
 
-v2:
- - Address all comments of RFC version, thanks for all of you ;-)
- - Add a bugfix that start dirty log for newly added dma ranges and domain.
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+---
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  2 +
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 41 ++++++++++++++++++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  8 ++++
+ 3 files changed, 50 insertions(+), 1 deletion(-)
 
-Intention：
-
-As we know, vfio live migration is an important and valuable feature, but there
-are still many hurdles to solve, including migration of interrupt, device state,
-DMA dirty log tracking, and etc.
-
-For now, the only dirty log tracking interface is pinning. It has some drawbacks:
-1. Only smart vendor drivers are aware of this.
-2. It's coarse-grained, the pinned-scope is generally bigger than what the device actually access.
-3. It can't track dirty continuously and precisely, vfio populates all pinned-scope as dirty.
-   So it doesn't work well with iteratively dirty log handling.
-
-About SMMU HTTU:
-
-HTTU (Hardware Translation Table Update) is a feature of ARM SMMUv3, it can update
-access flag or/and dirty state of the TTD (Translation Table Descriptor) by hardware.
-With HTTU, stage1 TTD is classified into 3 types:
-                        DBM bit             AP[2](readonly bit)
-1. writable_clean         1                       1
-2. writable_dirty         1                       0
-3. readonly               0                       1
-
-If HTTU_HD (manage dirty state) is enabled, smmu can change TTD from writable_clean to
-writable_dirty. Then software can scan TTD to sync dirty state into dirty bitmap. With
-this feature, we can track the dirty log of DMA continuously and precisely.
-
-About this series:
-
-Patch 1-3: Add feature detection for smmu HTTU and enable HTTU for smmu stage1 mapping.
-           And add feature detection for smmu BBML. We need to split block mapping when
-           start dirty log tracking and merge page mapping when stop dirty log tracking,
-		   which requires break-before-make procedure. But it might cause problems when the
-		   TTD is alive. The I/O streams might not tolerate translation faults. So BBML
-		   should be used.
-
-Patch 4-7: Add four interfaces (start_dirty_log, stop_dirty_log, sync_dirty_log and clear_dirty_log)
-           in IOMMU layer, they are essential to implement dma dirty log tracking for vfio.
-		   We implement these interfaces for arm smmuv3.
-
-Patch   8: Add HWDBM (Hardware Dirty Bit Management) device feature reporting in IOMMU layer.
-
-Patch9-11: Implement a new dirty log tracking method for vfio based on iommu hwdbm. A new
-           ioctl operation named VFIO_DIRTY_LOG_MANUAL_CLEAR is added, which can eliminate
-		   some redundant dirty handling of userspace.
-
-Optimizations TO Do:
-
-1. We recognized that each smmu_domain (a vfio_container may has several smmu_domain) has its
-   own stage1 mapping, and we must scan all these mapping to sync dirty state. We plan to refactor
-   smmu_domain to support more than one smmu in one smmu_domain, then these smmus can share a same
-   stage1 mapping.
-2. We also recognized that scan TTD is a hotspot of performance. Recently, I have implement a
-   SW/HW conbined dirty log tracking at MMU side [1], which can effectively solve this problem.
-   This idea can be applied to smmu side too.
-
-Thanks,
-Keqian
-
-
-[1] https://lore.kernel.org/linux-arm-kernel/20210126124444.27136-1-zhukeqian1@huawei.com/
-
-Jean-Philippe Brucker (1):
-  iommu/arm-smmu-v3: Add support for Hardware Translation Table Update
-
-jiangkunkun (10):
-  iommu/arm-smmu-v3: Enable HTTU for stage1 with io-pgtable mapping
-  iommu/arm-smmu-v3: Add feature detection for BBML
-  iommu/arm-smmu-v3: Split block descriptor when start dirty log
-  iommu/arm-smmu-v3: Merge a span of page when stop dirty log
-  iommu/arm-smmu-v3: Scan leaf TTD to sync hardware dirty log
-  iommu/arm-smmu-v3: Clear dirty log according to bitmap
-  iommu/arm-smmu-v3: Add HWDBM device feature reporting
-  vfio/iommu_type1: Add HWDBM status maintanance
-  vfio/iommu_type1: Optimize dirty bitmap population based on iommu
-    HWDBM
-  vfio/iommu_type1: Add support for manual dirty log clear
-
- .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |   2 +
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 226 +++++++++-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  14 +
- drivers/iommu/io-pgtable-arm.c                | 392 +++++++++++++++++-
- drivers/iommu/iommu.c                         | 236 +++++++++++
- drivers/vfio/vfio_iommu_type1.c               | 270 +++++++++++-
- include/linux/io-pgtable.h                    |  23 +
- include/linux/iommu.h                         |  84 ++++
- include/uapi/linux/vfio.h                     |  28 +-
- 9 files changed, 1264 insertions(+), 11 deletions(-)
-
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+index bb251cab61f3..ae075e675892 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+@@ -121,10 +121,12 @@ static struct arm_smmu_ctx_desc *arm_smmu_alloc_shared_cd(struct mm_struct *mm)
+ 	if (err)
+ 		goto out_free_asid;
+ 
++	/* HA and HD will be filtered out later if not supported by the SMMU */
+ 	tcr = FIELD_PREP(CTXDESC_CD_0_TCR_T0SZ, 64ULL - vabits_actual) |
+ 	      FIELD_PREP(CTXDESC_CD_0_TCR_IRGN0, ARM_LPAE_TCR_RGN_WBWA) |
+ 	      FIELD_PREP(CTXDESC_CD_0_TCR_ORGN0, ARM_LPAE_TCR_RGN_WBWA) |
+ 	      FIELD_PREP(CTXDESC_CD_0_TCR_SH0, ARM_LPAE_TCR_SH_IS) |
++	      CTXDESC_CD_0_TCR_HA | CTXDESC_CD_0_TCR_HD |
+ 	      CTXDESC_CD_0_TCR_EPD1 | CTXDESC_CD_0_AA64;
+ 
+ 	switch (PAGE_SIZE) {
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 8594b4a83043..b6d965504f44 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1012,10 +1012,17 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
+ 		 * this substream's traffic
+ 		 */
+ 	} else { /* (1) and (2) */
++		u64 tcr = cd->tcr;
++
+ 		cdptr[1] = cpu_to_le64(cd->ttbr & CTXDESC_CD_1_TTB0_MASK);
+ 		cdptr[2] = 0;
+ 		cdptr[3] = cpu_to_le64(cd->mair);
+ 
++		if (!(smmu->features & ARM_SMMU_FEAT_HD))
++			tcr &= ~CTXDESC_CD_0_TCR_HD;
++		if (!(smmu->features & ARM_SMMU_FEAT_HA))
++			tcr &= ~CTXDESC_CD_0_TCR_HA;
++
+ 		/*
+ 		 * STE is live, and the SMMU might read dwords of this CD in any
+ 		 * order. Ensure that it observes valid values before reading
+@@ -1023,7 +1030,7 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
+ 		 */
+ 		arm_smmu_sync_cd(smmu_domain, ssid, true);
+ 
+-		val = cd->tcr |
++		val = tcr |
+ #ifdef __BIG_ENDIAN
+ 			CTXDESC_CD_0_ENDI |
+ #endif
+@@ -3196,6 +3203,28 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
+ 	return 0;
+ }
+ 
++static void arm_smmu_get_httu(struct arm_smmu_device *smmu, u32 reg)
++{
++	u32 fw_features = smmu->features & (ARM_SMMU_FEAT_HA | ARM_SMMU_FEAT_HD);
++	u32 features = 0;
++
++	switch (FIELD_GET(IDR0_HTTU, reg)) {
++	case IDR0_HTTU_ACCESS_DIRTY:
++		features |= ARM_SMMU_FEAT_HD;
++		fallthrough;
++	case IDR0_HTTU_ACCESS:
++		features |= ARM_SMMU_FEAT_HA;
++	}
++
++	if (smmu->dev->of_node)
++		smmu->features |= features;
++	else if (features != fw_features)
++		/* ACPI IORT sets the HTTU bits */
++		dev_warn(smmu->dev,
++			 "IDR0.HTTU overridden by FW configuration (0x%x)\n",
++			 fw_features);
++}
++
+ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ {
+ 	u32 reg;
+@@ -3256,6 +3285,8 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ 			smmu->features |= ARM_SMMU_FEAT_E2H;
+ 	}
+ 
++	arm_smmu_get_httu(smmu, reg);
++
+ 	/*
+ 	 * The coherency feature as set by FW is used in preference to the ID
+ 	 * register, but warn on mismatch.
+@@ -3441,6 +3472,14 @@ static int arm_smmu_device_acpi_probe(struct platform_device *pdev,
+ 	if (iort_smmu->flags & ACPI_IORT_SMMU_V3_COHACC_OVERRIDE)
+ 		smmu->features |= ARM_SMMU_FEAT_COHERENCY;
+ 
++	switch (FIELD_GET(ACPI_IORT_SMMU_V3_HTTU_OVERRIDE, iort_smmu->flags)) {
++	case IDR0_HTTU_ACCESS_DIRTY:
++		smmu->features |= ARM_SMMU_FEAT_HD;
++		fallthrough;
++	case IDR0_HTTU_ACCESS:
++		smmu->features |= ARM_SMMU_FEAT_HA;
++	}
++
+ 	return 0;
+ }
+ #else
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index f985817c967a..26d6b935b383 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -33,6 +33,9 @@
+ #define IDR0_ASID16			(1 << 12)
+ #define IDR0_ATS			(1 << 10)
+ #define IDR0_HYP			(1 << 9)
++#define IDR0_HTTU			GENMASK(7, 6)
++#define IDR0_HTTU_ACCESS		1
++#define IDR0_HTTU_ACCESS_DIRTY		2
+ #define IDR0_COHACC			(1 << 4)
+ #define IDR0_TTF			GENMASK(3, 2)
+ #define IDR0_TTF_AARCH64		2
+@@ -285,6 +288,9 @@
+ #define CTXDESC_CD_0_TCR_IPS		GENMASK_ULL(34, 32)
+ #define CTXDESC_CD_0_TCR_TBI0		(1ULL << 38)
+ 
++#define CTXDESC_CD_0_TCR_HA		(1UL << 43)
++#define CTXDESC_CD_0_TCR_HD		(1UL << 42)
++
+ #define CTXDESC_CD_0_AA64		(1UL << 41)
+ #define CTXDESC_CD_0_S			(1UL << 44)
+ #define CTXDESC_CD_0_R			(1UL << 45)
+@@ -607,6 +613,8 @@ struct arm_smmu_device {
+ #define ARM_SMMU_FEAT_BTM		(1 << 16)
+ #define ARM_SMMU_FEAT_SVA		(1 << 17)
+ #define ARM_SMMU_FEAT_E2H		(1 << 18)
++#define ARM_SMMU_FEAT_HA		(1 << 19)
++#define ARM_SMMU_FEAT_HD		(1 << 20)
+ 	u32				features;
+ 
+ #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
 -- 
 2.19.1
 
