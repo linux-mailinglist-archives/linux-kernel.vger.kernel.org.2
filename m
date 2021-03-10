@@ -2,65 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CDA3340E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B233340FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhCJO5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:57:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51906 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231880AbhCJO5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:57:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7ADF8AD72;
-        Wed, 10 Mar 2021 14:57:08 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 15:57:07 +0100
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Peter Tyser <ptyser@xes-inc.com>,
-        hdegoede@redhat.com, henning.schild@siemens.com
-Subject: Re: [PATCH v1 1/7] PCI: Introduce pci_bus_*() printing macros when
- device is not available
-Message-ID: <20210310155707.122f3a1e@endymion>
-In-Reply-To: <20210308122020.57071-2-andriy.shevchenko@linux.intel.com>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
-        <20210308122020.57071-2-andriy.shevchenko@linux.intel.com>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S232885AbhCJPAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:00:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232989AbhCJO76 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 09:59:58 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C1CC061760;
+        Wed, 10 Mar 2021 06:59:58 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id c16so8618446ply.0;
+        Wed, 10 Mar 2021 06:59:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ux+557dunJ//CVXvtzX/Z5WItSrGBa9LPMeRHKA0DrA=;
+        b=sdCZywW+XXtqVqzMsthVMzirahL0ykX7Txl94Lvj8bxHwFH4tMQazGgqsfzS+zxxWQ
+         TRhSzC4+U5bBPRwTjgX27mUzf0Cg4TYywsukPq7YYQT7VR+NF8XAakptEyNAsgTF0fVh
+         Bo+xb2h/bE9SVBB06qNqJXeerjZFMQznVgta9cKzEI4UpjRowXbKFYzhz/mCQeFIfPQ7
+         nwSKddhaTrhFusagnM/lkCDRyBzu9ub5AQn8jYt4bSMU+BxakGWBYhTHmS1Stl8FERzd
+         dSUAAEZrT85jXm49pCqXNQpZQpNl98x0KXTigRMOq8f4jWurZg6sg1FM3ql/Eum1ulDe
+         OaMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ux+557dunJ//CVXvtzX/Z5WItSrGBa9LPMeRHKA0DrA=;
+        b=QtHzxqiLvfJN4Udh5Tj5+RHo2P8zMIbF0nNSEs5/4DL2Ft3wj4tD/A/Iag6FrSRLpV
+         AxSJi1MjEUO1Qz39xwHWV8OFwRQlzzt6r70gdKuTtvAYA9eh4sVD7srTdLe1rP5lZYRM
+         hh2A9RlMFgvVtWGxpFwIwEUx23BslWqcyuJ1mAy/jVvobKpuZcPmSGwUuyXf0Ok4xhrK
+         FS2j3x1BZ9u2aXLOPPA7dJICr5EJMT/CJsvglLfh44RWSD7wGnvkaoCeFkPwzFYq3D6u
+         vTiO9xUTezLi/cppPtqsA4UYTYFMdC1f+SR0j81FHPzigYdkp7eA1NW7a99+0d1ilrxi
+         fU/Q==
+X-Gm-Message-State: AOAM531nSPflm2s1WgAl7zBgcEQ0JpQm1QaPDBeGt0gE5u0zwFMFO7mM
+        lr878tRY0rmw9T3vPJj7Uas=
+X-Google-Smtp-Source: ABdhPJzmzcT7MTnHlBBDN1Udsyc3gMBHsV9pW5PFhbC1sZYxtcGZ8cFq1OUqDXDhhBqliJabNMdc5Q==
+X-Received: by 2002:a17:90b:ecf:: with SMTP id gz15mr3906670pjb.85.1615388397898;
+        Wed, 10 Mar 2021 06:59:57 -0800 (PST)
+Received: from DESKTOP-4V60UBS.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id y20sm16626941pfo.210.2021.03.10.06.59.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 06:59:57 -0800 (PST)
+From:   Xiaofeng Cao <cxfcosmos@gmail.com>
+To:     mchehab@kernel.org, patrice.chotard@st.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Xiaofeng Cao <cxfcosmos@gmail.com>
+Subject: [PATCH] Correct 'so'
+Date:   Wed, 10 Mar 2021 22:58:16 +0800
+Message-Id: <20210310145816.32271-1-cxfcosmos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  8 Mar 2021 14:20:14 +0200, Andy Shevchenko wrote:
-> In some cases PCI device structure is not available and we want to print
-> information based on the bus and devfn parameters. For this cases introduce
-> pci_bus_*() printing macros and replace in existing users.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/pci/probe.c | 12 +++---------
->  include/linux/pci.h |  9 +++++++++
->  2 files changed, 12 insertions(+), 9 deletions(-)
-> (...)
+In Kconfig it should be 'to'
+In c8sectpfe-core.c it should be 'do'
 
-Nice.
+Signed-off-by: Xiaofeng Cao <cxfcosmos@gmail.com>
+---
+ drivers/media/Kconfig                                 | 2 +-
+ drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
-
-(If you introduced a _debug flavor of that, it could probably be used in
-drivers/pci/hotplug/pciehp_hpc.c.)
-
+diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
+index 6222b3ae220b..b07812657cee 100644
+--- a/drivers/media/Kconfig
++++ b/drivers/media/Kconfig
+@@ -134,7 +134,7 @@ config MEDIA_PLATFORM_SUPPORT
+ 	  This is found on Embedded hardware (SoC), on V4L2 codecs and
+ 	  on some GPU and newer CPU chipsets.
+ 
+-	  Say Y when you want to be able so see such devices.
++	  Say Y when you want to be able to see such devices.
+ 
+ config MEDIA_TEST_SUPPORT
+ 	bool
+diff --git a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
+index a7a6ea666740..338b205ae3a7 100644
+--- a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
++++ b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
+@@ -655,7 +655,7 @@ static irqreturn_t c8sectpfe_error_irq_handler(int irq, void *priv)
+ 
+ 	/*
+ 	 * TODO FIXME we should detect some error conditions here
+-	 * and ideally so something about them!
++	 * and ideally do something about them!
+ 	 */
+ 
+ 	return IRQ_HANDLED;
 -- 
-Jean Delvare
-SUSE L3 Support
+2.25.1
+
