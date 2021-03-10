@@ -2,179 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC383333BBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB2F333BC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhCJLqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:46:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
+        id S230401AbhCJLsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:48:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbhCJLqZ (ORCPT
+        with ESMTP id S229948AbhCJLsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:46:25 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480CBC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:46:25 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id a18so22939508wrc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:46:25 -0800 (PST)
+        Wed, 10 Mar 2021 06:48:23 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1ECC06174A;
+        Wed, 10 Mar 2021 03:48:23 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id n14so17572059iog.3;
+        Wed, 10 Mar 2021 03:48:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=LvlruMaCLBIyF4bqWN8JBBR1UbyF6IvONx4LBcx3yHE=;
-        b=pNawfMqaAG/zuHUmVubbWIU6RERPhmUscbJ7tzU6EaRl3Pm3U4PK2ZY/XwvPdAckBb
-         8dywq6SltsGp7ya34cWvnM1wG9Th5sLJWMDrXia1Z8tgAo+iT7w3KDLwkWVu9e46JQUP
-         i7VKQWAn3pOw/lTdUqNCwwcDUBM0fTbMSt2rDYwwahGBE8nIbh/dwiR7qLox8frshMnQ
-         TpMVNc+79/Qy5Bjh/k71lvk/dMv9+s2GU20gDKueU+ru8VyKZmPbg9zTOIRoenJ4HO0f
-         dXcqPfRU4RRmq7z1HUv3WYGYltjc5f1f6zFV8j5P5lEERSslB/ZtV8e+Qd1JnoXcNOTS
-         hj/w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=MgumKQ8A8vujpcGidnQ3C//AKqkYksiK7PMribHV3ho=;
+        b=DYUnOI1xkybUKmjxUsxK/1caGOqEuExlhcOTDQXGlBsUyZc6CRZGuKVBBBULTOVD+P
+         aXQM/f5OrhNjI1N8kqj4OVJJq6VRKWOacQ4wnVSC+WconVS3D06jcWFpgMWd4+fcGj7U
+         YO3bCVtF/4IFiLXzdDU3KrFSxjQKz/uzYD+eOaA026la9A0q7zn7jCjnAgeeiS3eZDYr
+         hTs3eD6uVyZLbk7pptQgtEJZhXd+shP7DyW466TFg7u5B8JREcn8RDDaIAuPUIm7urRj
+         s+VBoOhVPPyNtvpqe+NQaeUCeZWUBFWtU18BF37s8A1fwwKdwCy+oP1jgFypQMNy6IYw
+         Zr4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=LvlruMaCLBIyF4bqWN8JBBR1UbyF6IvONx4LBcx3yHE=;
-        b=tLzWbwpv7WxHohWbTQCaNGiz3sVKsAlXklhR0VXfPQUJb16v6cII2s2ogf/Qzm9rrR
-         6NkMD7ABqTo9mEkxzieuUhf/lYBAy9hBcpYZvjYN1BxoHlWrgRsot9h3LpePZSvV4jWw
-         exS4zsooch3YxTwn6WdlUu2a/+s9tDxFS+XmY8pgE6JA2unsEyudgjUafWOZvA2ToaEV
-         QLMTkATsdPvUDh7LbscXPNc4AhHRI3lRpTnE1RnNWNYC9cuQeLyd/0e/ogopZpBtbB9i
-         5efVGnwdhfAfnCMe+KM+Q+x4Xn8iRS2gZw7vbgceHtwOhBqBJsGKGqqgYH9s9twEOT6b
-         PLMA==
-X-Gm-Message-State: AOAM530ZBxy5ts+PjUBRTHZnLLuen/AOA/Z1RrQIOKjQIKclWlCdIpL1
-        SyJ1W3YC7/OdNfM7XZ+SXan2vQ==
-X-Google-Smtp-Source: ABdhPJxVk/OwZANT/24F9BZUPSimf4ICwwnh+EBRhteoqtZ7OaMR4FqRgNXRlhokWxVAIJAncZHIeA==
-X-Received: by 2002:a05:6000:c7:: with SMTP id q7mr3148842wrx.356.1615376783902;
-        Wed, 10 Mar 2021 03:46:23 -0800 (PST)
-Received: from localhost.localdomain ([82.142.0.212])
-        by smtp.gmail.com with ESMTPSA id h10sm30368165wrp.22.2021.03.10.03.46.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 03:46:23 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
-Cc:     amitk@kernel.org, linux-pm@vger.kernel.org,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/3] thermal/drivers/cpuidle_cooling: Use device name instead of auto-numbering
-Date:   Wed, 10 Mar 2021 12:46:00 +0100
-Message-Id: <20210310114600.27178-3-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210310114600.27178-1-daniel.lezcano@linaro.org>
-References: <20210310114600.27178-1-daniel.lezcano@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=MgumKQ8A8vujpcGidnQ3C//AKqkYksiK7PMribHV3ho=;
+        b=g/JnMepo0ksPEkPwQFJsETeQpw31Mv6rffgMBEmEHPxrI39/kf8b/OKvWNr679Se/o
+         D+qJ+2ww2Y88k0BAaQQMUzfTjX4gM5AT2d6kQpeVeqQ3qdLYIdu5lUpbhqMlYoDt2OiF
+         DcAOoAyfmPCOgwdNxULCDFArjoxLYruBudWqfUFT/93NjBVP2VuzxCmnNZ6Rws/VfNEm
+         GxjTOyI2jsdENGcEnFoGZXN43GtiSJVY/gIyPMyQJRiLP+QW5TgH9KQpgRdSQ0g7dSF6
+         A2ja5MdVB0mUzAx1YHxGDLAxI1FBMgVMziPva2fhOQrZxq9QFCQhPPvrM/W5hZjPajSV
+         UbiQ==
+X-Gm-Message-State: AOAM532pFWqdOpGEA5BS3qZLuchiuhoH3p9y5FuBZU6wfMnLaCtP8rBk
+        lp3d7h0gAcXvfw9ZzjMYzwZ2Y2A6/OMdWq1SIz8=
+X-Google-Smtp-Source: ABdhPJyhYfR48luq7gEmplvCktrRBwsQTYvkmG1J4Fb6rJ6HGeOYQGGfk9FH8kWfX+Trko7XOFcRrXtMUeiW4aFdkd8=
+X-Received: by 2002:a5e:cb4d:: with SMTP id h13mr2073997iok.68.1615376902761;
+ Wed, 10 Mar 2021 03:48:22 -0800 (PST)
+MIME-Version: 1.0
+References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Wed, 10 Mar 2021 19:47:46 +0800
+Message-ID: <CAL9mu0LwT7GqWQY1Dpw3zLnS+oX8KFq=Lrp6NSBJvSgcsxEQVQ@mail.gmail.com>
+Subject: Re: [PATCH 0/8] ARM: STM32: add art-pi(stm32h750xbh6) board support
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux@armlinux.org.uk, Vladimir Murzin <vladimir.murzin@arm.com>,
+        afzal.mohd.ma@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the naming of a cooling device is just a cooling technique
-followed by a number. When there are multiple cooling devices using
-the same technique, it is impossible to clearly identify the related
-device as this one is just a number.
+for the device tree part , still waiting review. just a gentle ping.
+if Mr Alexandre torgue can take a look, would be great.
 
-For instance:
+thanks,
 
- thermal-idle-0
- thermal-idle-1
- thermal-idle-2
- thermal-idle-3
- etc ...
-
-The 'thermal' prefix is redundant with the subsystem namespace. This
-patch removes the 'thermal prefix and changes the number by the device
-name. So the naming above becomes:
-
- idle-cpu0
- idle-cpu1
- idle-cpu2
- idle-cpu3
- etc ...
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/thermal/cpuidle_cooling.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_cooling.c
-index 7ecab4b16b29..8bc0a9b46358 100644
---- a/drivers/thermal/cpuidle_cooling.c
-+++ b/drivers/thermal/cpuidle_cooling.c
-@@ -9,6 +9,7 @@
- 
- #include <linux/cpu_cooling.h>
- #include <linux/cpuidle.h>
-+#include <linux/device.h>
- #include <linux/err.h>
- #include <linux/idle_inject.h>
- #include <linux/idr.h>
-@@ -26,8 +27,6 @@ struct cpuidle_cooling_device {
- 	unsigned long state;
- };
- 
--static DEFINE_IDA(cpuidle_ida);
--
- /**
-  * cpuidle_cooling_runtime - Running time computation
-  * @idle_duration_us: CPU idle time to inject in microseconds
-@@ -174,10 +173,11 @@ static int __cpuidle_cooling_register(struct device_node *np,
- 	struct idle_inject_device *ii_dev;
- 	struct cpuidle_cooling_device *idle_cdev;
- 	struct thermal_cooling_device *cdev;
-+	struct device *dev;
- 	unsigned int idle_duration_us = TICK_USEC;
- 	unsigned int latency_us = UINT_MAX;
--	char dev_name[THERMAL_NAME_LENGTH];
--	int id, ret;
-+	char name[THERMAL_NAME_LENGTH];
-+	int ret;
- 
- 	idle_cdev = kzalloc(sizeof(*idle_cdev), GFP_KERNEL);
- 	if (!idle_cdev) {
-@@ -185,16 +185,10 @@ static int __cpuidle_cooling_register(struct device_node *np,
- 		goto out;
- 	}
- 
--	id = ida_simple_get(&cpuidle_ida, 0, 0, GFP_KERNEL);
--	if (id < 0) {
--		ret = id;
--		goto out_kfree;
--	}
--
- 	ii_dev = idle_inject_register(drv->cpumask);
- 	if (!ii_dev) {
- 		ret = -EINVAL;
--		goto out_id;
-+		goto out_kfree;
- 	}
- 
- 	of_property_read_u32(np, "duration-us", &idle_duration_us);
-@@ -205,9 +199,11 @@ static int __cpuidle_cooling_register(struct device_node *np,
- 
- 	idle_cdev->ii_dev = ii_dev;
- 
--	snprintf(dev_name, sizeof(dev_name), "thermal-idle-%d", id);
-+	dev = get_cpu_device(cpumask_first(drv->cpumask));
-+
-+	snprintf(name, sizeof(name), "idle-%s", dev_name(dev));
- 
--	cdev = thermal_of_cooling_device_register(np, dev_name, idle_cdev,
-+	cdev = thermal_of_cooling_device_register(np, name, idle_cdev,
- 						  &cpuidle_cooling_ops);
- 	if (IS_ERR(cdev)) {
- 		ret = PTR_ERR(cdev);
-@@ -215,14 +211,12 @@ static int __cpuidle_cooling_register(struct device_node *np,
- 	}
- 
- 	pr_debug("%s: Idle injection set with idle duration=%u, latency=%u\n",
--		 dev_name, idle_duration_us, latency_us);
-+		 name, idle_duration_us, latency_us);
- 
- 	return 0;
- 
- out_unregister:
- 	idle_inject_unregister(ii_dev);
--out_id:
--	ida_simple_remove(&cpuidle_ida, id);
- out_kfree:
- 	kfree(idle_cdev);
- out:
--- 
-2.17.1
-
+On Wed, Mar 3, 2021 at 4:05 PM <dillon.minfei@gmail.com> wrote:
+>
+> From: dillon min <dillon.minfei@gmail.com>
+>
+> This patchset intend to add art-pi board support, this board developed
+> by rt-thread(https://www.rt-thread.org/).
+>
+> Board resources:
+>
+> 8MiB QSPI flash
+> 16MiB SPI flash
+> 32MiB SDRAM
+> AP6212 wifi,bt,fm comb
+>
+> sw context:
+> - as stm32h750 just has 128k bytes internal flash, so running a fw on
+>   internal flash to download u-boot/kernel to qspi flash, boot
+>   u-boot/kernel from qspi flash. this fw is based on rt-thread.
+> - kernel can be xip on qspi flash or load to sdram
+> - root filesystem is jffs2(created by buildroot), stored on spi flash
+>
+> to support the boad, add following changes.
+> - fix r0-r3, r12 register restore failed after svc call,
+> - add dts binding
+> - update yaml doc
+>
+> dillon min (8):
+>   ARM: ARMv7-M: Fix register restore corrupt after svc call
+>   Documentation: arm: stm32: Add stm32h750 value line
+>   dt-bindings: arm: stm32: Add compatible strings for ART-PI board
+>   dt-bindings: pinctrl: stm32: Add stm32h750 pinctrl
+>   ARM: dts: stm32: introduce stm32h7-pinctrl.dtsi to support stm32h75x
+>   ARM: dts: stm32: add stm32h750-pinctrl.dtsi
+>   ARM: dts: stm32: add support for art-pi board based on stm32h750xbh6
+>   ARM: stm32: add initial support for stm32h750
+>
+>  Documentation/arm/index.rst                        |   1 +
+>  Documentation/arm/stm32/stm32h750-overview.rst     |  33 ++
+>  .../devicetree/bindings/arm/stm32/stm32.yaml       |   4 +
+>  .../bindings/pinctrl/st,stm32-pinctrl.yaml         |   1 +
+>  arch/arm/boot/dts/Makefile                         |   1 +
+>  arch/arm/boot/dts/stm32h7-pinctrl.dtsi             | 392 +++++++++++++++++++++
+>  arch/arm/boot/dts/stm32h743-pinctrl.dtsi           | 307 +---------------
+>  arch/arm/boot/dts/stm32h743.dtsi                   |  30 ++
+>  arch/arm/boot/dts/stm32h750-pinctrl.dtsi           |  11 +
+>  arch/arm/boot/dts/stm32h750.dtsi                   |   5 +
+>  arch/arm/boot/dts/stm32h750i-art-pi.dts            | 227 ++++++++++++
+>  arch/arm/mach-stm32/board-dt.c                     |   1 +
+>  arch/arm/mm/proc-v7m.S                             |   5 +-
+>  13 files changed, 716 insertions(+), 302 deletions(-)
+>  create mode 100644 Documentation/arm/stm32/stm32h750-overview.rst
+>  create mode 100644 arch/arm/boot/dts/stm32h7-pinctrl.dtsi
+>  create mode 100644 arch/arm/boot/dts/stm32h750-pinctrl.dtsi
+>  create mode 100644 arch/arm/boot/dts/stm32h750.dtsi
+>  create mode 100644 arch/arm/boot/dts/stm32h750i-art-pi.dts
+>
+> --
+> 2.7.4
+>
