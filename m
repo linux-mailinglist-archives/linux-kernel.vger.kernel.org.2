@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFA233374F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5389C333753
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232239AbhCJIaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:30:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        id S232376AbhCJIcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:32:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhCJIat (ORCPT
+        with ESMTP id S231934AbhCJIbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:30:49 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B90C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:30:49 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id 7so22200867wrz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:30:49 -0800 (PST)
+        Wed, 10 Mar 2021 03:31:53 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B3726C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:31:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3ilr9Chytc99dzJVMsZAwLaeZzrQPcuZ3XaLXQ1QBY0=;
-        b=zHOJKF+SyI6yEGnRKh3OX5KoS/QuFS3VP/c8R/WIuCs/8AKJRI6d2loCLzpB/QAZzn
-         1XG860ficzeyV2JigI+Qv7ibKki8MsBZEb/Bm913DrYfdzzOc5UD12/CEKXcNOY0eW51
-         eGcngDyvHXtgBQc4cJ9X1ruTWOayE9qBSXvoKffqfNly+wVF/xx/ZN6G5Ja7cWOeu687
-         NxSaatAWYsBi2uAXXHPtMX2tdj1KS4ipM+hS/V57FO/9PWlmPUfbg0cNsgqAKTZqPPiI
-         PYwWqhEgupsmw7ARi6yuoyzF/e1s+/b8pzxgC23GGt93PridGDdHXmtg/Ax7wZPMNnNw
-         szJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3ilr9Chytc99dzJVMsZAwLaeZzrQPcuZ3XaLXQ1QBY0=;
-        b=o54ebmCdf+ET1QgHhFm5dGjZJrWKis4SNq1YTez3fiK30uEFJ8gRKdrKIzMPNS3laP
-         GrW3GyRjWttdp35oXUEu5u5KZWNblcA3jZ1HHdGScaksUWX1R/fIW+rD7ptBiuOBRYQH
-         eVcvSzY27DPux9wxE+s4Zc3DVWpD0H4DikyxVN1uNUTAhzL67gNBUtXOjUl9vdwVxg9a
-         HbyQo8P1dekJmh/8xZGTrxOAg25YSg6Yfdc6YjGIjq5/AYMnL1b4Rq5xHocgxbT4WnJ8
-         4i6C7+dbkZ5aDv6fyYCpD8ZBvLqLEbguJhYbN2+1lRG6wFiWLx9WCZcoskpwH/smvNKL
-         nYLA==
-X-Gm-Message-State: AOAM533sMSW7/J5TCrsLUXaHOwGPSuhQLoY9eVbs12vI/swHWgpch7z2
-        uULg5QfSO+PO/XplFQPcy1g3/xrRf+Jt5w==
-X-Google-Smtp-Source: ABdhPJypDrJJUnScjwafTP5SrISI0r7uunc7ObEd/3/KisvbdTiDQtSTObGKhsPE24OVmey5NjVS9w==
-X-Received: by 2002:a5d:6ca6:: with SMTP id a6mr2183711wra.179.1615365048017;
-        Wed, 10 Mar 2021 00:30:48 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id n186sm7922962wmn.22.2021.03.10.00.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 00:30:47 -0800 (PST)
-Date:   Wed, 10 Mar 2021 08:30:45 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: dbx500-prcmu: Use true and false for bool
- variable
-Message-ID: <20210310083045.GC4931@dell>
-References: <1615348439-57732-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=nnm8ucZ5LQ
+        cGGIu3zt2kPvo+8H0RoC4x7aUGkFHxz0A=; b=SlfJWZkF4adwpYWN9axoLqr2o3
+        By0SRWHgTpZA1GUeJgzH0zOv9cvn2oQ9GD6qC3Ust9EVGqkep4eqlXSW0C5PiPLE
+        Gc+VPuSGWxr1oou65pqpjg8GEYPS4ft4u8sosEoLMIHdWieme6Qjj/5TMSBsl1Vo
+        PYvdJIbAI2FlUCOMo=
+Received: from ubuntu.localdomain (unknown [114.214.224.243])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBXRGHpg0hgL7ECAA--.3682S4;
+        Wed, 10 Mar 2021 16:31:37 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     ardb@kernel.org, jonathan.richardson@broadcom.com
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] firmware/efi: Fix a use after bug in efi_mem_reserve_persistent
+Date:   Wed, 10 Mar 2021 00:31:27 -0800
+Message-Id: <20210310083127.5784-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1615348439-57732-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-CM-TRANSID: LkAmygBXRGHpg0hgL7ECAA--.3682S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Wr1UZr47GryUuF4xAF4rAFb_yoWkKFcEkr
+        4rJ395K3yUKrW2vanFyrsa9asayayDXw109FnFya4fC39rAFy3ZrWkur1ktF47Cwn7Kryr
+        CF48tw4Ykw1xGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0D
+        UUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021, Jiapeng Chong wrote:
+In the for loop in efi_mem_reserve_persistent(), prsv = rsv->next
+use the unmapped rsv. Use the unmapped pages will cause segment
+fault.
 
-> Fix the following coccicheck warning:
-> 
-> ./include/linux/mfd/db8500-prcmu.h:723:8-9: WARNING: return of 0/1 in
-> function 'db8500_prcmu_is_ac_wake_requested' with return type bool.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
-> Changes in v2:
->   - Make the commit message more clearer.
+Fixes: 18df7577adae6 ("efi/memreserve: deal with memreserve entries in unmapped memory")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/firmware/efi/efi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I already fixed and applied this.
-
-Please take a look at my reply to v1.
-
->  include/linux/mfd/db8500-prcmu.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index df3f9bcab581..4b7ee3fa9224 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -927,7 +927,7 @@ int __ref efi_mem_reserve_persistent(phys_addr_t addr, u64 size)
+ 	}
+ 
+ 	/* first try to find a slot in an existing linked list entry */
+-	for (prsv = efi_memreserve_root->next; prsv; prsv = rsv->next) {
++	for (prsv = efi_memreserve_root->next; prsv; ) {
+ 		rsv = memremap(prsv, sizeof(*rsv), MEMREMAP_WB);
+ 		index = atomic_fetch_add_unless(&rsv->count, 1, rsv->size);
+ 		if (index < rsv->size) {
+@@ -937,6 +937,7 @@ int __ref efi_mem_reserve_persistent(phys_addr_t addr, u64 size)
+ 			memunmap(rsv);
+ 			return efi_mem_reserve_iomem(addr, size);
+ 		}
++		prsv = rsv->next;
+ 		memunmap(rsv);
+ 	}
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
+
