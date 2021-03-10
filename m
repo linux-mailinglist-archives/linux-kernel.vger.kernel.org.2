@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7869A333473
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC83333475
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhCJEjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 23:39:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
+        id S232172AbhCJEkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 23:40:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhCJEjP (ORCPT
+        with ESMTP id S232031AbhCJEjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 23:39:15 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A13C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 20:39:15 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id j14-20020a17090a588eb02900cefe2daa2cso1421805pji.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 20:39:15 -0800 (PST)
+        Tue, 9 Mar 2021 23:39:54 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BEDC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 20:39:53 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id f10so14327827ilq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 20:39:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+6Mi46dcdcY6Da+JW/3IUfZjddU3SLthUc42KkPmXok=;
-        b=WVHQdA5geSkOSY2k3mUbcYkex6ma0Gw2o1oSwFbTeaPkVjS435wLMr/aAH7xYFAbsG
-         pmmCh0WUXeWGsgxblzt66ObJFDYkyhIjDHeeAIo4W58V1vXCb3ziF6cZZD/uw0NRoIkR
-         5AK+k4r9bIgIANyMysONTHMg7VjS5mz7yp1Hobg1oD/qtt16hP45xp/g+BaD53GWgrK1
-         9CjkvXdId4bNpmqDBp61v4QboRJcdnj41Vv05Gc7PZZaOSnuO0dL7IGEtsfdyXVUVOgH
-         S58fs4sHOok4tIDrwVqrpeJf29up+chRyAK3KbF2erG+UOv9kVoCdA83JkdXwqHVqbdt
-         b2Cw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kMxMSisdcB4iYz8wEr7jHpP6C1gdaDzmlJgzQ9auShs=;
+        b=eGLdAQTEQTANhdedq17FapcRChntTlpJItXkzH9Jrjguv0hdtaFJ6sCepMOtMihcK1
+         NB6QsuTyjKmlTEYKVzV2SW+3FGXCWpZwBUZhfmE3e8oM8j1yfKrQ/OACN9ne22aAUASH
+         hcFphgZ0XY+BDjdQvlK2frqT8/TS8bMD6wj4x/T5DaiBwlMRVqNERubtwk8230lNjZVS
+         7iBv3+wHMZ3LTjrGX6cWmX2sLYzlNU+KkgBJyOygTBGtT7SE36v6N6wFfrqYq6YyGFZ4
+         xlyJLcRYxyq8yy6LWlOtf6TbE3JHdHUOGV2nyk9FHNr3jwFHC4Yoie30x3z/Mfb+B1rF
+         Y7KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=+6Mi46dcdcY6Da+JW/3IUfZjddU3SLthUc42KkPmXok=;
-        b=bRrjR2EKs0c14c0a7COGaA/qj+MxM9UszTC7aiFLdu8b2DicpAO83gphOzUA3e5T6T
-         FsZjw1wgGR8C9fgS2ziCOi1fhMNglI+uPubAu3LeVPJoFIiRRbBxXBqrKl0xkmHPDe0m
-         Lda8RQVPnPnskwd4sDMG7krEbwU4EM1TEN2WlhzizPrNu+wrILbvDUiM1xHbaHBMX39U
-         0q7uRhkYhDaagGJ94GLLuRGTYJ7G17AYuKCZnQNK9kT6bpTCsHPhGfsMi6xcCq9O3iGb
-         eYVB42pLMyxe9Eou02cAfxVPtF3hRxRPMVWYVPO+cPE2zxTtlW8bVyspEr1REZanbD6/
-         1sCw==
-X-Gm-Message-State: AOAM532s/UlRO2jx3QzioYH1e2wBU11jXd9F0zs1Zq9lTmXbrfLn5Fmh
-        JL9MNh07Uy8HEZ1dDtIpGo1CcA==
-X-Google-Smtp-Source: ABdhPJwUDSugnDD29UAQUcT0onkjP0AQ6O9yVuCP8VU294FXmjWhze4GQofHqYVvDs93mdTUffp8tQ==
-X-Received: by 2002:a17:902:d201:b029:e6:bba:52b3 with SMTP id t1-20020a170902d201b02900e60bba52b3mr1165798ply.51.1615351154584;
-        Tue, 09 Mar 2021 20:39:14 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id v26sm14137171pff.195.2021.03.09.20.39.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 20:39:14 -0800 (PST)
-Date:   Tue, 09 Mar 2021 20:39:14 -0800 (PST)
-X-Google-Original-Date: Tue, 09 Mar 2021 19:56:34 PST (-0800)
-Subject:     Re: [PATCH 2/6] mm: Generalize SYS_SUPPORTS_HUGETLBFS (rename as ARCH_SUPPORTS_HUGETLBFS)
-In-Reply-To: <1615278790-18053-3-git-send-email-anshuman.khandual@arm.com>
-CC:     linux-mm@kvack.org, anshuman.khandual@arm.com,
-        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
-        deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, ysato@users.sourceforge.jp, dalias@libc.org,
-        viro@zeniv.linux.org.uk, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     anshuman.khandual@arm.com
-Message-ID: <mhng-7d560865-85dd-4876-9f4a-69b4de968c9e@penguin>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kMxMSisdcB4iYz8wEr7jHpP6C1gdaDzmlJgzQ9auShs=;
+        b=X+cZ5dNhN2r7T35aRSj9A74MWQt32Ae3cAW4nBgClYECdjFWDr/Ch1CBuLsQaf0U+6
+         Ga2K8FJ64p9XWho+BQUYwvLusGDm6LVUgLKonFL58k+R4Bx6Z4uWEYJweUUANHVjRlMd
+         cob6DA00kZrSBVCVi6BdL+HDyGPySgP/cZ5rRIAcmzFjp79aPNRwqbb+j3pzZmUbjDh/
+         vyy7a7RLMC0tFZdAuKlD9NGCB6a/i1u3N0e5Qmm+7e/VHB8WeNLOb+sJm2mBYXsuqlOL
+         wUUYdMlYbG/fSQoyrz2jesijNwkpkJU6sXyPAk/CFZTzIUGm7ghfVfxWiVQ8OrJjXJNL
+         zSKQ==
+X-Gm-Message-State: AOAM531elyeVSydjRJFG/hmy8bF0ksyhuD6u6mDc3zFqG0t6skhA0hxV
+        5iamaAQsUBAkGQm0ID4xXEfGuC0/YC/GhrG+i2UiTw==
+X-Google-Smtp-Source: ABdhPJzkpjybl/vKBkOtlpw4P7Zz3pv9jti8Pynm2Bp5lzLC85cdEwxz9nWWMDj+P6oiWidL/vwGwLGqn1rvRtQbPLE=
+X-Received: by 2002:a92:ce4c:: with SMTP id a12mr1333640ilr.258.1615351193004;
+ Tue, 09 Mar 2021 20:39:53 -0800 (PST)
+MIME-Version: 1.0
+References: <20210310141606.75e990d2@canb.auug.org.au>
+In-Reply-To: <20210310141606.75e990d2@canb.auug.org.au>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Tue, 9 Mar 2021 20:39:16 -0800
+Message-ID: <CAJHvVchPVyw7wiyMnR6cBS+Gz+8aYWr_bxfjDJ57ZB=iKu=g2A@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Mar 2021 00:33:06 PST (-0800), anshuman.khandual@arm.com wrote:
-> SYS_SUPPORTS_HUGETLBFS config has duplicate definitions on platforms that
-> subscribe it. Instead, just make it a generic option which can be selected
-> on applicable platforms. Also rename it as ARCH_SUPPORTS_HUGETLBFS instead.
-> This reduces code duplication and makes it cleaner.
+On Tue, Mar 9, 2021 at 7:16 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm/Kconfig                       | 5 +----
->  arch/arm64/Kconfig                     | 4 +---
->  arch/mips/Kconfig                      | 6 +-----
->  arch/parisc/Kconfig                    | 5 +----
->  arch/powerpc/Kconfig                   | 3 ---
->  arch/powerpc/platforms/Kconfig.cputype | 6 +++---
->  arch/riscv/Kconfig                     | 5 +----
->  arch/sh/Kconfig                        | 5 +----
->  fs/Kconfig                             | 5 ++++-
->  9 files changed, 13 insertions(+), 31 deletions(-)
-
-[...]
-
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 85d626b8ce5e..69954db3aca9 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -30,6 +30,7 @@ config RISCV
->  	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
->  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
->  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
-> +	select ARCH_SUPPORTS_HUGETLBFS if MMU
->  	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
->  	select ARCH_WANT_FRAME_POINTERS
->  	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
-> @@ -165,10 +166,6 @@ config ARCH_WANT_GENERAL_HUGETLB
->  config ARCH_SUPPORTS_UPROBES
->  	def_bool y
+> Hi all,
 >
-> -config SYS_SUPPORTS_HUGETLBFS
-> -	depends on MMU
-> -	def_bool y
-> -
->  config STACKTRACE_SUPPORT
->  	def_bool y
+> After merging the akpm-current tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
 
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Hi Stephen,
+
+Sorry about the failure! Indeed, I had guarded this in the header, but
+not in the .c file. I sent a v2.5 of the patch earlier today which
+fixes the issue, but it hasn't made its way to Andrew's tree just yet.
+I'll CC you on that thread as well, as an FYI. Reverting the patches
+is also a fine workaround.
+
+Next time, I'll test with more config permutations. :)
+
+>
+> mm/shmem.c:2365:12: warning: 'enum mcopy_atomic_mode' declared inside parameter list will not be visible outside of this definition or declaration
+>  2365 |       enum mcopy_atomic_mode mode, struct page **pagep)
+>       |            ^~~~~~~~~~~~~~~~~
+> mm/shmem.c:2365:30: error: parameter 6 ('mode') has incomplete type
+>  2365 |       enum mcopy_atomic_mode mode, struct page **pagep)
+>       |       ~~~~~~~~~~~~~~~~~~~~~~~^~~~
+> mm/shmem.c:2362:5: error: function declaration isn't a prototype [-Werror=strict-prototypes]
+>  2362 | int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+>       |     ^~~~~~~~~~~~~~~~~~~~~~
+> mm/shmem.c: In function 'shmem_mcopy_atomic_pte':
+> mm/shmem.c:2367:30: error: 'MCOPY_ATOMIC_CONTINUE' undeclared (first use in this function)
+>  2367 |  bool is_continue = (mode == MCOPY_ATOMIC_CONTINUE);
+>       |                              ^~~~~~~~~~~~~~~~~~~~~
+> mm/shmem.c:2367:30: note: each undeclared identifier is reported only once for each function it appears in
+> mm/shmem.c:2394:15: error: 'MCOPY_ATOMIC_NORMAL' undeclared (first use in this function)
+>  2394 |   if (mode == MCOPY_ATOMIC_NORMAL) { /* mcopy_atomic */
+>       |               ^~~~~~~~~~~~~~~~~~~
+>
+> Caused by commit
+>
+>   3407bec05d6d ("userfaultfd: support minor fault handling for shmem")
+>
+> # CONFIG_USERFAULTFD is not set
+>
+> I have reverted that commit (and the following 4 as well).
+> --
+> Cheers,
+> Stephen Rothwell
