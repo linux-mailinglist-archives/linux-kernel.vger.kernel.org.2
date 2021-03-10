@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBFE334616
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCAB334617
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:01:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233803AbhCJR66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48792 "EHLO
+        id S233826AbhCJR67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:58:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbhCJR60 (ORCPT
+        with ESMTP id S233687AbhCJR62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:58:26 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A135AC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:58:25 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id r18so2972399wmq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:58:25 -0800 (PST)
+        Wed, 10 Mar 2021 12:58:28 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2403C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:58:27 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id e29so8314132wra.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:58:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=84bkslXA7Qi7zlX0xHNbjR4XGFTrfSQqHB0l+SkjRTk=;
-        b=gWR4E2H56ggbHXScQX04OGikwUKGFnpT1gmE6DUsaiqo17dy/goaVT6bwUgnhoi2Ju
-         l6LWaN0AfBgHJvRU3Ntr0R6mbn6chazZBSXWjI/zmceN+GqIiziZZG6WvehBBHjFFiCv
-         ff9Sb8VsJ6LT0Kj7avPebY6x8I2r8IJSx0TSinGSZuQBatEs2GvxWIim6kNPaBAilhzc
-         6wISeQvXokT2A2HYnczpuZZ3DMpgom1eOj/dEnrcQ2uXdttitkZONhv0pPSGLyhCFNNJ
-         2IpQR0s3Uwh8m+aS8s26mFq9vTzaNVZO59IeMkJaiD7fJ0Ial468WcZluMzWA4tW56/3
-         EcUQ==
+        bh=7ThSG/RVLlh/DBRky56NDH1ajIaqy925wlZsTYsbYqw=;
+        b=JEuYpJoMd4eciXRQGFuNKzbOmm8jGRXPcoKh/AeoZEfNeJ8pnd2yQE6JjHaW0xAyCa
+         pitaJDGhocf+iS6Ix5s83gf0SdJs18Bt+3rQeBC1COJjUlE/pWqLmZGpYl4Y3Q008Xxz
+         +KdxiZRuiY9IFxXtfadfJLEllXYm2dMSI1zsnCLjKK//Z68dcq7eoQguhGhmu8QBcbSo
+         zzqFqyy0UmFXIphK/sSFENn1hVHMx3C6eW9CGE2mWa11W4GEHDVuzldvjqZ4ksKH3Gay
+         m69aD9AQuVq3EYAST0FylU3iVNlhbgm1upS9OevLd1cZJCy4YWWktRZC6J9ZOco8M96R
+         DPtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=84bkslXA7Qi7zlX0xHNbjR4XGFTrfSQqHB0l+SkjRTk=;
-        b=DGP8TjkQjrjTtOBWXIhhwD+8m+faSwjw37JuUyVheOIBN3YJbfd8im3ol436fFFc6i
-         4bZOZ/RdsP/9SNFL9lMuFD4XGTATI0BjROoB5q1d6VClhPkq9/ieZ8DFLY0hvff8dzmI
-         G5WXw/BTBO9/xNTXDf0bIxHVKZwdlUI/G5EUZyS4jEeNtBP1hIeRdz5U9ezljMCLQDlY
-         IWJyIP6b/iuzrJ3OtlPeEUqZs9dsUGcqa/wrYF9whWQ13lqczgj6Twd0sqbCZ3lOdL2P
-         9gBqb6MncpwrfQo8o3+pNURoQnjVpNeITynsfqkUGxmWCra+0sBgGBrzQEIYCjlU2/7c
-         /n2A==
-X-Gm-Message-State: AOAM532H6PC7wK2PLEhYdQ7ekxaUMaBwz7RN43iSJwI5AUskrmEzql7J
-        j6n78S35eIDrtyNjDOEcojbBgCKU4yHw
-X-Google-Smtp-Source: ABdhPJya6ohuYr2xnAIymmnPbC5dgEguUfV3trhqlVeC84z+zmtstjGngwQdmVgPcn0lHtJOrOlTur1n8Dx9
+        bh=7ThSG/RVLlh/DBRky56NDH1ajIaqy925wlZsTYsbYqw=;
+        b=oTeyYMtXkm/4WdhQq+YpRT5HAgDUxybpV5MxI34iqJWBgxLq6+WCRtPuj227mmbsgN
+         kjYUAchDx/Ryisiar9snW4aUfvfPjr+NBllhlj+XEbcTAyxzkRuuLPz0o+REQCFP00zM
+         2uHvReH/4KGgn4AYC8SP0Q74eZ75jFzvtVTh2EjYi6/lTNd71DT5z0kCVNPu2f3tq5xG
+         2MggPiYyrGnMBHLaSM9bqUV2ZBUl+jbeTerCl3/uHai+aB+cJtIPUg9/SiysyeRhwMZF
+         FRABufUoUnkhc/VlOxylWEH2fiZ5RWAwp3WZjDufPM6FdYNkQnhNxtuPNlGw+NMgzvDU
+         6C2g==
+X-Gm-Message-State: AOAM530MKdMRgvj1t/AjQH2a7nQxfkw+xYAEdkAtDtYmudAC9RDAvKTD
+        nyEORyW1kLkYal+SeiqXnmguh6SlRe5f
+X-Google-Smtp-Source: ABdhPJyE9VwVGP/miD0PZ3GZDCYZcaB5M6aMqWesnLSzh0vu9I8m1MWCHPX7MchrOCygw+09qd4prsL24INh
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a5d:4ec5:: with SMTP id
- s5mr4826061wrv.168.1615399104184; Wed, 10 Mar 2021 09:58:24 -0800 (PST)
-Date:   Wed, 10 Mar 2021 17:57:31 +0000
+ (user=qperret job=sendgmr) by 2002:a05:600c:214d:: with SMTP id
+ v13mr4574201wml.7.1615399106500; Wed, 10 Mar 2021 09:58:26 -0800 (PST)
+Date:   Wed, 10 Mar 2021 17:57:32 +0000
 In-Reply-To: <20210310175751.3320106-1-qperret@google.com>
-Message-Id: <20210310175751.3320106-15-qperret@google.com>
+Message-Id: <20210310175751.3320106-16-qperret@google.com>
 Mime-Version: 1.0
 References: <20210310175751.3320106-1-qperret@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v4 14/34] KVM: arm64: Factor out vector address calculation
+Subject: [PATCH v4 15/34] arm64: asm: Provide set_sctlr_el2 macro
 From:   Quentin Perret <qperret@google.com>
 To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
         james.morse@arm.com, julien.thierry.kdev@gmail.com,
@@ -67,58 +67,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to re-map the guest vectors at EL2 when pKVM is enabled,
-refactor __kvm_vector_slot2idx() and kvm_init_vector_slot() to move all
-the address calculation logic in a static inline function.
+We will soon need to turn the EL2 stage 1 MMU on and off in nVHE
+protected mode, so refactor the set_sctlr_el1 macro to make it usable
+for that purpose.
 
-Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/include/asm/kvm_mmu.h | 8 ++++++++
- arch/arm64/kvm/arm.c             | 9 +--------
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ arch/arm64/include/asm/assembler.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index 90873851f677..5c42ec023cc7 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -168,6 +168,14 @@ phys_addr_t kvm_mmu_get_httbr(void);
- phys_addr_t kvm_get_idmap_vector(void);
- int kvm_mmu_init(void);
+diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+index ca31594d3d6c..fb651c1f26e9 100644
+--- a/arch/arm64/include/asm/assembler.h
++++ b/arch/arm64/include/asm/assembler.h
+@@ -676,11 +676,11 @@ USER(\label, ic	ivau, \tmp2)			// invalidate I line PoU
+ 	.endm
  
-+static inline void *__kvm_vector_slot2addr(void *base,
-+					   enum arm64_hyp_spectre_vector slot)
-+{
-+	int idx = slot - (slot != HYP_VECTOR_DIRECT);
+ /*
+- * Set SCTLR_EL1 to the passed value, and invalidate the local icache
++ * Set SCTLR_ELx to the @reg value, and invalidate the local icache
+  * in the process. This is called when setting the MMU on.
+  */
+-.macro set_sctlr_el1, reg
+-	msr	sctlr_el1, \reg
++.macro set_sctlr, sreg, reg
++	msr	\sreg, \reg
+ 	isb
+ 	/*
+ 	 * Invalidate the local I-cache so that any instructions fetched
+@@ -692,6 +692,14 @@ USER(\label, ic	ivau, \tmp2)			// invalidate I line PoU
+ 	isb
+ .endm
+ 
++.macro set_sctlr_el1, reg
++	set_sctlr sctlr_el1, \reg
++.endm
 +
-+	return base + (idx * SZ_2K);
-+}
++.macro set_sctlr_el2, reg
++	set_sctlr sctlr_el2, \reg
++.endm
 +
- struct kvm;
- 
- #define kvm_flush_dcache_to_poc(a,l)	__flush_dcache_area((a), (l))
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 3f8bcf8db036..26e573cdede3 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1345,16 +1345,9 @@ static unsigned long nvhe_percpu_order(void)
- /* A lookup table holding the hypervisor VA for each vector slot */
- static void *hyp_spectre_vector_selector[BP_HARDEN_EL2_SLOTS];
- 
--static int __kvm_vector_slot2idx(enum arm64_hyp_spectre_vector slot)
--{
--	return slot - (slot != HYP_VECTOR_DIRECT);
--}
--
- static void kvm_init_vector_slot(void *base, enum arm64_hyp_spectre_vector slot)
- {
--	int idx = __kvm_vector_slot2idx(slot);
--
--	hyp_spectre_vector_selector[slot] = base + (idx * SZ_2K);
-+	hyp_spectre_vector_selector[slot] = __kvm_vector_slot2addr(base, slot);
- }
- 
- static int kvm_init_vector_slots(void)
+ /*
+  * Check whether to yield to another runnable task from kernel mode NEON code
+  * (which runs with preemption disabled).
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
