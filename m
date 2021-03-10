@@ -2,138 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77133333F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC383333F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:49:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhCJDqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 22:46:24 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:45603 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232213AbhCJDqI (ORCPT
+        id S230516AbhCJDsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 22:48:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230198AbhCJDsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 22:46:08 -0500
-Received: by mail-io1-f69.google.com with SMTP id u1so11934155ior.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 19:46:08 -0800 (PST)
+        Tue, 9 Mar 2021 22:48:04 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408D4C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 19:48:04 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id e7so14235709ile.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 19:48:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ry2VwUF3H+Dyy7z8FInA0z451jNOET0hq4JeSLr2Jw4=;
+        b=UVSnRrtE43Jks5iUAOlGPEOwwRWlqyDAH1+CUXlTtgkj2GfZ6kC3/1rgdzIHbhkQJj
+         g1kL87FPi9mklgmAKAsg1b1UUigDawSInQrzpVD6CNqpyUimrBKWE4IftY4A6lO7KYUf
+         iEIjJAj2c52jSkfUiN9w3ymvO0r31jsaYgLljS7CJbcsZh5ybtANfxPStxBSpUzDENmj
+         8gj7CIbSz96umU8mqDjBxRFNtgUfDENz7LCWQ9hWOntKfs19HXKrjVGl4TILMW09inWf
+         lXfOQ/SkybbLGq88tVtaUHnpz6NG/Ci0WiL3yLa5/dFJ1ruvqcmTos0rimowcXpe/soy
+         okbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=6KmbIryMnJRuVB/jrFecitp60+EqhV5C/4UGROrP/H4=;
-        b=G882EXwEQZypBrT0iNQDYTfpRm4j/yS4hTdazpLqkI6f+YB0N0qMu2pN71XIgYM5Uv
-         GP9ExGN6P+Sq6POVGqqfUMgI01vsLabJ4C9h+9xQbZVfkfJ9QDwHjMp6mnCawbApCC1F
-         MmNixu/6VlHoJnCOzJ3DUq5didxSOKrF9OgSceo1nfd5rtw9Fnn2b8bALkLeY1+yYJPH
-         T/D73EHM0xn56d4hOtOj3dDTMizoPyuQKJXDxHviDMndjEkbqaaTrgnoKwK/tqmUNCVg
-         0D+h+ZlBzuoafsEtf/lXwEpmd5ik9X96HdDY30r0UhelFFIilKKxkNVZP5OgG9ZjVo0X
-         tNhg==
-X-Gm-Message-State: AOAM531t1Y70Uhaaph1dD0i7k85501zcCxJF4j2/mhkqRZ06Wgb5+cwl
-        aCtNJtdOk5dYbFjRC5BohKSyXXsS5uTyNY1XXqDeaO8KS15f
-X-Google-Smtp-Source: ABdhPJzLOmNxiRH6nceNk75CrvxwAUHBaDZHYkKoDlys3iwBS4YbeuzcGCb89sHaO1kUSXcUoVXp8vWkoI/PBBv+nfCOdFBBtNau
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ry2VwUF3H+Dyy7z8FInA0z451jNOET0hq4JeSLr2Jw4=;
+        b=Ap7VKQqfAjOYv2ZCLbPXsTHsRfwdKwk516ZCtSX5RZBULRhOA1XNPiIBVTqrfW26SX
+         JrI97ZHQtyTNfK+6Qv/gnrvC5YBqB6phnudkwp0EVxbI352RCxzY3u4tAyl8mt1ApLZ2
+         rAk7osB5CU9ID40fvbaqvAXi8/sv6zHkI55oEO42+s5Wc7vZeDv2v57Wm755w/T8LB//
+         /V2+fmn0Fpu8DjZibRtc/NTVHWcRk72NCA6WOa9gObPJZ5e0R7RVPrrF76tQLTvexUdJ
+         N62R0q6k0e/xUHVPhTkXpptBbcOVlH0HIA96AaCBUda7iCdBhERsMGSB/NqQYjfw99Z/
+         jGnQ==
+X-Gm-Message-State: AOAM531iVM5GRZH1WDnAc0FMP4lsf81/RpgTWC5u+qG3TX1NI6nWEF3W
+        OzrfUDXVBIssJsVgfVtl8f8UK8MF1pNo3I7bjg8aeQ==
+X-Google-Smtp-Source: ABdhPJyINiR4QFryPzcCN7fKWXkuisQNTdF58oY+/aNr/SqhnvTnZQ3haFVAv3ll4nHDoPIJnukTKHJaEpt7pCy4Up8=
+X-Received: by 2002:a05:6e02:1a4d:: with SMTP id u13mr1221281ilv.176.1615348083355;
+ Tue, 09 Mar 2021 19:48:03 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:381c:: with SMTP id i28mr1347794jav.60.1615347967972;
- Tue, 09 Mar 2021 19:46:07 -0800 (PST)
-Date:   Tue, 09 Mar 2021 19:46:07 -0800
-In-Reply-To: <179d05df-3c1f-1609-b941-a737f8fb13e0@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d1da9c05bd26815d@google.com>
-Subject: Re: [syzbot] possible deadlock in io_sq_thread_finish
-From:   syzbot <syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+ <YCxrV4u98ZQtInOE@google.com> <SN6PR12MB27672FF8358D122EDD8CC0188E859@SN6PR12MB2767.namprd12.prod.outlook.com>
+ <20210224175122.GA19661@ashkalra_ubuntu_server> <YDaZacLqNQ4nK/Ex@google.com>
+ <20210225202008.GA5208@ashkalra_ubuntu_server> <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
+ <20210226140432.GB5950@ashkalra_ubuntu_server> <YDkzibkC7tAYbfFQ@google.com>
+ <20210308104014.GA5333@ashkalra_ubuntu_server> <YEaAXXGZH0uSMA3v@google.com>
+ <bdf0767f-c2c4-5863-fd0d-352a3f68f7f9@amd.com> <CABayD+ftv5DNdXj-Bs8MXGeFNKx7-aTt99fPuD2R6w1mJ2u8TQ@mail.gmail.com>
+ <F3B77ECE-8C70-47AA-98F8-0C032CB5F568@amd.com>
+In-Reply-To: <F3B77ECE-8C70-47AA-98F8-0C032CB5F568@amd.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Tue, 9 Mar 2021 19:47:26 -0800
+Message-ID: <CABayD+d9DkHV9tnpPfKXgzGiQ27+K=21R1HhOpjLpks6zgoGUw@mail.gmail.com>
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST ioctl
+To:     "Kalra, Ashish" <Ashish.Kalra@amd.com>
+Cc:     "Singh, Brijesh" <brijesh.singh@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Mar 9, 2021 at 7:42 PM Kalra, Ashish <Ashish.Kalra@amd.com> wrote:
+>
+>
+>
+> > On Mar 9, 2021, at 3:22 AM, Steve Rutherford <srutherford@google.com> w=
+rote:
+> >
+> > =EF=BB=BFOn Mon, Mar 8, 2021 at 1:11 PM Brijesh Singh <brijesh.singh@am=
+d.com> wrote:
+> >>
+> >>
+> >>> On 3/8/21 1:51 PM, Sean Christopherson wrote:
+> >>> On Mon, Mar 08, 2021, Ashish Kalra wrote:
+> >>>> On Fri, Feb 26, 2021 at 09:44:41AM -0800, Sean Christopherson wrote:
+> >>>>> +Will and Quentin (arm64)
+> >>>>>
+> >>>>> Moving the non-KVM x86 folks to bcc, I don't they care about KVM de=
+tails at this
+> >>>>> point.
+> >>>>>
+> >>>>> On Fri, Feb 26, 2021, Ashish Kalra wrote:
+> >>>>>> On Thu, Feb 25, 2021 at 02:59:27PM -0800, Steve Rutherford wrote:
+> >>>>>>> On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.c=
+om> wrote:
+> >>>>>>> Thanks for grabbing the data!
+> >>>>>>>
+> >>>>>>> I am fine with both paths. Sean has stated an explicit desire for
+> >>>>>>> hypercall exiting, so I think that would be the current consensus=
+.
+> >>>>> Yep, though it'd be good to get Paolo's input, too.
+> >>>>>
+> >>>>>>> If we want to do hypercall exiting, this should be in a follow-up
+> >>>>>>> series where we implement something more generic, e.g. a hypercal=
+l
+> >>>>>>> exiting bitmap or hypercall exit list. If we are taking the hyper=
+call
+> >>>>>>> exit route, we can drop the kvm side of the hypercall.
+> >>>>> I don't think this is a good candidate for arbitrary hypercall inte=
+rception.  Or
+> >>>>> rather, I think hypercall interception should be an orthogonal impl=
+ementation.
+> >>>>>
+> >>>>> The guest, including guest firmware, needs to be aware that the hyp=
+ercall is
+> >>>>> supported, and the ABI needs to be well-defined.  Relying on usersp=
+ace VMMs to
+> >>>>> implement a common ABI is an unnecessary risk.
+> >>>>>
+> >>>>> We could make KVM's default behavior be a nop, i.e. have KVM enforc=
+e the ABI but
+> >>>>> require further VMM intervention.  But, I just don't see the point,=
+ it would
+> >>>>> save only a few lines of code.  It would also limit what KVM could =
+do in the
+> >>>>> future, e.g. if KVM wanted to do its own bookkeeping _and_ exit to =
+userspace,
+> >>>>> then mandatory interception would essentially make it impossible fo=
+r KVM to do
+> >>>>> bookkeeping while still honoring the interception request.
+> >>>>>
+> >>>>> However, I do think it would make sense to have the userspace exit =
+be a generic
+> >>>>> exit type.  But hey, we already have the necessary ABI defined for =
+that!  It's
+> >>>>> just not used anywhere.
+> >>>>>
+> >>>>>    /* KVM_EXIT_HYPERCALL */
+> >>>>>    struct {
+> >>>>>            __u64 nr;
+> >>>>>            __u64 args[6];
+> >>>>>            __u64 ret;
+> >>>>>            __u32 longmode;
+> >>>>>            __u32 pad;
+> >>>>>    } hypercall;
+> >>>>>
+> >>>>>
+> >>>>>>> Userspace could also handle the MSR using MSR filters (would need=
+ to
+> >>>>>>> confirm that).  Then userspace could also be in control of the cp=
+uid bit.
+> >>>>> An MSR is not a great fit; it's x86 specific and limited to 64 bits=
+ of data.
+> >>>>> The data limitation could be fudged by shoving data into non-standa=
+rd GPRs, but
+> >>>>> that will result in truly heinous guest code, and extensibility iss=
+ues.
+> >>>>>
+> >>>>> The data limitation is a moot point, because the x86-only thing is =
+a deal
+> >>>>> breaker.  arm64's pKVM work has a near-identical use case for a gue=
+st to share
+> >>>>> memory with a host.  I can't think of a clever way to avoid having =
+to support
+> >>>>> TDX's and SNP's hypervisor-agnostic variants, but we can at least n=
+ot have
+> >>>>> multiple KVM variants.
+> >>>>>
+> >>>> Potentially, there is another reason for in-kernel hypercall handlin=
+g
+> >>>> considering SEV-SNP. In case of SEV-SNP the RMP table tracks the sta=
+te
+> >>>> of each guest page, for instance pages in hypervisor state, i.e., pa=
+ges
+> >>>> with C=3D0 and pages in guest valid state with C=3D1.
+> >>>>
+> >>>> Now, there shouldn't be a need for page encryption status hypercalls=
+ on
+> >>>> SEV-SNP as KVM can track & reference guest page status directly usin=
+g
+> >>>> the RMP table.
+> >>> Relying on the RMP table itself would require locking the RMP table f=
+or an
+> >>> extended duration, and walking the entire RMP to find shared pages wo=
+uld be
+> >>> very inefficient.
+> >>>
+> >>>> As KVM maintains the RMP table, therefore we will need SET/GET type =
+of
+> >>>> interfaces to provide the guest page encryption status to userspace.
+> >>> Hrm, somehow I temporarily forgot about SNP and TDX adding their own =
+hypercalls
+> >>> for converting between shared and private.  And in the case of TDX, t=
+he hypercall
+> >>> can't be trusted, i.e. is just a hint, otherwise the guest could indu=
+ce a #MC in
+> >>> the host.
+> >>>
+> >>> But, the different guest behavior doesn't require KVM to maintain a l=
+ist/tree,
+> >>> e.g. adding a dedicated KVM_EXIT_* for notifying userspace of page en=
+cryption
+> >>> status changes would also suffice.
+> >>>
+> >>> Actually, that made me think of another argument against maintaining =
+a list in
+> >>> KVM: there's no way to notify userspace that a page's status has chan=
+ged.
+> >>> Userspace would need to query KVM to do GET_LIST after every GET_DIRT=
+Y.
+> >>> Obviously not a huge issue, but it does make migration slightly less =
+efficient.
+> >>>
+> >>> On a related topic, there are fatal race conditions that will require=
+ careful
+> >>> coordination between guest and host, and will effectively be wired in=
+to the ABI.
+> >>> SNP and TDX don't suffer these issues because host awareness of statu=
+s is atomic
+> >>> with respect to the guest actually writing the page with the new encr=
+yption
+> >>> status.
+> >>>
+> >>> For SEV live migration...
+> >>>
+> >>> If the guest does the hypercall after writing the page, then the gues=
+t is hosed
+> >>> if it gets migrated while writing the page (scenario #1):
+> >>>
+> >>>  vCPU                 Userspace
+> >>>  zero_bytes[0:N]
+> >>>                       <transfers written bytes as private instead of =
+shared>
+> >>>                     <migrates vCPU>
+> >>>  zero_bytes[N+1:4095]
+> >>>  set_shared (dest)
+> >>>  kaboom!
+> >>
+> >>
+> >> Maybe I am missing something, this is not any different from a normal
+> >> operation inside a guest. Making a page shared/private in the page tab=
+le
+> >> does not update the content of the page itself. In your above case, I
+> >> assume zero_bytes[N+1:4095] are written by the destination VM. The
+> >> memory region was private in the source VM page table, so, those write=
+s
+> >> will be performed encrypted. The destination VM later changed the memo=
+ry
+> >> to shared, but nobody wrote to the memory after it has been transition=
+ed
+> >> to the  shared, so a reader of the memory should get ciphertext and
+> >> unless there was a write after the set_shared (dest).
+> >>
+> >>
+> >>> If userspace does GET_DIRTY after GET_LIST, then the host would trans=
+fer bad
+> >>> data by consuming a stale list (scenario #2):
+> >>>
+> >>>  vCPU               Userspace
+> >>>                     get_list (from KVM or internally)
+> >>>  set_shared (src)
+> >>>  zero_page (src)
+> >>>                     get_dirty
+> >>>                     <transfers private data instead of shared>
+> >>>                     <migrates vCPU>
+> >>>  kaboom!
+> >>
+> >>
+> >> I don't remember how things are done in recent Ashish Qemu/KVM patches
+> >> but in previous series, the get_dirty() happens before the querying th=
+e
+> >> encrypted state. There was some logic in VMM to resync the encrypted
+> >> bitmap during the final migration stage and perform any additional dat=
+a
+> >> transfer since last sync.
+> >>
+> >>
+> >>> If both guest and host order things to avoid #1 and #2, the host can =
+still
+> >>> migrate the wrong data (scenario #3):
+> >>>
+> >>>  vCPU               Userspace
+> >>>  set_private
+> >>>  zero_bytes[0:4096]
+> >>>                     get_dirty
+> >>>  set_shared (src)
+> >>>                     get_list
+> >>>                     <transfers as shared instead of private>
+> >>>                   <migrates vCPU>
+> >>>  set_private (dest)
+> >>>  kaboom!
+> >>
+> >>
+> >> Since there was no write to the memory after the set_shared (src), so
+> >> the content of the page should not have changed. After the set_private
+> >> (dest), the caller should be seeing the same content written by the
+> >> zero_bytes[0:4096]
+> > I think Sean was going for the situation where the VM has moved to the
+> > destination, which would have changed the VEK. That way the guest
+> > would be decrypting the old ciphertext with the new (wrong) key.
+> >>
+>
+> But how can this happen, if a page is migrated as private , when it is re=
+ceived it will be decrypted using the transport key TEK and then re-encrypt=
+ed using the destination VM=E2=80=99s VEK on the destination VM.
+>
+If, as in scenario #3 above, the page is set to shared just before
+being migrated. It would then be migrated in the clear, but be
+interpreted on the target as encrypted (since, immediately
+post-migration, the page is flipped to private without ever writing to
+the page). This is not a scenario that is expected to work, as it
+requires violating (currently unspoken?) invariants.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: use-after-free Read in io_sq_thread
+Thanks,
+Steve
 
-==================================================================
-BUG: KASAN: use-after-free in __lock_acquire+0x3e6f/0x54c0 kernel/locking/lockdep.c:4770
-Read of size 8 at addr ffff888023e47c78 by task iou-sqp-10156/10158
-
-CPU: 0 PID: 10158 Comm: iou-sqp-10156 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- __lock_acquire+0x3e6f/0x54c0 kernel/locking/lockdep.c:4770
- lock_acquire kernel/locking/lockdep.c:5510 [inline]
- lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
- down_write+0x92/0x150 kernel/locking/rwsem.c:1406
- io_sq_thread+0x1220/0x1b10 fs/io_uring.c:6754
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Allocated by task 10156:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:427 [inline]
- ____kasan_kmalloc mm/kasan/common.c:506 [inline]
- ____kasan_kmalloc mm/kasan/common.c:465 [inline]
- __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:684 [inline]
- io_get_sq_data fs/io_uring.c:7153 [inline]
- io_sq_offload_create fs/io_uring.c:7827 [inline]
- io_uring_create fs/io_uring.c:9443 [inline]
- io_uring_setup+0x154b/0x2940 fs/io_uring.c:9523
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 3392:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
- kasan_slab_free include/linux/kasan.h:199 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7f0 mm/slub.c:4213
- io_put_sq_data fs/io_uring.c:7095 [inline]
- io_sq_thread_finish+0x48e/0x5b0 fs/io_uring.c:7113
- io_ring_ctx_free fs/io_uring.c:8355 [inline]
- io_ring_exit_work+0x333/0xcf0 fs/io_uring.c:8525
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-The buggy address belongs to the object at ffff888023e47c00
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 120 bytes inside of
- 512-byte region [ffff888023e47c00, ffff888023e47e00)
-The buggy address belongs to the page:
-page:00000000200f7571 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888023e47400 pfn:0x23e44
-head:00000000200f7571 order:2 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 ffffea00005f6908 ffffea0000527508 ffff88800fc41c80
-raw: ffff888023e47400 000000000010000f 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888023e47b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888023e47b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888023e47c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                                ^
- ffff888023e47c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888023e47d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
-Tested on:
-
-commit:         dc5c40fb io_uring: always wait for sqd exited when stoppin..
-git tree:       git://git.kernel.dk/linux-block io_uring-5.12
-console output: https://syzkaller.appspot.com/x/log.txt?x=16cd022cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b3c6cab008c50864
-dashboard link: https://syzkaller.appspot.com/bug?extid=ac39856cb1b332dbbdda
-compiler:       
-
+> Thanks,
+> Ashish
+>
+> >>
+> >>> Scenario #3 is unlikely, but plausible, e.g. if the guest bails from =
+its
+> >>> conversion flow for whatever reason, after making the initial hyperca=
+ll.  Maybe
+> >>> it goes without saying, but to address #3, the guest must consider ex=
+isting data
+> >>> as lost the instant it tells the host the page has been converted to =
+a different
+> >>> type.
+> >>>
+> >>>> For the above reason if we do in-kernel hypercall handling for page
+> >>>> encryption status (which we probably won't require for SEV-SNP &
+> >>>> correspondingly there will be no hypercall exiting),
+> >>> As above, that doesn't preclude KVM from exiting to userspace on conv=
+ersion.
+> >>>
+> >>>> then we can implement a standard GET/SET ioctl interface to get/set =
+the guest
+> >>>> page encryption status for userspace, which will work across SEV, SE=
+V-ES and
+> >>>> SEV-SNP.
