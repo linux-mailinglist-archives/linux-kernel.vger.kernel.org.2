@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5643341F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 691A83341F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbhCJPqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:46:47 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43792 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233219AbhCJPqX (ORCPT
+        id S233287AbhCJPqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:46:48 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47722 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232617AbhCJPq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:46:23 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12AFkIfu117261;
-        Wed, 10 Mar 2021 09:46:18 -0600
+        Wed, 10 Mar 2021 10:46:27 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12AFkL6u067707;
+        Wed, 10 Mar 2021 09:46:21 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615391178;
-        bh=OsKa0EDwQKMOxN4rn2UsJ4wTaESxeSKXJwtpa+eVAPs=;
+        s=ti-com-17Q1; t=1615391181;
+        bh=1m1jaw1QKhWt1my5TiZgSyHmcvod41lJIai7xVZR3M8=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=AtZ3bIh+10iAM0fNznHbBw845yGKpgVo6EJCd1H/v5rBVjZAOwqWEstKb6FHgGDaS
-         UrynFz4tR41Z9P+zZb9Sr/X8XMjRl4yKhARUDnVI6jArytn985vi+bgShPRJR6GEZE
-         mZvxlDFHGfHgH6ShRNormwBW+zzrj7iY5jdXBENw=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12AFkIKE014694
+        b=AimgfEufkI2q4yZEXpKgflNl4tqimqAVFDZwJ14MYlp8z2tY7ZMeko7CStc9h4DB7
+         YYXKp3D/51KntvxnEczwKXCahpKhyhNES6hVRU3i5uQYO4wXialI95VFob6FaCjyjS
+         tYh3kixgeAH7aCDcqdhwGOIiTp3RNh3Vyuq23dnc=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12AFkLfl088150
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Mar 2021 09:46:18 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 10 Mar 2021 09:46:21 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
- Mar 2021 09:46:18 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2021 09:46:21 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 10 Mar 2021 09:46:18 -0600
+ Frontend Transport; Wed, 10 Mar 2021 09:46:21 -0600
 Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12AFk2KS066370;
-        Wed, 10 Mar 2021 09:46:15 -0600
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12AFk2KT066370;
+        Wed, 10 Mar 2021 09:46:18 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -45,9 +45,9 @@ To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Swapnil Jakhade <sjakhade@cadence.com>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH v6 04/13] phy: ti: j721e-wiz: Get PHY properties only for "phy" or "link" subnode
-Date:   Wed, 10 Mar 2021 21:15:49 +0530
-Message-ID: <20210310154558.32078-5-kishon@ti.com>
+Subject: [PATCH v6 05/13] phy: cadence: cadence-sierra: Move all clk_get_*() to a separate function
+Date:   Wed, 10 Mar 2021 21:15:50 +0530
+Message-ID: <20210310154558.32078-6-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210310154558.32078-1-kishon@ti.com>
 References: <20210310154558.32078-1-kishon@ti.com>
@@ -58,35 +58,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"serdes" node (child node of WIZ) can have sub-nodes for representing links
-or it can have sub-nodes for representing the various clocks within the
-serdes. Instead of trying to read "reg" from every child node used for
-assigning "lane_phy_type", read only if the child node's name is "phy"
-or "link" subnode.
-Ideally all PHY dt nodes should have node name as "phy", however
-existing devicetree used "link" as subnode. So in order to maintain old
-DT compatibility get PHY properties for "phy" or "link" subnode.
+No functional change. Group all devm_clk_get_optional() to a
+separate function.
 
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- drivers/phy/ti/phy-j721e-wiz.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/phy/cadence/phy-cadence-sierra.c | 57 +++++++++++++++---------
+ 1 file changed, 35 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
-index 1bb73822f44a..659597645201 100644
---- a/drivers/phy/ti/phy-j721e-wiz.c
-+++ b/drivers/phy/ti/phy-j721e-wiz.c
-@@ -1102,6 +1102,10 @@ static int wiz_get_lane_phy_types(struct device *dev, struct wiz *wiz)
- 		u32 reg, num_lanes = 1, phy_type = PHY_NONE;
- 		int ret, i;
+diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
+index f7ba0ed416bc..7bf1b4c7774a 100644
+--- a/drivers/phy/cadence/phy-cadence-sierra.c
++++ b/drivers/phy/cadence/phy-cadence-sierra.c
+@@ -477,6 +477,38 @@ static int cdns_regmap_init_blocks(struct cdns_sierra_phy *sp,
+ 	return 0;
+ }
  
-+		if (!(of_node_name_eq(subnode, "phy") ||
-+		      of_node_name_eq(subnode, "link")))
-+			continue;
++static int cdns_sierra_phy_get_clocks(struct cdns_sierra_phy *sp,
++				      struct device *dev)
++{
++	struct clk *clk;
++	int ret;
 +
- 		ret = of_property_read_u32(subnode, "reg", &reg);
- 		if (ret) {
- 			dev_err(dev,
++	clk = devm_clk_get_optional(dev, "phy_clk");
++	if (IS_ERR(clk)) {
++		dev_err(dev, "failed to get clock phy_clk\n");
++		return PTR_ERR(clk);
++	}
++	sp->clk = clk;
++
++	clk = devm_clk_get_optional(dev, "cmn_refclk_dig_div");
++	if (IS_ERR(clk)) {
++		dev_err(dev, "cmn_refclk_dig_div clock not found\n");
++		ret = PTR_ERR(clk);
++		return ret;
++	}
++	sp->cmn_refclk_dig_div = clk;
++
++	clk = devm_clk_get_optional(dev, "cmn_refclk1_dig_div");
++	if (IS_ERR(clk)) {
++		dev_err(dev, "cmn_refclk1_dig_div clock not found\n");
++		ret = PTR_ERR(clk);
++		return ret;
++	}
++	sp->cmn_refclk1_dig_div = clk;
++
++	return 0;
++}
++
+ static int cdns_sierra_phy_probe(struct platform_device *pdev)
+ {
+ 	struct cdns_sierra_phy *sp;
+@@ -487,7 +519,6 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
+ 	unsigned int id_value;
+ 	int i, ret, node = 0;
+ 	void __iomem *base;
+-	struct clk *clk;
+ 	struct device_node *dn = dev->of_node, *child;
+ 
+ 	if (of_get_child_count(dn) == 0)
+@@ -524,11 +555,9 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, sp);
+ 
+-	sp->clk = devm_clk_get_optional(dev, "phy_clk");
+-	if (IS_ERR(sp->clk)) {
+-		dev_err(dev, "failed to get clock phy_clk\n");
+-		return PTR_ERR(sp->clk);
+-	}
++	ret = cdns_sierra_phy_get_clocks(sp, dev);
++	if (ret)
++		return ret;
+ 
+ 	sp->phy_rst = devm_reset_control_get(dev, "sierra_reset");
+ 	if (IS_ERR(sp->phy_rst)) {
+@@ -542,22 +571,6 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
+ 		return PTR_ERR(sp->apb_rst);
+ 	}
+ 
+-	clk = devm_clk_get_optional(dev, "cmn_refclk_dig_div");
+-	if (IS_ERR(clk)) {
+-		dev_err(dev, "cmn_refclk_dig_div clock not found\n");
+-		ret = PTR_ERR(clk);
+-		return ret;
+-	}
+-	sp->cmn_refclk_dig_div = clk;
+-
+-	clk = devm_clk_get_optional(dev, "cmn_refclk1_dig_div");
+-	if (IS_ERR(clk)) {
+-		dev_err(dev, "cmn_refclk1_dig_div clock not found\n");
+-		ret = PTR_ERR(clk);
+-		return ret;
+-	}
+-	sp->cmn_refclk1_dig_div = clk;
+-
+ 	ret = clk_prepare_enable(sp->clk);
+ 	if (ret)
+ 		return ret;
 -- 
 2.17.1
 
