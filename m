@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACDA333FBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFB5333FAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232873AbhCJN4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:56:16 -0500
-Received: from conuserg-08.nifty.com ([210.131.2.75]:18469 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbhCJN4F (ORCPT
+        id S232823AbhCJNyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:54:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231790AbhCJNyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:56:05 -0500
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 12ADtCAI025968;
-        Wed, 10 Mar 2021 22:55:12 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 12ADtCAI025968
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615384513;
-        bh=9XvoYcFtafIRd7rGLHERUKU/O6dLqZIhlkxuvCI8qjM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qnEIu3bs9ZFkgsz4CObu0g5EBcM1CNbUlCGXudGIqdnj2AdNOH2DNW94CMpKANzCU
-         KcqZz2L4hBgIO4JgA5MMuY9bIuCf9bhZByedohWBhrOPhfj5kf8fePPXuNE0E5QasT
-         Fs8xh0J83xnmfW0yx/Io8Tr8P5ZtODX10mI5bQoo7jLmru3GdhxZ3jLmNnCzrMW8hZ
-         Vv9YiTL3Rsf4Vmi2qHhjpsKsQk6HEQ5kXXm3jOWeD23tnn32PJzd1kjUp/5LWQUjAy
-         JENYNB1B9kWpQJN+9TOZirOpDijCTGTW/m5+BE32gS8mCvvGufeLsQIvqyuplHgPlc
-         ZUoixJSrW+Fzw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: remove LLVM=1 test from HAS_LTO_CLANG
-Date:   Wed, 10 Mar 2021 22:54:22 +0900
-Message-Id: <20210310135423.813041-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 10 Mar 2021 08:54:33 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCC0C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:54:32 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id e20so6609338ljn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:54:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telliq.com; s=google;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=LnieKbR1sQg1mAtsZUa22eMkB6iSaXuJyq8ZlNF/US4=;
+        b=NrP1reGTTbYR9yAtVXHeNfeEwBnwsvul8i7FL4bJtUFgddNQFnwl3IdfGt1gA+rhJj
+         wd7AcDbWPhZBGfU3jJ0GkjcjBzdrGbN4HuyXlPkRROygew/glcW3rG3/z1lyD+XEUPbK
+         NVerWvTSH60/BPloDQFAioD8fDOpj3bPfVq0ZCSRgDOzfSGzjTBSI9XzMR4KSs/h0asD
+         tpqEBG1Eu5/8g/oCVXkn2fqXerS7PYlWISwgJQVgTW7p8u4Lvnd/mUlXzeIcJ7zm1F+K
+         Gj5/q4sptvKiaf9uS2OFfMolhfVWwNFt0WmLd6gOYqxRJEe4BI35SGyqYA0A73gPy3mN
+         RlYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=LnieKbR1sQg1mAtsZUa22eMkB6iSaXuJyq8ZlNF/US4=;
+        b=qAvo2KXfq7XhpdUJIkmC1UZZVXCCuEKD1paN0xiZUwTdTmeVcVkgveN+EtSoyu5aaL
+         oADJt3l+WY0LHlHyYp0Kb/F3uObyDtbjlWWs++Vdyg62iQKYJ9tjmGSEqklg28zwaQjQ
+         +1WKHdB8ujvk1FMvFTKxSxaLyWsfh1BW6efoWGeqTFMQ0xhk5SJgSNMBwYwwzlG72efu
+         bygykY6KKS5kkySCU4bgoUqYNXaDKURezuEGXBzv5UnPRNXjJ54Op/ZQo8RfTgEF/kK9
+         v5Y5Nvc7aIdxO4w3Vgh3cCWDAP0AR8C2Sf4Xt8Rn88j7DRKe555ri7wJ5rfH0ZPHXq2i
+         b/kw==
+X-Gm-Message-State: AOAM5338TC68nx553uT62l9hYUUjdmrtejZxTNljnNN2x6IV0Ep0qfQb
+        IaeDWAUTJrWUrFl7I7oKeHzCng==
+X-Google-Smtp-Source: ABdhPJxEHQ8LAoylBqUOEpRlv3nouEzg0BCQ0INlp19o7MMfm2LT9WvInOwjI1rCpoZDQ4tmPcMMkA==
+X-Received: by 2002:a2e:9c12:: with SMTP id s18mr1865809lji.383.1615384471365;
+        Wed, 10 Mar 2021 05:54:31 -0800 (PST)
+Received: from polera.kvasta (h77-53-209-86.cust.a3fiber.se. [77.53.209.86])
+        by smtp.gmail.com with ESMTPSA id r5sm3176931ljh.128.2021.03.10.05.54.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 05:54:31 -0800 (PST)
+From:   Jan Kardell <jan.kardell@telliq.com>
+Subject: arm: lockdep complaining about locks allocations in static memory
+To:     Linux ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Message-ID: <6df24716-8b41-8e9a-f2f4-a0f5d49643bd@telliq.com>
+Date:   Wed, 10 Mar 2021 14:54:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 SeaMonkey/2.53.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Documentation/kbuild/llvm.rst notes, LLVM=1 switches the default of
-tools, but you can still override CC, LD, etc. individually. This LLVM=1
-check is unneeded because each tool is already checked separately.
+Hi,
 
-"make CC=clang LD=ld.lld NM=llvm-nm AR=llvm-ar LLVM_IAS=1 menuconfig"
-should be able to enable Clang LTO.
+During work lift the software and kernel versions on our custom TI 
+am3352 board I started to see lockdep warnings after enabling 
+CONFIG_PREEMT. Lockdep seems to think the memory that previously was 
+initmem is static memory. I'm using linux 5.4, as that is what is used 
+in the next OpenWrt version.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
----
+[ 92.198989] WARNING: CPU: 0 PID: 2015 at kernel/locking/lockdep.c:1119 
+alloc_netdev_mqs+0xb4/0x3b0
 
- arch/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+I guess CONFIG_PREEMT just changes the timing of allocations, and is 
+otherwise irrelevant.
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 2e7139b39e8f..ecfd3520b676 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -632,7 +632,6 @@ config HAS_LTO_CLANG
- 	def_bool y
- 	# Clang >= 11: https://github.com/ClangBuiltLinux/linux/issues/510
- 	depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD
--	depends on $(success,test $(LLVM) -eq 1)
- 	depends on $(success,test $(LLVM_IAS) -eq 1)
- 	depends on $(success,$(NM) --help | head -n 1 | grep -qi llvm)
- 	depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
--- 
-2.27.0
+This was fixed for s390 in linux 5.2 commit 
+7a5da02de8d6eafba99556f8c98e5313edebb449 by adding the function 
+arch_is_kernel_initmem_freed(). Later a very similar change was made for 
+powerpc, and a different solution for x86. I now believe that is needed 
+for arm as well. Though I don't know the inner workings of arm memory 
+management so I don't know if an identical solution to s390 will do for 
+arm, but my experiments suggests it works for am335x. The commit message 
+for s390 says "virt == phys", but that seems not to be the case for my 
+arm system.
+
+//Jan
 
