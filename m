@@ -2,91 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B2F3349AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3113349AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233825AbhCJVLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:11:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38774 "EHLO mx2.suse.de"
+        id S231273AbhCJVNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:13:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233809AbhCJVL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:11:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615410684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6GUjnkXjBs1KtZmnlih/UvqUZNGHdMWjAjgw8SoXP3g=;
-        b=Gu5UZClhRbGMERTYbpCARsXtae9aRA04srw0EVXmmZO4aQTUCX2Zs0Qbr5Sr8+BDlzEj0G
-        l8pGFJa4Vq116BU1/YmH0dqtEFV8fGdw+gKGqh6qXtdxuCdLWa3t6NgoSdAFaYQv3nzoWm
-        2XS2v3LzCrH+44JAXJFCIBCsMEkAoLU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B550DAC8C;
-        Wed, 10 Mar 2021 21:11:24 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 22:11:22 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, osalvador@suse.de, song.bao.hua@hisilicon.com,
-        david@redhat.com, naoya.horiguchi@nec.com,
-        joao.m.martins@oracle.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Subject: Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap pages associated
- with each HugeTLB page
-Message-ID: <YEk1+mDZ4u85RKL3@dhcp22.suse.cz>
-References: <20210308102807.59745-1-songmuchun@bytedance.com>
- <20210308102807.59745-5-songmuchun@bytedance.com>
- <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
- <f9f19d38-f1a7-ac8c-6ba8-3ce0bcc1e6a0@oracle.com>
+        id S230491AbhCJVMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:12:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1C4464FCA;
+        Wed, 10 Mar 2021 21:12:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615410758;
+        bh=O1zowkont3PqGMU4upFP7F2G1PaTifGVq/IuLfl8LfI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WYZBjRLaPFCYgPZH3zGjEHgk1sT+uabs8U7gSRR4/RrrkjocOzHHDeeRo22vEhFOr
+         1Z+8Cs/SSteHRHcceIJHgTBb773fkYJpS+odrrBiWxkHBqeRTKDpCPTs6Ns4n7x560
+         KCngergwPWIlvlN4vgQGiUDSH2zAUQM9riQUbpEEOAFP0keaF+DpLATbPa5WjLithE
+         EGRRQT2692Fo0r+bp41Zb9lcCt/tddKpx5RzQ7u2WkYY3/gwdeLMWkNz7f/S1ffQ9T
+         s4rDAZmArtQFMg4rgZH4mI92nGGI4mcmQznVOqAxoPNk7T7cTGiFCcFLZV0Fk/S8qm
+         xarOwPb3Gahwg==
+Received: by mail-ej1-f52.google.com with SMTP id mj10so41615211ejb.5;
+        Wed, 10 Mar 2021 13:12:37 -0800 (PST)
+X-Gm-Message-State: AOAM533W1u8qYrLRSx525iv6yhDzlsk8DMJFQxYzlgeKle1VaYZbXKbO
+        DHamXmYm4WIKOWqOSfpBe6+xIHaAT1li7RqG9A==
+X-Google-Smtp-Source: ABdhPJzumylkbMTmY9AuyDkEfZXR+DTQ+UCDbYWG5q865YkCmk0XtY8s3w1z5tNQTkiFCzwujTIp5t8p8tKAUDabvtY=
+X-Received: by 2002:a17:906:2312:: with SMTP id l18mr368275eja.468.1615410756158;
+ Wed, 10 Mar 2021 13:12:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9f19d38-f1a7-ac8c-6ba8-3ce0bcc1e6a0@oracle.com>
+References: <1615209750-2357-1-git-send-email-shengjiu.wang@nxp.com>
+ <1615209750-2357-4-git-send-email-shengjiu.wang@nxp.com> <20210310024834.GA1623179@robh.at.kernel.org>
+ <CAA+D8AM5nH+gwfas_=9gkzaegq4=4q2AfVybBnxM4xU3gOiF4w@mail.gmail.com>
+In-Reply-To: <CAA+D8AM5nH+gwfas_=9gkzaegq4=4q2AfVybBnxM4xU3gOiF4w@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 10 Mar 2021 14:12:24 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+NcXHtDo+HEFVOEcGqYTx9Heo8dc_R5Nfz1Rr-sAu6YA@mail.gmail.com>
+Message-ID: <CAL_Jsq+NcXHtDo+HEFVOEcGqYTx9Heo8dc_R5Nfz1Rr-sAu6YA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for
+ rpmsg cpu dai driver
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10-03-21 10:56:08, Mike Kravetz wrote:
-> On 3/10/21 7:19 AM, Michal Hocko wrote:
-> > On Mon 08-03-21 18:28:02, Muchun Song wrote:
-> > [...]
-> >> @@ -1447,7 +1486,7 @@ void free_huge_page(struct page *page)
-> >>  	/*
-> >>  	 * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
-> >>  	 */
-> >> -	if (!in_task()) {
-> >> +	if (in_atomic()) {
-> > 
-> > As I've said elsewhere in_atomic doesn't work for CONFIG_PREEMPT_COUNT=n.
-> > We need this change for other reasons and so it would be better to pull
-> > it out into a separate patch which also makes HUGETLB depend on
-> > PREEMPT_COUNT.
-> 
-> Yes, the issue of calling put_page for hugetlb pages from any context
-> still needs work.  IMO, that is outside the scope of this series.  We
-> already have code in this path which blocks/sleeps.
-> 
-> Making HUGETLB depend on PREEMPT_COUNT is too restrictive.  IIUC,
-> PREEMPT_COUNT will only be enabled if we enable:
-> PREEMPT "Preemptible Kernel (Low-Latency Desktop)"
-> PREEMPT_RT "Fully Preemptible Kernel (Real-Time)"
-> or, other 'debug' options.  These are not enabled in 'more common'
-> kernels.  Of course, we do not want to disable HUGETLB in common
-> configurations.
+On Wed, Mar 10, 2021 at 6:33 AM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+>
+> Hi Rob
+>
+> On Wed, Mar 10, 2021 at 10:49 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Mon, Mar 08, 2021 at 09:22:27PM +0800, Shengjiu Wang wrote:
+> > > fsl_rpmsg cpu dai driver is driver for rpmsg audio, which is mainly used
+> >
+> > Bindings describe h/w blocks, not drivers.
+>
+> I will modify the descriptions. but here it is a virtual device.  the
+> mapping in real h/w is cortex M core, Cortex M core controls the SAI,
+> DMA interface. What we see from Linux side is a audio service
+> through rpmsg channel.
 
-I haven't tried that but PREEMPT_COUNT should be selectable even without
-any change to the preemption model (e.g. !PREEMPT).
+It's describing the h/w from the view of the OS. It's not important
+that it's a Cortex-M, but how you interface to it whether that's
+shared registers, mailbox, etc. And it's what resources the block uses
+that the OS controls.
 
--- 
-Michal Hocko
-SUSE Labs
+> > > for getting the user's configuration from device tree and configure the
+> > > clocks which is used by Cortex-M core. So in this document define the
+> > > needed property.
+> > >
+> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > ---
+> > >  .../devicetree/bindings/sound/fsl,rpmsg.yaml  | 118 ++++++++++++++++++
+> > >  1 file changed, 118 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+> > > new file mode 100644
+> > > index 000000000000..5731c1fbc0a6
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+> > > @@ -0,0 +1,118 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/sound/fsl,rpmsg.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: NXP Audio RPMSG CPU DAI Controller
+> > > +
+> > > +maintainers:
+> > > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > +
+> > > +description: |
+> > > +  fsl_rpmsg cpu dai driver is virtual driver for rpmsg audio, which doesn't
+> > > +  touch hardware. It is mainly used for getting the user's configuration
+> > > +  from device tree and configure the clocks which is used by Cortex-M core.
+> > > +  So in this document define the needed property.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - fsl,imx7ulp-rpmsg
+> > > +      - fsl,imx8mn-rpmsg
+> > > +      - fsl,imx8mm-rpmsg
+> > > +      - fsl,imx8mp-rpmsg
+> > > +
+> > > +  model:
+> > > +    $ref: /schemas/types.yaml#/definitions/string
+> > > +    description: User specified audio sound card name
+> > > +
+> > > +  clocks:
+> > > +    items:
+> > > +      - description: Peripheral clock for register access
+> > > +      - description: Master clock
+> > > +      - description: DMA clock for DMA register access
+> > > +      - description: Parent clock for multiple of 8kHz sample rates
+> > > +      - description: Parent clock for multiple of 11kHz sample rates
+> > > +    minItems: 5
+> >
+> > If this doesn't touch hardware, what are these clocks for?
+>
+> When the cortex-M core support audio service, these clock
+> needed prepared & enabled by ALSA driver.
+>
+> >
+> > You don't need 'minItems' unless it's less than the number of 'items'.
+>
+> Ok, I will remove this minItems.
+>
+> >
+> > > +
+> > > +  clock-names:
+> > > +    items:
+> > > +      - const: ipg
+> > > +      - const: mclk
+> > > +      - const: dma
+> > > +      - const: pll8k
+> > > +      - const: pll11k
+> > > +    minItems: 5
+> > > +
+> > > +  power-domains:
+> > > +    maxItems: 1
+> > > +
+> > > +  fsl,audioindex:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    enum: [0, 1]
+> > > +    default: 0
+> > > +    description: Instance index for sound card in
+> > > +                 M core side, which share one rpmsg
+> > > +                 channel.
+> >
+> > We don't do indexes in DT. What's this numbering tied to?
+>
+> I will remove it. it is not necessary
+>
+> >
+> > > +
+> > > +  fsl,version:
+> >
+> > version of what?
+> >
+> > This seems odd at best.
+> >
+>
+> I will remove it.  it is not necessary
+>
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    enum: [1, 2]
+> >
+> > You're going to update this with every new firmware version?
+> >
+> > > +    default: 2
+> > > +    description: The version of M core image, which is
+> > > +                 to make driver compatible with different image.
+> > > +
+> > > +  fsl,buffer-size:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    description: pre allocate dma buffer size
+> >
+> > How can you have DMA, this doesn't touch h/w?
+>
+> The DMA is handled by M core image for sound playback
+> and capture. we need to allocated buffer in Linux side.
+> here just make the buffer size to be configurable.
+
+Do we set audio buffer sizes for other audio devices in DT? If not,
+why is this special? If so, why is it not common.
+
+> > > +  fsl,enable-lpa:
+> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > +    description: enable low power audio path.
+> > > +
+> > > +  fsl,rpmsg-out:
+> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > +    description: |
+> > > +      This is a boolean property. If present, the transmitting function
+> > > +      will be enabled.
+> > > +
+> > > +  fsl,rpmsg-in:
+> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > +    description: |
+> > > +      This is a boolean property. If present, the receiving function
+> > > +      will be enabled.
+> > > +
+> > > +  fsl,codec-type:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    enum: [0, 1, 2]
+> > > +    default: 0
+> > > +    description: Sometimes the codec is registered by
+> > > +                 driver not by the device tree, this items
+> > > +                 can be used to distinguish codecs.
+> >
+> > How does one decide what value to use?
+>
+> I will add more description:
+> 0: dummy codec
+> 1: WM8960 codec
+> 2: AK4497 codec
+
+I assume the last 2 cases have nodes in DT (pointed to by
+'audio-codec'), so this is redundant.
+
+> > > +
+> > > +  audio-codec:
+> > > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > > +    description: The phandle of the audio codec
+> >
+> > The codec is controlled from the Linux side?
+>
+> yes.
+>
+> >
+> > > +
+> > > +  memory-region:
+> > > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > > +    description: phandle to the reserved memory nodes
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - fsl,audioindex
+> > > +  - fsl,version
+> > > +  - fsl,buffer-size
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    rpmsg_audio: rpmsg_audio {
+> > > +        compatible = "fsl,imx8mn-rpmsg";
+> > > +        fsl,audioindex = <0> ;
+> > > +        fsl,version = <2>;
+> > > +        fsl,buffer-size = <0x6000000>;
+> > > +        fsl,enable-lpa;
+> >
+> > How does this work? Don't you need somewhere to put the 'rpmsg' data?
+>
+> The rpmsg data is not handled in this "rpmsg_audio" device, it is just to
+> prepare the resource for rpmsg audio function, the clock, the memory
+> the power...
+>
+> The rpmsg data is handled in imx-pcm-rpmsg.c and imx-audio-rpmsg.c
+> These devices is registered by imx remoteproc driver.
+
+Then what is 'memory-region' for? You need that, a mailbox, or ???
+somewhere in DT.
+
+Rob
