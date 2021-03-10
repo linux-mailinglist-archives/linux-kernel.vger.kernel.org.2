@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B5E333ED8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B892C333F37
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233995AbhCJN1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:27:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46616 "EHLO mail.kernel.org"
+        id S233899AbhCJNbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:31:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233196AbhCJNZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2808764FEE;
-        Wed, 10 Mar 2021 13:25:03 +0000 (UTC)
+        id S233350AbhCJNZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 267E764FDC;
+        Wed, 10 Mar 2021 13:25:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382704;
-        bh=wuObpUnoJjjDOvL8yCLHFnREMgh0pVK4LpjMl6IBIPE=;
+        s=korg; t=1615382746;
+        bh=B7g0x+MTAOn1FvDoG4Af/itGgaNgXucvJoRcpfKLbQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qyBqgYBbZeojfRHWBCxwzmNzoSi5xCJk2huiD9dyJ8NrpkZzwQNGjX3xglvkobn82
-         q184UWTN0zEjgo5mnoxvuCI1HEcjqrSBOF3CtRqe8isPYOL96JP9CZCamEOI3vZFpE
-         1h7flcjVflkk1YQ90vFOA+PjmHFN3lNPVIHHpF7I=
+        b=dP0po1b3KoC6b7qr+Lx1H4m/FFiX/HGB9oxfKevtjleilTZ2jPZf8N2yXh4duAosV
+         H/qUhsTY3WPtath15gvRTV0CHlVCApVpcs0upYdDPZVD3tXjpFE4QTn4sOU0byl8pE
+         oEsqQq2ayC5lkLJBYayptLD/hlFeSnTLYZY5ig1g=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.14 01/20] btrfs: raid56: simplify tracking of Q stripe presence
-Date:   Wed, 10 Mar 2021 14:24:38 +0100
-Message-Id: <20210310132320.559756662@linuxfoundation.org>
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 31/39] platform/x86: acer-wmi: Add support for SW_TABLET_MODE on Switch devices
+Date:   Wed, 10 Mar 2021 14:24:39 +0100
+Message-Id: <20210310132320.691409650@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.512307035@linuxfoundation.org>
-References: <20210310132320.512307035@linuxfoundation.org>
+In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
+References: <20210310132319.708237392@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,123 +43,215 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: David Sterba <dsterba@suse.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit c17af96554a8a8777cbb0fd53b8497250e548b43 upstream.
+[ Upstream commit 5c54cb6c627e8f50f490e6b5656051a5ac29eab4 ]
 
-There are temporary variables tracking the index of P and Q stripes, but
-none of them is really used as such, merely for determining if the Q
-stripe is present. This leads to compiler warnings with
--Wunused-but-set-variable and has been reported several times.
+Add support for SW_TABLET_MODE on the Acer Switch 10 (SW5-012) and the
+acer Switch 10 (S1003) models.
 
-fs/btrfs/raid56.c: In function ‘finish_rmw’:
-fs/btrfs/raid56.c:1199:6: warning: variable ‘p_stripe’ set but not used [-Wunused-but-set-variable]
- 1199 |  int p_stripe = -1;
-      |      ^~~~~~~~
-fs/btrfs/raid56.c: In function ‘finish_parity_scrub’:
-fs/btrfs/raid56.c:2356:6: warning: variable ‘p_stripe’ set but not used [-Wunused-but-set-variable]
- 2356 |  int p_stripe = -1;
-      |      ^~~~~~~~
+There is no way to detect if this is supported, so this uses DMI based
+quirks setting force_caps to ACER_CAP_KBD_DOCK (these devices have no
+other acer-wmi based functionality).
 
-Replace the two variables with one that has a clear meaning and also get
-rid of the warnings. The logic that verifies that there are only 2
-valid cases is unchanged.
+The new SW_TABLET_MODE functionality can be tested on devices which
+are not in the DMI table by passing acer_wmi.force_caps=0x40 on the
+kernel commandline.
 
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20201019185628.264473-6-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/raid56.c |   37 +++++++++++++++----------------------
- 1 file changed, 15 insertions(+), 22 deletions(-)
+ drivers/platform/x86/acer-wmi.c | 109 +++++++++++++++++++++++++++++++-
+ 1 file changed, 106 insertions(+), 3 deletions(-)
 
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -1190,22 +1190,19 @@ static noinline void finish_rmw(struct b
- 	int nr_data = rbio->nr_data;
- 	int stripe;
- 	int pagenr;
--	int p_stripe = -1;
--	int q_stripe = -1;
-+	bool has_qstripe;
- 	struct bio_list bio_list;
- 	struct bio *bio;
- 	int ret;
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 657fd8c49597..b22df329e97b 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -43,6 +43,7 @@
+ #include <linux/input/sparse-keymap.h>
+ #include <acpi/video.h>
  
- 	bio_list_init(&bio_list);
++ACPI_MODULE_NAME(KBUILD_MODNAME);
+ MODULE_AUTHOR("Carlos Corbacho");
+ MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
+ MODULE_LICENSE("GPL");
+@@ -93,7 +94,7 @@ MODULE_ALIAS("wmi:676AA15E-6A47-4D9F-A2CC-1E6D18D14026");
  
--	if (rbio->real_stripes - rbio->nr_data == 1) {
--		p_stripe = rbio->real_stripes - 1;
--	} else if (rbio->real_stripes - rbio->nr_data == 2) {
--		p_stripe = rbio->real_stripes - 2;
--		q_stripe = rbio->real_stripes - 1;
--	} else {
-+	if (rbio->real_stripes - rbio->nr_data == 1)
-+		has_qstripe = false;
-+	else if (rbio->real_stripes - rbio->nr_data == 2)
-+		has_qstripe = true;
-+	else
- 		BUG();
--	}
+ enum acer_wmi_event_ids {
+ 	WMID_HOTKEY_EVENT = 0x1,
+-	WMID_ACCEL_EVENT = 0x5,
++	WMID_ACCEL_OR_KBD_DOCK_EVENT = 0x5,
+ };
  
- 	/* at this point we either have a full stripe,
- 	 * or we've read the full stripe from the drive.
-@@ -1249,7 +1246,7 @@ static noinline void finish_rmw(struct b
- 		SetPageUptodate(p);
- 		pointers[stripe++] = kmap(p);
+ static const struct key_entry acer_wmi_keymap[] __initconst = {
+@@ -141,7 +142,9 @@ struct event_return_value {
+ 	u8 function;
+ 	u8 key_num;
+ 	u16 device_state;
+-	u32 reserved;
++	u16 reserved1;
++	u8 kbd_dock_state;
++	u8 reserved2;
+ } __attribute__((packed));
  
--		if (q_stripe != -1) {
-+		if (has_qstripe) {
+ /*
+@@ -225,6 +228,7 @@ struct hotkey_function_type_aa {
+ #define ACER_CAP_BRIGHTNESS		BIT(3)
+ #define ACER_CAP_THREEG			BIT(4)
+ #define ACER_CAP_SET_FUNCTION_MODE	BIT(5)
++#define ACER_CAP_KBD_DOCK		BIT(6)
  
- 			/*
- 			 * raid6, add the qstripe and call the
-@@ -2325,8 +2322,7 @@ static noinline void finish_parity_scrub
- 	int nr_data = rbio->nr_data;
- 	int stripe;
- 	int pagenr;
--	int p_stripe = -1;
--	int q_stripe = -1;
-+	bool has_qstripe;
- 	struct page *p_page = NULL;
- 	struct page *q_page = NULL;
- 	struct bio_list bio_list;
-@@ -2336,14 +2332,12 @@ static noinline void finish_parity_scrub
+ /*
+  * Interface type flags
+@@ -334,6 +338,15 @@ static int __init dmi_matched(const struct dmi_system_id *dmi)
+ 	return 1;
+ }
  
- 	bio_list_init(&bio_list);
++static int __init set_force_caps(const struct dmi_system_id *dmi)
++{
++	if (force_caps == -1) {
++		force_caps = (uintptr_t)dmi->driver_data;
++		pr_info("Found %s, set force_caps to 0x%x\n", dmi->ident, force_caps);
++	}
++	return 1;
++}
++
+ static struct quirk_entry quirk_unknown = {
+ };
  
--	if (rbio->real_stripes - rbio->nr_data == 1) {
--		p_stripe = rbio->real_stripes - 1;
--	} else if (rbio->real_stripes - rbio->nr_data == 2) {
--		p_stripe = rbio->real_stripes - 2;
--		q_stripe = rbio->real_stripes - 1;
--	} else {
-+	if (rbio->real_stripes - rbio->nr_data == 1)
-+		has_qstripe = false;
-+	else if (rbio->real_stripes - rbio->nr_data == 2)
-+		has_qstripe = true;
-+	else
- 		BUG();
--	}
+@@ -512,6 +525,24 @@ static const struct dmi_system_id acer_quirks[] __initconst = {
+ 		},
+ 		.driver_data = &quirk_acer_travelmate_2490,
+ 	},
++	{
++		.callback = set_force_caps,
++		.ident = "Acer Aspire Switch 10 SW5-012",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
++		},
++		.driver_data = (void *)ACER_CAP_KBD_DOCK,
++	},
++	{
++		.callback = set_force_caps,
++		.ident = "Acer One 10 (S1003)",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "One S1003"),
++		},
++		.driver_data = (void *)ACER_CAP_KBD_DOCK,
++	},
+ 	{}
+ };
  
- 	if (bbio->num_tgtdevs && bbio->tgtdev_map[rbio->scrubp]) {
- 		is_replace = 1;
-@@ -2365,7 +2359,7 @@ static noinline void finish_parity_scrub
- 		goto cleanup;
- 	SetPageUptodate(p_page);
+@@ -1552,6 +1583,71 @@ static int acer_gsensor_event(void)
+ 	return 0;
+ }
  
--	if (q_stripe != -1) {
-+	if (has_qstripe) {
- 		q_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
- 		if (!q_page) {
- 			__free_page(p_page);
-@@ -2388,8 +2382,7 @@ static noinline void finish_parity_scrub
- 		/* then add the parity stripe */
- 		pointers[stripe++] = kmap(p_page);
++/*
++ * Switch series keyboard dock status
++ */
++static int acer_kbd_dock_state_to_sw_tablet_mode(u8 kbd_dock_state)
++{
++	switch (kbd_dock_state) {
++	case 0x01: /* Docked, traditional clamshell laptop mode */
++		return 0;
++	case 0x04: /* Stand-alone tablet */
++	case 0x40: /* Docked, tent mode, keyboard not usable */
++		return 1;
++	default:
++		pr_warn("Unknown kbd_dock_state 0x%02x\n", kbd_dock_state);
++	}
++
++	return 0;
++}
++
++static void acer_kbd_dock_get_initial_state(void)
++{
++	u8 *output, input[8] = { 0x05, 0x00, };
++	struct acpi_buffer input_buf = { sizeof(input), input };
++	struct acpi_buffer output_buf = { ACPI_ALLOCATE_BUFFER, NULL };
++	union acpi_object *obj;
++	acpi_status status;
++	int sw_tablet_mode;
++
++	status = wmi_evaluate_method(WMID_GUID3, 0, 0x2, &input_buf, &output_buf);
++	if (ACPI_FAILURE(status)) {
++		ACPI_EXCEPTION((AE_INFO, status, "Error getting keyboard-dock initial status"));
++		return;
++	}
++
++	obj = output_buf.pointer;
++	if (!obj || obj->type != ACPI_TYPE_BUFFER || obj->buffer.length != 8) {
++		pr_err("Unexpected output format getting keyboard-dock initial status\n");
++		goto out_free_obj;
++	}
++
++	output = obj->buffer.pointer;
++	if (output[0] != 0x00 || (output[3] != 0x05 && output[3] != 0x45)) {
++		pr_err("Unexpected output [0]=0x%02x [3]=0x%02x getting keyboard-dock initial status\n",
++		       output[0], output[3]);
++		goto out_free_obj;
++	}
++
++	sw_tablet_mode = acer_kbd_dock_state_to_sw_tablet_mode(output[4]);
++	input_report_switch(acer_wmi_input_dev, SW_TABLET_MODE, sw_tablet_mode);
++
++out_free_obj:
++	kfree(obj);
++}
++
++static void acer_kbd_dock_event(const struct event_return_value *event)
++{
++	int sw_tablet_mode;
++
++	if (!has_cap(ACER_CAP_KBD_DOCK))
++		return;
++
++	sw_tablet_mode = acer_kbd_dock_state_to_sw_tablet_mode(event->kbd_dock_state);
++	input_report_switch(acer_wmi_input_dev, SW_TABLET_MODE, sw_tablet_mode);
++	input_sync(acer_wmi_input_dev);
++}
++
+ /*
+  * Rfkill devices
+  */
+@@ -1779,8 +1875,9 @@ static void acer_wmi_notify(u32 value, void *context)
+ 			sparse_keymap_report_event(acer_wmi_input_dev, scancode, 1, true);
+ 		}
+ 		break;
+-	case WMID_ACCEL_EVENT:
++	case WMID_ACCEL_OR_KBD_DOCK_EVENT:
+ 		acer_gsensor_event();
++		acer_kbd_dock_event(&return_value);
+ 		break;
+ 	default:
+ 		pr_warn("Unknown function number - %d - %d\n",
+@@ -1980,6 +2077,9 @@ static int __init acer_wmi_input_setup(void)
+ 	if (err)
+ 		goto err_free_dev;
  
--		if (q_stripe != -1) {
--
-+		if (has_qstripe) {
- 			/*
- 			 * raid6, add the qstripe and call the
- 			 * library function to fill in our p/q
++	if (has_cap(ACER_CAP_KBD_DOCK))
++		input_set_capability(acer_wmi_input_dev, EV_SW, SW_TABLET_MODE);
++
+ 	status = wmi_install_notify_handler(ACERWMID_EVENT_GUID,
+ 						acer_wmi_notify, NULL);
+ 	if (ACPI_FAILURE(status)) {
+@@ -1987,6 +2087,9 @@ static int __init acer_wmi_input_setup(void)
+ 		goto err_free_dev;
+ 	}
+ 
++	if (has_cap(ACER_CAP_KBD_DOCK))
++		acer_kbd_dock_get_initial_state();
++
+ 	err = input_register_device(acer_wmi_input_dev);
+ 	if (err)
+ 		goto err_uninstall_notifier;
+-- 
+2.30.1
+
 
 
