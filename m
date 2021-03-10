@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CCF334937
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76E6334939
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhCJU47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:56:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60252 "EHLO mail.kernel.org"
+        id S231757AbhCJU5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:57:32 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:36835 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230521AbhCJU4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:56:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9997564EE8;
-        Wed, 10 Mar 2021 20:56:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1615409771;
-        bh=VVx5ZS51pRRZ4Kk2g9iYDAMVtDpyywK24kFljFq/lUE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Pzd+NJwuI3bJfWQoBjUnXiggyLHtJjbt1dV+HJlQTLJ5cOrrBcNgrYCW4N6QeG6kb
-         AbnC9hY/E8KQY6uIupWFP1khFCouvNWf7Du3EzMJ7L1cJzMLPWUq1vTqGvDz/W9aE0
-         YVWQBNKZSu7dU3x+Gbcprv7XSNRkDkzPdiAMTtM4=
-Date:   Wed, 10 Mar 2021 12:56:09 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v3] mm: page_alloc: dump migrate-failed pages
-Message-Id: <20210310125609.359888dc65562fbed4b1f088@linux-foundation.org>
-In-Reply-To: <20210310180104.517886-1-minchan@kernel.org>
-References: <20210310180104.517886-1-minchan@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S231808AbhCJU5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:57:04 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615409824; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=5XWw8PFNwF6LFhiLkbPkKIEa4bbVxzhuAVG5qfayj/w=; b=wmWgaETEFC3UweVOu45u+jx8RNzd6RjWJEqIB4Zp2rNeySieQ8d3KzMKSU6QZ1QegRNokc1u
+ JDoSJIAPHMqXcKmIW2FMrDZsMZG39iTrNImCKuGfPkyEKydgVRG48z3i9wLG9c47L/4JQ2/P
+ wVxnGwTcC5ylihy0EYFTTwJHJo4=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6049329c155a7cd23434f6eb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 20:57:00
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 70F22C433C6; Wed, 10 Mar 2021 20:57:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C8164C433CA;
+        Wed, 10 Mar 2021 20:56:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C8164C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v2 RESEND] bus: mhi: core: Wait for ready state after
+ reset
+To:     Jeffrey Hugo <jhugo@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <80b6c87a-001c-96ae-d0ce-f41b48362d80@codeaurora.org>
+Date:   Wed, 10 Mar 2021 12:56:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 10:01:04 -0800 Minchan Kim <minchan@kernel.org> wrote:
 
-> Currently, debugging CMA allocation failures is quite limited.
-> The most commong source of these failures seems to be page
-> migration which doesn't provide any useful information on the
-> reason of the failure by itself. alloc_contig_range can report
-> those failures as it holds a list of migrate-failed pages.
-> 
-> page refcount, mapcount with page flags on dump_page are
-> helpful information to deduce the culprit. Furthermore,
-> dump_page_owner was super helpful to find long term pinner
-> who initiated the page allocation.
-> 
-> The reason it approach with dynamic debug is the debug message
-> could emit lots of noises as alloc_contig_range calls more
-> frequently since it's a best effort allocator.
-> 
-> There are two ifdefery conditions to support common dyndbg options:
-> 
-> - CONFIG_DYNAMIC_DEBUG_CORE && DYNAMIC_DEBUG_MODULE
-> It aims for supporting the feature with only specific file
-> with adding ccflags.
-> 
-> - CONFIG_DYNAMIC_DEBUG
-> It aims for supporting the feature with system wide globally.
-> 
-> A simple example to enable the feature:
-> 
-> Admin could enable the dump like this(by default, disabled)
-> 
-> 	echo "func dump_migrate_failure_pages +p" > control
-> 
-> Admin could disable it.
-> 
-> 	echo "func dump_migrate_failure_pages =_" > control
 
-I think the changelog is out of sync.  Did you mean
-"alloc_contig_dump_pages" here?
+On 3/10/21 12:41 PM, Jeffrey Hugo wrote:
+> After the device has signaled the end of reset by clearing the reset bit,
+> it will automatically reinit MHI and the internal device structures.  Once
+> That is done, the device will signal it has entered the ready state.
+> 
+> Signaling the ready state involves sending an interrupt (MSI) to the host
+> which might cause IOMMU faults if it occurs at the wrong time.
+> 
+> If the controller is being powered down, and possibly removed, then the
+> reset flow would only wait for the end of reset.  At which point, the host
+> and device would start a race.  The host may complete its reset work, and
+> remove the interrupt handler, which would cause the interrupt to be
+> disabled in the IOMMU.  If that occurs before the device signals the ready
+> state, then the IOMMU will fault since it blocked an interrupt.  While
+> harmless, the fault would appear like a serious issue has occurred so let's
+> silence it by making sure the device hits the ready state before the host
+> completes its reset processing.
+> 
+> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8453,6 +8453,27 @@ static unsigned long pfn_max_align_up(unsigned long pfn)
->  				pageblock_nr_pages));
->  }
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 
-> +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> +	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> +static void alloc_contig_dump_pages(struct list_head *page_list)
-> +{
-> +	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
-> +			"migrate failure");
-> +
-> +	if (DYNAMIC_DEBUG_BRANCH(descriptor)) {
-> +		struct page *page;
-> +
-> +		WARN(1, "failed callstack");
-> +		list_for_each_entry(page, page_list, lru)
-> +			dump_page(page, "migration failure");
-> +	}
-> +}
-
-I doubt if everyone is familiar with dynamic debug.  It might be kind
-to add a little comment over this, telling people how to turn it on and
-off.
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
