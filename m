@@ -2,148 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B365333B77
+	by mail.lfdr.de (Postfix) with ESMTP id 5E56C333B76
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhCJLbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230465AbhCJLbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 10 Mar 2021 06:31:09 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:63310 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhCJLar (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:30:47 -0500
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 12ABUYJu006714;
-        Wed, 10 Mar 2021 20:30:35 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 12ABUYJu006714
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615375835;
-        bh=/fSoNed1kAtUQ4lVH3GglUtu6K4SYi00Z3FO6YwKUwk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jNpFaSMvzSkMdSDrPrCfU+Bg2ibAEiJZDgR+FVFVBm/zbS5GnC+V1HP7ZDotRCFW3
-         Bf0d8EJb5j6Dbf9RBRzw5a+IOkWwx6rN9U7IL+NjQN8NIvhioOlZSjDIokOU0cxv+U
-         gM9qDp3KDMrO/SOluuLgmvfUHLwsj/RxkUTTHrjyCTRyDvF1wKkxBtfsHSUoCZH1+f
-         WpAKgATOYSq5e0Y08kTFBf1o10U/SikDN08U329jXy/BEF+ZT1UTyzdDBVyMLH0vMJ
-         YspfWoyxQWwQkKhbxV8oBNm0UYK836CCp/jNDWenNCDrKJFNtqADL8JTVFY9Uyybm0
-         4TpXXFXorbsbA==
-X-Nifty-SrcIP: [209.85.210.171]
-Received: by mail-pf1-f171.google.com with SMTP id 16so10346709pfn.5;
-        Wed, 10 Mar 2021 03:30:35 -0800 (PST)
-X-Gm-Message-State: AOAM533ulqcd3KUUwGEYTIbW3lvGIEHFRraZtzrcsOJKJbi/mqXLatD5
-        I0KblpY+IH1X1fsDGFgphxH1gN0f6MnByYeh1Wo=
-X-Google-Smtp-Source: ABdhPJx8MzgNXXYk42bIEYDrXHt+CuCAIW8G6SqXBkM4fVIWSQi25NzxQsqdkrF4/dJxvXIIiNzXkRMuX7WJIc93fqc=
-X-Received: by 2002:a65:428b:: with SMTP id j11mr2469119pgp.47.1615375834478;
- Wed, 10 Mar 2021 03:30:34 -0800 (PST)
+Received: from mail.kernel.org ([198.145.29.99]:52198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230450AbhCJLao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:30:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8B5E64FD7;
+        Wed, 10 Mar 2021 11:30:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615375844;
+        bh=suwFvFAR28YJE9v3I95o0mqKODn5ocVAXWz13k7wMeE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UhBmGLz5HOZgC4Q04Vw3fSd38wxZXDQnz2okpvGhb4ZvG4kllK97W8Me1NFmP49gG
+         T1uzuiaLXSF75FMv3KM6oLUdaSuHP3FCDd3wWyRw5kDYhkKXbaLIVqcOm4JixgqEsD
+         5/WsRE1/sAc/Kv9Tf35QZyKPEYUBxX9ePuxT3i3127ld8yK0k6qJs40aQ43NNbYqfz
+         O7nJmDM8FS3Xs1K9RwHqFsXqXXxkFgkLILILRnw3ZlYnQ8gIvnXPK9W0RY3O8HTH7/
+         28Yf0Bec9MSX7oKLWbIBD54BGyZlJ5QalMl/V9CojbTsrva6zo9c6z8g/vaVr8jUgW
+         WWLAkOYqquWyA==
+Date:   Wed, 10 Mar 2021 13:30:20 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/5] x86/sgx: Add a basic NUMA allocation scheme to
+ sgx_alloc_epc_page()
+Message-ID: <YEitzCiXd02/Pxy1@kernel.org>
+References: <20210303150323.433207-1-jarkko@kernel.org>
+ <20210303150323.433207-6-jarkko@kernel.org>
+ <7621d89e-9347-d8a5-a8b0-a108990d0e6d@intel.com>
 MIME-Version: 1.0
-References: <cover.1615354376.git.viresh.kumar@linaro.org> <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
- <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
-In-Reply-To: <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 10 Mar 2021 20:29:57 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAST04XTt7Y0DnSADHgAw-zy61HUcRJSyYRvy2rGHMdn4A@mail.gmail.com>
-Message-ID: <CAK7LNAST04XTt7Y0DnSADHgAw-zy61HUcRJSyYRvy2rGHMdn4A@mail.gmail.com>
-Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source files
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000cb315305bd2cfea8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7621d89e-9347-d8a5-a8b0-a108990d0e6d@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000cb315305bd2cfea8
-Content-Type: text/plain; charset="UTF-8"
+Weird. I did check my kernel org last time on Thrusday night but did not
+get this. I was actually wondering the lack of feedback.
 
-On Wed, Mar 10, 2021 at 8:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Wed, Mar 10, 2021 at 2:35 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > Since the overlays dtb files are now named as .dtbo, there is a lot of
-> > interest in similarly naming the overlay source dts files as .dtso.
-> >
-> > This patch makes the necessary changes to allow .dtso format for overlay
-> > source files.
-> >
-> > Note that we still support generating .dtbo files from .dts files. This
-> > is required for the source files present in drivers/of/unittest-data/,
-> > because they can't be renamed to .dtso as they are used for some runtime
-> > testing as well.
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Then I had suddenly huge pile of email waiting for me on Monday with
+bunch emails from around the time you sent this one.
+
+On Wed, Mar 03, 2021 at 04:20:03PM -0800, Dave Hansen wrote:
+> What changed from the last patch?
+> 
+> On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
+> > Background
+> > ==========
+> > 
+> > EPC section is covered by one or more SRAT entries that are associated with
+> > one and only one PXM (NUMA node). The motivation behind this patch is to
+> > provide basic elements of building allocation scheme based on this premise.
+> 
+> Just like normal RAM, enclave memory (EPC) should be covered by entries
+> in the ACPI SRAT table.  These entries allow each EPC section to be
+> associated with a NUMA node.
+> 
+> Use this information to implement a simple NUMA-aware allocator for
+> enclave memory.
+> 
+> > Use phys_to_target_node() to associate each NUMA node with the EPC
+> > sections contained within its range. In sgx_alloc_epc_page(), first try
+> > to allocate from the NUMA node, where the CPU is executing. If that
+> > fails, fallback to the legacy allocation.
+> 
+> By "legacy", you mean the one from the last patch? :)
+> 
+> > Link: https://lore.kernel.org/lkml/158188326978.894464.217282995221175417.stgit@dwillia2-desk3.amr.corp.intel.com/
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 > > ---
-> >  scripts/Makefile.lib | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> > index bc045a54a34e..59e86f67f9e0 100644
-> > --- a/scripts/Makefile.lib
-> > +++ b/scripts/Makefile.lib
-> > @@ -339,7 +339,7 @@ $(obj)/%.dtb.S: $(obj)/%.dtb FORCE
-> >
-> >  quiet_cmd_dtc = DTC     $@
-> >  cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
-> > -       $(DTC) -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
-> > +       $(DTC) -I dts -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
->
-> Even without "-I dts",
->
->    inform = guess_input_format(arg, "dts");
->
-> seems to fall back to "dts" anyway,
-> but I guess you wanted to make this explicit, correct?
->
-> I will drop the ugly -O.
-> https://patchwork.kernel.org/project/linux-kbuild/patch/20210310110824.782209-1-masahiroy@kernel.org/
->
-> I will queue it to linux-kbuild/fixes.
->
->
+> >  arch/x86/Kconfig               |  1 +
+> >  arch/x86/kernel/cpu/sgx/main.c | 84 ++++++++++++++++++++++++++++++++++
+> >  arch/x86/kernel/cpu/sgx/sgx.h  |  9 ++++
+> >  3 files changed, 94 insertions(+)
+> > 
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index a5f6a3013138..7eb1e96cfe8a 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -1940,6 +1940,7 @@ config X86_SGX
+> >  	depends on CRYPTO_SHA256=y
+> >  	select SRCU
+> >  	select MMU_NOTIFIER
+> > +	select NUMA_KEEP_MEMINFO if NUMA
+> 
+> This dependency is worth mentioning somewhere.  Why do we suddenly need
+> NUMA_KEEP_MEMINFO?
+> 
+> > +/* Nodes with one or more EPC sections. */
+> > +static nodemask_t sgx_numa_mask;
+> > +
+> > +/*
+> > + * Array with one list_head for each possible NUMA node.  Each
+> > + * list contains all the sgx_epc_section's which are on that
+> 
+> 					   ^ no "'", please
+> 
+> > + * node.
+> > + */
+> > +static struct sgx_numa_node *sgx_numa_nodes;
+> > +
+> > +/*
+> > + * sgx_free_epc_page() uses this to find out the correct struct sgx_numa_node,
+> > + * to put the page in.
+> > + */
+> > +static int sgx_section_to_numa_node_id[SGX_MAX_EPC_SECTIONS];
+> 
+> If this is per-section, why not put it in struct sgx_epc_section?
+
+Because struct sgx_epc_page does not contain a pointer to
+struct sgx_epc_section.
+
+> 
+> >  /*
+> > @@ -434,6 +451,36 @@ static bool __init sgx_page_reclaimer_init(struct list_head *laundry)
+> >  	return true;
+> >  }
+> >  
+> > +static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
+> > +{
+> > +	struct sgx_epc_page *page = NULL;
+> > +	struct sgx_numa_node *sgx_node;
+> > +
+> > +	if (WARN_ON_ONCE(nid < 0 || nid >= num_possible_nodes()))
+> > +		return NULL;
+> 
+> This has exactly one call-site which plumbs numa_node_id() in here
+> pretty directly.  Is this check worthwhile?
+
+Probably not.
 
 
-BTW, is the attached patch good for DTC?
+> > +	if (!node_isset(nid, sgx_numa_mask))
+> > +		return NULL;
+> > +
+> > +	sgx_node = &sgx_numa_nodes[nid];
+> > +
+> > +	spin_lock(&sgx_free_page_list_lock);
+> 
+> The glocal lock protecting a per-node structure is a bit unsightly.
 
-I do not know when '-O dtbo' is useful,
-unless I am missing something.
+The patch set could introduce additional patch for changing the
+locking scheme. It's logically a separate change.
 
+> > +	if (list_empty(&sgx_node->free_page_list)) {
+> > +		spin_unlock(&sgx_free_page_list_lock);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	page = list_first_entry(&sgx_node->free_page_list, struct sgx_epc_page, numa_list);
+> > +	list_del_init(&page->numa_list);
+> > +	list_del_init(&page->list);
+> > +	sgx_nr_free_pages--;
+> > +
+> > +	spin_unlock(&sgx_free_page_list_lock);
+> > +
+> > +	return page;
+> > +}
+> > +
+> >  /**
+> >   * __sgx_alloc_epc_page() - Allocate an EPC page
+> >   *
+> > @@ -446,8 +493,14 @@ static bool __init sgx_page_reclaimer_init(struct list_head *laundry)
+> >   */
+> >  struct sgx_epc_page *__sgx_alloc_epc_page(void)
+> >  {
+> > +	int current_nid = numa_node_id();
+> >  	struct sgx_epc_page *page;
+> >  
+> > +	/* Try to allocate EPC from the current node, first: */
+> > +	page = __sgx_alloc_epc_page_from_node(current_nid);
+> > +	if (page)
+> > +		return page;
+> > +
+> >  	spin_lock(&sgx_free_page_list_lock);
+> >  
+> >  	if (list_empty(&sgx_free_page_list)) {
+> > @@ -456,6 +509,7 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
+> >  	}
+> >  
+> >  	page = list_first_entry(&sgx_free_page_list, struct sgx_epc_page, list);
+> > +	list_del_init(&page->numa_list);
+> >  	list_del_init(&page->list);
+> >  	sgx_nr_free_pages--;
+> 
+> I would much rather prefer that this does what the real page allocator
+> does: kep the page on a single list.  That list is maintained
+> per-NUMA-node.  Allocations try local NUMA node structures, then fall
+> back to other structures (hopefully in a locality-aware fashion).
+> 
+> I wrote you the loop that I want to see this implement in an earlier
+> review.  This, basically:
+> 
+> 	page = NULL;
+> 	nid = numa_node_id();
+> 	while (true) {
+> 		page = __sgx_alloc_epc_page_from_node(nid);	
+> 		if (page)
+> 			break;
+> 
+> 		nid = // ... some search here, next_node_in()...
+> 		// check if we wrapped around:
+> 		if (nid == numa_node_id())
+> 			break;
+> 	}
+> 
+> There's no global list.  You just walk around nodes trying to find one
+> with space.  If you wrap around, you stop.
+> 
+> Please implement this.  If you think it's a bad idea, or can't, let's
+> talk about it in advance.  Right now, it appears that my review comments
+> aren't being incorporated into newer versions.
 
--- 
-Best Regards
-Masahiro Yamada
+How I interpreted your earlier comments is that the fallback is unfair and
+this patch set version does fix that. 
 
---000000000000cb315305bd2cfea8
-Content-Type: text/x-patch; charset="US-ASCII"; name="0001-dtc-Remove-O-dtbo-support.patch"
-Content-Disposition: attachment; 
-	filename="0001-dtc-Remove-O-dtbo-support.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_km3czox00>
-X-Attachment-Id: f_km3czox00
+I can buy the above allocation scheme, but I don't think this patch set
+version is a step backwards. The things done to struct sgx_epc_section
+are exactly what should be done to it.
 
-RnJvbSBlZWFjNzEwMjg5YTIyMzk3YzZhZTRlOTBhOTMzNGM0ZjdlMTc4Njg4IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBNYXNhaGlybyBZYW1hZGEgPG1hc2FoaXJveUBrZXJuZWwub3Jn
-PgpEYXRlOiBXZWQsIDEwIE1hciAyMDIxIDE5OjQ4OjA1ICswOTAwClN1YmplY3Q6IFtQQVRDSF0g
-ZHRjOiBSZW1vdmUgLU8gZHRibyBzdXBwb3J0CgpUaGlzIHBhcnRpYWxseSByZXZlcnRzIDE2M2Yw
-NDY5YmYyZSAoImR0YzogQWxsb3cgb3ZlcmxheXMgdG8gaGF2ZQouZHRibyBleHRlbnNpb24iKS4K
-CkkgZG8gbm90IHVuZGVyc3RhbmQgd2h5IHdlIG5lZWQgdG8gc3VwcG9ydCAiZHRibyIgYXMgLS1v
-dXQtZm9ybWF0LgoKKi5kdGIgYW5kICouZHRibyBoYXZlIHRoZSBzYW1lIGZvcm1hdCwgImR0YiIu
-CgpTaWduZWQtb2ZmLWJ5OiBNYXNhaGlybyBZYW1hZGEgPG1hc2FoaXJveUBrZXJuZWwub3JnPgot
-LS0KIGR0Yy5jIHwgMiAtLQogMSBmaWxlIGNoYW5nZWQsIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvZHRjLmMgYi9kdGMuYwppbmRleCA4MzhjNWRmLi4zOTYyZDNmIDEwMDY0NAotLS0gYS9k
-dGMuYworKysgYi9kdGMuYwpAQCAtMzU5LDggKzM1OSw2IEBAIGludCBtYWluKGludCBhcmdjLCBj
-aGFyICphcmd2W10pCiAjZW5kaWYKIAl9IGVsc2UgaWYgKHN0cmVxKG91dGZvcm0sICJkdGIiKSkg
-ewogCQlkdF90b19ibG9iKG91dGYsIGR0aSwgb3V0dmVyc2lvbik7Ci0JfSBlbHNlIGlmIChzdHJl
-cShvdXRmb3JtLCAiZHRibyIpKSB7Ci0JCWR0X3RvX2Jsb2Iob3V0ZiwgZHRpLCBvdXR2ZXJzaW9u
-KTsKIAl9IGVsc2UgaWYgKHN0cmVxKG91dGZvcm0sICJhc20iKSkgewogCQlkdF90b19hc20ob3V0
-ZiwgZHRpLCBvdXR2ZXJzaW9uKTsKIAl9IGVsc2UgaWYgKHN0cmVxKG91dGZvcm0sICJudWxsIikp
-IHsKLS0gCjIuMjcuMAoK
---000000000000cb315305bd2cfea8--
+Implementation-wise you are asking me to squash 4/5 and 5/5 into a single
+patch, and remove global list. It's a tiny iteration from this patch
+version and I can do it.
+
+> >  void sgx_free_epc_page(struct sgx_epc_page *page)
+> >  {
+> > +	int nid = sgx_section_to_numa_node_id[page->section];
+> > +	struct sgx_numa_node *sgx_node = &sgx_numa_nodes[nid];
+> >  	int ret;
+> >  
+> >  	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
+> > @@ -575,7 +631,15 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
+> >  		return;
+> >  
+> >  	spin_lock(&sgx_free_page_list_lock);
+> > +
+> > +	/*   Enable NUMA local allocation in sgx_alloc_epc_page(). */
+> > +	if (!node_isset(nid, sgx_numa_mask)) {
+> > +		INIT_LIST_HEAD(&sgx_node->free_page_list);
+> > +		node_set(nid, sgx_numa_mask);
+> > +	}
+> > +
+> >  	list_add_tail(&page->list, &sgx_free_page_list);
+> > +	list_add_tail(&page->numa_list, &sgx_node->free_page_list);
+> >  	sgx_nr_free_pages++;
+> >  	spin_unlock(&sgx_free_page_list_lock);
+> >  }
+> > @@ -626,8 +690,28 @@ static bool __init sgx_page_cache_init(struct list_head *laundry)
+> >  {
+> >  	u32 eax, ebx, ecx, edx, type;
+> >  	u64 pa, size;
+> > +	int nid;
+> >  	int i;
+> >  
+> > +	nodes_clear(sgx_numa_mask);
+> 
+> Is this really required for a variable allocated in .bss?
+
+Probably not, I'll check what nodes_clear() does.
+
+> > +	sgx_numa_nodes = kmalloc_array(num_possible_nodes(), sizeof(*sgx_numa_nodes), GFP_KERNEL);
+> 
+> This is what I was looking for here, thanks!
+> 
+> > +	/*
+> > +	 * Create NUMA node lookup table for sgx_free_epc_page() as the very
+> > +	 * first step, as it is used to populate the free list's during the
+> > +	 * initialization.
+> > +	 */
+> > +	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
+> > +		nid = numa_map_to_online_node(phys_to_target_node(pa));
+> > +		if (nid == NUMA_NO_NODE) {
+> > +			/* The physical address is already printed above. */
+> > +			pr_warn(FW_BUG "Unable to map EPC section to online node. Fallback to the NUMA node 0.\n");
+> > +			nid = 0;
+> > +		}
+> > +
+> > +		sgx_section_to_numa_node_id[i] = nid;
+> > +	}
+> > +
+> >  	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
+> >  		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
+> >  
+> > diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+> > index 41ca045a574a..3a3c07fc0c8e 100644
+> > --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> > +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> > @@ -27,6 +27,7 @@ struct sgx_epc_page {
+> >  	unsigned int flags;
+> >  	struct sgx_encl_page *owner;
+> >  	struct list_head list;
+> > +	struct list_head numa_list;
+> >  };
+> 
+> I'll say it again, explicitly: Each sgx_epc_page should be on one and
+> only one free list: a per-NUMA-node list.
+> 
+> >  /*
+> > @@ -43,6 +44,14 @@ struct sgx_epc_section {
+> >  
+> >  extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+> >  
+> > +/*
+> > + * Contains the tracking data for NUMA nodes having EPC pages. Most importantly,
+> > + * the free page list local to the node is stored here.
+> > + */
+> > +struct sgx_numa_node {
+> > +	struct list_head free_page_list;
+> > +};
+> 
+> I think it's unconscionable to leave this protected by a global lock.
+> Please at least give us a per-node spinlock proteting this list.
+
+I can do it but I'll add a separate commit for it. It's better to make
+locking scheme changes that way (IMHO). Helps with bisection later on...
+
+/Jarkko
