@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06FD334B89
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF6F334B88
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbhCJWZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:25:11 -0500
-Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:52940 "EHLO
-        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232659AbhCJWY7 (ORCPT
+        id S233732AbhCJWZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233060AbhCJWZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:24:59 -0500
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
-        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1lK7Fq-0003X1-2e; Wed, 10 Mar 2021 22:24:34 +0000
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
- schedule_tail
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <000000000000b74f1b05bd316729@google.com>
- <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <dbdca868-7ef2-47b3-ac26-12fe61f3156a@codethink.co.uk>
-Date:   Wed, 10 Mar 2021 22:24:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 10 Mar 2021 17:25:02 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A6DC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:25:02 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id u6so13598619oic.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:25:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oQIYfjtgUHgni6JFAt7/VwxRLmto1V13D58zyPfKeVE=;
+        b=USlEkai2cn+K/Clcj2iEzeKQbkFeTi8gGwovYsZQKNOrJDe24BnO7OJHsYmIPDRmZW
+         PvRVhy+8Ar8zCPqq4PIsamPuVbDgLckQNLd9lPxDsGT+++o6nSgBWT/sUU23NL7SwcIw
+         ORAB5T3OKfqhqfF+d0aXUuvAQ8+s6lAOw4drRs72Ox1TAdfV+77hXpqiARkI2qsOtaGX
+         PfMwEEJfx5w1Q03eMXiuy5pN5Kdhsq2k9hYZq/xPrYkzkCqfUTEOrN6jKlwhA2qWiEIO
+         8JQz4gxMWzdZJMgUyjReLWdN9mda7Il4oFHnDuCipVlXfVd2oR1JeMPk+0zf/fJoOI5a
+         kh5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oQIYfjtgUHgni6JFAt7/VwxRLmto1V13D58zyPfKeVE=;
+        b=VyHfIzDaj7IZ+tClOSgesYz3473NHfhrM28Kuh3KPoGExjUOzhQqyiGE+Rsh/TkdaP
+         BqPwJbDWZc1Gq8sozpGMdhODIYA7dcutwcIqEQuuSYCZIBbQnatJzhyx5YkCGrb6XV7i
+         OEs7/F4KEZMvHYQ1rBm8TiVAsEE3l3Avo48yxZWo+8x2+VytKRnkKF7znCX0v+3sZ0f6
+         +lwlzQ40wgNI/g8PDROdnRTR4Jk+XcLEo/aVIy6ykmBhKuXZz9+QFqHApKB5KWcIwQcZ
+         2rDiChzmH/jOQajjZTkdt3gDnVkI/DRZ6aIFDN5YLPlBG7sXFztmgG1rFTxT1Dy/yTtM
+         S8lA==
+X-Gm-Message-State: AOAM532jKxt9bQ4e20FxZLZh6e5NHm5IE6v+Gf0VSVdZ5UklHBDR9HQN
+        w4jan+tZ4r0MhLhI7JPZTT99iR/trze1/iaQ6xXnMQ==
+X-Google-Smtp-Source: ABdhPJzavjRAgQ/UaS0iEceAQhEvC+qkJPLJG4miOk18dlDF/qrAkUpGU5MyQElDu1zCc9dInB6yOmrkhunjHSO4hE4=
+X-Received: by 2002:aca:3a41:: with SMTP id h62mr3945506oia.89.1615415101663;
+ Wed, 10 Mar 2021 14:25:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210310003029.1250571-1-seanjc@google.com> <07cf7833-c74a-9ae0-6895-d74708b97f68@redhat.com>
+ <YEk2kBRUriFlCM62@google.com>
+In-Reply-To: <YEk2kBRUriFlCM62@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 10 Mar 2021 14:24:50 -0800
+Message-ID: <CANgfPd9WS+ntjdh87Gk97MQq6FYNUk8KVE3jQYfmgr2mFb3Stw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Skip !MMU-present SPTEs when removing SP in
+ exclusive mode
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/03/2021 17:16, Dmitry Vyukov wrote:
-> On Wed, Mar 10, 2021 at 5:46 PM syzbot
-> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
->>
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
->> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->> console output: https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
->> dashboard link: https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
->> userspace arch: riscv64
->>
->> Unfortunately, I don't have any reproducer for this issue yet.
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
-> 
-> +riscv maintainers
-> 
-> This is riscv64-specific.
-> I've seen similar crashes in put_user in other places. It looks like
-> put_user crashes in the user address is not mapped/protected (?).
+On Wed, Mar 10, 2021 at 1:14 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Wed, Mar 10, 2021, Paolo Bonzini wrote:
+> > On 10/03/21 01:30, Sean Christopherson wrote:
+> > > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > > index 50ef757c5586..f0c99fa04ef2 100644
+> > > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > > @@ -323,7 +323,18 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
+> > >                             cpu_relax();
+> > >                     }
+> > >             } else {
+> > > +                   /*
+> > > +                    * If the SPTE is not MMU-present, there is no backing
+> > > +                    * page associated with the SPTE and so no side effects
+> > > +                    * that need to be recorded, and exclusive ownership of
+> > > +                    * mmu_lock ensures the SPTE can't be made present.
+> > > +                    * Note, zapping MMIO SPTEs is also unnecessary as they
+> > > +                    * are guarded by the memslots generation, not by being
+> > > +                    * unreachable.
+> > > +                    */
+> > >                     old_child_spte = READ_ONCE(*sptep);
+> > > +                   if (!is_shadow_present_pte(old_child_spte))
+> > > +                           continue;
+> > >                     /*
+> > >                      * Marking the SPTE as a removed SPTE is not
+> >
+> > Ben, do you plan to make this path take mmu_lock for read?  If so, this
+> > wouldn't be too useful IIUC.
+>
+> I can see kvm_mmu_zap_all_fast()->kvm_tdp_mmu_zap_all() moving to a shared-mode
+> flow, but I don't think we'll ever want to move away from exclusive-mode zapping
+> for kvm_arch_flush_shadow_all()->kvm_mmu_zap_all()->kvm_tdp_mmu_zap_all().  In
+> that case, the VM is dead or dying; freeing memory should be done as quickly as
+> possible.
 
-The unmapped case should have been handled.
+Yeah, as Sean said, zapping under the MMU lock in write mode probably
+shouldn't go away, even if we find we're able to do it in read mode in
+some flows.
 
-I think this issue is that the check for user-mode access added. From
-what I read the code may be wrong in
-
-+	if (!user_mode(regs) && addr < TASK_SIZE &&
-+			unlikely(!(regs->status & SR_SUM)))
-+		die_kernel_fault("access to user memory without uaccess routines",
-+				addr, regs);
-
-I think the SR_SUM check might be wrong, as I read the standard the
-SR_SUM should be set to disable user-space access. So the check
-should be unlikely(regs->status & SR_SUM) to say access without
-having disabled the protection.
-
-Without this, you can end up with an infinite loop in the fault handler.
-
-> 
->> Unable to handle kernel access to user memory without uaccess routines at virtual address 000000002749f0d0
->> Oops [#1]
->> Modules linked in:
->> CPU: 1 PID: 4875 Comm: syz-executor.0 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
->> Hardware name: riscv-virtio,qemu (DT)
->> epc : schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
->>   ra : task_pid_vnr include/linux/sched.h:1421 [inline]
->>   ra : schedule_tail+0x70/0xb2 kernel/sched/core.c:4264
->> epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp : ffffffe025d17ec0
->>   gp : ffffffe005d25378 tp : ffffffe00f0d0000 t0 : 0000000000000000
->>   t1 : 0000000000000001 t2 : 00000000000f4240 s0 : ffffffe025d17ee0
->>   s1 : 000000002749f0d0 a0 : 000000000000002a a1 : 0000000000000003
->>   a2 : 1ffffffc0cfac500 a3 : ffffffe0000c80cc a4 : 5ae9db91c19bbe00
->>   a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
->>   s2 : 0000000000040000 s3 : ffffffe00eef96c0 s4 : ffffffe022c77fe0
->>   s5 : 0000000000004000 s6 : ffffffe067d74e00 s7 : ffffffe067d74850
->>   s8 : ffffffe067d73e18 s9 : ffffffe067d74e00 s10: ffffffe00eef96e8
->>   s11: 000000ae6cdf8368 t3 : 5ae9db91c19bbe00 t4 : ffffffc4043cafb2
->>   t5 : ffffffc4043cafba t6 : 0000000000040000
->> status: 0000000000000120 badaddr: 000000002749f0d0 cause: 000000000000000f
->> Call Trace:
->> [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
->> [<ffffffe000005570>] ret_from_exception+0x0/0x14
->> Dumping ftrace buffer:
->>     (ftrace buffer empty)
->> ---[ end trace b5f8f9231dc87dda ]---
->>
->>
->> ---
->> This report is generated by a bot. It may contain errors.
->> See https://goo.gl/tpsmEJ for more information about syzbot.
->> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>
->> syzbot will keep track of this issue. See:
->> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->>
->> --
->> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
->> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
->> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000b74f1b05bd316729%40google.com.
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
-
-
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
+This optimization also makes me think we could also skip the
+__handle_changed_spte call in the read mode case if the SPTE change
+was !PRESENT -> REMOVED.
