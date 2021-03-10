@@ -2,124 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A8C333CB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDB7333CC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhCJMiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:38:06 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:17847 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhCJMhm (ORCPT
+        id S232255AbhCJMkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:40:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230341AbhCJMkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:37:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1615379862; x=1646915862;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=iEdO6aDK+d2ggtmjtN5vrB2R3azyV6RNB/OSwmPdlno=;
-  b=jueL9wBEoM5EjgmoutIILIg8KJYFUYfXX/ZB30c2TUHe6alHngb+Eff2
-   u0HuC6I3F3O3JWpVfYxCfV+xi938/eh2ZdKBjLgY9Yw8ntCTHiigPQTBI
-   riYGViBRTmea9J9TJpHFvO1yRjqtiwshC5rU2ZX9vlW8IbAUyvLMUb+ag
-   M=;
-X-IronPort-AV: E=Sophos;i="5.81,237,1610409600"; 
-   d="scan'208";a="97494826"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 10 Mar 2021 12:37:33 +0000
-Received: from EX13D02EUB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 15996220B75;
-        Wed, 10 Mar 2021 12:37:32 +0000 (UTC)
-Received: from u2196cf9297dc59.ant.amazon.com (10.43.160.207) by
- EX13D02EUB001.ant.amazon.com (10.43.166.150) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 10 Mar 2021 12:37:24 +0000
-From:   Filippo Sironi <sironi@amazon.de>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <dwmw@amazon.co.uk>, <christian.brauner@ubuntu.com>,
-        <akpm@linux-foundation.org>, <ebiederm@xmission.com>,
-        <peterz@infradead.org>, <keescook@chromium.org>,
-        <krisman@collabora.com>, <peterx@redhat.com>, <axboe@kernel.dk>,
-        <surenb@google.com>, <shakeelb@google.com>, <guro@fb.com>,
-        <elver@google.com>, Filippo Sironi <sironi@amazon.de>
-Subject: [RFC PATCH] mm: fork: Prevent a NULL deref by getting mm only if the refcount isn't 0
-Date:   Wed, 10 Mar 2021 13:37:02 +0100
-Message-ID: <20210310123703.27894-1-sironi@amazon.de>
-X-Mailer: git-send-email 2.17.1
+        Wed, 10 Mar 2021 07:40:24 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDB8C061760;
+        Wed, 10 Mar 2021 04:40:23 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 07FCBF3;
+        Wed, 10 Mar 2021 13:40:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615380021;
+        bh=L1Qfhi4dDxGV3PGZ3CwD9ZsY/EKffY6u6Z68u5bbnLo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gPNnaBR79mVacN8LMMQICbM2FlbqYsa0kYRZKfqnpUyWh4q6cwzeSdm35F92pzwr6
+         rah1HfARz0A45uDlgqcZ4TcOWE1sHds6pOD3yiUgLg4daxHTw/nY1/LowuPQ8uYiGP
+         /Ht1mRVvyI7UyHUn75cnQKoDOerwx51XWbl25NMo=
+Date:   Wed, 10 Mar 2021 14:39:48 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH 2/3] media: i2c: imx219: Serialize during stream
+ start/stop
+Message-ID: <YEi+FBRbXBJch1DM@pendragon.ideasonboard.com>
+References: <20210310122014.28353-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210310122014.28353-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.207]
-X-ClientProxiedBy: EX13D29UWC004.ant.amazon.com (10.43.162.25) To
- EX13D02EUB001.ant.amazon.com (10.43.166.150)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210310122014.28353-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We've seen a number of crashes with the following signature:
+Hi Prabhakar,
 
-    BUG: kernel NULL pointer dereference, address: 0000000000000000
-    #PF: supervisor read access in kernel mode
-    #PF: error_code(0x0000) - not-present page
-    ...
-    Oops: 0000 [#1] SMP PTI
-    ...
-    RIP: 0010:__rb_erase_color+0xc2/0x260
-    ...
-    Call Trace:
-     unlink_file_vma+0x36/0x50
-     free_pgtables+0x62/0x110
-     exit_mmap+0xd5/0x160
-     ? put_dec+0x3a/0x90
-     ? num_to_str+0xa8/0xc0
-     mmput+0x11/0xb0
-     do_task_stat+0x940/0xc80
-     proc_single_show+0x49/0x80
-     ? __check_object_size+0xcc/0x1a0
-     seq_read+0xd3/0x400
-     vfs_read+0x72/0xb0
-     ksys_read+0x9c/0xd0
-     do_syscall_64+0x69/0x400
-     ? schedule+0x2a/0x90
-     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-    ...
+Thank you for the patch.
 
-This happens when a process goes through the tasks stats in procfs while
-another is exiting.  This looks like a race where the process that's
-exiting drops the last reference on the mm (with mmput) while the other
-increases it (with mmget).  By only increasing when the reference isn't
-0 to begin with, we prevent this from happening.
+On Wed, Mar 10, 2021 at 12:20:13PM +0000, Lad Prabhakar wrote:
+> Serialize during stream start/stop in suspend/resume callbacks.
 
-Signed-off-by: Filippo Sironi <sironi@amazon.de>
----
- kernel/fork.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Could you please explain why this is needed ?
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index d3171e8e88e5..a7541a85e5a9 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1209,10 +1209,8 @@ struct mm_struct *get_task_mm(struct task_struct *task)
- 	task_lock(task);
- 	mm = task->mm;
- 	if (mm) {
--		if (task->flags & PF_KTHREAD)
-+		if (task->flags & PF_KTHREAD || !mmget_not_zero(mm))
- 			mm = NULL;
--		else
--			mmget(mm);
- 	}
- 	task_unlock(task);
- 	return mm;
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  drivers/media/i2c/imx219.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+> index f0cf1985a4dc..87c021de1460 100644
+> --- a/drivers/media/i2c/imx219.c
+> +++ b/drivers/media/i2c/imx219.c
+> @@ -1172,8 +1172,10 @@ static int __maybe_unused imx219_suspend(struct device *dev)
+>  	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+>  	struct imx219 *imx219 = to_imx219(sd);
+>  
+> +	mutex_lock(&imx219->mutex);
+>  	if (imx219->streaming)
+>  		imx219_stop_streaming(imx219);
+> +	mutex_unlock(&imx219->mutex);
+>  
+>  	return 0;
+>  }
+> @@ -1184,11 +1186,13 @@ static int __maybe_unused imx219_resume(struct device *dev)
+>  	struct imx219 *imx219 = to_imx219(sd);
+>  	int ret;
+>  
+> +	mutex_lock(&imx219->mutex);
+>  	if (imx219->streaming) {
+>  		ret = imx219_start_streaming(imx219);
+>  		if (ret)
+>  			goto error;
+>  	}
+> +	mutex_unlock(&imx219->mutex);
+>  
+>  	return 0;
+>  
+> @@ -1197,6 +1201,7 @@ static int __maybe_unused imx219_resume(struct device *dev)
+>  	imx219->streaming = false;
+>  	__v4l2_ctrl_grab(imx219->vflip, false);
+>  	__v4l2_ctrl_grab(imx219->hflip, false);
+> +	mutex_unlock(&imx219->mutex);
+>  
+>  	return ret;
+>  }
+
 -- 
-2.17.1
+Regards,
 
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+Laurent Pinchart
