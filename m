@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BA8334369
+	by mail.lfdr.de (Postfix) with ESMTP id 8E44333436A
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233421AbhCJQos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:44:48 -0500
+        id S233445AbhCJQou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:44:50 -0500
 Received: from mga03.intel.com ([134.134.136.65]:37313 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232799AbhCJQoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232934AbhCJQoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Mar 2021 11:44:11 -0500
-IronPort-SDR: 1D7aEpFB/tYnmCHlYlYsI7jib8nqii9jJ4DP4b0+Qq+vX886VXeP4iUPgFs7bU68M9qTThYVeY
- 1z6c/Bon+9Jw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188546522"
+IronPort-SDR: 97EPE4afFg46Grz5k6HiCupDJvuR9ETn4ZC46RZVfCTvx3uGHPoDjUUbogGrtyi0Y8XyWld7jq
+ YceBsFD8DHAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188546526"
 X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="188546522"
+   d="scan'208";a="188546526"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:44:10 -0800
-IronPort-SDR: b24ZwTXmhCJEeUOIYhPhqjDyL1xrmXY6pBkzaCHDJ4Qc5J0oUxwvyVoh1oTsqrcb79kSeWMK4n
- vCgWQ0YrYboA==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:44:11 -0800
+IronPort-SDR: 9d5Wzg6HkDgSCiGf3p6sH3UlbP5yUNGCclMu3hmJNlforcDRTvlYMTS/RESx7xbNpZhZzOyF4y
+ P+TVmLjbdW+g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="509729342"
+   d="scan'208";a="509729357"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 08:44:09 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 08:44:11 -0800
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
@@ -32,9 +32,9 @@ Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
         namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
         yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V2 20/25] perf/x86/intel: Add Alder Lake Hybrid support
-Date:   Wed, 10 Mar 2021 08:37:56 -0800
-Message-Id: <1615394281-68214-21-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V2 21/25] perf: Introduce PERF_TYPE_HARDWARE_PMU and PERF_TYPE_HW_CACHE_PMU
+Date:   Wed, 10 Mar 2021 08:37:57 -0800
+Message-Id: <1615394281-68214-22-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
 References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
@@ -44,401 +44,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Alder Lake Hybrid system has two different types of core, Golden Cove
-core and Gracemont core. The Golden Cove core is registered to
-"cpu_core" PMU. The Gracemont core is registered to "cpu_atom" PMU.
+Current Hardware events and Hardware cache events have special perf
+types, PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE. The two types don't
+pass the PMU type in the user interface. For a hybrid system, the perf
+subsystem doesn't know which PMU the events belong to. The first capable
+PMU will always be assigned to the events. The events never get a chance
+to run on the other capable PMUs.
 
-The difference between the two PMUs include:
-- Number of GP and fixed counters
-- Events
-- The "cpu_core" PMU supports Topdown metrics.
-  The "cpu_atom" PMU supports PEBS-via-PT.
+Add a PMU aware version PERF_TYPE_HARDWARE_PMU and
+PERF_TYPE_HW_CACHE_PMU. The PMU type ID is stored at attr.config[40:32].
+Support the new types for X86.
 
-The "cpu_core" PMU is similar to the Sapphire Rapids PMU, but without
-PMEM.
-The "cpu_atom" PMU is similar to Tremont, but with different
-event_constraints, extra_regs and number of counters.
-
-The mem-loads AUX event workaround only applies to the Golden Cove core.
-
-Users may disable all CPUs of the same CPU type on the command line or
-in the BIOS. For this case, perf still initializes a PMU for the CPU
-type, but will not register the PMU. The PMU will only be registered
-when any corresponding CPU is online.
-
+Suggested-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/core.c | 248 ++++++++++++++++++++++++++++++++++++++++++-
- arch/x86/events/intel/ds.c   |   7 ++
- arch/x86/events/perf_event.h |   7 ++
- 3 files changed, 261 insertions(+), 1 deletion(-)
+ arch/x86/events/core.c          | 10 ++++++++--
+ include/uapi/linux/perf_event.h | 26 ++++++++++++++++++++++++++
+ kernel/events/core.c            | 14 +++++++++++++-
+ 3 files changed, 47 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 8ac948a..568e100 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2076,6 +2076,14 @@ static struct extra_reg intel_tnt_extra_regs[] __read_mostly = {
- 	EVENT_EXTRA_END
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index b675283..f031d00 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -484,7 +484,7 @@ int x86_setup_perfctr(struct perf_event *event)
+ 	if (attr->type == event->pmu->type)
+ 		return x86_pmu_extra_regs(event->attr.config, event);
+ 
+-	if (attr->type == PERF_TYPE_HW_CACHE)
++	if ((attr->type == PERF_TYPE_HW_CACHE) || (attr->type == PERF_TYPE_HW_CACHE_PMU))
+ 		return set_ext_hw_attr(hwc, event);
+ 
+ 	if (attr->config >= x86_pmu.max_events)
+@@ -2427,9 +2427,15 @@ static int x86_pmu_event_init(struct perf_event *event)
+ 
+ 	if ((event->attr.type != event->pmu->type) &&
+ 	    (event->attr.type != PERF_TYPE_HARDWARE) &&
+-	    (event->attr.type != PERF_TYPE_HW_CACHE))
++	    (event->attr.type != PERF_TYPE_HW_CACHE) &&
++	    (event->attr.type != PERF_TYPE_HARDWARE_PMU) &&
++	    (event->attr.type != PERF_TYPE_HW_CACHE_PMU))
+ 		return -ENOENT;
+ 
++	if ((event->attr.type == PERF_TYPE_HARDWARE_PMU) ||
++	    (event->attr.type == PERF_TYPE_HW_CACHE_PMU))
++		event->attr.config &= PERF_HW_CACHE_EVENT_MASK;
++
+ 	if (is_hybrid() && (event->cpu != -1)) {
+ 		pmu = hybrid_pmu(event->pmu);
+ 		if (!cpumask_test_cpu(event->cpu, &pmu->supported_cpus))
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index ad15e40..c0a511e 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -33,6 +33,8 @@ enum perf_type_id {
+ 	PERF_TYPE_HW_CACHE			= 3,
+ 	PERF_TYPE_RAW				= 4,
+ 	PERF_TYPE_BREAKPOINT			= 5,
++	PERF_TYPE_HARDWARE_PMU			= 6,
++	PERF_TYPE_HW_CACHE_PMU			= 7,
+ 
+ 	PERF_TYPE_MAX,				/* non-ABI */
+ };
+@@ -95,6 +97,30 @@ enum perf_hw_cache_op_result_id {
  };
  
-+static struct extra_reg intel_grt_extra_regs[] __read_mostly = {
-+	/* must define OFFCORE_RSP_X first, see intel_fixup_er() */
-+	INTEL_UEVENT_EXTRA_REG(0x01b7, MSR_OFFCORE_RSP_0, 0x3fffffffffull, RSP_0),
-+	INTEL_UEVENT_EXTRA_REG(0x02b7, MSR_OFFCORE_RSP_1, 0x3fffffffffull, RSP_1),
-+	INTEL_UEVENT_PEBS_LDLAT_EXTRA_REG(0x5d0),
-+	EVENT_EXTRA_END
-+};
-+
- #define KNL_OT_L2_HITE		BIT_ULL(19) /* Other Tile L2 Hit */
- #define KNL_OT_L2_HITF		BIT_ULL(20) /* Other Tile L2 Hit */
- #define KNL_MCDRAM_LOCAL	BIT_ULL(21)
-@@ -2430,6 +2438,16 @@ static int icl_set_topdown_event_period(struct perf_event *event)
- 	return 0;
- }
- 
-+static int adl_set_topdown_event_period(struct perf_event *event)
-+{
-+	struct x86_hybrid_pmu *pmu = hybrid_pmu(event->pmu);
-+
-+	if (pmu->cpu_type != INTEL_HYBRID_TYPE_CORE)
-+		return 0;
-+
-+	return icl_set_topdown_event_period(event);
-+}
-+
- static inline u64 icl_get_metrics_event_value(u64 metric, u64 slots, int idx)
- {
- 	u32 val;
-@@ -2570,6 +2588,17 @@ static u64 icl_update_topdown_event(struct perf_event *event)
- 						 x86_pmu.num_topdown_events - 1);
- }
- 
-+static u64 adl_update_topdown_event(struct perf_event *event)
-+{
-+	struct x86_hybrid_pmu *pmu = hybrid_pmu(event->pmu);
-+
-+	if (pmu->cpu_type != INTEL_HYBRID_TYPE_CORE)
-+		return 0;
-+
-+	return icl_update_topdown_event(event);
-+}
-+
-+
- static void intel_pmu_read_topdown_event(struct perf_event *event)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-@@ -3658,6 +3687,17 @@ static inline bool is_mem_loads_aux_event(struct perf_event *event)
- 	return (event->attr.config & INTEL_ARCH_EVENT_MASK) == X86_CONFIG(.event=0x03, .umask=0x82);
- }
- 
-+static inline bool require_mem_loads_aux_event(struct perf_event *event)
-+{
-+	if (!(x86_pmu.flags & PMU_FL_MEM_LOADS_AUX))
-+		return false;
-+
-+	if (is_hybrid())
-+		return hybrid_pmu(event->pmu)->cpu_type == INTEL_HYBRID_TYPE_CORE;
-+
-+	return true;
-+}
-+
- static inline bool intel_pmu_has_cap(struct perf_event *event, int idx)
- {
- 	union perf_capabilities *intel_cap;
-@@ -3782,7 +3822,7 @@ static int intel_pmu_hw_config(struct perf_event *event)
- 	 * event. The rule is to simplify the implementation of the check.
- 	 * That's because perf cannot have a complete group at the moment.
- 	 */
--	if (x86_pmu.flags & PMU_FL_MEM_LOADS_AUX &&
-+	if (require_mem_loads_aux_event(event) &&
- 	    (event->attr.sample_type & PERF_SAMPLE_DATA_SRC) &&
- 	    is_mem_loads_event(event)) {
- 		struct perf_event *leader = event->group_leader;
-@@ -4059,6 +4099,34 @@ tfa_get_event_constraints(struct cpu_hw_events *cpuc, int idx,
- 	return c;
- }
- 
-+static struct event_constraint *
-+adl_get_event_constraints(struct cpu_hw_events *cpuc, int idx,
-+			  struct perf_event *event)
-+{
-+	struct x86_hybrid_pmu *pmu = hybrid_pmu(event->pmu);
-+
-+	if (pmu->cpu_type == INTEL_HYBRID_TYPE_CORE)
-+		return spr_get_event_constraints(cpuc, idx, event);
-+	else if (pmu->cpu_type == INTEL_HYBRID_TYPE_ATOM)
-+		return tnt_get_event_constraints(cpuc, idx, event);
-+
-+	WARN_ON(1);
-+	return &emptyconstraint;
-+}
-+
-+static int adl_hw_config(struct perf_event *event)
-+{
-+	struct x86_hybrid_pmu *pmu = hybrid_pmu(event->pmu);
-+
-+	if (pmu->cpu_type == INTEL_HYBRID_TYPE_CORE)
-+		return hsw_hw_config(event);
-+	else if (pmu->cpu_type == INTEL_HYBRID_TYPE_ATOM)
-+		return intel_pmu_hw_config(event);
-+
-+	WARN_ON(1);
-+	return -EOPNOTSUPP;
-+}
-+
  /*
-  * Broadwell:
-  *
-@@ -4564,6 +4632,14 @@ static int intel_pmu_aux_output_match(struct perf_event *event)
- 	return is_intel_pt_event(event);
++ * attr.config layout for type PERF_TYPE_HARDWARE* and PERF_TYPE_HW_CACHE*
++ * PERF_TYPE_HARDWARE:		0xAA
++ *				AA: hardware event ID
++ * PERF_TYPE_HW_CACHE:		0xCCBBAA
++ *				AA: hardware cache ID
++ *				BB: hardware cache op ID
++ *				CC: hardware cache op result ID
++ * PERF_TYPE_HARDWARE_PMU:	0xDD000000AA
++ *				AA: hardware event ID
++ *				DD: PMU type ID
++ * PERF_TYPE_HW_CACHE_PMU:	0xDD00CCBBAA
++ *				AA: hardware cache ID
++ *				BB: hardware cache op ID
++ *				CC: hardware cache op result ID
++ *				DD: PMU type ID
++ */
++#define PERF_HW_CACHE_ID_SHIFT			0
++#define PERF_HW_CACHE_OP_ID_SHIFT		8
++#define PERF_HW_CACHE_OP_RESULT_ID_SHIFT	16
++#define PERF_HW_CACHE_EVENT_MASK		0xffffff
++
++#define PERF_PMU_TYPE_SHIFT			32
++
++/*
+  * Special "software" events provided by the kernel, even if the hardware
+  * does not support performance events. These events measure various
+  * physical and sw events of the kernel (and allow the profiling of them as
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 0aeca5f..6d7524e 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -11059,6 +11059,14 @@ static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
+ 	return ret;
  }
  
-+static int intel_pmu_filter_match(struct perf_event *event)
++static bool perf_event_is_hw_pmu_type(struct perf_event *event)
 +{
-+	struct x86_hybrid_pmu *pmu = hybrid_pmu(event->pmu);
-+	unsigned int cpu = smp_processor_id();
++	int type = event->attr.type;
 +
-+	return cpumask_test_cpu(cpu, &pmu->supported_cpus);
++	return type == PERF_TYPE_HARDWARE_PMU ||
++	       type == PERF_TYPE_HW_CACHE_PMU;
 +}
 +
- PMU_FORMAT_ATTR(offcore_rsp, "config1:0-63");
- 
- PMU_FORMAT_ATTR(ldlat, "config1:0-15");
-@@ -5266,6 +5342,84 @@ static const struct attribute_group *attr_update[] = {
- 	NULL,
- };
- 
-+EVENT_ATTR_STR_HYBRID(slots,			slots_hybrid,			"event=0x00,umask=0x4", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(topdown-retiring,		td_retiring_hybrid,		"event=0xc2,umask=0x0;event=0x00,umask=0x80", INTEL_HYBRID_TYPE_ATOM | INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(topdown-bad-spec,		td_bad_spec_hybrid,		"event=0x73,umask=0x0;event=0x00,umask=0x81", INTEL_HYBRID_TYPE_ATOM | INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(topdown-fe-bound,		td_fe_bound_hybrid,		"event=0x71,umask=0x0;event=0x00,umask=0x82", INTEL_HYBRID_TYPE_ATOM | INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(topdown-be-bound,		td_be_bound_hybrid,		"event=0x74,umask=0x0;event=0x00,umask=0x83", INTEL_HYBRID_TYPE_ATOM | INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(topdown-heavy-ops,	td_heavy_ops_hybrid,		"event=0x00,umask=0x84", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(topdown-br-mispredict,	td_br_mispredict_hybrid,	"event=0x00,umask=0x85", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(topdown-fetch-lat,	td_fetch_lat_hybrid,		"event=0x00,umask=0x86", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(topdown-mem-bound,	td_mem_bound_hybrid,		"event=0x00,umask=0x87", INTEL_HYBRID_TYPE_CORE);
-+
-+static struct attribute *adl_hybrid_events_attrs[] = {
-+	EVENT_PTR(slots_hybrid),
-+	EVENT_PTR(td_retiring_hybrid),
-+	EVENT_PTR(td_bad_spec_hybrid),
-+	EVENT_PTR(td_fe_bound_hybrid),
-+	EVENT_PTR(td_be_bound_hybrid),
-+	EVENT_PTR(td_heavy_ops_hybrid),
-+	EVENT_PTR(td_br_mispredict_hybrid),
-+	EVENT_PTR(td_fetch_lat_hybrid),
-+	EVENT_PTR(td_mem_bound_hybrid),
-+	NULL,
-+};
-+
-+/* Must be in IDX order */
-+EVENT_ATTR_STR_HYBRID(mem-loads, mem_ld_adl_hybrid, "event=0xd0,umask=0x5,ldlat=3;event=0xcd,umask=0x1,ldlat=3", INTEL_HYBRID_TYPE_ATOM | INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(mem-stores, mem_st_adl_hybrid, "event=0xd0,umask=0x6;event=0xcd,umask=0x2", INTEL_HYBRID_TYPE_ATOM | INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(mem-loads-aux, mem_ld_aux_hybrid, "event=0x03,umask=0x82", INTEL_HYBRID_TYPE_CORE);
-+
-+static struct attribute *adl_hybrid_mem_attrs[] = {
-+	EVENT_PTR(mem_ld_adl_hybrid),
-+	EVENT_PTR(mem_st_adl_hybrid),
-+	EVENT_PTR(mem_ld_aux_hybrid),
-+	NULL,
-+};
-+
-+EVENT_ATTR_STR_HYBRID(tx-start, tx_start_adl_hybrid, "event=0xc9,umask=0x1", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(tx-commit, tx_commit_adl_hybrid, "event=0xc9,umask=0x2", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(tx-abort, tx_abort_adl_hybrid, "event=0xc9,umask=0x4", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(tx-conflict, tx_conflict_adl_hybrid, "event=0x54,umask=0x1", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(cycles-t, cycles_t_adl_hybrid, "event=0x3c,in_tx=1", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(cycles-ct, cycles_ct_adl_hybrid, "event=0x3c,in_tx=1,in_tx_cp=1", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(tx-capacity-read, tx_capacity_read_adl_hybrid, "event=0x54,umask=0x80", INTEL_HYBRID_TYPE_CORE);
-+EVENT_ATTR_STR_HYBRID(tx-capacity-write, tx_capacity_write_adl_hybrid, "event=0x54,umask=0x2", INTEL_HYBRID_TYPE_CORE);
-+
-+static struct attribute *adl_hybrid_tsx_attrs[] = {
-+	EVENT_PTR(tx_start_adl_hybrid),
-+	EVENT_PTR(tx_abort_adl_hybrid),
-+	EVENT_PTR(tx_commit_adl_hybrid),
-+	EVENT_PTR(tx_capacity_read_adl_hybrid),
-+	EVENT_PTR(tx_capacity_write_adl_hybrid),
-+	EVENT_PTR(tx_conflict_adl_hybrid),
-+	EVENT_PTR(cycles_t_adl_hybrid),
-+	EVENT_PTR(cycles_ct_adl_hybrid),
-+	NULL,
-+};
-+
-+FORMAT_ATTR_HYBRID(in_tx, INTEL_HYBRID_TYPE_CORE);
-+FORMAT_ATTR_HYBRID(in_tx_cp, INTEL_HYBRID_TYPE_CORE);
-+FORMAT_ATTR_HYBRID(offcore_rsp, INTEL_HYBRID_TYPE_CORE | INTEL_HYBRID_TYPE_ATOM);
-+FORMAT_ATTR_HYBRID(ldlat, INTEL_HYBRID_TYPE_CORE | INTEL_HYBRID_TYPE_ATOM);
-+FORMAT_ATTR_HYBRID(frontend, INTEL_HYBRID_TYPE_CORE);
-+
-+static struct attribute *adl_hybrid_extra_attr_rtm[] = {
-+	FORMAT_HYBRID_PTR(in_tx),
-+	FORMAT_HYBRID_PTR(in_tx_cp),
-+	FORMAT_HYBRID_PTR(offcore_rsp),
-+	FORMAT_HYBRID_PTR(ldlat),
-+	FORMAT_HYBRID_PTR(frontend),
-+	NULL,
-+};
-+
-+static struct attribute *adl_hybrid_extra_attr[] = {
-+	FORMAT_HYBRID_PTR(offcore_rsp),
-+	FORMAT_HYBRID_PTR(ldlat),
-+	FORMAT_HYBRID_PTR(frontend),
-+	NULL,
-+};
-+
- static bool is_attr_for_this_pmu(struct kobject *kobj, struct attribute *attr)
+ static struct pmu *perf_init_event(struct perf_event *event)
  {
- 	struct device *dev = kobj_to_dev(kobj);
-@@ -5382,6 +5536,7 @@ __init int intel_pmu_init(void)
- 	bool pmem = false;
- 	int version, i;
- 	char *name;
-+	struct x86_hybrid_pmu *pmu;
+ 	int idx, type, ret;
+@@ -11082,13 +11090,17 @@ static struct pmu *perf_init_event(struct perf_event *event)
+ 	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE)
+ 		type = PERF_TYPE_RAW;
  
- 	if (!cpu_has(&boot_cpu_data, X86_FEATURE_ARCH_PERFMON)) {
- 		switch (boot_cpu_data.x86) {
-@@ -5976,6 +6131,97 @@ __init int intel_pmu_init(void)
- 		name = "sapphire_rapids";
- 		break;
- 
-+	case INTEL_FAM6_ALDERLAKE:
-+	case INTEL_FAM6_ALDERLAKE_L:
-+		/*
-+		 * Alder Lake has 2 types of CPU, core and atom.
-+		 *
-+		 * Initialize the common PerfMon capabilities here.
-+		 */
-+		x86_pmu.hybrid_pmu = kcalloc(X86_HYBRID_NUM_PMUS,
-+					     sizeof(struct x86_hybrid_pmu),
-+					     GFP_KERNEL);
-+		if (!x86_pmu.hybrid_pmu)
-+			return -ENOMEM;
-+		x86_pmu.num_hybrid_pmus = X86_HYBRID_NUM_PMUS;
++	if (perf_event_is_hw_pmu_type(event))
++		type = event->attr.config >> PERF_PMU_TYPE_SHIFT;
 +
-+		x86_pmu.late_ack = true;
-+		x86_pmu.pebs_aliases = NULL;
-+		x86_pmu.pebs_prec_dist = true;
-+		x86_pmu.pebs_block = true;
-+		x86_pmu.flags |= PMU_FL_HAS_RSP_1;
-+		x86_pmu.flags |= PMU_FL_NO_HT_SHARING;
-+		x86_pmu.flags |= PMU_FL_PEBS_ALL;
-+		x86_pmu.flags |= PMU_FL_INSTR_LATENCY;
-+		x86_pmu.flags |= PMU_FL_MEM_LOADS_AUX;
-+		x86_pmu.lbr_pt_coexist = true;
-+		intel_pmu_pebs_data_source_skl(false);
-+		x86_pmu.num_topdown_events = 8;
-+		x86_pmu.update_topdown_event = adl_update_topdown_event;
-+		x86_pmu.set_topdown_event_period = adl_set_topdown_event_period;
-+
-+		x86_pmu.filter_match = intel_pmu_filter_match;
-+		x86_pmu.get_event_constraints = adl_get_event_constraints;
-+		x86_pmu.hw_config = adl_hw_config;
-+		x86_pmu.limit_period = spr_limit_period;
-+		/*
-+		 * The rtm_abort_event is used to check whether to enable GPRs
-+		 * for the RTM abort event. Atom doesn't have the RTM abort
-+		 * event. There is no harmful to set it in the common
-+		 * x86_pmu.rtm_abort_event.
-+		 */
-+		x86_pmu.rtm_abort_event = X86_CONFIG(.event=0xc9, .umask=0x04);
-+
-+		td_attr = adl_hybrid_events_attrs;
-+		mem_attr = adl_hybrid_mem_attrs;
-+		tsx_attr = adl_hybrid_tsx_attrs;
-+		extra_attr = boot_cpu_has(X86_FEATURE_RTM) ?
-+			adl_hybrid_extra_attr_rtm : adl_hybrid_extra_attr;
-+
-+		/* Initialize big core specific PerfMon capabilities.*/
-+		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX];
-+		pmu->name = "cpu_core";
-+		pmu->cpu_type = INTEL_HYBRID_TYPE_CORE;
-+		pmu->num_counters = x86_pmu.num_counters + 2;
-+		pmu->num_counters_fixed = x86_pmu.num_counters_fixed + 1;
-+		pmu->max_pebs_events = min_t(unsigned, MAX_PEBS_EVENTS, pmu->num_counters);
-+		pmu->unconstrained = (struct event_constraint)
-+					__EVENT_CONSTRAINT(0, (1ULL << pmu->num_counters) - 1,
-+							   0, pmu->num_counters, 0, 0);
-+		pmu->intel_cap.capabilities = x86_pmu.intel_cap.capabilities;
-+		pmu->intel_cap.perf_metrics = 1;
-+		pmu->intel_cap.pebs_output_pt_available = 0;
-+
-+		memcpy(pmu->hw_cache_event_ids, spr_hw_cache_event_ids, sizeof(pmu->hw_cache_event_ids));
-+		memcpy(pmu->hw_cache_extra_regs, spr_hw_cache_extra_regs, sizeof(pmu->hw_cache_extra_regs));
-+		pmu->event_constraints = intel_spr_event_constraints;
-+		pmu->pebs_constraints = intel_spr_pebs_event_constraints;
-+		pmu->extra_regs = intel_spr_extra_regs;
-+
-+		/* Initialize Atom core specific PerfMon capabilities.*/
-+		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX];
-+		pmu->name = "cpu_atom";
-+		pmu->cpu_type = INTEL_HYBRID_TYPE_ATOM;
-+		pmu->num_counters = x86_pmu.num_counters;
-+		pmu->num_counters_fixed = x86_pmu.num_counters_fixed;
-+		pmu->max_pebs_events = x86_pmu.max_pebs_events;
-+		pmu->unconstrained = (struct event_constraint)
-+					__EVENT_CONSTRAINT(0, (1ULL << pmu->num_counters) - 1,
-+							   0, pmu->num_counters, 0, 0);
-+		pmu->intel_cap.capabilities = x86_pmu.intel_cap.capabilities;
-+		pmu->intel_cap.perf_metrics = 0;
-+		pmu->intel_cap.pebs_output_pt_available = 1;
-+
-+		memcpy(pmu->hw_cache_event_ids, glp_hw_cache_event_ids, sizeof(pmu->hw_cache_event_ids));
-+		memcpy(pmu->hw_cache_extra_regs, tnt_hw_cache_extra_regs, sizeof(pmu->hw_cache_extra_regs));
-+		pmu->hw_cache_event_ids[C(ITLB)][C(OP_READ)][C(RESULT_ACCESS)] = -1;
-+		pmu->event_constraints = intel_slm_event_constraints;
-+		pmu->pebs_constraints = intel_grt_pebs_event_constraints;
-+		pmu->extra_regs = intel_grt_extra_regs;
-+		pr_cont("Alderlake Hybrid events, ");
-+		name = "alderlake_hybrid";
-+		break;
-+
- 	default:
- 		switch (x86_pmu.version) {
- 		case 1:
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index f1402bc..2780cb5 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -779,6 +779,13 @@ struct event_constraint intel_glm_pebs_event_constraints[] = {
- 	EVENT_CONSTRAINT_END
- };
- 
-+struct event_constraint intel_grt_pebs_event_constraints[] = {
-+	/* Allow all events as PEBS with no flags */
-+	INTEL_PLD_CONSTRAINT(0x5d0, 0xf),
-+	INTEL_PSD_CONSTRAINT(0x6d0, 0xf),
-+	EVENT_CONSTRAINT_END
-+};
-+
- struct event_constraint intel_nehalem_pebs_event_constraints[] = {
- 	INTEL_PLD_CONSTRAINT(0x100b, 0xf),      /* MEM_INST_RETIRED.* */
- 	INTEL_FLAGS_EVENT_CONSTRAINT(0x0f, 0xf),    /* MEM_UNCORE_RETIRED.* */
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 74bdcfe..0c28f61 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -678,6 +678,11 @@ static __always_inline struct x86_hybrid_pmu *hybrid_pmu(struct pmu *pmu)
- 	__F;						\
- })
- 
-+#define X86_HYBRID_PMU_ATOM_IDX		0
-+#define X86_HYBRID_PMU_CORE_IDX		1
-+
-+#define X86_HYBRID_NUM_PMUS		2
-+
- /*
-  * struct x86_pmu - generic x86 pmu
-  */
-@@ -1241,6 +1246,8 @@ extern struct event_constraint intel_glm_pebs_event_constraints[];
- 
- extern struct event_constraint intel_glp_pebs_event_constraints[];
- 
-+extern struct event_constraint intel_grt_pebs_event_constraints[];
-+
- extern struct event_constraint intel_nehalem_pebs_event_constraints[];
- 
- extern struct event_constraint intel_westmere_pebs_event_constraints[];
+ again:
+ 	rcu_read_lock();
+ 	pmu = idr_find(&pmu_idr, type);
+ 	rcu_read_unlock();
+ 	if (pmu) {
+ 		ret = perf_try_init_event(pmu, event);
+-		if (ret == -ENOENT && event->attr.type != type) {
++		if (ret == -ENOENT && event->attr.type != type &&
++		    !perf_event_is_hw_pmu_type(event)) {
+ 			type = event->attr.type;
+ 			goto again;
+ 		}
 -- 
 2.7.4
 
