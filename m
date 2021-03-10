@@ -2,111 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8C233497E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F8533497C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhCJVIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:08:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231207AbhCJVI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:08:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 375CB64FD0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 21:08:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615410506;
-        bh=LNLeEWghXkIt/oUlWgRYrFr83oynDcgDF0s3ejym2KU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=i0/QmL4ZzLLOTbEAa606xhes1blfEB6MvhnUTOqiOcI5t8ekfl2yxC0RmI0mqfAka
-         W35XzGuRR8x3esIGMjtq/O8Acdu0h4tUq3vJB4ieupj8g3PCJ1oaXk8ayw9U39fd9l
-         OH9QM4nI/bqCIfPOkX/8GVA51Wy4nHpC3JTQ0dgLdgAIQ682D2bhtVscS8zr/mHwqb
-         l+M5WquHt0JMaVNkiaqd646FRxIA4eZ5Ku1O6PzIo4ssvTZNeZES39okLFEHiJWKbp
-         gXg+c6beLMjsw6+DLJqhQd+AD7c3aRgH/VMYjxFz8MmDFawQg3s4SqIhkKSZWyXiKs
-         e5wEDcrjxhY3w==
-Received: by mail-oi1-f170.google.com with SMTP id o22so10969909oic.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:08:26 -0800 (PST)
-X-Gm-Message-State: AOAM531+z8XPPDayqvs1PYIRVcPP+Vh79CderVRqBjz6wRvWJtrhH7WB
-        Ow+ul7MBw3JY3zNqQcGi+Ei/ey34nu9jaM8ewkQ=
-X-Google-Smtp-Source: ABdhPJyOe6GvnaoIa1FUitLLUEiVyBHLxhohQtHqH1tV+ZiQNmopWBvLUhq2zHo3i/iEK8EMue18HWyjbUA1A2wkMiI=
-X-Received: by 2002:aca:5e85:: with SMTP id s127mr3623525oib.67.1615410505313;
- Wed, 10 Mar 2021 13:08:25 -0800 (PST)
+        id S231960AbhCJVIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:08:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33585 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231273AbhCJVIT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:08:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615410498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l5MvdvNqgLulzxneBJsB2bgilIJpPxPGUd0qWzobxoU=;
+        b=G4ZGAqcWy+ZPkEcyJzyrNy5foYws1YtxbIL6lI/kbMysZ4WGUm090dsn2hmJ/t1Ar25s12
+        qCiAs9txeWvrX6u4vVP/+QJE+NKX3NnR+49f+3WEJ3/UwqC9CoUDpE+59yJ93oLBVWlzVF
+        j/lekVBQ/bNNXWoW85dwVrBmfj1yZuw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-UfAqW5lXOqquGR65FNcb1A-1; Wed, 10 Mar 2021 16:08:14 -0500
+X-MC-Unique: UfAqW5lXOqquGR65FNcb1A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1196C1019638;
+        Wed, 10 Mar 2021 21:08:13 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 788D960C05;
+        Wed, 10 Mar 2021 21:08:11 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <161529606657.163428.3340689182456495390.stgit@warthog.procyon.org.uk>
+References: <161529606657.163428.3340689182456495390.stgit@warthog.procyon.org.uk> <161529604216.163428.4905283330048991183.stgit@warthog.procyon.org.uk>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>, keyrings@vger.kernel.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] certs: Add ability to preload revocation certs
 MIME-Version: 1.0
-References: <20210225112122.2198845-1-arnd@kernel.org> <20210226211323.arkvjnr4hifxapqu@google.com>
- <CAK8P3a2bLKe3js4SKeZoGp8B51+rpW6G3KvpbJ5=y83sxHSu6g@mail.gmail.com>
- <1614559739.p25z5x88wl.astroid@bobo.none> <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
-In-Reply-To: <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 10 Mar 2021 22:08:09 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
-Message-ID: <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrew Scull <ascull@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, Nicolas Pitre <nico@fluxnic.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <305837.1615410490.1@warthog.procyon.org.uk>
+Date:   Wed, 10 Mar 2021 21:08:10 +0000
+Message-ID: <305838.1615410490@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 9:50 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> On Mon, Mar 1, 2021 at 10:11 AM Nicholas Piggin <npiggin@gmail.com> wrote:
-> > Excerpts from Arnd Bergmann's message of February 27, 2021 7:49 pm:
+Hi Eric,
 
->
-> masahiro@oscar:~/ref/linux$ echo  'void this_func_is_unused(void) {}'
-> >>  kernel/cpu.c
-> masahiro@oscar:~/ref/linux$ export
-> CROSS_COMPILE=/home/masahiro/tools/powerpc-10.1.0/bin/powerpc-linux-
-> masahiro@oscar:~/ref/linux$ make ARCH=powerpc  defconfig
-> masahiro@oscar:~/ref/linux$ ./scripts/config  -e EXPERT
-> masahiro@oscar:~/ref/linux$ ./scripts/config  -e LD_DEAD_CODE_DATA_ELIMINATION
-> masahiro@oscar:~/ref/linux$
-> ~/tools/powerpc-10.1.0/bin/powerpc-linux-nm -n  vmlinux | grep
-> this_func
-> c000000000170560 T .this_func_is_unused
-> c000000001d8d560 D this_func_is_unused
-> masahiro@oscar:~/ref/linux$ grep DEAD_CODE_ .config
-> CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION=y
-> CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
->
->
-> If I remember correctly,
-> LD_DEAD_CODE_DATA_ELIMINATION dropped unused functions
-> when I tried it last time.
->
->
-> I also tried arm64 with a HAVE_LD_DEAD_CODE_DATA_ELIMINATION hack.
-> The result was the same.
->
->
->
-> Am I missing something?
+Can you check this patch?  I rolled your changes into it.
 
-It's possible that it only works in combination with CLANG_LTO now
-because something broke. I definitely saw a reduction in kernel
-size when both options are enabled, but did not try a simple test
-case like you did.
+David
 
-Maybe some other reference gets created that prevents the function
-from being garbage-collected unless that other option is removed
-as well?
-
-         Arnd
