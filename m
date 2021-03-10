@@ -2,391 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B0B333CE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 796D1333CDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhCJMwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:52:50 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:48126 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbhCJMw3 (ORCPT
+        id S230122AbhCJMrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231922AbhCJMrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:52:29 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lJyKC-0005e4-8h; Wed, 10 Mar 2021 12:52:28 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] detached mounts fix
-Date:   Wed, 10 Mar 2021 13:45:22 +0100
-Message-Id: <20210310124520.797771-1-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 10 Mar 2021 07:47:06 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F0CC061760;
+        Wed, 10 Mar 2021 04:47:05 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id m9so17703942ybk.8;
+        Wed, 10 Mar 2021 04:47:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PNzo7/za+7Ji2NXrydXkGbcYF4yb4UI6vFbARFR5yJw=;
+        b=O8cuTDdRfZbiEcuzkumf8xI1xSM9i1M65gHKEvhVuHqMfms7EfYDqO5WnDX67dqPx0
+         /SqKq0U2tUDmOXJLOnWdbWklvQpiSFq8Y1cPbLeOEp7ImTx7oCE9ELHw/APMVi/kFP3d
+         IhDGX53iFRT/XrqLkMYgidkSIjxPLfzZPhIeGUHZS00URhs81NjCsn5kC9jTXdR6olmc
+         herIR/XMM+2CJYmvGaHL0bdXVTUiR4lAWmOTxrMn/jgsmV+TkvPuZXzYSJiMBvYq/5in
+         n6QZ9hzA416rHUDifs+ObU1BhR7Q/KCTqb4wanrfEYJ6G3+mpOEwwsys5qHJsjSX1caB
+         7d1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PNzo7/za+7Ji2NXrydXkGbcYF4yb4UI6vFbARFR5yJw=;
+        b=Ut/FIOICUnoIlqeBv2SXFaEaiA1/xcV0X13V+Mq1jd03ccoDlb+hmx2LNxdl8CpMXu
+         cGnNeuE23fQ6WvK2rT7RJCyfooCbAXYUasb2XyEHdzbRkIaLgko7rQ6V2SvMcqxo6Ut1
+         sxua2RUuov+CTS5vAxla4bCsqjXvo9hl5DtVrZYPEk6Fpm6TH3q1Z3TJbhxLt3HmuowW
+         VJb+LVoJnZpkcPOCdWHjW0qtH0YqScTuoyb/fMHgV1fhenO1Z5FVEHZ7K2dapmg+nKit
+         b08tU/altHkP3daQreunUipYYevqbt73Prs0wRVydGNoFCbLgZcr3vvO92hZArUEtZjj
+         zhBA==
+X-Gm-Message-State: AOAM531dy+oJTU3BEXoSvP8Jh8ncw5PAgSOs2Q74pY05t7FlO48OLkW1
+        ygpsnebIgVkoSr3Dt//Aa0UhopKCVdnSFZb5zH4=
+X-Google-Smtp-Source: ABdhPJx3bd3wgVd6ZNplHpk/sMPkOg47+qu0M56c5gAlaA71roGVz+M7tm0hWdyKNpfMA9Iuh9Is2mPBnpzoEc/38o0=
+X-Received: by 2002:a25:4204:: with SMTP id p4mr3791705yba.76.1615380425254;
+ Wed, 10 Mar 2021 04:47:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210310122014.28353-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210310122014.28353-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <YEi+FBRbXBJch1DM@pendragon.ideasonboard.com>
+In-Reply-To: <YEi+FBRbXBJch1DM@pendragon.ideasonboard.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 10 Mar 2021 12:46:39 +0000
+Message-ID: <CA+V-a8vPm7EM=MoxRt1nXnvpVVL5vQvSupd79GRNaGULpxS-kQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] media: i2c: imx219: Serialize during stream start/stop
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Laurent,
 
-/* Summary */
-Creating a series of detached mounts, attaching them to the filesystem,
-and unmounting them can be used to trigger an integer overflow in
-ns->mounts causing the kernel to block any new mounts in count_mounts()
-and returning ENOSPC because it falsely assumes that the maximum number
-of mounts in the mount namespace has been reached, i.e. it thinks it
-can't fit the new mounts into the mount namespace anymore.
+Thank you for the review.
 
-Without this fix heavy use of the new mount API with move_mount() will cause
-the host to become unuseable and thus blocks some xfstest patches I want to
-resend.
+On Wed, Mar 10, 2021 at 12:40 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Prabhakar,
+>
+> Thank you for the patch.
+>
+> On Wed, Mar 10, 2021 at 12:20:13PM +0000, Lad Prabhakar wrote:
+> > Serialize during stream start/stop in suspend/resume callbacks.
+>
+> Could you please explain why this is needed ?
+>
+The streaming variable in this driver has serialized access, but this
+wasn't taken care during suspend/resume callbacks.
 
-Depending on the number of mounts in your system, this can be reproduced
-on any kernel that supportes open_tree() and move_mount() by compiling
-and running the program in [1] (It'll take care to do this in another mount
-namespace, not in the host's mount namespace so there shouldn't be any risk
-in running it but if one did run it on the host it would require a reboot in
-order to be able to mount again. The program in [1] is also part of the commit
-message and has been sent for inclusion with xfstests. See
-https://lore.kernel.org/fstests/20210309121041.753359-1-christian.brauner@ubuntu.com).
+Cheers,
+Prabhakar
 
-The root cause of this is that detached mounts aren't handled correctly
-when source and target mount are identical and reside on a shared mount
-causing a broken mount tree where the detached source itself is
-propagated which propagation prevents for regular bind-mounts and new
-mounts. This ultimately leads to a miscalculation of the number of mounts in
-the mount namespace.
-
-Detached mounts created via
-open_tree(fd, path, OPEN_TREE_CLONE)
-are essentially like an unattached bind-mount. They can then later on be
-attached to the filesystem via move_mount() which calls into
-attach_recursive_mount(). Part of attaching it to the filesystem is making sure
-that mounts get correctly propagated in case the destination mountpoint is
-MS_SHARED, i.e. is a shared mountpoint. This is done by calling into
-propagate_mnt() which walks the list of peers calling propagate_one() on each
-mount in this list making sure it receives the propagation event.
-The propagate_one() function thereby skips both new mounts and bind
-mounts to not propagate them "into themselves". Both are identified by
-checking whether the mount is already attached to any mount namespace in
-mnt->mnt_ns. The is what the IS_MNT_NEW() helper is responsible for.
-
-However, detached mounts have an anonymous mount namespace attached to
-them stashed in mnt->mnt_ns which means that IS_MNT_NEW() doesn't
-realize they need to be skipped causing the mount to propagate "into
-itself" breaking the mount table and causing a disconnect between the
-number of mounts recorded as being beneath or reachable from the target
-mountpoint and the number of mounts actually recorded/counted in
-ns->mounts ultimately causing an overflow which in turn prevents any new
-mounts via the ENOSPC issue.
-
-So teach propagation to handle detached mounts by making it aware of
-them. I've been tracking this issue down for the last couple of days and
-then verifying that the fix is correct by
-unmounting everything in my current mount table leaving only /proc and
-/sys mounted and running the reproducer above overnight verifying the
-number of mounts counted in ns->mounts. With this fix the counts are
-correct and the ENOSPC issue can't be reproduced.
-
-This change will only have an effect on mounts created with the new mount API
-since detached mounts cannot be created with the old mount API so regressions
-are extremely unlikely.
-
-Here's an illustration:
-
-#### mount():
-ubuntu@f1-vm:~$ sudo mount --bind /mnt/ /mnt/
-ubuntu@f1-vm:~$ findmnt  | grep -i mnt
-├─/mnt                                /dev/sda2[/mnt] ext4       rw,relatime
-
-#### open_tree(OPEN_TREE_CLONE) + move_mount() with bug:
-ubuntu@f1-vm:~$ sudo ./mount-new /mnt/ /mnt/
-ubuntu@f1-vm:~$ findmnt  | grep -i mnt
-├─/mnt                                /dev/sda2[/mnt] ext4       rw,relatime
-│ └─/mnt                              /dev/sda2[/mnt] ext4       rw,relatime
-
-#### open_tree(OPEN_TREE_CLONE) + move_mount() with the patch in this pr:
-ubuntu@f1-vm:~$ sudo ./mount-new /mnt /mnt
-ubuntu@f1-vm:~$ findmnt | grep -i mnt
-└─/mnt                                /dev/sda2[/mnt] ext4       rw,relatime
-
-/* Testing */
-All patches have seen exposure in linux-next and are based on v5.12-rc2.
-
-/* Conflicts */
-At the time of creating this pr no merge conflicts were reported. A test merge
-with today's master 2021-03-10 13:35:00 CET worked fine.
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/for-linus-2021-03-10
-
-for you to fetch changes up to ee2e3f50629f17b0752b55b2566c15ce8dafb557:
-
-  mount: fix mounting of detached mounts onto targets that reside on shared mounts (2021-03-08 15:18:43 +0100)
-
-Please consider pulling these changes from the signed for-linus-2021-03-10 tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-for-linus-2021-03-10
-
-----------------------------------------------------------------
-Christian Brauner (1):
-      mount: fix mounting of detached mounts onto targets that reside on shared mounts
-
- fs/pnode.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-[1]:
-/* SPDX-License-Identifier: LGPL-2.1+ */
-
-#include <errno.h>
-#include <fcntl.h>
-#include <getopt.h>
-#include <limits.h>
-#include <sched.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/mount.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-/* open_tree() */
-#ifndef OPEN_TREE_CLONE
-#define OPEN_TREE_CLONE 1
-#endif
-
-#ifndef OPEN_TREE_CLOEXEC
-#define OPEN_TREE_CLOEXEC O_CLOEXEC
-#endif
-
-#ifndef __NR_open_tree
-	#if defined __alpha__
-		#define __NR_open_tree 538
-	#elif defined _MIPS_SIM
-		#if _MIPS_SIM == _MIPS_SIM_ABI32	/* o32 */
-			#define __NR_open_tree 4428
-		#endif
-		#if _MIPS_SIM == _MIPS_SIM_NABI32	/* n32 */
-			#define __NR_open_tree 6428
-		#endif
-		#if _MIPS_SIM == _MIPS_SIM_ABI64	/* n64 */
-			#define __NR_open_tree 5428
-		#endif
-	#elif defined __ia64__
-		#define __NR_open_tree (428 + 1024)
-	#else
-		#define __NR_open_tree 428
-	#endif
-#endif
-
-/* move_mount() */
-#ifndef MOVE_MOUNT_F_EMPTY_PATH
-#define MOVE_MOUNT_F_EMPTY_PATH 0x00000004 /* Empty from path permitted */
-#endif
-
-#ifndef __NR_move_mount
-	#if defined __alpha__
-		#define __NR_move_mount 539
-	#elif defined _MIPS_SIM
-		#if _MIPS_SIM == _MIPS_SIM_ABI32	/* o32 */
-			#define __NR_move_mount 4429
-		#endif
-		#if _MIPS_SIM == _MIPS_SIM_NABI32	/* n32 */
-			#define __NR_move_mount 6429
-		#endif
-		#if _MIPS_SIM == _MIPS_SIM_ABI64	/* n64 */
-			#define __NR_move_mount 5429
-		#endif
-	#elif defined __ia64__
-		#define __NR_move_mount (428 + 1024)
-	#else
-		#define __NR_move_mount 429
-	#endif
-#endif
-
-static inline int sys_open_tree(int dfd, const char *filename, unsigned int flags)
-{
-	return syscall(__NR_open_tree, dfd, filename, flags);
-}
-
-static inline int sys_move_mount(int from_dfd, const char *from_pathname, int to_dfd,
-				 const char *to_pathname, unsigned int flags)
-{
-	return syscall(__NR_move_mount, from_dfd, from_pathname, to_dfd, to_pathname, flags);
-}
-
-static bool is_shared_mountpoint(const char *path)
-{
-	bool shared = false;
-	FILE *f = NULL;
-	char *line = NULL;
-	int i;
-	size_t len = 0;
-
-	f = fopen("/proc/self/mountinfo", "re");
-	if (!f)
-		return 0;
-
-	while (getline(&line, &len, f) > 0) {
-		char *slider1, *slider2;
-
-		for (slider1 = line, i = 0; slider1 && i < 4; i++)
-			slider1 = strchr(slider1 + 1, ' ');
-
-		if (!slider1)
-			continue;
-
-		slider2 = strchr(slider1 + 1, ' ');
-		if (!slider2)
-			continue;
-
-		*slider2 = '\0';
-		if (strcmp(slider1 + 1, path) == 0) {
-			/* This is the path. Is it shared? */
-			slider1 = strchr(slider2 + 1, ' ');
-			if (slider1 && strstr(slider1, "shared:")) {
-				shared = true;
-				break;
-			}
-		}
-	}
-	fclose(f);
-	free(line);
-
-	return shared;
-}
-
-static void usage(void)
-{
-	const char *text = "mount-new [--recursive] <base-dir>\n";
-	fprintf(stderr, "%s", text);
-	_exit(EXIT_SUCCESS);
-}
-
-#define exit_usage(format, ...)                              \
-	({                                                   \
-		fprintf(stderr, format "\n", ##__VA_ARGS__); \
-		usage();                                     \
-	})
-
-#define exit_log(format, ...)                                \
-	({                                                   \
-		fprintf(stderr, format "\n", ##__VA_ARGS__); \
-		exit(EXIT_FAILURE);                          \
-	})
-
-static const struct option longopts[] = {
-	{"help",	no_argument,		0,	'a'},
-	{ NULL,		no_argument,		0,	 0 },
-};
-
-int main(int argc, char *argv[])
-{
-	int exit_code = EXIT_SUCCESS, index = 0;
-	int dfd, fd_tree, new_argc, ret;
-	char *base_dir;
-	char *const *new_argv;
-	char target[PATH_MAX];
-
-	while ((ret = getopt_long_only(argc, argv, "", longopts, &index)) != -1) {
-		switch (ret) {
-		case 'a':
-			/* fallthrough */
-		default:
-			usage();
-		}
-	}
-
-	new_argv = &argv[optind];
-	new_argc = argc - optind;
-	if (new_argc < 1)
-		exit_usage("Missing base directory\n");
-	base_dir = new_argv[0];
-
-	if (*base_dir != '/')
-		exit_log("Please specify an absolute path");
-
-	/* Ensure that target is a shared mountpoint. */
-	if (!is_shared_mountpoint(base_dir))
-		exit_log("Please ensure that \"%s\" is a shared mountpoint", base_dir);
-
-	ret = unshare(CLONE_NEWNS);
-	if (ret < 0)
-		exit_log("%m - Failed to create new mount namespace");
-
-	ret = mount(NULL, base_dir, NULL, MS_REC | MS_SHARED, NULL);
-	if (ret < 0)
-		exit_log("%m - Failed to make base_dir shared mountpoint");
-
-	dfd = open(base_dir, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
-	if (dfd < 0)
-		exit_log("%m - Failed to open base directory \"%s\"", base_dir);
-
-	ret = mkdirat(dfd, "detached-move-mount", 0755);
-	if (ret < 0)
-		exit_log("%m - Failed to create required temporary directories");
-
-	ret = snprintf(target, sizeof(target), "%s/detached-move-mount", base_dir);
-	if (ret < 0 || (size_t)ret >= sizeof(target))
-		exit_log("%m - Failed to assemble target path");
-
-	/*
-	 * Having a mount table with 10000 mounts is already quite excessive
-	 * and shoult account even for weird test systems.
-	 */
-	for (size_t i = 0; i < 10000; i++) {
-		fd_tree = sys_open_tree(dfd, "detached-move-mount",
-					OPEN_TREE_CLONE |
-					OPEN_TREE_CLOEXEC |
-					AT_EMPTY_PATH);
-		if (fd_tree < 0) {
-			if (errno == ENOSYS) /* New mount API not (fully) supported. */
-				break;
-
-			fprintf(stderr, "%m - Failed to open %d(detached-move-mount)", dfd);
-			exit_code = EXIT_FAILURE;
-			break;
-		}
-
-		ret = sys_move_mount(fd_tree, "", dfd, "detached-move-mount", MOVE_MOUNT_F_EMPTY_PATH);
-		if (ret < 0) {
-			if (errno == ENOSPC)
-				fprintf(stderr, "%m - Buggy mount counting");
-			else if (errno == ENOSYS) /* New mount API not (fully) supported. */
-				break;
-			else
-				fprintf(stderr, "%m - Failed to attach mount to %d(detached-move-mount)", dfd);
-			exit_code = EXIT_FAILURE;
-			break;
-		}
-		close(fd_tree);
-
-		ret = umount2(target, MNT_DETACH);
-		if (ret < 0) {
-			fprintf(stderr, "%m - Failed to unmount %s", target);
-			exit_code = EXIT_FAILURE;
-			break;
-		}
-	}
-
-	(void)unlinkat(dfd, "detached-move-mount", AT_REMOVEDIR);
-	close(dfd);
-
-	exit(exit_code);
-}
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> >  drivers/media/i2c/imx219.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+> > index f0cf1985a4dc..87c021de1460 100644
+> > --- a/drivers/media/i2c/imx219.c
+> > +++ b/drivers/media/i2c/imx219.c
+> > @@ -1172,8 +1172,10 @@ static int __maybe_unused imx219_suspend(struct device *dev)
+> >       struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> >       struct imx219 *imx219 = to_imx219(sd);
+> >
+> > +     mutex_lock(&imx219->mutex);
+> >       if (imx219->streaming)
+> >               imx219_stop_streaming(imx219);
+> > +     mutex_unlock(&imx219->mutex);
+> >
+> >       return 0;
+> >  }
+> > @@ -1184,11 +1186,13 @@ static int __maybe_unused imx219_resume(struct device *dev)
+> >       struct imx219 *imx219 = to_imx219(sd);
+> >       int ret;
+> >
+> > +     mutex_lock(&imx219->mutex);
+> >       if (imx219->streaming) {
+> >               ret = imx219_start_streaming(imx219);
+> >               if (ret)
+> >                       goto error;
+> >       }
+> > +     mutex_unlock(&imx219->mutex);
+> >
+> >       return 0;
+> >
+> > @@ -1197,6 +1201,7 @@ static int __maybe_unused imx219_resume(struct device *dev)
+> >       imx219->streaming = false;
+> >       __v4l2_ctrl_grab(imx219->vflip, false);
+> >       __v4l2_ctrl_grab(imx219->hflip, false);
+> > +     mutex_unlock(&imx219->mutex);
+> >
+> >       return ret;
+> >  }
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
