@@ -2,232 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B463348AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EDB3348B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbhCJUMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:12:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
+        id S231418AbhCJUNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:13:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhCJUMN (ORCPT
+        with ESMTP id S230525AbhCJUND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:12:13 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFFFC061574;
-        Wed, 10 Mar 2021 12:12:13 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id p186so19236794ybg.2;
-        Wed, 10 Mar 2021 12:12:13 -0800 (PST)
+        Wed, 10 Mar 2021 15:13:03 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7768DC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:13:03 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id r24so10596914otq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:13:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pihHqUGkeLP/6oZR4Iyg7AQM5wagbDJR64aCR265tK4=;
-        b=KPU5zMjNcUzrPM1Na1tezMBfiEvMjdNMl/+9I3JdCcsvrV+Fadi5A7PhA8FRoD8X6g
-         FXTZWPSyMegJCbujz5a/WFwxfpWjy/YcvlYNnkki6t1DUZ4CeFkGJVG/lub0NXTioQIy
-         TraAyv5plc9uJWKN10JYKE6H+5xnDTghwpIIBh9+/FEESAMC/zoPArNN0EH4hGEXZdgP
-         //QmutPyXnBY+98mUikIlrM3ve6ofl97byjoRLeyBqX9ACsni6lG9mF230n/0ZJwqgxM
-         v9YQTMUoXJAz72fRE1rmkJ5sbdLdPP6drlLMtNSY/MJ81VJTFXzI2zzYlHrB83HbnNmy
-         ez4A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ParB71IxhiRrfBGpAi87T+sw94LRbdpcOA901A69TgA=;
+        b=l9TN+s8G4fphqlAMXmxn0VTICbyOlt5MCFF/fUR/8oug0GoivqZ4PHhuFHh5SbZtyX
+         0MN1f3BqjFJ9KZB0opLj49yl27RHF3KQAG9oX8nUsh2QbgHxIcMtkPbD2ki38nki9qbI
+         ehc+6w1G3/oSnkOORqaQCC+f0XmGfuToDdeHPgM6/jWUURIHuOnl5ZA82W6/1eEhMfYG
+         QMJyTjJ250M+Bqq/tB03enMaqc4eGMUzHPEPFgRhDYvYhwRnAdOsGqbEMkFCYbI+Hm0X
+         TGkaIZ8L8rdMsJMJXYvQJ4qTVBEblp1XRzlaaVCDVGvPtuMM19ecJWAiDkml71Z9q44k
+         2CHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pihHqUGkeLP/6oZR4Iyg7AQM5wagbDJR64aCR265tK4=;
-        b=sAVMEJ9YrAeUg4K4WhLm3hlBkHcndVjRwTDe+nskuMmgiapOXBt0zgQLO26ckuH7jL
-         K7yispDmR1YAbzTSi01TlrUYPdn1ovPFFuDArO38XVwJrYOdG0lxIB3W/I5D9ynE0ojj
-         JTF7JvlZB0D0cgMVTFUefBET9JgvrsTteC+uQSJAS1bKNb0xwbGkd11Bv18betOyEIby
-         rDpzRtjXMSk4j1W1nHJcPNw0TW0RwKLh7WOmRV0FXWB0q4S3NuqVgpheG60WWMOLk4oT
-         +YB237Za3rPdKxqaZsbBzJP0FP9gFVlNAhjrqtXnAegzLfgN2ZEHgdVzqKHPO/LHxO2s
-         Njtw==
-X-Gm-Message-State: AOAM532Z6hQKoZoUmITrFbVMbL9tGidpYJhAO8n1beYqUHf9BgCi83VU
-        sLS3lHjzn+HXVDt1NWpjDcNjZ0+lYh+Qi2dgAVNW8XY/EgA=
-X-Google-Smtp-Source: ABdhPJxs6xZj6BeYVgtxyqUpJ2X1/rrLxizB3p0bFBC99+JiaScB1GnFkh5QmymRDZ0Hda/m4nIOnH+uYQ17tLgV1KI=
-X-Received: by 2002:a25:cc13:: with SMTP id l19mr6571615ybf.260.1615407132740;
- Wed, 10 Mar 2021 12:12:12 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ParB71IxhiRrfBGpAi87T+sw94LRbdpcOA901A69TgA=;
+        b=sN/eATCkxW4pJnWlgvB4fzd6csv3lBEvV92GU4LGPenfSzZ39lPPt2hlC2tnyCPMR8
+         A3tv4+bo0sgdzxlB7RvUPaworOS+uzbvSJu+VnaQVWpJbL3GNdicBBGd+gOR57u9OlrQ
+         NGGQr3gqiqh6Ip8UC6QYlB7rkRhkSCL2Evk6JbSrx6zC2bnQsjQ2wpH2AhMWQLijXET4
+         geWUtclj0wdHbeFkUrBtgnfd2DYvYnjagvZ7fQ53tdecI3m5/HUOydOczSytb/7V95Ww
+         tcNbtjr49ZuNJvNNasA+6T1isQ7IJnPldUgipO3qJrxuQEQ0lVbc94M8no0HENOLoQ1/
+         oGhA==
+X-Gm-Message-State: AOAM533XjmMOhBNSqSfHmVcgyOtDe8ovJ+Ko9MTrRTq1rT2aOTSKAgnu
+        rdmL88gLN9qfpv8xPctu/aJVNg==
+X-Google-Smtp-Source: ABdhPJxG71p4NqMut9jm2BctnUtl0uE1+wVO4QiKMsPrTKbFBAfQ1ej1T/mHQqfW4Ul/TSOVfc/7Bg==
+X-Received: by 2002:a05:6830:1da8:: with SMTP id z8mr3844420oti.11.1615407182801;
+        Wed, 10 Mar 2021 12:13:02 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j19sm98919oie.6.2021.03.10.12.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 12:13:02 -0800 (PST)
+Date:   Wed, 10 Mar 2021 14:13:00 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Andy Gross <agross@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH RESEND 0/2] Common protected-clocks implementation
+Message-ID: <YEkoTEJqzpRacByw@builder.lan>
+References: <20200903040015.5627-1-samuel@sholland.org>
+ <9363f63f-8584-2d84-71fd-baca13e16164@rasmusvillemoes.dk>
 MIME-Version: 1.0
-References: <20210310015455.1095207-1-revest@chromium.org> <f5cfb3d0-fab4-ee07-70de-ad5589db1244@fb.com>
- <eb0a8485-9624-1727-6913-e4520c9d8c04@fb.com> <CABRcYmK8m21sb8dHbr1wLT_oTCBpvr2Zg-8KHwKuJ2Ak0iTZ_A@mail.gmail.com>
- <454d2e4b-f842-624c-a89e-441830c98e99@fb.com>
-In-Reply-To: <454d2e4b-f842-624c-a89e-441830c98e99@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Mar 2021 12:12:01 -0800
-Message-ID: <CAEf4BzY8kRBM578iV+xMZZxT7gKazMFGp5CZjvc1ueyd9vf3KA@mail.gmail.com>
-Subject: Re: [BUG] One-liner array initialization with two pointers in BPF
- results in NULLs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9363f63f-8584-2d84-71fd-baca13e16164@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 8:59 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 3/10/21 3:48 AM, Florent Revest wrote:
-> > On Wed, Mar 10, 2021 at 6:16 AM Yonghong Song <yhs@fb.com> wrote:
-> >> On 3/9/21 7:43 PM, Yonghong Song wrote:
-> >>> On 3/9/21 5:54 PM, Florent Revest wrote:
-> >>>> I noticed that initializing an array of pointers using this syntax:
-> >>>> __u64 array[] = { (__u64)&var1, (__u64)&var2 };
-> >>>> (which is a fairly common operation with macros such as BPF_SEQ_PRINTF)
-> >>>> always results in array[0] and array[1] being NULL.
-> >>>>
-> >>>> Interestingly, if the array is only initialized with one pointer, ex:
-> >>>> __u64 array[] = { (__u64)&var1 };
-> >>>> Then array[0] will not be NULL.
-> >>>>
-> >>>> Or if the array is initialized field by field, ex:
-> >>>> __u64 array[2];
-> >>>> array[0] = (__u64)&var1;
-> >>>> array[1] = (__u64)&var2;
-> >>>> Then array[0] and array[1] will not be NULL either.
-> >>>>
-> >>>> I'm assuming that this should have something to do with relocations
-> >>>> and might be a bug in clang or in libbpf but because I don't know much
-> >>>> about these, I thought that reporting could be a good first step. :)
-> >>>
-> >>> Thanks for reporting. What you guess is correct, this is due to
-> >>> relocations :-(
-> >>>
-> >>> The compiler notoriously tend to put complex initial values into
-> >>> rodata section. For example, for
-> >>>      __u64 array[] = { (__u64)&var1, (__u64)&var2 };
-> >>> the compiler will put
-> >>>      { (__u64)&var1, (__u64)&var2 }
-> >>> into rodata section.
-> >>>
-> >>> But &var1 and &var2 themselves need relocation since they are
-> >>> address of static variables which will sit inside .data section.
-> >>>
-> >>> So in the elf file, you will see the following relocations:
-> >>>
-> >>> RELOCATION RECORDS FOR [.rodata]:
-> >>> OFFSET           TYPE                     VALUE
-> >>> 0000000000000018 R_BPF_64_64              .data
-> >>> 0000000000000020 R_BPF_64_64              .data
-> >
-> > Right :) Thank you for the explanations Yonghong!
-> >
-> >>> Currently, libbpf does not handle relocation inside .rodata
-> >>> section, so they content remains 0.
-> >
-> > Just for my own edification, why is .rodata relocation not yet handled
-> > in libbpf ? Is it because of a read-only mapping that makes it more
-> > difficult ?
->
-> We don't have this use case before. In general, people do not put
-> string pointers in init code in the declaration. I think
-> bpf_seq_printf() is special about this and hence triggering
-> the issue.
->
-> To support relocation of rodata section, kernel needs to be
-> involved and this is actually more complicated as
+On Tue 09 Mar 02:03 CST 2021, Rasmus Villemoes wrote:
 
-Exactly. It would be trivial for libbpf to support it, but it needs to
-resolve to the actual in-kernel address of a map (plus offset), which
-libbpf has no way of knowing.
+> On 03/09/2020 06.00, Samuel Holland wrote:
+> > Stephen, Maxime,
+> > 
+> > You previously asked me to implement the protected-clocks property in a
+> > driver-independent way:
+> > 
+> > https://www.spinics.net/lists/arm-kernel/msg753832.html
+> > 
+> > I provided an implementation 6 months ago, which I am resending now:
+> > 
+> > https://patchwork.kernel.org/patch/11398629/
+> > 
+> > Do you have any comments on it?
+> 
+> I'm also interested [1] in getting something like this supported in a
+> generic fashion - i.e., being able to mark a clock as
+> protected/critical/whatnot by just adding an appropriate property in the
+> clock provider's DT node, but without modifying the driver to opt-in to
+> handling it.
+> 
+> Now, as to this implementation, the commit 48d7f160b1 which added the
+> common protected-clocks binding says
+> 
+>   For example, on some Qualcomm firmwares reading or writing certain clk
+>   registers causes the entire system to reboot,
+> 
+> so I'm not sure handling protected-clocks by translating it to
+> CLK_CRITICAL and thus calling prepare/enable on it is the right thing to
+> do - clks that behave like above are truly "hands off, kernel", so the
+> current driver-specific implementation of simply not registering those
+> clocks seems to be the right thing to do - or at least the clk framework
+> would need to be taught to not actually call any methods on such
+> protected clocks.
+> 
 
-> the relocation is against .data section. Two issues the kernel
-> needs to deal with:
->     - .data section will be another map in kernel, so i.e.,
->       relocation of .rodata map value against another map.
->     - .data section may be modified, some protection might
->       be needed to prevent this. We may ignore this requirement
->       since user space may have similar issue.
->
-> This is a corner case, if we can workaround in the libbpf, in
-> this particular case, bpf_tracing.h. I think it will be
-> good enough, not adding further complexity in kernel for
-> such a corner case.
+I can confirm that this is the case. Marking the clocks as critical does
+not prevent the kernel from touching these registers so the boards where
+this is used doesn't boot with the two patches applied.
 
-Is there some way to trick compiler into thinking that those values
-are not constant? Some volatile and pointers game? Or any other magic?
+> For my use case, either "hands off kernel" or "make sure this clock is
+> enabled" would work since the bootloader anyway enables the clock.
+> 
 
+Our use case is that depending on firmware these platform might handle
+some specific clocks in firmware or in the kernel, and in the prior case
+security permissions are set up such that these registers are off limit
+for the kernel.
 
->
-> >
-> >>> That is why you see the issue with pointer as NULL.
-> >>>
-> >>> With array size of 1, compiler does not bother to put it into
-> >>> rodata section.
-> >>>
-> >>> I *guess* that it works in the macro due to some kind of heuristics,
-> >>> e.g., nested blocks, etc, and llvm did not promote the array init value
-> >>> to rodata. I will double check whether llvm can complete prevent
-> >>> such transformation.
-> >>>
-> >>> Maybe in the future libbpf is able to handle relocations for
-> >>> rodata section too. But for the time being, please just consider to use
-> >>> either macro, or the explicit array assignment.
-> >>
-> >> Digging into the compiler, the compiler tries to make *const* initial
-> >> value into rodata section if the initial value size > 64, so in
-> >> this case, macro does not work either. I think this is how you
-> >> discovered the issue.
-> >
-> > Indeed, I was using a macro similar to BPF_SEQ_PRINTF and this is how
-> > I found the bug.
-> >
-> >> The llvm does not provide target hooks to
-> >> influence this transformation.
-> >
-> > Oh, that is unfortunate :) Thanks for looking into it! I feel that the
-> > real fix would be in libbpf anyway and the rest is just workarounds.
->
-> The real fix will need libbpf and kernel.
->
-> >
-> >> So, there are two workarounds,
-> >> (1).    __u64 param_working[2];
-> >>           param_working[0] = (__u64)str1;
-> >>           param_working[1] = (__u64)str2;
-> >> (2). BPF_SEQ_PRINTF(seq, "%s ", str1);
-> >>        BPF_SEQ_PRINTF(seq, "%s", str2);
-> >
-> > (2) is a bit impractical for my actual usecase. I am implementing a
-> > bpf_snprintf helper (patch series Coming Soon TM) and I wanted to keep
-> > the selftest short with a few BPF_SNPRINTF() calls that exercise most
-> > format specifiers.
-> >
-> >> In practice, if you have at least one non-const format argument,
-> >> you should be fine. But if all format arguments are constant, then
-> >> none of them should be strings.
-> >
-> > Just for context, this does not only happen for strings but also for
-> > all sorts of pointers, for example, when I try to do address lookup of
-> > global __ksym variables, which is important for my selftest.
->
-> Currently, in bpf_seq_printf(), we do memory copy for string
-> and certain ipv4/ipv6 addresses. ipv4 is not an issue as the compiler
-> less likely put it into rodata. for ipv6,
-> if it is a constant, we can just directly put it into the format
-> string. For many other sort of pointers, we just print pointer
-> values, I don't see a value to print pointer value for something like
->      static const param[] = { &str1, &str2 };
->      bpf_seq_printf(seq, "%px\n", param[0]);
->
-> The global __ksym variable cannot be pointing to rodata at compile time,
-> so it should be fine.
->
-> >
-> >> Maybe we could change marco
-> >>      unsigned long long ___param[] = { args };
-> >> to declare an array explicitly and then have a loop to
-> >> assign each array element?
-> >
-> > I think this would be a good workaround for now, indeed. :) I'll look
-> > into it today and send it as part of my bpf_snprintf series.
->
-> If we can make it work, that will be great! thanks for working on this.
->
-> >
-> > Thanks!
-> >
+Regards,
+Bjorn
+
+> Rasmus
+> 
+> [1]
+> https://lore.kernel.org/lkml/20210226141411.2517368-1-linux@rasmusvillemoes.dk/
+> 
