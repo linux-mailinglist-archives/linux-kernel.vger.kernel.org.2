@@ -2,73 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495E2334042
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85792334048
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhCJOXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:23:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232776AbhCJOWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:22:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EDCB64FF3;
-        Wed, 10 Mar 2021 14:22:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615386166;
-        bh=fvRMVeiCybXoXRnQ1HMKD1A6w2E1RrFY453zPMPS9bg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QeIzYFzS6U9XfE4gOSrLARyy1DuIahTNuflRn5jm+8YYlys39qkTxl/q3dgH9iNJG
-         ndPLxX0aOZHbqQV2u+vMrelNkQHa7h74g3YakwLecNynq9dI2mPOhs9bKAllnN7UQy
-         wQrydj2+NPncQiU6JwYe03wl3rIC2S3FRq8MLNvCNcRV75CnKw2dZoqyj12S5RErbh
-         3fXrgoVOALucNo7FoNZHE9AxB9KA73w9gxxIiymZySOdXAy+aZ/cne6y2lu1mNBB1H
-         yjvWULnVETMvPNN1zOeQ+D8TvmWsUBdd5L/Xg5P8J3Yxu/DzEjWs2k1aQEQLq1kC50
-         WuyUONEhhNNiA==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lJzjk-0008Fv-Qw; Wed, 10 Mar 2021 15:22:56 +0100
-Date:   Wed, 10 Mar 2021 15:22:56 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     elder@kernel.org, gregkh@linuxfoundation.org,
-        greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] greybus/operation: Drop reference when message has
- been sent
-Message-ID: <YEjWQObSkj6QbXZP@hovoldconsulting.com>
-References: <20210310141736.3459-1-lyl2019@mail.ustc.edu.cn>
+        id S233025AbhCJOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231591AbhCJOY4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 09:24:56 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611BBC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:24:56 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id o38so11501994pgm.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:24:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ia4RFpicq2fRuAPgXhAozb2Coa1dHuagLeIfRQj8pNQ=;
+        b=MVAAnh5akGxaYjBBsx/wd8dd5mvwQkezHzzvAcU0d3DczYATYUbjWj9CxafssTwVdh
+         REID571/jUKlKRb3gGXQIlmV97PHAQyskUXSEstmL5xmEQibOXsFipYb2XnIpvfU/T9o
+         tw83tRACD2PPz3STkY9W0iyfEEMWvShwcUJhhroXzZPJa4iu4/uuJGifbuCZ1GdvUO/3
+         qAEqnVpVVKcnT+Jgqa6JsFXIGmQzsk3jlQZSKNaw+CgA2tdZkeXuIGPyeTntOeYHuNQN
+         5u99ovhof1usctC3jN4IBI++x0C5EDQWVXrvs09hQp3zP9acru0Y93MNL+ipZ8lBvpmm
+         NiLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ia4RFpicq2fRuAPgXhAozb2Coa1dHuagLeIfRQj8pNQ=;
+        b=YWoMOJPEiAlbcEKlzpg3Vu2v3VTOVIJYxXPzJnIFlOa1XQf4V++yrgT/1MyhuUKGM5
+         3zKiXwvjazJCsbeXCY49U8IIEM9KuSoS7c59MS3QDdlw/lswwHezwvHvidSQJamx/IZr
+         QVmchsXG5X1jdbyBSrG9W3Ar5RP8jv3oIcsMj4pmxsrbuuOzCohyVGyyP9YAVFcDiz/o
+         vssyQ5gjFfatOC7E9jZ1h6bVzse+GxgYFD18v96ItGZBYMyKbWxIGvcWp5uX27IrhMQc
+         QGr5i84pIY1nro7Wl1fT4FhN7NOXjA6Srngwb8vYlS4ypU1Uw6K0SYH39PAAec7HpECp
+         FkRg==
+X-Gm-Message-State: AOAM530shP7JtQMXNxmR9wyOevbUrT0ev/0YCiTEwlMjZ2pIGcfluXE9
+        rPU69qjsTl79w7B7XZt7E57KqA==
+X-Google-Smtp-Source: ABdhPJx/UEee10lhYSYD3qYfveLX/q/dS1C6S7LjHVDoMUNs4sdEMcr8xQaGtWjRqety3E84OglSew==
+X-Received: by 2002:a63:5b5d:: with SMTP id l29mr2978518pgm.272.1615386295912;
+        Wed, 10 Mar 2021 06:24:55 -0800 (PST)
+Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
+        by smtp.gmail.com with UTF8SMTPSA id j3sm3099058pjf.36.2021.03.10.06.24.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 06:24:55 -0800 (PST)
+Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor vfio_pci
+ drivers
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     alex.williamson@redhat.com, cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
+        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
+        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
+        kwankhede@nvidia.com, ACurrid@nvidia.com, cjia@nvidia.com,
+        yishaih@nvidia.com, mjrosato@linux.ibm.com, hch@lst.de
+References: <20210309083357.65467-1-mgurtovoy@nvidia.com>
+ <20210309083357.65467-9-mgurtovoy@nvidia.com>
+ <19e73e58-c7a9-03ce-65a7-50f37d52ca15@ozlabs.ru>
+ <8941cf42-0c40-776e-6c02-9227146d3d66@nvidia.com>
+ <20210310130246.GW2356281@nvidia.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <3b772357-7448-5fa7-9ecc-c13c08df95c3@ozlabs.ru>
+Date:   Thu, 11 Mar 2021 01:24:47 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310141736.3459-1-lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <20210310130246.GW2356281@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 06:17:36AM -0800, Lv Yunlong wrote:
-> In gb_operation_response_send, get an extra reference
-> before gb_message_send() with this comment "/* Reference will
-> be dropped when message has been sent. */". Therefore, we
-> should drop the got reference not only in the error branch,
-> but also in the complete branch.
+
+
+On 11/03/2021 00:02, Jason Gunthorpe wrote:
+> On Wed, Mar 10, 2021 at 02:57:57PM +0200, Max Gurtovoy wrote:
 > 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->  drivers/greybus/operation.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>>>> +    .err_handler        = &vfio_pci_core_err_handlers,
+>>>> +};
+>>>> +
+>>>> +#ifdef CONFIG_VFIO_PCI_DRIVER_COMPAT
+>>>> +struct pci_driver *get_nvlink2gpu_vfio_pci_driver(struct pci_dev *pdev)
+>>>> +{
+>>>> +    if (pci_match_id(nvlink2gpu_vfio_pci_driver.id_table, pdev))
+>>>> +        return &nvlink2gpu_vfio_pci_driver;
+>>>
+>>>
+>>> Why do we need matching PCI ids here instead of looking at the FDT which
+>>> will work better?
+>>
+>> what is FDT ? any is it better to use it instead of match_id ?
 > 
-> diff --git a/drivers/greybus/operation.c b/drivers/greybus/operation.c
-> index 8459e9bc0749..500b3fe53a04 100644
-> --- a/drivers/greybus/operation.c
-> +++ b/drivers/greybus/operation.c
-> @@ -855,6 +855,10 @@ static int gb_operation_response_send(struct gb_operation *operation,
->  	if (ret)
->  		goto err_put_active;
->  
-> +	/*Drop reference after message send completes. */
-> +	gb_operation_put_active(operation);
-> +	gb_operation_put(operation);
+> This is emulating the device_driver match for the pci_driver.
 
-No, this is broken.
 
-The reference is dropped in greybus_message_sent().
+No it is not, it is a device tree info which lets to skip the linux PCI 
+discovery part (the firmware does it anyway) but it tells nothing about 
+which drivers to bind.
 
-Johan
+
+> I don't think we can combine FDT matching with pci_driver, can we?
+
+It is a c function calling another c function, all within vfio-pci, this 
+is not called by the generic pci code.
+
+
+
+-- 
+Alexey
