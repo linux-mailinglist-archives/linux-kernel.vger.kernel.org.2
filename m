@@ -2,171 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAF033682E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E19336835
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhCJXxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:53:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
+        id S234062AbhCJXxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:53:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234110AbhCJXxH (ORCPT
+        with ESMTP id S232948AbhCJXxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:53:07 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A596CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:53:07 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id a17so18274346oto.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:53:07 -0800 (PST)
+        Wed, 10 Mar 2021 18:53:06 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B964C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:53:06 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id u75so19752788ybi.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:53:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=STePm3/TxG9rAAgXd9N5KIEzWISsuLXYEPo87xY5kA8=;
-        b=K7x/QefjkK5M0ZBXz9muoTBQl6/x5KpifwW1HfEsL/fgWLCpzyMOlHgg4uHWsCTikj
-         Qq1+yp+MSlFkciO3zIbTKdDURv6eR/feyA+0C2jBIJG8VDOSSwF4+ASZXhJHB/IBLCno
-         WDBa5/u+w4YXDwjjzJGM6Us/+zxPVDZihlbw9YErJm94fjl0SMqKeVs8qb1kyVDFW0BW
-         +8qbR7IwgMxiuxzKme10zDiJqq4G/JOrcEjrMiXahzIC5LER9NM90/EBAqzKaFbUAYnv
-         Fg+xG2ZaRgZrKbEoW+ZZijK88+yhI1U1OKHhJo6A61XuTiiJkW7X3dgNZtIDFRrbTchz
-         5tdw==
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=jucGFyw0LdGRkh7f5sXjGVPTKUgR6auGD9B4GpN9tOM=;
+        b=tzrp/tMdMSLlwB4Me1SjwDbofnPh3DioQR6Mcm2jxc5Bekikppn+DQ0s8Vs4eMqftN
+         zkUrlOKy5Dc5oqauBbMIZfdbba9/P+UfNIpXLkobTc1cJpsxufYNQ+U3oSb0ruWAiqI/
+         l52LPaAhv7+c21alBS1Tq1ERiYfPJuWtHSnPorktM9GsECPhx2aS51mxJub5orldkNYK
+         kynAhV94eGjXcF2S/8V5cWRzpQLa4DZ9oZH6s6WFZDhAFWr3aC05wQOGiydo6MzSbCab
+         mtm+giYdl+ogfF+Ko9ezoWqXgU7MliOgCB23cAt9BXRcqzXBsVXfUEF7jOoq8cjuW1JC
+         5B9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=STePm3/TxG9rAAgXd9N5KIEzWISsuLXYEPo87xY5kA8=;
-        b=Dg6bIbCPSPka413tfdIaHfY2y4ZI7uS+T1baZPaAAbpEkU77Qygzs8gigd4swb4kxR
-         XsBaAl2rnEQRV7Sz3bCJglyaRVtbO/YLnozArFrtluS/aoFprhPPIn9ZR8rtN+8a7gw0
-         qCSE/lXpkLrCatwaWRbhCQwaSHnKGdqLh+LeDy2Q8InLO7l4GwN/lc5ctSxiZHjdS/it
-         QMkjhzEhWdwcUfzN4pLAUiFPXfdgtYyEqWNbxaTDL3jMDoBBjxkOM+Qq/qkOeCuSbySs
-         TqIDI6YmiObEnhplEKt9sD0yq9xF+hZ0XVOZ/KFUKgkKYiRA8jrjKFVull1IaZbhtH8W
-         ZrOg==
-X-Gm-Message-State: AOAM530fa9hZtgAVNQm5bFEJGZnzo+clsQ99Gt4VVU504l41aGkVC/4v
-        sdVkC5h+5kzPAYA8bxijv5asSQ==
-X-Google-Smtp-Source: ABdhPJxTDt9P62t6CFkPQ9ENCy5L2mqY+b6cxAaC2zvOpINZKvWtdC/J4HI6UYDj059cdp23t9zj+Q==
-X-Received: by 2002:a05:6830:225b:: with SMTP id t27mr4523378otd.73.1615420387047;
-        Wed, 10 Mar 2021 15:53:07 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g34sm278385otg.51.2021.03.10.15.53.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 15:53:06 -0800 (PST)
-Date:   Wed, 10 Mar 2021 17:53:04 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, arnaud.pouliquen@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v7 12/17] remoteproc: Properly deal with the resource
- table when stopping
-Message-ID: <YElb4PITwZtMhpAw@builder.lan>
-References: <20210310211025.1084636-1-mathieu.poirier@linaro.org>
- <20210310211025.1084636-13-mathieu.poirier@linaro.org>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=jucGFyw0LdGRkh7f5sXjGVPTKUgR6auGD9B4GpN9tOM=;
+        b=fGuQXQAzAwG0mE3CXWW1xqpmOSDrCtrZkdvZvAHcU/GbI8EFuhhwe4wZBr/C55I/YS
+         S+LO3tgmP2WTYFODRKj3ZnA0oo+eRQw3+RTd3MHiXmeNoIg3nA0RHQhH33co6AvqFyyS
+         FeeJMkhO1ubUjErmMXrtfHrCMoQ33q6sza7KpUp6TBfAwiWwOFt51lMdz+fZ53bsnkDM
+         O8k0kkzgoAlKFV7yScpkj91xZUggoYqO0ybhRvUHTPjrVmYnd2ILRV1/Eo/Af0PVFove
+         ymcisZzUTJMAnq3/oL+26pWl8b6R1rnfncNqWlS0t9QLjAoUKxqVpLNSI7Pr/KfvI2fD
+         OwfQ==
+X-Gm-Message-State: AOAM531GYrcduJ1KGWYFStaarddEcry7II7V1/nL4U5RSnevwSKN7Kvz
+        vu2eiZv1wg9HNhQqkcJaKVFXHbfkBZ4NOMndeRA=
+X-Google-Smtp-Source: ABdhPJzrvPXJmJvgs5lcTjtqS1BcyS42sA15DKQqAK2B0b74VuzfBOi2TAh3Z/FbWs11JrEVv6y/doIkW1j8G8lNR7w=
+X-Received: by 2002:a25:d911:: with SMTP id q17mr7784421ybg.468.1615420385446;
+ Wed, 10 Mar 2021 15:53:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310211025.1084636-13-mathieu.poirier@linaro.org>
+Sender: alidami798@gmail.com
+Received: by 2002:a05:6900:3506:0:0:0:0 with HTTP; Wed, 10 Mar 2021 15:53:05
+ -0800 (PST)
+From:   ali dami <mralidami5@gmail.com>
+Date:   Wed, 10 Mar 2021 15:53:05 -0800
+X-Google-Sender-Auth: kB1j1V3bbdNtgi_pnGjOtq_cTGo
+Message-ID: <CAOT8OOiJ5X2LM5AWymVE6phL8CkkEuWX54G-RgztYXmh8Y2UXQ@mail.gmail.com>
+Subject: Dear friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10 Mar 15:10 CST 2021, Mathieu Poirier wrote:
+-- 
+Dear friend,
 
-> When a remote processor that was attached to is stopped, special care
-> must be taken to make sure the shutdown process is similar to what
-> it would be had it been started by the remoteproc core.
-> 
-> This patch takes care of that by making a copy of the resource
-> table currently used by the remote processor.  From that point on
-> the copy is used, as if the remote processor had been started by
-> the remoteproc core.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
-> New for V7:
->   New Patch, used to be part of 11/16 in V6.
-> ---
->  drivers/remoteproc/remoteproc_core.c | 53 +++++++++++++++++++++++++++-
->  1 file changed, 52 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index e9ea2558432d..c488b1aa6119 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -1634,6 +1634,52 @@ static int rproc_reset_rsc_table_on_detach(struct rproc *rproc)
->  	return 0;
->  }
->  
-> +static int rproc_reset_rsc_table_on_stop(struct rproc *rproc)
-> +{
-> +	struct resource_table *table_ptr;
-> +
-> +	/* A resource table was never retrieved, nothing to do here */
-> +	if (!rproc->table_ptr)
-> +		return 0;
-> +
-> +	/*
-> +	 * If a cache table exists the remote processor was started by
-> +	 * the remoteproc core.  That cache table should be used for
-> +	 * the rest of the shutdown process.
-> +	 */
-> +	if (rproc->cached_table)
-> +		goto out;
-> +
-> +	/* Remember where the external entity installed the resource table */
-> +	table_ptr = rproc->table_ptr;
-> +
+I am Mr.Ibrahim Josh,from West Africa am sorry to intrude into your
+privacy I got your email address through internet via computerized search
+after my prayers so I bring to you this transaction which I notify
+from our bank an abandon fund which belongs to our late foreign customer who
+deposited the sum of 10.2 million USD but he had a treble plane crash
+with his family ever since then no one has applied to claim the fund
+so I write to you with confidence that you can be a help so we can get
+the fund out of the bank I want you to apply to the bank as his
+foreign business partner note that once the fund is been release to
+your wish bank account in your country it will be shared among us in
+the ratio of 60%40 if you are interested please kindly forward your
+details so we can move towards it.
 
-Afaict this is just a remnant from the detach case.
+Your full name...........
 
-I think the series looks really good now, please let me know and I can
-drop the local "table_ptr" as I apply the patches.
+Your Bank Name:............
 
-Regards,
-Bjorn
+Your Telephone Number:............
 
-> +	/*
-> +	 * If we made it here the remote processor was started by another
-> +	 * entity and a cache table doesn't exist.  As such make a copy of
-> +	 * the resource table currently used by the remote processor and
-> +	 * use that for the rest of the shutdown process.  The memory
-> +	 * allocated here is free'd in rproc_shutdown().
-> +	 */
-> +	rproc->cached_table = kmemdup(rproc->table_ptr,
-> +				      rproc->table_sz, GFP_KERNEL);
-> +	if (!rproc->cached_table)
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * Since the remote processor is being switched off the clean table
-> +	 * won't be needed.  Allocated in rproc_set_rsc_table().
-> +	 */
-> +	kfree(rproc->clean_table);
-> +
-> +out:
-> +	/*
-> +	 * Use a copy of the resource table for the remainder of the
-> +	 * shutdown process.
-> +	 */
-> +	rproc->table_ptr = rproc->cached_table;
-> +	return 0;
-> +}
-> +
->  /*
->   * Attach to remote processor - similar to rproc_fw_boot() but without
->   * the steps that deal with the firmware image.
-> @@ -1759,7 +1805,12 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
->  	rproc_stop_subdevices(rproc, crashed);
->  
->  	/* the installed resource table is no longer accessible */
-> -	rproc->table_ptr = rproc->cached_table;
-> +	ret = rproc_reset_rsc_table_on_stop(rproc);
-> +	if (ret) {
-> +		dev_err(dev, "can't reset resource table: %d\n", ret);
-> +		return ret;
-> +	}
-> +
->  
->  	/* power off the remote processor */
->  	ret = rproc->ops->stop(rproc);
-> -- 
-> 2.25.1
-> 
+Your Age And Sex:.......................
+
+Your marital status........
+
+Your Occupation..........
+
+Your Country city............
+
+Thanks
+Mr Ibrahim Josh
