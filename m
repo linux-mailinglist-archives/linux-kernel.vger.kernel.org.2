@@ -2,111 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E953337C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 491203337CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhCJIsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:48:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232336AbhCJIry (ORCPT
+        id S231261AbhCJItT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:49:19 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:35380 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229544AbhCJItN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:47:54 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C9EC06174A;
-        Wed, 10 Mar 2021 00:47:54 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 138FD3FA1B;
-        Wed, 10 Mar 2021 08:47:46 +0000 (UTC)
-To:     Sumit Garg <sumit.garg@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Arnd Bergmann <arnd@linaro.org>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org>
- <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby>
- <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
- <6c542548-cc16-af68-c755-df52bd13b209@marcan.st>
- <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB)
- subsystem
-Message-ID: <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
-Date:   Wed, 10 Mar 2021 17:47:45 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+        Wed, 10 Mar 2021 03:49:13 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R361e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UREgr3u_1615366150;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UREgr3u_1615366150)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 10 Mar 2021 16:49:10 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     jdike@addtoit.com
+Cc:     richard@nod.at, anton.ivanov@cambridgegreys.com,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] uml: remove unneeded variable 'ret'
+Date:   Wed, 10 Mar 2021 16:49:08 +0800
+Message-Id: <1615366148-5357-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/03/2021 14.14, Sumit Garg wrote:
-> On Wed, 10 Mar 2021 at 02:47, Hector Martin <marcan@marcan.st> wrote:
->>
->> On 09/03/2021 01.20, Linus Walleij wrote:
->>> I suppose it would be a bit brutal if the kernel would just go in and
->>> appropriate any empty RPMB it finds, but I suspect it is the right way
->>> to make use of this facility given that so many of them are just sitting
->>> there unused. Noone will run $CUSTOM_UTILITY any more than they
->>> run the current RPMB tools in mmc-tools.
->>
->> AIUI the entire thing relies on a shared key that is programmed once
->> into the RPMB device, which is a permanent operation. This key has to be
->> secure, usually stored on CPU fuses or derived based on such a root of
->> trust. To me it would seem ill-advised to attempt to automate this
->> process and have the kernel do a permanent take-over of any RPMBs it
->> finds (with what key, for one?) :)
->>
-> 
-> Wouldn't it be a good idea to use DT here to represent whether a
-> particular RPMB is used as a TEE backup or is available for normal
-> kernel usage?
-> 
-> In case of normal kernel usage, I think the RPMB key can come from
-> trusted and encrypted keys subsystem.
+Fix the following coccicheck warning:
+./arch/um/drivers/hostaudio_kern.c:125:10-14: Unneeded variable: "mask".
+Return "0" on line 131
 
-Remember that if the key is ever lost, the RPMB is now completely 
-useless forever.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ arch/um/drivers/hostaudio_kern.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-This is why, as far as I know, most sane platforms will use hard fused 
-values to derive this kind of thing, not any kind of key stored in 
-erasable storage.
-
-Also, newly provisioned keys are sent in plain text, which means that 
-any kind of "if the RPMB is blank, take it over" automation equates to 
-handing over your key who an attacker who removes the RPMB and replaces 
-it with a blank one, and then they can go access anything they want on 
-the old RPMB device (assuming the key hasn't changed; and if it has 
-changed that's conversely a recipe for data loss if something goes wrong).
-
-I really think trying to automate any kind of "default" usage of an RPMB 
-is a terrible idea. It needs to be a conscious decision on a 
-per-platform basis.
-
+diff --git a/arch/um/drivers/hostaudio_kern.c b/arch/um/drivers/hostaudio_kern.c
+index d35d3f3..5b064d3 100644
+--- a/arch/um/drivers/hostaudio_kern.c
++++ b/arch/um/drivers/hostaudio_kern.c
+@@ -122,13 +122,11 @@ static ssize_t hostaudio_write(struct file *file, const char __user *buffer,
+ static __poll_t hostaudio_poll(struct file *file,
+ 				struct poll_table_struct *wait)
+ {
+-	__poll_t mask = 0;
+-
+ #ifdef DEBUG
+ 	printk(KERN_DEBUG "hostaudio: poll called (unimplemented)\n");
+ #endif
+ 
+-	return mask;
++	return 0;
+ }
+ 
+ static long hostaudio_ioctl(struct file *file,
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+1.8.3.1
+
