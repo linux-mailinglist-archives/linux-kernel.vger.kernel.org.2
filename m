@@ -2,103 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F3E334A59
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E022334AC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233356AbhCJWAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:00:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46286 "EHLO mail.kernel.org"
+        id S234074AbhCJWB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:01:56 -0500
+Received: from mga04.intel.com ([192.55.52.120]:4734 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231759AbhCJWAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:00:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7296B64EF6;
-        Wed, 10 Mar 2021 22:00:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615413631;
-        bh=ReSp2zP54RJS1AahxWZa0ePgAMVlaJXyfLVs8JQqAT4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Lqsk+FRi+f/exKF4sZcYF4/Z31p02Sh8HKyOz/RA7OezaDfWe4iJZqIiGtGOtYQH2
-         qS9V+ceFH0war3SM2erKFzXrT2D/heVQYgCiBIjnn51Mr6idLVSyHpC5X1UHDCD5oW
-         2jXtCMyUIjLk2MM5Gb5yuJ04dkoF4jTwt3yfxq6/EViW9O0KpBt2ftOAQkA3XUVu6l
-         co1b35paBosdrQkZYh3uQ8qn5CQF0Ps0XOvDy5tliHBJ+/nFnxuoUpGys1GhykHcSV
-         2C87kq9nBLzlcPy84T6HgMrVZCRrbJJNK54Z7wIUJ+XfYvOo6IpSiyiPy2gR5reWvs
-         pAfxPRTeU2wLg==
-Date:   Wed, 10 Mar 2021 16:00:30 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
- association
-Message-ID: <20210310220030.GA2068330@bjorn-Precision-5520>
+        id S233710AbhCJWBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:01:16 -0500
+IronPort-SDR: 4cJJ1KlHoHA3Vuv55HBst6lWCyLeTJ1ODJaXgTWX9m/rhYMXX4Y0jcRhwA2QgOjrkCBe7kRMjO
+ Mv/2hE7qHUBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186193135"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="186193135"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:01:15 -0800
+IronPort-SDR: aammkdbBPUJxiWwbn2ZXRrVnK5jkBy5rnIIQcXo1lS7MNTyNmWMHnp9FkaUyOU1KoW10FmvXID
+ zS51wfBDj05w==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="403847616"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:01:15 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v22 12/28] x86/mm: Update ptep_set_wrprotect() and pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
+Date:   Wed, 10 Mar 2021 14:00:30 -0800
+Message-Id: <20210310220046.15866-13-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210310220046.15866-1-yu-cheng.yu@intel.com>
+References: <20210310220046.15866-1-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222011717.43266-1-qiuxu.zhuo@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 09:17:17AM +0800, Qiuxu Zhuo wrote:
-> Function rcec_assoc_rciep() incorrectly used "rciep->devfn" (a single
-> byte encoding the device and function number) as the device number to
-> check whether the corresponding bit was set in the RCiEPBitmap of the
-> RCEC (Root Complex Event Collector) while enumerating over each bit of
-> the RCiEPBitmap.
-> 
-> As per the PCI Express Base Specification, Revision 5.0, Version 1.0,
-> Section 7.9.10.2, "Association Bitmap for RCiEPs", p. 935, only needs to
-> use a device number to check whether the corresponding bit was set in
-> the RCiEPBitmap.
-> 
-> Fix rcec_assoc_rciep() using the PCI_SLOT() macro and convert the value
-> of "rciep->devfn" to a device number to ensure that the RCiEP devices
-> associated with the RCEC are linked when the RCEC is enumerated.
-> 
-> Fixes: 507b460f8144 ("PCI/ERR: Add pcie_link_rcec() to associate RCiEPs")
-> Reported-and-tested-by: Wen Jin <wen.jin@intel.com>
-> Reviewed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+When Shadow Stack is introduced, [R/O + _PAGE_DIRTY] PTE is reserved for
+shadow stack.  Copy-on-write PTEs have [R/O + _PAGE_COW].
 
-I think 507b460f8144 appeared in v5.11, so not something we broke in
-v5.12.  Applied to pci/error for v5.13, thanks!
+When a PTE goes from [R/W + _PAGE_DIRTY] to [R/O + _PAGE_COW], it could
+become a transient shadow stack PTE in two cases:
 
-If I understand correctly, we previously only got this right in one
-case:
+The first case is that some processors can start a write but end up seeing
+a read-only PTE by the time they get to the Dirty bit, creating a transient
+shadow stack PTE.  However, this will not occur on processors supporting
+Shadow Stack, and a TLB flush is not necessary.
 
-   0 == PCI_SLOT(00.0)    # correct
-   1 == PCI_SLOT(00.1)    # incorrect
-   2 == PCI_SLOT(00.2)    # incorrect
-   ...
-   8 == PCI_SLOT(01.0)    # incorrect
-   9 == PCI_SLOT(01.1)    # incorrect
-   ...
-  31 == PCI_SLOT(03.7)    # incorrect
+The second case is that when _PAGE_DIRTY is replaced with _PAGE_COW non-
+atomically, a transient shadow stack PTE can be created as a result.
+Thus, prevent that with cmpxchg.
 
-> ---
-> v2->v3:
->  Drop "[ Krzysztof: Update commit message. ]" from the commit message
-> 
->  drivers/pci/pcie/rcec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
-> index 2c5c552994e4..d0bcd141ac9c 100644
-> --- a/drivers/pci/pcie/rcec.c
-> +++ b/drivers/pci/pcie/rcec.c
-> @@ -32,7 +32,7 @@ static bool rcec_assoc_rciep(struct pci_dev *rcec, struct pci_dev *rciep)
->  
->  	/* Same bus, so check bitmap */
->  	for_each_set_bit(devn, &bitmap, 32)
-> -		if (devn == rciep->devfn)
-> +		if (devn == PCI_SLOT(rciep->devfn))
->  			return true;
->  
->  	return false;
-> -- 
-> 2.17.1
-> 
+Dave Hansen, Jann Horn, Andy Lutomirski, and Peter Zijlstra provided many
+insights to the issue.  Jann Horn provided the cmpxchg solution.
+
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+ arch/x86/include/asm/pgtable.h | 36 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index e1739f590ca6..46d9394b884f 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1306,6 +1306,24 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
+ static inline void ptep_set_wrprotect(struct mm_struct *mm,
+ 				      unsigned long addr, pte_t *ptep)
+ {
++	/*
++	 * If Shadow Stack is enabled, pte_wrprotect() moves _PAGE_DIRTY
++	 * to _PAGE_COW (see comments at pte_wrprotect()).
++	 * When a thread reads a RW=1, Dirty=0 PTE and before changing it
++	 * to RW=0, Dirty=0, another thread could have written to the page
++	 * and the PTE is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
++	 * PTE changes and update old_pte, then try again.
++	 */
++	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
++		pte_t old_pte, new_pte;
++
++		old_pte = READ_ONCE(*ptep);
++		do {
++			new_pte = pte_wrprotect(old_pte);
++		} while (!try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
++
++		return;
++	}
+ 	clear_bit(_PAGE_BIT_RW, (unsigned long *)&ptep->pte);
+ }
+ 
+@@ -1350,6 +1368,24 @@ static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
+ static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+ 				      unsigned long addr, pmd_t *pmdp)
+ {
++	/*
++	 * If Shadow Stack is enabled, pmd_wrprotect() moves _PAGE_DIRTY
++	 * to _PAGE_COW (see comments at pmd_wrprotect()).
++	 * When a thread reads a RW=1, Dirty=0 PMD and before changing it
++	 * to RW=0, Dirty=0, another thread could have written to the page
++	 * and the PMD is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
++	 * PMD changes and update old_pmd, then try again.
++	 */
++	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
++		pmd_t old_pmd, new_pmd;
++
++		old_pmd = READ_ONCE(*pmdp);
++		do {
++			new_pmd = pmd_wrprotect(old_pmd);
++		} while (!try_cmpxchg((pmdval_t *)pmdp, (pmdval_t *)&old_pmd, pmd_val(new_pmd)));
++
++		return;
++	}
+ 	clear_bit(_PAGE_BIT_RW, (unsigned long *)pmdp);
+ }
+ 
+-- 
+2.21.0
+
