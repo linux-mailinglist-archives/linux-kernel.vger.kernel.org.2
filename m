@@ -2,180 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C87333352
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F42333358
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhCJCuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:50:39 -0500
-Received: from mail-io1-f52.google.com ([209.85.166.52]:35963 "EHLO
-        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbhCJCue (ORCPT
+        id S232245AbhCJCvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:51:41 -0500
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:56209 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232235AbhCJCvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:50:34 -0500
-Received: by mail-io1-f52.google.com with SMTP id n14so16334709iog.3;
-        Tue, 09 Mar 2021 18:50:34 -0800 (PST)
+        Tue, 9 Mar 2021 21:51:15 -0500
+Received: by mail-pj1-f50.google.com with SMTP id bt4so737253pjb.5;
+        Tue, 09 Mar 2021 18:51:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=qGkhmyvB04/++GcI6nNGGGhJTLlh0dJy/BDKFiCIA44=;
-        b=skuOGICKHk9aWyOUoE+fveG1LE7gVP5Q0SF78bTgXylS4Ft6U947Qn+QK7DF4+oa/O
-         KyAKrJ0l0UKS1xaLIZdei2z/D1ueAPkOncphSl2OryPvzIYqRsvCALdBcm9II28JbCLY
-         UkVudliu/0hAcVRAqy8UnS+Qxu8o3S+Io1iwe0ynwUM9re+Q3bXH9VKw3XCQpz3IegrN
-         DdQst39WSSNQLcknrQY52pr7DtqNlsBroGz8HAl/qqF6fjsyOQKYgEklXcB14GJzuTBD
-         g2tPJ00vru+75M+xLacCaZBZVyb1aJepW5iFFsIYb4u8ydsTSfwdBIkDGEhSGvAX+oFL
-         +6ZQ==
-X-Gm-Message-State: AOAM530f+HC9/t+LTJM9J1vR+sl3Qoh/HKIFFSItvNsMDlOM+kQ3wOdL
-        C05DfRvC/oVsB7TZNSNJ/g==
-X-Google-Smtp-Source: ABdhPJwmlsy2Cjw0y3wmn+ItEQ3eGdZ0VIhmu+UkmB+AUjgJsc1KgVxKNoaMvsyuyx2Kk5n+k7eTew==
-X-Received: by 2002:a02:6c8d:: with SMTP id w135mr1144154jab.125.1615344633132;
-        Tue, 09 Mar 2021 18:50:33 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id g5sm8128792ild.25.2021.03.09.18.50.31
+        bh=mbwVpoz1DQIkoT/p72Ric3YKtpuiNSl2U1hzqJm79zc=;
+        b=rdmFkjvJ7EC3FTNlIaRERfWFQmcsGv9T5pjb+f2WznJ8DnIPOtIDr1cpXwn/6eqxvf
+         mHhi02yGsT2kOj6MpTbVDuaJs1sY7xQ8z3rabSgnn6QTv1qNT4o8+QTdzL0iLTpRE16b
+         z++8ADV1+X2lz+IbnI8r4x9atYzOYFiSMSz5rjEyvsLpTO1qjJzpp6W02PtE2DwbVAIY
+         9W9Twr9p4ryLI5FitbPYSV15o997jtJ1lJ/t6OOG4cI4G1WsWmbgsxgdGhtwzRx4U8q9
+         j+Q4fh4ut4VKE9a+E4BwzAj3uNFZb35To7UDnpj54G4FMw1KsjmE9eifRUknpqWTFJpN
+         j7ig==
+X-Gm-Message-State: AOAM533WVlz9im1qrMfzQbQXc4WwEhW3jWxXesdM72NGirR20YhHBGfc
+        ZJVM/UJw0A8BkOzCsso9R5eMbZ5DPbw=
+X-Google-Smtp-Source: ABdhPJz2os2vn/MnDLi0l6SYsc5QJ3MkXszvP5w4+0qMIaSJ1t02etCjhmpKi8pkR+Cf9rmahVUaAw==
+X-Received: by 2002:a17:90a:598e:: with SMTP id l14mr1067504pji.187.1615344664255;
+        Tue, 09 Mar 2021 18:51:04 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id s19sm11491096pfh.168.2021.03.09.18.51.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 18:50:32 -0800 (PST)
-Received: (nullmailer pid 1648376 invoked by uid 1000);
-        Wed, 10 Mar 2021 02:50:30 -0000
-Date:   Tue, 9 Mar 2021 19:50:30 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: Add support for the Broadcom UART
- driver
-Message-ID: <20210310025030.GA1645614@robh.at.kernel.org>
-References: <20210308170522.4272-1-alcooperx@gmail.com>
- <20210308170522.4272-2-alcooperx@gmail.com>
+        Tue, 09 Mar 2021 18:51:03 -0800 (PST)
+Date:   Tue, 9 Mar 2021 18:51:02 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+Subject: Re: [PATCH v10 0/7] FPGA Security Manager Class Driver
+Message-ID: <YEg0FqjHk2icadah@epycbox.lan>
+References: <20210309003540.197600-1-russell.h.weight@intel.com>
+ <6f891032-8f73-5926-c137-279c2dd93041@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308170522.4272-2-alcooperx@gmail.com>
+In-Reply-To: <6f891032-8f73-5926-c137-279c2dd93041@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 12:05:21PM -0500, Al Cooper wrote:
-> Add DT bindings for the Broadcom 8250 based UART driver. This
-> UART is based on an 8250 but adds additional functionality. The
-> additional features include the ability to use DMA for transfers and
-> a baud rate clock system that is more accurate at high baud rates.
-> This UART is backward compatible with the standard 8250 UART.
-
-My comments on the previous v4 still apply.
-
+Hi Tom,
+On Tue, Mar 09, 2021 at 08:03:09AM -0800, Tom Rix wrote:
+> Moritz,
 > 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> ---
->  .../bindings/serial/brcm,bcm7271-uart.yaml    | 96 +++++++++++++++++++
->  1 file changed, 96 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+> This and the next patchset apply to today's char-misc-next.
 > 
-> diff --git a/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml b/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-> new file mode 100644
-> index 000000000000..f3d58e613480
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-> @@ -0,0 +1,96 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/serial/brcm,bcm7271-uart.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Broadcom 8250 based serial port devicetree bindings
-> +
-> +maintainers:
-> +  - Al Cooper <alcooperx@gmail.com>
-> +
-> +description: |+
-> +  The Broadcom UART is based on the basic 8250 UART but with
-> +  enhancements for more accurate high speed baud rates and support
-> +  for DMA.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^serial@[0-9a-f]+$"
-> +
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - brcm,bcm7271-uart
-> +          - brcm,bcm7278-uart
-> +  reg:
-> +    minItems: 1
-> +    maxItems: 5
-> +
-> +  reg-names:
-> +    description: The UART register block and optionally the DMA register blocks.
-> +    oneOf:
-> +      - items:
-> +          - const: uart
-> +      - items:
-> +          - const: uart
-> +          - const: dma_arb
-> +          - const: dma_rx
-> +          - const: dma_tx
-> +          - const: dma_intr2
-> +
-> +  clocks:
-> +    minItems: 1
-> +
-> +  clock-names:
-> +    const: sw_baud
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  interrupt-names:
-> +    description: The UART interrupt and optionally the DMA interrupt.
-> +    oneOf:
-> +      - items:
-> +          - const: uart
-> +      - items:
-> +          - const: uart
-> +          - const: dma
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - clock-names
-> +  - interrupts
-> +  - interrupt-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    serial@840d000 {
-> +        compatible = "brcm,bcm7271-uart";
-> +        reg = <0x840d000 0x20>;
-> +        reg-names = "uart";
-> +        interrupts = <0x0 0x62 0x4>;
-> +        interrupt-names = "uart";
-> +        clocks = <&scmi_clk 190>;
-> +        clock-names = "sw_baud";
-> +    };
-> +
-> +    serial@840e000 {
-> +        compatible = "brcm,bcm7271-uart";
-> +        reg = <0x840e000 0x20>,
-> +              <0x840e080 0x8>,
-> +              <0x840e100 0xa8>,
-> +              <0x840e200 0x4c>,
-> +              <0x840e300 0x30>;
-> +        reg-names = "uart", "dma_arb", "dma_rx", "dma_tx", "dma_intr2";
-> +        interrupts = <0x0 0x62 0x4>, <0x0 0x75 0x4>;
-> +        interrupt-names = "uart", "dma";
-> +        clocks = <&scmi_clk 190>;
-> +        clock-names = "sw_baud";
-> +    };
-> -- 
-> 2.17.1
+> However they conflicts with other in flight linux-fpga patchsets.
+> 
+> Since I believe these patchsets came first, I think they should have preference.
+
+I'm not sure what the ask here is, do you expect me to back out the
+applied patches?
+
+Conflicts will happen, it's part of working with git.
+
+> This feature of updating is needed for the basic operation of the fpga.
+> 
+> Tom
+> 
+> On 3/8/21 4:35 PM, Russ Weight wrote:
+> > The FPGA Security Manager class driver provides a common
+> > API for user-space tools to manage updates for secure FPGA
+> > devices. Device drivers that instantiate the FPGA Security
+> > Manager class driver will interact with a HW secure update
+> > engine in order to transfer new FPGA and BMC images to FLASH so
+> > that they will be automatically loaded when the FPGA card reboots.
+> >
+> > A significant difference between the FPGA Manager and the FPGA 
+> > Security Manager is that the FPGA Manager does a live update (Partial
+> > Reconfiguration) to a device whereas the FPGA Security Manager
+> > updates the FLASH images for the Static Region and the BMC so that
+> > they will be loaded the next time the FPGA card boots. Security is
+> > enforced by hardware and firmware. The security manager interacts
+> > with the firmware to initiate an update, pass in the necessary data,
+> > and collect status on the update.
+> >
+> > The n3000bmc-secure driver is the first driver to use the FPGA
+> > Security Manager. This driver was previously submitted in the same
+> > patch set, but has been split out into a separate patch set starting
+> > with V2. Future devices will also make use of this common API for
+> > secure updates.
+> >
+> > In addition to managing secure updates of the FPGA and BMC images,
+> > the FPGA Security Manager update process may also be used to
+> > program root entry hashes and cancellation keys for the FPGA static
+> > region, the FPGA partial reconfiguration region, and the BMC.
+> > The image files are self-describing, and contain a header describing
+> > the image type.
+> >
+> > Secure updates make use of the request_firmware framework, which
+> > requires that image files are accessible under /lib/firmware. A request
+> > for a secure update returns immediately, while the update itself
+> > proceeds in the context of a kernel worker thread. Sysfs files provide
+> > a means for monitoring the progress of a secure update and for
+> > retrieving error information in the event of a failure.
+> >
+> > The API includes a "name" sysfs file to export the name of the parent
+> > driver. It also includes an "update" sub-directory containing files that
+> > that can be used to instantiate and monitor a secure update.
+> >
+> > Changelog v9 -> v10:
+> >   - Rebased to 5.12-rc2 next
+> >   - Updated Date and KernelVersion in ABI documentation
+> >
+> > Changelog v8 -> v9:
+> >   - Rebased patches for 5.11-rc2
+> >   - Updated Date and KernelVersion in ABI documentation
+> >
+> > Changelog v7 -> v8:
+> >   - Fixed grammatical error in Documentation/fpga/fpga-sec-mgr.rst
+> >
+> > Changelog v6 -> v7:
+> >   - Changed dates in documentation file to December 2020
+> >   - Changed filename_store() to use kmemdup_nul() instead of
+> >     kstrndup() and changed the count to not assume a line-return.
+> >
+> > Changelog v5 -> v6:
+> >   - Removed sysfs support and documentation for the display of the
+> >     flash count, root entry hashes, and code-signing-key cancelation
+> >     vectors from the class driver. This information can vary by device
+> >     and will instead be displayed by the device-specific parent driver.
+> >
+> > Changelog v4 -> v5:
+> >   - Added the devm_fpga_sec_mgr_unregister() function, following recent
+> >     changes to the fpga_manager() implementation.
+> >   - Changed most of the *_show() functions to use sysfs_emit()
+> >     instead of sprintf(
+> >   - When checking the return values for functions of type enum
+> >     fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
+> >
+> > Changelog v3 -> v4:
+> >   - This driver is generic enough that it could be used for non Intel
+> >     FPGA devices. Changed from "Intel FPGA Security Manager" to FPGA
+> >     Security Manager" and removed unnecessary references to "Intel".
+> >   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+> >     Note that this also affects some filenames.
+> >
+> > Changelog v2 -> v3:
+> >   - Use dev_err() to report invalid progress in sec_progress()
+> >   - Use dev_err() to report invalid error code in sec_error()
+> >   - Modified sysfs handler check in check_sysfs_handler() to make
+> >     it more readable.
+> >   - Removed unnecessary "goto done"
+> >   - Added a comment to explain imgr->driver_unload in
+> >     ifpga_sec_mgr_unregister()
+> >
+> > Changelog v1 -> v2:
+> >   - Separated out the MAX10 BMC Security Engine to be submitted in
+> >     a separate patch-set.
+> >   - Bumped documentation dates and versions
+> >   - Split ifpga_sec_mgr_register() into create() and register() functions
+> >   - Added devm_ifpga_sec_mgr_create()
+> >   - Added Documentation/fpga/ifpga-sec-mgr.rst 
+> >   - Changed progress state "read_file" to "reading"
+> >   - Added sec_error() function (similar to sec_progress())
+> >   - Removed references to bmc_flash_count & smbus_flash_count (not supported)
+> >   - Removed typedefs for imgr ops
+> >   - Removed explicit value assignments in enums
+> >   - Other minor code cleanup per review comments 
+> >
+> > Russ Weight (7):
+> >   fpga: sec-mgr: fpga security manager class driver
+> >   fpga: sec-mgr: enable secure updates
+> >   fpga: sec-mgr: expose sec-mgr update status
+> >   fpga: sec-mgr: expose sec-mgr update errors
+> >   fpga: sec-mgr: expose sec-mgr update size
+> >   fpga: sec-mgr: enable cancel of secure update
+> >   fpga: sec-mgr: expose hardware error info
+> >
+> >  .../ABI/testing/sysfs-class-fpga-sec-mgr      |  81 +++
+> >  Documentation/fpga/fpga-sec-mgr.rst           |  44 ++
+> >  Documentation/fpga/index.rst                  |   1 +
+> >  MAINTAINERS                                   |   9 +
+> >  drivers/fpga/Kconfig                          |   9 +
+> >  drivers/fpga/Makefile                         |   3 +
+> >  drivers/fpga/fpga-sec-mgr.c                   | 652 ++++++++++++++++++
+> >  include/linux/fpga/fpga-sec-mgr.h             | 100 +++
+> >  8 files changed, 899 insertions(+)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+> >  create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
+> >  create mode 100644 drivers/fpga/fpga-sec-mgr.c
+> >  create mode 100644 include/linux/fpga/fpga-sec-mgr.h
+> >
 > 
