@@ -2,81 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E50334727
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 540D2334732
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhCJSuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:50:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233425AbhCJSup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:50:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3075764DFD;
-        Wed, 10 Mar 2021 18:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615402245;
-        bh=7EMDjMedyrLG3zrgNV64e8xd6a+Bn6iIf+l9PAZ1tGE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nmWbZHfB9JtBuSkosE6pT/lAzdo4BKucpd7KEi+VVGn/LYd6RN9xO/ngy6DC3ed/K
-         RHAHp91+DHRvhjCfzRt298Q3XxxqcNrFZNA7IrfJFYOuf+AvT2a3qy3b47poe93CRH
-         7/FP6KhfHm+SjguqTAcD1BvPLPnPLyJ1SBzNWl0Y=
-Date:   Wed, 10 Mar 2021 19:50:43 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>, Jann Horn <jannh@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 4.14 27/50] mm, slub: consider rest of partial list if
- acquire_slab() fails
-Message-ID: <YEkVA764JLFuGV9B@kroah.com>
-References: <20210122135735.176469491@linuxfoundation.org>
- <20210122135736.291270624@linuxfoundation.org>
- <CAHk-=wiAafgm4fu-+NNfd5MA_0v7o5Spma-KH82eyJzY_q8-9A@mail.gmail.com>
+        id S233600AbhCJSxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:53:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233403AbhCJSwa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:52:30 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478CDC061760;
+        Wed, 10 Mar 2021 10:52:30 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id t29so12603281pfg.11;
+        Wed, 10 Mar 2021 10:52:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V4YgXo58fsodWY8tVLTSwbceSR+eDpGyOkcHxaohODI=;
+        b=fjUeoiq4Y8MmY6pgSelBOCkJcqPMN9ezCduROyqUWvgCFUpDyM/8ZCs9M3YkGOaBSj
+         qfoRF7QEJW9fKXn7vkkpAmpCxxMtOW/bAnx1UutYX1DuYOv2cK9HKLmtnIPWCAWSpdt2
+         xa9Bn70UFJEfoklbgDw6Vu1RjMQVwT43O0dOm0VpWDto48LA1tlLIf5OaAQemVImOwUQ
+         yqQzNtX/Jht9xlQblQ7wBhDKnkhvxzsF36myRWsqGFpMn1W5qdBZEZSiIy39INczyLMd
+         iWsFCMCHfSVik2JEC8km7bITNNe6DQwVFD/x7Rtrbaul6it20FXIBy98xAHl3OVIGapL
+         b1NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V4YgXo58fsodWY8tVLTSwbceSR+eDpGyOkcHxaohODI=;
+        b=mzX3fdQg+Cqr0A68JM3yyZAi01CmbTQm+gliAz9uB7CM2DWqI7oO3P1HZ3kWD4Ri+7
+         eI/JuUMeWR0Ej+I1+8r+oexahCOdUT+SAarmmw5BH5bm02dnZ3P9OFU5oZgCsM99ZV8P
+         mPJJPb6DnscBXYoctIKErAO4iPBWarl5UrR/omhZLxcOzVOAkWZ0RmECRwwRwOmCHg55
+         puUZzFg3T1gwHP3Fk4ByskY3XxRcQqPidwqy7H7Zi6Rc905osTNQi7y74Re1yBe8h50L
+         Pdv9ctkavtVbMaWFEvHoVRexXocZt4c1B7uR+/8eVHJZpgX61USSZm6HdhS83sxqO/yE
+         UrwA==
+X-Gm-Message-State: AOAM530ra7XaZOCpMN6J2fWSXtHEVxeOYchSp4MAxUYRnAmCWFhJiWpC
+        X7uC+p0070Y8IvJx1jcnRV2li0UVdqk=
+X-Google-Smtp-Source: ABdhPJwnBKtvdjeC0kNlFIqmnIemBXZqmUH4/foXLjlOve1bh7fz81mJH2FY45NbNfpzTHeU9+7DTQ==
+X-Received: by 2002:a63:7885:: with SMTP id t127mr3836844pgc.237.1615402349384;
+        Wed, 10 Mar 2021 10:52:29 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b140sm243040pfb.98.2021.03.10.10.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 10:52:28 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: dsa: b53: Add debug prints in b53_vlan_enable()
+Date:   Wed, 10 Mar 2021 10:52:26 -0800
+Message-Id: <20210310185227.2685058-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiAafgm4fu-+NNfd5MA_0v7o5Spma-KH82eyJzY_q8-9A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 10:43:33AM -0800, Linus Torvalds wrote:
-> Just a note to the stable tree: this commit has been reverted
-> upstream, because it causes a huge performance drop (admittedly on a
-> load and setup that may not be all that relevant to most people).
-> 
-> It was applied to 4.4, 4.9 and 4.12, because the commit it was marked
-> as "fixing" is from 2012, but it turns out that the early exit from
-> the loop in that commit was very much intentional, and very much shows
-> up on scalability benchmarks.
-> 
-> I don't think this is likely to be a big deal for the stable kernels -
-> we're basically talking tuning for special cases, and while it is
-> reverted in my tree now, the "correct" thing to do is likely to be a
-> bit more flexible than either "exit loop immediately" or "loop for as
-> long as we have contention".
-> 
-> In practice, most machines probably won't see either case - or it will
-> at least be rare enough that you can't tell.
-> 
-> The machine that reports a huge performance drop was a multi-socket
-> machine under fairly extreme conditions, and these contention issues
-> are often close to exponential - a smaller machine (or a slighly less
-> extreme load) would never see the issue at all either way.
-> 
-> See
-> 
->     https://lore.kernel.org/lkml/20210301080404.GF12822@xsang-OptiPlex-9020/
-> 
-> for details if you care. I don't think this has to necessarily be
-> undone in the stable trees, this email is more of an incidental note
-> just as a heads-up.
+Having dynamic debug prints in b53_vlan_enable() has been helpful to
+uncover a recent but update the function to indicate the port being
+configured (or -1 for initial setup) and include the global VLAN enabled
+and VLAN filtering enable status.
 
-Thanks for the details, I'll look into reverting it in a future stable
-release.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/dsa/b53/b53_common.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-greg k-h
+diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+index a162499bcafc..9bd51c2a51d2 100644
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -349,7 +349,7 @@ static void b53_set_forwarding(struct b53_device *dev, int enable)
+ 	b53_write8(dev, B53_CTRL_PAGE, B53_IP_MULTICAST_CTRL, mgmt);
+ }
+ 
+-static void b53_enable_vlan(struct b53_device *dev, bool enable,
++static void b53_enable_vlan(struct b53_device *dev, int port, bool enable,
+ 			    bool enable_filtering)
+ {
+ 	u8 mgmt, vc0, vc1, vc4 = 0, vc5;
+@@ -431,6 +431,9 @@ static void b53_enable_vlan(struct b53_device *dev, bool enable,
+ 	b53_write8(dev, B53_CTRL_PAGE, B53_SWITCH_MODE, mgmt);
+ 
+ 	dev->vlan_enabled = enable;
++
++	dev_dbg(dev->dev, "Port %d VLAN enabled: %d, filtering: %d\n",
++		port, enable, enable_filtering);
+ }
+ 
+ static int b53_set_jumbo(struct b53_device *dev, bool enable, bool allow_10_100)
+@@ -743,7 +746,7 @@ int b53_configure_vlan(struct dsa_switch *ds)
+ 		b53_do_vlan_op(dev, VTA_CMD_CLEAR);
+ 	}
+ 
+-	b53_enable_vlan(dev, dev->vlan_enabled, ds->vlan_filtering);
++	b53_enable_vlan(dev, -1, dev->vlan_enabled, ds->vlan_filtering);
+ 
+ 	b53_for_each_port(dev, i)
+ 		b53_write16(dev, B53_VLAN_PAGE,
+@@ -1429,7 +1432,7 @@ int b53_vlan_filtering(struct dsa_switch *ds, int port, bool vlan_filtering,
+ {
+ 	struct b53_device *dev = ds->priv;
+ 
+-	b53_enable_vlan(dev, dev->vlan_enabled, vlan_filtering);
++	b53_enable_vlan(dev, port, dev->vlan_enabled, vlan_filtering);
+ 
+ 	return 0;
+ }
+@@ -1454,7 +1457,7 @@ static int b53_vlan_prepare(struct dsa_switch *ds, int port,
+ 	if (vlan->vid >= dev->num_vlans)
+ 		return -ERANGE;
+ 
+-	b53_enable_vlan(dev, true, ds->vlan_filtering);
++	b53_enable_vlan(dev, port, true, ds->vlan_filtering);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+
