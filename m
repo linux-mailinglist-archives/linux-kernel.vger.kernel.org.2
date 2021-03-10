@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC545333406
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0687633340C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbhCJD4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 22:56:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232215AbhCJD4E (ORCPT
+        id S231175AbhCJD7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 22:59:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48207 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229521AbhCJD7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 22:56:04 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E742C061761
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 19:56:04 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id v12so15072857ott.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 19:56:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aj082LGyMZQ2YsFd832Lo5lJGIXrMT5Ar9DshQA3/sk=;
-        b=Dj+0sOU+MbYoauDvAP07KkIx6pmGSWkLXPRzUcrQjximqSfd+n+7zXqCY3qBtauSnd
-         dfRfqS/BIDqGiDsPCNHwhzmNG09wiMKeut2wUiW4jGy2HOlysH64wyms9tI1yiiw8LNb
-         MxG6vB4FrMe2zIjADrpqY4gRO6JjGAzyceh8j1QiTUxQ0F3bDdkYcXBbm8Qq2tiqohqY
-         wjdbVs6JSIM57TJM5f4nBAvVQxjGtBsijshFpWxMdX9I3dh6w2OKbdMSMI84Pyj6Aq4D
-         7k9mgd9qCw1OGjGs0Z6k8gdycBnYf9Ra1EjFeaD42fmCkgvmTTtrOyZjdFZGbjn7Owf6
-         V3iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aj082LGyMZQ2YsFd832Lo5lJGIXrMT5Ar9DshQA3/sk=;
-        b=dG4hniR/ljJPtgqsoPM1iyXScLTe1kiU0lX6NIkn07v9TmPgRY2gYpRAqHaKorWCrK
-         1PHX+KZ3xysAYisAWA5lF5NeN0oKyXLD7YwAMxrkMZXsD4NOjdfqWOvwMy42WQMBdlfk
-         qld9BV0f5fB7nwoXJev1SmOwGyEp0C/r5O2xG2CfYgZp5L9RvBP9rtvsA35+k3/PX8qA
-         88q672C4qrl2M85P/fB/szRrhrrJcHKdWEdxpR4dD4l7vgNIu9KfNE4jsx56AwyFIntu
-         nrrsDnf2mkrdP5tgBWIy3KM0ApHtJ8Ib16PXb5ttWd0ao8CTNGpVHwxT4Vd3N28ahu4l
-         1FTw==
-X-Gm-Message-State: AOAM530XyTc2H1C11htHde3mgMCkalBxFIr4TjuzK1PMY4KrBMxMcvT0
-        N1UmLToT9J7a+Tqvwrw2hEwSkTsXGYSowQ==
-X-Google-Smtp-Source: ABdhPJzQxsC9ytUE5OK5+wQiR0umi1d24NiVdAVQ72mHUzWKWceak8ugpN5CWA2DMB51CZ9qs5grJQ==
-X-Received: by 2002:a9d:404b:: with SMTP id o11mr1114244oti.342.1615348563866;
-        Tue, 09 Mar 2021 19:56:03 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t22sm2658012otl.49.2021.03.09.19.56.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 19:56:03 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH] dt-bindings: arm: qcom: Add SM8350 HDK
-Date:   Tue,  9 Mar 2021 19:57:10 -0800
-Message-Id: <20210310035710.2816699-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Tue, 9 Mar 2021 22:59:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615348775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zqvaTm0YYGfnIq7+2390v7zCd44rG+1I8H0HRw9yO+w=;
+        b=TQpduQlnFLB0GH2r7ab5KokZY3VSovxtU2b0s4twl8NyTsFBfHV8NGqkiBLFsuSZK8jWDz
+        hi7kM67t9POgQWYim6dzjGgfO0s5bjkugsaQXXOvCKkhg+3N9hr14O0WyHXzxs3dy13vbN
+        nVBiKly5gU8nIn/JUsFDM6o728na1ns=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-kucxnTcWNDy5a7PZoL9CWw-1; Tue, 09 Mar 2021 22:59:32 -0500
+X-MC-Unique: kucxnTcWNDy5a7PZoL9CWw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 839FA80432D;
+        Wed, 10 Mar 2021 03:59:29 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-12-88.pek2.redhat.com [10.72.12.88])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 356E65D9DB;
+        Wed, 10 Mar 2021 03:59:10 +0000 (UTC)
+Subject: Re: [PATCH v6] i2c: virtio: add a virtio i2c frontend driver
+To:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, wsa@kernel.org, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com, pbonzini@redhat.com
+References: <9a2086f37c0a62069b67c39a3f75941b78a0039c.1614749417.git.jie.deng@intel.com>
+ <43b0842b-8b0f-1979-ed07-d6124e3a6b79@redhat.com>
+ <db9350b3-b847-8f54-546f-9a0bdec425d4@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <a3d4ce55-db25-5f96-ff44-5b76edfe9e08@redhat.com>
+Date:   Wed, 10 Mar 2021 11:59:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <db9350b3-b847-8f54-546f-9a0bdec425d4@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the SM8350 Hardware Development Kit (HDK).
 
-Reported-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
- 1 file changed, 1 insertion(+)
+On 2021/3/10 10:22 上午, Jie Deng wrote:
+>
+> On 2021/3/4 17:15, Jason Wang wrote:
+>>
+>>
+>>> +        }
+>>> +
+>>> +        if (msgs[i].flags & I2C_M_RD)
+>>> +            memcpy(msgs[i].buf, req->buf, msgs[i].len);
+>>
+>>
+>> Sorry if I had asked this before but any rason not to use msg[i].buf 
+>> directly?
+>>
+>>
+> The msg[i].buf is passed by the I2C core. I just noticed that these 
+> bufs are not
+> always allocated by kmalloc. They may come from the stack, which may 
+> cause
+> the check "sg_init_one -> sg_set_buf -> virt_addr_valid"  to fail. 
+> Therefore the
+> msg[i].buf is not suitable for direct use here.
+>
+> Regards.
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-index 174134f920e1..9d8acf6f6152 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -187,6 +187,7 @@ properties:
- 
-       - items:
-           - enum:
-+              - qcom,sm8350-hdk
-               - qcom,sm8350-mtp
-           - const: qcom,sm8350
- 
--- 
-2.29.2
+
+Right, stack is virtually mapped.
+
+Thanks
 
