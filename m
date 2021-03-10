@@ -2,157 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150F6333F57
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E89333F65
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhCJNdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:33:41 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:33761 "EHLO pegase1.c-s.fr"
+        id S234986AbhCJNhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:37:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232783AbhCJNd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:33:29 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DwY1f18kQzB09Zs;
-        Wed, 10 Mar 2021 14:33:26 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id UW49o0QEjYh0; Wed, 10 Mar 2021 14:33:26 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DwY1d6BkdzB09Zn;
-        Wed, 10 Mar 2021 14:33:25 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F0FE88B78C;
-        Wed, 10 Mar 2021 14:33:26 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id tX8OhmiwHzB5; Wed, 10 Mar 2021 14:33:26 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1C11A8B77E;
-        Wed, 10 Mar 2021 14:33:26 +0100 (CET)
-Subject: Re: [PATCH] powerpc: Fix missing declaration of
- [en/dis]able_kernel_vsx()
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexdeucher@gmail.com>
-References: <8d7d285a027e9d21f5ff7f850fa71a2655b0c4af.1615279170.git.christophe.leroy@csgroup.eu>
- <CAMuHMdW0Cn1So8ckvhsT+N+p2hiPiksmCS32jzM0xCUYU4UAdQ@mail.gmail.com>
- <b12f9128-790b-7d8b-5f3c-e0912f5bec0a@csgroup.eu>
- <CAMuHMdXM0qg23UN6VBqbb0Vm2bg3tRSM=OCD5r7U2K1brpnJAg@mail.gmail.com>
- <b64111a3-df3f-bf59-20ce-0af57715ad53@csgroup.eu>
- <CAMuHMdUQcE7+O9NWH4Xxxv+r7ZFnTGqtHuteOMiSPY_gK5xkZw@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <5b579a54-e596-bcf2-b003-5c28345447b7@csgroup.eu>
-Date:   Wed, 10 Mar 2021 14:33:25 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S233422AbhCJNgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:36:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AF1464FD6;
+        Wed, 10 Mar 2021 13:36:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615383406;
+        bh=/qvD9d3Yt6mfuCTPcp4UZO2U5EnDzRCNvDKcb6MmsJ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fXkTwOG7pbmDGBbDKSu+3o811aK9eFGLJzWdPfdV7IhuvVV2m3Nk/c4z9Li2QpgZq
+         JR5lFEpfU5x63QLFZC/Dg5+8+rA7Qy6i+bmi9WzXRbLRQ9uuLEpqqTPivY7IFzeayg
+         mzUQ1q78M6bMSFonfRUBBV3sSsGBjGfHvBIOyAoFB/+nGnPxHilxCy4AegMTxyxkqn
+         VjCUKcE1gHCAhPSvx/fugTqtMd/AwCxEl52l1MXY0/0FP1VAKrekT+ZcP+nH+lYrtB
+         xdfomGcbcJbdQXlOiQDFTC2QmRVFoe6Sbf/xhWZFNbZhyi3bAQoNn8f7QcqAOFdP+8
+         92FFehlbjeg4Q==
+Date:   Wed, 10 Mar 2021 13:35:34 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Bard liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
+ present
+Message-ID: <20210310133534.GD4746@sirena.org.uk>
+References: <20210303115526.419458-1-jonathanh@nvidia.com>
+ <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUQcE7+O9NWH4Xxxv+r7ZFnTGqtHuteOMiSPY_gK5xkZw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9dgjiU4MmWPVapMU"
+Content-Disposition: inline
+In-Reply-To: <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
+X-Cookie: no maintenance:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
 
-Le 09/03/2021 à 11:55, Geert Uytterhoeven a écrit :
-> Hi Christophe,
-> 
-> On Tue, Mar 9, 2021 at 10:58 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->> Le 09/03/2021 à 10:16, Geert Uytterhoeven a écrit :
->>> On Tue, Mar 9, 2021 at 9:52 AM Christophe Leroy
->>> <christophe.leroy@csgroup.eu> wrote:
->>>> Le 09/03/2021 à 09:45, Geert Uytterhoeven a écrit :
->>>>> On Tue, Mar 9, 2021 at 9:39 AM Christophe Leroy
->>>>> <christophe.leroy@csgroup.eu> wrote:
->>>>>> Add stub instances of enable_kernel_vsx() and disable_kernel_vsx()
->>>>>> when CONFIG_VSX is not set, to avoid following build failure.
->>>>>>
->>>>>>      CC [M]  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o
->>>>>> In file included from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_types.h:29,
->>>>>>                     from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services.h:37,
->>>>>>                     from drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:27:
->>>>>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: In function 'dcn_bw_apply_registry_override':
->>>>>> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:64:3: error: implicit declaration of function 'enable_kernel_vsx'; did you mean 'enable_kernel_fp'? [-Werror=implicit-function-declaration]
->>>>>>       64 |   enable_kernel_vsx(); \
->>>>>>          |   ^~~~~~~~~~~~~~~~~
->>>>>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:640:2: note: in expansion of macro 'DC_FP_START'
->>>>>>      640 |  DC_FP_START();
->>>>>>          |  ^~~~~~~~~~~
->>>>>> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:75:3: error: implicit declaration of function 'disable_kernel_vsx'; did you mean 'disable_kernel_fp'? [-Werror=implicit-function-declaration]
->>>>>>       75 |   disable_kernel_vsx(); \
->>>>>>          |   ^~~~~~~~~~~~~~~~~~
->>>>>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:676:2: note: in expansion of macro 'DC_FP_END'
->>>>>>      676 |  DC_FP_END();
->>>>>>          |  ^~~~~~~~~
->>>>>> cc1: some warnings being treated as errors
->>>>>> make[5]: *** [drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o] Error 1
->>>>>>
->>>>>> Fixes: 16a9dea110a6 ("amdgpu: Enable initial DCN support on POWER")
->>>>>> Cc: stable@vger.kernel.org
->>>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>>>>
->>>>> Thanks for your patch!
->>>>>
->>>>>> --- a/arch/powerpc/include/asm/switch_to.h
->>>>>> +++ b/arch/powerpc/include/asm/switch_to.h
->>>>>> @@ -71,6 +71,16 @@ static inline void disable_kernel_vsx(void)
->>>>>>     {
->>>>>>            msr_check_and_clear(MSR_FP|MSR_VEC|MSR_VSX);
->>>>>>     }
->>>>>> +#else
->>>>>> +static inline void enable_kernel_vsx(void)
->>>>>> +{
->>>>>> +       BUILD_BUG();
->>>>>> +}
->>>>>> +
->>>>>> +static inline void disable_kernel_vsx(void)
->>>>>> +{
->>>>>> +       BUILD_BUG();
->>>>>> +}
->>>>>>     #endif
->>>>>
->>>>> I'm wondering how this is any better than the current situation: using
->>>>> BUILD_BUG() will still cause a build failure?
->>>>
->>>> No it won't cause a failure. In drivers/gpu/drm/amd/display/dc/os_types.h you have:
->>>>
->>>> #define DC_FP_START() { \
->>>>           if (cpu_has_feature(CPU_FTR_VSX_COMP)) { \
->>>>                   preempt_disable(); \
->>>>                   enable_kernel_vsx(); \
->>>>           } else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) { \
->>>>                   preempt_disable(); \
->>>>                   enable_kernel_altivec(); \
->>>>           } else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) { \
->>>>                   preempt_disable(); \
->>>>                   enable_kernel_fp(); \
->>>>           } \
->>>>
->>>> When CONFIG_VSX is not selected, cpu_has_feature(CPU_FTR_VSX_COMP) constant folds to 'false' so the
->>>> call to enable_kernel_vsx() is discarded and the build succeeds.
->>>
->>> IC. So you might as well have an empty (dummy) function instead?
->>>
->>
->> But with an empty function, you take the risk that one day, someone calls it without checking that
->> CONFIG_VSX is selected. Here if someone does that, build will fail.
-> 
-> OK, convinced.
-> 
+--9dgjiU4MmWPVapMU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Note that following build test performed on kisskb, with gcc 4.9 the following change is required in 
-addition: 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/b231dfa040ce4cc37f702f5c3a595fdeabfe0462.1615378209.git.christophe.leroy@csgroup.eu/
+On Tue, Mar 09, 2021 at 01:41:45PM -0600, Pierre-Louis Bossart wrote:
 
-Christophe
+> The problem is that the cards are platform devices created by the parent
+> (which itself may be a PCI or ACPI device) and have nothing to do with ACPI.
+
+> Could we flip the logic and instead explicitly detect OF devices? That
+> restores functionality for us.
+
+Just change it to a system level check for ACPI, checking for OF would
+leave problems for board files or any other alternative firmware
+interfaces.
+
+--9dgjiU4MmWPVapMU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBIyyUACgkQJNaLcl1U
+h9AD0wf/Zbl1pfIcOCJxOTd8jWQgWmUT9U/NLT5bHSI+QKZCQ8TdhAJx5nbTYpsA
+EIfYRfIOyNbC+orOg933wQsEzmrhboS/ZfORAvfUKtlTHA7hmWO+qIserBNczgEE
+2L0pCqzopDnuD9IVNNzQr5CmEgunXIxShFGiJy2rkqHavvpZPwllhH9qpfQ3bwEO
+HTFhidXy7irpPJrZq1zenN70VzExNcqMUe19mz4M4g0imcyrGmfGOqWUj9c+7ZoY
+VNHHGINTIfh086c3T4PNKpK/pcmyhdsBXdJR3RewnPdMy72VzsAApz3XudGwcAqL
+aH9twLn24x911JXToXymhg7uqhlwuQ==
+=CPbE
+-----END PGP SIGNATURE-----
+
+--9dgjiU4MmWPVapMU--
