@@ -2,331 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EE333348B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87727333495
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhCJEst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 23:48:49 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:51927 "EHLO z11.mailgun.us"
+        id S232364AbhCJEya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 23:54:30 -0500
+Received: from mx4.veeam.com ([104.41.138.86]:33674 "EHLO mx4.veeam.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232360AbhCJEsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 23:48:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615351713; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=3QJl+xQdpkUYQGTAXkdYwW5Vo4YmIjcRh7Npt+NHeiA=; b=LN/vlN0D47WreXZ62/3jzjz0Y7gZxwevM91IHxsT8AaCRV8QBKgv11ecfxmVjDfE2aUw34uX
- kn7FOKolo4kGCTXIT86iZVqA0JH/k8tf7pXBHc3TP1XO16Vjzxuftbseo7/VhfuJBYegAxCa
- 4pqehfeD8ePBajvc5zjOHGe2/20=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60484f99a6850484a6e27bac (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 04:48:25
- GMT
-Sender: vbadigan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E5EE5C433C6; Wed, 10 Mar 2021 04:48:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.101] (unknown [49.205.242.72])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S229485AbhCJEx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 23:53:57 -0500
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: vbadigan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 37DCCC433C6;
-        Wed, 10 Mar 2021 04:48:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 37DCCC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
-Subject: Re: [PATCH V1] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
- card
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, sartgarg@codeaurora.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        sibis@codeaurora.org, cang@codeaurora.org, pragalla@codeaurora.org,
-        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org
-References: <1615317483-23780-1-git-send-email-sbhanu@codeaurora.org>
-From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Message-ID: <885574fe-3afe-8850-4acb-c330e1755a96@codeaurora.org>
-Date:   Wed, 10 Mar 2021 10:18:12 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        by mx4.veeam.com (Postfix) with ESMTPS id 258C58A78F;
+        Wed, 10 Mar 2021 07:53:23 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
+        t=1615352003; bh=2S21cNEoC4DbfsoORby8T13WajgTXFAjKBIA+uaX2aE=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+        b=QtWonQjbibxg7PZTL6pPo2iQzhB1y6WPs9Kj91BVqNOzkatCN2LXOOaycR+prKhxH
+         aOicCeOvms9IaolW3eJyHnM9LuGO+03WfHCn6tYLD19DuhrJoPkDHrH64QhQmjvWao
+         EGrjxZMSZgwO6R9Vx2tzmpfQi6OGjX9XxjIc7dJ4=
+Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Wed, 10 Mar 2021
+ 05:53:20 +0100
+Date:   Wed, 10 Mar 2021 07:53:13 +0300
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     "snitzer@redhat.com" <snitzer@redhat.com>,
+        "agk@redhat.com" <agk@redhat.com>, "hare@suse.de" <hare@suse.de>,
+        "song@kernel.org" <song@kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>
+Subject: Re: [PATCH v6 2/4] block: add blk_interposer
+Message-ID: <20210310045313.GA26929@veeam.com>
+References: <1614774618-22410-1-git-send-email-sergei.shtepa@veeam.com>
+ <1614774618-22410-3-git-send-email-sergei.shtepa@veeam.com>
+ <20210309172717.GB201344@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <1615317483-23780-1-git-send-email-sbhanu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20210309172717.GB201344@infradead.org>
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
+ (172.24.0.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29D2A50B58627664
+X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thank you, Christoph, for the review.
+I will correct all except two points.
 
-On 3/10/2021 12:48 AM, Shaik Sajida Bhanu wrote:
-> Add nodes for eMMC and SD card on sc7280.
->
-> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
->
-> ---
-> This change is depends on the below patch series:
-> https://lore.kernel.org/lkml/1613114930-1661-1-git-send-email-rnayak@codeaurora.org/
-> https://lore.kernel.org/patchwork/project/lkml/list/?series=&submitter=28035&state=&q=&archive=&delegate=
-> ---
->   arch/arm64/boot/dts/qcom/sc7280-idp.dts |  26 +++++
->   arch/arm64/boot/dts/qcom/sc7280.dtsi    | 170 ++++++++++++++++++++++++++++++++
->   2 files changed, 196 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> index ac79420..6abb2aa 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> @@ -8,6 +8,7 @@
->   /dts-v1/;
->   
->   #include "sc7280.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
->   
->   / {
->   	model = "Qualcomm Technologies, Inc. SC7280 IDP platform";
-> @@ -256,3 +257,28 @@
->   		bias-pull-up;
->   	};
->   };
-> +
-> +&sdhc_1 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&sdc1_on>;
-> +	pinctrl-1 = <&sdc1_off>;
-> +
-> +	vmmc-supply = <&vreg_l7b_2p9>;
-> +	vqmmc-supply = <&vreg_l19b_1p8>;
-> +
-> +};
-> +
-> +&sdhc_2 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default","sleep";
-> +	pinctrl-0 = <&sdc2_on>;
-> +	pinctrl-1 = <&sdc2_off>;
-> +
-> +	vmmc-supply = <&vreg_l9c_2p9>;
-> +	vqmmc-supply = <&vreg_l6c_2p9>;
-> +
-> +	cd-gpios = <&tlmm 91 GPIO_ACTIVE_LOW>;
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 3b86052..91fb18a 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -18,6 +18,11 @@
->   
->   	chosen { };
->   
-> +	aliases {
-> +		mmc1 = &sdhc_1;
-> +		mmc2 = &sdhc_2;
-> +	};
-> +
->   	clocks {
->   		xo_board: xo-board {
->   			compatible = "fixed-clock";
-> @@ -315,6 +320,69 @@
->   			#power-domain-cells = <1>;
->   		};
->   
-> +		sdhc_1: sdhci@7c4000 {
-> +			compatible = "qcom,sdhci-msm-v5";
-> +			reg = <0 0x7c4000 0 0x1000>,
-> +					<0 0x7c5000 0 0x1000>;
-> +			reg-names = "hc", "cqhci";
-> +
-> +			iommus = <&apps_smmu 0xC0 0x0>;
-> +			interrupts = <GIC_SPI 652 IRQ_TYPE_LEVEL_HIGH>,
-> +					<GIC_SPI 656 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "hc_irq", "pwr_irq";
-> +
-> +			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
-> +					<&gcc GCC_SDCC1_AHB_CLK>,
-> +					<&rpmhcc RPMH_CXO_CLK>;
-> +			clock-names = "core", "iface", "xo";
-> +
-> +			bus-width = <8>;
-> +			non-removable;
-> +			supports-cqe;
-> +			no-sd;
-> +			no-sdio;
-> +
-> +			max-frequency = <192000000>;
-> +
-> +			qcom,dll-config = <0x0007642c>;
-> +			qcom,ddr-config = <0x80040868>;
-> +
-> +			mmc-ddr-1_8v;
-> +			mmc-hs200-1_8v;
-> +			mmc-hs400-1_8v;
-> +			mmc-hs400-enhanced-strobe;
-> +
-> +			status = "disabled";
-> +
-> +		};
-> +
-> +		sdhc_2: sdhci@8804000 {
-> +			compatible = "qcom,sdhci-msm-v5";
-> +			reg = <0 0x08804000 0 0x1000>;
-> +
-> +			iommus = <&apps_smmu 0x100 0x0>;
-> +			interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>,
-> +					<GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "hc_irq", "pwr_irq";
-> +
-> +			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
-> +					<&gcc GCC_SDCC2_AHB_CLK>,
-> +					<&rpmhcc RPMH_CXO_CLK>;
-> +			clock-names = "core", "iface", "xo";
-> +
-> +			bus-width = <4>;
-> +
-> +			no-mmc;
-> +			no-sdio;
-> +
-> +			max-frequency = <202000000>;
-> +
-> +			qcom,dll-config = <0x0007642c>;
-> +
-> +			status = "disabled";
-> +
-> +		};
-> +
->   		qupv3_id_0: geniqup@9c0000 {
->   			compatible = "qcom,geni-se-qup";
->   			reg = <0 0x009c0000 0 0x2000>;
-> @@ -385,6 +453,108 @@
->   				pins = "gpio46", "gpio47";
->   				function = "qup13";
->   			};
-> +
-> +			sdc1_on: sdc1-on {
-> +				pinconf-clk {
-> +					pins = "sdc1_clk";
-> +					bias-disable;
-> +					drive-strength = <16>;
-> +				};
-> +
-> +				pinconf-cmd {
-> +					pins = "sdc1_cmd";
-> +					bias-pull-up;
-> +					drive-strength = <10>;
-> +				};
-> +
-> +				pinconf-data {
-> +					pins = "sdc1_data";
-> +					bias-pull-up;
-> +					drive-strength = <10>;
-> +				};
-> +
-> +				pinconf-rclk {
-> +					pins = "sdc1_rclk";
-> +					bias-pull-down;
-> +				};
-> +			};
-> +
-> +			sdc1_off: sdc1-off {
-> +				pinconf-clk {
-> +					pins = "sdc1_clk";
-> +					bias-disable;
-> +					drive-strength = <2>;
-> +				};
-> +
-> +				pinconf-cmd {
-> +					pins = "sdc1_cmd";
-> +					bias-pull-up;
-> +					drive-strength = <2>;
-> +				};
-> +
-> +				pinconf-data {
-> +					pins = "sdc1_data";
-> +					bias-pull-up;
-> +					drive-strength = <2>;
-> +				};
-> +
-> +				pinconf-rclk {
-> +					pins = "sdc1_rclk";
-> +					bias-pull-down;
-> +				};
-> +			};
-> +
-> +			sdc2_on: sdc2-on {
-> +				pinconf-clk {
-> +					pins = "sdc2_clk";
-> +					bias-disable;
-> +					drive-strength = <16>;
-> +				};
-> +
-> +				pinconf-cmd {
-> +					pins = "sdc2_cmd";
-> +					bias-pull-up;
-> +					drive-strength = <10>;
-> +				};
-> +
-> +				pinconf-data {
-> +					pins = "sdc2_data";
-> +					bias-pull-up;
-> +					drive-strength = <10>;
-> +				};
-> +
-> +				pinconf-sd-cd {
-> +					pins = "gpio91";
-> +					bias-pull-up;
-> +					drive-strength = <2>;
-> +				};
-> +			};
-> +
-> +			sdc2_off: sdc2-off {
-> +				pinconf-clk {
-> +					pins = "sdc2_clk";
-> +					bias-disable;
-> +					drive-strength = <2>;
-> +				};
-> +
-> +				pinconf-cmd {
-> +					pins = "sdc2_cmd";
-> +					bias-pull-up;
-> +					drive-strength = <2>;
-> +				};
-> +
-> +				pinconf-data {
-> +					pins = "sdc2_data";
-> +					bias-pull-up;
-> +					drive-strength = <2>;
-> +				};
-> +
-> +				pinconf-sd-cd {
-> +					pins = "gpio91";
-> +					bias-disable;
-On few sc7180 based boards where external pull up is missing on cd-gpio,
-we had seen issues like un-intended interrupt on cd-gpio pin (since its
-getting toggled) during runtime PM cycle and resulting in unnecessary
-scheduling of SDcard scan (mmc_rescan). This issue is seen only when SDcard
-is not present.
-By enabling internal pull all the time (bais-pull-up), we can avoid such 
-issue.
+The 03/09/2021 20:27, Christoph Hellwig wrote:
+> > +static blk_qc_t __submit_bio_interposed(struct bio *bio)
+> > +{
+> > +	struct bio_list bio_list[2] = { };
+> > +	blk_qc_t ret = BLK_QC_T_NONE;
+> > +
+> > +	current->bio_list = bio_list;
+> > +	if (likely(bio_queue_enter(bio) == 0)) {
+> > +		struct block_device *bdev = bio->bi_bdev;
+> > +
+> > +		if (likely(bdev_has_interposer(bdev))) {
+> > +			bio_set_flag(bio, BIO_INTERPOSED);
+> > +			bdev->bd_interposer->ip_submit_bio(bio);
+> > +		} else {
+> > +			/* interposer was removed */
+> > +			bio_list_add(&current->bio_list[0], bio);
+> > +		}
+> > +
+> > +		blk_queue_exit(bdev->bd_disk->queue);
+> > +	}
+> > +	current->bio_list = NULL;
+> > +
+> > +	/* Resubmit remaining bios */
+> > +	while ((bio = bio_list_pop(&bio_list[0])))
+> > +		ret = submit_bio_noacct(bio);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >  /**
+> >   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
+> >   * @bio:  The bio describing the location in memory and on the device.
+> > @@ -1043,6 +1071,14 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
+> >  		return BLK_QC_T_NONE;
+> >  	}
+> >  
+> > +	/*
+> > +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
+> > +	 * created by the bdev_interposer do not get to it for processing.
+> > +	 */
+> > +	if (bdev_has_interposer(bio->bi_bdev) &&
+> > +	    !bio_flagged(bio, BIO_INTERPOSED))
+> > +		return __submit_bio_interposed(bio);
+> > +
+> >  	if (!bio->bi_bdev->bd_disk->fops->submit_bio)
+> >  		return __submit_bio_noacct_mq(bio);
+> >  	return __submit_bio_noacct(bio);
+> > diff --git a/block/genhd.c b/block/genhd.c
+> > index fcc530164b5a..1ae8516643c8 100644
+> > --- a/block/genhd.c
+> > +++ b/block/genhd.c
+> > @@ -30,6 +30,11 @@
+> >  static struct kobject *block_depr;
+> >  
+> >  DECLARE_RWSEM(bdev_lookup_sem);
+> > +/*
+> > + * Prevents different block-layer interposers from attaching or detaching
+> > + * to the block device at the same time.
+> > + */
+> > +DEFINE_MUTEX(bdev_interposer_attach_lock);
+> 
+> This one can and should be marked static.
+> 
+> > +int bdev_interposer_attach(struct block_device *bdev, struct bdev_interposer *interposer,
+> 
+> Please avoid the overly long line.
+> 
+> > +	int ret = 0;
+> > +
+> > +	if (WARN_ON(!interposer))
+> 
+> WARN_ON_ONCE?
 
-> +					drive-strength = <2>;
-> +				};
-> +			};
->   		};
->   
->   		apps_smmu: iommu@15000000 {
+This function should be called quite rarely, and the absence of the interposer
+parameter indicates that the function is being used incorrectly.
+I would like to see this warning every time.
+
+> 
+> > +		return -EINVAL;
+> > +
+> > +	if (!blk_mq_is_queue_frozen(bdev->bd_disk->queue))
+> > +		return -EPERM;
+> 
+> This probly should be a WARN_ON_ONCE() as well.
+
+I think it's better to apply WARN_ON here.
+
+> 
+> > +
+> > +	mutex_lock(&bdev_interposer_attach_lock);
+> > +	if (bdev_has_interposer(bdev)) {
+> > +		if (bdev->bd_interposer->ip_submit_bio == ip_submit_bio)
+> > +			ret = -EALREADY;
+> > +		else
+> > +			ret = -EBUSY;
+> > +		goto out;
+> > +	}
+> 
+> Do we really need the two different error codes here?
+
+I think I need it. If we try to initialize the interposer again, the reason
+for this error is most likely in the logic of the module itself.
+If the interposer is occupied by someone else, then we need to let know
+about it.
+
+> 
+> > +
+> > +	interposer->ip_submit_bio = ip_submit_bio;
+> 
+> I'd rather let the caller initialize the field instead of passing the
+> submit function separately.
+
+Yes, I think so. This will allow to keep only one parameter of the function.
+
+> 
+> > +void bdev_interposer_detach(struct bdev_interposer *interposer,
+> > +			  const ip_submit_bio_t ip_submit_bio)
+> > +{
+> 
+> > +	/* Check if it is really our interposer. */
+> > +	if (WARN_ON(bdev->bd_interposer->ip_submit_bio != ip_submit_bio))
+> > +		goto out;
+> 
+> I don't really see any need to pass ip_submit_bio just for this check.
+> 
+> > +	struct bdev_interposer * bd_interposer;
+> 
+> The * goes just before the member name.
+> 
+> > +/*
+> > + * block layer interposers structure and functions
+> > + */
+> > +typedef void (*ip_submit_bio_t) (struct bio *bio);
+> > +
+> > +struct bdev_interposer {
+> > +	ip_submit_bio_t ip_submit_bio;
+> > +	struct block_device *bdev;
+> 
+> Do we need the ip_ prefix here?  Also we probably don't really the
+> the typedef for the function pointer.
+
+Ok. Maybe submit_bio_hook would be better? or submit_bio_interposer.
+
+> 
+> > +#define bdev_has_interposer(bd) ((bd)->bd_interposer != NULL)
+> 
+> And inline function would be nice here.
+
+-- 
+Sergei Shtepa
+Veeam Software developer.
