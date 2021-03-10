@@ -2,79 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7748E3348F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 975AF3348F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhCJUdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:33:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57332 "EHLO mail.kernel.org"
+        id S231321AbhCJUgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:36:55 -0500
+Received: from mga07.intel.com ([134.134.136.100]:35868 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229687AbhCJUd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:33:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3714D64FB3;
-        Wed, 10 Mar 2021 20:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615408406;
-        bh=OJnZxm8CcetkOZ55C4tsAeBTnG2Ccq7MXXTmvkchl9w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i4tUPg34U8CBqEZQ2EwErNfCtqPiAHb/lvFZi0wM6RSj6J859+Ae+sVpNXv//i8bk
-         ooXoeCUKPecd0uY2Yyfvc4iwWnHNV2mL65TlazKg/C0wp92ynF329n33RBf4QgQrrO
-         NO7JH2iIK//3uK+EU0pFOFhJ7k1R7Kr+7oXKfwoCe0mCazG9zuqy5E5h1zqkzVqeAs
-         xSPTUyCIeL+ggVAEfjPeOlmZxwT948pGQwo49KtqbO5mrfqDnrzn3j6WZR33rLzzX+
-         ckoX//fcnvQ667FuhbQQBex7tKWmYdkXlSbvwFeC5JWWUBr3rWcv4CsUiwYG66q80h
-         qAkoN6lixZV/g==
-Date:   Wed, 10 Mar 2021 13:33:23 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: -Walign-mismatch in block/blk-mq.c
-Message-ID: <20210310203323.35w2q7tlnxe23ukg@Ryzen-9-3900X.localdomain>
-References: <20210310182307.zzcbi5w5jrmveld4@archlinux-ax161>
- <99cf90ea-81c0-e110-4815-dd1f7df36cb4@kernel.dk>
+        id S231231AbhCJUgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:36:23 -0500
+IronPort-SDR: yY1R1FbubAxVdMVP2ycA/QXwt7VEmXqiwp8ZvEdHud/HZk9+q6se9+SFahQyzm17l7hcSvVPws
+ BGjcmmrRzecg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="252577468"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="252577468"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 12:36:22 -0800
+IronPort-SDR: FLB+VvQuDdCBg9OG6QwBvOFLwAqjq9M4bMK9Mfom025xStVQUXEvMzyn/eCW0XeWhEvC0KTvZ2
+ mavgNv32forg==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="438038492"
+Received: from xuhuiliu-mobl1.amr.corp.intel.com ([10.251.31.67])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 12:36:19 -0800
+Message-ID: <d8e55c583c4d76f3c9e9722e73f35c0618e40623.camel@intel.com>
+Subject: Re: [PATCH v3 2/5] x86/sgx: Use sgx_free_epc_page() in
+ sgx_reclaim_pages()
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 11 Mar 2021 09:36:15 +1300
+In-Reply-To: <YEjhjhBpYJ6i6EFD@kernel.org>
+References: <20210303150323.433207-1-jarkko@kernel.org>
+         <20210303150323.433207-3-jarkko@kernel.org>
+         <b223ea92-8b20-def3-7bd0-2cc44474bd78@intel.com>
+         <YEjhjhBpYJ6i6EFD@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99cf90ea-81c0-e110-4815-dd1f7df36cb4@kernel.dk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 01:21:52PM -0700, Jens Axboe wrote:
-> On 3/10/21 11:23 AM, Nathan Chancellor wrote:
-> > Hi Jens,
+On Wed, 2021-03-10 at 17:11 +0200, Jarkko Sakkinen wrote:
+> On Wed, Mar 03, 2021 at 08:59:17AM -0800, Dave Hansen wrote:
+> > On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
+> > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > > index 52d070fb4c9a..ed99c60024dc 100644
+> > > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > > @@ -305,7 +305,6 @@ static void sgx_reclaim_pages(void)
+> > >  {
+> > >  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
+> > >  	struct sgx_backing backing[SGX_NR_TO_SCAN];
+> > > -	struct sgx_epc_section *section;
+> > >  	struct sgx_encl_page *encl_page;
+> > >  	struct sgx_epc_page *epc_page;
+> > >  	pgoff_t page_index;
+> > > @@ -378,11 +377,7 @@ static void sgx_reclaim_pages(void)
+> > >  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
+> > >  		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+> > >  
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > -		section = &sgx_epc_sections[epc_page->section];
+> > > -		spin_lock(&section->lock);
+> > > -		list_add_tail(&epc_page->list, &section->page_list);
+> > > -		section->free_cnt++;
+> > > -		spin_unlock(&section->lock);
+> > > +		sgx_free_epc_page(epc_page);
+> > >  	}
+> > >  }
 > > 
-> > There is a new clang warning added in the development branch,
-> > -Walign-mismatch, which shows an instance in block/blk-mq.c:
-> > 
-> > block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to
-> > 32-byte aligned parameter 2 of 'smp_call_function_single_async' may
-> > result in an unaligned pointer access [-Walign-mismatch]
-> >                 smp_call_function_single_async(cpu, &rq->csd);
-> >                                                     ^
-> > 1 warning generated.
-> > 
-> > There appears to be some history here as I can see that this member was
-> > purposefully unaligned in commit 4ccafe032005 ("block: unalign
-> > call_single_data in struct request"). However, I later see a change in
-> > commit 7c3fb70f0341 ("block: rearrange a few request fields for better
-> > cache layout") that seems somewhat related. Is it possible to get back
-> > the alignment by rearranging the structure again? This seems to be the
-> > only solution for the warning aside from just outright disabling it,
-> > which would be a shame since it seems like it could be useful for
-> > architectures that cannot handle unaligned accesses well, unless I am
-> > missing something obvious :)
+> > In current upstream (3fb6d0e00e), sgx_free_epc_page() calls __eremove().
+> >  This code does not call __eremove().  That seems to be changing
+> > behavior where none was intended.
 > 
-> It should not be hard to ensure that alignment without re-introducing
-> the bloat. Is there some background on why 32-byte alignment is
-> required?
+> EREMOVE does not matter here, as it doesn't in almost all most of the sites
+> where sgx_free_epc_page() is used in the driver. It does nothing to an
+> uninitialized pages.
+
+Right. EREMOVE on uninitialized pages does nothing, so a more reasonable way is to
+just NOT call EREMOVE (your original code), since it is absolutely unnecessary.
+
+I don't see ANY reason we should call EREMOVE here. 
+
+Actually w/o my patch to split EREMOVE out of sgx_free_epc_page(), it then makes
+perfect sense to have new sgx_free_epc_page() here.
+
+> 
+> The two patches that I posted originally for Kai's series took EREMOVE out
+> of sgx_free_epc_page() and put an explicit EREMOVE where it is actually
+> needed, but for reasons unknown to me, that change is gone.
 > 
 
-This alignment requirement was introduced in commit 966a967116e6 ("smp:
-Avoid using two cache lines for struct call_single_data") and it looks
-like there was a thread between you and Peter Zijlstra that has some
-more information on this:
-https://lore.kernel.org/r/a9beb452-7344-9e2d-fc80-094d8f5a0394@kernel.dk/
+It's not gone. It goes into a new sgx_encl_free_epc_page(), which is exactly the same
+as current sgx_free_epc_page() which as EREMOVE, instead of putting EREMOVE into a
+dedicated sgx_reset_epc_page(), as you did in your series:
 
-Cheers,
-Nathan
+https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
+
+However, your change has side effort: it always put page back into free pool, even
+EREMOVE fails. To make your change w/o having any functional change, it has to be:
+
+	if(!sgx_reset_epc_page())
+		sgx_free_epc_page();
+
+And for this, Dave raised one concern we should add a WARN() to let user know EPC
+page is leaked, and reboot is requied to get them back.
+
+However with sgx_reset_epc_page(), there's no place to add such WARN(), and
+implementing original sgx_free_epc_page() as sgx_encl_free_epc_page() looks very
+reasonable to me:
+
+https://www.spinics.net/lists/linux-sgx/msg04631.html
+
+
+> Replacing the ad-hoc code with sgx_free_epc_page() is absolutely the right
+> action to take because it follows the pattern how sgx_free_epc_page() is
+> used in the driver.
+> 
+> For reference:
+> 
+> https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
+> 
+> > Was this, perhaps, based on top of Kai's series that changes the
+> > behavior of sgx_free_epc_page()?
+> 
+> I did not refer to that patch series.
+> 
+> /Jarkko
+
+
