@@ -2,116 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797CD3348E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132533348E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhCJU1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:27:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbhCJU1Q (ORCPT
+        id S229595AbhCJUba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:31:30 -0500
+Received: from smtp70.ord1c.emailsrvr.com ([108.166.43.70]:38572 "EHLO
+        smtp70.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229687AbhCJUbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:27:16 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C085FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:27:15 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id d20so18335626qkc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:27:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NjeHyvZMbZGJ8OEzLSik+NBjkSDo6JPO/IsATXTAv4U=;
-        b=HqjgsGqmuDSGg/MeVO8mxOU3yiE7d6qGOOsFAoMQmWI/ZpLuOC3B3KDsNgAVmp1HEP
-         I9teL1AcZ1SkgrbgstvsGH9yxsotjqYeZjCbqYMZcbLKvBYghiYTHElgDN1hIsSLWdZX
-         v5PPGjpkNnOgUjrXWbCYWccvWjR0lD1duMzNI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NjeHyvZMbZGJ8OEzLSik+NBjkSDo6JPO/IsATXTAv4U=;
-        b=bJougEsCLe+VuE2aQ0mmdYVijqyHdRAR9uKQXt3xI7LmN23wH3s5obu5iIasNoJYHc
-         86JFUec0ncUjU1f1MvuRYKTqM6jnhShKqhYag1z5JTdGkaJmMxKbEpuqBJP09V1UZoAW
-         uKc1gxMXAfOVkvahzMfy85VPJVMG+oHg7Aba/GyOe0gQjMhhVCmPSqTgKDjKzObNv119
-         GEE2FmcCgbYZh4j7OH/Fo4Ne267SyxjapPvnvpvRcfN2h6FSY1GWGXy3ZZfiYlCiy/Vv
-         ZCzmkhGZ5cfUDhYhsjuyenFqXa3lV966pJh/bUIP8BSjMEnTZ93v1Hcwx4zuxD4f6w/z
-         hnVw==
-X-Gm-Message-State: AOAM530El1vocKWUF299yut7jJRD08KJ1eyKAxc4KfJ9HRIAzg1RKBTX
-        uuBH0/h3KUufb0LvnMzHKX6LZQAmDRP8Sw==
-X-Google-Smtp-Source: ABdhPJxDrxW/b4odeJ4icVjwiEPrJbwrE0vnBDGEwoU90Rjyqj371MiOhDFvFOheidSspEkMcYGKKA==
-X-Received: by 2002:a37:4d57:: with SMTP id a84mr4623438qkb.464.1615408034674;
-        Wed, 10 Mar 2021 12:27:14 -0800 (PST)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id z5sm266906qtc.42.2021.03.10.12.27.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 12:27:14 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id h82so19203564ybc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:27:13 -0800 (PST)
-X-Received: by 2002:a25:9348:: with SMTP id g8mr4388320ybo.343.1615408033534;
- Wed, 10 Mar 2021 12:27:13 -0800 (PST)
+        Wed, 10 Mar 2021 15:31:24 -0500
+X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Mar 2021 15:31:23 EST
+X-Auth-ID: markh@compro.net
+Received: by smtp17.relay.ord1c.emailsrvr.com (Authenticated sender: markh-AT-compro.net) with ESMTPSA id 2735E600FD;
+        Wed, 10 Mar 2021 15:24:46 -0500 (EST)
+Reply-To: markh@compro.net
+Subject: Re: Logitech G602 wireless mouse kernel error messages in 5.10.11+
+ kernels
+To:     =?UTF-8?Q?Filipe_La=c3=adns?= <lains@archlinux.org>,
+        Jiri Kosina <jkosina@suse.cz>, sashal@kernel.org,
+        Linux-kernel <linux-kernel@vger.kernel.org>
+References: <ac5dde9c-194f-ce40-5c13-2a6890fad6a9@compro.net>
+ <bb840ecf8dc626a07b9f00af69b0d561fb60f75b.camel@archlinux.org>
+From:   Mark Hounschell <markh@compro.net>
+Organization: Compro Computer Svcs.
+Message-ID: <8276a207-abe7-06cc-0c25-f4eebf1a9525@compro.net>
+Date:   Wed, 10 Mar 2021 15:24:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210310202004.1436-1-saiprakash.ranjan@codeaurora.org>
-In-Reply-To: <20210310202004.1436-1-saiprakash.ranjan@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 10 Mar 2021 12:27:01 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=X-nZu1VTJdLOiXmtC4HrnK85KK=KqYe-9szX2LiJoo-Q@mail.gmail.com>
-Message-ID: <CAD=FV=X-nZu1VTJdLOiXmtC4HrnK85KK=KqYe-9szX2LiJoo-Q@mail.gmail.com>
-Subject: Re: [PATCH] watchdog: qcom: Move suspend/resume to suspend_late/resume_early
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bb840ecf8dc626a07b9f00af69b0d561fb60f75b.camel@archlinux.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Classification-ID: 494214d0-accd-474b-8f27-c6eec4513597-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 3/10/21 2:56 PM, Filipe Laíns wrote:
+> On Wed, 2021-03-10 at 13:55 -0500, Mark Hounschell wrote:
+>> I have been using a Logitech wireless G602 mouse since forever. As of
+>> kernel 5.10.11 I get the following kernel messages;
+>>
+>>
+>> $dmesg | grep -i logitech
+> (snip)
+>> .
+>> .
+>> .
+>> Every mouse event seems to produce another "Unexpected input report
+>> number 128" kernel message.
+>>
+>> The commit that started this is:
+>>
+>> commit 1e6fc9768ed2c3917e1fd7af26cb194dfe14f7da
+>> Author: Filipe LaÃ­ns <lains@archlinux.org>
+>> Date:   Mon Jan 4 20:47:17 2021 +0000
+>>
+>>       HID: logitech-dj: add the G602 receiver
+>>
+>>       [ Upstream commit e400071a805d6229223a98899e9da8c6233704a1 ]
+>>
+>>       Tested. The device gets correctly exported to userspace and I can see
+>>       mouse and keyboard events.
+>>
+>>       Signed-off-by: Filipe LaÃ­ns <lains@archlinux.org>
+>>       Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+>>       Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>
+>> The actual patch:
+>>
+>> diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+>> index 1ffcfc9a1e033..45e7e0bdd382b 100644
+>> --- a/drivers/hid/hid-logitech-dj.c
+>> +++ b/drivers/hid/hid-logitech-dj.c
+>> @@ -1869,6 +1869,10 @@ static const struct hid_device_id
+>> logi_dj_receivers[] = {
+>>             HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
+>>                   0xc531),
+>>            .driver_data = recvr_type_gaming_hidpp},
+>> +       { /* Logitech G602 receiver (0xc537) */
+>> +         HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
+>> +               0xc537),
+>> +        .driver_data = recvr_type_gaming_hidpp},
+>>           { /* Logitech lightspeed receiver (0xc539) */
+>>             HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
+>>                   USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1),
+>>
+>>
+>>
+>> markh@harley:~> lsusb
+>> Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+>> Bus 003 Device 003: ID 046d:c537 Logitech, Inc.
+>> Bus 003 Device 002: ID 0424:2504 Standard Microsystems Corp. USB 2.0 Hub
+>> Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+>> Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+>> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+>>
+>>
+>>
+>> With the patch reverted:
+>>
+>> $dmesg | grep -i logitech
+> (snip)
+>>
+>> $lsusb
+>> Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+>> Bus 003 Device 003: ID 046d:c537 Logitech, Inc.
+>> Bus 003 Device 002: ID 0424:2504 Standard Microsystems Corp. USB 2.0 Hub
+>> Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+>> Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+>> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+>>
+>> With or without the patch and error messages the mouse has always worked.
+>>
+>> Regards
+>> Mark
+> 
+> Yes, sorry about that. The following patch should fix it, can you confirm?
+> You probably didn't notice any breakage because you do not have any of your
+> buttons bound to keyboard events.
+> 
+> 
+> commit ef07c116d98772952807492bd32a61f5af172a94 (hid/for-5.11/upstream-fixes)
+> Author: Filipe Laíns <lains@riseup.net>
+> Date:   Fri Feb 5 14:34:44 2021 +0000
+> 
+>      HID: logitech-dj: add support for keyboard events in eQUAD step 4 Gaming
+> 
+>      In e400071a805d6229223a98899e9da8c6233704a1 I added support for the
+>      receiver that comes with the G602 device, but unfortunately I screwed up
+>      during testing and it seems the keyboard events were actually not being
+>      sent to userspace.
+>      This resulted in keyboard events being broken in userspace, please
+>      backport the fix.
+> 
+>      The receiver uses the normal 0x01 Logitech keyboard report descriptor,
+>      as expected, so it is just a matter of flagging it as supported.
+> 
+>      Reported in
+>      https://github.com/libratbag/libratbag/issues/1124
+> 
+>      Fixes: e400071a805d6 ("HID: logitech-dj: add the G602 receiver")
+>      Cc: <stable@vger.kernel.org>
+>      Signed-off-by: Filipe Laíns <lains@riseup.net>
+>      Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+> 
+> diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+> index 45e7e0bdd382..fcdc922bc973 100644
+> --- a/drivers/hid/hid-logitech-dj.c
+> +++ b/drivers/hid/hid-logitech-dj.c
+> @@ -980,6 +980,7 @@ static void logi_hidpp_recv_queue_notif(struct hid_device
+> *hdev,
+>          case 0x07:
+>                  device_type = "eQUAD step 4 Gaming";
+>                  logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
+> +               workitem.reports_supported |= STD_KEYBOARD;
+>                  break;
+>          case 0x08:
+>                  device_type = "eQUAD step 4 for gamepads";
+> 
+> 
 
-On Wed, Mar 10, 2021 at 12:20 PM Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
->
-> During suspend/resume usecases and tests, it is common to see issues
-> such as lockups either in suspend path or resume path because of the
-> bugs in the corresponding device driver pm handling code. In such cases,
-> it is important that watchdog is active to make sure that we either
-> receive a watchdog pretimeout notification or a bite causing reset
-> instead of a hang causing us to hard reset the machine.
->
-> There are good reasons as to why we need this because:
->
-> * We can have a watchdog pretimeout governor set to panic in which
->   case we can have a backtrace which would help identify the issue
->   with the particular driver and cause a normal reboot.
->
-> * Even in case where there is no pretimeout support, a watchdog
->   bite is still useful because some firmware has debug support to dump
->   CPU core context on watchdog bite for post-mortem analysis.
->
-> * One more usecase which comes to mind is of warm reboot. In case we
->   hard reset the target, a cold reboot could be induced resulting in
->   lose of ddr contents thereby losing all the debug info.
->
-> Currently, the watchdog pm callback just invokes the usual suspend
-> and resume callback which do not have any special ordering in the
-> sense that a watchdog can be suspended before the buggy device driver
-> suspend callback and watchdog resume can happen after the buggy device
-> driver resume callback. This would mean that the watchdog will not be
-> active when the buggy driver cause the lockups thereby hanging the
-> system. So to make sure this doesn't happen, move the watchdog pm to
-> use late/early system pm callbacks which will ensure that the watchdog
-> is suspended late and resumed early so that it can catch such issues.
->
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
->  drivers/watchdog/qcom-wdt.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+That is correct, I don't have any buttons bound to keyboard events. With 
+the original patch the G4(forward) and G5(Backward) buttons work in a 
+browser. I guess G7, G8, and G9 buttons are programmable to keyboard events?
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+However this patch does not seem to fix the messages I get.
+
+Regards
+Mark
