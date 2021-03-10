@@ -2,96 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA28333713
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD65333719
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhCJINf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:13:35 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:59210 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhCJIM4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:12:56 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A9743F3;
-        Wed, 10 Mar 2021 09:12:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615363974;
-        bh=p4o+P+DQ74y4yqjC73QioWWOWOlWjgSrnbi5iNTpD28=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TpnC23MxTmNMaLkZ3tij641VlgTTGnCgUNjbOiCc7L+sNkIAPGVxUwhGTFkIdyN8Q
-         Rw0Dow8jOSx0h9HL3nSrHhnF1a/AGlvn4plGxD+9n0tj6htyFIQQktnOy1GcfTj9zV
-         vTEwR7Ezm/GZKPYRYr+SidWcBQ5ATtOSmVkhPPZ4=
-Date:   Wed, 10 Mar 2021 10:12:22 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] media: videobuf2: Fix integer overrun in allocation
-Message-ID: <YEh/ZsfC34+aGI0Q@pendragon.ideasonboard.com>
-References: <20210309234317.1021588-1-ribalda@chromium.org>
- <YEh6AIQPa75MzP+8@pendragon.ideasonboard.com>
- <CANiDSCuz76q0Ukq5UfrgeRH_JFWKQ9hCpMqZTHUtiwHxpEd4oQ@mail.gmail.com>
+        id S231389AbhCJIPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:15:02 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:8101 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229643AbhCJIOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:14:31 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DwPxX24hjz9tyNS;
+        Wed, 10 Mar 2021 09:14:24 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id tNNusIgIeCpa; Wed, 10 Mar 2021 09:14:24 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DwPxX17kXz9tyNR;
+        Wed, 10 Mar 2021 09:14:24 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 249A98B783;
+        Wed, 10 Mar 2021 09:14:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id aH2RPuDK2FLr; Wed, 10 Mar 2021 09:14:25 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9CA0F8B77E;
+        Wed, 10 Mar 2021 09:14:24 +0100 (CET)
+Subject: Re: [PATCH v1 01/15] powerpc/uaccess: Remove __get_user_allowed() and
+ unsafe_op_wrap()
+To:     Daniel Axtens <dja@axtens.net>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <cover.1614275314.git.christophe.leroy@csgroup.eu>
+ <e0538c71167bd90224a8727fea9ed5b75612e2d7.1614275314.git.christophe.leroy@csgroup.eu>
+ <87im6ao7ld.fsf@dja-thinkpad.axtens.net>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <e57ae14b-806e-854d-d43b-e6278b89ae04@csgroup.eu>
+Date:   Wed, 10 Mar 2021 09:14:23 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANiDSCuz76q0Ukq5UfrgeRH_JFWKQ9hCpMqZTHUtiwHxpEd4oQ@mail.gmail.com>
+In-Reply-To: <87im6ao7ld.fsf@dja-thinkpad.axtens.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
 
-On Wed, Mar 10, 2021 at 08:58:39AM +0100, Ricardo Ribalda wrote:
-> On Wed, Mar 10, 2021 at 8:49 AM Laurent Pinchart wrote:
-> > On Wed, Mar 10, 2021 at 12:43:17AM +0100, Ricardo Ribalda wrote:
-> > > The plane_length is an unsigned integer. So, if we have a size of
-> > > 0xffffffff bytes we incorrectly allocate 0 bytes instead of 1 << 32.
-> > >
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: 7f8414594e47 ("[media] media: videobuf2: fix the length check for mmap")
-> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > ---
-> > >  drivers/media/common/videobuf2/videobuf2-core.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> > > index 02281d13505f..543da515c761 100644
-> > > --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> > > +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> > > @@ -223,8 +223,10 @@ static int __vb2_buf_mem_alloc(struct vb2_buffer *vb)
-> > >        * NOTE: mmapped areas should be page aligned
-> > >        */
-> > >       for (plane = 0; plane < vb->num_planes; ++plane) {
-> > > +             unsigned long size = vb->planes[plane].length;
-> >
-> > unsigned long is still 32-bit on 32-bit platforms.
-> >
-> > > +
-> > >               /* Memops alloc requires size to be page aligned. */
-> > > -             unsigned long size = PAGE_ALIGN(vb->planes[plane].length);
-> > > +             size = PAGE_ALIGN(size);
-> > >
-> > >               /* Did it wrap around? */
-> > >               if (size < vb->planes[plane].length)
-> >
-> > Doesn't this address the issue already ?
+
+Le 01/03/2021 à 23:02, Daniel Axtens a écrit :
 > 
-> Yes and no. If you need to allocate 0xffffffff you are still affected
-> by the underrun. The core will return an error instead of doing the
-> allocation.
 > 
-> (yes, I know it is a lot of memory for a buffer)
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> 
+>> Those two macros have only one user which is unsafe_get_user().
+>>
+>> Put everything in one place and remove them.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/include/asm/uaccess.h | 10 +++++-----
+>>   1 file changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+>> index 78e2a3990eab..8cbf3e3874f1 100644
+>> --- a/arch/powerpc/include/asm/uaccess.h
+>> +++ b/arch/powerpc/include/asm/uaccess.h
+>> @@ -53,9 +53,6 @@ static inline bool __access_ok(unsigned long addr, unsigned long size)
+>>   #define __put_user(x, ptr) \
+>>   	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
+>>   
+>> -#define __get_user_allowed(x, ptr) \
+>> -	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), false)
+>> -
+>>   #define __get_user_inatomic(x, ptr) \
+>>   	__get_user_nosleep((x), (ptr), sizeof(*(ptr)))
+>>   #define __put_user_inatomic(x, ptr) \
+>> @@ -482,8 +479,11 @@ user_write_access_begin(const void __user *ptr, size_t len)
+>>   #define user_write_access_begin	user_write_access_begin
+>>   #define user_write_access_end		prevent_current_write_to_user
+>>   
+>> -#define unsafe_op_wrap(op, err) do { if (unlikely(op)) goto err; } while (0)
+>> -#define unsafe_get_user(x, p, e) unsafe_op_wrap(__get_user_allowed(x, p), e)
+>> +#define unsafe_get_user(x, p, e) do {					\
+>> +	if (unlikely(__get_user_nocheck((x), (p), sizeof(*(p)), false)))\
+>> +		goto e;							\
+>> +} while (0)
+>> +
+> 
+> This seems correct to me.
+> 
+> Checkpatch does have one check that is relevant:
+> 
+> CHECK: Macro argument reuse 'p' - possible side-effects?
+> #36: FILE: arch/powerpc/include/asm/uaccess.h:482:
+> +#define unsafe_get_user(x, p, e) do {					\
+> +	if (unlikely(__get_user_nocheck((x), (p), sizeof(*(p)), false)))\
+> +		goto e;							\
+> +} while (0)
+> 
+> Given that we are already creating a new block, should we do something
+> like this (completely untested):
+> 
+> #define unsafe_get_user(x, p, e) do {					\
+>          __typeof__(p) __p = (p);
+> 	if (unlikely(__get_user_nocheck((x), (__p), sizeof(*(__p)), false)))\
+> 		goto e;							\
+> } while (0)
+> 
 
-That's my point, I don't think there's a need for this :-) Especially
-with v4l2_buffer.m.offset being a __u32, we are limited to 4GB for *all*
-buffers.
+As mentioned by Segher, this is not needed, sizeof(p) doesn't evaluate (p) so (p) is only evaluated 
+once in the macro, so no risk of side-effects with that.
 
--- 
-Regards,
-
-Laurent Pinchart
+Christophe
