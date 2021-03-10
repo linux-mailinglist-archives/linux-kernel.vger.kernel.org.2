@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3715A334909
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0088233490B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbhCJUlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:41:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
+        id S231983AbhCJUlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbhCJUlY (ORCPT
+        with ESMTP id S231852AbhCJUlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:41:24 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F8AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:41:23 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id dz17so13587103qvb.14
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:41:23 -0800 (PST)
+        Wed, 10 Mar 2021 15:41:25 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F2AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:41:25 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id m8so11804679qtp.14
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:41:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=tKJVajPcRM0ynF/upsTJnXEW3amsJCTEystjBfDXy2I=;
-        b=s5NBgw3ICWxWQimZDAGAWAgiHpwFRMEJ/ySHfxIL70/H3znR+G9V9YIUQ2dlQCAgVM
-         ObeoE9hy4icjKHg2eAabuXbqd3cN3OUY5JAUN1uzxCCi2eDXMwECrX1pipL318JXSurw
-         fBLWuxZMvTskGNNYRUTG9qDW5OZK0aYW19zy8ekKtrL3/g+uNTB8Nyj9QX6DgjzBqFWs
-         CA8e6GTXhCwG57XZ1EaK3rEMupogiRRUoHXzWBosmBncN5u63B5GZEMZpuQs6SRHoYAs
-         4iFSEg5oDQV9iyIysw4xLG+TatchRKzEGSHCxaICnrI6WftAjRIyJ9b4P7VaERaivpz9
-         P7+A==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=qRkxSnGo8p+8YE9t0u58+XLT5fPoV2yHdc+VOwdi69k=;
+        b=s/jdTAyAVHaRPYRqgCJsab3nMQAy29gaI73WvMeoo7Q2TKbbzK553dP83ty6n2VKWN
+         LoRyOPsqE+fjboRbShrNA9pHrvSBjgVYaiPUuqvubd2izdU9MjdCZQ7iIUMfNZUBOYx3
+         s1BuBWPrkRw7j6NM5xYcJ7/HMAkQPIPwaeVK1BTiq099XgSfky73Mom7YcYvn4ZuRoHh
+         XO8pLLWR+LCMZnDeVyEyFBABSOCV9wVRXuqnJjk87k/Cnh1HowvG7adg68LF072shFgh
+         6Xif5wo35EEj6iMnk4yePEDFXbCUoJqqSlmmXUFBSnkcGt2j8hFlxq+9Dur8idFFprM9
+         Afog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=tKJVajPcRM0ynF/upsTJnXEW3amsJCTEystjBfDXy2I=;
-        b=VYGqfn6nlk+vZ9XzCDAOrxfTIhdOcv0cq13/M0slQ5FzKLLo7v2N1I1Of6dC2FbykY
-         0pDgCXytQ+zw7wJZY1txNujWLJCizSQVCSStOOu5MDN13V7arna8gAIbZB2wnjTaNwfe
-         uyZkR0H6kiPU6cvdVRjsHX/KK7swvMnVsFUs5yRXLpB+jLfIWGUbIwYkHSmzN/iKfKsW
-         m4SfM4IzLzRVK/nF32XoumjtScgYAh7dQZZCgqyqmlOy58CpH6CzgzAH3jIyHVZiFRPh
-         Z3G19f4eEvYPQXLOEVrfLdoLCmKYo4l0p7859SGoNS5ESHtTEF5uSaJwn/SF3VVst2kE
-         zjxw==
-X-Gm-Message-State: AOAM530TZlrxycy6osb4cVSn9Kz1bauONdo5/ayRxLu5R711LjkGcF1Q
-        i2iJOQOvmsAThJc2OfHXrudY8eQ7gZ3j
-X-Google-Smtp-Source: ABdhPJxUF0i4wtRjId4YGEaahxu2YUeXTnHnhJrSpy9pwA0ZTaNW1jAE8JIZx5rH64fRCKUfcfkO0GG/81K2
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=qRkxSnGo8p+8YE9t0u58+XLT5fPoV2yHdc+VOwdi69k=;
+        b=lgcRktxXratVAjPUqbUCNg1uOt9B2YEuCRQv2+42qbS+eQWDQcUWXHNm+vRhcXABH+
+         Lfo7j7iIe1OmmvMtNeWlkkB3rZzYnxr7JUtQbHGUxAwScjwgXC26uLijOaTWy5kTnkTY
+         a5EFIdlbf1cSetZDcxHkgHiEjIVYsZfUyrnt5i0/Odgkgh0KgTRUoLVmtJAppTZVpSl+
+         iX/yO8p+GomGSejUw0PThbV5Z2x8UgDG1yf0HsQ01tx0abYRvJGNDMmdJDKMbPadQDel
+         59i4Cp3PAj1hhzUpzDyjd2oIRaouUqsalFKadGzcCtFdtVrdGlwWE2F9I1uFqXDSWL5P
+         6seA==
+X-Gm-Message-State: AOAM5311iDdVYnvfZp6eDVCySBwM9bLZ/sTD5zo1o15DjP69NIST5dy4
+        KVglIwjdTuJLJbbpbNJhHS4GRyLt/CQ3
+X-Google-Smtp-Source: ABdhPJy5h14ucuYxeFr4sr50OjRPEPEP5SA/TSUkUgEulqVYNJyFx8CyAz0A3IV160sYylIRxgR/37eWMB85
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f1bc:db2b:fff2:533])
- (user=irogers job=sendgmr) by 2002:a0c:9a04:: with SMTP id
- p4mr4902929qvd.38.1615408883134; Wed, 10 Mar 2021 12:41:23 -0800 (PST)
-Date:   Wed, 10 Mar 2021 12:41:16 -0800
-Message-Id: <20210310204118.711514-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:6214:1146:: with SMTP id
+ b6mr4612979qvt.62.1615408884955; Wed, 10 Mar 2021 12:41:24 -0800 (PST)
+Date:   Wed, 10 Mar 2021 12:41:17 -0800
+In-Reply-To: <20210310204118.711514-1-irogers@google.com>
+Message-Id: <20210310204118.711514-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20210310204118.711514-1-irogers@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 1/3] perf test: Remove unused argument
+Subject: [PATCH 2/3] perf test: Cleanup daemon if test is interrupted.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -64,81 +68,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused argument from daemon_exit.
+Reorder daemon_start and daemon_exit as the trap handler is added in
+daemon_start referencing daemon_exit.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/shell/daemon.sh | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ tools/perf/tests/shell/daemon.sh | 34 +++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
 diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index 5ad3ca8d681b..66ad56b4e0a5 100755
+index 66ad56b4e0a5..a02cedc76de6 100755
 --- a/tools/perf/tests/shell/daemon.sh
 +++ b/tools/perf/tests/shell/daemon.sh
-@@ -115,8 +115,7 @@ daemon_start()
+@@ -98,6 +98,23 @@ check_line_other()
+ 	fi
+ }
  
- daemon_exit()
- {
--	local base=$1
--	local config=$2
++daemon_exit()
++{
 +	local config=$1
++
++	local line=`perf daemon --config ${config} -x: | head -1`
++	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
++
++        # Reset trap handler.
++        trap - SIGINT SIGTERM
++
++	# stop daemon
++	perf daemon stop --config ${config}
++
++	# ... and wait for the pid to go away
++	tail --pid=${pid} -f /dev/null
++}
++
+ daemon_start()
+ {
+ 	local config=$1
+@@ -105,6 +122,9 @@ daemon_start()
  
- 	local line=`perf daemon --config ${config} -x: | head -1`
- 	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
-@@ -171,7 +170,7 @@ EOF
- 			 ${base}/session-time/ack "0"
+ 	perf daemon start --config ${config}
  
- 	# stop daemon
--	daemon_exit ${base} ${config}
-+	daemon_exit ${config}
- 
- 	rm -rf ${base}
- 	rm -f ${config}
-@@ -288,7 +287,7 @@ EOF
++        # Clean up daemon if interrupted.
++        trap "daemon_exit ${config}; exit 4" SIGINT SIGTERM
++
+ 	# wait for the session to ping
+ 	local state="FAIL"
+ 	while [ "${state}" != "OK" ]; do
+@@ -113,20 +133,6 @@ daemon_start()
  	done
+ }
  
- 	# stop daemon
--	daemon_exit ${base} ${config}
-+	daemon_exit ${config}
- 
- 	rm -rf ${base}
- 	rm -f ${config}
-@@ -333,7 +332,7 @@ EOF
- 	fi
- 
- 	# stop daemon
--	daemon_exit ${base} ${config}
-+	daemon_exit ${config}
- 
- 	# check that sessions are gone
- 	if [ -d "/proc/${pid_size}" ]; then
-@@ -374,7 +373,7 @@ EOF
- 	perf daemon signal --config ${config}
- 
- 	# stop daemon
--	daemon_exit ${base} ${config}
-+	daemon_exit ${config}
- 
- 	# count is 2 perf.data for signals and 1 for perf record finished
- 	count=`ls ${base}/session-test/ | grep perf.data | wc -l`
-@@ -420,7 +419,7 @@ EOF
- 	fi
- 
- 	# stop daemon
--	daemon_exit ${base} ${config}
-+	daemon_exit ${config}
- 
- 	rm -rf ${base}
- 	rm -f ${config}
-@@ -457,7 +456,7 @@ EOF
- 	fi
- 
- 	# stop daemon
--	daemon_exit ${base} ${config}
-+	daemon_exit ${config}
- 
- 	rm -rf ${base}
- 	rm -f ${config}
+-daemon_exit()
+-{
+-	local config=$1
+-
+-	local line=`perf daemon --config ${config} -x: | head -1`
+-	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
+-
+-	# stop daemon
+-	perf daemon stop --config ${config}
+-
+-	# ... and wait for the pid to go away
+-	tail --pid=${pid} -f /dev/null
+-}
+-
+ test_list()
+ {
+ 	echo "test daemon list"
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
