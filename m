@@ -2,46 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37D2334210
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4708D334214
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233215AbhCJPu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:50:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54400 "EHLO mail.kernel.org"
+        id S233247AbhCJPu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:50:59 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:49916 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233170AbhCJPuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:50:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2201364E86;
-        Wed, 10 Mar 2021 15:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615391410;
-        bh=T8BK0uKn3twU1W4L8XWiUMlGUZc9NtGsxvTX83v5KgI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xYrharKGpSNDU9rcqcFlAlqrd4po/151ntHoW9GAi28hH3X0qdsw3xTL0WzbAWjAy
-         3UTsKFw1uMxSsBLioGjNaEB3lMwT8525kks8Y+EHoJHrho0JR1RVW/Ft14RMSINVrF
-         XXOQsTLWao8rqqb8jNdTS+r8EXH8OEhy5q2rddqY=
-Date:   Wed, 10 Mar 2021 16:50:08 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, lkp@intel.com
-Subject: Re: [PATCH] virt: acrn: Fix document of acrn_msi_inject()
-Message-ID: <YEjqsEtXGr3rspkc@kroah.com>
-References: <20210310153751.17516-1-shuo.a.liu@intel.com>
+        id S233150AbhCJPuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:50:52 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lK16j-00ACNx-B7; Wed, 10 Mar 2021 16:50:45 +0100
+Date:   Wed, 10 Mar 2021 16:50:45 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org,
+        linux@armlinux.org.uk, mw@semihalf.com, rmk+kernel@armlinux.org.uk,
+        atenart@kernel.org, rabeeh@solid-run.com
+Subject: Re: [net-next] net: mvpp2: Add reserved port private flag
+ configuration
+Message-ID: <YEjq1eehhA+8MYwH@lunn.ch>
+References: <1615369329-9389-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310153751.17516-1-shuo.a.liu@intel.com>
+In-Reply-To: <1615369329-9389-1-git-send-email-stefanc@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:37:51PM +0800, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
-> 
-> This fixes below sparse warning.
-> 
-> ../drivers/virt/acrn/vm.c:105: warning: expecting prototype for
-> acrn_inject_msi(). Prototype was for acrn_msi_inject() instead
+>  static void mvpp2_ethtool_get_strings(struct net_device *netdev, u32 sset,
+>  				      u8 *data)
+>  {
+>  	struct mvpp2_port *port = netdev_priv(netdev);
+>  	int i, q;
+>  
+> -	if (sset != ETH_SS_STATS)
+> -		return;
+> +	switch (sset) {
+> +	case ETH_SS_STATS:
+> +		for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_mib_regs); i++) {
+> +			strscpy(data, mvpp2_ethtool_mib_regs[i].string,
+> +				ETH_GSTRING_LEN);
+> +			data += ETH_GSTRING_LEN;
+> +		}
 
-That is not a warning from sparse :(
+Hi Stefan
 
+Maybe rename the existing function to
+mvpp2_ethtool_get_strings_stats() and turn it into a helper. Add a new
+mvpp2_ethtool_get_strings_priv() helper. And a new
+mvpp2_ethtool_get_strings() which just calls the two helpers. Overall
+the patch should be smaller and much easier to review.
+
+    Andrew
