@@ -2,203 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5523F3338D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B783338DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhCJJd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:33:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231966AbhCJJdt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:33:49 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93A3C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:33:48 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id x4so25635954lfu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:33:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dDRhDJmwcUrEs6ffAtS8tb/gtAhqWCALd3fRPCTAJ70=;
-        b=bEUB6pz/vURQUdnkngDfbZbhni4rEB0aSPdUbUHgY9kTycoRiNRdZd8NKsojY2Qf6V
-         sWGYFVgJXD7iz++3qlg7CPyNnJhDrhLfTNx8abBb+PuEapPT8bna2NGgl5Yd/t0JIJg+
-         j19O4RtXQx59KLmeEyhcWN0i0q5/G1oq7yueI6eG4GtlA3ZZhQ8/YSD/RbI7P9h1yffw
-         NOgrjH9rO6UWfkaurrhy6r4UrCm+gIyzA5kA2gaTK8PuObuQsUFug5gIff4Z3an9Yn0m
-         5pSav63YOGmRbU63n5I6U7/LKhbQ01Ps3yQyOy/YDWhrZI81Oms1sjf2WIpdSchApRWT
-         Km0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dDRhDJmwcUrEs6ffAtS8tb/gtAhqWCALd3fRPCTAJ70=;
-        b=M94rfZwlEIeiMy7JUBJkxlhzhhWF55Q0TfwMj0/y67Asu0AhrmeO83BLUJ6KSfFg09
-         ER5mI66ULDScd2SuXuqWne7mhDCqQ+2wo7QkVEqxIkcSlTeXl5trqDCAsb2MnqsGxfu8
-         cGBdAQiIg4rvDKwyw/IftBFVrLkAXtwY9MQIGlkl57z0Sfr8zaHx1j1G37aPDGkxFtqt
-         v5gHdtmpMq9yVhnOqeBp7BLjwMgpLE6iaVDo1PEjl8s9byAxmmzeNYOqV6AmbKOEdZA+
-         lCr/t0dCZCwzNCa/9xmqxZ4xihT9NiL11AMY+4Q1EZhbUD/jrp3NPGEIKpYJy7nOGtpD
-         4UdQ==
-X-Gm-Message-State: AOAM530ZS3n7gJaNkMQTmSK9G+RsBa/wUA8dkuo9/HVqNlGTYY2VMAFZ
-        xA5yARL2xAcamUio/wuJ1f5631894M7q2nmtoNdULA==
-X-Google-Smtp-Source: ABdhPJxKM2BZRaNYPJ+fEjUPaeQksl/pR4sY3mSXpwekxQcskbbSM2E3UzpJMwFDvfLbDXlYPy+XJcSeA8y8GteS4wM=
-X-Received: by 2002:a19:4c08:: with SMTP id z8mr1459058lfa.157.1615368827066;
- Wed, 10 Mar 2021 01:33:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com> <178479.1615309961@warthog.procyon.org.uk>
-In-Reply-To: <178479.1615309961@warthog.procyon.org.uk>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 10 Mar 2021 10:33:35 +0100
-Message-ID: <CACRpkdaDtG4Xf0nYnT66C5d8GOwOoqd3=bZ1E3_=osveWo_C5A@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To:     David Howells <dhowells@redhat.com>
-Cc:     Arnd Bergmann <arnd@linaro.org>, keyrings@vger.kernel.org,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        id S232452AbhCJJe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:34:29 -0500
+Received: from mga18.intel.com ([134.134.136.126]:29797 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232548AbhCJJd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 04:33:57 -0500
+IronPort-SDR: KAQSfUw+ZUtdKtvCEOC1jxZqFsi6RKI6c6g2Dg5kUAAPNBKh7/Wo19QUrYVU/L1Yn+s//IozFL
+ mi7Mj4cMLUEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="176024410"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="176024410"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 01:33:57 -0800
+IronPort-SDR: VIUSYGiIoCRifQpTe9BtaBvmgXfEpQ0o4G7Xb+qoHIDrNhGsMsKCd9nxT3uJJm+t6zo3NG9llp
+ yr1uif5DyDOg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="603012410"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Mar 2021 01:33:57 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 10 Mar 2021 01:33:56 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 10 Mar 2021 01:33:56 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Wed, 10 Mar 2021 01:33:56 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Wed, 10 Mar 2021 01:33:55 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O3ATFPUtWK3lvLpM59TnIs//avQXMLK2qgyo36Qby/xWEFipYbFRUGUKxl5419/f9hIUERkFvCNIShnj1pXbWrP9523p/n8h/2wsblzpH3wJ3Wr/9b0wqYTMaia0xc2ITqrVzkauQD6CB7ByWpOHIwjsre53VlLKwsnaRIa1uPQ0Ga7oz8Sz+xMSV7b7n+1hvfI3b0dbDIiaejGLufRC2ZuM3fxi15ieUrWDwZC457nKL28kU5eDiSRWfDh2dKzPhPPTatWzP8QGHkVK/apjiy8eaw8JM2nZ43kkkN7kESinCT0tAnlhNOMCcDApsJBzz1BMQL181F7P8Y3UrKiYUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aeMTZHGLtyFxP1JAXmQzEv/1HMbLtm42vSJrKQrC2Uk=;
+ b=ZGqldd0FTnvd7HgMghut7X1bQaK9/tfIac6EfnxGQfS+7kLvtd6KpmJ1meEE1p68nPmqy/asiQC7LYdEORROStuBj4rML/0DykAGdvhTi6oNLris4FCXhYskKVM+rabGI/v1bebhqkuSbciSe7md0XZVk5JYH6bCCEzQbgIQmXq5SAafGSWLxN+TlRWmTlhGc/tHLVpR+Nd3wbk52nVAhVOnO8K24xCVBnsFob1k17xFQhXp54S4vTTJIXuXbTYkP0d5YR9ci2CRyrUkX7TUMS4CAgg6dxGf4WrxZr+At3yZ71CFIrni+KweNa6aS0zP8e3aQH+NqcNn1mfvSB2wsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aeMTZHGLtyFxP1JAXmQzEv/1HMbLtm42vSJrKQrC2Uk=;
+ b=Ki1z8S5FXfXwOXoYB9Eeik4jjYIE5JUjaD/iq0cWiTnpxh3ZvPJi5QpjebXvtT/u8aWAZjmZxXB0TYjLBg4J4SQ4UHzLb6OQvKOoMJgo51YG8mszl99J29n2fNx7/ItSNheQCnLwGMBzXldV7iEcpSq7ya88QbSp0FbiFDZG3mQ=
+Received: from BYAPR11MB3448.namprd11.prod.outlook.com (2603:10b6:a03:76::21)
+ by SJ0PR11MB5184.namprd11.prod.outlook.com (2603:10b6:a03:2d5::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.28; Wed, 10 Mar
+ 2021 09:33:52 +0000
+Received: from BYAPR11MB3448.namprd11.prod.outlook.com
+ ([fe80::b86b:4cf0:b741:11e3]) by BYAPR11MB3448.namprd11.prod.outlook.com
+ ([fe80::b86b:4cf0:b741:11e3%3]) with mapi id 15.20.3912.029; Wed, 10 Mar 2021
+ 09:33:52 +0000
+From:   "Verma, Vishal L" <vishal.l.verma@intel.com>
+To:     "Williams, Dan J" <dan.j.williams@intel.com>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
+CC:     lkp <lkp@intel.com>, "hch@lst.de" <hch@lst.de>,
+        "hare@suse.de" <hare@suse.de>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Hector Martin <marcan@marcan.st>
-Content-Type: text/plain; charset="UTF-8"
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+Subject: Re: [PATCH v2] libnvdimm: Notify disk drivers to revalidate region
+ read-only
+Thread-Topic: [PATCH v2] libnvdimm: Notify disk drivers to revalidate region
+ read-only
+Thread-Index: AQHXFU7ZjscxBXRsek+Q2910+9bZ46p89leA
+Date:   Wed, 10 Mar 2021 09:33:52 +0000
+Message-ID: <c016da156b56b7cd181b8eebdccfe28c5c1d3641.camel@intel.com>
+References: <161534060720.528671.2341213328968989192.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <161534060720.528671.2341213328968989192.stgit@dwillia2-desk3.amr.corp.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.55.55.43]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bcb3c2f7-9c27-4966-8172-08d8e3a79e2f
+x-ms-traffictypediagnostic: SJ0PR11MB5184:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB5184CBCD41AC7638F3E33026C7919@SJ0PR11MB5184.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pwbg2rV9gicqDPec72zoSM2J/u5vdBKTsBylPs1jdImtcrNeO4dFOkq+upNKHcUw5anrWEplTlPIGwvT7TcoLRe4oHF9UJD1tk1CgOPWlMd+b3zk8IFv+GqBkgGMl4XtLTbf3k74WTtrY/c3KHhyBB+14FuQyBXfZclXXctW2gXtHon5KBOmtP+SAcSdc2TjcxK5ZvbqAQsYCUvBTs8E+eHlCyhAO9vU0K+b+IkiC18oBbvVmQKNrIGzMS6prt+BFsVsRe4pdruvepFy3dBQguPZq0bO6AHISnwWqDJypJgb24Zn0ruvGmKPvmW69SQczqmVarzcXIU00+gbG5Xd5PnJuHCJRFtjBIk4bsJCv0IOiY8SYzRfqACwDZSzAWm3alcSCFA3BJbiwcJ4q6E9vMbcUv/sZ8sF0Vff9iE0pWzwQB+E1Z2FGmLtO6+crTDicZK/wY/x1G3BYrKdyoYPYEvXN1G4eycUR/jUTzR5dTVGQWsT9dsNd1Js0sdCNn6bxpZCADwJWy3Y+nKuGGAAT7Ow+EJJkL9bdTZteDy/H8tRkQrhotDhMKZgN1nS8XvaU/FDTaqU1sJ42xP+e2Cu+OCbRBfH+7VPlKhXAjhYkLg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3448.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(366004)(39860400002)(376002)(2616005)(186003)(2906002)(66946007)(64756008)(66476007)(66556008)(66446008)(86362001)(76116006)(54906003)(26005)(110136005)(966005)(4326008)(478600001)(316002)(8936002)(6512007)(71200400001)(83380400001)(5660300002)(36756003)(8676002)(6506007)(6486002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?MEVqZ2o4Q3VWbWdsVVVTUC9ra3A4aURQUE1obnBGQ2dJVU44ZDAweXR3cHQ2?=
+ =?utf-8?B?a1VtMTVJOVlsOXNsZ2tqd1EzVnBncW9GWDhqdloyMnNRVTdLVnplbGxBM3hz?=
+ =?utf-8?B?ZHNQbTJlMW5sMGhmSFJFdFJSZ0xLZmFvWlUwZnJEMUtxc1ZNdEp6azBKTHpZ?=
+ =?utf-8?B?OGxpTWhkMVhramlWUGh1NEVBbFlHcUYzUURVeHBScTFiN1hxU1dqRFY3R3Z2?=
+ =?utf-8?B?RXVTTHNhaWc3cmZTd0dMMGJtRmlCRmxHbnkzUldmZEl2UDFQY2M0b1dqZWtC?=
+ =?utf-8?B?NE92REpsMUNoOGRFVXlCbUFwcGlmaWhheEJDU0tyN2V6S3h3YXNxcHpJem1I?=
+ =?utf-8?B?Tmc0QVphZU45ZDErN01wdVZJZVhiVjFxa3huODd3N3ZMd1FuRXVWWGdJQ0Rx?=
+ =?utf-8?B?aThFVnVlTWY0QmlnWk1yWk9FQUNMZVAzeXZFc1U3UUZVS3pSRTZjcURPRHcx?=
+ =?utf-8?B?alh6UVgzemVGTm10WHlSVDQxbVlOYUdZZys1eGxNUDE1YUkwclRxSXZnbHAy?=
+ =?utf-8?B?T3Urcm9jcjVhaHYwWVZKWUZTMGFpaXd6NDFhYUJqa2tWU0l1SkJqbEZlWWxn?=
+ =?utf-8?B?NlRLZjZzNFd0cXFwT1hTUjRQeFV5bis2OER4LzNHaUd6eDlzMUwvZno1ajFS?=
+ =?utf-8?B?YlVXVzRtOWtNMWk0eEdjakdSQTRPc2lNVytBV1JreVlndEo5QjM4M3Byc0ZV?=
+ =?utf-8?B?MjNGWGFReXpNRUJyTW4xaGZTcVhYNnRYN2wyRjY0V1NwNnh2aVhHb3ZTVUx2?=
+ =?utf-8?B?TS92akVyUlllWG0zQlluRUhVbkVaMXlSZUFac1IyaTZLZ2VHbys5OWxVUkd2?=
+ =?utf-8?B?K3RjZGRwcVVPK3NneTZGWDZBdDk1MXRWcFpUZWFKWE5rVXl4SDdZbXdmRW4z?=
+ =?utf-8?B?MzhSck54dmZMMEY0dFd0M2FpY092M0NnSmJkY1dWVVNCMC8rd1pmUDFRMzRD?=
+ =?utf-8?B?Z3Y4MWVWc0JGTWNyTFNCNHNQZ3RSZVY1SFZPZlRueVBSbS9zdXBTQmV0MFhT?=
+ =?utf-8?B?OXpPcmNEd1V1SE5GYk5qTXQ3WkFTTkpib3p5ZnM3OXY1QnpCL0JXRzdRQVhS?=
+ =?utf-8?B?SlNZNHVYOEhHRzhUZDB3dDJFenB3U281WW9ycnd4TnU4UlVOZWJyQTA1NFU2?=
+ =?utf-8?B?M20vVHF6a0VNMCt1OVZmNkx5QVNUcitCYzdaUzhLOVRLSmNXcXc5OVdOM0U2?=
+ =?utf-8?B?L1NXdHFzVXhjaFF3MFpKZmZBYzRpT3pXQnVYS2ZyUzFNYWpGU01ocjVCa1N3?=
+ =?utf-8?B?cXJYZkRmUGxaMmp1a0JJbjZNSStjc2pzemFCWkxFcFEvTm11eWJoT0hsU0VM?=
+ =?utf-8?B?S3lVRDdIYVBZNGU0bDZEZlMrUjQ1WmJaY0JESndML0RORTVhREdvM2EwUjU0?=
+ =?utf-8?B?UW1sUmVRMnN3QmFXMFN5Ymdia1hTd3R3eThCb0YzL0lycXJ2cmNlUDRHcG1a?=
+ =?utf-8?B?djExSFFtOHRlY1QzV29NSmsrYi9FSWtSRDVDMk8wYWVoazdrN1lvTi9CcFEz?=
+ =?utf-8?B?ZkdicDcrbTBSWDJJbmdOYXlZQmVyM3pRK3JjSnRiVjJIWm8zU2d1STZEN3lT?=
+ =?utf-8?B?QTVvRlU1TExmWWNlR1F3eGNWTHQ0dWZGRFVGbHNJcHJzQkQvbFR6V3lqdWxQ?=
+ =?utf-8?B?MnJjaE9sM1V4WHJRSHl2U2ZGKytFTExOTlNvSzY5cFlIMlVrWjBQK1hPUHpx?=
+ =?utf-8?B?aUg5ekhqeEJGWVVBS3J4eThuenAxT25DVFN3OFNoTTh2Z2RiZzlxcEhuUWU5?=
+ =?utf-8?Q?HMSoK2xdHRzBVNGPyVic1Qh4/dUMHn4v9vtuJEy?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FBB0B987C67F8D4F815A727B01B0386A@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3448.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bcb3c2f7-9c27-4966-8172-08d8e3a79e2f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Mar 2021 09:33:52.4852
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: khCdsJBHNFwBU+J+ubqnWQPt5DjspwdvewGe9/LOlu5VTSEZj5Ge0EPoaKwE/8fMNj5oFrioucqV4HluHpZuo68A4O731KyZffP4degi3Go=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5184
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 6:12 PM David Howells <dhowells@redhat.com> wrote:
-> Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> > As it seems neither Microsoft nor Apple is paying it much attention
-> > (+/- new facts) it will be up to the community to define use cases
-> > for RPMB. I don't know what would make most sense, but the
-> > kernel keyring seems to make a bit of sense as it is a well maintained
-> > keyring project.
->
-> I'm afraid I don't know a whole lot about the RPMB.  I've just been and read
-> https://lwn.net/Articles/682276/ about it.
-
-Sorry, here is a primer on RPMB.
-
-The proper source is the eMMC specification from JEDEC
-which has semi-open access:
-https://www.jedec.org/standards-documents/technology-focus-areas/flash-memory-ssds-ufs-emmc/e-mmc
-
-The spec is not super helpful because it does not describe what the
-intention or use case for RPMB is, just what commands it can be
-given.
-
-Western Digital describes the use cases in this whitepaper page 5 ff:
-https://documents.westerndigital.com/content/dam/doc-library/en_us/assets/public/western-digital/collateral/white-paper/white-paper-emmc-security.pdf
-
-Quote:
-"Some well-known use cases include software version
-authentication, fingerprint verification, secure key storage,
-network vendor information, digital rights management (DRM)
-and secure payments."
-
-The replay protected memory block comes from mobile phone
-vendors, and it is described as designed for a usecase known
-as "anti-rollback": make it impossible to flash an older firmware.
-This is achieved by monotonic counters: a hardware counter
-that always increases so that if we have software version 13
-flashed we can flash version 14 or 15 but not version 10 or 12.
-Attackers of mobile phones used the possibility to revert to
-old firmware with vulnerabilities as an attack vector.
-
-Messages to the RPMB are protected by a symmetric key
-which is 32 bytes long. The hash used in messaging is
-HMAC SHA-256.
-
-The symmetric key is written once to initialize the RPMB.
-With the current mmc-utils "mmc" command it looks like this:
-
-echo -n AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH | mmc rpmb write-key /dev/mmcblk0rpmb -
-
-The entity writing stuff to RPMB needs to keep track of this
-secret. This is why a secure world such as TEE is often using
-RPMB, as these usually have access to a protected secret
-key, but any trusted environment can use the mechanism.
-Compared to TPM, we are on the inside of the chip here,
-so the agent dealing with this secret key will be vulnerable.
-
-After this secret has been initialized, protected data blocks of 256
-bytes can be written to RPMB while providing the key likt this:
-
-(awk 'BEGIN {while (c++<256) printf "a"}' | echo -n
-AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH) | mmc rpmb write-block
-/dev/mmcblk0rpmb 0x02 - -
-
-0x02 is the *counter*, so if you after this try to send the message
-with 0x01 it will fail, whereas 0x03 will work. That is how the
-monotonic counter is specified in the write interactions.
-
-This can be imagined as writing keys 1, 2, 3 ... while you cannot
-overwrite an older key you can write the next one in sequence.
-Typically this would be the version number of a firmware.
-The 256 bytes of data sent along with the key number is
-typically the hash of a firmware. But it can be any 256 bytes
-of data, RPMB leaves this up to whoever implements it.
-
-You can also read chunks of 256 bytes from the device:
-echo -n AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH | mmc rpmb read-block
-/dev/mmcblk0rpmb 0x02 1 /tmp/block -
-
-(0x02 again is the key index, 1 is the number of blocks/keys
-we want to read)
-
-This protocol is challenge-response so a random session key
-will be used along with the MAC for authentication.
-
-It is possible to read a key without authentication. I don't know
-what the use case of this would be:
-
-mmc rpmb read-block /dev/mmcblk0rpmb 0x02 1 /tmp/block
-
-RPMB is a multiple of 128KB of key storage. Most typically
-it is that size, so 128KB/256 = 512 unique keys can be
-written in most standard parts.
-
-> What is it you envision the keyring API doing with regard to this?
-> Being used to represent the key needed to access the RPMB or
-> being used to represent an RPMB entry (does it have entries?)?
-
-The idea is to have an API toward RPMB that keyring can
-use to store replay protection or other monotonic sequence
-information. Only one party can hold the authentication key
-so I guess both.
-
-The most intuitive use case is protecting against exhaustive
-password/pin/fingerprint/other authentication token search.
-
-On mobile phones it is used to establish that 3 attempts is really
-3 attempts, then your device is locked, for example. Doesn't
-have to be 3. Can be 500. But to put a cap on it.
-
-Also a time stamp from a monotonic clock can be stored in
-RPMB so that the increasing time between unlock attempts
-is enforced and cannot be manipulated. This requires
-secure, monotonic time (which can be achieved in various
-ways).
-
-Is this something keyring does today, or would be doing
-in the future? (Sorry for my ignorance...)
-
-The original use case of being unable to install older
-software can also be done, but since Linux distributions
-generally support installing older packages I don't think
-this is going to be requested much, maybe Chromebooks
-and Androids would appreciate to do that through this
-mechanism though?
-
-Yours,
-Linus Walleij
+T24gVHVlLCAyMDIxLTAzLTA5IGF0IDE3OjQzIC0wODAwLCBEYW4gV2lsbGlhbXMgd3JvdGU6DQo+
+IFByZXZpb3VzIGtlcm5lbHMgYWxsb3dlZCB0aGUgQkxLUk9TRVQgdG8gb3ZlcnJpZGUgdGhlIGRp
+c2sncyByZWFkLW9ubHkNCj4gc3RhdHVzLiBXaXRoIHRoYXQgc2l0dWF0aW9uIGZpeGVkIHRoZSBw
+bWVtIGRyaXZlciBuZWVkcyB0byByZWx5IG9uDQo+IG5vdGlmaWNhdGlvbiBldmVudHMgdG8gcmVl
+dmFsdWF0ZSB0aGUgZGlzayByZWFkLW9ubHkgc3RhdHVzIGFmdGVyIHRoZQ0KPiBob3N0IHJlZ2lv
+biBoYXMgYmVlbiBtYXJrZWQgcmVhZC13cml0ZS4NCj4gDQo+IFJlY2FsbCB0aGF0IHdoZW4gbGli
+bnZkaW1tIGRldGVybWluZXMgdGhhdCB0aGUgcGVyc2lzdGVudCBtZW1vcnkgaGFzDQo+IGxvc3Qg
+cGVyc2lzdGVuY2UgKGZvciBleGFtcGxlIGxhY2sgb2YgZW5lcmd5IHRvIGZsdXNoIGZyb20gRFJB
+TSB0byBGTEFTSA0KPiBvbiBhbiBOVkRJTU0tTiBkZXZpY2UpIGl0IG1hcmtzIHRoZSByZWdpb24g
+cmVhZC1vbmx5LCBidXQgdGhhdCBzdGF0ZSBjYW4NCj4gYmUgb3ZlcnJpZGRlbiBieSB0aGUgdXNl
+ciB2aWE6DQo+IA0KPiDCoMKgwqBlY2hvIDAgPiAvc3lzL2J1cy9uZC9kZXZpY2VzL3JlZ2lvblgv
+cmVhZF9vbmx5DQo+IA0KPiAuLi50byBkYXRlIHRoZXJlIGlzIG5vIG5vdGlmaWNhdGlvbiB0aGF0
+IHRoZSByZWdpb24gaGFzIHJlc3RvcmVkDQo+IHBlcnNpc3RlbmNlLCBzbyB0aGUgdXNlciBvdmVy
+cmlkZSBpcyB0aGUgb25seSByZWNvdmVyeS4NCj4gDQo+IEZpeGVzOiA1MmYwMTlkNDNjMjIgKCJi
+bG9jazogYWRkIGEgaGFyZC1yZWFkb25seSBmbGFnIHRvIHN0cnVjdCBnZW5kaXNrIikNCj4gQ2M6
+IENocmlzdG9waCBIZWxsd2lnIDxoY2hAbHN0LmRlPg0KPiBDYzogTWluZyBMZWkgPG1pbmcubGVp
+QHJlZGhhdC5jb20+DQo+IENjOiBNYXJ0aW4gSy4gUGV0ZXJzZW4gPG1hcnRpbi5wZXRlcnNlbkBv
+cmFjbGUuY29tPg0KPiBDYzogSGFubmVzIFJlaW5lY2tlIDxoYXJlQHN1c2UuZGU+DQo+IENjOiBK
+ZW5zIEF4Ym9lIDxheGJvZUBrZXJuZWwuZGs+DQo+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCBy
+b2JvdCA8bGtwQGludGVsLmNvbT4NCj4gUmVwb3J0ZWQtYnk6IFZpc2hhbCBWZXJtYSA8dmlzaGFs
+LmwudmVybWFAaW50ZWwuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBEYW4gV2lsbGlhbXMgPGRhbi5q
+LndpbGxpYW1zQGludGVsLmNvbT4NCj4gLS0tDQo+IENoYW5nZXMgc2luY2UgdjEgWzFdOg0KPiAt
+IE1vdmUgZnJvbSB0aGUgc2lua2luZyBzaGlwIG9mIHJldmFsaWRhdGVfZGlzaygpIHRvIHRoZSBs
+b2NhbCBob3RuZXNzDQo+IMKgwqBvZiBuZF9wbWVtX25vdGlmeSgpIChoY2gpLg0KPiANCj4gWzFd
+OiBodHRwOi8vbG9yZS5rZXJuZWwub3JnL3IvMTYxNTI3Mjg2MTk0LjQ0Njc5NC41MjE1MDM2MDM5
+NjU1NzY1MDQyLnN0Z2l0QGR3aWxsaWEyLWRlc2szLmFtci5jb3JwLmludGVsLmNvbQ0KPiANCj4g
+wqBkcml2ZXJzL252ZGltbS9idXMuYyAgICAgICAgIHwgICAxNCArKysrKystLS0tLS0tLQ0KPiDC
+oGRyaXZlcnMvbnZkaW1tL3BtZW0uYyAgICAgICAgfCAgIDM3ICsrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKy0tLS0NCj4gwqBkcml2ZXJzL252ZGltbS9yZWdpb25fZGV2cy5jIHwgICAg
+NyArKysrKysrDQo+IMKgaW5jbHVkZS9saW51eC9uZC5oICAgICAgICAgICB8ICAgIDEgKw0KPiDC
+oDQgZmlsZXMgY2hhbmdlZCwgNDcgaW5zZXJ0aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pDQoNCldp
+dGggdGhlIHVwZGF0ZSB0byB0aGUgdW5pdCB0ZXN0IGFwcGxpZWQsIGFuZCB0aGlzLCBldmVyeXRo
+aW5nIHBhc3Nlcw0KZm9yIG1lLiBZb3UgY2FuIGFkZDoNCg0KVGVzdGVkLWJ5OiBWaXNoYWwgVmVy
+bWEgPHZpc2hhbC5sLnZlcm1hQGludGVsLmNvbT4NCg0K
