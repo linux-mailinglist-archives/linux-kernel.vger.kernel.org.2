@@ -2,128 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989713341D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013F93341E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhCJPpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:45:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232953AbhCJPpX (ORCPT
+        id S233203AbhCJPqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:46:42 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47654 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232818AbhCJPqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:45:23 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AC8C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:45:22 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d23so5454038plq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:45:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K7J4mK1wcrpYvuUrhe1JER61F+ZE4UvbwDiIPZFXGcc=;
-        b=Abi4UsGeZm27KRexhiofdoPc/x71fqlJza7Q5Gdm1PMgUXGdaN4Ccik5MtaP0cjz6y
-         5qFGApD4ByCByqGB7qOWaGTOVcSBECT7reWjOIYlL6nArdAlPDIyX8iWchuHTGuuQ075
-         Wh3tQGbqbaXT+EOvSjzMqVXCWJ5qGIc9RHbKs4jRhECfss4+t44kETB4LPRt7RVxytqI
-         jzl7TVger2GfFNKYAU6NTdvgksn2Ms/Bdj07wMwoS2wlqQQ4ZUSWhH+CUlbfskG8FvMr
-         BZ7KyJsRTQPpLdgY3f5ftEgzyPMQlQNpI328/NQiMGSv0gh4ujg2Vuh0GSTTy4n6rSA2
-         a3eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=K7J4mK1wcrpYvuUrhe1JER61F+ZE4UvbwDiIPZFXGcc=;
-        b=WRImY2w3zssXltJ+UAgyf6EzBuMWquvi9num/jaWKFG9u7hFzjbEPDoLZJVTjunxFu
-         pnKTVjXDZCyaRj5YSQdUfknZU0WRTqxPaS+hPBeDtWW8NSmGSTw2iis3f5pGBW9HeqeO
-         NeZ3OEhEIUcZj8HZVKx4MjAd8mZDLyGWtYkQobIXTP1GVJYgT+1EXbPTkMdgJsxy4wj+
-         30KPCG77NIXMU2xcZQFQkYuk3MiZBOLQVCP59IgTpRY34w/awOajGLjLJRn6rzkJRdoG
-         O2K86856xz7VK78L+T5X5r6rErKUeMoMDnrZ9LEw4NhrUyBew5lWo1Dxdb80kHY0ohYS
-         OBdg==
-X-Gm-Message-State: AOAM532m5dMlwqJt1Jeew9C69dA0U380Qo3ulW+TvFrZdFuMs7BNnqVK
-        5Pm2OyGRs+S37MVZ7lePJ0s=
-X-Google-Smtp-Source: ABdhPJyxum0hAIsGKUQDt+qw44nnnOmGADd+iz0D8A+QyT69wJznXpft6ZD5PBdFWY4GNhNZ5AMA7g==
-X-Received: by 2002:a17:90a:a103:: with SMTP id s3mr4274115pjp.158.1615391122367;
-        Wed, 10 Mar 2021 07:45:22 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
-        by smtp.gmail.com with ESMTPSA id jt21sm6448248pjb.51.2021.03.10.07.45.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 07:45:21 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 10 Mar 2021 07:45:19 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
-Message-ID: <YEjpj9g32ApZFY6u@google.com>
-References: <20210308202047.1903802-1-minchan@kernel.org>
- <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
- <YEefLYiX6rF3Uk4E@google.com>
- <YEh4doXvyuRl5BDB@google.com>
- <5f0e17f2-b161-f0f1-65a4-a7b3af4d2cce@redhat.com>
+        Wed, 10 Mar 2021 10:46:13 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12AFk6CN067600;
+        Wed, 10 Mar 2021 09:46:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615391166;
+        bh=AUn7XpCLIngAp4n26qKR/3PFFYMJbQoYcvX98ciR6gI=;
+        h=From:To:CC:Subject:Date;
+        b=rqtHkgX5OhrDx6BZ2cqWuHo6NV5PQoMaemvR3lck9KwOi7esikm2d3C7QiYlI/qYT
+         X/zSETkHjSi67TeNUJFOkj201yx37st8uEAfuGV9x1AujESuuxRwzDuYFNHM7wfMG7
+         xfoR5oVCkGMoR/PcmycL/Gl5/Kly0roWaYvHnvlE=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12AFk6WN087462
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Mar 2021 09:46:06 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
+ Mar 2021 09:46:05 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 10 Mar 2021 09:46:05 -0600
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12AFk2KO066370;
+        Wed, 10 Mar 2021 09:46:02 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Swapnil Jakhade <sjakhade@cadence.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH v6 00/13] PHY: Add support in Sierra to use external clock
+Date:   Wed, 10 Mar 2021 21:15:45 +0530
+Message-ID: <20210310154558.32078-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f0e17f2-b161-f0f1-65a4-a7b3af4d2cce@redhat.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 09:20:40AM +0100, David Hildenbrand wrote:
-> On 10.03.21 08:42, Minchan Kim wrote:
-> > On Tue, Mar 09, 2021 at 08:15:41AM -0800, Minchan Kim wrote:
-> > 
-> > < snip >
-> > 
-> > > > [...]
-> > > > > +void dump_migrate_failure_pages(struct list_head *page_list)
-> > > > > +{
-> > > > > +	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
-> > > > > +			"migrate failure");
-> > > > > +	if (DYNAMIC_DEBUG_BRANCH(descriptor) &&
-> > > > > +			alloc_contig_ratelimit()) {
-> > > > > +		struct page *page;
-> > > > > +
-> > > > > +		WARN(1, "failed callstack");
-> > > > > +		list_for_each_entry(page, page_list, lru)
-> > > > > +			dump_page(page, "migration failure");
-> > > > > +	}
-> > > > 
-> > > > Apart from the above, do we have to warn for something that is a
-> > > > debugging aid? A similar concern wrt dump_page which uses pr_warn and
-> > > 
-> > > Make sense.
-> > > 
-> > > > page owner is using even pr_alert.
-> > > > Would it make sense to add a loglevel parameter both into __dump_page
-> > > > and dump_page_owner?
-> > > 
-> > > Let me try it.
-> > 
-> > I looked though them and made first draft to clean them up.
-> > 
-> > It's bigger than my initial expectaion because there are many callsites
-> > to use dump_page and stack_trace_print inconsistent loglevel.
-> > Since it's not a specific problem for this work, I'd like to deal with
-> > it as separate patchset since I don't want to be stuck on here for my
-> > initial goal.
-> 
-> Why the need to rush regarding your series?
-> 
-> If it will clean up your patch significantly, then I think doing the
-> cleanups first is the proper way to go.
+Patch series adds support in Sierra driver to use external clock.
 
-It doesn't clean up my patch at all. dump_page and internal functions
-are already broken in several places from print level point of view.
+v1 of the patch series can be found @ [1]
+v2 of the patch series can be found @ [2]
+v3 of the patch series can be found @ [3]
+v5 of the patch series can be found @ [5]
+v6 of the patch series can be found @ [6]
 
-I agreed that it's good to fix but it shouldn't be a block for the work
-since it's not a new particular problem this patch introduce.
+Changes from v5:
+1) Added Rob's Reviewed-by for the DT binding
+2) Fixed another error handling case pointed out by Swapnil
+3) Fixed few checkpatch errors.
 
-> 
-> I really don't get why this is a real problem.
+Changes from v4:
+1) Fixed couple of error handling cases
+2) Added reviewed by from Philipp Zabel
+3) Fixed couple of patch commit subjects to be uniform with other
+patches.
 
-That's because it's not my top priority.
+Changes from v3:
+1) Instead of adding separate subnodes for each clock, just add
+#clock-cells in Sierra SERDES nodes and model the clocks. This is
+in alignment with Rob's comment for a different series [4]
+2) Removed device tree changes from the series.
+
+Changes from v2:
+1) Add depends on COMMON_CLK in Sierra
+2) Add modelling PLL_CMNLC and PLL_CMNLC1 as clocks into a separate
+patch
+3) Disable clocks in Sierra driver remove
+
+Changes from v1:
+1) Remove the part that prevents configuration if the SERDES is already
+   configured and focus only on using external clock and the associated
+   cleanups
+2) Change patch ordering
+3) Use exclusive reset control APIs
+4) Fix error handling code
+5) Include DT patches in this series (I can send this separately to DT
+MAINTAINER once the driver patches are merged)
+
+[1] -> http://lore.kernel.org/r/20201103035556.21260-1-kishon@ti.com
+[2] -> http://lore.kernel.org/r/20201222070520.28132-1-kishon@ti.com
+[3] -> http://lore.kernel.org/r/20201224111627.32590-1-kishon@ti.com
+[4] -> http://lore.kernel.org/r/20210108025943.GA1790601@robh.at.kernel.org
+[5] -> https://lore.kernel.org/r/20210304044122.15166-1-kishon@ti.com
+[6] -> https://lore.kernel.org/r/20210308050732.7140-1-kishon@ti.com
+
+Kishon Vijay Abraham I (13):
+  phy: cadence: Sierra: Fix PHY power_on sequence
+  phy: ti: j721e-wiz: Invoke wiz_init() before
+    of_platform_device_create()
+  phy: cadence: cadence-sierra: Create PHY only for "phy" or "link"
+    sub-nodes
+  phy: ti: j721e-wiz: Get PHY properties only for "phy" or "link"
+    subnode
+  phy: cadence: cadence-sierra: Move all clk_get_*() to a separate
+    function
+  phy: cadence: cadence-sierra: Move all reset_control_get*() to a
+    separate function
+  phy: cadence: cadence-sierra: Explicitly request exclusive reset
+    control
+  phy: cadence-torrent: Use a common header file for Cadence SERDES
+  phy: cadence: cadence-sierra: Add array of input clocks in "struct
+    cdns_sierra_phy"
+  phy: cadence: cadence-sierra: Add missing clk_disable_unprepare() in
+    .remove callback
+  dt-bindings: phy: phy-cadence-sierra: Add binding to model Sierra as
+    clock provider
+  phy: cadence: phy-cadence-sierra: Model PLL_CMNLC and PLL_CMNLC1 as
+    clocks (mux clocks)
+  phy: cadence: sierra: Enable pll_cmnlc and pll_cmnlc1 clocks
+
+ .../bindings/phy/phy-cadence-sierra.yaml      |  17 +-
+ drivers/phy/cadence/Kconfig                   |   1 +
+ drivers/phy/cadence/phy-cadence-sierra.c      | 419 ++++++++++++++++--
+ drivers/phy/cadence/phy-cadence-torrent.c     |   2 +-
+ drivers/phy/ti/phy-j721e-wiz.c                |  21 +-
+ include/dt-bindings/phy/phy-cadence-torrent.h |  15 -
+ include/dt-bindings/phy/phy-cadence.h         |  20 +
+ 7 files changed, 428 insertions(+), 67 deletions(-)
+ delete mode 100644 include/dt-bindings/phy/phy-cadence-torrent.h
+ create mode 100644 include/dt-bindings/phy/phy-cadence.h
+
+-- 
+2.17.1
+
