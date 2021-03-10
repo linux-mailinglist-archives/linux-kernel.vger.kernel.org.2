@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4657E333943
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8B433394A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbhCJJyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbhCJJxi (ORCPT
+        id S230140AbhCJJ4J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 04:56:09 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:39164 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231139AbhCJJzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:53:38 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26179C06174A;
-        Wed, 10 Mar 2021 01:53:38 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id i9so6703062wml.0;
-        Wed, 10 Mar 2021 01:53:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=w0U5hMkEPQ0LdddaxPHYRwfwYDqIwqmZHfEAmO3vAk0=;
-        b=SQmG6rWy2UTs1WF3luS2hAQ8gUh+sUo41HkJR3rjIVkAkhZSm2gOT771VWhgzFAcyn
-         mNK5u43j8ljmeUbzzudDTuQ9s8YcQ89XfmMW+HoGq8/dMBxCKGmDnhk+l5dz1bt6tk1j
-         mgPj4MnEWS5ET8JZQ2vH4f1Pc/sTjK6Wj9pEmp+6JJlKJa9kMeQek0fCDNIOypF9MSQl
-         5y73dv3hysZ5X2rvKzg3BsRjdYttn3IocscTFLKuZPJ/1os/rnMix8pl1gDKZNbIY8Z5
-         fwtbFlPgnMhl1DsMlFLSu63XrGkaepC6O/yVjLGuWbfH4uv4gOYx4LdPXFmi5jAeZwoG
-         +uzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=w0U5hMkEPQ0LdddaxPHYRwfwYDqIwqmZHfEAmO3vAk0=;
-        b=KNGxMzxLFEbzdSuJrz8eL+c96MyK+yKdemaHmGofxfEndR3JgKI56C/hu0F7iowFPd
-         cH+R0nLiRcO7w6QgXLjRtA0uOmJ5mhUc5p61CpXxvpUCnQgehJPBKxR4MPkEROBLXM2u
-         damM8rb40Qv5outRaWbhnzIc2GXZhsFolKS7C97u14ycz5cBlee/YAB0YAUXzeoeHmNE
-         2aAb+jgvla0Wor5csO4GcuWQ7KKbYKWf045Nn27xLjRPCrInisne83gib1r2YOYIorJO
-         MxNb2EZaoz6TvkyZaaj/aKt1hucj0ppsLAeySZqN6cEv6WciB16mg0Moufa7gb0jeBDq
-         1bvA==
-X-Gm-Message-State: AOAM531hDYh84Ze8SE/c0MiQJb6PWgPWfq6RDMlKmoIwsoXGXZPZAnqY
-        9PY49KJ5fyKOmsBoQviAFOA1y7tMx70=
-X-Google-Smtp-Source: ABdhPJypGyz5Hhbmt6VvpOmx/6LZfrs61H+giJS+ne1VO5WxE4zCe7/mJAKu/zOfWbMlnhjIttpLTA==
-X-Received: by 2002:a1c:2b05:: with SMTP id r5mr2428301wmr.179.1615370016851;
-        Wed, 10 Mar 2021 01:53:36 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id l4sm21933661wrt.60.2021.03.10.01.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 01:53:36 -0800 (PST)
-Date:   Wed, 10 Mar 2021 10:53:34 +0100
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: rtc: rtc-m48t59: rtc-m48t59.0: IRQ index 0 not found
-Message-ID: <YEiXHjIrXfjkrv5U@Red>
+        Wed, 10 Mar 2021 04:55:45 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-196-icghlii5Ppe-aK3eY6X3oQ-1; Wed, 10 Mar 2021 09:55:39 +0000
+X-MC-Unique: icghlii5Ppe-aK3eY6X3oQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 10 Mar 2021 09:55:39 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 10 Mar 2021 09:55:39 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jiapeng Chong' <jiapeng.chong@linux.alibaba.com>,
+        "peterz@infradead.org" <peterz@infradead.org>
+CC:     "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH] perf machine: Assign boolean values to a bool variable
+Thread-Topic: [PATCH] perf machine: Assign boolean values to a bool variable
+Thread-Index: AQHXFMyuUkzqglnwCE+oJIwnabqrBap8/PsQ
+Date:   Wed, 10 Mar 2021 09:55:39 +0000
+Message-ID: <e28b0392ce4349989fdf03470ed8fd3e@AcuMS.aculab.com>
+References: <1615284669-82139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1615284669-82139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+From: Jiapeng Chong
+> Sent: 09 March 2021 10:11
+> 
+> Fix the following coccicheck warnings:
+> 
+> ./tools/perf/util/machine.c:2041:9-10: WARNING: return of 0/1 in
+> function 'symbol__match_regex' with return type bool.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  tools/perf/util/machine.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index b5c2d8b..435771e 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -2038,8 +2038,8 @@ int machine__process_event(struct machine *machine, union perf_event *event,
+>  static bool symbol__match_regex(struct symbol *sym, regex_t *regex)
+>  {
+>  	if (!regexec(regex, sym->name, 0, NULL, 0))
+> -		return 1;
+> -	return 0;
+> +		return true;
+> +	return false;
 
-On my SPARC sunblade 100, I got this:
-[   13.613727] rtc-m48t59 rtc-m48t59.0: IRQ index 0 not found
-[   13.805777] rtc-m48t59 rtc-m48t59.0: registered as rtc0
-[   14.385092] rtc-m48t59 rtc-m48t59.0: setting system clock to 2021-03-01T05:34:33 UTC (1614576873)
+What's wrong with:
+	return !regexec(regex, sym->name, 0, NULL, 0);
 
-The IRQ index 0 message is found after 5.5
+    David
 
-Testing rtc via hwclock give:
-hwclock: ioctl(3, RTC_UIE_ON, 0) to /dev/rtc0 failed: Input/output error
-But this hwclock behavior is present also on earlier kernel (tested 4.9.260, 4.19.179 and 4.14.224).
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Does this Input/output error is normal ? (I think no)
-
-Regards
