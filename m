@@ -2,143 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AEC333FDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651B6333FDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhCJOCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:02:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbhCJOBr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:01:47 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22238C061760;
-        Wed, 10 Mar 2021 06:01:47 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d23so5310262plq.2;
-        Wed, 10 Mar 2021 06:01:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GCVQjWt0AiUSEd6FKWYgmvzWBrd1IhH0M7mcUn/44lQ=;
-        b=Px0uOi0ryjRx6x08IYmQ6kMksj/yHk95AZS1jObIxSWVrOk6XIxq/UhsgFBDROE6NK
-         5tMupwA+SUii8a2B7zCpHiXtJ2ipBz070h1TZToPZO4ZpgHa0Wm/5EQeEznAzjOi+maU
-         0csiXQ9y3QH2/0Fl6oOID3TuSy5br8ERPBHeqmuiYFCkh4P8vxwTJMnAMdcTcu7+K6f7
-         u9VfaVnldMU4RC3T4u0tA2wL/rPCHmZ/bGLVX1cSeeo/gbJ6Va5seL6Q0j4pCtyTzi2+
-         AyiKOAzjASbUo8ZgbLxgWgmGlBUwc6NqPGqKi/rjkGGBT1c0ibOXQxrCJwlMkMVbsZq0
-         gBAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GCVQjWt0AiUSEd6FKWYgmvzWBrd1IhH0M7mcUn/44lQ=;
-        b=tKuWh0aFyeQxwnx7O7r5PLTL/X13rMs69X82rXCzbfqoE1ri46HCo7JpW/VPqSzlVz
-         F9Hj4wzaZhwWSEPINEPRjF+Dla1PvO63JUTjNeg3hAj0G2MYiwP2RgEukxFUMn9LT62X
-         oSNnVoWE9ffWqE+jzeHFGAQZRpshK7InXYoA2sCNqtECi158UJh+0bM/iAC4vpREYSh1
-         Ll449wbG7G1e5a8FtNLnXZmh2wWqQJ07NODyHGcxvmumsyx6FTp8LMB17/oYtPUTcx7w
-         HCTG4bWXXhbwM6cE3sNmSRrmHwkX/e3P/tZwfGLyYUBj/PJeJirTeUtw4PgFJqTi6V84
-         +7tw==
-X-Gm-Message-State: AOAM533wrCWg8uhMrF1V0P7r+ASz+zuJEyWnfzFEG86DLGNa27ujw22I
-        yD7Ne1jRCUYCJWWuTePbeyq0Ho9cA5aV47GTzvU=
-X-Google-Smtp-Source: ABdhPJzKz7o7Q41neFjaiKGbGw1g/ggo7MCvqxNQhETQKoMzACZK76VS/lS0IsB/t4i57E5n23jDy3qbOmh0U2sPIgY=
-X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr3828368pja.228.1615384906581;
- Wed, 10 Mar 2021 06:01:46 -0800 (PST)
+        id S232493AbhCJOCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:02:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38232 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230260AbhCJOCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 09:02:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F35E7AC17;
+        Wed, 10 Mar 2021 14:02:36 +0000 (UTC)
+Subject: Re: [PATCH v2] arm: print alloc free paths for address in registers
+To:     Maninder Singh <maninder1.s@samsung.com>, linux@armlinux.org.uk,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, a.sahrawat@samsung.com,
+        Vaneet Narang <v.narang@samsung.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+References: <CGME20210225075653epcas5p3d9551f01177d0c851c9c37f6ae84f38d@epcas5p3.samsung.com>
+ <1614239800-27549-1-git-send-email-maninder1.s@samsung.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <6f34c594-a840-30a5-5eb0-42b30844ec87@suse.cz>
+Date:   Wed, 10 Mar 2021 15:02:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210310125504.31886-1-noltari@gmail.com> <20210310125504.31886-3-noltari@gmail.com>
-In-Reply-To: <20210310125504.31886-3-noltari@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 10 Mar 2021 16:01:30 +0200
-Message-ID: <CAHp75VeAmdkDuJ-rhyunQ+tAbB6=qHLGKzwFg26jgkdYzJLK1A@mail.gmail.com>
-Subject: Re: [PATCH v6 02/15] gpio: regmap: set gpio_chip of_node
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1614239800-27549-1-git-send-email-maninder1.s@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 2:55 PM =C3=81lvaro Fern=C3=A1ndez Rojas
-<noltari@gmail.com> wrote:
->
-> This is needed for properly registering GPIO regmap as a child of a regma=
-p
-> pin controller.
-
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Thanks!
-
-> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
-> Reviewed-by: Michael Walle <michael@walle.cc>
+On 2/25/21 8:56 AM, Maninder Singh wrote:
+> In case of "Use After Free" kernel OOPs, free path of object
+> is required to debug futher.
+> And in most of cases object address is present in one of registers.
+> 
+> Thus check for register address and if it belongs to slab,
+> print its alloc and free path.
+> 
+> e.g. in below issue  register r6 belongs to slab, and use after free issue
+> occurred on one of its derefer values:
+> 
+> [  124.310386] (ptrval)
+> [  124.312647] 8<--- cut here ---
+> [  124.313761] Unable to handle kernel paging request at virtual address 6b6b6b6f
+> [  124.315972] pgd = (ptrval)
+> ...
+> [  124.328290] pc : [<c052fc0c>]    lr : [<c052fc00>]    psr: 60000013
+> [  124.330349] sp : c8993d28  ip : 0000bff4  fp : c8ae2020
+> [  124.332071] r10: 00000000  r9 : 00000001  r8 : c1804cc8
+> [  124.333803] r7 : 00000000  r6 : c8ae9180  r5 : c1804a80  r4 : c8ae2008
+> [  124.335936] r3 : 6b6b6b6b  r2 : 315049d6  r1 : 2d867000  r0 : c1396584
+> ..
+> [  124.365233] register r6: c8ae9180 belongs to slab object
+> [  124.366364] INFO: Allocated in meminfo_proc_show+0x3c/0x500 age=1 cpu=0 pid=69
+> [  124.367545]  meminfo_proc_show+0x3c/0x500
+> [  124.368271]  seq_read_iter+0x10c/0x4bc
+> [  124.368994]  proc_reg_read_iter+0x74/0xa8
+> [  124.369712]  generic_file_splice_read+0xe8/0x178
+> [  124.370496]  splice_direct_to_actor+0xe0/0x2b8
+> [  124.371261]  do_splice_direct+0xa4/0xdc
+> [  124.371917]  do_sendfile+0x1c4/0x3ec
+> [  124.372550]  sys_sendfile64+0x128/0x130
+> [  124.373109]  ret_fast_syscall+0x0/0x54
+> [  124.373664]  0xbe9a2de4
+> [  124.374081] INFO: Freed in meminfo_proc_show+0x5c/0x500 age=1 cpu=0 pid=69
+> [  124.374933]  meminfo_proc_show+0x5c/0x500
+> [  124.375485]  seq_read_iter+0x10c/0x4bc
+> [  124.376020]  proc_reg_read_iter+0x74/0xa8
+> [  124.376643]  generic_file_splice_read+0xe8/0x178
+> [  124.377331]  splice_direct_to_actor+0xe0/0x2b8
+> [  124.378022]  do_splice_direct+0xa4/0xdc
+> [  124.378633]  do_sendfile+0x1c4/0x3ec
+> [  124.379220]  sys_sendfile64+0x128/0x130
+> [  124.379822]  ret_fast_syscall+0x0/0x54
+> [  124.380421]  0xbe9a2de4
+> 
+> Co-developed-by: Vaneet Narang <v.narang@samsung.com>
+> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
 > ---
->  v6: add comment and simplify of_node assignment
->  v5: switch to fwnode
->  v4: fix documentation
->  v3: introduce patch needed for properly parsing gpio-range
->
->  drivers/gpio/gpio-regmap.c  | 1 +
->  include/linux/gpio/regmap.h | 4 ++++
->  2 files changed, 5 insertions(+)
->
-> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
-> index 5412cb3b0b2a..d4fc656e70b0 100644
-> --- a/drivers/gpio/gpio-regmap.c
-> +++ b/drivers/gpio/gpio-regmap.c
-> @@ -249,6 +249,7 @@ struct gpio_regmap *gpio_regmap_register(const struct=
- gpio_regmap_config *config
->
->         chip =3D &gpio->gpio_chip;
->         chip->parent =3D config->parent;
-> +       chip->of_node =3D to_of_node(config->fwnode);
->         chip->base =3D -1;
->         chip->ngpio =3D config->ngpio;
->         chip->names =3D config->names;
-> diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
-> index ad76f3d0a6ba..334dd928042b 100644
-> --- a/include/linux/gpio/regmap.h
-> +++ b/include/linux/gpio/regmap.h
-> @@ -4,6 +4,7 @@
->  #define _LINUX_GPIO_REGMAP_H
->
->  struct device;
-> +struct fwnode_handle;
->  struct gpio_regmap;
->  struct irq_domain;
->  struct regmap;
-> @@ -16,6 +17,8 @@ struct regmap;
->   * @parent:            The parent device
->   * @regmap:            The regmap used to access the registers
->   *                     given, the name of the device is used
-> + * @fwnode:            (Optional) The firmware node.
-> + *                     If not given, the fwnode of the parent is used.
->   * @label:             (Optional) Descriptive name for GPIO controller.
->   *                     If not given, the name of the device is used.
->   * @ngpio:             Number of GPIOs
-> @@ -57,6 +60,7 @@ struct regmap;
->  struct gpio_regmap_config {
->         struct device *parent;
->         struct regmap *regmap;
-> +       struct fwnode_handle *fwnode;
->
->         const char *label;
->         int ngpio;
-> --
-> 2.20.1
->
+> v1 -> v2: do address sanity with virt_addr_valid
+> 
+>  arch/arm/include/asm/bug.h |  1 +
+>  arch/arm/kernel/process.c  | 18 ++++++++++++++++++
+>  arch/arm/kernel/traps.c    |  1 +
+>  include/linux/slab.h       | 14 ++++++++++++++
+>  mm/slab.h                  |  7 -------
+>  mm/slub.c                  | 18 ++++++++++++++++++
 
+Instead of your changes to SL*B, could you check mem_dump_obj() and others added
+by Paul in 5.12-rc1?
 
---=20
-With Best Regards,
-Andy Shevchenko
+(+CC Paul, thus not trimming)
+
+Thanks,
+Vlastimil
+
+>  6 files changed, 52 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm/include/asm/bug.h b/arch/arm/include/asm/bug.h
+> index 673c7dd..ba8d9d7 100644
+> --- a/arch/arm/include/asm/bug.h
+> +++ b/arch/arm/include/asm/bug.h
+> @@ -88,5 +88,6 @@ extern asmlinkage void c_backtrace(unsigned long fp, int pmode,
+>  struct mm_struct;
+>  void show_pte(const char *lvl, struct mm_struct *mm, unsigned long addr);
+>  extern void __show_regs(struct pt_regs *);
+> +extern void __show_regs_alloc_free(struct pt_regs *regs);
+>  
+>  #endif
+> diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
+> index 5199a2b..97d2a7c 100644
+> --- a/arch/arm/kernel/process.c
+> +++ b/arch/arm/kernel/process.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/random.h>
+>  #include <linux/hw_breakpoint.h>
+>  #include <linux/leds.h>
+> +#include <linux/slab.h>
+>  
+>  #include <asm/processor.h>
+>  #include <asm/thread_notify.h>
+> @@ -92,6 +93,23 @@ void arch_cpu_idle_exit(void)
+>  	ledtrig_cpu(CPU_LED_IDLE_END);
+>  }
+>  
+> +void __show_regs_alloc_free(struct pt_regs *regs)
+> +{
+> +	int i;
+> +
+> +	/* check for r0 - r12 only */
+> +	for (i = 0; i < 13; i++) {
+> +		unsigned long addr = regs->uregs[i];
+> +		void *object;
+> +		struct kmem_cache *cache;
+> +
+> +		if (slab_page_object(addr, &object, &cache)) {
+> +			printk("\nregister r%d: %lx belongs to slab object\n", i, addr);
+> +			print_tracking(cache, object);
+> +		}
+> +	}
+> +}
+> +
+>  void __show_regs(struct pt_regs *regs)
+>  {
+>  	unsigned long flags;
+> diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
+> index 17d5a78..64308e3 100644
+> --- a/arch/arm/kernel/traps.c
+> +++ b/arch/arm/kernel/traps.c
+> @@ -287,6 +287,7 @@ static int __die(const char *str, int err, struct pt_regs *regs)
+>  
+>  	print_modules();
+>  	__show_regs(regs);
+> +	__show_regs_alloc_free(regs);
+>  	pr_emerg("Process %.*s (pid: %d, stack limit = 0x%p)\n",
+>  		 TASK_COMM_LEN, tsk->comm, task_pid_nr(tsk), end_of_stack(tsk));
+>  
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 7ae6040..a19ba55 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -706,4 +706,18 @@ static inline void *kzalloc_node(size_t size, gfp_t flags, int node)
+>  #define slab_dead_cpu		NULL
+>  #endif
+>  
+> +#ifdef CONFIG_SLUB_DEBUG
+> +bool slab_page_object(unsigned long address, void **object, struct kmem_cache **cache);
+> +extern void print_tracking(struct kmem_cache *s, void *object);
+> +#else
+> +static inline void print_tracking(struct kmem_cache *s, void *object)
+> +{
+> +}
+> +
+> +static inline bool slab_page_object(unsigned long address, void **object, struct kmem_cache **cache)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  #endif	/* _LINUX_SLAB_H */
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 076582f..8a072bd 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -208,18 +208,11 @@ static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
+>  		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
+>  }
+>  
+> -#ifdef CONFIG_SLUB_DEBUG
+>  #ifdef CONFIG_SLUB_DEBUG_ON
+>  DECLARE_STATIC_KEY_TRUE(slub_debug_enabled);
+>  #else
+>  DECLARE_STATIC_KEY_FALSE(slub_debug_enabled);
+>  #endif
+> -extern void print_tracking(struct kmem_cache *s, void *object);
+> -#else
+> -static inline void print_tracking(struct kmem_cache *s, void *object)
+> -{
+> -}
+> -#endif
+>  
+>  /*
+>   * Returns true if any of the specified slub_debug flags is enabled for the
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 0d5fac3..31436db 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -648,6 +648,24 @@ void print_tracking(struct kmem_cache *s, void *object)
+>  	print_track("Freed", get_track(s, object, TRACK_FREE), pr_time);
+>  }
+>  
+> +bool slab_page_object(unsigned long address, void **object, struct kmem_cache **cache)
+> +{
+> +	void *addr = (void *)address;
+> +	struct page *page;
+> +
+> +	if (virt_addr_valid(addr)) {
+> +		page = virt_to_head_page(addr);
+> +
+> +		if (PageSlab(page)) {
+> +			*cache = page->slab_cache;
+> +			*object = nearest_obj(*cache, page, addr);
+> +			return true;
+> +		}
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  static void print_page_info(struct page *page)
+>  {
+>  	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=0x%04lx\n",
+> 
+
