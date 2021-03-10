@@ -2,218 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA5F33442B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E806334435
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbhCJQ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:57:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31289 "EHLO
+        id S233680AbhCJQ6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:58:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56640 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233399AbhCJQ5S (ORCPT
+        by vger.kernel.org with ESMTP id S233632AbhCJQ5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:57:18 -0500
+        Wed, 10 Mar 2021 11:57:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615395438;
+        s=mimecast20190719; t=1615395457;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sH8IQrZxuYeOUbLZE/57xl+lGLw/UXV3S3e87t66hh4=;
-        b=c/Uejp7vuOL7gdap/GfmDX778VTG+l4+/6Q/QfHQ3zRVWxv/D/tpK2puGpmB7z4rYJP14/
-        y67XaYH7KVujE3/TrbL9NLtsL+racd5SemSVyvn8y6zSk6MfG1QvDqnAuNFxZgolcitnqH
-        n7/hjYUJihM6SddAVn0zwniYfTBut7E=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-smEmGA65NfyyeRjTFXeOZw-1; Wed, 10 Mar 2021 11:57:16 -0500
-X-MC-Unique: smEmGA65NfyyeRjTFXeOZw-1
-Received: by mail-qv1-f69.google.com with SMTP id h10so13128484qvf.19
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:57:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sH8IQrZxuYeOUbLZE/57xl+lGLw/UXV3S3e87t66hh4=;
-        b=JjI8UDKE3Bf4pM1AI3ilvgZG6nJOaGXzYDO5065t+knJhJdhr1oIrnQYhg+vQwE5Ok
-         +7OxQ4HkL3HAPh7prRUPMOhYGC0piT3yUbIR5qL/eR9rW9hY5fvdUT1TzKBb+XAe2ege
-         vVcyIprzCA76LQoPzWMlInyU7D/nHed2O99RCb+qn6vEdWsKy7Viv34sV8lMsfMGfuzc
-         Kh6DPINTwDLyxCqiZG0zz2EYc3YWCGx5VSzJosLcKGxykmPqB+J27DrCvUKOHK6cDn4f
-         oPCnT3x8RfnLeE99f0f+f1gvSvH8aG1BNuNNT6y3AWa8wgdJ/+6XuLDUa9/66h/gYiod
-         Po5A==
-X-Gm-Message-State: AOAM533BvPniHXq3HChA0IC4N+HfMxyu1hWLjeZethx0zWpzU7qMdVoX
-        kEzSkyEsMdvItYPhXk8CNs2SwgKcBiuDRos66U/V02YyoZbyPamlQLK4DGziNYBZfZogI1qyyew
-        sgx1luyZZnmIHhO/jMCWhfEDB
-X-Received: by 2002:ac8:4749:: with SMTP id k9mr2371966qtp.44.1615395435976;
-        Wed, 10 Mar 2021 08:57:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy3DSqfvNYFn7nY1WxbUtcI1yp3w27QNJwctoj81/6+xlgC0vsC2oq13zfz4EdeeuHAO5YHEQ==
-X-Received: by 2002:ac8:4749:: with SMTP id k9mr2371950qtp.44.1615395435682;
-        Wed, 10 Mar 2021 08:57:15 -0800 (PST)
-Received: from xz-x1 ([142.126.89.138])
-        by smtp.gmail.com with ESMTPSA id m21sm12908202qka.28.2021.03.10.08.57.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 08:57:15 -0800 (PST)
-Date:   Wed, 10 Mar 2021 11:57:13 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        bh=tJ1em54X7cNlxYOwt1XkWsi2bN3JlmKyhBUdFCYW68w=;
+        b=LfNr/TsOmkzujl4cBrcqey+FBn4BjzdfWd870plzsCCupX2GCKjw1Z9OBxp36Vj9FNuuOz
+        MTYjd9wmS3gAtvVaoQa/FWp0MalO+iG0TsUs/7yaF4U/QKG1RAJCaQdo2wavxsEehV0XDd
+        z0HLWbcNYNnQqGFLhJpFmJRYY8OIkWQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-lhDkcfi-NXOnfsBkFqHPVA-1; Wed, 10 Mar 2021 11:57:36 -0500
+X-MC-Unique: lhDkcfi-NXOnfsBkFqHPVA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7161108BD07;
+        Wed, 10 Mar 2021 16:57:33 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3C3C460C13;
+        Wed, 10 Mar 2021 16:57:24 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v4 13/28] netfs: Hold a ref on a page when PG_private_2 is set
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v4 2/4] hugetlb/userfaultfd: Forbid huge pmd sharing when
- uffd enabled
-Message-ID: <20210310165713.GB6530@xz-x1>
-References: <20210218230633.15028-1-peterx@redhat.com>
- <20210218231202.15426-1-peterx@redhat.com>
- <CA+G9fYvyQ=9cZgGDNzN_PH09WRk0yu=5CDfa1mxPQ+uzfonnkg@mail.gmail.com>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 10 Mar 2021 16:57:24 +0000
+Message-ID: <161539544426.286939.4484560053278261236.stgit@warthog.procyon.org.uk>
+In-Reply-To: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
+References: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="tKW2IUtsqtDRztdT"
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvyQ=9cZgGDNzN_PH09WRk0yu=5CDfa1mxPQ+uzfonnkg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Take a reference on a page when PG_private_2 is set and drop it once the
+bit is unlocked[1].
 
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-On Wed, Mar 10, 2021 at 01:18:42PM +0530, Naresh Kamboju wrote:
-> Hi Peter,
-
-Hi, Naresh,
-
-> 
-> On Fri, 19 Feb 2021 at 04:43, Peter Xu <peterx@redhat.com> wrote:
-> >
-> > Huge pmd sharing could bring problem to userfaultfd.  The thing is that
-> > userfaultfd is running its logic based on the special bits on page table
-> > entries, however the huge pmd sharing could potentially share page table
-> > entries for different address ranges.  That could cause issues on either:
-> >
-> >   - When sharing huge pmd page tables for an uffd write protected range, the
-> >     newly mapped huge pmd range will also be write protected unexpectedly, or,
-> >
-> >   - When we try to write protect a range of huge pmd shared range, we'll first
-> >     do huge_pmd_unshare() in hugetlb_change_protection(), however that also
-> >     means the UFFDIO_WRITEPROTECT could be silently skipped for the shared
-> >     region, which could lead to data loss.
-> >
-> > Since at it, a few other things are done altogether:
-> >
-> >   - Move want_pmd_share() from mm/hugetlb.c into linux/hugetlb.h, because
-> >     that's definitely something that arch code would like to use too
-> >
-> >   - ARM64 currently directly check against CONFIG_ARCH_WANT_HUGE_PMD_SHARE when
-> >     trying to share huge pmd.  Switch to the want_pmd_share() helper.
-> >
-> > Since at it, move vma_shareable() from huge_pmd_share() into want_pmd_share().
-> >
-> > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> > Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >  arch/arm64/mm/hugetlbpage.c   |  3 +--
-> >  include/linux/hugetlb.h       |  2 ++
-> >  include/linux/userfaultfd_k.h |  9 +++++++++
-> >  mm/hugetlb.c                  | 20 ++++++++++++++------
-> >  4 files changed, 26 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-> > index 6e3bcffe2837..58987a98e179 100644
-> > --- a/arch/arm64/mm/hugetlbpage.c
-> > +++ b/arch/arm64/mm/hugetlbpage.c
-> > @@ -284,8 +284,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
-> >                  */
-> >                 ptep = pte_alloc_map(mm, pmdp, addr);
-> >         } else if (sz == PMD_SIZE) {
-> > -               if (IS_ENABLED(CONFIG_ARCH_WANT_HUGE_PMD_SHARE) &&
-> > -                   pud_none(READ_ONCE(*pudp)))
-> > +               if (want_pmd_share(vma, addr) && pud_none(READ_ONCE(*pudp)))
-> 
-> While building Linux next 20210310 tag for arm64 architecture with
-> 
->   - CONFIG_ARM64_64K_PAGES=y
-> 
-> enabled the build failed due to below errors / warnings
-> 
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-> CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
-> 'HOSTCC=sccache gcc'
-> aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
-> aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
-> aarch64-linux-gnu-ld: arch/arm64/mm/hugetlbpage.o: in function `huge_pte_alloc':
-> hugetlbpage.c:(.text+0x7d8): undefined reference to `want_pmd_share'
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-Sorry for the issue & thanks for the report.  Would you please check whether
-the patch attached could fix the issue?
-
--- 
-Peter Xu
-
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment;
-	filename="0001-mm-hugetlb-Fix-build-with-ARCH_WANT_HUGE_PMD_SHARE.patch"
-
-From 4072042b415d1f78ac1ab017671e345b414ca6ab Mon Sep 17 00:00:00 2001
-From: Peter Xu <peterx@redhat.com>
-Date: Wed, 10 Mar 2021 11:48:56 -0500
-Subject: [PATCH] mm/hugetlb: Fix build with !ARCH_WANT_HUGE_PMD_SHARE
-
-want_pmd_share() is undefined with !ARCH_WANT_HUGE_PMD_SHARE since it's put
-by accident into a "#ifdef ARCH_WANT_HUGE_PMD_SHARE" block.  Moving it out
-won't work either since vma_shareable() is only defined within the block.
-Define it for !ARCH_WANT_HUGE_PMD_SHARE instead.
-
-Fixes: 5b109cc1cdcc ("hugetlb/userfaultfd: forbid huge pmd sharing when uffd enabled")
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Peter Xu <peterx@redhat.com>
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: Linus Torvalds <torvalds@linux-foundation.org>
+cc: linux-mm@kvack.org
+cc: linux-cachefs@redhat.com
+cc: linux-afs@lists.infradead.org
+cc: linux-nfs@vger.kernel.org
+cc: linux-cifs@vger.kernel.org
+cc: ceph-devel@vger.kernel.org
+cc: v9fs-developer@lists.sourceforge.net
+cc: linux-fsdevel@vger.kernel.org
+Link: https://lore.kernel.org/r/CAHk-=wh+2gbF7XEjYc=HV9w_2uVzVf7vs60BPz0gFA=+pUm3ww@mail.gmail.com/ [1]
+Link: https://lore.kernel.org/r/1331025.1612974993@warthog.procyon.org.uk/
+Link: https://lore.kernel.org/r/161340400833.1303470.8070750156044982282.stgit@warthog.procyon.org.uk/ # v3
 ---
- mm/hugetlb.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index d58f1456fe27..8dda7e034477 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5469,9 +5469,6 @@ static bool vma_shareable(struct vm_area_struct *vma, unsigned long addr)
+ fs/netfs/read_helper.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+index 0a7b76c11c98..ce11ca4c32e4 100644
+--- a/fs/netfs/read_helper.c
++++ b/fs/netfs/read_helper.c
+@@ -10,6 +10,7 @@
+ #include <linux/fs.h>
+ #include <linux/mm.h>
+ #include <linux/pagemap.h>
++#include <linux/pagevec.h>
+ #include <linux/slab.h>
+ #include <linux/uio.h>
+ #include <linux/sched/mm.h>
+@@ -238,10 +239,13 @@ static void netfs_rreq_unmark_after_write(struct netfs_read_request *rreq,
+ 					  bool was_async)
+ {
+ 	struct netfs_read_subrequest *subreq;
++	struct pagevec pvec;
+ 	struct page *page;
+ 	pgoff_t unlocked = 0;
+ 	bool have_unlocked = false;
  
- bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr)
- {
--#ifndef CONFIG_ARCH_WANT_HUGE_PMD_SHARE
--	return false;
--#endif
- #ifdef CONFIG_USERFAULTFD
- 	if (uffd_disable_huge_pmd_share(vma))
- 		return false;
-@@ -5616,6 +5613,11 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
- 				unsigned long *start, unsigned long *end)
- {
- }
++	pagevec_init(&pvec);
 +
-+bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr)
-+{
-+	return false;
-+}
- #endif /* CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
+ 	rcu_read_lock();
  
- #ifdef CONFIG_ARCH_WANT_GENERAL_HUGETLB
--- 
-2.26.2
+ 	list_for_each_entry(subreq, &rreq->subrequests, rreq_link) {
+@@ -255,6 +259,8 @@ static void netfs_rreq_unmark_after_write(struct netfs_read_request *rreq,
+ 				continue;
+ 			unlocked = page->index;
+ 			unlock_page_fscache(page);
++			if (pagevec_add(&pvec, page) == 0)
++				pagevec_release(&pvec);
+ 			have_unlocked = true;
+ 		}
+ 	}
+@@ -413,8 +419,10 @@ static void netfs_rreq_unlock(struct netfs_read_request *rreq)
+ 				pg_failed = true;
+ 				break;
+ 			}
+-			if (test_bit(NETFS_SREQ_WRITE_TO_CACHE, &subreq->flags))
++			if (test_bit(NETFS_SREQ_WRITE_TO_CACHE, &subreq->flags)) {
++				get_page(page);
+ 				SetPageFsCache(page);
++			}
+ 			pg_failed |= subreq_failed;
+ 			if (pgend < iopos + subreq->len)
+ 				break;
 
-
---tKW2IUtsqtDRztdT--
 
