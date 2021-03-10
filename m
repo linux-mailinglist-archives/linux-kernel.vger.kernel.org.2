@@ -2,114 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8E2334706
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546D233470D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhCJSoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:44:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhCJSny (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:43:54 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC22EC061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:43:53 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id h4so26952220ljl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:43:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vM8NHkCKbLRErp+CLsLgIaN6Ah0sE04uwPW1iIQb3RQ=;
-        b=LhHMVyE9AxYhSGJEFd4XxwBbmy35wlBI/mM/atTza9Ur7/XCAkFEXBMvb1Z4xsjyGg
-         9B7d31RNquKNpI6EorukgOrKK0VGqJQCD2JeMCiLB33vJjzAYFb0bVCNwPuckqStWaoY
-         RUUOQEWgTeszGaFAV0VmO9cpXrj/rJOCagzfs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vM8NHkCKbLRErp+CLsLgIaN6Ah0sE04uwPW1iIQb3RQ=;
-        b=C0ZokAniCZbb/OA9ySLVeTo0uqYXF9HjrSMEMbADBxWmx6tE79/qeJnm2jroje/C0g
-         ph4Bl8egXqJG+ZTDtpcLucREhDdH+Bt82ZzrOaqBSXo9DeGzFiq+gmSoHK5YgS3cKbxV
-         +nd+Sf1tJCUuio2rBSyeaC18NjBCE194k9Ydlcy6Yx+q+SBfKNM7/6XbYXkBVXncQs07
-         pnm48myIu16NPqrYB2OrHZ0wtvY+ClkAtmnSn78kUtQ36gWb9mRh3R2VEjoCIq1Wyr8O
-         ERE7Y6Q2Nmc3nW+TxvSi+L6F008GpzrhVBE/msHGb8zauc3HM2JRU/69ZzhEdJns/6qK
-         CjXw==
-X-Gm-Message-State: AOAM533fl7sl3FKhvzh/EhwJEFqqosqvPKFp6zCK7/pZl6lsw7D7srxf
-        o89HNFI22uzxPURX4aufUrWCl6ZSmfyTCQ==
-X-Google-Smtp-Source: ABdhPJzoMZPRovMWDNilTFSBSTET5xA0ttyqFvty0I1vbJ+YeR8xxulXtVBJmDfkTRIcUGsZ3tmBtw==
-X-Received: by 2002:a2e:300d:: with SMTP id w13mr2661005ljw.199.1615401831537;
-        Wed, 10 Mar 2021 10:43:51 -0800 (PST)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id z10sm35742lfe.114.2021.03.10.10.43.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 10:43:50 -0800 (PST)
-Received: by mail-lj1-f169.google.com with SMTP id t9so26913757ljt.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:43:49 -0800 (PST)
-X-Received: by 2002:a05:651c:3c1:: with SMTP id f1mr2546489ljp.507.1615401829544;
- Wed, 10 Mar 2021 10:43:49 -0800 (PST)
+        id S233456AbhCJSo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:44:27 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:51015 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233301AbhCJSoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:44:21 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615401861; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=h3hAZU0I4gFbWFD/bqpGuh3QFw2gtv9/q8EKmXg0xLM=; b=iZYdSzrR/DdLwDnzMZTaEfLYUdiKnLKpRm/5A3RjLGb8E+nsMRakOeZio5+DRLsg7Jrg/InU
+ v5hbAJX4hLt7uyopOS0tpqRtmy/tZyoKTUsTU87xlo+LHXXUY6zTfyXWuEhdz0Fqqy6gHwV9
+ 7tzWwvm0rz+enotuC5UvJ0dNFLw=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6049137a155a7cd234c1188b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 18:44:10
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9B23CC43463; Wed, 10 Mar 2021 18:44:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8FA7BC433ED;
+        Wed, 10 Mar 2021 18:44:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8FA7BC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org, dianders@chromium.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v3 0/2] Qualcomm's lpass device tree changes for I2s dai
+Date:   Thu, 11 Mar 2021 00:13:43 +0530
+Message-Id: <20210310184345.19016-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210122135735.176469491@linuxfoundation.org> <20210122135736.291270624@linuxfoundation.org>
-In-Reply-To: <20210122135736.291270624@linuxfoundation.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 10 Mar 2021 10:43:33 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiAafgm4fu-+NNfd5MA_0v7o5Spma-KH82eyJzY_q8-9A@mail.gmail.com>
-Message-ID: <CAHk-=wiAafgm4fu-+NNfd5MA_0v7o5Spma-KH82eyJzY_q8-9A@mail.gmail.com>
-Subject: Re: [PATCH 4.14 27/50] mm, slub: consider rest of partial list if
- acquire_slab() fails
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>, Jann Horn <jannh@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a note to the stable tree: this commit has been reverted
-upstream, because it causes a huge performance drop (admittedly on a
-load and setup that may not be all that relevant to most people).
+These patches are device tree changes to support audio over I2S.
 
-It was applied to 4.4, 4.9 and 4.12, because the commit it was marked
-as "fixing" is from 2012, but it turns out that the early exit from
-the loop in that commit was very much intentional, and very much shows
-up on scalability benchmarks.
+Changes Since v1:
+  -- Ajith's Certification is added.
+  -- Alias name added for sound dai link node
+Changes Since v2:
+  -- sound node variable is added in sc7180-trogdor-coachz.dtsi.
+  -- Audio-jack property is removed, as it may create conflicts with the boards 
+     having different codecs.
+Ajit Pandey (1):
+  arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for I2S driver
 
-I don't think this is likely to be a big deal for the stable kernels -
-we're basically talking tuning for special cases, and while it is
-reverted in my tree now, the "correct" thing to do is likely to be a
-bit more flexible than either "exit loop immediately" or "loop for as
-long as we have contention".
+Srinivasa Rao Mandadapu (1):
+  arm64: dts: qcom: Add sound node for sc7180-trogdor-coachz
 
-In practice, most machines probably won't see either case - or it will
-at least be rare enough that you can't tell.
+ .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  | 18 ++++++
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 58 +++++++++++++++++++
+ 2 files changed, 76 insertions(+)
 
-The machine that reports a huge performance drop was a multi-socket
-machine under fairly extreme conditions, and these contention issues
-are often close to exponential - a smaller machine (or a slighly less
-extreme load) would never see the issue at all either way.
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-See
-
-    https://lore.kernel.org/lkml/20210301080404.GF12822@xsang-OptiPlex-9020/
-
-for details if you care. I don't think this has to necessarily be
-undone in the stable trees, this email is more of an incidental note
-just as a heads-up.
-
-                Linus
-
-On Fri, Jan 22, 2021 at 6:14 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Jann Horn <jannh@google.com>
->
-> commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf upstream.
->
-> acquire_slab() fails if there is contention on the freelist of the page [..]
