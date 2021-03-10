@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA8B33461D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3195633462D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbhCJR7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:59:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbhCJR6i (ORCPT
+        id S233741AbhCJSAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:00:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59669 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234040AbhCJSAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:58:38 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41169C061760;
-        Wed, 10 Mar 2021 09:58:38 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id y131so17175814oia.8;
-        Wed, 10 Mar 2021 09:58:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Qkwa8H4HYdOM0e9yyfRDovBxJoNbMnvqE7j9wsTAbgU=;
-        b=VpSyEHAVHGH52gKKUFr0MYvtt6ou0/uJHn97MZVoHKP1+OT8WHgsYnV68zSFvWOjnH
-         0c9pN0igajg3Ryw7OAQqWtXBBJCwzKsUnxtnr9mLa3RW5EhY1ld9J8s37drZv9ojzFLV
-         wtnchP6Ea5lYJH3iFaq0tD9kEnwRm7PRoYwqyJnuxhat7kvEcUKa0e52CiprUjH6f+DI
-         u5TecbZ0vTi7dmDbhX0dg8OJvXLT9ucy8fkoJrBLQ2ltPk5nAsZRkTgE3sGkzzSr3Y6B
-         ARyYGafGrsrkF2yvupDjdgoZolcGfSun2QJKCCmCZkIiuiUCu+ejA/TJj9Kksd60JeB/
-         3QaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Qkwa8H4HYdOM0e9yyfRDovBxJoNbMnvqE7j9wsTAbgU=;
-        b=AZ6yUlGjOhBmFgNusV2eIRV+aMOEXhfcN7yM4JsZe48OemSiWUYsrfMHp2ejC4f+Wx
-         qgtr4GlYRy/muwQAJxPog+VdIa2S7WxELwmoR5Psi/Q9YAMNEwJi+82fqtaIkXUw3yoj
-         B6K/YCzArA7EJBzVSd/rpc9tTXVRyTHsi+6jHawrBZkqf2Hmmi3PLaGp7ByOUh0hAtw7
-         qEVd4vUxfb4utJkURq9BGlmFfMHS1TUgpIF4rCYuQPcvKTuVHp4AvWMJwByKQ1SmTS/x
-         Jlu2sC66zVCKczqswEMKtHU7V5oslbGXoJkep58gm9RBRbH3lh1Ka55EsQ8cIVViLUn6
-         4TUw==
-X-Gm-Message-State: AOAM531aJ7hPcCvMixOc1zNm/2z2uT/HXq6q3oLPvz8RymsUi3auBGUJ
-        E+VmBqIJ+8sooPbnybzxlQs=
-X-Google-Smtp-Source: ABdhPJxLuOU86ieJeoLsiEyhpG6yGHdOzv10X15L8V0aaHE45sA2VQ5nyfeKNwhLEiIEguPY+kJLYw==
-X-Received: by 2002:aca:4e8e:: with SMTP id c136mr3263201oib.97.1615399117350;
-        Wed, 10 Mar 2021 09:58:37 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 1sm72487otr.53.2021.03.10.09.58.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 10 Mar 2021 09:58:36 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 10 Mar 2021 09:58:34 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alex Elder <elder@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH 5.10 00/49] 5.10.23-rc1 review
-Message-ID: <20210310175834.GA257774@roeck-us.net>
-References: <20210310132321.948258062@linuxfoundation.org>
- <CA+G9fYuydf-g2FPOtP9LAX-4zY3EF64Bx0OQjbjn=a4V+0=eLA@mail.gmail.com>
+        Wed, 10 Mar 2021 13:00:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615399209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jMUG/MYMBAlLtck7raTA6W9NoAqKNam72W1I4W+SUDA=;
+        b=VLLlZtRE2yA2uFJbFhbJG6ttJqaYEGsLUvZsDl8lHZAGiywH/6/bbCmM89MVuaR/ovOXxs
+        NB4mCS0sls5vm5GFOpumdp3n18+802MYD/NPVuhgFErDodv/G/5REsy2OuN9bI63ntAOl2
+        1ks45VtPoZCm+sFK9uVosLeve6Yz/Q8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-ezZB1u16O1iv4YgJisAxVg-1; Wed, 10 Mar 2021 13:00:05 -0500
+X-MC-Unique: ezZB1u16O1iv4YgJisAxVg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 472AE802B5B;
+        Wed, 10 Mar 2021 18:00:03 +0000 (UTC)
+Received: from [10.36.112.107] (ovpn-112-107.ams2.redhat.com [10.36.112.107])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1510560C13;
+        Wed, 10 Mar 2021 17:59:55 +0000 (UTC)
+Subject: Re: [PATCH v3 0/2] x86/setup: consolidate early memory reservations
+To:     Mike Rapoport <rppt@kernel.org>, x86@kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210302100406.22059-1-rppt@kernel.org>
+ <YEkHQ4PnxJkqJeoU@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <ee92d29d-9593-4d9b-443b-10acee6dc400@redhat.com>
+Date:   Wed, 10 Mar 2021 18:59:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYuydf-g2FPOtP9LAX-4zY3EF64Bx0OQjbjn=a4V+0=eLA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YEkHQ4PnxJkqJeoU@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:08:10PM +0530, Naresh Kamboju wrote:
-> On Wed, 10 Mar 2021 at 18:54, <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> > This is the start of the stable review cycle for the 5.10.23 release.
-> > There are 49 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.23-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+On 10.03.21 18:52, Mike Rapoport wrote:
+> Any comments on these?
 > 
-> While building stable rc 5.10 for arm64 the build failed due to
-> the following errors / warnings.
-> 
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-> CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> clang'
-> drivers/net/ipa/gsi.c:1074:7: error: use of undeclared identifier
-> 'GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL'
->         case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
->              ^
-> 1 error generated.
-> make[4]: *** [scripts/Makefile.build:279: drivers/net/ipa/gsi.o] Error 1
-> 
-Also:
 
-Building arm64:allmodconfig ... failed
---------------
-Error log:
-sound/soc/intel/boards/sof_rt5682.c:117:6: error: 'SOF_RT1015_SPEAKER_AMP_100FS' undeclared here
+Take my
 
-Guenter
+Acked-by: David Hildenbrand <david@redhat.com>
+
+it looks sane to me ... but not sure what it's worth in that x86-64 code :)
+
+-- 
+Thanks,
+
+David / dhildenb
+
