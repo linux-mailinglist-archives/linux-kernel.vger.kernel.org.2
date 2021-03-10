@@ -2,111 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4873F3348A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5533348A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbhCJUHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
+        id S232160AbhCJUIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:08:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232132AbhCJUHS (ORCPT
+        with ESMTP id S232128AbhCJUII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:07:18 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F80DC061574;
-        Wed, 10 Mar 2021 12:07:18 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id u14so24737559wri.3;
-        Wed, 10 Mar 2021 12:07:18 -0800 (PST)
+        Wed, 10 Mar 2021 15:08:08 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3153FC061574;
+        Wed, 10 Mar 2021 12:08:08 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id e7so35702754lft.2;
+        Wed, 10 Mar 2021 12:08:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wOgAelLZHWumRUZs21CTsS2zD3FZVsziPeto0jg+ZCE=;
-        b=Zhg+3XhgV6ITD4zuHBLaBmmqu/Z4JKzJbm0coqwLukLYblSBSSp/WCkVm8LkMTQNOR
-         Vj0myKVkgiOaHwpkAD5hKcBLmyaQWEYaU7rcBaFeDW/8pyHl+ePYLshU5rQM/EIvkDTm
-         9OiVlEgLERsreqh8cZrLk2HfMOoGvAyfCZ9xLo/02KC9ttdIa6z/zU4DIfzCFANyw760
-         mV4yDz4l2plcY8TtkAtiW41TpzMQlGtEHofIl5K8FiDKCX2M4ZILr+kDW3VEw8Id6UsN
-         QNi/pTVSPKd0oDFlzkdw8ZSKBGV5TW+/+WQm8twF2GN/cuY1DznkRNtSkgq05fJdfWNM
-         fdHA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T2fV48ey9SKfN9cRCXs61fWLvq9fBk+pLOsfVuCnBEI=;
+        b=fAynUN4hH19OEI2HRySYreJB/dmqj7vhrN8UDfzPyLySiHih+iEJEGqaDk+eONFV4D
+         u/oAh38bxT3+zrSo0rfQ8FNAIZQM9yPt5LL/xSNnEeXSrJ0g4wj6hSIj7J3ZkIJBr0ml
+         HAnAc6prp0MfJDLveIyf2DRD6YR52Dh6tYd6+18I1W9MwRQ6UCZ9tYD/tX5qoxD+lEIt
+         qA+Pg+uHg1JFIXkoWnhNcq1WArFu3jt9uJssnzlCShOvnj4cc4WIaH7f+HBRbN2jvqYy
+         8QvRczbTV8fKHF5Z9QRcsEBDV4VKZuvKtqumrpmgSxLOgmCDZSIG/bLQtk3LpFzk0EOe
+         B4wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wOgAelLZHWumRUZs21CTsS2zD3FZVsziPeto0jg+ZCE=;
-        b=fW9oGvh6mvhIJsLFiqhPX/D//TzCfn6eILZZBOf/mDpzJBV9TFzio8WoF9p7FCmIcb
-         UyQFevvmgJpGb7P4+eF580GvgX28mtZr6N9ogg55mM6d1Rw4cBD3knnfeBJVy9/yJhiO
-         73gR5bsONqmlQc441j1nzMLraTu+1Y29oZqW9vksjILZXlT+iI08rzILL6Ysw3yq2F6w
-         M+AJYcWxeAcfCTo5rpZzCCLh20Ujgm9LBVgmrY1TDsMPjIARhKr5SZ8EAPs8O0PC5kbB
-         35QbhgLAB9gtSuJ1IQwGGiaf3rncqD4CFva/6nO8hZljodA+yifXqXuryBB4e8chAkTi
-         7GTg==
-X-Gm-Message-State: AOAM533c0lB9+JUKkv987oWx/NfNFFl2cXjX2DdScnINa+wO294ux9aX
-        iblBaUFgssUsWNyk7OTxhel9wiziJkmJpg==
-X-Google-Smtp-Source: ABdhPJwsH5QdZwvtuJJ0km8xhhnO57ZDdDl4ikE88zYJPHafhhROslLpWIbYqemy6BRU1UUjjbJOqQ==
-X-Received: by 2002:adf:e548:: with SMTP id z8mr5387658wrm.246.1615406837234;
-        Wed, 10 Mar 2021 12:07:17 -0800 (PST)
-Received: from example.org (ip-94-113-225-162.net.upcbroadband.cz. [94.113.225.162])
-        by smtp.gmail.com with ESMTPSA id g16sm415804wrs.76.2021.03.10.12.07.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T2fV48ey9SKfN9cRCXs61fWLvq9fBk+pLOsfVuCnBEI=;
+        b=RuvVLU5nsM0XV4NGDd0gvRubChoZrFQhX1pgXu8pSbRXJW9hZwO70ysY001wBfvJMY
+         awZ2FjCUvl+/a3zj+zsdYhZd6yV4uRMhCD7UEY4BojHZxYPgHic2tna1QJ7rjplUqrb/
+         FAjWl23HpdVcl5nAgq2m/kObCgmqGSVXKnKMPcCmJzQqolXFXsYZ0jCZ/6hfblQubCYc
+         1AExCP+1waIl77iwQffDQP4OIX/LftV4pR23FCMDA2kBiJbkNwhzmtT8BLTXSe+GFxjJ
+         6Q20Xqhl7OiX6ca/k66ATsxSuk4IODbzcS5sFFsvZYLKdOGhGzRJtbLZFXanXfX/ZA/t
+         XX/w==
+X-Gm-Message-State: AOAM530uDJX5SOC5Rk8UgXzETCfz1jOiob7ia15Wagw9YW00JoN+BChB
+        PkW2pYNY2OAJCS/tJMy/3NwfbDUtNj8jqQ==
+X-Google-Smtp-Source: ABdhPJzhDerlBmh0SgDdJeFSEOmY0UeSsFI3ACm8xoUyXmN/5VcPJoCwM41P03RYBGPHIsnbMHqmsw==
+X-Received: by 2002:a05:6512:3451:: with SMTP id j17mr103864lfr.188.1615406886608;
+        Wed, 10 Mar 2021 12:08:06 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id r12sm94207lfc.79.2021.03.10.12.08.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 12:07:16 -0800 (PST)
-Date:   Wed, 10 Mar 2021 21:07:12 +0100
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/5] proc: Relax check of mount visibility
-Message-ID: <20210310200712.z5yuedjmbz42n2jr@example.org>
-References: <cover.1615400395.git.gladkov.alexey@gmail.com>
+        Wed, 10 Mar 2021 12:08:05 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Zhang Qiang <qiang.zhang@windriver.com>
+Subject: [PATCH v2 1/1] kvfree_rcu: Release a page cache under memory pressure
+Date:   Wed, 10 Mar 2021 21:07:57 +0100
+Message-Id: <20210310200757.32331-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1615400395.git.gladkov.alexey@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 07:19:55PM +0100, Alexey Gladkov wrote:
-> If only the dynamic part of procfs is mounted (subset=pid), then there is no
-> need to check if procfs is fully visible to the user in the new user namespace.
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-I'm sorry about that unfinished patch set. Please ignore it.
+Add a drain_page_cache() function to drain a per-cpu page cache.
+The reason behind of it is a system can run into a low memory
+condition, in that case a page shrinker can ask for its users
+to free their caches in order to get extra memory available for
+other needs in a system.
 
-> Changelog
-> ---------
-> v4:
-> * Set SB_I_DYNAMIC only if pidonly is set.
-> * Add an error message if subset=pid is canceled during remount.
-> 
-> v3:
-> * Add 'const' to struct cred *mounter_cred (fix kernel test robot warning).
-> 
-> v2:
-> * cache the mounters credentials and make access to the net directories
->   contingent of the permissions of the mounter of procfs.
-> 
-> --
-> 
-> Alexey Gladkov (5):
->   docs: proc: add documentation about mount restrictions
->   proc: Show /proc/self/net only for CAP_NET_ADMIN
->   proc: Disable cancellation of subset=pid option
->   proc: Relax check of mount visibility
->   docs: proc: add documentation about relaxing visibility restrictions
-> 
->  Documentation/filesystems/proc.rst | 18 ++++++++++++++++++
->  fs/namespace.c                     | 27 ++++++++++++++++-----------
->  fs/proc/proc_net.c                 |  8 ++++++++
->  fs/proc/root.c                     | 25 +++++++++++++++++++------
->  include/linux/fs.h                 |  1 +
->  include/linux/proc_fs.h            |  1 +
->  6 files changed, 63 insertions(+), 17 deletions(-)
-> 
-> -- 
-> 2.29.2
-> 
+When a system hits such condition, a page cache is drained for
+all CPUs in a system. Apart of that a page cache work is delayed
+with 5 seconds interval until a memory pressure disappears.
 
+Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ kernel/rcu/tree.c | 59 ++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 51 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 2c9cf4df942c..46b8a98ca077 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3163,7 +3163,7 @@ struct kfree_rcu_cpu {
+ 	bool initialized;
+ 	int count;
+ 
+-	struct work_struct page_cache_work;
++	struct delayed_work page_cache_work;
+ 	atomic_t work_in_progress;
+ 	struct hrtimer hrtimer;
+ 
+@@ -3175,6 +3175,17 @@ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+ 	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
+ };
+ 
++// A page shrinker can ask for freeing extra pages
++// to get them available for other needs in a system.
++// Usually it happens under low memory condition, in
++// that case hold on a bit with page cache filling.
++static unsigned long backoff_page_cache_fill;
++
++// 5 seconds delay. That is long enough to reduce
++// an interfering and racing with a shrinker where
++// the cache is drained.
++#define PAGE_CACHE_FILL_DELAY (5 * HZ)
++
+ static __always_inline void
+ debug_rcu_bhead_unqueue(struct kvfree_rcu_bulk_data *bhead)
+ {
+@@ -3229,6 +3240,26 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
+ 
+ }
+ 
++static int
++drain_page_cache(struct kfree_rcu_cpu *krcp)
++{
++	unsigned long flags;
++	struct llist_node *page_list, *pos, *n;
++	int freed = 0;
++
++	raw_spin_lock_irqsave(&krcp->lock, flags);
++	page_list = llist_del_all(&krcp->bkvcache);
++	krcp->nr_bkv_objs = 0;
++	raw_spin_unlock_irqrestore(&krcp->lock, flags);
++
++	llist_for_each_safe(pos, n, page_list) {
++		free_page((unsigned long)pos);
++		freed++;
++	}
++
++	return freed;
++}
++
+ /*
+  * This function is invoked in workqueue context after a grace period.
+  * It frees all the objects queued on ->bhead_free or ->head_free.
+@@ -3419,7 +3450,7 @@ schedule_page_work_fn(struct hrtimer *t)
+ 	struct kfree_rcu_cpu *krcp =
+ 		container_of(t, struct kfree_rcu_cpu, hrtimer);
+ 
+-	queue_work(system_highpri_wq, &krcp->page_cache_work);
++	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
+ 	return HRTIMER_NORESTART;
+ }
+ 
+@@ -3428,7 +3459,7 @@ static void fill_page_cache_func(struct work_struct *work)
+ 	struct kvfree_rcu_bulk_data *bnode;
+ 	struct kfree_rcu_cpu *krcp =
+ 		container_of(work, struct kfree_rcu_cpu,
+-			page_cache_work);
++			page_cache_work.work);
+ 	unsigned long flags;
+ 	bool pushed;
+ 	int i;
+@@ -3457,10 +3488,14 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+ {
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+ 			!atomic_xchg(&krcp->work_in_progress, 1)) {
+-		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+-			HRTIMER_MODE_REL);
+-		krcp->hrtimer.function = schedule_page_work_fn;
+-		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
++		if (xchg(&backoff_page_cache_fill, 0UL)) {
++			queue_delayed_work(system_wq,
++				&krcp->page_cache_work, PAGE_CACHE_FILL_DELAY);
++		} else {
++			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++			krcp->hrtimer.function = schedule_page_work_fn;
++			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
++		}
+ 	}
+ }
+ 
+@@ -3612,14 +3647,20 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ {
+ 	int cpu;
+ 	unsigned long count = 0;
++	unsigned long flags;
+ 
+ 	/* Snapshot count of all CPUs */
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count += READ_ONCE(krcp->count);
++
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		count += krcp->nr_bkv_objs;
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 	}
+ 
++	WRITE_ONCE(backoff_page_cache_fill, 1);
+ 	return count;
+ }
+ 
+@@ -3634,6 +3675,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count = krcp->count;
++		count += drain_page_cache(krcp);
++
+ 		raw_spin_lock_irqsave(&krcp->lock, flags);
+ 		if (krcp->monitor_todo)
+ 			kfree_rcu_drain_unlock(krcp, flags);
+@@ -4608,7 +4651,7 @@ static void __init kfree_rcu_batch_init(void)
+ 		}
+ 
+ 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+-		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
++		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+ 		krcp->initialized = true;
+ 	}
+ 	if (register_shrinker(&kfree_rcu_shrinker))
 -- 
-Rgrds, legion
+2.20.1
 
