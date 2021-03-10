@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646FA33380B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD5333380F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbhCJJAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:00:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbhCJI7l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:59:41 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F9EC061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:59:40 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 124-20020a1c00820000b029010b871409cfso10448524wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:59:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Numor//xklH37BH1apB8OWJTxrcnrW9V5SsOFLfaiS0=;
-        b=C/ZuH1eryK9mb4HJf+c0Jss6Nk4Cr32zDnRnQsHusqPeZq/00fhMxgUI8gNpfMjMeR
-         XxQ6aG5htj73IvULLG3i92OuMLnO8y33KUnGcAT9tVG+g94WWWdjnH/aK7X1rfmxjBg+
-         g9M/hWFhKlR5MJUafzxQAe//C3+P8car6lQk/6gWhx86fAY4vQq+OFlPfUsxbdarrwrO
-         n7RUfeDA0E3sPwu0pi4Po6KOEr95nbZzll8VvcN7SX/EFrbwkAHmFwLfZAilAkBBgMv4
-         JvMn0PalYHRjVVDBPENIjvoDsabqGE8KZhuXzhIdNhKAnvDyiSfvOP1TFpnRvrcV8cDZ
-         Jksw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Numor//xklH37BH1apB8OWJTxrcnrW9V5SsOFLfaiS0=;
-        b=stGO4SWT8wc5paRFtfaEfLvB5MCOdbQRbnOxSibBrzQhFj3Ac2MY/PCsCFjqkRIwEH
-         LZIdB2tXLHwwo9F+AybZULrh6QxGeaiNSVsnCRE5QdBrMiJ+/Nis4s868k+JmbPlPjjS
-         xTk6QUeognDYpUHNOLWR837pPt5YWaw2Mm297G5IbdPhRWpa97+xJHppbfE2lylaLvZD
-         ACt5vf41FyeauosRnGE53sgP/NtymjHU9yBZy5vcM8hnz1CD1W/OyUXsZmdULGIzkRkR
-         o8vuXNWJTzedrJdXP77Ip8F/4mJEUvJBMi6PEYwwiW05U8G7LUbmaROCkP8luK7DIh/A
-         W68w==
-X-Gm-Message-State: AOAM531NdGgOXqupptIW7WpPNcBVJ3c8o223xZIivekHBD+JCb9Fr0cA
-        aJq+8wuNEa0SW2HrbOl1QamjYA==
-X-Google-Smtp-Source: ABdhPJxcuOIPUhMTUvr75q0rGDKEEBQHgxwWTHrS1arnd6JQKcQs+QGdoqcE3fNdGGMvy9ZGv+qnnQ==
-X-Received: by 2002:a7b:c041:: with SMTP id u1mr2219008wmc.161.1615366779478;
-        Wed, 10 Mar 2021 00:59:39 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id h20sm7942228wmm.19.2021.03.10.00.59.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 00:59:38 -0800 (PST)
-Date:   Wed, 10 Mar 2021 08:59:37 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Stephen Boyd <sboyd@kernel.org>, arnd@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 08/21] clk: clkdev: Ignore suggestion to use gnu_printf()
- as it's not appropriate here
-Message-ID: <20210310085937.GF4931@dell>
-References: <20210126124540.3320214-1-lee.jones@linaro.org>
- <20210126124540.3320214-9-lee.jones@linaro.org>
- <161307142704.1254594.1986201109191269158@swboyd.mtv.corp.google.com>
- <20210212093620.GG4572@dell>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210212093620.GG4572@dell>
+        id S232414AbhCJJBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:01:14 -0500
+Received: from mail.zju.edu.cn ([61.164.42.155]:20888 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232349AbhCJJAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 04:00:49 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app3 (Coremail) with SMTP id cC_KCgAnXwixikhgKUIyAg--.4878S4;
+        Wed, 10 Mar 2021 17:00:36 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: em28xx: Fix missing check in em28xx_capture_start
+Date:   Wed, 10 Mar 2021 17:00:32 +0800
+Message-Id: <20210310090032.13477-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgAnXwixikhgKUIyAg--.4878S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF48JFyDJFyfZFW5AF1xAFb_yoW8XF1xpF
+        4vy34rArZYgrn0vr1DJrs8Zr15Ga1ktFW2kry7G342gr1rCFsrKw4aqa18urs0kFyS9FZx
+        trW8t34akrWjvF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
+        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUTBlZdtSrQTAALsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021, Lee Jones wrote:
+There are several em28xx_write_reg() and em28xx_write_reg_bits()
+calls that we have caught their return values but lack further
+handling. Check and return error on failure just like other calls
+in em28xx_capture_start().
 
-> On Thu, 11 Feb 2021, Stephen Boyd wrote:
-> 
-> > Quoting Lee Jones (2021-01-26 04:45:27)
-> > > Fixes the following W=1 kernel build warning(s):
-> > > 
-> > >  drivers/clk/clkdev.c: In function ‘vclkdev_alloc’:
-> > >  drivers/clk/clkdev.c:173:3: warning: function ‘vclkdev_alloc’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
-> > > 
-> > > Cc: Russell King <linux@armlinux.org.uk>
-> > > Cc: linux-arm-kernel@lists.infradead.org
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >  drivers/clk/clkdev.c | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> > > 
-> > > diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-> > > index 0f2e3fcf0f19f..5e5f25d568724 100644
-> > > --- a/drivers/clk/clkdev.c
-> > > +++ b/drivers/clk/clkdev.c
-> > > @@ -153,6 +153,11 @@ struct clk_lookup_alloc {
-> > >         char    con_id[MAX_CON_ID];
-> > >  };
-> > >  
-> > > +#pragma GCC diagnostic push
-> > > +#ifndef __clang__
-> > > +#pragma GCC diagnostic ignored "-Wsuggest-attribute=format"
-> > > +#endif
-> > 
-> > Can this be some macro banished to compiler.h?
-> 
-> This is probably a question for Arnd.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/media/usb/em28xx/em28xx-core.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-UPDATE: Arnd and I are working on a solution for this.
-
+diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
+index 584fa400cd7d..2563275fec8e 100644
+--- a/drivers/media/usb/em28xx/em28xx-core.c
++++ b/drivers/media/usb/em28xx/em28xx-core.c
+@@ -661,6 +661,8 @@ int em28xx_capture_start(struct em28xx *dev, int start)
+ 						   EM2874_R5F_TS_ENABLE,
+ 						   start ? EM2874_TS2_CAPTURE_ENABLE : 0x00,
+ 						   EM2874_TS2_CAPTURE_ENABLE | EM2874_TS2_FILTER_ENABLE | EM2874_TS2_NULL_DISCARD);
++		if (rc < 0)
++			return rc;
+ 	} else {
+ 		/* FIXME: which is the best order? */
+ 		/* video registers are sampled by VREF */
+@@ -670,8 +672,11 @@ int em28xx_capture_start(struct em28xx *dev, int start)
+ 			return rc;
+ 
+ 		if (start) {
+-			if (dev->is_webcam)
++			if (dev->is_webcam) {
+ 				rc = em28xx_write_reg(dev, 0x13, 0x0c);
++				if (rc < 0)
++					return rc;
++			}
+ 
+ 			/* Enable video capture */
+ 			rc = em28xx_write_reg(dev, 0x48, 0x00);
+@@ -693,6 +698,8 @@ int em28xx_capture_start(struct em28xx *dev, int start)
+ 		} else {
+ 			/* disable video capture */
+ 			rc = em28xx_write_reg(dev, EM28XX_R12_VINENABLE, 0x27);
++			if (rc < 0)
++				return rc;
+ 		}
+ 	}
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.17.1
+
