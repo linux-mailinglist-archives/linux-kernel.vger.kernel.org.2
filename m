@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9303338BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884CC3338BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbhCJJah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:30:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhCJJaI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:30:08 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD41C06174A;
-        Wed, 10 Mar 2021 01:30:07 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id u18so8168463plc.12;
-        Wed, 10 Mar 2021 01:30:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=7hG+7twcez7MRZ/W+scBmz//nBOUL19Yr2GHqNWu7Is=;
-        b=LahTqfCcgLxfDbgjtQzdMG4P4FE2PXpu8jeWAgvx/yAlN2mjy+d1rzEdxQH5KCLgYE
-         hAhhvjCfjgj7px2xsplLnlTrHmA19f47wvzqxFK/QpciGvD4lcnZSG6Xuh9IMlxqEkbr
-         in72RqQOMIxlcGoNOuX1W5kTwQ5Ja7njIczrbLxN5I8CMzuqAmjLh+GGflIIlMIyYUMQ
-         6ChNAaLxK5hOLqtiq/bzH7TE6ao4jznaK4XpISjXzM3FucFsj50zE1678vDl6eZpnF1L
-         rvYBB/SpOU5CbGmjTjaI87Jq5i60Xs7K9dzEuh8c5MCT+fxkUuL2GK2tRKnRGrZJl53r
-         6KEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=7hG+7twcez7MRZ/W+scBmz//nBOUL19Yr2GHqNWu7Is=;
-        b=HBd8TLbcx4WDH5M8oBOaNapDeEnQI33YvZTPnwHHtew7fuq8kDrCYPbElOAkKBV2yz
-         QdoiCSmVHYhRUOc2I8QvWpZEjm/rfmt8nj7Xu1psko5plbDCgXSrVGcgs+TkyqZqJ/2V
-         6pMTbfWYNVIAYGa2nvgawKa8Gtv23aPks1dzTg/lb3m55FKxjOOSflOvrPx8areWG1nk
-         QVdN+DOTf8eaqi9MYkuBKKEqUHgRgdllGmRpDMcrGLFiu1t6pQxNiKpjWce2YJIogc5v
-         iVpmfrxntQQAai5FXWRZWp5Ks156+jE1wtKML3vOF/Dlui5byILL+nZocvMh5s4zRzcV
-         2fqg==
-X-Gm-Message-State: AOAM530ZmsECP1O5s55krP/cfaisr22Ze6AmtrITzFuPsicW7hulX16k
-        id9ztBBVATJknCfIegMbbNE=
-X-Google-Smtp-Source: ABdhPJy1vfKSygh4rO1ndPybvPGAsVYVzApfh2e3zrvI0YfuwmH9JvBQ2yQ2xbkOGE9050KUoQQOrw==
-X-Received: by 2002:a17:90a:70c2:: with SMTP id a2mr2579432pjm.63.1615368607511;
-        Wed, 10 Mar 2021 01:30:07 -0800 (PST)
-Received: from [10.38.0.26] ([45.135.186.59])
-        by smtp.gmail.com with ESMTPSA id f14sm7908511pfk.92.2021.03.10.01.30.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 01:30:07 -0800 (PST)
-Subject: Re: [PATCH] net: bonding: fix error return code of bond_neigh_init()
-To:     Roi Dayan <roid@nvidia.com>, j.vosburgh@gmail.com,
-        vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-References: <20210308031102.26730-1-baijiaju1990@gmail.com>
- <e15f36f7-6421-69a3-f10a-45b83621b96f@nvidia.com>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <ff2fdc70-4ee5-a0eb-64d7-4deb39a62e03@gmail.com>
-Date:   Wed, 10 Mar 2021 17:29:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <e15f36f7-6421-69a3-f10a-45b83621b96f@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S231773AbhCJJaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:30:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229643AbhCJJaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 04:30:15 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B34A864FE2;
+        Wed, 10 Mar 2021 09:30:14 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lJvAS-000iq4-G4; Wed, 10 Mar 2021 09:30:12 +0000
+Date:   Wed, 10 Mar 2021 09:30:11 +0000
+Message-ID: <87blbrxsnw.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     zhangqing <zhangqing@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangming01@loongson.cn
+Subject: Re: [PATCH v3 5/7] irqchip/loongson-liointc: irqchip add 2.0 version
+In-Reply-To: <5c5b2593-b07c-cd20-cd08-1d6542471260@loongson.cn>
+References: <20210306023633.9579-1-zhangqing@loongson.cn>
+        <20210306023633.9579-6-zhangqing@loongson.cn>
+        <87wnugy9oe.wl-maz@kernel.org>
+        <5c5b2593-b07c-cd20-cd08-1d6542471260@loongson.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: zhangqing@loongson.cn, chenhuacai@kernel.org, jiaxun.yang@flygoat.com, tsbogend@alpha.franken.de, tglx@linutronix.de, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, wangming01@loongson.cn
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 10 Mar 2021 02:26:24 +0000,
+zhangqing <zhangqing@loongson.cn> wrote:
+> 
+> 
+> On 03/09/2021 05:10 PM, Marc Zyngier wrote:
+> > 
+> >> +
+> >> +static void __iomem *liointc_get_reg_byname(struct device_node *node,
+> >> +						const char *name)
+> >> +{
+> >> +	int index = of_property_match_string(node, "reg-names", name);
+> >> +
+> >> +	return of_iomap(node, index);
+> > So if of_property_match_string() returns an error, you feed that error
+> > to of_iomap()? Somehow, I don't think that's a good idea.
+> 
+> Hi, Marc
+> 
+> Thank you for your suggestion, error handling is missing here,
+> 
+>      +    if (index <0)
+>      +           return NULL;
+> 
+>             return of_iomap(node, index);
+> 
+> It has been fixed in the fourth version, and I will send V4 soon.
+> 
+> > +	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
+> > +		base = liointc_get_reg_byname(node, "main");
+> > +		if (!base) {
+> > +			err = -ENODEV;
+> > +			goto out_free_priv;
+> > +		}
+> > +		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
+> > +			priv->core_isr[i] =
+> > +				liointc_get_reg_byname(node, core_reg_names[i]);
+> > Please write assignments on a single line.
+> 
+> In addition, write assignments on a single line
+> 
+>                  for (i = 0; i <LIOINTC_NUM_CORES; i++)
+>                          priv->core_isr[i] =
+> liointc_get_reg_byname(node, core_reg_names[i]);
+> 
+>     It is 92 characters, more than 80 characters...
 
+I really don't care about whatever arbitrary limit people think there
+is. Please put it on a single line.
 
-On 2021/3/10 17:24, Roi Dayan wrote:
->
->
-> On 2021-03-08 5:11 AM, Jia-Ju Bai wrote:
->> When slave is NULL or slave_ops->ndo_neigh_setup is NULL, no error
->> return code of bond_neigh_init() is assigned.
->> To fix this bug, ret is assigned with -EINVAL in these cases.
->>
->> Fixes: 9e99bfefdbce ("bonding: fix bond_neigh_init()")
->> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
->> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
->> ---
->>   drivers/net/bonding/bond_main.c | 8 ++++++--
->>   1 file changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/bonding/bond_main.c 
->> b/drivers/net/bonding/bond_main.c
->> index 74cbbb22470b..456315bef3a8 100644
->> --- a/drivers/net/bonding/bond_main.c
->> +++ b/drivers/net/bonding/bond_main.c
->> @@ -3978,11 +3978,15 @@ static int bond_neigh_init(struct neighbour *n)
->>         rcu_read_lock();
->>       slave = bond_first_slave_rcu(bond);
->> -    if (!slave)
->> +    if (!slave) {
->> +        ret = -EINVAL;
->>           goto out;
->> +    }
->>       slave_ops = slave->dev->netdev_ops;
->> -    if (!slave_ops->ndo_neigh_setup)
->> +    if (!slave_ops->ndo_neigh_setup) {
->> +        ret = -EINVAL;
->>           goto out;
->> +    }
->>         /* TODO: find another way [1] to implement this.
->>        * Passing a zeroed structure is fragile,
->>
->
->
-> Hi,
->
-> This breaks basic functionally that always worked. A slave doesn't need
-> to exists nor to implement ndo_neigh_setup.
-> Now trying to add a neigh entry because of that fails.
-> This commit needs to be reverted.
->
+Thanks,
 
-Okay, thanks for the explanation, and I am sorry for this false report...
+	M.
 
-
-Best wishes,
-Jia-Ju Bai
+-- 
+Without deviation from the norm, progress is not possible.
