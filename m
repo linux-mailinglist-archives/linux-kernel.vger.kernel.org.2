@@ -2,88 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E254F334C7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1AF334C83
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbhCJXZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:25:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        id S233271AbhCJX2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232933AbhCJXZS (ORCPT
+        with ESMTP id S232933AbhCJX2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:25:18 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25748C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:25:18 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 18so36488227lff.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:25:18 -0800 (PST)
+        Wed, 10 Mar 2021 18:28:49 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC7EC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:28:49 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id a17so18221965oto.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:28:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MgKseNFFkrrRFclSHj6wbS3S/tiTuRT8S1xZlIqzXlo=;
-        b=IjSkl6wJ2e929mSFyx3S1AYyWJi8WZsF060mBGXt6Rvngu6a9brGEMgy8OQcuKs/i4
-         QYHuH8hDjrhyCURvf340UfFNAKq+RK8VjIAFe3FugcoEAlsXvViQ6pdDHoiYbni6neu6
-         E4CETeLfFF/D7jbdJFYpwerqbqKuUvGHv15Apwy0EgMlUsRvDTmsMMbiB0XiD2cTVKpD
-         BFDbNtwNJp/BJD1okzaEvCGaTbn7P/WfAxpp+wyZCd6qP9aPw2tKjQg60pfFCta0j9Mm
-         rlL8T0YsoMyRZAh4bGwRaKcYYwrCBVZyiBeeN+uZizv5gBuJAZukyTXOE7q/U/xQwavI
-         VBBA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CcpjnFhs+hD8NIsHxenerG7IM+48zY0/1AwqAoJFhWQ=;
+        b=bKne5DjbZE9XY5B/uBertZFJs2UrcfISuG2Z5FAP3+P4BEi8k0hijfCeLcQT4EOmM3
+         hD0sukxdht/nOTSaCOmDUJ3aYZElo+UBaqA5JmmA76TDHs2O4fXRP5XaHNzYO2pocp8K
+         cS2e4pHyf9tHqtF1OSQQTgBHvp/8UovsFmwXnK0Ob8+bO65/QhaII/fTFMK8e+SgeQPr
+         hROoy/oKmFS/J6oFxe+Gu1CN8MaQdiKokHTgcw02pKhWGE4OK3hmvaVVPwhxBmQFodS9
+         uoYu0OOKh4XiHQPMXAOgbrGaK7hfd6ybeVDXmOkuQE+fjIUyfZnz9ArTIUtilhjl+BFJ
+         j/Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MgKseNFFkrrRFclSHj6wbS3S/tiTuRT8S1xZlIqzXlo=;
-        b=VVDNzrjBvw97BnJoDI3TpvuUkX59Jziq/GXM7/pbM6pnfDlS56ApA+CfPwE1Lr4ZoJ
-         /d9grwaNiaepe6JinYXAsqC9wj6ylZ09GFyG05o6uBlDwrSS6DJKuTmvYj27oK8wS3qG
-         krNt6o7vGAc9wG5r9VvRSbDpatjqPF76aSt2UEHkF6heCDurqOMsndi1qHimW28AZn4H
-         ITzDZlRMe2GsOSgCp3Zbh0Ao/JwL/EPbQgwGOHA9njUnGQchFNxSFqmg1od4YFTee4NR
-         05ZEOsW23kEp6FlW3FeqmHP5M+0KQDVSrQ9TNwS0j7b4lZ6NXixjlpByGIHZpL/9XlEW
-         Queg==
-X-Gm-Message-State: AOAM530q47IlVFSP6aNkmMAhD7mu2eoEL8LdUFW7aXpzvNRj4rHOc0BE
-        04pTDHkhb68TxtY69Nq6CwuK0WbOhrIUVzxRY6Q7JA==
-X-Google-Smtp-Source: ABdhPJwGk6XtIb3w/iX57ttUl7E3k4dv+R8ze9Q1sAcTvGDDr2Xt4Qko01grmgJD8rFH0mJ9Oh66fDhzHwkgI2//SbY=
-X-Received: by 2002:a05:6512:243:: with SMTP id b3mr514695lfo.529.1615418716717;
- Wed, 10 Mar 2021 15:25:16 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CcpjnFhs+hD8NIsHxenerG7IM+48zY0/1AwqAoJFhWQ=;
+        b=o+xN9JmZ0hRQIwRCuFxKpfwEWbXqNSDMgp2CAbisNIBradOXYPzjQQh/j3xLUmfvUj
+         /Slp5PwBU8H1jtAaSlHtpKl/hPSbWZeKRcQKlfqSTy2G21wgiuXVrLmmmEX6CgQAlyWr
+         VBbOIyAannEvtSp7FakPpCx6ypW0otavqgSEkh1o42FUw9pL2mM7ktppZNr34GuCxjfo
+         geJvt1jQqYfy46IUY3nmwXS/L2AX0ugs1YdEHeWCvTbX44uupkygfy56N41c/VlMhN4z
+         7r2nolcl3Ax8Hj0GRL/3qqnMkKNvvlegLWGbWfdkaOhHiavwaasAQL/Gn40E8ne/0kxD
+         1qLQ==
+X-Gm-Message-State: AOAM530MARRvA9W7U2ZkfoDYQ6iAqEsRSWepvaPUJZjCVoiRnfapwrUK
+        becjDXAGgEGzjrnG88P+2BMQ+Q==
+X-Google-Smtp-Source: ABdhPJz52c30YvfDi3Kw8yjoSTmqG5ij8W6ebHqwnKKKCm0AFJvEKyzkQvQrGgaK4stz861b2WS8KA==
+X-Received: by 2002:a9d:6a50:: with SMTP id h16mr4504158otn.67.1615418929055;
+        Wed, 10 Mar 2021 15:28:49 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g21sm183373ooa.15.2021.03.10.15.28.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 15:28:48 -0800 (PST)
+Date:   Wed, 10 Mar 2021 17:28:46 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Souradeep Chowdhury <schowdhu@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        sibis@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
+Subject: Re: [PATCH V1 4/6] DCC: Added the sysfs entries for DCC(Data Capture
+ and Compare) driver
+Message-ID: <YElWLqemavtXGlPd@builder.lan>
+References: <cover.1615393454.git.schowdhu@codeaurora.org>
+ <332477ea39088fca5879af1a5278c289e1602f6d.1615393454.git.schowdhu@codeaurora.org>
 MIME-Version: 1.0
-References: <20210115224420.1635017-1-dianders@chromium.org>
-In-Reply-To: <20210115224420.1635017-1-dianders@chromium.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 11 Mar 2021 00:25:06 +0100
-Message-ID: <CACRpkdYUs2W3b_u8YrmYwq_kcUCf0DhZ-o2o6O2EmU5rdtv=BA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] drm/panel-simple: Patches for N116BCA-EA1
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <332477ea39088fca5879af1a5278c289e1602f6d.1615393454.git.schowdhu@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 11:44 PM Douglas Anderson <dianders@chromium.org> wrote:
+On Wed 10 Mar 10:46 CST 2021, Souradeep Chowdhury wrote:
 
-> - ("drm/panel-simple: Don't wait longer for HPD...") new for v2.
-> - ("drm/panel-simple: Retry if we timeout waiting for HPD") new for v2.
+> The DCC is a DMA engine designed to store register values either in
+> case of a system crash or in case of software triggers manually done
+> by the user. Using DCC hardware and the sysfs interface of the driver
+> the user can exploit various functionalities of DCC. The user can specify
+> the register addresses, the values of which is stored by DCC in it's
+> dedicated SRAM. The register addresses can be used either to read from,
+> write to, first read and store value and then write or to loop. All these
+> options can be exploited using the sysfs interface given to the user.
+> Following are the sysfs interfaces exposed in DCC driver which are
+> documented
+> 1)trigger
+> 2)config
+> 3)config_write
+> 4)config_reset
+> 5)enable
+> 6)rd_mod_wr
+> 7)loop
+> 
+> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+> ---
+>  Documentation/ABI/testing/sysfs-driver-dcc | 74 ++++++++++++++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-dcc
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-dcc b/Documentation/ABI/testing/sysfs-driver-dcc
+> new file mode 100644
+> index 0000000..7a855ca
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-driver-dcc
+> @@ -0,0 +1,74 @@
+> +What:           /sys/bus/platform/devices/.../trigger
+> +Date:           February 2021
+> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +Description:
+> +		This file allows the software trigger to be enabled
+> +		by the user through the sysfs interface.Through this
+> +		interface the user can manually start a software trigger
+> +		in dcc where by the dcc driver stores the current status
+> +		of the specified registers in dcc sram.
+> +
+> +What:           /sys/bus/platform/devices/.../enable
+> +Date:           February 2021
+> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +Description:
+> +		This file allows the user to manually enable or
+> +		disable dcc driver.The dcc hardware needs to be
+> +		enabled before use.
+> +
+> +What:           /sys/bus/platform/devices/.../config
+> +Date:           February 2021
+> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +Description:
+> +		This file allows user to configure the register values
+> +		along with addresses to the dcc driver.This register
+> +		addresses are used to read from,write or loop through.
+> +		To enable all these options separate sysfs files have
+> +		are created.
 
-I couldn't find these patches in my inbox but my concern would
-be that at some point panel-simple will turn from simple into
-panel-rube-goldberg-machine.
+Please describe the expected content of this file.
 
-Given that the talk with the manufacturer may result
-in even more quirks... maybe this should just be a separate
-panel driver?
+> +
+> +What:           /sys/bus/platform/devices/.../config_write
+> +Date:           February 2021
+> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +Description:
+> +		This file allows user to write a value to the register
+> +		address given as argument.The values are entered in the
+> +		form of <register_address> <value>.
 
-(I expect pushback because I see how handy it is, but
-I am the guy writing new panel drivers all the time rather than
-using simple.)
+So it's just a generic 'write some user defined data to some user
+defined register'? This doesn't sound like the typical way things are
+exposed in sysfs.
 
-Yours,
-Linus Walleij
+> +
+> +What:           /sys/bus/platform/devices/.../config_reset
+> +Date:           February 2021
+> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +Description:
+> +		This file is used to reset the configuration of
+> +		a dcc driver to the default configuration.
+> +
+> +What:           /sys/bus/platform/devices/.../loop
+> +Date:           February 2021
+> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +Description:
+> +		This file is used to enter the loop count as dcc
+> +		driver gives the option to loop multiple times on
+> +		the same register and store the values for each
+> +		loop.
+> +
+> +What:           /sys/bus/platform/devices/.../rd_mod_wr
+> +Date:           February 2021
+> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +Description:
+> +		This file is used to read the value of the register
+> +		and then write the value given as an argument to the
+> +		register address in config.The address argument should
+> +		be given of the form <mask> <value>.
+> +
+> +What:           /sys/bus/platform/devices/.../ready
+> +Date:           February 2021
+> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +Description:
+> +		This file is used to check the status of the dcc
+> +		hardware if it's ready to take the inputs.
+> +
+> +What:		/sys/bus/platform/devices/.../curr_list
+> +Date:		February 2021
+> +Contact:	Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +Description:
+> +		This file is used to configure the linkedlist data
+> +		to be used while configuring addresses.
+
+Please describe the format of this attr. Is it read/write?
+
+Regards,
+Bjorn
+
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
