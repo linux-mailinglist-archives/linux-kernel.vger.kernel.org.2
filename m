@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FD7333F21
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4E4333F36
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233327AbhCJNaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:30:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48628 "EHLO mail.kernel.org"
+        id S233058AbhCJNbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:31:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233480AbhCJNZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1C2E64FDA;
-        Wed, 10 Mar 2021 13:25:39 +0000 (UTC)
+        id S233490AbhCJNZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8043764FE8;
+        Wed, 10 Mar 2021 13:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382741;
-        bh=wLklBr5q8q6e7TbB1MwTMrvQA84qaaYu38tHb7WlGLU=;
+        s=korg; t=1615382742;
+        bh=b32iJa/j1mUZb1ZjLDvLsX9pSTewh8tz68bM3zxGkQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uUHDPCv/X36GrAuK/MOXF+vGc4n1aqj0uKXi6Zs6eh806LPh8dmmbp7OGWRqc1qwB
-         yvljyxc11pu1fjO5dQ/xPw9ElKmQtPqXslMV4JNoXohtAAEJEWVgIVq9GE5N1islQm
-         tucORx1v9VTQ4Q5Ucdkq+gNhatvMByJlUVzb+sXg=
+        b=NpfakrvyCTZ0GPux4LkHg38HkruEvR8q88vvISra/nWu9pQJXmTIIfWbFx2hVyS3n
+         +h0YrsdFTrmhF73e2feevtdN3Efy5MOJVzRsoGjiHPjOIDEAs+SbDQH8wyr3hFsFVO
+         U8pPgY+9VFaf4SgT46ejc3stMJMAlKUdeP3VG3z4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 28/39] platform/x86: acer-wmi: Cleanup accelerometer device handling
-Date:   Wed, 10 Mar 2021 14:24:36 +0100
-Message-Id: <20210310132320.597353840@linuxfoundation.org>
+Subject: [PATCH 4.19 29/39] platform/x86: acer-wmi: Add new force_caps module parameter
+Date:   Wed, 10 Mar 2021 14:24:37 +0100
+Message-Id: <20210310132320.626710165@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
 References: <20210310132319.708237392@linuxfoundation.org>
@@ -45,96 +45,74 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 9feb0763e4985ccfae632de3bb2f029cc8389842 ]
+[ Upstream commit 39aa009bb66f9d5fbd1e58ca4aa03d6e6f2c9915 ]
 
-Cleanup accelerometer device handling:
--Drop acer_wmi_accel_destroy instead directly call input_unregister_device.
--The information tracked by the CAP_ACCEL flag mirrors acer_wmi_accel_dev
- being NULL. Drop the CAP flag, this is a preparation change for allowing
- users to override the capability flags. Dropping the flag stops users
- from causing a NULL pointer dereference by forcing the capability.
+Add a new force_caps module parameter to allow overriding the drivers
+builtin capability detection mechanism.
+
+This can be used to for example:
+-Disable rfkill functionality on devices where there is an AA OEM DMI
+ record advertising non functional rfkill switches
+-Force loading of the driver on devices with a missing AA OEM DMI record
+
+Note that force_caps is -1 when unset, this allows forcing the
+capability field to 0, which results in acer-wmi only providing WMI
+hotkey handling while disabling all other (led, rfkill, backlight)
+functionality.
 
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20201019185628.264473-3-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20201019185628.264473-4-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/acer-wmi.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+ drivers/platform/x86/acer-wmi.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index 8d06454f5915..b95dce2475ab 100644
+index b95dce2475ab..2e77ac458bab 100644
 --- a/drivers/platform/x86/acer-wmi.c
 +++ b/drivers/platform/x86/acer-wmi.c
-@@ -224,7 +224,6 @@ struct hotkey_function_type_aa {
- #define ACER_CAP_BLUETOOTH		BIT(2)
- #define ACER_CAP_BRIGHTNESS		BIT(3)
- #define ACER_CAP_THREEG			BIT(4)
--#define ACER_CAP_ACCEL			BIT(5)
+@@ -246,6 +246,7 @@ static int mailled = -1;
+ static int brightness = -1;
+ static int threeg = -1;
+ static int force_series;
++static int force_caps = -1;
+ static bool ec_raw_mode;
+ static bool has_type_aa;
+ static u16 commun_func_bitmap;
+@@ -255,11 +256,13 @@ module_param(mailled, int, 0444);
+ module_param(brightness, int, 0444);
+ module_param(threeg, int, 0444);
+ module_param(force_series, int, 0444);
++module_param(force_caps, int, 0444);
+ module_param(ec_raw_mode, bool, 0444);
+ MODULE_PARM_DESC(mailled, "Set initial state of Mail LED");
+ MODULE_PARM_DESC(brightness, "Set initial LCD backlight brightness");
+ MODULE_PARM_DESC(threeg, "Set initial state of 3G hardware");
+ MODULE_PARM_DESC(force_series, "Force a different laptop series");
++MODULE_PARM_DESC(force_caps, "Force the capability bitmask to this value");
+ MODULE_PARM_DESC(ec_raw_mode, "Enable EC raw mode");
  
- /*
-  * Interface type flags
-@@ -1526,7 +1525,7 @@ static int acer_gsensor_event(void)
- 	struct acpi_buffer output;
- 	union acpi_object out_obj[5];
+ struct acer_data {
+@@ -2228,7 +2231,7 @@ static int __init acer_wmi_init(void)
+ 		}
+ 		/* WMID always provides brightness methods */
+ 		interface->capability |= ACER_CAP_BRIGHTNESS;
+-	} else if (!wmi_has_guid(WMID_GUID2) && interface && !has_type_aa) {
++	} else if (!wmi_has_guid(WMID_GUID2) && interface && !has_type_aa && force_caps == -1) {
+ 		pr_err("No WMID device detection method found\n");
+ 		return -ENODEV;
+ 	}
+@@ -2258,6 +2261,9 @@ static int __init acer_wmi_init(void)
+ 	if (acpi_video_get_backlight_type() != acpi_backlight_vendor)
+ 		interface->capability &= ~ACER_CAP_BRIGHTNESS;
  
--	if (!has_cap(ACER_CAP_ACCEL))
-+	if (!acer_wmi_accel_dev)
- 		return -1;
- 
- 	output.length = sizeof(out_obj);
-@@ -1935,8 +1934,6 @@ static int __init acer_wmi_accel_setup(void)
- 	if (err)
- 		return err;
- 
--	interface->capability |= ACER_CAP_ACCEL;
--
- 	acer_wmi_accel_dev = input_allocate_device();
- 	if (!acer_wmi_accel_dev)
- 		return -ENOMEM;
-@@ -1962,11 +1959,6 @@ err_free_dev:
- 	return err;
- }
- 
--static void acer_wmi_accel_destroy(void)
--{
--	input_unregister_device(acer_wmi_accel_dev);
--}
--
- static int __init acer_wmi_input_setup(void)
- {
- 	acpi_status status;
-@@ -2121,7 +2113,7 @@ static int acer_resume(struct device *dev)
- 	if (has_cap(ACER_CAP_BRIGHTNESS))
- 		set_u32(data->brightness, ACER_CAP_BRIGHTNESS);
- 
--	if (has_cap(ACER_CAP_ACCEL))
-+	if (acer_wmi_accel_dev)
- 		acer_gsensor_init();
- 
- 	return 0;
-@@ -2329,8 +2321,8 @@ error_device_alloc:
- error_platform_register:
- 	if (wmi_has_guid(ACERWMID_EVENT_GUID))
- 		acer_wmi_input_destroy();
--	if (has_cap(ACER_CAP_ACCEL))
--		acer_wmi_accel_destroy();
-+	if (acer_wmi_accel_dev)
-+		input_unregister_device(acer_wmi_accel_dev);
- 
- 	return err;
- }
-@@ -2340,8 +2332,8 @@ static void __exit acer_wmi_exit(void)
- 	if (wmi_has_guid(ACERWMID_EVENT_GUID))
- 		acer_wmi_input_destroy();
- 
--	if (has_cap(ACER_CAP_ACCEL))
--		acer_wmi_accel_destroy();
-+	if (acer_wmi_accel_dev)
-+		input_unregister_device(acer_wmi_accel_dev);
- 
- 	remove_debugfs();
- 	platform_device_unregister(acer_platform_device);
++	if (force_caps != -1)
++		interface->capability = force_caps;
++
+ 	if (wmi_has_guid(WMID_GUID3)) {
+ 		if (ACPI_FAILURE(acer_wmi_enable_rf_button()))
+ 			pr_warn("Cannot enable RF Button Driver\n");
 -- 
 2.30.1
 
