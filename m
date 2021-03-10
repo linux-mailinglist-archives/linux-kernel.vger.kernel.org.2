@@ -2,270 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB8E3346BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1DA3346C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233580AbhCJS35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:29:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232802AbhCJS31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:29:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3245264EFD;
-        Wed, 10 Mar 2021 18:29:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615400967;
-        bh=gFvTeR4qQmXHoWxhEP4MMSaTdq/EEq4Yn7TDl28ZApo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=2vulh9vqHhhpOVjE8DwJy+Em+mlnVxpaZpUE6wyVwBa2//lpUeNVgn1TtZ2UA+xtm
-         DqTi7i6QJt8gkLZoNavpkpLjUJdIiyixfqVc40pvD+GuYkKhgHdXoVhpPzEdd521PI
-         +vgLplbm+/28vMk91P1cV5jLeHRUAYJrfk5Hx1Zk=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 5.10 00/47] 5.10.23-rc2 review
-Date:   Wed, 10 Mar 2021 19:29:23 +0100
-Message-Id: <20210310182834.696191666@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        id S232951AbhCJSbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:31:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37326 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232734AbhCJSb0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:31:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615401085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CPoRS9ORJYnVBCLNHbLzK3HURBgeQOuy6dE3PZ5/hXU=;
+        b=W8j5BucwCFr8w5GqjqceTXv54pRPD64l2IwOgo+d8dkClxc4LZuR9u5JkeSt/SCulmY7Fb
+        Jq2Vei08HYAmMWkxdM2CNTVBKk6GNk8JXV71XtAzdze60HxmXCvwNNfFILG01fQVVzrxyB
+        rk6JKcJ00meMTeTGzEsbEuP6Z6afZz4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198-MAY54ix0P36TF9VY8dtaUw-1; Wed, 10 Mar 2021 13:31:21 -0500
+X-MC-Unique: MAY54ix0P36TF9VY8dtaUw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C50C557;
+        Wed, 10 Mar 2021 18:31:19 +0000 (UTC)
+Received: from treble (ovpn-118-249.rdu2.redhat.com [10.10.118.249])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2D2B762AF8;
+        Wed, 10 Mar 2021 18:31:15 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 12:31:13 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
+        kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
+Message-ID: <20210310183113.xxverwh4qplr7xxb@treble>
+References: <161495873696.346821.10161501768906432924.stgit@devnote2>
+ <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
+ <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
+ <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
+ <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
+ <20210309011945.ky7v3pnbdpxhmxkh@treble>
+ <20210310185734.332d9d52a26780ba02d09197@kernel.org>
+ <20210310150845.7kctaox34yrfyjxt@treble>
+ <20210311005509.0a1a65df0d2d6c7da73a9288@kernel.org>
 MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.10.23-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.10.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.10.23-rc2
-X-KernelTest-Deadline: 2021-03-12T18:28+00:00
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210311005509.0a1a65df0d2d6c7da73a9288@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Thu, Mar 11, 2021 at 12:55:09AM +0900, Masami Hiramatsu wrote:
+> +#ifdef CONFIG_KRETPROBES
+> +static unsigned long orc_kretprobe_correct_ip(struct unwind_state *state)
+> +{
+> +	return kretprobe_find_ret_addr(
+> +			(unsigned long)kretprobe_trampoline_addr(),
+> +			state->task, &state->kr_iter);
+> +}
+> +
+> +static bool is_kretprobe_trampoline_address(unsigned long ip)
+> +{
+> +	return ip == (unsigned long)kretprobe_trampoline_addr();
+> +}
+> +#else
+> +static unsigned long orc_kretprobe_correct_ip(struct unwind_state *state)
+> +{
+> +	return state->ip;
+> +}
+> +
+> +static bool is_kretprobe_trampoline_address(unsigned long ip)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
 
-This is the start of the stable review cycle for the 5.10.23 release.
-There are 47 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+Can this code go in a kprobes file?  I'd rather not clutter ORC with it,
+and maybe it would be useful for other arches or unwinders.
 
-Responses should be made by Fri, 12 Mar 2021 18:28:23 +0000.
-Anything received after that time might be too late.
+>  bool unwind_next_frame(struct unwind_state *state)
+>  {
+>  	unsigned long ip_p, sp, tmp, orig_ip = state->ip, prev_sp = state->sp;
+> @@ -536,6 +561,18 @@ bool unwind_next_frame(struct unwind_state *state)
+>  
+>  		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
+>  						  state->ip, (void *)ip_p);
+> +		/*
+> +		 * There are special cases when the stack unwinder is called
+> +		 * from the kretprobe handler or the interrupt handler which
+> +		 * occurs in the kretprobe trampoline code. In those cases,
+> +		 * %sp is shown on the stack instead of the return address.
+> +		 * Or, when the unwinder find the return address is replaced
+> +		 * by kretprobe_trampoline.
+> +		 * In those cases, correct address can be found in kretprobe.
+> +		 */
+> +		if (state->ip == sp ||
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.23-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-and the diffstat can be found below.
+Why is the 'state->ip == sp' needed?
 
-thanks,
+> +		    is_kretprobe_trampoline_address(state->ip))
+> +			state->ip = orc_kretprobe_correct_ip(state);
 
-greg k-h
+This is similar in concept to ftrace_graph_ret_addr(), right?  Would it
+be possible to have a similar API?  Like
 
--------------
-Pseudo-Shortlog of commits:
+		state->ip = kretprobe_ret_addr(state->task, &state->kr_iter, state->ip);
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.10.23-rc2
+and without the conditional.
 
-Pascal Terjan <pterjan@google.com>
-    nvme-pci: add quirks for Lexar 256GB SSD
+>  
+>  		state->sp = sp;
+>  		state->regs = NULL;
+> @@ -649,6 +686,12 @@ void __unwind_start(struct unwind_state *state, struct task_struct *task,
+>  		state->full_regs = true;
+>  		state->signal = true;
+>  
+> +		/*
+> +		 * When the unwinder called with regs from kretprobe handler,
+> +		 * the regs->ip starts from kretprobe_trampoline address.
+> +		 */
+> +		if (is_kretprobe_trampoline_address(state->ip))
+> +			state->ip = orc_kretprobe_correct_ip(state);
 
-Julian Einwag <jeinwag-nvme@marcapo.com>
-    nvme-pci: mark Seagate Nytro XM1440 as QUIRK_NO_NS_DESC_LIST.
+Shouldn't __kretprobe_trampoline_handler() just set regs->ip to
+'correct_ret_addr' before passing the regs to the handler?  I'd think
+that would be a less surprising value for regs->ip than
+'&kretprobe_trampoline'.
 
-Babu Moger <babu.moger@amd.com>
-    KVM: SVM: Clear the CR4 register on reset
+And it would make the unwinder just work automatically when unwinding
+from the handler using the regs.
 
-Avri Altman <avri.altman@wdc.com>
-    scsi: ufs: Fix a duplicate dev quirk number
+It would also work when unwinding from the handler's stack, if we put an
+UNWIND_HINT_REGS after saving the regs.
 
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-    ASoC: Intel: sof_sdw: add quirk for HP Spectre x360 convertible
+The only (rare) case it wouldn't work would be unwinding from an
+interrupt before regs->ip gets set properly.  In which case we'd still
+need the above call to orc_kretprobe_correct_ip() or so.
 
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-    ASoC: Intel: sof_sdw: reorganize quirks by generation
-
-Nadeem Athani <nadeem@cadence.com>
-    PCI: cadence: Retrain Link to work around Gen2 training defect
-
-Fabian Lesniak <fabian@lesniak-it.de>
-    ALSA: usb-audio: add mixer quirks for Pioneer DJM-900NXS2
-
-Olivia Mackintosh <livvy@base.nu>
-    ALSA: usb-audio: Add DJM750 to Pioneer mixer quirk
-
-Hans de Goede <hdegoede@redhat.com>
-    HID: i2c-hid: Add I2C_HID_QUIRK_NO_IRQ_AFTER_RESET for ITE8568 EC on Voyo Winpad A15
-
-Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-    mmc: sdhci-of-dwcmshc: set SDHCI_QUIRK2_PRESET_VALUE_BROKEN
-
-AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-    drm/msm/a5xx: Remove overwriting A5XX_PC_DBG_ECO_CNTL register
-
-Kiwoong Kim <kwmad.kim@samsung.com>
-    scsi: ufs: ufs-exynos: Use UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE
-
-Kiwoong Kim <kwmad.kim@samsung.com>
-    scsi: ufs: ufs-exynos: Apply vendor-specific values for three timeouts
-
-Kiwoong Kim <kwmad.kim@samsung.com>
-    scsi: ufs: Introduce a quirk to allow only page-aligned sg entries
-
-Aswath Govindraju <a-govindraju@ti.com>
-    misc: eeprom_93xx46: Add quirk to support Microchip 93LC46B eeprom
-
-Kiwoong Kim <kwmad.kim@samsung.com>
-    scsi: ufs: Add a quirk to permit overriding UniPro defaults
-
-Stanley Chu <stanley.chu@mediatek.com>
-    scsi: ufs-mediatek: Enable UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
-
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-    ASoC: Intel: sof_sdw: add missing TGL_HDMI quirk for Dell SKU 0A32
-
-Vitaly Kuznetsov <vkuznets@redhat.com>
-    KVM: x86: Supplement __cr4_reserved_bits() with X86_FEATURE_PCID check
-
-Bjorn Helgaas <bhelgaas@google.com>
-    PCI: Add function 1 DMA alias quirk for Marvell 9215 SATA controller
-
-Roger Quadros <rogerq@ti.com>
-    usb: cdns3: fix NULL pointer dereference on no platform data
-
-Peter Chen <peter.chen@nxp.com>
-    usb: cdns3: add quirk for enable runtime pm by default
-
-Peter Chen <peter.chen@nxp.com>
-    usb: cdns3: host: add xhci_plat_priv quirk XHCI_SKIP_PHY_INIT
-
-Peter Chen <peter.chen@nxp.com>
-    usb: cdns3: host: add .suspend_quirk for xhci-plat.c
-
-Chris Chiu <chiu@endlessos.org>
-    ASoC: Intel: bytcr_rt5640: Add quirk for ARCHOS Cesium 140
-
-Jasper St. Pierre <jstpierre@mecheye.net>
-    ACPI: video: Add DMI quirk for GIGABYTE GB-BXBT-2807
-
-Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>
-    media: cx23885: add more quirks for reset DMA on some AMD IOMMU
-
-Ethan Warth <redyoshi49q@gmail.com>
-    HID: mf: add support for 0079:1846 Mayflash/Dragonrise USB Gamecube Adapter
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Add ACER_CAP_KBD_DOCK quirk for the Aspire Switch 10E SW3-016
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Add support for SW_TABLET_MODE on Switch devices
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Add ACER_CAP_SET_FUNCTION_MODE capability flag
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Add new force_caps module parameter
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Cleanup accelerometer device handling
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Cleanup ACER_CAP_FOO defines
-
-Tony Lindgren <tony@atomide.com>
-    bus: ti-sysc: Implement GPMC debug quirk to drop platform data
-
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-    ASoC: Intel: sof_sdw: add quirk for new TigerLake-SDCA device
-
-Tsuchiya Yuto <kitakar@gmail.com>
-    mwifiex: pcie: skip cancel_work_sync() on reset failure path
-
-Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-    Bluetooth: btqca: Add valid le states quirk
-
-Andrey Ryabinin <arbn@yandex-team.com>
-    iommu/amd: Fix sleeping in atomic in increase_address_space()
-
-Nikolay Borisov <nborisov@suse.com>
-    btrfs: don't flush from btrfs_delayed_inode_reserve_metadata
-
-Nikolay Borisov <nborisov@suse.com>
-    btrfs: export and rename qgroup_reserve_meta
-
-Nathan Chancellor <nathan@kernel.org>
-    arm64: Make CPU_BIG_ENDIAN depend on ld.bfd or ld.lld 13.0.0+
-
-Helge Deller <deller@gmx.de>
-    parisc: Enable -mlong-calls gcc option with CONFIG_COMPILE_TEST
-
-Zoltán Böszörményi <zboszor@gmail.com>
-    nvme-pci: mark Kingston SKC2000 as not supporting the deepest power state
-
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-    ASoC: SOF: Intel: broadwell: fix mutual exclusion with catpt driver
-
-Hans de Goede <hdegoede@redhat.com>
-    ACPICA: Fix race in generic_serial_bus (I2C) and GPIO op_region parameter handling
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |   4 +-
- arch/arm64/Kconfig                                 |   5 +-
- arch/parisc/Kconfig                                |   7 +-
- arch/x86/kvm/svm/svm.c                             |   1 +
- arch/x86/kvm/x86.h                                 |   2 +
- drivers/acpi/acpica/acobject.h                     |   1 +
- drivers/acpi/acpica/evhandler.c                    |   7 +
- drivers/acpi/acpica/evregion.c                     |  64 +++-
- drivers/acpi/acpica/evxfregn.c                     |   2 +
- drivers/acpi/video_detect.c                        |   7 +
- drivers/bluetooth/hci_qca.c                        |  19 +-
- drivers/bus/ti-sysc.c                              |  10 +
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c              |   2 -
- drivers/hid/hid-ids.h                              |   3 +
- drivers/hid/hid-mf.c                               |   2 +
- drivers/hid/hid-quirks.c                           |   2 +
- drivers/hid/i2c-hid/i2c-hid-core.c                 |   2 +
- drivers/iommu/amd/iommu.c                          |  10 +-
- drivers/media/pci/cx23885/cx23885-core.c           |   4 +
- drivers/misc/eeprom/eeprom_93xx46.c                |  15 +
- drivers/mmc/host/sdhci-of-dwcmshc.c                |   1 +
- drivers/net/wireless/marvell/mwifiex/pcie.c        |  18 +-
- drivers/net/wireless/marvell/mwifiex/pcie.h        |   2 +
- drivers/nvme/host/pci.c                            |   8 +-
- drivers/pci/controller/cadence/pci-j721e.c         |   3 +
- drivers/pci/controller/cadence/pcie-cadence-host.c |  81 ++++-
- drivers/pci/controller/cadence/pcie-cadence.h      |  11 +-
- drivers/pci/quirks.c                               |   3 +
- drivers/platform/x86/acer-wmi.c                    | 169 ++++++++--
- drivers/scsi/ufs/ufs-exynos.c                      |   9 +-
- drivers/scsi/ufs/ufs-mediatek.c                    |   1 +
- drivers/scsi/ufs/ufshcd.c                          |  42 +--
- drivers/scsi/ufs/ufshcd.h                          |  10 +
- drivers/usb/cdns3/core.c                           |   3 +-
- drivers/usb/cdns3/core.h                           |   4 +
- drivers/usb/cdns3/host-export.h                    |   6 +
- drivers/usb/cdns3/host.c                           |  60 +++-
- fs/btrfs/delayed-inode.c                           |   3 +-
- fs/btrfs/inode.c                                   |   2 +-
- fs/btrfs/qgroup.c                                  |   8 +-
- fs/btrfs/qgroup.h                                  |   2 +
- include/linux/eeprom_93xx46.h                      |   2 +
- include/linux/platform_data/ti-sysc.h              |   1 +
- sound/soc/intel/boards/bytcr_rt5640.c              |  12 +
- sound/soc/intel/boards/sof_sdw.c                   |  78 +++--
- sound/soc/sof/intel/Kconfig                        |   2 +-
- sound/usb/mixer_quirks.c                           | 367 ++++++++++++++-------
- 47 files changed, 820 insertions(+), 257 deletions(-)
-
+-- 
+Josh
 
