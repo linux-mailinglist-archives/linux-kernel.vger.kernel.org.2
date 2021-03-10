@@ -2,74 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EEA3342F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 831463342FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhCJQX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:23:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53262 "EHLO mx2.suse.de"
+        id S231831AbhCJQYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:24:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53716 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229950AbhCJQXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:23:16 -0500
+        id S229602AbhCJQYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:24:04 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615393395; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZjcsPl8c1NpSuh6kdJ7LYMmcjRYGJQhsfZkCKKU6XuI=;
-        b=vXpPk4nMksjsPTm6wnCe/gPNciZkJNGEefix5jvb3KFs6tXbBoy+hl+zdTf3kMMJ+cY5h8
-        olKivXhawvrubG2/NzLPA+3ZCj2zZvbNQQhJIfnW/lZBTLERsZMXaRF/m3w1GbOM1R1/4a
-        yiNcWczNI5F5gz9LJlaD+4SjW7Sqs68=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A8B15ABD7;
-        Wed, 10 Mar 2021 16:23:15 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 17:23:09 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>, Zi Yan <ziy@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 0/3] hugetlb: add demote/split page functionality
-Message-ID: <YEjyS+xyeNlMcW/l@dhcp22.suse.cz>
-References: <20210309001855.142453-1-mike.kravetz@oracle.com>
+        by mx2.suse.de (Postfix) with ESMTP id 7CDBEABD7;
+        Wed, 10 Mar 2021 16:24:03 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 17:24:02 +0100
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: make STACKPROTECTOR_PER_TASK configurable.
+Message-ID: <20210310162402.GH6564@kitsune.suse.cz>
+References: <20210309123544.14040-1-msuchanek@suse.de>
+ <CAK7LNAT+8mGunqXSPLHxhF1FTXQEzbAoKPY=48pBgtLbhcB0jg@mail.gmail.com>
+ <20210309133523.GX6564@kitsune.suse.cz>
+ <CAK7LNARVPYBWvaA+MCjVic+qLay1AR-+UZuyC+_FRGShL=gahg@mail.gmail.com>
+ <20210309151046.GZ6564@kitsune.suse.cz>
+ <CAK7LNAQ_oJJem6sdEwTjLucjHF_R70Pa=C_c__v7x3QMz-WBAw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210309001855.142453-1-mike.kravetz@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNAQ_oJJem6sdEwTjLucjHF_R70Pa=C_c__v7x3QMz-WBAw@mail.gmail.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 08-03-21 16:18:52, Mike Kravetz wrote:
-[...]
-> Converting larger to smaller hugetlb pages can be accomplished today by
-> first freeing the larger page to the buddy allocator and then allocating
-> the smaller pages.  However, there are two issues with this approach:
-> 1) This process can take quite some time, especially if allocation of
->    the smaller pages is not immediate and requires migration/compaction.
-> 2) There is no guarantee that the total size of smaller pages allocated
->    will match the size of the larger page which was freed.  This is
->    because the area freed by the larger page could quickly be
->    fragmented.
-
-I will likely not surprise to show some level of reservation. While your
-concerns about reconfiguration by existing interfaces are quite real is
-this really a problem in practice? How often do you need such a
-reconfiguration?
-
-Is this all really worth the additional code to something as tricky as
-hugetlb code base?
-
->  include/linux/hugetlb.h |   8 ++
->  mm/hugetlb.c            | 199 +++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 204 insertions(+), 3 deletions(-)
+On Wed, Mar 10, 2021 at 04:07:00AM +0900, Masahiro Yamada wrote:
+> On Wed, Mar 10, 2021 at 12:10 AM Michal Suchánek <msuchanek@suse.de> wrote:
+> >
+> > On Tue, Mar 09, 2021 at 11:53:21PM +0900, Masahiro Yamada wrote:
+> > > On Tue, Mar 9, 2021 at 10:35 PM Michal Suchánek <msuchanek@suse.de> wrote:
+> > > >
+> > > > On Tue, Mar 09, 2021 at 10:22:36PM +0900, Masahiro Yamada wrote:
+> > > > > On Tue, Mar 9, 2021 at 9:35 PM Michal Suchanek <msuchanek@suse.de> wrote:
+> > > > > >
+> > > > > > When using dummy-tools STACKPROTECTOR_PER_TASK is unconditionally
+> > > > > > selected. This defeats the purpose of the all-enabled tool.
+> > > > > >
+> > > > > > Description copied from arm
+> > > > > >
+> > > > > > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > > >
+> > > > >
+> > > > > Could you explain what problem
+> > > > > this patch is trying to solve?
+> > > >
+> > > > The option cannot be disabled when compiler has the required capability.
+> > >
+> > >
+> > > Yes.
+> > > Currently, this symbol claims "def_bool y",
+> > > so there is no way to disable it.
+> > >
+> > > But, it comes from the nature of Kconfig in general.
+> > >
+> > > dummy-tools is completely unrelated here.
+> >
+> > dummy-tools makes all configuration options available in order to be
+> > able to author configuration files on system different from the one
+> > where the kernel is built. This prevents authoring a configuration file
+> > with this option disabled.
 > 
-> -- 
-> 2.29.2
 > 
+> No.
+> dummy-tools enables as many $(cc-option, ...)
+> and $(shell, ...) as possible. That's it.
+> 
+> 
+> In my understanding, STACKPROTECTOR_PER_TASK
+> should not be user-configurable.
+> That is why 'def_bool y'.
 
--- 
-Michal Hocko
-SUSE Labs
+And that's wrong. Either it's a required copiler feature and then it
+should be always enabled. Or it is optional and then it should be
+possible to disable - one or the other.
+
+When it is optional you should be able to
+
+ - (de) select in randconfig
+ - test/bisect the old code path without crippling your toolchain
+ - author configuration file that does not have the option enabled for
+   build on system that uses older toolchain
+
+Thanks
+
+Michal
