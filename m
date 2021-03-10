@@ -2,209 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345A53344CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B88E33344D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbhCJRHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbhCJRGv (ORCPT
+        id S231496AbhCJRKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:10:22 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:49156 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhCJRKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:06:51 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3281C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:06:51 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso7834297pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:06:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TfEm/y7pEQMr6MXjjU5bRH5tGGOCo24jcAcUw3mQM4s=;
-        b=J8abThtMfxLAw9eH0YlC39eu8FGF7dH6sZt718K5+YhCCZy93/gSBWX7M+fIM7DWLa
-         GWQwxTOkLGTL8cd958P0pBPh6vXMmO9AnVKXyF8EH/OCdPNJyWyZocVk+PmoRpGror5r
-         DFzs8s7ZyXS42Ng/2yRaDkbLOrONFs9Xc2kjq0Nfof0LW+xC7Bj88jP1EH4N7IFUgtwq
-         cAskTeWfYexhsik70qKo19NxwDLWLudHXXHNnvsEn8vTRKMCu2vEj55Ijw2jHPR6ZoMq
-         GI8oruf7g41Wx0c6VBcfGcVxhXVsfBXkWifpJksav3KLiCjGVMGm49ANYJRkpHKZb0gm
-         QCtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=TfEm/y7pEQMr6MXjjU5bRH5tGGOCo24jcAcUw3mQM4s=;
-        b=MeZ0F6yXCfIEKgyO/3oNaQ9nMM/rVl+x5eaAbIxVFOHFZW3glaxa3005G99lr0MbRt
-         ePCwG0pGzVmOyU0pzz9EuAufAqZo3ZFDnws36mQO3Bcsl5suwT9P4U2+vlkXUS6neHyt
-         CdCdqhWgZZ4k0yI5T9z7g3NgmBUDWqXOIyZv4sQBMFVeuxLBfUD4p7I3kBg1eymLcpeR
-         77TSp/znZUF0jgXbVkXE6jUGxlOSmhMLOVVs/BZJ9ZD+2BBqOCUfFyG2BEgm+xNj57OL
-         YVQiwv4TBtCsC+uNiUPis4fI8LQQzflNPXRf0mP4nxVGygXRma5ISyMnDxWlQcuB+ZVd
-         yrYA==
-X-Gm-Message-State: AOAM5333NhUDuGm+IGHY1ZZ8yaLx/CicLiKC0Mv4eBIzJKsEQ4mfi+4f
-        7MIvUE9MwJFQWrtbtTAQ4tI=
-X-Google-Smtp-Source: ABdhPJwCWRueY/ClQ9By+RMJ0jAAvHVZvk6Jo9yiDh5JYuCFUDKZftr/Fb0E8TWYxiq/4YZfFygOmg==
-X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr4529677pjb.74.1615396011239;
-        Wed, 10 Mar 2021 09:06:51 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
-        by smtp.gmail.com with ESMTPSA id d8sm113990pfq.27.2021.03.10.09.06.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 09:06:50 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 10 Mar 2021 09:06:48 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
-Message-ID: <YEj8qACYFmbckWk7@google.com>
-References: <20210308202047.1903802-1-minchan@kernel.org>
- <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
- <YEefLYiX6rF3Uk4E@google.com>
- <YEh4doXvyuRl5BDB@google.com>
- <YEjEefQpBHV5eBXj@dhcp22.suse.cz>
- <YEjuUHBDKu2uX4EO@google.com>
- <YEj4AGuBn/Q4CIuY@dhcp22.suse.cz>
+        Wed, 10 Mar 2021 12:10:07 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lK2LN-00E697-2Y; Wed, 10 Mar 2021 10:09:57 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lK2LL-000QlE-92; Wed, 10 Mar 2021 10:09:56 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Filippo Sironi <sironi@amazon.de>
+Cc:     <linux-kernel@vger.kernel.org>, <dwmw@amazon.co.uk>,
+        <christian.brauner@ubuntu.com>, <akpm@linux-foundation.org>,
+        <peterz@infradead.org>, <keescook@chromium.org>,
+        <krisman@collabora.com>, <peterx@redhat.com>, <axboe@kernel.dk>,
+        <surenb@google.com>, <shakeelb@google.com>, <guro@fb.com>,
+        <elver@google.com>
+References: <20210310123703.27894-1-sironi@amazon.de>
+Date:   Wed, 10 Mar 2021 11:09:58 -0600
+In-Reply-To: <20210310123703.27894-1-sironi@amazon.de> (Filippo Sironi's
+        message of "Wed, 10 Mar 2021 13:37:02 +0100")
+Message-ID: <m1pn07rl3t.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEj4AGuBn/Q4CIuY@dhcp22.suse.cz>
+Content-Type: text/plain
+X-XM-SPF: eid=1lK2LL-000QlE-92;;;mid=<m1pn07rl3t.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19mcqpwDm93cSui+dUoiUk0SpN8vkf2Q9I=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_12,XMSubLong,
+        XM_B_SpammyWords autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+        *  1.0 T_XMDrugObfuBody_12 obfuscated drug references
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Filippo Sironi <sironi@amazon.de>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 734 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.4 (0.5%), b_tie_ro: 2.3 (0.3%), parse: 0.95
+        (0.1%), extract_message_metadata: 3.3 (0.5%), get_uri_detail_list:
+        1.36 (0.2%), tests_pri_-1000: 4.0 (0.5%), tests_pri_-950: 1.34 (0.2%),
+        tests_pri_-900: 1.06 (0.1%), tests_pri_-90: 119 (16.2%), check_bayes:
+        118 (16.0%), b_tokenize: 8 (1.1%), b_tok_get_all: 7 (1.0%),
+        b_comp_prob: 2.3 (0.3%), b_tok_touch_all: 97 (13.2%), b_finish: 0.68
+        (0.1%), tests_pri_0: 585 (79.8%), check_dkim_signature: 0.40 (0.1%),
+        check_dkim_adsp: 380 (51.8%), poll_dns_idle: 379 (51.6%),
+        tests_pri_10: 1.60 (0.2%), tests_pri_500: 5 (0.7%), rewrite_mail: 0.00
+        (0.0%)
+Subject: Re: [RFC PATCH] mm: fork: Prevent a NULL deref by getting mm only if the refcount isn't 0
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:46:56PM +0100, Michal Hocko wrote:
-> On Wed 10-03-21 08:05:36, Minchan Kim wrote:
-> > On Wed, Mar 10, 2021 at 02:07:05PM +0100, Michal Hocko wrote:
-> [...]
-> > > The is a lot of churn indeed. Have you considered adding $FOO_lglvl
-> > > variants for those so that you can use them for your particular case
-> > > without affecting most of existing users? Something similar we have
-> > > discussed in other email thread regarding lru_add_drain_all?
-> > 
-> > I thought that way but didn't try since it couldn't make them
-> > atomic(For example, other printk place in other context will
-> > affect by the $FOO_lglvl).
-> 
-> I do not follow. I meant something like the following (likely incomplete
-> but you should get an idea).
+Filippo Sironi <sironi@amazon.de> writes:
 
-Oh, I thought you wanted to override loglevel temporally.
+> We've seen a number of crashes with the following signature:
+>
+>     BUG: kernel NULL pointer dereference, address: 0000000000000000
+>     #PF: supervisor read access in kernel mode
+>     #PF: error_code(0x0000) - not-present page
+>     ...
+>     Oops: 0000 [#1] SMP PTI
+>     ...
+>     RIP: 0010:__rb_erase_color+0xc2/0x260
+>     ...
+>     Call Trace:
+>      unlink_file_vma+0x36/0x50
+>      free_pgtables+0x62/0x110
+>      exit_mmap+0xd5/0x160
+>      ? put_dec+0x3a/0x90
+>      ? num_to_str+0xa8/0xc0
+>      mmput+0x11/0xb0
+>      do_task_stat+0x940/0xc80
+>      proc_single_show+0x49/0x80
+>      ? __check_object_size+0xcc/0x1a0
+>      seq_read+0xd3/0x400
+>      vfs_read+0x72/0xb0
+>      ksys_read+0x9c/0xd0
+>      do_syscall_64+0x69/0x400
+>      ? schedule+0x2a/0x90
+>      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>     ...
+>
+> This happens when a process goes through the tasks stats in procfs while
+> another is exiting.  This looks like a race where the process that's
+> exiting drops the last reference on the mm (with mmput) while the other
+> increases it (with mmget).  By only increasing when the reference isn't
+> 0 to begin with, we prevent this from happening.
 
-old_lvl = save_printk_lvl(new level);
-dump_page();
-restore_printk_lvl(old_lvl);
+For this to be a race with exit this would require racing with exit_mm
+where current->mm is cleared.
 
-> 
-> diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
-> index 3468794f83d2..71b402eb8f78 100644
-> --- a/include/linux/page_owner.h
-> +++ b/include/linux/page_owner.h
-> @@ -14,7 +14,7 @@ extern void __set_page_owner(struct page *page,
->  extern void __split_page_owner(struct page *page, unsigned int nr);
->  extern void __copy_page_owner(struct page *oldpage, struct page *newpage);
->  extern void __set_page_owner_migrate_reason(struct page *page, int reason);
-> -extern void __dump_page_owner(struct page *page);
-> +extern void __dump_page_owner(struct page *page, const char *loglvl);
->  extern void pagetypeinfo_showmixedcount_print(struct seq_file *m,
->  					pg_data_t *pgdat, struct zone *zone);
->  
-> @@ -46,10 +46,10 @@ static inline void set_page_owner_migrate_reason(struct page *page, int reason)
->  	if (static_branch_unlikely(&page_owner_inited))
->  		__set_page_owner_migrate_reason(page, reason);
->  }
-> -static inline void dump_page_owner(struct page *page)
-> +static inline void dump_page_owner(struct page *page, const char *loglvl)
->  {
->  	if (static_branch_unlikely(&page_owner_inited))
-> -		__dump_page_owner(page);
-> +		__dump_page_owner(page, loglvl);
->  }
->  #else
->  static inline void reset_page_owner(struct page *page, unsigned int order)
-> @@ -69,7 +69,7 @@ static inline void copy_page_owner(struct page *oldpage, struct page *newpage)
->  static inline void set_page_owner_migrate_reason(struct page *page, int reason)
->  {
->  }
-> -static inline void dump_page_owner(struct page *page)
-> +static inline void dump_page_owner(struct page *page, const char *loglvl)
->  {
->  }
->  #endif /* CONFIG_PAGE_OWNER */
-> diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-> index 9f8117c7cfdd..1b13135d9916 100644
-> --- a/kernel/stacktrace.c
-> +++ b/kernel/stacktrace.c
-> @@ -14,6 +14,18 @@
->  #include <linux/kallsyms.h>
->  #include <linux/stacktrace.h>
->  
-> +void __stack_trace_print(const unsigned long *entries, unsigned int nr_entries,
-> +		       int spacesconst, char *loglvl)
-> +{
-> +	unsigned int i;
-> +
-> +	if (WARN_ON(!entries))
-> +		return;
-> +
-> +	for (i = 0; i < nr_entries; i++)
-> +		printk("%s%*c%pS\n", loglvl, 1 + spaces, ' ', (void *)entries[i]);
-> +}
+Looking at exit_mm() the code does:
 
-That's exactly I did with introducing pr_loglevel. I wanted to address
-*all places* to use dump_page and stack_trace_print since some folks
-might ask me to fix all the broken place all at once. I'm getting tired
-with such hassle.
+	struct mm_struct *mm = current->mm;
 
-void dump_page(const char *log_lvl, struct page *page, const char *reason)
-{
-        __dump_page(log_lvl, page, reason);
-        dump_page_owner(log_lvl, page);
-}
-EXPORT_SYMBOL(dump_page);
+	mmap_read_lock(mm);
+	mmgrab(mm);
+        task_lock(current);
+	local_irq_disable();
+        current->mm = NULL;
+        local_irq_enable();
+        task_unlock(current);
+        mmap_read_unlock(mm);
 
-/**
- * pr_loglevel - Print an loglevel message
- * @level: loglevel
- * @fmt: format string
- * @...: arguments for the format string
- *
- * This macro expands to a printk with @loglevel. It uses pr_fmt() to
- * generate the format string.
- */
-#define pr_loglevel(level, fmt, ...) \
-        printk("%s" pr_fmt(fmt), level, ##__VA_ARGS__)
+	mmput(mm);
 
-void __dump_page(const char *log_lvl, struct page *page, const char *reason)
-{
-..
-..
-        if (page_poisoned) {
-                pr_loglevel(log_lvl, "page:%px is uninitialized and poisoned", page);
-                goto hex_only;
-        }
-..
-}
+Which seems to guarantee "mm_users > 0" if "task->mm != NULL" under
+tasklist_lock.
 
-static inline void dump_page_owner(const char *log_lvl, struct page *page)
-{
-        if (static_branch_unlikely(&page_owner_inited))
-                __dump_page_owner(log_lvl, page);
-}
+So I suggest you instrument your failing kernels and find what is
+improperly decrementing mm_users.
 
-void stack_trace_print(const char *log_lvl, const unsigned long *entries,
-                unsigned int nr_entries, int spaces)
-{
-        unsigned int i;
-
-        if (WARN_ON(!entries))
-                return;
-
-        for (i = 0; i < nr_entries; i++)
-                pr_loglevel(log_lvl, "%*c%pS\n", 1 + spaces, ' ', (void *)entries[i]);
-}
-EXPORT_SYMBOL_GPL(stack_trace_print);
-
-
+Eric
