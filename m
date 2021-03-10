@@ -2,198 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F281D334B85
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A06FD334B89
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbhCJWXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:23:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48340 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232063AbhCJWXJ (ORCPT
+        id S233429AbhCJWZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:25:11 -0500
+Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:52940 "EHLO
+        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232659AbhCJWY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:23:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615414989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZFzDXRjRCL3c0mZFRAdKQ2jZRyOr3oCuno8J4ucW1ys=;
-        b=PNuET1DtmhDWZrYKYgtjEw/5pd/dVAusKMt/0sLYUlM9I7rVaxgC7FfN38UIerfao2H+BO
-        do4+smpm0DxVPwkR4r+Z1oRYNi1xwnOBf37GNPH4HVCOJS09398KIJAm5Q7iMSoKA87L3A
-        0sRH4ZhAy64lI6fUU7EIjmv2rEBerAc=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-SullbfnGPB-czQpIYTdHJQ-1; Wed, 10 Mar 2021 17:23:07 -0500
-X-MC-Unique: SullbfnGPB-czQpIYTdHJQ-1
-Received: by mail-qt1-f198.google.com with SMTP id j15so4991652qtj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:23:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZFzDXRjRCL3c0mZFRAdKQ2jZRyOr3oCuno8J4ucW1ys=;
-        b=N23NoZb6bn9Vn4y0eWM4bV1l5zFcnHWlrHFiocPdoYV+64rgzfd9+Pug2bNhv/YRfW
-         8iiCIRYO9QwH2VIrmsBmHpxDxz5GL/xv1UsFXq83UzSvE9BEbQ0AUVuBFU7L/U1DcbHt
-         nMriNqtclHnuX4nM6e+mcmvnE5dSV48FSDcGFxve6W6GZ9DbrNo7/ek7bhN60HWFqbAd
-         d5nFo98j89o27IMUfmorBXmtEUBxUwSigFu+x9BIEao93QwplyuAaad0wtWESHETLT97
-         BUkPF/uCWQ22wkz6p1QPrBxd8ONv6y18AqXTgXIv1MmWLQ0SnuhpPJPybtr12yUWW1WB
-         MUpQ==
-X-Gm-Message-State: AOAM5337mx7PPikeax7TOOjz7U3vSv232pK88xzTqmc3Xxb2W8gXzS5T
-        ocOVUzlD2yZhg6nUWKyhrFRsrB2FMdHMmQZ95OAWTWCRH5DJvViYZUT0rVHyPzu0HP8SA/fwNhF
-        rNugi5OA8+yPIZr5g9WfXkpFp
-X-Received: by 2002:ac8:66d6:: with SMTP id m22mr4889756qtp.56.1615414987203;
-        Wed, 10 Mar 2021 14:23:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx0t3Sv/WtT2KXEpJpvdRgG/DJ9qTaCC0wpr6ZtX+MfqYxr2PjwtYccR5Z4rx16/S25TA6Rzg==
-X-Received: by 2002:ac8:66d6:: with SMTP id m22mr4889741qtp.56.1615414986928;
-        Wed, 10 Mar 2021 14:23:06 -0800 (PST)
-Received: from xz-x1.redhat.com ([142.126.89.138])
-        by smtp.gmail.com with ESMTPSA id e18sm451364qtr.52.2021.03.10.14.23.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 14:23:06 -0800 (PST)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-man@vger.kernel.org
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        linux-kernel@vger.kernel.org, peterx@redhat.com,
-        Linux MM Mailing List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH v3 4/4] ioctl_userfaultfd.2: Add write-protect mode docs
-Date:   Wed, 10 Mar 2021 17:23:00 -0500
-Message-Id: <20210310222300.200054-5-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210310222300.200054-1-peterx@redhat.com>
-References: <20210310222300.200054-1-peterx@redhat.com>
+        Wed, 10 Mar 2021 17:24:59 -0500
+Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
+        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1lK7Fq-0003X1-2e; Wed, 10 Mar 2021 22:24:34 +0000
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
+ schedule_tail
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <000000000000b74f1b05bd316729@google.com>
+ <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <dbdca868-7ef2-47b3-ac26-12fe61f3156a@codethink.co.uk>
+Date:   Wed, 10 Mar 2021 22:24:30 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userfaultfd write-protect mode is supported starting from Linux 5.7.
+On 10/03/2021 17:16, Dmitry Vyukov wrote:
+> On Wed, Mar 10, 2021 at 5:46 PM syzbot
+> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
+>>
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
+>> userspace arch: riscv64
+>>
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
+> 
+> +riscv maintainers
+> 
+> This is riscv64-specific.
+> I've seen similar crashes in put_user in other places. It looks like
+> put_user crashes in the user address is not mapped/protected (?).
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- man2/ioctl_userfaultfd.2 | 81 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 78 insertions(+), 3 deletions(-)
+The unmapped case should have been handled.
 
-diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-index d4a8375b8..d8380896a 100644
---- a/man2/ioctl_userfaultfd.2
-+++ b/man2/ioctl_userfaultfd.2
-@@ -234,6 +234,11 @@ operation is supported.
- The
- .B UFFDIO_UNREGISTER
- operation is supported.
-+.TP
-+.B 1 << _UFFDIO_WRITEPROTECT
-+The
-+.B UFFDIO_WRITEPROTECT
-+operation is supported.
- .PP
- This
- .BR ioctl (2)
-@@ -322,9 +327,6 @@ Track page faults on missing pages.
- .B UFFDIO_REGISTER_MODE_WP
- Track page faults on write-protected pages.
- .PP
--Currently, the only supported mode is
--.BR UFFDIO_REGISTER_MODE_MISSING .
--.PP
- If the operation is successful, the kernel modifies the
- .I ioctls
- bit-mask field to indicate which
-@@ -443,6 +445,13 @@ operation:
- .TP
- .B UFFDIO_COPY_MODE_DONTWAKE
- Do not wake up the thread that waits for page-fault resolution
-+.TP
-+.B UFFDIO_COPY_MODE_WP
-+Copy the page with read-only permission.
-+This allows the user to trap the next write to the page, which will block and
-+generate another write-protect userfault message.
-+This is only used in conjunction with write-protect mode when both missing and
-+write-protect modes are enabled.
- .PP
- The
- .I copy
-@@ -654,6 +663,72 @@ field of the
- structure was not a multiple of the system page size; or
- .I len
- was zero; or the specified range was otherwise invalid.
-+.SS UFFDIO_WRITEPROTECT (Since Linux 5.7)
-+Write-protect or write-unprotect an userfaultfd registered memory range
-+registered with mode
-+.BR UFFDIO_REGISTER_MODE_WP .
-+.PP
-+The
-+.I argp
-+argument is a pointer to a
-+.I uffdio_range
-+structure as shown below:
-+.PP
-+.in +4n
-+.EX
-+struct uffdio_writeprotect {
-+    struct uffdio_range range;  /* Range to change write permission */
-+    __u64 mode;                 /* Mode to change write permission */
-+};
-+.EE
-+.in
-+There're two mode bits that are supported in this structure:
-+.TP
-+.B UFFDIO_WRITEPROTECT_MODE_WP
-+When this mode bit is set, the ioctl will be a write-protect operation upon the
-+memory range specified by
-+.IR range .
-+Otherwise it'll be a write-unprotect operation upon the specified range, which
-+can be used to resolve an userfaultfd write-protect page fault.
-+.TP
-+.B UFFDIO_WRITEPROTECT_MODE_DONTWAKE
-+When this mode bit is set, do not wake up any thread that waits for page-fault
-+resolution after the operation.
-+This could only be specified if
-+.B UFFDIO_WRITEPROTECT_MODE_WP
-+is not specified.
-+.PP
-+This
-+.BR ioctl (2)
-+operation returns 0 on success.
-+On error, \-1 is returned and
-+.I errno
-+is set to indicate the error.
-+Possible errors include:
-+.TP
-+.B EINVAL
-+The
-+.I start
-+or the
-+.I len
-+field of the
-+.I ufdio_range
-+structure was not a multiple of the system page size; or
-+.I len
-+was zero; or the specified range was otherwise invalid.
-+.TP
-+.B EAGAIN
-+The process was interrupted and need to retry.
-+.TP
-+.B ENOENT
-+The range specified in
-+.I range
-+is not valid.
-+For example, the virtual address does not exist, or not registered with
-+userfaultfd write-protect mode.
-+.TP
-+.B EFAULT
-+Encountered a generic fault during processing.
- .SH RETURN VALUE
- See descriptions of the individual operations, above.
- .SH ERRORS
+I think this issue is that the check for user-mode access added. From
+what I read the code may be wrong in
+
++	if (!user_mode(regs) && addr < TASK_SIZE &&
++			unlikely(!(regs->status & SR_SUM)))
++		die_kernel_fault("access to user memory without uaccess routines",
++				addr, regs);
+
+I think the SR_SUM check might be wrong, as I read the standard the
+SR_SUM should be set to disable user-space access. So the check
+should be unlikely(regs->status & SR_SUM) to say access without
+having disabled the protection.
+
+Without this, you can end up with an infinite loop in the fault handler.
+
+> 
+>> Unable to handle kernel access to user memory without uaccess routines at virtual address 000000002749f0d0
+>> Oops [#1]
+>> Modules linked in:
+>> CPU: 1 PID: 4875 Comm: syz-executor.0 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+>> Hardware name: riscv-virtio,qemu (DT)
+>> epc : schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
+>>   ra : task_pid_vnr include/linux/sched.h:1421 [inline]
+>>   ra : schedule_tail+0x70/0xb2 kernel/sched/core.c:4264
+>> epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp : ffffffe025d17ec0
+>>   gp : ffffffe005d25378 tp : ffffffe00f0d0000 t0 : 0000000000000000
+>>   t1 : 0000000000000001 t2 : 00000000000f4240 s0 : ffffffe025d17ee0
+>>   s1 : 000000002749f0d0 a0 : 000000000000002a a1 : 0000000000000003
+>>   a2 : 1ffffffc0cfac500 a3 : ffffffe0000c80cc a4 : 5ae9db91c19bbe00
+>>   a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
+>>   s2 : 0000000000040000 s3 : ffffffe00eef96c0 s4 : ffffffe022c77fe0
+>>   s5 : 0000000000004000 s6 : ffffffe067d74e00 s7 : ffffffe067d74850
+>>   s8 : ffffffe067d73e18 s9 : ffffffe067d74e00 s10: ffffffe00eef96e8
+>>   s11: 000000ae6cdf8368 t3 : 5ae9db91c19bbe00 t4 : ffffffc4043cafb2
+>>   t5 : ffffffc4043cafba t6 : 0000000000040000
+>> status: 0000000000000120 badaddr: 000000002749f0d0 cause: 000000000000000f
+>> Call Trace:
+>> [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
+>> [<ffffffe000005570>] ret_from_exception+0x0/0x14
+>> Dumping ftrace buffer:
+>>     (ftrace buffer empty)
+>> ---[ end trace b5f8f9231dc87dda ]---
+>>
+>>
+>> ---
+>> This report is generated by a bot. It may contain errors.
+>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>
+>> syzbot will keep track of this issue. See:
+>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>>
+>> --
+>> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+>> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+>> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000b74f1b05bd316729%40google.com.
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+
+
 -- 
-2.26.2
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
 
+https://www.codethink.co.uk/privacy.html
