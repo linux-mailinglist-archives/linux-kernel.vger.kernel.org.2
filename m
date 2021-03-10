@@ -2,150 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A10D334B44
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400E6334B48
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233346AbhCJWNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:13:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47538 "EHLO
+        id S231905AbhCJWQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:16:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233889AbhCJWNi (ORCPT
+        with ESMTP id S229574AbhCJWQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:13:38 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BBAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:13:37 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso11624691wmi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:13:37 -0800 (PST)
+        Wed, 10 Mar 2021 17:16:07 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB0AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:16:06 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id jt13so42013541ejb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:16:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:message-id:references:mime-version:content-disposition
-         :in-reply-to:subject:resent-from:resent-to:resent-cc:date:user-agent
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=f6b0ySB65gAluU5jkcMgJzHgnrlwCgvwd9FpZIquqBY=;
-        b=dUOutTFWzecLpw/uH1JQ7qFklqMkd1HC0mHP4hUFIznvT0XIZcvRdVnhV4JznL1zyg
-         GcorLaiY44LNgaoPg283+dUDbyX4eawoN4xnjnmeb0dvehqLfIfj7LfnseGbl5Fn/nyb
-         kt5dbbShu6NOpJjSQ+pVy1PHHWIaLszqK/HJpZp5F4SpEwA+HlJLSDsRXjvsC5BIhMAH
-         g5bR004z4zxJpfr5HCYMjrmDzlZm8O7P9bBGPk/7Vsf4AZp0Igv4Mie/diTvrTfj7LIs
-         vLXdT0N7Gmv1k6vL0+Ve/Z5YLdt5bh1FxEryctQwrAHPPCCeOONFfEPGuCQopZ2fUv5G
-         nnwQ==
+        bh=re8TUbsE0dO0c8tinrCkKpAasXzv2AM9ceRsQ1QF7n8=;
+        b=hPQfozB12KC6qu+yv8shLRVXpJz7Xpjo/SCPBi3uQd0Ey/KRKrBdnU0WUX9A9PUjQU
+         GZP9qfg2OCppE8tosQf8BQCtbVIFK0rj9a0kDOBRI8/6+vLNfEuFgUcg94qmHIgcCWtD
+         VoTDjG1snTNU5DzGYySypXPbtYhLFMZi5anj4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:message-id:references:mime-version
-         :content-disposition:in-reply-to:subject:resent-from:resent-to
-         :resent-cc:date:user-agent:content-transfer-encoding;
-        bh=f6b0ySB65gAluU5jkcMgJzHgnrlwCgvwd9FpZIquqBY=;
-        b=GIIVnCL8qinVDkPi9xPysAeGEWHHXEZ7RDKmCCDVaIobAfSvf6mcPIK8HWckbxaCat
-         JepaCVCL5/KESjo2cFEAw4hfWgWfhtkoxFyk360KGEqJMFGbD/NdYyJmDcmODDI3gjCt
-         QU0TFKlhlMJbfISn49SMppHJXH1/b/9v5YFXPkX9BHFRiM3UuOT0RglWMtDzkF2n5MAc
-         DQtfZJxb+ALQ64KTJyA8p+sKVcQG8aZVvslahN5qELq1cmEpUrI1UU5NhqzVj8sP8iIx
-         k+0kg43QoxXOBrAexlNHv+Q10WkhMwdyeZTZfzBj2/JCVkfpIb9v0VuhxqS5eFLBkSvV
-         EK5g==
-X-Gm-Message-State: AOAM532TmjTBZqPjfME7ZTsjoWqs0qL2wxBZ0UkGEN4OFtqxD7ex9lWa
-        Kfxe3I/GmLevqXnB9HJqrHYuoaVexcY=
-X-Google-Smtp-Source: ABdhPJy+jaRhQfyr5OAeh4pDipJ/SdY0izbXnb/3YYJI9iW5xj0hYSCcuVsquyReoZH6DrILWwTnWw==
-X-Received: by 2002:a05:600c:19ce:: with SMTP id u14mr4701474wmq.109.1615414416742;
-        Wed, 10 Mar 2021 14:13:36 -0800 (PST)
-Received: from [192.168.43.236] ([5.171.72.165])
-        by smtp.gmail.com with ESMTPSA id b65sm760286wmh.4.2021.03.10.14.13.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=re8TUbsE0dO0c8tinrCkKpAasXzv2AM9ceRsQ1QF7n8=;
+        b=BB4gWboI17UmaX8ItVj0pv9xJeVR0oXKWMe2N2G9TQ5lXdwwXd4CCL9RG8iAYE3yXI
+         ozyTwNtD//o8xzsrEdX30QwsR5wUDXtqKiTLCgwNr6+sF+NKPPMqUwa+Q35j0blkLYvt
+         23A0k6hcSvWWfNgFp+2sKH9YGAGWiCwUX8Oz4rkHQAMGSk48cAK1z1XZxe/n137lhYP9
+         rByjwRrrFznH+2RAowm01nxqFp1CA5u3eWZZV81uwEBiKUBIe1j78e0rDQv2VwwV/7Cr
+         XkqUG9w/gest8qJRkccw6DItH3VxyNTTkPDXYFhIe2wOrAuFT3sAMckcwZgzFhxVBD9v
+         Nf9A==
+X-Gm-Message-State: AOAM533KAzAgZ1f/o3W04dpF6tEEXtlzwKhrTy7iwViqd/J6/N3Q9FbS
+        I1Azv+ve1Tuk444qdq705ad8Nw==
+X-Google-Smtp-Source: ABdhPJy7fJyPDrOoycZMA2cHillh2M2zKhNgHdYE/o5cj7n9CplbTPPYDPVV3dAW9mPZ9vn8Ymd7jQ==
+X-Received: by 2002:a17:906:2804:: with SMTP id r4mr56347ejc.521.1615414565286;
+        Wed, 10 Mar 2021 14:16:05 -0800 (PST)
+Received: from prevas-ravi.prevas.se ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id b4sm281105edh.40.2021.03.10.14.16.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 14:13:36 -0800 (PST)
-Received: from agape.jhs ([151.47.162.135]) by smtp.gmail.com with ESMTPSA
- id f21sm10126639ejw.124.2021.03.10.08.09.50 for
- <gregkh@linuxfoundation.org> (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384
- bits=256/256); Wed, 10 Mar 2021 08:09:50 -0800 (PST)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Message-ID: <20210310160946.GA6421@agape.jhs>
-References: <20210310153717.GA5741@agape.jhs>
- <YEjrEErDZTH47gto@kroah.com>
+        Wed, 10 Mar 2021 14:16:04 -0800 (PST)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: bnx2i: make bnx2i_process_iscsi_error simpler and more robust
+Date:   Wed, 10 Mar 2021 23:16:02 +0100
+Message-Id: <20210310221602.2494422-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEjrEErDZTH47gto@kroah.com>
-Subject: Re: [PATCH] staging: rtl8723bs: align comments
-Date:   Wed, 10 Mar 2021 23:13:35 +0100
-User-Agent: Evolution 3.30.5-1.1 
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 04:51:44PM +0100, Greg KH wrote:
-> On Wed, Mar 10, 2021 at 04:37:21PM +0100, Fabio Aiuto wrote:
-> > fix the following checkpatch warnings:
-> >=20
-> > WARNING: Block comments use * on subsequent lines
-> > +	/*
-> > +		AMPDU_para [1:0]:Max AMPDU Len =3D> 0:8k , 1:16k, 2:32k, 3:64k
-> > --
-> > WARNING: Block comments use * on subsequent lines
-> > +/*
-> > +op_mode
-> >=20
-> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > ---
-> >  drivers/staging/rtl8723bs/core/rtw_ap.c | 28 ++++++++++++-------------
-> >  1 file changed, 14 insertions(+), 14 deletions(-)
-> >=20
-> > diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/=
-rtl8723bs/core/rtw_ap.c
-> > index b6f944b37b08..3a0e4f64466a 100644
-> > --- a/drivers/staging/rtl8723bs/core/rtw_ap.c
-> > +++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-> > @@ -721,9 +721,9 @@ static void update_hw_ht_param(struct adapter *pada=
-pter)
-> > =20
-> >  	/* handle A-MPDU parameter field */
-> >  	/*
-> > -		AMPDU_para [1:0]:Max AMPDU Len =3D> 0:8k , 1:16k, 2:32k, 3:64k
-> > -		AMPDU_para [4:2]:Min MPDU Start Spacing
-> > -	*/
-> > +	 *	AMPDU_para [1:0]:Max AMPDU Len =3D> 0:8k , 1:16k, 2:32k, 3:64k
-> > +	 *	AMPDU_para [4:2]:Min MPDU Start Spacing
-> > +	 */
-> >  	max_AMPDU_len =3D pmlmeinfo->HT_caps.u.HT_cap_element.AMPDU_para & 0x=
-03;
-> > =20
-> >  	min_MPDU_spacing =3D (
-> > @@ -1815,17 +1815,17 @@ void update_beacon(struct adapter *padapter, u8=
- ie_id, u8 *oui, u8 tx)
-> >  }
-> > =20
-> >  /*
-> > -op_mode
-> > -Set to 0 (HT pure) under the following conditions
-> > -	- all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
-> > -	- all STAs in the BSS are 20 MHz HT in 20 MHz BSS
-> > -Set to 1 (HT non-member protection) if there may be non-HT STAs
-> > -	in both the primary and the secondary channel
-> > -Set to 2 if only HT STAs are associated in BSS,
-> > -	however and at least one 20 MHz HT STA is associated
-> > -Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
-> > -	(currently non-GF HT station is considered as non-HT STA also)
-> > -*/
-> > + *op_mode
-> > + *Set to 0 (HT pure) under the following conditions
-> > + *	 - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
-> > + *	 - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
-> > + *Set to 1 (HT non-member protection) if there may be non-HT STAs
-> > + *	 in both the primary and the secondary channel
-> > + *Set to 2 if only HT STAs are associated in BSS,
-> > + *	 however and at least one 20 MHz HT STA is associated
-> > + *Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
-> > + *	 (currently non-GF HT station is considered as non-HT STA also)
-> > + */
->=20
-> Add a space after the ' ' to make it look correct please.
->=20
-> thanks,
->=20
-> greg k-h
-I am sorry, I fear I don't understand, checkpatch.sh script says the patch =
-is ok.
-Where have I to add a ' ' (a blank?)?
+Instead of strcpy'ing into a stack buffer, just let additional_notice
+point to a string literal living in .rodata. This is better in a few
+ways:
 
-thank you,
+- Smaller .text - instead of gcc compiling the strcpys as a bunch of
+  immediate stores (effectively encoding the string literal in the
+  instruction stream), we only pay the price of storing the literal in
+  .rodata.
 
-fabio
+- Faster, because there's no string copying.
+
+- Smaller stack usage (with my compiler, 72 bytes instead of 176 for
+  the sole caller, bnx2i_indicate_kcqe)
+
+Moreover, it's currently possible for additional_notice[] to get used
+uninitialized, so some random stack garbage would be passed to
+printk() - in the worst case without any '\0' anywhere in those 64
+bytes. That could be fixed by initializing additional_notice[0], but
+the same is achieved here by initializing the new pointer variable to
+"".
+
+Also give the message pointer a similar treatment - there's no point
+making temporary copies on the stack of those two strings.
+
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ drivers/scsi/bnx2i/bnx2i_hwi.c | 85 ++++++++++++++++------------------
+ 1 file changed, 41 insertions(+), 44 deletions(-)
+
+diff --git a/drivers/scsi/bnx2i/bnx2i_hwi.c b/drivers/scsi/bnx2i/bnx2i_hwi.c
+index bad396e5c601..43e8a1dafec0 100644
+--- a/drivers/scsi/bnx2i/bnx2i_hwi.c
++++ b/drivers/scsi/bnx2i/bnx2i_hwi.c
+@@ -2206,10 +2206,8 @@ static void bnx2i_process_iscsi_error(struct bnx2i_hba *hba,
+ {
+ 	struct bnx2i_conn *bnx2i_conn;
+ 	u32 iscsi_cid;
+-	char warn_notice[] = "iscsi_warning";
+-	char error_notice[] = "iscsi_error";
+-	char additional_notice[64];
+-	char *message;
++	const char *additional_notice = "";
++	const char *message;
+ 	int need_recovery;
+ 	u64 err_mask64;
+ 
+@@ -2224,133 +2222,132 @@ static void bnx2i_process_iscsi_error(struct bnx2i_hba *hba,
+ 
+ 	if (err_mask64 & iscsi_error_mask) {
+ 		need_recovery = 0;
+-		message = warn_notice;
++		message = "iscsi_warning";
+ 	} else {
+ 		need_recovery = 1;
+-		message = error_notice;
++		message = "iscsi_error";
+ 	}
+ 
+ 	switch (iscsi_err->completion_status) {
+ 	case ISCSI_KCQE_COMPLETION_STATUS_HDR_DIG_ERR:
+-		strcpy(additional_notice, "hdr digest err");
++		additional_notice = "hdr digest err";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_DATA_DIG_ERR:
+-		strcpy(additional_notice, "data digest err");
++		additional_notice = "data digest err";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_OPCODE:
+-		strcpy(additional_notice, "wrong opcode rcvd");
++		additional_notice = "wrong opcode rcvd";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_AHS_LEN:
+-		strcpy(additional_notice, "AHS len > 0 rcvd");
++		additional_notice = "AHS len > 0 rcvd";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_ITT:
+-		strcpy(additional_notice, "invalid ITT rcvd");
++		additional_notice = "invalid ITT rcvd";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_STATSN:
+-		strcpy(additional_notice, "wrong StatSN rcvd");
++		additional_notice = "wrong StatSN rcvd";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_EXP_DATASN:
+-		strcpy(additional_notice, "wrong DataSN rcvd");
++		additional_notice = "wrong DataSN rcvd";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_PEND_R2T:
+-		strcpy(additional_notice, "pend R2T violation");
++		additional_notice = "pend R2T violation";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_0:
+-		strcpy(additional_notice, "ERL0, UO");
++		additional_notice = "ERL0, UO";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_1:
+-		strcpy(additional_notice, "ERL0, U1");
++		additional_notice = "ERL0, U1";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_2:
+-		strcpy(additional_notice, "ERL0, U2");
++		additional_notice = "ERL0, U2";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_3:
+-		strcpy(additional_notice, "ERL0, U3");
++		additional_notice = "ERL0, U3";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_4:
+-		strcpy(additional_notice, "ERL0, U4");
++		additional_notice = "ERL0, U4";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_5:
+-		strcpy(additional_notice, "ERL0, U5");
++		additional_notice = "ERL0, U5";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_6:
+-		strcpy(additional_notice, "ERL0, U6");
++		additional_notice = "ERL0, U6";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_REMAIN_RCV_LEN:
+-		strcpy(additional_notice, "invalid resi len");
++		additional_notice = "invalid resi len";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_MAX_RCV_PDU_LEN:
+-		strcpy(additional_notice, "MRDSL violation");
++		additional_notice = "MRDSL violation";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_F_BIT_ZERO:
+-		strcpy(additional_notice, "F-bit not set");
++		additional_notice = "F-bit not set";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_TTT_NOT_RSRV:
+-		strcpy(additional_notice, "invalid TTT");
++		additional_notice = "invalid TTT";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_DATASN:
+-		strcpy(additional_notice, "invalid DataSN");
++		additional_notice = "invalid DataSN";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_REMAIN_BURST_LEN:
+-		strcpy(additional_notice, "burst len violation");
++		additional_notice = "burst len violation";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_BUFFER_OFF:
+-		strcpy(additional_notice, "buf offset violation");
++		additional_notice = "buf offset violation";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_LUN:
+-		strcpy(additional_notice, "invalid LUN field");
++		additional_notice = "invalid LUN field";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_R2TSN:
+-		strcpy(additional_notice, "invalid R2TSN field");
++		additional_notice = "invalid R2TSN field";
+ 		break;
+ #define BNX2I_ERR_DESIRED_DATA_TRNS_LEN_0 	\
+ 	ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_DESIRED_DATA_TRNS_LEN_0
+ 	case BNX2I_ERR_DESIRED_DATA_TRNS_LEN_0:
+-		strcpy(additional_notice, "invalid cmd len1");
++		additional_notice = "invalid cmd len1";
+ 		break;
+ #define BNX2I_ERR_DESIRED_DATA_TRNS_LEN_1 	\
+ 	ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_DESIRED_DATA_TRNS_LEN_1
+ 	case BNX2I_ERR_DESIRED_DATA_TRNS_LEN_1:
+-		strcpy(additional_notice, "invalid cmd len2");
++		additional_notice = "invalid cmd len2";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_PEND_R2T_EXCEED:
+-		strcpy(additional_notice,
+-		       "pend r2t exceeds MaxOutstandingR2T value");
++		additional_notice = "pend r2t exceeds MaxOutstandingR2T value";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_TTT_IS_RSRV:
+-		strcpy(additional_notice, "TTT is rsvd");
++		additional_notice = "TTT is rsvd";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_MAX_BURST_LEN:
+-		strcpy(additional_notice, "MBL violation");
++		additional_notice = "MBL violation";
+ 		break;
+ #define BNX2I_ERR_DATA_SEG_LEN_NOT_ZERO 	\
+ 	ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_DATA_SEG_LEN_NOT_ZERO
+ 	case BNX2I_ERR_DATA_SEG_LEN_NOT_ZERO:
+-		strcpy(additional_notice, "data seg len != 0");
++		additional_notice = "data seg len != 0";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_REJECT_PDU_LEN:
+-		strcpy(additional_notice, "reject pdu len error");
++		additional_notice = "reject pdu len error";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_ASYNC_PDU_LEN:
+-		strcpy(additional_notice, "async pdu len error");
++		additional_notice = "async pdu len error";
+ 		break;
+ 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_NOPIN_PDU_LEN:
+-		strcpy(additional_notice, "nopin pdu len error");
++		additional_notice = "nopin pdu len error";
+ 		break;
+ #define BNX2_ERR_PEND_R2T_IN_CLEANUP			\
+ 	ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_PEND_R2T_IN_CLEANUP
+ 	case BNX2_ERR_PEND_R2T_IN_CLEANUP:
+-		strcpy(additional_notice, "pend r2t in cleanup");
++		additional_notice = "pend r2t in cleanup";
+ 		break;
+ 
+ 	case ISCI_KCQE_COMPLETION_STATUS_TCP_ERROR_IP_FRAGMENT:
+-		strcpy(additional_notice, "IP fragments rcvd");
++		additional_notice = "IP fragments rcvd";
+ 		break;
+ 	case ISCI_KCQE_COMPLETION_STATUS_TCP_ERROR_IP_OPTIONS:
+-		strcpy(additional_notice, "IP options error");
++		additional_notice = "IP options error";
+ 		break;
+ 	case ISCI_KCQE_COMPLETION_STATUS_TCP_ERROR_URGENT_FLAG:
+-		strcpy(additional_notice, "urgent flag error");
++		additional_notice = "urgent flag error";
+ 		break;
+ 	default:
+ 		printk(KERN_ALERT "iscsi_err - unknown err %x\n",
+-- 
+2.29.2
 
