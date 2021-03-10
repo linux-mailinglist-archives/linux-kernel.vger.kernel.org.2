@@ -2,169 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5E13349E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2D73349F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhCJVlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:41:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42890 "EHLO mail.kernel.org"
+        id S231975AbhCJVlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:41:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231778AbhCJVky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:40:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 731E764FE8;
-        Wed, 10 Mar 2021 21:40:54 +0000 (UTC)
+        id S231911AbhCJVlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:41:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77CDE64FC4;
+        Wed, 10 Mar 2021 21:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615412454;
-        bh=lljbEm8y6jNcxvIMoB+J261BTyFdid0U0j/1mSpgrns=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eDXX9I0rBca4D2age7wm+DtVv6geacxhoDXnt5SysKVhym9aYBoOULiDV+ts4rOLP
-         jxqSr5B0vX0/o/NShM/j+kwlnb4hGRATSr0mEhy2fTgb4b/f9TFkN0sucrguP/wUnN
-         VpsdkpA2+bkS7oY10zU2zq+j59iH8lNhIYLI61shYJGWLghrHuyig30tcjLo3fTgbB
-         3DEVFLncbcg+C2B9HtVOo3SUvsmkNa+xgZXWZi3ZI5a2G3Gno+oUiLdB0wFYwj7D9V
-         li5Sma9VH3O9evfauK7N3UwWSXURG5BK+1LBH0BYK5Vbx589vAqinspwZjQAwTmkXH
-         mjJKT2LCYnF3Q==
-Received: by mail-qk1-f179.google.com with SMTP id m186so1917402qke.12;
-        Wed, 10 Mar 2021 13:40:54 -0800 (PST)
-X-Gm-Message-State: AOAM532bmvbOE5P49KZOS0cD2KWJvsod2ISvDBzPVJPC80auwWE+hToR
-        AA4UccCh9R29pvbb73fNZY1LaaCoz6jH/BN8fQ==
-X-Google-Smtp-Source: ABdhPJwvOHv4sjXRoS+j4qWhL9MVaGJgYMXKyxBDilpUrwUXgxjhTnULwJ7kIho0KdWOn0m+qzW6exxxNwLS3x7GxZU=
-X-Received: by 2002:a05:620a:1001:: with SMTP id z1mr4659415qkj.364.1615412453005;
- Wed, 10 Mar 2021 13:40:53 -0800 (PST)
+        s=k20201202; t=1615412497;
+        bh=7L66YLf+ed4bmAJ64a+z2Rfb2jejvrDUJlt5flDQSzc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WeHJlZUUXjhMzB0/88zdlqbvsiS1W0n+3Ir0GWVoZi3fNsOyyoW1K3k/zkXzce+2B
+         kupH6bNM25jf4p0/6AONLd4Tb60fLXSIGH33Vu77s5EbxeT2gKCEAln9hjc+ckfsCI
+         EF1Tzwn+e/C5pQ3AF/jHVKyi6+lO2sGXakUAZ1LYm1Q96gRIJcKo6IY/xtNOTaiGb1
+         VGTre1rlahv2JZ25OXfgztv0cnsflZLbrpm0pCjPgOWdAMddR4+lNMBxZaQXfsGE2Z
+         AoSAT0O1ZMxAC9jtlOQ0QSs+QMDopV7VanzXKNotQ+W7ezAKH+528KIWoQR4cIEZC3
+         R7xW0yDIFDmBQ==
+Date:   Wed, 10 Mar 2021 23:41:12 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org
+Subject: Re: [PATCH v11 01/10] oid_registry: Add OIDs for ECDSA with
+ sha224/256/384/512
+Message-ID: <YEk8+OwwVJbXIb9+@kernel.org>
+References: <20210305205956.3594375-1-stefanb@linux.vnet.ibm.com>
+ <20210305205956.3594375-2-stefanb@linux.vnet.ibm.com>
+ <YEjnPZOVit+U9YcG@kernel.org>
+ <b2672c92-ddf5-51ba-bb4c-f3aadee26daf@linux.ibm.com>
 MIME-Version: 1.0
-References: <20210209062131.2300005-1-tientzu@chromium.org>
- <20210209062131.2300005-14-tientzu@chromium.org> <20210310160747.GA29834@willie-the-truck>
-In-Reply-To: <20210310160747.GA29834@willie-the-truck>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 10 Mar 2021 14:40:41 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqJE6A4awYCvqzw3qk2uAJEKgkSOKbk9tPaMKup8zes8cA@mail.gmail.com>
-Message-ID: <CAL_JsqJE6A4awYCvqzw3qk2uAJEKgkSOKbk9tPaMKup8zes8cA@mail.gmail.com>
-Subject: Re: [PATCH v4 13/14] dt-bindings: of: Add restricted DMA pool
-To:     Will Deacon <will@kernel.org>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Grant Likely <grant.likely@arm.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b2672c92-ddf5-51ba-bb4c-f3aadee26daf@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 9:08 AM Will Deacon <will@kernel.org> wrote:
->
-> Hi Claire,
->
-> On Tue, Feb 09, 2021 at 02:21:30PM +0800, Claire Chang wrote:
-> > Introduce the new compatible string, restricted-dma-pool, for restricted
-> > DMA. One can specify the address and length of the restricted DMA memory
-> > region by restricted-dma-pool in the reserved-memory node.
-> >
-> > Signed-off-by: Claire Chang <tientzu@chromium.org>
-> > ---
-> >  .../reserved-memory/reserved-memory.txt       | 24 +++++++++++++++++++
-> >  1 file changed, 24 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> > index e8d3096d922c..fc9a12c2f679 100644
-> > --- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> > +++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> > @@ -51,6 +51,20 @@ compatible (optional) - standard definition
-> >            used as a shared pool of DMA buffers for a set of devices. It can
-> >            be used by an operating system to instantiate the necessary pool
-> >            management subsystem if necessary.
-> > +        - restricted-dma-pool: This indicates a region of memory meant to be
-> > +          used as a pool of restricted DMA buffers for a set of devices. The
-> > +          memory region would be the only region accessible to those devices.
-> > +          When using this, the no-map and reusable properties must not be set,
-> > +          so the operating system can create a virtual mapping that will be used
-> > +          for synchronization. The main purpose for restricted DMA is to
-> > +          mitigate the lack of DMA access control on systems without an IOMMU,
-> > +          which could result in the DMA accessing the system memory at
-> > +          unexpected times and/or unexpected addresses, possibly leading to data
-> > +          leakage or corruption. The feature on its own provides a basic level
-> > +          of protection against the DMA overwriting buffer contents at
-> > +          unexpected times. However, to protect against general data leakage and
-> > +          system memory corruption, the system needs to provide way to lock down
-> > +          the memory access, e.g., MPU.
->
-> As far as I can tell, these pools work with both static allocations (which
-> seem to match your use-case where firmware has preconfigured the DMA ranges)
-> but also with dynamic allocations where a 'size' property is present instead
-> of the 'reg' property and the kernel is responsible for allocating the
-> reservation during boot. Am I right and, if so, is that deliberate?
+On Wed, Mar 10, 2021 at 01:38:12PM -0500, Stefan Berger wrote:
+> 
+> On 3/10/21 10:35 AM, Jarkko Sakkinen wrote:
+> > On Fri, Mar 05, 2021 at 03:59:47PM -0500, Stefan Berger wrote:
+> > > From: Stefan Berger <stefanb@linux.ibm.com>
+> > > 
+> > > Add OIDs for ECDSA with sha224/256/384/512.
+> > Nit: SHA224/256/384/512 (sorry cannot help myself with these, have been
+> > doing this way too much, consider me as a bot :-) )
+> > 
+> > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+> 
+> Jarrko,
+> 
+>   I applied the nit and the 4 Acked-by's.
+> 
+> Thank you!
+> 
+> 
+>    Stefan
 
-I believe so. I'm not keen on having size only reservations in DT.
-Yes, we allowed that already, but that's back from the days of needing
-large CMA carveouts to be reserved early in boot. I've read that the
-kernel is much better now at contiguous allocations, so do we really
-need this in DT anymore?
+Cool, thank you :-)
 
-> I ask because I think that would potentially be useful to us for the
-> Protected KVM work, where we need to bounce virtio memory accesses via
-> guest-determined windows because the guest memory is generally inaccessible
-> to the host. We've been hacking this using a combination of "swiotlb=force"
-> and set_memory_{decrypted,encrypted}() but it would be much better to
-> leverage the stuff you have here.
->
-> Also:
->
-> > +
-> > +             restricted_dma_mem_reserved: restricted_dma_mem_reserved {
-> > +                     compatible = "restricted-dma-pool";
-> > +                     reg = <0x50000000 0x400000>;
-> > +             };
-> >       };
-> >
-> >       /* ... */
-> > @@ -138,4 +157,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
-> >               memory-region = <&multimedia_reserved>;
-> >               /* ... */
-> >       };
-> > +
-> > +     pcie_device: pcie_device@0,0 {
-> > +             memory-region = <&restricted_dma_mem_reserved>;
-> > +             /* ... */
-> > +     };
->
-> I find this example a bit weird, as I didn't think we usually had DT nodes
-> for PCI devices; rather they are discovered as a result of probing config
-> space. Is the idea that you have one reserved memory region attached to the
-> RC and all the PCI devices below that share the region, or is there a need
-> for a mapping mechanism?
-
-We can have DT nodes for PCI. AIUI, IBM power systems always do. For
-FDT, it's only if there are extra non-discoverable resources. It's
-particularly fun when it's resources which need to be enabled for the
-PCI device to be discovered. That seems to be a growing problem as PCI
-becomes more common on embedded systems.
-
-Rob
+/Jarkko
