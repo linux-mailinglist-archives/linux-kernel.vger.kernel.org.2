@@ -2,85 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D90F333BE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76ED4333BF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhCJMBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:01:37 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:38566 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231867AbhCJMBT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:01:19 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0URJJq9b_1615377675;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0URJJq9b_1615377675)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 10 Mar 2021 20:01:15 +0800
-Date:   Wed, 10 Mar 2021 20:01:15 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>, rostedt@goodmis.org,
-        mingo@redhat.com, Networking <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
-Message-ID: <YEi1C5XXNYWW/ZWn@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
- <203c49a3-6dd8-105e-e12a-0e15da0d4df7@gmail.com>
- <CACAyw9-tacJC-5Cimars4Ncu0PzZ6gg-qfj7g_yz_UgX5h6H-Q@mail.gmail.com>
+        id S232455AbhCJMCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:02:12 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:56010 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230341AbhCJMBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 07:01:44 -0500
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 6C66440D01;
+        Wed, 10 Mar 2021 12:01:37 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: [PATCH v8 0/8] Count rlimits in each user namespace
+Date:   Wed, 10 Mar 2021 13:01:25 +0100
+Message-Id: <cover.1615372955.git.gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACAyw9-tacJC-5Cimars4Ncu0PzZ6gg-qfj7g_yz_UgX5h6H-Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.4 (raptor.unsafe.ru [0.0.0.0]); Wed, 10 Mar 2021 12:01:42 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 09:22:34AM +0000, Lorenz Bauer wrote:
-> On Tue, 9 Mar 2021 at 20:12, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> >
-> > On 3/9/21 5:43 AM, Tony Lu wrote:
-> > > There are lots of net namespaces on the host runs containers like k8s.
-> > > It is very common to see the same interface names among different net
-> > > namespaces, such as eth0. It is not possible to distinguish them without
-> > > net namespace inode.
-> > >
-> > > This adds net namespace inode for all net_dev events, help us
-> > > distinguish between different net devices.
-> > >
-> > > Output:
-> > >   <idle>-0       [006] ..s.   133.306989: net_dev_xmit: net_inum=4026531992 dev=eth0 skbaddr=0000000011a87c68 len=54 rc=0
-> > >
-> > > Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
-> > > ---
-> > >
-> >
-> > There was a proposal from Lorenz to use netns cookies (SO_NETNS_COOKIE) instead.
-> >
-> > They have a guarantee of being not reused.
-> >
-> > After 3d368ab87cf6681f9 ("net: initialize net->net_cookie at netns setup")
-> > net->net_cookie is directly available.
-> 
-> The patch set is at
-> https://lore.kernel.org/bpf/20210219154330.93615-1-lmb@cloudflare.com/
-> but I decided to abandon it. I can work around my issue by comparing
-> the netns inode of two processes, which is "good enough" for now.
+Preface
+-------
+These patches are for binding the rlimit counters to a user in user namespace.
+This patch set can be applied on top of:
 
-Without the patch set, it is impossible to get net_cookie from
-userspace, except bpf prog. AFAIK, netns inode has been widely used to
-distinguish different netns, it is easy to use for docker
-(/proc/${container_pid}/ns/net). It would be better to provide a unified
-approach to do so.
+git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.11
 
+Problem
+-------
+The RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING, RLIMIT_MSGQUEUE rlimits
+implementation places the counters in user_struct [1]. These limits are global
+between processes and persists for the lifetime of the process, even if
+processes are in different user namespaces.
 
-Cheers,
-Tony Lu
+To illustrate the impact of rlimits, let's say there is a program that does not
+fork. Some service-A wants to run this program as user X in multiple containers.
+Since the program never fork the service wants to set RLIMIT_NPROC=1.
 
-> 
-> -- 
-> Lorenz Bauer  |  Systems Engineer
-> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-> 
-> www.cloudflare.com
+service-A
+ \- program (uid=1000, container1, rlimit_nproc=1)
+ \- program (uid=1000, container2, rlimit_nproc=1)
+
+The service-A sets RLIMIT_NPROC=1 and runs the program in container1. When the
+service-A tries to run a program with RLIMIT_NPROC=1 in container2 it fails
+since user X already has one running process.
+
+The problem is not that the limit from container1 affects container2. The
+problem is that limit is verified against the global counter that reflects
+the number of processes in all containers.
+
+This problem can be worked around by using different users for each container
+but in this case we face a different problem of uid mapping when transferring
+files from one container to another.
+
+Eric W. Biederman mentioned this issue [2][3].
+
+Introduced changes
+------------------
+To address the problem, we bind rlimit counters to user namespace. Each counter
+reflects the number of processes in a given uid in a given user namespace. The
+result is a tree of rlimit counters with the biggest value at the root (aka
+init_user_ns). The limit is considered exceeded if it's exceeded up in the tree.
+
+[1]: https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
+[2]: https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
+[3]: https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
+
+Changelog
+---------
+v8:
+* Used atomic_t for ucounts reference counting. Also added counter overflow
+  check (thanks to Linus Torvalds for the idea).
+* Fixed other issues found by lkp-tests project in the patch that Reimplements
+  RLIMIT_MEMLOCK on top of ucounts.
+
+v7:
+* Fixed issues found by lkp-tests project in the patch that Reimplements
+  RLIMIT_MEMLOCK on top of ucounts.
+
+v6:
+* Fixed issues found by lkp-tests project.
+* Rebased onto v5.11.
+
+v5:
+* Split the first commit into two commits: change ucounts.count type to atomic_long_t
+  and add ucounts to cred. These commits were merged by mistake during the rebase.
+* The __get_ucounts() renamed to alloc_ucounts().
+* The cred.ucounts update has been moved from commit_creds() as it did not allow
+  to handle errors.
+* Added error handling of set_cred_ucounts().
+
+v4:
+* Reverted the type change of ucounts.count to refcount_t.
+* Fixed typo in the kernel/cred.c
+
+v3:
+* Added get_ucounts() function to increase the reference count. The existing
+  get_counts() function renamed to __get_ucounts().
+* The type of ucounts.count changed from atomic_t to refcount_t.
+* Dropped 'const' from set_cred_ucounts() arguments.
+* Fixed a bug with freeing the cred structure after calling cred_alloc_blank().
+* Commit messages have been updated.
+* Added selftest.
+
+v2:
+* RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are migrated to ucounts.
+* Added ucounts for pair uid and user namespace into cred.
+* Added the ability to increase ucount by more than 1.
+
+v1:
+* After discussion with Eric W. Biederman, I increased the size of ucounts to
+  atomic_long_t.
+* Added ucount_max to avoid the fork bomb.
+
+--
+
+Alexey Gladkov (8):
+  Increase size of ucounts to atomic_long_t
+  Add a reference to ucounts for each cred
+  Use atomic_t for ucounts reference counting
+  Reimplement RLIMIT_NPROC on top of ucounts
+  Reimplement RLIMIT_MSGQUEUE on top of ucounts
+  Reimplement RLIMIT_SIGPENDING on top of ucounts
+  Reimplement RLIMIT_MEMLOCK on top of ucounts
+  kselftests: Add test to check for rlimit changes in different user
+    namespaces
+
+ fs/exec.c                                     |   6 +-
+ fs/hugetlbfs/inode.c                          |  16 +-
+ fs/io-wq.c                                    |  22 ++-
+ fs/io-wq.h                                    |   2 +-
+ fs/io_uring.c                                 |   2 +-
+ fs/proc/array.c                               |   2 +-
+ include/linux/cred.h                          |   4 +
+ include/linux/hugetlb.h                       |   4 +-
+ include/linux/mm.h                            |   4 +-
+ include/linux/sched/user.h                    |   7 -
+ include/linux/shmem_fs.h                      |   2 +-
+ include/linux/signal_types.h                  |   4 +-
+ include/linux/user_namespace.h                |  26 ++-
+ ipc/mqueue.c                                  |  41 ++---
+ ipc/shm.c                                     |  26 +--
+ kernel/cred.c                                 |  50 +++++-
+ kernel/exit.c                                 |   2 +-
+ kernel/fork.c                                 |  18 +-
+ kernel/signal.c                               |  57 +++----
+ kernel/sys.c                                  |  14 +-
+ kernel/ucount.c                               | 140 ++++++++++++---
+ kernel/user.c                                 |   3 -
+ kernel/user_namespace.c                       |   9 +-
+ mm/memfd.c                                    |   4 +-
+ mm/mlock.c                                    |  23 ++-
+ mm/mmap.c                                     |   4 +-
+ mm/shmem.c                                    |   8 +-
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/rlimits/.gitignore    |   2 +
+ tools/testing/selftests/rlimits/Makefile      |   6 +
+ tools/testing/selftests/rlimits/config        |   1 +
+ .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
+ 32 files changed, 512 insertions(+), 159 deletions(-)
+ create mode 100644 tools/testing/selftests/rlimits/.gitignore
+ create mode 100644 tools/testing/selftests/rlimits/Makefile
+ create mode 100644 tools/testing/selftests/rlimits/config
+ create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+
+-- 
+2.29.2
+
