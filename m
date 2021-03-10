@@ -2,161 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E115334B3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC22334B40
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhCJWMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233427AbhCJWNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:13:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232991AbhCJWMu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Mar 2021 17:12:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233157AbhCJWMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:12:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C5C964FC3;
-        Wed, 10 Mar 2021 22:12:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615414361;
-        bh=1OnkFXcDUkCwy2jSxkxa/k7cglG81blJIDUfbLMl1FY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B+P/sa90nd4vfX2yds1N5ClVQG/3FqpzArnUbsjElzTzh8FIkgw2YNLOUxYblCjkJ
-         CrKlmUq1K7Gpe3a42fta/nXGPE3opbLo27ZsWK2jVfVvt1TfoOiYBSxz9w5gulUVOm
-         Ed/l9IafiuHFEk3YtoV3iC5ZtO0f1k8MkZPQpM1fnKmgsFKkLJ/ng2DPMCVrXeIo15
-         WE6Grg4mCVf+qShzM4nxkFycR/FS15giNgJefL+PZGRdSkhII4tKyr8/3tMmNxVvXB
-         f7al6BFj3XhLqzlH6u7P9/AKWZ1O+UpXjwrjF5kQPVjnvg8MwRqYHlX7MWtZ68gLwH
-         jkPyAKehqD0kA==
-Date:   Thu, 11 Mar 2021 00:12:17 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] x86/sgx: Use sgx_free_epc_page() in
- sgx_reclaim_pages()
-Message-ID: <YElEQXZlzdrElovv@kernel.org>
-References: <20210303150323.433207-1-jarkko@kernel.org>
- <20210303150323.433207-3-jarkko@kernel.org>
- <b223ea92-8b20-def3-7bd0-2cc44474bd78@intel.com>
- <YEjhjhBpYJ6i6EFD@kernel.org>
- <d8e55c583c4d76f3c9e9722e73f35c0618e40623.camel@intel.com>
- <YElD7orORGElfMdZ@kernel.org>
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F3BC061574;
+        Wed, 10 Mar 2021 14:12:49 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id 16so11583342pfn.5;
+        Wed, 10 Mar 2021 14:12:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8T32QTH1yWolqsovx8D+tK2naeopNTlCRVMubzQO1RM=;
+        b=VmfjgtBnv7qRT4p4OjHzo8Jf53zCLviWLqjlsk/EeXd9NCKJ090h4d4vRszWAV3Wn0
+         fveJCJknPHh5lOB03hZutBytWMpBoNLGdzf22AJzMYgIB6NiWys2+Oh/z5cSvhJ9B9BM
+         EeHYi75BmoLlan4P/CWMzv68jH9kxNKDDv3dOzumqZ78vmuu6gWtlHXB2ApvHuX5j8KK
+         R9YxagMusqv0CfK4PojdzaEaGzHuD2UJyucFK54imC1kXOunkUx8waZPU1srEH01JTNd
+         QbtUrj8Zjz7062T1ejWdaHhw6OrVStLpUbsA1/vhBsNq6QJUMHIefHwyTUbp3k4lTRB+
+         bYQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8T32QTH1yWolqsovx8D+tK2naeopNTlCRVMubzQO1RM=;
+        b=f146PPdSyxJQiGaUa5KxFZOv9XaY7y1nGMSUqh1g9x4Q8q/fLunuitOxaEZqQYH1qG
+         7I/le1/QJQSNZOeKp25Jz4nWHvYwZXrcx8OPlrVfhNqLFkGsyu4n9e1a0vT/6EYwkfX8
+         5cUm0xcXBQ/4bzeOWXxS+sdz0aQfYlywCxvCR2yfN8hhvxcHEUmdpRRBb/J3iOn6gBGG
+         qNCRU7iNe/9N5ovOx0IjVL0XwHAgSLCcNtrgHwzJvvPZ/Jn6VvEh/tkoY4m6Cq6gkPqJ
+         G7708PB7IO+DPW0bUJSrEGoEAZBVfs/OBRkg/YViLP9a25b2ymK/q8W+5ohgT+pErZI7
+         26rg==
+X-Gm-Message-State: AOAM531oH6klzY4hksGl4StCwpxJ7J7oQRB+hVzzpv/7fZ8CeTyJ9mOV
+        j61wrhPpol39tjGAfst7yyYoqND4CBk=
+X-Google-Smtp-Source: ABdhPJxA3aeiZp7oWsoyyghX4gqfLAA1odDI7q/EYNunNaKd4ahJh+X5vlqLsBLRTeu0JtnJR8Tlhw==
+X-Received: by 2002:a63:1312:: with SMTP id i18mr4560866pgl.108.1615414368977;
+        Wed, 10 Mar 2021 14:12:48 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id gk12sm310638pjb.44.2021.03.10.14.12.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 14:12:48 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: phy: Expose phydev::dev_flags through sysfs
+Date:   Wed, 10 Mar 2021 14:12:43 -0800
+Message-Id: <20210310221244.2968469-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YElD7orORGElfMdZ@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:10:56AM +0200, Jarkko Sakkinen wrote:
-> On Thu, Mar 11, 2021 at 09:36:15AM +1300, Kai Huang wrote:
-> > On Wed, 2021-03-10 at 17:11 +0200, Jarkko Sakkinen wrote:
-> > > On Wed, Mar 03, 2021 at 08:59:17AM -0800, Dave Hansen wrote:
-> > > > On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
-> > > > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > > > > index 52d070fb4c9a..ed99c60024dc 100644
-> > > > > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > > > > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > > > > @@ -305,7 +305,6 @@ static void sgx_reclaim_pages(void)
-> > > > >  {
-> > > > >  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
-> > > > >  	struct sgx_backing backing[SGX_NR_TO_SCAN];
-> > > > > -	struct sgx_epc_section *section;
-> > > > >  	struct sgx_encl_page *encl_page;
-> > > > >  	struct sgx_epc_page *epc_page;
-> > > > >  	pgoff_t page_index;
-> > > > > @@ -378,11 +377,7 @@ static void sgx_reclaim_pages(void)
-> > > > >  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
-> > > > >  		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-> > > > >  
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > -		section = &sgx_epc_sections[epc_page->section];
-> > > > > -		spin_lock(&section->lock);
-> > > > > -		list_add_tail(&epc_page->list, &section->page_list);
-> > > > > -		section->free_cnt++;
-> > > > > -		spin_unlock(&section->lock);
-> > > > > +		sgx_free_epc_page(epc_page);
-> > > > >  	}
-> > > > >  }
-> > > > 
-> > > > In current upstream (3fb6d0e00e), sgx_free_epc_page() calls __eremove().
-> > > >  This code does not call __eremove().  That seems to be changing
-> > > > behavior where none was intended.
-> > > 
-> > > EREMOVE does not matter here, as it doesn't in almost all most of the sites
-> > > where sgx_free_epc_page() is used in the driver. It does nothing to an
-> > > uninitialized pages.
-> > 
-> > Right. EREMOVE on uninitialized pages does nothing, so a more reasonable way is to
-> > just NOT call EREMOVE (your original code), since it is absolutely unnecessary.
-> > 
-> > I don't see ANY reason we should call EREMOVE here. 
-> > 
-> > Actually w/o my patch to split EREMOVE out of sgx_free_epc_page(), it then makes
-> > perfect sense to have new sgx_free_epc_page() here.
-> > 
-> > > 
-> > > The two patches that I posted originally for Kai's series took EREMOVE out
-> > > of sgx_free_epc_page() and put an explicit EREMOVE where it is actually
-> > > needed, but for reasons unknown to me, that change is gone.
-> > > 
-> > 
-> > It's not gone. It goes into a new sgx_encl_free_epc_page(), which is exactly the same
-> > as current sgx_free_epc_page() which as EREMOVE, instead of putting EREMOVE into a
-> > dedicated sgx_reset_epc_page(), as you did in your series:
-> > 
-> > https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
-> > 
-> > However, your change has side effort: it always put page back into free pool, even
-> > EREMOVE fails. To make your change w/o having any functional change, it has to be:
-> > 
-> > 	if(!sgx_reset_epc_page())
-> > 		sgx_free_epc_page();
-> 
-> OK, great, your patch set uses the wrapper only in the necessary call
-> sites. Sorry, I overlooked this part.
-> 
-> Anyway, it knowingly does that. I considered either as equally harmful
-> side-ffects when I implemented. Either can only trigger, when there is a
-> bug in the kernel code.
-> 
-> It *could* do what that snippet suggest but it's like "out of the frying pan,
-> into the fire" kind of change.
-> 
-> Since NUMA patch set anyway requires to have a global dirty list, I think
-> the better way to deal with this, would be to declare a new global in the
-> patch under discussion:
-> 
-> static struct list_head sgx_dirty_list;
+phydev::dev_flags contains a bitmask of configuration bits requested by
+the consumer of a PHY device (Ethernet MAC or switch) towards the PHY
+driver. Since these flags are often used for requesting LED or other
+type of configuration being able to quickly audit them without
+instrumenting the kernel is useful.
 
-sgx_dirty_page_list
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ Documentation/ABI/testing/sysfs-class-net-phydev | 12 ++++++++++++
+ drivers/net/phy/phy_device.c                     | 11 +++++++++++
+ 2 files changed, 23 insertions(+)
 
-> 
-> And sgx_encl_free_epc_page() could simply put the pages in this list. In
-> some cases you could possibly even reset the system state using kexec for
-> debugging purposes, so it could potentially bring a tiny bit of value.
-> 
-> I can rebase then my NUMA patches on top of SGX specific KVM patches, once
-> Boris have applied them.
-> 
-> > And for this, Dave raised one concern we should add a WARN() to let user know EPC
-> > page is leaked, and reboot is requied to get them back.
-> > 
-> > However with sgx_reset_epc_page(), there's no place to add such WARN(), and
-> > implementing original sgx_free_epc_page() as sgx_encl_free_epc_page() looks very
-> > reasonable to me:
-> > 
-> > https://www.spinics.net/lists/linux-sgx/msg04631.html
-> 
-> /Jarkko
+diff --git a/Documentation/ABI/testing/sysfs-class-net-phydev b/Documentation/ABI/testing/sysfs-class-net-phydev
+index 40ced0ea4316..ac722dd5e694 100644
+--- a/Documentation/ABI/testing/sysfs-class-net-phydev
++++ b/Documentation/ABI/testing/sysfs-class-net-phydev
+@@ -51,3 +51,15 @@ Description:
+ 		Boolean value indicating whether the PHY device is used in
+ 		standalone mode, without a net_device associated, by PHYLINK.
+ 		Attribute created only when this is the case.
++
++What:		/sys/class/mdio_bus/<bus>/<device>/phy_dev_flags
++Date:		March 2021
++KernelVersion:	5.13
++Contact:	netdev@vger.kernel.org
++Description:
++		32-bit hexadecimal number representing a bit mask of the
++		configuration bits passed from the consumer of the PHY
++		(Ethernet MAC, switch, etc.) to the PHY driver. The flags are
++		only used internally by the kernel and their placement are
++		not meant to be stable across kernel versions. This is intended
++		for facilitating the debugging of PHY drivers.
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index cc38e326405a..a009d1769b08 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -512,10 +512,21 @@ phy_has_fixups_show(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RO(phy_has_fixups);
+ 
++static ssize_t phy_dev_flags_show(struct device *dev,
++				  struct device_attribute *attr,
++				  char *buf)
++{
++	struct phy_device *phydev = to_phy_device(dev);
++
++	return sprintf(buf, "0x%08x\n", phydev->dev_flags);
++}
++static DEVICE_ATTR_RO(phy_dev_flags);
++
+ static struct attribute *phy_dev_attrs[] = {
+ 	&dev_attr_phy_id.attr,
+ 	&dev_attr_phy_interface.attr,
+ 	&dev_attr_phy_has_fixups.attr,
++	&dev_attr_phy_dev_flags.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(phy_dev);
+-- 
+2.25.1
 
-
-/Jarkko
