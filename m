@@ -2,50 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E19233467B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEAC334686
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbhCJSSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:18:39 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50182 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233622AbhCJSSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:18:34 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lK3Pf-00ADWA-Vx; Wed, 10 Mar 2021 19:18:27 +0100
-Date:   Wed, 10 Mar 2021 19:18:27 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Yan Markman <ymarkman@marvell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
-        "atenart@kernel.org" <atenart@kernel.org>,
-        "rabeeh@solid-run.com" <rabeeh@solid-run.com>
-Subject: Re: [EXT] Re: [net-next] net: mvpp2: Add reserved port private flag
- configuration
-Message-ID: <YEkNc5ZsiJsy0GfZ@lunn.ch>
-References: <1615369329-9389-1-git-send-email-stefanc@marvell.com>
- <YEjq1eehhA+8MYwH@lunn.ch>
- <CO6PR18MB3873813B7C30F2BE0095C061B0919@CO6PR18MB3873.namprd18.prod.outlook.com>
+        id S233687AbhCJSTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:19:13 -0500
+Received: from smtp-bc09.mail.infomaniak.ch ([45.157.188.9]:38863 "EHLO
+        smtp-bc09.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233416AbhCJSTD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:19:03 -0500
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DwgM81nhTzMqHRb;
+        Wed, 10 Mar 2021 19:19:00 +0100 (CET)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DwgM74BsHzlh8T2;
+        Wed, 10 Mar 2021 19:18:59 +0100 (CET)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH v2 0/1] Unprivileged chroot
+Date:   Wed, 10 Mar 2021 19:18:56 +0100
+Message-Id: <20210310181857.401675-1-mic@digikod.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CO6PR18MB3873813B7C30F2BE0095C061B0919@CO6PR18MB3873.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Make it patch series? I can split it to 2/3 patches.
+Hi,
 
-I don't think that will be needed. The helpers should be pretty
-obvious.
+This second patch replaces the custom is_path_beneath() with the
+existing path_is_under().
 
-	Andrew
+The chroot system call is currently limited to be used by processes with
+the CAP_SYS_CHROOT capability.  This protects against malicious
+procesess willing to trick SUID-like binaries.  The following patch
+allows unprivileged users to safely use chroot(2).
+
+This patch is a follow-up of a previous one sent by Andy Lutomirski some
+time ago:
+https://lore.kernel.org/lkml/0e2f0f54e19bff53a3739ecfddb4ffa9a6dbde4d.1327858005.git.luto@amacapital.net/
+
+This patch can be applied on top of v5.12-rc2 .  I would really
+appreciate constructive reviews.
+
+Previous version:
+https://lore.kernel.org/r/20210310161000.382796-1-mic@digikod.net
+
+Regards,
+
+Mickaël Salaün (1):
+  fs: Allow no_new_privs tasks to call chroot(2)
+
+ fs/open.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
+
+
+base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+-- 
+2.30.2
+
