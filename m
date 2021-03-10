@@ -2,132 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D12334B8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B66334B95
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhCJW1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
+        id S233114AbhCJW22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:28:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhCJW1f (ORCPT
+        with ESMTP id S231935AbhCJW2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:27:35 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E08FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:27:35 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id v15so25105059wrx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:27:35 -0800 (PST)
+        Wed, 10 Mar 2021 17:28:04 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BDFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:28:04 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id h18so17152039ils.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:28:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=87k2e/RW0d520c+kOrMfvUjoXVowQB+P8Fhwo1lIzWg=;
-        b=MPdn/zzkA9cSAtCRL3Zk323wBXDzpRAhZ6bKHmhjnCBn8t5yjtjnqYbNxD84jPi8uE
-         gCghBbBxxMjLwLs3pspgnf4POv9fSc2v97h5U3SCvsL3kNJuurE9aly+gjmXZ+QytWoF
-         bhvtdLFuFFBVKY2fX3XbES6t+ilkpUkjfTVjEKUc4ByYZX5fuJr4Cg0O9vEGNkL2THgW
-         Kw6tYvNVgXfMr0KVdv5AXLaIplS4gZ79dajTXnra4jplzrQK95l+zFLgQzjFqYl6HMSr
-         PFVUpQ5kDqAMENyll+e8BCvPuQncXS8xO1g+RylwNy7zPngtd65idL215ZYTf8slmNlr
-         1pgw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3LFyuXpMRLIGA0oVb60X0seTa3J0valro1PxCcKN/DM=;
+        b=Bm6RNvQzL9TLUqo1/qVst2cHgKfFa3uFxN3tpI6ntj8GoK6H/W9W3icW7MGOWpbxfw
+         pxQpHipOcy/xDB+rwnbj1DH1pRlx+FjFFt/sSgqx60RWrsxOItCEwWQ0MQ7W3nUL16I4
+         l97de7tWU0i25g5UGR180rWVT6wGiGNj2LzCQc2JAuU210ALVhezd7z7n3wQbV3Zguh/
+         P0yma07fpERMRyjq31GIllM/ufbANTzYU82GKZJMKUtX7dIVTI008DUXj1NNQNeReZx2
+         IjkCj3sIrbFom1Hi4FNszU8z5sA1SPR9QLwECTADTaCuNW/uJyujaLzqvXx7ztCDRaNG
+         zaeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=87k2e/RW0d520c+kOrMfvUjoXVowQB+P8Fhwo1lIzWg=;
-        b=GytRQ8fBj6FjujgU/rqyGc9++9sfcla6cAMUagXwem0S8A45adfBZdd73W1+xAQfcC
-         usSk3wPUPkmJHQbaRqiUg8O4qW1TnKQvpzcvHwZcv9NWks8zo1059Ih8HyxVRUw+y3UA
-         GrMNDqGaqJesarPb/R7ch2ef+EOd6106Ni9eumYUV2qE7p1E9TIo6unRQfPGTby98Hv9
-         otrmtj/Zrt+MzsWLvKiE2Szs5jQ5acPc6YSamuOPuDTA8DF1nRzTigbT6v9eBAobFX3o
-         Q4iFzTwrEpB9KdBkS7xXe91v9m4yiy+tXLOi8Z8nu2mVvPu/WNsPB/8hg1wgSbcVOQVL
-         BQRg==
-X-Gm-Message-State: AOAM530Gb0N3GaEJ3UvFAbUtYrX9U22jPvpkO2eSyqIf7wKjZveeZOLx
-        zpDGKpI/eVUaC/KtJxegjwY=
-X-Google-Smtp-Source: ABdhPJxlGD3c8eGIZ+4Qd29Gun6laMCmO2yRYRW9dNlFLOzHNu62vhwO1y+Qz2RBFflEzIZN1Oz6kg==
-X-Received: by 2002:adf:ed12:: with SMTP id a18mr5681195wro.249.1615415254202;
-        Wed, 10 Mar 2021 14:27:34 -0800 (PST)
-Received: from agape.jhs ([5.171.72.165])
-        by smtp.gmail.com with ESMTPSA id z82sm744157wmg.19.2021.03.10.14.27.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 14:27:33 -0800 (PST)
-Date:   Wed, 10 Mar 2021 23:27:31 +0100
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: rtl8723bs: align and beautify comments
-Message-ID: <20210310222728.GA3246@agape.jhs>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3LFyuXpMRLIGA0oVb60X0seTa3J0valro1PxCcKN/DM=;
+        b=iWEVzYhv/ChJRvkN9KbFJk5yM8S7Zjvr2inFH3tulVSfM4+TTEICXioFErQXkIu82g
+         6JLDMGlaCOCj6XETOY+7YQeQJBkaKFzZ32D7xNPXuYUvawhTAzn9bu/QDhbe8ptA4O9w
+         30elE/xuxRQVskZNmXKhp3NCs1Nnn2TNObAY3PwvuQegd8V1d/lGzhg+mTzSj4TfPuAj
+         Y7OQZRRXqjhmIfr1Q33ya4FA4qFXY5B0XpVseziTC7arLna3FIQ0lwAmX6Z/G5shFPsj
+         Go7bjdOttjnOCmKXHJ/4L+AfNUGoskzLkd6JFm+49/qsoC2RTAK7o23rfQ8IBSKFRpe6
+         EoPA==
+X-Gm-Message-State: AOAM5330BQvLGZsJh6RIk3zY7wdoCV7Z/cMwRhcO6tJk3KCPMn8/xOIS
+        3iok2Za7+i4U+2evN9/Yla9dMtkkGqzBWvJwD3V8yfW4S9cfN+hC
+X-Google-Smtp-Source: ABdhPJyQFVb7tR865Cpwi+PC3bE/sDFIfZ6SDS8RmoYjLr9lXCma8VECXcThFWDRs4JLlDxAgckQ4dAp9G6xdad1HiA=
+X-Received: by 2002:a92:c24c:: with SMTP id k12mr3131280ilo.282.1615415284065;
+ Wed, 10 Mar 2021 14:28:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210310153717.GA5741@agape.jhs> <YEjrEErDZTH47gto@kroah.com> <20210310160946.GA6421@agape.jhs>
+In-Reply-To: <20210310160946.GA6421@agape.jhs>
+From:   Eric Curtin <ericcurtin17@gmail.com>
+Date:   Wed, 10 Mar 2021 22:27:53 +0000
+Message-ID: <CANpvso71zHTHJBduzrX7wx=gDN9mi2CEaXskF=TaZZoL-2+V_Q@mail.gmail.com>
+Subject: Re: [PATCH] staging: rtl8723bs: align comments
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Kernel development list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix the following checkpatch warnings:
+Hi Fabio,
 
-WARNING: Block comments use * on subsequent lines
-+	/*
-+		AMPDU_para [1:0]:Max AMPDU Len => 0:8k , 1:16k, 2:32k, 3:64k
---
-WARNING: Block comments use * on subsequent lines
-+/*
-+op_mode
+> I am sorry, I fear I don't understand, checkpatch.sh script says the patch is ok.
+> Where have I to add a ' ' (a blank?)?
+>
+> thank you,
+>
+> fabio
+>
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_ap.c | 32 ++++++++++++-------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+I'm only responding to this because this email is doing a very good job
+of avoiding my filters somehow :) I think what Greg means is:
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
-index b6f944b37b08..6d203814260f 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ap.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-@@ -719,11 +719,11 @@ static void update_hw_ht_param(struct adapter *padapter)
- 
- 	DBG_871X("%s\n", __func__);
- 
--	/* handle A-MPDU parameter field */
--	/*
--		AMPDU_para [1:0]:Max AMPDU Len => 0:8k , 1:16k, 2:32k, 3:64k
--		AMPDU_para [4:2]:Min MPDU Start Spacing
--	*/
-+	/* handle A-MPDU parameter field
-+	 *
-+	 *	AMPDU_para [1:0]:Max AMPDU Len => 0:8k , 1:16k, 2:32k, 3:64k
-+	 *	AMPDU_para [4:2]:Min MPDU Start Spacing
-+	 */
- 	max_AMPDU_len = pmlmeinfo->HT_caps.u.HT_cap_element.AMPDU_para & 0x03;
- 
- 	min_MPDU_spacing = (
-@@ -1815,17 +1815,17 @@ void update_beacon(struct adapter *padapter, u8 ie_id, u8 *oui, u8 tx)
- }
- 
+Change this:
+
  /*
 -op_mode
 -Set to 0 (HT pure) under the following conditions
--	- all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
--	- all STAs in the BSS are 20 MHz HT in 20 MHz BSS
+-       - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
+-       - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
 -Set to 1 (HT non-member protection) if there may be non-HT STAs
--	in both the primary and the secondary channel
+-       in both the primary and the secondary channel
 -Set to 2 if only HT STAs are associated in BSS,
--	however and at least one 20 MHz HT STA is associated
+-       however and at least one 20 MHz HT STA is associated
 -Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
--	(currently non-GF HT station is considered as non-HT STA also)
+-       (currently non-GF HT station is considered as non-HT STA also)
+-*/
++ *op_mode
++ *Set to 0 (HT pure) under the following conditions
++ *      - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
++ *      - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
++ *Set to 1 (HT non-member protection) if there may be non-HT STAs
++ *      in both the primary and the secondary channel
++ *Set to 2 if only HT STAs are associated in BSS,
++ *      however and at least one 20 MHz HT STA is associated
++ *Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
++ *      (currently non-GF HT station is considered as non-HT STA also)
++ */
+
+to this:
+
+ /*
+-op_mode
+-Set to 0 (HT pure) under the following conditions
+-       - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
+-       - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
+-Set to 1 (HT non-member protection) if there may be non-HT STAs
+-       in both the primary and the secondary channel
+-Set to 2 if only HT STAs are associated in BSS,
+-       however and at least one 20 MHz HT STA is associated
+-Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
+-       (currently non-GF HT station is considered as non-HT STA also)
 -*/
 + * op_mode
 + * Set to 0 (HT pure) under the following conditions
-+ *	  - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
-+ *	  - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
++ *      - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
++ *      - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
 + * Set to 1 (HT non-member protection) if there may be non-HT STAs
-+ *	  in both the primary and the secondary channel
++ *      in both the primary and the secondary channel
 + * Set to 2 if only HT STAs are associated in BSS,
-+ *	  however and at least one 20 MHz HT STA is associated
++ *      however and at least one 20 MHz HT STA is associated
 + * Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
-+ *	  (currently non-GF HT station is considered as non-HT STA also)
-+ */
- static int rtw_ht_operation_update(struct adapter *padapter)
- {
- 	u16 cur_op_mode, new_op_mode;
--- 
-2.20.1
++ *      (currently non-GF HT station is considered as non-HT STA also)
++ * /
 
+Like Dan said, you need a space after the '*'/
+
+Is mise le meas/Regards,
+
+Eric Curtin
+
+Check out this charity that's close to my heart:
+
+https://www.idonate.ie/fundraiser/11394438_peak-for-pat.html
+https://www.facebook.com/Peak-for-Pat-104470678280309
+https://www.instagram.com/peakforpat/
