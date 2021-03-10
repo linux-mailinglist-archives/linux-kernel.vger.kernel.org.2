@@ -2,93 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA493336CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C28BD3336C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhCJH50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:57:26 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33352 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229643AbhCJH4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:56:55 -0500
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_O3e0hg6KoXAA--.12657S8;
-        Wed, 10 Mar 2021 15:56:48 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
-Subject: [PATCH v4 6/7] dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
-Date:   Wed, 10 Mar 2021 15:56:38 +0800
-Message-Id: <20210310075639.20372-7-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210310075639.20372-1-zhangqing@loongson.cn>
-References: <20210310075639.20372-1-zhangqing@loongson.cn>
+        id S231829AbhCJH5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:57:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhCJH4w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 02:56:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8B6C06174A;
+        Tue,  9 Mar 2021 23:56:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8yDNi4Cu7JaX2t8j5a1pH+xv/sVGeWdMdEUl6pT4Ks0=; b=DMrk3dBOuhklCt4yj8SS0dgfR4
+        +1PbC4jpBhZCLTLvddt8tZDJoxaoW6ICKxqclcUI+u12CQhc7x91rDb0NNszOXkJSa15d+94Ek8Ri
+        myp2LwbQR9xow+bF02kIENvcti+ctlnLgdpilVo1/z64HTSZ+Lvn0PeIO9DsJgWUvrs2z2H+aHoIA
+        M5MATDVvPDQM797+9scQSd0xpzlz+d95SBedfNXbHImZi9+eTUyNsJd2CEtR2UAj3w0JU6cVPF8/a
+        0cxIX9Qq26wbejO5uKM59JAVZAoGQUTtGAa975CyqxnvkTqLJ9YwCdNkNO6EXIo/7BUi9MIJzBDAX
+        NrJ3GZSg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJthv-002nUx-HH; Wed, 10 Mar 2021 07:56:43 +0000
+Date:   Wed, 10 Mar 2021 07:56:39 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
+Subject: Re: [PATCH v1 07/14] vfio: Add a device notifier interface
+Message-ID: <20210310075639.GB662265@infradead.org>
+References: <161523878883.3480.12103845207889888280.stgit@gimli.home>
+ <161524010999.3480.14282676267275402685.stgit@gimli.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxn_O3e0hg6KoXAA--.12657S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw47JF18XrW3tF1xGw17Jrb_yoW8Xw4kpr
-        srC3ZIgF4UtF13uay8tFy0ka13Zr98AwnrGrsFy3y7GFnrtw1jqr1agF1kAayrCFW0qa4q
-        vFyF93W0gasFyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
-        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMx
-        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
-        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwI
-        xGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8
-        Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0x
-        vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUvg4hUUUUU=
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161524010999.3480.14282676267275402685.stgit@gimli.home>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add liointc-2.0 properties support, so update the maxItems and description.
+On Mon, Mar 08, 2021 at 02:48:30PM -0700, Alex Williamson wrote:
+> Using a vfio device, a notifier block can be registered to receive
+> select device events.  Notifiers can only be registered for contained
+> devices, ie. they are available through a user context.  Registration
+> of a notifier increments the reference to that container context
+> therefore notifiers must minimally respond to the release event by
+> asynchronously removing notifiers.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-Tested-by: Ming Wang <wangming01@loongson.cn>
----
-
-v3-v4: Standard submission of information
-
- .../bindings/interrupt-controller/loongson,liointc.yaml    | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-index f38e0113f360..5280cf60a9a7 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-@@ -10,9 +10,9 @@ maintainers:
-   - Jiaxun Yang <jiaxun.yang@flygoat.com>
- 
- description: |
--  This interrupt controller is found in the Loongson-3 family of chips as the primary
--  package interrupt controller which can route local I/O interrupt to interrupt lines
--  of cores.
-+  This interrupt controller is found in the Loongson-3 family of chips and
-+  Loongson-2K1000 chip, as the primary package interrupt controller which
-+  can route local I/O interrupt to interrupt lines of cores.
- 
- allOf:
-   - $ref: /schemas/interrupt-controller.yaml#
-@@ -22,6 +22,7 @@ properties:
-     oneOf:
-       - const: loongson,liointc-1.0
-       - const: loongson,liointc-1.0a
-+      - const: loongson,liointc-2.0
- 
-   reg:
-     maxItems: 1
--- 
-2.20.1
-
+Notifiers generally are a horrible multiplexed API.  Can't we just
+add a proper method table for the intended communication channel?
