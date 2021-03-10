@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13F13349F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291DB334A02
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232114AbhCJVmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:42:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
+        id S232128AbhCJVo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhCJVlu (ORCPT
+        with ESMTP id S232133AbhCJVob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:41:50 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613BEC061574;
-        Wed, 10 Mar 2021 13:41:50 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id bd6so30314604edb.10;
-        Wed, 10 Mar 2021 13:41:50 -0800 (PST)
+        Wed, 10 Mar 2021 16:44:31 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFB1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:44:31 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id t37so1478660pga.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:44:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o/qwFAyd2t4eeQ5y/zr+yw6AQn6TtGLfgsf4qZGMOj0=;
-        b=IuZNGPtOkpq7xi8mg/JCqVEioZf5VKLjRUeEhu6DPobVhI9+q7izx2xlVN0mQCzaL8
-         HQMk2lWBA/qp+IBC9BQV3Nzc/VH4aRN09q834QPs1M5nhmy6fViT35JVuBYlXot5I5b7
-         YcwNUonY3kXQfEytf/YWjq0d+Zi3bNMUJ5+6I2HdGfT4sJxdDqL8UzhYJyAAvAcEk0aD
-         rq7ARSvWXJ/2EgAja08AVrkvvdAlik6f4IeHG7WW8aKALJ/9wUZGfyD3x4MGLNjEk3dm
-         abY4MdlSFEZLPt8XSUGrFAk5uOvlHsT5rp0Q2drj+3u+ewgeCkbiciBvAoOzl3K+xACW
-         wS1Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=F1rP/HK0MUpthdudkFLSzT5JtnfPSdIqufAWiqCyWfE=;
+        b=WX3V1AKQraPws2f/CLbZSrzfKO5shyl+APrsP1fTvCPUV8TNkxbdFcWlcAXvozZLXd
+         kifrWLi/f8JJdtI0PL736rcBkXvmm/jZFTlNH0MSk9iLJJctqmFyrpZyTY1od6ejsP8+
+         4NIRB5hL3/0+8sjcNd9CFCZxm8V27X9MNja1bxX4w3I1Ksg+rQyNJ4pHHlcDhezxYAAA
+         tv/WRm1pKgKAUPMd7ejAS2p1IwZYAuq+xW8mlQNpCDbeCSDLkGlO0Ik1NsWecDZTHeTL
+         QLqSm+ZhNHi4cgc+rsAI+3aVXSClw6g1/mumkg10Ago+jQISGbxzKc1ba8nHk6Juoivh
+         m4uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o/qwFAyd2t4eeQ5y/zr+yw6AQn6TtGLfgsf4qZGMOj0=;
-        b=GUTNBQdVKC0h0ZNCYD6S5w2Ob/KoFlWWL695cWuu7YDAen2bQaT5yUx1uGlAzu/kzE
-         zZntzQOQzspCbX2Rw5qQlMAffp2NEfRy3ArEhrh9bmgUn4rvw9O3jlYcqKLGBd4ciL8H
-         wJbU01W6m3sW57xIgSCFl/SH9TB52BWm7N0vPL12ijd5t6MKzctDmChg4y1BNV8qoIeV
-         e+cjbZRbNVDhAftYjAC6olAof0nC75m7QvUPIRPMCx4FBYSNqO9RUWu7qvUA3Njo//nv
-         xjfpZhlCaoX1tH3pF6dStLy8HIgVB0JyJEQmpWTyI5Uc3dl51UzHGh8ktbWY8mu8NjYb
-         RwFA==
-X-Gm-Message-State: AOAM532ccPefVcX1Y0UyxzaVfgPi69AoGPhwqKDS4ois8wy5agkybjCa
-        03LmRPEZ+JJqg/FIJyd1FPVEjczh7vP/qym6X54=
-X-Google-Smtp-Source: ABdhPJywjTf6nT0poSBOpWK3Efk08tHVcrEHEq/GIItbAKb6sm9RkAFzPMqFnGoKno2pW+PgllbEO8q516idS5NzHK0=
-X-Received: by 2002:a50:ef11:: with SMTP id m17mr5428269eds.151.1615412509105;
- Wed, 10 Mar 2021 13:41:49 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=F1rP/HK0MUpthdudkFLSzT5JtnfPSdIqufAWiqCyWfE=;
+        b=SrwEvCfizRNaCismVPlf8EtDx62wBnxLBLkonV4+p+qylCBhpS8b8JJhMvZlF2vFm1
+         BmZKGrQCUe+5fzZS0HIBY/40k4yHZIgU+e0FIf4Kh/m1YqbVpAReQaDzutqRc8hlb0h4
+         XyiWQReZXfplPl3e1JcGwqpbvV/EMG+nb2CIlB5/g/VEO8AESGsk+6pAXWCo7KXPe1tl
+         SBO0EQB6HjeE5yZIoqo129ATTXgr5monwoogQV5E7+Czl8XwU2Orv1yNdc4NwnzZXEpG
+         E+zXrP7nhR7Xs9UO2PoNv125Qad5lRrZngr8uaxkHpXu4OgG1kVgN5SHh4cUujJ/FR9K
+         Jj/Q==
+X-Gm-Message-State: AOAM532gSDsTg3KjmvMvZi4JvIMEVCOIowFtNZhFHGYND410lI55ABMT
+        owvE6PWGfwYQz0NqcPUvxck=
+X-Google-Smtp-Source: ABdhPJypsSKXx5n5ORV+uEvNyrGd64CkLtPHIiDVVoGJhkcs5JqN2IsQm46LGimngeRfP8puqcbJcA==
+X-Received: by 2002:a65:6a48:: with SMTP id o8mr4411929pgu.424.1615412670705;
+        Wed, 10 Mar 2021 13:44:30 -0800 (PST)
+Received: from f8ffc2228008.ant.amazon.com ([54.240.193.1])
+        by smtp.gmail.com with ESMTPSA id a7sm407994pfo.105.2021.03.10.13.44.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 13:44:29 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] mm/memcg: rename mem_cgroup_split_huge_fixup to
+ split_page_memcg
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Zhou Guanghui <zhouguanghui1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, hughd@google.com,
+        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
+        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
+        dingtianhong@huawei.com, chenweilong@huawei.com,
+        rui.xiang@huawei.com
+References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
+ <20210304074053.65527-2-zhouguanghui1@huawei.com>
+ <3ad50842-881f-eb88-a14d-0b6c70ce33d2@gmail.com>
+ <YEcxqTUp88sl/cq3@dhcp22.suse.cz>
+From:   "Singh, Balbir" <bsingharora@gmail.com>
+Message-ID: <d20d5dbe-74cd-fe90-8e43-ebbc5a3b4403@gmail.com>
+Date:   Thu, 11 Mar 2021 08:44:22 +1100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210310174603.5093-1-shy828301@gmail.com> <20210310174603.5093-14-shy828301@gmail.com>
- <CALvZod5q5LDEfUMuvO7V2hTf+oCsBGXKZn3tBByOXL952wqbRw@mail.gmail.com>
- <CAHbLzkpX0h2_FpeOWfrK3AO8RY4GE=wDqgSwFt69vn+roo6U3A@mail.gmail.com> <CALvZod4hSCBsXPisPT_Tai3kHW1Oo5k8z2ihbSgmLsMTAqWGHg@mail.gmail.com>
-In-Reply-To: <CALvZod4hSCBsXPisPT_Tai3kHW1Oo5k8z2ihbSgmLsMTAqWGHg@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 10 Mar 2021 13:41:37 -0800
-Message-ID: <CAHbLzkp2pW+nR-7Z0w3mGG4+ZBgRy4X4O+nfn03hLWBfB1HVXw@mail.gmail.com>
-Subject: Re: [v9 PATCH 13/13] mm: vmscan: shrink deferred objects proportional
- to priority
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YEcxqTUp88sl/cq3@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 1:08 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Wed, Mar 10, 2021 at 10:54 AM Yang Shi <shy828301@gmail.com> wrote:
-> >
-> > On Wed, Mar 10, 2021 at 10:24 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > On Wed, Mar 10, 2021 at 9:46 AM Yang Shi <shy828301@gmail.com> wrote:
-> > > >
-> > > > The number of deferred objects might get windup to an absurd number, and it
-> > > > results in clamp of slab objects.  It is undesirable for sustaining workingset.
-> > > >
-> > > > So shrink deferred objects proportional to priority and cap nr_deferred to twice
-> > > > of cache items.
-> > > >
-> > > > The idea is borrowed from Dave Chinner's patch:
-> > > > https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
-> > > >
-> > > > Tested with kernel build and vfs metadata heavy workload in our production
-> > > > environment, no regression is spotted so far.
-> > >
-> > > Did you run both of these workloads in the same cgroup or separate cgroups?
-> >
-> > Both are covered.
-> >
->
-> Have you tried just this patch i.e. without the first 12 patches?
+On 9/3/21 7:28 pm, Michal Hocko wrote:
+> On Tue 09-03-21 09:37:29, Balbir Singh wrote:
+>> On 4/3/21 6:40 pm, Zhou Guanghui wrote:
+> [...]
+>>> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>>>  /*
+>>> - * Because page_memcg(head) is not set on compound tails, set it now.
+>>> + * Because page_memcg(head) is not set on tails, set it now.
+>>>   */
+>>> -void mem_cgroup_split_huge_fixup(struct page *head)
+>>> +void split_page_memcg(struct page *head, unsigned int nr)
+>>>  {
+>>
+>> Do we need input validation on nr? Can nr be aribtrary or can we enforce
+>>
+>> VM_BUG_ON(!is_power_of_2(nr));
+> 
+> In practice this will be power of 2 but why should we bother to sanitze
+> that? 
+> 
 
-No. It could be applied without the first 12 patches, but I didn't
-test this combination specifically since I don't think it would have
-any difference from with the first 12 patches. I tested running the
-test case under root memcg, it seems equal to w/o the first 12 patches
-and the only difference is where to get nr_deferred.
+Just when DEBUG_VM is enabled to ensure the contract is valid, given that
+nr is now variable, we could end up with subtle bugs unless we can audit
+all callers. Even the power of 2 check does not catch the fact that nr
+is indeed what we expect, but it still checks a large range of invalid
+inputs.
+
+Balbir Singh.
