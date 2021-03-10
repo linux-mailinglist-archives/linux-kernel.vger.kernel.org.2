@@ -2,182 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9C53342CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:15:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D75F3342DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232940AbhCJQOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:14:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhCJQOj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:14:39 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46878C061760;
-        Wed, 10 Mar 2021 08:14:39 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id w34so10640768pga.8;
-        Wed, 10 Mar 2021 08:14:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2lZIChPtI3p/aQ6I3GH7R9vIF95h/LXfK2s4My5ecFY=;
-        b=PpJW7kp5pzBkHhRmXGWgHhfCoR5r78l0ND0ggR1yOLv9HV1gPw2Ucrv9D1FahpYdNX
-         v/Pq+6lsYoRIRGMfHS9cp+RFs5LOFR4izsjtsBv3ctsddBwDVuUBJos2yKEW0g/I8CIy
-         GZaSi5mU7jBOOTlw6J9itpKWr2FrElsM6Nz5PVwFamSgbcaN9/vIs24Qkol7SQq8xJPN
-         diOupJhOcJ7Jv+3wbA3GI3OLkZI7pJhQCMsrPwzOtlw5oWxeSuXNSoq2guC86l5HRGqI
-         /iIhvjog/gC5R0GSdyCFa8oavOc9B8gg+M1WVWD60fKpBBTm3FKaWDS+9OtiqPDbA/eo
-         kYPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=2lZIChPtI3p/aQ6I3GH7R9vIF95h/LXfK2s4My5ecFY=;
-        b=px4eyER33OsZkGbAma4t0aBgcOYcGJpdr5kQDPuoMjKXpkkV6EilunEVl9btfiShLZ
-         ZHcrv5LMzUv1puN6irlhB5PB6NcnXWdzSXeN/d0QEnZfxFRAuoxpNAlZuGIQhaIgA9wI
-         y2gD1hB17XSDCjOkQuvJmqFS7klR5sj8yUbtpYSjhmtNBBNwchSM6G1MP0fgVpaHMQEt
-         Sj61cb984gddSu1MYmWsT08a53xkxeL7UHzH315/WQK4QtQ5ClvhnBzCji+eQ1YnUgIw
-         ejSpy8qjip79TtmXt+Y540vFwBAUAqqxBh9+tsVsSom/ly85x9jAAw8rXs1i5v65lZBJ
-         c4mw==
-X-Gm-Message-State: AOAM533wlDWWcR/cvM1v074gMC115h+jmU2ndvrIAZ+tlZqSSWOZEDMs
-        COiF9+Kyj3fpCaDFQriVUK8=
-X-Google-Smtp-Source: ABdhPJyPQhcFlW2wScizcKfaE6eSRP+gjVd97qisGxEWmX7zZWVrW7WndKT1z6Wy60BgoWv6yGaykA==
-X-Received: by 2002:a05:6a00:3:b029:1f3:1959:2e3b with SMTP id h3-20020a056a000003b02901f319592e3bmr3444355pfk.11.1615392878842;
-        Wed, 10 Mar 2021 08:14:38 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
-        by smtp.gmail.com with ESMTPSA id d1sm7121189pjc.24.2021.03.10.08.14.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 08:14:38 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
-        willy@infradead.org, mhocko@suse.com, david@redhat.com,
-        vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH v3 3/3] mm: fs: Invalidate BH LRU during page migration
-Date:   Wed, 10 Mar 2021 08:14:29 -0800
-Message-Id: <20210310161429.399432-3-minchan@kernel.org>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-In-Reply-To: <20210310161429.399432-1-minchan@kernel.org>
-References: <20210310161429.399432-1-minchan@kernel.org>
+        id S231853AbhCJQSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:18:33 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:50481 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231519AbhCJQR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:17:59 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 12AGHGuu019933;
+        Wed, 10 Mar 2021 17:17:16 +0100
+Date:   Wed, 10 Mar 2021 17:17:16 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Claudiu.Beznea@microchip.com
+Cc:     schwab@linux-m68k.org, linux-riscv@lists.infradead.org,
+        ckeepax@opensource.cirrus.com, andrew@lunn.ch,
+        Nicolas.Ferre@microchip.com, daniel@0x0f.com,
+        alexandre.belloni@bootlin.com, pthombar@cadence.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: macb broken on HiFive Unleashed
+Message-ID: <20210310161716.GB17851@1wt.eu>
+References: <87tupl30kl.fsf@igel.home>
+ <04a7e801-9a55-c926-34ad-3a7665077a4e@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04a7e801-9a55-c926-34ad-3a7665077a4e@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pages containing buffer_heads that are in one of the per-CPU
-buffer_head LRU caches will be pinned and thus cannot be migrated.
-This can prevent CMA allocations from succeeding, which are often used
-on platforms with co-processors (such as a DSP) that can only use
-physically contiguous memory. It can also prevent memory
-hot-unplugging from succeeding, which involves migrating at least
-MIN_MEMORY_BLOCK_SIZE bytes of memory, which ranges from 8 MiB to 1
-GiB based on the architecture in use.
+Hi,
 
-Correspondingly, invalidate the BH LRU caches before a migration
-starts and stop any buffer_head from being cached in the LRU caches,
-until migration has finished.
+On Tue, Mar 09, 2021 at 08:55:10AM +0000, Claudiu.Beznea@microchip.com wrote:
+> Hi Andreas,
+> 
+> On 08.03.2021 21:30, Andreas Schwab wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > One of the changes to the macb driver between 5.10 and 5.11 has broken
+> > the SiFive HiFive Unleashed.  These are the last messages before the
+> > system hangs:
+> > 
+> > [   12.468674] libphy: Fixed MDIO Bus: probed
+> > [   12.746518] macb 10090000.ethernet: Registered clk switch 'sifive-gemgxl-mgmt'
+> > [   12.753119] macb 10090000.ethernet: GEM doesn't support hardware ptp.
+> > [   12.760178] libphy: MACB_mii_bus: probed
+> > [   12.881792] MACsec IEEE 802.1AE
+> > [   12.944426] macb 10090000.ethernet eth0: Cadence GEM rev 0x10070109 at 0x10090000 irq 16 (70:b3:d5:92:f1:07)
+> > 
+> 
+> I don't have a SiFive HiFive Unleashed to investigate this. Can you check
+> if reverting commits on macb driver b/w 5.10 and 5.11 solves your issues:
+> 
+> git log --oneline v5.10..v5.11 -- drivers/net/ethernet/cadence/
+> 1d0d561ad1d7 net: macb: Correct usage of MACB_CAPS_CLK_HW_CHG flag
+> 1d608d2e0d51 Revert "macb: support the two tx descriptors on at91rm9200"
+> 700d566e8171 net: macb: add support for sama7g5 emac interface
+> ec771de654e4 net: macb: add support for sama7g5 gem interface
+> f4de93f03ed8 net: macb: unprepare clocks in case of failure
+> 38493da4e6a8 net: macb: add function to disable all macb clocks
+> daafa1d33cc9 net: macb: add capability to not set the clock rate
+> edac63861db7 net: macb: add userio bits as platform configuration
+> 9e6cad531c9d net: macb: Fix passing zero to 'PTR_ERR'
+> 0012eeb370f8 net: macb: fix NULL dereference due to no pcs_config method
+> e4e143e26ce8 net: macb: add support for high speed interface
 
-Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- fs/buffer.c                 | 12 ++++++++++--
- include/linux/buffer_head.h |  4 ++++
- mm/swap.c                   |  5 ++++-
- 3 files changed, 18 insertions(+), 3 deletions(-)
+In addition, it's worth mentioning that the driver has multiple rx/tx/irq
+functions depending on the platforms or chip variants, and that based on
+this it should be easy to further reduce this list.
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 0cb7ffd4977c..ca9dd736bcb8 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -1264,6 +1264,14 @@ static void bh_lru_install(struct buffer_head *bh)
- 	int i;
- 
- 	check_irqs_on();
-+	/*
-+	 * buffer_head in bh_lru could increase refcount of the page
-+	 * until it will be invalidated. It causes page migraion failure.
-+	 * Skip putting upcoming bh into bh_lru until migration is done.
-+	 */
-+	if (lru_cache_disabled())
-+		return;
-+
- 	bh_lru_lock();
- 
- 	b = this_cpu_ptr(&bh_lrus);
-@@ -1409,7 +1417,7 @@ EXPORT_SYMBOL(__bread_gfp);
-  * This doesn't race because it runs in each cpu either in irq
-  * or with preempt disabled.
-  */
--static void invalidate_bh_lru(void *arg)
-+void invalidate_bh_lru(void *arg)
- {
- 	struct bh_lru *b = &get_cpu_var(bh_lrus);
- 	int i;
-@@ -1421,7 +1429,7 @@ static void invalidate_bh_lru(void *arg)
- 	put_cpu_var(bh_lrus);
- }
- 
--static bool has_bh_in_lru(int cpu, void *dummy)
-+bool has_bh_in_lru(int cpu, void *dummy)
- {
- 	struct bh_lru *b = per_cpu_ptr(&bh_lrus, cpu);
- 	int i;
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index 6b47f94378c5..05998b5947a2 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -194,6 +194,8 @@ void __breadahead_gfp(struct block_device *, sector_t block, unsigned int size,
- struct buffer_head *__bread_gfp(struct block_device *,
- 				sector_t block, unsigned size, gfp_t gfp);
- void invalidate_bh_lrus(void);
-+void invalidate_bh_lru(void *arg);
-+bool has_bh_in_lru(int cpu, void *dummy);
- struct buffer_head *alloc_buffer_head(gfp_t gfp_flags);
- void free_buffer_head(struct buffer_head * bh);
- void unlock_buffer(struct buffer_head *bh);
-@@ -406,6 +408,8 @@ static inline int inode_has_buffers(struct inode *inode) { return 0; }
- static inline void invalidate_inode_buffers(struct inode *inode) {}
- static inline int remove_inode_buffers(struct inode *inode) { return 1; }
- static inline int sync_mapping_buffers(struct address_space *mapping) { return 0; }
-+static inline void invalidate_bh_lru(void *arg) {}
-+static inline bool has_bh_in_lru(int cpu, void *dummy) { return 0; }
- #define buffer_heads_over_limit 0
- 
- #endif /* CONFIG_BLOCK */
-diff --git a/mm/swap.c b/mm/swap.c
-index fbdf6ac05aec..2a431959a45d 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -36,6 +36,7 @@
- #include <linux/hugetlb.h>
- #include <linux/page_idle.h>
- #include <linux/local_lock.h>
-+#include <linux/buffer_head.h>
- 
- #include "internal.h"
- 
-@@ -641,6 +642,7 @@ void lru_add_drain_cpu(int cpu)
- 		pagevec_lru_move_fn(pvec, lru_lazyfree_fn);
- 
- 	activate_page_drain(cpu);
-+	invalidate_bh_lru(NULL);
- }
- 
- /**
-@@ -828,7 +830,8 @@ static void __lru_add_drain_all(bool force_all_cpus)
- 		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate_file, cpu)) ||
- 		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate, cpu)) ||
- 		    pagevec_count(&per_cpu(lru_pvecs.lru_lazyfree, cpu)) ||
--		    need_activate_page_drain(cpu)) {
-+		    need_activate_page_drain(cpu) ||
-+		    has_bh_in_lru(cpu, NULL)) {
- 			INIT_WORK(work, lru_add_drain_per_cpu);
- 			queue_work_on(cpu, mm_percpu_wq, work);
- 			__cpumask_set_cpu(cpu, &has_work);
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+Just my two cents,
+Willy
