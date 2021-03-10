@@ -2,163 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F35333689
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4691133368D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhCJHnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhCJHnA (ORCPT
+        id S231195AbhCJHoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:44:44 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48604 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhCJHod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:43:00 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EC5C061760
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:42:49 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id a188so11492587pfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:42:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PgzuC8/TNXUF5UZqdDTCIRg3y35yfyPd03qqWgWTsJ4=;
-        b=B3az+5aKkQv8oKsx41T73ASQ/XRUUv/PD8x3u6627vmTMF9pgVDTDNCtihfrqX8GLp
-         9UZ8xWnW4M47fsyZG3HbPOJ35IpAlSQjREOb+IzE4MglvzO2ACMgQ+YbramzEmSYSkBk
-         OOi2OvLF2EMt8uDnol4CyLe3JZ/xACiZTcegeOB5kEFVg11hXo3J51dBjGtkHO4ngZxD
-         zkoY1mSLbkhW3mDa7u9VnB4+a9HIdUhqzmZt/6VQL2T3EEu4ACY7k27cL14kEHosDWz6
-         hmJssGQnKr7A2XXYVr8O2l003iCimXuE9PKq0cZjCL8j3tZ7hlx8RsVQXEIv8OETPZc6
-         U16A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=PgzuC8/TNXUF5UZqdDTCIRg3y35yfyPd03qqWgWTsJ4=;
-        b=HyK1/UapRWma88nvCH7fufXIf26JVNiC4mVHCN8MXNu98Kbu/c+oGZlksTwx4SW4IC
-         PoGaT0lnHFkZskXe0cKa81HFIHhUKlQ3lX7NWpOuAy4zD1cTvW74xnG0DcPbI+dRvNuB
-         omB6WDw9cDjuLyV7TFYbvPJQCAWNAogB4zg9Kp+k4DM0m4G7pghlc240gQn6pyHG0ZDg
-         HuWRnz66PhydX4Yc22+i+PBC2s3qZrld9oWjNL2IVu8JNWIeiVTo1rNqyemIp1bCgbwu
-         igYcmrvZJ53gD/1EeRVmy9tU9WbbsJgivNJyjMF4KZxmQldZ6iTOrEGrtGdm4JakNxgn
-         Kz/Q==
-X-Gm-Message-State: AOAM533zuIILN6FgkYz5DKTuMTqAnC6ade2eGvS0SCHCYKXWPAf3gBhy
-        8YF4dbIj1q4ki/zu8RJVNjo=
-X-Google-Smtp-Source: ABdhPJx+aIT0R3oWBbHjfi73oOJplCSsgFHW6973ObD5KeT3MnmeKXtzBeRDUjYBaqJddxjLUxwqwg==
-X-Received: by 2002:a63:8f5d:: with SMTP id r29mr1657909pgn.353.1615362168930;
-        Tue, 09 Mar 2021 23:42:48 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:f896:d6be:86d4:a59b])
-        by smtp.gmail.com with ESMTPSA id r184sm15608540pfc.107.2021.03.09.23.42.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 23:42:48 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 9 Mar 2021 23:42:46 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
-Message-ID: <YEh4doXvyuRl5BDB@google.com>
-References: <20210308202047.1903802-1-minchan@kernel.org>
- <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
- <YEefLYiX6rF3Uk4E@google.com>
+        Wed, 10 Mar 2021 02:44:33 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12A7iR8t016821;
+        Wed, 10 Mar 2021 01:44:27 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615362267;
+        bh=TfQQgTKeBCY4xuMtmfDUQm+/YrcItfzYj5J9OoTYvQY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Ik4N/5Oumj4RnQagRniaq7Oc3tsK7T43gBQfl6u8RRV/2ZTWb8X+mN0H+C96qVR+z
+         EPXgCO/JNPqAV0FLyEVc3qdRTEPgpdB2CnI15f7C7r6zyC9kCoyDQwZwH73BT9RLTW
+         u9lcBpA1mqZbVAROboGSIhF8kmFABLw1n22D/OkY=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12A7iRlf025991
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Mar 2021 01:44:27 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
+ Mar 2021 01:44:27 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 10 Mar 2021 01:44:27 -0600
+Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12A7iNjp074705;
+        Wed, 10 Mar 2021 01:44:24 -0600
+Subject: Re: [PATCH 0/2] AM64: Add USB support
+To:     Kishon Vijay Abraham I <kishon@ti.com>, Nishanth Menon <nm@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>
+References: <20210301055109.17626-1-a-govindraju@ti.com>
+ <20210301152227.f6phla2m3rz457pj@passerby>
+ <85b1b60f-455c-51b8-9e28-019226413885@ti.com>
+ <e8d53390-7a70-fda1-2b6c-ab252947e41b@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <44a86048-3356-0e8b-513e-1efb36f2987b@ti.com>
+Date:   Wed, 10 Mar 2021 13:14:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEefLYiX6rF3Uk4E@google.com>
+In-Reply-To: <e8d53390-7a70-fda1-2b6c-ab252947e41b@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 08:15:41AM -0800, Minchan Kim wrote:
+Hi Kishon,
 
-< snip >
-
-> > [...]
-> > > +void dump_migrate_failure_pages(struct list_head *page_list)
-> > > +{
-> > > +	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
-> > > +			"migrate failure");
-> > > +	if (DYNAMIC_DEBUG_BRANCH(descriptor) &&
-> > > +			alloc_contig_ratelimit()) {
-> > > +		struct page *page;
-> > > +
-> > > +		WARN(1, "failed callstack");
-> > > +		list_for_each_entry(page, page_list, lru)
-> > > +			dump_page(page, "migration failure");
-> > > +	}
-> > 
-> > Apart from the above, do we have to warn for something that is a
-> > debugging aid? A similar concern wrt dump_page which uses pr_warn and
+On 10/03/21 12:33 pm, Kishon Vijay Abraham I wrote:
+> +Vinod
 > 
-> Make sense.
+> Hi Aswath,
 > 
-> > page owner is using even pr_alert.
-> > Would it make sense to add a loglevel parameter both into __dump_page
-> > and dump_page_owner?
+> On 10/03/21 12:27 pm, Aswath Govindraju wrote:
+>> Hi Nishanth,
+>>
+>> On 01/03/21 8:52 pm, Nishanth Menon wrote:
+>>> On 11:21-20210301, Aswath Govindraju wrote:
+>>>> The following series of patches, add USB support for AM64.
+>>>>
+>>>> This series of patches depends on,
+>>>> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439039
+>>>>
+>>>> Aswath Govindraju (2):
+>>>>   arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
+>>>>   arm64: dts: ti: k3-am642-evm: Add USB support
+>>>>
+>>>>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 30 ++++++++++++++++++++++++
+>>>>  arch/arm64/boot/dts/ti/k3-am642-evm.dts  | 18 ++++++++++++++
+>>>>  2 files changed, 48 insertions(+)
+>>>
+>>> Please update the series to include SK as well.
+>>>
+>>
+>> I was planning on posting patches that add support for USB in SK later
+>> because of phy dependencies.
 > 
-> Let me try it.
+> The dependency is only on [1] right? I've got all the required ACKs so
+> it should be okay to include it in this series. (That patch will be
+> required only when PCIe DT is merged for me.)
+> 
+> Nishant, would you be okay to merge [1] along with other patches from
+> Aswath? There is no dependency as such on my other PHY patches, so don't
+> think there is a need for a stable tag here.
+> 
+> 
+> [1] ->
+> https://lore.kernel.org/linux-devicetree/20210222112314.10772-4-kishon@ti.com/
+>>
 
-I looked though them and made first draft to clean them up.
+There is also a dependency on,
 
-It's bigger than my initial expectaion because there are many callsites
-to use dump_page and stack_trace_print inconsistent loglevel. 
-Since it's not a specific problem for this work, I'd like to deal with
-it as separate patchset since I don't want to be stuck on here for my
-initial goal.
+https://lore.kernel.org/linux-devicetree/20210222112314.10772-2-kishon@ti.com/
 
-FYI,
-
-Subject: [RFC 0/5] make dump_page aware of loglevel
-
-- Forked from [1]
-
-dump_page uses __dump_page and dump_page_owner internally to
-print various information. However, their printk loglevel are
-inconsistent in that
-
-__dump_page: KERN_WARNING
-__dump_page_owner: KERN_ALERT
-        stack_trace_print: KERN_DEFAULT
-
-To make them consistent from dump_page, this patch introduces
-pr_loglevel in printk and make the utility functions aware of
-loglevel. Finally, last patch changes dump_page to support
-loglevel to make the printing level consistent.
-
-[1] https://lore.kernel.org/linux-mm/YEdAw6gnp9XxoWUQ@dhcp22.suse.cz/
-
-Minchan Kim (5):
-  mm: introduce pr_loglevel for __dump_[page]_owner
-  stacktrace: stack_trace_print aware of loglevel
-  mm: page_owner: dump_page_owner aware of loglevel
-  mm: debug: __dump_page aware of loglevel
-  mm: debug: dump_page aware of loglevel
-  drivers/md/dm-bufio.c       |  2 +-
- drivers/virtio/virtio_mem.c |  2 +-
- fs/btrfs/ref-verify.c       |  2 +-
- fs/fuse/dev.c               |  2 +-
- include/linux/mmdebug.h     | 10 ++++++----
- include/linux/page_owner.h  |  8 ++++----
- include/linux/printk.h      | 12 +++++++++++
- include/linux/stacktrace.h  |  4 ++--
- kernel/backtracetest.c      |  2 +-
- kernel/dma/debug.c          |  3 ++-
- kernel/kcsan/report.c       |  7 ++++---
- kernel/locking/lockdep.c    |  3 ++-
- kernel/stacktrace.c         |  5 +++--
- mm/debug.c                  | 40 ++++++++++++++++++-------------------
- mm/filemap.c                |  2 +-
- mm/gup_test.c               |  4 ++--
- mm/huge_memory.c            |  4 ++--
- mm/kasan/report.c           |  4 ++--
- mm/kfence/report.c          |  3 ++-
- mm/kmemleak.c               |  2 +-
- mm/memory.c                 |  2 +-
- mm/memory_hotplug.c         |  4 ++--
- mm/page_alloc.c             |  4 ++--
- mm/page_isolation.c         |  2 +-
- mm/page_owner.c             | 24 +++++++++++-----------
- 25 files changed, 88 insertions(+), 69 deletions(-)
-
+Thanks,
+Aswath
