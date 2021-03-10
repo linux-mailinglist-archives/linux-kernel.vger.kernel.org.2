@@ -2,70 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C958533436E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E532A33433C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:39:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhCJQo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:44:57 -0500
-Received: from mga03.intel.com ([134.134.136.65]:37313 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233146AbhCJQoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:44:16 -0500
-IronPort-SDR: bCZOWeBveSkpt33wZNSETiq3J5RJPJ5KoOuSGbqGIBcW/9N+I51YrSrB0NgLy7V3oW7gU/Pqw1
- WjvMu6QS8+OQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188546549"
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="188546549"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:44:16 -0800
-IronPort-SDR: clxXMd45tcZpdR38SJOrO05l0EjS2KeS0a3c+b/0enTTKGcyhJP7F+5RrAjyUoBmO2HQ7QqCSU
- DYKU0duGntMg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="509729389"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 08:44:15 -0800
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
-        adrian.hunter@intel.com, Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH V2 25/25] perf/x86/rapl: Add support for Intel Alder Lake
-Date:   Wed, 10 Mar 2021 08:38:01 -0800
-Message-Id: <1615394281-68214-26-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+        id S233070AbhCJQiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231319AbhCJQid (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:38:33 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F45FC061761
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:38:33 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id d139-20020a1c1d910000b029010b895cb6f2so11129846wmd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:38:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=sVQWlrBBeoHKwdd8D9L9gvXK0pkYdnkCO45O59sXhqE=;
+        b=q0jOQtaYZjQtMu6WQQD9tfAYd5at3q0TEHS1dUCtD72fMVVqkUYR87DPWZHJiDyy+q
+         vFZTNiFX5UjeF3jS2V2FB/TneNRx3Bd7Zx6ln/1DhisKyiOJGCEe6ZKfk2f7qNKfO6AU
+         /aXcMcx9zW3jq26E+kIs9+yMB4spWrO3tfJ465ANnCpKOy9Ov4KIV8x27u7BQdeDygqb
+         9TC6WFH2Gqm1L9KEqiK0qnm8GSII/tKMRmGDsS+l81kV/ZyAGP3Igr4KyD4TJdCVCHRJ
+         0bRf+nadEtziMOPrKBx/ZV+LM1WdQBYKGgQgZSY3klS4OBLzQMbZTf45HjaV/p8KEVPN
+         Fcmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=sVQWlrBBeoHKwdd8D9L9gvXK0pkYdnkCO45O59sXhqE=;
+        b=D8NNLtQpjIog4fCrmIrM1N0SbXJqv19MSOPfV3hPlqBvZ+U0uctoXqNcZgwlSn7c/b
+         7ntb/QWqTntTUxAxWm8D1g7SAicz2xwrQre2xNHtUR8B4I+vcIuLuuoN9448273bzT4P
+         1ruTLS6+ZxrDQSGeY/fmLQkro/LyYsV8IkxPE+mT7gNr5S/mOA/ALIy7bsK72mejoZgY
+         e0EbjgTBnCMTzWEWvIB62qTlAhwzdUznGrzoBYXjWgpjuoxfh2DryzlRcXI8g/wVlh8s
+         TtfohbYrZaj0XiFhZVNiy4z59mL3iO8xpFayX6KkS8iMxZ/qnA9HoBXGUTDfCRhDCxQR
+         ymdQ==
+X-Gm-Message-State: AOAM530lVdFUODFH4AWuJrPzPyLKt57XjaDWGaCguepkKBvkgZ5xPcWa
+        GHlci6axfBkiNxSUIWZ9+2rFdQ==
+X-Google-Smtp-Source: ABdhPJwDrIR7F7SMof/RHEqmZ96cNOGJ6ObmZEUKOAayqrXrKfrobyIkYN8y7xne+Pl/tcOX6LVXLA==
+X-Received: by 2002:a1c:4c17:: with SMTP id z23mr4242467wmf.17.1615394312049;
+        Wed, 10 Mar 2021 08:38:32 -0800 (PST)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id p12sm8446541wrx.28.2021.03.10.08.38.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 08:38:31 -0800 (PST)
+Date:   Wed, 10 Mar 2021 16:38:29 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
+Subject: Re: [PATCH v3 06/15] mfd: Add ROHM BD71815 ID
+Message-ID: <20210310163829.GS701493@dell>
+References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+ <be0e8cd06ed75e799c942e5076ee7b56ad658467.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+ <20210310103639.GG701493@dell>
+ <a631bbc3dd3bd0f02693d1c35f9a14dbaec67cc3.camel@fi.rohmeurope.com>
+ <20210310111755.GN701493@dell>
+ <e7bb00af76de65c60061c58a570d5b6f40961eb0.camel@fi.rohmeurope.com>
+ <20210310133136.GQ701493@dell>
+ <c1cb760a0bd2cf46dc5d9b21d1a08286a7671d21.camel@fi.rohmeurope.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1cb760a0bd2cf46dc5d9b21d1a08286a7671d21.camel@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Rui <rui.zhang@intel.com>
+On Wed, 10 Mar 2021, Matti Vaittinen wrote:
 
-Alder Lake RAPL support is the same as previous Sky Lake.
-Add Alder Lake model for RAPL.
+> 
+> On Wed, 2021-03-10 at 13:31 +0000, Lee Jones wrote:
+> > On Wed, 10 Mar 2021, Matti Vaittinen wrote:
+> > 
+> > > On Wed, 2021-03-10 at 11:17 +0000, Lee Jones wrote:
+> > > > On Wed, 10 Mar 2021, Vaittinen, Matti wrote:
+> > > > 
+> > > > > Hello Lee,
+> > > > > 
+> > > > > On Wed, 2021-03-10 at 10:36 +0000, Lee Jones wrote:
+> > > > > > On Mon, 08 Mar 2021, Matti Vaittinen wrote:
+> > > > > > 
+> > > > > > > Add chip ID for ROHM BD71815 and PMIC so that drivers can
+> > > > > > > identify
+> > > > > > > this IC.
+> > > > > > > 
+> > > > > > > Signed-off-by: Matti Vaittinen <
+> > > > > > > matti.vaittinen@fi.rohmeurope.com>
+> > > > > > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > > > > > > ---
+> > > > > > >  include/linux/mfd/rohm-generic.h | 1 +
+> > > > > > >  1 file changed, 1 insertion(+)
+> > > > > > > 
+> > > > > > > diff --git a/include/linux/mfd/rohm-generic.h
+> > > > > > > b/include/linux/mfd/rohm-generic.h
+> > > > > > > index 66f673c35303..e5392bcbc098 100644
+> > > > > > > --- a/include/linux/mfd/rohm-generic.h
+> > > > > > > +++ b/include/linux/mfd/rohm-generic.h
+> > > > > > > @@ -14,6 +14,7 @@ enum rohm_chip_type {
+> > > > > > >  	ROHM_CHIP_TYPE_BD71828,
+> > > > > > >  	ROHM_CHIP_TYPE_BD9571,
+> > > > > > >  	ROHM_CHIP_TYPE_BD9574,
+> > > > > > > +	ROHM_CHIP_TYPE_BD71815,
+> > > > > > 
+> > > > > > Is there a technical reason why these can't be re-ordered?
+> > > > > 
+> > > > > No, I don't think so.
+> > > > > 
+> > > > > BTW. there will probably be a (trivial) conflict here as both
+> > > > > this
+> > > > > series and the BD9576/BD9573 series add an ID here. Let me
+> > > > > guess,
+> > > > > you'd
+> > > > 
+> > > > That's fine.  I will resolve that manually.
+> > > 
+> > > Thanks :)
+> > > 
+> > > > > like to see them sorted?
+> > > > 
+> > > > Wouldn't that be nice? :)
+> > > Aesthetics is not really my cup of tea. OTOH, if amount of IDs
+> > > grow,
+> > > then sorting helps spotting whether some IC has an ID here. So yes,
+> > > it
+> > > kind of makes sense.
+> > 
+> > By 'nice' I don't mean 'pretty'.
+> > 
+> > I mean 'improving readability/maintainability would be nice'.
+> > 
+> > > Can you do sorting while resolving the conflict between series or
+> > > do
+> > > you want me to
+> > > a) do sorting if (when) I re-spin the series
+> > > b) send separate sorting patch as a part of this series
+> > > c) send sepatate sorting patch after all the pending patches
+> > > touching
+> > > these IDs have been merged?
+> > 
+> > I'll let you use your imagination.
+> > 
+> 
+> Right :)
+> 
+> I'll sort the ID enum when I respin a series which is touching it, ok?
+> Or do you want me to resend this even if there were no other changes?
+> 
+> It's just an old habit to add new enums at the bottom to maintain
+> binary compatibility - which does not matter in this case.
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
----
- arch/x86/events/rapl.c | 2 ++
- 1 file changed, 2 insertions(+)
+I won't let this alone hold up merging of the whole set, but it looks
+like you're still short of quite a few reviews.  I'd be surprised if
+it's this version that gets applied.
 
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index f42a704..84a1042 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -800,6 +800,8 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&model_hsx),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&model_spr),
- 	X86_MATCH_VENDOR_FAM(AMD,	0x17,		&model_amd_fam17h),
- 	X86_MATCH_VENDOR_FAM(HYGON,	0x18,		&model_amd_fam17h),
 -- 
-2.7.4
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
