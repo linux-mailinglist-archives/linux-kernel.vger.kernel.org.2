@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2025334049
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE87334051
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhCJOZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:25:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
+        id S233049AbhCJO1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbhCJOY5 (ORCPT
+        with ESMTP id S230373AbhCJO0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:24:57 -0500
+        Wed, 10 Mar 2021 09:26:51 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98149C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:24:57 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29023C061760;
+        Wed, 10 Mar 2021 06:26:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=plOvh9vyCxI+W79dsawsRUqmt5nDXxIS3jse/b6xlb8=; b=P12Z1QOJ7Ys0pmztT9aYj3qM0T
-        eeGReMBtFtdOaTIWJHIpmZN7wBuQ4L9uY02X4f9WZXO9WBMn1gsfEgg8qD0G0kgxBtF5LvLGu3C1I
-        JTtMQdQB3zqjSyrsXkHZcn2pDrSpsqInvZ3l+iaJrpz7NmjXN9BBvT0BPMY3fTBn8PFtOpqFXYCbq
-        AndpkJ/1F1qJ+sFNPrYod4TgJSvtTheoWby1wR17zcZ17UI/kir8jrYGvaHMDmAlNOFi9WzDimASd
-        94EbYe/cni19rSsGrmHwKuQ0eTAvKQvlJ3kclzDVKGhtSkoIicjKswgpPNYuLhpXoDMCVco5XNJnd
-        NUnbbLBg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJzlY-003gZB-F1; Wed, 10 Mar 2021 14:24:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4FB063011F0;
-        Wed, 10 Mar 2021 15:24:47 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 43A9C21ADDC04; Wed, 10 Mar 2021 15:24:47 +0100 (CET)
-Date:   Wed, 10 Mar 2021 15:24:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: The killing of ideal_nops[]
-Message-ID: <YEjWryS/9uB2y62O@hirez.programming.kicks-ass.net>
-References: <YEepKVHc5kkDybu6@hirez.programming.kicks-ass.net>
- <20210309120519.7c6bbb97@gandalf.local.home>
- <YEfnnFUbizbJUQig@hirez.programming.kicks-ass.net>
- <362BD2A4-016D-4F6B-8974-92C84DC0DDB4@zytor.com>
- <YEiN+/Zp4uE/ISWD@hirez.programming.kicks-ass.net>
- <YEiS8Xws0tTFmMJp@hirez.programming.kicks-ass.net>
- <YEiZXtB74cnsLTx/@hirez.programming.kicks-ass.net>
- <YEid+HQnqgnt3iyY@hirez.programming.kicks-ass.net>
- <20210310091324.0c346d5f@oasis.local.home>
+        bh=fMRcAUQViDFbKSMCzio+nZwR3R7d5z+5tJ4oYqUVAyM=; b=DX3yw+7jm8vk9+eflfEViPntiM
+        iSRvWHzc9BxqlUmr+6/Vkm+qr6xjowBVUFsKtF0EEGRn5WNMMNKA79ysVFg64GdBFelo3aUDgyq7p
+        cGt+Z/bf01+Wl4HA0Bk1VjCX/q3YZs3OAVLSWY3XSqWG2a7L34LbeaMH3hHvdwodIvUfKxym4i9l7
+        umdcaXJUac96k4gdNzC2XXyI8murWFW7EfACp9WA3JFUGr+iogourTMBlCtmFEh7Uutlb6qXjRXlW
+        vw2UZ/8FJ1hREoKp3KcvS6Z7hici2aTs/J5tJ6YKg1N8rongRZND9sgpPrZbkQDxKnX+sxE29HOrw
+        9PoWbUvg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJznP-003gjI-VB; Wed, 10 Mar 2021 14:26:45 +0000
+Date:   Wed, 10 Mar 2021 14:26:43 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     Neal Gompa <ngompa13@gmail.com>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        darrick.wong@oracle.com, dan.j.williams@intel.com, jack@suse.cz,
+        viro@zeniv.linux.org.uk, Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, david@fromorbit.com, hch@lst.de
+Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
+Message-ID: <20210310142643.GQ3479805@casper.infradead.org>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com>
+ <20210310130227.GN3479805@casper.infradead.org>
+ <20210310142159.kudk7q2ogp4yqn36@fiona>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310091324.0c346d5f@oasis.local.home>
+In-Reply-To: <20210310142159.kudk7q2ogp4yqn36@fiona>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 09:13:24AM -0500, Steven Rostedt wrote:
-> On Wed, 10 Mar 2021 11:22:48 +0100
-> Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, Mar 10, 2021 at 08:21:59AM -0600, Goldwyn Rodrigues wrote:
+> On 13:02 10/03, Matthew Wilcox wrote:
+> > On Wed, Mar 10, 2021 at 07:30:41AM -0500, Neal Gompa wrote:
+> > > Forgive my ignorance, but is there a reason why this isn't wired up to
+> > > Btrfs at the same time? It seems weird to me that adding a feature
+> > 
+> > btrfs doesn't support DAX.  only ext2, ext4, XFS and FUSE have DAX support.
+> > 
+> > If you think about it, btrfs and DAX are diametrically opposite things.
+> > DAX is about giving raw access to the hardware.  btrfs is about offering
+> > extra value (RAID, checksums, ...), none of which can be done if the
+> > filesystem isn't in the read/write path.
+> > 
+> > That's why there's no DAX support in btrfs.  If you want DAX, you have
+> > to give up all the features you like in btrfs.  So you may as well use
+> > a different filesystem.
 > 
-> > After this FEATURE_NOPL is unused except for required-features for
-> > x86_64. FEATURE_K8 is only used for PTI and FEATURE_K7 is unused.
-> > 
-> > AFAICT this negatively affects lots of 32bit (DONTCARE) and 32bit on
-> > 64bit CPUs (CARELESS) and early AMD (K8) which is from 2003 and almost
-> > 2 decades old by now (SHRUG).
-> > 
-> > Everything x86_64 since AMD K10 (2007) was using p6_nops.
-> > 
-> > And per FEATURE_NOPL being required for x86_64, all those CPUs can use
-> > p6_nops. So stop caring about NOPs, simplify things and get on with life
-> > :-)
+> DAX on btrfs has been attempted[1]. Of course, we could not
+
+But why?  A completeness fetish?  I don't understand why you decided
+to do this work.
+
+> have checksums or multi-device with it. However, got stuck on
+> associating a shared extent on the same page mapping: basically the
+> TODO above dax_associate_entry().
 > 
-> Before ripping out all the ideal_nop logic, I wonder if we should just
-> force the nops you want now (that is, don't change the selected
-> ideal_nops, just "pretend" that the CPU wants p6_nops), and see if anyone
-> complains. After a few releases, if there's no complaints, then we can
-> rip out the ideal_nop logic.
+> Shiyang has proposed a way to disassociate existing mapping, but I
+> don't think that is the best solution. DAX for CoW will not work until
+> we have a way of mapping a page to multiple inodes (page->mapping),
+> which will convert a 1-N inode-page mapping to M-N inode-page mapping.
 
-Nah, just rip the entire thing out. You should be happy about
-deterministic NOPs :-)
-
-NOP encoding is not something CPUs should differentiate on, that's just
-bollocks.
+If you're still thinking in terms of pages, you're doing DAX wrong.
+DAX should work without a struct page.
