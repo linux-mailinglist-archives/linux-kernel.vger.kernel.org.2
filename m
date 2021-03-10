@@ -2,117 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8805B334544
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B3F334545
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhCJRix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:38:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbhCJRiX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:38:23 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1C1C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:38:23 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id mm21so40299945ejb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:38:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=okV++VFxVSFyAERp8JdbnLcbQt5jDIvaux7uTpycWNY=;
-        b=qBemZ4JHjSlP1msVG5z66KEhDBsStg25FgSoIPAXuJMTQjjx6hdY3APMV3MjWA1djV
-         tlbdeAPJd16zyumDX1HSElzgZfjNRLxYC4Sv40i9rJ2YX/EXVcx7m3MSbzX6HObxxcT0
-         Y3QLgxUGWToiRJ1ixU+CgP7nBuvg8W3DCxJwTHpYV1AgHJxgaV7D+b18iq74Sc3bjbfK
-         iBH188WxGP/T9/hpYY2c2/bxHeY/J50rHcMAmv1GWi9HB5x13gRGVKbjsskK49EgAPLO
-         /VYN3cIhUrWSRaF3MZD7nvtPkqVRuGOQ7YyH5wOftpNuJ6w8/G7FJ/YmJTrGy+Q8JvNM
-         mKgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=okV++VFxVSFyAERp8JdbnLcbQt5jDIvaux7uTpycWNY=;
-        b=EYLPJdd9B7da6LpwCujBF94t1aTqnT1PEBghdcIvVk7ijMcCkqpZaAnPWGYjtBCQ2W
-         JDoUJqFSjrHq3wnfwVIiE6B1H8gQckvr6PkywTe5LgQxjaqJrw1t4lDsCtFT9OLmQdUj
-         PJOrGkQ4k2jCwgIXNqk3VdXx2l9b0YjXbiGEBhxTKHgSySwnwhCNVstj+U/0YBmLxQ9A
-         fSNloAqTQoslJNC0RSsVSoHJnyMzTTX594/4kocXGV1dxPAn49PyMf+KMNhx/cjOi1dB
-         mPoLt41tJVurZKUyUhl+49BR3GmP3T/aD4V9mTECXl9ajNTtbSltjtX5uh/dn2By3qtq
-         tpJg==
-X-Gm-Message-State: AOAM5339Nu8ExrvxJJdMz+8qP+i7EiKHiDownlFGljCG/UqanU+NHFcS
-        9BBtLiBvb22bnaVuHpkqtuMkQvtrZEooCo7VUUqIug==
-X-Google-Smtp-Source: ABdhPJzcR1BVT4oayP9E7SdgOQDg9FkHjMIuiCm2oG++v/DxNaO3ew1DPo2i++wCyrjHoK66vb0bK/qwkMoYPDFo0HY=
-X-Received: by 2002:a17:906:7b8d:: with SMTP id s13mr4854165ejo.247.1615397901839;
- Wed, 10 Mar 2021 09:38:21 -0800 (PST)
+        id S232830AbhCJRiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:38:54 -0500
+Received: from mga07.intel.com ([134.134.136.100]:20521 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230525AbhCJRik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 12:38:40 -0500
+IronPort-SDR: bqwauvv9Ttp+S76vpmH7tScQfczm5sZN2dMEvub7XC9LNt71tbSVQkGzGbJEqiP+NgfcQbYS6p
+ mRk3U8WQflTQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="252540309"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="252540309"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 09:38:37 -0800
+IronPort-SDR: 1ahEmA63Re4qRs6O+MzE+7cr+uLD9nKmKUAmFMs19suHhtqcov5Td2qNCJ+PgZBnE9bAfuHGqr
+ cCs1revEMPKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="410277083"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 10 Mar 2021 09:38:37 -0800
+Received: from [10.251.19.203] (kliang2-MOBL.ccr.corp.intel.com [10.251.19.203])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 5E2CB5808B0;
+        Wed, 10 Mar 2021 09:38:36 -0800 (PST)
+Subject: Re: [PATCH V2 16/25] perf/x86: Register hybrid PMUs
+To:     Dave Hansen <dave.hansen@intel.com>, peterz@infradead.org,
+        mingo@kernel.org, linux-kernel@vger.kernel.org
+Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
+        adrian.hunter@intel.com
+References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+ <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
+ <a1adb737-f126-ecec-9bca-a1b5bdb76156@intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <e8dd446f-f57c-dfbd-d923-b313411b74a0@linux.intel.com>
+Date:   Wed, 10 Mar 2021 12:38:35 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210310132321.948258062@linuxfoundation.org>
-In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 10 Mar 2021 23:08:10 +0530
-Message-ID: <CA+G9fYuydf-g2FPOtP9LAX-4zY3EF64Bx0OQjbjn=a4V+0=eLA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/49] 5.10.23-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Alex Elder <elder@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a1adb737-f126-ecec-9bca-a1b5bdb76156@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 at 18:54, <gregkh@linuxfoundation.org> wrote:
->
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> This is the start of the stable review cycle for the 5.10.23 release.
-> There are 49 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.23-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-While building stable rc 5.10 for arm64 the build failed due to
-the following errors / warnings.
-
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-clang'
-drivers/net/ipa/gsi.c:1074:7: error: use of undeclared identifier
-'GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL'
-        case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
-             ^
-1 error generated.
-make[4]: *** [scripts/Makefile.build:279: drivers/net/ipa/gsi.o] Error 1
 
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On 3/10/2021 11:50 AM, Dave Hansen wrote:
+> On 3/10/21 8:37 AM, kan.liang@linux.intel.com wrote:
+>> -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+>> -	if (err)
+>> -		goto out2;
+>> +	if (!is_hybrid()) {
+>> +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+>> +		if (err)
+>> +			goto out2;
+>> +	} else {
+>> +		u8 cpu_type = get_hybrid_cpu_type(smp_processor_id());
+>> +		struct x86_hybrid_pmu *hybrid_pmu;
+>> +		int i;
+> 
+> Where's the preempt_disable()?
+> 
+>> +static void init_hybrid_pmu(int cpu)
+>> +{
+>> +	unsigned int fixed_mask, unused_eax, unused_ebx, unused_edx;
+>> +	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
+>> +	u8 cpu_type = get_hybrid_cpu_type(cpu);
+>> +	struct x86_hybrid_pmu *pmu = NULL;
+>> +	struct perf_cpu_context *cpuctx;
+>> +	int i;
+> 
+> Ditto.
+> 
+> Are we really sure the IPIs are worth the trouble?  Why don't we just
+> cache the leaf when we bring the CPU up like just about every other
+> thing we read from CPUID?
 
-> Alex Elder <elder@linaro.org>
->     net: ipa: ignore CHANNEL_NOT_RUNNING errors
+Simple answer: You are right. We don't need it. A simple 
+get_this_hybrid_cpu_type() should be fine for perf.
 
-Build log link,
-https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1086862412#L210
+Here is the complete story.
+I need the CPU type of the dead CPU in the cpu_dead. In the previous 
+patch set, we can read it from the cached CPU type in the struct 
+cpuinfo_x86.
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+In the V2 patch, I tried to do a similar thing (but I have to read it at 
+runtime). Since the CPU is offlined, I asked Ricardo to provide the 
+function get_hybrid_cpu_type() which can read the CPU type of a specific 
+CPU. But I'm wrong. We cannot retrieve the valid CPU type from an 
+offlined CPU. So I dropped the method and used another method to 
+retrieve the information, but I didn't let Ricardo update the function. 
+My bad.
+
+Now, we only need to read the CPU type of the current CPU. A 
+get_this_hybrid_cpu_type() function is enough for me.
+
+I think we can get rid of the IPIs trouble with the new 
+get_this_hybrid_cpu_type() in the next version. We shouldn't need the 
+preempt_disable() either.
+
+Thanks for pointing that out.
+
+Kan
+
