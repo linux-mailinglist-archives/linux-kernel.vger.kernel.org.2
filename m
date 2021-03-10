@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C09333E64
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF96333E03
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhCJN0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:26:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
+        id S233281AbhCJNZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:25:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232938AbhCJNYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 264B064FF3;
-        Wed, 10 Mar 2021 13:24:40 +0000 (UTC)
+        id S232822AbhCJNY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C304064FD7;
+        Wed, 10 Mar 2021 13:24:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382682;
-        bh=eDxca02f5Q3hJ6WcWjxYS3O2tqD2JDskL56ZN7VS4tc=;
+        s=korg; t=1615382667;
+        bh=X3yK/idqPR+LbLgv7H7UiBV/a2UUCMlIYVM/V5fbTvA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LLVTUzs7939v6TVxI7VaQeT+uHX9IT5ZSQISDNA4Kqj+o2VhdYvMHYucVexuqHQww
-         niBZE+Zp8cA/Y/6837xduVdLrQcys8f0SgrMHbA7rsR19sz8XLOWJBd3vBs1YIRK+p
-         6mYxPy6t5zW3KYpPMERWhQz9WvX7Fbb+UD8SFr+g=
+        b=Bds3GqqOr06shFRNDif6Ic28OjhmQ5zM81Tn7sIvGsb5wYtFxvApOTkohpdWBOWVC
+         Ktw2EMRPSud8rHbpaKMq752mWqu/vNzKYaEJdYFfGR0rfvQoe1KRUQRuFmyG18zRyV
+         pDI6J53eO4RjukPbcIvanDFrA0wK087ybUi1vpGo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 20/49] platform/x86: acer-wmi: Add ACER_CAP_KBD_DOCK quirk for the Aspire Switch 10E SW3-016
+Subject: [PATCH 5.11 18/36] scsi: ufs-mediatek: Enable UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
 Date:   Wed, 10 Mar 2021 14:23:31 +0100
-Message-Id: <20210310132322.595579552@linuxfoundation.org>
+Message-Id: <20210310132321.086618126@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
-References: <20210310132321.948258062@linuxfoundation.org>
+In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
+References: <20210310132320.510840709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +43,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Stanley Chu <stanley.chu@mediatek.com>
 
-[ Upstream commit bf753400280d1384abb783efc0b42c491d6deec3 ]
+[ Upstream commit 46ec9592ffd679fa26142dcb9e5119aad7e60b55 ]
 
-Add the Acer Aspire Switch 10E SW3-016 to the list of models which use the
-Acer Switch WMI interface for reporting SW_TABLET_MODE.
+Flush during hibern8 is sufficient on MediaTek platforms, thus enable
+UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL to skip enabling
+fWriteBoosterBufferFlush during WriteBooster initialization.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20201123151625.5530-1-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20201222072928.32328-1-stanley.chu@mediatek.com
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/acer-wmi.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/scsi/ufs/ufs-mediatek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index 1efca84bc1bd..80983f9dfcd5 100644
---- a/drivers/platform/x86/acer-wmi.c
-+++ b/drivers/platform/x86/acer-wmi.c
-@@ -511,6 +511,15 @@ static const struct dmi_system_id acer_quirks[] __initconst = {
- 		},
- 		.driver_data = &quirk_acer_travelmate_2490,
- 	},
-+	{
-+		.callback = set_force_caps,
-+		.ident = "Acer Aspire Switch 10E SW3-016",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW3-016"),
-+		},
-+		.driver_data = (void *)ACER_CAP_KBD_DOCK,
-+	},
- 	{
- 		.callback = set_force_caps,
- 		.ident = "Acer Aspire Switch 10 SW5-012",
+diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
+index 80618af7c872..c55202b92a43 100644
+--- a/drivers/scsi/ufs/ufs-mediatek.c
++++ b/drivers/scsi/ufs/ufs-mediatek.c
+@@ -661,6 +661,7 @@ static int ufs_mtk_init(struct ufs_hba *hba)
+ 
+ 	/* Enable WriteBooster */
+ 	hba->caps |= UFSHCD_CAP_WB_EN;
++	hba->quirks |= UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL;
+ 	hba->vps->wb_flush_threshold = UFS_WB_BUF_REMAIN_PERCENT(80);
+ 
+ 	if (host->caps & UFS_MTK_CAP_DISABLE_AH8)
 -- 
 2.30.1
 
