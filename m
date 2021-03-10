@@ -2,63 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4459B3337DB
+	by mail.lfdr.de (Postfix) with ESMTP id B5EE83337DC
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhCJIxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:53:36 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:53745 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231539AbhCJIxJ (ORCPT
+        id S232467AbhCJIxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:53:37 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53844 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhCJIxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:53:09 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0URGfeKO_1615366385;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0URGfeKO_1615366385)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 10 Mar 2021 16:53:05 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     isdn@linux-pingi.de
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] isdn: mISDN: remove unneeded variable 'ret'
-Date:   Wed, 10 Mar 2021 16:53:04 +0800
-Message-Id: <1615366384-12225-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 10 Mar 2021 03:53:30 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 5B2821C0B80; Wed, 10 Mar 2021 09:53:28 +0100 (CET)
+Date:   Wed, 10 Mar 2021 09:53:28 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     linux-kernel@vger.kernel.org
+Cc:     Amy Parker <enbyamy@gmail.com>, linux-gcc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: Alternative compilers to GCC/Clang
+Message-ID: <20210310085328.GA21872@duo.ucw.cz>
+References: <CAE1WUT6mp80yFDgAirZcKvc31O23ynpLGcsdPaa8qd1dsXiXhg@mail.gmail.com>
+ <20210202053307.GB28542@1wt.eu>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
+Content-Disposition: inline
+In-Reply-To: <20210202053307.GB28542@1wt.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
-./drivers/isdn/mISDN/dsp_core.c:956:6-9: Unneeded variable: "err".
-Return "0" on line 1001
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/isdn/mISDN/dsp_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/isdn/mISDN/dsp_core.c b/drivers/isdn/mISDN/dsp_core.c
-index 038e72a..4946ea1 100644
---- a/drivers/isdn/mISDN/dsp_core.c
-+++ b/drivers/isdn/mISDN/dsp_core.c
-@@ -953,7 +953,6 @@
- {
- 	struct dsp		*dsp = container_of(ch, struct dsp, ch);
- 	u_long		flags;
--	int		err = 0;
- 
- 	if (debug & DEBUG_DSP_CTRL)
- 		printk(KERN_DEBUG "%s:(%x)\n", __func__, cmd);
-@@ -998,7 +997,7 @@
- 		module_put(THIS_MODULE);
- 		break;
- 	}
--	return err;
-+	return 0;
- }
- 
- static void
--- 
-1.8.3.1
+Hi!
 
+> > Hello! My name's Amy. I'm really impressed by the work done to make
+> > Clang (and the LLVM toolchain overall) able to compile the kernel.
+> > Figured I might as well donate my monkey hours to helping make it run
+> > on other compilers as well. I haven't been able to find any that use
+> > the same arguments structure as GCC and Clang (read: you can pass it
+> > in as CC=3Dcompilername in your $MAKEOPTS). Any compilers along that
+> > route anyone here has worked with that I could work with?
+>=20
+> If you're interested, you should have a look at TCC (tiny CC) :
+>=20
+>      https://repo.or.cz/tinycc.git
+>=20
+> It compiles extremely fast, implements some subsets of gcc (a few
+> attributes for example), but is far from being able to compile a kernel
+> (at least last time I checked). Its speed makes it very convenient for
+> development. I made some efforts to make haproxy support it (and provided
+> some fixes to tcc) as it compiles the whole project in 0.5 second instead
+> of ~10 seconds with a modern gcc. It could probably compile a kernel in
+> 15-20 seconds if properly supported, and this could be particularly handy
+> for development and testing.
+
+For the record, yes, something that compiles kernel fast would be very
+very nice.
+
+Best regards,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--Nq2Wo0NMKNjxTN9z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEiJCAAKCRAw5/Bqldv6
+8p11AKCDwTTMrx+W0hdAZUHUMPePkUqsMwCfecQRePV2o724Cd/lGV4I13rQfKA=
+=wTkl
+-----END PGP SIGNATURE-----
+
+--Nq2Wo0NMKNjxTN9z--
