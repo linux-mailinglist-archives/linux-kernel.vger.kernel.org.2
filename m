@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5B2333E0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332D3333E19
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233321AbhCJNZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:25:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45636 "EHLO mail.kernel.org"
+        id S233365AbhCJNZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:25:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232823AbhCJNY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 790E164FD8;
-        Wed, 10 Mar 2021 13:24:27 +0000 (UTC)
+        id S232830AbhCJNYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C6BF64FE8;
+        Wed, 10 Mar 2021 13:24:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382669;
-        bh=b2FM5EXACoZxENyA6JOmUL/r8mqcx62ssGnf7zDjeYs=;
+        s=korg; t=1615382670;
+        bh=1M1m0uH2q7uBqF/WhqQItDLmoETowGVwj1uW41Switk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=quavyEUiQzXlXXUw2GTYg6o8NWLCMfBzaaV5BPRKhhX5Alc1Z/rmAKX/5lVJc0DVd
-         7b+UxDqa71TUHLiMjfUfWmQL+HeGNaLBMQ3E3rxopttA7vYTiDiE4YMWE8luGKTHPT
-         +VBTTA4yRi1MABq9Cs2kbKUqskEdUbn4CrcSu7Sc=
+        b=lPgymjPpNUvbd47jx3rm+6abqPEzyea0nboXnkM2QCTSuV2dFFyl+KKVzyecJU8gN
+         QfOY+Vla24BvMrUexUgYPAerBO1OpYFBH2GFnR9UdfzFXHjNr+p6hy7SwxaHWchSMv
+         0pMjy0TSvIose9jr4ilem97YMeq/HUxlyGZDy16g=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 12/49] ASoC: Intel: sof_sdw: add quirk for new TigerLake-SDCA device
-Date:   Wed, 10 Mar 2021 14:23:23 +0100
-Message-Id: <20210310132322.351648651@linuxfoundation.org>
+Subject: [PATCH 5.10 13/49] bus: ti-sysc: Implement GPMC debug quirk to drop platform data
+Date:   Wed, 10 Mar 2021 14:23:24 +0100
+Message-Id: <20210310132322.383450855@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
 References: <20210310132321.948258062@linuxfoundation.org>
@@ -44,42 +41,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 488cdbd8931fe4bc7f374a8b429e81d0e4b7ac76 ]
+[ Upstream commit cfeeea60af2f01c13b94d57a9bb1291e7bc181da ]
 
-Add quirks for jack detection, rt715 DAI and number of speakers.
+We need to enable no-reset-on-init quirk for GPMC if the config
+option for CONFIG_OMAP_GPMC_DEBUG is set. Otherwise the GPMC
+driver code is unable to show the bootloader configured timings.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Link: https://lore.kernel.org/r/20201111214318.150529-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/bus/ti-sysc.c                 | 10 ++++++++++
+ include/linux/platform_data/ti-sysc.h |  1 +
+ 2 files changed, 11 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 0f1d845a0cca..9519e5403cbf 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -48,6 +48,16 @@ static int sof_sdw_quirk_cb(const struct dmi_system_id *id)
- }
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 92ecf1a78ec7..45f5530666d3 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1379,6 +1379,8 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 		   SYSC_QUIRK_CLKDM_NOAUTO),
+ 	SYSC_QUIRK("dwc3", 0x488c0000, 0, 0x10, -ENODEV, 0x500a0200, 0xffffffff,
+ 		   SYSC_QUIRK_CLKDM_NOAUTO),
++	SYSC_QUIRK("gpmc", 0, 0, 0x10, 0x14, 0x00000060, 0xffffffff,
++		   SYSC_QUIRK_GPMC_DEBUG),
+ 	SYSC_QUIRK("hdmi", 0, 0, 0x10, -ENODEV, 0x50030200, 0xffffffff,
+ 		   SYSC_QUIRK_OPT_CLKS_NEEDED),
+ 	SYSC_QUIRK("hdq1w", 0, 0, 0x14, 0x18, 0x00000006, 0xffffffff,
+@@ -1814,6 +1816,14 @@ static void sysc_init_module_quirks(struct sysc *ddata)
+ 		return;
+ 	}
  
- static const struct dmi_system_id sof_sdw_quirk_table[] = {
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A32")
-+		},
-+		.driver_data = (void *)(SOF_RT711_JD_SRC_JD2 |
-+					SOF_RT715_DAI_ID_FIX |
-+					SOF_SDW_FOUR_SPK),
-+	},
- 	{
- 		.callback = sof_sdw_quirk_cb,
- 		.matches = {
++#ifdef CONFIG_OMAP_GPMC_DEBUG
++	if (ddata->cfg.quirks & SYSC_QUIRK_GPMC_DEBUG) {
++		ddata->cfg.quirks |= SYSC_QUIRK_NO_RESET_ON_INIT;
++
++		return;
++	}
++#endif
++
+ 	if (ddata->cfg.quirks & SYSC_MODULE_QUIRK_I2C) {
+ 		ddata->pre_reset_quirk = sysc_pre_reset_quirk_i2c;
+ 		ddata->post_reset_quirk = sysc_post_reset_quirk_i2c;
+diff --git a/include/linux/platform_data/ti-sysc.h b/include/linux/platform_data/ti-sysc.h
+index 240dce553a0b..fafc1beea504 100644
+--- a/include/linux/platform_data/ti-sysc.h
++++ b/include/linux/platform_data/ti-sysc.h
+@@ -50,6 +50,7 @@ struct sysc_regbits {
+ 	s8 emufree_shift;
+ };
+ 
++#define SYSC_QUIRK_GPMC_DEBUG		BIT(26)
+ #define SYSC_MODULE_QUIRK_ENA_RESETDONE	BIT(25)
+ #define SYSC_MODULE_QUIRK_PRUSS		BIT(24)
+ #define SYSC_MODULE_QUIRK_DSS_RESET	BIT(23)
 -- 
 2.30.1
 
