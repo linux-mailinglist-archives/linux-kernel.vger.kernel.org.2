@@ -2,85 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE9E333B50
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9E5333B57
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhCJL0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhCJLZ7 (ORCPT
+        id S232736AbhCJL0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:26:43 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:54828 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232670AbhCJL0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:25:59 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA621C06174A;
-        Wed, 10 Mar 2021 03:24:44 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwV961y7dz9sRf;
-        Wed, 10 Mar 2021 22:24:42 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615375482;
-        bh=V+V8sLOoFHc4RKm9lLu93GG2y5UNHz1wUBDpBk2W6C4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jiZOpEju8c4EAgfnR2Q83/iE3qMGwG2wC/ZJ4Knvn2r2Cn30G4fO1KftywaYLCjzR
-         sc3U99aqVyYaKNscOylAMvXoO3ltC6cmBqeOiYESM95PCWWpasuCX4h55HcKzahf15
-         S3wFlpAIM2ceo0WhL8c/I60yYPbHWjEAMvjTmNiS+C90t+YedcOQ+RO7AmyQh2zoWt
-         dhbaZvos8elsZAr3PFz64TtuYI1LfsaOhmaSwW0gTJ0hdbjX9HWUs77KUVCS9n0i/P
-         BQkmqy0J9gccuG84fZmk5O7+G0nPur2IY94YbjNPfb2ai/5Qwn7MGMdhgXFOUyD4yw
-         /IU9MkgkDI7ZQ==
-Date:   Wed, 10 Mar 2021 22:24:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Oded Gabbay <ogabbay@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commits in the
- char-misc.current tree
-Message-ID: <20210310222441.6a8dcb10@canb.auug.org.au>
-In-Reply-To: <YEiphZVhmY4rYzbJ@kroah.com>
-References: <20210310220404.086c426c@canb.auug.org.au>
-        <YEiphZVhmY4rYzbJ@kroah.com>
+        Wed, 10 Mar 2021 06:26:07 -0500
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 12ABPUus013422;
+        Wed, 10 Mar 2021 20:25:30 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 12ABPUus013422
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615375530;
+        bh=EtPI5/QZah2DyjWRoZyS3HDm98BPv6IVUcYhV4WF/kk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PZCO7Z2y94+u+OqKaHscyOjzMVfEhJZoTiTCIdBtSL4vMDpEZ1Q2cdpTVCLk+AtGz
+         U77F8zM2BiGEkOddfCblhCtfdAzQx1PdVSsJYJ+hmheKwxpWOJL1WaH7N/papEwZyV
+         ILnnYUoU1Suo1apESMd6boJBgjlVnPIPy+TIHFDdhag3eE4hRIzWEAuMbIpXhuR1Ff
+         KKlMX72y5kJmKPNnr805XN9EEOu7thDMq6k1nCPuTnDySZni0xhhqMXgbSg5COsOM7
+         4BuAiYt6gPBO+sbn00tqhahA3c3UVwf81iT/9E+dVQr31LEFmZHn4AV6KZG2weGFJL
+         GV8/UwL0qvwNQ==
+X-Nifty-SrcIP: [209.85.210.176]
+Received: by mail-pf1-f176.google.com with SMTP id x7so8407488pfi.7;
+        Wed, 10 Mar 2021 03:25:30 -0800 (PST)
+X-Gm-Message-State: AOAM530TtGyNzlHOrAzj45TCDEt+qwBT/9klD5rKEZ7Jh7MIAuAn7+v8
+        oo1g0e28C81hrRb9YJEQEN04QG40RY3lvW2r2nw=
+X-Google-Smtp-Source: ABdhPJw6QDfOuoCC6vgyVkMWd3r+4bJUHr5slmEcw4gwwkO3egn3v/OjmKXfcHsFqGu0gomzgVN2uvXhAc5uvo7AWRc=
+X-Received: by 2002:aa7:956d:0:b029:1f1:5ba6:2a58 with SMTP id
+ x13-20020aa7956d0000b02901f15ba62a58mr2660757pfq.63.1615375529634; Wed, 10
+ Mar 2021 03:25:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Cz69z98RP9qNCKyzcY1iS=7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <cover.1615354376.git.viresh.kumar@linaro.org> <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+In-Reply-To: <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 10 Mar 2021 20:24:52 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+Message-ID: <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source files
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Cz69z98RP9qNCKyzcY1iS=7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Greg,
-
-On Wed, 10 Mar 2021 12:12:05 +0100 Greg KH <greg@kroah.com> wrote:
+On Wed, Mar 10, 2021 at 2:35 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> Ah, yeah, oh well, I'll just live with this, I don't want to rebase
-> again :(
+> Since the overlays dtb files are now named as .dtbo, there is a lot of
+> interest in similarly naming the overlay source dts files as .dtso.
+>
+> This patch makes the necessary changes to allow .dtso format for overlay
+> source files.
+>
+> Note that we still support generating .dtbo files from .dts files. This
+> is required for the source files present in drivers/of/unittest-data/,
+> because they can't be renamed to .dtso as they are used for some runtime
+> testing as well.
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  scripts/Makefile.lib | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index bc045a54a34e..59e86f67f9e0 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -339,7 +339,7 @@ $(obj)/%.dtb.S: $(obj)/%.dtb FORCE
+>
+>  quiet_cmd_dtc = DTC     $@
+>  cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
+> -       $(DTC) -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
+> +       $(DTC) -I dts -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
 
-At least the -rc1 booby trap is gone.
+Even without "-I dts",
 
---=20
-Cheers,
-Stephen Rothwell
+   inform = guess_input_format(arg, "dts");
 
---Sig_/Cz69z98RP9qNCKyzcY1iS=7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+seems to fall back to "dts" anyway,
+but I guess you wanted to make this explicit, correct?
 
------BEGIN PGP SIGNATURE-----
+I will drop the ugly -O.
+https://patchwork.kernel.org/project/linux-kbuild/patch/20210310110824.782209-1-masahiroy@kernel.org/
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBIrHkACgkQAVBC80lX
-0GwdHAf9HWPRXFNXDrZBGgv30sIUwXZ0mv6P+2O+46VQHYFZxpEq6KmLdb+xzoKk
-HjEWTA+iPC3BU60yAIIhCbjCDgcm1VaFpcw8QFkysfrLH//Fa/gsOvxTbjxUNEke
-kFeFAxnz3azwdF6oVKlOgmKp75lh7B4T3SPyFIZCbKcQhV+H4QLXEcwzfan3pMoW
-QNbbrXlALUmqUMR/sdGegiJ+We5dbbcKWjXltilO/Ol/Hc/vaflQ4lXGoUdGv6bG
-W6LrUpR+oGJMBl0Zu/GNkGYLroGjvaBzJ9lvbW0DKrbe8US1wyMugOFETHKA2gJk
-hto+E5HuXfuKkN8rJNLk8H/3Prm0yw==
-=56lY
------END PGP SIGNATURE-----
+I will queue it to linux-kbuild/fixes.
 
---Sig_/Cz69z98RP9qNCKyzcY1iS=7--
+
+
+>                 $(addprefix -i,$(dir $<) $(DTC_INCLUDE)) $(DTC_FLAGS) \
+>                 -d $(depfile).dtc.tmp $(dtc-tmp) ; \
+>         cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
+> @@ -347,9 +347,13 @@ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ;
+>  $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
+>         $(call if_changed_dep,dtc)
+>
+> +# Required for of unit-test files as they can't be renamed to .dtso
+
+If you go with *.dtso, I think you will rename
+all *.dts under the drivers/ directory.
+
+What is blocking you from making this consistent?
+
+
+
+
+
+
+>  $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+>         $(call if_changed_dep,dtc)
+>
+> +$(obj)/%.dtbo: $(src)/%.dtso $(DTC) FORCE
+> +       $(call if_changed_dep,dtc)
+> +
+>  overlay-y := $(addprefix $(obj)/, $(overlay-y))
+>
+>  quiet_cmd_fdtoverlay = DTOVL   $@
+> @@ -375,6 +379,9 @@ endef
+>  $(obj)/%.dt.yaml: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
+>         $(call if_changed_rule,dtc,yaml)
+>
+> +$(obj)/%.dt.yaml: $(src)/%.dtso $(DTC) $(DT_TMP_SCHEMA) FORCE
+> +       $(call if_changed_rule,dtc,yaml)
+> +
+>  dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
+>
+>  # Bzip2
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
