@@ -2,263 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA940333E9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579A5333ED7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbhCJN00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:26:26 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:34152 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233032AbhCJNYt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:49 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1DB7A9E7;
-        Wed, 10 Mar 2021 14:24:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615382687;
-        bh=Jbzzq9e1ey5tdMEkoKKaMbLAWYr9uSrkXwsnfH3Y8Ac=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zxe5zClTQlTnZrtTrK6rcslc+2yfonjdCjp5CrAUXDApbKWShepL1SIo3sSXc9vhU
-         l4op5JFOzdiahNUHO3S4/XYgplAMWFNfZzlWYw57VPtSf+95iCOUfx2wizHq/bMKlJ
-         VAmtkGscQI/dAKfCGLwr8NTMeiO45+uO+1gKbPY8=
-Date:   Wed, 10 Mar 2021 15:24:15 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        mchehab@kernel.org, a.hajda@samsung.com, narmstrong@baylibre.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net, kishon@ti.com,
-        vkoul@kernel.org, robert.foss@linaro.org, lee.jones@linaro.org
-Subject: Re: [PATCH v5 02/14] media: docs: Add some RGB bus formats for
- i.MX8qm/qxp pixel combiner
-Message-ID: <YEjIf//ouB1wZss3@pendragon.ideasonboard.com>
-References: <1615370138-5673-1-git-send-email-victor.liu@nxp.com>
- <1615370138-5673-3-git-send-email-victor.liu@nxp.com>
+        id S233966AbhCJN1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:27:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233199AbhCJNZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6030B64FF7;
+        Wed, 10 Mar 2021 13:25:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615382704;
+        bh=+jYzso4KsiU++9EzFHM5uujqnJ/+C8P3LTIVaK+Enx0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=0V3QUjy3w10AtX2FJg4ismLwO0+ccClfpYwV4xHuJrkJxUgVyOEFpOn/3xWXv7QIq
+         I9XpIZNwPgSqvqeRziywdPJUmhja4Mr4hoimsF/YtdlZPy9jkcO03NThkPzyIPcXiV
+         4OuKPyEStiKv/OPGKoO461Au7VHP5CAhSoL0FZZU=
+From:   gregkh@linuxfoundation.org
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Milan Broz <gmazyland@gmail.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 07/39] dm bufio: subtract the number of initial sectors in dm_bufio_get_device_size
+Date:   Wed, 10 Mar 2021 14:24:15 +0100
+Message-Id: <20210310132319.964034941@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
+References: <20210310132319.708237392@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1615370138-5673-3-git-send-email-victor.liu@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liu,
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Thank you for the patch.
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-On Wed, Mar 10, 2021 at 05:55:26PM +0800, Liu Ying wrote:
-> This patch adds documentations for RGB666_1X30_CPADLO, RGB888_1X30_CPADLO,
-> RGB666_1X36_CPADLO and RGB888_1X36_CPADLO bus formats used by i.MX8qm/qxp
-> pixel combiner.  The RGB pixels with padding low per component are
-> transmitted on a 30-bit input bus(10-bit per component) from a display
-> controller or a 36-bit output bus(12-bit per component) to a pixel link.
-> 
-> Reviewed-by: Robert Foss <robert.foss@linaro.org>
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v4->v5:
-> * Add Robert's R-b tag.
-> 
-> v3->v4:
-> * No change.
-> 
-> v2->v3:
-> * No change.
-> 
-> v1->v2:
-> * No change.
-> 
->  .../userspace-api/media/v4l/subdev-formats.rst     | 156 +++++++++++++++++++++
->  1 file changed, 156 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/subdev-formats.rst b/Documentation/userspace-api/media/v4l/subdev-formats.rst
-> index 7f16cbe..201c16d 100644
-> --- a/Documentation/userspace-api/media/v4l/subdev-formats.rst
-> +++ b/Documentation/userspace-api/media/v4l/subdev-formats.rst
-> @@ -1488,6 +1488,80 @@ The following tables list existing packed RGB formats.
->        - b\ :sub:`2`
->        - b\ :sub:`1`
->        - b\ :sub:`0`
-> +    * .. _MEDIA-BUS-FMT-RGB666-1X30-CPADLO:
-> +
-> +      - MEDIA_BUS_FMT_RGB666_1X30-CPADLO
-> +      - 0x101e
-> +      -
-> +      - 0
-> +      - 0
+commit a14e5ec66a7a66e57b24e2469f9212a78460207e upstream.
 
-I count 32 bits here. Should these two 0 be replaced by spaces ? Same
-for MEDIA_BUS_FMT_RGB888_1X30-CPADLO.
+dm_bufio_get_device_size returns the device size in blocks. Before
+returning the value, we must subtract the nubmer of starting
+sectors. The number of starting sectors may not be divisible by block
+size.
 
-With this fixed,
+Note that currently, no target is using dm_bufio_set_sector_offset and
+dm_bufio_get_device_size simultaneously, so this change has no effect.
+However, an upcoming dm-verity-fec fix needs this change.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Reviewed-by: Milan Broz <gmazyland@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/md/dm-bufio.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-> +      - r\ :sub:`5`
-> +      - r\ :sub:`4`
-> +      - r\ :sub:`3`
-> +      - r\ :sub:`2`
-> +      - r\ :sub:`1`
-> +      - r\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - g\ :sub:`5`
-> +      - g\ :sub:`4`
-> +      - g\ :sub:`3`
-> +      - g\ :sub:`2`
-> +      - g\ :sub:`1`
-> +      - g\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - b\ :sub:`5`
-> +      - b\ :sub:`4`
-> +      - b\ :sub:`3`
-> +      - b\ :sub:`2`
-> +      - b\ :sub:`1`
-> +      - b\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +    * .. _MEDIA-BUS-FMT-RGB888-1X30-CPADLO:
-> +
-> +      - MEDIA_BUS_FMT_RGB888_1X30-CPADLO
-> +      - 0x101f
-> +      -
-> +      - 0
-> +      - 0
-> +      - r\ :sub:`7`
-> +      - r\ :sub:`6`
-> +      - r\ :sub:`5`
-> +      - r\ :sub:`4`
-> +      - r\ :sub:`3`
-> +      - r\ :sub:`2`
-> +      - r\ :sub:`1`
-> +      - r\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - g\ :sub:`7`
-> +      - g\ :sub:`6`
-> +      - g\ :sub:`5`
-> +      - g\ :sub:`4`
-> +      - g\ :sub:`3`
-> +      - g\ :sub:`2`
-> +      - g\ :sub:`1`
-> +      - g\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - b\ :sub:`7`
-> +      - b\ :sub:`6`
-> +      - b\ :sub:`5`
-> +      - b\ :sub:`4`
-> +      - b\ :sub:`3`
-> +      - b\ :sub:`2`
-> +      - b\ :sub:`1`
-> +      - b\ :sub:`0`
-> +      - 0
-> +      - 0
->      * .. _MEDIA-BUS-FMT-ARGB888-1X32:
->  
->        - MEDIA_BUS_FMT_ARGB888_1X32
-> @@ -1665,6 +1739,88 @@ The following table list existing packed 36bit wide RGB formats.
->        - 2
->        - 1
->        - 0
-> +    * .. _MEDIA-BUS-FMT-RGB666-1X36-CPADLO:
-> +
-> +      - MEDIA_BUS_FMT_RGB666_1X36_CPADLO
-> +      - 0x1020
-> +      -
-> +      - r\ :sub:`5`
-> +      - r\ :sub:`4`
-> +      - r\ :sub:`3`
-> +      - r\ :sub:`2`
-> +      - r\ :sub:`1`
-> +      - r\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - g\ :sub:`5`
-> +      - g\ :sub:`4`
-> +      - g\ :sub:`3`
-> +      - g\ :sub:`2`
-> +      - g\ :sub:`1`
-> +      - g\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - b\ :sub:`5`
-> +      - b\ :sub:`4`
-> +      - b\ :sub:`3`
-> +      - b\ :sub:`2`
-> +      - b\ :sub:`1`
-> +      - b\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +    * .. _MEDIA-BUS-FMT-RGB888-1X36-CPADLO:
-> +
-> +      - MEDIA_BUS_FMT_RGB888_1X36_CPADLO
-> +      - 0x1021
-> +      -
-> +      - r\ :sub:`7`
-> +      - r\ :sub:`6`
-> +      - r\ :sub:`5`
-> +      - r\ :sub:`4`
-> +      - r\ :sub:`3`
-> +      - r\ :sub:`2`
-> +      - r\ :sub:`1`
-> +      - r\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - g\ :sub:`7`
-> +      - g\ :sub:`6`
-> +      - g\ :sub:`5`
-> +      - g\ :sub:`4`
-> +      - g\ :sub:`3`
-> +      - g\ :sub:`2`
-> +      - g\ :sub:`1`
-> +      - g\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - b\ :sub:`7`
-> +      - b\ :sub:`6`
-> +      - b\ :sub:`5`
-> +      - b\ :sub:`4`
-> +      - b\ :sub:`3`
-> +      - b\ :sub:`2`
-> +      - b\ :sub:`1`
-> +      - b\ :sub:`0`
-> +      - 0
-> +      - 0
-> +      - 0
-> +      - 0
->      * .. _MEDIA-BUS-FMT-RGB121212-1X36:
->  
->        - MEDIA_BUS_FMT_RGB121212_1X36
+--- a/drivers/md/dm-bufio.c
++++ b/drivers/md/dm-bufio.c
+@@ -1463,6 +1463,10 @@ EXPORT_SYMBOL_GPL(dm_bufio_get_block_siz
+ sector_t dm_bufio_get_device_size(struct dm_bufio_client *c)
+ {
+ 	sector_t s = i_size_read(c->bdev->bd_inode) >> SECTOR_SHIFT;
++	if (s >= c->start)
++		s -= c->start;
++	else
++		s = 0;
+ 	if (likely(c->sectors_per_block_bits >= 0))
+ 		s >>= c->sectors_per_block_bits;
+ 	else
 
--- 
-Regards,
 
-Laurent Pinchart
