@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548F9334AE6
+	by mail.lfdr.de (Postfix) with ESMTP id C3FFB334AE7
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbhCJWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:03:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        id S234140AbhCJWDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:03:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234353AbhCJWCg (ORCPT
+        with ESMTP id S234168AbhCJWCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:02:36 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F928C061763
+        Wed, 10 Mar 2021 17:02:41 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D42C0613D7
         for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:31 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id w11so25046785wrr.10
+Received: by mail-wr1-x42d.google.com with SMTP id v15so25046384wrx.4
         for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BQ2hKQWhpJ/WTdKG9UWGdly9pe3CMhv89pfXyaQmgfE=;
-        b=YhsFvX1QktFHIWBCy6YnZtuUwh/y9Vkf5pPz9uqPdkC55xYf3v7ff2d67tv52x/bo2
-         XFJR2svsqaTSYeQUOk+dnEj44wtY9uUjNHSXL7BK55ZFHhuB/HEToOG5uM9gc0VxPY4G
-         y45qELB7GtbglYR6i+U8wM9UYYHCticWOwKBU=
+        bh=JPXJZO7MToUvf4q+MCl8l3dLahahtNLVnU5sI9beblw=;
+        b=NLYx5TphKj9sRLeVfLuFQrvYg3epOz+xFbTZFuwZs3r433Qw/RdxeKFjteTUEAMBi1
+         aGej6L8jUSdppH+eygN6vpyU8vEPzh33SzaLT7vCE3WFMspGhJuSe2OOSArZ/mU7EE+a
+         isXrj4JZn0M2b/3EtXQ4QGwTRySKfNw9y7smg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BQ2hKQWhpJ/WTdKG9UWGdly9pe3CMhv89pfXyaQmgfE=;
-        b=T28AFn8OumEMuv54Jzgx+NTyxifKr4vcKMi0ANr2PmdSCrjdWuf/7I2sbdEJlgHnNE
-         ubq5YMJROjClohAkTklROnJWEPFjJvGkX2wKUzdE7n92zhvaDj6OQB+eJKiIfjeksFJT
-         0PV1zlVhBfz/gFv787sTQtdnwTbtW3o8fGu4/wRmKn9KNELGgII9vmhGKGkiFDF89/Z/
-         YRJ09rCYbSb64beM2QLdQdqGGKljwmCL4545bHKLzfzjyLDbCohI3AkADY6oxDcm2Ey1
-         enaDVHgWFBO14djDyKQn9SzcoiYKTFRSvUBqLUHAk43fHe48qPpb/pBhqaPRUiyBV7EY
-         f7qg==
-X-Gm-Message-State: AOAM530Z6JjYwHPu50zi/rS3Xl6cG8L8M4PY41rZPy3xgYwBJOrDq+1S
-        PkY8pLjz9h7lpoAlwx1UCazwGA==
-X-Google-Smtp-Source: ABdhPJyR3we1bikA48yPH7LSQyZ6ykyowWWr2CR5qm+5WfsA0mofpIB4dthmSTwirh+/fG0c0Geoeg==
-X-Received: by 2002:a5d:4b06:: with SMTP id v6mr5676166wrq.41.1615413749649;
-        Wed, 10 Mar 2021 14:02:29 -0800 (PST)
+        bh=JPXJZO7MToUvf4q+MCl8l3dLahahtNLVnU5sI9beblw=;
+        b=BK9yPYQF88/BFcqch7TTY+fBf32TZY9eL9Q43lz4RoqITZoVT6uNkQ9S4lZKOsNKBQ
+         QJBBiY2A5y9auaytn9xhCR5a8wC6bAvxoWusW1CCCm/2YAGjvt89Pc5771aI3EuXr+Ig
+         ZXV5sJnKmd+jwPDpufdL/yAIUBkt0v1MnE71S95mbslF5fxEFS80MNR/9EfWos9orUjm
+         n8+CW4cGPtYAIMRep9v2TuZG9dj572+S6cH6puCwm2ZtjK0+jmC8OhrGHAax0lZXmuwA
+         B509vNOfcbjs08pc5H8QH+VJdafSj8c/JvX2r9uLKPsfRUQXeaeYcvLZH4iyj3RXWqeJ
+         qENg==
+X-Gm-Message-State: AOAM530El/4ojGoyidQNjcUw7g+MkqGk4yNjONYIoeerpgckEN/GRyHV
+        vvaDAEtfX3E++5nChsqk6Re3Rw==
+X-Google-Smtp-Source: ABdhPJwuPfFDGCTxE9brofNXk2DcargQP8ONxDJUt9MQUP7V0CwVDtkM1/xVW0D8lV+5TBiZFDdZpg==
+X-Received: by 2002:adf:a2c2:: with SMTP id t2mr5516389wra.47.1615413750578;
+        Wed, 10 Mar 2021 14:02:30 -0800 (PST)
 Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:e08c:1e90:4e6b:365a])
-        by smtp.gmail.com with ESMTPSA id y16sm699234wrh.3.2021.03.10.14.02.28
+        by smtp.gmail.com with ESMTPSA id y16sm699234wrh.3.2021.03.10.14.02.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 14:02:29 -0800 (PST)
+        Wed, 10 Mar 2021 14:02:30 -0800 (PST)
 From:   Florent Revest <revest@chromium.org>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         yhs@fb.com, kpsingh@kernel.org, jackmanb@chromium.org,
         linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next 3/5] libbpf: Initialize the bpf_seq_printf parameters array field by field
-Date:   Wed, 10 Mar 2021 23:02:09 +0100
-Message-Id: <20210310220211.1454516-4-revest@chromium.org>
+Subject: [PATCH bpf-next 4/5] libbpf: Introduce a BPF_SNPRINTF helper macro
+Date:   Wed, 10 Mar 2021 23:02:10 +0100
+Message-Id: <20210310220211.1454516-5-revest@chromium.org>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 In-Reply-To: <20210310220211.1454516-1-revest@chromium.org>
 References: <20210310220211.1454516-1-revest@chromium.org>
@@ -62,69 +62,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When initializing the __param array with a one liner, if all args are
-const, the initial array value will be placed in the rodata section but
-because libbpf does not support relocation in the rodata section, any
-pointer in this array will stay NULL.
-
-This is a workaround, ideally the rodata relocation should be supported
-by libbpf but this would require a disproportionate amount of work given
-the actual usecases. (it is very unlikely that one uses a const array of
-relocated addresses)
+Similarly to BPF_SEQ_PRINTF, this macro turns variadic arguments into an
+array of u64, making it more natural to call the bpf_snprintf helper.
 
 Signed-off-by: Florent Revest <revest@chromium.org>
 ---
- tools/lib/bpf/bpf_tracing.h | 30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+ tools/lib/bpf/bpf_tracing.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index f9ef37707888..f6a2deb3cd5b 100644
+index f6a2deb3cd5b..89e82da9b8a0 100644
 --- a/tools/lib/bpf/bpf_tracing.h
 +++ b/tools/lib/bpf/bpf_tracing.h
-@@ -413,6 +413,34 @@ typeof(name(0)) name(struct pt_regs *ctx)				    \
- }									    \
- static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+@@ -457,4 +457,19 @@ static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+ 		___ret;							    \
+ 	})
  
-+#define ___bpf_build_param0(narg, x)
-+#define ___bpf_build_param1(narg, x) ___param[narg - 1] = x
-+#define ___bpf_build_param2(narg, x, args...) ___param[narg - 2] = x; \
-+					      ___bpf_build_param1(narg, args)
-+#define ___bpf_build_param3(narg, x, args...) ___param[narg - 3] = x; \
-+					      ___bpf_build_param2(narg, args)
-+#define ___bpf_build_param4(narg, x, args...) ___param[narg - 4] = x; \
-+					      ___bpf_build_param3(narg, args)
-+#define ___bpf_build_param5(narg, x, args...) ___param[narg - 5] = x; \
-+					      ___bpf_build_param4(narg, args)
-+#define ___bpf_build_param6(narg, x, args...) ___param[narg - 6] = x; \
-+					      ___bpf_build_param5(narg, args)
-+#define ___bpf_build_param7(narg, x, args...) ___param[narg - 7] = x; \
-+					      ___bpf_build_param6(narg, args)
-+#define ___bpf_build_param8(narg, x, args...) ___param[narg - 8] = x; \
-+					      ___bpf_build_param7(narg, args)
-+#define ___bpf_build_param9(narg, x, args...) ___param[narg - 9] = x; \
-+					      ___bpf_build_param8(narg, args)
-+#define ___bpf_build_param10(narg, x, args...) ___param[narg - 10] = x; \
-+					       ___bpf_build_param9(narg, args)
-+#define ___bpf_build_param11(narg, x, args...) ___param[narg - 11] = x; \
-+					       ___bpf_build_param10(narg, args)
-+#define ___bpf_build_param12(narg, x, args...) ___param[narg - 12] = x; \
-+					       ___bpf_build_param11(narg, args)
-+#define ___bpf_build_param(args...) \
-+	unsigned long long ___param[___bpf_narg(args)];			\
-+	___bpf_apply(___bpf_build_param, ___bpf_narg(args))(___bpf_narg(args), args)
-+
- /*
-  * BPF_SEQ_PRINTF to wrap bpf_seq_printf to-be-printed values
-  * in a structure.
-@@ -422,7 +450,7 @@ static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
- 		_Pragma("GCC diagnostic push")				    \
- 		_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")	    \
- 		static const char ___fmt[] = fmt;			    \
--		unsigned long long ___param[] = { args };		    \
++/*
++ * BPF_SNPRINTF wraps the bpf_snprintf helper with variadic arguments instead of
++ * an array of u64.
++ */
++#define BPF_SNPRINTF(out, out_size, fmt, args...)			    \
++	({								    \
++		_Pragma("GCC diagnostic push")				    \
++		_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")	    \
 +		___bpf_build_param(args);				    \
- 		_Pragma("GCC diagnostic pop")				    \
- 		int ___ret = bpf_seq_printf(seq, ___fmt, sizeof(___fmt),    \
- 					    ___param, sizeof(___param));    \
++		_Pragma("GCC diagnostic pop")				    \
++		int ___ret = bpf_snprintf(out, out_size, fmt,		    \
++					    ___param, sizeof(___param));    \
++		___ret;							    \
++	})
++
+ #endif
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
