@@ -2,45 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188E2334953
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E167334957
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhCJVAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:00:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32800 "EHLO mail.kernel.org"
+        id S231987AbhCJVAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:00:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231911AbhCJVAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:00:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1DA8B64FD0;
+        id S232000AbhCJVAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:00:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 54EF165015;
         Wed, 10 Mar 2021 21:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1615410013;
-        bh=HtJPighkxzhTi5SUiW2p+tXG2qjnfpO48Oh0cNOkQc4=;
+        bh=q2xrPMBHgH74pAfIiot6Jwwe60GTAPk0QGmEpvVHYmU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MF8A6tRfTj6Hj31AionaUju3jtjCrbTPa/Co5yc5ma+CppYq9Q4HuRVBU356fTEbl
-         tn+9jrz1CWFTjwif3OlWyI24qdJ2nRFD46oPUEubUuCiLJSjmEH8Gm3W4sfyLIWzc8
-         ZQVkv2AonfgxOj2DaLAZasg+F70zZD+Hd3mKGqsWJ5kiz6D1kpgN2M5hpORuEdNoYR
-         vVhhW0hOFnqq1+BMmYciR795HU4isrcRT6nrjPoDcmeGdh7D4ygwPhGqW4nFz4A40I
-         l8hK05dHryz9uHO+qyrHA77k7w5WjLAms9V43LGjnCvVDB8q78Wz5jrnJK7B0oa5RN
-         H0D5MyN+twm/Q==
+        b=PzjgzZkAajtBWO/pO0jiCRevPYyWwSoGRGYcmUJhyN+C91kcf9Kmw2eN9/I4OJ2Mf
+         putwLblU2lv9bE+Cn9bTDcispOspCuHwBHQXQ0dta6aS1xRhGxUAVgq7hBiSjcZMzI
+         W08Vi14E5yfAZVeq8EZKFbWUBkU0Xb+7hwwGq7Qf7X87bqaWCQAyWJdHj27+Hp6hVq
+         U30rcKCZMGK6HPzynONHeo5vAj+exzdeyQI/EHO9GHLM7CYUcqB8WNcVVNhV8HJii0
+         oN2nexA60zMOESLeZ+0B08S3A9yc3pg7cfWSaYlQZKY2kvqiktNYliCwJpNrOJihu/
+         oE5jeK/BN0Abg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0DD46609B8;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 43783609BB;
         Wed, 10 Mar 2021 21:00:13 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: ipv6: route.c:fix indentation
+Subject: Re: [PATCH] drivers: isdn: mISDN: fix spelling typo of 'wheter'
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161541001305.4631.16788593573945667819.git-patchwork-notify@kernel.org>
+Message-Id: <161541001327.4631.4619454405550574531.git-patchwork-notify@kernel.org>
 Date:   Wed, 10 Mar 2021 21:00:13 +0000
-References: <20210310203314.wk6zjxyo6ax5chbd@kewl-virtual-machine>
-In-Reply-To: <20210310203314.wk6zjxyo6ax5chbd@kewl-virtual-machine>
-To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, bpf@vger.kernel.org,
-        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, bkkarthik@pesu.pes.edu, netdev@vger.kernel.org,
+References: <1615345563-1293-1-git-send-email-wangqing@vivo.com>
+In-Reply-To: <1615345563-1293-1-git-send-email-wangqing@vivo.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     isdn@linux-pingi.de, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,18 +46,17 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu, 11 Mar 2021 02:03:14 +0530 you wrote:
-> The series of space has been replaced by tab space
-> wherever required.
+On Wed, 10 Mar 2021 11:06:03 +0800 you wrote:
+> wheter -> whether
 > 
-> Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 > ---
->  net/ipv6/route.c | 26 +++++++++++++-------------
->  1 file changed, 13 insertions(+), 13 deletions(-)
+>  drivers/isdn/mISDN/l1oip_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - net: ipv6: route.c:fix indentation
-    https://git.kernel.org/netdev/net-next/c/13fdb9403d9e
+  - drivers: isdn: mISDN: fix spelling typo of 'wheter'
+    https://git.kernel.org/netdev/net-next/c/67a580aad179
 
 You are awesome, thank you!
 --
