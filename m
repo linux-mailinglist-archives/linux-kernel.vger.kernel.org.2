@@ -2,180 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F7133474C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 587643347B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhCJS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:58:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36416 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232920AbhCJS6T (ORCPT
+        id S233663AbhCJTO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 14:14:27 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57720 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229526AbhCJTOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:58:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615402699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ZU6Kc8uQsaX+NELkZSTr0b1PNiA71McvIaFWuScfNKY=;
-        b=VWHnPflVRPkeQZu/ZYmRf8aoHk/7CIBUaA4PhNo3rHNJKloMuKwmy7OvtAwZhzrqHyuFK2
-        +3l12zo3AFDnKbiJSsX2dyesob3ZzyyoHW9g9ZSBkgurwPC5D6ib1/aClbbwNTUraCHmbm
-        mSe74YPXRDWyjJCKtSveKLQ/8tdHdCA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-UhquQQhUN9KrgFjVbGda3A-1; Wed, 10 Mar 2021 13:58:17 -0500
-X-MC-Unique: UhquQQhUN9KrgFjVbGda3A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC036801817;
-        Wed, 10 Mar 2021 18:58:15 +0000 (UTC)
-Received: from gimli.home (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C56D65D6D7;
-        Wed, 10 Mar 2021 18:58:07 +0000 (UTC)
-Subject: [PATCH v2] vfio/pci: Handle concurrent vma faults
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, jgg@nvidia.com,
-        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
-Date:   Wed, 10 Mar 2021 11:58:07 -0700
-Message-ID: <161540257788.10151.6284852774772157400.stgit@gimli.home>
-User-Agent: StGit/0.21-2-g8ef5
+        Wed, 10 Mar 2021 14:14:15 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12AJC2Ed141522;
+        Wed, 10 Mar 2021 14:14:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=amzags5YcX+M0MJ1WgRdmRhqbumE4K+Zq6EJs80Aru0=;
+ b=TqspHXiH1DhaCkEtORVakTEYbeZOVpF+upmAptCFYCDRnR42+gpwPJ/WJIWV346FWVIo
+ qPX/c7nRYq7Pk6e+ChNluZSpKQVsAZUh2UezlcHi7oYwIZX7Ojt3zRIjvDpNlEGxfUuc
+ qvZU5kypOc2bnMe7jmBmWUTvwLzbOTvLGavS46SU+LCmCbLJNw6Ip0XZ1QC8NIcmLBQh
+ FMUHXUIhymOy3dh1gITIIdA6JSjsijnAJl4lyyuHjOpHSMA1SWUS7vrLPG+gNczMcEGL
+ l+TL8H3ApUPviyYPIYtq+FWTkL8Q6n0RwAoBwtmKEN+B2wCHJj7g48TdYEmG03IU8F79 Gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37742d85e6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 14:14:06 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12AJCFic143091;
+        Wed, 10 Mar 2021 14:13:58 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37742d82gm-20
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 14:13:58 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12AIbcBW009470;
+        Wed, 10 Mar 2021 18:38:14 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma03dal.us.ibm.com with ESMTP id 3768s24cxg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 18:38:14 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12AIcDVQ15270284
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Mar 2021 18:38:13 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52A21BE05D;
+        Wed, 10 Mar 2021 18:38:13 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 94BF9BE058;
+        Wed, 10 Mar 2021 18:38:12 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 10 Mar 2021 18:38:12 +0000 (GMT)
+Subject: Re: [PATCH v11 01/10] oid_registry: Add OIDs for ECDSA with
+ sha224/256/384/512
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org
+References: <20210305205956.3594375-1-stefanb@linux.vnet.ibm.com>
+ <20210305205956.3594375-2-stefanb@linux.vnet.ibm.com>
+ <YEjnPZOVit+U9YcG@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <b2672c92-ddf5-51ba-bb4c-f3aadee26daf@linux.ibm.com>
+Date:   Wed, 10 Mar 2021 13:38:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <YEjnPZOVit+U9YcG@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-10_10:2021-03-10,2021-03-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ impostorscore=0 suspectscore=0 spamscore=0 priorityscore=1501 bulkscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103100090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfio_pci_mmap_fault() incorrectly makes use of io_remap_pfn_range()
-from within a vm_ops fault handler.  This function will trigger a
-BUG_ON if it encounters a populated pte within the remapped range,
-where any fault is meant to populate the entire vma.  Concurrent
-inflight faults to the same vma will therefore hit this issue,
-triggering traces such as:
 
-[ 1591.733256] kernel BUG at mm/memory.c:2177!
-[ 1591.739515] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-[ 1591.747381] Modules linked in: vfio_iommu_type1 vfio_pci vfio_virqfd vfio pv680_mii(O)
-[ 1591.760536] CPU: 2 PID: 227 Comm: lcore-worker-2 Tainted: G O 5.11.0-rc3+ #1
-[ 1591.770735] Hardware name:  , BIOS HixxxxFPGA 1P B600 V121-1
-[ 1591.778872] pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-[ 1591.786134] pc : remap_pfn_range+0x214/0x340
-[ 1591.793564] lr : remap_pfn_range+0x1b8/0x340
-[ 1591.799117] sp : ffff80001068bbd0
-[ 1591.803476] x29: ffff80001068bbd0 x28: 0000042eff6f0000
-[ 1591.810404] x27: 0000001100910000 x26: 0000001300910000
-[ 1591.817457] x25: 0068000000000fd3 x24: ffffa92f1338e358
-[ 1591.825144] x23: 0000001140000000 x22: 0000000000000041
-[ 1591.832506] x21: 0000001300910000 x20: ffffa92f141a4000
-[ 1591.839520] x19: 0000001100a00000 x18: 0000000000000000
-[ 1591.846108] x17: 0000000000000000 x16: ffffa92f11844540
-[ 1591.853570] x15: 0000000000000000 x14: 0000000000000000
-[ 1591.860768] x13: fffffc0000000000 x12: 0000000000000880
-[ 1591.868053] x11: ffff0821bf3d01d0 x10: ffff5ef2abd89000
-[ 1591.875932] x9 : ffffa92f12ab0064 x8 : ffffa92f136471c0
-[ 1591.883208] x7 : 0000001140910000 x6 : 0000000200000000
-[ 1591.890177] x5 : 0000000000000001 x4 : 0000000000000001
-[ 1591.896656] x3 : 0000000000000000 x2 : 0168044000000fd3
-[ 1591.903215] x1 : ffff082126261880 x0 : fffffc2084989868
-[ 1591.910234] Call trace:
-[ 1591.914837]  remap_pfn_range+0x214/0x340
-[ 1591.921765]  vfio_pci_mmap_fault+0xac/0x130 [vfio_pci]
-[ 1591.931200]  __do_fault+0x44/0x12c
-[ 1591.937031]  handle_mm_fault+0xcc8/0x1230
-[ 1591.942475]  do_page_fault+0x16c/0x484
-[ 1591.948635]  do_translation_fault+0xbc/0xd8
-[ 1591.954171]  do_mem_abort+0x4c/0xc0
-[ 1591.960316]  el0_da+0x40/0x80
-[ 1591.965585]  el0_sync_handler+0x168/0x1b0
-[ 1591.971608]  el0_sync+0x174/0x180
-[ 1591.978312] Code: eb1b027f 540000c0 f9400022 b4fffe02 (d4210000)
+On 3/10/21 10:35 AM, Jarkko Sakkinen wrote:
+> On Fri, Mar 05, 2021 at 03:59:47PM -0500, Stefan Berger wrote:
+>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>
+>> Add OIDs for ECDSA with sha224/256/384/512.
+> Nit: SHA224/256/384/512 (sorry cannot help myself with these, have been
+> doing this way too much, consider me as a bot :-) )
+>
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>   
+> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Switch to using vmf_insert_pfn() to allow replacing mappings, and
-include decrypted memory protection as formerly provided by
-io_remap_pfn_range().  Tracking of vmas is also updated to
-prevent duplicate entries.
+Jarrko,
 
-Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
-Reported-by: Zeng Tao <prime.zeng@hisilicon.com>
-Suggested-by: Zeng Tao <prime.zeng@hisilicon.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
----
+   I applied the nit and the 4 Acked-by's.
 
-v2: Set decrypted pgprot in mmap, use non-_prot vmf_insert_pfn()
-    as suggested by Jason G.
+Thank you!
 
- drivers/vfio/pci/vfio_pci.c |   30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 65e7e6b44578..73e125d73640 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -1573,6 +1573,11 @@ static int __vfio_pci_add_vma(struct vfio_pci_device *vdev,
- {
- 	struct vfio_pci_mmap_vma *mmap_vma;
- 
-+	list_for_each_entry(mmap_vma, &vdev->vma_list, vma_next) {
-+		if (mmap_vma->vma == vma)
-+			return 0; /* Swallow the error, the vma is tracked */
-+	}
-+
- 	mmap_vma = kmalloc(sizeof(*mmap_vma), GFP_KERNEL);
- 	if (!mmap_vma)
- 		return -ENOMEM;
-@@ -1612,31 +1617,31 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
- {
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct vfio_pci_device *vdev = vma->vm_private_data;
--	vm_fault_t ret = VM_FAULT_NOPAGE;
-+	unsigned long vaddr = vma->vm_start, pfn = vma->vm_pgoff;
-+	vm_fault_t ret = VM_FAULT_SIGBUS;
- 
- 	mutex_lock(&vdev->vma_lock);
- 	down_read(&vdev->memory_lock);
- 
--	if (!__vfio_pci_memory_enabled(vdev)) {
--		ret = VM_FAULT_SIGBUS;
--		mutex_unlock(&vdev->vma_lock);
-+	if (!__vfio_pci_memory_enabled(vdev))
- 		goto up_out;
-+
-+	for (; vaddr < vma->vm_end; vaddr += PAGE_SIZE, pfn++) {
-+		ret = vmf_insert_pfn(vma, vaddr, pfn);
-+		if (ret != VM_FAULT_NOPAGE) {
-+			zap_vma_ptes(vma, vma->vm_start, vaddr - vma->vm_start);
-+			goto up_out;
-+		}
- 	}
- 
- 	if (__vfio_pci_add_vma(vdev, vma)) {
- 		ret = VM_FAULT_OOM;
--		mutex_unlock(&vdev->vma_lock);
--		goto up_out;
-+		zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);
- 	}
- 
--	mutex_unlock(&vdev->vma_lock);
--
--	if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
--			       vma->vm_end - vma->vm_start, vma->vm_page_prot))
--		ret = VM_FAULT_SIGBUS;
--
- up_out:
- 	up_read(&vdev->memory_lock);
-+	mutex_unlock(&vdev->vma_lock);
- 	return ret;
- }
- 
-@@ -1702,6 +1707,7 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
- 
- 	vma->vm_private_data = vdev;
- 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-+	vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
- 	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
- 
- 	/*
+    Stefan
+
 
