@@ -2,121 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA5A333A3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FC3333A52
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbhCJKlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:41:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
+        id S232518AbhCJKmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:42:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbhCJKlE (ORCPT
+        with ESMTP id S231958AbhCJKlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:41:04 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925CBC061762
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:41:03 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id f12so22742768wrx.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:41:03 -0800 (PST)
+        Wed, 10 Mar 2021 05:41:51 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F915C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:41:51 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id d15so12310296qvn.16
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:41:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WkEYLNZKWBGlnhJh5/km8rZ3DoQwSCNLt1pwHkgN/WY=;
-        b=mHQYTozuc0TTEvwola4UDXnujaWX5hjYQa9oyx2Km6taceH5yU6itTe3PHtZRoodFk
-         PcpDyrzEdhly/3+4FAgeUEG40pSos2nmuPn1KTn0DaKzmxXkOLlhaSMgX3xY0TP5yGho
-         XUAGxYyDak/7+4NtvRj+ZYLT5U1J2/9BlGZ3cDktu+mUvRsohm8uzz6kt2LvcNFTcmIJ
-         iLoeMXyTF9AvGdP4MtkZmWxddvxG8KX8rGFLE97/3fMt941pJ/GCNgLhf3sq73X85KMT
-         ZvEMyGQ06vuK16Gnxi7/pPa0ZujXMlI26tTXN4iq9PCwUotcEIAVxQcOPv9rOzFR0PW4
-         Q9ug==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=CXDGXPLv4zBuXju/CY+pJKsC5gho63hQizGsKGKZIlo=;
+        b=s8QQMW2LW/UVYVavbb8dseqF5ki4rCkHLP26JLijl8mjtrb2/K9xsn1pRuxTKkCI4A
+         WGyH7yeNfeUXgTkHZRLKKruj4dvA8zqeAw8g9DEKxuPrIaGljnESUIgjFlOM+bCXz4tn
+         c9bFCJzuS2ISr9LWzCXLNx+Wcm+zwSSUKC22+8M7ayZ+u40rra70SNM/qZC8LntQ8M+x
+         LfbEJhGnYNOCsOoYIBKkY22AYCekDUpQLyniHJOCTXmbR2NjqIWEI/Q7LXtMgkQdT9PA
+         pBMfOEGap4OIRTFxX57bGhAxB9ytAltLxLxoTVs8/M5KXEc0dKDW6iG4+bhnhlJ2Cq5H
+         n5tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WkEYLNZKWBGlnhJh5/km8rZ3DoQwSCNLt1pwHkgN/WY=;
-        b=ddUsmDqeqqFfu43pCpbwWvl+FjbvCfexuChmOZgnzeBt8s+hVubD0w6wbuB3SgI0N3
-         y8TKIV7GCYS3UzrF9aUjWCtWMJy46KOxmp/NUsHLLGhkJtuiEl00vvch6bmMZM51Ovii
-         v2QLeWxLaIVyCkQrCK1bIN5j0pt0yjIGDtwRNEHGUysX4OrU15k+EfKO+XaXhpX0I4X+
-         /0v7Nb9N9XsOH0lTj8N2p5AQPP43krNBdl6Ag96w3LVdfKWxg0CUPBw5lH1WI0peDxED
-         KYApW2KatmlGwQ1BMbUFHnItdS9FuYUT7Qkzd04Z3E/6b3plufKboOaQK3/rzjYhlvW+
-         /Xwg==
-X-Gm-Message-State: AOAM531GGti3H3BtJXDsId2BJincVmgqdtKX1sq5Gfu7jUvL7PVd3lcN
-        UFd2lOXHI3YhptlCbsNs05uE7A==
-X-Google-Smtp-Source: ABdhPJxwjavMwOHE+n1ODwYYFNhz44dTAKmAcPmhdGkziT2QVK5lAqeefbljMchSOuIx6t1sYrSA2w==
-X-Received: by 2002:adf:fecc:: with SMTP id q12mr2761099wrs.317.1615372862210;
-        Wed, 10 Mar 2021 02:41:02 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id x11sm8453405wmi.3.2021.03.10.02.41.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 02:41:01 -0800 (PST)
-Date:   Wed, 10 Mar 2021 10:40:58 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v3 07/15] mfd: Support for ROHM BD71815 PMIC core
-Message-ID: <20210310104058.GH701493@dell>
-References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
- <aaec00c776c83d301cfe66685ca9c8e01cccc9d8.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aaec00c776c83d301cfe66685ca9c8e01cccc9d8.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=CXDGXPLv4zBuXju/CY+pJKsC5gho63hQizGsKGKZIlo=;
+        b=eCbnp1QgjkKmvh9nhcs7+wQ2J74NzQ6ytt64TlT+K5awCNfiTxFrmjOJvQMtdDSuc8
+         enubapolSpM1lJYaXu4eeG/vwluxCy44eFIge+4J/LO4fpQcdaWqIcDVv3urVXMTMBlt
+         yAuzVUBl1J9ZxNVG+Pkeu3eNy9hA/vA/bK1ACx/7ayAqnTOXF7mghIKaiP4yuwIYb5GB
+         XeA3DVUVheV/ZGj7iLp9UkDhDjOcrAaLgVosngF8cuJJQ3SZZzo5svS7WOzXkk3s4xD/
+         BpLzRnJrO3XpXJgL563XhpIw3WTmdjfvbGgS77kVprBLSs38s3OOZfSDVpIBU3araA+Q
+         1bsw==
+X-Gm-Message-State: AOAM531MWDiRF9c83nmMHmzWAZW76JEgCnIQzCWN97t3eI9UsBruf+5c
+        W15O1PPdGOfENrB5MFR2IzefWf4naA==
+X-Google-Smtp-Source: ABdhPJyUi3y7lpUQnvLHzVb9XkNgXOybwzuc9DsNWma/PHqm9SowojQnqTCgLARpnGj2C/XeILIJohc7NA==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:e995:ac0b:b57c:49a4])
+ (user=elver job=sendgmr) by 2002:a05:6214:2262:: with SMTP id
+ gs2mr2155838qvb.32.1615372910698; Wed, 10 Mar 2021 02:41:50 -0800 (PST)
+Date:   Wed, 10 Mar 2021 11:41:31 +0100
+Message-Id: <20210310104139.679618-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH RFC v2 0/8] Add support for synchronous signals on perf events
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, peterz@infradead.org,
+        alexander.shishkin@linux.intel.com, acme@kernel.org,
+        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
+        namhyung@kernel.org, tglx@linutronix.de
+Cc:     glider@google.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
+        christian@brauner.io, dvyukov@google.com, jannh@google.com,
+        axboe@kernel.dk, mascasa@google.com, pcc@google.com,
+        irogers@google.com, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021, Matti Vaittinen wrote:
+The perf subsystem today unifies various tracing and monitoring
+features, from both software and hardware. One benefit of the perf
+subsystem is automatically inheriting events to child tasks, which
+enables process-wide events monitoring with low overheads. By default
+perf events are non-intrusive, not affecting behaviour of the tasks
+being monitored.
 
-> Add core support for ROHM BD71815 Power Management IC.
-> 
-> The IC integrates regulators, a battery charger with a coulomb counter,
-> a real-time clock (RTC), clock gate and general-purpose outputs (GPO).
-> 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
-> Changes since v2:
->   - styling / clean-ups suggested by Lee
->   - corrected clk-mode dt property values to match changed bindings
-> 
->  drivers/mfd/Kconfig              |  15 +-
->  drivers/mfd/rohm-bd71828.c       | 486 +++++++++++++++++++-------
->  include/linux/mfd/rohm-bd71815.h | 563 +++++++++++++++++++++++++++++++
->  include/linux/mfd/rohm-bd71828.h |   3 +
->  4 files changed, 934 insertions(+), 133 deletions(-)
->  create mode 100644 include/linux/mfd/rohm-bd71815.h
+For certain use-cases, however, it makes sense to leverage the
+generality of the perf events subsystem and optionally allow the tasks
+being monitored to receive signals on events they are interested in.
+This patch series adds the option to synchronously signal user space on
+events.
 
-[...]
+To better support process-wide synchronous self-monitoring, without
+events propagating to children that do not share the current process's
+shared environment, two pre-requisite patches are added to optionally
+restrict inheritance to CLONE_THREAD, and remove events on exec (without
+affecting the parent).
 
-> diff --git a/include/linux/mfd/rohm-bd71815.h b/include/linux/mfd/rohm-bd71815.h
-> new file mode 100644
-> index 000000000000..9927aadac234
-> --- /dev/null
-> +++ b/include/linux/mfd/rohm-bd71815.h
-> @@ -0,0 +1,563 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + *
+Examples how to use these features can be found in the two kselftests at
+the end of the series. The kselftests verify and stress test the basic
+functionality.
 
-Nit: If you rework this for any reason, please remove this line.
+The discussion at [1] led to the changes proposed in this series. The
+approach taken in patch "Add support for SIGTRAP on perf events" to use
+'event_limit' to trigger the signal was kindly suggested by Peter
+Zijlstra in [2].
 
-For my own reference (apply this as-is to your sign-off block):
+[1] https://lore.kernel.org/lkml/CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com/
+[2] https://lore.kernel.org/lkml/YBv3rAT566k+6zjg@hirez.programming.kicks-ass.net/ 
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+Motivation and example uses:
+
+1. 	Our immediate motivation is low-overhead sampling-based race
+	detection for user space [3]. By using perf_event_open() at
+	process initialization, we can create hardware
+	breakpoint/watchpoint events that are propagated automatically
+	to all threads in a process. As far as we are aware, today no
+	existing kernel facility (such as ptrace) allows us to set up
+	process-wide watchpoints with minimal overheads (that are
+	comparable to mprotect() of whole pages).
+
+	[3] https://llvm.org/devmtg/2020-09/slides/Morehouse-GWP-Tsan.pdf 
+
+2.	Other low-overhead error detectors that rely on detecting
+	accesses to certain memory locations or code, process-wide and
+	also only in a specific set of subtasks or threads.
+
+Other ideas for use-cases we found interesting, but should only
+illustrate the range of potential to further motivate the utility (we're
+sure there are more):
+
+3.	Code hot patching without full stop-the-world. Specifically, by
+	setting a code breakpoint to entry to the patched routine, then
+	send signals to threads and check that they are not in the
+	routine, but without stopping them further. If any of the
+	threads will enter the routine, it will receive SIGTRAP and
+	pause.
+
+4.	Safepoints without mprotect(). Some Java implementations use
+	"load from a known memory location" as a safepoint. When threads
+	need to be stopped, the page containing the location is
+	mprotect()ed and threads get a signal. This could be replaced with
+	a watchpoint, which does not require a whole page nor DTLB
+	shootdowns.
+
+5.	Threads receiving signals on performance events to
+	throttle/unthrottle themselves.
+
+6.	Tracking data flow globally.
+
+---
+v2:
+* Patch "Support only inheriting events if cloned with CLONE_THREAD"
+  added to series.
+* Patch "Add support for event removal on exec" added to series.
+* Patch "Add kselftest for process-wide sigtrap handling" added to
+  series.
+* Patch "Add kselftest for remove_on_exec" added to series.
+* Implicitly restrict inheriting events if sigtrap, but the child was
+  cloned with CLONE_CLEAR_SIGHAND, because it is not generally safe if
+  the child cleared all signal handlers to continue sending SIGTRAP.
+* Various minor fixes (see details in patches).
+
+v1: https://lkml.kernel.org/r/20210223143426.2412737-1-elver@google.com
+
+Marco Elver (8):
+  perf/core: Apply PERF_EVENT_IOC_MODIFY_ATTRIBUTES to children
+  perf/core: Support only inheriting events if cloned with CLONE_THREAD
+  perf/core: Add support for event removal on exec
+  signal: Introduce TRAP_PERF si_code and si_perf to siginfo
+  perf/core: Add support for SIGTRAP on perf events
+  perf/core: Add breakpoint information to siginfo on SIGTRAP
+  selftests/perf: Add kselftest for process-wide sigtrap handling
+  selftests/perf: Add kselftest for remove_on_exec
+
+ arch/m68k/kernel/signal.c                     |   3 +
+ arch/x86/kernel/signal_compat.c               |   5 +-
+ fs/signalfd.c                                 |   4 +
+ include/linux/compat.h                        |   2 +
+ include/linux/perf_event.h                    |   5 +-
+ include/linux/signal.h                        |   1 +
+ include/uapi/asm-generic/siginfo.h            |   6 +-
+ include/uapi/linux/perf_event.h               |   5 +-
+ include/uapi/linux/signalfd.h                 |   4 +-
+ kernel/events/core.c                          | 130 ++++++++-
+ kernel/fork.c                                 |   2 +-
+ kernel/signal.c                               |  11 +
+ .../testing/selftests/perf_events/.gitignore  |   3 +
+ tools/testing/selftests/perf_events/Makefile  |   6 +
+ tools/testing/selftests/perf_events/config    |   1 +
+ .../selftests/perf_events/remove_on_exec.c    | 256 ++++++++++++++++++
+ tools/testing/selftests/perf_events/settings  |   1 +
+ .../selftests/perf_events/sigtrap_threads.c   | 202 ++++++++++++++
+ 18 files changed, 632 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/perf_events/.gitignore
+ create mode 100644 tools/testing/selftests/perf_events/Makefile
+ create mode 100644 tools/testing/selftests/perf_events/config
+ create mode 100644 tools/testing/selftests/perf_events/remove_on_exec.c
+ create mode 100644 tools/testing/selftests/perf_events/settings
+ create mode 100644 tools/testing/selftests/perf_events/sigtrap_threads.c
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.30.1.766.gb4fecdf3b7-goog
+
