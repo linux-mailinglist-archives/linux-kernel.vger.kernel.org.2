@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351C23332A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5E63332A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhCJBGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 20:06:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231294AbhCJBGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 20:06:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 013D6650ED;
-        Wed, 10 Mar 2021 01:06:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615338377;
-        bh=doMwAKvc65hJgV0hGY24kZEfV+65wCntr/zwMUzueIQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=dyaO8KTX+anVrEkoN9VagAZvK0lUdHW2mPB7jY9f2ztrLks9+/bwMpYCWe+yFFLKW
-         WIu2nMpurS05zyuK822hE+itjjcyrhku61u5SiNFZvEYVw0xalJ4Iwu2MmskIos8eu
-         wfVju7ZrrYFHA+uacTYRkVPMXNq04h/2+Zpjxf6YiF+Aea7AyhpSACIBEtl8TN3kNV
-         scKlOQOWNilZF6fEg35zQ/Cf4CVb/fGZCYzUgnAQSUmzorrppqEWE0HGaWtMH5W5dB
-         nSKU+oU/qhyqNd+1leQrs8S6QlirF3RGzqmg+X47QCHzHE5KIeh87xWhFqn0tvLXrj
-         hPy40hePw1QAg==
-Subject: Re: [PATCH 1/3] arm64: dts: ls1046a: mark crypto engine dma coherent
-To:     =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210307204737.12063-1-horia.geanta@nxp.com>
- <20210307204737.12063-2-horia.geanta@nxp.com>
-From:   Greg Ungerer <gerg@kernel.org>
-Message-ID: <fb608f39-a6ce-3ab5-328e-29a80d2d6b8a@kernel.org>
-Date:   Wed, 10 Mar 2021 11:06:12 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231657AbhCJBML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 20:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230489AbhCJBLz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 20:11:55 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE7AC06174A;
+        Tue,  9 Mar 2021 17:11:55 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d23so4422370plq.2;
+        Tue, 09 Mar 2021 17:11:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=FGISyVhw3ySIweJMtXxSOZtXnd+xKsePHBEX5Ypjhtg=;
+        b=pVJ4osi3mGeryeQFhpdkIj0PuunPA50aH6IsziowPUzUJUh8bzJCJfKsM1SLc6752/
+         qAPNrqaIn58Fv8BrEnrmas/pnFX7tEtzoy38itp39px+/Olpcu6TOtaLuO41voI5FZpH
+         vdDzXzPP41woedr3QHwiA7GVV9Cjw8ha4cZe6QTZxDe1335weNMyMsKwHCd0eu++sWvU
+         DH1ZbgrdgsTg4h8FPPhgYTGfcH784Rzfr/9Wy3h0La8eosKbPd0Eu9+5NCZUUCQErVek
+         Ur2MEE29R80YviR3EKi+Lx5K9W1NTr+5tzAEg2jwgwD6XeNqpyxt4GeXUSDhnaJYjVf9
+         GDEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=FGISyVhw3ySIweJMtXxSOZtXnd+xKsePHBEX5Ypjhtg=;
+        b=fIfXTR8n+kdVfjntnwNBk81Z+0tDtBVCuwFC8JhAZZEQ6sOQhIlieVmXwiaoy1XdyE
+         of7DjL1vhZk13ym2MByKYFSlueIxkuBBhWSTBfmb2na1JicOlK8KsNKvTSaeJ194i/uo
+         DfW0LWhqJ5+rTaz+tgCEMHAjpIAUR4ieHUlwXzvXXhslVojFZVD1d0LuISfp6hoYAIbo
+         f/dnLWX5w4yOQaRMuXbToiGM+51rZenFXbe2FpCVeSAENJHv2ublBqtTdrNURLd7BAvz
+         t9CtQvsPP2eVyRM0WF5yyuRazB1dCZgiMT7T9RYYr4B/3LjwZg4RPDql2EzGvBQMmTga
+         fxoA==
+X-Gm-Message-State: AOAM533j8gaKFE9m5itaD3kWAB1MpP6MjFrndD5/LaxRM+F/40QkVKUo
+        x6q7YUqKMk+wupGs+y4XrgXXc40LMajReI/I
+X-Google-Smtp-Source: ABdhPJzsJ0ZbHxlWXGRKXgJ/YFWd5raaHXnbHeehvx2+VexZ+mR8kdnEKYMvccQtp633uGJee7aVLw==
+X-Received: by 2002:a17:90a:d90a:: with SMTP id c10mr729901pjv.13.1615338714133;
+        Tue, 09 Mar 2021 17:11:54 -0800 (PST)
+Received: from [10.38.0.14] ([45.135.186.59])
+        by smtp.gmail.com with ESMTPSA id l4sm11038491pgi.19.2021.03.09.17.11.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 17:11:53 -0800 (PST)
+Subject: Re: [PATCH] fs: proc: fix error return code of
+ proc_map_files_readdir()
+To:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     christian@brauner.io, ebiederm@xmission.com,
+        akpm@linux-foundation.org, keescook@chromium.org,
+        gladkov.alexey@gmail.com, walken@google.com,
+        bernd.edlinger@hotmail.de, avagin@gmail.com, deller@gmx.de,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20210309095527.27969-1-baijiaju1990@gmail.com>
+ <YEe+v+ywMrxgmj05@gmail.com> <YEfG54xMM7OtPEE5@localhost.localdomain>
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Message-ID: <86f9dae2-7bb1-4555-44a4-24045260916b@gmail.com>
+Date:   Wed, 10 Mar 2021 09:11:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20210307204737.12063-2-horia.geanta@nxp.com>
+In-Reply-To: <YEfG54xMM7OtPEE5@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 8/3/21 6:47 am, Horia Geantă wrote:
-> Crypto engine (CAAM) on LS1046A platform is configured HW-coherent,
-> mark accordingly the DT node.
-> 
-> As reported by Greg and Sascha, and explained by Robin, lack of
-> "dma-coherent" property for an IP that is configured HW-coherent
-> can lead to problems, e.g. on v5.11:
-> 
->> kernel BUG at drivers/crypto/caam/jr.c:247!
->> Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
->> Modules linked in:
->> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.11.0-20210225-3-00039-g434215968816-dirty #12
->> Hardware name: TQ TQMLS1046A SoM on Arkona AT1130 (C300) board (DT)
->> pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
->> pc : caam_jr_dequeue+0x98/0x57c
->> lr : caam_jr_dequeue+0x98/0x57c
->> sp : ffff800010003d50
->> x29: ffff800010003d50 x28: ffff8000118d4000
->> x27: ffff8000118d4328 x26: 00000000000001f0
->> x25: ffff0008022be480 x24: ffff0008022c6410
->> x23: 00000000000001f1 x22: ffff8000118d4329
->> x21: 0000000000004d80 x20: 00000000000001f1
->> x19: 0000000000000001 x18: 0000000000000020
->> x17: 0000000000000000 x16: 0000000000000015
->> x15: ffff800011690230 x14: 2e2e2e2e2e2e2e2e
->> x13: 2e2e2e2e2e2e2020 x12: 3030303030303030
->> x11: ffff800011700a38 x10: 00000000fffff000
->> x9 : ffff8000100ada30 x8 : ffff8000116a8a38
->> x7 : 0000000000000001 x6 : 0000000000000000
->> x5 : 0000000000000000 x4 : 0000000000000000
->> x3 : 00000000ffffffff x2 : 0000000000000000
->> x1 : 0000000000000000 x0 : 0000000000001800
->> Call trace:
->>   caam_jr_dequeue+0x98/0x57c
->>   tasklet_action_common.constprop.0+0x164/0x18c
->>   tasklet_action+0x44/0x54
->>   __do_softirq+0x160/0x454
->>   __irq_exit_rcu+0x164/0x16c
->>   irq_exit+0x1c/0x30
->>   __handle_domain_irq+0xc0/0x13c
->>   gic_handle_irq+0x5c/0xf0
->>   el1_irq+0xb4/0x180
->>   arch_cpu_idle+0x18/0x30
->>   default_idle_call+0x3c/0x1c0
->>   do_idle+0x23c/0x274
->>   cpu_startup_entry+0x34/0x70
->>   rest_init+0xdc/0xec
->>   arch_call_rest_init+0x1c/0x28
->>   start_kernel+0x4ac/0x4e4
->> Code: 91392021 912c2000 d377d8c6 97f24d96 (d4210000)
-> 
-> Cc: <stable@vger.kernel.org> # v4.10+
-> Fixes: 8126d88162a5 ("arm64: dts: add QorIQ LS1046A SoC support")
-> Link: https://lore.kernel.org/linux-crypto/fe6faa24-d8f7-d18f-adfa-44fa0caa1598@arm.com
-> Reported-by: Greg Ungerer <gerg@kernel.org>
-> Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
 
-Acked-by: Greg Ungerer <gerg@kernel.org>
+On 2021/3/10 3:05, Alexey Dobriyan wrote:
+> On Tue, Mar 09, 2021 at 10:30:23AM -0800, Eric Biggers wrote:
+>
+>>> --- a/fs/proc/base.c
+>>> +++ b/fs/proc/base.c
+>>> @@ -2332,8 +2332,10 @@ proc_map_files_readdir(struct file *file, struct dir_context *ctx)
+>>>   		goto out_put_task;
+>>>   
+>>>   	mm = get_task_mm(task);
+>>> -	if (!mm)
+>>> +	if (!mm) {
+>>> +		ret = -ENOENT;
+>>>   		goto out_put_task;
+>>> +	}
+>>>   
+>>>   	ret = mmap_read_lock_killable(mm);
+>> Is there something in particular that makes you think that returning ENOENT is
+>> the correct behavior in this case?  Try 'ls /proc/$pid/map_files' where pid is a
+>> kernel thread; it's an empty directory, which is probably intentional.  Your
+>> patch would change reading the directory to fail with ENOENT.
+> Yes. 0 from readdir means "no more stuff", not an error.
+
+Thanks for your reply and explanation.
+I am sorry for the false report...
 
 
-> ---
->   arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-> index f581a6d1f881..37fec474673a 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-> @@ -354,6 +354,7 @@
->   			ranges = <0x0 0x00 0x1700000 0x100000>;
->   			reg = <0x00 0x1700000 0x0 0x100000>;
->   			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
-> +			dma-coherent;
->   
->   			sec_jr0: jr@10000 {
->   				compatible = "fsl,sec-v5.4-job-ring",
-> 
+Best wishes,
+Jia-Ju Bai
