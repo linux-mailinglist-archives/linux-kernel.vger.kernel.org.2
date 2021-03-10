@@ -2,122 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4787A334122
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB47233412E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbhCJPFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:05:39 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51911 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233215AbhCJPFZ (ORCPT
+        id S233160AbhCJPGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:06:43 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33894 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230270AbhCJPGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:05:25 -0500
-Received: from mail-wr1-f69.google.com ([209.85.221.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lK0Oq-0000Kp-Q1
-        for linux-kernel@vger.kernel.org; Wed, 10 Mar 2021 15:05:24 +0000
-Received: by mail-wr1-f69.google.com with SMTP id h30so8123942wrh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:05:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6O6+tOduwR48d8zZ29bwhvehUqmwn5KZAJpghN9/ZFw=;
-        b=ScNG2Xlp3wmKQqrUAS834kXjZkUPpcB7GlX14928C3iCa97I3y4pIYrj0Bv2m44pbJ
-         V1kKHP9Aubs5ZyQIuByornN/Q8bSq8Q0GgjzLOkHJ09yE2uDtVXfpPmHCrX1U0PPqB1X
-         pUE8iMdvfx5AbeHoYiXYS1PmLqAjf4bpSpp/R/wXqo4XU8LBwYJJsu5V7KFyAqHenH27
-         N9/f9eId9SGwJW/b1LH5Zy9czm3wkp6NJOh7zozkaZx39rqzF9p9nL7qTnnVjEUoQuxY
-         RdAVQSNxySt7WDhl9zaXS2k9Igw3pxckFQ5k78uukhHLzCR5zhEhx/Duhhtgs7kYBRQ8
-         Q6GQ==
-X-Gm-Message-State: AOAM5338uEJWF2tpDHCZsM3YMpImyFCmSWeWrJdUOEYtXPLWrqsD9G7G
-        3vmbvRb0cSQJv6vqYzb/njeInKsmmPqJbk7d6JBo2BVME24uGQthAicI/87INGjWkZTaxb605t5
-        pZBtmtE7V7EYzQOBzV2JAuFW90wLJxXBP6r2QNMhtnw==
-X-Received: by 2002:adf:f303:: with SMTP id i3mr3936433wro.67.1615388724383;
-        Wed, 10 Mar 2021 07:05:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzGJJurjVb7EYp0bgYqxrECEX4ZhpKbOThOV2/LSr/fZ3VGeNkWRh86xSztb8QWNx4T9B9Jfg==
-X-Received: by 2002:adf:f303:: with SMTP id i3mr3936156wro.67.1615388721715;
-        Wed, 10 Mar 2021 07:05:21 -0800 (PST)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id c26sm32188982wrb.87.2021.03.10.07.05.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 07:05:21 -0800 (PST)
-Subject: Re: [RFC v2 3/5] arm64: socfpga: rename ARCH_STRATIX10 to
- ARCH_SOCFPGA64
-To:     Tom Rix <trix@redhat.com>, Lee Jones <lee.jones@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-fpga@vger.kernel.org,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        arm@kernel.org, soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-References: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
- <20210310083840.481615-1-krzysztof.kozlowski@canonical.com>
- <20210310094527.GA701493@dell>
- <35c39c81-08e4-24c8-f683-2fa7a7ea71de@redhat.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <1c06cb74-f0b0-66e5-a594-ed1ee9bc876e@canonical.com>
-Date:   Wed, 10 Mar 2021 16:05:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 10 Mar 2021 10:06:10 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12AF43Yh050263;
+        Wed, 10 Mar 2021 10:06:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=53H1LLl3qRqfe3nJ8hxU7IBg/TBXctguygeNieZskCk=;
+ b=SNK8U9lDAk6kTkgm1N3MR17znDbI8Qk0e3nxQO+x99vuzwTBCbkKAMvqmABdHzhWBXzu
+ uQ2fIs58/4V6aOs3tqGWvjhACLSSuofyQlWYdu7zWb722NJj9C3+5S9N4MZsHP79Rbnp
+ Sw846sgjI7+nsQ6jx38+dJafmJISC9GQVIFxwJU62r6vYf5NkjWrNyd/WOz1dlkj0Vcp
+ TRqrOuVoQy445yz8WxKv+wXNt1k2RLede/BRNnYOk4gl+3DNTioWaMbM5coSplQCoRyZ
+ mbNE3AO4yBuD5Tn+ShOim+r/9NoIcVjJE8VHmBFgSTS5tOLsiSJnUCNv1Ph6PQqqqpFU 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 376hwdy29r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 10:06:06 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12AF45hi050487;
+        Wed, 10 Mar 2021 10:06:06 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 376hwdy28c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 10:06:05 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12AF3bFM016572;
+        Wed, 10 Mar 2021 15:06:04 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02dal.us.ibm.com with ESMTP id 3768rbjt42-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 15:06:04 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12AF646s11338076
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Mar 2021 15:06:04 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 135D12805A;
+        Wed, 10 Mar 2021 15:06:04 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8DE2E2805C;
+        Wed, 10 Mar 2021 15:06:03 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com.com (unknown [9.85.150.254])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 10 Mar 2021 15:06:03 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
+        kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
+Subject: [PATCH v4 0/1] s390/vfio-ap: fix circular lockdep when starting
+Date:   Wed, 10 Mar 2021 10:05:58 -0500
+Message-Id: <20210310150559.8956-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-In-Reply-To: <35c39c81-08e4-24c8-f683-2fa7a7ea71de@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-10_09:2021-03-10,2021-03-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1015 priorityscore=1501 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103100076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/03/2021 15:45, Tom Rix wrote:
-> 
-> On 3/10/21 1:45 AM, Lee Jones wrote:
->> On Wed, 10 Mar 2021, Krzysztof Kozlowski wrote:
->>
->>> Prepare for merging Stratix 10, Agilex and N5X into one arm64
->>> architecture by first renaming the ARCH_STRATIX10 into ARCH_SOCFPGA64.
->>>
->>> The existing ARCH_SOCFPGA (in ARMv7) Kconfig symbol cannot be used
->>> because altera_edac driver builds differently between them (with
->>> ifdefs).
->>>
->>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>> ---
->>>  arch/arm64/Kconfig.platforms                |  7 ++++---
->>>  arch/arm64/boot/dts/altera/Makefile         |  2 +-
->>>  arch/arm64/configs/defconfig                |  2 +-
->>>  drivers/clk/Makefile                        |  2 +-
->>>  drivers/clk/socfpga/Kconfig                 |  4 ++--
->>>  drivers/edac/Kconfig                        |  2 +-
->>>  drivers/edac/altera_edac.c                  | 10 +++++-----
->>>  drivers/firmware/Kconfig                    |  2 +-
->>>  drivers/fpga/Kconfig                        |  2 +-
->>>  drivers/mfd/Kconfig                         |  2 +-
->> If it's okay with everyone else, it'll be okay with me:
->>
->> Acked-by: Lee Jones <lee.jones@linaro.org>
-> 
-> I think the name is too broad, from the description in the config
-> 
-> +	bool "Intel's SoCFPGA ARMv8 Families"
-> 
-> A better name would be ARCH_INTEL_SOCFPGA64
-> 
-> So other vendors like Xilinx could do their own thing.
+*Commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
+pointer invalidated") introduced a change that results in a circular
+lockdep when a Secure Execution guest that is configured with
+crypto devices is started. The problem resulted due to the fact that the
+patch moved the setting of the guest's AP masks within the protection of
+the matrix_dev->lock when the vfio_ap driver is notified that the KVM 
+pointer has been set. Since it is not critical that setting/clearing of
+the guest's AP masks be done under the matrix_dev->lock when the driver
+is notified, the masks will not be updated under the matrix_dev->lock.
+The lock is necessary for the setting/unsetting of the KVM pointer,
+however, so that will remain in place. 
 
-Many other architectures do not have vendor prefix (TEGRA, EXYNOS,
-ZYNQMP etc). I would call it the same as in ARMv7 - ARCH_SOCFPGA - but
-the Altera EDAC driver depends on these symbols to be different.
-Anyway, I don't mind using something else for the name.
+The dependency chain for the circular lockdep resolved by this patch 
+is (in reverse order):
 
-Best regards,
-Krzysztof
+2:	vfio_ap_mdev_group_notifier:	kvm->lock
+					matrix_dev->lock
+
+1:	handle_pqap:			matrix_dev->lock
+	kvm_vcpu_ioctl:			vcpu->mutex
+
+0:	kvm_s390_cpus_to_pv:		vcpu->mutex
+	kvm_vm_ioctl:  			kvm->lock
+
+Please note:
+-----------
+* If checkpatch is run against this patch series, you may
+  get a "WARNING: Unknown commit id 'f21916ec4826', maybe rebased or not 
+  pulled?" message. The commit 'f21916ec4826', however, is definitely
+  in the master branch on top of which this patch series was built, so
+  I'm not sure why this message is being output by checkpatch.
+* All acks granted from previous review of this patch have been removed
+  due to the fact that this patch introduces non-trivial changes (see
+  change log below).
+
+Change log v3=> v4:
+------------------
+* In vfio_ap_mdev_set_kvm() function, moved the setting of 
+  matrix_mdev->kvm_busy just prior to unlocking matrix_dev->lock.
+
+* Reset queues regardless of regardless of the value of matrix_mdev->kvm
+  in response to the VFIO_DEVICE_RESET ioctl.
+
+Change log v2=> v3:
+------------------ 
+* Added two fields - 'bool kvm_busy' and 'wait_queue_head_t wait_for_kvm'
+  to struct ap_matrix_mdev. The former indicates that the KVM
+  pointer is in the process of being updated and the second allows a
+  function that needs access to the KVM pointer to wait until it is
+  no longer being updated. Resolves problem of synchronization between
+  the functions that change the KVM pointer value and the functions that
+  required access to it.
+
+Change log v1=> v2:
+------------------
+* No longer holding the matrix_dev->lock prior to setting/clearing the
+  masks supplying the AP configuration to a KVM guest.
+* Make all updates to the data in the matrix mdev that is used to manage
+  AP resources used by the KVM guest in the vfio_ap_mdev_set_kvm()
+  function instead of the group notifier callback.
+* Check for the matrix mdev's KVM pointer in the vfio_ap_mdev_unset_kvm()
+  function instead of the vfio_ap_mdev_release() function.
+
+Tony Krowiak (1):
+  s390/vfio-ap: fix circular lockdep when setting/clearing crypto masks
+
+ drivers/s390/crypto/vfio_ap_ops.c     | 309 ++++++++++++++++++--------
+ drivers/s390/crypto/vfio_ap_private.h |   2 +
+ 2 files changed, 215 insertions(+), 96 deletions(-)
+
+-- 
+2.21.3
+
