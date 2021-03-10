@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9E33349D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CEB3349D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhCJV0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:26:05 -0500
-Received: from mail-pg1-f172.google.com ([209.85.215.172]:44280 "EHLO
-        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhCJVZi (ORCPT
+        id S231394AbhCJV1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:27:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231542AbhCJV1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:25:38 -0500
-Received: by mail-pg1-f172.google.com with SMTP id t37so1448795pga.11;
-        Wed, 10 Mar 2021 13:25:38 -0800 (PST)
+        Wed, 10 Mar 2021 16:27:07 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADBDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:27:07 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id d5so16987610iln.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:27:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e6D5z3mafEzY8yrWw6TNKSwod1RWWNCgjnlei0AA4Yg=;
+        b=sqQvvFfF9Rv0VE0JwuclYzO/9N0bN+joIEu77n22nsqkxRelcawXlykkuDoGb4K9wa
+         z/ajL4jkgypagouVW5k65wZIDFdSiwXmrXS9zddpZyOxURu7qhkO/IOFyJWULxkV3roM
+         9WAZIGHSplakE0vgu+Nhl2dZWx2L1jS6TlQrAH6tD6uBorrz40sHEoAEN6PAJxVi4FS2
+         SBmMpf/c5cEB2bCNUpBJypDC7u24baxee4WBz5NzyctAEJq3PEEq+nG84MeYqbVg3Ns+
+         Nc585bsochmyJvVAJlH3YJFaLhvsPKsonYRoCgnQC4aqACNosnsc/OIDgBpM67Tk46Lr
+         bX2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ms44mDQ7A9dmdKDge0JZIY094AcGXA8nwHblvXeaCyw=;
-        b=SBxhnzVC+/NlrE6ONydbTQrH/u6qKKfUY+Uwuvc50ieuX/Kg7gi9KqgFoQldzj/snb
-         +UzHWIHTdLYde99F7KKjilwx6oFy0MIWmc3Pn48i7FJnMoQoHDTsmDgHoxIrNZ/xH0j1
-         FvaYICg2VBtCNrL8Slch+Uuz1bMRH0N6u3z/xs1Y7Tdx0meRy1MIRTle4GSAeYVMDmF5
-         epYNSR7NwuygeDMZ0KHyvPq+PFrTVZjYqMX6VgIDeU5J/3Vh38JYQ9VwtTWSt3MZj98b
-         R58K1B1gugQn4CgGHadXJaLH2SCdxm5KWetZ9mtbR64g4zw8pbZLSugLN6f88jR/Y/sq
-         y+5Q==
-X-Gm-Message-State: AOAM5314KqxM6hMeHAGMYJ9axPDgMYfDjhxDYCXfTfB8ZLTFHwZejW4W
-        oKtH7zjtjIWXUstxvTQ6/Wg=
-X-Google-Smtp-Source: ABdhPJwLsuwjD3NN9UlISpyn/BdzcALDlE7ZEIEbT3k9ljxnv+MXLA/1jO8yZ/TYtR97mlMP3YU3ig==
-X-Received: by 2002:a05:6a00:22d6:b029:1cb:35ac:d8e0 with SMTP id f22-20020a056a0022d6b02901cb35acd8e0mr4504555pfj.17.1615411538334;
-        Wed, 10 Mar 2021 13:25:38 -0800 (PST)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id q184sm389753pfc.78.2021.03.10.13.25.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 13:25:37 -0800 (PST)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 635A34024E; Wed, 10 Mar 2021 21:25:36 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 21:25:36 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, mbenes@suse.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <20210310212536.GQ13911@42.do-not-panic.com>
-References: <20210306022035.11266-1-mcgrof@kernel.org>
- <20210306022035.11266-2-mcgrof@kernel.org>
- <YEbjom8FIclEgRYv@google.com>
- <20210310131115.GQ4332@42.do-not-panic.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e6D5z3mafEzY8yrWw6TNKSwod1RWWNCgjnlei0AA4Yg=;
+        b=mt6e3qevR/9F2ayrXXDPPwrOhnn64z8lOu7pkjGRhkDHnmExTi/TPHCyTkqblngZrW
+         hxoSK5avkdPFFOYi95krskPgge3XRLRZ3eTxRUzrRYj8fVp7hVO/jMiVT0ywRLSZvxbp
+         MuWKV6uC6z6+xnr2sB9ERpcoTzX3NGUVkWgcUrzaZhizWHBIN3Jb2OF6K7lB6gg2XwXv
+         Ydq1zZmSAKJXJJ3wt54rImllUO0DHJ6mMMP7PDJz2WCXGoedgglss7MuO1mCIm/3w0tC
+         3uCFBme7y1Bo1B5e5uQ7j7NKR305i03VmaBrCCxK+EiiwL0WBTcFcU6SmnIHEWWHmXVs
+         CFVA==
+X-Gm-Message-State: AOAM532W9blB772DpUnxXTfA8XHJ5+v1w4vTEkt0q+w3eA7retHbdbM/
+        fkfoBtaVNBx9blTywXJpSbT7EeSI9W8nx/J5ZCfuQA==
+X-Google-Smtp-Source: ABdhPJyPVwTTHE1TsFxNCU6mx29jBLudL6jpgWl9CE4iX0JZiitRwaeTOniNdwI68K66urDGyjaWVnzufYaYGVgMp18=
+X-Received: by 2002:a92:d6d2:: with SMTP id z18mr4402514ilp.30.1615411626484;
+ Wed, 10 Mar 2021 13:27:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310131115.GQ4332@42.do-not-panic.com>
+References: <20210310004511.51996-1-peterx@redhat.com>
+In-Reply-To: <20210310004511.51996-1-peterx@redhat.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Wed, 10 Mar 2021 13:26:29 -0800
+Message-ID: <CAJHvVcj0JUtV8VFAa_CftEN7-ohNLhcnfpmM-zny2aVvc0a2ug@mail.gmail.com>
+Subject: Re: [PATCH 0/5] userfaultfd/selftests: A few cleanups
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 01:11:15PM +0000, Luis Chamberlain wrote:
-> I can try to modify it to include second patch first, as that is
-> required. There are two separate bugs here.
+These look like good cleanups to me! I reviewed all of the patches,
+and tried out the resulting selftest program, it seems to work
+correctly. So, for what it's worth:
 
-I tried this, applying the syfs required changes first and then
-applying your idea as a secondary patch ends up like this:
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 4b57c84ba9d4..bb45c1e0f3e0 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1702,6 +1702,7 @@ static void zram_reset_device(struct zram *zram)
- 
- 	set_capacity_and_notify(zram->disk, 0);
- 	part_stat_set_all(zram->disk->part0, 0);
-+	module_put(THIS_MODULE);
- 
- 	up_write(&zram->init_lock);
- 	/* I/O operation under all of CPU are done so let's free */
-@@ -1747,6 +1748,7 @@ static ssize_t disksize_store(struct device *dev,
- 		goto out_free_meta;
- 	}
- 
-+	BUG_ON(!try_module_get(THIS_MODULE));
- 	zram->comp = comp;
- 	zram->disksize = disksize;
- 	set_capacity_and_notify(zram->disk, zram->disksize >> SECTOR_SHIFT);
 
-The BUG_ON() is doable as we *know* we already have a reference to the
-module due to the beginning of the other try_module_get() which would
-be placed on the first patch at the top of disksize_store().
-
-This however doesn't fix the issue. We end up in a situation where we
-cannot unload the zram driver.
-
-  Luis
+On Tue, Mar 9, 2021 at 4:45 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> Based on v5.12-rc2-mmots-2021-03-08-21-54.
+>
+> I wanted to cleanup userfaultfd.c fault handling for a long time. If it's not
+> cleaned, when the new code grows the file it'll also grow the size that needs
+> to be cleaned...  This is my attempt to cleanup the userfaultfd selftest on
+> fault handling, to use an err() macro instead of either fprintf() or perror()
+> then another exit() call.
+>
+> The huge cleanup is done in the last patch.  The first 4 patches are some other
+> standalone cleanups for the same file, so I put them together.
+>
+> Please review, thanks.
+>
+> Peter Xu (5):
+>   userfaultfd/selftests: Use user mode only
+>   userfaultfd/selftests: Remove the time() check on delayed uffd
+>   userfaultfd/selftests: Dropping VERIFY check in locking_thread
+>   userfaultfd/selftests: Only dump counts if mode enabled
+>   userfaultfd/selftests: Unify error handling
+>
+>  tools/testing/selftests/vm/userfaultfd.c | 742 +++++++----------------
+>  1 file changed, 235 insertions(+), 507 deletions(-)
+>
+> --
+> 2.26.2
+>
+>
