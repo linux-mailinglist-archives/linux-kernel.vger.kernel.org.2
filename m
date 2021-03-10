@@ -2,122 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B53333D57
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D61333D58
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhCJNJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:09:03 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:46896 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhCJNId (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:08:33 -0500
-Received: by mail-lf1-f51.google.com with SMTP id r3so25155430lfc.13;
-        Wed, 10 Mar 2021 05:08:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IDSJEhR3nj5vbJCjgS5WrWjZtxX52Thgjco29XIGLgY=;
-        b=JT8ejpoxgIz50uEJkFDHHBBgmZLtL58201nGKz7lZvn7BPHm1MXClOepL2hgwABjht
-         fFYM1SwdZ6b8h/bmBcukQfqD2voQ+ij5CpwG/YVZAsN76tnEDpDFk6b1K8aAgT5h3w57
-         Ul0nQ+l1bQ1bH72ZAs3HfEUu9bbA++nUhQTERoSqcg7AUtbEVkFA8QFaJ2YSWHVgESdT
-         MqutPH0lV0lLV1IFWyd7W/sO0Ta/54tqb/lxlCSVfoM7a6ifTFLuKa+JYXyjYUrpeQmy
-         belXHU8t0DYs/bH8PQuJh6L8VIgohSJ3SwF2WIpr6ido78+1eeZ9jOI094KtmiAV68oQ
-         NVkQ==
-X-Gm-Message-State: AOAM5315Cqa7dquYRIV83asLPVQ9V4uqlzMWJ6/FYY99uPNTv2nRdWoo
-        46nUezMqOEflK4ZlUcKm+6g=
-X-Google-Smtp-Source: ABdhPJwfQ0bt5y8RwlLFpXp+rNneUOk7FdAyE1c/hGg5LRZAlzot2uD8ixavdxwaSp3DLs+cK6wDew==
-X-Received: by 2002:a19:4147:: with SMTP id o68mr2161232lfa.295.1615381711228;
-        Wed, 10 Mar 2021 05:08:31 -0800 (PST)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id x31sm2934474lfu.10.2021.03.10.05.08.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 05:08:30 -0800 (PST)
-Date:   Wed, 10 Mar 2021 15:08:24 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org
-Subject: [RFC PATCH v2 2/7] regulator: add warning flags
-Message-ID: <2a89e9208164b44b8179abe8719dc16100da4848.1615367099.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1615367099.git.matti.vaittinen@fi.rohmeurope.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1615367099.git.matti.vaittinen@fi.rohmeurope.com>
+        id S232691AbhCJNJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:09:04 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:4451 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231272AbhCJNIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:08:38 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DwXSt3c9szB09Zj;
+        Wed, 10 Mar 2021 14:08:30 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Lq6Kc8eUPitN; Wed, 10 Mar 2021 14:08:30 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DwXSt26QQzB09Zh;
+        Wed, 10 Mar 2021 14:08:30 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A1E638B78A;
+        Wed, 10 Mar 2021 14:08:31 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id i5rQz8Reddhl; Wed, 10 Mar 2021 14:08:31 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 69C718B77E;
+        Wed, 10 Mar 2021 14:08:31 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 60F4867560; Wed, 10 Mar 2021 13:08:31 +0000 (UTC)
+Message-Id: <25459896a398909d195fd5eb3d82ca1acb07b783.1615381467.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] iov_iter: Use user_read_access_begin() instead of
+ user_access_begin()
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Wed, 10 Mar 2021 13:08:31 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'warning' level events and error flags to regulator core.
-Current regulator core notifications are used to inform consumers
-about errors where HW is misbehaving in such way it is assumed to
-be broken/unrecoverable.
+copy_compat_iovec_from_user() only do unsafe_get_user(),
+it only requires read access.
 
-There are PMICs which are designed for system(s) that may have use
-for regulator indications sent before HW is damaged so that some
-board/consumer specific recovery-event can be performed while
-continuing most of the normal operations.
-
-Add new WARNING level events and notifications to be used for
-that purpose.
-
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- include/linux/regulator/consumer.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ lib/iov_iter.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
-index 20e84a84fb77..f72ca73631be 100644
---- a/include/linux/regulator/consumer.h
-+++ b/include/linux/regulator/consumer.h
-@@ -119,6 +119,16 @@ struct regulator_dev;
- #define REGULATOR_EVENT_PRE_DISABLE		0x400
- #define REGULATOR_EVENT_ABORT_DISABLE		0x800
- #define REGULATOR_EVENT_ENABLE			0x1000
-+/*
-+ * Following notifications should be emitted only if detected condition
-+ * is such that the HW is likely to still be working but consumers should
-+ * take a recovery action to prevent problems esacalating into errors.
-+ */
-+#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
-+#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
-+#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
-+#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
-+#define REGULATOR_EVENT_WARN_MASK		0x1E000
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index f66c62aa7154..76952a117b47 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -1665,7 +1665,7 @@ static int copy_compat_iovec_from_user(struct iovec *iov,
+ 		(const struct compat_iovec __user *)uvec;
+ 	int ret = -EFAULT, i;
  
- /*
-  * Regulator errors that can be queried using regulator_get_error_flags
-@@ -138,6 +148,10 @@ struct regulator_dev;
- #define REGULATOR_ERROR_FAIL			BIT(4)
- #define REGULATOR_ERROR_OVER_TEMP		BIT(5)
+-	if (!user_access_begin(uiov, nr_segs * sizeof(*uiov)))
++	if (!user_read_access_begin(uiov, nr_segs * sizeof(*uiov)))
+ 		return -EFAULT;
  
-+#define REGULATOR_ERROR_UNDER_VOLTAGE_WARN	BIT(6)
-+#define REGULATOR_ERROR_OVER_CURRENT_WARN	BIT(7)
-+#define REGULATOR_ERROR_OVER_VOLTAGE_WARN	BIT(8)
-+#define REGULATOR_ERROR_OVER_TEMP_WARN		BIT(9)
+ 	for (i = 0; i < nr_segs; i++) {
+@@ -1686,7 +1686,7 @@ static int copy_compat_iovec_from_user(struct iovec *iov,
  
- /**
-  * struct pre_voltage_change_data - Data sent with PRE_VOLTAGE_CHANGE event
+ 	ret = 0;
+ uaccess_end:
+-	user_access_end();
++	user_read_access_end();
+ 	return ret;
+ }
+ 
 -- 
-2.25.4
+2.25.0
 
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
