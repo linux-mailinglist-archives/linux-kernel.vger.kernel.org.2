@@ -2,122 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC21336819
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0564233681A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbhCJXu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:50:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
+        id S234066AbhCJXvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233887AbhCJXuk (ORCPT
+        with ESMTP id S233910AbhCJXuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:50:40 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D470C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:50:40 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id w34so11404998pga.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:50:40 -0800 (PST)
+        Wed, 10 Mar 2021 18:50:55 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FABDC061574;
+        Wed, 10 Mar 2021 15:50:55 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id b8so18231489oti.7;
+        Wed, 10 Mar 2021 15:50:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=h9ZagqJLxk4OElhdkNGPVroIsWiFpbxbC5YZRvu24ZA=;
-        b=gxKLX80uK2NO4R2AUw7XDraRQhplZ/rId2VFrO69upXzWsfYtCyiWN0ENOT0ZYEMB+
-         MFvBKQGqalbJbZ4lzAoyecmPr6kgJXTaaptDA7rbElmrAMbx9ctSkQrhgKQGVejI3S5e
-         nelCpfb4e8JCUEmHtg/RJtufArT/G7WQa7P9OyRfnh+dtAzWASSP+XSpqC7yTveT9xhK
-         J15zO3fi1oYPEqSxSS0LctRiqB7OWTRjtPefpj2aYzQv7mGbiC7YuxdFgh1Sy5RVlwjU
-         afr856u2vsDBd/06dgHiuPjpLJV+yZHjNtWcryO9ejf4m2AMtmB3QGcunyLeZZxueny6
-         +ZJw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MWvqhNV4JfDa4XVfwoSOowOHKfIFuSZIQxmsbkzwWOQ=;
+        b=stmvkg9C4wahxNXx8YbhOlBvKiiv6GdFAvW+2G09xalREWjBzwp1fo5CWfSbvVsR1m
+         519vPbNXlqKyz52aqbc1iiQ0suADXO27TtjKsMwdCgU6IKXY6pebAL+OcND8uI3tGdRB
+         AUnx9oNf0YODNmvn3VASa6I19lWWtZhxfGprHALuCHRhBu+JdJWxB0ppLBvT9sc34uAf
+         cX6yyJE/IueYmJWNHfXbCDhzom8oI51QYC40UN1LLhjXszHhG4koBeCrGAxk+aZXaV/G
+         GsxsDZ/KzyWX4nYainVpp5gRzp5CeLZpt7LmVIOqFtv0PuB8UBukI0kqmHSvzEHlzTCU
+         KpaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h9ZagqJLxk4OElhdkNGPVroIsWiFpbxbC5YZRvu24ZA=;
-        b=MxsZWakcNW5ouhdhwKwczqJfLA2pKgj5RvGA06ooHgRYLIVpKkpzgJE0ZkdJB686VQ
-         5cPaRRGRoBXa9/GYd6iEe5NNNrLqgMp88JoHjd7AtgRPKtuCdk1WzHz05PImJuUNNvGu
-         P1cfIzRO8Q1q3UaJrIGp0ePqhycS763DBQBMXuDU80gSyKEUAJ2WkH5qG6q5Uy8Bdw5m
-         M53F9SMVJ9g89rUqiNCLwMcKV3GD/SPB0F6Wy9tPbcKc+lh9ii/KnaamvKjY6Vv2ABdD
-         5Iuoq1UKoMZGg5FIEQdWRq80gPWseduYRTlLPp7fYO1xn0jthl/yttJ4iiE+rGInji59
-         8Hpw==
-X-Gm-Message-State: AOAM530r3V2A8P18dux9XKyLjjN3/Rx2pEqUgk5UA947toYUBkn2Ndfu
-        zWqY1gGnHZflpw2S2oPwgXE=
-X-Google-Smtp-Source: ABdhPJzd/+OScYpMEEtLglUJ+pg4TyfFxWjB1JBiNwsQ6WNyIWOFf6f6+UAyNBdKQTQD0O6U9XBsMw==
-X-Received: by 2002:aa7:9aaa:0:b029:1f3:dd0e:282d with SMTP id x10-20020aa79aaa0000b02901f3dd0e282dmr5110398pfi.38.1615420239493;
-        Wed, 10 Mar 2021 15:50:39 -0800 (PST)
-Received: from f8ffc2228008.ant.amazon.com ([54.240.193.129])
-        by smtp.gmail.com with ESMTPSA id z4sm527245pgv.73.2021.03.10.15.50.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 15:50:38 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] mm/memcg: rename mem_cgroup_split_huge_fixup to
- split_page_memcg
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Zhou Guanghui <zhouguanghui1@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, hannes@cmpxchg.org,
-        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
-        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
-        dingtianhong@huawei.com, chenweilong@huawei.com,
-        rui.xiang@huawei.com
-References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
- <20210304074053.65527-2-zhouguanghui1@huawei.com>
- <3ad50842-881f-eb88-a14d-0b6c70ce33d2@gmail.com>
- <YEcxqTUp88sl/cq3@dhcp22.suse.cz>
- <d20d5dbe-74cd-fe90-8e43-ebbc5a3b4403@gmail.com>
- <alpine.LSU.2.11.2103101353240.1783@eggly.anvils>
-From:   "Singh, Balbir" <bsingharora@gmail.com>
-Message-ID: <f276a028-e2d2-f098-fdf9-6ee505f32e33@gmail.com>
-Date:   Thu, 11 Mar 2021 10:50:31 +1100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MWvqhNV4JfDa4XVfwoSOowOHKfIFuSZIQxmsbkzwWOQ=;
+        b=cfrZjuf44rJmRymiPk3y8wPiWOvXz5s0hy3jqoKqw8h7ShLGiUpEVyrHUXsExq5gIf
+         N2Dy1Cb4oIgX48bIJKCzZzfIlQl6ZCgLpQwloHmetAkoQkBLgF+A1A3uGElm1EUE+8xa
+         6abvs6DIxQK9Hq5GWp7FwRHiAskpQDyNcT4q+yB7xpyZU6xiLwGSQ3X79WifBGfqleLW
+         3+YUYZ6vE8R8/FarwG2ADAzuEQAONRtoJz+oX8xdBHS4KpXaqsybCv/7m5QGEsyixscE
+         6mifdl/p0VJsCqLsdzvKlreApFKOro6/mn6qtPqBUh5s/zsTtJQ5/vi/XMKjDFKgqEQE
+         2V5Q==
+X-Gm-Message-State: AOAM533/r9+Fw2W3b2cEYxwU2XqITMdXStlqO1ufB7LDmRMXAie6zdF5
+        afPQzV/BKy6oqjZts716+MU=
+X-Google-Smtp-Source: ABdhPJyO/mwyyxPDS3WfwX80asI5QJcbPBQk8mHqFDBeK90Vv2rTSj3UMo5HlBZfRfB5YA0zKPvdYA==
+X-Received: by 2002:a9d:2d8a:: with SMTP id g10mr4647338otb.212.1615420254947;
+        Wed, 10 Mar 2021 15:50:54 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a185sm212065oif.49.2021.03.10.15.50.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Mar 2021 15:50:54 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 10 Mar 2021 15:50:53 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 00/11] 4.9.261-rc1 review
+Message-ID: <20210310235053.GB195769@roeck-us.net>
+References: <20210310132320.393957501@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2103101353240.1783@eggly.anvils>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310132320.393957501@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 9:00 am, Hugh Dickins wrote:
-> On Thu, 11 Mar 2021, Singh, Balbir wrote:
->> On 9/3/21 7:28 pm, Michal Hocko wrote:
->>> On Tue 09-03-21 09:37:29, Balbir Singh wrote:
->>>> On 4/3/21 6:40 pm, Zhou Guanghui wrote:
->>> [...]
->>>>> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>>>>  /*
->>>>> - * Because page_memcg(head) is not set on compound tails, set it now.
->>>>> + * Because page_memcg(head) is not set on tails, set it now.
->>>>>   */
->>>>> -void mem_cgroup_split_huge_fixup(struct page *head)
->>>>> +void split_page_memcg(struct page *head, unsigned int nr)
->>>>>  {
->>>>
->>>> Do we need input validation on nr? Can nr be aribtrary or can we enforce
->>>>
->>>> VM_BUG_ON(!is_power_of_2(nr));
->>>
->>> In practice this will be power of 2 but why should we bother to sanitze
->>> that? 
->>>
->>
->> Just when DEBUG_VM is enabled to ensure the contract is valid, given that
->> nr is now variable, we could end up with subtle bugs unless we can audit
->> all callers. Even the power of 2 check does not catch the fact that nr
->> is indeed what we expect, but it still checks a large range of invalid
->> inputs.
+On Wed, Mar 10, 2021 at 02:24:59PM +0100, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> I think you imagine this is something it's not.
+> This is the start of the stable review cycle for the 4.9.261 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> "all callers" are __split_huge_page() and split_page() (maybe Matthew
-> will have a third caller, maybe not).  It is not something drivers will
-> be calling directly themselves, and it won't ever get EXPORTed to them.
+> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> Anything received after that time might be too late.
 > 
 
-Don't feel strongly about it if that is the case.
+Build results:
+	total: 168 pass: 168 fail: 0
+Qemu test results:
+	total: 383 pass: 383 fail: 0
 
-Thanks,
-Balbir Singh
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+Guenter
