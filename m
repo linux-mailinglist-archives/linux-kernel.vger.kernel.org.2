@@ -2,148 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2A0334A18
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56732334A1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhCJVsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:48:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbhCJVsl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:48:41 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9563DC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:48:40 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 6E1C0891AE;
-        Thu, 11 Mar 2021 10:48:36 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1615412916;
-        bh=2Y40yV20kTz+uP8WJOd2zRY2ZK37UuSTQye56QXyLdQ=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=zItC4lNaMAuEdg9ohspna/PZidFL62L3E2Zz+vs565vG2MOekEjAnSrcCzKHz/VVM
-         ISseRsweCb70Q6ueWshQrsAOouaSTJwcyE/RX2Ul9sRGRTueW4QpgbVqDfsL0Wmng3
-         8rbLFfiQaMPMA1vA5on4O1MIPG3QcwigXBK2gXvRK3UKKxmEHLrqGegRYlDrz70H0W
-         lBRReMk35Zl6YgwOgPnXr90Sx46F+cCXE61Jrsh11cwOetmTSz9jR4gor0JmoUrf5v
-         1CzS2E7zesLrBR2lU8WJL8lA6n7/+XNitiEUHNjeJA4Y/YC7y5+nQ+H7PM/BPpRpu1
-         3i1TyMRv515gQ==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60493eb40001>; Thu, 11 Mar 2021 10:48:36 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Mar 2021 10:48:36 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Thu, 11 Mar 2021 10:48:36 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        "jdelvare@suse.com" <jdelvare@suse.com>
-CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: Errant readings on LM81 with T2080 SoC
-Thread-Topic: Errant readings on LM81 with T2080 SoC
-Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Sk6p4Y2sAgAAgcACAACSBgIAABe+AgAEDagCAAfS7gIAALq8AgAEX54A=
-Date:   Wed, 10 Mar 2021 21:48:35 +0000
-Message-ID: <b41a802b-2833-13fb-58ad-1762a3507460@alliedtelesis.co.nz>
-References: <8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@alliedtelesis.co.nz>
- <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
- <4a1b1494-df96-2d8c-9323-beb2c2ba706b@alliedtelesis.co.nz>
- <a67ea323-634d-d34e-c63e-b1aaa4737b19@alliedtelesis.co.nz>
- <5709f180-04b5-09b2-e1c4-53eb5c9345d8@roeck-us.net>
- <d6074923-ee7e-4499-0e54-383a607d3c41@alliedtelesis.co.nz>
- <1aa0dc23-0706-5902-2f46-0767de0e3ad6@alliedtelesis.co.nz>
- <d5045879-45aa-db38-e6aa-4c8ea3e62f6c@roeck-us.net>
-In-Reply-To: <d5045879-45aa-db38-e6aa-4c8ea3e62f6c@roeck-us.net>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EE669EFBE8218F4B972E00D4598F3679@atlnz.lc>
-Content-Transfer-Encoding: base64
+        id S232409AbhCJVtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:49:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232206AbhCJVtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:49:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C825064FAB;
+        Wed, 10 Mar 2021 21:49:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615412954;
+        bh=+oOFNv56O7sMY7qolB4gLqf1KbVTKbHQJ69T+KpnJ2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZLvuUQ+VxNtzXtc89ljBECwuc81VfHAHA8rI1rEkpff+j5Lh2nAl3YUvNMMJF+h1j
+         c34KzybBRtUBywyrFAU1zoimW8MV+mS1Y5SXSS7l5y5he3UokpYm6LpI2NhrKTaD9B
+         bIP1j5KU5103Rf5gxy62v9VxHH+IVSW4lyI4VbaHx/3tt+w2LufwFwLNomu0tXESO5
+         wpbLMZQqVZhZ0CDgEMOxXe/zNKXKvHJcLyylS4cypnPtnGlN2wEoKRGli5Vpo5kmFL
+         rj15DNdq1YnHBEwpPbAlcik68D+RnYURpExd9pKrY4ERqdV52KXNFTiIvfZjnNgiZr
+         TcidJ4eOx2wvA==
+Date:   Wed, 10 Mar 2021 23:48:50 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/5] x86/sgx: Add a basic NUMA allocation scheme to
+ sgx_alloc_epc_page()
+Message-ID: <YEk+wpHbSrHBZeKn@kernel.org>
+References: <20210303150323.433207-1-jarkko@kernel.org>
+ <20210303150323.433207-6-jarkko@kernel.org>
+ <7621d89e-9347-d8a5-a8b0-a108990d0e6d@intel.com>
+ <YEitzCiXd02/Pxy1@kernel.org>
+ <c710eea8-a0ea-70b6-6521-0dd685adbb06@intel.com>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=DsQoB13+ c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=NNP4SLs9GTR1jxPQxVAA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c710eea8-a0ea-70b6-6521-0dd685adbb06@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxMC8wMy8yMSA2OjA2IHBtLCBHdWVudGVyIFJvZWNrIHdyb3RlOg0KPiBPbiAzLzkvMjEg
-NjoxOSBQTSwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4+IE9uIDkvMDMvMjEgOToyNyBhbSwgQ2hy
-aXMgUGFja2hhbSB3cm90ZToNCj4+PiBPbiA4LzAzLzIxIDU6NTkgcG0sIEd1ZW50ZXIgUm9lY2sg
-d3JvdGU6DQo+Pj4+IE90aGVyIHRoYW4gdGhhdCwgdGhlIG9ubHkgb3RoZXIgcmVhbCBpZGVhIEkg
-aGF2ZSB3b3VsZCBiZSB0byBtb25pdG9yDQo+Pj4+IHRoZSBpMmMgYnVzLg0KPj4+IEkgYW0gaW4g
-dGhlIGZvcnR1bmF0ZSBwb3NpdGlvbiBvZiBiZWluZyBhYmxlIHRvIGdvIGludG8gdGhlIG9mZmlj
-ZSBhbmQNCj4+PiBldmVuIGhhcHBlbiB0byBoYXZlIHRoZSBleHBlbnNpdmUgc2NvcGUgYXQgdGhl
-IG1vbWVudC4gTm93IEkganVzdCBuZWVkDQo+Pj4gdG8gZmluZCBhIHRhbWUgSFcgZW5naW5lZXIg
-c28gSSBkb24ndCBidXJuIG15c2VsZiB0cnlpbmcgdG8gYXR0YWNoIHRoZQ0KPj4+IHByb2Jlcy4N
-Cj4+IE9uZSB0aGluZyBJIHNlZSBvbiB0aGUgc2NvcGUgaXMgdGhhdCB3aGVuIHRoZXJlIGlzIGEg
-Q1BVIGxvYWQgdGhlcmUNCj4+IGFwcGVhcnMgdG8gYmUgc29tZSBjbG9jayBzdHJldGNoaW5nIGdv
-aW5nIG9uIChTQ0wgaXMgaGVsZCBsb3cgc29tZQ0KPj4gdGltZXMpLiBJIGRvbid0IHNlZSBpdCB3
-aXRob3V0IHRoZSBDUFUgbG9hZC4gSXQncyBoYXJkIHRvIGNvcnJlbGF0ZSBhDQo+PiBjbG9jayBz
-dHJldGNoaW5nIGV2ZW50IHdpdGggYSBiYWQgcmVhZCBvciBlcnJvciBidXQgaXQgaXMgb25lIGFy
-ZWEgd2hlcmUNCj4+IHRoZSBTTUJVUyBzcGVjIGhhcyBhIG1heGltdW0gdGhhdCBtaWdodCBjYXVz
-ZSB0aGUgZGV2aWNlIHRvIGdpdmUgdXAgd2FpdGluZy4NCj4+DQo+IERvIHlvdSBoYXZlIENPTkZJ
-R19QUkVFTVBUIGVuYWJsZWQgaW4geW91ciBrZXJuZWwgPyBCdXQgZXZlbiB3aXRob3V0DQo+IHRo
-YXQgaXQgaXMgcG9zc2libGUgdGhhdCB0aGUgaG90IGxvb3BzIGF0IHRoZSBiZWdpbm5pbmcgYW5k
-IGVuZCBvZg0KPiBlYWNoIG9wZXJhdGlvbiBtZXNzIHVwIHRoZSBkcml2ZXIgYW5kIGNhdXNlIGl0
-IHRvIHNsZWVwIGxvbmdlcg0KPiB0aGFuIGludGVuZGVkLiBEaWQgeW91IHRyeSB1c2xlZXBfcmFu
-Z2UoKSA/DQoNCkkndmUgYmVlbiBydW5uaW5nIHdpdGggYW5kIHdpdGhvdXQgQ09ORklHX1BSRUVN
-UFQuIFRoZSBmYWlsdXJlcyBoYXBwZW4gDQp3aXRoIGJvdGguDQoNCkkgZGlkIHRyeSB1c2xlZXBf
-cmFuZ2UoKSBhbmQgc3RpbGwgc2F3IGZhaWx1cmVzLg0KDQo+IE9uIGEgc2lkZSBub3RlLCBjYW4g
-eW91IHNlbmQgbWUgYSByZWdpc3RlciBkdW1wIGZvciB0aGUgbG04MSA/DQo+IEl0IHdvdWxkIGJl
-IHVzZWZ1bCBmb3IgbXkgbW9kdWxlIHRlc3QgY29kZS4NCg0KSGVyZSB5b3UgZ28gdGhpcyBpcyBm
-cm9tIGEgbGFyZ2VseSB1bmNvbmZpZ3VyZWQgTE04MQ0KDQogwqDCoMKgwqAgMMKgIDHCoCAywqAg
-M8KgIDTCoCA1wqAgNsKgIDfCoCA4wqAgOcKgIGHCoCBiwqAgY8KgIGTCoCBlwqAgZiAwMTIzNDU2
-Nzg5YWJjZGVmDQowMDogNDcgNDcgNDcgNDcgNDcgNDcgNDcgNDcgNDcgNDcgNDcgNDcgNDcgNDcg
-NDcgNDcgR0dHR0dHR0dHR0dHR0dHRw0KMTA6IDQ3IDgxIDI0IDAzIDk0IDAwIDAwIDAwIDAwIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIEc/JD8/Li4uLi4uLi4uLi4NCjIwOiBiZiBjYiBjMSAwMCBjMCA0
-NyBlYyAyNCBmZiBmZiA2NSBmZiAwMCBmZiAwMCBmZiA/Pz8uP0c/JC4uZS4uLi4uDQozMDogMDAg
-ZmYgMDAgZmYgMDAgZmYgMDAgNzEgYTkgN2YgN2YgZmYgZmYgNTggMDEgMDQgLi4uLi4uLnE/Pz8u
-Llg/Pw0KNDA6IDAxIDA4IDAwIDAwIDAwIDAwIDAwIDUwIDJmIDgwIDgwIDAxIDQ0IDAwIDAwIDAw
-ID8/Li4uLi5QLz8/P0QuLi4NCjUwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAuLi4uLi4uLi4uLi4uLi4uDQo2MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgLi4uLi4uLi4uLi4uLi4uLg0KNzA6IDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIC4uLi4uLi4uLi4uLi4uLi4N
-CjgwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAuLi4u
-Li4uLi4uLi4uLi4uDQo5MDogMDAgODEgMjQgMDMgOTQgMDAgMDAgMDAgMDAgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgLj8kPz8uLi4uLi4uLi4uLg0KYTA6IGJmIGNiIGMxIDAwIGMwIDQ3IGVjIDI0IGZm
-IGZmIDY1IGZmIDAwIGZmIDAwIGZmID8/Py4/Rz8kLi5lLi4uLi4NCmIwOiAwMCBmZiAwMCBmZiAw
-MCBmZiAwMCA3MSBhOSA3ZiA3ZiBmZiBmZiA1OCAwMSAwNCAuLi4uLi4ucT8/Py4uWD8/DQpjMDog
-MDEgMDAgMDAgMDAgMDAgMDAgMDAgNTAgMmYgODAgODAgMDEgNDQgMDAgMDAgMDAgPy4uLi4uLlAv
-Pz8/RC4uLg0KZDA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIC4uLi4uLi4uLi4uLi4uLi4NCmUwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAuLi4uLi4uLi4uLi4uLi4uDQpmMDogMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgLi4uLi4uLi4uLi4uLi4uLg0KDQpUaGlzIGlz
-IGZyb20gYSBMTTgxIHRoYXQncyBiZWVuIGNvbmZpZ3VyZWQgYnkgb3VyIGFwcGxpY2F0aW9uIFNX
-IHdpdGggDQpsaW1pdHMgYXBwcm9wcmlhdGUgZm9yIHRoZSBwbGF0Zm9ybS4NCg0KIMKgwqDCoMKg
-IDDCoCAxwqAgMsKgIDPCoCA0wqAgNcKgIDbCoCA3wqAgOMKgIDnCoCBhwqAgYsKgIGPCoCBkwqAg
-ZcKgIGYgMDEyMzQ1Njc4OWFiY2RlZg0KMDA6IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIC4uLi4uLi4uLi4uLi4uLi4NCjEwOiBmZiA4MSAyNCAwMyA5NCAw
-MCAwMCAwMCAwMCBmZiBmZiBmZiBmZiBmZiBmZiBmZiAuLiQuLi4uLi4uLi4uLi4uDQoyMDogYmYg
-Y2MgYzEgMDAgYzAgNDcgZWMgMWMgZmYgZmYgNjUgZGMgYjQgZmYgYzAgZDMgLi4uLi5HLi4uLmUu
-Li4uLg0KMzA6IGFkIGZmIDAwIGQzIGFkIDRlIDQwIDcxIGE5IDRiIDQ2IGZmIGZmIDU4IDAxIDA0
-IC4uLi4uTkBxLktGLi5YLi4NCjQwOiAwMSAwOCAwMCAwMCAwMCAwMCAwMCBmMCAyZiA4MCA4MCA4
-MSA0NCA4MCA4MCA4MCAuLi4uLi4uLi8uLi5ELi4uDQo1MDogODAgODAgODAgODAgODAgODAgODAg
-ODAgODAgODAgODAgODAgODAgODAgODAgODAgLi4uLi4uLi4uLi4uLi4uLg0KNjA6IDgwIDgwIDgw
-IDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIC4uLi4uLi4uLi4uLi4uLi4N
-CjcwOiA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCAuLi4u
-Li4uLi4uLi4uLi4uDQo4MDogODAgODAgODAgODAgODAgODAgODAgODAgODAgODAgODAgODAgODAg
-ODAgODAgODAgLi4uLi4uLi4uLi4uLi4uLg0KOTA6IDgwIDgxIDI0IDAzIDk0IDAwIDAwIDAwIDAw
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIC4uJC4uLi4uLi4uLi4uLi4NCmEwOiBiZiBjYyBjMSAwMCBj
-MCA0NyBlYyAxYyBmZiBmZiA2NSBkYyBiNCBmZiBjMCBkMyAuLi4uLkcuLi4uZS4uLi4uDQpiMDog
-YWQgZmYgMDAgZDMgYWQgNGUgNDAgNzEgYTkgNGIgNDYgZmYgZmYgNTggMDEgMDQgLi4uLi5OQHEu
-S0YuLlguLg0KYzA6IDAxIDAwIDAwIDAwIDAwIDAwIDAwIGYwIDJmIDgwIDgwIDgxIDQ0IDgwIDgw
-IDgwIC4uLi4uLi4uLy4uLkQuLi4NCmQwOiA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4MCA4
-MCA4MCA4MCA4MCA4MCA4MCAuLi4uLi4uLi4uLi4uLi4uDQplMDogODAgODAgODAgODAgODAgODAg
-ODAgODAgODAgODAgODAgODAgODAgODAgODAgODAgLi4uLi4uLi4uLi4uLi4uLg0KZjA6IDgwIDgw
-IDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIDgwIC4uLi4uLi4uLi4uLi4u
-Li4NCg==
+On Wed, Mar 10, 2021 at 07:44:39AM -0800, Dave Hansen wrote:
+> >>> + * node.
+> >>> + */
+> >>> +static struct sgx_numa_node *sgx_numa_nodes;
+> >>> +
+> >>> +/*
+> >>> + * sgx_free_epc_page() uses this to find out the correct struct sgx_numa_node,
+> >>> + * to put the page in.
+> >>> + */
+> >>> +static int sgx_section_to_numa_node_id[SGX_MAX_EPC_SECTIONS];
+> >>
+> >> If this is per-section, why not put it in struct sgx_epc_section?
+> > 
+> > Because struct sgx_epc_page does not contain a pointer to
+> > struct sgx_epc_section.
+> 
+> Currently, we have epc_page->section.  That's not changing.  But, with
+> the free list moving from sgx_epc_section to sgx_numa_node, we need a
+> way to get from page->node, not just page->section.
+> 
+> We can either add that to:
+> 
+> 	struct sgx_epc_section {
+> 		...
+> +		struct sgx_numa_node *node;
+> 	}
+> 
+> so we can do epc_page->section->node to find the epc_page's free list,
+> or we could just do:
+> 
+>  struct sgx_epc_page {
+> - 	unsigned int section;
+> + 	unsigned int node;
+>  	unsigned int flags;
+>  	struct sgx_encl_page *owner;
+>  	struct list_head list;
+> 	struct list_head numa_list;
+>  };
+> 
+> and go from page->node directly.
+
+OK, I buy this, thanks.
+
+> >>>  	page = list_first_entry(&sgx_free_page_list, struct sgx_epc_page, list);
+> >>> +	list_del_init(&page->numa_list);
+> >>>  	list_del_init(&page->list);
+> >>>  	sgx_nr_free_pages--;
+> >>
+> >> I would much rather prefer that this does what the real page allocator
+> >> does: kep the page on a single list.  That list is maintained
+> >> per-NUMA-node.  Allocations try local NUMA node structures, then fall
+> >> back to other structures (hopefully in a locality-aware fashion).
+> >>
+> >> I wrote you the loop that I want to see this implement in an earlier
+> >> review.  This, basically:
+> >>
+> >> 	page = NULL;
+> >> 	nid = numa_node_id();
+> >> 	while (true) {
+> >> 		page = __sgx_alloc_epc_page_from_node(nid);	
+> >> 		if (page)
+> >> 			break;
+> >>
+> >> 		nid = // ... some search here, next_node_in()...
+> >> 		// check if we wrapped around:
+> >> 		if (nid == numa_node_id())
+> >> 			break;
+> >> 	}
+> >>
+> >> There's no global list.  You just walk around nodes trying to find one
+> >> with space.  If you wrap around, you stop.
+> >>
+> >> Please implement this.  If you think it's a bad idea, or can't, let's
+> >> talk about it in advance.  Right now, it appears that my review comments
+> >> aren't being incorporated into newer versions.
+> > 
+> > How I interpreted your earlier comments is that the fallback is unfair and
+> > this patch set version does fix that. 
+> > 
+> > I can buy the above allocation scheme, but I don't think this patch set
+> > version is a step backwards. The things done to struct sgx_epc_section
+> > are exactly what should be done to it.
+> 
+> To me, it's a step backwards.  It regresses in that it falls back to an
+> entirely non-NUMA aware allocation mechanism.  The global list is
+> actually likely to be even worse than the per-section searches because
+> it has a global lock as opposed to the at per-section locks.  It also
+> has the overhead of managing two lists instead of one.
+> 
+> So, yes, it is *fair* in terms of NUMA node pressure.  But being fair in
+> a NUMA-aware allocator by simply not doing NUMA at all is a regression.
+
+The code is structured now in a way that is trivial to remove the global
+list and move on to just node lists. I.e. nasty section lists have been
+wiped away. Refactoring global list out is a trivial step.  
+
+That way this is a step forwards, even if having a global list would
+be step backwards:-)
+
+> > Implementation-wise you are asking me to squash 4/5 and 5/5 into a single
+> > patch, and remove global list. It's a tiny iteration from this patch
+> > version and I can do it.
+> 
+> Sounds good.
+
+I'll dissolve your feedback and come with the new version, which I'll
+put out tomorrow.
+
+PS. If you don't here of me after you have given feedback to the next
+version, please ping privately. It looks like things are getting through
+again fast but better be sure than sorry...
+
+/Jarkko
