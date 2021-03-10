@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A77336812
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F3B336817
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbhCJXsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:48:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
+        id S233830AbhCJXu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:50:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbhCJXsA (ORCPT
+        with ESMTP id S231964AbhCJXu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:48:00 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788FEC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:48:00 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id n16so36637814lfb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:48:00 -0800 (PST)
+        Wed, 10 Mar 2021 18:50:27 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C181AC061574;
+        Wed, 10 Mar 2021 15:50:26 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id n23so12618408otq.1;
+        Wed, 10 Mar 2021 15:50:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kRvHS9o5dMLT6f5yfgrvrgY38oLudE/U5A4iFNm6Au8=;
-        b=iNrRn08C6u6wm9/NWOjycwj9HSvpAmM5+og002MFmZagOZwJW/7mrsRDnTGETT1tW6
-         ofpe9swHZzRRGPwfWFG/pgGOlBDYcFDnyxi9fHhJ3SS6ghK+w/ham9nZWPqLc18RH4lD
-         tRWZSiEut1qDfamOLDJam2Rn2B+gIUwvVOtq1zGIPnSpYgTYNYlN6e6Yxz7eMGVqRnro
-         Ox2Sof2CKCiSwyXXXiEWIzRseCm6nB/7WoEi4mIGNqG1w8Wi2/HBAPf5Ym7+GCX5VY+n
-         aIL7DuV6/sbDWbA4uUhog1FBJXkWHaVbpursDstZGbIUdX1ov+MH3m4vmrXgmTYqJqD3
-         O1Nw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MNL5asoPdv8UwHAUz9s6a7wD7qq9PF25E8iQDVIHen8=;
+        b=KJBN27NQxR/hjM5K0whr0TSLpFJfuPgSty6mqlf09E2VrHDDj9ZCGdtYqbeSFNU1o+
+         omFmHQcoPO1bT0thQClVTJgmAm2prIgYXnUpjR6BwdF4ImzDt2FLRN3yuyDjOccPga5N
+         epyhx2GRfm5Zl3BXBSNo/X4AbYZ/O2eKIbYUoNsR6ZYiHjXB9S2ROuIhgmChQzTLRFP1
+         u/AnKO1BkyfsOe4kPnpwy0tz6VeSUPcdMdUJE8anmzwxVpcYo5GTtjXA8ZhhQKnpUJ1F
+         zoqVqrQVLkgylhEnXqWOlWtRv4gFCMeIzlrTRdSp/waOSuku3P+bV+tk25Op4epIB8wo
+         0oHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kRvHS9o5dMLT6f5yfgrvrgY38oLudE/U5A4iFNm6Au8=;
-        b=lfNG621d0ibxt+t4m80n96g0CBCJt/MzkIjhUJUw8ZGdHyB6zBbJlXbV1DPxhYpg6+
-         lyr8XL3SFlskeo4kNVyK1TTvcQSlAB1dd6Ec0mhXblt4HZRHWubncHfpqG4QLqWmM8js
-         STJYC/HF/TCMuieVoqMqzfGuBMFWkC9r5g1hoDG9Zji+3R5ujDAPwrAaw73ghkUqR/sF
-         sKnTlJkUv0JwLXxJTdbdctUypRhmuNu4A3dn3VEHtUSid/zYbXq+nxEXKTYr3OwPLqKw
-         d/y2FlPloavQra0q9J1ycRej23BgsPZvb15rX2ogkvDgbYELYYMb5UTnX2T+JsDr23Yp
-         JsNw==
-X-Gm-Message-State: AOAM530iCppr6j5++sc7+6dgQmy0cxPo1/NSeUQhqeZW6g8neiWLcLav
-        ZZRgZ24XpdPousQY06NKU9p7VHhdPCJV+SJ6VOoBmA==
-X-Google-Smtp-Source: ABdhPJz0squ0Ye3e/PiQIDYAcOJXAgc8W4xsitrsSru2AMgkDx47v8y6PLZPozsGXf40w2FsskuwPuAGjhSxg9qCrgc=
-X-Received: by 2002:a05:6512:74a:: with SMTP id c10mr571356lfs.586.1615420079060;
- Wed, 10 Mar 2021 15:47:59 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MNL5asoPdv8UwHAUz9s6a7wD7qq9PF25E8iQDVIHen8=;
+        b=TZo+JuSHP2Qv5ThiKZk+3yucBJ/rCOZoSlfYwFmB04BxM+s86nMkK903+Ow5wIo3QH
+         uItZWN2DIFRIEIB0JWDSm4UMzQOoUJsfn+LeeHMLImYMe/gr6elBzVrMtLPqTXj+XPXS
+         /APJ0iVx5CVZ09bLAVaCwkx6JsO+WZbJTiqMBKd8OXnslP0pYUUWTy/vDVvjdMETnp8x
+         xlC1v+YqZvqI5ZjeqraOq9tCWhqWfYIMLP9yDtGj2IE9DkYMufKdc8aGTE7SfWfaL7DH
+         qdRe83XJf8lwiKUH/28hSZDvks/WK9VC5tXyeUu/owqQp4l6FSM/fBTYdQnMKT6C0vh0
+         AvZw==
+X-Gm-Message-State: AOAM5322hVAdTLfwquKi40yc/r+2bkxMVvIgopAFe3SPv7kT2eUmSg9U
+        YEwl3aRuKezYEnkJxydC98RX6sVwyeY=
+X-Google-Smtp-Source: ABdhPJwDs5OSWCrHEFp5eX/Wo28NnYYpL8Z+QKeKP4guQNb3mN1M8Rdgu+BRII++BQ3P3s7DnuYVIg==
+X-Received: by 2002:a05:6830:90a:: with SMTP id v10mr4668020ott.364.1615420226130;
+        Wed, 10 Mar 2021 15:50:26 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w7sm215493oie.7.2021.03.10.15.50.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Mar 2021 15:50:25 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 10 Mar 2021 15:50:24 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 0/7] 4.4.261-rc1 review
+Message-ID: <20210310235024.GA195769@roeck-us.net>
+References: <20210310132319.155338551@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210308164845.3210393-1-vkoul@kernel.org>
-In-Reply-To: <20210308164845.3210393-1-vkoul@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 11 Mar 2021 00:47:48 +0100
-Message-ID: <CACRpkdbOY_ZuL4YwkQy1dCDn_USEDy1+F1EUooNTtkXDU0zBDw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom-pmic-gpio: Add pm8350 and friends
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310132319.155338551@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 5:48 PM Vinod Koul <vkoul@kernel.org> wrote:
+On Wed, Mar 10, 2021 at 02:25:13PM +0100, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 4.4.261 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> Anything received after that time might be too late.
+> 
 
-> Add support for the PM8350, PM8350B, PM8350C, PMK8350, PMR735A and
-> PMR735B GPIO support to the Qualcomm PMIC GPIO binding.
->
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Build results:
+	total: 165 pass: 165 fail: 0
+Qemu test results:
+	total: 331 pass: 331 fail: 0
 
-Both patches applied!
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks Vinod,
-Linus Walleij
+Guenter
