@@ -2,44 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DEC333C0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F6B333C0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhCJMCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:02:47 -0500
-Received: from angie.orcam.me.uk ([157.25.102.26]:37578 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbhCJMCi (ORCPT
+        id S232759AbhCJMCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:02:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232747AbhCJMCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:02:38 -0500
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id BAB5292009C; Wed, 10 Mar 2021 13:02:36 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id B4CB392009B;
-        Wed, 10 Mar 2021 13:02:36 +0100 (CET)
-Date:   Wed, 10 Mar 2021 13:02:36 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     netdev@vger.kernel.org
-cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 0/3] FDDI: Update my e-mail address througout
-Message-ID: <alpine.DEB.2.21.2103091700320.33195@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Wed, 10 Mar 2021 07:02:40 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D19C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:02:39 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so7593075wmj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:02:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dlqVLTWOTrikd1dncf0ixNXcbLRecLbYPdhiTz2QQsg=;
+        b=IlbejYfHeXrIsqw5NZNVZk+8IE4RQ4b8f8wSrjm/SSTVYsip2XiKzDeCcFu175GzWM
+         5no/YG1PM040hYzcBSHClu3O/dhHRKyWdFHli1vNQLZwFDwWeThwiqfMUKQH2dHmYA2T
+         rA591uTi4Uj5souPrH0ka0y1h5e+YjLJ125d8f8mOqBB1G18bA9g24xmdVzJWzaZ9RFl
+         t/6o1aIi/ehzFUJYI1+OL4k7LhgVsjQjpkScP4LJvCDOKn76cQGePll9JIDF7Tl69sys
+         fovELYDyLK6zzX0gxPaED5ocON9r55Dd2WPNKtSFyvBrgcPg2ztbk2xGyj1w+PJnDunk
+         p9yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dlqVLTWOTrikd1dncf0ixNXcbLRecLbYPdhiTz2QQsg=;
+        b=J9VyIAfINE1odDbutu40GkNfK868gm+OLlZutkQ++loxVFzzljY2o1Q5R7yzfSqSKb
+         qDPpywAWqiUfpyTvSptl0VRDISqHe5yzw1VBWNI15x2Us97EwGfFv0yCIaj7kGj0E7Rq
+         1s6C6mGi953nhiv8eiFDkFBJbNgcQCfE31eVl8ehFUz5olh9UvIISQv40e2Xsz29oFWG
+         VWKSiWRVDHNa+VjoW4T55ium8Qy5Ql1vFqBGnZoEVSGRZZnXhv6mAvYhDjtx7+RfU3qU
+         8SsnsMIDs3PGhAbd9JsOCRupuOzhC3sQCV6zJzXCKmzcOFvCxr9f79evR1BDjijNadHM
+         Fmig==
+X-Gm-Message-State: AOAM530/Jen/oI+vtV4aPt6UUGBWIwJuZHhmKt0GGa7dSdlEwI4hQoMb
+        JVBT1B3XAnl5lc6ExvQfy0zBWjcwIWziMQ==
+X-Google-Smtp-Source: ABdhPJzyl0mOxjO8QTMhpDMKlfhOPmDe6unEELImhzPQxinkABg6DsE/szmYglilSx0lHPd30rN2pw==
+X-Received: by 2002:a05:600c:220d:: with SMTP id z13mr3046652wml.1.1615377758337;
+        Wed, 10 Mar 2021 04:02:38 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8018:efa9:4421:9140? ([2a01:e34:ed2f:f020:8018:efa9:4421:9140])
+        by smtp.googlemail.com with ESMTPSA id y10sm28607210wrl.19.2021.03.10.04.02.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 04:02:37 -0800 (PST)
+Subject: Re: [PATCH] thermal: thermal_of: fix error return code of
+ thermal_of_populate_bind_params()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>, rui.zhang@intel.com,
+        amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210306141106.18695-1-baijiaju1990@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <ac49897d-fdcd-57aa-fb1a-2bf7f3b2296d@linaro.org>
+Date:   Wed, 10 Mar 2021 13:02:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210306141106.18695-1-baijiaju1990@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 06/03/2021 15:11, Jia-Ju Bai wrote:
+> When kcalloc() fails and __tcbp is NULL, no error return code of
+> thermal_of_populate_bind_params() is assigned.
+> To fix this bug, ret is assigned with -ENOMEM in this case.
+> 
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> ---
+>  drivers/thermal/thermal_of.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+> index 69ef12f852b7..e8c9041482e9 100644
+> --- a/drivers/thermal/thermal_of.c
+> +++ b/drivers/thermal/thermal_of.c
+> @@ -710,8 +710,10 @@ static int thermal_of_populate_bind_params(struct device_node *np,
+>  	}
+>  
+>  	__tcbp = kcalloc(count, sizeof(*__tcbp), GFP_KERNEL);
+> -	if (!__tcbp)
+> +	if (!__tcbp) {
+> +		ret = -ENOMEM;
+>  		goto end;
+> +	}
 
- Following the recent update to MAINTAINERS update my e-mail addresses 
-embedded througout the FDDI networking pieces.  Change split into parts 
-according to individual components.
+Thank you for your patch.
 
- LMO (linux-mips.org) has not been recovered at this point, but in the 
-interim I now have forwarding set up from my old e-mail address, so I 
-think there's no need to backport this series to stable branches.
+Seems like the same happens a few lines before:
 
- Please apply.
+        count = of_count_phandle_with_args(np, "cooling-device",
+                                           "#cooling-cells");
+        if (!count) {
+                pr_err("Add a cooling_device property with at least one
+device\n");
+                goto end;
+        }
 
-  Maciej
+Mind to send a patch fixing both ?
+
+Thanks
+
+  -- Daniel
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
