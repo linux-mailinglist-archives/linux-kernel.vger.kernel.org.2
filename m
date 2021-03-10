@@ -2,153 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88368333364
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA59333360
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhCJCzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:55:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbhCJCyx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232142AbhCJCyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 9 Mar 2021 21:54:53 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC673C061761;
-        Tue,  9 Mar 2021 18:54:41 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id n132so16356921iod.0;
-        Tue, 09 Mar 2021 18:54:41 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232004AbhCJCyl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 21:54:41 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B21CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 18:54:30 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id y67so11107079pfb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 18:54:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hye7a38rXTNI1SCZAq9FjOmi6j8GoBMhyqfw/nAPiao=;
-        b=nESiPiFkYSu4eDoCWA3HpeZRytLbODo369VhGGS3fWIsEirsaQsDiAmFx3egmSSxn9
-         nJgzvvJNSjgco+ww9g++pCQnLNxxLj70mq02mI0YGODSNEw5tEeQT9kA4S+UrQFxUcvY
-         5OETXEZQF7Wr7jPa/8RtJODFWiqGxPUMCG0WmMPhjp2ZLVqbkTqCw62eJjqExTo5IBBx
-         PHvGa1D/brWprF/FpKsooUANUYGbcScWfln/doHVvV7zxO5jUySMZD7d8gHpCm5Cutmg
-         8GsDM1FW/89ErQk2c6yvWf1D3Q8wtRXpm60QgXEBsgkU3KdqcedxQYsEh5KiKyWghWdG
-         nukw==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YBxARwCSnvP/MPs48fuZLZiuQ0mo/90Nc+1kxldAXvY=;
+        b=mgPjitELPEW/P5qmpcLVfVoA0D6sHZbihRmkHn2T6K9SBG4Ha/LJO/otu10peacMhr
+         LuL0fRZdQLwP7M9wEDrTpBtLj8K8tudZNldX6kZxxwpgoOUxKITkywSl2jzbDDQ+LlzB
+         pAfWpubnARGarXUbdueVAOGEZZwgdwg38kjUrvpm8UlRyhUcHqhOLh/KTMLubon7Kb4n
+         SDBddPEB0kPjpJ49JkLLyjwoA35CMpN5HTgdd0VAg06YzUz21lg3gZ8E6/aU6kC48WxF
+         Iv+Fz7wjENWwmVReUBuT2iyV4vRqfYBaKfQMpvTe0Mkt1040FtnGxaGlyV9nF1Rgq6o4
+         4rKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hye7a38rXTNI1SCZAq9FjOmi6j8GoBMhyqfw/nAPiao=;
-        b=bePbOZy0OrnxwHuH7K9yBNBc7nBzDe85jnlimaXASo8Qdglf/olZ3n4mf8miLuDt6z
-         XeDwRqc7eD5R8xvkNIH7S7kVyH+WcZ6ISj4pzhih5zH4v3Zee5rZ5HyXVR69Mi8j7bWP
-         NyLDw9YpdBobii3yP0zjHZovMwrxKW4eHp5Tpels0g/gfppfl3U4hFtgaa+UVDn5WthV
-         +Bmhj8h5p5ZgNdrT4AQqcJdb5AtaOMJIJYumzjwX/UxRjYraIyvZebnKNCbu1jlHoszD
-         hgUHwcqDiJyi1oLFaElUXLfz14EOkh+zwHeqUvxPUL3NOX774rC1LkNHxRuSzVsK1a5l
-         E+Ww==
-X-Gm-Message-State: AOAM5316VPiyXJdZrsWyWUHDhZSHhR55pXlCuHxilGKVF8tgCYFjyKnm
-        5O8RGXtlOwIRnulO3wfvYK+8i6jc3OSm3uFtti0=
-X-Google-Smtp-Source: ABdhPJw3qiZYQygEZtdApPt9vDrti6XQ1M0BC8sZaWv8O48riStgllRv6ybY8VmbvAoavFXif3HFNdc+TZ0hmP/LTl0=
-X-Received: by 2002:a6b:4f09:: with SMTP id d9mr1019988iob.60.1615344881266;
- Tue, 09 Mar 2021 18:54:41 -0800 (PST)
-MIME-Version: 1.0
-References: <1615270520-16951-1-git-send-email-dillon.minfei@gmail.com> <20210309121836.GU4207@pengutronix.de>
-In-Reply-To: <20210309121836.GU4207@pengutronix.de>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Wed, 10 Mar 2021 10:54:05 +0800
-Message-ID: <CAL9mu0JOyM8n9LABwrOYgV4Qxj27XKTchWiGKsE3dMU0W5RNbw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: imx6ull: fix ubi mount failed on MYS-6ULX-IOT board
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, shawnguo@kernel.org,
-        parthiban@linumiz.com, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=YBxARwCSnvP/MPs48fuZLZiuQ0mo/90Nc+1kxldAXvY=;
+        b=YBCOlLKTsHC9aCtfHGP9Iz6n5zTEH/pqe1/BoWAT/MIy9gz/t6Tj1+vXUzlSUABfuG
+         gy3EWB2Rfam/wuy5VGe9hEeu3QoK9hD/P26dhrfp2di4zoo+l0uKzLDCNwQPOJv/sFE7
+         Hw+wau+rRHXg4aQnISDoUDJRNvUUpHxEv4CijbRCKiXMqjNreF+UTDvXgoLisz7qAwRN
+         D2RYQIM0UmtEAPON4XaSU8dbv7WJyoIty4r8CIndz8X1loKjM+EhJigqvBncuT+ZrHaK
+         F6Mx57C4cVek7/lk3JXOFxD/iqJqFcBg+yTzmE/wH+XVUk9q/9OIQkjSKslJ7i0HybNT
+         MhtQ==
+X-Gm-Message-State: AOAM533KXIlWM1AsfN1jwZiCbvwCxcvaNq0N9Y7jjkwuagnTAhPsuhq4
+        ITDBjdoHj8Gv1T/UcGA6uaukYw==
+X-Google-Smtp-Source: ABdhPJw9djyUJKGf+CL7k+IvlqXvhXmzFMbBeiDmFCthoAskqXlsDt4pmgMsgrh8nJwik7OuxQCByg==
+X-Received: by 2002:a62:b410:0:b029:1a4:7868:7e4e with SMTP id h16-20020a62b4100000b02901a478687e4emr891769pfn.62.1615344869693;
+        Tue, 09 Mar 2021 18:54:29 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id v1sm4250210pjt.1.2021.03.09.18.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 18:54:28 -0800 (PST)
+Date:   Tue, 09 Mar 2021 18:54:28 -0800 (PST)
+X-Google-Original-Date: Tue, 09 Mar 2021 18:54:03 PST (-0800)
+Subject:     Re: [PATCH 0/3] Move kernel mapping outside the linear mapping
+In-Reply-To: <20210225080453.1314-1-alex@ghiti.fr>
+CC:     corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
+        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
+        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org, alex@ghiti.fr
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alex@ghiti.fr
+Message-ID: <mhng-cf5d29ec-e941-4579-8c42-2c11799a8f2f@penguin>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sascha,
-
-Thanks for reviewing.
-
-On Tue, Mar 9, 2021 at 8:18 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+On Thu, 25 Feb 2021 00:04:50 PST (-0800), alex@ghiti.fr wrote:
+> I decided to split sv48 support in small series to ease the review.
 >
-> On Tue, Mar 09, 2021 at 02:15:19PM +0800, dillon.minfei@gmail.com wrote:
-> > From: dillon min <dillon.minfei@gmail.com>
-> >
-> > This patch intend to fix ubi filesystem mount failed on MYS-6ULX-IOT board,
-> > from Micron MT29F2G08ABAEAWP's datasheets, we need to choose 4-bit ECC.
-> >
-> > Table 18: Error Management Details
-> >
-> > Description                                   Requirement
-> >
-> > Minimum number of valid blocks (NVB) per LUN  2008
-> > Total available blocks per LUN                        2048
-> > First spare area location                     x8: byte 2048 x16: word 1024
-> > Bad-block mark                                        x8: 00h x16: 0000h
-> > Minimum required ECC                          4-bit ECC per 528 bytes
-> > Minimum ECC with internal ECC enabled         4-bit ECC per 516 bytes (user data) + 8
-> >                                               bytes (parity data)
-> > Minimum required ECC for block 0 if PROGRAM/
-> > ERASE cycles are less than 1000                       1-bit ECC per 528 bytes
+> This patchset pushes the kernel mapping (modules and BPF too) to the last
+> 4GB of the 64bit address space, this allows to:
+> - implement relocatable kernel (that will come later in another
+>   patchset) that requires to move the kernel mapping out of the linear
+>   mapping to avoid to copy the kernel at a different physical address.
+> - have a single kernel that is not relocatable (and then that avoids the
+>   performance penalty imposed by PIC kernel) for both sv39 and sv48.
 >
-> 4-bit ECC is the minimum this chip requires. There's nothing wrong with
-> choosing a better ECC like the GPMI driver does by default.
+> The first patch implements this behaviour, the second patch introduces a
+> documentation that describes the virtual address space layout of the 64bit
+> kernel and the last patch is taken from my sv48 series where I simply added
+> the dump of the modules/kernel/BPF mapping.
 >
-Yes, indeed, the mt29f2g08's minimum ecc is 4-bit, you can use 8-bits ecc.
-but there is a dependency between new kernel gpmi-nand with the old
-mfg-kernel's , which means
-if the old nand ecc layout is 4-bits, you should use ecc 4-bit in the
-new kernel (by fsl,use-minimum-ecc),
-else use 8-bits.
-
-For my case, the ubifs filesystem was created by ecc 4-bits, without
-reflash filesystem or change
-gpmi-nand.c , so the better way is to use dts configure.
-
-use legacy_set_geometry() :
-[    6.713115] GF length              : 13
-[    6.713115] ECC Strength           : 8
-[    6.713115] Page Size in Bytes     : 2110
-[    6.713115] Metadata Size in Bytes : 10
-[    6.713115] ECC Chunk Size in Bytes: 512
-[    6.713115] ECC Chunk Count        : 4
-[    6.713115] Payload Size in Bytes  : 2048
-[    6.713115] Auxiliary Size in Bytes: 16
-[    6.713115] Auxiliary Status Offset: 12
-[    6.713115] Block Mark Byte Offset : 1999
-[    6.713115] Block Mark Bit Offset  : 0
-
-use set_geometry_by_ecc_info()
-[    6.701262] GF length              : 13
-[    6.701262] ECC Strength           : 4
-[    6.701262] Page Size in Bytes     : 2084
-[    6.701262] Metadata Size in Bytes : 10
-[    6.701262] ECC Chunk Size in Bytes: 512
-[    6.701262] ECC Chunk Count        : 4
-[    6.701262] Payload Size in Bytes  : 2048
-[    6.701262] Auxiliary Size in Bytes: 16
-[    6.701262] Auxiliary Status Offset: 12
-[    6.701262] Block Mark Byte Offset : 2018
-[    6.701262] Block Mark Bit Offset  : 4
-
-here are some background tips (fsl,use-minimum-ecc) for your refer:
-
-The bug was submitted in regression test,
-[1] https://linux-mtd.infradead.narkive.com/hfRFPn3P/gpmi-mtd-ecc-regression
-
-First patch to fix it
-[2] https://stable.vger.kernel.narkive.com/mupPGUPj/patch-v2-mtd-gpmi-fix-the-ecc-regression
-
-Introduce devicetree to configure by user(more flexibility)
-[3] https://linux-mtd.infradead.narkive.com/tqQZ75Iz/patch-v2-mtd-gpmi-add-a-new-dt-property-to-use-the-datasheet-s-minimum-required-ecc
-
-
-
-> It looks like you are papering over some other problem.
+> I removed the Reviewed-by on the first patch since it changed enough from
+> last time and deserves a second look.
 >
-> Sascha
+> Alexandre Ghiti (3):
+>   riscv: Move kernel mapping outside of linear mapping
+>   Documentation: riscv: Add documentation that describes the VM layout
+>   riscv: Prepare ptdump for vm layout dynamic addresses
 >
-> --
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+>  Documentation/riscv/index.rst       |  1 +
+>  Documentation/riscv/vm-layout.rst   | 61 ++++++++++++++++++++++
+>  arch/riscv/boot/loader.lds.S        |  3 +-
+>  arch/riscv/include/asm/page.h       | 18 ++++++-
+>  arch/riscv/include/asm/pgtable.h    | 37 +++++++++----
+>  arch/riscv/include/asm/set_memory.h |  1 +
+>  arch/riscv/kernel/head.S            |  3 +-
+>  arch/riscv/kernel/module.c          |  6 +--
+>  arch/riscv/kernel/setup.c           |  3 ++
+>  arch/riscv/kernel/vmlinux.lds.S     |  3 +-
+>  arch/riscv/mm/fault.c               | 13 +++++
+>  arch/riscv/mm/init.c                | 81 +++++++++++++++++++++++------
+>  arch/riscv/mm/kasan_init.c          |  9 ++++
+>  arch/riscv/mm/physaddr.c            |  2 +-
+>  arch/riscv/mm/ptdump.c              | 67 +++++++++++++++++++-----
+>  15 files changed, 258 insertions(+), 50 deletions(-)
+>  create mode 100644 Documentation/riscv/vm-layout.rst
+
+This generally looks good, but I'm getting a bunch of checkpatch warnings and 
+some conflicts, do you mind fixing those up (and including your other kasan 
+patch, as that's likely to conflict)?
