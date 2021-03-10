@@ -2,124 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E703346B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF343346B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233558AbhCJS1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233459AbhCJS2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:28:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233514AbhCJS1r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Mar 2021 13:27:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233514AbhCJS1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:27:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9064F64F9A;
-        Wed, 10 Mar 2021 18:27:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615400852;
-        bh=aEh3imEtTS6FERscWfpt/m6v5j+dyVcy0L7xTjrmVuM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=y2mQPlSUo7YdAGlWHzqn0bPetOcSuDG4fijvR6g3XbDdTy739GeJ2g1UpNk3rPPYI
-         kBnHVk5PGafPh+rLOCmgxZPfCOHGaOIyCS+gSykUsrQaQPEJsv7oFLdZC4LQI/xJgj
-         vEbEpyPZ7KJ1EUH0fCMJAsHhRiggiQPhJlazQ/sU=
-Date:   Wed, 10 Mar 2021 19:27:30 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Alex Elder <elder@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH 5.10 14/49] net: ipa: ignore CHANNEL_NOT_RUNNING errors
-Message-ID: <YEkPkgYAe7Xmb6Wo@kroah.com>
-References: <20210310132321.948258062@linuxfoundation.org>
- <20210310132322.413240905@linuxfoundation.org>
- <CA+G9fYthEr7TtFBpAXxQfDtwxCe+qg=bbE74nPQ+mpGmSSJ2dw@mail.gmail.com>
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58455C061760;
+        Wed, 10 Mar 2021 10:27:47 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DCB7022173;
+        Wed, 10 Mar 2021 19:27:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615400865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F8vDNH8421RXKDc4eht9KA1gFC2SxxBRRDukiV+MMMM=;
+        b=CxkAO/k0r91N18hLq9c3RkDcy0oyNTMGFDRDx5ThQEr1MkpWhN6rpju8l7at0IUwvQKiUV
+        wuXhMJjctMculrdUrAqkPCuh8ropI+x19oA8SXNRFjMruo0Lu1Pn2VU5eBWpOCMuZuLpcU
+        Wmv3COHMuaGqqDdfkKrL411UEoS/H1M=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYthEr7TtFBpAXxQfDtwxCe+qg=bbE74nPQ+mpGmSSJ2dw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 10 Mar 2021 19:27:44 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 02/15] gpio: regmap: set gpio_chip of_node
+In-Reply-To: <20210310125504.31886-3-noltari@gmail.com>
+References: <20210310125504.31886-1-noltari@gmail.com>
+ <20210310125504.31886-3-noltari@gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <7e35bfd395f3ae40029b0f3cb2bc8f70@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:06:09PM +0530, Naresh Kamboju wrote:
-> On Wed, 10 Mar 2021 at 18:56, <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> > From: Alex Elder <elder@linaro.org>
-> >
-> > [ Upstream commit f849afcc8c3b27d7b50827e95b60557f24184df0 ]
-> >
-> > IPA v4.2 has a hardware quirk that requires the AP to allocate GSI
-> > channels for the modem to use.  It is recommended that these modem
-> > channels get stopped (with a HALT generic command) by the AP when
-> > its IPA driver gets removed.
-> >
-> > The AP has no way of knowing the current state of a modem channel.
-> > So when the IPA driver issues a HALT command it's possible the
-> > channel is not running, and in that case we get an error indication.
-> > This error simply means we didn't need to stop the channel, so we
-> > can ignore it.
-> >
-> > This patch adds an explanation for this situation, and arranges for
-> > this condition to *not* report an error message.
-> >
-> > Signed-off-by: Alex Elder <elder@linaro.org>
-> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> >  drivers/net/ipa/gsi.c | 24 +++++++++++++++++++++++-
-> >  1 file changed, 23 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-> > index 2a65efd3e8da..48ee43b89fec 100644
-> > --- a/drivers/net/ipa/gsi.c
-> > +++ b/drivers/net/ipa/gsi.c
-> > @@ -1052,10 +1052,32 @@ static void gsi_isr_gp_int1(struct gsi *gsi)
-> >         u32 result;
-> >         u32 val;
-> >
-> > +       /* This interrupt is used to handle completions of the two GENERIC
-> > +        * GSI commands.  We use these to allocate and halt channels on
-> > +        * the modem's behalf due to a hardware quirk on IPA v4.2.  Once
-> > +        * allocated, the modem "owns" these channels, and as a result we
-> > +        * have no way of knowing the channel's state at any given time.
-> > +        *
-> > +        * It is recommended that we halt the modem channels we allocated
-> > +        * when shutting down, but it's possible the channel isn't running
-> > +        * at the time we issue the HALT command.  We'll get an error in
-> > +        * that case, but it's harmless (the channel is already halted).
-> > +        *
-> > +        * For this reason, we silently ignore a CHANNEL_NOT_RUNNING error
-> > +        * if we receive it.
-> > +        */
-> >         val = ioread32(gsi->virt + GSI_CNTXT_SCRATCH_0_OFFSET);
-> >         result = u32_get_bits(val, GENERIC_EE_RESULT_FMASK);
-> > -       if (result != GENERIC_EE_SUCCESS_FVAL)
-> > +
-> > +       switch (result) {
-> > +       case GENERIC_EE_SUCCESS_FVAL:
-> > +       case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
+Am 2021-03-10 13:54, schrieb Álvaro Fernández Rojas:
+> This is needed for properly registering GPIO regmap as a child of a 
+> regmap
+> pin controller.
 > 
-> 
-> While building stable rc 5.10 for arm64 the build failed due to
-> the following errors / warnings.
-> 
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-> CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> clang'
-> drivers/net/ipa/gsi.c:1074:7: error: use of undeclared identifier
-> 'GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL'
->         case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
->              ^
-> 1 error generated.
-> make[4]: *** [scripts/Makefile.build:279: drivers/net/ipa/gsi.o] Error 1
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Build log link,
-> https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1086862412#L210
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Reviewed-by: Michael Walle <michael@walle.cc>
+> ---
+>  v6: add comment and simplify of_node assignment
 
-I'll go drop this and push out a -rc2 now, thanks.
+Ah, I see you add the comment for the documentation. Nice. But I'd
+like to see it in the code, too. See below.
 
-greg k-h
+>  v5: switch to fwnode
+>  v4: fix documentation
+>  v3: introduce patch needed for properly parsing gpio-range
+> 
+>  drivers/gpio/gpio-regmap.c  | 1 +
+>  include/linux/gpio/regmap.h | 4 ++++
+>  2 files changed, 5 insertions(+)
+> 
+> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+> index 5412cb3b0b2a..d4fc656e70b0 100644
+> --- a/drivers/gpio/gpio-regmap.c
+> +++ b/drivers/gpio/gpio-regmap.c
+> @@ -249,6 +249,7 @@ struct gpio_regmap *gpio_regmap_register(const
+> struct gpio_regmap_config *config
+> 
+>  	chip = &gpio->gpio_chip;
+>  	chip->parent = config->parent;
+
+If there will be a new version, please add the following comment:
+
+/* gpiolib will use of_node of the parent if chip->of_node is NULL */
+
+>> +       chip->of_node = to_of_node(config->fwnode);
+
+Otherwise, it is not obvious that config->fwnode is optional.
+
+-michael
+
+> +	chip->of_node = to_of_node(config->fwnode);
+>  	chip->base = -1;
+>  	chip->ngpio = config->ngpio;
+>  	chip->names = config->names;
+> diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
+> index ad76f3d0a6ba..334dd928042b 100644
+> --- a/include/linux/gpio/regmap.h
+> +++ b/include/linux/gpio/regmap.h
+> @@ -4,6 +4,7 @@
+>  #define _LINUX_GPIO_REGMAP_H
+> 
+>  struct device;
+> +struct fwnode_handle;
+>  struct gpio_regmap;
+>  struct irq_domain;
+>  struct regmap;
+> @@ -16,6 +17,8 @@ struct regmap;
+>   * @parent:		The parent device
+>   * @regmap:		The regmap used to access the registers
+>   *			given, the name of the device is used
+> + * @fwnode:		(Optional) The firmware node.
+> + *			If not given, the fwnode of the parent is used.
+>   * @label:		(Optional) Descriptive name for GPIO controller.
+>   *			If not given, the name of the device is used.
+>   * @ngpio:		Number of GPIOs
+> @@ -57,6 +60,7 @@ struct regmap;
+>  struct gpio_regmap_config {
+>  	struct device *parent;
+>  	struct regmap *regmap;
+> +	struct fwnode_handle *fwnode;
+> 
+>  	const char *label;
+>  	int ngpio;
