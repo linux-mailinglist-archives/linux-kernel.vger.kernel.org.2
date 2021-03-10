@@ -2,66 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73685333F4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9378A333F50
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234546AbhCJNbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:31:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
+        id S233948AbhCJNcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:32:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233932AbhCJNaA (ORCPT
+        with ESMTP id S234464AbhCJNbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:30:00 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB15C061760;
-        Wed, 10 Mar 2021 05:30:00 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0a9900288f756052865d4a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:9900:288f:7560:5286:5d4a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9A7661EC0324;
-        Wed, 10 Mar 2021 14:29:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615382998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=xXkvh9pNw7/Mx24TDR3vMVMWkIB3Ep8+dOHPbr4oHyA=;
-        b=kz5zgJwdrx7KeFAw4ZfBJeEXjUUKR6exhF6zsx9S1bZUdNbqHesEOcCp4Ht26DdQzlAJTl
-        mlcX/7K1TiVM1EdBNexaOq0VF4YYnZT4LOhGN5iqBVopmlNa7/kE9sXp8DL0VoFUMgO+DS
-        2MB+bAsA5W3cHVGE/zWTN8GAhzvw7sw=
-Date:   Wed, 10 Mar 2021 14:29:48 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
-        b.thiel@posteo.de, jmattson@google.com, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, corbet@lwn.net
-Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
-Message-ID: <20210310132948.GE23521@zn.tnic>
-References: <cover.1615250634.git.kai.huang@intel.com>
- <20210309093037.GA699@zn.tnic>
- <76cb4216a7a689883c78b4622c86bd9c3faaa465.camel@intel.com>
+        Wed, 10 Mar 2021 08:31:40 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7ECC061762
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:31:40 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id n22so7123309wmc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:31:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=bMOvPe8N8rGJXOLjCxzS5gSb/gTvdEZoEOlGF4GuSFs=;
+        b=NLPCffky6G7GzaObhllkOllIgtNjBeMsGjkEMASPl+1pYHywRsMYpm2dtlcyg8Mib8
+         KwVVv4nAqkmnzcogt078Dvez0a507CpBKA+tJqKRJBcxaYDNWIi7zlQV2h4gZ9wKz3L6
+         j3kQgf/A+1u4o9qE7lMpQ7EEJOiZI6/9tl0x/oaILLtId4rQGq0DiqT9WTLHIMixEUWJ
+         Osd21hXPUX+hEuewL193hn1+YN+pQznzUc5B9A/MJ13U8ort3kQ35MparokcriCZU9YH
+         hwDXRCPg/vCK/Lthwuf6UThwdLUGaK/BxDJ9Azo/RtJUMNwP/L+WSKFIGnylkhmpWbmH
+         OAFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bMOvPe8N8rGJXOLjCxzS5gSb/gTvdEZoEOlGF4GuSFs=;
+        b=XiSIIBx4hDLN5wG1UkStiabDUz/B+7KJjPx1RPsio1UCpWV68E4ShU7E2ZnsBG7pDg
+         wlCSpoR6wXmi43oUMFSiLxsVYxAhHE0UynuCrwldWiZ2N2CegOW0e2J7XcSF3oAilNU1
+         2B6UU2OKKvh1nBhnwqe06LNfyyjC2Phf4oxOrfs9YvfcR/fGdlarRQ+CWBtVK3AYDFYJ
+         2PB0q2moUBdwdO/5tz2E+Zs6kIRp9SO1HTFPZbPu6PBJ1xBi3JdIBwqwjDa9MN+8v7FA
+         /H5O5rtufnDeteu2GyKp9buSQcBUBWcayDruGd40c4NZJtRFBuKuU46DM0E3UndDhaAl
+         XqDg==
+X-Gm-Message-State: AOAM532bFQfweXA32s8Letg2scYGJuxJx45Au89ypw3uGj9JQU0bGt3y
+        L7OXAIZJnxs94jPuqlm9tir6Xw==
+X-Google-Smtp-Source: ABdhPJyfXWtzHaUWQl/M4ZEr0SSi/Fz8xcU7IHooODBN0RLT7MhUmViUHHQQEekoUzXnBL6YUKMhJQ==
+X-Received: by 2002:a05:600c:4a06:: with SMTP id c6mr3384475wmp.35.1615383098982;
+        Wed, 10 Mar 2021 05:31:38 -0800 (PST)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id j13sm13409331wrt.29.2021.03.10.05.31.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 05:31:38 -0800 (PST)
+Date:   Wed, 10 Mar 2021 13:31:36 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
+Subject: Re: [PATCH v3 06/15] mfd: Add ROHM BD71815 ID
+Message-ID: <20210310133136.GQ701493@dell>
+References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+ <be0e8cd06ed75e799c942e5076ee7b56ad658467.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+ <20210310103639.GG701493@dell>
+ <a631bbc3dd3bd0f02693d1c35f9a14dbaec67cc3.camel@fi.rohmeurope.com>
+ <20210310111755.GN701493@dell>
+ <e7bb00af76de65c60061c58a570d5b6f40961eb0.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <76cb4216a7a689883c78b4622c86bd9c3faaa465.camel@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e7bb00af76de65c60061c58a570d5b6f40961eb0.camel@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 10:27:05PM +1300, Kai Huang wrote:
-> Sorry for the mistake. I will send out another version with that fixed.
+On Wed, 10 Mar 2021, Matti Vaittinen wrote:
 
-If patch 3 is the only one which needs to change, you can send only that
-one as a reply to the original patch 3 message...
+> On Wed, 2021-03-10 at 11:17 +0000, Lee Jones wrote:
+> > On Wed, 10 Mar 2021, Vaittinen, Matti wrote:
+> > 
+> > > Hello Lee,
+> > > 
+> > > On Wed, 2021-03-10 at 10:36 +0000, Lee Jones wrote:
+> > > > On Mon, 08 Mar 2021, Matti Vaittinen wrote:
+> > > > 
+> > > > > Add chip ID for ROHM BD71815 and PMIC so that drivers can
+> > > > > identify
+> > > > > this IC.
+> > > > > 
+> > > > > Signed-off-by: Matti Vaittinen <
+> > > > > matti.vaittinen@fi.rohmeurope.com>
+> > > > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > > > > ---
+> > > > >  include/linux/mfd/rohm-generic.h | 1 +
+> > > > >  1 file changed, 1 insertion(+)
+> > > > > 
+> > > > > diff --git a/include/linux/mfd/rohm-generic.h
+> > > > > b/include/linux/mfd/rohm-generic.h
+> > > > > index 66f673c35303..e5392bcbc098 100644
+> > > > > --- a/include/linux/mfd/rohm-generic.h
+> > > > > +++ b/include/linux/mfd/rohm-generic.h
+> > > > > @@ -14,6 +14,7 @@ enum rohm_chip_type {
+> > > > >  	ROHM_CHIP_TYPE_BD71828,
+> > > > >  	ROHM_CHIP_TYPE_BD9571,
+> > > > >  	ROHM_CHIP_TYPE_BD9574,
+> > > > > +	ROHM_CHIP_TYPE_BD71815,
+> > > > 
+> > > > Is there a technical reason why these can't be re-ordered?
+> > > 
+> > > No, I don't think so.
+> > > 
+> > > BTW. there will probably be a (trivial) conflict here as both this
+> > > series and the BD9576/BD9573 series add an ID here. Let me guess,
+> > > you'd
+> > 
+> > That's fine.  I will resolve that manually.
+> 
+> Thanks :)
+> 
+> > 
+> > > like to see them sorted?
+> > 
+> > Wouldn't that be nice? :)
+> Aesthetics is not really my cup of tea. OTOH, if amount of IDs grow,
+> then sorting helps spotting whether some IC has an ID here. So yes, it
+> kind of makes sense.
 
-Thx.
+By 'nice' I don't mean 'pretty'.
+
+I mean 'improving readability/maintainability would be nice'.
+
+> Can you do sorting while resolving the conflict between series or do
+> you want me to
+> a) do sorting if (when) I re-spin the series
+> b) send separate sorting patch as a part of this series
+> c) send sepatate sorting patch after all the pending patches touching
+> these IDs have been merged?
+
+I'll let you use your imagination.
+
+I just noticed that the latest entry did not fit well inside the
+current list.  Why don't you start by putting that in the list where
+it makes the most sense i.e. somewhere near ROHM_CHIP_TYPE_BD71828,
+and see how you get on.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
