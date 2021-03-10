@@ -2,100 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB17334140
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3971433414D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbhCJPMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:12:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232405AbhCJPLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:11:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79FB364F4C;
-        Wed, 10 Mar 2021 15:11:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615389095;
-        bh=GrnU7hctx6M3VdWoZiGqdmasQZGYP8izzqK/3P5/BYY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kSQVsW7ohF2rlCLhswvfcBGIb8wDMAngSd4+oMyCLngilh5Mfddkh2PvC65FniR1P
-         YHNSUyllKFGbTdug0H0NcB5LmXhYW3YJhu/1MwDgaB850ho9Jjg33QrHMyknYuEjQW
-         6RkxoWpFc185+C5VpkVhcQnfX+Dms6GQKOftBenzeYxLlN95srjMlQop0GXzVNUnk2
-         SQC59UYLMZTfCg4YAyADctetIa9sHcIisk93RUtUWFAjrjlyhpvWtPsZEFuH4f6TI+
-         dSKbMQnvNvXee5KTerjyNWAQPFhd7F8pUuuj//cOOPXPYja6P8ncB7Gnyqy572t85U
-         +Vzcd5cS/KlEQ==
-Date:   Wed, 10 Mar 2021 17:11:10 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] x86/sgx: Use sgx_free_epc_page() in
- sgx_reclaim_pages()
-Message-ID: <YEjhjhBpYJ6i6EFD@kernel.org>
-References: <20210303150323.433207-1-jarkko@kernel.org>
- <20210303150323.433207-3-jarkko@kernel.org>
- <b223ea92-8b20-def3-7bd0-2cc44474bd78@intel.com>
+        id S232587AbhCJPRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:17:04 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:44306 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhCJPQ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:16:29 -0500
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 12AFFu1r027275;
+        Thu, 11 Mar 2021 00:15:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 12AFFu1r027275
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615389357;
+        bh=am2Rpw5u8k0GIO0ZLg2v0XmZ9MepkJ5+FWoX6aHGHrg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=omk4UADYKMUBJp6sKf4ci7fLuozdTe1T8IbBNiZN8iRYtBY8oBmnLlFtFjf4xPEE6
+         DwIe+nRz9c3lGa3wU5oGcBxkzGvCj0M5zmsVSEHua3Y4svzgfPFqNF9+z5NXhku3+X
+         OGcW7z+DR2j2WxBdBZisf84pibabaW7943coE9hC7lJTdQ4ErHNTd8YTOoim8TShTE
+         JxRZ5tKK9GDuC7+8ZVZYT5zuJn3zjJd9pMlQNL7x915kr2HQjzcZZNIkYH8grOEbh6
+         AlpUnGF4muniT+wJJEnWiBm4Ch8skGp4EIEECvbFjSveaqWSoDU3xuwWzywK9Nvfz5
+         b9ER/3jsOHw5w==
+X-Nifty-SrcIP: [209.85.214.178]
+Received: by mail-pl1-f178.google.com with SMTP id w7so5134653pll.8;
+        Wed, 10 Mar 2021 07:15:57 -0800 (PST)
+X-Gm-Message-State: AOAM5332I8lcl20RjJSQWBByeCN80apI9+tGcRGLvO4T6uBSq6cfeqtD
+        riqYjtZxtGa+iSLwvRxYTdk5+0GL36Lclodt0EU=
+X-Google-Smtp-Source: ABdhPJzNL9Y7K7R8TM5hJNqul6boslcL1ISkBronua4FGzwGMDlgaXULaU+Le+9O8ODXuyx5G/jdokhFvmarIVgUi5c=
+X-Received: by 2002:a17:902:8ec9:b029:e6:c5e:cf18 with SMTP id
+ x9-20020a1709028ec9b02900e60c5ecf18mr3249695plo.47.1615389356374; Wed, 10 Mar
+ 2021 07:15:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b223ea92-8b20-def3-7bd0-2cc44474bd78@intel.com>
+References: <cover.1615354376.git.viresh.kumar@linaro.org> <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+ <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com> <20210310144730.5ipzeailoj6nno5h@vireshk-i7>
+In-Reply-To: <20210310144730.5ipzeailoj6nno5h@vireshk-i7>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 11 Mar 2021 00:15:19 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARKdZT+UdCVmZ1_P3T07yT2Ra34rzMf2RwMvkj7hVkfDg@mail.gmail.com>
+Message-ID: <CAK7LNARKdZT+UdCVmZ1_P3T07yT2Ra34rzMf2RwMvkj7hVkfDg@mail.gmail.com>
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source files
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 08:59:17AM -0800, Dave Hansen wrote:
-> On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
-> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > index 52d070fb4c9a..ed99c60024dc 100644
-> > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > @@ -305,7 +305,6 @@ static void sgx_reclaim_pages(void)
-> >  {
-> >  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
-> >  	struct sgx_backing backing[SGX_NR_TO_SCAN];
-> > -	struct sgx_epc_section *section;
-> >  	struct sgx_encl_page *encl_page;
-> >  	struct sgx_epc_page *epc_page;
-> >  	pgoff_t page_index;
-> > @@ -378,11 +377,7 @@ static void sgx_reclaim_pages(void)
-> >  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
-> >  		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-> >  
-> > -		section = &sgx_epc_sections[epc_page->section];
-> > -		spin_lock(&section->lock);
-> > -		list_add_tail(&epc_page->list, &section->page_list);
-> > -		section->free_cnt++;
-> > -		spin_unlock(&section->lock);
-> > +		sgx_free_epc_page(epc_page);
-> >  	}
-> >  }
-> 
-> In current upstream (3fb6d0e00e), sgx_free_epc_page() calls __eremove().
->  This code does not call __eremove().  That seems to be changing
-> behavior where none was intended.
+On Wed, Mar 10, 2021 at 11:47 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 10-03-21, 20:24, Masahiro Yamada wrote:
+> > On Wed, Mar 10, 2021 at 2:35 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > > diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> > > index bc045a54a34e..59e86f67f9e0 100644
+> > > --- a/scripts/Makefile.lib
+> > > +++ b/scripts/Makefile.lib
+> > > @@ -339,7 +339,7 @@ $(obj)/%.dtb.S: $(obj)/%.dtb FORCE
+> > >
+> > >  quiet_cmd_dtc = DTC     $@
+> > >  cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
+> > > -       $(DTC) -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
+> > > +       $(DTC) -I dts -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
+> >
+> > Even without "-I dts",
+> >
+> >    inform = guess_input_format(arg, "dts");
+> >
+> > seems to fall back to "dts" anyway,
+>
+> I missed this TBH.
+>
+> > but I guess you wanted to make this explicit, correct?
+>
+> That can be a reason now :)
+>
+> > I will drop the ugly -O.
+> > https://patchwork.kernel.org/project/linux-kbuild/patch/20210310110824.782209-1-masahiroy@kernel.org/
+>
+> But if we are going to depend on DTC to guess it right, then we
+> shouldn't add -I at all..
+>
+> > I will queue it to linux-kbuild/fixes.
+> >
+> >
+> >
+> > >                 $(addprefix -i,$(dir $<) $(DTC_INCLUDE)) $(DTC_FLAGS) \
+> > >                 -d $(depfile).dtc.tmp $(dtc-tmp) ; \
+> > >         cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
+> > > @@ -347,9 +347,13 @@ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ;
+> > >  $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
+> > >         $(call if_changed_dep,dtc)
+> > >
+> > > +# Required for of unit-test files as they can't be renamed to .dtso
+> >
+> > If you go with *.dtso, I think you will rename
+> > all *.dts under the drivers/ directory.
+> >
+> > What is blocking you from making this consistent?
+>
+> The unit-test dts files are designed differently (we have had lots of
+> discussion between Frank and David on that) and they aren't purely
+> overlay or base files. They are designed to do some tricky testing and
+> renaming them to .dtso won't be right, we are just reusing them to do
+> static (build time) testing as well.
 
-EREMOVE does not matter here, as it doesn't in almost all most of the sites
-where sgx_free_epc_page() is used in the driver. It does nothing to an
-uninitialized pages.
 
-The two patches that I posted originally for Kai's series took EREMOVE out
-of sgx_free_epc_page() and put an explicit EREMOVE where it is actually
-needed, but for reasons unknown to me, that change is gone.
+I still do not understand.
 
-Replacing the ad-hoc code with sgx_free_epc_page() is absolutely the right
-action to take because it follows the pattern how sgx_free_epc_page() is
-used in the driver.
+If they are not overlay files, why
+do you need to have them suffixed with .dtbo?
 
-For reference:
+".dts -> .dtb" should be enough.
 
-https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
+Why do you need to do ".dts  -> .dtbo" ?
 
-> Was this, perhaps, based on top of Kai's series that changes the
-> behavior of sgx_free_epc_page()?
 
-I did not refer to that patch series.
 
-/Jarkko
+
+> I think it would be better if we can drop the existing %.dtbo rule
+> here (i.e. dtbo from .dts) and do some magic in unit-test's Makefile,
+> so it is localised at least instead of it here.
+>
+> Any ideas for that ?
+
+I do not know.
+
+My impression is you are doing something fishy.
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
