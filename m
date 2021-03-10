@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F4E333EBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41269333E6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbhCJN0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:26:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46068 "EHLO mail.kernel.org"
+        id S233740AbhCJN0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:26:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232969AbhCJNYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232979AbhCJNYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Mar 2021 08:24:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF9AB64FD8;
-        Wed, 10 Mar 2021 13:24:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C89464FE8;
+        Wed, 10 Mar 2021 13:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382682;
-        bh=PdE2ITkHsmSoZi7qf4AEmJ1X7Nc09213l1yP3F9skVM=;
+        s=korg; t=1615382684;
+        bh=Z1ocGTsyiniW7nPzdRciArBgFAHoS1zxuMi7IXgD1dI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xqm8u9IsRkZ98k2gz5ZEiJd059IvaVg/qbn70RdUqxUeb1C7BkvOqxQzkrUG+o3Nz
-         4IJMUZZfWqk/bSrWAgKRWXmUcz2NUVamSkR8cRiSzxydvtYYagpUsHR5pPFJhZo9jX
-         /voaF+eMHjbdBjsK9oWlh2+FvECKpndgAfhyja0k=
+        b=OmdAG7bXLgQ5yAaciCC0kvGzxrqKkrA2GXkZ42hnjBXvmwvkxjHfzjoKfkD6KFQvM
+         wlrejit5CcE2IShDBl/EWrWgkHtUasjdbwtt5mfeHgTSiLQlWcG42dHA6DzhiPS9uC
+         3gELMmOrAUAyF+aqNqJXAMQtP2gYbcVgXpYzogr8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Lobakin <bloodyreaper@yandex.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 5.4 01/24] net: dsa: add GRO support via gro_cells
-Date:   Wed, 10 Mar 2021 14:24:13 +0100
-Message-Id: <20210310132320.597893085@linuxfoundation.org>
+        stable@vger.kernel.org, Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.4 02/24] dm table: fix iterate_devices based device capability checks
+Date:   Wed, 10 Mar 2021 14:24:14 +0100
+Message-Id: <20210310132320.627343619@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132320.550932445@linuxfoundation.org>
 References: <20210310132320.550932445@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,155 +41,206 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Alexander Lobakin <bloodyreaper@yandex.ru>
+From: Jeffle Xu <jefflexu@linux.alibaba.com>
 
-commit e131a5634830047923c694b4ce0c3b31745ff01b upstream.
+commit a4c8dd9c2d0987cf542a2a0c42684c9c6d78a04e upstream.
 
-gro_cells lib is used by different encapsulating netdevices, such as
-geneve, macsec, vxlan etc. to speed up decapsulated traffic processing.
-CPU tag is a sort of "encapsulation", and we can use the same mechs to
-greatly improve overall DSA performance.
-skbs are passed to the GRO layer after removing CPU tags, so we don't
-need any new packet offload types as it was firstly proposed by me in
-the first GRO-over-DSA variant [1].
+According to the definition of dm_iterate_devices_fn:
+ * This function must iterate through each section of device used by the
+ * target until it encounters a non-zero return code, which it then returns.
+ * Returns zero if no callout returned non-zero.
 
-The size of struct gro_cells is sizeof(void *), so hot struct
-dsa_slave_priv becomes only 4/8 bytes bigger, and all critical fields
-remain in one 32-byte cacheline.
-The other positive side effect is that drivers for network devices
-that can be shipped as CPU ports of DSA-driven switches can now use
-napi_gro_frags() to pass skbs to kernel. Packets built that way are
-completely non-linear and are likely being dropped without GRO.
+For some target type (e.g. dm-stripe), one call of iterate_devices() may
+iterate multiple underlying devices internally, in which case a non-zero
+return code returned by iterate_devices_callout_fn will stop the iteration
+in advance. No iterate_devices_callout_fn should return non-zero unless
+device iteration should stop.
 
-This was tested on to-be-mainlined-soon Ethernet driver that uses
-napi_gro_frags(), and the overall performance was on par with the
-variant from [1], sometimes even better due to minimal overhead.
-net.core.gro_normal_batch tuning may help to push it to the limit
-on particular setups and platforms.
+Rename dm_table_requires_stable_pages() to dm_table_any_dev_attr() and
+elevate it for reuse to stop iterating (and return non-zero) on the
+first device that causes iterate_devices_callout_fn to return non-zero.
+Use dm_table_any_dev_attr() to properly iterate through devices.
 
-iperf3 IPoE VLAN NAT TCP forwarding (port1.218 -> port0) setup
-on 1.2 GHz MIPS board:
+Rename device_is_nonrot() to device_is_rotational() and invert logic
+accordingly to fix improper disposition.
 
-5.7-rc2 baseline:
-
-[ID]  Interval         Transfer     Bitrate        Retr
-[ 5]  0.00-120.01 sec  9.00 GBytes  644 Mbits/sec  413  sender
-[ 5]  0.00-120.00 sec  8.99 GBytes  644 Mbits/sec       receiver
-
-Iface      RX packets  TX packets
-eth0       7097731     7097702
-port0      426050      6671829
-port1      6671681     425862
-port1.218  6671677     425851
-
-With this patch:
-
-[ID]  Interval         Transfer     Bitrate        Retr
-[ 5]  0.00-120.01 sec  12.2 GBytes  870 Mbits/sec  122  sender
-[ 5]  0.00-120.00 sec  12.2 GBytes  870 Mbits/sec       receiver
-
-Iface      RX packets  TX packets
-eth0       9474792     9474777
-port0      455200      353288
-port1      9019592     455035
-port1.218  353144      455024
-
-v2:
- - Add some performance examples in the commit message;
- - No functional changes.
-
-[1] https://lore.kernel.org/netdev/20191230143028.27313-1-alobakin@dlink.ru/
-
-Signed-off-by: Alexander Lobakin <bloodyreaper@yandex.ru>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Cc: Pali Rohár <pali@kernel.org>
+Fixes: c3c4555edd10 ("dm table: clear add_random unless all devices have it set")
+Fixes: 4693c9668fdc ("dm table: propagate non rotational flag")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dsa/Kconfig    |    1 +
- net/dsa/dsa.c      |    2 +-
- net/dsa/dsa_priv.h |    3 +++
- net/dsa/slave.c    |   10 +++++++++-
- 4 files changed, 14 insertions(+), 2 deletions(-)
+ drivers/md/dm-table.c |  103 ++++++++++++++++++++++++++------------------------
+ 1 file changed, 54 insertions(+), 49 deletions(-)
 
---- a/net/dsa/Kconfig
-+++ b/net/dsa/Kconfig
-@@ -9,6 +9,7 @@ menuconfig NET_DSA
- 	tristate "Distributed Switch Architecture"
- 	depends on HAVE_NET_DSA
- 	depends on BRIDGE || BRIDGE=n
-+	select GRO_CELLS
- 	select NET_SWITCHDEV
- 	select PHYLINK
- 	select NET_DEVLINK
---- a/net/dsa/dsa.c
-+++ b/net/dsa/dsa.c
-@@ -238,7 +238,7 @@ static int dsa_switch_rcv(struct sk_buff
- 	if (dsa_skb_defer_rx_timestamp(p, skb))
- 		return 0;
- 
--	netif_receive_skb(skb);
-+	gro_cells_receive(&p->gcells, skb);
- 
- 	return 0;
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -1376,6 +1376,46 @@ struct dm_target *dm_table_find_target(s
+ 	return &t->targets[(KEYS_PER_NODE * n) + k];
  }
---- a/net/dsa/dsa_priv.h
-+++ b/net/dsa/dsa_priv.h
-@@ -11,6 +11,7 @@
- #include <linux/netdevice.h>
- #include <linux/netpoll.h>
- #include <net/dsa.h>
-+#include <net/gro_cells.h>
  
- enum {
- 	DSA_NOTIFIER_AGEING_TIME,
-@@ -68,6 +69,8 @@ struct dsa_slave_priv {
- 
- 	struct pcpu_sw_netstats	*stats64;
- 
-+	struct gro_cells	gcells;
++/*
++ * type->iterate_devices() should be called when the sanity check needs to
++ * iterate and check all underlying data devices. iterate_devices() will
++ * iterate all underlying data devices until it encounters a non-zero return
++ * code, returned by whether the input iterate_devices_callout_fn, or
++ * iterate_devices() itself internally.
++ *
++ * For some target type (e.g. dm-stripe), one call of iterate_devices() may
++ * iterate multiple underlying devices internally, in which case a non-zero
++ * return code returned by iterate_devices_callout_fn will stop the iteration
++ * in advance.
++ *
++ * Cases requiring _any_ underlying device supporting some kind of attribute,
++ * should use the iteration structure like dm_table_any_dev_attr(), or call
++ * it directly. @func should handle semantics of positive examples, e.g.
++ * capable of something.
++ *
++ * Cases requiring _all_ underlying devices supporting some kind of attribute,
++ * should use the iteration structure like dm_table_supports_nowait() or
++ * dm_table_supports_discards(). Or introduce dm_table_all_devs_attr() that
++ * uses an @anti_func that handle semantics of counter examples, e.g. not
++ * capable of something. So: return !dm_table_any_dev_attr(t, anti_func);
++ */
++static bool dm_table_any_dev_attr(struct dm_table *t,
++				  iterate_devices_callout_fn func)
++{
++	struct dm_target *ti;
++	unsigned int i;
 +
- 	/* DSA port data, such as switch, port index, etc. */
- 	struct dsa_port		*dp;
- 
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -1431,6 +1431,11 @@ int dsa_slave_create(struct dsa_port *po
- 		free_netdev(slave_dev);
- 		return -ENOMEM;
- 	}
++	for (i = 0; i < dm_table_get_num_targets(t); i++) {
++		ti = dm_table_get_target(t, i);
 +
-+	ret = gro_cells_init(&p->gcells, slave_dev);
-+	if (ret)
-+		goto out_free;
++		if (ti->type->iterate_devices &&
++		    ti->type->iterate_devices(ti, func, NULL))
++			return true;
++        }
 +
- 	p->dp = port;
- 	INIT_LIST_HEAD(&p->mall_tc_list);
- 	INIT_WORK(&port->xmit_work, dsa_port_xmit_work);
-@@ -1443,7 +1448,7 @@ int dsa_slave_create(struct dsa_port *po
- 	ret = dsa_slave_phy_setup(slave_dev);
- 	if (ret) {
- 		netdev_err(master, "error %d setting up slave phy\n", ret);
--		goto out_free;
-+		goto out_gcells;
- 	}
- 
- 	dsa_slave_notify(slave_dev, DSA_PORT_REGISTER);
-@@ -1462,6 +1467,8 @@ out_phy:
- 	phylink_disconnect_phy(p->dp->pl);
- 	rtnl_unlock();
- 	phylink_destroy(p->dp->pl);
-+out_gcells:
-+	gro_cells_destroy(&p->gcells);
- out_free:
- 	free_percpu(p->stats64);
- 	free_netdev(slave_dev);
-@@ -1482,6 +1489,7 @@ void dsa_slave_destroy(struct net_device
- 	dsa_slave_notify(slave_dev, DSA_PORT_UNREGISTER);
- 	unregister_netdev(slave_dev);
- 	phylink_destroy(dp->pl);
-+	gro_cells_destroy(&p->gcells);
- 	free_percpu(p->stats64);
- 	free_netdev(slave_dev);
++	return false;
++}
++
+ static int count_device(struct dm_target *ti, struct dm_dev *dev,
+ 			sector_t start, sector_t len, void *data)
+ {
+@@ -1692,12 +1732,12 @@ static int dm_table_supports_dax_write_c
+ 	return false;
  }
+ 
+-static int device_is_nonrot(struct dm_target *ti, struct dm_dev *dev,
+-			    sector_t start, sector_t len, void *data)
++static int device_is_rotational(struct dm_target *ti, struct dm_dev *dev,
++				sector_t start, sector_t len, void *data)
+ {
+ 	struct request_queue *q = bdev_get_queue(dev->bdev);
+ 
+-	return q && blk_queue_nonrot(q);
++	return q && !blk_queue_nonrot(q);
+ }
+ 
+ static int device_is_not_random(struct dm_target *ti, struct dm_dev *dev,
+@@ -1708,35 +1748,18 @@ static int device_is_not_random(struct d
+ 	return q && !blk_queue_add_random(q);
+ }
+ 
+-static bool dm_table_all_devices_attribute(struct dm_table *t,
+-					   iterate_devices_callout_fn func)
+-{
+-	struct dm_target *ti;
+-	unsigned i;
+-
+-	for (i = 0; i < dm_table_get_num_targets(t); i++) {
+-		ti = dm_table_get_target(t, i);
+-
+-		if (!ti->type->iterate_devices ||
+-		    !ti->type->iterate_devices(ti, func, NULL))
+-			return false;
+-	}
+-
+-	return true;
+-}
+-
+-static int device_no_partial_completion(struct dm_target *ti, struct dm_dev *dev,
++static int device_is_partial_completion(struct dm_target *ti, struct dm_dev *dev,
+ 					sector_t start, sector_t len, void *data)
+ {
+ 	char b[BDEVNAME_SIZE];
+ 
+ 	/* For now, NVMe devices are the only devices of this class */
+-	return (strncmp(bdevname(dev->bdev, b), "nvme", 4) == 0);
++	return (strncmp(bdevname(dev->bdev, b), "nvme", 4) != 0);
+ }
+ 
+ static bool dm_table_does_not_support_partial_completion(struct dm_table *t)
+ {
+-	return dm_table_all_devices_attribute(t, device_no_partial_completion);
++	return !dm_table_any_dev_attr(t, device_is_partial_completion);
+ }
+ 
+ static int device_not_write_same_capable(struct dm_target *ti, struct dm_dev *dev,
+@@ -1863,27 +1886,6 @@ static int device_requires_stable_pages(
+ 	return q && bdi_cap_stable_pages_required(q->backing_dev_info);
+ }
+ 
+-/*
+- * If any underlying device requires stable pages, a table must require
+- * them as well.  Only targets that support iterate_devices are considered:
+- * don't want error, zero, etc to require stable pages.
+- */
+-static bool dm_table_requires_stable_pages(struct dm_table *t)
+-{
+-	struct dm_target *ti;
+-	unsigned i;
+-
+-	for (i = 0; i < dm_table_get_num_targets(t); i++) {
+-		ti = dm_table_get_target(t, i);
+-
+-		if (ti->type->iterate_devices &&
+-		    ti->type->iterate_devices(ti, device_requires_stable_pages, NULL))
+-			return true;
+-	}
+-
+-	return false;
+-}
+-
+ void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
+ 			       struct queue_limits *limits)
+ {
+@@ -1928,10 +1930,10 @@ void dm_table_set_restrictions(struct dm
+ 		dax_write_cache(t->md->dax_dev, true);
+ 
+ 	/* Ensure that all underlying devices are non-rotational. */
+-	if (dm_table_all_devices_attribute(t, device_is_nonrot))
+-		blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
+-	else
++	if (dm_table_any_dev_attr(t, device_is_rotational))
+ 		blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
++	else
++		blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
+ 
+ 	if (!dm_table_supports_write_same(t))
+ 		q->limits.max_write_same_sectors = 0;
+@@ -1943,8 +1945,11 @@ void dm_table_set_restrictions(struct dm
+ 	/*
+ 	 * Some devices don't use blk_integrity but still want stable pages
+ 	 * because they do their own checksumming.
++	 * If any underlying device requires stable pages, a table must require
++	 * them as well.  Only targets that support iterate_devices are considered:
++	 * don't want error, zero, etc to require stable pages.
+ 	 */
+-	if (dm_table_requires_stable_pages(t))
++	if (dm_table_any_dev_attr(t, device_requires_stable_pages))
+ 		q->backing_dev_info->capabilities |= BDI_CAP_STABLE_WRITES;
+ 	else
+ 		q->backing_dev_info->capabilities &= ~BDI_CAP_STABLE_WRITES;
+@@ -1955,7 +1960,7 @@ void dm_table_set_restrictions(struct dm
+ 	 * Clear QUEUE_FLAG_ADD_RANDOM if any underlying device does not
+ 	 * have it set.
+ 	 */
+-	if (blk_queue_add_random(q) && dm_table_all_devices_attribute(t, device_is_not_random))
++	if (blk_queue_add_random(q) && dm_table_any_dev_attr(t, device_is_not_random))
+ 		blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, q);
+ 
+ 	/*
 
 
