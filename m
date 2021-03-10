@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12329333EE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471A2333F3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234139AbhCJN2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:28:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46746 "EHLO mail.kernel.org"
+        id S234105AbhCJNbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:31:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233237AbhCJNZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A693B64FEE;
-        Wed, 10 Mar 2021 13:25:07 +0000 (UTC)
+        id S233533AbhCJNZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9782664FD8;
+        Wed, 10 Mar 2021 13:25:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382708;
-        bh=RTubKmSeI2vbzOr6c61McxKmecNOPSUfeMLlOURJP5g=;
+        s=korg; t=1615382752;
+        bh=YJU8yFNiyFH3WZ34gjSAtlslf+6v0fNqB+uKWus6eHY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UcjybmeU6jpSIsaL9kANUzt6QlzaxMKBYsCWTgsugtLZzKnWxh3fwB9MZIEdJhWq/
-         sQ4gt0Lm2RGE4qRGLCNWoO0+2HOOFrimjFD4PdbKl/MFy+4OuoV3TzFu0FDbnKdvM4
-         vvenXPnRBE0i1tdhFfJkJk3lmTYnJKslXb/zZ8yQ=
+        b=1KQokAP6n0dSvd+ZfgtrDkajuMLnmicPop4FN/htF+3e3hRRJHX5+zK9Mkeo/VJfp
+         zI70QKVLII8yBW3O1nGFWR0ht6U6OlI65hiyuUjeJqBTp3UX5ANXFNjGPtl0H8pRwT
+         Fcss7V58puG/qwSMIOBVWQbj2ig5n7rI0iCPRyxA=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antonio Borneo <borneo.antonio@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
-Subject: [PATCH 4.14 04/20] usbip: tools: fix build error for multiple definition
-Date:   Wed, 10 Mar 2021 14:24:41 +0100
-Message-Id: <20210310132320.655383688@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 34/39] media: cx23885: add more quirks for reset DMA on some AMD IOMMU
+Date:   Wed, 10 Mar 2021 14:24:42 +0100
+Message-Id: <20210310132320.778550677@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.512307035@linuxfoundation.org>
-References: <20210310132320.512307035@linuxfoundation.org>
+In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
+References: <20210310132319.708237392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +44,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Antonio Borneo <borneo.antonio@gmail.com>
+From: Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>
 
-commit d5efc2e6b98fe661dbd8dd0d5d5bfb961728e57a upstream.
+[ Upstream commit dbf0b3a7b719eb3f72cb53c2ce7d34a012a9c261 ]
 
-With GCC 10, building usbip triggers error for multiple definition
-of 'udev_context', in:
-- libsrc/vhci_driver.c:18 and
-- libsrc/usbip_host_common.c:27.
+On AMD Family 15h (Models 30h-3fh), I/O Memory Management Unit
+RiSC engine sometimes stalls, requiring a reset.
 
-Declare as extern the definition in libsrc/usbip_host_common.c.
+As result, MythTV and w-scan won't scan channels on the AMD Kaveri
+APU with the Hauppauge QuadHD TV tuner card.
 
-Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20200618000844.1048309-1-borneo.antonio@gmail.com
-Cc: Petr Štetiar <ynezz@true.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+For the solution I added the Input/Output Memory Management Unit's PCI
+Identity of 0x1423 to the broken_dev_id[] array, which is used by
+a quirks logic meant to fix similar problems with other AMD
+chipsets.
+
+Signed-off-by: Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/usb/usbip/libsrc/usbip_host_common.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/pci/cx23885/cx23885-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/tools/usb/usbip/libsrc/usbip_host_common.c
-+++ b/tools/usb/usbip/libsrc/usbip_host_common.c
-@@ -35,7 +35,7 @@
- #include "list.h"
- #include "sysfs_utils.h"
+diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
+index fd5c52b21436..a1d738969d7b 100644
+--- a/drivers/media/pci/cx23885/cx23885-core.c
++++ b/drivers/media/pci/cx23885/cx23885-core.c
+@@ -2084,6 +2084,10 @@ static struct {
+ 	 * 0x1451 is PCI ID for the IOMMU found on Ryzen
+ 	 */
+ 	{ PCI_VENDOR_ID_AMD, 0x1451 },
++	/* According to sudo lspci -nn,
++	 * 0x1423 is the PCI ID for the IOMMU found on Kaveri
++	 */
++	{ PCI_VENDOR_ID_AMD, 0x1423 },
+ };
  
--struct udev *udev_context;
-+extern struct udev *udev_context;
- 
- static int32_t read_attr_usbip_status(struct usbip_usb_device *udev)
- {
+ static bool cx23885_does_need_dma_reset(void)
+-- 
+2.30.1
+
 
 
