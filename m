@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1116333EB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96212333EE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbhCJN0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:26:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46298 "EHLO mail.kernel.org"
+        id S234126AbhCJN2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:28:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233077AbhCJNYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 713ED64FD7;
-        Wed, 10 Mar 2021 13:24:50 +0000 (UTC)
+        id S233236AbhCJNZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9365F64FF7;
+        Wed, 10 Mar 2021 13:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382691;
-        bh=jnvREqkWOwfPsE+m6wvepIilJ/GqGuTcWPGG1RVnuB4=;
+        s=korg; t=1615382708;
+        bh=kZq5hc93neSL74M+vk8fXw0dLZp9MBr5+vaTLjI4JaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NrRcncJ96MHrEIptgqgFN27G5w9kf10IB1a5q3CmnEaJZNVzcYRVJ3i4FJQplOGqN
-         Akq+nzpyuLfaa6+D9hWYdvbI8NhA31kGB5qWyn73playI9MX44VXFQAND33/PfN3Py
-         Exnh8dgKXr0ap73w6LUwT/vmXZUZJ1jwCOhA+1Oc=
+        b=uL+yw9A2uqYWQ9HrloFijGlGc/Aj66xrvMt+ilsEHvXr2icVEllppKor5CsMecw1I
+         L+p/0BCnPGrzBC3pLdwdqMHPtOs/qH/JEDAQELviFIBo/j2tRnX9R10XjYkpa230H0
+         aO3qPQtVnPQcq82ESUdjrv3bWawN9UJXP79X4oD0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Kiwoong Kim <kwmad.kim@samsung.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 32/36] ASoC: Intel: sof_sdw: add quirk for HP Spectre x360 convertible
-Date:   Wed, 10 Mar 2021 14:23:45 +0100
-Message-Id: <20210310132321.524091477@linuxfoundation.org>
+Subject: [PATCH 5.10 35/49] scsi: ufs: Introduce a quirk to allow only page-aligned sg entries
+Date:   Wed, 10 Mar 2021 14:23:46 +0100
+Message-Id: <20210310132323.055351773@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
-References: <20210310132320.510840709@linuxfoundation.org>
+In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
+References: <20210310132321.948258062@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +42,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Kiwoong Kim <kwmad.kim@samsung.com>
 
-[ Upstream commit d92e279dee56b4b65c1af21f972413f172a9734a ]
+[ Upstream commit 2b2bfc8aa519f696087475ed8e8c61850c673272 ]
 
-This set of devices has SoundWire support along with DMICs.
-The DMI information was provided by users for 3 separate skus.
+Some SoCs require a single scatterlist entry for smaller than page size,
+i.e. 4KB. When dispatching commands with more than one scatterlist entry
+under 4KB in size the following behavior is observed:
 
-BugLink: https://github.com/thesofproject/linux/issues/2700
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20210208233336.59449-4-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+A command to read a block range is dispatched with two scatterlist entries
+that are named AAA and BBB. After dispatching, the host builds two PRDT
+entries and during transmission, device sends just one DATA IN because
+device doesn't care about host DMA. The host then transfers the combined
+amount of data from start address of the area named AAA. As a consequence,
+the area that follows AAA in memory would be corrupted.
+
+    |<------------->|
+    +-------+------------         +-------+
+    +  AAA  + (corrupted)   ...   +  BBB  +
+    +-------+------------         +-------+
+
+To avoid this we need to enforce page size alignment for sg entries.
+
+Link: https://lore.kernel.org/r/56dddef94f60bd9466fd77e69f64bbbd657ed2a1.1611026909.git.kwmad.kim@samsung.com
+Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/scsi/ufs/ufshcd.c | 2 ++
+ drivers/scsi/ufs/ufshcd.h | 4 ++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 9e2e8f508ed4..1d7677376e74 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -159,6 +159,22 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 					SOF_SDW_PCH_DMIC |
- 					SOF_SDW_FOUR_SPK),
- 	},
-+	{
-+		/*
-+		 * this entry covers multiple HP SKUs. The family name
-+		 * does not seem robust enough, so we use a partial
-+		 * match that ignores the product name suffix
-+		 * (e.g. 15-eb1xxx, 14t-ea000 or 13-aw2xxx)
-+		 */
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Spectre x360 Convertible"),
-+		},
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
-+					SOF_SDW_PCH_DMIC |
-+					SOF_RT711_JD_SRC_JD2),
-+	},
- 	/* TigerLake-SDCA devices */
- 	{
- 		.callback = sof_sdw_quirk_cb,
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 379d44d6b9eb..5a7cc2e42ffd 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -4748,6 +4748,8 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
+ 	struct request_queue *q = sdev->request_queue;
+ 
+ 	blk_queue_update_dma_pad(q, PRDT_DATA_BYTE_COUNT_PAD - 1);
++	if (hba->quirks & UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE)
++		blk_queue_update_dma_alignment(q, PAGE_SIZE - 1);
+ 
+ 	if (ufshcd_is_rpm_autosuspend_allowed(hba))
+ 		sdev->rpm_autosuspend = 1;
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index fcca4e15c8cd..a0bc118f9188 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -550,6 +550,10 @@ enum ufshcd_quirks {
+ 	 */
+ 	UFSHCD_QUIRK_SKIP_DEF_UNIPRO_TIMEOUT_SETTING = 1 << 13,
+ 
++	/*
++	 * This quirk allows only sg entries aligned with page size.
++	 */
++	UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE		= 1 << 13,
+ };
+ 
+ enum ufshcd_caps {
 -- 
 2.30.1
 
