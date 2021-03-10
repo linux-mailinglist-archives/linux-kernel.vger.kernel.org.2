@@ -2,109 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FA1334920
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A752E334923
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbhCJUt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:49:58 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:53133 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231584AbhCJUtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:49:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615409392; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=6Dex5qLQKQqs46mtJ5oJBUS+U8y6SzohFsM/HQL/NDs=; b=MELnUz32sChAN7/pqZefMQKQ8KGB2AM26c97C61AJLeCbRO07QEOqJpux/owCrfo/vuQt/GK
- 4ZouzeQavFeQzCnH3KeuHLbATgUBbJYJaZP/IMBSZqqZ7oevfn6PI9xXITiKne6QWpibg2Ty
- YaGUj/EW8MUUbufduzY42IIzycw=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 604930e1a6850484a6844cd7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 20:49:37
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 74303C43461; Wed, 10 Mar 2021 20:49:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 21566C433CA;
-        Wed, 10 Mar 2021 20:49:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 21566C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH v3] bus: mhi: core: Check state before processing power_down
-Date:   Wed, 10 Mar 2021 13:49:25 -0700
-Message-Id: <1615409365-8165-1-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S231741AbhCJUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:51:03 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:17789 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231759AbhCJUur (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:50:47 -0500
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 12AKoKhL021570
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:50:20 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 12AKoKhL021570
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615409420;
+        bh=vkspD6XwG9rG1Ytw7ZTJwsuuvU9BzfeWtF/EO7NZxcw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jlhT/zXInqDRocnQcd25cXigTXn4U2J5+fAzdADlEzZd8eepQGJbU0DMgasu75Hb3
+         fVtK6bUOAVx2Lkl4r/V+Pk3w2jX8bgv2ZVEC/crxRxYxnM+O7n7SC1zS87ne/jIQEM
+         keGpGgtFrPrXKTgpuZBGBAmFBjraOrSOLnpXIYfsTdDSuP1bC/KX25rhezxpcYXPKd
+         BGPTu7oa2OJ486rB99VUBeSblueGjmfLBKADwgOXEb5TVNIVb0AWwcKXRShWJA5VQi
+         SWHgbK9Bqt+MupI3DMfVj4O8oXB43BuUxBQ+NVAf5u6v5i7TzCK3C81GCwS0dTIXhC
+         JTHbbVDp9bdwQ==
+X-Nifty-SrcIP: [209.85.214.177]
+Received: by mail-pl1-f177.google.com with SMTP id u18so9069771plc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:50:20 -0800 (PST)
+X-Gm-Message-State: AOAM531eZcYnIHnPLsUoIboab+hIRmHOWQrTMdywJaYuBem55a15rv5y
+        Wl40TBMvu/m2VfjsfKRQJZQB27SL3h94+pqYCa0=
+X-Google-Smtp-Source: ABdhPJzQ1MlUUYOx6ctKUbbI1vw5urT2osjwH23aqKEtVncC4vqvQPiS/CeJIOS6U2Zq/jZ8U8KtjFAkVIBOLG1H3Pk=
+X-Received: by 2002:a17:902:8ec9:b029:e6:c5e:cf18 with SMTP id
+ x9-20020a1709028ec9b02900e60c5ecf18mr4523952plo.47.1615409419575; Wed, 10 Mar
+ 2021 12:50:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210225112122.2198845-1-arnd@kernel.org> <20210226211323.arkvjnr4hifxapqu@google.com>
+ <CAK8P3a2bLKe3js4SKeZoGp8B51+rpW6G3KvpbJ5=y83sxHSu6g@mail.gmail.com> <1614559739.p25z5x88wl.astroid@bobo.none>
+In-Reply-To: <1614559739.p25z5x88wl.astroid@bobo.none>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 11 Mar 2021 05:49:42 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
+Message-ID: <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Fangrui Song <maskray@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Scull <ascull@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, Nicolas Pitre <nico@fluxnic.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We cannot process a power_down if the power state is DISABLED.  There is
-no valid mhi_ctxt in that case, so attepting to process the power_down
-will likely result in a null pointer dereference.  If the power state is
-DISABLED, there is nothing to do anyways, so just bail early.
+On Mon, Mar 1, 2021 at 10:11 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+>
+> Excerpts from Arnd Bergmann's message of February 27, 2021 7:49 pm:
+> > On Fri, Feb 26, 2021 at 10:13 PM 'Fangrui Song' via Clang Built Linux
+> > <clang-built-linux@googlegroups.com> wrote:
+> >>
+> >> For folks who are interested in --gc-sections on metadata sections,
+> >> I want to bring you awareness of the implication of __start_/__stop_ symbols and C identifier name sections.
+> >> You can see https://github.com/ClangBuiltLinux/linux/issues/1307 for a summary.
+> >> (Its linked blog article has some examples.)
+> >>
+> >> In the kernel linker scripts, most C identifier name sections begin with double-underscore __.
+> >> Some are surrounded by `KEEP(...)`, some are not.
+> >>
+> >> * A `KEEP` keyword has GC root semantics and makes ld --gc-sections ineffectful.
+> >> * Without `KEEP`, __start_/__stop_ references from a live input section
+> >>    can unnecessarily retain all the associated C identifier name input
+> >>    sections. The new ld.lld option `-z start-stop-gc` can defeat this rule.
+> >>
+> >> As an example, a __start___jump_table reference from a live section
+> >> causes all `__jump_table` input section to be retained, even if you
+> >> change `KEEP(__jump_table)` to `(__jump_table)`.
+> >> (If you change the symbol name from `__start_${section}` to something
+> >> else (e.g. `__start${section}`), the rule will not apply.)
+> >
+> > I suspect the __start_* symbols are cargo-culted by many developers
+> > copying stuff around between kernel linker scripts, that's certainly how I
+> > approach making changes to it normally without a deeper understanding
+> > of how the linker actually works or what the different bits of syntax mean
+> > there.
+> >
+> > I see the original vmlinux.lds linker script showed up in linux-2.1.23, and
+> > it contained
+> >
+> > +  . = ALIGN(16);               /* Exception table */
+> > +  __start___ex_table = .;
+> > +  __ex_table : { *(__ex_table) }
+> > +  __stop___ex_table = .;
+> > +
+> > +  __start___ksymtab = .;       /* Kernel symbol table */
+> > +  __ksymtab : { *(__ksymtab) }
+> > +  __stop___ksymtab = .;
+> >
+> > originally for arch/sparc, and shortly afterwards for i386. The magic
+> > __ex_table section was first used in linux-2.1.7 without a linker
+> > script. It's probably a good idea to try cleaning these up by using
+> > non-magic start/stop symbols for all sections, and relying on KEEP()
+> > instead where needed.
+> >
+> >> There are a lot of KEEP usage. Perhaps some can be dropped to facilitate
+> >> ld --gc-sections.
+> >
+> > I see a lot of these were added by Nick Piggin (added to Cc) in this commit:
+> >
+> > commit 266ff2a8f51f02b429a987d87634697eb0d01d6a
+> > Author: Nicholas Piggin <npiggin@gmail.com>
+> > Date:   Wed May 9 22:59:58 2018 +1000
+> >
+> >     kbuild: Fix asm-generic/vmlinux.lds.h for LD_DEAD_CODE_DATA_ELIMINATION
+> >
+> >     KEEP more tables, and add the function/data section wildcard to more
+> >     section selections.
+> >
+> >     This is a little ad-hoc at the moment, but kernel code should be moved
+> >     to consistently use .text..x (note: double dots) for explicit sections
+> >     and all references to it in the linker script can be made with
+> >     TEXT_MAIN, and similarly for other sections.
+> >
+> >     For now, let's see if major architectures move to enabling this option
+> >     then we can do some refactoring passes. Otherwise if it remains unused
+> >     or superseded by LTO, this may not be required.
+> >
+> >     Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> >     Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> >
+> > which apparently was intentionally cautious.
+> >
+> > Unlike what Nick expected in his submission, I now think the annotations
+> > will be needed for LTO just like they are for --gc-sections.
+>
+> Yeah I wasn't sure exactly what LTO looks like or how it would work.
+> I thought perhaps LTO might be able to find dead code with circular /
+> back references, we could put references from the code back to these
+> tables or something so they would be kept without KEEP. I don't know, I
+> was handwaving!
+>
+> I managed to get powerpc (and IIRC x86?) working with gc sections with
+> those KEEP annotations, but effectiveness of course is far worse than
+> what Nicolas was able to achieve with all his techniques and tricks.
+>
+> But yes unless there is some other mechanism to handle these tables,
+> then KEEP probably has to stay. I suggest this wants a very explicit and
+> systematic way to handle it (maybe with some toolchain support) rather
+> than trying to just remove things case by case and see what breaks.
+>
+> I don't know if Nicolas is still been working on his shrinking patches
+> recenty but he probably knows more than anyone about this stuff.
+>
+> Thanks,
+> Nick
+>
 
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
 
-v3: Move the pm_lock use up
-v2: Fix subject and tweak the locking to avoid needless lock/unlock/relock
+I tested LD_DEAD_CODE_DATA_ELIMINATION for the latest kernel.
 
- drivers/bus/mhi/core/pm.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+I added an unused function, this_func_is_unused(),
+then built the ppc kernel with LD_DEAD_CODE_DATA_ELIMINATION.
 
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 414da4f..ea62549 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -1149,6 +1149,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
- 		mhi_deinit_dev_ctxt(mhi_cntrl);
- 
- error_dev_ctxt:
-+	mhi_cntrl->pm_state = MHI_PM_DISABLE;
- 	mutex_unlock(&mhi_cntrl->pm_mutex);
- 
- 	return ret;
-@@ -1160,12 +1161,19 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
- 	enum mhi_pm_state cur_state, transition_state;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 
-+	mutex_lock(&mhi_cntrl->pm_mutex);
-+	write_lock_irq(&mhi_cntrl->pm_lock);
-+	cur_state = mhi_cntrl->pm_state;
-+	if (cur_state == MHI_PM_DISABLE) {
-+		write_unlock_irq(&mhi_cntrl->pm_lock);
-+		mutex_unlock(&mhi_cntrl->pm_mutex);
-+		return; /* Already powered down */
-+	}
-+
- 	/* If it's not a graceful shutdown, force MHI to linkdown state */
- 	transition_state = (graceful) ? MHI_PM_SHUTDOWN_PROCESS :
- 			   MHI_PM_LD_ERR_FATAL_DETECT;
- 
--	mutex_lock(&mhi_cntrl->pm_mutex);
--	write_lock_irq(&mhi_cntrl->pm_lock);
- 	cur_state = mhi_tryset_pm_state(mhi_cntrl, transition_state);
- 	if (cur_state != transition_state) {
- 		dev_err(dev, "Failed to move to state: %s from: %s\n",
+It remained in vmlinux.
+
+
+masahiro@oscar:~/ref/linux$ echo  'void this_func_is_unused(void) {}'
+>>  kernel/cpu.c
+masahiro@oscar:~/ref/linux$ export
+CROSS_COMPILE=/home/masahiro/tools/powerpc-10.1.0/bin/powerpc-linux-
+masahiro@oscar:~/ref/linux$ make ARCH=powerpc  defconfig
+masahiro@oscar:~/ref/linux$ ./scripts/config  -e EXPERT
+masahiro@oscar:~/ref/linux$ ./scripts/config  -e LD_DEAD_CODE_DATA_ELIMINATION
+masahiro@oscar:~/ref/linux$
+~/tools/powerpc-10.1.0/bin/powerpc-linux-nm -n  vmlinux | grep
+this_func
+c000000000170560 T .this_func_is_unused
+c000000001d8d560 D this_func_is_unused
+masahiro@oscar:~/ref/linux$ grep DEAD_CODE_ .config
+CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION=y
+CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
+
+
+If I remember correctly,
+LD_DEAD_CODE_DATA_ELIMINATION dropped unused functions
+when I tried it last time.
+
+
+I also tried arm64 with a HAVE_LD_DEAD_CODE_DATA_ELIMINATION hack.
+The result was the same.
+
+
+
+Am I missing something?
+
+
+
 -- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Best Regards
+Masahiro Yamada
