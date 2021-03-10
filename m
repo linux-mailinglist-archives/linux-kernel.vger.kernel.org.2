@@ -2,144 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E64033453E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 100F3334540
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbhCJRgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:36:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbhCJRgW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:36:22 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9D1C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:36:22 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id d13so29366318edp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:36:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o0qx1P3+0pCBpzbRfl6S1GiH0ttn2Cr7Rfh1TFUYrhQ=;
-        b=Uja17BIpkiNfpDNxhJMmLhmb8CGjis7QUU3NcZ4/f3U1Qn5cTg6ox4jcC5tq0n/EN3
-         ykXWeo9+ZXtwb/CXKbssqJu33xOUSyOYr8gfiXneu/zi5M/TT9zLlIEGTsglPgNCdUf5
-         Lv1PaJZve5bvCaVruzXelkNouHd120Qv+4/EPbWqN/gPHtpT4eYiUHTosynuYl3GieVJ
-         29tBxIFl4NPkAQiPp18tq5V/UqxxeL6Jp7Wk7oTvUAdwpLRc9cLrh1p96GkY03RDMF0U
-         2ghfmrdoYKBzr5VmuHmY+Z3Fxl6hO7gP6BP+VvwxTZlBJ0rjAF++t45lqY3dmRwVC/jh
-         iaGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o0qx1P3+0pCBpzbRfl6S1GiH0ttn2Cr7Rfh1TFUYrhQ=;
-        b=ZlllXIbSSjumTlLjiD3uss87Ey8yUozCLg008hrn98xv4UoV0xnOB+QKWWMuGGXw2Z
-         NTkfdyB/NfIifbv+dWQ2yMBAMYYK6tu+1u19xQKdYtTti75gk3CXIFUNDLRffqT9tv98
-         saoXYm/wAAeAaPXtR1KS1FsWew2MRK069fjwHbi1N4Y1vSKa1qQ0ujEoLjvkg9dPTb5c
-         JOv4yxdDb5IreKEA765BtjZ7qZe6hs3qDMJ7pYBnd0VXoCivk3n++ixIBGxpnqXohaHI
-         jRHhftC8UfwgTAzM/mjyCOizKetBc+/OSsJq5xiNM9BYZ9dx1rVkj825+YbqtJq7/p6M
-         IoWQ==
-X-Gm-Message-State: AOAM532DfggYVYN+2RP0DYNjPIEvVq0/85LOC4AiKyALVrpUQhV8i3en
-        HT38ev2MmWeblxGq1XE4Z8p2SSq2io31kaMI+hhs7w==
-X-Google-Smtp-Source: ABdhPJxuJpOuewGAFdUepGTu6BAQ6RHOh3x6zUiz5X50hVjX0yh0BlB9XEQck/Z2EiEIxaMK0K9YPFqJ7FPp+5UJUtc=
-X-Received: by 2002:aa7:c3cd:: with SMTP id l13mr4530827edr.52.1615397780739;
- Wed, 10 Mar 2021 09:36:20 -0800 (PST)
+        id S233286AbhCJRhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:37:17 -0500
+Received: from mail-mw2nam10on2080.outbound.protection.outlook.com ([40.107.94.80]:28097
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229828AbhCJRgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 12:36:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QXH+tdvleWuM3ERuWnnhTMB/Wxfwq47f0HLO4F8dLRT1/Y+a17UmPspYr2owlBDbIdHvpvb/ONKmc5kZygtId3rAAmVyrvz6zj/B28ynHLc/+QbObUYFIpeuoX3i9MvS5OFhqYUvW3CrYv5jcmmtdCmbeOgifUuLyJ2PpKmPyE1cht/Fch2s23YmBtLfb/mnj8OgSKikcq1pBPys/ZWCChEV3kwXtAY6UDAuLnPhLKfq97x7xjbs+aJSG3KouBxk3CN0nd9kvhUv6S/Wf5z2XfIqBo+W3wbjLYImdUtl62CEZesAW8OKCj9O72BrD9jZzfv2ySoqsW+UvlRK0u+FJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ap/AlS8Qurf2luSCffRUawgjqkE+z693dtjDqEmHASM=;
+ b=VgEWOfS1tDJU19uDOvXgHk4JxL4nUlUfRhQ/Nxy3RAx49R/hc3AMu6IcAOIAaLlbZzXuvIwDx7ZrpIPRMAE3qdozYXl1ez8YXKt63pQloflmOT/R8Lt5Jkt1D3tX20bl2w4tKJW0zbH+KkpbM3MyImosrLXMKq9nw4qBIdbwZdn0i/+xQMXDMhZwvkuIiIdRIm0e4hguNBL15GCyJw/0zPAtLJ1v+6IhQJFqkU4yBLU0p1HpJSWtQH+nfioYZmwqaZv7NOGO/9vVt9s/i0a86uAVyHw56tuO+/RYlHhv7fgamddFHyAzMSNiej9B0T0n0qmWlPW6J1gIhMi6ITlcgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ap/AlS8Qurf2luSCffRUawgjqkE+z693dtjDqEmHASM=;
+ b=Zo6wZsgXojpIuEqk63qLLYjp5T1DdkUHIEmaTZJQ/rtocEWX1U/NLhwbo2gbN3lY+kUF/8E04F3zPPZRGlW02W8RsXCBDiy+LCn1QxaMpIyDIS6wKh81j65QNnSiYHaFwlCCALAxLDufNJyIeByWITdpRZsoKk+SJZJPQ1ArzV/RBDSLulsmyIBvlR5jScKgoMp7GJeQH1REMnTVvvpPSY/MMHINqww5NU33I5xk3yELbrlqy0PhBin11cCVwWp9XbYmo5lArJTXh5xfx3x/sA46/7AV9YokYw/i3Q9kKWDyd28rxU2hzDYg3ceTqdBTysfKdISnbGAa8UUjoGobWQ==
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
+ by BL0PR12MB5009.namprd12.prod.outlook.com (2603:10b6:208:1c2::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26; Wed, 10 Mar
+ 2021 17:36:47 +0000
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::a1b1:5d8:47d7:4b60]) by MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::a1b1:5d8:47d7:4b60%7]) with mapi id 15.20.3890.038; Wed, 10 Mar 2021
+ 17:36:46 +0000
+From:   "Zi Yan" <ziy@nvidia.com>
+To:     "Michal Hocko" <mhocko@suse.com>
+Cc:     "Mike Kravetz" <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "David Hildenbrand" <david@redhat.com>,
+        "Oscar Salvador" <osalvador@suse.de>,
+        "David Rientjes" <rientjes@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 0/3] hugetlb: add demote/split page functionality
+Date:   Wed, 10 Mar 2021 12:36:41 -0500
+X-Mailer: MailMate (1.14r5757)
+Message-ID: <FD17A9A0-D8D5-4F08-9C90-C8C65F9E94EE@nvidia.com>
+In-Reply-To: <YEj8QwPAvZe5QhsC@dhcp22.suse.cz>
+References: <20210309001855.142453-1-mike.kravetz@oracle.com>
+ <YEjyS+xyeNlMcW/l@dhcp22.suse.cz>
+ <298CE371-115E-4A78-A732-57D7B37DF74C@nvidia.com>
+ <YEj8QwPAvZe5QhsC@dhcp22.suse.cz>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_168BDEE1-DEBE-4AD1-9F8B-1730A2FC44BE_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [216.228.112.22]
+X-ClientProxiedBy: MN2PR03CA0005.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::10) To MN2PR12MB3823.namprd12.prod.outlook.com
+ (2603:10b6:208:168::26)
 MIME-Version: 1.0
-References: <20210310132321.948258062@linuxfoundation.org> <20210310132322.413240905@linuxfoundation.org>
-In-Reply-To: <20210310132322.413240905@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 10 Mar 2021 23:06:09 +0530
-Message-ID: <CA+G9fYthEr7TtFBpAXxQfDtwxCe+qg=bbE74nPQ+mpGmSSJ2dw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 14/49] net: ipa: ignore CHANNEL_NOT_RUNNING errors
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>, Alex Elder <elder@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.2.49.51] (216.228.112.22) by MN2PR03CA0005.namprd03.prod.outlook.com (2603:10b6:208:23a::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Wed, 10 Mar 2021 17:36:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ad08a773-b89f-4228-9194-08d8e3eb1418
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5009:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB5009048220E70D4898B22028C2919@BL0PR12MB5009.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w0RGRc8gWpDzwKdoMpv2FnqNEgCSh9F6eocjdocrYu4SISk52VGkwFRyG7Tyd1HnVPD9fmxYTNO9pLIePklrgV/eVmilGBbCY0+TIVOR2I/UcvRRRD78+Auq3IvEl7yTcRNaRKjoK8gnLltO+mVU+Xydk4FtISS889bz7sLBddvKsKo7gJWoLcoJvK7gnPTvHrUEWPCsCllsKkMI+GxqHQ6jSLFOPSa/Ne0UmwgHVBTJH1EzqBrUe3mv2nzHC1x8xhJr7Mz7rjQ1iMoNoomihFYrDnB0lPuzphV5haFBqwwzNiLseEfyu8vpj2SKO/P1fRP4KwM24TezlszdVm4Nx+B/qJqLSrjTzpC1aVcYvIU20CezYI/vbGTWU7Q6kdKbX6Kv7CPVTxH9bc5vDy0ZyAeMtyM5Cr2bBAaFo9lI+7jOrHuSYueYGeRaL8h4cmYn6p13wvQF0+4oxpu15aaqT+ixdVZyUj0/96WaCi2yv7Apu5tN6vV52KWLgUPk6KzzhgrYxL2TCRzjPabN70MtNx1lDUkHJ5gXUK/X/jNzohFTnagTUBfVHxiXtYlyBdIZld99FwGEYZ1+R0xA0Tokj1njS6xpxOCfyvrGpe+Z6FU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(2906002)(6486002)(53546011)(6916009)(66946007)(33964004)(478600001)(66556008)(8936002)(6666004)(5660300002)(16526019)(186003)(26005)(33656002)(8676002)(4326008)(235185007)(66476007)(83380400001)(86362001)(16576012)(316002)(956004)(2616005)(54906003)(36756003)(45980500001)(72826003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TVZaRzRjY1Zxcy9oYml0OVBsenpyYnFTSVROeFJ5NGpBVlhEUEdqSzNpUnlx?=
+ =?utf-8?B?dFVpdWVqTVp6SlNWeHgvQSs2Wmc1VURhS0sxOXhPNGE3b1RwTUxHbzJiWGRD?=
+ =?utf-8?B?Uk91bWZxZzE0MWMrc0thUm9DVWFYVTZ0M2dHSyt0cDgwZlJKNGU0L1dvN0pk?=
+ =?utf-8?B?NXJlNzRoQTZaaEhPM0FBRmQ2U3RYSHNwd0lVMURxcVpjOWozclloNEtqdnVj?=
+ =?utf-8?B?Y2NXSHI4VFVyeWJweGxmcXRnY0x0Z1VKeWlHMURCTmhIcWpNempVVlMwcnp4?=
+ =?utf-8?B?UFdGMVpBOU9oRFZFWE9RWGtsRFgvRkpPQUNraG9MYVB5N1Nmbm52aEltKy9S?=
+ =?utf-8?B?ZWtUQ3BDYTNiTXVsc2YxVXZDT2RQQU1pdThsSUZGQkRFR2g0bytKYkV5Nngv?=
+ =?utf-8?B?TmZIL3g5TkQyV3psdFZMZVp6cjVOb0UrLzFINEdmTTB1VWdkMFp0QzZKSnN4?=
+ =?utf-8?B?a3NLSWdXVURVWXEvd3Z4VTdTRVpVeVhSUUpoa21oUWFmYlhRWTc3b1dqZm1Y?=
+ =?utf-8?B?c29xMy9ZNUcyTVJvREMwcmI3Y3RqSDBhTmFwRGpjMFZzM0pvZ3YzaXcvVTVD?=
+ =?utf-8?B?UXNOcUZYRzI5RHV5bjFxVm4xdTVseDFXR1doKzJmU0FSTllYYjNZa2grMVJS?=
+ =?utf-8?B?TkFrRmp5Qlh3Y2l1NUVNUTNGbnVFMXZFOEZsRm5lQlRUOXdpaWozYzJhdmpQ?=
+ =?utf-8?B?c2g0bURRN1lmdG1wbmRnQmNCWW1jTTNhWUpNVG1CMGcxMGFkTXVPcjhZNmFO?=
+ =?utf-8?B?UUZPMzdSMmNDMkw4ZDROU0FpS0VCTGtNMmlOWW5OUmF3c1g3b1BBWWtUc3JY?=
+ =?utf-8?B?MFdqSUladkdaQjJYS28va3Q4QU1INjYwZ0kxK3pXN2V1OFVvQXErbGhGbEQz?=
+ =?utf-8?B?dVpQVWVxSGR0WlFGVm96QnFaRmhuUW13S0VQVVB3c1M0TFFxZGtmcUZFOFBE?=
+ =?utf-8?B?Q1Rhd2dFbGlJRFJFb2lhM1JzdVNqWXNOazkxdnFTMUtISVZZYW9oaUQ2UHd3?=
+ =?utf-8?B?RXdSVEl5M2xRQTA4dk9CQ3I2SXF4UGI4K0ZCRlMyN3NJUkFHUzBQUHNkTmpZ?=
+ =?utf-8?B?Wk5jbHhOU0JFVm9wZjBQUnowdGVIN1lPczYzcFh1UzRZRTZiUUFlb1RQa3dz?=
+ =?utf-8?B?eUJQdlRxWmdENEpiSW5OT3ZPQmxwL1FvREpHYno1ZVhzTjh0Q2wwNmI1YnVU?=
+ =?utf-8?B?YzFrQjI4ZU1uNnJ5SFJMZHd2anhTMW9MRjM2THpIYmZTV0pRdXhVSmpiYkx1?=
+ =?utf-8?B?NHRlMlUwYmdDcDFoRDhrRURZUXhsUDZSZHdDV2J5eWNpaDJ0cy96YWVXOG1D?=
+ =?utf-8?B?UG5kWC9ITGhwSWlhMHlSSjcxMStSUlhiTDdBd0hpUTI1bEJxbk5VVkxkOVJY?=
+ =?utf-8?B?VEhIVFZ5ZmtSWW9adkl5NUdsT3hoSVI5aUFNNGtjK0hBZDlXaFh6NE9vTGU0?=
+ =?utf-8?B?alJKNG1GeVREd1VWb3BScGRQWGxtVVFaVlBZZWMyMUpuZUI4ZG1LRVpySGF0?=
+ =?utf-8?B?TlRBV09YU0ZjNzlpeGdPTnBUWWNuUmtPTUFtZWM1b2I4U0VzdFRvajd5aEdq?=
+ =?utf-8?B?RGVXR0pVOTR1YzB3ZkRtd3p1cXVxNjJuditCa3JFMDNDSW9ESGtIYUxOSlhM?=
+ =?utf-8?B?d285QkxYb3kwNE1XcXFBVmIyUUFxTWdVdjBuMVVTWG1QcjljczN3Q1padGhH?=
+ =?utf-8?B?ZTBFSy83blFjVWpzcVU2cXUrdUU1ZjRnNmpXRkh1cUtxOHVnNW1jZm5RWVhs?=
+ =?utf-8?Q?s6PvBjigMVNpqtL9xCc5syoTyFoOtT6/Gin8nDn?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad08a773-b89f-4228-9194-08d8e3eb1418
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2021 17:36:46.8948
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qfsNuDaA3/3f/AK5xwskTWdRH/PrWScOORpYBFRq6GumyPOpasI7QudKXn9v6sAx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5009
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 at 18:56, <gregkh@linuxfoundation.org> wrote:
+--=_MailMate_168BDEE1-DEBE-4AD1-9F8B-1730A2FC44BE_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On 10 Mar 2021, at 12:05, Michal Hocko wrote:
+
+> On Wed 10-03-21 11:46:57, Zi Yan wrote:
+>> On 10 Mar 2021, at 11:23, Michal Hocko wrote:
+>>
+>>> On Mon 08-03-21 16:18:52, Mike Kravetz wrote:
+>>> [...]
+>>>> Converting larger to smaller hugetlb pages can be accomplished today=
+ by
+>>>> first freeing the larger page to the buddy allocator and then alloca=
+ting
+>>>> the smaller pages.  However, there are two issues with this approach=
+:
+>>>> 1) This process can take quite some time, especially if allocation o=
+f
+>>>>    the smaller pages is not immediate and requires migration/compact=
+ion.
+>>>> 2) There is no guarantee that the total size of smaller pages alloca=
+ted
+>>>>    will match the size of the larger page which was freed.  This is
+>>>>    because the area freed by the larger page could quickly be
+>>>>    fragmented.
+>>>
+>>> I will likely not surprise to show some level of reservation. While y=
+our
+>>> concerns about reconfiguration by existing interfaces are quite real =
+is
+>>> this really a problem in practice? How often do you need such a
+>>> reconfiguration?
+>>>
+>>> Is this all really worth the additional code to something as tricky a=
+s
+>>> hugetlb code base?
+>>>
+>>>>  include/linux/hugetlb.h |   8 ++
+>>>>  mm/hugetlb.c            | 199 +++++++++++++++++++++++++++++++++++++=
+++-
+>>>>  2 files changed, 204 insertions(+), 3 deletions(-)
+>>>>
+>>>> -- =
+
+>>>> 2.29.2
+>>>>
+>>
+>> The high level goal of this patchset seems to enable flexible huge pag=
+e
+>> allocation from a single pool, when multiple huge page sizes are avail=
+able
+>> to use. The limitation of existing mechanism is that user has to speci=
+fy
+>> how many huge pages he/she wants and how many gigantic pages he/she wa=
+nts
+>> before the actual use.
 >
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> I believe I have understood this part. And I am not questioning that.
+> This seems useful. I am mostly asking whether we need such a
+> flexibility. Mostly because of the additional code and future
+> maintenance complexity which has turned to be a problem for a long time=
+=2E
+> Each new feature tends to just add on top of the existing complexity.
+
+I totally agree. This patchset looks to me like a partial functional
+replication of splitting high order free pages to lower order ones in bud=
+dy
+allocator. That is why I had the crazy idea below.
+
 >
-> From: Alex Elder <elder@linaro.org>
+>> I just want to throw an idea here, please ignore if it is too crazy.
+>> Could we have a variant buddy allocator for huge page allocations,
+>> which only has available huge page orders in the free list? For exampl=
+e,
+>> if user wants 2MB and 1GB pages, the allocator will only have order-9 =
+and
+>> order-19 pages; when order-9 pages run out, we can split order-19 page=
+s;
+>> if possible, adjacent order-9 pages can be merged back to order-19 pag=
+es.
 >
-> [ Upstream commit f849afcc8c3b27d7b50827e95b60557f24184df0 ]
->
-> IPA v4.2 has a hardware quirk that requires the AP to allocate GSI
-> channels for the modem to use.  It is recommended that these modem
-> channels get stopped (with a HALT generic command) by the AP when
-> its IPA driver gets removed.
->
-> The AP has no way of knowing the current state of a modem channel.
-> So when the IPA driver issues a HALT command it's possible the
-> channel is not running, and in that case we get an error indication.
-> This error simply means we didn't need to stop the channel, so we
-> can ignore it.
->
-> This patch adds an explanation for this situation, and arranges for
-> this condition to *not* report an error message.
->
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/net/ipa/gsi.c | 24 +++++++++++++++++++++++-
->  1 file changed, 23 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-> index 2a65efd3e8da..48ee43b89fec 100644
-> --- a/drivers/net/ipa/gsi.c
-> +++ b/drivers/net/ipa/gsi.c
-> @@ -1052,10 +1052,32 @@ static void gsi_isr_gp_int1(struct gsi *gsi)
->         u32 result;
->         u32 val;
->
-> +       /* This interrupt is used to handle completions of the two GENERIC
-> +        * GSI commands.  We use these to allocate and halt channels on
-> +        * the modem's behalf due to a hardware quirk on IPA v4.2.  Once
-> +        * allocated, the modem "owns" these channels, and as a result we
-> +        * have no way of knowing the channel's state at any given time.
-> +        *
-> +        * It is recommended that we halt the modem channels we allocated
-> +        * when shutting down, but it's possible the channel isn't running
-> +        * at the time we issue the HALT command.  We'll get an error in
-> +        * that case, but it's harmless (the channel is already halted).
-> +        *
-> +        * For this reason, we silently ignore a CHANNEL_NOT_RUNNING error
-> +        * if we receive it.
-> +        */
->         val = ioread32(gsi->virt + GSI_CNTXT_SCRATCH_0_OFFSET);
->         result = u32_get_bits(val, GENERIC_EE_RESULT_FMASK);
-> -       if (result != GENERIC_EE_SUCCESS_FVAL)
-> +
-> +       switch (result) {
-> +       case GENERIC_EE_SUCCESS_FVAL:
-> +       case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
+> I assume you mean to remove those pages from the allocator when they
+> are reserved rather than really used, right? I am not really sure how
+
+No. The allocator maintains all the reserved pages for huge page allocati=
+ons,
+replacing existing cma_alloc or alloc_contig_pages. The kernel builds
+the free list when pages are reserved either during boot time or runtime.=
 
 
-While building stable rc 5.10 for arm64 the build failed due to
-the following errors / warnings.
+> you want to deal with lower orders consuming/splitting too much from
+> higher orders which then makes those unusable for the use even though
+> they were preallocated for a specific workload. Another worry is that a=
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-clang'
-drivers/net/ipa/gsi.c:1074:7: error: use of undeclared identifier
-'GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL'
-        case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
-             ^
-1 error generated.
-make[4]: *** [scripts/Makefile.build:279: drivers/net/ipa/gsi.o] Error 1
+> gap between 2MB and 1GB pages is just too big so a single 2MB request
+> from 1G pool will make the whole 1GB page unusable even when the smalle=
+r
+> pool needs few pages.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Yeah, the gap between 2MB and 1GB is large. The fragmentation will be
+a problem. Maybe we do not need it right now, since this patchset does no=
+t
+propose promoting/merging pages. Or we can reuse the existing
+anti fragmentation mechanisms but with pageblock set to gigantic page siz=
+e
+in this pool.
 
-Build log link,
-https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1086862412#L210
+I admit my idea is a much intrusive change, but I feel that more
+functionality replications of core mm are added to hugetlb code, then why=
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+not reuse the core mm code.
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_168BDEE1-DEBE-4AD1-9F8B-1730A2FC44BE_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmBJA6kPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKG2kQAI/LGOKnNiz/TPOgzoFzqjfaDZH8CE7ZvnlI
+FfLWI/JZrer3SA8eutyEe7Yj7aGbSjfm8vejdQrmJZWjag5eC1aErjfxRiAUHJ11
+YKVHqBfswgt/G9F+v7L913LFOoSeRqUARiISDCru9ezVXNLWWdIqj3BQide39/Am
+b7YK828hAAgOfDSUYmZlls06wwyyUo7kbu0AiWjz1osk7pe+wP/OLU/ocd+M633V
+JvT9mWAQp3vgxDrZ870USCT6gKlFzqMrniWWAzJzXqzHokoVLnXJxtXLoSBoPFFW
+w65jb6rzkkd9GXX0jlECI8GLly73ouxsNmagSndkjBP06Oq7TUPqT/Rt+g4bUO8z
+GIJDTTy9Xy4vGIX8XjpENKkd30wzIdld4BeqD05PSi3b5kT+12rxWS5TMFIPcKNE
+gd3EwpDfCfAnKbrDxC35M5XbNprFPz0w8uVvIER+AkFCpyYkpYJ15jvlfs1e7iW2
+uIWotXjUXBioR6G8KPOsXPPOS65CFbM6Ccn3hLoqP1pAHMsImHjSYuzod9gRcWsG
+PGRjr1HRdmsKtkKKrqy86p2VA6EQLbxq8Pngwka24FWLfNcMGEyc0kXHMBNn9OXy
+Ps/KiDnidiXrGDfG41SDzfsYr7f0kJCCAATReRkK8CYxbmOYuyQnBs9Q4SXQCoa1
+JfCA1xAL
+=/w1F
+-----END PGP SIGNATURE-----
+
+--=_MailMate_168BDEE1-DEBE-4AD1-9F8B-1730A2FC44BE_=--
