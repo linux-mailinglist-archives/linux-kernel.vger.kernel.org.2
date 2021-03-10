@@ -2,228 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09496333345
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA69333349
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhCJCtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:49:01 -0500
-Received: from mail-il1-f173.google.com ([209.85.166.173]:45992 "EHLO
-        mail-il1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhCJCsi (ORCPT
+        id S232115AbhCJCtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:49:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231235AbhCJCtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:48:38 -0500
-Received: by mail-il1-f173.google.com with SMTP id s1so14130522ilh.12;
-        Tue, 09 Mar 2021 18:48:38 -0800 (PST)
+        Tue, 9 Mar 2021 21:49:08 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B334DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 18:48:55 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso4145519pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 18:48:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=SSM2NdMm5I7+I/4ZH3H1cFrXbjEOIb78kT0+qdRhlMA=;
+        b=NHJz5ikagGAMmuCe4/xpZRWTs8giri08Ra4JAEwP1fHCylgU1kTW0axqrTFJagCOCG
+         pqOQW/YGU0maQUcsnF0fBY8Ol/yE12Us64aVk3r3a0Wb3kAkbgmpGc3Xx81AIPMFqiWR
+         q6aFXavmyCZzBqlyUdMD0+BLUNfYzfmQc+NMwCw7wbnHzFwuF4UuXXPXQk1gr2UI7Bt6
+         fB1LhSXO6KTSYFYgvLRjWCvQKytja5mCPvCUSayJvE86gzMXfgHEuZ3GHYmXbbPcZqLq
+         TYkjF80cxLSyAhr9bEf+iIrb8U9N8PW1h+LQoAy/QzeC1GWiAYaik/XddPiJ2PJlavIx
+         DFSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tEOOZPHDEcY0BRs13eDY3wS0u+L4s5FzuNZ5kGdjLNs=;
-        b=eV2gPCQedLWrmNOQrzbtioYRmvDkw6ex/rTGk406xvRhyFhNbgs6EtoQkArujWt8h1
-         /6BAHAcKmdo10ax9+ow4COsHaFMXquCsWtv64eHeRv9B5JzuY7slA4X9Pt8l1jMLfklr
-         r8UsDkhyqdbEvbzpXST1prBr48PwZDR3vhRb5aK/9UPeW2UXSV2F/ZxbikyuOXJFzoTH
-         1lCVg8tBGKiSY46vDHaeKglidGzo7c8Ym5YGMDJUDINxKs9/6+0kzZ1jUzDIlSKGCSI8
-         zH2PatyaTSM5HASMBITf1VLJeY67ia4znP9G3wqFJS8ceu/yh1uYu462dI6oYzLEUPg5
-         RY2g==
-X-Gm-Message-State: AOAM532M4yzsMLJwcDAq6ZfK1fW5AjZhY4p8sK0weA0pZBe3gqEHbjjZ
-        EsHr3kOiX9jJuzYgnojZ7w==
-X-Google-Smtp-Source: ABdhPJxlxbdsnOqUBKBvn9roAYNjrX2t5RPeImFkLklYb3N4N/Nb+GkhzCBE7xUxdgoLpquCONAlmw==
-X-Received: by 2002:a05:6e02:685:: with SMTP id o5mr998162ils.39.1615344518240;
-        Tue, 09 Mar 2021 18:48:38 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id x6sm8397734ioh.19.2021.03.09.18.48.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 18:48:37 -0800 (PST)
-Received: (nullmailer pid 1645357 invoked by uid 1000);
-        Wed, 10 Mar 2021 02:48:34 -0000
-Date:   Tue, 9 Mar 2021 19:48:34 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, timur@kernel.org,
-        nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 3/6] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for
- rpmsg cpu dai driver
-Message-ID: <20210310024834.GA1623179@robh.at.kernel.org>
-References: <1615209750-2357-1-git-send-email-shengjiu.wang@nxp.com>
- <1615209750-2357-4-git-send-email-shengjiu.wang@nxp.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SSM2NdMm5I7+I/4ZH3H1cFrXbjEOIb78kT0+qdRhlMA=;
+        b=LtW24uk721OhLoXC0ltxZ11tnst4yd0MPOotPi39Spbg2nmLCvnsfYVHbUGVFwWpqD
+         EQvhMtW+ues++kCT18Wrph7srGQ8nkpl6QPwjay+zgGu/bXHFJjFKbJRaWFMJ9wlsTqp
+         VtQctjmvigXZwirlaFxHg3bxHSVh1pQ8iQXdAs2HZGjglFpkXmv+tL+9Y8jPcc9MldnI
+         N593gdzoJpkuU5OdzfkxRTMOcgZ6LWXqRxaQlZcMCpOmlxHvnsrqNOPrpFA1h8MZWKkF
+         4iHhRv+SPHrRnEx6ES9cFB9EBGxpZ6VsTDNhnaSqsPSynZOiA3NJtZk0GcQSg74jBbL5
+         Ra0A==
+X-Gm-Message-State: AOAM532olmH+OJTxk2giYsLDN51YyOpS8RsB3I7gPTE8Hi4B6kENXMzH
+        fu41MsyT637EIIYYe6Ms0jlr0Q==
+X-Google-Smtp-Source: ABdhPJznsmRwat2YmybFdZ5bTxueFvrvVVQiG2apqCgI0KKf3BljkZ0EZcLavVVs/8YBwAlz6Cak5A==
+X-Received: by 2002:a17:90a:77c8:: with SMTP id e8mr1109294pjs.48.1615344535032;
+        Tue, 09 Mar 2021 18:48:55 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id j35sm14785971pgj.45.2021.03.09.18.48.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 18:48:54 -0800 (PST)
+Subject: Re: [v5.12-rc2 regression] io_uring: high CPU use after
+ suspend-to-ram
+To:     Kevin Locke <kevin@kevinlocke.name>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rafael.j.wysocki@intel.com
+References: <YEgnIp43/6kFn8GL@kevinlocke.name>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <0d333d67-9a3e-546d-ad1c-ecebfdbe9932@kernel.dk>
+Date:   Tue, 9 Mar 2021 19:48:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615209750-2357-4-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <YEgnIp43/6kFn8GL@kevinlocke.name>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 09:22:27PM +0800, Shengjiu Wang wrote:
-> fsl_rpmsg cpu dai driver is driver for rpmsg audio, which is mainly used
-
-Bindings describe h/w blocks, not drivers.
-
-> for getting the user's configuration from device tree and configure the
-> clocks which is used by Cortex-M core. So in this document define the
-> needed property.
+On 3/9/21 6:55 PM, Kevin Locke wrote:
+> With kernel 5.12-rc2 (and torvalds/master 144c79ef3353), if mpd is
+> playing or paused when my system is suspended-to-ram, when the system is
+> resumed mpd will consume ~200% CPU until killed.  It continues to
+> produce audio and respond to pause/play commands, which do not affect
+> CPU usage.  This occurs with either pulse (to PulseAudio or
+> PipeWire-as-PulseAudio) or alsa audio_output.
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../devicetree/bindings/sound/fsl,rpmsg.yaml  | 118 ++++++++++++++++++
->  1 file changed, 118 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+> The issue appears to have been introduced by a combination of two
+> commits: 3bfe6106693b caused freeze on suspend-to-ram when mpd is paused
+> or playing.  e4b4a13f4941 fixed suspend-to-ram, but introduced the high
+> CPU on resume.
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-> new file mode 100644
-> index 000000000000..5731c1fbc0a6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-> @@ -0,0 +1,118 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/fsl,rpmsg.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP Audio RPMSG CPU DAI Controller
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +description: |
-> +  fsl_rpmsg cpu dai driver is virtual driver for rpmsg audio, which doesn't
-> +  touch hardware. It is mainly used for getting the user's configuration
-> +  from device tree and configure the clocks which is used by Cortex-M core.
-> +  So in this document define the needed property.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx7ulp-rpmsg
-> +      - fsl,imx8mn-rpmsg
-> +      - fsl,imx8mm-rpmsg
-> +      - fsl,imx8mp-rpmsg
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User specified audio sound card name
-> +
-> +  clocks:
-> +    items:
-> +      - description: Peripheral clock for register access
-> +      - description: Master clock
-> +      - description: DMA clock for DMA register access
-> +      - description: Parent clock for multiple of 8kHz sample rates
-> +      - description: Parent clock for multiple of 11kHz sample rates
-> +    minItems: 5
-
-If this doesn't touch hardware, what are these clocks for?
-
-You don't need 'minItems' unless it's less than the number of 'items'.
-
-> +
-> +  clock-names:
-> +    items:
-> +      - const: ipg
-> +      - const: mclk
-> +      - const: dma
-> +      - const: pll8k
-> +      - const: pll11k
-> +    minItems: 5
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  fsl,audioindex:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1]
-> +    default: 0
-> +    description: Instance index for sound card in
-> +                 M core side, which share one rpmsg
-> +                 channel.
-
-We don't do indexes in DT. What's this numbering tied to?
-
-> +
-> +  fsl,version:
-
-version of what?
-
-This seems odd at best.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [1, 2]
-
-You're going to update this with every new firmware version?
-
-> +    default: 2
-> +    description: The version of M core image, which is
-> +                 to make driver compatible with different image.
-> +
-> +  fsl,buffer-size:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: pre allocate dma buffer size
-
-How can you have DMA, this doesn't touch h/w?
-
-> +
-> +  fsl,enable-lpa:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: enable low power audio path.
-> +
-> +  fsl,rpmsg-out:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      This is a boolean property. If present, the transmitting function
-> +      will be enabled.
-> +
-> +  fsl,rpmsg-in:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      This is a boolean property. If present, the receiving function
-> +      will be enabled.
-> +
-> +  fsl,codec-type:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1, 2]
-> +    default: 0
-> +    description: Sometimes the codec is registered by
-> +                 driver not by the device tree, this items
-> +                 can be used to distinguish codecs.
-
-How does one decide what value to use?
-
-> +
-> +  audio-codec:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of the audio codec
-
-The codec is controlled from the Linux side?
-
-> +
-> +  memory-region:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: phandle to the reserved memory nodes
-> +
-> +required:
-> +  - compatible
-> +  - fsl,audioindex
-> +  - fsl,version
-> +  - fsl,buffer-size
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    rpmsg_audio: rpmsg_audio {
-> +        compatible = "fsl,imx8mn-rpmsg";
-> +        fsl,audioindex = <0> ;
-> +        fsl,version = <2>;
-> +        fsl,buffer-size = <0x6000000>;
-> +        fsl,enable-lpa;
-
-How does this work? Don't you need somewhere to put the 'rpmsg' data?
-
-> +    };
-> -- 
-> 2.27.0
+> I attempted to further diagnose using `perf record -p $(pidof mpd)`.
+> Running for about a minute after resume shows ~280 MMAP2 events and
+> almost nothing else.  I'm not sure what to make of that or how to
+> further investigate.
 > 
+> Let me know if there's anything else I can do to help diagnose/test.
+
+The below makes it work as expected for me - but I don't quite
+understand why we're continually running after the freeze. Adding Rafael
+to help understand this.
+
+Rafael, what appears to happen here from a quick look is that the io
+threads are frozen fine and the system suspends. But when we resume,
+signal_pending() is perpetually true, and that is why we then see the
+io_wq_manager() thread just looping like crazy. Is there anything
+special I need to do? Note that these are not kthreads, PF_KTHREAD is
+not true. I'm guessing it may have something to do with that, but
+haven't dug deeper yet.
+
+
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 3d7060ba547a..0ae9ecadf295 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -591,7 +591,7 @@ static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
+ 	tsk->pf_io_worker = worker;
+ 	worker->task = tsk;
+ 	set_cpus_allowed_ptr(tsk, cpumask_of_node(wqe->node));
+-	tsk->flags |= PF_NOFREEZE | PF_NO_SETAFFINITY;
++	tsk->flags |= PF_NO_SETAFFINITY;
+ 
+ 	raw_spin_lock_irq(&wqe->lock);
+ 	hlist_nulls_add_head_rcu(&worker->nulls_node, &wqe->free_list);
+@@ -709,7 +709,6 @@ static int io_wq_manager(void *data)
+ 		set_current_state(TASK_INTERRUPTIBLE);
+ 		io_wq_check_workers(wq);
+ 		schedule_timeout(HZ);
+-		try_to_freeze();
+ 		if (fatal_signal_pending(current))
+ 			set_bit(IO_WQ_BIT_EXIT, &wq->state);
+ 	} while (!test_bit(IO_WQ_BIT_EXIT, &wq->state));
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 280133f3abc4..8f4128eb4aa2 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -6735,7 +6735,6 @@ static int io_sq_thread(void *data)
+ 
+ 			up_read(&sqd->rw_lock);
+ 			schedule();
+-			try_to_freeze();
+ 			down_read(&sqd->rw_lock);
+ 			list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
+ 				io_ring_clear_wakeup_flag(ctx);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index d3171e8e88e5..72e444cd0ffe 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2436,6 +2436,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
+ 	if (!IS_ERR(tsk)) {
+ 		sigfillset(&tsk->blocked);
+ 		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL));
++		tsk->flags |= PF_NOFREEZE;
+ 	}
+ 	return tsk;
+ }
+
+-- 
+Jens Axboe
+
