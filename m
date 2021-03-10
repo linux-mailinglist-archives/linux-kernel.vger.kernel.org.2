@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C31333744
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 209EB333745
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbhCJI2L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 03:28:11 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:50139 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhCJI17 (ORCPT
+        id S231843AbhCJI2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:28:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229828AbhCJI2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:27:59 -0500
-Received: from mail-oi1-f182.google.com ([209.85.167.182]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MgeXk-1lwIPx1h88-00h510; Wed, 10 Mar 2021 09:27:57 +0100
-Received: by mail-oi1-f182.google.com with SMTP id v192so10653875oia.5;
-        Wed, 10 Mar 2021 00:27:57 -0800 (PST)
-X-Gm-Message-State: AOAM5337ZYo7aHRu62aa9eXCXgLuKcU/kda7KYqYD+4GcjBCwWBxOVg2
-        s3PhQkJnPH9eTamxBbdKKdU/JTAcXJDa8W60kmo=
-X-Google-Smtp-Source: ABdhPJxUhp0PQlwZhuWBNMm9oBfXDiwFXSQirR9+uVR5kqr2lW3VW2x9+3+VkueduIybWF/5lKAChdCwsc7m15dMWKc=
-X-Received: by 2002:aca:bf44:: with SMTP id p65mr1571024oif.11.1615364876081;
- Wed, 10 Mar 2021 00:27:56 -0800 (PST)
+        Wed, 10 Mar 2021 03:28:04 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636E9C06174A;
+        Wed, 10 Mar 2021 00:28:04 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so7079231pjb.2;
+        Wed, 10 Mar 2021 00:28:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gXHvFOcpTs5YSNgg90LeTtmLZOSFRC3TkmFfCtcgHFM=;
+        b=qLyzb+Nl/WHv4ILfCqMuiicINya6xVDZM3Aztv3RQq8pTPSAAVD6II1S2yApFiyI9W
+         Ni2074l0vT583ozI9ObzHYye7vWAGvO/jmE111vDgis8RF/3b1d+G72CW0ktfJFpfjqx
+         KMvZnAFQ7q/apq9WU7KCe8s37/5RjDqDCDwHBfMbPW03pytdgXYsemNFeBcS8rsaK49o
+         aGPO8xQWLACdlIZ4hbwCj+18qN3YcWABm9k602TgmbxaOFcBXDlhNBVnPhwBrgpYZJRK
+         CxcfotkQ2wkmV+f3SIorOfmgVwlMi5bWoMaMELi7p6jalIz7Wipm9C0A8EKbEqMKmruW
+         4NfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gXHvFOcpTs5YSNgg90LeTtmLZOSFRC3TkmFfCtcgHFM=;
+        b=myS2ahRw8F5vKRg6d3sYx8vhXy/dgFZ7TUm0yrahk3f9R42EQwmrbEsjUQNl0ho9oB
+         pAZVRAckfYHY736/zAtxED9+yHHyFaAnC/RXa/K1Cxt0BUv8mTNhJNZ/1NriwuNymgeI
+         ugFsPNxAn4AiDClB749//aPz5IQmODhBWC/xbOr0lFFEd5ciiaxvAtbj6amXJwZ5hBom
+         4BvRbaU+12VlXWk234CmtbGIgynRmrH1w27AZau88OvgG7dSXMFSvIKGJYQ3X37+D578
+         XyHp5N3ShjOjOYQtD32+fqxLgBrUbbK7AcMvYGET57IYQCXwYD2grktOBKGo6h/CLVVC
+         KdEA==
+X-Gm-Message-State: AOAM530kF0Hv0beWKPWplKX0trL+qDRtMD4rcg1DvoyLQ/A+VnTdd+cB
+        p8c8kzcyMegD9bvn2EXqMv4=
+X-Google-Smtp-Source: ABdhPJztrwO8n0VoO3qra8G+kOHoiVb9mqvj2ofY6GJJdo20IPhwvB4kG6P/DRnwLnfuZhp/ub3+XA==
+X-Received: by 2002:a17:90a:7e8b:: with SMTP id j11mr2447290pjl.11.1615364884031;
+        Wed, 10 Mar 2021 00:28:04 -0800 (PST)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id b3sm14327748pgd.48.2021.03.10.00.28.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 00:28:03 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     martin.petersen@oracle.com, jejb@linux.ibm.com,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, beanhuo@micron.com,
+        stanley.chu@mediatek.com, cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com, zhangwen@yulong.com
+Subject: [PATCH] scsi: ufs: Remove unnecessary ret in ufshcd_populate_vreg()
+Date:   Wed, 10 Mar 2021 16:27:41 +0800
+Message-Id: <20210310082741.647-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-References: <9a2086f37c0a62069b67c39a3f75941b78a0039c.1614749417.git.jie.deng@intel.com>
- <43b0842b-8b0f-1979-ed07-d6124e3a6b79@redhat.com> <db9350b3-b847-8f54-546f-9a0bdec425d4@intel.com>
- <a3d4ce55-db25-5f96-ff44-5b76edfe9e08@redhat.com>
-In-Reply-To: <a3d4ce55-db25-5f96-ff44-5b76edfe9e08@redhat.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 10 Mar 2021 09:27:39 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a04u9Xv15K06zrsOtzZF18+1wDpJbBHUU3wYwU--Hdz5A@mail.gmail.com>
-Message-ID: <CAK8P3a04u9Xv15K06zrsOtzZF18+1wDpJbBHUU3wYwU--Hdz5A@mail.gmail.com>
-Subject: Re: [PATCH v6] i2c: virtio: add a virtio i2c frontend driver
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:uNkXJ57CqaHfrf67v16xUK7HDRzqrdDYjE2JrZreTApXfNu7N44
- FVna6gI24gg59qkwPFoV4prAGD8EyjPObh4Fw9f8NQOFL2AkdKNgPhgoSU10SrWXkENTSDd
- ka1X7dE8zHlPZiGcctRtzG+A7foEWr64ht8qoM74VKm46I2hQ+ndZufi5EOl4HXJwdOTuSB
- FlEloR8eK+eO1HaTTVHAA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EHMUgJkB05Y=:d/1IC4jQHAhhSfSX60Xj6W
- gQtU7dagvkLxpJ49/NreYoeDnMPtLTDIJ/FoirVs/I4K2whFrelGq/v1r8VO8L8kN/wlauI57
- X2BHg7FyPAbTKsEAbZD2CmIh6NrdOD6UhpvYFGlZoD4DGYi2e/TFElJgS52OIlwJimhr0SXD4
- sf6d9qKXtgk4T+prV23K0YVKCrg0rZzxStKTung9icOqHN4unxXiR1iuEF8X5b0D/jQduQhEf
- oVd95q9HmdtHAgADkBU6TyMBt1Tx9ptSIBp9iNtrHLxZxDcHOWiBm//w6WQowJrQ9UXIW/mqh
- T8KEAy9Xs4B/QKYDW0t1RBitP40nqRc1SR1zuv6W5aonlwKogPm6hYfsK2ZW/btHZX5Hk1dxL
- LB0r87OOBgpKDIwEH8u5TC4sfmjpeIZ2hoV30IqcNBBxItbFZMINK8nPHNSVH
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 4:59 AM Jason Wang <jasowang@redhat.com> wrote:
-> On 2021/3/10 10:22 上午, Jie Deng wrote:
-> > On 2021/3/4 17:15, Jason Wang wrote:
-> >>
-> >>
-> >>> +        }
-> >>> +
-> >>> +        if (msgs[i].flags & I2C_M_RD)
-> >>> +            memcpy(msgs[i].buf, req->buf, msgs[i].len);
-> >>
-> >>
-> >> Sorry if I had asked this before but any rason not to use msg[i].buf
-> >> directly?
-> >>
-> >>
-> > The msg[i].buf is passed by the I2C core. I just noticed that these
-> > bufs are not
-> > always allocated by kmalloc. They may come from the stack, which may
-> > cause
-> > the check "sg_init_one -> sg_set_buf -> virt_addr_valid"  to fail.
-> > Therefore the
-> > msg[i].buf is not suitable for direct use here.
->
-> Right, stack is virtually mapped.
+From: Yue Hu <huyue2@yulong.com>
 
-Maybe there is (or should be) a way to let the i2c core code handle
-the bounce buffering in this case. This is surely not a problem that
-is unique to this driver, and I'm sure it has come up many times in
-the past.
+The local variable _ret_ is always zero, so we can remove it and just
+return 0 directly in the end.
 
-I see that there is a i2c_get_dma_safe_msg_buf() helper for this
-purpose, but it has to be called by the driver rather than the core,
-so the driver still needs to keep track of each address when it
-sends multiple i2c_msg at once, but maybe it can all be done
-inside the sg_table instead of yet another structure.
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ drivers/scsi/ufs/ufshcd-pltfrm.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-At least this one avoids copying data that is marked with the
-I2C_M_DMA_SAFE flag.
+diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+index 1a69949..fedb7de 100644
+--- a/drivers/scsi/ufs/ufshcd-pltfrm.c
++++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+@@ -106,7 +106,6 @@ static int ufshcd_parse_clock_info(struct ufs_hba *hba)
+ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+ 		struct ufs_vreg **out_vreg)
+ {
+-	int ret = 0;
+ 	char prop_name[MAX_PROP_SIZE];
+ 	struct ufs_vreg *vreg = NULL;
+ 	struct device_node *np = dev->of_node;
+@@ -135,9 +134,8 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+ 		vreg->max_uA = 0;
+ 	}
+ out:
+-	if (!ret)
+-		*out_vreg = vreg;
+-	return ret;
++	*out_vreg = vreg;
++	return 0;
+ }
+ 
+ /**
+-- 
+1.9.1
 
-       Arnd
