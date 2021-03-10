@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BB6334C2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A399334C37
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhCJXFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:05:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232181AbhCJXFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:05:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FD2C64FC3;
-        Wed, 10 Mar 2021 23:05:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615417516;
-        bh=XyxscAGqJqN5bwT0S+ApXaeaQO6zY8Mh7SZCMy4y92Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B1WBa10526PGTQqZ+BZNjcYDgBeC4olep5iBLxBSByjMfN/9bFhGwiTK/0Qk8HEFM
-         zAlk1CwuCqi9rOa9RGN0xBzT3CZH3SMH5UTCvb4zI3A25muWOGBCPx9d74RFeHjrtS
-         lDHtU4K2jSvmGm3Rh8M+vxLPPS3X1ew06NZ4HlpV1Cp5SmrksjU4Mi2Z/IvBOIiorf
-         CKlj7wPpi5pmrVMdhNBKHyGtuJNgI4wZci/msl0/YwqlxwZ0bwvpvE1BFUhO9b/vfW
-         +dnyRdAH+H4x+Gf0O7fsdZQb5kpUZknrKYxRJ+ftybX507mLG3go60az8EyHwRMoZm
-         piLHU88BVVHTw==
-Date:   Thu, 11 Mar 2021 01:04:52 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] tpm: vtpm_proxy: Avoid reading host log when
- using a virtual device
-Message-ID: <YElQlDGQI8sx2Igz@kernel.org>
-References: <20210310221916.356716-1-stefanb@linux.ibm.com>
- <20210310221916.356716-4-stefanb@linux.ibm.com>
+        id S233312AbhCJXHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231301AbhCJXHX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 18:07:23 -0500
+X-Greylist: delayed 155488 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 10 Mar 2021 15:07:23 PST
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F85C061574;
+        Wed, 10 Mar 2021 15:07:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=GThwOt7we7afhufajq/5ARwrxio8Hss54rg43Et+q4Y=; b=aFTqMZq1+d0BQWUk9reg54Kvtz
+        ZExbPx7xFUu6/kFimMmWqNKRGOhqJu2ziQFfzdrVysEpREMiMbe5T+BU+KedvqUcsTIjwIJd5SUWt
+        +xLpDVXlDN6BIwujX5grjC4cPBGbzLk+bKuLNBD4KJMlHn8185g+kQuVhfD9oGAbnRoVlL8QV/bWT
+        G7jTh3HnY6BhN/HGNW5VkVQL/QhWLcXocewWPiWuTj2b2OEltWbUwS7vizPWXguUfUhjg6U/ZMhnS
+        59deUbJ2lgjilZgCQH7HVzcdlNLv53WN5YjvP3VjWOthmP4IDPGZjeRQeWzdqOkS26sS5sL/XMb1m
+        D974DBZQ==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lK7vE-000rfW-8W; Wed, 10 Mar 2021 23:07:20 +0000
+Subject: Re: [PATCH] net: fddi: skfp: Mundane typo fixes throughout the file
+ smt.h
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210310225123.4676-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bfae0e27-6bc1-b3fe-3ca8-f96b8d3c81ad@infradead.org>
+Date:   Wed, 10 Mar 2021 15:07:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310221916.356716-4-stefanb@linux.ibm.com>
+In-Reply-To: <20210310225123.4676-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:19:16PM -0500, Stefan Berger wrote:
-> Avoid allocating memory and reading the host log when a virtual device
-> is used since this log is of no use to that driver. A virtual
-> device can be identified through the flag TPM_CHIP_FLAG_VIRTUAL, which
-> is only set for the tpm_vtpm_proxy driver.
+On 3/10/21 2:51 PM, Bhaskar Chowdhury wrote:
 > 
-> Fixes: 6f99612e2500 ("tpm: Proxy driver for supporting multiple emulated TPMs")
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Few spelling fixes throughout the file.
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+thanks.
+
 > ---
->  drivers/char/tpm/eventlog/common.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/net/fddi/skfp/h/smt.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/char/tpm/eventlog/common.c b/drivers/char/tpm/eventlog/common.c
-> index 7460f230bae4..8512ec76d526 100644
-> --- a/drivers/char/tpm/eventlog/common.c
-> +++ b/drivers/char/tpm/eventlog/common.c
-> @@ -107,6 +107,9 @@ void tpm_bios_log_setup(struct tpm_chip *chip)
->  	int log_version;
->  	int rc = 0;
->  
-> +	if (chip->flags & TPM_CHIP_FLAG_VIRTUAL)
-> +		return;
-> +
->  	rc = tpm_read_log(chip);
->  	if (rc < 0)
->  		return;
-> -- 
-> 2.29.2
+> diff --git a/drivers/net/fddi/skfp/h/smt.h b/drivers/net/fddi/skfp/h/smt.h
+> index a0dbc0f57a55..8d104f13e2c3 100644
+> --- a/drivers/net/fddi/skfp/h/smt.h
+> +++ b/drivers/net/fddi/skfp/h/smt.h
+> @@ -411,7 +411,7 @@ struct smt_p_reason {
+>  #define SMT_RDF_ILLEGAL 0x00000005	/* read only (PMF) */
+>  #define SMT_RDF_NOPARAM	0x6		/* parameter not supported (PMF) */
+>  #define SMT_RDF_RANGE	0x8		/* out of range */
+> -#define SMT_RDF_AUTHOR	0x9		/* not autohorized */
+> +#define SMT_RDF_AUTHOR	0x9		/* not authorized */
+>  #define SMT_RDF_LENGTH	0x0a		/* length error */
+>  #define SMT_RDF_TOOLONG	0x0b		/* length error */
+>  #define SMT_RDF_SBA	0x0d		/* SBA denied */
+> @@ -450,7 +450,7 @@ struct smt_p_version {
 > 
+>  struct smt_p_0015 {
+>  	struct smt_para	para ;		/* generic parameter header */
+> -	u_int		res_type ;	/* recsource type */
+> +	u_int		res_type ;	/* resource type */
+>  } ;
 > 
+>  #define	SYNC_BW		0x00000001L	/* Synchronous Bandwidth */
+> @@ -489,7 +489,7 @@ struct smt_p_0017 {
+>  struct smt_p_0018 {
+>  	struct smt_para	para ;		/* generic parameter header */
+>  	int		sba_ov_req ;	/* total sync bandwidth req for overhead*/
+> -} ;					/* measuered in bytes per T_Neg */
+> +} ;					/* measured in bytes per T_Neg */
+> 
+>  /*
+>   * P19 : SBA Allocation Address
+> @@ -562,7 +562,7 @@ struct smt_p_fsc {
+>  #define FSC_TYPE2	2		/* Special A/C indicator forwarding */
+> 
+>  /*
+> - * P00 21 : user defined authoriziation (see pmf.c)
+> + * P00 21 : user defined authorization (see pmf.c)
+>   */
+>  #define SMT_P_AUTHOR	0x0021
+> 
+> --
 
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+-- 
+~Randy
 
-
-/Jarkko
