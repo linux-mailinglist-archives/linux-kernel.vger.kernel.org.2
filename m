@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD64333681
+	by mail.lfdr.de (Postfix) with ESMTP id D8E76333683
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhCJHko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:40:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55544 "EHLO
+        id S231844AbhCJHkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:40:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhCJHkg (ORCPT
+        with ESMTP id S229828AbhCJHkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:40:36 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821D9C061760
+        Wed, 10 Mar 2021 02:40:37 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A79C06174A
         for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:40:36 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id u20so16874437iot.9
+Received: by mail-ej1-x636.google.com with SMTP id hs11so36553819ejc.1
         for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:40:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cq2aReYAb1NZEVYoZ/NXyw9vsJhlnWLU3P0pndjoTAE=;
-        b=DLlBEv1FlGiqLVy6NzkOd9B1PaTLbdBPBDA26CrI+8Ac08za+k724bSm8tYj8G6iUN
-         URNdXo+Ytnx63SWNCmWLe3ybgChdYoC3xHLbY/FM888J8RPDSqWbPG9FWgkRxhZ8fuiA
-         7DUw3VXOqIlTcqHEednvFtpo7p0QhXG0XkW8I=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7htfKEWj4A1mHYbOJujhEP8fr6drS4OtZ91jlFV3ApY=;
+        b=lc1dhv1vlFR8xg17tISMV9ljgonYRYnKCI/dV2TYIoLjzvNOCNBnM2dcg6GR99RUV7
+         6olqwk9R6ELu+/8U7cxQSYQFhTp2YEHQ67u9v4N45SJR2Gr9705iihIiaWE1MY65yLEv
+         1kJgIT1Du4xtvS4SsKPll30rFeGxpvFFPkg4s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cq2aReYAb1NZEVYoZ/NXyw9vsJhlnWLU3P0pndjoTAE=;
-        b=foxe7EHv21WtGi2ApAsCv2zwZXqeYaXB2rVsPssdIB5Z6r4EodEpLRTIaumYg7DwWQ
-         ZrRCH3oBCfp+ru63aMey401C24JqaveMIx9UofUrqutFmAYy/cxiItHwyNLVofmCwHJE
-         sjBC5KrO7+Ev3dyz790O52+lumWIefmLCM6Sde07XRFD0XeeSTydQBZnPJZ0HlirKuV/
-         yUw0Om5wdppPtz0zkTQUvcm/rJSzQI+6APQUCXvZUL0r+ePNnaLmqDShHy2iouR8zEJ1
-         ZGvuD9xO4lwHMqfMPlqU33kzYM7VpMgFmVMIWDq1L8B/DiI+jbslNWn+YEFx6j8RkRRr
-         5Iwg==
-X-Gm-Message-State: AOAM531aPrKEbFqzmhGJdxGmoSwKUXeO3JSS9Gm+Ik7/YtjAr59CoOZH
-        L8RhxwAWcXudxjQBYe4Z480G6FcyJcElvw==
-X-Google-Smtp-Source: ABdhPJzYRhQh0w9NunupKwrdPSIBHkVEZT20wQFz4L9ZuADzsxWKLJPcBwzFurVzDnolv9t+XCeyRw==
-X-Received: by 2002:a02:a691:: with SMTP id j17mr1960407jam.14.1615362035705;
-        Tue, 09 Mar 2021 23:40:35 -0800 (PST)
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com. [209.85.166.51])
-        by smtp.gmail.com with ESMTPSA id a16sm1599562ild.82.2021.03.09.23.40.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 23:40:35 -0800 (PST)
-Received: by mail-io1-f51.google.com with SMTP id z13so16884000iox.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:40:35 -0800 (PST)
-X-Received: by 2002:a02:a303:: with SMTP id q3mr1925364jai.32.1615362034751;
- Tue, 09 Mar 2021 23:40:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20210309234317.1021588-1-ribalda@chromium.org> <YEgj61iAt4Avnp6d@google.com>
-In-Reply-To: <YEgj61iAt4Avnp6d@google.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7htfKEWj4A1mHYbOJujhEP8fr6drS4OtZ91jlFV3ApY=;
+        b=VIdDpGEd3T/Cp33882eyGw/Ln8V8DYhWH9MFWan7ZBqNQg7u0iHEvSdlz+dm0m5TL/
+         AS8EmtIM8Egzfv5zRdsTtxR400pzpz/QXvX/zrIanojEt546/EbpWGSYGG9SRDCUuQac
+         R+QR6UqAE4qF7EK4y9mSHtxFh5NMKPI9ZGHog5ZXFlpWljI48iKVIlbCfDhcVGWbMW3H
+         LZoX+HArpQJyI8ubpgOCb5YOg5JdRoTjT2FUBzYTOMK9nibw/vC0BIQkPauJmSXTn+8d
+         0HyuO4bx057CpF+hoNiCcbh7HQu/JV5rCXMX2NTpeViWECkMptAmkS4N1oKfCkFnLNto
+         1WWw==
+X-Gm-Message-State: AOAM531TUUJY8tPJIxiYo2pmP8oIA53MMUFi+4JQ3rkl0SAmK7i1ln7B
+        39IJjZEDG1s96z7SJFhkCzbz8g==
+X-Google-Smtp-Source: ABdhPJwIhNo0p77nmtL5NmTaAsBp68g+mGOKFQRYDcHVyhZbKylB7G6jH6lPNhXHMRN8oSrGbY7I1w==
+X-Received: by 2002:a17:906:cd05:: with SMTP id oz5mr2232468ejb.345.1615362029874;
+        Tue, 09 Mar 2021 23:40:29 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id a12sm10253646edx.91.2021.03.09.23.40.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 23:40:29 -0800 (PST)
 From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Wed, 10 Mar 2021 08:40:24 +0100
-X-Gmail-Original-Message-ID: <CANiDSCuVvhRXGHch0EvJ22mU+bfVs7ZyT2vrnWPxNu0z-ja_1g@mail.gmail.com>
-Message-ID: <CANiDSCuVvhRXGHch0EvJ22mU+bfVs7ZyT2vrnWPxNu0z-ja_1g@mail.gmail.com>
-Subject: Re: [PATCH] media: videobuf2: Fix integer overrun in allocation
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
+To:     Tomasz Figa <tfiga@chromium.org>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
         stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH] media: videobuf2: Fix integer overrun in vb2_mmap
+Date:   Wed, 10 Mar 2021 08:40:28 +0100
+Message-Id: <20210310074028.1042475-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey
+The plane_length is an unsigned integer. So, if we have a size of
+0xffffffff bytes we incorrectly allocate 0 bytes instead of 1 << 32.
 
-On Wed, Mar 10, 2021 at 2:42 AM Sergey Senozhatsky
-<sergey.senozhatsky.work@gmail.com> wrote:
->
-> On (21/03/10 00:43), Ricardo Ribalda wrote:
-> > The plane_length is an unsigned integer. So, if we have a size of
-> > 0xffffffff bytes we incorrectly allocate 0 bytes instead of 1 << 32.
->
-> Hi Ricardo,
->
-> > @@ -223,8 +223,10 @@ static int __vb2_buf_mem_alloc(struct vb2_buffer *vb)
-> >        * NOTE: mmapped areas should be page aligned
-> >        */
-> >       for (plane = 0; plane < vb->num_planes; ++plane) {
-> > +             unsigned long size = vb->planes[plane].length;
-> > +
-> >               /* Memops alloc requires size to be page aligned. */
-> > -             unsigned long size = PAGE_ALIGN(vb->planes[plane].length);
-> > +             size = PAGE_ALIGN(size);
-> >
-> >               /* Did it wrap around? */
-> >               if (size < vb->planes[plane].length)
->
-> Shouldn't the same be done in vb2_mmap()?
-Indeed, I was having tunnel vision focussing on my issue.
+Suggested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: stable@vger.kernel.org
+Fixes: 7f8414594e47 ("[media] media: videobuf2: fix the length check for mmap")
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+ drivers/media/common/videobuf2/videobuf2-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I have sent a new patch.
+diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+index 543da515c761..876db5886867 100644
+--- a/drivers/media/common/videobuf2/videobuf2-core.c
++++ b/drivers/media/common/videobuf2/videobuf2-core.c
+@@ -2256,7 +2256,7 @@ int vb2_mmap(struct vb2_queue *q, struct vm_area_struct *vma)
+ 	 * The buffer length was page_aligned at __vb2_buf_mem_alloc(),
+ 	 * so, we need to do the same here.
+ 	 */
+-	length = PAGE_ALIGN(vb->planes[plane].length);
++	length = PAGE_ALIGN((unsigned int)vb->planes[plane].length);
+ 	if (length < (vma->vm_end - vma->vm_start)) {
+ 		dprintk(q, 1,
+ 			"MMAP invalid, as it would overflow buffer length\n");
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
-Thanks!
->
->         -ss
-
-
-
---
-Ricardo Ribalda
