@@ -2,104 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B74F333C96
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00072333C99
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhCJMZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:25:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
+        id S231265AbhCJM10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhCJMYq (ORCPT
+        with ESMTP id S230173AbhCJM1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:24:46 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC383C061760;
-        Wed, 10 Mar 2021 04:24:45 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id 16so10438388pfn.5;
-        Wed, 10 Mar 2021 04:24:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=wuZ7Tj7BwTy6hVZuAWi1nQ3E4gOZYnPzBXefRg0kZPU=;
-        b=Iq6hc4p3pEUPX0ryf5lZ+7v2GqP86f7RHCdcs4xXkaJiaBWqrfN2wCf1wqzRQtBBEY
-         rNDPsVRzJCDzbhetPy+rCaW5uCal3vExi/2xcmYpL236fnMMVTiwmvmmBCqT9sLVRWaD
-         BZZMCKwJvN96RElmxWyqFPVAv3LG62pUZiIsKsVIessbaT3DOr0duoxmoMYW6+OClugt
-         llqyclovZ0nVyQqazJh7U4Nw2rmyhYpDzztYTPkSsHvBX5HPoA/oEXCCCLVaxOxomROX
-         CPuwOcHrhjpvtUycyDzNdb20CH7IC3LUxxUvx+P/uD/DKehb32SH6P0qPAS0ZLmJwd1u
-         vWcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=wuZ7Tj7BwTy6hVZuAWi1nQ3E4gOZYnPzBXefRg0kZPU=;
-        b=gJD8iukC39eHCBr3Snv7AMjY/UJWgn9NMro9hVJFaoALVT4JUgwrHkJSreX2nP64Nu
-         l/T80+9Rn5Du2O0RAUPYmk0kuhPmAPrmLh990Oog0EQp/zVagpL7hfQVKNbrkuW5Q0VA
-         142aaBlBHlNbPXthrYJis/lfhOlLhe5eQnZt3XXRgMfVcCTYPAtp0o6n2tZ22Wtcp5+0
-         Nqd82CDL6TxhuzPGieyuIKc4HfIjjyVexqhaUBYSZZeaj0Esf1KoVZ0aSqkSO67aL0zv
-         4Xb7zpx8j/1m4cCe6Q1O0YjOAPS23AfyipYrKKO82j/9xRY0MZgPcRAau6xGJDJNTcd9
-         OgmA==
-X-Gm-Message-State: AOAM531HZQZQyvtMET+E3S12XuL+QmP0ykCZHsp7yn4QDgCgH9vGwz/H
-        6J64Q7svaFWEchrh+czCHDc=
-X-Google-Smtp-Source: ABdhPJwFPu5GUYLlVOCrnQ+Z3JHSMv/JOMDoEsza7h6uis5elP6ntNkeM3u+j8pKmPdAsaO2mK3CJQ==
-X-Received: by 2002:a62:ac1a:0:b029:1f9:5ca4:dd4d with SMTP id v26-20020a62ac1a0000b02901f95ca4dd4dmr2553621pfe.68.1615379085246;
-        Wed, 10 Mar 2021 04:24:45 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.89])
-        by smtp.gmail.com with ESMTPSA id c193sm17433859pfc.180.2021.03.10.04.24.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 04:24:44 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH v2] thermal: thermal_of: fix error return code of thermal_of_populate_bind_params()
-Date:   Wed, 10 Mar 2021 04:24:23 -0800
-Message-Id: <20210310122423.3266-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 10 Mar 2021 07:27:00 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AC3C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:27:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=z2fH+lcyyGo0ZM4lIpRkUgjnEz2lLIgr6ohv3ie7wnM=; b=wP7+V78+L6qz/SN8lcA87aAWoU
+        RWlIZ6tcfJ1Flk8TkgW6rsQaSyu8HBMVao7ypjdEDP/uNFHwU9/sLq/L5OEmzVTq+klgtTwntDZZI
+        LFqKpw8ytStinD4P9OdX2rlSPXMyUeV4mkKbhxdjPB9sQ6BWGt86Zfk2ap+fJ8NWcdOF41y66ALFS
+        ArShCTCTVKVxzMztxPbl4LCbDUdjpPgDK8GORRG9YZjWd95RZE9vvUlhOnqE5dE83VkOHw6OHe8kH
+        ++poUV6Gn93I6xWaAdcUZCRIpUGWsyZYfy7mppkTxXVUIUOVk0sswr08zqy4a5HHa3J8MKY66OduA
+        Z0rY3rpg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJxv9-003NFB-78; Wed, 10 Mar 2021 12:26:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 849083010CF;
+        Wed, 10 Mar 2021 13:26:21 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6CD7D20160C00; Wed, 10 Mar 2021 13:26:21 +0100 (CET)
+Date:   Wed, 10 Mar 2021 13:26:21 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     changhuaixin <changhuaixin@linux.alibaba.com>
+Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
+        pauld@redhead.com, pjt@google.com, rostedt@goodmis.org,
+        shanpeic@linux.alibaba.com, vincent.guittot@linaro.org,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v3 0/4] sched/fair: Burstable CFS bandwidth controller
+Message-ID: <YEi67Tv7Lu5Ej/rh@hirez.programming.kicks-ass.net>
+References: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
+ <9FD4A7E9-B545-40AB-A5B5-66DF37991474@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9FD4A7E9-B545-40AB-A5B5-66DF37991474@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kcalloc() returns NULL to __tcbp or of_count_phandle_with_args() 
-returns zero or -ENOENT to count, no error return code of
-thermal_of_populate_bind_params() is assigned.
-To fix these bugs, ret is assigned with -ENOMEM and -ENOENT in these
-cases, respectively.
+On Tue, Jan 26, 2021 at 06:18:59PM +0800, changhuaixin wrote:
+> Ping, any new comments on this patchset? If there're no other
+> concerns, I think it's ready to be merged?
 
-Fixes: a92bab8919e3 ("of: thermal: Allow multiple devices to share cooling map")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
-v2:
-* Add the fixing about of_count_phandle_with_args() and the fixes tag.
-  Thank Daniel Lezcano for good advice.
+I only found this by accident...
 
----
- drivers/thermal/thermal_of.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Thread got lost because you're posting new series as replies to older
+series. Please don't do that, it's crap.
 
-diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-index 69ef12f852b7..5b76f9a1280d 100644
---- a/drivers/thermal/thermal_of.c
-+++ b/drivers/thermal/thermal_of.c
-@@ -704,14 +704,17 @@ static int thermal_of_populate_bind_params(struct device_node *np,
- 
- 	count = of_count_phandle_with_args(np, "cooling-device",
- 					   "#cooling-cells");
--	if (!count) {
-+	if (count <= 0) {
- 		pr_err("Add a cooling_device property with at least one device\n");
-+		ret = -ENOENT;
- 		goto end;
- 	}
- 
- 	__tcbp = kcalloc(count, sizeof(*__tcbp), GFP_KERNEL);
--	if (!__tcbp)
-+	if (!__tcbp) {
-+		ret = -ENOMEM;
- 		goto end;
-+	}
- 
- 	for (i = 0; i < count; i++) {
- 		ret = of_parse_phandle_with_args(np, "cooling-device",
--- 
-2.17.1
-
+I'll go have a look.
