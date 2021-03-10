@@ -2,56 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28893334289
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2169334290
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbhCJQJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:09:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233253AbhCJQJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:09:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DEF5A64EB3;
-        Wed, 10 Mar 2021 16:09:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615392588;
-        bh=C0BjbrFILuIdm0gH2fNV9//MEdJhoKcilycTcDKfmbE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hjia/KwGtGVsc5+U5PJVzo53iU86uG11+oNUqtAO+nzOwqe3eAPRQYzhU1xLUxg8n
-         xcm5V2EB5hJySA1uZDTt5CnLd7f3gp2p0JTGdnjh6qIf7pUssFdZ97kVktvfev6xHV
-         i/fNZ4XzxydTLWo5jsN0M4re0k+x/KsQNjMgafOo=
-Date:   Wed, 10 Mar 2021 17:09:46 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mihai Carabas <mihai.carabas@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de, rdunlap@infradead.org,
-        bobo.shaobowang@huawei.com
-Subject: Re: [PATCH v4] add support for pci in the pvpanic driver
-Message-ID: <YEjvStU2WyI80W+I@kroah.com>
-References: <1613245447-21495-1-git-send-email-mihai.carabas@oracle.com>
- <d35f5afd-6067-313e-ac1f-0d1b23fcb531@oracle.com>
- <YEjvDnK4E0anCrqO@kroah.com>
+        id S232978AbhCJQK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:10:28 -0500
+Received: from smtp-8fad.mail.infomaniak.ch ([83.166.143.173]:35175 "EHLO
+        smtp-8fad.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233186AbhCJQKU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:10:20 -0500
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DwcVf5S9hzMqMCP;
+        Wed, 10 Mar 2021 17:10:18 +0100 (CET)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DwcVc2fkqzlh8TK;
+        Wed, 10 Mar 2021 17:10:16 +0100 (CET)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Eric Biederman <ebiederm@xmission.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH v1 0/1] Unprivileged chroot
+Date:   Wed, 10 Mar 2021 17:09:59 +0100
+Message-Id: <20210310161000.382796-1-mic@digikod.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEjvDnK4E0anCrqO@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:08:46PM +0100, Greg KH wrote:
-> On Sun, Feb 28, 2021 at 08:39:29PM +0200, Mihai Carabas wrote:
-> > Hello,
-> > 
-> > Any feedback on this last series?
-> 
-> Other than the "this breaks the build according to the kernel test
-> robot"?
-> 
-> I think that needs to be fixed before we can do anything here...
+Hi,
 
-Ok, it didn't break the build, it added a warning, which is still not
-allowed, as you know.
+The chroot system call is currently limited to be used by processes with
+the CAP_SYS_CHROOT capability.  This protects against malicious
+procesess willing to trick SUID-like binaries.  The following patch
+allows unprivileged users to safely use chroot(2).
 
-thanks,
+This patch is a follow-up of a previous one sent by Andy Lutomirski some
+time ago:
+https://lore.kernel.org/lkml/0e2f0f54e19bff53a3739ecfddb4ffa9a6dbde4d.1327858005.git.luto@amacapital.net/
 
-greg k-h
+This patch can be applied on top of v5.12-rc2 .  I would really
+appreciate constructive reviews.
+
+Regards,
+
+Mickaël Salaün (1):
+  fs: Allow no_new_privs tasks to call chroot(2)
+
+ fs/open.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 61 insertions(+), 3 deletions(-)
+
+
+base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+-- 
+2.30.2
+
