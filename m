@@ -2,178 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E10333AF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D449F333B01
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhCJLCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:02:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
+        id S232157AbhCJLE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbhCJLCV (ORCPT
+        with ESMTP id S232065AbhCJLE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:02:21 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A28C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:02:21 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso10721836wmi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:02:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=v0a0P82FBqcJYMtTstBhU6OwDjxrI0ymrdgmVRwXE98=;
-        b=oSnESTuRrlSPD8vl748DcLdzGj6QpSScfFvSqW6pyUMeI5jXG4tMVHSYvKVBkuawlj
-         89UFnoMMkfLlf/vEwqmA+mMYghOq0Ji1bIzA7UXBRv+0/QvToOGMHyCtN1NDriEssZeb
-         U6RR95/XVyJ45HFSSjbAmamJU067SJx8F0YaOnWdiyyGdyUWGMYq/s8bpAkFgobt9Lri
-         MOViG6bwNvLYa8c1WMuPVu5Ha0sWIYyBvNtFSNLNBOkB1lJOfgUDNU7Ur5hhUdLRJKFD
-         ozrdV3mVMYFCB/pKfRnR2DTQkn2gBVIU9WOihIMwdBQ4t5bCIVpM7cbU61S7UcCtk8sI
-         vAFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=v0a0P82FBqcJYMtTstBhU6OwDjxrI0ymrdgmVRwXE98=;
-        b=AxwbqIAHi+OgBaTPTr3lqJTtScq8UgE6swbLqPBo7LDrSmrecrD38zc49GxRhAGf6z
-         VLPZezFLOHsrwgP3PVc2LK1rHUqtJfuz9Rz28ySYQ+IFxlCkvnnDbGtZcB8gyFrM8XIR
-         EQH3X/lnRgP8RIH/IpZERYg0G5S9Y49+uxQbu3IjAQsKC0O3EAF636d9hcdMpwk7STFz
-         uOL4wYYH8JW9ZSWnbl9h9DFr1SoSeKjDj9IUAPPzz0TC5uOXgpuWSsbbB4HHPnmNXntA
-         ybVyG8BK1EktipTIZA1GvUrkYP72ebkB5uSiPMDtMUJF8/v4BWuMw4h+LWLHvM5mcUYy
-         ldEg==
-X-Gm-Message-State: AOAM5313zsT+ZeGCePfy0078So6RLl31tp1TSlQiYyPUTfVAhWdzCBsL
-        TnpSkg7T5csOaE/zsIsHEjh18Q==
-X-Google-Smtp-Source: ABdhPJwumqdTQGcNS35dpB48M2Ryxk3bSaitVmd1n77FnIWGtJm8StbZCAcL5y/CjpbykEqdIpO2+g==
-X-Received: by 2002:a05:600c:2945:: with SMTP id n5mr2801524wmd.78.1615374140239;
-        Wed, 10 Mar 2021 03:02:20 -0800 (PST)
-Received: from localhost.localdomain ([82.142.0.212])
-        by smtp.gmail.com with ESMTPSA id k4sm36193902wrd.9.2021.03.10.03.02.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 03:02:19 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com
-Subject: [PATCH v3 5/5] powercap/drivers/dtpm: Scale the power with the load
-Date:   Wed, 10 Mar 2021 12:02:12 +0100
-Message-Id: <20210310110212.26512-5-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210310110212.26512-1-daniel.lezcano@linaro.org>
-References: <20210310110212.26512-1-daniel.lezcano@linaro.org>
+        Wed, 10 Mar 2021 06:04:27 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D10C06174A;
+        Wed, 10 Mar 2021 03:04:26 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwTjf3Kjrz9sRN;
+        Wed, 10 Mar 2021 22:04:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615374263;
+        bh=M0R5BtxmG5VRwgjoqYn5Zqjv+QrYkDel5v1EO2fbjgs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RmipunGXJcIyh9fppxQMRU/171Oh1qAhHH0AuTlfolwoDAffKm2BXLKtXURsVnRRH
+         afLLPQV6UK7GteBQWTr4Vyjksw877xfo8lLx9pMFG5fgBCNUcqG5iLZtl/oexhiDM2
+         mBSqmUtNrLeVdYE9ipnJb6zTup1Vx1V9qj5vW3+ojtfI+d+aa0sXByvmAVO8VHItDJ
+         oI5e1HR4NzDfRyCRr1JM1vzDaaKdTxoAxc36jHQ3DdVm1YIMMP72iKYZjIK9HGN26v
+         CYF4MWXLBUZTCWk0LdxaPAqIWy048sDXDMqyeiajf18DlFWzmGDgJ/JqwlxA66O/mP
+         INFj/zDdmqYYg==
+Date:   Wed, 10 Mar 2021 22:04:04 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Oded Gabbay <ogabbay@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the
+ char-misc.current tree
+Message-ID: <20210310220404.086c426c@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/ceLJ4TPO8vpJzyiH1XEt0Y7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the power consumption is based on the current OPP power
-assuming the entire performance domain is fully loaded.
+--Sig_/ceLJ4TPO8vpJzyiH1XEt0Y7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That gives very gross power estimation and we can do much better by
-using the load to scale the power consumption.
+Hi all,
 
-Use the utilization to normalize and scale the power usage over the
-max possible power.
+Commits
 
-Tested on a rock960 with 2 big CPUS, the power consumption estimation
-conforms with the expected one.
+  15097e9338ed ("habanalabs: fix debugfs address translation")
+  ffd123fe8397 ("habanalabs: Disable file operations after device is remove=
+d")
+  27ac5aada024 ("habanalabs: Call put_pid() when releasing control device")
+  16db6b532fa4 ("habanalabs: mark hl_eq_inc_ptr() as static")
 
-Before this change:
+are missing a Signed-off-by from their committer.
 
-~$ ~/dhrystone -t 1 -l 10000&
-~$ cat /sys/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:1/constraint_0_max_power_uw
-2260000
+Sorry, Greg, one of the hazards of rebasing :-( (which I know I asked
+you to do).  I guess what should have happened is that the habanalabs
+branch should have been rebased onto v5.12-rc2 by its commiter and then
+you should have pulled that into your rebased tree.
 
-After this change:
+--=20
+Cheers,
+Stephen Rothwell
 
-~$ ~/dhrystone -t 1 -l 10000&
-~$ cat /sys/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:1/constraint_0_max_power_uw
-1130000
+--Sig_/ceLJ4TPO8vpJzyiH1XEt0Y7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-~$ ~/dhrystone -t 2 -l 10000&
-~$ cat /sys/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:1/constraint_0_max_power_uw
-2260000
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBIp6QACgkQAVBC80lX
+0GwYTAf/dGknWD0LYZEr/keHY+WTI/bvDyi5ucMAEVNmO8XQsm6lk3qimT3yFIrZ
+An2O9f6iyumWg6/IhYyx8mqMsoXUaW+cpRA3Ao82VjgVUtmBrXHpDqi6aP0eNkjE
+9kAoRuYL0Gzak53l95FdPIOGHC9vApVFsv9vRw5NyUm51m4WrhyrpA6gUh9Sr+9d
+b5vrc7zo8VLLwBdc/AsSyT9VFANjCDBlB25nBmmuiqMLiWALMOEbGnLZRuNWWHmN
+LkXgqsw3gCUt7v1WYtoCHc2IqoeCKQfdkEupg+b5kiwtO6OVnYECvJTTLeE+Sr9y
+0SkpY3SuRATNEcPyYpzchueyH8mxJw==
+=rdYG
+-----END PGP SIGNATURE-----
 
-V3:
-  - Fixed uninitialized 'cpu' in scaled_power_uw()
-V2:
-  - Replaced cpumask by em_span_cpus
-  - Changed 'util' metrics variable types
-  - Optimized utilization scaling power computation
-  - Renamed parameter name for scale_pd_power_uw()
----
- drivers/powercap/dtpm_cpu.c | 46 +++++++++++++++++++++++++++++++------
- 1 file changed, 39 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-index ac7f2e7e262f..47854923d958 100644
---- a/drivers/powercap/dtpm_cpu.c
-+++ b/drivers/powercap/dtpm_cpu.c
-@@ -68,27 +68,59 @@ static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
- 	return power_limit;
- }
- 
-+static u64 scale_pd_power_uw(struct cpumask *pd_mask, u64 power)
-+{
-+	unsigned long max = 0, sum_util = 0;
-+	int cpu;
-+
-+	for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
-+
-+		/*
-+		 * The capacity is the same for all CPUs belonging to
-+		 * the same perf domain, so a single call to
-+		 * arch_scale_cpu_capacity() is enough. However, we
-+		 * need the CPU parameter to be initialized by the
-+		 * loop, so the call ends up in this block.
-+		 *
-+		 * We can initialize 'max' with a cpumask_first() call
-+		 * before the loop but the bits computation is not
-+		 * worth given the arch_scale_cpu_capacity() just
-+		 * returns a value where the resulting assembly code
-+		 * will be optimized by the compiler.
-+		 */
-+		max = arch_scale_cpu_capacity(cpu);
-+		sum_util += sched_cpu_util(cpu, max);
-+	}
-+
-+	/*
-+	 * In the improbable case where all the CPUs of the perf
-+	 * domain are offline, 'max' will be zero and will lead to an
-+	 * illegal operation with a zero division.
-+	 */
-+	return max ? (power * ((sum_util << 10) / max)) >> 10 : 0;
-+}
-+
- static u64 get_pd_power_uw(struct dtpm *dtpm)
- {
- 	struct dtpm_cpu *dtpm_cpu = to_dtpm_cpu(dtpm);
- 	struct em_perf_domain *pd;
--	struct cpumask cpus;
-+	struct cpumask *pd_mask;
- 	unsigned long freq;
--	int i, nr_cpus;
-+	int i;
- 
- 	pd = em_cpu_get(dtpm_cpu->cpu);
--	freq = cpufreq_quick_get(dtpm_cpu->cpu);
- 
--	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
--	nr_cpus = cpumask_weight(&cpus);
-+	pd_mask = em_span_cpus(pd);
-+
-+	freq = cpufreq_quick_get(dtpm_cpu->cpu);
- 
- 	for (i = 0; i < pd->nr_perf_states; i++) {
- 
- 		if (pd->table[i].frequency < freq)
- 			continue;
- 
--		return pd->table[i].power *
--			MICROWATT_PER_MILLIWATT * nr_cpus;
-+		return scale_pd_power_uw(pd_mask, pd->table[i].power *
-+					 MICROWATT_PER_MILLIWATT);
- 	}
- 
- 	return 0;
--- 
-2.17.1
-
+--Sig_/ceLJ4TPO8vpJzyiH1XEt0Y7--
