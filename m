@@ -2,171 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4422A333BC7
+	by mail.lfdr.de (Postfix) with ESMTP id 92204333BC8
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232448AbhCJLt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:49:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhCJLs4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:48:56 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6898EC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:48:56 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id s1so15237582ilh.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:48:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OUZP8m10BICXg+bVPGfgJD/AJgcaU4lrh7k/xffSUxE=;
-        b=mbtgLm0pM+7qiwMv60dRKDKZJqODnkpoqbEPoXqEqIaq5AD66TqKZs3XHEKiTdSPBd
-         E6J3u/bTHxuSW6PPuPCqsU3aDrPURWPqHsrbCWzVBicwhtV/KwmL3qrhpGDRfhjaaiDp
-         yiEtfTMyHG8ISa0s1zbE7YNeG/nMKcc0hSOlA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OUZP8m10BICXg+bVPGfgJD/AJgcaU4lrh7k/xffSUxE=;
-        b=q0iX1JRbyM7FBWnPWYNCwovWzJAGZTnL71c/Z+y5Brlz3/Os7NdWHEcqmj/2NVT84f
-         LV9zDRj807/wxDTf1eozGsvTrcZBOLXCCC4KrEQHtjJ2IIAKLyWTy8/7DYuMtUYe5fnt
-         TWYNBbl/MN+YKi3yw9Wht8d/oaVg8iwdW1a8B3e3HkXw6E5XWSYZwYNNjZJyG+d9zLxk
-         U9zEwjekH6v6F0qOSXI8FOJl68wT5ACn2Z03D9zkOIQQuqMI0pnb0Qr9zjRPm3yXMwqD
-         tpPBgRgmXDY/U002dUYwSpEjG+dnC6TRhT8W1LP2Zjgshw4RHqUnWmGxSZ0Yjpbt2iDi
-         GnHA==
-X-Gm-Message-State: AOAM530czemoi2JTNnWPIFfVQTYz49VS1+jRqm8UCSAK50UskVflQQoQ
-        /XgtZs5I8bvpEZ3+9bPW71XmelBnAeYvAgcre0qwpw==
-X-Google-Smtp-Source: ABdhPJzKDZ2w84WPy4/Sc+NOCtoscv5Ymh7J7VojvKq29V559mzpfigpeAYOQvyHM6D72hvNfq6B4YY6wtu3RfIQZ+U=
-X-Received: by 2002:a05:6e02:12b4:: with SMTP id f20mr2231220ilr.220.1615376935917;
- Wed, 10 Mar 2021 03:48:55 -0800 (PST)
+        id S232609AbhCJLt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:49:28 -0500
+Received: from mga02.intel.com ([134.134.136.20]:21323 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231517AbhCJLtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:49:20 -0500
+IronPort-SDR: O8G2jLWaRy5KgcYxMX5QuXvnPJT6bdf6jmb51nRAfR7aiEcr8YWN3r4cUr61iLgC4H1RziQf/X
+ 662AO8Y2Mh+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175553693"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="175553693"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 03:49:19 -0800
+IronPort-SDR: U9rgF9K7qXapMdDxZuv6kGfPi26I0ayRc+zblwqAWHyy2VX1SExU1JAqr1SmGd9O5leJ6z8/TX
+ UP3QDofCmE6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="376936658"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga007.fm.intel.com with ESMTP; 10 Mar 2021 03:49:15 -0800
+Date:   Wed, 10 Mar 2021 19:49:15 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
+ MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
+Message-ID: <20210310114915.GA71505@shbuild999.sh.intel.com>
+References: <20210303120717.GA16736@shbuild999.sh.intel.com>
+ <20210303121833.GB16736@shbuild999.sh.intel.com>
+ <YD+BvvM/388AVnmm@dhcp22.suse.cz>
+ <20210303131832.GB78458@shbuild999.sh.intel.com>
+ <20210303134644.GC78458@shbuild999.sh.intel.com>
+ <YD+WR5cpuWhybm2L@dhcp22.suse.cz>
+ <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
+ <d07f8675-939b-daea-c128-30ceecfac8a0@intel.com>
+ <20210310051947.GA33036@shbuild999.sh.intel.com>
+ <YEiU6/5BXM7v4AOu@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20210310015455.1095207-1-revest@chromium.org> <f5cfb3d0-fab4-ee07-70de-ad5589db1244@fb.com>
- <eb0a8485-9624-1727-6913-e4520c9d8c04@fb.com>
-In-Reply-To: <eb0a8485-9624-1727-6913-e4520c9d8c04@fb.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 10 Mar 2021 12:48:45 +0100
-Message-ID: <CABRcYmK8m21sb8dHbr1wLT_oTCBpvr2Zg-8KHwKuJ2Ak0iTZ_A@mail.gmail.com>
-Subject: Re: [BUG] One-liner array initialization with two pointers in BPF
- results in NULLs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEiU6/5BXM7v4AOu@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 6:16 AM Yonghong Song <yhs@fb.com> wrote:
-> On 3/9/21 7:43 PM, Yonghong Song wrote:
-> > On 3/9/21 5:54 PM, Florent Revest wrote:
-> >> I noticed that initializing an array of pointers using this syntax:
-> >> __u64 array[] = { (__u64)&var1, (__u64)&var2 };
-> >> (which is a fairly common operation with macros such as BPF_SEQ_PRINTF)
-> >> always results in array[0] and array[1] being NULL.
-> >>
-> >> Interestingly, if the array is only initialized with one pointer, ex:
-> >> __u64 array[] = { (__u64)&var1 };
-> >> Then array[0] will not be NULL.
-> >>
-> >> Or if the array is initialized field by field, ex:
-> >> __u64 array[2];
-> >> array[0] = (__u64)&var1;
-> >> array[1] = (__u64)&var2;
-> >> Then array[0] and array[1] will not be NULL either.
-> >>
-> >> I'm assuming that this should have something to do with relocations
-> >> and might be a bug in clang or in libbpf but because I don't know much
-> >> about these, I thought that reporting could be a good first step. :)
-> >
-> > Thanks for reporting. What you guess is correct, this is due to
-> > relocations :-(
-> >
-> > The compiler notoriously tend to put complex initial values into
-> > rodata section. For example, for
-> >     __u64 array[] = { (__u64)&var1, (__u64)&var2 };
-> > the compiler will put
-> >     { (__u64)&var1, (__u64)&var2 }
-> > into rodata section.
-> >
-> > But &var1 and &var2 themselves need relocation since they are
-> > address of static variables which will sit inside .data section.
-> >
-> > So in the elf file, you will see the following relocations:
-> >
-> > RELOCATION RECORDS FOR [.rodata]:
-> > OFFSET           TYPE                     VALUE
-> > 0000000000000018 R_BPF_64_64              .data
-> > 0000000000000020 R_BPF_64_64              .data
+On Wed, Mar 10, 2021 at 10:44:11AM +0100, Michal Hocko wrote:
+> On Wed 10-03-21 13:19:47, Feng Tang wrote:
+> [...]
+> > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> > index d66c1c0..00b19f7 100644
+> > --- a/mm/mempolicy.c
+> > +++ b/mm/mempolicy.c
+> > @@ -2205,9 +2205,13 @@ static struct page *alloc_pages_policy(struct mempolicy *pol, gfp_t gfp,
+> >  	 * | MPOL_PREFERRED_MANY (round 2) | local         | NULL       |
+> >  	 * +-------------------------------+---------------+------------+
+> >  	 */
+> > -	if (pol->mode == MPOL_PREFERRED_MANY)
+> > +	if (pol->mode == MPOL_PREFERRED_MANY) {
+> >  		gfp_mask |= __GFP_RETRY_MAYFAIL | __GFP_NOWARN;
+> >  
+> > +		/* Skip direct reclaim, as there will be a second try */
+> > +		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
+> 
+> __GFP_RETRY_MAYFAIL is a reclaim modifier which doesn't make any sense
+> without __GFP_DIRECT_RECLAIM. Also I think it would be better to have a
+> proper allocation flags in the initial patch which implements the
+> fallback.
 
-Right :) Thank you for the explanations Yonghong!
+Ok, will remove the __GFP_RETRY_MAYFAIL setting and folder this with
+previous patch(8/14).
 
-> > Currently, libbpf does not handle relocation inside .rodata
-> > section, so they content remains 0.
+Thanks,
+Feng
 
-Just for my own edification, why is .rodata relocation not yet handled
-in libbpf ? Is it because of a read-only mapping that makes it more
-difficult ?
-
-> > That is why you see the issue with pointer as NULL.
-> >
-> > With array size of 1, compiler does not bother to put it into
-> > rodata section.
-> >
-> > I *guess* that it works in the macro due to some kind of heuristics,
-> > e.g., nested blocks, etc, and llvm did not promote the array init value
-> > to rodata. I will double check whether llvm can complete prevent
-> > such transformation.
-> >
-> > Maybe in the future libbpf is able to handle relocations for
-> > rodata section too. But for the time being, please just consider to use
-> > either macro, or the explicit array assignment.
->
-> Digging into the compiler, the compiler tries to make *const* initial
-> value into rodata section if the initial value size > 64, so in
-> this case, macro does not work either. I think this is how you
-> discovered the issue.
-
-Indeed, I was using a macro similar to BPF_SEQ_PRINTF and this is how
-I found the bug.
-
-> The llvm does not provide target hooks to
-> influence this transformation.
-
-Oh, that is unfortunate :) Thanks for looking into it! I feel that the
-real fix would be in libbpf anyway and the rest is just workarounds.
-
-> So, there are two workarounds,
-> (1).    __u64 param_working[2];
->          param_working[0] = (__u64)str1;
->          param_working[1] = (__u64)str2;
-> (2). BPF_SEQ_PRINTF(seq, "%s ", str1);
->       BPF_SEQ_PRINTF(seq, "%s", str2);
-
-(2) is a bit impractical for my actual usecase. I am implementing a
-bpf_snprintf helper (patch series Coming Soon TM) and I wanted to keep
-the selftest short with a few BPF_SNPRINTF() calls that exercise most
-format specifiers.
-
-> In practice, if you have at least one non-const format argument,
-> you should be fine. But if all format arguments are constant, then
-> none of them should be strings.
-
-Just for context, this does not only happen for strings but also for
-all sorts of pointers, for example, when I try to do address lookup of
-global __ksym variables, which is important for my selftest.
-
-> Maybe we could change marco
->     unsigned long long ___param[] = { args };
-> to declare an array explicitly and then have a loop to
-> assign each array element?
-
-I think this would be a good workaround for now, indeed. :) I'll look
-into it today and send it as part of my bpf_snprintf series.
-
-Thanks!
+> > +	}
+> > +
+> >  	page = __alloc_pages_nodemask(gfp_mask, order,
+> >  				      policy_node(gfp, pol, preferred_nid),
+> >  				      policy_nodemask(gfp, pol));
+> > -- 
+> > 2.7.4
+> > 
+> > 
+> 
+> -- 
+> Michal Hocko
+> SUSE Labs
