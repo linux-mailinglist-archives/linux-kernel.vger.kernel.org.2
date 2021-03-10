@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B6A333E1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55EF0333E29
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233382AbhCJNZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:25:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45680 "EHLO mail.kernel.org"
+        id S233442AbhCJNZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:25:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232832AbhCJNYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0369D64FEF;
-        Wed, 10 Mar 2021 13:24:30 +0000 (UTC)
+        id S232834AbhCJNYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB0BB64FF3;
+        Wed, 10 Mar 2021 13:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382672;
-        bh=SrpHNz+9s1NbwOcx1sv9lILKLb86ARnZkK3UFGGccyI=;
+        s=korg; t=1615382674;
+        bh=UeDav3EGNIgPzfN43RzWdmp3M+EGl0rvc8wbcvJx5Tg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ze2dN8wHr5y9WeVrxl3TCrcEhxoGB4uBTzTFS0G0jGvTs10tD2b9xohnhJ/Se1gfS
-         pekZRWQuLeIasvUy2DNxeePc+X0UMKh9RoCMXFyQTGHv98fafnFyAxXrpyQOqpJxJ4
-         RSqdwgRbvdvlpQTcce9xR/Ln/H2Znl+wbq3S9nWg=
+        b=aUnNXf8CY3+g7O3OOkO68oFbSIuQIZcw4FR/YUYlTNxuTBtIYO0FtE9YbqAlorL/E
+         1bB/QMH5slW41ALflfV3vnEjy1IP2+0ak+9tau4cf8ykBZslzlWgxYxlutOunEb/Zi
+         SeK9qAMEfgKLE0HQE9bwndL1Lj6DVdOWTtHKmgos=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 14/49] net: ipa: ignore CHANNEL_NOT_RUNNING errors
-Date:   Wed, 10 Mar 2021 14:23:25 +0100
-Message-Id: <20210310132322.413240905@linuxfoundation.org>
+Subject: [PATCH 5.10 15/49] platform/x86: acer-wmi: Cleanup ACER_CAP_FOO defines
+Date:   Wed, 10 Mar 2021 14:23:26 +0100
+Message-Id: <20210310132322.443951388@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
 References: <20210310132321.948258062@linuxfoundation.org>
@@ -42,68 +43,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Alex Elder <elder@linaro.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit f849afcc8c3b27d7b50827e95b60557f24184df0 ]
+[ Upstream commit 7c936d8d26afbc74deac0651d613dead2f76e81c ]
 
-IPA v4.2 has a hardware quirk that requires the AP to allocate GSI
-channels for the modem to use.  It is recommended that these modem
-channels get stopped (with a HALT generic command) by the AP when
-its IPA driver gets removed.
+Cleanup the ACER_CAP_FOO defines:
+-Switch to using BIT() macro.
+-The ACER_CAP_RFBTN flag is set, but it is never checked anywhere, drop it.
+-Drop the unused ACER_CAP_ANY define.
 
-The AP has no way of knowing the current state of a modem channel.
-So when the IPA driver issues a HALT command it's possible the
-channel is not running, and in that case we get an error indication.
-This error simply means we didn't need to stop the channel, so we
-can ignore it.
-
-This patch adds an explanation for this situation, and arranges for
-this condition to *not* report an error message.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20201019185628.264473-2-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/gsi.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ drivers/platform/x86/acer-wmi.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 2a65efd3e8da..48ee43b89fec 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -1052,10 +1052,32 @@ static void gsi_isr_gp_int1(struct gsi *gsi)
- 	u32 result;
- 	u32 val;
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 5592a929b593..75b1f6ceb76e 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -206,14 +206,12 @@ struct hotkey_function_type_aa {
+ /*
+  * Interface capability flags
+  */
+-#define ACER_CAP_MAILLED		(1<<0)
+-#define ACER_CAP_WIRELESS		(1<<1)
+-#define ACER_CAP_BLUETOOTH		(1<<2)
+-#define ACER_CAP_BRIGHTNESS		(1<<3)
+-#define ACER_CAP_THREEG			(1<<4)
+-#define ACER_CAP_ACCEL			(1<<5)
+-#define ACER_CAP_RFBTN			(1<<6)
+-#define ACER_CAP_ANY			(0xFFFFFFFF)
++#define ACER_CAP_MAILLED		BIT(0)
++#define ACER_CAP_WIRELESS		BIT(1)
++#define ACER_CAP_BLUETOOTH		BIT(2)
++#define ACER_CAP_BRIGHTNESS		BIT(3)
++#define ACER_CAP_THREEG			BIT(4)
++#define ACER_CAP_ACCEL			BIT(5)
  
-+	/* This interrupt is used to handle completions of the two GENERIC
-+	 * GSI commands.  We use these to allocate and halt channels on
-+	 * the modem's behalf due to a hardware quirk on IPA v4.2.  Once
-+	 * allocated, the modem "owns" these channels, and as a result we
-+	 * have no way of knowing the channel's state at any given time.
-+	 *
-+	 * It is recommended that we halt the modem channels we allocated
-+	 * when shutting down, but it's possible the channel isn't running
-+	 * at the time we issue the HALT command.  We'll get an error in
-+	 * that case, but it's harmless (the channel is already halted).
-+	 *
-+	 * For this reason, we silently ignore a CHANNEL_NOT_RUNNING error
-+	 * if we receive it.
-+	 */
- 	val = ioread32(gsi->virt + GSI_CNTXT_SCRATCH_0_OFFSET);
- 	result = u32_get_bits(val, GENERIC_EE_RESULT_FMASK);
--	if (result != GENERIC_EE_SUCCESS_FVAL)
-+
-+	switch (result) {
-+	case GENERIC_EE_SUCCESS_FVAL:
-+	case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
-+		break;
-+
-+	default:
- 		dev_err(gsi->dev, "global INT1 generic result %u\n", result);
-+		break;
-+	}
+ /*
+  * Interface type flags
+@@ -1253,10 +1251,8 @@ static void __init type_aa_dmi_decode(const struct dmi_header *header, void *d)
+ 		interface->capability |= ACER_CAP_THREEG;
+ 	if (type_aa->commun_func_bitmap & ACER_WMID3_GDS_BLUETOOTH)
+ 		interface->capability |= ACER_CAP_BLUETOOTH;
+-	if (type_aa->commun_func_bitmap & ACER_WMID3_GDS_RFBTN) {
+-		interface->capability |= ACER_CAP_RFBTN;
++	if (type_aa->commun_func_bitmap & ACER_WMID3_GDS_RFBTN)
+ 		commun_func_bitmap &= ~ACER_WMID3_GDS_RFBTN;
+-	}
  
- 	complete(&gsi->completion);
+ 	commun_fn_key_number = type_aa->commun_fn_key_number;
  }
 -- 
 2.30.1
