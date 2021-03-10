@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F8133491D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72FA1334920
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhCJUtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:49:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59072 "EHLO mail.kernel.org"
+        id S231664AbhCJUt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:49:58 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:53133 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230491AbhCJUtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:49:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 208F664FC6;
-        Wed, 10 Mar 2021 20:49:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615409362;
-        bh=8Lubpt2RtIi1IKD8AnfhhcFsPyM8ZlZWqojFGL66AEo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PQhX5z72m4tWNc1wPcJL4+eNCCqDixQzxar0vIqh+ktQmQmEMsYW2KARrqaR/sQz4
-         xpu0uPizxIRDEbDLwNJkkihaImSz+OqHzM6htvp4AHC9W4ll/3jEg2WbWoZ4tyAOl7
-         XkRO6Dg4iZygdESiVlzkh5G4V3li+h3I0Uc84TN4rj3JWGIf9McWsQP4FCfYvLSofw
-         5I86XkYXRXb76K/gPmswQCXUYxkai7RHD5vZ+HhgNvAVVe3QWJcbOZ2uzdhuntCUMp
-         kAy8FBMwT8QmYbaoMNw70iSw8ElSfrOJ14GwFobOzWND+101iubMUZkqpDuoL4TXua
-         2uqd9ngJtrxig==
-Date:   Wed, 10 Mar 2021 12:49:20 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Huang Jianan <huangjianan@oppo.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Weichao Guo <guoweichao@oppo.com>, rpalethorpe@suse.de,
-        kernel test robot <oliver.sang@intel.com>, lkp@intel.com,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Chao Yu <yuchao0@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ltp@lists.linux.it
-Subject: Re: [LTP] [f2fs] 02eb84b96b: ltp.swapon03.fail
-Message-ID: <YEkw0J9VEg66AgIt@google.com>
-References: <20210308072510.GA902@xsang-OptiPlex-9020>
- <87h7llhnfe.fsf@suse.de>
- <c75229cc-e325-1c8b-0afa-fd236db8319c@oppo.com>
- <20210309040144.GH3479805@casper.infradead.org>
- <c84bf5c9-501e-6c25-1728-a7c6281093fd@oppo.com>
+        id S231584AbhCJUtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:49:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615409392; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=6Dex5qLQKQqs46mtJ5oJBUS+U8y6SzohFsM/HQL/NDs=; b=MELnUz32sChAN7/pqZefMQKQ8KGB2AM26c97C61AJLeCbRO07QEOqJpux/owCrfo/vuQt/GK
+ 4ZouzeQavFeQzCnH3KeuHLbATgUBbJYJaZP/IMBSZqqZ7oevfn6PI9xXITiKne6QWpibg2Ty
+ YaGUj/EW8MUUbufduzY42IIzycw=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 604930e1a6850484a6844cd7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 20:49:37
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 74303C43461; Wed, 10 Mar 2021 20:49:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 21566C433CA;
+        Wed, 10 Mar 2021 20:49:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 21566C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH v3] bus: mhi: core: Check state before processing power_down
+Date:   Wed, 10 Mar 2021 13:49:25 -0700
+Message-Id: <1615409365-8165-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c84bf5c9-501e-6c25-1728-a7c6281093fd@oppo.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10, Huang Jianan wrote:
-> Hi Richard,
-> 
-> On 2021/3/9 12:01, Matthew Wilcox wrote:
-> > On Tue, Mar 09, 2021 at 10:23:35AM +0800, Weichao Guo wrote:
-> > > Hi Richard,
-> > > 
-> > > On 2021/3/8 19:53, Richard Palethorpe wrote:
-> > > > Hello,
-> > > > 
-> > > > > kern  :err   : [  187.461914] F2FS-fs (sda1): Swapfile does not align to section
-> > > > > commit 02eb84b96bc1b382dd138bf60724edbefe77b025
-> > > > > Author: huangjianan@oppo.com <huangjianan@oppo.com>
-> > > > > Date:   Mon Mar 1 12:58:44 2021 +0800
-> > > > >       f2fs: check if swapfile is section-alligned
-> > > > >       If the swapfile isn't created by pin and fallocate, it can't be
-> > > > >       guaranteed section-aligned, so it may be selected by f2fs gc. When
-> > > > >       gc_pin_file_threshold is reached, the address of swapfile may change,
-> > > > >       but won't be synchronized to swap_extent, so swap will write to wrong
-> > > > >       address, which will cause data corruption.
-> > > > >       Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> > > > >       Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> > > > >       Reviewed-by: Chao Yu <yuchao0@huawei.com>
-> > > > >       Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > > > The test uses fallocate to preallocate the swap file and writes zeros to
-> > > > it. I'm not sure what pin refers to?
-> > > 'pin' refers to pinned file feature in F2FS, the LBA(Logical Block Address)
-> > > of a file is fixed after pinned. Without this operation before fallocate,
-> > > the LBA may not align with section(F2FS GC unit), some LBA of the file may
-> > > be changed by F2FS GC in some extreme cases.
-> > > 
-> > > For this test case, how about pin the swap file before fallocate for F2FS as
-> > > following:
-> > > 
-> > > ioctl(fd, F2FS_IOC_SET_PIN_FILE, true);
-> > No special ioctl should be needed.  f2fs_swap_activate() should pin the
-> > file, just like it converts inline inodes and disables compression.
-> 
-> Now f2fs_swap_activate() will pin the file. The problem is that when
-> f2fs_swap_activate()
-> 
-> is executed, the file has been created and may not be section-aligned.
-> 
-> So I think it would be better to consider aligning the swapfile during
-> f2fs_swap_activate()?
+We cannot process a power_down if the power state is DISABLED.  There is
+no valid mhi_ctxt in that case, so attepting to process the power_down
+will likely result in a null pointer dereference.  If the power state is
+DISABLED, there is nothing to do anyways, so just bail early.
 
-Does it make sense to reallocate blocks like
-in f2fs_swap_activate(),
-	set_inode_flag(inode, FI_PIN_FILE);
-	truncate_pagecache(inode, 0);
-	f2fs_truncate_blocks(inode, 0, true);
-	expand_inode_data();
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+---
+
+v3: Move the pm_lock use up
+v2: Fix subject and tweak the locking to avoid needless lock/unlock/relock
+
+ drivers/bus/mhi/core/pm.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index 414da4f..ea62549 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -1149,6 +1149,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+ 		mhi_deinit_dev_ctxt(mhi_cntrl);
+ 
+ error_dev_ctxt:
++	mhi_cntrl->pm_state = MHI_PM_DISABLE;
+ 	mutex_unlock(&mhi_cntrl->pm_mutex);
+ 
+ 	return ret;
+@@ -1160,12 +1161,19 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+ 	enum mhi_pm_state cur_state, transition_state;
+ 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 
++	mutex_lock(&mhi_cntrl->pm_mutex);
++	write_lock_irq(&mhi_cntrl->pm_lock);
++	cur_state = mhi_cntrl->pm_state;
++	if (cur_state == MHI_PM_DISABLE) {
++		write_unlock_irq(&mhi_cntrl->pm_lock);
++		mutex_unlock(&mhi_cntrl->pm_mutex);
++		return; /* Already powered down */
++	}
++
+ 	/* If it's not a graceful shutdown, force MHI to linkdown state */
+ 	transition_state = (graceful) ? MHI_PM_SHUTDOWN_PROCESS :
+ 			   MHI_PM_LD_ERR_FATAL_DETECT;
+ 
+-	mutex_lock(&mhi_cntrl->pm_mutex);
+-	write_lock_irq(&mhi_cntrl->pm_lock);
+ 	cur_state = mhi_tryset_pm_state(mhi_cntrl, transition_state);
+ 	if (cur_state != transition_state) {
+ 		dev_err(dev, "Failed to move to state: %s from: %s\n",
+-- 
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
+
