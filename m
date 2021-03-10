@@ -2,129 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210373345B9
+	by mail.lfdr.de (Postfix) with ESMTP id E81343345BB
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhCJRwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:52:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbhCJRv5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:51:57 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CFCC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:51:57 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id c16so8869179ply.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:51:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YAIZBUejgsuRm3I/i8T3yjE4IQIAIxaYEAKBNsGudB8=;
-        b=n7lAY9Mh6yDTmTTIv7zZyu41T9/hF6k4r9wQkCHFWNi0aKhriqdg3RwoAnkmp+lgwk
-         Oy/bbQXbJgFLBo6GR1J30O/H2pM+3SOBLTotrHTTK0VLehStaNQLiDWXyxAJE2mjc1dC
-         ntlQpJkvDo7H5ChokF7zw02U6yB/4+aEXUwD/2Pv32YC3hrMeWgJsBKnkja+L5kqQPis
-         M5sJUpsQ6+Lckj2ERtiVM0F9lRmy8+qRydOp6ns1Gh33ktnXoaNPdndAPw7s0nZF9HER
-         /8iZil8ckUoUwH6HzX7JXqVCfmQc1AkEcafLpOg1TaxViD/cyNak0teaHOHK2/PnZ8Dm
-         ngVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YAIZBUejgsuRm3I/i8T3yjE4IQIAIxaYEAKBNsGudB8=;
-        b=Rx64QOUQbkuFkZisuu2LiCutHU13yizb3FeG6bU0KEgtWEkZlZ8+wwQRX4zstWwU61
-         myZYqjzFKrKI65tUCCDSrvVkM0HqwSIpIRP8nlJcBgLESzD1iI/TKhA27W9QYbTcuYxT
-         //qb4dT14lOMfjim4KPEtznZIB1XIS4/2aS7LxllivbxEUm4bavgagQ3B+o8278tG5jK
-         Fi83fXSvqODrUnHgIuVhS+b0Bt+65Ko1L39pz1dzjZytTdL6UZMSstOd5XweMi34B+4L
-         HO0nCdh5zkrjQ7j5CjjLJj835Ig7pGFAza/+lNdtVn00KENQiF7mRBrD6Gl4Ixr5n9PR
-         6ybg==
-X-Gm-Message-State: AOAM530zFUznx2gM1DSBcHheJOffHsqf548cAPzAe/4PEWYQgd1D2p9q
-        gaQ0N0CHccF5VKreBbo0dBF64Q==
-X-Google-Smtp-Source: ABdhPJx2/KjxJOlLrywlrZyCi4etdMjlYm9VOhRGmyxW79l/RXMdX6XsloC3NohTmM/VTndD9sLVmA==
-X-Received: by 2002:a17:902:b610:b029:e3:2b1e:34ff with SMTP id b16-20020a170902b610b02900e32b1e34ffmr4041572pls.69.1615398716928;
-        Wed, 10 Mar 2021 09:51:56 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
-        by smtp.gmail.com with ESMTPSA id f3sm164471pfe.25.2021.03.10.09.51.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 09:51:56 -0800 (PST)
-Date:   Wed, 10 Mar 2021 09:51:48 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Martin Radev <martin.b.radev@gmail.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 5/7] x86/boot/compressed/64: Add CPUID sanity check to
- 32-bit boot-path
-Message-ID: <YEkHNDgmybNI+Ptt@google.com>
-References: <20210310084325.12966-1-joro@8bytes.org>
- <20210310084325.12966-6-joro@8bytes.org>
- <YEjvBfJg8P1SQt98@google.com>
- <YEkBU9em9SQZ25vA@martin-ThinkPad-T440p>
+        id S233516AbhCJRwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:52:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233188AbhCJRwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 12:52:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDAC564F88;
+        Wed, 10 Mar 2021 17:52:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615398733;
+        bh=doWCBtbU+Cvcw96n3h3mK98dT2eO39OIy2ytJMx9y/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HbRFL6X5Fj+AzjAFIKT3gv0fcYLF1E5iyuyY2AkOGAb/8SEZ5IPqYn7G4WZa59r5n
+         WFCAPpUY7qEj4NodwwJZcjTihZlXG8Cg8G13rBFScGLFM16DRsS+BKt8ESUxy/fjwU
+         +o9RBuNIg5aOL4qRt67mY+FLFe7CpxM3HgMH1S3iaa44NaAYV43VtaQIXLLi+EuetB
+         1n2jCS1hsduX/AE/aYKU/Qups/RX/lfHLGogmOv3syLcQy0YAumSWiC9tEXYUCqCAG
+         7B0tbgk8Y8cj56IfHj1tKRAuHmDInG5Gfh9gBaxHtsKN6XzyB0rH21XSR3vKUF9Axz
+         NjNyB5KTb+oHg==
+Date:   Wed, 10 Mar 2021 19:52:03 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     x86@kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3 0/2] x86/setup: consolidate early memory reservations
+Message-ID: <YEkHQ4PnxJkqJeoU@kernel.org>
+References: <20210302100406.22059-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YEkBU9em9SQZ25vA@martin-ThinkPad-T440p>
+In-Reply-To: <20210302100406.22059-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021, Martin Radev wrote:
-> On Wed, Mar 10, 2021 at 08:08:37AM -0800, Sean Christopherson wrote:
-> > On Wed, Mar 10, 2021, Joerg Roedel wrote:
-> > > +	/*
-> > > +	 * Sanity check CPUID results from the Hypervisor. See comment in
-> > > +	 * do_vc_no_ghcb() for more details on why this is necessary.
-> > > +	 */
-> > > +
-> > > +	/* Fail if Hypervisor bit not set in CPUID[1].ECX[31] */
-> > 
-> > This check is flawed, as is the existing check in 64-bit boot.  Or I guess more
-> > accurately, the check in get_sev_encryption_bit() is flawed.  AIUI, SEV-ES
-> > doesn't require the hypervisor to intercept CPUID.  A malicious hypervisor can
-> > temporarily pass-through CPUID to bypass the CPUID[1].ECX[31] check.
+Any comments on these?
+
+On Tue, Mar 02, 2021 at 12:04:04PM +0200, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> If erroneous information is provided, either through interception or without, there's
-> this check which is performed every time a new page table is set in the early linux stages:
-> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/x86/kernel/sev_verify_cbit.S#L22
+> Hi,
 > 
-> This should lead to a halt if corruption is detected, unless I'm overlooking something.
-> Please share more info.
-
-That check is predicated on sme_me_mask != 0, sme_me_mask is set based on the
-result of get_sev_encryption_bit(), and that returns '0' if CPUID[1].ECX[31] is
-'0'.
-
-sme_enable() also appears to have the same issue, as CPUID[1].ECX[31]=0 would
-cause it to check for SME instead of SEV, and the hypervisor can simply return
-0 for a VMGEXIT to get MSR_K8_SYSCFG.
-
-I've no idea if the guest would actually survive with a bogus sme_me_mask, but
-relying on CPUID[1] to #VC is flawed.
-
-Since MSR_AMD64_SEV is non-interceptable, that seems like it should be the
-canonical way to detect SEV/SEV-ES.  The only complication seems to be handling
-#GP faults on the RDMSR in early boot.
-
-> > The hypervisor likely has access to the guest firmware source, so it
-> > wouldn't be difficult for the hypervisor to disable CPUID interception once
-> > it detects that firmware is handing over control to the kernel.
-> > 
+> David noticed that we do some of memblock_reserve() calls after allocations
+> are possible:
 > 
-> You probably don't even need to know the firmware for that. There the option
-> to set CR* changes to cause #AE which probably gives away enough information.
+> https://lore.kernel.org/lkml/6ba6bde3-1520-5cd0-f987-32d543f0b79f@redhat.com
+> 
+> The below patches consolidate early memory reservations done during
+> setup_arch() so that memory used by firmware, bootloader, kernel text/data
+> and the memory that should be excluded from the available memory for
+> whatever other reason is reserved before memblock allocations are possible.
+> 
+> The patches are rebased on v5.12-rc1 and I think x86 tree is the best way
+> to merge them.
+> 
+> v3:
+> * rebase on v5.12-rc1
+> 
+> v2: https://lore.kernel.org/lkml/20210128105711.10428-1-rppt@kernel.org
+> * get rid of trim_platform_memory_ranges() and call trim_snb_memory()
+>   directly, per Boris comments
+> * massage changelog and comments to use passive voice, per Boris
+> * add Acked-by and Reviewed-by, thanks Boris and David
+> 
+> v1: https://lore.kernel.org/lkml/20210115083255.12744-1-rppt@kernel.org
+> 
+> Mike Rapoport (2):
+>   x86/setup: consolidate early memory reservations
+>   x86/setup: merge several reservations of start of the memory
+> 
+>  arch/x86/kernel/setup.c | 95 ++++++++++++++++++++---------------------
+>  1 file changed, 46 insertions(+), 49 deletions(-)
+> 
+> -- 
+> 2.28.0
+> 
+
+-- 
+Sincerely yours,
+Mike.
