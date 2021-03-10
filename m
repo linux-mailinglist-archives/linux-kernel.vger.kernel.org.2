@@ -2,94 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F454333A7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 971CA333A9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhCJKn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:43:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
+        id S232742AbhCJKqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:46:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232535AbhCJKnZ (ORCPT
+        with ESMTP id S232493AbhCJKqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:43:25 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98C2C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:43:22 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id u187so6777688wmg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:43:22 -0800 (PST)
+        Wed, 10 Mar 2021 05:46:32 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65BAC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:46:32 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id j12so11662851pfj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:46:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=rsU+poXPdTllS4PKXDMWT0nVCZvcUjovfEdKBIBONHk=;
-        b=GbrZ107Exov4pd9ZsNZ5esv5o9Ueu3MGIBr5f1bTaIFX9iDjeNZrqXbdm3rkahEy6V
-         ju7CI0ylGSw0461x6iQAhBhgCMg/TIairs2UahjCJdjI7mJgbyq28JQeAzpWbNTlBB06
-         7KK9bDgzBu9SK/6oXHL0n/+TTazKdf7iG5OScnEeS09HsRKhTJKjN5YBNZYU7Q3bwfLo
-         84OLgH7bziMVNWXoHo6ZkH/1RIAqPcnbvnwoRiQ9jL/g3i2tZEAxQcZc1F5K+zZKS8ub
-         ZvS1tv1tZlxyxcvp8immeaG3OFIJA1ijKA3GuUEXCZyZxbQ2wD/trKn3nhpEJZr/OAMS
-         mX2g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GI0LvxVWnBHKRJ/ABECeLBRx+47qje3za2yNkc6q9Cg=;
+        b=LtcEUhKZwMqdrPOvjO+fndjQpDbIJohdvWTJfztjMC0dYw+o5S2kV2bKjwlzi9aMri
+         DTRlU6rGpg053NqYh7hUvJGVtSkq0eXOLPXaxq+imS3a+tDcPs356EiK4pt71wCRPRYY
+         ACB9gZQUIliYPeKrLUlXUkZeT40FWoBGnDy9amk/CRuh8yu/sMFvE6JCDsa5vBSp6c5c
+         /hUHk4SEUb0qrKfEDfLRhF99cEOBKV/b4mlUngBbZfwMfTIGIN1A4ISK0D1RvY/Jkmhp
+         Ojz2d9W6FevcdM9SxTBTutZZp+toQrTOPWucbkP4iawwuPY4grhc26lE1KLShjGIpgFG
+         5j7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rsU+poXPdTllS4PKXDMWT0nVCZvcUjovfEdKBIBONHk=;
-        b=VyN/Bk3ctZ4uDf+AYf2xX9cGZUV1lHZ08Fyy6jNXghA+JeUGKAW34KAnijzGkCVl+y
-         f+Tcd4r13iF2AvbRIMi3Q5vdaD/jKOFcj9jCx4HBNn4iBpMYWnCGHkGfC+70WXeARfAO
-         ryKh0+1Xr/8Uugo0osrFsSnyRS4oxJnOwb8ye+BEOBseXYvDk5bNzBKa72TSC127ceM/
-         61amBdeZnmRxLcvkpBVHr01xc4A58ytVyVZtzp3kCy8h4Bl6oBw3AK3U1REj/dBZo33s
-         YrUJzHPdk+X8knTldp2/FSTj9lVFH1UU+T5TIQwll8vV5Nn5ETmKs2ZXOZDrV48ALkGe
-         i8hQ==
-X-Gm-Message-State: AOAM532xRJvTnlOpdeizvsoqSAG4ywffoDBCl3d8XcjBozPXm28xRghA
-        KfEDHZ3QnjmfH5IcwZZwjAGZgw==
-X-Google-Smtp-Source: ABdhPJyQ7UF5/2+gHkI5V+DDKgkKUxhX2NrXwpglkxK2ELTTsq9x2rm7JfELxNTCkbMH9OIxXOsPeQ==
-X-Received: by 2002:a05:600c:35c1:: with SMTP id r1mr2672631wmq.60.1615373001562;
-        Wed, 10 Mar 2021 02:43:21 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id r26sm8602527wmn.28.2021.03.10.02.43.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GI0LvxVWnBHKRJ/ABECeLBRx+47qje3za2yNkc6q9Cg=;
+        b=nTTcMMW57sem2srTHPS2bOX1Y9TpBptlEucPWKA1UY8PEmLUklY84zAkMUhSTGb9ke
+         dWB59zGfhr4tuzd+VYxzlLOPHcFVt3MnSJ0Zz2fxcFYKvO5WIYQqvJ7dTLA8QXi6fkJ4
+         +QiI1uZASGzRrxdITKqpfHUA9mi/JMqFEsrkxxzzbn/5Pi9jkckTrCz+BmGg236pcGzf
+         uP9pMdMMbVEVaZVy4G/9O//rVMP5kncCYvzLgm9IKg/r1Em4BfL434MbD5uj2ajcYDzr
+         YxI7Ba4NQEFrtfkbh7zn9gKDFz+ok7z4oFP4RuDc+mdimp+w6dymbW3BHWK2i42uSW30
+         gbsA==
+X-Gm-Message-State: AOAM531AhAPsewxov3og+zJXqY5ylBAOmJXQwWE0zuz9flMoEyiR/Z4n
+        v5cpB0OYOiOBTRtBZeFBwZlpwB2jDq4=
+X-Google-Smtp-Source: ABdhPJwE1TuzTzrm74Pwem5KVwzGkDl0zgfeE2Y7fKMeHPrzRAu9gwPkYitl0WwEmd1p3q9JBYVamw==
+X-Received: by 2002:a63:c20:: with SMTP id b32mr2330288pgl.79.1615373192099;
+        Wed, 10 Mar 2021 02:46:32 -0800 (PST)
+Received: from localhost.localdomain ([171.49.209.253])
+        by smtp.gmail.com with ESMTPSA id fs9sm5959372pjb.40.2021.03.10.02.46.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 02:43:21 -0800 (PST)
-Date:   Wed, 10 Mar 2021 10:43:18 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
-Subject: Re: [PATCH v3 11/15] regulator: rohm-regulator: Support SNVS HW
- state.
-Message-ID: <20210310104318.GI701493@dell>
-References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
- <4e9d048689acb3570159e87f31becf39455af3c9.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+        Wed, 10 Mar 2021 02:46:31 -0800 (PST)
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Atul Gopinathan <atulgopinathan@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8192u: ieee80211: Remove braces for single line blocks
+Date:   Wed, 10 Mar 2021 16:13:54 +0530
+Message-Id: <20210310104353.14531-1-atulgopinathan@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4e9d048689acb3570159e87f31becf39455af3c9.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021, Matti Vaittinen wrote:
+Remove braces around those `if` and `for` blocks which contain a
+single line and therefore fix the Checkpatch warning of the
+following type:
 
-> The ROHM BD71815 supports setting voltage levels/regulator status
-> for HW-states "RUN", "SUSPEND", "LPSR" and "SNVS". Add DT parsing
-> helper also for SNVS state.
-> 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
->  drivers/regulator/rohm-regulator.c | 6 ++++++
+"WARNING: braces {} are not necessary for single statement blocks"
 
->  include/linux/mfd/rohm-generic.h   | 6 +++++-
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+---
+ .../staging/rtl8192u/ieee80211/ieee80211_rx.c | 42 ++++++++-----------
+ .../staging/rtl8192u/ieee80211/ieee80211_tx.c |  4 +-
+ .../staging/rtl8192u/ieee80211/ieee80211_wx.c |  6 +--
+ 3 files changed, 22 insertions(+), 30 deletions(-)
 
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-
->  2 files changed, 11 insertions(+), 1 deletion(-)
-
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c
+index b6fee7230ce0..b0e01ee65f7f 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c
+@@ -612,9 +612,9 @@ static void RxReorderIndicatePacket(struct ieee80211_device *ieee,
+ 		pHTInfo->RxReorderDropCounter++;
+ 		{
+ 			int i;
+-			for (i = 0; i < prxb->nr_subframes; i++) {
++			for (i = 0; i < prxb->nr_subframes; i++)
+ 				dev_kfree_skb(prxb->subframes[i]);
+-			}
++
+ 			kfree(prxb);
+ 			prxb = NULL;
+ 		}
+@@ -632,11 +632,11 @@ static void RxReorderIndicatePacket(struct ieee80211_device *ieee,
+ 		pTS->rx_indicate_seq = (pTS->rx_indicate_seq + 1) % 4096;
+ 		bMatchWinStart = true;
+ 	} else if (SN_LESS(WinEnd, SeqNum)) {
+-		if (SeqNum >= (WinSize - 1)) {
++		if (SeqNum >= (WinSize - 1))
+ 			pTS->rx_indicate_seq = SeqNum + 1 - WinSize;
+-		} else {
++		else
+ 			pTS->rx_indicate_seq = 4095 - (WinSize - (SeqNum + 1)) + 1;
+-		}
++
+ 		IEEE80211_DEBUG(IEEE80211_DL_REORDER, "Window Shift! IndicateSeq: %d, NewSeq: %d\n", pTS->rx_indicate_seq, SeqNum);
+ 	}
+ 
+@@ -674,9 +674,9 @@ static void RxReorderIndicatePacket(struct ieee80211_device *ieee,
+ 				list_add_tail(&pReorderEntry->List, &ieee->RxReorder_Unused_List);
+ 				{
+ 					int i;
+-					for (i = 0; i < prxb->nr_subframes; i++) {
++					for (i = 0; i < prxb->nr_subframes; i++)
+ 						dev_kfree_skb(prxb->subframes[i]);
+-					}
++
+ 					kfree(prxb);
+ 					prxb = NULL;
+ 				}
+@@ -693,9 +693,9 @@ static void RxReorderIndicatePacket(struct ieee80211_device *ieee,
+ 			IEEE80211_DEBUG(IEEE80211_DL_ERR, "RxReorderIndicatePacket(): There is no reorder entry!! Packet is dropped!!\n");
+ 			{
+ 				int i;
+-				for (i = 0; i < prxb->nr_subframes; i++) {
++				for (i = 0; i < prxb->nr_subframes; i++)
+ 					dev_kfree_skb(prxb->subframes[i]);
+-				}
++
+ 				kfree(prxb);
+ 				prxb = NULL;
+ 			}
+@@ -785,13 +785,12 @@ static u8 parse_subframe(struct ieee80211_device *ieee,
+ 		bIsAggregateFrame = true;
+ 	}
+ 
+-	if (IEEE80211_QOS_HAS_SEQ(fc)) {
++	if (IEEE80211_QOS_HAS_SEQ(fc))
+ 		LLCOffset += 2;
+-	}
+ 
+-	if (rx_stats->bContainHTC) {
++	if (rx_stats->bContainHTC)
+ 		LLCOffset += HTCLNG;
+-	}
++
+ 	// Null packet, don't indicate it to upper layer
+ 	ChkLength = LLCOffset;/* + (Frame_WEP(frame)!=0 ?Adapter->MgntInfo.SecurityInfo.EncryptionHeadOverhead:0);*/
+ 
+@@ -855,13 +854,11 @@ static u8 parse_subframe(struct ieee80211_device *ieee,
+ 
+ 			if (skb->len != 0) {
+ 				nPadding_Length = 4 - ((nSubframe_Length + ETHERNET_HEADER_SIZE) % 4);
+-				if (nPadding_Length == 4) {
++				if (nPadding_Length == 4)
+ 					nPadding_Length = 0;
+-				}
+ 
+-				if (skb->len < nPadding_Length) {
++				if (skb->len < nPadding_Length)
+ 					return 0;
+-				}
+ 
+ 				skb_pull(skb, nPadding_Length);
+ 			}
+@@ -1248,9 +1245,8 @@ int ieee80211_rx(struct ieee80211_device *ieee, struct sk_buff *skb,
+ 		TID = Frame_QoSTID(skb->data);
+ 		SeqNum = WLAN_GET_SEQ_SEQ(sc);
+ 		GetTs(ieee, (struct ts_common_info **)&pTS, hdr->addr2, TID, RX_DIR, true);
+-		if (TID != 0 && TID != 3) {
++		if (TID != 0 && TID != 3)
+ 			ieee->bis_any_nonbepkts = true;
+-		}
+ 	}
+ //added by amy for reorder
+ 	/* skb: hdr + (possible reassembled) full plaintext payload */
+@@ -1262,9 +1258,9 @@ int ieee80211_rx(struct ieee80211_device *ieee, struct sk_buff *skb,
+ 	/* qos data packets & reserved bit is 1 */
+ 	if (parse_subframe(ieee, skb, rx_stats, rxb, src, dst) == 0) {
+ 		/* only to free rxb, and not submit the packets to upper layer */
+-		for (i = 0; i < rxb->nr_subframes; i++) {
++		for (i = 0; i < rxb->nr_subframes; i++)
+ 			dev_kfree_skb(rxb->subframes[i]);
+-		}
++
+ 		kfree(rxb);
+ 		rxb = NULL;
+ 		goto rx_dropped;
+@@ -1523,11 +1519,9 @@ static inline void ieee80211_extract_country_ie(
+ 		// some AP (e.g. Cisco 1242) don't include country IE in their
+ 		// probe response frame.
+ 		//
+-		if (IS_EQUAL_CIE_SRC(ieee, addr2)) {
++		if (IS_EQUAL_CIE_SRC(ieee, addr2))
+ 			UPDATE_CIE_WATCHDOG(ieee);
+-		}
+ 	}
+-
+ }
+ 
+ int ieee80211_parse_info_param(struct ieee80211_device *ieee,
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c
+index bd8914645e95..96e6aaf859ec 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c
+@@ -301,9 +301,9 @@ static void ieee80211_tx_query_agg_cap(struct ieee80211_device *ieee,
+ 	if (is_multicast_ether_addr(hdr->addr1))
+ 		return;
+ 	//check packet and mode later
+-	if (!ieee->GetNmodeSupportBySecCfg(ieee->dev)) {
++	if (!ieee->GetNmodeSupportBySecCfg(ieee->dev))
+ 		return;
+-	}
++
+ 	if (pHTInfo->bCurrentAMPDUEnable) {
+ 		if (!GetTs(ieee, (struct ts_common_info **)(&pTxTs), hdr->addr1, skb->priority, TX_DIR, true)) {
+ 			printk("===>can't get TS\n");
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
+index 22373c0afebc..78cc8f357bbc 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
+@@ -184,9 +184,8 @@ static inline char *rtl819x_translate_scan(struct ieee80211_device *ieee,
+ 	//	printk("WPA IE\n");
+ 		u8 *p = buf;
+ 		p += sprintf(p, "wpa_ie=");
+-		for (i = 0; i < network->wpa_ie_len; i++) {
++		for (i = 0; i < network->wpa_ie_len; i++)
+ 			p += sprintf(p, "%02x", network->wpa_ie[i]);
+-		}
+ 
+ 		memset(&iwe, 0, sizeof(iwe));
+ 		iwe.cmd = IWEVCUSTOM;
+@@ -199,9 +198,8 @@ static inline char *rtl819x_translate_scan(struct ieee80211_device *ieee,
+ 
+ 		u8 *p = buf;
+ 		p += sprintf(p, "rsn_ie=");
+-		for (i = 0; i < network->rsn_ie_len; i++) {
++		for (i = 0; i < network->rsn_ie_len; i++)
+ 			p += sprintf(p, "%02x", network->rsn_ie[i]);
+-		}
+ 
+ 		memset(&iwe, 0, sizeof(iwe));
+ 		iwe.cmd = IWEVCUSTOM;
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.27.0
+
