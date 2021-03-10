@@ -2,187 +2,648 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B783338DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE1B3338DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbhCJJe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:34:29 -0500
-Received: from mga18.intel.com ([134.134.136.126]:29797 "EHLO mga18.intel.com"
+        id S232578AbhCJJeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:34:31 -0500
+Received: from mail.pr-group.ru ([178.18.215.3]:51638 "EHLO mail.pr-group.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232548AbhCJJd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:33:57 -0500
-IronPort-SDR: KAQSfUw+ZUtdKtvCEOC1jxZqFsi6RKI6c6g2Dg5kUAAPNBKh7/Wo19QUrYVU/L1Yn+s//IozFL
- mi7Mj4cMLUEw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="176024410"
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="176024410"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 01:33:57 -0800
-IronPort-SDR: VIUSYGiIoCRifQpTe9BtaBvmgXfEpQ0o4G7Xb+qoHIDrNhGsMsKCd9nxT3uJJm+t6zo3NG9llp
- yr1uif5DyDOg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="603012410"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga005.fm.intel.com with ESMTP; 10 Mar 2021 01:33:57 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 10 Mar 2021 01:33:56 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 10 Mar 2021 01:33:56 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Wed, 10 Mar 2021 01:33:56 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Wed, 10 Mar 2021 01:33:55 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O3ATFPUtWK3lvLpM59TnIs//avQXMLK2qgyo36Qby/xWEFipYbFRUGUKxl5419/f9hIUERkFvCNIShnj1pXbWrP9523p/n8h/2wsblzpH3wJ3Wr/9b0wqYTMaia0xc2ITqrVzkauQD6CB7ByWpOHIwjsre53VlLKwsnaRIa1uPQ0Ga7oz8Sz+xMSV7b7n+1hvfI3b0dbDIiaejGLufRC2ZuM3fxi15ieUrWDwZC457nKL28kU5eDiSRWfDh2dKzPhPPTatWzP8QGHkVK/apjiy8eaw8JM2nZ43kkkN7kESinCT0tAnlhNOMCcDApsJBzz1BMQL181F7P8Y3UrKiYUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aeMTZHGLtyFxP1JAXmQzEv/1HMbLtm42vSJrKQrC2Uk=;
- b=ZGqldd0FTnvd7HgMghut7X1bQaK9/tfIac6EfnxGQfS+7kLvtd6KpmJ1meEE1p68nPmqy/asiQC7LYdEORROStuBj4rML/0DykAGdvhTi6oNLris4FCXhYskKVM+rabGI/v1bebhqkuSbciSe7md0XZVk5JYH6bCCEzQbgIQmXq5SAafGSWLxN+TlRWmTlhGc/tHLVpR+Nd3wbk52nVAhVOnO8K24xCVBnsFob1k17xFQhXp54S4vTTJIXuXbTYkP0d5YR9ci2CRyrUkX7TUMS4CAgg6dxGf4WrxZr+At3yZ71CFIrni+KweNa6aS0zP8e3aQH+NqcNn1mfvSB2wsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aeMTZHGLtyFxP1JAXmQzEv/1HMbLtm42vSJrKQrC2Uk=;
- b=Ki1z8S5FXfXwOXoYB9Eeik4jjYIE5JUjaD/iq0cWiTnpxh3ZvPJi5QpjebXvtT/u8aWAZjmZxXB0TYjLBg4J4SQ4UHzLb6OQvKOoMJgo51YG8mszl99J29n2fNx7/ItSNheQCnLwGMBzXldV7iEcpSq7ya88QbSp0FbiFDZG3mQ=
-Received: from BYAPR11MB3448.namprd11.prod.outlook.com (2603:10b6:a03:76::21)
- by SJ0PR11MB5184.namprd11.prod.outlook.com (2603:10b6:a03:2d5::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.28; Wed, 10 Mar
- 2021 09:33:52 +0000
-Received: from BYAPR11MB3448.namprd11.prod.outlook.com
- ([fe80::b86b:4cf0:b741:11e3]) by BYAPR11MB3448.namprd11.prod.outlook.com
- ([fe80::b86b:4cf0:b741:11e3%3]) with mapi id 15.20.3912.029; Wed, 10 Mar 2021
- 09:33:52 +0000
-From:   "Verma, Vishal L" <vishal.l.verma@intel.com>
-To:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
-CC:     lkp <lkp@intel.com>, "hch@lst.de" <hch@lst.de>,
-        "hare@suse.de" <hare@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
-Subject: Re: [PATCH v2] libnvdimm: Notify disk drivers to revalidate region
- read-only
-Thread-Topic: [PATCH v2] libnvdimm: Notify disk drivers to revalidate region
- read-only
-Thread-Index: AQHXFU7ZjscxBXRsek+Q2910+9bZ46p89leA
-Date:   Wed, 10 Mar 2021 09:33:52 +0000
-Message-ID: <c016da156b56b7cd181b8eebdccfe28c5c1d3641.camel@intel.com>
-References: <161534060720.528671.2341213328968989192.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <161534060720.528671.2341213328968989192.stgit@dwillia2-desk3.amr.corp.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.55.43]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bcb3c2f7-9c27-4966-8172-08d8e3a79e2f
-x-ms-traffictypediagnostic: SJ0PR11MB5184:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR11MB5184CBCD41AC7638F3E33026C7919@SJ0PR11MB5184.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pwbg2rV9gicqDPec72zoSM2J/u5vdBKTsBylPs1jdImtcrNeO4dFOkq+upNKHcUw5anrWEplTlPIGwvT7TcoLRe4oHF9UJD1tk1CgOPWlMd+b3zk8IFv+GqBkgGMl4XtLTbf3k74WTtrY/c3KHhyBB+14FuQyBXfZclXXctW2gXtHon5KBOmtP+SAcSdc2TjcxK5ZvbqAQsYCUvBTs8E+eHlCyhAO9vU0K+b+IkiC18oBbvVmQKNrIGzMS6prt+BFsVsRe4pdruvepFy3dBQguPZq0bO6AHISnwWqDJypJgb24Zn0ruvGmKPvmW69SQczqmVarzcXIU00+gbG5Xd5PnJuHCJRFtjBIk4bsJCv0IOiY8SYzRfqACwDZSzAWm3alcSCFA3BJbiwcJ4q6E9vMbcUv/sZ8sF0Vff9iE0pWzwQB+E1Z2FGmLtO6+crTDicZK/wY/x1G3BYrKdyoYPYEvXN1G4eycUR/jUTzR5dTVGQWsT9dsNd1Js0sdCNn6bxpZCADwJWy3Y+nKuGGAAT7Ow+EJJkL9bdTZteDy/H8tRkQrhotDhMKZgN1nS8XvaU/FDTaqU1sJ42xP+e2Cu+OCbRBfH+7VPlKhXAjhYkLg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3448.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(366004)(39860400002)(376002)(2616005)(186003)(2906002)(66946007)(64756008)(66476007)(66556008)(66446008)(86362001)(76116006)(54906003)(26005)(110136005)(966005)(4326008)(478600001)(316002)(8936002)(6512007)(71200400001)(83380400001)(5660300002)(36756003)(8676002)(6506007)(6486002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?MEVqZ2o4Q3VWbWdsVVVTUC9ra3A4aURQUE1obnBGQ2dJVU44ZDAweXR3cHQ2?=
- =?utf-8?B?a1VtMTVJOVlsOXNsZ2tqd1EzVnBncW9GWDhqdloyMnNRVTdLVnplbGxBM3hz?=
- =?utf-8?B?ZHNQbTJlMW5sMGhmSFJFdFJSZ0xLZmFvWlUwZnJEMUtxc1ZNdEp6azBKTHpZ?=
- =?utf-8?B?OGxpTWhkMVhramlWUGh1NEVBbFlHcUYzUURVeHBScTFiN1hxU1dqRFY3R3Z2?=
- =?utf-8?B?RXVTTHNhaWc3cmZTd0dMMGJtRmlCRmxHbnkzUldmZEl2UDFQY2M0b1dqZWtC?=
- =?utf-8?B?NE92REpsMUNoOGRFVXlCbUFwcGlmaWhheEJDU0tyN2V6S3h3YXNxcHpJem1I?=
- =?utf-8?B?Tmc0QVphZU45ZDErN01wdVZJZVhiVjFxa3huODd3N3ZMd1FuRXVWWGdJQ0Rx?=
- =?utf-8?B?aThFVnVlTWY0QmlnWk1yWk9FQUNMZVAzeXZFc1U3UUZVS3pSRTZjcURPRHcx?=
- =?utf-8?B?alh6UVgzemVGTm10WHlSVDQxbVlOYUdZZys1eGxNUDE1YUkwclRxSXZnbHAy?=
- =?utf-8?B?T3Urcm9jcjVhaHYwWVZKWUZTMGFpaXd6NDFhYUJqa2tWU0l1SkJqbEZlWWxn?=
- =?utf-8?B?NlRLZjZzNFd0cXFwT1hTUjRQeFV5bis2OER4LzNHaUd6eDlzMUwvZno1ajFS?=
- =?utf-8?B?YlVXVzRtOWtNMWk0eEdjakdSQTRPc2lNVytBV1JreVlndEo5QjM4M3Byc0ZV?=
- =?utf-8?B?MjNGWGFReXpNRUJyTW4xaGZTcVhYNnRYN2wyRjY0V1NwNnh2aVhHb3ZTVUx2?=
- =?utf-8?B?TS92akVyUlllWG0zQlluRUhVbkVaMXlSZUFac1IyaTZLZ2VHbys5OWxVUkd2?=
- =?utf-8?B?K3RjZGRwcVVPK3NneTZGWDZBdDk1MXRWcFpUZWFKWE5rVXl4SDdZbXdmRW4z?=
- =?utf-8?B?MzhSck54dmZMMEY0dFd0M2FpY092M0NnSmJkY1dWVVNCMC8rd1pmUDFRMzRD?=
- =?utf-8?B?Z3Y4MWVWc0JGTWNyTFNCNHNQZ3RSZVY1SFZPZlRueVBSbS9zdXBTQmV0MFhT?=
- =?utf-8?B?OXpPcmNEd1V1SE5GYk5qTXQ3WkFTTkpib3p5ZnM3OXY1QnpCL0JXRzdRQVhS?=
- =?utf-8?B?SlNZNHVYOEhHRzhUZDB3dDJFenB3U281WW9ycnd4TnU4UlVOZWJyQTA1NFU2?=
- =?utf-8?B?M20vVHF6a0VNMCt1OVZmNkx5QVNUcitCYzdaUzhLOVRLSmNXcXc5OVdOM0U2?=
- =?utf-8?B?L1NXdHFzVXhjaFF3MFpKZmZBYzRpT3pXQnVYS2ZyUzFNYWpGU01ocjVCa1N3?=
- =?utf-8?B?cXJYZkRmUGxaMmp1a0JJbjZNSStjc2pzemFCWkxFcFEvTm11eWJoT0hsU0VM?=
- =?utf-8?B?S3lVRDdIYVBZNGU0bDZEZlMrUjQ1WmJaY0JESndML0RORTVhREdvM2EwUjU0?=
- =?utf-8?B?UW1sUmVRMnN3QmFXMFN5Ymdia1hTd3R3eThCb0YzL0lycXJ2cmNlUDRHcG1a?=
- =?utf-8?B?djExSFFtOHRlY1QzV29NSmsrYi9FSWtSRDVDMk8wYWVoazdrN1lvTi9CcFEz?=
- =?utf-8?B?ZkdicDcrbTBSWDJJbmdOYXlZQmVyM3pRK3JjSnRiVjJIWm8zU2d1STZEN3lT?=
- =?utf-8?B?QTVvRlU1TExmWWNlR1F3eGNWTHQ0dWZGRFVGbHNJcHJzQkQvbFR6V3lqdWxQ?=
- =?utf-8?B?MnJjaE9sM1V4WHJRSHl2U2ZGKytFTExOTlNvSzY5cFlIMlVrWjBQK1hPUHpx?=
- =?utf-8?B?aUg5ekhqeEJGWVVBS3J4eThuenAxT25DVFN3OFNoTTh2Z2RiZzlxcEhuUWU5?=
- =?utf-8?Q?HMSoK2xdHRzBVNGPyVic1Qh4/dUMHn4v9vtuJEy?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <FBB0B987C67F8D4F815A727B01B0386A@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S232562AbhCJJeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 04:34:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+        d=metrotek.ru; s=mail;
+        h=from:subject:date:message-id:to:cc:mime-version:content-type:in-reply-to:
+         references;
+        bh=NlJxdbuH03Kh8jwsdsOh0tBPguBi+8O2C30XRUQ+zyw=;
+        b=ODMc74kt1gUZK7DE7TCOWUDO1QpNHpva27odaGHmcCD3tgtVgTjTnMJz/1WCVqclp8/k13mjZrN+9
+         PsQY2UEABiqHylSpPjD5wtT9nO6OCIbynTQaQvy6HMmcecfZ9msOreLFQHXQyYJBdqTnjvA8ChJ0M4
+         HFCz2XVyWSaJE2pRmrB7XwPi8K9hTaAsflMoylnjJL/2kPxHu1MXxs7Yy0hq5qR/3GwWTcaq6lUNe3
+         s48R4zhU4AucmJnrhxaFR51CVnzf7Lqz7u2X5Q4HDuYKjdKbTEIPB78Jh0RqJ3RP0HtV33VcVVdGq/
+         jNhQHnt+g8M5e9uqRxrnHn0r+nrk0tg==
+X-Spam-Status: No, hits=0.0 required=3.4
+        tests=AWL: 0.000, BAYES_00: -1.665, CUSTOM_RULE_FROM: ALLOW,
+        TOTAL_SCORE: -1.665,autolearn=ham
+X-Spam-Level: 
+X-Footer: bWV0cm90ZWsucnU=
+Received: from dhcp-179.ddg ([85.143.252.66])
+        (authenticated user i.bornyakov@metrotek.ru)
+        by mail.pr-group.ru with ESMTPSA
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits));
+        Wed, 10 Mar 2021 12:33:56 +0300
+Date:   Wed, 10 Mar 2021 12:33:54 +0300
+From:   Ivan Bornyakov <i.bornyakov@metrotek.ru>
+To:     netdev@vger.kernel.org
+Cc:     system@metrotek.ru, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] net: phy: add Marvell 88X2222 transceiver support
+Message-ID: <20210310093353.p4g3zbr2idv4xsnv@dhcp-179.ddg>
+References: <20210201192250.gclztkomtsihczz6@dhcp-179.ddg>
+ <20210303160210.35komp5dy2qxn7lc@dhcp-179.ddg>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3448.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bcb3c2f7-9c27-4966-8172-08d8e3a79e2f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Mar 2021 09:33:52.4852
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: khCdsJBHNFwBU+J+ubqnWQPt5DjspwdvewGe9/LOlu5VTSEZj5Ge0EPoaKwE/8fMNj5oFrioucqV4HluHpZuo68A4O731KyZffP4degi3Go=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5184
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303160210.35komp5dy2qxn7lc@dhcp-179.ddg>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAzLTA5IGF0IDE3OjQzIC0wODAwLCBEYW4gV2lsbGlhbXMgd3JvdGU6DQo+
-IFByZXZpb3VzIGtlcm5lbHMgYWxsb3dlZCB0aGUgQkxLUk9TRVQgdG8gb3ZlcnJpZGUgdGhlIGRp
-c2sncyByZWFkLW9ubHkNCj4gc3RhdHVzLiBXaXRoIHRoYXQgc2l0dWF0aW9uIGZpeGVkIHRoZSBw
-bWVtIGRyaXZlciBuZWVkcyB0byByZWx5IG9uDQo+IG5vdGlmaWNhdGlvbiBldmVudHMgdG8gcmVl
-dmFsdWF0ZSB0aGUgZGlzayByZWFkLW9ubHkgc3RhdHVzIGFmdGVyIHRoZQ0KPiBob3N0IHJlZ2lv
-biBoYXMgYmVlbiBtYXJrZWQgcmVhZC13cml0ZS4NCj4gDQo+IFJlY2FsbCB0aGF0IHdoZW4gbGli
-bnZkaW1tIGRldGVybWluZXMgdGhhdCB0aGUgcGVyc2lzdGVudCBtZW1vcnkgaGFzDQo+IGxvc3Qg
-cGVyc2lzdGVuY2UgKGZvciBleGFtcGxlIGxhY2sgb2YgZW5lcmd5IHRvIGZsdXNoIGZyb20gRFJB
-TSB0byBGTEFTSA0KPiBvbiBhbiBOVkRJTU0tTiBkZXZpY2UpIGl0IG1hcmtzIHRoZSByZWdpb24g
-cmVhZC1vbmx5LCBidXQgdGhhdCBzdGF0ZSBjYW4NCj4gYmUgb3ZlcnJpZGRlbiBieSB0aGUgdXNl
-ciB2aWE6DQo+IA0KPiDCoMKgwqBlY2hvIDAgPiAvc3lzL2J1cy9uZC9kZXZpY2VzL3JlZ2lvblgv
-cmVhZF9vbmx5DQo+IA0KPiAuLi50byBkYXRlIHRoZXJlIGlzIG5vIG5vdGlmaWNhdGlvbiB0aGF0
-IHRoZSByZWdpb24gaGFzIHJlc3RvcmVkDQo+IHBlcnNpc3RlbmNlLCBzbyB0aGUgdXNlciBvdmVy
-cmlkZSBpcyB0aGUgb25seSByZWNvdmVyeS4NCj4gDQo+IEZpeGVzOiA1MmYwMTlkNDNjMjIgKCJi
-bG9jazogYWRkIGEgaGFyZC1yZWFkb25seSBmbGFnIHRvIHN0cnVjdCBnZW5kaXNrIikNCj4gQ2M6
-IENocmlzdG9waCBIZWxsd2lnIDxoY2hAbHN0LmRlPg0KPiBDYzogTWluZyBMZWkgPG1pbmcubGVp
-QHJlZGhhdC5jb20+DQo+IENjOiBNYXJ0aW4gSy4gUGV0ZXJzZW4gPG1hcnRpbi5wZXRlcnNlbkBv
-cmFjbGUuY29tPg0KPiBDYzogSGFubmVzIFJlaW5lY2tlIDxoYXJlQHN1c2UuZGU+DQo+IENjOiBK
-ZW5zIEF4Ym9lIDxheGJvZUBrZXJuZWwuZGs+DQo+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCBy
-b2JvdCA8bGtwQGludGVsLmNvbT4NCj4gUmVwb3J0ZWQtYnk6IFZpc2hhbCBWZXJtYSA8dmlzaGFs
-LmwudmVybWFAaW50ZWwuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBEYW4gV2lsbGlhbXMgPGRhbi5q
-LndpbGxpYW1zQGludGVsLmNvbT4NCj4gLS0tDQo+IENoYW5nZXMgc2luY2UgdjEgWzFdOg0KPiAt
-IE1vdmUgZnJvbSB0aGUgc2lua2luZyBzaGlwIG9mIHJldmFsaWRhdGVfZGlzaygpIHRvIHRoZSBs
-b2NhbCBob3RuZXNzDQo+IMKgwqBvZiBuZF9wbWVtX25vdGlmeSgpIChoY2gpLg0KPiANCj4gWzFd
-OiBodHRwOi8vbG9yZS5rZXJuZWwub3JnL3IvMTYxNTI3Mjg2MTk0LjQ0Njc5NC41MjE1MDM2MDM5
-NjU1NzY1MDQyLnN0Z2l0QGR3aWxsaWEyLWRlc2szLmFtci5jb3JwLmludGVsLmNvbQ0KPiANCj4g
-wqBkcml2ZXJzL252ZGltbS9idXMuYyAgICAgICAgIHwgICAxNCArKysrKystLS0tLS0tLQ0KPiDC
-oGRyaXZlcnMvbnZkaW1tL3BtZW0uYyAgICAgICAgfCAgIDM3ICsrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKy0tLS0NCj4gwqBkcml2ZXJzL252ZGltbS9yZWdpb25fZGV2cy5jIHwgICAg
-NyArKysrKysrDQo+IMKgaW5jbHVkZS9saW51eC9uZC5oICAgICAgICAgICB8ICAgIDEgKw0KPiDC
-oDQgZmlsZXMgY2hhbmdlZCwgNDcgaW5zZXJ0aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pDQoNCldp
-dGggdGhlIHVwZGF0ZSB0byB0aGUgdW5pdCB0ZXN0IGFwcGxpZWQsIGFuZCB0aGlzLCBldmVyeXRo
-aW5nIHBhc3Nlcw0KZm9yIG1lLiBZb3UgY2FuIGFkZDoNCg0KVGVzdGVkLWJ5OiBWaXNoYWwgVmVy
-bWEgPHZpc2hhbC5sLnZlcm1hQGludGVsLmNvbT4NCg0K
+On Wed, Mar 03, 2021 at 07:02:11PM +0300, Ivan Bornyakov wrote:
+> Add basic support for the Marvell 88X2222 multi-speed ethernet
+> transceiver.
+> 
+> This PHY provides data transmission over fiber-optic as well as Twinax
+> copper links. The 88X2222 supports 2 ports of 10GBase-R and 1000Base-X
+> on the line-side interface. The host-side interface supports 4 ports of
+> 10GBase-R, RXAUI, 1000Base-X and 2 ports of XAUI.
+> 
+> This driver, however, supports only XAUI on the host-side and
+> 1000Base-X/10GBase-R on the line-side, for now. The SGMII is also
+> supported over 1000Base-X. Interrupts are not supported.
+> 
+> Internal registers access compliant with the Clause 45 specification.
+> 
+> Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
+> ---
+>  drivers/net/phy/Kconfig           |   6 +
+>  drivers/net/phy/Makefile          |   1 +
+>  drivers/net/phy/marvell-88x2222.c | 519 ++++++++++++++++++++++++++++++
+>  include/linux/marvell_phy.h       |   1 +
+>  4 files changed, 527 insertions(+)
+>  create mode 100644 drivers/net/phy/marvell-88x2222.c
+> 
+> diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+> index 698bea312adc..a615b3660b05 100644
+> --- a/drivers/net/phy/Kconfig
+> +++ b/drivers/net/phy/Kconfig
+> @@ -201,6 +201,12 @@ config MARVELL_10G_PHY
+>  	help
+>  	  Support for the Marvell Alaska MV88X3310 and compatible PHYs.
+>  
+> +config MARVELL_88X2222_PHY
+> +	tristate "Marvell 88X2222 PHY"
+> +	help
+> +	  Support for the Marvell 88X2222 Dual-port Multi-speed Ethernet
+> +	  Transceiver.
+> +
+>  config MICREL_PHY
+>  	tristate "Micrel PHYs"
+>  	help
+> diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+> index a13e402074cf..de683e3abe63 100644
+> --- a/drivers/net/phy/Makefile
+> +++ b/drivers/net/phy/Makefile
+> @@ -63,6 +63,7 @@ obj-$(CONFIG_LSI_ET1011C_PHY)	+= et1011c.o
+>  obj-$(CONFIG_LXT_PHY)		+= lxt.o
+>  obj-$(CONFIG_MARVELL_10G_PHY)	+= marvell10g.o
+>  obj-$(CONFIG_MARVELL_PHY)	+= marvell.o
+> +obj-$(CONFIG_MARVELL_88X2222_PHY)	+= marvell-88x2222.o
+>  obj-$(CONFIG_MESON_GXL_PHY)	+= meson-gxl.o
+>  obj-$(CONFIG_MICREL_KS8995MA)	+= spi_ks8995.o
+>  obj-$(CONFIG_MICREL_PHY)	+= micrel.o
+> diff --git a/drivers/net/phy/marvell-88x2222.c b/drivers/net/phy/marvell-88x2222.c
+> new file mode 100644
+> index 000000000000..eca8c2f20684
+> --- /dev/null
+> +++ b/drivers/net/phy/marvell-88x2222.c
+> @@ -0,0 +1,519 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Marvell 88x2222 dual-port multi-speed ethernet transceiver.
+> + *
+> + * Supports:
+> + *	XAUI on the host side.
+> + *	1000Base-X or 10GBase-R on the line side.
+> + *	SGMII over 1000Base-X.
+> + */
+> +#include <linux/module.h>
+> +#include <linux/phy.h>
+> +#include <linux/gpio.h>
+> +#include <linux/delay.h>
+> +#include <linux/mdio.h>
+> +#include <linux/marvell_phy.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/sfp.h>
+> +#include <linux/netdevice.h>
+> +
+> +/* Port PCS Configuration */
+> +#define	MV_PCS_CONFIG		0xF002
+> +#define	MV_PCS_HOST_XAUI	0x73
+> +#define	MV_PCS_LINE_10GBR	(0x71 << 8)
+> +#define	MV_PCS_LINE_1GBX_AN	(0x7B << 8)
+> +#define	MV_PCS_LINE_SGMII_AN	(0x7F << 8)
+> +
+> +/* Port Reset and Power Down */
+> +#define	MV_PORT_RST	0xF003
+> +#define	MV_LINE_RST_SW	BIT(15)
+> +#define	MV_HOST_RST_SW	BIT(7)
+> +#define	MV_PORT_RST_SW	(MV_LINE_RST_SW | MV_HOST_RST_SW)
+> +
+> +/* 1000Base-X/SGMII Control Register */
+> +#define	MV_1GBX_CTRL		(0x2000 + MII_BMCR)
+> +
+> +/* 1000BASE-X/SGMII Status Register */
+> +#define	MV_1GBX_STAT		(0x2000 + MII_BMSR)
+> +
+> +/* 1000Base-X Auto-Negotiation Advertisement Register */
+> +#define	MV_1GBX_ADVERTISE	(0x2000 + MII_ADVERTISE)
+> +
+> +/* 1000Base-X PHY Specific Status Register */
+> +#define	MV_1GBX_PHY_STAT		0xA003
+> +#define	MV_1GBX_PHY_STAT_AN_RESOLVED	BIT(11)
+> +#define	MV_1GBX_PHY_STAT_DUPLEX		BIT(13)
+> +#define	MV_1GBX_PHY_STAT_SPEED100	BIT(14)
+> +#define	MV_1GBX_PHY_STAT_SPEED1000	BIT(15)
+> +
+> +struct mv2222_data {
+> +	phy_interface_t line_interface;
+> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported);
+> +};
+> +
+> +/* SFI PMA transmit enable */
+> +static int mv2222_tx_enable(struct phy_device *phydev)
+> +{
+> +	return phy_clear_bits_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_TXDIS,
+> +				  MDIO_PMD_TXDIS_GLOBAL);
+> +}
+> +
+> +/* SFI PMA transmit disable */
+> +static int mv2222_tx_disable(struct phy_device *phydev)
+> +{
+> +	return phy_set_bits_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_TXDIS,
+> +				MDIO_PMD_TXDIS_GLOBAL);
+> +}
+> +
+> +static int mv2222_soft_reset(struct phy_device *phydev)
+> +{
+> +	int val, ret;
+> +
+> +	ret = phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PORT_RST,
+> +			    MV_PORT_RST_SW);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return phy_read_mmd_poll_timeout(phydev, MDIO_MMD_VEND2, MV_PORT_RST,
+> +					 val, !(val & MV_PORT_RST_SW),
+> +					 5000, 1000000, true);
+> +}
+> +
+> +/* Returns negative on error, 0 if link is down, 1 if link is up */
+> +static int mv2222_read_status_10g(struct phy_device *phydev)
+> +{
+> +	int val, link = 0;
+> +
+> +	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MDIO_STAT1);
+> +	if (val < 0)
+> +		return val;
+> +
+> +	if (val & MDIO_STAT1_LSTATUS) {
+> +		link = 1;
+> +
+> +		/* 10GBASE-R do not support auto-negotiation */
+> +		phydev->autoneg = AUTONEG_DISABLE;
+> +		phydev->speed = SPEED_10000;
+> +		phydev->duplex = DUPLEX_FULL;
+> +	}
+> +
+> +	return link;
+> +}
+> +
+> +/* Returns negative on error, 0 if link is down, 1 if link is up */
+> +static int mv2222_read_status_1g(struct phy_device *phydev)
+> +{
+> +	int val, link = 0;
+> +
+> +	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_STAT);
+> +	if (val < 0)
+> +		return val;
+> +
+> +	if (!(val & BMSR_LSTATUS) ||
+> +	    (phydev->autoneg == AUTONEG_ENABLE &&
+> +	     !(val & BMSR_ANEGCOMPLETE)))
+> +		return 0;
+> +
+> +	link = 1;
+> +
+> +	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_PHY_STAT);
+> +	if (val < 0)
+> +		return val;
+> +
+> +	if (val & MV_1GBX_PHY_STAT_AN_RESOLVED) {
+> +		if (val & MV_1GBX_PHY_STAT_DUPLEX)
+> +			phydev->duplex = DUPLEX_FULL;
+> +		else
+> +			phydev->duplex = DUPLEX_HALF;
+> +
+> +		if (val & MV_1GBX_PHY_STAT_SPEED1000)
+> +			phydev->speed = SPEED_1000;
+> +		else if (val & MV_1GBX_PHY_STAT_SPEED100)
+> +			phydev->speed = SPEED_100;
+> +		else
+> +			phydev->speed = SPEED_10;
+> +	}
+> +
+> +	return link;
+> +}
+> +
+> +static int mv2222_read_status(struct phy_device *phydev)
+> +{
+> +	struct mv2222_data *priv = phydev->priv;
+> +	int link;
+> +
+> +	phydev->link = 0;
+> +	phydev->speed = SPEED_UNKNOWN;
+> +	phydev->duplex = DUPLEX_UNKNOWN;
+> +
+> +	if (priv->line_interface == PHY_INTERFACE_MODE_10GBASER)
+> +		link = mv2222_read_status_10g(phydev);
+> +	else
+> +		link = mv2222_read_status_1g(phydev);
+> +
+> +	if (link < 0)
+> +		return link;
+> +
+> +	phydev->link = link;
+> +
+> +	return 0;
+> +}
+> +
+> +static int mv2222_disable_aneg(struct phy_device *phydev)
+> +{
+> +	int ret = phy_clear_bits_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_CTRL,
+> +				     BMCR_ANENABLE | BMCR_ANRESTART);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return mv2222_soft_reset(phydev);
+> +}
+> +
+> +static int mv2222_enable_aneg(struct phy_device *phydev)
+> +{
+> +	int ret = phy_set_bits_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_CTRL,
+> +				   BMCR_ANENABLE | BMCR_RESET);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return mv2222_soft_reset(phydev);
+> +}
+> +
+> +static int mv2222_set_sgmii_speed(struct phy_device *phydev)
+> +{
+> +	struct mv2222_data *priv = phydev->priv;
+> +
+> +	switch (phydev->speed) {
+> +	default:
+> +	case SPEED_1000:
+> +		if ((linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
+> +				       priv->supported) ||
+> +		     linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
+> +				       priv->supported)))
+> +			return phy_modify_mmd(phydev, MDIO_MMD_PCS,
+> +					      MV_1GBX_CTRL,
+> +					      BMCR_SPEED1000 | BMCR_SPEED100,
+> +					      BMCR_SPEED1000);
+> +
+> +		fallthrough;
+> +	case SPEED_100:
+> +		if ((linkmode_test_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT,
+> +				       priv->supported) ||
+> +		     linkmode_test_bit(ETHTOOL_LINK_MODE_100baseT_Half_BIT,
+> +				       priv->supported)))
+> +			return phy_modify_mmd(phydev, MDIO_MMD_PCS,
+> +					      MV_1GBX_CTRL,
+> +					      BMCR_SPEED1000 | BMCR_SPEED100,
+> +					      BMCR_SPEED100);
+> +		fallthrough;
+> +	case SPEED_10:
+> +		if ((linkmode_test_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT,
+> +				       priv->supported) ||
+> +		     linkmode_test_bit(ETHTOOL_LINK_MODE_10baseT_Half_BIT,
+> +				       priv->supported)))
+> +			return phy_modify_mmd(phydev, MDIO_MMD_PCS,
+> +					      MV_1GBX_CTRL,
+> +					      BMCR_SPEED1000 | BMCR_SPEED100,
+> +					      BMCR_SPEED10);
+> +
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static bool mv2222_is_10g_capable(struct phy_device *phydev)
+> +{
+> +	struct mv2222_data *priv = phydev->priv;
+> +
+> +	return (linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseT_Full_BIT,
+> +				  priv->supported) ||
+> +		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseCR_Full_BIT,
+> +				  priv->supported) ||
+> +		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseSR_Full_BIT,
+> +				  priv->supported) ||
+> +		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseLR_Full_BIT,
+> +				  priv->supported) ||
+> +		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseLRM_Full_BIT,
+> +				  priv->supported) ||
+> +		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseER_Full_BIT,
+> +				  priv->supported));
+> +}
+> +
+> +static bool mv2222_is_1gbx_capable(struct phy_device *phydev)
+> +{
+> +	struct mv2222_data *priv = phydev->priv;
+> +
+> +	return linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
+> +				 priv->supported);
+> +}
+> +
+> +static int mv2222_config_line(struct phy_device *phydev)
+> +{
+> +	struct mv2222_data *priv = phydev->priv;
+> +
+> +	switch (priv->line_interface) {
+> +	case PHY_INTERFACE_MODE_10GBASER:
+> +		return phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
+> +				     MV_PCS_HOST_XAUI | MV_PCS_LINE_10GBR);
+> +	case PHY_INTERFACE_MODE_1000BASEX:
+> +		return phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
+> +				     MV_PCS_HOST_XAUI | MV_PCS_LINE_1GBX_AN);
+> +	case PHY_INTERFACE_MODE_SGMII:
+> +		return phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
+> +				     MV_PCS_HOST_XAUI | MV_PCS_LINE_SGMII_AN);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int mv2222_setup_forced(struct phy_device *phydev)
+> +{
+> +	struct mv2222_data *priv = phydev->priv;
+> +	bool changed = false;
+> +	int ret;
+> +
+> +	switch (priv->line_interface) {
+> +	case PHY_INTERFACE_MODE_10GBASER:
+> +		if (phydev->speed == SPEED_1000 &&
+> +		    mv2222_is_1gbx_capable(phydev)) {
+> +			priv->line_interface = PHY_INTERFACE_MODE_1000BASEX;
+> +			changed = true;
+> +		}
+> +
+> +		break;
+> +	case PHY_INTERFACE_MODE_1000BASEX:
+> +		if (phydev->speed == SPEED_10000 &&
+> +		    mv2222_is_10g_capable(phydev)) {
+> +			priv->line_interface = PHY_INTERFACE_MODE_10GBASER;
+> +			changed = true;
+> +		}
+> +
+> +		break;
+> +	case PHY_INTERFACE_MODE_SGMII:
+> +		ret = mv2222_set_sgmii_speed(phydev);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (changed) {
+> +		ret = mv2222_config_line(phydev);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	return mv2222_disable_aneg(phydev);
+> +}
+> +
+> +static int mv2222_config_aneg(struct phy_device *phydev)
+> +{
+> +	struct mv2222_data *priv = phydev->priv;
+> +	int ret, adv;
+> +
+> +	/* SFP is not present, do nothing */
+> +	if (priv->line_interface == PHY_INTERFACE_MODE_NA)
+> +		return 0;
+> +
+> +	if (phydev->autoneg == AUTONEG_DISABLE ||
+> +	    phydev->speed == SPEED_10000)
+> +		return mv2222_setup_forced(phydev);
+> +
+> +	if (priv->line_interface == PHY_INTERFACE_MODE_10GBASER &&
+> +	    mv2222_is_1gbx_capable(phydev)) {
+> +		priv->line_interface = PHY_INTERFACE_MODE_1000BASEX;
+> +		ret = mv2222_config_line(phydev);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	adv = linkmode_adv_to_mii_adv_x(priv->supported,
+> +					ETHTOOL_LINK_MODE_1000baseX_Full_BIT);
+> +
+> +	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_ADVERTISE,
+> +			     ADVERTISE_1000XFULL |
+> +			     ADVERTISE_1000XPAUSE | ADVERTISE_1000XPSE_ASYM,
+> +			     adv);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return mv2222_enable_aneg(phydev);
+> +}
+> +
+> +static int mv2222_aneg_done(struct phy_device *phydev)
+> +{
+> +	int ret;
+> +
+> +	if (mv2222_is_10g_capable(phydev)) {
+> +		ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MDIO_STAT1);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		if (ret & MDIO_STAT1_LSTATUS)
+> +			return 1;
+> +	}
+> +
+> +	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_STAT);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return (ret & BMSR_ANEGCOMPLETE);
+> +}
+> +
+> +static int mv2222_resume(struct phy_device *phydev)
+> +{
+> +	return mv2222_tx_enable(phydev);
+> +}
+> +
+> +static int mv2222_suspend(struct phy_device *phydev)
+> +{
+> +	return mv2222_tx_disable(phydev);
+> +}
+> +
+> +static int mv2222_get_features(struct phy_device *phydev)
+> +{
+> +	/* All supported linkmodes are set at probe */
+> +
+> +	return 0;
+> +}
+> +
+> +static int mv2222_config_init(struct phy_device *phydev)
+> +{
+> +	if (phydev->interface != PHY_INTERFACE_MODE_XAUI)
+> +		return -EINVAL;
+> +
+> +	phydev->autoneg = AUTONEG_DISABLE;
+> +
+> +	return 0;
+> +}
+> +
+> +static int mv2222_sfp_insert(void *upstream, const struct sfp_eeprom_id *id)
+> +{
+> +	struct phy_device *phydev = upstream;
+> +	phy_interface_t sfp_interface;
+> +	struct mv2222_data *priv;
+> +	struct device *dev;
+> +	int ret;
+> +
+> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(sfp_supported) = { 0, };
+> +
+> +	priv = (struct mv2222_data *)phydev->priv;
+> +	dev = &phydev->mdio.dev;
+> +
+> +	sfp_parse_support(phydev->sfp_bus, id, sfp_supported);
+> +	sfp_interface = sfp_select_interface(phydev->sfp_bus, sfp_supported);
+> +
+> +	dev_info(dev, "%s SFP module inserted\n", phy_modes(sfp_interface));
+> +
+> +	if (sfp_interface != PHY_INTERFACE_MODE_10GBASER &&
+> +	    sfp_interface != PHY_INTERFACE_MODE_1000BASEX &&
+> +	    sfp_interface != PHY_INTERFACE_MODE_SGMII) {
+> +		dev_err(dev, "Incompatible SFP module inserted\n");
+> +
+> +		return -EINVAL;
+> +	}
+> +
+> +	priv->line_interface = sfp_interface;
+> +	linkmode_and(priv->supported, phydev->supported, sfp_supported);
+> +
+> +	ret = mv2222_config_line(phydev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (mutex_trylock(&phydev->lock)) {
+> +		if (priv->line_interface == PHY_INTERFACE_MODE_10GBASER)
+> +			ret = mv2222_setup_forced(phydev);
+> +		else
+> +			ret = mv2222_config_aneg(phydev);
+> +
+> +		mutex_unlock(&phydev->lock);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static void mv2222_sfp_remove(void *upstream)
+> +{
+> +	struct phy_device *phydev = upstream;
+> +	struct mv2222_data *priv;
+> +
+> +	priv = (struct mv2222_data *)phydev->priv;
+> +
+> +	priv->line_interface = PHY_INTERFACE_MODE_NA;
+> +	linkmode_zero(priv->supported);
+> +}
+> +
+> +static const struct sfp_upstream_ops sfp_phy_ops = {
+> +	.module_insert = mv2222_sfp_insert,
+> +	.module_remove = mv2222_sfp_remove,
+> +	.attach = phy_sfp_attach,
+> +	.detach = phy_sfp_detach,
+> +};
+> +
+> +static int mv2222_probe(struct phy_device *phydev)
+> +{
+> +	struct device *dev = &phydev->mdio.dev;
+> +	struct mv2222_data *priv = NULL;
+> +
+> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported) = { 0, };
+> +
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_Autoneg_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_Pause_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_TP_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10baseT_Half_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_100baseT_Half_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseT_Half_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseT_Full_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseCR_Full_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseSR_Full_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseLR_Full_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseLRM_Full_BIT, supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseER_Full_BIT, supported);
+> +
+> +	linkmode_copy(phydev->supported, supported);
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->line_interface = PHY_INTERFACE_MODE_NA;
+> +	phydev->priv = priv;
+> +
+> +	return phy_sfp_probe(phydev, &sfp_phy_ops);
+> +}
+> +
+> +static struct phy_driver mv2222_drivers[] = {
+> +	{
+> +		.phy_id = MARVELL_PHY_ID_88X2222,
+> +		.phy_id_mask = MARVELL_PHY_ID_MASK,
+> +		.name = "Marvell 88X2222",
+> +		.get_features = mv2222_get_features,
+> +		.soft_reset = mv2222_soft_reset,
+> +		.config_init = mv2222_config_init,
+> +		.config_aneg = mv2222_config_aneg,
+> +		.aneg_done = mv2222_aneg_done,
+> +		.probe = mv2222_probe,
+> +		.suspend = mv2222_suspend,
+> +		.resume = mv2222_resume,
+> +		.read_status = mv2222_read_status,
+> +	},
+> +};
+> +module_phy_driver(mv2222_drivers);
+> +
+> +static struct mdio_device_id __maybe_unused mv2222_tbl[] = {
+> +	{ MARVELL_PHY_ID_88X2222, MARVELL_PHY_ID_MASK },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(mdio, mv2222_tbl);
+> +
+> +MODULE_DESCRIPTION("Marvell 88x2222 ethernet transceiver driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/linux/marvell_phy.h b/include/linux/marvell_phy.h
+> index 52b1610eae68..274abd5fbac3 100644
+> --- a/include/linux/marvell_phy.h
+> +++ b/include/linux/marvell_phy.h
+> @@ -24,6 +24,7 @@
+>  #define MARVELL_PHY_ID_88E3016		0x01410e60
+>  #define MARVELL_PHY_ID_88X3310		0x002b09a0
+>  #define MARVELL_PHY_ID_88E2110		0x002b09b0
+> +#define MARVELL_PHY_ID_88X2222		0x01410f10
+>  
+>  /* Marvel 88E1111 in Finisar SFP module with modified PHY ID */
+>  #define MARVELL_PHY_ID_88E1111_FINISAR	0x01ff0cc0
+> -- 
+> 2.20.1
+> 
+
+Friendly ping.
+Is this version good enough already?
+
