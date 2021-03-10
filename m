@@ -2,211 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7297D333AB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D24333AB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhCJKu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:50:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230450AbhCJKum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:50:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75F8064FC4;
-        Wed, 10 Mar 2021 10:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615373441;
-        bh=+hwjUkc3aKzHKd1d/ppZeQNCLgMD1GbFQ/2v76DduBk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GH2/6emwcBNuGLikyTXbISk/7Cd7kztAzlwnaXTnIcjPRVMAkKdwUm7JJ3Dh/sHZV
-         fEuuVspeBBoC8BpKJoSZaUTIn2qY1ecDYK8aruPg6JT0tv732CJg5iqjNgB6xWRD/t
-         +qXJfdCE9F80pVsTIV10UsvpRNo0pyHKW4Um0FtJw5THmYbN1d5Qpv6oCPD9ZXocPj
-         6RzZvQ9P9yMu+jAxgzcOHw+ZWgh6kqGD/JsoNHplvKv9yAFYBUy+NbrHeG08r0PdT5
-         tgXQZS8x4W2onsdg7bR8uFvBDTimr9OvrLR9I8a3p+ohe3nf6kMsg8lGlxmI5PfRHu
-         XsEhQh6ficglQ==
-Date:   Wed, 10 Mar 2021 19:50:36 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-Id: <20210310195036.9aefe44bda0418484886c3a9@kernel.org>
-In-Reply-To: <20210309213442.fyhxozdcyxfjljih@dlxu-fedora-R90QNFJV>
-References: <161495873696.346821.10161501768906432924.stgit@devnote2>
-        <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
-        <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
-        <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
-        <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
-        <20210309213442.fyhxozdcyxfjljih@dlxu-fedora-R90QNFJV>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232449AbhCJKvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:51:32 -0500
+Received: from mail.zju.edu.cn ([61.164.42.155]:36260 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229706AbhCJKvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 05:51:17 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app2 (Coremail) with SMTP id by_KCgB3XomDpEhgYxkiAg--.43318S4;
+        Wed, 10 Mar 2021 18:50:48 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Hannes Reinecke <hare@suse.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: aic7xxx: aic79xx: Add missing check in ahc_handle_seqint
+Date:   Wed, 10 Mar 2021 18:50:42 +0800
+Message-Id: <20210310105042.31660-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgB3XomDpEhgYxkiAg--.43318S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxWrWrCFW3GrykGr43Aw1UJrb_yoW5Arykp3
+        Z7K392krs5ur4jy3y8Xw4vqa15Jr4xtasIyF1xG3s2kr43Ca45u3WIgFyaqF1kWr92qrya
+        gas09rWDJr4UWwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkq1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
+        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v
+        1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUTBlZdtSrQTAANsX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021 13:34:42 -0800
-Daniel Xu <dxu@dxuuu.xyz> wrote:
+ahc_lookup_scb() may return a null pointer and further lead to
+null-pointer-dereference in case DATA_OVERRUN. Fix this by adding
+a null check.
 
-> Hi Masami,
-> 
-> Just want to clarify a few points:
-> 
-> On Mon, Mar 08, 2021 at 11:52:10AM +0900, Masami Hiramatsu wrote:
-> > On Sun, 7 Mar 2021 13:23:33 -0800
-> > Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > To help your understanding, let me explain.
-> > 
-> > If we have a code here
-> > 
-> > caller_func:
-> > 0x00 add sp, 0x20	/* 0x20 bytes stack frame allocated */
-> > ...
-> > 0x10 call target_func
-> > 0x15 ... /* return address */
-> > 
-> > On the stack in the entry of target_func, we have
-> > 
-> > [stack]
-> > 0x0e0 caller_func+0x15
-> > ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> > 0x100 /* caller_func return address */
-> > 
-> > And when we put a kretprobe on the target_func, the stack will be
-> > 
-> > [stack]
-> > 0x0e0 kretprobe_trampoline
-> > ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> > 0x100 /* caller_func return address */
-> > 
-> > * "caller_func+0x15" is saved in current->kretprobe_instances.first.
-> > 
-> > When returning from the target_func, call consumed the 0x0e0 and
-> > jump to kretprobe_trampoline. Let's see the assembler code.
-> > 
-> >         ".text\n"
-> >         ".global kretprobe_trampoline\n"
-> >         ".type kretprobe_trampoline, @function\n"
-> >         "kretprobe_trampoline:\n"
-> >         /* We don't bother saving the ss register */
-> >         "       pushq %rsp\n"
-> >         "       pushfq\n"
-> >         SAVE_REGS_STRING
-> >         "       movq %rsp, %rdi\n"
-> >         "       call trampoline_handler\n"
-> >         /* Replace saved sp with true return address. */
-> >         "       movq %rax, 19*8(%rsp)\n"
-> >         RESTORE_REGS_STRING
-> >         "       popfq\n"
-> >         "       ret\n"
-> > 
-> > When the entry of trampoline_handler, stack is like this;
-> > 
-> > [stack]
-> > 0x040 kretprobe_trampoline+0x25
-> > 0x048 r15
-> > ...     /* pt_regs */
-> > 0x0d8 flags
-> > 0x0e0 rsp (=0x0e0)
-> > ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> > 0x100 /* caller_func return address */
-> > 
-> > And after returned from trampoline_handler, "movq" changes the
-> > stack like this.
-> > 
-> > [stack]
-> > 0x040 kretprobe_trampoline+0x25
-> > 0x048 r15
-> > ...     /* pt_regs */
-> > 0x0d8 flags
-> > 0x0e0 caller_func+0x15
-> > ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> > 0x100 /* caller_func return address */
-> 
-> Thanks for the detailed explanation. I think I understand kretprobe
-> mechanics from a somewhat high level (kprobe saves real return address
-> on entry, overwrites return address to trampoline, then trampoline
-> runs handler and finally resets return address to real return address).
-> 
-> I don't usually write much assembly so the details escape me somewhat.
-> 
-> > So at the kretprobe handler, we have 2 issues.
-> > 1) the return address (caller_func+0x15) is not on the stack.
-> >    this can be solved by searching from current->kretprobe_instances.
-> 
-> Yes, agreed.
-> 
-> > 2) the stack frame size of kretprobe_trampoline is unknown
-> >    Since the stackframe is fixed, the fixed number (0x98) can be used.
-> 
-> I'm confused why this is relevant. Is it so ORC knows where to find
-> saved return address in the frame?
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/scsi/aic7xxx/aic7xxx_core.c | 72 +++++++++++++++--------------
+ 1 file changed, 37 insertions(+), 35 deletions(-)
 
-No, because the kretprobe_trampoline is somewhat special. Usually, at the
-function entry, there is a return address on the top of stack, but
-kretprobe_trampoline doesn't have it.
-So we have to put a hint at the function entry to mark there should be
-a next return address. (and ORC unwinder must find it)
-
-> > However, those solutions are only for the kretprobe handler. The stacktrace
-> > from interrupt handler hit in the kretprobe_trampoline still doesn't work.
-> > 
-> > So, here is my idea;
-> > 
-> > 1) Change the trampline code to prepare stack frame at first and save
-> >    registers on it, instead of "push". This will makes ORC easy to setup
-> >    stackframe information for this code.
-> 
-> I'm confused on the details here. But this is what Josh solves in his
-> patch, right?
-
-I'm not so sure how objtool makes the ORC information. If it can trace the
-push/pop correctly, yes, it is solved.
-
-> > 2) change the return addres fixup timing. Instead of using return value
-> >    of trampoline handler, before removing the real return address from
-> >    current->kretprobe_instances.
-> 
-> Is the idea to have `kretprobe_trampoline` place the real return address
-> on the stack (while telling ORC where to find it) _before_ running `call
-> trampoline_handler` ? So that an unwind from inside the user defined
-> kretprobe handler simply unwinds correctly?
-
-No, unless calling the trampoline_handler, we can not get the real return
-address. Thus, the __kretprobe_trampoline_handler() will call return address
-fixup function right before unlink the current->kretprobe_instances.
-
-> And to be extra clear, this would only work for stack_trace_save() and
-> not stack_trace_save_regs()?
-
-Yes, for the stack_trace_save_regs() and the stack-tracing inside the
-kretprobe'd target function, we still need a hack as same as orc_ftrace_find().
-
-> 
-> > 3) Then, if orc_find() finds the ip is in the kretprobe_trampoline, it
-> >    checks the contents of the end of stackframe (at the place of regs->sp)
-> >    is same as the address of it. If it is, it can find the correct address
-> >    from current->kretprobe_instances. If not, there is a correct address.
-> 
-> What do you mean by "it" w.r.t. "is the same address of it"? I'm
-> confused on this point.
-
-Oh I meant,
-
-3) Then, if orc_find() finds the ip is in the kretprobe_trampoline, orc_find()
-    checks the contents of the end of stackframe (at the place of regs->sp)
-   is same as the address of the stackframe (Note that kretprobe_trampoline
-   does "push %sp" at first). If so, orc_find() can find the correct address
-   from current->kretprobe_instances. If not, there is a correct address.
-
-I need to see the orc unwinder carefully, orc_find() only gets the ip but
-to find stackframe, I think this should be fixed in the caller of orc_find().
-
-Thank you,
-
+diff --git a/drivers/scsi/aic7xxx/aic7xxx_core.c b/drivers/scsi/aic7xxx/aic7xxx_core.c
+index 4b04ab8908f8..3a1cd6a0334e 100644
+--- a/drivers/scsi/aic7xxx/aic7xxx_core.c
++++ b/drivers/scsi/aic7xxx/aic7xxx_core.c
+@@ -1382,43 +1382,45 @@ ahc_handle_seqint(struct ahc_softc *ahc, u_int intstat)
+ 		u_int i;
+ 
+ 		scb = ahc_lookup_scb(ahc, scbindex);
+-		for (i = 0; i < num_phases; i++) {
+-			if (lastphase == ahc_phase_table[i].phase)
+-				break;
+-		}
+-		ahc_print_path(ahc, scb);
+-		printk("data overrun detected %s."
+-		       "  Tag == 0x%x.\n",
+-		       ahc_phase_table[i].phasemsg,
+-		       scb->hscb->tag);
+-		ahc_print_path(ahc, scb);
+-		printk("%s seen Data Phase.  Length = %ld.  NumSGs = %d.\n",
+-		       ahc_inb(ahc, SEQ_FLAGS) & DPHASE ? "Have" : "Haven't",
+-		       ahc_get_transfer_length(scb), scb->sg_count);
+-		if (scb->sg_count > 0) {
+-			for (i = 0; i < scb->sg_count; i++) {
+-
+-				printk("sg[%d] - Addr 0x%x%x : Length %d\n",
+-				       i,
+-				       (ahc_le32toh(scb->sg_list[i].len) >> 24
+-					& SG_HIGH_ADDR_BITS),
+-				       ahc_le32toh(scb->sg_list[i].addr),
+-				       ahc_le32toh(scb->sg_list[i].len)
+-				       & AHC_SG_LEN_MASK);
++		if (scb != NULL) {
++			for (i = 0; i < num_phases; i++) {
++				if (lastphase == ahc_phase_table[i].phase)
++					break;
+ 			}
++			ahc_print_path(ahc, scb);
++			printk("data overrun detected %s."
++				"  Tag == 0x%x.\n",
++				ahc_phase_table[i].phasemsg,
++				scb->hscb->tag);
++			ahc_print_path(ahc, scb);
++			printk("%s seen Data Phase.  Length = %ld.  NumSGs = %d.\n",
++				ahc_inb(ahc, SEQ_FLAGS) & DPHASE ? "Have" : "Haven't",
++				ahc_get_transfer_length(scb), scb->sg_count);
++			if (scb->sg_count > 0) {
++				for (i = 0; i < scb->sg_count; i++) {
++
++					printk("sg[%d] - Addr 0x%x%x : Length %d\n",
++						i,
++						(ahc_le32toh(scb->sg_list[i].len) >> 24
++						& SG_HIGH_ADDR_BITS),
++						ahc_le32toh(scb->sg_list[i].addr),
++						ahc_le32toh(scb->sg_list[i].len)
++						& AHC_SG_LEN_MASK);
++				}
++			}
++			/*
++			* Set this and it will take effect when the
++			* target does a command complete.
++			*/
++			ahc_freeze_devq(ahc, scb);
++			if ((scb->flags & SCB_SENSE) == 0) {
++				ahc_set_transaction_status(scb, CAM_DATA_RUN_ERR);
++			} else {
++				scb->flags &= ~SCB_SENSE;
++				ahc_set_transaction_status(scb, CAM_AUTOSENSE_FAIL);
++			}
++			ahc_freeze_scb(scb);
+ 		}
+-		/*
+-		 * Set this and it will take effect when the
+-		 * target does a command complete.
+-		 */
+-		ahc_freeze_devq(ahc, scb);
+-		if ((scb->flags & SCB_SENSE) == 0) {
+-			ahc_set_transaction_status(scb, CAM_DATA_RUN_ERR);
+-		} else {
+-			scb->flags &= ~SCB_SENSE;
+-			ahc_set_transaction_status(scb, CAM_AUTOSENSE_FAIL);
+-		}
+-		ahc_freeze_scb(scb);
+ 
+ 		if ((ahc->features & AHC_ULTRA2) != 0) {
+ 			/*
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.17.1
+
