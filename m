@@ -2,65 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD70333676
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4F533367A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhCJHhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:37:25 -0500
-Received: from mga06.intel.com ([134.134.136.31]:45001 "EHLO mga06.intel.com"
+        id S231761AbhCJHh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:37:58 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:47397 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhCJHg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:36:57 -0500
-IronPort-SDR: oeJClIGehzJZjC4HTOVHcMK70CzZqipJe0tavN+Um1F93jbmU1s0RTqE8vYzYmCjnbqbduLD14
- +7S/fffCwAbg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="249776572"
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="249776572"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 23:36:56 -0800
-IronPort-SDR: UAkbMdbJldkxjM5d2poW7X9YUErN6BXBA4WsjppwYuiQJ25zZhYaK1x+iFQ0A38icXJKshkYbH
- MZ9k9hiPpX8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="509577418"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 09 Mar 2021 23:36:53 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 10 Mar 2021 09:36:52 +0200
-Date:   Wed, 10 Mar 2021 09:36:52 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] software node: Two fixes
-Message-ID: <YEh3FGTExpE3IGhb@kuha.fi.intel.com>
-References: <20210301143012.55118-1-heikki.krogerus@linux.intel.com>
- <YEdTGsr6CjUirOsn@smile.fi.intel.com>
- <CAJZ5v0ivHnHNTFPXKSgiKYY0fKiqSWuBaLh6noqE3xQEFC2-pA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0ivHnHNTFPXKSgiKYY0fKiqSWuBaLh6noqE3xQEFC2-pA@mail.gmail.com>
+        id S231934AbhCJHho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 02:37:44 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615361864; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=xuYPSMdgz8Yi0oiFGDEAJkTZb66LQ7xiQZRdBDqgi1w=; b=sc+DkK5dudN04UVxOZsLCNzXsjtq4PPTBP1C3aQwoo7wtP2IUiHFJx1FqZSGThlIIdYmRhQ6
+ sjPxM4zX6SG4GRANYrhcBGptbhI5P3u3w5Vjg9PWdh2WqNMsFi23RdFxIQykGC3avjTrK6R1
+ 0INMRUw0rQZTEDTMZKneW+8lMJw=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60487730e90f410d8813d95f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 07:37:20
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ECF2EC43462; Wed, 10 Mar 2021 07:37:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C375FC433C6;
+        Wed, 10 Mar 2021 07:37:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C375FC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     sibis@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
+Date:   Wed, 10 Mar 2021 13:07:09 +0530
+Message-Id: <1615361829-22370-1-git-send-email-pillair@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 02:51:22PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Mar 9, 2021 at 11:51 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Mon, Mar 01, 2021 at 05:30:10PM +0300, Heikki Krogerus wrote:
-> > > Hi,
-> > >
-> > > The second one only affects 5.12-rc1.
-> >
-> > Rafael, Greg, can this be applied for v5.12-rcX?
-> 
-> Do you have a pointer to this?
+Add the WPSS remoteproc node in dts for
+PIL loading.
 
-Pointer?
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+- This change is dependent on the below patch series
+1) https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
+2) https://lore.kernel.org/patchwork/project/lkml/list/?series=488365
+---
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts |  4 +++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi    | 47 +++++++++++++++++++++++++++++++++
+ 2 files changed, 51 insertions(+)
 
-thanks,
-
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+index 950ecb2..603f56b 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+@@ -26,6 +26,10 @@
+ 	status = "okay";
+ };
+ 
++&remoteproc_wpss {
++	status = "okay";
++};
++
+ &uart5 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 8af6d77..26dd466 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -53,6 +53,16 @@
+ 			no-map;
+ 			reg = <0x0 0x80b00000 0x0 0x100000>;
+ 		};
++
++		wlan_fw_mem: memory@80c00000 {
++			no-map;
++			reg = <0x0 0x80c00000 0x0 0xc00000>;
++		};
++
++		wpss_mem: memory@9ae00000 {
++			no-map;
++			reg = <0x0 0x9ae00000 0x0 0x1900000>;
++		};
+ 	};
+ 
+ 	cpus {
+@@ -305,6 +315,43 @@
+ 			};
+ 		};
+ 
++		remoteproc_wpss: remoteproc@8a00000 {
++			compatible = "qcom,sc7280-wpss-pil";
++			reg = <0 0x08a00000 0 0x10000>;
++
++			interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 0 0>,
++					      <&wpss_smp2p_in 1 0>,
++					      <&wpss_smp2p_in 2 0>,
++					      <&wpss_smp2p_in 3 0>,
++					      <&wpss_smp2p_in 7 0>;
++			interrupt-names = "wdog", "fatal", "ready", "handover",
++					  "stop-ack", "shutdown-ack";
++
++			memory-region = <&wpss_mem>;
++
++			qcom,smem-states = <&wpss_smp2p_out 0>;
++			qcom,smem-state-names = "stop";
++
++			resets = <&aoss_reset AOSS_CC_WCSS_RESTART>;
++			reset-names = "restart";
++
++			qcom,halt-regs = <&tcsr_mutex_regs 0x37000>;
++
++			status = "disabled";
++
++			glink-edge {
++				interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
++							     IPCC_MPROC_SIGNAL_GLINK_QMP
++							     IRQ_TYPE_EDGE_RISING>;
++				mboxes = <&ipcc IPCC_CLIENT_WPSS
++						IPCC_MPROC_SIGNAL_GLINK_QMP>;
++
++				label = "wpss";
++				qcom,remote-pid = <13>;
++			};
++		};
++
+ 		pdc: interrupt-controller@b220000 {
+ 			compatible = "qcom,sc7280-pdc", "qcom,pdc";
+ 			reg = <0 0x0b220000 0 0x30000>;
 -- 
-heikki
+2.7.4
+
