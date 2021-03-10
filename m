@@ -2,146 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B08C333A09
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BEC333A1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhCJK36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
+        id S231899AbhCJKf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:35:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232479AbhCJK3j (ORCPT
+        with ESMTP id S231811AbhCJKfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:29:39 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD80DC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:29:38 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id m22so32555144lfg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:29:38 -0800 (PST)
+        Wed, 10 Mar 2021 05:35:43 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5DBC061761
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:35:42 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id l22so6777580wme.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:35:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hZu8kYWcUsjJZQZLgu1XKiWKVJDy+c+Bw7NCUyMv0Bc=;
-        b=RJH9YJ4ctf1i7yh5gwJmVZ6iIZEtaOi4hcZsPJS+3fHl6JJRW9vQcHUJuIbxI7ELPW
-         4WWZ7RYqXaZCBUAmpCBQibq4rGpusj9qpj7lq4rIsorl11VcXQWfGJ/1U8KC/nXVH0lC
-         X5enEIdvBbbV7lC+KCEhzTEZxen86rsiL5tYoCOGGj56VETxgkV3iU/jxhh+EA3a9RPu
-         3rzJnssS2eVBVNTlQRd/h34engsUMq7A63Zn5Va3+VeF/B5tGfVPWLfn5WR4G2Mtxn0I
-         9Ry+cNgqM6c5mrkJFQS4CxtCLc91eV+wfOLKMTeAdLbtGmTT4WDXeKYQ2R9eZ1bsyD1g
-         Y35A==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=k11X2IaCm7778Ql6a7D/ZiOxFU1ZEqfWNW+eBOH3OF8=;
+        b=KqK258d2QHv7GjqtjRSg40t0WuJXZB5TC4pmhS1sfVUud9iiq28hZscR/pYRDHADt0
+         3ngif1VVcCFN8W1KFj+FJyByX89v1XlrNRu8Eqb2rPMS+/v8ikJKCriSIsrUyqrR9AAI
+         c/GKw6xIW0xrZJG8H2KBpJceqc2IY27Xa6mvV05UpaMYS+AuN396IIJMfNFvOAT9A7Xi
+         JeRgMOTNcd5VHfj2Ud3g4Spjf4QtlbhPNy1saLLdxmgNJnvOVfcHj5TKfQ+tbPFQuNh6
+         eZLrxAG5qs2Gfx+JWUCGv0at9m45ur7leVzSQBAkzg+Oke4Cftu8w80ZEcURiQOnV1jw
+         hJvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hZu8kYWcUsjJZQZLgu1XKiWKVJDy+c+Bw7NCUyMv0Bc=;
-        b=adFt2C/OrzM2YDPUhlylg51rm7hV2yIK+LmonKmS7WQUvS9e0kExBcGAwJXC2+HLWt
-         YmCuZzv6ZZ2QvtofwVQrZ10ojFHr8p9SlbA2U3dHgQewub9l434g5AoRBUo8nemC+i7p
-         BRzmjLpQMa4hhNL7H5IAi4y+vbj3zaKsIMsmmuaJ8cP4f+9ev5uPN8n1LwX3fcRJew5V
-         v/yA9w7jMEnN3sl0LdFS7KbeuV6Ti/NiCfA4+uYUQDjcWCGR8SPOdetzEyfrrW2STJ9n
-         dqxfUIB3/RtUm3JCIZBP5xEcYC8oLZHrY97+toxwdnDefoXe/SkVKWRrbyMugz7bpRGy
-         CLAw==
-X-Gm-Message-State: AOAM5319u7CSF4BBrwKZmuZmcsX9OFQHD4wAnkoLm6WUIdzrMUlnF3Q7
-        t2SByN59IAEapLU5INYHgnJWJIkDxQVC+13cwh/B4A==
-X-Google-Smtp-Source: ABdhPJzV5rCJIjqxQ3LiucCut2xv+IIf2U8hV+WxjX4O6mNhhvyogQZlfhPtOtXXp1t/ll9omuk+MAkZGnu5Q6bJfH0=
-X-Received: by 2002:ac2:46db:: with SMTP id p27mr1639785lfo.396.1615372177245;
- Wed, 10 Mar 2021 02:29:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=k11X2IaCm7778Ql6a7D/ZiOxFU1ZEqfWNW+eBOH3OF8=;
+        b=oon8Jx/U63+MzrpUhl233GgDyVUpxh1wxqISHkxoLIWGi/fT1hDaVLXqg/L9X3QhNG
+         lfanXYEB3E7odSwUapmFnLSg3zxWU7fTMQvkdZHXWQ1gOvqLmtLS2+Z+qOOEzqfC7mFl
+         iV4bbN4FaPtqNrB8WJ6eQu++RN0F9HG9PPe6/v+kQyIuZjM/ZFQEsC+wZ3s4nev7yDLo
+         6Ng98Ysxh+ADrO6u27u54eTEPQATxyteqIjyGykw9HBLciPPS+Rf+uFK1vmg+8HKdtDH
+         3p4jWGufyrT4HZb55IixTTD/3+GMSvL8ZXFm0CqU2d1EBfE82Zy4bZq7DPPbA7a0M+ue
+         uedQ==
+X-Gm-Message-State: AOAM533Ws1SfXnn+0q06pXP+Xw0z02nMqi6ISa9/Dbt+DnjQ22G0JTBA
+        Hx5RKx4M8YVD0hF8YT+YQGFEayUpVlii3A==
+X-Google-Smtp-Source: ABdhPJyLdOIr4E9Qa53UvZvv/KO6KjoXTUQ6/+YP6LjE0pSDSgp7inNcVk00mLbhh5ugPQI+9vacOg==
+X-Received: by 2002:a05:600c:47d7:: with SMTP id l23mr2682273wmo.155.1615372541428;
+        Wed, 10 Mar 2021 02:35:41 -0800 (PST)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id s3sm2307358wmd.21.2021.03.10.02.35.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 02:35:41 -0800 (PST)
+Date:   Wed, 10 Mar 2021 10:35:39 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com,
+        henning.schild@siemens.com
+Subject: Re: [PATCH v1 5/7] mfd: lpc_ich: Switch to generic pci_p2sb_bar()
+Message-ID: <20210310103539.GF701493@dell>
+References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+ <20210308122020.57071-6-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
- <6c542548-cc16-af68-c755-df52bd13b209@marcan.st> <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
- <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
-In-Reply-To: <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 10 Mar 2021 15:59:25 +0530
-Message-ID: <CAFA6WYMSJxK2CjmoLJ6mdNNEfOQOMVXZPbbFRfah7KLeZNfguw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@linaro.org>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210308122020.57071-6-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 at 14:17, Hector Martin <marcan@marcan.st> wrote:
->
-> On 10/03/2021 14.14, Sumit Garg wrote:
-> > On Wed, 10 Mar 2021 at 02:47, Hector Martin <marcan@marcan.st> wrote:
-> >>
-> >> On 09/03/2021 01.20, Linus Walleij wrote:
-> >>> I suppose it would be a bit brutal if the kernel would just go in and
-> >>> appropriate any empty RPMB it finds, but I suspect it is the right way
-> >>> to make use of this facility given that so many of them are just sitting
-> >>> there unused. Noone will run $CUSTOM_UTILITY any more than they
-> >>> run the current RPMB tools in mmc-tools.
-> >>
-> >> AIUI the entire thing relies on a shared key that is programmed once
-> >> into the RPMB device, which is a permanent operation. This key has to be
-> >> secure, usually stored on CPU fuses or derived based on such a root of
-> >> trust. To me it would seem ill-advised to attempt to automate this
-> >> process and have the kernel do a permanent take-over of any RPMBs it
-> >> finds (with what key, for one?) :)
-> >>
-> >
-> > Wouldn't it be a good idea to use DT here to represent whether a
-> > particular RPMB is used as a TEE backup or is available for normal
-> > kernel usage?
-> >
-> > In case of normal kernel usage, I think the RPMB key can come from
-> > trusted and encrypted keys subsystem.
->
-> Remember that if the key is ever lost, the RPMB is now completely
-> useless forever.
->
-> This is why, as far as I know, most sane platforms will use hard fused
-> values to derive this kind of thing, not any kind of key stored in
-> erasable storage.
+On Mon, 08 Mar 2021, Andy Shevchenko wrote:
 
-AFAIK, trusted and encrypted keys are generally loaded from initramfs
-(as an encrypted blob) which happens during boot and if an attacker is
-able to erase initramfs then it's already able to make the device
-non-bootable (DoS attack which is hard to prevent against).
+> Instead of open coding pci_p2sb_bar() functionality we are going to
+> use generic library for that. There one more user of it is coming.
+> 
+> Besides cleaning up it fixes a potential issue if, by some reason,
+> SPI bar is 64-bit.
 
-Although, I agree with you that fuses are the preferred way to store
-RPMB key but not every platform may possess it and vendors may decide
-to re-flash a bricked device via recovery image.
+Probably worth cleaning up the English in both these sections.
 
->
-> Also, newly provisioned keys are sent in plain text, which means that
-> any kind of "if the RPMB is blank, take it over" automation equates to
-> handing over your key who an attacker who removes the RPMB and replaces
-> it with a blank one, and then they can go access anything they want on
-> the old RPMB device (assuming the key hasn't changed; and if it has
-> changed that's conversely a recipe for data loss if something goes wrong).
->
-> I really think trying to automate any kind of "default" usage of an RPMB
-> is a terrible idea. It needs to be a conscious decision on a
-> per-platform basis.
->
+ Instead of open coding pci_p2sb_bar() functionality we are going to
+ use generic library. There is one more user en route.
 
-Agree and via DT method I only meant to assign already provisioned
-RPMB device/s either to TEE or Linux kernel. And RPMB key provisioning
-being a one time process should be carried out carefully during device
-manufacturing only.
+ This is more than just a clean-up.  It also fixes a potential issue
+ seen when SPI bar is 64-bit.
 
--Sumit
+Also worth briefly describing what that issue is I think.
 
-> --
-> Hector Martin (marcan@marcan.st)
-> Public Key: https://mrcn.st/pub
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/mfd/Kconfig   |  1 +
+>  drivers/mfd/lpc_ich.c | 20 ++++++--------------
+>  2 files changed, 7 insertions(+), 14 deletions(-)
+
+Code looks fine:
+
+For my own reference (apply this as-is to your sign-off block):
+
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
