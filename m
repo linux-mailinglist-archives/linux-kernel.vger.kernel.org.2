@@ -2,112 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F69333B4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B1B333B38
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbhCJLYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:24:47 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:61541 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhCJLYR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:24:17 -0500
-X-Greylist: delayed 494 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Mar 2021 06:24:16 EST
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id 91C4DA1820;
-        Wed, 10 Mar 2021 12:16:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=upyph0mD533C
-        Y6YiXd33LgOwWoBbDT7ww7/3l9ldIhw=; b=x6trUXuix8nRLTknbDNPF3W/LMep
-        gCDJf98BJpEqs9OFdJlwaFV+bSgWizAAQMeazcNTEeV9I4srSzxXvp2czrBegjgX
-        ezUD5iP61WhOu7pfD98sMW4ulQjEI1XGZZ1iHLpDPDyHBI5bta4vpwJXyEd7B08z
-        982T+XILi7A5YN7iALhBhF9/rI2CNnC25P1nMNULqeb2Xk+eSAMgRDjEoOpMBLTJ
-        YRu3r3CdFBbeDW1pl34z0U10PRCPVTEQjDQZWmOzZyWWxbI+eFWrmVtOsXkTGhPe
-        e/eFNPTiBvwmT998KWWr2R2t5slRuDLy5A9i3SwyLzhmh17+bsVuITcAjA==
-To:     Jyoti Bhayana <jbhayana@google.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <cristian.marussi@arm.com>, <sudeep.holla@arm.com>,
-        <egranata@google.com>, <mikhail.golubev@opensynergy.com>,
-        <Igor.Skalkin@opensynergy.com>, <ankitarora@google.com>,
-        <gurunagarajan@google.com>, kernel test robot <lkp@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20210309231259.78050-1-jbhayana@google.com>
- <20210309231259.78050-2-jbhayana@google.com>
-From:   Peter Hilber <peter.hilber@opensynergy.com>
-Subject: Re: [PATCH v7 1/1] iio/scmi: Adding support for IIO SCMI Based
- Sensors
-Message-ID: <0b9483ca-6f61-cc13-34e6-7f8c31c4c626@opensynergy.com>
-Date:   Wed, 10 Mar 2021 12:15:58 +0100
+        id S231811AbhCJLQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:16:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230319AbhCJLQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:16:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11BAA64FCB;
+        Wed, 10 Mar 2021 11:16:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615375014;
+        bh=C1VoDQKlIyJ1+nzA/Wf/O69QQ2pK9i73dDn//SNSEaQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cTAaDy2FK8y6Vilcsq2+9RlAsua1MAyRNcX7f/jInV2ZinChR7DSHtXQgPV872V1v
+         AWUBPfU4l/j2B+FiX7hjHkURG0meYFKulgNNyVA7RmRcvBGDnOvuXAfwWdx04+bdic
+         D3JVpdZCamSjxaWJ0FNWpy9/TeI4jVNScKhcNlKSaH2hdHlRmYwFF9f3V+bSwyS0OP
+         RgnV5k9ScuJ+TPbsFHmDpZoC+G3ySHkKsbrqF6QnRPKkALurWvHnMfbuvfKEanwE+Y
+         70eAU4jlhyv3dUWVewIf+0Hhmeg5vLiZZ81rY5RhnWTyVENLP/hKoDCeauHFzXfiG+
+         bku0b6hYgxaDg==
+Date:   Wed, 10 Mar 2021 11:16:49 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Mark Salter <msalter@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] arm64: mm: fix runtime fallback to 48-bt VA when 52-bit
+ VA is enabled
+Message-ID: <20210310111649.GA29413@willie-the-truck>
+References: <20210310003216.410037-1-msalter@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210309231259.78050-2-jbhayana@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-02.open-synergy.com (10.26.10.22)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310003216.410037-1-msalter@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.03.21 00:12, Jyoti Bhayana wrote:
-> This change provides ARM SCMI Protocol based IIO device.
-> This driver provides support for Accelerometer and Gyroscope using
-> SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification
+On Tue, Mar 09, 2021 at 07:32:16PM -0500, Mark Salter wrote:
+> I ran into an early boot soft lockup on a Qualcomm Amberwing using a v5.11
+> kernel configured for 52-bit VA. This turned into a panic with a v5.12-rc2
+> kernel.
 > 
+> The problem is that when we fall back to 48-bit VA, idmap_t0sz is not
+> updated. Later, the kvm hypervisor uses idmap_t0sz to set its tcr_el2 and
+> hangs (v5.11). After commit 1401bef703a4 ("arm64: mm: Always update TCR_EL1
+> from __cpu_set_tcr_t0sz()"), the kernel panics when trying to use the idmap
+> to call idmap_cpu_replace_ttbr1().
+> 
+> Oddly, other systems (thunderX2 and Ampere eMag) which don't support 52-bit
+> VA seem to handle the setting of an unsupported t0sz without any apparent
+> problems. Indeed, if one reads back the tcr written with t0sz==12, the
+> value read has t0sz==16. Not so with Amberwing.
 
-[snip]
+Nice, you have one of those elusive platforms!
 
-> +
-> +static int scmi_iio_get_chan_modifier(const char *name,
-> +				      enum iio_modifier *modifier)
-> +{
-> +	char *pch, mod;
-> +
-> +	if (!name)
-> +		return -EINVAL;
-> +
-> +	pch = strrchr(name, '_');
-> +	if (!pch)
-> +		return -EINVAL;
-> +
-> +	mod = *(pch + 1);
-> +	switch (mod) {
-> +	case 'X':
-> +		*modifier = IIO_MOD_X;
-> +		return 0;
-> +	case 'Y':
-> +		*modifier = IIO_MOD_Y;
-> +		return 0;
-> +	case 'Z':
-> +		*modifier = IIO_MOD_Z;
-> +		return 0;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
+> Fixes: 90ec95cda91a ("arm64: mm: Introduce VA_BITS_MIN")
+> Signed-off-by: Mark Salter <msalter@redhat.com>
+> ---
+>  arch/arm64/kernel/head.S | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+> index 66b0e0b66e31..2bcbbb26292e 100644
+> --- a/arch/arm64/kernel/head.S
+> +++ b/arch/arm64/kernel/head.S
+> @@ -291,6 +291,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>  	 */
+>  	adrp	x0, idmap_pg_dir
+>  	adrp	x3, __idmap_text_start		// __pa(__idmap_text_start)
+> +	mov	x4, TCR_T0SZ(VA_BITS)
+>  
+>  #ifdef CONFIG_ARM64_VA_BITS_52
+>  	mrs_s	x6, SYS_ID_AA64MMFR2_EL1
+> @@ -299,6 +300,13 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>  	cbnz	x6, 1f
+>  #endif
+>  	mov	x5, #VA_BITS_MIN
+> +#ifdef CONFIG_ARM64_VA_BITS_52
+> +	mov	x4, TCR_T0SZ(VA_BITS_MIN)
+> +	adr_l	x6, idmap_t0sz
+> +	str	x4, [x6]
+> +	dmb	sy
+> +	dc	ivac, x6		// Invalidate potentially stale cache line
+> +#endif
+>  1:
+>  	adr_l	x6, vabits_actual
+>  	str	x5, [x6]
+> @@ -319,7 +327,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>  	 */
+>  	adrp	x5, __idmap_text_end
+>  	clz	x5, x5
+> -	cmp	x5, TCR_T0SZ(VA_BITS)	// default T0SZ small enough?
+> +	cmp	x5, x4			// default T0SZ small enough?
+>  	b.ge	1f			// .. then skip VA range extension
 
-Hi Jyoti,
+Could we instead have the default value be 48-bit, and then avoid having
+to update the variable in both cases? e.g. something along the lines of
+the entirely untested diff below?
 
-could you still change the above code to also accept lower case 'x',
-'y', 'z'?
+Cheers,
 
-Supporting lower case as well would establish compatibility with the
-lower case naming conventions used for IIO channels. By this change,
-channels could be forwarded without name changes (as long as they fit
-into the name field). I'm sorry to notice this only now.
+Will
 
-Best regards,
+--->8
 
-Peter
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index 66b0e0b66e31..fb795123896f 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -319,7 +319,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+         */
+        adrp    x5, __idmap_text_end
+        clz     x5, x5
+-       cmp     x5, TCR_T0SZ(VA_BITS)   // default T0SZ small enough?
++       cmp     x5, TCR_T0SZ(VA_BITS_MIN)       // default T0SZ small enough?
+        b.ge    1f                      // .. then skip VA range extension
+ 
+        adr_l   x6, idmap_t0sz
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 3802cfbdd20d..4c5603c41870 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -40,7 +40,7 @@
+ #define NO_BLOCK_MAPPINGS      BIT(0)
+ #define NO_CONT_MAPPINGS       BIT(1)
+ 
+-u64 idmap_t0sz = TCR_T0SZ(VA_BITS);
++u64 idmap_t0sz = TCR_T0SZ(VA_BITS_MIN);
+ u64 idmap_ptrs_per_pgd = PTRS_PER_PGD;
+ 
+ u64 __section(".mmuoff.data.write") vabits_actual;
 
