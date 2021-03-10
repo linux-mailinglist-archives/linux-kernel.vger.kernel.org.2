@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E89333F65
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC1B333F61
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbhCJNhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:37:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233422AbhCJNgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:36:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AF1464FD6;
-        Wed, 10 Mar 2021 13:36:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615383406;
-        bh=/qvD9d3Yt6mfuCTPcp4UZO2U5EnDzRCNvDKcb6MmsJ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fXkTwOG7pbmDGBbDKSu+3o811aK9eFGLJzWdPfdV7IhuvVV2m3Nk/c4z9Li2QpgZq
-         JR5lFEpfU5x63QLFZC/Dg5+8+rA7Qy6i+bmi9WzXRbLRQ9uuLEpqqTPivY7IFzeayg
-         mzUQ1q78M6bMSFonfRUBBV3sSsGBjGfHvBIOyAoFB/+nGnPxHilxCy4AegMTxyxkqn
-         VjCUKcE1gHCAhPSvx/fugTqtMd/AwCxEl52l1MXY0/0FP1VAKrekT+ZcP+nH+lYrtB
-         xdfomGcbcJbdQXlOiQDFTC2QmRVFoe6Sbf/xhWZFNbZhyi3bAQoNn8f7QcqAOFdP+8
-         92FFehlbjeg4Q==
-Date:   Wed, 10 Mar 2021 13:35:34 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Jon Hunter <jonathanh@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
- present
-Message-ID: <20210310133534.GD4746@sirena.org.uk>
-References: <20210303115526.419458-1-jonathanh@nvidia.com>
- <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
+        id S233511AbhCJNgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:36:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233422AbhCJNgn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:36:43 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D120C061760;
+        Wed, 10 Mar 2021 05:36:43 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id b10so17876348ybn.3;
+        Wed, 10 Mar 2021 05:36:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2aYptJ+Gov2C+oARQmlRLopxW2URRuwXw1AKwLGZv1E=;
+        b=lpoFJtg+RfBaF3k+0slfbJr1UD9yvARkoMbBl9MWr5rmcJvOHNz8P65bPDF0DzSKLZ
+         A3QopQpfSEcP9hG6NFxwAymzBtPvh9QtuREgkj9DQjN9L8S9GwxojaVH5XTEDnVF4bQA
+         sMnKkKxuoVoJRr9q12QkvPO1QPeOriCBtg4BBD7uVIji+3DiHwzqJJj7m+b17VLR6Y0I
+         q9ykpG9dwvTB05YeMwCb59uPHELbo+jaZKbPrWda81m5JAPQL+ZZ1OluKZ7IDbefl91g
+         9ceIqeicNGysV//j//GKZJRSGU2l1tIS6W2s+tKKgHsfQeKrQgjbRQJws2xtrkEhX9Kt
+         ZXxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2aYptJ+Gov2C+oARQmlRLopxW2URRuwXw1AKwLGZv1E=;
+        b=nZOWR/QPiTGVea/EBlLrzpvp8b9/nkppZ1c5SnlM5WJI0cIfCNvgqeYezlgKCMfNus
+         I2kXb2Ut4St+Ki/UtQo8YZ5Qwq5a2p8Gf/R7ST4xIrWCozXaVN20EOhX/BOpk3BNwC3U
+         JpowUd0RKAqW7Tbssj4PnHJztcfNMIFafH8U+vMufSAxIXMnnMBExWw4iHRI9Ysuqyy0
+         +5F0SMAUQKXroPVBtif9/jG2/3hxstPpnLmDZVj+LjcOSft5q9Xs8OYqqOyQdsOK2meT
+         19TAe1poSv6kdo7dBZAVeNiZSxohylGuANybLT2uudSfggChTnhlKu0raRxVPno32HD2
+         v17A==
+X-Gm-Message-State: AOAM532OTJYJQsn+4NkpqmRs8ikkg8UCGzdZ1Yz5t8/t2UFaRdku/IWA
+        oz8D7doCwB/kvoiPOOKfoICakkQAZEDzC1EuBzE=
+X-Google-Smtp-Source: ABdhPJz1jxdINaxIIQwiE1/7TJj4kvjkB1loYv97hj60cdpiwpI1AFhO8/qRMCL4/0SP4ps/aG+kQlYilaoS6/0nAb8=
+X-Received: by 2002:a25:d8f:: with SMTP id 137mr1981743ybn.47.1615383402310;
+ Wed, 10 Mar 2021 05:36:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9dgjiU4MmWPVapMU"
-Content-Disposition: inline
-In-Reply-To: <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
-X-Cookie: no maintenance:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com> <20210310130227.GN3479805@casper.infradead.org>
+In-Reply-To: <20210310130227.GN3479805@casper.infradead.org>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Wed, 10 Mar 2021 08:36:06 -0500
+Message-ID: <CAEg-Je-F6ybPPV22-hq9=cuUCA7cw2xAA7Y-97tKhYUX1+fDwg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        darrick.wong@oracle.com, dan.j.williams@intel.com, jack@suse.cz,
+        viro@zeniv.linux.org.uk, Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, david@fromorbit.com, hch@lst.de,
+        rgoldwyn@suse.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 10, 2021 at 8:02 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Mar 10, 2021 at 07:30:41AM -0500, Neal Gompa wrote:
+> > Forgive my ignorance, but is there a reason why this isn't wired up to
+> > Btrfs at the same time? It seems weird to me that adding a feature
+>
+> btrfs doesn't support DAX.  only ext2, ext4, XFS and FUSE have DAX suppor=
+t.
+>
+> If you think about it, btrfs and DAX are diametrically opposite things.
+> DAX is about giving raw access to the hardware.  btrfs is about offering
+> extra value (RAID, checksums, ...), none of which can be done if the
+> filesystem isn't in the read/write path.
+>
+> That's why there's no DAX support in btrfs.  If you want DAX, you have
+> to give up all the features you like in btrfs.  So you may as well use
+> a different filesystem.
 
---9dgjiU4MmWPVapMU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So does that mean that DAX is incompatible with those filesystems when
+layered on DM (e.g. through LVM)?
 
-On Tue, Mar 09, 2021 at 01:41:45PM -0600, Pierre-Louis Bossart wrote:
+Also, based on what you're saying, that means that DAX'd resources
+would not be able to use reflinks on XFS, right? That'd put it in
+similar territory as swap files on Btrfs, I would think.
 
-> The problem is that the cards are platform devices created by the parent
-> (which itself may be a PCI or ACPI device) and have nothing to do with ACPI.
 
-> Could we flip the logic and instead explicitly detect OF devices? That
-> restores functionality for us.
 
-Just change it to a system level check for ACPI, checking for OF would
-leave problems for board files or any other alternative firmware
-interfaces.
-
---9dgjiU4MmWPVapMU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBIyyUACgkQJNaLcl1U
-h9AD0wf/Zbl1pfIcOCJxOTd8jWQgWmUT9U/NLT5bHSI+QKZCQ8TdhAJx5nbTYpsA
-EIfYRfIOyNbC+orOg933wQsEzmrhboS/ZfORAvfUKtlTHA7hmWO+qIserBNczgEE
-2L0pCqzopDnuD9IVNNzQr5CmEgunXIxShFGiJy2rkqHavvpZPwllhH9qpfQ3bwEO
-HTFhidXy7irpPJrZq1zenN70VzExNcqMUe19mz4M4g0imcyrGmfGOqWUj9c+7ZoY
-VNHHGINTIfh086c3T4PNKpK/pcmyhdsBXdJR3RewnPdMy72VzsAApz3XudGwcAqL
-aH9twLn24x911JXToXymhg7uqhlwuQ==
-=CPbE
------END PGP SIGNATURE-----
-
---9dgjiU4MmWPVapMU--
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
