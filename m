@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B574333D88
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD173333D8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhCJNTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:19:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbhCJNSp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:18:45 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00E2C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:18:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eis4+R44fvabYv/h8cyHmkDydX2d+usvNs4QgffIqJE=; b=vb69C58Eyeg+N03Qb7GiBVKaYg
-        vvgZFWsgoAihLoxPKehsyjABbBl0jUnlYgYh8Qhe1B7NcSVXKCc5mSlQxOloQPaXhAlfeD6bTacHv
-        Enb5yfEtLYRfQ+wdpmqHHQTRjDhNhVFAqYVHmagGCYbQPILK2Xvp9oniyJyMf3lSs/hFSfBT6dGzE
-        OLpcEC0Ni3BP0GD+FOiGMTDE10NQ2N05wv8TDD1F7f/Y/LpubFmk2Gi0dUKL7DqM5sjmWpYOJ5iws
-        DXwhJKLp6SQm99oCad+v+XBNhiWU8/+K7OYVKDCOlOEGN9DOPV88pIvAoFWfnMFoBL29GzVtSsNX6
-        mnwkUCRQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJyiZ-003Vkg-IK; Wed, 10 Mar 2021 13:17:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AAEA9300455;
-        Wed, 10 Mar 2021 14:17:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7388D20541634; Wed, 10 Mar 2021 14:17:27 +0100 (CET)
-Date:   Wed, 10 Mar 2021 14:17:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
-        pauld@redhead.com, pjt@google.com, rostedt@goodmis.org,
-        shanpeic@linux.alibaba.com, vincent.guittot@linaro.org,
-        xiyou.wangcong@gmail.com
-Subject: Re: [PATCH v3 4/4] sched/fair: Add document for burstable CFS
- bandwidth control
-Message-ID: <YEjG5wNgTzjRLEOL@hirez.programming.kicks-ass.net>
-References: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
- <20210121110453.18899-5-changhuaixin@linux.alibaba.com>
+        id S232261AbhCJNW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:22:28 -0500
+Received: from verein.lst.de ([213.95.11.211]:36338 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231132AbhCJNV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:21:59 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0FC3A68B05; Wed, 10 Mar 2021 14:21:57 +0100 (CET)
+Date:   Wed, 10 Mar 2021 14:21:56 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        hch@lst.de, Chaitanya.Kulkarni@wdc.com
+Subject: Re: [PATCH 1/1] nvme-pci: add the DISABLE_WRITE_ZEROES quirk for a
+ Samsung PM1725a
+Message-ID: <20210310132156.GA12145@lst.de>
+References: <1615377076-3251-1-git-send-email-dmtrmonakhov@yandex-team.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121110453.18899-5-changhuaixin@linux.alibaba.com>
+In-Reply-To: <1615377076-3251-1-git-send-email-dmtrmonakhov@yandex-team.ru>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 07:04:53PM +0800, Huaixin Chang wrote:
-> Basic description of usage and effect for CFS Bandwidth Control Burst.
+Can you try this patch instead?
+
+http://lists.infradead.org/pipermail/linux-nvme/2021-February/023183.html
+
+On Wed, Mar 10, 2021 at 02:51:16PM +0300, Dmitry Monakhov wrote:
+> This adds a quirk for Samsung PM1725a drive which fixes timeouts and
+> I/O errors due to the fact that the controller does not properly
+> handle the Write Zeroes command, dmesg log:
 > 
-> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
-> Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
-
-Guess :-)
-
-> +Sometimes users might want a group to burst without accumulation. This is
-> +tunable via::
-> +       /proc/sys/kernel/sched_cfs_bw_burst_onset_percent (default=0)
-> +
-> +Up to 100% runtime of cpu.cfs_burst_us might be given on setting bandwidth.
-
-Sometimes is a very crap reason for code to exist. Also, everything is
-in _us, why do we have this one thing as a percent?
+> nvme nvme0: I/O 528 QID 10 timeout, aborting
+> nvme nvme0: I/O 529 QID 10 timeout, aborting
+> nvme nvme0: I/O 530 QID 10 timeout, aborting
+> nvme nvme0: I/O 531 QID 10 timeout, aborting
+> nvme nvme0: I/O 532 QID 10 timeout, aborting
+> nvme nvme0: I/O 533 QID 10 timeout, aborting
+> nvme nvme0: I/O 534 QID 10 timeout, aborting
+> nvme nvme0: I/O 535 QID 10 timeout, aborting
+> nvme nvme0: Abort status: 0x0
+> nvme nvme0: Abort status: 0x0
+> nvme nvme0: Abort status: 0x0
+> nvme nvme0: Abort status: 0x0
+> nvme nvme0: Abort status: 0x0
+> nvme nvme0: Abort status: 0x0
+> nvme nvme0: Abort status: 0x0
+> nvme nvme0: Abort status: 0x0
+> nvme nvme0: I/O 528 QID 10 timeout, reset controller
+> nvme nvme0: controller is down; will reset: CSTS=0x3, PCI_STATUS=0x10
+> nvme nvme0: Device not ready; aborting reset, CSTS=0x3
+> nvme nvme0: Device not ready; aborting reset, CSTS=0x3
+> nvme nvme0: Removing after probe failure status: -19
+> nvme0n1: detected capacity change from 6251233968 to 0
+> blk_update_request: I/O error, dev nvme0n1, sector 32776 op 0x1:(WRITE) flags 0x3000 phys_seg 6 prio class 0
+> blk_update_request: I/O error, dev nvme0n1, sector 113319936 op 0x9:(WRITE_ZEROES) flags 0x800 phys_seg 0 prio class 0
+> Buffer I/O error on dev nvme0n1p2, logical block 1, lost async page write
+> blk_update_request: I/O error, dev nvme0n1, sector 113319680 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
+> Buffer I/O error on dev nvme0n1p2, logical block 2, lost async page write
+> blk_update_request: I/O error, dev nvme0n1, sector 113319424 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
+> Buffer I/O error on dev nvme0n1p2, logical block 3, lost async page write
+> blk_update_request: I/O error, dev nvme0n1, sector 113319168 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
+> Buffer I/O error on dev nvme0n1p2, logical block 4, lost async page write
+> blk_update_request: I/O error, dev nvme0n1, sector 113318912 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
+> Buffer I/O error on dev nvme0n1p2, logical block 5, lost async page write
+> blk_update_request: I/O error, dev nvme0n1, sector 113318656 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
+> Buffer I/O error on dev nvme0n1p2, logical block 6, lost async page write
+> blk_update_request: I/O error, dev nvme0n1, sector 113318400 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
+> blk_update_request: I/O error, dev nvme0n1, sector 113318144 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
+> blk_update_request: I/O error, dev nvme0n1, sector 113317888 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
+> 
+> Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+> ---
+>  drivers/nvme/host/pci.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+> index 17ab332..7249ae7 100644
+> --- a/drivers/nvme/host/pci.c
+> +++ b/drivers/nvme/host/pci.c
+> @@ -3246,6 +3246,7 @@ static const struct pci_device_id nvme_id_table[] = {
+>  		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY, },
+>  	{ PCI_DEVICE(0x144d, 0xa822),   /* Samsung PM1725a */
+>  		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY |
+> +				NVME_QUIRK_DISABLE_WRITE_ZEROES|
+>  				NVME_QUIRK_IGNORE_DEV_SUBNQN, },
+>  	{ PCI_DEVICE(0x1987, 0x5016),	/* Phison E16 */
+>  		.driver_data = NVME_QUIRK_IGNORE_DEV_SUBNQN, },
+> -- 
+> 2.7.4
+---end quoted text---
