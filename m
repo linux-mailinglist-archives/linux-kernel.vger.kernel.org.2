@@ -2,163 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E9B334BF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0DC334BF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232874AbhCJWwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:52:44 -0500
-Received: from mga06.intel.com ([134.134.136.31]:55279 "EHLO mga06.intel.com"
+        id S233428AbhCJWxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:53:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231998AbhCJWwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:52:25 -0500
-IronPort-SDR: LuKyxBNvw0NuQMHcwI/G54/Qm/Sh68cN2eHevTJARJ8g5u7U3Reh1msNYi5Kh+KVlBW6d2t6hZ
- 1j5XRfWRulGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="249946420"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="249946420"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:52:24 -0800
-IronPort-SDR: pcxiQrQuu0aGSixmATswF77f+WUoZDINa7ajmyvvpEd/spUL0EWsZyfv0pcLMHQM4Hm06kA7Ms
- XMqv+wbVMc/A==
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="403864478"
-Received: from xuhuiliu-mobl1.amr.corp.intel.com ([10.251.31.67])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:52:21 -0800
-Message-ID: <6b9e71218f5ad43af46f32cf91fb3db068e49140.camel@intel.com>
-Subject: Re: [PATCH v3 2/5] x86/sgx: Use sgx_free_epc_page() in
- sgx_reclaim_pages()
-From:   Kai Huang <kai.huang@intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>, linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 11 Mar 2021 11:52:19 +1300
-In-Reply-To: <0fbd6e74ce70c64e9a5978b4b94f6df4e46a9d68.camel@intel.com>
-References: <20210303150323.433207-1-jarkko@kernel.org>
-         <20210303150323.433207-3-jarkko@kernel.org>
-         <b223ea92-8b20-def3-7bd0-2cc44474bd78@intel.com>
-         <YEjhjhBpYJ6i6EFD@kernel.org>
-         <d8e55c583c4d76f3c9e9722e73f35c0618e40623.camel@intel.com>
-         <YElD7orORGElfMdZ@kernel.org> <YElEQXZlzdrElovv@kernel.org>
-         <YElJpEQ8KLa/HlLD@kernel.org>
-         <0fbd6e74ce70c64e9a5978b4b94f6df4e46a9d68.camel@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S230499AbhCJWwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:52:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A57D64FAD;
+        Wed, 10 Mar 2021 22:52:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615416765;
+        bh=MkCN1VAfUgADubYsZbTmw2H9+u5F7zEXUUWpNKMGZNM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GSGF1V+ne/C/fthu1GGCeyHir1chRImToauZkZl9ZaYFfij1PdPFJ+xHCz4mohPdr
+         +XehbGV4BFsEYxRoZsgL2bTAMUrww8F4CINhBjeEn9sdiFGk4mLe7VI0CykAPBEDBq
+         5n8g2ZEssQu5Yl9tJ8Sx6fpEw3Omik02t2L9E1H9C/B78J9qzJN77u2dUwjx6OL+nW
+         lS/zru8KCKk97jSG7K9Ix67urj18Eg4uvnflTe5xlkGUTPTRdw+plcKKbe54ZreFDL
+         EkrOK0L7i/Q/H4ZXGWBS5cFUD6S9C1J+kGO1AUkCtsx8P5Pl8XCN5TAbfdXhYU663o
+         emVEZHnZpAUtQ==
+Date:   Wed, 10 Mar 2021 15:52:40 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: -Walign-mismatch in block/blk-mq.c
+Message-ID: <20210310225240.4epj2mdmzt4vurr3@archlinux-ax161>
+References: <20210310182307.zzcbi5w5jrmveld4@archlinux-ax161>
+ <99cf90ea-81c0-e110-4815-dd1f7df36cb4@kernel.dk>
+ <20210310203323.35w2q7tlnxe23ukg@Ryzen-9-3900X.localdomain>
+ <e43dba61-8c74-757d-862d-99d23559cf50@kernel.dk>
+ <20210310205250.hpe4wcgn4yh3rjqz@archlinux-ax161>
+ <9834f7fc-f4d2-2230-7e1f-9b607ea782de@kernel.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9834f7fc-f4d2-2230-7e1f-9b607ea782de@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-03-11 at 11:43 +1300, Kai Huang wrote:
-> On Thu, 2021-03-11 at 00:35 +0200, Jarkko Sakkinen wrote:
-> > On Thu, Mar 11, 2021 at 12:12:17AM +0200, Jarkko Sakkinen wrote:
-> > > On Thu, Mar 11, 2021 at 12:10:56AM +0200, Jarkko Sakkinen wrote:
-> > > > On Thu, Mar 11, 2021 at 09:36:15AM +1300, Kai Huang wrote:
-> > > > > On Wed, 2021-03-10 at 17:11 +0200, Jarkko Sakkinen wrote:
-> > > > > > On Wed, Mar 03, 2021 at 08:59:17AM -0800, Dave Hansen wrote:
-> > > > > > > On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
-> > > > > > > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > > > > > > > index 52d070fb4c9a..ed99c60024dc 100644
-> > > > > > > > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > > > > > > > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > > > > > > > @@ -305,7 +305,6 @@ static void sgx_reclaim_pages(void)
-> > > > > > > >  {
-> > > > > > > >  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
-> > > > > > > >  	struct sgx_backing backing[SGX_NR_TO_SCAN];
-> > > > > > > > -	struct sgx_epc_section *section;
-> > > > > > > >  	struct sgx_encl_page *encl_page;
-> > > > > > > >  	struct sgx_epc_page *epc_page;
-> > > > > > > >  	pgoff_t page_index;
-> > > > > > > > @@ -378,11 +377,7 @@ static void sgx_reclaim_pages(void)
-> > > > > > > >  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
-> > > > > > > >  		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-> > > > > > > >  
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > -		section = &sgx_epc_sections[epc_page->section];
-> > > > > > > > -		spin_lock(&section->lock);
-> > > > > > > > -		list_add_tail(&epc_page->list, &section->page_list);
-> > > > > > > > -		section->free_cnt++;
-> > > > > > > > -		spin_unlock(&section->lock);
-> > > > > > > > +		sgx_free_epc_page(epc_page);
-> > > > > > > >  	}
-> > > > > > > >  }
-> > > > > > > 
-> > > > > > > In current upstream (3fb6d0e00e), sgx_free_epc_page() calls __eremove().
-> > > > > > >  This code does not call __eremove().  That seems to be changing
-> > > > > > > behavior where none was intended.
-> > > > > > 
-> > > > > > EREMOVE does not matter here, as it doesn't in almost all most of the sites
-> > > > > > where sgx_free_epc_page() is used in the driver. It does nothing to an
-> > > > > > uninitialized pages.
-> > > > > 
-> > > > > Right. EREMOVE on uninitialized pages does nothing, so a more reasonable way is to
-> > > > > just NOT call EREMOVE (your original code), since it is absolutely unnecessary.
-> > > > > 
-> > > > > I don't see ANY reason we should call EREMOVE here. 
-> > > > > 
-> > > > > Actually w/o my patch to split EREMOVE out of sgx_free_epc_page(), it then makes
-> > > > > perfect sense to have new sgx_free_epc_page() here.
-> > > > > 
-> > > > > > 
-> > > > > > The two patches that I posted originally for Kai's series took EREMOVE out
-> > > > > > of sgx_free_epc_page() and put an explicit EREMOVE where it is actually
-> > > > > > needed, but for reasons unknown to me, that change is gone.
-> > > > > > 
-> > > > > 
-> > > > > It's not gone. It goes into a new sgx_encl_free_epc_page(), which is exactly the same
-> > > > > as current sgx_free_epc_page() which as EREMOVE, instead of putting EREMOVE into a
-> > > > > dedicated sgx_reset_epc_page(), as you did in your series:
-> > > > > 
-> > > > > https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
-> > > > > 
-> > > > > However, your change has side effort: it always put page back into free pool, even
-> > > > > EREMOVE fails. To make your change w/o having any functional change, it has to be:
-> > > > > 
-> > > > > 	if(!sgx_reset_epc_page())
-> > > > > 		sgx_free_epc_page();
-> > > > 
-> > > > OK, great, your patch set uses the wrapper only in the necessary call
-> > > > sites. Sorry, I overlooked this part.
-> > > > 
-> > > > Anyway, it knowingly does that. I considered either as equally harmful
-> > > > side-ffects when I implemented. Either can only trigger, when there is a
-> > > > bug in the kernel code.
-> > > > 
-> > > > It *could* do what that snippet suggest but it's like "out of the frying pan,
-> > > > into the fire" kind of change.
-> > > > 
-> > > > Since NUMA patch set anyway requires to have a global dirty list, I think
-> > > > the better way to deal with this, would be to declare a new global in the
-> > > > patch under discussion:
-> > > > 
-> > > > static struct list_head sgx_dirty_list;
-> > > 
-> > > sgx_dirty_page_list
+On Wed, Mar 10, 2021 at 02:03:56PM -0700, Jens Axboe wrote:
+> On 3/10/21 1:52 PM, Nathan Chancellor wrote:
+> > On Wed, Mar 10, 2021 at 01:40:25PM -0700, Jens Axboe wrote:
+> >> On 3/10/21 1:33 PM, Nathan Chancellor wrote:
+> >>> On Wed, Mar 10, 2021 at 01:21:52PM -0700, Jens Axboe wrote:
+> >>>> On 3/10/21 11:23 AM, Nathan Chancellor wrote:
+> >>>>> Hi Jens,
+> >>>>>
+> >>>>> There is a new clang warning added in the development branch,
+> >>>>> -Walign-mismatch, which shows an instance in block/blk-mq.c:
+> >>>>>
+> >>>>> block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to
+> >>>>> 32-byte aligned parameter 2 of 'smp_call_function_single_async' may
+> >>>>> result in an unaligned pointer access [-Walign-mismatch]
+> >>>>>                 smp_call_function_single_async(cpu, &rq->csd);
+> >>>>>                                                     ^
+> >>>>> 1 warning generated.
+> >>>>>
+> >>>>> There appears to be some history here as I can see that this member was
+> >>>>> purposefully unaligned in commit 4ccafe032005 ("block: unalign
+> >>>>> call_single_data in struct request"). However, I later see a change in
+> >>>>> commit 7c3fb70f0341 ("block: rearrange a few request fields for better
+> >>>>> cache layout") that seems somewhat related. Is it possible to get back
+> >>>>> the alignment by rearranging the structure again? This seems to be the
+> >>>>> only solution for the warning aside from just outright disabling it,
+> >>>>> which would be a shame since it seems like it could be useful for
+> >>>>> architectures that cannot handle unaligned accesses well, unless I am
+> >>>>> missing something obvious :)
+> >>>>
+> >>>> It should not be hard to ensure that alignment without re-introducing
+> >>>> the bloat. Is there some background on why 32-byte alignment is
+> >>>> required?
+> >>>>
+> >>>
+> >>> This alignment requirement was introduced in commit 966a967116e6 ("smp:
+> >>> Avoid using two cache lines for struct call_single_data") and it looks
+> >>> like there was a thread between you and Peter Zijlstra that has some
+> >>> more information on this:
+> >>> https://lore.kernel.org/r/a9beb452-7344-9e2d-fc80-094d8f5a0394@kernel.dk/
+> >>
+> >> Ah now I remember - so it's not that it _needs_ to be 32-byte aligned,
+> >> it's just a handy way to ensure that it doesn't straddle two cachelines.
+> >> In fact, there's no real alignment concern, outside of performance
+> >> reasons we don't want it touching two cachelines.
+> >>
+> >> So... what exactly is your concern? Just silencing that warning? Because
 > > 
-> > Actually, I think it is good as it is now. Please do nothing :-)
-> > 
-> > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > 
-> > I can continue from that and improve the fallback further. Not perfect, but
-> > good enough.
+> > Yes, dealing with the warning in some way is my only motivation. My
+> > apologies, I should have led with that. I had assumed that this would
+> > potentially be an issue due to the warning's text and that rearranging
+> > the structure might allow the alignment to be added back but if there is
+> > not actually a problem, then the warning should be silenced in some way.
 > 
-> Great. Thank you Jarkko.
+> Right, that's what I was getting at, but I needed to page that context
+> back in, it had long since been purged :-)
 > 
-> I'll add your Acked-by and repost it since I also made a mistake in copy-paste:)
+> > I am not sure if there is a preferred way to silence it (CFLAGS_... or
+> > some of the __diag() infrastructure in include/linux/compiler_types.h).
 > 
+> That's a good question, I'm not sure what the best approach here would
+> be. Funnily enough, on my build, it just so happens to be 32-byte
+> aligned anyway, but that's by mere chance.
 
-Hmm.. This patch was originally from you, so it has From you, and has your SoB. It
-also has Co-developed-by me, but does it still require Acked-by from you?
+As far as I can tell, there are two options.
 
-Anyway I have added it to my local. Let me know if I should remove it.
+1. Objectively smallest option is to just disable -Walign-mismatch for
+   the whole translation unit. The benefit of this route is one small
+   and simple patch. The downside is that if there are any more
+   instances of this added in the future, they won't be caught. May or
+   may not actually happen or be a big deal.
 
+diff --git a/block/Makefile b/block/Makefile
+index 8d841f5f986f..432d0329fb58 100644
+--- a/block/Makefile
++++ b/block/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_BLOCK) := bio.o elevator.o blk-core.o blk-sysfs.o \
+ 			blk-lib.o blk-mq.o blk-mq-tag.o blk-stat.o \
+ 			blk-mq-sysfs.o blk-mq-cpumap.o blk-mq-sched.o ioctl.o \
+ 			genhd.o ioprio.o badblocks.o partitions/ blk-rq-qos.o
++CFLAGS_blk-mq.o := $(call cc-disable-warning, align-mismatch)
+ 
+ obj-$(CONFIG_BOUNCE)		+= bounce.o
+ obj-$(CONFIG_BLK_SCSI_REQUEST)	+= scsi_ioctl.o
+
+2. Use the __diag() infrastructure, which would allow us to locally
+   disable the warning while adding a comment. The benefit of this
+   approach is that the warning is only disabled for the problematic
+   line so other instances can be caught. The downside is there is a
+   little churn as it will involve a patch for the initial __diag()
+   support for clang (as it has not needed it yet) and a few more lines
+   in block/blk-mq.c. Additionally, the reason for the warning can be
+   documented (the comment can obviously be improved).
+
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index d4d7c1caa439..2781c04d06bc 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -627,7 +627,10 @@ static void blk_mq_complete_send_ipi(struct request *rq)
+ 	list = &per_cpu(blk_cpu_done, cpu);
+ 	if (llist_add(&rq->ipi_list, list)) {
+ 		INIT_CSD(&rq->csd, __blk_mq_complete_request_remote, rq);
++		__diag_push();
++		__diag_ignore(clang, 13, "-Walign-mismatch", "There is no issue with misalignment here");
+ 		smp_call_function_single_async(cpu, &rq->csd);
++		__diag_pop();
+ 	}
+ }
+ 
+diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+index 04c0a5a717f7..0a20fddc1c30 100644
+--- a/include/linux/compiler-clang.h
++++ b/include/linux/compiler-clang.h
+@@ -55,3 +55,25 @@
+ #if __has_feature(shadow_call_stack)
+ # define __noscs	__attribute__((__no_sanitize__("shadow-call-stack")))
+ #endif
++
++/*
++ *  * Turn individual warnings and errors on and off locally, depending
++ *   * on version.
++ *    */
++#define __diag_clang(version, severity, s) \
++		__diag_clang_ ## version(__diag_clang_ ## severity s)
++
++/* Severity used in pragma directives */
++#define __diag_clang_ignore	ignored
++#define __diag_clang_warn	warning
++#define __diag_clang_error	error
++
++#define __diag_str1(s)		#s
++#define __diag_str(s)		__diag_str1(s)
++#define __diag(s)		_Pragma(__diag_str(clang diagnostic s))
++
++#if CONFIG_CLANG_VERSION >= 130000
++#define __diag_clang_13(s)		__diag(s)
++#else
++#define __diag_clang_13(s)
++#endif
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index e5dd5a4ae946..a505d8a4302d 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -328,6 +328,10 @@ struct ftrace_likely_data {
+ #define __diag(string)
+ #endif
+ 
++#ifndef __diag_clang
++#define __diag_clang(version, severity, string)
++#endif
++
+ #ifndef __diag_GCC
+ #define __diag_GCC(version, severity, string)
+ #endif
+
+I would say the preference is ultimately up to the maintainer, unless my
+fellow ClangBuiltLinux maintainers/contributors have any further
+comments/objections.
+
+Cheers,
+Nathan
