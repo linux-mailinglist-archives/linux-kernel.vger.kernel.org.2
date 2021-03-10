@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B28B333EF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D420F333EFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhCJN2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:28:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47566 "EHLO mail.kernel.org"
+        id S233561AbhCJN24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:28:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233278AbhCJNZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A9FB64FFD;
-        Wed, 10 Mar 2021 13:25:15 +0000 (UTC)
+        id S233290AbhCJNZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A712A6500D;
+        Wed, 10 Mar 2021 13:25:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382716;
-        bh=bzIv8TnIEfkpzFtHkU9fFj/0LADJvVXU/TIRsmONQPs=;
+        s=korg; t=1615382717;
+        bh=kPVsOsqn4Q67G1MB9BxuDrFmpty10DB+O2p4M/qV4Po=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eKeVMLT9SADMEpolzhy4pNWMGU/P4JmMynGJdhpgL+soX8s3pMWouajZmBZltGOMn
-         PwoREhLim8/NkQo6PlfO9t5pvhLZhbPTWh4USS+ZXvGwvBFjPmy0EHH+oW3bdW+D8z
-         B6qzgGkhnMOrobFaKXIc+wgdUURamv1d7G18VLO0=
+        b=B5rCW3glORsDpHAWtNba1buzIvXNnINUu1zLY9x9nsPwGCz5UX+kL+HEKKs55EnIo
+         esohTDLVZauTwM6gfCofGdvgk3z9WJY76OnH9EFHfutPq8fgUlhuevgmQbprE13sPb
+         0vSa9EJYsPG86vmCXJu9ciHIuCFVgnm9pXq9Irbs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.14 09/20] dm table: fix zoned iterate_devices based device capability checks
-Date:   Wed, 10 Mar 2021 14:24:46 +0100
-Message-Id: <20210310132320.826074753@linuxfoundation.org>
+        stable@vger.kernel.org, Andrey Ryabinin <arbn@yandex-team.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH 4.14 10/20] iommu/amd: Fix sleeping in atomic in increase_address_space()
+Date:   Wed, 10 Mar 2021 14:24:47 +0100
+Message-Id: <20210310132320.855798204@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132320.512307035@linuxfoundation.org>
 References: <20210310132320.512307035@linuxfoundation.org>
@@ -41,162 +41,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jeffle Xu <jefflexu@linux.alibaba.com>
+From: Andrey Ryabinin <arbn@yandex-team.com>
 
-commit 24f6b6036c9eec21191646930ad42808e6180510 upstream.
+commit 140456f994195b568ecd7fc2287a34eadffef3ca upstream.
 
-Fix dm_table_supports_zoned_model() and invert logic of both
-iterate_devices_callout_fn so that all devices' zoned capabilities are
-properly checked.
+increase_address_space() calls get_zeroed_page(gfp) under spin_lock with
+disabled interrupts. gfp flags passed to increase_address_space() may allow
+sleeping, so it comes to this:
 
-Add one more parameter to dm_table_any_dev_attr(), which is actually
-used as the @data parameter of iterate_devices_callout_fn, so that
-dm_table_matches_zone_sectors() can be replaced by
-dm_table_any_dev_attr().
+ BUG: sleeping function called from invalid context at mm/page_alloc.c:4342
+ in_atomic(): 1, irqs_disabled(): 1, pid: 21555, name: epdcbbf1qnhbsd8
 
-Fixes: dd88d313bef02 ("dm table: add zoned block devices validation")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-[jeffle: also convert no_sg_merge check]
+ Call Trace:
+  dump_stack+0x66/0x8b
+  ___might_sleep+0xec/0x110
+  __alloc_pages_nodemask+0x104/0x300
+  get_zeroed_page+0x15/0x40
+  iommu_map_page+0xdd/0x3e0
+  amd_iommu_map+0x50/0x70
+  iommu_map+0x106/0x220
+  vfio_iommu_type1_ioctl+0x76e/0x950 [vfio_iommu_type1]
+  do_vfs_ioctl+0xa3/0x6f0
+  ksys_ioctl+0x66/0x70
+  __x64_sys_ioctl+0x16/0x20
+  do_syscall_64+0x4e/0x100
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fix this by moving get_zeroed_page() out of spin_lock/unlock section.
+
+Fixes: 754265bcab ("iommu/amd: Fix race in increase_address_space()")
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+Acked-by: Will Deacon <will@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210217143004.19165-1-arbn@yandex-team.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/md/dm-table.c |   50 +++++++++++++++++---------------------------------
- 1 file changed, 17 insertions(+), 33 deletions(-)
 
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1372,10 +1372,10 @@ struct dm_target *dm_table_find_target(s
-  * should use the iteration structure like dm_table_supports_nowait() or
-  * dm_table_supports_discards(). Or introduce dm_table_all_devs_attr() that
-  * uses an @anti_func that handle semantics of counter examples, e.g. not
-- * capable of something. So: return !dm_table_any_dev_attr(t, anti_func);
-+ * capable of something. So: return !dm_table_any_dev_attr(t, anti_func, data);
-  */
- static bool dm_table_any_dev_attr(struct dm_table *t,
--				  iterate_devices_callout_fn func)
-+				  iterate_devices_callout_fn func, void *data)
- {
- 	struct dm_target *ti;
- 	unsigned int i;
-@@ -1384,7 +1384,7 @@ static bool dm_table_any_dev_attr(struct
- 		ti = dm_table_get_target(t, i);
+---
+ drivers/iommu/amd_iommu.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+--- a/drivers/iommu/amd_iommu.c
++++ b/drivers/iommu/amd_iommu.c
+@@ -1347,24 +1347,26 @@ static void increase_address_space(struc
+ 	unsigned long flags;
+ 	u64 *pte;
  
- 		if (ti->type->iterate_devices &&
--		    ti->type->iterate_devices(ti, func, NULL))
-+		    ti->type->iterate_devices(ti, func, data))
- 			return true;
-         }
++	pte = (void *)get_zeroed_page(gfp);
++	if (!pte)
++		return;
++
+ 	spin_lock_irqsave(&domain->lock, flags);
  
-@@ -1427,13 +1427,13 @@ bool dm_table_has_no_data_devices(struct
- 	return true;
- }
+ 	if (WARN_ON_ONCE(domain->mode == PAGE_MODE_6_LEVEL))
+ 		/* address space already 64 bit large */
+ 		goto out;
  
--static int device_is_zoned_model(struct dm_target *ti, struct dm_dev *dev,
--				 sector_t start, sector_t len, void *data)
-+static int device_not_zoned_model(struct dm_target *ti, struct dm_dev *dev,
-+				  sector_t start, sector_t len, void *data)
- {
- 	struct request_queue *q = bdev_get_queue(dev->bdev);
- 	enum blk_zoned_model *zoned_model = data;
- 
--	return q && blk_queue_zoned_model(q) == *zoned_model;
-+	return !q || blk_queue_zoned_model(q) != *zoned_model;
- }
- 
- static bool dm_table_supports_zoned_model(struct dm_table *t,
-@@ -1450,37 +1450,20 @@ static bool dm_table_supports_zoned_mode
- 			return false;
- 
- 		if (!ti->type->iterate_devices ||
--		    !ti->type->iterate_devices(ti, device_is_zoned_model, &zoned_model))
-+		    ti->type->iterate_devices(ti, device_not_zoned_model, &zoned_model))
- 			return false;
- 	}
- 
- 	return true;
- }
- 
--static int device_matches_zone_sectors(struct dm_target *ti, struct dm_dev *dev,
--				       sector_t start, sector_t len, void *data)
-+static int device_not_matches_zone_sectors(struct dm_target *ti, struct dm_dev *dev,
-+					   sector_t start, sector_t len, void *data)
- {
- 	struct request_queue *q = bdev_get_queue(dev->bdev);
- 	unsigned int *zone_sectors = data;
- 
--	return q && blk_queue_zone_sectors(q) == *zone_sectors;
--}
+-	pte = (void *)get_zeroed_page(gfp);
+-	if (!pte)
+-		goto out;
 -
--static bool dm_table_matches_zone_sectors(struct dm_table *t,
--					  unsigned int zone_sectors)
--{
--	struct dm_target *ti;
--	unsigned i;
--
--	for (i = 0; i < dm_table_get_num_targets(t); i++) {
--		ti = dm_table_get_target(t, i);
--
--		if (!ti->type->iterate_devices ||
--		    !ti->type->iterate_devices(ti, device_matches_zone_sectors, &zone_sectors))
--			return false;
--	}
--
--	return true;
-+	return !q || blk_queue_zone_sectors(q) != *zone_sectors;
+ 	*pte             = PM_LEVEL_PDE(domain->mode,
+ 					iommu_virt_to_phys(domain->pt_root));
+ 	domain->pt_root  = pte;
+ 	domain->mode    += 1;
+ 	domain->updated  = true;
++	pte              = NULL;
+ 
+ out:
+ 	spin_unlock_irqrestore(&domain->lock, flags);
++	free_page((unsigned long)pte);
+ 
+ 	return;
  }
- 
- static int validate_hardware_zoned_model(struct dm_table *table,
-@@ -1500,7 +1483,7 @@ static int validate_hardware_zoned_model
- 	if (!zone_sectors || !is_power_of_2(zone_sectors))
- 		return -EINVAL;
- 
--	if (!dm_table_matches_zone_sectors(table, zone_sectors)) {
-+	if (dm_table_any_dev_attr(table, device_not_matches_zone_sectors, &zone_sectors)) {
- 		DMERR("%s: zone sectors is not consistent across all devices",
- 		      dm_device_name(table->md));
- 		return -EINVAL;
-@@ -1837,11 +1820,11 @@ void dm_table_set_restrictions(struct dm
- 	else
- 		queue_flag_clear_unlocked(QUEUE_FLAG_DAX, q);
- 
--	if (dm_table_any_dev_attr(t, device_dax_write_cache_enabled))
-+	if (dm_table_any_dev_attr(t, device_dax_write_cache_enabled, NULL))
- 		dax_write_cache(t->md->dax_dev, true);
- 
- 	/* Ensure that all underlying devices are non-rotational. */
--	if (dm_table_any_dev_attr(t, device_is_rotational))
-+	if (dm_table_any_dev_attr(t, device_is_rotational, NULL))
- 		queue_flag_clear_unlocked(QUEUE_FLAG_NONROT, q);
- 	else
- 		queue_flag_set_unlocked(QUEUE_FLAG_NONROT, q);
-@@ -1851,7 +1834,7 @@ void dm_table_set_restrictions(struct dm
- 	if (!dm_table_supports_write_zeroes(t))
- 		q->limits.max_write_zeroes_sectors = 0;
- 
--	if (dm_table_any_dev_attr(t, queue_no_sg_merge))
-+	if (dm_table_any_dev_attr(t, queue_no_sg_merge, NULL))
- 		queue_flag_set_unlocked(QUEUE_FLAG_NO_SG_MERGE, q);
- 	else
- 		queue_flag_clear_unlocked(QUEUE_FLAG_NO_SG_MERGE, q);
-@@ -1865,7 +1848,7 @@ void dm_table_set_restrictions(struct dm
- 	 * them as well.  Only targets that support iterate_devices are considered:
- 	 * don't want error, zero, etc to require stable pages.
- 	 */
--	if (dm_table_any_dev_attr(t, device_requires_stable_pages))
-+	if (dm_table_any_dev_attr(t, device_requires_stable_pages, NULL))
- 		q->backing_dev_info->capabilities |= BDI_CAP_STABLE_WRITES;
- 	else
- 		q->backing_dev_info->capabilities &= ~BDI_CAP_STABLE_WRITES;
-@@ -1876,7 +1859,8 @@ void dm_table_set_restrictions(struct dm
- 	 * Clear QUEUE_FLAG_ADD_RANDOM if any underlying device does not
- 	 * have it set.
- 	 */
--	if (blk_queue_add_random(q) && dm_table_any_dev_attr(t, device_is_not_random))
-+	if (blk_queue_add_random(q) &&
-+	    dm_table_any_dev_attr(t, device_is_not_random, NULL))
- 		queue_flag_clear_unlocked(QUEUE_FLAG_ADD_RANDOM, q);
- 
- 	/*
 
 
