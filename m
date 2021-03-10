@@ -2,286 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400E6334B48
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3AF334B56
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbhCJWQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:16:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCJWQH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:16:07 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB0AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:16:06 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id jt13so42013541ejb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:16:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=re8TUbsE0dO0c8tinrCkKpAasXzv2AM9ceRsQ1QF7n8=;
-        b=hPQfozB12KC6qu+yv8shLRVXpJz7Xpjo/SCPBi3uQd0Ey/KRKrBdnU0WUX9A9PUjQU
-         GZP9qfg2OCppE8tosQf8BQCtbVIFK0rj9a0kDOBRI8/6+vLNfEuFgUcg94qmHIgcCWtD
-         VoTDjG1snTNU5DzGYySypXPbtYhLFMZi5anj4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=re8TUbsE0dO0c8tinrCkKpAasXzv2AM9ceRsQ1QF7n8=;
-        b=BB4gWboI17UmaX8ItVj0pv9xJeVR0oXKWMe2N2G9TQ5lXdwwXd4CCL9RG8iAYE3yXI
-         ozyTwNtD//o8xzsrEdX30QwsR5wUDXtqKiTLCgwNr6+sF+NKPPMqUwa+Q35j0blkLYvt
-         23A0k6hcSvWWfNgFp+2sKH9YGAGWiCwUX8Oz4rkHQAMGSk48cAK1z1XZxe/n137lhYP9
-         rByjwRrrFznH+2RAowm01nxqFp1CA5u3eWZZV81uwEBiKUBIe1j78e0rDQv2VwwV/7Cr
-         XkqUG9w/gest8qJRkccw6DItH3VxyNTTkPDXYFhIe2wOrAuFT3sAMckcwZgzFhxVBD9v
-         Nf9A==
-X-Gm-Message-State: AOAM533KAzAgZ1f/o3W04dpF6tEEXtlzwKhrTy7iwViqd/J6/N3Q9FbS
-        I1Azv+ve1Tuk444qdq705ad8Nw==
-X-Google-Smtp-Source: ABdhPJy7fJyPDrOoycZMA2cHillh2M2zKhNgHdYE/o5cj7n9CplbTPPYDPVV3dAW9mPZ9vn8Ymd7jQ==
-X-Received: by 2002:a17:906:2804:: with SMTP id r4mr56347ejc.521.1615414565286;
-        Wed, 10 Mar 2021 14:16:05 -0800 (PST)
-Received: from prevas-ravi.prevas.se ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id b4sm281105edh.40.2021.03.10.14.16.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 14:16:04 -0800 (PST)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: bnx2i: make bnx2i_process_iscsi_error simpler and more robust
-Date:   Wed, 10 Mar 2021 23:16:02 +0100
-Message-Id: <20210310221602.2494422-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.29.2
+        id S232845AbhCJWRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:17:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232181AbhCJWRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:17:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F52664FB9;
+        Wed, 10 Mar 2021 22:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615414625;
+        bh=uvxATqmALoLwZ5xgJ3XvB9q+ryBa5IKMCmWm/PrqUS8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ahAt+j+pAV7DmD0Z1B3oguj1fYJjKbXXGMMJmOlnqSK2gsaTPeH71RUDM7a+DpC6F
+         s6DZmBWqsvjcT7v85GFi4DiNnLYWR5LbRn6SwxzykW8hnyzU5jXYacUPxVIPdtFaVT
+         ZOh8FMZY4bhcIYyBLxCgHRts7Bv9J6+9A1cqwzlbe9FcvWmtMlKbe5gnSJo/mOeVxL
+         6FLmXK2Q6e/7DmHfvS0GMTpJseA3yuxjc/qeaCnLMwif11ImkpPvDEDH5log0Dwb40
+         zOES27c+I/2rDwh3p4bx0VoVlof6X/OqLpFNBP6kbB87AxwxyRnE6wxdUBkuDRAyB3
+         HbAn0992iqtBw==
+Date:   Wed, 10 Mar 2021 23:17:02 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 10/13] rcu/nocb: Delete bypass_timer upon nocb_gp wakeup
+Message-ID: <20210310221702.GC2949@lothringen>
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-11-frederic@kernel.org>
+ <20210303012456.GC20917@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303012456.GC20917@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of strcpy'ing into a stack buffer, just let additional_notice
-point to a string literal living in .rodata. This is better in a few
-ways:
+On Tue, Mar 02, 2021 at 05:24:56PM -0800, Paul E. McKenney wrote:
+> On Tue, Feb 23, 2021 at 01:10:08AM +0100, Frederic Weisbecker wrote:
+> > A NOCB-gp wake up can safely delete the nocb_bypass_timer. nocb_gp_wait()
+> > is going to check again the bypass state and rearm the bypass timer if
+> > necessary.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> 
+> Give that you delete this code a couple of patches later in this series,
+> why not just leave it out entirely?  ;-)
 
-- Smaller .text - instead of gcc compiling the strcpys as a bunch of
-  immediate stores (effectively encoding the string literal in the
-  instruction stream), we only pay the price of storing the literal in
-  .rodata.
+It's not exactly deleted later, it's rather merged within the
+"del_timer(&rdp_gp->nocb_timer)".
 
-- Faster, because there's no string copying.
+The purpose of that patch is to make it clear that we explicitly cancel
+the nocb_bypass_timer here before we do it implicitly later with the
+merge of nocb_bypass_timer into nocb_timer.
 
-- Smaller stack usage (with my compiler, 72 bytes instead of 176 for
-  the sole caller, bnx2i_indicate_kcqe)
+We could drop that patch, the resulting code in the end of the patchset
+will be the same of course but the behaviour detail described here might
+slip out of the reviewers attention :-)
 
-Moreover, it's currently possible for additional_notice[] to get used
-uninitialized, so some random stack garbage would be passed to
-printk() - in the worst case without any '\0' anywhere in those 64
-bytes. That could be fixed by initializing additional_notice[0], but
-the same is achieved here by initializing the new pointer variable to
-"".
+> 
+> 							Thanx, Paul
+> 
+> > ---
+> >  kernel/rcu/tree_plugin.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index b62ad79bbda5..9da67b0d3997 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -1711,6 +1711,8 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
+> >  		del_timer(&rdp_gp->nocb_timer);
+> >  	}
+> >  
+> > +	del_timer(&rdp_gp->nocb_bypass_timer);
+> > +
+> >  	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
+> >  		WRITE_ONCE(rdp_gp->nocb_gp_sleep, false);
+> >  		needwake = true;
 
-Also give the message pointer a similar treatment - there's no point
-making temporary copies on the stack of those two strings.
-
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- drivers/scsi/bnx2i/bnx2i_hwi.c | 85 ++++++++++++++++------------------
- 1 file changed, 41 insertions(+), 44 deletions(-)
-
-diff --git a/drivers/scsi/bnx2i/bnx2i_hwi.c b/drivers/scsi/bnx2i/bnx2i_hwi.c
-index bad396e5c601..43e8a1dafec0 100644
---- a/drivers/scsi/bnx2i/bnx2i_hwi.c
-+++ b/drivers/scsi/bnx2i/bnx2i_hwi.c
-@@ -2206,10 +2206,8 @@ static void bnx2i_process_iscsi_error(struct bnx2i_hba *hba,
- {
- 	struct bnx2i_conn *bnx2i_conn;
- 	u32 iscsi_cid;
--	char warn_notice[] = "iscsi_warning";
--	char error_notice[] = "iscsi_error";
--	char additional_notice[64];
--	char *message;
-+	const char *additional_notice = "";
-+	const char *message;
- 	int need_recovery;
- 	u64 err_mask64;
- 
-@@ -2224,133 +2222,132 @@ static void bnx2i_process_iscsi_error(struct bnx2i_hba *hba,
- 
- 	if (err_mask64 & iscsi_error_mask) {
- 		need_recovery = 0;
--		message = warn_notice;
-+		message = "iscsi_warning";
- 	} else {
- 		need_recovery = 1;
--		message = error_notice;
-+		message = "iscsi_error";
- 	}
- 
- 	switch (iscsi_err->completion_status) {
- 	case ISCSI_KCQE_COMPLETION_STATUS_HDR_DIG_ERR:
--		strcpy(additional_notice, "hdr digest err");
-+		additional_notice = "hdr digest err";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_DATA_DIG_ERR:
--		strcpy(additional_notice, "data digest err");
-+		additional_notice = "data digest err";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_OPCODE:
--		strcpy(additional_notice, "wrong opcode rcvd");
-+		additional_notice = "wrong opcode rcvd";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_AHS_LEN:
--		strcpy(additional_notice, "AHS len > 0 rcvd");
-+		additional_notice = "AHS len > 0 rcvd";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_ITT:
--		strcpy(additional_notice, "invalid ITT rcvd");
-+		additional_notice = "invalid ITT rcvd";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_STATSN:
--		strcpy(additional_notice, "wrong StatSN rcvd");
-+		additional_notice = "wrong StatSN rcvd";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_EXP_DATASN:
--		strcpy(additional_notice, "wrong DataSN rcvd");
-+		additional_notice = "wrong DataSN rcvd";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_PEND_R2T:
--		strcpy(additional_notice, "pend R2T violation");
-+		additional_notice = "pend R2T violation";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_0:
--		strcpy(additional_notice, "ERL0, UO");
-+		additional_notice = "ERL0, UO";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_1:
--		strcpy(additional_notice, "ERL0, U1");
-+		additional_notice = "ERL0, U1";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_2:
--		strcpy(additional_notice, "ERL0, U2");
-+		additional_notice = "ERL0, U2";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_3:
--		strcpy(additional_notice, "ERL0, U3");
-+		additional_notice = "ERL0, U3";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_4:
--		strcpy(additional_notice, "ERL0, U4");
-+		additional_notice = "ERL0, U4";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_5:
--		strcpy(additional_notice, "ERL0, U5");
-+		additional_notice = "ERL0, U5";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_O_U_6:
--		strcpy(additional_notice, "ERL0, U6");
-+		additional_notice = "ERL0, U6";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_REMAIN_RCV_LEN:
--		strcpy(additional_notice, "invalid resi len");
-+		additional_notice = "invalid resi len";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_MAX_RCV_PDU_LEN:
--		strcpy(additional_notice, "MRDSL violation");
-+		additional_notice = "MRDSL violation";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_F_BIT_ZERO:
--		strcpy(additional_notice, "F-bit not set");
-+		additional_notice = "F-bit not set";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_TTT_NOT_RSRV:
--		strcpy(additional_notice, "invalid TTT");
-+		additional_notice = "invalid TTT";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_DATASN:
--		strcpy(additional_notice, "invalid DataSN");
-+		additional_notice = "invalid DataSN";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_REMAIN_BURST_LEN:
--		strcpy(additional_notice, "burst len violation");
-+		additional_notice = "burst len violation";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_BUFFER_OFF:
--		strcpy(additional_notice, "buf offset violation");
-+		additional_notice = "buf offset violation";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_LUN:
--		strcpy(additional_notice, "invalid LUN field");
-+		additional_notice = "invalid LUN field";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_R2TSN:
--		strcpy(additional_notice, "invalid R2TSN field");
-+		additional_notice = "invalid R2TSN field";
- 		break;
- #define BNX2I_ERR_DESIRED_DATA_TRNS_LEN_0 	\
- 	ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_DESIRED_DATA_TRNS_LEN_0
- 	case BNX2I_ERR_DESIRED_DATA_TRNS_LEN_0:
--		strcpy(additional_notice, "invalid cmd len1");
-+		additional_notice = "invalid cmd len1";
- 		break;
- #define BNX2I_ERR_DESIRED_DATA_TRNS_LEN_1 	\
- 	ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_DESIRED_DATA_TRNS_LEN_1
- 	case BNX2I_ERR_DESIRED_DATA_TRNS_LEN_1:
--		strcpy(additional_notice, "invalid cmd len2");
-+		additional_notice = "invalid cmd len2";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_PEND_R2T_EXCEED:
--		strcpy(additional_notice,
--		       "pend r2t exceeds MaxOutstandingR2T value");
-+		additional_notice = "pend r2t exceeds MaxOutstandingR2T value";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_TTT_IS_RSRV:
--		strcpy(additional_notice, "TTT is rsvd");
-+		additional_notice = "TTT is rsvd";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_MAX_BURST_LEN:
--		strcpy(additional_notice, "MBL violation");
-+		additional_notice = "MBL violation";
- 		break;
- #define BNX2I_ERR_DATA_SEG_LEN_NOT_ZERO 	\
- 	ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_DATA_SEG_LEN_NOT_ZERO
- 	case BNX2I_ERR_DATA_SEG_LEN_NOT_ZERO:
--		strcpy(additional_notice, "data seg len != 0");
-+		additional_notice = "data seg len != 0";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_REJECT_PDU_LEN:
--		strcpy(additional_notice, "reject pdu len error");
-+		additional_notice = "reject pdu len error";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_ASYNC_PDU_LEN:
--		strcpy(additional_notice, "async pdu len error");
-+		additional_notice = "async pdu len error";
- 		break;
- 	case ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_NOPIN_PDU_LEN:
--		strcpy(additional_notice, "nopin pdu len error");
-+		additional_notice = "nopin pdu len error";
- 		break;
- #define BNX2_ERR_PEND_R2T_IN_CLEANUP			\
- 	ISCSI_KCQE_COMPLETION_STATUS_PROTOCOL_ERR_PEND_R2T_IN_CLEANUP
- 	case BNX2_ERR_PEND_R2T_IN_CLEANUP:
--		strcpy(additional_notice, "pend r2t in cleanup");
-+		additional_notice = "pend r2t in cleanup";
- 		break;
- 
- 	case ISCI_KCQE_COMPLETION_STATUS_TCP_ERROR_IP_FRAGMENT:
--		strcpy(additional_notice, "IP fragments rcvd");
-+		additional_notice = "IP fragments rcvd";
- 		break;
- 	case ISCI_KCQE_COMPLETION_STATUS_TCP_ERROR_IP_OPTIONS:
--		strcpy(additional_notice, "IP options error");
-+		additional_notice = "IP options error";
- 		break;
- 	case ISCI_KCQE_COMPLETION_STATUS_TCP_ERROR_URGENT_FLAG:
--		strcpy(additional_notice, "urgent flag error");
-+		additional_notice = "urgent flag error";
- 		break;
- 	default:
- 		printk(KERN_ALERT "iscsi_err - unknown err %x\n",
--- 
-2.29.2
-
+Thanks.
