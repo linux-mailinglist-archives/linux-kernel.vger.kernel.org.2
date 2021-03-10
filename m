@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88277333EF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3A9333EF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbhCJN2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:28:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46706 "EHLO mail.kernel.org"
+        id S233977AbhCJN2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:28:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232990AbhCJNZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE22465029;
-        Wed, 10 Mar 2021 13:25:10 +0000 (UTC)
+        id S232815AbhCJNZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 850A36500C;
+        Wed, 10 Mar 2021 13:25:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382712;
-        bh=uUzuN6c2yJeTmroTZyUSLtBLyvK4cq6WKjcfoRitTaY=;
+        s=korg; t=1615382713;
+        bh=Ont2uxVjwErKP8hvOvO2RYTJTb1cnh6siOu2Whel2VM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bo2MyLC7DBDuoMo3pkRdsEJLBBUVCe6ceeHBtLvAWSk5NAZbgZ/Gj+M0TLfjY2uka
-         NjJasEkGR2Tozw3QO4JQTzPaX4b4VSLlsYM0GZXmEXylLdqQNgaE5WSNMLU/WrB/qS
-         +PuyE/OVaec3tvBjGh3XH4eZM19Tq++lrhLE4eEo=
+        b=PNE1aZuEcA1XjeQYisT4rju2Ek0jBtMNjb5TPMvDOWiudI0uDqzFzCsYyF7dChc34
+         7nznm0pc8E+IoljRqbKoChYdLVki4StXXiHAXSUTj5S8KC/k23QjNYAq+Xo3mE++mG
+         0dGgQ23HC1AQR15f5MvAPX06kJSOgrNpQWObvFlc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kiwoong Kim <kwmad.kim@samsung.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 37/49] scsi: ufs: ufs-exynos: Use UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE
-Date:   Wed, 10 Mar 2021 14:23:48 +0100
-Message-Id: <20210310132323.116748169@linuxfoundation.org>
+Subject: [PATCH 5.10 38/49] drm/msm/a5xx: Remove overwriting A5XX_PC_DBG_ECO_CNTL register
+Date:   Wed, 10 Mar 2021 14:23:49 +0100
+Message-Id: <20210310132323.145707419@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
 References: <20210310132321.948258062@linuxfoundation.org>
@@ -42,36 +45,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Kiwoong Kim <kwmad.kim@samsung.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-[ Upstream commit f1ef9047aaab036edb39261b0a7a6bdcf3010b87 ]
+[ Upstream commit 8f03c30cb814213e36032084a01f49a9e604a3e3 ]
 
-Exynos needs scatterlist entries aligned to page size because it isn't
-capable of transferring data contained in one DATA IN operation to seversal
-areas in memory.
+The PC_DBG_ECO_CNTL register on the Adreno A5xx family gets
+programmed to some different values on a per-model basis.
+At least, this is what we intend to do here;
 
-Link: https://lore.kernel.org/r/80d7e27d6ec537e650a6bd74897b6c60618efcdc.1611026909.git.kwmad.kim@samsung.com
-Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Unfortunately, though, this register is being overwritten with a
+static magic number, right after applying the GPU-specific
+configuration (including the GPU-specific quirks) and that is
+effectively nullifying the efforts.
+
+Let's remove the redundant and wrong write to the PC_DBG_ECO_CNTL
+register in order to retain the wanted configuration for the
+target GPU.
+
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufs-exynos.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufs-exynos.c b/drivers/scsi/ufs/ufs-exynos.c
-index 2993ac877a61..f54b494ca448 100644
---- a/drivers/scsi/ufs/ufs-exynos.c
-+++ b/drivers/scsi/ufs/ufs-exynos.c
-@@ -1255,7 +1255,8 @@ struct exynos_ufs_drv_data exynos_ufs_drvs = {
- 				  UFSHCI_QUIRK_SKIP_RESET_INTR_AGGR |
- 				  UFSHCD_QUIRK_BROKEN_OCS_FATAL_ERROR |
- 				  UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL |
--				  UFSHCD_QUIRK_SKIP_DEF_UNIPRO_TIMEOUT_SETTING,
-+				  UFSHCD_QUIRK_SKIP_DEF_UNIPRO_TIMEOUT_SETTING |
-+				  UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE,
- 	.opts			= EXYNOS_UFS_OPT_HAS_APB_CLK_CTRL |
- 				  EXYNOS_UFS_OPT_BROKEN_AUTO_CLK_CTRL |
- 				  EXYNOS_UFS_OPT_BROKEN_RX_SEL_IDX |
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+index 69ed2c609466..5e11cdb207d8 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+@@ -626,8 +626,6 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
+ 	if (adreno_gpu->info->quirks & ADRENO_QUIRK_TWO_PASS_USE_WFI)
+ 		gpu_rmw(gpu, REG_A5XX_PC_DBG_ECO_CNTL, 0, (1 << 8));
+ 
+-	gpu_write(gpu, REG_A5XX_PC_DBG_ECO_CNTL, 0xc0200100);
+-
+ 	/* Enable USE_RETENTION_FLOPS */
+ 	gpu_write(gpu, REG_A5XX_CP_CHICKEN_DBG, 0x02000000);
+ 
 -- 
 2.30.1
 
