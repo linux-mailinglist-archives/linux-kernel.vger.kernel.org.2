@@ -2,153 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97A5334AF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B71334B08
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232790AbhCJWFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:05:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50212 "EHLO mail.kernel.org"
+        id S233878AbhCJWF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:05:56 -0500
+Received: from mga04.intel.com ([192.55.52.120]:5154 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232907AbhCJWFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:05:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DDBE64F42;
-        Wed, 10 Mar 2021 22:05:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615413909;
-        bh=S0EjQ5tCchbtzTAxcrKIMWxHU6YxSDhJ7SQApGf4i4A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gHAGe5LcxiNVrqTpLts7N02jt0UTqdktabljAP5xZXvvI9Qlj7OV791JvHnNXp76D
-         8gpqO83j/Sq96yKauWZy3ez1/bI15fsRLpXrxZ/CxxrqJoCNeImVCGi4OUcmPzKm4I
-         8Fz+3pE+NhrOcs09E8rD5Nd5dhOL/mFClc6ZfcI+3O28uwvONh2dtgYjZaOAfcyYhH
-         V9TKDNxlGvEP9vWYjb/7p5Fv4ym38uhKJMonZWgfUvJrOAgiaW696PaD1Y24KAmh6l
-         q1I2Dn8s8GVoFZzfddw9U9CGlQQnc0l7XiIFM2oJdyF/b8ypefwc4oTv9niku+rOVw
-         SQPZGFFEFbQkQ==
-Date:   Wed, 10 Mar 2021 23:05:07 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        id S233007AbhCJWFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:05:50 -0500
+IronPort-SDR: aJraxlXJXtVW1l90XMg+hk5QCwQUzTFaW9A11cELARsgvbXl/mmwEDKn9WrgxHIVnohZ35+8Cp
+ H4uxFMo60c1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186193973"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="186193973"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:05:43 -0800
+IronPort-SDR: oTpgMha/lK6Us+RPckMTufD9ZWBEGfd5LJzZ+dn7arzRETtdXULJr3gzUzBdHvh47nKEz0r3SN
+ xLGY7HAejfTA==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="410368489"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:05:43 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Stable <stable@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 05/13] rcu/nocb: Use the rcuog CPU's ->nocb_timer
-Message-ID: <20210310220507.GA2949@lothringen>
-References: <20210223001011.127063-1-frederic@kernel.org>
- <20210223001011.127063-6-frederic@kernel.org>
- <20210303011557.GA20917@paulmck-ThinkPad-P72>
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v22 0/8] Control-flow Enforcement: Indirect Branch Tracking
+Date:   Wed, 10 Mar 2021 14:05:11 -0800
+Message-Id: <20210310220519.16811-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303011557.GA20917@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 05:15:57PM -0800, Paul E. McKenney wrote:
-> The first question is of course: Did you try this with lockdep enabled?  ;-)
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
 
-Yep I always do. But I may miss some configs on my testings. I usually
-test at least TREE01 on x86 and arm64.
+This is the second part of CET and enables Indirect Branch Tracking (IBT).
+It is built on top of the shadow stack series.
 
-> > @@ -1702,43 +1692,50 @@ bool rcu_is_nocb_cpu(int cpu)
-> >  	return false;
-> >  }
-> >  
-> > -/*
-> > - * Kick the GP kthread for this NOCB group.  Caller holds ->nocb_lock
-> > - * and this function releases it.
-> > - */
-> > -static bool wake_nocb_gp(struct rcu_data *rdp, bool force,
-> > -			 unsigned long flags)
-> > -	__releases(rdp->nocb_lock)
-> > +static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
-> > +			   struct rcu_data *rdp,
-> > +			   bool force, unsigned long flags)
-> > +	__releases(rdp_gp->nocb_gp_lock)
-> >  {
-> >  	bool needwake = false;
-> > -	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
-> >  
-> > -	lockdep_assert_held(&rdp->nocb_lock);
-> >  	if (!READ_ONCE(rdp_gp->nocb_gp_kthread)) {
-> > -		rcu_nocb_unlock_irqrestore(rdp, flags);
-> > +		raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
-> >  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
-> >  				    TPS("AlreadyAwake"));
-> >  		return false;
-> >  	}
-> >  
-> > -	if (READ_ONCE(rdp->nocb_defer_wakeup) > RCU_NOCB_WAKE_NOT) {
-> > -		WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
-> > -		del_timer(&rdp->nocb_timer);
-> > +	if (rdp_gp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
-> 
-> So there are no longer any data races involving ->nocb_defer_wakeup?
-> 
-> (Yes, I could fire up KCSAN, but my KCSAN-capable system is otherwise
-> occupied for several more hours.)
+Changes in v22:
+- Add patch #8: Add endbr64 to sgx vdso entry point.
+- Rebase to Linus tree v5.12-rc2.
 
-To be more specific, there is no more unlocked write to the timer (queue/cancel)
-and its nocb_defer_wakeup matching state. And there is only one (on purpose) racy
-reader of ->nocb_defer_wakeup which is the non-timer deferred wakeup.
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
 
-So the writes to the timer keep their WRITE_ONCE() and only the reader in
-do_nocb_deferred_wakeup() keeps its READ_ONCE(). Other readers are protected
-by the ->nocb_gp_lock.
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
 
-> > +
-> >  		// Advance callbacks if helpful and low contention.
-> >  		needwake_gp = false;
-> >  		if (!rcu_segcblist_restempty(&rdp->cblist,
-> > @@ -2178,11 +2182,18 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
-> >  	my_rdp->nocb_gp_bypass = bypass;
-> >  	my_rdp->nocb_gp_gp = needwait_gp;
-> >  	my_rdp->nocb_gp_seq = needwait_gp ? wait_gp_seq : 0;
-> > -	if (bypass && !rcu_nocb_poll) {
-> > -		// At least one child with non-empty ->nocb_bypass, so set
-> > -		// timer in order to avoid stranding its callbacks.
-> > +	if (bypass) {
-> >  		raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
-> > -		mod_timer(&my_rdp->nocb_bypass_timer, j + 2);
-> > +		// Avoid race with first bypass CB.
-> > +		if (my_rdp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
-> > +			WRITE_ONCE(my_rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
-> > +			del_timer(&my_rdp->nocb_timer);
-> > +		}
-> 
-> Given that the timer does not get queued if rcu_nocb_poll, why not move the
-> above "if" statement under the one following?
+[2] Indirect Branch Tracking patches v21:
 
-It's done later in the set.
+    https://lore.kernel.org/r/20210217223135.16790-1-yu-cheng.yu@intel.com/
 
-> 
-> > +		if (!rcu_nocb_poll) {
-> > +			// At least one child with non-empty ->nocb_bypass, so set
-> > +			// timer in order to avoid stranding its callbacks.
-> > +			mod_timer(&my_rdp->nocb_bypass_timer, j + 2);
-> > +		}
-> >  		raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
-> >  	}
-> >  	if (rcu_nocb_poll) {
-> > @@ -2385,7 +2399,10 @@ static void do_nocb_deferred_wakeup_timer(struct timer_list *t)
-> >   */
-> >  static bool do_nocb_deferred_wakeup(struct rcu_data *rdp)
-> >  {
-> > -	if (rcu_nocb_need_deferred_wakeup(rdp))
-> > +	if (!rdp->nocb_gp_rdp)
-> > +		return false;
-> 
-> This check was not necessary previously because each CPU used its own rdp,
-> correct?
+H.J. Lu (3):
+  x86/cet/ibt: Update arch_prctl functions for Indirect Branch Tracking
+  x86/vdso/32: Add ENDBR32 to __kernel_vsyscall entry point
+  x86/vdso: Insert endbr32/endbr64 to vDSO
 
-Exactly!
+Yu-cheng Yu (5):
+  x86/cet/ibt: Update Kconfig for user-mode Indirect Branch Tracking
+  x86/cet/ibt: User-mode Indirect Branch Tracking support
+  x86/cet/ibt: Handle signals for Indirect Branch Tracking
+  x86/cet/ibt: Update ELF header parsing for Indirect Branch Tracking
+  x86/vdso: Add ENDBR64 to __vdso_sgx_enter_enclave
 
-> The theory is that this early return is taken only during boot,
-> and that the spawning of the kthreads will act as an implicit wakeup?
+ arch/x86/Kconfig                         |  1 +
+ arch/x86/entry/vdso/Makefile             |  4 ++
+ arch/x86/entry/vdso/vdso32/system_call.S |  3 ++
+ arch/x86/entry/vdso/vsgx.S               |  3 ++
+ arch/x86/include/asm/cet.h               |  3 ++
+ arch/x86/kernel/cet.c                    | 59 +++++++++++++++++++++++-
+ arch/x86/kernel/cet_prctl.c              |  5 ++
+ arch/x86/kernel/fpu/signal.c             |  8 ++--
+ arch/x86/kernel/process_64.c             |  8 ++++
+ 9 files changed, 89 insertions(+), 5 deletions(-)
 
-You guessed right! That probably deserve a comment.
+-- 
+2.21.0
 
-Thanks!
