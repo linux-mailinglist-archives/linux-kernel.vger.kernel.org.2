@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DDD333B3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2279333B42
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhCJLUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:20:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
+        id S232456AbhCJLVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:21:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhCJLTo (ORCPT
+        with ESMTP id S230319AbhCJLU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:19:44 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CA8C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:19:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QWdKU/s0/le4J4R64M2CitQHFtjef5LFPXGhL33eeLQ=; b=YgiJC2NqwRPYFyfpxceIfnP1AH
-        qxtA4Vc9oOIMXFqtP8/d7htL4I4ZeS5WdzbWxFTI8uznkwNONxghdufk6nv7GrZR4aceyDMLpv74W
-        iL7nd1Ib7WGqMprAhUEu56276SOK8GfcAiD7YVvKmH8g1u+IJ7APM6OwmFDIdCgZ+9Wv4zA52A6R3
-        G4aUM9c1YdrgiYaT9F/u3/jPX7WxeYpoevRZ6TFNFATGElhogcW54UPeuF4BcqR/1QjdYg02FplaJ
-        AMGNGSLB6y1w67wBvzTITXI8RTmBA1Oh1n0Pth83SyobRl8sK5rPQT40INN5g3Qidi0EEkNkyKAm1
-        GGzbEXSw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJwsN-006hk0-AH; Wed, 10 Mar 2021 11:19:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6F1B63011F0;
-        Wed, 10 Mar 2021 12:19:38 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6218C2115BC7C; Wed, 10 Mar 2021 12:19:38 +0100 (CET)
-Date:   Wed, 10 Mar 2021 12:19:38 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     jgross@suse.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] objtool,x86: Fix uaccess PUSHF/POPF validation
-Message-ID: <YEirSryc3X3Lpf44@hirez.programming.kicks-ass.net>
-References: <YEY4rIbQYa5fnnEp@hirez.programming.kicks-ass.net>
+        Wed, 10 Mar 2021 06:20:58 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E9AC06174A;
+        Wed, 10 Mar 2021 03:20:58 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id n9so10251409pgi.7;
+        Wed, 10 Mar 2021 03:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=226SqCfAh3qQ3UxQNI+mT8Jvh9PheA/4vqh6AF+hXfA=;
+        b=jqoYXmR4S+q84qQfnmGWNpD46mtj3/M+Js9Rd1SBW2mcYRnZEgipEXETod6fV5GvJS
+         OZO1ZZpU0Nje5BS2raek9dX0H/JVj7WZSgdPytszgVwW8ThTygEaZaose/lwPn7G7wnH
+         r5hGsIgPw0EI4USvJGzIue506B5l+2yQXmqQnSvqJ1v1rOx2eUlt6RlmG4k3iYoZohvX
+         wUIB9xQhLfT/jq7+SachAJMLQiqbVvkl2640NjlYCE/BowXSsxjzAIHS2OeB+OGE7P53
+         C/xsvwYidND3BmhFZLU1M4LilnmbVmHFqs8ijIaLYiUfijcLHa3BVL58kFRdScDJzNnG
+         vw3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=226SqCfAh3qQ3UxQNI+mT8Jvh9PheA/4vqh6AF+hXfA=;
+        b=Tpb2fMeXFyL3sEnsFboZ4LKO6X7THHTqfYwSGL1ndsX/L+iMqBXeN+qp+cdFUYX30e
+         uBrsRpNjfJAX90xCCN2yFy3g9pZmZLy2o0WsiDW+C+w8bsM/BjiEmV6lF70FLF+Yod5U
+         ya0slSKG6lKC0ayG04adc6SXfDN83XXTgh327CFSTXodUc6K6B9M/3I79oFUEdhYPtqr
+         2+lQ5CB5fT37ByU3y1UzbMIWzCGIG1tyqSSYRFVPrsSnMmEptmcIHZGOsHv8p5cQ5cqU
+         7i072+eZlLT3Y4dz54Qw2pBodBHuh+UFlZA0XSEJNjAvh2HqP8uNUAKENU2UOF3zPeh6
+         ga3g==
+X-Gm-Message-State: AOAM5324srT8DYkxQaaR7sj3ARmmCongJF3RwhHRETnuPaZv+I78QiL7
+        re0ECbmG3/58LBOIZ4mZYFk=
+X-Google-Smtp-Source: ABdhPJy5IufC3OBPEd6RVRZ7a1LMB0WM8rDn8GIUcFPid2pSmSzEOjGFDUOcSmOMmhNW3GIPftTBBg==
+X-Received: by 2002:a65:41c6:: with SMTP id b6mr2364903pgq.7.1615375254862;
+        Wed, 10 Mar 2021 03:20:54 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id z8sm6538195pjd.0.2021.03.10.03.20.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Mar 2021 03:20:54 -0800 (PST)
+Date:   Wed, 10 Mar 2021 19:20:51 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     rafael@kernel.org
+Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com, viresh.kumar@linaro.org
+Subject: Re: [PATCH v2] cpufreq: schedutil: Call sugov_update_next_freq()
+ before check to fast_switch_enabled
+Message-ID: <20210310192051.00006659.zbestahu@gmail.com>
+In-Reply-To: <20210224064727.w3w4b66jnsmcxdff@vireshk-i7>
+References: <20210224063927.1298-1-zbestahu@gmail.com>
+        <20210224064727.w3w4b66jnsmcxdff@vireshk-i7>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEY4rIbQYa5fnnEp@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rafael,
 
-Seems like I forgot LKML (again!)...
+Please also review the patch.
+I'm not sure if you have reviewed or not.
 
-On Mon, Mar 08, 2021 at 03:46:04PM +0100, Peter Zijlstra wrote:
+Thank you!
+
+On Wed, 24 Feb 2021 12:17:27 +0530
+Viresh Kumar <viresh.kumar@linaro.org> wrote:
+
+> On 24-02-21, 14:39, Yue Hu wrote:
+> > From: Yue Hu <huyue2@yulong.com>
+> > 
+> > Note that sugov_update_next_freq() may return false, that means the
+> > caller sugov_fast_switch() will do nothing except fast switch check.
+> > 
+> > Similarly, sugov_deferred_update() also has unnecessary operations
+> > of raw_spin_{lock,unlock} in sugov_update_single_freq() for that case.
+> > 
+> > So, let's call sugov_update_next_freq() before the fast switch check
+> > to avoid unnecessary behaviors above. Accordingly, update interface
+> > definition to sugov_deferred_update() and remove sugov_fast_switch()
+> > since we will call cpufreq_driver_fast_switch() directly instead.
+> > 
+> > Signed-off-by: Yue Hu <huyue2@yulong.com>
+> > ---
+> > v2: remove sugov_fast_switch() and call cpufreq_driver_fast_switch()
+> >     directly instead, also update minor log message.
+> > 
+> >  kernel/sched/cpufreq_schedutil.c | 29 ++++++++++++-----------------
+> >  1 file changed, 12 insertions(+), 17 deletions(-)  
 > 
-> Commit ab234a260b1f ("x86/pv: Rework arch_local_irq_restore() to not
-> use popf") replaced "push %reg; popf" with something like: "test
-> $0x200, %reg; jz 1f; sti; 1:", which breaks the pushf/popf symmetry
-> that commit ea24213d8088 ("objtool: Add UACCESS validation") relies
-> on.
-> 
-> The result is:
-> 
->   drivers/gpu/drm/amd/amdgpu/si.o: warning: objtool: si_common_hw_init()+0xf36: PUSHF stack exhausted
-> 
-> Meanwhile, commit c9c324dc22aa ("objtool: Support stack layout changes
-> in alternatives") makes that we can actually use stack-ops in
-> alternatives, which means we can revert 1ff865e343c2 ("x86,smap: Fix
-> smap_{save,restore}() alternatives").
-> 
-> That in turn means we can limit the PUSHF/POPF handling of
-> ea24213d8088 to those instructions that are in alternatives.
-> 
-> Fixes: ab234a260b1f ("x86/pv: Rework arch_local_irq_restore() to not use popf")
-> Reported-by: Borislav Petkov <bp@alien8.de>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/include/asm/smap.h |   10 ++++------
->  tools/objtool/check.c       |    3 +++
->  2 files changed, 7 insertions(+), 6 deletions(-)
-> 
-> --- a/arch/x86/include/asm/smap.h
-> +++ b/arch/x86/include/asm/smap.h
-> @@ -58,9 +58,8 @@ static __always_inline unsigned long sma
->  	unsigned long flags;
->  
->  	asm volatile ("# smap_save\n\t"
-> -		      ALTERNATIVE("jmp 1f", "", X86_FEATURE_SMAP)
-> -		      "pushf; pop %0; " __ASM_CLAC "\n\t"
-> -		      "1:"
-> +		      ALTERNATIVE("", "pushf; pop %0; " __ASM_CLAC "\n\t",
-> +				  X86_FEATURE_SMAP)
->  		      : "=rm" (flags) : : "memory", "cc");
->  
->  	return flags;
-> @@ -69,9 +68,8 @@ static __always_inline unsigned long sma
->  static __always_inline void smap_restore(unsigned long flags)
->  {
->  	asm volatile ("# smap_restore\n\t"
-> -		      ALTERNATIVE("jmp 1f", "", X86_FEATURE_SMAP)
-> -		      "push %0; popf\n\t"
-> -		      "1:"
-> +		      ALTERNATIVE("", "push %0; popf\n\t",
-> +				  X86_FEATURE_SMAP)
->  		      : : "g" (flags) : "memory", "cc");
->  }
->  
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -2425,6 +2425,9 @@ static int handle_insn_ops(struct instru
->  		if (update_cfi_state(insn, next_insn, &state->cfi, op))
->  			return 1;
->  
-> +		if (!insn->alt_group)
-> +			continue;
-> +
->  		if (op->dest.type == OP_DEST_PUSHF) {
->  			if (!state->uaccess_stack) {
->  				state->uaccess_stack = 1;
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+
