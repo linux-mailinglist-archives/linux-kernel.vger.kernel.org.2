@@ -2,107 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B9D3349E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5E13349E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhCJVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:40:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42384 "EHLO mail.kernel.org"
+        id S231783AbhCJVlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:41:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229563AbhCJVjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:39:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D14864FC4;
-        Wed, 10 Mar 2021 21:39:35 +0000 (UTC)
+        id S231778AbhCJVky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:40:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 731E764FE8;
+        Wed, 10 Mar 2021 21:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615412375;
-        bh=UdFxVt64TzjKasA+NMSYVTgOVpISnwKFURrW8ppuVck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=El7iw81ezSJi4ARA7ejwk5ECH5c2j22Aay12Zi77N7B5T7/Fdw7c3wOJk35JlyBBW
-         H8WtGS3rFYrYVYZcXQBFzQXDoeYjMeQ0/ElxndxpDnp1HpkvBz4CVjJ5952mcg7tgn
-         LFZ9hXoZuTr4QdTJU7dhoKWkgOR2hOpRdFhAu/XGuywTu87XwgQhE7/37TEDLe92/Y
-         +W762Xh/CO/ZL4zcdqk7e6VMUgL2uy4RpzpNeeVfTVLHhuh5UcUUNTSH1RGuoyMweZ
-         sDCpsIkSFxOruGMEWq92/6GdUo/G748CQ/UqHa06QogWLJ/SqVhsm3M93XDkKmBOMJ
-         vODf01DZHbIog==
-Date:   Wed, 10 Mar 2021 23:39:11 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jia Zhang <zhang.jia@linux.alibaba.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
- SGX_INVALID_SIGNATURE
-Message-ID: <YEk8f/29icpsUhas@kernel.org>
-References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
- <YDy51R2Wva7s+k/x@kernel.org>
- <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
- <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
- <YD5B7P++T6jLoWBR@kernel.org>
- <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
+        s=k20201202; t=1615412454;
+        bh=lljbEm8y6jNcxvIMoB+J261BTyFdid0U0j/1mSpgrns=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eDXX9I0rBca4D2age7wm+DtVv6geacxhoDXnt5SysKVhym9aYBoOULiDV+ts4rOLP
+         jxqSr5B0vX0/o/NShM/j+kwlnb4hGRATSr0mEhy2fTgb4b/f9TFkN0sucrguP/wUnN
+         VpsdkpA2+bkS7oY10zU2zq+j59iH8lNhIYLI61shYJGWLghrHuyig30tcjLo3fTgbB
+         3DEVFLncbcg+C2B9HtVOo3SUvsmkNa+xgZXWZi3ZI5a2G3Gno+oUiLdB0wFYwj7D9V
+         li5Sma9VH3O9evfauK7N3UwWSXURG5BK+1LBH0BYK5Vbx589vAqinspwZjQAwTmkXH
+         mjJKT2LCYnF3Q==
+Received: by mail-qk1-f179.google.com with SMTP id m186so1917402qke.12;
+        Wed, 10 Mar 2021 13:40:54 -0800 (PST)
+X-Gm-Message-State: AOAM532bmvbOE5P49KZOS0cD2KWJvsod2ISvDBzPVJPC80auwWE+hToR
+        AA4UccCh9R29pvbb73fNZY1LaaCoz6jH/BN8fQ==
+X-Google-Smtp-Source: ABdhPJwvOHv4sjXRoS+j4qWhL9MVaGJgYMXKyxBDilpUrwUXgxjhTnULwJ7kIho0KdWOn0m+qzW6exxxNwLS3x7GxZU=
+X-Received: by 2002:a05:620a:1001:: with SMTP id z1mr4659415qkj.364.1615412453005;
+ Wed, 10 Mar 2021 13:40:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
+References: <20210209062131.2300005-1-tientzu@chromium.org>
+ <20210209062131.2300005-14-tientzu@chromium.org> <20210310160747.GA29834@willie-the-truck>
+In-Reply-To: <20210310160747.GA29834@willie-the-truck>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 10 Mar 2021 14:40:41 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqJE6A4awYCvqzw3qk2uAJEKgkSOKbk9tPaMKup8zes8cA@mail.gmail.com>
+Message-ID: <CAL_JsqJE6A4awYCvqzw3qk2uAJEKgkSOKbk9tPaMKup8zes8cA@mail.gmail.com>
+Subject: Re: [PATCH v4 13/14] dt-bindings: of: Add restricted DMA pool
+To:     Will Deacon <will@kernel.org>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Grant Likely <grant.likely@arm.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 08:44:44PM +0800, Jia Zhang wrote:
-> 
-> 
-> On 2021/3/2 下午9:47, Jarkko Sakkinen wrote:
-> > On Mon, Mar 01, 2021 at 09:54:37PM -0800, Andy Lutomirski wrote:
-> >> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
-> >> <tianjia.zhang@linux.alibaba.com> wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
-> >>>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
-> >>>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
-> >>>>
-> >>>> What does determine this?
-> >>>>
-> >>>>> In this case, the valid portion of q2 is reordered reversely for
-> >>>>> little endian order, and the remaining portion is filled with zero.
-> >>>>
-> >>>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
-> >>>>
-> >>>> I'm lacking these details:
-> >>>>
-> >>>> 1. Why the length of Q2 can vary?
-> >>>> 2. Why reversing the bytes is the correct measure to counter-measure
-> >>>>     this variation?
-> >>>>
-> >>>> /Jarkko
-> >>>>
-> >>>
-> >>> When use openssl to generate a key instead of using the built-in
-> >>> sign_key.pem, there is a probability that will encounter this problem.
-> >>>
-> >>> Here is a problematic key I encountered. The calculated q1 and q2 of
-> >>> this key are both 383 bytes, If the length is not processed, the
-> >>> hardware signature will fail.
-> >>
-> >> Presumably the issue is that some keys have parameters that have
-> >> enough leading 0 bits to be effectively shorter.  The openssl API
-> >> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
-> >> variable-size integers.
-> > 
-> > But the test uses a static key. It used to generate a key on fly but
-> 
-> IMO even though the test code, it comes from the linux kernel, meaning
-> that its quality has a certain guarantee and it is a good reference, so
-> the test code still needs to ensure its correctness.
+On Wed, Mar 10, 2021 at 9:08 AM Will Deacon <will@kernel.org> wrote:
+>
+> Hi Claire,
+>
+> On Tue, Feb 09, 2021 at 02:21:30PM +0800, Claire Chang wrote:
+> > Introduce the new compatible string, restricted-dma-pool, for restricted
+> > DMA. One can specify the address and length of the restricted DMA memory
+> > region by restricted-dma-pool in the reserved-memory node.
+> >
+> > Signed-off-by: Claire Chang <tientzu@chromium.org>
+> > ---
+> >  .../reserved-memory/reserved-memory.txt       | 24 +++++++++++++++++++
+> >  1 file changed, 24 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+> > index e8d3096d922c..fc9a12c2f679 100644
+> > --- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+> > +++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+> > @@ -51,6 +51,20 @@ compatible (optional) - standard definition
+> >            used as a shared pool of DMA buffers for a set of devices. It can
+> >            be used by an operating system to instantiate the necessary pool
+> >            management subsystem if necessary.
+> > +        - restricted-dma-pool: This indicates a region of memory meant to be
+> > +          used as a pool of restricted DMA buffers for a set of devices. The
+> > +          memory region would be the only region accessible to those devices.
+> > +          When using this, the no-map and reusable properties must not be set,
+> > +          so the operating system can create a virtual mapping that will be used
+> > +          for synchronization. The main purpose for restricted DMA is to
+> > +          mitigate the lack of DMA access control on systems without an IOMMU,
+> > +          which could result in the DMA accessing the system memory at
+> > +          unexpected times and/or unexpected addresses, possibly leading to data
+> > +          leakage or corruption. The feature on its own provides a basic level
+> > +          of protection against the DMA overwriting buffer contents at
+> > +          unexpected times. However, to protect against general data leakage and
+> > +          system memory corruption, the system needs to provide way to lock down
+> > +          the memory access, e.g., MPU.
+>
+> As far as I can tell, these pools work with both static allocations (which
+> seem to match your use-case where firmware has preconfigured the DMA ranges)
+> but also with dynamic allocations where a 'size' property is present instead
+> of the 'reg' property and the kernel is responsible for allocating the
+> reservation during boot. Am I right and, if so, is that deliberate?
 
-Hmm... what is working incorrectly then?
+I believe so. I'm not keen on having size only reservations in DT.
+Yes, we allowed that already, but that's back from the days of needing
+large CMA carveouts to be reserved early in boot. I've read that the
+kernel is much better now at contiguous allocations, so do we really
+need this in DT anymore?
 
-/Jarkko
+> I ask because I think that would potentially be useful to us for the
+> Protected KVM work, where we need to bounce virtio memory accesses via
+> guest-determined windows because the guest memory is generally inaccessible
+> to the host. We've been hacking this using a combination of "swiotlb=force"
+> and set_memory_{decrypted,encrypted}() but it would be much better to
+> leverage the stuff you have here.
+>
+> Also:
+>
+> > +
+> > +             restricted_dma_mem_reserved: restricted_dma_mem_reserved {
+> > +                     compatible = "restricted-dma-pool";
+> > +                     reg = <0x50000000 0x400000>;
+> > +             };
+> >       };
+> >
+> >       /* ... */
+> > @@ -138,4 +157,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
+> >               memory-region = <&multimedia_reserved>;
+> >               /* ... */
+> >       };
+> > +
+> > +     pcie_device: pcie_device@0,0 {
+> > +             memory-region = <&restricted_dma_mem_reserved>;
+> > +             /* ... */
+> > +     };
+>
+> I find this example a bit weird, as I didn't think we usually had DT nodes
+> for PCI devices; rather they are discovered as a result of probing config
+> space. Is the idea that you have one reserved memory region attached to the
+> RC and all the PCI devices below that share the region, or is there a need
+> for a mapping mechanism?
+
+We can have DT nodes for PCI. AIUI, IBM power systems always do. For
+FDT, it's only if there are extra non-discoverable resources. It's
+particularly fun when it's resources which need to be enabled for the
+PCI device to be discovered. That seems to be a growing problem as PCI
+becomes more common on embedded systems.
+
+Rob
