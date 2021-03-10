@@ -2,94 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23725334327
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B5F33432C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhCJQfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:35:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
+        id S232985AbhCJQhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231926AbhCJQfa (ORCPT
+        with ESMTP id S232347AbhCJQhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:35:30 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9EBC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:35:30 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id n22so7526394wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:35:30 -0800 (PST)
+        Wed, 10 Mar 2021 11:37:06 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E43BC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:37:06 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id i26so14764857ljn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:37:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hpjSjtsTxLvJqlL//kdY1jDwuLy76fsmhvsuUd9J4S0=;
-        b=QL9zSpshDLbUfH/cyRC60m9hHK4MBWIx2aCHt1v4F0/0z2ssUy5slouQ7R2a0t3doe
-         rSejFOepBE+Ov4C0WW/A19UtXk7sVklJ2d37Y5EY4zdLk+RSFQivwjCAb17VQMzqXlXp
-         dDo+ZUMNIOGvD/kJOZbW+9O7YWscISp3Y7WcQot329jQOonEjbMh8Tv76Honzctm5EEN
-         fwx+Y08ueOb4Jci6VfJJmlhB37Dde3jLYWyxAkYDTX2s+A1P4J8wUjLEcIE3sMW+4LSK
-         WQGLVPzdT7QnXIFYckzxyWww3V5UMSVFvpsOkeKHmxIVDEYQomqP7+XZPT8r9t0Vkf4Q
-         Fm7w==
+        d=qtec.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IkmW2GvjqGWts2vPAfis7GUqTOxPlIzb1CZYJYGpMME=;
+        b=GODj3reE+EBC+KyzxwypFssgDByJDM+onjtNQHeM27vWvLdCqxABZeo4InGHNq29CH
+         s4xAf/jsadcR28qkpE9OKvbOoEN06BXkj5tT/O5gJj88sibReqzJMxkjJIR0bbmC8/ur
+         P7sCIgK4eKNLw81XGdRKs6WZ0jD38AdhrxSeWq1p9mE8AO/AKD+aatuDOOpLX4/MW9m6
+         g1NYzb2lF3pr0SmKbpDQofzv+ZdyCOFJWR6TboyexTyCaHFS9z/GHq2Uz+YEgVVfpklD
+         lZiKygPz4Klu1svIlHFgfq0VD/IAgQupazGb1mtXY0nfNxCs6KH8xfkM5FkdvWL3SuBQ
+         k1LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hpjSjtsTxLvJqlL//kdY1jDwuLy76fsmhvsuUd9J4S0=;
-        b=rzERSOakZbwkWOAS7KXsEKOcf4e4BDlnTgfBs1xNx3q5oSsvuCojs0Fh1mBf8DzyNQ
-         xKynoO9ajX7XKfoMUXqWTn9JcOFlLPHi7OyDuYCtNHV3h7bXHTgG3J/OA1M1Vovv81Ym
-         iyKIizSVBnDgdcZ5Rx8upKXPAARz8G2Alh2Bzl7VDpBgH8k4EoRO63r19o+T6j9hiur0
-         fvK0WJWQ0Ai4bAbCqb8htT7ZyobwkR4zTgzeeNfJ8etv6eHAE60wdaweUi7yWQUrnOPd
-         TSx+jzVHquf0YC99iwrqM9wwh/BMPkhsPOBJW7MZLJ4baw0FZ+H+J0MVgTQjNjb/ZK29
-         GaSw==
-X-Gm-Message-State: AOAM533c2NHM0e8y+9NsaFK4FdBpLkd3IfzsLkR6EGz8haAX0Xx8Bn+I
-        1QlFJPJ4pgYBNr997lqMOs/HdQ==
-X-Google-Smtp-Source: ABdhPJwCIH/OAKlnDRxH6PzJ+YRfZ9wcFs6IeNdsX88nG0yXi03Y5jASSedCz5hEzuAXb6A34ckthg==
-X-Received: by 2002:a1c:c90c:: with SMTP id f12mr4257293wmb.98.1615394129187;
-        Wed, 10 Mar 2021 08:35:29 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id n186sm58762wmn.22.2021.03.10.08.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 08:35:28 -0800 (PST)
-Date:   Wed, 10 Mar 2021 16:35:26 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     linux-kernel@vger.kernel.org, trix@redhat.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH v4 0/4] Some improvement for Intel MAX 10 MFD drivers
-Message-ID: <20210310163526.GR701493@dell>
-References: <1615391748-1733-1-git-send-email-yilun.xu@intel.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IkmW2GvjqGWts2vPAfis7GUqTOxPlIzb1CZYJYGpMME=;
+        b=pSBYI9Vlq0KKUKfG4xj2CaPT8UreibuG8VarfNQRFcOdND+cYbuQZraREgwxfaS3fC
+         OcbxeJAiSypwFrKqYbu0IgJcm0Q7xEtVgJJepwwZW3QHxWfy7vAZijnjXY3laybwcdAM
+         uxtdIYLOfMJSy8FxEoBHqPX9KNdXT0WstwGIKa/oGLVeDRX/PR5GJ/umIidDTeqxu4Ct
+         TO1D1JPNvs/S7aHtQhEid+ptWF5XaMvUYp7/C1Trv4Kaq9ewwFi/bRzcm/Dx6q3U+CTG
+         rwAjTmPRvk/PdCk25YG8k91se/N6Dbwd1awT+y9NekQl2RMhBhy9xRG8Z6W7yV/DQ6HE
+         H0Jw==
+X-Gm-Message-State: AOAM532tSYVursDNdIcuYVuTGklt6RwIKY55w1ZkJ0CJZrED7dLbDEsG
+        9xLgAeqrx4zmJTEjAKveGoLmXw==
+X-Google-Smtp-Source: ABdhPJy/e5j6tJye7L9eF/hLH4FCYLVMSzfrfMtWZuFThVQR3RMJkkYsQZ7O3gNjRWcN3Ff6vXuUTg==
+X-Received: by 2002:a2e:9d8f:: with SMTP id c15mr2289953ljj.494.1615394224788;
+        Wed, 10 Mar 2021 08:37:04 -0800 (PST)
+Received: from localhost (80-167-86-46-cable.dk.customer.tdc.net. [80.167.86.46])
+        by smtp.gmail.com with ESMTPSA id q17sm1846587lfm.168.2021.03.10.08.37.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 08:37:04 -0800 (PST)
+From:   Daniel Gomez <daniel@qtec.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Huang Rui <ray.huang@amd.com>, Nirmoy Das <nirmoy.das@amd.com>,
+        Dennis Li <Dennis.Li@amd.com>, Monk Liu <Monk.Liu@amd.com>,
+        Yintian Tao <yttao@amd.com>, Guchun Chen <guchun.chen@amd.com>,
+        Evan Quan <evan.quan@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Cc:     Daniel Gomez <daniel@qtec.com>
+Subject: [PATCH]] drm/amdgpu/gfx9: add gfxoff quirk
+Date:   Wed, 10 Mar 2021 17:36:52 +0100
+Message-Id: <20210310163655.2591893-1-daniel@qtec.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1615391748-1733-1-git-send-email-yilun.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021, Xu Yilun wrote:
+Disabling GFXOFF via the quirk list fixes a hardware lockup in
+Ryzen V1605B, RAVEN 0x1002:0x15DD rev 0x83.
 
-> This patchset is some improvements for intel-m10-bmc and its subdevs.
-> 
-> Main changes from v1:
-> - Add a patch (#2) to simplify the definition of the legacy version reg.
-> - Add a patch (#4), add entry in MAINTAINERS for intel-m10-bmc mfd driver
->   and the subdev drivers.
-> 
-> Main changes from v2:
-> - Add Tom Rix as the reviewer for intel-m10-bmc mfd driver and the subdev
->   drivers.
-> - Rebased to 5.12-rc1
-> 
-> Main changes from v3:
-> - Improve the comments for valid version check.
+Signed-off-by: Daniel Gomez <daniel@qtec.com>
+---
 
-Good enough.
+This patch is a continuation of the work here:
+https://lkml.org/lkml/2021/2/3/122 where a hardware lockup was discussed and
+a dma_fence deadlock was provoke as a side effect. To reproduce the issue
+please refer to the above link.
 
-All applied, thanks.
+The hardware lockup was introduced in 5.6-rc1 for our particular revision as it
+wasn't part of the new blacklist. Before that, in kernel v5.5, this hardware was
+working fine without any hardware lock because the GFXOFF was actually disabled
+by the if condition for the CHIP_RAVEN case. So this patch, adds the 'Radeon
+Vega Mobile Series [1002:15dd] (rev 83)' to the blacklist to disable the GFXOFF.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+But besides the fix, I'd like to ask from where this revision comes from. Is it
+an ASIC revision or is it hardcoded in the VBIOS from our vendor? From what I
+can see, it comes from the ASIC and I wonder if somehow we can get an APU in the
+future, 'not blacklisted', with the same problem. Then, should this table only
+filter for the vendor and device and not the revision? Do you know if there are
+any revisions for the 1002:15dd validated, tested and functional?
+
+Logs:
+[   27.708348] [drm] initializing kernel modesetting (RAVEN
+0x1002:0x15DD 0x1002:0x15DD 0x83).
+[   27.789156] amdgpu: ATOM BIOS: 113-RAVEN-115
+
+Thanks in advance,
+Daniel
+
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+index 65db88bb6cbc..319d4b99aec8 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+@@ -1243,6 +1243,8 @@ static const struct amdgpu_gfxoff_quirk amdgpu_gfxoff_quirk_list[] = {
+ 	{ 0x1002, 0x15dd, 0x103c, 0x83e7, 0xd3 },
+ 	/* GFXOFF is unstable on C6 parts with a VBIOS 113-RAVEN-114 */
+ 	{ 0x1002, 0x15dd, 0x1002, 0x15dd, 0xc6 },
++	/* GFXOFF provokes a hw lockup on 83 parts with a VBIOS 113-RAVEN-115 */
++	{ 0x1002, 0x15dd, 0x1002, 0x15dd, 0x83 },
+ 	{ 0, 0, 0, 0, 0 },
+ };
+
+--
+2.30.1
+
