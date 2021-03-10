@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE82333C8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B74F333C96
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhCJMVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:21:31 -0500
-Received: from relmlor1.renesas.com ([210.160.252.171]:51390 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232926AbhCJMU5 (ORCPT
+        id S231906AbhCJMZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhCJMYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:20:57 -0500
-X-IronPort-AV: E=Sophos;i="5.81,237,1610377200"; 
-   d="scan'208";a="74701243"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 10 Mar 2021 21:20:56 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id C1F4E40108E4;
-        Wed, 10 Mar 2021 21:20:53 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: [PATCH 3/3] media: i2c: imx219: Balance runtime PM use-count in resume callback
-Date:   Wed, 10 Mar 2021 12:20:14 +0000
-Message-Id: <20210310122014.28353-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Wed, 10 Mar 2021 07:24:46 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC383C061760;
+        Wed, 10 Mar 2021 04:24:45 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id 16so10438388pfn.5;
+        Wed, 10 Mar 2021 04:24:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=wuZ7Tj7BwTy6hVZuAWi1nQ3E4gOZYnPzBXefRg0kZPU=;
+        b=Iq6hc4p3pEUPX0ryf5lZ+7v2GqP86f7RHCdcs4xXkaJiaBWqrfN2wCf1wqzRQtBBEY
+         rNDPsVRzJCDzbhetPy+rCaW5uCal3vExi/2xcmYpL236fnMMVTiwmvmmBCqT9sLVRWaD
+         BZZMCKwJvN96RElmxWyqFPVAv3LG62pUZiIsKsVIessbaT3DOr0duoxmoMYW6+OClugt
+         llqyclovZ0nVyQqazJh7U4Nw2rmyhYpDzztYTPkSsHvBX5HPoA/oEXCCCLVaxOxomROX
+         CPuwOcHrhjpvtUycyDzNdb20CH7IC3LUxxUvx+P/uD/DKehb32SH6P0qPAS0ZLmJwd1u
+         vWcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=wuZ7Tj7BwTy6hVZuAWi1nQ3E4gOZYnPzBXefRg0kZPU=;
+        b=gJD8iukC39eHCBr3Snv7AMjY/UJWgn9NMro9hVJFaoALVT4JUgwrHkJSreX2nP64Nu
+         l/T80+9Rn5Du2O0RAUPYmk0kuhPmAPrmLh990Oog0EQp/zVagpL7hfQVKNbrkuW5Q0VA
+         142aaBlBHlNbPXthrYJis/lfhOlLhe5eQnZt3XXRgMfVcCTYPAtp0o6n2tZ22Wtcp5+0
+         Nqd82CDL6TxhuzPGieyuIKc4HfIjjyVexqhaUBYSZZeaj0Esf1KoVZ0aSqkSO67aL0zv
+         4Xb7zpx8j/1m4cCe6Q1O0YjOAPS23AfyipYrKKO82j/9xRY0MZgPcRAau6xGJDJNTcd9
+         OgmA==
+X-Gm-Message-State: AOAM531HZQZQyvtMET+E3S12XuL+QmP0ykCZHsp7yn4QDgCgH9vGwz/H
+        6J64Q7svaFWEchrh+czCHDc=
+X-Google-Smtp-Source: ABdhPJwFPu5GUYLlVOCrnQ+Z3JHSMv/JOMDoEsza7h6uis5elP6ntNkeM3u+j8pKmPdAsaO2mK3CJQ==
+X-Received: by 2002:a62:ac1a:0:b029:1f9:5ca4:dd4d with SMTP id v26-20020a62ac1a0000b02901f95ca4dd4dmr2553621pfe.68.1615379085246;
+        Wed, 10 Mar 2021 04:24:45 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.89])
+        by smtp.gmail.com with ESMTPSA id c193sm17433859pfc.180.2021.03.10.04.24.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 04:24:44 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH v2] thermal: thermal_of: fix error return code of thermal_of_populate_bind_params()
+Date:   Wed, 10 Mar 2021 04:24:23 -0800
+Message-Id: <20210310122423.3266-1-baijiaju1990@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210310122014.28353-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210310122014.28353-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The runtime PM use-count gets incremented in imx219_set_stream() call
-when streaming is started this needs to be balanced by calling
-pm_runtime_put() upon failure to start stream in resume callback.
+When kcalloc() returns NULL to __tcbp or of_count_phandle_with_args() 
+returns zero or -ENOENT to count, no error return code of
+thermal_of_populate_bind_params() is assigned.
+To fix these bugs, ret is assigned with -ENOMEM and -ENOENT in these
+cases, respectively.
 
-Fixes: 1283b3b8f82b9 ("media: i2c: Add driver for Sony IMX219 sensor")
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Fixes: a92bab8919e3 ("of: thermal: Allow multiple devices to share cooling map")
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 ---
- drivers/media/i2c/imx219.c | 3 +++
- 1 file changed, 3 insertions(+)
+v2:
+* Add the fixing about of_count_phandle_with_args() and the fixes tag.
+  Thank Daniel Lezcano for good advice.
 
-diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
-index 87c021de1460..afffc85cd265 100644
---- a/drivers/media/i2c/imx219.c
-+++ b/drivers/media/i2c/imx219.c
-@@ -1184,6 +1184,7 @@ static int __maybe_unused imx219_resume(struct device *dev)
- {
- 	struct v4l2_subdev *sd = dev_get_drvdata(dev);
- 	struct imx219 *imx219 = to_imx219(sd);
-+	struct i2c_client *client;
- 	int ret;
+---
+ drivers/thermal/thermal_of.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+index 69ef12f852b7..5b76f9a1280d 100644
+--- a/drivers/thermal/thermal_of.c
++++ b/drivers/thermal/thermal_of.c
+@@ -704,14 +704,17 @@ static int thermal_of_populate_bind_params(struct device_node *np,
  
- 	mutex_lock(&imx219->mutex);
-@@ -1197,7 +1198,9 @@ static int __maybe_unused imx219_resume(struct device *dev)
- 	return 0;
+ 	count = of_count_phandle_with_args(np, "cooling-device",
+ 					   "#cooling-cells");
+-	if (!count) {
++	if (count <= 0) {
+ 		pr_err("Add a cooling_device property with at least one device\n");
++		ret = -ENOENT;
+ 		goto end;
+ 	}
  
- error:
-+	client = v4l2_get_subdevdata(&imx219->sd);
- 	imx219_stop_streaming(imx219);
-+	pm_runtime_put(&client->dev);
- 	imx219->streaming = false;
- 	__v4l2_ctrl_grab(imx219->vflip, false);
- 	__v4l2_ctrl_grab(imx219->hflip, false);
+ 	__tcbp = kcalloc(count, sizeof(*__tcbp), GFP_KERNEL);
+-	if (!__tcbp)
++	if (!__tcbp) {
++		ret = -ENOMEM;
+ 		goto end;
++	}
+ 
+ 	for (i = 0; i < count; i++) {
+ 		ret = of_parse_phandle_with_args(np, "cooling-device",
 -- 
 2.17.1
 
