@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CCB3333C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 924EC3333CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbhCJDUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 22:20:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231146AbhCJDUe (ORCPT
+        id S232124AbhCJDVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 22:21:47 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:53287 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231335AbhCJDVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 22:20:34 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4522FC06174A;
-        Tue,  9 Mar 2021 19:20:34 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id y13so7633421pfr.0;
-        Tue, 09 Mar 2021 19:20:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=J2XwB36eXJKYuuPFa+xQF2Oj55lS2ihjK8QzJTmob/g=;
-        b=E31twb0Z4lcvg9i9/gts8lWTTOVTklysLXiv3MiWV0m5jKStkjgKYyLAF+kIU9hVUZ
-         Gj6JzKr1oTd4eBG/PWErAJmHFGHenxFY6bpPMA7YjiL7qBJIiPt4FbXUqmPebDj4MA+8
-         +DQPTCUywaIzsb5s28o7yObucsZyGNJEgzJrSY98XQOxPZL58MkhsdXoM8SsH5nozVNn
-         Q7DviyBgTweka2XOqImPqy5vj5jU4zHp0K1XRPxq8htFM6WUJVff7uxEQjAQn4dB+0X8
-         0ce0fmM6wh91FSk8Og6CNCBkFoaR/p3E4aq/qa1YJ+mxZu61/yy7cPMLrlcoJHtL+VVc
-         mZ3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=J2XwB36eXJKYuuPFa+xQF2Oj55lS2ihjK8QzJTmob/g=;
-        b=F4MCIqcIG7KUJyRi5VxIknoVz+gm2PMCNTxMm/oB/HAx4NjOu3mIGwNOw9Kpcf4qGh
-         Hc4is7ClPKrpf7of5P0dKFZRG30RKyszZ9Zz9GFY1Y0i2xIZBBJLvOY7YFqs5VitTNSw
-         tTGRCeSjmPdZOntp7rEy6azRgYXOKk475rycswgCi4/+PeUebgbRYrUwcA1knNdD9XTO
-         /I12IU/chSzKG5fd7XoVJ49qF07vORIXeryy4IXShztBHm69bA/hMmgqAzWcUan82VZt
-         4Yf204OuN3ujEZ4mjk8qxeBe660mRYLoEFk4N7PkStEmcmF86ZP7dhiWHbRYsr5pnbIu
-         h1Gw==
-X-Gm-Message-State: AOAM530E6DuUSeA0fhLQENXACc2Ne3xzwNRKfayoeT0+B5E8UPfK7hN2
-        c2bLuksRT8mAv8ezz0qVV02FABGWug3WQsw3
-X-Google-Smtp-Source: ABdhPJyelEfNr9Ijnj6uy61F8uQ4/94uwc90wZOfPzyMaef8k4dOKd/3+Q773Exsuj9Ieid6UNPYhQ==
-X-Received: by 2002:aa7:8488:0:b029:1fc:f312:b24e with SMTP id u8-20020aa784880000b02901fcf312b24emr840441pfn.55.1615346433876;
-        Tue, 09 Mar 2021 19:20:33 -0800 (PST)
-Received: from [10.62.0.178] ([45.135.186.89])
-        by smtp.gmail.com with ESMTPSA id d6sm13998934pfq.109.2021.03.09.19.20.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 19:20:33 -0800 (PST)
-Subject: Re: [PATCH] usb: renesas_usbhs: fix error return code of
- usbhsf_pkt_handler()
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-References: <20210307090030.22369-1-baijiaju1990@gmail.com>
- <TY2PR01MB36929E9390A48F6FC7042AF8D8929@TY2PR01MB3692.jpnprd01.prod.outlook.com>
- <255bce3c-1680-593d-9083-6635e1a57b63@gmail.com>
- <TY2PR01MB3692E5843AC864F7F549927AD8919@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <05aecdb3-23f5-54aa-c396-bff7f1624899@gmail.com>
-Date:   Wed, 10 Mar 2021 11:20:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 9 Mar 2021 22:21:22 -0500
+X-UUID: eab3b4bbb0a846868e39fa1681109134-20210310
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Qm4ADIUSz0BkSqAidhclsvS24ql8ww8Akt6F39qDx7Y=;
+        b=dQNMnUK5Rgi5d0+JFSbgWfXkESLIQPVG+2CPB8ps5/Mt+5PfBP8hoYACMS0kprBTw6yk0UbhGPfd9oa20HnF5deEXi1hQws3rO53Deu8WSu0Q8ofKzsu1K4CXBZcdGagvcUynYa7LtiQUQypmNOLZghTDOx3c00cIJeN6TyqRzU=;
+X-UUID: eab3b4bbb0a846868e39fa1681109134-20210310
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 711981258; Wed, 10 Mar 2021 11:21:19 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS32N1.mediatek.inc
+ (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 10 Mar
+ 2021 11:21:15 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 10 Mar 2021 11:21:11 +0800
+Message-ID: <1615346469.26498.1.camel@mhfsdcap03>
+Subject: Re: [PATCH v4 01/12] dt-bindings: usb: fix yamllint check warning
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>
+Date:   Wed, 10 Mar 2021 11:21:09 +0800
+In-Reply-To: <20210310022811.GA1612587@robh.at.kernel.org>
+References: <20210308053745.25697-1-chunfeng.yun@mediatek.com>
+         <20210310022811.GA1612587@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <TY2PR01MB3692E5843AC864F7F549927AD8919@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-TM-SNTS-SMTP: 03113CCC20566CE8672CF41E43EC90724E1ED108A9BDF8A6453CB766C18F9BDB2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gVHVlLCAyMDIxLTAzLTA5IGF0IDE5OjI4IC0wNzAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gTW9uLCBNYXIgMDgsIDIwMjEgYXQgMDE6Mzc6MzRQTSArMDgwMCwgQ2h1bmZlbmcgWXVuIHdy
+b3RlOg0KPiA+IEZpeCB3YXJuaW5nOiAibWlzc2luZyBzdGFydGluZyBzcGFjZSBpbiBjb21tZW50
+Ig0KPiANCj4gV2hhdCB0cmVlIGlzIHRoaXMgaW4gYmVjYXVzZSBJIGRvbid0IHNlZSBpdC4NClRo
+ZSBwYXRjaCBpcyBiYXNlZCBrZXJuZWwgNS4xMi1yYzEsIGFsc28gaGFwcGVucyBvbg0KZ2l0Oi8v
+Z2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2dyZWdraC91c2IuZ2l0IHVz
+Yi1uZXh0DQoNCg0KPiANCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNo
+dW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gdjJ+djQ6IG5vIGNoYW5nZXMN
+Cj4gPiAtLS0NCj4gPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi91c2It
+ZGV2aWNlLnlhbWwgfCA2ICsrKy0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25z
+KCspLCAzIGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvdXNiL3VzYi1kZXZpY2UueWFtbCBiL0RvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvdXNiLWRldmljZS55YW1sDQo+ID4gaW5kZXggZDRjOTk4
+MDllZTlhLi5iNzc5NjBhN2EzN2IgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL3VzYi91c2ItZGV2aWNlLnlhbWwNCj4gPiArKysgYi9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL3VzYi1kZXZpY2UueWFtbA0KPiA+IEBAIC04Miw5
+ICs4Miw5IEBAIHJlcXVpcmVkOg0KPiA+ICBhZGRpdGlvbmFsUHJvcGVydGllczogdHJ1ZQ0KPiA+
+ICANCj4gPiAgZXhhbXBsZXM6DQo+ID4gLSAgI2h1YiBjb25uZWN0ZWQgdG8gcG9ydCAxDQo+ID4g
+LSAgI2RldmljZSBjb25uZWN0ZWQgdG8gcG9ydCAyDQo+ID4gLSAgI2RldmljZSBjb25uZWN0ZWQg
+dG8gcG9ydCAzDQo+ID4gKyAgIyBodWIgY29ubmVjdGVkIHRvIHBvcnQgMQ0KPiA+ICsgICMgZGV2
+aWNlIGNvbm5lY3RlZCB0byBwb3J0IDINCj4gPiArICAjIGRldmljZSBjb25uZWN0ZWQgdG8gcG9y
+dCAzDQo+ID4gICAgIyAgICBpbnRlcmZhY2UgMCBvZiBjb25maWd1cmF0aW9uIDENCj4gPiAgICAj
+ICAgIGludGVyZmFjZSAwIG9mIGNvbmZpZ3VyYXRpb24gMg0KPiA+ICAgIC0gfA0KPiA+IC0tIA0K
+PiA+IDIuMTguMA0KDQo=
 
-
-On 2021/3/10 10:54, Yoshihiro Shimoda wrote:
-> Hi Jia-Ju,
->
->> From: Jia-Ju Bai, Sent: Tuesday, March 9, 2021 10:39 PM
->> On 2021/3/9 19:59, Yoshihiro Shimoda wrote:
->>> Hi Jia-Ju,
->>>
->>> Thank you for the patch!
->>>
->>>> From: Jia-Ju Bai, Sent: Sunday, March 7, 2021 6:01 PM
->>>>
->>>> When __usbhsf_pkt_get() returns NULL to pkt, no error return code of
->>>> usbhsf_pkt_handler() is assigned.
->>> Yes. Also I realized that no error return code of usbhsf_pkt_handler()
->>> was assigned if the type value was unexpected value. So, I'm thinking
->>> initial value of ret should be -EINVAL instead of 0.
->> This is okay to me.
->> Need I write a new patch for this?
-> Thank you for your reply. I can write such a new patch with your
-> Reported-by for this as minor refactoring of the usbhsf_pkt_handler().
-> May I write such a patch?
-
-Okay, sure :)
-
-
-Best wishes,
-Jia-Ju Bai
