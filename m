@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EEB33330E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321E3333313
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhCJCTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:19:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhCJCSh (ORCPT
+        id S232054AbhCJCUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:20:16 -0500
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:49284 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231299AbhCJCTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:18:37 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00356C061760
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 18:18:26 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so6361615pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 18:18:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=RrPzKgExLakSNfglFinl/rLo5PZVVt54ykNip4IxOYo=;
-        b=Z/uUQSqxocqOZX8J7RHcXC56RqQamTlEYNS62KbiW6twgpjFZ544/kkdonfB5nTB3N
-         oz8qETeZ5ObLlpqxhJb4ih0OzVOJXFHltqVyTDDQRinuAeRpzccXp21uzeEJryERBWhZ
-         1pG524zmUGIcgwwQ1K6sOy6IXWY7XO86UXDwgWzWd1/x08k/Spb+wXfWmiDJ+YL/A776
-         HKzSyURiuO04qlsWTNaNBy8JdJvAkhl+O3F3zhM6Ph8l9EA6aqfKL5Mpro0a8iDgFfeA
-         wHZ20pkzVOedRHswZx449PIAQvTSUOfsuo7J5DPIjK1HV7Uc9yO4k36W96Tf6/EMeozV
-         SUqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RrPzKgExLakSNfglFinl/rLo5PZVVt54ykNip4IxOYo=;
-        b=f3uXn6KyY3SmcXs/37CHzAa3IAAJTK2QcLlSiF9GAMwI331O//c2drxMR1K7mM5f8x
-         HjRVg2kFK7xeLNcEet5SE6Lyjr9uioQ36mkIYqJEuOK8vN1cPMP5eTDmHTLc/QWO87v1
-         yrX9xOqLwncKMrdAcE0bCRWG4OTJ/VD95drZy3OP2xLcmV/l2Oi/PZjII7CEk4dUGO2p
-         7OHm9S7/nasthT/RnOvxabubo0M4h1yWTDZiXSQscVCbGf11q9gOt1MIs54r4iTDsj98
-         47aAJf1afDOwsav10cBko9Nq4UzgaraJZm06+0akN2ApDNTCvvOEBA8avHtLdId3mZas
-         658A==
-X-Gm-Message-State: AOAM532BDrwsSdYwKKTqA29jKQS7OyOZHHR6V3m1u20bLXSInMUSKauw
-        B1X96iE4VJO4BNAXk53tg4L+voCi07cYQA==
-X-Google-Smtp-Source: ABdhPJyWu/sQQK+wQ4rlIGXbSdQalPOWx0Cxcqzh5Obvk3cZkLsdZNCGPjfLt1dhW7o1G8pfVcMouQ==
-X-Received: by 2002:a17:902:b18c:b029:e4:4cfd:1f7d with SMTP id s12-20020a170902b18cb02900e44cfd1f7dmr946005plr.84.1615342706104;
-        Tue, 09 Mar 2021 18:18:26 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id d124sm14698761pfa.149.2021.03.09.18.18.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 18:18:25 -0800 (PST)
-Subject: Re: [v5.12-rc2 regression] io_uring: high CPU use after
- suspend-to-ram
-To:     Kevin Locke <kevin@kevinlocke.name>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <YEgnIp43/6kFn8GL@kevinlocke.name>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <44808ad3-e4f7-8a05-9c52-a1224bf6c534@kernel.dk>
-Date:   Tue, 9 Mar 2021 19:18:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <YEgnIp43/6kFn8GL@kevinlocke.name>
-Content-Type: text/plain; charset=utf-8
+        Tue, 9 Mar 2021 21:19:44 -0500
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 9CACE891AE;
+        Wed, 10 Mar 2021 15:19:42 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1615342782;
+        bh=ynjd/8Ld7IjX+nN+ReBSD47ri0nvGf5EYjcBgqv7HqU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=n2fOU6ZsJKEaUmE5B+IzQCPxN/WbklRw6M6gwOYhetGgEOiS4qvBOyIq+moC55CZw
+         alhBA8XmtmjPs/g4F1h0Cz2G7vHf2RyX6Y0JhtGxv3Ue2rJ5UaHkWaX9036OCr8IMr
+         VoXl1mvYpv9zMI8FcsEjTpgMZ5U2q/5mXYykmg1WLkghQCKAroDMBTpIPjikkN+A+L
+         4eHwVYgrzIiSK25Fi9vdHZk4mLpvpLJMmtFaQYl957uoXd0Qxsorwv/xO8gu8eF2UA
+         yqenmLBRsgGRLbzReDav+TClSpzS3HRB6p06TZggPKLEn70LZcJ2uz7jN1bm3HyGUY
+         2G01NJmget2IA==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60482cbe0001>; Wed, 10 Mar 2021 15:19:42 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 10 Mar 2021 15:19:42 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Wed, 10 Mar 2021 15:19:42 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        "jdelvare@suse.com" <jdelvare@suse.com>
+CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: Errant readings on LM81 with T2080 SoC
+Thread-Topic: Errant readings on LM81 with T2080 SoC
+Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Sk6p4Y2sAgAAgcACAACSBgIAABe+AgAEDagCAAfS7gA==
+Date:   Wed, 10 Mar 2021 02:19:41 +0000
+Message-ID: <1aa0dc23-0706-5902-2f46-0767de0e3ad6@alliedtelesis.co.nz>
+References: <8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@alliedtelesis.co.nz>
+ <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
+ <4a1b1494-df96-2d8c-9323-beb2c2ba706b@alliedtelesis.co.nz>
+ <a67ea323-634d-d34e-c63e-b1aaa4737b19@alliedtelesis.co.nz>
+ <5709f180-04b5-09b2-e1c4-53eb5c9345d8@roeck-us.net>
+ <d6074923-ee7e-4499-0e54-383a607d3c41@alliedtelesis.co.nz>
+In-Reply-To: <d6074923-ee7e-4499-0e54-383a607d3c41@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0026D2B10AFD31449586F5F5A3AF42B8@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=pY-3r6TeYhhqQcfjg64A:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 6:55 PM, Kevin Locke wrote:
-> With kernel 5.12-rc2 (and torvalds/master 144c79ef3353), if mpd is
-> playing or paused when my system is suspended-to-ram, when the system is
-> resumed mpd will consume ~200% CPU until killed.  It continues to
-> produce audio and respond to pause/play commands, which do not affect
-> CPU usage.  This occurs with either pulse (to PulseAudio or
-> PipeWire-as-PulseAudio) or alsa audio_output.
-> 
-> The issue appears to have been introduced by a combination of two
-> commits: 3bfe6106693b caused freeze on suspend-to-ram when mpd is paused
-> or playing.  e4b4a13f4941 fixed suspend-to-ram, but introduced the high
-> CPU on resume.
-> 
-> I attempted to further diagnose using `perf record -p $(pidof mpd)`.
-> Running for about a minute after resume shows ~280 MMAP2 events and
-> almost nothing else.  I'm not sure what to make of that or how to
-> further investigate.
-> 
-> Let me know if there's anything else I can do to help diagnose/test.
-
-Thanks for the report, let me take a look and try and reproduce (and
-fix) it. I'll let you know if I fail in reproducing and need your
-help in testing a fix!
-
--- 
-Jens Axboe
-
+T24gOS8wMy8yMSA5OjI3IGFtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPiBPbiA4LzAzLzIxIDU6
+NTkgcG0sIEd1ZW50ZXIgUm9lY2sgd3JvdGU6DQo+PiBPdGhlciB0aGFuIHRoYXQsIHRoZSBvbmx5
+IG90aGVyIHJlYWwgaWRlYSBJIGhhdmUgd291bGQgYmUgdG8gbW9uaXRvcg0KPj4gdGhlIGkyYyBi
+dXMuDQo+IEkgYW0gaW4gdGhlIGZvcnR1bmF0ZSBwb3NpdGlvbiBvZiBiZWluZyBhYmxlIHRvIGdv
+IGludG8gdGhlIG9mZmljZSBhbmQgDQo+IGV2ZW4gaGFwcGVuIHRvIGhhdmUgdGhlIGV4cGVuc2l2
+ZSBzY29wZSBhdCB0aGUgbW9tZW50LiBOb3cgSSBqdXN0IG5lZWQgDQo+IHRvIGZpbmQgYSB0YW1l
+IEhXIGVuZ2luZWVyIHNvIEkgZG9uJ3QgYnVybiBteXNlbGYgdHJ5aW5nIHRvIGF0dGFjaCB0aGUg
+DQo+IHByb2Jlcy4NCk9uZSB0aGluZyBJIHNlZSBvbiB0aGUgc2NvcGUgaXMgdGhhdCB3aGVuIHRo
+ZXJlIGlzIGEgQ1BVIGxvYWQgdGhlcmUgDQphcHBlYXJzIHRvIGJlIHNvbWUgY2xvY2sgc3RyZXRj
+aGluZyBnb2luZyBvbiAoU0NMIGlzIGhlbGQgbG93IHNvbWUgDQp0aW1lcykuIEkgZG9uJ3Qgc2Vl
+IGl0IHdpdGhvdXQgdGhlIENQVSBsb2FkLiBJdCdzIGhhcmQgdG8gY29ycmVsYXRlIGEgDQpjbG9j
+ayBzdHJldGNoaW5nIGV2ZW50IHdpdGggYSBiYWQgcmVhZCBvciBlcnJvciBidXQgaXQgaXMgb25l
+IGFyZWEgd2hlcmUgDQp0aGUgU01CVVMgc3BlYyBoYXMgYSBtYXhpbXVtIHRoYXQgbWlnaHQgY2F1
+c2UgdGhlIGRldmljZSB0byBnaXZlIHVwIHdhaXRpbmcuDQo=
