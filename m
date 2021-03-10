@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9FC334800
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7182334805
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhCJTcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 14:32:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49054 "EHLO mail.kernel.org"
+        id S229851AbhCJTdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 14:33:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233992AbhCJTcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:32:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33EEF64FB2;
-        Wed, 10 Mar 2021 19:32:48 +0000 (UTC)
+        id S233942AbhCJTdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:33:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA0564FB2;
+        Wed, 10 Mar 2021 19:33:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615404768;
-        bh=f5/lUJllLGXsUxKTawCkR3n1Ver3P//PbBnMTRmYk/o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fUbYZ64I87gmzgnsW41cv2cHvR1Ba5VaKcad5Du7xG5eVNOyr715DL+39NQuGyE02
-         QcI3yJOBiah1yKhatbZOpU4WUOjQv85YQXB726vwjqgB+/EB0fSpVZx96oHkkSsM9I
-         m8rv2HkKtGUhf1wrvkPvfrTWQxbLqlXJakLmPUx0L5zRd6fkp7s7mss8K7rAin3chl
-         XgKlvGRwIpf7cXK5aLu+ddEEGinavXXwLmnBGK0RIKBeilic6qfpjhbyqN9I5527b5
-         gk89tI+MGJ9iX8ote//aWqqqD0Eewn3Gro8vC4LZG4+Ky4eJm+FFaqOUJqVQ0cGpkV
-         3nT7vmIcMmEVg==
-Date:   Wed, 10 Mar 2021 13:32:46 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] PCI: controller: al: select CONFIG_PCI_ECAM
-Message-ID: <20210310193246.GA2033984@bjorn-Precision-5520>
+        s=k20201202; t=1615404800;
+        bh=HSKJm/eop7og5BaIReOnqWqOik9WWlx22NnmsHLVihY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oZOTDRKn+Tj787FecJjq3VI/Dei6KMXECNi0da8WYHvBYG7p78WCLP0VTjaN6LHpz
+         SIALime9msIZkUsgCN5wRPyvzqQcQT++oebwPji1on3KqmeIAvqkCS3LTUweaB9/MW
+         z8K3OY9Zof7NG0da35FMfArutjvvJrdWW7owSRlWjmdEMwCJXT8ExQzYlxGoINxACq
+         hAomrQzt/iUUByOUGMYguT+R13Llf1CdB/6P2AZn9q6/ie1kRnvKPD00zz5LHeM9wB
+         KP7fthHUwruPtQ/ozi7u5+NP0tSvm8ogv/NvABl0qrbVeEvb8+xFH/NbmIsWAGRTo/
+         qNiSbS7biX3+A==
+Date:   Wed, 10 Mar 2021 21:32:56 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Arnd Bergmann <arnd@kernel.org>, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] keys: Add EFI_CERT_X509_GUID support for dbx/mokx
+ entries
+Message-ID: <YEke6BU5QshCDA2C@kernel.org>
+References: <161529604216.163428.4905283330048991183.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308152501.2135937-1-arnd@kernel.org>
+In-Reply-To: <161529604216.163428.4905283330048991183.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:24:46PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Mar 09, 2021 at 01:20:42PM +0000, David Howells wrote:
 > 
-> Compile-testing this driver without ECAM support results in a link
-> failure:
+> Here's my take on v5 of Eric Snowberg's patches[1]:
 > 
-> ld.lld: error: undefined symbol: pci_ecam_map_bus
-> >>> referenced by pcie-al.c
-> >>>               pci/controller/dwc/pcie-al.o:(al_pcie_map_bus) in archive drivers/built-in.a
+> This series of patches adds support for EFI_CERT_X509_GUID entries [2].  It has
+> been expanded to not only include dbx entries but also entries in the mokx.
+> Additionally Eric included his patches to preload these certificate [3].
 > 
-> Select CONFIG_ECAM like the other drivers do.
-
-Did we add these compile issues in the v5.12-rc1?  I.e., are the fixes
-candidates for v5.12?
-
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> The patches can be found on the following branch:
+> 
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-cve-2020-26541-branch
+> 
+> Changes:
+> 
+> ver #3:
+>  - Rolled in changes from Eric to fix conditional building issues[7].
+> 
+> ver #2:
+>  - Rolled in a fix to the second patch to include certs/common.h in
+>    certs/common.c[6].
+> 
+> ver #1:
+>  - I've modified the first patch in the series to fix a configuration
+>    problem[4][5], to move the added functions to a more logical place
+>    within thefile and to add kerneldoc comments.
+> 
+> Link: https://lore.kernel.org/r/20210122181054.32635-1-eric.snowberg@oracle.com [1]
+> Link: https://patchwork.kernel.org/project/linux-security-module/patch/20200916004927.64276-1-eric.snowberg@oracle.com/ [2]
+> Link: https://lore.kernel.org/patchwork/cover/1315485/ [3]
+> Link: https://lore.kernel.org/r/bc2c24e3-ed68-2521-0bf4-a1f6be4a895d@infradead.org/ [4]
+> Link: https://lore.kernel.org/r/20210225125638.1841436-1-arnd@kernel.org/ [5]
+> Link: https://lore.kernel.org/r/EDA280F9-F72D-4181-93C7-CDBE95976FF7@oracle.com/ [6]
+> Link: https://lore.kernel.org/r/161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk/ # v1 posting
+> Link: https://lore.kernel.org/r/161433310139.902181.11787442834918634133.stgit@warthog.procyon.org.uk/ # v2 posting
+> Link: https://lore.kernel.org/r/20210304175030.184131-1-eric.snowberg@oracle.com/ [7]
+> 
+> David
 > ---
->  drivers/pci/controller/dwc/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+> Eric Snowberg (4):
+>       certs: Add EFI_CERT_X509_GUID support for dbx entries
+>       certs: Move load_system_certificate_list to a common function
+>       certs: Add ability to preload revocation certs
+>       integrity: Load mokx variables into the blacklist keyring
 > 
-> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> index 5a3032d9b844..d981a0eba99f 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -311,6 +311,7 @@ config PCIE_AL
->  	depends on OF && (ARM64 || COMPILE_TEST)
->  	depends on PCI_MSI_IRQ_DOMAIN
->  	select PCIE_DW_HOST
-> +	select PCI_ECAM
->  	help
->  	  Say Y here to enable support of the Amazon's Annapurna Labs PCIe
->  	  controller IP on Amazon SoCs. The PCIe controller uses the DesignWare
-> -- 
-> 2.29.2
 > 
+>  certs/Kconfig                                 |  8 +++
+>  certs/Makefile                                | 21 ++++++-
+>  certs/blacklist.c                             | 21 +++++++
+>  certs/common.c                                | 57 +++++++++++++++++++
+>  certs/common.h                                |  9 +++
+>  certs/revocation_certificates.S               | 21 +++++++
+>  certs/system_keyring.c                        | 49 +---------------
+>  scripts/Makefile                              |  1 +
+>  security/integrity/platform_certs/load_uefi.c | 20 ++++++-
+>  9 files changed, 156 insertions(+), 51 deletions(-)
+>  create mode 100644 certs/common.c
+>  create mode 100644 certs/common.h
+>  create mode 100644 certs/revocation_certificates.S
+> 
+> 
+> 
+
+Looks good to me.
+
+/Jarkko
