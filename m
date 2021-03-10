@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E76333683
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DFB333688
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhCJHkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:40:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbhCJHkh (ORCPT
+        id S232131AbhCJHnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:43:11 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36959 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232204AbhCJHmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:40:37 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A79C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:40:36 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id hs11so36553819ejc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:40:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7htfKEWj4A1mHYbOJujhEP8fr6drS4OtZ91jlFV3ApY=;
-        b=lc1dhv1vlFR8xg17tISMV9ljgonYRYnKCI/dV2TYIoLjzvNOCNBnM2dcg6GR99RUV7
-         6olqwk9R6ELu+/8U7cxQSYQFhTp2YEHQ67u9v4N45SJR2Gr9705iihIiaWE1MY65yLEv
-         1kJgIT1Du4xtvS4SsKPll30rFeGxpvFFPkg4s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7htfKEWj4A1mHYbOJujhEP8fr6drS4OtZ91jlFV3ApY=;
-        b=VIdDpGEd3T/Cp33882eyGw/Ln8V8DYhWH9MFWan7ZBqNQg7u0iHEvSdlz+dm0m5TL/
-         AS8EmtIM8Egzfv5zRdsTtxR400pzpz/QXvX/zrIanojEt546/EbpWGSYGG9SRDCUuQac
-         R+QR6UqAE4qF7EK4y9mSHtxFh5NMKPI9ZGHog5ZXFlpWljI48iKVIlbCfDhcVGWbMW3H
-         LZoX+HArpQJyI8ubpgOCb5YOg5JdRoTjT2FUBzYTOMK9nibw/vC0BIQkPauJmSXTn+8d
-         0HyuO4bx057CpF+hoNiCcbh7HQu/JV5rCXMX2NTpeViWECkMptAmkS4N1oKfCkFnLNto
-         1WWw==
-X-Gm-Message-State: AOAM531TUUJY8tPJIxiYo2pmP8oIA53MMUFi+4JQ3rkl0SAmK7i1ln7B
-        39IJjZEDG1s96z7SJFhkCzbz8g==
-X-Google-Smtp-Source: ABdhPJwIhNo0p77nmtL5NmTaAsBp68g+mGOKFQRYDcHVyhZbKylB7G6jH6lPNhXHMRN8oSrGbY7I1w==
-X-Received: by 2002:a17:906:cd05:: with SMTP id oz5mr2232468ejb.345.1615362029874;
-        Tue, 09 Mar 2021 23:40:29 -0800 (PST)
-Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id a12sm10253646edx.91.2021.03.09.23.40.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 23:40:29 -0800 (PST)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] media: videobuf2: Fix integer overrun in vb2_mmap
-Date:   Wed, 10 Mar 2021 08:40:28 +0100
-Message-Id: <20210310074028.1042475-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+        Wed, 10 Mar 2021 02:42:33 -0500
+X-UUID: 815a1e554c3e4de5874394ecb9f3ac63-20210310
+X-UUID: 815a1e554c3e4de5874394ecb9f3ac63-20210310
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 98255046; Wed, 10 Mar 2021 15:42:19 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 10 Mar 2021 15:42:17 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 10 Mar 2021 15:42:16 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        CK Hu <ck.hu@mediatek.com>
+CC:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v1 0/2] Revert "mailbox: mediatek: remove implementation related to atomic_exec"
+Date:   Wed, 10 Mar 2021 15:42:10 +0800
+Message-ID: <1615362132-30603-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The plane_length is an unsigned integer. So, if we have a size of
-0xffffffff bytes we incorrectly allocate 0 bytes instead of 1 << 32.
+This series base linux 5.12-rc1
+these two patches will cause home ui flick when cursor moved,
+there is no fix solution yet, revert these patches first.
 
-Suggested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: stable@vger.kernel.org
-Fixes: 7f8414594e47 ("[media] media: videobuf2: fix the length check for mmap")
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/common/videobuf2/videobuf2-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yongqiang Niu (2):
+  Revert "drm/mediatek: Make sure previous message done or be aborted
+    before send"
+  Revert "mailbox: mediatek: remove implementation related to
+    atomic_exec"
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 543da515c761..876db5886867 100644
---- a/drivers/media/common/videobuf2/videobuf2-core.c
-+++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -2256,7 +2256,7 @@ int vb2_mmap(struct vb2_queue *q, struct vm_area_struct *vma)
- 	 * The buffer length was page_aligned at __vb2_buf_mem_alloc(),
- 	 * so, we need to do the same here.
- 	 */
--	length = PAGE_ALIGN(vb->planes[plane].length);
-+	length = PAGE_ALIGN((unsigned int)vb->planes[plane].length);
- 	if (length < (vma->vm_end - vma->vm_start)) {
- 		dprintk(q, 1,
- 			"MMAP invalid, as it would overflow buffer length\n");
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c |  1 -
+ drivers/mailbox/mtk-cmdq-mailbox.c      | 80 +++++++++++++++++++++++++++++----
+ 2 files changed, 71 insertions(+), 10 deletions(-)
+
 -- 
-2.30.1.766.gb4fecdf3b7-goog
+1.8.1.1.dirty
 
