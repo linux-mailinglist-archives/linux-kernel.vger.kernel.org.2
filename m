@@ -2,106 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92204333BC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B654E333BD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232609AbhCJLt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:49:28 -0500
-Received: from mga02.intel.com ([134.134.136.20]:21323 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231517AbhCJLtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:49:20 -0500
-IronPort-SDR: O8G2jLWaRy5KgcYxMX5QuXvnPJT6bdf6jmb51nRAfR7aiEcr8YWN3r4cUr61iLgC4H1RziQf/X
- 662AO8Y2Mh+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175553693"
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="175553693"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 03:49:19 -0800
-IronPort-SDR: U9rgF9K7qXapMdDxZuv6kGfPi26I0ayRc+zblwqAWHyy2VX1SExU1JAqr1SmGd9O5leJ6z8/TX
- UP3QDofCmE6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="376936658"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga007.fm.intel.com with ESMTP; 10 Mar 2021 03:49:15 -0800
-Date:   Wed, 10 Mar 2021 19:49:15 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
- MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
-Message-ID: <20210310114915.GA71505@shbuild999.sh.intel.com>
-References: <20210303120717.GA16736@shbuild999.sh.intel.com>
- <20210303121833.GB16736@shbuild999.sh.intel.com>
- <YD+BvvM/388AVnmm@dhcp22.suse.cz>
- <20210303131832.GB78458@shbuild999.sh.intel.com>
- <20210303134644.GC78458@shbuild999.sh.intel.com>
- <YD+WR5cpuWhybm2L@dhcp22.suse.cz>
- <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
- <d07f8675-939b-daea-c128-30ceecfac8a0@intel.com>
- <20210310051947.GA33036@shbuild999.sh.intel.com>
- <YEiU6/5BXM7v4AOu@dhcp22.suse.cz>
+        id S232083AbhCJLvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:51:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230435AbhCJLur (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:50:47 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DD0C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:50:47 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lJxMS-0000dy-H8; Wed, 10 Mar 2021 12:50:44 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lJxMQ-0001h5-O7; Wed, 10 Mar 2021 12:50:42 +0100
+Date:   Wed, 10 Mar 2021 12:50:41 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        wahrenst@gmx.net, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        linux-clk@vger.kernel.org, sboyd@kernel.org,
+        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
+        andy.shevchenko@gmail.com
+Subject: Re: [PATCH v7 11/11] pwm: Add Raspberry Pi Firmware based PWM bus
+Message-ID: <20210310115041.s7tzvgdpksws6yss@pengutronix.de>
+References: <20210118123244.13669-1-nsaenzjulienne@suse.de>
+ <20210118123244.13669-12-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ul6qbztvwf7nowqu"
 Content-Disposition: inline
-In-Reply-To: <YEiU6/5BXM7v4AOu@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210118123244.13669-12-nsaenzjulienne@suse.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 10:44:11AM +0100, Michal Hocko wrote:
-> On Wed 10-03-21 13:19:47, Feng Tang wrote:
+
+--ul6qbztvwf7nowqu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Nicolas,
+
+On Mon, Jan 18, 2021 at 01:32:44PM +0100, Nicolas Saenz Julienne wrote:
+> diff --git a/drivers/pwm/pwm-raspberrypi-poe.c b/drivers/pwm/pwm-raspberr=
+ypi-poe.c
+> new file mode 100644
+> index 000000000000..ca845e8fabe6
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-raspberrypi-poe.c
+> @@ -0,0 +1,220 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright 2020 Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> + * For more information on Raspberry Pi's PoE hat see:
+> + * https://www.raspberrypi.org/products/poe-hat/
+> + *
+> + * Limitations:
+> + *  - No disable bit, so a disabled PWM is simulated by duty_cycle 0
+> + *  - Only normal polarity
+> + *  - Fixed 12.5 kHz period
+> + *
+> + * The current period is completed when HW is reconfigured.
+
+nice.
+
+> + */
+> +
 > [...]
-> > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > index d66c1c0..00b19f7 100644
-> > --- a/mm/mempolicy.c
-> > +++ b/mm/mempolicy.c
-> > @@ -2205,9 +2205,13 @@ static struct page *alloc_pages_policy(struct mempolicy *pol, gfp_t gfp,
-> >  	 * | MPOL_PREFERRED_MANY (round 2) | local         | NULL       |
-> >  	 * +-------------------------------+---------------+------------+
-> >  	 */
-> > -	if (pol->mode == MPOL_PREFERRED_MANY)
-> > +	if (pol->mode == MPOL_PREFERRED_MANY) {
-> >  		gfp_mask |= __GFP_RETRY_MAYFAIL | __GFP_NOWARN;
-> >  
-> > +		/* Skip direct reclaim, as there will be a second try */
-> > +		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
-> 
-> __GFP_RETRY_MAYFAIL is a reclaim modifier which doesn't make any sense
-> without __GFP_DIRECT_RECLAIM. Also I think it would be better to have a
-> proper allocation flags in the initial patch which implements the
-> fallback.
+> +static int raspberrypi_pwm_apply(struct pwm_chip *chip, struct pwm_devic=
+e *pwm,
+> +				 const struct pwm_state *state)
+> +{
+> +	struct raspberrypi_pwm *rpipwm =3D raspberrypi_pwm_from_chip(chip);
+> +	unsigned int duty_cycle;
+> +	int ret;
+> +
+> +	if (state->period < RPI_PWM_PERIOD_NS ||
+> +	    state->polarity !=3D PWM_POLARITY_NORMAL)
+> +		return -EINVAL;
+> +
+> +	if (!state->enabled)
+> +		duty_cycle =3D 0;
+> +	else if (state->duty_cycle < RPI_PWM_PERIOD_NS)
+> +		duty_cycle =3D DIV_ROUND_DOWN_ULL(state->duty_cycle * RPI_PWM_MAX_DUTY,
+> +						RPI_PWM_PERIOD_NS);
+> +	else
+> +		duty_cycle =3D RPI_PWM_MAX_DUTY;
+> +
+> +	if (duty_cycle =3D=3D rpipwm->duty_cycle)
+> +		return 0;
+> +
+> +	ret =3D raspberrypi_pwm_set_property(rpipwm->firmware, RPI_PWM_CUR_DUTY=
+_REG,
+> +					   duty_cycle);
+> +	if (ret) {
+> +		dev_err(chip->dev, "Failed to set duty cycle: %pe\n",
+> +			ERR_PTR(ret));
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * This sets the default duty cycle after resetting the board, we
+> +	 * updated it every time to mimic Raspberry Pi's downstream's driver
+> +	 * behaviour.
+> +	 */
+> +	ret =3D raspberrypi_pwm_set_property(rpipwm->firmware, RPI_PWM_DEF_DUTY=
+_REG,
+> +					   duty_cycle);
+> +	if (ret) {
+> +		dev_err(chip->dev, "Failed to set default duty cycle: %pe\n",
+> +			ERR_PTR(ret));
+> +		return ret;
 
-Ok, will remove the __GFP_RETRY_MAYFAIL setting and folder this with
-previous patch(8/14).
+This only has an effect for the next reboot, right? If so I wonder if it
+is a good idea in general. (Think: The current PWM setting enables a
+motor that makes a self-driving car move at 100 km/h. Consider the rpi
+crashes, do I want to car to pick up driving 100 km/h at power up even
+before Linux is up again?) And if we agree it's a good idea: Should
+raspberrypi_pwm_apply return 0 if setting the duty cycle succeeded and
+only setting the default didn't?
 
-Thanks,
-Feng
+Other than that the patch looks fine.
 
-> > +	}
-> > +
-> >  	page = __alloc_pages_nodemask(gfp_mask, order,
-> >  				      policy_node(gfp, pol, preferred_nid),
-> >  				      policy_nodemask(gfp, pol));
-> > -- 
-> > 2.7.4
-> > 
-> > 
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ul6qbztvwf7nowqu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBIso0ACgkQwfwUeK3K
+7An3RQgAk7LiLPojRn3qgp/eEHGcY24aQQQnYHXFzwvNNsqfY9q1T6NOjwiJlIBj
+owBPtq8IteT+V4qhiiQuB4MLMbNeaBZ+iR4l7OVDwzwuPrHtZuGFxz7vZumxdIET
+Eqq1G++2nk48ZFJOUnKeWM733IgWZQwaM0XEr04i58ZjnoJ9mZo7g4nC2c8O6F6A
+HQshnIGC2hEIZbpmpQrBOMI92Uh0pt03ScuCXM4o/YUuKxb8oeygwt963lrJwhXp
+Vb1/aPD/lELD/kAAeOa3cje1nAdfEJPzH0kjIMfXNTkX8TeEEA0klNEEOXkVxrTP
+0c+bK2SaxSe/2i1555OooX7x1H2VCg==
+=540n
+-----END PGP SIGNATURE-----
+
+--ul6qbztvwf7nowqu--
