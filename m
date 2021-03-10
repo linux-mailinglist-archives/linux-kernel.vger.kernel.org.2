@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C15333FA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE2C333FAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbhCJNwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:52:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52084 "EHLO
+        id S232797AbhCJNxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:53:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232871AbhCJNwX (ORCPT
+        with ESMTP id S231571AbhCJNxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:52:23 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D07C061760;
-        Wed, 10 Mar 2021 05:52:23 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id DE6D73FA1B;
-        Wed, 10 Mar 2021 13:52:08 +0000 (UTC)
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Arnd Bergmann <arnd@linaro.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org>
- <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby>
- <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
- <6c542548-cc16-af68-c755-df52bd13b209@marcan.st>
- <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
- <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
- <CACRpkdbQks5pRFNHkNLVvLHCBhh0XCv7pHYq25EVAbU60PcwsA@mail.gmail.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB)
- subsystem
-Message-ID: <0a26713a-8988-1713-4358-bc62364b9e25@marcan.st>
-Date:   Wed, 10 Mar 2021 22:52:06 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 10 Mar 2021 08:53:07 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991F5C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:53:07 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so7525928pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:53:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=InN9m7hIprfWWBkDrI24e5tae9R+vk+vV3+IqqJrTHk=;
+        b=hley0yp994m20s7olEdzr4zUvmgmfA+s3wM2zyc1EsCKyEFbeVDRMjl/LyikTjjb2/
+         GSakKCGengIIeWFNg9Zu7w5qmL09Gvx6hxOgmFNtm7dS03pNPbz2PEf8fvaBnTH1bFsl
+         VsV+soMSWTd7HlfHpZIqcCmtcDvcb9bRcqXG+e+vnLJIlDq588Ynbt1IXUtTftYDHClX
+         Vq29xJHDW0eS2QxXGTAeBtczP6p6nVXj/zWCoA6vBXv56MhWBp4VFZ/RCkX7xZ8+/vez
+         GmK009YmJxv/TsI0Xh2Yvce/E0QIJrRr+2gjxRDKXMceum117T+mAtFiHfptINans96K
+         ejpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=InN9m7hIprfWWBkDrI24e5tae9R+vk+vV3+IqqJrTHk=;
+        b=KSzFYYcuUFpLxifgowuq5LC3JVU1ih4nqQsOY4k7eOjoqYTdT70RPThjxQzXpCPr2X
+         7PpvtMg+LvpRU5qEkvvenFzmdmxjBwYIkIXQt6uK9ybg+48OoeQIlfA07Mu38akYzzUB
+         0mavDLMpK7qHAlpzEz2H+zWJ8YTb3VtjrHw4N5Cny3PzfEXK02E/LJohCWO7NhV1huzz
+         ZR4nt+gfyOUQZLedg0xlvThQxVEZk55pk6f+54s1v9+UxF0utPnbqZ5Gi5WoJO3ZwO99
+         biohWhkeVr3cmczgdz2pTrqKphKPJ0DXBebHbMC41nqRyKzi/GAbn8VlmdEMZo/DY+7m
+         UtcA==
+X-Gm-Message-State: AOAM531tfWYpkjx6isZIz69h3I0VKYY8LyCq7n3jClDBtjGXMs2e+neX
+        f3nxPSg16wdxz8Flw6tuGR+r
+X-Google-Smtp-Source: ABdhPJy9D3b4xRKPH7Fw5bprufQUEXAOSRHXuKvGxwnap5Z9PaIf4V/bUoxe86dq6v+VfzZuHYbHZA==
+X-Received: by 2002:a17:90a:7182:: with SMTP id i2mr3666760pjk.111.1615384387119;
+        Wed, 10 Mar 2021 05:53:07 -0800 (PST)
+Received: from thinkpad ([103.66.79.59])
+        by smtp.gmail.com with ESMTPSA id 35sm16050113pgr.14.2021.03.10.05.53.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 05:53:06 -0800 (PST)
+Date:   Wed, 10 Mar 2021 19:23:01 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v3] bus: mhi: core: Add missing checks for MMIO register
+ entries
+Message-ID: <20210310135301.GN30275@thinkpad>
+References: <1615315490-36017-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdbQks5pRFNHkNLVvLHCBhh0XCv7pHYq25EVAbU60PcwsA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615315490-36017-1-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/03/2021 18.48, Linus Walleij wrote:
-> Disk is encrypted, and RPMB is there to block any exhaustive
-> password or other authentication token search.
-
-This relies on having a secure boot chain to start with (otherwise you 
-can just bypass policy that way; the RPMB is merely storage to give you 
-anti-rollback properties, it can't enforce anything itself). So you 
-would have to have a laptop with a fully locked down secure boot, which 
-can only boot some version of Linux signed by you until, say, LUKS 
-decryption. And then the tooling around that needs to be integrated with 
-RPMB, to use it as an attempt counter.
-
-But now this ends up having to involve userspace anyway; the kernel key 
-stuff doesn't support policy like this, does it? So having the kernel 
-automagically use RPMB wouldn't get us there.
-
-I may be wrong on the details here, but as far as I know RPMB is 
-strictly equivalent to a simple secure increment-only counter in what it 
-buys you. The stuff about writing data to it securely is all a red 
-herring - you can implement secure storage elsewhere, and with secure 
-storage + a single secure counter, you can implement anti-rollback.
-
-It is not intended to store keys in a way that is somehow safer than 
-other mechanisms. After all, you need to securely store the RPMB key to 
-begin with; you might as well use that to encrypt a keystore on any 
-random block device.
-
-> Ideally: the only way to make use of the hardware again would
-> be to solder off the eMMC, if eMMC is used for RPMB.
-> If we have RPMB on an NVME or UFS drive, the idea is
-> to lock that thing such that it becomes useless and need to
-> be replaced with a new part in this scenario.
+On Tue, Mar 09, 2021 at 10:44:50AM -0800, Bhaumik Bhatt wrote:
+> As per documentation, fields marked as (required) in an MHI
+> controller structure need to be populated by the controller driver
+> before calling mhi_register_controller(). Ensure all required
+> pointers and non-zero fields are present in the controller before
+> proceeding with the registration.
 > 
-> In practice: make it hard, because we know no such jail is
-> perfect. Make it not worth the effort, make it cheaper for thieves
-> to just buy a new harddrive to use a stolen laptop, locking
-> the data that was in it away forever by making the drive
-> useless for any practical attacks.
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-But RPMB does not enforce any of this policy for you. RPMB only gives 
-you a primitive: the ability to have storage that cannot be externally 
-rolled back. So none of this works unless the entire system is set up to 
-securely boot all the way until the drive unlock happens, and there are 
-no other blatant code execution avenues.
+Applied to mhi-next!
 
-There isn't even any encryption involved in the protocol, so all the 
-data stored in the RPMB is public and available to any attacker.
+Thanks,
+Mani
 
-So unless the kernel grows a subsystem/feature to enforce complex key 
-policies (with things like use counts, retry times, etc), I don't think 
-there's a place to integrate RPMB kernel-side. You still need a trusted 
-userspace tool to glue it all together.
-
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+> ---
+>  v3: removed fw_image as not all controllers require it
+>  v2: removed iova_start and iova_stop as they can be zero
+> 
+>  drivers/bus/mhi/core/init.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 272f350..d8882b3 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -879,12 +879,10 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+>  	u32 soc_info;
+>  	int ret, i;
+>  
+> -	if (!mhi_cntrl)
+> -		return -EINVAL;
+> -
+> -	if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
+> +	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
+> +	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
+>  	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
+> -	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs)
+> +	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs || !mhi_cntrl->irq)
+>  		return -EINVAL;
+>  
+>  	ret = parse_config(mhi_cntrl, config);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
