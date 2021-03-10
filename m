@@ -2,163 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1523C3345A3
+	by mail.lfdr.de (Postfix) with ESMTP id 8654B3345A4
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhCJRsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:48:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233570AbhCJRsF (ORCPT
+        id S233545AbhCJRtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:49:10 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:40564 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230477AbhCJRso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:48:05 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2D4C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:48:05 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id y20so525680iot.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:48:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pjhY9oWxqLqIb5ufRBoTvobG2ljtmnnOM6d4fQirr8c=;
-        b=vZPceUuDn68WpBRoiQ1Q2dEUjhbJJ9aHA6FfzCTmls8eD0M1QscdzTIHkQGfQAzX9C
-         QWT9U1zuDksfaB4HaOSduoJt3g40b7DTzyN0vrPorA+jxz9wQ/h4obNX9UPznS1fpz3T
-         yKNCFOLaYw3OtusVKZ0iroINJ05oflR0zDtpUGTLwmaIDafaD+lYCBNvypvHejcM9MII
-         A/WQXlfzmAURAC/0YQzyBpHVmDzNHhFraT4zFMF0Emn5eXcqcq4LIw11pcEp+Cfpvbj/
-         y5rHmNenLuA1Vzzmw0/g8LeAYKo3JmW2JueFmgaxr482b+dENHYocHPcnW4PYukypanS
-         7VxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pjhY9oWxqLqIb5ufRBoTvobG2ljtmnnOM6d4fQirr8c=;
-        b=QTE0syIlg8kyQvGhvKpmS2nD+2e181lj+QKTQmXybxiXjOCcSN8PV1jdV6VmKpQeyj
-         7bn9vYmxJ1+RPQoGrChU6oQ6maFexLTI0ngQ5HvQ2E9vep8Ag7cFDhbSoxcQ1aCn0VRv
-         pshUngFkE4H9gRlYhmqdnCJK1qsnieNto/hMbUMLLGe/PHuKC+f+/MKlWJgvyBCPiEUh
-         GzeAIAFrSVKX0L+C3D+v854nbE/aj20YCtyLaxQgkJg1J5a7nak8kjLZkrYhCIc/45F3
-         HeTg4luLj7hpcn3KDwrgT3KgSYeD8SZ4WOL7l56f9/Klm3lDv3ZHq0D80LMdXzXTj390
-         otNQ==
-X-Gm-Message-State: AOAM532PwTT8QztpkjLA6J2oRv8wYis5VZfIcf44kbw4ilEGLyttbyBF
-        aTfq/Ai4hCWmrYwdbGh5xDkDYA==
-X-Google-Smtp-Source: ABdhPJwPIjxdeFmd179IQqcFgl6sf8KYeOUkM67gX0Ij6062UpwuhOyLwgftQvxIgMlyjJOJSuPthg==
-X-Received: by 2002:a05:6602:15cd:: with SMTP id f13mr3210274iow.173.1615398485006;
-        Wed, 10 Mar 2021 09:48:05 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id s9sm122455iob.33.2021.03.10.09.48.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 09:48:04 -0800 (PST)
-Subject: Re: [PATCH 5.10 14/49] net: ipa: ignore CHANNEL_NOT_RUNNING errors
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org
-References: <20210310132321.948258062@linuxfoundation.org>
- <20210310132322.413240905@linuxfoundation.org>
- <CA+G9fYthEr7TtFBpAXxQfDtwxCe+qg=bbE74nPQ+mpGmSSJ2dw@mail.gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <a1d30ddd-2c2e-325b-f401-2e8461abba25@linaro.org>
-Date:   Wed, 10 Mar 2021 11:48:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 10 Mar 2021 12:48:44 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12AHfi88091752;
+        Wed, 10 Mar 2021 17:48:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=2nFXaqO+IMxgomZInrb6mZnb5Zaqy4wyO3kAeFUfVco=;
+ b=jlDczlIN4t/LD2PDUCtrKZeQo2NYqTSJrSLdvnO0Z2RTCeqUoWj7b9DyxlEP1aNsp3bv
+ vWQo8N/9bQmvbMZDxn5qoPxG2DxH1RYOslQT12+EQtLSDxmOB7/+Vm8Na3LQM9ISrsaE
+ OiVVCZ6CcThwyf02ZggnEQ+/oDbpGu4HNNVOfOwdfV/HAZtL4zedTjL7hVzasxD+6hCx
+ 5UvcPDL2UmtwEFnoA6XjIWIjavItOs4VTuVMPLWIGHbIqK4O5DwqB8TugE+wdo0x+Xho
+ xBJPaplDXa6OMi+OgfBXQvxyq5UPz5TI8Wvl4NkB9c2cSl4GOak+L1qE70K8F33GT7n2 XQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 3742cnbtkn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Mar 2021 17:48:40 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12AHf6BO092016;
+        Wed, 10 Mar 2021 17:48:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 374kgtpv0k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Mar 2021 17:48:38 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12AHmb0h011650;
+        Wed, 10 Mar 2021 17:48:37 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Mar 2021 09:48:37 -0800
+Date:   Wed, 10 Mar 2021 20:48:30 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: align comments
+Message-ID: <20210310174830.GM2087@kadam>
+References: <20210310153717.GA5741@agape.jhs>
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYthEr7TtFBpAXxQfDtwxCe+qg=bbE74nPQ+mpGmSSJ2dw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310153717.GA5741@agape.jhs>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9919 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103100085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9919 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ clxscore=1011 phishscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 mlxscore=0 impostorscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103100085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 11:36 AM, Naresh Kamboju wrote:
-> On Wed, 10 Mar 2021 at 18:56, <gregkh@linuxfoundation.org> wrote:
->>
->> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>
->> From: Alex Elder <elder@linaro.org>
->>
->> [ Upstream commit f849afcc8c3b27d7b50827e95b60557f24184df0 ]
+On Wed, Mar 10, 2021 at 04:37:21PM +0100, Fabio Aiuto wrote:
+> fix the following checkpatch warnings:
+> 
+> WARNING: Block comments use * on subsequent lines
+> +	/*
+> +		AMPDU_para [1:0]:Max AMPDU Len => 0:8k , 1:16k, 2:32k, 3:64k
+> --
+> WARNING: Block comments use * on subsequent lines
+> +/*
+> +op_mode
+> 
+> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/core/rtw_ap.c | 28 ++++++++++++-------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
+> index b6f944b37b08..3a0e4f64466a 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_ap.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
+> @@ -721,9 +721,9 @@ static void update_hw_ht_param(struct adapter *padapter)
+>  
+>  	/* handle A-MPDU parameter field */
+>  	/*
 
-Upstream commit f849afcc8c3b27d7b5 is described as:
-   v5.10-rc4-1094-gf849afcc8c3b2
-Is this being "back-ported" to v5.10 stable?
+Combine these two comments into one mult-line comment.
 
-Maybe I'm confused.
+> -		AMPDU_para [1:0]:Max AMPDU Len => 0:8k , 1:16k, 2:32k, 3:64k
+> -		AMPDU_para [4:2]:Min MPDU Start Spacing
+> -	*/
+> +	 *	AMPDU_para [1:0]:Max AMPDU Len => 0:8k , 1:16k, 2:32k, 3:64k
+> +	 *	AMPDU_para [4:2]:Min MPDU Start Spacing
+> +	 */
+>  	max_AMPDU_len = pmlmeinfo->HT_caps.u.HT_cap_element.AMPDU_para & 0x03;
+>  
+>  	min_MPDU_spacing = (
+> @@ -1815,17 +1815,17 @@ void update_beacon(struct adapter *padapter, u8 ie_id, u8 *oui, u8 tx)
+>  }
+>  
+>  /*
+> -op_mode
+> -Set to 0 (HT pure) under the following conditions
+> -	- all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
+> -	- all STAs in the BSS are 20 MHz HT in 20 MHz BSS
+> -Set to 1 (HT non-member protection) if there may be non-HT STAs
+> -	in both the primary and the secondary channel
+> -Set to 2 if only HT STAs are associated in BSS,
+> -	however and at least one 20 MHz HT STA is associated
+> -Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
+> -	(currently non-GF HT station is considered as non-HT STA also)
+> -*/
+> + *op_mode
 
-					-Alex
+You need to have a space character after the '*'.
 
->> IPA v4.2 has a hardware quirk that requires the AP to allocate GSI
->> channels for the modem to use.  It is recommended that these modem
->> channels get stopped (with a HALT generic command) by the AP when
->> its IPA driver gets removed.
->>
->> The AP has no way of knowing the current state of a modem channel.
->> So when the IPA driver issues a HALT command it's possible the
->> channel is not running, and in that case we get an error indication.
->> This error simply means we didn't need to stop the channel, so we
->> can ignore it.
->>
->> This patch adds an explanation for this situation, and arranges for
->> this condition to *not* report an error message.
->>
->> Signed-off-by: Alex Elder <elder@linaro.org>
->> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>   drivers/net/ipa/gsi.c | 24 +++++++++++++++++++++++-
->>   1 file changed, 23 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
->> index 2a65efd3e8da..48ee43b89fec 100644
->> --- a/drivers/net/ipa/gsi.c
->> +++ b/drivers/net/ipa/gsi.c
->> @@ -1052,10 +1052,32 @@ static void gsi_isr_gp_int1(struct gsi *gsi)
->>          u32 result;
->>          u32 val;
->>
->> +       /* This interrupt is used to handle completions of the two GENERIC
->> +        * GSI commands.  We use these to allocate and halt channels on
->> +        * the modem's behalf due to a hardware quirk on IPA v4.2.  Once
->> +        * allocated, the modem "owns" these channels, and as a result we
->> +        * have no way of knowing the channel's state at any given time.
->> +        *
->> +        * It is recommended that we halt the modem channels we allocated
->> +        * when shutting down, but it's possible the channel isn't running
->> +        * at the time we issue the HALT command.  We'll get an error in
->> +        * that case, but it's harmless (the channel is already halted).
->> +        *
->> +        * For this reason, we silently ignore a CHANNEL_NOT_RUNNING error
->> +        * if we receive it.
->> +        */
->>          val = ioread32(gsi->virt + GSI_CNTXT_SCRATCH_0_OFFSET);
->>          result = u32_get_bits(val, GENERIC_EE_RESULT_FMASK);
->> -       if (result != GENERIC_EE_SUCCESS_FVAL)
->> +
->> +       switch (result) {
->> +       case GENERIC_EE_SUCCESS_FVAL:
->> +       case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
-> 
-> 
-> While building stable rc 5.10 for arm64 the build failed due to
-> the following errors / warnings.
-> 
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-> CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> clang'
-> drivers/net/ipa/gsi.c:1074:7: error: use of undeclared identifier
-> 'GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL'
->          case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
->               ^
-> 1 error generated.
-> make[4]: *** [scripts/Makefile.build:279: drivers/net/ipa/gsi.o] Error 1
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Build log link,
-> https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1086862412#L210
-> 
+/*
+ * op_mode
+ * Set to ...
+
+> + *Set to 0 (HT pure) under the following conditions
+> + *	 - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
+> + *	 - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
+> + *Set to 1 (HT non-member protection) if there may be non-HT STAs
+> + *	 in both the primary and the secondary channel
+> + *Set to 2 if only HT STAs are associated in BSS,
+> + *	 however and at least one 20 MHz HT STA is associated
+> + *Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
+> + *	 (currently non-GF HT station is considered as non-HT STA also)
+> + */
+
+regards,
+dan carpenter
 
