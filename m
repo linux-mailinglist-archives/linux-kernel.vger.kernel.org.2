@@ -2,206 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D63333952
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96412333979
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhCJJ6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:58:49 -0500
-Received: from mout.gmx.net ([212.227.15.19]:35187 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229489AbhCJJ6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:58:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1615370305;
-        bh=kHjJ9yeNHQwRs04k3pxUqHG2EByrtGLPJmDVZKxSo0w=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date;
-        b=AWlNegyl1ZNkgd8q8pNVBSX49mw1ubJz8+9/WDkgo/CBwJedev//EHxbBKp9s8kAI
-         gthtzhmOPWELwDaqDQDFUt2nrgx46M1xQ9G0bFNVAW7zxiX9lIijkHs2FRl+70KGkC
-         K7UruEYvSox9DqDyhaR+L3m5TQb/oZmvpEWIsNwE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.146.50.246]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MDhlV-1lUh7e2g6R-00ApAX; Wed, 10
- Mar 2021 10:58:25 +0100
-Message-ID: <987bd1ca15545ca896c4e1c115e89a1bba0ad306.camel@gmx.de>
-Subject: nouveau: lockdep cli->mutex vs reservation_ww_class_mutex  deadlock
- report
-From:   Mike Galbraith <efault@gmx.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ben Skeggs <bskeggs@redhat.com>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        Dave Airlie <airlied@redhat.com>
-Date:   Wed, 10 Mar 2021 10:58:24 +0100
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S232429AbhCJKJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:09:08 -0500
+Received: from mail-eopbgr130078.outbound.protection.outlook.com ([40.107.13.78]:19622
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229609AbhCJKJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 05:09:02 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iUb9W/LOzmEjidXweTqypkoi/Nq+Ns7JZ3Sm/QiH1HK44JuGDaJHYNYJz43A+T8TpOgvtNicSThWH2dujfkSwCevKcb9Pg58dgpyUIIyBWaEEC1iddhjM3ZF7DMTKs64+n0VOMusYUtHuuDp4gG9ZHiypb3SUeewXO1JlqK+ThoXYhuGnFclkFNaftHIQz6rJ7uN4A5Li1Q+l38AmiwYTLhIlaA4ylOdcmtj7fRv68UIDPXAQAZ1KuZCOpr/5KrdbUnqbUCM7SRBj+4kEWTZgpJYLAzeSzTC/LI1HeB4y52WhbHh+qZwWkO+7uAAv/86GRJC5rTJlCvzNrTNi5N9Lg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vwwtrOIhnNZ1OcZd69TbVCOxPkqpkcuWcJr8omph3Sc=;
+ b=Ra6/Hm+OK0IXDRRWAoiYiQHU/ARvgayAZv5wU4NYh2XEwSWQ6AFZbfSguIQBV80t/ROmf7TRtTc+OqBTnwc+Qvfma8QVoeAmHiISCh5I18iUOxCDld33tCSCs0lwpQ5kDc4eL4l7fbolNb7kMufvDHRP+S1nAW6nd0UEXx2goRRjRFtyW1gli7nErCdpaoRplLeQpqBDCTjMv5EYneSLD2xf0HqC3ZZvqn2Z8ATV4N9YR+qE/6LXMMBIHPVUBqgOzHvTXpE2ra6ejnIb0fdHjceYs8oXDhl63bXsWmokz9el5d1H/Q7FsNaqtEU8787EPowlRscor2NzdZ6H/8vK2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vwwtrOIhnNZ1OcZd69TbVCOxPkqpkcuWcJr8omph3Sc=;
+ b=DndL7iuuH0zcS61D+hV0h6u/vqrJWsIFCxOkKfQF3Uj9jvw8dV1Ra2de1PXeg/0QjY5c8S8Dx6SZR0n3+lX7ysm/4waPtAG5pCLU6/r98uKf+tDd7xL9peQrV+m5Y0yd93+klo6bDEpzuI89N7CH1Y4/3ESjzel4OCPnfGl+/nU=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR0401MB2318.eurprd04.prod.outlook.com (2603:10a6:800:27::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Wed, 10 Mar
+ 2021 10:08:57 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3912.028; Wed, 10 Mar 2021
+ 10:08:57 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org,
+        robert.foss@linaro.org, lee.jones@linaro.org
+Subject: [PATCH v5 00/14] Add some DRM bridge drivers support for i.MX8qm/qxp SoCs
+Date:   Wed, 10 Mar 2021 17:55:24 +0800
+Message-Id: <1615370138-5673-1-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: HK2PR06CA0010.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::22) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SqMISrnRsST5M8n+PLCgrwmSWekhu+csAh8+hgmtewkNHuiIMkm
- z5QOfQ/7a9y2gbuNvPw1qspFoXPhHwIrrVLJeh4hBoinLlDAwPGwit5dz/9lQ+G800OhsOU
- 9MHNDJpEANgbRgDXdL/WsQOX3hYZKl7JKnJsyuJXkBOWgv+QjbPrXevEVNtgwdSlVzFwMJZ
- 8MICHJkuS6n6BxMVzi80w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/eofxP9CXK0=:bbRtNamIC9RA9VtunQN7TQ
- 81ahJoichvwaYfOlE0v3N8z8REbuX7xNHW0pnBChE+XKzCHwOtwjYfN5Q0Hxe9m54U2xDZONK
- girMDwdfH9PRmt5a6L6ahVY0mz8v87l6Adt5gwc+T06Y/9hxuTUODi0xeiChirZOia/DfDBE1
- YhHApFPKumR6crtXRsAITBeoDlIN38MDQeP6eVkNsnYelnVHt3eSFTHNCwGyEqksX4D9cjg8+
- yOMNK1boG668XpJxUIutgOAIs9bOFwkuU5O8EhwXIyG/0/j1sJAdE/MJTt/zq2T1XbjTu6PZB
- QK86bH8+2zMarMREEEhwkE+93ZHqNYXNZLj5iPNBe5k4bdGo8zd+EQEjIno3ZHr8jffseZljD
- E82sTdqsyo+2nSnCT1Q7roMS9BGzDhFrEyTju+TWP6+jOV0iZ9bQ6WRxyBw29HsZCGMI8keHi
- VVUwkm6qLcTzh/wGH4n7G8rwk3gf+1EJrSArujWYmFl+v/YSm84hmOlNpV+jMHwKBdyXBwoGv
- 08wrtcPpfQJRnyIl/MRJtso5APOzevTC+8I+CEUKhxEBAl43FAKTmFJwf83eQfthM//S3N2eh
- InY1T+mMNEPrxOdpuWFWZo3XhFJc+RaAxnxI3eMP5aITqCaXUGkXoZG453ntBnedddrykCXh4
- 8Xo5zueYgmJ4QFyfzERoSMXzMAIn08E+G6CcXBFzxkxUV+tBJAJ+hgBlCft7MbPXLVf8CoRDN
- yLGQsrhUgtgoQlowx5j0j+4cO6ZrA7nxR93MSzFg6oaLg6j7TYCay+9BN952iDkx/DAw2Jbtk
- RkMV65K4gVkudZ3O1KMKMsYmjD/pUO4/j8GRgBjSNe8bnZ0lUisufBi3PsZTavc//5XscyPFV
- FCKyZgY49u6hfBZWTkzg==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by HK2PR06CA0010.apcprd06.prod.outlook.com (2603:1096:202:2e::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3912.17 via Frontend Transport; Wed, 10 Mar 2021 10:08:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d3612e21-d246-4bbc-bc66-08d8e3ac84a7
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2318:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB2318B15E9ABC97B1FD57048998919@VI1PR0401MB2318.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hGB78jFM+9XHjZJgtVjxvbHM9HQZCuNLah1C4V4QrRWhDOO6DnauvEfHb0yBujPhUfjQZ88cWS2KGBpspsv9ZOCbVHVjnvI0g1rREdm43NxM8jYGKIQ59+so5HnElanGdgtG4eokahz3qroXnYk5U5I7LtVWJD4buYGcOl8Vd8h2sQxGImsm1LTYGb8mziL8lteuiFyJTn5vbczYDkiOT+QdpJTVzrBweZQIcX/Nf4U1vEOwlushxnINMjfHtctIi4Ek/q8hVaPk+apdMa5PeHGPYAI1XiHWFRJilkqQwSK9N8fAh8bO1X7AZ5A816JhidGvlfT1SHOxPZ7R4nD4s/hB98baeGUcdAa8rj2JtNWuYPL1VZzcFzOnCffUvlfz7T496RxB/LrXzpsqnkL7OF9TZ7yfFoGNLRd9S4yXyII/V/D1+mPg84/be54Bsx8fG58YeyW4377Q8ndQFXMM80JLxY64kqjJ/0CNBTx+P4I7Fh3+l0wSKOrzIJZWfFNpEBH9bZjsXeHtWG+kIjhdpQA/lZUu0bwpbec5QBZ0whYLZyPFiQ0OvVcFWis0e5zKbxNX2XWRSr8JX+HV9ah4sGz1r9HOGW5by1z12JquAlkNXfBIltPI606eN7r9qL7lDn+h1DaJ/an3iLIogoIrqVorg2+CLqo/IFEnZVaHkjw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(4636009)(39860400002)(136003)(396003)(366004)(376002)(346002)(6666004)(66476007)(83380400001)(66556008)(8936002)(6512007)(966005)(2616005)(36756003)(6506007)(316002)(66946007)(69590400012)(956004)(4326008)(86362001)(16526019)(5660300002)(478600001)(8676002)(2906002)(52116002)(6486002)(186003)(7416002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?qq+Q0PIe+0rzE55E1k67N2TOo0biPYIW4AJXZBPjV1HqH/Y8GcKVxN9YqP6E?=
+ =?us-ascii?Q?fK8PmNmlzI3A6H5gaHFuFTii1XQ7PCNsy91xECgMYa4zylGmI5YVSn4Ce2Hy?=
+ =?us-ascii?Q?M1Piyc6o3Ppxq6UvENOYahuXboeYCN2N07GTp1RkI8TGlyQtvsqqgblohnqn?=
+ =?us-ascii?Q?f4XiplaZq5lM9M9Ed6GBVr/CsRBSqwvYKPNhM0lls9ikKD3R/pTLGfv8Nguh?=
+ =?us-ascii?Q?q7u4/9p+c3ABCtmBIjQ3vLC4OW4W8ttO71ZvpClidttatM/juvli0/6+iCb8?=
+ =?us-ascii?Q?Uo/xSGiRE5Jgs/7LSwqDKOVZWUTstv0d73dTiKHu3OLiQrHI6oxtkXFX7ydT?=
+ =?us-ascii?Q?OSNpcFkukKsO9MdPmYim2QmRzKtDeuBedEOsLLexlhWVpqhXTNNZpQf8ViYR?=
+ =?us-ascii?Q?KVZ+ssed6ZThB4SIfTxUcolGYn0ajbHf+tPd3vkjHvyuC9tPH5Dtz/bKNljI?=
+ =?us-ascii?Q?qoXNixlTIBBkRwrowOGM/MaDCDv4InDE5SwKFfT6VM8z36GPDweWGk8xaZxu?=
+ =?us-ascii?Q?un+nX0JG4mJisGX4gqXPihiLPBvfHsSslL4nGrBt6KJ+ZY+DP8A00tkI32Ut?=
+ =?us-ascii?Q?lz1ngIsi/kN9jqDkpe7aZSoGnEB0tiE36TEs5b1tjF83WcMzwBlUCSvv5o5s?=
+ =?us-ascii?Q?1i3vBuOOr+xhw7hSDt9GMPyHhOEZkjb71yiQbHnS1oKLOmff/VzYH5OHTKSn?=
+ =?us-ascii?Q?aLOnDZNO0oUJvXuj/eLDG7WC2lgiLhsSUXixqhJ2wSYBEBJBNZ7a3kmjQMjW?=
+ =?us-ascii?Q?IjucdGavOVzk2cwr72/n/4RST4DIGbpgDV65GIcx+Rtw/PZ9Ah4PlEVr+BuJ?=
+ =?us-ascii?Q?GtYKuNN35yVM8v/byAfDCEN/YQXsnyELYfmniNxzZ9gMyPeVmQ+IGBoHzDT2?=
+ =?us-ascii?Q?4Q5AgvEDpERuT/Q48jPKwt0OiGqQ2zlFh/RX5GxcjybgKgqCtCEPoFZQC/uV?=
+ =?us-ascii?Q?vdM/SThZPTW/GA7sTXwCuBUx04BH7o6UDROCIwX+SUSic8rk16TM0tQEO4NV?=
+ =?us-ascii?Q?BnAdxPisSjv2xm7YpsisOhQ/iegT96IbmoXc7zlEmYZGDsyX1x6u/mRzfuFY?=
+ =?us-ascii?Q?W/dKdVuHzLiqsVGnJ4ojy5GgCz1+Gb0KQ4qhJQoczwKUGF+HIRxMYiVXtA04?=
+ =?us-ascii?Q?CNf52yrPbWFwWfATZZ3v1gWPEXgBB2X7YUkU+YUfR64QpOoOqpPSchYUuLUJ?=
+ =?us-ascii?Q?mc3NcNXvDWdjxqU69utLHLCYt1dNTw4VI5md2hcEjd6ckquwDWbPI/bSQsGd?=
+ =?us-ascii?Q?ECzOLM7i3Z12bC1uAABnKK6MwwGvfxl/jiws62AobVA/MSht9M9SlAZvxPYr?=
+ =?us-ascii?Q?U963V86aRjTfZSFcmR65PkdW?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3612e21-d246-4bbc-bc66-08d8e3ac84a7
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2021 10:08:57.6718
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rJBF+DGVAAhGD64QJECgnXz9qDX9JybgAMc7dPonJJR3dVdCINtxdfjWFRMg3CUENKSW8L6OEuZseRAnGFLQKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2318
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-[   29.966927] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[   29.966929] WARNING: possible circular locking dependency detected
-[   29.966932] 5.12.0.g05a59d7-master #2 Tainted: G        W   E
-[   29.966934] ------------------------------------------------------
-[   29.966937] X/2145 is trying to acquire lock:
-[   29.966939] ffff888120714518 (&cli->mutex){+.+.}-{3:3}, at: nouveau_bo_=
-move+0x11f/0x980 [nouveau]
-[   29.967002]
-               but task is already holding lock:
-[   29.967004] ffff888123c201a0 (reservation_ww_class_mutex){+.+.}-{3:3}, =
-at: nouveau_bo_pin+0x2b/0x310 [nouveau]
-[   29.967053]
-               which lock already depends on the new lock.
+This is the v5 series to add some DRM bridge drivers support
+for i.MX8qm/qxp SoCs.
 
-[   29.967056]
-               the existing dependency chain (in reverse order) is:
-[   29.967058]
-               -> #1 (reservation_ww_class_mutex){+.+.}-{3:3}:
-[   29.967063]        __ww_mutex_lock.constprop.16+0xbe/0x10d0
-[   29.967069]        nouveau_bo_pin+0x2b/0x310 [nouveau]
-[   29.967112]        nouveau_channel_prep+0x106/0x2e0 [nouveau]
-[   29.967151]        nouveau_channel_new+0x4f/0x760 [nouveau]
-[   29.967188]        nouveau_abi16_ioctl_channel_alloc+0xdf/0x350 [nouvea=
-u]
-[   29.967223]        drm_ioctl_kernel+0x91/0xe0 [drm]
-[   29.967245]        drm_ioctl+0x2db/0x380 [drm]
-[   29.967259]        nouveau_drm_ioctl+0x56/0xb0 [nouveau]
-[   29.967303]        __x64_sys_ioctl+0x76/0xb0
-[   29.967307]        do_syscall_64+0x33/0x40
-[   29.967310]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   29.967314]
-               -> #0 (&cli->mutex){+.+.}-{3:3}:
-[   29.967318]        __lock_acquire+0x1494/0x1ac0
-[   29.967322]        lock_acquire+0x23e/0x3b0
-[   29.967325]        __mutex_lock+0x95/0x9d0
-[   29.967330]        nouveau_bo_move+0x11f/0x980 [nouveau]
-[   29.967377]        ttm_bo_handle_move_mem+0x79/0x130 [ttm]
-[   29.967384]        ttm_bo_validate+0x156/0x1b0 [ttm]
-[   29.967390]        nouveau_bo_validate+0x48/0x70 [nouveau]
-[   29.967438]        nouveau_bo_pin+0x1de/0x310 [nouveau]
-[   29.967487]        nv50_wndw_prepare_fb+0x53/0x4d0 [nouveau]
-[   29.967531]        drm_atomic_helper_prepare_planes+0x8a/0x110 [drm_kms=
-_helper]
-[   29.967547]        nv50_disp_atomic_commit+0xa9/0x1b0 [nouveau]
-[   29.967593]        drm_atomic_helper_update_plane+0x10a/0x150 [drm_kms_=
-helper]
-[   29.967606]        drm_mode_cursor_universal+0x10b/0x220 [drm]
-[   29.967627]        drm_mode_cursor_common+0x190/0x200 [drm]
-[   29.967648]        drm_mode_cursor_ioctl+0x3d/0x50 [drm]
-[   29.967669]        drm_ioctl_kernel+0x91/0xe0 [drm]
-[   29.967684]        drm_ioctl+0x2db/0x380 [drm]
-[   29.967699]        nouveau_drm_ioctl+0x56/0xb0 [nouveau]
-[   29.967748]        __x64_sys_ioctl+0x76/0xb0
-[   29.967752]        do_syscall_64+0x33/0x40
-[   29.967756]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   29.967760]
-               other info that might help us debug this:
+The bridges may chain one by one to form display pipes to support
+LVDS displays.  The relevant display controller is DPU embedded in
+i.MX8qm/qxp SoCs.
 
-[   29.967764]  Possible unsafe locking scenario:
+The DPU KMS driver can be found at:
+https://www.spinics.net/lists/arm-kernel/msg878542.html
 
-[   29.967767]        CPU0                    CPU1
-[   29.967770]        ----                    ----
-[   29.967772]   lock(reservation_ww_class_mutex);
-[   29.967776]                                lock(&cli->mutex);
-[   29.967779]                                lock(reservation_ww_class_mu=
-tex);
-[   29.967783]   lock(&cli->mutex);
-[   29.967786]
-                *** DEADLOCK ***
+This series supports the following display pipes:
+1) i.MX8qxp:
+prefetch eng -> DPU -> pixel combiner -> pixel link ->
+pixel link to DPI(PXL2DPI) -> LVDS display bridge(LDB)
 
-[   29.967790] 3 locks held by X/2145:
-[   29.967792]  #0: ffff88810365bcf8 (crtc_ww_class_acquire){+.+.}-{0:0}, =
-at: drm_mode_cursor_common+0x87/0x200 [drm]
-[   29.967817]  #1: ffff888108d9e098 (crtc_ww_class_mutex){+.+.}-{3:3}, at=
-: drm_modeset_lock+0xc3/0xe0 [drm]
-[   29.967841]  #2: ffff888123c201a0 (reservation_ww_class_mutex){+.+.}-{3=
-:3}, at: nouveau_bo_pin+0x2b/0x310 [nouveau]
-[   29.967896]
-               stack backtrace:
-[   29.967899] CPU: 6 PID: 2145 Comm: X Kdump: loaded Tainted: G        W =
-  E     5.12.0.g05a59d7-master #2
-[   29.967904] Hardware name: MEDION MS-7848/MS-7848, BIOS M7848W08.20C 09=
-/23/2013
-[   29.967908] Call Trace:
-[   29.967911]  dump_stack+0x6d/0x89
-[   29.967915]  check_noncircular+0xe7/0x100
-[   29.967919]  ? nvkm_vram_map+0x48/0x50 [nouveau]
-[   29.967959]  ? __lock_acquire+0x1494/0x1ac0
-[   29.967963]  __lock_acquire+0x1494/0x1ac0
-[   29.967967]  lock_acquire+0x23e/0x3b0
-[   29.967971]  ? nouveau_bo_move+0x11f/0x980 [nouveau]
-[   29.968020]  __mutex_lock+0x95/0x9d0
-[   29.968024]  ? nouveau_bo_move+0x11f/0x980 [nouveau]
-[   29.968070]  ? nvif_vmm_map+0xf4/0x110 [nouveau]
-[   29.968093]  ? nouveau_bo_move+0x11f/0x980 [nouveau]
-[   29.968137]  ? lock_release+0x160/0x280
-[   29.968141]  ? nouveau_bo_move+0x11f/0x980 [nouveau]
-[   29.968184]  nouveau_bo_move+0x11f/0x980 [nouveau]
-[   29.968226]  ? up_write+0x17/0x130
-[   29.968229]  ? unmap_mapping_pages+0x53/0x110
-[   29.968234]  ttm_bo_handle_move_mem+0x79/0x130 [ttm]
-[   29.968240]  ttm_bo_validate+0x156/0x1b0 [ttm]
-[   29.968247]  nouveau_bo_validate+0x48/0x70 [nouveau]
-[   29.968289]  nouveau_bo_pin+0x1de/0x310 [nouveau]
-[   29.968330]  nv50_wndw_prepare_fb+0x53/0x4d0 [nouveau]
-[   29.968372]  drm_atomic_helper_prepare_planes+0x8a/0x110 [drm_kms_helpe=
-r]
-[   29.968384]  ? lockdep_init_map_type+0x58/0x240
-[   29.968388]  nv50_disp_atomic_commit+0xa9/0x1b0 [nouveau]
-[   29.968430]  drm_atomic_helper_update_plane+0x10a/0x150 [drm_kms_helper=
-]
-[   29.968442]  drm_mode_cursor_universal+0x10b/0x220 [drm]
-[   29.968463]  ? lock_is_held_type+0xdd/0x130
-[   29.968468]  drm_mode_cursor_common+0x190/0x200 [drm]
-[   29.968486]  ? drm_mode_setplane+0x190/0x190 [drm]
-[   29.968502]  drm_mode_cursor_ioctl+0x3d/0x50 [drm]
-[   29.968518]  drm_ioctl_kernel+0x91/0xe0 [drm]
-[   29.968533]  drm_ioctl+0x2db/0x380 [drm]
-[   29.968548]  ? drm_mode_setplane+0x190/0x190 [drm]
-[   29.968570]  ? _raw_spin_unlock_irqrestore+0x30/0x60
-[   29.968574]  ? lockdep_hardirqs_on+0x79/0x100
-[   29.968578]  ? _raw_spin_unlock_irqrestore+0x3b/0x60
-[   29.968582]  nouveau_drm_ioctl+0x56/0xb0 [nouveau]
-[   29.968632]  __x64_sys_ioctl+0x76/0xb0
-[   29.968636]  ? lockdep_hardirqs_on+0x79/0x100
-[   29.968640]  do_syscall_64+0x33/0x40
-[   29.968644]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   29.968648] RIP: 0033:0x7f1ccfb4e9e7
-[   29.968652] Code: b3 66 90 48 8b 05 b1 14 2c 00 64 c7 00 26 00 00 00 48=
- c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <=
-48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 81 14 2c 00 f7 d8 64 89 01 48
-[   29.968659] RSP: 002b:00007ffca9596058 EFLAGS: 00000246 ORIG_RAX: 00000=
-00000000010
-[   29.968663] RAX: ffffffffffffffda RBX: 000055da9d0c6470 RCX: 00007f1ccf=
-b4e9e7
-[   29.968667] RDX: 00007ffca9596090 RSI: 00000000c01c64a3 RDI: 0000000000=
-00000e
-[   29.968670] RBP: 00007ffca9596090 R08: 0000000000000040 R09: 000055da9d=
-0f6310
-[   29.968674] R10: 0000000000000093 R11: 0000000000000246 R12: 00000000c0=
-1c64a3
-[   29.968677] R13: 000000000000000e R14: 0000000000000000 R15: 0000000000=
-000000
+2) i.MX8qm:
+prefetch eng -> DPU -> pixel combiner -> pixel link -> LVDS display bridge(LDB)
+
+
+This series drops the patch 'phy: Add LVDS configuration options', as suggested
+by Robert Foss, because it has already been sent with the following series to
+add Mixel combo PHY found in i.MX8qxp:
+https://www.spinics.net/lists/arm-kernel/msg879957.html
+
+So, this version depends on that series.
+
+
+Patch 1/14 and 2/14 add bus formats used by PXL2DPI.
+
+Patch 7/14 adds dt-binding for Control and Status Registers module(a syscon
+used by PXL2DPI and LDB), which references the PXL2DPI and LDB schemas.
+
+Patch 10/14 adds a helper for LDB bridge drivers.
+
+Patch 3/14 ~ 6/14, 8/14, 9/14 and 11/14 ~ 13/14 add drm bridge drivers and
+dt-bindings support for the bridges.
+
+Patch 14/14 updates MAINTAINERS.
+
+
+I've tested this series with a koe,tx26d202vm0bwa dual link LVDS panel and
+a LVDS to HDMI bridge(with a downstream drm bridge driver).
+
+
+Welcome comments, thanks.
+
+v4->v5:
+* Drop the patch 'phy: Add LVDS configuration options'. (Robert)
+* Add Robert's R-b tags on patch 1/14, 2/14, 4/14 and 6/14.
+* Drop the 'PC_BUF_PARA_REG' register definition from the pixel combiner bridge
+  driver(patch 4/14). (Robert)
+* Make a comment occupy a line in the pixel link bridge driver(patch 6/14).
+  (Robert)
+* Introduce a new patch(patch 7/14) to add dt-binding for Control and Status
+  Registers module. (Rob)
+* Make imx-ldb-helper be a pure object to be linked with i.MX8qxp LDB bridge
+  driver and i.MX8qm LDB bridge driver, instead of a module.  Correspondingly,
+  rename 'imx8{qm, qxp}-ldb.c' to 'imx8{qm, qxp}-ldb-drv.c'. (Robert)
+* Move 'imx_ldb_helper.h' to 'drivers/gpu/drm/bridge/imx/imx-ldb-helper.h'.
+  (Robert)
+* s/__FSL_IMX_LDB__/__IMX_LDB_HELPER__/  for 'imx-ldb-helper.h'.
+
+v3->v4:
+* Use 'fsl,sc-resource' DT property to get the SCU resource ID associated with
+  the PXL2DPI instance instead of using alias ID. (Rob)
+* Add Rob's R-b tag on patch 11/14.
+
+v2->v3:
+* Drop 'fsl,syscon' DT properties from fsl,imx8qxp-ldb.yaml and
+  fsl,imx8qxp-pxl2dpi.yaml. (Rob)
+* Mention the CSR module controls LDB and PXL2DPI in fsl,imx8qxp-ldb.yaml and
+  fsl,imx8qxp-pxl2dpi.yaml.
+* Call syscon_node_to_regmap() to get regmaps from LDB bridge helper driver
+  and PXL2DPI bridger driver instead of syscon_regmap_lookup_by_phandle().
+* Drop two macros from pixel link bridge driver which help define functions
+  and define them directly.
+* Properly disable all pixel link controls to POR value by calling
+  imx8qxp_pixel_link_disable_all_controls() from
+  imx8qxp_pixel_link_bridge_probe().
+* Add Rob's R-b tags on patch 4/14 and 6/14.
+
+v1->v2:
+* Rebase the series upon the latest drm-misc-next branch(5.11-rc2 based).
+* Use graph schema in the dt-bindings of the bridges. (Laurent)
+* Require all four pixel link output ports in fsl,imx8qxp-pixel-link.yaml.
+  (Laurent)
+* Side note i.MX8qm/qxp LDB official name 'pixel mapper' in fsl,imx8qxp-ldb.yaml.
+  (Laurent)
+* Mention pixel link is accessed via SCU firmware in fsl,imx8qxp-pixel-link.yaml.
+  (Rob)
+* Use enum instead of oneOf + const for the reg property of pixel combiner
+  channels in fsl,imx8qxp-pixel-combiner.yaml. (Rob)
+* Rewrite the function to find the next bridge in pixel link bridge driver
+  by properly using OF APIs and dropping unnecessary DT validation. (Rob)
+* Drop unnecessary port availability check in i.MX8qxp pixel link to DPI
+  bridge driver.
+* Drop unnecessary DT validation from i.MX8qxp LDB bridge driver.
+* Use of_graph_get_endpoint_by_regs() and of_graph_get_remote_endpoint() to
+  get the input remote endpoint in imx8qxp_ldb_set_di_id() of i.MX8qxp LDB
+  bridge driver.
+* Avoid using companion_port OF node after putting it in
+  imx8qxp_ldb_parse_dt_companion() of i.MX8qxp LDB bridge driver.
+* Drop unnecessary check for maximum available LDB channels from
+  i.MX8qm LDB bridge driver.
+* Mention i.MX8qm/qxp LDB official name 'pixel mapper' in i.MX8qm/qxp LDB
+  bridge drivers and Kconfig help messages.
+
+Liu Ying (14):
+  media: uapi: Add some RGB bus formats for i.MX8qm/qxp pixel combiner
+  media: docs: Add some RGB bus formats for i.MX8qm/qxp pixel combiner
+  dt-bindings: display: bridge: Add i.MX8qm/qxp pixel combiner binding
+  drm/bridge: imx: Add i.MX8qm/qxp pixel combiner support
+  dt-bindings: display: bridge: Add i.MX8qm/qxp display pixel link
+    binding
+  drm/bridge: imx: Add i.MX8qm/qxp display pixel link support
+  dt-bindings: mfd: Add i.MX8qm/qxp Control and Status Registers module
+    binding
+  dt-bindings: display: bridge: Add i.MX8qxp pixel link to DPI binding
+  drm/bridge: imx: Add i.MX8qxp pixel link to DPI support
+  drm/bridge: imx: Add LDB driver helper support
+  dt-bindings: display: bridge: Add i.MX8qm/qxp LVDS display bridge
+    binding
+  drm/bridge: imx: Add LDB support for i.MX8qxp
+  drm/bridge: imx: Add LDB support for i.MX8qm
+  MAINTAINERS: add maintainer for DRM bridge drivers for i.MX SoCs
+
+ .../bindings/display/bridge/fsl,imx8qxp-ldb.yaml   | 173 +++++
+ .../display/bridge/fsl,imx8qxp-pixel-combiner.yaml | 144 +++++
+ .../display/bridge/fsl,imx8qxp-pixel-link.yaml     | 106 +++
+ .../display/bridge/fsl,imx8qxp-pxl2dpi.yaml        | 108 ++++
+ .../devicetree/bindings/mfd/fsl,imx8qxp-csr.yaml   | 202 ++++++
+ .../userspace-api/media/v4l/subdev-formats.rst     | 156 +++++
+ MAINTAINERS                                        |  10 +
+ drivers/gpu/drm/bridge/Kconfig                     |   2 +
+ drivers/gpu/drm/bridge/Makefile                    |   1 +
+ drivers/gpu/drm/bridge/imx/Kconfig                 |  42 ++
+ drivers/gpu/drm/bridge/imx/Makefile                |   9 +
+ drivers/gpu/drm/bridge/imx/imx-ldb-helper.c        | 232 +++++++
+ drivers/gpu/drm/bridge/imx/imx-ldb-helper.h        |  98 +++
+ drivers/gpu/drm/bridge/imx/imx8qm-ldb-drv.c        | 586 +++++++++++++++++
+ drivers/gpu/drm/bridge/imx/imx8qxp-ldb-drv.c       | 720 +++++++++++++++++++++
+ .../gpu/drm/bridge/imx/imx8qxp-pixel-combiner.c    | 448 +++++++++++++
+ drivers/gpu/drm/bridge/imx/imx8qxp-pixel-link.c    | 427 ++++++++++++
+ drivers/gpu/drm/bridge/imx/imx8qxp-pxl2dpi.c       | 485 ++++++++++++++
+ include/uapi/linux/media-bus-format.h              |   6 +-
+ 19 files changed, 3954 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/fsl,imx8qxp-csr.yaml
+ create mode 100644 drivers/gpu/drm/bridge/imx/Kconfig
+ create mode 100644 drivers/gpu/drm/bridge/imx/Makefile
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx-ldb-helper.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx-ldb-helper.h
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qm-ldb-drv.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-ldb-drv.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-pixel-combiner.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-pixel-link.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-pxl2dpi.c
+
+-- 
+2.7.4
 
