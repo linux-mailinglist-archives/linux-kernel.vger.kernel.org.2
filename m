@@ -2,191 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28475333B7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EDF333B83
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhCJLd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:33:59 -0500
-Received: from foss.arm.com ([217.140.110.172]:44618 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230173AbhCJLc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:32:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A6BF1063;
-        Wed, 10 Mar 2021 03:32:29 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.52.108])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF2773F85F;
-        Wed, 10 Mar 2021 03:32:26 -0800 (PST)
-Date:   Wed, 10 Mar 2021 11:32:20 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, broonie@kernel.org,
-        Paul Mackerras <paulus@samba.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
- save_stack_trace() and friends
-Message-ID: <20210310112441.GA19619@C02TD0UTHF1T.local>
-References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
- <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
- <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
- <YD+o5QkCZN97mH8/@elver.google.com>
- <20210304145730.GC54534@C02TD0UTHF1T.local>
- <20210304215448.GU29191@gate.crashing.org>
- <20210309160505.GA4979@C02TD0UTHF1T.local>
- <20210309220532.GI29191@gate.crashing.org>
+        id S231424AbhCJLem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:34:42 -0500
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:52390 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhCJLeQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:34:16 -0500
+Received: by mail-wm1-f48.google.com with SMTP id n22so6895307wmc.2;
+        Wed, 10 Mar 2021 03:34:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7J7s2ULlckxPGV45ObvNHeMFlnciPOBmL4sFeKxQRrY=;
+        b=f+hF+pFH0HAizt2JQ2xgYBt5+SCWy5rWFtjiPaAHluZDlhNTVAFfW3YyvrG8WtjjkE
+         gzybpQUkYL9piVr/2mU8hhKJfTZitAxv6ju4K+sFKPUm80F90AocMyXQVBJl//tG9rjA
+         JGwrnkuE7P9ZEQJHQ3koboVUHoezYIlEl8gsjKo4Gm3vZ+8R3fEGWDCxvFZZiL8xRu3E
+         JppUwYvQCEhXuqFpAKeIbupK7tFUySZgLLJV1uKiQTJj9etpe0kDz4VUHLu4o3GtwaeG
+         Rg3rfIYd5sZxtIYtCdV19hBiCEZJPJoIFClAfNsT5AWndbShOEnZtRaVblkDoLRnGKYn
+         832w==
+X-Gm-Message-State: AOAM530ywGmQCXDobx4UaQCGDsEFT/pGvcCVMahMEHRVWyB0meaU1qU0
+        pkelFlQl5+I4e6c8nsAR+Go=
+X-Google-Smtp-Source: ABdhPJykSDTXQb6rMzAJxlIEs15qvYEmGaFG3pm37E2tlVeGACX4zqvLUH6j+7SC5v6ZH9AFK3lxiA==
+X-Received: by 2002:a7b:ce19:: with SMTP id m25mr2938803wmc.74.1615376055056;
+        Wed, 10 Mar 2021 03:34:15 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id m3sm8770402wmc.48.2021.03.10.03.34.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 03:34:14 -0800 (PST)
+Date:   Wed, 10 Mar 2021 11:34:13 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Denis Kirjanov <kda@linux-powerpc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        ath9k-devel@qca.qualcomm.com, Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net
+Subject: Re: [patch 12/14] PCI: hv: Use tasklet_disable_in_atomic()
+Message-ID: <20210310113413.cuvmnrd3vhyhzi4c@liuwe-devbox-debian-v2>
+References: <20210309084203.995862150@linutronix.de>
+ <20210309084242.516519290@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210309220532.GI29191@gate.crashing.org>
+In-Reply-To: <20210309084242.516519290@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 04:05:32PM -0600, Segher Boessenkool wrote:
-> Hi!
+On Tue, Mar 09, 2021 at 09:42:15AM +0100, Thomas Gleixner wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > 
-> On Tue, Mar 09, 2021 at 04:05:23PM +0000, Mark Rutland wrote:
-> > On Thu, Mar 04, 2021 at 03:54:48PM -0600, Segher Boessenkool wrote:
-> > > On Thu, Mar 04, 2021 at 02:57:30PM +0000, Mark Rutland wrote:
-> > > > It looks like GCC is happy to give us the function-entry-time FP if we use
-> > > > __builtin_frame_address(1),
-> > > 
-> > > From the GCC manual:
-> > >      Calling this function with a nonzero argument can have
-> > >      unpredictable effects, including crashing the calling program.  As
-> > >      a result, calls that are considered unsafe are diagnosed when the
-> > >      '-Wframe-address' option is in effect.  Such calls should only be
-> > >      made in debugging situations.
-> > > 
-> > > It *does* warn (the warning is in -Wall btw), on both powerpc and
-> > > aarch64.  Furthermore, using this builtin causes lousy code (it forces
-> > > the use of a frame pointer, which we normally try very hard to optimise
-> > > away, for good reason).
-> > > 
-> > > And, that warning is not an idle warning.  Non-zero arguments to
-> > > __builtin_frame_address can crash the program.  It won't on simpler
-> > > functions, but there is no real definition of what a simpler function
-> > > *is*.  It is meant for debugging, not for production use (this is also
-> > > why no one has bothered to make it faster).
-> > >
-> > > On Power it should work, but on pretty much any other arch it won't.
-> > 
-> > I understand this is true generally, and cannot be relied upon in
-> > portable code. However as you hint here for Power, I believe that on
-> > arm64 __builtin_frame_address(1) shouldn't crash the program due to the
-> > way frame records work on arm64, but I'll go check with some local
-> > compiler folk. I agree that __builtin_frame_address(2) and beyond
-> > certainly can, e.g.  by NULL dereference and similar.
+> The hv_compose_msi_msg() callback in irq_chip::irq_compose_msi_msg is
+> invoked via irq_chip_compose_msi_msg(), which itself is always invoked from
+> atomic contexts from the guts of the interrupt core code.
 > 
-> I still do not know the aarch64 ABI well enough.  If only I had time!
+> There is no way to change this w/o rewriting the whole driver, so use
+> tasklet_disable_in_atomic() which allows to make tasklet_disable()
+> sleepable once the remaining atomic users are addressed.
 > 
-> > For context, why do you think this would work on power specifically? I
-> > wonder if our rationale is similar.
-> 
-> On most 64-bit Power ABIs all stack frames are connected together as a
-> linked list (which is updated atomically, importantly).  This makes it
-> possible to always find all previous stack frames.
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-We have something similar on arm64, where the kernel depends on being
-built with a frame pointer following the AAPCS frame pointer rules.
-
-Every stack frame contains a "frame record" *somewhere* within that
-stack frame, and the frame records are chained together as a linked
-list. The frame pointer points at the most recent frame record (and this
-is what __builtin_frame_address(0) returns).
-
-The records themselves are basically:
-
-struct record {
-	struct record *next;
-	unsigned long ret_addr;
-};
-
-At function call boundaries, we know that the FP is the caller's record
-(or NULL for the first function), and the LR is the address the current
-function should return to. Within a function with a stack frame, we can
-access that function's record and the `next` field (equivalent to the FP
-at the time of entry to the function) is what __builtin_frame_address(1)
-should return.
-
-> > Are you aware of anything in particular that breaks using
-> > __builtin_frame_address(1) in non-portable code, or is this just a
-> > general sentiment of this not being a supported use-case?
-> 
-> It is not supported, and trying to do it anyway can crash: it can use
-> random stack contents as pointer!  Not really "random" of course, but
-> where it thinks to find a pointer into the previous frame, which is not
-> something it can rely on (unless the ABI guarantees it somehow).
-> 
-> See gcc.gnu.org/PR60109 for example.
-
-Sure; I see that being true generally (and Ramana noted that on 32-bit
-arm a frame pointer wasn't mandated), but I think in this case we have a
-stronger target (and configuration) specific guarantee.
-
-> > > > Unless we can get some strong guarantees from compiler folk such that we
-> > > > can guarantee a specific function acts boundary for unwinding (and
-> > > > doesn't itself get split, etc), the only reliable way I can think to
-> > > > solve this requires an assembly trampoline. Whatever we do is liable to
-> > > > need some invasive rework.
-> > > 
-> > > You cannot get such a guarantee, other than not letting the compiler
-> > > see into the routine at all, like with assembler code (not inline asm,
-> > > real assembler code).
-> > 
-> > If we cannot reliably ensure this then I'm happy to go write an assembly
-> > trampoline to snapshot the state at a function call boundary (where our
-> > procedure call standard mandates the state of the LR, FP, and frame
-> > records pointed to by the FP).
-> 
-> Is the frame pointer required?!
-
-The arm64 Linux port mandates frame pointers for kernel code. It is
-generally possible to build code without frame pointers (e.g. userspace),
-but doing that for kernel code would be a bug.
-
-> > This'll require reworking a reasonable
-> > amount of code cross-architecture, so I'll need to get some more
-> > concrete justification (e.g. examples of things that can go wrong in
-> > practice).
-> 
-> Say you have a function that does dynamic stack allocation, then there
-> is usually no way to find the previous stack frame (without function-
-> specific knowledge).  So __builtin_frame_address cannot work (it knows
-> nothing about frames further up).
-> 
-> Dynamic stack allocation (alloca, or variable length automatic arrays)
-> is just the most common and most convenient example; it is not the only
-> case you have problems here.
-
-I agree with those as general concerns, but I don't think that affects
-arm64's frame records, since their location within a stack frame is
-immaterial given the chaining.
-
-> > > The real way forward is to bite the bullet and to no longer pretend you
-> > > can do a full backtrace from just the stack contents.  You cannot.
-> > 
-> > I think what you mean here is that there's no reliable way to handle the
-> > current/leaf function, right? If so I do agree.
-> 
-> No, I meant what I said.
-> 
-> There is the separate issue that you do not know where the return
-> address (etc.) is stored in a function that has not yet done a call
-> itself, sure.  You cannot assume anything the ABI does not tell you you
-> can depend on.
-
-This is in the frame record per the AAPCS.
-
-> > Beyond that I believe that arm64's frame records should be sufficient.
-> 
-> Do you have a simple linked list connecting all frames?
-
-Yes.
-
-Thanks,
-Mark.
+Acked-by: Wei Liu <wei.liu@kernel.org>
