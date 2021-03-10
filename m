@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EBD334B1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADB7334B21
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233998AbhCJWHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:07:00 -0500
-Received: from mga14.intel.com ([192.55.52.115]:30913 "EHLO mga14.intel.com"
+        id S232011AbhCJWHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:07:01 -0500
+Received: from mga12.intel.com ([192.55.52.136]:64757 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233077AbhCJWGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:06:38 -0500
-IronPort-SDR: giG5A3nnUZTr2WOMnVeLLVjbexlemS2cHdWSA1bj5ASUjjoOu1J7LL+/JzeHpA7t2PN7Mcbgdo
- enaVtZiucrEA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="187936102"
+        id S234273AbhCJWGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:06:39 -0500
+IronPort-SDR: X0m5t9BQXqgSLDbFStQc4eikJGGCdIK5WajuF2jWUqaz9P0LYs4+59CUD/wlCV4jhaZJDndbmK
+ zqF3LDpyPW7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167847354"
 X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="187936102"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:06:37 -0800
-IronPort-SDR: ODSjEq3vixKPnCX5oeHCmtTwoyko+CIxWFmxuspHSfcueZYhRr9pEfstVz4sisHF54COI83lZ+
- GHYs3ZfsUCbw==
+   d="scan'208";a="167847354"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:06:38 -0800
+IronPort-SDR: jBMWqoWyC+dYvZUjCrYPZE0Dae97mnaKx+lfSI0HM7LEpGJdD3KFqUOvmEdEkUWBUEBKrQDoVG
+ AD6wXuNMDe5g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="603275939"
+   d="scan'208";a="448065443"
 Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 10 Mar 2021 14:06:36 -0800
+  by orsmga001.jf.intel.com with ESMTP; 10 Mar 2021 14:06:36 -0800
 Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lK6yS-0000PN-33; Wed, 10 Mar 2021 22:06:36 +0000
-Date:   Thu, 11 Mar 2021 06:05:41 +0800
+        id 1lK6yS-0000PK-2g; Wed, 10 Mar 2021 22:06:36 +0000
+Date:   Thu, 11 Mar 2021 06:05:50 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/urgent] BUILD SUCCESS
- 4817a52b306136c8b2b2271d8770401441e4cf79
-Message-ID: <604942b5.sWTS4QX1wbRqSOmk%lkp@intel.com>
+Subject: [tip:sched/core] BUILD SUCCESS
+ 13c2235b2b2870675195f0b551275d1abdd81068
+Message-ID: <604942be.aL63CAj/sGvqJMRO%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,8 +43,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/urgent
-branch HEAD: 4817a52b306136c8b2b2271d8770401441e4cf79  seqlock,lockdep: Fix seqcount_latch_init()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/core
+branch HEAD: 13c2235b2b2870675195f0b551275d1abdd81068  sched: Remove unnecessary variable from schedule_tail()
 
 elapsed time: 727m
 
@@ -60,10 +60,10 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+sparc                            allyesconfig
 mips                         db1xxx_defconfig
 powerpc                     tqm8540_defconfig
 powerpc                      ppc44x_defconfig
-sparc                            allyesconfig
 mips                         tb0287_defconfig
 mips                     cu1830-neo_defconfig
 powerpc                 mpc8540_ads_defconfig
@@ -133,7 +133,6 @@ arm                       versatile_defconfig
 powerpc                 mpc832x_mds_defconfig
 arm                         s3c2410_defconfig
 mips                          ath79_defconfig
-riscv                               defconfig
 arm                            xcep_defconfig
 arc                           tb10x_defconfig
 arm                          ep93xx_defconfig
@@ -216,6 +215,7 @@ riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
+riscv                               defconfig
 riscv                            allmodconfig
 x86_64                           allyesconfig
 x86_64                    rhel-7.6-kselftests
