@@ -2,608 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A2A334C66
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5127B334C6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbhCJXUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:20:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233178AbhCJXTk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:19:40 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19225C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:19:40 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id b8so18164251oti.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:19:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rQVZRuv7v9HNpbXdcvf4GyZAZLaOLOz+BRqgqExhf04=;
-        b=NlHdOF4qXRnnUjaZVDrn5FPVj4g6PzjNBSMwmEv9krULKYVPe58sndKLwJDux+AyOP
-         Wrp4j82M5yBiuzt8WMRjN+oDE9kzU3Y0WYNWquLs9oRW2czzRh9QoI8ntsmd16xRdR8W
-         aslPjR7zyBngqDzpBK74KqGqmgkUuZH0xOx68Dn1ZHvW0FxOSISzIUgpP/SITJnyCtcn
-         UJfrGEhPtxP3kwP+EFQuvUwR8HywfehkcNXvj1gAbFHjeAlKbZ5NF5Uw14a8DuSJNxcE
-         rGWi5laff3MWOxfAN39opXZ58IRcH9nIONxMPnGuEOowA5SONr7X2RyPdvj0XsF89BcZ
-         T3nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rQVZRuv7v9HNpbXdcvf4GyZAZLaOLOz+BRqgqExhf04=;
-        b=mxIJ5d7FEDmBl8vXC0pl01yUQL9d6q661ENXF8LqpYELRslpnxjo03t0q2cjeg4woG
-         ubv7lFDW4S/kqIXAdAaoPOyeaWjQxok0DJo0+oiiS2N+JmzvXNNueH1xQW/dnAMbRT/F
-         TW0ndw2joxt4sQBb3arJ1/Z7I+yYtHlxrpWE8tGv/0Ble84KZYAVdP9Z+7GAHOfRL9LT
-         bYajkX5eB5x04Ts+U0BvjQtJZ8wfp9j4oYsCeVSJIZlfwBHgZCbt1y+97d6woivZXjhU
-         oukdT939GDz9MJkj/9L+4VKstW/3igsGhJTt7DamCYtXUiPM0rz12BsSZongDWORRK59
-         relA==
-X-Gm-Message-State: AOAM531oRvHK3bp9e2iqcGvNbN0W1qX/7aXqLeXRN9Z+ElMKnMoH1eHD
-        amDyKZhbCpFE0iDcjIK7BStE1w==
-X-Google-Smtp-Source: ABdhPJyjKkut+Edx72bAxRpaWLi7CfGhH+ocAsBNc3kV8ABgiaGznmsRVVKfkkKF/KpahTa/hoAB2Q==
-X-Received: by 2002:a9d:7e8d:: with SMTP id m13mr4506749otp.54.1615418379266;
-        Wed, 10 Mar 2021 15:19:39 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v3sm186816oix.48.2021.03.10.15.19.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 15:19:38 -0800 (PST)
-Date:   Wed, 10 Mar 2021 17:19:37 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Souradeep Chowdhury <schowdhu@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        sibis@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
-Subject: Re: [PATCH V1 2/6] soc: qcom: dcc: Add driver support for Data
- Capture and Compare unit(DCC)
-Message-ID: <YElUCaBUOx7hEuIh@builder.lan>
-References: <cover.1615393454.git.schowdhu@codeaurora.org>
- <48556129a02c9f7cd0b31b2e8ee0f168e6d211b7.1615393454.git.schowdhu@codeaurora.org>
+        id S233905AbhCJXUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:20:47 -0500
+Received: from mga01.intel.com ([192.55.52.88]:11033 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233890AbhCJXUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 18:20:25 -0500
+IronPort-SDR: NdwaCg2lhSw/Ntlnkb/WgYs7V9kodjQblQc8hsuuBI+enSSHiZ4wJyXbtltGZ6sDXQFlwoTlNW
+ ILz1NXm0iJHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="208394417"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="208394417"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 15:20:25 -0800
+IronPort-SDR: 4SmmEZR0tt+E97Wkd/t6ILnIemJbLhVvQJ075cJtiAWIdfM38gFbNRe5+xLwuqZ0bhIuzj/LfI
+ uW53Cb0Xq8Pw==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="431396562"
+Received: from umalluga-mobl.amr.corp.intel.com (HELO [10.209.90.191]) ([10.209.90.191])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 15:20:21 -0800
+Subject: Re: [PATCH v22 8/8] x86/vdso: Add ENDBR64 to __vdso_sgx_enter_enclave
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210310220519.16811-1-yu-cheng.yu@intel.com>
+ <20210310220519.16811-9-yu-cheng.yu@intel.com> <YElKjT2v628tidE/@kernel.org>
+ <8b8efe44-b79f-ce29-ee28-066f88c93840@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <c2bfe707-2ef6-213a-f02c-4689726a473a@intel.com>
+Date:   Wed, 10 Mar 2021 15:20:20 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48556129a02c9f7cd0b31b2e8ee0f168e6d211b7.1615393454.git.schowdhu@codeaurora.org>
+In-Reply-To: <8b8efe44-b79f-ce29-ee28-066f88c93840@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10 Mar 10:46 CST 2021, Souradeep Chowdhury wrote:
-
-> The DCC is a DMA Engine designed to capture and store data
-> during system crash or software triggers. The DCC operates
-> based on link list entries which provides it with data and
-> addresses and the function it needs to perform. These
-> functions are read, write and loop. Added the basic driver
-> in this patch which contains a probe method which instantiates
-> the resources needed by the driver. DCC has it's own SRAM which
-> needs to be instantiated at probe time as well.
+On 3/10/21 2:55 PM, Yu, Yu-cheng wrote:
+> On 3/10/2021 2:39 PM, Jarkko Sakkinen wrote:
+>> On Wed, Mar 10, 2021 at 02:05:19PM -0800, Yu-cheng Yu wrote:
+>>> When CET is enabled, __vdso_sgx_enter_enclave() needs an endbr64
+>>> in the beginning of the function.
+>>
+>> OK.
+>>
+>> What you should do is to explain what it does and why it's needed.
+>>
 > 
+> The endbr marks a branch target.  Without the "no-track" prefix, if an
+> indirect call/jmp reaches a non-endbr opcode, a control-protection fault
+> is raised.  Usually endbr's are inserted by the compiler.  For assembly,
+> these have to be put in manually.  I will add this in the commit log if
+> there is another revision.  Thanks!
 
-So to summarize, the DCC will upon a crash copy the configured region
-into the dcc-ram, where it can be retrieved either by dumping the memory
-over USB or from sysfs on the next boot?
+This is close, but it's missing a detail or two that I think is
+important for someone like Jarkko trying to figure out what it means for
+his subsystem or driver.
 
-> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
-> ---
->  drivers/soc/qcom/Kconfig  |   8 +
->  drivers/soc/qcom/Makefile |   1 +
->  drivers/soc/qcom/dcc.c    | 388 ++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 397 insertions(+)
->  create mode 100644 drivers/soc/qcom/dcc.c
-> 
-> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-> index 79b568f..8819e0b 100644
-> --- a/drivers/soc/qcom/Kconfig
-> +++ b/drivers/soc/qcom/Kconfig
-> @@ -69,6 +69,14 @@ config QCOM_LLCC
->  	  SDM845. This provides interfaces to clients that use the LLCC.
->  	  Say yes here to enable LLCC slice driver.
->  
-> +config QCOM_DCC
-> +	tristate "Qualcomm Technologies, Inc. Data Capture and Compare engine driver"
-> +	depends on ARCH_QCOM || COMPILE_TEST
-> +	help
-> +	  This option enables driver for Data Capture and Compare engine. DCC
-> +	  driver provides interface to configure DCC block and read back
-> +	  captured data from DCC's internal SRAM.
-> +
->  config QCOM_KRYO_L2_ACCESSORS
->  	bool
->  	depends on ARCH_QCOM && ARM64 || COMPILE_TEST
-> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-> index ad675a6..1b00870 100644
-> --- a/drivers/soc/qcom/Makefile
-> +++ b/drivers/soc/qcom/Makefile
-> @@ -26,3 +26,4 @@ obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
->  obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
->  obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
->  obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
-> +obj-$(CONFIG_QCOM_DCC) += dcc.o
-> diff --git a/drivers/soc/qcom/dcc.c b/drivers/soc/qcom/dcc.c
-> new file mode 100644
-> index 0000000..89816bf
-> --- /dev/null
-> +++ b/drivers/soc/qcom/dcc.c
-> @@ -0,0 +1,388 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2015-2021, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/bitops.h>
-> +#include <linux/cdev.h>
-> +#include <linux/delay.h>
-> +#include <linux/fs.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/uaccess.h>
-> +
-> +#define dcc_readl(drvdata, off)						\
-> +	readl(drvdata->base + dcc_offset_conv(drvdata, off))
+I'd probably say:
 
-This is only used in probe, please just inline it, and use (a) local
-variable(s) to avoid the lengthy lines.
+ENDBR is a special new instruction for the Indirect Branch Tracking
+(IBR) component of CET.  IBT prevents attacks by ensuring that (most)
+indirect branches and function calls may only land at ENDBR
+instructions.  Branches that don't follow the rules will result in
+control flow (#CF) exceptions.
 
-> +
-> +/* DCC registers */
-> +#define DCC_HW_INFO			0x04
-> +#define DCC_LL_NUM_INFO			0x10
-> +
-> +#define DCC_MAP_LEVEL1			0x18
-> +#define DCC_MAP_LEVEL2			0x34
-> +#define DCC_MAP_LEVEL3			0x4C
-> +
-> +#define DCC_MAP_OFFSET1			0x10
-> +#define DCC_MAP_OFFSET2			0x18
-> +#define DCC_MAP_OFFSET3			0x1C
-> +#define DCC_MAP_OFFSET4			0x8
-> +
-> +#define DCC_FIX_LOOP_OFFSET		16
-> +#define DCC_VER_INFO_BIT		9
-> +
-> +#define DCC_MAX_LINK_LIST		8
-> +#define DCC_INVALID_LINK_LIST		GENMASK(7, 0)
-> +
-> +#define DCC_VER_MASK1			GENMASK(6, 0)
-> +#define DCC_VER_MASK2			GENMASK(5, 0)
-> +
-> +#define DCC_RD_MOD_WR_ADDR		0xC105E
-> +
-> +struct qcom_dcc_config {
-> +	const int dcc_ram_offset;
-> +};
-> +
-> +enum dcc_mem_map_ver {
-> +	DCC_MEM_MAP_VER1,
-
-As these are just integers, I would suggest skipping them. If you really
-like them I would like to see VER1 = 1, to make any future debugging
-easier.
-
-> +	DCC_MEM_MAP_VER2,
-> +	DCC_MEM_MAP_VER3
-> +};
-> +
-> +enum dcc_descriptor_type {
-> +	DCC_ADDR_TYPE,
-> +	DCC_LOOP_TYPE,
-> +	DCC_READ_WRITE_TYPE,
-> +	DCC_WRITE_TYPE
-> +};
-> +
-> +struct dcc_config_entry {
-> +	u32				base;
-> +	u32				offset;
-> +	u32				len;
-> +	u32				index;
-> +	u32				loop_cnt;
-> +	u32				write_val;
-> +	u32				mask;
-> +	bool				apb_bus;
-> +	enum dcc_descriptor_type	desc_type;
-> +	struct list_head		list;
-> +};
-> +
-> +struct dcc_drvdata {
-> +	void __iomem		*base;
-> +	u32			reg_size;
-> +	struct device		*dev;
-> +	struct mutex		mutex;
-> +	void __iomem		*ram_base;
-> +	u32			ram_size;
-> +	u32			ram_offset;
-> +	enum dcc_mem_map_ver	mem_map_ver;
-> +	u32			ram_cfg;
-> +	u32			ram_start;
-> +	bool			*enable;
-> +	bool			*configured;
-> +	bool			interrupt_disable;
-> +	char			*sram_node;
-> +	struct cdev		sram_dev;
-> +	struct class		*sram_class;
-> +	struct list_head	*cfg_head;
-> +	u32			*nr_config;
-> +	u32			nr_link_list;
-> +	u8			curr_list;
-> +	u8			loopoff;
-> +};
-> +
-> +static u32 dcc_offset_conv(struct dcc_drvdata *drvdata, u32 off)
-
-I don't see a reason for specifying that the parameter and return value
-are 32-bit unsigned ints, please use a generic data type...Like size_t
-
-> +{
-> +	if (drvdata->mem_map_ver == DCC_MEM_MAP_VER1) {
-> +		if ((off & DCC_VER_MASK1) >= DCC_MAP_LEVEL3)
-> +			return (off - DCC_MAP_OFFSET3);
-> +		if ((off & DCC_VER_MASK1) >= DCC_MAP_LEVEL2)
-> +			return (off - DCC_MAP_OFFSET2);
-> +		else if ((off & DCC_VER_MASK1) >= DCC_MAP_LEVEL1)
-> +			return (off - DCC_MAP_OFFSET1);
-> +	} else if (drvdata->mem_map_ver == DCC_MEM_MAP_VER2) {
-> +		if ((off & DCC_VER_MASK1) >= DCC_MAP_LEVEL2)
-> +			return (off - DCC_MAP_OFFSET4);
-> +	}
-> +	return off;
-> +}
-> +
-> +static void dcc_config_reset(struct dcc_drvdata *drvdata)
-> +{
-> +	struct dcc_config_entry *entry, *temp;
-> +	int curr_list;
-> +
-> +	mutex_lock(&drvdata->mutex);
-> +
-> +	for (curr_list = 0; curr_list < drvdata->nr_link_list; curr_list++) {
-> +
-
-Unnecessary newline.
-
-> +		list_for_each_entry_safe(entry, temp,
-> +			&drvdata->cfg_head[curr_list], list) {
-> +			list_del(&entry->list);
-> +			devm_kfree(drvdata->dev, entry);
-> +			drvdata->nr_config[curr_list]--;
-> +		}
-> +	}
-> +	drvdata->ram_start = 0;
-> +	drvdata->ram_cfg = 0;
-> +	mutex_unlock(&drvdata->mutex);
-> +}
-> +
-> +static int dcc_sram_open(struct inode *inode, struct file *file)
-> +{
-> +	struct dcc_drvdata *drvdata = container_of(inode->i_cdev,
-> +		struct dcc_drvdata,
-> +		sram_dev);
-> +	file->private_data = drvdata;
-> +
-> +	return	0;
-> +}
-> +
-> +static ssize_t dcc_sram_read(struct file *file, char __user *data,
-> +						size_t len, loff_t *ppos)
-> +{
-> +	unsigned char *buf;
-> +	struct dcc_drvdata *drvdata = file->private_data;
-> +
-> +	/* EOF check */
-> +	if (drvdata->ram_size <= *ppos)
-
-"Is ppos beyond the EOF" is better expressed as:
-
-	if (*ppos >= drvdata->ram_size)
-
-> +		return 0;
-> +
-> +	if ((*ppos + len) > drvdata->ram_size)
-> +		len = (drvdata->ram_size - *ppos);
-> +
-> +	buf = kzalloc(len, GFP_KERNEL);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +
-> +	memcpy_fromio(buf, (drvdata->ram_base + *ppos), len);
-
-Parenthesis are unnecessary.
-
-> +
-> +	if (copy_to_user(data, buf, len)) {
-> +		dev_err(drvdata->dev, "DCC: Couldn't copy all data to user\n");
-> +		kfree(buf);
-> +		return -EFAULT;
-> +	}
-> +
-> +	*ppos += len;
-> +
-> +	kfree(buf);
-> +
-> +	return len;
-> +}
-> +
-> +static const struct file_operations dcc_sram_fops = {
-> +	.owner		= THIS_MODULE,
-> +	.open		= dcc_sram_open,
-> +	.read		= dcc_sram_read,
-> +	.llseek		= no_llseek,
-> +};
-> +
-> +static int dcc_sram_dev_register(struct dcc_drvdata *drvdata)
-> +{
-> +	int ret;
-> +	struct device *device;
-> +	dev_t dev;
-> +
-> +	ret = alloc_chrdev_region(&dev, 0, 1, drvdata->sram_node);
-> +	if (ret)
-> +		goto err_alloc;
-> +
-> +	cdev_init(&drvdata->sram_dev, &dcc_sram_fops);
-
-How about implementing this using pstore instead of exposing it through
-a custom /dev/dcc_sram (if I read the code correclty)
-
-> +
-> +	drvdata->sram_dev.owner = THIS_MODULE;
-> +	ret = cdev_add(&drvdata->sram_dev, dev, 1);
-> +	if (ret)
-> +		goto err_cdev_add;
-> +
-> +	drvdata->sram_class = class_create(THIS_MODULE, drvdata->sram_node);
-> +	if (IS_ERR(drvdata->sram_class)) {
-> +		ret = PTR_ERR(drvdata->sram_class);
-> +		goto err_class_create;
-> +	}
-> +
-> +	device = device_create(drvdata->sram_class, NULL,
-> +						drvdata->sram_dev.dev, drvdata,
-> +						drvdata->sram_node);
-> +	if (IS_ERR(device)) {
-> +		ret = PTR_ERR(device);
-> +		goto err_dev_create;
-> +	}
-> +
-> +	return 0;
-> +err_dev_create:
-> +	class_destroy(drvdata->sram_class);
-> +err_class_create:
-> +	cdev_del(&drvdata->sram_dev);
-> +err_cdev_add:
-> +	unregister_chrdev_region(drvdata->sram_dev.dev, 1);
-> +err_alloc:
-> +	return ret;
-> +}
-> +
-> +static void dcc_sram_dev_deregister(struct dcc_drvdata *drvdata)
-> +{
-> +	device_destroy(drvdata->sram_class, drvdata->sram_dev.dev);
-> +	class_destroy(drvdata->sram_class);
-> +	cdev_del(&drvdata->sram_dev);
-> +	unregister_chrdev_region(drvdata->sram_dev.dev, 1);
-> +}
-> +
-> +static int dcc_sram_dev_init(struct dcc_drvdata *drvdata)
-> +{
-> +	int ret = 0;
-> +	size_t node_size;
-> +	char *node_name = "dcc_sram";
-> +	struct device *dev = drvdata->dev;
-> +
-> +	node_size = strlen(node_name) + 1;
-> +
-> +	drvdata->sram_node = devm_kzalloc(dev, node_size, GFP_KERNEL);
-
-kzalloc + strlcpy can be replaced by kstrdup(), but that said...all this
-does seems to be to copy a const string to the heap and lugging it
-around. Use a define instead.
-
-> +	if (!drvdata->sram_node)
-> +		return -ENOMEM;
-> +
-> +	strlcpy(drvdata->sram_node, node_name, node_size);
-> +	ret = dcc_sram_dev_register(drvdata);
-> +	if (ret)
-> +		dev_err(drvdata->dev, "DCC: sram node not registered.\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static void dcc_sram_dev_exit(struct dcc_drvdata *drvdata)
-> +{
-> +	dcc_sram_dev_deregister(drvdata);
-> +}
-> +
-> +static int dcc_probe(struct platform_device *pdev)
-> +{
-> +	int ret = 0, i;
-> +	struct device *dev = &pdev->dev;
-> +	struct dcc_drvdata *drvdata;
-
-I think "dcc" would be a better name than "drvdata"...
-
-> +	struct resource *res;
-> +	const struct qcom_dcc_config *cfg;
-> +
-> +	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-> +	if (!drvdata)
-> +		return -ENOMEM;
-> +
-> +	drvdata->dev = &pdev->dev;
-> +	platform_set_drvdata(pdev, drvdata);
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dcc-base");
-
-platform_get_resource_byname() + devm_ioremap() is done in one go using
-devm_platform_ioremap_resource_byname()
-
-> +	if (!res)
-> +		return -EINVAL;
-> +
-> +	drvdata->reg_size = resource_size(res);
-
-reg_size is unused outside this assignment, no need to lug it around in
-drvdata.
-
-> +	drvdata->base = devm_ioremap(dev, res->start, resource_size(res));
-
-drvdata->base is only accessed from this function, use a local variable
-instead.
-
-> +	if (!drvdata->base)
-> +		return -ENOMEM;
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> +							"dcc-ram-base");
-
-Here you're actually carrying the resource size, so it makes sense.
-
-But it's okay not to wrap this line.
-
-> +	if (!res)
-> +		return -EINVAL;
-> +
-> +	drvdata->ram_size = resource_size(res);
-> +	drvdata->ram_base = devm_ioremap(dev, res->start, resource_size(res));
-> +	if (!drvdata->ram_base)
-> +		return -ENOMEM;
-> +	cfg = of_device_get_match_data(&pdev->dev);
-> +	drvdata->ram_offset = cfg->dcc_ram_offset;
-> +
-> +	if (FIELD_GET(BIT(DCC_VER_INFO_BIT), dcc_readl(drvdata, DCC_HW_INFO))) {
-> +		drvdata->mem_map_ver = DCC_MEM_MAP_VER3;
-> +		drvdata->nr_link_list = dcc_readl(drvdata, DCC_LL_NUM_INFO);
-> +		if (drvdata->nr_link_list == 0)
-> +			return	-EINVAL;
-
-Replace the \t in the middle
-
-> +	} else if ((dcc_readl(drvdata, DCC_HW_INFO) & DCC_VER_MASK2) == DCC_VER_MASK2) {
-> +		drvdata->mem_map_ver = DCC_MEM_MAP_VER2;
-> +		drvdata->nr_link_list = dcc_readl(drvdata, DCC_LL_NUM_INFO);
-> +		if (drvdata->nr_link_list == 0)
-> +			return	-EINVAL;
-> +	} else {
-> +		drvdata->mem_map_ver = DCC_MEM_MAP_VER1;
-> +		drvdata->nr_link_list = DCC_MAX_LINK_LIST;
-> +	}
-> +
-> +	if ((dcc_readl(drvdata, DCC_HW_INFO) & BIT(6)) == BIT(6))
-> +		drvdata->loopoff = DCC_FIX_LOOP_OFFSET;
-> +	else
-> +		drvdata->loopoff = get_bitmask_order((drvdata->ram_size +
-> +				drvdata->ram_offset) / 4 - 1);
-> +	mutex_init(&drvdata->mutex);
-> +
-> +	drvdata->enable = devm_kzalloc(dev, drvdata->nr_link_list *
-> +			sizeof(bool), GFP_KERNEL);
-
-kzalloc(, items * sizeof(), ...) is kcalloc()
-
-> +	if (!drvdata->enable)
-> +		return -ENOMEM;
-
-Add a newline between each check and the subsequent allocation, or do
-all the allocation then do a
-	if (!dcc->enable || !dcc->configured ...)
-		return -ENOMEM;
-
-> +	drvdata->configured = devm_kzalloc(dev, drvdata->nr_link_list *
-> +			sizeof(bool), GFP_KERNEL);
-> +	if (!drvdata->configured)
-> +		return -ENOMEM;
-> +	drvdata->nr_config = devm_kzalloc(dev, drvdata->nr_link_list *
-> +			sizeof(u32), GFP_KERNEL);
-> +	if (!drvdata->nr_config)
-> +		return -ENOMEM;
-> +	drvdata->cfg_head = devm_kzalloc(dev, drvdata->nr_link_list *
-> +			sizeof(struct list_head), GFP_KERNEL);
-> +	if (!drvdata->cfg_head)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < drvdata->nr_link_list; i++) {
-> +		INIT_LIST_HEAD(&drvdata->cfg_head[i]);
-> +		drvdata->nr_config[i] = 0;
-
-kzalloc() already initialized nr_config.
-
-> +	}
-> +
-> +	memset_io(drvdata->ram_base, 0, drvdata->ram_size);
-> +
-> +	drvdata->curr_list = DCC_INVALID_LINK_LIST;
-> +
-> +	ret = dcc_sram_dev_init(drvdata);
-> +	if (ret)
-> +		goto err;
-> +
-> +	return ret;
-
-We know ret is 0 here, but if you rename "err" to "out" and move it
-above this line you can reuse return.
-
-> +err:
-> +	return ret;
-> +}
-> +
-> +static int dcc_remove(struct platform_device *pdev)
-> +{
-> +	struct dcc_drvdata *drvdata = platform_get_drvdata(pdev);
-> +
-> +	dcc_sram_dev_exit(drvdata);
-> +
-> +	dcc_config_reset(drvdata);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct qcom_dcc_config sm8150_cfg = {
-> +	.dcc_ram_offset                         = 0x5000,
-> +};
-> +
-> +static const struct of_device_id dcc_match_table[] = {
-> +	{ .compatible = "qcom,sm8150-dcc", .data = &sm8150_cfg },
-> +};
-
-MODULE_DEVICE_TABLE(of, dcc_match_table);
-
-> +
-> +static struct platform_driver dcc_driver = {
-> +	.probe					= dcc_probe,
-
-The indentation here is excessive, feel free to use a single space.
-
-> +	.remove					= dcc_remove,
-> +	.driver					= {
-> +		.name		= "msm-dcc",
-
-We tend to not use "msm" anymore, so how about "qcom-dcc"?
-
-
-PS. It's hard to comment on some of the things in this patch, as they
-are not used until the next patch...
-
-Regards,
-Bjorn
-
-> +		.of_match_table	= dcc_match_table,
-> +	},
-> +};
-> +
-> +module_platform_driver(dcc_driver);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("Qualcomm Technologies Inc. DCC driver");
-> +
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
+instructions are inserted automatically by the compiler, but branch
+targets written in assembly must have ENDBR added manually, like this one.
