@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B087D333ECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D4B333ED0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233909AbhCJN13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:27:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46524 "EHLO mail.kernel.org"
+        id S233922AbhCJN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:27:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232787AbhCJNZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A4A464FDC;
-        Wed, 10 Mar 2021 13:24:59 +0000 (UTC)
+        id S233178AbhCJNZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C680F64FE0;
+        Wed, 10 Mar 2021 13:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382700;
-        bh=XQQ9uTjCOGkWb5LHQKTQFVtOqVSsw6/cFLW0mJpYp4M=;
+        s=korg; t=1615382702;
+        bh=mWKgiM90xWGEZ7uNtcaRT3FhLD3Rrjk6Uyw/7xBk/ss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GajVXrZnIOfGoGM5pgzVIOgzbmBcjIgUthBnIKAwKOLkOxjifY62bzHL+vd2eFHGp
-         6fqCFDUTnvwuomYv1e0XEBHVLtsrBwjxWeRSoqmSyaBnXormCMR7PZCObHAHRjK5uH
-         tn1qNaVvmOJGsgnJW7N1DMowz4QGrs1EOLxm4B08=
+        b=g+Ke7QnHVEMpEM5GA43qeQQs+exSg5hA+57b06KBBVE5Gn7vblcO9Ov2ftZbNQQUv
+         uxJarwHV0YJPENe/la/DrB+BcqZbm31sjWtSEofp2dhlpWGDEBbMhJaxk20bYLrxYo
+         Nuc4etKNBn7auBItCnM6Tyqik3bP8V94JcfK//iU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 30/49] KVM: x86: Supplement __cr4_reserved_bits() with X86_FEATURE_PCID check
-Date:   Wed, 10 Mar 2021 14:23:41 +0100
-Message-Id: <20210310132322.895507927@linuxfoundation.org>
+Subject: [PATCH 5.10 31/49] ASoC: Intel: sof_sdw: add missing TGL_HDMI quirk for Dell SKU 0A32
+Date:   Wed, 10 Mar 2021 14:23:42 +0100
+Message-Id: <20210310132322.924975281@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
 References: <20210310132321.948258062@linuxfoundation.org>
@@ -42,47 +45,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 4683d758f48e6ae87d3d3493ffa00aceb955ee16 ]
+[ Upstream commit 45c92ec32b43c6cb42341ebf07577eefed9d87ec ]
 
-Commit 7a873e455567 ("KVM: selftests: Verify supported CR4 bits can be set
-before KVM_SET_CPUID2") reveals that KVM allows to set X86_CR4_PCIDE even
-when PCID support is missing:
+We missed adding the TGL_HDMI quirk which is very much needed to
+expose the 4 display pipelines and will be required on TGL topologies.
 
-==== Test Assertion Failure ====
-  x86_64/set_sregs_test.c:41: rc
-  pid=6956 tid=6956 - Invalid argument
-     1	0x000000000040177d: test_cr4_feature_bit at set_sregs_test.c:41
-     2	0x00000000004014fc: main at set_sregs_test.c:119
-     3	0x00007f2d9346d041: ?? ??:0
-     4	0x000000000040164d: _start at ??:?
-  KVM allowed unsupported CR4 bit (0x20000)
-
-Add X86_FEATURE_PCID feature check to __cr4_reserved_bits() to make
-kvm_is_valid_cr4() fail.
-
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Message-Id: <20210201142843.108190-1-vkuznets@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 488cdbd8931fe ('ASoC: Intel: sof_sdw: add quirk for new TigerLake-SDCA device')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20210204203312.27112-4-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.h | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index e7ca622a468f..2249a7d7ca27 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -404,6 +404,8 @@ bool kvm_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u32 type);
- 		__reserved_bits |= X86_CR4_UMIP;        \
- 	if (!__cpu_has(__c, X86_FEATURE_VMX))           \
- 		__reserved_bits |= X86_CR4_VMXE;        \
-+	if (!__cpu_has(__c, X86_FEATURE_PCID))          \
-+		__reserved_bits |= X86_CR4_PCIDE;       \
- 	__reserved_bits;                                \
- })
- 
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 9519e5403cbf..daca06dde99b 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -54,7 +54,8 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A32")
+ 		},
+-		.driver_data = (void *)(SOF_RT711_JD_SRC_JD2 |
++		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
++					SOF_RT711_JD_SRC_JD2 |
+ 					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
 -- 
 2.30.1
 
