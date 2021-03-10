@@ -2,934 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754363339B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A729F3339BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhCJKMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:12:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhCJKMa (ORCPT
+        id S231622AbhCJKN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:13:57 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:44502 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229948AbhCJKNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:12:30 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F59C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:12:29 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id s21so793984pfm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:12:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IAJbmUzdQsfVsrhqeFVbB7rN0dbH1Slv+H2JARnzwJI=;
-        b=ydHiQPUCTQxbfclHi4W9dMgOo1aIfxCIOsFeWX2jv7wgionGllBtQbkAONUcUXcUFU
-         GBEvV2XxN0+zCnu8zGT+wJqYGlV342ZVMciYnjJSQoIehSZW0GJw7jEZetRGJoFyW7ot
-         0cn1dqHwBeMJ5P9ZtThiJ3I1LUGE750/ZwMphM4+Cn+iXmppJ1M8uVcjjT0Unxo+M4a9
-         y5AN5n+qmLC70igEkEIgfUpTNWApBFOM+VE0+k53MtupDWfK1OYfJ78ttbMvjc6MyqYf
-         5qF0wMyMRcFzQpAGppggWFVyMisZNhvbE4yu8Rt0dJuiG6/zOOm7x6Aci6qm/cXNxZZO
-         2noQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IAJbmUzdQsfVsrhqeFVbB7rN0dbH1Slv+H2JARnzwJI=;
-        b=psZkbN+2QGudxhcVfzTe4XsaNFZNzt/Dsd8iF6yuSAHOKDYVI8wDFotc51N5koycmd
-         wb2TlNRwh+SfK1sm7B4aLD9sxwykhrSs9RnlcKhNNTBpeFxsHGGq9SsirNXqJEo5zfiQ
-         xXdjPBxIaJJifUQ16KDQG/O3DtRim/Ddy58AcXxtq4oQ5rzDg68Ndr++sxywtvA2y+JY
-         Dj6PyB5j+0LKjYigvl6tjEyqP6cxJQZJMmyTzzhKxwjEGIoBufWJQnTl/Z8qIjjFX0lO
-         9TLC7VRvTDq72vz3TthJp62YviAJQKSewccJRFRvWs7lHoqQZjMoqqbPaGkRzBXR/qzM
-         yn+w==
-X-Gm-Message-State: AOAM530zj8ZoZ3VKXO7RxcGKKjjR2hTUITtPB9lbBwiEgyVFAHHvl6Bd
-        lA0pm/nC3a3aDc8l7t6KNb1awg5q98IGCYkHk0Rj6w==
-X-Google-Smtp-Source: ABdhPJy6tFRzcuCXNBJQ75DtB1Qd5fjHN1ycoZ6QRaLRPGt7Qw9tQNAMD1yOgCAkPZwkwXKjqYXYHsvVSchd+4LQSBM=
-X-Received: by 2002:a63:ee4b:: with SMTP id n11mr2221612pgk.265.1615371149101;
- Wed, 10 Mar 2021 02:12:29 -0800 (PST)
+        Wed, 10 Mar 2021 05:13:52 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 68F2675F27;
+        Wed, 10 Mar 2021 13:13:45 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1615371225;
+        bh=y98Bi0qAbz9deRs+wlsKu+q5eUchiSDI3Y/IVgT6utQ=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=lCQO2+sOqBUXm0Ttryc5cVhM9FNGqS+OH+BofVXldaz5YvyPrIej8op0Wyrmia4WR
+         CJrYpGps4ve3A2UNCxxZstb03o4rrcn8eqoXn2NDdYL9bGU5HHPnjAgVbS5c+WJgWP
+         cjt9HHOxndMFWJx/0U5d9CIbXuLMKLe7gwDd6uLXhKo+P3K8B9c/5E91rd2dClqRoQ
+         Yv9gvaL0EUduePHLZNL3Yak5OeyuciUvfzVG+gU/QbyoryqQ9GRayAqu4n+r8tuwzz
+         oUApVg9alNOvK64XavLgvpLQOlXDD3GoVkqR7TqA1c9ldUFDsxbMlRFx1j2+SPFRUQ
+         xZQp2+iTf8RZg==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 761AA75F47;
+        Wed, 10 Mar 2021 13:13:44 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
+ Mar 2021 13:13:43 +0300
+Subject: Re: [RFC PATCH v6 00/22] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210307175722.3464068-1-arseny.krasnov@kaspersky.com>
+ <20210310100603.rfhpy4uglkb6oxez@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <2239aa8d-34b6-1dc5-400b-68d447032bbb@kaspersky.com>
+Date:   Wed, 10 Mar 2021 13:13:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210304120326.153966-1-robert.foss@linaro.org>
- <20210304120326.153966-11-robert.foss@linaro.org> <e1762a19-2f00-bb6d-d48d-ba839334afb2@linaro.org>
-In-Reply-To: <e1762a19-2f00-bb6d-d48d-ba839334afb2@linaro.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 10 Mar 2021 11:12:17 +0100
-Message-ID: <CAG3jFytrBNBQubVQmT7YoHfycFMnj7L8hM+tJ4wt7neNSjrWmw@mail.gmail.com>
-Subject: Re: [PATCH v6 10/22] media: camss: Add support for CSID hardware
- version Titan 170
-To:     Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        angelogioacchino.delregno@somainline.org,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Rob Herring <robh@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210310100603.rfhpy4uglkb6oxez@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 03/10/2021 09:59:26
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 162301 [Mar 10 2021]
+X-KSE-AntiSpam-Info: LuaCore: 433 433 d32eb971e08589ce94716a9bf8a0ef265b4c8d7c
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_PLAIN}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_TEXT_PLAIN_OR_HTML}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_TYPE_8_BIT_WITH_7_BIT_C_TRANSFER_ENCODING}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_TYPE_ENCODING_NOT_JAPANESE}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_TYPE_ENCODING_NOT_RUS}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_TYPE_INCORRECT_BIT_FOR_C_TRANSFER_ENCODING}
+X-KSE-AntiSpam-Info: {Macro_DATE_MOSCOW}
+X-KSE-AntiSpam-Info: {Macro_FROM_DOUBLE_ENG_NAME}
+X-KSE-AntiSpam-Info: {Macro_FROM_LOWCAPS_DOUBLE_ENG_NAME_IN_EMAIL}
+X-KSE-AntiSpam-Info: {Macro_FROM_NOT_RU}
+X-KSE-AntiSpam-Info: {Macro_FROM_NOT_RUS_CHARSET}
+X-KSE-AntiSpam-Info: {Macro_FROM_REAL_NAME_MATCHES_ALL_USERNAME_PROB}
+X-KSE-AntiSpam-Info: {Macro_HEADERS_NOT_LIST}
+X-KSE-AntiSpam-Info: {Macro_MAILER_THUNDERBIRD}
+X-KSE-AntiSpam-Info: {Macro_MISC_X_PRIORITY_MISSED}
+X-KSE-AntiSpam-Info: {Macro_MSGID_LOWHEX_8_4_4_4_12}
+X-KSE-AntiSpam-Info: {Macro_NO_DKIM}
+X-KSE-AntiSpam-Info: {Macro_REPLY_TO_MISSED}
+X-KSE-AntiSpam-Info: {Macro_SUBJECT_AT_LEAST_2_WORDS}
+X-KSE-AntiSpam-Info: {Macro_SUBJECT_ENG_UPPERCASE_BEGINNING}
+X-KSE-AntiSpam-Info: {Macro_SUBJECT_LONG_TEXT}
+X-KSE-AntiSpam-Info: {Macro_SUBJECT_WITH_FWD_OR_RE}
+X-KSE-AntiSpam-Info: {Macro_TEXT_GREETINGS_AT_BEGINNING}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 03/10/2021 10:02:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 10.03.2021 5:44:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/03/10 09:12:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/03/10 05:44:00 #16384964
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Andrey,
+Hello, great, no problem!
 
-On Tue, 9 Mar 2021 at 14:54, Andrey Konovalov
-<andrey.konovalov@linaro.org> wrote:
->
-> Hi Robert,
->
-> The testgen_pattern in this version are in the right direction, but
-> the test patterns aren't working properly in v6:
->
-> On db410c:
-> ==========
-> -----8<-----
-> $ v4l2-ctl -L -d /dev/v4l-subdev2
->
-> Image Processing Controls
->
->                     test_pattern 0x009f0903 (menu)   : min=0 max=7 default=0 value=1
->                  0: Disabled
->                  1: Incrementing
->                  2: Alternating 0x55/0xAA
->                  3: All Zeros 0x00
->                  4: All Ones 0xFF
->                  5: Pseudo-random Data
->                  6: User Specified
->                  7: Complex pattern
-> $
-> -----8<-----
-> - "max=7" is not right; it should be "max=6", and "7: Complex pattern" should not
->    be listed for this SOC.
->
-> On db845c:
-> ==========
-> -----8<-----
-> $ v4l2-ctl -L -d /dev/v4l-subdev4
->
-> Image Processing Controls
->
->                     test_pattern 0x009f0903 (menu)   : min=0 max=10 default=0 value=0
->                  0: Disabled
->                  1: Incrementing
->                  2: Alternating 0x55/0xAA
->                  3: All Zeros 0x00
->                  4: All Ones 0xFF
->                  5: Pseudo-random Data
->                  6: User Specified
->                  7: Complex pattern
->                  8: Color box
->                  9: Color bars
->
-> Message from syslogd@linaro-gnome at Mar  8 21:09:26 ...
->   kernel:[ 3936.604286] Internal error: Oops: 96000004 [#1] PREEMPT SMP
->
-> Message from syslogd@linaro-gnome at Mar  8 21:09:26 ...
->   kernel:[ 3936.858085] Code: a8c27bfd d50323bf d65f03c0 b4ffff61 (39400020)
-> Segmentation fault
-> $
-> -----8<-----
-> - "max=10" is too much; it goes beyond the array of test pattern names and segfaults.
->
+Thanks
 
-Thanks for finding this, and sending the logs!
-
-I'll fix this in v7.
-
+On 10.03.2021 13:06, Stefano Garzarella wrote:
+> Hi Arseny,
+> thanks for this new version.
 >
-> The rest looks good for me.
->
+> It's a busy week for me, but I hope to review this series by the end of 
+> this week :-)
 >
 > Thanks,
-> Andrey
+> Stefano
 >
-> On 04.03.2021 15:03, Robert Foss wrote:
-> > Add register definitions for version 170 of the Titan architecture
-> > and implement support for the CSID subdevice.
-> >
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
-> > ---
-> >
-> > Changes since v5:
-> >   - Andrey: Fix test pattern selection logic
-> >   - Andrey: Add r-b
-> >   - Move Titan 170 specific test modes to this commit
-> >
-> >
-> >   drivers/media/platform/qcom/camss/Makefile    |   1 +
-> >   .../platform/qcom/camss/camss-csid-170.c      | 601 ++++++++++++++++++
-> >   .../media/platform/qcom/camss/camss-csid.c    |   4 +
-> >   .../media/platform/qcom/camss/camss-csid.h    |   9 +
-> >   .../media/platform/qcom/camss/camss-vfe-170.c |   1 -
-> >   drivers/media/platform/qcom/camss/camss.c     |  62 ++
-> >   6 files changed, 677 insertions(+), 1 deletion(-)
-> >   create mode 100644 drivers/media/platform/qcom/camss/camss-csid-170.c
-> >
-> > diff --git a/drivers/media/platform/qcom/camss/Makefile b/drivers/media/platform/qcom/camss/Makefile
-> > index cff388b653ba..0752c46ea37b 100644
-> > --- a/drivers/media/platform/qcom/camss/Makefile
-> > +++ b/drivers/media/platform/qcom/camss/Makefile
-> > @@ -6,6 +6,7 @@ qcom-camss-objs += \
-> >               camss-csid.o \
-> >               camss-csid-4-1.o \
-> >               camss-csid-4-7.o \
-> > +             camss-csid-170.o \
-> >               camss-csiphy-2ph-1-0.o \
-> >               camss-csiphy-3ph-1-0.o \
-> >               camss-csiphy.o \
-> > diff --git a/drivers/media/platform/qcom/camss/camss-csid-170.c b/drivers/media/platform/qcom/camss/camss-csid-170.c
-> > new file mode 100644
-> > index 000000000000..ee16efecd466
-> > --- /dev/null
-> > +++ b/drivers/media/platform/qcom/camss/camss-csid-170.c
-> > @@ -0,0 +1,601 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * camss-csid-4-7.c
-> > + *
-> > + * Qualcomm MSM Camera Subsystem - CSID (CSI Decoder) Module
-> > + *
-> > + * Copyright (C) 2020 Linaro Ltd.
-> > + */
-> > +#include <linux/completion.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/of.h>
-> > +
-> > +#include "camss-csid.h"
-> > +#include "camss-csid-gen2.h"
-> > +#include "camss.h"
-> > +
-> > +/* The CSID 2 IP-block is different from the others,
-> > + * and is of a bare-bones Lite version, with no PIX
-> > + * interface support. As a result of that it has an
-> > + * alternate register layout.
-> > + */
-> > +#define IS_LITE              (csid->id == 2 ? 1 : 0)
-> > +
-> > +#define CSID_HW_VERSION              0x0
-> > +#define              HW_VERSION_STEPPING     0
-> > +#define              HW_VERSION_REVISION     16
-> > +#define              HW_VERSION_GENERATION   28
-> > +
-> > +#define CSID_RST_STROBES     0x10
-> > +#define              RST_STROBES     0
-> > +
-> > +#define CSID_CSI2_RX_IRQ_STATUS      0x20
-> > +#define      CSID_CSI2_RX_IRQ_MASK   0x24
-> > +#define CSID_CSI2_RX_IRQ_CLEAR       0x28
-> > +
-> > +#define CSID_CSI2_RDIN_IRQ_STATUS(rdi)               ((IS_LITE ? 0x30 : 0x40) \
-> > +                                              + 0x10 * (rdi))
-> > +#define CSID_CSI2_RDIN_IRQ_MASK(rdi)         ((IS_LITE ? 0x34 : 0x44) \
-> > +                                              + 0x10 * (rdi))
-> > +#define CSID_CSI2_RDIN_IRQ_CLEAR(rdi)                ((IS_LITE ? 0x38 : 0x48) \
-> > +                                              + 0x10 * (rdi))
-> > +#define CSID_CSI2_RDIN_IRQ_SET(rdi)          ((IS_LITE ? 0x3C : 0x4C) \
-> > +                                              + 0x10 * (rdi))
-> > +
-> > +#define CSID_TOP_IRQ_STATUS  0x70
-> > +#define              TOP_IRQ_STATUS_RESET_DONE 0
-> > +#define CSID_TOP_IRQ_MASK    0x74
-> > +#define CSID_TOP_IRQ_CLEAR   0x78
-> > +#define CSID_TOP_IRQ_SET     0x7C
-> > +#define CSID_IRQ_CMD         0x80
-> > +#define              IRQ_CMD_CLEAR   0
-> > +#define              IRQ_CMD_SET     4
-> > +
-> > +#define CSID_CSI2_RX_CFG0    0x100
-> > +#define              CSI2_RX_CFG0_NUM_ACTIVE_LANES   0
-> > +#define              CSI2_RX_CFG0_DL0_INPUT_SEL      4
-> > +#define              CSI2_RX_CFG0_DL1_INPUT_SEL      8
-> > +#define              CSI2_RX_CFG0_DL2_INPUT_SEL      12
-> > +#define              CSI2_RX_CFG0_DL3_INPUT_SEL      16
-> > +#define              CSI2_RX_CFG0_PHY_NUM_SEL        20
-> > +#define              CSI2_RX_CFG0_PHY_TYPE_SEL       24
-> > +
-> > +#define CSID_CSI2_RX_CFG1    0x104
-> > +#define              CSI2_RX_CFG1_PACKET_ECC_CORRECTION_EN           0
-> > +#define              CSI2_RX_CFG1_DE_SCRAMBLE_EN                     1
-> > +#define              CSI2_RX_CFG1_VC_MODE                            2
-> > +#define              CSI2_RX_CFG1_COMPLETE_STREAM_EN                 4
-> > +#define              CSI2_RX_CFG1_COMPLETE_STREAM_FRAME_TIMING       5
-> > +#define              CSI2_RX_CFG1_MISR_EN                            6
-> > +#define              CSI2_RX_CFG1_CGC_MODE                           7
-> > +#define                      CGC_MODE_DYNAMIC_GATING         0
-> > +#define                      CGC_MODE_ALWAYS_ON              1
-> > +
-> > +#define CSID_RDI_CFG0(rdi)                   ((IS_LITE ? 0x200 : 0x300) \
-> > +                                              + 0x100 * (rdi))
-> > +#define              RDI_CFG0_BYTE_CNTR_EN           0
-> > +#define              RDI_CFG0_FORMAT_MEASURE_EN      1
-> > +#define              RDI_CFG0_TIMESTAMP_EN           2
-> > +#define              RDI_CFG0_DROP_H_EN              3
-> > +#define              RDI_CFG0_DROP_V_EN              4
-> > +#define              RDI_CFG0_CROP_H_EN              5
-> > +#define              RDI_CFG0_CROP_V_EN              6
-> > +#define              RDI_CFG0_MISR_EN                7
-> > +#define              RDI_CFG0_CGC_MODE               8
-> > +#define                      CGC_MODE_DYNAMIC        0
-> > +#define                      CGC_MODE_ALWAYS_ON      1
-> > +#define              RDI_CFG0_PLAIN_ALIGNMENT        9
-> > +#define                      PLAIN_ALIGNMENT_LSB     0
-> > +#define                      PLAIN_ALIGNMENT_MSB     1
-> > +#define              RDI_CFG0_PLAIN_FORMAT           10
-> > +#define              RDI_CFG0_DECODE_FORMAT          12
-> > +#define              RDI_CFG0_DATA_TYPE              16
-> > +#define              RDI_CFG0_VIRTUAL_CHANNEL        22
-> > +#define              RDI_CFG0_DT_ID                  27
-> > +#define              RDI_CFG0_EARLY_EOF_EN           29
-> > +#define              RDI_CFG0_PACKING_FORMAT         30
-> > +#define              RDI_CFG0_ENABLE                 31
-> > +
-> > +#define CSID_RDI_CFG1(rdi)                   ((IS_LITE ? 0x204 : 0x304)\
-> > +                                             + 0x100 * (rdi))
-> > +#define              RDI_CFG1_TIMESTAMP_STB_SEL      0
-> > +
-> > +#define CSID_RDI_CTRL(rdi)                   ((IS_LITE ? 0x208 : 0x308)\
-> > +                                             + 0x100 * (rdi))
-> > +#define              RDI_CTRL_HALT_CMD               0
-> > +#define                      ALT_CMD_RESUME_AT_FRAME_BOUNDARY        1
-> > +#define              RDI_CTRL_HALT_MODE              2
-> > +
-> > +#define CSID_RDI_FRM_DROP_PATTERN(rdi)                       ((IS_LITE ? 0x20C : 0x30C)\
-> > +                                                     + 0x100 * (rdi))
-> > +#define CSID_RDI_FRM_DROP_PERIOD(rdi)                        ((IS_LITE ? 0x210 : 0x310)\
-> > +                                                     + 0x100 * (rdi))
-> > +#define CSID_RDI_IRQ_SUBSAMPLE_PATTERN(rdi)          ((IS_LITE ? 0x214 : 0x314)\
-> > +                                                     + 0x100 * (rdi))
-> > +#define CSID_RDI_IRQ_SUBSAMPLE_PERIOD(rdi)           ((IS_LITE ? 0x218 : 0x318)\
-> > +                                                     + 0x100 * (rdi))
-> > +#define CSID_RDI_RPP_PIX_DROP_PATTERN(rdi)           ((IS_LITE ? 0x224 : 0x324)\
-> > +                                                     + 0x100 * (rdi))
-> > +#define CSID_RDI_RPP_PIX_DROP_PERIOD(rdi)            ((IS_LITE ? 0x228 : 0x328)\
-> > +                                                     + 0x100 * (rdi))
-> > +#define CSID_RDI_RPP_LINE_DROP_PATTERN(rdi)          ((IS_LITE ? 0x22C : 0x32C)\
-> > +                                                     + 0x100 * (rdi))
-> > +#define CSID_RDI_RPP_LINE_DROP_PERIOD(rdi)           ((IS_LITE ? 0x230 : 0x330)\
-> > +                                                     + 0x100 * (rdi))
-> > +
-> > +#define CSID_TPG_CTRL                0x600
-> > +#define              TPG_CTRL_TEST_EN                0
-> > +#define              TPG_CTRL_FS_PKT_EN              1
-> > +#define              TPG_CTRL_FE_PKT_EN              2
-> > +#define              TPG_CTRL_NUM_ACTIVE_LANES       4
-> > +#define              TPG_CTRL_CYCLES_BETWEEN_PKTS    8
-> > +#define              TPG_CTRL_NUM_TRAIL_BYTES        20
-> > +
-> > +#define CSID_TPG_VC_CFG0     0x604
-> > +#define              TPG_VC_CFG0_VC_NUM                      0
-> > +#define              TPG_VC_CFG0_NUM_ACTIVE_SLOTS            8
-> > +#define                      NUM_ACTIVE_SLOTS_0_ENABLED      0
-> > +#define                      NUM_ACTIVE_SLOTS_0_1_ENABLED    1
-> > +#define                      NUM_ACTIVE_SLOTS_0_1_2_ENABLED  2
-> > +#define                      NUM_ACTIVE_SLOTS_0_1_3_ENABLED  3
-> > +#define              TPG_VC_CFG0_LINE_INTERLEAVING_MODE      10
-> > +#define                      INTELEAVING_MODE_INTERLEAVED    0
-> > +#define                      INTELEAVING_MODE_ONE_SHOT       1
-> > +#define              TPG_VC_CFG0_NUM_FRAMES                  16
-> > +
-> > +#define CSID_TPG_VC_CFG1     0x608
-> > +#define              TPG_VC_CFG1_H_BLANKING_COUNT            0
-> > +#define              TPG_VC_CFG1_V_BLANKING_COUNT            12
-> > +#define              TPG_VC_CFG1_V_BLANK_FRAME_WIDTH_SEL     24
-> > +
-> > +#define CSID_TPG_LFSR_SEED   0x60C
-> > +
-> > +#define CSID_TPG_DT_n_CFG_0(n)       (0x610 + (n) * 0xC)
-> > +#define              TPG_DT_n_CFG_0_FRAME_HEIGHT     0
-> > +#define              TPG_DT_n_CFG_0_FRAME_WIDTH      16
-> > +
-> > +#define CSID_TPG_DT_n_CFG_1(n)       (0x614 + (n) * 0xC)
-> > +#define              TPG_DT_n_CFG_1_DATA_TYPE        0
-> > +#define              TPG_DT_n_CFG_1_ECC_XOR_MASK     8
-> > +#define              TPG_DT_n_CFG_1_CRC_XOR_MASK     16
-> > +
-> > +#define CSID_TPG_DT_n_CFG_2(n)       (0x618 + (n) * 0xC)
-> > +#define              TPG_DT_n_CFG_2_PAYLOAD_MODE             0
-> > +#define              TPG_DT_n_CFG_2_USER_SPECIFIED_PAYLOAD   4
-> > +#define              TPG_DT_n_CFG_2_ENCODE_FORMAT            16
-> > +
-> > +#define CSID_TPG_COLOR_BARS_CFG      0x640
-> > +#define              TPG_COLOR_BARS_CFG_UNICOLOR_BAR_EN      0
-> > +#define              TPG_COLOR_BARS_CFG_UNICOLOR_BAR_SEL     4
-> > +#define              TPG_COLOR_BARS_CFG_SPLIT_EN             5
-> > +#define              TPG_COLOR_BARS_CFG_ROTATE_PERIOD        8
-> > +
-> > +#define CSID_TPG_COLOR_BOX_CFG       0x644
-> > +#define              TPG_COLOR_BOX_CFG_MODE          0
-> > +#define              TPG_COLOR_BOX_PATTERN_SEL       2
-> > +
-> > +
-> > +static const struct csid_format csid_formats[] = {
-> > +     {
-> > +             MEDIA_BUS_FMT_UYVY8_2X8,
-> > +             DATA_TYPE_YUV422_8BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> > +             8,
-> > +             2,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_VYUY8_2X8,
-> > +             DATA_TYPE_YUV422_8BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> > +             8,
-> > +             2,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_YUYV8_2X8,
-> > +             DATA_TYPE_YUV422_8BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> > +             8,
-> > +             2,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_YVYU8_2X8,
-> > +             DATA_TYPE_YUV422_8BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> > +             8,
-> > +             2,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SBGGR8_1X8,
-> > +             DATA_TYPE_RAW_8BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> > +             8,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SGBRG8_1X8,
-> > +             DATA_TYPE_RAW_8BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> > +             8,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SGRBG8_1X8,
-> > +             DATA_TYPE_RAW_8BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> > +             8,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SRGGB8_1X8,
-> > +             DATA_TYPE_RAW_8BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> > +             8,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SBGGR10_1X10,
-> > +             DATA_TYPE_RAW_10BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> > +             10,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SGBRG10_1X10,
-> > +             DATA_TYPE_RAW_10BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> > +             10,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SGRBG10_1X10,
-> > +             DATA_TYPE_RAW_10BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> > +             10,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SRGGB10_1X10,
-> > +             DATA_TYPE_RAW_10BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> > +             10,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_Y10_1X10,
-> > +             DATA_TYPE_RAW_10BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> > +             10,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SBGGR12_1X12,
-> > +             DATA_TYPE_RAW_12BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-> > +             12,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SGBRG12_1X12,
-> > +             DATA_TYPE_RAW_12BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-> > +             12,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SGRBG12_1X12,
-> > +             DATA_TYPE_RAW_12BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-> > +             12,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SRGGB12_1X12,
-> > +             DATA_TYPE_RAW_12BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-> > +             12,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SBGGR14_1X14,
-> > +             DATA_TYPE_RAW_14BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-> > +             14,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SGBRG14_1X14,
-> > +             DATA_TYPE_RAW_14BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-> > +             14,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SGRBG14_1X14,
-> > +             DATA_TYPE_RAW_14BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-> > +             14,
-> > +             1,
-> > +     },
-> > +     {
-> > +             MEDIA_BUS_FMT_SRGGB14_1X14,
-> > +             DATA_TYPE_RAW_14BIT,
-> > +             DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-> > +             14,
-> > +             1,
-> > +     },
-> > +};
-> > +
-> > +static void csid_configure_stream(struct csid_device *csid, u8 enable)
-> > +{
-> > +     struct csid_testgen_config *tg = &csid->testgen;
-> > +     u32 val;
-> > +     u32 phy_sel = 0;
-> > +     u8 lane_cnt = csid->phy.lane_cnt;
-> > +     struct v4l2_mbus_framefmt *input_format =
-> > +                     &csid->fmt[MSM_CSID_PAD_SRC];
-> > +     const struct csid_format *format = csid_get_fmt_entry(
-> > +                     csid->formats, csid->nformats, input_format->code);
-> > +     if (!lane_cnt)
-> > +             lane_cnt = 4;
-> > +
-> > +     if (!tg->enabled)
-> > +             phy_sel = csid->phy.csiphy_id;
-> > +
-> > +     if (enable) {
-> > +             u8 vc = 0; /* Virtual Channel 0 */
-> > +             u8 dt_id = vc * 4;
-> > +
-> > +             if (tg->enabled) {
-> > +                     /* Config Test Generator */
-> > +                     vc = 0xa;
-> > +
-> > +                     /* configure one DT, infinite frames */
-> > +                     val = vc << TPG_VC_CFG0_VC_NUM;
-> > +                     val |= INTELEAVING_MODE_ONE_SHOT << TPG_VC_CFG0_LINE_INTERLEAVING_MODE;
-> > +                     val |= 0 << TPG_VC_CFG0_NUM_FRAMES;
-> > +                     writel_relaxed(val, csid->base + CSID_TPG_VC_CFG0);
-> > +
-> > +                     val = 0x740 << TPG_VC_CFG1_H_BLANKING_COUNT;
-> > +                     val |= 0x3ff << TPG_VC_CFG1_V_BLANKING_COUNT;
-> > +                     writel_relaxed(val, csid->base + CSID_TPG_VC_CFG1);
-> > +
-> > +                     writel_relaxed(0x12345678, csid->base + CSID_TPG_LFSR_SEED);
-> > +
-> > +                     val = input_format->height & 0x1fff << TPG_DT_n_CFG_0_FRAME_HEIGHT;
-> > +                     val |= input_format->width & 0x1fff << TPG_DT_n_CFG_0_FRAME_WIDTH;
-> > +                     writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_0(0));
-> > +
-> > +                     val = DATA_TYPE_RAW_10BIT << TPG_DT_n_CFG_1_DATA_TYPE;
-> > +                     writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_1(0));
-> > +
-> > +                     val = tg->mode << TPG_DT_n_CFG_2_PAYLOAD_MODE;
-> > +                     val |= 0xBE << TPG_DT_n_CFG_2_USER_SPECIFIED_PAYLOAD;
-> > +                     val |= format->decode_format << TPG_DT_n_CFG_2_ENCODE_FORMAT;
-> > +                     writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_2(0));
-> > +
-> > +                     writel_relaxed(0, csid->base + CSID_TPG_COLOR_BARS_CFG);
-> > +
-> > +                     writel_relaxed(0, csid->base + CSID_TPG_COLOR_BOX_CFG);
-> > +             }
-> > +
-> > +             val = 1 << RDI_CFG0_BYTE_CNTR_EN;
-> > +             val |= 1 << RDI_CFG0_FORMAT_MEASURE_EN;
-> > +             val |= 1 << RDI_CFG0_TIMESTAMP_EN;
-> > +             val |= DECODE_FORMAT_PAYLOAD_ONLY << RDI_CFG0_DECODE_FORMAT;
-> > +             val |= DATA_TYPE_RAW_10BIT << RDI_CFG0_DATA_TYPE;
-> > +             val |= vc << RDI_CFG0_VIRTUAL_CHANNEL;
-> > +             val |= dt_id << RDI_CFG0_DT_ID;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_CFG0(0));
-> > +
-> > +             /* CSID_TIMESTAMP_STB_POST_IRQ */
-> > +             val = 2 << RDI_CFG1_TIMESTAMP_STB_SEL;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_CFG1(0));
-> > +
-> > +             val = 1;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_FRM_DROP_PERIOD(0));
-> > +
-> > +             val = 0;
-> > +             writel_relaxed(0, csid->base + CSID_RDI_FRM_DROP_PATTERN(0));
-> > +
-> > +             val = 1;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_IRQ_SUBSAMPLE_PERIOD(0));
-> > +
-> > +             val = 0;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_IRQ_SUBSAMPLE_PATTERN(0));
-> > +
-> > +             val = 1;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_RPP_PIX_DROP_PERIOD(0));
-> > +
-> > +             val = 0;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_RPP_PIX_DROP_PATTERN(0));
-> > +
-> > +             val = 1;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_RPP_LINE_DROP_PERIOD(0));
-> > +
-> > +             val = 0;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_RPP_LINE_DROP_PATTERN(0));
-> > +
-> > +             val = 0;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_CTRL(0));
-> > +
-> > +             val = readl_relaxed(csid->base + CSID_RDI_CFG0(0));
-> > +             val |=  1 << RDI_CFG0_ENABLE;
-> > +             writel_relaxed(val, csid->base + CSID_RDI_CFG0(0));
-> > +     }
-> > +
-> > +     if (tg->enabled) {
-> > +             val = enable << TPG_CTRL_TEST_EN;
-> > +             val |= 1 << TPG_CTRL_FS_PKT_EN;
-> > +             val |= 1 << TPG_CTRL_FE_PKT_EN;
-> > +             val |= (lane_cnt - 1) << TPG_CTRL_NUM_ACTIVE_LANES;
-> > +             val |= 0x64 << TPG_CTRL_CYCLES_BETWEEN_PKTS;
-> > +             val |= 0xA << TPG_CTRL_NUM_TRAIL_BYTES;
-> > +             writel_relaxed(val, csid->base + CSID_TPG_CTRL);
-> > +     }
-> > +
-> > +     val = (lane_cnt - 1) << CSI2_RX_CFG0_NUM_ACTIVE_LANES;
-> > +     val |= csid->phy.lane_assign << CSI2_RX_CFG0_DL0_INPUT_SEL;
-> > +     val |= phy_sel << CSI2_RX_CFG0_PHY_NUM_SEL;
-> > +     writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG0);
-> > +
-> > +
-> > +     val = 1 << CSI2_RX_CFG1_PACKET_ECC_CORRECTION_EN;
-> > +     val |= 1 << CSI2_RX_CFG1_MISR_EN;
-> > +     writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG1); // csi2_vc_mode_shift_val ?
-> > +
-> > +     /* error irqs start at BIT(11) */
-> > +     writel_relaxed(~0u, csid->base + CSID_CSI2_RX_IRQ_MASK);
-> > +
-> > +     /* RDI irq */
-> > +     writel_relaxed(~0u, csid->base + CSID_TOP_IRQ_MASK);
-> > +
-> > +     val = 1 << RDI_CTRL_HALT_CMD;
-> > +     writel_relaxed(val, csid->base + CSID_RDI_CTRL(0));
-> > +}
-> > +
-> > +static int csid_configure_testgen_pattern(struct csid_device *csid, s32 val)
-> > +{
-> > +     if (val > 0 && val < csid->testgen.nmodes)
-> > +             csid->testgen.mode = val;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +/*
-> > + * csid_hw_version - CSID hardware version query
-> > + * @csid: CSID device
-> > + *
-> > + * Return HW version or error
-> > + */
-> > +static u32 csid_hw_version(struct csid_device *csid)
-> > +{
-> > +     u32 hw_version;
-> > +     u32 hw_gen;
-> > +     u32 hw_rev;
-> > +     u32 hw_step;
-> > +
-> > +     hw_version = readl_relaxed(csid->base + CSID_HW_VERSION);
-> > +     hw_gen = (hw_version >> HW_VERSION_GENERATION) & 0xF;
-> > +     hw_rev = (hw_version >> HW_VERSION_REVISION) & 0xFFF;
-> > +     hw_step = (hw_version >> HW_VERSION_STEPPING) & 0xFFFF;
-> > +     dev_dbg(csid->camss->dev, "CSID HW Version = %u.%u.%u\n",
-> > +             hw_gen, hw_rev, hw_step);
-> > +
-> > +     return hw_version;
-> > +}
-> > +
-> > +/*
-> > + * csid_isr - CSID module interrupt service routine
-> > + * @irq: Interrupt line
-> > + * @dev: CSID device
-> > + *
-> > + * Return IRQ_HANDLED on success
-> > + */
-> > +static irqreturn_t csid_isr(int irq, void *dev)
-> > +{
-> > +     struct csid_device *csid = dev;
-> > +     u32 val;
-> > +     u8 reset_done;
-> > +
-> > +     val = readl_relaxed(csid->base + CSID_TOP_IRQ_STATUS);
-> > +     writel_relaxed(val, csid->base + CSID_TOP_IRQ_CLEAR);
-> > +     reset_done = val & BIT(TOP_IRQ_STATUS_RESET_DONE);
-> > +
-> > +     val = readl_relaxed(csid->base + CSID_CSI2_RX_IRQ_STATUS);
-> > +     writel_relaxed(val, csid->base + CSID_CSI2_RX_IRQ_CLEAR);
-> > +
-> > +     val = readl_relaxed(csid->base + CSID_CSI2_RDIN_IRQ_STATUS(0));
-> > +     writel_relaxed(val, csid->base + CSID_CSI2_RDIN_IRQ_CLEAR(0));
-> > +
-> > +     val = 1 << IRQ_CMD_CLEAR;
-> > +     writel_relaxed(val, csid->base + CSID_IRQ_CMD);
-> > +
-> > +     if (reset_done)
-> > +             complete(&csid->reset_complete);
-> > +
-> > +     return IRQ_HANDLED;
-> > +}
-> > +
-> > +/*
-> > + * csid_reset - Trigger reset on CSID module and wait to complete
-> > + * @csid: CSID device
-> > + *
-> > + * Return 0 on success or a negative error code otherwise
-> > + */
-> > +static int csid_reset(struct csid_device *csid)
-> > +{
-> > +     unsigned long time;
-> > +     u32 val;
-> > +
-> > +     reinit_completion(&csid->reset_complete);
-> > +
-> > +     writel_relaxed(1, csid->base + CSID_TOP_IRQ_CLEAR);
-> > +     writel_relaxed(1, csid->base + CSID_IRQ_CMD);
-> > +     writel_relaxed(1, csid->base + CSID_TOP_IRQ_MASK);
-> > +     writel_relaxed(1, csid->base + CSID_IRQ_CMD);
-> > +
-> > +     /* preserve registers */
-> > +     val = 0x1e << RST_STROBES;
-> > +     writel_relaxed(val, csid->base + CSID_RST_STROBES);
-> > +
-> > +     time = wait_for_completion_timeout(&csid->reset_complete,
-> > +             msecs_to_jiffies(CSID_RESET_TIMEOUT_MS));
-> > +     if (!time) {
-> > +             dev_err(csid->camss->dev, "CSID reset timeout\n");
-> > +             return -EIO;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static u32 csid_src_pad_code(struct csid_device *csid, u32 sink_code,
-> > +                          unsigned int match_format_idx, u32 match_code)
-> > +{
-> > +     switch (sink_code) {
-> > +     case MEDIA_BUS_FMT_SBGGR10_1X10:
-> > +     {
-> > +             u32 src_code[] = {
-> > +                     MEDIA_BUS_FMT_SBGGR10_1X10,
-> > +                     MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE,
-> > +             };
-> > +
-> > +             return csid_find_code(src_code, ARRAY_SIZE(src_code),
-> > +                                   match_format_idx, match_code);
-> > +     }
-> > +     case MEDIA_BUS_FMT_Y10_1X10:
-> > +     {
-> > +             u32 src_code[] = {
-> > +                     MEDIA_BUS_FMT_Y10_1X10,
-> > +                     MEDIA_BUS_FMT_Y10_2X8_PADHI_LE,
-> > +             };
-> > +
-> > +             return csid_find_code(src_code, ARRAY_SIZE(src_code),
-> > +                                   match_format_idx, match_code);
-> > +     }
-> > +     default:
-> > +             if (match_format_idx > 0)
-> > +                     return 0;
-> > +
-> > +             return sink_code;
-> > +     }
-> > +}
-> > +
-> > +static void csid_subdev_init(struct csid_device *csid)
-> > +{
-> > +     csid->formats = csid_formats;
-> > +     csid->nformats = ARRAY_SIZE(csid_formats);
-> > +     csid->testgen.modes = csid_testgen_modes;
-> > +     csid->testgen.nmodes = CSID_PAYLOAD_MODE_NUM_SUPPORTED_170;
-> > +}
-> > +
-> > +const struct csid_hw_ops csid_ops_170 = {
-> > +     .configure_stream = csid_configure_stream,
-> > +     .configure_testgen_pattern = csid_configure_testgen_pattern,
-> > +     .hw_version = csid_hw_version,
-> > +     .isr = csid_isr,
-> > +     .reset = csid_reset,
-> > +     .src_pad_code = csid_src_pad_code,
-> > +     .subdev_init = csid_subdev_init,
-> > +};
-> > diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-> > index a76ad213604e..a5a94425923a 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-csid.c
-> > +++ b/drivers/media/platform/qcom/camss/camss-csid.c
-> > @@ -124,6 +124,8 @@ static int csid_set_clock_rates(struct csid_device *csid)
-> >                               dev_err(dev, "clk set rate failed: %d\n", ret);
-> >                               return ret;
-> >                       }
-> > +             } else if (clock->nfreqs) {
-> > +                     clk_set_rate(clock->clk, clock->freq[0]);
-> >               }
-> >       }
-> >
-> > @@ -545,6 +547,8 @@ int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
-> >       } else if (camss->version == CAMSS_8x96 ||
-> >                  camss->version == CAMSS_660) {
-> >               csid->ops = &csid_ops_4_7;
-> > +     } else if (camss->version == CAMSS_845) {
-> > +             csid->ops = &csid_ops_170;
-> >       } else {
-> >               return -EINVAL;
-> >       }
-> > diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
-> > index 60933f436daa..892150e1f7a0 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-csid.h
-> > +++ b/drivers/media/platform/qcom/camss/camss-csid.h
-> > @@ -58,6 +58,10 @@ enum csid_testgen_mode {
-> >       CSID_PAYLOAD_MODE_USER_SPECIFIED = 6,
-> >       CSID_PAYLOAD_MODE_NUM_SUPPORTED_4_1 = 7,
-> >       CSID_PAYLOAD_MODE_NUM_SUPPORTED_4_7 = 7,
-> > +     CSID_PAYLOAD_MODE_COMPLEX_PATTERN = 7,
-> > +     CSID_PAYLOAD_MODE_COLOR_BOX = 8,
-> > +     CSID_PAYLOAD_MODE_COLOR_BARS = 9,
-> > +     CSID_PAYLOAD_MODE_NUM_SUPPORTED_170 = 10,
-> >   };
-> >
-> >   static const char * const csid_testgen_modes[] = {
-> > @@ -68,6 +72,9 @@ static const char * const csid_testgen_modes[] = {
-> >       "All Ones 0xFF",
-> >       "Pseudo-random Data",
-> >       "User Specified",
-> > +     "Complex pattern",
-> > +     "Color box",
-> > +     "Color bars",
-> >   };
-> >
-> >   struct csid_format {
-> > @@ -213,5 +220,7 @@ void msm_csid_get_csid_id(struct media_entity *entity, u8 *id);
-> >
-> >   extern const struct csid_hw_ops csid_ops_4_1;
-> >   extern const struct csid_hw_ops csid_ops_4_7;
-> > +extern const struct csid_hw_ops csid_ops_170;
-> > +
-> >
-> >   #endif /* QC_MSM_CAMSS_CSID_H */
-> > diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> > index 9ab5964b1e99..ce1130108e01 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> > +++ b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> > @@ -274,7 +274,6 @@ static void vfe_wm_start(struct vfe_device *vfe, u8 wm, struct vfe_line *line)
-> >       writel_relaxed(val, vfe->base + VFE_BUS_WM_PACKER_CFG(wm)); // XXX 1 for PLAIN8?
-> >
-> >       /* Configure stride for RDIs */
-> > -     //val = pix->plane_fmt[0].bytesperline;
-> >       val = WM_STRIDE_DEFAULT_STRIDE;
-> >       writel_relaxed(val, vfe->base + VFE_BUS_WM_STRIDE(wm));
-> >
-> > diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-> > index 0e006def1996..0b1693c34fbc 100644
-> > --- a/drivers/media/platform/qcom/camss/camss.c
-> > +++ b/drivers/media/platform/qcom/camss/camss.c
-> > @@ -465,6 +465,68 @@ static const struct resources vfe_res_660[] = {
-> >       }
-> >   };
-> >
-> > +static const struct resources csid_res_845[] = {
-> > +     /* CSID0 */
-> > +     {
-> > +             .regulator = { "vdda-csi0" },
-> > +             .clock = { "cpas_ahb", "cphy_rx_src", "slow_ahb_src",
-> > +                             "soc_ahb", "vfe0", "vfe0_src",
-> > +                             "vfe0_cphy_rx", "csi0",
-> > +                             "csi0_src" },
-> > +             .clock_rate = { { 0 },
-> > +                             { 384000000 },
-> > +                             { 80000000 },
-> > +                             { 0 },
-> > +                             { 19200000, 100000000, 320000000, 404000000, 480000000, 600000000 },
-> > +                             { 320000000 },
-> > +                             { 0 },
-> > +                             { 19200000, 75000000, 384000000, 538666667 },
-> > +                             { 384000000 } },
-> > +             .reg = { "csid0" },
-> > +             .interrupt = { "csid0" }
-> > +     },
-> > +
-> > +     /* CSID1 */
-> > +     {
-> > +             .regulator = { "vdda-csi1" },
-> > +             .clock = { "cpas_ahb", "cphy_rx_src", "slow_ahb_src",
-> > +                             "soc_ahb", "vfe1", "vfe1_src",
-> > +                             "vfe1_cphy_rx", "csi1",
-> > +                             "csi1_src" },
-> > +             .clock_rate = { { 0 },
-> > +                             { 384000000 },
-> > +                             { 80000000 },
-> > +                             { 0 },
-> > +                             { 19200000, 100000000, 320000000, 404000000, 480000000, 600000000 },
-> > +                             { 320000000 },
-> > +                             { 0 },
-> > +                             { 19200000, 75000000, 384000000, 538666667 },
-> > +                             { 384000000 } },
-> > +             .reg = { "csid1" },
-> > +             .interrupt = { "csid1" }
-> > +     },
-> > +
-> > +     /* CSID2 */
-> > +     {
-> > +             .regulator = { "vdda-csi2" },
-> > +             .clock = { "cpas_ahb", "cphy_rx_src", "slow_ahb_src",
-> > +                             "soc_ahb", "vfe_lite", "vfe_lite_src",
-> > +                             "vfe_lite_cphy_rx", "csi2",
-> > +                             "csi2_src" },
-> > +             .clock_rate = { { 0 },
-> > +                             { 384000000 },
-> > +                             { 80000000 },
-> > +                             { 0 },
-> > +                             { 19200000, 100000000, 320000000, 404000000, 480000000, 600000000 },
-> > +                             { 320000000 },
-> > +                             { 0 },
-> > +                             { 19200000, 75000000, 384000000, 538666667 },
-> > +                             { 384000000 } },
-> > +             .reg = { "csid2" },
-> > +             .interrupt = { "csid2" }
-> > +     }
-> > +};
-> > +
-> >   static const struct resources vfe_res_845[] = {
-> >       /* VFE0 */
-> >       {
-> >
+> On Sun, Mar 07, 2021 at 08:57:19PM +0300, Arseny Krasnov wrote:
+>> 	This patchset implements support of SOCK_SEQPACKET for virtio
+>> transport.
+>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>> do it, two new packet operations were added: first for start of record
+>> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+>> both operations carries metadata - to maintain boundaries and payload
+>> integrity. Metadata is introduced by adding special header with two
+>> fields - message id and message length:
+>>
+>> 	struct virtio_vsock_seq_hdr {
+>> 		__le32  msg_id;
+>> 		__le32  msg_len;
+>> 	} __attribute__((packed));
+>>
+>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+>> packets(buffer of second virtio descriptor in chain) in the same way as
+>> data transmitted in RW packets. Payload was chosen as buffer for this
+>> header to avoid touching first virtio buffer which carries header of
+>> packet, because someone could check that size of this buffer is equal
+>> to size of packet header. To send record, packet with start marker is
+>> sent first(it's header carries length of record and id),then all data
+>> is sent as usual 'RW' packets and finally SEQ_END is sent(it carries
+>> id of message, which is equal to id of SEQ_BEGIN), also after sending
+>> SEQ_END id is incremented. On receiver's side,size of record is known
+> >from packet with start record marker. To check that no packets were
+>> dropped by transport, 'msg_id's of two sequential SEQ_BEGIN and SEQ_END
+>> are checked to be equal and length of data between two markers is
+>> compared to then length in SEQ_BEGIN header.
+>> 	Now as  packets of one socket are not reordered neither on
+>> vsock nor on vhost transport layers, such markers allows to restore
+>> original record on receiver's side. If user's buffer is smaller that
+>> record length, when all out of size data is dropped.
+>> 	Maximum length of datagram is not limited as in stream socket,
+>> because same credit logic is used. Difference with stream socket is
+>> that user is not woken up until whole record is received or error
+>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>> 	Tests also implemented.
+>>
+>> 	Thanks to stsp2@yandex.ru for encouragements and initial design
+>> recommendations.
+>>
+>> Arseny Krasnov (22):
+>>  af_vsock: update functions for connectible socket
+>>  af_vsock: separate wait data loop
+>>  af_vsock: separate receive data loop
+>>  af_vsock: implement SEQPACKET receive loop
+>>  af_vsock: separate wait space loop
+>>  af_vsock: implement send logic for SEQPACKET
+>>  af_vsock: rest of SEQPACKET support
+>>  af_vsock: update comments for stream sockets
+>>  virtio/vsock: set packet's type in virtio_transport_send_pkt_info()
+>>  virtio/vsock: simplify credit update function API
+>>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>>  virtio/vsock: fetch length for SEQPACKET record
+>>  virtio/vsock: add SEQPACKET receive logic
+>>  virtio/vsock: rest of SOCK_SEQPACKET support
+>>  virtio/vsock: SEQPACKET feature bit
+>>  vhost/vsock: SEQPACKET feature bit support
+>>  virtio/vsock: SEQPACKET feature bit support
+>>  virtio/vsock: setup SEQPACKET ops for transport
+>>  vhost/vsock: setup SEQPACKET ops for transport
+>>  vsock/loopback: setup SEQPACKET ops for transport
+>>  vsock_test: add SOCK_SEQPACKET tests
+>>  virtio/vsock: update trace event for SEQPACKET
+>>
+>> drivers/vhost/vsock.c                        |  22 +-
+>> include/linux/virtio_vsock.h                 |  22 +
+>> include/net/af_vsock.h                       |  10 +
+>> .../events/vsock_virtio_transport_common.h   |  48 +-
+>> include/uapi/linux/virtio_vsock.h            |  19 +
+>> net/vmw_vsock/af_vsock.c                     | 589 +++++++++++------
+>> net/vmw_vsock/virtio_transport.c             |  18 +
+>> net/vmw_vsock/virtio_transport_common.c      | 364 ++++++++--
+>> net/vmw_vsock/vsock_loopback.c               |  13 +
+>> tools/testing/vsock/util.c                   |  32 +-
+>> tools/testing/vsock/util.h                   |   3 +
+>> tools/testing/vsock/vsock_test.c             | 126 ++++
+>> 12 files changed, 1013 insertions(+), 253 deletions(-)
+>>
+>> v5 -> v6:
+>> General changelog:
+>> - virtio transport specific callbacks which send SEQ_BEGIN or
+>>   SEQ_END now hidden inside virtio transport. Only enqueue,
+>>   dequeue and record length callbacks are provided by transport.
+>>
+>> - virtio feature bit for SEQPACKET socket support introduced:
+>>   VIRTIO_VSOCK_F_SEQPACKET.
+>>
+>> - 'msg_cnt' field in 'struct virtio_vsock_seq_hdr' renamed to
+>>   'msg_id' and used as id.
+>>
+>> Per patch changelog:
+>> - 'af_vsock: separate wait data loop':
+>>    1) Commit message updated.
+>>    2) 'prepare_to_wait()' moved inside while loop(thanks to
+>>      Jorgen Hansen).
+>>    Marked 'Reviewed-by' with 1), but as 2) I removed R-b.
+>>
+>> - 'af_vsock: separate receive data loop': commit message
+>>    updated.
+>>    Marked 'Reviewed-by' with that fix.
+>>
+>> - 'af_vsock: implement SEQPACKET receive loop': style fixes.
+>>
+>> - 'af_vsock: rest of SEQPACKET support':
+>>    1) 'module_put()' added when transport callback check failed.
+>>    2) Now only 'seqpacket_allow()' callback called to check
+>>       support of SEQPACKET by transport.
+>>
+>> - 'af_vsock: update comments for stream sockets': commit message
+>>    updated.
+>>    Marked 'Reviewed-by' with that fix.
+>>
+>> - 'virtio/vsock: set packet's type in send':
+>>    1) Commit message updated.
+>>    2) Parameter 'type' from 'virtio_transport_send_credit_update()'
+>>       also removed in this patch instead of in next.
+>>
+>> - 'virtio/vsock: dequeue callback for SOCK_SEQPACKET': SEQPACKET
+>>    related state wrapped to special struct.
+>>
+>> - 'virtio/vsock: update trace event for SEQPACKET': format strings
+>>    now not broken by new lines.
+>>
+>> v4 -> v5:
+>> - patches reorganized:
+>>   1) Setting of packet's type in 'virtio_transport_send_pkt_info()'
+>>      is moved to separate patch.
+>>   2) Simplifying of 'virtio_transport_send_credit_update()' is
+>>      moved to separate patch and before main virtio/vsock patches.
+>> - style problem fixed
+>> - in 'af_vsock: separate receive data loop' extra 'release_sock()'
+>>   removed
+>> - added trace event fields for SEQPACKET
+>> - in 'af_vsock: separate wait data loop':
+>>   1) 'vsock_wait_data()' removed 'goto out;'
+>>   2) Comment for invalid data amount is changed.
+>> - in 'af_vsock: rest of SEQPACKET support', 'new_transport' pointer
+>>   check is moved after 'try_module_get()'
+>> - in 'af_vsock: update comments for stream sockets', 'connect-oriented'
+>>   replaced with 'connection-oriented'
+>> - in 'loopback/vsock: setup SEQPACKET ops for transport',
+>>   'loopback/vsock' replaced with 'vsock/loopback'
+>>
+>> v3 -> v4:
+>> - SEQPACKET specific metadata moved from packet header to payload
+>>   and called 'virtio_vsock_seq_hdr'
+>> - record integrity check:
+>>   1) SEQ_END operation was added, which marks end of record.
+>>   2) Both SEQ_BEGIN and SEQ_END carries counter which is incremented
+>>      on every marker send.
+>> - af_vsock.c: socket operations for STREAM and SEQPACKET call same
+>>   functions instead of having own "gates" differs only by names:
+>>   'vsock_seqpacket/stream_getsockopt()' now replaced with
+>>   'vsock_connectible_getsockopt()'.
+>> - af_vsock.c: 'seqpacket_dequeue' callback returns error and flag that
+>>   record ready. There is no need to return number of copied bytes,
+>>   because case when record received successfully is checked at virtio
+>>   transport layer, when SEQ_END is processed. Also user doesn't need
+>>   number of copied bytes, because 'recv()' from SEQPACKET could return
+>>   error, length of users's buffer or length of whole record(both are
+>>   known in af_vsock.c).
+>> - af_vsock.c: both wait loops in af_vsock.c(for data and space) moved
+>>   to separate functions because now both called from several places.
+>> - af_vsock.c: 'vsock_assign_transport()' checks that 'new_transport'
+>>   pointer is not NULL and returns 'ESOCKTNOSUPPORT' instead of 'ENODEV'
+>>   if failed to use transport.
+>> - tools/testing/vsock/vsock_test.c: rename tests
+>>
+>> v2 -> v3:
+>> - patches reorganized: split for prepare and implementation patches
+>> - local variables are declared in "Reverse Christmas tree" manner
+>> - virtio_transport_common.c: valid leXX_to_cpu() for vsock header
+>>   fields access
+>> - af_vsock.c: 'vsock_connectible_*sockopt()' added as shared code
+>>   between stream and seqpacket sockets.
+>> - af_vsock.c: loops in '__vsock_*_recvmsg()' refactored.
+>> - af_vsock.c: 'vsock_wait_data()' refactored.
+>>
+>> v1 -> v2:
+>> - patches reordered: af_vsock.c related changes now before virtio vsock
+>> - patches reorganized: more small patches, where +/- are not mixed
+>> - tests for SOCK_SEQPACKET added
+>> - all commit messages updated
+>> - af_vsock.c: 'vsock_pre_recv_check()' inlined to
+>>   'vsock_connectible_recvmsg()'
+>> - af_vsock.c: 'vsock_assign_transport()' returns ENODEV if transport
+>>   was not found
+>> - virtio_transport_common.c: transport callback for seqpacket dequeue
+>> - virtio_transport_common.c: simplified
+>>   'virtio_transport_recv_connected()'
+>> - virtio_transport_common.c: send reset on socket and packet type
+>> 			      mismatch.
+>>
+>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>>
+>> -- 
+>> 2.25.1
+>>
+>
