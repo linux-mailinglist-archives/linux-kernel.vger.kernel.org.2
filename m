@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5473333B05
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7741333B08
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232568AbhCJLF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhCJLFN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:05:13 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0C0C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:05:12 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id i9so6840553wml.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:05:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=atOYJKiQtVIBmsUBmGwjDSf2ypG69MQgMpofGinBoI0=;
-        b=Mlh0zyh1Ino2/V00s3+M49s+nPBHlpbeYQQX6xgnfD9WRcoEVEUpxqyN7ZKOXj7jNJ
-         taseauMDQ5v2plY79dBSWk9X1VWM/daC/1yL/nZtkKJ8vKKVhYDHPO8hn41aD3c4zn2P
-         qh7R6smDbymWjqQhmjAD6ssxaMXHyuSWApIfcxBDr3GU8Pv0KShHQzUZZrpJ3BZildzd
-         eyvGiBpnFwgtmGcsHqoMxpGnzcpaRT7CaASrWmh1/hXvqBGZZNiYgD6/GNkAtGoHIjH3
-         O+Pb0oOaUWMT71DpJiXOneOFcchp4gm9djkIHBmkU+4WM8GUhA4sQdzyV5xxk3xctfx+
-         tWSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=atOYJKiQtVIBmsUBmGwjDSf2ypG69MQgMpofGinBoI0=;
-        b=BGVKDwQMwlXfjb1EdKglNFwkXFezPm5coLnub5OMFw6hmc3QYQ9YvGk8x1RQtyxYZA
-         vghmXQlN+TzfnzgTHVs9qydKTIvenJNK+iq8lFBGseNpsOoBpw+IcdUw62EAhyMlopZg
-         if3jVGGothVzDYLUReCpNXVeuRC9rJs5+djzcgWF0NLsWydt+MI5mS2ceSDAYC458Uoq
-         qFzSd2PDJyp02gFExiiyHo4ZEZ7ehZEBTdOgr/au+MRwbyRb0sBOd+8BBFKt6MpVuaG/
-         wfhCgKbbq7tOkyI9p9LtUlb21zMvVEuMvlWSB0ujwR1UlteLuMzVypxM3dIH67ytlYYC
-         OHfA==
-X-Gm-Message-State: AOAM531Cy0UyU0AVDL5rofjr1eKHgLgxiYBW7HB+s0y0YmzrdSEyBPQ6
-        U7e1Uoi3h2wlFSrrZ6eTbPPSdA==
-X-Google-Smtp-Source: ABdhPJwIN42kKI2urjm5A/VYZZSRhiAcsg0CX8N7w77B4ABoEAk97Hu3APSNPnqi+kElMOv7xpMTqg==
-X-Received: by 2002:a1c:bc56:: with SMTP id m83mr2825755wmf.174.1615374311485;
-        Wed, 10 Mar 2021 03:05:11 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id n6sm29772526wrt.1.2021.03.10.03.05.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 03:05:11 -0800 (PST)
-Date:   Wed, 10 Mar 2021 11:05:09 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [GIT PULL] Immutable branch between MFD and Watchdog due for the
- v5.13 merge window
-Message-ID: <20210310110509.GK701493@dell>
-References: <cover.1615219345.git.matti.vaittinen@fi.rohmeurope.com>
+        id S232537AbhCJLGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:06:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232670AbhCJLFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:05:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A05164FE4;
+        Wed, 10 Mar 2021 11:05:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615374337;
+        bh=250n1SIL81Lob3W2vemslcjdvU/uN2/HJ6ayL4zyAdg=;
+        h=Date:From:To:Subject:From;
+        b=bxadrJ8dKI0MtUl/3oZdJqcTMiCFuxi3pl2rfz+6uMEVcOjrajdFcIEFsGdzmzvNB
+         egtiP8g8GkEYQs14JzMqWhK8T0Xsnc9O0Q48Uj2Kl/tvvBZr1Bh8ik6UEm7ZpD8bU9
+         QVjZL7FlD0i0Ct2j/B09eH5FT7Q0zcb9opfbOiMATJTT08pz15U1rEmXy0WpsL1OaQ
+         TAUMm9u463LP3W/bMk1t1qsncTrnpQ3t1sOxadpFihfKtjlgnvfzLMZX2pXvB3isH5
+         YiGNVnGBjvnYUdJ/1RR7F87Sbd4CjG2sQu4jvBuf/+uVseorVeIvJgHdoOqW4b0dZr
+         BLRnzVP8bYn7A==
+Received: by pali.im (Postfix)
+        id 36836A83; Wed, 10 Mar 2021 12:05:35 +0100 (CET)
+Date:   Wed, 10 Mar 2021 12:05:35 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Amey Narkhede <ameynarkhede02@gmail.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: How long should be PCIe card in Warm Reset state?
+Message-ID: <20210310110535.zh4pnn4vpmvzwl5q@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1615219345.git.matti.vaittinen@fi.rohmeurope.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enjoy!
+Hello!
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+I would like to open a question about PCIe Warm Reset. Warm Reset of
+PCIe card is triggered by asserting PERST# signal and in most cases
+PERST# signal is controlled by GPIO.
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+Basically every native Linux PCIe controller driver is doing this Warm
+Reset of connected PCIe card during native driver initialization
+procedure.
 
-are available in the Git repository at:
+And now the important question is: How long should be PCIe card in Warm
+Reset state? After which timeout can be PERST# signal de-asserted by
+Linux controller driver?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-watchdog-v5.13
+Lorenzo and Rob already expressed concerns [1] [2] that this Warm Reset
+timeout should not be driver specific and I agree with them.
 
-for you to fetch changes up to 42fc191d60e6d5fd8c52e7afa8bccdc912947ce4:
+I have done investigation which timeout is using which native PCIe
+driver [3] and basically every driver is using different timeout.
 
-  mfd: bd9576: Add safety limit/monitoring registers (2021-03-10 10:59:03 +0000)
+I have tried to find timeouts in PCIe specifications, I was not able to
+understand and deduce correct timeout value for Warm Reset from PCIe
+specifications. What I have found is written in my email [4].
 
-----------------------------------------------------------------
-Immutable branch between MFD and Watchdog due for the v5.13 merge window
+Alex (as a "reset expert"), could you look at this issue?
 
-----------------------------------------------------------------
-Matti Vaittinen (6):
-      dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF PMICs
-      mfd: Support ROHM BD9576MUF and BD9573MUF
-      mfd: bd9576: Add IRQ support
-      wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
-      MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
-      mfd: bd9576: Add safety limit/monitoring registers
+Or is there somebody else who understand PCIe specifications and PCIe
+diagrams to figure out what is the minimal timeout for de-asserting
+PERST# signal?
 
- .../devicetree/bindings/mfd/rohm,bd9576-pmic.yaml  | 123 +++++++++
- MAINTAINERS                                        |   4 +
- drivers/mfd/Kconfig                                |  11 +
- drivers/mfd/Makefile                               |   1 +
- drivers/mfd/rohm-bd9576.c                          | 189 +++++++++++++
- drivers/watchdog/Kconfig                           |  13 +
- drivers/watchdog/Makefile                          |   1 +
- drivers/watchdog/bd9576_wdt.c                      | 291 +++++++++++++++++++++
- include/linux/mfd/rohm-bd957x.h                    | 140 ++++++++++
- include/linux/mfd/rohm-generic.h                   |   2 +
- 10 files changed, 775 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
- create mode 100644 drivers/mfd/rohm-bd9576.c
- create mode 100644 drivers/watchdog/bd9576_wdt.c
- create mode 100644 include/linux/mfd/rohm-bd957x.h
+There are still some issues with WiFi cards (e.g. Compex one) which
+sometimes do not appear on PCIe bus. And based on these "reset timeout
+differences" in Linux PCIe controller drivers, I suspect that it is not
+(only) the problems in WiFi cards but also in Linux PCIe controller
+drivers. In my email [3] I have written that I figured out that WLE1216
+card needs to be in Warm Reset state for at least 10ms, otherwise card
+is not detected.
 
---
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+[1] - https://lore.kernel.org/linux-pci/20200513115940.fiemtnxfqcyqo6ik@pali/
+[2] - https://lore.kernel.org/linux-pci/20200507212002.GA32182@bogus/
+[3] - https://lore.kernel.org/linux-pci/20200424092546.25p3hdtkehohe3xw@pali/
+[4] - https://lore.kernel.org/linux-pci/20200430082245.xblvb7xeamm4e336@pali/
