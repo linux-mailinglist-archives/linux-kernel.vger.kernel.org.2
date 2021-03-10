@@ -2,222 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5E733394B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B3B333950
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhCJJ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhCJJzt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:55:49 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F7FC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:55:48 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id h98so22538552wrh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:55:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HHS3s7B2vM5MRq/T4alYcLZsp9PgXOhtJLQHTWHyG6I=;
-        b=hKViq3oKw/Vzky61W3Q+HWwLjeGfUxULXZEO8L/8fo6zGoamptGPi/urnI4aaoG5V9
-         bh8cmIXVfLP1j1LSIKzmXxB0CotqgvVjooLXGln71hiHo0xrQJ/pJ+Eo3FtR2zl/xtNj
-         Q+536+Jl9ns1oRoM/ww7TMSe7mM0TGQsh2VVH2Sj5EdLm273Kp3zgy/xIYa+Qfmcwfir
-         dBqP6mmE8OOrAvtHuWj6gXqqwVFCHZGHazZsIYLW1VNUm2jHyeY41xPEOGHXRYRDEQEb
-         yH1qABj2b4FiBcSfCxVNBLHyRZnc9BhSwH1HVgpLHRaZLKFhl2VpvynMlDEIUikvz6tN
-         ge4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HHS3s7B2vM5MRq/T4alYcLZsp9PgXOhtJLQHTWHyG6I=;
-        b=d+in4EG93DEFJyLlyzsu0wdCBl+XASYvNOew6pEkHEEtbcsIRfQytrQjBErQ305izF
-         x8GJH60QUN742Q0z0I2/mDFog9ez0OcFS4jjNEPH1tpZroGQ6AA46tV5nQKgdzRn/OG7
-         DJmlPcs1ZlZVXTrG/1RjiAgC2NalNoEv45gP1knj+zVO+bD53AHFv8nXbTPhfGVrrC4k
-         VIXyow/SnSnF2AWc53I2itL9BtY4F1MKwvf1b7BhSEEEs5zfjasXWmBcK9J/VZODLYWH
-         dHVXas24qRq96ojW2EKM6IYsJZHEMzwKKzJ8LN1Hqn+R/NQ4V4iNql7rZKZIyaLqseJi
-         1n9Q==
-X-Gm-Message-State: AOAM532eTYdVyydNAMByK6oth6BGoXe/3BubkTJriMmJyMr62bIi0AwY
-        JxP6c+6zscL8xNTIEG+pT3NDeg==
-X-Google-Smtp-Source: ABdhPJyoZTGC2woPSF5yhEou7gGECHKgumljJpV8qoFiWV+xxml8Hs75oo+qErUSvhLuiem2nfR9bw==
-X-Received: by 2002:adf:b355:: with SMTP id k21mr2655022wrd.156.1615370147356;
-        Wed, 10 Mar 2021 01:55:47 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id v9sm29000370wrn.86.2021.03.10.01.55.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 01:55:46 -0800 (PST)
-Date:   Wed, 10 Mar 2021 09:55:45 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: ntxec: Support for EC in Tolino Shine 2 HD
-Message-ID: <20210310095545.GC701493@dell>
-References: <20210308212952.20774-1-andreas@kemnade.info>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210308212952.20774-1-andreas@kemnade.info>
+        id S232342AbhCJJ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:57:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231880AbhCJJ5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 04:57:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEC1064FD7;
+        Wed, 10 Mar 2021 09:57:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615370260;
+        bh=+DTrRVEF3qk4U23WJWKCrDPH2PrYHPiKc92L7OXbWHY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j1wrx0PQy5ZdUWwocyCM4N/fepb5BQpOGtakmcV2fHilmo6eWGnz1yybo1KOOHMNY
+         sTfG5XoaZp0Y5p6hVf/OfiWWe2qKJs2hBQyF0mzn5RnfHYMbH5hoGdQHwebdO/0Zrc
+         t9AsYwQm/g/La1TkD13V7VJ84P+HFnRvKRmAh+X6+AHTmLbeKW2hinSWXow6YDlo+8
+         2OxrWK4l2f0xT+/8HenlDh0Bt68eUblGe5LoCHw0VzUb+3y1W/dIkGrNPfBXGF3uwi
+         GdzDBWnscE+iFUVs3ViP5/V6GiMfw4hoKVh0BI5RHpdIkEkRRxRTPX0yxQtQJ12RwM
+         l/TFKCIxAXynQ==
+Date:   Wed, 10 Mar 2021 18:57:34 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
+        kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
+Message-Id: <20210310185734.332d9d52a26780ba02d09197@kernel.org>
+In-Reply-To: <20210309011945.ky7v3pnbdpxhmxkh@treble>
+References: <161495873696.346821.10161501768906432924.stgit@devnote2>
+        <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
+        <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
+        <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
+        <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
+        <20210309011945.ky7v3pnbdpxhmxkh@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021, Andreas Kemnade wrote:
+Hi Josh,
 
-> Add the version of the EC in the Tolino Shine 2 HD
-> to the supported versions. It seems not to have an RTC
-> and does not ack data written to it.
-> The vendor kernel happily ignores write errors, using
-> I2C via userspace i2c-set also shows the error.
-> So add a quirk to ignore that error.
+On Mon, 8 Mar 2021 19:19:45 -0600
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+
+> On Mon, Mar 08, 2021 at 11:52:10AM +0900, Masami Hiramatsu wrote:
+> > So at the kretprobe handler, we have 2 issues.
+> > 1) the return address (caller_func+0x15) is not on the stack.
+> >    this can be solved by searching from current->kretprobe_instances.
+> > 2) the stack frame size of kretprobe_trampoline is unknown
+> >    Since the stackframe is fixed, the fixed number (0x98) can be used.
+> > 
+> > However, those solutions are only for the kretprobe handler. The stacktrace
+> > from interrupt handler hit in the kretprobe_trampoline still doesn't work.
+> > 
+> > So, here is my idea;
+> > 
+> > 1) Change the trampline code to prepare stack frame at first and save
+> >    registers on it, instead of "push". This will makes ORC easy to setup
+> >    stackframe information for this code.
+> > 2) change the return addres fixup timing. Instead of using return value
+> >    of trampoline handler, before removing the real return address from
+> >    current->kretprobe_instances.
+> > 3) Then, if orc_find() finds the ip is in the kretprobe_trampoline, it
+> >    checks the contents of the end of stackframe (at the place of regs->sp)
+> >    is same as the address of it. If it is, it can find the correct address
+> >    from current->kretprobe_instances. If not, there is a correct address.
+> > 
+> > I need to find how the ORC info is prepared for 1), maybe UNWIND_HINT macro
+> > may help?
 > 
-> PWM can be successfully configured despite of that error.
+> Hi Masami,
 > 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
-> Changes in v2:
-> - more comments about stacking regmap construction
-> - fix accidential line removal
-> - better naming for subdevices
+> If I understand correctly, for #1 you need an unwind hint which treats
+> the instruction *after* the "pushq %rsp" as the beginning of the
+> function.
+
+Thanks for the patch. In that case, should I still change the stack allocation?
+Or can I continue to use a series of "push/pop" ?
+
 > 
->  drivers/mfd/ntxec.c       | 61 +++++++++++++++++++++++++++++++++++++--
->  include/linux/mfd/ntxec.h |  1 +
->  2 files changed, 59 insertions(+), 3 deletions(-)
+> I'm thinking this should work:
+
+OK, Let me test it.
+
+Thanks!
+
 > 
-> diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
-> index 957de2b03529..0bbd2e34e89c 100644
-> --- a/drivers/mfd/ntxec.c
-> +++ b/drivers/mfd/ntxec.c
-> @@ -96,6 +96,38 @@ static struct notifier_block ntxec_restart_handler = {
->  	.priority = 128,
->  };
+> 
+> diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
+> index 8e574c0afef8..8b33674288ea 100644
+> --- a/arch/x86/include/asm/unwind_hints.h
+> +++ b/arch/x86/include/asm/unwind_hints.h
+> @@ -52,6 +52,11 @@
+>  	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=8 type=UNWIND_HINT_TYPE_FUNC
+>  .endm
 >  
-> +static int regmap_ignore_write(void *context,
-> +			       unsigned int reg, unsigned int val)
+> +#else
 > +
-> +{
-> +	struct regmap *regmap = context;
+> +#define UNWIND_HINT_FUNC \
+> +	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
 > +
-> +	regmap_write(regmap, reg, val);
-> +
-> +	return 0;
-> +}
-> +
-> +static int regmap_wrap_read(void *context, unsigned int reg,
-> +			    unsigned int *val)
-> +{
-> +	struct regmap *regmap = context;
-> +
-> +	return regmap_read(regmap, reg, val);
-> +}
-> +
-> +/*
-> + * Some firmware versions do not ack written data, add a wrapper. It
-> + * is used to stack another regmap on top.
-> + */
-> +static const struct regmap_config regmap_config_noack = {
-> +	.name = "ntxec_noack",
-> +	.reg_bits = 8,
-> +	.val_bits = 16,
-> +	.cache_type = REGCACHE_NONE,
-> +	.reg_write = regmap_ignore_write,
-> +	.reg_read = regmap_wrap_read
-> +};
-> +
->  static const struct regmap_config regmap_config = {
->  	.name = "ntxec",
->  	.reg_bits = 8,
-> @@ -104,15 +136,20 @@ static const struct regmap_config regmap_config = {
->  	.val_format_endian = REGMAP_ENDIAN_BIG,
->  };
+>  #endif /* __ASSEMBLY__ */
 >  
-> -static const struct mfd_cell ntxec_subdevices[] = {
-> +static const struct mfd_cell ntxec_subdev[] = {
->  	{ .name = "ntxec-rtc" },
->  	{ .name = "ntxec-pwm" },
->  };
+>  #endif /* _ASM_X86_UNWIND_HINTS_H */
+> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> index df776cdca327..38ff1387f95d 100644
+> --- a/arch/x86/kernel/kprobes/core.c
+> +++ b/arch/x86/kernel/kprobes/core.c
+> @@ -767,6 +767,7 @@ asm(
+>  	/* We don't bother saving the ss register */
+>  #ifdef CONFIG_X86_64
+>  	"	pushq %rsp\n"
+> +	UNWIND_HINT_FUNC
+>  	"	pushfq\n"
+>  	SAVE_REGS_STRING
+>  	"	movq %rsp, %rdi\n"
+> @@ -790,7 +791,6 @@ asm(
+>  	".size kretprobe_trampoline, .-kretprobe_trampoline\n"
+>  );
+>  NOKPROBE_SYMBOL(kretprobe_trampoline);
+> -STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
 >  
-> +static const struct mfd_cell ntxec_subdev_pwm[] = {
-> +	{ .name = "ntxec-pwm" },
-> +};
-
-To put across what you're trying to achieve, maybe call this:
-
-  ntxec_subdev_no_rtc[]
-
-Then if other devices are added, the semantics/intent stays the same
-and it won't have to be renamed.
-
->  static int ntxec_probe(struct i2c_client *client)
->  {
->  	struct ntxec *ec;
->  	unsigned int version;
-> +	bool has_rtc;
->  	int res;
 >  
->  	ec = devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
-> @@ -137,6 +174,16 @@ static int ntxec_probe(struct i2c_client *client)
->  	/* Bail out if we encounter an unknown firmware version */
->  	switch (version) {
->  	case NTXEC_VERSION_KOBO_AURA:
-> +		has_rtc = true;
-> +		break;
-> +	case NTXEC_VERSION_TOLINO_SHINE2:
-> +		has_rtc = false;
-> +		/* Another regmap stacked on top of the other */
-> +		ec->regmap = devm_regmap_init(ec->dev, NULL,
-> +					      ec->regmap,
-> +					      &regmap_config_noack);
-> +		if (IS_ERR(ec->regmap))
-> +			return PTR_ERR(ec->regmap);
->  		break;
->  	default:
->  		dev_err(ec->dev,
-> @@ -181,8 +228,16 @@ static int ntxec_probe(struct i2c_client *client)
->  
->  	i2c_set_clientdata(client, ec);
->  
-> -	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subdevices,
-> -				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
-> +	if (has_rtc)
-> +		res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
-> +					   ntxec_subdev,
-> +					   ARRAY_SIZE(ntxec_subdev),
-> +					   NULL, 0, NULL);
-> +	else
-> +		res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
-> +					   ntxec_subdev_pwm,
-> +					   ARRAY_SIZE(ntxec_subdev_pwm),
-> +					   NULL, 0, NULL);
+>  /*
+> 
 
-You're over-complicating things.
-
-Simply have a local mfd_cells variable that you assign either
-'ntxec_subdev' or 'ntxec_subdev_pwm' to, then simply call
-devm_mfd_add_devices() once.
-
-It means you can also drop 'has_rtc'.
-
->  	if (res)
->  		dev_err(ec->dev, "Failed to add subdevices: %d\n", res);
->  
-> diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
-> index 361204d125f1..26ab3b8eb612 100644
-> --- a/include/linux/mfd/ntxec.h
-> +++ b/include/linux/mfd/ntxec.h
-> @@ -33,5 +33,6 @@ static inline __be16 ntxec_reg8(u8 value)
->  
->  /* Known firmware versions */
->  #define NTXEC_VERSION_KOBO_AURA	0xd726	/* found in Kobo Aura */
-> +#define NTXEC_VERSION_TOLINO_SHINE2 0xf110 /* found in Tolino Shine 2 HD */
->  
->  #endif
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Masami Hiramatsu <mhiramat@kernel.org>
