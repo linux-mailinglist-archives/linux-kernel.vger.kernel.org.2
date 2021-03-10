@@ -2,161 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56732334A1E
+	by mail.lfdr.de (Postfix) with ESMTP id 0A67E334A1D
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbhCJVtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:49:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44176 "EHLO mail.kernel.org"
+        id S232238AbhCJVtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:49:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232206AbhCJVtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:49:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C825064FAB;
-        Wed, 10 Mar 2021 21:49:13 +0000 (UTC)
+        id S231636AbhCJVtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:49:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E62A764E27;
+        Wed, 10 Mar 2021 21:49:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615412954;
-        bh=+oOFNv56O7sMY7qolB4gLqf1KbVTKbHQJ69T+KpnJ2A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZLvuUQ+VxNtzXtc89ljBECwuc81VfHAHA8rI1rEkpff+j5Lh2nAl3YUvNMMJF+h1j
-         c34KzybBRtUBywyrFAU1zoimW8MV+mS1Y5SXSS7l5y5he3UokpYm6LpI2NhrKTaD9B
-         bIP1j5KU5103Rf5gxy62v9VxHH+IVSW4lyI4VbaHx/3tt+w2LufwFwLNomu0tXESO5
-         wpbLMZQqVZhZ0CDgEMOxXe/zNKXKvHJcLyylS4cypnPtnGlN2wEoKRGli5Vpo5kmFL
-         rj15DNdq1YnHBEwpPbAlcik68D+RnYURpExd9pKrY4ERqdV52KXNFTiIvfZjnNgiZr
-         TcidJ4eOx2wvA==
-Date:   Wed, 10 Mar 2021 23:48:50 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-sgx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] x86/sgx: Add a basic NUMA allocation scheme to
- sgx_alloc_epc_page()
-Message-ID: <YEk+wpHbSrHBZeKn@kernel.org>
-References: <20210303150323.433207-1-jarkko@kernel.org>
- <20210303150323.433207-6-jarkko@kernel.org>
- <7621d89e-9347-d8a5-a8b0-a108990d0e6d@intel.com>
- <YEitzCiXd02/Pxy1@kernel.org>
- <c710eea8-a0ea-70b6-6521-0dd685adbb06@intel.com>
+        s=k20201202; t=1615412950;
+        bh=k4nA3Eis+qAbq10nmWD8z7V/kQBE/rHbRJtN9QWQBw0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=P5sKfqEbajEnmE7axLxcCMjxpejmZbLeK/35uQ75J2PTcy2fnAMV4slxTa8XGxp0O
+         6M12d7qF70AIb555wieAmHBgSiLAsK5lSUU3DeoewzlfOTT4y0UkJ4zRhwZPYNDRmQ
+         E1NS///fOr6Rjo7kiNl8M89ii91dTn5FmQk2B4FA4u4LRt8pEsJBkMFekpVJW8BqXA
+         kZzgtbp5pwCUxSUIHIhqirnDaeaF6gn6tQjuUN4mlo6pm41bqlBfNFNJfJ9xr++O/a
+         cAJkEKjYuIFGdfkKqeIMidCG0/O19aFeR0P7PkFa03mpo27vHPlgdSIKVMaWYdq+GC
+         5eSPUE2QdHLuA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 940603522611; Wed, 10 Mar 2021 13:49:09 -0800 (PST)
+Date:   Wed, 10 Mar 2021 13:49:09 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+Message-ID: <20210310214909.GY2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-5-songmuchun@bytedance.com>
+ <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
+ <f9f19d38-f1a7-ac8c-6ba8-3ce0bcc1e6a0@oracle.com>
+ <YEk1+mDZ4u85RKL3@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c710eea8-a0ea-70b6-6521-0dd685adbb06@intel.com>
+In-Reply-To: <YEk1+mDZ4u85RKL3@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 07:44:39AM -0800, Dave Hansen wrote:
-> >>> + * node.
-> >>> + */
-> >>> +static struct sgx_numa_node *sgx_numa_nodes;
-> >>> +
-> >>> +/*
-> >>> + * sgx_free_epc_page() uses this to find out the correct struct sgx_numa_node,
-> >>> + * to put the page in.
-> >>> + */
-> >>> +static int sgx_section_to_numa_node_id[SGX_MAX_EPC_SECTIONS];
-> >>
-> >> If this is per-section, why not put it in struct sgx_epc_section?
+On Wed, Mar 10, 2021 at 10:11:22PM +0100, Michal Hocko wrote:
+> On Wed 10-03-21 10:56:08, Mike Kravetz wrote:
+> > On 3/10/21 7:19 AM, Michal Hocko wrote:
+> > > On Mon 08-03-21 18:28:02, Muchun Song wrote:
+> > > [...]
+> > >> @@ -1447,7 +1486,7 @@ void free_huge_page(struct page *page)
+> > >>  	/*
+> > >>  	 * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
+> > >>  	 */
+> > >> -	if (!in_task()) {
+> > >> +	if (in_atomic()) {
+> > > 
+> > > As I've said elsewhere in_atomic doesn't work for CONFIG_PREEMPT_COUNT=n.
+> > > We need this change for other reasons and so it would be better to pull
+> > > it out into a separate patch which also makes HUGETLB depend on
+> > > PREEMPT_COUNT.
 > > 
-> > Because struct sgx_epc_page does not contain a pointer to
-> > struct sgx_epc_section.
-> 
-> Currently, we have epc_page->section.  That's not changing.  But, with
-> the free list moving from sgx_epc_section to sgx_numa_node, we need a
-> way to get from page->node, not just page->section.
-> 
-> We can either add that to:
-> 
-> 	struct sgx_epc_section {
-> 		...
-> +		struct sgx_numa_node *node;
-> 	}
-> 
-> so we can do epc_page->section->node to find the epc_page's free list,
-> or we could just do:
-> 
->  struct sgx_epc_page {
-> - 	unsigned int section;
-> + 	unsigned int node;
->  	unsigned int flags;
->  	struct sgx_encl_page *owner;
->  	struct list_head list;
-> 	struct list_head numa_list;
->  };
-> 
-> and go from page->node directly.
-
-OK, I buy this, thanks.
-
-> >>>  	page = list_first_entry(&sgx_free_page_list, struct sgx_epc_page, list);
-> >>> +	list_del_init(&page->numa_list);
-> >>>  	list_del_init(&page->list);
-> >>>  	sgx_nr_free_pages--;
-> >>
-> >> I would much rather prefer that this does what the real page allocator
-> >> does: kep the page on a single list.  That list is maintained
-> >> per-NUMA-node.  Allocations try local NUMA node structures, then fall
-> >> back to other structures (hopefully in a locality-aware fashion).
-> >>
-> >> I wrote you the loop that I want to see this implement in an earlier
-> >> review.  This, basically:
-> >>
-> >> 	page = NULL;
-> >> 	nid = numa_node_id();
-> >> 	while (true) {
-> >> 		page = __sgx_alloc_epc_page_from_node(nid);	
-> >> 		if (page)
-> >> 			break;
-> >>
-> >> 		nid = // ... some search here, next_node_in()...
-> >> 		// check if we wrapped around:
-> >> 		if (nid == numa_node_id())
-> >> 			break;
-> >> 	}
-> >>
-> >> There's no global list.  You just walk around nodes trying to find one
-> >> with space.  If you wrap around, you stop.
-> >>
-> >> Please implement this.  If you think it's a bad idea, or can't, let's
-> >> talk about it in advance.  Right now, it appears that my review comments
-> >> aren't being incorporated into newer versions.
+> > Yes, the issue of calling put_page for hugetlb pages from any context
+> > still needs work.  IMO, that is outside the scope of this series.  We
+> > already have code in this path which blocks/sleeps.
 > > 
-> > How I interpreted your earlier comments is that the fallback is unfair and
-> > this patch set version does fix that. 
-> > 
-> > I can buy the above allocation scheme, but I don't think this patch set
-> > version is a step backwards. The things done to struct sgx_epc_section
-> > are exactly what should be done to it.
+> > Making HUGETLB depend on PREEMPT_COUNT is too restrictive.  IIUC,
+> > PREEMPT_COUNT will only be enabled if we enable:
+> > PREEMPT "Preemptible Kernel (Low-Latency Desktop)"
+> > PREEMPT_RT "Fully Preemptible Kernel (Real-Time)"
+> > or, other 'debug' options.  These are not enabled in 'more common'
+> > kernels.  Of course, we do not want to disable HUGETLB in common
+> > configurations.
 > 
-> To me, it's a step backwards.  It regresses in that it falls back to an
-> entirely non-NUMA aware allocation mechanism.  The global list is
-> actually likely to be even worse than the per-section searches because
-> it has a global lock as opposed to the at per-section locks.  It also
-> has the overhead of managing two lists instead of one.
-> 
-> So, yes, it is *fair* in terms of NUMA node pressure.  But being fair in
-> a NUMA-aware allocator by simply not doing NUMA at all is a regression.
+> I haven't tried that but PREEMPT_COUNT should be selectable even without
+> any change to the preemption model (e.g. !PREEMPT).
 
-The code is structured now in a way that is trivial to remove the global
-list and move on to just node lists. I.e. nasty section lists have been
-wiped away. Refactoring global list out is a trivial step.  
+It works reliably for me, for example as in the diff below.  So,
+as Michal says, you should be able to add "select PREEMPT_COUNT" to
+whatever Kconfig option you need to.
 
-That way this is a step forwards, even if having a global list would
-be step backwards:-)
+							Thanx, Paul
 
-> > Implementation-wise you are asking me to squash 4/5 and 5/5 into a single
-> > patch, and remove global list. It's a tiny iteration from this patch
-> > version and I can do it.
-> 
-> Sounds good.
-
-I'll dissolve your feedback and come with the new version, which I'll
-put out tomorrow.
-
-PS. If you don't here of me after you have given feedback to the next
-version, please ping privately. It looks like things are getting through
-again fast but better be sure than sorry...
-
-/Jarkko
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 3128b7c..7d9f989 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -8,6 +8,7 @@ menu "RCU Subsystem"
+ config TREE_RCU
+ 	bool
+ 	default y if SMP
++	select PREEMPT_COUNT
+ 	help
+ 	  This option selects the RCU implementation that is
+ 	  designed for very large SMP system with hundreds or
