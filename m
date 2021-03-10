@@ -2,131 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB163346E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3886F3346E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbhCJSep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:34:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22058 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232790AbhCJSeS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:34:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615401255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2zg5A9GRmmUbhQTpSccn6Zg6U2kdiSb2CT/WezBnaxU=;
-        b=cQEjw2bPS9KrMOT9vaRF9ISfTGonCMXMlbF8GfPIkheuPhIw0L71kdwD7SQucHZX0mvbML
-        IPG959ado/SVgHEhKfmtZvwTB8as830TaB6Zxu5j3pPq8ZnVvC+qOMq1Vvs/iVGADI1KZR
-        NPT/hR1ugd9exykRq97mRWifoc3UNWo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-142-9tpFA-piNeewkWb8-_F1Gg-1; Wed, 10 Mar 2021 13:34:14 -0500
-X-MC-Unique: 9tpFA-piNeewkWb8-_F1Gg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DFEA69738;
-        Wed, 10 Mar 2021 18:34:12 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2C59D62461;
-        Wed, 10 Mar 2021 18:34:07 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 11:34:06 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
-Subject: Re: [PATCH] vfio/pci: Handle concurrent vma faults
-Message-ID: <20210310113406.6f029fcf@omen.home.shazbot.org>
-In-Reply-To: <20210310181446.GZ2356281@nvidia.com>
-References: <161539852724.8302.17137130175894127401.stgit@gimli.home>
-        <20210310181446.GZ2356281@nvidia.com>
+        id S232598AbhCJShX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:37:23 -0500
+Received: from mga12.intel.com ([192.55.52.136]:47310 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233337AbhCJShO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:37:14 -0500
+IronPort-SDR: bevrzVm48kfPV2u9sQLfAdC6FQy3HHfiUvy5AOgEZjtSp3al6A6CE89K+gO8T9Ns5jldx2uzCA
+ nEvN8P6RA9Sw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167811307"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="167811307"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 10:37:13 -0800
+IronPort-SDR: 5o943c0kgvAX14ZxTFPwFhrVTX6enozmWA1CgGJ9MKwP5hy7hKsjslEcTQ81XP0hH3/H2ZwmeD
+ kNVtaLeIv6wA==
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="447996950"
+Received: from jsglenn-mobl1.amr.corp.intel.com (HELO [10.251.2.203]) ([10.251.2.203])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 10:37:11 -0800
+Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
+ present
+To:     Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Bard liao <yung-chuan.liao@linux.intel.com>
+References: <20210303115526.419458-1-jonathanh@nvidia.com>
+ <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
+ <20210310133534.GD4746@sirena.org.uk>
+ <6a2352e6-f2b7-def1-de58-52fbeb7846e5@linux.intel.com>
+ <20210310161814.GA28564@sirena.org.uk> <s5hzgzbvube.wl-tiwai@suse.de>
+ <9b073d01-f2fe-a99b-e53c-4a0b3f95ca05@linux.intel.com>
+ <20210310165235.GD28564@sirena.org.uk>
+ <cf03ce61-1501-e0e7-6887-d921c7d1af62@linux.intel.com>
+ <20210310181611.GE28564@sirena.org.uk>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9e1075c6-da49-d614-e7af-30242dd3d3fe@linux.intel.com>
+Date:   Wed, 10 Mar 2021 12:37:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210310181611.GE28564@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 14:14:46 -0400
-Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> On Wed, Mar 10, 2021 at 10:53:29AM -0700, Alex Williamson wrote:
+>>> Build time dependencies aren't going to help anything, arm64 (and to my
+>>> understanding some future x86 systems, LynxPoint IIRC) supports both DT
+>>> and ACPI and so you have kernels built with support for both.
 > 
-> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> > index 65e7e6b44578..ae723808e08b 100644
-> > +++ b/drivers/vfio/pci/vfio_pci.c
-> > @@ -1573,6 +1573,11 @@ static int __vfio_pci_add_vma(struct vfio_pci_device *vdev,
-> >  {
-> >  	struct vfio_pci_mmap_vma *mmap_vma;
-> >  
-> > +	list_for_each_entry(mmap_vma, &vdev->vma_list, vma_next) {
-> > +		if (mmap_vma->vma == vma)
-> > +			return 0; /* Swallow the error, the vma is tracked */
-> > +	}
-> > +
-> >  	mmap_vma = kmalloc(sizeof(*mmap_vma), GFP_KERNEL);
-> >  	if (!mmap_vma)
-> >  		return -ENOMEM;
-> > @@ -1612,31 +1617,32 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
-> >  {
-> >  	struct vm_area_struct *vma = vmf->vma;
-> >  	struct vfio_pci_device *vdev = vma->vm_private_data;
-> > -	vm_fault_t ret = VM_FAULT_NOPAGE;
-> > +	unsigned long vaddr = vma->vm_start, pfn = vma->vm_pgoff;
-> > +	vm_fault_t ret = VM_FAULT_SIGBUS;
-> >  
-> >  	mutex_lock(&vdev->vma_lock);
-> >  	down_read(&vdev->memory_lock);
-> >  
-> > -	if (!__vfio_pci_memory_enabled(vdev)) {
-> > -		ret = VM_FAULT_SIGBUS;
-> > -		mutex_unlock(&vdev->vma_lock);
-> > +	if (!__vfio_pci_memory_enabled(vdev))
-> >  		goto up_out;
-> > +
-> > +	for (; vaddr < vma->vm_end; vaddr += PAGE_SIZE, pfn++) {
-> > +		ret = vmf_insert_pfn_prot(vma, vaddr, pfn,
-> > +					  pgprot_decrypted(vma->vm_page_prot));  
+>> well, that's what I suggested initially:
+>>         if (is_of_node(card->dev->fwnode))
 > 
-> I investigated this, I think the above pgprot_decrypted() should be
-> moved here:
+>> I used the of_node test as a proxy for 'no DMI' since I am not aware of any
+>> means to detect if DMI is enabled at run-time.
 > 
-> static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
-> {
->         vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> +       vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
-> 
-> 
-> And since:
-> 
-> vm_fault_t vmf_insert_pfn(struct vm_area_struct *vma, unsigned long addr,
-> 			unsigned long pfn)
-> {
-> 	return vmf_insert_pfn_prot(vma, addr, pfn, vma->vm_page_prot);
-> 
-> The above can just use vfm_insert_pfn()
+> Can we not fix the DMI code so it lets us check dmi_available either
+> directly or with an accessor?  I don't understand why all the proposals
+> are dancing around local bodges here.
 
-Cool, easy enough.  Thanks for looking.
- 
-> The only thing that makes me nervous about this arrangment is loosing
-> the track_pfn_remap() which was in remap_pfn_range() - I think it
-> means we miss out on certain PAT manipulations.. I *suspect* this is
-> not a problem for VFIO because it will rely on the MTRRs generally on
-> x86 - but I also don't know this mechanim too well.
+something like this then (compile-tested only)?
 
-Yeah, for VM use cases the MTRRs generally override.
+diff --git a/drivers/firmware/dmi_scan.c b/drivers/firmware/dmi_scan.c
+index d51ca0428bb8..f191a1f901ac 100644
+--- a/drivers/firmware/dmi_scan.c
++++ b/drivers/firmware/dmi_scan.c
+@@ -166,6 +166,7 @@ static int __init dmi_checksum(const u8 *buf, u8 len)
+  static const char *dmi_ident[DMI_STRING_MAX];
+  static LIST_HEAD(dmi_devices);
+  int dmi_available;
++EXPORT_SYMBOL_GPL(dmi_available);
 
-> I think after the address_space changes this should try to stick with
-> a normal io_rmap_pfn_range() done outside the fault handler.
+  /*
+   *     Save a DMI string
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 16ba54eb8164..c7e4600b2dd4 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1574,7 +1574,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card 
+*card, const char *flavour)
+         if (card->long_name)
+                 return 0; /* long name already set by driver or from DMI */
 
-I assume you're suggesting calling io_remap_pfn_range() when device
-memory is enabled, do you mean using vma_interval_tree_foreach() like
-unmap_mapping_range() does to avoid re-adding a vma list?  Thanks,
+-       if (!is_acpi_device_node(card->dev->fwnode))
++       if (!dmi_available)
+                 return 0;
 
-Alex
+         /* make up dmi long name as: vendor-product-version-board */
+
+
 
