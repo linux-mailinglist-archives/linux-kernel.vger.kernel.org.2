@@ -2,116 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4691133368D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AC6333693
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhCJHoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:44:44 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48604 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhCJHod (ORCPT
+        id S231252AbhCJHqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:46:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230198AbhCJHq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:44:33 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12A7iR8t016821;
-        Wed, 10 Mar 2021 01:44:27 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615362267;
-        bh=TfQQgTKeBCY4xuMtmfDUQm+/YrcItfzYj5J9OoTYvQY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Ik4N/5Oumj4RnQagRniaq7Oc3tsK7T43gBQfl6u8RRV/2ZTWb8X+mN0H+C96qVR+z
-         EPXgCO/JNPqAV0FLyEVc3qdRTEPgpdB2CnI15f7C7r6zyC9kCoyDQwZwH73BT9RLTW
-         u9lcBpA1mqZbVAROboGSIhF8kmFABLw1n22D/OkY=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12A7iRlf025991
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Mar 2021 01:44:27 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
- Mar 2021 01:44:27 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 10 Mar 2021 01:44:27 -0600
-Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12A7iNjp074705;
-        Wed, 10 Mar 2021 01:44:24 -0600
-Subject: Re: [PATCH 0/2] AM64: Add USB support
-To:     Kishon Vijay Abraham I <kishon@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>
-References: <20210301055109.17626-1-a-govindraju@ti.com>
- <20210301152227.f6phla2m3rz457pj@passerby>
- <85b1b60f-455c-51b8-9e28-019226413885@ti.com>
- <e8d53390-7a70-fda1-2b6c-ab252947e41b@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <44a86048-3356-0e8b-513e-1efb36f2987b@ti.com>
-Date:   Wed, 10 Mar 2021 13:14:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 10 Mar 2021 02:46:28 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F54AC061761
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:46:28 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so6767091pjc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:46:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YtSOPZCf9Da269ZEPcGrsyfquqgeGyegkCV8/Htilvk=;
+        b=R5gEY8VaX1kw0BYeYWpOh2pvYK1+99hrZLVbBXAd3RwBgFjYc1B57PG7nhkaYE0mLc
+         SXm6a1/sZRJ3lPzuMVqkrY91FHDPAe9Jscu5lh0y5zZmfoNOf7VeB8S4X77/Gr9e1ujv
+         wuL7xpQ/EtRPPpp/f3fxRXxIVUJhTNkZFIIqM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YtSOPZCf9Da269ZEPcGrsyfquqgeGyegkCV8/Htilvk=;
+        b=U6+0ons9W1LcdQDexdmp/KVQ25BBGFPTQvpA7VnfN8S3k62AouMtoDBOIpmkmc0qC1
+         VDHtAWY+jsIWKI6wo5yqBEKlQ4YRNsM4na3sZ4vodbYGRZejBepMr4O28N47D2QG5ZXZ
+         pT4K8m4Pj+qHlKbPX+2JOSHvaDOQeKNgZBWjnLKaiqTGqaBRrpeXxuMntWG52Dsh4HRz
+         ZyvUkwjN5OSYIV+9+CTjRXngknCQ/wPqBFa5nzkAEIrDzhN1xs1/ztgAs8ld/YSEs3t8
+         M9nke926UHbQFxre/aPOUO7OEU5amxSDQJ6o+dcOEo9CyGjrCrlZi1IMG93AR16Uqhdl
+         HkNg==
+X-Gm-Message-State: AOAM530vuOG6dn+IUrvXU4+iTnAMURBVlTUY9EMtV3jC4gEQQaylJY7b
+        S4Ki071ZVQQZs+Fb7zb/eOk51Q==
+X-Google-Smtp-Source: ABdhPJwEa8CkSLK2/AJuxaIcUqDxCJOy2d+vmOQXrdTz9u3hdWTy0ok3NvdeQBqSoRxViggpDTF0wQ==
+X-Received: by 2002:a17:90a:8:: with SMTP id 8mr2313414pja.6.1615362387840;
+        Tue, 09 Mar 2021 23:46:27 -0800 (PST)
+Received: from google.com ([2409:10:2e40:5100:30c3:e7ed:8b0a:7f01])
+        by smtp.gmail.com with ESMTPSA id n9sm1793181pjq.38.2021.03.09.23.46.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 23:46:27 -0800 (PST)
+Date:   Wed, 10 Mar 2021 16:46:22 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] media: videobuf2: Fix integer overrun in vb2_mmap
+Message-ID: <YEh5TmP/fbHeZc2G@google.com>
+References: <20210310074028.1042475-1-ribalda@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <e8d53390-7a70-fda1-2b6c-ab252947e41b@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310074028.1042475-1-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+On (21/03/10 08:40), Ricardo Ribalda wrote:
+> 
+> The plane_length is an unsigned integer. So, if we have a size of
+> 0xffffffff bytes we incorrectly allocate 0 bytes instead of 1 << 32.
+> 
+> Suggested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Cc: stable@vger.kernel.org
+> Fixes: 7f8414594e47 ("[media] media: videobuf2: fix the length check for mmap")
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-On 10/03/21 12:33 pm, Kishon Vijay Abraham I wrote:
-> +Vinod
-> 
-> Hi Aswath,
-> 
-> On 10/03/21 12:27 pm, Aswath Govindraju wrote:
->> Hi Nishanth,
->>
->> On 01/03/21 8:52 pm, Nishanth Menon wrote:
->>> On 11:21-20210301, Aswath Govindraju wrote:
->>>> The following series of patches, add USB support for AM64.
->>>>
->>>> This series of patches depends on,
->>>> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439039
->>>>
->>>> Aswath Govindraju (2):
->>>>   arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
->>>>   arm64: dts: ti: k3-am642-evm: Add USB support
->>>>
->>>>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 30 ++++++++++++++++++++++++
->>>>  arch/arm64/boot/dts/ti/k3-am642-evm.dts  | 18 ++++++++++++++
->>>>  2 files changed, 48 insertions(+)
->>>
->>> Please update the series to include SK as well.
->>>
->>
->> I was planning on posting patches that add support for USB in SK later
->> because of phy dependencies.
-> 
-> The dependency is only on [1] right? I've got all the required ACKs so
-> it should be okay to include it in this series. (That patch will be
-> required only when PCIe DT is merged for me.)
-> 
-> Nishant, would you be okay to merge [1] along with other patches from
-> Aswath? There is no dependency as such on my other PHY patches, so don't
-> think there is a need for a stable tag here.
-> 
-> 
-> [1] ->
-> https://lore.kernel.org/linux-devicetree/20210222112314.10772-4-kishon@ti.com/
->>
 
-There is also a dependency on,
-
-https://lore.kernel.org/linux-devicetree/20210222112314.10772-2-kishon@ti.com/
-
-Thanks,
-Aswath
+FWIF,
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
