@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3324C333254
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 01:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F273833325D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 01:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhCJA3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 19:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        id S231309AbhCJAai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 19:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhCJA3E (ORCPT
+        with ESMTP id S231324AbhCJAad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 19:29:04 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9517C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 16:29:04 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id t16so14707901ott.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 16:29:04 -0800 (PST)
+        Tue, 9 Mar 2021 19:30:33 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF0DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 16:30:33 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id jx11so11457478qvb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 16:30:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YCFqenVwgnCmAUoeefLo2iVv6XxOeskoCaYYAzv0TRA=;
-        b=gIkwjcO/KoP+cwZtxXlX5WIlpIpsCBmYJyT7yi+Wk58xdUnKN9E/uYybEjSsdRVOiS
-         30YeghMqtLpBhy0Ni52K/+iabei4ZEzECEGl4UHJ2NkwPcA7q3XGe3yUTMIoZxEWckef
-         79fCtCVcDZYjkSH4nHWfocrayc5VSJDCu7SHE=
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=ZbG3xZb8PBQgiaDoQSCf4y5RYRarcXuHOWtQzEo4Lp4=;
+        b=us2FvwuKuUsnKtfzXb/jE9ZyNfz3iRwsk6KoFEfxEIznNEhIADvJky2H+nPDcHEZR/
+         vll9/s0EeGTtsOotd350+EnFp+LlDw9a7VzG7Yzup0s7mN88cuVzSHHDWewX+PXJC3U0
+         +WhZREu1Dw2O+ti0oRCiF+/PyGn5LBENAwy9wXS7g2VW4IVqT7PkYnyNeJ9A4YmGpCAC
+         Ritx82nsW4Kpi/W6N1Sv557L3+x2JRRz6SkRU2WNSl6xG87d717YIRdK0HDQZlmj2MqU
+         Hgs1pijsHPN8P3gS1o5ylJOoC4vYeIW/w+qjmVjrPzce/+GcqTGt3dqS0Qlao7bGwccb
+         S2lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YCFqenVwgnCmAUoeefLo2iVv6XxOeskoCaYYAzv0TRA=;
-        b=lVvHXRDj90AxS+MBzPVk+tLRZ0xVBCnbsuHInGgY/JNNZFSSHqgM7bYx8Cw1h5g3w9
-         6ZBciQtELK6OuBADc9hIZV2tQa2GFliQM8JiTjg5VRu6rFCf1IwJSyAVyQLmXo8TeKDZ
-         JOfSZ+WgE4LX4czMGNqRRWhQhbE63QTYXOxJc9kPQ8aUImb1CLORlH/d2rtYZ3gPYdHh
-         LZ0R+RJDSRIrca9UyT8EYPB/TtgTIjMx0Us9BsSOxZ4agXTiUCaksGK9MDjSn2L6h5fG
-         JQcvazEd2RGZAIdLI5hHNLCi+lDmsApP0ScsyMYdZ1cKpbcTMBGsCCpFc1yoB0Q/EPjV
-         J3vg==
-X-Gm-Message-State: AOAM5326kSHvVkM5raCB67zfx6CiVuLlJaUF78RJ86yjaN2i5uSZ4SlA
-        IuZBCBlIBFR5Kr0WhaorFsPWWw==
-X-Google-Smtp-Source: ABdhPJw7TybX5+FL0pbTYdm39ZmmBuRtKJBvI5JnKZpZOuJeir3SGXJKLHPRdCGCKsjetEDFFQBC1Q==
-X-Received: by 2002:a9d:640b:: with SMTP id h11mr614458otl.224.1615336144055;
-        Tue, 09 Mar 2021 16:29:04 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s21sm3319980oos.5.2021.03.09.16.29.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 16:29:03 -0800 (PST)
-Subject: Re: [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races
- leading to gpf
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        shuah@kernel.org, valentina.manea.m@gmail.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1615171203.git.skhan@linuxfoundation.org>
- <268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org>
- <05aed75a-4a81-ef59-fc4f-6007f18e7839@i-love.sakura.ne.jp>
- <5df3d221-9e78-4cbe-826b-81cbfc4d5888@i-love.sakura.ne.jp>
- <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
- <f8f5e763-da2d-b26f-c6a5-d345bbe55448@i-love.sakura.ne.jp>
- <30a1afb2-d5a4-40b2-385d-24a2bf110e92@linuxfoundation.org>
- <7b9465aa-213e-a513-d033-12c048df15d6@i-love.sakura.ne.jp>
- <05e8e744-0847-cde2-b978-0bfd7ef93a9f@linuxfoundation.org>
- <9653ae69-86f4-7608-ce97-4ec39b063ed2@i-love.sakura.ne.jp>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <1edb9542-59c9-bbf6-9f16-99614605a800@linuxfoundation.org>
-Date:   Tue, 9 Mar 2021 17:29:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <9653ae69-86f4-7608-ce97-4ec39b063ed2@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=ZbG3xZb8PBQgiaDoQSCf4y5RYRarcXuHOWtQzEo4Lp4=;
+        b=AM/6xCBSdTz0MgJS3h+Q6fT4dvFseHlio2RICTMdyynBLXqdEKscO1B5trIJhscLp4
+         kt/ATfeKpQR8bblv28CRXq3pf3dWMMnHbaprFYj/TYteMImIDbJZ+VJ34oihMZhwR3Dh
+         S163suQP6EUm7uRoSi+7kUuD/OoBPDPABYBNgA46MAv2tclatAqhWElA5i+hXK71sktC
+         bdOyvdQW+6dmqZdbsIiR2tyZ0x54JF3iZPGbCka14geGZSB0PUyik6JP7RZyzrlTNXac
+         jW3ydAeT70Z4jA5Pfbre/hrAnzlvkjfB/zNUvAPqGMlYXcABnmq7nS12SyumY31opZxx
+         ithg==
+X-Gm-Message-State: AOAM530AYo1YNzOwEOEuOaDGIX/C7eECeAeHNnmUjs/14jZfve1DFEOX
+        YFROV5BtAbGy4jCXlMYyBtxueQ4iU3k=
+X-Google-Smtp-Source: ABdhPJz8JBsJ6DNuTmV245LAf4RiHcBxMThlSVNRRXuyrUb6m0zifQoo7EXUCGWd67jnrZzuYtZf609dG5c=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
+ (user=seanjc job=sendgmr) by 2002:a0c:b71a:: with SMTP id t26mr558668qvd.38.1615336232507;
+ Tue, 09 Mar 2021 16:30:32 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue,  9 Mar 2021 16:30:29 -0800
+Message-Id: <20210310003029.1250571-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH] KVM: x86/mmu: Skip !MMU-present SPTEs when removing SP in
+ exclusive mode
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 5:03 PM, Tetsuo Handa wrote:
-> On 2021/03/10 8:52, Shuah Khan wrote:
->> On 3/9/21 4:40 PM, Tetsuo Handa wrote:
->>> On 2021/03/10 4:50, Shuah Khan wrote:
->>>> On 3/9/21 4:04 AM, Tetsuo Handa wrote:
->>>>> On 2021/03/09 1:27, Shuah Khan wrote:
->>>>>> Yes. We might need synchronization between events, threads, and shutdown
->>>>>> in usbip_host side and in connection polling and threads in vhci.
->>>>>>
->>>>>> I am also looking at the shutdown sequences closely as well since the
->>>>>> local state is referenced without usbip_device lock in these paths.
->>>>>>
->>>>>> I am approaching these problems as peeling the onion an expression so
->>>>>> we can limit the changes and take a spot fix approach. We have the
->>>>>> goal to address these crashes and not introduce regressions.
->>>>>
->>>>> I think my [PATCH v4 01/12]-[PATCH v4 06/12] simplify your further changes
->>>>> without introducing regressions. While ud->lock is held when checking ud->status,
->>>>> current attach/detach code is racy about read/update of ud->status . I think we
->>>>> can close race in attach/detach code via a simple usbip_event_mutex serialization.
->>>>>
->>>>
->>>> Do you mean patches 1,2,3,3,4,5,6?
->>>
->>> Yes, my 1,2,3,4,5,6.
->>>
->>> Since you think that usbip_prepare_threads() does not worth introducing, I'm fine with
->>> replacing my 7,8,9,10,11,12 with your "[PATCH 0/6] usbip fixes to crashes found by syzbot".
->>>
->>
->> Using event lock isn't the right approach to solve the race. It is a
->> large grain lock. I am not looking to replace patches.
-> 
-> It is not a large grain lock. Since event_handler() is exclusively executed, this lock
-> does _NOT_ block event_handler() unless attach/detach operations run concurrently.
-> 
->>
+If mmu_lock is held for write, don't bother setting !PRESENT SPTEs to
+REMOVED_SPTE when recursively zapping SPTEs as part of shadow page
+removal.  The concurrent write protections provided by REMOVED_SPTE are
+not needed, there are no backing page side effects to record, and MMIO
+SPTEs can be left as is since they are protected by the memslot
+generation, not by ensuring that the MMIO SPTE is unreachable (which
+is racy with respect to lockless walks regardless of zapping behavior).
 
-event handler queues the events. It shouldn't be blocked by attach
-and detach. The events could originate for various reasons during
-the host and vhci operations. I don't like using this lock for
-attach and detach.
+Skipping !PRESENT drastically reduces the number of updates needed to
+tear down sparsely populated MMUs, e.g. when tearing down a 6gb VM that
+didn't touch much memory, 6929/7168 (~96.6%) of SPTEs were '0' and could
+be skipped.
 
->> I still haven't seen any response from you about if you were able to
->> verify the fixes I sent in fix the problem you are seeing.
->  > I won't be able to verify your fixes, for it is syzbot who is seeing 
-the problem.
+Avoiding the write itself is likely close to a wash, but avoiding
+__handle_changed_spte() is a clear-cut win as that involves saving and
+restoring all non-volatile GPRs (it's a subtly big function), as well as
+several conditional branches before bailing out.
 
-Thank you for letting me know.
+Cc: Ben Gardon <bgardon@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/mmu/tdp_mmu.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-thanks,
--- Shuah
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 50ef757c5586..f0c99fa04ef2 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -323,7 +323,18 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
+ 				cpu_relax();
+ 			}
+ 		} else {
++			/*
++			 * If the SPTE is not MMU-present, there is no backing
++			 * page associated with the SPTE and so no side effects
++			 * that need to be recorded, and exclusive ownership of
++			 * mmu_lock ensures the SPTE can't be made present.
++			 * Note, zapping MMIO SPTEs is also unnecessary as they
++			 * are guarded by the memslots generation, not by being
++			 * unreachable.
++			 */
+ 			old_child_spte = READ_ONCE(*sptep);
++			if (!is_shadow_present_pte(old_child_spte))
++				continue;
+ 
+ 			/*
+ 			 * Marking the SPTE as a removed SPTE is not
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
