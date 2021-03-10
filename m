@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C84334B72
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CE6334B64
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233493AbhCJWTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:19:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        id S232136AbhCJWSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:18:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhCJWTX (ORCPT
+        with ESMTP id S232966AbhCJWSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:19:23 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE184C061574;
-        Wed, 10 Mar 2021 14:19:23 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id g4so12336658pgj.0;
-        Wed, 10 Mar 2021 14:19:23 -0800 (PST)
+        Wed, 10 Mar 2021 17:18:05 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E001C061574;
+        Wed, 10 Mar 2021 14:18:05 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so8291056pjg.5;
+        Wed, 10 Mar 2021 14:18:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=E86sp18F5ikuV/UL0w2a0I3kcFs8CycFV8c4Ty6/Z+c=;
-        b=ia/Zj9LAVFb8I28l8N8lom02TthJY1cl4qOeRv6IGghY6RIuzROssWdgQVdM7VDJ6w
-         pkdWWXAWMrctdIDwnKZ7knp9SbRZimD82zY3wvGSwZV28765yRGrHCKlx00Nm3KLP6+I
-         PWVcy56Upi1PY2QzmdoUxJkcGoyHFkviDYvUFBsYovZkVINr4q/SuMyZeNOIYVcg2bcY
-         v+q4ByklnjMzT7CHiEm02v99cAduL/PB8SnCDY8k5nnePz5sd6Q6trObkOatD4IEMGpF
-         b8FwlUiIyDttX9uu75GcXxx9KxTLuOSs+qbVgMtTDnmhKd8hBfRx+Gs1zpXVgaoLsHne
-         CdKg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+xtotJdtE8IECL7B+knRaC6QHBjAVHpH83IXZLLoBaQ=;
+        b=f4LFL0AM9KK3d+tr2hQeScaIcYk1HynSQDdJr4zn9C+1PAeAflMVtRZbS3lrFAsVEU
+         yP2S5SjLP0alZeHosQxOoCevEeMYV/TbCru1XmUTFHFvVjEF59bjauphaW+75rCSJVpA
+         vKjGtExXttTH6Gjqw8HxfK8dCPgDmIATBBLMQeml6sPAQBUQ/XtxXHbreHFh7sQWNkB1
+         LPzn64sVSCBW2sYHtQOr0jz6shM/MivzFGI0HtV9tVwzOd9/O/5INzXPaJ/tUWXUDs7c
+         eCeMgtr7Q6gHIoZZKhPcLw1mzs6WtrR3rWsh+0j25u9zHqZ9+/eJk7LBTSQ6YZSEsfyq
+         BA8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=E86sp18F5ikuV/UL0w2a0I3kcFs8CycFV8c4Ty6/Z+c=;
-        b=YJly1qlGAiPY5q0sZv0AijyT4o8xlfC4kv28TuqbYzt6GerYVdoOQgPo4sRHbNqaTl
-         6NM08OMSXG/m+Y/rsdnc4zf4PIRILacE9TrhQ1ATG2Qco0nenOqDjQ7WNVhaJ1O/qDdz
-         8j7piPckwfv0p3+zFzHp2D5BcQQNI8WI+MAyma6fsmV66jlw1Kf9N92w2VhXxnDUkKYf
-         RiIkdgbrdzw4tAHNjX2gJubELM8rcv/X8gRylXWqo4EpSw610w2U4o0x5BWZkXZgOMop
-         2AqDp+8IRKLs5kWQmlE/6ZJSsQ1dLccJkxVPtY+2BB/vu8deEGtGN3z2tq8fYafwbAxi
-         0KvQ==
-X-Gm-Message-State: AOAM5336xy0Ns5zDBtWG0Yp/CxNRM3+n2lPO4TLGy9coWo7O+8gNNc8F
-        MY8YhNcsiWXbGOOslnKbq5E=
-X-Google-Smtp-Source: ABdhPJw6xkncCkhOlZRPyeExcrrV/AKaFEqpDfYJc3/FYXqYmxJtQ5lSAXZkyIXQKeUcS31g3+4EMA==
-X-Received: by 2002:a63:74d:: with SMTP id 74mr4536077pgh.316.1615414763327;
-        Wed, 10 Mar 2021 14:19:23 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id g21sm477675pfk.30.2021.03.10.14.19.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 10 Mar 2021 14:19:23 -0800 (PST)
-Date:   Wed, 10 Mar 2021 14:17:07 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        guillaume.tucker@collabora.com, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
-Message-ID: <20210310221707.GB10431@Asurada-Nvidia>
-References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
- <a8a7a0af-895f-9d79-410d-5dd03ebbd6dd@gmail.com>
- <7714f272-3862-84ac-306d-86363a1c4880@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+xtotJdtE8IECL7B+knRaC6QHBjAVHpH83IXZLLoBaQ=;
+        b=Jrm/eovopKtfjrl9R+wnA3tkXzLjqYndb7CbPpa+ISBV2CHOf75y+jr1EvdCGnpchm
+         sBXNDAfTcfUW/9FXQNZJn3oIuuAQjuIqSPe3CUb84y9XCJxeV8QsoyYmatJLs1OldUSQ
+         ztNRvrsIImMgwYJH2C81CjghrAPprjbIYbj8c8m1Qjylu+uEd7Shxd59BJU5e0Z16HwK
+         rOPI8cz8kMVt0QpCIcdu7tbktHL5M/hYHCfBxAjYNEbaSbsLKh81A/H+nnDfnt3hfyyT
+         5AocGaK8ahJcMpK1HGzFv7S4y6T03t5vpENzYF7I77yhZe3OUplDZtsVbREXbVtgWItm
+         EQRw==
+X-Gm-Message-State: AOAM533LOVatYzcy3um3x8nWhEvabSnKP/KG/VuuWzfhnl0tSnSUbIlY
+        pSj994uU4okB9LAdgxoQ6SEnfcymIc0=
+X-Google-Smtp-Source: ABdhPJz2HVXRhnTG+RhiHqBppOjdPBR8Li+O5WPdBDuX3iH2KS5T9Kg1TYpxr3Lfmj8kOznBO5qa0Q==
+X-Received: by 2002:a17:902:8ec9:b029:e6:c5e:cf18 with SMTP id x9-20020a1709028ec9b02900e60c5ecf18mr4824029plo.47.1615414684221;
+        Wed, 10 Mar 2021 14:18:04 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g6sm476750pfi.15.2021.03.10.14.18.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 14:18:03 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] net: dsa: bcm_sf2: Qualify phydev->dev_flags based on port
+Date:   Wed, 10 Mar 2021 14:17:58 -0800
+Message-Id: <20210310221758.2969808-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7714f272-3862-84ac-306d-86363a1c4880@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:22:57PM +0300, Dmitry Osipenko wrote:
-> 10.03.2021 22:13, Dmitry Osipenko пишет:
-> > I found that this patch introduced a serious regression on Tegra30 using
-> > today's linux-next. Tegra30 has two 3d h/w blocks connected in SLI and
-> > only one of the blocks is now attached to IOMMU domain, meaning that GPU
-> > is unusable now. All 3d, 2d and display devices share the same "DRM"
-> > group on Tegra30.
-> > 
-> > Nicolin, please let me know if have any suggestions. I may take a closer
-> > look a day later, for now I'll just revert this patch locally. Thanks in
-> > advance.
-> > 
-> 
-> Actually, this was easy to fix:
-> 
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index 97eb62f667d2..639d5ceab60b 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -853,8 +853,6 @@ static struct iommu_device
-> *tegra_smmu_probe_device(struct device *dev)
-> 
->  			if (err < 0)
->  				return ERR_PTR(err);
-> -
-> -			break;
+Similar to commit 92696286f3bb37ba50e4bd8d1beb24afb759a799 ("net:
+bcmgenet: Set phydev->dev_flags only for internal PHYs") we need to
+qualify the phydev->dev_flags based on whether the port is connected to
+an internal or external PHY otherwise we risk having a flags collision
+with a completely different interpretation depending on the driver.
 
-Hmm..I don't understand why this "break" causes problems on Tegra30.
-The older versions that used _find()+configure() had it also, e.g.:
-https://elixir.bootlin.com/linux/v5.9.16/source/drivers/iommu/tegra-smmu.c#L760
+Fixes: aa9aef77c761 ("net: dsa: bcm_sf2: communicate integrated PHY revision to PHY driver")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/dsa/bcm_sf2.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Dmitry, do you have any idea?
+diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
+index 1277e5f48b7f..321924a241f8 100644
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -643,7 +643,10 @@ static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
+ 	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
+ 	 * the REG_PHY_REVISION register layout is.
+ 	 */
+-	return priv->hw_params.gphy_rev;
++	if (priv->int_phy_mask & BIT(port))
++		return priv->hw_params.gphy_rev;
++	else
++		return 0;
+ }
+ 
+ static void bcm_sf2_sw_validate(struct dsa_switch *ds, int port,
+-- 
+2.25.1
+
