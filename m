@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76E6334939
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F18F334946
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhCJU5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:57:32 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:36835 "EHLO z11.mailgun.us"
+        id S231922AbhCJU7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:59:42 -0500
+Received: from mx1.riseup.net ([198.252.153.129]:48952 "EHLO mx1.riseup.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231808AbhCJU5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:57:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615409824; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=5XWw8PFNwF6LFhiLkbPkKIEa4bbVxzhuAVG5qfayj/w=; b=wmWgaETEFC3UweVOu45u+jx8RNzd6RjWJEqIB4Zp2rNeySieQ8d3KzMKSU6QZ1QegRNokc1u
- JDoSJIAPHMqXcKmIW2FMrDZsMZG39iTrNImCKuGfPkyEKydgVRG48z3i9wLG9c47L/4JQ2/P
- wVxnGwTcC5ylihy0EYFTTwJHJo4=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6049329c155a7cd23434f6eb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 20:57:00
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 70F22C433C6; Wed, 10 Mar 2021 20:57:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C8164C433CA;
-        Wed, 10 Mar 2021 20:56:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C8164C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v2 RESEND] bus: mhi: core: Wait for ready state after
- reset
-To:     Jeffrey Hugo <jhugo@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <80b6c87a-001c-96ae-d0ce-f41b48362d80@codeaurora.org>
-Date:   Wed, 10 Mar 2021 12:56:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231293AbhCJU73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:59:29 -0500
+Received: from fews2.riseup.net (fews2-pn.riseup.net [10.0.1.84])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4DwkwJ32WJzDxYw;
+        Wed, 10 Mar 2021 12:59:28 -0800 (PST)
+X-Riseup-User-ID: 0B9311A4F9ADE25606E5341B9A10FF603FD168CAF999532FD0036A1D703775AD
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews2.riseup.net (Postfix) with ESMTPSA id 4DwkwH67qMz1y6Q;
+        Wed, 10 Mar 2021 12:59:27 -0800 (PST)
+From:   Jim Newsome <jnewsome@torproject.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jim Newsome <jnewsome@torproject.org>
+Subject: [PATCH] ptrace: Allow other threads to access tracee
+Date:   Wed, 10 Mar 2021 14:59:08 -0600
+Message-Id: <20210310205908.23447-1-jnewsome@torproject.org>
 MIME-Version: 1.0
-In-Reply-To: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently only the tracing thread can call ptrace on a given pid. This
+patch allows any task in the tracing thread's thread group to also call
+ptrace. This makes it easier and more performant to write multi-threaded
+applications that use ptrace.
 
+In our ptrace-based simulator, we currently work-around this limitation
+by stopping and detaching inactive tracees, so that any thread in our
+worker thread pool can later re-attach and resume control of the tracee.
+This detaching and reattaching carries with it a significant performance
+overhead. With this patch, detaching and reattaching is no longer
+necessary.
 
-On 3/10/21 12:41 PM, Jeffrey Hugo wrote:
-> After the device has signaled the end of reset by clearing the reset bit,
-> it will automatically reinit MHI and the internal device structures.  Once
-> That is done, the device will signal it has entered the ready state.
-> 
-> Signaling the ready state involves sending an interrupt (MSI) to the host
-> which might cause IOMMU faults if it occurs at the wrong time.
-> 
-> If the controller is being powered down, and possibly removed, then the
-> reset flow would only wait for the end of reset.  At which point, the host
-> and device would start a race.  The host may complete its reset work, and
-> remove the interrupt handler, which would cause the interrupt to be
-> disabled in the IOMMU.  If that occurs before the device signals the ready
-> state, then the IOMMU will fault since it blocked an interrupt.  While
-> harmless, the fault would appear like a serious issue has occurred so let's
-> silence it by making sure the device hits the ready state before the host
-> completes its reset processing.
-> 
-> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+Signed-off-by: James Newsome <jnewsome@torproject.org>
+---
+ kernel/ptrace.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 821cf1723814..bd9968a35784 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -50,7 +50,7 @@ int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
+ 		return 0;
+ 
+ 	if (!tsk->ptrace ||
+-	    (current != tsk->parent) ||
++	    !same_thread_group(current, tsk->parent) ||
+ 	    ((get_dumpable(mm) != SUID_DUMP_USER) &&
+ 	     !ptracer_capable(tsk, mm->user_ns))) {
+ 		mmput(mm);
+@@ -193,7 +193,7 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
+ 	if (task->state != __TASK_TRACED)
+ 		return;
+ 
+-	WARN_ON(!task->ptrace || task->parent != current);
++	WARN_ON(!task->ptrace || !same_thread_group(task->parent, current));
+ 
+ 	/*
+ 	 * PTRACE_LISTEN can allow ptrace_trap_notify to wake us up remotely.
+@@ -238,7 +238,7 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
+ 	 * be changed by us so it's not changing right after this.
+ 	 */
+ 	read_lock(&tasklist_lock);
+-	if (child->ptrace && child->parent == current) {
++	if (child->ptrace && same_thread_group(child->parent, current)) {
+ 		WARN_ON(child->state == __TASK_TRACED);
+ 		/*
+ 		 * child->sighand can't be NULL, release_task()
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.30.1
+
