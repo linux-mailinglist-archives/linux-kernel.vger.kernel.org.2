@@ -2,109 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CC7334845
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E0C33484A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhCJTrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 14:47:20 -0500
-Received: from mga09.intel.com ([134.134.136.24]:48818 "EHLO mga09.intel.com"
+        id S233749AbhCJTrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 14:47:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233659AbhCJTrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:47:04 -0500
-IronPort-SDR: kg3MYwHw/fFW83zCk7hbPjc2YkqKs4BlYXEJOeVIDqQkiizX94K9VrLKQjV2uo1Zfgcca8pDkT
- F7k98TgwUAvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188648904"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="188648904"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 11:47:04 -0800
-IronPort-SDR: Q5lcKJC4ou1WSE4Aso0a7QJqHUzCpOseCl7OaifJ1nRy0sCO513dGhZbvpd4VXx2apLUhCVwAi
- I8Ti0AtqyAUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="410326573"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga008.jf.intel.com with ESMTP; 10 Mar 2021 11:47:03 -0800
-Date:   Wed, 10 Mar 2021 11:46:44 -0800
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, acme@kernel.org, tglx@linutronix.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
-        adrian.hunter@intel.com,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: Re: [PATCH V2 1/25] x86/cpufeatures: Enumerate Intel Hybrid
- Technology feature bit
-Message-ID: <20210310194644.GA1218@ranerica-svr.sc.intel.com>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-2-git-send-email-kan.liang@linux.intel.com>
- <20210310165358.GI23521@zn.tnic>
+        id S232828AbhCJTr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:47:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D07464F3D;
+        Wed, 10 Mar 2021 19:47:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615405648;
+        bh=6QaKgAtYloRRvL6YH9byGT9vss6DmvYiz83jBAE+D7c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E7CUHqd9pTe2+Tq+I/evX/WY2cg6iv8+5DGjl871GYXPZSY5mRUCU6+ZbCH5oWKAm
+         vMsv3nlx/XAItx2sYSmX7faut/7NTKPDP211Kbw/38mFz2KwYyiobln2uI/Ue8Isrb
+         fDbKR9ne1sjWRaU6DG415IPgtLtlLaaaVPB5IV/AtsnT4bRQ5mtsMdtiYtlc26lTrF
+         5TwhL1MmF57pOWlS0KYrP70/4tLdpziUhGCRdVKDOlOnNQufM/WVesvH+rU8vJUOC5
+         0MqBLQMdNqAps7kc5lQiIJG/RV6SVZQtQ9FFEJPqb1NWA7TVF84GJipDCRWkR5dYyC
+         45MncULytz1vg==
+Date:   Wed, 10 Mar 2021 21:47:04 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] tpm: efi: Use local variable for calculating final
+ log size
+Message-ID: <YEkiONI7P32bH29i@kernel.org>
+References: <20210309031954.6232-1-stefanb@linux.ibm.com>
+ <20210309031954.6232-2-stefanb@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310165358.GI23521@zn.tnic>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210309031954.6232-2-stefanb@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:53:58PM +0100, Borislav Petkov wrote:
-> On Wed, Mar 10, 2021 at 08:37:37AM -0800, kan.liang@linux.intel.com wrote:
-> > From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> > 
-> > Add feature enumeration to identify a processor with Intel Hybrid
-> > Technology: one in which CPUs of more than one type are the same package.
-> > On a hybrid processor, all CPUs support the same homogeneous (i.e.,
-> > symmetric) instruction set. All CPUs enumerate the same features in CPUID.
-> > Thus, software (user space and kernel) can run and migrate to any CPU in
-> > the system as well as utilize any of the enumerated features without any
-> > change or special provisions. The main difference among CPUs in a hybrid
-> > processor are power and performance properties.
-> > 
-> > Cc: Andi Kleen <ak@linux.intel.com>
-> > Cc: Kan Liang <kan.liang@linux.intel.com>
-> > Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> > Cc: "Ravi V. Shankar" <ravi.v.shankar@intel.com>
-> > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> > Cc: linux-kernel@vger.kernel.org
-> > Reviewed-by: Len Brown <len.brown@intel.com>
-> > Reviewed-by: Tony Luck <tony.luck@intel.com>
-> > Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> > ---
-> > Changes since v1 (as part of patchset for perf change for Alderlake)
-> >  * None
-> > 
-> > Changes since v1 (in a separate posting):
-> >  * Reworded commit message to clearly state what is Intel Hybrid
-> >    Technology. Stress that all CPUs can run the same instruction
-> >    set and support the same features.
-> > ---
-> >  arch/x86/include/asm/cpufeatures.h | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> > index cc96e26d69f7..e7cfc9eedf8d 100644
-> > --- a/arch/x86/include/asm/cpufeatures.h
-> > +++ b/arch/x86/include/asm/cpufeatures.h
-> > @@ -374,6 +374,7 @@
-> >  #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
-> >  #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
-> >  #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
-> > +#define X86_FEATURE_HYBRID_CPU		(18*32+15) /* This part has CPUs of more than one type */
+On Mon, Mar 08, 2021 at 10:19:52PM -0500, Stefan Berger wrote:
+> When tpm_read_log_efi was called multiple times, which happens when one
+> loads and unloads a TPM2 driver multiple times, then the global variable
+> efi_tpm_final_log_size will at some point become a negative number due
+> to the subtraction of final_events_preboot_size occurring each time. Use
+> a local_efi_tpm_final_log_size to avoid this integer underflow.
 > 
-> 							  /* "" This ...
+> The following issue is now resolved:
 > 
-> unless you have a valid use case for "hybrid_cpu" being present there.
+> Mar  8 15:35:12 hibinst kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+> Mar  8 15:35:12 hibinst kernel: Workqueue: tpm-vtpm vtpm_proxy_work [tpm_vtpm_proxy]
+> Mar  8 15:35:12 hibinst kernel: RIP: 0010:__memcpy+0x12/0x20
+> Mar  8 15:35:12 hibinst kernel: Code: 00 b8 01 00 00 00 85 d2 74 0a c7 05 44 7b ef 00 0f 00 00 00 c3 cc cc cc 66 66 90 66 90 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4
+> Mar  8 15:35:12 hibinst kernel: RSP: 0018:ffff9ac4c0fcfde0 EFLAGS: 00010206
+> Mar  8 15:35:12 hibinst kernel: RAX: ffff88f878cefed5 RBX: ffff88f878ce9000 RCX: 1ffffffffffffe0f
+> Mar  8 15:35:12 hibinst kernel: RDX: 0000000000000003 RSI: ffff9ac4c003bff9 RDI: ffff88f878cf0e4d
+> Mar  8 15:35:12 hibinst kernel: RBP: ffff9ac4c003b000 R08: 0000000000001000 R09: 000000007e9d6073
+> Mar  8 15:35:12 hibinst kernel: R10: ffff9ac4c003b000 R11: ffff88f879ad3500 R12: 0000000000000ed5
+> Mar  8 15:35:12 hibinst kernel: R13: ffff88f878ce9760 R14: 0000000000000002 R15: ffff88f77de7f018
+> Mar  8 15:35:12 hibinst kernel: FS:  0000000000000000(0000) GS:ffff88f87bd00000(0000) knlGS:0000000000000000
+> Mar  8 15:35:12 hibinst kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> Mar  8 15:35:12 hibinst kernel: CR2: ffff9ac4c003c000 CR3: 00000001785a6004 CR4: 0000000000060ee0
+> Mar  8 15:35:12 hibinst kernel: Call Trace:
+> Mar  8 15:35:12 hibinst kernel: tpm_read_log_efi+0x152/0x1a7
+> Mar  8 15:35:12 hibinst kernel: tpm_bios_log_setup+0xc8/0x1c0
+> Mar  8 15:35:12 hibinst kernel: tpm_chip_register+0x8f/0x260
+> Mar  8 15:35:12 hibinst kernel: vtpm_proxy_work+0x16/0x60 [tpm_vtpm_proxy]
+> Mar  8 15:35:12 hibinst kernel: process_one_work+0x1b4/0x370
+> Mar  8 15:35:12 hibinst kernel: worker_thread+0x53/0x3e0
+> Mar  8 15:35:12 hibinst kernel: ? process_one_work+0x370/0x370
+> 
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> ---
+>  drivers/char/tpm/eventlog/efi.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/eventlog/efi.c b/drivers/char/tpm/eventlog/efi.c
+> index 35229e5143ca..b6ffb5faf416 100644
+> --- a/drivers/char/tpm/eventlog/efi.c
+> +++ b/drivers/char/tpm/eventlog/efi.c
+> @@ -18,6 +18,7 @@ int tpm_read_log_efi(struct tpm_chip *chip)
+>  
+>  	struct efi_tcg2_final_events_table *final_tbl = NULL;
+>  	struct linux_efi_tpm_eventlog *log_tbl;
+> +	int local_efi_tpm_final_log_size;
+>  	struct tpm_bios_log *log;
+>  	u32 log_size;
+>  	u8 tpm_log_version;
+> @@ -80,10 +81,11 @@ int tpm_read_log_efi(struct tpm_chip *chip)
+>  		goto out;
+>  	}
+>  
+> -	efi_tpm_final_log_size -= log_tbl->final_events_preboot_size;
+> +	local_efi_tpm_final_log_size = efi_tpm_final_log_size -
+> +					log_tbl->final_events_preboot_size;
 
-But this series provides the use case, right? Kan's patches handle PMU counters
-that may differ cross types of CPUs. In patch 2, get_hybrid_params()
-needs to check first if X86_FEATURE_HYBRID_CPU is enabled before
-querying the hybrid parameters. Otherwise, we would need to rely on the
-maximum level of CPUID, which may not be reliable.
+This starts to have so many weird locals that an inline comment here
+in plain Enlighs would be nice explaining the calculation.
 
-Thanks and BR,
-Ricardo
+>  
+>  	tmp = krealloc(log->bios_event_log,
+> -		       log_size + efi_tpm_final_log_size,
+> +		       log_size + local_efi_tpm_final_log_size,
+
+Ditto.
+
+>  		       GFP_KERNEL);
+>  	if (!tmp) {
+>  		kfree(log->bios_event_log);
+> @@ -100,9 +102,9 @@ int tpm_read_log_efi(struct tpm_chip *chip)
+>  	 */
+>  	memcpy((void *)log->bios_event_log + log_size,
+>  	       final_tbl->events + log_tbl->final_events_preboot_size,
+> -	       efi_tpm_final_log_size);
+> +	       local_efi_tpm_final_log_size);
+>  	log->bios_event_log_end = log->bios_event_log +
+> -		log_size + efi_tpm_final_log_size;
+> +		log_size + local_efi_tpm_final_log_size;
+
+Ditto.
+
+>  
+>  out:
+>  	memunmap(final_tbl);
+> -- 
+> 2.29.2
+> 
+> 
+
+I think this is good chance to improve the documentation a bit.
+
+/Jarkko
