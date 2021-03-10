@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCFA3343AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6FA3343B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233404AbhCJQvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:51:06 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:46135 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbhCJQur (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:50:47 -0500
-Received: by mail-ot1-f49.google.com with SMTP id r24so9936754otq.13;
-        Wed, 10 Mar 2021 08:50:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R6oolcrYeb0Yyin4lnT3+FTu+4DQx6lMstBt7PUzwi0=;
-        b=q3T5jhpDRW0arpOr+B2pBpKJ+vNombSvom2iHmPDIOzHaAsXgB8hsd8/tkd2ULCeUv
-         1ST9bqHDeWL6GRqoiEKRHLP8KyQ37mjs6cCBW4BdUwQ2KiC3gqmRWL8E9QQmEzOi8gg/
-         SdbBBi0B+QG7XDjQluu4MfLBKmV8qC1c3fWZJhKO65sA4je0+gNtZUmfPff8LnCpGAIT
-         vOnNKmdvMTnSJptjZbMGjdnDRXIKWcEnm79/CqOlsxJD9HwEwok/GqAjvRJlfo7+IFOu
-         7z8qLoBW/IxmgGN8bXu3xcPMy7nCYDj4fO/doBDlinTznFk0V7XRpZcOPRKBpbI3YDwj
-         kH1g==
-X-Gm-Message-State: AOAM530ygL5p/evcAU3aHkoFrMLdV5QrFPOUTh6CONQqca3lxhQWuAiP
-        QPN+r5ks4PO+QhrbuObjkKFdbmZ8M5gWnoi5CLI=
-X-Google-Smtp-Source: ABdhPJxlV/2wigpev0dSrTzB8wJqeftxRW6Co9lMLbSVPFiscoQ+P0Nnu5Je7p/f5rT4/q41GbjFbv0o9/cGohCEUyU=
-X-Received: by 2002:a05:6830:1e03:: with SMTP id s3mr3331388otr.321.1615395047082;
- Wed, 10 Mar 2021 08:50:47 -0800 (PST)
+        id S231785AbhCJQwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:52:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230147AbhCJQwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:52:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8B7B64FC3;
+        Wed, 10 Mar 2021 16:52:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615395130;
+        bh=fblKNntOKs+r+Hk8T8EVXTYLBjqZfnQB55Ec28BK85w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UiJhmR9Msd4dJcCAI3JQh5cFCa2RPKi+AAUyhajhmxZx/fdhIvPQvMtRG2/3fHHc9
+         HqqPR1e1v/DoDIvPFXMiv+G1I1U3bg8GJtKw7Zz5VCHEByz1fZ8H8zLcuxYRH0m3x+
+         DU97IXKJGEJxqgmuP1L7UH6zXbKycS2INQ8lm0DL45TiZe/Wo2tHL65iyN6M099JgS
+         W1PdxgMnGZBeBES6UvyxgihEtG6h4Xc457fEisSdpRG/Zy4SPIZB/R/Wj1eg6FfafE
+         dxUrzuF28JcgGb+BZem0wdPYmtjrQGjeky8kLhVVAtcNVcrJ0Fq0mfz9PHjeNQ+rxc
+         +4KyBWZhgC5nQ==
+Date:   Wed, 10 Mar 2021 16:50:58 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Bard liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
+ present
+Message-ID: <20210310165058.GC28564@sirena.org.uk>
+References: <20210303115526.419458-1-jonathanh@nvidia.com>
+ <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
+ <20210310133534.GD4746@sirena.org.uk>
+ <6a2352e6-f2b7-def1-de58-52fbeb7846e5@linux.intel.com>
+ <20210310161814.GA28564@sirena.org.uk>
+ <s5hzgzbvube.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <6660750.UgobAMfxrE@kreacher> <CAJZ5v0gCobMbDGt80exScjpGgjnbo+5kMtB6qsx1wfOf6QyiJQ@mail.gmail.com>
- <20210310160851.GA331077@ninjato>
-In-Reply-To: <20210310160851.GA331077@ninjato>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 10 Mar 2021 17:50:36 +0100
-Message-ID: <CAJZ5v0iOsPuNkmmH2cWY=u6C_1stkPKhUtbYM4DYvwt=EYtNAA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: i2c-scmi: Drop unused ACPI_MODULE_NAME definition
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="E13BgyNx05feLLmH"
+Content-Disposition: inline
+In-Reply-To: <s5hzgzbvube.wl-tiwai@suse.de>
+X-Cookie: Yow!  Are we laid back yet?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 5:08 PM Wolfram Sang <wsa@kernel.org> wrote:
->
-> On Wed, Mar 10, 2021 at 03:47:10PM +0100, Rafael J. Wysocki wrote:
-> > On Fri, Mar 5, 2021 at 7:29 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > >
-> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > >
-> > > The ACPI_MODULE_NAME() definition is only used by the message
-> > > printing macros from ACPICA that are not used by the code in
-> > > question, so it is redundant.  Drop it.
-> > >
-> > > No functional impact.
-> > >
-> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > If there are no concerns regarding this, I'll queue it up for 5.13 in
-> > the ACPI tree, thanks!
->
-> I'd prefer the I2C tree a tad to avoid conflicts. Any reason for the
-> ACPI tree?
 
-There are some patches doing this type of a cleanup in the ACPI tree,
-but this is the only reason, so please route it through the i2c tree
-if that is preferred.
+--E13BgyNx05feLLmH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 10, 2021 at 05:37:25PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
+
+> > > did you mean if (!IS_ENABLED(CONFIG_ACPI)) ?
+
+> > Is there a runtime check?
+
+> Well, basically both DMI and ACPI are completely different things, so
+> I don't think it's right to check the availability of ACPI as a signal
+> of the availability of DMI.
+
+In theory they are only somewhat related, but in practice they're both
+part of a holistic system model - ACPI users complain if their system
+does not also provide DMI information.
+
+--E13BgyNx05feLLmH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBI+PEACgkQJNaLcl1U
+h9AKhwf/TqggBJ9cnL1UX9G9mZNlGaHbKXQez9oZGubvZ8Ejuhu4f1AUQyMXtX97
+N7xUBWv6Tk+rVC3eq7ocQki9aEDHy2mSp7Lraw2/7k3Y94C54oO43n5hOzPiJxhk
+VoBOVYEGgC1YHuG9Jyulpq7Q6ERCJTT0cxdLVlrgMosofWkw0osp2UGcCCST8Kjt
+tRM6ayTyRWhtIJX62WDKFdzV8EBodR2E8h1WA7kMb5yD0N4fxZEXhdWRPBk7DjMU
+YvSFWtTsKQMP2cTRTtxSI5q3QfBOGcx069FteBw40uMkCBdYGq3Eieb8wRnQ3Ip3
+K1On2WnwhEx9MDLvlqzkRqvM/X6kGQ==
+=7qIj
+-----END PGP SIGNATURE-----
+
+--E13BgyNx05feLLmH--
