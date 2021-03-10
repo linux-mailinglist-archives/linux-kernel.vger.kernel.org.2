@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC199333ED3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1397333F35
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbhCJN1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:27:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46570 "EHLO mail.kernel.org"
+        id S233053AbhCJNa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:30:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233183AbhCJNZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 453F664FFD;
-        Wed, 10 Mar 2021 13:25:00 +0000 (UTC)
+        id S232993AbhCJNZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4042964FEE;
+        Wed, 10 Mar 2021 13:25:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382702;
-        bh=zJKt1BxN9mBneiEwI3ScoYkRpOBSH347dIjQIQ5Ltbo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=p5uOYJSo/GqaMloLdMnGOWyOB1l4C+uj6pAwnq69e7B6nr7qoIfbAFRpk8g4Hmoll
-         bVJt+l6vz2dUjIbEXHS7cIiYWwMCBgOVjDXqj2uf72PJ+V5dLzCcb6T8pti5B4qq3Y
-         i6ncwgd1+7GQhFRkP5uXxRHZnaKLTVGxA+YrkM90=
+        s=korg; t=1615382744;
+        bh=8YDagtuGgfNLI4LgiAmlM32QPvFAwF2C7X9i86u/HXM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=T4E0kEoqgYrFEIpZpF7Zxnc+SQu5TXt3lPuJsUPVR1T9JNujeKYn8yKS1H9w/Mr4f
+         4h/YZoGoOEdUfL5ouYN8Gtzjh30MF3N44VnQNgjCNv+evSeb7qOATDoxzpEVGZ3AAQ
+         DgwDxe4s2fjpDRWWQCgh8xhAZwhTcULGUdkR9AT8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.14 00/20] 4.14.225-rc1 review
-Date:   Wed, 10 Mar 2021 14:24:37 +0100
-Message-Id: <20210310132320.512307035@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 30/39] platform/x86: acer-wmi: Add ACER_CAP_SET_FUNCTION_MODE capability flag
+Date:   Wed, 10 Mar 2021 14:24:38 +0100
+Message-Id: <20210310132320.662946657@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
+In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
+References: <20210310132319.708237392@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.225-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.225-rc1
-X-KernelTest-Deadline: 2021-03-12T13:23+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,110 +43,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This is the start of the stable review cycle for the 4.14.225 release.
-There are 20 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Hans de Goede <hdegoede@redhat.com>
 
-Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 82cb8a5c395ea5be20e0fe31a8fe84380a502ca5 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.225-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
+Not all devices supporting WMID_GUID3 support the wmid3_set_function_mode()
+call, leading to errors like these:
 
-thanks,
+[   60.138358] acer_wmi: Enabling RF Button failed: 0x1 - 0xff
+[   60.140036] acer_wmi: Enabling Launch Manager failed: 0x1 - 0xff
 
-greg k-h
+Add an ACER_CAP_SET_FUNCTION_MODE capability flag, so that these calls
+can be disabled through the new force_caps mechanism.
 
--------------
-Pseudo-Shortlog of commits:
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20201019185628.264473-5-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/platform/x86/acer-wmi.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.225-rc1
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 2e77ac458bab..657fd8c49597 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -224,6 +224,7 @@ struct hotkey_function_type_aa {
+ #define ACER_CAP_BLUETOOTH		BIT(2)
+ #define ACER_CAP_BRIGHTNESS		BIT(3)
+ #define ACER_CAP_THREEG			BIT(4)
++#define ACER_CAP_SET_FUNCTION_MODE	BIT(5)
+ 
+ /*
+  * Interface type flags
+@@ -2261,10 +2262,14 @@ static int __init acer_wmi_init(void)
+ 	if (acpi_video_get_backlight_type() != acpi_backlight_vendor)
+ 		interface->capability &= ~ACER_CAP_BRIGHTNESS;
+ 
++	if (wmi_has_guid(WMID_GUID3))
++		interface->capability |= ACER_CAP_SET_FUNCTION_MODE;
++
+ 	if (force_caps != -1)
+ 		interface->capability = force_caps;
+ 
+-	if (wmi_has_guid(WMID_GUID3)) {
++	if (wmi_has_guid(WMID_GUID3) &&
++	    (interface->capability & ACER_CAP_SET_FUNCTION_MODE)) {
+ 		if (ACPI_FAILURE(acer_wmi_enable_rf_button()))
+ 			pr_warn("Cannot enable RF Button Driver\n");
+ 
+-- 
+2.30.1
 
-AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-    drm/msm/a5xx: Remove overwriting A5XX_PC_DBG_ECO_CNTL register
-
-Aswath Govindraju <a-govindraju@ti.com>
-    misc: eeprom_93xx46: Add quirk to support Microchip 93LC46B eeprom
-
-Bjorn Helgaas <bhelgaas@google.com>
-    PCI: Add function 1 DMA alias quirk for Marvell 9215 SATA controller
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Add ACER_CAP_KBD_DOCK quirk for the Aspire Switch 10E SW3-016
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Add support for SW_TABLET_MODE on Switch devices
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Add ACER_CAP_SET_FUNCTION_MODE capability flag
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Add new force_caps module parameter
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Cleanup accelerometer device handling
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: acer-wmi: Cleanup ACER_CAP_FOO defines
-
-Tsuchiya Yuto <kitakar@gmail.com>
-    mwifiex: pcie: skip cancel_work_sync() on reset failure path
-
-Andrey Ryabinin <arbn@yandex-team.com>
-    iommu/amd: Fix sleeping in atomic in increase_address_space()
-
-Jeffle Xu <jefflexu@linux.alibaba.com>
-    dm table: fix zoned iterate_devices based device capability checks
-
-Jeffle Xu <jefflexu@linux.alibaba.com>
-    dm table: fix DAX iterate_devices based device capability checks
-
-Jeffle Xu <jefflexu@linux.alibaba.com>
-    dm table: fix iterate_devices based device capability checks
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    rsxx: Return -EFAULT if copy_to_user() fails
-
-Colin Ian King <colin.king@canonical.com>
-    ALSA: ctxfi: cthw20k2: fix mask on conf to allow 4 bits
-
-Antonio Borneo <borneo.antonio@gmail.com>
-    usbip: tools: fix build error for multiple definition
-
-Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-    PM: runtime: Update device status before letting suppliers suspend
-
-Ira Weiny <ira.weiny@intel.com>
-    btrfs: fix raid6 qstripe kmap
-
-David Sterba <dsterba@suse.com>
-    btrfs: raid56: simplify tracking of Q stripe presence
-
-
--------------
-
-Diffstat:
-
- Makefile                                    |   4 +-
- drivers/base/power/runtime.c                |  62 ++++++----
- drivers/block/rsxx/core.c                   |   8 +-
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c       |   2 -
- drivers/iommu/amd_iommu.c                   |  10 +-
- drivers/md/dm-table.c                       | 168 ++++++++++++---------------
- drivers/misc/eeprom/eeprom_93xx46.c         |  15 +++
- drivers/net/wireless/marvell/mwifiex/pcie.c |  18 ++-
- drivers/net/wireless/marvell/mwifiex/pcie.h |   2 +
- drivers/pci/quirks.c                        |   3 +
- drivers/platform/x86/acer-wmi.c             | 169 +++++++++++++++++++++++-----
- fs/btrfs/raid56.c                           |  58 ++++------
- include/linux/eeprom_93xx46.h               |   2 +
- sound/pci/ctxfi/cthw20k2.c                  |   2 +-
- tools/usb/usbip/libsrc/usbip_host_common.c  |   2 +-
- 15 files changed, 326 insertions(+), 199 deletions(-)
 
 
