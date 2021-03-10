@@ -2,168 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8FF333AF6
+	by mail.lfdr.de (Postfix) with ESMTP id 1F356333AF5
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhCJLCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:02:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232065AbhCJLCa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:02:30 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BEFC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:02:19 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id v15so22829218wrx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:02:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=MUZ+0f1MMpnUEJ4a2J6EdFMV+wQUIe9TSPtGUldR/hk=;
-        b=y0iHqhxGqdzHFL8wfLSo6jm347ZGXsAdHL8hB108DF0MgZmBNmJGhNXA3nURpmzP9R
-         abp//oR3F9XH2AkwvGm73nfbIgpQ5etzjh0Iy1EDw44xa0meeCekCOBUUeGxOvHImon3
-         GGq2U58SzGoLG5oHyFNAfj6LUVigNi1tpWiQrq90ss6/AWkiBI9JbuohUa2uqpyNUXx5
-         bC2C5/FGogFcHndxS9gNeIpEVzFKLDix5JOaEa9yWuujb8OCyzSAFox7qres52K3tzhV
-         QYmli1GxoGWk0moXdVCxiKThjzqL8+2sVES9lC0bGGfnRzycsD9c+U6WQBGAJaPw5NLE
-         DmxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=MUZ+0f1MMpnUEJ4a2J6EdFMV+wQUIe9TSPtGUldR/hk=;
-        b=CKSItAitvuicFfDzXlwp5GuPcFSp5Km+JWUB2Xw64diKAOVOT3+lImHYnRbHsUeWTP
-         VmTIY7pXdyg2ZdcCMcycLTTHXsynrxZu/KQTbiMCAFkbEeXl3Wo48Bki5/LtiS0Ib8Zb
-         /gwZzICK81zWkfV6Jsg3uQY2vvFCvuwv7dk2v3vB6UfHliOMfuraDPF7dj2zMrkADN8m
-         lZKuBLJzDsW+wdD7/ye+LFJpTBE95XyuA7mCABddy8k/2XkayeMXP57x9a88Hk8AVQ74
-         8W95bL5faXJOGl3TgtFuyOGEKXb4yLY8WdVRJddWpQpZaYb9Cxje9lZgae7uYBbMUOUx
-         8NJg==
-X-Gm-Message-State: AOAM533IA9KjCwJ9Cg9KLsvPE3twf+bbvHag0TsOEatUDMdUwZqMqfq5
-        uphUEKdHwXSdwrotLcusUqeiew==
-X-Google-Smtp-Source: ABdhPJyzSobxPU8N7LXQOoOASI5Q6oJTiH5/RRsocNmqz+1DJa7GmDLKGP1Rr2FR5SjPrd8II8zxpA==
-X-Received: by 2002:adf:ed46:: with SMTP id u6mr2885348wro.350.1615374138108;
-        Wed, 10 Mar 2021 03:02:18 -0800 (PST)
-Received: from localhost.localdomain ([82.142.0.212])
-        by smtp.gmail.com with ESMTPSA id k4sm36193902wrd.9.2021.03.10.03.02.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 03:02:17 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com
-Subject: [PATCH v3 3/5] powercap/drivers/dtpm: Simplify the dtpm table
-Date:   Wed, 10 Mar 2021 12:02:10 +0100
-Message-Id: <20210310110212.26512-3-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210310110212.26512-1-daniel.lezcano@linaro.org>
-References: <20210310110212.26512-1-daniel.lezcano@linaro.org>
+        id S232625AbhCJLCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:02:52 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:20382 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231987AbhCJLCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:02:24 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615374144; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=jI/ErXJ/bj/7OZg8pXEpxdgJW4e8YopJ7lQRgZC5Q9c=; b=DqP/0qydHE/6mzStQ6ZucJSYkyjeujJjGhp+4jRPnu11AXW4RF1FzQ0JDhlYCFd102AMMFaa
+ +mYFAemId++7DI6i4lVWtPMAsPEFrHV1TQxDCLFV90Kq79J2sboTko+s+gJMGGkCTfjDHQ6W
+ B1bcK2teFTofgB/1ZsFCO1eCHgI=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6048a739fa6ebd85e8833e9d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 11:02:17
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 21BECC43464; Wed, 10 Mar 2021 11:02:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E2F6DC433C6;
+        Wed, 10 Mar 2021 11:02:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E2F6DC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH] usb: dwc3: gadget: Prevent EP queuing while stopping transfers
+Date:   Wed, 10 Mar 2021 03:02:10 -0800
+Message-Id: <1615374130-28353-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dtpm table is an array of pointers, that forces the user of the
-table to define initdata along with the declaration of the table
-entry. It is more efficient to create an array of dtpm structure, so
-the declaration of the table entry can be done by initializing the
-different fields.
+In the situations where the DWC3 gadget stops active transfers, once
+calling the dwc3_gadget_giveback(), there is a chance where a function
+driver can queue a new USB request in between the time where the dwc3
+lock has been released and re-aquired.  This occurs after we've already
+issued an ENDXFER command.  When the stop active transfers continues
+to remove USB requests from all dep lists, the newly added request will
+also be removed, while controller still has an active TRB for it.
+This can lead to the controller accessing an unmapped memory address.
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Fix this by ensuring parameters to prevent EP queuing are set before
+calling the stop active transfers API.
+
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
 ---
- drivers/powercap/dtpm.c     |  4 ++--
- drivers/powercap/dtpm_cpu.c |  4 +++-
- include/linux/dtpm.h        | 22 +++++++++-------------
- 3 files changed, 14 insertions(+), 16 deletions(-)
+ drivers/usb/dwc3/gadget.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/powercap/dtpm.c b/drivers/powercap/dtpm.c
-index d00f55f0ee30..74d9603bd42a 100644
---- a/drivers/powercap/dtpm.c
-+++ b/drivers/powercap/dtpm.c
-@@ -610,7 +610,7 @@ int dtpm_create(const char *name, struct dtpm *dtpm, struct dtpm *parent)
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 4780983..4d98fbf 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -783,8 +783,6 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
  
- static int __init dtpm_init(void)
- {
--	struct dtpm_descr **dtpm_descr;
-+	struct dtpm_descr *dtpm_descr;
+ 	trace_dwc3_gadget_ep_disable(dep);
  
- 	pct = powercap_register_control_type(NULL, "dtpm", NULL);
- 	if (IS_ERR(pct)) {
-@@ -619,7 +619,7 @@ static int __init dtpm_init(void)
+-	dwc3_remove_requests(dwc, dep);
+-
+ 	/* make sure HW endpoint isn't stalled */
+ 	if (dep->flags & DWC3_EP_STALL)
+ 		__dwc3_gadget_ep_set_halt(dep, 0, false);
+@@ -803,6 +801,8 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
+ 		dep->endpoint.desc = NULL;
  	}
  
- 	for_each_dtpm_table(dtpm_descr)
--		(*dtpm_descr)->init(*dtpm_descr);
-+		dtpm_descr->init();
- 
- 	return 0;
- }
-diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-index 628d4d6d83a6..983f1ca27dc3 100644
---- a/drivers/powercap/dtpm_cpu.c
-+++ b/drivers/powercap/dtpm_cpu.c
-@@ -204,7 +204,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
- 	return ret;
- }
- 
--int dtpm_register_cpu(struct dtpm *parent)
-+static int __init dtpm_cpu_init(void)
- {
- 	int ret;
- 
-@@ -241,3 +241,5 @@ int dtpm_register_cpu(struct dtpm *parent)
- 
- 	return 0;
- }
++	dwc3_remove_requests(dwc, dep);
 +
-+DTPM_DECLARE(dtpm_cpu, dtpm_cpu_init);
-diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
-index d724c5a7b2f4..5f71ddc18ee9 100644
---- a/include/linux/dtpm.h
-+++ b/include/linux/dtpm.h
-@@ -34,25 +34,23 @@ struct dtpm_ops {
- 	void (*release)(struct dtpm *);
- };
+ 	return 0;
+ }
  
--struct dtpm_descr;
+@@ -1617,7 +1617,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+ {
+ 	struct dwc3		*dwc = dep->dwc;
+ 
+-	if (!dep->endpoint.desc || !dwc->pullups_connected) {
++	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
+ 		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+ 				dep->name);
+ 		return -ESHUTDOWN;
+@@ -2247,6 +2247,7 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+ 	if (!is_on) {
+ 		u32 count;
+ 
++		dwc->connected = false;
+ 		/*
+ 		 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
+ 		 * Section 4.1.8 Table 4-7, it states that for a device-initiated
+@@ -3329,8 +3330,6 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+ {
+ 	u32			reg;
+ 
+-	dwc->connected = true;
 -
--typedef int (*dtpm_init_t)(struct dtpm_descr *);
-+typedef int (*dtpm_init_t)(void);
+ 	/*
+ 	 * WORKAROUND: DWC3 revisions <1.88a have an issue which
+ 	 * would cause a missing Disconnect Event if there's a
+@@ -3370,6 +3369,7 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+ 	 * transfers."
+ 	 */
+ 	dwc3_stop_active_transfers(dwc);
++	dwc->connected = true;
  
- struct dtpm_descr {
--	struct dtpm *parent;
--	const char *name;
- 	dtpm_init_t init;
- };
- 
- /* Init section thermal table */
--extern struct dtpm_descr *__dtpm_table[];
--extern struct dtpm_descr *__dtpm_table_end[];
-+extern struct dtpm_descr __dtpm_table[];
-+extern struct dtpm_descr __dtpm_table_end[];
- 
--#define DTPM_TABLE_ENTRY(name)			\
--	static typeof(name) *__dtpm_table_entry_##name	\
--	__used __section("__dtpm_table") = &name
-+#define DTPM_TABLE_ENTRY(name, __init)				\
-+	static struct dtpm_descr __dtpm_table_entry_##name	\
-+	__used __section("__dtpm_table") = {			\
-+		.init = __init,					\
-+	}
- 
--#define DTPM_DECLARE(name)	DTPM_TABLE_ENTRY(name)
-+#define DTPM_DECLARE(name, init)	DTPM_TABLE_ENTRY(name, init)
- 
- #define for_each_dtpm_table(__dtpm)	\
- 	for (__dtpm = __dtpm_table;	\
-@@ -74,8 +72,6 @@ void dtpm_destroy(struct dtpm *dtpm);
- 
- int dtpm_create(const char *name, struct dtpm *dtpm, struct dtpm *parent);
- 
--int dtpm_register_cpu(struct dtpm *parent);
--
- int dtpm_register(const char *name, struct dtpm *dtpm);
- 
- void dtpm_unregister(const char *name);
+ 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+ 	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
