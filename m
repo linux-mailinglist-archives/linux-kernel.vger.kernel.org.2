@@ -2,77 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CE3333319
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3110C33331D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbhCJCW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:22:57 -0500
-Received: from mga18.intel.com ([134.134.136.126]:11702 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231299AbhCJCWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:22:37 -0500
-IronPort-SDR: LEY/aue7aBdfJgQIgJ5ZIpx/REIfSOgk1zN5RW5Xwomlu3hMab3uP7VSx/Zkai076lidHnMlpp
- POKb0uhepJyw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175966622"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="175966622"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 18:22:35 -0800
-IronPort-SDR: 4hb4GTO/VCURjcsMMoLIhUgrPjxB6ULiRRKXoeTZE+siy3Iy3gYkSIer46ao1JOZ1k65tnpHD7
- gglQM2RcKfaw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="376770074"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Mar 2021 18:22:30 -0800
-Subject: Re: [PATCH v6] i2c: virtio: add a virtio i2c frontend driver
-To:     Jason Wang <jasowang@redhat.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     mst@redhat.com, wsa@kernel.org, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
-        stefanha@redhat.com, pbonzini@redhat.com
-References: <9a2086f37c0a62069b67c39a3f75941b78a0039c.1614749417.git.jie.deng@intel.com>
- <43b0842b-8b0f-1979-ed07-d6124e3a6b79@redhat.com>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <db9350b3-b847-8f54-546f-9a0bdec425d4@intel.com>
-Date:   Wed, 10 Mar 2021 10:22:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S231986AbhCJC0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:26:41 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47472 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231235AbhCJC0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 21:26:39 -0500
+Received: from [10.130.0.65] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxedRRLkhgUpQXAA--.29562S3;
+        Wed, 10 Mar 2021 10:26:25 +0800 (CST)
+Subject: Re: [PATCH v3 5/7] irqchip/loongson-liointc: irqchip add 2.0 version
+To:     Marc Zyngier <maz@kernel.org>
+References: <20210306023633.9579-1-zhangqing@loongson.cn>
+ <20210306023633.9579-6-zhangqing@loongson.cn> <87wnugy9oe.wl-maz@kernel.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangming01@loongson.cn
+From:   zhangqing <zhangqing@loongson.cn>
+Message-ID: <5c5b2593-b07c-cd20-cd08-1d6542471260@loongson.cn>
+Date:   Wed, 10 Mar 2021 10:26:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <43b0842b-8b0f-1979-ed07-d6124e3a6b79@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <87wnugy9oe.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9AxedRRLkhgUpQXAA--.29562S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr48Gw4UWF4kZF4xuF47XFb_yoWkKrc_Cr
+        4qg34UXF15ZryfJrs8Cr4UZF93JF9rKr43JFW0g3WIva40vw4UGrWkurZ3t3yIgFn2grna
+        kryFkay7CrW2qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
+        67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbpwZ7UUUUU==
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/3/4 17:15, Jason Wang wrote:
+On 03/09/2021 05:10 PM, Marc Zyngier wrote:
 >
->
->> +        }
 >> +
->> +        if (msgs[i].flags & I2C_M_RD)
->> +            memcpy(msgs[i].buf, req->buf, msgs[i].len);
->
->
-> Sorry if I had asked this before but any rason not to use msg[i].buf 
-> directly?
->
->
-The msg[i].buf is passed by the I2C core. I just noticed that these bufs 
-are not
-always allocated by kmalloc. They may come from the stack, which may cause
-the check "sg_init_one -> sg_set_buf -> virt_addr_valid"  to fail. 
-Therefore the
-msg[i].buf is not suitable for direct use here.
+>> +static void __iomem *liointc_get_reg_byname(struct device_node *node,
+>> +						const char *name)
+>> +{
+>> +	int index = of_property_match_string(node, "reg-names", name);
+>> +
+>> +	return of_iomap(node, index);
+> So if of_property_match_string() returns an error, you feed that error
+> to of_iomap()? Somehow, I don't think that's a good idea.
 
-Regards.
+Hi, Marc
+
+Thank you for your suggestion, error handling is missing here,
+
+      +    if (index <0)
+      +           return NULL;
+
+             return of_iomap(node, index);
+
+It has been fixed in the fourth version, and I will send V4 soon.
+
+> +	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
+> +		base = liointc_get_reg_byname(node, "main");
+> +		if (!base) {
+> +			err = -ENODEV;
+> +			goto out_free_priv;
+> +		}
+> +		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
+> +			priv->core_isr[i] =
+> +				liointc_get_reg_byname(node, core_reg_names[i]);
+> Please write assignments on a single line.
+
+In addition, write assignments on a single line
+
+                  for (i = 0; i <LIOINTC_NUM_CORES; i++)
+                          priv->core_isr[i] = 
+liointc_get_reg_byname(node, core_reg_names[i]);
+
+     It is 92 characters, more than 80 characters...
+
+
+    Thanks
+
+    -Qing
+
+>
+> Thanks,
+>
+> 	M.
+>
 
