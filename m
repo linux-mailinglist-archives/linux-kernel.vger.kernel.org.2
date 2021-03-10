@@ -2,138 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F95C333433
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B5133343A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhCJEGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 23:06:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
+        id S232288AbhCJEHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 23:07:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbhCJEFr (ORCPT
+        with ESMTP id S229584AbhCJEHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 23:05:47 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C63C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 20:05:46 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id a7so16415446iok.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 20:05:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WZ3rtEg/bwCYEb0dkhHomQWwGXuiWcjFrdtbUjGi/nM=;
-        b=BlYVfepGwUqTOaZpCTkLZ8ye5WNMoLIiihM0O1hVkvmmwE/11uJH2jDcpeQwCFZr6q
-         08b1COfPAU8yCULs66j4vvI+zgoEMoV9VLnUJ88Tm73TIhc2Ira5K8dEc71u3yegDD+9
-         l22jzt1kD8syXAmWFS9rdnoLCGv5HIoIlGdArTBeF/KVozfH8pGJ1P37c5rjh1eKAUo5
-         TDzhb/hPs0LkMc9efVlJs77fth97iWqeHGiveazyswfo1K3DQ/skbtFxd3JxG9cIpMLl
-         pz7J9fZgUF8kY+9dip7p/CxZpfL1iE5hjuhxfK5DtrWz6KDcyodkjdS7MQDhDktzmQTd
-         Nj4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WZ3rtEg/bwCYEb0dkhHomQWwGXuiWcjFrdtbUjGi/nM=;
-        b=P5L6QJ7ok6TQSyD59I7shp5/QYsDNAEP+Ap5xg/fMLKR46OmICv6Tfkn9dpmLlYkB8
-         LWtEzH2SUzJ11W+NIYUb3xYMlycDbwS+XtpvHdEBKE2GsyMSfHwa7HUFqweGzWmL5aEc
-         oP6efmyPnXuZCAcujOWbFBGfxTSdzfFtvDzIxt0V5ayuE/CdlVP3toQBv9wWdIvaAEv1
-         sjHQgWqHmfhNyR1Im1V4DCfy0yig4t7lrliJaVEeGo6ua7xrFzYmYZzIclau0Ull/lhK
-         Bdy2pOArPccbrl5sf0lZKR9kRalDoJV5p2RdvLG61WBLWuVK1QhAHgfCXS/iLTRUfTSk
-         1sjg==
-X-Gm-Message-State: AOAM5323+UDzS1INinOr1Lt3ECaN3fwzUNy8Htl29zTGYLbkGUoiJayw
-        fA11RYHUOh92guP6F5yq1AxFOPjxwIZnTwSl5A==
-X-Google-Smtp-Source: ABdhPJzgHPUMsCwrZ8Z35B2KPUddxLUmwyX1vrqkRcWw0wEr0qKnh/yTNY3WE6lEtTvbScugCVOp8xelmcAqa66FRNs=
-X-Received: by 2002:a05:6602:2018:: with SMTP id y24mr1160030iod.74.1615349146331;
- Tue, 09 Mar 2021 20:05:46 -0800 (PST)
+        Tue, 9 Mar 2021 23:07:22 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F69BC06174A;
+        Tue,  9 Mar 2021 20:07:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MZP04mmRYHSUMNN7Bbpif73MByRe1GqD/bRFFteUyfw=; b=ldgU6n02jJhSaG5jfG/yFXoBjb
+        jqO0xwes2kpfTznTIioIJ6OLRsJ2Rf5BKvl+WRQqfq3ithfHHVTOrh+OiOVFLlkCnr6A6dP6sA/8g
+        Wx51dHg8mloZlZdg/ttj4KY3k1GlayTwG64TE/tu12bbfG6O36fKXrVbls/MysL7RmCmrJuMq9H77
+        VBewHZHaWWnTDDLy4jE9fWXCsINUJACeVhrwMp5LBIjUn60fkuv0edawFzc9/FSWl1eoHTIxAvExX
+        cxW2jUeNPKjL+VpiGPOtLh+akLXAvSlyp6mUR091Ti2VOzOqnxnANFHSVocMPKcksPzQ0Z/4ngUfM
+        3R7+aFkQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJq6T-002MKD-Jm; Wed, 10 Mar 2021 04:05:49 +0000
+Date:   Wed, 10 Mar 2021 04:05:45 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Nadav Amit <namit@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: make alloc_anon_inode more useful
+Message-ID: <20210310040545.GM3479805@casper.infradead.org>
+References: <20210309155348.974875-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20210309102138.41170-1-kernelfans@gmail.com> <20210309140159.GA28395@willie-the-truck>
-In-Reply-To: <20210309140159.GA28395@willie-the-truck>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Wed, 10 Mar 2021 12:05:35 +0800
-Message-ID: <CAFgQCTvgd32_aa4pgjo-+Ob2mETL03N=7TCZJNmhVe4kbEFKGQ@mail.gmail.com>
-Subject: Re: [PATCH] drivers/arch_numa: remove rebudant setup_per_cpu_areas()
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309155348.974875-1-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 10:02 PM Will Deacon <will@kernel.org> wrote:
->
-> [typo in subject "rebudant"]
->
-> On Tue, Mar 09, 2021 at 06:21:38PM +0800, Pingfan Liu wrote:
-> > There are two identical implementations of setup_per_cpu_areas() in
-> > mm/percpu.c and drivers/base/arch_numa.c.
-> >
-> > Hence removing the one in arch_numa.c. And let arm64 drop
-> > HAVE_SETUP_PER_CPU_AREA.
-> >
-> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: Atish Patra <atish.patra@wdc.com>
-> > Cc: linux-kernel@vger.kernel.org
-> > To: linux-arm-kernel@lists.infradead.org
-> > ---
-> >  arch/arm64/Kconfig       |  4 ----
-> >  drivers/base/arch_numa.c | 22 ----------------------
-> >  2 files changed, 26 deletions(-)
-> >
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index 1f212b47a48a..d4bf8be0c3d5 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -1022,10 +1022,6 @@ config USE_PERCPU_NUMA_NODE_ID
-> >       def_bool y
-> >       depends on NUMA
-> >
-> > -config HAVE_SETUP_PER_CPU_AREA
-> > -     def_bool y
-> > -     depends on NUMA
-> > -
-> >  config NEED_PER_CPU_EMBED_FIRST_CHUNK
-> >       def_bool y
-> >       depends on NUMA
-> > diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
-> > index 4cc4e117727d..23e1e419a83d 100644
-> > --- a/drivers/base/arch_numa.c
-> > +++ b/drivers/base/arch_numa.c
-> > @@ -167,28 +167,6 @@ static void __init pcpu_fc_free(void *ptr, size_t size)
-> >  {
-> >       memblock_free_early(__pa(ptr), size);
-> >  }
-> > -
-> > -void __init setup_per_cpu_areas(void)
-> > -{
-> > -     unsigned long delta;
-> > -     unsigned int cpu;
-> > -     int rc;
-> > -
-> > -     /*
-> > -      * Always reserve area for module percpu variables.  That's
-> > -      * what the legacy allocator did.
-> > -      */
-> > -     rc = pcpu_embed_first_chunk(PERCPU_MODULE_RESERVE,
-> > -                                 PERCPU_DYNAMIC_RESERVE, PAGE_SIZE,
-> > -                                 pcpu_cpu_distance,
-> > -                                 pcpu_fc_alloc, pcpu_fc_free);
->
-> This doesn't look identical to the version in mm/percpu.c -- that one passes
-> NULL instead of 'pcpu_cpu_distance' and tries to allocate the pcpu memory on
-> the relevant NUMA nodes. In fact, if you could remove this function, you
-> could probably remove the whole HAVE_SETUP_PER_CPU_AREA block here as the
-> other functions are just used as helpers. So I'm not sure this is valid.
->
-You are right. I need to rethink about it to see whether these two
-functions can be unified into one.
+On Tue, Mar 09, 2021 at 04:53:39PM +0100, Christoph Hellwig wrote:
+> this series first renames the existing alloc_anon_inode to
+> alloc_anon_inode_sb to clearly mark it as requiring a superblock.
+> 
+> It then adds a new alloc_anon_inode that works on the anon_inode
+> file system super block, thus removing tons of boilerplate code.
+> 
+> The few remainig callers of alloc_anon_inode_sb all use alloc_file_pseudo
+> later, but might also be ripe for some cleanup.
 
-Thanks,
-Pingfan
+On a somewhat related note, could I get you to look at
+drivers/video/fbdev/core/fb_defio.c?
+
+As far as I can tell, there's no need for fb_deferred_io_aops to exist.
+We could just set file->f_mapping->a_ops to NULL, and set_page_dirty()
+would do the exact same thing this code does (except it would get the
+return value correct).
+
+But maybe that would make something else go wrong that distinguishes
+between page->mapping being NULL and page->mapping->a_ops->foo being NULL?
+Completely untested patch ...
+
+diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
+index a591d291b231..441ec31d3e4d 100644
+--- a/drivers/video/fbdev/core/fb_defio.c
++++ b/drivers/video/fbdev/core/fb_defio.c
+@@ -151,17 +151,6 @@ static const struct vm_operations_struct fb_deferred_io_vm_ops = {
+ 	.page_mkwrite	= fb_deferred_io_mkwrite,
+ };
+ 
+-static int fb_deferred_io_set_page_dirty(struct page *page)
+-{
+-	if (!PageDirty(page))
+-		SetPageDirty(page);
+-	return 0;
+-}
+-
+-static const struct address_space_operations fb_deferred_io_aops = {
+-	.set_page_dirty = fb_deferred_io_set_page_dirty,
+-};
+-
+ int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
+ {
+ 	vma->vm_ops = &fb_deferred_io_vm_ops;
+@@ -212,14 +201,6 @@ void fb_deferred_io_init(struct fb_info *info)
+ }
+ EXPORT_SYMBOL_GPL(fb_deferred_io_init);
+ 
+-void fb_deferred_io_open(struct fb_info *info,
+-			 struct inode *inode,
+-			 struct file *file)
+-{
+-	file->f_mapping->a_ops = &fb_deferred_io_aops;
+-}
+-EXPORT_SYMBOL_GPL(fb_deferred_io_open);
+-
+ void fb_deferred_io_cleanup(struct fb_info *info)
+ {
+ 	struct fb_deferred_io *fbdefio = info->fbdefio;
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index 06f5805de2de..c4ba76359f22 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -1415,10 +1415,7 @@ __releases(&info->lock)
+ 		if (res)
+ 			module_put(info->fbops->owner);
+ 	}
+-#ifdef CONFIG_FB_DEFERRED_IO
+-	if (info->fbdefio)
+-		fb_deferred_io_open(info, inode, file);
+-#endif
++	file->f_mapping->a_ops = NULL;
+ out:
+ 	unlock_fb_info(info);
+ 	if (res)
+diff --git a/include/linux/fb.h b/include/linux/fb.h
+index ecfbcc0553a5..a8dccd23c249 100644
+--- a/include/linux/fb.h
++++ b/include/linux/fb.h
+@@ -659,9 +659,6 @@ static inline void __fb_pad_aligned_buffer(u8 *dst, u32 d_pitch,
+ /* drivers/video/fb_defio.c */
+ int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma);
+ extern void fb_deferred_io_init(struct fb_info *info);
+-extern void fb_deferred_io_open(struct fb_info *info,
+-				struct inode *inode,
+-				struct file *file);
+ extern void fb_deferred_io_cleanup(struct fb_info *info);
+ extern int fb_deferred_io_fsync(struct file *file, loff_t start,
+ 				loff_t end, int datasync);
