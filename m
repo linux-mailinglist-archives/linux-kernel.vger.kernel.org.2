@@ -2,169 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A18334281
+	by mail.lfdr.de (Postfix) with ESMTP id BC844334282
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbhCJQIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:08:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbhCJQIr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:08:47 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251B5C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:08:47 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id o38so11687796pgm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:08:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n5SUJ6SxBX80zMdF1n9kHJvTdoHW9bhKWhAVahClOnw=;
-        b=CWTtLzbpRE0V6DoYNY5ITdORUBJw8jR4RCevgqlelCN+8kUmrRzlTLdFdG4a/eMvz2
-         ZrVuOTckkKqFhXKDwA1CP/ArmUcQpwL+VQlD499zZ1ZUR+pPtJZyT63QpFgeUNGjFEwr
-         FQ7GRQDp/0r38umVI6oWVOHtPyGT+vGswax9+1eh97CaZ81ynX5x+JNdkTxsZLhKM50O
-         1ShZYqKP38mYycHxl3jRlhy6hXAflEwBjO0IKlVRRc3eVO9hx7kemvMjmD7/PZoSDDIu
-         IiefWTdhxFmCxahCznDHWM8FVVIbG0hzEUu4GGRXhBraxl2ygu6ILYeHWzuWAuqk1as3
-         dvfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n5SUJ6SxBX80zMdF1n9kHJvTdoHW9bhKWhAVahClOnw=;
-        b=enXZlvS9v+0Zp2ChjbtKuBtJmwJ9G/vUulPX0/+WGYTBzMfFuSEK8Q7YfsisC85kY2
-         xsmzHMMWsl5RDKFeX8JecmFbwhr9F8d/p+B1bqrELCKK0bD9iOKnxbKRwhG8nllYuBA7
-         IgWznNLOwMA6x6Wr/BtEpECrJtZiagiDH7aswnEC6LjaAwjIPsFD7L+js3C07ymhGDMJ
-         QLzsATvFlJ3g3z6a0Ufp/IwFiCJtkYp9dNvYKbkO6UTOBgyZvfHkBcdE+H91JKM5Li27
-         dz+cgAxLrOp4Q+WeOmFZrvUHcT0rn22N31u7YML4GrnKcoDbFFbP4WNcIiohQUpszS7B
-         rixQ==
-X-Gm-Message-State: AOAM531Pv5JUcjwE9/LxMq6ZrEq2igygfyfidClXCcg3qK9JU/I+NH//
-        cz6q8pLYEkDvIgINXwqVAxhd0Q==
-X-Google-Smtp-Source: ABdhPJy5E/rQt24yUFZtGlD2TgGJpQC3ID3/OnoSW5lGrPnU+CrQLObcNsCRohIldO+xCguGUhtUKg==
-X-Received: by 2002:a63:ff53:: with SMTP id s19mr3403048pgk.347.1615392526495;
-        Wed, 10 Mar 2021 08:08:46 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
-        by smtp.gmail.com with ESMTPSA id x7sm5308pfp.23.2021.03.10.08.08.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 08:08:45 -0800 (PST)
-Date:   Wed, 10 Mar 2021 08:08:37 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 5/7] x86/boot/compressed/64: Add CPUID sanity check to
- 32-bit boot-path
-Message-ID: <YEjvBfJg8P1SQt98@google.com>
-References: <20210310084325.12966-1-joro@8bytes.org>
- <20210310084325.12966-6-joro@8bytes.org>
+        id S232622AbhCJQI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:08:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231816AbhCJQIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:08:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A39864F4C;
+        Wed, 10 Mar 2021 16:08:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615392528;
+        bh=+jeM5mTF0DWL/FFvXq5PQzjSG6jE96CmIpkZ2rxyrDg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v/AozybfyhVfCTT6ZzdtslXkas+V4mi9DEqe49ZuDUs1nT3nMQIBN5LEmbyq4sajr
+         09+56Z9bl+RljCi0vHkTOu0VpN35lRaIb49/OBJDRf8EvQGIChwIX/QU5i+60Ect3t
+         MnBLZCtHfDOaV5w8U6K+EyTjQBE3obHvvC8rCmm0=
+Date:   Wed, 10 Mar 2021 17:08:46 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mihai Carabas <mihai.carabas@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de, rdunlap@infradead.org,
+        bobo.shaobowang@huawei.com
+Subject: Re: [PATCH v4] add support for pci in the pvpanic driver
+Message-ID: <YEjvDnK4E0anCrqO@kroah.com>
+References: <1613245447-21495-1-git-send-email-mihai.carabas@oracle.com>
+ <d35f5afd-6067-313e-ac1f-0d1b23fcb531@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310084325.12966-6-joro@8bytes.org>
+In-Reply-To: <d35f5afd-6067-313e-ac1f-0d1b23fcb531@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
+On Sun, Feb 28, 2021 at 08:39:29PM +0200, Mihai Carabas wrote:
+> Hello,
 > 
-> The 32-bit #VC handler has no GHCB and can only handle CPUID exit codes.
-> It is needed by the early boot code to handle #VC exceptions raised in
-> verify_cpu() and to get the position of the C bit.
-> 
-> But the CPUID information comes from the hypervisor, which is untrusted
-> and might return results which trick the guest into the no-SEV boot path
-> with no C bit set in the page-tables. All data written to memory would
-> then be unencrypted and could leak sensitive data to the hypervisor.
-> 
-> Add sanity checks to the 32-bit boot #VC handler to make sure the
-> hypervisor does not pretend that SEV is not enabled.
-> 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/boot/compressed/mem_encrypt.S | 36 ++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
-> 
-> diff --git a/arch/x86/boot/compressed/mem_encrypt.S b/arch/x86/boot/compressed/mem_encrypt.S
-> index 2ca056a3707c..8941c3a8ff8a 100644
-> --- a/arch/x86/boot/compressed/mem_encrypt.S
-> +++ b/arch/x86/boot/compressed/mem_encrypt.S
-> @@ -145,6 +145,34 @@ SYM_CODE_START(startup32_vc_handler)
->  	jnz	.Lfail
->  	movl	%edx, 0(%esp)		# Store result
->  
-> +	/*
-> +	 * Sanity check CPUID results from the Hypervisor. See comment in
-> +	 * do_vc_no_ghcb() for more details on why this is necessary.
-> +	 */
-> +
-> +	/* Fail if Hypervisor bit not set in CPUID[1].ECX[31] */
+> Any feedback on this last series?
 
-This check is flawed, as is the existing check in 64-bit boot.  Or I guess more
-accurately, the check in get_sev_encryption_bit() is flawed.  AIUI, SEV-ES
-doesn't require the hypervisor to intercept CPUID.  A malicious hypervisor can
-temporarily pass-through CPUID to bypass the CPUID[1].ECX[31] check.  The
-hypervisor likely has access to the guest firmware source, so it wouldn't be
-difficult for the hypervisor to disable CPUID interception once it detects that
-firmware is handing over control to the kernel.
+Other than the "this breaks the build according to the kernel test
+robot"?
 
-> +	cmpl    $1, %ebx
-> +	jne     .Lcheck_leaf
-> +	btl     $31, 4(%esp)
-> +	jnc     .Lfail
-> +	jmp     .Ldone
-> +
-> +.Lcheck_leaf:
-> +	/* Fail if SEV leaf not available in CPUID[0x80000000].EAX */
-> +	cmpl    $0x80000000, %ebx
-> +	jne     .Lcheck_sev
-> +	cmpl    $0x8000001f, 12(%esp)
-> +	jb      .Lfail
-> +	jmp     .Ldone
-> +
-> +.Lcheck_sev:
-> +	/* Fail if SEV bit not set in CPUID[0x8000001f].EAX[1] */
-> +	cmpl    $0x8000001f, %ebx
-> +	jne     .Ldone
-> +	btl     $1, 12(%esp)
-> +	jnc     .Lfail
-> +
-> +.Ldone:
->  	popl	%edx
->  	popl	%ecx
->  	popl	%ebx
-> @@ -158,6 +186,14 @@ SYM_CODE_START(startup32_vc_handler)
->  
->  	iret
->  .Lfail:
-> +	/* Send terminate request to Hypervisor */
-> +	movl    $0x100, %eax
-> +	xorl    %edx, %edx
-> +	movl    $MSR_AMD64_SEV_ES_GHCB, %ecx
-> +	wrmsr
-> +	rep; vmmcall
-> +
-> +	/* If request fails, go to hlt loop */
->  	hlt
->  	jmp .Lfail
->  SYM_CODE_END(startup32_vc_handler)
-> -- 
-> 2.30.1
-> 
+I think that needs to be fixed before we can do anything here...
+
+thnaks,
+
+greg k-h
