@@ -2,123 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022F7333724
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B67333728
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhCJIRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:17:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhCJIRB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:17:01 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FD9C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:17:01 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id dx17so36786484ejb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:17:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3Yz3/NapStuDE+x+ZZl/tDltLKdbda90tbUvwhJ9e1s=;
-        b=Sv0cLWYhmCUh8YdfxgJyfrGi6dqUoz1gT1CKoOPY1xRit3aV0WpSBVplnFeY4YPBao
-         ybFdFpEIWsjPTOyg/HAzTSmlLCecF306hfaQF6KxEVrmcHPC97jb0oVcjTO00QToKXX0
-         fufJyXV84DvMDHwoUmZi5IDsC2KrZtCReRQlgi+U7T8jkyu3WYRACB7QSJduykpPrWwH
-         uvtPloc5adPXHp6D1oCzbRQZxVoLTnWXfPmezHx4RhI8qnUzlsJk2zXGkKrxZasZCYaP
-         vbLgZ0gwZlywG2hxADX3PdYMcyDbTSlXkhk9Ff8oqPFodigGejMlq1o7yGVQ22ivaH9c
-         uKPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=3Yz3/NapStuDE+x+ZZl/tDltLKdbda90tbUvwhJ9e1s=;
-        b=eXNUsLAAUrwjD+X7gmFv8IPqa0yKbGYuwCLc1wxKPjvCM5KB09HwIrj+eS2/HIGUIr
-         foUPKe5GqlPveGtRj6Iawq7+edmdZBYwM+QDi2/r3kkMar3EldQLquRhVPTuAZGbUYBQ
-         czwtt9kp6bH0qYTmb9niqlZMeECP/uqxKE/hmqrvRjc7hUuneggT9QcjOHvvMGVR7u4I
-         kbK3ZnF/cOtxN028UAeX7nZArvl6O9VoCDcVlE9sS8OuBS/SakRwCQya+OhqXV2c0ZRr
-         WilaSO8Zdcihu/UogR2mJrpGrmAQYXsXoYV1pu3txhw19j3yCcE/km65gA6QClzkTqGl
-         p3Kw==
-X-Gm-Message-State: AOAM5316i8Abj28ZSaLowVwKrMLnXBjiNwbPXZ1ZYwyuf6Vef4K6rfLc
-        FaKFP+mmqDaPQneB32FVKXb85k1N46hlStAu
-X-Google-Smtp-Source: ABdhPJz4ZTXnSuoq4KUK5DrPNX65o1gIe5a95m7wuEf/U2c1T8EoCxvSQV29LqaOQctTi/+vYBB5mA==
-X-Received: by 2002:a17:907:9870:: with SMTP id ko16mr2344119ejc.227.1615364219497;
-        Wed, 10 Mar 2021 00:16:59 -0800 (PST)
-Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
-        by smtp.gmail.com with ESMTPSA id n25sm10513909edq.55.2021.03.10.00.16.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 10 Mar 2021 00:16:58 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-gpio@vger.kernel.org
-Subject: [PATCH] pinctrl: core: Handling pinmux and pinconf separately
-Date:   Wed, 10 Mar 2021 09:16:54 +0100
-Message-Id: <cfbe01f791c2dd42a596cbda57e15599969b57aa.1615364211.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.30.1
+        id S230198AbhCJISP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:18:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58982 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229900AbhCJISI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:18:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D3C81AC1F;
+        Wed, 10 Mar 2021 08:18:06 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 09:18:06 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Jinyang He <hejinyang@loongson.cn>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH RFC] MIPS: livepatch: Add LIVEPATCH basic code
+In-Reply-To: <1614598201-17858-1-git-send-email-hejinyang@loongson.cn>
+Message-ID: <alpine.LSU.2.21.2103100912590.13355@pobox.suse.cz>
+References: <1614598201-17858-1-git-send-email-hejinyang@loongson.cn>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now the handling order depends on how entries are coming which is
-corresponding with order in DT. We have reached the case with DT overlays
-where conf and mux descriptions are exchanged which ends up in sequence
-that firmware has been asked to perform configuration before requesting the
-pin.
-The patch is enforcing the order that pin is requested all the time first
-followed by pin configuration. This change will ensure that firmware gets
-requests in the right order.
+Hi,
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+I cannot really comment on mips arch specifics but few words from the live 
+patching perspective.
 
- drivers/pinctrl/core.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+On Mon, 1 Mar 2021, Jinyang He wrote:
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index 7d3370289938..f5c32d2a3c91 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -1258,13 +1258,34 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
- 
- 	p->state = NULL;
- 
--	/* Apply all the settings for the new state */
-+	/* Apply all the settings for the new state - pinmux first */
- 	list_for_each_entry(setting, &state->settings, node) {
- 		switch (setting->type) {
- 		case PIN_MAP_TYPE_MUX_GROUP:
- 			ret = pinmux_enable_setting(setting);
- 			break;
- 		case PIN_MAP_TYPE_CONFIGS_PIN:
-+		case PIN_MAP_TYPE_CONFIGS_GROUP:
-+			break;
-+		default:
-+			ret = -EINVAL;
-+			break;
-+		}
-+
-+		if (ret < 0)
-+			goto unapply_new_state;
-+
-+		/* Do not link hogs (circular dependency) */
-+		if (p != setting->pctldev->p)
-+			pinctrl_link_add(setting->pctldev, p->dev);
-+	}
-+
-+	/* Apply all the settings for the new state - pinconf after */
-+	list_for_each_entry(setting, &state->settings, node) {
-+		switch (setting->type) {
-+		case PIN_MAP_TYPE_MUX_GROUP:
-+			break;
-+		case PIN_MAP_TYPE_CONFIGS_PIN:
- 		case PIN_MAP_TYPE_CONFIGS_GROUP:
- 			ret = pinconf_apply_setting(setting);
- 			break;
--- 
-2.30.1
+> Add the basic code of livepatch. livepatch is temporarily unavailable.
+> Two core functions are missing, one is DYNAMIC_FTRACE_WITH_REGS, and
+> another is save_stack_trace_tsk_reliable().
+> `Huang Pei <huangpei@loongson.cn>` is doing for ftrace. He will use
+> `-fpatchable-function-entry` to achieve more complete ftrace.
 
+DYNAMIC_FTRACE_WITH_ARGS has been introduced recently, so you might also 
+look at that. As far as the live patching is concerned, 
+DYNAMIC_FTRACE_WITH_ARGS is sufficient.
+
+> save_stack_trace_tsk_reliable() currently has difficulties. This function
+> may be improved in the future, but that seems to be a long time away.
+> This is also the reason for delivering this RFC. Hope to get any help.
+
+You may want to look at Documentation/livepatch/reliable-stacktrace.rst 
+which nicely describes the requirements for the reliable stacktraces. 
+
+Regards
+Miroslav
