@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377FF3334D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDB03334D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 06:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhCJFUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 00:20:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
+        id S229570AbhCJFWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 00:22:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhCJFUh (ORCPT
+        with ESMTP id S229632AbhCJFWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 00:20:37 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51753C06174A;
-        Tue,  9 Mar 2021 21:20:37 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwL4j4Sq1z9sVt;
-        Wed, 10 Mar 2021 16:20:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1615353635;
-        bh=hRcUlrx6WVs6H6bysWKFjU5tqR/J0nyX9yzAP97GJsQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=J7tJEgWYlgdvVYjfzFG1g90s1EOtAnSSXBRLQ734Q2HRbgzt8b5qMsfcT75CaJw/5
-         k2iXGDhutq9tOyXtkr9ZdT6+Kw3xBnr49WyYm1ThfwbSXS49oSisxLyUici9Us3TE5
-         HtEU/wSHCFC/s0gViktBCnLKaTQ6q/J6g7vI7Yf82084Vpw7jSTqhvDbOhMgyxxI9w
-         06Bw6yZRBta9uSCCaIQ2c7wKj4hZxuCWKQRB2mMVm8bhHalhKoBF9ueKaVIbelzwFf
-         39/YMJZ9zGzrte7RuLUNxyCLzwS8ZoBCqvCyhYy1dJsJ4rr7rf2eQnVXaCuVc8iu5b
-         xcUsluM3pIA9g==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>, x86@kernel.org,
-        linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 2/6] mm: Generalize SYS_SUPPORTS_HUGETLBFS (rename as
- ARCH_SUPPORTS_HUGETLBFS)
-In-Reply-To: <1615185706-24342-3-git-send-email-anshuman.khandual@arm.com>
-References: <1615185706-24342-1-git-send-email-anshuman.khandual@arm.com>
- <1615185706-24342-3-git-send-email-anshuman.khandual@arm.com>
-Date:   Wed, 10 Mar 2021 16:20:19 +1100
-Message-ID: <874khjr3e4.fsf@mpe.ellerman.id.au>
+        Wed, 10 Mar 2021 00:22:03 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B72C061760;
+        Tue,  9 Mar 2021 21:22:03 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d23so4687359plq.2;
+        Tue, 09 Mar 2021 21:22:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PxoqHN27T6pDjgp5WZBZkMeXIS9WasI3ajvmniwuXIc=;
+        b=Fat+mGGlvb0kZXvfB0Ah5dJJZkXsuNpR0SWa0f1jfjY5YKdvqYDbsI7s2Dkf1T5UZ4
+         dpBeC9gPA6fp0P94kG+zMOha5hD1UfCcKx4o9kxxcKFM+m9BbVylaZyCPJgWir0JEIvz
+         y3J214o49C6qqQgJvaya2oJGpACPSoF9dLTxbXnTnBUv/n0yEBFVb0+QeGtKjJq4PM0V
+         cXoSajFjoyqVy2jcHmolNRBTEdi7u6WAMYZziuYGKR8L3LdsXUmTYAu9g7/uzGIt6ASb
+         OgYBClGX28+IuIsjhp8LXGXtaHyRubiSjLcz9F5ZtK2Eb6J0ycAOjjtV/ooeAK0qmSFb
+         u2+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PxoqHN27T6pDjgp5WZBZkMeXIS9WasI3ajvmniwuXIc=;
+        b=P/eHDmbjNUlF3whJ/7mcnB1IR6pNkTZOhGYD1NzYaxbDOkaWE8tJ0HXlL2O/2k/50o
+         NOXYBi4+G/ET//CIe2rQWUYMZoFB+BWKvKmLaKD7rs4SIFVxKCDfSTk+MBFoY2/V3YaX
+         EVtwag/mWRaoiaGqX3hsfzVQNQrA1AqVngvtddUr3++eldVeHEm85fiJiXOR+BXxFAKT
+         H1C9tmrtRfQJNnCudx/KeCyzxjaa8aJa5H35rE7pYW5/p3u+JDFOF/3fFkNC9FTPelRH
+         YQU0C1o3OqYqdCsx1WlZ0E3dHwq25UK4C/HEuL4SbdqG0qtLNkxJrUvpQUICtpIQa87M
+         L0Hg==
+X-Gm-Message-State: AOAM532ufcq96mXOJaP9+GX9ofAFGXWJS7KyFiJW+ahW13z97Gg02gHL
+        uwQjZ3gBXRKQUBS+/Eec8Sg=
+X-Google-Smtp-Source: ABdhPJz4ONgz/x8KMz1gq687gJQOHvFCCp63VCgqqv8efNstksQfpZHCYtDpA3LNvmTuR3uAz7JmNA==
+X-Received: by 2002:a17:902:be06:b029:e3:7031:bef with SMTP id r6-20020a170902be06b02900e370310befmr1395102pls.19.1615353723080;
+        Tue, 09 Mar 2021 21:22:03 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:e01e:c062:1c0c:6962:60a3:24ea])
+        by smtp.gmail.com with ESMTPSA id r2sm14535590pgv.50.2021.03.09.21.22.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 21:22:02 -0800 (PST)
+From:   Vasanth <vasanth3g@gmail.com>
+To:     kys@microsoft.com
+Cc:     haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vasanth <vasanth3g@gmail.com>
+Subject: [PATCH v2] drivers: hv: Fix EXPORT_SYMBOL and tab spaces issue
+Date:   Wed, 10 Mar 2021 10:51:55 +0530
+Message-Id: <20210310052155.39460-1-vasanth3g@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Anshuman Khandual <anshuman.khandual@arm.com> writes:
-> SYS_SUPPORTS_HUGETLBFS config has duplicate definitions on platforms that
-> subscribe it. Instead, just make it a generic option which can be selected
-> on applicable platforms. Also rename it as ARCH_SUPPORTS_HUGETLBFS instead.
-> This reduces code duplication and makes it cleaner.
->
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm/Kconfig                       | 5 +----
->  arch/arm64/Kconfig                     | 4 +---
->  arch/mips/Kconfig                      | 6 +-----
->  arch/parisc/Kconfig                    | 5 +----
->  arch/powerpc/Kconfig                   | 3 ---
->  arch/powerpc/platforms/Kconfig.cputype | 6 +++---
+1.Fixed EXPORT_SYMBOL should be follow immediately function/variable.
+2.Fixed code tab spaces issue.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Signed-off-by: Vasanth M <vasanth3g@gmail.com>
+---
 
-cheers
+changes in v2:
+*  Added commit message
+*  Revised Subject
+
+ drivers/hv/channel_mgmt.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+index 1d44bb635bb8..84d6b3dde76f 100644
+--- a/drivers/hv/channel_mgmt.c
++++ b/drivers/hv/channel_mgmt.c
+@@ -302,7 +302,6 @@ bool vmbus_prep_negotiate_resp(struct icmsg_hdr *icmsghdrp,
+ 	negop->icversion_data[1].minor = icmsg_minor;
+ 	return found_match;
+ }
+-
+ EXPORT_SYMBOL_GPL(vmbus_prep_negotiate_resp);
+ 
+ /*
+@@ -562,10 +561,10 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
+ 	 * CPUS_READ_UNLOCK		CPUS_WRITE_UNLOCK
+ 	 *
+ 	 * Forbids: CPU1's LOAD from *not* seing CPU2's STORE &&
+-	 * 		CPU2's SEARCH from *not* seeing CPU1's INSERT
++	 *              CPU2's SEARCH from *not* seeing CPU1's INSERT
+ 	 *
+ 	 * Forbids: CPU2's SEARCH from seeing CPU1's INSERT &&
+-	 * 		CPU2's LOAD from *not* seing CPU1's STORE
++	 *              CPU2's LOAD from *not* seing CPU1's STORE
+ 	 */
+ 	cpus_read_lock();
+ 
+@@ -928,7 +927,7 @@ static void vmbus_onoffer(struct vmbus_channel_message_header *hdr)
+ 		 *					UNLOCK channel_mutex
+ 		 *
+ 		 * Forbids: r1 == valid_relid &&
+-		 * 		channels[valid_relid] == channel
++		 *              channels[valid_relid] == channel
+ 		 *
+ 		 * Note.  r1 can be INVALID_RELID only for an hv_sock channel.
+ 		 * None of the hv_sock channels which were present before the
+-- 
+2.25.1
+
