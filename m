@@ -2,124 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231BA334240
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48523334243
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbhCJPz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:55:56 -0500
-Received: from mga12.intel.com ([192.55.52.136]:31547 "EHLO mga12.intel.com"
+        id S232457AbhCJP4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:56:23 -0500
+Received: from mga12.intel.com ([192.55.52.136]:31624 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229790AbhCJPzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:55:36 -0500
-IronPort-SDR: G4wowIapEP0reN+ThdPUhXx0BkRgykSgaa4LsHyw/YmfILUQpuUe1jMLDW01KtmltKR9STgpdm
- HK9fNpgplfCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167769240"
+        id S233253AbhCJP4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:56:10 -0500
+IronPort-SDR: djN2Lp2OLNdWsQNwToayqS9h3UJFvKDo3zoVSLTgzEoKNjwbRRs+ZnSai7tzgb0sW0gJfuxfX8
+ BnGVZzixFxNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167769373"
 X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="167769240"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 07:55:36 -0800
-IronPort-SDR: prqA15s0rTEfiGDuHgh+fqsTp09XhcjS54WhF5ZUaqqkRmNkOlL08ydWfXbC335bQIBi51cWj5
- Kk63cqENLULg==
+   d="scan'208";a="167769373"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 07:56:10 -0800
+IronPort-SDR: PN/wuXwd5C7QvPYXD47yxs0L449njoPwxrDcIki4ZuYEjuarWZ8WB5HYaVyp9WfVTUAJso27vp
+ pRcmWVxXUztA==
 X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="431260572"
-Received: from umalluga-mobl.amr.corp.intel.com (HELO [10.209.90.191]) ([10.209.90.191])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 07:55:35 -0800
-Subject: Re: [PATCH v3 2/5] x86/sgx: Use sgx_free_epc_page() in
- sgx_reclaim_pages()
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <20210303150323.433207-1-jarkko@kernel.org>
- <20210303150323.433207-3-jarkko@kernel.org>
- <b223ea92-8b20-def3-7bd0-2cc44474bd78@intel.com>
- <YEjhjhBpYJ6i6EFD@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b1b11501-805d-fcfd-4978-18d4b252510a@intel.com>
-Date:   Wed, 10 Mar 2021 07:55:35 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="403726594"
+Received: from sliu49-mobl1.ccr.corp.intel.com (HELO [10.249.170.226]) ([10.249.170.226])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 07:56:08 -0800
+Subject: Re: [PATCH] virt: acrn: Fix document of acrn_msi_inject()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, lkp@intel.com
+References: <20210310153751.17516-1-shuo.a.liu@intel.com>
+ <YEjqsEtXGr3rspkc@kroah.com>
+From:   "Liu, Shuo A" <shuo.a.liu@intel.com>
+Message-ID: <acfb840c-6968-33e9-ec81-93a314cf87d9@intel.com>
+Date:   Wed, 10 Mar 2021 23:56:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YEjhjhBpYJ6i6EFD@kernel.org>
+In-Reply-To: <YEjqsEtXGr3rspkc@kroah.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 7:11 AM, Jarkko Sakkinen wrote:
->>> -		section = &sgx_epc_sections[epc_page->section];
->>> -		spin_lock(&section->lock);
->>> -		list_add_tail(&epc_page->list, &section->page_list);
->>> -		section->free_cnt++;
->>> -		spin_unlock(&section->lock);
->>> +		sgx_free_epc_page(epc_page);
->>>  	}
->>>  }
->> In current upstream (3fb6d0e00e), sgx_free_epc_page() calls __eremove().
->>  This code does not call __eremove().  That seems to be changing
->> behavior where none was intended.
-> EREMOVE does not matter here, as it doesn't in almost all most of the sites
-> where sgx_free_epc_page() is used in the driver. It does nothing to an
-> uninitialized pages.
-> 
-> The two patches that I posted originally for Kai's series took EREMOVE out
-> of sgx_free_epc_page() and put an explicit EREMOVE where it is actually
-> needed, but for reasons unknown to me, that change is gone.
-> 
-> Replacing the ad-hoc code with sgx_free_epc_page() is absolutely the right
-> action to take because it follows the pattern how sgx_free_epc_page() is
-> used in the driver.
 
-That sounds generally fine.  But, this is a functional change.  Where
-there are functional changes, I always hope to see some mention of the
-change in the changelog.
 
-Could you add some of this to the next changelog, please?
+On 3/10/2021 23:50, Greg Kroah-Hartman wrote:
+> On Wed, Mar 10, 2021 at 11:37:51PM +0800, shuo.a.liu@intel.com wrote:
+>> From: Shuo Liu <shuo.a.liu@intel.com>
+>>
+>> This fixes below sparse warning.
+>>
+>> ../drivers/virt/acrn/vm.c:105: warning: expecting prototype for
+>> acrn_inject_msi(). Prototype was for acrn_msi_inject() instead
+> 
+> That is not a warning from sparse :(
+> 
+
+Oh. You are right. I was fixing another sparse warning and did
+	make O=out -j24 W=1 C=1
+to reproduce that warning.
+
+It misled me that this warning coming out with sparse too.
+
+Let me re-send the patch.
+
+Thanks
+shuo
