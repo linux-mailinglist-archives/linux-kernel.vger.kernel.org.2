@@ -2,216 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02FB3332DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D103332DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhCJBnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 20:43:46 -0500
-Received: from mga11.intel.com ([192.55.52.93]:20658 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231422AbhCJBnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 20:43:42 -0500
-IronPort-SDR: JZTopoaVIAtciT6GBg6LMHiGyQCBhkM354fHXBs8ZoxscnF3O47DCdloFlpDIcNBt+n2s6Tnwm
- YRRO+SwcBx4w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="185004425"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="185004425"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 17:43:39 -0800
-IronPort-SDR: Y7+W9Tom12E92Bku2I5dnJLtcYucyCcPGg1e9R0eUmX++VmOvYAoe74ImkoAF04m6TxXJHyD+q
- JzwsFQh5Lx0Q==
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="409973299"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 17:43:38 -0800
-Subject: [PATCH v2] libnvdimm: Notify disk drivers to revalidate region
- read-only
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-nvdimm@lists.01.org
-Cc:     Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        kernel test robot <lkp@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Date:   Tue, 09 Mar 2021 17:43:38 -0800
-Message-ID: <161534060720.528671.2341213328968989192.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S231458AbhCJBxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 20:53:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231358AbhCJBxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 20:53:45 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA53DC06174A;
+        Tue,  9 Mar 2021 17:53:44 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id z5so7691607plg.3;
+        Tue, 09 Mar 2021 17:53:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3cAJ8QasC8iUVsBAkva2w1fCiJ27KJ2oqhZsjVJDktk=;
+        b=h8aMBarV2GLotNdUMDkDCi0rcE8MAukDz9gB7KqiG3YGguTrGPgZwqnZ9nG316CFGn
+         cOLj5+DDZv26u98TcFdoBjg0MhnGjnaQLte7gJuPBPfYn1kraNAMkRt7DnbtAQ5jXQlm
+         rMBm9ZME8KdtKXligikR9Rt5c83yxqZ/pNuFv8anASAW9/iq81W0FdcO2tY67JOyhBAp
+         ve1TFeLkDA7GXT5h0Ti847lND4o/K5oWjuC24D2zFktnewLHEqlENfquV4XGBFAlC6qE
+         t9Pt//CBOgmAr6+9JK3C5SWKQ8QPmwqKEKEkrMIBi1rlcXF6kOQCO1wO+RPGiyNB1HOs
+         geSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3cAJ8QasC8iUVsBAkva2w1fCiJ27KJ2oqhZsjVJDktk=;
+        b=ZVBdc35NwK8ZMlCg3vMS1YjZYZL20pl6bsxBNQpfwLlrogtQ2dH3Pg4cIFaCQ0NrO+
+         gE/9gYGunY1knmOgNIzaMjLU8NRHDAO/MCeb4j/UvqyCRiqjFU8Skw4quuZvu5NohwTD
+         HX5EmTyLCsjfPJBXlUmf79lZ3BqSOSWtaU1lRCn74qK1Nx0mCl/+NlmVEsg4PtkOL1cK
+         QQp5viGMKqU7GjIxrtAXL1nO/XUeT4ZPKRqGbwRtpOsNmZ8WiGgFn+3GItR9R9H/182a
+         1q6BGqSd9rY78A2rpYn72x6x9agJ7nLqgc7vZCtPaTtIuLTLMqx1Sjv3WULPOC1frb1M
+         +KlA==
+X-Gm-Message-State: AOAM5334pdYCtrZkVRb6IyNZcLQ3ifdZx9dXH3UNdIHIKBJvAT5/0z6q
+        aZuPMofCT9yPDCKR2bSlqBg=
+X-Google-Smtp-Source: ABdhPJxT/HLum+AWOy81iV0DNKMICKUNS7reZBCD61CC4J/ms1MegQBNNdn0QHNbqCBfi9MhV3Y6cQ==
+X-Received: by 2002:a17:902:ac82:b029:e3:bca2:cca7 with SMTP id h2-20020a170902ac82b02900e3bca2cca7mr811515plr.43.1615341224328;
+        Tue, 09 Mar 2021 17:53:44 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id 133sm14867097pfa.130.2021.03.09.17.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 17:53:43 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     kuba@kernel.org, andy.shevchenko@gmail.com
+Cc:     davem@davemloft.net, axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        herbert@gondor.apana.org.au, dong.menglong@zte.com.cn,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
+Date:   Tue,  9 Mar 2021 17:51:35 -0800
+Message-Id: <20210310015135.293794-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previous kernels allowed the BLKROSET to override the disk's read-only
-status. With that situation fixed the pmem driver needs to rely on
-notification events to reevaluate the disk read-only status after the
-host region has been marked read-write.
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Recall that when libnvdimm determines that the persistent memory has
-lost persistence (for example lack of energy to flush from DRAM to FLASH
-on an NVDIMM-N device) it marks the region read-only, but that state can
-be overridden by the user via:
+The bit mask for MSG_* seems a little confused here. Replace it
+with BIT() to make it clear to understand.
 
-   echo 0 > /sys/bus/nd/devices/regionX/read_only
-
-...to date there is no notification that the region has restored
-persistence, so the user override is the only recovery.
-
-Fixes: 52f019d43c22 ("block: add a hard-readonly flag to struct gendisk")
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: Hannes Reinecke <hare@suse.de>
-Cc: Jens Axboe <axboe@kernel.dk>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 ---
-Changes since v1 [1]:
-- Move from the sinking ship of revalidate_disk() to the local hotness
-  of nd_pmem_notify() (hch).
+v4:
+- CC netdev
+v3:
+- move changelog here
+v2:
+- use BIT() instead of BIT_MASK()
+---
+ include/linux/socket.h | 71 ++++++++++++++++++++++--------------------
+ 1 file changed, 37 insertions(+), 34 deletions(-)
 
-[1]: http://lore.kernel.org/r/161527286194.446794.5215036039655765042.stgit@dwillia2-desk3.amr.corp.intel.com
-
- drivers/nvdimm/bus.c         |   14 ++++++--------
- drivers/nvdimm/pmem.c        |   37 +++++++++++++++++++++++++++++++++----
- drivers/nvdimm/region_devs.c |    7 +++++++
- include/linux/nd.h           |    1 +
- 4 files changed, 47 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/nvdimm/bus.c b/drivers/nvdimm/bus.c
-index 48f0985ca8a0..3a777d0073b7 100644
---- a/drivers/nvdimm/bus.c
-+++ b/drivers/nvdimm/bus.c
-@@ -631,16 +631,14 @@ void nvdimm_check_and_set_ro(struct gendisk *disk)
- 	struct nd_region *nd_region = to_nd_region(dev->parent);
- 	int disk_ro = get_disk_ro(disk);
+diff --git a/include/linux/socket.h b/include/linux/socket.h
+index 385894b4a8bb..e88859f38cd0 100644
+--- a/include/linux/socket.h
++++ b/include/linux/socket.h
+@@ -283,42 +283,45 @@ struct ucred {
+    Added those for 1003.1g not all are supported yet
+  */
  
--	/*
--	 * Upgrade to read-only if the region is read-only preserve as
--	 * read-only if the disk is already read-only.
--	 */
--	if (disk_ro || nd_region->ro == disk_ro)
-+	/* catch the disk up with the region ro state */
-+	if (disk_ro == nd_region->ro)
- 		return;
- 
--	dev_info(dev, "%s read-only, marking %s read-only\n",
--			dev_name(&nd_region->dev), disk->disk_name);
--	set_disk_ro(disk, 1);
-+	dev_info(dev, "%s read-%s, marking %s read-%s\n",
-+		 dev_name(&nd_region->dev), nd_region->ro ? "only" : "write",
-+		 disk->disk_name, nd_region->ro ? "only" : "write");
-+	set_disk_ro(disk, nd_region->ro);
- }
- EXPORT_SYMBOL(nvdimm_check_and_set_ro);
- 
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index b8a85bfb2e95..7daac795db39 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -26,6 +26,7 @@
- #include <linux/mm.h>
- #include <asm/cacheflush.h>
- #include "pmem.h"
-+#include "btt.h"
- #include "pfn.h"
- #include "nd.h"
- 
-@@ -585,7 +586,7 @@ static void nd_pmem_shutdown(struct device *dev)
- 	nvdimm_flush(to_nd_region(dev->parent), NULL);
- }
- 
--static void nd_pmem_notify(struct device *dev, enum nvdimm_event event)
-+static void pmem_revalidate_poison(struct device *dev)
- {
- 	struct nd_region *nd_region;
- 	resource_size_t offset = 0, end_trunc = 0;
-@@ -595,9 +596,6 @@ static void nd_pmem_notify(struct device *dev, enum nvdimm_event event)
- 	struct range range;
- 	struct kernfs_node *bb_state;
- 
--	if (event != NVDIMM_REVALIDATE_POISON)
--		return;
+-#define MSG_OOB		1
+-#define MSG_PEEK	2
+-#define MSG_DONTROUTE	4
+-#define MSG_TRYHARD     4       /* Synonym for MSG_DONTROUTE for DECnet */
+-#define MSG_CTRUNC	8
+-#define MSG_PROBE	0x10	/* Do not send. Only probe path f.e. for MTU */
+-#define MSG_TRUNC	0x20
+-#define MSG_DONTWAIT	0x40	/* Nonblocking io		 */
+-#define MSG_EOR         0x80	/* End of record */
+-#define MSG_WAITALL	0x100	/* Wait for a full request */
+-#define MSG_FIN         0x200
+-#define MSG_SYN		0x400
+-#define MSG_CONFIRM	0x800	/* Confirm path validity */
+-#define MSG_RST		0x1000
+-#define MSG_ERRQUEUE	0x2000	/* Fetch message from error queue */
+-#define MSG_NOSIGNAL	0x4000	/* Do not generate SIGPIPE */
+-#define MSG_MORE	0x8000	/* Sender will send more */
+-#define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
+-#define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
+-#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
+-#define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
+-#define MSG_EOF         MSG_FIN
+-#define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
+-#define MSG_SENDPAGE_DECRYPTED	0x100000 /* sendpage() internal : page may carry
+-					  * plain text and require encryption
+-					  */
 -
- 	if (is_nd_btt(dev)) {
- 		struct nd_btt *nd_btt = to_nd_btt(dev);
- 
-@@ -635,6 +633,37 @@ static void nd_pmem_notify(struct device *dev, enum nvdimm_event event)
- 		sysfs_notify_dirent(bb_state);
- }
- 
-+static void pmem_revalidate_region(struct device *dev)
-+{
-+	struct pmem_device *pmem;
+-#define MSG_ZEROCOPY	0x4000000	/* Use user data in kernel path */
+-#define MSG_FASTOPEN	0x20000000	/* Send data in TCP SYN */
+-#define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exec for file
+-					   descriptor received through
+-					   SCM_RIGHTS */
++#define MSG_OOB		BIT(0)
++#define MSG_PEEK	BIT(1)
++#define MSG_DONTROUTE	BIT(2)
++#define MSG_TRYHARD	BIT(2)	/* Synonym for MSG_DONTROUTE for DECnet		*/
++#define MSG_CTRUNC	BIT(3)
++#define MSG_PROBE	BIT(4)	/* Do not send. Only probe path f.e. for MTU	*/
++#define MSG_TRUNC	BIT(5)
++#define MSG_DONTWAIT	BIT(6)	/* Nonblocking io		*/
++#define MSG_EOR		BIT(7)	/* End of record		*/
++#define MSG_WAITALL	BIT(8)	/* Wait for a full request	*/
++#define MSG_FIN		BIT(9)
++#define MSG_SYN		BIT(10)
++#define MSG_CONFIRM	BIT(11)	/* Confirm path validity	*/
++#define MSG_RST		BIT(12)
++#define MSG_ERRQUEUE	BIT(13)	/* Fetch message from error queue */
++#define MSG_NOSIGNAL	BIT(14)	/* Do not generate SIGPIPE	*/
++#define MSG_MORE	BIT(15)	/* Sender will send more	*/
++#define MSG_WAITFORONE	BIT(16)	/* recvmmsg(): block until 1+ packets avail */
++#define MSG_SENDPAGE_NOPOLICY	BIT(16)	/* sendpage() internal : do no apply policy */
++#define MSG_SENDPAGE_NOTLAST	BIT(17)	/* sendpage() internal : not the last page  */
++#define MSG_BATCH	BIT(18)		/* sendmmsg(): more messages coming */
++#define MSG_EOF		MSG_FIN
++#define MSG_NO_SHARED_FRAGS	BIT(19)	/* sendpage() internal : page frags
++					 * are not shared
++					 */
++#define MSG_SENDPAGE_DECRYPTED	BIT(20)	/* sendpage() internal : page may carry
++					 * plain text and require encryption
++					 */
 +
-+	if (is_nd_btt(dev)) {
-+		struct nd_btt *nd_btt = to_nd_btt(dev);
-+		struct btt *btt = nd_btt->btt;
-+
-+		nvdimm_check_and_set_ro(btt->btt_disk);
-+		return;
-+	}
-+
-+	pmem = dev_get_drvdata(dev);
-+	nvdimm_check_and_set_ro(pmem->disk);
-+}
-+
-+static void nd_pmem_notify(struct device *dev, enum nvdimm_event event)
-+{
-+	switch (event) {
-+	case NVDIMM_REVALIDATE_POISON:
-+		pmem_revalidate_poison(dev);
-+		break;
-+	case NVDIMM_REVALIDATE_REGION:
-+		pmem_revalidate_region(dev);
-+		break;
-+	default:
-+		dev_WARN_ONCE(dev, 1, "notify: unknown event: %d\n", event);
-+		break;
-+	}
-+}
-+
- MODULE_ALIAS("pmem");
- MODULE_ALIAS_ND_DEVICE(ND_DEVICE_NAMESPACE_IO);
- MODULE_ALIAS_ND_DEVICE(ND_DEVICE_NAMESPACE_PMEM);
-diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
-index ef23119db574..51870eb51da6 100644
---- a/drivers/nvdimm/region_devs.c
-+++ b/drivers/nvdimm/region_devs.c
-@@ -518,6 +518,12 @@ static ssize_t read_only_show(struct device *dev,
- 	return sprintf(buf, "%d\n", nd_region->ro);
- }
++#define MSG_ZEROCOPY	BIT(26)		/* Use user data in kernel path */
++#define MSG_FASTOPEN	BIT(29)		/* Send data in TCP SYN */
++#define MSG_CMSG_CLOEXEC	BIT(30)	/* Set close_on_exec for file
++					 * descriptor received through
++					 * SCM_RIGHTS
++					 */
+ #if defined(CONFIG_COMPAT)
+-#define MSG_CMSG_COMPAT	0x80000000	/* This message needs 32 bit fixups */
++#define MSG_CMSG_COMPAT	BIT(31)	/* This message needs 32 bit fixups */
+ #else
+-#define MSG_CMSG_COMPAT	0		/* We never have 32 bit fixups */
++#define MSG_CMSG_COMPAT	0	/* We never have 32 bit fixups */
+ #endif
  
-+static int revalidate_read_only(struct device *dev, void *data)
-+{
-+	nd_device_notify(dev, NVDIMM_REVALIDATE_REGION);
-+	return 0;
-+}
-+
- static ssize_t read_only_store(struct device *dev,
- 		struct device_attribute *attr, const char *buf, size_t len)
- {
-@@ -529,6 +535,7 @@ static ssize_t read_only_store(struct device *dev,
- 		return rc;
  
- 	nd_region->ro = ro;
-+	device_for_each_child(dev, NULL, revalidate_read_only);
- 	return len;
- }
- static DEVICE_ATTR_RW(read_only);
-diff --git a/include/linux/nd.h b/include/linux/nd.h
-index cec526c8043d..ee9ad76afbba 100644
---- a/include/linux/nd.h
-+++ b/include/linux/nd.h
-@@ -11,6 +11,7 @@
- 
- enum nvdimm_event {
- 	NVDIMM_REVALIDATE_POISON,
-+	NVDIMM_REVALIDATE_REGION,
- };
- 
- enum nvdimm_claim_class {
+-- 
+2.25.1
 
