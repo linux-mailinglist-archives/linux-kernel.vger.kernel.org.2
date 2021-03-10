@@ -2,318 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC74C3339E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:25:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251133339E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbhCJKYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:24:30 -0500
-Received: from mail-db8eur05on2058.outbound.protection.outlook.com ([40.107.20.58]:59744
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229609AbhCJKYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:24:24 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RynxEMM7CWTPaiNMTRKc8TnXCgMzrAPnUHe+J4eRsf3iwipxZxyQ08WJn30JYMhoRUmFf8dv9bMps3pqy3sFyAeeAPPbld5T4zHxQC08zv0yTpoJFuZ1LEB9j5CHmox8y4Os/F9SqwygWFqnN/wkKXgFqr4HMj+1+nWLCxxciaJyle5ZpQ9oNU6G6I32yFthD0U5wFrlU3oLT04MZEWmHoEjCdMey8jaeDeN+B5HTJFBi22PEkrCmuYYfzrk0ygoC8FhNt0uWV/unMs7UTI0/of3eQsEEb/xDPqeL0HbZT74muEXYpd/KQkEGXDUjDwumudcKufeK8XbAN3miXsyDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0l/HoP8sqwZ2TT3WHwCcaJf/4JUJW+6iLyGzBKzeyWg=;
- b=f7KfQtUfEHjg7kOgMdXoVfB7NztHEHnlRs9duVKqzTgmWjeEM4XIny2HwhZ37uUlS7GpV5hbcq919G5Ghq8fR5is37L4PD5j/oukdI5fnDyPdWfRy5SBExqZMMUodSYgZhzS9yTLjV42AJFLDR4/ReKBw4TzdENryA4SSpDuzF++l7DWOUah1blYjepRI8wlDagm887IKXOZ00uCufTpm+vJEfRmDhSoixjMSPMVFZcWljO11XgrMnFxf+Mc0Nyh3j4VxRIiJfMta0XYBnsffRBpFqBc1RhAyYdjV5IpB0NKMGWdLXwQk9TWVFxtYWmGj/dllfYYHSBoA3KOatZDhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0l/HoP8sqwZ2TT3WHwCcaJf/4JUJW+6iLyGzBKzeyWg=;
- b=JbQNZJN5OYwwFa3zKdOgatMCiZOpmo1YE+QEfFDv3PnCY5D4nxZazZLhe/cWAB9rZzPDGwrub+DBbym4OsEOdoTobYRDzKdhe7x9inhhJIhbDAhXteuOkk59oH9WVBpwLZQEW/tWBI0r6ejJJJpdj5nzOdmuH4BDDBb7GC1E17Y=
-Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
- by DBBPR04MB7515.eurprd04.prod.outlook.com (2603:10a6:10:202::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Wed, 10 Mar
- 2021 10:24:22 +0000
-Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
- ([fe80::c99c:dbc3:ed75:e6e8]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
- ([fe80::c99c:dbc3:ed75:e6e8%5]) with mapi id 15.20.3890.040; Wed, 10 Mar 2021
- 10:24:22 +0000
-From:   Kuldeep Singh <kuldeep.singh@nxp.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        id S232444AbhCJKZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:25:03 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52310 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232049AbhCJKYp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 05:24:45 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12AAOVmB127513;
+        Wed, 10 Mar 2021 04:24:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615371871;
+        bh=i09rXQy/RppMIEWjXFpnoKgIX92U98VUciWg+IgQCcY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Dow2EYJaRA2Rl8750jd7BObGVy3xIjKkJ6szsmnmPRlHSXguG6kjUkduGa+Vks4jm
+         Mw66qzJjIs/L76LJhnZhKsaZPy4397ICBMeyf2ZUKpHAteyKVqOQIZkYtxRFT/O+WJ
+         582jgrIkOJtV2Oi3Y3a5fW51Udfd8L7gehMDANG4=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12AAOV07013901
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Mar 2021 04:24:31 -0600
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
+ Mar 2021 04:24:30 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 10 Mar 2021 04:24:30 -0600
+Received: from [10.250.234.4] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12AAOR52115402;
+        Wed, 10 Mar 2021 04:24:28 -0600
+Subject: Re: [PATCH v2 9/9] phy: cadence-torrent: Add support to drive refclk
+ out
+To:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Peter Rosin <peda@axentia.se>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ashish Kumar <ashish.kumar@nxp.com>
-Subject: RE: [EXT] Re: [PATCH] dt-bindings: spi: Convert NXP flexspi to json
- schema
-Thread-Topic: [EXT] Re: [PATCH] dt-bindings: spi: Convert NXP flexspi to json
- schema
-Thread-Index: AQHXFM/6iIqk6EfgdU6QexJiEf5Gy6p7hhTAgAAR0oCAAE7kYIAAA7QAgAEZWuA=
-Date:   Wed, 10 Mar 2021 10:24:21 +0000
-Message-ID: <DB6PR0402MB27582479DBE5A2011ABB049FE0919@DB6PR0402MB2758.eurprd04.prod.outlook.com>
-References: <20210309103528.3538910-1-kuldeep.singh@nxp.com>
- <DB6PR0402MB275834FAF7CEF44AB7F342B2E0929@DB6PR0402MB2758.eurprd04.prod.outlook.com>
- <20210309123601.GA4878@sirena.org.uk>
- <DB6PR0402MB275840529A4F50EBFC723E1AE0929@DB6PR0402MB2758.eurprd04.prod.outlook.com>
- <20210309173138.GC4878@sirena.org.uk>
-In-Reply-To: <20210309173138.GC4878@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [27.58.231.233]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 87e5b7ba-a5ca-42a5-cb19-08d8e3aeabf8
-x-ms-traffictypediagnostic: DBBPR04MB7515:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBBPR04MB751522016A506B61082F6646E0919@DBBPR04MB7515.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bb0vhMlOnSU5ks0190fSHnUlmxRrCVEwoSit4mCgIsDWAQHupU9a3HEemWxyXRxo+fnFSmBWZNmdr6ACN3F9jZqO5g/j69VWTL9si9Bq7ta+t5EAGJ6fy2o0s6v3hsILZy1OgmBlOlKm1ft/wUAiSJR7CGvVOPZORZj6UOD56ixHdEE5+FmZvhkNEJbx65/smost92/lMFAbHTLLDNiJy+wUdV1Blk/l7k/VJlZZPzR4VSMkuMnNZiu+J47yGAmaWYeiquh1s4/F67GRudzYVl2oufhWUcZUYeVYjig6QGf9Zz2eWzDWYdzWNlbQanJoodugs40cl/knySnfhQJC8ZE7TYw5CT3pU6zRq2jtkm+/RNscK9X5F3J0SBKBynoZ0e8EfizOo2slIXW+MvDvyAYLxJK+1prRH0eYDT0nrk9nXSMwTlEqOhIEzaSKnW8tSUiTenZTTUGsoPjmtLKVF0oQ2XUhKMO0YesW8ouWf3WtKe75/30YAeTezOOe4T8J7j5X2DFbJb99+X1OSSVim3ArDHgqggzKGi8iecJfqhQ9Ym4GhlLxmq192c1Lg1A8ZZ6Rck1q56nTrmv9Hn7MtA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2758.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(346002)(366004)(83380400001)(26005)(66556008)(5660300002)(2906002)(9686003)(55016002)(33656002)(8676002)(8936002)(44832011)(86362001)(54906003)(316002)(76116006)(66476007)(71200400001)(4326008)(966005)(66446008)(52536014)(6506007)(478600001)(53546011)(186003)(7696005)(6916009)(66946007)(64756008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?8OmEBc0FyyI59ei0+XSLhMQ4c4P0XSK4rxDIEcDIPg3oatJU3NEk1g++QfkX?=
- =?us-ascii?Q?MzygRDE6/dE5XGMb1b6pcHVmdkUkWQpoomgX5BvWiBKPeeCIiNTnL1AmcH+U?=
- =?us-ascii?Q?g1TVP8pAiVorg8x+Br0rAU9vbCBqHKW2HkOmC0NF8yAqvBc+dMgONQzDnfW1?=
- =?us-ascii?Q?GVWVIq+YhQ8nbNilyh61R+gnJg4O3twuNuRAar63GQmy9YyNh+oJU/O+W85x?=
- =?us-ascii?Q?pWXyJF3AiYOfqCDt7p0vtInKxgRpv8/tAvddT+w5bRGgWivpIlxV0LTxruXW?=
- =?us-ascii?Q?AVoZyKCrgEk47hoeUg5RLZv0c6Mmt+5tYhrFkXHaIQWev5mVllwBYd8ZUcOy?=
- =?us-ascii?Q?Y5j1dIdqWXG9gdoqWbqRZCeMWpBO4KcVJ9Qzk9luaD60rxaBulvcKPjMJwE+?=
- =?us-ascii?Q?T1EE2L4XyDFMcomPhcTflMKnv9PpRsT/F1gUcBnc3POeuCAn4J/BfnXgwg1z?=
- =?us-ascii?Q?5lgbJ40Pemfg6Q1j1zm4eCxhv0L8KEGGLc4g/XACaT4kp/MeVDT82KLWDcSN?=
- =?us-ascii?Q?Ny6VcZ4D8GUlOMIB6KDvViipUS0J3QTkwFV93pqpHu++Ql872VZJ5pTdBBn5?=
- =?us-ascii?Q?8Z6m+funpAz9OGfYXp9dBb+gMaP6MeGraZ9AwY9FzrTY7aqllFFT9Jt18Daz?=
- =?us-ascii?Q?ZM9rNcEfms0LAr7U2gH4zu3kGaMOC1suM9jiDnrnrKMzHfsLXUmtzJKsdcTY?=
- =?us-ascii?Q?DjOdIO5ZTvEdCKfi1vcXn3P5G+0SHviNHit+7C1Eg2Lzp4bHRb2LXzJwsXxw?=
- =?us-ascii?Q?gkZl40dOBeex3iM0b0g6kkNyWjqkrde3J3r3toXtWsKxTVvXUk2flZiE9Dlg?=
- =?us-ascii?Q?AeqUdyQ/cIQFR/3upyAbRwhEGZIdK46yjDaos5sC2RRIWGF/G+VR9PhYqgcb?=
- =?us-ascii?Q?m+XEJlmOp105xHKXHX/l3Aym1ErAwuCjXisGpvOhuCyHDD5aumQbnRULhKHW?=
- =?us-ascii?Q?4dtSWJOYOHj3Ctu10pUdF+KiIkhtuQPETLnTH7QTejY5IuNXAb/In4EDhvVI?=
- =?us-ascii?Q?r94I8/JCp6PdVFxnEEIcnW2F6SfC6kS1uhX0sHm91832VuvYmFQS5Ecb3XFm?=
- =?us-ascii?Q?jkOP9uvLD5QGygCOjOqR7Yb70uM4kjsFBfmlzqpLaf3T3E/r6jlEB0w1x2nO?=
- =?us-ascii?Q?0/FOyDIkfhyXeMK7LxzE24cTBGfOuRFi8IswU1ex5fXjLiRNuQzZUK+xDVV9?=
- =?us-ascii?Q?plKQ4oZtXb4YO0OMO63//8QzNlqXZSWG0N6mUs0sg7tFNjBCVUOsDSkyROAR?=
- =?us-ascii?Q?csiTPx7o/ENPRXwoe+q5CY+axHSPTiY6F8052GSmgPcuKx1bLNdTwfBz2GxW?=
- =?us-ascii?Q?PoA=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>
+References: <20210222112314.10772-1-kishon@ti.com>
+ <20210222112314.10772-10-kishon@ti.com>
+ <MN2PR07MB616036AE3164A0BB929BE0D8C5929@MN2PR07MB6160.namprd07.prod.outlook.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <a04dcf6a-1152-8ef4-7ea4-00e67172c4b2@ti.com>
+Date:   Wed, 10 Mar 2021 15:54:27 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87e5b7ba-a5ca-42a5-cb19-08d8e3aeabf8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Mar 2021 10:24:22.0689
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sCEjkEqLGCHqsPNYiMfNcmgw+Jgn7ftJ79tdHZK3+tISdlFmMFg0Cb/Bg7Q3GKGIWU/t5WO/yaaZGuobfyYlcQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7515
+In-Reply-To: <MN2PR07MB616036AE3164A0BB929BE0D8C5929@MN2PR07MB6160.namprd07.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Swapnil,
 
-> -----Original Message-----
-> From: Mark Brown <broonie@kernel.org>
-> Sent: Tuesday, March 9, 2021 11:02 PM
-> To: Kuldeep Singh <kuldeep.singh@nxp.com>
-> Cc: Rob Herring <robh+dt@kernel.org>; linux-spi@vger.kernel.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Ashish Kumar
-> <ashish.kumar@nxp.com>
-> Subject: Re: [EXT] Re: [PATCH] dt-bindings: spi: Convert NXP flexspi to j=
-son schema
->=20
-> On Tue, Mar 09, 2021 at 05:30:00PM +0000, Kuldeep Singh wrote:
->=20
-> > > Binding patches generally go through the subsystem tree so please
-> > > send the patch to me.
->=20
-> > Thanks for letting me know.
-> > I have developed the patch on top of your tree and also sent to spi-dev=
-el
-> mailing list.
-> > Please see [1] for more details. Kindly let me know if I need to resubm=
-it the
-> patch.
->=20
-> Like I said in the mail you're replying to please send me a copy of the p=
-atch.
+On 09/03/21 7:51 pm, Swapnil Kashinath Jakhade wrote:
+> Hi Kishon,
+> 
+>> -----Original Message-----
+>> From: Kishon Vijay Abraham I <kishon@ti.com>
+>> Sent: Monday, February 22, 2021 4:53 PM
+>> To: Kishon Vijay Abraham I <kishon@ti.com>; Vinod Koul
+>> <vkoul@kernel.org>; Rob Herring <robh+dt@kernel.org>; Peter Rosin
+>> <peda@axentia.se>; Swapnil Kashinath Jakhade <sjakhade@cadence.com>
+>> Cc: linux-kernel@vger.kernel.org; devicetree@vger.kernel.org; linux-
+>> phy@lists.infradead.org
+>> Subject: [PATCH v2 9/9] phy: cadence-torrent: Add support to drive refclk out
+>>
+>> EXTERNAL MAIL
+>>
+>>
+>> cmn_refclk_<p/m> lines in Torrent SERDES is used for connecting external
+>> reference clock. cmn_refclk_<p/m> can also be configured to output the
+>> reference clock. Model this derived reference clock as a "clock" so that
+>> platforms like AM642 EVM can enable it.
+>>
+>> This is used by PCIe to use the same refclk both in local SERDES
+>> and remote device. Add support here to drive refclk out.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  drivers/phy/cadence/phy-cadence-torrent.c | 202 +++++++++++++++++++++-
+>>  1 file changed, 199 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c
+>> b/drivers/phy/cadence/phy-cadence-torrent.c
+>> index f310e15d94cb..07eebdd90d4b 100644
+>> --- a/drivers/phy/cadence/phy-cadence-torrent.c
+>> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
+>> @@ -7,7 +7,9 @@
+>>   */
+>>
+>>  #include <dt-bindings/phy/phy.h>
+>> +#include <dt-bindings/phy/phy-cadence-torrent.h>
+>>  #include <linux/clk.h>
+>> +#include <linux/clk-provider.h>
+>>  #include <linux/delay.h>
+>>  #include <linux/err.h>
+>>  #include <linux/io.h>
+>> @@ -76,6 +78,8 @@
+>>   * register offsets from SD0801 PHY register block base (i.e MHDP
+>>   * register base + 0x500000)
+>>   */
+>> +#define CMN_CDIAG_REFCLK_OVRD		0x004CU
+>> +#define CMN_CDIAG_REFCLK_DRV0_CTRL	0x0050U
+> 
+> Nitpick, this can be added sequentially.
+> 
+>>  #define CMN_SSM_BANDGAP_TMR		0x0021U
+>>  #define CMN_SSM_BIAS_TMR		0x0022U
+>>  #define CMN_PLLSM0_PLLPRE_TMR		0x002AU
+>> @@ -206,6 +210,8 @@
+>>  #define RX_DIAG_ACYA			0x01FFU
+>>
+>>  /* PHY PCS common registers */
+>> +#define PHY_PIPE_CMN_CTRL1		0x0000U
+>> +#define PHY_ISO_CMN_CTRL		0x0008U
+>>  #define PHY_PLL_CFG			0x000EU
+>>  #define PHY_PIPE_USB3_GEN2_PRE_CFG0	0x0020U
+>>  #define PHY_PIPE_USB3_GEN2_POST_CFG0	0x0022U
+>> @@ -216,6 +222,10 @@
+>>  #define PHY_PMA_CMN_CTRL2		0x0001U
+>>  #define PHY_PMA_PLL_RAW_CTRL		0x0003U
+>>
+>> +static const char * const clk_names[] = {
+>> +	[CDNS_TORRENT_REFCLK_DRIVER] = "refclk-driver",
+>> +};
+>> +
+>>  static const struct reg_field phy_pll_cfg =
+>>  				REG_FIELD(PHY_PLL_CFG, 0, 1);
+>>
+>> @@ -231,6 +241,36 @@ static const struct reg_field phy_pma_pll_raw_ctrl =
+>>  static const struct reg_field phy_reset_ctrl =
+>>  				REG_FIELD(PHY_RESET, 8, 8);
+>>
+>> +#define REFCLK_OUT_NUM_CONFIGURATIONS_PCS_CONFIG	2
+> 
+> This could be reduced just to REFCLK_OUT_NUM_PCS_CONFIG, but up to you.
+> Same below.
+> 
+>> +
+>> +enum cdns_torrent_refclk_out_pcs {
+>> +	PHY_ISO_CMN_CTRL_8,
+>> +	PHY_PIPE_CMN_CTRL1_0,
+>> +};
+>> +
+>> +#define REFCLK_OUT_NUM_CONFIGURATIONS_CMN_CONFIG	5
+>> +
+>> +enum cdns_torrent_refclk_out_cmn {
+>> +	CMN_CDIAG_REFCLK_OVRD_4,
+>> +	CMN_CDIAG_REFCLK_DRV0_CTRL_1,
+>> +	CMN_CDIAG_REFCLK_DRV0_CTRL_4,
+>> +	CMN_CDIAG_REFCLK_DRV0_CTRL_5,
+>> +	CMN_CDIAG_REFCLK_DRV0_CTRL_6,
+>> +};
+>> +
+>> +static const struct reg_field refclk_out_pcs_cfg[] = {
+>> +	[PHY_ISO_CMN_CTRL_8]	= REG_FIELD(PHY_ISO_CMN_CTRL, 8,
+>> 8),
+>> +	[PHY_PIPE_CMN_CTRL1_0]	= REG_FIELD(PHY_PIPE_CMN_CTRL1,
+>> 0, 0),
+>> +};
+>> +
+>> +static const struct reg_field refclk_out_cmn_cfg[] = {
+>> +	[CMN_CDIAG_REFCLK_OVRD_4]	=
+>> REG_FIELD(CMN_CDIAG_REFCLK_OVRD, 4, 4),
+>> +	[CMN_CDIAG_REFCLK_DRV0_CTRL_1]	=
+>> REG_FIELD(CMN_CDIAG_REFCLK_DRV0_CTRL, 1, 1),
+>> +	[CMN_CDIAG_REFCLK_DRV0_CTRL_4]	=
+>> REG_FIELD(CMN_CDIAG_REFCLK_DRV0_CTRL, 4, 4),
+>> +	[CMN_CDIAG_REFCLK_DRV0_CTRL_5]  =
+>> REG_FIELD(CMN_CDIAG_REFCLK_DRV0_CTRL, 5, 5),
+>> +	[CMN_CDIAG_REFCLK_DRV0_CTRL_6]	=
+>> REG_FIELD(CMN_CDIAG_REFCLK_DRV0_CTRL, 6, 6),
+>> +};
+>> +
+>>  enum cdns_torrent_phy_type {
+>>  	TYPE_NONE,
+>>  	TYPE_DP,
+>> @@ -279,6 +319,8 @@ struct cdns_torrent_phy {
+>>  	struct regmap_field *phy_pma_cmn_ctrl_2;
+>>  	struct regmap_field *phy_pma_pll_raw_ctrl;
+>>  	struct regmap_field *phy_reset_ctrl;
+>> +	struct clk *clks[CDNS_TORRENT_REFCLK_DRIVER + 1];
+>> +	struct clk_onecell_data clk_data;
+>>  };
+>>
+>>  enum phy_powerstate {
+>> @@ -288,6 +330,16 @@ enum phy_powerstate {
+>>  	POWERSTATE_A3 = 3,
+>>  };
+>>
+>> +struct cdns_torrent_derived_refclk {
+>> +	struct clk_hw		hw;
+>> +	struct regmap_field
+>> 	*pcs_fields[REFCLK_OUT_NUM_CONFIGURATIONS_PCS_CONFIG];
+>> +	struct regmap_field
+>> 	*cmn_fields[REFCLK_OUT_NUM_CONFIGURATIONS_CMN_CONFIG];
+>> +	struct clk_init_data	clk_data;
+>> +};
+>> +
+>> +#define to_cdns_torrent_derived_refclk(_hw)	\
+>> +			container_of(_hw, struct
+>> cdns_torrent_derived_refclk, hw)
+>> +
+>>  static int cdns_torrent_phy_init(struct phy *phy);
+>>  static int cdns_torrent_dp_init(struct phy *phy);
+>>  static int cdns_torrent_dp_run(struct cdns_torrent_phy *cdns_phy,
+>> @@ -1604,6 +1656,111 @@ static int cdns_torrent_dp_run(struct
+>> cdns_torrent_phy *cdns_phy, u32 num_lanes)
+>>  	return ret;
+>>  }
+>>
+>> +static int cdns_torrent_derived_refclk_enable(struct clk_hw *hw)
+>> +{
+>> +	struct cdns_torrent_derived_refclk *derived_refclk =
+>> to_cdns_torrent_derived_refclk(hw);
+>> +
+>> +	regmap_field_write(derived_refclk-
+>>> cmn_fields[CMN_CDIAG_REFCLK_DRV0_CTRL_6], 0);
+>> +	regmap_field_write(derived_refclk-
+>>> cmn_fields[CMN_CDIAG_REFCLK_DRV0_CTRL_4], 1);
+>> +	regmap_field_write(derived_refclk-
+>>> cmn_fields[CMN_CDIAG_REFCLK_DRV0_CTRL_5], 1);
+>> +	regmap_field_write(derived_refclk-
+>>> cmn_fields[CMN_CDIAG_REFCLK_DRV0_CTRL_1], 0);
+>> +	regmap_field_write(derived_refclk-
+>>> cmn_fields[CMN_CDIAG_REFCLK_OVRD_4], 1);
+>> +	regmap_field_write(derived_refclk-
+>>> pcs_fields[PHY_PIPE_CMN_CTRL1_0], 1);
+>> +	regmap_field_write(derived_refclk-
+>>> pcs_fields[PHY_ISO_CMN_CTRL_8], 1);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void cdns_torrent_derived_refclk_disable(struct clk_hw *hw)
+>> +{
+>> +	struct cdns_torrent_derived_refclk *derived_refclk =
+>> to_cdns_torrent_derived_refclk(hw);
+>> +
+>> +	regmap_field_write(derived_refclk-
+>>> pcs_fields[PHY_ISO_CMN_CTRL_8], 0);
+>> +}
+>> +
+> 
+> PHY_ISO_CMN_CTRL is a PHY isolation register. Not sure, but is this correct
+> to control phy_en_refclk to enable/disable refclk output from here?
 
-I hope this will suffice. Please let me know in case of any other requireme=
-nt.
+hmm.. I see this is used to drive phy_en_refclk when in ISOLATION mode.
+Given that we are not selecting to operate in isolation mode, this
+shouldn't be required.
 
-Regards
-Kuldeep
-[1]
-Convert the NXP FlexSPI binding to DT schema format using json-schema.
+This was present in the sequence given by HW team but maybe it's enabled
+for some debugging.
 
-Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
----
- .../bindings/spi/nxp,spi-nxp-fspi.yaml        | 85 +++++++++++++++++++
- .../devicetree/bindings/spi/spi-nxp-fspi.txt  | 43 ----------
- MAINTAINERS                                   |  2 +-
- 3 files changed, 86 insertions(+), 44 deletions(-)  create mode 100644 Doc=
-umentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+I've also verified PCIe works without this configuration. I'll repost
+without this configuration and also check with HW team on why it was added.
 
-diff --git a/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml b/=
-Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
-new file mode 100644
-index 000000000000..e3f2c5aae847
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
-@@ -0,0 +1,85 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/nxp,spi-nxp-fspi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP Flex Serial Peripheral Interface (FSPI)
-+
-+maintainers:
-+  - Ashish Kumar <ashish.kumar@nxp.com>
-+
-+allOf:
-+  - $ref: "spi-controller.yaml#"
-+
-+properties:
-+  compatible:
-+    enum:
-+      - nxp,lx2160a-fspi
-+      - nxp,imx8qxp-fspi
-+      - nxp,imx8mm-fspi
-+      - nxp,imx8dxl-fspi
-+
-+  reg:
-+    items:
-+      - description: registers
-+      - description: memory mapping
-+
-+  reg-names:
-+    items:
-+      - const: fspi_base
-+      - const: fspi_mmap
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: SoC SPI fspi_en clock
-+      - description: SoC SPI fspi clock
-+
-+  clock-names:
-+    items:
-+      - const: fspi_en
-+      - const: fspi
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/fsl,qoriq-clockgen.h>
-+
-+    soc {
-+        #address-cells =3D <2>;
-+        #size-cells =3D <2>;
-+
-+        spi@20c0000 {
-+            compatible =3D "nxp,lx2160a-fspi";
-+            reg =3D <0x0 0x20c0000 0x0 0x100000>,
-+                  <0x0 0x20000000 0x0 0x10000000>;
-+            reg-names =3D "fspi_base", "fspi_mmap";
-+            interrupts =3D <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
-+            clocks =3D <&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV=
-(4)>,
-+                     <&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(4=
-)>;
-+            clock-names =3D "fspi_en", "fspi";
-+            #address-cells =3D <1>;
-+            #size-cells =3D <0>;
-+
-+            flash@0 {
-+                compatible =3D "jedec,spi-nor";
-+                spi-max-frequency =3D <50000000>;
-+                reg =3D <0>;
-+                spi-rx-bus-width =3D <8>;
-+                spi-tx-bus-width =3D <8>;
-+            };
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt b/Docum=
-entation/devicetree/bindings/spi/spi-nxp-fspi.txt
-deleted file mode 100644
-index df178d1b62e6..000000000000
---- a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-+++ /dev/null
-@@ -1,43 +0,0 @@
--* NXP Flex Serial Peripheral Interface (FSPI)
--
--Required properties:
--  - compatible : Should be "nxp,lx2160a-fspi"
--			    "nxp,imx8qxp-fspi"
--			    "nxp,imx8mm-fspi"
--			    "nxp,imx8dxl-fspi"
--
--  - reg :        First contains the register location and length,
--                 Second contains the memory mapping address and length
--  - reg-names :  Should contain the resource reg names:
--	         - fspi_base: configuration register address space
--                 - fspi_mmap: memory mapped address space
--  - interrupts : Should contain the interrupt for the device
--
--Required SPI slave node properties:
--  - reg :        There are two buses (A and B) with two chip selects each.
--                 This encodes to which bus and CS the flash is connected:
--                 - <0>: Bus A, CS 0
--                 - <1>: Bus A, CS 1
--                 - <2>: Bus B, CS 0
--                 - <3>: Bus B, CS 1
--
--Example showing the usage of two SPI NOR slave devices on bus A:
--
--fspi0: spi@20c0000 {
--	compatible =3D "nxp,lx2160a-fspi";
--	reg =3D <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0 0x10000000>;
--	reg-names =3D "fspi_base", "fspi_mmap";
--	interrupts =3D <0 25 0x4>; /* Level high type */
--	clocks =3D <&clockgen 4 3>, <&clockgen 4 3>;
--	clock-names =3D "fspi_en", "fspi";
--
--	mt35xu512aba0: flash@0 {
--		reg =3D <0>;
--		....
--	};
--
--	mt35xu512aba1: flash@1 {
--		reg =3D <1>;
--		....
--	};
--};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..8729f7b50945 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12832,7 +12832,7 @@ M:	Ashish Kumar <ashish.kumar@nxp.com>
- R:	Yogesh Gaur <yogeshgaur.83@gmail.com>
- L:	linux-spi@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-+F:	Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
- F:	drivers/spi/spi-nxp-fspi.c
-=20
- NXP FXAS21002C DRIVER
---
-2.25.1
-
+Thanks
+Kishon
