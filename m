@@ -2,97 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4C933383B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12CC333840
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhCJJGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbhCJJGE (ORCPT
+        id S232572AbhCJJHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:07:11 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13490 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232543AbhCJJGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:06:04 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7157DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:06:03 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id f12so22363219wrx.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:06:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=N4vbXKs7ZJbURzN9BaHYH0I2x/dDDM0xoa3qDCuTQqo=;
-        b=E0tggtbIxTWhE0nsjKYhrt9luo08Fu7dmvgy6pT5VOfL4YwxRwArp7itkVIypzv7zM
-         wPlLSy2A2W1XKdI5fnwXtABzJFnd8lyDSABUZcG3UgB5O3d7WWhURQ/ckKFkV/6VW8w6
-         HTSomeWphrGlKOp/VYxIPe2a+U/ni2iGYdxF9Gh7Q8tjT5pSUrpT0UgXEMEqm4dLabqD
-         NUoaESbv1Xg7qyWcxmFUFEdqMg/MVv6EzZ9K4N1wkIjs9Kt8bHAoX9R86Zs42U/fI72b
-         rEtQT9dW8HZCCOhHAG6Lkd4wR4J1s0o4eXfFVHix1rSU3hGRO4OeUr67wuudjq6QCHpj
-         srOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=N4vbXKs7ZJbURzN9BaHYH0I2x/dDDM0xoa3qDCuTQqo=;
-        b=jdveBBqJ54xXcUTiBUCKCwD77qav+iI/oA/FZV3Pty97TD+/sZ4uk+RHt1B2sBhm1k
-         TXTUXw7N/MV6PIwjMn3M70uDMlDIjD2mHisDZa10Q9pEnnxF+0xuJB/Q1h7m+HN3l34J
-         3Dh6OY5Ew57xNzM+xaGdwyVRjP5/seDWCQCJxS3jVSLS+BlOd+wGBDwrlwrWq36r46Pk
-         ADhi3yPKh7TrEtawmXEPAWrYvwEhJFzb8Bh1bxkd5YbRb/nVIU3DohqwebupUNDZFAuw
-         +PFDO6+j9bEKCW1qnf1Q0usJv67BYVxK0QF7NQI4xpJ5PPwmHM4H5hYSoYoj9I/zktyg
-         sBtg==
-X-Gm-Message-State: AOAM532zbLsYGLHJBFcNJ8shM271BB5ibmpoabpgSIsR1fNdJn1/ZM+T
-        EWMahneg9EPqrrRc8Xh9svEey+h8ALIPug==
-X-Google-Smtp-Source: ABdhPJyfbU3j4FXTIzXwazFxh47rBt96RubkMP+WEmnJEr/EeESzflGVfZu8RZd3rGoxoUNH30vJhg==
-X-Received: by 2002:adf:b313:: with SMTP id j19mr2348335wrd.188.1615367162112;
-        Wed, 10 Mar 2021 01:06:02 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id s3sm1950721wmd.21.2021.03.10.01.06.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 01:06:01 -0800 (PST)
-Date:   Wed, 10 Mar 2021 09:05:59 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     'Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Lubomir Rintel <lkundrak@v3.sk>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next RESEND] mfd: ene-kb3930: Make symbol
- 'kb3930_power_off' static
-Message-ID: <20210310090559.GI4931@dell>
-References: <20210308123147.2340998-1-weiyongjun1@huawei.com>
+        Wed, 10 Mar 2021 04:06:52 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DwR3z0FyyzrTKc;
+        Wed, 10 Mar 2021 17:05:03 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 10 Mar 2021 17:06:17 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        Will Deacon <will@kernel.org>
+CC:     Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
+        <yuzenghui@huawei.com>, <lushenming@huawei.com>
+Subject: [PATCH v2 00/11] vfio/iommu_type1: Implement dirty log tracking based on smmuv3 HTTU
+Date:   Wed, 10 Mar 2021 17:06:03 +0800
+Message-ID: <20210310090614.26668-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210308123147.2340998-1-weiyongjun1@huawei.com>
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021, 'Wei Yongjun wrote:
+Hi all,
 
-> From: Wei Yongjun <weiyongjun1@huawei.com>
-> 
-> The sparse tool complains as follows:
-> 
-> drivers/mfd/ene-kb3930.c:36:15: warning:
->  symbol 'kb3930_power_off' was not declared. Should it be static?
-> 
-> This symbol is not used outside of ene-kb3930.c, so this
-> commit marks it static.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> Acked-by: Lubomir Rintel <lkundrak@v3.sk>
+This patch series implement vfio dma dirty log tracking based on smmuv3 HTTU.
 
-This should have been a Reviewed-by.
+changelog:
 
-> ---
->  drivers/mfd/ene-kb3930.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+v2:
+ - Address all comments of RFC version, thanks for all of you ;-)
+ - Add a bugfix that start dirty log for newly added dma ranges and domain.
 
-Applied, thanks.
+Intention：
+
+As we know, vfio live migration is an important and valuable feature, but there
+are still many hurdles to solve, including migration of interrupt, device state,
+DMA dirty log tracking, and etc.
+
+For now, the only dirty log tracking interface is pinning. It has some drawbacks:
+1. Only smart vendor drivers are aware of this.
+2. It's coarse-grained, the pinned-scope is generally bigger than what the device actually access.
+3. It can't track dirty continuously and precisely, vfio populates all pinned-scope as dirty.
+   So it doesn't work well with iteratively dirty log handling.
+
+About SMMU HTTU:
+
+HTTU (Hardware Translation Table Update) is a feature of ARM SMMUv3, it can update
+access flag or/and dirty state of the TTD (Translation Table Descriptor) by hardware.
+With HTTU, stage1 TTD is classified into 3 types:
+                        DBM bit             AP[2](readonly bit)
+1. writable_clean         1                       1
+2. writable_dirty         1                       0
+3. readonly               0                       1
+
+If HTTU_HD (manage dirty state) is enabled, smmu can change TTD from writable_clean to
+writable_dirty. Then software can scan TTD to sync dirty state into dirty bitmap. With
+this feature, we can track the dirty log of DMA continuously and precisely.
+
+About this series:
+
+Patch 1-3: Add feature detection for smmu HTTU and enable HTTU for smmu stage1 mapping.
+           And add feature detection for smmu BBML. We need to split block mapping when
+           start dirty log tracking and merge page mapping when stop dirty log tracking,
+		   which requires break-before-make procedure. But it might cause problems when the
+		   TTD is alive. The I/O streams might not tolerate translation faults. So BBML
+		   should be used.
+
+Patch 4-7: Add four interfaces (start_dirty_log, stop_dirty_log, sync_dirty_log and clear_dirty_log)
+           in IOMMU layer, they are essential to implement dma dirty log tracking for vfio.
+		   We implement these interfaces for arm smmuv3.
+
+Patch   8: Add HWDBM (Hardware Dirty Bit Management) device feature reporting in IOMMU layer.
+
+Patch9-11: Implement a new dirty log tracking method for vfio based on iommu hwdbm. A new
+           ioctl operation named VFIO_DIRTY_LOG_MANUAL_CLEAR is added, which can eliminate
+		   some redundant dirty handling of userspace.
+
+Optimizations TO Do:
+
+1. We recognized that each smmu_domain (a vfio_container may has several smmu_domain) has its
+   own stage1 mapping, and we must scan all these mapping to sync dirty state. We plan to refactor
+   smmu_domain to support more than one smmu in one smmu_domain, then these smmus can share a same
+   stage1 mapping.
+2. We also recognized that scan TTD is a hotspot of performance. Recently, I have implement a
+   SW/HW conbined dirty log tracking at MMU side [1], which can effectively solve this problem.
+   This idea can be applied to smmu side too.
+
+Thanks,
+Keqian
+
+
+[1] https://lore.kernel.org/linux-arm-kernel/20210126124444.27136-1-zhukeqian1@huawei.com/
+
+Jean-Philippe Brucker (1):
+  iommu/arm-smmu-v3: Add support for Hardware Translation Table Update
+
+jiangkunkun (10):
+  iommu/arm-smmu-v3: Enable HTTU for stage1 with io-pgtable mapping
+  iommu/arm-smmu-v3: Add feature detection for BBML
+  iommu/arm-smmu-v3: Split block descriptor when start dirty log
+  iommu/arm-smmu-v3: Merge a span of page when stop dirty log
+  iommu/arm-smmu-v3: Scan leaf TTD to sync hardware dirty log
+  iommu/arm-smmu-v3: Clear dirty log according to bitmap
+  iommu/arm-smmu-v3: Add HWDBM device feature reporting
+  vfio/iommu_type1: Add HWDBM status maintanance
+  vfio/iommu_type1: Optimize dirty bitmap population based on iommu
+    HWDBM
+  vfio/iommu_type1: Add support for manual dirty log clear
+
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |   2 +
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 226 +++++++++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  14 +
+ drivers/iommu/io-pgtable-arm.c                | 392 +++++++++++++++++-
+ drivers/iommu/iommu.c                         | 236 +++++++++++
+ drivers/vfio/vfio_iommu_type1.c               | 270 +++++++++++-
+ include/linux/io-pgtable.h                    |  23 +
+ include/linux/iommu.h                         |  84 ++++
+ include/uapi/linux/vfio.h                     |  28 +-
+ 9 files changed, 1264 insertions(+), 11 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.19.1
+
