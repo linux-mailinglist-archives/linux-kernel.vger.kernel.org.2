@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EAF333496
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031AD33349A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbhCJEyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 23:54:39 -0500
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:32952 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhCJEyS (ORCPT
+        id S232388AbhCJEzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 23:55:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232378AbhCJEyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 23:54:18 -0500
-Received: by mail-ed1-f51.google.com with SMTP id x9so25573976edd.0;
-        Tue, 09 Mar 2021 20:54:17 -0800 (PST)
+        Tue, 9 Mar 2021 23:54:46 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F86EC061763
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 20:54:46 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id r3so23069748lfc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 20:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9nJduy9vJ/gQ9Q5XK6k0XKFhpSnNly3WrZaYD2M0E4M=;
+        b=Qu+1v9uZK4/SCesRdfvdaIGpwyqIYD3wcfpeNPzOcsro1n4BnHpcpIshrnhMWrC297
+         bJ1vLzD8JDObKwC5i3DXxeM1b6ttsMToxGQiVstvyI4EzvPyPEmcgDwImrG7jz35W76R
+         5WBVSyEOuu0OOPuNDEgZJyyPu3wrxis8s+iJK6IxnMnPMM5fQXVmjj6V/BgYVnzhtRt8
+         Q/g3YQRgbR8t6eYYRUcO7tTT4k79FpDfKDxiCqmg614HPZB3FPgXAABs2eXgqEyoOU86
+         3XGRbsqTonKUCL3dh5eUUlW3+4Jvd/Wys5N/s+z3AXteE5qQ0zl+736eu+txVvl14A5E
+         bsGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UR9GHogTuwPfg1420rnBVKlRPMMG6gjYMkZ67S2OdAw=;
-        b=b2rlao6BajEqKnmXf6ySIHEGpHetzcR00i6jLVwqC9RmJz02HkqLJY2h1whFCnuXNR
-         lLyfwsUB6ioWqNTUi0nORSmhTlYfF/Z4LFT433edEXK4FOlOu1PdNNVHQHPMT1WLHtyz
-         oRSSzBER6TZ1++AulAhDjzRoAvtKVYVAsqG6VnjWr26V7gCgEeCHu2nTxKC39Oaukd4r
-         sepR3l1mgI2FyRLnGODcoo9bggBPl5QOC7XdxG7bAGtArjdTcpdTEYggOlbPxir9r/Me
-         UCxLEYB8w6rjULvYUKLvcQMjSluICUD8lcOHr68eg35AMINBGr2dYvt9wSZdwUqYhSGg
-         J+Pw==
-X-Gm-Message-State: AOAM533kj9YeJBypqZ8LZcowhpTmh7MKbv0NS9JRLM43udfEGuauksey
-        uHAGVHRenypm4msPs6Eih2AXCVNLJ9k=
-X-Google-Smtp-Source: ABdhPJxCh6TyyGmaFur42C7mRiPhg6HA/f6AOfNXSKl4jCb3a61y0OMyfuLUh82WqDpOleJwyiGYMg==
-X-Received: by 2002:aa7:d2d5:: with SMTP id k21mr1131656edr.216.1615352056675;
-        Tue, 09 Mar 2021 20:54:16 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id v11sm10016760eds.14.2021.03.09.20.54.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 20:54:15 -0800 (PST)
-Subject: Re: [PATCH] kbuild: dummy-tools: adjust to scripts/cc-version.sh
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Philipp Rudo <prudo@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-References: <20210309162545.637647-1-masahiroy@kernel.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <87f93105-926a-d81b-3226-c5147870d62a@kernel.org>
-Date:   Wed, 10 Mar 2021 05:54:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9nJduy9vJ/gQ9Q5XK6k0XKFhpSnNly3WrZaYD2M0E4M=;
+        b=gPU15o4H8E95iqTGpQ1z8UidYBtw4SpEqffEJom8N9uAnz0W0JLWdfmT7RfJsEHhKx
+         bDa+hMVD3MtVLLFdTHpyuEYRAuA+HY1Zyz1m+T0bsMBXolclKKM7ZadGHksKxXLE8Fk7
+         Vn//xuQWYe9jlNakWlzWjx3vXO/bEi2Kq1Fn8mDysI/CzvAZkZHCz+y5JBG88p1CKqsq
+         q0b7nBmzfC+DWQnWV+DmfBctew90G5AhQ6Vuc6wk+RitxGsgi7M6x8XnOWbm6gzruXvU
+         EWaPbfOR74CJy/rQvjj5ACK88FPtqty6odM10yifM3I4QlA7+hnRRy5dDcO1b2cXEMxZ
+         tGPg==
+X-Gm-Message-State: AOAM533NAGHALwwIQ2gGiZYDP6NsGXsVPFgdkQo0JAums8OnqbViZHPi
+        DP1phhLAnqfiX5f8ewtYLi0saEj/zTtQwnKKcQjGTA==
+X-Google-Smtp-Source: ABdhPJyA+Fk223H+bm0hGNLZN8BH2HdjMZLq6AkSXE9jXyn96FwjiEAycghxLxVYi1VmZdSiSE4xc4Vgs9mOjBPtTQw=
+X-Received: by 2002:ac2:5970:: with SMTP id h16mr901084lfp.108.1615352084389;
+ Tue, 09 Mar 2021 20:54:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210309162545.637647-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210303135500.24673-1-alex.bennee@linaro.org>
+ <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
+ <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
+ <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com> <178479.1615309961@warthog.procyon.org.uk>
+In-Reply-To: <178479.1615309961@warthog.procyon.org.uk>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 10 Mar 2021 10:24:33 +0530
+Message-ID: <CAFA6WYOvszeEBUL6_mhX90zZMFAtGN6f=tBAC7L43ik00Js7=w@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
+To:     David Howells <dhowells@redhat.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@linaro.org>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Ruchika Gupta <ruchika.gupta@linaro.org>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>,
+        Hector Martin <marcan@marcan.st>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09. 03. 21, 17:25, Masahiro Yamada wrote:
-> Commit aec6c60a01d3 ("kbuild: check the minimum compiler version in
-> Kconfig") changed how the script detects the compiler version.
-> 
-> Get 'make CROSS_COMPILE=scripts/dummy-tools/' back working again.
-> 
-> Fixes: aec6c60a01d3 ("kbuild: check the minimum compiler version in Kconfig")
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
-> Perhaps, Jiri may have already noticed this issue, and have a similar patch.
-> I just checked ML, but I did not find a patch to fix this.
+Hi David,
 
-No, as I was making it work on 5.11 :).
+On Tue, 9 Mar 2021 at 22:43, David Howells <dhowells@redhat.com> wrote:
+>
+> Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> > As it seems neither Microsoft nor Apple is paying it much attention
+> > (+/- new facts) it will be up to the community to define use cases
+> > for RPMB. I don't know what would make most sense, but the
+> > kernel keyring seems to make a bit of sense as it is a well maintained
+> > keyring project.
+>
+> I'm afraid I don't know a whole lot about the RPMB.  I've just been and read
+> https://lwn.net/Articles/682276/ about it.
+>
+> What is it you envision the keyring API doing with regard to this?  Being used
+> to represent the key needed to access the RPMB or being used to represent an
+> RPMB entry (does it have entries?)?
+>
 
-BTW there is one remaining issue I came across:
-config PAHOLE_HAS_SPLIT_BTF
-         def_bool $(success, test `$(PAHOLE) --version | sed -E 
-'s/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+I think it's the former one to represent the RPMB key and it looks
+like the trusted and encrypted keys subsystem should be useful here to
+prevent any user-space exposures of the RPMB key.
 
-and in Makefile we see:
-PAHOLE          = pahole
+-Sumit
 
-and not something like:
-PAHOLE          = $(CROSS_COMPILE)pahole
-
-Any idea how to fix this?
-
->   scripts/dummy-tools/gcc | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
-> index 7b10332b23ba..39e65fee59bd 100755
-> --- a/scripts/dummy-tools/gcc
-> +++ b/scripts/dummy-tools/gcc
-> @@ -57,9 +57,9 @@ if arg_contain --version "$@"; then
->   fi
->   
->   if arg_contain -E "$@"; then
-> -	# For scripts/gcc-version.sh; This emulates GCC 20.0.0
-> +	# For scripts/cc-version.sh; This emulates GCC 20.0.0
->   	if arg_contain - "$@"; then
-> -		sed 's/^__GNUC__$/20/; s/^__GNUC_MINOR__$/0/; s/^__GNUC_PATCHLEVEL__$/0/'
-> +		sed -n '/^GCC/{s/__GNUC__/20/; s/__GNUC_MINOR__/0/; s/__GNUC_PATCHLEVEL__/0/; p;}'
->   		exit 0
->   	else
->   		echo "no input files" >&2
-> 
-
-
--- 
-js
-suse labs
+> David
+>
