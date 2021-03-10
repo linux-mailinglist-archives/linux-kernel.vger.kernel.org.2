@@ -2,156 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D1C334162
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F73333416A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbhCJPUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:20:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40300 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233167AbhCJPTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:19:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615389586; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NH84xqLldcd45A2RcbHMMjzdvw5PYH9+xCTWIfl+GaY=;
-        b=rc8GZH6Q5gLGWNm/UPxjOLv7H5GzISHfw+SGj3ByIhEO649bOcHuAaeC3D3Z0KeJ/+1aoq
-        /+Fjp5AAnjJttZzxeKr1wglfWKOpHlYn+l2VuXGYyQVul9yTwL/srioThzMLcbpt7blwIP
-        dnnbfe4gRKTqnfBKi1hyTrR10jJu9d4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 804FDAE3C;
-        Wed, 10 Mar 2021 15:19:46 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 16:19:39 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Subject: Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap pages associated
- with each HugeTLB page
-Message-ID: <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
-References: <20210308102807.59745-1-songmuchun@bytedance.com>
- <20210308102807.59745-5-songmuchun@bytedance.com>
+        id S232026AbhCJPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:24:34 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:45586 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231359AbhCJPYY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:24:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615389863; x=1646925863;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=qhWXpo6sA8wYnJfCpmhhUeKxki99ScpogOsdtuDQEcE=;
+  b=HSdtfbonRUJRgGu+fLKhUFjU0NRWwfOLYYgpWah6RotGpIqg/TqjdlOh
+   DURAejO80bwVfFsEpx4yYf2FjI8VZ+TvuA9TGz2bJVX1h4Cb78+yg3aNL
+   BCG7I7l2vigR811b42Q7cWN0Ds8ptLpYRVtZaXqejResGg3ytAsWmfmNj
+   cqwA5QNvulXLsNyk8vw+6pSolzgU8aaxFSjYVOFidMwlav2WtwqrFpz1G
+   UIP8bVec5jShWTC2q6k36KwiPAZgf9kggQJdo1TGsF4gGb129NonT/rbk
+   PZ/tPs1mTP3JWBAVFFllLQUKOJQlM8wcUTdlV/Jsu8Xtu+qqJSjCf15gT
+   Q==;
+IronPort-SDR: z5a9mHrbjdtSN5C3UNt19sNUfkkeZj2wAtkzrtCzYBCTgD3wENdTyCQa2Tgp3iLqKFwovhNlaR
+ FACx+uy8CBiVokvauiqyI7VgSPqOvCJ3bGBaQLa12cINq3y7zaNBJ1Wmq7eWW8QVqiqXiGVZIc
+ Z7us53e1JSSkokTbBC6DXYlj6oqjb6kGXKeRDrLSfyEU8uFkmuuKpIyYUFeMG1e1m4MzrtHWNN
+ r7FdBnMKidd84fhqE3XgwsGUn5h4u19PCp/HHnrLVlN5a8fgFEcCFXHv99X+uj7Cfsep8H865K
+ lR8=
+X-IronPort-AV: E=Sophos;i="5.81,237,1610434800"; 
+   d="scan'208";a="106651791"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Mar 2021 08:24:23 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 10 Mar 2021 08:24:23 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 10 Mar 2021 08:24:21 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        <stable@vger.kernel.org>,
+        "Sandeep Sheriker Mallikarjun" 
+        <sandeepsheriker.mallikarjun@microchip.com>
+Subject: [PATCH v2] ARM: dts: at91: sam9x60: fix mux-mask to match product's datasheet
+Date:   Wed, 10 Mar 2021 16:20:06 +0100
+Message-ID: <20210310152006.15018-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210308184527.33036-1-nicolas.ferre@microchip.com>
+References: <20210308184527.33036-1-nicolas.ferre@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308102807.59745-5-songmuchun@bytedance.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 08-03-21 18:28:02, Muchun Song wrote:
-[...]
-> -static void update_and_free_page(struct hstate *h, struct page *page)
-> +static int update_and_free_page(struct hstate *h, struct page *page)
-> +	__releases(&hugetlb_lock) __acquires(&hugetlb_lock)
->  {
->  	int i;
->  	struct page *subpage = page;
-> +	int nid = page_to_nid(page);
->  
->  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
-> -		return;
-> +		return 0;
->  
->  	h->nr_huge_pages--;
-> -	h->nr_huge_pages_node[page_to_nid(page)]--;
-> +	h->nr_huge_pages_node[nid]--;
-> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
-> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-> +	set_page_refcounted(page);
-> +	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> +
-> +	/*
-> +	 * If the vmemmap pages associated with the HugeTLB page can be
-> +	 * optimized or the page is gigantic, we might block in
-> +	 * alloc_huge_page_vmemmap() or free_gigantic_page(). In both
-> +	 * cases, drop the hugetlb_lock.
-> +	 */
-> +	if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
-> +		spin_unlock(&hugetlb_lock);
-> +
-> +	if (alloc_huge_page_vmemmap(h, page)) {
-> +		spin_lock(&hugetlb_lock);
-> +		INIT_LIST_HEAD(&page->lru);
-> +		set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
-> +		h->nr_huge_pages++;
-> +		h->nr_huge_pages_node[nid]++;
-> +
-> +		/*
-> +		 * If we cannot allocate vmemmap pages, just refuse to free the
-> +		 * page and put the page back on the hugetlb free list and treat
-> +		 * as a surplus page.
-> +		 */
-> +		h->surplus_huge_pages++;
-> +		h->surplus_huge_pages_node[nid]++;
-> +
-> +		/*
-> +		 * The refcount can possibly be increased by memory-failure or
-> +		 * soft_offline handlers.
+Fix the whole mux-mask table according to datasheet for the sam9x60
+product.  Too much functions for pins were disabled leading to
+misunderstandings when enabling more peripherals or taking this table
+as an example for another board.
+Take advantage of this fix to move the mux-mask in the SoC file where it
+belongs and use lower case letters for hex numbers like everywhere in
+the file.
 
-This comment could be more helpful. I believe you want to say this
-		/*
-		 * HWpoisoning code can increment the reference
-		 * count here. If there is a race then bail out
-		 * the holder of the additional reference count will
-		 * free up the page with put_page.
-> +		 */
-> +		if (likely(put_page_testzero(page))) {
-> +			arch_clear_hugepage_flags(page);
-> +			enqueue_huge_page(h, page);
-> +		}
-> +
-> +		return -ENOMEM;
-> +	}
-> +
->  	for (i = 0; i < pages_per_huge_page(h);
->  	     i++, subpage = mem_map_next(subpage, page, i)) {
->  		subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
-[...]
-> @@ -1447,7 +1486,7 @@ void free_huge_page(struct page *page)
->  	/*
->  	 * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
->  	 */
-> -	if (!in_task()) {
-> +	if (in_atomic()) {
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Fixes: 1e5f532c2737 ("ARM: dts: at91: sam9x60: add device tree for soc and board")
+Cc: <stable@vger.kernel.org> # 5.6+
+Cc: Sandeep Sheriker Mallikarjun <sandeepsheriker.mallikarjun@microchip.com>
+---
+v1 -> v2:
+- move to SoC dtsi file: it applies to all boards using the sam9x60 SoC version
+- use lower case for hex numbers instead of mixed nonsense
 
-As I've said elsewhere in_atomic doesn't work for CONFIG_PREEMPT_COUNT=n.
-We need this change for other reasons and so it would be better to pull
-it out into a separate patch which also makes HUGETLB depend on
-PREEMPT_COUNT.
+ arch/arm/boot/dts/at91-sam9x60ek.dts | 8 --------
+ arch/arm/boot/dts/sam9x60.dtsi       | 9 +++++++++
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
-[...]
-> @@ -1771,8 +1813,12 @@ int dissolve_free_huge_page(struct page *page)
->  		h->free_huge_pages--;
->  		h->free_huge_pages_node[nid]--;
->  		h->max_huge_pages--;
-> -		update_and_free_page(h, head);
-> -		rc = 0;
-> +		rc = update_and_free_page(h, head);
-> +		if (rc) {
-> +			h->surplus_huge_pages--;
-> +			h->surplus_huge_pages_node[nid]--;
-> +			h->max_huge_pages++;
-
-This is quite ugly and confusing. update_and_free_page is careful to do
-the proper counters accounting and now you just override it partially.
-Why cannot we rely on update_and_free_page do the right thing?
-
+diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
+index 4c40ae571154..775ceb3acb6c 100644
+--- a/arch/arm/boot/dts/at91-sam9x60ek.dts
++++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
+@@ -334,14 +334,6 @@ ethernet-phy@0 {
+ };
+ 
+ &pinctrl {
+-	atmel,mux-mask = <
+-			 /*	A	B	C	*/
+-			 0xFFFFFEFF 0xC0E039FF 0xEF00019D	/* pioA */
+-			 0x03FFFFFF 0x02FC7E68 0x00780000	/* pioB */
+-			 0xffffffff 0xF83FFFFF 0xB800F3FC	/* pioC */
+-			 0x003FFFFF 0x003F8000 0x00000000	/* pioD */
+-			 >;
+-
+ 	adc {
+ 		pinctrl_adc_default: adc_default {
+ 			atmel,pins = <AT91_PIOB 15 AT91_PERIPH_A AT91_PINCTRL_NONE>;
+diff --git a/arch/arm/boot/dts/sam9x60.dtsi b/arch/arm/boot/dts/sam9x60.dtsi
+index 84066c1298df..ec45ced3cde6 100644
+--- a/arch/arm/boot/dts/sam9x60.dtsi
++++ b/arch/arm/boot/dts/sam9x60.dtsi
+@@ -606,6 +606,15 @@ pinctrl: pinctrl@fffff400 {
+ 				compatible = "microchip,sam9x60-pinctrl", "atmel,at91sam9x5-pinctrl", "atmel,at91rm9200-pinctrl", "simple-bus";
+ 				ranges = <0xfffff400 0xfffff400 0x800>;
+ 
++				/* mux-mask corresponding to sam9x60 SoC in TFBGA228L package */
++				atmel,mux-mask = <
++						 /*	A	B	C	*/
++						 0xffffffff 0xffe03fff 0xef00019d	/* pioA */
++						 0x03ffffff 0x02fc7e7f 0x00780000	/* pioB */
++						 0xffffffff 0xffffffff 0xf83fffff	/* pioC */
++						 0x003fffff 0x003f8000 0x00000000	/* pioD */
++						 >;
++
+ 				pioA: gpio@fffff400 {
+ 					compatible = "microchip,sam9x60-gpio", "atmel,at91sam9x5-gpio", "atmel,at91rm9200-gpio";
+ 					reg = <0xfffff400 0x200>;
 -- 
-Michal Hocko
-SUSE Labs
+2.30.2
+
