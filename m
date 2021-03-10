@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF08A334C7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E254F334C7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhCJXZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:25:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231478AbhCJXZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:25:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 229F06186A;
-        Wed, 10 Mar 2021 23:25:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615418703;
-        bh=JtSGztaLHp+SDjYjqr5VsKw0N4JxONlTc3ny6BtrX6c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t8VuFMMM4xAspUG35vA0IkSZXV0Yp3136+/3ZW67lRyHZldC7r2sLkXXfu13I/3qE
-         ydfx7UcTRJvS8Y3Zg2o0ZuSNTO8Rgu38vLPy4e4BVLiFSsNGd2w5e4U+41z0oB3+4p
-         Y69jmuVA1QHms81JVkbIGF+xczsWlqzP+YB3jG866kbF6l15EqauV6j/XPAdJXfShe
-         kH15QpqcFVFQrSj1Q84kMtA6Zl5f4ebxHifwUYQI3q8h+r+qW4jKScKCsQB+w7EEoO
-         +Sxle53g8llIN7kJadJGXbsaYhKa0qsqFPiSGvCwgn6E34cDACu608Sv68OHB0Wxn/
-         UPgZq9Mus12gg==
-Date:   Thu, 11 Mar 2021 01:24:39 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mjg59@google.com
-Subject: Re: [PATCH v2 1/3] tpm: efi: Use local variable for calculating
- final log size
-Message-ID: <YElVN0kwMIyeF9gQ@kernel.org>
-References: <20210310221916.356716-1-stefanb@linux.ibm.com>
- <20210310221916.356716-2-stefanb@linux.ibm.com>
- <YElUiIFkyf6txZoV@kernel.org>
+        id S233724AbhCJXZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232933AbhCJXZS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 18:25:18 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25748C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:25:18 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 18so36488227lff.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:25:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MgKseNFFkrrRFclSHj6wbS3S/tiTuRT8S1xZlIqzXlo=;
+        b=IjSkl6wJ2e929mSFyx3S1AYyWJi8WZsF060mBGXt6Rvngu6a9brGEMgy8OQcuKs/i4
+         QYHuH8hDjrhyCURvf340UfFNAKq+RK8VjIAFe3FugcoEAlsXvViQ6pdDHoiYbni6neu6
+         E4CETeLfFF/D7jbdJFYpwerqbqKuUvGHv15Apwy0EgMlUsRvDTmsMMbiB0XiD2cTVKpD
+         BFDbNtwNJp/BJD1okzaEvCGaTbn7P/WfAxpp+wyZCd6qP9aPw2tKjQg60pfFCta0j9Mm
+         rlL8T0YsoMyRZAh4bGwRaKcYYwrCBVZyiBeeN+uZizv5gBuJAZukyTXOE7q/U/xQwavI
+         VBBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MgKseNFFkrrRFclSHj6wbS3S/tiTuRT8S1xZlIqzXlo=;
+        b=VVDNzrjBvw97BnJoDI3TpvuUkX59Jziq/GXM7/pbM6pnfDlS56ApA+CfPwE1Lr4ZoJ
+         /d9grwaNiaepe6JinYXAsqC9wj6ylZ09GFyG05o6uBlDwrSS6DJKuTmvYj27oK8wS3qG
+         krNt6o7vGAc9wG5r9VvRSbDpatjqPF76aSt2UEHkF6heCDurqOMsndi1qHimW28AZn4H
+         ITzDZlRMe2GsOSgCp3Zbh0Ao/JwL/EPbQgwGOHA9njUnGQchFNxSFqmg1od4YFTee4NR
+         05ZEOsW23kEp6FlW3FeqmHP5M+0KQDVSrQ9TNwS0j7b4lZ6NXixjlpByGIHZpL/9XlEW
+         Queg==
+X-Gm-Message-State: AOAM530q47IlVFSP6aNkmMAhD7mu2eoEL8LdUFW7aXpzvNRj4rHOc0BE
+        04pTDHkhb68TxtY69Nq6CwuK0WbOhrIUVzxRY6Q7JA==
+X-Google-Smtp-Source: ABdhPJwGk6XtIb3w/iX57ttUl7E3k4dv+R8ze9Q1sAcTvGDDr2Xt4Qko01grmgJD8rFH0mJ9Oh66fDhzHwkgI2//SbY=
+X-Received: by 2002:a05:6512:243:: with SMTP id b3mr514695lfo.529.1615418716717;
+ Wed, 10 Mar 2021 15:25:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YElUiIFkyf6txZoV@kernel.org>
+References: <20210115224420.1635017-1-dianders@chromium.org>
+In-Reply-To: <20210115224420.1635017-1-dianders@chromium.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Mar 2021 00:25:06 +0100
+Message-ID: <CACRpkdYUs2W3b_u8YrmYwq_kcUCf0DhZ-o2o6O2EmU5rdtv=BA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] drm/panel-simple: Patches for N116BCA-EA1
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 01:21:47AM +0200, Jarkko Sakkinen wrote:
-> On Wed, Mar 10, 2021 at 05:19:14PM -0500, Stefan Berger wrote:
-> > When tpm_read_log_efi is called multiple times, which happens when
-> > one loads and unloads a TPM2 driver multiple times, then the global
-> > variable efi_tpm_final_log_size will at some point become a negative
-> > number due to the subtraction of final_events_preboot_size occurring
-> > each time. Use a local variable to avoid this integer underflow.
-> > 
-> > The following issue is now resolved:
-> > 
-> > Mar  8 15:35:12 hibinst kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-> > Mar  8 15:35:12 hibinst kernel: Workqueue: tpm-vtpm vtpm_proxy_work [tpm_vtpm_proxy]
-> > Mar  8 15:35:12 hibinst kernel: RIP: 0010:__memcpy+0x12/0x20
-> > Mar  8 15:35:12 hibinst kernel: Code: 00 b8 01 00 00 00 85 d2 74 0a c7 05 44 7b ef 00 0f 00 00 00 c3 cc cc cc 66 66 90 66 90 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4
-> > Mar  8 15:35:12 hibinst kernel: RSP: 0018:ffff9ac4c0fcfde0 EFLAGS: 00010206
-> > Mar  8 15:35:12 hibinst kernel: RAX: ffff88f878cefed5 RBX: ffff88f878ce9000 RCX: 1ffffffffffffe0f
-> > Mar  8 15:35:12 hibinst kernel: RDX: 0000000000000003 RSI: ffff9ac4c003bff9 RDI: ffff88f878cf0e4d
-> > Mar  8 15:35:12 hibinst kernel: RBP: ffff9ac4c003b000 R08: 0000000000001000 R09: 000000007e9d6073
-> > Mar  8 15:35:12 hibinst kernel: R10: ffff9ac4c003b000 R11: ffff88f879ad3500 R12: 0000000000000ed5
-> > Mar  8 15:35:12 hibinst kernel: R13: ffff88f878ce9760 R14: 0000000000000002 R15: ffff88f77de7f018
-> > Mar  8 15:35:12 hibinst kernel: FS:  0000000000000000(0000) GS:ffff88f87bd00000(0000) knlGS:0000000000000000
-> > Mar  8 15:35:12 hibinst kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > Mar  8 15:35:12 hibinst kernel: CR2: ffff9ac4c003c000 CR3: 00000001785a6004 CR4: 0000000000060ee0
-> > Mar  8 15:35:12 hibinst kernel: Call Trace:
-> > Mar  8 15:35:12 hibinst kernel: tpm_read_log_efi+0x152/0x1a7
-> > Mar  8 15:35:12 hibinst kernel: tpm_bios_log_setup+0xc8/0x1c0
-> > Mar  8 15:35:12 hibinst kernel: tpm_chip_register+0x8f/0x260
-> > Mar  8 15:35:12 hibinst kernel: vtpm_proxy_work+0x16/0x60 [tpm_vtpm_proxy]
-> > Mar  8 15:35:12 hibinst kernel: process_one_work+0x1b4/0x370
-> > Mar  8 15:35:12 hibinst kernel: worker_thread+0x53/0x3e0
-> > Mar  8 15:35:12 hibinst kernel: ? process_one_work+0x370/0x370
-> > 
-> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> 
-> Fixes tag for this one? 
+On Fri, Jan 15, 2021 at 11:44 PM Douglas Anderson <dianders@chromium.org> wrote:
 
-Or just sanity check, I think it is:
+> - ("drm/panel-simple: Don't wait longer for HPD...") new for v2.
+> - ("drm/panel-simple: Retry if we timeout waiting for HPD") new for v2.
 
-Fixes: 166a2809d65b ("tpm: Don't duplicate events from the final event log in the TCG2 log")
+I couldn't find these patches in my inbox but my concern would
+be that at some point panel-simple will turn from simple into
+panel-rube-goldberg-machine.
 
-Also, I guess all of the patches ought to have stable cc, right?
+Given that the talk with the manufacturer may result
+in even more quirks... maybe this should just be a separate
+panel driver?
 
-/Jarkko
+(I expect pushback because I see how handy it is, but
+I am the guy writing new panel drivers all the time rather than
+using simple.)
+
+Yours,
+Linus Walleij
