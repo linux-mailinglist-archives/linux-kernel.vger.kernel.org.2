@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD3A334287
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FA333429B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbhCJQJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:09:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231816AbhCJQI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:08:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C12CD64F02;
-        Wed, 10 Mar 2021 16:08:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615392538;
-        bh=Ow/CgKkE/PJ+8hOp5NJf/Xonmpc0AENmeHEZXVudxf8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BKH2QpYz/iP8qF4/rkQqvys4jBM6BxAGJysnaKXo8lmUsnSK7uyPr+2oly22VsfXf
-         sTmX89b+PEG5mIhoK/teQ+B/7kXkpnIbtKBpCjXyi5D+glZJ1ICrsmnKay77Pok94X
-         59+TPSm6iR690cu4LdhGZlGTPpUrRXXc4deVotJJoDecdoD8GtWd6mRyYyJjXYbKhR
-         yi+x3K/8fG33ETPhz8wyhQl4BcLOgIQW/Tg3dSSoHPVqank7rfemmJNd7hd31To1bl
-         G4mbfALiB+wOS149g0vQea40h0E0ipcsOKXO6d9HrVcvauSCe1ssCEc7uWzAuAMaif
-         D9IoQDr4iP7CQ==
-Date:   Wed, 10 Mar 2021 17:08:51 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] i2c: i2c-scmi: Drop unused ACPI_MODULE_NAME definition
-Message-ID: <20210310160851.GA331077@ninjato>
-References: <6660750.UgobAMfxrE@kreacher>
- <CAJZ5v0gCobMbDGt80exScjpGgjnbo+5kMtB6qsx1wfOf6QyiJQ@mail.gmail.com>
+        id S233263AbhCJQLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:11:00 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:51386 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233214AbhCJQKe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:10:34 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12AG9x4b127769;
+        Wed, 10 Mar 2021 10:09:59 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615392599;
+        bh=Uaw2AhSFxM9oBV3jzN5LoozupiwUAtWEp62rFJomdbs=;
+        h=From:To:CC:Subject:Date;
+        b=edKji/Ypjl6R/GH86U7ToJnG27nz5QAOc8ejtMGf6CqAdPPGuMUEemeGoBPiXDJFN
+         Iryf70ViYg3/+pQ/R+lEpZgd5IWLGoGnxfZNTKpWgWI/hesV4MqwWcuW2ZLJo0CvzU
+         0ItSAh9rZOHGCoQG6YpQUYDocrSSeF36asJLCuY4=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12AG9x0F003935
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Mar 2021 10:09:59 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
+ Mar 2021 10:09:59 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 10 Mar 2021 10:09:59 -0600
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12AG9qkr100440;
+        Wed, 10 Mar 2021 10:09:52 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Nadeem Athani <nadeem@cadence.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH v4 0/7] Add SR-IOV support in PCIe Endpoint Core
+Date:   Wed, 10 Mar 2021 21:39:36 +0530
+Message-ID: <20210310160943.7606-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gCobMbDGt80exScjpGgjnbo+5kMtB6qsx1wfOf6QyiJQ@mail.gmail.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Patch series
+*) Adds support to add virtual functions to enable endpoint controller
+   which supports SR-IOV capability
+*) Add support in Cadence endpoint driver to configure virtual functions
+*) Enable pci_endpoint_test driver to create pci_device for virtual
+   functions
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v1 of the patch series can be found at [1]
+v2 of the patch series can be found at [2]
+v3 of the patch series can be found at [3]
 
-On Wed, Mar 10, 2021 at 03:47:10PM +0100, Rafael J. Wysocki wrote:
-> On Fri, Mar 5, 2021 at 7:29 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrot=
-e:
-> >
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > The ACPI_MODULE_NAME() definition is only used by the message
-> > printing macros from ACPICA that are not used by the code in
-> > question, so it is redundant.  Drop it.
-> >
-> > No functional impact.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->=20
-> If there are no concerns regarding this, I'll queue it up for 5.13 in
-> the ACPI tree, thanks!
+Here both physical functions and virtual functions use the same
+pci_endpoint_test driver and existing pcitest utility can be used
+to test virtual functions as well.
 
-I'd prefer the I2C tree a tad to avoid conflicts. Any reason for the
-ACPI tree?
+Changes from v3:
+*) Fixed Rob's comment and added his Reviewed-by as suggested by him.
 
+Changes from v2:
+*) Fixed DT binding documentation comment by Rob
+*) Fixed the error check in pci-epc-core.c
 
---HcAYCG3uE/tztfnV
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes from v1:
+*) Re-based and Re-worked to latest kernel 5.10.0-rc2+ (now has generic
+   binding for EP)
 
------BEGIN PGP SIGNATURE-----
+[1] -> http://lore.kernel.org/r/20191231113534.30405-1-kishon@ti.com
+[2] -> http://lore.kernel.org/r/20201112175358.2653-1-kishon@ti.com
+[3] -> https://lore.kernel.org/r/20210305050410.9201-1-kishon@ti.com
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBI7w8ACgkQFA3kzBSg
-Kba+gQ/7B6Ia7moxCI0lBWcGBWMpcnSzTXJIZtoonghrWryWNJTlJ7yYyVzJKPDz
-ddelDKPX2dtiKquTZwWRq/21aJL0PSt3sPb7LnI1ykcy/Ipe2Nbgj2OhviRuJqtb
-nX++egBWiyqC4qySeSmVdSnyIXo+F7L2elNs6AbCZLKeWjzT5gFo7HpzMnsrNMyO
-j3dXCecCq/DCrZan2jHUAkplbW3V+OBPLQ90HE8R02U692LN2cP2nvGmr++01pnh
-OeFt4pJkguT2BV0S4Je2FiprNBMDkurwSVlrYdrbroJdZNsGd0CRFvQuloO//BGq
-lA+tQUZ35/vSs7QsbGjXGJRQWf8pUmAOwBPyBtEQMI7pJ33OK9sPG5uShVtAL9Zn
-EMA9y8/aS0Q6kjP1jqwMzEa7W4shVhgK4ExjtWSO8Fku94IRnH5eBd0qYI0U5ELZ
-lpfPigQTLnxduq/hC6Q0skx1kj4SRVAYT3dS6Dy+575sXuV7dE1HGGmkZuq/tmH2
-n+bYvTsaJT2dE/J0AST9JCw0FvwziPsIB5nesc8cL9eGP+PXM3jdE87fS5vaJ8Mb
-qk1ZCOCocNeqHPbkZOD+6VxA0ge3blRvo9GBF2R9SLyFQS7OzubMuNJTSOJ/VHf1
-SEuymiMXzjCq9yGz82cYwSQXNV2DrtsfvUiDkGYlCdI2Z9OBlRo=
-=5s3T
------END PGP SIGNATURE-----
+Kishon Vijay Abraham I (7):
+  dt-bindings: PCI: pci-ep: Add binding to specify virtual function
+  PCI: endpoint: Add support to add virtual function in endpoint core
+  PCI: endpoint: Add support to link a physical function to a virtual
+    function
+  PCI: endpoint: Add virtual function number in pci_epc ops
+  PCI: cadence: Add support to configure virtual functions
+  misc: pci_endpoint_test: Populate sriov_configure ops to configure
+    SR-IOV device
+  Documentation: PCI: endpoint/pci-endpoint-cfs: Guide to use SR-IOV
 
---HcAYCG3uE/tztfnV--
+ .../PCI/endpoint/pci-endpoint-cfs.rst         |  12 +-
+ .../devicetree/bindings/pci/pci-ep.yaml       |   7 +
+ drivers/misc/pci_endpoint_test.c              |   1 +
+ .../pci/controller/cadence/pcie-cadence-ep.c  | 251 +++++++++++++++---
+ drivers/pci/controller/cadence/pcie-cadence.h |   7 +
+ .../pci/controller/dwc/pcie-designware-ep.c   |  36 +--
+ drivers/pci/controller/pcie-rcar-ep.c         |  19 +-
+ drivers/pci/controller/pcie-rockchip-ep.c     |  18 +-
+ drivers/pci/endpoint/functions/pci-epf-ntb.c  |  79 +++---
+ drivers/pci/endpoint/functions/pci-epf-test.c |  66 +++--
+ drivers/pci/endpoint/pci-ep-cfs.c             |  24 ++
+ drivers/pci/endpoint/pci-epc-core.c           | 130 ++++++---
+ drivers/pci/endpoint/pci-epf-core.c           | 144 +++++++++-
+ include/linux/pci-epc.h                       |  57 ++--
+ include/linux/pci-epf.h                       |  16 +-
+ 15 files changed, 664 insertions(+), 203 deletions(-)
+
+-- 
+2.17.1
+
