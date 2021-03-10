@@ -2,75 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C59E333940
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4657E333943
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhCJJww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:52:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60550 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232292AbhCJJwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:52:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615369943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BzpWVQgMrjdLxjzqjLNOJBINgLByL8FbMn1TCm9MLpU=;
-        b=uNVIyVuu1EaOJBxUk/vvyC9SQJqBYq8n5Q4IYKCX/29tT8VWk0KekZAnzqVhHpQFDf+/ae
-        iLmYr86ilvyT67s4mahVc/Cz7An3vqdQWQE30aWbSJCYuyI74IzkMt03p5F9gN90PCMT5a
-        1tjIL7aSVtwdJjvt73GrwMsChVOsPBc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CF3E0AE42;
-        Wed, 10 Mar 2021 09:52:23 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 10:52:23 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: linux-next: Tree for Mar 10 (lib/test_printf.c)
-Message-ID: <YEiW12IkiVothTb2@alley>
-References: <20210310150217.046fef19@canb.auug.org.au>
- <62857b03-c12c-6841-72ae-d94f00a3a868@infradead.org>
+        id S231738AbhCJJyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:54:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230466AbhCJJxi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 04:53:38 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26179C06174A;
+        Wed, 10 Mar 2021 01:53:38 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id i9so6703062wml.0;
+        Wed, 10 Mar 2021 01:53:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=w0U5hMkEPQ0LdddaxPHYRwfwYDqIwqmZHfEAmO3vAk0=;
+        b=SQmG6rWy2UTs1WF3luS2hAQ8gUh+sUo41HkJR3rjIVkAkhZSm2gOT771VWhgzFAcyn
+         mNK5u43j8ljmeUbzzudDTuQ9s8YcQ89XfmMW+HoGq8/dMBxCKGmDnhk+l5dz1bt6tk1j
+         mgPj4MnEWS5ET8JZQ2vH4f1Pc/sTjK6Wj9pEmp+6JJlKJa9kMeQek0fCDNIOypF9MSQl
+         5y73dv3hysZ5X2rvKzg3BsRjdYttn3IocscTFLKuZPJ/1os/rnMix8pl1gDKZNbIY8Z5
+         fwtbFlPgnMhl1DsMlFLSu63XrGkaepC6O/yVjLGuWbfH4uv4gOYx4LdPXFmi5jAeZwoG
+         +uzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=w0U5hMkEPQ0LdddaxPHYRwfwYDqIwqmZHfEAmO3vAk0=;
+        b=KNGxMzxLFEbzdSuJrz8eL+c96MyK+yKdemaHmGofxfEndR3JgKI56C/hu0F7iowFPd
+         cH+R0nLiRcO7w6QgXLjRtA0uOmJ5mhUc5p61CpXxvpUCnQgehJPBKxR4MPkEROBLXM2u
+         damM8rb40Qv5outRaWbhnzIc2GXZhsFolKS7C97u14ycz5cBlee/YAB0YAUXzeoeHmNE
+         2aAb+jgvla0Wor5csO4GcuWQ7KKbYKWf045Nn27xLjRPCrInisne83gib1r2YOYIorJO
+         MxNb2EZaoz6TvkyZaaj/aKt1hucj0ppsLAeySZqN6cEv6WciB16mg0Moufa7gb0jeBDq
+         1bvA==
+X-Gm-Message-State: AOAM531hDYh84Ze8SE/c0MiQJb6PWgPWfq6RDMlKmoIwsoXGXZPZAnqY
+        9PY49KJ5fyKOmsBoQviAFOA1y7tMx70=
+X-Google-Smtp-Source: ABdhPJypGyz5Hhbmt6VvpOmx/6LZfrs61H+giJS+ne1VO5WxE4zCe7/mJAKu/zOfWbMlnhjIttpLTA==
+X-Received: by 2002:a1c:2b05:: with SMTP id r5mr2428301wmr.179.1615370016851;
+        Wed, 10 Mar 2021 01:53:36 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id l4sm21933661wrt.60.2021.03.10.01.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 01:53:36 -0800 (PST)
+Date:   Wed, 10 Mar 2021 10:53:34 +0100
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: rtc: rtc-m48t59: rtc-m48t59.0: IRQ index 0 not found
+Message-ID: <YEiXHjIrXfjkrv5U@Red>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <62857b03-c12c-6841-72ae-d94f00a3a868@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-03-09 21:57:48, Randy Dunlap wrote:
-> On 3/9/21 8:02 PM, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> 
-> on i386 (at least):
-> 
-> ../lib/test_printf.c: In function 'page_flags_test':
-> ../lib/test_printf.c:595:17: error: 'sec' undeclared (first use in this function); did you mean 'sem'?
->   page_flags |= (sec & SECTIONS_MASK) << SECTIONS_PGSHIFT;
->                  ^~~
-> 
-> 
-> Should that be 'section'?
+Hello
 
-Yup, it looks like.
+On my SPARC sunblade 100, I got this:
+[   13.613727] rtc-m48t59 rtc-m48t59.0: IRQ index 0 not found
+[   13.805777] rtc-m48t59 rtc-m48t59.0: registered as rtc0
+[   14.385092] rtc-m48t59 rtc-m48t59.0: setting system clock to 2021-03-01T05:34:33 UTC (1614576873)
 
-There seems to be one more problem found by the test robot:
+The IRQ index 0 message is found after 5.5
 
-   lib/test_printf.c:595:17: note: each undeclared identifier is reported only once for each function it appears in
->> lib/test_printf.c:612:17: error: 'tag' undeclared (first use in this function)
-     612 |  page_flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
+Testing rtc via hwclock give:
+hwclock: ioctl(3, RTC_UIE_ON, 0) to /dev/rtc0 failed: Input/output error
+But this hwclock behavior is present also on earlier kernel (tested 4.9.260, 4.19.179 and 4.14.224).
 
+Does this Input/output error is normal ? (I think no)
 
-Yafang is going to send a fix. I have temporary removed the
-problematic patch from printk/linux.git, for-next branch.
-
-I am sorry for the troubles. Anyway, it is great that linux-next
-and all the test robots are around.
-
-Best Regards,
-Petr
+Regards
