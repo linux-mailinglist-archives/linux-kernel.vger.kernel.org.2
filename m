@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9061334C3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0882334C42
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhCJXKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
+        id S231919AbhCJXMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhCJXK3 (ORCPT
+        with ESMTP id S232127AbhCJXLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:10:29 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4D0C061574;
-        Wed, 10 Mar 2021 15:10:29 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id p7so30833969eju.6;
-        Wed, 10 Mar 2021 15:10:29 -0800 (PST)
+        Wed, 10 Mar 2021 18:11:35 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1708C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:11:34 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id e2so27847709ljo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:11:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+Y9MjRts8tJjHgCUb2Iq9KHOIcaGo0V2pW4Fp5XYQq0=;
-        b=t5WCXHDCAqWoOY8vvWjS/p98fmmrH0F+h6H5pURHoN8BEnzWfMl2aouEntq+FPFgI9
-         GDAzlnWeW+3+Ghn6KfC1qbH0xHIAJVanWaGJPS+mfIhc9LA0KDmrNf0JmmS6JkAIXfTn
-         /t+WKh1rgyDH/B0i4ehnaSTcLCxwlMf5TJNzPTY1W9s6J8jKgqKnU1CO3EwrJCdAJ4Vz
-         49HDZntyJHHxlg4EH4m3n64MwXfiEkj09hIU+Bc0shA3TiMMVeIqzid6HY0euxrBoNh/
-         5AcPlr1Ind4FFNh18T3wydqCHQcGlNoQWz5jwUYVMeWaY0xm6cjGMNJVoEf3n0ZNwu9C
-         fyIg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fsUvZGKYC5fgx4oei9Q5/ic2uEIxVNyjDNMh2AgyO6I=;
+        b=YFJ7SMDaL74sPgY4t2M2TveLoai2GpxFH7T+w02cY0yAPfz4d7STzMXwN2LMQ2iEoZ
+         AC3wFDsX/B+jYJXVNzs+y4D9tGf/wEA3njzRA4m7PPgqfVi486jFs5jC4rjhpItvLjMl
+         feX0SL4sSjFQxxMpaHtUG3m/yP5ZsWGY2bHZ1JzjeRWLuH3LgTM/weeATOW14t4za+lM
+         0oejehpKlmlwaemoSaXKHgvkv/wgRR/MCed4z76h2TRaPLDfBO1rpazJRuqEpn9HXUuZ
+         gZsRlyCIDNbKHWfuIFLOxVswPmSPuq2apnjiVRCSHJ7mbVzB2AtDRB2jPCfVazu7Yozu
+         i7/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+Y9MjRts8tJjHgCUb2Iq9KHOIcaGo0V2pW4Fp5XYQq0=;
-        b=LDw5/a3wro/0WSaiAKTJw6gCO1BvotWfl90unpxHjXClA4K8q4qiX4hdhATofd3erA
-         G86ocpkpR8CDGu5YHNd9bk/sYphH+aCfLwBwK6GlpYRax5Rcpm6OrmtzQIPXb32mXmRT
-         eiQB/9DDpUEK94Rg0dNGPTAunnrtJWIYqrx/tBhLCrOXOd4+C7WI6E3tUm14UT7QmTwT
-         F/x1x9rtP/RG/cc3Hoxc66HrWXar+Cd10RYV2Ot6WalRMcPWz6gL5mgjcCaI6/prIzqR
-         FQ+F3/84tufkOS6/vKBRpUOHxOjSJ3AWP/GEar6eVBdDc2uFl2v+i3U4/w0OtHedz4oR
-         g85A==
-X-Gm-Message-State: AOAM5326ejaCWizyM4sUEJqnFRwWWoJyf7k4Y53Yp1jndNdn4s8WxOnE
-        DQyH+n2gploToN2EYkF1MXo=
-X-Google-Smtp-Source: ABdhPJzpCw/su5dc23eER+GYr7msTlNS7+5Mn+Zm9/S1spB5ac9PVKV85UZGOsHF3uMOZxcT9C+f7A==
-X-Received: by 2002:a17:906:95d1:: with SMTP id n17mr242829ejy.394.1615417828283;
-        Wed, 10 Mar 2021 15:10:28 -0800 (PST)
-Received: from skbuf ([188.25.219.167])
-        by smtp.gmail.com with ESMTPSA id gq25sm387319ejb.85.2021.03.10.15.10.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 15:10:27 -0800 (PST)
-Date:   Thu, 11 Mar 2021 01:10:26 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] net: dsa: mt7530: setup core clock even in TRGMII
- mode
-Message-ID: <20210310231026.lhxakeldngkr7prm@skbuf>
-References: <20210310211420.649985-1-ilya.lipnitskiy@gmail.com>
- <20210310211420.649985-3-ilya.lipnitskiy@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fsUvZGKYC5fgx4oei9Q5/ic2uEIxVNyjDNMh2AgyO6I=;
+        b=ZQZLpe8uUOQgti0ssgRmSCNJvJQ9jQq4D0TDjy4lhBGzBVAtraHCyb6g0C5piBpTTE
+         t6+QfBF/y1DqfBXcUbUfQKl2i0/RFsv341ZPpbvZQ+l55jRMWU4I8OYaCd0DHUB9ZOtj
+         6sBaX06EctV0fio8ZrjrczLH8FdqrJrgFTTIaMXNORAoZqD+bRoU3/lsLcNF99qyEOZw
+         6uetviQDvpsyG/nxi9hgTwP9kVFBcg2NwECjfDK5v3gSVJr9pWAwzg2DXSgJ/YfXjONK
+         WTzGOP+jESXJNvoi+SoNSg9ghgP2yJMgNsEH0MxuRu2X8BrQsY45MTLWJ0GyafuXoqr3
+         8OqA==
+X-Gm-Message-State: AOAM530+jJJ/tP4TXD/1NW8OXaqkqohdIG2onG3PfW/0rkrV2dUZ0X7u
+        ryw6g5lO67PImSIC92yOiW3jQI1s3rndgvSR3CNdUA==
+X-Google-Smtp-Source: ABdhPJzmo5G8NylnSmgEyDfdbat9eWDptGx3+8/H3Ywrq5Z5I67GtCUd0mY3fRoJZXOwQZI5bSexUvc4wSg5BOhWX4M=
+X-Received: by 2002:a2e:7001:: with SMTP id l1mr3125411ljc.200.1615417892988;
+ Wed, 10 Mar 2021 15:11:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310211420.649985-3-ilya.lipnitskiy@gmail.com>
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-26-marcan@marcan.st>
+In-Reply-To: <20210304213902.83903-26-marcan@marcan.st>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Mar 2021 00:11:22 +0100
+Message-ID: <CACRpkdZrFfP3nx=eU-hKKVUfxHHX2J2-__6tjV8hTPgX3qtBDA@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 25/27] tty: serial: samsung_tty: Add earlycon
+ support for Apple UARTs
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Ilya,
+On Thu, Mar 4, 2021 at 10:42 PM Hector Martin <marcan@marcan.st> wrote:
 
-On Wed, Mar 10, 2021 at 01:14:20PM -0800, Ilya Lipnitskiy wrote:
-> 3f9ef7785a9c ("MIPS: ralink: manage low reset lines") made it so mt7530
-> actually resets the switch on platforms such as mt7621 (where bit 2 is
-> the reset line for the switch). That exposed an issue where the switch
-> would not function properly in TRGMII mode after a reset.
+> Earlycon support is identical to S3C2410, but Apple SoCs also need
+> MMIO mapped as nGnRnE. This is handled generically for normal drivers
+> including the normal UART path here, but earlycon uses fixmap and
+> runs before that scaffolding is ready.
 >
-> Reconfigure core clock in TRGMII mode to fix the issue.
+> Since this is the only case where we need this fix, it makes more
+> sense to do it here in the UART driver instead of introducing a
+> whole fdt nonposted-mmio resolver just for earlycon/fixmap.
 >
-> Also, disable both core and TRGMII Tx clocks prior to reconfiguring.
-> Previously, only the core clock was disabled, but not TRGMII Tx clock.
->
-> Tested on Ubiquity ER-X (MT7621) with TRGMII mode enabled.
->
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> ---
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 
-For the networking subsystem there are two git trees, "net" for bugfixes
-and "net-next" for new features, and we specify the target tree using
-git send-email --subject-prefix="PATCH net-next".
+This is as elegant as it gets!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-I assume you would like the v5.12 kernel to actually be functional on
-the Ubiquiti ER-X switch, so I would recommend keeping this patch
-minimal and splitting it out from the current series, and targeting it
-towards the "net" tree, which will eventually get merged into one of the
-v5.12 rc's and then into the final version. The other patches won't go
-into v5.12 but into v5.13, hence the "next" name.
-
-Also add these lines in your .gitconfig:
-
-[core]
-	abbrev = 12
-[pretty]
-	fixes = Fixes: %h (\"%s\")
-
-and run:
-
-git show 3f9ef7785a9c --pretty=fixes
-Fixes: 3f9ef7785a9c ("MIPS: ralink: manage low reset lines")
-
-and paste that "Fixes:" line in the commit message, right above your
-Signed-off-by: tag.
+Yours,
+Linus Walleij
