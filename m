@@ -2,74 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2D73349F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F13F13349F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhCJVlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:41:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231911AbhCJVlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:41:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77CDE64FC4;
-        Wed, 10 Mar 2021 21:41:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615412497;
-        bh=7L66YLf+ed4bmAJ64a+z2Rfb2jejvrDUJlt5flDQSzc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WeHJlZUUXjhMzB0/88zdlqbvsiS1W0n+3Ir0GWVoZi3fNsOyyoW1K3k/zkXzce+2B
-         kupH6bNM25jf4p0/6AONLd4Tb60fLXSIGH33Vu77s5EbxeT2gKCEAln9hjc+ckfsCI
-         EF1Tzwn+e/C5pQ3AF/jHVKyi6+lO2sGXakUAZ1LYm1Q96gRIJcKo6IY/xtNOTaiGb1
-         VGTre1rlahv2JZ25OXfgztv0cnsflZLbrpm0pCjPgOWdAMddR4+lNMBxZaQXfsGE2Z
-         AoSAT0O1ZMxAC9jtlOQ0QSs+QMDopV7VanzXKNotQ+W7ezAKH+528KIWoQR4cIEZC3
-         R7xW0yDIFDmBQ==
-Date:   Wed, 10 Mar 2021 23:41:12 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v11 01/10] oid_registry: Add OIDs for ECDSA with
- sha224/256/384/512
-Message-ID: <YEk8+OwwVJbXIb9+@kernel.org>
-References: <20210305205956.3594375-1-stefanb@linux.vnet.ibm.com>
- <20210305205956.3594375-2-stefanb@linux.vnet.ibm.com>
- <YEjnPZOVit+U9YcG@kernel.org>
- <b2672c92-ddf5-51ba-bb4c-f3aadee26daf@linux.ibm.com>
+        id S232114AbhCJVmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:42:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231994AbhCJVlu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:41:50 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613BEC061574;
+        Wed, 10 Mar 2021 13:41:50 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id bd6so30314604edb.10;
+        Wed, 10 Mar 2021 13:41:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o/qwFAyd2t4eeQ5y/zr+yw6AQn6TtGLfgsf4qZGMOj0=;
+        b=IuZNGPtOkpq7xi8mg/JCqVEioZf5VKLjRUeEhu6DPobVhI9+q7izx2xlVN0mQCzaL8
+         HQMk2lWBA/qp+IBC9BQV3Nzc/VH4aRN09q834QPs1M5nhmy6fViT35JVuBYlXot5I5b7
+         YcwNUonY3kXQfEytf/YWjq0d+Zi3bNMUJ5+6I2HdGfT4sJxdDqL8UzhYJyAAvAcEk0aD
+         rq7ARSvWXJ/2EgAja08AVrkvvdAlik6f4IeHG7WW8aKALJ/9wUZGfyD3x4MGLNjEk3dm
+         abY4MdlSFEZLPt8XSUGrFAk5uOvlHsT5rp0Q2drj+3u+ewgeCkbiciBvAoOzl3K+xACW
+         wS1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o/qwFAyd2t4eeQ5y/zr+yw6AQn6TtGLfgsf4qZGMOj0=;
+        b=GUTNBQdVKC0h0ZNCYD6S5w2Ob/KoFlWWL695cWuu7YDAen2bQaT5yUx1uGlAzu/kzE
+         zZntzQOQzspCbX2Rw5qQlMAffp2NEfRy3ArEhrh9bmgUn4rvw9O3jlYcqKLGBd4ciL8H
+         wJbU01W6m3sW57xIgSCFl/SH9TB52BWm7N0vPL12ijd5t6MKzctDmChg4y1BNV8qoIeV
+         e+cjbZRbNVDhAftYjAC6olAof0nC75m7QvUPIRPMCx4FBYSNqO9RUWu7qvUA3Njo//nv
+         xjfpZhlCaoX1tH3pF6dStLy8HIgVB0JyJEQmpWTyI5Uc3dl51UzHGh8ktbWY8mu8NjYb
+         RwFA==
+X-Gm-Message-State: AOAM532ccPefVcX1Y0UyxzaVfgPi69AoGPhwqKDS4ois8wy5agkybjCa
+        03LmRPEZ+JJqg/FIJyd1FPVEjczh7vP/qym6X54=
+X-Google-Smtp-Source: ABdhPJywjTf6nT0poSBOpWK3Efk08tHVcrEHEq/GIItbAKb6sm9RkAFzPMqFnGoKno2pW+PgllbEO8q516idS5NzHK0=
+X-Received: by 2002:a50:ef11:: with SMTP id m17mr5428269eds.151.1615412509105;
+ Wed, 10 Mar 2021 13:41:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b2672c92-ddf5-51ba-bb4c-f3aadee26daf@linux.ibm.com>
+References: <20210310174603.5093-1-shy828301@gmail.com> <20210310174603.5093-14-shy828301@gmail.com>
+ <CALvZod5q5LDEfUMuvO7V2hTf+oCsBGXKZn3tBByOXL952wqbRw@mail.gmail.com>
+ <CAHbLzkpX0h2_FpeOWfrK3AO8RY4GE=wDqgSwFt69vn+roo6U3A@mail.gmail.com> <CALvZod4hSCBsXPisPT_Tai3kHW1Oo5k8z2ihbSgmLsMTAqWGHg@mail.gmail.com>
+In-Reply-To: <CALvZod4hSCBsXPisPT_Tai3kHW1Oo5k8z2ihbSgmLsMTAqWGHg@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 10 Mar 2021 13:41:37 -0800
+Message-ID: <CAHbLzkp2pW+nR-7Z0w3mGG4+ZBgRy4X4O+nfn03hLWBfB1HVXw@mail.gmail.com>
+Subject: Re: [v9 PATCH 13/13] mm: vmscan: shrink deferred objects proportional
+ to priority
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 01:38:12PM -0500, Stefan Berger wrote:
-> 
-> On 3/10/21 10:35 AM, Jarkko Sakkinen wrote:
-> > On Fri, Mar 05, 2021 at 03:59:47PM -0500, Stefan Berger wrote:
-> > > From: Stefan Berger <stefanb@linux.ibm.com>
-> > > 
-> > > Add OIDs for ECDSA with sha224/256/384/512.
-> > Nit: SHA224/256/384/512 (sorry cannot help myself with these, have been
-> > doing this way too much, consider me as a bot :-) )
-> > 
-> > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> Jarrko,
-> 
->   I applied the nit and the 4 Acked-by's.
-> 
-> Thank you!
-> 
-> 
->    Stefan
+On Wed, Mar 10, 2021 at 1:08 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Wed, Mar 10, 2021 at 10:54 AM Yang Shi <shy828301@gmail.com> wrote:
+> >
+> > On Wed, Mar 10, 2021 at 10:24 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > On Wed, Mar 10, 2021 at 9:46 AM Yang Shi <shy828301@gmail.com> wrote:
+> > > >
+> > > > The number of deferred objects might get windup to an absurd number, and it
+> > > > results in clamp of slab objects.  It is undesirable for sustaining workingset.
+> > > >
+> > > > So shrink deferred objects proportional to priority and cap nr_deferred to twice
+> > > > of cache items.
+> > > >
+> > > > The idea is borrowed from Dave Chinner's patch:
+> > > > https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
+> > > >
+> > > > Tested with kernel build and vfs metadata heavy workload in our production
+> > > > environment, no regression is spotted so far.
+> > >
+> > > Did you run both of these workloads in the same cgroup or separate cgroups?
+> >
+> > Both are covered.
+> >
+>
+> Have you tried just this patch i.e. without the first 12 patches?
 
-Cool, thank you :-)
-
-/Jarkko
+No. It could be applied without the first 12 patches, but I didn't
+test this combination specifically since I don't think it would have
+any difference from with the first 12 patches. I tested running the
+test case under root memcg, it seems equal to w/o the first 12 patches
+and the only difference is where to get nr_deferred.
