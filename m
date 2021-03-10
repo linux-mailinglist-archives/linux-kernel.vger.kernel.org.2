@@ -2,143 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54CD3348BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E647F3348C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhCJUR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:17:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbhCJUR2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:17:28 -0500
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132DAC061574;
-        Wed, 10 Mar 2021 12:17:28 -0800 (PST)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S231533AbhCJUVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:21:09 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:44162 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231246AbhCJUUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:20:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615407653; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=dxtZkfJ5IYq7cEqVuScsgqcXnLuYpfjLDBXSw8+MHek=; b=vIL8LOb4zthXNBgBdJY8hXPXFaYQeRg/Ygau0677ND5TS8up2jBSTno585Ze46bsqsfsbkov
+ tGNJuq8uQ/YdiQH/fH3VtwkBmR6zcBb1edoymgVjaeW6o+PMjUROCDJw9VKCvF+abroc9CYz
+ nh+OeQQ6XZli5cyZPYgZcaH05v8=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60492a05d3a53bc38f144a6f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 20:20:21
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 14BF2C43465; Wed, 10 Mar 2021 20:20:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Dwjzm5MBFzQjmn;
-        Wed, 10 Mar 2021 21:17:24 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
-        t=1615407442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pc2KSGdjhoUm+KWisxb/fuVEslksJpAE3Ymh75BH0Cw=;
-        b=z1EREBP0vZqNDvFLzdtr6RdAF1QKXCR1Eev4uIKVV4Nu1Uv2HgvieeYYZt5W2ZeUgKpIc8
-        QOQ6t/CcufhP6+dcJeQT5KBtrjrn0utrxWtHrmYRT3ZAwpiO8B36voAagadx/8BE6VAnKr
-        JQUdBfTJ1b1MrvjywfZaIgGZeB4OJerMYrSjkAPiKaPzQNdzGsktETy7JNLBbf+FDO0+NR
-        Bb8cPR0xxP2EhdevYDlYM5QmAKfpghnsSLLvzVhdbEOtaLmzlBF+pmHDJ2DNWjOI/sWOMM
-        EECuyRqn5UZ/aUYDSgtdykz67N77keP9tmaWmSNgbQRGSpnWhR28Z234DuVhzw==
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
-        with ESMTP id apVk64UXcm7b; Wed, 10 Mar 2021 21:17:17 +0100 (CET)
-To:     Arnd Bergmann <arnd@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        qwu@maxlinear.com
-Cc:     Adam Borowski <kilobyte@angband.pl>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Hauke Mehrtens <hmehrtens@maxlinear.com>
-References: <20210308153052.2353885-1-arnd@kernel.org>
- <20210309180851.GA4669@duo.ucw.cz> <20210309193910.GA7507@amd>
- <YEgeoPqCCgTUEsSc@angband.pl> <20210310072831.GA29779@amd>
- <CAK8P3a2+o8N77A_OkP+QD7ntA+M4U26k15Hh1rNN16-afcTp9g@mail.gmail.com>
-From:   Hauke Mehrtens <hauke@hauke-m.de>
-Subject: Re: MaxLinear, please maintain your drivers was Re: [PATCH] leds:
- lgm: fix gpiolib dependency
-Message-ID: <9a74ce79-b7cf-dec1-a64c-d928b5712645@hauke-m.de>
-Date:   Wed, 10 Mar 2021 21:17:15 +0100
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1C96C433C6;
+        Wed, 10 Mar 2021 20:20:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A1C96C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH] watchdog: qcom: Move suspend/resume to suspend_late/resume_early
+Date:   Thu, 11 Mar 2021 01:50:04 +0530
+Message-Id: <20210310202004.1436-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2+o8N77A_OkP+QD7ntA+M4U26k15Hh1rNN16-afcTp9g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -8.43 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 0024C17E3
-X-Rspamd-UID: e6c179
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 5:57 PM, Arnd Bergmann wrote:
-> On Wed, Mar 10, 2021 at 8:30 AM Pavel Machek <pavel@ucw.cz> wrote:
->>
->> Hi!
->>
->>>>> I'd like people from Intel to contact me. There's more to fix there,
->>>>> and AFAICT original author went away.
->>>>
->>>> The following message to <mallikarjunax.reddy@linux.intel.com> was
->>>> undeliverable.
->>>
->>>> <mallikarjunax.reddy@linux.intel.com>: Recipient
->>>> +address rejected: User unknown in virtual mailbox table'
->>>
->>>> commit c3987cd2bca34ddfec69027acedb2fae5ffcf7a0
->>>> Author: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
->>>
->>> I asked around, and got told Mallikarjuna has been "sold" to MaxLinear,
->>> together with the rest of the Connected Home Division.  So he most likely
->>> still works on this stuff, just under a different banner.
->>>
->>>> If someone knows how to contact the author, that would be welcome.
->>>
->>> Alas, no idea about his MaxLinear address.
->>
->> Thanks for the effort. Anyway, I suspect I'll just do this:
-> 
-> Maybe Hauke or John  (added both to cc) know who at MaxLinear is
-> responsible for maintaining the Lightning Mountain drivers now.
-> 
->         Arnd
+During suspend/resume usecases and tests, it is common to see issues
+such as lockups either in suspend path or resume path because of the
+bugs in the corresponding device driver pm handling code. In such cases,
+it is important that watchdog is active to make sure that we either
+receive a watchdog pretimeout notification or a bite causing reset
+instead of a hang causing us to hard reset the machine.
 
-Hi Qiming,
+There are good reasons as to why we need this because:
 
-It looks like there are some problems and potential fixes for the led 
-driver Mallikarjuna added to the Linux kernel for LGM some time ago.
+* We can have a watchdog pretimeout governor set to panic in which
+  case we can have a backtrace which would help identify the issue
+  with the particular driver and cause a normal reboot.
 
-Could you please take care of this request from Pavel and Arnd.
+* Even in case where there is no pretimeout support, a watchdog
+  bite is still useful because some firmware has debug support to dump
+  CPU core context on watchdog bite for post-mortem analysis.
 
+* One more usecase which comes to mind is of warm reboot. In case we
+  hard reset the target, a cold reboot could be induced resulting in
+  lose of ddr contents thereby losing all the debug info.
 
-Hauke
+Currently, the watchdog pm callback just invokes the usual suspend
+and resume callback which do not have any special ordering in the
+sense that a watchdog can be suspended before the buggy device driver
+suspend callback and watchdog resume can happen after the buggy device
+driver resume callback. This would mean that the watchdog will not be
+active when the buggy driver cause the lockups thereby hanging the
+system. So to make sure this doesn't happen, move the watchdog pm to
+use late/early system pm callbacks which will ensure that the watchdog
+is suspended late and resumed early so that it can catch such issues.
 
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
+ drivers/watchdog/qcom-wdt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> 
->> diff --git a/drivers/leds/blink/Kconfig b/drivers/leds/blink/Kconfig
->> index 6dedc58c47b3..79493f21d365 100644
->> --- a/drivers/leds/blink/Kconfig
->> +++ b/drivers/leds/blink/Kconfig
->> @@ -1,14 +1,6 @@
->> -menuconfig LEDS_BLINK
->> -       bool "LED Blink support"
->> -       depends on LEDS_CLASS
->> -       help
->> -         This option enables blink support for the leds class.
->> -         If unsure, say Y.
->> -
->> -if LEDS_BLINK
->> -
->>   config LEDS_BLINK_LGM
->>          tristate "LED support for Intel LGM SoC series"
->> +       depends on BROKEN
->>          depends on GPIOLIB
->>          depends on LEDS_CLASS
->>          depends on MFD_SYSCON
->> @@ -17,5 +9,3 @@ config LEDS_BLINK_LGM
->>            Parallel to serial conversion, which is also called SSO controller,
->>            can drive external shift register for LED outputs.
->>            This enables LED support for Serial Shift Output controller(SSO).
->> -
->> -endif # LEDS_BLINK
->>
->>
->> --
->> http://www.livejournal.com/~pavelmachek
+diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
+index e38a87ffe5f5..0d2209c5eaca 100644
+--- a/drivers/watchdog/qcom-wdt.c
++++ b/drivers/watchdog/qcom-wdt.c
+@@ -329,7 +329,9 @@ static int __maybe_unused qcom_wdt_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(qcom_wdt_pm_ops, qcom_wdt_suspend, qcom_wdt_resume);
++static const struct dev_pm_ops qcom_wdt_pm_ops = {
++	SET_LATE_SYSTEM_SLEEP_PM_OPS(qcom_wdt_suspend, qcom_wdt_resume)
++};
+ 
+ static const struct of_device_id qcom_wdt_of_table[] = {
+ 	{ .compatible = "qcom,kpss-timer", .data = &match_data_apcs_tmr },
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
