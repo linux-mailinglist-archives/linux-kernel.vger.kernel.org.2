@@ -2,115 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2868633453B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E64033453E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbhCJRfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:35:09 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:45368 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbhCJRen (ORCPT
+        id S232543AbhCJRgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:36:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229828AbhCJRgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:34:43 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12AHYYgw031257;
-        Wed, 10 Mar 2021 11:34:34 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615397674;
-        bh=+p/u5nK7EFO7bfVybM8fCJ8w2Wt1hcRrMflilr6AVio=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=wFUSYIKCVYBr5Py1sIWj8f78LeXi1A3J1CpR/jcgdhvrSVy/hSEIcCKbuPLK6LRFd
-         eKNA+SKSd+NtIvBDgIKfSyM+pCXnx/dYlxqPRJdpjWNqz7AElfLkjHYLbUAzqDDBzO
-         mOXdXKlZJxsEcFcnMUsDdBAwJmy0YL7ialPV1/3Y=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12AHYY1m021998
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Mar 2021 11:34:34 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
- Mar 2021 11:34:33 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 10 Mar 2021 11:34:33 -0600
-Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12AHYU6K009051;
-        Wed, 10 Mar 2021 11:34:31 -0600
-Subject: Re: [PATCH 1/2] arm64: dts: ti: k3-am64-main: Add OSPI node
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210309130514.11740-1-vigneshr@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <4a41ecf2-2203-f3db-f728-fc0d1b0426c6@ti.com>
-Date:   Wed, 10 Mar 2021 23:04:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 10 Mar 2021 12:36:22 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9D1C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:36:22 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id d13so29366318edp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:36:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o0qx1P3+0pCBpzbRfl6S1GiH0ttn2Cr7Rfh1TFUYrhQ=;
+        b=Uja17BIpkiNfpDNxhJMmLhmb8CGjis7QUU3NcZ4/f3U1Qn5cTg6ox4jcC5tq0n/EN3
+         ykXWeo9+ZXtwb/CXKbssqJu33xOUSyOYr8gfiXneu/zi5M/TT9zLlIEGTsglPgNCdUf5
+         Lv1PaJZve5bvCaVruzXelkNouHd120Qv+4/EPbWqN/gPHtpT4eYiUHTosynuYl3GieVJ
+         29tBxIFl4NPkAQiPp18tq5V/UqxxeL6Jp7Wk7oTvUAdwpLRc9cLrh1p96GkY03RDMF0U
+         2ghfmrdoYKBzr5VmuHmY+Z3Fxl6hO7gP6BP+VvwxTZlBJ0rjAF++t45lqY3dmRwVC/jh
+         iaGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o0qx1P3+0pCBpzbRfl6S1GiH0ttn2Cr7Rfh1TFUYrhQ=;
+        b=ZlllXIbSSjumTlLjiD3uss87Ey8yUozCLg008hrn98xv4UoV0xnOB+QKWWMuGGXw2Z
+         NTkfdyB/NfIifbv+dWQ2yMBAMYYK6tu+1u19xQKdYtTti75gk3CXIFUNDLRffqT9tv98
+         saoXYm/wAAeAaPXtR1KS1FsWew2MRK069fjwHbi1N4Y1vSKa1qQ0ujEoLjvkg9dPTb5c
+         JOv4yxdDb5IreKEA765BtjZ7qZe6hs3qDMJ7pYBnd0VXoCivk3n++ixIBGxpnqXohaHI
+         jRHhftC8UfwgTAzM/mjyCOizKetBc+/OSsJq5xiNM9BYZ9dx1rVkj825+YbqtJq7/p6M
+         IoWQ==
+X-Gm-Message-State: AOAM532DfggYVYN+2RP0DYNjPIEvVq0/85LOC4AiKyALVrpUQhV8i3en
+        HT38ev2MmWeblxGq1XE4Z8p2SSq2io31kaMI+hhs7w==
+X-Google-Smtp-Source: ABdhPJxuJpOuewGAFdUepGTu6BAQ6RHOh3x6zUiz5X50hVjX0yh0BlB9XEQck/Z2EiEIxaMK0K9YPFqJ7FPp+5UJUtc=
+X-Received: by 2002:aa7:c3cd:: with SMTP id l13mr4530827edr.52.1615397780739;
+ Wed, 10 Mar 2021 09:36:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210309130514.11740-1-vigneshr@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210310132321.948258062@linuxfoundation.org> <20210310132322.413240905@linuxfoundation.org>
+In-Reply-To: <20210310132322.413240905@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 10 Mar 2021 23:06:09 +0530
+Message-ID: <CA+G9fYthEr7TtFBpAXxQfDtwxCe+qg=bbE74nPQ+mpGmSSJ2dw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 14/49] net: ipa: ignore CHANNEL_NOT_RUNNING errors
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>, Alex Elder <elder@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nishanth
-
-On 3/9/21 6:35 PM, Vignesh Raghavendra wrote:
-> AM64 SoC has a single Octal SPI (OSPI) instance under Flash SubSystem
-> (FSS).  Add DT entry for the same.
-> 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+On Wed, 10 Mar 2021 at 18:56, <gregkh@linuxfoundation.org> wrote:
+>
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> From: Alex Elder <elder@linaro.org>
+>
+> [ Upstream commit f849afcc8c3b27d7b50827e95b60557f24184df0 ]
+>
+> IPA v4.2 has a hardware quirk that requires the AP to allocate GSI
+> channels for the modem to use.  It is recommended that these modem
+> channels get stopped (with a HALT generic command) by the AP when
+> its IPA driver gets removed.
+>
+> The AP has no way of knowing the current state of a modem channel.
+> So when the IPA driver issues a HALT command it's possible the
+> channel is not running, and in that case we get an error indication.
+> This error simply means we didn't need to stop the channel, so we
+> can ignore it.
+>
+> This patch adds an explanation for this situation, and arranges for
+> this condition to *not* report an error message.
+>
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
-
-Please ignore the series. I see some instabilities in my testing... Will
-repost once I have addressed them. Sorry for the noise.
-
-
-Regards
-Vignesh
-
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 25 ++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> index 5f85950daef7..bcec4fa444b5 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> @@ -402,4 +402,29 @@ sdhci1: mmc@fa00000 {
->  		ti,otap-del-sel-ddr50 = <0x9>;
->  		ti,clkbuf-sel = <0x7>;
->  	};
+>  drivers/net/ipa/gsi.c | 24 +++++++++++++++++++++++-
+>  1 file changed, 23 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+> index 2a65efd3e8da..48ee43b89fec 100644
+> --- a/drivers/net/ipa/gsi.c
+> +++ b/drivers/net/ipa/gsi.c
+> @@ -1052,10 +1052,32 @@ static void gsi_isr_gp_int1(struct gsi *gsi)
+>         u32 result;
+>         u32 val;
+>
+> +       /* This interrupt is used to handle completions of the two GENERIC
+> +        * GSI commands.  We use these to allocate and halt channels on
+> +        * the modem's behalf due to a hardware quirk on IPA v4.2.  Once
+> +        * allocated, the modem "owns" these channels, and as a result we
+> +        * have no way of knowing the channel's state at any given time.
+> +        *
+> +        * It is recommended that we halt the modem channels we allocated
+> +        * when shutting down, but it's possible the channel isn't running
+> +        * at the time we issue the HALT command.  We'll get an error in
+> +        * that case, but it's harmless (the channel is already halted).
+> +        *
+> +        * For this reason, we silently ignore a CHANNEL_NOT_RUNNING error
+> +        * if we receive it.
+> +        */
+>         val = ioread32(gsi->virt + GSI_CNTXT_SCRATCH_0_OFFSET);
+>         result = u32_get_bits(val, GENERIC_EE_RESULT_FMASK);
+> -       if (result != GENERIC_EE_SUCCESS_FVAL)
 > +
-> +	fss: bus@fc00000 {
-> +		compatible = "simple-bus";
-> +		reg = <0x00 0x0fc00000 0x00 0x70000>;
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		ospi0: spi@fc40000 {
-> +			compatible = "ti,am654-ospi", "cdns,qspi-nor";
-> +			reg = <0x00 0x0fc40000 0x00 0x100>,
-> +			      <0x05 0x00000000 0x01 0x00000000>;
-> +			interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
-> +			cdns,fifo-depth = <256>;
-> +			cdns,fifo-width = <4>;
-> +			cdns,trigger-address = <0x0>;
-> +			#address-cells = <0x1>;
-> +			#size-cells = <0x0>;
-> +			clocks = <&k3_clks 75 6>;
-> +			assigned-clocks = <&k3_clks 75 6>;
-> +			assigned-clock-parents = <&k3_clks 75 7>;
-> +			assigned-clock-rates = <166666666>;
-> +			power-domains = <&k3_pds 75 TI_SCI_PD_EXCLUSIVE>;
-> +		};
-> +	};
->  };
-> 
+> +       switch (result) {
+> +       case GENERIC_EE_SUCCESS_FVAL:
+> +       case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
+
+
+While building stable rc 5.10 for arm64 the build failed due to
+the following errors / warnings.
+
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+clang'
+drivers/net/ipa/gsi.c:1074:7: error: use of undeclared identifier
+'GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL'
+        case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
+             ^
+1 error generated.
+make[4]: *** [scripts/Makefile.build:279: drivers/net/ipa/gsi.o] Error 1
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Build log link,
+https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1086862412#L210
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
