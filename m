@@ -2,150 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9378A333F50
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7661333F53
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233948AbhCJNcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:32:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S234303AbhCJNdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:33:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234464AbhCJNbk (ORCPT
+        with ESMTP id S234368AbhCJNcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:31:40 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7ECC061762
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:31:40 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id n22so7123309wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:31:40 -0800 (PST)
+        Wed, 10 Mar 2021 08:32:54 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B61C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:32:54 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id z190so16710411qka.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:32:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bMOvPe8N8rGJXOLjCxzS5gSb/gTvdEZoEOlGF4GuSFs=;
-        b=NLPCffky6G7GzaObhllkOllIgtNjBeMsGjkEMASPl+1pYHywRsMYpm2dtlcyg8Mib8
-         KwVVv4nAqkmnzcogt078Dvez0a507CpBKA+tJqKRJBcxaYDNWIi7zlQV2h4gZ9wKz3L6
-         j3kQgf/A+1u4o9qE7lMpQ7EEJOiZI6/9tl0x/oaILLtId4rQGq0DiqT9WTLHIMixEUWJ
-         Osd21hXPUX+hEuewL193hn1+YN+pQznzUc5B9A/MJ13U8ort3kQ35MparokcriCZU9YH
-         hwDXRCPg/vCK/Lthwuf6UThwdLUGaK/BxDJ9Azo/RtJUMNwP/L+WSKFIGnylkhmpWbmH
-         OAFA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=e5fjltDnBfAqnsxFSrinxxrmQWKIftTB/3C3cSfdklM=;
+        b=sf1/cdgdKge7QLGVyzepeIFJl3wnkBfHoW5xh8d44j9SgupeyeQmGpzwPEAMzIyZ3p
+         9ctZKh+XfNw6DbaK+Zd/vifYJKBCGZ69QNByu7UoLm3cO0fcnpXUuCaknGkdVQlXBEVQ
+         p7HZQIJ4ui1vuaB1BxCseZN0Xo9C8kmPmqhwNyPaUej08DKet4WfhtCgynv1twIA5ax0
+         853XsjbtmnNYIlQPSKYWJAxlYl789/0RY8jry3LiOx+ewpKOIkcr0bgn5f220d8cinaU
+         ZL08lFu3hfkWQ+kW40a0yPlBOTn5qLulqyKBKh2llN2hGi2Vw96cEBG+8IDDLCqTPjLZ
+         jDEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bMOvPe8N8rGJXOLjCxzS5gSb/gTvdEZoEOlGF4GuSFs=;
-        b=XiSIIBx4hDLN5wG1UkStiabDUz/B+7KJjPx1RPsio1UCpWV68E4ShU7E2ZnsBG7pDg
-         wlCSpoR6wXmi43oUMFSiLxsVYxAhHE0UynuCrwldWiZ2N2CegOW0e2J7XcSF3oAilNU1
-         2B6UU2OKKvh1nBhnwqe06LNfyyjC2Phf4oxOrfs9YvfcR/fGdlarRQ+CWBtVK3AYDFYJ
-         2PB0q2moUBdwdO/5tz2E+Zs6kIRp9SO1HTFPZbPu6PBJ1xBi3JdIBwqwjDa9MN+8v7FA
-         /H5O5rtufnDeteu2GyKp9buSQcBUBWcayDruGd40c4NZJtRFBuKuU46DM0E3UndDhaAl
-         XqDg==
-X-Gm-Message-State: AOAM532bFQfweXA32s8Letg2scYGJuxJx45Au89ypw3uGj9JQU0bGt3y
-        L7OXAIZJnxs94jPuqlm9tir6Xw==
-X-Google-Smtp-Source: ABdhPJyfXWtzHaUWQl/M4ZEr0SSi/Fz8xcU7IHooODBN0RLT7MhUmViUHHQQEekoUzXnBL6YUKMhJQ==
-X-Received: by 2002:a05:600c:4a06:: with SMTP id c6mr3384475wmp.35.1615383098982;
-        Wed, 10 Mar 2021 05:31:38 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id j13sm13409331wrt.29.2021.03.10.05.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 05:31:38 -0800 (PST)
-Date:   Wed, 10 Mar 2021 13:31:36 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
-Subject: Re: [PATCH v3 06/15] mfd: Add ROHM BD71815 ID
-Message-ID: <20210310133136.GQ701493@dell>
-References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
- <be0e8cd06ed75e799c942e5076ee7b56ad658467.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
- <20210310103639.GG701493@dell>
- <a631bbc3dd3bd0f02693d1c35f9a14dbaec67cc3.camel@fi.rohmeurope.com>
- <20210310111755.GN701493@dell>
- <e7bb00af76de65c60061c58a570d5b6f40961eb0.camel@fi.rohmeurope.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e5fjltDnBfAqnsxFSrinxxrmQWKIftTB/3C3cSfdklM=;
+        b=qGA2KWeyMjzpuQUcbmM4YykqNc78nH2OFl66vB5j/DlluFjpLaPVfMSV98/3T9Us3i
+         2uAZzdUL7wZ23qiq4ro3v9q+JgK81ALCAnCTebtbp83E53DLd/+I4h6SajZBXNbSffI8
+         Ibb/bYGc3JmYUdPdSnJMI6iG4CHvQbEYZ++FeDlue9PJD8m9308cu2zb4gaQZONX/5rG
+         RVP4gWruq3uo1pYyIPw4JUcMzR3I/UABU/xcwarH3kUdsJYck8/uclMkeQd2LJdXZlk8
+         0hEEt1Zbz0nf+8JoX9KDNgZTXPdYQCrnkADPWsOB3KntmcZCkJFktT0pzikxw5tJ9mP4
+         f54Q==
+X-Gm-Message-State: AOAM531uiZ4kuBzY32xOktcMf8l668OcdRwq+ggJOvLAEgO3WHede5EW
+        BS1Hr47dsLVN5D41+nNLMCxSEM/5b4M7Dw==
+X-Google-Smtp-Source: ABdhPJz+7l9MQT7QhmhNYxev+DuVXZBqIAdp1veJ+jJRJJP3mD7NFQQT0uC4SCiV3DjHn6OYKm8CIg==
+X-Received: by 2002:a37:51c1:: with SMTP id f184mr2597720qkb.185.1615383173207;
+        Wed, 10 Mar 2021 05:32:53 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id w13sm12170394qtv.37.2021.03.10.05.32.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 05:32:52 -0800 (PST)
+Subject: Re: [PATCH v10 0/8] Add support for ipq8064 tsens
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210217194011.22649-1-ansuelsmth@gmail.com>
+ <f0ab094e-440d-993c-6618-bf80fd05d484@linaro.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <44c7919c-0ed4-abba-21e0-226bb553aad3@linaro.org>
+Date:   Wed, 10 Mar 2021 08:32:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e7bb00af76de65c60061c58a570d5b6f40961eb0.camel@fi.rohmeurope.com>
+In-Reply-To: <f0ab094e-440d-993c-6618-bf80fd05d484@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021, Matti Vaittinen wrote:
 
-> On Wed, 2021-03-10 at 11:17 +0000, Lee Jones wrote:
-> > On Wed, 10 Mar 2021, Vaittinen, Matti wrote:
-> > 
-> > > Hello Lee,
-> > > 
-> > > On Wed, 2021-03-10 at 10:36 +0000, Lee Jones wrote:
-> > > > On Mon, 08 Mar 2021, Matti Vaittinen wrote:
-> > > > 
-> > > > > Add chip ID for ROHM BD71815 and PMIC so that drivers can
-> > > > > identify
-> > > > > this IC.
-> > > > > 
-> > > > > Signed-off-by: Matti Vaittinen <
-> > > > > matti.vaittinen@fi.rohmeurope.com>
-> > > > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> > > > > ---
-> > > > >  include/linux/mfd/rohm-generic.h | 1 +
-> > > > >  1 file changed, 1 insertion(+)
-> > > > > 
-> > > > > diff --git a/include/linux/mfd/rohm-generic.h
-> > > > > b/include/linux/mfd/rohm-generic.h
-> > > > > index 66f673c35303..e5392bcbc098 100644
-> > > > > --- a/include/linux/mfd/rohm-generic.h
-> > > > > +++ b/include/linux/mfd/rohm-generic.h
-> > > > > @@ -14,6 +14,7 @@ enum rohm_chip_type {
-> > > > >  	ROHM_CHIP_TYPE_BD71828,
-> > > > >  	ROHM_CHIP_TYPE_BD9571,
-> > > > >  	ROHM_CHIP_TYPE_BD9574,
-> > > > > +	ROHM_CHIP_TYPE_BD71815,
-> > > > 
-> > > > Is there a technical reason why these can't be re-ordered?
-> > > 
-> > > No, I don't think so.
-> > > 
-> > > BTW. there will probably be a (trivial) conflict here as both this
-> > > series and the BD9576/BD9573 series add an ID here. Let me guess,
-> > > you'd
-> > 
-> > That's fine.  I will resolve that manually.
+
+On 3/10/21 7:19 AM, Daniel Lezcano wrote:
 > 
-> Thanks :)
+> Hi Ansuel,
 > 
-> > 
-> > > like to see them sorted?
-> > 
-> > Wouldn't that be nice? :)
-> Aesthetics is not really my cup of tea. OTOH, if amount of IDs grow,
-> then sorting helps spotting whether some IC has an ID here. So yes, it
-> kind of makes sense.
+> On 17/02/2021 20:40, Ansuel Smith wrote:
+>> This patchset convert msm8960 to reg_filed, use int_common instead
+>> of a custom function and fix wrong tsens get_temp function for msm8960.
+>> Ipq8064 SoCs tsens driver is based on 8960 tsens driver. Ipq8064 needs
+>> to be registered as a gcc child as the tsens regs on this platform are
+>> shared with the controller.
+>> This is based on work and code here
+>> https://git.linaro.org/people/amit.kucheria/kernel.git/log/?h=wrk3/tsens-8960-breakage
+> 
+> I don't have major concerns with the series except there is no comment
+> from the maintainer / reviewer of the sensor.
+> 
+> Given it is based on Amit's work, I can assume they are correct.
+> 
+> I added Thara in Cc hoping she has time to review the changes. If nobody
+> complains with the series, I'll merge them in the next days
 
-By 'nice' I don't mean 'pretty'.
+Hi Ansuel/Daniel,
 
-I mean 'improving readability/maintainability would be nice'.
+Just wanted to let you know that I have started looking into this and 
+review this within next week or two.
 
-> Can you do sorting while resolving the conflict between series or do
-> you want me to
-> a) do sorting if (when) I re-spin the series
-> b) send separate sorting patch as a part of this series
-> c) send sepatate sorting patch after all the pending patches touching
-> these IDs have been merged?
-
-I'll let you use your imagination.
-
-I just noticed that the latest entry did not fit well inside the
-current list.  Why don't you start by putting that in the list where
-it makes the most sense i.e. somewhere near ROHM_CHIP_TYPE_BD71828,
-and see how you get on.
+> 
+> Thanks
+> 
+>    -- Daniel
+> 
+> 
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Warm Regards
+Thara
