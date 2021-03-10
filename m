@@ -2,190 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362C9334723
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E50334727
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhCJSuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:50:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57287 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233403AbhCJSuP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:50:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615402214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ujgHC2APsB8R2uAWzIAh2HLokjAekCL0UgQUy4oA9CY=;
-        b=L56K0bKBiFyC97iMybfm5jPe1GT8hMnQD9L7G1BAw0OIZGHvvKqPz921Zg4U327lgMZacQ
-        Dos2U2FcRcw/6ITSQ/56TU7S1AHcs53FndJBDfoHtS3pJCpJd977zCwHxQGiZE53h1qn46
-        vjXKVpG/B7zGlFU4nyKuhRQ+65INLOs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-552-huHmzua5PeKRAYpDhp0a9Q-1; Wed, 10 Mar 2021 13:50:10 -0500
-X-MC-Unique: huHmzua5PeKRAYpDhp0a9Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6891618D6A40;
-        Wed, 10 Mar 2021 18:50:08 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.38])
-        by smtp.corp.redhat.com (Postfix) with SMTP id A5BA177BF0;
-        Wed, 10 Mar 2021 18:50:03 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed, 10 Mar 2021 19:50:08 +0100 (CET)
-Date:   Wed, 10 Mar 2021 19:50:02 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Piotr Figiel <figiel@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        mathieu.desnoyers@efficios.com, peterz@infradead.org,
-        paulmck@kernel.org, boqun.feng@gmail.com, ldv@altlinux.org,
-        fweimer@redhat.com, Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org,
-        posk@google.com, kyurtsever@google.com, ckennelly@google.com,
-        pjt@google.com, emmir@google.com, linux-man@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v2] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
-Message-ID: <20210310185001.GD8973@redhat.com>
-References: <20210226135156.1081606-1-figiel@google.com>
+        id S233439AbhCJSuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:50:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233425AbhCJSup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:50:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3075764DFD;
+        Wed, 10 Mar 2021 18:50:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615402245;
+        bh=7EMDjMedyrLG3zrgNV64e8xd6a+Bn6iIf+l9PAZ1tGE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nmWbZHfB9JtBuSkosE6pT/lAzdo4BKucpd7KEi+VVGn/LYd6RN9xO/ngy6DC3ed/K
+         RHAHp91+DHRvhjCfzRt298Q3XxxqcNrFZNA7IrfJFYOuf+AvT2a3qy3b47poe93CRH
+         7/FP6KhfHm+SjguqTAcD1BvPLPnPLyJ1SBzNWl0Y=
+Date:   Wed, 10 Mar 2021 19:50:43 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, Jann Horn <jannh@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 4.14 27/50] mm, slub: consider rest of partial list if
+ acquire_slab() fails
+Message-ID: <YEkVA764JLFuGV9B@kroah.com>
+References: <20210122135735.176469491@linuxfoundation.org>
+ <20210122135736.291270624@linuxfoundation.org>
+ <CAHk-=wiAafgm4fu-+NNfd5MA_0v7o5Spma-KH82eyJzY_q8-9A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210226135156.1081606-1-figiel@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CAHk-=wiAafgm4fu-+NNfd5MA_0v7o5Spma-KH82eyJzY_q8-9A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I don't think I can review this patch, I don't understand the problem space
-well enough. But just in case, I see nothing wrong in this simple patch.
+On Wed, Mar 10, 2021 at 10:43:33AM -0800, Linus Torvalds wrote:
+> Just a note to the stable tree: this commit has been reverted
+> upstream, because it causes a huge performance drop (admittedly on a
+> load and setup that may not be all that relevant to most people).
+> 
+> It was applied to 4.4, 4.9 and 4.12, because the commit it was marked
+> as "fixing" is from 2012, but it turns out that the early exit from
+> the loop in that commit was very much intentional, and very much shows
+> up on scalability benchmarks.
+> 
+> I don't think this is likely to be a big deal for the stable kernels -
+> we're basically talking tuning for special cases, and while it is
+> reverted in my tree now, the "correct" thing to do is likely to be a
+> bit more flexible than either "exit loop immediately" or "loop for as
+> long as we have contention".
+> 
+> In practice, most machines probably won't see either case - or it will
+> at least be rare enough that you can't tell.
+> 
+> The machine that reports a huge performance drop was a multi-socket
+> machine under fairly extreme conditions, and these contention issues
+> are often close to exponential - a smaller machine (or a slighly less
+> extreme load) would never see the issue at all either way.
+> 
+> See
+> 
+>     https://lore.kernel.org/lkml/20210301080404.GF12822@xsang-OptiPlex-9020/
+> 
+> for details if you care. I don't think this has to necessarily be
+> undone in the stable trees, this email is more of an incidental note
+> just as a heads-up.
 
-Feel free to add
+Thanks for the details, I'll look into reverting it in a future stable
+release.
 
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-
-
-
-On 02/26, Piotr Figiel wrote:
->
-> For userspace checkpoint and restore (C/R) a way of getting process state
-> containing RSEQ configuration is needed.
-> 
-> There are two ways this information is going to be used:
->  - to re-enable RSEQ for threads which had it enabled before C/R
->  - to detect if a thread was in a critical section during C/R
-> 
-> Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
-> using the address registered before C/R.
-> 
-> Detection whether the thread is in a critical section during C/R is needed
-> to enforce behavior of RSEQ abort during C/R. Attaching with ptrace()
-> before registers are dumped itself doesn't cause RSEQ abort.
-> Restoring the instruction pointer within the critical section is
-> problematic because rseq_cs may get cleared before the control is passed
-> to the migrated application code leading to RSEQ invariants not being
-> preserved. C/R code will use RSEQ ABI address to find the abort handler
-> to which the instruction pointer needs to be set.
-> 
-> To achieve above goals expose the RSEQ ABI address and the signature value
-> with the new ptrace request PTRACE_GET_RSEQ_CONFIGURATION.
-> 
-> This new ptrace request can also be used by debuggers so they are aware
-> of stops within restartable sequences in progress.
-> 
-> Signed-off-by: Piotr Figiel <figiel@google.com>
-> Reviewed-by: Michal Miroslaw <emmir@google.com>
-> 
-> ---
-> v2:
-> Applied review comments:
->  - changed return value from the ptrace request to the size of the
->    configuration structure
->  - expanded configuration structure with the flags field and
->    the rseq abi structure size
-> 
-> v1:
->  https://lore.kernel.org/lkml/20210222100443.4155938-1-figiel@google.com/
-> 
-> ---
->  include/uapi/linux/ptrace.h | 10 ++++++++++
->  kernel/ptrace.c             | 25 +++++++++++++++++++++++++
->  2 files changed, 35 insertions(+)
-> 
-> diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
-> index 83ee45fa634b..3747bf816f9a 100644
-> --- a/include/uapi/linux/ptrace.h
-> +++ b/include/uapi/linux/ptrace.h
-> @@ -102,6 +102,16 @@ struct ptrace_syscall_info {
->  	};
->  };
->  
-> +#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
-> +
-> +struct ptrace_rseq_configuration {
-> +	__u64 rseq_abi_pointer;
-> +	__u32 rseq_abi_size;
-> +	__u32 signature;
-> +	__u32 flags;
-> +	__u32 pad;
-> +};
-> +
->  /*
->   * These values are stored in task->ptrace_message
->   * by tracehook_report_syscall_* to describe the current syscall-stop.
-> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-> index 61db50f7ca86..76f09456ec4b 100644
-> --- a/kernel/ptrace.c
-> +++ b/kernel/ptrace.c
-> @@ -31,6 +31,7 @@
->  #include <linux/cn_proc.h>
->  #include <linux/compat.h>
->  #include <linux/sched/signal.h>
-> +#include <linux/minmax.h>
->  
->  #include <asm/syscall.h>	/* for syscall_get_* */
->  
-> @@ -779,6 +780,24 @@ static int ptrace_peek_siginfo(struct task_struct *child,
->  	return ret;
->  }
->  
-> +#ifdef CONFIG_RSEQ
-> +static long ptrace_get_rseq_configuration(struct task_struct *task,
-> +					  unsigned long size, void __user *data)
-> +{
-> +	struct ptrace_rseq_configuration conf = {
-> +		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
-> +		.rseq_abi_size = sizeof(*task->rseq),
-> +		.signature = task->rseq_sig,
-> +		.flags = 0,
-> +	};
-> +
-> +	size = min_t(unsigned long, size, sizeof(conf));
-> +	if (copy_to_user(data, &conf, size))
-> +		return -EFAULT;
-> +	return sizeof(conf);
-> +}
-> +#endif
-> +
->  #ifdef PTRACE_SINGLESTEP
->  #define is_singlestep(request)		((request) == PTRACE_SINGLESTEP)
->  #else
-> @@ -1222,6 +1241,12 @@ int ptrace_request(struct task_struct *child, long request,
->  		ret = seccomp_get_metadata(child, addr, datavp);
->  		break;
->  
-> +#ifdef CONFIG_RSEQ
-> +	case PTRACE_GET_RSEQ_CONFIGURATION:
-> +		ret = ptrace_get_rseq_configuration(child, addr, datavp);
-> +		break;
-> +#endif
-> +
->  	default:
->  		break;
->  	}
-> -- 
-> 2.30.1.766.gb4fecdf3b7-goog
-> 
-
+greg k-h
