@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB05334B80
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595EB334B83
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbhCJWXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:23:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52262 "EHLO
+        id S233199AbhCJWXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:23:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38846 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230499AbhCJWXF (ORCPT
+        by vger.kernel.org with ESMTP id S231368AbhCJWXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:23:05 -0500
+        Wed, 10 Mar 2021 17:23:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615414984;
+        s=mimecast20190719; t=1615414986;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4+4lOSq3vIhecnbI3KNZCHHzBpOut6f3fq9Jok/tPms=;
-        b=Ozy1MgcZOoW3RhBYShIAHpZ/6nywJrlRpXOcnlHv8VJqE055RImraIjoQX6DPfZ09b43Jq
-        d+IVwvKfHbQQEKMxNh7ZQe2XLXfTkxbxgDxJ3b1oCirgpnJ4l4UeOfUXDCrCUsFV93ASJt
-        LZ9ek5KeWsRDzNiCIxlfySdyg1r7gvQ=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-vFegCmokMPytaieQ_d7QQg-1; Wed, 10 Mar 2021 17:23:02 -0500
-X-MC-Unique: vFegCmokMPytaieQ_d7QQg-1
-Received: by mail-qv1-f69.google.com with SMTP id iy2so13745984qvb.22
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:23:02 -0800 (PST)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xTi7eK4FhauapOMog+x2j3yLdISM1j6yYqbUEE/lj8k=;
+        b=EOny+7YwKvV3oGXe6aBsGnOP4vzQGK7BnY7M6M295Md192TZZ9eYjIZaKFYQNkXkomNBxL
+        rVr3lq9HAPFPgSPASEUIfLsQA5ABmWS1YvoYQVAx9cD+COC75bhfaMHmrnvgWdRcWWrf0J
+        RU0pC0KZ6sda1jX6lYbFbb8fePODhEk=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-523-EX8JKWZuP_e-MyNOnt2_vA-1; Wed, 10 Mar 2021 17:23:04 -0500
+X-MC-Unique: EX8JKWZuP_e-MyNOnt2_vA-1
+Received: by mail-qk1-f198.google.com with SMTP id y9so13927289qki.14
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:23:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4+4lOSq3vIhecnbI3KNZCHHzBpOut6f3fq9Jok/tPms=;
-        b=S6DKXepJZxZvglnn3fOFeLj9dyp+zlufpTF7EmwzvOnI55ps59X6TrXyoAw8Oj93vr
-         at0r0FB4lmbIZ2Rkg/4ealYOK0ZVluYHb0y7fjOTb0nW/SyFMk5t6iBI0VhiVFCt9+CD
-         bVo2HMyjHHVUneAwtuR0DIm0Dbdo9xp4nsoZCMBcTal7VOnk2hHDm7PORvqi2I8v9p1G
-         SzPa3JSXTbn37+UXqOAnLm4x9QhWK+43hpVzjkiYX6s3kr3gx+QrdsxuH/PpWV43UtiR
-         flqSMUBGDl+4cB0uaDq4+l1HY8YegojBISQKUji93YIvlCqI2ScpZVnCBjTIkOYkskl3
-         nBgQ==
-X-Gm-Message-State: AOAM531sgY8oJ0Uvy0nMq4R7UNYstlpWUn+dRlIZlpQ3f/+3ZSyZMLCn
-        awXFAkRpeS94QldVyZ4DuEdRIHXUgJ3GYjTdV9SypRiIKVAK+OZ7k1jiY4LvaTIM2cHwuGZFMkw
-        8ZOhsFJKAOWYGEYOrzqiH4X2L
-X-Received: by 2002:a05:620a:1206:: with SMTP id u6mr4695977qkj.173.1615414982369;
-        Wed, 10 Mar 2021 14:23:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxrZ0MoZVzbfqM3VCqFGsolarRmIxVHVTf2hN+KL5gwkEMk9jF3alEwbNLQH1X5ZoTmSNCufQ==
-X-Received: by 2002:a05:620a:1206:: with SMTP id u6mr4695953qkj.173.1615414982107;
-        Wed, 10 Mar 2021 14:23:02 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xTi7eK4FhauapOMog+x2j3yLdISM1j6yYqbUEE/lj8k=;
+        b=BjQcxHvds3eZNqGCRE9t7eEaBUaiFr8dcrqB/s2m98vqeHdckHfaC2+4EcUdFETW6O
+         1sx2VUrG+gMOYcSs2yotE/6Hjs/lN90ysPjtVXSQD3ULpMRKUfEx9ztj3zjOuB0SSWhu
+         2y3vlJIybhEkFnZHW5DBQrujZDaGM0nqvxjdOHS7Z7ZYStRC/uFLA58i2WWNNfwgrE/M
+         ils+gSU9jvpmUxjAZsHZYHgbFdvP1kE3kcIaR7mSsqEVY8bjr7hH7G/2axLwmK8UYmmk
+         +Rm25HfxJlqNL+/4JiwaG3sjVKKqPfoW1uWPj51Op2cQOkqW8g5qh5eKAxtkKK8aJyIZ
+         xuPg==
+X-Gm-Message-State: AOAM530RbGsXPGWp0ng4oW1CX57nB8aUMduCJ7WZ8E8i0T5JLS5RLDIf
+        TefRRFGwc9FdiuTbsql2BRMink915y+dWXTnyNoXTE/Mgm2BFDaLVwo01fLSoSIWHPCRqxMXkCl
+        hCbUQvhzONTkN/smNEJH0MhkC
+X-Received: by 2002:a37:b801:: with SMTP id i1mr4941131qkf.133.1615414983456;
+        Wed, 10 Mar 2021 14:23:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwU243DD5kOgxdOCxo20TQ0iqAimdDflbdLiodAf/V734MqCBcbaDiFEuQUCmE8qO5s1PRH9Q==
+X-Received: by 2002:a37:b801:: with SMTP id i1mr4941116qkf.133.1615414983236;
+        Wed, 10 Mar 2021 14:23:03 -0800 (PST)
 Received: from xz-x1.redhat.com ([142.126.89.138])
-        by smtp.gmail.com with ESMTPSA id e18sm451364qtr.52.2021.03.10.14.23.00
+        by smtp.gmail.com with ESMTPSA id e18sm451364qtr.52.2021.03.10.14.23.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 14:23:01 -0800 (PST)
+        Wed, 10 Mar 2021 14:23:02 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-man@vger.kernel.org
 Cc:     Andrea Arcangeli <aarcange@redhat.com>,
@@ -61,56 +62,63 @@ Cc:     Andrea Arcangeli <aarcange@redhat.com>,
         Alejandro Colomar <alx.manpages@gmail.com>,
         Nadav Amit <nadav.amit@gmail.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH v3 0/4] man2: udpate mm/userfaultfd manpages to latest
-Date:   Wed, 10 Mar 2021 17:22:56 -0500
-Message-Id: <20210310222300.200054-1-peterx@redhat.com>
+Subject: [PATCH v3 1/4] userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs
+Date:   Wed, 10 Mar 2021 17:22:57 -0500
+Message-Id: <20210310222300.200054-2-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210310222300.200054-1-peterx@redhat.com>
+References: <20210310222300.200054-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v3:=0D
-- Don't use "Currently", instead add "(since x.y)" mark where proper [Alex]=
-=0D
-- Always use semantic newlines across the whole patchset [Alex]=0D
-- Use quote when possible, rather than escapes [Alex]=0D
-- Fix one missing replacement of ".BR" -> ".B" [Alex]=0D
-- Some other trivial rephrases here and there when fixing up above=0D
-=0D
-v2 changes:=0D
-- Fix wordings as suggested [MikeR]=0D
-- convert ".BR" to ".B" where proper for the patchset [Alex]=0D
-- rearrange a few lines in the last two patches where they got messed up=0D
-- document more things, e.g. UFFDIO_COPY_MODE_WP; and also on how to resolv=
-e a=0D
-  wr-protect page fault.=0D
-=0D
-There're two features missing in current manpage, namely:=0D
-=0D
-  (1) Userfaultfd Thread-ID feature=0D
-  (2) Userfaultfd write protect mode=0D
-=0D
-There's also a 3rd one which was just contributed from Axel - Axel, I think=
- it=0D
-would be great if you can add that part too, probably after the whole=0D
-hugetlbfs/shmem minor mode reaches the linux master branch.=0D
-=0D
-Please review, thanks.=0D
-=0D
-Peter Xu (4):=0D
-  userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs=0D
-  userfaultfd.2: Add write-protect mode=0D
-  ioctl_userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs=0D
-  ioctl_userfaultfd.2: Add write-protect mode docs=0D
-=0D
- man2/ioctl_userfaultfd.2 |  86 ++++++++++++++++++++++++++++-=0D
- man2/userfaultfd.2       | 116 ++++++++++++++++++++++++++++++++++++++-=0D
- 2 files changed, 197 insertions(+), 5 deletions(-)=0D
-=0D
--- =0D
-2.26.2=0D
-=0D
+UFFD_FEATURE_THREAD_ID is supported since Linux 4.14.
+
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ man2/userfaultfd.2 | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
+index e7dc9f813..555e37409 100644
+--- a/man2/userfaultfd.2
++++ b/man2/userfaultfd.2
+@@ -77,6 +77,13 @@ When the last file descriptor referring to a userfaultfd object is closed,
+ all memory ranges that were registered with the object are unregistered
+ and unread events are flushed.
+ .\"
++.PP
++Since Linux 4.14, userfaultfd page fault message can selectively embed faulting
++thread ID information into the fault message.
++One needs to enable this feature explicitly using the
++.BR UFFD_FEATURE_THREAD_ID
++feature bit when initializing the userfaultfd context.
++By default, thread ID reporting is diabled.
+ .SS Usage
+ The userfaultfd mechanism is designed to allow a thread in a multithreaded
+ program to perform user-space paging for the other threads in the process.
+@@ -229,6 +236,9 @@ struct uffd_msg {
+         struct {
+             __u64 flags;    /* Flags describing fault */
+             __u64 address;  /* Faulting address */
++            union {
++                __u32 ptid; /* Thread ID of the fault */
++            } feat;
+         } pagefault;
+ 
+         struct {            /* Since Linux 4.11 */
+@@ -358,6 +368,9 @@ otherwise it is a read fault.
+ .\" UFFD_PAGEFAULT_FLAG_WP is not yet supported.
+ .RE
+ .TP
++.I pagefault.feat.pid
++The thread ID that triggered the page fault.
++.TP
+ .I fork.ufd
+ The file descriptor associated with the userfault object
+ created for the child created by
+-- 
+2.26.2
 
