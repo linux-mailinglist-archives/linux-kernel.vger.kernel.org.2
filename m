@@ -2,109 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48572334B2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B21334B25
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhCJWKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:10:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232874AbhCJWK1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:10:27 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D26C061574;
-        Wed, 10 Mar 2021 14:10:27 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id y13so9638042pfr.0;
-        Wed, 10 Mar 2021 14:10:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=842g7c9Tn0Z3vLdWgTHxvqUqf5VmKZ15G35dMX8yNNs=;
-        b=VYNAz89I+dztCb63TA5G+CqSH4s4uZSzFUtQS4MqK4KH1ngNNnM5zLTn1e+0S77hF0
-         2hNzjqrbXkCDPo4DZyvefpHiqos4YmuAr9hbgT25tFm6aDEzT6w3LH7KPzNpspl3mJaV
-         NbDqclIaQ9Kqb5OR5VBjFSOzJqf1oeTf2qDBCfOlYx+NMwpcfPMfpNp5QtCNweUpUs7o
-         weu7zwvLuoAwJAAcGrrcVZ3xhms9aLx7M16skUJPAKsUefLYllPLZfMZitCXjMZZFW7x
-         HNBn2Crt979arvZhs24LmuvfHRw+S6GlmYm2tqwRfefJIhtab4crscG2ItBGu61yCKL0
-         yQWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=842g7c9Tn0Z3vLdWgTHxvqUqf5VmKZ15G35dMX8yNNs=;
-        b=rRH7yVCW0SfZuJHSJnPXMMm5rm+EK5L0BrwJ3A41NMSxLkBPW6VhV6QF60dP9Uo+Dr
-         KExstIPsd0iq+cn3dDirajBzKqirVtp+ys0tCJEWdHSP06aXS1/6DusBV6Qvu8SmAqRm
-         ue3fPtJdQs1af2to1txDTNLMmWUSy1TFfP6n4lN7bg326gtvwtSIF/jCB4qJWU5EDNwG
-         3E/ZUkxYwTC0YSgGbJ88sf6AimiOZ+1OUG2ZC4mY0WGAQBix0KonFpAg/jtIYULKoD1j
-         pMxL2D1U20M1UlammDvgRPy24/v1+k+N4yBDFRUmQIRrZhjvWa63fgHprLcaec3ajNm6
-         5KoQ==
-X-Gm-Message-State: AOAM530XU5O46TVj8YzQKtfnMXXvuS/DnU6xBBCtsVrrvu3J0iMc4N/f
-        DMzO/iWzAqRMOUsZkWZKUWl6Jhy8n9DCzw==
-X-Google-Smtp-Source: ABdhPJx4d2837GNgaZU1BEW7RVpyIJA7zsGwnRxN5Nth6O0xbgiD/FkbfW5Msi832YRG01718dg+6A==
-X-Received: by 2002:a65:6641:: with SMTP id z1mr4422868pgv.399.1615414227133;
-        Wed, 10 Mar 2021 14:10:27 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id 21sm428760pgf.69.2021.03.10.14.10.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 10 Mar 2021 14:10:26 -0800 (PST)
-Date:   Wed, 10 Mar 2021 14:08:09 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iommu/tegra-smmu: Add pagetable mappings to debugfs
-Message-ID: <20210310220808.GA10431@Asurada-Nvidia>
-References: <20210310033614.16772-1-nicoleotsuka@gmail.com>
- <cc5dca8f-e9b0-a845-1af4-e762782d5441@gmail.com>
+        id S233725AbhCJWId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:08:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233493AbhCJWIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:08:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5636964E27;
+        Wed, 10 Mar 2021 22:08:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615414091;
+        bh=7DgS4RMA6sw3/cVUzknsVlM4gDfY7Ai2f4HejB8VsOU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eCRD/Pu/fzPu7c54D8GC3G8AfxKorBs43jwNo7LYLzovcCoxjNgdsbbSF6xqjGHIf
+         2kZ8AuOGzmPrQ6qZJr2lnLNCifIoCFvMOSOGp0HQGotg57ggsnLyF0dTNLmlOTHsBr
+         KzOy2zl4xfxrrXZS9bUQDTEp5d0eT4+69oMC3HWYwc4EZVhF3F/Piu6NjDoIWRZKnd
+         EJ7Tb6j05EfQVT9MCjfbtSdvXkm8L4kjlb9wkyB4Zk1vPI/Ec9tdjGCu48/UiR7AeB
+         /Mj2VF4dKSyghotVTEN2vgOuCsYDCIaVE/mtKyAc+hqR754sWbnXjP6GsIOJKSbw0Y
+         4KIOvP6hAP+WA==
+Date:   Wed, 10 Mar 2021 23:08:09 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 11/13] rcu/nocb: Only cancel nocb timer if not polling
+Message-ID: <20210310220809.GB2949@lothringen>
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-12-frederic@kernel.org>
+ <20210303012229.GB20917@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cc5dca8f-e9b0-a845-1af4-e762782d5441@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210303012229.GB20917@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:38:47PM +0300, Dmitry Osipenko wrote:
-> 10.03.2021 06:36, Nicolin Chen пишет:
-> > This patch dumps all active mapping entries from pagetable
-> > to a debugfs directory named "mappings".
+On Tue, Mar 02, 2021 at 05:22:29PM -0800, Paul E. McKenney wrote:
+> On Tue, Feb 23, 2021 at 01:10:09AM +0100, Frederic Weisbecker wrote:
+> > No need to disarm the nocb_timer if rcu_nocb is polling because it
+> > shouldn't be armed either.
 > > 
-> > Ataching an example:
-> > 
-> > SWGROUP: hc
-> > ASID: 0
-> > reg: 0x250
-> > PTB_ASID: 0xe0080004
-> > as->pd_dma: 0x80004000
-> > {
-> >         [1023] 0xf0080013 (1)
-> >         {
-> >                 PTE RANGE       PHYS           IOVA        SIZE        ATTR
-> >                 #1023 - #1023   0x122e5e000    0xfffff000  0x1000      0x5
-> >         }
-> > }
-> > Total PDE count: 1
-> > Total PTE count: 1
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
 > 
-> Addresses are 32bit on ARM32, please fix the formatting. The phys_addr_t
-> and dma_addr_t have special printk specifiers [1].
-> 
-> [1]
-> https://www.kernel.org/doc/html/latest/core-api/printk-formats.html?highlight=printk#physical-address-types-phys-addr-t
-> 
-> as->pd_dma: 0xc026e81b0000026c
-> {
->         [0] 0xf0082848 (1024)
->         {
->                 PTE RANGE       PHYS           IOVA        SIZE
-> ATTR
->                 #0    - #15     0xc0f9fc40bfde0000 0x0         0x10000
+> OK, so it does make sense to move that del_timer() under the following
+> "if" statement, then.  ;-)
 
-Thanks for the feedback! I will send v3.
+Right, probably I should have handled that in the beginning of the patchset
+instead of the end but heh, my mind is never that clear.
+
+Thanks.
