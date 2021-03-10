@@ -2,94 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1F03337F8
+	by mail.lfdr.de (Postfix) with ESMTP id 8785D3337F9
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbhCJI4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:56:50 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:46684 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230156AbhCJI4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:56:34 -0500
-Received: from [10.130.0.55] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxqdS7iUhgea4XAA--.30118S3;
-        Wed, 10 Mar 2021 16:56:28 +0800 (CST)
-Subject: Re: [PATCH RFC] MIPS: livepatch: Add LIVEPATCH basic code
-To:     Miroslav Benes <mbenes@suse.cz>
-References: <1614598201-17858-1-git-send-email-hejinyang@loongson.cn>
- <alpine.LSU.2.21.2103100912590.13355@pobox.suse.cz>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <07945438-05b9-b62a-28eb-b91729ebf637@loongson.cn>
-Date:   Wed, 10 Mar 2021 16:56:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S231486AbhCJI4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:56:51 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:32881 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231899AbhCJI4r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:56:47 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id B69C25C00A9;
+        Wed, 10 Mar 2021 03:56:46 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 10 Mar 2021 03:56:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=dhpbj3Bm/YirP1Wo9nWvDfpHcaC
+        0BIpgfsBiWqT5VhM=; b=jOk+Wux6scGrrEpkS3VDNcm3SsnlMVrfOQ8VPilI2XI
+        OuTqbmgtn+skq3mnH2rCS2pPHm/SEY0kWXPLVwUNW35U0R1XQQaJpn18xwjYI7DE
+        yiLIpCjYGdkCx6u0NpwKzwvnwUW0hwi6ldJrLvr2SiMWiDISpUOUWeKdhZLoJ1qo
+        a2Xz4MrB5SI8mKREozfnqAeXsTMtWUQV7VwSWJ4ugr3d8wqTSj3sOcA6CuW2yxxC
+        BsSJ0fMdzCN5/wgEFiDDIX1rzCfWU8rjTS8iaQ5PVk1qDxOad/DoK6OhDAFDLcsj
+        zy0uyrm9cLqq81LOtyn1jDwmQH9JpFHEMbXb2xF0A+Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=dhpbj3
+        Bm/YirP1Wo9nWvDfpHcaC0BIpgfsBiWqT5VhM=; b=IpY7Ghk7pDzKLLowJWTUBi
+        qaBbvYsAO5VVBf4l9p6a2ZgbIIkxuymOTb+vBhV8/ZgeTBLJv8WP9O5cExRpwsuM
+        o71nkNbpFEeDg2d62TgInTPVdoGygfVOJ8d3dV9VFEn0FCMJMoAqZv4bijrWRs/N
+        mXBPKh/CDzVrNe2HyfCRMudA33SrvtE86Fm0ps3s0VIriJnXGisQaDEdGKeiqKm/
+        B75WdPZ1T6BBMSXLY1ChWUJLWTsxyXC4FH+rEuLZwU72dgW1yLqG2rPKxpO3NQPS
+        nGtZeXVVsyrSU+3k9wHDS1+bIyoKmWn3FofEbqhVvxqjh2KBKqK0vMfLG/a+bwfQ
+        ==
+X-ME-Sender: <xms:zYlIYJjkJAXdy1Vo8zQCLeXO9ib3n64qxRCM8iD_gcudd7BJjxDb9Q>
+    <xme:zYlIYOAALCqeZapqUV5lYidEQ5QrytqLoRmmYvanqTq-vsR8dhWd5OEEcuSREfKJv
+    bPbJqiXselUqyQIZ0E>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddujedguddugecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeeuueelieeugeelvdehhfffteetgfehieejhffgtdegvdehgfeuveehjeej
+    lefgveenucffohhmrghinhepshhpihhnihgtshdrnhgvthdpkhgvrhhnvghlrdhorhhgne
+    cukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:zYlIYJH3ZYPz3AdW3HLTZsIjLS-Mk6ojeIKwgSTiiOxG92huaYNR8A>
+    <xmx:zYlIYOQaZsv_E600i6Ma4ru_OTngf1q-JexBU8-ZoCIXd25O2GzTJg>
+    <xmx:zYlIYGwPFhXzOYoGnRkJFNoD92zMuAmU8-o4eZSOcOZCt8KfYD1IPA>
+    <xmx:zolIYByDF2XnlCVhXJ6lIRlwq-YIDtU8fyBgyTlV3RTpbu0ZF3VMQA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 34EF21080063;
+        Wed, 10 Mar 2021 03:56:45 -0500 (EST)
+Date:   Wed, 10 Mar 2021 09:56:42 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH RESEND 0/2] Common protected-clocks implementation
+Message-ID: <20210310085642.ugywtfct66x2bo5j@gilmour>
+References: <20200903040015.5627-1-samuel@sholland.org>
+ <9363f63f-8584-2d84-71fd-baca13e16164@rasmusvillemoes.dk>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.21.2103100912590.13355@pobox.suse.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxqdS7iUhgea4XAA--.30118S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4fKryxKF47XF45Zw4xJFb_yoW8Ar43pF
-        W5KFn3tw4DAr929rs7Zw4xWr15Z397Kr9xW3W8Wr1UZ3WDWw1SkFs2yw4qya45X34kKay3
-        Z3y8tF1kZ3WkZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
-        IFyTuYvjfUeHUDDUUUU
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="supdipipenbcn226"
+Content-Disposition: inline
+In-Reply-To: <9363f63f-8584-2d84-71fd-baca13e16164@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2021 04:18 PM, Miroslav Benes wrote:
 
-> Hi,
->
-> I cannot really comment on mips arch specifics but few words from the live
-> patching perspective.
-Thanks for your reply. :-)
+--supdipipenbcn226
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> On Mon, 1 Mar 2021, Jinyang He wrote:
->
->> Add the basic code of livepatch. livepatch is temporarily unavailable.
->> Two core functions are missing, one is DYNAMIC_FTRACE_WITH_REGS, and
->> another is save_stack_trace_tsk_reliable().
->> `Huang Pei <huangpei@loongson.cn>` is doing for ftrace. He will use
->> `-fpatchable-function-entry` to achieve more complete ftrace.
-> DYNAMIC_FTRACE_WITH_ARGS has been introduced recently, so you might also
-> look at that. As far as the live patching is concerned,
-> DYNAMIC_FTRACE_WITH_ARGS is sufficient.
-Huang Pei had told me, and the follow link explains it detaily.
-He is doing this work on mips arch now.
+Hi,
 
-http://mpe.github.io/posts/2016/05/23/kernel-live-patching-for-ppc64le/
+On Tue, Mar 09, 2021 at 09:03:14AM +0100, Rasmus Villemoes wrote:
+> On 03/09/2020 06.00, Samuel Holland wrote:
+> > Stephen, Maxime,
+> >=20
+> > You previously asked me to implement the protected-clocks property in a
+> > driver-independent way:
+> >=20
+> > https://www.spinics.net/lists/arm-kernel/msg753832.html
+> >=20
+> > I provided an implementation 6 months ago, which I am resending now:
+> >=20
+> > https://patchwork.kernel.org/patch/11398629/
+> >=20
+> > Do you have any comments on it?
+>=20
+> I'm also interested [1] in getting something like this supported in a
+> generic fashion - i.e., being able to mark a clock as
+> protected/critical/whatnot by just adding an appropriate property in the
+> clock provider's DT node, but without modifying the driver to opt-in to
+> handling it.
+>=20
+> Now, as to this implementation, the commit 48d7f160b1 which added the
+> common protected-clocks binding says
+>=20
+>   For example, on some Qualcomm firmwares reading or writing certain clk
+>   registers causes the entire system to reboot,
+>=20
+> so I'm not sure handling protected-clocks by translating it to
+> CLK_CRITICAL and thus calling prepare/enable on it is the right thing to
+> do - clks that behave like above are truly "hands off, kernel", so the
+> current driver-specific implementation of simply not registering those
+> clocks seems to be the right thing to do - or at least the clk framework
+> would need to be taught to not actually call any methods on such
+> protected clocks.
 
->> save_stack_trace_tsk_reliable() currently has difficulties. This function
->> may be improved in the future, but that seems to be a long time away.
->> This is also the reason for delivering this RFC. Hope to get any help.
-> You may want to look at Documentation/livepatch/reliable-stacktrace.rst
-> which nicely describes the requirements for the reliable stacktraces.
-And Maciej answered many questions for me about reliable stacktrace.
-I thought Documentation/livepatch/reliable-stacktrace.rst is important, too.
-I noticed that arm64 has submitted objtool patches before, and it seems that
-MIPS may use this method (ORC) to achieve reliable stack traceback. It looks
-complicated to me. Drawf, compiler, abi and so on.
+The idea to use CLK_CRITICAL was also there to allow any clock to be
+marked as protected, and not just the root ones. Indeed, by just
+ignoring that clock, the parent clock could end up in a situation where
+it doesn't have any (registered) child and thus would be disabled,
+disabling the ignored clock as well. Reparenting could cause the same
+issue.
 
-> Regards
-> Miroslav
-Thanks,
-Jinyang
+Calling clk_prepare_enable just allows the kernel to track that it (and
+thus its parent) should never be disabled, ever.
 
+> For my use case, either "hands off kernel" or "make sure this clock is
+> enabled" would work since the bootloader anyway enables the clock.
+
+The current protected clocks semantics have been that the clock
+shouldn't be disabled by the kernel, but "hands off kernel" clocks imply
+a slightly different one. I would expect that the bootloader in this
+case wouldn't expect any parent or rate (or phase, or any other
+parameter really) change, while it might be ok for some other use cases
+(like the one Samuel was trying to address for example).
+
+And even if we wanted the kernel to behave that way (making sure there's
+no way to change the rate, parents, phase, etc.), the kernel would have
+to have knowledge of it to also propagate that restriction to the whole
+chain of parents.
+
+Maxim
+
+--supdipipenbcn226
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYEiJygAKCRDj7w1vZxhR
+xQR8AQD/+TN0gj9knlLqLn2CHZlAnj0A92xKow/bZnO58HhvwQEA6M0KautXexRL
+iinBv4Y7M5goEbbXeZtBJkB3c56USg4=
+=it6C
+-----END PGP SIGNATURE-----
+
+--supdipipenbcn226--
