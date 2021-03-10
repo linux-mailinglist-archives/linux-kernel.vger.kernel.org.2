@@ -2,111 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCFC33422D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A0C334236
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232849AbhCJPys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:54:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbhCJPyl (ORCPT
+        id S233176AbhCJPzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:55:21 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46336 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231760AbhCJPzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:54:41 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE547C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:54:40 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id e7so15970519ile.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:54:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vnS5jA9i9gI46BON0h6ZM9jTU/INdZkZOvAGVlfFP1Y=;
-        b=Jp4I/nkPkxDYWV5jKsar83puIuxuP6Y9g9Ld2s/WRcvIxjs5sBWM5Gchz1UszMTBY7
-         TrUV6Juy0G4VzQg9XAvkmF1pcLA9wsONObmXZ0oEmJSvwkiqwwAtqsvt4mw6euWfnmKz
-         V9suro+K3Q2x0dtfLguCnaHrnZVv2ZObLzPRw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vnS5jA9i9gI46BON0h6ZM9jTU/INdZkZOvAGVlfFP1Y=;
-        b=Do9UlQhLwpbWqTG9MtLjXk/LK1Ssrqd1bcC1zQyXZ0HAxVvL3IeEMHyDXL2EXrw9Tq
-         cUQcFuwM8G9KnJsgozOpF7c5xzMwB2xjpZPW8+sIi36y015WL075mmJYx30eRQya2AZu
-         Un2RLhug3q/vXrGNYrCoq+DtFpIG4s1llNau3Ns6bgsqVlXbnUIKmKbXl/GqER6jslGH
-         4EqlORa6mAoaPY0AGTM7Y9V2fpD2vQBzEJupQbPoPiM7iM+NQnN+23ZmQ361eCb7dkUe
-         1yxoTRMQ3NJCinBPtEnurcefqtIm0MvQypxwTQ7zLVQ6y1+TitUg7htpvGd+C+VyMyCU
-         04eA==
-X-Gm-Message-State: AOAM532Aco7US1SwYbJ3I/hDXcgIIPt/VXquELAZPQv6q6STNOBQF1l8
-        HzvExJEIm1DoHD5nsPkFnzp/Uw==
-X-Google-Smtp-Source: ABdhPJxJZsz0h0G4355L1Dg2Hq03AooUnFtRGqf3RAbfFos4CUc0HiAowIZidO7He/MR9FNBQVQCUg==
-X-Received: by 2002:a05:6e02:1d0b:: with SMTP id i11mr2959233ila.206.1615391680364;
-        Wed, 10 Mar 2021 07:54:40 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id m4sm9511481ilc.53.2021.03.10.07.54.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 07:54:39 -0800 (PST)
-Subject: Re: [PATCH v2] kunit: fix checkpatch warning
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210303020350.4sahuojkqnkcxquf@smtp.gmail.com>
- <CAFd5g47rjt7i7JXWsYarqX_dShHiqSg8StKb7KCqOye3=eyZDg@mail.gmail.com>
- <20210304043554.jysk6qms4h4hue4i@smtp.gmail.com>
- <d9f1007a-8de4-45e4-b662-846054d50390@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <4cef7239-1fef-951a-6b99-07c8c973c091@linuxfoundation.org>
-Date:   Wed, 10 Mar 2021 08:54:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 10 Mar 2021 10:55:09 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12AFsuA7120873;
+        Wed, 10 Mar 2021 09:54:56 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615391696;
+        bh=8AYrDZ9YTwYsvVYi/Y4U5QHZjjUnhc9h3+C5pzcRwqo=;
+        h=From:To:CC:Subject:Date;
+        b=Si4a9pP87FSkTc9KvUXBQBpMdJ0uHnykTc5C+FFVf79oYMjzIxLCKvJD4HF9ojtXV
+         Fpqn0f4fKKiVKL8TOOwl1cj2+Lq9IqyrBqttqHU8eUVJUPCdRV+fHrXeOmBhxtUNLe
+         D5TBAD1Vn8X/u78N21JoH+guFFw6bDZnUGE3me/4=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12AFsuab029139
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Mar 2021 09:54:56 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
+ Mar 2021 09:54:56 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 10 Mar 2021 09:54:56 -0600
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12AFsq5h082613;
+        Wed, 10 Mar 2021 09:54:53 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Swapnil Jakhade <sjakhade@cadence.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-phy@lists.infradead.org>
+Subject: [PATCH 0/4] j721e-wiz/cadence-torrent: Support to skip SERDES configuration
+Date:   Wed, 10 Mar 2021 21:24:41 +0530
+Message-ID: <20210310155445.534-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <d9f1007a-8de4-45e4-b662-846054d50390@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/21 4:12 PM, Shuah Khan wrote:
-> On 3/3/21 9:35 PM, Lucas Stankus wrote:
->> On Wed, Mar 03, 2021 at 12:56:05PM -0800, Brendan Higgins wrote:
->>> Did you change anything other than fixing the Signed-off-by that Shuah
->>> requested?
->>
->> No, I only fixed the Signed-off-by warning.
->>
->>> Generally when you make a small change after receiving a Reviewed-by
->>> (especially one so small as here), you are supposed to include the
->>> Reviewed-by with the other git commit message footers directly below
->>> the "Signed-off-by". Please remember to do so in the future.
->>>
->>> Also, when you make a change to a patch and send out a subsequent
->>> revision, it is best practice to make note explaining the changes you
->>> made since the last revision in the "comment section" [1] of the
->>> git-diff, right after the three dashes and before the change log as
->>> you can see in this example [2] (note that everything after
->>> "Signed-off-by: David Gow <davidgow@google.com>\n ---" and before
->>> "tools/testing/kunit/configs/broken_on_uml.config | 2 ++" is discarded
->>> by git am).
->>
->> Sorry for the incovenience regarding best practices, I'll keep that
->> noted for further contributions.
->>
-> 
+Add support to skip SERDES configuration if it's already configured in
+bootloader.
 
-Sorry I should have asked you about this. I like to see what is being
-fixed in the subject line.
+The wiz part was initially sent in [1] but that was sent more in the
+context of Sierra but this is in context of Torrent. The Sierra part
+would be sent later.
 
-Can you update the subject line. The current one doesn't say anything
-about the nature of the fix.
+[1] -> http://lore.kernel.org/r/20201103035556.21260-1-kishon@ti.com
 
-Also please run the checkpatch script on your patches. This tool useful
-and can offer you tips on improving your commit log as well as code.
+Faiz Abbas (1):
+  phy: ti: j721e-wiz: Do not configure wiz if its already configured
 
-thanks,
--- Shuah
+Kishon Vijay Abraham I (3):
+  phy: cadence-torrent: Group reset APIs and clock APIs
+  phy: cadence-torrent: Do not configure SERDES if it's already
+    configured
+  phy: cadence-torrent: Explicitly request exclusive reset control
+
+ drivers/phy/cadence/phy-cadence-torrent.c | 106 ++++++++++++++--------
+ drivers/phy/ti/phy-j721e-wiz.c            |  21 ++++-
+ 2 files changed, 86 insertions(+), 41 deletions(-)
+
+-- 
+2.17.1
+
