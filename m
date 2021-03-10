@@ -2,109 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42FE334914
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7EE33491C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhCJUob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:44:31 -0500
-Received: from mga12.intel.com ([192.55.52.136]:58443 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230491AbhCJUoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:44:15 -0500
-IronPort-SDR: ziWv5KNtIST7z6I1+g9nvbU4w+qgqVyljisoYyRL5Tuj5dug9CxNoKmiWl7hwVGP2MDVZtibjB
- v5hercud+LoQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167835676"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="167835676"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 12:44:15 -0800
-IronPort-SDR: j71S+seXjSD2UZQz7i5nkTRxqrVG0IghE+KqmMko2hAAUd91sa+u9WXuqyx8cG45Iwth9SGz1l
- bMP616clnbTw==
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="438040003"
-Received: from xuhuiliu-mobl1.amr.corp.intel.com ([10.251.31.67])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 12:44:09 -0800
-Message-ID: <519e3851e2857f653af29d64a79044cff233401b.camel@intel.com>
-Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
-From:   Kai Huang <kai.huang@intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>, Borislav Petkov <bp@alien8.de>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
-        b.thiel@posteo.de, jmattson@google.com, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, corbet@lwn.net
-Date:   Thu, 11 Mar 2021 09:44:07 +1300
-In-Reply-To: <YEkJXu262YDa8ZaK@kernel.org>
-References: <cover.1615250634.git.kai.huang@intel.com>
-         <20210309093037.GA699@zn.tnic> <YEkJXu262YDa8ZaK@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S231338AbhCJUtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:49:23 -0500
+Received: from smtp83.iad3a.emailsrvr.com ([173.203.187.83]:35942 "EHLO
+        smtp83.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230173AbhCJUtD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:49:03 -0500
+X-Auth-ID: markh@compro.net
+Received: by smtp11.relay.iad3a.emailsrvr.com (Authenticated sender: markh-AT-compro.net) with ESMTPSA id 3DECA5364;
+        Wed, 10 Mar 2021 15:49:02 -0500 (EST)
+Reply-To: markh@compro.net
+Subject: Re: Logitech G602 wireless mouse kernel error messages in 5.10.11+
+ kernels
+From:   Mark Hounschell <markh@compro.net>
+To:     =?UTF-8?Q?Filipe_La=c3=adns?= <lains@archlinux.org>,
+        Jiri Kosina <jkosina@suse.cz>, sashal@kernel.org,
+        Linux-kernel <linux-kernel@vger.kernel.org>
+References: <ac5dde9c-194f-ce40-5c13-2a6890fad6a9@compro.net>
+ <bb840ecf8dc626a07b9f00af69b0d561fb60f75b.camel@archlinux.org>
+ <8276a207-abe7-06cc-0c25-f4eebf1a9525@compro.net>
+Organization: Compro Computer Svcs.
+Message-ID: <b45b7d5f-0ac6-fc19-0e5c-59fea6211e6a@compro.net>
+Date:   Wed, 10 Mar 2021 15:49:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <8276a207-abe7-06cc-0c25-f4eebf1a9525@compro.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Classification-ID: 3fdca5c6-28fa-46af-8bc1-bf0031205817-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-10 at 20:01 +0200, Jarkko Sakkinen wrote:
-> On Tue, Mar 09, 2021 at 10:30:37AM +0100, Borislav Petkov wrote:
-> > On Tue, Mar 09, 2021 at 02:38:49PM +1300, Kai Huang wrote:
-> > > This series adds KVM SGX virtualization support. The first 14 patches starting
-> > > with x86/sgx or x86/cpu.. are necessary changes to x86 and SGX core/driver to
-> > > support KVM SGX virtualization, while the rest are patches to KVM subsystem.
-> > 
-> > Ok, I guess I'll queue 1-14 once Sean doesn't find anything
-> > objectionable then give Paolo an immutable commit to base the KVM stuff
-> > ontop.
-> > 
-> > Unless folks have better suggestions, ofc.
+On 3/10/21 3:24 PM, Mark Hounschell wrote:
+> On 3/10/21 2:56 PM, Filipe Laíns wrote:
+>> On Wed, 2021-03-10 at 13:55 -0500, Mark Hounschell wrote:
+>>> I have been using a Logitech wireless G602 mouse since forever. As of
+>>> kernel 5.10.11 I get the following kernel messages;
+>>>
+>>>
+>>> $dmesg | grep -i logitech
+>> (snip)
+>>> .
+>>> .
+>>> .
+>>> Every mouse event seems to produce another "Unexpected input report
+>>> number 128" kernel message.
+>>>
+>>> The commit that started this is:
+>>>
+>>> commit 1e6fc9768ed2c3917e1fd7af26cb194dfe14f7da
+>>> Author: Filipe LaÃ­ns <lains@archlinux.org>
+>>> Date:   Mon Jan 4 20:47:17 2021 +0000
+>>>
+>>>       HID: logitech-dj: add the G602 receiver
+>>>
+>>>       [ Upstream commit e400071a805d6229223a98899e9da8c6233704a1 ]
+>>>
+>>>       Tested. The device gets correctly exported to userspace and I 
+>>> can see
+>>>       mouse and keyboard events.
+>>>
+>>>       Signed-off-by: Filipe LaÃ­ns <lains@archlinux.org>
+>>>       Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+>>>       Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>>
+>>> The actual patch:
+>>>
+>>> diff --git a/drivers/hid/hid-logitech-dj.c 
+>>> b/drivers/hid/hid-logitech-dj.c
+>>> index 1ffcfc9a1e033..45e7e0bdd382b 100644
+>>> --- a/drivers/hid/hid-logitech-dj.c
+>>> +++ b/drivers/hid/hid-logitech-dj.c
+>>> @@ -1869,6 +1869,10 @@ static const struct hid_device_id
+>>> logi_dj_receivers[] = {
+>>>             HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
+>>>                   0xc531),
+>>>            .driver_data = recvr_type_gaming_hidpp},
+>>> +       { /* Logitech G602 receiver (0xc537) */
+>>> +         HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
+>>> +               0xc537),
+>>> +        .driver_data = recvr_type_gaming_hidpp},
+>>>           { /* Logitech lightspeed receiver (0xc539) */
+>>>             HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
+>>>                   USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1),
+>>>
+>>>
+>>>
+>>> markh@harley:~> lsusb
+>>> Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+>>> Bus 003 Device 003: ID 046d:c537 Logitech, Inc.
+>>> Bus 003 Device 002: ID 0424:2504 Standard Microsystems Corp. USB 2.0 Hub
+>>> Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+>>> Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+>>> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+>>>
+>>>
+>>>
+>>> With the patch reverted:
+>>>
+>>> $dmesg | grep -i logitech
+>> (snip)
+>>>
+>>> $lsusb
+>>> Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+>>> Bus 003 Device 003: ID 046d:c537 Logitech, Inc.
+>>> Bus 003 Device 002: ID 0424:2504 Standard Microsystems Corp. USB 2.0 Hub
+>>> Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+>>> Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+>>> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+>>>
+>>> With or without the patch and error messages the mouse has always 
+>>> worked.
+>>>
+>>> Regards
+>>> Mark
+>>
+>> Yes, sorry about that. The following patch should fix it, can you 
+>> confirm?
+>> You probably didn't notice any breakage because you do not have any of 
+>> your
+>> buttons bound to keyboard events.
+>>
+>>
+>> commit ef07c116d98772952807492bd32a61f5af172a94 
+>> (hid/for-5.11/upstream-fixes)
+>> Author: Filipe Laíns <lains@riseup.net>
+>> Date:   Fri Feb 5 14:34:44 2021 +0000
+>>
+>>      HID: logitech-dj: add support for keyboard events in eQUAD step 4 
+>> Gaming
+>>
+>>      In e400071a805d6229223a98899e9da8c6233704a1 I added support for the
+>>      receiver that comes with the G602 device, but unfortunately I 
+>> screwed up
+>>      during testing and it seems the keyboard events were actually not 
+>> being
+>>      sent to userspace.
+>>      This resulted in keyboard events being broken in userspace, please
+>>      backport the fix.
+>>
+>>      The receiver uses the normal 0x01 Logitech keyboard report 
+>> descriptor,
+>>      as expected, so it is just a matter of flagging it as supported.
+>>
+>>      Reported in
+>>      https://github.com/libratbag/libratbag/issues/1124
+>>
+>>      Fixes: e400071a805d6 ("HID: logitech-dj: add the G602 receiver")
+>>      Cc: <stable@vger.kernel.org>
+>>      Signed-off-by: Filipe Laíns <lains@riseup.net>
+>>      Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+>>
+>> diff --git a/drivers/hid/hid-logitech-dj.c 
+>> b/drivers/hid/hid-logitech-dj.c
+>> index 45e7e0bdd382..fcdc922bc973 100644
+>> --- a/drivers/hid/hid-logitech-dj.c
+>> +++ b/drivers/hid/hid-logitech-dj.c
+>> @@ -980,6 +980,7 @@ static void logi_hidpp_recv_queue_notif(struct 
+>> hid_device
+>> *hdev,
+>>          case 0x07:
+>>                  device_type = "eQUAD step 4 Gaming";
+>>                  logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, 
+>> &workitem);
+>> +               workitem.reports_supported |= STD_KEYBOARD;
+>>                  break;
+>>          case 0x08:
+>>                  device_type = "eQUAD step 4 for gamepads";
+>>
+>>
 > 
-> I'm otherwise cool with that, except patch #2.
+> That is correct, I don't have any buttons bound to keyboard events. With 
+> the original patch the G4(forward) and G5(Backward) buttons work in a 
+> browser. I guess G7, G8, and G9 buttons are programmable to keyboard 
+> events?
 > 
-> It's based on this series:
+> However this patch does not seem to fix the messages I get.
 > 
-> https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
-> 
-> It's not reasonable to create driver specific wrapper for
-> sgx_free_epc_page() because there is exactly *2* call sites of the function
-> in the driver.  The driver contains 10 call sites (11 after my NUMA patches
-> have been applied) of sgx_free_epc_page() in total.
-> 
-> Instead, it is better to add explicit EREMOVE to those call sites.
-> 
-> The wrapper only trashes the codebase. I'm not happy with it, given all the
-> trouble to make it clean and sound.
 
-However, your change has side effort: it always put page back into free pool, even
-EREMOVE fails. To make your change w/o having any functional change, it has to be:
+Actually is not this patch already in a 5.10.21 kernel?
 
-	if(!sgx_reset_epc_page())
-		sgx_free_epc_page();
-
-And for this, Dave raised one concern we should add a WARN() to let user know EPC
-page is leaked, and reboot is requied to get them back.
-
-However with sgx_reset_epc_page(), there's no place to add such WARN(), and
-implementing original sgx_free_epc_page() as sgx_encl_free_epc_page() looks very
-reasonable to me:
-
-https://www.spinics.net/lists/linux-sgx/msg04631.html
-
-Hi Dave,
-
-What is your comment here?
-
-> 
-> > Thx.
-> > 
-> > -- 
-> > Regards/Gruss,
-> >     Boris.
-> > 
-> > https://people.kernel.org/tglx/notes-about-netiquette
-> 
-> 
-> /Jarkko
-
+Mark
 
