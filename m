@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB67333BA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E9A333BA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhCJLmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:42:20 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:63318 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbhCJLmI (ORCPT
+        id S231753AbhCJLnh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 06:43:37 -0500
+Received: from mout.kundenserver.de ([217.72.192.74]:43659 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231356AbhCJLnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:42:08 -0500
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 10 Mar 2021 03:42:07 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 10 Mar 2021 03:42:05 -0800
-X-QCInternal: smtphost
-Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 10 Mar 2021 17:11:39 +0530
-Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
-        id 7098820F0F; Wed, 10 Mar 2021 17:11:38 +0530 (IST)
-From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        rjliao@codeaurora.org, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Subject: [RFC PATCH v1] Bluetooth: hci_qca: Add device_may_wakeup support
-Date:   Wed, 10 Mar 2021 17:11:36 +0530
-Message-Id: <1615376496-13577-1-git-send-email-gubbaven@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 10 Mar 2021 06:43:16 -0500
+Received: from mail-oi1-f176.google.com ([209.85.167.176]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MSLlu-1l8zwg1biq-00Sioh; Wed, 10 Mar 2021 12:43:14 +0100
+Received: by mail-oi1-f176.google.com with SMTP id d20so18734653oiw.10;
+        Wed, 10 Mar 2021 03:43:13 -0800 (PST)
+X-Gm-Message-State: AOAM531/7yZSvEeZkdCJa5NSq6fmieEqZ2RXVdtDQxJXhoLASuwSYSuv
+        L1D+aTPOqxnQ5AciLBcxDsIpR6C2d074lcunWHY=
+X-Google-Smtp-Source: ABdhPJxlHt0uYmch4USUhyI1PmZYpWv5SFHgA7xLm+M/LTOw8bqf4Cpyeoo3gC1uj5lb01XEoAYopnrDQGHXZzFybs8=
+X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr2139659oie.4.1615376592865;
+ Wed, 10 Mar 2021 03:43:12 -0800 (PST)
+MIME-Version: 1.0
+References: <20210225080453.1314-1-alex@ghiti.fr> <20210225080453.1314-3-alex@ghiti.fr>
+ <5279e97c-3841-717c-2a16-c249a61573f9@redhat.com> <7d9036d9-488b-47cc-4673-1b10c11baad0@ghiti.fr>
+In-Reply-To: <7d9036d9-488b-47cc-4673-1b10c11baad0@ghiti.fr>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 10 Mar 2021 12:42:56 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3mVDwJG6k7PZEKkteszujP06cJf8Zqhq43F0rNsU=h4g@mail.gmail.com>
+Message-ID: <CAK8P3a3mVDwJG6k7PZEKkteszujP06cJf8Zqhq43F0rNsU=h4g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Documentation: riscv: Add documentation that
+ describes the VM layout
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:bgeb1O6xJm5Eu32jvoeA9HZygSXfrnl6bZIKYPa2hQtRZXi2xN3
+ 8jiZ6cQFF3TuLw3vAMCIncE4hHz5L0+F/ma7mjn8OgcOJ8SBGuKV6xnwhYd1YRWxK+SHaUq
+ GvuqHahb7NpC9WtQtfE1XV0CSRe53Ql/RVv7U9gTuy5hbREGU8NRODTnUE2vGdZycIwcAsV
+ EaYbF3tvDquFns9QufCqQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DD+2KlrKtKs=:I8RnZHOqF3ZzqNfAQyYRZs
+ eozE/kGvXgg3SwkhQPZo3yDi3UHAQl3YjU37wSfrg4wc7JTnCWLLsmKCWGwlXDC5eQKl0ctTr
+ WMm9wS3qpjAIlvgxPoaUWMTaAfLd8FSVZfY3/AejgeJ7rVsB13zpmHXMgjOwm4A4VxyB6LHNW
+ xl90+WmC/CvbjKbqeJQAQwlToPYiNWdMXybUY+U6PnuzTnaPwpXFjKRvEYCgdIRIwiC/n1J91
+ XJiWP003mpMbm91mxfXNU3jnlIkmD4gh6lVuaOrChdXc1c2l6opjLx5wlSGj0dMmN0Bo/2Cke
+ MPwWkJsDaxzdNXWEMpQ+gsFQvUF4r1icCF/kM9DgIT6rcTX8/95bdvKgbcmNehg1VLmaYBqFO
+ AGLekYDVrJW0OsGZFCfKhMGoNrc1PVb2gmsRclRHfvlMqeppED9iDOt23F1b8TwTzAtMF7PXq
+ /gJQpHeSCg6gQKLiEv6hxZdZAizwq8j9Kll9/il2Zf8D8+n/EvFhVszDaJ14sxwkqu8ePQw2E
+ JkaEp3+OQnftw+WMKhTBNi8mqYP0KdgW02F+6mZuYrl3BxchjCoI0UEmir7kE/Mwg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added device_may_wakeup() support.
+On Thu, Feb 25, 2021 at 12:56 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>
+> Le 2/25/21 à 5:34 AM, David Hildenbrand a écrit :
+> >                   |            |                  |         |> +
+> > ffffffc000000000 | -256    GB | ffffffc7ffffffff |   32 GB | kasan
+> >> +   ffffffcefee00000 | -196    GB | ffffffcefeffffff |    2 MB | fixmap
+> >> +   ffffffceff000000 | -196    GB | ffffffceffffffff |   16 MB | PCI io
+> >> +   ffffffcf00000000 | -196    GB | ffffffcfffffffff |    4 GB | vmemmap
+> >> +   ffffffd000000000 | -192    GB | ffffffdfffffffff |   64 GB |
+> >> vmalloc/ioremap space
+> >> +   ffffffe000000000 | -128    GB | ffffffff7fffffff |  126 GB |
+> >> direct mapping of all physical memory
+> >
+> > ^ So you could never ever have more than 126 GB, correct?
+> >
+> > I assume that's nothing new.
+> >
+>
+> Before this patch, the limit was 128GB, so in my sense, there is nothing
+> new. If ever we want to increase that limit, we'll just have to lower
+> PAGE_OFFSET, there is still some unused virtual addresses after kasan
+> for example.
 
-Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
----
- drivers/bluetooth/hci_qca.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Linus Walleij is looking into changing the arm32 code to have the kernel
+direct map inside of the vmalloc area, which would be another place
+that you could use here. It would be nice to not have too many different
+ways of doing this, but I'm not sure how hard it would be to rework your
+code, or if there are any downsides of doing this.
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index de36af6..73af901 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1571,6 +1571,20 @@ static void qca_cmd_timeout(struct hci_dev *hdev)
- 	mutex_unlock(&qca->hci_memdump_lock);
- }
- 
-+static bool qca_prevent_wake(struct hci_dev *hdev)
-+{
-+	struct hci_uart *hu = hci_get_drvdata(hdev);
-+	bool wakeup;
-+
-+	/* UART driver handles the interrupt from BT SoC.So we need to use
-+	 * device handle of UART driver to get the status of device may wakeup.
-+	 */
-+	wakeup = device_may_wakeup(hu->serdev->ctrl->dev.parent);
-+	bt_dev_dbg(hu->hdev, "wakeup status : %d", wakeup);
-+
-+	return !wakeup;
-+}
-+
- static int qca_wcn3990_init(struct hci_uart *hu)
- {
- 	struct qca_serdev *qcadev;
-@@ -1721,6 +1735,7 @@ static int qca_setup(struct hci_uart *hu)
- 		qca_debugfs_init(hdev);
- 		hu->hdev->hw_error = qca_hw_error;
- 		hu->hdev->cmd_timeout = qca_cmd_timeout;
-+		hu->hdev->prevent_wake = qca_prevent_wake;
- 	} else if (ret == -ENOENT) {
- 		/* No patch/nvm-config found, run with original fw/config */
- 		set_bit(QCA_ROM_FW, &qca->flags);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+        Arnd
