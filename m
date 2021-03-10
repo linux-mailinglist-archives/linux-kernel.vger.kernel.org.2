@@ -2,189 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F9A33409C
+	by mail.lfdr.de (Postfix) with ESMTP id 51E9533409D
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhCJOpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:45:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:47732 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230260AbhCJOo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:44:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D478831B;
-        Wed, 10 Mar 2021 06:44:57 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC0933F793;
-        Wed, 10 Mar 2021 06:44:55 -0800 (PST)
-Date:   Wed, 10 Mar 2021 14:44:53 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, swood@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
-        ouwen210@hotmail.com
-Subject: Re: [PATCH v4 15/19] sched: Fix migrate_disable() vs rt/dl balancing
-Message-ID: <20210310144453.u756vzktfdd3vxmy@e107158-lin.cambridge.arm.com>
-References: <20201023101158.088940906@infradead.org>
- <20201023102347.499155098@infradead.org>
- <20201226135445.gkxfn5lmbxhblnj4@e107158-lin>
- <YEJGq3aKM9lfYked@hirez.programming.kicks-ass.net>
- <jhjblbx7glh.mognet@arm.com>
+        id S232129AbhCJOpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:45:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231282AbhCJOpE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 09:45:04 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3ECC061761
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:45:03 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id u20so18138391iot.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:45:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=lpHU9Z06I3ZLqqdmnhOHsbTsUx3TMVYCwOYcEQja0+E=;
+        b=w/GtcqKVdprrDYj1MjWLN/IeceW/hpxjovERePj87KK+i1+pMEFXv+lt/Nnt+Slv8S
+         b79VFWTiQDYLCjJIQUqjJ5muLNUVmg+yRRs2gdMtCVMRtrB4nLc1L+2+zoutwr5NB6EK
+         eWCTrHeisTWeludslZMWOhA2x8HkccKbNJkVSCPJ0Lxy8zyX2jVbqlJ+8PGzTyFZ4l5v
+         EB/2hKjvciTnbI/8NSZy3KmjMOScJ9OvUTNzuP9SJ+50BNiNACXYFrz40i0F7z8RRkl1
+         RT1FrkuE6qH3lCvwDA2Ab8aiPuene05J3pRocfwj6owSxBQTO/InAOk86ngUfCokmjZ6
+         cvpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lpHU9Z06I3ZLqqdmnhOHsbTsUx3TMVYCwOYcEQja0+E=;
+        b=s9U7ai4u2M4CBsLxoWtq6ZaDU1J5Lb1i2g+zQZ7AHg1k2W3DNBKtTQjdTXRxblUR+S
+         HVn6IWg4/KHr3DSYU1p6eBoVi/GQSvVy+xS/k9cJyO792aCQ7VKyFKJXyJK2BZXvMJme
+         qLMU5vqSfz3wlxGwNOyrAEb1c2W7ELHi5BnxLgo8dd2m0/W5xeRnrmE9ubfnHSDGrB4J
+         /7YSfifeZT9fXN9lALWIqiYKAgOsn2T2V73xM9701PhDCFB6FXxlkaHtZYZt5PjLtknk
+         TUZ5sZWXqNvaM4Msve3+1Y1/w2oznjkgW8S58gIeAhXvAn1Mj7RT4H6V1V/CeZ2e9DnZ
+         4e4A==
+X-Gm-Message-State: AOAM531nwtbkzmoKruIsIeIcn83BJzOOgeJFzo5sZNl51C6lCqr3DH0A
+        +6AG2Ch0QjXsQau2UccbiOZUZQ==
+X-Google-Smtp-Source: ABdhPJzHmYDxRh16Sc+zeDXIZ8Dupx02kP7PsLcgbZ7VfPfgrTSVPilRkgyUm1R26M/l3SEXPe7Ufw==
+X-Received: by 2002:a6b:b5c2:: with SMTP id e185mr2577150iof.204.1615387503245;
+        Wed, 10 Mar 2021 06:45:03 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id w3sm9188359ill.80.2021.03.10.06.45.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 06:45:02 -0800 (PST)
+Subject: Re: [v5.12-rc2 regression] io_uring: high CPU use after
+ suspend-to-ram
+To:     Kevin Locke <kevin@kevinlocke.name>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rafael.j.wysocki@intel.com
+References: <YEgnIp43/6kFn8GL@kevinlocke.name>
+ <0d333d67-9a3e-546d-ad1c-ecebfdbe9932@kernel.dk>
+ <YEg7rmuMjV3FyGBR@kevinlocke.name>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <344c1326-0d32-c855-4c30-cfefd9746a2a@kernel.dk>
+Date:   Wed, 10 Mar 2021 07:45:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <YEg7rmuMjV3FyGBR@kevinlocke.name>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <jhjblbx7glh.mognet@arm.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/05/21 15:41, Valentin Schneider wrote:
-> On 05/03/21 15:56, Peter Zijlstra wrote:
-> > On Sat, Dec 26, 2020 at 01:54:45PM +0000, Qais Yousef wrote:
-> >>
-> >> > +static inline struct task_struct *get_push_task(struct rq *rq)
-> >> > +{
-> >> > +	struct task_struct *p = rq->curr;
-> >>
-> >> Shouldn't we verify the class of the task here? The RT task in migration
-> >> disabled could have been preempted by a dl or stopper task. Similarly, the dl
-> >> task could have been preempted by a stopper task.
-> >>
-> >> I don't think an RT task should be allowed to push a dl task under any
-> >> circumstances?
-> >
-> > Hmm, quite. Fancy doing a patch?
+On 3/9/21 8:23 PM, Kevin Locke wrote:
+> On Tue, 2021-03-09 at 19:48 -0700, Jens Axboe wrote:
+>> On 3/9/21 6:55 PM, Kevin Locke wrote:
+>>> With kernel 5.12-rc2 (and torvalds/master 144c79ef3353), if mpd is
+>>> playing or paused when my system is suspended-to-ram, when the system is
+>>> resumed mpd will consume ~200% CPU until killed.  It continues to
+>>> produce audio and respond to pause/play commands, which do not affect
+>>> CPU usage.  This occurs with either pulse (to PulseAudio or
+>>> PipeWire-as-PulseAudio) or alsa audio_output.
+>>
+>> The below makes it work as expected for me - but I don't quite
+>> understand why we're continually running after the freeze. Adding Rafael
+>> to help understand this.
 > 
-> Last time we talked about this, I looked into
+> I can confirm that your patch resolves the high CPU usage after suspend
+> on my system as well.  Many thanks!
 > 
->   push_rt_task() + find_lowest_rq()
+> Tested-by: Kevin Locke <kevin@kevinlocke.name>
 > 
-> IIRC, with how
-> 
->   find_lowest_rq() + cpupri_find_fitness()
-> 
-> currently work, find_lowest_rq() should return -1 in push_rt_task() if
-> rq->curr is DL (CPUPRI_INVALID). IOW, Migration-Disabled RT tasks shouldn't
-> actually interfere with DL tasks (unless a DL task gets scheduled after we
-> drop the rq lock and kick the stopper, but we have that problem everywhere
-> including CFS active balance).
+> Happy to test any future revisions as well.
 
-This makes it less of a problem true, but AFAICT this can still happen in the
-pull path.
+Thanks, I'll just hold on to this version for now. It's how it would've
+worked before the thread rework anyway. I'd still like to understand why
+the thaw leaves them spinning, though :-). But once that is understood,
+we can potentially just enable freezing again as a separate patch.
+Fixing this one is more important for the time being.
 
-Anyways, here's the patch as extra bolts and braces to be considered.
-
-Thanks
-
---
-Qais Yousef
-
---->8----
-
-From 2df733d381f636cc185944c7eda86c824a9a785e Mon Sep 17 00:00:00 2001
-From: Qais Yousef <qais.yousef@arm.com>
-Date: Tue, 12 Jan 2021 11:54:16 +0000
-Subject: [PATCH] sched: Don't push a higher priority class in get_push_task()
-
-Commit a7c81556ec4d ("sched: Fix migrate_disable() vs rt/dl balancing")
-will attempt to push/pull a higher priority task if the candidate task
-is in migrate_disable() section. This is an attempt to prevent
-starvation of these lower priority task that, in theory at least, could
-end up in a situation where they're forever in migrate disable section
-with no CPU time to run.
-
-One issue with that is get_push_task() assumes rq->curr is of the same
-sched_class, which AFAICT is not guaranteed to be true.
-
-This patch adds extra bolts and braces to ensure that this voluntary
-push operation is performed on a task of the same scheduling class only.
-
-Otherwise an RT task could end up causing a DL task to be pushed away.
-Which breaks the strict priority between sched classes.
-
-We could also end up trying to push the migration task. Which I think is
-harmless and is nothing but a wasted effort.
-
-Fixes: a7c81556ec4d ("sched: Fix migrate_disable() vs rt/dl balancing")
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
----
- kernel/sched/deadline.c |  2 +-
- kernel/sched/rt.c       |  4 ++--
- kernel/sched/sched.h    | 17 ++++++++++++++++-
- 3 files changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index aac3539aa0fe..afadc7e1f968 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2276,7 +2276,7 @@ static void pull_dl_task(struct rq *this_rq)
- 				goto skip;
- 
- 			if (is_migration_disabled(p)) {
--				push_task = get_push_task(src_rq);
-+				push_task = get_push_task(src_rq, SCHED_DEADLINE);
- 			} else {
- 				deactivate_task(src_rq, p, 0);
- 				set_task_cpu(p, this_cpu);
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 8f720b71d13d..c2c5c08e3030 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1892,7 +1892,7 @@ static int push_rt_task(struct rq *rq, bool pull)
- 		 * to this other CPU, instead attempt to push the current
- 		 * running task on this CPU away.
- 		 */
--		push_task = get_push_task(rq);
-+		push_task = get_push_task(rq, SCHED_FIFO);
- 		if (push_task) {
- 			raw_spin_unlock(&rq->lock);
- 			stop_one_cpu_nowait(rq->cpu, push_cpu_stop,
-@@ -2225,7 +2225,7 @@ static void pull_rt_task(struct rq *this_rq)
- 				goto skip;
- 
- 			if (is_migration_disabled(p)) {
--				push_task = get_push_task(src_rq);
-+				push_task = get_push_task(src_rq, SCHED_FIFO);
- 			} else {
- 				deactivate_task(src_rq, p, 0);
- 				set_task_cpu(p, this_cpu);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 10a1522b1e30..4e156f008d22 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1954,12 +1954,27 @@ extern void trigger_load_balance(struct rq *rq);
- 
- extern void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
- 
--static inline struct task_struct *get_push_task(struct rq *rq)
-+static inline struct task_struct *get_push_task(struct rq *rq, int policy)
- {
- 	struct task_struct *p = rq->curr;
- 
- 	lockdep_assert_held(&rq->lock);
- 
-+	switch(policy) {
-+	case SCHED_FIFO:
-+	case SCHED_RR:
-+		if (!rt_task(p))
-+			return NULL;
-+		break;
-+	case SCHED_DEADLINE:
-+		if (!dl_task(p))
-+			return NULL;
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		return NULL;
-+	}
-+
- 	if (rq->push_busy)
- 		return NULL;
- 
 -- 
-2.25.1
+Jens Axboe
 
