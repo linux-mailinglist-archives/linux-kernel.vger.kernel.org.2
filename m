@@ -2,238 +2,542 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6533338FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F21D1333903
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhCJJlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230140AbhCJJlT (ORCPT
+        id S229552AbhCJJnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:43:02 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:20760 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229747AbhCJJmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:41:19 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74724C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:41:19 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id a17so24751073ljq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:41:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mXkoSTZdLoKg2jgVROL3n8DkphhHYsaXqGSb7Y6KQRU=;
-        b=SmNOr8A01cSCeXivBq9rXM9Iqp0sgkBo/yIC0HHWBc8Y5LqEd2iuSHP0GOrnunPZRh
-         ruvkBYiRTroxLKFQs6L0+vwvz2Cc3KJSq5K5AlwGfWsVexfH7UZGHFJ3v/l7om/g1yJC
-         zbzCSCWMILpf511b7IIIVf3c2TrJAZxAHBuJXOqJBVQq+DxwpqFRNTRrn239iJRqX0pf
-         17e+chyZNIt4PBTskJBaAhMbK632dh22wV/WRNtzDCAZHUN08fWIEE+/HA0oPKpuNCmC
-         TUmrRdUHqn6SA6I1WzF55cNxkJmoU96myKtn3OTxS5p7dLfdKkcmWaP2D9tHrJBOb3Oy
-         Iotw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mXkoSTZdLoKg2jgVROL3n8DkphhHYsaXqGSb7Y6KQRU=;
-        b=fs5dHcCMZu831q+4orl2v0Vf/YVrFRDTqNNuypPgBtXw5s9P16gGKlNVM+ZAkdDrcQ
-         ZpMBoC2Rwnq7XE5PJ8d9UnemDoyWTKLw375bKcpn6Pn2Q0EABxu7vBkAOx2GmOevWTKR
-         JVHLZE01Qg/iXihhhEZGX0GhgSabrjqoO6le7bcmbt3sO641B+9N6eWpjuVKrPoZwAS3
-         P8k9vJua5WdqmamIe06Ex06WmcC00NIC7iMGfM0IRPidtvAlanYMc+h3AlMvY5ijJ6ll
-         uhV4e1DuVKAIL76iD71DktK1EcUPUesufxX3FOEcjX1ZawsnGyWCM9vYlNllhVexmB/1
-         gi0g==
-X-Gm-Message-State: AOAM532lRYyhX0OrFq9ayRddbC8L3uz7N1taKMLAKiIfqFkCSCi4Sm6R
-        yhBXLjNMHIJiRbAFOKv04gQLY/CRkPAOGXYiCyU=
-X-Google-Smtp-Source: ABdhPJzVrI/RftJvenR3m9j5XAYPboD3zI+72G9RFOzKMzdblNHDF7ketlPQq63g63aU9emOObkgElK+aGqeR9qqsNQ=
-X-Received: by 2002:a2e:9195:: with SMTP id f21mr1321491ljg.340.1615369277837;
- Wed, 10 Mar 2021 01:41:17 -0800 (PST)
+        Wed, 10 Mar 2021 04:42:36 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12A9Vjd2029588;
+        Wed, 10 Mar 2021 01:42:21 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=l/qq8KUfzfSTdaYEhXAxx0tLHa5CDlzW2PKHLJB/J6s=;
+ b=fymRlTn+fqI5LCuD69k6eD7BfrMhNryzzNacGabYASSw+OsRiXPgo96pk5fVQuiJdDSy
+ hQleREnY3LzR8JUVnw5zDGI9WXqEA4w250Ch+LEGGh3nw4pKL+qtyAxDQkyAQtLquKp0
+ pQWXx/rVBX48vf1Pr0YZ5BBJAeo/WmYDrQkYrZ00r5ofZkhoYu36H/50WA9URt/Ca9Iu
+ nretSUrQRBi9msT0PAy2GyD0iv+k9S7y5lNJwpBdSgY4ExUX5tamHUjEW7IyvXBJL+io
+ 6GshYpWAEL1p2R9gaGBDLBoFKOpqzXv87yrQF2qDYCw8tj39AcieqMfpfFrvaNqQUv+T xg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3747yv3avt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 01:42:21 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 10 Mar
+ 2021 01:42:19 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 10 Mar
+ 2021 01:42:19 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 10 Mar 2021 01:42:19 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 0A7623F7041;
+        Wed, 10 Mar 2021 01:42:15 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>, <rabeeh@solid-run.com>
+Subject: [net-next] net: mvpp2: Add reserved port private flag configuration
+Date:   Wed, 10 Mar 2021 11:42:09 +0200
+Message-ID: <1615369329-9389-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-References: <CAGyP=7dpTbbj39uO37YrNMg9h4Nzmkszc3MoZg9n8ALir_A52g@mail.gmail.com>
- <YEZcVKbPzfMVK2aK@zeniv-ca.linux.org.uk> <CAGyP=7fHhyrTP-u0tqCy5ZHzZN0v_0dAoj6dCHnFuBbqtfnBmQ@mail.gmail.com>
- <YEeFYMcdPVNrKRJT@zeniv-ca.linux.org.uk> <CAGyP=7egSA4ZMwdjpYGwKAq=O4P9NzkKQO2ACr_VOUj68-vvzA@mail.gmail.com>
- <CACT4Y+YGKZPDbvLSJJw7oXrZpUJEpvdGm_GxQ0cJ8NsCkWB45g@mail.gmail.com>
-In-Reply-To: <CACT4Y+YGKZPDbvLSJJw7oXrZpUJEpvdGm_GxQ0cJ8NsCkWB45g@mail.gmail.com>
-From:   Palash Oswal <oswalpalash@gmail.com>
-Date:   Wed, 10 Mar 2021 15:11:06 +0530
-Message-ID: <CAGyP=7eiuUH_JbNEgxdBh4cEHgk82KnbHS0i8PEsJ6D3Exx=pg@mail.gmail.com>
-Subject: Re: kernel panic: Attempted to kill init!
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-10_07:2021-03-10,2021-03-10 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The kernel stack is not very useful in this case, it's a common faulting stack.
-> Maybe it will shed some light if you install gdb in the image, attach
-> it to the systemd process, then trigger the segfault and then unwind
-> stack in the systemd process at the time of fault, dump registers,
-> etc. However, I don't know if gdb will get the signal first, or the
-> kernel will panic first...
+From: Stefan Chulski <stefanc@marvell.com>
 
-Here's the gdb trace from the end of open_by_handle_at to the panic. I
-will try to attach gdb to systemd and report back.
+According to Armada SoC architecture and design, all the PPv2 ports
+which are populated on the same communication processor silicon die
+(CP11x) share the same Classifier and Parser engines.
 
-Thread 1 hit Breakpoint 3, __x64_sys_open_by_handle_at
-(regs=0xffffc90000933f58) at fs/fhandle.c:271
-271        return ret;
-do_syscall_64 (nr=<optimized out>, regs=0xffffc90000933f58) at
-arch/x86/entry/common.c:56
-56        syscall_exit_to_user_mode(regs);
-entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:127
-127        movq    RCX(%rsp), %rcx
-128        movq    RIP(%rsp), %r11
-130        cmpq    %rcx, %r11    /* SYSRET requires RCX == RIP */
-131        jne    swapgs_restore_regs_and_return_to_usermode
-145        ALTERNATIVE "shl $(64 - 48), %rcx; sar $(64 - 48), %rcx", \
-153        cmpq    %rcx, %r11
-154        jne    swapgs_restore_regs_and_return_to_usermode
-156        cmpq    $__USER_CS, CS(%rsp)        /* CS must match SYSRET */
-157        jne    swapgs_restore_regs_and_return_to_usermode
-159        movq    R11(%rsp), %r11
-160        cmpq    %r11, EFLAGS(%rsp)        /* R11 == RFLAGS */
-161        jne    swapgs_restore_regs_and_return_to_usermode
-181        testq    $(X86_EFLAGS_RF|X86_EFLAGS_TF), %r11
-182        jnz    swapgs_restore_regs_and_return_to_usermode
-186        cmpq    $__USER_DS, SS(%rsp)        /* SS must match SYSRET */
-187        jne    swapgs_restore_regs_and_return_to_usermode
-195        POP_REGS pop_rdi=0 skip_r11rcx=1
-entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:201
-201        movq    %rsp, %rdi
-202        movq    PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %rsp
-entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:205
-205        pushq    RSP-RDI(%rdi)    /* RSP */
-entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:206
-206        pushq    (%rdi)        /* RDI */
-entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:214
-214        SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
-216        popq    %rdi
-entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:217
-217        popq    %rsp
-entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:218
-218        USERGS_SYSRET64
-native_io_apic_read (apic=<optimized out>, reg=24) at
-arch/x86/kernel/apic/io_apic.c:277
-277        return readl(&io_apic->data);
-59    build_mmio_read(readl, "l", unsigned int, "=r", :"memory")
-__ioapic_read_entry (apic=0, pin=<optimized out>) at
-arch/x86/kernel/apic/io_apic.c:294
-294        entry.w2 = io_apic_read(apic, 0x11 + 2 * pin);
-296        return entry;
-ioapic_irq_get_chip_state (irqd=<optimized out>, which=<optimized
-out>, state=0xffffc90000247a8f) at arch/x86/kernel/apic/io_apic.c:1960
-1960            if (rentry.irr && rentry.is_level) {
-1952        for_each_irq_pin(p, mcd->irq_2_pin) {
-1965        raw_spin_unlock(&ioapic_lock);
-1966        return 0;
-__synchronize_hardirq (desc=desc@entry=0xffff888003d36c00,
-sync_chip=sync_chip@entry=true) at kernel/irq/manage.c:71
-71            raw_spin_unlock_irqrestore(&desc->lock, flags);
-74        } while (inprogress);
-synchronize_irq (irq=4) at kernel/irq/manage.c:138
-138            wait_event(desc->wait_for_threads,
-138            wait_event(desc->wait_for_threads,
-serial8250_do_shutdown (port=port@entry=0xffffffff836b62a0
-<serial8250_ports>) at drivers/tty/serial/8250/8250_port.c:2449
-2449        if (up->dma)
-329        return &lock->rlock;
-2453        if (port->flags & UPF_FOURPORT) {
-2458            port->mctrl &= ~TIOCM_OUT2;
-2460        serial8250_set_mctrl(port, port->mctrl);
-2461        spin_unlock_irqrestore(&port->lock, flags);
-2467                serial_port_in(port, UART_LCR) & ~UART_LCR_SBC);
-2466        serial_port_out(port, UART_LCR,
-2468        serial8250_clear_fifos(up);
-2474        disable_rsa(up);
-2481        serial_port_in(port, UART_RX);
-2482        serial8250_rpm_put(up);
-2484        up->ops->release_irq(up);
-uart_port_shutdown (port=port@entry=0xffff8880054e0000) at
-drivers/tty/serial/serial_core.c:1716
-1716            synchronize_irq(uport->irq);
-uart_shutdown (tty=tty@entry=0xffff88800451c400,
-state=state@entry=0xffff8880054e0000) at
-drivers/tty/serial/serial_core.c:307
-307        tty_port_set_suspended(port, 0);
-315        uart_port_lock(state, flags);
-316        xmit_buf = state->xmit.buf;
-317        state->xmit.buf = NULL;
-318        uart_port_unlock(uport, flags);
-320        if (xmit_buf)
-321            free_page((unsigned long)xmit_buf);
-uart_hangup (tty=tty@entry=0xffff88800451c400) at ./include/linux/spinlock.h:329
-329        return &lock->rlock;
-1680            spin_unlock_irqrestore(&port->lock, flags);
-1681            tty_port_set_active(port, 0);
-1682            tty_port_tty_set(port, NULL);
-1683            if (uport && !uart_console(uport))
-1685            wake_up_interruptible(&port->open_wait);
-1686            wake_up_interruptible(&port->delta_msr_wait);
-1688        mutex_unlock(&port->mutex);
-__tty_hangup (tty=tty@entry=0xffff88800451c400,
-exit_session=exit_session@entry=1) at drivers/tty/tty_io.c:651
-651        set_bit(TTY_HUPPED, &tty->flags);
-652        clear_bit(TTY_HUPPING, &tty->flags);
-653        tty_unlock(tty);
-655        if (f)
-disassociate_ctty (on_exit=on_exit@entry=1) at drivers/tty/tty_jobctrl.c:279
-279            tty_kref_put(tty);
-295        spin_lock_irq(&current->sighand->siglock);
-15        return this_cpu_read_stable(current_task);
-298        tty = tty_kref_get(current->signal->tty);
-299        spin_unlock_irq(&current->sighand->siglock);
-301        if (tty) {
-316        read_lock(&tasklist_lock);
-317        session_clear_tty(task_session(current));
-318        read_unlock(&tasklist_lock);
-do_exit (code=code@entry=7) at kernel/exit.c:824
-824        exit_task_namespaces(tsk);
-825        exit_task_work(tsk);
-826        exit_thread(tsk);
-834        perf_event_exit_task(tsk);
-836        sched_autogroup_exit_task(tsk);
-837        cgroup_exit(tsk);
-842        flush_ptrace_hw_breakpoint(tsk);
-844        exit_tasks_rcu_start();
-845        exit_notify(tsk, group_dead);
-846        proc_exit_connector(tsk);
-847        mpol_put_task_policy(tsk);
-849        if (unlikely(current->pi_state_cache))
-15        return this_cpu_read_stable(current_task);
-857        if (tsk->io_context)
-858            exit_io_context(tsk);
-860        if (tsk->splice_pipe)
-863        if (tsk->task_frag.page)
-869        preempt_disable();
-870        if (tsk->nr_dirtied)
-871            __this_cpu_add(dirty_throttle_leaks, tsk->nr_dirtied);
-872        exit_rcu();
-873        exit_tasks_rcu_finish();
-876        do_task_dead();
+Armada is an embedded platform and therefore there is a need to reserve
+some of the PPv2 ports for different use cases.
 
+For example, a port can be reserved for a CM3 CPU running FreeRTOS for
+management purposes or by user-space data plane application.
 
-> FWIW I can't reproduce this locally on wheezy/stretch images.
+During port reservation all common configurations are preserved and
+only RXQ, TXQ, and interrupt vectors are disabled.
 
-These are the reproducers I have for this bug from various ext4 images-
-Repro 1 -
-r0 = creat(&(0x7f0000000180)='./file0\x00', 0x0)
-open_by_handle_at(r0, &(0x7f0000000000)={0xa, 0x1, "b70b"}, 0x40200)
-Repro 2 -
-r0 = creat(&(0x7f00000001c0)='./file0\x00', 0x0)
-open_by_handle_at(r0,
-&(0x7f0000000000)=ANY=[@ANYBLOB="0a000000020000004b0d"], 0x2f00)
-Repro 3 -
-r0 = creat(&(0x7f0000000040)='./file0\x00', 0x0)
-open_by_handle_at(r0,
-&(0x7f0000000080)=ANY=[@ANYBLOB="2700000001000000d10b"], 0x2f00)
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |   4 +
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 286 ++++++++++++++++----
+ 2 files changed, 242 insertions(+), 48 deletions(-)
 
-Have you tried running syzkaller with "enable_syscalls":
-["creat","open_by_handle_at"]? It takes about an hour on my system to
-identify this bug for a new image.
-I'm using the stretch images.
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+index 8edba5e..e2f8eec 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+@@ -865,6 +865,7 @@
+ /* Port flags */
+ #define MVPP2_F_LOOPBACK		BIT(0)
+ #define MVPP2_F_DT_COMPAT		BIT(1)
++#define MVPP22_F_IF_RESERVED		BIT(2)
+ 
+ /* Marvell tag types */
+ enum mvpp2_tag_type {
+@@ -1251,6 +1252,9 @@ struct mvpp2_port {
+ 
+ 	/* Firmware TX flow control */
+ 	bool tx_fc;
++
++	/* private storage, allocated/used by Reserved/Normal mode toggling */
++	void *res_cfg;
+ };
+ 
+ /* The mvpp2_tx_desc and mvpp2_rx_desc structures describe the
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index d415447..80ddf1c 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -55,6 +55,14 @@ enum mvpp2_bm_pool_log_num {
+ 	int buf_num;
+ } mvpp2_pools[MVPP2_BM_POOLS_NUM];
+ 
++struct mvpp2_port_port_cfg {
++	unsigned int nqvecs;
++	unsigned int nrxqs;
++	unsigned int ntxqs;
++	int mtu;
++	bool rxhash_en;
++};
++
+ /* The prototype is added here to be used in start_dev when using ACPI. This
+  * will be removed once phylink is used for all modes (dt+ACPI).
+  */
+@@ -1431,6 +1439,9 @@ static void mvpp2_interrupts_unmask(void *arg)
+ 	if (cpu >= port->priv->nthreads)
+ 		return;
+ 
++	if (port->flags & MVPP22_F_IF_RESERVED)
++		return;
++
+ 	thread = mvpp2_cpu_to_thread(port->priv, cpu);
+ 
+ 	val = MVPP2_CAUSE_MISC_SUM_MASK |
+@@ -1942,48 +1953,58 @@ static u32 mvpp2_read_index(struct mvpp2 *priv, u32 index, u32 reg)
+ 						 (ARRAY_SIZE(mvpp2_ethtool_rxq_regs) * (nrxqs)) + \
+ 						 ARRAY_SIZE(mvpp2_ethtool_xdp))
+ 
++static const char mvpp22_priv_flags_strings[][ETH_GSTRING_LEN] = {
++	"reserved",
++};
++
++#define MVPP22_F_IF_RESERVED_PRIV	BIT(0)
++
+ static void mvpp2_ethtool_get_strings(struct net_device *netdev, u32 sset,
+ 				      u8 *data)
+ {
+ 	struct mvpp2_port *port = netdev_priv(netdev);
+ 	int i, q;
+ 
+-	if (sset != ETH_SS_STATS)
+-		return;
++	switch (sset) {
++	case ETH_SS_STATS:
++		for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_mib_regs); i++) {
++			strscpy(data, mvpp2_ethtool_mib_regs[i].string,
++				ETH_GSTRING_LEN);
++			data += ETH_GSTRING_LEN;
++		}
+ 
+-	for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_mib_regs); i++) {
+-		strscpy(data, mvpp2_ethtool_mib_regs[i].string,
+-			ETH_GSTRING_LEN);
+-		data += ETH_GSTRING_LEN;
+-	}
++		for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_port_regs); i++) {
++			strscpy(data, mvpp2_ethtool_port_regs[i].string,
++				ETH_GSTRING_LEN);
++			data += ETH_GSTRING_LEN;
++		}
+ 
+-	for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_port_regs); i++) {
+-		strscpy(data, mvpp2_ethtool_port_regs[i].string,
+-			ETH_GSTRING_LEN);
+-		data += ETH_GSTRING_LEN;
+-	}
++		for (q = 0; q < port->ntxqs; q++) {
++			for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_txq_regs); i++) {
++				snprintf(data, ETH_GSTRING_LEN,
++					 mvpp2_ethtool_txq_regs[i].string, q);
++				data += ETH_GSTRING_LEN;
++			}
++		}
+ 
+-	for (q = 0; q < port->ntxqs; q++) {
+-		for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_txq_regs); i++) {
+-			snprintf(data, ETH_GSTRING_LEN,
+-				 mvpp2_ethtool_txq_regs[i].string, q);
+-			data += ETH_GSTRING_LEN;
++		for (q = 0; q < port->nrxqs; q++) {
++			for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_rxq_regs); i++) {
++				snprintf(data, ETH_GSTRING_LEN,
++					 mvpp2_ethtool_rxq_regs[i].string,
++					 q);
++				data += ETH_GSTRING_LEN;
++			}
+ 		}
+-	}
+ 
+-	for (q = 0; q < port->nrxqs; q++) {
+-		for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_rxq_regs); i++) {
+-			snprintf(data, ETH_GSTRING_LEN,
+-				 mvpp2_ethtool_rxq_regs[i].string,
+-				 q);
++		for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_xdp); i++) {
++			strscpy(data, mvpp2_ethtool_xdp[i].string,
++				ETH_GSTRING_LEN);
+ 			data += ETH_GSTRING_LEN;
+ 		}
+-	}
+-
+-	for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_xdp); i++) {
+-		strscpy(data, mvpp2_ethtool_xdp[i].string,
+-			ETH_GSTRING_LEN);
+-		data += ETH_GSTRING_LEN;
++		break;
++	case ETH_SS_PRIV_FLAGS:
++		memcpy(data, mvpp22_priv_flags_strings,
++		       ARRAY_SIZE(mvpp22_priv_flags_strings) * ETH_GSTRING_LEN);
+ 	}
+ }
+ 
+@@ -2130,8 +2151,13 @@ static int mvpp2_ethtool_get_sset_count(struct net_device *dev, int sset)
+ {
+ 	struct mvpp2_port *port = netdev_priv(dev);
+ 
+-	if (sset == ETH_SS_STATS)
++	switch (sset) {
++	case ETH_SS_STATS:
+ 		return MVPP2_N_ETHTOOL_STATS(port->ntxqs, port->nrxqs);
++	case ETH_SS_PRIV_FLAGS:
++		return (port->priv->hw_version == MVPP21) ?
++			0 : ARRAY_SIZE(mvpp22_priv_flags_strings);
++	}
+ 
+ 	return -EOPNOTSUPP;
+ }
+@@ -2207,6 +2233,9 @@ static inline void mvpp2_gmac_max_rx_size_set(struct mvpp2_port *port)
+ {
+ 	u32 val;
+ 
++	if (port->flags & MVPP22_F_IF_RESERVED)
++		return;
++
+ 	val = readl(port->base + MVPP2_GMAC_CTRL_0_REG);
+ 	val &= ~MVPP2_GMAC_MAX_RX_SIZE_MASK;
+ 	val |= (((port->pkt_size - MVPP2_MH_SIZE) / 2) <<
+@@ -2219,6 +2248,9 @@ static inline void mvpp2_xlg_max_rx_size_set(struct mvpp2_port *port)
+ {
+ 	u32 val;
+ 
++	if (port->flags & MVPP22_F_IF_RESERVED)
++		return;
++
+ 	val =  readl(port->base + MVPP22_XLG_CTRL1_REG);
+ 	val &= ~MVPP22_XLG_CTRL1_FRAMESIZELIMIT_MASK;
+ 	val |= ((port->pkt_size - MVPP2_MH_SIZE) / 2) <<
+@@ -2321,6 +2353,9 @@ static void mvpp2_egress_enable(struct mvpp2_port *port)
+ 	int queue;
+ 	int tx_port_num = mvpp2_egress_port(port);
+ 
++	if (port->flags & MVPP22_F_IF_RESERVED)
++		return;
++
+ 	/* Enable all initialized TXs. */
+ 	qmap = 0;
+ 	for (queue = 0; queue < port->ntxqs; queue++) {
+@@ -2343,6 +2378,9 @@ static void mvpp2_egress_disable(struct mvpp2_port *port)
+ 	int delay;
+ 	int tx_port_num = mvpp2_egress_port(port);
+ 
++	if (port->flags & MVPP22_F_IF_RESERVED)
++		return;
++
+ 	/* Issue stop command for active channels only */
+ 	mvpp2_write(port->priv, MVPP2_TXP_SCHED_PORT_INDEX_REG, tx_port_num);
+ 	reg_data = (mvpp2_read(port->priv, MVPP2_TXP_SCHED_Q_CMD_REG)) &
+@@ -3411,7 +3449,8 @@ static void mvpp2_isr_handle_link(struct mvpp2_port *port, bool link)
+ 		mvpp2_egress_enable(port);
+ 		mvpp2_ingress_enable(port);
+ 		netif_carrier_on(dev);
+-		netif_tx_wake_all_queues(dev);
++		if (!(port->flags & MVPP22_F_IF_RESERVED))
++			netif_tx_wake_all_queues(dev);
+ 	} else {
+ 		netif_tx_stop_all_queues(dev);
+ 		netif_carrier_off(dev);
+@@ -4556,7 +4595,8 @@ static void mvpp2_start_dev(struct mvpp2_port *port)
+ 		mvpp2_acpi_start(port);
+ 	}
+ 
+-	netif_tx_start_all_queues(port->dev);
++	if (!(port->flags & MVPP22_F_IF_RESERVED))
++		netif_tx_start_all_queues(port->dev);
+ 
+ 	clear_bit(0, &port->state);
+ }
+@@ -4702,7 +4742,8 @@ static void mvpp2_irqs_deinit(struct mvpp2_port *port)
+ static bool mvpp22_rss_is_supported(struct mvpp2_port *port)
+ {
+ 	return (queue_mode == MVPP2_QDIST_MULTI_MODE) &&
+-		!(port->flags & MVPP2_F_LOOPBACK);
++		!(port->flags & MVPP2_F_LOOPBACK) &&
++		!(port->flags & MVPP22_F_IF_RESERVED);
+ }
+ 
+ static int mvpp2_open(struct net_device *dev)
+@@ -4719,20 +4760,23 @@ static int mvpp2_open(struct net_device *dev)
+ 		netdev_err(dev, "mvpp2_prs_mac_da_accept BC failed\n");
+ 		return err;
+ 	}
+-	err = mvpp2_prs_mac_da_accept(port, dev->dev_addr, true);
+-	if (err) {
+-		netdev_err(dev, "mvpp2_prs_mac_da_accept own addr failed\n");
+-		return err;
+-	}
+-	err = mvpp2_prs_tag_mode_set(port->priv, port->id, MVPP2_TAG_TYPE_MH);
+-	if (err) {
+-		netdev_err(dev, "mvpp2_prs_tag_mode_set failed\n");
+-		return err;
+-	}
+-	err = mvpp2_prs_def_flow(port);
+-	if (err) {
+-		netdev_err(dev, "mvpp2_prs_def_flow failed\n");
+-		return err;
++
++	if (!(port->flags & MVPP22_F_IF_RESERVED)) {
++		err = mvpp2_prs_mac_da_accept(port, dev->dev_addr, true);
++		if (err) {
++			netdev_err(dev, "mvpp2_prs_mac_da_accept own addr failed\n");
++			return err;
++		}
++		err = mvpp2_prs_tag_mode_set(port->priv, port->id, MVPP2_TAG_TYPE_MH);
++		if (err) {
++			netdev_err(dev, "mvpp2_prs_tag_mode_set failed\n");
++			return err;
++		}
++		err = mvpp2_prs_def_flow(port);
++		if (err) {
++			netdev_err(dev, "mvpp2_prs_def_flow failed\n");
++			return err;
++		}
+ 	}
+ 
+ 	/* Allocate the Rx/Tx queues */
+@@ -4979,6 +5023,11 @@ static int mvpp2_change_mtu(struct net_device *dev, int mtu)
+ 	struct mvpp2 *priv = port->priv;
+ 	int err;
+ 
++	if (port->flags & MVPP22_F_IF_RESERVED) {
++		netdev_err(dev, "MTU can not be modified for port in reserved mode\n");
++		return -EPERM;
++	}
++
+ 	if (!IS_ALIGNED(MVPP2_RX_PKT_SIZE(mtu), 8)) {
+ 		netdev_info(dev, "illegal MTU value %d, round to %d\n", mtu,
+ 			    ALIGN(MVPP2_RX_PKT_SIZE(mtu), 8));
+@@ -5385,12 +5434,16 @@ static int mvpp2_ethtool_get_coalesce(struct net_device *dev,
+ static void mvpp2_ethtool_get_drvinfo(struct net_device *dev,
+ 				      struct ethtool_drvinfo *drvinfo)
+ {
++	struct mvpp2_port *port = netdev_priv(dev);
++
+ 	strlcpy(drvinfo->driver, MVPP2_DRIVER_NAME,
+ 		sizeof(drvinfo->driver));
+ 	strlcpy(drvinfo->version, MVPP2_DRIVER_VERSION,
+ 		sizeof(drvinfo->version));
+ 	strlcpy(drvinfo->bus_info, dev_name(&dev->dev),
+ 		sizeof(drvinfo->bus_info));
++	drvinfo->n_priv_flags = (port->priv->hw_version == MVPP21) ?
++			0 : ARRAY_SIZE(mvpp22_priv_flags_strings);
+ }
+ 
+ static void mvpp2_ethtool_get_ringparam(struct net_device *dev,
+@@ -5662,6 +5715,139 @@ static int mvpp2_ethtool_set_rxfh_context(struct net_device *dev,
+ 
+ 	return mvpp22_port_rss_ctx_indir_set(port, *rss_context, indir);
+ }
++
++static u32 mvpp22_get_priv_flags(struct net_device *dev)
++{
++	struct mvpp2_port *port = netdev_priv(dev);
++	u32 priv_flags = 0;
++
++	if (port->flags & MVPP22_F_IF_RESERVED)
++		priv_flags |= MVPP22_F_IF_RESERVED_PRIV;
++	return priv_flags;
++}
++
++static int mvpp2_port_reserved_cfg(struct net_device *dev, bool ena)
++{
++	struct mvpp2_port *port = netdev_priv(dev);
++	struct mvpp2_port_port_cfg *cfg;
++
++	if (ena) {
++		/* Disable Queues and IntVec allocations for reserved ports,
++		 * but save original values.
++		 */
++		cfg = kzalloc(sizeof(*cfg), GFP_KERNEL);
++		if (!cfg)
++			return -ENOMEM;
++		port->res_cfg = (void *)cfg;
++		cfg->nqvecs = port->nqvecs;
++		cfg->nrxqs  = port->nrxqs;
++		cfg->ntxqs = port->ntxqs;
++		cfg->mtu = dev->mtu;
++		cfg->rxhash_en = !!(dev->hw_features & NETIF_F_RXHASH);
++
++		port->nqvecs = 0;
++		port->nrxqs  = 0;
++		port->ntxqs  = 0;
++		if (cfg->rxhash_en) {
++			dev->hw_features &= ~NETIF_F_RXHASH;
++			netdev_update_features(dev);
++		}
++	} else {
++		struct mvpp2_bm_pool *pool;
++		int i;
++
++		/* Back to normal mode */
++		cfg = port->res_cfg;
++		port->nqvecs = cfg->nqvecs;
++		port->nrxqs  = cfg->nrxqs;
++		port->ntxqs  = cfg->ntxqs;
++		if (cfg->rxhash_en) {
++			dev->hw_features |= NETIF_F_RXHASH;
++			netdev_update_features(dev);
++		}
++		kfree(cfg);
++		port->res_cfg = NULL;
++
++		/* Restore RxQ/pool association */
++		for (i = 0; i < port->nrxqs; i++) {
++			if (port->priv->percpu_pools) {
++				pool = &port->priv->bm_pools[i];
++				mvpp2_rxq_short_pool_set(port, i, pool->id);
++				pool = &port->priv->bm_pools[i + port->nrxqs];
++				mvpp2_rxq_long_pool_set(port, i, pool->id);
++			} else {
++				mvpp2_rxq_short_pool_set(port, i, port->pool_short->id);
++				mvpp2_rxq_long_pool_set(port, i, port->pool_long->id);
++			}
++		}
++	}
++	return 0;
++}
++
++static int mvpp2_port_reserved_set(struct net_device *dev, bool ena)
++{
++	struct mvpp2_port *port = netdev_priv(dev);
++	bool running = netif_running(dev);
++	struct mvpp2 *priv = port->priv;
++	int err;
++
++	/* This procedure is called by ethtool change or by Module-remove.
++	 * For "remove" do anything only if we are in reserved-mode
++	 * and toggling back to Normal-mode is required.
++	 */
++	if (!ena && !port->res_cfg)
++		return 0;
++
++	if (ena) {
++		port->flags |= MVPP22_F_IF_RESERVED;
++		if (priv->percpu_pools)
++			mvpp2_bm_switch_buffers(priv, false);
++	} else {
++		bool reserved = false;
++		int i;
++
++		port->flags &= ~MVPP22_F_IF_RESERVED;
++		for (i = 0; i < priv->port_count; i++)
++			if (priv->port_list[i] != port &&
++			    priv->port_list[i]->flags & MVPP22_F_IF_RESERVED) {
++				reserved = true;
++				break;
++			}
++
++		if (!reserved) {
++			dev_info(port->dev->dev.parent,
++				 "No ports in reserved mode, switching to per-cpu buffers");
++			mvpp2_bm_switch_buffers(priv, true);
++		}
++	}
++
++	if (running)
++		mvpp2_stop(dev);
++
++	err = mvpp2_port_reserved_cfg(dev, ena);
++	if (err)
++		netdev_err(dev, "reserved set=%d: error=%d\n", ena, err);
++
++	if (running)
++		mvpp2_open(dev);
++
++	return 0;
++}
++
++static int mvpp22_set_priv_flags(struct net_device *dev, u32 priv_flags)
++{
++	struct mvpp2_port *port = netdev_priv(dev);
++	bool f_old, f_new;
++	int err = 0;
++
++	f_old = port->flags & MVPP22_F_IF_RESERVED;
++	f_new = priv_flags & MVPP22_F_IF_RESERVED_PRIV;
++	if (f_old != f_new)
++		err = mvpp2_port_reserved_set(dev, f_new);
++
++	return err;
++}
++
+ /* Device ops */
+ 
+ static const struct net_device_ops mvpp2_netdev_ops = {
+@@ -5705,6 +5891,8 @@ static int mvpp2_ethtool_set_rxfh_context(struct net_device *dev,
+ 	.set_rxfh		= mvpp2_ethtool_set_rxfh,
+ 	.get_rxfh_context	= mvpp2_ethtool_get_rxfh_context,
+ 	.set_rxfh_context	= mvpp2_ethtool_set_rxfh_context,
++	.get_priv_flags		= mvpp22_get_priv_flags,
++	.set_priv_flags		= mvpp22_set_priv_flags,
+ };
+ 
+ /* Used for PPv2.1, or PPv2.2 with the old Device Tree binding that
+@@ -6602,7 +6790,8 @@ static void mvpp2_mac_link_up(struct phylink_config *config,
+ 
+ 	mvpp2_egress_enable(port);
+ 	mvpp2_ingress_enable(port);
+-	netif_tx_wake_all_queues(port->dev);
++	if (!(port->flags & MVPP22_F_IF_RESERVED))
++		netif_tx_wake_all_queues(port->dev);
+ }
+ 
+ static void mvpp2_mac_link_down(struct phylink_config *config,
+@@ -6944,6 +7133,7 @@ static void mvpp2_port_remove(struct mvpp2_port *port)
+ {
+ 	int i;
+ 
++	mvpp2_port_reserved_set(port->dev, false);
+ 	unregister_netdev(port->dev);
+ 	if (port->phylink)
+ 		phylink_destroy(port->phylink);
+-- 
+1.9.1
+
