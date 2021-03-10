@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A05E333EDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCBE333F07
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbhCJN1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:27:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46636 "EHLO mail.kernel.org"
+        id S234161AbhCJN3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:29:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233217AbhCJNZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:25:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0909C64FFF;
-        Wed, 10 Mar 2021 13:25:04 +0000 (UTC)
+        id S232832AbhCJNZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E4336509D;
+        Wed, 10 Mar 2021 13:25:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382706;
-        bh=Cqsrg7AhcVjMUaR+OKL0aUrlB3Dz98IhFJq2ubqAFu0=;
+        s=korg; t=1615382727;
+        bh=/njeAngNDUY7boyAqABp6iWVkUY+jhqRBquVjom9DS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I16MTPv7z5p/Q39nSKSZSSvtWmVsS1ezpkpcC0IgnVCiJUkp/qNw+OcKHj0AX0XP/
-         gHo+wNxIJEcbzQRGSGvfYHKiuMCogpbcvhC0WlTFfMvOiLrrC8eUxTX3YVYZM0/1tm
-         4acNJKNjJrmxBdb3O6OHMi/2O8TpDkf0nZoo7J14=
+        b=ASmu0TCWfrELG0KQx9G8mYF9wh9aiRQT99MyvW6/ORA8Cse7NAkp+HGF8zyuenR6N
+         kFP3xZITU3Ko4sdrJSfHpxioo31YghltDxrdiPG8nsqG6e5R85+GTuMeDZ0PXxLuQM
+         moLzKRRJ4V7KAfhdmq/EL902VKknkefL1eECsvbY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 15/24] media: cx23885: add more quirks for reset DMA on some AMD IOMMU
-Date:   Wed, 10 Mar 2021 14:24:27 +0100
-Message-Id: <20210310132321.012882676@linuxfoundation.org>
+        stable@vger.kernel.org, Armin Wolf <W_Armin@gmx.de>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 20/39] r8169: fix resuming from suspend on RTL8105e if machine runs on battery
+Date:   Wed, 10 Mar 2021 14:24:28 +0100
+Message-Id: <20210310132320.357631522@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.550932445@linuxfoundation.org>
-References: <20210310132320.550932445@linuxfoundation.org>
+In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
+References: <20210310132319.708237392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +42,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit dbf0b3a7b719eb3f72cb53c2ce7d34a012a9c261 ]
+commit d2a04370817fc7b0172dad2ef2decf907e1a304e upstream.
 
-On AMD Family 15h (Models 30h-3fh), I/O Memory Management Unit
-RiSC engine sometimes stalls, requiring a reset.
+Armin reported that after referenced commit his RTL8105e is dead when
+resuming from suspend and machine runs on battery. This patch has been
+confirmed to fix the issue.
 
-As result, MythTV and w-scan won't scan channels on the AMD Kaveri
-APU with the Hauppauge QuadHD TV tuner card.
-
-For the solution I added the Input/Output Memory Management Unit's PCI
-Identity of 0x1423 to the broken_dev_id[] array, which is used by
-a quirks logic meant to fix similar problems with other AMD
-chipsets.
-
-Signed-off-by: Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: e80bd76fbf56 ("r8169: work around power-saving bug on some chip versions")
+Reported-by: Armin Wolf <W_Armin@gmx.de>
+Tested-by: Armin Wolf <W_Armin@gmx.de>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/pci/cx23885/cx23885-core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/realtek/r8169.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
-index 7e0b0b7cc2a3..ead0acb7807c 100644
---- a/drivers/media/pci/cx23885/cx23885-core.c
-+++ b/drivers/media/pci/cx23885/cx23885-core.c
-@@ -2074,6 +2074,10 @@ static struct {
- 	 * 0x1451 is PCI ID for the IOMMU found on Ryzen
- 	 */
- 	{ PCI_VENDOR_ID_AMD, 0x1451 },
-+	/* According to sudo lspci -nn,
-+	 * 0x1423 is the PCI ID for the IOMMU found on Kaveri
-+	 */
-+	{ PCI_VENDOR_ID_AMD, 0x1423 },
- };
+--- a/drivers/net/ethernet/realtek/r8169.c
++++ b/drivers/net/ethernet/realtek/r8169.c
+@@ -4238,6 +4238,7 @@ static void r8168_pll_power_down(struct
  
- static bool cx23885_does_need_dma_reset(void)
--- 
-2.30.1
-
+ 	switch (tp->mac_version) {
+ 	case RTL_GIGA_MAC_VER_25 ... RTL_GIGA_MAC_VER_26:
++	case RTL_GIGA_MAC_VER_29 ... RTL_GIGA_MAC_VER_30:
+ 	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_33:
+ 	case RTL_GIGA_MAC_VER_37:
+ 	case RTL_GIGA_MAC_VER_39:
+@@ -4265,6 +4266,7 @@ static void r8168_pll_power_up(struct rt
+ {
+ 	switch (tp->mac_version) {
+ 	case RTL_GIGA_MAC_VER_25 ... RTL_GIGA_MAC_VER_26:
++	case RTL_GIGA_MAC_VER_29 ... RTL_GIGA_MAC_VER_30:
+ 	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_33:
+ 	case RTL_GIGA_MAC_VER_37:
+ 	case RTL_GIGA_MAC_VER_39:
 
 
