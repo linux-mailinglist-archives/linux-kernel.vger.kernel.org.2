@@ -2,111 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19CF333383
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3C7333388
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbhCJDD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 22:03:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbhCJDDG (ORCPT
+        id S231202AbhCJDD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 22:03:58 -0500
+Received: from mail-il1-f172.google.com ([209.85.166.172]:37943 "EHLO
+        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232255AbhCJDDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 22:03:06 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5FEC06174A;
-        Tue,  9 Mar 2021 19:03:05 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id f8so9961106otp.8;
-        Tue, 09 Mar 2021 19:03:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=n3GzWJzLNVoqvnXq7RaqdLj51ULbTIFoms5h2/ibyd8=;
-        b=doRVoHeDPKyrN7016YfzTEnq9P+bxC7jaEfruXCLYPoaDyfBGxDJcE2aOgSZUB9OTD
-         czJog0YA2Wlm4fQNe8dqWfyJt5Y2SQm2LXECeWJSbEiI+XQ0bnLfYXMkCm5RS/M3HwnK
-         YVjy6N8ZQ7g/jwt7T7N88IWCIs6tSRJidxsgN2T67nwMVhuHX+nRPEBBQbZRXd/mcrBv
-         IfwprcIgMMndk+Wkt9tQaCS631uasZBPCiSoUrB8JRNi2PSyxDSNufOC2sljpEmXaRfu
-         QSMNyqT5iUcjzTH0duYr02AnQjra0VZY11qrklDeGDsRcFgPZ5pCvqS1qeXjkG5mjYlp
-         kAXw==
+        Tue, 9 Mar 2021 22:03:31 -0500
+Received: by mail-il1-f172.google.com with SMTP id f10so14171364ilq.5;
+        Tue, 09 Mar 2021 19:03:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=n3GzWJzLNVoqvnXq7RaqdLj51ULbTIFoms5h2/ibyd8=;
-        b=bgn4v5QfdT9WCTEjx2ekwbMCxhhXmusbEb7MYdUlWzHs8btjSNMhuUHmjRDgkkBNVi
-         4Gb1cRCw+XgZiJmo7dfLGTVSWnHt2ZVhQ1wMDl7KMj6KDV2/KXPlTG/u6bre1Ag04EE3
-         Ec0MJQC4idjDYZVjPjrCiYmPUq2Holr7xZYaec1vc5WWyUtsF3JR49DjelkqQV8RxAIT
-         G9r21jT2cNp/hkzs/yqy1k8+DPl+rUwVlFDANZ+YY1SvxQVw3ZWRcPbsIKqnfoZQEosI
-         Oouzq0WMvdHV9UHG+9AU7teGsQ2xnzJncUMzFBVjDRraRJSa0d3EDNd4+SPm/Xo0hoN5
-         bPPg==
-X-Gm-Message-State: AOAM533tWIDVFxDT+KP+nrguDHyTdPT250xQPYtuOx7A2OdxUt5MDEfl
-        ugTmO6nAQx3QFPBCyamT6ihE8c76J4Id8FjZ55o=
-X-Google-Smtp-Source: ABdhPJw0mOm6cRWVMQW4f+G7mc7PI9JXOSk/79tDuc+OABVhZU1HkU5qNd9cwG095J1jJlVr5uKCSm3mYj7LTiR5tqA=
-X-Received: by 2002:a9d:6c8b:: with SMTP id c11mr1055512otr.52.1615345385434;
- Tue, 09 Mar 2021 19:03:05 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LksHYlIfEzV9pnoP+0yGzfGcP3EXHPwjjnl8Sebgu9s=;
+        b=Po59giS4dBXCvaSGx5+xdAo9ESNp0RXmuztbsfdHGjey0VcdtXcDg/UrUacEjUgLFl
+         6Qxs3A1hCkKxEsKDckkMtav37EV07fuuP93x4t3QZGvy5YzQ4BClIoF9mI10Odtm1eZx
+         O+jbAGTMC8Xwtr1ejrU1weEMPMdAJGsqvmjaZkY2lF6JndWaOeHswhQt7H7HAhMrnSRA
+         mhv7173SfVDKf1a5GzFgO5BohLqLo6I6XCZ1miWp7awksZpvmUW/D7QQPDGg0MROYfwq
+         oJ0NbR+YPbD3wFN3Or5k0NLf58cqpzAzHU+uwYW71SNnKMkna82Lwig2NYqIiYUCUvfg
+         V3CA==
+X-Gm-Message-State: AOAM533cBBAUQesbf3m/gurRREzCpuop6ImHif5mY8VvRyR8WyONsPFz
+        1F+44Lrb2Ww4aRBsXLguOA==
+X-Google-Smtp-Source: ABdhPJwHlovanhm09rYK9MxOUzAafoA8UlPvo2TveZpStF8GsdLMIMzL1DG2MZz5qTREXlxlKO/lBA==
+X-Received: by 2002:a92:940b:: with SMTP id c11mr1068894ili.132.1615345410835;
+        Tue, 09 Mar 2021 19:03:30 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id b5sm8561376ioq.7.2021.03.09.19.03.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 19:03:30 -0800 (PST)
+Received: (nullmailer pid 1669195 invoked by uid 1000);
+        Wed, 10 Mar 2021 03:03:28 -0000
+Date:   Tue, 9 Mar 2021 20:03:28 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     linux-kernel@vger.kernel.org, od@zcrc.me,
+        devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings/timer: ingenic: Add compatible
+ strings for JZ4760(B)
+Message-ID: <20210310030328.GA1669134@robh.at.kernel.org>
+References: <20210308212302.10288-1-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
- <1615294733-22761-12-git-send-email-aisheng.dong@nxp.com> <89ce7e90-55d9-872a-59d3-48c3dcadfc9d@gmail.com>
-In-Reply-To: <89ce7e90-55d9-872a-59d3-48c3dcadfc9d@gmail.com>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Wed, 10 Mar 2021 11:03:05 +0800
-Message-ID: <CAA+hA=Q-GZMN3xWgR5xn-s5xgWKPGQtpw72rsp_i4y14Zvkr5g@mail.gmail.com>
-Subject: Re: [PATCH 11/11] PM / devfreq: imx8m-ddrc: drop polling_ms
-To:     Chanwoo Choi <cwchoi00@gmail.com>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Abel Vesa <abel.vesa@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308212302.10288-1-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 12:23 AM Chanwoo Choi <cwchoi00@gmail.com> wrote:
->
-> On 21. 3. 9. =EC=98=A4=ED=9B=84 9:58, Dong Aisheng wrote:
-> > polling_ms is only used by simple ondemand governor which
-> > this driver can't support. Drop it to avoid confusing.
-> >
-> > Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> > ---
-> >   drivers/devfreq/imx8m-ddrc.c | 1 -
-> >   1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.=
-c
-> > index 0a6b7a1c829d..ecb9375aa877 100644
-> > --- a/drivers/devfreq/imx8m-ddrc.c
-> > +++ b/drivers/devfreq/imx8m-ddrc.c
-> > @@ -417,7 +417,6 @@ static int imx8m_ddrc_probe(struct platform_device =
-*pdev)
-> >       if (ret < 0)
-> >               goto err;
-> >
-> > -     priv->profile.polling_ms =3D 1000;
-> >       priv->profile.target =3D imx8m_ddrc_target;
-> >       priv->profile.exit =3D imx8m_ddrc_exit;
-> >       priv->profile.get_cur_freq =3D imx8m_ddrc_get_cur_freq;
-> >
->
-> You can squash this patch with patch10 because polling_ms
-> is related to .get_dev_status.
+On Mon, 08 Mar 2021 21:23:00 +0000, Paul Cercueil wrote:
+> Add compatible strings to support the system timer, clocksource, OST,
+> watchdog and PWM blocks of the JZ4760 and JZ4760B SoCs.
+> 
+> Newer SoCs which behave like the JZ4760 or JZ4760B now see their
+> compatible string require a fallback compatible string that corresponds
+> to one of these two SoCs.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+> 
+> Notes:
+>     v2: - Fix indentation
+>         - Fix example not using correct compatible strings
+> 
+>  .../bindings/timer/ingenic,tcu.yaml           | 30 ++++++++++++++-----
+>  1 file changed, 22 insertions(+), 8 deletions(-)
+> 
 
-Sure i can do it.
-
-Regards
-Aisheng
-
->
-> --
-> Best Regards,
-> Samsung Electronics
-> Chanwoo Choi
+Reviewed-by: Rob Herring <robh@kernel.org>
