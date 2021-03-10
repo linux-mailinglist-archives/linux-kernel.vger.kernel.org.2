@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA684334B23
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48572334B2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbhCJWHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:07:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
+        id S232357AbhCJWKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:10:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233725AbhCJWHT (ORCPT
+        with ESMTP id S232874AbhCJWK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:07:19 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD1CC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:07:19 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id k2so19698954ioh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:07:19 -0800 (PST)
+        Wed, 10 Mar 2021 17:10:27 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D26C061574;
+        Wed, 10 Mar 2021 14:10:27 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id y13so9638042pfr.0;
+        Wed, 10 Mar 2021 14:10:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3yg0o3VoZc2Igrv2WKaYIdci4mKdYRYHXxP6y4sgjMk=;
-        b=GDwL5+aEG8LzO+VLWexjdVnLbmtF53yrvXdPdWxdCFmMqml9Bh/Ab2NmG+tFjIdIxm
-         n1606YRVDxLCTirQ/87COiOR/TK22acOukM8TYX+dxxfQsdEboOZd4E2ocQ1cvQRtQP5
-         +UevCGAtwW5uEoEfAszU0YXaY8v/9vv0gcwBg=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=842g7c9Tn0Z3vLdWgTHxvqUqf5VmKZ15G35dMX8yNNs=;
+        b=VYNAz89I+dztCb63TA5G+CqSH4s4uZSzFUtQS4MqK4KH1ngNNnM5zLTn1e+0S77hF0
+         2hNzjqrbXkCDPo4DZyvefpHiqos4YmuAr9hbgT25tFm6aDEzT6w3LH7KPzNpspl3mJaV
+         NbDqclIaQ9Kqb5OR5VBjFSOzJqf1oeTf2qDBCfOlYx+NMwpcfPMfpNp5QtCNweUpUs7o
+         weu7zwvLuoAwJAAcGrrcVZ3xhms9aLx7M16skUJPAKsUefLYllPLZfMZitCXjMZZFW7x
+         HNBn2Crt979arvZhs24LmuvfHRw+S6GlmYm2tqwRfefJIhtab4crscG2ItBGu61yCKL0
+         yQWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3yg0o3VoZc2Igrv2WKaYIdci4mKdYRYHXxP6y4sgjMk=;
-        b=jRwZ4mQSVBk4NjtfUxOM/5EF0aSYi2ltcsfD6Sz1Ij0GRE1lJ9Y06wb7yd7xg+uoL2
-         Yna5uLOabqmj9oqY9GVgbqGHXel5oj0LJNc8fZ+GuSqlg6xJIsTPWwQsWeKHz6hTBL8P
-         hgI0jZH6ThNeFvVfR45m7YMwtnhRUglo+PkmoxkTjMgLm6x12A9CzsobkX4kUMAFp0vb
-         hAwGMYyRgWYM3PqzDpcf/G4OwQ/tSiAKCKzh7hx18hAirfNCf96RNpS26kPaM0RNGqoy
-         PwMuqQw1dHrRWkkD9mWHxQiL/mbMKYqt7XwhcX6JuvcRweKBMHSGzwGnKUcezQisL406
-         MZ2w==
-X-Gm-Message-State: AOAM533XJehES3FjN4IMQKjPhjctltX2QrOUIRhEu2DwIciIUJDV2qtk
-        SMms9G2ko1WNHgek0kCkO7rcfVZ5pywJRcS8UsEYkQ==
-X-Google-Smtp-Source: ABdhPJynxBXyPUtfZbglWNYNzJlVBNFfyQwZyF3CPiNZNAOYH8HRtWJYDRZOeUYQvGR+FDs0Wk7/pilYq5+EX6jQC6E=
-X-Received: by 2002:a02:a303:: with SMTP id q3mr652085jai.32.1615414038764;
- Wed, 10 Mar 2021 14:07:18 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=842g7c9Tn0Z3vLdWgTHxvqUqf5VmKZ15G35dMX8yNNs=;
+        b=rRH7yVCW0SfZuJHSJnPXMMm5rm+EK5L0BrwJ3A41NMSxLkBPW6VhV6QF60dP9Uo+Dr
+         KExstIPsd0iq+cn3dDirajBzKqirVtp+ys0tCJEWdHSP06aXS1/6DusBV6Qvu8SmAqRm
+         ue3fPtJdQs1af2to1txDTNLMmWUSy1TFfP6n4lN7bg326gtvwtSIF/jCB4qJWU5EDNwG
+         3E/ZUkxYwTC0YSgGbJ88sf6AimiOZ+1OUG2ZC4mY0WGAQBix0KonFpAg/jtIYULKoD1j
+         pMxL2D1U20M1UlammDvgRPy24/v1+k+N4yBDFRUmQIRrZhjvWa63fgHprLcaec3ajNm6
+         5KoQ==
+X-Gm-Message-State: AOAM530XU5O46TVj8YzQKtfnMXXvuS/DnU6xBBCtsVrrvu3J0iMc4N/f
+        DMzO/iWzAqRMOUsZkWZKUWl6Jhy8n9DCzw==
+X-Google-Smtp-Source: ABdhPJx4d2837GNgaZU1BEW7RVpyIJA7zsGwnRxN5Nth6O0xbgiD/FkbfW5Msi832YRG01718dg+6A==
+X-Received: by 2002:a65:6641:: with SMTP id z1mr4422868pgv.399.1615414227133;
+        Wed, 10 Mar 2021 14:10:27 -0800 (PST)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id 21sm428760pgf.69.2021.03.10.14.10.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Mar 2021 14:10:26 -0800 (PST)
+Date:   Wed, 10 Mar 2021 14:08:09 -0800
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iommu/tegra-smmu: Add pagetable mappings to debugfs
+Message-ID: <20210310220808.GA10431@Asurada-Nvidia>
+References: <20210310033614.16772-1-nicoleotsuka@gmail.com>
+ <cc5dca8f-e9b0-a845-1af4-e762782d5441@gmail.com>
 MIME-Version: 1.0
-References: <20210310015455.1095207-1-revest@chromium.org> <f5cfb3d0-fab4-ee07-70de-ad5589db1244@fb.com>
- <eb0a8485-9624-1727-6913-e4520c9d8c04@fb.com> <CABRcYmK8m21sb8dHbr1wLT_oTCBpvr2Zg-8KHwKuJ2Ak0iTZ_A@mail.gmail.com>
- <454d2e4b-f842-624c-a89e-441830c98e99@fb.com> <CAEf4BzY8kRBM578iV+xMZZxT7gKazMFGp5CZjvc1ueyd9vf3KA@mail.gmail.com>
- <CAEf4BzbZ+96_WRCyHQ8LVW7gvLouf2rT95Pt6vHPFu7uGqX=WQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbZ+96_WRCyHQ8LVW7gvLouf2rT95Pt6vHPFu7uGqX=WQ@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 10 Mar 2021 23:07:08 +0100
-Message-ID: <CABRcYmKq0VzyZywSjHCo6vr8hqFGQz==u4Bd5qNb3pw_5i4G2A@mail.gmail.com>
-Subject: Re: [BUG] One-liner array initialization with two pointers in BPF
- results in NULLs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cc5dca8f-e9b0-a845-1af4-e762782d5441@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 10:51 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Wed, Mar 10, 2021 at 12:12 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Wed, Mar 10, 2021 at 8:59 AM Yonghong Song <yhs@fb.com> wrote:
-> > > On 3/10/21 3:48 AM, Florent Revest wrote:
-> > > > On Wed, Mar 10, 2021 at 6:16 AM Yonghong Song <yhs@fb.com> wrote:
-> > > >> On 3/9/21 7:43 PM, Yonghong Song wrote:
-> > > >>> On 3/9/21 5:54 PM, Florent Revest wrote:
-> > > >>>> I noticed that initializing an array of pointers using this syntax:
-> > > >>>> __u64 array[] = { (__u64)&var1, (__u64)&var2 };
-> > > >>>> (which is a fairly common operation with macros such as BPF_SEQ_PRINTF)
-> > > >>>> always results in array[0] and array[1] being NULL.
-> > > >>>>
-> > > >>>> Interestingly, if the array is only initialized with one pointer, ex:
-> > > >>>> __u64 array[] = { (__u64)&var1 };
-> > > >>>> Then array[0] will not be NULL.
-> > > >>>>
-> > > >>>> Or if the array is initialized field by field, ex:
-> > > >>>> __u64 array[2];
-> > > >>>> array[0] = (__u64)&var1;
-> > > >>>> array[1] = (__u64)&var2;
-> > > >>>> Then array[0] and array[1] will not be NULL either.
-> > > >>>>
-> > > >>>> I'm assuming that this should have something to do with relocations
-> > > >>>> and might be a bug in clang or in libbpf but because I don't know much
-> > > >>>> about these, I thought that reporting could be a good first step. :)
-> > > >>>
-> > > >>> Thanks for reporting. What you guess is correct, this is due to
-> > > >>> relocations :-(
-> > > >>>
-> > > >>> The compiler notoriously tend to put complex initial values into
-> > > >>> rodata section. For example, for
-> > > >>>      __u64 array[] = { (__u64)&var1, (__u64)&var2 };
-> > > >>> the compiler will put
-> > > >>>      { (__u64)&var1, (__u64)&var2 }
-> > > >>> into rodata section.
-> > > >>>
-> > > >>> But &var1 and &var2 themselves need relocation since they are
-> > > >>> address of static variables which will sit inside .data section.
-> > > >>>
-> > > >>> So in the elf file, you will see the following relocations:
-> > > >>>
-> > > >>> RELOCATION RECORDS FOR [.rodata]:
-> > > >>> OFFSET           TYPE                     VALUE
-> > > >>> 0000000000000018 R_BPF_64_64              .data
-> > > >>> 0000000000000020 R_BPF_64_64              .data
-> > > >
-> > > > Right :) Thank you for the explanations Yonghong!
-> > > >
-> > > >>> Currently, libbpf does not handle relocation inside .rodata
-> > > >>> section, so they content remains 0.
-> > > >
-> > > > Just for my own edification, why is .rodata relocation not yet handled
-> > > > in libbpf ? Is it because of a read-only mapping that makes it more
-> > > > difficult ?
-> > >
-> > > We don't have this use case before. In general, people do not put
-> > > string pointers in init code in the declaration. I think
-> > > bpf_seq_printf() is special about this and hence triggering
-> > > the issue.
+On Wed, Mar 10, 2021 at 11:38:47PM +0300, Dmitry Osipenko wrote:
+> 10.03.2021 06:36, Nicolin Chen пишет:
+> > This patch dumps all active mapping entries from pagetable
+> > to a debugfs directory named "mappings".
+> > 
+> > Ataching an example:
+> > 
+> > SWGROUP: hc
+> > ASID: 0
+> > reg: 0x250
+> > PTB_ASID: 0xe0080004
+> > as->pd_dma: 0x80004000
+> > {
+> >         [1023] 0xf0080013 (1)
+> >         {
+> >                 PTE RANGE       PHYS           IOVA        SIZE        ATTR
+> >                 #1023 - #1023   0x122e5e000    0xfffff000  0x1000      0x5
+> >         }
+> > }
+> > Total PDE count: 1
+> > Total PTE count: 1
+> 
+> Addresses are 32bit on ARM32, please fix the formatting. The phys_addr_t
+> and dma_addr_t have special printk specifiers [1].
+> 
+> [1]
+> https://www.kernel.org/doc/html/latest/core-api/printk-formats.html?highlight=printk#physical-address-types-phys-addr-t
+> 
+> as->pd_dma: 0xc026e81b0000026c
+> {
+>         [0] 0xf0082848 (1024)
+>         {
+>                 PTE RANGE       PHYS           IOVA        SIZE
+> ATTR
+>                 #0    - #15     0xc0f9fc40bfde0000 0x0         0x10000
 
-Fair enough, the only reasonable usecase that I can think of is a
-selftest like the one I wrote for bpf_snprintf and the macro in
-bpf_tracing.h will be a good enough workaround for that.
-
-> > > To support relocation of rodata section, kernel needs to be
-> > > involved and this is actually more complicated as
-> >
-> > Exactly. It would be trivial for libbpf to support it, but it needs to
-> > resolve to the actual in-kernel address of a map (plus offset), which
-> > libbpf has no way of knowing.
-
-Ah right, I see now, thanks! Indeed this would be quite complex and
-probably not very useful.
-
-> Having said that, libbpf should probably error out when such
-> relocation is present, because there is no way the application with
-> such relocations is going to be correct.
-
-Good point, it would have helped me notice the problem earlier. :)
+Thanks for the feedback! I will send v3.
