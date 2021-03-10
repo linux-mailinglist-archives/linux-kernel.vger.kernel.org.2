@@ -2,216 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A752E334923
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D23FD334930
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhCJUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:51:03 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:17789 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231759AbhCJUur (ORCPT
+        id S231937AbhCJUxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:53:43 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:7081 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231880AbhCJUxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:50:47 -0500
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 12AKoKhL021570
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:50:20 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 12AKoKhL021570
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615409420;
-        bh=vkspD6XwG9rG1Ytw7ZTJwsuuvU9BzfeWtF/EO7NZxcw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jlhT/zXInqDRocnQcd25cXigTXn4U2J5+fAzdADlEzZd8eepQGJbU0DMgasu75Hb3
-         fVtK6bUOAVx2Lkl4r/V+Pk3w2jX8bgv2ZVEC/crxRxYxnM+O7n7SC1zS87ne/jIQEM
-         keGpGgtFrPrXKTgpuZBGBAmFBjraOrSOLnpXIYfsTdDSuP1bC/KX25rhezxpcYXPKd
-         BGPTu7oa2OJ486rB99VUBeSblueGjmfLBKADwgOXEb5TVNIVb0AWwcKXRShWJA5VQi
-         SWHgbK9Bqt+MupI3DMfVj4O8oXB43BuUxBQ+NVAf5u6v5i7TzCK3C81GCwS0dTIXhC
-         JTHbbVDp9bdwQ==
-X-Nifty-SrcIP: [209.85.214.177]
-Received: by mail-pl1-f177.google.com with SMTP id u18so9069771plc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:50:20 -0800 (PST)
-X-Gm-Message-State: AOAM531eZcYnIHnPLsUoIboab+hIRmHOWQrTMdywJaYuBem55a15rv5y
-        Wl40TBMvu/m2VfjsfKRQJZQB27SL3h94+pqYCa0=
-X-Google-Smtp-Source: ABdhPJzQ1MlUUYOx6ctKUbbI1vw5urT2osjwH23aqKEtVncC4vqvQPiS/CeJIOS6U2Zq/jZ8U8KtjFAkVIBOLG1H3Pk=
-X-Received: by 2002:a17:902:8ec9:b029:e6:c5e:cf18 with SMTP id
- x9-20020a1709028ec9b02900e60c5ecf18mr4523952plo.47.1615409419575; Wed, 10 Mar
- 2021 12:50:19 -0800 (PST)
+        Wed, 10 Mar 2021 15:53:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615409599; x=1646945599;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AWvF456SJS1J0zSd4aJXrpNBFWwvVhUG9BmVkFd52Q0=;
+  b=CYncQ0F2OPlYyAjQBq97qljmCkTfWJcorGP9n1Rlx58hD3rb6Zc8gyhC
+   FLOcCSEuEBOqZleJ1iNQ+0MJ8shpWUhk+bpXlpxVwisJW05O0pC8W+c4c
+   2G6xkN40navFWD2ExPYLSfmXw2w9g9BMUGdvHZ2D82ygzPrn8OIr1EMyf
+   Bg9e3MidGRh9Ce3q69gkngu1GQEUOOVXmFp5SuZbK86y2vt2XZCjU6jAU
+   i2HQsnGeFxizM7KFaKMGkvYh81Y14dSeQqWJQj2D1aXd/dXFuP5fQzWnm
+   c9/xz6g5ZfxEW+sWw8GSxCOUWKk7M7IMrxFO56Sb4+C9iBYSEb9BMAav8
+   Q==;
+IronPort-SDR: BiIaNvCNgdqqZZ8Ruqm5VNwuH2SCb74je2QV17q/7Dc5fIQoiHdVY1OjlZorSzkpHtruev3GcE
+ Zb37ORrDHn7Jj+x8fdX8iVXcwxl8TKvQUk+J8nVLgNRWWW4TEA9sYzq0XWf4pZr+lNTpj+s2Y3
+ wiPs0UapRwZewjt7RsnNtMCp86KpgS9MybnmbgluyDeIt4TT/N4U8fMxBrAdQs/k7/Is12oUwY
+ 3pyPVZSia+xXHZPjDdjDwIBwFeOBuRcuC+V26Mq4ZDK6sNcSw99f02x9CEO5h9jGpc+HL8+1dr
+ 7HI=
+X-IronPort-AV: E=Sophos;i="5.81,238,1610434800"; 
+   d="scan'208";a="109510053"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Mar 2021 13:53:18 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 10 Mar 2021 13:53:17 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 10 Mar 2021 13:53:15 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <vladimir.oltean@nxp.com>, <claudiu.manoil@nxp.com>,
+        <alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next] net: ocelot: Extend MRP
+Date:   Wed, 10 Mar 2021 21:51:40 +0100
+Message-ID: <20210310205140.1428791-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210225112122.2198845-1-arnd@kernel.org> <20210226211323.arkvjnr4hifxapqu@google.com>
- <CAK8P3a2bLKe3js4SKeZoGp8B51+rpW6G3KvpbJ5=y83sxHSu6g@mail.gmail.com> <1614559739.p25z5x88wl.astroid@bobo.none>
-In-Reply-To: <1614559739.p25z5x88wl.astroid@bobo.none>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 11 Mar 2021 05:49:42 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
-Message-ID: <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Fangrui Song <maskray@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, Nicolas Pitre <nico@fluxnic.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 10:11 AM Nicholas Piggin <npiggin@gmail.com> wrote:
->
-> Excerpts from Arnd Bergmann's message of February 27, 2021 7:49 pm:
-> > On Fri, Feb 26, 2021 at 10:13 PM 'Fangrui Song' via Clang Built Linux
-> > <clang-built-linux@googlegroups.com> wrote:
-> >>
-> >> For folks who are interested in --gc-sections on metadata sections,
-> >> I want to bring you awareness of the implication of __start_/__stop_ symbols and C identifier name sections.
-> >> You can see https://github.com/ClangBuiltLinux/linux/issues/1307 for a summary.
-> >> (Its linked blog article has some examples.)
-> >>
-> >> In the kernel linker scripts, most C identifier name sections begin with double-underscore __.
-> >> Some are surrounded by `KEEP(...)`, some are not.
-> >>
-> >> * A `KEEP` keyword has GC root semantics and makes ld --gc-sections ineffectful.
-> >> * Without `KEEP`, __start_/__stop_ references from a live input section
-> >>    can unnecessarily retain all the associated C identifier name input
-> >>    sections. The new ld.lld option `-z start-stop-gc` can defeat this rule.
-> >>
-> >> As an example, a __start___jump_table reference from a live section
-> >> causes all `__jump_table` input section to be retained, even if you
-> >> change `KEEP(__jump_table)` to `(__jump_table)`.
-> >> (If you change the symbol name from `__start_${section}` to something
-> >> else (e.g. `__start${section}`), the rule will not apply.)
-> >
-> > I suspect the __start_* symbols are cargo-culted by many developers
-> > copying stuff around between kernel linker scripts, that's certainly how I
-> > approach making changes to it normally without a deeper understanding
-> > of how the linker actually works or what the different bits of syntax mean
-> > there.
-> >
-> > I see the original vmlinux.lds linker script showed up in linux-2.1.23, and
-> > it contained
-> >
-> > +  . = ALIGN(16);               /* Exception table */
-> > +  __start___ex_table = .;
-> > +  __ex_table : { *(__ex_table) }
-> > +  __stop___ex_table = .;
-> > +
-> > +  __start___ksymtab = .;       /* Kernel symbol table */
-> > +  __ksymtab : { *(__ksymtab) }
-> > +  __stop___ksymtab = .;
-> >
-> > originally for arch/sparc, and shortly afterwards for i386. The magic
-> > __ex_table section was first used in linux-2.1.7 without a linker
-> > script. It's probably a good idea to try cleaning these up by using
-> > non-magic start/stop symbols for all sections, and relying on KEEP()
-> > instead where needed.
-> >
-> >> There are a lot of KEEP usage. Perhaps some can be dropped to facilitate
-> >> ld --gc-sections.
-> >
-> > I see a lot of these were added by Nick Piggin (added to Cc) in this commit:
-> >
-> > commit 266ff2a8f51f02b429a987d87634697eb0d01d6a
-> > Author: Nicholas Piggin <npiggin@gmail.com>
-> > Date:   Wed May 9 22:59:58 2018 +1000
-> >
-> >     kbuild: Fix asm-generic/vmlinux.lds.h for LD_DEAD_CODE_DATA_ELIMINATION
-> >
-> >     KEEP more tables, and add the function/data section wildcard to more
-> >     section selections.
-> >
-> >     This is a little ad-hoc at the moment, but kernel code should be moved
-> >     to consistently use .text..x (note: double dots) for explicit sections
-> >     and all references to it in the linker script can be made with
-> >     TEXT_MAIN, and similarly for other sections.
-> >
-> >     For now, let's see if major architectures move to enabling this option
-> >     then we can do some refactoring passes. Otherwise if it remains unused
-> >     or superseded by LTO, this may not be required.
-> >
-> >     Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> >     Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> >
-> > which apparently was intentionally cautious.
-> >
-> > Unlike what Nick expected in his submission, I now think the annotations
-> > will be needed for LTO just like they are for --gc-sections.
->
-> Yeah I wasn't sure exactly what LTO looks like or how it would work.
-> I thought perhaps LTO might be able to find dead code with circular /
-> back references, we could put references from the code back to these
-> tables or something so they would be kept without KEEP. I don't know, I
-> was handwaving!
->
-> I managed to get powerpc (and IIRC x86?) working with gc sections with
-> those KEEP annotations, but effectiveness of course is far worse than
-> what Nicolas was able to achieve with all his techniques and tricks.
->
-> But yes unless there is some other mechanism to handle these tables,
-> then KEEP probably has to stay. I suggest this wants a very explicit and
-> systematic way to handle it (maybe with some toolchain support) rather
-> than trying to just remove things case by case and see what breaks.
->
-> I don't know if Nicolas is still been working on his shrinking patches
-> recenty but he probably knows more than anyone about this stuff.
->
-> Thanks,
-> Nick
->
+This patch extends MRP support for Ocelot.  It allows to have multiple
+rings and when the node has the MRC role it forwards MRP Test frames in
+HW. For MRM there is no change.
 
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+---
+ drivers/net/ethernet/mscc/ocelot.c     |   6 -
+ drivers/net/ethernet/mscc/ocelot_mrp.c | 229 +++++++++++++++++--------
+ include/soc/mscc/ocelot.h              |  10 +-
+ 3 files changed, 158 insertions(+), 87 deletions(-)
 
-I tested LD_DEAD_CODE_DATA_ELIMINATION for the latest kernel.
-
-I added an unused function, this_func_is_unused(),
-then built the ppc kernel with LD_DEAD_CODE_DATA_ELIMINATION.
-
-It remained in vmlinux.
-
-
-masahiro@oscar:~/ref/linux$ echo  'void this_func_is_unused(void) {}'
->>  kernel/cpu.c
-masahiro@oscar:~/ref/linux$ export
-CROSS_COMPILE=/home/masahiro/tools/powerpc-10.1.0/bin/powerpc-linux-
-masahiro@oscar:~/ref/linux$ make ARCH=powerpc  defconfig
-masahiro@oscar:~/ref/linux$ ./scripts/config  -e EXPERT
-masahiro@oscar:~/ref/linux$ ./scripts/config  -e LD_DEAD_CODE_DATA_ELIMINATION
-masahiro@oscar:~/ref/linux$
-~/tools/powerpc-10.1.0/bin/powerpc-linux-nm -n  vmlinux | grep
-this_func
-c000000000170560 T .this_func_is_unused
-c000000001d8d560 D this_func_is_unused
-masahiro@oscar:~/ref/linux$ grep DEAD_CODE_ .config
-CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION=y
-CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
-
-
-If I remember correctly,
-LD_DEAD_CODE_DATA_ELIMINATION dropped unused functions
-when I tried it last time.
-
-
-I also tried arm64 with a HAVE_LD_DEAD_CODE_DATA_ELIMINATION hack.
-The result was the same.
-
-
-
-Am I missing something?
-
-
-
+diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
+index 46e5c9136bac..9b79363db17f 100644
+--- a/drivers/net/ethernet/mscc/ocelot.c
++++ b/drivers/net/ethernet/mscc/ocelot.c
+@@ -772,12 +772,6 @@ int ocelot_xtr_poll_frame(struct ocelot *ocelot, int grp, struct sk_buff **nskb)
+ 
+ 	skb->protocol = eth_type_trans(skb, dev);
+ 
+-#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+-	if (skb->protocol == cpu_to_be16(ETH_P_MRP) &&
+-	    cpuq & BIT(OCELOT_MRP_CPUQ))
+-		skb->offload_fwd_mark = 0;
+-#endif
+-
+ 	*nskb = skb;
+ 
+ 	return 0;
+diff --git a/drivers/net/ethernet/mscc/ocelot_mrp.c b/drivers/net/ethernet/mscc/ocelot_mrp.c
+index 683da320bfd8..86b36e5d2279 100644
+--- a/drivers/net/ethernet/mscc/ocelot_mrp.c
++++ b/drivers/net/ethernet/mscc/ocelot_mrp.c
+@@ -1,8 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MIT)
+ /* Microsemi Ocelot Switch driver
+- *
+- * This contains glue logic between the switchdev driver operations and the
+- * mscc_ocelot_switch_lib.
+  *
+  * Copyright (c) 2017, 2019 Microsemi Corporation
+  * Copyright 2020-2021 NXP Semiconductors
+@@ -15,13 +12,33 @@
+ #include "ocelot.h"
+ #include "ocelot_vcap.h"
+ 
+-static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int port)
++static const u8 mrp_test_dmac[] = {0x01, 0x15, 0x4e, 0x00, 0x00, 0x01 };
++static const u8 mrp_control_dmac[] = {0x01, 0x15, 0x4e, 0x00, 0x00, 0x02 };
++
++static int ocelot_mrp_find_port(struct ocelot *ocelot, struct ocelot_port *p)
++{
++	int i;
++
++	for (i = 0; i < ocelot->num_phys_ports; ++i) {
++		struct ocelot_port *ocelot_port = ocelot->ports[i];
++
++		if (!ocelot_port || p == ocelot_port)
++			continue;
++
++		if (ocelot_port->mrp_ring_id == p->mrp_ring_id)
++			return i;
++	}
++
++	return 0;
++}
++
++static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int id)
+ {
+ 	struct ocelot_vcap_block *block_vcap_is2;
+ 	struct ocelot_vcap_filter *filter;
+ 
+ 	block_vcap_is2 = &ocelot->block[VCAP_IS2];
+-	filter = ocelot_vcap_block_find_filter_by_id(block_vcap_is2, port,
++	filter = ocelot_vcap_block_find_filter_by_id(block_vcap_is2, id,
+ 						     false);
+ 	if (!filter)
+ 		return 0;
+@@ -29,6 +46,87 @@ static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int port)
+ 	return ocelot_vcap_filter_del(ocelot, filter);
+ }
+ 
++static int ocelot_mrp_redirect_add_vcap(struct ocelot *ocelot, int src_port,
++					int dst_port)
++{
++	const u8 mrp_test_mask[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
++	struct ocelot_vcap_filter *filter;
++	int err;
++
++	filter = kzalloc(sizeof(*filter), GFP_ATOMIC);
++	if (!filter)
++		return -ENOMEM;
++
++	filter->key_type = OCELOT_VCAP_KEY_ETYPE;
++	filter->prio = 1;
++	filter->id.cookie = src_port;
++	filter->id.tc_offload = false;
++	filter->block_id = VCAP_IS2;
++	filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
++	filter->ingress_port_mask = BIT(src_port);
++	ether_addr_copy(filter->key.etype.dmac.value, mrp_test_dmac);
++	ether_addr_copy(filter->key.etype.dmac.mask, mrp_test_mask);
++	filter->action.mask_mode = OCELOT_MASK_MODE_REDIRECT;
++	filter->action.port_mask = BIT(dst_port);
++
++	err = ocelot_vcap_filter_add(ocelot, filter, NULL);
++	if (err)
++		kfree(filter);
++
++	return err;
++}
++
++static int ocelot_mrp_copy_add_vcap(struct ocelot *ocelot, int port,
++				    int prio, int cookie)
++{
++	const u8 mrp_mask[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0x00 };
++	struct ocelot_vcap_filter *filter;
++	int err;
++
++	filter = kzalloc(sizeof(*filter), GFP_ATOMIC);
++	if (!filter)
++		return -ENOMEM;
++
++	filter->key_type = OCELOT_VCAP_KEY_ETYPE;
++	filter->prio = prio;
++	filter->id.cookie = cookie;
++	filter->id.tc_offload = false;
++	filter->block_id = VCAP_IS2;
++	filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
++	filter->ingress_port_mask = BIT(port);
++	/* Here is possible to use control or test dmac because the mask
++	 * doesn't cover the LSB
++	 */
++	ether_addr_copy(filter->key.etype.dmac.value, mrp_test_dmac);
++	ether_addr_copy(filter->key.etype.dmac.mask, mrp_mask);
++	filter->action.mask_mode = OCELOT_MASK_MODE_PERMIT_DENY;
++	filter->action.port_mask = 0x0;
++	filter->action.cpu_copy_ena = true;
++	filter->action.cpu_qu_num = OCELOT_MRP_CPUQ;
++
++	err = ocelot_vcap_filter_add(ocelot, filter, NULL);
++	if (err)
++		kfree(filter);
++
++	return err;
++}
++
++static void ocelot_mrp_save_mac(struct ocelot *ocelot,
++				struct ocelot_port *port)
++{
++	ocelot_mact_learn(ocelot, PGID_MRP, mrp_test_dmac,
++			  port->pvid_vlan.vid, ENTRYTYPE_LOCKED);
++	ocelot_mact_learn(ocelot, PGID_MRP, mrp_control_dmac,
++			  port->pvid_vlan.vid, ENTRYTYPE_LOCKED);
++}
++
++static void ocelot_mrp_del_mac(struct ocelot *ocelot,
++			       struct ocelot_port *port)
++{
++	ocelot_mact_forget(ocelot, mrp_test_dmac, port->pvid_vlan.vid);
++	ocelot_mact_forget(ocelot, mrp_control_dmac, port->pvid_vlan.vid);
++}
++
+ int ocelot_mrp_add(struct ocelot *ocelot, int port,
+ 		   const struct switchdev_obj_mrp *mrp)
+ {
+@@ -45,18 +143,7 @@ int ocelot_mrp_add(struct ocelot *ocelot, int port,
+ 	if (mrp->p_port != dev && mrp->s_port != dev)
+ 		return 0;
+ 
+-	if (ocelot->mrp_ring_id != 0 &&
+-	    ocelot->mrp_s_port &&
+-	    ocelot->mrp_p_port)
+-		return -EINVAL;
+-
+-	if (mrp->p_port == dev)
+-		ocelot->mrp_p_port = dev;
+-
+-	if (mrp->s_port == dev)
+-		ocelot->mrp_s_port = dev;
+-
+-	ocelot->mrp_ring_id = mrp->ring_id;
++	ocelot_port->mrp_ring_id = mrp->ring_id;
+ 
+ 	return 0;
+ }
+@@ -66,34 +153,31 @@ int ocelot_mrp_del(struct ocelot *ocelot, int port,
+ 		   const struct switchdev_obj_mrp *mrp)
+ {
+ 	struct ocelot_port *ocelot_port = ocelot->ports[port];
+-	struct ocelot_port_private *priv;
+-	struct net_device *dev;
++	int i;
+ 
+ 	if (!ocelot_port)
+ 		return -EOPNOTSUPP;
+ 
+-	priv = container_of(ocelot_port, struct ocelot_port_private, port);
+-	dev = priv->dev;
+-
+-	if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
++	if (ocelot_port->mrp_ring_id != mrp->ring_id)
+ 		return 0;
+ 
+-	if (ocelot->mrp_ring_id == 0 &&
+-	    !ocelot->mrp_s_port &&
+-	    !ocelot->mrp_p_port)
+-		return -EINVAL;
++	ocelot_mrp_del_vcap(ocelot, port);
++	ocelot_mrp_del_vcap(ocelot, port + ocelot->num_phys_ports);
+ 
+-	if (ocelot_mrp_del_vcap(ocelot, priv->chip_port))
+-		return -EINVAL;
++	ocelot_port->mrp_ring_id = 0;
+ 
+-	if (ocelot->mrp_p_port == dev)
+-		ocelot->mrp_p_port = NULL;
++	for (i = 0; i < ocelot->num_phys_ports; ++i) {
++		ocelot_port = ocelot->ports[i];
+ 
+-	if (ocelot->mrp_s_port == dev)
+-		ocelot->mrp_s_port = NULL;
++		if (!ocelot_port)
++			continue;
+ 
+-	ocelot->mrp_ring_id = 0;
++		if (ocelot_port->mrp_ring_id != 0)
++			goto out;
++	}
+ 
++	ocelot_mrp_del_mac(ocelot, ocelot->ports[port]);
++out:
+ 	return 0;
+ }
+ EXPORT_SYMBOL(ocelot_mrp_del);
+@@ -102,49 +186,36 @@ int ocelot_mrp_add_ring_role(struct ocelot *ocelot, int port,
+ 			     const struct switchdev_obj_ring_role_mrp *mrp)
+ {
+ 	struct ocelot_port *ocelot_port = ocelot->ports[port];
+-	struct ocelot_vcap_filter *filter;
+-	struct ocelot_port_private *priv;
+-	struct net_device *dev;
++	int dst_port;
+ 	int err;
+ 
+ 	if (!ocelot_port)
+ 		return -EOPNOTSUPP;
+ 
+-	priv = container_of(ocelot_port, struct ocelot_port_private, port);
+-	dev = priv->dev;
+-
+-	if (ocelot->mrp_ring_id != mrp->ring_id)
+-		return -EINVAL;
+-
+-	if (!mrp->sw_backup)
++	if (mrp->ring_role != BR_MRP_RING_ROLE_MRC && !mrp->sw_backup)
+ 		return -EOPNOTSUPP;
+ 
+-	if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
++	if (ocelot_port->mrp_ring_id != mrp->ring_id)
+ 		return 0;
+ 
+-	filter = kzalloc(sizeof(*filter), GFP_ATOMIC);
+-	if (!filter)
+-		return -ENOMEM;
++	ocelot_mrp_save_mac(ocelot, ocelot_port);
+ 
+-	filter->key_type = OCELOT_VCAP_KEY_ETYPE;
+-	filter->prio = 1;
+-	filter->id.cookie = priv->chip_port;
+-	filter->id.tc_offload = false;
+-	filter->block_id = VCAP_IS2;
+-	filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
+-	filter->ingress_port_mask = BIT(priv->chip_port);
+-	*(__be16 *)filter->key.etype.etype.value = htons(ETH_P_MRP);
+-	*(__be16 *)filter->key.etype.etype.mask = htons(0xffff);
+-	filter->action.mask_mode = OCELOT_MASK_MODE_PERMIT_DENY;
+-	filter->action.port_mask = 0x0;
+-	filter->action.cpu_copy_ena = true;
+-	filter->action.cpu_qu_num = OCELOT_MRP_CPUQ;
++	if (mrp->ring_role != BR_MRP_RING_ROLE_MRC)
++		return ocelot_mrp_copy_add_vcap(ocelot, port, 1, port);
+ 
+-	err = ocelot_vcap_filter_add(ocelot, filter, NULL);
++	dst_port = ocelot_mrp_find_port(ocelot, ocelot_port);
++	err = ocelot_mrp_redirect_add_vcap(ocelot, port, dst_port);
+ 	if (err)
+-		kfree(filter);
++		return err;
+ 
+-	return err;
++	err = ocelot_mrp_copy_add_vcap(ocelot, port, 2,
++				       port + ocelot->num_phys_ports);
++	if (err) {
++		ocelot_mrp_del_vcap(ocelot, port);
++		return err;
++	}
++
++	return 0;
+ }
+ EXPORT_SYMBOL(ocelot_mrp_add_ring_role);
+ 
+@@ -152,24 +223,32 @@ int ocelot_mrp_del_ring_role(struct ocelot *ocelot, int port,
+ 			     const struct switchdev_obj_ring_role_mrp *mrp)
+ {
+ 	struct ocelot_port *ocelot_port = ocelot->ports[port];
+-	struct ocelot_port_private *priv;
+-	struct net_device *dev;
++	int i;
+ 
+ 	if (!ocelot_port)
+ 		return -EOPNOTSUPP;
+ 
+-	priv = container_of(ocelot_port, struct ocelot_port_private, port);
+-	dev = priv->dev;
+-
+-	if (ocelot->mrp_ring_id != mrp->ring_id)
+-		return -EINVAL;
+-
+-	if (!mrp->sw_backup)
++	if (mrp->ring_role != BR_MRP_RING_ROLE_MRC && !mrp->sw_backup)
+ 		return -EOPNOTSUPP;
+ 
+-	if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
++	if (ocelot_port->mrp_ring_id != mrp->ring_id)
+ 		return 0;
+ 
+-	return ocelot_mrp_del_vcap(ocelot, priv->chip_port);
++	ocelot_mrp_del_vcap(ocelot, port);
++	ocelot_mrp_del_vcap(ocelot, port + ocelot->num_phys_ports);
++
++	for (i = 0; i < ocelot->num_phys_ports; ++i) {
++		ocelot_port = ocelot->ports[i];
++
++		if (!ocelot_port)
++			continue;
++
++		if (ocelot_port->mrp_ring_id != 0)
++			goto out;
++	}
++
++	ocelot_mrp_del_mac(ocelot, ocelot->ports[port]);
++out:
++	return 0;
+ }
+ EXPORT_SYMBOL(ocelot_mrp_del_ring_role);
+diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
+index 425ff29d9389..c41696d2e82b 100644
+--- a/include/soc/mscc/ocelot.h
++++ b/include/soc/mscc/ocelot.h
+@@ -51,6 +51,7 @@
+  */
+ 
+ /* Reserve some destination PGIDs at the end of the range:
++ * PGID_MRP: used for not flooding MRP frames to CPU
+  * PGID_CPU: used for whitelisting certain MAC addresses, such as the addresses
+  *           of the switch port net devices, towards the CPU port module.
+  * PGID_UC: the flooding destinations for unknown unicast traffic.
+@@ -59,6 +60,7 @@
+  * PGID_MCIPV6: the flooding destinations for IPv6 multicast traffic.
+  * PGID_BC: the flooding destinations for broadcast traffic.
+  */
++#define PGID_MRP			57
+ #define PGID_CPU			58
+ #define PGID_UC				59
+ #define PGID_MC				60
+@@ -611,6 +613,8 @@ struct ocelot_port {
+ 
+ 	struct net_device		*bond;
+ 	bool				lag_tx_active;
++
++	u16				mrp_ring_id;
+ };
+ 
+ struct ocelot {
+@@ -679,12 +683,6 @@ struct ocelot {
+ 	/* Protects the PTP clock */
+ 	spinlock_t			ptp_clock_lock;
+ 	struct ptp_pin_desc		ptp_pins[OCELOT_PTP_PINS_NUM];
+-
+-#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+-	u16				mrp_ring_id;
+-	struct net_device		*mrp_p_port;
+-	struct net_device		*mrp_s_port;
+-#endif
+ };
+ 
+ struct ocelot_policer {
 -- 
-Best Regards
-Masahiro Yamada
+2.30.1
+
