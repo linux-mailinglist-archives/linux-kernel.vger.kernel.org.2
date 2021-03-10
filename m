@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B593340B2
+	by mail.lfdr.de (Postfix) with ESMTP id 76FDB3340B4
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhCJOtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:49:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
+        id S232894AbhCJOtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232885AbhCJOsk (ORCPT
+        with ESMTP id S232898AbhCJOsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:48:40 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF012C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:48:40 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id ha17so988258pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:48:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bMJ4aZ3R3rYsoukCOuzGCwYETWFAfdH+2YsRQY1iRCk=;
-        b=IhD7nT7BnmKrI05K+d+SGEDdb2wAozsKYbFoNYNj/vCwmFcNa9xOydcSVeCxyvL653
-         KwQ7CfNsXpZAzifY8JBGcOc5C9+tIS7IGLoLwmoPTClHC62AjHrNnI3o/G+7BHjuzmGB
-         5jc3Xa2Qfgofyr+XjtLvgCRnv2ZII2jZkFFbZaNDobQTZqgUDe1oO7Zzy0kKLrjeS2OJ
-         QCvHtlmwz/VDm/Jy2IpeVHdGih0XT9sV0d65+U9s+e9WsyPGgrCEv08JuyPb6b+Y/vxX
-         kVzAMk5sFvEvP9LWEg5zuvlWFLRQkTOYMzg2lnJm/zNiitLxE4sIF+QeMboYXs2QVEPi
-         KE3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bMJ4aZ3R3rYsoukCOuzGCwYETWFAfdH+2YsRQY1iRCk=;
-        b=W8eTsLkAJoxt35orCnkZajWLO4vcS3ns8sw5t2zdo5MQDntairvW8TxfvN4/WILOh4
-         Q9BdnMGecmkfbjU/zfMwkQh/UlmetwLUE7ToaMnmKymqd+pQEMm3U9rboU4MzdfTMmd3
-         Hg6RnHWllcFEHG2F/+w1UcrXMDuDsKnslki0kTMTW3mjmrajjrHZS5ZHJKP6OfLhtNQP
-         4iSHoAkvv3vo6SINxaaTVeT+egd3Cz18keEzL0ZRYq5xRxmy+tEhwng4Uf0tw05Y7DCP
-         cSphnEwpsn+3xILWtsxeUWFIG8sWJadp2HHCv7hvFbWqLOfoTxaYZAlztBG0C6iqixIU
-         jh/g==
-X-Gm-Message-State: AOAM532sMGykQYwHU0pggEhObk7SBIMuS9ReZRjvPdiAKuJfU4oHHBLS
-        VaAbVl/ESNQ6mK3GjCNL+YruVA==
-X-Google-Smtp-Source: ABdhPJym40pBjSIdZY98Bg4oP9FoGu204iWlwzwNG9Zb4Mt8nzheIB2gOf7dMbQQX9Q2kss5lnvSdw==
-X-Received: by 2002:a17:90a:77c8:: with SMTP id e8mr3882550pjs.48.1615387720341;
-        Wed, 10 Mar 2021 06:48:40 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id z1sm8282554pfn.127.2021.03.10.06.48.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Mar 2021 06:48:39 -0800 (PST)
-Date:   Wed, 10 Mar 2021 20:18:37 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source
- files
-Message-ID: <20210310144837.hxz3nbwonvwi3j5c@vireshk-i7>
-References: <cover.1615354376.git.viresh.kumar@linaro.org>
- <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
- <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
- <CAK7LNAST04XTt7Y0DnSADHgAw-zy61HUcRJSyYRvy2rGHMdn4A@mail.gmail.com>
+        Wed, 10 Mar 2021 09:48:47 -0500
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F2AC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:48:46 -0800 (PST)
+Received: from [192.168.1.101] (abac94.neoplus.adsl.tpnet.pl [83.6.166.94])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E137C3F646;
+        Wed, 10 Mar 2021 15:48:42 +0100 (CET)
+Subject: Re: [PATCH 11/18] arm64: qcom: sdm660: don't use underscore in node
+ name
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210308060826.3074234-1-vkoul@kernel.org>
+ <20210308060826.3074234-12-vkoul@kernel.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <6664e2a1-2706-d5dc-a004-cfc735cdcb05@somainline.org>
+Date:   Wed, 10 Mar 2021 15:48:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAST04XTt7Y0DnSADHgAw-zy61HUcRJSyYRvy2rGHMdn4A@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210308060826.3074234-12-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-03-21, 20:29, Masahiro Yamada wrote:
-> BTW, is the attached patch good for DTC?
-> 
-> I do not know when '-O dtbo' is useful,
-> unless I am missing something.
 
-It is useful if we are sending the -O option all the time (I have
-already given more details to your patch) as outform will not be NULL.
+On 08.03.2021 07:08, Vinod Koul wrote:
+> We have underscore (_) in node name so fix that up as well.
+>
+> Fix this by changing node name to use dash (-)
+>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sdm660.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
 
--- 
-viresh
+We might want to omit
+
+this one,
+
+arm64: qcom: sdm660: don't use empty memory node,
+
+and
+
+arm64: qcom: sdm660: use reg value for memory node
+
+
+as our huge-630/660-feature-drop patchset removes all of the nodes in question from sdm660.dtsi and will hopefully be merged in this window
+
+
+Konrad
+
