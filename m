@@ -2,70 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815D233451E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0FF334529
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbhCJR2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:28:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55662 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233188AbhCJR2H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:28:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615397286;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/HCbdKQtl1hc4k6FOD0WDGWfRfllFHhgAWZ0zbz9Dgw=;
-        b=eTN9Md2yhcuQHXQJM4nzfUzsFxFGmR8Kds/Qh2Y5ZzDXNWjIbgszj4aC8Gj4SfD+QyfO+F
-        kf0nJNayYGWE0JBB/ZEh/KNJfkdlIQSBq1ivbM+Pg1oAluOMVmNoHly3X5/JXG1hu2hyH6
-        Jl9VZH1dH4QCeyD94bEQ0dJMfCycZas=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-1omLWBNxMBGLlXEABc3x3Q-1; Wed, 10 Mar 2021 12:27:58 -0500
-X-MC-Unique: 1omLWBNxMBGLlXEABc3x3Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 625031005D45;
-        Wed, 10 Mar 2021 17:27:56 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.38])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E0A8F772E8;
-        Wed, 10 Mar 2021 17:27:54 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed, 10 Mar 2021 18:27:56 +0100 (CET)
-Date:   Wed, 10 Mar 2021 18:27:53 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jim Newsome <jnewsome@torproject.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
-Message-ID: <20210310172752.GA8973@redhat.com>
-References: <20210309203919.15920-1-jnewsome@torproject.org>
+        id S230421AbhCJRby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:31:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229851AbhCJRbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 12:31:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E30DA60232;
+        Wed, 10 Mar 2021 17:31:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615397498;
+        bh=5+OuADc9zNr0gMnVRLkwdpbs53AaVsD63u4EkGcF4Tw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kt/eok08k2lSnRQGbK9BeEwkbeJk0Tdrog2ifxX8r9ChLmiDbXlDl5lmjSqwbwKQy
+         ct1s4RqnF39ZJPN2rpq0GhRdLdh2tjZVVCs33ZqBva8Kltz3HYEU2rdCWMEK8zwG8T
+         srpy4BEvbYaD5FinWhNj1LRZ6ZtZHypAO9SInrj59eMTD2RT9GV42lJ1h9oQMsKyFj
+         nrI8bbPltORmXPBaFI06LrnociFiCFJRgs9RTNgQnEdYOA/RdBhBUYg+9TLxT8HaeT
+         kGz/QS1tY3+NhQyz9VDzZBoG4thu2ir4e2h8pJ9v+VSJg/4C/ny7RfPV1AiNR2CGx6
+         MQbZVSP+bWbPg==
+Date:   Wed, 10 Mar 2021 19:31:14 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v11 10/10] certs: Add support for using elliptic curve
+ keys for signing modules
+Message-ID: <YEkCYvnmaSqx3ZQT@kernel.org>
+References: <20210305205956.3594375-1-stefanb@linux.vnet.ibm.com>
+ <20210305205956.3594375-11-stefanb@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210309203919.15920-1-jnewsome@torproject.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210305205956.3594375-11-stefanb@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/09, Jim Newsome wrote:
->
-> do_wait is an internal function used to implement waitpid, waitid,
-> wait4, etc. To handle the general case, it does an O(n) linear scan of
-> the thread group's children and tracees.
->
-> This patch adds a special-case when waiting on a pid to skip these scans
-> and instead do an O(1) lookup. This improves performance when waiting on
-> a pid from a thread group with many children and/or tracees.
->
-> Signed-off-by: James Newsome <jnewsome@torproject.org>
+On Fri, Mar 05, 2021 at 03:59:56PM -0500, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
+> 
+> Add support for using elliptic curve keys for signing modules. It uses
+> a NIST P384 (secp384r1) key if the user chooses an elliptic curve key
+> and will have ECDSA support built into the kernel.
+> 
+> Note: A developer choosing an ECDSA key for signing modules has to
+> manually delete the signing key (rm certs/signing_key.*) when falling
+> back to building an older version of a kernel that only supports RSA
+> keys since otherwise ECDSA-signed modules will not be usable when that
+> older kernel runs and the ECDSA key was still used for signing modules.
+> 
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 
+/Jarkko
+
+> ---
+> 
+> v8->v9:
+>  - Automatically select CONFIG_ECDSA for built-in ECDSA support
+>  - Added help documentation
+> 
+> This patch builds on top Nayna's series for 'kernel build support for
+> loading the kernel module signing key'.
+> - https://lkml.org/lkml/2021/2/18/856
+> ---
+>  certs/Kconfig                         | 22 ++++++++++++++++++++++
+>  certs/Makefile                        | 14 ++++++++++++++
+>  crypto/asymmetric_keys/pkcs7_parser.c |  4 ++++
+>  3 files changed, 40 insertions(+)
+> 
+> diff --git a/certs/Kconfig b/certs/Kconfig
+> index 48675ad319db..919db43ce80b 100644
+> --- a/certs/Kconfig
+> +++ b/certs/Kconfig
+> @@ -15,6 +15,28 @@ config MODULE_SIG_KEY
+>           then the kernel will automatically generate the private key and
+>           certificate as described in Documentation/admin-guide/module-signing.rst
+>  
+> +choice
+> +	prompt "Type of module signing key to be generated"
+> +	default MODULE_SIG_KEY_TYPE_RSA
+> +	help
+> +	 The type of module signing key type to generated. This option
+> +	 does not apply if a #PKCS11 URI is used.
+> +
+> +config MODULE_SIG_KEY_TYPE_RSA
+> +	bool "RSA"
+> +	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
+> +	help
+> +	 Use an RSA key for module signing.
+> +
+> +config MODULE_SIG_KEY_TYPE_ECDSA
+> +	bool "ECDSA"
+> +	select CRYPTO_ECDSA
+> +	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
+> +	help
+> +	 Use an elliptic curve key (NIST P384) for module signing.
+> +
+> +endchoice
+> +
+>  config SYSTEM_TRUSTED_KEYRING
+>  	bool "Provide system-wide ring of trusted keys"
+>  	depends on KEYS
+> diff --git a/certs/Makefile b/certs/Makefile
+> index 3fe6b73786fa..c487d7021c54 100644
+> --- a/certs/Makefile
+> +++ b/certs/Makefile
+> @@ -69,6 +69,18 @@ else
+>  SIGNER = -signkey $(obj)/signing_key.key
+>  endif # CONFIG_IMA_APPRAISE_MODSIG
+>  
+> +X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
+> +
+> +# Support user changing key type
+> +ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
+> +keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
+> +$(if $(findstring ecdsa-with-,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
+> +endif
+> +
+> +ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
+> +$(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
+> +endif
+> +
+>  $(obj)/signing_key.pem: $(obj)/x509.genkey
+>  	@$(kecho) "###"
+>  	@$(kecho) "### Now generating an X.509 key pair to be used for signing modules."
+> @@ -86,12 +98,14 @@ ifeq ($(CONFIG_IMA_APPRAISE_MODSIG),y)
+>  		-batch -x509 -config $(obj)/x509.genkey \
+>  		-outform PEM -out $(CA_KEY) \
+>  		-keyout $(CA_KEY) -extensions ca_ext \
+> +		$(keytype_openssl) \
+>  		$($(quiet)redirect_openssl)
+>  endif # CONFIG_IMA_APPRAISE_MODSIG
+>  	$(Q)openssl req -new -nodes -utf8 \
+>  		-batch -config $(obj)/x509.genkey \
+>  		-outform PEM -out $(obj)/signing_key.csr \
+>  		-keyout $(obj)/signing_key.key -extensions myexts \
+> +		$(keytype_openssl) \
+>  		$($(quiet)redirect_openssl)
+>  	$(Q)openssl x509 -req -days 36500 -in $(obj)/signing_key.csr \
+>  		-outform PEM -out $(obj)/signing_key.crt $(SIGNER) \
+> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
+> index 967329e0a07b..2546ec6a0505 100644
+> --- a/crypto/asymmetric_keys/pkcs7_parser.c
+> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
+> @@ -269,6 +269,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
+>  		ctx->sinfo->sig->pkey_algo = "rsa";
+>  		ctx->sinfo->sig->encoding = "pkcs1";
+>  		break;
+> +	case OID_id_ecdsa_with_sha256:
+> +		ctx->sinfo->sig->pkey_algo = "ecdsa";
+> +		ctx->sinfo->sig->encoding = "x962";
+> +		break;
+>  	default:
+>  		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
+>  		return -ENOPKG;
+> -- 
+> 2.29.2
+> 
+> 
