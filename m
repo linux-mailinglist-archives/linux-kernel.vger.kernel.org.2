@@ -2,80 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7484D334175
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 205D033417E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhCJP0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:26:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhCJP0W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:26:22 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1AAC061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:26:10 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id p10so15882260ils.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:26:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0j+bHu3iXH8HjnjVM83afjyL/KXBL2oPI3bv48YdxXw=;
-        b=ZQiRmhgRiDJM1ExEBOq9yi4Apm/6NTwVfFVloNORnQ2cRtlhBji3yuxdvhH5TxZYYf
-         nlbz12Ei6H6RjF9X5prZwHq86Jy3vrJxnLP2GweM4GLocgAJGFJwaI1ic47udFXS0NqP
-         wHxm0UojBmGq8cA73wvCz3HTnI4972hf0pjuPprCeIyF9/Z6vt7kb+TglvIc+x72TJuH
-         Ihjz8Ud+/v/zOZaDcIfGLj0heCW8t9l0sMcb79dgaiobwOdwNtLDui70g5EB8DK7aiwD
-         qDUht7Opqwv7chiRUL2mmGw8vyxqOgjxGkP1dnyzZGgBcc55MqFE20RB5EASQb64kKNU
-         d3/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0j+bHu3iXH8HjnjVM83afjyL/KXBL2oPI3bv48YdxXw=;
-        b=qeqaqX6WCYBpsDJ0DmImKYmAK/3GUvb6NmAn1QCTR8VJy7plHAKQz9osrMmIhMKOzm
-         xzFEj6ozKQ5SB2LTHPK6dSVdtteT4ROYpN08DKUnTHaLI/kvlUPeQW3R6ygzm/rQfOJt
-         dzpQn3WAllwIVS5EaJOCV2j6Ya6s47LoEiRsPrQ9OSyydFLeyPFmC58lDR7Zdn1gIWft
-         d8YiKeKlw/X6+mYwlNucPijxADL84coWiHnHdzO+7AniRa2o+WX1WFsGaNyGUwJHlcDW
-         TnCg6Jwu0tmBRJXHjJEgE0m/1Wki+qpjh4Luxq3Xt0N0EJzd1wHwi9JcgNBcYmfDqhQ+
-         r0iw==
-X-Gm-Message-State: AOAM530yglCKCGA0w03eEVOAb4+MOJQhZCIok060Q/urXhV3bMNuuAs9
-        H+++qDF7CATj9nSR+soQLcuiRkBPZhHC0Q==
-X-Google-Smtp-Source: ABdhPJxpUkLNtdjCX87kdRLr6TBMJO2ghMIEJX8R88HRRF8L5KciBAuoui/STuMaqArpTkHC5a5EEw==
-X-Received: by 2002:a05:6e02:18c9:: with SMTP id s9mr3075571ilu.265.1615389970003;
-        Wed, 10 Mar 2021 07:26:10 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id n7sm8971398ili.79.2021.03.10.07.26.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 07:26:09 -0800 (PST)
-Subject: Re: [PATCH v2] block: rsxx: fix error return code of rsxx_pci_probe()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>, josh.h.morris@us.ibm.com,
-        pjk1939@linux.ibm.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210310033017.4023-1-baijiaju1990@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <746df289-a8d9-9b73-d37d-cffe44b36bc9@kernel.dk>
-Date:   Wed, 10 Mar 2021 08:26:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232834AbhCJP2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:28:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45746 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233087AbhCJP2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:28:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615390080; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rV2+nGi9H+LnzHxy4iouC60dKrTmppkWVNroc466CSU=;
+        b=YZL8nOyZeCwufqUC87IWBmJFM0SB1zh3XusV6PGa0yANnsbREDb4TQblLI/+0nUQ+xNf6X
+        FTe8cUwCBbHK+MAdOrch4O6veeJXY6FKhGO+pIi6XwEXC5/Y0CwVxq2SgMsOg6WBK3Wcw9
+        bdM4pvcjyxGGdxAlmdOR0bLFzrh6AF0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 08259ABD7;
+        Wed, 10 Mar 2021 15:28:00 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 16:27:59 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: Re: [PATCH v18 5/9] mm: hugetlb: set the PageHWPoison to the raw
+ error page
+Message-ID: <YEjlf/yV+hz+NksO@dhcp22.suse.cz>
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-6-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <20210310033017.4023-1-baijiaju1990@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308102807.59745-6-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 8:30 PM, Jia-Ju Bai wrote:
-> When create_singlethread_workqueue returns NULL to card->event_wq, no
-> error return code of rsxx_pci_probe() is assigned.
-> 
-> To fix this bug, st is assigned with -ENOMEM in this case.
+On Mon 08-03-21 18:28:03, Muchun Song wrote:
+> Because we reuse the first tail vmemmap page frame and remap it
+> with read-only, we cannot set the PageHWPosion on some tail pages.
+> So we can use the head[4].private (There are at least 128 struct
+> page structures associated with the optimized HugeTLB page, so
+> using head[4].private is safe) to record the real error page index
+> and set the raw error page PageHWPoison later.
 
-Thanks, this looks much better. Applied.
+Can we have more poisoned tail pages? Also who does consume that index
+and set the HWPoison on the proper tail page?
+ 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Tested-by: Chen Huang <chenhuang5@huawei.com>
+> Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+> ---
+>  mm/hugetlb.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 72 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 377e0c1b283f..c0c1b7635ca9 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1304,6 +1304,74 @@ static inline void destroy_compound_gigantic_page(struct page *page,
+>  						unsigned int order) { }
+>  #endif
+>  
+> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> +static inline void hwpoison_subpage_deliver(struct hstate *h, struct page *head)
+> +{
+> +	struct page *page;
+> +
+> +	if (!PageHWPoison(head) || !free_vmemmap_pages_per_hpage(h))
+> +		return;
+> +
+> +	page = head + page_private(head + 4);
+> +
+> +	/*
+> +	 * Move PageHWPoison flag from head page to the raw error page,
+> +	 * which makes any subpages rather than the error page reusable.
+> +	 */
+> +	if (page != head) {
+> +		SetPageHWPoison(page);
+> +		ClearPageHWPoison(head);
+> +	}
+> +}
+> +
+> +static inline void hwpoison_subpage_set(struct hstate *h, struct page *head,
+> +					struct page *page)
+> +{
+> +	if (!PageHWPoison(head))
+> +		return;
+> +
+> +	if (free_vmemmap_pages_per_hpage(h)) {
+> +		set_page_private(head + 4, page - head);
+> +	} else if (page != head) {
+> +		/*
+> +		 * Move PageHWPoison flag from head page to the raw error page,
+> +		 * which makes any subpages rather than the error page reusable.
+> +		 */
+> +		SetPageHWPoison(page);
+> +		ClearPageHWPoison(head);
+> +	}
+> +}
+> +
+> +static inline void hwpoison_subpage_clear(struct hstate *h, struct page *head)
+> +{
+> +	if (!PageHWPoison(head) || !free_vmemmap_pages_per_hpage(h))
+> +		return;
+> +
+> +	set_page_private(head + 4, 0);
+> +}
+> +#else
+> +static inline void hwpoison_subpage_deliver(struct hstate *h, struct page *head)
+> +{
+> +}
+> +
+> +static inline void hwpoison_subpage_set(struct hstate *h, struct page *head,
+> +					struct page *page)
+> +{
+> +	if (PageHWPoison(head) && page != head) {
+> +		/*
+> +		 * Move PageHWPoison flag from head page to the raw error page,
+> +		 * which makes any subpages rather than the error page reusable.
+> +		 */
+> +		SetPageHWPoison(page);
+> +		ClearPageHWPoison(head);
+> +	}
+> +}
+> +
+> +static inline void hwpoison_subpage_clear(struct hstate *h, struct page *head)
+> +{
+> +}
+> +#endif
+> +
+>  static int update_and_free_page(struct hstate *h, struct page *page)
+>  	__releases(&hugetlb_lock) __acquires(&hugetlb_lock)
+>  {
+> @@ -1357,6 +1425,8 @@ static int update_and_free_page(struct hstate *h, struct page *page)
+>  		return -ENOMEM;
+>  	}
+>  
+> +	hwpoison_subpage_deliver(h, page);
+> +
+>  	for (i = 0; i < pages_per_huge_page(h);
+>  	     i++, subpage = mem_map_next(subpage, page, i)) {
+>  		subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
+> @@ -1801,14 +1871,7 @@ int dissolve_free_huge_page(struct page *page)
+>  			goto retry;
+>  		}
+>  
+> -		/*
+> -		 * Move PageHWPoison flag from head page to the raw error page,
+> -		 * which makes any subpages rather than the error page reusable.
+> -		 */
+> -		if (PageHWPoison(head) && page != head) {
+> -			SetPageHWPoison(page);
+> -			ClearPageHWPoison(head);
+> -		}
+> +		hwpoison_subpage_set(h, head, page);
+>  		list_del(&head->lru);
+>  		h->free_huge_pages--;
+>  		h->free_huge_pages_node[nid]--;
+> @@ -1818,6 +1881,7 @@ int dissolve_free_huge_page(struct page *page)
+>  			h->surplus_huge_pages--;
+>  			h->surplus_huge_pages_node[nid]--;
+>  			h->max_huge_pages++;
+> +			hwpoison_subpage_clear(h, head);
+>  		}
+>  	}
+>  out:
+> -- 
+> 2.11.0
+> 
 
 -- 
-Jens Axboe
-
+Michal Hocko
+SUSE Labs
