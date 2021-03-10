@@ -2,136 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B66334B95
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7D9334B99
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233114AbhCJW22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:28:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
+        id S232030AbhCJW33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbhCJW2E (ORCPT
+        with ESMTP id S232133AbhCJW31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:28:04 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BDFC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:28:04 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id h18so17152039ils.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:28:04 -0800 (PST)
+        Wed, 10 Mar 2021 17:29:27 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E818AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:29:26 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id o10so12354670pgg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:29:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3LFyuXpMRLIGA0oVb60X0seTa3J0valro1PxCcKN/DM=;
-        b=Bm6RNvQzL9TLUqo1/qVst2cHgKfFa3uFxN3tpI6ntj8GoK6H/W9W3icW7MGOWpbxfw
-         pxQpHipOcy/xDB+rwnbj1DH1pRlx+FjFFt/sSgqx60RWrsxOItCEwWQ0MQ7W3nUL16I4
-         l97de7tWU0i25g5UGR180rWVT6wGiGNj2LzCQc2JAuU210ALVhezd7z7n3wQbV3Zguh/
-         P0yma07fpERMRyjq31GIllM/ufbANTzYU82GKZJMKUtX7dIVTI008DUXj1NNQNeReZx2
-         IjkCj3sIrbFom1Hi4FNszU8z5sA1SPR9QLwECTADTaCuNW/uJyujaLzqvXx7ztCDRaNG
-         zaeA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M1LQocdyrILdN3y2ftG88hya3R5bASNZBW6DmO/mx8w=;
+        b=rRAmlYnwokFCMZCfoI41jeWTl58ratOsNSgKi9c2hJ4iln8AOVIAJ1+sWavIS+bF9F
+         RNOplYoZJCumLg3mMmS5S4WrbITN/O4aM04wtiU6Qz6YkQsLI0wt/IeoUK5gv+P/fya5
+         bBUBJ450uOGclJLMkLxutYWB/fEU3nJq+32Dia7+h4lbgtaxaaHz28VRIWPclkq29NC+
+         BtIusP4jp19RDVX3/94PKsfLZK53vRlitB2aaxPhIKHyLsrK6rJRZtDGSl/LufXIYep8
+         nz41na5a5VlyNaQ5NZHTo/NFqcoQA8LcEXueAQLmQHr6xurHFzhRZbLkEAsEHVKBGHsa
+         TJEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3LFyuXpMRLIGA0oVb60X0seTa3J0valro1PxCcKN/DM=;
-        b=iWEVzYhv/ChJRvkN9KbFJk5yM8S7Zjvr2inFH3tulVSfM4+TTEICXioFErQXkIu82g
-         6JLDMGlaCOCj6XETOY+7YQeQJBkaKFzZ32D7xNPXuYUvawhTAzn9bu/QDhbe8ptA4O9w
-         30elE/xuxRQVskZNmXKhp3NCs1Nnn2TNObAY3PwvuQegd8V1d/lGzhg+mTzSj4TfPuAj
-         Y7OQZRRXqjhmIfr1Q33ya4FA4qFXY5B0XpVseziTC7arLna3FIQ0lwAmX6Z/G5shFPsj
-         Go7bjdOttjnOCmKXHJ/4L+AfNUGoskzLkd6JFm+49/qsoC2RTAK7o23rfQ8IBSKFRpe6
-         EoPA==
-X-Gm-Message-State: AOAM5330BQvLGZsJh6RIk3zY7wdoCV7Z/cMwRhcO6tJk3KCPMn8/xOIS
-        3iok2Za7+i4U+2evN9/Yla9dMtkkGqzBWvJwD3V8yfW4S9cfN+hC
-X-Google-Smtp-Source: ABdhPJyQFVb7tR865Cpwi+PC3bE/sDFIfZ6SDS8RmoYjLr9lXCma8VECXcThFWDRs4JLlDxAgckQ4dAp9G6xdad1HiA=
-X-Received: by 2002:a92:c24c:: with SMTP id k12mr3131280ilo.282.1615415284065;
- Wed, 10 Mar 2021 14:28:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M1LQocdyrILdN3y2ftG88hya3R5bASNZBW6DmO/mx8w=;
+        b=P3wn1LeznKPSXX+dtwujZQ3JIWOdwfRL+AokuD4qbNgXiAkW+uxBHlA39g81wctRPE
+         GojQnOpjBX3D6OluYB1zfaAgbvTms8LZfbQZG7ygXPSEHZSxpfByyLmzbB3M+ilI0NBh
+         xB5XSgNQviEes0DHU4LF4HRNVUVWHlWLYv+Autv1o3PiO9nMz51tLylLzY2Xih9Z9TNO
+         vOr+SCkh8SF6mnQrxnYQfc3h8eQmw32KI6IkRakkEK4qtyFHLjX7oI3zs3+LfUns99MS
+         n31L+L9TXN02ac2DDHA5raNXGZ+mPeBYnEcuEImZWL9AV7uBxO/SkaKbwrCRnwV4cz8u
+         nDSg==
+X-Gm-Message-State: AOAM532V3wtfTzKPB0xoiGxjlhQJBMy7qqdSIF/oPWMK7YL2ZMWthWW5
+        B2ADR2hd5lcExboIAl6owY6snQ==
+X-Google-Smtp-Source: ABdhPJwpjGZgnpdrKpm/0s9dytIZYfRa0f6S1OLEGLXaeGLYa/sHF51cyL2rnC+D4J9/KhIpJB2jrQ==
+X-Received: by 2002:a63:170e:: with SMTP id x14mr4600946pgl.245.1615415366310;
+        Wed, 10 Mar 2021 14:29:26 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:6ded:c9f:3996:6bc8])
+        by smtp.gmail.com with ESMTPSA id j21sm450003pfc.114.2021.03.10.14.29.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 14:29:25 -0800 (PST)
+Date:   Wed, 10 Mar 2021 14:29:21 -0800
+From:   Fangrui Song <maskray@google.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Scull <ascull@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, Nicolas Pitre <nico@fluxnic.net>
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Message-ID: <20210310222921.t7tf7cjr7po5dlay@google.com>
+References: <20210225112122.2198845-1-arnd@kernel.org>
+ <20210226211323.arkvjnr4hifxapqu@google.com>
+ <CAK8P3a2bLKe3js4SKeZoGp8B51+rpW6G3KvpbJ5=y83sxHSu6g@mail.gmail.com>
+ <1614559739.p25z5x88wl.astroid@bobo.none>
+ <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
+ <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210310153717.GA5741@agape.jhs> <YEjrEErDZTH47gto@kroah.com> <20210310160946.GA6421@agape.jhs>
-In-Reply-To: <20210310160946.GA6421@agape.jhs>
-From:   Eric Curtin <ericcurtin17@gmail.com>
-Date:   Wed, 10 Mar 2021 22:27:53 +0000
-Message-ID: <CANpvso71zHTHJBduzrX7wx=gDN9mi2CEaXskF=TaZZoL-2+V_Q@mail.gmail.com>
-Subject: Re: [PATCH] staging: rtl8723bs: align comments
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Kernel development list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
-
-> I am sorry, I fear I don't understand, checkpatch.sh script says the patch is ok.
-> Where have I to add a ' ' (a blank?)?
+On 2021-03-10, Arnd Bergmann wrote:
+>On Wed, Mar 10, 2021 at 9:50 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>> On Mon, Mar 1, 2021 at 10:11 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+>> > Excerpts from Arnd Bergmann's message of February 27, 2021 7:49 pm:
 >
-> thank you,
+>>
+>> masahiro@oscar:~/ref/linux$ echo  'void this_func_is_unused(void) {}'
+>> >>  kernel/cpu.c
+>> masahiro@oscar:~/ref/linux$ export
+>> CROSS_COMPILE=/home/masahiro/tools/powerpc-10.1.0/bin/powerpc-linux-
+>> masahiro@oscar:~/ref/linux$ make ARCH=powerpc  defconfig
+>> masahiro@oscar:~/ref/linux$ ./scripts/config  -e EXPERT
+>> masahiro@oscar:~/ref/linux$ ./scripts/config  -e LD_DEAD_CODE_DATA_ELIMINATION
+>> masahiro@oscar:~/ref/linux$
+>> ~/tools/powerpc-10.1.0/bin/powerpc-linux-nm -n  vmlinux | grep
+>> this_func
+>> c000000000170560 T .this_func_is_unused
+>> c000000001d8d560 D this_func_is_unused
+>> masahiro@oscar:~/ref/linux$ grep DEAD_CODE_ .config
+>> CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION=y
+>> CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
+>>
+>>
+>> If I remember correctly,
+>> LD_DEAD_CODE_DATA_ELIMINATION dropped unused functions
+>> when I tried it last time.
+
+--gc-sections drops unused sections.
+If the unused function is part of a larger section which is retained due to other symbols (-fno-function-sections),
+the unused section will be retained as well.
+
+>>
+>>
+>> I also tried arm64 with a HAVE_LD_DEAD_CODE_DATA_ELIMINATION hack.
+>> The result was the same.
+>>
+>>
+>>
+>> Am I missing something?
 >
-> fabio
+>It's possible that it only works in combination with CLANG_LTO now
+>because something broke. I definitely saw a reduction in kernel
+>size when both options are enabled, but did not try a simple test
+>case like you did.
 >
+>Maybe some other reference gets created that prevents the function
+>from being garbage-collected unless that other option is removed
+>as well?
+>
+>         Arnd
 
-I'm only responding to this because this email is doing a very good job
-of avoiding my filters somehow :) I think what Greg means is:
+I believe with LLVM regular LTO, --gc-sections has very little benefit
+on compiler generated sections. It is still useful for assembly generated sections
+(but most such sections are probably needed):
 
-Change this:
+* Target specific optimizations can drop references on constants (e.g. `memcpy(..., &constant, sizeof(constant));`)
+* Due to phase ordering issues some definitions are not discarded by the optimizer.
 
- /*
--op_mode
--Set to 0 (HT pure) under the following conditions
--       - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
--       - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
--Set to 1 (HT non-member protection) if there may be non-HT STAs
--       in both the primary and the secondary channel
--Set to 2 if only HT STAs are associated in BSS,
--       however and at least one 20 MHz HT STA is associated
--Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
--       (currently non-GF HT station is considered as non-HT STA also)
--*/
-+ *op_mode
-+ *Set to 0 (HT pure) under the following conditions
-+ *      - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
-+ *      - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
-+ *Set to 1 (HT non-member protection) if there may be non-HT STAs
-+ *      in both the primary and the secondary channel
-+ *Set to 2 if only HT STAs are associated in BSS,
-+ *      however and at least one 20 MHz HT STA is associated
-+ *Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
-+ *      (currently non-GF HT station is considered as non-HT STA also)
-+ */
+For ThinLTO there are more compiler generated sections discarded by `--gc-sections`:
 
-to this:
+* ThinLTO can cause a definition to be imported to other modules. The original definition may be unneeded after imports.
+* The definition may survive after intra-module optimization. After imports, a round of (inter-module) IR optimizations after `computeDeadSymbolsWithConstProp` may make the definition unneeded.
+* Symbol resolution is conservative.
 
- /*
--op_mode
--Set to 0 (HT pure) under the following conditions
--       - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
--       - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
--Set to 1 (HT non-member protection) if there may be non-HT STAs
--       in both the primary and the secondary channel
--Set to 2 if only HT STAs are associated in BSS,
--       however and at least one 20 MHz HT STA is associated
--Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
--       (currently non-GF HT station is considered as non-HT STA also)
--*/
-+ * op_mode
-+ * Set to 0 (HT pure) under the following conditions
-+ *      - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
-+ *      - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
-+ * Set to 1 (HT non-member protection) if there may be non-HT STAs
-+ *      in both the primary and the secondary channel
-+ * Set to 2 if only HT STAs are associated in BSS,
-+ *      however and at least one 20 MHz HT STA is associated
-+ * Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
-+ *      (currently non-GF HT station is considered as non-HT STA also)
-+ * /
+Regarding symbol resolution, symbol resolution happens before LTO and LTO happens before --gc-sections. The symbol resolution process may be conservative: it may communicate to LTO that some symbols are referenced by regular object files while in the GC stage the references turn out to not exist because of discarded sections with more precise GC roots.
 
-Like Dan said, you need a space after the '*'/
-
-Is mise le meas/Regards,
-
-Eric Curtin
-
-Check out this charity that's close to my heart:
-
-https://www.idonate.ie/fundraiser/11394438_peak-for-pat.html
-https://www.facebook.com/Peak-for-Pat-104470678280309
-https://www.instagram.com/peakforpat/
+(I've added the above points to my https://maskray.me/blog/2021-02-28-linker-garbage-collection#link-time-optimization )
