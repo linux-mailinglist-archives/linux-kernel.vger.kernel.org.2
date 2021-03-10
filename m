@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E4F334019
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:15:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D922D33401F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhCJOPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:15:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46854 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232956AbhCJOO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:14:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615385697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PsgN0DLBzJSs8dxWX8jTU+wIyrjJ0g+0prudfyao9mI=;
-        b=Tvrh7P5wQ54v3pcp4SSdZktDbXaGQxnTqh5w1+b5YXcC9xj3PxbzzEaa0nRg8xuUBhUx6F
-        mVAAT+wTOiHORW7XCiJ5OKfFDqN7cTZSNUdy5453SIY4RCOmf3mcYh/PO/KDFinvgkn1Xg
-        Im/jUaDXWzfu7BnsmFD6m2cFS5qbi9A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 64687AEB6;
-        Wed, 10 Mar 2021 14:14:57 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 15:14:56 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Subject: Re: [PATCH v18 1/9] mm: memory_hotplug: factor out bootmem core
- functions to bootmem_info.c
-Message-ID: <YEjUYOIJb2kYoQIA@dhcp22.suse.cz>
-References: <20210308102807.59745-1-songmuchun@bytedance.com>
- <20210308102807.59745-2-songmuchun@bytedance.com>
+        id S232986AbhCJOPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:15:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233002AbhCJOPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 09:15:05 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26941C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:15:05 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id t29so12021980pfg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 06:15:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8VRAirfevKmUWNCrs14aatYK1Jqu0K30gv7JJNtCMro=;
+        b=tEJQ3VnKAD4WGlA/T4R2UaiQZXE89wl366FVuI8/sG3HDPzrjlB8lvT6JEp4zGr1Wp
+         1dFPMFQ6TzYcMw3o3EwK4Tqg/wyQ0SLOeSvTm44aigcSyb1+RsbL9tNhd8W6N20jS0zY
+         TPc6TpOvW3f3XIZTluIQFAucv0XX9r/GII41/3vRhJbNCOqzX4M3DgmUKe6sShGnkYRD
+         MbWO01JryYholDe2CKapFJRRW+UYMNvc+WXogsIEbfx8mg7QnchJCvrLYTS4Pz9iXDsj
+         nZ+w1TDyPF6jxcef3vDus/sK5vpkuttDDMTZE3Z4/vVbyvEWWn0TNF/o5VHpBSL/isIv
+         848Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8VRAirfevKmUWNCrs14aatYK1Jqu0K30gv7JJNtCMro=;
+        b=arPU2Sfg2nEukOVxo0WsD3BKIIBoqlAbGsbgM9ur+JFgWuMWTLcl4wifzHi9Xn8Ant
+         IXg1yXyjcq6aGptVuQvjwDiLzPYUNXyAu3ZPraRVjVQV32550xqrhEi1SrzgqDdXp83l
+         dwbq1cc9nhm6xjRJWeLo+M2t7ayykCZQrAzXBHdPIH6Largw2ni1hCZhHwNyi6J5Alt3
+         0krZIYHLo+PKCp8cYYr2dnoLFABanE82eiotdtQai6aMQUILY9/BrNCRR2QUvqPEmzpl
+         emYtPeXb1DdJLiFqc+8zeaM+fiRyZy61yvFPpPlbE019qU5y5xkrpW7zF5L2MPfOcrnC
+         QcVw==
+X-Gm-Message-State: AOAM531vRlmvzCxy6bxeuBsy15u8qrd5grcgOH8VBJGA+P33pV+DOT1C
+        sYMu6aO3ZVhsn9JRvA3fkjcW
+X-Google-Smtp-Source: ABdhPJx5WO2muywySjBRhugk0IwlGBiY0hVjSoEt/Bv1W4JEE1tJabz8HTSFhD+cR/8NPd+y6NFMJg==
+X-Received: by 2002:a63:4504:: with SMTP id s4mr2984320pga.184.1615385704658;
+        Wed, 10 Mar 2021 06:15:04 -0800 (PST)
+Received: from thinkpad ([103.66.79.59])
+        by smtp.gmail.com with ESMTPSA id 9sm16220155pgy.79.2021.03.10.06.15.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 06:15:04 -0800 (PST)
+Date:   Wed, 10 Mar 2021 19:44:58 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH] bus: mhi: Make firmware image optional for controller
+Message-ID: <20210310141458.GU30275@thinkpad>
+References: <1615315595-37750-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308102807.59745-2-songmuchun@bytedance.com>
+In-Reply-To: <1615315595-37750-1-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[I am sorry for a late review]
-
-On Mon 08-03-21 18:27:59, Muchun Song wrote:
-> Move bootmem info registration common API to individual bootmem_info.c.
-> And we will use {get,put}_page_bootmem() to initialize the page for the
-> vmemmap pages or free the vmemmap pages to buddy in the later patch.
-> So move them out of CONFIG_MEMORY_HOTPLUG_SPARSE. This is just code
-> movement without any functional change.
+On Tue, Mar 09, 2021 at 10:46:35AM -0800, Bhaumik Bhatt wrote:
+> Some controllers can opt to not have MHI download a firmware
+> image to have the device bootup and can find the device in a
+> pass through execution environment, ready to go. Thus, MHI
+> controllers for those devices do not need fw_image defined.
+> Make it optional to accommodate different bootup modes.
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-> Tested-by: Chen Huang <chenhuang5@huawei.com>
-> Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+> Suggested-by: Loic Poulain <loic.poulain@linaro.org>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-Separation from memory_hotplug.c is definitely a right step. I am
-wondering about the config dependency though
-[...]
-> diff --git a/mm/Makefile b/mm/Makefile
-> index 72227b24a616..daabf86d7da8 100644
-> --- a/mm/Makefile
-> +++ b/mm/Makefile
-> @@ -83,6 +83,7 @@ obj-$(CONFIG_SLUB) += slub.o
->  obj-$(CONFIG_KASAN)	+= kasan/
->  obj-$(CONFIG_KFENCE) += kfence/
->  obj-$(CONFIG_FAILSLAB) += failslab.o
-> +obj-$(CONFIG_HAVE_BOOTMEM_INFO_NODE) += bootmem_info.o
+Applied to mhi-next!
 
-I would have expected this would depend on CONFIG_SPARSE.
-BOOTMEM_INFO_NODE is really an odd thing to depend on here. There is
-some functionality which requires the node info but that can be gated
-specifically. Or what is the thinking behind?
+Thanks,
+Mani
 
-This doesn't matter right now because it seems that the *_page_bootmem
-is only used by x86 outside of the memory hotplug.
-
-Other than that looks good to me.
--- 
-Michal Hocko
-SUSE Labs
+> ---
+>  include/linux/mhi.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index 56c4c52..838a3c4 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -296,7 +296,7 @@ struct mhi_controller_config {
+>   * @wake_db: MHI WAKE doorbell register address
+>   * @iova_start: IOMMU starting address for data (required)
+>   * @iova_stop: IOMMU stop address for data (required)
+> - * @fw_image: Firmware image name for normal booting (required)
+> + * @fw_image: Firmware image name for normal booting (optional)
+>   * @edl_image: Firmware image name for emergency download mode (optional)
+>   * @rddm_size: RAM dump size that host should allocate for debugging purpose
+>   * @sbl_size: SBL image size downloaded through BHIe (optional)
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
