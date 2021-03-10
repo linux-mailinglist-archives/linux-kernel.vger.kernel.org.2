@@ -2,134 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5113334AEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97A5334AF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhCJWD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:03:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234273AbhCJWCr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:02:47 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF53C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:38 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id u18so27666906ljd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sXKxf2WheKTyVYrbgS1oaunkjJtfisdRmZ807RF1ULg=;
-        b=dbU4ABptlvOkwDfx7plNb6a5nN6D3I3kAXWL/Oeko/xOmVpIlvVeERfIF6cIirsLEv
-         nuevb/uU9rqPIsW4zwKzOoZ9h9xbXwV37dTOuoBmPxQGIVr/QPHA2GzWKOmiJB+I1xp7
-         ecrphjmPAcMl1PfEUhUBXeOdOS29Vim/ALbGZoaIQYEZCTo3fpIcrAvW5Op+St6fEUsI
-         VI9Nh2X1G7sDheoPWjf7y8Md/pyrscJEUIS3Pr2OznkRsRGmrNvBzkvBUyOihPuRZUUm
-         GjFqtqhG1zI/d6vW3rtQK9hX6kBUs+tqoyLrtA2te62P48fhoDo95rHm/ZqN+kOJthKo
-         8N4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sXKxf2WheKTyVYrbgS1oaunkjJtfisdRmZ807RF1ULg=;
-        b=XXBflvqoVSh4b1TZW/xrNA+yYuuLqLCeEiRaDXWy4jrkOU5iZsLbwQKoETL0h9s02o
-         Q5zl0OF4Vg8xgoBxZ92OpTHnmZvcQTzCiybijdybtfbJ2Tign+hD8LpQuY5Sq5yy6F6s
-         WMtLNGdILEjXENwRd2ITPxEk1yHNEGj5HwJytELfz6GSwiDkXcB3S7uxD9fJoFUDXadQ
-         dGLVGu3B8sRnHQ+DSP4jT1aiNcU4FSeEHDuJml9aH81SsBuxg5c/12NIiKt77RNZ/0w5
-         KylXbLNHTJnc23CE2jR/XGOVEP056EcOnyT/S/UxzDd6R8FmznldgS/Z9R7fDiyfLjNo
-         1fjQ==
-X-Gm-Message-State: AOAM533uklGdvBSxQwOrQcNd+eTsYUKNAiwF4/22KtzndXJDk20tnNom
-        qQ01l85EwiJmvgHcHi1qY60jGh+G/O9yXdtstqq0KA==
-X-Google-Smtp-Source: ABdhPJznUWbLFNZFALzU8fQ9YS1h0QQBh8Wqc/a3pb1tgbl1rRtFm+l7R02qCrm4WRhwHDcStYtCj/ZrwiScdaMDdy0=
-X-Received: by 2002:a2e:b88b:: with SMTP id r11mr2941721ljp.495.1615413756356;
- Wed, 10 Mar 2021 14:02:36 -0800 (PST)
+        id S232790AbhCJWFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:05:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232907AbhCJWFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:05:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DDBE64F42;
+        Wed, 10 Mar 2021 22:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615413909;
+        bh=S0EjQ5tCchbtzTAxcrKIMWxHU6YxSDhJ7SQApGf4i4A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gHAGe5LcxiNVrqTpLts7N02jt0UTqdktabljAP5xZXvvI9Qlj7OV791JvHnNXp76D
+         8gpqO83j/Sq96yKauWZy3ez1/bI15fsRLpXrxZ/CxxrqJoCNeImVCGi4OUcmPzKm4I
+         8Fz+3pE+NhrOcs09E8rD5Nd5dhOL/mFClc6ZfcI+3O28uwvONh2dtgYjZaOAfcyYhH
+         V9TKDNxlGvEP9vWYjb/7p5Fv4ym38uhKJMonZWgfUvJrOAgiaW696PaD1Y24KAmh6l
+         q1I2Dn8s8GVoFZzfddw9U9CGlQQnc0l7XiIFM2oJdyF/b8ypefwc4oTv9niku+rOVw
+         SQPZGFFEFbQkQ==
+Date:   Wed, 10 Mar 2021 23:05:07 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 05/13] rcu/nocb: Use the rcuog CPU's ->nocb_timer
+Message-ID: <20210310220507.GA2949@lothringen>
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-6-frederic@kernel.org>
+ <20210303011557.GA20917@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20210225112122.2198845-1-arnd@kernel.org> <20210226211323.arkvjnr4hifxapqu@google.com>
- <CAK8P3a2bLKe3js4SKeZoGp8B51+rpW6G3KvpbJ5=y83sxHSu6g@mail.gmail.com>
- <1614559739.p25z5x88wl.astroid@bobo.none> <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
- <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
-In-Reply-To: <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 10 Mar 2021 14:02:24 -0800
-Message-ID: <CAKwvOdk4y3Ekc_TiWuk6D2KNbH_6YHZLRK9TtAnOP=cLP6E0Rw@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-To:     kernel-toolchains@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrew Scull <ascull@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Arnd Bergmann <arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303011557.GA20917@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 1:08 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Wed, Mar 10, 2021 at 9:50 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > On Mon, Mar 1, 2021 at 10:11 AM Nicholas Piggin <npiggin@gmail.com> wrote:
-> > > Excerpts from Arnd Bergmann's message of February 27, 2021 7:49 pm:
->
-> >
-> > masahiro@oscar:~/ref/linux$ echo  'void this_func_is_unused(void) {}'
-> > >>  kernel/cpu.c
-> > masahiro@oscar:~/ref/linux$ export
-> > CROSS_COMPILE=/home/masahiro/tools/powerpc-10.1.0/bin/powerpc-linux-
-> > masahiro@oscar:~/ref/linux$ make ARCH=powerpc  defconfig
-> > masahiro@oscar:~/ref/linux$ ./scripts/config  -e EXPERT
-> > masahiro@oscar:~/ref/linux$ ./scripts/config  -e LD_DEAD_CODE_DATA_ELIMINATION
-> > masahiro@oscar:~/ref/linux$
-> > ~/tools/powerpc-10.1.0/bin/powerpc-linux-nm -n  vmlinux | grep
-> > this_func
-> > c000000000170560 T .this_func_is_unused
-> > c000000001d8d560 D this_func_is_unused
-> > masahiro@oscar:~/ref/linux$ grep DEAD_CODE_ .config
-> > CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION=y
-> > CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
-> >
-> >
-> > If I remember correctly,
-> > LD_DEAD_CODE_DATA_ELIMINATION dropped unused functions
-> > when I tried it last time.
-> >
-> >
-> > I also tried arm64 with a HAVE_LD_DEAD_CODE_DATA_ELIMINATION hack.
-> > The result was the same.
-> >
-> >
-> >
-> > Am I missing something?
->
-> It's possible that it only works in combination with CLANG_LTO now
-> because something broke. I definitely saw a reduction in kernel
-> size when both options are enabled, but did not try a simple test
-> case like you did.
->
-> Maybe some other reference gets created that prevents the function
-> from being garbage-collected unless that other option is removed
-> as well?
+On Tue, Mar 02, 2021 at 05:15:57PM -0800, Paul E. McKenney wrote:
+> The first question is of course: Did you try this with lockdep enabled?  ;-)
 
-I wish the linker had a debug flag that could let developers discover
-the decisions it made during --gc-sections as to why certain symbols
-were retained/kept or not.
--- 
-Thanks,
-~Nick Desaulniers
+Yep I always do. But I may miss some configs on my testings. I usually
+test at least TREE01 on x86 and arm64.
+
+> > @@ -1702,43 +1692,50 @@ bool rcu_is_nocb_cpu(int cpu)
+> >  	return false;
+> >  }
+> >  
+> > -/*
+> > - * Kick the GP kthread for this NOCB group.  Caller holds ->nocb_lock
+> > - * and this function releases it.
+> > - */
+> > -static bool wake_nocb_gp(struct rcu_data *rdp, bool force,
+> > -			 unsigned long flags)
+> > -	__releases(rdp->nocb_lock)
+> > +static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
+> > +			   struct rcu_data *rdp,
+> > +			   bool force, unsigned long flags)
+> > +	__releases(rdp_gp->nocb_gp_lock)
+> >  {
+> >  	bool needwake = false;
+> > -	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+> >  
+> > -	lockdep_assert_held(&rdp->nocb_lock);
+> >  	if (!READ_ONCE(rdp_gp->nocb_gp_kthread)) {
+> > -		rcu_nocb_unlock_irqrestore(rdp, flags);
+> > +		raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
+> >  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+> >  				    TPS("AlreadyAwake"));
+> >  		return false;
+> >  	}
+> >  
+> > -	if (READ_ONCE(rdp->nocb_defer_wakeup) > RCU_NOCB_WAKE_NOT) {
+> > -		WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+> > -		del_timer(&rdp->nocb_timer);
+> > +	if (rdp_gp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
+> 
+> So there are no longer any data races involving ->nocb_defer_wakeup?
+> 
+> (Yes, I could fire up KCSAN, but my KCSAN-capable system is otherwise
+> occupied for several more hours.)
+
+To be more specific, there is no more unlocked write to the timer (queue/cancel)
+and its nocb_defer_wakeup matching state. And there is only one (on purpose) racy
+reader of ->nocb_defer_wakeup which is the non-timer deferred wakeup.
+
+So the writes to the timer keep their WRITE_ONCE() and only the reader in
+do_nocb_deferred_wakeup() keeps its READ_ONCE(). Other readers are protected
+by the ->nocb_gp_lock.
+
+> > +
+> >  		// Advance callbacks if helpful and low contention.
+> >  		needwake_gp = false;
+> >  		if (!rcu_segcblist_restempty(&rdp->cblist,
+> > @@ -2178,11 +2182,18 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+> >  	my_rdp->nocb_gp_bypass = bypass;
+> >  	my_rdp->nocb_gp_gp = needwait_gp;
+> >  	my_rdp->nocb_gp_seq = needwait_gp ? wait_gp_seq : 0;
+> > -	if (bypass && !rcu_nocb_poll) {
+> > -		// At least one child with non-empty ->nocb_bypass, so set
+> > -		// timer in order to avoid stranding its callbacks.
+> > +	if (bypass) {
+> >  		raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
+> > -		mod_timer(&my_rdp->nocb_bypass_timer, j + 2);
+> > +		// Avoid race with first bypass CB.
+> > +		if (my_rdp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
+> > +			WRITE_ONCE(my_rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+> > +			del_timer(&my_rdp->nocb_timer);
+> > +		}
+> 
+> Given that the timer does not get queued if rcu_nocb_poll, why not move the
+> above "if" statement under the one following?
+
+It's done later in the set.
+
+> 
+> > +		if (!rcu_nocb_poll) {
+> > +			// At least one child with non-empty ->nocb_bypass, so set
+> > +			// timer in order to avoid stranding its callbacks.
+> > +			mod_timer(&my_rdp->nocb_bypass_timer, j + 2);
+> > +		}
+> >  		raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
+> >  	}
+> >  	if (rcu_nocb_poll) {
+> > @@ -2385,7 +2399,10 @@ static void do_nocb_deferred_wakeup_timer(struct timer_list *t)
+> >   */
+> >  static bool do_nocb_deferred_wakeup(struct rcu_data *rdp)
+> >  {
+> > -	if (rcu_nocb_need_deferred_wakeup(rdp))
+> > +	if (!rdp->nocb_gp_rdp)
+> > +		return false;
+> 
+> This check was not necessary previously because each CPU used its own rdp,
+> correct?
+
+Exactly!
+
+> The theory is that this early return is taken only during boot,
+> and that the spawning of the kthreads will act as an implicit wakeup?
+
+You guessed right! That probably deserve a comment.
+
+Thanks!
