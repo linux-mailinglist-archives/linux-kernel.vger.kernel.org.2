@@ -2,163 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903A4333484
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6A2333486
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbhCJErL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 23:47:11 -0500
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:4816 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230198AbhCJEqy (ORCPT
+        id S232317AbhCJErp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 23:47:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230198AbhCJErc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 23:46:54 -0500
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12A4iKa9027090;
-        Tue, 9 Mar 2021 20:46:44 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=proofpoint;
- bh=pZnA7WSOuV0jUYGP53mm6b4vhFrmY5biDNstAinwM+w=;
- b=PxYIkSUykDWLqfLcV46rhzaePC7DtRpSocFqt14TqQU/tXc6SoARH20pQCingAISMHoP
- BJnOMsm47DOo0gK/e/oBPC+SwbFdjff9O8oK4lZKt1xCdK/5XjPfDdvNMu1D+eOuv1XN
- RyZHgm+KUGZSm50GnVtQozU08CZkw3agMIqJdpHzriPOmrWheCbwuDuucoIP2aUS2EXY
- Snpu0/C75Q1ilqmhwJmwZ+t4854s4SPi+p/yIRwuPWxwUn8ag+L9lRqvNXsHF6jGFa6V
- SRAtkD9x86bIgJt9f1Cj+pJofxLIJq1JDLVMI0b4/04BA7RJr5L1GTvcGQxfQLYK92oS EA== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 3746753etu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 20:46:44 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OdPTxoHDGPPGQESdyLpTSKbWtgkn+PeCrJwxMQX20NPw9ViDImO1sUClp+7koLASj7yGfKBn0uEPhUXNWWMwvzr+AtnPC33BtMCGh3fnXNIgFIMzHWRKaZ0DBeeXXWNT/tANEL51AaeXpxb8f6qKl4NDwx0mtSWjEI//JOOgcchcSrW9BHFMRU4S+wwhfJ77te1K2O80TiRfTSepR+WU/NeuzLd9KTHDrTyIEkyzA6DvMws+zhjEB9JLWtqG+SfjvxpZcUMuPcWAlq0JtRpL2lXCIFxM8DYHIERtoZlTQNbeKBym3Z5Nrtobf7wMjY9LQipqUtemjo+dwcZ9mnHw0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pZnA7WSOuV0jUYGP53mm6b4vhFrmY5biDNstAinwM+w=;
- b=LKoDkDVfymaUshy3i7J203guGy6/ZVVc3ZL+ReneyTrrz4KalPTGJkQjVOxlPwB97FSWX3JWc3xkIwPBrFd2ZoFidnL99R1Ywuq7dHud2THYZci0Leyr5IF3CJ9EQKQ+WeQKlAX90LIZuk28C+04f+zPCnon8HJccEs0jYM7uGHoKUldEuoVxVZ2qfvRYgly4ZlHm4lf7iVn3YXiLzbnB3y95lVM1pg9CqDpV+kL7Xaetyr4BPy+KxGd0rTe51MO+6uoQ+YVQQPiezHjNgkAOoZUUD5yx92+QejEtYWJb8MaXPQ2k+n7yAtNOFSK0nRO87RDeQ8nV+okTzT42qQw2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 199.43.4.23) smtp.rcpttodomain=kernel.org smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pZnA7WSOuV0jUYGP53mm6b4vhFrmY5biDNstAinwM+w=;
- b=JKt044vhSiXtpLVZYA5rRuOazi7mRkBoHmyWR6PPMxCXkxB+faG4Fj9V19KARvlLsjB0bAXgFtWiHzLoAfETH9iwisHzWMCFF34RZODrHbmkjCxsyjzmgNECf8mTMoXfgypGjYSdHi11c3jmLKM7joDGUG8Ktoaiul/bbFf4tPU=
-Received: from DM6PR07CA0102.namprd07.prod.outlook.com (2603:10b6:5:337::35)
- by SN6PR07MB4958.namprd07.prod.outlook.com (2603:10b6:805:a4::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Wed, 10 Mar
- 2021 04:46:41 +0000
-Received: from DM6NAM12FT019.eop-nam12.prod.protection.outlook.com
- (2603:10b6:5:337:cafe::e8) by DM6PR07CA0102.outlook.office365.com
- (2603:10b6:5:337::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Wed, 10 Mar 2021 04:46:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
- smtp.mailfrom=cadence.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
- client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
-Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- DM6NAM12FT019.mail.protection.outlook.com (10.13.178.84) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3933.16 via Frontend Transport; Wed, 10 Mar 2021 04:46:41 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 12A4kcgG025556
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Mar 2021 23:46:40 -0500
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 10 Mar 2021 05:46:25 +0100
-Received: from gli-login.cadence.com (10.187.128.100) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Wed, 10 Mar 2021 05:46:25 +0100
-Received: from gli-login.cadence.com (localhost [127.0.0.1])
-        by gli-login.cadence.com (8.14.4/8.14.4) with ESMTP id 12A4kPcJ006026;
-        Wed, 10 Mar 2021 05:46:25 +0100
-Received: (from pawell@localhost)
-        by gli-login.cadence.com (8.14.4/8.14.4/Submit) id 12A4kOBC005936;
-        Wed, 10 Mar 2021 05:46:24 +0100
-From:   Pawel Laszczak <pawell@cadence.com>
-To:     <linux-api@vger.kernel.org>, <gregkh@linuxfoundation.org>
-CC:     <balbi@kernel.org>, <laurent.pinchart@ideasonboard.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <peter.chen@kernel.org>, <kurahul@cadence.com>,
-        Pawel Laszczak <pawell@cadence.com>
-Subject: [PATCH v2 2/2] usb: webcam: Invalid size of Processing Unit Descriptor
-Date:   Wed, 10 Mar 2021 05:45:40 +0100
-Message-ID: <20210310044540.4088-1-pawell@gli-login.cadence.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4e431c9d-f30d-4e27-3aad-08d8e37f7faa
-X-MS-TrafficTypeDiagnostic: SN6PR07MB4958:
-X-Microsoft-Antispam-PRVS: <SN6PR07MB49581A2CEA7E64BAB4C3630FDD919@SN6PR07MB4958.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PVGetPBVGXtWQkoiZXsd+3K7TKN4v1gcFo9umS3pWR0T5Oc0itc408LEAZABQXiFCxCIYSzKXc66zBJqSo1/JtCQClLoDzUbinGxDbWvMRG2dINrBJZSlLBVJOwXpt+8EZ36L14+Nss2kLt6+ByHAW6jYg6pezTxrtKBlsy0nUAQlm2Hk3BQU+C2taFIouaQOSpna1o9c+Za7dRboW7id3V5U/TDyyjFER5mGnNxJmxYrOTz4IW3XlFjuTFkN6+gHbFSpn9moMuUilKURrtovaEkV2Lghdrm2Gd0nCWztDCW81r3jTW2IucA8Xw1feT4tLckEPI9qg4qMFTznIfSjtw8Guozi/y6dpfb5XzXVmub0JlN3rniHY0PxfmgpULAWaXLt3w6yinVXRXJ7RuJfUeK8kk74+aaKjp+N7dMJYgN/YPjqZWHMS0pb+QiAHk4YqvR88IH2mGl71QiK7kigqvYmGKBbK/JfM3ZkHYbgdDPGsu4Lm/g8Kh62H/1kBK2NIGPn+8AszSeIo2prHvMoUPXjkn2+anrWBPq0TxZvyJlAz7s1XNPTYMigu8gx0Ta4drKWFuq6h26148/S1nwJCsKyxtKPwtyyWEgmr2zmoCQgcyQRi4QIKmUv4Jgyc8a55QpYbVf5k2omL4weXKpo50il4L6kaAv7tjDiLly0AUqVBo4fzuNE0b3ie47zm8dIgywHqZQbn9OMLJX4nXCHg==
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(376002)(396003)(36092001)(36840700001)(46966006)(8676002)(86362001)(5660300002)(426003)(81166007)(316002)(70586007)(42186006)(2906002)(47076005)(6666004)(110136005)(54906003)(186003)(8936002)(336012)(478600001)(4326008)(70206006)(36906005)(1076003)(26005)(356005)(36860700001)(82310400003)(83380400001)(82740400003)(107886003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2021 04:46:41.4299
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e431c9d-f30d-4e27-3aad-08d8e37f7faa
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT019.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR07MB4958
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-10_03:2021-03-09,2021-03-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 suspectscore=0
- phishscore=0 clxscore=1015 bulkscore=0 impostorscore=0 priorityscore=1501
- spamscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=762 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103100022
+        Tue, 9 Mar 2021 23:47:32 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2D3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 20:47:31 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id j6so7859617plx.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 20:47:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V8CovqO2r2c3lZFxI+Vlz80bG5YIFGmxCrj/XPBe6Sw=;
+        b=tcRWTtQJwyQCDK5Db+d9WbORhnitIMEgAhGeA8awjiVyQlNhU2iFat9SLNzn0ZYU22
+         7TN2//+Jr0Q8dWOHFEzlaxej5pcUQoIG+gqUMTjsW6U8eK+2ZBhShZkJZ0wNSNzgQImZ
+         rUBsoqUSJxXKHyURNg054vZ5S4aQizqtRcAf0gL8NoC8DCckCFNM4h/aYJg6CacmumZu
+         Ou5efOjgv5CIfdYvJoC/+joeN4r0ICEt90ROswhSwPnrGULUgXUeJFU5yx0no05QmGd0
+         IvTZ9vYuJlM9lDiCWyLWUtH9dfBdJIwK47bHFyPzn83ouXlUreBso3eA9HZf3IpSf5Z0
+         GqlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=V8CovqO2r2c3lZFxI+Vlz80bG5YIFGmxCrj/XPBe6Sw=;
+        b=H1aDpBhMi+4ZWnfyDb/bEh5ZBWVZCQtMcuwGdaa1UlBDgNLu69fjIG2TpzdPnRg8Tx
+         OgE+eEZ5PN3ds1MRevEhWLbyOpLe0y235bmaW5gPCV9We/ehOXGzjH7wqJhSvMa81I4c
+         CNenD5sMC5c1MdkMKOtYWwl6o5DGQntuSW5wQICfWyY7Av5MD9J49kt15ILJU74Au6gh
+         aJc54w11IYrnPFk2SsmtnswtD3iR6dWH4/5kTXDgTi9nobvmJWIqW/ejONagzSZpOL8P
+         w2jIfl3J5os/UmZ4J7tqtln60zwx6VJ2Qtjwx3ERnz4jix3DmJSwbjpSjan87FWdax5o
+         9LfQ==
+X-Gm-Message-State: AOAM53092jGWSt1NJH8hCJp7S5y6a5Zy/akg8/wb/+le1JfKjGF5ooOw
+        8VgP1QtttjXy60LgZ8uDeS/iWQ==
+X-Google-Smtp-Source: ABdhPJzpFUiJudJafEmd5UfrnkjeEeW49aL4mN5nGImsEab1r6oCo1IahjaNCjeP0HQ9zUe/rrs5LA==
+X-Received: by 2002:a17:90a:990a:: with SMTP id b10mr1583598pjp.178.1615351651352;
+        Tue, 09 Mar 2021 20:47:31 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 3sm4428818pjk.26.2021.03.09.20.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 20:47:30 -0800 (PST)
+Date:   Tue, 09 Mar 2021 20:47:30 -0800 (PST)
+X-Google-Original-Date: Tue, 09 Mar 2021 20:46:23 PST (-0800)
+Subject:     Re: [PATCH 1/9] riscv: traps: Fix no prototype warnings
+In-Reply-To: <20210305113332.428048-2-sunnanyong@huawei.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Atish Patra <Atish.Patra@wdc.com>, wangkefeng.wang@huawei.com,
+        sunnanyong@huawei.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     sunnanyong@huawei.com
+Message-ID: <mhng-31d44427-3d4a-4e15-aeae-5bbb8b271349@penguin>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pawel Laszczak <pawell@cadence.com>
+On Fri, 05 Mar 2021 03:33:24 PST (-0800), sunnanyong@huawei.com wrote:
+> Fix all W=1 compilation warnings:'no previous prototype for' in arch/riscv/kernel/traps.c:
+> arch/riscv/kernel/traps.c:96:15: warning: no previous prototype for ‘do_trap_unknown’ [-Wmissing-prototypes]
+>    96 | DO_ERROR_INFO(do_trap_unknown,
+>       |               ^~~~~~~~~~~~~~~
+> arch/riscv/kernel/traps.c:91:27: note: in definition of macro ‘DO_ERROR_INFO’
+>    91 | asmlinkage __visible void name(struct pt_regs *regs)   \
+>       |                           ^~~~
+> arch/riscv/kernel/traps.c:98:15: warning: no previous prototype for ‘do_trap_insn_misaligned’ [-Wmissing-prototypes]
+>    98 | DO_ERROR_INFO(do_trap_insn_misaligned,
+>       |               ^~~~~~~~~~~~~~~~~~~~~~~
+> arch/riscv/kernel/traps.c:91:27: note: in definition of macro ‘DO_ERROR_INFO’
+>    91 | asmlinkage __visible void name(struct pt_regs *regs)   \
+>       |                           ^~~~
+> arch/riscv/kernel/traps.c:100:15: warning: no previous prototype for ‘do_trap_insn_fault’ [-Wmissing-prototypes]
+> ...
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+> ---
+>  arch/riscv/include/asm/asm-prototypes.h | 16 ++++++++++++++++
+>  arch/riscv/kernel/traps.c               |  1 +
+>  2 files changed, 17 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/asm-prototypes.h b/arch/riscv/include/asm/asm-prototypes.h
+> index 27e005fca584..6d81abf5d9f8 100644
+> --- a/arch/riscv/include/asm/asm-prototypes.h
+> +++ b/arch/riscv/include/asm/asm-prototypes.h
+> @@ -9,4 +9,20 @@ long long __lshrti3(long long a, int b);
+>  long long __ashrti3(long long a, int b);
+>  long long __ashlti3(long long a, int b);
+>
+> +
+> +#define DECLARE_DO_ERROR_INFO(name)	asmlinkage void name(struct pt_regs *regs);
 
-According with USB Device Class Definition for Video Device the
-Processing Unit Descriptor bLength should be 12 (10 + bmControlSize),
-but it has 11.
+This triggers checkpatch.
 
-Invalid length caused that Processing Unit Descriptor Test Video form
-CV tool failed. To fix this issue patch adds bmVideoStandards into
-uvc_processing_unit_descriptor structure.
-
-Signed-off-by: Pawel Laszczak <pawell@cadence.com>
----
-Changelog:
-v2:
-- updated UVC_DT_PROCESSING_UNIT_SIZE macro
-
- include/uapi/linux/usb/video.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/usb/video.h b/include/uapi/linux/usb/video.h
-index d854cb19c42c..bfdae12cdacf 100644
---- a/include/uapi/linux/usb/video.h
-+++ b/include/uapi/linux/usb/video.h
-@@ -302,9 +302,10 @@ struct uvc_processing_unit_descriptor {
- 	__u8   bControlSize;
- 	__u8   bmControls[2];
- 	__u8   iProcessing;
-+	__u8   bmVideoStandards;
- } __attribute__((__packed__));
- 
--#define UVC_DT_PROCESSING_UNIT_SIZE(n)			(9+(n))
-+#define UVC_DT_PROCESSING_UNIT_SIZE(n)			(10+(n))
- 
- /* 3.7.2.6. Extension Unit Descriptor */
- struct uvc_extension_unit_descriptor {
--- 
-2.25.1
-
+> +
+> +DECLARE_DO_ERROR_INFO(do_trap_unknown)
+> +DECLARE_DO_ERROR_INFO(do_trap_insn_misaligned)
+> +DECLARE_DO_ERROR_INFO(do_trap_insn_fault)
+> +DECLARE_DO_ERROR_INFO(do_trap_insn_illegal)
+> +DECLARE_DO_ERROR_INFO(do_trap_load_fault)
+> +DECLARE_DO_ERROR_INFO(do_trap_load_misaligned)
+> +DECLARE_DO_ERROR_INFO(do_trap_store_misaligned)
+> +DECLARE_DO_ERROR_INFO(do_trap_store_fault)
+> +DECLARE_DO_ERROR_INFO(do_trap_ecall_u)
+> +DECLARE_DO_ERROR_INFO(do_trap_ecall_s)
+> +DECLARE_DO_ERROR_INFO(do_trap_ecall_m)
+> +DECLARE_DO_ERROR_INFO(do_trap_break)
+> +
+>  #endif /* _ASM_RISCV_PROTOTYPES_H */
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index 3ed2c23601a0..0879b5df11b9 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/module.h>
+>  #include <linux/irq.h>
+>
+> +#include <asm/asm-prototypes.h>
+>  #include <asm/bug.h>
+>  #include <asm/processor.h>
+>  #include <asm/ptrace.h>
