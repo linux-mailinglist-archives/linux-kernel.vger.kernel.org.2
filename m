@@ -2,159 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE99333C1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74859333C2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhCJMDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhCJMDZ (ORCPT
+        id S232939AbhCJMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:05:27 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:36431 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232673AbhCJMFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:03:25 -0500
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DFD5AC061760;
-        Wed, 10 Mar 2021 04:03:24 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 44C769200B3; Wed, 10 Mar 2021 13:03:24 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 3EBF992009E;
-        Wed, 10 Mar 2021 13:03:24 +0100 (CET)
-Date:   Wed, 10 Mar 2021 13:03:24 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     netdev@vger.kernel.org
-cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 4/4] FDDI: defxx: Use driver's name with resource
- requests
-In-Reply-To: <alpine.DEB.2.21.2103091713260.33195@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2103100248020.33195@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2103091713260.33195@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Wed, 10 Mar 2021 07:05:18 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id E0DB51793;
+        Wed, 10 Mar 2021 07:05:16 -0500 (EST)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Wed, 10 Mar 2021 07:05:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=lcbgpdvAyk1ewK+Y4PqnLqcmVSI1dth
+        kZ4XNg78LRiU=; b=U7YxLFH3D2v+jp+29mTKghCSdK4C8ZXDZCwUAkazy5uepKz
+        BBfimGYY3bcC6cqbKLt+LEmn2To5cG8zIFqw67j+vhh5u60WWtrilYvuAgcQ1yzA
+        lKlYPsw0aBJwTKw9GFvxFMO0v+ZxHpum82pquxfNUQ9jozvaE2UdhiXeFouKo4zu
+        v0qScCbGbYqutM5TP3E8oewXr7GmTVZPQGbo13yQLJ9EZGNWpoFRzF+jaf4iTUDI
+        S5PlXgoLnXLnfDdKo9hVy0KUTyoTFBdvKHqB5feCDn4gQLWeCRa/+Z52pubk0QnP
+        RP7mB020AWuHvQOtt/q0rJCseER5O5G/vFyMobw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=lcbgpd
+        vAyk1ewK+Y4PqnLqcmVSI1dthkZ4XNg78LRiU=; b=sRgN4MuMr7fCRXKM0LkSxq
+        W9UmnkOg7KGA9xmyIM2rAYPdTpq4CG7LH3m/koWlrkPMFXSo8+YeXbATWbgA/gBu
+        9aslTcfwf1n7LdTMO+u4RDuEfXDZwI1iwPV2HwCcKQGYbvxUsz4NwdP/OoCwbRzJ
+        lhXtITduc2bbYusdWvav6DVYmiudEOIeGjDEIWBOjQ1Ly74IbiMdZZPxmC5x6Qg2
+        cqiTMQSfRC0FULVfRFEcZtjw+cesCggINBZ5EC6CM7SvohCa0wwmCL9XJx2NR1DY
+        4w0+aKTyiDWV5Z78Sp097zn7x3JBTwjAEzlcBz7aHrOCeCLcZ1Y5vgVi0VyinStw
+        ==
+X-ME-Sender: <xms:-rVIYBxP47tlYaGkLidxbM9n5Z3BsihH_nQOUASk9A12aQQykZPuZQ>
+    <xme:-rVIYBTzobbq-KIMDjj1QsvAeS4-UjfmVNRzUvC0d4W89V7gfcedk3wLEAbf20wSh
+    hfAdgC66z3bIq87Nbw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddukedgfeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdflihgr
+    gihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
+    enucggtffrrghtthgvrhhnpeevtdehveetkedvvdehhfeuueeffeduffduveevudeiveeu
+    tedvheekteeujeegueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:-rVIYLXPKKm8YC00xer5n36-Y5opyRRvnnd-3Dht2CoB18hvRVNUWw>
+    <xmx:-rVIYDh6vGbKQxs7mHkdlZDSOWD2J8Q7AsTAsSlfoz9ugJmmwCUExQ>
+    <xmx:-rVIYDAe8os2IPhPcC1DjwSlJwgwlKPXg-b8Z56yHfWHBVp64KBPtQ>
+    <xmx:_LVIYF2zcn-obIJ1P0-ZZie-Bu6VJYLR5Rb2I7DYGD8--egmPicqKg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id B7591130005F; Wed, 10 Mar 2021 07:05:14 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-206-g078a48fda5-fm-20210226.001-g078a48fd
+Mime-Version: 1.0
+Message-Id: <da399bdd-9454-4d63-a549-546c049c1a29@www.fastmail.com>
+In-Reply-To: <20210310075639.20372-7-zhangqing@loongson.cn>
+References: <20210310075639.20372-1-zhangqing@loongson.cn>
+ <20210310075639.20372-7-zhangqing@loongson.cn>
+Date:   Wed, 10 Mar 2021 20:04:53 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Qing Zhang" <zhangqing@loongson.cn>,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Marc Zyngier" <maz@kernel.org>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        "Ming Wang" <wangming01@loongson.cn>
+Subject: =?UTF-8?Q?Re:_[PATCH_v4_6/7]_dt-bindings:_interrupt-controller:_Add_Loon?=
+ =?UTF-8?Q?gson-2K1000_LIOINTC?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace repeated "defxx" strings with a reference to the DRV_NAME macro 
-and then use the driver's name rather that the bus address with resource 
-requests so as to have contents of /proc/iomem and /proc/ioports more 
-meaningful to the user, in line with what drivers usually do.
 
-So rather than say:
 
-5000-50ff : DEC FDDIcontroller/EISA Adapter
-  5000-503f : 00:05
-  5040-5043 : 00:05
-5400-54ff : DEC FDDIcontroller/EISA Adapter
-5800-58ff : DEC FDDIcontroller/EISA Adapter
-5c00-5cff : DEC FDDIcontroller/EISA Adapter
-  5c80-5cbf : 00:05
+On Wed, Mar 10, 2021, at 3:56 PM, Qing Zhang wrote:
+> Add liointc-2.0 properties support, so update the maxItems and description.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+^ I have nothing todo with this patch so please drop me for this one :-)
 
-or:
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> Tested-by: Ming Wang <wangming01@loongson.cn>
+> ---
+> 
+> v3-v4: Standard submission of information
+^ It's called commit message.
 
-620c080020000-620c08002007f : 0031:02:04.0
-  620c080020000-620c08002007f : 0031:02:04.0
-620c080030000-620c08003ffff : 0031:02:04.0
+> 
+>  .../bindings/interrupt-controller/loongson,liointc.yaml    | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git 
+> a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+> index f38e0113f360..5280cf60a9a7 100644
+> --- 
+> a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+> +++ 
+> b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+> @@ -10,9 +10,9 @@ maintainers:
+>    - Jiaxun Yang <jiaxun.yang@flygoat.com>
+>  
+>  description: |
+> -  This interrupt controller is found in the Loongson-3 family of chips 
+> as the primary
+> -  package interrupt controller which can route local I/O interrupt to 
+> interrupt lines
+> -  of cores.
+> +  This interrupt controller is found in the Loongson-3 family of chips 
+> and
+> +  Loongson-2K1000 chip, as the primary package interrupt controller 
+> which
+> +  can route local I/O interrupt to interrupt lines of cores.
+>  
+>  allOf:
+>    - $ref: /schemas/interrupt-controller.yaml#
+> @@ -22,6 +22,7 @@ properties:
+>      oneOf:
+>        - const: loongson,liointc-1.0
+>        - const: loongson,liointc-1.0a
+> +      - const: loongson,liointc-2.0
+>  
+>    reg:
+>      maxItems: 1
+^ Please document multiple reg prop change as well.
 
-or:
+Thanks.
 
-1f100000-1f10003f : tc2
+- Jiaxun
 
-we report:
+> -- 
+> 2.20.1
+> 
+>
 
-5000-50ff : DEC FDDIcontroller/EISA Adapter
-  5000-503f : defxx
-  5040-5043 : defxx
-5400-54ff : DEC FDDIcontroller/EISA Adapter
-5800-58ff : DEC FDDIcontroller/EISA Adapter
-5c00-5cff : DEC FDDIcontroller/EISA Adapter
-  5c80-5cbf : defxx
-
-and:
-
-620c080020000-620c08002007f : 0031:02:04.0
-  620c080020000-620c08002007f : defxx
-620c080030000-620c08003ffff : 0031:02:04.0
-
-and:
-
-1f100000-1f10003f : defxx
-
-respectively for the DEFEA (EISA), DEFPA (PCI), and DEFTA (TURBOchannel) 
-adapters.
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
- drivers/net/fddi/defxx.c |   17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
-
-Index: linux-defxx/drivers/net/fddi/defxx.c
-===================================================================
---- linux-defxx.orig/drivers/net/fddi/defxx.c
-+++ linux-defxx/drivers/net/fddi/defxx.c
-@@ -580,14 +580,15 @@ static int dfx_register(struct device *b
- 
- 	if (dfx_use_mmio) {
- 		region = request_mem_region(bar_start[0], bar_len[0],
--					    print_name);
-+					    bdev->driver->name);
- 		if (!region && (dfx_bus_eisa || dfx_bus_pci)) {
- 			bp->mmio = false;
- 			dfx_get_bars(bp, bar_start, bar_len);
- 		}
- 	}
- 	if (!dfx_use_mmio)
--		region = request_region(bar_start[0], bar_len[0], print_name);
-+		region = request_region(bar_start[0], bar_len[0],
-+					bdev->driver->name);
- 	if (!region) {
- 		dfx_register_res_err(print_name, dfx_use_mmio,
- 				     bar_start[0], bar_len[0]);
-@@ -595,7 +596,8 @@ static int dfx_register(struct device *b
- 		goto err_out_disable;
- 	}
- 	if (bar_start[1] != 0) {
--		region = request_region(bar_start[1], bar_len[1], print_name);
-+		region = request_region(bar_start[1], bar_len[1],
-+					bdev->driver->name);
- 		if (!region) {
- 			dfx_register_res_err(print_name, 0,
- 					     bar_start[1], bar_len[1]);
-@@ -604,7 +606,8 @@ static int dfx_register(struct device *b
- 		}
- 	}
- 	if (bar_start[2] != 0) {
--		region = request_region(bar_start[2], bar_len[2], print_name);
-+		region = request_region(bar_start[2], bar_len[2],
-+					bdev->driver->name);
- 		if (!region) {
- 			dfx_register_res_err(print_name, 0,
- 					     bar_start[2], bar_len[2]);
-@@ -3745,7 +3748,7 @@ static const struct pci_device_id dfx_pc
- MODULE_DEVICE_TABLE(pci, dfx_pci_table);
- 
- static struct pci_driver dfx_pci_driver = {
--	.name		= "defxx",
-+	.name		= DRV_NAME,
- 	.id_table	= dfx_pci_table,
- 	.probe		= dfx_pci_register,
- 	.remove		= dfx_pci_unregister,
-@@ -3776,7 +3779,7 @@ MODULE_DEVICE_TABLE(eisa, dfx_eisa_table
- static struct eisa_driver dfx_eisa_driver = {
- 	.id_table	= dfx_eisa_table,
- 	.driver		= {
--		.name	= "defxx",
-+		.name	= DRV_NAME,
- 		.bus	= &eisa_bus_type,
- 		.probe	= dfx_dev_register,
- 		.remove	= dfx_dev_unregister,
-@@ -3797,7 +3800,7 @@ MODULE_DEVICE_TABLE(tc, dfx_tc_table);
- static struct tc_driver dfx_tc_driver = {
- 	.id_table	= dfx_tc_table,
- 	.driver		= {
--		.name	= "defxx",
-+		.name	= DRV_NAME,
- 		.bus	= &tc_bus_type,
- 		.probe	= dfx_dev_register,
- 		.remove	= dfx_dev_unregister,
+-- 
+- Jiaxun
