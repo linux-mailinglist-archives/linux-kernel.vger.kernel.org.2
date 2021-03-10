@@ -2,130 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F73333416A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E50A334168
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbhCJPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:24:34 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:45586 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhCJPYY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:24:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1615389863; x=1646925863;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qhWXpo6sA8wYnJfCpmhhUeKxki99ScpogOsdtuDQEcE=;
-  b=HSdtfbonRUJRgGu+fLKhUFjU0NRWwfOLYYgpWah6RotGpIqg/TqjdlOh
-   DURAejO80bwVfFsEpx4yYf2FjI8VZ+TvuA9TGz2bJVX1h4Cb78+yg3aNL
-   BCG7I7l2vigR811b42Q7cWN0Ds8ptLpYRVtZaXqejResGg3ytAsWmfmNj
-   cqwA5QNvulXLsNyk8vw+6pSolzgU8aaxFSjYVOFidMwlav2WtwqrFpz1G
-   UIP8bVec5jShWTC2q6k36KwiPAZgf9kggQJdo1TGsF4gGb129NonT/rbk
-   PZ/tPs1mTP3JWBAVFFllLQUKOJQlM8wcUTdlV/Jsu8Xtu+qqJSjCf15gT
-   Q==;
-IronPort-SDR: z5a9mHrbjdtSN5C3UNt19sNUfkkeZj2wAtkzrtCzYBCTgD3wENdTyCQa2Tgp3iLqKFwovhNlaR
- FACx+uy8CBiVokvauiqyI7VgSPqOvCJ3bGBaQLa12cINq3y7zaNBJ1Wmq7eWW8QVqiqXiGVZIc
- Z7us53e1JSSkokTbBC6DXYlj6oqjb6kGXKeRDrLSfyEU8uFkmuuKpIyYUFeMG1e1m4MzrtHWNN
- r7FdBnMKidd84fhqE3XgwsGUn5h4u19PCp/HHnrLVlN5a8fgFEcCFXHv99X+uj7Cfsep8H865K
- lR8=
-X-IronPort-AV: E=Sophos;i="5.81,237,1610434800"; 
-   d="scan'208";a="106651791"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Mar 2021 08:24:23 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 10 Mar 2021 08:24:23 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 10 Mar 2021 08:24:21 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        <stable@vger.kernel.org>,
-        "Sandeep Sheriker Mallikarjun" 
-        <sandeepsheriker.mallikarjun@microchip.com>
-Subject: [PATCH v2] ARM: dts: at91: sam9x60: fix mux-mask to match product's datasheet
-Date:   Wed, 10 Mar 2021 16:20:06 +0100
-Message-ID: <20210310152006.15018-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210308184527.33036-1-nicolas.ferre@microchip.com>
-References: <20210308184527.33036-1-nicolas.ferre@microchip.com>
+        id S231187AbhCJPYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:24:01 -0500
+Received: from mga02.intel.com ([134.134.136.20]:38467 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229602AbhCJPX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:23:59 -0500
+IronPort-SDR: mN30GvvSgQzJSA3piu5p8bVklGGQyXi3d7x6GOOqqefia3Bnz5C1qvXbPTWrYrhVG5HewSjn7d
+ 7R7PC53VTaCw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="175591770"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="175591770"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 07:23:58 -0800
+IronPort-SDR: bRtDhYMHwW7QEbjiH14ChdldRcRD9gXCKABb3tIBs/ZeT/tUlV4taXTRkh4SKx2aJwNXe3dYo4
+ s6KbyvjZI2ng==
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="437963249"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 07:23:57 -0800
+From:   Andi Kleen <ak@linux.intel.com>
+To:     peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        jmattson@google.com
+Subject: [PATCH] perf/x86/kvm: Fix inverted pebs_no_isolation check
+Date:   Wed, 10 Mar 2021 07:23:33 -0800
+Message-Id: <20210310152333.1291338-1-ak@linux.intel.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+The pebs_no_isolation optimization check is inverted. We want to disable
+PEBS isolation when the microcode is at least the revision in the table,
+not for older microcode. So remove the extra !.
 
-Fix the whole mux-mask table according to datasheet for the sam9x60
-product.  Too much functions for pins were disabled leading to
-misunderstandings when enabling more peripherals or taking this table
-as an example for another board.
-Take advantage of this fix to move the mux-mask in the SoC file where it
-belongs and use lower case letters for hex numbers like everywhere in
-the file.
+It meant that the new microcodes did unnecessary work, and the old
+microcodes could crash the PEBS. Presumably most people already
+running with newer microcodes, so that functional impact is small.
+But it should speed up the newer systems by the 2-4% claimed in
+the original patch.
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Fixes: 1e5f532c2737 ("ARM: dts: at91: sam9x60: add device tree for soc and board")
-Cc: <stable@vger.kernel.org> # 5.6+
-Cc: Sandeep Sheriker Mallikarjun <sandeepsheriker.mallikarjun@microchip.com>
+Cc: jmattson@google.com
+Fixes: 9b545c04abd4 ("perf/x86/kvm: Avoid unnecessary work ...")
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
 ---
-v1 -> v2:
-- move to SoC dtsi file: it applies to all boards using the sam9x60 SoC version
-- use lower case for hex numbers instead of mixed nonsense
+ arch/x86/events/intel/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/arm/boot/dts/at91-sam9x60ek.dts | 8 --------
- arch/arm/boot/dts/sam9x60.dtsi       | 9 +++++++++
- 2 files changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
-index 4c40ae571154..775ceb3acb6c 100644
---- a/arch/arm/boot/dts/at91-sam9x60ek.dts
-+++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
-@@ -334,14 +334,6 @@ ethernet-phy@0 {
- };
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 5bac48d5c18e..d74deadd3a6d 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -4532,7 +4532,7 @@ static const struct x86_cpu_desc isolation_ucodes[] = {
  
- &pinctrl {
--	atmel,mux-mask = <
--			 /*	A	B	C	*/
--			 0xFFFFFEFF 0xC0E039FF 0xEF00019D	/* pioA */
--			 0x03FFFFFF 0x02FC7E68 0x00780000	/* pioB */
--			 0xffffffff 0xF83FFFFF 0xB800F3FC	/* pioC */
--			 0x003FFFFF 0x003F8000 0x00000000	/* pioD */
--			 >;
--
- 	adc {
- 		pinctrl_adc_default: adc_default {
- 			atmel,pins = <AT91_PIOB 15 AT91_PERIPH_A AT91_PINCTRL_NONE>;
-diff --git a/arch/arm/boot/dts/sam9x60.dtsi b/arch/arm/boot/dts/sam9x60.dtsi
-index 84066c1298df..ec45ced3cde6 100644
---- a/arch/arm/boot/dts/sam9x60.dtsi
-+++ b/arch/arm/boot/dts/sam9x60.dtsi
-@@ -606,6 +606,15 @@ pinctrl: pinctrl@fffff400 {
- 				compatible = "microchip,sam9x60-pinctrl", "atmel,at91sam9x5-pinctrl", "atmel,at91rm9200-pinctrl", "simple-bus";
- 				ranges = <0xfffff400 0xfffff400 0x800>;
+ static void intel_check_pebs_isolation(void)
+ {
+-	x86_pmu.pebs_no_isolation = !x86_cpu_has_min_microcode_rev(isolation_ucodes);
++	x86_pmu.pebs_no_isolation = x86_cpu_has_min_microcode_rev(isolation_ucodes);
+ }
  
-+				/* mux-mask corresponding to sam9x60 SoC in TFBGA228L package */
-+				atmel,mux-mask = <
-+						 /*	A	B	C	*/
-+						 0xffffffff 0xffe03fff 0xef00019d	/* pioA */
-+						 0x03ffffff 0x02fc7e7f 0x00780000	/* pioB */
-+						 0xffffffff 0xffffffff 0xf83fffff	/* pioC */
-+						 0x003fffff 0x003f8000 0x00000000	/* pioD */
-+						 >;
-+
- 				pioA: gpio@fffff400 {
- 					compatible = "microchip,sam9x60-gpio", "atmel,at91sam9x5-gpio", "atmel,at91rm9200-gpio";
- 					reg = <0xfffff400 0x200>;
+ static __init void intel_pebs_isolation_quirk(void)
 -- 
-2.30.2
+2.25.4
 
