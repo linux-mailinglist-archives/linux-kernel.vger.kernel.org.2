@@ -2,235 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADB7334B21
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE4B334B1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhCJWHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:07:01 -0500
-Received: from mga12.intel.com ([192.55.52.136]:64757 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234273AbhCJWGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:06:39 -0500
-IronPort-SDR: X0m5t9BQXqgSLDbFStQc4eikJGGCdIK5WajuF2jWUqaz9P0LYs4+59CUD/wlCV4jhaZJDndbmK
- zqF3LDpyPW7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167847354"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="167847354"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 14:06:38 -0800
-IronPort-SDR: jBMWqoWyC+dYvZUjCrYPZE0Dae97mnaKx+lfSI0HM7LEpGJdD3KFqUOvmEdEkUWBUEBKrQDoVG
- AD6wXuNMDe5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="448065443"
-Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 10 Mar 2021 14:06:36 -0800
-Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lK6yS-0000PK-2g; Wed, 10 Mar 2021 22:06:36 +0000
-Date:   Thu, 11 Mar 2021 06:05:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 13c2235b2b2870675195f0b551275d1abdd81068
-Message-ID: <604942be.aL63CAj/sGvqJMRO%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S233794AbhCJWG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:06:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233998AbhCJWF7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:05:59 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F81C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:05:59 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id t4so18680175qkp.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NWPWYdWvWcOBp2T3gIhmVnLIkAxq/bhGSpQPWfx2I2w=;
+        b=iYi0EfVrT6z67CWn2YUps4KYY2aTNsuGmqRf2Z+VTK2I/FXe7CjlVMAms4KumtwoK+
+         2u/nDAY95sETpUUpM7iZS/JWizhIye+YnQUVJwHKEhmw8V9P0swH3R+jdvdTU5yOpjVg
+         VPsKXcci6F0HIaDR5sW3MM5035f3WkAbficradxylOc85vUZHOKD53NosL8ipzVxrGyn
+         h2cLAe+Z5uj+6boOW1dwBIelde7JrkhhcKDiSkHeFYn2h4OF74TxWPMLAh6DyrTrMyKd
+         RYLzDX73uYBVR7+GCrTnA5p2g3ry5oPBz4QAlHUgoCVwb+WB7ivrC9+a4mZIoa/qo7+J
+         sI0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NWPWYdWvWcOBp2T3gIhmVnLIkAxq/bhGSpQPWfx2I2w=;
+        b=boRd9Jpn7r05OrSQg6KCSEYNj9J1TltaODV7d4ZREyRc3J5Dmx6JgeLeEPAQiR8jpw
+         35y9/YvDzHtf/lbZ7uQVhp+qxgTdAN71V3uoxOviKVFKMJZ4bxVX25Lwc+nAoQEl+Wm1
+         O0/d9FNB4ogHIq51IH/fc4W4+lux97S6O0tniqrF0gGUlyFazeuo/OcxHEo8aT5BPesR
+         lL4QXtrSAuzz8Xuo5by4Ns1sluUTQlLKoY+uP3+VR3EQs7MvdWkJmo55LMxe9iIWabbx
+         Ad7/amrdDQWw2drBZ6iSuEkzgfQZ50Vo75QNTs9TnR5eBxOSiZg3xg0aWCPVBLxngGuO
+         c4Ig==
+X-Gm-Message-State: AOAM531eCdArygvMQJPSroKY4rfJ8tJToL4Tk1dY+JWMFvtJv+U2K+S6
+        /gZRAsK5dtEBsT3IwPlTUGBb5w==
+X-Google-Smtp-Source: ABdhPJwYjRYwWe0mtckQIBE9tIbDlVWot/V0zyNS99ti0BBnTawmWK+Mwby35mAWO2gxzFYCOEBSig==
+X-Received: by 2002:a37:9d93:: with SMTP id g141mr4746631qke.270.1615413957643;
+        Wed, 10 Mar 2021 14:05:57 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 84sm568843qkg.8.2021.03.10.14.05.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 14:05:57 -0800 (PST)
+Date:   Wed, 10 Mar 2021 17:05:56 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com
+Subject: Re: [PATCH v3 3/4] mm: memcontrol: use obj_cgroup APIs to charge
+ kmem pages
+Message-ID: <YElCxDzVgBBLAQhJ@cmpxchg.org>
+References: <20210309100717.253-1-songmuchun@bytedance.com>
+ <20210309100717.253-4-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210309100717.253-4-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/core
-branch HEAD: 13c2235b2b2870675195f0b551275d1abdd81068  sched: Remove unnecessary variable from schedule_tail()
+Hello Munchun,
 
-elapsed time: 727m
+On Tue, Mar 09, 2021 at 06:07:16PM +0800, Muchun Song wrote:
+> @@ -6806,11 +6823,23 @@ static inline void uncharge_gather_clear(struct uncharge_gather *ug)
+>  static void uncharge_batch(const struct uncharge_gather *ug)
+>  {
+>  	unsigned long flags;
+> +	unsigned long nr_pages;
+>  
+> -	if (!mem_cgroup_is_root(ug->memcg)) {
+> -		page_counter_uncharge(&ug->memcg->memory, ug->nr_pages);
+> +	/*
+> +	 * The kmem pages can be reparented to the root memcg, in
+> +	 * order to prevent the memory counter of root memcg from
+> +	 * increasing indefinitely. We should decrease the memory
+> +	 * counter when unchange.
+> +	 */
+> +	if (mem_cgroup_is_root(ug->memcg))
+> +		nr_pages = ug->nr_kmem;
+> +	else
+> +		nr_pages = ug->nr_pages;
 
-configs tested: 173
-configs skipped: 2
+Correct or not, I find this unreadable. We're uncharging nr_kmem on
+the root, and nr_pages against leaf groups?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+It implies several things that might not be immediately obvious to the
+reader of this function. Namely, that nr_kmem is a subset of nr_pages.
+Or that we don't *want* to account LRU pages for the root cgroup.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sparc                            allyesconfig
-mips                         db1xxx_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                      ppc44x_defconfig
-mips                         tb0287_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                 mpc8540_ads_defconfig
-mips                           jazz_defconfig
-sh                          r7785rp_defconfig
-m68k                          hp300_defconfig
-powerpc                    adder875_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                      ppc40x_defconfig
-mips                      pistachio_defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                      obs600_defconfig
-powerpc                       holly_defconfig
-powerpc                     kmeter1_defconfig
-riscv                          rv32_defconfig
-sh                          landisk_defconfig
-sh                          rsk7264_defconfig
-sh                          r7780mp_defconfig
-m68k                        mvme16x_defconfig
-powerpc                    mvme5100_defconfig
-arm                             pxa_defconfig
-powerpc                     tqm8541_defconfig
-sh                          polaris_defconfig
-powerpc                      ep88xc_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     mpc512x_defconfig
-sh                   sh7770_generic_defconfig
-arm                             ezx_defconfig
-powerpc                       eiger_defconfig
-ia64                            zx1_defconfig
-ia64                             allmodconfig
-i386                                defconfig
-sh                                  defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                       cns3420vb_defconfig
-m68k                       m5275evb_defconfig
-h8300                               defconfig
-mips                        bcm63xx_defconfig
-mips                  maltasmvp_eva_defconfig
-h8300                    h8300h-sim_defconfig
-mips                            gpr_defconfig
-powerpc64                        alldefconfig
-sh                          urquell_defconfig
-arc                    vdk_hs38_smp_defconfig
-m68k                       bvme6000_defconfig
-x86_64                              defconfig
-arm                        spear3xx_defconfig
-microblaze                          defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                          lboxre2_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                         hackkit_defconfig
-mips                     loongson1b_defconfig
-h8300                            alldefconfig
-arm                       omap2plus_defconfig
-arm                      tct_hammer_defconfig
-arm                         lubbock_defconfig
-arm                            hisi_defconfig
-mips                           ip32_defconfig
-arc                 nsimosci_hs_smp_defconfig
-mips                            ar7_defconfig
-powerpc                     asp8347_defconfig
-powerpc                         wii_defconfig
-arm                       versatile_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                         s3c2410_defconfig
-mips                          ath79_defconfig
-arm                            xcep_defconfig
-arc                           tb10x_defconfig
-arm                          ep93xx_defconfig
-powerpc                     stx_gp3_defconfig
-arm                          pxa910_defconfig
-powerpc                        icon_defconfig
-m68k                        m5307c3_defconfig
-powerpc                     tqm5200_defconfig
-xtensa                          iss_defconfig
-sh                         ap325rxa_defconfig
-arm                        multi_v5_defconfig
-m68k                        m5272c3_defconfig
-m68k                             allyesconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210308
-x86_64               randconfig-a001-20210308
-x86_64               randconfig-a004-20210308
-x86_64               randconfig-a002-20210308
-x86_64               randconfig-a005-20210308
-x86_64               randconfig-a003-20210308
-i386                 randconfig-a005-20210309
-i386                 randconfig-a003-20210309
-i386                 randconfig-a002-20210309
-i386                 randconfig-a006-20210309
-i386                 randconfig-a004-20210309
-i386                 randconfig-a001-20210309
-x86_64               randconfig-a013-20210309
-x86_64               randconfig-a016-20210309
-x86_64               randconfig-a015-20210309
-x86_64               randconfig-a014-20210309
-x86_64               randconfig-a011-20210309
-x86_64               randconfig-a012-20210309
-x86_64               randconfig-a011-20210310
-x86_64               randconfig-a016-20210310
-x86_64               randconfig-a013-20210310
-x86_64               randconfig-a015-20210310
-x86_64               randconfig-a014-20210310
-x86_64               randconfig-a012-20210310
-i386                 randconfig-a016-20210309
-i386                 randconfig-a012-20210309
-i386                 randconfig-a014-20210309
-i386                 randconfig-a013-20210309
-i386                 randconfig-a011-20210309
-i386                 randconfig-a015-20210309
-i386                 randconfig-a016-20210308
-i386                 randconfig-a012-20210308
-i386                 randconfig-a014-20210308
-i386                 randconfig-a013-20210308
-i386                 randconfig-a011-20210308
-i386                 randconfig-a015-20210308
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+The old code followed a very simple pattern: the root memcg's page
+counters aren't touched.
 
-clang tested configs:
-x86_64               randconfig-a013-20210308
-x86_64               randconfig-a016-20210308
-x86_64               randconfig-a015-20210308
-x86_64               randconfig-a014-20210308
-x86_64               randconfig-a011-20210308
-x86_64               randconfig-a012-20210308
+This is no longer true: we modify them depending on very specific
+circumstances. But that's too clever for the stupid uncharge_batch()
+which is only supposed to flush a number of accumulators into their
+corresponding page counters.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This distinction really needs to be moved down to uncharge_page() now.
+
+> @@ -6828,7 +6857,7 @@ static void uncharge_batch(const struct uncharge_gather *ug)
+>  
+>  static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+>  {
+> -	unsigned long nr_pages;
+> +	unsigned long nr_pages, nr_kmem;
+>  	struct mem_cgroup *memcg;
+>  
+>  	VM_BUG_ON_PAGE(PageLRU(page), page);
+> @@ -6836,34 +6865,44 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+>  	if (!page_memcg_charged(page))
+>  		return;
+>  
+> +	nr_pages = compound_nr(page);
+>  	/*
+>  	 * Nobody should be changing or seriously looking at
+> -	 * page memcg at this point, we have fully exclusive
+> -	 * access to the page.
+> +	 * page memcg or objcg at this point, we have fully
+> +	 * exclusive access to the page.
+>  	 */
+> -	memcg = page_memcg_check(page);
+> +	if (PageMemcgKmem(page)) {
+> +		struct obj_cgroup *objcg;
+> +
+> +		objcg = page_objcg(page);
+> +		memcg = obj_cgroup_memcg_get(objcg);
+> +
+> +		page->memcg_data = 0;
+> +		obj_cgroup_put(objcg);
+> +		nr_kmem = nr_pages;
+> +	} else {
+> +		memcg = page_memcg(page);
+> +		page->memcg_data = 0;
+> +		nr_kmem = 0;
+> +	}
+
+Why is all this moved above the uncharge_batch() call?
+
+It separates the pointer manipulations from the refcounting, which
+makes the code very difficult to follow.
+
+> +
+>  	if (ug->memcg != memcg) {
+>  		if (ug->memcg) {
+>  			uncharge_batch(ug);
+>  			uncharge_gather_clear(ug);
+>  		}
+>  		ug->memcg = memcg;
+> +		ug->dummy_page = page;
+
+Why this change?
+
+>  		/* pairs with css_put in uncharge_batch */
+>  		css_get(&ug->memcg->css);
+>  	}
+>  
+> -	nr_pages = compound_nr(page);
+>  	ug->nr_pages += nr_pages;
+> +	ug->nr_kmem += nr_kmem;
+> +	ug->pgpgout += !nr_kmem;
+
+Oof.
+
+Yes, this pgpgout line is an equivalent transformation for counting
+LRU compound pages. But unless you already know that, it's completely
+impossible to understand what the intent here is.
+
+Please avoid clever tricks like this. If you need to check whether the
+page is kmem, test PageMemcgKmem() instead of abusing the counters as
+boolean flags. This is supposed to be read by human beings, too.
+
+> -	if (PageMemcgKmem(page))
+> -		ug->nr_kmem += nr_pages;
+> -	else
+> -		ug->pgpgout++;
+> -
+> -	ug->dummy_page = page;
+> -	page->memcg_data = 0;
+> -	css_put(&ug->memcg->css);
+> +	css_put(&memcg->css);
+
+Sorry, these two functions are no longer readable after your changes.
+
+Please retain the following sequence as discrete steps:
+
+1. look up memcg from the page
+2. flush existing batch if memcg changed
+3. add page's various counts to the current batch
+4. clear page->memcg and decrease the referece count to whatever it was pointing to
+
+And as per above, step 3. is where we should check whether to uncharge
+the memcg's page counter at all:
+
+	if (PageMemcgKmem(page)) {
+		ug->nr_pages += nr_pages;
+		ug->nr_kmem += nr_pages;
+	} else {
+		/* LRU pages aren't accounted at the root level */
+		if (!mem_cgroup_is_root(memcg))
+			ug->nr_pages += nr_pages;
+		ug->pgpgout++;
+	}
+
+In fact, it might be a good idea to rename ug->nr_pages to
+ug->nr_memory to highlight how it maps to the page_counter.
