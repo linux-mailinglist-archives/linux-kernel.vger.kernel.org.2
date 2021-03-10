@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7BF333917
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDB1333919
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbhCJJoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232499AbhCJJol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:44:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51478 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232479AbhCJJoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Mar 2021 04:44:13 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13590 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbhCJJnh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:43:37 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DwRtN0Syxz17J2q;
-        Wed, 10 Mar 2021 17:41:48 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 10 Mar 2021 17:43:25 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        "Julien Thierry" <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <wanghaibin.wang@huawei.com>, <zhukeqian1@huawei.com>,
-        <yuzenghui@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
-Subject: [RFC PATCH v2 3/3] KVM: arm64: Distinguish cases of memcache allocations completely
-Date:   Wed, 10 Mar 2021 17:43:19 +0800
-Message-ID: <20210310094319.18760-4-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210310094319.18760-1-wangyanan55@huawei.com>
-References: <20210310094319.18760-1-wangyanan55@huawei.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615369452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3SsgBHW16eFWnTUrEH/77iFpVMjIm1pROOU1P8F4Mng=;
+        b=Npfk496kGiHkf4as0AZ+Zg1Csp7luUcJauh0vcSnRMePUC5McZDgwhvAyoDjRmPedo9h78
+        4ydozO4Se11nTVuHJ/nzYvi9WbUb7OFZkXtD1JhdIF1h0uWxv0ZIgYg7sjQGUSrvqxFJ4g
+        xuYQ55aaqua7NEO1Wl9PEoSg8tccWCQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 793B2AE42;
+        Wed, 10 Mar 2021 09:44:12 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 10:44:11 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
+ MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
+Message-ID: <YEiU6/5BXM7v4AOu@dhcp22.suse.cz>
+References: <YD91jTMssJUCupJm@dhcp22.suse.cz>
+ <20210303120717.GA16736@shbuild999.sh.intel.com>
+ <20210303121833.GB16736@shbuild999.sh.intel.com>
+ <YD+BvvM/388AVnmm@dhcp22.suse.cz>
+ <20210303131832.GB78458@shbuild999.sh.intel.com>
+ <20210303134644.GC78458@shbuild999.sh.intel.com>
+ <YD+WR5cpuWhybm2L@dhcp22.suse.cz>
+ <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
+ <d07f8675-939b-daea-c128-30ceecfac8a0@intel.com>
+ <20210310051947.GA33036@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310051947.GA33036@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With a guest translation fault, the memcache pages are not needed if KVM
-is only about to install a new leaf entry into the existing page table.
-And with a guest permission fault, the memcache pages are also not needed
-for a write_fault in dirty-logging time if KVM is only about to update
-the existing leaf entry instead of collapsing a block entry into a table.
+On Wed 10-03-21 13:19:47, Feng Tang wrote:
+[...]
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index d66c1c0..00b19f7 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -2205,9 +2205,13 @@ static struct page *alloc_pages_policy(struct mempolicy *pol, gfp_t gfp,
+>  	 * | MPOL_PREFERRED_MANY (round 2) | local         | NULL       |
+>  	 * +-------------------------------+---------------+------------+
+>  	 */
+> -	if (pol->mode == MPOL_PREFERRED_MANY)
+> +	if (pol->mode == MPOL_PREFERRED_MANY) {
+>  		gfp_mask |= __GFP_RETRY_MAYFAIL | __GFP_NOWARN;
+>  
+> +		/* Skip direct reclaim, as there will be a second try */
+> +		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
 
-By comparing fault_granule and vma_pagesize, cases that require allocations
-from memcache and cases that don't can be distinguished completely.
+__GFP_RETRY_MAYFAIL is a reclaim modifier which doesn't make any sense
+without __GFP_DIRECT_RECLAIM. Also I think it would be better to have a
+proper allocation flags in the initial patch which implements the
+fallback.
 
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
----
- arch/arm64/kvm/mmu.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+> +	}
+> +
+>  	page = __alloc_pages_nodemask(gfp_mask, order,
+>  				      policy_node(gfp, pol, preferred_nid),
+>  				      policy_nodemask(gfp, pol));
+> -- 
+> 2.7.4
+> 
+> 
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 1eec9f63bc6f..05af40dc60c1 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -810,19 +810,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	gfn = fault_ipa >> PAGE_SHIFT;
- 	mmap_read_unlock(current->mm);
- 
--	/*
--	 * Permission faults just need to update the existing leaf entry,
--	 * and so normally don't require allocations from the memcache. The
--	 * only exception to this is when dirty logging is enabled at runtime
--	 * and a write fault needs to collapse a block entry into a table.
--	 */
--	if (fault_status != FSC_PERM || (logging_active && write_fault)) {
--		ret = kvm_mmu_topup_memory_cache(memcache,
--						 kvm_mmu_cache_min_pages(kvm));
--		if (ret)
--			return ret;
--	}
--
- 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
- 	/*
- 	 * Ensure the read of mmu_notifier_seq happens before we call
-@@ -880,6 +867,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
- 		prot |= KVM_PGTABLE_PROT_X;
- 
-+	/*
-+	 * Allocations from the memcache are required only when granule of the
-+	 * lookup level where the guest fault happened exceeds vma_pagesize,
-+	 * which means new page tables will be created in the fault handlers.
-+	 */
-+	if (fault_granule > vma_pagesize) {
-+		ret = kvm_mmu_topup_memory_cache(memcache,
-+						 kvm_mmu_cache_min_pages(kvm));
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/*
- 	 * Under the premise of getting a FSC_PERM fault, we just need to relax
- 	 * permissions only if vma_pagesize equals fault_granule. Otherwise,
 -- 
-2.19.1
-
+Michal Hocko
+SUSE Labs
