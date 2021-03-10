@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2E933424F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56115334253
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhCJQAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbhCJP7i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:59:38 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77FE8C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:59:38 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so328580pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:59:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XYIw53FG6Pi0idyEbOGAM+kfG1SQqpJslcWfjDqB6js=;
-        b=prYQIQ3qyXWCVibRtNvRq4flpOmaMd4lkcnSgz/w7bz6BKppSS0icpG1u485cofcxh
-         l6GchQXDHIrUAS8oQUK55YNP3CeIQtaA6ZUGvtzehNMplVm2wt5zNf9nG2Osy6bhY9MC
-         D/izinGXARDF/6KJv9HJ8k0h23vy9PBKh5N88D7D42lbhQngCpsUqVQmpvcdgzfQEyw5
-         83yGT0xVrOVCbmQyXJxSbP553TQ0OwMmMAzUGXdLB6brA9hIsRNQv9MCbCFANc08hoRC
-         IsExRfEvwiRtA9yHu8cgAbFBsLuUMvN8KQpKffzhU+PX/d2cm0vg0s05HP1H6R5Gk3mI
-         MOfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=XYIw53FG6Pi0idyEbOGAM+kfG1SQqpJslcWfjDqB6js=;
-        b=tHdFk1O89NAjWDD8t8jMFELsr+Wmqp7v/3gMFnBqYBDj+GoCOMVktoCwB61DbbzX5n
-         xSUtnwE8hhgtQYB2Z7BlDcw4aUBX9+cf21ZrmaoOYY3YUqYs8j+4x14WoufLaxw7oQLW
-         EBYBoCYrbjir76bLhijlgsgw2YkqCAJsEuMgY2MeXIxyO1Q0b5Kit023OsbPaBOkHyuM
-         cNY/CC0oTQ/FxicT5sA33cUCDyhHmUAP4jbpTsWnvticssdPzqHTAnXimJKubEADColq
-         vpIIUzarqFZXDgNZd3fYoSrxFzTfZWw85vZ6MIxNPcL234BckWQq+qCFNcDONi7fhQBD
-         Pz9w==
-X-Gm-Message-State: AOAM530SasHMVF1aU9VHk2wHTiPJiVkkoh7A3pV4fDe0FYaBb3y6XlNJ
-        ne8/1ITF0gbfKdDdpVxfxFQ=
-X-Google-Smtp-Source: ABdhPJyoegNIOLarzPhAC3f6wVIE5ZPCpUJZiCanxiVr5Qw4WCeU0M8Sur02hLDMi1tBXT3I8ePCRg==
-X-Received: by 2002:a17:902:d2c7:b029:e6:34e2:7a83 with SMTP id n7-20020a170902d2c7b02900e634e27a83mr3759493plc.60.1615391977985;
-        Wed, 10 Mar 2021 07:59:37 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
-        by smtp.gmail.com with ESMTPSA id c193sm17971105pfc.180.2021.03.10.07.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 07:59:36 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 10 Mar 2021 07:59:34 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
-Message-ID: <YEjs5vxO/FRLUHhl@google.com>
-References: <20210308202047.1903802-1-minchan@kernel.org>
- <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
- <YEefLYiX6rF3Uk4E@google.com>
- <YEejCP5tzUtrAjcw@dhcp22.suse.cz>
- <YEewF8c1ydu2pU0A@google.com>
- <YEjD91BprqJMZUah@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEjD91BprqJMZUah@dhcp22.suse.cz>
+        id S233169AbhCJQBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:01:15 -0500
+Received: from mga04.intel.com ([192.55.52.120]:37100 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232422AbhCJQAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:00:46 -0500
+IronPort-SDR: mUJc01wdbTZ7rPafsW2VQx1IIpLFLiPuV7LRTZQ86pB1l773fEKmX/3Xu5QTVK4gjOVvE7cbZn
+ +h+ooc2b/IuA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186119198"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="186119198"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 08:00:45 -0800
+IronPort-SDR: c3Em6UwgdQORPKfSlHW5FSPoTRq1Xcu+o7kPKqpxWjt0E4Zk00PCtgWioBTjN4qD0FM9t87OHS
+ vki+CITjT84g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="588877263"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga005.jf.intel.com with ESMTP; 10 Mar 2021 08:00:41 -0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, yilun.xu@intel.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com
+Subject: [PATCH v4 0/4] Some improvement for Intel MAX 10 MFD drivers
+Date:   Wed, 10 Mar 2021 23:55:44 +0800
+Message-Id: <1615391748-1733-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 02:04:55PM +0100, Michal Hocko wrote:
+This patchset is some improvements for intel-m10-bmc and its subdevs.
 
-< snip >
+Main changes from v1:
+- Add a patch (#2) to simplify the definition of the legacy version reg.
+- Add a patch (#4), add entry in MAINTAINERS for intel-m10-bmc mfd driver
+  and the subdev drivers.
 
-> > > Also are all those CONFIG_DYNAMIC_DEBUG* ifdefs necessary?  Can we
-> > > simply enable DYNAMIC_DEBUG for page_alloc as I've suggested above?
-> > 
-> > They are different usecases.
-> > 
-> > With DYNAMIC_DEBUG_MODULE with CONFIG_DYNAMIC_DEBUG_CORE,
-> > it works for only specific compile flags as you suggested.
-> > (CONFIG_DYNAMIC_DEBUG_CORE is requirement to work DYNAMIC_DEBUG_MODULE.
-> > 
-> > With CONFIG_DYNAMIC_DEBUG, user could enable/disable every dynamic
-> > debug places without needing DYNAMIC_DEBUG_MODULE flags for source
-> > files.
-> > 
-> > Both usecase makes sense to me.
-> 
-> Well, this is more of a question for dynamic debugging maintainers. But
-> it would be really great to reduce the ifdefery as much as possible.
+Main changes from v2:
+- Add Tom Rix as the reviewer for intel-m10-bmc mfd driver and the subdev
+  drivers.
+- Rebased to 5.12-rc1
 
-I don't understand why this is something particular case which is okay
-to lose either way to make dyndbg dynamic.
+Main changes from v3:
+- Improve the comments for valid version check.
+
+
+Matthew Gerlach (1):
+  mfd: intel-m10-bmc: Add access table configuration to the regmap
+
+Xu Yilun (3):
+  mfd: intel-m10-bmc: Fix the register access range
+  mfd: intel-m10-bmc: Simplify the legacy version reg definition
+  MAINTAINERS: Add entry for Intel MAX 10 mfd driver
+
+ MAINTAINERS                       | 10 ++++++++++
+ drivers/mfd/intel-m10-bmc.c       | 30 ++++++++++++++++++++----------
+ include/linux/mfd/intel-m10-bmc.h |  7 +++++--
+ 3 files changed, 35 insertions(+), 12 deletions(-)
+
+-- 
+2.7.4
+
