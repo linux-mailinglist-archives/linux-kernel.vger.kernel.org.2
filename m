@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE1A334ADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A484334AE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbhCJWCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:02:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
+        id S234277AbhCJWDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:03:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234012AbhCJWBu (ORCPT
+        with ESMTP id S234235AbhCJWCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:01:50 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F171C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:01:50 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id 81so19640747iou.11
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:01:50 -0800 (PST)
+        Wed, 10 Mar 2021 17:02:44 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DCAC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:28 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id e10so25018259wro.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:02:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3cP7P+yaSZll8Aff9ty5g2D35+pxtgQDDxTDTmOEYgg=;
-        b=PuMwMmd78vULTh6oO14V/Ss3gJlNSNS0U6ju/rYR671Ns3dPWZWdKU8JWBv81cQm1K
-         QEkdhysrMSl+yFgH4MA3WBTRvgc5tSYC8KEjvcjOhzdkqkjiSlLMLwiu3WVTgUMxhMkC
-         yWxEFqnwvORfE9VBYVXNj3mHqB22NywvYx4rU=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VfVu4rgHClGk+8SIjkOcz2mDzeC9JP6hk5DHUIIUQrg=;
+        b=hz2+fCxPAmSw5xiUIHLElrNRlQWd6rjSlCoNRPMHK4OJHfQAdBK2m+ZfllvSf/vLCQ
+         Vc8k9Eesy786WaBQRzzgWwqAXqdYypfnxAQGWNeXOhNiH9QHavMnvPSXoixIZTicIMAm
+         QU3sZ0RHWC9NeNIBBSJF2brN2UH8zOfsM8V6E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=3cP7P+yaSZll8Aff9ty5g2D35+pxtgQDDxTDTmOEYgg=;
-        b=XuQiclaGpU238yTadGS+1QSwDPKW4wfIBBWXehZfFf4JayuILVw0GNNqFM0xh1V+uz
-         Sxi8UYLCV9ZtVUUsgMGoPuIE8ZoWc2Q16/+biNra7zpYtkcQHWAWbNMOLJcpSxUWDmMN
-         LOgL+XXW/C1iNaEiisVzguXeL6Ic73vppBjnQ747G7LvGwf4HlT7RhHxWusBSWhMKVn9
-         2aPJsSZiIv362g2Gb27rVrPA5LLZHjeXIbLalpIbvXVxzrvJ0v0YSPfqaUrRT2Z6cwi3
-         iIGJHv6qvhm3AOxkxDtPic2/OfVDPBcyLQ5DN/mof2NKEmYQAt+mYdSo5G48NQSiHnNW
-         JbZQ==
-X-Gm-Message-State: AOAM531H+2/BiIJgbjZ/ovOzUCle0c2y4gw/705aHNIiQ4JZeJUioef1
-        lCeGaq/dN2Zp5dqaZX1BhztENA==
-X-Google-Smtp-Source: ABdhPJxNxAKjK/e5ReM+AhU30wkxHnicffEyWGJIL8cfK1HSBz6wjHoZMhLJ582yWUk0obhKsIcEZw==
-X-Received: by 2002:a02:cb48:: with SMTP id k8mr629706jap.52.1615413709830;
-        Wed, 10 Mar 2021 14:01:49 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 128sm393274iov.1.2021.03.10.14.01.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 14:01:48 -0800 (PST)
-Subject: Re: [PATCH 4.4 0/7] 4.4.261-rc1 review
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210310132319.155338551@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <387a12a0-6161-2b79-5087-10873775d18d@linuxfoundation.org>
-Date:   Wed, 10 Mar 2021 15:01:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=VfVu4rgHClGk+8SIjkOcz2mDzeC9JP6hk5DHUIIUQrg=;
+        b=FIFHRlrEGiSyvaBdEaiMgrOQwfZKUgVMyQzF/uPjZ7DbTcEI2H4ut4R4X1I03GdxqZ
+         tBZpnEt17wCH4t/1IsvPV7G47ZnbdNqA+tHxeLAm57bph+eCTXV0jtKShVjTEqzck6yh
+         4G/+iVj/gk/hvPf14SBO7keeJaMJaGQ0y/2sU56hd1i8o9+2APtqi0Ixk95rol9UNRql
+         U9FbqgEASZw1/gUhCZ+3DSMKbApnDGKw3c1SM6xomIOQhJWxoYFCnswk1Kucn6s48qDY
+         UrpLnX9GCHXZ4RUYoqw4hUtjk6qJdO3kWp3W958Djpm5hQEQWYXYqoHoH4kLQCGOrIFb
+         g2Hg==
+X-Gm-Message-State: AOAM530INdpYsNN0FyTIk2N2SOyabosnmThONxoAtJOeFF/grSNQbvKJ
+        qpeNNinqTYePYfSbiR8Cq6Y/UQ==
+X-Google-Smtp-Source: ABdhPJzxL8IVcjAp8x6e2r85HgQOwpHHsvW/wLcSOWALF0m4Pwpobaon8H/CcjdC5Jb4H5bzNQSY+A==
+X-Received: by 2002:a5d:58ce:: with SMTP id o14mr306939wrf.4.1615413746955;
+        Wed, 10 Mar 2021 14:02:26 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:e08c:1e90:4e6b:365a])
+        by smtp.gmail.com with ESMTPSA id y16sm699234wrh.3.2021.03.10.14.02.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 14:02:26 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, jackmanb@chromium.org,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next 0/5] Add a snprintf eBPF helper
+Date:   Wed, 10 Mar 2021 23:02:06 +0100
+Message-Id: <20210310220211.1454516-1-revest@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-In-Reply-To: <20210310132319.155338551@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 6:25 AM, gregkh@linuxfoundation.org wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> This is the start of the stable review cycle for the 4.4.261 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.261-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
->
-Compiled and booted on my test system. No dmesg regressions.
+We have a usecase where we want to audit symbol names (if available) in
+callback registration hooks. (ex: fentry/nf_register_net_hook)
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+A few months back, I proposed a bpf_kallsyms_lookup series but it was
+decided in the reviews that a more generic helper, bpf_snprintf, would
+be more useful.
 
-thanks,
--- Shuah
+This series implements the helper according to the feedback received in
+https://lore.kernel.org/bpf/20201126165748.1748417-1-revest@google.com/T/#u
+
+- A new arg type guarantees the NULL-termination of string arguments and
+  lets us pass format strings in only one arg
+- A new helper is implemented using that guarantee. Because the format
+  string is known at verification time, the format string validation is
+  done by the verifier
+- To implement a series of tests for bpf_snprintf, the logic for
+  marshalling variadic args in a fixed-size array is reworked as per:
+https://lore.kernel.org/bpf/20210310015455.1095207-1-revest@chromium.org/T/#u
+
+Florent Revest (5):
+  bpf: Add a ARG_PTR_TO_CONST_STR argument type
+  bpf: Add a bpf_snprintf helper
+  libbpf: Initialize the bpf_seq_printf parameters array field by field
+  libbpf: Introduce a BPF_SNPRINTF helper macro
+  selftests/bpf: Add a series of tests for bpf_snprintf
+
+ include/linux/bpf.h                           |   5 +
+ include/uapi/linux/bpf.h                      |  28 +++
+ kernel/bpf/verifier.c                         | 178 ++++++++++++++++++
+ kernel/trace/bpf_trace.c                      | 110 +++++++++++
+ tools/include/uapi/linux/bpf.h                |  28 +++
+ tools/lib/bpf/bpf_tracing.h                   |  45 ++++-
+ .../selftests/bpf/prog_tests/snprintf.c       |  71 +++++++
+ .../selftests/bpf/progs/test_snprintf.c       |  71 +++++++
+ 8 files changed, 535 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
