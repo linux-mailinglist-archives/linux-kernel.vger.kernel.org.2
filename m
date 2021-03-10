@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39816333E8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A857C333EDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbhCJN0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:26:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46208 "EHLO mail.kernel.org"
+        id S233217AbhCJN1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:27:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233030AbhCJNYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A17E64FF4;
-        Wed, 10 Mar 2021 13:24:46 +0000 (UTC)
+        id S232808AbhCJNZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A26B64FDC;
+        Wed, 10 Mar 2021 13:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382688;
-        bh=fnNKBqJvtCuo1EoH7hWQtzDisRIDsOSQwmGY80T3gGA=;
+        s=korg; t=1615382705;
+        bh=10Bonuk5UnU056ZHl/EWIiNUlawTYt4Gx81Q/r1iu8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zIkB/TFPTUBK6XkTazSZS07VbKJFcNATD2Dy1sM1Q3/hUieuHBQl9vjsDJbV38frI
-         /lNsnxeXQ5JdQSZnuWKf6hPRH+tkUlYRclxwfTSlsA+ovK3MrPL7dW1TBcmMgYUHAx
-         0jCaxBfP5HPHqBb+NTIEgSxMDALpL/vBI+QEzhy4=
+        b=G3Wilhdpp9YO141GNetOzayNmTMZCPPkSgjg33bhc/ytUFDjqOZ4tKubIH6yaNRyp
+         J6y8Dw/KpeS+SiKrDiunbtYRDLwhvhZ2cYI0vV1Btl1S+ysRvPwBwtjXKHEE9mtH7M
+         Z5XbTcS8WZIjjePriqUv382fpN7bCjs6qTlWS77o=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadeem Athani <nadeem@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        stable@vger.kernel.org, Avri Altman <Avri.Altman@wdc.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 30/36] PCI: cadence: Retrain Link to work around Gen2 training defect
-Date:   Wed, 10 Mar 2021 14:23:43 +0100
-Message-Id: <20210310132321.456005224@linuxfoundation.org>
+Subject: [PATCH 5.10 33/49] scsi: ufs: Add a quirk to permit overriding UniPro defaults
+Date:   Wed, 10 Mar 2021 14:23:44 +0100
+Message-Id: <20210310132322.985472646@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
-References: <20210310132320.510840709@linuxfoundation.org>
+In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
+References: <20210310132321.948258062@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,200 +43,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Nadeem Athani <nadeem@cadence.com>
+From: Kiwoong Kim <kwmad.kim@samsung.com>
 
-[ Upstream commit 4740b969aaf58adeca6829947a3ad8da423976cf ]
+[ Upstream commit b1d0d2eb89d4e3a25b212a9d836587503537067e ]
 
-Cadence controller will not initiate autonomous speed change if strapped
-as Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+The UniPro specification states that attribute IDs of the following
+parameters are vendor-specific so some SoCs could have no regions at the
+defined addresses:
 
-Link: https://lore.kernel.org/r/20210209144622.26683-3-nadeem@cadence.com
-Signed-off-by: Nadeem Athani <nadeem@cadence.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+ - DME_LocalFC0ProtectionTimeOutVal
+ - DME_LocalTC0ReplayTimeOutVal
+ - DME_LocalAFC0ReqTimeOutVal
+
+In addition, the following parameters should be set considering the
+compatibility between host and device.
+
+ - PA_PWRMODEUSERDATA0
+ - PA_PWRMODEUSERDATA1
+ - PA_PWRMODEUSERDATA2
+ - PA_PWRMODEUSERDATA3
+ - PA_PWRMODEUSERDATA4
+ - PA_PWRMODEUSERDATA5
+
+Introduce a quirk to allow vendor drivers to override the UniPro defaults.
+
+Link: https://lore.kernel.org/r/1fedd3dea0ccc980913a5995a10510d86a5b01b9.1608513782.git.kwmad.kim@samsung.com
+Acked-by: Avri Altman <Avri.Altman@wdc.com>
+Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/cadence/pci-j721e.c    |  3 +
- .../controller/cadence/pcie-cadence-host.c    | 81 ++++++++++++++-----
- drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
- 3 files changed, 76 insertions(+), 19 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 40 ++++++++++++++++++++-------------------
+ drivers/scsi/ufs/ufshcd.h |  6 ++++++
+ 2 files changed, 27 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index dac1ac8a7615..849f1e416ea5 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -64,6 +64,7 @@ enum j721e_pcie_mode {
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 813289328467..379d44d6b9eb 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -4153,25 +4153,27 @@ static int ufshcd_change_power_mode(struct ufs_hba *hba,
+ 		ufshcd_dme_set(hba, UIC_ARG_MIB(PA_HSSERIES),
+ 						pwr_mode->hs_rate);
  
- struct j721e_pcie_data {
- 	enum j721e_pcie_mode	mode;
-+	bool quirk_retrain_flag;
- };
- 
- static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
-@@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
- 
- static const struct j721e_pcie_data j721e_pcie_rc_data = {
- 	.mode = PCI_MODE_RC,
-+	.quirk_retrain_flag = true,
- };
- 
- static const struct j721e_pcie_data j721e_pcie_ep_data = {
-@@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
- 
- 		bridge->ops = &cdns_ti_pcie_host_ops;
- 		rc = pci_host_bridge_priv(bridge);
-+		rc->quirk_retrain_flag = data->quirk_retrain_flag;
- 
- 		cdns_pcie = &rc->pcie;
- 		cdns_pcie->dev = dev;
-diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
-index 1cb7cfc75d6e..73dcf8cf98fb 100644
---- a/drivers/pci/controller/cadence/pcie-cadence-host.c
-+++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
-@@ -77,6 +77,68 @@ static struct pci_ops cdns_pcie_host_ops = {
- 	.write		= pci_generic_config_write,
- };
- 
-+static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
-+{
-+	struct device *dev = pcie->dev;
-+	int retries;
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA0),
+-			DL_FC0ProtectionTimeOutVal_Default);
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA1),
+-			DL_TC0ReplayTimeOutVal_Default);
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA2),
+-			DL_AFC0ReqTimeOutVal_Default);
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA3),
+-			DL_FC1ProtectionTimeOutVal_Default);
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA4),
+-			DL_TC1ReplayTimeOutVal_Default);
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA5),
+-			DL_AFC1ReqTimeOutVal_Default);
+-
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalFC0ProtectionTimeOutVal),
+-			DL_FC0ProtectionTimeOutVal_Default);
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalTC0ReplayTimeOutVal),
+-			DL_TC0ReplayTimeOutVal_Default);
+-	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalAFC0ReqTimeOutVal),
+-			DL_AFC0ReqTimeOutVal_Default);
++	if (!(hba->quirks & UFSHCD_QUIRK_SKIP_DEF_UNIPRO_TIMEOUT_SETTING)) {
++		ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA0),
++				DL_FC0ProtectionTimeOutVal_Default);
++		ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA1),
++				DL_TC0ReplayTimeOutVal_Default);
++		ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA2),
++				DL_AFC0ReqTimeOutVal_Default);
++		ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA3),
++				DL_FC1ProtectionTimeOutVal_Default);
++		ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA4),
++				DL_TC1ReplayTimeOutVal_Default);
++		ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA5),
++				DL_AFC1ReqTimeOutVal_Default);
 +
-+	/* Check if the link is up or not */
-+	for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
-+		if (cdns_pcie_link_up(pcie)) {
-+			dev_info(dev, "Link up\n");
-+			return 0;
-+		}
-+		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
++		ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalFC0ProtectionTimeOutVal),
++				DL_FC0ProtectionTimeOutVal_Default);
++		ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalTC0ReplayTimeOutVal),
++				DL_TC0ReplayTimeOutVal_Default);
++		ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalAFC0ReqTimeOutVal),
++				DL_AFC0ReqTimeOutVal_Default);
 +	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static int cdns_pcie_retrain(struct cdns_pcie *pcie)
-+{
-+	u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
-+	u16 lnk_stat, lnk_ctl;
-+	int ret = 0;
-+
+ 
+ 	ret = ufshcd_uic_change_pwr_mode(hba, pwr_mode->pwr_rx << 4
+ 			| pwr_mode->pwr_tx);
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 6c62a281c863..fcca4e15c8cd 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -544,6 +544,12 @@ enum ufshcd_quirks {
+ 	 */
+ 	UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL		= 1 << 12,
+ 
 +	/*
-+	 * Set retrain bit if current speed is 2.5 GB/s,
-+	 * but the PCIe root port support is > 2.5 GB/s.
++	 * This quirk needs to disable unipro timeout values
++	 * before power mode change
 +	 */
++	UFSHCD_QUIRK_SKIP_DEF_UNIPRO_TIMEOUT_SETTING = 1 << 13,
 +
-+	lnk_cap_sls = cdns_pcie_readl(pcie, (CDNS_PCIE_RP_BASE + pcie_cap_off +
-+					     PCI_EXP_LNKCAP));
-+	if ((lnk_cap_sls & PCI_EXP_LNKCAP_SLS) <= PCI_EXP_LNKCAP_SLS_2_5GB)
-+		return ret;
-+
-+	lnk_stat = cdns_pcie_rp_readw(pcie, pcie_cap_off + PCI_EXP_LNKSTA);
-+	if ((lnk_stat & PCI_EXP_LNKSTA_CLS) == PCI_EXP_LNKSTA_CLS_2_5GB) {
-+		lnk_ctl = cdns_pcie_rp_readw(pcie,
-+					     pcie_cap_off + PCI_EXP_LNKCTL);
-+		lnk_ctl |= PCI_EXP_LNKCTL_RL;
-+		cdns_pcie_rp_writew(pcie, pcie_cap_off + PCI_EXP_LNKCTL,
-+				    lnk_ctl);
-+
-+		ret = cdns_pcie_host_wait_for_link(pcie);
-+	}
-+	return ret;
-+}
-+
-+static int cdns_pcie_host_start_link(struct cdns_pcie_rc *rc)
-+{
-+	struct cdns_pcie *pcie = &rc->pcie;
-+	int ret;
-+
-+	ret = cdns_pcie_host_wait_for_link(pcie);
-+
-+	/*
-+	 * Retrain link for Gen2 training defect
-+	 * if quirk flag is set.
-+	 */
-+	if (!ret && rc->quirk_retrain_flag)
-+		ret = cdns_pcie_retrain(pcie);
-+
-+	return ret;
-+}
- 
- static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
- {
-@@ -399,23 +461,6 @@ static int cdns_pcie_host_init(struct device *dev,
- 	return cdns_pcie_host_init_address_translation(rc);
- }
- 
--static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
--{
--	struct device *dev = pcie->dev;
--	int retries;
--
--	/* Check if the link is up or not */
--	for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
--		if (cdns_pcie_link_up(pcie)) {
--			dev_info(dev, "Link up\n");
--			return 0;
--		}
--		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
--	}
--
--	return -ETIMEDOUT;
--}
--
- int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
- {
- 	struct device *dev = rc->pcie.dev;
-@@ -458,7 +503,7 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
- 		return ret;
- 	}
- 
--	ret = cdns_pcie_host_wait_for_link(pcie);
-+	ret = cdns_pcie_host_start_link(rc);
- 	if (ret)
- 		dev_dbg(dev, "PCIe link never came up\n");
- 
-diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-index 30eba6cafe2c..254d2570f8c9 100644
---- a/drivers/pci/controller/cadence/pcie-cadence.h
-+++ b/drivers/pci/controller/cadence/pcie-cadence.h
-@@ -119,7 +119,7 @@
-  * Root Port Registers (PCI configuration space for the root port function)
-  */
- #define CDNS_PCIE_RP_BASE	0x00200000
--
-+#define CDNS_PCIE_RP_CAP_OFFSET 0xc0
- 
- /*
-  * Address Translation Registers
-@@ -291,6 +291,7 @@ struct cdns_pcie {
-  * @device_id: PCI device ID
-  * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and	RP_NO_BAR if it's free or
-  *                available
-+ * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
-  */
- struct cdns_pcie_rc {
- 	struct cdns_pcie	pcie;
-@@ -299,6 +300,7 @@ struct cdns_pcie_rc {
- 	u32			vendor_id;
- 	u32			device_id;
- 	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
-+	bool                    quirk_retrain_flag;
  };
  
- /**
-@@ -414,6 +416,13 @@ static inline void cdns_pcie_rp_writew(struct cdns_pcie *pcie,
- 	cdns_pcie_write_sz(addr, 0x2, value);
- }
- 
-+static inline u16 cdns_pcie_rp_readw(struct cdns_pcie *pcie, u32 reg)
-+{
-+	void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
-+
-+	return cdns_pcie_read_sz(addr, 0x2);
-+}
-+
- /* Endpoint Function register access */
- static inline void cdns_pcie_ep_fn_writeb(struct cdns_pcie *pcie, u8 fn,
- 					  u32 reg, u8 value)
+ enum ufshcd_caps {
 -- 
 2.30.1
 
