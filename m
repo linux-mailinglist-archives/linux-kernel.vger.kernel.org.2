@@ -2,158 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B734333A9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E47333AA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbhCJKqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:46:49 -0500
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:46875 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232455AbhCJKqY (ORCPT
+        id S232033AbhCJKrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232570AbhCJKqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:46:24 -0500
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id EA5391AE9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:46:19 +0000 (GMT)
-Received: (qmail 23960 invoked from network); 10 Mar 2021 10:46:19 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 10 Mar 2021 10:46:19 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 5/5] net: page_pool: use alloc_pages_bulk in refill code path
-Date:   Wed, 10 Mar 2021 10:46:18 +0000
-Message-Id: <20210310104618.22750-6-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210310104618.22750-1-mgorman@techsingularity.net>
-References: <20210310104618.22750-1-mgorman@techsingularity.net>
+        Wed, 10 Mar 2021 05:46:42 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CFBC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:46:42 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id p1so27357038edy.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:46:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o7E2gXsQZ9cBxH8hKnNKchItzy4zUfJI/8/dUUecjq8=;
+        b=dxAPCGTYWx8GZ/6wY8jtkMzDpWcBv0e/dNkghlRLMrgsVfdrQJ2z+oJ6mrAvIzwzrZ
+         7KpwWUdSEKNo9psYA0JmmsiLbNMf4qZUlU6zYRWdNGlyQ2fzwm3WYy9mZ+IfKxv2Vb7X
+         gommdvyC2NX/sK1OB/WI4S/tC1x7hnsRunNzs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o7E2gXsQZ9cBxH8hKnNKchItzy4zUfJI/8/dUUecjq8=;
+        b=jUoWCaIMEFvRQtUkSL6CRQ96aMZpKu0ccR8MbCicuBVOrRQnA9lzR/x4uf6yPi3T3s
+         VpW7smedVGKihR87RMYpkmcdYN2joll4ZrvjAcfHC6FgKqxPZo4JhrVyv9iLUzTMDBqM
+         yxK8Up++M1RcCWRocP+Og459TspSQlQIiz5ZnghuK1I4xb4ZzFgy1wX/7YH/Bam2eIb9
+         YOe0FeXOETv6/f0XiQmfeXv3BJtZ2kBXdH2hk2M7JRQRxSD2NRhD9DiZ18fMK9VOM5Lj
+         zEGiNSAGNMOKc6sAP/AOrZ2ft5VtOFiW/iosKvUDgaVFdgNUABDy+6tc4zMoQXJthuU7
+         3xiQ==
+X-Gm-Message-State: AOAM532l/Z6VcgEjCBfGPbIYWH+pN+D0YNQdSZ4jaEPbRVkOrJfSSzt0
+        y0dLZBvrzWqbXPdR+/NiTxae0w==
+X-Google-Smtp-Source: ABdhPJxPx0CojsYcEqI9IXVTlvXpnhDJnrEF6fgKvzZaTdmzHC6l1zZ6iIYZu6SYm/K5k5S0bFYnEA==
+X-Received: by 2002:a50:ee19:: with SMTP id g25mr2522188eds.351.1615373200967;
+        Wed, 10 Mar 2021 02:46:40 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id hd37sm9416918ejc.114.2021.03.10.02.46.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 02:46:40 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH] media: videobuf2: Explicitly state max size of planes
+Date:   Wed, 10 Mar 2021 11:46:39 +0100
+Message-Id: <20210310104639.1069974-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+The plane size needs to be PAGE_ALIGNED, so it is not possible to have
+sizes bigger than MAX_INT - PAGE_SIZE.
 
-There are cases where the page_pool need to refill with pages from the
-page allocator. Some workloads cause the page_pool to release pages
-instead of recycling these pages.
+We already check for overflows when that happen:
+ if (size < vb->planes[plane].length)
+	goto free;
 
-For these workload it can improve performance to bulk alloc pages from
-the page-allocator to refill the alloc cache.
+But it is good to explicitly state our max allowed value, in order to
+align with the driver expectations.
 
-For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
-redirecting xdp_frame packets into a veth, that does XDP_PASS to create
-an SKB from the xdp_frame, which then cannot return the page to the
-page_pool. In this case, we saw[1] an improvement of 18.8% from using
-the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
-
-[1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- net/core/page_pool.c | 65 ++++++++++++++++++++++++++++----------------
- 1 file changed, 41 insertions(+), 24 deletions(-)
+ include/media/videobuf2-core.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 40e1b2beaa6c..ec51bd9454e2 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -208,44 +208,61 @@ noinline
- static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 						 gfp_t _gfp)
- {
-+	const int bulk = PP_ALLOC_CACHE_REFILL;
-+	struct page *page, *next, *first_page;
- 	unsigned int pp_flags = pool->p.flags;
--	struct page *page;
-+	unsigned int pp_order = pool->p.order;
-+	int pp_nid = pool->p.nid;
-+	LIST_HEAD(page_list);
- 	gfp_t gfp = _gfp;
- 
--	/* We could always set __GFP_COMP, and avoid this branch, as
--	 * prep_new_page() can handle order-0 with __GFP_COMP.
--	 */
--	if (pool->p.order)
-+	/* Don't support bulk alloc for high-order pages */
-+	if (unlikely(pp_order)) {
- 		gfp |= __GFP_COMP;
-+		first_page = alloc_pages_node(pp_nid, gfp, pp_order);
-+		if (unlikely(!first_page))
-+			return NULL;
-+		goto out;
-+	}
- 
--	/* FUTURE development:
--	 *
--	 * Current slow-path essentially falls back to single page
--	 * allocations, which doesn't improve performance.  This code
--	 * need bulk allocation support from the page allocator code.
--	 */
--
--	/* Cache was empty, do real allocation */
--#ifdef CONFIG_NUMA
--	page = alloc_pages_node(pool->p.nid, gfp, pool->p.order);
--#else
--	page = alloc_pages(gfp, pool->p.order);
--#endif
--	if (!page)
-+	if (unlikely(!__alloc_pages_bulk_nodemask(gfp, pp_nid, NULL,
-+						  bulk, &page_list)))
- 		return NULL;
- 
--	if ((pp_flags & PP_FLAG_DMA_MAP) &&
--	    unlikely(!page_pool_dma_map(pool, page))) {
--		put_page(page);
-+	/* First page is extracted and returned to caller */
-+	first_page = list_first_entry(&page_list, struct page, lru);
-+	list_del(&first_page->lru);
-+
-+	/* Remaining pages store in alloc.cache */
-+	list_for_each_entry_safe(page, next, &page_list, lru) {
-+		list_del(&page->lru);
-+		if ((pp_flags & PP_FLAG_DMA_MAP) &&
-+		    unlikely(!page_pool_dma_map(pool, page))) {
-+			put_page(page);
-+			continue;
-+		}
-+		if (likely(pool->alloc.count < PP_ALLOC_CACHE_SIZE)) {
-+			pool->alloc.cache[pool->alloc.count++] = page;
-+			pool->pages_state_hold_cnt++;
-+			trace_page_pool_state_hold(pool, page,
-+						   pool->pages_state_hold_cnt);
-+		} else {
-+			put_page(page);
-+		}
-+	}
-+out:
-+	if (pp_flags & PP_FLAG_DMA_MAP &&
-+	    unlikely(!page_pool_dma_map(pool, first_page))) {
-+		put_page(first_page);
- 		return NULL;
- 	}
- 
- 	/* Track how many pages are held 'in-flight' */
- 	pool->pages_state_hold_cnt++;
--	trace_page_pool_state_hold(pool, page, pool->pages_state_hold_cnt);
-+	trace_page_pool_state_hold(pool, first_page, pool->pages_state_hold_cnt);
- 
- 	/* When page just alloc'ed is should/must have refcnt 1. */
--	return page;
-+	return first_page;
- }
- 
- /* For using page_pool replace: alloc_pages() API calls, but provide
+diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+index 799ba61b5b6f..12955cb460d2 100644
+--- a/include/media/videobuf2-core.h
++++ b/include/media/videobuf2-core.h
+@@ -154,9 +154,11 @@ struct vb2_mem_ops {
+  * @dbuf:	dma_buf - shared buffer object.
+  * @dbuf_mapped:	flag to show whether dbuf is mapped or not
+  * @bytesused:	number of bytes occupied by data in the plane (payload).
+- * @length:	size of this plane (NOT the payload) in bytes.
++ * @length:	size of this plane (NOT the payload) in bytes. The maximum
++ *		valid size is MAX_UINT - PAGE_SIZE.
+  * @min_length:	minimum required size of this plane (NOT the payload) in bytes.
+- *		@length is always greater or equal to @min_length.
++ *		@length is always greater or equal to @min_length, and like
++ *		@length, it is limited to MAX_UINT - PAGE_SIZE.
+  * @m:		Union with memtype-specific data.
+  * @m.offset:	when memory in the associated struct vb2_buffer is
+  *		%VB2_MEMORY_MMAP, equals the offset from the start of
 -- 
-2.26.2
+2.30.1.766.gb4fecdf3b7-goog
 
