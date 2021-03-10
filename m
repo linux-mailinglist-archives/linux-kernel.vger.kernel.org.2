@@ -2,907 +2,651 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55BF334835
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711E2334838
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 20:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232932AbhCJTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 14:41:59 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10644 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232983AbhCJTlf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:41:35 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12AJc0rL171038;
-        Wed, 10 Mar 2021 14:41:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=T3OtQt9wZxUCla/Ezo5+7q8KRpB7rCaeTPrhiQ4GYg8=;
- b=pMaKNxoCxbK7/F3N3jaTrnOLBRpCMmQ5Ad558tnBYAqAfJ98ih/5Aul3f/NS699maVke
- JfYktnalqxpJNgX7p1pSvcUd3LmIsNl8XvDnc+XXG1R4kzY/Ipz8RWm3/zmsm7+GuS+i
- nOxNRkfmORnevJn1t6e+ZajU4prkb14SEcG4Wq/XPZY0Ld7hfA2QK/lrazgv87GrRkc4
- A8Bz4c/T/pxhKGFdvDCePjJvsmZrp0QDBBqP6qYqFM7pRcq5NDxO2w2TQCkJH/OuUzOl
- EDyXRi60xYEAQu+X4Ccicd0s1L9R0GvOjA9JZK6uvQ1mgstWZLAE9SpBQxgYr0ubgAwn Bw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3774ek03hh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Mar 2021 14:41:30 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12AJWJmU031490;
-        Wed, 10 Mar 2021 19:40:50 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 3768urs8kw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Mar 2021 19:40:49 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12AJekR256820058
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Mar 2021 19:40:46 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B171AE058;
-        Wed, 10 Mar 2021 19:40:46 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24994AE045;
-        Wed, 10 Mar 2021 19:40:46 +0000 (GMT)
-Received: from osiris (unknown [9.171.75.29])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 10 Mar 2021 19:40:46 +0000 (GMT)
-Date:   Wed, 10 Mar 2021 20:40:44 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.12-rc3
-Message-ID: <YEkgvDUmkCkbTe5O@osiris>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S231858AbhCJTnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 14:43:03 -0500
+Received: from mga07.intel.com ([134.134.136.100]:31380 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230081AbhCJTmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:42:33 -0500
+IronPort-SDR: 6N5+hKPKBAj3V/USZSE+0HbVvexuuXW1nbuemDZBu4QBRmbRMKAZLYhto7k1VGomzCer73tkIG
+ II6DO+DWn8TQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="252567704"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="gz'50?scan'50,208,50";a="252567704"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 11:42:32 -0800
+IronPort-SDR: QLh2kk6/pmwKHSAQLtAorqRzcxyoNKiMgbfKC8ANXJFVmv4B4VXvsvveV7lOg6EqS/ml8kR0Py
+ eIzY8H1+tS0Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="gz'50?scan'50,208,50";a="520841927"
+Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 10 Mar 2021 11:42:29 -0800
+Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lK4iy-0000L4-W9; Wed, 10 Mar 2021 19:42:28 +0000
+Date:   Thu, 11 Mar 2021 03:42:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>
+Cc:     kbuild-all@lists.01.org, Alexey Gladkov <legion@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v5 4/5] proc: Relax check of mount visibility
+Message-ID: <202103110340.VKEE0q8m-lkp@intel.com>
+References: <eeba37cf1db2fb81bd4509efce9063156ebb83dc.1615400395.git.gladkov.alexey@gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-10_10:2021-03-10,2021-03-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0
- clxscore=1015 spamscore=0 phishscore=0 mlxscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103100092
+Content-Type: multipart/mixed; boundary="5mCyUwZo2JvN/JJP"
+Content-Disposition: inline
+In-Reply-To: <eeba37cf1db2fb81bd4509efce9063156ebb83dc.1615400395.git.gladkov.alexey@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-please pull some s390 updates for 5.12-rc3. All of this was actually
-already beginning of last week in linux-next, however I rebased this
-from rc1 to rc2.
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Heiko
+Hi Alexey,
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+Thank you for the patch! Yet something to improve:
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+[auto build test ERROR on linux/master]
+[also build test ERROR on kees/for-next/pstore linus/master v5.12-rc2 next-20210310]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-are available in the Git repository at:
+url:    https://github.com/0day-ci/linux/commits/Alexey-Gladkov/proc-Relax-check-of-mount-visibility/20210311-022252
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
+config: powerpc-randconfig-s032-20210309 (attached as .config)
+compiler: powerpc64-linux-gcc (GCC) 9.3.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.3-262-g5e674421-dirty
+        # https://github.com/0day-ci/linux/commit/57a1fff647a507e103bbe22d67c6fe6b54c6a088
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Alexey-Gladkov/proc-Relax-check-of-mount-visibility/20210311-022252
+        git checkout 57a1fff647a507e103bbe22d67c6fe6b54c6a088
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=powerpc 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.12-3
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-for you to fetch changes up to 78c7cccaab9d5f9ead44579d79dd7d13a05aec7e:
+All errors (new ones prefixed by >>):
 
-  s390: remove IBM_PARTITION and CONFIGFS_FS from zfcpdump defconfig (2021-03-08 10:46:30 +0100)
+   fs/proc/root.c: In function 'proc_reconfigure':
+>> fs/proc/root.c:233:11: error: 'fs_info' undeclared (first use in this function); did you mean 'qc_info'?
+     233 |  put_cred(fs_info->mounter_cred);
+         |           ^~~~~~~
+         |           qc_info
+   fs/proc/root.c:233:11: note: each undeclared identifier is reported only once for each function it appears in
 
-----------------------------------------------------------------
-s390 updates for 5.12-rc3
 
-- fix various user space visible copy_to_user() instances which return the
-  number of bytes left to copy instead of -EFAULT
+vim +233 fs/proc/root.c
 
-- make TMPFS_INODE64 available again for s390 and alpha, now that both
-  architectures have been switched to 64-bit ino_t
-  see commit 96c0a6a72d18 ("s390,alpha: switch to 64-bit ino_t")
+97412950b10e64 Vasiliy Kulikov 2012-01-10  226  
+66f592e2ece038 David Howells   2018-11-01  227  static int proc_reconfigure(struct fs_context *fc)
+97412950b10e64 Vasiliy Kulikov 2012-01-10  228  {
+66f592e2ece038 David Howells   2018-11-01  229  	struct super_block *sb = fc->root->d_sb;
+02b9984d640873 Theodore Ts'o   2014-03-13  230  
+02b9984d640873 Theodore Ts'o   2014-03-13  231  	sync_filesystem(sb);
+66f592e2ece038 David Howells   2018-11-01  232  
+b84f25e5938b65 Alexey Gladkov  2021-03-10 @233  	put_cred(fs_info->mounter_cred);
+b84f25e5938b65 Alexey Gladkov  2021-03-10  234  	fs_info->mounter_cred = get_cred(fc->cred);
+b84f25e5938b65 Alexey Gladkov  2021-03-10  235  
+57a1fff647a507 Alexey Gladkov  2021-03-10  236  	return proc_apply_options(sb, fc, current_user_ns());
+97412950b10e64 Vasiliy Kulikov 2012-01-10  237  }
+97412950b10e64 Vasiliy Kulikov 2012-01-10  238  
 
-- make sure to release a shared hypervisor resource within the zcore device
-  driver also on restart and power down; also remove unneeded surrounding
-  debugfs_create return value checks
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-- for the new hardware counter set device driver rename the uapi header file to
-  be a bit more generic; also remove 60 second read limit which is not really
-  necessary and without the limit the interface can be easier tested
+--5mCyUwZo2JvN/JJP
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-- some small cleanups, the largest being to convert all long long in our time
-  and idle code to longs
+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
 
-- update defconfigs
-
-----------------------------------------------------------------
-Alexander Egorenkov (3):
-      s390/zcore: no need to check return value of debugfs_create functions
-      s390/zcore: release dump save area on restart or power down
-      s390: remove IBM_PARTITION and CONFIGFS_FS from zfcpdump defconfig
-
-Eric Farman (1):
-      s390/cio: return -EFAULT if copy_to_user() fails
-
-Heiko Carstens (4):
-      s390/time,idle: get rid of unsigned long long
-      s390/topology: remove always false if check
-      s390,alpha: make TMPFS_INODE64 available again
-      s390: update defconfigs
-
-Jiapeng Chong (1):
-      s390/cpumf: remove unneeded semicolon
-
-Joe Perches (1):
-      s390/tty3270: avoid comma separated statements
-
-Thomas Richter (2):
-      s390/cpumf: remove 60 seconds read limit
-      s390/cpumf: rename header file to hwctrset.h
-
-Wang Qing (2):
-      s390/cio: return -EFAULT if copy_to_user() fails
-      s390/crypto: return -EFAULT if copy_to_user() fails
-
- arch/s390/configs/debug_defconfig                  | 16 ++------
- arch/s390/configs/defconfig                        | 11 +-----
- arch/s390/configs/zfcpdump_defconfig               |  3 --
- arch/s390/include/asm/idle.h                       | 12 +++---
- arch/s390/include/asm/timex.h                      | 36 +++++++++---------
- .../uapi/asm/{perf_cpum_cf_diag.h => hwctrset.h}   |  0
- arch/s390/kernel/idle.c                            | 12 +++---
- arch/s390/kernel/perf_cpum_cf.c                    |  2 +-
- arch/s390/kernel/perf_cpum_cf_diag.c               | 20 ++--------
- arch/s390/kernel/time.c                            | 28 +++++++-------
- arch/s390/kernel/topology.c                        |  2 -
- arch/s390/kvm/interrupt.c                          |  2 +-
- drivers/s390/char/tty3270.c                        |  6 ++-
- drivers/s390/char/zcore.c                          | 44 +++++++++++++---------
- drivers/s390/cio/device_fsm.c                      |  2 +-
- drivers/s390/cio/vfio_ccw_ops.c                    |  6 +--
- drivers/s390/crypto/vfio_ap_ops.c                  |  2 +-
- fs/Kconfig                                         |  2 +-
- 18 files changed, 91 insertions(+), 115 deletions(-)
- rename arch/s390/include/uapi/asm/{perf_cpum_cf_diag.h => hwctrset.h} (100%)
-
-diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
-index 02056b024091..dc0b69058ac4 100644
---- a/arch/s390/configs/debug_defconfig
-+++ b/arch/s390/configs/debug_defconfig
-@@ -275,9 +275,9 @@ CONFIG_IP_VS_DH=m
- CONFIG_IP_VS_SH=m
- CONFIG_IP_VS_SED=m
- CONFIG_IP_VS_NQ=m
-+CONFIG_IP_VS_TWOS=m
- CONFIG_IP_VS_FTP=m
- CONFIG_IP_VS_PE_SIP=m
--CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
- CONFIG_IP_NF_IPTABLES=m
-@@ -298,7 +298,6 @@ CONFIG_IP_NF_SECURITY=m
- CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NF_TABLES_IPV6=y
- CONFIG_NFT_FIB_IPV6=m
- CONFIG_IP6_NF_IPTABLES=m
- CONFIG_IP6_NF_MATCH_AH=m
-@@ -481,7 +480,6 @@ CONFIG_NLMON=m
- # CONFIG_NET_VENDOR_AQUANTIA is not set
- # CONFIG_NET_VENDOR_ARC is not set
- # CONFIG_NET_VENDOR_ATHEROS is not set
--# CONFIG_NET_VENDOR_AURORA is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_BROCADE is not set
- # CONFIG_NET_VENDOR_CADENCE is not set
-@@ -581,7 +579,6 @@ CONFIG_VIRTIO_BALLOON=m
- CONFIG_VIRTIO_INPUT=y
- CONFIG_VHOST_NET=m
- CONFIG_VHOST_VSOCK=m
--# CONFIG_SURFACE_PLATFORMS is not set
- CONFIG_S390_CCW_IOMMU=y
- CONFIG_S390_AP_IOMMU=y
- CONFIG_EXT4_FS=y
-@@ -635,6 +632,7 @@ CONFIG_NTFS_RW=y
- CONFIG_PROC_KCORE=y
- CONFIG_TMPFS=y
- CONFIG_TMPFS_POSIX_ACL=y
-+CONFIG_TMPFS_INODE64=y
- CONFIG_HUGETLBFS=y
- CONFIG_CONFIGFS_FS=m
- CONFIG_ECRYPT_FS=m
-@@ -714,12 +712,8 @@ CONFIG_CRYPTO_VMAC=m
- CONFIG_CRYPTO_CRC32=m
- CONFIG_CRYPTO_BLAKE2S=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
--CONFIG_CRYPTO_RMD128=m
- CONFIG_CRYPTO_RMD160=m
--CONFIG_CRYPTO_RMD256=m
--CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
- CONFIG_CRYPTO_ANUBIS=m
-@@ -731,7 +725,6 @@ CONFIG_CRYPTO_CAST6=m
- CONFIG_CRYPTO_DES=m
- CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
--CONFIG_CRYPTO_SALSA20=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
- CONFIG_CRYPTO_SM4=m
-@@ -796,12 +789,9 @@ CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
- CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y
- CONFIG_SLUB_DEBUG_ON=y
- CONFIG_SLUB_STATS=y
--CONFIG_DEBUG_KMEMLEAK=y
--CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF=y
- CONFIG_DEBUG_STACK_USAGE=y
- CONFIG_DEBUG_VM=y
- CONFIG_DEBUG_VM_VMACACHE=y
--CONFIG_DEBUG_VM_RB=y
- CONFIG_DEBUG_VM_PGFLAGS=y
- CONFIG_DEBUG_MEMORY_INIT=y
- CONFIG_MEMORY_NOTIFIER_ERROR_INJECT=m
-@@ -838,6 +828,7 @@ CONFIG_BPF_KPROBE_OVERRIDE=y
- CONFIG_HIST_TRIGGERS=y
- CONFIG_FTRACE_STARTUP_TEST=y
- # CONFIG_EVENT_TRACE_STARTUP_TEST is not set
-+CONFIG_DEBUG_ENTRY=y
- CONFIG_NOTIFIER_ERROR_INJECTION=m
- CONFIG_NETDEV_NOTIFIER_ERROR_INJECT=m
- CONFIG_FAULT_INJECTION=y
-@@ -861,4 +852,3 @@ CONFIG_PERCPU_TEST=m
- CONFIG_ATOMIC64_SELFTEST=y
- CONFIG_TEST_BITOPS=m
- CONFIG_TEST_BPF=m
--CONFIG_DEBUG_ENTRY=y
-diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
-index bac721a501da..320379da96d9 100644
---- a/arch/s390/configs/defconfig
-+++ b/arch/s390/configs/defconfig
-@@ -266,9 +266,9 @@ CONFIG_IP_VS_DH=m
- CONFIG_IP_VS_SH=m
- CONFIG_IP_VS_SED=m
- CONFIG_IP_VS_NQ=m
-+CONFIG_IP_VS_TWOS=m
- CONFIG_IP_VS_FTP=m
- CONFIG_IP_VS_PE_SIP=m
--CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
- CONFIG_IP_NF_IPTABLES=m
-@@ -289,7 +289,6 @@ CONFIG_IP_NF_SECURITY=m
- CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NF_TABLES_IPV6=y
- CONFIG_NFT_FIB_IPV6=m
- CONFIG_IP6_NF_IPTABLES=m
- CONFIG_IP6_NF_MATCH_AH=m
-@@ -473,7 +472,6 @@ CONFIG_NLMON=m
- # CONFIG_NET_VENDOR_AQUANTIA is not set
- # CONFIG_NET_VENDOR_ARC is not set
- # CONFIG_NET_VENDOR_ATHEROS is not set
--# CONFIG_NET_VENDOR_AURORA is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_BROCADE is not set
- # CONFIG_NET_VENDOR_CADENCE is not set
-@@ -573,7 +571,6 @@ CONFIG_VIRTIO_BALLOON=m
- CONFIG_VIRTIO_INPUT=y
- CONFIG_VHOST_NET=m
- CONFIG_VHOST_VSOCK=m
--# CONFIG_SURFACE_PLATFORMS is not set
- CONFIG_S390_CCW_IOMMU=y
- CONFIG_S390_AP_IOMMU=y
- CONFIG_EXT4_FS=y
-@@ -623,6 +620,7 @@ CONFIG_NTFS_RW=y
- CONFIG_PROC_KCORE=y
- CONFIG_TMPFS=y
- CONFIG_TMPFS_POSIX_ACL=y
-+CONFIG_TMPFS_INODE64=y
- CONFIG_HUGETLBFS=y
- CONFIG_CONFIGFS_FS=m
- CONFIG_ECRYPT_FS=m
-@@ -703,12 +701,8 @@ CONFIG_CRYPTO_VMAC=m
- CONFIG_CRYPTO_CRC32=m
- CONFIG_CRYPTO_BLAKE2S=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
--CONFIG_CRYPTO_RMD128=m
- CONFIG_CRYPTO_RMD160=m
--CONFIG_CRYPTO_RMD256=m
--CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
- CONFIG_CRYPTO_ANUBIS=m
-@@ -720,7 +714,6 @@ CONFIG_CRYPTO_CAST6=m
- CONFIG_CRYPTO_DES=m
- CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
--CONFIG_CRYPTO_SALSA20=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
- CONFIG_CRYPTO_SM4=m
-diff --git a/arch/s390/configs/zfcpdump_defconfig b/arch/s390/configs/zfcpdump_defconfig
-index acf982a2ae4c..76123a4b26ab 100644
---- a/arch/s390/configs/zfcpdump_defconfig
-+++ b/arch/s390/configs/zfcpdump_defconfig
-@@ -26,7 +26,6 @@ CONFIG_CRASH_DUMP=y
- # CONFIG_SECCOMP is not set
- # CONFIG_GCC_PLUGINS is not set
- CONFIG_PARTITION_ADVANCED=y
--CONFIG_IBM_PARTITION=y
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- # CONFIG_COMPACTION is not set
- # CONFIG_MIGRATION is not set
-@@ -61,11 +60,9 @@ CONFIG_RAW_DRIVER=y
- # CONFIG_HID is not set
- # CONFIG_VIRTIO_MENU is not set
- # CONFIG_VHOST_MENU is not set
--# CONFIG_SURFACE_PLATFORMS is not set
- # CONFIG_IOMMU_SUPPORT is not set
- # CONFIG_DNOTIFY is not set
- # CONFIG_INOTIFY_USER is not set
--CONFIG_CONFIGFS_FS=y
- # CONFIG_MISC_FILESYSTEMS is not set
- # CONFIG_NETWORK_FILESYSTEMS is not set
- CONFIG_LSM="yama,loadpin,safesetid,integrity"
-diff --git a/arch/s390/include/asm/idle.h b/arch/s390/include/asm/idle.h
-index b04f6a794cdf..5cea629c548e 100644
---- a/arch/s390/include/asm/idle.h
-+++ b/arch/s390/include/asm/idle.h
-@@ -14,12 +14,12 @@
- 
- struct s390_idle_data {
- 	seqcount_t seqcount;
--	unsigned long long idle_count;
--	unsigned long long idle_time;
--	unsigned long long clock_idle_enter;
--	unsigned long long clock_idle_exit;
--	unsigned long long timer_idle_enter;
--	unsigned long long timer_idle_exit;
-+	unsigned long idle_count;
-+	unsigned long idle_time;
-+	unsigned long clock_idle_enter;
-+	unsigned long clock_idle_exit;
-+	unsigned long timer_idle_enter;
-+	unsigned long timer_idle_exit;
- 	unsigned long mt_cycles_enter[8];
- };
- 
-diff --git a/arch/s390/include/asm/timex.h b/arch/s390/include/asm/timex.h
-index c4e23e925665..f6326c6d2abe 100644
---- a/arch/s390/include/asm/timex.h
-+++ b/arch/s390/include/asm/timex.h
-@@ -98,10 +98,10 @@ extern unsigned char ptff_function_mask[16];
- 
- /* Query TOD offset result */
- struct ptff_qto {
--	unsigned long long physical_clock;
--	unsigned long long tod_offset;
--	unsigned long long logical_tod_offset;
--	unsigned long long tod_epoch_difference;
-+	unsigned long physical_clock;
-+	unsigned long tod_offset;
-+	unsigned long logical_tod_offset;
-+	unsigned long tod_epoch_difference;
- } __packed;
- 
- static inline int ptff_query(unsigned int nr)
-@@ -151,9 +151,9 @@ struct ptff_qui {
- 	rc;								\
- })
- 
--static inline unsigned long long local_tick_disable(void)
-+static inline unsigned long local_tick_disable(void)
- {
--	unsigned long long old;
-+	unsigned long old;
- 
- 	old = S390_lowcore.clock_comparator;
- 	S390_lowcore.clock_comparator = clock_comparator_max;
-@@ -161,7 +161,7 @@ static inline unsigned long long local_tick_disable(void)
- 	return old;
- }
- 
--static inline void local_tick_enable(unsigned long long comp)
-+static inline void local_tick_enable(unsigned long comp)
- {
- 	S390_lowcore.clock_comparator = comp;
- 	set_clock_comparator(S390_lowcore.clock_comparator);
-@@ -169,9 +169,9 @@ static inline void local_tick_enable(unsigned long long comp)
- 
- #define CLOCK_TICK_RATE		1193180 /* Underlying HZ */
- 
--typedef unsigned long long cycles_t;
-+typedef unsigned long cycles_t;
- 
--static inline unsigned long long get_tod_clock(void)
-+static inline unsigned long get_tod_clock(void)
- {
- 	union tod_clock clk;
- 
-@@ -179,10 +179,10 @@ static inline unsigned long long get_tod_clock(void)
- 	return clk.tod;
- }
- 
--static inline unsigned long long get_tod_clock_fast(void)
-+static inline unsigned long get_tod_clock_fast(void)
- {
- #ifdef CONFIG_HAVE_MARCH_Z9_109_FEATURES
--	unsigned long long clk;
-+	unsigned long clk;
- 
- 	asm volatile("stckf %0" : "=Q" (clk) : : "cc");
- 	return clk;
-@@ -208,9 +208,9 @@ extern union tod_clock tod_clock_base;
-  * Therefore preemption must be disabled, otherwise the returned
-  * value is not guaranteed to be monotonic.
-  */
--static inline unsigned long long get_tod_clock_monotonic(void)
-+static inline unsigned long get_tod_clock_monotonic(void)
- {
--	unsigned long long tod;
-+	unsigned long tod;
- 
- 	preempt_disable_notrace();
- 	tod = get_tod_clock() - tod_clock_base.tod;
-@@ -237,7 +237,7 @@ static inline unsigned long long get_tod_clock_monotonic(void)
-  * -> ns = (th * 125) + ((tl * 125) >> 9);
-  *
-  */
--static inline unsigned long long tod_to_ns(unsigned long long todval)
-+static inline unsigned long tod_to_ns(unsigned long todval)
- {
- 	return ((todval >> 9) * 125) + (((todval & 0x1ff) * 125) >> 9);
- }
-@@ -249,10 +249,10 @@ static inline unsigned long long tod_to_ns(unsigned long long todval)
-  *
-  * Returns: true if a is later than b
-  */
--static inline int tod_after(unsigned long long a, unsigned long long b)
-+static inline int tod_after(unsigned long a, unsigned long b)
- {
- 	if (MACHINE_HAS_SCC)
--		return (long long) a > (long long) b;
-+		return (long) a > (long) b;
- 	return a > b;
- }
- 
-@@ -263,10 +263,10 @@ static inline int tod_after(unsigned long long a, unsigned long long b)
-  *
-  * Returns: true if a is later than b
-  */
--static inline int tod_after_eq(unsigned long long a, unsigned long long b)
-+static inline int tod_after_eq(unsigned long a, unsigned long b)
- {
- 	if (MACHINE_HAS_SCC)
--		return (long long) a >= (long long) b;
-+		return (long) a >= (long) b;
- 	return a >= b;
- }
- 
-diff --git a/arch/s390/include/uapi/asm/perf_cpum_cf_diag.h b/arch/s390/include/uapi/asm/hwctrset.h
-similarity index 100%
-rename from arch/s390/include/uapi/asm/perf_cpum_cf_diag.h
-rename to arch/s390/include/uapi/asm/hwctrset.h
-diff --git a/arch/s390/kernel/idle.c b/arch/s390/kernel/idle.c
-index 812073ea073e..4bf1ee293f2b 100644
---- a/arch/s390/kernel/idle.c
-+++ b/arch/s390/kernel/idle.c
-@@ -47,7 +47,7 @@ void account_idle_time_irq(void)
- void arch_cpu_idle(void)
- {
- 	struct s390_idle_data *idle = this_cpu_ptr(&s390_idle);
--	unsigned long long idle_time;
-+	unsigned long idle_time;
- 	unsigned long psw_mask;
- 
- 	/* Wait for external, I/O or machine check interrupt. */
-@@ -73,7 +73,7 @@ static ssize_t show_idle_count(struct device *dev,
- 				struct device_attribute *attr, char *buf)
- {
- 	struct s390_idle_data *idle = &per_cpu(s390_idle, dev->id);
--	unsigned long long idle_count;
-+	unsigned long idle_count;
- 	unsigned int seq;
- 
- 	do {
-@@ -82,14 +82,14 @@ static ssize_t show_idle_count(struct device *dev,
- 		if (READ_ONCE(idle->clock_idle_enter))
- 			idle_count++;
- 	} while (read_seqcount_retry(&idle->seqcount, seq));
--	return sprintf(buf, "%llu\n", idle_count);
-+	return sprintf(buf, "%lu\n", idle_count);
- }
- DEVICE_ATTR(idle_count, 0444, show_idle_count, NULL);
- 
- static ssize_t show_idle_time(struct device *dev,
- 				struct device_attribute *attr, char *buf)
- {
--	unsigned long long now, idle_time, idle_enter, idle_exit, in_idle;
-+	unsigned long now, idle_time, idle_enter, idle_exit, in_idle;
- 	struct s390_idle_data *idle = &per_cpu(s390_idle, dev->id);
- 	unsigned int seq;
- 
-@@ -109,14 +109,14 @@ static ssize_t show_idle_time(struct device *dev,
- 		}
- 	}
- 	idle_time += in_idle;
--	return sprintf(buf, "%llu\n", idle_time >> 12);
-+	return sprintf(buf, "%lu\n", idle_time >> 12);
- }
- DEVICE_ATTR(idle_time_us, 0444, show_idle_time, NULL);
- 
- u64 arch_cpu_idle_time(int cpu)
- {
- 	struct s390_idle_data *idle = &per_cpu(s390_idle, cpu);
--	unsigned long long now, idle_enter, idle_exit, in_idle;
-+	unsigned long now, idle_enter, idle_exit, in_idle;
- 	unsigned int seq;
- 
- 	do {
-diff --git a/arch/s390/kernel/perf_cpum_cf.c b/arch/s390/kernel/perf_cpum_cf.c
-index 0eb1d1cc53a8..b3beef64d3d4 100644
---- a/arch/s390/kernel/perf_cpum_cf.c
-+++ b/arch/s390/kernel/perf_cpum_cf.c
-@@ -269,7 +269,7 @@ static int __hw_perf_event_init(struct perf_event *event, unsigned int type)
- 	case CPUMF_CTR_SET_MAX:
- 		/* The counter could not be associated to a counter set */
- 		return -EINVAL;
--	};
-+	}
- 
- 	/* Initialize for using the CPU-measurement counter facility */
- 	if (!atomic_inc_not_zero(&num_events)) {
-diff --git a/arch/s390/kernel/perf_cpum_cf_diag.c b/arch/s390/kernel/perf_cpum_cf_diag.c
-index db4877bbb9aa..bc302b86ce28 100644
---- a/arch/s390/kernel/perf_cpum_cf_diag.c
-+++ b/arch/s390/kernel/perf_cpum_cf_diag.c
-@@ -26,12 +26,10 @@
- #include <asm/timex.h>
- #include <asm/debug.h>
- 
--#include <asm/perf_cpum_cf_diag.h>
-+#include <asm/hwctrset.h>
- 
- #define	CF_DIAG_CTRSET_DEF		0xfeef	/* Counter set header mark */
--#define CF_DIAG_MIN_INTERVAL		60	/* Minimum counter set read */
- 						/* interval in seconds */
--static unsigned long cf_diag_interval = CF_DIAG_MIN_INTERVAL;
- static unsigned int cf_diag_cpu_speed;
- static debug_info_t *cf_diag_dbg;
- 
-@@ -729,7 +727,6 @@ static DEFINE_MUTEX(cf_diag_ctrset_mutex);
- static struct cf_diag_ctrset {
- 	unsigned long ctrset;		/* Bit mask of counter set to read */
- 	cpumask_t mask;			/* CPU mask to read from */
--	time64_t lastread;		/* Epoch counter set last read */
- } cf_diag_ctrset;
- 
- static void cf_diag_ctrset_clear(void)
-@@ -866,27 +863,16 @@ static int cf_diag_all_read(unsigned long arg)
- {
- 	struct cf_diag_call_on_cpu_parm p;
- 	cpumask_var_t mask;
--	time64_t now;
--	int rc = 0;
-+	int rc;
- 
- 	debug_sprintf_event(cf_diag_dbg, 5, "%s\n", __func__);
- 	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
- 		return -ENOMEM;
--	now = ktime_get_seconds();
--	if (cf_diag_ctrset.lastread + cf_diag_interval > now) {
--		debug_sprintf_event(cf_diag_dbg, 5, "%s now %lld "
--				    " lastread %lld\n", __func__, now,
--				    cf_diag_ctrset.lastread);
--		rc = -EAGAIN;
--		goto out;
--	} else {
--		cf_diag_ctrset.lastread = now;
--	}
-+
- 	p.sets = cf_diag_ctrset.ctrset;
- 	cpumask_and(mask, &cf_diag_ctrset.mask, cpu_online_mask);
- 	on_each_cpu_mask(mask, cf_diag_cpu_read, &p, 1);
- 	rc = cf_diag_all_copy(arg, mask);
--out:
- 	free_cpumask_var(mask);
- 	debug_sprintf_event(cf_diag_dbg, 5, "%s rc %d\n", __func__, rc);
- 	return rc;
-diff --git a/arch/s390/kernel/time.c b/arch/s390/kernel/time.c
-index 06bcfa636638..165da961f901 100644
---- a/arch/s390/kernel/time.c
-+++ b/arch/s390/kernel/time.c
-@@ -68,10 +68,10 @@ EXPORT_SYMBOL(s390_epoch_delta_notifier);
- 
- unsigned char ptff_function_mask[16];
- 
--static unsigned long long lpar_offset;
--static unsigned long long initial_leap_seconds;
--static unsigned long long tod_steering_end;
--static long long tod_steering_delta;
-+static unsigned long lpar_offset;
-+static unsigned long initial_leap_seconds;
-+static unsigned long tod_steering_end;
-+static long tod_steering_delta;
- 
- /*
-  * Get time offsets with PTFF
-@@ -96,7 +96,7 @@ void __init time_early_init(void)
- 
- 	/* get initial leap seconds */
- 	if (ptff_query(PTFF_QUI) && ptff(&qui, sizeof(qui), PTFF_QUI) == 0)
--		initial_leap_seconds = (unsigned long long)
-+		initial_leap_seconds = (unsigned long)
- 			((long) qui.old_leap * 4096000000L);
- }
- 
-@@ -222,7 +222,7 @@ void __init read_persistent_wall_and_boot_offset(struct timespec64 *wall_time,
- 
- static u64 read_tod_clock(struct clocksource *cs)
- {
--	unsigned long long now, adj;
-+	unsigned long now, adj;
- 
- 	preempt_disable(); /* protect from changes to steering parameters */
- 	now = get_tod_clock();
-@@ -362,7 +362,7 @@ static inline int check_sync_clock(void)
-  * Apply clock delta to the global data structures.
-  * This is called once on the CPU that performed the clock sync.
-  */
--static void clock_sync_global(unsigned long long delta)
-+static void clock_sync_global(unsigned long delta)
- {
- 	unsigned long now, adj;
- 	struct ptff_qto qto;
-@@ -378,7 +378,7 @@ static void clock_sync_global(unsigned long long delta)
- 			-(adj >> 15) : (adj >> 15);
- 	tod_steering_delta += delta;
- 	if ((abs(tod_steering_delta) >> 48) != 0)
--		panic("TOD clock sync offset %lli is too large to drift\n",
-+		panic("TOD clock sync offset %li is too large to drift\n",
- 		      tod_steering_delta);
- 	tod_steering_end = now + (abs(tod_steering_delta) << 15);
- 	vdso_data->arch_data.tod_steering_end = tod_steering_end;
-@@ -394,7 +394,7 @@ static void clock_sync_global(unsigned long long delta)
-  * Apply clock delta to the per-CPU data structures of this CPU.
-  * This is called for each online CPU after the call to clock_sync_global.
-  */
--static void clock_sync_local(unsigned long long delta)
-+static void clock_sync_local(unsigned long delta)
- {
- 	/* Add the delta to the clock comparator. */
- 	if (S390_lowcore.clock_comparator != clock_comparator_max) {
-@@ -418,7 +418,7 @@ static void __init time_init_wq(void)
- struct clock_sync_data {
- 	atomic_t cpus;
- 	int in_sync;
--	unsigned long long clock_delta;
-+	unsigned long clock_delta;
- };
- 
- /*
-@@ -538,7 +538,7 @@ static int stpinfo_valid(void)
- static int stp_sync_clock(void *data)
- {
- 	struct clock_sync_data *sync = data;
--	unsigned long long clock_delta, flags;
-+	u64 clock_delta, flags;
- 	static int first;
- 	int rc;
- 
-@@ -720,8 +720,8 @@ static ssize_t ctn_id_show(struct device *dev,
- 
- 	mutex_lock(&stp_mutex);
- 	if (stpinfo_valid())
--		ret = sprintf(buf, "%016llx\n",
--			      *(unsigned long long *) stp_info.ctnid);
-+		ret = sprintf(buf, "%016lx\n",
-+			      *(unsigned long *) stp_info.ctnid);
- 	mutex_unlock(&stp_mutex);
- 	return ret;
- }
-@@ -794,7 +794,7 @@ static ssize_t leap_seconds_scheduled_show(struct device *dev,
- 	if (!stzi.lsoib.p)
- 		return sprintf(buf, "0,0\n");
- 
--	return sprintf(buf, "%llu,%d\n",
-+	return sprintf(buf, "%lu,%d\n",
- 		       tod_to_ns(stzi.lsoib.nlsout - TOD_UNIX_EPOCH) / NSEC_PER_SEC,
- 		       stzi.lsoib.nlso - stzi.lsoib.also);
- }
-diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
-index e7ce447651b9..bfcc327acc6b 100644
---- a/arch/s390/kernel/topology.c
-+++ b/arch/s390/kernel/topology.c
-@@ -76,8 +76,6 @@ static void cpu_group_map(cpumask_t *dst, struct mask_info *info, unsigned int c
- 			}
- 			info = info->next;
- 		}
--		if (cpumask_empty(&mask))
--			cpumask_copy(&mask, cpumask_of(cpu));
- 		break;
- 	case TOPOLOGY_MODE_PACKAGE:
- 		cpumask_copy(&mask, cpu_present_mask);
-diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
-index e3183bd05910..d548d60caed2 100644
---- a/arch/s390/kvm/interrupt.c
-+++ b/arch/s390/kvm/interrupt.c
-@@ -1287,7 +1287,7 @@ static u64 __calculate_sltime(struct kvm_vcpu *vcpu)
- 			/* already expired? */
- 			if (cputm >> 63)
- 				return 0;
--			return min(sltime, tod_to_ns(cputm));
-+			return min_t(u64, sltime, tod_to_ns(cputm));
- 		}
- 	} else if (cpu_timer_interrupts_enabled(vcpu)) {
- 		sltime = kvm_s390_get_cpu_timer(vcpu);
-diff --git a/drivers/s390/char/tty3270.c b/drivers/s390/char/tty3270.c
-index 15692449a1c3..307a80f85c07 100644
---- a/drivers/s390/char/tty3270.c
-+++ b/drivers/s390/char/tty3270.c
-@@ -424,8 +424,10 @@ tty3270_update(struct timer_list *t)
- 			 * last output position matches the start address
- 			 * of this line.
- 			 */
--			if (s->string[1] == sba[0] && s->string[2] == sba[1])
--				str += 3, len -= 3;
-+			if (s->string[1] == sba[0] && s->string[2] == sba[1]) {
-+				str += 3;
-+				len -= 3;
-+			}
- 			if (raw3270_request_add_data(wrq, str, len) != 0)
- 				break;
- 			list_del_init(&s->update);
-diff --git a/drivers/s390/char/zcore.c b/drivers/s390/char/zcore.c
-index 1515fdc3c1ab..bd3c724bf695 100644
---- a/drivers/s390/char/zcore.c
-+++ b/drivers/s390/char/zcore.c
-@@ -15,6 +15,7 @@
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/debugfs.h>
-+#include <linux/reboot.h>
- 
- #include <asm/asm-offsets.h>
- #include <asm/ipl.h>
-@@ -238,6 +239,28 @@ static int __init zcore_reipl_init(void)
- 	return 0;
- }
- 
-+static int zcore_reboot_and_on_panic_handler(struct notifier_block *self,
-+					     unsigned long	   event,
-+					     void		   *data)
-+{
-+	if (hsa_available)
-+		release_hsa();
-+
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block zcore_reboot_notifier = {
-+	.notifier_call	= zcore_reboot_and_on_panic_handler,
-+	/* we need to be notified before reipl and kdump */
-+	.priority	= INT_MAX,
-+};
-+
-+static struct notifier_block zcore_on_panic_notifier = {
-+	.notifier_call	= zcore_reboot_and_on_panic_handler,
-+	/* we need to be notified before reipl and kdump */
-+	.priority	= INT_MAX,
-+};
-+
- static int __init zcore_init(void)
- {
- 	unsigned char arch;
-@@ -293,28 +316,15 @@ static int __init zcore_init(void)
- 		goto fail;
- 
- 	zcore_dir = debugfs_create_dir("zcore" , NULL);
--	if (!zcore_dir) {
--		rc = -ENOMEM;
--		goto fail;
--	}
- 	zcore_reipl_file = debugfs_create_file("reipl", S_IRUSR, zcore_dir,
- 						NULL, &zcore_reipl_fops);
--	if (!zcore_reipl_file) {
--		rc = -ENOMEM;
--		goto fail_dir;
--	}
- 	zcore_hsa_file = debugfs_create_file("hsa", S_IRUSR|S_IWUSR, zcore_dir,
- 					     NULL, &zcore_hsa_fops);
--	if (!zcore_hsa_file) {
--		rc = -ENOMEM;
--		goto fail_reipl_file;
--	}
--	return 0;
- 
--fail_reipl_file:
--	debugfs_remove(zcore_reipl_file);
--fail_dir:
--	debugfs_remove(zcore_dir);
-+	register_reboot_notifier(&zcore_reboot_notifier);
-+	atomic_notifier_chain_register(&panic_notifier_list, &zcore_on_panic_notifier);
-+
-+	return 0;
- fail:
- 	diag308(DIAG308_REL_HSA, NULL);
- 	return rc;
-diff --git a/drivers/s390/cio/device_fsm.c b/drivers/s390/cio/device_fsm.c
-index 6420b197bb05..05e136cfb8be 100644
---- a/drivers/s390/cio/device_fsm.c
-+++ b/drivers/s390/cio/device_fsm.c
-@@ -47,7 +47,7 @@ static void ccw_timeout_log(struct ccw_device *cdev)
- 	orb = &private->orb;
- 	cc = stsch(sch->schid, &schib);
- 
--	printk(KERN_WARNING "cio: ccw device timeout occurred at %llx, "
-+	printk(KERN_WARNING "cio: ccw device timeout occurred at %lx, "
- 	       "device information:\n", get_tod_clock());
- 	printk(KERN_WARNING "cio: orb:\n");
- 	print_hex_dump(KERN_WARNING, "cio:  ", DUMP_PREFIX_NONE, 16, 1,
-diff --git a/drivers/s390/cio/vfio_ccw_ops.c b/drivers/s390/cio/vfio_ccw_ops.c
-index 68106be4ba7a..767ac41686fe 100644
---- a/drivers/s390/cio/vfio_ccw_ops.c
-+++ b/drivers/s390/cio/vfio_ccw_ops.c
-@@ -543,7 +543,7 @@ static ssize_t vfio_ccw_mdev_ioctl(struct mdev_device *mdev,
- 		if (ret)
- 			return ret;
- 
--		return copy_to_user((void __user *)arg, &info, minsz);
-+		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
- 	}
- 	case VFIO_DEVICE_GET_REGION_INFO:
- 	{
-@@ -561,7 +561,7 @@ static ssize_t vfio_ccw_mdev_ioctl(struct mdev_device *mdev,
- 		if (ret)
- 			return ret;
- 
--		return copy_to_user((void __user *)arg, &info, minsz);
-+		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
- 	}
- 	case VFIO_DEVICE_GET_IRQ_INFO:
- 	{
-@@ -582,7 +582,7 @@ static ssize_t vfio_ccw_mdev_ioctl(struct mdev_device *mdev,
- 		if (info.count == -1)
- 			return -EINVAL;
- 
--		return copy_to_user((void __user *)arg, &info, minsz);
-+		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
- 	}
- 	case VFIO_DEVICE_SET_IRQS:
- 	{
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 41fc2e4135fe..1ffdd411201c 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -1286,7 +1286,7 @@ static int vfio_ap_mdev_get_device_info(unsigned long arg)
- 	info.num_regions = 0;
- 	info.num_irqs = 0;
- 
--	return copy_to_user((void __user *)arg, &info, minsz);
-+	return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
- }
- 
- static ssize_t vfio_ap_mdev_ioctl(struct mdev_device *mdev,
-diff --git a/fs/Kconfig b/fs/Kconfig
-index 462253ae483a..a55bda4233bb 100644
---- a/fs/Kconfig
-+++ b/fs/Kconfig
-@@ -203,7 +203,7 @@ config TMPFS_XATTR
- 
- config TMPFS_INODE64
- 	bool "Use 64-bit ino_t by default in tmpfs"
--	depends on TMPFS && 64BIT && !(S390 || ALPHA)
-+	depends on TMPFS && 64BIT
- 	default n
- 	help
- 	  tmpfs has historically used only inode numbers as wide as an unsigned
+--5mCyUwZo2JvN/JJP--
