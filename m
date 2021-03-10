@@ -2,164 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7D633369E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 254C73336A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbhCJHtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:49:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
+        id S232334AbhCJHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:49:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhCJHsz (ORCPT
+        with ESMTP id S229900AbhCJHtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:48:55 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A71C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:48:55 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id mm21so36517715ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:48:54 -0800 (PST)
+        Wed, 10 Mar 2021 02:49:10 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8D3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:49:10 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id s21so1130664pjq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:49:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UYIAYFhn9jv5jndPR2ePIIH3j9f4IGqFq4xY6Rn35ck=;
-        b=braAeI90Nb4I9UfvR7erd8SSxj9A/vwLm6IcYkkdG1V8lsbJfUXqxxNVPxmc1o2zD5
-         USyRAFdzI2rzcYdxKTw36cbczuQyPUTpiyNmXacEQhRR/2f9JaBlI+w8quQrllcBespS
-         e1eb1VJDP0R0U0TweLlfRbY6WqtAnRfwOL0zM4vPGXuKY+u/C8ivpxjjsc0PMnc4QkxF
-         TgEK1Bg4dgHt6rGP/Z58bhy3XUGCU5HG56UTok8bezkvdLHj2xMFJ8NZxf9FX5bnFD4m
-         kEEdyNinARJBnWD5V9I+tMJAm1t/HgRpNZbNBglhRIwxapMl7FqUbUGscWgAjojWh3e3
-         h9+w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dvp9oDPr2aXVni5MslBiMmnlh8KTKKiXl9dnsNUki18=;
+        b=V+mqWr16/4vWsZyHYN1fCn36hZMUs1eoy5mu+n7cVfRgMrwBing3pjf+2OKSWOdKce
+         neZBRYgoOJzxSjJKcIm4Taj22pzyh1DqQ08Qy1g8GQ/R65JkIHVZo7AYdo9p6QV7v9Gf
+         COhIIZoghr+xBz6hc/2Fz59l6hYSFaQRxqZNQR4ELM471sLZBG73JUIxMuB0kPVq5pXY
+         +j8L+AzoTHL+vPxxx1lq8IYHjTWtENqRWoHlW72dbTyUgLMQxO9A3bZS2SGswnGB9D8w
+         NV1koxYkXzo7JLTrk6gAaXXGsSuEkuNCXR0+mfeVNeZzB+Zhi4DF47U388nv4lm+oztp
+         mkZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UYIAYFhn9jv5jndPR2ePIIH3j9f4IGqFq4xY6Rn35ck=;
-        b=l+GTejUBpU/HsmlSNAb8CMt5WlCTQftMb+MBrXgmRRA6LLny5ag88OKQh1AvcVG8aH
-         v0N3Y2fmT+bb3Ocu96q4ieWx+Oc9I5BcVZDGYbxeodH6h0kl94qewI6cMK03N/sd6+cT
-         tl0uKijYYNjIdyR32UM4D6K3Ao+SEG8sQkYZN92YGZVlvhYHHKHTT/PwB4lL8KwgteB1
-         AXYyomx41mOkyiap05KdH5DjbsOfJpF1U1Caw/YC1E3KG9VvZvlLIAsBVi14A/rax2/n
-         DbslSSJNcgGTitsGjpdub+6WPO/c308LxDDLw+UcZ3LSyhAnawTrlIoBshTINNxezEf/
-         OVtA==
-X-Gm-Message-State: AOAM530FXKKSttyV89YrNFIYLuJse5a2P93NLZESIqrjMDm+XhzB2Zw9
-        jl74K3N1H5MVuxgNsIAJJIe7sPEOgKW2DS7J8XJb2Q==
-X-Google-Smtp-Source: ABdhPJzWLk1+GHbweU/Gu0GuvGkG0Dsq0G+OcfGNZanks6CE76sr07/IWmGLcJAyOtypC8yEDdCjY5TeBojPrD04G2o=
-X-Received: by 2002:a17:906:229b:: with SMTP id p27mr2327796eja.287.1615362533619;
- Tue, 09 Mar 2021 23:48:53 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dvp9oDPr2aXVni5MslBiMmnlh8KTKKiXl9dnsNUki18=;
+        b=EUV3dydub0fX2SZesZUKJnZMdPGAVfR187Pxtt8hNvDk1F1UxwFI3MBIGnhkCWRyuT
+         AsqMjmWJssC84KlKB6IEetWkYt+k/N10qRfMc1Vv+zvnM9UH5sFLjGqmeklS7Se2aciO
+         KeINg/8gvgZG8VFsB3f4STmnfbf5sDeRgQ5DJbEzaqcaPjiCcH73BNDGsSPVpIeblcso
+         aNvacYp6nVt2uAAwO6baI+s93FYBjI2npw+XYsRza4hSunZLd7jGvD6Qkh2AU24R7e2Z
+         +S/AJODxPD0DTlCnxOV60H93PAnfXQtWH0VG/S+dUs+dkbc+8gu39q/Fp9fRS8cCMEGC
+         yy3w==
+X-Gm-Message-State: AOAM532RRgEwtqknoS4GEtTh3qwzL2+9Gupw+G+6iGacNwlhZm8TCRW9
+        Hy1kWbIsnxAhtV7BdlEwKjlR1GoZJ2Qc5Q==
+X-Google-Smtp-Source: ABdhPJw5B+fajZx6ce6Uu+mavC/f6ZDkzsl39TQr9VMq2qQs/eNdN8mGUzpc1J6/uTjW5Bphk/i5hg==
+X-Received: by 2002:a17:90a:634a:: with SMTP id v10mr2249733pjs.109.1615362550093;
+        Tue, 09 Mar 2021 23:49:10 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id q11sm883591pfh.132.2021.03.09.23.49.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Mar 2021 23:49:09 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     shuo.a.liu@intel.com, yejune.deng@gmail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH] virt: acrn: Use EPOLLIN instead of POLLIN
+Date:   Wed, 10 Mar 2021 15:49:01 +0800
+Message-Id: <20210310074901.7486-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210218230633.15028-1-peterx@redhat.com> <20210218231202.15426-1-peterx@redhat.com>
-In-Reply-To: <20210218231202.15426-1-peterx@redhat.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 10 Mar 2021 13:18:42 +0530
-Message-ID: <CA+G9fYvyQ=9cZgGDNzN_PH09WRk0yu=5CDfa1mxPQ+uzfonnkg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] hugetlb/userfaultfd: Forbid huge pmd sharing when
- uffd enabled
-To:     Peter Xu <peterx@redhat.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+This fixes the following sparse warning:
+"sparse warnings: (new ones prefixed by >>)"
+>> drivers/virt/acrn/irqfd.c:163:13: sparse: sparse: restricted __poll_t
+ degrades to integer
 
-On Fri, 19 Feb 2021 at 04:43, Peter Xu <peterx@redhat.com> wrote:
->
-> Huge pmd sharing could bring problem to userfaultfd.  The thing is that
-> userfaultfd is running its logic based on the special bits on page table
-> entries, however the huge pmd sharing could potentially share page table
-> entries for different address ranges.  That could cause issues on either:
->
->   - When sharing huge pmd page tables for an uffd write protected range, the
->     newly mapped huge pmd range will also be write protected unexpectedly, or,
->
->   - When we try to write protect a range of huge pmd shared range, we'll first
->     do huge_pmd_unshare() in hugetlb_change_protection(), however that also
->     means the UFFDIO_WRITEPROTECT could be silently skipped for the shared
->     region, which could lead to data loss.
->
-> Since at it, a few other things are done altogether:
->
->   - Move want_pmd_share() from mm/hugetlb.c into linux/hugetlb.h, because
->     that's definitely something that arch code would like to use too
->
->   - ARM64 currently directly check against CONFIG_ARCH_WANT_HUGE_PMD_SHARE when
->     trying to share huge pmd.  Switch to the want_pmd_share() helper.
->
-> Since at it, move vma_shareable() from huge_pmd_share() into want_pmd_share().
->
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  arch/arm64/mm/hugetlbpage.c   |  3 +--
->  include/linux/hugetlb.h       |  2 ++
->  include/linux/userfaultfd_k.h |  9 +++++++++
->  mm/hugetlb.c                  | 20 ++++++++++++++------
->  4 files changed, 26 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-> index 6e3bcffe2837..58987a98e179 100644
-> --- a/arch/arm64/mm/hugetlbpage.c
-> +++ b/arch/arm64/mm/hugetlbpage.c
-> @@ -284,8 +284,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
->                  */
->                 ptep = pte_alloc_map(mm, pmdp, addr);
->         } else if (sz == PMD_SIZE) {
-> -               if (IS_ENABLED(CONFIG_ARCH_WANT_HUGE_PMD_SHARE) &&
-> -                   pud_none(READ_ONCE(*pudp)))
-> +               if (want_pmd_share(vma, addr) && pud_none(READ_ONCE(*pudp)))
+Fixes: 803c1aadecdb("virt: acrn: Use vfs_poll() instead of f_op->poll()")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ drivers/virt/acrn/irqfd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-While building Linux next 20210310 tag for arm64 architecture with
-
-  - CONFIG_ARM64_64K_PAGES=y
-
-enabled the build failed due to below errors / warnings
-
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
-'HOSTCC=sccache gcc'
-aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
-aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
-aarch64-linux-gnu-ld: arch/arm64/mm/hugetlbpage.o: in function `huge_pte_alloc':
-hugetlbpage.c:(.text+0x7d8): undefined reference to `want_pmd_share'
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-Steps to reproduce:
-----------------------------
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-
-tuxmake --runtime podman --target-arch arm64 --toolchain gcc-9
---kconfig defconfig --kconfig-add
-https://builds.tuxbuild.com/1pYCSoc1oGtPWlPgLAJxbHx07kL/config
-
-Build link,
-https://builds.tuxbuild.com/1pYCSoc1oGtPWlPgLAJxbHx07kL/
-
-
+diff --git a/drivers/virt/acrn/irqfd.c b/drivers/virt/acrn/irqfd.c
+index 98d6e9b18f9e..df5184979b28 100644
+--- a/drivers/virt/acrn/irqfd.c
++++ b/drivers/virt/acrn/irqfd.c
+@@ -160,7 +160,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
+ 	/* Check the pending event in this stage */
+ 	events = vfs_poll(f.file, &irqfd->pt);
+ 
+-	if (events & POLLIN)
++	if (events & EPOLLIN)
+ 		acrn_irqfd_inject(irqfd);
+ 
+ 	fdput(f);
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.29.0
+
