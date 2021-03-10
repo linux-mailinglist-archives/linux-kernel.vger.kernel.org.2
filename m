@@ -2,213 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87727333495
+	by mail.lfdr.de (Postfix) with ESMTP id D2EAF333496
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 05:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhCJEya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 23:54:30 -0500
-Received: from mx4.veeam.com ([104.41.138.86]:33674 "EHLO mx4.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229485AbhCJEx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 23:53:57 -0500
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id 258C58A78F;
-        Wed, 10 Mar 2021 07:53:23 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1615352003; bh=2S21cNEoC4DbfsoORby8T13WajgTXFAjKBIA+uaX2aE=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=QtWonQjbibxg7PZTL6pPo2iQzhB1y6WPs9Kj91BVqNOzkatCN2LXOOaycR+prKhxH
-         aOicCeOvms9IaolW3eJyHnM9LuGO+03WfHCn6tYLD19DuhrJoPkDHrH64QhQmjvWao
-         EGrjxZMSZgwO6R9Vx2tzmpfQi6OGjX9XxjIc7dJ4=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Wed, 10 Mar 2021
- 05:53:20 +0100
-Date:   Wed, 10 Mar 2021 07:53:13 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     "snitzer@redhat.com" <snitzer@redhat.com>,
-        "agk@redhat.com" <agk@redhat.com>, "hare@suse.de" <hare@suse.de>,
-        "song@kernel.org" <song@kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>
-Subject: Re: [PATCH v6 2/4] block: add blk_interposer
-Message-ID: <20210310045313.GA26929@veeam.com>
-References: <1614774618-22410-1-git-send-email-sergei.shtepa@veeam.com>
- <1614774618-22410-3-git-send-email-sergei.shtepa@veeam.com>
- <20210309172717.GB201344@infradead.org>
+        id S232373AbhCJEyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 23:54:39 -0500
+Received: from mail-ed1-f51.google.com ([209.85.208.51]:32952 "EHLO
+        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230346AbhCJEyS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 23:54:18 -0500
+Received: by mail-ed1-f51.google.com with SMTP id x9so25573976edd.0;
+        Tue, 09 Mar 2021 20:54:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UR9GHogTuwPfg1420rnBVKlRPMMG6gjYMkZ67S2OdAw=;
+        b=b2rlao6BajEqKnmXf6ySIHEGpHetzcR00i6jLVwqC9RmJz02HkqLJY2h1whFCnuXNR
+         lLyfwsUB6ioWqNTUi0nORSmhTlYfF/Z4LFT433edEXK4FOlOu1PdNNVHQHPMT1WLHtyz
+         oRSSzBER6TZ1++AulAhDjzRoAvtKVYVAsqG6VnjWr26V7gCgEeCHu2nTxKC39Oaukd4r
+         sepR3l1mgI2FyRLnGODcoo9bggBPl5QOC7XdxG7bAGtArjdTcpdTEYggOlbPxir9r/Me
+         UCxLEYB8w6rjULvYUKLvcQMjSluICUD8lcOHr68eg35AMINBGr2dYvt9wSZdwUqYhSGg
+         J+Pw==
+X-Gm-Message-State: AOAM533kj9YeJBypqZ8LZcowhpTmh7MKbv0NS9JRLM43udfEGuauksey
+        uHAGVHRenypm4msPs6Eih2AXCVNLJ9k=
+X-Google-Smtp-Source: ABdhPJxCh6TyyGmaFur42C7mRiPhg6HA/f6AOfNXSKl4jCb3a61y0OMyfuLUh82WqDpOleJwyiGYMg==
+X-Received: by 2002:aa7:d2d5:: with SMTP id k21mr1131656edr.216.1615352056675;
+        Tue, 09 Mar 2021 20:54:16 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id v11sm10016760eds.14.2021.03.09.20.54.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 20:54:15 -0800 (PST)
+Subject: Re: [PATCH] kbuild: dummy-tools: adjust to scripts/cc-version.sh
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Philipp Rudo <prudo@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+References: <20210309162545.637647-1-masahiroy@kernel.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <87f93105-926a-d81b-3226-c5147870d62a@kernel.org>
+Date:   Wed, 10 Mar 2021 05:54:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20210309172717.GB201344@infradead.org>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29D2A50B58627664
-X-Veeam-MMEX: True
+In-Reply-To: <20210309162545.637647-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you, Christoph, for the review.
-I will correct all except two points.
+On 09. 03. 21, 17:25, Masahiro Yamada wrote:
+> Commit aec6c60a01d3 ("kbuild: check the minimum compiler version in
+> Kconfig") changed how the script detects the compiler version.
+> 
+> Get 'make CROSS_COMPILE=scripts/dummy-tools/' back working again.
+> 
+> Fixes: aec6c60a01d3 ("kbuild: check the minimum compiler version in Kconfig")
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+> Perhaps, Jiri may have already noticed this issue, and have a similar patch.
+> I just checked ML, but I did not find a patch to fix this.
 
-The 03/09/2021 20:27, Christoph Hellwig wrote:
-> > +static blk_qc_t __submit_bio_interposed(struct bio *bio)
-> > +{
-> > +	struct bio_list bio_list[2] = { };
-> > +	blk_qc_t ret = BLK_QC_T_NONE;
-> > +
-> > +	current->bio_list = bio_list;
-> > +	if (likely(bio_queue_enter(bio) == 0)) {
-> > +		struct block_device *bdev = bio->bi_bdev;
-> > +
-> > +		if (likely(bdev_has_interposer(bdev))) {
-> > +			bio_set_flag(bio, BIO_INTERPOSED);
-> > +			bdev->bd_interposer->ip_submit_bio(bio);
-> > +		} else {
-> > +			/* interposer was removed */
-> > +			bio_list_add(&current->bio_list[0], bio);
-> > +		}
-> > +
-> > +		blk_queue_exit(bdev->bd_disk->queue);
-> > +	}
-> > +	current->bio_list = NULL;
-> > +
-> > +	/* Resubmit remaining bios */
-> > +	while ((bio = bio_list_pop(&bio_list[0])))
-> > +		ret = submit_bio_noacct(bio);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >  /**
-> >   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
-> >   * @bio:  The bio describing the location in memory and on the device.
-> > @@ -1043,6 +1071,14 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
-> >  		return BLK_QC_T_NONE;
-> >  	}
-> >  
-> > +	/*
-> > +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
-> > +	 * created by the bdev_interposer do not get to it for processing.
-> > +	 */
-> > +	if (bdev_has_interposer(bio->bi_bdev) &&
-> > +	    !bio_flagged(bio, BIO_INTERPOSED))
-> > +		return __submit_bio_interposed(bio);
-> > +
-> >  	if (!bio->bi_bdev->bd_disk->fops->submit_bio)
-> >  		return __submit_bio_noacct_mq(bio);
-> >  	return __submit_bio_noacct(bio);
-> > diff --git a/block/genhd.c b/block/genhd.c
-> > index fcc530164b5a..1ae8516643c8 100644
-> > --- a/block/genhd.c
-> > +++ b/block/genhd.c
-> > @@ -30,6 +30,11 @@
-> >  static struct kobject *block_depr;
-> >  
-> >  DECLARE_RWSEM(bdev_lookup_sem);
-> > +/*
-> > + * Prevents different block-layer interposers from attaching or detaching
-> > + * to the block device at the same time.
-> > + */
-> > +DEFINE_MUTEX(bdev_interposer_attach_lock);
-> 
-> This one can and should be marked static.
-> 
-> > +int bdev_interposer_attach(struct block_device *bdev, struct bdev_interposer *interposer,
-> 
-> Please avoid the overly long line.
-> 
-> > +	int ret = 0;
-> > +
-> > +	if (WARN_ON(!interposer))
-> 
-> WARN_ON_ONCE?
+No, as I was making it work on 5.11 :).
 
-This function should be called quite rarely, and the absence of the interposer
-parameter indicates that the function is being used incorrectly.
-I would like to see this warning every time.
+BTW there is one remaining issue I came across:
+config PAHOLE_HAS_SPLIT_BTF
+         def_bool $(success, test `$(PAHOLE) --version | sed -E 
+'s/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
 
-> 
-> > +		return -EINVAL;
-> > +
-> > +	if (!blk_mq_is_queue_frozen(bdev->bd_disk->queue))
-> > +		return -EPERM;
-> 
-> This probly should be a WARN_ON_ONCE() as well.
+and in Makefile we see:
+PAHOLE          = pahole
 
-I think it's better to apply WARN_ON here.
+and not something like:
+PAHOLE          = $(CROSS_COMPILE)pahole
 
-> 
-> > +
-> > +	mutex_lock(&bdev_interposer_attach_lock);
-> > +	if (bdev_has_interposer(bdev)) {
-> > +		if (bdev->bd_interposer->ip_submit_bio == ip_submit_bio)
-> > +			ret = -EALREADY;
-> > +		else
-> > +			ret = -EBUSY;
-> > +		goto out;
-> > +	}
-> 
-> Do we really need the two different error codes here?
+Any idea how to fix this?
 
-I think I need it. If we try to initialize the interposer again, the reason
-for this error is most likely in the logic of the module itself.
-If the interposer is occupied by someone else, then we need to let know
-about it.
+>   scripts/dummy-tools/gcc | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
+> index 7b10332b23ba..39e65fee59bd 100755
+> --- a/scripts/dummy-tools/gcc
+> +++ b/scripts/dummy-tools/gcc
+> @@ -57,9 +57,9 @@ if arg_contain --version "$@"; then
+>   fi
+>   
+>   if arg_contain -E "$@"; then
+> -	# For scripts/gcc-version.sh; This emulates GCC 20.0.0
+> +	# For scripts/cc-version.sh; This emulates GCC 20.0.0
+>   	if arg_contain - "$@"; then
+> -		sed 's/^__GNUC__$/20/; s/^__GNUC_MINOR__$/0/; s/^__GNUC_PATCHLEVEL__$/0/'
+> +		sed -n '/^GCC/{s/__GNUC__/20/; s/__GNUC_MINOR__/0/; s/__GNUC_PATCHLEVEL__/0/; p;}'
+>   		exit 0
+>   	else
+>   		echo "no input files" >&2
+> 
 
-> 
-> > +
-> > +	interposer->ip_submit_bio = ip_submit_bio;
-> 
-> I'd rather let the caller initialize the field instead of passing the
-> submit function separately.
-
-Yes, I think so. This will allow to keep only one parameter of the function.
-
-> 
-> > +void bdev_interposer_detach(struct bdev_interposer *interposer,
-> > +			  const ip_submit_bio_t ip_submit_bio)
-> > +{
-> 
-> > +	/* Check if it is really our interposer. */
-> > +	if (WARN_ON(bdev->bd_interposer->ip_submit_bio != ip_submit_bio))
-> > +		goto out;
-> 
-> I don't really see any need to pass ip_submit_bio just for this check.
-> 
-> > +	struct bdev_interposer * bd_interposer;
-> 
-> The * goes just before the member name.
-> 
-> > +/*
-> > + * block layer interposers structure and functions
-> > + */
-> > +typedef void (*ip_submit_bio_t) (struct bio *bio);
-> > +
-> > +struct bdev_interposer {
-> > +	ip_submit_bio_t ip_submit_bio;
-> > +	struct block_device *bdev;
-> 
-> Do we need the ip_ prefix here?  Also we probably don't really the
-> the typedef for the function pointer.
-
-Ok. Maybe submit_bio_hook would be better? or submit_bio_interposer.
-
-> 
-> > +#define bdev_has_interposer(bd) ((bd)->bd_interposer != NULL)
-> 
-> And inline function would be nice here.
 
 -- 
-Sergei Shtepa
-Veeam Software developer.
+js
+suse labs
