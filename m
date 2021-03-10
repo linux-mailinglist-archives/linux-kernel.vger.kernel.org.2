@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B25333895
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C21DE333898
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhCJJUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:20:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
+        id S231596AbhCJJVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhCJJTu (ORCPT
+        with ESMTP id S231366AbhCJJUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:19:50 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C99C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:19:49 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id b18so22438183wrn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:19:49 -0800 (PST)
+        Wed, 10 Mar 2021 04:20:50 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38A7C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:20:49 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id u187so6608773wmg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:20:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=PVNedkkKpVAOBXR/t2ZWvouM0Cb8Zr2NJii8w5ZgcAU=;
-        b=UzmDnBAls30cfQT5WfUg1iPN9L3ygNyjCvIWPVld0GcncMGPWUStycG81yJei7yxei
-         1Iv4sgzXPZgI3ha7Jm1pTiTm/S7CCJg2VAG6dT8FEAr6QWmI/UKCYefKWVm3zQjd7qqa
-         bC/PyPhxwOPUg/7pSG4juhmopB0ACDxgW74h1jHAEqDD8EO5dlth3aLAq/m+Rkyjpc3P
-         KvdJMNNX1Mid9wJJntwKUt9Src+3+cnwGuPZA8yr+cZl2W5YzzH7dPxViz0FOrPG6VEg
-         KEmj/r8TRJsEmB+5LISDoPjFlD9HrOHDTKXkgZyZwbY67EO+UaCy11XjEYVUBrcs8YtW
-         tBDA==
+        bh=tWe8BBy/Grpe76XE/g2ZHEzNebNipo5s14kvH6ji3n0=;
+        b=iV29gzW2+PaN/fUAydh0RYmuW30QVJz/q90S6gWPpH5P5qO00IgO8T/PoJOy0EvGwX
+         pkHuy98buZUaQNtY8VNR/tiNYnAtTwIrr9OZ03GFAVsRHmWMZB5RLIi0boIO6Yjr8tvg
+         P42xZE+BAhEXddAXcEhpgBh6+obyq3Obe7Nq/okXmoYuCfThyKKghGV1YjWfMD9KcEU+
+         B6JwCP/t7Fz/mgWT6t0F7WqcVP4A2DOr0lyVMpe7HsQPBfs6mEEYDI7ypHblHrpsZRDC
+         /YkejYbGKKG4tB5LKwwGbqGdJkWj1/uEXkn+c2snehxlQNiz1dQQEPvgpo2RUfAG1+MO
+         m5Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=PVNedkkKpVAOBXR/t2ZWvouM0Cb8Zr2NJii8w5ZgcAU=;
-        b=sNPKCzsmXYX/n24GNHW6ueE6s/3LQUCy3rqNEslC4H8tUaXGatZz9ohk2RAzrv3Qtf
-         6fg7Zi9nUiiMSKzYZreTkiC/RPirGkf3SjuV52sP5YsgMaPfehKLnyUsLcRN01TqLGyP
-         ZdeyhxEliyRF7fBSLox1HTjBAN+smJE+znwZS1RKFjCyQKwetDTCfETHn4K/ZjlwXBxo
-         /t2D/ly5I5RmojbZfw+0hteTf82UdQ80Rq4cracBKrh9a73RwxfNzQW/eULqETkBhwB6
-         gwPKmWTcSzT47/FbPy8I3qoXnjgDfTk84kNJE2xlwjxxj0rC0UprGeCh/if3feDuIMqF
-         QSPQ==
-X-Gm-Message-State: AOAM531PxXpTj3pEfHtfGtHiADDOzz0bQ75B2Xg/0ErdRlo/ZQCvqP7X
-        bEvyQm7Jz0zsB7KeDb4XMx/fsA==
-X-Google-Smtp-Source: ABdhPJwnTSFH8BtGwZ4GUIiCoCXMFPk2GaVWRtNv48CNMh9SrRGH3ogUtG7IrKoFBMfhnrIeryClxA==
-X-Received: by 2002:a5d:4708:: with SMTP id y8mr2555075wrq.382.1615367988336;
-        Wed, 10 Mar 2021 01:19:48 -0800 (PST)
+        bh=tWe8BBy/Grpe76XE/g2ZHEzNebNipo5s14kvH6ji3n0=;
+        b=KvgbbgZNE+TrEjXEsAPzyJ9lgEjm8A8NW26sq7Cp9s0Cg6hX9g1KKMnRza9WxTkF2b
+         UqL8PHvRLPUU0m5TXEaB1JPJUNY7w2cgfiaKb24+0bRaYQAdNLECUUalDhzeAIfugiYm
+         3wBhiBsNTFjGE3lssUzpSshKGR+/K/zOyoneGE5RYiTEnkZAvQFBoeYEH2OfpKX15FBC
+         vQNbHEpDRtUKC4/Qbet0sxjHuusCYsiFR65YS12z70HzZP6SB9ww0e/X4h8KNn9Vbhqp
+         t3ymcOanWa4YLk06/6P+zzDoELrOMcSRx7aTKj+gstnKoMbhi2/yYVmvdR/53cRngqiv
+         2T4g==
+X-Gm-Message-State: AOAM531CvabhQZm1qgzVzupq5ohtrMoXl+NUQfPW8G4Vpzbc5tfIDE0y
+        w3fi3+EECob6f9jz0WA8v+IClvnInTwQsA==
+X-Google-Smtp-Source: ABdhPJyEitYe1kT60YMC2lFQpM7Na/RhDsTp4v/CvInEUBG8HKN4rdsdgmFXdibppd+8oGfzFmfXSw==
+X-Received: by 2002:a7b:cf2f:: with SMTP id m15mr2297330wmg.177.1615368048614;
+        Wed, 10 Mar 2021 01:20:48 -0800 (PST)
 Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id o14sm26829893wri.48.2021.03.10.01.19.47
+        by smtp.gmail.com with ESMTPSA id x13sm28108821wrt.75.2021.03.10.01.20.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 01:19:47 -0800 (PST)
-Date:   Wed, 10 Mar 2021 09:19:46 +0000
+        Wed, 10 Mar 2021 01:20:48 -0800 (PST)
+Date:   Wed, 10 Mar 2021 09:20:46 +0000
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     linux-kernel@vger.kernel.org, trix@redhat.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH v3 4/4] MAINTAINERS: Add entry for Intel MAX 10 mfd driver
-Message-ID: <20210310091946.GM4931@dell>
-References: <1614578385-26955-1-git-send-email-yilun.xu@intel.com>
- <1614578385-26955-5-git-send-email-yilun.xu@intel.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Keerthy <j-keerthy@ti.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: mfd: lp875xx: add optional reset GPIO
+Message-ID: <20210310092046.GN4931@dell>
+References: <20210226142852.19632-1-luca@lucaceresoli.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1614578385-26955-5-git-send-email-yilun.xu@intel.com>
+In-Reply-To: <20210226142852.19632-1-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Mar 2021, Xu Yilun wrote:
+On Fri, 26 Feb 2021, Luca Ceresoli wrote:
 
-> This patch adds maintainer info for Intel MAX 10 mfd driver.
+> Document the LP8756x-Q1 and LP87524-Q1 ICs reset pin.
 > 
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 > ---
-> v3: Add Tom Rix as the reviewer.
-> ---
->  MAINTAINERS | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  Documentation/devicetree/bindings/mfd/ti,lp87524-q1.yaml | 4 ++++
+>  Documentation/devicetree/bindings/mfd/ti,lp87561-q1.yaml | 4 ++++
+>  Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml | 4 ++++
+>  3 files changed, 12 insertions(+)
 
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+Applied, thanks.
 
 -- 
 Lee Jones [李琼斯]
