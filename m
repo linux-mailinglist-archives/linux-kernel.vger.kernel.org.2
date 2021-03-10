@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9290933492C
+	by mail.lfdr.de (Postfix) with ESMTP id 4273A33492B
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhCJUxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:53:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59726 "EHLO mail.kernel.org"
+        id S231786AbhCJUxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:53:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231221AbhCJUw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:52:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E7B964FB3;
-        Wed, 10 Mar 2021 20:52:55 +0000 (UTC)
+        id S230215AbhCJUwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:52:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7558E64FCA;
+        Wed, 10 Mar 2021 20:52:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615409576;
-        bh=2SjCojOETFkG2rRUWVAB+4whVS5cbqkAr+vD1KHLtY8=;
+        s=k20201202; t=1615409574;
+        bh=9TLZ3UuLAek2YDKYxVEVIbMal/1XxdYrNY1x5nvkKsc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FrXzjSJqhtObCZdEbsFAu+HSscqH018XZzGlzd4yvwAbnR9tQL3iFTp4mORcH6fGn
-         4l74DMWh6abn4Na4pNViBxW1jlqjPNLB515Eqxl5ufev1BPnLJF+oSzsNxzHKGNfkY
-         KlFJXzUKn/lyiQiRG6ECaA+LrRyBG64EUfhakEVu1YsU/bW4BUKIwtaicchXZe4dxi
-         Et74zNzYJmG3IZZrXxcAaPH4/kb6bWciwzVqzvrkCz+wmPl0cSna6+FUmGbC8FHr4V
-         GF8GKOvdi/PTfbiC7Mai8tCrqrwuRF8ewemTviw19GiG5g831LWWftzmmnUxEqEGIn
-         HzPfJUPahGXqQ==
-Date:   Wed, 10 Mar 2021 13:52:50 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: -Walign-mismatch in block/blk-mq.c
-Message-ID: <20210310205250.hpe4wcgn4yh3rjqz@archlinux-ax161>
-References: <20210310182307.zzcbi5w5jrmveld4@archlinux-ax161>
- <99cf90ea-81c0-e110-4815-dd1f7df36cb4@kernel.dk>
- <20210310203323.35w2q7tlnxe23ukg@Ryzen-9-3900X.localdomain>
- <e43dba61-8c74-757d-862d-99d23559cf50@kernel.dk>
+        b=hsBjUCehd8Lp0wCHjHa8PVi+JxUY0YTRjVLdeHdCXYM2KGpuLz0YvFVKDHOS/Aj9m
+         FAZzhvF1sNE2hsY7P6S1zEDVb8x8qfAgprKC90t/RzJZf6Pf6xOHr4E9xM871zYYOj
+         Kb+4HbX6ck43X1CM10LbhT7gmkQgzagHt/OOyqgiVD0K/XwBC1CYC7/+1SjEqlzRa+
+         bJ7dvyyxYjQvxMKDAOktKukE8WN9d7BKU6hUgc/oIlDFs2b2uJyADP1If61deD6mnM
+         ipBVoVDiMoScOs8Gd2ZColy3UTX3mTE1Oq/d7HGUoJ/Gvm01XE9fAlZoVK/PSj6ec4
+         wIjEyRfF3QE1g==
+Date:   Wed, 10 Mar 2021 12:52:52 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v4] f2fs: compress: add compress_inode to
+ cache compressed blockst
+Message-ID: <YEkxpAp8FQjRUfm6@google.com>
+References: <20210202080056.51658-1-yuchao0@huawei.com>
+ <46e9924c-0086-cd2a-2e93-7149b92ba27e@huawei.com>
+ <YDsleDjeIcpuBXKA@google.com>
+ <YEFBAuP26t0RzVHZ@google.com>
+ <01a0ff76-6fa7-3196-8760-e7f6f163ef64@huawei.com>
+ <YEa66ekikyuPWSyd@google.com>
+ <a40929d4-a8de-98ea-8dd8-6c807d8a6adc@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e43dba61-8c74-757d-862d-99d23559cf50@kernel.dk>
+In-Reply-To: <a40929d4-a8de-98ea-8dd8-6c807d8a6adc@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 01:40:25PM -0700, Jens Axboe wrote:
-> On 3/10/21 1:33 PM, Nathan Chancellor wrote:
-> > On Wed, Mar 10, 2021 at 01:21:52PM -0700, Jens Axboe wrote:
-> >> On 3/10/21 11:23 AM, Nathan Chancellor wrote:
-> >>> Hi Jens,
-> >>>
-> >>> There is a new clang warning added in the development branch,
-> >>> -Walign-mismatch, which shows an instance in block/blk-mq.c:
-> >>>
-> >>> block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to
-> >>> 32-byte aligned parameter 2 of 'smp_call_function_single_async' may
-> >>> result in an unaligned pointer access [-Walign-mismatch]
-> >>>                 smp_call_function_single_async(cpu, &rq->csd);
-> >>>                                                     ^
-> >>> 1 warning generated.
-> >>>
-> >>> There appears to be some history here as I can see that this member was
-> >>> purposefully unaligned in commit 4ccafe032005 ("block: unalign
-> >>> call_single_data in struct request"). However, I later see a change in
-> >>> commit 7c3fb70f0341 ("block: rearrange a few request fields for better
-> >>> cache layout") that seems somewhat related. Is it possible to get back
-> >>> the alignment by rearranging the structure again? This seems to be the
-> >>> only solution for the warning aside from just outright disabling it,
-> >>> which would be a shame since it seems like it could be useful for
-> >>> architectures that cannot handle unaligned accesses well, unless I am
-> >>> missing something obvious :)
-> >>
-> >> It should not be hard to ensure that alignment without re-introducing
-> >> the bloat. Is there some background on why 32-byte alignment is
-> >> required?
-> >>
+On 03/09, Chao Yu wrote:
+> On 2021/3/9 8:01, Jaegeuk Kim wrote:
+> > On 03/05, Chao Yu wrote:
+> > > On 2021/3/5 4:20, Jaegeuk Kim wrote:
+> > > > On 02/27, Jaegeuk Kim wrote:
+> > > > > On 02/04, Chao Yu wrote:
+> > > > > > Jaegeuk,
+> > > > > > 
+> > > > > > On 2021/2/2 16:00, Chao Yu wrote:
+> > > > > > > -	for (i = 0; i < dic->nr_cpages; i++) {
+> > > > > > > +	for (i = 0; i < cc->nr_cpages; i++) {
+> > > > > > >     		struct page *page = dic->cpages[i];
+> > > > > > 
+> > > > > > por_fsstress still hang in this line?
+> > > > > 
+> > > > > I'm stuck on testing the patches, since the latest kernel is panicking somehow.
+> > > > > Let me update later, once I can test a bit. :(
+> > > > 
+> > > > It seems this works without error.
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=4e6e1364dccba80ed44925870b97fbcf989b96c9
+> > > 
+> > > Ah, good news.
+> > > 
+> > > Thanks for helping to test the patch. :)
 > > 
-> > This alignment requirement was introduced in commit 966a967116e6 ("smp:
-> > Avoid using two cache lines for struct call_single_data") and it looks
-> > like there was a thread between you and Peter Zijlstra that has some
-> > more information on this:
-> > https://lore.kernel.org/r/a9beb452-7344-9e2d-fc80-094d8f5a0394@kernel.dk/
+> > Hmm, I hit this again. Let me check w/o compress_cache back. :(
 > 
-> Ah now I remember - so it's not that it _needs_ to be 32-byte aligned,
-> it's just a handy way to ensure that it doesn't straddle two cachelines.
-> In fact, there's no real alignment concern, outside of performance
-> reasons we don't want it touching two cachelines.
-> 
-> So... what exactly is your concern? Just silencing that warning? Because
+> Oops :(
 
-Yes, dealing with the warning in some way is my only motivation. My
-apologies, I should have led with that. I had assumed that this would
-potentially be an issue due to the warning's text and that rearranging
-the structure might allow the alignment to be added back but if there is
-not actually a problem, then the warning should be silenced in some way.
-
-I am not sure if there is a preferred way to silence it (CFLAGS_... or
-some of the __diag() infrastructure in include/linux/compiler_types.h).
-
-> there doesn't seem to be an issue with just having it wherever in struct
-> request.
-> 
-
-Cheers,
-Nathan
+Ok, apprantely that panic is caused by compress_cache. The test is running over
+24hours w/o it.
