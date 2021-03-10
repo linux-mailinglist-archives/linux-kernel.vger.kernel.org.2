@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EDF333B83
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2EE333B8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhCJLem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:34:42 -0500
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:52390 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhCJLeQ (ORCPT
+        id S231203AbhCJLhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:37:18 -0500
+Received: from lucky1.263xmail.com ([211.157.147.131]:60356 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231858AbhCJLgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:34:16 -0500
-Received: by mail-wm1-f48.google.com with SMTP id n22so6895307wmc.2;
-        Wed, 10 Mar 2021 03:34:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7J7s2ULlckxPGV45ObvNHeMFlnciPOBmL4sFeKxQRrY=;
-        b=f+hF+pFH0HAizt2JQ2xgYBt5+SCWy5rWFtjiPaAHluZDlhNTVAFfW3YyvrG8WtjjkE
-         gzybpQUkYL9piVr/2mU8hhKJfTZitAxv6ju4K+sFKPUm80F90AocMyXQVBJl//tG9rjA
-         JGwrnkuE7P9ZEQJHQ3koboVUHoezYIlEl8gsjKo4Gm3vZ+8R3fEGWDCxvFZZiL8xRu3E
-         JppUwYvQCEhXuqFpAKeIbupK7tFUySZgLLJV1uKiQTJj9etpe0kDz4VUHLu4o3GtwaeG
-         Rg3rfIYd5sZxtIYtCdV19hBiCEZJPJoIFClAfNsT5AWndbShOEnZtRaVblkDoLRnGKYn
-         832w==
-X-Gm-Message-State: AOAM530ywGmQCXDobx4UaQCGDsEFT/pGvcCVMahMEHRVWyB0meaU1qU0
-        pkelFlQl5+I4e6c8nsAR+Go=
-X-Google-Smtp-Source: ABdhPJykSDTXQb6rMzAJxlIEs15qvYEmGaFG3pm37E2tlVeGACX4zqvLUH6j+7SC5v6ZH9AFK3lxiA==
-X-Received: by 2002:a7b:ce19:: with SMTP id m25mr2938803wmc.74.1615376055056;
-        Wed, 10 Mar 2021 03:34:15 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id m3sm8770402wmc.48.2021.03.10.03.34.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 03:34:14 -0800 (PST)
-Date:   Wed, 10 Mar 2021 11:34:13 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Denis Kirjanov <kda@linux-powerpc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        ath9k-devel@qca.qualcomm.com, Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, Chas Williams <3chas3@gmail.com>,
-        linux-atm-general@lists.sourceforge.net,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net
-Subject: Re: [patch 12/14] PCI: hv: Use tasklet_disable_in_atomic()
-Message-ID: <20210310113413.cuvmnrd3vhyhzi4c@liuwe-devbox-debian-v2>
-References: <20210309084203.995862150@linutronix.de>
- <20210309084242.516519290@linutronix.de>
+        Wed, 10 Mar 2021 06:36:01 -0500
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 2F791B9494;
+        Wed, 10 Mar 2021 19:35:20 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P24304T139685143766784S1615376108869662_;
+        Wed, 10 Mar 2021 19:35:20 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <4ec89a2957857c08fc507248c6268e1d>
+X-RL-SENDER: guolongji@uniontech.com
+X-SENDER: guolongji@uniontech.com
+X-LOGIN-NAME: guolongji@uniontech.com
+X-FST-TO: gregkh@linuxfoundation.org
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Longji Guo <guolongji@uniontech.com>
+To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        matthew.v.deangelis@gmail.com, dan.carpenter@oracle.com,
+        amarjargal16@gmail.com, vkor@vkten.in, pterjan@google.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Longji Guo <guolongji@uniontech.com>
+Subject: [PATCH] Staging: rtl8723bs/core: fix coding style issue
+Date:   Wed, 10 Mar 2021 19:35:03 +0800
+Message-Id: <20210310113503.1352-1-guolongji@uniontech.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309084242.516519290@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:42:15AM +0100, Thomas Gleixner wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> 
-> The hv_compose_msi_msg() callback in irq_chip::irq_compose_msi_msg is
-> invoked via irq_chip_compose_msi_msg(), which itself is always invoked from
-> atomic contexts from the guts of the interrupt core code.
-> 
-> There is no way to change this w/o rewriting the whole driver, so use
-> tasklet_disable_in_atomic() which allows to make tasklet_disable()
-> sleepable once the remaining atomic users are addressed.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Move operators and spaces before tabs to fix coding style issues.
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Longji Guo <guolongji@uniontech.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_recv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8723bs/core/rtw_recv.c b/drivers/staging/rtl8723bs/core/rtw_recv.c
+index 3c9dbd7443d9..f249193edeb3 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_recv.c
++++ b/drivers/staging/rtl8723bs/core/rtw_recv.c
+@@ -576,7 +576,7 @@ union recv_frame *portctrl(struct adapter *adapter, union recv_frame *precv_fram
+ 			prtnframe = precv_frame;
+ 
+ 			/* get ether_type */
+-			ptr = ptr+pfhdr->attrib.hdrlen+pfhdr->attrib.iv_len+LLC_HEADER_SIZE;
++			ptr = ptr + pfhdr->attrib.hdrlen + pfhdr->attrib.iv_len + LLC_HEADER_SIZE;
+ 			memcpy(&be_tmp, ptr, 2);
+ 			ether_type = ntohs(be_tmp);
+ 
+-- 
+2.30.1
+
+
+
