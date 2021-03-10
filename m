@@ -2,127 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B737C3332AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D53DA3332AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhCJBQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 20:16:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
+        id S231463AbhCJBRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 20:17:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhCJBPl (ORCPT
+        with ESMTP id S231386AbhCJBQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 20:15:41 -0500
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87198C06174A;
-        Tue,  9 Mar 2021 17:15:41 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 00DB84D0F5B8A;
-        Tue,  9 Mar 2021 17:15:40 -0800 (PST)
-Date:   Tue, 09 Mar 2021 17:15:40 -0800 (PST)
-Message-Id: <20210309.171540.1612415953102779664.davem@davemloft.net>
-To:     torvalds@linux-foundation.org
-Cc:     glaubitz@physik.fu-berlin.de, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [GIT] SPARC
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20210309.162454.822491855062735992.davem@davemloft.net>
-References: <20210309.110812.234617387417457658.davem@davemloft.net>
-        <CAHk-=whgiPiFy9Ye_t=fV9J8VdqgZW5XQcb-1z8PgpQbVBWqCQ@mail.gmail.com>
-        <20210309.162454.822491855062735992.davem@davemloft.net>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Tue, 09 Mar 2021 17:15:41 -0800 (PST)
+        Tue, 9 Mar 2021 20:16:56 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50ADCC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 17:16:56 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id m6so10951406pfk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 17:16:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=DjidbrwyCx3lORD3j61lhIQB01qhNRAIbQn71N/GNnc=;
+        b=NFP/fOl8BCAapNo/2gaBvjw/pa0scQdoJA9QjrWcRvb09sWIwzFqlBHXFWGc36E/95
+         lQhvzcVswpo7zSr/0EUho7lqZ7jPW5xGstl5gQj2nd/pGygE5rKok0egs5SR6QsKo01Q
+         04IfXWwGSN3Yevzkp6UBSFQeeOniDjlIGWn8TBMt6VL+jDGvS9xviXckbCZk2P7jWT/N
+         Fw8UMGb9YulUI3EEyF4f9+41kqMs2J0ieXJB/POmvPyCsij24EB7Oyouzlezu/hVrxBK
+         7Y0BQqxsfT0mZvVf9LxwMqqakPMIxLFHB6QMvis8iP7YVAv0SCxH+d0VCe8fdxuh+jeD
+         ldNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=DjidbrwyCx3lORD3j61lhIQB01qhNRAIbQn71N/GNnc=;
+        b=HEaO/2jn/akIl7AdRWSuyQTgfKapLwTJTmAplbO53VO6WYWlKOULU29+jbS7+/y8On
+         qIXZ4u8hEoR+DNgeuCDV16jkNMLPwJYffkYYwLek09b8NmKxbTCo1mjvU539p1+eqzsq
+         Cy0fa/SEMciKr9py9b8CTonVvcYpnPAjgKpuVUmFuhviqMr4vcZ10ZyRb/BnOcBfyVRc
+         /BMNdrVhztoWTe80pckVuJrLP6vlwqwKxNSDE3QCo9Dgdh809KSUOZSf7uGYIWfeHnuu
+         IZx52y8owYZVW1u2z89gjpuu8eMsaKp9kM9ViCeqT3ycLZ/3pXBhebDi/lSrv6V0F22e
+         qJ/A==
+X-Gm-Message-State: AOAM532brv9144X7ndei3SbBygDrn3wKFsi60AwNJ5ugGNNDBu5gFvvR
+        tXdzJ4ImZU/rD+yVgnFg+8Hlz1JR1+o=
+X-Google-Smtp-Source: ABdhPJyQq4Lc5AFbI42oqK1tMmOp5ZBN1pH2tB5VAev9LMJErHXAaM0Qxhs1H9CMlazf7jv+S5A8eg==
+X-Received: by 2002:a63:40c5:: with SMTP id n188mr516700pga.255.1615339015898;
+        Tue, 09 Mar 2021 17:16:55 -0800 (PST)
+Received: from localhost (58-6-239-121.tpgi.com.au. [58.6.239.121])
+        by smtp.gmail.com with ESMTPSA id a204sm3162989pfd.106.2021.03.09.17.16.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 17:16:54 -0800 (PST)
+Date:   Wed, 10 Mar 2021 11:16:49 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 01/43] powerpc/traps: unrecoverable_exception() is not
+ an interrupt handler
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
+        <ae96c59fa2cb7f24a8929c58cfa2c909cb8ff1f1.1615291471.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <ae96c59fa2cb7f24a8929c58cfa2c909cb8ff1f1.1615291471.git.christophe.leroy@csgroup.eu>
+MIME-Version: 1.0
+Message-Id: <1615338957.9ydlqjl817.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Miller <davem@davemloft.net>
-Date: Tue, 09 Mar 2021 16:24:54 -0800 (PST)
+Excerpts from Christophe Leroy's message of March 9, 2021 10:09 pm:
+> unrecoverable_exception() is called from interrupt handlers or
+> after an interrupt handler has failed.
+>=20
+> Make it a standard function to avoid doubling the actions
+> performed on interrupt entry (e.g.: user time accounting).
+>=20
+> Fixes: 3a96570ffceb ("powerpc: convert interrupt handlers to use wrappers=
+")
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-> From: Linus Torvalds <torvalds@linux-foundation.org>
-> Date: Tue, 9 Mar 2021 11:27:41 -0800
-> 
->> On Tue, Mar 9, 2021 at 11:08 AM David Miller <davem@davemloft.net> wrote:
->> 
->> (And yes, I prefer lore.kernel.org over marc, although for single
->> patches it doesn't make much of a difference. For patch series, I find
->> 'b4' so convenient that I definitely want the patch to show up on
->> lore.kernel.org).
-> 
-> Sadly, lore does not archive sparclinux@vger.kernel.org, so there
-> isn't much choice in this case.
->> 
->> I'll await your pull request or 'I have nothing else, take it from
->> xyz', this thread is otherwise archived for me as "done".
-> 
-> I added Rob's fix to the tree, here is a new pull request, thanks!
-> 
-> The following changes since commit 062c84fccc4444805738d76a2699c4d3c95184ec:
-> 
->   Merge tag 'rproc-v5.12' of git://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc (2021-02-24 11:30:13 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org:/pub/scm/linux/kernel/git/davem/sparc.git 
-> 
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
 
-Somehow you pull didn't get commits:
+This should go in as a fix for this release I think.
 
-commit 69264b4a43aff7307283e2bae29e9305ab6b7d47 (HEAD -> master, origin/master, origin/HEAD)
-Author: Corentin Labbe <clabbe@baylibre.com>
-Date:   Mon Mar 8 09:51:26 2021 +0000
-
-    sparc: sparc64_defconfig: remove duplicate CONFIGs
-    
-    After my patch there is CONFIG_ATA defined twice.
-    Remove the duplicate one.
-    Same problem for CONFIG_HAPPYMEAL, except I added as builtin for boot
-    test with NFS.
-    
-    Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-    Fixes: a57cdeb369ef ("sparc: sparc64_defconfig: add necessary configs for qemu")
-    Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
-
-commit e5e8b80d352ec999d2bba3ea584f541c83f4ca3f
-Author: Rob Gardner <rob.gardner@oracle.com>
-Date:   Sun Feb 28 22:48:16 2021 -0700
-
-    sparc64: Fix opcode filtering in handling of no fault loads
-    
-    is_no_fault_exception() has two bugs which were discovered via random
-    opcode testing with stress-ng. Both are caused by improper filtering
-    of opcodes.
-    
-    The first bug can be triggered by a floating point store with a no-fault
-    ASI, for instance "sta %f0, [%g0] #ASI_PNF", opcode C1A01040.
-    
-    The code first tests op3[5] (0x1000000), which denotes a floating
-    point instruction, and then tests op3[2] (0x200000), which denotes a
-    store instruction. But these bits are not mutually exclusive, and the
-    above mentioned opcode has both bits set. The intent is to filter out
-    stores, so the test for stores must be done first in order to have
-    any effect.
-    
-    The second bug can be triggered by a floating point load with one of
-    the invalid ASI values 0x8e or 0x8f, which pass this check in
-    is_no_fault_exception():
-         if ((asi & 0xf2) == ASI_PNF)
-    
-    An example instruction is "ldqa [%l7 + %o7] #ASI 0x8f, %f38",
-    opcode CF95D1EF. Asi values greater than 0x8b (ASI_SNFL) are fatal
-    in handle_ldf_stq(), and is_no_fault_exception() must not allow these
-    invalid asi values to make it that far.
-    
-    In both of these cases, handle_ldf_stq() reacts by calling
-    sun4v_data_access_exception() or spitfire_data_access_exception(),
-    which call is_no_fault_exception() and results in an infinite
-    recursion.
-    
-    Signed-off-by: Rob Gardner <rob.gardner@oracle.com>
-    Tested-by: Anatoly Pugachev <matorola@gmail.com>
-
-Can you repull to get them, thanks.
-
+> ---
+>  arch/powerpc/include/asm/interrupt.h | 3 ++-
+>  arch/powerpc/kernel/interrupt.c      | 1 -
+>  arch/powerpc/kernel/traps.c          | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/=
+asm/interrupt.h
+> index aedfba29e43a..e8d09a841373 100644
+> --- a/arch/powerpc/include/asm/interrupt.h
+> +++ b/arch/powerpc/include/asm/interrupt.h
+> @@ -410,7 +410,6 @@ DECLARE_INTERRUPT_HANDLER(altivec_assist_exception);
+>  DECLARE_INTERRUPT_HANDLER(CacheLockingException);
+>  DECLARE_INTERRUPT_HANDLER(SPEFloatingPointException);
+>  DECLARE_INTERRUPT_HANDLER(SPEFloatingPointRoundException);
+> -DECLARE_INTERRUPT_HANDLER(unrecoverable_exception);
+>  DECLARE_INTERRUPT_HANDLER(WatchdogException);
+>  DECLARE_INTERRUPT_HANDLER(kernel_bad_stack);
+> =20
+> @@ -437,6 +436,8 @@ DECLARE_INTERRUPT_HANDLER_NMI(hmi_exception_realmode)=
+;
+> =20
+>  DECLARE_INTERRUPT_HANDLER_ASYNC(TAUException);
+> =20
+> +void unrecoverable_exception(struct pt_regs *regs);
+> +
+>  void replay_system_reset(void);
+>  void replay_soft_interrupts(void);
+> =20
+> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interr=
+upt.c
+> index 398cd86b6ada..b8e7d25be31b 100644
+> --- a/arch/powerpc/kernel/interrupt.c
+> +++ b/arch/powerpc/kernel/interrupt.c
+> @@ -436,7 +436,6 @@ notrace unsigned long interrupt_exit_user_prepare(str=
+uct pt_regs *regs, unsigned
+>  	return ret;
+>  }
+> =20
+> -void unrecoverable_exception(struct pt_regs *regs);
+>  void preempt_schedule_irq(void);
+> =20
+>  notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs=
+, unsigned long msr)
+> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+> index 1583fd1c6010..a44a30b0688c 100644
+> --- a/arch/powerpc/kernel/traps.c
+> +++ b/arch/powerpc/kernel/traps.c
+> @@ -2170,7 +2170,7 @@ DEFINE_INTERRUPT_HANDLER(SPEFloatingPointRoundExcep=
+tion)
+>   * in the MSR is 0.  This indicates that SRR0/1 are live, and that
+>   * we therefore lost state by taking this exception.
+>   */
+> -DEFINE_INTERRUPT_HANDLER(unrecoverable_exception)
+> +void unrecoverable_exception(struct pt_regs *regs)
+>  {
+>  	pr_emerg("Unrecoverable exception %lx at %lx (msr=3D%lx)\n",
+>  		 regs->trap, regs->nip, regs->msr);
+> --=20
+> 2.25.0
+>=20
+>=20
