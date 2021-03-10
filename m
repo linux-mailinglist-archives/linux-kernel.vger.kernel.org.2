@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEEE333B4F
+	by mail.lfdr.de (Postfix) with ESMTP id EAE9E333B50
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:26:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbhCJL0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:26:06 -0500
-Received: from mout.kundenserver.de ([217.72.192.74]:57427 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhCJLYR (ORCPT
+        id S232623AbhCJL0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:26:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231203AbhCJLZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:24:17 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MGQzj-1lWIM71eAv-00GoSe; Wed, 10 Mar 2021 12:23:58 +0100
-Received: by mail-ot1-f44.google.com with SMTP id x28so1271357otr.6;
-        Wed, 10 Mar 2021 03:23:57 -0800 (PST)
-X-Gm-Message-State: AOAM5339D7e95cwCcbZPCPbhyGrW/LOC6RZj7tAtqETACXCOPzqrqI1m
-        xbSoXNOvqgctYIV2tXq7t5Su2RBmFhIoZjimzWQ=
-X-Google-Smtp-Source: ABdhPJzSi9rQjVmQMcCdC3Ugc0EWFLl//ABE/fGqmyUE3BjBZcH2sAsjResUueB/qNZ0M5JXaPsoktuZzqJxAH31rsg=
-X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr2167623otq.305.1615375436800;
- Wed, 10 Mar 2021 03:23:56 -0800 (PST)
+        Wed, 10 Mar 2021 06:25:59 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA621C06174A;
+        Wed, 10 Mar 2021 03:24:44 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwV961y7dz9sRf;
+        Wed, 10 Mar 2021 22:24:42 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615375482;
+        bh=V+V8sLOoFHc4RKm9lLu93GG2y5UNHz1wUBDpBk2W6C4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jiZOpEju8c4EAgfnR2Q83/iE3qMGwG2wC/ZJ4Knvn2r2Cn30G4fO1KftywaYLCjzR
+         sc3U99aqVyYaKNscOylAMvXoO3ltC6cmBqeOiYESM95PCWWpasuCX4h55HcKzahf15
+         S3wFlpAIM2ceo0WhL8c/I60yYPbHWjEAMvjTmNiS+C90t+YedcOQ+RO7AmyQh2zoWt
+         dhbaZvos8elsZAr3PFz64TtuYI1LfsaOhmaSwW0gTJ0hdbjX9HWUs77KUVCS9n0i/P
+         BQkmqy0J9gccuG84fZmk5O7+G0nPur2IY94YbjNPfb2ai/5Qwn7MGMdhgXFOUyD4yw
+         /IU9MkgkDI7ZQ==
+Date:   Wed, 10 Mar 2021 22:24:41 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Oded Gabbay <ogabbay@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commits in the
+ char-misc.current tree
+Message-ID: <20210310222441.6a8dcb10@canb.auug.org.au>
+In-Reply-To: <YEiphZVhmY4rYzbJ@kroah.com>
+References: <20210310220404.086c426c@canb.auug.org.au>
+        <YEiphZVhmY4rYzbJ@kroah.com>
 MIME-Version: 1.0
-References: <20210309181533.231573-1-willy@infradead.org>
-In-Reply-To: <20210309181533.231573-1-willy@infradead.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 10 Mar 2021 12:23:40 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a31=gJkF+GypnaznfhKCYSnwU1yF4u0tem==YSpz3pwXw@mail.gmail.com>
-Message-ID: <CAK8P3a31=gJkF+GypnaznfhKCYSnwU1yF4u0tem==YSpz3pwXw@mail.gmail.com>
-Subject: Re: [PATCH] include: Remove pagemap.h from blkdev.h
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-bcache@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-scsi <linux-scsi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:ZAMdrLCRoCgXj3tTGCPDyaMO7QGvyKUlz2EHeBiucgYdBifB9nF
- PJ5b8WT7SWsdRy9ivuV9503hX0xNnHrYgtkQG+PUtIjdN7esmNers6qgqNOvGDJt6zuueb5
- Nq7v3rBHycipdjqcDt3ptbbJG1hsm+6sql36pHv7Gaa8pgd4Wmj6JdvCw5SQl95Q2/XoZUa
- L1ofXYif4PmcgUrbOclWA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3jyXK99JXM8=:VDoDom1E04Ct8FnIHdWHkg
- 5Ia4vX9kWptKMWFI2zdlhOS1L40FOH7iyhTCZoJ12kCJjOgrNQdrwxevWz9IJdReQ2UPTUEEd
- u3ZSsc8A/wAcv+XSW3uWZnntuFRWkAKHeF6hyKb8IFFjB660n3gFDfehLH2DsRe2GGLGHdkUq
- tUggdFAmLCPZ/cPV7Dsnq8wm4zjBU1AGlsmPPS7s7s4WJ09528pUivexpAe/l+2suGTdRc8Av
- FQ8i5bNuYbMs4xeIzFWCoiKGQyOEu2t9yHO+fboZRlz+z4nm6Rnpke7/WkHyKb0+czrBigcrl
- 5dBXq0rJjNDeLX6laLu8FzJbqjR0qvXblJbXqp7LkN5O5Gi8s8Nogx8UG7A+o0MygmDU8yy6N
- hK1kWDOapsDkcd2Ol+yrD3zFXsBclF/RIkBI5EXZKHDKJH1RpZRPqZnPnVd9K69dvIDPRhIbu
- ifERUrrchHyrdg681fLrJet4UnLg+kd7yKddq1Z4quovkXRUimZ8plkiW/VZ+kslZVCUt7HWP
- vBSRcO+OX30XqqSlcFpYHCzjkmhBE13iYDgWeFCGaWPraJY0vCQ5dwHYlf4m2Qwug==
+Content-Type: multipart/signed; boundary="Sig_/Cz69z98RP9qNCKyzcY1iS=7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 7:15 PM Matthew Wilcox (Oracle)
-<willy@infradead.org> wrote:
+--Sig_/Cz69z98RP9qNCKyzcY1iS=7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Greg,
+
+On Wed, 10 Mar 2021 12:12:05 +0100 Greg KH <greg@kroah.com> wrote:
 >
-> My UEK-derived config has 1030 files depending on pagemap.h before
-> this change.  Afterwards, just 240 files need to be rebuilt when I
-> touch pagemap.h.  I think blkdev.h is probably included too widely,
-> but untangling that dependency is harder and this solves my problem.
-> x86 allmodconfig builds, but there may be implicit include problems
-> on other architectures.
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Ah, yeah, oh well, I'll just live with this, I don't want to rebase
+> again :(
 
-Good catch!
+At least the -rc1 booby trap is gone.
 
-With the build regression fixed (I suppose you now need to include
-pagemap.h in swap.h):
+--=20
+Cheers,
+Stephen Rothwell
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+--Sig_/Cz69z98RP9qNCKyzcY1iS=7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBIrHkACgkQAVBC80lX
+0GwdHAf9HWPRXFNXDrZBGgv30sIUwXZ0mv6P+2O+46VQHYFZxpEq6KmLdb+xzoKk
+HjEWTA+iPC3BU60yAIIhCbjCDgcm1VaFpcw8QFkysfrLH//Fa/gsOvxTbjxUNEke
+kFeFAxnz3azwdF6oVKlOgmKp75lh7B4T3SPyFIZCbKcQhV+H4QLXEcwzfan3pMoW
+QNbbrXlALUmqUMR/sdGegiJ+We5dbbcKWjXltilO/Ol/Hc/vaflQ4lXGoUdGv6bG
+W6LrUpR+oGJMBl0Zu/GNkGYLroGjvaBzJ9lvbW0DKrbe8US1wyMugOFETHKA2gJk
+hto+E5HuXfuKkN8rJNLk8H/3Prm0yw==
+=56lY
+-----END PGP SIGNATURE-----
+
+--Sig_/Cz69z98RP9qNCKyzcY1iS=7--
