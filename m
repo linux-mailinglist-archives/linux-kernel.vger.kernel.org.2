@@ -2,370 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3177A3333E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBEA03333E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 04:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhCJDjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 22:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbhCJDjC (ORCPT
+        id S231703AbhCJDg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 22:36:59 -0500
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:49570 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhCJDg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 22:39:02 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6D9C06174A;
-        Tue,  9 Mar 2021 19:39:02 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id b23so2459541pfo.8;
-        Tue, 09 Mar 2021 19:39:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=mcwREzFVw6W5FK314R1LHVbuIgRDIYcjs41i2ItQ/Q4=;
-        b=b8vDFZE6MpAJnLDIwNqoW2kZfIKu933z8gQ4no17zJv+D5HsmqcQowPXImbjQ5Wp7h
-         27jnZRsVk+eLjHJDqXBqAxpo1qdZycBZh3aXo26O0sCVJjwb4yC9YFIKxTtuRU0Vsp1n
-         +yvYksFt9Gn1VKYfCsUbkNQRZq8C468c/ktwN8gugZp/lHuDF7KipqODYRj3cWY3gCNM
-         jHfur1UhOu4iEi4oy6ze5xC+ZPZXxHp2wQ3ScFP0L8Gjdy+PBZUzMM3NBWDbosyw6FQu
-         KwuC8WWFTE4z/KSbUnhGbEMFP+ILk36IcFhYUTUS6Ndn3JVHb6miQr9GrWkMB45wBc8g
-         b/aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mcwREzFVw6W5FK314R1LHVbuIgRDIYcjs41i2ItQ/Q4=;
-        b=NqUhb3sIhU4lWWxv5q0/Y03qrEwlrdQSbOXCe4bwz3Dd2NYlcgpMejq8tKAealXDnn
-         3N4JfP2JNTjdbTkiuogjZz73zKGH4hbLwexOxcfMYlKKord+Ju3shEi9D7EoIZD8Pos5
-         +mEJP1wrEzp9BjQIi5DwEai9vkeoCUI/kLbOpYBXv/oCSBeNMakXi+ttGdBfAtMuFaGD
-         /rZZI1Rh39zmqCiRQf8Coq6l1QZt4dFEqpk1HBQibXZXT67q7FoU9JLkXpuOkY33xjKk
-         qxrflB1ssU9xa13RifLYZMW/6u1wh0TsW/YFfUad0qam/6LhXw/Jkxm+aiGs6J1VgBCq
-         refg==
-X-Gm-Message-State: AOAM532MsIV7WZibeDdp7y+GSf9OP2TqIb3xJSGIwwYMIbUFH1eRFDkY
-        CyRT32KKxpnJkUSOwnJNnST7kqGqtx7ocA==
-X-Google-Smtp-Source: ABdhPJxiswUDvvjRGsq/a6vprRcJjYlaidnoD4Yxs4LihTn3R85pX9rxuR+yJECU1MJfRJlmZL/0OQ==
-X-Received: by 2002:a63:6642:: with SMTP id a63mr959044pgc.333.1615347541716;
-        Tue, 09 Mar 2021 19:39:01 -0800 (PST)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id n4sm14071952pgg.68.2021.03.09.19.39.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 19:39:01 -0800 (PST)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com, digetx@gmail.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iommu/tegra-smmu: Add pagetable mappings to debugfs
-Date:   Tue,  9 Mar 2021 19:36:14 -0800
-Message-Id: <20210310033614.16772-1-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 9 Mar 2021 22:36:27 -0500
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 7E1CB806B5;
+        Wed, 10 Mar 2021 16:36:23 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1615347383;
+        bh=7bckZETHXVmIMlRNKb3dK3NE3KdWhKUje9CIs3GHUcc=;
+        h=From:To:Cc:Subject:Date;
+        b=GUnjdf82sri+QL3BMM4alz3djQ1s0eMK+jvOXC1hT49SvHs+W4Suz4Qw2QsP6ejXZ
+         ef/7NnX3Egqz+uTFPHYDEIVpvfHv+16MV8RRDLwzaX/W5iVqJtXfYVtHdADaZ8P+KD
+         K/sM84x2sUcNMlOJ8Yc+5DjIy+8HH76uL7QCtG2zrYL3pQcw+5Gy6jS8ZhfD04ULHj
+         +f0OyQFCtoPO09W8G0RwDHpG3k5wM4zspgJOph/bf916xMfV9BRgyDcKDpKXK7LUbd
+         0C3chHpbiWOXz0vKhkvX4t+95GXfIeR/t3noDTWpw1BgXMbl3aIc9jbJ6IswBsMJqz
+         0hy8wygEN0iSw==
+Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60483eb70000>; Wed, 10 Mar 2021 16:36:23 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id B03D513EEFA;
+        Wed, 10 Mar 2021 16:36:35 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 45B3E2840A0; Wed, 10 Mar 2021 16:36:23 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     jdelvare@suse.com, linux@roeck-us.net
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH] hwmon: (adm9240): Don't re-read config/limits
+Date:   Wed, 10 Mar 2021 16:36:18 +1300
+Message-Id: <20210310033618.29354-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=VwQbUJbxAAAA:8 a=l7mOSMfaaC0OoaFJrU8A:9 a=AjGcO6oz07-iQ99wixmX:22 a=BPzZvq435JnGatEyYwdK:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch dumps all active mapping entries from pagetable
-to a debugfs directory named "mappings".
+The hwmon chip is configured either via sysfs or by an earlier boot
+stage (e.g. bootloader/bios). In the sysfs case we already store the
+configuration values before it's written to the device. Reading in the
+configuration only needs to be done once at probe time to cover the
+second case.
 
-Ataching an example:
-
-SWGROUP: hc
-ASID: 0
-reg: 0x250
-PTB_ASID: 0xe0080004
-as->pd_dma: 0x80004000
-{
-        [1023] 0xf0080013 (1)
-        {
-                PTE RANGE       PHYS           IOVA        SIZE        ATTR
-                #1023 - #1023   0x122e5e000    0xfffff000  0x1000      0x5
-        }
-}
-Total PDE count: 1
-Total PTE count: 1
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
 
-Changelog
-v2:
- * Expanded mutex range to the entire function
- * Added as->lock to protect pagetable walkthrough
- * Replaced devm_kzalloc with devm_kcalloc for group_debug
- * Added "PTE RANGE" and "SIZE" columns to group contiguous mappings
- * Dropped as->count check; added WARN_ON when as->count mismatches pd[pd_index]
-v1: https://lkml.org/lkml/2020/9/26/70
+This doesn't resolve my ongoing i2c issues[0] but avoiding unnecessary
+i2c reads will help a bit (it'll certainly avoid errors where the
+threshold spontaneously changes).
 
- drivers/iommu/tegra-smmu.c | 172 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 167 insertions(+), 5 deletions(-)
+[0] - https://lore.kernel.org/lkml/8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@a=
+lliedtelesis.co.nz/
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 97eb62f667d2..155735f6323f 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -19,6 +19,11 @@
- #include <soc/tegra/ahb.h>
- #include <soc/tegra/mc.h>
- 
-+struct tegra_smmu_group_debug {
-+	const struct tegra_smmu_swgroup *group;
-+	void *priv;
-+};
-+
- struct tegra_smmu_group {
- 	struct list_head list;
- 	struct tegra_smmu *smmu;
-@@ -47,6 +52,8 @@ struct tegra_smmu {
- 	struct dentry *debugfs;
- 
- 	struct iommu_device iommu;	/* IOMMU Core code handle */
-+
-+	struct tegra_smmu_group_debug *group_debug;
- };
- 
- struct tegra_smmu_as {
-@@ -152,6 +159,9 @@ static inline u32 smmu_readl(struct tegra_smmu *smmu, unsigned long offset)
- 
- #define SMMU_PDE_ATTR		(SMMU_PDE_READABLE | SMMU_PDE_WRITABLE | \
- 				 SMMU_PDE_NONSECURE)
-+#define SMMU_PTE_ATTR		(SMMU_PTE_READABLE | SMMU_PTE_WRITABLE | \
-+				 SMMU_PTE_NONSECURE)
-+#define SMMU_PTE_ATTR_SHIFT	(29)
- 
- static unsigned int iova_pd_index(unsigned long iova)
- {
-@@ -163,6 +173,12 @@ static unsigned int iova_pt_index(unsigned long iova)
- 	return (iova >> SMMU_PTE_SHIFT) & (SMMU_NUM_PTE - 1);
- }
- 
-+static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
-+{
-+	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
-+	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
-+}
-+
- static bool smmu_dma_addr_valid(struct tegra_smmu *smmu, dma_addr_t addr)
- {
- 	addr >>= 12;
-@@ -334,7 +350,7 @@ static void tegra_smmu_domain_free(struct iommu_domain *domain)
- }
- 
- static const struct tegra_smmu_swgroup *
--tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
-+tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup, int *index)
- {
- 	const struct tegra_smmu_swgroup *group = NULL;
- 	unsigned int i;
-@@ -342,6 +358,8 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
- 	for (i = 0; i < smmu->soc->num_swgroups; i++) {
- 		if (smmu->soc->swgroups[i].swgroup == swgroup) {
- 			group = &smmu->soc->swgroups[i];
-+			if (index)
-+				*index = i;
- 			break;
+ drivers/hwmon/adm9240.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/hwmon/adm9240.c b/drivers/hwmon/adm9240.c
+index cc3e0184e720..7e1258b20b35 100644
+--- a/drivers/hwmon/adm9240.c
++++ b/drivers/hwmon/adm9240.c
+@@ -128,7 +128,6 @@ struct adm9240_data {
+ 	struct mutex update_lock;
+ 	char valid;
+ 	unsigned long last_updated_measure;
+-	unsigned long last_updated_config;
+=20
+ 	u8 in[6];		/* ro	in0_input */
+ 	u8 in_max[6];		/* rw	in0_max */
+@@ -282,21 +281,11 @@ static struct adm9240_data *adm9240_update_device(s=
+truct device *dev)
+ 			return ERR_PTR(err);
  		}
+ 		data->last_updated_measure =3D jiffies;
+-	}
+-
+-	/* minimum config reading cycle: 300 seconds */
+-	if (time_after(jiffies, data->last_updated_config + (HZ * 300))
+-			|| !data->valid) {
+-		err =3D adm9240_update_config(data);
+-		if (err < 0) {
+-			data->valid =3D 0;
+-			mutex_unlock(&data->update_lock);
+-			return ERR_PTR(err);
+-		}
+-		data->last_updated_config =3D jiffies;
+ 		data->valid =3D 1;
  	}
-@@ -350,19 +368,22 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
++
+ 	mutex_unlock(&data->update_lock);
++
+ 	return data;
  }
- 
- static void tegra_smmu_enable(struct tegra_smmu *smmu, unsigned int swgroup,
--			      unsigned int asid)
-+			      struct tegra_smmu_as *as)
- {
- 	const struct tegra_smmu_swgroup *group;
-+	unsigned int asid = as->id;
- 	unsigned int i;
- 	u32 value;
- 
--	group = tegra_smmu_find_swgroup(smmu, swgroup);
-+	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
- 	if (group) {
- 		value = smmu_readl(smmu, group->reg);
- 		value &= ~SMMU_ASID_MASK;
- 		value |= SMMU_ASID_VALUE(asid);
- 		value |= SMMU_ASID_ENABLE;
- 		smmu_writel(smmu, value, group->reg);
-+		if (smmu->group_debug)
-+			smmu->group_debug[i].priv = as;
- 	} else {
- 		pr_warn("%s group from swgroup %u not found\n", __func__,
- 				swgroup);
-@@ -389,13 +410,15 @@ static void tegra_smmu_disable(struct tegra_smmu *smmu, unsigned int swgroup,
- 	unsigned int i;
- 	u32 value;
- 
--	group = tegra_smmu_find_swgroup(smmu, swgroup);
-+	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
- 	if (group) {
- 		value = smmu_readl(smmu, group->reg);
- 		value &= ~SMMU_ASID_MASK;
- 		value |= SMMU_ASID_VALUE(asid);
- 		value &= ~SMMU_ASID_ENABLE;
- 		smmu_writel(smmu, value, group->reg);
-+		if (smmu->group_debug)
-+			smmu->group_debug[i].priv = NULL;
- 	}
- 
- 	for (i = 0; i < smmu->soc->num_clients; i++) {
-@@ -499,7 +522,7 @@ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
- 		if (err)
- 			goto disable;
- 
--		tegra_smmu_enable(smmu, fwspec->ids[index], as->id);
-+		tegra_smmu_enable(smmu, fwspec->ids[index], as);
- 	}
- 
- 	if (index == 0)
-@@ -1058,8 +1081,132 @@ static int tegra_smmu_clients_show(struct seq_file *s, void *data)
- 
- DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
- 
-+static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
-+{
-+	struct tegra_smmu_group_debug *group_debug = s->private;
-+	const struct tegra_smmu_swgroup *group;
-+	struct tegra_smmu_as *as;
-+	struct tegra_smmu *smmu;
-+	int pd_index, pt_index;
-+	unsigned long flags;
-+	u64 pte_count = 0;
-+	u32 pde_count = 0;
-+	u32 val, ptb_reg;
-+	u32 *pd;
+=20
+@@ -855,7 +844,15 @@ static int adm9240_probe(struct i2c_client *new_clie=
+nt)
+ 							   new_client->name,
+ 							   data,
+ 							   adm9240_groups);
+-	return PTR_ERR_OR_ZERO(hwmon_dev);
++	if (IS_ERR(hwmon_dev))
++		return PTR_ERR(hwmon_dev);
 +
-+	if (!group_debug || !group_debug->priv || !group_debug->group)
-+		return 0;
-+
-+	group = group_debug->group;
-+	as = group_debug->priv;
-+	smmu = as->smmu;
-+
-+	mutex_lock(&smmu->lock);
-+
-+	val = smmu_readl(smmu, group->reg) & SMMU_ASID_ENABLE;
-+	if (!val)
-+		goto unlock;
-+
-+	pd = page_address(as->pd);
-+	if (!pd)
-+		goto unlock;
-+
-+	seq_printf(s, "\nSWGROUP: %s\nASID: %d\nreg: 0x%x\n", group->name, as->id, group->reg);
-+
-+	smmu_writel(smmu, as->id & 0x7f, SMMU_PTB_ASID);
-+	ptb_reg = smmu_readl(smmu, SMMU_PTB_DATA);
-+
-+	seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: 0x%llx\n", ptb_reg, as->pd_dma);
-+	seq_puts(s, "{\n");
-+
-+	spin_lock_irqsave(&as->lock, flags);
-+
-+	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-+		struct page *pt_page;
-+		u32 *addr;
-+		int i;
-+
-+		/* An empty PDE should not have a pte use count */
-+		WARN_ON_ONCE(!pd[pd_index] ^ !as->count[pd_index]);
-+
-+		/* Skip this empty PDE */
-+		if (!pd[pd_index])
-+			continue;
-+
-+		pde_count++;
-+		pte_count += as->count[pd_index];
-+		seq_printf(s, "\t[%d] 0x%x (%d)\n", pd_index, pd[pd_index], as->count[pd_index]);
-+		pt_page = as->pts[pd_index];
-+		addr = page_address(pt_page);
-+
-+		seq_puts(s, "\t{\n");
-+		seq_printf(s, "\t\t%-15s %-14s %-11s %-11s %-6s\n",
-+			   "PTE RANGE", "PHYS", "IOVA", "SIZE", "ATTR");
-+		for (pt_index = 0; pt_index < SMMU_NUM_PTE; pt_index += i) {
-+			size_t size = SMMU_SIZE_PT;
-+			phys_addr_t pa;
-+			u64 iova;
-+
-+			i = 1;
-+
-+			if (!addr[pt_index])
-+				continue;
-+
-+			iova = pd_pt_index_iova(pd_index, pt_index);
-+			pa = SMMU_PFN_PHYS(addr[pt_index] & ~SMMU_PTE_ATTR);
-+
-+			/* Check contiguous mappings and increase size */
-+			while (pt_index + i < SMMU_NUM_PTE) {
-+				phys_addr_t next_pa;
-+				u64 next_iova;
-+
-+				if (!addr[pt_index + i])
-+					break;
-+
-+				next_iova = pd_pt_index_iova(pd_index, pt_index + i);
-+				next_pa = SMMU_PFN_PHYS(addr[pt_index + i] & ~SMMU_PTE_ATTR);
-+
-+				/* Break at the end of a linear mapping */
-+				if ((next_iova - iova != SMMU_SIZE_PT * i) ||
-+				    (next_pa - pa != SMMU_SIZE_PT * i))
-+					break;
-+
-+				i++;
-+			}
-+
-+			seq_printf(s, "\t\t#%-4d - #%-6d 0x%-12llx 0x%-9llx 0x%-9lx 0x%-4x\n",
-+				   pt_index, pt_index + i - 1, pa, iova, size * i,
-+				   addr[pt_index] >> SMMU_PTE_ATTR_SHIFT);
-+		}
-+		seq_puts(s, "\t}\n");
-+	}
-+
-+	spin_unlock_irqrestore(&as->lock, flags);
-+
-+	seq_puts(s, "}\n");
-+	seq_printf(s, "Total PDE count: %d\n", pde_count);
-+	seq_printf(s, "Total PTE count: %lld\n", pte_count);
-+
-+unlock:
-+	mutex_unlock(&smmu->lock);
++	/* pull in configuration from an earlier boot stage */
++	err =3D adm9240_update_config(data);
++	if (err < 0)
++		return err;
 +
 +	return 0;
-+}
-+
-+DEFINE_SHOW_ATTRIBUTE(tegra_smmu_mappings);
-+
- static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
- {
-+	const struct tegra_smmu_soc *soc = smmu->soc;
-+	struct tegra_smmu_group_debug *group_debug;
-+	struct device *dev = smmu->dev;
-+	struct dentry *d;
-+	int i;
-+
-+	group_debug = devm_kcalloc(dev, soc->num_swgroups, sizeof(*group_debug), GFP_KERNEL);
-+	if (!group_debug)
-+		return;
-+
- 	smmu->debugfs = debugfs_create_dir("smmu", NULL);
- 	if (!smmu->debugfs)
- 		return;
-@@ -1068,6 +1215,21 @@ static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
- 			    &tegra_smmu_swgroups_fops);
- 	debugfs_create_file("clients", S_IRUGO, smmu->debugfs, smmu,
- 			    &tegra_smmu_clients_fops);
-+	d = debugfs_create_dir("mappings", smmu->debugfs);
-+
-+	for (i = 0; i < soc->num_swgroups; i++) {
-+		const struct tegra_smmu_swgroup *group = &soc->swgroups[i];
-+
-+		if (!group->name)
-+			continue;
-+
-+		group_debug[i].group = group;
-+
-+		debugfs_create_file(group->name, 0444, d, &group_debug[i],
-+				    &tegra_smmu_mappings_fops);
-+	}
-+
-+	smmu->group_debug = group_debug;
  }
- 
- static void tegra_smmu_debugfs_exit(struct tegra_smmu *smmu)
--- 
-2.17.1
+=20
+ static const struct i2c_device_id adm9240_id[] =3D {
+--=20
+2.30.1
 
