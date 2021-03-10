@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3D933328C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 01:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BA833328E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 01:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhCJAoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 19:44:21 -0500
-Received: from mail-il1-f174.google.com ([209.85.166.174]:37586 "EHLO
-        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhCJAoQ (ORCPT
+        id S231302AbhCJApd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 19:45:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27341 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229775AbhCJApQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 19:44:16 -0500
-Received: by mail-il1-f174.google.com with SMTP id k2so13939718ili.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 16:44:16 -0800 (PST)
+        Tue, 9 Mar 2021 19:45:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615337115;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=W98fuu229Cun2sqDqrjOiHtCzvQ3USdusEfS/X1ze5s=;
+        b=cPz+DEEiaCLzrziiX0u6WdDtegg7uyJNOXs1Tk257he5zXJZp7657X0/sztl5iZzZSIf+3
+        DTHyfMSWTU7Qz4Kjbj1SbKLuJcSKUvZe+86qmfKlJJ4z6Y9IKhXCH258pBZmymNGLpjdlI
+        NPkXHeV4kM8BxyKG7RFwjGAiQcIcUrs=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-w1aKF8PcPOqNYbR1v7FeKQ-1; Tue, 09 Mar 2021 19:45:13 -0500
+X-MC-Unique: w1aKF8PcPOqNYbR1v7FeKQ-1
+Received: by mail-qt1-f198.google.com with SMTP id m8so9694063qtp.14
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 16:45:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JZP9hhge4WzyijD3W+Otb4HaEj3fiwE5NUjCWIVxl+U=;
-        b=VpO4o2BTGhnxBBOFEIcBmFMu/3+KsJjX1mKuer7c0oNHEv+FslXhAlI5B31J+rixyW
-         OVI7P70I9It2E1ukojaobKh1PnwCSWfa8L0zGznLRjwxr4yLpEK7ZrZmM+qaU6S26c+X
-         adKiM0kjJyoA6rctCymEa+ppwXqC8fUEIJS5OXGOYsf49Ba850Rp0iGV5LwjIsdLMDn5
-         85ElPBj28akm3k2iJu36NOf3GrwBirTzDGIkIDOwqvS8hC2Psgoq3j6UZUefgax1SYOI
-         JRXvVmspDMc3HG5Yjr3m4TpHWO7yFJuZkShuS0E3TBS+veBqC8SuwuV4oZl0Qnf9VZE8
-         1NZQ==
-X-Gm-Message-State: AOAM530CdnOlbdd3aEGq6gSvKzLzQYj+A3dLssHnwQP6SJXaE9hS3ahR
-        pf0ztnlSbDXDoJECvT8Xng==
-X-Google-Smtp-Source: ABdhPJzbxjq8CxdNH2tC86nnjPZSYaQ8l3zIKij7gZzKgeZ4MzGiQeCrz7cyUY9ecmQNmMraRcrfbw==
-X-Received: by 2002:a92:b70c:: with SMTP id k12mr800290ili.60.1615337056074;
-        Tue, 09 Mar 2021 16:44:16 -0800 (PST)
-Received: from xps15.herring.priv ([64.188.179.253])
-        by smtp.googlemail.com with ESMTPSA id k14sm8276109iob.34.2021.03.09.16.44.13
+        bh=W98fuu229Cun2sqDqrjOiHtCzvQ3USdusEfS/X1ze5s=;
+        b=daF/CdxnolY/blGZqSMGCz9CRchT47U8eOtCooZZCtZoJFHjMrf0moBQ81LhnwH3+z
+         bxbpo2T8bp3+lqa2pwt+nThOFXQO5RhZ0WOv4iPGH4PhKGz5OTKg6OFgJriV7SwwkyGZ
+         LSvtAkCEHFrtCfdIzNKnhs6AhbENKJPB63MOjim8kUF2VX5/iS8UDV1O1simymbRRN6e
+         R8inz9GYlzdpA5b2FketcN53VimJ8DM37kkm1vTB7dyreRICdbq186fvA+MghiNoqo/s
+         W9ixklLWLT655gbTvRtq8syNv9SROBa+E4dxLfz1CWBfqUnwxXqgsDo/2nchUVbC7pnB
+         +nAg==
+X-Gm-Message-State: AOAM532wtGqPYGKRZjoKitkyrIORxIr/nnbJ5R1csgsDBp0LfIPSJrZE
+        HS1BwBNnsOJ+FsRn7ORLSz6tdXILU3b1MO3xhSdlO9eaaoNUZyDZIQxx1onnj4NHiFYh9T4isFg
+        KS+ZCL6YFsRMEawNF5j7cCgpP
+X-Received: by 2002:a37:7985:: with SMTP id u127mr350153qkc.333.1615337113323;
+        Tue, 09 Mar 2021 16:45:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyQmVhJtqSjUci8fVJ8o5WZ7jjvrbupE5H7DdcgunffLV1/oC/SbCBDMPCDN2MW56G7CoQWWw==
+X-Received: by 2002:a37:7985:: with SMTP id u127mr350131qkc.333.1615337113047;
+        Tue, 09 Mar 2021 16:45:13 -0800 (PST)
+Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
+        by smtp.gmail.com with ESMTPSA id b27sm11418173qkl.102.2021.03.09.16.45.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 16:44:15 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH] arm64: perf: Fix 64-bit event counter read truncation
-Date:   Tue,  9 Mar 2021 17:44:12 -0700
-Message-Id: <20210310004412.1450128-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 09 Mar 2021 16:45:12 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+Subject: [PATCH 0/5] userfaultfd/selftests: A few cleanups
+Date:   Tue,  9 Mar 2021 19:45:06 -0500
+Message-Id: <20210310004511.51996-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0fdf1bb75953 ("arm64: perf: Avoid PMXEV* indirection") changed
-armv8pmu_read_evcntr() to return a u32 instead of u64. The result is
-silent truncation of the event counter when using 64-bit counters. Given
-the offending commit appears to have passed thru several folks, it seems
-likely this was a bad rebase after v8.5 PMU 64-bit counters landed.
-
-Fixes: 0fdf1bb75953 ("arm64: perf: Avoid PMXEV* indirection")
-Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- arch/arm64/kernel/perf_event.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index 7d2318f80955..4658fcf88c2b 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -460,7 +460,7 @@ static inline int armv8pmu_counter_has_overflowed(u32 pmnc, int idx)
- 	return pmnc & BIT(ARMV8_IDX_TO_COUNTER(idx));
- }
- 
--static inline u32 armv8pmu_read_evcntr(int idx)
-+static inline u64 armv8pmu_read_evcntr(int idx)
- {
- 	u32 counter = ARMV8_IDX_TO_COUNTER(idx);
- 
--- 
-2.27.0
+Based on v5.12-rc2-mmots-2021-03-08-21-54.=0D
+=0D
+I wanted to cleanup userfaultfd.c fault handling for a long time. If it's n=
+ot=0D
+cleaned, when the new code grows the file it'll also grow the size that nee=
+ds=0D
+to be cleaned...  This is my attempt to cleanup the userfaultfd selftest on=
+=0D
+fault handling, to use an err() macro instead of either fprintf() or perror=
+()=0D
+then another exit() call.=0D
+=0D
+The huge cleanup is done in the last patch.  The first 4 patches are some o=
+ther=0D
+standalone cleanups for the same file, so I put them together.=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (5):=0D
+  userfaultfd/selftests: Use user mode only=0D
+  userfaultfd/selftests: Remove the time() check on delayed uffd=0D
+  userfaultfd/selftests: Dropping VERIFY check in locking_thread=0D
+  userfaultfd/selftests: Only dump counts if mode enabled=0D
+  userfaultfd/selftests: Unify error handling=0D
+=0D
+ tools/testing/selftests/vm/userfaultfd.c | 742 +++++++----------------=0D
+ 1 file changed, 235 insertions(+), 507 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
