@@ -2,92 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFB5333FAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F97B333FB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhCJNyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:54:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbhCJNyd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:54:33 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCC0C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:54:32 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id e20so6609338ljn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 05:54:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telliq.com; s=google;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=LnieKbR1sQg1mAtsZUa22eMkB6iSaXuJyq8ZlNF/US4=;
-        b=NrP1reGTTbYR9yAtVXHeNfeEwBnwsvul8i7FL4bJtUFgddNQFnwl3IdfGt1gA+rhJj
-         wd7AcDbWPhZBGfU3jJ0GkjcjBzdrGbN4HuyXlPkRROygew/glcW3rG3/z1lyD+XEUPbK
-         NVerWvTSH60/BPloDQFAioD8fDOpj3bPfVq0ZCSRgDOzfSGzjTBSI9XzMR4KSs/h0asD
-         tpqEBG1Eu5/8g/oCVXkn2fqXerS7PYlWISwgJQVgTW7p8u4Lvnd/mUlXzeIcJ7zm1F+K
-         Gj5/q4sptvKiaf9uS2OFfMolhfVWwNFt0WmLd6gOYqxRJEe4BI35SGyqYA0A73gPy3mN
-         RlYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=LnieKbR1sQg1mAtsZUa22eMkB6iSaXuJyq8ZlNF/US4=;
-        b=qAvo2KXfq7XhpdUJIkmC1UZZVXCCuEKD1paN0xiZUwTdTmeVcVkgveN+EtSoyu5aaL
-         oADJt3l+WY0LHlHyYp0Kb/F3uObyDtbjlWWs++Vdyg62iQKYJ9tjmGSEqklg28zwaQjQ
-         +1WKHdB8ujvk1FMvFTKxSxaLyWsfh1BW6efoWGeqTFMQ0xhk5SJgSNMBwYwwzlG72efu
-         bygykY6KKS5kkySCU4bgoUqYNXaDKURezuEGXBzv5UnPRNXjJ54Op/ZQo8RfTgEF/kK9
-         v5Y5Nvc7aIdxO4w3Vgh3cCWDAP0AR8C2Sf4Xt8Rn88j7DRKe555ri7wJ5rfH0ZPHXq2i
-         b/kw==
-X-Gm-Message-State: AOAM5338TC68nx553uT62l9hYUUjdmrtejZxTNljnNN2x6IV0Ep0qfQb
-        IaeDWAUTJrWUrFl7I7oKeHzCng==
-X-Google-Smtp-Source: ABdhPJxEHQ8LAoylBqUOEpRlv3nouEzg0BCQ0INlp19o7MMfm2LT9WvInOwjI1rCpoZDQ4tmPcMMkA==
-X-Received: by 2002:a2e:9c12:: with SMTP id s18mr1865809lji.383.1615384471365;
-        Wed, 10 Mar 2021 05:54:31 -0800 (PST)
-Received: from polera.kvasta (h77-53-209-86.cust.a3fiber.se. [77.53.209.86])
-        by smtp.gmail.com with ESMTPSA id r5sm3176931ljh.128.2021.03.10.05.54.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 05:54:31 -0800 (PST)
-From:   Jan Kardell <jan.kardell@telliq.com>
-Subject: arm: lockdep complaining about locks allocations in static memory
-To:     Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Message-ID: <6df24716-8b41-8e9a-f2f4-a0f5d49643bd@telliq.com>
-Date:   Wed, 10 Mar 2021 14:54:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 SeaMonkey/2.53.5.1
+        id S232832AbhCJNzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:55:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55996 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231790AbhCJNy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:54:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615384498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ynb5w72NY+rJnL7ZUNtb0DAziwv6ypIpu01j5U3oDF0=;
+        b=dtf9xoa8uw+8wPnmhFPI4ktZchNiqWASPNhgFUR1Ci6SA0fkRACyCFyk6Ct5InbOsphh6n
+        Umh4jvgMUcVOyU9qJTE1HxlERdH1YllpJEmJ+NVGVgq0T0QMZSRIhOMbn3l0jL/KqhgDsk
+        n2yeETOVKtHmQyZnOreOVwE5pMiZ9k4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 69530AEE5;
+        Wed, 10 Mar 2021 13:54:58 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 14:54:57 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Dias <joaodias@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Baron <jbaron@akamai.com>
+Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
+Message-ID: <YEjPsfAApvVmO4Jb@dhcp22.suse.cz>
+References: <20210308202047.1903802-1-minchan@kernel.org>
+ <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
+ <20210310132623.GO3479805@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310132623.GO3479805@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed 10-03-21 13:26:23, Matthew Wilcox wrote:
+> On Tue, Mar 09, 2021 at 10:32:51AM +0100, Michal Hocko wrote:
+> > Apart from the above, do we have to warn for something that is a
+> > debugging aid? A similar concern wrt dump_page which uses pr_warn and
+> > page owner is using even pr_alert.
+> > Would it make sense to add a loglevel parameter both into __dump_page
+> > and dump_page_owner?
+> 
+> No.  What would make sense is turning __dump_page() inside-out.
+> Something like printk("%pP\n");
+> 
+> In lib/vsprintf.c, there's a big switch statement in the function
+> pointer() that handles printing things like IPv6 addresses, dentries,
+> and function symbols.
+> 
+> Then we can do whatever we want around the new %pP, including choosing
+> the log level, adding additional information, choosing to dump the page
+> to a sysfs file, etc, etc.
 
-During work lift the software and kernel versions on our custom TI 
-am3352 board I started to see lockdep warnings after enabling 
-CONFIG_PREEMT. Lockdep seems to think the memory that previously was 
-initmem is static memory. I'm using linux 5.4, as that is what is used 
-in the next OpenWrt version.
+Hmm, __dump_page has grown quite some heavy lifting over time and I am
+not sure this is a good candidate to put into printk proper (e.g. is it
+safe/reasonable to call get_kernel_nofault from printk - aka arbitrary
+context)?.
 
-[ 92.198989] WARNING: CPU: 0 PID: 2015 at kernel/locking/lockdep.c:1119 
-alloc_netdev_mqs+0xb4/0x3b0
-
-I guess CONFIG_PREEMT just changes the timing of allocations, and is 
-otherwise irrelevant.
-
-This was fixed for s390 in linux 5.2 commit 
-7a5da02de8d6eafba99556f8c98e5313edebb449 by adding the function 
-arch_is_kernel_initmem_freed(). Later a very similar change was made for 
-powerpc, and a different solution for x86. I now believe that is needed 
-for arm as well. Though I don't know the inner workings of arm memory 
-management so I don't know if an identical solution to s390 will do for 
-arm, but my experiments suggests it works for am335x. The commit message 
-for s390 says "virt == phys", but that seems not to be the case for my 
-arm system.
-
-//Jan
-
+But you've got a point that such a printk format wouldn't need to be 1:1
+with the existing __dump_page. There is quite a lot to infer from page
+count, map count, flags, page type already. Then a question would be
+what is an actual advantage of %pP over dump_page_info(loglvl, p). One I
+can see is that %pP would allow to dump the state into a string and so
+it would be more versatile but I am not aware of a usecase for that
+(maybe tracing?).
+-- 
+Michal Hocko
+SUSE Labs
