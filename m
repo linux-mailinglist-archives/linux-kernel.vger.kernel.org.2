@@ -2,141 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDD733427F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A18334281
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhCJQIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:08:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232569AbhCJQH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:07:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E45D564F4C;
-        Wed, 10 Mar 2021 16:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615392478;
-        bh=7sTMvplzl4qRhmylBff3JMaWNZ6VDs7GHryb8IWMb8E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PIIVIbrunaUx2mEUOz6ZJxHRH1se7E+5o1HDWFnKHf8eRzIiylHjOZmg5NZShqUGW
-         hjBa9elVXNdk4eDdsGhTeXYuzv3/BXbX9p/KFb7ybT6VG90bTEx1lnCRZOw2RFaiFz
-         xUEZGv0mJM9hDLsvPxYJiJZDiqjW49MgbOGmc1zY8E3cbyvNj4DU6HwresgdU5wkaD
-         /6Nzn59UjeidTCW1K7nx7/asBj1lP/sYdEKM7aFPidqM8CVyvFTnzvC3yn1XacZioJ
-         H8pxELt905xod7Mk5tdYLPuc5q0SIB1frKl7tHHxsimgV+p7eYBm76eNyVHMHiOgX+
-         s9X5laJqNqC3Q==
-Date:   Wed, 10 Mar 2021 16:07:48 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        id S232422AbhCJQIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:08:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231689AbhCJQIr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 11:08:47 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251B5C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:08:47 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id o38so11687796pgm.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:08:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n5SUJ6SxBX80zMdF1n9kHJvTdoHW9bhKWhAVahClOnw=;
+        b=CWTtLzbpRE0V6DoYNY5ITdORUBJw8jR4RCevgqlelCN+8kUmrRzlTLdFdG4a/eMvz2
+         ZrVuOTckkKqFhXKDwA1CP/ArmUcQpwL+VQlD499zZ1ZUR+pPtJZyT63QpFgeUNGjFEwr
+         FQ7GRQDp/0r38umVI6oWVOHtPyGT+vGswax9+1eh97CaZ81ynX5x+JNdkTxsZLhKM50O
+         1ShZYqKP38mYycHxl3jRlhy6hXAflEwBjO0IKlVRRc3eVO9hx7kemvMjmD7/PZoSDDIu
+         IiefWTdhxFmCxahCznDHWM8FVVIbG0hzEUu4GGRXhBraxl2ygu6ILYeHWzuWAuqk1as3
+         dvfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n5SUJ6SxBX80zMdF1n9kHJvTdoHW9bhKWhAVahClOnw=;
+        b=enXZlvS9v+0Zp2ChjbtKuBtJmwJ9G/vUulPX0/+WGYTBzMfFuSEK8Q7YfsisC85kY2
+         xsmzHMMWsl5RDKFeX8JecmFbwhr9F8d/p+B1bqrELCKK0bD9iOKnxbKRwhG8nllYuBA7
+         IgWznNLOwMA6x6Wr/BtEpECrJtZiagiDH7aswnEC6LjaAwjIPsFD7L+js3C07ymhGDMJ
+         QLzsATvFlJ3g3z6a0Ufp/IwFiCJtkYp9dNvYKbkO6UTOBgyZvfHkBcdE+H91JKM5Li27
+         dz+cgAxLrOp4Q+WeOmFZrvUHcT0rn22N31u7YML4GrnKcoDbFFbP4WNcIiohQUpszS7B
+         rixQ==
+X-Gm-Message-State: AOAM531Pv5JUcjwE9/LxMq6ZrEq2igygfyfidClXCcg3qK9JU/I+NH//
+        cz6q8pLYEkDvIgINXwqVAxhd0Q==
+X-Google-Smtp-Source: ABdhPJy5E/rQt24yUFZtGlD2TgGJpQC3ID3/OnoSW5lGrPnU+CrQLObcNsCRohIldO+xCguGUhtUKg==
+X-Received: by 2002:a63:ff53:: with SMTP id s19mr3403048pgk.347.1615392526495;
+        Wed, 10 Mar 2021 08:08:46 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
+        by smtp.gmail.com with ESMTPSA id x7sm5308pfp.23.2021.03.10.08.08.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 08:08:45 -0800 (PST)
+Date:   Wed, 10 Mar 2021 08:08:37 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
         Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Subject: Re: [PATCH v4 13/14] dt-bindings: of: Add restricted DMA pool
-Message-ID: <20210310160747.GA29834@willie-the-truck>
-References: <20210209062131.2300005-1-tientzu@chromium.org>
- <20210209062131.2300005-14-tientzu@chromium.org>
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 5/7] x86/boot/compressed/64: Add CPUID sanity check to
+ 32-bit boot-path
+Message-ID: <YEjvBfJg8P1SQt98@google.com>
+References: <20210310084325.12966-1-joro@8bytes.org>
+ <20210310084325.12966-6-joro@8bytes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209062131.2300005-14-tientzu@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210310084325.12966-6-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claire,
-
-On Tue, Feb 09, 2021 at 02:21:30PM +0800, Claire Chang wrote:
-> Introduce the new compatible string, restricted-dma-pool, for restricted
-> DMA. One can specify the address and length of the restricted DMA memory
-> region by restricted-dma-pool in the reserved-memory node.
+On Wed, Mar 10, 2021, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 > 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> The 32-bit #VC handler has no GHCB and can only handle CPUID exit codes.
+> It is needed by the early boot code to handle #VC exceptions raised in
+> verify_cpu() and to get the position of the C bit.
+> 
+> But the CPUID information comes from the hypervisor, which is untrusted
+> and might return results which trick the guest into the no-SEV boot path
+> with no C bit set in the page-tables. All data written to memory would
+> then be unencrypted and could leak sensitive data to the hypervisor.
+> 
+> Add sanity checks to the 32-bit boot #VC handler to make sure the
+> hypervisor does not pretend that SEV is not enabled.
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
 > ---
->  .../reserved-memory/reserved-memory.txt       | 24 +++++++++++++++++++
->  1 file changed, 24 insertions(+)
+>  arch/x86/boot/compressed/mem_encrypt.S | 36 ++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> index e8d3096d922c..fc9a12c2f679 100644
-> --- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> +++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> @@ -51,6 +51,20 @@ compatible (optional) - standard definition
->            used as a shared pool of DMA buffers for a set of devices. It can
->            be used by an operating system to instantiate the necessary pool
->            management subsystem if necessary.
-> +        - restricted-dma-pool: This indicates a region of memory meant to be
-> +          used as a pool of restricted DMA buffers for a set of devices. The
-> +          memory region would be the only region accessible to those devices.
-> +          When using this, the no-map and reusable properties must not be set,
-> +          so the operating system can create a virtual mapping that will be used
-> +          for synchronization. The main purpose for restricted DMA is to
-> +          mitigate the lack of DMA access control on systems without an IOMMU,
-> +          which could result in the DMA accessing the system memory at
-> +          unexpected times and/or unexpected addresses, possibly leading to data
-> +          leakage or corruption. The feature on its own provides a basic level
-> +          of protection against the DMA overwriting buffer contents at
-> +          unexpected times. However, to protect against general data leakage and
-> +          system memory corruption, the system needs to provide way to lock down
-> +          the memory access, e.g., MPU.
-
-As far as I can tell, these pools work with both static allocations (which
-seem to match your use-case where firmware has preconfigured the DMA ranges)
-but also with dynamic allocations where a 'size' property is present instead
-of the 'reg' property and the kernel is responsible for allocating the
-reservation during boot. Am I right and, if so, is that deliberate?
-
-I ask because I think that would potentially be useful to us for the
-Protected KVM work, where we need to bounce virtio memory accesses via
-guest-determined windows because the guest memory is generally inaccessible
-to the host. We've been hacking this using a combination of "swiotlb=force"
-and set_memory_{decrypted,encrypted}() but it would be much better to
-leverage the stuff you have here.
-
-Also:
-
-> +
-> +		restricted_dma_mem_reserved: restricted_dma_mem_reserved {
-> +			compatible = "restricted-dma-pool";
-> +			reg = <0x50000000 0x400000>;
-> +		};
->  	};
+> diff --git a/arch/x86/boot/compressed/mem_encrypt.S b/arch/x86/boot/compressed/mem_encrypt.S
+> index 2ca056a3707c..8941c3a8ff8a 100644
+> --- a/arch/x86/boot/compressed/mem_encrypt.S
+> +++ b/arch/x86/boot/compressed/mem_encrypt.S
+> @@ -145,6 +145,34 @@ SYM_CODE_START(startup32_vc_handler)
+>  	jnz	.Lfail
+>  	movl	%edx, 0(%esp)		# Store result
 >  
->  	/* ... */
-> @@ -138,4 +157,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
->  		memory-region = <&multimedia_reserved>;
->  		/* ... */
->  	};
+> +	/*
+> +	 * Sanity check CPUID results from the Hypervisor. See comment in
+> +	 * do_vc_no_ghcb() for more details on why this is necessary.
+> +	 */
 > +
-> +	pcie_device: pcie_device@0,0 {
-> +		memory-region = <&restricted_dma_mem_reserved>;
-> +		/* ... */
-> +	};
+> +	/* Fail if Hypervisor bit not set in CPUID[1].ECX[31] */
 
-I find this example a bit weird, as I didn't think we usually had DT nodes
-for PCI devices; rather they are discovered as a result of probing config
-space. Is the idea that you have one reserved memory region attached to the
-RC and all the PCI devices below that share the region, or is there a need
-for a mapping mechanism?
+This check is flawed, as is the existing check in 64-bit boot.  Or I guess more
+accurately, the check in get_sev_encryption_bit() is flawed.  AIUI, SEV-ES
+doesn't require the hypervisor to intercept CPUID.  A malicious hypervisor can
+temporarily pass-through CPUID to bypass the CPUID[1].ECX[31] check.  The
+hypervisor likely has access to the guest firmware source, so it wouldn't be
+difficult for the hypervisor to disable CPUID interception once it detects that
+firmware is handing over control to the kernel.
 
-Will
+> +	cmpl    $1, %ebx
+> +	jne     .Lcheck_leaf
+> +	btl     $31, 4(%esp)
+> +	jnc     .Lfail
+> +	jmp     .Ldone
+> +
+> +.Lcheck_leaf:
+> +	/* Fail if SEV leaf not available in CPUID[0x80000000].EAX */
+> +	cmpl    $0x80000000, %ebx
+> +	jne     .Lcheck_sev
+> +	cmpl    $0x8000001f, 12(%esp)
+> +	jb      .Lfail
+> +	jmp     .Ldone
+> +
+> +.Lcheck_sev:
+> +	/* Fail if SEV bit not set in CPUID[0x8000001f].EAX[1] */
+> +	cmpl    $0x8000001f, %ebx
+> +	jne     .Ldone
+> +	btl     $1, 12(%esp)
+> +	jnc     .Lfail
+> +
+> +.Ldone:
+>  	popl	%edx
+>  	popl	%ecx
+>  	popl	%ebx
+> @@ -158,6 +186,14 @@ SYM_CODE_START(startup32_vc_handler)
+>  
+>  	iret
+>  .Lfail:
+> +	/* Send terminate request to Hypervisor */
+> +	movl    $0x100, %eax
+> +	xorl    %edx, %edx
+> +	movl    $MSR_AMD64_SEV_ES_GHCB, %ecx
+> +	wrmsr
+> +	rep; vmmcall
+> +
+> +	/* If request fails, go to hlt loop */
+>  	hlt
+>  	jmp .Lfail
+>  SYM_CODE_END(startup32_vc_handler)
+> -- 
+> 2.30.1
+> 
