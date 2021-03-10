@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161E1333A38
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA5A333A3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhCJKlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:41:19 -0500
-Received: from mail-vs1-f46.google.com ([209.85.217.46]:38467 "EHLO
-        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbhCJKk7 (ORCPT
+        id S232495AbhCJKlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:41:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231790AbhCJKlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:40:59 -0500
-Received: by mail-vs1-f46.google.com with SMTP id e21so6471347vsh.5;
-        Wed, 10 Mar 2021 02:40:58 -0800 (PST)
+        Wed, 10 Mar 2021 05:41:04 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925CBC061762
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:41:03 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id f12so22742768wrx.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:41:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=WkEYLNZKWBGlnhJh5/km8rZ3DoQwSCNLt1pwHkgN/WY=;
+        b=mHQYTozuc0TTEvwola4UDXnujaWX5hjYQa9oyx2Km6taceH5yU6itTe3PHtZRoodFk
+         PcpDyrzEdhly/3+4FAgeUEG40pSos2nmuPn1KTn0DaKzmxXkOLlhaSMgX3xY0TP5yGho
+         XUAGxYyDak/7+4NtvRj+ZYLT5U1J2/9BlGZ3cDktu+mUvRsohm8uzz6kt2LvcNFTcmIJ
+         iLoeMXyTF9AvGdP4MtkZmWxddvxG8KX8rGFLE97/3fMt941pJ/GCNgLhf3sq73X85KMT
+         ZvEMyGQ06vuK16Gnxi7/pPa0ZujXMlI26tTXN4iq9PCwUotcEIAVxQcOPv9rOzFR0PW4
+         Q9ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A3HwYVod5TOKRztYfZ5qITnVIC4tyRTRWsk+gg9JXNM=;
-        b=oW/QHGDKLMzID4zTdSbTcbrhij+U6ffmZ8b4XTgox7tR++8tnyq20bA2taYHDA4ulQ
-         4RIoo/5g4S2a0q3D+3PDzYLf/j2dgDW4RFyYUQtH/94C9EHwwW5g1+AH9cRDUEsr79Zu
-         jF03IvGyVM7nYsCSVMVoLuicWyiVzhuQEL4SxEqgjzAT3VsyzzU2w8MKh4/Y2JuGzeSl
-         kE63dIMPzt2+s+4XsPa+8bcizytEUy9f1DZBr1XAR83H8MQDwQt3Rv8BFQPHkEyreDxA
-         2u4rmcpFL4UHOpxtlp3/7gphfsuhT03Xr0j8TuLbD9IbbsY6b0kxD8Nslz0ZaHFwm2q3
-         ol+A==
-X-Gm-Message-State: AOAM532oCKvTKkjEsUdA3e74AFq6K793uOw1GtStgpJSJnustcZldhK1
-        v+gOt4o3mWhl16meFnXGMeogIASDXhOnKNr3SQo=
-X-Google-Smtp-Source: ABdhPJyu8XyeCmhpXiJPJj3U/OPCe/KwuX/xfvAEkczLsuVS5aBfKCBjtBy/V6Veyr0XJFIYYgQtiOyREgjkdSOYp2I=
-X-Received: by 2002:a67:8883:: with SMTP id k125mr1358079vsd.18.1615372858427;
- Wed, 10 Mar 2021 02:40:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=WkEYLNZKWBGlnhJh5/km8rZ3DoQwSCNLt1pwHkgN/WY=;
+        b=ddUsmDqeqqFfu43pCpbwWvl+FjbvCfexuChmOZgnzeBt8s+hVubD0w6wbuB3SgI0N3
+         y8TKIV7GCYS3UzrF9aUjWCtWMJy46KOxmp/NUsHLLGhkJtuiEl00vvch6bmMZM51Ovii
+         v2QLeWxLaIVyCkQrCK1bIN5j0pt0yjIGDtwRNEHGUysX4OrU15k+EfKO+XaXhpX0I4X+
+         /0v7Nb9N9XsOH0lTj8N2p5AQPP43krNBdl6Ag96w3LVdfKWxg0CUPBw5lH1WI0peDxED
+         KYApW2KatmlGwQ1BMbUFHnItdS9FuYUT7Qkzd04Z3E/6b3plufKboOaQK3/rzjYhlvW+
+         /Xwg==
+X-Gm-Message-State: AOAM531GGti3H3BtJXDsId2BJincVmgqdtKX1sq5Gfu7jUvL7PVd3lcN
+        UFd2lOXHI3YhptlCbsNs05uE7A==
+X-Google-Smtp-Source: ABdhPJxwjavMwOHE+n1ODwYYFNhz44dTAKmAcPmhdGkziT2QVK5lAqeefbljMchSOuIx6t1sYrSA2w==
+X-Received: by 2002:adf:fecc:: with SMTP id q12mr2761099wrs.317.1615372862210;
+        Wed, 10 Mar 2021 02:41:02 -0800 (PST)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id x11sm8453405wmi.3.2021.03.10.02.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 02:41:01 -0800 (PST)
+Date:   Wed, 10 Mar 2021 10:40:58 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     mazziesaccount@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v3 07/15] mfd: Support for ROHM BD71815 PMIC core
+Message-ID: <20210310104058.GH701493@dell>
+References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+ <aaec00c776c83d301cfe66685ca9c8e01cccc9d8.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <37859f29-dc59-d6c2-6f92-abaae32ee4ab@physik.fu-berlin.de>
- <20210309.110812.234617387417457658.davem@davemloft.net> <CAHk-=whgiPiFy9Ye_t=fV9J8VdqgZW5XQcb-1z8PgpQbVBWqCQ@mail.gmail.com>
- <20210309.162454.822491855062735992.davem@davemloft.net>
-In-Reply-To: <20210309.162454.822491855062735992.davem@davemloft.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 10 Mar 2021 11:40:47 +0100
-Message-ID: <CAMuHMdXAZzURKDWuLdUM=YZ8_OoYQAPuho8Qg3ckv3nkOujk4A@mail.gmail.com>
-Subject: Re: [GIT] SPARC
-To:     David Miller <davem@davemloft.net>
-Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aaec00c776c83d301cfe66685ca9c8e01cccc9d8.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Mon, 08 Mar 2021, Matti Vaittinen wrote:
 
-Good to see you're back!
+> Add core support for ROHM BD71815 Power Management IC.
+> 
+> The IC integrates regulators, a battery charger with a coulomb counter,
+> a real-time clock (RTC), clock gate and general-purpose outputs (GPO).
+> 
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
+> Changes since v2:
+>   - styling / clean-ups suggested by Lee
+>   - corrected clk-mode dt property values to match changed bindings
+> 
+>  drivers/mfd/Kconfig              |  15 +-
+>  drivers/mfd/rohm-bd71828.c       | 486 +++++++++++++++++++-------
+>  include/linux/mfd/rohm-bd71815.h | 563 +++++++++++++++++++++++++++++++
+>  include/linux/mfd/rohm-bd71828.h |   3 +
+>  4 files changed, 934 insertions(+), 133 deletions(-)
+>  create mode 100644 include/linux/mfd/rohm-bd71815.h
 
-On Wed, Mar 10, 2021 at 1:27 AM David Miller <davem@davemloft.net> wrote:
-> From: Linus Torvalds <torvalds@linux-foundation.org>
-> Date: Tue, 9 Mar 2021 11:27:41 -0800
-> > On Tue, Mar 9, 2021 at 11:08 AM David Miller <davem@davemloft.net> wrote:
-> > (And yes, I prefer lore.kernel.org over marc, although for single
-> > patches it doesn't make much of a difference. For patch series, I find
-> > 'b4' so convenient that I definitely want the patch to show up on
-> > lore.kernel.org).
->
-> Sadly, lore does not archive sparclinux@vger.kernel.org, so there
-> isn't much choice in this case.
+[...]
 
-Which is only an "ask Konstantin" (CCed) away, isn't it?
+> diff --git a/include/linux/mfd/rohm-bd71815.h b/include/linux/mfd/rohm-bd71815.h
+> new file mode 100644
+> index 000000000000..9927aadac234
+> --- /dev/null
+> +++ b/include/linux/mfd/rohm-bd71815.h
+> @@ -0,0 +1,563 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/*
+> + *
 
-Gr{oetje,eeting}s,
+Nit: If you rework this for any reason, please remove this line.
 
-                        Geert
+For my own reference (apply this as-is to your sign-off block):
+
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
