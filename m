@@ -2,66 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48000334630
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16369334632
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhCJSB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:01:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58872 "EHLO mail.kernel.org"
+        id S233282AbhCJSBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:01:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232852AbhCJSBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:01:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B24664F3A;
-        Wed, 10 Mar 2021 18:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615399260;
-        bh=l8kPs4iqhyL1QS3Vh9N72C+xubL3d2D30IguIQxkbjI=;
+        id S233368AbhCJSB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:01:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ED3964FAB;
+        Wed, 10 Mar 2021 18:01:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615399286;
+        bh=nmBnWUW/EBCBjUO3cuezAL9YIQYYT7/E+Zau1+tfllg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WghfUsbT38yiRp41uiZGn3Rnm1ziKc91OwuSOg7CXqKN+rMpdbMH6Vgmqcxx4PeQk
-         sugn6ki/07/6QRm7HgxdlfhnAyhWprElF1gVOTfsS4NihmhGBMAF8KWvV6S1U5qto3
-         kWirdYzFGAtp+t9FbObnz1XdH0GbLe8YIn8BDaZs=
-Date:   Wed, 10 Mar 2021 19:00:58 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH 5.10 14/49] net: ipa: ignore CHANNEL_NOT_RUNNING errors
-Message-ID: <YEkJWuKZCDv763Gn@kroah.com>
-References: <20210310132321.948258062@linuxfoundation.org>
- <20210310132322.413240905@linuxfoundation.org>
- <CA+G9fYthEr7TtFBpAXxQfDtwxCe+qg=bbE74nPQ+mpGmSSJ2dw@mail.gmail.com>
- <a1d30ddd-2c2e-325b-f401-2e8461abba25@linaro.org>
+        b=LZEU0AHJCK4sl63V+mLsSn1vNnJ5QckmFW1n7FsbcSW/OkuERkVtRJoQe8JOrkXXb
+         uWWwFKGldFtGhY0jeevpHEwqnZy1/nTcHEfihFfOXb/8dwjJ4r8jsfwyjU7Pja8oV3
+         hVWV46xTpLIc7WXdtSUEBlmGtPj2k1Tkvd20ZkaUSiDiQVS+j9lQMzgSHip1+y/NvU
+         uMJc/U56CJxidI8Pp1+f+4k6KMvRA0whJzO8he023+D0a7dWq4wAmRzKuT/dAE+J0O
+         lj18VMhTTZXce8wmQXP7jD/aL1ly8uhQdGzQQYRmiuvWV9cxSWt4hiIA5SEWewwJ9L
+         0QJBqVv3lhbrQ==
+Date:   Wed, 10 Mar 2021 20:01:02 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
+        b.thiel@posteo.de, jmattson@google.com, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, corbet@lwn.net
+Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
+Message-ID: <YEkJXu262YDa8ZaK@kernel.org>
+References: <cover.1615250634.git.kai.huang@intel.com>
+ <20210309093037.GA699@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a1d30ddd-2c2e-325b-f401-2e8461abba25@linaro.org>
+In-Reply-To: <20210309093037.GA699@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:48:03AM -0600, Alex Elder wrote:
-> On 3/10/21 11:36 AM, Naresh Kamboju wrote:
-> > On Wed, 10 Mar 2021 at 18:56, <gregkh@linuxfoundation.org> wrote:
-> > > 
-> > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > 
-> > > From: Alex Elder <elder@linaro.org>
-> > > 
-> > > [ Upstream commit f849afcc8c3b27d7b50827e95b60557f24184df0 ]
+On Tue, Mar 09, 2021 at 10:30:37AM +0100, Borislav Petkov wrote:
+> On Tue, Mar 09, 2021 at 02:38:49PM +1300, Kai Huang wrote:
+> > This series adds KVM SGX virtualization support. The first 14 patches starting
+> > with x86/sgx or x86/cpu.. are necessary changes to x86 and SGX core/driver to
+> > support KVM SGX virtualization, while the rest are patches to KVM subsystem.
 > 
-> Upstream commit f849afcc8c3b27d7b5 is described as:
->   v5.10-rc4-1094-gf849afcc8c3b2
+> Ok, I guess I'll queue 1-14 once Sean doesn't find anything
+> objectionable then give Paolo an immutable commit to base the KVM stuff
+> ontop.
+> 
+> Unless folks have better suggestions, ofc.
 
-$ git describe --contains f849afcc8c3b27d7b50827e95b60557f24184df0
-v5.11-rc1~169^2~199^2~3
+I'm otherwise cool with that, except patch #2.
 
-> Is this being "back-ported" to v5.10 stable?
+It's based on this series:
 
-Yes, because it showed up in 5.11 :)
+https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
 
-thanks,
+It's not reasonable to create driver specific wrapper for
+sgx_free_epc_page() because there is exactly *2* call sites of the function
+in the driver.  The driver contains 10 call sites (11 after my NUMA patches
+have been applied) of sgx_free_epc_page() in total.
 
-greg k-h
+Instead, it is better to add explicit EREMOVE to those call sites.
+
+The wrapper only trashes the codebase. I'm not happy with it, given all the
+trouble to make it clean and sound.
+
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+
+/Jarkko
