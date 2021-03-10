@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AE933376E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2FD333760
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhCJIgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:36:14 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:41079 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232394AbhCJIgK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:36:10 -0500
-Received: from mail-wr1-f70.google.com ([209.85.221.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lJuK8-0003RO-Rw
-        for linux-kernel@vger.kernel.org; Wed, 10 Mar 2021 08:36:08 +0000
-Received: by mail-wr1-f70.google.com with SMTP id g2so7652236wrx.20
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:36:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=i/6qc/RQ930gzKXWVvSB83Vp2NSZq1QHYNGd1Chw3/w=;
-        b=oeVGmtcfShZu8dKswe3VX1ND+RLt6xPIMiJzXx8NK/vdyFx1CvleqyLq91pDxQ2Q5w
-         yFEBbNPMzvqUgeRCtnc6MQnPz70Swq5G1fx0Nyrxy8T5lbliITqctDygxdWdJJqjIlvO
-         xG4xq4wK5XzQo6mTqgRCd9pBuGPgJBOlHnRheYmyGUqMKrHB0OJ/tjcpC7ppNLQANHHt
-         AnSnEgQCUsczNBqzbd0DGcPiITzEP+/wjQ2XNOUSvTDtve3xixEqXQpZ1UTRhrYospeW
-         lT5t/zkcLZzNH13muBYgNbOIryWnCfYlGO0GFjfTCjHwGEIQgCowAu/EAsW5pOhr7M//
-         pjvA==
-X-Gm-Message-State: AOAM531rhQPIVo/cFuI4zzbR6jQkRS1tgYjxydQaASH7GVVpuIxwYqED
-        YvQaEnavQqSuk2oiLuTLYhSgpBYvQETotSMK6d+1tusD20khBR0t612594jhPeX/JKOZhfzaNRY
-        n6qZjMepfKdcFwjJwsMQSFwL3td7A9znnUmqt3/7bgw==
-X-Received: by 2002:adf:e94a:: with SMTP id m10mr2234004wrn.55.1615365368471;
-        Wed, 10 Mar 2021 00:36:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwEUpvv8HqbunwmpgW9dLuMjI8TkFCOSyoEzksFOj0CUbMMkau9T5AdEKH6IN5MAnbjxKn6TA==
-X-Received: by 2002:adf:e94a:: with SMTP id m10mr2233978wrn.55.1615365368280;
-        Wed, 10 Mar 2021 00:36:08 -0800 (PST)
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id m17sm28675495wrx.92.2021.03.10.00.36.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 00:36:08 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-fpga@vger.kernel.org,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        arm@kernel.org, soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [RFC v2 2/5] clk: socfpga: build together Stratix 10, Agilex and N5X clock drivers
-Date:   Wed, 10 Mar 2021 09:33:24 +0100
-Message-Id: <20210310083327.480837-3-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
-References: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
+        id S232339AbhCJIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:34:08 -0500
+Received: from m32-153.88.com ([43.250.32.153]:28197 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229763AbhCJIdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:33:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=5g4I0r/DGg6RJLF1PGE/mXjosHacIgb1ONExj
+        xL+IEk=; b=Md1VgYbQ1e7UjkYsG2OznmBYOUdKKNgeBW00F6cN2COaToPz+BKWg
+        d950Es2TvlkeJDQ/NrhyeO8oTio+CGhFAmjkvH7XfTt1VvssfWWROrTdkrWyIHmp
+        y6a78QAxULhlo5y9vlDW4mDK3WoKEcZRBGgSoTYkgBxzg3v6jloFB4=
+Received: from mipc (unknown [110.64.86.229])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgCnMiNhhEhgjH4hAA--.23797S2;
+        Wed, 10 Mar 2021 16:33:39 +0800 (CST)
+Date:   Wed, 10 Mar 2021 16:33:37 +0800
+From:   Wu XiangCheng <bobwxc@email.cn>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: [PATCH] docs/zh_CN: fix original link unknown document warning
+Message-ID: <20210310083335.GA17722@mipc>
+References: <20210310142019.27b9aa7b@canb.auug.org.au>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210310142019.27b9aa7b@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: GiKnCgCnMiNhhEhgjH4hAA--.23797S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4Utw1fGw4rWFW5Jw4Utwb_yoW8Aryrpa
+        4vkryIk3ZrAFy3Cr4kWry7tF17tF4xW398GF1j9wn5XFs5Ar1vqr42gr9rK3ZxXr40qay8
+        XrWSgryF9r4jyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUqqb7Iv0xC_KF4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
+        z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcx
+        kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWx
+        Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l42
+        xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
+        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+        wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IUUOzVUUU
+        UUU==
+X-Originating-IP: [110.64.86.229]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a multiplatform kernel there is little benefit in splitting each
-clock driver per platform because space savings are minimal.  Such split
-also complicates the code, especially after adding compile testing.
+fix original link unknown document warning in zh_CN/admin-guide/README.rst
+and admin-guide/unicode.rst which introduced by commit:
 
-Build all arm64 Intel SoCFPGA clocks together with one entry in
-Makefile.  This also removed duplicated line in the Makefile (selecting
-common part of clocks per platform).
+  550c8399d017 ("docs/zh_CN: Add zh_CN/admin-guide/README.rst")
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Wu XiangCheng <bobwxc@email.cn>
 ---
- drivers/clk/socfpga/Kconfig  | 8 ++++----
- drivers/clk/socfpga/Makefile | 7 +++----
- 2 files changed, 7 insertions(+), 8 deletions(-)
+Sorry for the inconvenience. This is a fix patch. 
+Or I could re-submit the two original patches if you need.
 
-diff --git a/drivers/clk/socfpga/Kconfig b/drivers/clk/socfpga/Kconfig
-index cae6fd9fac64..7d4772faf93d 100644
---- a/drivers/clk/socfpga/Kconfig
-+++ b/drivers/clk/socfpga/Kconfig
+ Documentation/translations/zh_CN/admin-guide/README.rst  | 2 +-
+ Documentation/translations/zh_CN/admin-guide/unicode.rst | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/translations/zh_CN/admin-guide/README.rst b/Documentation/translations/zh_CN/admin-guide/README.rst
+index 939aee115e48..99b708a416d8 100644
+--- a/Documentation/translations/zh_CN/admin-guide/README.rst
++++ b/Documentation/translations/zh_CN/admin-guide/README.rst
 @@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
--config COMMON_CLK_AGILEX
-+config COMMON_CLK_SOCFPGA64
- 	bool
--	# Intel Agilex / N5X clock controller support
--	default y if ARCH_AGILEX || ARCH_N5X
--	depends on ARCH_AGILEX || ARCH_N5X
-+	# Intel Stratix / Agilex / N5X clock controller support
-+	default y if ARCH_AGILEX || ARCH_N5X || ARCH_STRATIX10
-+	depends on ARCH_AGILEX || ARCH_N5X || ARCH_STRATIX10
-diff --git a/drivers/clk/socfpga/Makefile b/drivers/clk/socfpga/Makefile
-index e3614f758184..0446240162cf 100644
---- a/drivers/clk/socfpga/Makefile
-+++ b/drivers/clk/socfpga/Makefile
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_ARCH_SOCFPGA) += clk.o clk-gate.o clk-pll.o clk-periph.o
- obj-$(CONFIG_ARCH_SOCFPGA) += clk-pll-a10.o clk-periph-a10.o clk-gate-a10.o
--obj-$(CONFIG_ARCH_STRATIX10) += clk-s10.o
--obj-$(CONFIG_ARCH_STRATIX10) += clk-pll-s10.o clk-periph-s10.o clk-gate-s10.o
--obj-$(CONFIG_COMMON_CLK_AGILEX) += clk-agilex.o
--obj-$(CONFIG_COMMON_CLK_AGILEX) += clk-pll-s10.o clk-periph-s10.o clk-gate-s10.o
-+obj-$(CONFIG_COMMON_CLK_SOCFPGA64) += clk-s10.o \
-+				      clk-pll-s10.o clk-periph-s10.o clk-gate-s10.o \
-+				      clk-agilex.o
+ .. include:: ../disclaimer-zh_CN.rst
+ 
+-:Original: :ref:`Documentation/admin-guide/README.rst <Linux kernel release 5.x>`
++:Original: :doc:`../../../admin-guide/README`
+ 
+ :译者:
+ 
+diff --git a/Documentation/translations/zh_CN/admin-guide/unicode.rst b/Documentation/translations/zh_CN/admin-guide/unicode.rst
+index ef7f3cb2c02e..814f9ecf562b 100644
+--- a/Documentation/translations/zh_CN/admin-guide/unicode.rst
++++ b/Documentation/translations/zh_CN/admin-guide/unicode.rst
+@@ -1,6 +1,6 @@
+ .. include:: ../disclaimer-zh_CN.rst
+ 
+-:Original: :ref:`Documentation/admin-guide/unicode.rst`
++:Original: :doc:`../../../admin-guide/unicode`
+ 
+ :译者:
+ 
 -- 
-2.25.1
+2.20.1
 
