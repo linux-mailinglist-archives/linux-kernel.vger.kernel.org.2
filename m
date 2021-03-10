@@ -2,159 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9740833458F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF684334570
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbhCJRrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:47:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233495AbhCJRqm (ORCPT
+        id S233468AbhCJRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:46:40 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:54620 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231857AbhCJRqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:46:42 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EA2C061760;
-        Wed, 10 Mar 2021 09:46:41 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso7900391pjb.3;
-        Wed, 10 Mar 2021 09:46:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sHD52Sa+hkPXZ82uTwxwMMAdUbtnhYs3jM+eAa3hQC4=;
-        b=PMvgCUnE80nILtQ2zlCJoYAgUvQmTVJucA6+y4K4wxwO6YJrKobwbUSLVLeis7S1KP
-         d6UAmZakJ6HVzaoCYaOUOiQ87cpXlRynpv8Bdx94Osz6Ftkzr6wCePVsT1sWHtlg9t+u
-         iXaL0vCXp4wW9yJa4ABJ8J0FK+LgqGPjx3Z/Wa4iu0fa97r1AiOiMX+vt9tT3ltyErqS
-         tORkHF48vI39D1syGD3K2TzbOOs6S52RzC2oIl8HKh5dum7GPMi623Bz2mD2aUUIGQ3Z
-         5Tiqo/hn89JdQ0CGpkcxgi9hm/yMlCRAPcoNLPrMQszIe6HMuu6cHctnB4murDsq3NOk
-         MqEA==
+        Wed, 10 Mar 2021 12:46:22 -0500
+Received: by mail-il1-f197.google.com with SMTP id w8so13433116ilg.21
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:46:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sHD52Sa+hkPXZ82uTwxwMMAdUbtnhYs3jM+eAa3hQC4=;
-        b=hmWCTSpkuJPh0xXIYXM14ZNY+nRonHqLSU1s9WSe0rEgXMJ7NOM6XuyPKBEzCYU9ho
-         CEEyQvv9MzAEHBfr3fH3BFA382g2tVqHza1IdtnefLC4nzBI4d9QH4Plz1yu+IRpK308
-         Gos0MjFaEA1OglDStryNQvBBl43E+XDz+VP5HcDdHnvwfxX2zTG7KcegjH0slfL782IF
-         3djlLJOgU0iW0H7Jdi4utZrJEoPhYY2FpV6zN6CegeQtkPusA/ZqBG7/HY84fCTdryG/
-         ptZASPoucfiEEkKy2VEnpJPY399U4I+jirV1yzFzg29hCOfObSg8Cy+4+dH95Af3WIev
-         9eyA==
-X-Gm-Message-State: AOAM5327IAzpZ0kRCsMnYZTni2SEzbF4vQLZJnk/eYOQL2i/fPHrFMeJ
-        bzhX+AdTC8R/8xUSXPuo+oo=
-X-Google-Smtp-Source: ABdhPJy0/FEbV2UYtiznaebUra6fBNIUYPi6n9765r1hA2Y/cHKhUMldo7IUnb9SWEgqSkqvqxTrdQ==
-X-Received: by 2002:a17:90a:8908:: with SMTP id u8mr4549214pjn.135.1615398401563;
-        Wed, 10 Mar 2021 09:46:41 -0800 (PST)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id d6sm145804pfq.109.2021.03.10.09.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 09:46:41 -0800 (PST)
-From:   Yang Shi <shy828301@gmail.com>
-To:     guro@fb.com, ktkhai@virtuozzo.com, vbabka@suse.cz,
-        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
-        mhocko@suse.com, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [v9 PATCH 13/13] mm: vmscan: shrink deferred objects proportional to priority
-Date:   Wed, 10 Mar 2021 09:46:03 -0800
-Message-Id: <20210310174603.5093-14-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210310174603.5093-1-shy828301@gmail.com>
-References: <20210310174603.5093-1-shy828301@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=5FPHwToO7ZQWGqAvlF2e4QNPWZDqlPuVg12iTCyWKIU=;
+        b=l5LY27LBlRQITvAqWFKvMleCYz+ApMlmQ0yqP6GyqM55Xpl2sboCm07H3EG7epnIWj
+         NQxh/s1TrQAYjZVdy61qoN6rdtaiQRA1jl2y8Ukx0Lt4UYFQ9zABDPSVuuJTuoENy8oJ
+         KQiB7bxl0gjK1fXAhJnepX7xIcXM8z4MmAP7ZtwxfisO2ASlPljXvMjmQAK5CN1jB25k
+         PgamcYStohUgFbNbBMCZJ5tCppxFtjuGPXD2RoCRCZ/sOXSeegPBZZhQEUkaaNmyhyqv
+         B6SWfV5UbGO39dp6DFfDL7YzuXHE8s+qSG9/z5usPiPY5mPEvpqc9mLRHLSpgmlII+CC
+         m3ng==
+X-Gm-Message-State: AOAM5324sM0KZM757WVXMEfZMrPRf55tkgcTJds6Vtk55A00crW+6lr3
+        QE2ufwcfRU5iOl5pY4iMKrtZTpJTDsA1Tibrc7YGlT9ahnE/
+X-Google-Smtp-Source: ABdhPJy13ZTCtqZgR/r7EFvx5vWtdvf7fysI9carZq2GBuI7kH3NL9Io/9XRJQSAiF2B/eeNVnRoVXdvXGm9xh139sUliGoaMZaG
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:9e47:: with SMTP id i7mr3233340ioi.104.1615398381766;
+ Wed, 10 Mar 2021 09:46:21 -0800 (PST)
+Date:   Wed, 10 Mar 2021 09:46:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b750a505bd323e48@google.com>
+Subject: [syzbot] WARNING in do_user_addr_fault
+From:   syzbot <syzbot+beb50656d2e0b1940264@syzkaller.appspotmail.com>
+To:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        longman@redhat.com, mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The number of deferred objects might get windup to an absurd number, and it
-results in clamp of slab objects.  It is undesirable for sustaining workingset.
+Hello,
 
-So shrink deferred objects proportional to priority and cap nr_deferred to twice
-of cache items.
+syzbot found the following issue on:
 
-The idea is borrowed from Dave Chinner's patch:
-https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
+HEAD commit:    05a59d79 Merge git://git.kernel.org:/pub/scm/linux/kernel/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=107f822ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=750735fdbc630971
+dashboard link: https://syzkaller.appspot.com/bug?extid=beb50656d2e0b1940264
 
-Tested with kernel build and vfs metadata heavy workload in our production
-environment, no regression is spotted so far.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Signed-off-by: Yang Shi <shy828301@gmail.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+beb50656d2e0b1940264@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+raw_local_irq_restore() called with IRQs enabled
+WARNING: CPU: 0 PID: 8407 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+Modules linked in:
+CPU: 0 PID: 8407 Comm: syz-fuzzer Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d 11 d1 ad 04 00 74 01 c3 48 c7 c7 20 79 6b 89 c6 05 00 d1 ad 04 01 e8 75 5b be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
+RSP: 0000:ffffc900010b7ab0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff888032907120 RCX: 0000000000000000
+RDX: ffff888013bde340 RSI: ffffffff815b4435 RDI: fffff52000216f48
+RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815ad19e R11: 0000000000000000 R12: 0000000000000003
+R13: ffffed1006520e24 R14: 0000000000000001 R15: ffff8880b9c36000
+CR2: 000000c0002de000 CR3: 000000001a614000 CR4: 00000000001506f0
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
+ pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
+ __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
+ do_user_addr_fault+0x483/0x1210 arch/x86/mm/fault.c:1390
+RIP: 0033:0x46cf33
+Code: 00 48 81 eb 00 01 00 00 48 81 c7 00 01 00 00 48 81 fb 00 01 00 00 73 82 e9 07 ff ff ff c5 fd ef c0 48 81 fb 00 00 00 02 73 46 <c5> fe 7f 07 c5 fe 7f 47 20 c5 fe 7f 47 40 c5 fe 7f 47 60 48 81 eb
+RSP: 002b:000000c0000c35f0 EFLAGS: 00010287
+RAX: 0000000000000000 RBX: 00000000000001a0 RCX: 00000000000001a0
+RDX: 00000000000001a0 RSI: 0000000000000000 RDI: 000000c0002de000
+R10: 00007ff0c6f30b00 R11: 0000000000000000 R12: 0000000000000040
+
+
 ---
- mm/vmscan.c | 46 +++++++++++-----------------------------------
- 1 file changed, 11 insertions(+), 35 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 9a2dfeaa79f4..6a0a91b23597 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -662,7 +662,6 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
- 	 */
- 	nr = xchg_nr_deferred(shrinker, shrinkctl);
- 
--	total_scan = nr;
- 	if (shrinker->seeks) {
- 		delta = freeable >> priority;
- 		delta *= 4;
-@@ -676,37 +675,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
- 		delta = freeable / 2;
- 	}
- 
-+	total_scan = nr >> priority;
- 	total_scan += delta;
--	if (total_scan < 0) {
--		pr_err("shrink_slab: %pS negative objects to delete nr=%ld\n",
--		       shrinker->scan_objects, total_scan);
--		total_scan = freeable;
--		next_deferred = nr;
--	} else
--		next_deferred = total_scan;
--
--	/*
--	 * We need to avoid excessive windup on filesystem shrinkers
--	 * due to large numbers of GFP_NOFS allocations causing the
--	 * shrinkers to return -1 all the time. This results in a large
--	 * nr being built up so when a shrink that can do some work
--	 * comes along it empties the entire cache due to nr >>>
--	 * freeable. This is bad for sustaining a working set in
--	 * memory.
--	 *
--	 * Hence only allow the shrinker to scan the entire cache when
--	 * a large delta change is calculated directly.
--	 */
--	if (delta < freeable / 4)
--		total_scan = min(total_scan, freeable / 2);
--
--	/*
--	 * Avoid risking looping forever due to too large nr value:
--	 * never try to free more than twice the estimate number of
--	 * freeable entries.
--	 */
--	if (total_scan > freeable * 2)
--		total_scan = freeable * 2;
-+	total_scan = min(total_scan, (2 * freeable));
- 
- 	trace_mm_shrink_slab_start(shrinker, shrinkctl, nr,
- 				   freeable, delta, total_scan, priority);
-@@ -745,10 +716,15 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
- 		cond_resched();
- 	}
- 
--	if (next_deferred >= scanned)
--		next_deferred -= scanned;
--	else
--		next_deferred = 0;
-+	/*
-+	 * The deferred work is increased by any new work (delta) that wasn't
-+	 * done, decreased by old deferred work that was done now.
-+	 *
-+	 * And it is capped to two times of the freeable items.
-+	 */
-+	next_deferred = max_t(long, (nr + delta - scanned), 0);
-+	next_deferred = min(next_deferred, (2 * freeable));
-+
- 	/*
- 	 * move the unused scan count back into the shrinker in a
- 	 * manner that handles concurrent updates.
--- 
-2.26.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
