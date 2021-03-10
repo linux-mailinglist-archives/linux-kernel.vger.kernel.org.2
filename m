@@ -2,124 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EA13339DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82393339E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbhCJKXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        id S231940AbhCJKX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhCJKW6 (ORCPT
+        with ESMTP id S229657AbhCJKXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:22:58 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE277C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:22:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=c1dSdngbby5wMSRQlaNZcuWULVXSILfowsqxzDo6joU=; b=TNVFzqOQlsR2qBo7UCt3+wWpmm
-        vTX278P9elr9j8335LznMpmwRdrwT8CjFl/ynuwTUTevpQWpRtD9zSKdEcovXMWbFa5lsQG76B/c2
-        kh4i11L92CBXpacl5tKDcLg0vMW2B9eI3OR0r6slEo328ttmzhW6wWKY+dLfGbU5+TeaJsrh9he5Q
-        oqxVveOMZR08I8Z1LOdSMpgxzyNkHTrKXP7pbjOXhN6v8aymh47y9mGelXpYWYhjijzL4suQJ9nzY
-        Z6dGmDLS5Lk3/uFYq4K3B6BSN74nslYG4ATBCepY3rK6TiW+DSrniQlyn1kQlm8yPWWKhO0Ce78ZT
-        r2f/ITnQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJvzN-003A8s-Gd; Wed, 10 Mar 2021 10:22:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DC037300455;
-        Wed, 10 Mar 2021 11:22:48 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9A28F234E3604; Wed, 10 Mar 2021 11:22:48 +0100 (CET)
-Date:   Wed, 10 Mar 2021 11:22:48 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     hpa@zytor.com
-Cc:     Steven Rostedt <rostedt@goodmis.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: The killing of ideal_nops[]
-Message-ID: <YEid+HQnqgnt3iyY@hirez.programming.kicks-ass.net>
-References: <YEepKVHc5kkDybu6@hirez.programming.kicks-ass.net>
- <20210309120519.7c6bbb97@gandalf.local.home>
- <YEfnnFUbizbJUQig@hirez.programming.kicks-ass.net>
- <362BD2A4-016D-4F6B-8974-92C84DC0DDB4@zytor.com>
- <YEiN+/Zp4uE/ISWD@hirez.programming.kicks-ass.net>
- <YEiS8Xws0tTFmMJp@hirez.programming.kicks-ass.net>
- <YEiZXtB74cnsLTx/@hirez.programming.kicks-ass.net>
+        Wed, 10 Mar 2021 05:23:44 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3B2C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:23:43 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id a18so22655415wrc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:23:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=i9Y/lpV+3eqs1cpuuW1CZ+hgCgLS+DhozHv8ISeLWGY=;
+        b=Kfeii9nE4ZKnTyWx5UmmhF9q83vyk22XkyetBGYNVMxzVKsL+Lclpqh9POFCia192v
+         9dcnjnOoaDwCmXqqU/KwcNLrGkAppGI2Xp+fhMaof6d6EhDVwovryi2gPZKooIhV1NpG
+         YyxpR8/62q0ejk+CGMVVTgWTOzISJ4Fct5IdvrxJBdoGDMsby0OdO/U2hcVzb2GNarqh
+         I7TjAiSigO/wFTsTrJWdr612nFVgebzxyIL4iAv7YNVOfALPp6kjLuxgw0SaXwh8zxQj
+         qGOQR0vHKruzgA367zRYENg+2kkxXB1i1JM0/vMxn6RmbKcaNhtDAOWQirobmlxrInaP
+         F5qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i9Y/lpV+3eqs1cpuuW1CZ+hgCgLS+DhozHv8ISeLWGY=;
+        b=Vtumih3/AXPk+5x4ZKwtA+vhNw8AfF3lX6E5b8N5VhFBjmYLdfYZ6KBw/hWjrXhgYx
+         0ozfoIugsg1HaIbqyN+6m3S/mAoxUAQgGAHJx5j5VKxacejpYttQK9DY1to4CtU2b+QZ
+         8NfqOLCnExvi1ZigXWlYF8Zqaks5fPIsBZvqkuIGnK64zZNxJrUBPoo/ndERVkG6uS9C
+         ExAiqOArdxQ/uSXEMD7D8NPgIHEayE0B0cGGrdJjaJlSRyl5GcDCxk5d4gHE9Tu2MG4Z
+         Gy/TFM7sA8OKzj8dB3OOMd4Q1OYjBnxW162XyISOjX52Svn/MzemvUC7UvLEt8UH4/cY
+         bBUg==
+X-Gm-Message-State: AOAM5316YaugpSwknOu5ilR6vIhYKm3WHynNPT+4qOpa9TLbueyzZA+q
+        PNtcHMC3CjlYh+B71DV56exx8w==
+X-Google-Smtp-Source: ABdhPJxn9ebVqJvF8ImEFbKjT1QeBgvP7bS2omQk3vudL3fVsjieqKX/wP2R0dHt3jbY8soFgYzPeA==
+X-Received: by 2002:a5d:5047:: with SMTP id h7mr2827756wrt.111.1615371822522;
+        Wed, 10 Mar 2021 02:23:42 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id r7sm29118896wre.25.2021.03.10.02.23.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Mar 2021 02:23:41 -0800 (PST)
+Subject: Re: [PATCH V2 1/2] dt-bindings: nvmem: add Broadcom's NVRAM
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20210305183236.11784-1-zajec5@gmail.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <4be3e736-8bd5-b9e4-9c5b-e69b164e152d@linaro.org>
+Date:   Wed, 10 Mar 2021 10:23:36 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEiZXtB74cnsLTx/@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210305183236.11784-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:03:10AM +0100, Peter Zijlstra wrote:
-> -void __init arch_init_ideal_nops(void)
-> -{
-> -	switch (boot_cpu_data.x86_vendor) {
-> -	case X86_VENDOR_INTEL:
-> -		/*
-> -		 * Due to a decoder implementation quirk, some
-> -		 * specific Intel CPUs actually perform better with
-> -		 * the "k8_nops" than with the SDM-recommended NOPs.
-> -		 */
-> -		if (boot_cpu_data.x86 == 6 &&
-> -		    boot_cpu_data.x86_model >= 0x0f &&
-> -		    boot_cpu_data.x86_model != 0x1c &&
-> -		    boot_cpu_data.x86_model != 0x26 &&
-> -		    boot_cpu_data.x86_model != 0x27 &&
-> -		    boot_cpu_data.x86_model < 0x30) {
-> -			ideal_nops = k8_nops;
-> -		} else if (boot_cpu_has(X86_FEATURE_NOPL)) {
-> -			   ideal_nops = p6_nops;
-> -		} else {
-> -#ifdef CONFIG_X86_64
-> -			ideal_nops = k8_nops;
-> -#else
-> -			ideal_nops = intel_nops;
-> -#endif
-> -		}
-> -		break;
-> -
-> -	case X86_VENDOR_HYGON:
-> -		ideal_nops = p6_nops;
-> -		return;
-> -
-> -	case X86_VENDOR_AMD:
-> -		if (boot_cpu_data.x86 > 0xf) {
-> -			ideal_nops = p6_nops;
-> -			return;
-> -		}
-> -
-> -		fallthrough;
-> -
-> -	default:
-> -#ifdef CONFIG_X86_64
-> -		ideal_nops = k8_nops;
-> -#else
-> -		if (boot_cpu_has(X86_FEATURE_K8))
-> -			ideal_nops = k8_nops;
-> -		else if (boot_cpu_has(X86_FEATURE_K7))
-> -			ideal_nops = k7_nops;
-> -		else
-> -			ideal_nops = intel_nops;
-> -#endif
-> -	}
-> -}
 
-After this FEATURE_NOPL is unused except for required-features for
-x86_64. FEATURE_K8 is only used for PTI and FEATURE_K7 is unused.
 
-AFAICT this negatively affects lots of 32bit (DONTCARE) and 32bit on
-64bit CPUs (CARELESS) and early AMD (K8) which is from 2003 and almost
-2 decades old by now (SHRUG).
+On 05/03/2021 18:32, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> Broadcom's NVRAM structure contains device data and can be accessed
+> using I/O mapping.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
 
-Everything x86_64 since AMD K10 (2007) was using p6_nops.
 
-And per FEATURE_NOPL being required for x86_64, all those CPUs can use
-p6_nops. So stop caring about NOPs, simplify things and get on with life
-:-)
+Applied both patches!
+
+
+thanks
+-srini
+
+> V2: Use Broadcom's NVRAM specific binding. Generic "nvmem-iomap" binding
+>      didn't make much sense. Thanks Srinivas!
+> ---
+>   .../devicetree/bindings/nvmem/brcm,nvram.yaml | 34 +++++++++++++++++++
+>   1 file changed, 34 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/nvmem/brcm,nvram.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/nvmem/brcm,nvram.yaml b/Documentation/devicetree/bindings/nvmem/brcm,nvram.yaml
+> new file mode 100644
+> index 000000000000..58ff6b0bdb1a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/nvmem/brcm,nvram.yaml
+> @@ -0,0 +1,34 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/nvmem/brcm,nvram.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Broadcom's NVRAM
+> +
+> +description: |
+> +  Broadcom's NVRAM is a structure containing device specific environment
+> +  variables. It is used for storing device configuration, booting parameters
+> +  and calibration data.
+> +
+> +  NVRAM can be accessed on Broadcom BCM47xx MIPS and Northstar ARM Cortex-A9
+> +  devices usiong I/O mapped memory.
+> +
+> +maintainers:
+> +  - Rafał Miłecki <rafal@milecki.pl>
+> +
+> +allOf:
+> +  - $ref: "nvmem.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    const: brcm,nvram
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    nvram@1eff0000 {
+> +            compatible = "brcm,nvram";
+> +            reg = <0x1eff0000 0x10000>;
+> +    };
+> 
