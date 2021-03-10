@@ -2,85 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16369334632
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D91334631
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhCJSBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:01:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233368AbhCJSB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:01:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ED3964FAB;
-        Wed, 10 Mar 2021 18:01:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615399286;
-        bh=nmBnWUW/EBCBjUO3cuezAL9YIQYYT7/E+Zau1+tfllg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LZEU0AHJCK4sl63V+mLsSn1vNnJ5QckmFW1n7FsbcSW/OkuERkVtRJoQe8JOrkXXb
-         uWWwFKGldFtGhY0jeevpHEwqnZy1/nTcHEfihFfOXb/8dwjJ4r8jsfwyjU7Pja8oV3
-         hVWV46xTpLIc7WXdtSUEBlmGtPj2k1Tkvd20ZkaUSiDiQVS+j9lQMzgSHip1+y/NvU
-         uMJc/U56CJxidI8Pp1+f+4k6KMvRA0whJzO8he023+D0a7dWq4wAmRzKuT/dAE+J0O
-         lj18VMhTTZXce8wmQXP7jD/aL1ly8uhQdGzQQYRmiuvWV9cxSWt4hiIA5SEWewwJ9L
-         0QJBqVv3lhbrQ==
-Date:   Wed, 10 Mar 2021 20:01:02 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
-        b.thiel@posteo.de, jmattson@google.com, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, corbet@lwn.net
-Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
-Message-ID: <YEkJXu262YDa8ZaK@kernel.org>
-References: <cover.1615250634.git.kai.huang@intel.com>
- <20210309093037.GA699@zn.tnic>
+        id S233137AbhCJSBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:01:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232387AbhCJSBJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:01:09 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E61C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:01:09 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id e6so11902892pgk.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:01:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9jmoenAGMFpKHfMNt6zq7dsNBrDUYlAgJfLcxbv2cwY=;
+        b=DSDRCT2Gn+BkaXVqZYpRnM7Vhl8kTYeebkTTSNqc3y/R+hb3F3LaGSctN8hAACu8uU
+         elN/UzMtTqpKCHQBiyFOJiubnRHsoveuM8VqSRjPWzZDXq9XiecLx5mVmSz/LKqtLqZo
+         7HvM9Z6lk92sjl9yJ1au8+pZSyqWM1fvkiUl4mcGLdPtzy1JlMdTFUYrIw1GcPSYBFUd
+         tPwipmpQRHoZn0H4A3vkjF38cUtcDdmrcm1AcoijWUlVE4uG5V/+u5XP0uUREbfQ/2im
+         Fc3Ligirw05nZA5HdqP4gXTnEGNs4ETlwRS7lgHm2onoBfgaTTeaV4em9NDqSAKHe8mH
+         XQbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=9jmoenAGMFpKHfMNt6zq7dsNBrDUYlAgJfLcxbv2cwY=;
+        b=MR20fNUIJ5TTSkuvP8I6c2ddXW8R+m1WOKsaMrTG+0s47Kx4KAL8yeP0mUBZ7L+Ofc
+         Z7Uo/jEKRXPvfSYfSV33OIFYNoSL6g0pxAjhTkDUJIFGiG3ptdRe78SUE9/9K7Kgy55L
+         pVN7j7yhBYaIR1nqaNf2JqW3pinHZ3cbJ6vgHV3f8tdcZjEUHlDuBRsK98NfJaEWNRc0
+         NiIqWQG2KuD+YjvrvTH7HNSbqDYQGT99LKCTNGgKo7dbcUWDoufbLG9ZKStpp3oztk5o
+         2Bl+ykXbGar+Po8PreihXPbdDquH2hsZeDQm4isc3eLuehMjHes/im03zxkzJEG+hsWJ
+         h3jg==
+X-Gm-Message-State: AOAM530RCGMH09y2Q91je0PmU50dvMdPtFpQ8ff/j3vjaSlfQnhw4qzV
+        +AYUo2zK0tHKh24SV/cbZg4=
+X-Google-Smtp-Source: ABdhPJwzWYaUv5g003e42TPTQsAVKPBZ10h8/tuAidHFZ0TQfUXW/Oxu4Xxn3w9OBBdo3pAwzS81TA==
+X-Received: by 2002:a63:cd09:: with SMTP id i9mr3806659pgg.407.1615399269162;
+        Wed, 10 Mar 2021 10:01:09 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
+        by smtp.gmail.com with ESMTPSA id 35sm217683pgr.14.2021.03.10.10.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 10:01:08 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Dias <joaodias@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH v3] mm: page_alloc: dump migrate-failed pages
+Date:   Wed, 10 Mar 2021 10:01:04 -0800
+Message-Id: <20210310180104.517886-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309093037.GA699@zn.tnic>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 10:30:37AM +0100, Borislav Petkov wrote:
-> On Tue, Mar 09, 2021 at 02:38:49PM +1300, Kai Huang wrote:
-> > This series adds KVM SGX virtualization support. The first 14 patches starting
-> > with x86/sgx or x86/cpu.. are necessary changes to x86 and SGX core/driver to
-> > support KVM SGX virtualization, while the rest are patches to KVM subsystem.
-> 
-> Ok, I guess I'll queue 1-14 once Sean doesn't find anything
-> objectionable then give Paolo an immutable commit to base the KVM stuff
-> ontop.
-> 
-> Unless folks have better suggestions, ofc.
+Currently, debugging CMA allocation failures is quite limited.
+The most commong source of these failures seems to be page
+migration which doesn't provide any useful information on the
+reason of the failure by itself. alloc_contig_range can report
+those failures as it holds a list of migrate-failed pages.
 
-I'm otherwise cool with that, except patch #2.
+page refcount, mapcount with page flags on dump_page are
+helpful information to deduce the culprit. Furthermore,
+dump_page_owner was super helpful to find long term pinner
+who initiated the page allocation.
 
-It's based on this series:
+The reason it approach with dynamic debug is the debug message
+could emit lots of noises as alloc_contig_range calls more
+frequently since it's a best effort allocator.
 
-https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
+There are two ifdefery conditions to support common dyndbg options:
 
-It's not reasonable to create driver specific wrapper for
-sgx_free_epc_page() because there is exactly *2* call sites of the function
-in the driver.  The driver contains 10 call sites (11 after my NUMA patches
-have been applied) of sgx_free_epc_page() in total.
+- CONFIG_DYNAMIC_DEBUG_CORE && DYNAMIC_DEBUG_MODULE
+It aims for supporting the feature with only specific file
+with adding ccflags.
 
-Instead, it is better to add explicit EREMOVE to those call sites.
+- CONFIG_DYNAMIC_DEBUG
+It aims for supporting the feature with system wide globally.
 
-The wrapper only trashes the codebase. I'm not happy with it, given all the
-trouble to make it clean and sound.
+A simple example to enable the feature:
 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+Admin could enable the dump like this(by default, disabled)
 
+	echo "func dump_migrate_failure_pages +p" > control
 
-/Jarkko
+Admin could disable it.
+
+	echo "func dump_migrate_failure_pages =_" > control
+
+Detail goes Documentation/admin-guide/dynamic-debug-howto.rst
+
+A concern is utility functions in dump_page uses inconsistent
+loglevels.
+
+__dump_page: KERN_WARNING
+__dump_page_owner: KERN_ALERT
+        stack_trace_print: KERN_DEFAULT
+
+There are bunch of places to use the inconsistent loglevel
+utility functions(e.g., just grep dump_page/strace_trace_print).
+It's unfortunate but here we are. It could be addressed
+different patchset.
+
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+* from v2 - https://lore.kernel.org/linux-mm/20210308202047.1903802-1-minchan@kernel.org/
+  * remove ratelimit - mhocko
+
+* from v1 - https://lore.kernel.org/linux-mm/20210217163603.429062-1-minchan@kernel.org/
+  * use dynamic debugging with system wide instead of per-call site - mhocko
+
+ mm/page_alloc.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3e4b29ee2b1e..f42f3e208794 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8453,6 +8453,27 @@ static unsigned long pfn_max_align_up(unsigned long pfn)
+ 				pageblock_nr_pages));
+ }
+ 
++#if defined(CONFIG_DYNAMIC_DEBUG) || \
++	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
++static void alloc_contig_dump_pages(struct list_head *page_list)
++{
++	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
++			"migrate failure");
++
++	if (DYNAMIC_DEBUG_BRANCH(descriptor)) {
++		struct page *page;
++
++		WARN(1, "failed callstack");
++		list_for_each_entry(page, page_list, lru)
++			dump_page(page, "migration failure");
++	}
++}
++#else
++static inline void alloc_contig_dump_pages(struct list_head *page_list)
++{
++}
++#endif
++
+ /* [start, end) must belong to a single zone. */
+ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 					unsigned long start, unsigned long end)
+@@ -8496,6 +8517,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+ 	}
+ 	if (ret < 0) {
++		alloc_contig_dump_pages(&cc->migratepages);
+ 		putback_movable_pages(&cc->migratepages);
+ 		return ret;
+ 	}
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
