@@ -2,174 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5A1334644
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F8633464D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhCJSH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:07:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhCJSH3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:07:29 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3D1C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:07:29 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id 18so12621055pfo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:07:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Zxiip2c1Jbn1bNQkx0KWERIv1qGU2NgyRSD/41MH1PQ=;
-        b=sWH/DMKMNLZLpIijHk76vZJm0wBKHgHee05dHNVrYaqg4afe2O0sENf3b8h5k8dqqQ
-         eUl6jzWb6id/wwcENgDwVwHFYfIWA9OkVSC4U4u36/BGy4FGRUvgQUyBJgV1rL1tegYl
-         nFdFyHmALWSITuq3H+4HVxRclEmxvABye5qWOzsom1EtvAuN0KjqhjRJz5alwHJIzkEm
-         RXupMVoHoiK5AQZZHj/XiCwhxH4/HFFP4MDsK0f77yKZD6DJaTFl7ecpOxesBHl+0vYR
-         0tlA5jmXQRSBIhTkdkHjV1c8pfezT8ih2YCASBj+mism15sQxcsAPszgPTyTbz1cylMQ
-         OF2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Zxiip2c1Jbn1bNQkx0KWERIv1qGU2NgyRSD/41MH1PQ=;
-        b=BK42g+/eAYWt8iAldeKAI4uGB18yxrHvfMbM5w0aCrzMSu8maLYrFfaegn9eTSMs0T
-         bBaOSsIPFHQg8ECUlY+NhHrbl0bbv/IqfohJ2Zk82ot85AKZOjVWaK7CwPrRcYIkZSyY
-         XeyNklI0P9nnw12fOWqLAX+iIg0/V6OdI397cWJZDJPTcBIi46uUTrXggr+fsLVXdHKF
-         VxJbx2ri09ZqGx2tEWtRb7wH7kfEsZgvCYfJ6FOAOBchUD15v6RgNLqNF29LCBy7HErd
-         o+1KILwQ0ET88HZiZuOrnn6fwiW67/gL2jpp3PQVcc33eI65rExCoQGpjw06Kl7GOShk
-         593Q==
-X-Gm-Message-State: AOAM530v7pET/MdfhgaJ837h7IRJ9IIyA044I9OdRqpZF9QpjNgUf0PK
-        XrpEkRQBRAGc5yj26vl7PASAy1Tphd8=
-X-Google-Smtp-Source: ABdhPJyhnhncF9bbuxh/qByGIrJSZdLQDYG8wDeZD8q3uMLGvjC1p8zeIuLoR7GeDQr6G3CLDJfkRg==
-X-Received: by 2002:a63:505d:: with SMTP id q29mr3731904pgl.218.1615399648986;
-        Wed, 10 Mar 2021 10:07:28 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
-        by smtp.gmail.com with ESMTPSA id d19sm67477pjs.55.2021.03.10.10.07.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 10:07:27 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 10 Mar 2021 10:07:25 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
-Message-ID: <YEkK3SktwS46Fp9o@google.com>
-References: <20210308202047.1903802-1-minchan@kernel.org>
- <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
- <YEefLYiX6rF3Uk4E@google.com>
- <YEh4doXvyuRl5BDB@google.com>
- <YEjEefQpBHV5eBXj@dhcp22.suse.cz>
- <YEjuUHBDKu2uX4EO@google.com>
- <YEj4AGuBn/Q4CIuY@dhcp22.suse.cz>
- <YEj8qACYFmbckWk7@google.com>
+        id S233188AbhCJSKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:10:05 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:52862 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232387AbhCJSJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:09:45 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615399785; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=4UDlzegvOLBDg09bYlcNach0n7DBzaGRIBBydQB+MVU=; b=Rgy7GzYSWFmzfegMlZ7iyZ271r/W4K92AtkOgcUzxH0yLmdwH4bPAKEXAtUSDwNSGormhNSn
+ nwajvh0k9Uv1BB9ii5lJJ4GfngV8iTgmdD/h/LyVYNga/2h1VTbvOWBoUOI1qkl2flGQsjV0
+ w3oKLztROxayDm/iAIzY2iXRC8c=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60490b5cf14e98d35db6fb63 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 18:09:32
+ GMT
+Sender: jackp=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CADE7C43468; Wed, 10 Mar 2021 18:09:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jackp)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF1ABC43465;
+        Wed, 10 Mar 2021 18:09:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DF1ABC43465
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
+Date:   Wed, 10 Mar 2021 10:09:25 -0800
+From:   Jack Pham <jackp@codeaurora.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Prevent EP queuing while stopping
+ transfers
+Message-ID: <20210310180925.GA16385@jackp-linux.qualcomm.com>
+References: <1615374130-28353-1-git-send-email-wcheng@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YEj8qACYFmbckWk7@google.com>
+In-Reply-To: <1615374130-28353-1-git-send-email-wcheng@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 09:06:48AM -0800, Minchan Kim wrote:
-> On Wed, Mar 10, 2021 at 05:46:56PM +0100, Michal Hocko wrote:
-> > On Wed 10-03-21 08:05:36, Minchan Kim wrote:
-> > > On Wed, Mar 10, 2021 at 02:07:05PM +0100, Michal Hocko wrote:
-> > [...]
-> > > > The is a lot of churn indeed. Have you considered adding $FOO_lglvl
-> > > > variants for those so that you can use them for your particular case
-> > > > without affecting most of existing users? Something similar we have
-> > > > discussed in other email thread regarding lru_add_drain_all?
-> > > 
-> > > I thought that way but didn't try since it couldn't make them
-> > > atomic(For example, other printk place in other context will
-> > > affect by the $FOO_lglvl).
-> > 
-> > I do not follow. I meant something like the following (likely incomplete
-> > but you should get an idea).
-> 
-> Oh, I thought you wanted to override loglevel temporally.
-> 
-> old_lvl = save_printk_lvl(new level);
-> dump_page();
-> restore_printk_lvl(old_lvl);
-> 
-> > 
-> > diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
-> > index 3468794f83d2..71b402eb8f78 100644
-> > --- a/include/linux/page_owner.h
-> > +++ b/include/linux/page_owner.h
-> > @@ -14,7 +14,7 @@ extern void __set_page_owner(struct page *page,
-> >  extern void __split_page_owner(struct page *page, unsigned int nr);
-> >  extern void __copy_page_owner(struct page *oldpage, struct page *newpage);
-> >  extern void __set_page_owner_migrate_reason(struct page *page, int reason);
-> > -extern void __dump_page_owner(struct page *page);
-> > +extern void __dump_page_owner(struct page *page, const char *loglvl);
-> >  extern void pagetypeinfo_showmixedcount_print(struct seq_file *m,
-> >  					pg_data_t *pgdat, struct zone *zone);
-> >  
-> > @@ -46,10 +46,10 @@ static inline void set_page_owner_migrate_reason(struct page *page, int reason)
-> >  	if (static_branch_unlikely(&page_owner_inited))
-> >  		__set_page_owner_migrate_reason(page, reason);
-> >  }
-> > -static inline void dump_page_owner(struct page *page)
-> > +static inline void dump_page_owner(struct page *page, const char *loglvl)
-> >  {
-> >  	if (static_branch_unlikely(&page_owner_inited))
-> > -		__dump_page_owner(page);
-> > +		__dump_page_owner(page, loglvl);
-> >  }
-> >  #else
-> >  static inline void reset_page_owner(struct page *page, unsigned int order)
-> > @@ -69,7 +69,7 @@ static inline void copy_page_owner(struct page *oldpage, struct page *newpage)
-> >  static inline void set_page_owner_migrate_reason(struct page *page, int reason)
-> >  {
-> >  }
-> > -static inline void dump_page_owner(struct page *page)
-> > +static inline void dump_page_owner(struct page *page, const char *loglvl)
-> >  {
-> >  }
-> >  #endif /* CONFIG_PAGE_OWNER */
-> > diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-> > index 9f8117c7cfdd..1b13135d9916 100644
-> > --- a/kernel/stacktrace.c
-> > +++ b/kernel/stacktrace.c
-> > @@ -14,6 +14,18 @@
-> >  #include <linux/kallsyms.h>
-> >  #include <linux/stacktrace.h>
-> >  
-> > +void __stack_trace_print(const unsigned long *entries, unsigned int nr_entries,
-> > +		       int spacesconst, char *loglvl)
-> > +{
-> > +	unsigned int i;
-> > +
-> > +	if (WARN_ON(!entries))
-> > +		return;
-> > +
-> > +	for (i = 0; i < nr_entries; i++)
-> > +		printk("%s%*c%pS\n", loglvl, 1 + spaces, ' ', (void *)entries[i]);
-> > +}
-> 
-> That's exactly I did with introducing pr_loglevel. I wanted to address
-> *all places* to use dump_page and stack_trace_print since some folks
-> might ask me to fix all the broken place all at once. I'm getting tired
-> with such hassle.
-> 
-> void dump_page(const char *log_lvl, struct page *page, const char *reason)
-> {
->         __dump_page(log_lvl, page, reason);
->         dump_page_owner(log_lvl, page);
-> }
-> EXPORT_SYMBOL(dump_page);
+Hi Wesley,
 
-Since it's good to have regardless of the patch, I posted next revision
-with removeing ratelimit and put something more in description to
-proceed the work.
+On Wed, Mar 10, 2021 at 03:02:10AM -0800, Wesley Cheng wrote:
+> In the situations where the DWC3 gadget stops active transfers, once
+> calling the dwc3_gadget_giveback(), there is a chance where a function
+> driver can queue a new USB request in between the time where the dwc3
+> lock has been released and re-aquired.  This occurs after we've already
+> issued an ENDXFER command.  When the stop active transfers continues
+> to remove USB requests from all dep lists, the newly added request will
+> also be removed, while controller still has an active TRB for it.
+> This can lead to the controller accessing an unmapped memory address.
+> 
+> Fix this by ensuring parameters to prevent EP queuing are set before
+> calling the stop active transfers API.
 
-Posted v3 - https://lore.kernel.org/linux-mm/20210310180104.517886-1-minchan@kernel.org/
+Is it correct to say this Fixes: ae7e86108b12 ("usb: dwc3: Stop active
+transfers before halting the controller") ?
 
+Jack
+
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> ---
+>  drivers/usb/dwc3/gadget.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+> index 4780983..4d98fbf 100644
+> --- a/drivers/usb/dwc3/gadget.c
+> +++ b/drivers/usb/dwc3/gadget.c
+> @@ -783,8 +783,6 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
+>  
+>  	trace_dwc3_gadget_ep_disable(dep);
+>  
+> -	dwc3_remove_requests(dwc, dep);
+> -
+>  	/* make sure HW endpoint isn't stalled */
+>  	if (dep->flags & DWC3_EP_STALL)
+>  		__dwc3_gadget_ep_set_halt(dep, 0, false);
+> @@ -803,6 +801,8 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
+>  		dep->endpoint.desc = NULL;
+>  	}
+>  
+> +	dwc3_remove_requests(dwc, dep);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1617,7 +1617,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+>  {
+>  	struct dwc3		*dwc = dep->dwc;
+>  
+> -	if (!dep->endpoint.desc || !dwc->pullups_connected) {
+> +	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
+>  		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+>  				dep->name);
+>  		return -ESHUTDOWN;
+> @@ -2247,6 +2247,7 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>  	if (!is_on) {
+>  		u32 count;
+>  
+> +		dwc->connected = false;
+>  		/*
+>  		 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
+>  		 * Section 4.1.8 Table 4-7, it states that for a device-initiated
+> @@ -3329,8 +3330,6 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+>  {
+>  	u32			reg;
+>  
+> -	dwc->connected = true;
+> -
+>  	/*
+>  	 * WORKAROUND: DWC3 revisions <1.88a have an issue which
+>  	 * would cause a missing Disconnect Event if there's a
+> @@ -3370,6 +3369,7 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+>  	 * transfers."
+>  	 */
+>  	dwc3_stop_active_transfers(dwc);
+> +	dwc->connected = true;
+>  
+>  	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+>  	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
