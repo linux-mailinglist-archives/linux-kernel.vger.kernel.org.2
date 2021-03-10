@@ -2,154 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDF0333B6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97364333B5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhCJL2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:28:46 -0500
-Received: from mga01.intel.com ([192.55.52.88]:14341 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232795AbhCJL2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:28:16 -0500
-IronPort-SDR: Ui84lZhgcIOIvJcEvYFsg48BG7ESQPTKWMjEgFmTUwS7vnKa6o+vpeouK8Ue2iSIVvRtRvVBsI
- NRatPbdNsp+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="208246663"
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="208246663"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 03:28:15 -0800
-IronPort-SDR: mQltItoAclFLphAA9Tm6V3shApLG1tejwbtmiHtdNDcV1yvJgJKRdy4RwUDs3mqjPaWANOVuw6
- eOJJertDEiWQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="509634258"
-Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 03:28:14 -0800
-Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lJx0f-00009S-J9; Wed, 10 Mar 2021 11:28:13 +0000
-Date:   Wed, 10 Mar 2021 19:27:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/xfs] BUILD SUCCESS
- c53742bdbe1ace569d71d762f93e4180d70d7668
-Message-ID: <6048ad20.OfDLmbP6i6d2GDrz%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232796AbhCJL2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:28:15 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40406 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231790AbhCJL15 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:27:57 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12ABRqqs098979;
+        Wed, 10 Mar 2021 05:27:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615375672;
+        bh=mrB7A5eFUsStRMGOQDpoao+QjlYjX/e54j3BJhMvifQ=;
+        h=From:To:CC:Subject:Date;
+        b=cyY0KMwMVRxXDR4R94QGpv1EucZsSDsFOs5drFLtgnlaIldpIQ8deWcV9pMylFOUP
+         2OoiBzhfB+uLjT0kpegsU6aakp6EmjExAFMQ2qtbd9gPMHmhRBJV1KlDd+kSwd7Vwy
+         Vr2Aup3J2wTgQxB3U0SBVjVx7AJPHvkRcH/1qgYk=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12ABRqYS049319
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Mar 2021 05:27:52 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 10
+ Mar 2021 05:27:51 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 10 Mar 2021 05:27:51 -0600
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12ABRkvW075949;
+        Wed, 10 Mar 2021 05:27:48 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Rosin <peda@axentia.se>,
+        Swapnil Jakhade <sjakhade@cadence.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH 0/3] AM64: Add SERDES DT bindings
+Date:   Wed, 10 Mar 2021 16:57:42 +0530
+Message-ID: <20210310112745.3445-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/xfs
-branch HEAD: c53742bdbe1ace569d71d762f93e4180d70d7668  xfs: Replace one-element arrays with flexible-array members
+Patch series adds device tree bindings to support SERDES in AM64
+platform.
 
-elapsed time: 720m
+This is split from [1] since this binding is also required for AM64
+USB DT patches to be merged.
 
-configs tested: 92
-configs skipped: 2
+Vinod,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Once the 1st patch of the series is reviewed by Rob, can you merge and
+prepare a immutable tag to be used by Nishant Menon so that he can merge
+USB3 DT patches.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sparc                            allyesconfig
-mips                         db1xxx_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                      ppc44x_defconfig
-arm                             mxs_defconfig
-sh                         microdev_defconfig
-mips                       capcella_defconfig
-arm                        mvebu_v7_defconfig
-xtensa                  cadence_csp_defconfig
-arm                         hackkit_defconfig
-sh                               j2_defconfig
-mips                        omega2p_defconfig
-arm                       versatile_defconfig
-sh                        sh7757lcr_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                    ge_imp3a_defconfig
-mips                     loongson1b_defconfig
-h8300                            alldefconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210309
-i386                 randconfig-a003-20210309
-i386                 randconfig-a002-20210309
-i386                 randconfig-a006-20210309
-i386                 randconfig-a004-20210309
-i386                 randconfig-a001-20210309
-x86_64               randconfig-a013-20210309
-x86_64               randconfig-a016-20210309
-x86_64               randconfig-a015-20210309
-x86_64               randconfig-a014-20210309
-x86_64               randconfig-a011-20210309
-x86_64               randconfig-a012-20210309
-i386                 randconfig-a016-20210309
-i386                 randconfig-a012-20210309
-i386                 randconfig-a014-20210309
-i386                 randconfig-a013-20210309
-i386                 randconfig-a011-20210309
-i386                 randconfig-a015-20210309
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Changes from [1]:
+*) Reverted back to adding compatible under enum.
 
-clang tested configs:
-x86_64               randconfig-a006-20210309
-x86_64               randconfig-a001-20210309
-x86_64               randconfig-a004-20210309
-x86_64               randconfig-a002-20210309
-x86_64               randconfig-a005-20210309
-x86_64               randconfig-a003-20210309
+[1] -> http://lore.kernel.org/r/20210222112314.10772-1-kishon@ti.com
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Kishon Vijay Abraham I (3):
+  dt-bindings: phy: ti,phy-j721e-wiz: Add bindings for AM64 SERDES
+    Wrapper
+  dt-bindings: phy: cadence-torrent: Add binding for refclk driver
+  dt-bindings: ti-serdes-mux: Add defines for AM64 SoC
+
+ .../bindings/phy/phy-cadence-torrent.yaml     | 20 +++++++++++++++---
+ .../bindings/phy/ti,phy-j721e-wiz.yaml        |  4 ++++
+ include/dt-bindings/mux/ti-serdes.h           |  5 +++++
+ include/dt-bindings/phy/phy-cadence-torrent.h |  2 ++
+ include/dt-bindings/phy/phy-ti.h              | 21 +++++++++++++++++++
+ 5 files changed, 49 insertions(+), 3 deletions(-)
+ create mode 100644 include/dt-bindings/phy/phy-ti.h
+
+-- 
+2.17.1
+
