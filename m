@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042C5333DD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B54333DF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbhCJNZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:25:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45548 "EHLO mail.kernel.org"
+        id S233082AbhCJNZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:25:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232808AbhCJNYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EFC364FF3;
-        Wed, 10 Mar 2021 13:24:20 +0000 (UTC)
+        id S232815AbhCJNYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD51864FDA;
+        Wed, 10 Mar 2021 13:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382661;
-        bh=Mv7fJKNjfiRutYFVYnTT1lTLGnJfdjtqJHtP1adkQjw=;
+        s=korg; t=1615382665;
+        bh=UxmEYKfC122h6ZT5+Wks9ZNXBZyNwDx3a5vHmRPyK4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VmnhcCkdUyW4HWJta4SZdbiCcxWmUIZZaa7wTIT28cphgcyQ/HL1/037qoGhUVO0N
-         auOCLhg5iAtEcHcgJlJhqwXEnh+y6ddjeCKXYQ5VC7PasD1JqViNhnf2qUgalZWkwq
-         EWS959bOsCO9oRkW2BP8ZbtTBhcHhDxLKmdMmL/E=
+        b=GvPkjeIITf6m25Mai+vM2ZNJmMbsatEXPALImk8gsEblq7B+2D9nBJIas5yCynlMl
+         uxWrsO4RVy1IXFgMTKDm5w12o1J0ynaTLcKngr7BVKSZ9apCv7+O+jkBKmYU7T9apB
+         XPhkDUPqnoQ+XHqx0QsqrWQTVahPvKjWhmdYSXh8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.11 15/36] btrfs: export and rename qgroup_reserve_meta
-Date:   Wed, 10 Mar 2021 14:23:28 +0100
-Message-Id: <20210310132320.997397561@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 10/49] Bluetooth: btqca: Add valid le states quirk
+Date:   Wed, 10 Mar 2021 14:23:21 +0100
+Message-Id: <20210310132322.284338281@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
-References: <20210310132320.510840709@linuxfoundation.org>
+In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
+References: <20210310132321.948258062@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +43,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Nikolay Borisov <nborisov@suse.com>
+From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 
-commit 80e9baed722c853056e0c5374f51524593cb1031 upstream
+[ Upstream commit 547801380ec7e6104ea679f599d03c342b4b39a0 ]
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+WCN3991 supports connectable advertisements so we need to add the valid
+le states quirk so the 'central-peripheral' role is exposed in
+userspace.
+
+Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/qgroup.c |    8 ++++----
- fs/btrfs/qgroup.h |    2 ++
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ drivers/bluetooth/hci_qca.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3841,8 +3841,8 @@ static int sub_root_meta_rsv(struct btrf
- 	return num_bytes;
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 5c26c7d94173..ad47ff0d55c2 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -78,6 +78,7 @@ enum qca_flags {
+ 
+ enum qca_capabilities {
+ 	QCA_CAP_WIDEBAND_SPEECH = BIT(0),
++	QCA_CAP_VALID_LE_STATES = BIT(1),
+ };
+ 
+ /* HCI_IBS transmit side sleep protocol states */
+@@ -1782,7 +1783,7 @@ static const struct qca_device_data qca_soc_data_wcn3991 = {
+ 		{ "vddch0", 450000 },
+ 	},
+ 	.num_vregs = 4,
+-	.capabilities = QCA_CAP_WIDEBAND_SPEECH,
++	.capabilities = QCA_CAP_WIDEBAND_SPEECH | QCA_CAP_VALID_LE_STATES,
+ };
+ 
+ static const struct qca_device_data qca_soc_data_wcn3998 = {
+@@ -2019,11 +2020,17 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+ 		hdev->shutdown = qca_power_off;
+ 	}
+ 
+-	/* Wideband speech support must be set per driver since it can't be
+-	 * queried via hci.
+-	 */
+-	if (data && (data->capabilities & QCA_CAP_WIDEBAND_SPEECH))
+-		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
++	if (data) {
++		/* Wideband speech support must be set per driver since it can't
++		 * be queried via hci. Same with the valid le states quirk.
++		 */
++		if (data->capabilities & QCA_CAP_WIDEBAND_SPEECH)
++			set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED,
++				&hdev->quirks);
++
++		if (data->capabilities & QCA_CAP_VALID_LE_STATES)
++			set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
++	}
+ 
+ 	return 0;
  }
- 
--static int qgroup_reserve_meta(struct btrfs_root *root, int num_bytes,
--				enum btrfs_qgroup_rsv_type type, bool enforce)
-+int btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes,
-+			      enum btrfs_qgroup_rsv_type type, bool enforce)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	int ret;
-@@ -3873,14 +3873,14 @@ int __btrfs_qgroup_reserve_meta(struct b
- {
- 	int ret;
- 
--	ret = qgroup_reserve_meta(root, num_bytes, type, enforce);
-+	ret = btrfs_qgroup_reserve_meta(root, num_bytes, type, enforce);
- 	if (ret <= 0 && ret != -EDQUOT)
- 		return ret;
- 
- 	ret = try_flush_qgroup(root);
- 	if (ret < 0)
- 		return ret;
--	return qgroup_reserve_meta(root, num_bytes, type, enforce);
-+	return btrfs_qgroup_reserve_meta(root, num_bytes, type, enforce);
- }
- 
- void btrfs_qgroup_free_meta_all_pertrans(struct btrfs_root *root)
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -361,6 +361,8 @@ int btrfs_qgroup_release_data(struct btr
- int btrfs_qgroup_free_data(struct btrfs_inode *inode,
- 			   struct extent_changeset *reserved, u64 start,
- 			   u64 len);
-+int btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes,
-+			      enum btrfs_qgroup_rsv_type type, bool enforce);
- int __btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes,
- 				enum btrfs_qgroup_rsv_type type, bool enforce);
- /* Reserve metadata space for pertrans and prealloc type */
+-- 
+2.30.1
+
 
 
