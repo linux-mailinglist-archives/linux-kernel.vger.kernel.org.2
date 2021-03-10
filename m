@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2AD333E3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E182333EC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbhCJNZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:25:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46068 "EHLO mail.kernel.org"
+        id S233817AbhCJN1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:27:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232913AbhCJNYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B7DE64FFB;
-        Wed, 10 Mar 2021 13:24:38 +0000 (UTC)
+        id S233130AbhCJNY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5517364FEF;
+        Wed, 10 Mar 2021 13:24:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382679;
-        bh=03VvVo2hJ9Th1W4Ti2EDtJL0wv4GRIGT7NvTsAFW3W0=;
+        s=korg; t=1615382696;
+        bh=bkk9e+K0PeWR2B3vg6L3EGwP4rJSltn/D6guNeruDvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EmUDQnG1st0kQL9rXI3QxDQOMqxoCdx+Pws83bzLop9YPKK0/zY82f4xc3XuHfaCk
-         xtOh6ngsoeHbgwuH2sGBgtpH6DDSlCcnMF40ZD/pl4fzOBFEOwXqUHWVEBEBtjQ9xR
-         Wk44Sk1VpsstqxhKxUuDLq6gHoPHNdO6fiX6oyN8=
+        b=q+M52O+N44dlIHFCSkMIJEaU5HPk65dmNbj8fg9g5ZCWDIKVBB0NOvpJvULvK+pEx
+         b2khhxVFA4vfjhc19Mg7MNzstXATgPlQvwO4TOoJMH9sKlzXIcrkR6c5/MJiOvo1y/
+         HxXx6wGKqmlRrY4yvweFU/XUqJ6CdIwnePDe3/WM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Nishanth Menon <nm@ti.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Peter Chen <peter.chen@nxp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 25/36] mmc: sdhci-of-dwcmshc: set SDHCI_QUIRK2_PRESET_VALUE_BROKEN
-Date:   Wed, 10 Mar 2021 14:23:38 +0100
-Message-Id: <20210310132321.291582621@linuxfoundation.org>
+Subject: [PATCH 5.10 28/49] usb: cdns3: fix NULL pointer dereference on no platform data
+Date:   Wed, 10 Mar 2021 14:23:39 +0100
+Message-Id: <20210310132322.836195902@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
-References: <20210310132320.510840709@linuxfoundation.org>
+In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
+References: <20210310132321.948258062@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +44,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+From: Roger Quadros <rogerq@ti.com>
 
-[ Upstream commit 5f7dfda4f2cec580c135fd81d96a05006651c128 ]
+[ Upstream commit 448373d9db1a7000072f65103af19e20503f0c0c ]
 
-The SDHCI_PRESET_FOR_* registers are not set(all read as zeros), so
-set the quirk.
+Some platforms (e.g. TI) will not have any platform data which will
+lead to NULL pointer dereference if we don't check for NULL pdata.
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Link: https://lore.kernel.org/r/20201210165510.76b917e5@xhacker.debian
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 7cea9657756b ("usb: cdns3: add quirk for enable runtime pm by default")
+Reported-by: Nishanth Menon <nm@ti.com>
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+Acked-by: Pawel Laszczak <pawell@cadence.com>
+Signed-off-by: Peter Chen <peter.chen@nxp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-of-dwcmshc.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/cdns3/core.c | 2 +-
+ drivers/usb/cdns3/host.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-index d90020ed3622..59d8d96ce206 100644
---- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-+++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-@@ -112,6 +112,7 @@ static const struct sdhci_ops sdhci_dwcmshc_ops = {
- static const struct sdhci_pltfm_data sdhci_dwcmshc_pdata = {
- 	.ops = &sdhci_dwcmshc_ops,
- 	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
-+	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
- };
+diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+index 29affbf1e828..6eeb7ed8e91f 100644
+--- a/drivers/usb/cdns3/core.c
++++ b/drivers/usb/cdns3/core.c
+@@ -569,7 +569,7 @@ static int cdns3_probe(struct platform_device *pdev)
+ 	device_set_wakeup_capable(dev, true);
+ 	pm_runtime_set_active(dev);
+ 	pm_runtime_enable(dev);
+-	if (!(cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW))
++	if (!(cdns->pdata && (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW)))
+ 		pm_runtime_forbid(dev);
  
- static int dwcmshc_probe(struct platform_device *pdev)
+ 	/*
+diff --git a/drivers/usb/cdns3/host.c b/drivers/usb/cdns3/host.c
+index c3b29a9c77a5..102977790d60 100644
+--- a/drivers/usb/cdns3/host.c
++++ b/drivers/usb/cdns3/host.c
+@@ -59,7 +59,7 @@ static int __cdns3_host_init(struct cdns3 *cdns)
+ 		goto err1;
+ 	}
+ 
+-	if (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW)
++	if (cdns->pdata && (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW))
+ 		cdns->xhci_plat_data->quirks |= XHCI_DEFAULT_PM_RUNTIME_ALLOW;
+ 
+ 	ret = platform_device_add_data(xhci, cdns->xhci_plat_data,
 -- 
 2.30.1
 
