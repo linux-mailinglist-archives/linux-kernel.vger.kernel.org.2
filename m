@@ -2,112 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5A2334A69
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B93D6334ADA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 23:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233831AbhCJWBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 17:01:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
+        id S234334AbhCJWCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 17:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbhCJWBJ (ORCPT
+        with ESMTP id S233801AbhCJWBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 17:01:09 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD62C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:01:09 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id mm21so41797881ejb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:01:09 -0800 (PST)
+        Wed, 10 Mar 2021 17:01:20 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A03C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:01:20 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id n132so19699941iod.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 14:01:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5b+lsixy3d7D3BIr++muUtKp8Fmjm6SWsiwbl+RXXPw=;
-        b=Vq9es4vGcXJRtQHcmyvIJzK8d5nwG9k2/kE0pDNUa2CEeM34TDYhXaOo4Aj518rW+z
-         2k6YfPQqQAAMhFQTR1wdj6OWVoeYZaW7aSThgQrV1dVroOdEla1RISzSz7w+RF/SkY0k
-         eJJX8oTGBnK3gM1Avc4uTDxOPaxYxSMz6xfCA=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w2N/Ui0FPsDG5VvjMDBi5pl6ygCSR2qqM9L9qwIdVTY=;
+        b=ItUnwFtDp7nKbo6lP5//AUVngbFebFzqdZrL2ThIK6fq3hqyAGCD3aUSNBZFj8ytw8
+         5kFTZF8Xl3nsrDOH2RSiMsIe/EYfHK4bbgZit3bIGXjRUqAltVcN+633UVqcBR9tG5SX
+         CiPZdsQDfrQ5cbAcjgA2yiwLJh3NQBFOzY7tc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=5b+lsixy3d7D3BIr++muUtKp8Fmjm6SWsiwbl+RXXPw=;
-        b=n5YqhtLKf/Q4GuIasw5bOedo+9zSQGdxpygb4Ukdh7PVODYJkMpOsNWn7MRFvB0JWV
-         TbFr+Wwzv5vGZm8tXguaYRJNK00udanxm0nn3cGEMOdT3HUOqVM45oESe/APXIor15Hj
-         qdkL9frS3u7p/k87g5y80bl2puFLAs1RFF/t78UKZ3b3ENuf82go0P0k4iLZbap0A1ja
-         +t6qufsJOKgyaQYq/ldO5yM8esBvW0ID3lEWmu2AzWxBmRBmzwaiIf1FUWCskGpMJlsn
-         vY+ZkbGiIUQkdtVy33Ce4qUo1ITHZ3IO+8L6vjF/VIYnRVfz/68A/08CgGoQ/VLD1/kv
-         0lOQ==
-X-Gm-Message-State: AOAM530+6C/F8X8gvEJXALVqwUbVk5aSDSn5hFt+l3bCruzcVq3lPQ8Q
-        hTm6RyjhKL3HrpNI5wRoGA5weA==
-X-Google-Smtp-Source: ABdhPJxXpTNVKEgdl1uJ9O8I60+OTCZexcFAdp/WTMaXdSlSfIejd1pmnhHf9Fsm1ugh5Fpw4k5vdQ==
-X-Received: by 2002:a17:906:b14d:: with SMTP id bt13mr15804ejb.407.1615413668056;
-        Wed, 10 Mar 2021 14:01:08 -0800 (PST)
-Received: from prevas-ravi.prevas.se ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id x21sm268122eds.53.2021.03.10.14.01.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 14:01:07 -0800 (PST)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Hubert Jasudowicz <hubert.jasudowicz@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH resend] kernel/cred.c: make init_groups static
-Date:   Wed, 10 Mar 2021 23:01:01 +0100
-Message-Id: <20210310220102.2484201-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.29.2
+        bh=w2N/Ui0FPsDG5VvjMDBi5pl6ygCSR2qqM9L9qwIdVTY=;
+        b=XkyX+YWmXex0PM+FhPfjrFrrgtinHC835FzpUIv8Eqf4oCUUkvgpQEJrwlaWr0DGHS
+         yVCyfYSvR4vJmNB587xrrGKbnQZfRQMgF0RXS+ygg8JBXYMrKQg4+QimVCo6nutFCOIF
+         7hNXhkLNpkv3RHP6TzrRwq6wfIOTdgQjkg8R4z1hJH9DHDFU/FdG5IiiAu5sV5PZi/d6
+         9OfDYNCacUWK7IFIdrnFuhP1UmqqVkm2sg5jpVNQYi3rGBgIQlJ6mMDb7wKWjpo40jmX
+         87s2TZZp38lWUpAufDVVAIjCR/cgfCx4yWdvJFLuPFLT/F377PSVqRiCPZW8rv2C/wCe
+         muyw==
+X-Gm-Message-State: AOAM532cw0PuCQFWsU3H451wYOIUkFSpwqMU9dE/jAwq5OjcfYAqjNjf
+        M7O9bEdIiCOSNsFRJRKvB3RrPQ==
+X-Google-Smtp-Source: ABdhPJzX0FdvZMPzA8rKuLxgkQo1PXLSD6J7G0z0Qn4Ia/1GwV/EMa5KqdXtSMX8cpQD5ZMqCdNc+Q==
+X-Received: by 2002:a6b:7010:: with SMTP id l16mr3770525ioc.96.1615413680247;
+        Wed, 10 Mar 2021 14:01:20 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h2sm359447ioj.30.2021.03.10.14.01.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 14:01:19 -0800 (PST)
+Subject: Re: [PATCH 4.19 00/39] 4.19.180-rc1 review
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210310132319.708237392@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <a3616c83-9a91-7148-886e-55579bf8908a@linuxfoundation.org>
+Date:   Wed, 10 Mar 2021 15:01:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-init_groups is declared in both cred.h and init_task.h, but it is not
-actually referenced anywhere outside of cred.c where it is defined. So
-make it static and remove the declarations.
+On 3/10/21 6:24 AM, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 4.19.180 release.
+> There are 39 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.180-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- include/linux/cred.h      | 1 -
- include/linux/init_task.h | 1 -
- kernel/cred.c             | 2 +-
- 3 files changed, 1 insertion(+), 3 deletions(-)
+Compiled and booted on my test system. No dmesg regressions.
 
-diff --git a/include/linux/cred.h b/include/linux/cred.h
-index 4c6350503697..2695ad118806 100644
---- a/include/linux/cred.h
-+++ b/include/linux/cred.h
-@@ -53,7 +53,6 @@ do {							\
- 		groups_free(group_info);		\
- } while (0)
- 
--extern struct group_info init_groups;
- #ifdef CONFIG_MULTIUSER
- extern struct group_info *groups_alloc(int);
- extern void groups_free(struct group_info *);
-diff --git a/include/linux/init_task.h b/include/linux/init_task.h
-index b2412b4d4c20..40fc5813cf93 100644
---- a/include/linux/init_task.h
-+++ b/include/linux/init_task.h
-@@ -25,7 +25,6 @@
- extern struct files_struct init_files;
- extern struct fs_struct init_fs;
- extern struct nsproxy init_nsproxy;
--extern struct group_info init_groups;
- extern struct cred init_cred;
- 
- #ifndef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
-diff --git a/kernel/cred.c b/kernel/cred.c
-index 421b1149c651..e1d274cd741b 100644
---- a/kernel/cred.c
-+++ b/kernel/cred.c
-@@ -33,7 +33,7 @@ do {									\
- static struct kmem_cache *cred_jar;
- 
- /* init to 2 - one for init_task, one to ensure it is never freed */
--struct group_info init_groups = { .usage = ATOMIC_INIT(2) };
-+static struct group_info init_groups = { .usage = ATOMIC_INIT(2) };
- 
- /*
-  * The initial credentials for the initial task
--- 
-2.29.2
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
+thanks,
+-- Shuah
