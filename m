@@ -2,178 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1522334104
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB6C3340FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbhCJPC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:02:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232733AbhCJPB4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:01:56 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9B2C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 07:01:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=k3LAP6nuyVJ64Q+TnP9etBGvWVETHe7WmgwfLX7aamM=; b=h4txAob/jpziUFWjbItQPM+7vO
-        VTC+XRVXL6FRExJwDnjWO/IJhraLUxrMnwd1L6Mj0H2EHx6WuXeLOF6EOVhZ3acjfjZRcq9vcr+aQ
-        hK7QVXIvg7n9CW9ZAb2/xscqyJSonfCXj0qCyzX9U1ykzPTbK+onnK3o1PynHrZxjpzhdBBVfmyVv
-        yhXfAqO5ZBnWmzPPcdPm1vllAWln2tm//boUeYufMX0GTR1GOlvfv8WeP7QgTMHurbjAgnBBl4ETq
-        8n2++29Z3P8TqBdibTacdcX4Ocejzs+6ECalzQ4ebcuW9qFcScaFpmGeakeqyr5eqfzTyAlnz9ax+
-        OdDW/Huw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lK0LF-0074av-LG; Wed, 10 Mar 2021 15:01:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1AFEE30257C;
-        Wed, 10 Mar 2021 16:01:41 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 0437729A44D2B; Wed, 10 Mar 2021 16:01:41 +0100 (CET)
-Message-ID: <20210310150109.259726371@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 10 Mar 2021 15:53:01 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     valentin.schneider@arm.com, tglx@linutronix.de, mingo@kernel.org,
-        bigeasy@linutronix.de, swood@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, qais.yousef@arm.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs hotplug-rollback
-References: <20210310145258.899619710@infradead.org>
+        id S232689AbhCJPBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:01:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229602AbhCJPBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:01:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77B7764EFE;
+        Wed, 10 Mar 2021 15:00:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615388460;
+        bh=1cf22zRqKYkUMXPfWyA63RDLMOreSLGYDa97S769FvY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b1o0J0ci823rHynKGMs7SfrHjNj3bi0okmEbLl1j0NbMMAU1MUNOnXDhDp7/VrN+Y
+         Nr6giB/Qciu2OdoI5jzTtWiMfhm+okheWvW/TiUVGzXGmG4Qj4Qk+RsY3o1FhiIF6h
+         BjP97yq3Zx8G4uPk0leTAojOBDVFAlWQUXxRO1MkrFestMfiYYEntCyXMprt8wnNqO
+         uBj78/j6ezZBce3G1ZKetq9TPrE4J/+1k8PqQBUZLWcy4JOSH1g/jbyafMSIrGF8s6
+         ScPDmBCyLIQQfenFnjkP16oOQfhgSKqPH6Tq84v0LTsP8e7LS3YSXk2J/VzzvxEFGJ
+         c7gFjLl3/4Whg==
+Date:   Wed, 10 Mar 2021 17:00:35 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org, stable@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Serge Ayoun <serge.ayoun@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] x86/sgx: Fix a resource leak in sgx_init()
+Message-ID: <YEjfEzDfRdd0fK88@kernel.org>
+References: <20210303150323.433207-1-jarkko@kernel.org>
+ <20210303150323.433207-2-jarkko@kernel.org>
+ <57b33fb5-f961-5c81-72f1-ebf5e6af671c@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57b33fb5-f961-5c81-72f1-ebf5e6af671c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new cpu_dying() state to simplify and fix the balance_push()
-vs CPU hotplug rollback state.
+On Wed, Mar 03, 2021 at 08:56:52AM -0800, Dave Hansen wrote:
+> On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
+> > If sgx_page_cache_init() fails in the middle, a trivial return
+> > statement causes unused memory and virtual address space reserved for
+> > the EPC section, not freed. Fix this by using the same rollback, as
+> > when sgx_page_reclaimer_init() fails.
+> ...
+> > @@ -708,8 +708,10 @@ static int __init sgx_init(void)
+> >  	if (!cpu_feature_enabled(X86_FEATURE_SGX))
+> >  		return -ENODEV;
+> >  
+> > -	if (!sgx_page_cache_init())
+> > -		return -ENOMEM;
+> > +	if (!sgx_page_cache_init()) {
+> > +		ret = -ENOMEM;
+> > +		goto err_page_cache;
+> > +	}
+> 
+> 
+> Currently, the only way sgx_page_cache_init() can fail is in the case
+> that there are no sections:
+> 
+>         if (!sgx_nr_epc_sections) {
+>                 pr_err("There are zero EPC sections.\n");
+>                 return false;
+>         }
+> 
+> That only happened if all sgx_setup_epc_section() calls failed.
+> sgx_setup_epc_section() never both allocates memory with vmalloc for
+> section->pages *and* fails.  If sgx_setup_epc_section() has a successful
+> memremap() but a failed vmalloc(), it cleans up with memunmap().
+> 
+> In other words, I see how this _looks_ like a memory leak from
+> sgx_init(), but I don't see an actual leak in practice.
+> 
+> Am I missing something?
 
-Specifically, we currently rely on notifiers sched_cpu_dying() /
-sched_cpu_activate() to terminate balance_push, however if the
-cpu_down() fails when we're past sched_cpu_deactivate(), it should
-terminate balance_push at that point and not wait until we hit
-sched_cpu_activate().
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/sched/core.c  |   33 ++++++++++++++++++++-------------
- kernel/sched/sched.h |    1 -
- 2 files changed, 20 insertions(+), 14 deletions(-)
-
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1811,7 +1811,7 @@ static inline bool is_cpu_allowed(struct
- 		return cpu_online(cpu);
- 
- 	/* Regular kernel threads don't get to stay during offline. */
--	if (cpu_rq(cpu)->balance_push)
-+	if (cpu_dying(cpu))
- 		return false;
- 
- 	/* But are allowed during online. */
-@@ -7647,12 +7647,19 @@ static void balance_push(struct rq *rq)
- 
- 	lockdep_assert_held(&rq->lock);
- 	SCHED_WARN_ON(rq->cpu != smp_processor_id());
-+
- 	/*
- 	 * Ensure the thing is persistent until balance_push_set(.on = false);
- 	 */
- 	rq->balance_callback = &balance_push_callback;
- 
- 	/*
-+	 * Only active while going offline.
-+	 */
-+	if (!cpu_dying(rq->cpu))
-+		return;
-+
-+	/*
- 	 * Both the cpu-hotplug and stop task are in this case and are
- 	 * required to complete the hotplug process.
- 	 *
-@@ -7705,7 +7712,6 @@ static void balance_push_set(int cpu, bo
- 	struct rq_flags rf;
- 
- 	rq_lock_irqsave(rq, &rf);
--	rq->balance_push = on;
- 	if (on) {
- 		WARN_ON_ONCE(rq->balance_callback);
- 		rq->balance_callback = &balance_push_callback;
-@@ -7830,8 +7836,8 @@ int sched_cpu_activate(unsigned int cpu)
- 	struct rq_flags rf;
- 
- 	/*
--	 * Make sure that when the hotplug state machine does a roll-back
--	 * we clear balance_push. Ideally that would happen earlier...
-+	 * Clear the balance_push callback and prepare to schedule
-+	 * regular tasks.
- 	 */
- 	balance_push_set(cpu, false);
- 
-@@ -7883,14 +7889,6 @@ int sched_cpu_deactivate(unsigned int cp
- 	set_cpu_active(cpu, false);
- 
- 	/*
--	 * From this point forward, this CPU will refuse to run any task that
--	 * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
--	 * push those tasks away until this gets cleared, see
--	 * sched_cpu_dying().
--	 */
--	balance_push_set(cpu, true);
--
--	/*
- 	 * We've cleared cpu_active_mask / set balance_push, wait for all
- 	 * preempt-disabled and RCU users of this state to go away such that
- 	 * all new such users will observe it.
-@@ -7910,6 +7908,14 @@ int sched_cpu_deactivate(unsigned int cp
- 	}
- 	rq_unlock_irqrestore(rq, &rf);
- 
-+	/*
-+	 * From this point forward, this CPU will refuse to run any task that
-+	 * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
-+	 * push those tasks away until this gets cleared, see
-+	 * sched_cpu_dying().
-+	 */
-+	balance_push_set(cpu, true);
-+
- #ifdef CONFIG_SCHED_SMT
- 	/*
- 	 * When going down, decrement the number of cores with SMT present.
-@@ -8206,7 +8212,7 @@ void __init sched_init(void)
- 		rq->sd = NULL;
- 		rq->rd = NULL;
- 		rq->cpu_capacity = rq->cpu_capacity_orig = SCHED_CAPACITY_SCALE;
--		rq->balance_callback = NULL;
-+		rq->balance_callback = &balance_push_callback;
- 		rq->active_balance = 0;
- 		rq->next_balance = jiffies;
- 		rq->push_cpu = 0;
-@@ -8253,6 +8259,7 @@ void __init sched_init(void)
- 
- #ifdef CONFIG_SMP
- 	idle_thread_set_boot_cpu();
-+	balance_push_set(smp_processor_id(), false);
- #endif
- 	init_sched_fair_class();
- 
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -982,7 +982,6 @@ struct rq {
- 	unsigned long		cpu_capacity_orig;
- 
- 	struct callback_head	*balance_callback;
--	unsigned char		balance_push;
- 
- 	unsigned char		nohz_idle_balance;
- 	unsigned char		idle_balance;
+In sgx_setup_epc_section():
 
 
+	section->pages = vmalloc(nr_pages * sizeof(struct sgx_epc_page));
+	if (!section->pages) {
+		memunmap(section->virt_addr);
+		return false;
+	}
+
+I.e. this rollback does not happen without this fix applied:
+
+	for (i = 0; i < sgx_nr_epc_sections; i++) {
+		vfree(sgx_epc_sections[i].pages);
+		memunmap(sgx_epc_sections[i].virt_addr);
+	}
+
+/Jarkko
