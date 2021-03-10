@@ -2,138 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B1B333B38
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A063C333B3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhCJLQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:16:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230319AbhCJLQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:16:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11BAA64FCB;
-        Wed, 10 Mar 2021 11:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615375014;
-        bh=C1VoDQKlIyJ1+nzA/Wf/O69QQ2pK9i73dDn//SNSEaQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cTAaDy2FK8y6Vilcsq2+9RlAsua1MAyRNcX7f/jInV2ZinChR7DSHtXQgPV872V1v
-         AWUBPfU4l/j2B+FiX7hjHkURG0meYFKulgNNyVA7RmRcvBGDnOvuXAfwWdx04+bdic
-         D3JVpdZCamSjxaWJ0FNWpy9/TeI4jVNScKhcNlKSaH2hdHlRmYwFF9f3V+bSwyS0OP
-         RgnV5k9ScuJ+TPbsFHmDpZoC+G3ySHkKsbrqF6QnRPKkALurWvHnMfbuvfKEanwE+Y
-         70eAU4jlhyv3dUWVewIf+0Hhmeg5vLiZZ81rY5RhnWTyVENLP/hKoDCeauHFzXfiG+
-         bku0b6hYgxaDg==
-Date:   Wed, 10 Mar 2021 11:16:49 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Mark Salter <msalter@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] arm64: mm: fix runtime fallback to 48-bt VA when 52-bit
- VA is enabled
-Message-ID: <20210310111649.GA29413@willie-the-truck>
-References: <20210310003216.410037-1-msalter@redhat.com>
+        id S232125AbhCJLSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:18:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhCJLR7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:17:59 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361A7C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:17:59 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id e10so22844884wro.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 03:17:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=8/BvaC/nK4OARL6liXjkIyGeKizu5NW5s37p+jzN3rQ=;
+        b=Psywx4DhVt3ugx3PIxZeB43//KWnVK4bTpb2dRxGAtIDzQ9t/VwoqLeTXFxEuYSBpX
+         CMpuokQ6B+5jaKqmQP0KA4n9ha86S9L55WvCW3bmITc56n2AmeOV+/Z4rhSMpwRBwSEt
+         BTspTOBFMnm6ftya42im4dgEPRLD9KzI83DFx5A0y7gJC6VBeGZgfvBJjBy27oDVk4mz
+         PfKzL72xoDzNzYkkqn55uMjaFBw+jJbIZ8NlM59TxZBQjq18is1nRhjXUGCfFuonFcp7
+         UYCmvR4PeEIxdVeS7RyasXbzymv+eRKk5KAaI4fNR0iEYuzU+tPZih/J5b9KKUJQx+Qo
+         Gipg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=8/BvaC/nK4OARL6liXjkIyGeKizu5NW5s37p+jzN3rQ=;
+        b=sQbauFsqX7mo1DuPHjiBLE8LMBFfWQRWN/K1YYRlWMMBCDedqWV2ASUr6ShsiwyP/v
+         fGUAn5jSDh6fmpkz1s20chq+PwUmIyGbot6XAXbtAo/Lg+ntmJhDQLkpPDVc2/g4ejWb
+         qpe0UdOiVWVpZsXAS5RIAPqnRtRZp++FD3rR3a3AX/H1rKB2aANuD3IsPFk+zGuvJmIC
+         84wsfIRPeBKcFH5FyxdZu57mJHVCzEBOkLqZVt1ZHhWOSN0RlJdMuQHOQVi1PHNajWbg
+         718h17MqU2C6CEuQWA6N4Osu4MHpXH/HNPIg4RmX0lw8apy60WXzx2x5vgyI1P6v/xbb
+         rpBw==
+X-Gm-Message-State: AOAM533kKIn5LUyeJyNQTKXE4/HWEz0lRPY7xDYGDmUfbLcXqSkoTMzu
+        u5wdrceM9ope0+Ga8Cj9B5rqyw==
+X-Google-Smtp-Source: ABdhPJx3IYKM3QBCdZT4QUUshLK1DxO4Zo6U2/nM97niWViFKQGFICLI7dFD9eafmhr+BAl2HPBtEA==
+X-Received: by 2002:adf:ed12:: with SMTP id a18mr3016460wro.249.1615375077845;
+        Wed, 10 Mar 2021 03:17:57 -0800 (PST)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id h25sm3711077wml.32.2021.03.10.03.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 03:17:57 -0800 (PST)
+Date:   Wed, 10 Mar 2021 11:17:55 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
+Subject: Re: [PATCH v3 06/15] mfd: Add ROHM BD71815 ID
+Message-ID: <20210310111755.GN701493@dell>
+References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+ <be0e8cd06ed75e799c942e5076ee7b56ad658467.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+ <20210310103639.GG701493@dell>
+ <a631bbc3dd3bd0f02693d1c35f9a14dbaec67cc3.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210310003216.410037-1-msalter@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a631bbc3dd3bd0f02693d1c35f9a14dbaec67cc3.camel@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 07:32:16PM -0500, Mark Salter wrote:
-> I ran into an early boot soft lockup on a Qualcomm Amberwing using a v5.11
-> kernel configured for 52-bit VA. This turned into a panic with a v5.12-rc2
-> kernel.
+On Wed, 10 Mar 2021, Vaittinen, Matti wrote:
+
+> Hello Lee,
 > 
-> The problem is that when we fall back to 48-bit VA, idmap_t0sz is not
-> updated. Later, the kvm hypervisor uses idmap_t0sz to set its tcr_el2 and
-> hangs (v5.11). After commit 1401bef703a4 ("arm64: mm: Always update TCR_EL1
-> from __cpu_set_tcr_t0sz()"), the kernel panics when trying to use the idmap
-> to call idmap_cpu_replace_ttbr1().
+> On Wed, 2021-03-10 at 10:36 +0000, Lee Jones wrote:
+> > On Mon, 08 Mar 2021, Matti Vaittinen wrote:
+> > 
+> > > Add chip ID for ROHM BD71815 and PMIC so that drivers can identify
+> > > this IC.
+> > > 
+> > > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > > ---
+> > >  include/linux/mfd/rohm-generic.h | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/include/linux/mfd/rohm-generic.h
+> > > b/include/linux/mfd/rohm-generic.h
+> > > index 66f673c35303..e5392bcbc098 100644
+> > > --- a/include/linux/mfd/rohm-generic.h
+> > > +++ b/include/linux/mfd/rohm-generic.h
+> > > @@ -14,6 +14,7 @@ enum rohm_chip_type {
+> > >  	ROHM_CHIP_TYPE_BD71828,
+> > >  	ROHM_CHIP_TYPE_BD9571,
+> > >  	ROHM_CHIP_TYPE_BD9574,
+> > > +	ROHM_CHIP_TYPE_BD71815,
+> > 
+> > Is there a technical reason why these can't be re-ordered?
 > 
-> Oddly, other systems (thunderX2 and Ampere eMag) which don't support 52-bit
-> VA seem to handle the setting of an unsupported t0sz without any apparent
-> problems. Indeed, if one reads back the tcr written with t0sz==12, the
-> value read has t0sz==16. Not so with Amberwing.
-
-Nice, you have one of those elusive platforms!
-
-> Fixes: 90ec95cda91a ("arm64: mm: Introduce VA_BITS_MIN")
-> Signed-off-by: Mark Salter <msalter@redhat.com>
-> ---
->  arch/arm64/kernel/head.S | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+> No, I don't think so.
 > 
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index 66b0e0b66e31..2bcbbb26292e 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -291,6 +291,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->  	 */
->  	adrp	x0, idmap_pg_dir
->  	adrp	x3, __idmap_text_start		// __pa(__idmap_text_start)
-> +	mov	x4, TCR_T0SZ(VA_BITS)
->  
->  #ifdef CONFIG_ARM64_VA_BITS_52
->  	mrs_s	x6, SYS_ID_AA64MMFR2_EL1
-> @@ -299,6 +300,13 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->  	cbnz	x6, 1f
->  #endif
->  	mov	x5, #VA_BITS_MIN
-> +#ifdef CONFIG_ARM64_VA_BITS_52
-> +	mov	x4, TCR_T0SZ(VA_BITS_MIN)
-> +	adr_l	x6, idmap_t0sz
-> +	str	x4, [x6]
-> +	dmb	sy
-> +	dc	ivac, x6		// Invalidate potentially stale cache line
-> +#endif
->  1:
->  	adr_l	x6, vabits_actual
->  	str	x5, [x6]
-> @@ -319,7 +327,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->  	 */
->  	adrp	x5, __idmap_text_end
->  	clz	x5, x5
-> -	cmp	x5, TCR_T0SZ(VA_BITS)	// default T0SZ small enough?
-> +	cmp	x5, x4			// default T0SZ small enough?
->  	b.ge	1f			// .. then skip VA range extension
+> BTW. there will probably be a (trivial) conflict here as both this
+> series and the BD9576/BD9573 series add an ID here. Let me guess, you'd
 
-Could we instead have the default value be 48-bit, and then avoid having
-to update the variable in both cases? e.g. something along the lines of
-the entirely untested diff below?
+That's fine.  I will resolve that manually.
 
-Cheers,
+> like to see them sorted?
 
-Will
+Wouldn't that be nice? :)
 
---->8
-
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index 66b0e0b66e31..fb795123896f 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -319,7 +319,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
-         */
-        adrp    x5, __idmap_text_end
-        clz     x5, x5
--       cmp     x5, TCR_T0SZ(VA_BITS)   // default T0SZ small enough?
-+       cmp     x5, TCR_T0SZ(VA_BITS_MIN)       // default T0SZ small enough?
-        b.ge    1f                      // .. then skip VA range extension
- 
-        adr_l   x6, idmap_t0sz
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 3802cfbdd20d..4c5603c41870 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -40,7 +40,7 @@
- #define NO_BLOCK_MAPPINGS      BIT(0)
- #define NO_CONT_MAPPINGS       BIT(1)
- 
--u64 idmap_t0sz = TCR_T0SZ(VA_BITS);
-+u64 idmap_t0sz = TCR_T0SZ(VA_BITS_MIN);
- u64 idmap_ptrs_per_pgd = PTRS_PER_PGD;
- 
- u64 __section(".mmuoff.data.write") vabits_actual;
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
