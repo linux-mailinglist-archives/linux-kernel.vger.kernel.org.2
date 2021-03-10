@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369EC3345A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE63E3345AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233325AbhCJRuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:50:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56576 "EHLO mx2.suse.de"
+        id S232815AbhCJRuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:50:46 -0500
+Received: from mga18.intel.com ([134.134.136.126]:6363 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232828AbhCJRuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:50:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 40EBFAC54;
-        Wed, 10 Mar 2021 17:50:00 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 18:49:57 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/4] x86/vmemmap: Handle unpopulated sub-pmd ranges
-Message-ID: <20210310174953.GA16289@linux>
-References: <20210309174113.5597-1-osalvador@suse.de>
- <20210309174113.5597-4-osalvador@suse.de>
- <3471fe0e-d8f4-c8fe-2096-8d9c8b1ab5bc@redhat.com>
+        id S233103AbhCJRuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 12:50:18 -0500
+IronPort-SDR: 5Qcxn6PBwK2fhNb15xo3SK4pCxcdHsyOYWt0KiCjX1d/B1vt1+uCbtcz/BLdBQON3fRUbXVE5W
+ r+xfMaePNIVw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="176120633"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="176120633"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 09:50:17 -0800
+IronPort-SDR: b2evOkNO/0UV6Pdj15EO+j1vjXvRxRE4shFbKJsY9eS2FoRoq5gKfFz4l6WnU3f+scbmfAzhk1
+ loVURsv0Rv6w==
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
+   d="scan'208";a="403766454"
+Received: from huiyingw-mobl.amr.corp.intel.com (HELO [10.212.214.84]) ([10.212.214.84])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 09:50:15 -0800
+Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
+ present
+To:     Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Bard liao <yung-chuan.liao@linux.intel.com>
+References: <20210303115526.419458-1-jonathanh@nvidia.com>
+ <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
+ <20210310133534.GD4746@sirena.org.uk>
+ <6a2352e6-f2b7-def1-de58-52fbeb7846e5@linux.intel.com>
+ <20210310161814.GA28564@sirena.org.uk> <s5hzgzbvube.wl-tiwai@suse.de>
+ <9b073d01-f2fe-a99b-e53c-4a0b3f95ca05@linux.intel.com>
+ <20210310165235.GD28564@sirena.org.uk>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <cf03ce61-1501-e0e7-6887-d921c7d1af62@linux.intel.com>
+Date:   Wed, 10 Mar 2021 11:50:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3471fe0e-d8f4-c8fe-2096-8d9c8b1ab5bc@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210310165235.GD28564@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 06:52:38PM +0100, David Hildenbrand wrote:
-> > -#define PAGE_INUSE 0xFD
-> > +#ifdef CONFIG_SPARSEMEM_VMEMMAP
-> > +#define PAGE_UNUSED 0xFD
-> > +
-> > +/* Returns true if the PMD is completely unused and thus it can be freed */
-> > +static bool __meminit vmemmap_pmd_is_unused(unsigned long addr, unsigned long end)
-> > +{
+
+
+On 3/10/21 10:52 AM, Mark Brown wrote:
+> On Wed, Mar 10, 2021 at 10:41:18AM -0600, Pierre-Louis Bossart wrote:
 > 
-> I don't think the new name is any better. It implies that all it does is a
-> check - yet it actually clears the given range. (I prefer the old name, but
-> well, I came up with that, so what do I know :D )
+>> would this work?
+> 
+>> if (!IS_ENABLED(CONFIG_DMI))
+>>      return 0;
+> 
+> Build time dependencies aren't going to help anything, arm64 (and to my
+> understanding some future x86 systems, LynxPoint IIRC) supports both DT
+> and ACPI and so you have kernels built with support for both.
 
-Sorry, I did not mean to offend here.
+well, that's what I suggested initially:
+        if (is_of_node(card->dev->fwnode))
 
-Something like: vmemmap_is_pmd_unused_after_clearing_it would be a bit better
-I guess.
-Tbh, both this and previous one looked fine to me, but I understand where Dave
-confusion was coming from, that is why I decided to rename it.
+I used the of_node test as a proxy for 'no DMI' since I am not aware of 
+any means to detect if DMI is enabled at run-time.
 
-Maybe a middle-ground would have been to expand the comment above.
-
--- 
-Oscar Salvador
-SUSE L3
