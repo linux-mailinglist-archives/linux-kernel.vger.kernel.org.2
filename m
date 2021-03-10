@@ -2,78 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AC43345B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 210373345B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233355AbhCJRvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:51:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47236 "EHLO
+        id S233504AbhCJRwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:52:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbhCJRvW (ORCPT
+        with ESMTP id S232994AbhCJRv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:51:22 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29658C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:51:22 -0800 (PST)
-Date:   Wed, 10 Mar 2021 18:51:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615398679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aSIb//N8NgxmAAqcYWn+xZg/W7zBbeYa44UtqizpJ7c=;
-        b=2iiosQ6F5igJ0wCB+/GF79e+LQqAoSgwmipYn5tKQXihHcGoQ239mFScugg4yF3mif4lCG
-        7dHZ9ZLCubpA97z6qXDdkSXX7u8khJuPHtK6OYhBnjdq7WhFdYEgkEr6P4Sz50WtPZd3FB
-        FNubnEICl15A8vDMwkNu6A7tXjZ21X2lc5oY5/Q9q/tRtZiqvkz4Mcg0E6RU5V9Q47fxzR
-        XxmhktzxYI9LPKXj4/FXUcVh5kzbC3VfR79Jcr8czWr46ll7rEVxBfsM7tlDLCQPBFbO61
-        phK5MaLeEg1GM7oqWK5Qzsr4LFJK5pkB8JAzGbg6xwcZ+QC723eh2YAqPCDp7A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615398679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aSIb//N8NgxmAAqcYWn+xZg/W7zBbeYa44UtqizpJ7c=;
-        b=Lm+yOufA/9Sr/YaM1pt8UQ0CC/BHSJDG7UkgiDyiYPavZQF9gEx/w3C1NS4EjGTViqIiFi
-        R/RhxRrqfaG2ypAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Willy Tarreau <w@1wt.eu>
-Subject: Re: [PATCH v3] auxdisplay: Remove in_interrupt() usage.
-Message-ID: <20210310175117.dqv7uufl7tplmgk5@linutronix.de>
-References: <20210208204136.sv4omzms3nadse6e@linutronix.de>
- <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
- <20210209090112.lewvvhnc2y7oyr27@linutronix.de>
- <CANiq72mG3zXA7j9KbC74hQ1BMgw713Hm3WDAcQBjKxgg0fLHeg@mail.gmail.com>
- <20210213165040.vzzieegx4aliyosd@linutronix.de>
- <CANiq72mkkSfbnNM_mmXE-TNKO1orsAeyByMKFy1N6hm+EBA40A@mail.gmail.com>
- <20210216102856.dnaycukt3oqxoszp@linutronix.de>
- <CANiq72mge40Uvqf3mb4uof2gi8ktvhjoodfyJY7uLW4guTnvDw@mail.gmail.com>
- <20210216182619.xd7h4uwpqcw5kcup@linutronix.de>
- <CANiq72np-G3whePohyYazx3KpP6A+DsRwq-bjd7E7qKb1JG62w@mail.gmail.com>
+        Wed, 10 Mar 2021 12:51:57 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CFCC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:51:57 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id c16so8869179ply.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:51:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YAIZBUejgsuRm3I/i8T3yjE4IQIAIxaYEAKBNsGudB8=;
+        b=n7lAY9Mh6yDTmTTIv7zZyu41T9/hF6k4r9wQkCHFWNi0aKhriqdg3RwoAnkmp+lgwk
+         Oy/bbQXbJgFLBo6GR1J30O/H2pM+3SOBLTotrHTTK0VLehStaNQLiDWXyxAJE2mjc1dC
+         ntlQpJkvDo7H5ChokF7zw02U6yB/4+aEXUwD/2Pv32YC3hrMeWgJsBKnkja+L5kqQPis
+         M5sJUpsQ6+Lckj2ERtiVM0F9lRmy8+qRydOp6ns1Gh33ktnXoaNPdndAPw7s0nZF9HER
+         /8iZil8ckUoUwH6HzX7JXqVCfmQc1AkEcafLpOg1TaxViD/cyNak0teaHOHK2/PnZ8Dm
+         ngVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YAIZBUejgsuRm3I/i8T3yjE4IQIAIxaYEAKBNsGudB8=;
+        b=Rx64QOUQbkuFkZisuu2LiCutHU13yizb3FeG6bU0KEgtWEkZlZ8+wwQRX4zstWwU61
+         myZYqjzFKrKI65tUCCDSrvVkM0HqwSIpIRP8nlJcBgLESzD1iI/TKhA27W9QYbTcuYxT
+         //qb4dT14lOMfjim4KPEtznZIB1XIS4/2aS7LxllivbxEUm4bavgagQ3B+o8278tG5jK
+         Fi83fXSvqODrUnHgIuVhS+b0Bt+65Ko1L39pz1dzjZytTdL6UZMSstOd5XweMi34B+4L
+         HO0nCdh5zkrjQ7j5CjjLJj835Ig7pGFAza/+lNdtVn00KENQiF7mRBrD6Gl4Ixr5n9PR
+         6ybg==
+X-Gm-Message-State: AOAM530zFUznx2gM1DSBcHheJOffHsqf548cAPzAe/4PEWYQgd1D2p9q
+        gaQ0N0CHccF5VKreBbo0dBF64Q==
+X-Google-Smtp-Source: ABdhPJx2/KjxJOlLrywlrZyCi4etdMjlYm9VOhRGmyxW79l/RXMdX6XsloC3NohTmM/VTndD9sLVmA==
+X-Received: by 2002:a17:902:b610:b029:e3:2b1e:34ff with SMTP id b16-20020a170902b610b02900e32b1e34ffmr4041572pls.69.1615398716928;
+        Wed, 10 Mar 2021 09:51:56 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
+        by smtp.gmail.com with ESMTPSA id f3sm164471pfe.25.2021.03.10.09.51.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 09:51:56 -0800 (PST)
+Date:   Wed, 10 Mar 2021 09:51:48 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Martin Radev <martin.b.radev@gmail.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 5/7] x86/boot/compressed/64: Add CPUID sanity check to
+ 32-bit boot-path
+Message-ID: <YEkHNDgmybNI+Ptt@google.com>
+References: <20210310084325.12966-1-joro@8bytes.org>
+ <20210310084325.12966-6-joro@8bytes.org>
+ <YEjvBfJg8P1SQt98@google.com>
+ <YEkBU9em9SQZ25vA@martin-ThinkPad-T440p>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CANiq72np-G3whePohyYazx3KpP6A+DsRwq-bjd7E7qKb1JG62w@mail.gmail.com>
+In-Reply-To: <YEkBU9em9SQZ25vA@martin-ThinkPad-T440p>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-16 21:21:07 [+0100], Miguel Ojeda wrote:
-=E2=80=A6
-> It is not an order :-) i.e. don't feel pressured that you need to sign
-> off on the comment change -- I can submit the comment on my own later
-> on.
+On Wed, Mar 10, 2021, Martin Radev wrote:
+> On Wed, Mar 10, 2021 at 08:08:37AM -0800, Sean Christopherson wrote:
+> > On Wed, Mar 10, 2021, Joerg Roedel wrote:
+> > > +	/*
+> > > +	 * Sanity check CPUID results from the Hypervisor. See comment in
+> > > +	 * do_vc_no_ghcb() for more details on why this is necessary.
+> > > +	 */
+> > > +
+> > > +	/* Fail if Hypervisor bit not set in CPUID[1].ECX[31] */
+> > 
+> > This check is flawed, as is the existing check in 64-bit boot.  Or I guess more
+> > accurately, the check in get_sev_encryption_bit() is flawed.  AIUI, SEV-ES
+> > doesn't require the hypervisor to intercept CPUID.  A malicious hypervisor can
+> > temporarily pass-through CPUID to bypass the CPUID[1].ECX[31] check.
+> 
+> If erroneous information is provided, either through interception or without, there's
+> this check which is performed every time a new page table is set in the early linux stages:
+> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/x86/kernel/sev_verify_cbit.S#L22
+> 
+> This should lead to a halt if corruption is detected, unless I'm overlooking something.
+> Please share more info.
 
-I assumed you are going to apply it but I don't see it in -next as of
-today. Is there anything I need to do?
+That check is predicated on sme_me_mask != 0, sme_me_mask is set based on the
+result of get_sev_encryption_bit(), and that returns '0' if CPUID[1].ECX[31] is
+'0'.
 
-> Cheers,
-> Miguel
+sme_enable() also appears to have the same issue, as CPUID[1].ECX[31]=0 would
+cause it to check for SME instead of SEV, and the hypervisor can simply return
+0 for a VMGEXIT to get MSR_K8_SYSCFG.
 
-Sebastian
+I've no idea if the guest would actually survive with a bogus sme_me_mask, but
+relying on CPUID[1] to #VC is flawed.
+
+Since MSR_AMD64_SEV is non-interceptable, that seems like it should be the
+canonical way to detect SEV/SEV-ES.  The only complication seems to be handling
+#GP faults on the RDMSR in early boot.
+
+> > The hypervisor likely has access to the guest firmware source, so it
+> > wouldn't be difficult for the hypervisor to disable CPUID interception once
+> > it detects that firmware is handing over control to the kernel.
+> > 
+> 
+> You probably don't even need to know the firmware for that. There the option
+> to set CR* changes to cause #AE which probably gives away enough information.
