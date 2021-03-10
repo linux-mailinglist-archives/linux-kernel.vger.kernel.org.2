@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E351C333933
+	by mail.lfdr.de (Postfix) with ESMTP id 977A4333932
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhCJJtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:49:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232417AbhCJJtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232460AbhCJJtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230156AbhCJJtI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Mar 2021 04:49:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7765B64FBF;
-        Wed, 10 Mar 2021 09:48:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615369717;
-        bh=cbaXPFLPlfxO4DO+qzqvpj+RpO9wsmrj2KK3636FN+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qCgfX7gAmGPzDsZNVC9PSOTerA2i1LvJ0X4ipfELvEA3x6NA1BkNLkWNWQ/aFFSwh
-         NNwTyvKLNcKy2imUpU4/IMpbZXbv+Z0XzsCwFQhsj3OZJZOD/4Vnxc9xwgrWQT4pjJ
-         PHyTTAqCdsHBYp6R/WHPRSDOgozii7qXPYgFDULg=
-Date:   Wed, 10 Mar 2021 10:48:34 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v3 07/11] lib: bitmap: provide devm_bitmap_alloc() and
- devm_bitmap_zalloc()
-Message-ID: <YEiV8gY/LJiwl10R@kroah.com>
-References: <20210309205921.15992-1-brgl@bgdev.pl>
- <20210309205921.15992-8-brgl@bgdev.pl>
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED57C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:48:50 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id e2so24734363ljo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:48:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XtHA2WDlEgIkr4gPC6h7Fo/UqIYBpPKwlhK+eaqepyw=;
+        b=tY/zIW4Jt+MrodIYY2WZdIiCNb/lU3TrDkCWVH1GC0ZPyU8Fx0CiEb9Y0y6cWNwv7U
+         3+UQ4tj0HCbX1WI9IIyo1VQinhXuWm4yZ4/FrglyModxavmcD8ic3hi8VDuL0mu7sjvO
+         r5E3kNoy61v/83xcWywtQVUii/xoonAa4J0vcuc4IIrtgr+1XAGhb6OW3Mi4t5bvbWxc
+         GIgozN4dt2GxWFomJxp6BI7YoAy/xPboNJQTdjjKnrHxVFj4+9L5cBB9ed/Szln9egGk
+         D9vT9z4k3NfBlpCqmdhXbTHzIRr2dVJNtXzUNIocr7litDYcpUQG9qfLgvf2bTY4K7bC
+         /Isw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XtHA2WDlEgIkr4gPC6h7Fo/UqIYBpPKwlhK+eaqepyw=;
+        b=tukmZR3Qgj0bbCVfELMqE+eD4DW+VoTKm3J0wT8ctKWr5vK1p94kgDrbLDpYBGtoWW
+         iUsd0vA0WkYXAf+UtoYKfZrTrWTIJA+WkGfg3dybHIPMHx/oB/86gIKfCwC/WOj2NLT1
+         Z+Lw/oN5yhm1q0cjRvWL+/lePhQ9mRrHiOfPH5wQB1TOLWfvHOuFcq0dEX084fOg3hWE
+         i44nwePPeGoWy1iDuXamsMLo0gwUmYc0/gO5uRwBosiEdI6EZZFV79SwPNQS/5wUQNkd
+         FibQcNPxd7RB/vmhON3qvJZxTonSE8Mcw6lSemETUUrFiwN41ZQIOB4xjwLR/zq5CYzx
+         GvfQ==
+X-Gm-Message-State: AOAM533NVvqou8HSohme75JzWJm4qT0SFJ+K59YQaq+aA5doXNc/T3M/
+        mTWvHP7rI5pAMx63XaYG5oW5UVR2uiJCFbCQf/Pbjw==
+X-Google-Smtp-Source: ABdhPJy+6iVKLlhEs9ytjE2yJ6jzfWyAjkcYGwRmlv2dADiCXewf+sSTgUSixyA6cjqoVwsnHGvaAVVLYVVNGU7AOWM=
+X-Received: by 2002:a2e:864a:: with SMTP id i10mr1268524ljj.467.1615369729068;
+ Wed, 10 Mar 2021 01:48:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309205921.15992-8-brgl@bgdev.pl>
+References: <20210303135500.24673-1-alex.bennee@linaro.org>
+ <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
+ <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
+ <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
+ <6c542548-cc16-af68-c755-df52bd13b209@marcan.st> <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
+ <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
+In-Reply-To: <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 10 Mar 2021 10:48:38 +0100
+Message-ID: <CACRpkdbQks5pRFNHkNLVvLHCBhh0XCv7pHYq25EVAbU60PcwsA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
+To:     Hector Martin <marcan@marcan.st>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        Arnd Bergmann <arnd@linaro.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Ruchika Gupta <ruchika.gupta@linaro.org>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:59:17PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> Provide managed variants of bitmap_alloc() and bitmap_zalloc().
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  include/linux/bitmap.h |  8 ++++++++
->  lib/bitmap.c           | 33 +++++++++++++++++++++++++++++++++
->  2 files changed, 41 insertions(+)
-> 
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index 3282db97e06c..73d039476fa4 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -9,6 +9,8 @@
->  #include <linux/string.h>
->  #include <linux/types.h>
->  
-> +struct device;
-> +
->  /*
->   * bitmaps provide bit arrays that consume one or more unsigned
->   * longs.  The bitmap interface and available operations are listed
-> @@ -122,6 +124,12 @@ unsigned long *bitmap_alloc(unsigned int nbits, gfp_t flags);
->  unsigned long *bitmap_zalloc(unsigned int nbits, gfp_t flags);
->  void bitmap_free(const unsigned long *bitmap);
->  
-> +/* Managed variants of the above. */
-> +unsigned long *devm_bitmap_alloc(struct device *dev,
-> +				 unsigned int nbits, gfp_t flags);
-> +unsigned long *devm_bitmap_zalloc(struct device *dev,
-> +				  unsigned int nbits, gfp_t flags);
-> +
->  /*
->   * lib/bitmap.c provides these functions:
->   */
-> diff --git a/lib/bitmap.c b/lib/bitmap.c
-> index 78f70d9007ad..b4fd7fd084c6 100644
-> --- a/lib/bitmap.c
-> +++ b/lib/bitmap.c
-> @@ -8,6 +8,7 @@
->  #include <linux/bitops.h>
->  #include <linux/bug.h>
->  #include <linux/ctype.h>
-> +#include <linux/device.h>
->  #include <linux/errno.h>
->  #include <linux/export.h>
->  #include <linux/kernel.h>
-> @@ -1263,6 +1264,38 @@ void bitmap_free(const unsigned long *bitmap)
->  }
->  EXPORT_SYMBOL(bitmap_free);
->  
-> +static void devm_bitmap_free(void *data)
-> +{
-> +	unsigned long *bitmap = data;
-> +
-> +	bitmap_free(bitmap);
-> +}
-> +
-> +unsigned long *devm_bitmap_alloc(struct device *dev,
-> +				 unsigned int nbits, gfp_t flags)
-> +{
-> +	unsigned long *bitmap;
-> +	int ret;
-> +
-> +	bitmap = bitmap_alloc(nbits, flags);
-> +	if (!bitmap)
-> +		return NULL;
-> +
-> +	ret = devm_add_action_or_reset(dev, devm_bitmap_free, bitmap);
-> +	if (ret)
-> +		return NULL;
-> +
-> +	return bitmap;
-> +}
-> +EXPORT_SYMBOL(devm_bitmap_alloc);
-> +
-> +unsigned long *devm_bitmap_zalloc(struct device *dev,
-> +				  unsigned int nbits, gfp_t flags)
-> +{
-> +	return devm_bitmap_alloc(dev, nbits, flags | __GFP_ZERO);
-> +}
-> +EXPORT_SYMBOL(devm_bitmap_zalloc);
+On Wed, Mar 10, 2021 at 9:47 AM Hector Martin <marcan@marcan.st> wrote:
 
-devm_* functions have been traditionally exported with
-EXPORT_SYMBOL_GPL() due to the use of a struct device *.  Perhaps do
-that here as well?
+> Remember that if the key is ever lost, the RPMB is now completely
+> useless forever.
+>
+> This is why, as far as I know, most sane platforms will use hard fused
+> values to derive this kind of thing, not any kind of key stored in
+> erasable storage.
 
-thanks,
+You're right. In the mobile phone world this is a given fact.
 
-greg k-h
+If we are thinking devices are to be repurposed or reinstalled
+from scratch for example, like ordinary desktops or servers,
+RPMB does not make generic sense: it is not for
+"generic computing" but rather for protecting devices that you
+carry around and can be lost: mobile phones, chromebooks,
+maybe laptops.
+
+If and only if the user so desires, I would say, but sometimes
+the vendors decide policy...
+
+(+/- the fact that some recent supply chain attacks for server
+software may actually make cloud people start thinking like this
+about their servers integrity, what do I know.)
+
+> Also, newly provisioned keys are sent in plain text, which means that
+> any kind of "if the RPMB is blank, take it over" automation equates to
+> handing over your key who an attacker who removes the RPMB and replaces
+> it with a blank one, and then they can go access anything they want on
+> the old RPMB device (assuming the key hasn't changed; and if it has
+> changed that's conversely a recipe for data loss if something goes wrong).
+>
+> I really think trying to automate any kind of "default" usage of an RPMB
+> is a terrible idea. It needs to be a conscious decision on a
+> per-platform basis.
+
+OK sorry for my bad ideas, what was I thinking :D
+
+For a laptop or so, I would say, a user who is paranoid that their
+device gets stolen and used by someone else, should be able to
+set their device up, with some tool, such that a secret key from
+somewhere and RPMB is used to lock down the machine so that
+attackers cannot get into it and get the data out.
+
+Disk is encrypted, and RPMB is there to block any exhaustive
+password or other authentication token search.
+
+Ideally: the only way to make use of the hardware again would
+be to solder off the eMMC, if eMMC is used for RPMB.
+If we have RPMB on an NVME or UFS drive, the idea is
+to lock that thing such that it becomes useless and need to
+be replaced with a new part in this scenario.
+
+In practice: make it hard, because we know no such jail is
+perfect. Make it not worth the effort, make it cheaper for thieves
+to just buy a new harddrive to use a stolen laptop, locking
+the data that was in it away forever by making the drive
+useless for any practical attacks.
+
+Maybe it will be possible to blank the drive and use without
+RPMB since that is now locked with a key they can no longer
+acces: the end result is the same: RPMB protected the data
+of the original user. So a one-time user protection such
+as a seal, once broken this seal cannot be reused to seal
+anything again and that is OK.
+
+Yours,
+Linus Walleij
