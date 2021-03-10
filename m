@@ -2,87 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC1D33366D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38708333671
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhCJHb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:31:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53512 "EHLO
+        id S231535AbhCJHdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:33:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhCJHba (ORCPT
+        with ESMTP id S231913AbhCJHdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:31:30 -0500
-X-Greylist: delayed 367 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 Mar 2021 23:31:17 PST
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DC091C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:31:17 -0800 (PST)
+        Wed, 10 Mar 2021 02:33:20 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63304C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 23:33:20 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id e7so31870112lft.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 23:33:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=C5c3qyNcj+
-        yM0eWSk6JHCF/keE9ww6gJQ/zxKfWTSLo=; b=fAVwDAcw17hDMuosu7ykZ9BR0D
-        YzO5PyVWPFk6hxcbFD/wlzGOjbcXZo8TFWMpFk4/fvBCEN7/scMgOOuekT+pD/K7
-        IElfl0crrBjvMXLxp4ie4c9O95UQwm04JdzlDqFjpdi/oTzFd787mnR6hBYq5wD0
-        fKlYxndo0XsgCbQ14=
-Received: from ubuntu.localdomain (unknown [114.214.224.243])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCnk2BOdEhgGDsCAA--.1553S4;
-        Wed, 10 Mar 2021 15:25:02 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     gustavo@embeddedor.com, gregkh@suse.de, mikew@google.com
-Cc:     linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] drivers/firmware: Fix double free in dmi_sysfs_register_handle
-Date:   Tue,  9 Mar 2021 23:24:59 -0800
-Message-Id: <20210310072459.5029-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d25lunF52I2d+HwAf6vLh2UeB4dI+4X5OmemShJ2/Ss=;
+        b=TAdzsQHqlfJrqSMB7FDoVHYA9xhamOZB1ElXiUimCcZJ1SVXFYSaNsfBdQ/HpXDRj2
+         MwCgSMN+paV5GC4IdhDdzWwsHzleIN5qoVrMTPDvousD/WARE5k73RAtFWtGM2fzLoTA
+         4rRLh4DMOWpCSB3fXd2i7eX6iNbwc6o///W1ywkvh+rvjwIP0UUUWU8qaNzT7ht+FWAI
+         2YmXAxY0lJF6X01uIS8oR/Vh2Y1nElfibHyiMasjhyAp8XClK8fnIgAtbvx2ozWKO/r5
+         jHegHOYsZJfeKMoqHKxoSrgwL9G9z1NOOhXbnXg6RmncoF2fdHTtAtMJLbSq48ZHthqO
+         RC1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d25lunF52I2d+HwAf6vLh2UeB4dI+4X5OmemShJ2/Ss=;
+        b=ojNWcGUDOXUosg2J6wVUVtuzwo3SWlad4gZMXKP8jHU691ISfKcqxkPnfjTnVq7lTg
+         4/Do/4whnp8a5HCYY8s63Ig5Dwgp07ttCztIdhnlRfqI6NcDF84yRm4p5mgG3qKDV9pG
+         JazMNBzPpr947OzKu3DF2iD+faeZ7zTa4fHp6EkG8HGCMl3ZPR6EVZmy+TrajX0Seobr
+         wchOUf1ei8VlWWlgP1dbscuTzXNNSRnkBOyxMXcx5pA6sy3clzfhu0fieItPi8SW6rSW
+         LG39+bg9IwcQCUfrODrVqSFXWBG5ov4a4GE8b5x0sL5zOa2hId9CW5arVzMROWp/lW1u
+         GgPA==
+X-Gm-Message-State: AOAM533+L2nhf9fYz7jqhwkuv6KV2wtX+4ms4qfG7M6JWEwpe1q2RDZ7
+        kDbmV/Z63aehJNlYpb+jzTzjEh/jlZ16EqgD4ow=
+X-Google-Smtp-Source: ABdhPJyU8EKDZ+7+xGo5OXDAmXNLiyRKd/MFw+PQT4OjZC9Tbmx0Jgr90fPeCpJuVzm9Y0KAIXKYqEyi5oEOyglFBZU=
+X-Received: by 2002:ac2:5a0b:: with SMTP id q11mr1255454lfn.391.1615361598796;
+ Tue, 09 Mar 2021 23:33:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygCnk2BOdEhgGDsCAA--.1553S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7JF18try3Kw43try5Kw18Grg_yoWDJrX_CF
-        W5tryfWw48KF4aqr1avw1Fvr9Iva1vv3s7CrWSy3Wayry3Xw48Xr4jgw1xZrW7WFyIyFWk
-        Ar1DKry8Cr4IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0D
-        UUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+References: <CAGyP=7dpTbbj39uO37YrNMg9h4Nzmkszc3MoZg9n8ALir_A52g@mail.gmail.com>
+ <YEZcVKbPzfMVK2aK@zeniv-ca.linux.org.uk> <CAGyP=7fHhyrTP-u0tqCy5ZHzZN0v_0dAoj6dCHnFuBbqtfnBmQ@mail.gmail.com>
+ <YEeFYMcdPVNrKRJT@zeniv-ca.linux.org.uk> <CACT4Y+Z==NtH2K6pxN8w90cbczffF+wYbcTgTdbBczeBk5n1aw@mail.gmail.com>
+In-Reply-To: <CACT4Y+Z==NtH2K6pxN8w90cbczffF+wYbcTgTdbBczeBk5n1aw@mail.gmail.com>
+From:   Palash Oswal <oswalpalash@gmail.com>
+Date:   Wed, 10 Mar 2021 13:03:07 +0530
+Message-ID: <CAGyP=7dLJMX0JW4bKAhRWNNCzggGnc8twvnFOxdkduz7J5gJGw@mail.gmail.com>
+Subject: Re: kernel panic: Attempted to kill init!
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A double free bug was found in drivers/firmware/dmi-sysfs.c.
-In the implementation of dmi_sysfs_register_handle, it calls
-dmi_system_event_log() to initialize entry->child. If
-kobject_init_and_add() failed, entry->child is freed. But
-unfortunately, out_err branch in dmi_sysfs_register_handle
-will freed entry->child twice!
+On Tue, Mar 9, 2021 at 8:36 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> FWIW the code looks reasonable:
+>
+> All code
+> ========
+>    0: 00 00                add    %al,(%rax)
+>    2: 00 00                add    %al,(%rax)
+>    4: 41 57                push   %r15
+>    6: 41 56                push   %r14
+>    8: 41 55                push   %r13
+>    a: 41 54                push   %r12
+>    c: 55                    push   %rbp
+>    d: 53                    push   %rbx
+>    e: 89 fd                mov    %edi,%ebp
+>   10: 48 81 ec 48 01 00 00 sub    $0x148,%rsp
+>   17: 64 48 8b 04 25 28 00 mov    %fs:0x28,%rax
+>   1e: 00 00
+>   20: 48 89 84 24 38 01 00 mov    %rax,0x138(%rsp)
+>   27: 00
+>   28: 31 c0                xor    %eax,%eax
+>   2a:* e8 f5 bf f7 ff        callq  0xfffffffffff7c024 <-- trapping instruction
+>   2f: 83 f8 01              cmp    $0x1,%eax
+>   32: 0f 84 b7 00 00 00    je     0xef
+>   38: 48                    rex.W
+>   39: 8d                    .byte 0x8d
+>   3a: 9c                    pushfq
+>   3b: 40                    rex
+>
+> This is a PC-relative call to a reasonable address, right?
+> I wonder if it always traps on this instruction or not. Maybe the
+> executable is corrupted and has a page missing in the image or
+> something similar. But also if we suspect a badly corrupted image, is
+> it worth pursuing it?...
 
-Fixes: 925a1da7477fc ("firmware: Break out system_event_log in dmi-sysfs")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/firmware/dmi-sysfs.c | 1 -
- 1 file changed, 1 deletion(-)
+I copied over a new systemd binary from a fresh disk image generated
+using  tools/create-image.sh in syzkaller (debootstrap) and the bug
+was still reproducible.
+root@sandbox:~# md5sum /lib/systemd/systemd
+12b20bfd8321ef7884b4dbf974a91213  /lib/systemd/systemd
+root@sandbox:~# md5sum /lib/systemd/systemd_orig
+12b20bfd8321ef7884b4dbf974a91213  /lib/systemd/systemd_orig
 
-diff --git a/drivers/firmware/dmi-sysfs.c b/drivers/firmware/dmi-sysfs.c
-index 8b8127fa8955..ad97bbd37206 100644
---- a/drivers/firmware/dmi-sysfs.c
-+++ b/drivers/firmware/dmi-sysfs.c
-@@ -631,7 +631,6 @@ static void __init dmi_sysfs_register_handle(const struct dmi_header *dh,
- 
- 	return;
- out_err:
--	kobject_put(entry->child);
- 	kobject_put(&entry->kobj);
- 	return;
- }
--- 
-2.25.1
+root@sandbox:~# gcc -pthread hax.c -o repro
+root@sandbox:~# ./repro
+[  115.515840] got to 221
+[  115.515853] got to 183
+[  115.516400] got to 201
+[  115.516935] got to 208
+[  115.517475] got to 210
+[  115.521008] got to 270
+[  115.544984] systemd[1]: segfault at 7ffe972adfb8 ip
+00005560fb079466 sp 00007ffe972adfc0 error 6 in
+systemd[5560fafcd000+ed000]
+[  115.546554] Code: 00 00 00 00 41 57 41 56 41 55 41 54 55 53 89 fd
+48 81 ec 48 01 00 00 64 48 8b 04 25 28 00 00 00 48 89 84 24 38 01 00
+00 31 c0 <e8> f5 bf f7 ff 83 f8 01 0f 84 b7 00 00 00 48 8d 9c 240
+[  115.548575] Kernel panic - not syncing: Attempted to kill init!
+exitcode=0x0000000b
+[  115.549352] CPU: 0 PID: 1 Comm: systemd Not tainted 5.11.2+ #22
+[  115.549994] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.14.0-1 04/01/2014
+[  115.550834] Call Trace:
+[  115.551090]  dump_stack+0xb2/0xe4
+[  115.551438]  panic+0x196/0x502
+[  115.551798]  do_exit.cold+0x70/0x108
+[  115.552170]  do_group_exit+0x78/0x120
+[  115.552552]  get_signal+0x22e/0xd60
+[  115.552916]  arch_do_signal_or_restart+0xef/0x890
+[  115.553407]  exit_to_user_mode_prepare+0x102/0x190
+[  115.553920]  irqentry_exit_to_user_mode+0x9/0x20
+[  115.554412]  irqentry_exit+0x19/0x30
+[  115.554781]  exc_page_fault+0xc3/0x240
+[  115.555168]  ? asm_exc_page_fault+0x8/0x30
+[  115.555626]  asm_exc_page_fault+0x1e/0x30
+[  115.556092] RIP: 0033:0x5560fb079466
+[  115.556476] Code: 00 00 00 00 41 57 41 56 41 55 41 54 55 53 89 fd
+48 81 ec 48 01 00 00 64 48 8b 04 25 28 00 00 00 48 89 84 24 38 01 00
+00 31 c0 <e8> f5 bf f7 ff 83 f8 01 0f 84 b7 00 00 00 48 8d 9c 240
+[  115.558399] RSP: 002b:00007ffe972adfc0 EFLAGS: 00010246
+[  115.558947] RAX: 0000000000000000 RBX: 00005560fcaa7f40 RCX: 00007ff6fb1c22e3
+[  115.559720] RDX: 00007ffe972ae140 RSI: 00007ffe972ae270 RDI: 0000000000000007
+[  115.560475] RBP: 0000000000000007 R08: 431bde82d7b634db R09: 000000000000000b
+[  115.561219] R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffe97aad190
+[  115.561963] R13: 0000000000000001 R14: ffffffffffffffff R15: 0000000000000002
+[  115.562768] Kernel Offset: disabled
+[  115.563148] ---[ end Kernel panic - not syncing: Attempted to kill
+init! exitcode=0x0000000b ]---
 
-
+For sanity, I created a new disk image altogether, made a replica of
+the image and ran syzkaller on the first copy of the image to find a
+new reproducer for this bug.
+[NEW IMAGE]                     [NEW IMAGE REPLICA]
+Used by syzkaller                Used for testing the reproducer manually
+After discovering the new reproducer for this fresh image, I triggered
+the new reproducer on the *untainted* replica of the image and the bug
+was reproducible.
+This would invalidate the assumption that the image/binaries on the
+image are corrupted.
