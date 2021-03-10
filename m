@@ -2,184 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4899D3349F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C83AC3349DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhCJVnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:43:22 -0500
-Received: from mx0b-002ab301.pphosted.com ([148.163.154.99]:29602 "EHLO
-        mx0b-002ab301.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232058AbhCJVmy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:42:54 -0500
-X-Greylist: delayed 1895 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Mar 2021 16:42:53 EST
-Received: from pps.filterd (m0118794.ppops.net [127.0.0.1])
-        by mx0b-002ab301.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12AL70Sl000506;
-        Wed, 10 Mar 2021 16:11:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=distech-controls.com; h=from : to :
- cc : subject : date : message-id : content-type : mime-version;
- s=pps-02182019; bh=eO2jkEqWaS8YS+gMdiS/gOzdsdWdvABn2hslfDIptOM=;
- b=qXw8Hd1pZYf3obg2E8ElpSLemVMKAEfPanmkUJpv0+8HGxlyEDqWGd5ZrA6OE0iKhbiT
- uk/mYcsIuAIwKhpXW6YhWrXa4StSVWFt2dvES94KoWkAZ9oIIJods0REyjAsTVeKuV4x
- n+lYgbJvKo0Fv7EGYozMxGCzPLj7CreQKAkt40vcFNfP8PAHWAwjyLW4RqpRE40US4Z4
- LlzUpmscN045R6mRYrxQIhS6ykV59BYwlSxuHF8kp8daiKQCvkBSesLYPNAHuvjfhO9m
- +/T8LhcSHyEjTaDtFLgTsLasImGk7KZoCA7fCCJTQgutbUy4Ke7skCIIbWet/mkzSl4H ow== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by mx0b-002ab301.pphosted.com with ESMTP id 376muy0vbd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Mar 2021 16:11:01 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c8fiZCZaNZsV9ZC777Lol5/Bm7Hj1M4/x9cdDc3TDFKTQSDS9qh8HuEi1hfy1hAgelCT4gH5hk6hl4W6IlCOizx+BkgqItfTWhr1gtFcu+dcgSTqFnmV3YusZQh2K6bu7WvSeSN4Kxb1E5UYUJskIY3+jj8WxgwbojtfTwsVw+56a6BtzQ9RZqDfE/uJbZd/BgrxQ7RjPyGEK97g2EPYem8jzff6aGCvS66fbR8C+s3MSD3zFuf1ttloMswu3vcMnEC7oYQX9ym9k0yOaQ8S8Wfg9xxhgxct94xToSU3YK870e6a8L5ff6/NjtyeJZCHgRE4560NgoK5cI7jszmwGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eO2jkEqWaS8YS+gMdiS/gOzdsdWdvABn2hslfDIptOM=;
- b=Ku1SSFNeo+ppWSfJtzFab5uXCtPMt8WLnxcUlOn48XtWX8aLDsGZhJvxlTk2jioyiziCgmP14mopnrIy3mcWzo7V+N0LMV/yOm5ICRQCbw6R3/0pLLPTifibDbkjzIariv3MnKRAy6YMuE/yNypLAsuYQXFVtGDyNI7PYSTDYqL4/Hdk8WShYI3RcrhCcNf1Ts74SYzFwIL3NeXoyUj17yg6DEZdH3cHBGLj9zruG+OfNSTE2e2Wr+A8bQ9pbQmZ7Qne3joY6VFPLWIyR8gozHveX1PNhr3ki8H2iv4PUZQv6+lFKEEygXApqedD62LcsH6QQZC/CMJ3iYyPi5EIhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=distech-controls.com; dmarc=pass action=none
- header.from=distech-controls.com; dkim=pass header.d=distech-controls.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=distech-controls.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eO2jkEqWaS8YS+gMdiS/gOzdsdWdvABn2hslfDIptOM=;
- b=VcrwN9qF/lHQBX90FOTRKdzNWqod11qoxDOZNo1j7qgLyIkiGm8vPgeV8iK7q89uo99mV4epdZur8xv4Qw0xJOVKeVn5X4PLa0JGpZnQdatU7hNCLWSuo4i1kZWgsiNRevWywwdZcucJPotcPBp5upWSU6fVj79kWa+gct+adYo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=distech-controls.com;
-Received: from DM6PR01MB4265.prod.exchangelabs.com (2603:10b6:5:22::33) by
- DM5PR01MB2426.prod.exchangelabs.com (2603:10b6:3:3b::12) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3912.29; Wed, 10 Mar 2021 21:10:59 +0000
-Received: from DM6PR01MB4265.prod.exchangelabs.com
- ([fe80::6061:d9d0:b3d9:42c7]) by DM6PR01MB4265.prod.exchangelabs.com
- ([fe80::6061:d9d0:b3d9:42c7%4]) with mapi id 15.20.3912.027; Wed, 10 Mar 2021
- 21:10:59 +0000
-From:   Francois Gervais <fgervais@distech-controls.com>
-To:     linux-rtc@vger.kernel.org
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Michael McCormick <michael.mccormick@enatel.net>,
-        linux-kernel@vger.kernel.org,
-        Francois Gervais <fgervais@distech-controls.com>
-Subject: [PATCH 1/1] rtc: pcf85063: fallback to parent of_node
-Date:   Wed, 10 Mar 2021 16:10:26 -0500
-Message-Id: <20210310211026.27299-1-fgervais@distech-controls.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [174.92.176.122]
-X-ClientProxiedBy: MN2PR02CA0018.namprd02.prod.outlook.com
- (2603:10b6:208:fc::31) To DM6PR01MB4265.prod.exchangelabs.com
- (2603:10b6:5:22::33)
+        id S231484AbhCJVb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:31:29 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:58085 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhCJVbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:31:12 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615411872; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=Ck7/GXkHmms5j9pb0FrNRlyu0DwdCkV4LmdoKje7Jk0=; b=SHys6u2GvJMVstBPesRiar6ajMXpGKxe898/gPZNvNjSLAjTaL9GcmbgbZN3eHcVYiMXzF/o
+ 50SjYpgS91H4HpNQr2C9Rws7MMCcEEphe/ktL9aiulM7vtL7+GfTeZI+jU+6pYu8Nh9a14Sv
+ y4InVJsunb8vER9CHslSWXM0DL0=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60493a9baf1d9a68ad4d656d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 21:31:07
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9CF8CC433C6; Wed, 10 Mar 2021 21:31:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D0218C433CA;
+        Wed, 10 Mar 2021 21:31:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D0218C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH v3] bus: mhi: core: Sanity check values from remote device before use
+Date:   Wed, 10 Mar 2021 14:30:55 -0700
+Message-Id: <1615411855-15053-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (174.92.176.122) by MN2PR02CA0018.namprd02.prod.outlook.com (2603:10b6:208:fc::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Wed, 10 Mar 2021 21:10:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f1953322-bfb9-454b-515b-08d8e40900c8
-X-MS-TrafficTypeDiagnostic: DM5PR01MB2426:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR01MB2426A0199573A59D048C9026F3919@DM5PR01MB2426.prod.exchangelabs.com>
-x-pp-identifier: acuityo365
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zcqCg8hSvKs0ztl6itqi551/MbR5DHJ95ytEbCqebYjGBUkdDyh17nPDqgWWkNwhaLxy2hOppfe1rFkR3C2HiAIh2Gf5dJWMRXpTzsTjiZInwoYC1K4zINS4yoTsbFfs3OXIb7bhS66WbKSGGbg/i/hvgKQFaHS0a3kaEed2h6TVYFToNOvSgZ2i+YyGvLooChzuo7CKZ4CGUk7ibtrwA8uJ0Q3awZN45Q1KR8NwaBD0ZNMc80wqQ5TIXmzlRSXzLHEdDUCyEO1hL8SeIxH7Z3/UGJq5KtzvkWjK7xR12oKaNvRsBS6lCD9TgsWep5LTwqwXeaxcV8ciFKJiCJLO9x1KROH2ETd++y4kCBUnAIzpSKt/tegwoXF+aejz7/ql8/bhvLYu9uIZaLdiiN6OP2RCHWDJeqZa4xHaq776LVlUNowfCbPMP7jm9k4LW1QgvNe9ui2Rjfl5fsff/Lo1HDoTqmMct5/XGqpplchxwMTHouUiy9j3v473jVy7mQFcgWEwvIFWQ9FLE1Ld1Dl0WKHOsyvdbUDi/B1KAfYejw+GPt5cDceDlo5iikTRB2UTJL1BStd3PCekVCiaGCLpKQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB4265.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(366004)(376002)(346002)(6486002)(36756003)(52116002)(316002)(8936002)(6512007)(478600001)(26005)(2906002)(66476007)(6666004)(54906003)(66556008)(4326008)(69590400012)(6506007)(2616005)(8676002)(5660300002)(83380400001)(956004)(86362001)(186003)(16526019)(107886003)(1076003)(66946007)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NZYCMaWPmzJgJdjEY1VOF3TPTos5uo4HFYFP+p4zEo3xhr15Uua2Qm2dePc+?=
- =?us-ascii?Q?IUFVn8t/GDG0ckPNTjKItRFdFMG4jFESpX/6hGnKL0iDEdMYGVZaeH99Lz6L?=
- =?us-ascii?Q?DtmxVlUEm+H+6ix+sHL1Jlj31PqAnnLGGyVJdn0+Cxekdum1jjqV82R3Wfng?=
- =?us-ascii?Q?73AvCc/QF6/mwmri0N9k5bVjwel3Z1lk2RtZhLsq43AZw/ZjzB3TacUwLzIg?=
- =?us-ascii?Q?71bum5rzfbAK8PrmTtKUbaQHHHQXmorKQ6p1m6CR1qGykBC0/TPqYn/KAP8p?=
- =?us-ascii?Q?03Q9IyUQlM04qF0HZhdrSQM+UngR6U1CiW6xHpACjw/IsRGej1Ft/8Q29Hm7?=
- =?us-ascii?Q?GHYOcpJd8wKlvAwLZfdL5w5k1Gm0yhgARSvD4vgo9QspC7Y/hDwtmurIZvo8?=
- =?us-ascii?Q?aLT2R7e+hk8plev0CJilxbhiOz9dRoH+qoyvQhg+IPeFu+/FeQPz2ipNjKhy?=
- =?us-ascii?Q?5SNUYi6olvNSOW83nBmENSmofiqOvDEOFDSGQkgVnOsQZ9YJ5sVL2FhJ0IWN?=
- =?us-ascii?Q?Mu97Vjh2clG0vYWmxlNUd/q3sOi0CmVRgTDy4Dn2wkRk4zLlgALeTgpXusY4?=
- =?us-ascii?Q?KzXILK9lKF1zYIMPME7z3uNKx0sItmL5gPNvxw54TU2YEvi+HKM5KgDoe3Ls?=
- =?us-ascii?Q?Ep+Ht3/dYs0vUqVo6zgTwsUuokKCPw026HAJtanX/zbTv2VUycyODIdrKkFd?=
- =?us-ascii?Q?Qhzomtrj2yLTHom/qIm2XOVpBDqYNXs9i6ywtid7s92sWVdQx3vE4H866vDY?=
- =?us-ascii?Q?p+rB1IASVmV4SwWVhl4gw8oLSz1g4rHLDoxYindQQ2pseki8I1ord5f+bK8E?=
- =?us-ascii?Q?ur2XEcCyoThy7eaFuacQygb032m4eO07ox3KBFm5SZn5aBpFxDP6Um1tQmPP?=
- =?us-ascii?Q?skDIPHzoyu0IHJ15FY3tKh7dnV9H1lTNf0GeTh+h3uHb+ijD/BsULP16LNQu?=
- =?us-ascii?Q?YXh1k4MccRLZvBjYVVLI0J0cqwPRIM73Ui15xKuZ8KWwzObKuz1h7S8/6WI5?=
- =?us-ascii?Q?g1ByQBCAPEKajhDezSkUwAw28qWjf1mAPpURtur9fRaJsXW5jnNfg6cDtEhH?=
- =?us-ascii?Q?sPyoP9+5yabqQRzFxqwqwbjvhRDLZou9cQdUksWnySyU87KbJCjqxt8K5qju?=
- =?us-ascii?Q?qNUvhQomJd3ZscCPyDTljPykETuiM9+g4F2bHLoFvSArq9iD+iDB7jugPUO6?=
- =?us-ascii?Q?RGpNvpoHHHLGznrJ+QtNFPmsodi8gGVWJ5uwaFpHQGOYuj971Q3Ay7xbxmVZ?=
- =?us-ascii?Q?ur/RlIlt0hgRGi7mkuKw+erSIoHjBuKKs5XlNr6jZbve3lhrEN5J3kVvSSfD?=
- =?us-ascii?Q?Yw9+Cgsssv3JUC06rehjrZYP?=
-X-OriginatorOrg: distech-controls.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1953322-bfb9-454b-515b-08d8e40900c8
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB4265.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2021 21:10:59.4280
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: caadbe96-024e-4f67-82ec-fb28ff53d16d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qAhT22ajoReDEsTfNZC7ShlAZg6CNYbJIL8AfiCFRoVL14ZDbEj5pkZ6GfDG9ydiTmEz5gahMGBNDkofFwLmVg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR01MB2426
-X-Proofpoint-Processed: True
-X-Proofpoint-Spam-Details: rule=outbound_spam_notspam policy=outbound_spam score=0 priorityscore=1501
- mlxscore=0 malwarescore=0 clxscore=1011 suspectscore=0 spamscore=0
- adultscore=0 impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103100102
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rtc device node is always or at the very least can possibly be NULL.
+When parsing the structures in the shared memory, there are values which
+come from the remote device.  For example, a transfer completion event
+will have a pointer to the tre in the relevant channel's transfer ring.
+As another example, event ring elements may specify a channel in which
+the event occurred, however the specified channel value may not be valid
+as no channel is defined at that index even though the index may be less
+than the maximum allowed index.  Such values should be considered to be
+untrusted, and validated before use.  If we blindly use such values, we
+may access invalid data or crash if the values are corrupted.
 
-Since v5.12-rc1-dontuse/3c9ea42802a1fbf7ef29660ff8c6e526c58114f6 this
-will lead to a NULL pointer dereference.
+If validation fails, drop the relevant event.
 
-To fix this we fallback to using the parent node which is the i2c client
-node as set by devm_rtc_allocate_device().
-
-Using the i2c client node seems to be what other similar drivers do
-e.g. rtc-pcf8563.c.
-
-Signed-off-by: Francois Gervais <fgervais@distech-controls.com>
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 ---
- drivers/rtc/rtc-pcf85063.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/rtc/rtc-pcf85063.c b/drivers/rtc/rtc-pcf85063.c
-index aef6c1ee8bb0..463991c74fdd 100644
---- a/drivers/rtc/rtc-pcf85063.c
-+++ b/drivers/rtc/rtc-pcf85063.c
-@@ -478,6 +478,7 @@ static struct clk *pcf85063_clkout_register_clk(struct pcf85063 *pcf85063)
- {
- 	struct clk *clk;
- 	struct clk_init_data init;
-+	struct device_node *node = pcf85063->rtc->dev.of_node;
- 
- 	init.name = "pcf85063-clkout";
- 	init.ops = &pcf85063_clkout_ops;
-@@ -486,16 +487,17 @@ static struct clk *pcf85063_clkout_register_clk(struct pcf85063 *pcf85063)
- 	init.num_parents = 0;
- 	pcf85063->clkout_hw.init = &init;
- 
-+	if (node == NULL)
-+		node = pcf85063->rtc->dev.parent->of_node;
-+
- 	/* optional override of the clockname */
--	of_property_read_string(pcf85063->rtc->dev.of_node,
--				"clock-output-names", &init.name);
-+	of_property_read_string(node, "clock-output-names", &init.name);
- 
- 	/* register the clock */
- 	clk = devm_clk_register(&pcf85063->rtc->dev, &pcf85063->clkout_hw);
- 
- 	if (!IS_ERR(clk))
--		of_clk_add_provider(pcf85063->rtc->dev.of_node,
--				    of_clk_src_simple_get, clk);
-+		of_clk_add_provider(node, of_clk_src_simple_get, clk);
- 
- 	return clk;
+v3: Add the channel validation example to commit text
+v2: Fix subject
+
+ drivers/bus/mhi/core/main.c | 81 +++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 74 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index a7811fb..6c0e05d 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -242,6 +242,11 @@ static void mhi_del_ring_element(struct mhi_controller *mhi_cntrl,
+ 	smp_wmb();
  }
+ 
++static bool is_valid_ring_ptr(struct mhi_ring *ring, dma_addr_t addr)
++{
++	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len;
++}
++
+ int mhi_destroy_device(struct device *dev, void *data)
+ {
+ 	struct mhi_chan *ul_chan, *dl_chan;
+@@ -404,7 +409,16 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
+ 	struct mhi_event_ctxt *er_ctxt =
+ 		&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
+ 	struct mhi_ring *ev_ring = &mhi_event->ring;
+-	void *dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
++	dma_addr_t ptr = er_ctxt->rp;
++	void *dev_rp;
++
++	if (!is_valid_ring_ptr(ev_ring, ptr)) {
++		dev_err(&mhi_cntrl->mhi_dev->dev,
++			"Event ring rp points outside of the event ring\n");
++		return IRQ_HANDLED;
++	}
++
++	dev_rp = mhi_to_virtual(ev_ring, ptr);
+ 
+ 	/* Only proceed if event ring has pending events */
+ 	if (ev_ring->rp == dev_rp)
+@@ -560,6 +574,11 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+ 		struct mhi_buf_info *buf_info;
+ 		u16 xfer_len;
+ 
++		if (!is_valid_ring_ptr(tre_ring, ptr)) {
++			dev_err(&mhi_cntrl->mhi_dev->dev,
++				"Event element points outside of the tre ring\n");
++			break;
++		}
+ 		/* Get the TRB this event points to */
+ 		ev_tre = mhi_to_virtual(tre_ring, ptr);
+ 
+@@ -719,6 +738,12 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
+ 	struct mhi_chan *mhi_chan;
+ 	u32 chan;
+ 
++	if (!is_valid_ring_ptr(mhi_ring, ptr)) {
++		dev_err(&mhi_cntrl->mhi_dev->dev,
++			"Event element points outside of the cmd ring\n");
++		return;
++	}
++
+ 	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
+ 
+ 	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
+@@ -743,6 +768,7 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+ 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 	u32 chan;
+ 	int count = 0;
++	dma_addr_t ptr = er_ctxt->rp;
+ 
+ 	/*
+ 	 * This is a quick check to avoid unnecessary event processing
+@@ -752,7 +778,13 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+ 	if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
+ 		return -EIO;
+ 
+-	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
++	if (!is_valid_ring_ptr(ev_ring, ptr)) {
++		dev_err(&mhi_cntrl->mhi_dev->dev,
++			"Event ring rp points outside of the event ring\n");
++		return -EIO;
++	}
++
++	dev_rp = mhi_to_virtual(ev_ring, ptr);
+ 	local_rp = ev_ring->rp;
+ 
+ 	while (dev_rp != local_rp) {
+@@ -858,6 +890,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+ 			 */
+ 			if (chan < mhi_cntrl->max_chan) {
+ 				mhi_chan = &mhi_cntrl->mhi_chan[chan];
++				if (!mhi_chan->configured)
++					break;
+ 				parse_xfer_event(mhi_cntrl, local_rp, mhi_chan);
+ 				event_quota--;
+ 			}
+@@ -869,7 +903,15 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+ 
+ 		mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
+ 		local_rp = ev_ring->rp;
+-		dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
++
++		ptr = er_ctxt->rp;
++		if (!is_valid_ring_ptr(ev_ring, ptr)) {
++			dev_err(&mhi_cntrl->mhi_dev->dev,
++				"Event ring rp points outside of the event ring\n");
++			return -EIO;
++		}
++
++		dev_rp = mhi_to_virtual(ev_ring, ptr);
+ 		count++;
+ 	}
+ 
+@@ -892,11 +934,18 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
+ 	int count = 0;
+ 	u32 chan;
+ 	struct mhi_chan *mhi_chan;
++	dma_addr_t ptr = er_ctxt->rp;
+ 
+ 	if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
+ 		return -EIO;
+ 
+-	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
++	if (!is_valid_ring_ptr(ev_ring, ptr)) {
++		dev_err(&mhi_cntrl->mhi_dev->dev,
++			"Event ring rp points outside of the event ring\n");
++		return -EIO;
++	}
++
++	dev_rp = mhi_to_virtual(ev_ring, ptr);
+ 	local_rp = ev_ring->rp;
+ 
+ 	while (dev_rp != local_rp && event_quota > 0) {
+@@ -910,7 +959,8 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
+ 		 * Only process the event ring elements whose channel
+ 		 * ID is within the maximum supported range.
+ 		 */
+-		if (chan < mhi_cntrl->max_chan) {
++		if (chan < mhi_cntrl->max_chan &&
++		    mhi_cntrl->mhi_chan[chan].configured) {
+ 			mhi_chan = &mhi_cntrl->mhi_chan[chan];
+ 
+ 			if (likely(type == MHI_PKT_TYPE_TX_EVENT)) {
+@@ -924,7 +974,15 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
+ 
+ 		mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
+ 		local_rp = ev_ring->rp;
+-		dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
++
++		ptr = er_ctxt->rp;
++		if (!is_valid_ring_ptr(ev_ring, ptr)) {
++			dev_err(&mhi_cntrl->mhi_dev->dev,
++				"Event ring rp points outside of the event ring\n");
++			return -EIO;
++		}
++
++		dev_rp = mhi_to_virtual(ev_ring, ptr);
+ 		count++;
+ 	}
+ 	read_lock_bh(&mhi_cntrl->pm_lock);
+@@ -1385,6 +1443,7 @@ static void mhi_mark_stale_events(struct mhi_controller *mhi_cntrl,
+ 	struct mhi_ring *ev_ring;
+ 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 	unsigned long flags;
++	dma_addr_t ptr;
+ 
+ 	dev_dbg(dev, "Marking all events for chan: %d as stale\n", chan);
+ 
+@@ -1392,7 +1451,15 @@ static void mhi_mark_stale_events(struct mhi_controller *mhi_cntrl,
+ 
+ 	/* mark all stale events related to channel as STALE event */
+ 	spin_lock_irqsave(&mhi_event->lock, flags);
+-	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
++
++	ptr = er_ctxt->rp;
++	if (!is_valid_ring_ptr(ev_ring, ptr)) {
++		dev_err(&mhi_cntrl->mhi_dev->dev,
++			"Event ring rp points outside of the event ring\n");
++		dev_rp = ev_ring->rp;
++	} else {
++		dev_rp = mhi_to_virtual(ev_ring, ptr);
++	}
+ 
+ 	local_rp = ev_ring->rp;
+ 	while (dev_rp != local_rp) {
 -- 
-2.17.1
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
 
