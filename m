@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2FD333760
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF88333767
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbhCJIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:34:08 -0500
-Received: from m32-153.88.com ([43.250.32.153]:28197 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229763AbhCJIdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:33:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=Date:From:To; bh=5g4I0r/DGg6RJLF1PGE/mXjosHacIgb1ONExj
-        xL+IEk=; b=Md1VgYbQ1e7UjkYsG2OznmBYOUdKKNgeBW00F6cN2COaToPz+BKWg
-        d950Es2TvlkeJDQ/NrhyeO8oTio+CGhFAmjkvH7XfTt1VvssfWWROrTdkrWyIHmp
-        y6a78QAxULhlo5y9vlDW4mDK3WoKEcZRBGgSoTYkgBxzg3v6jloFB4=
-Received: from mipc (unknown [110.64.86.229])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgCnMiNhhEhgjH4hAA--.23797S2;
-        Wed, 10 Mar 2021 16:33:39 +0800 (CST)
-Date:   Wed, 10 Mar 2021 16:33:37 +0800
-From:   Wu XiangCheng <bobwxc@email.cn>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: [PATCH] docs/zh_CN: fix original link unknown document warning
-Message-ID: <20210310083335.GA17722@mipc>
-References: <20210310142019.27b9aa7b@canb.auug.org.au>
+        id S232360AbhCJIfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:35:40 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58426 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231149AbhCJIfV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:35:21 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615365319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KNVv9IVPxme33ODhBvY9HeZ8n0HmbebZpSdkkLbTl8w=;
+        b=xfcn6vZDFxE8PRpzk6pS7M+ebcY4niw6TUF7ZHp9kuQg/NUkf9Cl0sp6cBgeuRhOwjsv4n
+        6kiZ/RexPCwPtrvtgw3YaZSy/74AyJhGo1wiG2jmbqZlcMEQUvpFXNI/vUw7wqbywoKrYK
+        NqyMhuocQ698IZO1jv5Ts0taF01QuAanHRqnFHcO+iEVFmNA2p5mnEGzpnzVSM7O1fIwuQ
+        SIiAKhVr0BMGmhHSXnWDgBZ83AfYFaAb55Lpcwj6t5B+uAQsAfAj88wHnY5V7eRWZeKzJC
+        t02OHr1r//zhTizh5lwXtvfoua49UHnjG7o/KlA3k7QiRYlLQMQ1qnx7kOBXvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615365319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KNVv9IVPxme33ODhBvY9HeZ8n0HmbebZpSdkkLbTl8w=;
+        b=9Gm97OGZ8/wBob3qxo3W9D+xqmPG4Mhj//BKk0KKZET0EAIo5+tOK5O1kbF76YtX9/VoJT
+        SAU2q1mI3E4g07Ag==
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Denis Kirjanov <kda@linux-powerpc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        ath9k-devel@qca.qualcomm.com, Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net
+Subject: Re: [patch 07/14] tasklets: Prevent tasklet_unlock_spin_wait() deadlock on RT
+In-Reply-To: <20210309152154.jqi62ep2ndkpoikc@linutronix.de>
+References: <20210309084203.995862150@linutronix.de> <20210309084241.988908275@linutronix.de> <20210309150036.5rcecmmz2wbu4ypc@linutronix.de> <20210309152154.jqi62ep2ndkpoikc@linutronix.de>
+Date:   Wed, 10 Mar 2021 09:35:18 +0100
+Message-ID: <87y2ev4da1.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210310142019.27b9aa7b@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CM-TRANSID: GiKnCgCnMiNhhEhgjH4hAA--.23797S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4Utw1fGw4rWFW5Jw4Utwb_yoW8Aryrpa
-        4vkryIk3ZrAFy3Cr4kWry7tF17tF4xW398GF1j9wn5XFs5Ar1vqr42gr9rK3ZxXr40qay8
-        XrWSgryF9r4jyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUqqb7Iv0xC_KF4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
-        z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcx
-        kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWx
-        Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l42
-        xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IUUOzVUUU
-        UUU==
-X-Originating-IP: [110.64.86.229]
-X-CM-SenderInfo: pere453f6hztlloou0/
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix original link unknown document warning in zh_CN/admin-guide/README.rst
-and admin-guide/unicode.rst which introduced by commit:
+On Tue, Mar 09 2021 at 16:21, Sebastian Andrzej Siewior wrote:
 
-  550c8399d017 ("docs/zh_CN: Add zh_CN/admin-guide/README.rst")
+> On 2021-03-09 16:00:37 [+0100], To Thomas Gleixner wrote:
+>> diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+>> index 07c7329d21aa7..1c14ccd351091 100644
+>> --- a/include/linux/interrupt.h
+>> +++ b/include/linux/interrupt.h
+>> @@ -663,15 +663,6 @@ static inline int tasklet_trylock(struct tasklet_struct *t)
+>>  void tasklet_unlock(struct tasklet_struct *t);
+>>  void tasklet_unlock_wait(struct tasklet_struct *t);
+>>  
+>> -/*
+>> - * Do not use in new code. Waiting for tasklets from atomic contexts is
+>> - * error prone and should be avoided.
+>> - */
+>> -static inline void tasklet_unlock_spin_wait(struct tasklet_struct *t)
+>> -{
+>> -	while (test_bit(TASKLET_STATE_RUN, &t->state))
+>> -		cpu_relax();
+>> -}
+>
+> Look at that. The forward declaration for tasklet_unlock_spin_wait()
+> should have remained. Sorry for that.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Wu XiangCheng <bobwxc@email.cn>
----
-Sorry for the inconvenience. This is a fix patch. 
-Or I could re-submit the two original patches if you need.
+No idea how I managed to mess that up and fail to notice. Brown
+paperbags to the rescue.
 
- Documentation/translations/zh_CN/admin-guide/README.rst  | 2 +-
- Documentation/translations/zh_CN/admin-guide/unicode.rst | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Thanks,
 
-diff --git a/Documentation/translations/zh_CN/admin-guide/README.rst b/Documentation/translations/zh_CN/admin-guide/README.rst
-index 939aee115e48..99b708a416d8 100644
---- a/Documentation/translations/zh_CN/admin-guide/README.rst
-+++ b/Documentation/translations/zh_CN/admin-guide/README.rst
-@@ -1,6 +1,6 @@
- .. include:: ../disclaimer-zh_CN.rst
- 
--:Original: :ref:`Documentation/admin-guide/README.rst <Linux kernel release 5.x>`
-+:Original: :doc:`../../../admin-guide/README`
- 
- :译者:
- 
-diff --git a/Documentation/translations/zh_CN/admin-guide/unicode.rst b/Documentation/translations/zh_CN/admin-guide/unicode.rst
-index ef7f3cb2c02e..814f9ecf562b 100644
---- a/Documentation/translations/zh_CN/admin-guide/unicode.rst
-+++ b/Documentation/translations/zh_CN/admin-guide/unicode.rst
-@@ -1,6 +1,6 @@
- .. include:: ../disclaimer-zh_CN.rst
- 
--:Original: :ref:`Documentation/admin-guide/unicode.rst`
-+:Original: :doc:`../../../admin-guide/unicode`
- 
- :译者:
- 
--- 
-2.20.1
-
+        tglx
