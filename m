@@ -2,96 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D929533497F
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8C233497E
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 22:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhCJVIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 16:08:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhCJVI3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:08:29 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00B2C061574;
-        Wed, 10 Mar 2021 13:08:28 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id p8so41572179ejb.10;
-        Wed, 10 Mar 2021 13:08:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0SX53bYeJpoRn/Rj8EJYnn/yWlrMIeX4TZ6gWcrZofc=;
-        b=bmC+GZuRpPw22iaH2nG9joxOZVNCyQ1ZEe+2lEU2JOh9Ei2AeeP+twZLnzoNb+/5lh
-         L7hfz8o+uo0vLTKt6cNNlMNcKCgiRDRjxe/4VpEzHbT3iE8UvfKfbaFHwfF8PGSe1weY
-         GE5UKQPgrg2Rf1VmwyWeMutLitQET78oyCiG36084I0rZSY9/upOTWWo/jSQKBrYQL0e
-         CdtbQrHk2m/Yl3Wlqb877oxESdLiFMo9aVGaARam8/XrsmirLW4vRakHHcmbHOAFJVGi
-         KQ+uioCVj1UhAjc8UofeeIUP+7ZNTmfNmfPsayy8d5azv0LUg96EQbb31mL0sxcNXj8T
-         tiIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0SX53bYeJpoRn/Rj8EJYnn/yWlrMIeX4TZ6gWcrZofc=;
-        b=PsTY3JJaJtrNzsiqAvE6LOIz4CTIRMWbiI0sUYJbdw82C6JV5O9MuhvSqNU74TPgbn
-         DxcgULEueOBnrBhdc6RyJSxig6+a9Wb0YbznqLNaFQJVdnLI/wetwyFIUoLwAMY8szOD
-         t369D9KwOazxvOHvYsrq4Q6R0m6+BKSzbnfcvf7x/sktX3dhCkV7qUpoCfrc4mRLkvEc
-         0aSX0/ho6McxmhF4dtATePzdfO802vC28wxbSI99COqsLG7OU0otgEBpMUSdGCifHokr
-         unLfPPY3dLEHo2gGKr6hPaD4ZrGtS1zF0EWk75xZEvTSAESCV2XpGxW9o4e/lchVSxmz
-         N4SQ==
-X-Gm-Message-State: AOAM533x3DoqVOD9K6GPujUOhujWzKqZutXpG+3LcocQKj3vIYPmpYge
-        eLzlcim+l2I34pWCxuP7ywE=
-X-Google-Smtp-Source: ABdhPJzKCqWitK4itgJF5gOPWZ9BHxznB01QDhOfG6tEDyip2Frv/S1yKF7GrTdEgH6a7nWKme2yTA==
-X-Received: by 2002:a17:906:f1c8:: with SMTP id gx8mr334710ejb.385.1615410506866;
-        Wed, 10 Mar 2021 13:08:26 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.googlemail.com with ESMTPSA id f19sm252947edu.12.2021.03.10.13.08.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 13:08:26 -0800 (PST)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] devicetree: nvmem: nvmem: drop $nodename restriction
-Date:   Wed, 10 Mar 2021 22:08:03 +0100
-Message-Id: <20210310210812.8880-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210310210812.8880-1-ansuelsmth@gmail.com>
-References: <20210310210812.8880-1-ansuelsmth@gmail.com>
+        id S232038AbhCJVIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 16:08:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231207AbhCJVI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:08:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 375CB64FD0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 21:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615410506;
+        bh=LNLeEWghXkIt/oUlWgRYrFr83oynDcgDF0s3ejym2KU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i0/QmL4ZzLLOTbEAa606xhes1blfEB6MvhnUTOqiOcI5t8ekfl2yxC0RmI0mqfAka
+         W35XzGuRR8x3esIGMjtq/O8Acdu0h4tUq3vJB4ieupj8g3PCJ1oaXk8ayw9U39fd9l
+         OH9QM4nI/bqCIfPOkX/8GVA51Wy4nHpC3JTQ0dgLdgAIQ682D2bhtVscS8zr/mHwqb
+         l+M5WquHt0JMaVNkiaqd646FRxIA4eZ5Ku1O6PzIo4ssvTZNeZES39okLFEHiJWKbp
+         gXg+c6beLMjsw6+DLJqhQd+AD7c3aRgH/VMYjxFz8MmDFawQg3s4SqIhkKSZWyXiKs
+         e5wEDcrjxhY3w==
+Received: by mail-oi1-f170.google.com with SMTP id o22so10969909oic.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 13:08:26 -0800 (PST)
+X-Gm-Message-State: AOAM531+z8XPPDayqvs1PYIRVcPP+Vh79CderVRqBjz6wRvWJtrhH7WB
+        Ow+ul7MBw3JY3zNqQcGi+Ei/ey34nu9jaM8ewkQ=
+X-Google-Smtp-Source: ABdhPJyOe6GvnaoIa1FUitLLUEiVyBHLxhohQtHqH1tV+ZiQNmopWBvLUhq2zHo3i/iEK8EMue18HWyjbUA1A2wkMiI=
+X-Received: by 2002:aca:5e85:: with SMTP id s127mr3623525oib.67.1615410505313;
+ Wed, 10 Mar 2021 13:08:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210225112122.2198845-1-arnd@kernel.org> <20210226211323.arkvjnr4hifxapqu@google.com>
+ <CAK8P3a2bLKe3js4SKeZoGp8B51+rpW6G3KvpbJ5=y83sxHSu6g@mail.gmail.com>
+ <1614559739.p25z5x88wl.astroid@bobo.none> <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
+In-Reply-To: <CAK7LNATUSJ5T6bs-aA3sMQgXKWfcyWJLDfhmteBhQ5FuUR52Zg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 10 Mar 2021 22:08:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
+Message-ID: <CAK8P3a3yF+JV3+Xq5QtD_59JqxA7akz=u=0t05Gv-isHD9Kv4A@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Scull <ascull@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, Nicolas Pitre <nico@fluxnic.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop $nodename restriction as now mtd partition can also be used as
-nvmem provider.
+On Wed, Mar 10, 2021 at 9:50 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> On Mon, Mar 1, 2021 at 10:11 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+> > Excerpts from Arnd Bergmann's message of February 27, 2021 7:49 pm:
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- Documentation/devicetree/bindings/nvmem/nvmem.yaml | 3 ---
- 1 file changed, 3 deletions(-)
+>
+> masahiro@oscar:~/ref/linux$ echo  'void this_func_is_unused(void) {}'
+> >>  kernel/cpu.c
+> masahiro@oscar:~/ref/linux$ export
+> CROSS_COMPILE=/home/masahiro/tools/powerpc-10.1.0/bin/powerpc-linux-
+> masahiro@oscar:~/ref/linux$ make ARCH=powerpc  defconfig
+> masahiro@oscar:~/ref/linux$ ./scripts/config  -e EXPERT
+> masahiro@oscar:~/ref/linux$ ./scripts/config  -e LD_DEAD_CODE_DATA_ELIMINATION
+> masahiro@oscar:~/ref/linux$
+> ~/tools/powerpc-10.1.0/bin/powerpc-linux-nm -n  vmlinux | grep
+> this_func
+> c000000000170560 T .this_func_is_unused
+> c000000001d8d560 D this_func_is_unused
+> masahiro@oscar:~/ref/linux$ grep DEAD_CODE_ .config
+> CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION=y
+> CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
+>
+>
+> If I remember correctly,
+> LD_DEAD_CODE_DATA_ELIMINATION dropped unused functions
+> when I tried it last time.
+>
+>
+> I also tried arm64 with a HAVE_LD_DEAD_CODE_DATA_ELIMINATION hack.
+> The result was the same.
+>
+>
+>
+> Am I missing something?
 
-diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-index 7481a9e48f19..b8dc3d2b6e92 100644
---- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-@@ -20,9 +20,6 @@ description: |
-   storage device.
- 
- properties:
--  $nodename:
--    pattern: "^(eeprom|efuse|nvram)(@.*|-[0-9a-f])*$"
--
-   "#address-cells":
-     const: 1
- 
--- 
-2.30.0
+It's possible that it only works in combination with CLANG_LTO now
+because something broke. I definitely saw a reduction in kernel
+size when both options are enabled, but did not try a simple test
+case like you did.
 
+Maybe some other reference gets created that prevents the function
+from being garbage-collected unless that other option is removed
+as well?
+
+         Arnd
