@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56F0333CC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2640A333CCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232644AbhCJMma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231909AbhCJMmK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:42:10 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91DCC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:42:09 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id l12so23132382wry.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:42:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hY0Jhu8wT7V8ZQXnYvLhJQTUPLVmTFuidvQylpZANlI=;
-        b=LaCPxpPRFfgxla0eGWzfrNKvk/MWez1ih7ahc7n8iSHcGYJlA4MX4JCY1liBFJBWM4
-         ih2xdFuXbZX+w27Cm2KpOiYamMmiVhSuyVbfZ7zr/9P8zi+bssPQFckKOREb8fr/j37V
-         ZYjl60c0giHzX8qI9ioMTmHpWfvn7JaJ+HePyXP4Az+JFNdirUS2wSYn3Wn3vjyd+xWZ
-         qtIz1CRmRlRHcBURYfoAjCLT4VnpTRnq9xMq50/TL98nr5ZE/5Dcl5Ghn+Xr4yqorIwa
-         zp2VxLYBbw0dIZT4bl6HO2j6X7gVvhIWY8rN3Ja3eEpcTzLB4JZqF7IXBT1KTubpMGAL
-         lDlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hY0Jhu8wT7V8ZQXnYvLhJQTUPLVmTFuidvQylpZANlI=;
-        b=SR/oXCY9b+BUnjVM2YKTDDlhtYdzdkhqbe9nW4pmyrloNLFrv4Zl9BaA8igmZkkFrf
-         IKFOL7tQTsZJUKOX11j6wx8WjtmOxatXTgg4bjJc7w7FGqYpg+KXn2z3JR6WHvdxtXPl
-         wR+Hlkhx3evwf0zv5oqi/9LpI4js9PPAhOQcQy3WNGNuSeBcJzyD0ttHKfRTH9SskQrz
-         eAGNNTGYw3dV1yElppjDmazZQDAC971qscpoG5EwUIG1hR/s7pYHbiYUxEN4mIDk/p5q
-         HQuWEPPW7Hg75Cpzfa8cBc///OAb9l614gvNU13MHYLBlpwP12Ulxzv0maMa7N01y/i4
-         KTWQ==
-X-Gm-Message-State: AOAM533n9l/XvLEz1DWb6w3tPEmico1FPWOX616lm2kBcH/zfeLDr3mU
-        z5EvYIEa5s9mdjzigYHaHHaxcJV7A60CPA==
-X-Google-Smtp-Source: ABdhPJxoxQR4GvIWoJVNiaP/ojkeJ6Dy26wSDJUoajoGdG3/DHN8BM0jq36K8XsS8f/eYzBks680mg==
-X-Received: by 2002:a5d:6ca6:: with SMTP id a6mr3296016wra.179.1615380128613;
-        Wed, 10 Mar 2021 04:42:08 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8018:efa9:4421:9140? ([2a01:e34:ed2f:f020:8018:efa9:4421:9140])
-        by smtp.googlemail.com with ESMTPSA id h20sm8670290wmb.1.2021.03.10.04.42.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 04:42:08 -0800 (PST)
-Subject: Re: [PATCH v2] thermal: thermal_of: fix error return code of
- thermal_of_populate_bind_params()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>, rui.zhang@intel.com,
-        amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210310122423.3266-1-baijiaju1990@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <bd1fde82-7e4d-9a3e-4054-60c7ee486b11@linaro.org>
-Date:   Wed, 10 Mar 2021 13:42:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210310122423.3266-1-baijiaju1990@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S232042AbhCJMnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:43:33 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:30392 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232088AbhCJMnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 07:43:14 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DwWvh0jCFz9ty2j;
+        Wed, 10 Mar 2021 13:43:12 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id ny2_IcOITQLa; Wed, 10 Mar 2021 13:43:12 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DwWvg3vRPz9twyk;
+        Wed, 10 Mar 2021 13:43:11 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D519D8B78A;
+        Wed, 10 Mar 2021 13:43:12 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id xnzGXWZ5-qOx; Wed, 10 Mar 2021 13:43:12 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A21CF8B77E;
+        Wed, 10 Mar 2021 13:43:12 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id C63B867560; Wed, 10 Mar 2021 12:43:12 +0000 (UTC)
+Message-Id: <a1e552006b8c51f23edd2f6cabdd9a986c631146.1615380184.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/Makefile: Remove workaround for gcc versions below
+ 4.9
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 10 Mar 2021 12:43:12 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/03/2021 13:24, Jia-Ju Bai wrote:
-> When kcalloc() returns NULL to __tcbp or of_count_phandle_with_args() 
-> returns zero or -ENOENT to count, no error return code of
-> thermal_of_populate_bind_params() is assigned.
-> To fix these bugs, ret is assigned with -ENOMEM and -ENOENT in these
-> cases, respectively.
-> 
-> Fixes: a92bab8919e3 ("of: thermal: Allow multiple devices to share cooling map")
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Commit 6ec4476ac825 ("Raise gcc version requirement to 4.9")
+made it impossible to build with gcc 4.8 and under.
 
-Thanks, applied.
+Remove related workaround.
 
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/Makefile | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+index 5f8544cf724a..32dd693b4e42 100644
+--- a/arch/powerpc/Makefile
++++ b/arch/powerpc/Makefile
+@@ -181,12 +181,6 @@ CC_FLAGS_FTRACE := -pg
+ ifdef CONFIG_MPROFILE_KERNEL
+ CC_FLAGS_FTRACE += -mprofile-kernel
+ endif
+-# Work around gcc code-gen bugs with -pg / -fno-omit-frame-pointer in gcc <= 4.8
+-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=44199
+-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52828
+-ifndef CONFIG_CC_IS_CLANG
+-CC_FLAGS_FTRACE	+= $(call cc-ifversion, -lt, 0409, -mno-sched-epilog)
+-endif
+ endif
+ 
+ CFLAGS-$(CONFIG_TARGET_CPU_BOOL) += $(call cc-option,-mcpu=$(CONFIG_TARGET_CPU))
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.25.0
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
