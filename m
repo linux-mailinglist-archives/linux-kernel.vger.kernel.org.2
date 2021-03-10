@@ -2,327 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E56C333B76
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28475333B7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 12:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhCJLbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 06:31:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52198 "EHLO mail.kernel.org"
+        id S230319AbhCJLd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 06:33:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:44618 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230450AbhCJLao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 06:30:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8B5E64FD7;
-        Wed, 10 Mar 2021 11:30:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615375844;
-        bh=suwFvFAR28YJE9v3I95o0mqKODn5ocVAXWz13k7wMeE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UhBmGLz5HOZgC4Q04Vw3fSd38wxZXDQnz2okpvGhb4ZvG4kllK97W8Me1NFmP49gG
-         T1uzuiaLXSF75FMv3KM6oLUdaSuHP3FCDd3wWyRw5kDYhkKXbaLIVqcOm4JixgqEsD
-         5/WsRE1/sAc/Kv9Tf35QZyKPEYUBxX9ePuxT3i3127ld8yK0k6qJs40aQ43NNbYqfz
-         O7nJmDM8FS3Xs1K9RwHqFsXqXXxkFgkLILILRnw3ZlYnQ8gIvnXPK9W0RY3O8HTH7/
-         28Yf0Bec9MSX7oKLWbIBD54BGyZlJ5QalMl/V9CojbTsrva6zo9c6z8g/vaVr8jUgW
-         WWLAkOYqquWyA==
-Date:   Wed, 10 Mar 2021 13:30:20 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-sgx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] x86/sgx: Add a basic NUMA allocation scheme to
- sgx_alloc_epc_page()
-Message-ID: <YEitzCiXd02/Pxy1@kernel.org>
-References: <20210303150323.433207-1-jarkko@kernel.org>
- <20210303150323.433207-6-jarkko@kernel.org>
- <7621d89e-9347-d8a5-a8b0-a108990d0e6d@intel.com>
+        id S230173AbhCJLc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:32:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A6BF1063;
+        Wed, 10 Mar 2021 03:32:29 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.52.108])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF2773F85F;
+        Wed, 10 Mar 2021 03:32:26 -0800 (PST)
+Date:   Wed, 10 Mar 2021 11:32:20 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Marco Elver <elver@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, broonie@kernel.org,
+        Paul Mackerras <paulus@samba.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
+ save_stack_trace() and friends
+Message-ID: <20210310112441.GA19619@C02TD0UTHF1T.local>
+References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
+ <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
+ <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
+ <YD+o5QkCZN97mH8/@elver.google.com>
+ <20210304145730.GC54534@C02TD0UTHF1T.local>
+ <20210304215448.GU29191@gate.crashing.org>
+ <20210309160505.GA4979@C02TD0UTHF1T.local>
+ <20210309220532.GI29191@gate.crashing.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7621d89e-9347-d8a5-a8b0-a108990d0e6d@intel.com>
+In-Reply-To: <20210309220532.GI29191@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Weird. I did check my kernel org last time on Thrusday night but did not
-get this. I was actually wondering the lack of feedback.
-
-Then I had suddenly huge pile of email waiting for me on Monday with
-bunch emails from around the time you sent this one.
-
-On Wed, Mar 03, 2021 at 04:20:03PM -0800, Dave Hansen wrote:
-> What changed from the last patch?
+On Tue, Mar 09, 2021 at 04:05:32PM -0600, Segher Boessenkool wrote:
+> Hi!
 > 
-> On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
-> > Background
-> > ==========
+> On Tue, Mar 09, 2021 at 04:05:23PM +0000, Mark Rutland wrote:
+> > On Thu, Mar 04, 2021 at 03:54:48PM -0600, Segher Boessenkool wrote:
+> > > On Thu, Mar 04, 2021 at 02:57:30PM +0000, Mark Rutland wrote:
+> > > > It looks like GCC is happy to give us the function-entry-time FP if we use
+> > > > __builtin_frame_address(1),
+> > > 
+> > > From the GCC manual:
+> > >      Calling this function with a nonzero argument can have
+> > >      unpredictable effects, including crashing the calling program.  As
+> > >      a result, calls that are considered unsafe are diagnosed when the
+> > >      '-Wframe-address' option is in effect.  Such calls should only be
+> > >      made in debugging situations.
+> > > 
+> > > It *does* warn (the warning is in -Wall btw), on both powerpc and
+> > > aarch64.  Furthermore, using this builtin causes lousy code (it forces
+> > > the use of a frame pointer, which we normally try very hard to optimise
+> > > away, for good reason).
+> > > 
+> > > And, that warning is not an idle warning.  Non-zero arguments to
+> > > __builtin_frame_address can crash the program.  It won't on simpler
+> > > functions, but there is no real definition of what a simpler function
+> > > *is*.  It is meant for debugging, not for production use (this is also
+> > > why no one has bothered to make it faster).
+> > >
+> > > On Power it should work, but on pretty much any other arch it won't.
 > > 
-> > EPC section is covered by one or more SRAT entries that are associated with
-> > one and only one PXM (NUMA node). The motivation behind this patch is to
-> > provide basic elements of building allocation scheme based on this premise.
+> > I understand this is true generally, and cannot be relied upon in
+> > portable code. However as you hint here for Power, I believe that on
+> > arm64 __builtin_frame_address(1) shouldn't crash the program due to the
+> > way frame records work on arm64, but I'll go check with some local
+> > compiler folk. I agree that __builtin_frame_address(2) and beyond
+> > certainly can, e.g.  by NULL dereference and similar.
 > 
-> Just like normal RAM, enclave memory (EPC) should be covered by entries
-> in the ACPI SRAT table.  These entries allow each EPC section to be
-> associated with a NUMA node.
+> I still do not know the aarch64 ABI well enough.  If only I had time!
 > 
-> Use this information to implement a simple NUMA-aware allocator for
-> enclave memory.
+> > For context, why do you think this would work on power specifically? I
+> > wonder if our rationale is similar.
 > 
-> > Use phys_to_target_node() to associate each NUMA node with the EPC
-> > sections contained within its range. In sgx_alloc_epc_page(), first try
-> > to allocate from the NUMA node, where the CPU is executing. If that
-> > fails, fallback to the legacy allocation.
+> On most 64-bit Power ABIs all stack frames are connected together as a
+> linked list (which is updated atomically, importantly).  This makes it
+> possible to always find all previous stack frames.
+
+We have something similar on arm64, where the kernel depends on being
+built with a frame pointer following the AAPCS frame pointer rules.
+
+Every stack frame contains a "frame record" *somewhere* within that
+stack frame, and the frame records are chained together as a linked
+list. The frame pointer points at the most recent frame record (and this
+is what __builtin_frame_address(0) returns).
+
+The records themselves are basically:
+
+struct record {
+	struct record *next;
+	unsigned long ret_addr;
+};
+
+At function call boundaries, we know that the FP is the caller's record
+(or NULL for the first function), and the LR is the address the current
+function should return to. Within a function with a stack frame, we can
+access that function's record and the `next` field (equivalent to the FP
+at the time of entry to the function) is what __builtin_frame_address(1)
+should return.
+
+> > Are you aware of anything in particular that breaks using
+> > __builtin_frame_address(1) in non-portable code, or is this just a
+> > general sentiment of this not being a supported use-case?
 > 
-> By "legacy", you mean the one from the last patch? :)
+> It is not supported, and trying to do it anyway can crash: it can use
+> random stack contents as pointer!  Not really "random" of course, but
+> where it thinks to find a pointer into the previous frame, which is not
+> something it can rely on (unless the ABI guarantees it somehow).
 > 
-> > Link: https://lore.kernel.org/lkml/158188326978.894464.217282995221175417.stgit@dwillia2-desk3.amr.corp.intel.com/
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> >  arch/x86/Kconfig               |  1 +
-> >  arch/x86/kernel/cpu/sgx/main.c | 84 ++++++++++++++++++++++++++++++++++
-> >  arch/x86/kernel/cpu/sgx/sgx.h  |  9 ++++
-> >  3 files changed, 94 insertions(+)
+> See gcc.gnu.org/PR60109 for example.
+
+Sure; I see that being true generally (and Ramana noted that on 32-bit
+arm a frame pointer wasn't mandated), but I think in this case we have a
+stronger target (and configuration) specific guarantee.
+
+> > > > Unless we can get some strong guarantees from compiler folk such that we
+> > > > can guarantee a specific function acts boundary for unwinding (and
+> > > > doesn't itself get split, etc), the only reliable way I can think to
+> > > > solve this requires an assembly trampoline. Whatever we do is liable to
+> > > > need some invasive rework.
+> > > 
+> > > You cannot get such a guarantee, other than not letting the compiler
+> > > see into the routine at all, like with assembler code (not inline asm,
+> > > real assembler code).
 > > 
-> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > index a5f6a3013138..7eb1e96cfe8a 100644
-> > --- a/arch/x86/Kconfig
-> > +++ b/arch/x86/Kconfig
-> > @@ -1940,6 +1940,7 @@ config X86_SGX
-> >  	depends on CRYPTO_SHA256=y
-> >  	select SRCU
-> >  	select MMU_NOTIFIER
-> > +	select NUMA_KEEP_MEMINFO if NUMA
+> > If we cannot reliably ensure this then I'm happy to go write an assembly
+> > trampoline to snapshot the state at a function call boundary (where our
+> > procedure call standard mandates the state of the LR, FP, and frame
+> > records pointed to by the FP).
 > 
-> This dependency is worth mentioning somewhere.  Why do we suddenly need
-> NUMA_KEEP_MEMINFO?
-> 
-> > +/* Nodes with one or more EPC sections. */
-> > +static nodemask_t sgx_numa_mask;
-> > +
-> > +/*
-> > + * Array with one list_head for each possible NUMA node.  Each
-> > + * list contains all the sgx_epc_section's which are on that
-> 
-> 					   ^ no "'", please
-> 
-> > + * node.
-> > + */
-> > +static struct sgx_numa_node *sgx_numa_nodes;
-> > +
-> > +/*
-> > + * sgx_free_epc_page() uses this to find out the correct struct sgx_numa_node,
-> > + * to put the page in.
-> > + */
-> > +static int sgx_section_to_numa_node_id[SGX_MAX_EPC_SECTIONS];
-> 
-> If this is per-section, why not put it in struct sgx_epc_section?
+> Is the frame pointer required?!
 
-Because struct sgx_epc_page does not contain a pointer to
-struct sgx_epc_section.
+The arm64 Linux port mandates frame pointers for kernel code. It is
+generally possible to build code without frame pointers (e.g. userspace),
+but doing that for kernel code would be a bug.
 
+> > This'll require reworking a reasonable
+> > amount of code cross-architecture, so I'll need to get some more
+> > concrete justification (e.g. examples of things that can go wrong in
+> > practice).
 > 
-> >  /*
-> > @@ -434,6 +451,36 @@ static bool __init sgx_page_reclaimer_init(struct list_head *laundry)
-> >  	return true;
-> >  }
-> >  
-> > +static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
-> > +{
-> > +	struct sgx_epc_page *page = NULL;
-> > +	struct sgx_numa_node *sgx_node;
-> > +
-> > +	if (WARN_ON_ONCE(nid < 0 || nid >= num_possible_nodes()))
-> > +		return NULL;
+> Say you have a function that does dynamic stack allocation, then there
+> is usually no way to find the previous stack frame (without function-
+> specific knowledge).  So __builtin_frame_address cannot work (it knows
+> nothing about frames further up).
 > 
-> This has exactly one call-site which plumbs numa_node_id() in here
-> pretty directly.  Is this check worthwhile?
+> Dynamic stack allocation (alloca, or variable length automatic arrays)
+> is just the most common and most convenient example; it is not the only
+> case you have problems here.
 
-Probably not.
+I agree with those as general concerns, but I don't think that affects
+arm64's frame records, since their location within a stack frame is
+immaterial given the chaining.
 
+> > > The real way forward is to bite the bullet and to no longer pretend you
+> > > can do a full backtrace from just the stack contents.  You cannot.
+> > 
+> > I think what you mean here is that there's no reliable way to handle the
+> > current/leaf function, right? If so I do agree.
+> 
+> No, I meant what I said.
+> 
+> There is the separate issue that you do not know where the return
+> address (etc.) is stored in a function that has not yet done a call
+> itself, sure.  You cannot assume anything the ABI does not tell you you
+> can depend on.
 
-> > +	if (!node_isset(nid, sgx_numa_mask))
-> > +		return NULL;
-> > +
-> > +	sgx_node = &sgx_numa_nodes[nid];
-> > +
-> > +	spin_lock(&sgx_free_page_list_lock);
-> 
-> The glocal lock protecting a per-node structure is a bit unsightly.
+This is in the frame record per the AAPCS.
 
-The patch set could introduce additional patch for changing the
-locking scheme. It's logically a separate change.
+> > Beyond that I believe that arm64's frame records should be sufficient.
+> 
+> Do you have a simple linked list connecting all frames?
 
-> > +	if (list_empty(&sgx_node->free_page_list)) {
-> > +		spin_unlock(&sgx_free_page_list_lock);
-> > +		return NULL;
-> > +	}
-> > +
-> > +	page = list_first_entry(&sgx_node->free_page_list, struct sgx_epc_page, numa_list);
-> > +	list_del_init(&page->numa_list);
-> > +	list_del_init(&page->list);
-> > +	sgx_nr_free_pages--;
-> > +
-> > +	spin_unlock(&sgx_free_page_list_lock);
-> > +
-> > +	return page;
-> > +}
-> > +
-> >  /**
-> >   * __sgx_alloc_epc_page() - Allocate an EPC page
-> >   *
-> > @@ -446,8 +493,14 @@ static bool __init sgx_page_reclaimer_init(struct list_head *laundry)
-> >   */
-> >  struct sgx_epc_page *__sgx_alloc_epc_page(void)
-> >  {
-> > +	int current_nid = numa_node_id();
-> >  	struct sgx_epc_page *page;
-> >  
-> > +	/* Try to allocate EPC from the current node, first: */
-> > +	page = __sgx_alloc_epc_page_from_node(current_nid);
-> > +	if (page)
-> > +		return page;
-> > +
-> >  	spin_lock(&sgx_free_page_list_lock);
-> >  
-> >  	if (list_empty(&sgx_free_page_list)) {
-> > @@ -456,6 +509,7 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
-> >  	}
-> >  
-> >  	page = list_first_entry(&sgx_free_page_list, struct sgx_epc_page, list);
-> > +	list_del_init(&page->numa_list);
-> >  	list_del_init(&page->list);
-> >  	sgx_nr_free_pages--;
-> 
-> I would much rather prefer that this does what the real page allocator
-> does: kep the page on a single list.  That list is maintained
-> per-NUMA-node.  Allocations try local NUMA node structures, then fall
-> back to other structures (hopefully in a locality-aware fashion).
-> 
-> I wrote you the loop that I want to see this implement in an earlier
-> review.  This, basically:
-> 
-> 	page = NULL;
-> 	nid = numa_node_id();
-> 	while (true) {
-> 		page = __sgx_alloc_epc_page_from_node(nid);	
-> 		if (page)
-> 			break;
-> 
-> 		nid = // ... some search here, next_node_in()...
-> 		// check if we wrapped around:
-> 		if (nid == numa_node_id())
-> 			break;
-> 	}
-> 
-> There's no global list.  You just walk around nodes trying to find one
-> with space.  If you wrap around, you stop.
-> 
-> Please implement this.  If you think it's a bad idea, or can't, let's
-> talk about it in advance.  Right now, it appears that my review comments
-> aren't being incorporated into newer versions.
+Yes.
 
-How I interpreted your earlier comments is that the fallback is unfair and
-this patch set version does fix that. 
-
-I can buy the above allocation scheme, but I don't think this patch set
-version is a step backwards. The things done to struct sgx_epc_section
-are exactly what should be done to it.
-
-Implementation-wise you are asking me to squash 4/5 and 5/5 into a single
-patch, and remove global list. It's a tiny iteration from this patch
-version and I can do it.
-
-> >  void sgx_free_epc_page(struct sgx_epc_page *page)
-> >  {
-> > +	int nid = sgx_section_to_numa_node_id[page->section];
-> > +	struct sgx_numa_node *sgx_node = &sgx_numa_nodes[nid];
-> >  	int ret;
-> >  
-> >  	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
-> > @@ -575,7 +631,15 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
-> >  		return;
-> >  
-> >  	spin_lock(&sgx_free_page_list_lock);
-> > +
-> > +	/*   Enable NUMA local allocation in sgx_alloc_epc_page(). */
-> > +	if (!node_isset(nid, sgx_numa_mask)) {
-> > +		INIT_LIST_HEAD(&sgx_node->free_page_list);
-> > +		node_set(nid, sgx_numa_mask);
-> > +	}
-> > +
-> >  	list_add_tail(&page->list, &sgx_free_page_list);
-> > +	list_add_tail(&page->numa_list, &sgx_node->free_page_list);
-> >  	sgx_nr_free_pages++;
-> >  	spin_unlock(&sgx_free_page_list_lock);
-> >  }
-> > @@ -626,8 +690,28 @@ static bool __init sgx_page_cache_init(struct list_head *laundry)
-> >  {
-> >  	u32 eax, ebx, ecx, edx, type;
-> >  	u64 pa, size;
-> > +	int nid;
-> >  	int i;
-> >  
-> > +	nodes_clear(sgx_numa_mask);
-> 
-> Is this really required for a variable allocated in .bss?
-
-Probably not, I'll check what nodes_clear() does.
-
-> > +	sgx_numa_nodes = kmalloc_array(num_possible_nodes(), sizeof(*sgx_numa_nodes), GFP_KERNEL);
-> 
-> This is what I was looking for here, thanks!
-> 
-> > +	/*
-> > +	 * Create NUMA node lookup table for sgx_free_epc_page() as the very
-> > +	 * first step, as it is used to populate the free list's during the
-> > +	 * initialization.
-> > +	 */
-> > +	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
-> > +		nid = numa_map_to_online_node(phys_to_target_node(pa));
-> > +		if (nid == NUMA_NO_NODE) {
-> > +			/* The physical address is already printed above. */
-> > +			pr_warn(FW_BUG "Unable to map EPC section to online node. Fallback to the NUMA node 0.\n");
-> > +			nid = 0;
-> > +		}
-> > +
-> > +		sgx_section_to_numa_node_id[i] = nid;
-> > +	}
-> > +
-> >  	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
-> >  		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
-> >  
-> > diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-> > index 41ca045a574a..3a3c07fc0c8e 100644
-> > --- a/arch/x86/kernel/cpu/sgx/sgx.h
-> > +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-> > @@ -27,6 +27,7 @@ struct sgx_epc_page {
-> >  	unsigned int flags;
-> >  	struct sgx_encl_page *owner;
-> >  	struct list_head list;
-> > +	struct list_head numa_list;
-> >  };
-> 
-> I'll say it again, explicitly: Each sgx_epc_page should be on one and
-> only one free list: a per-NUMA-node list.
-> 
-> >  /*
-> > @@ -43,6 +44,14 @@ struct sgx_epc_section {
-> >  
-> >  extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
-> >  
-> > +/*
-> > + * Contains the tracking data for NUMA nodes having EPC pages. Most importantly,
-> > + * the free page list local to the node is stored here.
-> > + */
-> > +struct sgx_numa_node {
-> > +	struct list_head free_page_list;
-> > +};
-> 
-> I think it's unconscionable to leave this protected by a global lock.
-> Please at least give us a per-node spinlock proteting this list.
-
-I can do it but I'll add a separate commit for it. It's better to make
-locking scheme changes that way (IMHO). Helps with bisection later on...
-
-/Jarkko
+Thanks,
+Mark.
