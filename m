@@ -2,119 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E647F3348C7
+	by mail.lfdr.de (Postfix) with ESMTP id 747D73348C6
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhCJUVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231264AbhCJUVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 10 Mar 2021 15:21:09 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:44162 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231246AbhCJUUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:20:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615407653; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=dxtZkfJ5IYq7cEqVuScsgqcXnLuYpfjLDBXSw8+MHek=; b=vIL8LOb4zthXNBgBdJY8hXPXFaYQeRg/Ygau0677ND5TS8up2jBSTno585Ze46bsqsfsbkov
- tGNJuq8uQ/YdiQH/fH3VtwkBmR6zcBb1edoymgVjaeW6o+PMjUROCDJw9VKCvF+abroc9CYz
- nh+OeQQ6XZli5cyZPYgZcaH05v8=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60492a05d3a53bc38f144a6f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 20:20:21
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 14BF2C43465; Wed, 10 Mar 2021 20:20:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1C96C433C6;
-        Wed, 10 Mar 2021 20:20:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A1C96C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH] watchdog: qcom: Move suspend/resume to suspend_late/resume_early
-Date:   Thu, 11 Mar 2021 01:50:04 +0530
-Message-Id: <20210310202004.1436-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+Received: from jabberwock.ucw.cz ([46.255.230.98]:57910 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231301AbhCJUUq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:20:46 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 488281C0B77; Wed, 10 Mar 2021 21:20:44 +0100 (CET)
+Date:   Wed, 10 Mar 2021 21:20:43 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 0/7] 4.4.261-rc1 review
+Message-ID: <20210310202043.GA13374@amd>
+References: <20210310132319.155338551@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="nFreZHaLTZJo0R7j"
+Content-Disposition: inline
+In-Reply-To: <20210310132319.155338551@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During suspend/resume usecases and tests, it is common to see issues
-such as lockups either in suspend path or resume path because of the
-bugs in the corresponding device driver pm handling code. In such cases,
-it is important that watchdog is active to make sure that we either
-receive a watchdog pretimeout notification or a bite causing reset
-instead of a hang causing us to hard reset the machine.
 
-There are good reasons as to why we need this because:
+--nFreZHaLTZJo0R7j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-* We can have a watchdog pretimeout governor set to panic in which
-  case we can have a backtrace which would help identify the issue
-  with the particular driver and cause a normal reboot.
+Hi!
 
-* Even in case where there is no pretimeout support, a watchdog
-  bite is still useful because some firmware has debug support to dump
-  CPU core context on watchdog bite for post-mortem analysis.
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>=20
+> This is the start of the stable review cycle for the 4.4.261 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-* One more usecase which comes to mind is of warm reboot. In case we
-  hard reset the target, a cold reboot could be induced resulting in
-  lose of ddr contents thereby losing all the debug info.
+CIP testing did not find any problems here:
 
-Currently, the watchdog pm callback just invokes the usual suspend
-and resume callback which do not have any special ordering in the
-sense that a watchdog can be suspended before the buggy device driver
-suspend callback and watchdog resume can happen after the buggy device
-driver resume callback. This would mean that the watchdog will not be
-active when the buggy driver cause the lockups thereby hanging the
-system. So to make sure this doesn't happen, move the watchdog pm to
-use late/early system pm callbacks which will ensure that the watchdog
-is suspended late and resumed early so that it can catch such issues.
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/watchdog/qcom-wdt.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
-diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-index e38a87ffe5f5..0d2209c5eaca 100644
---- a/drivers/watchdog/qcom-wdt.c
-+++ b/drivers/watchdog/qcom-wdt.c
-@@ -329,7 +329,9 @@ static int __maybe_unused qcom_wdt_resume(struct device *dev)
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(qcom_wdt_pm_ops, qcom_wdt_suspend, qcom_wdt_resume);
-+static const struct dev_pm_ops qcom_wdt_pm_ops = {
-+	SET_LATE_SYSTEM_SLEEP_PM_OPS(qcom_wdt_suspend, qcom_wdt_resume)
-+};
- 
- static const struct of_device_id qcom_wdt_of_table[] = {
- 	{ .compatible = "qcom,kpss-timer", .data = &match_data_apcs_tmr },
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Best regards,
+									Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
+--nFreZHaLTZJo0R7j
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBJKhsACgkQMOfwapXb+vI3TACgrtdCK8MLXjwYbInY1+3t03jt
+VnoAoJ4s6Ok4MlnRQI8uD39t2q5pAlr4
+=5EUZ
+-----END PGP SIGNATURE-----
+
+--nFreZHaLTZJo0R7j--
