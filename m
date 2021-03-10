@@ -2,109 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A25D33385B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A7C333857
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232679AbhCJJJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:09:22 -0500
-Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:32749 "EHLO
-        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232529AbhCJJJJ (ORCPT
+        id S232618AbhCJJJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:09:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50187 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232702AbhCJJJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:09:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1615367349;
-  h=subject:from:to:cc:references:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=4VmRMA+z46nfmAF79aPtxD7G3DEltQtHlbCtG5CBYG4=;
-  b=Oq+822VZ5t8P44vyOUntHqzho2aGrkWNEYrjMLxAg/hOhCwevf7ur+C8
-   Q78qeD/eqetdQdwtEdS5j5ooAZd7aISCyAMHCfpXgu7ZhJpSvImbUdKVK
-   arJ9t6mqbuUKAHiC4do5BO82ld79tSGMzcDaLaJufYyvbj7v7Ghktwwvl
-   Q=;
-Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: +BTeAh8Uamfyx7JXECtHe4MHBr+LasAM5IXnbCFVbC7EHr7AXjhpZ2DwltkQWS/F20JUriuzsK
- yA5Ums4mSHCc8c4kJo1ffSBruToMR/0xTG6++UDBIcucvS/OvayHRSpbeMhDloJihYTntaNyfa
- jqEn4uvZWBAZ+riECrRqYQ3GbIVyT8sXD7xh9a04GX7/ut8T9qZklS1VhoeCKg5MZXjDg8V1Yx
- 2w+5DjAbQJ9y7wGBDeYwVdahccCzVTRTFQyNi3lPb7BZqcVSOErEkrrdzjhPrJtpRcNvfkEfvQ
- zxE=
-X-SBRS: 4.0
-X-MesageID: 38931597
-X-Ironport-Server: esa3.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.81,237,1610427600"; 
-   d="scan'208";a="38931597"
-Subject: Re: [PATCH v4 2/3] xen/events: don't unmask an event channel when an
- eoi is pending
-From:   Ross Lagerwall <ross.lagerwall@citrix.com>
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
-CC:     Stefano Stabellini <sstabellini@kernel.org>,
-        <stable@vger.kernel.org>, Julien Grall <julien@xen.org>,
-        Julien Grall <jgrall@amazon.com>
-References: <20210306161833.4552-1-jgross@suse.com>
- <20210306161833.4552-3-jgross@suse.com>
- <ff9fb99f-12ca-c04e-e4bc-1b1c67381cc2@oracle.com>
- <d6a1ab2e-4b77-7b14-e397-74aa71efb70d@suse.com>
- <b6d41422-47cf-956c-9c4a-98998c64b103@citrix.com>
-Message-ID: <3880be9d-1176-8beb-b192-20078cd39038@citrix.com>
-Date:   Wed, 10 Mar 2021 09:08:34 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 10 Mar 2021 04:09:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615367341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BmockwskQjMF5QAoMpBw7lnx9hxakWy3Uk40dCq8ECk=;
+        b=U1lyzCNowXrGphX46uwpzj+PVcshjmU5KyF3DPj4OpCtMkZ0XF+mSzCX0mPc3yxfBSQjfn
+        8TKI5MXZGUSqqwyijxyDtW8MtvPSkliZ0KAVaLbRuKgLVbPDETqXZDtFLPWodpqDNgY6Xn
+        HRLZn/NvAnWXS+IZZcC9gQFNDtnFUg0=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-112-fbtTCrxbNQe_6XbrAqTBZA-1; Wed, 10 Mar 2021 04:09:00 -0500
+X-MC-Unique: fbtTCrxbNQe_6XbrAqTBZA-1
+Received: by mail-wm1-f71.google.com with SMTP id y9so881991wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:08:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BmockwskQjMF5QAoMpBw7lnx9hxakWy3Uk40dCq8ECk=;
+        b=FSQ6frneiCfGHJpUyfKUYzSYojBtyD7UGdEZISqtYevCMXu4N0cW2ni0RJRVN3xrxy
+         rLN+uavws/cs2TBNDBqDqtJ+rIp4/fewNHFE2jd9HeRzd9b+Y5BmjqqZJVFx57WiGhMW
+         MsMwH1AEtG0S3aL1uMIwZknobNOVgJpaKn4U1G6GDoqjH4V6pTKJYk8KAT2KSEpks1v6
+         rag+WR4n6YdUOyeSARDfQrcoc548nVWSSs9VrA1btyaijiGc3kDH56ct0yD+dbHzLKCC
+         Dx3kZdWtG/wlg+9KgVo941BAxBGJeeJnG6Jz1xtkdectLbUIq4V0LOLB6YQfr2eLaqNe
+         Sfyg==
+X-Gm-Message-State: AOAM53049vInb0GpQ1oHgP2SWuyI/4DDSKhcaPPacBifqBbjtBGDeWFi
+        h3QQOjzjNhS/HN1b+PHS5R1t7rFK9FbxWHw3Fu/kXEIOXPJQpP905oraTJOOmkCbRJbEWgXf7vr
+        qYAXwmMG/ZXXion4oCSuKwaCj
+X-Received: by 2002:a05:600c:2d42:: with SMTP id a2mr2316383wmg.77.1615367338737;
+        Wed, 10 Mar 2021 01:08:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzxQCipYAWNB0txuNi1jdo9rluJARSnskL/vwWkiJ/cIOzii1j16GaSPbgIx+cPvASjDYCFMQ==
+X-Received: by 2002:a05:600c:2d42:: with SMTP id a2mr2316363wmg.77.1615367338594;
+        Wed, 10 Mar 2021 01:08:58 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d29sm28275541wra.51.2021.03.10.01.08.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 01:08:57 -0800 (PST)
+Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
+To:     Babu Moger <babu.moger@amd.com>, Jim Mattson <jmattson@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <159985237526.11252.1516487214307300610.stgit@bmoger-ubuntu>
+ <83a96ca9-0810-6c07-2e45-5aa2da9b1ab0@redhat.com>
+ <5df9b517-448f-d631-2222-6e78d6395ed9@amd.com>
+ <CALMp9eRDSW66+XvbHVF4ohL7XhThoPoT0BrB0TcS0cgk=dkcBg@mail.gmail.com>
+ <bb2315e3-1c24-c5ae-3947-27c5169a9d47@amd.com>
+ <CALMp9eQBY50kZT6WdM-D2gmUgDZmCYTn+kxcxk8EQTg=SygLKA@mail.gmail.com>
+ <21ee28c6-f693-e7c0-6d83-92daa9a46880@amd.com>
+ <01cf2fd7-626e-c084-5a6a-1a53d111d9fa@amd.com>
+ <84f42bad-9fb0-8a76-7f9b-580898b634b9@amd.com>
+ <032386c6-4b4c-2d3f-0f6a-3d6350363b3c@amd.com>
+ <CALMp9eTTBcdADUYizO-ADXUfkydVGqRm0CSQUO92UHNnfQ-qFw@mail.gmail.com>
+ <0ebda5c6-097e-20bb-d695-f444761fbb79@amd.com>
+ <0d8f6573-f7f6-d355-966a-9086a00ef56c@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1451b13e-c67f-8948-64ff-5c01cfb47ea7@redhat.com>
+Date:   Wed, 10 Mar 2021 10:08:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <b6d41422-47cf-956c-9c4a-98998c64b103@citrix.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <0d8f6573-f7f6-d355-966a-9086a00ef56c@amd.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-09 08:57, Ross Lagerwall wrote:
-> On 2021-03-09 05:14, Jürgen Groß wrote:
->> On 08.03.21 21:33, Boris Ostrovsky wrote:
->>>
->>> On 3/6/21 11:18 AM, Juergen Gross wrote:
->>>> An event channel should be kept masked when an eoi is pending for it.
->>>> When being migrated to another cpu it might be unmasked, though.
->>>>
->>>> In order to avoid this keep three different flags for each event channel
->>>> to be able to distinguish "normal" masking/unmasking from eoi related
->>>> masking/unmasking and temporary masking. The event channel should only
->>>> be able to generate an interrupt if all flags are cleared.
->>>>
->>>> Cc: stable@vger.kernel.org
->>>> Fixes: 54c9de89895e0a36047 ("xen/events: add a new late EOI evtchn framework")
->>>> Reported-by: Julien Grall <julien@xen.org>
->>>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>>> Reviewed-by: Julien Grall <jgrall@amazon.com>
->>>> ---
->>>> V2:
->>>> - introduce a lock around masking/unmasking
->>>> - merge patch 3 into this one (Jan Beulich)
->>>> V4:
->>>> - don't set eoi masking flag in lateeoi_mask_ack_dynirq()
->>>
->>>
->>> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
->>>
->>>
->>> Ross, are you planning to test this?
->>
->> Just as another data point: With the previous version of the patches
->> a reboot loop of a guest needed max 33 reboots to loose network in
->> my tests (those were IIRC 6 test runs). With this patch version I
->> stopped the test after about 1300 reboots without having seen any
->> problems.
->>
+On 10/03/21 02:04, Babu Moger wrote:
+> Debian kernel 4.10(tag 4.10~rc6-1~exp1) also works fine. It appears the
+> problem is on Debian 4.9 kernel. I am not sure how to run git bisect on
+> Debian kernel. Tried anyway. It is pointing to
 > 
-> Thanks, I'll test it today and get back to you.
+> 47811c66356d875e76a6ca637a9d384779a659bb is the first bad commit
+> commit 47811c66356d875e76a6ca637a9d384779a659bb
+> Author: Ben Hutchings<benh@debian.org>
+> Date:   Mon Mar 8 01:17:32 2021 +0100
 > 
+>      Prepare to release linux (4.9.258-1).
+> 
+> It does not appear to be the right commit. I am out of ideas now.
+> hanks
 
-Tested-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+Have you tried bisecting the upstream stable kernels (from 4.9.0 to 
+4.9.258)?
 
-The updated patch seems fine in testing.
+Paolo
 
-Thanks
-Ross
