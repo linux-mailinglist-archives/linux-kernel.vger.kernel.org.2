@@ -2,130 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F141333FD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AEC333FDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbhCJOBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:01:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
+        id S232959AbhCJOCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:02:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232727AbhCJOB3 (ORCPT
+        with ESMTP id S232493AbhCJOBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:01:29 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC5FC061760;
-        Wed, 10 Mar 2021 06:01:29 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id x19so17975645ybe.0;
-        Wed, 10 Mar 2021 06:01:29 -0800 (PST)
+        Wed, 10 Mar 2021 09:01:47 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22238C061760;
+        Wed, 10 Mar 2021 06:01:47 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d23so5310262plq.2;
+        Wed, 10 Mar 2021 06:01:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7a2OeopqH0Y4h1owU3t7VkDKxd93A5ERI3FGH0Y4yUA=;
-        b=CaJtkQrEXLtU6IB+EaQnvDWDwXLsgL8YDPUo7TBqmxyEH0m7zo05lmLwDQ75aR+m/p
-         W9efunnt6u80BLcojGaLbMyRBPXn+GEuB3eGLcdIITvsH2n3xe33Rw6n6sblg6WTL1AV
-         TpOt7otXdFIhKc9jPtm5ZFebaC3ngUdkJzrrKniJp9ezHwYgB9DAD5BJa4Yo/VlLHV/d
-         NyOu5Pj6aLui1jKyKpkCkEv7OdSBmcnEJ3gVxpeZ5xyNn+lPgjqMWrD0EucFfjeGcuKE
-         sePuGgK+g9J9d7llBo7rzQ/wh4clMNQnJHKE9V+WT1m4hhX8BRYhDXOIOZ3U/gu5yFMa
-         JFrQ==
+         :cc:content-transfer-encoding;
+        bh=GCVQjWt0AiUSEd6FKWYgmvzWBrd1IhH0M7mcUn/44lQ=;
+        b=Px0uOi0ryjRx6x08IYmQ6kMksj/yHk95AZS1jObIxSWVrOk6XIxq/UhsgFBDROE6NK
+         5tMupwA+SUii8a2B7zCpHiXtJ2ipBz070h1TZToPZO4ZpgHa0Wm/5EQeEznAzjOi+maU
+         0csiXQ9y3QH2/0Fl6oOID3TuSy5br8ERPBHeqmuiYFCkh4P8vxwTJMnAMdcTcu7+K6f7
+         u9VfaVnldMU4RC3T4u0tA2wL/rPCHmZ/bGLVX1cSeeo/gbJ6Va5seL6Q0j4pCtyTzi2+
+         AyiKOAzjASbUo8ZgbLxgWgmGlBUwc6NqPGqKi/rjkGGBT1c0ibOXQxrCJwlMkMVbsZq0
+         gBAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7a2OeopqH0Y4h1owU3t7VkDKxd93A5ERI3FGH0Y4yUA=;
-        b=Q8Uq/XFCE8eAVEL4Ew4GVbc5+E8IzhlZWXYcB3VZAkkTxXeS90FvyW/kIp6HozMCYH
-         3dNCFrAZD05aCXFhI7YnA/80iqit1h4qODW9vmoY0r98h6NYSVDLLVSgHAMM1xbxg14e
-         lK1Tw/giUwrcvVq5IvIArhe+qqM9k/OX7AROtyhAoyNGvWcjJv+e3Crp0e6VyAqgNAek
-         46kTs3RtRuo3nvvphgD4uVpO3VQ5ojjMqQ08uIX1vnjSj+zkA+NMqbKoJCPTW762t3wy
-         eHTQ+d34yKb1hnr3pykcnFiBXIWpEEH2ktHfC3+ih34YN5o+uhXbH4MA5lUqHdqwnUbL
-         Sapw==
-X-Gm-Message-State: AOAM532uQCkeADWl9el41tR/4Pj4YSGxXHL74dZlOqH15XrEbyImkB/z
-        Thaz4TPPobAVQA9D2jQSEwbIZTxtouy7lW4ZWlo=
-X-Google-Smtp-Source: ABdhPJxXaxlVuYIZd3Mum1Ha9lwUcrH3kN15/FT06kJc+7h/6Tn4pZu8buSiIP3XwauBNHtw51+Zvmbtqw5jLto54Qo=
-X-Received: by 2002:a25:cec8:: with SMTP id x191mr4151186ybe.214.1615384888127;
- Wed, 10 Mar 2021 06:01:28 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GCVQjWt0AiUSEd6FKWYgmvzWBrd1IhH0M7mcUn/44lQ=;
+        b=tKuWh0aFyeQxwnx7O7r5PLTL/X13rMs69X82rXCzbfqoE1ri46HCo7JpW/VPqSzlVz
+         F9Hj4wzaZhwWSEPINEPRjF+Dla1PvO63JUTjNeg3hAj0G2MYiwP2RgEukxFUMn9LT62X
+         oSNnVoWE9ffWqE+jzeHFGAQZRpshK7InXYoA2sCNqtECi158UJh+0bM/iAC4vpREYSh1
+         Ll449wbG7G1e5a8FtNLnXZmh2wWqQJ07NODyHGcxvmumsyx6FTp8LMB17/oYtPUTcx7w
+         HCTG4bWXXhbwM6cE3sNmSRrmHwkX/e3P/tZwfGLyYUBj/PJeJirTeUtw4PgFJqTi6V84
+         +7tw==
+X-Gm-Message-State: AOAM533wrCWg8uhMrF1V0P7r+ASz+zuJEyWnfzFEG86DLGNa27ujw22I
+        yD7Ne1jRCUYCJWWuTePbeyq0Ho9cA5aV47GTzvU=
+X-Google-Smtp-Source: ABdhPJzKz7o7Q41neFjaiKGbGw1g/ggo7MCvqxNQhETQKoMzACZK76VS/lS0IsB/t4i57E5n23jDy3qbOmh0U2sPIgY=
+X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr3828368pja.228.1615384906581;
+ Wed, 10 Mar 2021 06:01:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210310122014.28353-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210310122014.28353-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <YEjAL22jNXvpe23W@pendragon.ideasonboard.com>
-In-Reply-To: <YEjAL22jNXvpe23W@pendragon.ideasonboard.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 10 Mar 2021 14:01:02 +0000
-Message-ID: <CA+V-a8ua38zhCPW+Vu+8XmEUNt4rWGpPbg9BtojUK9_0SPhJuw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] media: i2c: imx219: Balance runtime PM use-count in
- resume callback
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20210310125504.31886-1-noltari@gmail.com> <20210310125504.31886-3-noltari@gmail.com>
+In-Reply-To: <20210310125504.31886-3-noltari@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 10 Mar 2021 16:01:30 +0200
+Message-ID: <CAHp75VeAmdkDuJ-rhyunQ+tAbB6=qHLGKzwFg26jgkdYzJLK1A@mail.gmail.com>
+Subject: Re: [PATCH v6 02/15] gpio: regmap: set gpio_chip of_node
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On Wed, Mar 10, 2021 at 2:55 PM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
+>
+> This is needed for properly registering GPIO regmap as a child of a regma=
+p
+> pin controller.
 
-Thank you for the review.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Thanks!
 
-On Wed, Mar 10, 2021 at 12:49 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> Reviewed-by: Michael Walle <michael@walle.cc>
+> ---
+>  v6: add comment and simplify of_node assignment
+>  v5: switch to fwnode
+>  v4: fix documentation
+>  v3: introduce patch needed for properly parsing gpio-range
 >
-> Hi Prabhakar,
+>  drivers/gpio/gpio-regmap.c  | 1 +
+>  include/linux/gpio/regmap.h | 4 ++++
+>  2 files changed, 5 insertions(+)
 >
-> Thank you for the patch.
+> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+> index 5412cb3b0b2a..d4fc656e70b0 100644
+> --- a/drivers/gpio/gpio-regmap.c
+> +++ b/drivers/gpio/gpio-regmap.c
+> @@ -249,6 +249,7 @@ struct gpio_regmap *gpio_regmap_register(const struct=
+ gpio_regmap_config *config
 >
-> On Wed, Mar 10, 2021 at 12:20:14PM +0000, Lad Prabhakar wrote:
-> > The runtime PM use-count gets incremented in imx219_set_stream() call
-> > when streaming is started this needs to be balanced by calling
-> > pm_runtime_put() upon failure to start stream in resume callback.
-> >
-> > Fixes: 1283b3b8f82b9 ("media: i2c: Add driver for Sony IMX219 sensor")
-> > Reported-by: Pavel Machek <pavel@denx.de>
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  drivers/media/i2c/imx219.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
-> > index 87c021de1460..afffc85cd265 100644
-> > --- a/drivers/media/i2c/imx219.c
-> > +++ b/drivers/media/i2c/imx219.c
-> > @@ -1184,6 +1184,7 @@ static int __maybe_unused imx219_resume(struct device *dev)
-> >  {
-> >       struct v4l2_subdev *sd = dev_get_drvdata(dev);
-> >       struct imx219 *imx219 = to_imx219(sd);
-> > +     struct i2c_client *client;
-> >       int ret;
-> >
-> >       mutex_lock(&imx219->mutex);
-> > @@ -1197,7 +1198,9 @@ static int __maybe_unused imx219_resume(struct device *dev)
-> >       return 0;
-> >
-> >  error:
-> > +     client = v4l2_get_subdevdata(&imx219->sd);
-> >       imx219_stop_streaming(imx219);
-> > +     pm_runtime_put(&client->dev);
-> >       imx219->streaming = false;
-> >       __v4l2_ctrl_grab(imx219->vflip, false);
-> >       __v4l2_ctrl_grab(imx219->hflip, false);
+>         chip =3D &gpio->gpio_chip;
+>         chip->parent =3D config->parent;
+> +       chip->of_node =3D to_of_node(config->fwnode);
+>         chip->base =3D -1;
+>         chip->ngpio =3D config->ngpio;
+>         chip->names =3D config->names;
+> diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
+> index ad76f3d0a6ba..334dd928042b 100644
+> --- a/include/linux/gpio/regmap.h
+> +++ b/include/linux/gpio/regmap.h
+> @@ -4,6 +4,7 @@
+>  #define _LINUX_GPIO_REGMAP_H
 >
-> Similarly to the __v4l2_ctrl_grab(), it could be better to move
-> pm_runtime_put() to imx219_stop_streaming().
+>  struct device;
+> +struct fwnode_handle;
+>  struct gpio_regmap;
+>  struct irq_domain;
+>  struct regmap;
+> @@ -16,6 +17,8 @@ struct regmap;
+>   * @parent:            The parent device
+>   * @regmap:            The regmap used to access the registers
+>   *                     given, the name of the device is used
+> + * @fwnode:            (Optional) The firmware node.
+> + *                     If not given, the fwnode of the parent is used.
+>   * @label:             (Optional) Descriptive name for GPIO controller.
+>   *                     If not given, the name of the device is used.
+>   * @ngpio:             Number of GPIOs
+> @@ -57,6 +60,7 @@ struct regmap;
+>  struct gpio_regmap_config {
+>         struct device *parent;
+>         struct regmap *regmap;
+> +       struct fwnode_handle *fwnode;
 >
-Agreed, moved this to imx219_stop_streaming().
-
-Cheers,
-Prabhakar
-
+>         const char *label;
+>         int ngpio;
 > --
-> Regards,
+> 2.20.1
 >
-> Laurent Pinchart
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
