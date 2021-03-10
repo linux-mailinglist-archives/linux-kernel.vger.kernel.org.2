@@ -2,116 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444AA33426C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C3233426F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 17:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233161AbhCJQFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 11:05:37 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:50981 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233087AbhCJQF0 (ORCPT
+        id S233196AbhCJQGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 11:06:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232130AbhCJQFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 11:05:26 -0500
-Received: by mail-il1-f197.google.com with SMTP id x11so13250971ill.17
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:05:25 -0800 (PST)
+        Wed, 10 Mar 2021 11:05:39 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2719C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:05:39 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id p21so11687599pgl.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 08:05:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/IlSQt+JdroGzkdRffXyJXxruj/9j7m6kLbpUsf+B50=;
+        b=DfSVPLK4FHvcXwn0XEJYawc7Fg1vG89qRrbkyKld2NJiUMZ3YmqiPlM8VqDnB9tzTy
+         teSe23q3yqMnsFQ4tWo1bNAtiViMRyNQPqc+NifHhX/RLXGnU4AcvhghaGvGu397wT7w
+         kAaV74/8MaugvamoYbMZK/f4edWPhuVGJsmUN9MWaUSD9hGzhmeIYfyZ2FBxXUzJKyN5
+         jBTTARCxmk5QzaF/qwgGtUqvODd6YwLYsNVHxerGg7yNxOBlR1rhLwhG66Bo1wZXHIGW
+         RLZNEwJEkbXk1b4RTn3j1RgPlG/Jst1WXgqDjWdck7cPAYPP34Bpu/s8QYDyvw+8HT2h
+         1mJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qZNVHnR/bDC9xj148yuWgAcFlo0xsdJ2gWgHjhJ2R70=;
-        b=nOvjOfbFUixhp1Z2Bou2DZKMFYd+TS9X/r43sUtZv15ibrcq3t41K2Kux8sjcIJR8h
-         bRFDt8LniuD9qTUjRv8gVV0M+EuzPo8/sXWndjenubM821UVbR3Z59HLFo+CtRS1KFNV
-         /d/VJWKQDQ4avI1Oc8TmrmZ0GGGLr0Ag42zvT7cd8RylOlvSxdZmnuQwSbyl+LSYLsHy
-         c5oSy4N56mq3rJwfj2ld9Y0W4eyMvcRAAo8Lk7PAdmkC8dbt+bqRa+Wyzn58nnWweuMa
-         txcefVBvI3SwQqeLhwIy3H+Mnl4jGesYOJBb0JOGkFh9qeHInCGaXNo1OvCPQPsYyPNG
-         Ld6g==
-X-Gm-Message-State: AOAM530PHTffRNl1XkxyRiLf6TMq8jhXEFEDw4Sd36CLJtHtUcYMxp0h
-        DKKzn5Y8qX6vVFrkv9bFyiI/1Bjb0G9WJStWbITqvhw+7xJ/
-X-Google-Smtp-Source: ABdhPJw7a1swnVOCyzqS79tPGgZfT1srPo/AI8rsI/TK3EdYa9Ee33ce4hE3/A7SlzScOZnD5S3U0UCpcndVAu6q6LzrHOjZpZch
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=/IlSQt+JdroGzkdRffXyJXxruj/9j7m6kLbpUsf+B50=;
+        b=gablzqFqnd6K7KKDDtIDznbFTvOi4tvo76mnGBb0+ORBEWbQB/XY59szJ3oRkbeg04
+         UQIGXx2kc0VlJQPW4o4tgmYHsRFw3Pmyu+Wm4IZzu7f6nNu1wbTXu+5qegQWsA9lJaZP
+         pvvvVCpaRNpCIzBDJ1t8xqeNy29/Qeb65bB9kWnNbgXV39rKI2hjf6U+iOA1ZHm2O9pA
+         fqgII2YrZZ2DXotOOuQUqFgLlusZVMj+wxqfr9ipqGsTz/Ymp1Bg3EufiyZMgdnRNX6+
+         Dvg67drpNsi6fG4k9ULSF10YvEuB3AFE9KvD92CXNVFNZTvY8jIterFZQoWLLpKvdkNT
+         pdgg==
+X-Gm-Message-State: AOAM531/Ewrcskgg3TT9AOyZftyBMbJxwnFRa/ZJCs9i3rDF3n0DTEru
+        YrRZtIBlm/hNKJBL5Wqk5ak=
+X-Google-Smtp-Source: ABdhPJzPlQDcNuvakRLyeeXywTieaSeEdksct8IP45dFXbTxviDyI2sxg+hAZjhj3LIu2zC3iBgXHA==
+X-Received: by 2002:a63:f912:: with SMTP id h18mr3377253pgi.287.1615392339167;
+        Wed, 10 Mar 2021 08:05:39 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
+        by smtp.gmail.com with ESMTPSA id a21sm17205098pfk.83.2021.03.10.08.05.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 08:05:38 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 10 Mar 2021 08:05:36 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Dias <joaodias@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Baron <jbaron@akamai.com>
+Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
+Message-ID: <YEjuUHBDKu2uX4EO@google.com>
+References: <20210308202047.1903802-1-minchan@kernel.org>
+ <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz>
+ <YEefLYiX6rF3Uk4E@google.com>
+ <YEh4doXvyuRl5BDB@google.com>
+ <YEjEefQpBHV5eBXj@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a809:: with SMTP id f9mr3529472jaj.63.1615392322586;
- Wed, 10 Mar 2021 08:05:22 -0800 (PST)
-Date:   Wed, 10 Mar 2021 08:05:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008f912605bd30d5d7@google.com>
-Subject: [syzbot] UBSAN: shift-out-of-bounds in ___bpf_prog_run
-From:   syzbot <syzbot+bed360704c521841c85d@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEjEefQpBHV5eBXj@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Mar 10, 2021 at 02:07:05PM +0100, Michal Hocko wrote:
+> On Tue 09-03-21 23:42:46, Minchan Kim wrote:
+> > On Tue, Mar 09, 2021 at 08:15:41AM -0800, Minchan Kim wrote:
+> > 
+> > < snip >
+> > 
+> > > > [...]
+> > > > > +void dump_migrate_failure_pages(struct list_head *page_list)
+> > > > > +{
+> > > > > +	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
+> > > > > +			"migrate failure");
+> > > > > +	if (DYNAMIC_DEBUG_BRANCH(descriptor) &&
+> > > > > +			alloc_contig_ratelimit()) {
+> > > > > +		struct page *page;
+> > > > > +
+> > > > > +		WARN(1, "failed callstack");
+> > > > > +		list_for_each_entry(page, page_list, lru)
+> > > > > +			dump_page(page, "migration failure");
+> > > > > +	}
+> > > > 
+> > > > Apart from the above, do we have to warn for something that is a
+> > > > debugging aid? A similar concern wrt dump_page which uses pr_warn and
+> > > 
+> > > Make sense.
+> > > 
+> > > > page owner is using even pr_alert.
+> > > > Would it make sense to add a loglevel parameter both into __dump_page
+> > > > and dump_page_owner?
+> > > 
+> > > Let me try it.
+> > 
+> > I looked though them and made first draft to clean them up.
+> > 
+> > It's bigger than my initial expectaion because there are many callsites
+> > to use dump_page and stack_trace_print inconsistent loglevel. 
+> > Since it's not a specific problem for this work, I'd like to deal with
+> > it as separate patchset since I don't want to be stuck on here for my
+> > initial goal.
+> > 
+> > FYI,
+> > 
+> > Subject: [RFC 0/5] make dump_page aware of loglevel
+> > 
+> > - Forked from [1]
+> > 
+> > dump_page uses __dump_page and dump_page_owner internally to
+> > print various information. However, their printk loglevel are
+> > inconsistent in that
+> > 
+> > __dump_page: KERN_WARNING
+> > __dump_page_owner: KERN_ALERT
+> >         stack_trace_print: KERN_DEFAULT
+> > 
+> > To make them consistent from dump_page, this patch introduces
+> > pr_loglevel in printk and make the utility functions aware of
+> > loglevel. Finally, last patch changes dump_page to support
+> > loglevel to make the printing level consistent.
+> > 
+> > [1] https://lore.kernel.org/linux-mm/YEdAw6gnp9XxoWUQ@dhcp22.suse.cz/
+> > 
+> > Minchan Kim (5):
+> >   mm: introduce pr_loglevel for __dump_[page]_owner
+> >   stacktrace: stack_trace_print aware of loglevel
+> >   mm: page_owner: dump_page_owner aware of loglevel
+> >   mm: debug: __dump_page aware of loglevel
+> >   mm: debug: dump_page aware of loglevel
+> >   drivers/md/dm-bufio.c       |  2 +-
+> >  drivers/virtio/virtio_mem.c |  2 +-
+> >  fs/btrfs/ref-verify.c       |  2 +-
+> >  fs/fuse/dev.c               |  2 +-
+> >  include/linux/mmdebug.h     | 10 ++++++----
+> >  include/linux/page_owner.h  |  8 ++++----
+> >  include/linux/printk.h      | 12 +++++++++++
+> >  include/linux/stacktrace.h  |  4 ++--
+> >  kernel/backtracetest.c      |  2 +-
+> >  kernel/dma/debug.c          |  3 ++-
+> >  kernel/kcsan/report.c       |  7 ++++---
+> >  kernel/locking/lockdep.c    |  3 ++-
+> >  kernel/stacktrace.c         |  5 +++--
+> >  mm/debug.c                  | 40 ++++++++++++++++++-------------------
+> >  mm/filemap.c                |  2 +-
+> >  mm/gup_test.c               |  4 ++--
+> >  mm/huge_memory.c            |  4 ++--
+> >  mm/kasan/report.c           |  4 ++--
+> >  mm/kfence/report.c          |  3 ++-
+> >  mm/kmemleak.c               |  2 +-
+> >  mm/memory.c                 |  2 +-
+> >  mm/memory_hotplug.c         |  4 ++--
+> >  mm/page_alloc.c             |  4 ++--
+> >  mm/page_isolation.c         |  2 +-
+> >  mm/page_owner.c             | 24 +++++++++++-----------
+> >  25 files changed, 88 insertions(+), 69 deletions(-)
+> 
+> The is a lot of churn indeed. Have you considered adding $FOO_lglvl
+> variants for those so that you can use them for your particular case
+> without affecting most of existing users? Something similar we have
+> discussed in other email thread regarding lru_add_drain_all?
 
-syzbot found the following issue on:
-
-HEAD commit:    144c79ef Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07'..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1572d952d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ccdd84f79f45b23d
-dashboard link: https://syzkaller.appspot.com/bug?extid=bed360704c521841c85d
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-
-================================================================================
-UBSAN: shift-out-of-bounds in kernel/bpf/core.c:1420:2
-shift exponent 255 is too large for 64-bit type 'long long unsigned int'
-CPU: 1 PID: 11097 Comm: syz-executor.4 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
- ___bpf_prog_run.cold+0x19/0x56c kernel/bpf/core.c:1420
- __bpf_prog_run32+0x8f/0xd0 kernel/bpf/core.c:1735
- bpf_dispatcher_nop_func include/linux/bpf.h:644 [inline]
- bpf_prog_run_pin_on_cpu include/linux/filter.h:624 [inline]
- bpf_prog_run_clear_cb include/linux/filter.h:755 [inline]
- run_filter+0x1a1/0x470 net/packet/af_packet.c:2031
- packet_rcv+0x313/0x13e0 net/packet/af_packet.c:2104
- dev_queue_xmit_nit+0x7c2/0xa90 net/core/dev.c:2387
- xmit_one net/core/dev.c:3588 [inline]
- dev_hard_start_xmit+0xad/0x920 net/core/dev.c:3609
- __dev_queue_xmit+0x2121/0x2e00 net/core/dev.c:4182
- __bpf_tx_skb net/core/filter.c:2116 [inline]
- __bpf_redirect_no_mac net/core/filter.c:2141 [inline]
- __bpf_redirect+0x548/0xc80 net/core/filter.c:2164
- ____bpf_clone_redirect net/core/filter.c:2448 [inline]
- bpf_clone_redirect+0x2ae/0x420 net/core/filter.c:2420
- ___bpf_prog_run+0x34e1/0x77d0 kernel/bpf/core.c:1523
- __bpf_prog_run512+0x99/0xe0 kernel/bpf/core.c:1737
- bpf_dispatcher_nop_func include/linux/bpf.h:644 [inline]
- bpf_test_run+0x3ed/0xc50 net/bpf/test_run.c:50
- bpf_prog_test_run_skb+0xabc/0x1c50 net/bpf/test_run.c:582
- bpf_prog_test_run kernel/bpf/syscall.c:3127 [inline]
- __do_sys_bpf+0x1ea9/0x4f00 kernel/bpf/syscall.c:4406
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x465f69
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f2797f63188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465f69
-RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
-RBP: 00000000004bfa3f R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007ffcd53d929f R14: 00007f2797f63300 R15: 0000000000022000
-================================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I thought that way but didn't try since it couldn't make them
+atomic(For example, other printk place in other context will
+affect by the $FOO_lglvl).
