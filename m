@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E379A33490D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B7733490F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhCJUlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:41:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbhCJUl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:41:27 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59B2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:41:27 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id b15so13604446qvz.15
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 12:41:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=olgDNThU3Gi1qEGHEgliM8s73SM6b44MNPtrpvNjnMY=;
-        b=Uy08lqnM701KIBp5IehqUikZPbohigqlYMLTf+HXv9DA44ndE8qzbjFq4d+PVWfbi0
-         GsdmMXD6/UbUxOhBOGKHX4kOzcvjLMhF7k922iMPU4nrqjGxn5Sp9+AKLh4VMPzaJtKZ
-         BNW/PzSvllZ5/VRlM+J2SBbkEcUR7yT3QQtEO9KzApMsx5CaupMk38JHg1TOuzicZ91q
-         zn7A7d9HX99AAWWUNirqqHDsF5ahe8BZUdmq2BkR30kE4Y6dp3ZZR0U2AQAutvgdWEZz
-         1oB09SQLPJ1oWmZOlmaSGx9i6eU5TtxWutE0gj0FB44rwaTj1zxTvXJfOun1R0uXAMgq
-         tnag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=olgDNThU3Gi1qEGHEgliM8s73SM6b44MNPtrpvNjnMY=;
-        b=cr8eCWhkuX5T1OG28HQCcpptdtCyOpn+s2Pt7EDyySVlBUH+K/hxKGw0uMrR5cl+ae
-         defgruEiNIneVizYxgnAus+75b4qFB9IixDUteLLzaVrbnjxC/fPyMdyuNKo6kwDYN9Y
-         RzL0Tnd9cO6ugoUg1op+HSQZmzhKyNPo84vKmwkGS8v02soGlhUIJywE0eNthk+Pzvli
-         rOKNwWDg1GZEpQLOOLLWYdgyMEpL8NOMDG0iEAKDUhiuhJ4qz4pogCpR7aeaYmpokhKi
-         FAGfu3wGbuO3pzZqGOfBoyhGqTMo0wUx+GP2+v8uGfQ3dk8bHK/0tGq2On/QuL07SOBA
-         ygGQ==
-X-Gm-Message-State: AOAM531NAJ+fGbhmg4vgehl709rdcYlhtOiyZ3zzF/iFqnK3M/v/ckUh
-        CPqiXakLCEImRdcxFvMdA9fi40tV0FpX
-X-Google-Smtp-Source: ABdhPJzv+44pu5ytJgXrdfJznreaPuUG/WeOYMDmyXBfKIo44ENL++EBkFaT7w4my+X06rj7pVIbuVnN9nye
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f1bc:db2b:fff2:533])
- (user=irogers job=sendgmr) by 2002:a05:6214:15d1:: with SMTP id
- p17mr4651906qvz.28.1615408886915; Wed, 10 Mar 2021 12:41:26 -0800 (PST)
-Date:   Wed, 10 Mar 2021 12:41:18 -0800
-In-Reply-To: <20210310204118.711514-1-irogers@google.com>
-Message-Id: <20210310204118.711514-3-irogers@google.com>
-Mime-Version: 1.0
-References: <20210310204118.711514-1-irogers@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 3/3] perf test: Add 30s timeout for wait for daemon start.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231644AbhCJUmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:42:55 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:32852 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232064AbhCJUmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:42:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615408952; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=y9dG7dshC+k0sBZNCdzBkLkCPX7Wmt3l2cPIISsNooE=; b=WaQOi2bccZapIvLzWIWRdv67Z0/d911rL4xM5qm7hWbdR3R2V0ZjQUNTRB0c9PbPfzzjY4C+
+ LJv0UFPcww3BoXvfAXzbQK5SI3VuvKPc5Bdpus5hqrVcGAVlbTTHOGnBjB5Ku8tWsPnJ/bW+
+ we6TibLgpDlAVip2PMb63hPmzXM=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60492f236e1c22bc8d552580 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 20:42:11
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 74BBCC43461; Wed, 10 Mar 2021 20:42:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 26331C433C6;
+        Wed, 10 Mar 2021 20:42:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 26331C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH v2 RESEND] bus: mhi: core: Wait for ready state after reset
+Date:   Wed, 10 Mar 2021 13:41:58 -0700
+Message-Id: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Retry the ping loop upto 600 times, or approximately 30 seconds, to make
-sure the test does hang at start up.
+After the device has signaled the end of reset by clearing the reset bit,
+it will automatically reinit MHI and the internal device structures.  Once
+That is done, the device will signal it has entered the ready state.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Signaling the ready state involves sending an interrupt (MSI) to the host
+which might cause IOMMU faults if it occurs at the wrong time.
+
+If the controller is being powered down, and possibly removed, then the
+reset flow would only wait for the end of reset.  At which point, the host
+and device would start a race.  The host may complete its reset work, and
+remove the interrupt handler, which would cause the interrupt to be
+disabled in the IOMMU.  If that occurs before the device signals the ready
+state, then the IOMMU will fault since it blocked an interrupt.  While
+harmless, the fault would appear like a serious issue has occurred so let's
+silence it by making sure the device hits the ready state before the host
+completes its reset processing.
+
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 ---
- tools/perf/tests/shell/daemon.sh | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/bus/mhi/core/pm.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index a02cedc76de6..cb831ff2c185 100755
---- a/tools/perf/tests/shell/daemon.sh
-+++ b/tools/perf/tests/shell/daemon.sh
-@@ -127,9 +127,16 @@ daemon_start()
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index adb0e80..414da4f 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -467,7 +467,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
  
- 	# wait for the session to ping
- 	local state="FAIL"
-+	local retries=0
- 	while [ "${state}" != "OK" ]; do
- 		state=`perf daemon ping --config ${config} --session ${session} | awk '{ print $1 }'`
- 		sleep 0.05
-+		retries=$((${retries} +1))
-+		if [ ${retries} -ge 600 ]; then
-+			echo "Timeout waiting for daemon to ping"
-+			daemon_exit ${config}
-+			exit 62
-+		fi
- 	done
- }
+ 	/* Trigger MHI RESET so that the device will not access host memory */
+ 	if (!MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
+-		u32 in_reset = -1;
++		u32 in_reset = -1, ready = 0;
+ 		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
  
+ 		dev_dbg(dev, "Triggering MHI Reset in device\n");
+@@ -490,6 +490,21 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+ 		 * hence re-program it
+ 		 */
+ 		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
++
++		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
++			/* wait for ready to be set */
++			ret = wait_event_timeout(mhi_cntrl->state_event,
++						 mhi_read_reg_field(mhi_cntrl,
++							mhi_cntrl->regs,
++							MHISTATUS,
++							MHISTATUS_READY_MASK,
++							MHISTATUS_READY_SHIFT,
++							&ready)
++						 || ready, timeout);
++			if (!ret || !ready)
++				dev_warn(dev,
++					"Device failed to enter READY state\n");
++		}
+ 	}
+ 
+ 	dev_dbg(dev,
 -- 
-2.30.1.766.gb4fecdf3b7-goog
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
 
