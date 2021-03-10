@@ -2,70 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8103341B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82803341AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhCJPiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:38:09 -0500
-Received: from mga12.intel.com ([192.55.52.136]:29764 "EHLO mga12.intel.com"
+        id S233044AbhCJPhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:37:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51142 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233188AbhCJPhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:37:42 -0500
-IronPort-SDR: li0WUBl4KwTANVqPVwSFkGGN+ah2N8Bx7rqw3RMw2zqQxAJGAqbxZyTK/FGWUdvdIIDgo4vwzD
- 86cam2kOG6eA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167764354"
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="167764354"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 07:37:42 -0800
-IronPort-SDR: /jwZ3eJvchUszeFKv9oHIpkXEgsTd9ZKE83agHGU5k83nVGrjd2Fxg4ayYinIBWdRM66CRp0Jo
- k8CsMMIkDO4g==
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; 
-   d="scan'208";a="447938072"
-Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 07:37:40 -0800
-From:   shuo.a.liu@intel.com
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, lkp@intel.com,
-        Shuo Liu <shuo.a.liu@intel.com>
-Subject: [PATCH] virt: acrn: Correct type casting of argument of copy_from_user()
-Date:   Wed, 10 Mar 2021 23:37:08 +0800
-Message-Id: <20210310153708.17451-1-shuo.a.liu@intel.com>
-X-Mailer: git-send-email 2.28.0
+        id S232913AbhCJPhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:37:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615390633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ek7QUkaAmi5C+C6ZBMnIeD647GlkKkIXowQZxyRv+lI=;
+        b=CnP90l4b0Nb10SRhkfwzCmXQpNNGZRpK4jeHd7hZxHH7MqRqzZYhZmlQd9qQVvXcqX7ZfX
+        KJzR6ZG5UnxE75VRinEx2AcFLF0XlnKYSYmFUeNLZ9mAafKJTlkv9WL8uBQSANVAEn5PXP
+        oFVf6LpAcH33335O0IczazA+8/ODTeE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 19479AC1F;
+        Wed, 10 Mar 2021 15:37:13 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 16:37:11 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: Re: [PATCH v18 6/9] mm: hugetlb: add a kernel parameter
+ hugetlb_free_vmemmap
+Message-ID: <YEjnpwN8eDlyc08+@dhcp22.suse.cz>
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-7-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308102807.59745-7-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuo Liu <shuo.a.liu@intel.com>
+On Mon 08-03-21 18:28:04, Muchun Song wrote:
+> Add a kernel parameter hugetlb_free_vmemmap to enable the feature of
+> freeing unused vmemmap pages associated with each hugetlb page on boot.
+> 
+> We disables PMD mapping of vmemmap pages for x86-64 arch when this
+> feature is enabled. Because vmemmap_remap_free() depends on vmemmap
+> being base page mapped.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
+> Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+> Tested-by: Chen Huang <chenhuang5@huawei.com>
+> Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 14 ++++++++++++++
+>  Documentation/admin-guide/mm/hugetlbpage.rst    |  3 +++
+>  arch/x86/mm/init_64.c                           |  8 ++++++--
+>  include/linux/hugetlb.h                         | 19 +++++++++++++++++++
+>  mm/hugetlb_vmemmap.c                            | 24 ++++++++++++++++++++++++
+>  5 files changed, 66 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 04545725f187..de91d54573c4 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1557,6 +1557,20 @@
+>  			Documentation/admin-guide/mm/hugetlbpage.rst.
+>  			Format: size[KMG]
+>  
+> +	hugetlb_free_vmemmap=
+> +			[KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
+> +			this controls freeing unused vmemmap pages associated
+> +			with each HugeTLB page. When this option is enabled,
+> +			we disable PMD/huge page mapping of vmemmap pages which
+> +			increase page table pages. So if a user/sysadmin only
+> +			uses a small number of HugeTLB pages (as a percentage
+> +			of system memory), they could end up using more memory
+> +			with hugetlb_free_vmemmap on as opposed to off.
+> +			Format: { on | off (default) }
 
-hsm.c:336:50: warning: incorrect type in argument 2 (different address spaces)
-hsm.c:336:50:    expected void const [noderef] __user *from
-hsm.c:336:50:    got void *
-
-This patch fixes above sparse warning.
-
-Fixes: 3d679d5aec64 ("virt: acrn: Introduce interfaces to query C-states and P-states allowed by hypervisor")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
----
- drivers/virt/acrn/hsm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-index 1f6b7c54a1a4..37cc7acd7df8 100644
---- a/drivers/virt/acrn/hsm.c
-+++ b/drivers/virt/acrn/hsm.c
-@@ -333,7 +333,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 		acrn_ioreq_request_clear(vm);
- 		break;
- 	case ACRN_IOCTL_PM_GET_CPU_STATE:
--		if (copy_from_user(&cstate_cmd, (void *)ioctl_param,
-+		if (copy_from_user(&cstate_cmd, (void __user *)ioctl_param,
- 				   sizeof(cstate_cmd)))
- 			return -EFAULT;
- 
+Please note this is an admin guide and for those this seems overly low
+level. I would use something like the following
+			[KNL] Reguires CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+			enabled.
+			Allows heavy hugetlb users to free up some more
+			memory (6 * PAGE_SIZE for each 2MB hugetlb
+			page).
+			This feauture is not free though. Large page
+			tables are not use to back vmemmap pages which
+			can lead to a performance degradation for some
+			workloads. Also there will be memory allocation
+			required when hugetlb pages are freed from the
+			pool which can lead to corner cases under heavy
+			memory pressure.
+> +
+> +			on:  enable the feature
+> +			off: disable the feature
+> +
+>  	hung_task_panic=
+>  			[KNL] Should the hung task detector generate panics.
+>  			Format: 0 | 1
 -- 
-2.28.0
-
+Michal Hocko
+SUSE Labs
