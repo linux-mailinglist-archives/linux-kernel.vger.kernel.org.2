@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B23334550
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BA333455C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbhCJRnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:43:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53390 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229828AbhCJRnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:43:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E74C8ACBF;
-        Wed, 10 Mar 2021 17:43:13 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 18:43:10 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "Dave.Martin@arm.com" <Dave.Martin@arm.com>,
-        "jannh@google.com" <jannh@google.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "carlos@redhat.com" <carlos@redhat.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v6 3/6] x86/elf: Support a new ELF aux vector
- AT_MINSIGSTKSZ
-Message-ID: <20210310174310.GB25403@zn.tnic>
-References: <20210227165911.32757-1-chang.seok.bae@intel.com>
- <20210227165911.32757-4-chang.seok.bae@intel.com>
- <20210305104325.GA2896@zn.tnic>
- <F637CCE0-1744-478C-B2ED-65EA14B07938@intel.com>
+        id S233320AbhCJRp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:45:27 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33960 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231228AbhCJRo7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 12:44:59 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12AHhOmt054518;
+        Wed, 10 Mar 2021 12:44:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Mn8sY8sJqOTDe7oikzYLEpWDu7TaX1hz5Zzib5aMyfk=;
+ b=QD4WZM3VtiTUeDP23sZI8koJqNWM6a/altyzvE+4dOTo14GMyYE9GzRAmKqfyF3np3mT
+ KCz3Iy9hxGaG9ME5xND+nvGF3GC1MOW8IKRECzDEc9atEeflNNKYWFX6do2XpyPDeMcs
+ Rt0OBlVsk5RFBrhb9nNPIAdf346lQubOKhYxeDy+sguzuD0FXt7uKABOe2wjHOWdoDpv
+ dOh/28SejY1uX+vEXREosOwH4vaf1JLUkclMLmxURGKhGyZ9BsIqeQSOUsKCFtNJ8Bmu
+ Dl6/Pm8kSAS4hreA83PMfthYxHt3nNaGsADYTDoq5+MN3FCzLyD7Ggq0WL9jlGnJsGuT gQ== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3772ru03k5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 12:44:52 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12AHevDr002545;
+        Wed, 10 Mar 2021 17:44:10 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 3768mprmsk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Mar 2021 17:44:09 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12AHi7xn42205572
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Mar 2021 17:44:07 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDE7311C04C;
+        Wed, 10 Mar 2021 17:44:06 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7CBFE11C04A;
+        Wed, 10 Mar 2021 17:44:06 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.162.110])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 10 Mar 2021 17:44:06 +0000 (GMT)
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        clombard@linux.ibm.com
+Subject: [PATCH] cxl: don't manipulate the mm.mm_users field directly
+Date:   Wed, 10 Mar 2021 18:44:05 +0100
+Message-Id: <20210310174405.51044-1-ldufour@linux.ibm.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <F637CCE0-1744-478C-B2ED-65EA14B07938@intel.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-10_10:2021-03-10,2021-03-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ spamscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1011
+ impostorscore=0 mlxlogscore=745 malwarescore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103100084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 04:34:40PM +0000, Bae, Chang Seok wrote:
-> Yeah, right. While this attempts to fix the issue, it involves the ABI change.
-> Len and I think PATCH5 [1] is rather a backport candidate as it gives a more
-> reasonable behavior.
+It is better to rely on the API provided by the MM layer instead of
+directly manipulating the mm_users field.
 
-Yap, patch 5 is more conservative, sure.
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+---
+ drivers/misc/cxl/fault.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I guess I can take it out of the set and send it Linuswards now.
-
-> > That source code needs some special markup to look like source code -
-> > currently, the result looks bad.
-> 
-> How about this code:
-
-No, build the docs by doing
-
-make htmldocs
-
-and look at the result.
-
-Btw, you should always look at the result before sending it out.
-
-> Rewrote like this:
-> 
-> AT_SYSINFO is used for locating the vsyscall entry point.  It is not exported
-> on 64-bit mode.
-> 
-> AT_SYSINFO_EHDR is the start address of the page containing the vDSO.
-> 
-> AT_MINSIGSTKSZ denotes the minimum stack size required by the kernel to
-> deliver a signal to user-space.  AT_MINSIGSTKSZ comprehends the space consumed
-> by the kernel to accommodate the user context for the current hardware
-> configuration.  It does not comprehend subsequent user-space stack
-> consumption, which must be added by the user.  (e.g. Above, user-space adds
-> SIGSTKSZ to AT_MINSIGSTKSZ.)
-
-Better.
-
-Thx.
-
+diff --git a/drivers/misc/cxl/fault.c b/drivers/misc/cxl/fault.c
+index 01153b74334a..60c829113299 100644
+--- a/drivers/misc/cxl/fault.c
++++ b/drivers/misc/cxl/fault.c
+@@ -200,7 +200,7 @@ static struct mm_struct *get_mem_context(struct cxl_context *ctx)
+ 	if (ctx->mm == NULL)
+ 		return NULL;
+ 
+-	if (!atomic_inc_not_zero(&ctx->mm->mm_users))
++	if (!mmget_not_zero(ctx->mm))
+ 		return NULL;
+ 
+ 	return ctx->mm;
 -- 
-Regards/Gruss,
-    Boris.
+2.30.1
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
