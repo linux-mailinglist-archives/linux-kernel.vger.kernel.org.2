@@ -2,54 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBA233683E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 00:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F52336842
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhCJX7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 18:59:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229648AbhCJX6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:58:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65D6364FA9;
-        Wed, 10 Mar 2021 23:58:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1615420717;
-        bh=luK33h5nP8fsBBPXEQ/QzxyI7Rp8lL7ssg1ESsYovco=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PWPbXbmUPDuaxxwOXGMFkJwz3+KhBbEuY0dtfsHo8Sp6E/u4pIWNAYPV0/JlduYuD
-         63m8KvxzeXoPX23tAUJI2hFEXYItkPBnssFlukQPvVU8R1ynC5STCBRMd8Wret/mzI
-         CKTeuNgTh2jX1ACnNfv7LTQhGhnSnyFe3N6CuIUM=
-Date:   Wed, 10 Mar 2021 15:58:36 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     ira.weiny@intel.com
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: Convert kmap/memset/kunmap to memzero_user()
-Message-Id: <20210310155836.7d63604e28d746ef493c1882@linux-foundation.org>
-In-Reply-To: <20210309212137.2610186-1-ira.weiny@intel.com>
-References: <20210309212137.2610186-1-ira.weiny@intel.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229696AbhCJX7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 18:59:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhCJX7Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 18:59:24 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF32BC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:59:23 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id r3so28467794lfc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 15:59:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dagZdlJSDk9BSW0IHSKAmSKBHhrpoDiQ1DO3svAoSVA=;
+        b=XBeLryR4FhDUUNs0NTaX5cqE4HV9BM84aNyHPkcZP1lriZYH6OvwYjiHWkWo0NU3y+
+         R6uoOjkPACcqUKIJOhrlyQs/yW5cggb3TVOGRzZqe5tU94KwZ6P3mI2YZp/0yDQbEcB8
+         MBHRQ3dyvp6eTR9W83FVpLkeCZJjkHEfdAnd4mlSOpgHAqhV/yUReYk3XNnAoL9MIZSp
+         59trtMWtRzivg6GNH+dVgz6WSuCFbGiR4qeyD8KjgbRkZBS3Hh9Ny8tGbxchuqGVTVNS
+         p+e0QSwn1YM7BnoEXASxUy0qV8C/lYPO8qoyTnfQ5KErs/bKdkIw9kWKkYdi1nMbDeo8
+         gGqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dagZdlJSDk9BSW0IHSKAmSKBHhrpoDiQ1DO3svAoSVA=;
+        b=oPAr144PV8SYDoFQ+AEsOB3x0f+E5qeDXf+D6ODWy0qYIcsa6TwmlFtJ3U71aeCQZk
+         tIQ6wVjve94WhiV+2fFAYU07zCv761aSpDT2QgecnwHVcUU6jV2fKLh8dOQVDWsSMpZg
+         bdP0ybURvgz67PeSCimEYi6P2gV8zvsH411qUwFb8RNiNbcQfob5bshA6nhNQS2CYyN8
+         rr/Ld5H7Vap+Wj35T6LgGyNnIOweo3oDDXaQpmswippgWS+8sI7MZTsogHoRB+GghsqD
+         pX3+8Mumii39A3twdEtZNr2Uf6SqH/wVg3OoPaRF7W7GEcz5adbJ+v75j3avuFKXtvcR
+         ajzw==
+X-Gm-Message-State: AOAM532luO9poBmAqev+L/FHf4yHXyAjhOhCgBUpLcuyqHhLupld+Dnb
+        UMCssWoUmOgLzoI7LipxoSMsBdyjq4f+o8VtOPGcRw==
+X-Google-Smtp-Source: ABdhPJzdEdBi2sdOnSDjlS1DfmctL5wDJBhET4DfhoDIhrBBeoOES5ahoxRNyDKR7g42nmU2eovUzpQkaobRoucA/Ss=
+X-Received: by 2002:ac2:4d95:: with SMTP id g21mr612424lfe.29.1615420762141;
+ Wed, 10 Mar 2021 15:59:22 -0800 (PST)
+MIME-Version: 1.0
+References: <20210306155712.4298-1-noltari@gmail.com> <20210306155712.4298-4-noltari@gmail.com>
+ <CAHp75VdwqpL0UScR5s+Tf4z7RZQfyo+625uXZtfWV3=xQr6Z2Q@mail.gmail.com> <EC7F8938-63CB-43D9-AE75-644B2E647360@gmail.com>
+In-Reply-To: <EC7F8938-63CB-43D9-AE75-644B2E647360@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Mar 2021 00:59:11 +0100
+Message-ID: <CACRpkdbP7kAVR9ORQuj7W9iT3EDE1S3iZ-1q+kBoQ8R0TUVMJA@mail.gmail.com>
+Subject: Re: [PATCH v5 03/15] pinctrl: bcm: add bcm63xx base code
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  9 Mar 2021 13:21:34 -0800 ira.weiny@intel.com wrote:
+On Wed, Mar 10, 2021 at 8:25 AM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
 
-> Previously this was submitted to convert to zero_user()[1].  zero_user() is not
-> the same as memzero_user() and in fact some zero_user() calls may be better off
-> as memzero_user().  Regardless it was incorrect to convert btrfs to
-> zero_user().
-> 
-> This series corrects this by lifting memzero_user(), converting it to
-> kmap_local_page(), and then using it in btrfs.
+> > // for now, since we have not an analogue (yet)
 
-This impacts btrfs more than MM.  I suggest the btrfs developers grab
-it, with my
+> > node =3D=3D> to_of_node(fwnode)
+>
+> So you want me to convert everything to fwnode, but then I would need to =
+use of_node here=E2=80=A6
+> It makes more sense to me to use of_node for now and convert it to fwnode=
+ in the future=E2=80=A6
+> @Linus, what do you think?
 
-Acked-by: Andrew Morton <akpm@linux-foundation.org>
+I am aware of the ambition to use fwnode more to more things.
 
+To me it is most important on things that will potentially run with
+both OF and ACPI.
+Typical example: ARM Qualcomm SoCs. New drivers for Aarch64 platforms.
+
+This is a legacy MIPS platform, and we have tons of legacy platforms for AR=
+M
+etc which will never get converted to fwnode, sadly.
+
+Is it realistic that these MIPS platforms will run ACPI in addition to
+OF? Is ACPI even available on MIPS? Isn't OF the preferred HW description
+language for anything MIPS?
+
+Yours,
+Linus Walleij
