@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3110C33331D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B380333320
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbhCJC0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:26:41 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:47472 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231235AbhCJC0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:26:39 -0500
-Received: from [10.130.0.65] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxedRRLkhgUpQXAA--.29562S3;
-        Wed, 10 Mar 2021 10:26:25 +0800 (CST)
-Subject: Re: [PATCH v3 5/7] irqchip/loongson-liointc: irqchip add 2.0 version
-To:     Marc Zyngier <maz@kernel.org>
-References: <20210306023633.9579-1-zhangqing@loongson.cn>
- <20210306023633.9579-6-zhangqing@loongson.cn> <87wnugy9oe.wl-maz@kernel.org>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangming01@loongson.cn
-From:   zhangqing <zhangqing@loongson.cn>
-Message-ID: <5c5b2593-b07c-cd20-cd08-1d6542471260@loongson.cn>
-Date:   Wed, 10 Mar 2021 10:26:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S232009AbhCJC2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:28:17 -0500
+Received: from mail-il1-f170.google.com ([209.85.166.170]:36609 "EHLO
+        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231299AbhCJC2P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 21:28:15 -0500
+Received: by mail-il1-f170.google.com with SMTP id g9so14122519ilc.3;
+        Tue, 09 Mar 2021 18:28:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H/PbJJ+B+OfvmyZFpcyfF/sjb4tA6E0cFD7ESjMM+e0=;
+        b=E124yc9puClWVoIgYcMGg/BGRueIAGEnlszL/tXvYy2M7KizwCgduTRuP9lu4FRItn
+         42oCo6JbTpBn0MSgqezbSNMQONCDp4huqot15OJDM77kqdyGZYthyKHPaPR6Off0x2E2
+         2Sp7fHmnhjris/1r3PqL4G6Z+GEAAebpAbqZGNedj7Fc2hEAzu6Pn9XU5hBqlF/kvDPX
+         D3+FAeFQe778KspuikHaNMmxWK0iIvCeF84qdnYRqCjS6leL+y3z9OopfXdu9oDmequl
+         JomNpgexuiCa79HKGdfRcKJGL5SgkvoaxGaWeRmTGVlAMGGKYrQPDlwq4qmg9ZDqN09r
+         8Lcg==
+X-Gm-Message-State: AOAM532PREabYSkqyE/hDib7rOz7gHor9FrGS+I9InsQVTXQYmsQrU6Q
+        n3uzf2yF9rterLtIKYobuw==
+X-Google-Smtp-Source: ABdhPJxaBqWxJBySm+R6hLqmNeaFC9yTJW09h+zTC0LttNCVmJdKatSxs4V8sNf0p307tRVKiggTJw==
+X-Received: by 2002:a92:6510:: with SMTP id z16mr1137919ilb.88.1615343294967;
+        Tue, 09 Mar 2021 18:28:14 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id j12sm8238945ila.75.2021.03.09.18.28.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 18:28:14 -0800 (PST)
+Received: (nullmailer pid 1613968 invoked by uid 1000);
+        Wed, 10 Mar 2021 02:28:11 -0000
+Date:   Tue, 9 Mar 2021 19:28:11 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v4 01/12] dt-bindings: usb: fix yamllint check warning
+Message-ID: <20210310022811.GA1612587@robh.at.kernel.org>
+References: <20210308053745.25697-1-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <87wnugy9oe.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxedRRLkhgUpQXAA--.29562S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr48Gw4UWF4kZF4xuF47XFb_yoWkKrc_Cr
-        4qg34UXF15ZryfJrs8Cr4UZF93JF9rKr43JFW0g3WIva40vw4UGrWkurZ3t3yIgFn2grna
-        kryFkay7CrW2qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
-        67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUbpwZ7UUUUU==
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308053745.25697-1-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 08, 2021 at 01:37:34PM +0800, Chunfeng Yun wrote:
+> Fix warning: "missing starting space in comment"
 
-On 03/09/2021 05:10 PM, Marc Zyngier wrote:
->
->> +
->> +static void __iomem *liointc_get_reg_byname(struct device_node *node,
->> +						const char *name)
->> +{
->> +	int index = of_property_match_string(node, "reg-names", name);
->> +
->> +	return of_iomap(node, index);
-> So if of_property_match_string() returns an error, you feed that error
-> to of_iomap()? Somehow, I don't think that's a good idea.
+What tree is this in because I don't see it.
 
-Hi, Marc
-
-Thank you for your suggestion, error handling is missing here,
-
-      +    if (index <0)
-      +           return NULL;
-
-             return of_iomap(node, index);
-
-It has been fixed in the fourth version, and I will send V4 soon.
-
-> +	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
-> +		base = liointc_get_reg_byname(node, "main");
-> +		if (!base) {
-> +			err = -ENODEV;
-> +			goto out_free_priv;
-> +		}
-> +		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
-> +			priv->core_isr[i] =
-> +				liointc_get_reg_byname(node, core_reg_names[i]);
-> Please write assignments on a single line.
-
-In addition, write assignments on a single line
-
-                  for (i = 0; i <LIOINTC_NUM_CORES; i++)
-                          priv->core_isr[i] = 
-liointc_get_reg_byname(node, core_reg_names[i]);
-
-     It is 92 characters, more than 80 characters...
-
-
-    Thanks
-
-    -Qing
-
->
-> Thanks,
->
-> 	M.
->
-
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2~v4: no changes
+> ---
+>  Documentation/devicetree/bindings/usb/usb-device.yaml | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/usb-device.yaml b/Documentation/devicetree/bindings/usb/usb-device.yaml
+> index d4c99809ee9a..b77960a7a37b 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-device.yaml
+> +++ b/Documentation/devicetree/bindings/usb/usb-device.yaml
+> @@ -82,9 +82,9 @@ required:
+>  additionalProperties: true
+>  
+>  examples:
+> -  #hub connected to port 1
+> -  #device connected to port 2
+> -  #device connected to port 3
+> +  # hub connected to port 1
+> +  # device connected to port 2
+> +  # device connected to port 3
+>    #    interface 0 of configuration 1
+>    #    interface 0 of configuration 2
+>    - |
+> -- 
+> 2.18.0
