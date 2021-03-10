@@ -2,97 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4125A3344FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AB733450C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbhCJRT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:19:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232970AbhCJRTw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:19:52 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E517C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 09:19:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=pfezQPr2Z3+Jnt76E5tGzgXbIfU7Vr+gGQTFCD/YsW0=; b=XArOQJ9GfH1lHI3+JYcnGQ3uyh
-        kv3wydZnU9j2ppAoBdZNvGLWk9QHNTUmWrhFKFFg7yHXk4xXq2OG7D/2b0Sj9w4K23ekaydBMdaSn
-        ZOu4WJ8D8HcSdlbUdHmHN1mSEmYlyNu7BHwt9BC671sIgY5NfQyUYTbmFzXN6weC2lO+dQj5u2sto
-        jmgri2xPrCiM3PTh65FMEc5VbNdjSPMSqOdnWa6WkZVL8HZHJAbtkaiI9oJr5tj/TkLBW1z8r+xu3
-        aV5d3sAGi7ihNPmDtRk9p1CGTEZj7J+zy7LsAQiEDZIPk7Uxg6CE+7HVf6p+TZYOnz2Dmv/nCySs4
-        Ir1yRm0w==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lK2Uv-000pXP-GU; Wed, 10 Mar 2021 17:19:49 +0000
-Subject: Re: [PATCH] Correct 'so'
-To:     Xiaofeng Cao <cxfcosmos@gmail.com>, mchehab@kernel.org,
-        patrice.chotard@st.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210310145816.32271-1-cxfcosmos@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <bcc2c2c9-5ad7-ba04-fe81-ca1728e81dc2@infradead.org>
-Date:   Wed, 10 Mar 2021 09:19:44 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229546AbhCJRWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:22:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233146AbhCJRWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 12:22:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5E9264FCB;
+        Wed, 10 Mar 2021 17:22:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615396928;
+        bh=SK+6Zfd8qFN5HrEWQ1Qexu/sh62jiznyOdEEtUWkUUY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=giCFhb5jS/L5dNA9p3aqvol1FdK8R28L26bYoL7uSQ9C13PN+eZn4tHjyo6Cisx/i
+         XSGnsWchcmB7ndb+aZuvUGjy7i62Yim5gYt+YoCYybjN4aHHcQiEFt27UCivB2RM70
+         WFleWF122tfECk2R2pave7DgNclBcUOmeeX0AdyxymGAsI7VnNPuxxGtFjHVSdF7KD
+         sVA+mrRzQ7MiY17oHe8ERHLLL8tPYhpzZZ/P2wZ/2E9a1QzDQ+7tzRwia/3IEQ+1qE
+         sdAiwxnkxiss6WJMiNzf59KwbSO3RtEM59wioRKswSPo+L1G7meCnNeQVxJOybWN+V
+         hNuoUKO3QinAQ==
+Received: by mail-qk1-f174.google.com with SMTP id m186so985433qke.12;
+        Wed, 10 Mar 2021 09:22:07 -0800 (PST)
+X-Gm-Message-State: AOAM53158945bEbV3cIjpDuf9DgxHj/TeQm2zJmfpkPsgbKPBlyYCEGV
+        ctCU95GeGbE88fwCPwgYWk9vio5aR6WFwz0w+Q==
+X-Google-Smtp-Source: ABdhPJx8ZortjSvtESnDKmJbd7shsjiK7JG0zR24gC3xumihDFvY1IhcQ5GWdem+N4oMsJv19bHuG9wUbdLlpAmjB5g=
+X-Received: by 2002:a05:620a:b02:: with SMTP id t2mr3822126qkg.128.1615396927087;
+ Wed, 10 Mar 2021 09:22:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210310145816.32271-1-cxfcosmos@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210223204340.312-1-noltari@gmail.com> <20210224075640.20465-1-noltari@gmail.com>
+ <20210224075640.20465-2-noltari@gmail.com> <20210306201404.GB1137882@robh.at.kernel.org>
+ <889b9814-40d4-e012-ff7c-39b00f8c623a@gmail.com>
+In-Reply-To: <889b9814-40d4-e012-ff7c-39b00f8c623a@gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 10 Mar 2021 10:21:56 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqJzFJvwTEk3u+g3Fjv_K2Te9F3hyZnEPWurWjxgs2dShg@mail.gmail.com>
+Message-ID: <CAL_JsqJzFJvwTEk3u+g3Fjv_K2Te9F3hyZnEPWurWjxgs2dShg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: interrupt-controller: document
+ BCM6345 external interrupt controller
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 6:58 AM, Xiaofeng Cao wrote:
-> In Kconfig it should be 'to'
-> In c8sectpfe-core.c it should be 'do'
-> 
-> Signed-off-by: Xiaofeng Cao <cxfcosmos@gmail.com>
+On Sun, Mar 7, 2021 at 3:12 AM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
+ail.com> wrote:
+>
+> Hi Rob,
+>
+> El 06/03/2021 a las 21:14, Rob Herring escribi=C3=B3:
+> > On Wed, Feb 24, 2021 at 08:56:39AM +0100, =C3=81lvaro Fern=C3=A1ndez Ro=
+jas wrote:
+> >> Document the binding for the BCM6345 external interrupt controller.
+> >>
+> >> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> >> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> >> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> >> ---
+> >>   v3: pass dt_binding_check.
+> >>   v2: fix title typo.
+> >>
+> >>   .../brcm,bcm6345-ext-intc.yaml                | 78 +++++++++++++++++=
+++
+> >>   1 file changed, 78 insertions(+)
+> >>   create mode 100644 Documentation/devicetree/bindings/interrupt-contr=
+oller/brcm,bcm6345-ext-intc.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/interrupt-controller/br=
+cm,bcm6345-ext-intc.yaml b/Documentation/devicetree/bindings/interrupt-cont=
+roller/brcm,bcm6345-ext-intc.yaml
+> >> new file mode 100644
+> >> index 000000000000..a691510e78b7
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6=
+345-ext-intc.yaml
+> >> @@ -0,0 +1,78 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/interrupt-controller/brcm,bcm6345-=
+ext-intc.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Broadcom BCM6345 external interrupt controller
+> >> +
+> >> +maintainers:
+> >> +  - =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> >> +  - Jonas Gorski <jonas.gorski@gmail.com>
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    enum:
+> >> +      - brcm,bcm6318-ext-intc
+> >> +      - brcm,bcm6345-ext-intc
+> >> +
+> >> +  "#interrupt-cells":
+> >> +    const: 2
+> >> +
+> >> +  reg:
+> >> +    maxItems: 1
+> >> +
+> >> +  "#address-cells":
+> >> +    const: 0
+> >> +
+> >> +  interrupt-controller: true
+> >> +
+> >> +  interrupts:
+> >> +    description: Specifies the interrupt line(s) in the interrupt-par=
+ent
+> >> +      controller node. Valid values depend on the type of parent inte=
+rrupt
+> >> +      controller.
+> >> +    maxItems: 4
+> >> +
+> >> +  brcm,field-width:
+> >> +    description: Interrupt controller field width (the default is 4).
+> >
+> > default: 4
+> >
+> >> +    maxItems: 1
+> >
+> > All uint32's are 1 item.
+>
+> Ok, so I should remove this :)
+>
+> >
+> > What's the set or range of values?
+>
+> Only BCM6348 needs to set this value to 5, other BCM63xx use the default
+> value of 4 (BCM3368, BCM6318, BCM6328, BCM6338, BCM6345, BCM6358,
+> BCM6362, BCM6368, BCM63268).
 
-The Subject: could use some work, but the patch contents look good.
-Thanks.
+So:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  drivers/media/Kconfig                                 | 2 +-
->  drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
-> index 6222b3ae220b..b07812657cee 100644
-> --- a/drivers/media/Kconfig
-> +++ b/drivers/media/Kconfig
-> @@ -134,7 +134,7 @@ config MEDIA_PLATFORM_SUPPORT
->  	  This is found on Embedded hardware (SoC), on V4L2 codecs and
->  	  on some GPU and newer CPU chipsets.
->  
-> -	  Say Y when you want to be able so see such devices.
-> +	  Say Y when you want to be able to see such devices.
->  
->  config MEDIA_TEST_SUPPORT
->  	bool
-> diff --git a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
-> index a7a6ea666740..338b205ae3a7 100644
-> --- a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
-> +++ b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
-> @@ -655,7 +655,7 @@ static irqreturn_t c8sectpfe_error_irq_handler(int irq, void *priv)
->  
->  	/*
->  	 * TODO FIXME we should detect some error conditions here
-> -	 * and ideally so something about them!
-> +	 * and ideally do something about them!
->  	 */
->  
->  	return IRQ_HANDLED;
-> 
-
-
--- 
-~Randy
-
+enum: [ 4, 5 ]
