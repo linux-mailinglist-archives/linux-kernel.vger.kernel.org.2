@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF74333849
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BF0333841
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbhCJJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:07:29 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13495 "EHLO
+        id S232665AbhCJJHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:07:16 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13489 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232673AbhCJJGy (ORCPT
+        with ESMTP id S232667AbhCJJGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:06:54 -0500
+        Wed, 10 Mar 2021 04:06:53 -0500
 Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DwR3z0lTdzrTKk;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DwR3z1DfBzrTKp;
         Wed, 10 Mar 2021 17:05:03 +0800 (CST)
 Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
@@ -34,11 +34,10 @@ CC:     Kirti Wankhede <kwankhede@nvidia.com>,
         James Morse <james.morse@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH v2 01/11] iommu/arm-smmu-v3: Add support for Hardware Translation Table Update
-Date:   Wed, 10 Mar 2021 17:06:04 +0800
-Message-ID: <20210310090614.26668-2-zhukeqian1@huawei.com>
+        <yuzenghui@huawei.com>, <lushenming@huawei.com>
+Subject: [PATCH v2 02/11] iommu/arm-smmu-v3: Enable HTTU for stage1 with io-pgtable mapping
+Date:   Wed, 10 Mar 2021 17:06:05 +0800
+Message-ID: <20210310090614.26668-3-zhukeqian1@huawei.com>
 X-Mailer: git-send-email 2.8.4.windows.1
 In-Reply-To: <20210310090614.26668-1-zhukeqian1@huawei.com>
 References: <20210310090614.26668-1-zhukeqian1@huawei.com>
@@ -50,158 +49,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+From: jiangkunkun <jiangkunkun@huawei.com>
 
-If the SMMU supports it and the kernel was built with HTTU support,
-enable hardware update of access and dirty flags. This is essential for
-shared page tables, to reduce the number of access faults on the fault
-queue. Normal DMA with io-pgtables doesn't currently use the access or
-dirty flags.
+If HTTU is supported, we enable HA/HD bits in the SMMU CD (stage 1
+mapping), and set DBM bit for writable TTD.
 
-We can enable HTTU even if CPUs don't support it, because the kernel
-always checks for HW dirty bit and updates the PTE flags atomically.
+The dirty state information is encoded using the access permission
+bits AP[2] (stage 1) or S2AP[1] (stage 2) in conjunction with the
+DBM (Dirty Bit Modifier) bit, where DBM means writable and AP[2]/
+S2AP[1] means dirty.
 
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
+Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
 ---
- .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  2 +
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 41 ++++++++++++++++++-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  8 ++++
- 3 files changed, 50 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-index bb251cab61f3..ae075e675892 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-@@ -121,10 +121,12 @@ static struct arm_smmu_ctx_desc *arm_smmu_alloc_shared_cd(struct mm_struct *mm)
- 	if (err)
- 		goto out_free_asid;
- 
-+	/* HA and HD will be filtered out later if not supported by the SMMU */
- 	tcr = FIELD_PREP(CTXDESC_CD_0_TCR_T0SZ, 64ULL - vabits_actual) |
- 	      FIELD_PREP(CTXDESC_CD_0_TCR_IRGN0, ARM_LPAE_TCR_RGN_WBWA) |
- 	      FIELD_PREP(CTXDESC_CD_0_TCR_ORGN0, ARM_LPAE_TCR_RGN_WBWA) |
- 	      FIELD_PREP(CTXDESC_CD_0_TCR_SH0, ARM_LPAE_TCR_SH_IS) |
-+	      CTXDESC_CD_0_TCR_HA | CTXDESC_CD_0_TCR_HD |
- 	      CTXDESC_CD_0_TCR_EPD1 | CTXDESC_CD_0_AA64;
- 
- 	switch (PAGE_SIZE) {
+changelog:
+
+v2:
+ - Use a new quirk flag named IO_PGTABLE_QUIRK_ARM_HD to transfer
+   SMMU HD feature to io-pgtable. (Robin)
+
+ - Rebase on Jean's HTTU patch(#1).
+
+---
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 3 +++
+ drivers/iommu/io-pgtable-arm.c              | 7 ++++++-
+ include/linux/io-pgtable.h                  | 3 +++
+ 3 files changed, 12 insertions(+), 1 deletion(-)
+
 diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 8594b4a83043..b6d965504f44 100644
+index b6d965504f44..369c0ea7a104 100644
 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
 +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -1012,10 +1012,17 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
- 		 * this substream's traffic
- 		 */
- 	} else { /* (1) and (2) */
-+		u64 tcr = cd->tcr;
-+
- 		cdptr[1] = cpu_to_le64(cd->ttbr & CTXDESC_CD_1_TTB0_MASK);
- 		cdptr[2] = 0;
- 		cdptr[3] = cpu_to_le64(cd->mair);
+@@ -1921,6 +1921,7 @@ static int arm_smmu_domain_finalise_s1(struct arm_smmu_domain *smmu_domain,
+ 			  FIELD_PREP(CTXDESC_CD_0_TCR_ORGN0, tcr->orgn) |
+ 			  FIELD_PREP(CTXDESC_CD_0_TCR_SH0, tcr->sh) |
+ 			  FIELD_PREP(CTXDESC_CD_0_TCR_IPS, tcr->ips) |
++			  CTXDESC_CD_0_TCR_HA | CTXDESC_CD_0_TCR_HD |
+ 			  CTXDESC_CD_0_TCR_EPD1 | CTXDESC_CD_0_AA64;
+ 	cfg->cd.mair	= pgtbl_cfg->arm_lpae_s1_cfg.mair;
  
-+		if (!(smmu->features & ARM_SMMU_FEAT_HD))
-+			tcr &= ~CTXDESC_CD_0_TCR_HD;
-+		if (!(smmu->features & ARM_SMMU_FEAT_HA))
-+			tcr &= ~CTXDESC_CD_0_TCR_HA;
-+
- 		/*
- 		 * STE is live, and the SMMU might read dwords of this CD in any
- 		 * order. Ensure that it observes valid values before reading
-@@ -1023,7 +1030,7 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
- 		 */
- 		arm_smmu_sync_cd(smmu_domain, ssid, true);
+@@ -2026,6 +2027,8 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
  
--		val = cd->tcr |
-+		val = tcr |
- #ifdef __BIG_ENDIAN
- 			CTXDESC_CD_0_ENDI |
- #endif
-@@ -3196,6 +3203,28 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
- 	return 0;
- }
+ 	if (smmu_domain->non_strict)
+ 		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
++	if (smmu->features & ARM_SMMU_FEAT_HD)
++		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_ARM_HD;
  
-+static void arm_smmu_get_httu(struct arm_smmu_device *smmu, u32 reg)
-+{
-+	u32 fw_features = smmu->features & (ARM_SMMU_FEAT_HA | ARM_SMMU_FEAT_HD);
-+	u32 features = 0;
-+
-+	switch (FIELD_GET(IDR0_HTTU, reg)) {
-+	case IDR0_HTTU_ACCESS_DIRTY:
-+		features |= ARM_SMMU_FEAT_HD;
-+		fallthrough;
-+	case IDR0_HTTU_ACCESS:
-+		features |= ARM_SMMU_FEAT_HA;
-+	}
-+
-+	if (smmu->dev->of_node)
-+		smmu->features |= features;
-+	else if (features != fw_features)
-+		/* ACPI IORT sets the HTTU bits */
-+		dev_warn(smmu->dev,
-+			 "IDR0.HTTU overridden by FW configuration (0x%x)\n",
-+			 fw_features);
-+}
-+
- static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ 	pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
+ 	if (!pgtbl_ops)
+diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+index 87def58e79b5..94d790b8ed27 100644
+--- a/drivers/iommu/io-pgtable-arm.c
++++ b/drivers/iommu/io-pgtable-arm.c
+@@ -72,6 +72,7 @@
+ 
+ #define ARM_LPAE_PTE_NSTABLE		(((arm_lpae_iopte)1) << 63)
+ #define ARM_LPAE_PTE_XN			(((arm_lpae_iopte)3) << 53)
++#define ARM_LPAE_PTE_DBM		(((arm_lpae_iopte)1) << 51)
+ #define ARM_LPAE_PTE_AF			(((arm_lpae_iopte)1) << 10)
+ #define ARM_LPAE_PTE_SH_NS		(((arm_lpae_iopte)0) << 8)
+ #define ARM_LPAE_PTE_SH_OS		(((arm_lpae_iopte)2) << 8)
+@@ -81,7 +82,7 @@
+ 
+ #define ARM_LPAE_PTE_ATTR_LO_MASK	(((arm_lpae_iopte)0x3ff) << 2)
+ /* Ignore the contiguous bit for block splitting */
+-#define ARM_LPAE_PTE_ATTR_HI_MASK	(((arm_lpae_iopte)6) << 52)
++#define ARM_LPAE_PTE_ATTR_HI_MASK	(((arm_lpae_iopte)13) << 51)
+ #define ARM_LPAE_PTE_ATTR_MASK		(ARM_LPAE_PTE_ATTR_LO_MASK |	\
+ 					 ARM_LPAE_PTE_ATTR_HI_MASK)
+ /* Software bit for solving coherency races */
+@@ -379,6 +380,7 @@ static int __arm_lpae_map(struct arm_lpae_io_pgtable *data, unsigned long iova,
+ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
+ 					   int prot)
  {
- 	u32 reg;
-@@ -3256,6 +3285,8 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
- 			smmu->features |= ARM_SMMU_FEAT_E2H;
- 	}
++	struct io_pgtable_cfg *cfg = &data->iop.cfg;
+ 	arm_lpae_iopte pte;
  
-+	arm_smmu_get_httu(smmu, reg);
+ 	if (data->iop.fmt == ARM_64_LPAE_S1 ||
+@@ -386,6 +388,9 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
+ 		pte = ARM_LPAE_PTE_nG;
+ 		if (!(prot & IOMMU_WRITE) && (prot & IOMMU_READ))
+ 			pte |= ARM_LPAE_PTE_AP_RDONLY;
++		else if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_HD)
++			pte |= ARM_LPAE_PTE_DBM;
 +
- 	/*
- 	 * The coherency feature as set by FW is used in preference to the ID
- 	 * register, but warn on mismatch.
-@@ -3441,6 +3472,14 @@ static int arm_smmu_device_acpi_probe(struct platform_device *pdev,
- 	if (iort_smmu->flags & ACPI_IORT_SMMU_V3_COHACC_OVERRIDE)
- 		smmu->features |= ARM_SMMU_FEAT_COHERENCY;
- 
-+	switch (FIELD_GET(ACPI_IORT_SMMU_V3_HTTU_OVERRIDE, iort_smmu->flags)) {
-+	case IDR0_HTTU_ACCESS_DIRTY:
-+		smmu->features |= ARM_SMMU_FEAT_HD;
-+		fallthrough;
-+	case IDR0_HTTU_ACCESS:
-+		smmu->features |= ARM_SMMU_FEAT_HA;
-+	}
-+
- 	return 0;
- }
- #else
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index f985817c967a..26d6b935b383 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -33,6 +33,9 @@
- #define IDR0_ASID16			(1 << 12)
- #define IDR0_ATS			(1 << 10)
- #define IDR0_HYP			(1 << 9)
-+#define IDR0_HTTU			GENMASK(7, 6)
-+#define IDR0_HTTU_ACCESS		1
-+#define IDR0_HTTU_ACCESS_DIRTY		2
- #define IDR0_COHACC			(1 << 4)
- #define IDR0_TTF			GENMASK(3, 2)
- #define IDR0_TTF_AARCH64		2
-@@ -285,6 +288,9 @@
- #define CTXDESC_CD_0_TCR_IPS		GENMASK_ULL(34, 32)
- #define CTXDESC_CD_0_TCR_TBI0		(1ULL << 38)
- 
-+#define CTXDESC_CD_0_TCR_HA		(1UL << 43)
-+#define CTXDESC_CD_0_TCR_HD		(1UL << 42)
-+
- #define CTXDESC_CD_0_AA64		(1UL << 41)
- #define CTXDESC_CD_0_S			(1UL << 44)
- #define CTXDESC_CD_0_R			(1UL << 45)
-@@ -607,6 +613,8 @@ struct arm_smmu_device {
- #define ARM_SMMU_FEAT_BTM		(1 << 16)
- #define ARM_SMMU_FEAT_SVA		(1 << 17)
- #define ARM_SMMU_FEAT_E2H		(1 << 18)
-+#define ARM_SMMU_FEAT_HA		(1 << 19)
-+#define ARM_SMMU_FEAT_HD		(1 << 20)
- 	u32				features;
- 
- #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+ 		if (!(prot & IOMMU_PRIV))
+ 			pte |= ARM_LPAE_PTE_AP_UNPRIV;
+ 	} else {
+diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+index a4c9ca2c31f1..64cee6831c97 100644
+--- a/include/linux/io-pgtable.h
++++ b/include/linux/io-pgtable.h
+@@ -82,6 +82,8 @@ struct io_pgtable_cfg {
+ 	 *
+ 	 * IO_PGTABLE_QUIRK_ARM_OUTER_WBWA: Override the outer-cacheability
+ 	 *	attributes set in the TCR for a non-coherent page-table walker.
++	 *
++	 * IO_PGTABLE_QUIRK_ARM_HD: Support hardware management of dirty status.
+ 	 */
+ 	#define IO_PGTABLE_QUIRK_ARM_NS		BIT(0)
+ 	#define IO_PGTABLE_QUIRK_NO_PERMS	BIT(1)
+@@ -89,6 +91,7 @@ struct io_pgtable_cfg {
+ 	#define IO_PGTABLE_QUIRK_NON_STRICT	BIT(4)
+ 	#define IO_PGTABLE_QUIRK_ARM_TTBR1	BIT(5)
+ 	#define IO_PGTABLE_QUIRK_ARM_OUTER_WBWA	BIT(6)
++	#define IO_PGTABLE_QUIRK_ARM_HD		BIT(7)
+ 	unsigned long			quirks;
+ 	unsigned long			pgsize_bitmap;
+ 	unsigned int			ias;
 -- 
 2.19.1
 
