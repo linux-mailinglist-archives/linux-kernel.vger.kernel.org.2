@@ -2,224 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C7F334095
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26698334098
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhCJOma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 09:42:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40164 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232712AbhCJOmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 09:42:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615387324; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+/0syBVLNk8kdInbBQltckRnqMuyIZPKIEM/Rs/ny3Y=;
-        b=l9N0AUkqrrHFm/Jp2ESxBj2Y1aKWtXMc+9gTZ8Y4eObL6pCL0JhzS9VWNqD5KgmRemvX/L
-        sqR8uK+2F+v/8JJjxjkKkU+S3cvFrCF7gkk3NJYvw+gN2T7sWttXdXdp2XyjiZB1/bxxg3
-        7hYEgI7txiHx6Rs0W07H21ysOoHiev0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 83989AE78;
-        Wed, 10 Mar 2021 14:42:04 +0000 (UTC)
-Subject: Re: [PATCH v6 05/12] x86/alternative: support ALTERNATIVE_TERNARY
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210309134813.23912-1-jgross@suse.com>
- <20210309134813.23912-6-jgross@suse.com> <20210310142754.GH23521@zn.tnic>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <544d2242-9a1d-b7cb-dd8f-e40c9277a3de@suse.com>
-Date:   Wed, 10 Mar 2021 15:42:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232921AbhCJOnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:43:04 -0500
+Received: from out28-147.mail.aliyun.com ([115.124.28.147]:51366 "EHLO
+        out28-147.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232975AbhCJOmr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 09:42:47 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436317|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.193297-0.00363244-0.80307;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.Jj1IsSD_1615387362;
+Received: from 192.168.10.152(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Jj1IsSD_1615387362)
+          by smtp.aliyun-inc.com(10.147.42.22);
+          Wed, 10 Mar 2021 22:42:43 +0800
+Subject: Re: [PATCH 5/6] clk: ingenic: Support overriding PLLs M/N/OD calc
+ algorithm
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     od@zcrc.me, linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+References: <20210307141759.30426-1-paul@crapouillou.net>
+ <20210307141759.30426-6-paul@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <14fe0eed-5657-c555-f8eb-6e6b8b367b44@wanyeetech.com>
+Date:   Wed, 10 Mar 2021 22:42:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210310142754.GH23521@zn.tnic>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="yUa0AJIhNLS0Uyf0hnyo1orD0saQSud6E"
+In-Reply-To: <20210307141759.30426-6-paul@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---yUa0AJIhNLS0Uyf0hnyo1orD0saQSud6E
-Content-Type: multipart/mixed; boundary="kJ8l9mKS7p0DVZOe2szQ2JoMiNQgWluHZ";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: xen-devel@lists.xenproject.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>
-Message-ID: <544d2242-9a1d-b7cb-dd8f-e40c9277a3de@suse.com>
-Subject: Re: [PATCH v6 05/12] x86/alternative: support ALTERNATIVE_TERNARY
-References: <20210309134813.23912-1-jgross@suse.com>
- <20210309134813.23912-6-jgross@suse.com> <20210310142754.GH23521@zn.tnic>
-In-Reply-To: <20210310142754.GH23521@zn.tnic>
+Hi Paul,
 
---kJ8l9mKS7p0DVZOe2szQ2JoMiNQgWluHZ
-Content-Type: multipart/mixed;
- boundary="------------B77F5407A0AB926917EEBC34"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------B77F5407A0AB926917EEBC34
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 10.03.21 15:27, Borislav Petkov wrote:
-> On Tue, Mar 09, 2021 at 02:48:06PM +0100, Juergen Gross wrote:
->> diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm=
-/alternative.h
->> index 89889618ae01..4fb844e29d26 100644
->> --- a/arch/x86/include/asm/alternative.h
->> +++ b/arch/x86/include/asm/alternative.h
->> @@ -178,6 +178,9 @@ static inline int alternatives_text_reserved(void =
-*start, void *end)
->>   	ALTINSTR_REPLACEMENT(newinstr2, 2)				\
->>   	".popsection\n"
->>  =20
->> +#define ALTERNATIVE_TERNARY(oldinstr, feature, newinstr1, newinstr2)	=
-\
->> +	ALTERNATIVE_2(oldinstr, newinstr2, X86_FEATURE_ALWAYS, newinstr1, fe=
-ature)
->=20
-> Make that:
->=20
-> /*
->   * If @feature is set, patch @newinstr_yes, else @newinstr_no
->   */
-> #define ALTERNATIVE_TERNARY(oldinstr, feature, newinstr_yes, newinstr_n=
-o) \
->          ALTERNATIVE_2(oldinstr, newinstr_no, X86_FEATURE_ALWAYS, newin=
-str_yes, feature)
->=20
-> and in alternative-asm.h too pls.
-
-Okay.
-
->=20
-> Regardless, this looks nice! :)
-
-Thanks,
+On 2021/3/7 下午10:17, Paul Cercueil wrote:
+> SoC-specific code can now provide a callback if they need to compute the
+> M/N/OD values in a specific way.
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>   drivers/clk/ingenic/cgu.c | 40 ++++++++++++++++++++++++++-------------
+>   drivers/clk/ingenic/cgu.h |  3 +++
+>   2 files changed, 30 insertions(+), 13 deletions(-)
 
 
-Juergen
+Tested-by: 周琰杰 (Zhou Yanjie)<zhouyanjie@wanyeetech.com>   # on CU1000-neo/X1000E
 
---------------B77F5407A0AB926917EEBC34
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------B77F5407A0AB926917EEBC34--
-
---kJ8l9mKS7p0DVZOe2szQ2JoMiNQgWluHZ--
-
---yUa0AJIhNLS0Uyf0hnyo1orD0saQSud6E
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmBI2rsFAwAAAAAACgkQsN6d1ii/Ey/H
-8Af+Mp6GwCI/zjkP3UBP3qphr21aQq25jWKZb9guCkcsrn2XmX5MCZQw9K1ZCMohoLa5VVbDuNA+
-6DoaPJOl5RIAewSCKcNIseCY8+ulrddEsk8oJs9WfMQfPSHWQOs7F5MvyFVz9YAhTGOIMZVYfPj5
-Vw4eNcyeZZ/SlUPcsUQ4wIfoSh4s8H3Nhi5NHdri/vs3MEOtxwCgGXRYgG1VTRQRfHIk3k/DcOBc
-e0AzBBzMPSyFQh36RIse5cc0cuFT/0tVQ5nvIBbr89YO259csXG7Bx+S8e7KUYL9F3DbFbVPbKRs
-4o2+vNL1+u5BVlR+jcDygOpspt2ataDtxVIurSiFWQ==
-=+cHb
------END PGP SIGNATURE-----
-
---yUa0AJIhNLS0Uyf0hnyo1orD0saQSud6E--
+> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+> index 58f7ab5cf0fe..266c7595d330 100644
+> --- a/drivers/clk/ingenic/cgu.c
+> +++ b/drivers/clk/ingenic/cgu.c
+> @@ -119,28 +119,42 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+>   		n * od);
+>   }
+>   
+> -static unsigned long
+> -ingenic_pll_calc(const struct ingenic_cgu_clk_info *clk_info,
+> -		 unsigned long rate, unsigned long parent_rate,
+> -		 unsigned *pm, unsigned *pn, unsigned *pod)
+> +static void
+> +ingenic_pll_calc_m_n_od(const struct ingenic_cgu_pll_info *pll_info,
+> +			unsigned long rate, unsigned long parent_rate,
+> +			unsigned int *pm, unsigned int *pn, unsigned int *pod)
+>   {
+> -	const struct ingenic_cgu_pll_info *pll_info;
+> -	unsigned m, n, od;
+> -
+> -	pll_info = &clk_info->pll;
+> -	od = 1;
+> +	unsigned int m, n, od = 1;
+>   
+>   	/*
+>   	 * The frequency after the input divider must be between 10 and 50 MHz.
+>   	 * The highest divider yields the best resolution.
+>   	 */
+>   	n = parent_rate / (10 * MHZ);
+> -	n = min_t(unsigned, n, 1 << clk_info->pll.n_bits);
+> -	n = max_t(unsigned, n, pll_info->n_offset);
+> +	n = min_t(unsigned int, n, 1 << pll_info->n_bits);
+> +	n = max_t(unsigned int, n, pll_info->n_offset);
+>   
+>   	m = (rate / MHZ) * od * n / (parent_rate / MHZ);
+> -	m = min_t(unsigned, m, 1 << clk_info->pll.m_bits);
+> -	m = max_t(unsigned, m, pll_info->m_offset);
+> +	m = min_t(unsigned int, m, 1 << pll_info->m_bits);
+> +	m = max_t(unsigned int, m, pll_info->m_offset);
+> +
+> +	*pm = m;
+> +	*pn = n;
+> +	*pod = od;
+> +}
+> +
+> +static unsigned long
+> +ingenic_pll_calc(const struct ingenic_cgu_clk_info *clk_info,
+> +		 unsigned long rate, unsigned long parent_rate,
+> +		 unsigned int *pm, unsigned int *pn, unsigned int *pod)
+> +{
+> +	const struct ingenic_cgu_pll_info *pll_info = &clk_info->pll;
+> +	unsigned int m, n, od;
+> +
+> +	if (pll_info->calc_m_n_od)
+> +		(*pll_info->calc_m_n_od)(pll_info, rate, parent_rate, &m, &n, &od);
+> +	else
+> +		ingenic_pll_calc_m_n_od(pll_info, rate, parent_rate, &m, &n, &od);
+>   
+>   	if (pm)
+>   		*pm = m;
+> diff --git a/drivers/clk/ingenic/cgu.h b/drivers/clk/ingenic/cgu.h
+> index 10521d1b7b12..bfc2b9c38a41 100644
+> --- a/drivers/clk/ingenic/cgu.h
+> +++ b/drivers/clk/ingenic/cgu.h
+> @@ -55,6 +55,9 @@ struct ingenic_cgu_pll_info {
+>   	s8 bypass_bit;
+>   	u8 enable_bit;
+>   	u8 stable_bit;
+> +	void (*calc_m_n_od)(const struct ingenic_cgu_pll_info *pll_info,
+> +			    unsigned long rate, unsigned long parent_rate,
+> +			    unsigned int *m, unsigned int *n, unsigned int *od);
+>   };
+>   
+>   /**
