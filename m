@@ -2,173 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5D233372A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95DF33372E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCJITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:19:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhCJITJ (ORCPT
+        id S231700AbhCJIVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:21:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24896 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230437AbhCJIUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:19:09 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506F3C06174A;
-        Wed, 10 Mar 2021 00:19:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BplBrpcAUR9ox/acJYHH1QuTJwnq90Wzo2Tfibypmbw=; b=gCz2acIZJCzGp+dUiyEKZIQhEY
-        Tpuy93Bkp1UYF1pjK8vXPSqabfP6KxcxVtxzfYh0KLITThZJ/AipWfFyBQ1Ki1QEtVjayr09YDiar
-        JOcfbYrIBMeCe55IogUUSmrm6sa2iFJuOYTKluV0Ro0isXeiGtvkj8jGEgrJJ6NRKvgxgk0ASyCg+
-        4mJMtjQgkS+WI+aam3cmo9UzaFOHREDcan2cViNtfyOsKSnLwTJUz29Ar+L6WxuxEGat46ad7OMZ2
-        mC5DHQTHfUrTlZoix1+Fvlc0fck68WfPRUnhnX7l618NFHwMjaJrbuuKWHKy9qqyISi5fjq49QXvk
-        dIvQ2eAg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJu3F-006IBD-2l; Wed, 10 Mar 2021 08:18:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 704CE3010CF;
-        Wed, 10 Mar 2021 09:18:38 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5C216284B819A; Wed, 10 Mar 2021 09:18:38 +0100 (CET)
-Date:   Wed, 10 Mar 2021 09:18:38 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Like Xu <like.xu@linux.intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] x86/perf: Use RET0 as default for guest_get_msrs to
- handle "no PMU" case
-Message-ID: <YEiA3hoCTMJbhKXO@hirez.programming.kicks-ass.net>
-References: <20210309171019.1125243-1-seanjc@google.com>
+        Wed, 10 Mar 2021 03:20:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615364451;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bghe3IBXWRcmWBizADZMdloUyJIWOP+IKjTdfFF6DRY=;
+        b=ERmUSzOeewLJUpzBGJjGFBdQWIvl5pWlzjqQihXw+KHkbrRVpQYjixxmfr0PpHDcuIsSCl
+        2eTYtRz1Pae3IVDzp6FDVlw32szGWmSBQjXDpInMkaahracKjeLXXjDRSEp1TF5RjQOxS3
+        usP1oWYT5r07rKWy7iaPn35YZfSC2SY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-DxM81C5nPCyMx0fWFeShag-1; Wed, 10 Mar 2021 03:20:44 -0500
+X-MC-Unique: DxM81C5nPCyMx0fWFeShag-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D85D41842145;
+        Wed, 10 Mar 2021 08:20:42 +0000 (UTC)
+Received: from [10.36.114.87] (ovpn-114-87.ams2.redhat.com [10.36.114.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6710F10013C1;
+        Wed, 10 Mar 2021 08:20:41 +0000 (UTC)
+Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
+To:     Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Dias <joaodias@google.com>,
+        Jason Baron <jbaron@akamai.com>
+References: <20210308202047.1903802-1-minchan@kernel.org>
+ <YEdAw6gnp9XxoWUQ@dhcp22.suse.cz> <YEefLYiX6rF3Uk4E@google.com>
+ <YEh4doXvyuRl5BDB@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5f0e17f2-b161-f0f1-65a4-a7b3af4d2cce@redhat.com>
+Date:   Wed, 10 Mar 2021 09:20:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309171019.1125243-1-seanjc@google.com>
+In-Reply-To: <YEh4doXvyuRl5BDB@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:10:19AM -0800, Sean Christopherson wrote:
+On 10.03.21 08:42, Minchan Kim wrote:
+> On Tue, Mar 09, 2021 at 08:15:41AM -0800, Minchan Kim wrote:
+> 
+> < snip >
+> 
+>>> [...]
+>>>> +void dump_migrate_failure_pages(struct list_head *page_list)
+>>>> +{
+>>>> +	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
+>>>> +			"migrate failure");
+>>>> +	if (DYNAMIC_DEBUG_BRANCH(descriptor) &&
+>>>> +			alloc_contig_ratelimit()) {
+>>>> +		struct page *page;
+>>>> +
+>>>> +		WARN(1, "failed callstack");
+>>>> +		list_for_each_entry(page, page_list, lru)
+>>>> +			dump_page(page, "migration failure");
+>>>> +	}
+>>>
+>>> Apart from the above, do we have to warn for something that is a
+>>> debugging aid? A similar concern wrt dump_page which uses pr_warn and
+>>
+>> Make sense.
+>>
+>>> page owner is using even pr_alert.
+>>> Would it make sense to add a loglevel parameter both into __dump_page
+>>> and dump_page_owner?
+>>
+>> Let me try it.
+> 
+> I looked though them and made first draft to clean them up.
+> 
+> It's bigger than my initial expectaion because there are many callsites
+> to use dump_page and stack_trace_print inconsistent loglevel.
+> Since it's not a specific problem for this work, I'd like to deal with
+> it as separate patchset since I don't want to be stuck on here for my
+> initial goal.
 
-> @@ -2024,9 +2021,6 @@ static int __init init_hw_perf_events(void)
->  	if (!x86_pmu.read)
->  		x86_pmu.read = _x86_pmu_read;
->  
-> -	if (!x86_pmu.guest_get_msrs)
-> -		x86_pmu.guest_get_msrs = perf_guest_get_msrs_nop;
+Why the need to rush regarding your series?
 
-I suspect I might've been over eager here and we're now in trouble when
-*_pmu_init() clears x86_pmu.guest_get_msrs (like for instance on AMD).
+If it will clean up your patch significantly, then I think doing the 
+cleanups first is the proper way to go.
 
-When that happens we need to restore __static_call_return0, otherwise
-the following static_call_update() will patch in a NOP and RAX will be
-garbage again.
+I really don't get why this is a real problem.
 
-So I've taken the liberty to update the patch as below.
 
----
+-- 
+Thanks,
 
-Subject: x86/perf: Use RET0 as default for guest_get_msrs to handle "no PMU" case
-From: Sean Christopherson <seanjc@google.com>
-Date: Tue, 9 Mar 2021 09:10:19 -0800
+David / dhildenb
 
-From: Sean Christopherson <seanjc@google.com>
-
-Initialize x86_pmu.guest_get_msrs to return 0/NULL to handle the "nop"
-case.  Patching in perf_guest_get_msrs_nop() during setup does not work
-if there is no PMU, as setup bails before updating the static calls,
-leaving x86_pmu.guest_get_msrs NULL and thus a complete nop.  Ultimately,
-this causes VMX abort on VM-Exit due to KVM putting random garbage from
-the stack into the MSR load list.
-
-Add a comment in KVM to note that nr_msrs is valid if and only if the
-return value is non-NULL.
-
-Fixes: abd562df94d1 ("x86/perf: Use static_call for x86_pmu.guest_get_msrs")
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Reported-by: syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210309171019.1125243-1-seanjc@google.com
----
-
-v2:
- - Use __static_call_return0 to return NULL instead of manually checking
-   the hook at invocation.  [Peter]
- - Rebase to tip/sched/core, commit 4117cebf1a9f ("psi: Optimize task
-   switch inside shared cgroups").
-
- arch/x86/events/core.c |   15 ++++++---------
- arch/x86/kvm/vmx/vmx.c |    2 +-
- 2 files changed, 7 insertions(+), 10 deletions(-)
-
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -81,7 +81,11 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_swap_tas
- DEFINE_STATIC_CALL_NULL(x86_pmu_drain_pebs,   *x86_pmu.drain_pebs);
- DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
- 
--DEFINE_STATIC_CALL_NULL(x86_pmu_guest_get_msrs,  *x86_pmu.guest_get_msrs);
-+/*
-+ * This one is magic, it will get called even when PMU init fails (because
-+ * there is no PMU), in which case it should simply return NULL.
-+ */
-+DEFINE_STATIC_CALL_RET0(x86_pmu_guest_get_msrs, *x86_pmu.guest_get_msrs);
- 
- u64 __read_mostly hw_cache_event_ids
- 				[PERF_COUNT_HW_CACHE_MAX]
-@@ -1944,13 +1948,6 @@ static void _x86_pmu_read(struct perf_ev
- 	x86_perf_event_update(event);
- }
- 
--static inline struct perf_guest_switch_msr *
--perf_guest_get_msrs_nop(int *nr)
--{
--	*nr = 0;
--	return NULL;
--}
--
- static int __init init_hw_perf_events(void)
- {
- 	struct x86_pmu_quirk *quirk;
-@@ -2025,7 +2022,7 @@ static int __init init_hw_perf_events(vo
- 		x86_pmu.read = _x86_pmu_read;
- 
- 	if (!x86_pmu.guest_get_msrs)
--		x86_pmu.guest_get_msrs = perf_guest_get_msrs_nop;
-+		x86_pmu.guest_get_msrs = (void *)&__static_call_return0;
- 
- 	x86_pmu_static_call_update();
- 
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6580,8 +6580,8 @@ static void atomic_switch_perf_msrs(stru
- 	int i, nr_msrs;
- 	struct perf_guest_switch_msr *msrs;
- 
-+	/* Note, nr_msrs may be garbage if perf_guest_get_msrs() returns NULL. */
- 	msrs = perf_guest_get_msrs(&nr_msrs);
--
- 	if (!msrs)
- 		return;
- 
