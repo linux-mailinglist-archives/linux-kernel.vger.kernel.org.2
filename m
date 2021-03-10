@@ -2,91 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33C4334163
+	by mail.lfdr.de (Postfix) with ESMTP id 67D1C334162
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 16:20:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhCJPUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 10:20:18 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:28181 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233225AbhCJPUF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 10:20:05 -0500
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 12AFJZuf017579;
-        Thu, 11 Mar 2021 00:19:35 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 12AFJZuf017579
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615389575;
-        bh=GxApZPXoYou1fxvWGS97/MEPVr6v/IPteIgbS9v7Xog=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XT8jbNZMjyn7UHoFVpeEVsZcfc7eShjCl63TM5l2p4CvDryB5jM94E0K1WVrwizdv
-         L4x6y3u/o3SY6RRcp/gvBEdFFUrrGvQPRJkpDarx7buC3d/RI/0bs5jv4ChgZrh4pW
-         kyYHfOoghEyWJ+a0QQ8vC6V+wgHoFERmBwkgA254pbJX7UU5SE9TjEOj/FfpJXHS+v
-         AQneRKx6ItkMNlo2G+y9Lv52UPUZ+JcJmHxbYkcAOIJGPhAovY7QxMzhWyGjaigkTo
-         6LhCE/V7DtWVkRX5AFbA+72IRQiouM4+14CjuZLKGMg0HYD7VDH35g4KNAUNlS718U
-         x9qtkitR0nYsw==
-X-Nifty-SrcIP: [209.85.216.42]
-Received: by mail-pj1-f42.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so7400691pjh.1;
-        Wed, 10 Mar 2021 07:19:35 -0800 (PST)
-X-Gm-Message-State: AOAM531l+R6L9N0WTDEIntyw0TkGMAuYLh7KDSh6KUNXq0RtV8sN9zhY
-        3Vl4Xu3XzGq6B+OQ3aaE4S5EDgUyzRHeT2JzbDo=
-X-Google-Smtp-Source: ABdhPJyE+MhCrJ1nRyki5mODpYGDgERcoghQQc0HcFjo9EH3RcdMQm3lkP1vnI1fqIxu1HNWElrEMQFXVhZN9FDwTl4=
-X-Received: by 2002:a17:902:b589:b029:e6:2875:aa4c with SMTP id
- a9-20020a170902b589b02900e62875aa4cmr3448032pls.71.1615389574861; Wed, 10 Mar
- 2021 07:19:34 -0800 (PST)
+        id S233168AbhCJPUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 10:20:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40300 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233167AbhCJPTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 10:19:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615389586; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NH84xqLldcd45A2RcbHMMjzdvw5PYH9+xCTWIfl+GaY=;
+        b=rc8GZH6Q5gLGWNm/UPxjOLv7H5GzISHfw+SGj3ByIhEO649bOcHuAaeC3D3Z0KeJ/+1aoq
+        /+Fjp5AAnjJttZzxeKr1wglfWKOpHlYn+l2VuXGYyQVul9yTwL/srioThzMLcbpt7blwIP
+        dnnbfe4gRKTqnfBKi1hyTrR10jJu9d4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 804FDAE3C;
+        Wed, 10 Mar 2021 15:19:46 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 16:19:39 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+Message-ID: <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-5-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <cover.1615354376.git.viresh.kumar@linaro.org> <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
- <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
- <CAK7LNAST04XTt7Y0DnSADHgAw-zy61HUcRJSyYRvy2rGHMdn4A@mail.gmail.com> <20210310144837.hxz3nbwonvwi3j5c@vireshk-i7>
-In-Reply-To: <20210310144837.hxz3nbwonvwi3j5c@vireshk-i7>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 11 Mar 2021 00:18:57 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQBtrG3nF7YtuRhog+ZZpCRGg22b88VkCga7-em57NyDg@mail.gmail.com>
-Message-ID: <CAK7LNAQBtrG3nF7YtuRhog+ZZpCRGg22b88VkCga7-em57NyDg@mail.gmail.com>
-Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source files
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308102807.59745-5-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:48 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 10-03-21, 20:29, Masahiro Yamada wrote:
-> > BTW, is the attached patch good for DTC?
-> >
-> > I do not know when '-O dtbo' is useful,
-> > unless I am missing something.
->
-> It is useful if we are sending the -O option all the time (I have
-> already given more details to your patch) as outform will not be NULL.
+On Mon 08-03-21 18:28:02, Muchun Song wrote:
+[...]
+> -static void update_and_free_page(struct hstate *h, struct page *page)
+> +static int update_and_free_page(struct hstate *h, struct page *page)
+> +	__releases(&hugetlb_lock) __acquires(&hugetlb_lock)
+>  {
+>  	int i;
+>  	struct page *subpage = page;
+> +	int nid = page_to_nid(page);
+>  
+>  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
+> -		return;
+> +		return 0;
+>  
+>  	h->nr_huge_pages--;
+> -	h->nr_huge_pages_node[page_to_nid(page)]--;
+> +	h->nr_huge_pages_node[nid]--;
+> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
+> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
 
+> +	set_page_refcounted(page);
+> +	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
+> +
+> +	/*
+> +	 * If the vmemmap pages associated with the HugeTLB page can be
+> +	 * optimized or the page is gigantic, we might block in
+> +	 * alloc_huge_page_vmemmap() or free_gigantic_page(). In both
+> +	 * cases, drop the hugetlb_lock.
+> +	 */
+> +	if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
+> +		spin_unlock(&hugetlb_lock);
+> +
+> +	if (alloc_huge_page_vmemmap(h, page)) {
+> +		spin_lock(&hugetlb_lock);
+> +		INIT_LIST_HEAD(&page->lru);
+> +		set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
+> +		h->nr_huge_pages++;
+> +		h->nr_huge_pages_node[nid]++;
+> +
+> +		/*
+> +		 * If we cannot allocate vmemmap pages, just refuse to free the
+> +		 * page and put the page back on the hugetlb free list and treat
+> +		 * as a surplus page.
+> +		 */
+> +		h->surplus_huge_pages++;
+> +		h->surplus_huge_pages_node[nid]++;
+> +
+> +		/*
+> +		 * The refcount can possibly be increased by memory-failure or
+> +		 * soft_offline handlers.
 
-"-O dtbo" was useful to make your buggy patch work.
+This comment could be more helpful. I believe you want to say this
+		/*
+		 * HWpoisoning code can increment the reference
+		 * count here. If there is a race then bail out
+		 * the holder of the additional reference count will
+		 * free up the page with put_page.
+> +		 */
+> +		if (likely(put_page_testzero(page))) {
+> +			arch_clear_hugepage_flags(page);
+> +			enqueue_huge_page(h, page);
+> +		}
+> +
+> +		return -ENOMEM;
+> +	}
+> +
+>  	for (i = 0; i < pages_per_huge_page(h);
+>  	     i++, subpage = mem_map_next(subpage, page, i)) {
+>  		subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
+[...]
+> @@ -1447,7 +1486,7 @@ void free_huge_page(struct page *page)
+>  	/*
+>  	 * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
+>  	 */
+> -	if (!in_task()) {
+> +	if (in_atomic()) {
 
-That is not justification.
+As I've said elsewhere in_atomic doesn't work for CONFIG_PREEMPT_COUNT=n.
+We need this change for other reasons and so it would be better to pull
+it out into a separate patch which also makes HUGETLB depend on
+PREEMPT_COUNT.
 
+[...]
+> @@ -1771,8 +1813,12 @@ int dissolve_free_huge_page(struct page *page)
+>  		h->free_huge_pages--;
+>  		h->free_huge_pages_node[nid]--;
+>  		h->max_huge_pages--;
+> -		update_and_free_page(h, head);
+> -		rc = 0;
+> +		rc = update_and_free_page(h, head);
+> +		if (rc) {
+> +			h->surplus_huge_pages--;
+> +			h->surplus_huge_pages_node[nid]--;
+> +			h->max_huge_pages++;
 
-.yaml   ->  -O yaml
-.dtb    ->  -O dtb
-.dtbo   ->  -O dtb
-
-is the correct if you want to give -O explicitly.
-
-
+This is quite ugly and confusing. update_and_free_page is careful to do
+the proper counters accounting and now you just override it partially.
+Why cannot we rely on update_and_free_page do the right thing?
 
 -- 
-Best Regards
-Masahiro Yamada
+Michal Hocko
+SUSE Labs
