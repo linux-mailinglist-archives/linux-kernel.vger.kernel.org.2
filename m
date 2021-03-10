@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05411333D26
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:58:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EA7333CA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhCJM6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
+        id S232068AbhCJMb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:31:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhCJM6I (ORCPT
+        with ESMTP id S230341AbhCJMbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:58:08 -0500
-X-Greylist: delayed 1742 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 10 Mar 2021 04:58:08 PST
-Received: from mx0.chaotikum.eu (mx0.chaotikum.eu [IPv6:2a01:4f8:c2c:ce71::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1470C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 04:58:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=chaotikum.eu; s=20200128.mx0; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=e+FszExSm2+EMZkgFJP/qRDz5nqeWE3dpwvkv4Wthek=; b=A1cNwIUZ8DRlzFSjthkkM7Ehei
-        yymARAEb8neNldWvZ2UaKfMoH5jj84yWw6Q7Al366sSQ/fVtoHB0HpD37ndpNQ97c6s34Qu+gOmth
-        feBb6xPb2w7jgjzn6USQ+DnQ7eQsxINL06CxkXQgXCSjzm+Gkf7kyePBlpEUdzWUwLEtte5wZuZky
-        0o2qZg5KmgI+xNOJhrH20cbw/gMsDtdkdcYhBzSBK8FrZeqagAfo0n3lw0QiZTAUiGtPUgsZMXsqU
-        tMpu2goRZOlRBlw1kJoWFEycZgJeFEj87mFfq16PSWU94buhvX9e9p9QsGZAEgm2/Momvya01Ziy/
-        pestF14YFrmLNKgn3WghMKA8Ln+9WoG9mCVuYfeyPPW5Iv+uPQXK6igc+0G78cMP9UAcskvruuYdP
-        0RLwz7x8pVtMR9dMK1o9OxnKKjSUFtCegRWS6IqKhBg0kRBsbCZfcnsHoCgTyb0HY1gVhEakcFcqm
-        VAIr198V8AgwQp2U6VeMPmxcnKObH1Y9lWvjZK+0pMS/KvJ7y19d0olAI5DdKaMYZ1cQjBFvhSD1U
-        EI6hB5siSah85v3Tc6gVi8UbOBf7s5YLj5EG/uu2naIWbqE2jj4xPueDNcwflvNAeXB5yaVBc/Xy9
-        mcx3Gqu3OWSk6MEaiOMgnNv0xcEBKfOwVBzlpGcMY=;
-X-Spam-Action: no action
-X-Spam-Bar: /
-X-Spam-Report: Action: no action
- Symbol: ARC_NA(0.00)
- Symbol: RCVD_VIA_SMTP_AUTH(0.00)
- Symbol: FROM_HAS_DN(0.00)
- Symbol: TO_DN_SOME(0.00)
- Symbol: TO_MATCH_ENVRCPT_ALL(0.00)
- Symbol: MIME_GOOD(-0.10)
- Symbol: RCPT_COUNT_FIVE(0.00)
- Symbol: MID_CONTAINS_FROM(1.00)
- Symbol: RCVD_COUNT_ONE(0.00)
- Symbol: FROM_EQ_ENVFROM(0.00)
- Symbol: MIME_TRACE(0.00)
- Symbol: ASN(0.00)
- Symbol: RCVD_TLS_ALL(0.00)
- Message-ID: 20210310122821.126408-1-qsx@chaotikum.eu
-X-Spam-Score: 0.9 (/)
-Received: from [2001:4dd0:4f8e:0:801a:7487:7f8e:9f57] (port=45816 helo=neptun.chaotikum.eu)
-        by mx0.chaotikum.eu with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <qsx@chaotikum.eu>)
-        id 1lJxxV-0002RO-Nf; Wed, 10 Mar 2021 13:29:02 +0100
-From:   Thomas Schneider <qsx@chaotikum.eu>
-To:     Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     Thomas Schneider <qsx@chaotikum.eu>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: rockchip: add infrared receiver node to rockpro64
-Date:   Wed, 10 Mar 2021 13:28:21 +0100
-Message-Id: <20210310122821.126408-1-qsx@chaotikum.eu>
-X-Mailer: git-send-email 2.30.1
+        Wed, 10 Mar 2021 07:31:18 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCBBC061760;
+        Wed, 10 Mar 2021 04:31:18 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id 133so17648198ybd.5;
+        Wed, 10 Mar 2021 04:31:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=atKgvCAVpItHVZX4pm9LPMJMeABJeY6Z3gkRYABn5yM=;
+        b=CqUqoL9kkvx+9GPDQrx/onWS2YqBsmUkD9RdH3kHKTKq0Cer4EZT4m88Jw1x4Fr3ay
+         TiaLyhLOVS3KIjiESjXT/yUrAY3W1sZdEm6TSmA+7EtxpUAPl9UGLAHN1LPhHptz8M4W
+         awatnKWJUohL/31zVJXD5w/KHKFHyP/tXqk0Ma2sIXDK6kPy8Zt1D+Va9Mfmvz7UOItG
+         5/DBwezK/etsdPHs3GV7GnvF0RLpA9aHGTPlINFPjl6Ceem8bSrdhpjAxCNFrmKNSnM1
+         3zAQJZQbW2rR8gGM7xa5X45SmKRn206FsjxUb9Z4X7woqN6A1P+KAmARKYNbS/6aUl9Z
+         5FIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=atKgvCAVpItHVZX4pm9LPMJMeABJeY6Z3gkRYABn5yM=;
+        b=SQbrl3l/NtPbEHU1rGZJPfLlGyJTc8GtuGvk4lIEj61QOvNL60rfTOFnoumjQ4GIu3
+         KbsVR0YZPl12N8Wqu52Dmw4FfyS8yerMyDxzDU4zA/x/uSyLu6qpVJhTyWDqkrhiwIEU
+         AwI3NxKsumdClXsENMLWCQL8OMvRb6Mh7pC4Qis9XhtHkZ1pgaD/nGdgYiFNdjrGBjAN
+         E5nAE5eBI361uUe608tNyItHhQaBDO+p7/O4Y88/P2c8D6SQ1sDlP1CVVY41/owzCYpR
+         034JapJRo9eUiQ01bzxIuS4kzh3WAnaaoYbAHWUKcVL8chmp2dfagQhgS9IRbHIgDNR6
+         QcVg==
+X-Gm-Message-State: AOAM532JBhF3IFVB7X3me15KomSLtdLHGRRea1cA0PDtYPiOzysOedxg
+        9I42aJVQfdG+6SQ5sIX971vE7mbXUxXCyz28YUk=
+X-Google-Smtp-Source: ABdhPJx2QY4l9cQe75nptZ7Pf1Zho+J5rcKWrpKzrd9BmVRKh3Mvj6bvtkk6JVBRVJMnA8nldnylsisoMg5a0XbleWs=
+X-Received: by 2002:a05:6902:1001:: with SMTP id w1mr3859288ybt.176.1615379477739;
+ Wed, 10 Mar 2021 04:31:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Wed, 10 Mar 2021 07:30:41 -0500
+Message-ID: <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, david@fromorbit.com, hch@lst.de,
+        rgoldwyn@suse.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the RockPro64’s infrared receiver to its dtsi.  The configuration is
-almost the same as on rk3328-rock64, except for the GPIO pins, and thus adapted
-from there.
+On Thu, Feb 25, 2021 at 7:23 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrot=
+e:
+>
+> This patchset is attempt to add CoW support for fsdax, and take XFS,
+> which has both reflink and fsdax feature, as an example.
+>
+> Changes from V1:
+>  - Factor some helper functions to simplify dax fault code
+>  - Introduce iomap_apply2() for dax_dedupe_file_range_compare()
+>  - Fix mistakes and other problems
+>  - Rebased on v5.11
+>
+> One of the key mechanism need to be implemented in fsdax is CoW.  Copy
+> the data from srcmap before we actually write data to the destance
+> iomap.  And we just copy range in which data won't be changed.
+>
+> Another mechanism is range comparison.  In page cache case, readpage()
+> is used to load data on disk to page cache in order to be able to
+> compare data.  In fsdax case, readpage() does not work.  So, we need
+> another compare data with direct access support.
+>
+> With the two mechanism implemented in fsdax, we are able to make reflink
+> and fsdax work together in XFS.
+>
+>
+> Some of the patches are picked up from Goldwyn's patchset.  I made some
+> changes to adapt to this patchset.
+>
+> (Rebased on v5.11)
 
-Signed-off-by: Thomas Schneider <qsx@chaotikum.eu>
----
- arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Forgive my ignorance, but is there a reason why this isn't wired up to
+Btrfs at the same time? It seems weird to me that adding a feature
+like DAX to work with CoW filesystems is not being wired into *the*
+CoW filesystem in the Linux kernel that fully takes advantage of
+copy-on-write. I'm aware that XFS supports reflinks and does some
+datacow stuff, but I don't know if I would consider XFS integration
+sufficient for integrating this feature now, especially if it's
+possible that the design might not work with Btrfs (I hadn't seen any
+feedback from Btrfs developers, though given how much email there is
+here, it's entirely possible that I missed it).
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-index 5ab0b9edfc88..d42c75c6dcbd 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-@@ -36,6 +36,13 @@ power {
- 		};
- 	};
- 
-+	ir-receiver {
-+		compatible = "gpio-ir-receiver";
-+		gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_LOW>;
-+		pinctrl-0 = <&ir_int>;
-+		pinctrl-names = "default";
-+	};
-+
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
-@@ -604,6 +611,12 @@ fusb0_int: fusb0-int {
- 		};
- 	};
- 
-+	ir {
-+		ir_int: ir-int {
-+			rockchip,pins = <0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
- 	leds {
- 		work_led_pin: work-led-pin {
- 			rockchip,pins = <0 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
--- 
-2.30.1
 
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
