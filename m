@@ -2,119 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE96D333C47
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB8F333C4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbhCJMJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:09:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232073AbhCJMJb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:09:31 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576A0C061760;
-        Wed, 10 Mar 2021 04:09:31 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id w34so10219109pga.8;
-        Wed, 10 Mar 2021 04:09:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=EGYkQJ9FJJaI5eGPOqdWnbYRXcHETF+ClVAnsVwF5+w=;
-        b=kjttHZDsCbGL7E392wZMMsNEOP1cKrFYs0OCWryWfTJ20IGobyoI3PMtH9vo+fAhHU
-         /QdLtw/XBR/ZJneft7H++HVEpno1/mbTC816sb1yXPBUR6R44s15A3UUUQ6/2IiNCKBW
-         MQepIDYPV4dNhPh1QkHcf4k3kM4ZptiJ0GO9wtPgRy2ru18abRFvGKZ8sn7q+l/BMO4X
-         qkcjvKqauC/dS9ahsyNPCpCZQzh/hukoOurD60FfN23nnLS2gQsUrb8FcSpFYrceZOQU
-         euS8LMSUOCxkxyunYEWRu58DNGKuKCWw/ztSIgLp/+WHBbvsw5YreXA3na1mc5Dahk9O
-         ZtqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=EGYkQJ9FJJaI5eGPOqdWnbYRXcHETF+ClVAnsVwF5+w=;
-        b=a+1tvYAIftmM7yXXW0ML2o2eHrSvna8U6f8JgEAjvUNEufOujl3HvNOXVFqteQlScc
-         SfA1tlP5qOSuPzU4H16jOMroEbCN38n7k8nqIJPtRHuoB9O68YOAF4MSS6mtAVqVWjCk
-         tm/HTHJY+OdfvO0vzNSeLMLSAL26c0yfZ8S0cFMjd0XVFVkhN39MGdL/DZM6l6u/ZHk+
-         ndOerAKCNbZNKsRyF1Dpb0rIu1wtqIbv7GaGpb52PgYyFGldeTPi/qHsPT56U2igpOvZ
-         3oQ5fU2W0AiuvhXww9YKC36ecpL6CKL6iHKw21t/nveeVvnELVziCeKthk3Lev/ReONz
-         Ul2A==
-X-Gm-Message-State: AOAM531K1x4IMfhOxwbEAk/pxiknVfk4u45HMOipGW+uJl6+WX0GSqe0
-        OMfE5xszdFAikzzP1t7dhOd0whOJy7ZN9Q==
-X-Google-Smtp-Source: ABdhPJzPzP1RJtWKMOkELkXPAeDPTK040moyRZg7kfRsBua91nb7RT8r8pxxDO56uMqEoWBjn69ftQ==
-X-Received: by 2002:aa7:9797:0:b029:1f8:1a14:b055 with SMTP id o23-20020aa797970000b02901f81a14b055mr2774190pfp.57.1615378170592;
-        Wed, 10 Mar 2021 04:09:30 -0800 (PST)
-Received: from [10.38.0.10] ([45.135.186.59])
-        by smtp.gmail.com with ESMTPSA id a15sm6442537pju.34.2021.03.10.04.09.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 04:09:30 -0800 (PST)
-Subject: Re: [PATCH] thermal: thermal_of: fix error return code of
- thermal_of_populate_bind_params()
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com,
-        amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210306141106.18695-1-baijiaju1990@gmail.com>
- <ac49897d-fdcd-57aa-fb1a-2bf7f3b2296d@linaro.org>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <e3d1aacd-ecbd-aa93-a547-11f89ca5f487@gmail.com>
-Date:   Wed, 10 Mar 2021 20:09:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <ac49897d-fdcd-57aa-fb1a-2bf7f3b2296d@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S232726AbhCJMKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:10:43 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:49184 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232231AbhCJMKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 07:10:38 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DwWB33MXvz9txr0;
+        Wed, 10 Mar 2021 13:10:35 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 50zCdInSTEKv; Wed, 10 Mar 2021 13:10:35 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DwWB26L47z9txqx;
+        Wed, 10 Mar 2021 13:10:34 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E2DEB8B78A;
+        Wed, 10 Mar 2021 13:10:35 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id L-0L8waMBKwJ; Wed, 10 Mar 2021 13:10:35 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 576EA8B77E;
+        Wed, 10 Mar 2021 13:10:35 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id EB1536755D; Wed, 10 Mar 2021 12:10:34 +0000 (UTC)
+Message-Id: <b231dfa040ce4cc37f702f5c3a595fdeabfe0462.1615378209.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc: Force inlining of cpu_has_feature() to avoid build
+ failure
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 10 Mar 2021 12:10:34 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The code relies on constant folding of cpu_has_feature() based
+on possible and always true values as defined per
+CPU_FTRS_ALWAYS and CPU_FTRS_POSSIBLE.
 
+Build failure is encountered with for instance
+book3e_all_defconfig on kisskb in the AMDGPU driver which uses
+cpu_has_feature(CPU_FTR_VSX_COMP) to decide whether calling
+kernel_enable_vsx() or not.
 
-On 2021/3/10 20:02, Daniel Lezcano wrote:
-> On 06/03/2021 15:11, Jia-Ju Bai wrote:
->> When kcalloc() fails and __tcbp is NULL, no error return code of
->> thermal_of_populate_bind_params() is assigned.
->> To fix this bug, ret is assigned with -ENOMEM in this case.
->>
->> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
->> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
->> ---
->>   drivers/thermal/thermal_of.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
->> index 69ef12f852b7..e8c9041482e9 100644
->> --- a/drivers/thermal/thermal_of.c
->> +++ b/drivers/thermal/thermal_of.c
->> @@ -710,8 +710,10 @@ static int thermal_of_populate_bind_params(struct device_node *np,
->>   	}
->>   
->>   	__tcbp = kcalloc(count, sizeof(*__tcbp), GFP_KERNEL);
->> -	if (!__tcbp)
->> +	if (!__tcbp) {
->> +		ret = -ENOMEM;
->>   		goto end;
->> +	}
-> Thank you for your patch.
->
-> Seems like the same happens a few lines before:
->
->          count = of_count_phandle_with_args(np, "cooling-device",
->                                             "#cooling-cells");
->          if (!count) {
->                  pr_err("Add a cooling_device property with at least one
-> device\n");
->                  goto end;
->          }
->
-> Mind to send a patch fixing both ?
->
+The failure is due to cpu_has_feature() not being inlined with
+that configuration with gcc 4.9.
 
-Thanks for the reply and advice.
-I will send a new version of the patch to fix them both.
+In the same way as commit acdad8fb4a15 ("powerpc: Force inlining of
+mmu_has_feature to fix build failure"), for inlining of
+cpu_has_feature().
 
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/cpu_has_feature.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best wishes,
-Jia-Ju Bai
+diff --git a/arch/powerpc/include/asm/cpu_has_feature.h b/arch/powerpc/include/asm/cpu_has_feature.h
+index 7897d16e0990..727d4b321937 100644
+--- a/arch/powerpc/include/asm/cpu_has_feature.h
++++ b/arch/powerpc/include/asm/cpu_has_feature.h
+@@ -7,7 +7,7 @@
+ #include <linux/bug.h>
+ #include <asm/cputable.h>
+ 
+-static inline bool early_cpu_has_feature(unsigned long feature)
++static __always_inline bool early_cpu_has_feature(unsigned long feature)
+ {
+ 	return !!((CPU_FTRS_ALWAYS & feature) ||
+ 		  (CPU_FTRS_POSSIBLE & cur_cpu_spec->cpu_features & feature));
+@@ -46,7 +46,7 @@ static __always_inline bool cpu_has_feature(unsigned long feature)
+ 	return static_branch_likely(&cpu_feature_keys[i]);
+ }
+ #else
+-static inline bool cpu_has_feature(unsigned long feature)
++static __always_inline bool cpu_has_feature(unsigned long feature)
+ {
+ 	return early_cpu_has_feature(feature);
+ }
+-- 
+2.25.0
+
