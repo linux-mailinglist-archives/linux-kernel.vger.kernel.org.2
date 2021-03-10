@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0667F33332D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD187333331
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 03:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbhCJCeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 21:34:13 -0500
-Received: from mail-io1-f52.google.com ([209.85.166.52]:32799 "EHLO
-        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhCJCeG (ORCPT
+        id S232075AbhCJCfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 21:35:51 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:41265 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232043AbhCJCfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 21:34:06 -0500
-Received: by mail-io1-f52.google.com with SMTP id n132so16315789iod.0;
-        Tue, 09 Mar 2021 18:34:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jVJuHwNtFnhiIpdvi4iXC7hbsxDw7lapoWRXaBtbaCY=;
-        b=WBo9aLGdQo6Wv9ir34Vyd3IeO76B8ZBAx2IR85L65/LPciYZmUaBx4g3dyXCD3kDnN
-         RsKmfMP703Nv5Zl+UXcr3LeJYJVdDLalk44cI/+DGUBFwVs1TDPkgJ2YFkfMKrVR/OB9
-         95uprE2OxNiopkPSSe5D9DpnGabzUEF4Um+G5es7hKWMwscRD5eZDe2Ri0IUlAN4zYGl
-         reHALZs+XgBbxnwE5E/s+AKqlxtNIHO9N//tqYvtFBT3l/eIfs5u21b/1Vc/YOV/3JOs
-         +S/UcB4VyFY2DJ29/4FUuy+ccqU2wBs+81BNG19HeW3AEzPF/63e6PfuoyIfitiu29DP
-         kSJw==
-X-Gm-Message-State: AOAM530DF1K/hRb52bVykFd6bHeyEQHYm2cPrYWIhFG83Idkrt+DSVZF
-        7qWIlPtGfVezWqtCZcWH7Q==
-X-Google-Smtp-Source: ABdhPJzn5+OnaQcbq9py83N+I+20k5N0ExASimPvcyzCWj4ldTkE5CXKuj+Y0I7vEhmibFklnXgpEQ==
-X-Received: by 2002:a6b:e20a:: with SMTP id z10mr908695ioc.99.1615343646327;
-        Tue, 09 Mar 2021 18:34:06 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id t7sm8632404ilj.62.2021.03.09.18.34.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 18:34:05 -0800 (PST)
-Received: (nullmailer pid 1622948 invoked by uid 1000);
-        Wed, 10 Mar 2021 02:34:03 -0000
-Date:   Tue, 9 Mar 2021 19:34:03 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-omap@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
-        Nadeem Athani <nadeem@cadence.com>
-Subject: Re: [PATCH v4 1/4] dt-bindings: PCI: ti, j721e: Add binding to
- represent refclk to the connector
-Message-ID: <20210310023403.GA1622887@robh.at.kernel.org>
-References: <20210308063550.6227-1-kishon@ti.com>
- <20210308063550.6227-2-kishon@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308063550.6227-2-kishon@ti.com>
+        Tue, 9 Mar 2021 21:35:37 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0URB1F74_1615343728;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0URB1F74_1615343728)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 10 Mar 2021 10:35:34 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] netdevsim: fib: Remove redundant code
+Date:   Wed, 10 Mar 2021 10:35:27 +0800
+Message-Id: <1615343727-96723-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021 12:05:47 +0530, Kishon Vijay Abraham I wrote:
-> Add binding to represent refclk to the PCIe connector.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  .../devicetree/bindings/pci/ti,j721e-pci-host.yaml       | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
+Fix the following coccicheck warnings:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+./drivers/net/netdevsim/fib.c:874:5-8: Unneeded variable: "err". Return
+"0" on line 889.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/net/netdevsim/fib.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/net/netdevsim/fib.c b/drivers/net/netdevsim/fib.c
+index 46fb414..db794f9 100644
+--- a/drivers/net/netdevsim/fib.c
++++ b/drivers/net/netdevsim/fib.c
+@@ -871,8 +871,6 @@ static int nsim_fib6_event(struct nsim_fib_data *data,
+ 
+ static int nsim_fib_event(struct nsim_fib_event *fib_event)
+ {
+-	int err = 0;
+-
+ 	switch (fib_event->family) {
+ 	case AF_INET:
+ 		nsim_fib4_event(fib_event->data, &fib_event->fen_info,
+@@ -886,7 +884,7 @@ static int nsim_fib_event(struct nsim_fib_event *fib_event)
+ 		break;
+ 	}
+ 
+-	return err;
++	return 0;
+ }
+ 
+ static int nsim_fib4_prepare_event(struct fib_notifier_info *info,
+-- 
+1.8.3.1
+
