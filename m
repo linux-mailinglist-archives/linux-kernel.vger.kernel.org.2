@@ -2,123 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825B8333CD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B0B333CE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhCJMpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:45:10 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:37202 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229948AbhCJMos (ORCPT
+        id S232348AbhCJMwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:52:50 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:48126 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231828AbhCJMw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:44:48 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=zhang.jia@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0URK2fWn_1615380284;
-Received: from ali-6c96cfd98fb5.local(mailfrom:zhang.jia@linux.alibaba.com fp:SMTPD_---0URK2fWn_1615380284)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 10 Mar 2021 20:44:45 +0800
-Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
- SGX_INVALID_SIGNATURE
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
- <YDy51R2Wva7s+k/x@kernel.org>
- <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
- <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
- <YD5B7P++T6jLoWBR@kernel.org>
-From:   Jia Zhang <zhang.jia@linux.alibaba.com>
-Message-ID: <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
-Date:   Wed, 10 Mar 2021 20:44:44 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        Wed, 10 Mar 2021 07:52:29 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1lJyKC-0005e4-8h; Wed, 10 Mar 2021 12:52:28 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] detached mounts fix
+Date:   Wed, 10 Mar 2021 13:45:22 +0100
+Message-Id: <20210310124520.797771-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <YD5B7P++T6jLoWBR@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
+/* Summary */
+Creating a series of detached mounts, attaching them to the filesystem,
+and unmounting them can be used to trigger an integer overflow in
+ns->mounts causing the kernel to block any new mounts in count_mounts()
+and returning ENOSPC because it falsely assumes that the maximum number
+of mounts in the mount namespace has been reached, i.e. it thinks it
+can't fit the new mounts into the mount namespace anymore.
 
-On 2021/3/2 下午9:47, Jarkko Sakkinen wrote:
-> On Mon, Mar 01, 2021 at 09:54:37PM -0800, Andy Lutomirski wrote:
->> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
->> <tianjia.zhang@linux.alibaba.com> wrote:
->>>
->>>
->>>
->>> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
->>>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
->>>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
->>>>
->>>> What does determine this?
->>>>
->>>>> In this case, the valid portion of q2 is reordered reversely for
->>>>> little endian order, and the remaining portion is filled with zero.
->>>>
->>>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
->>>>
->>>> I'm lacking these details:
->>>>
->>>> 1. Why the length of Q2 can vary?
->>>> 2. Why reversing the bytes is the correct measure to counter-measure
->>>>     this variation?
->>>>
->>>> /Jarkko
->>>>
->>>
->>> When use openssl to generate a key instead of using the built-in
->>> sign_key.pem, there is a probability that will encounter this problem.
->>>
->>> Here is a problematic key I encountered. The calculated q1 and q2 of
->>> this key are both 383 bytes, If the length is not processed, the
->>> hardware signature will fail.
->>
->> Presumably the issue is that some keys have parameters that have
->> enough leading 0 bits to be effectively shorter.  The openssl API
->> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
->> variable-size integers.
-> 
-> But the test uses a static key. It used to generate a key on fly but
+Without this fix heavy use of the new mount API with move_mount() will cause
+the host to become unuseable and thus blocks some xfstest patches I want to
+resend.
 
-IMO even though the test code, it comes from the linux kernel, meaning
-that its quality has a certain guarantee and it is a good reference, so
-the test code still needs to ensure its correctness.
+Depending on the number of mounts in your system, this can be reproduced
+on any kernel that supportes open_tree() and move_mount() by compiling
+and running the program in [1] (It'll take care to do this in another mount
+namespace, not in the host's mount namespace so there shouldn't be any risk
+in running it but if one did run it on the host it would require a reboot in
+order to be able to mount again. The program in [1] is also part of the commit
+message and has been sent for inclusion with xfstests. See
+https://lore.kernel.org/fstests/20210309121041.753359-1-christian.brauner@ubuntu.com).
 
-Jia
+The root cause of this is that detached mounts aren't handled correctly
+when source and target mount are identical and reside on a shared mount
+causing a broken mount tree where the detached source itself is
+propagated which propagation prevents for regular bind-mounts and new
+mounts. This ultimately leads to a miscalculation of the number of mounts in
+the mount namespace.
 
-> in some of the last versions I replaced key generation with a static
-> key:
-> 
-> static RSA *gen_sign_key(void)
-> {
-> 	unsigned long sign_key_length;
-> 	BIO *bio;
-> 	RSA *key;
-> 
-> 	sign_key_length = (unsigned long)&sign_key_end -
-> 			  (unsigned long)&sign_key;
-> 
-> 	bio = BIO_new_mem_buf(&sign_key, sign_key_length);
-> 	if (!bio)
-> 		return NULL;
-> 
-> 	key = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, NULL);
-> 	BIO_free(bio);
-> 
-> 	return key;
-> }
-> 
-> /Jarkko
-> 
+Detached mounts created via
+open_tree(fd, path, OPEN_TREE_CLONE)
+are essentially like an unattached bind-mount. They can then later on be
+attached to the filesystem via move_mount() which calls into
+attach_recursive_mount(). Part of attaching it to the filesystem is making sure
+that mounts get correctly propagated in case the destination mountpoint is
+MS_SHARED, i.e. is a shared mountpoint. This is done by calling into
+propagate_mnt() which walks the list of peers calling propagate_one() on each
+mount in this list making sure it receives the propagation event.
+The propagate_one() function thereby skips both new mounts and bind
+mounts to not propagate them "into themselves". Both are identified by
+checking whether the mount is already attached to any mount namespace in
+mnt->mnt_ns. The is what the IS_MNT_NEW() helper is responsible for.
+
+However, detached mounts have an anonymous mount namespace attached to
+them stashed in mnt->mnt_ns which means that IS_MNT_NEW() doesn't
+realize they need to be skipped causing the mount to propagate "into
+itself" breaking the mount table and causing a disconnect between the
+number of mounts recorded as being beneath or reachable from the target
+mountpoint and the number of mounts actually recorded/counted in
+ns->mounts ultimately causing an overflow which in turn prevents any new
+mounts via the ENOSPC issue.
+
+So teach propagation to handle detached mounts by making it aware of
+them. I've been tracking this issue down for the last couple of days and
+then verifying that the fix is correct by
+unmounting everything in my current mount table leaving only /proc and
+/sys mounted and running the reproducer above overnight verifying the
+number of mounts counted in ns->mounts. With this fix the counts are
+correct and the ENOSPC issue can't be reproduced.
+
+This change will only have an effect on mounts created with the new mount API
+since detached mounts cannot be created with the old mount API so regressions
+are extremely unlikely.
+
+Here's an illustration:
+
+#### mount():
+ubuntu@f1-vm:~$ sudo mount --bind /mnt/ /mnt/
+ubuntu@f1-vm:~$ findmnt  | grep -i mnt
+├─/mnt                                /dev/sda2[/mnt] ext4       rw,relatime
+
+#### open_tree(OPEN_TREE_CLONE) + move_mount() with bug:
+ubuntu@f1-vm:~$ sudo ./mount-new /mnt/ /mnt/
+ubuntu@f1-vm:~$ findmnt  | grep -i mnt
+├─/mnt                                /dev/sda2[/mnt] ext4       rw,relatime
+│ └─/mnt                              /dev/sda2[/mnt] ext4       rw,relatime
+
+#### open_tree(OPEN_TREE_CLONE) + move_mount() with the patch in this pr:
+ubuntu@f1-vm:~$ sudo ./mount-new /mnt /mnt
+ubuntu@f1-vm:~$ findmnt | grep -i mnt
+└─/mnt                                /dev/sda2[/mnt] ext4       rw,relatime
+
+/* Testing */
+All patches have seen exposure in linux-next and are based on v5.12-rc2.
+
+/* Conflicts */
+At the time of creating this pr no merge conflicts were reported. A test merge
+with today's master 2021-03-10 13:35:00 CET worked fine.
+
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/for-linus-2021-03-10
+
+for you to fetch changes up to ee2e3f50629f17b0752b55b2566c15ce8dafb557:
+
+  mount: fix mounting of detached mounts onto targets that reside on shared mounts (2021-03-08 15:18:43 +0100)
+
+Please consider pulling these changes from the signed for-linus-2021-03-10 tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+for-linus-2021-03-10
+
+----------------------------------------------------------------
+Christian Brauner (1):
+      mount: fix mounting of detached mounts onto targets that reside on shared mounts
+
+ fs/pnode.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+[1]:
+/* SPDX-License-Identifier: LGPL-2.1+ */
+
+#include <errno.h>
+#include <fcntl.h>
+#include <getopt.h>
+#include <limits.h>
+#include <sched.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mount.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+/* open_tree() */
+#ifndef OPEN_TREE_CLONE
+#define OPEN_TREE_CLONE 1
+#endif
+
+#ifndef OPEN_TREE_CLOEXEC
+#define OPEN_TREE_CLOEXEC O_CLOEXEC
+#endif
+
+#ifndef __NR_open_tree
+	#if defined __alpha__
+		#define __NR_open_tree 538
+	#elif defined _MIPS_SIM
+		#if _MIPS_SIM == _MIPS_SIM_ABI32	/* o32 */
+			#define __NR_open_tree 4428
+		#endif
+		#if _MIPS_SIM == _MIPS_SIM_NABI32	/* n32 */
+			#define __NR_open_tree 6428
+		#endif
+		#if _MIPS_SIM == _MIPS_SIM_ABI64	/* n64 */
+			#define __NR_open_tree 5428
+		#endif
+	#elif defined __ia64__
+		#define __NR_open_tree (428 + 1024)
+	#else
+		#define __NR_open_tree 428
+	#endif
+#endif
+
+/* move_mount() */
+#ifndef MOVE_MOUNT_F_EMPTY_PATH
+#define MOVE_MOUNT_F_EMPTY_PATH 0x00000004 /* Empty from path permitted */
+#endif
+
+#ifndef __NR_move_mount
+	#if defined __alpha__
+		#define __NR_move_mount 539
+	#elif defined _MIPS_SIM
+		#if _MIPS_SIM == _MIPS_SIM_ABI32	/* o32 */
+			#define __NR_move_mount 4429
+		#endif
+		#if _MIPS_SIM == _MIPS_SIM_NABI32	/* n32 */
+			#define __NR_move_mount 6429
+		#endif
+		#if _MIPS_SIM == _MIPS_SIM_ABI64	/* n64 */
+			#define __NR_move_mount 5429
+		#endif
+	#elif defined __ia64__
+		#define __NR_move_mount (428 + 1024)
+	#else
+		#define __NR_move_mount 429
+	#endif
+#endif
+
+static inline int sys_open_tree(int dfd, const char *filename, unsigned int flags)
+{
+	return syscall(__NR_open_tree, dfd, filename, flags);
+}
+
+static inline int sys_move_mount(int from_dfd, const char *from_pathname, int to_dfd,
+				 const char *to_pathname, unsigned int flags)
+{
+	return syscall(__NR_move_mount, from_dfd, from_pathname, to_dfd, to_pathname, flags);
+}
+
+static bool is_shared_mountpoint(const char *path)
+{
+	bool shared = false;
+	FILE *f = NULL;
+	char *line = NULL;
+	int i;
+	size_t len = 0;
+
+	f = fopen("/proc/self/mountinfo", "re");
+	if (!f)
+		return 0;
+
+	while (getline(&line, &len, f) > 0) {
+		char *slider1, *slider2;
+
+		for (slider1 = line, i = 0; slider1 && i < 4; i++)
+			slider1 = strchr(slider1 + 1, ' ');
+
+		if (!slider1)
+			continue;
+
+		slider2 = strchr(slider1 + 1, ' ');
+		if (!slider2)
+			continue;
+
+		*slider2 = '\0';
+		if (strcmp(slider1 + 1, path) == 0) {
+			/* This is the path. Is it shared? */
+			slider1 = strchr(slider2 + 1, ' ');
+			if (slider1 && strstr(slider1, "shared:")) {
+				shared = true;
+				break;
+			}
+		}
+	}
+	fclose(f);
+	free(line);
+
+	return shared;
+}
+
+static void usage(void)
+{
+	const char *text = "mount-new [--recursive] <base-dir>\n";
+	fprintf(stderr, "%s", text);
+	_exit(EXIT_SUCCESS);
+}
+
+#define exit_usage(format, ...)                              \
+	({                                                   \
+		fprintf(stderr, format "\n", ##__VA_ARGS__); \
+		usage();                                     \
+	})
+
+#define exit_log(format, ...)                                \
+	({                                                   \
+		fprintf(stderr, format "\n", ##__VA_ARGS__); \
+		exit(EXIT_FAILURE);                          \
+	})
+
+static const struct option longopts[] = {
+	{"help",	no_argument,		0,	'a'},
+	{ NULL,		no_argument,		0,	 0 },
+};
+
+int main(int argc, char *argv[])
+{
+	int exit_code = EXIT_SUCCESS, index = 0;
+	int dfd, fd_tree, new_argc, ret;
+	char *base_dir;
+	char *const *new_argv;
+	char target[PATH_MAX];
+
+	while ((ret = getopt_long_only(argc, argv, "", longopts, &index)) != -1) {
+		switch (ret) {
+		case 'a':
+			/* fallthrough */
+		default:
+			usage();
+		}
+	}
+
+	new_argv = &argv[optind];
+	new_argc = argc - optind;
+	if (new_argc < 1)
+		exit_usage("Missing base directory\n");
+	base_dir = new_argv[0];
+
+	if (*base_dir != '/')
+		exit_log("Please specify an absolute path");
+
+	/* Ensure that target is a shared mountpoint. */
+	if (!is_shared_mountpoint(base_dir))
+		exit_log("Please ensure that \"%s\" is a shared mountpoint", base_dir);
+
+	ret = unshare(CLONE_NEWNS);
+	if (ret < 0)
+		exit_log("%m - Failed to create new mount namespace");
+
+	ret = mount(NULL, base_dir, NULL, MS_REC | MS_SHARED, NULL);
+	if (ret < 0)
+		exit_log("%m - Failed to make base_dir shared mountpoint");
+
+	dfd = open(base_dir, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
+	if (dfd < 0)
+		exit_log("%m - Failed to open base directory \"%s\"", base_dir);
+
+	ret = mkdirat(dfd, "detached-move-mount", 0755);
+	if (ret < 0)
+		exit_log("%m - Failed to create required temporary directories");
+
+	ret = snprintf(target, sizeof(target), "%s/detached-move-mount", base_dir);
+	if (ret < 0 || (size_t)ret >= sizeof(target))
+		exit_log("%m - Failed to assemble target path");
+
+	/*
+	 * Having a mount table with 10000 mounts is already quite excessive
+	 * and shoult account even for weird test systems.
+	 */
+	for (size_t i = 0; i < 10000; i++) {
+		fd_tree = sys_open_tree(dfd, "detached-move-mount",
+					OPEN_TREE_CLONE |
+					OPEN_TREE_CLOEXEC |
+					AT_EMPTY_PATH);
+		if (fd_tree < 0) {
+			if (errno == ENOSYS) /* New mount API not (fully) supported. */
+				break;
+
+			fprintf(stderr, "%m - Failed to open %d(detached-move-mount)", dfd);
+			exit_code = EXIT_FAILURE;
+			break;
+		}
+
+		ret = sys_move_mount(fd_tree, "", dfd, "detached-move-mount", MOVE_MOUNT_F_EMPTY_PATH);
+		if (ret < 0) {
+			if (errno == ENOSPC)
+				fprintf(stderr, "%m - Buggy mount counting");
+			else if (errno == ENOSYS) /* New mount API not (fully) supported. */
+				break;
+			else
+				fprintf(stderr, "%m - Failed to attach mount to %d(detached-move-mount)", dfd);
+			exit_code = EXIT_FAILURE;
+			break;
+		}
+		close(fd_tree);
+
+		ret = umount2(target, MNT_DETACH);
+		if (ret < 0) {
+			fprintf(stderr, "%m - Failed to unmount %s", target);
+			exit_code = EXIT_FAILURE;
+			break;
+		}
+	}
+
+	(void)unlinkat(dfd, "detached-move-mount", AT_REMOVEDIR);
+	close(dfd);
+
+	exit(exit_code);
+}
