@@ -2,118 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B7733490F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42FE334914
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbhCJUmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:42:55 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:32852 "EHLO z11.mailgun.us"
+        id S231126AbhCJUob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:44:31 -0500
+Received: from mga12.intel.com ([192.55.52.136]:58443 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232064AbhCJUmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:42:32 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615408952; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=y9dG7dshC+k0sBZNCdzBkLkCPX7Wmt3l2cPIISsNooE=; b=WaQOi2bccZapIvLzWIWRdv67Z0/d911rL4xM5qm7hWbdR3R2V0ZjQUNTRB0c9PbPfzzjY4C+
- LJv0UFPcww3BoXvfAXzbQK5SI3VuvKPc5Bdpus5hqrVcGAVlbTTHOGnBjB5Ku8tWsPnJ/bW+
- we6TibLgpDlAVip2PMb63hPmzXM=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60492f236e1c22bc8d552580 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Mar 2021 20:42:11
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 74BBCC43461; Wed, 10 Mar 2021 20:42:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 26331C433C6;
-        Wed, 10 Mar 2021 20:42:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 26331C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH v2 RESEND] bus: mhi: core: Wait for ready state after reset
-Date:   Wed, 10 Mar 2021 13:41:58 -0700
-Message-Id: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S230491AbhCJUoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:44:15 -0500
+IronPort-SDR: ziWv5KNtIST7z6I1+g9nvbU4w+qgqVyljisoYyRL5Tuj5dug9CxNoKmiWl7hwVGP2MDVZtibjB
+ v5hercud+LoQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167835676"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="167835676"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 12:44:15 -0800
+IronPort-SDR: j71S+seXjSD2UZQz7i5nkTRxqrVG0IghE+KqmMko2hAAUd91sa+u9WXuqyx8cG45Iwth9SGz1l
+ bMP616clnbTw==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="438040003"
+Received: from xuhuiliu-mobl1.amr.corp.intel.com ([10.251.31.67])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 12:44:09 -0800
+Message-ID: <519e3851e2857f653af29d64a79044cff233401b.camel@intel.com>
+Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>, Borislav Petkov <bp@alien8.de>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
+        b.thiel@posteo.de, jmattson@google.com, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, corbet@lwn.net
+Date:   Thu, 11 Mar 2021 09:44:07 +1300
+In-Reply-To: <YEkJXu262YDa8ZaK@kernel.org>
+References: <cover.1615250634.git.kai.huang@intel.com>
+         <20210309093037.GA699@zn.tnic> <YEkJXu262YDa8ZaK@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the device has signaled the end of reset by clearing the reset bit,
-it will automatically reinit MHI and the internal device structures.  Once
-That is done, the device will signal it has entered the ready state.
+On Wed, 2021-03-10 at 20:01 +0200, Jarkko Sakkinen wrote:
+> On Tue, Mar 09, 2021 at 10:30:37AM +0100, Borislav Petkov wrote:
+> > On Tue, Mar 09, 2021 at 02:38:49PM +1300, Kai Huang wrote:
+> > > This series adds KVM SGX virtualization support. The first 14 patches starting
+> > > with x86/sgx or x86/cpu.. are necessary changes to x86 and SGX core/driver to
+> > > support KVM SGX virtualization, while the rest are patches to KVM subsystem.
+> > 
+> > Ok, I guess I'll queue 1-14 once Sean doesn't find anything
+> > objectionable then give Paolo an immutable commit to base the KVM stuff
+> > ontop.
+> > 
+> > Unless folks have better suggestions, ofc.
+> 
+> I'm otherwise cool with that, except patch #2.
+> 
+> It's based on this series:
+> 
+> https://lore.kernel.org/linux-sgx/20210113233541.17669-1-jarkko@kernel.org/
+> 
+> It's not reasonable to create driver specific wrapper for
+> sgx_free_epc_page() because there is exactly *2* call sites of the function
+> in the driver.  The driver contains 10 call sites (11 after my NUMA patches
+> have been applied) of sgx_free_epc_page() in total.
+> 
+> Instead, it is better to add explicit EREMOVE to those call sites.
+> 
+> The wrapper only trashes the codebase. I'm not happy with it, given all the
+> trouble to make it clean and sound.
 
-Signaling the ready state involves sending an interrupt (MSI) to the host
-which might cause IOMMU faults if it occurs at the wrong time.
+However, your change has side effort: it always put page back into free pool, even
+EREMOVE fails. To make your change w/o having any functional change, it has to be:
 
-If the controller is being powered down, and possibly removed, then the
-reset flow would only wait for the end of reset.  At which point, the host
-and device would start a race.  The host may complete its reset work, and
-remove the interrupt handler, which would cause the interrupt to be
-disabled in the IOMMU.  If that occurs before the device signals the ready
-state, then the IOMMU will fault since it blocked an interrupt.  While
-harmless, the fault would appear like a serious issue has occurred so let's
-silence it by making sure the device hits the ready state before the host
-completes its reset processing.
+	if(!sgx_reset_epc_page())
+		sgx_free_epc_page();
 
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
- drivers/bus/mhi/core/pm.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+And for this, Dave raised one concern we should add a WARN() to let user know EPC
+page is leaked, and reboot is requied to get them back.
 
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index adb0e80..414da4f 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -467,7 +467,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
- 
- 	/* Trigger MHI RESET so that the device will not access host memory */
- 	if (!MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
--		u32 in_reset = -1;
-+		u32 in_reset = -1, ready = 0;
- 		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
- 
- 		dev_dbg(dev, "Triggering MHI Reset in device\n");
-@@ -490,6 +490,21 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
- 		 * hence re-program it
- 		 */
- 		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
-+
-+		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
-+			/* wait for ready to be set */
-+			ret = wait_event_timeout(mhi_cntrl->state_event,
-+						 mhi_read_reg_field(mhi_cntrl,
-+							mhi_cntrl->regs,
-+							MHISTATUS,
-+							MHISTATUS_READY_MASK,
-+							MHISTATUS_READY_SHIFT,
-+							&ready)
-+						 || ready, timeout);
-+			if (!ret || !ready)
-+				dev_warn(dev,
-+					"Device failed to enter READY state\n");
-+		}
- 	}
- 
- 	dev_dbg(dev,
--- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+However with sgx_reset_epc_page(), there's no place to add such WARN(), and
+implementing original sgx_free_epc_page() as sgx_encl_free_epc_page() looks very
+reasonable to me:
+
+https://www.spinics.net/lists/linux-sgx/msg04631.html
+
+Hi Dave,
+
+What is your comment here?
+
+> 
+> > Thx.
+> > 
+> > -- 
+> > Regards/Gruss,
+> >     Boris.
+> > 
+> > https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> 
+> /Jarkko
+
 
