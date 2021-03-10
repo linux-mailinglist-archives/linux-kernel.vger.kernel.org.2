@@ -2,165 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014FE3346A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773F43346A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 19:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232330AbhCJSYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 13:24:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233130AbhCJSYU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:24:20 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43ECBC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:24:20 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id p15so26797060ljc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 10:24:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uM8pUZ0KtpIP4tmwMWGoiI2kI1p+H+zJasTko8V61Mw=;
-        b=qK+Eak/IUin0xvRSRy/doM8DVPq6tgbzFJp2RqOhLyzg39iiQj/3VtuCR4uh4V0taP
-         NsJH1HKbhu0DA0STZiobO4FRclLpJEt1UW0057VMAwvwB0/2Lvpz5cfmnFJqoyJrkDK/
-         qnXIiaQfNmk+AncdFYYrid1iADXijko36+wbl2oEEZOV/VkpbNPsp1eGwRqPOtkBa7w2
-         N+TD887AuLjcacHbPDsBdHa03V9wJo3qc5Zl7T8H5uqlUZziiDR8MCOBQXh131LMdOff
-         0jh07+UhYLy4Kwk5TlToV6EcfCjmg03X+58fhcS4z17+rkIb17h+VG85eIIeBDMRwJW7
-         Ipow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uM8pUZ0KtpIP4tmwMWGoiI2kI1p+H+zJasTko8V61Mw=;
-        b=SEVnPWnPd7Pp5DtY1hNZrZkxNSe7UOQ0Ny6/mDIgCOoI/cyhjbYkTNYuX7jlIBPJlv
-         xUjccUpvto/p0Emycubsj8sr+6VLuqsKhR63geCQiyfxafPvtW/nbDeRJiyIs9nfK8Ps
-         8rOXtrN6EX+gQk309cqZouUYY9nRkj5+OO2Lufc2zE7RWS+PNKOohfmIaKGw+pPPLWc7
-         +zXepokeivKzmpvjbd+DUJ+vs/qOHfya7QjdMesKT0bWx26EU2C7MmwQpugNLUjghIrp
-         lcNQl0dYYUh1dBtK2St4wjCX3Vf7SOSfUbRsZ8GInAJKSyDgQDxJJNm4IPLTTtPKhnV9
-         eybA==
-X-Gm-Message-State: AOAM532OWaks9FnNRfiOiwcf4qJ7vuQrXlLD38nki/2+XTuw37lCChY7
-        im8o6EPMnP70KcIRbdj0JbJSxNHXy54Sl60PQe/XWg==
-X-Google-Smtp-Source: ABdhPJwd9A8937MRDsobC/NbdnlGRgLFg6wQJm3RHO2xVNlco62TixObhQVwvQCnX4kNOVtcvAu23vTVZ6Boxb6yHMc=
-X-Received: by 2002:a2e:8984:: with SMTP id c4mr2444913lji.456.1615400658479;
- Wed, 10 Mar 2021 10:24:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20210310174603.5093-1-shy828301@gmail.com> <20210310174603.5093-14-shy828301@gmail.com>
-In-Reply-To: <20210310174603.5093-14-shy828301@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 10 Mar 2021 10:24:06 -0800
-Message-ID: <CALvZod5q5LDEfUMuvO7V2hTf+oCsBGXKZn3tBByOXL952wqbRw@mail.gmail.com>
-Subject: Re: [v9 PATCH 13/13] mm: vmscan: shrink deferred objects proportional
- to priority
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
+        id S232846AbhCJS0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 13:26:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231138AbhCJS0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:26:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20AFD64EE6;
+        Wed, 10 Mar 2021 18:26:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615400777;
+        bh=UWnQsIGwkgbWSvIc8G15s/a5eaz1NZT7a4zcMVwZDAU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ti3Mev1IJa4BycbRYeWecKa8ZM5CCUHjI2YO8nwTqh4L3Lj474IHJQEz4Pug2p/b8
+         CtmEa5F6bEWQOmA8hileaVaXiBVxzKNmWUEk+lpKvfOE34zr3WoCimJ0G1Y/AZI47y
+         38eexWiDbE2kOixPr3zhvCirhzhgnD4Rx9gBbNPU=
+Date:   Wed, 10 Mar 2021 19:26:15 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alex Elder <elder@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>, lkft-triage@lists.linaro.org
+Subject: Re: [PATCH 5.10 00/49] 5.10.23-rc1 review
+Message-ID: <YEkPRy/RUfF764r+@kroah.com>
+References: <20210310132321.948258062@linuxfoundation.org>
+ <CA+G9fYuydf-g2FPOtP9LAX-4zY3EF64Bx0OQjbjn=a4V+0=eLA@mail.gmail.com>
+ <20210310175834.GA257774@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310175834.GA257774@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 9:46 AM Yang Shi <shy828301@gmail.com> wrote:
->
-> The number of deferred objects might get windup to an absurd number, and it
-> results in clamp of slab objects.  It is undesirable for sustaining workingset.
->
-> So shrink deferred objects proportional to priority and cap nr_deferred to twice
-> of cache items.
->
-> The idea is borrowed from Dave Chinner's patch:
-> https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
->
-> Tested with kernel build and vfs metadata heavy workload in our production
-> environment, no regression is spotted so far.
+On Wed, Mar 10, 2021 at 09:58:34AM -0800, Guenter Roeck wrote:
+> On Wed, Mar 10, 2021 at 11:08:10PM +0530, Naresh Kamboju wrote:
+> > On Wed, 10 Mar 2021 at 18:54, <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > >
+> > > This is the start of the stable review cycle for the 5.10.23 release.
+> > > There are 49 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > >
+> > > Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.23-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> > 
+> > While building stable rc 5.10 for arm64 the build failed due to
+> > the following errors / warnings.
+> > 
+> > make --silent --keep-going --jobs=8
+> > O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
+> > CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+> > clang'
+> > drivers/net/ipa/gsi.c:1074:7: error: use of undeclared identifier
+> > 'GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL'
+> >         case GENERIC_EE_CHANNEL_NOT_RUNNING_FVAL:
+> >              ^
+> > 1 error generated.
+> > make[4]: *** [scripts/Makefile.build:279: drivers/net/ipa/gsi.o] Error 1
+> > 
+> Also:
+> 
+> Building arm64:allmodconfig ... failed
+> --------------
+> Error log:
+> sound/soc/intel/boards/sof_rt5682.c:117:6: error: 'SOF_RT1015_SPEAKER_AMP_100FS' undeclared here
 
-Did you run both of these workloads in the same cgroup or separate cgroups?
+This patch now dropped, thanks.
 
->
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  mm/vmscan.c | 46 +++++++++++-----------------------------------
->  1 file changed, 11 insertions(+), 35 deletions(-)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 9a2dfeaa79f4..6a0a91b23597 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -662,7 +662,6 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
->          */
->         nr = xchg_nr_deferred(shrinker, shrinkctl);
->
-> -       total_scan = nr;
->         if (shrinker->seeks) {
->                 delta = freeable >> priority;
->                 delta *= 4;
-> @@ -676,37 +675,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
->                 delta = freeable / 2;
->         }
->
-> +       total_scan = nr >> priority;
->         total_scan += delta;
-> -       if (total_scan < 0) {
-> -               pr_err("shrink_slab: %pS negative objects to delete nr=%ld\n",
-> -                      shrinker->scan_objects, total_scan);
-> -               total_scan = freeable;
-> -               next_deferred = nr;
-> -       } else
-> -               next_deferred = total_scan;
-> -
-> -       /*
-> -        * We need to avoid excessive windup on filesystem shrinkers
-> -        * due to large numbers of GFP_NOFS allocations causing the
-> -        * shrinkers to return -1 all the time. This results in a large
-> -        * nr being built up so when a shrink that can do some work
-> -        * comes along it empties the entire cache due to nr >>>
-> -        * freeable. This is bad for sustaining a working set in
-> -        * memory.
-> -        *
-> -        * Hence only allow the shrinker to scan the entire cache when
-> -        * a large delta change is calculated directly.
-> -        */
-> -       if (delta < freeable / 4)
-> -               total_scan = min(total_scan, freeable / 2);
-> -
-> -       /*
-> -        * Avoid risking looping forever due to too large nr value:
-> -        * never try to free more than twice the estimate number of
-> -        * freeable entries.
-> -        */
-> -       if (total_scan > freeable * 2)
-> -               total_scan = freeable * 2;
-> +       total_scan = min(total_scan, (2 * freeable));
->
->         trace_mm_shrink_slab_start(shrinker, shrinkctl, nr,
->                                    freeable, delta, total_scan, priority);
-> @@ -745,10 +716,15 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
->                 cond_resched();
->         }
->
-> -       if (next_deferred >= scanned)
-> -               next_deferred -= scanned;
-> -       else
-> -               next_deferred = 0;
-> +       /*
-> +        * The deferred work is increased by any new work (delta) that wasn't
-> +        * done, decreased by old deferred work that was done now.
-> +        *
-> +        * And it is capped to two times of the freeable items.
-> +        */
-> +       next_deferred = max_t(long, (nr + delta - scanned), 0);
-> +       next_deferred = min(next_deferred, (2 * freeable));
-> +
->         /*
->          * move the unused scan count back into the shrinker in a
->          * manner that handles concurrent updates.
-> --
-> 2.26.2
->
+greg k-h
