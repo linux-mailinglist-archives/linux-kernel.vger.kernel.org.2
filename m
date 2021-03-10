@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A4233371C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 022F7333724
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhCJIPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:15:34 -0500
-Received: from verein.lst.de ([213.95.11.211]:35068 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229904AbhCJIPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:15:14 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C83AB68B05; Wed, 10 Mar 2021 09:15:09 +0100 (CET)
-Date:   Wed, 10 Mar 2021 09:15:08 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     jgg@nvidia.com, alex.williamson@redhat.com, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
-        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
-        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
-        mjrosato@linux.ibm.com, aik@ozlabs.ru, hch@lst.de
-Subject: Re: [PATCH 9/9] vfio/pci: export igd support into vendor vfio_pci
- driver
-Message-ID: <20210310081508.GB4364@lst.de>
-References: <20210309083357.65467-1-mgurtovoy@nvidia.com> <20210309083357.65467-10-mgurtovoy@nvidia.com>
+        id S230481AbhCJIRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:17:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhCJIRB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:17:01 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FD9C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:17:01 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id dx17so36786484ejb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 00:17:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Yz3/NapStuDE+x+ZZl/tDltLKdbda90tbUvwhJ9e1s=;
+        b=Sv0cLWYhmCUh8YdfxgJyfrGi6dqUoz1gT1CKoOPY1xRit3aV0WpSBVplnFeY4YPBao
+         ybFdFpEIWsjPTOyg/HAzTSmlLCecF306hfaQF6KxEVrmcHPC97jb0oVcjTO00QToKXX0
+         fufJyXV84DvMDHwoUmZi5IDsC2KrZtCReRQlgi+U7T8jkyu3WYRACB7QSJduykpPrWwH
+         uvtPloc5adPXHp6D1oCzbRQZxVoLTnWXfPmezHx4RhI8qnUzlsJk2zXGkKrxZasZCYaP
+         vbLgZ0gwZlywG2hxADX3PdYMcyDbTSlXkhk9Ff8oqPFodigGejMlq1o7yGVQ22ivaH9c
+         uKPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=3Yz3/NapStuDE+x+ZZl/tDltLKdbda90tbUvwhJ9e1s=;
+        b=eXNUsLAAUrwjD+X7gmFv8IPqa0yKbGYuwCLc1wxKPjvCM5KB09HwIrj+eS2/HIGUIr
+         foUPKe5GqlPveGtRj6Iawq7+edmdZBYwM+QDi2/r3kkMar3EldQLquRhVPTuAZGbUYBQ
+         czwtt9kp6bH0qYTmb9niqlZMeECP/uqxKE/hmqrvRjc7hUuneggT9QcjOHvvMGVR7u4I
+         kbK3ZnF/cOtxN028UAeX7nZArvl6O9VoCDcVlE9sS8OuBS/SakRwCQya+OhqXV2c0ZRr
+         WilaSO8Zdcihu/UogR2mJrpGrmAQYXsXoYV1pu3txhw19j3yCcE/km65gA6QClzkTqGl
+         p3Kw==
+X-Gm-Message-State: AOAM5316i8Abj28ZSaLowVwKrMLnXBjiNwbPXZ1ZYwyuf6Vef4K6rfLc
+        FaKFP+mmqDaPQneB32FVKXb85k1N46hlStAu
+X-Google-Smtp-Source: ABdhPJz4ZTXnSuoq4KUK5DrPNX65o1gIe5a95m7wuEf/U2c1T8EoCxvSQV29LqaOQctTi/+vYBB5mA==
+X-Received: by 2002:a17:907:9870:: with SMTP id ko16mr2344119ejc.227.1615364219497;
+        Wed, 10 Mar 2021 00:16:59 -0800 (PST)
+Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
+        by smtp.gmail.com with ESMTPSA id n25sm10513909edq.55.2021.03.10.00.16.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Mar 2021 00:16:58 -0800 (PST)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-gpio@vger.kernel.org
+Subject: [PATCH] pinctrl: core: Handling pinmux and pinconf separately
+Date:   Wed, 10 Mar 2021 09:16:54 +0100
+Message-Id: <cfbe01f791c2dd42a596cbda57e15599969b57aa.1615364211.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309083357.65467-10-mgurtovoy@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The terminology is all weird here.  You don't export functionality
-you move it.  And this is not a "vendor" driver, but just a device
-specific one.
+Right now the handling order depends on how entries are coming which is
+corresponding with order in DT. We have reached the case with DT overlays
+where conf and mux descriptions are exchanged which ends up in sequence
+that firmware has been asked to perform configuration before requesting the
+pin.
+The patch is enforcing the order that pin is requested all the time first
+followed by pin configuration. This change will ensure that firmware gets
+requests in the right order.
 
-> +struct igd_vfio_pci_device {
-> +	struct vfio_pci_core_device	vdev;
-> +};
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
-Why do you need this separate structure?  You could just use
-vfio_pci_core_device directly.
+ drivers/pinctrl/core.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-> +static void igd_vfio_pci_release(void *device_data)
-> +{
-> +	struct vfio_pci_core_device *vdev = device_data;
-> +
-> +	mutex_lock(&vdev->reflck->lock);
-> +	if (!(--vdev->refcnt)) {
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index 7d3370289938..f5c32d2a3c91 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -1258,13 +1258,34 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
+ 
+ 	p->state = NULL;
+ 
+-	/* Apply all the settings for the new state */
++	/* Apply all the settings for the new state - pinmux first */
+ 	list_for_each_entry(setting, &state->settings, node) {
+ 		switch (setting->type) {
+ 		case PIN_MAP_TYPE_MUX_GROUP:
+ 			ret = pinmux_enable_setting(setting);
+ 			break;
+ 		case PIN_MAP_TYPE_CONFIGS_PIN:
++		case PIN_MAP_TYPE_CONFIGS_GROUP:
++			break;
++		default:
++			ret = -EINVAL;
++			break;
++		}
++
++		if (ret < 0)
++			goto unapply_new_state;
++
++		/* Do not link hogs (circular dependency) */
++		if (p != setting->pctldev->p)
++			pinctrl_link_add(setting->pctldev, p->dev);
++	}
++
++	/* Apply all the settings for the new state - pinconf after */
++	list_for_each_entry(setting, &state->settings, node) {
++		switch (setting->type) {
++		case PIN_MAP_TYPE_MUX_GROUP:
++			break;
++		case PIN_MAP_TYPE_CONFIGS_PIN:
+ 		case PIN_MAP_TYPE_CONFIGS_GROUP:
+ 			ret = pinconf_apply_setting(setting);
+ 			break;
+-- 
+2.30.1
 
-No need for the braces here.
-
-> +		vfio_pci_vf_token_user_add(vdev, -1);
-> +		vfio_pci_core_spapr_eeh_release(vdev);
-> +		vfio_pci_core_disable(vdev);
-> +	}
-> +	mutex_unlock(&vdev->reflck->lock);
-
-But more importantly all this code should be in a helper exported
-from the core code.
-
-> +
-> +	module_put(THIS_MODULE);
-
-This looks bogus - the module reference is now gone while
-igd_vfio_pci_release is still running.  Module refcounting always
-need to be done by the caller, not the individual driver.
-
-> +static int igd_vfio_pci_open(void *device_data)
-> +{
-> +	struct vfio_pci_core_device *vdev = device_data;
-> +	int ret = 0;
-> +
-> +	if (!try_module_get(THIS_MODULE))
-> +		return -ENODEV;
-
-Same here - thi is something the caller needs to do.
-
-> +	mutex_lock(&vdev->reflck->lock);
-> +
-> +	if (!vdev->refcnt) {
-> +		ret = vfio_pci_core_enable(vdev);
-> +		if (ret)
-> +			goto error;
-> +
-> +		ret = vfio_pci_igd_init(vdev);
-> +		if (ret && ret != -ENODEV) {
-> +			pci_warn(vdev->pdev, "Failed to setup Intel IGD regions\n");
-> +			vfio_pci_core_disable(vdev);
-> +			goto error;
-> +		}
-> +		ret = 0;
-> +		vfio_pci_probe_mmaps(vdev);
-> +		vfio_pci_core_spapr_eeh_open(vdev);
-> +		vfio_pci_vf_token_user_add(vdev, 1);
-
-Way to much boilerplate.  Why doesn't the core only call a function
-that does the vfio_pci_igd_init?
-
-> +static const struct pci_device_id igd_vfio_pci_table[] = {
-> +	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_DISPLAY_VGA << 8, 0xff0000, 0 },
-
-Please avoid the overly long line.  And a match as big as any Intel
-graphics at very least needs a comment documenting why this is safe
-and will perpetually remain safe.
-
-> +#ifdef CONFIG_VFIO_PCI_DRIVER_COMPAT
-> +struct pci_driver *get_igd_vfio_pci_driver(struct pci_dev *pdev)
-> +{
-> +	if (pci_match_id(igd_vfio_pci_driver.id_table, pdev))
-> +		return &igd_vfio_pci_driver;
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(get_igd_vfio_pci_driver);
-> +#endif
-
-> +	case PCI_VENDOR_ID_INTEL:
-> +		if (pdev->class == PCI_CLASS_DISPLAY_VGA << 8)
-> +			return get_igd_vfio_pci_driver(pdev);
-
-And this now means that the core code has a dependency on the igd
-one, making the whole split rather pointless.
