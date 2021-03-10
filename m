@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A7C333857
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1CE33386A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232618AbhCJJJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:09:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50187 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232702AbhCJJJC (ORCPT
+        id S232482AbhCJJKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:10:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232557AbhCJJKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:09:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615367341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BmockwskQjMF5QAoMpBw7lnx9hxakWy3Uk40dCq8ECk=;
-        b=U1lyzCNowXrGphX46uwpzj+PVcshjmU5KyF3DPj4OpCtMkZ0XF+mSzCX0mPc3yxfBSQjfn
-        8TKI5MXZGUSqqwyijxyDtW8MtvPSkliZ0KAVaLbRuKgLVbPDETqXZDtFLPWodpqDNgY6Xn
-        HRLZn/NvAnWXS+IZZcC9gQFNDtnFUg0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-112-fbtTCrxbNQe_6XbrAqTBZA-1; Wed, 10 Mar 2021 04:09:00 -0500
-X-MC-Unique: fbtTCrxbNQe_6XbrAqTBZA-1
-Received: by mail-wm1-f71.google.com with SMTP id y9so881991wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:08:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BmockwskQjMF5QAoMpBw7lnx9hxakWy3Uk40dCq8ECk=;
-        b=FSQ6frneiCfGHJpUyfKUYzSYojBtyD7UGdEZISqtYevCMXu4N0cW2ni0RJRVN3xrxy
-         rLN+uavws/cs2TBNDBqDqtJ+rIp4/fewNHFE2jd9HeRzd9b+Y5BmjqqZJVFx57WiGhMW
-         MsMwH1AEtG0S3aL1uMIwZknobNOVgJpaKn4U1G6GDoqjH4V6pTKJYk8KAT2KSEpks1v6
-         rag+WR4n6YdUOyeSARDfQrcoc548nVWSSs9VrA1btyaijiGc3kDH56ct0yD+dbHzLKCC
-         Dx3kZdWtG/wlg+9KgVo941BAxBGJeeJnG6Jz1xtkdectLbUIq4V0LOLB6YQfr2eLaqNe
-         Sfyg==
-X-Gm-Message-State: AOAM53049vInb0GpQ1oHgP2SWuyI/4DDSKhcaPPacBifqBbjtBGDeWFi
-        h3QQOjzjNhS/HN1b+PHS5R1t7rFK9FbxWHw3Fu/kXEIOXPJQpP905oraTJOOmkCbRJbEWgXf7vr
-        qYAXwmMG/ZXXion4oCSuKwaCj
-X-Received: by 2002:a05:600c:2d42:: with SMTP id a2mr2316383wmg.77.1615367338737;
-        Wed, 10 Mar 2021 01:08:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzxQCipYAWNB0txuNi1jdo9rluJARSnskL/vwWkiJ/cIOzii1j16GaSPbgIx+cPvASjDYCFMQ==
-X-Received: by 2002:a05:600c:2d42:: with SMTP id a2mr2316363wmg.77.1615367338594;
-        Wed, 10 Mar 2021 01:08:58 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d29sm28275541wra.51.2021.03.10.01.08.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 01:08:57 -0800 (PST)
-Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
-To:     Babu Moger <babu.moger@amd.com>, Jim Mattson <jmattson@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Sean Christopherson <seanjc@google.com>
-References: <159985237526.11252.1516487214307300610.stgit@bmoger-ubuntu>
- <83a96ca9-0810-6c07-2e45-5aa2da9b1ab0@redhat.com>
- <5df9b517-448f-d631-2222-6e78d6395ed9@amd.com>
- <CALMp9eRDSW66+XvbHVF4ohL7XhThoPoT0BrB0TcS0cgk=dkcBg@mail.gmail.com>
- <bb2315e3-1c24-c5ae-3947-27c5169a9d47@amd.com>
- <CALMp9eQBY50kZT6WdM-D2gmUgDZmCYTn+kxcxk8EQTg=SygLKA@mail.gmail.com>
- <21ee28c6-f693-e7c0-6d83-92daa9a46880@amd.com>
- <01cf2fd7-626e-c084-5a6a-1a53d111d9fa@amd.com>
- <84f42bad-9fb0-8a76-7f9b-580898b634b9@amd.com>
- <032386c6-4b4c-2d3f-0f6a-3d6350363b3c@amd.com>
- <CALMp9eTTBcdADUYizO-ADXUfkydVGqRm0CSQUO92UHNnfQ-qFw@mail.gmail.com>
- <0ebda5c6-097e-20bb-d695-f444761fbb79@amd.com>
- <0d8f6573-f7f6-d355-966a-9086a00ef56c@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1451b13e-c67f-8948-64ff-5c01cfb47ea7@redhat.com>
-Date:   Wed, 10 Mar 2021 10:08:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 10 Mar 2021 04:10:31 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6769EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:10:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=pLCS94GcTa
+        H2GKIiQ+BY02BGYn72s8ZyHkaYsJZadf8=; b=Dj78AAhNHpiAV0NMAY6h8t3Yrr
+        3sw6XPMREnBJElkq4dwG8IWTzArjVlAtpw4TemTx470ZVJifwZO+UQUeZG65w0+X
+        sntpHaRre/gKbdW1Z3WKONVXaAAbCl+BQW2gQo8AuOfmI5kTMWivzLAogQ94UX/V
+        jctVp5nUVFxuMwKD8=
+Received: from ubuntu.localdomain (unknown [114.214.224.243])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBHM2AAjUhg5foCAA--.130S4;
+        Wed, 10 Mar 2021 17:10:24 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org
+Cc:     greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] greybus/operation: Drop reference when message has been set
+Date:   Wed, 10 Mar 2021 01:10:14 -0800
+Message-Id: <20210310091014.6407-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <0d8f6573-f7f6-d355-966a-9086a00ef56c@amd.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygBHM2AAjUhg5foCAA--.130S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XryftrW8Cr1rAr18tw48tFb_yoWftFc_uF
+        18trs7A3WkJr4DK347uw1fZrnayr4v9r1xur17t39xA34avr1DJr98Wws5WrW7Wr18Xr1a
+        ya4DJF1UXrn7ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbx8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ2
+        3UUUUU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/03/21 02:04, Babu Moger wrote:
-> Debian kernel 4.10(tag 4.10~rc6-1~exp1) also works fine. It appears the
-> problem is on Debian 4.9 kernel. I am not sure how to run git bisect on
-> Debian kernel. Tried anyway. It is pointing to
-> 
-> 47811c66356d875e76a6ca637a9d384779a659bb is the first bad commit
-> commit 47811c66356d875e76a6ca637a9d384779a659bb
-> Author: Ben Hutchings<benh@debian.org>
-> Date:   Mon Mar 8 01:17:32 2021 +0100
-> 
->      Prepare to release linux (4.9.258-1).
-> 
-> It does not appear to be the right commit. I am out of ideas now.
-> hanks
+In gb_operation_response_send, get an extra reference
+before gb_message_send() with this comment "/* Reference will
+be dropped when message has been sent. */". Therefore, we
+should drop the got reference not only in the error branch,
+but also in the complete branch.
 
-Have you tried bisecting the upstream stable kernels (from 4.9.0 to 
-4.9.258)?
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/greybus/operation.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Paolo
+diff --git a/drivers/greybus/operation.c b/drivers/greybus/operation.c
+index 296f0b93d171..500b3fe53a04 100644
+--- a/drivers/greybus/operation.c
++++ b/drivers/greybus/operation.c
+@@ -855,7 +855,7 @@ static int gb_operation_response_send(struct gb_operation *operation,
+ 	if (ret)
+ 		goto err_put_active;
+ 
+-	/*Drop reference after message send successfully. */
++	/*Drop reference after message send completes. */
+ 	gb_operation_put_active(operation);
+ 	gb_operation_put(operation);
+ 
+-- 
+2.25.1
+
 
