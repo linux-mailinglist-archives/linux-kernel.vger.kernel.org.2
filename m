@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D696333DEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00798333E44
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233228AbhCJNZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:25:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45570 "EHLO mail.kernel.org"
+        id S233517AbhCJNZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:25:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232814AbhCJNYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 094A664FD8;
-        Wed, 10 Mar 2021 13:24:21 +0000 (UTC)
+        id S232910AbhCJNYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A45F64FDA;
+        Wed, 10 Mar 2021 13:24:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382663;
-        bh=1KaVJhICpHXO6lUzfQqBdyG9rL4ohMn5NpgaZN+BPXs=;
+        s=korg; t=1615382680;
+        bh=YvgajY/lVqGmMKTtIn92RfSxKE6dqCsFl1pX0dGH06Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OwBx3pAAM6YmFiZPC5A2DtNZ5BSX0xPcQMBYHBoJh+oMuqBU+Lw087HA9ooiBJUHr
-         kZ4ww/A5QyFXMt47Lh7yssPJvXCBiOdkYEjiIt7oaEnzq0CLQthv4E2DVT70IMIScX
-         E/W9+6EY+1mdqf5JxWk1TIKjRavEASvT+i0nBJMc=
+        b=KgmIwDg+Zdvpk+K59a4JYRCB/CaGlt3jYWqWHMQ80JUwUMqjzJyuygq5Bboe1SdzZ
+         zRgn5+OliX1xal8FsBghB1pl7b7QYBIGC3WQsdScXrdoX59hro5pmeQ8Lhb1GaH0k6
+         i1iaG5iGPosTncu1Wy3MX7qpJkVYExsVu85kJwpw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.11 16/36] btrfs: dont flush from btrfs_delayed_inode_reserve_metadata
-Date:   Wed, 10 Mar 2021 14:23:29 +0100
-Message-Id: <20210310132321.026545448@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 19/49] platform/x86: acer-wmi: Add support for SW_TABLET_MODE on Switch devices
+Date:   Wed, 10 Mar 2021 14:23:30 +0100
+Message-Id: <20210310132322.566512132@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
-References: <20210310132320.510840709@linuxfoundation.org>
+In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
+References: <20210310132321.948258062@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,117 +43,215 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Nikolay Borisov <nborisov@suse.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 4d14c5cde5c268a2bc26addecf09489cb953ef64 upstream
+[ Upstream commit 5c54cb6c627e8f50f490e6b5656051a5ac29eab4 ]
 
-Calling btrfs_qgroup_reserve_meta_prealloc from
-btrfs_delayed_inode_reserve_metadata can result in flushing delalloc
-while holding a transaction and delayed node locks. This is deadlock
-prone. In the past multiple commits:
+Add support for SW_TABLET_MODE on the Acer Switch 10 (SW5-012) and the
+acer Switch 10 (S1003) models.
 
- * ae5e070eaca9 ("btrfs: qgroup: don't try to wait flushing if we're
-already holding a transaction")
+There is no way to detect if this is supported, so this uses DMI based
+quirks setting force_caps to ACER_CAP_KBD_DOCK (these devices have no
+other acer-wmi based functionality).
 
- * 6f23277a49e6 ("btrfs: qgroup: don't commit transaction when we already
- hold the handle")
+The new SW_TABLET_MODE functionality can be tested on devices which
+are not in the DMI table by passing acer_wmi.force_caps=0x40 on the
+kernel commandline.
 
-Tried to solve various aspects of this but this was always a
-whack-a-mole game. Unfortunately those 2 fixes don't solve a deadlock
-scenario involving btrfs_delayed_node::mutex. Namely, one thread
-can call btrfs_dirty_inode as a result of reading a file and modifying
-its atime:
-
-  PID: 6963   TASK: ffff8c7f3f94c000  CPU: 2   COMMAND: "test"
-  #0  __schedule at ffffffffa529e07d
-  #1  schedule at ffffffffa529e4ff
-  #2  schedule_timeout at ffffffffa52a1bdd
-  #3  wait_for_completion at ffffffffa529eeea             <-- sleeps with delayed node mutex held
-  #4  start_delalloc_inodes at ffffffffc0380db5
-  #5  btrfs_start_delalloc_snapshot at ffffffffc0393836
-  #6  try_flush_qgroup at ffffffffc03f04b2
-  #7  __btrfs_qgroup_reserve_meta at ffffffffc03f5bb6     <-- tries to reserve space and starts delalloc inodes.
-  #8  btrfs_delayed_update_inode at ffffffffc03e31aa      <-- acquires delayed node mutex
-  #9  btrfs_update_inode at ffffffffc0385ba8
- #10  btrfs_dirty_inode at ffffffffc038627b               <-- TRANSACTIION OPENED
- #11  touch_atime at ffffffffa4cf0000
- #12  generic_file_read_iter at ffffffffa4c1f123
- #13  new_sync_read at ffffffffa4ccdc8a
- #14  vfs_read at ffffffffa4cd0849
- #15  ksys_read at ffffffffa4cd0bd1
- #16  do_syscall_64 at ffffffffa4a052eb
- #17  entry_SYSCALL_64_after_hwframe at ffffffffa540008c
-
-This will cause an asynchronous work to flush the delalloc inodes to
-happen which can try to acquire the same delayed_node mutex:
-
-  PID: 455    TASK: ffff8c8085fa4000  CPU: 5   COMMAND: "kworker/u16:30"
-  #0  __schedule at ffffffffa529e07d
-  #1  schedule at ffffffffa529e4ff
-  #2  schedule_preempt_disabled at ffffffffa529e80a
-  #3  __mutex_lock at ffffffffa529fdcb                    <-- goes to sleep, never wakes up.
-  #4  btrfs_delayed_update_inode at ffffffffc03e3143      <-- tries to acquire the mutex
-  #5  btrfs_update_inode at ffffffffc0385ba8              <-- this is the same inode that pid 6963 is holding
-  #6  cow_file_range_inline.constprop.78 at ffffffffc0386be7
-  #7  cow_file_range at ffffffffc03879c1
-  #8  btrfs_run_delalloc_range at ffffffffc038894c
-  #9  writepage_delalloc at ffffffffc03a3c8f
- #10  __extent_writepage at ffffffffc03a4c01
- #11  extent_write_cache_pages at ffffffffc03a500b
- #12  extent_writepages at ffffffffc03a6de2
- #13  do_writepages at ffffffffa4c277eb
- #14  __filemap_fdatawrite_range at ffffffffa4c1e5bb
- #15  btrfs_run_delalloc_work at ffffffffc0380987         <-- starts running delayed nodes
- #16  normal_work_helper at ffffffffc03b706c
- #17  process_one_work at ffffffffa4aba4e4
- #18  worker_thread at ffffffffa4aba6fd
- #19  kthread at ffffffffa4ac0a3d
- #20  ret_from_fork at ffffffffa54001ff
-
-To fully address those cases the complete fix is to never issue any
-flushing while holding the transaction or the delayed node lock. This
-patch achieves it by calling qgroup_reserve_meta directly which will
-either succeed without flushing or will fail and return -EDQUOT. In the
-latter case that return value is going to be propagated to
-btrfs_dirty_inode which will fallback to start a new transaction. That's
-fine as the majority of time we expect the inode will have
-BTRFS_DELAYED_NODE_INODE_DIRTY flag set which will result in directly
-copying the in-memory state.
-
-Fixes: c53e9653605d ("btrfs: qgroup: try to flush qgroup space when we get -EDQUOT")
-CC: stable@vger.kernel.org # 5.10+
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20201019185628.264473-6-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/delayed-inode.c |    3 ++-
- fs/btrfs/inode.c         |    2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/platform/x86/acer-wmi.c | 109 +++++++++++++++++++++++++++++++-
+ 1 file changed, 106 insertions(+), 3 deletions(-)
 
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -627,7 +627,8 @@ static int btrfs_delayed_inode_reserve_m
- 	 */
- 	if (!src_rsv || (!trans->bytes_reserved &&
- 			 src_rsv->type != BTRFS_BLOCK_RSV_DELALLOC)) {
--		ret = btrfs_qgroup_reserve_meta_prealloc(root, num_bytes, true);
-+		ret = btrfs_qgroup_reserve_meta(root, num_bytes,
-+					  BTRFS_QGROUP_RSV_META_PREALLOC, true);
- 		if (ret < 0)
- 			return ret;
- 		ret = btrfs_block_rsv_add(root, dst_rsv, num_bytes,
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5916,7 +5916,7 @@ static int btrfs_dirty_inode(struct inod
- 		return PTR_ERR(trans);
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 8662468491a3..1efca84bc1bd 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -30,6 +30,7 @@
+ #include <linux/input/sparse-keymap.h>
+ #include <acpi/video.h>
  
- 	ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
--	if (ret && ret == -ENOSPC) {
-+	if (ret && (ret == -ENOSPC || ret == -EDQUOT)) {
- 		/* whoops, lets try again with the full transaction */
- 		btrfs_end_transaction(trans);
- 		trans = btrfs_start_transaction(root, 1);
++ACPI_MODULE_NAME(KBUILD_MODNAME);
+ MODULE_AUTHOR("Carlos Corbacho");
+ MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
+ MODULE_LICENSE("GPL");
+@@ -80,7 +81,7 @@ MODULE_ALIAS("wmi:676AA15E-6A47-4D9F-A2CC-1E6D18D14026");
+ 
+ enum acer_wmi_event_ids {
+ 	WMID_HOTKEY_EVENT = 0x1,
+-	WMID_ACCEL_EVENT = 0x5,
++	WMID_ACCEL_OR_KBD_DOCK_EVENT = 0x5,
+ };
+ 
+ static const struct key_entry acer_wmi_keymap[] __initconst = {
+@@ -128,7 +129,9 @@ struct event_return_value {
+ 	u8 function;
+ 	u8 key_num;
+ 	u16 device_state;
+-	u32 reserved;
++	u16 reserved1;
++	u8 kbd_dock_state;
++	u8 reserved2;
+ } __attribute__((packed));
+ 
+ /*
+@@ -212,6 +215,7 @@ struct hotkey_function_type_aa {
+ #define ACER_CAP_BRIGHTNESS		BIT(3)
+ #define ACER_CAP_THREEG			BIT(4)
+ #define ACER_CAP_SET_FUNCTION_MODE	BIT(5)
++#define ACER_CAP_KBD_DOCK		BIT(6)
+ 
+ /*
+  * Interface type flags
+@@ -320,6 +324,15 @@ static int __init dmi_matched(const struct dmi_system_id *dmi)
+ 	return 1;
+ }
+ 
++static int __init set_force_caps(const struct dmi_system_id *dmi)
++{
++	if (force_caps == -1) {
++		force_caps = (uintptr_t)dmi->driver_data;
++		pr_info("Found %s, set force_caps to 0x%x\n", dmi->ident, force_caps);
++	}
++	return 1;
++}
++
+ static struct quirk_entry quirk_unknown = {
+ };
+ 
+@@ -498,6 +511,24 @@ static const struct dmi_system_id acer_quirks[] __initconst = {
+ 		},
+ 		.driver_data = &quirk_acer_travelmate_2490,
+ 	},
++	{
++		.callback = set_force_caps,
++		.ident = "Acer Aspire Switch 10 SW5-012",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
++		},
++		.driver_data = (void *)ACER_CAP_KBD_DOCK,
++	},
++	{
++		.callback = set_force_caps,
++		.ident = "Acer One 10 (S1003)",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "One S1003"),
++		},
++		.driver_data = (void *)ACER_CAP_KBD_DOCK,
++	},
+ 	{}
+ };
+ 
+@@ -1542,6 +1573,71 @@ static int acer_gsensor_event(void)
+ 	return 0;
+ }
+ 
++/*
++ * Switch series keyboard dock status
++ */
++static int acer_kbd_dock_state_to_sw_tablet_mode(u8 kbd_dock_state)
++{
++	switch (kbd_dock_state) {
++	case 0x01: /* Docked, traditional clamshell laptop mode */
++		return 0;
++	case 0x04: /* Stand-alone tablet */
++	case 0x40: /* Docked, tent mode, keyboard not usable */
++		return 1;
++	default:
++		pr_warn("Unknown kbd_dock_state 0x%02x\n", kbd_dock_state);
++	}
++
++	return 0;
++}
++
++static void acer_kbd_dock_get_initial_state(void)
++{
++	u8 *output, input[8] = { 0x05, 0x00, };
++	struct acpi_buffer input_buf = { sizeof(input), input };
++	struct acpi_buffer output_buf = { ACPI_ALLOCATE_BUFFER, NULL };
++	union acpi_object *obj;
++	acpi_status status;
++	int sw_tablet_mode;
++
++	status = wmi_evaluate_method(WMID_GUID3, 0, 0x2, &input_buf, &output_buf);
++	if (ACPI_FAILURE(status)) {
++		ACPI_EXCEPTION((AE_INFO, status, "Error getting keyboard-dock initial status"));
++		return;
++	}
++
++	obj = output_buf.pointer;
++	if (!obj || obj->type != ACPI_TYPE_BUFFER || obj->buffer.length != 8) {
++		pr_err("Unexpected output format getting keyboard-dock initial status\n");
++		goto out_free_obj;
++	}
++
++	output = obj->buffer.pointer;
++	if (output[0] != 0x00 || (output[3] != 0x05 && output[3] != 0x45)) {
++		pr_err("Unexpected output [0]=0x%02x [3]=0x%02x getting keyboard-dock initial status\n",
++		       output[0], output[3]);
++		goto out_free_obj;
++	}
++
++	sw_tablet_mode = acer_kbd_dock_state_to_sw_tablet_mode(output[4]);
++	input_report_switch(acer_wmi_input_dev, SW_TABLET_MODE, sw_tablet_mode);
++
++out_free_obj:
++	kfree(obj);
++}
++
++static void acer_kbd_dock_event(const struct event_return_value *event)
++{
++	int sw_tablet_mode;
++
++	if (!has_cap(ACER_CAP_KBD_DOCK))
++		return;
++
++	sw_tablet_mode = acer_kbd_dock_state_to_sw_tablet_mode(event->kbd_dock_state);
++	input_report_switch(acer_wmi_input_dev, SW_TABLET_MODE, sw_tablet_mode);
++	input_sync(acer_wmi_input_dev);
++}
++
+ /*
+  * Rfkill devices
+  */
+@@ -1769,8 +1865,9 @@ static void acer_wmi_notify(u32 value, void *context)
+ 			sparse_keymap_report_event(acer_wmi_input_dev, scancode, 1, true);
+ 		}
+ 		break;
+-	case WMID_ACCEL_EVENT:
++	case WMID_ACCEL_OR_KBD_DOCK_EVENT:
+ 		acer_gsensor_event();
++		acer_kbd_dock_event(&return_value);
+ 		break;
+ 	default:
+ 		pr_warn("Unknown function number - %d - %d\n",
+@@ -1935,6 +2032,9 @@ static int __init acer_wmi_input_setup(void)
+ 	if (err)
+ 		goto err_free_dev;
+ 
++	if (has_cap(ACER_CAP_KBD_DOCK))
++		input_set_capability(acer_wmi_input_dev, EV_SW, SW_TABLET_MODE);
++
+ 	status = wmi_install_notify_handler(ACERWMID_EVENT_GUID,
+ 						acer_wmi_notify, NULL);
+ 	if (ACPI_FAILURE(status)) {
+@@ -1942,6 +2042,9 @@ static int __init acer_wmi_input_setup(void)
+ 		goto err_free_dev;
+ 	}
+ 
++	if (has_cap(ACER_CAP_KBD_DOCK))
++		acer_kbd_dock_get_initial_state();
++
+ 	err = input_register_device(acer_wmi_input_dev);
+ 	if (err)
+ 		goto err_uninstall_notifier;
+-- 
+2.30.1
+
 
 
