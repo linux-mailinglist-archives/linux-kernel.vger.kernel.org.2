@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3269333ECB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6518F333ECD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhCJN1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:27:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46488 "EHLO mail.kernel.org"
+        id S233901AbhCJN12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:27:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233155AbhCJNY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0243A64FF4;
-        Wed, 10 Mar 2021 13:24:57 +0000 (UTC)
+        id S233170AbhCJNZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:25:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99E0A64FFC;
+        Wed, 10 Mar 2021 13:24:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382699;
-        bh=FeRVY0rVDHLoX6Xkb15Dp53Q/1Q+zVP1AiO/fqTJZ5o=;
+        s=korg; t=1615382700;
+        bh=N3XFJuamEXjMY/iQLu9M4RuxbmpB/XKwAGTAVYdB3Hk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qE9bmfki+0G0Jy/sD3wsX4U1yFlsERVz7xsFkPeKvSL7ubgJhyK4OSL4mOlp6oUy9
-         gVtAmcvdWYw/teNGZdxMII6eC0vSa+aLmF+UFKACgHBvExQ9qHaG/PGKsFLOEoHuUn
-         1KmJ5j57CjB8ZLoXHn5fRv667gKPruzuYstJS5rE=
+        b=T9TwrZqooJNceZl8rK/MbpCINoMLBMgxmprPyMBZZRUzANnrLsyFWiAc87IoGGn9Y
+         pRr6AO13D/ty+N/Bis6Tk9AcZ6nk6GdZoJ9BG52Us2r0YiWdHpkLmGe0w9ZH7XGrzo
+         LFRHwXltzk19NidD7Pz2nWrEBPRRQ7Bgy5tG44SI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
         Nikolay Borisov <nborisov@suse.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 04/39] btrfs: free correct amount of space in btrfs_delayed_inode_reserve_metadata
-Date:   Wed, 10 Mar 2021 14:24:12 +0100
-Message-Id: <20210310132319.865687239@linuxfoundation.org>
+Subject: [PATCH 4.19 05/39] btrfs: unlock extents in btrfs_zero_range in case of quota reservation errors
+Date:   Wed, 10 Mar 2021 14:24:13 +0100
+Message-Id: <20210310132319.897535962@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
 References: <20210310132319.708237392@linuxfoundation.org>
@@ -44,35 +44,38 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Nikolay Borisov <nborisov@suse.com>
 
-commit 0f9c03d824f6f522d3bc43629635c9765546ebc5 upstream.
+commit 4f6a49de64fd1b1dba5229c02047376da7cf24fd upstream.
 
-Following commit f218ea6c4792 ("btrfs: delayed-inode: Remove wrong
-qgroup meta reservation calls") this function now reserves num_bytes,
-rather than the fixed amount of nodesize. As such this requires the
-same amount to be freed in case of failure. Fix this by adjusting
-the amount we are freeing.
+If btrfs_qgroup_reserve_data returns an error (i.e quota limit reached)
+the handling logic directly goes to the 'out' label without first
+unlocking the extent range between lockstart, lockend. This results in
+deadlocks as other processes try to lock the same extent.
 
-Fixes: f218ea6c4792 ("btrfs: delayed-inode: Remove wrong qgroup meta reservation calls")
-CC: stable@vger.kernel.org # 4.19+
+Fixes: a7f8b1c2ac21 ("btrfs: file: reserve qgroup space after the hole punch range is locked")
+CC: stable@vger.kernel.org # 5.10+
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/delayed-inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/file.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -642,7 +642,7 @@ static int btrfs_delayed_inode_reserve_m
- 						      btrfs_ino(inode),
- 						      num_bytes, 1);
- 		} else {
--			btrfs_qgroup_free_meta_prealloc(root, fs_info->nodesize);
-+			btrfs_qgroup_free_meta_prealloc(root, num_bytes);
- 		}
- 		return ret;
- 	}
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3016,8 +3016,11 @@ reserve_space:
+ 			goto out;
+ 		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
+ 						alloc_start, bytes_to_reserve);
+-		if (ret)
++		if (ret) {
++			unlock_extent_cached(&BTRFS_I(inode)->io_tree, lockstart,
++					     lockend, &cached_state);
+ 			goto out;
++		}
+ 		ret = btrfs_prealloc_file_range(inode, mode, alloc_start,
+ 						alloc_end - alloc_start,
+ 						i_blocksize(inode),
 
 
