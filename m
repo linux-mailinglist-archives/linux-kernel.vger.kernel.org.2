@@ -2,91 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DAF3332D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02FB3332DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 02:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhCJBmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 20:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhCJBmJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 20:42:09 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C4AC06174A;
-        Tue,  9 Mar 2021 17:42:09 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id j12so10824619pfj.12;
-        Tue, 09 Mar 2021 17:42:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZDI+zqz/gmKV7eFJ/IUB2NDdlfLMPKP1roKLG1D9fzo=;
-        b=sYbkeuGXVxQ51NlG9TEIyxkd7N8rYYcBTIoV5eiNDhKDDAUTt2LSbXWcZZktQF6eWa
-         R0mKtNO8tTHr68v3ieJVcPbGm/8GV34By1MXeV59LTpxfvVHyfk6DPkc9FlEuhF+lVci
-         Fd8GexxCz0LrwsK44NJunKLzgQa9aFRCauSKLdHggkWKuEp1T2JGQ7FuUyHQMt4NRfWJ
-         V6J4GctGsbcJY6DtwUuo5C7C6MmtCQY1i1Da0j46bt2CjSDCdM4bKV/usEQqnQ3muj1n
-         UIojIB0dTPEzzGmM4yMykSrxLEreAOXOvM4uuFRoKkL9zm5yFzt2v8h5q9VhEi/BaMvk
-         WXUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZDI+zqz/gmKV7eFJ/IUB2NDdlfLMPKP1roKLG1D9fzo=;
-        b=T02cbdA0dj9Lc/5zxLBY+bYF8kX9tgMtzufIZY9ukQ4EpzDGpGClTwRjZqPIAWm1Jx
-         0o8vtPNCouRqKjA8DBs+/eXsZ3emxi2Qe01vPIgLbbpzvW2/Kijzc955LWs+LwpsL/QK
-         X2bZCQZu+ZHw2Ah0iVxoXp6+mq0yE8KvjKt9LX7gtOMTLS+f779YagMhO9jjhJqvQ3kq
-         ZNyNYAcWawyiDZW23zCuJVvBKzo7HQ41VvCHHcjAUv+CdfxXM2z7hK++UYeJIOLxRz2N
-         7CcsZcATLDXsSvnWPzQxi9KYDNcxhQ4zsWifN9vhlVge7DE7ItD+EZo1dnEJ/v8duwkK
-         wtuA==
-X-Gm-Message-State: AOAM5336pU71qiY9Y7cylszPVufv1EDadBlMVA7KwgqG/K+ZG0F7NNKx
-        Puwr6TaTilXtzdTFU8OhlFA=
-X-Google-Smtp-Source: ABdhPJxMvFYOtWPkwwQOOsV2kI0StOthXy7kGxL53gB2dwSpf4FDyJ7YaOhwctBxJ625mAtBkd1V4w==
-X-Received: by 2002:a62:78d4:0:b029:1f1:595b:dfdf with SMTP id t203-20020a6278d40000b02901f1595bdfdfmr619146pfc.81.1615340529136;
-        Tue, 09 Mar 2021 17:42:09 -0800 (PST)
-Received: from google.com ([2409:10:2e40:5100:30c3:e7ed:8b0a:7f01])
-        by smtp.gmail.com with ESMTPSA id n9sm721799pjq.38.2021.03.09.17.42.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 17:42:08 -0800 (PST)
-Date:   Wed, 10 Mar 2021 10:42:03 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] media: videobuf2: Fix integer overrun in allocation
-Message-ID: <YEgj61iAt4Avnp6d@google.com>
-References: <20210309234317.1021588-1-ribalda@chromium.org>
+        id S231131AbhCJBnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 20:43:46 -0500
+Received: from mga11.intel.com ([192.55.52.93]:20658 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231422AbhCJBnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 20:43:42 -0500
+IronPort-SDR: JZTopoaVIAtciT6GBg6LMHiGyQCBhkM354fHXBs8ZoxscnF3O47DCdloFlpDIcNBt+n2s6Tnwm
+ YRRO+SwcBx4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="185004425"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="185004425"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 17:43:39 -0800
+IronPort-SDR: Y7+W9Tom12E92Bku2I5dnJLtcYucyCcPGg1e9R0eUmX++VmOvYAoe74ImkoAF04m6TxXJHyD+q
+ JzwsFQh5Lx0Q==
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="409973299"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 17:43:38 -0800
+Subject: [PATCH v2] libnvdimm: Notify disk drivers to revalidate region
+ read-only
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-nvdimm@lists.01.org
+Cc:     Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        kernel test robot <lkp@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Date:   Tue, 09 Mar 2021 17:43:38 -0800
+Message-ID: <161534060720.528671.2341213328968989192.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309234317.1021588-1-ribalda@chromium.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/10 00:43), Ricardo Ribalda wrote:
-> The plane_length is an unsigned integer. So, if we have a size of
-> 0xffffffff bytes we incorrectly allocate 0 bytes instead of 1 << 32.
+Previous kernels allowed the BLKROSET to override the disk's read-only
+status. With that situation fixed the pmem driver needs to rely on
+notification events to reevaluate the disk read-only status after the
+host region has been marked read-write.
 
-Hi Ricardo,
+Recall that when libnvdimm determines that the persistent memory has
+lost persistence (for example lack of energy to flush from DRAM to FLASH
+on an NVDIMM-N device) it marks the region read-only, but that state can
+be overridden by the user via:
 
-> @@ -223,8 +223,10 @@ static int __vb2_buf_mem_alloc(struct vb2_buffer *vb)
->  	 * NOTE: mmapped areas should be page aligned
->  	 */
->  	for (plane = 0; plane < vb->num_planes; ++plane) {
-> +		unsigned long size = vb->planes[plane].length;
-> +
->  		/* Memops alloc requires size to be page aligned. */
-> -		unsigned long size = PAGE_ALIGN(vb->planes[plane].length);
-> +		size = PAGE_ALIGN(size);
->  
->  		/* Did it wrap around? */
->  		if (size < vb->planes[plane].length)
+   echo 0 > /sys/bus/nd/devices/regionX/read_only
 
-Shouldn't the same be done in vb2_mmap()?
+...to date there is no notification that the region has restored
+persistence, so the user override is the only recovery.
 
-	-ss
+Fixes: 52f019d43c22 ("block: add a hard-readonly flag to struct gendisk")
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: Hannes Reinecke <hare@suse.de>
+Cc: Jens Axboe <axboe@kernel.dk>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Vishal Verma <vishal.l.verma@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+Changes since v1 [1]:
+- Move from the sinking ship of revalidate_disk() to the local hotness
+  of nd_pmem_notify() (hch).
+
+[1]: http://lore.kernel.org/r/161527286194.446794.5215036039655765042.stgit@dwillia2-desk3.amr.corp.intel.com
+
+ drivers/nvdimm/bus.c         |   14 ++++++--------
+ drivers/nvdimm/pmem.c        |   37 +++++++++++++++++++++++++++++++++----
+ drivers/nvdimm/region_devs.c |    7 +++++++
+ include/linux/nd.h           |    1 +
+ 4 files changed, 47 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/nvdimm/bus.c b/drivers/nvdimm/bus.c
+index 48f0985ca8a0..3a777d0073b7 100644
+--- a/drivers/nvdimm/bus.c
++++ b/drivers/nvdimm/bus.c
+@@ -631,16 +631,14 @@ void nvdimm_check_and_set_ro(struct gendisk *disk)
+ 	struct nd_region *nd_region = to_nd_region(dev->parent);
+ 	int disk_ro = get_disk_ro(disk);
+ 
+-	/*
+-	 * Upgrade to read-only if the region is read-only preserve as
+-	 * read-only if the disk is already read-only.
+-	 */
+-	if (disk_ro || nd_region->ro == disk_ro)
++	/* catch the disk up with the region ro state */
++	if (disk_ro == nd_region->ro)
+ 		return;
+ 
+-	dev_info(dev, "%s read-only, marking %s read-only\n",
+-			dev_name(&nd_region->dev), disk->disk_name);
+-	set_disk_ro(disk, 1);
++	dev_info(dev, "%s read-%s, marking %s read-%s\n",
++		 dev_name(&nd_region->dev), nd_region->ro ? "only" : "write",
++		 disk->disk_name, nd_region->ro ? "only" : "write");
++	set_disk_ro(disk, nd_region->ro);
+ }
+ EXPORT_SYMBOL(nvdimm_check_and_set_ro);
+ 
+diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+index b8a85bfb2e95..7daac795db39 100644
+--- a/drivers/nvdimm/pmem.c
++++ b/drivers/nvdimm/pmem.c
+@@ -26,6 +26,7 @@
+ #include <linux/mm.h>
+ #include <asm/cacheflush.h>
+ #include "pmem.h"
++#include "btt.h"
+ #include "pfn.h"
+ #include "nd.h"
+ 
+@@ -585,7 +586,7 @@ static void nd_pmem_shutdown(struct device *dev)
+ 	nvdimm_flush(to_nd_region(dev->parent), NULL);
+ }
+ 
+-static void nd_pmem_notify(struct device *dev, enum nvdimm_event event)
++static void pmem_revalidate_poison(struct device *dev)
+ {
+ 	struct nd_region *nd_region;
+ 	resource_size_t offset = 0, end_trunc = 0;
+@@ -595,9 +596,6 @@ static void nd_pmem_notify(struct device *dev, enum nvdimm_event event)
+ 	struct range range;
+ 	struct kernfs_node *bb_state;
+ 
+-	if (event != NVDIMM_REVALIDATE_POISON)
+-		return;
+-
+ 	if (is_nd_btt(dev)) {
+ 		struct nd_btt *nd_btt = to_nd_btt(dev);
+ 
+@@ -635,6 +633,37 @@ static void nd_pmem_notify(struct device *dev, enum nvdimm_event event)
+ 		sysfs_notify_dirent(bb_state);
+ }
+ 
++static void pmem_revalidate_region(struct device *dev)
++{
++	struct pmem_device *pmem;
++
++	if (is_nd_btt(dev)) {
++		struct nd_btt *nd_btt = to_nd_btt(dev);
++		struct btt *btt = nd_btt->btt;
++
++		nvdimm_check_and_set_ro(btt->btt_disk);
++		return;
++	}
++
++	pmem = dev_get_drvdata(dev);
++	nvdimm_check_and_set_ro(pmem->disk);
++}
++
++static void nd_pmem_notify(struct device *dev, enum nvdimm_event event)
++{
++	switch (event) {
++	case NVDIMM_REVALIDATE_POISON:
++		pmem_revalidate_poison(dev);
++		break;
++	case NVDIMM_REVALIDATE_REGION:
++		pmem_revalidate_region(dev);
++		break;
++	default:
++		dev_WARN_ONCE(dev, 1, "notify: unknown event: %d\n", event);
++		break;
++	}
++}
++
+ MODULE_ALIAS("pmem");
+ MODULE_ALIAS_ND_DEVICE(ND_DEVICE_NAMESPACE_IO);
+ MODULE_ALIAS_ND_DEVICE(ND_DEVICE_NAMESPACE_PMEM);
+diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
+index ef23119db574..51870eb51da6 100644
+--- a/drivers/nvdimm/region_devs.c
++++ b/drivers/nvdimm/region_devs.c
+@@ -518,6 +518,12 @@ static ssize_t read_only_show(struct device *dev,
+ 	return sprintf(buf, "%d\n", nd_region->ro);
+ }
+ 
++static int revalidate_read_only(struct device *dev, void *data)
++{
++	nd_device_notify(dev, NVDIMM_REVALIDATE_REGION);
++	return 0;
++}
++
+ static ssize_t read_only_store(struct device *dev,
+ 		struct device_attribute *attr, const char *buf, size_t len)
+ {
+@@ -529,6 +535,7 @@ static ssize_t read_only_store(struct device *dev,
+ 		return rc;
+ 
+ 	nd_region->ro = ro;
++	device_for_each_child(dev, NULL, revalidate_read_only);
+ 	return len;
+ }
+ static DEVICE_ATTR_RW(read_only);
+diff --git a/include/linux/nd.h b/include/linux/nd.h
+index cec526c8043d..ee9ad76afbba 100644
+--- a/include/linux/nd.h
++++ b/include/linux/nd.h
+@@ -11,6 +11,7 @@
+ 
+ enum nvdimm_event {
+ 	NVDIMM_REVALIDATE_POISON,
++	NVDIMM_REVALIDATE_REGION,
+ };
+ 
+ enum nvdimm_claim_class {
+
