@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00798333E44
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4773E333DF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:35:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbhCJNZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:25:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
+        id S233244AbhCJNZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:25:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232910AbhCJNYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A45F64FDA;
-        Wed, 10 Mar 2021 13:24:39 +0000 (UTC)
+        id S232818AbhCJNYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12D3C64FE0;
+        Wed, 10 Mar 2021 13:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382680;
-        bh=YvgajY/lVqGmMKTtIn92RfSxKE6dqCsFl1pX0dGH06Y=;
+        s=korg; t=1615382665;
+        bh=eMFce+OUG1S4tAoKIpavrInKh2pwXReA55EAj7i4Tsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KgmIwDg+Zdvpk+K59a4JYRCB/CaGlt3jYWqWHMQ80JUwUMqjzJyuygq5Bboe1SdzZ
-         zRgn5+OliX1xal8FsBghB1pl7b7QYBIGC3WQsdScXrdoX59hro5pmeQ8Lhb1GaH0k6
-         i1iaG5iGPosTncu1Wy3MX7qpJkVYExsVu85kJwpw=
+        b=s8pKikJAgjP51LltmHnHFprMgcAaSBtK0Ka2i+Ajl9hz3qORzcduRi7EdBLqmNhdG
+         Yso80U4EWVqSkFR8ii766Ug32YK++cW8c1bQ91TkI9Pw64mZ6NX2WUliWvYfzsYN0P
+         VMUuzLBn1I+2B++tWY4oLtCJqdu3FDm+tg7ufTig=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 19/49] platform/x86: acer-wmi: Add support for SW_TABLET_MODE on Switch devices
+        stable@vger.kernel.org, Andrey Ryabinin <arbn@yandex-team.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH 5.11 17/36] iommu/amd: Fix sleeping in atomic in increase_address_space()
 Date:   Wed, 10 Mar 2021 14:23:30 +0100
-Message-Id: <20210310132322.566512132@linuxfoundation.org>
+Message-Id: <20210310132321.056982754@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132321.948258062@linuxfoundation.org>
-References: <20210310132321.948258062@linuxfoundation.org>
+In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
+References: <20210310132320.510840709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,215 +41,83 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Andrey Ryabinin <arbn@yandex-team.com>
 
-[ Upstream commit 5c54cb6c627e8f50f490e6b5656051a5ac29eab4 ]
+commit 140456f994195b568ecd7fc2287a34eadffef3ca upstream.
 
-Add support for SW_TABLET_MODE on the Acer Switch 10 (SW5-012) and the
-acer Switch 10 (S1003) models.
+increase_address_space() calls get_zeroed_page(gfp) under spin_lock with
+disabled interrupts. gfp flags passed to increase_address_space() may allow
+sleeping, so it comes to this:
 
-There is no way to detect if this is supported, so this uses DMI based
-quirks setting force_caps to ACER_CAP_KBD_DOCK (these devices have no
-other acer-wmi based functionality).
+ BUG: sleeping function called from invalid context at mm/page_alloc.c:4342
+ in_atomic(): 1, irqs_disabled(): 1, pid: 21555, name: epdcbbf1qnhbsd8
 
-The new SW_TABLET_MODE functionality can be tested on devices which
-are not in the DMI table by passing acer_wmi.force_caps=0x40 on the
-kernel commandline.
+ Call Trace:
+  dump_stack+0x66/0x8b
+  ___might_sleep+0xec/0x110
+  __alloc_pages_nodemask+0x104/0x300
+  get_zeroed_page+0x15/0x40
+  iommu_map_page+0xdd/0x3e0
+  amd_iommu_map+0x50/0x70
+  iommu_map+0x106/0x220
+  vfio_iommu_type1_ioctl+0x76e/0x950 [vfio_iommu_type1]
+  do_vfs_ioctl+0xa3/0x6f0
+  ksys_ioctl+0x66/0x70
+  __x64_sys_ioctl+0x16/0x20
+  do_syscall_64+0x4e/0x100
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20201019185628.264473-6-hdegoede@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by moving get_zeroed_page() out of spin_lock/unlock section.
+
+Fixes: 754265bcab ("iommu/amd: Fix race in increase_address_space()")
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+Acked-by: Will Deacon <will@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210217143004.19165-1-arbn@yandex-team.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/platform/x86/acer-wmi.c | 109 +++++++++++++++++++++++++++++++-
- 1 file changed, 106 insertions(+), 3 deletions(-)
+ drivers/iommu/amd/iommu.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index 8662468491a3..1efca84bc1bd 100644
---- a/drivers/platform/x86/acer-wmi.c
-+++ b/drivers/platform/x86/acer-wmi.c
-@@ -30,6 +30,7 @@
- #include <linux/input/sparse-keymap.h>
- #include <acpi/video.h>
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -1502,6 +1502,10 @@ static bool increase_address_space(struc
+ 	bool ret = true;
+ 	u64 *pte;
  
-+ACPI_MODULE_NAME(KBUILD_MODNAME);
- MODULE_AUTHOR("Carlos Corbacho");
- MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
- MODULE_LICENSE("GPL");
-@@ -80,7 +81,7 @@ MODULE_ALIAS("wmi:676AA15E-6A47-4D9F-A2CC-1E6D18D14026");
++	pte = (void *)get_zeroed_page(gfp);
++	if (!pte)
++		return false;
++
+ 	spin_lock_irqsave(&domain->lock, flags);
  
- enum acer_wmi_event_ids {
- 	WMID_HOTKEY_EVENT = 0x1,
--	WMID_ACCEL_EVENT = 0x5,
-+	WMID_ACCEL_OR_KBD_DOCK_EVENT = 0x5,
- };
+ 	amd_iommu_domain_get_pgtable(domain, &pgtable);
+@@ -1513,10 +1517,6 @@ static bool increase_address_space(struc
+ 	if (WARN_ON_ONCE(pgtable.mode == PAGE_MODE_6_LEVEL))
+ 		goto out;
  
- static const struct key_entry acer_wmi_keymap[] __initconst = {
-@@ -128,7 +129,9 @@ struct event_return_value {
- 	u8 function;
- 	u8 key_num;
- 	u16 device_state;
--	u32 reserved;
-+	u16 reserved1;
-+	u8 kbd_dock_state;
-+	u8 reserved2;
- } __attribute__((packed));
+-	pte = (void *)get_zeroed_page(gfp);
+-	if (!pte)
+-		goto out;
+-
+ 	*pte = PM_LEVEL_PDE(pgtable.mode, iommu_virt_to_phys(pgtable.root));
  
- /*
-@@ -212,6 +215,7 @@ struct hotkey_function_type_aa {
- #define ACER_CAP_BRIGHTNESS		BIT(3)
- #define ACER_CAP_THREEG			BIT(4)
- #define ACER_CAP_SET_FUNCTION_MODE	BIT(5)
-+#define ACER_CAP_KBD_DOCK		BIT(6)
+ 	pgtable.root  = pte;
+@@ -1530,10 +1530,12 @@ static bool increase_address_space(struc
+ 	 */
+ 	amd_iommu_domain_set_pgtable(domain, pte, pgtable.mode);
  
- /*
-  * Interface type flags
-@@ -320,6 +324,15 @@ static int __init dmi_matched(const struct dmi_system_id *dmi)
- 	return 1;
++	pte = NULL;
+ 	ret = true;
+ 
+ out:
+ 	spin_unlock_irqrestore(&domain->lock, flags);
++	free_page((unsigned long)pte);
+ 
+ 	return ret;
  }
- 
-+static int __init set_force_caps(const struct dmi_system_id *dmi)
-+{
-+	if (force_caps == -1) {
-+		force_caps = (uintptr_t)dmi->driver_data;
-+		pr_info("Found %s, set force_caps to 0x%x\n", dmi->ident, force_caps);
-+	}
-+	return 1;
-+}
-+
- static struct quirk_entry quirk_unknown = {
- };
- 
-@@ -498,6 +511,24 @@ static const struct dmi_system_id acer_quirks[] __initconst = {
- 		},
- 		.driver_data = &quirk_acer_travelmate_2490,
- 	},
-+	{
-+		.callback = set_force_caps,
-+		.ident = "Acer Aspire Switch 10 SW5-012",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
-+		},
-+		.driver_data = (void *)ACER_CAP_KBD_DOCK,
-+	},
-+	{
-+		.callback = set_force_caps,
-+		.ident = "Acer One 10 (S1003)",
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "One S1003"),
-+		},
-+		.driver_data = (void *)ACER_CAP_KBD_DOCK,
-+	},
- 	{}
- };
- 
-@@ -1542,6 +1573,71 @@ static int acer_gsensor_event(void)
- 	return 0;
- }
- 
-+/*
-+ * Switch series keyboard dock status
-+ */
-+static int acer_kbd_dock_state_to_sw_tablet_mode(u8 kbd_dock_state)
-+{
-+	switch (kbd_dock_state) {
-+	case 0x01: /* Docked, traditional clamshell laptop mode */
-+		return 0;
-+	case 0x04: /* Stand-alone tablet */
-+	case 0x40: /* Docked, tent mode, keyboard not usable */
-+		return 1;
-+	default:
-+		pr_warn("Unknown kbd_dock_state 0x%02x\n", kbd_dock_state);
-+	}
-+
-+	return 0;
-+}
-+
-+static void acer_kbd_dock_get_initial_state(void)
-+{
-+	u8 *output, input[8] = { 0x05, 0x00, };
-+	struct acpi_buffer input_buf = { sizeof(input), input };
-+	struct acpi_buffer output_buf = { ACPI_ALLOCATE_BUFFER, NULL };
-+	union acpi_object *obj;
-+	acpi_status status;
-+	int sw_tablet_mode;
-+
-+	status = wmi_evaluate_method(WMID_GUID3, 0, 0x2, &input_buf, &output_buf);
-+	if (ACPI_FAILURE(status)) {
-+		ACPI_EXCEPTION((AE_INFO, status, "Error getting keyboard-dock initial status"));
-+		return;
-+	}
-+
-+	obj = output_buf.pointer;
-+	if (!obj || obj->type != ACPI_TYPE_BUFFER || obj->buffer.length != 8) {
-+		pr_err("Unexpected output format getting keyboard-dock initial status\n");
-+		goto out_free_obj;
-+	}
-+
-+	output = obj->buffer.pointer;
-+	if (output[0] != 0x00 || (output[3] != 0x05 && output[3] != 0x45)) {
-+		pr_err("Unexpected output [0]=0x%02x [3]=0x%02x getting keyboard-dock initial status\n",
-+		       output[0], output[3]);
-+		goto out_free_obj;
-+	}
-+
-+	sw_tablet_mode = acer_kbd_dock_state_to_sw_tablet_mode(output[4]);
-+	input_report_switch(acer_wmi_input_dev, SW_TABLET_MODE, sw_tablet_mode);
-+
-+out_free_obj:
-+	kfree(obj);
-+}
-+
-+static void acer_kbd_dock_event(const struct event_return_value *event)
-+{
-+	int sw_tablet_mode;
-+
-+	if (!has_cap(ACER_CAP_KBD_DOCK))
-+		return;
-+
-+	sw_tablet_mode = acer_kbd_dock_state_to_sw_tablet_mode(event->kbd_dock_state);
-+	input_report_switch(acer_wmi_input_dev, SW_TABLET_MODE, sw_tablet_mode);
-+	input_sync(acer_wmi_input_dev);
-+}
-+
- /*
-  * Rfkill devices
-  */
-@@ -1769,8 +1865,9 @@ static void acer_wmi_notify(u32 value, void *context)
- 			sparse_keymap_report_event(acer_wmi_input_dev, scancode, 1, true);
- 		}
- 		break;
--	case WMID_ACCEL_EVENT:
-+	case WMID_ACCEL_OR_KBD_DOCK_EVENT:
- 		acer_gsensor_event();
-+		acer_kbd_dock_event(&return_value);
- 		break;
- 	default:
- 		pr_warn("Unknown function number - %d - %d\n",
-@@ -1935,6 +2032,9 @@ static int __init acer_wmi_input_setup(void)
- 	if (err)
- 		goto err_free_dev;
- 
-+	if (has_cap(ACER_CAP_KBD_DOCK))
-+		input_set_capability(acer_wmi_input_dev, EV_SW, SW_TABLET_MODE);
-+
- 	status = wmi_install_notify_handler(ACERWMID_EVENT_GUID,
- 						acer_wmi_notify, NULL);
- 	if (ACPI_FAILURE(status)) {
-@@ -1942,6 +2042,9 @@ static int __init acer_wmi_input_setup(void)
- 		goto err_free_dev;
- 	}
- 
-+	if (has_cap(ACER_CAP_KBD_DOCK))
-+		acer_kbd_dock_get_initial_state();
-+
- 	err = input_register_device(acer_wmi_input_dev);
- 	if (err)
- 		goto err_uninstall_notifier;
--- 
-2.30.1
-
 
 
