@@ -2,69 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92059333699
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9E633369C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 08:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhCJHsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 02:48:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56338 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhCJHry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:47:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7605AD87;
-        Wed, 10 Mar 2021 07:47:52 +0000 (UTC)
-Subject: Re: [PATCH] media: videobuf2: Fix integer overrun in vb2_mmap
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        stable@vger.kernel.org
-References: <20210310074028.1042475-1-ribalda@chromium.org>
-From:   Jiri Slaby <jslaby@suse.cz>
-Message-ID: <48e8ffd7-7f42-8e22-bf9d-646d9bd89bd9@suse.cz>
-Date:   Wed, 10 Mar 2021 08:47:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231158AbhCJHtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 02:49:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229904AbhCJHsz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 02:48:55 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DF8C061761;
+        Tue,  9 Mar 2021 23:48:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PPu2UvPAXkyCwFNg4js+GYjpdd291lCCF0Weo8KPpZk=; b=mXP8wHF6IsGSDLqffxgt2JYE83
+        qwObZaj/YT82ac4J2iNq7TICkg37FIJdhBZ7rPgqi58NKmIdU0RIT/TWXcKqdwDF4/Vc6EsJTbQXi
+        wGv4xwkdQP650Q/vnNOe3QZWME2pPu+NITM8msfTOyCTl4YKEnuhbJth9seQ8/2AtLluZb6EneT23
+        JOFXbV6nQ9zi/cJ026K0LxaoRX8WmA2iUcKePObJY/ulzEDlL5wqLiy7t9i7clMsoPorMe0FlFFXk
+        d6EVSYvGiuBZBnm75txDqDGomyhYrL0DmqCohpCtFhGQqa3WQUmPiCR9ZY9yJNmBIVzRh7EtWhF1f
+        MlCPH/kw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJtaA-002mla-HJ; Wed, 10 Mar 2021 07:48:42 +0000
+Date:   Wed, 10 Mar 2021 07:48:38 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
+Subject: Re: [PATCH v1 02/14] vfio: Update vfio_add_group_dev() API
+Message-ID: <20210310074838.GA662265@infradead.org>
+References: <161523878883.3480.12103845207889888280.stgit@gimli.home>
+ <161524006056.3480.3931750068527641030.stgit@gimli.home>
 MIME-Version: 1.0
-In-Reply-To: <20210310074028.1042475-1-ribalda@chromium.org>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161524006056.3480.3931750068527641030.stgit@gimli.home>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10. 03. 21, 8:40, Ricardo Ribalda wrote:
-> The plane_length is an unsigned integer. So, if we have a size of
-> 0xffffffff bytes we incorrectly allocate 0 bytes instead of 1 << 32.
+On Mon, Mar 08, 2021 at 02:47:40PM -0700, Alex Williamson wrote:
+> Rather than an errno, return a pointer to the opaque vfio_device
+> to allow the bus driver to call into vfio-core without additional
+> lookups and references.  Note that bus drivers are still required
+> to use vfio_del_group_dev() to teardown the vfio_device.
 > 
-> Suggested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Cc: stable@vger.kernel.org
-> Fixes: 7f8414594e47 ("[media] media: videobuf2: fix the length check for mmap")
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->   drivers/media/common/videobuf2/videobuf2-core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index 543da515c761..876db5886867 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -2256,7 +2256,7 @@ int vb2_mmap(struct vb2_queue *q, struct vm_area_struct *vma)
->   	 * The buffer length was page_aligned at __vb2_buf_mem_alloc(),
->   	 * so, we need to do the same here.
->   	 */
-> -	length = PAGE_ALIGN(vb->planes[plane].length);
-> +	length = PAGE_ALIGN((unsigned int)vb->planes[plane].length);
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 
-Hi,
+This looks like it is superseded by the
 
-I fail to see how case from uint to uint helps -- IOW, did you mean ulong?
+  vfio: Split creation of a vfio_device into init and register ops
 
-regards,
--- 
-js
-suse labs
+patch from Jason, which provides a much nicer API.
