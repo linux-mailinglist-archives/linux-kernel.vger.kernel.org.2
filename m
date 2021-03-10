@@ -2,95 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BA333455C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C65F334565
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 18:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbhCJRp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 12:45:27 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33960 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231228AbhCJRo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 12:44:59 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12AHhOmt054518;
-        Wed, 10 Mar 2021 12:44:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=Mn8sY8sJqOTDe7oikzYLEpWDu7TaX1hz5Zzib5aMyfk=;
- b=QD4WZM3VtiTUeDP23sZI8koJqNWM6a/altyzvE+4dOTo14GMyYE9GzRAmKqfyF3np3mT
- KCz3Iy9hxGaG9ME5xND+nvGF3GC1MOW8IKRECzDEc9atEeflNNKYWFX6do2XpyPDeMcs
- Rt0OBlVsk5RFBrhb9nNPIAdf346lQubOKhYxeDy+sguzuD0FXt7uKABOe2wjHOWdoDpv
- dOh/28SejY1uX+vEXREosOwH4vaf1JLUkclMLmxURGKhGyZ9BsIqeQSOUsKCFtNJ8Bmu
- Dl6/Pm8kSAS4hreA83PMfthYxHt3nNaGsADYTDoq5+MN3FCzLyD7Ggq0WL9jlGnJsGuT gQ== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3772ru03k5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Mar 2021 12:44:52 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12AHevDr002545;
-        Wed, 10 Mar 2021 17:44:10 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 3768mprmsk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Mar 2021 17:44:09 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12AHi7xn42205572
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Mar 2021 17:44:07 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDE7311C04C;
-        Wed, 10 Mar 2021 17:44:06 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7CBFE11C04A;
-        Wed, 10 Mar 2021 17:44:06 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.162.110])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 10 Mar 2021 17:44:06 +0000 (GMT)
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-To:     fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clombard@linux.ibm.com
-Subject: [PATCH] cxl: don't manipulate the mm.mm_users field directly
-Date:   Wed, 10 Mar 2021 18:44:05 +0100
-Message-Id: <20210310174405.51044-1-ldufour@linux.ibm.com>
-X-Mailer: git-send-email 2.30.1
+        id S233252AbhCJRqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 12:46:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231359AbhCJRp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 12:45:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CAF464F48;
+        Wed, 10 Mar 2021 17:45:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615398356;
+        bh=U6ytBYeBdD/aDMKjPInZo1ngnvAJ2clewIczyr53hII=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ef/5KVEx3LQWCSTPR8v5neJRPWW6VTuYaluLiz7ZHXiAGKCium7wIA4OXuCDE8x/d
+         HRlC4LmVN8XgiZzZ+GK/iGt/sm+orLuXJklKG2iimojcviH1d6oqTqu46KmFRdqJrN
+         LGLYUrxClfbnfzrevnOdZss7UxbAdxf6IDX7w3hUmqgR3J3QiYNBrbExUnZLHA3K04
+         D47OSC5tVcDt0EXOHGxRM9PNMAsQOTHzO7IkfIZ9056XgG8pgFpjrt7IS4dbvde3Rp
+         L163gKgFFKP6lM2mKlMZ6wVcW0Kaa5KDnNS07LSn8YozML00I9GVGY0tiPaoohpvaT
+         FoEmX4ow28JUg==
+Received: by mail-ej1-f50.google.com with SMTP id p8so40387977ejb.10;
+        Wed, 10 Mar 2021 09:45:56 -0800 (PST)
+X-Gm-Message-State: AOAM533M0Ui/IlQW9u00uZnZhWyL1EuKH/XKQbuJU/D6QfKjHl5RN2jJ
+        niQwV8kUV6TfF+mAIHRDVjF25dThVZQi3mWpRQ==
+X-Google-Smtp-Source: ABdhPJzhn9gyePa9pqaI1P5IPJEuu0+8OodWzXS1eP0nJjTFn5KQIDk7+vF34ai0qyk/n4U0G+vmCytDzNCpy+CfnXk=
+X-Received: by 2002:a17:906:25c4:: with SMTP id n4mr4886767ejb.359.1615398355126;
+ Wed, 10 Mar 2021 09:45:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-10_10:2021-03-10,2021-03-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- spamscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1011
- impostorscore=0 mlxlogscore=745 malwarescore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103100084
+References: <20210310125504.31886-1-noltari@gmail.com> <20210310125504.31886-5-noltari@gmail.com>
+In-Reply-To: <20210310125504.31886-5-noltari@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 10 Mar 2021 10:45:43 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqK4b+U7cVb04+moB4biGVFC4mr3VGx70KdQKitiCGdtnQ@mail.gmail.com>
+Message-ID: <CAL_JsqK4b+U7cVb04+moB4biGVFC4mr3VGx70KdQKitiCGdtnQ@mail.gmail.com>
+Subject: Re: [PATCH v6 04/15] dt-bindings: add BCM6328 pincontroller binding documentation
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is better to rely on the API provided by the MM layer instead of
-directly manipulating the mm_users field.
+On Wed, Mar 10, 2021 at 5:55 AM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
+>
+> Add binding documentation for the pincontrol core found in BCM6328 SoCs.
+>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> Co-developed-by: Jonas Gorski <jonas.gorski@gmail.com>
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> ---
+>  v6: add changes suggested by Rob Herring
+>  v5: change Documentation to dt-bindings in commit title
+>  v4: no changes
+>  v3: add new gpio node
+>  v2: remove interrupts
+>
+>  .../pinctrl/brcm,bcm6328-pinctrl.yaml         | 174 ++++++++++++++++++
+>  1 file changed, 174 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm632=
+8-pinctrl.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinct=
+rl.yaml b/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.ya=
+ml
+> new file mode 100644
+> index 000000000000..471f6efa1754
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml
+> @@ -0,0 +1,174 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/brcm,bcm6328-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Broadcom BCM6328 pin controller
+> +
+> +maintainers:
+> +  - =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> +  - Jonas Gorski <jonas.gorski@gmail.com>
+> +
+> +description: |+
+> +  The pin controller node should be the child of a syscon node.
+> +
+> +  Refer to the the bindings described in
+> +  Documentation/devicetree/bindings/mfd/syscon.yaml
+> +
+> +properties:
+> +  compatible:
+> +    const: brcm,bcm6328-pinctrl
+> +
+> +  gpio:
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        const: brcm,bcm6328-gpio
+> +
+> +      data:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +          Offset in the register map for the data register (in bytes).
+> +
+> +      dirout:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +          Offset in the register map for the dirout register (in bytes).
+> +
+> +      gpio-controller: true
+> +
+> +      "#gpio-cells":
+> +        const: 2
+> +
+> +      gpio-ranges:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - gpio-controller
+> +      - gpio-ranges
+> +      - '#gpio-cells'
+> +
+> +    additionalProperties: false
+> +
+> +patternProperties:
+> +  '^.*-pins$':
+> +    if:
+> +      type: object
+> +    then:
+> +      properties:
+> +        function:
+> +          $ref: "pinmux-node.yaml#/properties/function"
+> +          enum: [ serial_led_data, serial_led_clk, inet_act_led, pcie_cl=
+kreq,
+> +                  led, ephy0_act_led, ephy1_act_led, ephy2_act_led,
+> +                  ephy3_act_led, hsspi_cs1, usb_device_port, usb_host_po=
+rt ]
+> +
+> +        pins:
+> +          $ref: "pinmux-node.yaml#/properties/pins"
+> +          enum: [ gpio6, gpio7, gpio11, gpio16, gpio17, gpio18, gpio19,
+> +                  gpio20, gpio25, gpio26, gpio27, gpio28, hsspi_cs1,
+> +                  usb_port1 ]
+> +
+> +required:
+> +  - compatible
+> +  - gpio
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    gpio_cntl@10000080 {
+> +      compatible =3D "brcm,bcm6328-gpio-controller", "syscon", "simple-m=
+fd";
 
-Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
----
- drivers/misc/cxl/fault.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You just added "brcm,bcm6328-gpio-controller", it would need to be document=
+ed.
 
-diff --git a/drivers/misc/cxl/fault.c b/drivers/misc/cxl/fault.c
-index 01153b74334a..60c829113299 100644
---- a/drivers/misc/cxl/fault.c
-+++ b/drivers/misc/cxl/fault.c
-@@ -200,7 +200,7 @@ static struct mm_struct *get_mem_context(struct cxl_context *ctx)
- 	if (ctx->mm == NULL)
- 		return NULL;
- 
--	if (!atomic_inc_not_zero(&ctx->mm->mm_users))
-+	if (!mmget_not_zero(ctx->mm))
- 		return NULL;
- 
- 	return ctx->mm;
--- 
-2.30.1
+> +      reg =3D <0x10000080 0x80>;
+> +
+> +      pinctrl: pinctrl {
+> +        compatible =3D "brcm,bcm6328-pinctrl";
+> +
+> +        gpio {
+> +          compatible =3D "brcm,bcm6328-gpio";
 
+I'm still trying to understand why you need 3 levels of nodes here?
+The gpio controller contains a pin controller plus other undefined
+functions (because of 'syscon') and the pin controller contains a gpio
+controller?
+
+I think "brcm,bcm6328-gpio-controller" and "brcm,bcm6328-pinctrl"
+should be a single node.
+
+> +          data =3D <0xc>;
+> +          dirout =3D <0x4>;
+
+This looks similar to the brcm,bcm6345-gpio.txt binding which then
+uses the gpio-mmio driver. Defining addresses with 'reg' is much
+preferred over custom properties. That binding also captures the bank
+size.
+
+Rob
