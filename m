@@ -2,178 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098F9333E7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA940333E9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233820AbhCJN0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:26:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233006AbhCJNYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:24:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB66664FDA;
-        Wed, 10 Mar 2021 13:24:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615382685;
-        bh=DdBcEjlaR5j3lG1ocQ8xi77KDagXpgXE9CwA15jTWV8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UREr8/SwRLlA5JQnXtUrK1PuiiVbv8WMCjSiKBaikK/EHjwu59UFBHFWV94ql7hqk
-         w+rabGvq2J0d0y/zACxtDNLOUr9PEGti1b+p6PcCwMPM4dR0cqNwcLWyurhgLqRur5
-         Db/1dwFpEwKe/ABOGlLIcPewCFBRpxp9GiXSwnck=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 03/24] dm table: fix DAX iterate_devices based device capability checks
-Date:   Wed, 10 Mar 2021 14:24:15 +0100
-Message-Id: <20210310132320.654836213@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310132320.550932445@linuxfoundation.org>
-References: <20210310132320.550932445@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233647AbhCJN00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 08:26:26 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:34152 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233032AbhCJNYt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 08:24:49 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1DB7A9E7;
+        Wed, 10 Mar 2021 14:24:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615382687;
+        bh=Jbzzq9e1ey5tdMEkoKKaMbLAWYr9uSrkXwsnfH3Y8Ac=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zxe5zClTQlTnZrtTrK6rcslc+2yfonjdCjp5CrAUXDApbKWShepL1SIo3sSXc9vhU
+         l4op5JFOzdiahNUHO3S4/XYgplAMWFNfZzlWYw57VPtSf+95iCOUfx2wizHq/bMKlJ
+         VAmtkGscQI/dAKfCGLwr8NTMeiO45+uO+1gKbPY8=
+Date:   Wed, 10 Mar 2021 15:24:15 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        mchehab@kernel.org, a.hajda@samsung.com, narmstrong@baylibre.com,
+        jonas@kwiboo.se, jernej.skrabec@siol.net, kishon@ti.com,
+        vkoul@kernel.org, robert.foss@linaro.org, lee.jones@linaro.org
+Subject: Re: [PATCH v5 02/14] media: docs: Add some RGB bus formats for
+ i.MX8qm/qxp pixel combiner
+Message-ID: <YEjIf//ouB1wZss3@pendragon.ideasonboard.com>
+References: <1615370138-5673-1-git-send-email-victor.liu@nxp.com>
+ <1615370138-5673-3-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1615370138-5673-3-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hi Liu,
 
-From: Jeffle Xu <jefflexu@linux.alibaba.com>
+Thank you for the patch.
 
-commit 5b0fab508992c2e120971da658ce80027acbc405 upstream.
+On Wed, Mar 10, 2021 at 05:55:26PM +0800, Liu Ying wrote:
+> This patch adds documentations for RGB666_1X30_CPADLO, RGB888_1X30_CPADLO,
+> RGB666_1X36_CPADLO and RGB888_1X36_CPADLO bus formats used by i.MX8qm/qxp
+> pixel combiner.  The RGB pixels with padding low per component are
+> transmitted on a 30-bit input bus(10-bit per component) from a display
+> controller or a 36-bit output bus(12-bit per component) to a pixel link.
+> 
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v4->v5:
+> * Add Robert's R-b tag.
+> 
+> v3->v4:
+> * No change.
+> 
+> v2->v3:
+> * No change.
+> 
+> v1->v2:
+> * No change.
+> 
+>  .../userspace-api/media/v4l/subdev-formats.rst     | 156 +++++++++++++++++++++
+>  1 file changed, 156 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/subdev-formats.rst b/Documentation/userspace-api/media/v4l/subdev-formats.rst
+> index 7f16cbe..201c16d 100644
+> --- a/Documentation/userspace-api/media/v4l/subdev-formats.rst
+> +++ b/Documentation/userspace-api/media/v4l/subdev-formats.rst
+> @@ -1488,6 +1488,80 @@ The following tables list existing packed RGB formats.
+>        - b\ :sub:`2`
+>        - b\ :sub:`1`
+>        - b\ :sub:`0`
+> +    * .. _MEDIA-BUS-FMT-RGB666-1X30-CPADLO:
+> +
+> +      - MEDIA_BUS_FMT_RGB666_1X30-CPADLO
+> +      - 0x101e
+> +      -
+> +      - 0
+> +      - 0
 
-Fix dm_table_supports_dax() and invert logic of both
-iterate_devices_callout_fn so that all devices' DAX capabilities are
-properly checked.
+I count 32 bits here. Should these two 0 be replaced by spaces ? Same
+for MEDIA_BUS_FMT_RGB888_1X30-CPADLO.
 
-Fixes: 545ed20e6df6 ("dm: add infrastructure for DAX support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/md/dm-table.c |   37 ++++++++++---------------------------
- drivers/md/dm.c       |    2 +-
- drivers/md/dm.h       |    2 +-
- 3 files changed, 12 insertions(+), 29 deletions(-)
+With this fixed,
 
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -888,24 +888,24 @@ void dm_table_set_type(struct dm_table *
- EXPORT_SYMBOL_GPL(dm_table_set_type);
- 
- /* validate the dax capability of the target device span */
--int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
-+int device_not_dax_capable(struct dm_target *ti, struct dm_dev *dev,
- 			sector_t start, sector_t len, void *data)
- {
- 	int blocksize = *(int *) data, id;
- 	bool rc;
- 
- 	id = dax_read_lock();
--	rc = dax_supported(dev->dax_dev, dev->bdev, blocksize, start, len);
-+	rc = !dax_supported(dev->dax_dev, dev->bdev, blocksize, start, len);
- 	dax_read_unlock(id);
- 
- 	return rc;
- }
- 
- /* Check devices support synchronous DAX */
--static int device_dax_synchronous(struct dm_target *ti, struct dm_dev *dev,
--				  sector_t start, sector_t len, void *data)
-+static int device_not_dax_synchronous_capable(struct dm_target *ti, struct dm_dev *dev,
-+					      sector_t start, sector_t len, void *data)
- {
--	return dev->dax_dev && dax_synchronous(dev->dax_dev);
-+	return !dev->dax_dev || !dax_synchronous(dev->dax_dev);
- }
- 
- bool dm_table_supports_dax(struct dm_table *t,
-@@ -922,7 +922,7 @@ bool dm_table_supports_dax(struct dm_tab
- 			return false;
- 
- 		if (!ti->type->iterate_devices ||
--		    !ti->type->iterate_devices(ti, iterate_fn, blocksize))
-+		    ti->type->iterate_devices(ti, iterate_fn, blocksize))
- 			return false;
- 	}
- 
-@@ -996,7 +996,7 @@ static int dm_table_determine_type(struc
- verify_bio_based:
- 		/* We must use this table as bio-based */
- 		t->type = DM_TYPE_BIO_BASED;
--		if (dm_table_supports_dax(t, device_supports_dax, &page_size) ||
-+		if (dm_table_supports_dax(t, device_not_dax_capable, &page_size) ||
- 		    (list_empty(devices) && live_md_type == DM_TYPE_DAX_BIO_BASED)) {
- 			t->type = DM_TYPE_DAX_BIO_BASED;
- 		} else {
-@@ -1715,23 +1715,6 @@ static int device_dax_write_cache_enable
- 	return false;
- }
- 
--static int dm_table_supports_dax_write_cache(struct dm_table *t)
--{
--	struct dm_target *ti;
--	unsigned i;
--
--	for (i = 0; i < dm_table_get_num_targets(t); i++) {
--		ti = dm_table_get_target(t, i);
--
--		if (ti->type->iterate_devices &&
--		    ti->type->iterate_devices(ti,
--				device_dax_write_cache_enabled, NULL))
--			return true;
--	}
--
--	return false;
--}
--
- static int device_is_rotational(struct dm_target *ti, struct dm_dev *dev,
- 				sector_t start, sector_t len, void *data)
- {
-@@ -1918,15 +1901,15 @@ void dm_table_set_restrictions(struct dm
- 	}
- 	blk_queue_write_cache(q, wc, fua);
- 
--	if (dm_table_supports_dax(t, device_supports_dax, &page_size)) {
-+	if (dm_table_supports_dax(t, device_not_dax_capable, &page_size)) {
- 		blk_queue_flag_set(QUEUE_FLAG_DAX, q);
--		if (dm_table_supports_dax(t, device_dax_synchronous, NULL))
-+		if (dm_table_supports_dax(t, device_not_dax_synchronous_capable, NULL))
- 			set_dax_synchronous(t->md->dax_dev);
- 	}
- 	else
- 		blk_queue_flag_clear(QUEUE_FLAG_DAX, q);
- 
--	if (dm_table_supports_dax_write_cache(t))
-+	if (dm_table_any_dev_attr(t, device_dax_write_cache_enabled))
- 		dax_write_cache(t->md->dax_dev, true);
- 
- 	/* Ensure that all underlying devices are non-rotational. */
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -1139,7 +1139,7 @@ static bool dm_dax_supported(struct dax_
- 	if (!map)
- 		goto out;
- 
--	ret = dm_table_supports_dax(map, device_supports_dax, &blocksize);
-+	ret = dm_table_supports_dax(map, device_not_dax_capable, &blocksize);
- 
- out:
- 	dm_put_live_table(md, srcu_idx);
---- a/drivers/md/dm.h
-+++ b/drivers/md/dm.h
-@@ -74,7 +74,7 @@ void dm_table_free_md_mempools(struct dm
- struct dm_md_mempools *dm_table_get_md_mempools(struct dm_table *t);
- bool dm_table_supports_dax(struct dm_table *t, iterate_devices_callout_fn fn,
- 			   int *blocksize);
--int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
-+int device_not_dax_capable(struct dm_target *ti, struct dm_dev *dev,
- 			   sector_t start, sector_t len, void *data);
- 
- void dm_lock_md_type(struct mapped_device *md);
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
+> +      - r\ :sub:`5`
+> +      - r\ :sub:`4`
+> +      - r\ :sub:`3`
+> +      - r\ :sub:`2`
+> +      - r\ :sub:`1`
+> +      - r\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - g\ :sub:`5`
+> +      - g\ :sub:`4`
+> +      - g\ :sub:`3`
+> +      - g\ :sub:`2`
+> +      - g\ :sub:`1`
+> +      - g\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - b\ :sub:`5`
+> +      - b\ :sub:`4`
+> +      - b\ :sub:`3`
+> +      - b\ :sub:`2`
+> +      - b\ :sub:`1`
+> +      - b\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +    * .. _MEDIA-BUS-FMT-RGB888-1X30-CPADLO:
+> +
+> +      - MEDIA_BUS_FMT_RGB888_1X30-CPADLO
+> +      - 0x101f
+> +      -
+> +      - 0
+> +      - 0
+> +      - r\ :sub:`7`
+> +      - r\ :sub:`6`
+> +      - r\ :sub:`5`
+> +      - r\ :sub:`4`
+> +      - r\ :sub:`3`
+> +      - r\ :sub:`2`
+> +      - r\ :sub:`1`
+> +      - r\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - g\ :sub:`7`
+> +      - g\ :sub:`6`
+> +      - g\ :sub:`5`
+> +      - g\ :sub:`4`
+> +      - g\ :sub:`3`
+> +      - g\ :sub:`2`
+> +      - g\ :sub:`1`
+> +      - g\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - b\ :sub:`7`
+> +      - b\ :sub:`6`
+> +      - b\ :sub:`5`
+> +      - b\ :sub:`4`
+> +      - b\ :sub:`3`
+> +      - b\ :sub:`2`
+> +      - b\ :sub:`1`
+> +      - b\ :sub:`0`
+> +      - 0
+> +      - 0
+>      * .. _MEDIA-BUS-FMT-ARGB888-1X32:
+>  
+>        - MEDIA_BUS_FMT_ARGB888_1X32
+> @@ -1665,6 +1739,88 @@ The following table list existing packed 36bit wide RGB formats.
+>        - 2
+>        - 1
+>        - 0
+> +    * .. _MEDIA-BUS-FMT-RGB666-1X36-CPADLO:
+> +
+> +      - MEDIA_BUS_FMT_RGB666_1X36_CPADLO
+> +      - 0x1020
+> +      -
+> +      - r\ :sub:`5`
+> +      - r\ :sub:`4`
+> +      - r\ :sub:`3`
+> +      - r\ :sub:`2`
+> +      - r\ :sub:`1`
+> +      - r\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - g\ :sub:`5`
+> +      - g\ :sub:`4`
+> +      - g\ :sub:`3`
+> +      - g\ :sub:`2`
+> +      - g\ :sub:`1`
+> +      - g\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - b\ :sub:`5`
+> +      - b\ :sub:`4`
+> +      - b\ :sub:`3`
+> +      - b\ :sub:`2`
+> +      - b\ :sub:`1`
+> +      - b\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +    * .. _MEDIA-BUS-FMT-RGB888-1X36-CPADLO:
+> +
+> +      - MEDIA_BUS_FMT_RGB888_1X36_CPADLO
+> +      - 0x1021
+> +      -
+> +      - r\ :sub:`7`
+> +      - r\ :sub:`6`
+> +      - r\ :sub:`5`
+> +      - r\ :sub:`4`
+> +      - r\ :sub:`3`
+> +      - r\ :sub:`2`
+> +      - r\ :sub:`1`
+> +      - r\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - g\ :sub:`7`
+> +      - g\ :sub:`6`
+> +      - g\ :sub:`5`
+> +      - g\ :sub:`4`
+> +      - g\ :sub:`3`
+> +      - g\ :sub:`2`
+> +      - g\ :sub:`1`
+> +      - g\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - b\ :sub:`7`
+> +      - b\ :sub:`6`
+> +      - b\ :sub:`5`
+> +      - b\ :sub:`4`
+> +      - b\ :sub:`3`
+> +      - b\ :sub:`2`
+> +      - b\ :sub:`1`
+> +      - b\ :sub:`0`
+> +      - 0
+> +      - 0
+> +      - 0
+> +      - 0
+>      * .. _MEDIA-BUS-FMT-RGB121212-1X36:
+>  
+>        - MEDIA_BUS_FMT_RGB121212_1X36
 
+-- 
+Regards,
+
+Laurent Pinchart
