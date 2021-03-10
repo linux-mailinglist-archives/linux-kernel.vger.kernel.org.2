@@ -2,95 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38B93348C0
+	by mail.lfdr.de (Postfix) with ESMTP id A54CD3348BF
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbhCJUR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:17:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230215AbhCJURe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:17:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E735F64FB3;
-        Wed, 10 Mar 2021 20:17:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615407454;
-        bh=22tESQIORWwnjVfGnwjn+fBTqJ+OKmI3PPmG59IpzFc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L57vt6Er2TEZ7xI53hKEVh/9U3//HFqey7UDMI/eaSqhjvvU/3JXz8hF4E4E/0gRW
-         dTVDBfq8ofbwGNvXfOvW5yMhI2mRUoCOQO3c0uz+3dJdWGWQ8TN6qU8l6WZptSBuVc
-         KTPo3IaUcfU4gKFKAA4NYn3NRibSG5B053rzNrL+VAbYfKkFb4I12uHFynn8uzGqEQ
-         tJ63O0TXO5Xh1dXMK3bY8u+XEYRyJ9WS0OtQzbXrmUfsm6it9joAAR6fa3wmFswQE6
-         wKPyAsHd7RG8qRT6tb2aplCB1vwoH64mscEWrMuPiTVS3xgaPgb64jgtF+lL5V2OF1
-         MHJTXrpiKp9bg==
-Date:   Wed, 10 Mar 2021 20:16:22 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        linux-tegra@vger.kernel.org,
-        Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
- present
-Message-ID: <20210310201622.GF28564@sirena.org.uk>
-References: <20210310133534.GD4746@sirena.org.uk>
- <6a2352e6-f2b7-def1-de58-52fbeb7846e5@linux.intel.com>
- <20210310161814.GA28564@sirena.org.uk>
- <s5hzgzbvube.wl-tiwai@suse.de>
- <9b073d01-f2fe-a99b-e53c-4a0b3f95ca05@linux.intel.com>
- <20210310165235.GD28564@sirena.org.uk>
- <cf03ce61-1501-e0e7-6887-d921c7d1af62@linux.intel.com>
- <20210310181611.GE28564@sirena.org.uk>
- <9e1075c6-da49-d614-e7af-30242dd3d3fe@linux.intel.com>
- <9020a65c-b8b8-ac1e-d0f8-a12e507322b8@nvidia.com>
+        id S231468AbhCJUR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:17:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229595AbhCJUR2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:17:28 -0500
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132DAC061574;
+        Wed, 10 Mar 2021 12:17:28 -0800 (PST)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Dwjzm5MBFzQjmn;
+        Wed, 10 Mar 2021 21:17:24 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
+        t=1615407442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pc2KSGdjhoUm+KWisxb/fuVEslksJpAE3Ymh75BH0Cw=;
+        b=z1EREBP0vZqNDvFLzdtr6RdAF1QKXCR1Eev4uIKVV4Nu1Uv2HgvieeYYZt5W2ZeUgKpIc8
+        QOQ6t/CcufhP6+dcJeQT5KBtrjrn0utrxWtHrmYRT3ZAwpiO8B36voAagadx/8BE6VAnKr
+        JQUdBfTJ1b1MrvjywfZaIgGZeB4OJerMYrSjkAPiKaPzQNdzGsktETy7JNLBbf+FDO0+NR
+        Bb8cPR0xxP2EhdevYDlYM5QmAKfpghnsSLLvzVhdbEOtaLmzlBF+pmHDJ2DNWjOI/sWOMM
+        EECuyRqn5UZ/aUYDSgtdykz67N77keP9tmaWmSNgbQRGSpnWhR28Z234DuVhzw==
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
+        with ESMTP id apVk64UXcm7b; Wed, 10 Mar 2021 21:17:17 +0100 (CET)
+To:     Arnd Bergmann <arnd@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        qwu@maxlinear.com
+Cc:     Adam Borowski <kilobyte@angband.pl>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        John Crispin <john@phrozen.org>,
+        Hauke Mehrtens <hmehrtens@maxlinear.com>
+References: <20210308153052.2353885-1-arnd@kernel.org>
+ <20210309180851.GA4669@duo.ucw.cz> <20210309193910.GA7507@amd>
+ <YEgeoPqCCgTUEsSc@angband.pl> <20210310072831.GA29779@amd>
+ <CAK8P3a2+o8N77A_OkP+QD7ntA+M4U26k15Hh1rNN16-afcTp9g@mail.gmail.com>
+From:   Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Re: MaxLinear, please maintain your drivers was Re: [PATCH] leds:
+ lgm: fix gpiolib dependency
+Message-ID: <9a74ce79-b7cf-dec1-a64c-d928b5712645@hauke-m.de>
+Date:   Wed, 10 Mar 2021 21:17:15 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Wb5NtZlyOqqy58h0"
-Content-Disposition: inline
-In-Reply-To: <9020a65c-b8b8-ac1e-d0f8-a12e507322b8@nvidia.com>
-X-Cookie: Yow!  Are we laid back yet?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAK8P3a2+o8N77A_OkP+QD7ntA+M4U26k15Hh1rNN16-afcTp9g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -8.43 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 0024C17E3
+X-Rspamd-UID: e6c179
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/10/21 5:57 PM, Arnd Bergmann wrote:
+> On Wed, Mar 10, 2021 at 8:30 AM Pavel Machek <pavel@ucw.cz> wrote:
+>>
+>> Hi!
+>>
+>>>>> I'd like people from Intel to contact me. There's more to fix there,
+>>>>> and AFAICT original author went away.
+>>>>
+>>>> The following message to <mallikarjunax.reddy@linux.intel.com> was
+>>>> undeliverable.
+>>>
+>>>> <mallikarjunax.reddy@linux.intel.com>: Recipient
+>>>> +address rejected: User unknown in virtual mailbox table'
+>>>
+>>>> commit c3987cd2bca34ddfec69027acedb2fae5ffcf7a0
+>>>> Author: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+>>>
+>>> I asked around, and got told Mallikarjuna has been "sold" to MaxLinear,
+>>> together with the rest of the Connected Home Division.  So he most likely
+>>> still works on this stuff, just under a different banner.
+>>>
+>>>> If someone knows how to contact the author, that would be welcome.
+>>>
+>>> Alas, no idea about his MaxLinear address.
+>>
+>> Thanks for the effort. Anyway, I suspect I'll just do this:
+> 
+> Maybe Hauke or John  (added both to cc) know who at MaxLinear is
+> responsible for maintaining the Lightning Mountain drivers now.
+> 
+>         Arnd
 
---Wb5NtZlyOqqy58h0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Qiming,
 
-On Wed, Mar 10, 2021 at 07:17:13PM +0000, Jon Hunter wrote:
-> On 10/03/2021 18:37, Pierre-Louis Bossart wrote:
+It looks like there are some problems and potential fixes for the led 
+driver Mallikarjuna added to the Linux kernel for LGM some time ago.
 
-> > +EXPORT_SYMBOL_GPL(dmi_available);
+Could you please take care of this request from Pavel and Arnd.
 
-> > -=A0=A0=A0=A0=A0=A0 if (!is_acpi_device_node(card->dev->fwnode))
-> > +=A0=A0=A0=A0=A0=A0 if (!dmi_available)
 
-> Sounds good to me. I would have done the same if I had known that the
-> current solution would have caused this regression.
+Hauke
 
-Yes, this looks good.
 
---Wb5NtZlyOqqy58h0
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+>> diff --git a/drivers/leds/blink/Kconfig b/drivers/leds/blink/Kconfig
+>> index 6dedc58c47b3..79493f21d365 100644
+>> --- a/drivers/leds/blink/Kconfig
+>> +++ b/drivers/leds/blink/Kconfig
+>> @@ -1,14 +1,6 @@
+>> -menuconfig LEDS_BLINK
+>> -       bool "LED Blink support"
+>> -       depends on LEDS_CLASS
+>> -       help
+>> -         This option enables blink support for the leds class.
+>> -         If unsure, say Y.
+>> -
+>> -if LEDS_BLINK
+>> -
+>>   config LEDS_BLINK_LGM
+>>          tristate "LED support for Intel LGM SoC series"
+>> +       depends on BROKEN
+>>          depends on GPIOLIB
+>>          depends on LEDS_CLASS
+>>          depends on MFD_SYSCON
+>> @@ -17,5 +9,3 @@ config LEDS_BLINK_LGM
+>>            Parallel to serial conversion, which is also called SSO controller,
+>>            can drive external shift register for LED outputs.
+>>            This enables LED support for Serial Shift Output controller(SSO).
+>> -
+>> -endif # LEDS_BLINK
+>>
+>>
+>> --
+>> http://www.livejournal.com/~pavelmachek
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBJKRUACgkQJNaLcl1U
-h9Do/Qf9GmQSmIRRH5Rx5BD9lm0loP+WMo4oztmA5BvnLrrnSgf2K+wOlWAG9Kgz
-kya+OGtjauw1NImpC086m07bV39/APPw/ag4ZC8neDY8u1BCdebYNGxoLNd61OSS
-W6EnONmDY0axTAwTnNwt3CCp/Q4hiXtuuQvYy1o91mF7RJv9hwAs8rpFjId/yZ/1
-AmOiaklO+mRU3Cyysmz/wuYoHXO/j82Ftuhn4XgBKn/vl2kpRQ5pbnCJl0e3X4MA
-NB+Ks0DefrXiHfRocACmQLUcCxXCd07KnM/3T9oPdURYRQrklqUjbyiAdqrjbQYR
-PV/F+VNwl+q08hwHT31LEW3nY1+xCA==
-=atzH
------END PGP SIGNATURE-----
-
---Wb5NtZlyOqqy58h0--
