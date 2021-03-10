@@ -2,84 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20040333FB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 14:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F141333FD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 15:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhCJNzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 08:55:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
+        id S232822AbhCJOBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 09:01:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232925AbhCJNzi (ORCPT
+        with ESMTP id S232727AbhCJOB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 08:55:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C50C061760;
-        Wed, 10 Mar 2021 05:55:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ASkeCYNO3dhrSyJuXDJUBfebpEQzrlHM2DpTFAkPLVI=; b=Tt7ayNXNWXK2bTVKrYTcEgnkh+
-        f1XcrJPHapkQa44CIKSbezQvxwWp57snh9ZQwPdTMAk8AB48/hoKyAYsV3ZU4LGI3DP+I6nECBWbe
-        mY8h829FSnSMNv/PCAsrzVymOeG/qWx13tFKzswafFltkt9XHyX7vptRhmgxV+4sHHs8TT+u96GSL
-        4nlKgrcNvpOFZWyOF3okP7Uk5+XNkqMtBb7NgFccqDeLTOWWgoQL+VFa7b1Ix9secQvnL/Gs/rzb7
-        Aq26qRzbQFKc31DbCj6H7qdLZAgtko2Pd9+6RYYvXLu4N3eSeb9hz4Wf+6HZD9JmGcZZiCUZ26U0N
-        zLJxPIow==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJzJD-003a9C-NN; Wed, 10 Mar 2021 13:55:32 +0000
-Date:   Wed, 10 Mar 2021 13:55:31 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        darrick.wong@oracle.com, dan.j.williams@intel.com, jack@suse.cz,
-        viro@zeniv.linux.org.uk, Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de
-Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
-Message-ID: <20210310135531.GP3479805@casper.infradead.org>
-References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
- <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com>
- <20210310130227.GN3479805@casper.infradead.org>
- <CAEg-Je-F6ybPPV22-hq9=cuUCA7cw2xAA7Y-97tKhYUX1+fDwg@mail.gmail.com>
+        Wed, 10 Mar 2021 09:01:29 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC5FC061760;
+        Wed, 10 Mar 2021 06:01:29 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id x19so17975645ybe.0;
+        Wed, 10 Mar 2021 06:01:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7a2OeopqH0Y4h1owU3t7VkDKxd93A5ERI3FGH0Y4yUA=;
+        b=CaJtkQrEXLtU6IB+EaQnvDWDwXLsgL8YDPUo7TBqmxyEH0m7zo05lmLwDQ75aR+m/p
+         W9efunnt6u80BLcojGaLbMyRBPXn+GEuB3eGLcdIITvsH2n3xe33Rw6n6sblg6WTL1AV
+         TpOt7otXdFIhKc9jPtm5ZFebaC3ngUdkJzrrKniJp9ezHwYgB9DAD5BJa4Yo/VlLHV/d
+         NyOu5Pj6aLui1jKyKpkCkEv7OdSBmcnEJ3gVxpeZ5xyNn+lPgjqMWrD0EucFfjeGcuKE
+         sePuGgK+g9J9d7llBo7rzQ/wh4clMNQnJHKE9V+WT1m4hhX8BRYhDXOIOZ3U/gu5yFMa
+         JFrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7a2OeopqH0Y4h1owU3t7VkDKxd93A5ERI3FGH0Y4yUA=;
+        b=Q8Uq/XFCE8eAVEL4Ew4GVbc5+E8IzhlZWXYcB3VZAkkTxXeS90FvyW/kIp6HozMCYH
+         3dNCFrAZD05aCXFhI7YnA/80iqit1h4qODW9vmoY0r98h6NYSVDLLVSgHAMM1xbxg14e
+         lK1Tw/giUwrcvVq5IvIArhe+qqM9k/OX7AROtyhAoyNGvWcjJv+e3Crp0e6VyAqgNAek
+         46kTs3RtRuo3nvvphgD4uVpO3VQ5ojjMqQ08uIX1vnjSj+zkA+NMqbKoJCPTW762t3wy
+         eHTQ+d34yKb1hnr3pykcnFiBXIWpEEH2ktHfC3+ih34YN5o+uhXbH4MA5lUqHdqwnUbL
+         Sapw==
+X-Gm-Message-State: AOAM532uQCkeADWl9el41tR/4Pj4YSGxXHL74dZlOqH15XrEbyImkB/z
+        Thaz4TPPobAVQA9D2jQSEwbIZTxtouy7lW4ZWlo=
+X-Google-Smtp-Source: ABdhPJxXaxlVuYIZd3Mum1Ha9lwUcrH3kN15/FT06kJc+7h/6Tn4pZu8buSiIP3XwauBNHtw51+Zvmbtqw5jLto54Qo=
+X-Received: by 2002:a25:cec8:: with SMTP id x191mr4151186ybe.214.1615384888127;
+ Wed, 10 Mar 2021 06:01:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEg-Je-F6ybPPV22-hq9=cuUCA7cw2xAA7Y-97tKhYUX1+fDwg@mail.gmail.com>
+References: <20210310122014.28353-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210310122014.28353-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <YEjAL22jNXvpe23W@pendragon.ideasonboard.com>
+In-Reply-To: <YEjAL22jNXvpe23W@pendragon.ideasonboard.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 10 Mar 2021 14:01:02 +0000
+Message-ID: <CA+V-a8ua38zhCPW+Vu+8XmEUNt4rWGpPbg9BtojUK9_0SPhJuw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] media: i2c: imx219: Balance runtime PM use-count in
+ resume callback
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 08:36:06AM -0500, Neal Gompa wrote:
-> On Wed, Mar 10, 2021 at 8:02 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Wed, Mar 10, 2021 at 07:30:41AM -0500, Neal Gompa wrote:
-> > > Forgive my ignorance, but is there a reason why this isn't wired up to
-> > > Btrfs at the same time? It seems weird to me that adding a feature
-> >
-> > btrfs doesn't support DAX.  only ext2, ext4, XFS and FUSE have DAX support.
-> >
-> > If you think about it, btrfs and DAX are diametrically opposite things.
-> > DAX is about giving raw access to the hardware.  btrfs is about offering
-> > extra value (RAID, checksums, ...), none of which can be done if the
-> > filesystem isn't in the read/write path.
-> >
-> > That's why there's no DAX support in btrfs.  If you want DAX, you have
-> > to give up all the features you like in btrfs.  So you may as well use
-> > a different filesystem.
-> 
-> So does that mean that DAX is incompatible with those filesystems when
-> layered on DM (e.g. through LVM)?
+Hi Laurent,
 
-Yes.  It might be possible to work through RAID-0 or read-only through
-RAID-1, but I'm not sure anybody's bothered to do that work.
+Thank you for the review.
 
-> Also, based on what you're saying, that means that DAX'd resources
-> would not be able to use reflinks on XFS, right? That'd put it in
-> similar territory as swap files on Btrfs, I would think.
+On Wed, Mar 10, 2021 at 12:49 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Prabhakar,
+>
+> Thank you for the patch.
+>
+> On Wed, Mar 10, 2021 at 12:20:14PM +0000, Lad Prabhakar wrote:
+> > The runtime PM use-count gets incremented in imx219_set_stream() call
+> > when streaming is started this needs to be balanced by calling
+> > pm_runtime_put() upon failure to start stream in resume callback.
+> >
+> > Fixes: 1283b3b8f82b9 ("media: i2c: Add driver for Sony IMX219 sensor")
+> > Reported-by: Pavel Machek <pavel@denx.de>
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> >  drivers/media/i2c/imx219.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+> > index 87c021de1460..afffc85cd265 100644
+> > --- a/drivers/media/i2c/imx219.c
+> > +++ b/drivers/media/i2c/imx219.c
+> > @@ -1184,6 +1184,7 @@ static int __maybe_unused imx219_resume(struct device *dev)
+> >  {
+> >       struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> >       struct imx219 *imx219 = to_imx219(sd);
+> > +     struct i2c_client *client;
+> >       int ret;
+> >
+> >       mutex_lock(&imx219->mutex);
+> > @@ -1197,7 +1198,9 @@ static int __maybe_unused imx219_resume(struct device *dev)
+> >       return 0;
+> >
+> >  error:
+> > +     client = v4l2_get_subdevdata(&imx219->sd);
+> >       imx219_stop_streaming(imx219);
+> > +     pm_runtime_put(&client->dev);
+> >       imx219->streaming = false;
+> >       __v4l2_ctrl_grab(imx219->vflip, false);
+> >       __v4l2_ctrl_grab(imx219->hflip, false);
+>
+> Similarly to the __v4l2_ctrl_grab(), it could be better to move
+> pm_runtime_put() to imx219_stop_streaming().
+>
+Agreed, moved this to imx219_stop_streaming().
 
-You can use DAX with reflinks because the CPU can do read-only mmaps.
-On a write fault, we break the reflink, copy the data and put in a
-writable PTE.
+Cheers,
+Prabhakar
+
+> --
+> Regards,
+>
+> Laurent Pinchart
