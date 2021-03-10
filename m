@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BEC333A1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CD9333A24
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 11:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhCJKf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 05:35:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
+        id S231908AbhCJKg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 05:36:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231811AbhCJKfn (ORCPT
+        with ESMTP id S232041AbhCJKgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:35:43 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5DBC061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:35:42 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id l22so6777580wme.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:35:42 -0800 (PST)
+        Wed, 10 Mar 2021 05:36:44 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE064C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:36:42 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id b18so22721477wrn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 02:36:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=k11X2IaCm7778Ql6a7D/ZiOxFU1ZEqfWNW+eBOH3OF8=;
-        b=KqK258d2QHv7GjqtjRSg40t0WuJXZB5TC4pmhS1sfVUud9iiq28hZscR/pYRDHADt0
-         3ngif1VVcCFN8W1KFj+FJyByX89v1XlrNRu8Eqb2rPMS+/v8ikJKCriSIsrUyqrR9AAI
-         c/GKw6xIW0xrZJG8H2KBpJceqc2IY27Xa6mvV05UpaMYS+AuN396IIJMfNFvOAT9A7Xi
-         JeRgMOTNcd5VHfj2Ud3g4Spjf4QtlbhPNy1saLLdxmgNJnvOVfcHj5TKfQ+tbPFQuNh6
-         eZLrxAG5qs2Gfx+JWUCGv0at9m45ur7leVzSQBAkzg+Oke4Cftu8w80ZEcURiQOnV1jw
-         hJvQ==
+        bh=Jb7ZelfORH1QHJnFWCjShP1okoL5Fzbc3XNjssblVDM=;
+        b=Wtl+/BWmYdVQ1eCD7d/+zWRstywW8SSDLChG2No8Nt659lCdvZ1AH6TF9QhRKJfJfJ
+         elWDFxQJHuG/54mKawxKkPBWZdKweaH2UfMrGgDmWg5wsIRALmZbsWcI51/06wquWogj
+         1ikDFcfaOfCDthMi0nY9erfPIqnIDOMToHoakc2XbndZgaxBgvssewb0ZC/USXxJ+60E
+         rv3NyN8XbPueJGxjNsB3vi/SeKJCjFBlc4kOWZsnSjYgIGz8rGjVHlqDiCzQHYFfwxWa
+         p7aUw8ynGbHTXaEL8uHwJc/HX1f1Iu+QJJbKzOAI2WmatTLrls4wgrbNcd73tOLQes/f
+         yXow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=k11X2IaCm7778Ql6a7D/ZiOxFU1ZEqfWNW+eBOH3OF8=;
-        b=oon8Jx/U63+MzrpUhl233GgDyVUpxh1wxqISHkxoLIWGi/fT1hDaVLXqg/L9X3QhNG
-         lfanXYEB3E7odSwUapmFnLSg3zxWU7fTMQvkdZHXWQ1gOvqLmtLS2+Z+qOOEzqfC7mFl
-         iV4bbN4FaPtqNrB8WJ6eQu++RN0F9HG9PPe6/v+kQyIuZjM/ZFQEsC+wZ3s4nev7yDLo
-         6Ng98Ysxh+ADrO6u27u54eTEPQATxyteqIjyGykw9HBLciPPS+Rf+uFK1vmg+8HKdtDH
-         3p4jWGufyrT4HZb55IixTTD/3+GMSvL8ZXFm0CqU2d1EBfE82Zy4bZq7DPPbA7a0M+ue
-         uedQ==
-X-Gm-Message-State: AOAM533Ws1SfXnn+0q06pXP+Xw0z02nMqi6ISa9/Dbt+DnjQ22G0JTBA
-        Hx5RKx4M8YVD0hF8YT+YQGFEayUpVlii3A==
-X-Google-Smtp-Source: ABdhPJyLdOIr4E9Qa53UvZvv/KO6KjoXTUQ6/+YP6LjE0pSDSgp7inNcVk00mLbhh5ugPQI+9vacOg==
-X-Received: by 2002:a05:600c:47d7:: with SMTP id l23mr2682273wmo.155.1615372541428;
-        Wed, 10 Mar 2021 02:35:41 -0800 (PST)
+        bh=Jb7ZelfORH1QHJnFWCjShP1okoL5Fzbc3XNjssblVDM=;
+        b=iZmaDTwJqL0cxHDsZl7Lipk/hN+UIMx2DzHcyfHsmGtVUm+yJL6k4yI7ypM/Eb7wBk
+         tJRpnAmWgYcPqe70PKb4xzSE++U6JLImQ/Mc1MLk2GRmwpbwCDzJKK01DE/TZUtxGT54
+         6ME3AXUpS+VFV7iLabDR/FUCemW1KBuPehTq3rY6H3PU1+/AWWMkV14rV7PXcbzAfYip
+         uvHThE5dSf7MiGHqXzqxsKkQvjdF7XrHR4DaDu63dLiFd5P0uY8KBG4tHHUwrVgVmCd1
+         L1BIBfDTuwIe23Mrq85Iuq6x8rrrCDO0Mhem1RpH8arEClkg+OcgTPyTmxZzx7jvmngr
+         9xQw==
+X-Gm-Message-State: AOAM530lsz5aDjaDEA2btlmIlMk7MYJiSgrSqC6wUol8hrUw94XNdhSa
+        kH1F+k7z/UyFELy8rd/oqvGw2Q==
+X-Google-Smtp-Source: ABdhPJwWYgVLki6B90CCw0UsfdKlqtXBlodzOFwgFzBQoo1El4DPbwMQZWGcm7Uz/h6ROKgdbsyCkA==
+X-Received: by 2002:adf:e482:: with SMTP id i2mr2787952wrm.392.1615372601570;
+        Wed, 10 Mar 2021 02:36:41 -0800 (PST)
 Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id s3sm2307358wmd.21.2021.03.10.02.35.40
+        by smtp.gmail.com with ESMTPSA id u63sm8634794wmg.24.2021.03.10.02.36.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 02:35:41 -0800 (PST)
-Date:   Wed, 10 Mar 2021 10:35:39 +0000
+        Wed, 10 Mar 2021 02:36:41 -0800 (PST)
+Date:   Wed, 10 Mar 2021 10:36:39 +0000
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com,
-        henning.schild@siemens.com
-Subject: Re: [PATCH v1 5/7] mfd: lpc_ich: Switch to generic pci_p2sb_bar()
-Message-ID: <20210310103539.GF701493@dell>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
- <20210308122020.57071-6-andriy.shevchenko@linux.intel.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     mazziesaccount@gmail.com, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v3 06/15] mfd: Add ROHM BD71815 ID
+Message-ID: <20210310103639.GG701493@dell>
+References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+ <be0e8cd06ed75e799c942e5076ee7b56ad658467.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210308122020.57071-6-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <be0e8cd06ed75e799c942e5076ee7b56ad658467.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021, Andy Shevchenko wrote:
+On Mon, 08 Mar 2021, Matti Vaittinen wrote:
 
-> Instead of open coding pci_p2sb_bar() functionality we are going to
-> use generic library for that. There one more user of it is coming.
+> Add chip ID for ROHM BD71815 and PMIC so that drivers can identify
+> this IC.
 > 
-> Besides cleaning up it fixes a potential issue if, by some reason,
-> SPI bar is 64-bit.
-
-Probably worth cleaning up the English in both these sections.
-
- Instead of open coding pci_p2sb_bar() functionality we are going to
- use generic library. There is one more user en route.
-
- This is more than just a clean-up.  It also fixes a potential issue
- seen when SPI bar is 64-bit.
-
-Also worth briefly describing what that issue is I think.
-
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/mfd/Kconfig   |  1 +
->  drivers/mfd/lpc_ich.c | 20 ++++++--------------
->  2 files changed, 7 insertions(+), 14 deletions(-)
+>  include/linux/mfd/rohm-generic.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
+> index 66f673c35303..e5392bcbc098 100644
+> --- a/include/linux/mfd/rohm-generic.h
+> +++ b/include/linux/mfd/rohm-generic.h
+> @@ -14,6 +14,7 @@ enum rohm_chip_type {
+>  	ROHM_CHIP_TYPE_BD71828,
+>  	ROHM_CHIP_TYPE_BD9571,
+>  	ROHM_CHIP_TYPE_BD9574,
+> +	ROHM_CHIP_TYPE_BD71815,
 
-Code looks fine:
+Is there a technical reason why these can't be re-ordered?
 
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+>  	ROHM_CHIP_TYPE_AMOUNT
+>  };
+>  
 
 -- 
 Lee Jones [李琼斯]
