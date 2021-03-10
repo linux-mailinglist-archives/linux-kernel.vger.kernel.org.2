@@ -2,138 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656DC3337D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8968E3337D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 09:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbhCJIu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 03:50:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbhCJIuc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:50:32 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E64C06174A;
-        Wed, 10 Mar 2021 00:50:32 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 18so32115967lff.6;
-        Wed, 10 Mar 2021 00:50:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cXAwMKtrLhlTAKUm2JyzSR52zFEvTMF+n/fM4EEcXZQ=;
-        b=T2jCzDOwOsOEX5EXpPC0yhOaXyo1+YjI/JSOIKQno+1XWayLhBq/5zb3bZ7jGiTWfM
-         uMOdZUkqLNE74RY/+2Ge7iiQe/2z6+bVULEGHr6185ThcKjRY5YOzQ1gLPPentIvtOjY
-         pwi1/DMr1CBWCWBkF2qL8lFcHHw3LpWWAN0AhtW8DxsnlkQxHNBItzTMSICkcnj4KqVT
-         +MQWgllGArl0+S8xKUuQ2tN438CTTJ886Wb91ehPse8sYCLB8GIKzFU3DNjaHDVH8LWd
-         IOh4KHjnLoHFIw7TIz5yluxCBrZkbvWJ4AYMwjoCxnDoi2Sx5qf6peWZmYFLh3yv7qxm
-         w50g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=cXAwMKtrLhlTAKUm2JyzSR52zFEvTMF+n/fM4EEcXZQ=;
-        b=JMgxdtd6lO3E+eRzQl6lbxlQQkEE4yqn51ObfTHrtEEsgoFKKAZJedJEe+4OuuvFw1
-         QBC6iaxc1NPokk9a1KT2ctG1y/ByIO1nfWpucmArrNXReyV/gkWAvdm+rs6FiVKqGdX2
-         JNNR3lY02H+KCfirEcJAsAiQX1z9I/UxhoZxMy9B7NU/nqqlbU1ud/9hlRCCosII1YFZ
-         UFk0b5EUvcDOofH1T4JykdCg4lXJUEGtkj/iFWdb34khw1mjthaWzrw9RZTReCh3E0MY
-         agWrQe34Lcq1ioXNDR+iQwM8eCvk0AJW1d3V5/k7Fyk7jqKt04jwfhAqXQcg0WM04T66
-         a2XA==
-X-Gm-Message-State: AOAM531TZuXecaWNo45Ff2i/MmkWJkglrYvtOxedccGxXswEznshCpNQ
-        evjT+51Y4Wgf6cm9xERBgpo=
-X-Google-Smtp-Source: ABdhPJzsFIEKJlb4GU7aZlayDwJj3SBRl3sio62s2wScFkSnGweomCVVKSqggJcQc02nYk8rWJBa6Q==
-X-Received: by 2002:a05:6512:31d3:: with SMTP id j19mr1438210lfe.495.1615366230885;
-        Wed, 10 Mar 2021 00:50:30 -0800 (PST)
-Received: from [192.168.1.100] ([178.176.74.161])
-        by smtp.gmail.com with ESMTPSA id k6sm2672986lfg.28.2021.03.10.00.50.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 00:50:30 -0800 (PST)
-Subject: Re: [PATCH v4 3/7] MIPS: Loongson64: Add support for the
- Loongson-2K1000 to get cpu_clock_freq
-To:     Qing Zhang <zhangqing@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
-References: <20210310075639.20372-1-zhangqing@loongson.cn>
- <20210310075639.20372-4-zhangqing@loongson.cn>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <cb549804-4ee1-79ab-d872-3e95bf0cbe55@gmail.com>
-Date:   Wed, 10 Mar 2021 11:50:20 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230453AbhCJIwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 03:52:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232467AbhCJIwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 03:52:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4873D64FEE;
+        Wed, 10 Mar 2021 08:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615366325;
+        bh=ijxRDmvFdE54TR+aDgU5N1hfbWna1xc6Q27akx3/hM8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V8n/vzKH3R44LtbnDPf4SgMvZiOaXnicZHLbuoOaZ+XFFKIH1yTDUrj5iikx+y692
+         rNvDSDQVFhEb/rwUZFAt1RN5kknz+fUVVMWOQt5l6L+WiG2jnLGJHCl66JnqBPjwn1
+         DT0mpYekRczHJ13a+Ivts1EnziAiysFCymMa4yX8=
+Date:   Wed, 10 Mar 2021 09:52:02 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] char/mwave: turn tp3780I_InitializeBoardData() into void
+ function
+Message-ID: <YEiIsmZ3O3Wk6DDq@kroah.com>
+References: <1615365963-2096-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210310075639.20372-4-zhangqing@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615365963-2096-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 10.03.2021 10:56, Qing Zhang wrote:
-
-> Get the fixed-clock from the CPU0 node of the device tree.
+On Wed, Mar 10, 2021 at 04:46:03PM +0800, Yang Li wrote:
+> This function always return '0' and no callers use the return value.
+> So make it a void function.
 > 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-> Tested-by: Ming Wang <wangming01@loongson.cn>
+> This eliminates the following coccicheck warning:
+> ./drivers/char/mwave/tp3780i.c:182:5-11: Unneeded variable: "retval".
+> Return "0" on line 187
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
+>  drivers/char/mwave/tp3780i.c | 6 +-----
+>  drivers/char/mwave/tp3780i.h | 2 +-
+>  2 files changed, 2 insertions(+), 6 deletions(-)
 > 
-> v3-v4: Standard submission of information
->         Add return after error
-> 
->   arch/mips/loongson64/time.c | 24 ++++++++++++++++++++++++
->   1 file changed, 24 insertions(+)
-> 
-> diff --git a/arch/mips/loongson64/time.c b/arch/mips/loongson64/time.c
-> index 91e842b58365..2d84f9b20a9b 100644
-> --- a/arch/mips/loongson64/time.c
-> +++ b/arch/mips/loongson64/time.c
-> @@ -11,9 +11,33 @@
->   #include <asm/hpet.h>
->   
->   #include <loongson.h>
-> +#include <linux/clk.h>
-> +#include <linux/of_clk.h>
->   
->   void __init plat_time_init(void)
->   {
-> +	struct clk *clk = NULL;
+> diff --git a/drivers/char/mwave/tp3780i.c b/drivers/char/mwave/tp3780i.c
+> index 5e1618a..8588b51 100644
+> --- a/drivers/char/mwave/tp3780i.c
+> +++ b/drivers/char/mwave/tp3780i.c
+> @@ -177,14 +177,10 @@ int tp3780I_InitializeBoardData(THINKPAD_BD_DATA * pBDData)
+>  	return retval;
+>  }
+>  
+> -int tp3780I_Cleanup(THINKPAD_BD_DATA * pBDData)
+> +void tp3780I_Cleanup(THINKPAD_BD_DATA *pBDData)
 
-    You don't seem to need this initializer.
-
-> +	struct device_node *np;
-> +
-> +	if (loongson_sysconf.fw_interface == LOONGSON_DTB) {
-> +		of_clk_init(NULL);
-> +
-> +		np = of_get_cpu_node(0, NULL);
-> +		if (!np) {
-> +			pr_err("Failed to get CPU node\n");
-> +			return;
-> +		}
-> +
-> +		clk = of_clk_get(np, 0);
-> +		if (IS_ERR(clk)) {
-> +			pr_err("Failed to get CPU clock: %ld\n", PTR_ERR(clk));
-> +			return;
-> +		}
-> +
-> +		cpu_clock_freq = clk_get_rate(clk);
-> +		clk_put(clk);
-> +	}
-> +
->   	/* setup mips r4k timer */
->   	mips_hpt_frequency = cpu_clock_freq / 2;
->   
-> 
+Your subject line does not match what the patch does :(
 
