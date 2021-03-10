@@ -2,147 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977A4333932
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CCD333939
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 10:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhCJJtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 04:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
+        id S230242AbhCJJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 04:51:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhCJJtI (ORCPT
+        with ESMTP id S231139AbhCJJvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:49:08 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED57C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:48:50 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id e2so24734363ljo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:48:50 -0800 (PST)
+        Wed, 10 Mar 2021 04:51:47 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20395C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:51:47 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id l12so27150358edt.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:51:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XtHA2WDlEgIkr4gPC6h7Fo/UqIYBpPKwlhK+eaqepyw=;
-        b=tY/zIW4Jt+MrodIYY2WZdIiCNb/lU3TrDkCWVH1GC0ZPyU8Fx0CiEb9Y0y6cWNwv7U
-         3+UQ4tj0HCbX1WI9IIyo1VQinhXuWm4yZ4/FrglyModxavmcD8ic3hi8VDuL0mu7sjvO
-         r5E3kNoy61v/83xcWywtQVUii/xoonAa4J0vcuc4IIrtgr+1XAGhb6OW3Mi4t5bvbWxc
-         GIgozN4dt2GxWFomJxp6BI7YoAy/xPboNJQTdjjKnrHxVFj4+9L5cBB9ed/Szln9egGk
-         D9vT9z4k3NfBlpCqmdhXbTHzIRr2dVJNtXzUNIocr7litDYcpUQG9qfLgvf2bTY4K7bC
-         /Isw==
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zBIxLdWqLnaTc/HNSK6FC9gib04yK5F64uC+VAu1FBc=;
+        b=MSo18LFoB3yv54bsMl2QvxGIX+lA2zh3asnEdxzGM5LfyCL6fsQ0E0pcyK2NWxPMEM
+         Kvo/olQLRlSTCgzO/34AYq1Cw9x1u0JGL7sR+2cURgpk4zfljK/7VXp1wTCgaoAoDM4B
+         kJUba0MspCUKqRNov/dSW+DYR6uaB+zDQ/hDvLAWcXjHxYWqVQ296j1ld/D8Px+LhJ8Y
+         3PQXu40MaR5keFXFs0cflmaL8Wl01y4HNB0ypLbx2PdE/nSbtw/c+5C4bnvNfQ5XZHMG
+         sw+DLP11U4LMaqbV06dJY2hYzS0wJMKc89i5W09HEqUh5dytPuHH/w3rBns5W/zfUGmI
+         Aqng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XtHA2WDlEgIkr4gPC6h7Fo/UqIYBpPKwlhK+eaqepyw=;
-        b=tukmZR3Qgj0bbCVfELMqE+eD4DW+VoTKm3J0wT8ctKWr5vK1p94kgDrbLDpYBGtoWW
-         iUsd0vA0WkYXAf+UtoYKfZrTrWTIJA+WkGfg3dybHIPMHx/oB/86gIKfCwC/WOj2NLT1
-         Z+Lw/oN5yhm1q0cjRvWL+/lePhQ9mRrHiOfPH5wQB1TOLWfvHOuFcq0dEX084fOg3hWE
-         i44nwePPeGoWy1iDuXamsMLo0gwUmYc0/gO5uRwBosiEdI6EZZFV79SwPNQS/5wUQNkd
-         FibQcNPxd7RB/vmhON3qvJZxTonSE8Mcw6lSemETUUrFiwN41ZQIOB4xjwLR/zq5CYzx
-         GvfQ==
-X-Gm-Message-State: AOAM533NVvqou8HSohme75JzWJm4qT0SFJ+K59YQaq+aA5doXNc/T3M/
-        mTWvHP7rI5pAMx63XaYG5oW5UVR2uiJCFbCQf/Pbjw==
-X-Google-Smtp-Source: ABdhPJy+6iVKLlhEs9ytjE2yJ6jzfWyAjkcYGwRmlv2dADiCXewf+sSTgUSixyA6cjqoVwsnHGvaAVVLYVVNGU7AOWM=
-X-Received: by 2002:a2e:864a:: with SMTP id i10mr1268524ljj.467.1615369729068;
- Wed, 10 Mar 2021 01:48:49 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zBIxLdWqLnaTc/HNSK6FC9gib04yK5F64uC+VAu1FBc=;
+        b=Bcn+/ES2cHCR6n6KvpAH2XlUPhIruL7NU6vQIk/xNYAtKOTchmK5m7WY7oMybUyYBN
+         COBGUojp+YUF7lr9QvHWUNC6VPviVNHMLxBQ0xUb8u1z+iCyj0ZofagXCUdf7Fb2Yy7E
+         oAoq7wpsxRnmcnvBtWXXWCq3sB+MHSaYR+5mXNMwS5IvmQmLny+GT/ms2ZAGosf2tZ23
+         S9n9dA8egWOBOUZPPAheZnIuthoHcUaY0LR5r/qaI2rV/qkiyUjTUlM70F0oJfXC5O37
+         UM0yt8hWXeBCbkH/yDMsJ3hCkliM1/oys0eQzZhl9Wh+SveqEh5VzXHyItV7DXyc/VwY
+         cGtA==
+X-Gm-Message-State: AOAM530zY/2J2kmyf1WaBIZWHRaPezzxkZzUHDjRL0s3lEdQ3jpTiy73
+        /IdeatYsZsiQESLr5sYIqp3o1Q==
+X-Google-Smtp-Source: ABdhPJwDNyIPf4nWh3MzECZMM0ZIqB4OEA7e3uSknGcoFvDB4e9weZbbP/OighJ/kFTBiV/nun3hIg==
+X-Received: by 2002:aa7:d74b:: with SMTP id a11mr2301036eds.92.1615369905860;
+        Wed, 10 Mar 2021 01:51:45 -0800 (PST)
+Received: from localhost.localdomain ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id s20sm8921807ejj.38.2021.03.10.01.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 01:51:45 -0800 (PST)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     Michael.Hennerich@analog.com, gregkh@linuxfoundation.org,
+        linux@deviqon.com, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] staging: iio: ad9834: convert to device-managed functions in probe
+Date:   Wed, 10 Mar 2021 11:51:31 +0200
+Message-Id: <20210310095131.47476-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
- <6c542548-cc16-af68-c755-df52bd13b209@marcan.st> <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
- <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
-In-Reply-To: <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 10 Mar 2021 10:48:38 +0100
-Message-ID: <CACRpkdbQks5pRFNHkNLVvLHCBhh0XCv7pHYq25EVAbU60PcwsA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To:     Hector Martin <marcan@marcan.st>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Arnd Bergmann <arnd@linaro.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 9:47 AM Hector Martin <marcan@marcan.st> wrote:
+This change converts the driver to use device-managed functions in the
+probe function. For the clock and regulator disable, some
+devm_add_action_or_reset() calls are required, and then
+devm_iio_device_register() function can be used register the IIO device.
 
-> Remember that if the key is ever lost, the RPMB is now completely
-> useless forever.
->
-> This is why, as far as I know, most sane platforms will use hard fused
-> values to derive this kind of thing, not any kind of key stored in
-> erasable storage.
+The final aim here would be for IIO to export only the device-managed
+functions of it's API. That's a long way to go and this a small step in
+that direction.
 
-You're right. In the mobile phone world this is a given fact.
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/staging/iio/frequency/ad9834.c | 64 +++++++++++++-------------
+ 1 file changed, 31 insertions(+), 33 deletions(-)
 
-If we are thinking devices are to be repurposed or reinstalled
-from scratch for example, like ordinary desktops or servers,
-RPMB does not make generic sense: it is not for
-"generic computing" but rather for protecting devices that you
-carry around and can be lost: mobile phones, chromebooks,
-maybe laptops.
+diff --git a/drivers/staging/iio/frequency/ad9834.c b/drivers/staging/iio/frequency/ad9834.c
+index 262c3590e64e..b063cfd0e0e1 100644
+--- a/drivers/staging/iio/frequency/ad9834.c
++++ b/drivers/staging/iio/frequency/ad9834.c
+@@ -390,6 +390,20 @@ static const struct iio_info ad9833_info = {
+ 	.attrs = &ad9833_attribute_group,
+ };
+ 
++static void ad9834_disable_reg(void *data)
++{
++	struct regulator *reg = data;
++
++	regulator_disable(reg);
++}
++
++static void ad9834_disable_clk(void *data)
++{
++	struct clk *clk = data;
++
++	clk_disable_unprepare(clk);
++}
++
+ static int ad9834_probe(struct spi_device *spi)
+ {
+ 	struct ad9834_state *st;
+@@ -407,26 +421,33 @@ static int ad9834_probe(struct spi_device *spi)
+ 		return ret;
+ 	}
+ 
++	ret = devm_add_action_or_reset(&spi->dev, ad9834_disable_reg, reg);
++	if (ret)
++		return ret;
++
+ 	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+ 	if (!indio_dev) {
+ 		ret = -ENOMEM;
+-		goto error_disable_reg;
++		return ret;
+ 	}
+-	spi_set_drvdata(spi, indio_dev);
+ 	st = iio_priv(indio_dev);
+ 	mutex_init(&st->lock);
+ 	st->mclk = devm_clk_get(&spi->dev, NULL);
+ 	if (IS_ERR(st->mclk)) {
+ 		ret = PTR_ERR(st->mclk);
+-		goto error_disable_reg;
++		return ret;
+ 	}
+ 
+ 	ret = clk_prepare_enable(st->mclk);
+ 	if (ret) {
+ 		dev_err(&spi->dev, "Failed to enable master clock\n");
+-		goto error_disable_reg;
++		return ret;
+ 	}
+ 
++	ret = devm_add_action_or_reset(&spi->dev, ad9834_disable_clk, st->mclk);
++	if (ret)
++		return ret;
++
+ 	st->spi = spi;
+ 	st->devid = spi_get_device_id(spi)->driver_data;
+ 	st->reg = reg;
+@@ -470,48 +491,26 @@ static int ad9834_probe(struct spi_device *spi)
+ 	ret = spi_sync(st->spi, &st->msg);
+ 	if (ret) {
+ 		dev_err(&spi->dev, "device init failed\n");
+-		goto error_clock_unprepare;
++		return ret;
+ 	}
+ 
+ 	ret = ad9834_write_frequency(st, AD9834_REG_FREQ0, 1000000);
+ 	if (ret)
+-		goto error_clock_unprepare;
++		return ret;
+ 
+ 	ret = ad9834_write_frequency(st, AD9834_REG_FREQ1, 5000000);
+ 	if (ret)
+-		goto error_clock_unprepare;
++		return ret;
+ 
+ 	ret = ad9834_write_phase(st, AD9834_REG_PHASE0, 512);
+ 	if (ret)
+-		goto error_clock_unprepare;
++		return ret;
+ 
+ 	ret = ad9834_write_phase(st, AD9834_REG_PHASE1, 1024);
+ 	if (ret)
+-		goto error_clock_unprepare;
+-
+-	ret = iio_device_register(indio_dev);
+-	if (ret)
+-		goto error_clock_unprepare;
+-
+-	return 0;
+-error_clock_unprepare:
+-	clk_disable_unprepare(st->mclk);
+-error_disable_reg:
+-	regulator_disable(reg);
+-
+-	return ret;
+-}
+-
+-static int ad9834_remove(struct spi_device *spi)
+-{
+-	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+-	struct ad9834_state *st = iio_priv(indio_dev);
+-
+-	iio_device_unregister(indio_dev);
+-	clk_disable_unprepare(st->mclk);
+-	regulator_disable(st->reg);
++		return ret;
+ 
+-	return 0;
++	return devm_iio_device_register(&spi->dev, indio_dev);
+ }
+ 
+ static const struct spi_device_id ad9834_id[] = {
+@@ -539,7 +538,6 @@ static struct spi_driver ad9834_driver = {
+ 		.of_match_table = ad9834_of_match
+ 	},
+ 	.probe		= ad9834_probe,
+-	.remove		= ad9834_remove,
+ 	.id_table	= ad9834_id,
+ };
+ module_spi_driver(ad9834_driver);
+-- 
+2.29.2
 
-If and only if the user so desires, I would say, but sometimes
-the vendors decide policy...
-
-(+/- the fact that some recent supply chain attacks for server
-software may actually make cloud people start thinking like this
-about their servers integrity, what do I know.)
-
-> Also, newly provisioned keys are sent in plain text, which means that
-> any kind of "if the RPMB is blank, take it over" automation equates to
-> handing over your key who an attacker who removes the RPMB and replaces
-> it with a blank one, and then they can go access anything they want on
-> the old RPMB device (assuming the key hasn't changed; and if it has
-> changed that's conversely a recipe for data loss if something goes wrong).
->
-> I really think trying to automate any kind of "default" usage of an RPMB
-> is a terrible idea. It needs to be a conscious decision on a
-> per-platform basis.
-
-OK sorry for my bad ideas, what was I thinking :D
-
-For a laptop or so, I would say, a user who is paranoid that their
-device gets stolen and used by someone else, should be able to
-set their device up, with some tool, such that a secret key from
-somewhere and RPMB is used to lock down the machine so that
-attackers cannot get into it and get the data out.
-
-Disk is encrypted, and RPMB is there to block any exhaustive
-password or other authentication token search.
-
-Ideally: the only way to make use of the hardware again would
-be to solder off the eMMC, if eMMC is used for RPMB.
-If we have RPMB on an NVME or UFS drive, the idea is
-to lock that thing such that it becomes useless and need to
-be replaced with a new part in this scenario.
-
-In practice: make it hard, because we know no such jail is
-perfect. Make it not worth the effort, make it cheaper for thieves
-to just buy a new harddrive to use a stolen laptop, locking
-the data that was in it away forever by making the drive
-useless for any practical attacks.
-
-Maybe it will be possible to blank the drive and use without
-RPMB since that is now locked with a key they can no longer
-acces: the end result is the same: RPMB protected the data
-of the original user. So a one-time user protection such
-as a seal, once broken this seal cannot be reused to seal
-anything again and that is OK.
-
-Yours,
-Linus Walleij
