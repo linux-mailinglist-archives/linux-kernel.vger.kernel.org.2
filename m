@@ -2,77 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A17333C75
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BA0333C79
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 13:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCJMRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 07:17:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233081AbhCJMRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:17:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D0CB64FE7;
-        Wed, 10 Mar 2021 12:17:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615378629;
-        bh=TMe7CnR9HKbioIrZulViQgGBc86z1nxs2RXTijWx1AM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0BwWNpThmsoX6mfUyfP3AL+FIKOImoTwkVWlVs9q36CfbyFei3hDoaoG4e9xBF6O1
-         eIvFLDPECZ+kfFPvsTY60TiZfAOLnTyC69liC36WgHjETPk8Rp16Nuj0IqQpr83km2
-         NXoBeqo21kHH7TBo93lvoYYrhstxJVQuX9hNqm2Y=
-Date:   Wed, 10 Mar 2021 13:16:43 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v5] printk: Userspace format enumeration support
-Message-ID: <YEi4qwBAd/O+sXyq@kroah.com>
-References: <YEgvR6Wc1xt0qupy@chrisdown.name>
- <YEhsHELBM20f4MRE@kroah.com>
- <YEi3ySLkw3hZinnS@chrisdown.name>
+        id S232904AbhCJMSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 07:18:17 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:29588 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232566AbhCJMSF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 07:18:05 -0500
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 12ACHoxE028941;
+        Wed, 10 Mar 2021 21:17:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 12ACHoxE028941
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615378671;
+        bh=1uzRseWND95yPdttTTlSI8iqUuJQXLvWlCES5n3lIEg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nOeVSNqCgj4eBjEMeoHSVzmDuQU8atwOWT9cDz77R9xN5Ur7R3Z187TXIKlVZBztO
+         88gyr1O1T8gN+S28Da9S1tUnAwHcTGOQ3iu85VtFuXjlZMGo2o2TnK7hfjxtcxAFlj
+         DCOX9OE4UUe4hJHrS9BCAc1oMpucTKFGZjohYRxQ8HzF0L4paN+vuWB9JIMHAIK98Y
+         pwoAo+U4XX8LygvBIfsLA3RNefAdbLovOpKqaVqkg7xl+5nk7nKZrLQj5Ghrzx+GHD
+         aWWk+UPhVrrNcv8PU/PhvbgPqOvFkXV1r20pADVU+4PsD7yefBuFJhgrjk1Vs2FYLZ
+         KtCmOfrdC3O2g==
+X-Nifty-SrcIP: [209.85.216.53]
+Received: by mail-pj1-f53.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso4879765pjb.4;
+        Wed, 10 Mar 2021 04:17:50 -0800 (PST)
+X-Gm-Message-State: AOAM533YaQrFzrwfEPc49s75AqOLnwRMygO62v078ZTgZCbDTiARKi/n
+        CaIEteZQ9A14X6gun/zLKTjyovqnSH0NJ4XNEVk=
+X-Google-Smtp-Source: ABdhPJzMkPmMW8O6bOX4zaHgWdNSG8cKICJI0tzuj1hM2k3Mtbcp/sgpCGkWKw+dV8k+oZ6SJssAesWQdjYkIzq3Fk0=
+X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr2134520pjb.87.1615378669828;
+ Wed, 10 Mar 2021 04:17:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEi3ySLkw3hZinnS@chrisdown.name>
+References: <20210309162545.637647-1-masahiroy@kernel.org> <87f93105-926a-d81b-3226-c5147870d62a@kernel.org>
+In-Reply-To: <87f93105-926a-d81b-3226-c5147870d62a@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 10 Mar 2021 21:17:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARV4umAMEEc2YAhrgnOJSDvXEUkyNSsmN-AyotZNATedw@mail.gmail.com>
+Message-ID: <CAK7LNARV4umAMEEc2YAhrgnOJSDvXEUkyNSsmN-AyotZNATedw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: dummy-tools: adjust to scripts/cc-version.sh
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Philipp Rudo <prudo@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 12:12:57PM +0000, Chris Down wrote:
-> Greg Kroah-Hartman writes:
-> > On Wed, Mar 10, 2021 at 02:30:31AM +0000, Chris Down wrote:
-> > > +	ps->file = debugfs_create_file(pi_get_module_name(mod), 0444, dfs_index,
-> > > +				       ps, &dfs_index_fops);
-> > > +
-> > > +	if (IS_ERR(ps->file)) {
-> > > +		pi_sec_remove(mod);
-> > > +		return;
-> > > +	}
-> > 
-> > No need to check this and try to clean up if there is a problem, just
-> > save the pointer off and call debugfs_remove() when you want to clean
-> > up.
-> 
-> Petr, what are your thoughts on this, since you requested the cleanup on
-> debugfs failure? :-)
+On Wed, Mar 10, 2021 at 1:54 PM Jiri Slaby <jirislaby@kernel.org> wrote:
+>
+> On 09. 03. 21, 17:25, Masahiro Yamada wrote:
+> > Commit aec6c60a01d3 ("kbuild: check the minimum compiler version in
+> > Kconfig") changed how the script detects the compiler version.
+> >
+> > Get 'make CROSS_COMPILE=scripts/dummy-tools/' back working again.
+> >
+> > Fixes: aec6c60a01d3 ("kbuild: check the minimum compiler version in Kconfig")
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> > Perhaps, Jiri may have already noticed this issue, and have a similar patch.
+> > I just checked ML, but I did not find a patch to fix this.
+>
+> No, as I was making it work on 5.11 :).
+>
+> BTW there is one remaining issue I came across:
+> config PAHOLE_HAS_SPLIT_BTF
+>          def_bool $(success, test `$(PAHOLE) --version | sed -E
+> 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
 
-There is nothing to "clean up" if there is a debugfs failure here so I
-don't see the need.
 
-> > Or better yet, no need to save anything, you can always look it up when
-> > you want to remove it, that will save you one pointer per module.
-> 
-> That's a good point, and with that maybe we can even do away with the pi_sec
-> entirely then since that only leaves start/end pointers which we can
-> calculate on demand from existing data.
+I think I said this somewhere, but
+PAHOLE_HAS_SPLIT_BTF should be deleted.
+Checking the pahole version in Kconfig is wrong, I believe.
 
-Please do, that makes the code simpler overall.
 
-thanks,
 
-greg k-h
+>
+> and in Makefile we see:
+> PAHOLE          = pahole
+>
+> and not something like:
+> PAHOLE          = $(CROSS_COMPILE)pahole
+
+I do not think $(CROSS_COMPILE)pahole
+makes sense.
+
+
+As far as I test, pahole works
+for fereing architecture objects too.
+The DWARF format is identical
+across architectures.
+
+
+
+For example, for the following code:
+
+$ cat test.c
+struct sample {
+     char a[2];
+     long l;
+     int i;
+     void *p;
+     short s;
+} sample;
+
+
+$ gcc -g -c -o test.o test.c; pahole test.o
+$ arm-linux-gnueabihf-gcc -g -c -o test.o test.c; pahole test.o
+$ aarch64-linux-gnu-gcc -g -c -o test.o test.c; pahole test.o
+
+All worked for me.
+
+
+
+
+
+
+> Any idea how to fix this?
+>
+> >   scripts/dummy-tools/gcc | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
+> > index 7b10332b23ba..39e65fee59bd 100755
+> > --- a/scripts/dummy-tools/gcc
+> > +++ b/scripts/dummy-tools/gcc
+> > @@ -57,9 +57,9 @@ if arg_contain --version "$@"; then
+> >   fi
+> >
+> >   if arg_contain -E "$@"; then
+> > -     # For scripts/gcc-version.sh; This emulates GCC 20.0.0
+> > +     # For scripts/cc-version.sh; This emulates GCC 20.0.0
+> >       if arg_contain - "$@"; then
+> > -             sed 's/^__GNUC__$/20/; s/^__GNUC_MINOR__$/0/; s/^__GNUC_PATCHLEVEL__$/0/'
+> > +             sed -n '/^GCC/{s/__GNUC__/20/; s/__GNUC_MINOR__/0/; s/__GNUC_PATCHLEVEL__/0/; p;}'
+> >               exit 0
+> >       else
+> >               echo "no input files" >&2
+> >
+>
+>
+> --
+> js
+> suse labs
+
+
+
+--
+Best Regards
+Masahiro Yamada
