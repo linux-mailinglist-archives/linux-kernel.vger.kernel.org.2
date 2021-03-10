@@ -2,250 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BFB3348D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A660B3348DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 21:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbhCJUXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 15:23:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
+        id S231865AbhCJUXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 15:23:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231834AbhCJUXA (ORCPT
+        with ESMTP id S231805AbhCJUXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:23:00 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50627C061574;
-        Wed, 10 Mar 2021 12:23:00 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id a17so27350998ljq.2;
-        Wed, 10 Mar 2021 12:23:00 -0800 (PST)
+        Wed, 10 Mar 2021 15:23:31 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ABE3C061574;
+        Wed, 10 Mar 2021 12:23:31 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id q130so1610113oif.13;
+        Wed, 10 Mar 2021 12:23:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dc+9ECts2IZ064hl65L8HRp579vEHQIkiP5UJ9UmCDU=;
-        b=JcqyTxSj32Bubbcc9ULL9PMQDkhWp66LFUp+Q5bW+SBrMUIrwPDF99JLyIwa39NC+e
-         ERd9AM9I734yeTT2By3uvyPdlU+2yb1o1kZM/An6exRX6lzzOLhUwwk0AMGqikA0UnEQ
-         ytwo+DMGNOUd2L0E4XOWABPEErNGB+siuViAuV1BjNB5WVBsy64CF2bjZGrzSEuN01v1
-         /y8uY81f+/EHxlkwhJ60PT9uCr6BP3QER5WEHqeeoUDqQsPg3VDg0VuEQgesu5tP6t9l
-         CrzEmxWtM+2+/kFEQ3kNV6RJeKr38dFqzyKbaBzV3RA/vvj3KwYgtxs9oepH/VxiME3r
-         Yv4g==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Vm9XUUppL8awfY6TqwCU4Ztl76kZr7dZVqDbSCfoZBY=;
+        b=K/USteWKzYPi2Omxz47yeC+3vTraxCrIdPrXnFadaRkmP8b8oRLHmwhakEmkV6OCov
+         5wp+cdqzhhRys3HR23jbU0XRHg2dhANmlUC4vj7RHB7N0mncCs4z/2wpmbMUKoLcF0F6
+         9GyRLwbYJIfazI0TaxQuNeJjaBeSGqZZ2oP1Un3Jd3xM3NLEhpt+YYpwMdOrZMt36IHZ
+         q3iFDSVHnXdAVxdPAebDbmaBqOj3Mta01lBFLaJVK+4VF5dNGz4OcvYMRUNy1xH/MLlA
+         JtEO5sIabItDztaVeSZJIBkwt9Qzwkaa1UaAbvkjXv6rLNPNqOzON01Vdh1TsTTwjb3d
+         5HOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dc+9ECts2IZ064hl65L8HRp579vEHQIkiP5UJ9UmCDU=;
-        b=okHQkVUq6tJuT6r8qDMuxbKImzHE+mSiTJEKtrc1GIcCcp3phLH+9cj9XSyF3wfd2J
-         YYui8zQEtwXPKmUAf+naxVDZRtvGAwx3q3DHkb9bzEM6ZgVaQx5ZBS6/qRdDFh9TJ1t+
-         fFr0AiMxHszJ8BI6/7jZJHslW7I6LJDlDnhcECk6SZ5DA5dAszvHrtgMyl1CHD1SU95N
-         vPMZQKia243puwrOwmyyvcHP2kAZ/+aRiLlhbCdqXbJEX9lgJO3gs5JJEHEEMb76oBjC
-         EBYYuPPfJaFlMkDofw/fKemqf86tK664oMTgLI70+LqYaov8NmhHkQ5+Y81PacQBbyz5
-         CXEA==
-X-Gm-Message-State: AOAM533f8/MXlLY5jqGbb1KGi6S3PgpG4MiXAvJkeJ73sEiWyB0eo8zO
-        FRCKcVwTYmpd7IFSi3NdqYLDKzxfBbY=
-X-Google-Smtp-Source: ABdhPJwl0AQhk01TKob1GoCfd1jHQKG3caFssOOoPSgQKNX2hT7JHB/54yyAXTrpahDh/m5eRVZGAg==
-X-Received: by 2002:a2e:9bd0:: with SMTP id w16mr2741803ljj.465.1615407778621;
-        Wed, 10 Mar 2021 12:22:58 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id s7sm105571lfi.140.2021.03.10.12.22.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 12:22:58 -0800 (PST)
-Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        thierry.reding@gmail.com, will@kernel.org,
-        guillaume.tucker@collabora.com
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
- <a8a7a0af-895f-9d79-410d-5dd03ebbd6dd@gmail.com>
-Message-ID: <7714f272-3862-84ac-306d-86363a1c4880@gmail.com>
-Date:   Wed, 10 Mar 2021 23:22:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Vm9XUUppL8awfY6TqwCU4Ztl76kZr7dZVqDbSCfoZBY=;
+        b=QYW1iibu9B9n/OvPWjy78brgXt/dUCKC9NaagEeikImNHSXKVHZmzVI6TeLghTyiDP
+         ubW/WAW73ey5l7QNNFHWuV2jvTR0KeGtzGIwZ7G/6drPM6fQ70GB8t4mXBP9w2hJeuM3
+         7I8pzQAl541fNNGcq3Z88cP6x1rQJ4zXPGGZEokTARDngSGvj93V5ygP9AEO/MtS/m8s
+         LdVZxvaEyCZZ2bY/8NDbZBlPN7+l1BWrF0RJBYIbMufwIK6yZA9UjBvSbUuhwyOzcjt0
+         OF3qU3bYxJ6EfjTP1+rgLsi0ckZvJ1CBFLAMv8XehZlQLkPxco4UhVfUIPw7RCYv3bJc
+         82NQ==
+X-Gm-Message-State: AOAM532nmq8tujaU1+Oi31XyKeNFSY3MF+h0Z+9ju+8WM7pC+IypL/3W
+        NejsdAqmfcDrSchzuu40lgU=
+X-Google-Smtp-Source: ABdhPJwPd35TGu9N7pw8fk3DDKtasC4jlo33D9P2tKXWhXlmS4dB344eohQD7mTsv1bHLprFjoApSg==
+X-Received: by 2002:aca:741:: with SMTP id 62mr3548334oih.104.1615407810962;
+        Wed, 10 Mar 2021 12:23:30 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f197sm73222oob.38.2021.03.10.12.23.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Mar 2021 12:23:29 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 10 Mar 2021 12:23:27 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] watchdog: qcom: Move suspend/resume to
+ suspend_late/resume_early
+Message-ID: <20210310202327.GA237124@roeck-us.net>
+References: <20210310202004.1436-1-saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <a8a7a0af-895f-9d79-410d-5dd03ebbd6dd@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310202004.1436-1-saiprakash.ranjan@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-10.03.2021 22:13, Dmitry Osipenko пишет:
-> 19.02.2021 01:07, Nicolin Chen пишет:
->> Commit 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
->> removed certain hack in the tegra_smmu_probe() by relying on IOMMU core to
->> of_xlate SMMU's SID per device, so as to get rid of tegra_smmu_find() and
->> tegra_smmu_configure() that are typically done in the IOMMU core also.
->>
->> This approach works for both existing devices that have DT nodes and other
->> devices (like PCI device) that don't exist in DT, on Tegra210 and Tegra3
->> upon testing. However, Page Fault errors are reported on tegra124-Nyan:
->>
->>   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
->> 	 EMEM address decode error (SMMU translation error [--S])
->>   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
->> 	 Page fault (SMMU translation error [--S])
->>
->> After debugging, I found that the mentioned commit changed some function
->> callback sequence of tegra-smmu's, resulting in enabling SMMU for display
->> client before display driver gets initialized. I couldn't reproduce exact
->> same issue on Tegra210 as Tegra124 (arm-32) differs at arch-level code.
->>
->> Actually this Page Fault is a known issue, as on most of Tegra platforms,
->> display gets enabled by the bootloader for the splash screen feature, so
->> it keeps filling the framebuffer memory. A proper fix to this issue is to
->> 1:1 linear map the framebuffer memory to IOVA space so the SMMU will have
->> the same address as the physical address in its page table. Yet, Thierry
->> has been working on the solution above for a year, and it hasn't merged.
->>
->> Therefore, let's partially revert the mentioned commit to fix the errors.
->>
->> The reason why we do a partial revert here is that we can still set priv
->> in ->of_xlate() callback for PCI devices. Meanwhile, devices existing in
->> DT, like display, will go through tegra_smmu_configure() at the stage of
->> bus_set_iommu() when SMMU gets probed(), as what it did before we merged
->> the mentioned commit.
->>
->> Once we have the linear map solution for framebuffer memory, this change
->> can be cleaned away.
->>
->> [Big thank to Guillaume who reported and helped debugging/verification]
->>
->> Fixes: 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
->> Reported-by: Guillaume Tucker <guillaume.tucker@collabora.com>
->> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
->> ---
->>
->> Guillaume, would you please give a "Tested-by" to this change? Thanks!
->>
->>  drivers/iommu/tegra-smmu.c | 72 +++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 71 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
->> index 4a3f095a1c26..97eb62f667d2 100644
->> --- a/drivers/iommu/tegra-smmu.c
->> +++ b/drivers/iommu/tegra-smmu.c
->> @@ -798,10 +798,70 @@ static phys_addr_t tegra_smmu_iova_to_phys(struct iommu_domain *domain,
->>  	return SMMU_PFN_PHYS(pfn) + SMMU_OFFSET_IN_PAGE(iova);
->>  }
->>  
->> +static struct tegra_smmu *tegra_smmu_find(struct device_node *np)
->> +{
->> +	struct platform_device *pdev;
->> +	struct tegra_mc *mc;
->> +
->> +	pdev = of_find_device_by_node(np);
->> +	if (!pdev)
->> +		return NULL;
->> +
->> +	mc = platform_get_drvdata(pdev);
->> +	if (!mc)
->> +		return NULL;
->> +
->> +	return mc->smmu;
->> +}
->> +
->> +static int tegra_smmu_configure(struct tegra_smmu *smmu, struct device *dev,
->> +				struct of_phandle_args *args)
->> +{
->> +	const struct iommu_ops *ops = smmu->iommu.ops;
->> +	int err;
->> +
->> +	err = iommu_fwspec_init(dev, &dev->of_node->fwnode, ops);
->> +	if (err < 0) {
->> +		dev_err(dev, "failed to initialize fwspec: %d\n", err);
->> +		return err;
->> +	}
->> +
->> +	err = ops->of_xlate(dev, args);
->> +	if (err < 0) {
->> +		dev_err(dev, "failed to parse SW group ID: %d\n", err);
->> +		iommu_fwspec_free(dev);
->> +		return err;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>  static struct iommu_device *tegra_smmu_probe_device(struct device *dev)
->>  {
->> -	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
->> +	struct device_node *np = dev->of_node;
->> +	struct tegra_smmu *smmu = NULL;
->> +	struct of_phandle_args args;
->> +	unsigned int index = 0;
->> +	int err;
->> +
->> +	while (of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
->> +					  &args) == 0) {
->> +		smmu = tegra_smmu_find(args.np);
->> +		if (smmu) {
->> +			err = tegra_smmu_configure(smmu, dev, &args);
->> +			of_node_put(args.np);
->>  
->> +			if (err < 0)
->> +				return ERR_PTR(err);
->> +
->> +			break;
->> +		}
->> +
->> +		of_node_put(args.np);
->> +		index++;
->> +	}
->> +
->> +	smmu = dev_iommu_priv_get(dev);
->>  	if (!smmu)
->>  		return ERR_PTR(-ENODEV);
->>  
->> @@ -1028,6 +1088,16 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
->>  	if (!smmu)
->>  		return ERR_PTR(-ENOMEM);
->>  
->> +	/*
->> +	 * This is a bit of a hack. Ideally we'd want to simply return this
->> +	 * value. However the IOMMU registration process will attempt to add
->> +	 * all devices to the IOMMU when bus_set_iommu() is called. In order
->> +	 * not to rely on global variables to track the IOMMU instance, we
->> +	 * set it here so that it can be looked up from the .probe_device()
->> +	 * callback via the IOMMU device's .drvdata field.
->> +	 */
->> +	mc->smmu = smmu;
->> +
->>  	size = BITS_TO_LONGS(soc->num_asids) * sizeof(long);
->>  
->>  	smmu->asids = devm_kzalloc(dev, size, GFP_KERNEL);
->>
+On Thu, Mar 11, 2021 at 01:50:04AM +0530, Sai Prakash Ranjan wrote:
+> During suspend/resume usecases and tests, it is common to see issues
+> such as lockups either in suspend path or resume path because of the
+> bugs in the corresponding device driver pm handling code. In such cases,
+> it is important that watchdog is active to make sure that we either
+> receive a watchdog pretimeout notification or a bite causing reset
+> instead of a hang causing us to hard reset the machine.
 > 
-> I found that this patch introduced a serious regression on Tegra30 using
-> today's linux-next. Tegra30 has two 3d h/w blocks connected in SLI and
-> only one of the blocks is now attached to IOMMU domain, meaning that GPU
-> is unusable now. All 3d, 2d and display devices share the same "DRM"
-> group on Tegra30.
+> There are good reasons as to why we need this because:
 > 
-> Nicolin, please let me know if have any suggestions. I may take a closer
-> look a day later, for now I'll just revert this patch locally. Thanks in
-> advance.
+> * We can have a watchdog pretimeout governor set to panic in which
+>   case we can have a backtrace which would help identify the issue
+>   with the particular driver and cause a normal reboot.
 > 
+> * Even in case where there is no pretimeout support, a watchdog
+>   bite is still useful because some firmware has debug support to dump
+>   CPU core context on watchdog bite for post-mortem analysis.
+> 
+> * One more usecase which comes to mind is of warm reboot. In case we
+>   hard reset the target, a cold reboot could be induced resulting in
+>   lose of ddr contents thereby losing all the debug info.
+> 
+> Currently, the watchdog pm callback just invokes the usual suspend
+> and resume callback which do not have any special ordering in the
+> sense that a watchdog can be suspended before the buggy device driver
+> suspend callback and watchdog resume can happen after the buggy device
+> driver resume callback. This would mean that the watchdog will not be
+> active when the buggy driver cause the lockups thereby hanging the
+> system. So to make sure this doesn't happen, move the watchdog pm to
+> use late/early system pm callbacks which will ensure that the watchdog
+> is suspended late and resumed early so that it can catch such issues.
+> 
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 
-Actually, this was easy to fix:
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 97eb62f667d2..639d5ceab60b 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -853,8 +853,6 @@ static struct iommu_device
-*tegra_smmu_probe_device(struct device *dev)
-
- 			if (err < 0)
- 				return ERR_PTR(err);
--
--			break;
- 		}
-
- 		of_node_put(args.np);
-
-
-Nicolin, please make a proper patch. You may add my reported-by and
-tested-by.
+> ---
+>  drivers/watchdog/qcom-wdt.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
+> index e38a87ffe5f5..0d2209c5eaca 100644
+> --- a/drivers/watchdog/qcom-wdt.c
+> +++ b/drivers/watchdog/qcom-wdt.c
+> @@ -329,7 +329,9 @@ static int __maybe_unused qcom_wdt_resume(struct device *dev)
+>  	return 0;
+>  }
+>  
+> -static SIMPLE_DEV_PM_OPS(qcom_wdt_pm_ops, qcom_wdt_suspend, qcom_wdt_resume);
+> +static const struct dev_pm_ops qcom_wdt_pm_ops = {
+> +	SET_LATE_SYSTEM_SLEEP_PM_OPS(qcom_wdt_suspend, qcom_wdt_resume)
+> +};
+>  
+>  static const struct of_device_id qcom_wdt_of_table[] = {
+>  	{ .compatible = "qcom,kpss-timer", .data = &match_data_apcs_tmr },
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
