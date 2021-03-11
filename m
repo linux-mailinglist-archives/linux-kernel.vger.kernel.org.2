@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5863371AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6B53371C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbhCKLs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:48:56 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:49380 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232519AbhCKLsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:48:23 -0500
-Received: from zn.tnic (p200300ec2f0e1f0084acfb80b2ea2480.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1f00:84ac:fb80:b2ea:2480])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 203261EC0402;
-        Thu, 11 Mar 2021 12:48:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615463302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=+T8jHdTHhTXNJ17K47mZybeuko0jgRMbn4SbH0sUdkg=;
-        b=FRJ8cjgMaYtJEx1iTnulsaiaw7JRmDcl3bj7NpXHGkJa9VO6SX6482xP7lTZVYnwFqFMa4
-        qLLphuvhe0nTUJceNI9a9lVHnVXqyWE0ClqR+Tx2VsWiu1tSSZEnq9Rsa+f+o11NaJtkCP
-        DD3GQbDidxWavPnaFxswc0lI3O27zZg=
-Date:   Thu, 11 Mar 2021 12:48:14 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, acme@kernel.org, tglx@linutronix.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
-        adrian.hunter@intel.com,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: Re: [PATCH V2 2/25] x86/cpu: Add helper functions to get parameters
- of hybrid CPUs
-Message-ID: <20210311114814.GA5829@zn.tnic>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-3-git-send-email-kan.liang@linux.intel.com>
+        id S232878AbhCKLuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:50:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232753AbhCKLth (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 06:49:37 -0500
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77D0C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:49:36 -0800 (PST)
+Received: by mail-vk1-xa36.google.com with SMTP id b10so408123vkl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:49:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8J99SnIHN40QUiCh4vdDv5XtXr5pbmjm/XVHbBVvsdo=;
+        b=h8ZLqeB7M7wbPWxGDpPzKfQIuZJOHhG5As4FbvW0Yf0l9V0uLDCrQXDxPM1kZkevHe
+         gKH2xuExf1aX5ktCcJFGF1FYQcI2oVicL4gNYiWPyhrbXk0+aMaAm1YgpsGLPArfP2Hq
+         pRolEovwCCiNMCFeoq6NfmiLG9FG8oV3VwsA/AIExOxEOsRCzGdPLsWOQSzVESgbyDXa
+         ma2C1jPVLKyk3mri8cXR+J3Uo/LdfN5/cyNgYTQy3tSdO/psFgUvNL3immA3AS81ZQY6
+         xuAtBD74h0YpLmU2c/rjrg2K0hkzBLhZXIYsJusVcYd3kjTEmz7m+62wyvRv8F2NSeT/
+         qCFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8J99SnIHN40QUiCh4vdDv5XtXr5pbmjm/XVHbBVvsdo=;
+        b=Abk540iw2AvGuLrxOfIsOvt2dWmczjhuPP46jj1wdLPtl1uKHpQrjp0/1InQETki/W
+         ZB/Xa/v+hrHlMNvqxq2ZnzTbFGDaeERu8k669dNmKVE35Cjsi0LgO2dDDR4z+xXNn+wL
+         WQ4nnXSm6uFDjY/AuG5/J64+AdxdWMAky87H7sM0mHY0QALJYa1RgVRl8+yuUHx9Na0u
+         HIYKV5xrmeNaXPPXddDukxmPFv2z+gGn9d1ErHeJbGSjRYvoxL5ksZwHLB3hFihW9X5a
+         e3gPThh1RWT3WUycFpkH+v4201581UgkuNA0Lvl9naWAUF9dSGRMGmk9dvlVxVm49En0
+         401g==
+X-Gm-Message-State: AOAM531nebhinqGXAShM8zVZouZNAedrzaVMkdjgMNs4CzLCq5RdlAqE
+        5BiSvcQMYq8l3+eYtY9HsQENuUcjAHoY+g+z0z9HHA==
+X-Google-Smtp-Source: ABdhPJx6dRR9fk/pnTw3aBPdfGpJrX8AMeRQ74wps29lBE0pAN6F0BFTtUFED9CQBE4m/6bTv6K1fofytFjXA13eo9k=
+X-Received: by 2002:a1f:2e88:: with SMTP id u130mr4253740vku.15.1615463375690;
+ Thu, 11 Mar 2021 03:49:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1615394281-68214-3-git-send-email-kan.liang@linux.intel.com>
+References: <20210311174157.561dada9@xhacker.debian>
+In-Reply-To: <20210311174157.561dada9@xhacker.debian>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 11 Mar 2021 12:48:59 +0100
+Message-ID: <CAPDyKFqYzJX1eP6VxSXWDPAAKj7NYu1+8YwTmtH1nFbzm+MRag@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdio: fix a typo in the comment of SDIO_SD_REV_3_00
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 08:37:38AM -0800, kan.liang@linux.intel.com wrote:
-> From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> 
-> On processors with Intel Hybrid Technology (i.e., one having more than one
-> type of CPU in the same package), all CPUs support the same instruction
-> set and enumerate the same features on CPUID. Thus, all software can run
-> on any CPU without restrictions. However, there may be model-specific
-> differences among types of CPUs. For instance, each type of CPU may support
-> a different number of performance counters. Also, machine check error banks
-> may be wired differently. Even though most software will not care about
-> these differences, kernel subsystems dealing with these differences must
-> know. Add a new member to cpuinfo_x86 that subsystems can query to know
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+On Thu, 11 Mar 2021 at 10:42, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+>
+> I believe "Spev" is typo, should be "Spec".
+>
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-That is not the case anymore.
+Applied for next, thanks!
 
-And it looks like the IPIing is going away too, which is good.
+Kind regards
+Uffe
 
-Thx.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+>  include/linux/mmc/sdio.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/mmc/sdio.h b/include/linux/mmc/sdio.h
+> index e28769991e82..2a05d1ac4f0e 100644
+> --- a/include/linux/mmc/sdio.h
+> +++ b/include/linux/mmc/sdio.h
+> @@ -82,7 +82,7 @@
+>  #define  SDIO_SD_REV_1_01      0       /* SD Physical Spec Version 1.01 */
+>  #define  SDIO_SD_REV_1_10      1       /* SD Physical Spec Version 1.10 */
+>  #define  SDIO_SD_REV_2_00      2       /* SD Physical Spec Version 2.00 */
+> -#define  SDIO_SD_REV_3_00      3       /* SD Physical Spev Version 3.00 */
+> +#define  SDIO_SD_REV_3_00      3       /* SD Physical Spec Version 3.00 */
+>
+>  #define SDIO_CCCR_IOEx         0x02
+>  #define SDIO_CCCR_IORx         0x03
+> --
+> 2.30.2
+>
