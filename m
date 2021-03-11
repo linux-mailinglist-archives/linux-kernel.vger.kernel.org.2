@@ -2,113 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B51337AC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B12337AC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbhCKRZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:25:55 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:20558 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhCKRZo (ORCPT
+        id S230095AbhCKRZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:25:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhCKRZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:25:44 -0500
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 12BHPUIR024578;
-        Fri, 12 Mar 2021 02:25:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 12BHPUIR024578
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615483531;
-        bh=PXJt6D8qnKY8szVqGBkNLxIg6+eK0InYeixeUSx4Lhs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Qb4NHPOdreQxZNopchu3iYo/9GCNDjinFt5dgXgg7/NB9pUl5M32rRvqbInAxN9Ec
-         8RVARmmJ8RCOCDfV+DCPa8VFdntwzEDh2mJ3SicXe1F3Xiu3DUOTbhqLUb1B/H0SK+
-         fGNb7CiPQtjZ6n+NCbBDBpadYu+LBbGz/MB5pG67+F8JaWY9LC7Z9U4QX2w+QrMemP
-         XqPtWbxM96G/FK5zFVCqGSe4eeey81GfS/sSKIAeuNwOuBX8qIPCM+zyiq+vfORO0A
-         VNKcYJGkmxwnb7nKeQFsKmBV+bNlsAOahEwri2PtUf6YBmkq3jfdIsOP1JSEJ61uxn
-         diVOHH2nZw5/Q==
-X-Nifty-SrcIP: [209.85.216.51]
-Received: by mail-pj1-f51.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so9413076pjc.2;
-        Thu, 11 Mar 2021 09:25:31 -0800 (PST)
-X-Gm-Message-State: AOAM532FnJM5d+t3pXEVYwsEglymDgs2Y+moFP1qSHMePAgNC8zPJNLn
-        XwKJfuoXyluJ6tx4girlgO9pUi7B7fnptwvrYvU=
-X-Google-Smtp-Source: ABdhPJxPcnVso4Em3gdaU2xvNMRrfF43T4ctrqiyqNN0sGobXOGU9+yOVbhG2axf6IP41vq7Mu+axhdDnGBjOdY7abI=
-X-Received: by 2002:a17:90a:3b0e:: with SMTP id d14mr10135971pjc.198.1615483530413;
- Thu, 11 Mar 2021 09:25:30 -0800 (PST)
+        Thu, 11 Mar 2021 12:25:23 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAFCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:25:22 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id dm8so3989144edb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:25:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yG/vJmP1bt9V/zcHq9LX/hDiqMUciXWcy0fyRaWMlUE=;
+        b=0YX0R0Q2hP+VRr62VJBofrj5bwB+MCjUnWO/PvCvGfcEsYGhMMejCqBm8Pfj5e8TdI
+         tREJb6S5wxcQOrnVPKESltVTqt698WVEwkHUhw6f646QkClKEo46BT5Pnx4PgGwwzpO3
+         tmo5tkrk/yQ2sRylmuPQmAPVuX47NBSI2bBBy2oVNLI2mE2W9cw46R8sHkRC8vbvs8aM
+         fJk54uUOb4JlfqsCahno6tBFIGSrTM11D1eXjVahUlcYLWXbPEs/bKkZIqkR95ZVBOgP
+         gfHGo42KJ88F0zo9mQ7JNr4WkHjSitiNGvkyRqyfELfoh99GZtkbGnaEih5B1EUO51t6
+         eiVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yG/vJmP1bt9V/zcHq9LX/hDiqMUciXWcy0fyRaWMlUE=;
+        b=nuTzW1zxELedeoVZ58vSv7crf1iZoIEbGynV5l1h3Qjw/LLTnLS8pNZe+jWzQCAZjR
+         U7S52FxLAirn3GpTZnNC71mknYH4BVrcgJzjyTkZCI6Sk/BpfM8kkOzBPCII8m3kRoac
+         +elrfGmyXvMjmfgKM65CGt/LGQc0cXhN77waOjC+I01uAa5fuG6FhvE2/MMb6a5jZr7C
+         LcdvJSZpXlQGBvEmJUmgdiC+bKhQKuxt5zc6aNFR4gNzDCGCzIXf+N7KLDjAjRw6QXeK
+         mv/YnN3JZgFZUTVkjt3yFvptwpfbwhVcSs1JPoWeHoEnkhBq3tIO8XoPfntwME/eJ0yW
+         +nyA==
+X-Gm-Message-State: AOAM530URF9PbU6t+EcxyfzU3+13MOncw8y8/q8ikmzMqyEXiVBGhWUr
+        0SZpD1DV0ABtDoMjEJSOmgLiyR6UUTjW2dUAjwMqUA==
+X-Google-Smtp-Source: ABdhPJy90akk7moyg6odTY/2ggxqCFkjHdNlPxywRl8kvBDuR1hqSnlJiDWgzS2rTOPef79+7VRiSHGqGyssrZy3vH4=
+X-Received: by 2002:a05:6402:4301:: with SMTP id m1mr9971780edc.210.1615483521452;
+ Thu, 11 Mar 2021 09:25:21 -0800 (PST)
 MIME-Version: 1.0
-References: <a1a749e7-48be-d0ab-8fb5-914daf512ae9@web.de> <YEpEuoRGh0KoWoGa@lunn.ch>
-In-Reply-To: <YEpEuoRGh0KoWoGa@lunn.ch>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 12 Mar 2021 02:24:52 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASPRUdvy8go5Cn6C+8j2O5AGJje1h-uKiTCFyVOmZwcUw@mail.gmail.com>
-Message-ID: <CAK7LNASPRUdvy8go5Cn6C+8j2O5AGJje1h-uKiTCFyVOmZwcUw@mail.gmail.com>
-Subject: Re: of_mdio: Checking build dependencies
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
-        stable <stable@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
+References: <CE1E7D7EFA066443B6454A6A5063B50220D0B849@dggeml509-mbs.china.huawei.com>
+ <20210311121923.GU3479805@casper.infradead.org>
+In-Reply-To: <20210311121923.GU3479805@casper.infradead.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 11 Mar 2021 09:25:10 -0800
+Message-ID: <CAPcyv4jz7-uq+T-sd_U3O_C7SB9nYWVJDnhVsaM0VNR207m8xA@mail.gmail.com>
+Subject: Re: [question] Panic in dax_writeback_one
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "chenjun (AM)" <chenjun102@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
+        "lizhe (Y)" <lizhe67@huawei.com>, yangerkun <yangerkun@huawei.com>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 1:26 AM Andrew Lunn <andrew@lunn.ch> wrote:
+On Thu, Mar 11, 2021 at 4:20 AM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> On Wed, Mar 10, 2021 at 09:31:07PM +0100, Markus Elfring wrote:
-> > Hello,
-> >
-> > I would like to build the Linux version =E2=80=9C5.11.5=E2=80=9D for my=
- needs.
-> > But I stumbled on the following information.
-> >
-> > =E2=80=A6
-> >   AR      drivers/built-in.a
-> >   LD [M]  drivers/visorbus/visorbus.o
-> >   GEN     .version
-> >   CHK     include/generated/compile.h
-> > error: the following would cause module name conflict:
-> >   drivers/net/mdio/of_mdio.ko
-> >   drivers/of/of_mdio.ko
+> On Thu, Mar 11, 2021 at 07:48:25AM +0000, chenjun (AM) wrote:
+> > static int dax_writeback_one(struct xa_state *xas, struct dax_device
+> > *dax_dev, struct address_space *mapping, void *entry)
+> > ----dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_SIZE);
+> > The pfn is returned by the driver. In my case, the pfn does not have
+> > struct page. so pfn_to_page(pfn) return a wrong address.
 >
-> Hi Markus
->
-> Something wrong here. There should not be any of_mdio.ko in
-> drivers/of. That was the whole point of the patch you referenced, it
-> moved this file to drivers/net/mdio/. Please check where your
-> drivers/of/of_mdio.ko comes from. Has there been a bad merge conflict
-> resolution? Or is it left over from an older build?
->
->    Andrew
+> I wasn't involved, but I think the right solution here is simply to
+> replace page_address(pfn_to_page(pfn)) with pfn_to_virt(pfn).  I don't
+> know why Dan decided to do this in the more complicated way.
 
+pfn_to_virt() only works for the direct-map. If pages are not mapped I
+don't see how pfn_to_virt() is expected to work.
 
-modules.order may include both
-drivers/of/of_mdio.ko  and
-drivers/net/mdio/of_mdio.c
-
-But, I do not know how this could happen.
-
-I checked out 14b26b127c098bba^,
-and built modules with CONFIG_OF_MDIO=3Dm.
-Then, I checked out 14b26b127c098bba
-and rebuilt.
-
-I did not see such an error.
-
-I also checked the Kbuild code,
-and it looks good too.
-
-Please let me know if you find steps
-to reproduce it.
-
---
-Best Regards
-Masahiro Yamada
+The real question Chenjun is why are you writing a new simulator of
+memory as a block-device vs reusing the pmem driver or brd?
