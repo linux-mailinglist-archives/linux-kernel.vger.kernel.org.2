@@ -2,117 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F2D336DD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50060336DD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhCKI1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:27:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39964 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231405AbhCKI1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:27:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615451257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RFfA+vp/9KZx10jXES2OVvQ+pa5INPvCzddyZh0Z1og=;
-        b=VL7vCelacOXvGk0dZEDo6fCWaGBJAdTCxvhhC4VVs+D3/L4PXujrMX5XMFzFFCtuBj8mv0
-        9zd5ULZXDYLZ+wzKAt+jNeNc17X8B9Ccgb5N3lLx9ML1GZFYCqCUpYXfo37iudxRWH36z/
-        4vYVXwnbBKAkEpke6WZNicXZr/R0zSU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 99BE6AC16;
-        Thu, 11 Mar 2021 08:27:37 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 09:27:37 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, tglx@linutronix.de,
-        john.ogness@linutronix.de, urezki@gmail.com, ast@fb.com,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>, peterz@infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
- in_atomic use
-Message-ID: <YEnUeagd/CF1W8Db@dhcp22.suse.cz>
-References: <20210311021321.127500-1-mike.kravetz@oracle.com>
- <YEnUGtx79QaMNGVN@dhcp22.suse.cz>
+        id S230158AbhCKIbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230448AbhCKIa7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:30:59 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F3FC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:30:59 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id x21so1451051eds.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:30:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NBSPLtUn2dyF0yPANjmhingDcHQoPHZlxpbtzfl/OHQ=;
+        b=Su8QgkGF4OChLXB8mHx8QBQ72TwgAEAT/BregRE5v38WlY87JDijmoq+L/6jPcKvBo
+         Lhj8bSS6CsdkoJ0O2JcUEn/ucOB+BEFtgx49FIEXzbSxmFk+mfRNQUWBrM6hN2JTj2hs
+         zznpF2E8tSTiBaVJm2qsGA7+S4JHr098mBbNGhGwvODoaKQ1IpQ+dWBoqpHcfwQ3ktoy
+         YNdsmgcmxdXIknjxSxZYRPBD66+G0bWuM+Va4zI6jT7f1NutyNLe+kcU09zpTwqFghnJ
+         k0/h+A0UDoO4fhYIfwIfqjIYx0xm/hISi2b0LlPAf/4RmiSThOXuV8l4zMAu5vXsmAsT
+         IyXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NBSPLtUn2dyF0yPANjmhingDcHQoPHZlxpbtzfl/OHQ=;
+        b=K5d2BsTYSaAcdh7s+bnVMNoaqjGZcWoQvOXlfWxCc13vtf7brqv4VgPn24LBVYiojy
+         XLlDWdYWZtNdPk0oSEwUIuSmxSJPMRz5Y+POGq+gGtXCiM3sCJSZV6dDbBy3iQn2iMCz
+         gMeY9mq9roLQk/XPj/j6mOcoXc7uMsH0qoT1FFhiIUNJWSqso7xocxCfHWwffNqqo9cq
+         edsn22jzjuOPnCS4tn4eLS6DXml4HnoxfVtMZRsRRTBaO9s61LokMZ3R8JuTzXXUg142
+         Zsqjw1B9K3UvPjOqtdyIXSNd4Ac5V/KW/TkYaeipPbZC77MEa40S9yfPMk5c9f301hDz
+         TVeQ==
+X-Gm-Message-State: AOAM531jlF3hhXVqMBmU0H+wy6lbrNO3PMh/jfFBufF3mIy5F7CkTM6+
+        VxhBi17BT+RQSwj9vV2mnyydlwET/TWisKeOwfQ0gw==
+X-Google-Smtp-Source: ABdhPJyWL3On2xd1gMOWCTPAgc4EiVm1wt1A1LbH8eeYJCXUxHhMWshh7rWXy27Wrpsg/C/JcHbqAycQ4tEuPXe+m74=
+X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr7506432edd.78.1615451457609;
+ Thu, 11 Mar 2021 00:30:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEnUGtx79QaMNGVN@dhcp22.suse.cz>
+References: <20210310132320.512307035@linuxfoundation.org>
+In-Reply-To: <20210310132320.512307035@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 11 Mar 2021 14:00:46 +0530
+Message-ID: <CA+G9fYsGu0NVJK59cJuECo1meKWn=+RWGCsEGvUGwd-5APqUOw@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/20] 4.14.225-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11-03-21 09:26:03, Michal Hocko wrote:
-> On Wed 10-03-21 18:13:21, Mike Kravetz wrote:
-> > put_page does not correctly handle all calling contexts for hugetlb
-> > pages.  This was recently discussed in the threads [1] and [2].
-> > 
-> > free_huge_page is the routine called for the final put_page of huegtlb
-> > pages.  Since at least the beginning of git history, free_huge_page has
-> > acquired the hugetlb_lock to move the page to a free list and possibly
-> > perform other processing. When this code was originally written, the
-> > hugetlb_lock should have been made irq safe.
-> > 
-> > For many years, nobody noticed this situation until lockdep code caught
-> > free_huge_page being called from irq context.  By this time, another
-> > lock (hugetlb subpool) was also taken in the free_huge_page path.  In
-> > addition, hugetlb cgroup code had been added which could hold
-> > hugetlb_lock for a considerable period of time.  Because of this, commit
-> > c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in non-task
-> > context") was added to address the issue of free_huge_page being called
-> > from irq context.  That commit hands off free_huge_page processing to a
-> > workqueue if !in_task.
-> > 
-> > The !in_task check handles the case of being called from irq context.
-> > However, it does not take into account the case when called with irqs
-> > disabled as in [1].
-> > 
-> > To complicate matters, functionality has been added to hugetlb
-> > such that free_huge_page may block/sleep in certain situations.  The
-> > hugetlb_lock is of course dropped before potentially blocking.
-> > 
-> > One way to handle all calling contexts is to have free_huge_page always
-> > send pages to the workqueue for processing.  This idea was briefly
-> > discussed here [3], but has some undesirable side effects.
-> 
-> s@undesirable side effects@undesirable user visible side effects@
-> 
-> > Ideally, the hugetlb_lock should have been irq safe from the beginning
-> > and any code added to the free_huge_page path should have taken this
-> > into account.  However, this has not happened.  The code today does have
-> > the ability to hand off requests to a workqueue.  It does this for calls
-> > from irq context.  Changing the check in the code from !in_task to
-> > in_atomic would handle the situations when called with irqs disabled.
-> > However, it does not not handle the case when called with a spinlock
-> > held.  This is needed because the code could block/sleep.
-> > 
-> > Select PREEMPT_COUNT if HUGETLB_PAGE is enabled so that in_atomic can be
-> > used to detect all atomic contexts where sleeping is not possible.
-> > 
-> > [1] https://lore.kernel.org/linux-mm/000000000000f1c03b05bc43aadc@google.com/
-> > [2] https://lore.kernel.org/linux-mm/YEjji9oAwHuZaZEt@dhcp22.suse.cz/
-> > [3] https://lore.kernel.org/linux-mm/YDzaAWK41K4gD35V@dhcp22.suse.cz/
-> > 
-> > Suggested-by: Michal Hocko <mhocko@suse.com>
-> > Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> 
-> While not an ideal solution I believe this is the most straightforward
-> one wrt to backporting to older kernels which are affected. I have a
-> hope that a preemption model independent in_atomic() is going to become
-> a norm. RCU is very much interested in the same thing as well. Now we
-> have two core kernel users requiring this so hopefully this will make
-> the case stronger.
-> 
-> That being said
-> Acked-by: Michal Hocko <mhocko@suse.com>
+On Wed, 10 Mar 2021 at 18:56, <gregkh@linuxfoundation.org> wrote:
+>
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> This is the start of the stable review cycle for the 4.14.225 release.
+> There are 20 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.225-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Btw. we very likely want
-Cc: stable
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-Michal Hocko
-SUSE Labs
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.14.225-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: 878d7bf8fdf6e16616c200ff20d091126f795542
+git describe: v4.14.224-21-g878d7bf8fdf6
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
+.y/build/v4.14.224-21-g878d7bf8fdf6
+
+No regressions (compared to build v4.14.224)
+
+No fixes (compared to build v4.14.224)
+
+Ran 42230 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* fwts
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-tracing-tests
+* network-basic-tests
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpufreq
+* kselftest-intel_pstate
+* kselftest-kexec
+* kselftest-livepatch
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-ptrace
+* kselftest-tc-testing
+* kselftest-vm
+* kselftest-x86
+* ltp-containers-tests
+* ltp-open-posix-tests
+* kselftest-cpu-hotplug
+* kvm-unit-tests
+* rcutorture
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
