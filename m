@@ -2,316 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF9A336CDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F1D336CCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbhCKHJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:09:47 -0500
-Received: from mga04.intel.com ([192.55.52.120]:22599 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231864AbhCKHJZ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:09:25 -0500
-IronPort-SDR: qXfI3AceS6oTRvClhbxK32p86pZ/MSmbOzMWujCcCP3t1ydznFyX+ls4PGLQIp2OK61zBC0Ha/
- HIQAuoFvwBgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246143"
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="186246143"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:09:25 -0800
-IronPort-SDR: ahwB/tfyVuU6FDzlJVzvRCZ9g0qe40AMr3CkqeUjw8jyRUDVJesKoQxdKDoKERglGYKRmvUQq+
- 5vtw9OrUadig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="509938047"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:09:23 -0800
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 27/27] perf Documentation: Document intel-hybrid support
-Date:   Thu, 11 Mar 2021 15:07:42 +0800
-Message-Id: <20210311070742.9318-28-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210311070742.9318-1-yao.jin@linux.intel.com>
-References: <20210311070742.9318-1-yao.jin@linux.intel.com>
+        id S231844AbhCKHJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:09:10 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:48097 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231648AbhCKHIv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:08:51 -0500
+Received: from mail-wr1-f70.google.com ([209.85.221.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lKFRC-0001ho-4B
+        for linux-kernel@vger.kernel.org; Thu, 11 Mar 2021 07:08:50 +0000
+Received: by mail-wr1-f70.google.com with SMTP id g5so9047578wrd.22
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 23:08:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zgH3nywQ4QyohOt2SMlSyPyC9OdZbO8xrqdRqBr6msM=;
+        b=gotfvNDiXvjCSJ7Xn0nrSBcUigeeG8oU4HLwg3VA2D2xEc2LohEuka9ZP8wiCMXFhx
+         9GIwhgcAu/MuMJh9ed2514XqRL1QkMo9UXOvu2bTRE/tkaYt4kZDkaVOt2e2W+7gKhIN
+         0t3qSVHJ6av8E7hF9tux3WuRQlaHw5BeMSdc+lqAi2775gWjGH7XroH46H4Q30/t2SsJ
+         KOv4uZg/oOR9lmtD8c+J6vBTAQ6m4obqp29dtl1Axw7A3LL+vMZbEx/oDTurAF7mBFGu
+         BnkR6lIXl9In1BBygN8gczRO75YcT9/CcSHA8CsN9h6+fOVgihmHGAO9s6riC2Uw+s5C
+         CcuQ==
+X-Gm-Message-State: AOAM5323rtiyBUbEdBjMF8uTAAQTPVG9NeCOwm3rksLq9mWRGDuqIRqb
+        GSqEQwHWIA+bvOvUfMGXLx/S4ekM+N5FkcjzkpuZ2uOUwWBjeE8co7+aAfQN5RPkzr8102etnWl
+        jRw3NgDe9P/18QY4LS2VxcLqNiiZUFL7t6J9iCB0e2Q==
+X-Received: by 2002:a7b:ce16:: with SMTP id m22mr6850402wmc.65.1615446529710;
+        Wed, 10 Mar 2021 23:08:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxFSUTjS1JFmjO0hMPLkEAzm/KPuXrtY7IKz/mXB9yfWR7YE3pRWw0tap7L6t6boQLro+3hFQ==
+X-Received: by 2002:a7b:ce16:: with SMTP id m22mr6850370wmc.65.1615446529545;
+        Wed, 10 Mar 2021 23:08:49 -0800 (PST)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id a6sm2515137wmm.0.2021.03.10.23.08.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 23:08:49 -0800 (PST)
+Subject: Re: [RFC v2 3/5] arm64: socfpga: rename ARCH_STRATIX10 to
+ ARCH_SOCFPGA64
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Tom Rix <trix@redhat.com>, Lee Jones <lee.jones@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-edac@vger.kernel.org, linux-fpga@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com, arm-soc <arm@kernel.org>,
+        SoC Team <soc@kernel.org>, Olof Johansson <olof@lixom.net>
+References: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
+ <20210310083840.481615-1-krzysztof.kozlowski@canonical.com>
+ <20210310094527.GA701493@dell>
+ <35c39c81-08e4-24c8-f683-2fa7a7ea71de@redhat.com>
+ <1c06cb74-f0b0-66e5-a594-ed1ee9bc876e@canonical.com>
+ <CAK8P3a1CCQwbeH4KiUgif+-HdubVjjZBkMXimEjYkgeh4eJ7cg@mail.gmail.com>
+ <52d0489f-0f77-76a2-3269-e3004c6b6c07@canonical.com>
+ <ba2536a6-7c74-0cca-023f-cc6179950d37@canonical.com>
+ <CAK8P3a1k7c5X5x=-_-=f=ACwY+uQQ8YEcAGXYfdTdSnqpo96sA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <fb0d8ca3-ac46-f547-02b0-7f47ff8fff6b@canonical.com>
+Date:   Thu, 11 Mar 2021 08:08:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <CAK8P3a1k7c5X5x=-_-=f=ACwY+uQQ8YEcAGXYfdTdSnqpo96sA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some words and examples to help understanding of
-Intel hybrid perf support.
+On 10/03/2021 17:42, Arnd Bergmann wrote:
+> On Wed, Mar 10, 2021 at 4:54 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>> On 10/03/2021 16:47, Krzysztof Kozlowski wrote:
+>>> This edac Altera driver is very weird... it uses the same compatible
+>>> differently depending whether this is 32-bit or 64-bit (e.g. Stratix
+>>> 10)! On ARMv7 the compatible means for example one IRQ... On ARMv8, we
+>>> have two. It's quite a new code (2019 from Intel), not some ancient
+>>> legacy, so it should never have been accepted...
+>>
+>> Oh, it's not that horrible as it sounds. They actually have different
+>> compatibles for edac driver with these differences (e.g. in interrupts).
+>> They just do not use them and instead check for the basic (common?)
+>> compatible and architecture... Anyway without testing I am not the
+>> person to fix the edac driver.
+> 
+> Ok, This should be fixed properly as you describe, but as a quick hack
+> it wouldn't be hard to just change the #ifdef to check for CONFIG_64BIT
+> instead of CONFIG_ARCH_STRATIX10 during the rename of the config
+> symbol.
 
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/Documentation/intel-hybrid.txt | 228 ++++++++++++++++++++++
- tools/perf/Documentation/perf-record.txt  |   1 +
- tools/perf/Documentation/perf-stat.txt    |   2 +
- 3 files changed, 231 insertions(+)
- create mode 100644 tools/perf/Documentation/intel-hybrid.txt
+This would work. The trouble with renaming ARCH_SOCFPGA into
+ARCH_INTEL_SOCFPGA is that still SOCFPGA will appear in many other
+Kconfig symbols or even directory paths.
 
-diff --git a/tools/perf/Documentation/intel-hybrid.txt b/tools/perf/Documentation/intel-hybrid.txt
-new file mode 100644
-index 000000000000..ff641d9ac81b
---- /dev/null
-+++ b/tools/perf/Documentation/intel-hybrid.txt
-@@ -0,0 +1,228 @@
-+Intel hybrid support
-+--------------------
-+Support for Intel hybrid events within perf tools.
-+
-+For some Intel platforms, such as AlderLake, which is hybrid platform and
-+it consists of atom cpu and core cpu. Each cpu has dedicated event list.
-+Part of events are available on core cpu, part of events are available
-+on atom cpu and even part of events are available on both.
-+
-+Kernel exports two new cpu pmus via sysfs:
-+/sys/devices/cpu_core
-+/sys/devices/cpu_atom
-+
-+The 'cpus' files are created under the directories. For example,
-+
-+cat /sys/devices/cpu_core/cpus
-+0-15
-+
-+cat /sys/devices/cpu_atom/cpus
-+16-23
-+
-+It indicates cpu0-cpu15 are core cpus and cpu16-cpu23 are atom cpus.
-+
-+Quickstart
-+
-+List hybrid event
-+-----------------
-+
-+As before, use perf-list to list the symbolic event.
-+
-+perf list
-+
-+inst_retired.any
-+	[Fixed Counter: Counts the number of instructions retired. Unit: cpu_atom]
-+inst_retired.any
-+	[Number of instructions retired. Fixed Counter - architectural event. Unit: cpu_core]
-+
-+The 'Unit: xxx' is added to brief description to indicate which pmu
-+the event is belong to. Same event name but with different pmu can
-+be supported.
-+
-+Enable hybrid event with a specific pmu
-+---------------------------------------
-+
-+To enable a core only event or atom only event, following syntax is supported:
-+
-+	cpu_core/<event name>/
-+or
-+	cpu_atom/<event name>/
-+
-+For example, count the 'cycles' event on core cpus.
-+
-+	perf stat -e cpu_core/cycles/
-+
-+Create two events for one hardware event automatically
-+------------------------------------------------------
-+
-+When creating one event and the event is available on both atom and core,
-+two events are created automatically. One is for atom, the other is for
-+core. Most of hardware events and cache events are available on both
-+cpu_core and cpu_atom.
-+
-+For hardware events, they have pre-defined configs (e.g. 0 for cycles).
-+But on hybrid platform, kernel needs to know where the event comes from
-+(from atom or from core). The original perf event type PERF_TYPE_HARDWARE
-+can't carry pmu information. So a new type PERF_TYPE_HARDWARE_PMU is
-+introduced.
-+
-+The new attr.config layout for PERF_TYPE_HARDWARE_PMU:
-+
-+0xDD000000AA
-+AA: original hardware event ID
-+DD: PMU type ID
-+
-+Cache event is similar. A new type PERF_TYPE_HW_CACHE_PMU is introduced.
-+
-+The new attr.config layout for PERF_TYPE_HW_CACHE_PMU:
-+
-+0xDD00CCBBAA
-+AA: original hardware cache ID
-+BB: original hardware cache op ID
-+CC: original hardware cache op result ID
-+DD: PMU type ID
-+
-+PMU type ID is retrieved from sysfs
-+
-+cat /sys/devices/cpu_atom/type
-+10
-+
-+cat /sys/devices/cpu_core/type
-+4
-+
-+When enabling a hardware event without specified pmu, such as,
-+perf stat -e cycles -a (use system-wide in this example), two events
-+are created automatically.
-+
-+    ------------------------------------------------------------
-+    perf_event_attr:
-+      type                             6
-+      size                             120
-+      config                           0x400000000
-+      sample_type                      IDENTIFIER
-+      read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
-+      disabled                         1
-+      inherit                          1
-+      exclude_guest                    1
-+    ------------------------------------------------------------
-+
-+and
-+
-+    ------------------------------------------------------------
-+    perf_event_attr:
-+      type                             6
-+      size                             120
-+      config                           0xa00000000
-+      sample_type                      IDENTIFIER
-+      read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
-+      disabled                         1
-+      inherit                          1
-+      exclude_guest                    1
-+    ------------------------------------------------------------
-+
-+type 6 is PERF_TYPE_HARDWARE_PMU.
-+0x4 in 0x400000000 indicates it's cpu_core pmu.
-+0xa in 0xa00000000 indicates it's cpu_atom pmu (atom pmu type id is random).
-+
-+The kernel creates 'cycles' (0x400000000) on cpu0-cpu15 (core cpus),
-+and create 'cycles' (0xa00000000) on cpu16-cpu23 (atom cpus).
-+
-+For perf-stat result, it displays two events:
-+
-+ Performance counter stats for 'system wide':
-+
-+    12,869,720,529      cpu_core/cycles/
-+     6,405,459,328      cpu_atom/cycles/
-+
-+The first 'cycles' is core event, the second 'cycles' is atom event.
-+
-+Thread mode example:
-+--------------------
-+
-+perf-stat reports the scaled counts for hybrid event and with a percentage
-+displayed. The percentage is the event's running time/enabling time.
-+
-+One example, 'triad_loop' runs on cpu16 (atom core), while we can see the
-+scaled value for core cycles is 160,444,092 and the percentage is 0.47%.
-+
-+perf stat -e cycles -- taskset -c 16 ./triad_loop
-+
-+As previous, two events are created.
-+
-+------------------------------------------------------------
-+perf_event_attr:
-+  type                             6
-+  size                             120
-+  config                           0x400000000
-+  sample_type                      IDENTIFIER
-+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
-+  disabled                         1
-+  inherit                          1
-+  enable_on_exec                   1
-+  exclude_guest                    1
-+------------------------------------------------------------
-+
-+and
-+
-+------------------------------------------------------------
-+perf_event_attr:
-+  type                             6
-+  size                             120
-+  config                           0xa00000000
-+  sample_type                      IDENTIFIER
-+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
-+  disabled                         1
-+  inherit                          1
-+  enable_on_exec                   1
-+  exclude_guest                    1
-+------------------------------------------------------------
-+
-+cycles: 0: 784136 339210144 1013444
-+cycles: 0: 601988862 339210144 338196700
-+cycles: 262458394 339210144 1013444
-+cycles: 603792788 339210144 338196700
-+
-+ Performance counter stats for 'taskset -c 16 ./triad_loop':
-+
-+       262,458,394      cpu_core/cycles/                                              (0.30%)
-+       603,792,788      cpu_atom/cycles/                                              (99.70%)
-+
-+       0.340467913 seconds time elapsed
-+
-+perf-record:
-+------------
-+
-+If there is no '-e' specified in perf record, on hybrid platform,
-+it creates two default 'cycles' and adds them to event list. One
-+is for core, the other is for atom.
-+
-+perf-stat:
-+----------
-+
-+If there is no '-e' specified in perf stat, on hybrid platform,
-+besides of software events, following events are created and
-+added to event list in order.
-+
-+core 'cycles',
-+atom 'cycles',
-+core 'instructions',
-+atom 'instructions',
-+core 'branches',
-+atom 'branches',
-+core 'branch-misses',
-+atom 'branch-misses'
-+
-+Of course, both perf-stat and perf-record support to enable
-+hybrid event with a specific pmu.
-+
-+e.g.
-+perf stat -e cpu_core/cycles/
-+perf stat -e cpu_atom/cycles/
-+perf stat -e cpu_core/r1a/
-+perf stat -e cpu_atom/L1-icache-loads/
-+perf stat -e cpu_core/cycles/,cpu_atom/instructions/
-+perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}'
-+
-+But '{cpu_core/cycles/,cpu_atom/instructions/}' will return
-+"<not supported>" for 'instructions', because the pmus in
-+group are not matched (cpu_core vs. cpu_atom).
-\ No newline at end of file
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index f3161c9673e9..d71bac847936 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -695,6 +695,7 @@ measurements:
-  wait -n ${perf_pid}
-  exit $?
- 
-+include::intel-hybrid.txt[]
- 
- SEE ALSO
- --------
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index 08a1714494f8..d0def5c1715a 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -527,6 +527,8 @@ The fields are in this order:
- 
- Additional metrics may be printed with all earlier fields being empty.
- 
-+include::intel-hybrid.txt[]
-+
- SEE ALSO
- --------
- linkperf:perf-top[1], linkperf:perf-list[1]
--- 
-2.17.1
+Let me use ARCH_INTEL_SOCFPGA for 64bit here and renaming of 32bit a
+little bit later.
 
+Best regards,
+Krzysztof
