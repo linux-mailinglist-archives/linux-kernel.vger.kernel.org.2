@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEC33378F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D01337902
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbhCKQPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:15:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234431AbhCKQOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:14:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFD5464F88;
-        Thu, 11 Mar 2021 16:14:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615479288;
-        bh=qYDGWCW64bxyZudXVN5dkVQ3DwMt7Dn8FEVKXvpunG4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i8MnI3+2/a4u7kdasK8yp0GaOhcv8jnkA0X0v12U8iXfzM0yXF00qlOJQJ8BLfxR5
-         SnPL1CygmdEkO3n6m167qfRXk7n9zJx/PGswMJN3JnCgolPkglroyEnbPjel4Fq5LP
-         1yHs7VglYuyH6+Eh34R9mwABULkfgq9200BQns63jNQjRiJATlopDnbhkoPGNlq66y
-         ruNVpmIy/icGq9PgJjCT8YCHy4irUwrh0eyvmpmb0QZt7fz/XlOMiRbrRVgbCud2js
-         0MrnSAz1IeSLEuIJbhrD54+im2PZkuBoIndFzApzln30phdH25lNkXlpxqIENZCiCV
-         D+iGWJPBqZCCQ==
-Date:   Thu, 11 Mar 2021 16:14:42 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
-Subject: Re: [PATCH v4 12/34] KVM: arm64: Introduce a Hyp buddy page allocator
-Message-ID: <20210311161441.GC31206@willie-the-truck>
-References: <20210310175751.3320106-1-qperret@google.com>
- <20210310175751.3320106-13-qperret@google.com>
+        id S234476AbhCKQQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:16:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234462AbhCKQQF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:16:05 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFA2C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:16:05 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id 184so2862075ljf.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lfYyTSB6sN53w9Rpv4MYqNBv1FPOEZ0SmWjIhTyeJxs=;
+        b=w7gbpWGeeJ+LlzySG7BIYUktxr5ZW6HHVY4+kDsfrOjR8+uCX7UfS12tge1fIba7bN
+         siJe30TAnw+/h3qtte6NL8++/XN56VXtXOlGG2vrWXs32XJku7afWUNsnk0tLSZgaoRP
+         qIZ/4GmtZ1i9oNXcd8zXNQVIY3z/cXgu/HYe6RiK/HznG1JHC1RnGEO26o+3Kc7Gu24t
+         mDKnOJnUQbaI2aW18KnCx1bzYgbMjT0hOd0+44R+gc8vZc2nH65LvMln58GGsQgDMGjl
+         svz66W78wmfOTwVlEZMQmHrfQk2qoRs3WoDHpHpgjVjwpj29LtQx6vil16mwBYI1Xq9f
+         qtxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lfYyTSB6sN53w9Rpv4MYqNBv1FPOEZ0SmWjIhTyeJxs=;
+        b=b1mo/c207NHo878hE5R6UYejVXBJOoBo4N6sZB4+DTYq1lRkYrIar9AOMmBMMNSvLE
+         BDWrxtdOF2KsZ8rd3+FcmDjwfXLQE3SUB21DOF/2eisvqZa0WyXl8VN8GrONX9NnE1vM
+         wltllH8Oy5tZ+wh6wMU6g98bZZvSEEZtoNvK5jOD94q16Ec/MTWL3v32M+ilXxfZntfK
+         NDZiAvHm7REdxa90vDO0iIb41uXJeqnjKonXJV4jkW0U/LycRC4mYMTSRDM8ftg86zQh
+         Z5NhrIicTfb+nGVTDyBgULbdcYqK0pA1Ed+9NrlHv0L1wWnRwLzUJ93qZIhfK1FmPmcP
+         g2xQ==
+X-Gm-Message-State: AOAM53289TiV8jkC6YyKGoW4t5/Wd22UMmvxn+pFHryYfBQvvWzLZEal
+        WVIKhwttLkoULy4hu7cR8fJrvOSU2ETOk2klOZ5BwQ==
+X-Google-Smtp-Source: ABdhPJxjSHy1zm8V6vPLxd2/BZt39BMm+ldl/7gvjdw+kLTDN0YCYgFmd4U2bedbP56ygtsRdV6mIHbZc0eUiDGxSiE=
+X-Received: by 2002:a2e:700a:: with SMTP id l10mr5292190ljc.368.1615479363631;
+ Thu, 11 Mar 2021 08:16:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310175751.3320106-13-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210115224420.1635017-1-dianders@chromium.org>
+In-Reply-To: <20210115224420.1635017-1-dianders@chromium.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Mar 2021 17:15:52 +0100
+Message-ID: <CACRpkdY0h0kEE_63y7wyc=0etTe0Bfn+EmWpfQSe7g2KcfTvhw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] drm/panel-simple: Patches for N116BCA-EA1
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:57:29PM +0000, Quentin Perret wrote:
-> When memory protection is enabled, the hyp code will require a basic
-> form of memory management in order to allocate and free memory pages at
-> EL2. This is needed for various use-cases, including the creation of hyp
-> mappings or the allocation of stage 2 page tables.
-> 
-> To address these use-case, introduce a simple memory allocator in the
-> hyp code. The allocator is designed as a conventional 'buddy allocator',
-> working with a page granularity. It allows to allocate and free
-> physically contiguous pages from memory 'pools', with a guaranteed order
-> alignment in the PA space. Each page in a memory pool is associated
-> with a struct hyp_page which holds the page's metadata, including its
-> refcount, as well as its current order, hence mimicking the kernel's
-> buddy system in the GFP infrastructure. The hyp_page metadata are made
-> accessible through a hyp_vmemmap, following the concept of
-> SPARSE_VMEMMAP in the kernel.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/kvm/hyp/include/nvhe/gfp.h    |  68 ++++++++
->  arch/arm64/kvm/hyp/include/nvhe/memory.h |  28 ++++
->  arch/arm64/kvm/hyp/nvhe/Makefile         |   2 +-
->  arch/arm64/kvm/hyp/nvhe/page_alloc.c     | 195 +++++++++++++++++++++++
->  4 files changed, 292 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/gfp.h
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/page_alloc.c
+On Fri, Jan 15, 2021 at 11:44 PM Douglas Anderson <dianders@chromium.org> wrote:
 
-Eventually, we can replace the refcount with refcount_t, but for now this
-looks pretty good:
+> This series is to get the N116BCA-EA1 panel working. Most of the
+> patches are simple, but on hardware I have in front of me the panel
+> sometimes doesn't come up. I'm still working with the hardware
+> manufacturer to get to the bottom of it, but I've got it working with
+> retries. Adding the retries doesn't seem like an insane thing to do
+> and makes some of the error handling more robust, so I've gone ahead
+> and included those patches here. Hopefully they look OK.
+>
+> Changes in v2:
 
-Acked-by: Will Deacon <will@kernel.org>
+This v2 version applied to drm-misc-next.
 
-Will
+Yours,
+Linus Walleij
