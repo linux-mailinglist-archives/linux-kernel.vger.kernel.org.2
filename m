@@ -2,239 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BA3337375
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8A433737D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbhCKNJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:09:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36654 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233446AbhCKNJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:09:06 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615468145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/cnNGJS92LaF9k2ZTwqu9nk70vjyYRogPXIIe3N+itQ=;
-        b=kSANEUwtRLviDB/KeIGzWdmCHf41qrSF9+Pm1o/8rRyuc8A/u8rrbcbOZP76OHKzT0Ahan
-        o4iw1I/ZCFewIHFheXvfWca3clVhL5wyEWkdV6xa8e1HH+Me6ZBUX+ZSZrsIO76H/stff7
-        2z+fhGh3Mab5+X9lwPIQQBbdGVYU1Is=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B29A9AC17;
-        Thu, 11 Mar 2021 13:09:04 +0000 (UTC)
-Subject: Re: [PATCH v6 00/12] x86: major paravirt cleanup
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, virtualization@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <20210309134813.23912-1-jgross@suse.com>
- <20210311125026.GB5829@zn.tnic> <20210311125143.GC5829@zn.tnic>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <121a494d-b365-eb41-c329-2f0676b72c20@suse.com>
-Date:   Thu, 11 Mar 2021 14:09:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S233448AbhCKNKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:10:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233465AbhCKNKU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 08:10:20 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A5AC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:10:20 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so12761799wmj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:10:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+hhpCW4NXZ2+Io3IMxIPYt+lYnp9sm+v1Ci9SUk4a3o=;
+        b=JNpInhzYi/QnLCeOhXJx5y7ODz0WDyvNCzDUaEHpOk3MmBIeniVihqSRcfAx5GJ7px
+         Jr+zQJ+o5Qlg1Vhf6G4z1e+jH7desHi3Dbn82MxKmS1Nq+qSx+mmW4AVXBigDJ/G0YuZ
+         pGbslCB6D3BwYRFru3GF5x9gCIm9fC2/1MXxU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=+hhpCW4NXZ2+Io3IMxIPYt+lYnp9sm+v1Ci9SUk4a3o=;
+        b=uSw9u6m4vEFRbU+FtUUZahOksS7KlWCyIgDor55VD5owgFxxhacSC9uTd7eIsOGJ+6
+         rWIKyrZGmhp4xgvVBAklYu9ByG+CGOpojBpudlbPk+2To/sLcVA5pGiGIdxPydGHZ7yO
+         1vyQYOTm9ndL9Z3pXTUogtjoazn5x65iMo3AWcTakMECD6UucWbUmQnCh8iac50Bbkt1
+         MxreHrPo3IkIv7k+cabEf5JDtCVdMRVyMXXVX4aUO9lbhs7tX7ORfgNrTP33barSUBNy
+         v7YgRsQYIGQziwAtr9VM+ra16cw1Mg7wGIbJqIKdRpmFncZsroPmC2W4BoEU5M5eRcWw
+         xbbQ==
+X-Gm-Message-State: AOAM533qbLGeTvxAbeeL6PJ0+DKc9wLQG0ttXlgkD152iZvV752+QU2Q
+        oJGOCv5HCF2IEl7pJKaUFrGtbg==
+X-Google-Smtp-Source: ABdhPJy51Lb+MAwQ+byf24AEh2DP5jP8rj5VHu5rcUu4pEdw0ULIAaT7cZjaXYbs9Ol1mcprLfnklA==
+X-Received: by 2002:a1c:7e45:: with SMTP id z66mr8189532wmc.126.1615468218741;
+        Thu, 11 Mar 2021 05:10:18 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g5sm3782504wrq.30.2021.03.11.05.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 05:10:18 -0800 (PST)
+Date:   Thu, 11 Mar 2021 14:10:16 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Marek =?utf-8?B?T2zFocOhaw==?= <marek.olsak@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/radeon: fix copy of uninitialized variable back to
+ userspace
+Message-ID: <YEoWuBOCf8nr5tZn@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Colin King <colin.king@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Marek =?utf-8?B?T2zFocOhaw==?= <marek.olsak@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210303002759.28752-1-colin.king@canonical.com>
+ <490409f2-9fcb-d402-a6ae-b45c80bae3d2@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210311125143.GC5829@zn.tnic>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="sHGm1foLXOCKkEUnUGNC7UsESSEa9kG2D"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <490409f2-9fcb-d402-a6ae-b45c80bae3d2@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---sHGm1foLXOCKkEUnUGNC7UsESSEa9kG2D
-Content-Type: multipart/mixed; boundary="ncnlhSdjJDB3MyBZ79puGdjOzrKooCvcO";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
- x86@kernel.org, virtualization@lists.linux-foundation.org,
- linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
- kvm@vger.kernel.org, clang-built-linux@googlegroups.com,
- Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
- Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>,
- Ard Biesheuvel <ardb@kernel.org>, Deep Shah <sdeep@vmware.com>,
- "VMware, Inc." <pv-drivers@vmware.com>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>,
- Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson
- <seanjc@google.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
- Wanpeng Li <wanpengli@tencent.com>, Jim Mattson <jmattson@google.com>,
- Joerg Roedel <joro@8bytes.org>, Boris Ostrovsky
- <boris.ostrovsky@oracle.com>, Stefano Stabellini <sstabellini@kernel.org>,
- Andy Lutomirski <luto@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>
-Message-ID: <121a494d-b365-eb41-c329-2f0676b72c20@suse.com>
-Subject: Re: [PATCH v6 00/12] x86: major paravirt cleanup
-References: <20210309134813.23912-1-jgross@suse.com>
- <20210311125026.GB5829@zn.tnic> <20210311125143.GC5829@zn.tnic>
-In-Reply-To: <20210311125143.GC5829@zn.tnic>
+On Wed, Mar 03, 2021 at 08:42:31AM +0100, Christian König wrote:
+> Am 03.03.21 um 01:27 schrieb Colin King:
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > Currently the ioctl command RADEON_INFO_SI_BACKEND_ENABLED_MASK can
+> > copy back uninitialised data in value_tmp that pointer *value points
+> > to. This can occur when rdev->family is less than CHIP_BONAIRE and
+> > less than CHIP_TAHITI.  Fix this by adding in a missing -EINVAL
+> > so that no invalid value is copied back to userspace.
+> > 
+> > Addresses-Coverity: ("Uninitialized scalar variable)
+> > Cc: stable@vger.kernel.org # 3.13+
+> > Fixes: 439a1cfffe2c ("drm/radeon: expose render backend mask to the userspace")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> Reviewed-by: Christian König <christian.koenig@amd.com>
+> 
+> Let's hope that this doesn't break UAPI.
 
---ncnlhSdjJDB3MyBZ79puGdjOzrKooCvcO
-Content-Type: multipart/mixed;
- boundary="------------C6C892EEF89D5D4CB4A414F1"
-Content-Language: en-US
+If it does I think the only difference would be errno userspace sees
+(aside from the stack garbage, which we could also emulate). Switching to
+return 0; is easy. So no worries this would be a problem :-)
+-Daniel
 
-This is a multi-part message in MIME format.
---------------C6C892EEF89D5D4CB4A414F1
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> 
+> Christian.
+> 
+> > ---
+> >   drivers/gpu/drm/radeon/radeon_kms.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
+> > index 2479d6ab7a36..58876bb4ef2a 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_kms.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_kms.c
+> > @@ -518,6 +518,7 @@ int radeon_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
+> >   			*value = rdev->config.si.backend_enable_mask;
+> >   		} else {
+> >   			DRM_DEBUG_KMS("BACKEND_ENABLED_MASK is si+ only!\n");
+> > +			return -EINVAL;
+> >   		}
+> >   		break;
+> >   	case RADEON_INFO_MAX_SCLK:
+> 
 
-On 11.03.21 13:51, Borislav Petkov wrote:
-> On Thu, Mar 11, 2021 at 01:50:26PM +0100, Borislav Petkov wrote:
->> and move the cleanups patches 13 and 14 to the beginning of the set?
->=20
-> Yeah, 14 needs ALTERNATIVE_TERNARY so I guess after patch 5, that is.
-
-I'm putting 13 at the begin of the series and 14 after 5.
-
-
-Juergen
-
---------------C6C892EEF89D5D4CB4A414F1
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------C6C892EEF89D5D4CB4A414F1--
-
---ncnlhSdjJDB3MyBZ79puGdjOzrKooCvcO--
-
---sHGm1foLXOCKkEUnUGNC7UsESSEa9kG2D
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmBKFm4FAwAAAAAACgkQsN6d1ii/Ey+h
-KQgAjhK+g8WC8LZv2hOzJE0RlIalM761Yaxv12fceCorl30Mq4b1ZB57xdM97FUQkO6DjnJs7XYg
-2c97qfyRRv9pPDd+Su+Fh7p2Uu47BFyHBxT250G0OwoK6/j/FZzu4EPYtliizyz2yMJ8+qtHugU2
-8vXAmywUjTjUvKSIfPAOmn5tjViNfhf27RnVZAY/LF8zkg05naANhSW3K2fKfT5se7UBaPxK1f+2
-YKKfs031D231+gYklLq9lLoBhfIu6RYF4wiVdcNw7oFNjMv8ggFAUVRDmtTEOa8GkQsqHDpvqdoJ
-0i0OjOZrTslf0aJUbx0dLx60C4JKa2cQAkGwGgKU1Q==
-=koDR
------END PGP SIGNATURE-----
-
---sHGm1foLXOCKkEUnUGNC7UsESSEa9kG2D--
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
