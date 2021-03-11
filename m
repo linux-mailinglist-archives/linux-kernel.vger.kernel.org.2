@@ -2,216 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A141D337CA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA77C337CB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhCKS0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:26:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52495 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229942AbhCKS0j (ORCPT
+        id S230056AbhCKSdw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 13:33:52 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:38184 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230039AbhCKSdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:26:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615487199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7/wSGYLh9BUQ/m4VK2E3Iu8L1K7AWw+HwFDDXH/P7x4=;
-        b=Dt56iO4QJuJA+k3BrHjVi7X4akcMO+fRI3Op/0Vlc4YS1d0fSliXBiTt5M6YPh81npUeAo
-        DONzHVH3vUzM3i7Q/rhj6Wb86BvX9R713O30qm86eYnTVWaw712H2o2v2ckbvL/zzFODWg
-        NXs61CYptcr97lCFNI+HveKAq/RCz64=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-206-GUVYd-KdNVyg2lVODjOFTg-1; Thu, 11 Mar 2021 13:26:37 -0500
-X-MC-Unique: GUVYd-KdNVyg2lVODjOFTg-1
-Received: by mail-qk1-f200.google.com with SMTP id m68so16297097qkd.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:26:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=7/wSGYLh9BUQ/m4VK2E3Iu8L1K7AWw+HwFDDXH/P7x4=;
-        b=QjzC+k31E9YIF3GUJQVB3eIdM47rnmV3PMMVY6x7i4ccUTF3s3ncX761eOH/yajqhH
-         3OvALcQ1tjbcThNwclT6xPiEY6fhGzYJ1m0wYtRk3WNEAwNAXzPDfFda1toUzDhjhjLA
-         eIFVPMBp04WbAIzKtEJ+Is+2oavK0IvxHD+KcQ4vl3c+lZQ+f98eYQ0zxDmzVawlinOq
-         l8pTyJ0O0G9gevl1H4e8Gtmt1vNI+NopygWagKg9fcgg85r2vA0Yjq2RDjokQWFvlFOQ
-         CaxhEFjo9qo8SKnmQwJPT7lu7v2LFlMJs60GkTVYlXL8YqE552cyGtwQUYnneDDR3XKW
-         888w==
-X-Gm-Message-State: AOAM530tArcgW7DBb5VP3JtGplIuBAGUwngODCF5vzk0pegNxbdyek49
-        JGAfAk7W0m14x9uCxA2lLBJt1E1A7hTTbWVWPsgh4WpninJ7UHBaxeavan1SlnutbgC8767PDky
-        i8zAj4x42KomBJQuNrt/lmNlk
-X-Received: by 2002:ac8:68d:: with SMTP id f13mr8512352qth.300.1615487197326;
-        Thu, 11 Mar 2021 10:26:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJykrRpLf1VdnWeXfJOmyNvXTcgKB/EbD8MxyP146EU0lCHJTfc5M6K1GGvBKnS5gI4cz7i4ig==
-X-Received: by 2002:ac8:68d:: with SMTP id f13mr8512326qth.300.1615487197076;
-        Thu, 11 Mar 2021 10:26:37 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 77sm2571571qko.48.2021.03.11.10.26.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 10:26:36 -0800 (PST)
-Subject: Re: [PATCH v3 00/15] arm64 / clk: socfpga: simplifying, cleanups and
- compile testing
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-References: <20210311152545.1317581-1-krzysztof.kozlowski@canonical.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <f0b90916-9047-d5da-5cde-75d4330cf041@redhat.com>
-Date:   Thu, 11 Mar 2021 10:26:32 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 11 Mar 2021 13:33:38 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 289AD31AC12;
+        Thu, 11 Mar 2021 13:15:57 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id t23hS-wYneFr; Thu, 11 Mar 2021 13:15:56 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 6DC5831ACB5;
+        Thu, 11 Mar 2021 13:15:54 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id HMmsWzl9nXEh; Thu, 11 Mar 2021 13:15:54 -0300 (-03)
+Received: from [10.208.85.246] (89-200-33-201.mobile.kpn.net [89.200.33.201])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 28FE331AC2A;
+        Thu, 11 Mar 2021 13:15:28 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210311152545.1317581-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Thu, 11 Mar 2021 17:15:50 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210311161529.28FE331AC2A@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-On 3/11/21 7:25 AM, Krzysztof Kozlowski wrote:
-> Hi,
->
-> All three Intel arm64 SoCFPGA architectures (Agilex, N5X and Stratix 10)
-> are basically flavors/platforms of the same architecture.  At least from
-> the Linux point of view.  Up to a point that N5X and Agilex share DTSI.
-> Having three top-level architectures for the same one barely makes
-> sense and complicates driver selection.
->
-> Additionally it was pointed out that ARCH_SOCFPGA name is too generic.
-> There are other vendors making SoC+FPGA designs, so the name should be
-> changed to have real vendor (currently: Intel).
->
->
-> Dependencies / merging
-> ======================
-> 1. Patch 1 is used as base, so other changes depend on its hunks.
->    I put it at beginning as it is something close to a fix, so candidate
->    for stable (even though I did not mark it like that).
-> 2. Patch 2: everything depends on it.
->
-> 3. 64-bit path:
-> 3a. Patches 3-7: depend on patch 2, from 64-bit point of view.
-> 3b. Patch 8: depends on 2-7 as it finally removes 64-bit ARCH_XXX
->     symbols.
->
-> 4. 32-bit path:
-> 4a. Patches 9-14: depend on 2, from 32-bit point of view.
-> 4b. Patch 15: depends on 9-14 as it finally removes 32-bit ARCH_SOCFPGA
->     symbol.
->
-> If the patches look good, proposed merging is via SoC tree (after
-> getting acks from everyone). Sharing immutable branches is also a way.
->
->
-> Changes since v2
-> ================
-> 1. Several new patches and changes.
-> 2. Rename ARCH_SOCFPGA to ARCH_INTEL_SOCFPGA on 32-bit and 64-bit.
-> 3. Enable compile testing of 32-bit socfpga clock drivers.
-> 4. Split changes per subsystems for easier review.
-> 5. I already received an ack from Lee Jones, but I did not add it as
->    there was big refactoring.  Please kindly ack one more time if it
->    looks good.
->
-> Changes since v1
-> ================
-> 1. New patch 3: arm64: socfpga: rename ARCH_STRATIX10 to ARCH_SOCFPGA64.
-> 2. New patch 4: arm64: intel: merge Agilex and N5X into ARCH_SOCFPGA64.
-> 3. Fix build is.sue reported by kernel test robot (with ARCH_STRATIX10
->    and COMPILE_TEST but without selecting some of the clocks).
->
->
-> RFT
-> ===
-> I tested compile builds on few configurations, so I hope kbuild 0-day
-> will check more options (please give it few days on the lists).
-> I compare the generated autoconf.h and found no issues.  Testing on real
-> hardware would be appreciated.
->
-> Best regards,
-> Krzysztof
->
-> Krzysztof Kozlowski (15):
->   clk: socfpga: allow building N5X clocks with ARCH_N5X
->   ARM: socfpga: introduce common ARCH_INTEL_SOCFPGA
->   mfd: altera: merge ARCH_SOCFPGA and ARCH_STRATIX10
->   net: stmmac: merge ARCH_SOCFPGA and ARCH_STRATIX10
->   clk: socfpga: build together Stratix 10, Agilex and N5X clock drivers
->   clk: socfpga: merge ARCH_SOCFPGA and ARCH_STRATIX10
->   EDAC: altera: merge ARCH_SOCFPGA and ARCH_STRATIX10
->   arm64: socfpga: merge Agilex and N5X into ARCH_INTEL_SOCFPGA
->   clk: socfpga: allow compile testing of Stratix 10 / Agilex clocks
->   clk: socfpga: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs (and
->     compile test)
->   dmaengine: socfpga: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs
->   fpga: altera: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs
->   i2c: altera: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs
->   reset: socfpga: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs
->   ARM: socfpga: drop ARCH_SOCFPGA
->
->  arch/arm/Kconfig                            |  2 +-
->  arch/arm/Kconfig.debug                      |  6 +++---
->  arch/arm/Makefile                           |  2 +-
->  arch/arm/boot/dts/Makefile                  |  2 +-
->  arch/arm/configs/multi_v7_defconfig         |  2 +-
->  arch/arm/configs/socfpga_defconfig          |  2 +-
->  arch/arm/mach-socfpga/Kconfig               |  4 ++--
->  arch/arm64/Kconfig.platforms                | 17 ++++-------------
->  arch/arm64/boot/dts/altera/Makefile         |  2 +-
->  arch/arm64/boot/dts/intel/Makefile          |  6 +++---
->  arch/arm64/configs/defconfig                |  3 +--
->  drivers/clk/Kconfig                         |  1 +
->  drivers/clk/Makefile                        |  4 +---
->  drivers/clk/socfpga/Kconfig                 | 19 +++++++++++++++++++
->  drivers/clk/socfpga/Makefile                | 11 +++++------
->  drivers/dma/Kconfig                         |  2 +-
->  drivers/edac/Kconfig                        |  2 +-
->  drivers/edac/altera_edac.c                  | 17 +++++++++++------
->  drivers/firmware/Kconfig                    |  2 +-
->  drivers/fpga/Kconfig                        |  8 ++++----
->  drivers/i2c/busses/Kconfig                  |  2 +-
->  drivers/mfd/Kconfig                         |  4 ++--
->  drivers/net/ethernet/stmicro/stmmac/Kconfig |  4 ++--
->  drivers/reset/Kconfig                       |  6 +++---
->  24 files changed, 71 insertions(+), 59 deletions(-)
->  create mode 100644 drivers/clk/socfpga/Kconfig
->
-Thanks for changing the config name.
+Sir/Madam,
 
-Please review checkpatch --strict on this set, the typical complaint is
+CONGRATULATIONS!!!
 
-clk: socfpga: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs (and compile test)    
-WARNING: please write a paragraph that describes the config symbol fully
-#35: FILE: drivers/clk/socfpg/Kconfig:11:                       
-+config CLK_INTEL_SOCFPGA32
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 9th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-Tom
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
