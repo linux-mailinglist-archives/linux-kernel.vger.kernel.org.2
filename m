@@ -2,110 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE731336E9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C6D336EA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbhCKJP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232001AbhCKJP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:15:58 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:37524 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231629AbhCKJP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Mar 2021 04:15:28 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:36025 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbhCKJPM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:15:12 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MFbFW-1lWvnJ0PaY-00H7e9; Thu, 11 Mar 2021 10:15:07 +0100
-Received: by mail-ot1-f53.google.com with SMTP id 75so854357otn.4;
-        Thu, 11 Mar 2021 01:15:06 -0800 (PST)
-X-Gm-Message-State: AOAM530eVF7rVrpAp1XLvQIrseRQla+swzeBKntkJBil4am9F6BNaHgT
-        /7lc/bi2WdFhGObsvTlTFukx3xklGp4XhWG4Fm0=
-X-Google-Smtp-Source: ABdhPJyn+biUFqeUpWbgYz+onSoY1lB5lZXnaVdOJ59ivfe6fWw6B/LYP9dm97k0WNF1I7ZVkGTZlALTwC9lFjwxZew=
-X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr6129948otq.305.1615454105254;
- Thu, 11 Mar 2021 01:15:05 -0800 (PST)
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615454127; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=1HuCv2zVnv2tpAzUSqF8U758lZQ7MZTMxyLOOq6ria8=; b=XVVqyJUHkP0s6uYpbfEHYl0lavYAk6QpxJM4hhzMVYcfRRTs7DqhQvCrxLi3R0iTO3mzELqf
+ o27y+svk0o60YleQWJcRQt9O1nxPY93NJixBO95PZK0fszPn3+glW6l5hFDIjVtBQPtIw94i
+ SRWBZZB5gjpgb5tc6CBRbiIRCX0=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6049dfa9bb6300df75161c33 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 09:15:21
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E02DDC433CA; Thu, 11 Mar 2021 09:15:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.102] (unknown [49.207.203.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D8957C43461;
+        Thu, 11 Mar 2021 09:15:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D8957C43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH 00/13] Add binding updates and DT files for SC7280 SoC
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org>
+ <YElgnuH6ZEoMOgdj@builder.lan>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <a4f03a1c-880b-ebf5-ad7e-387e1b5c61e4@codeaurora.org>
+Date:   Thu, 11 Mar 2021 14:45:16 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
- <20210310083840.481615-1-krzysztof.kozlowski@canonical.com>
- <20210310094527.GA701493@dell> <35c39c81-08e4-24c8-f683-2fa7a7ea71de@redhat.com>
- <1c06cb74-f0b0-66e5-a594-ed1ee9bc876e@canonical.com> <CAK8P3a1CCQwbeH4KiUgif+-HdubVjjZBkMXimEjYkgeh4eJ7cg@mail.gmail.com>
- <52d0489f-0f77-76a2-3269-e3004c6b6c07@canonical.com> <ba2536a6-7c74-0cca-023f-cc6179950d37@canonical.com>
- <CAK8P3a1k7c5X5x=-_-=f=ACwY+uQQ8YEcAGXYfdTdSnqpo96sA@mail.gmail.com> <fb0d8ca3-ac46-f547-02b0-7f47ff8fff6b@canonical.com>
-In-Reply-To: <fb0d8ca3-ac46-f547-02b0-7f47ff8fff6b@canonical.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 11 Mar 2021 10:14:49 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a05VkttECKTgonxKCSjJR0W4V1TRrUYMydgUGywbCSCWQ@mail.gmail.com>
-Message-ID: <CAK8P3a05VkttECKTgonxKCSjJR0W4V1TRrUYMydgUGywbCSCWQ@mail.gmail.com>
-Subject: Re: [RFC v2 3/5] arm64: socfpga: rename ARCH_STRATIX10 to ARCH_SOCFPGA64
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Tom Rix <trix@redhat.com>, Lee Jones <lee.jones@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-edac@vger.kernel.org, linux-fpga@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com, arm-soc <arm@kernel.org>,
-        SoC Team <soc@kernel.org>, Olof Johansson <olof@lixom.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:8zSo19FEMGDxyiVQDBPRPGNk7oUpBJKvj23wAA3LeoGeGTVaVDe
- tYcAtEWJuc6QF3xHchWKOFHw7SzdIyvsUGzwG5ZCAIbpfSiEs2I44sZv8Ig0uLr7MILLENl
- cggEdUK03qWlQ/08UCGbvsKoo6DI2tigOl0tTfxiLh2W3CnAAeAKnlFxyt1SxNWb91t9oNT
- f3uj0KvErM5ZZx+1XApng==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DHa3uyTr8Bg=:mYAf3HuyZSpvNDQzaYFPIa
- LQ8jH4G5xwF5IsG18LSCUNEXu4cXgmL7HkSnx6t4Odmq50eV26cIJzOSX95EuRoTU568WFmVF
- 6D6D2deAwUPjNAd5o/5141PGlP5tMgZPA3BihdFgV9Vw8oifzBng1y8RuPF4IX6cUvqY5NNbz
- en5TQeAfMSBlKae749fUXQxsregl6IgMbfo+qesr2t5g5x2bCVIUzGqMysf6XNbekDVasEP3g
- 6EXFmth3Dl/KzQzYt3UXUELR8LXIo7HFiARyafcLr85kuYQpClWDo5ZRL1uOd+ggzsJb/7YIE
- CGe/BYpm/a3+KFbtnRLNP15PnpWixRxwkjNUvGXUaeCU9viIXWzITSL9ZLlZatpM1k3BK4VZp
- gadboAk6GmkTmKrcXZfqvdunIX95jT0D0bli/LjuuMhmXSPV40LWZHonSaELFmzWfjcBHMIJ5
- z3Fq8/5O8dgcvuQ3hGKZOMoL+YW/IWvOOEsxT4sU+CK9ihrHpjVf/eIrZ8h4RNFNvXWG6gPgJ
- M+CdNro9r1nbTqwf74QTm4hvH8nIJCY5WcW0ZvCL+Ii/J7pF2RXZfOlA/V0c0xtqA==
+In-Reply-To: <YElgnuH6ZEoMOgdj@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 8:08 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
-> On 10/03/2021 17:42, Arnd Bergmann wrote:
-> > On Wed, Mar 10, 2021 at 4:54 PM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@canonical.com> wrote:
-> >> On 10/03/2021 16:47, Krzysztof Kozlowski wrote:
-> >>> This edac Altera driver is very weird... it uses the same compatible
-> >>> differently depending whether this is 32-bit or 64-bit (e.g. Stratix
-> >>> 10)! On ARMv7 the compatible means for example one IRQ... On ARMv8, we
-> >>> have two. It's quite a new code (2019 from Intel), not some ancient
-> >>> legacy, so it should never have been accepted...
-> >>
-> >> Oh, it's not that horrible as it sounds. They actually have different
-> >> compatibles for edac driver with these differences (e.g. in interrupts).
-> >> They just do not use them and instead check for the basic (common?)
-> >> compatible and architecture... Anyway without testing I am not the
-> >> person to fix the edac driver.
-> >
-> > Ok, This should be fixed properly as you describe, but as a quick hack
-> > it wouldn't be hard to just change the #ifdef to check for CONFIG_64BIT
-> > instead of CONFIG_ARCH_STRATIX10 during the rename of the config
-> > symbol.
->
-> This would work. The trouble with renaming ARCH_SOCFPGA into
-> ARCH_INTEL_SOCFPGA is that still SOCFPGA will appear in many other
-> Kconfig symbols or even directory paths.
->
-> Let me use ARCH_INTEL_SOCFPGA for 64bit here and renaming of 32bit a
-> little bit later.
 
-Maybe you can introduce a hidden 'ARCH_INTEL_SOCFPGA' option first
-and select that from both the 32-bit and the 64-bit platforms in the first step.
+On 3/11/2021 5:43 AM, Bjorn Andersson wrote:
+> On Fri 12 Feb 01:28 CST 2021, Rajendra Nayak wrote:
+> 
+>> This series includes a few minor binding updates and base device tree
+>> files (to boot to shell) for SC7280 SoC and the IDP board using this SoC.
+>>
+>> The series is dependent on a few driver patches to merge first, for
+>> gcc, rpmhcc and pinctrl
+>> https://lore.kernel.org/patchwork/project/lkml/list/?series=484517
+>> https://lore.kernel.org/patchwork/project/lkml/list/?series=484489
+>> https://lore.kernel.org/patchwork/patch/1379831/
+>>
+> 
+> I'm not able to find v2 of this series, but plenty of patches that
+> depends on its content. Do I somehow miss it, or is it coming?
 
-That should decouple the cleanups, so you can change the drivers to
-(only) 'depends on ARCH_INTEL_SOCFPGA' before removing the other
-names.
+I did post v2 [1], and will post v3 shortly addressing some of
+the feedback from Stephen on v2. I was waiting on the rpmh clock
+fix to come out [2], which addresses the question about the XO clock
+frequency [3] in DT
 
-        Arnd
+[1] https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
+[2] https://lore.kernel.org/patchwork/patch/1393159/
+[3] https://lore.kernel.org/patchwork/patch/1389019/
+
+> Regards,
+> Bjorn
+> 
+>> Maulik Shah (3):
+>>    arm64: dts: qcom: sc7280: Add RSC and PDC devices
+>>    arm64: dts: qcom: Add reserved memory for fw
+>>    arm64: dts: qcom: sc7280: Add cpuidle states
+>>
+>> Rajendra Nayak (5):
+>>    dt-bindings: arm: qcom: Document SC7280 SoC and board
+>>    dt-bindings: firmware: scm: Add SC7280 support
+>>    arm64: dts: sc7280: Add basic dts/dtsi files for SC7280 soc
+>>    dt-bindings: qcom,pdc: Add compatible for sc7280
+>>    arm64: dts: qcom: SC7280: Add rpmhcc clock controller node
+>>
+>> Sai Prakash Ranjan (4):
+>>    dt-bindings: arm-smmu: Add compatible for SC7280 SoC
+>>    arm64: dts: qcom: sc7280: Add device node for APPS SMMU
+>>    dt-bindings: watchdog: Add compatible for SC7280 SoC
+>>    arm64: dts: qcom: sc7280: Add APSS watchdog node
+>>
+>> satya priya (1):
+>>    arm64: dts: qcom: sc7280: Add SPMI PMIC arbiter device for SC7280
+>>
+>>   Documentation/devicetree/bindings/arm/qcom.yaml    |   6 +
+>>   .../devicetree/bindings/firmware/qcom,scm.txt      |   1 +
+>>   .../bindings/interrupt-controller/qcom,pdc.txt     |   1 +
+>>   .../devicetree/bindings/iommu/arm,smmu.yaml        |   1 +
+>>   .../devicetree/bindings/watchdog/qcom-wdt.yaml     |   1 +
+>>   arch/arm64/boot/dts/qcom/Makefile                  |   1 +
+>>   arch/arm64/boot/dts/qcom/sc7280-idp.dts            |  47 ++
+>>   arch/arm64/boot/dts/qcom/sc7280.dtsi               | 596 +++++++++++++++++++++
+>>   8 files changed, 654 insertions(+)
+>>   create mode 100644 arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>>   create mode 100644 arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>
+>> -- 
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>>
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
