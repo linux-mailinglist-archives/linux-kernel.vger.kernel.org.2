@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEDD337FCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5891F337FCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhCKVkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:40:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
+        id S229900AbhCKVoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:44:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbhCKVkN (ORCPT
+        with ESMTP id S229674AbhCKVnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:40:13 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BD5C061574;
-        Thu, 11 Mar 2021 13:40:13 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e1f00f0a77a9e991aa23f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1f00:f0a7:7a9e:991a:a23f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C61701EC0324;
-        Thu, 11 Mar 2021 22:40:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615498811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=OtXM/2jJOcgC79Wplu1CqVJJao4RuO3TzJVik1mXAr8=;
-        b=fE1YvmBU8rfJYcpy3CscSv9D/WZvkvXdkTRR0EVYfYPqPodusUHFwUFjc3eVOHfZaFw70Z
-        SzlRCgSp5Fg2gVvYEcaIkn8UlpE+3NBLGmfPKk0JTUlg1tkrwDEXvOIM9wFEwymjlIs2Se
-        /dqtLOnQClOv3PPRU16MV87smfo12nQ=
-Date:   Thu, 11 Mar 2021 22:40:13 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
-Message-ID: <20210311214013.GH5829@zn.tnic>
-References: <0ebda5c6-097e-20bb-d695-f444761fbb79@amd.com>
- <0d8f6573-f7f6-d355-966a-9086a00ef56c@amd.com>
- <1451b13e-c67f-8948-64ff-5c01cfb47ea7@redhat.com>
- <3929a987-5d09-6a0c-5131-ff6ffe2ae425@amd.com>
- <7a7428f4-26b3-f704-d00b-16bcf399fd1b@amd.com>
- <78cc2dc7-a2ee-35ac-dd47-8f3f8b62f261@redhat.com>
- <d7c6211b-05d3-ec3f-111a-f69f09201681@amd.com>
- <20210311200755.GE5829@zn.tnic>
- <20210311203206.GF5829@zn.tnic>
- <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com>
+        Thu, 11 Mar 2021 16:43:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A086CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:43:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ac2GshzHDBbYFZYWpQvmFOuN7K45Tqd3TxtnIlDvA1g=; b=L2IlJ1fsg+OdawMAj/25KcTwi9
+        ASjxBq3+ctOm1ZknMCi/B6gL2zMBPJBWcn4Xax9Z8uZhBeyeAzjssUjP9XN79FC+o0SYRv/meiuIK
+        WB9i+y4yu697xl+c44w/HrNYz3V7cJJBxGMH6o4EypfXgOeZmUXMRunRBYkrFvoXYS/EihSJb1M84
+        ybzK58NeEZ43JG1wbv1USkuWlO+ZLX/M1VpQbquANpolt+JSrMlRpMX9qov9uQIZvgeHwExB8sMad
+        Yawe+ZtgPdE9N/HR2kiuYlAFOGjKrSYxsyz9Vba5P8bHMY7re3YQ/89dP/LgDOjqG0fT0RGOeDQBV
+        SlsEM/mg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKT5Q-008gI0-Gw; Thu, 11 Mar 2021 21:43:17 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 65D7D9864D0; Thu, 11 Mar 2021 22:43:15 +0100 (CET)
+Date:   Thu, 11 Mar 2021 22:43:15 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "yao.jin@linux.intel.com" <yao.jin@linux.intel.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: Re: [PATCH V2 20/25] perf/x86/intel: Add Alder Lake Hybrid support
+Message-ID: <20210311214315.GN4746@worktop.programming.kicks-ass.net>
+References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+ <1615394281-68214-21-git-send-email-kan.liang@linux.intel.com>
+ <YEpAtTttSxMVDWYp@hirez.programming.kicks-ass.net>
+ <01176076-049b-0129-4865-8c49cd002060@linux.intel.com>
+ <20210311195832.GK4746@worktop.programming.kicks-ass.net>
+ <400dbd6e-389c-899d-6d11-14b5a8f8f90e@linux.intel.com>
+ <20210311204742.GM4746@worktop.programming.kicks-ass.net>
+ <a606211b5b454ef5b658858e0cb361f0@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com>
+In-Reply-To: <a606211b5b454ef5b658858e0cb361f0@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 02:57:04PM -0600, Babu Moger wrote:
->  It is related PCID and INVPCID combination. Few more details.
->  1. System comes up fine with "noinvpid". So, it happens when invpcid is
-> enabled.
-
-Which system, host or guest?
-
->  2. Host is coming up fine. Problem is with the guest.
-
-Aha, guest.
-
->  3. Problem happens with Debian 9. Debian kernel version is 4.9.0-14.
->  4. Debian 10 is fine.
->  5. Upstream kernels are fine. Tried on v5.11 and it is working fine.
->  6. Git bisect pointed to commit 47811c66356d875e76a6ca637a9d384779a659bb.
+On Thu, Mar 11, 2021 at 09:09:57PM +0000, Luck, Tony wrote:
+> >> I think the "sapphire_rapids" is the code name for the server platform.
+> >
+> > If that's really the case, then:
+> >
+> > #define INTEL_FAM6_SAPPHIRERAPIDS_X     0x8F
+> >
+> > is wrong, those things should be uarch name, not platform name. Tony?
 > 
->  Let me know if want me to try something else.
+> 0x8F is the model number of the CPU that is named Sapphire Rapids that
+> goes into the Eagle Stream platform
+> 
+> If you want a uarch name, that might be the name of the core
+> (.... something-cove ... I can't keep track of the names of all the
+> coves).
 
-Yes, I assume host has the patches which belong to this thread?
+uarch names used to be different from that. But looking at wikipedia,
+things have gone completely apeshit after skylake :-/
 
-So please describe:
+We used to have one microarch and then a laptop,desktop and server sku,
+but now each of those has a separately named microarch, so where we had
+one new name each year, we now have at least 3. No wonder I've no
+sodding clue anymore.
 
-1. host has these patches, cmdline params, etc.
-2. guest is a 4.9 kernel, cmdline params, etc.
-
-Please be exact and specific so that I can properly reproduce.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+/me stmps off to get a beer to forget all I've seen ...
