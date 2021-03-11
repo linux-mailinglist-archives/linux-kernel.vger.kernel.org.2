@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6B53371C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71FE3371B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:50:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232878AbhCKLuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:50:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        id S232905AbhCKLuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:50:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232753AbhCKLth (ORCPT
+        with ESMTP id S232757AbhCKLtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:49:37 -0500
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77D0C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:49:36 -0800 (PST)
-Received: by mail-vk1-xa36.google.com with SMTP id b10so408123vkl.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:49:36 -0800 (PST)
+        Thu, 11 Mar 2021 06:49:39 -0500
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8ADC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:49:39 -0800 (PST)
+Received: by mail-ua1-x931.google.com with SMTP id g7so508931uab.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:49:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8J99SnIHN40QUiCh4vdDv5XtXr5pbmjm/XVHbBVvsdo=;
-        b=h8ZLqeB7M7wbPWxGDpPzKfQIuZJOHhG5As4FbvW0Yf0l9V0uLDCrQXDxPM1kZkevHe
-         gKH2xuExf1aX5ktCcJFGF1FYQcI2oVicL4gNYiWPyhrbXk0+aMaAm1YgpsGLPArfP2Hq
-         pRolEovwCCiNMCFeoq6NfmiLG9FG8oV3VwsA/AIExOxEOsRCzGdPLsWOQSzVESgbyDXa
-         ma2C1jPVLKyk3mri8cXR+J3Uo/LdfN5/cyNgYTQy3tSdO/psFgUvNL3immA3AS81ZQY6
-         xuAtBD74h0YpLmU2c/rjrg2K0hkzBLhZXIYsJusVcYd3kjTEmz7m+62wyvRv8F2NSeT/
-         qCFQ==
+        bh=PFTIqFdLWWdY29/pRWKsrCjVVaUcvjydilTqihigIMs=;
+        b=cu4PSIOj96NZbIS+1jrpPVRxPh9/bAfihyDQaoU03m758Y6gyvh6OMia8ws4vOZcMc
+         M7Qhx87oZNkO35S7goR6IRdaiTw0/19mhWGN6uPE1o2Iu3gJHmqkImd22aPQMWErZepZ
+         Ant7OZm5qaFM6K9Ma9hfyUHxXTtOU+vaGGt8vpppf3zH2oFjMHclSozE1aQF7yMwEYxE
+         2UXsFllf891X2O1C3xSRyFoAFNoIa4MY3eM5yFHnZlEycgare9N/5WQTgkZfUkGA5QB4
+         T2CpILr5SH5dgP6n+RdqCQBY2wRpHUjge3bMbG96M9sUigQmcn6ZWwLhYN/aJKpqDhb1
+         UNaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8J99SnIHN40QUiCh4vdDv5XtXr5pbmjm/XVHbBVvsdo=;
-        b=Abk540iw2AvGuLrxOfIsOvt2dWmczjhuPP46jj1wdLPtl1uKHpQrjp0/1InQETki/W
-         ZB/Xa/v+hrHlMNvqxq2ZnzTbFGDaeERu8k669dNmKVE35Cjsi0LgO2dDDR4z+xXNn+wL
-         WQ4nnXSm6uFDjY/AuG5/J64+AdxdWMAky87H7sM0mHY0QALJYa1RgVRl8+yuUHx9Na0u
-         HIYKV5xrmeNaXPPXddDukxmPFv2z+gGn9d1ErHeJbGSjRYvoxL5ksZwHLB3hFihW9X5a
-         e3gPThh1RWT3WUycFpkH+v4201581UgkuNA0Lvl9naWAUF9dSGRMGmk9dvlVxVm49En0
-         401g==
-X-Gm-Message-State: AOAM531nebhinqGXAShM8zVZouZNAedrzaVMkdjgMNs4CzLCq5RdlAqE
-        5BiSvcQMYq8l3+eYtY9HsQENuUcjAHoY+g+z0z9HHA==
-X-Google-Smtp-Source: ABdhPJx6dRR9fk/pnTw3aBPdfGpJrX8AMeRQ74wps29lBE0pAN6F0BFTtUFED9CQBE4m/6bTv6K1fofytFjXA13eo9k=
-X-Received: by 2002:a1f:2e88:: with SMTP id u130mr4253740vku.15.1615463375690;
- Thu, 11 Mar 2021 03:49:35 -0800 (PST)
+        bh=PFTIqFdLWWdY29/pRWKsrCjVVaUcvjydilTqihigIMs=;
+        b=s4YkuQfcAcgQRMqGHhdYTIIYZENkMTIz7bD2uPlOP8PhiimGy/VG0cOEBICa2zHvVK
+         m4T5ioSzCoITVWnQyS7CbVIcTdRb2ix5A/SHgH73IMnOnD4kD7ewjq8wF5iQ74xwmtyw
+         3FejMW/RrF4DVxG9GzRxcYamsSRInUZnAPFUjA9WhPmfgimbqzRZZ4XGiRWLdSoJo00y
+         DloicWIeZX2Bs574yNoizkKAWXkB5lHP5wcOi9BQMWGiwf//FiUyYaItVekszmWKNFf0
+         FBX4rF97iYtS9wFEWa8PDHHBQSe4FUr68MH9EOl8PBeK1Dz9R/kblJsy3CfHNPklJOwc
+         QfbA==
+X-Gm-Message-State: AOAM533xWEfh1wUKTfKhO/O4ELkWJ9pSdImYCsIyvvVv77HA7JYBxkl2
+        AJjftMvWDswkBLuUxU5W5SgahWf6om7oRHB88vD86w==
+X-Google-Smtp-Source: ABdhPJzBpiiAn3iYlmdGnO4PxGr42qjfn3ntKhGt7ALLe3Ir5hku6BDAAIf9Rrv6P+aH6nXKT2JjbSj2QlXEp2yFmh4=
+X-Received: by 2002:ab0:6045:: with SMTP id o5mr4562650ual.100.1615463378649;
+ Thu, 11 Mar 2021 03:49:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20210311174157.561dada9@xhacker.debian>
-In-Reply-To: <20210311174157.561dada9@xhacker.debian>
+References: <20210311174046.597d1951@xhacker.debian>
+In-Reply-To: <20210311174046.597d1951@xhacker.debian>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 11 Mar 2021 12:48:59 +0100
-Message-ID: <CAPDyKFqYzJX1eP6VxSXWDPAAKj7NYu1+8YwTmtH1nFbzm+MRag@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdio: fix a typo in the comment of SDIO_SD_REV_3_00
+Date:   Thu, 11 Mar 2021 12:49:02 +0100
+Message-ID: <CAPDyKFodwp4BLdyGu7GoU7H3f+juF1o4UBqZ4zgz-CXJoeT=oA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci: Use "mmc" directly rather than "host->mmc"
 To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 at 10:42, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+On Thu, 11 Mar 2021 at 10:40, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
 >
-> I believe "Spev" is typo, should be "Spec".
+> Clean up the code to use the "mmc" directly instead of "host->mmc".
+> If the code sits in hot code path, this clean up also brings trvial
+> performance improvement. Take the sdhci_post_req() for example:
+>
+> before the patch:
+>      ...
+>      8d0:       a9be7bfd        stp     x29, x30, [sp, #-32]!
+>      8d4:       910003fd        mov     x29, sp
+>      8d8:       f9000bf3        str     x19, [sp, #16]
+>      8dc:       f9400833        ldr     x19, [x1, #16]
+>      8e0:       b9404261        ldr     w1, [x19, #64]
+>      8e4:       34000161        cbz     w1, 910 <sdhci_post_req+0x50>
+>      8e8:       f9424400        ldr     x0, [x0, #1160]
+>      8ec:       d2800004        mov     x4, #0x0                        // #0
+>      8f0:       b9401a61        ldr     w1, [x19, #24]
+>      8f4:       b9403262        ldr     w2, [x19, #48]
+>      8f8:       f9400000        ldr     x0, [x0]
+>      8fc:       f278003f        tst     x1, #0x100
+>      900:       f9401e61        ldr     x1, [x19, #56]
+>      904:       1a9f17e3        cset    w3, eq  // eq = none
+>      908:       11000463        add     w3, w3, #0x1
+>      90c:       94000000        bl      0 <dma_unmap_sg_attrs>
+>      ...
+>
+> After the patch:
+>      ...
+>      8d0:       a9be7bfd        stp     x29, x30, [sp, #-32]!
+>      8d4:       910003fd        mov     x29, sp
+>      8d8:       f9000bf3        str     x19, [sp, #16]
+>      8dc:       f9400833        ldr     x19, [x1, #16]
+>      8e0:       b9404261        ldr     w1, [x19, #64]
+>      8e4:       34000141        cbz     w1, 90c <sdhci_post_req+0x4c>
+>      8e8:       b9401a61        ldr     w1, [x19, #24]
+>      8ec:       d2800004        mov     x4, #0x0                        // #0
+>      8f0:       b9403262        ldr     w2, [x19, #48]
+>      8f4:       f9400000        ldr     x0, [x0]
+>      8f8:       f278003f        tst     x1, #0x100
+>      8fc:       f9401e61        ldr     x1, [x19, #56]
+>      900:       1a9f17e3        cset    w3, eq  // eq = none
+>      904:       11000463        add     w3, w3, #0x1
+>      908:       94000000        bl      0 <dma_unmap_sg_attrs>
+>      ...
+>
+> We saved one ldr instruction: "ldr     x0, [x0, #1160]"
 >
 > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
@@ -72,22 +116,137 @@ Uffe
 
 
 > ---
->  include/linux/mmc/sdio.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mmc/host/sdhci.c | 33 ++++++++++++++++-----------------
+>  1 file changed, 16 insertions(+), 17 deletions(-)
 >
-> diff --git a/include/linux/mmc/sdio.h b/include/linux/mmc/sdio.h
-> index e28769991e82..2a05d1ac4f0e 100644
-> --- a/include/linux/mmc/sdio.h
-> +++ b/include/linux/mmc/sdio.h
-> @@ -82,7 +82,7 @@
->  #define  SDIO_SD_REV_1_01      0       /* SD Physical Spec Version 1.01 */
->  #define  SDIO_SD_REV_1_10      1       /* SD Physical Spec Version 1.10 */
->  #define  SDIO_SD_REV_2_00      2       /* SD Physical Spec Version 2.00 */
-> -#define  SDIO_SD_REV_3_00      3       /* SD Physical Spev Version 3.00 */
-> +#define  SDIO_SD_REV_3_00      3       /* SD Physical Spec Version 3.00 */
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 2d73407ee52e..b1afabab9cae 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -907,7 +907,7 @@ static void sdhci_calc_sw_timeout(struct sdhci_host *host,
 >
->  #define SDIO_CCCR_IOEx         0x02
->  #define SDIO_CCCR_IORx         0x03
+>         if (data) {
+>                 blksz = data->blksz;
+> -               freq = host->mmc->actual_clock ? : host->clock;
+> +               freq = mmc->actual_clock ? : host->clock;
+>                 transfer_time = (u64)blksz * NSEC_PER_SEC * (8 / bus_width);
+>                 do_div(transfer_time, freq);
+>                 /* multiply by '2' to account for any unknowns */
+> @@ -2269,14 +2269,14 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+>
+>                 if (host->quirks & SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK &&
+>                     host->clock) {
+> -                       host->timeout_clk = host->mmc->actual_clock ?
+> -                                               host->mmc->actual_clock / 1000 :
+> +                       host->timeout_clk = mmc->actual_clock ?
+> +                                               mmc->actual_clock / 1000 :
+>                                                 host->clock / 1000;
+> -                       host->mmc->max_busy_timeout =
+> +                       mmc->max_busy_timeout =
+>                                 host->ops->get_max_timeout_count ?
+>                                 host->ops->get_max_timeout_count(host) :
+>                                 1 << 27;
+> -                       host->mmc->max_busy_timeout /= host->timeout_clk;
+> +                       mmc->max_busy_timeout /= host->timeout_clk;
+>                 }
+>         }
+>
+> @@ -2399,7 +2399,7 @@ static int sdhci_get_cd(struct mmc_host *mmc)
+>                 return 0;
+>
+>         /* If nonremovable, assume that the card is always present. */
+> -       if (!mmc_card_is_removable(host->mmc))
+> +       if (!mmc_card_is_removable(mmc))
+>                 return 1;
+>
+>         /*
+> @@ -2489,14 +2489,14 @@ void sdhci_enable_sdio_irq(struct mmc_host *mmc, int enable)
+>         unsigned long flags;
+>
+>         if (enable)
+> -               pm_runtime_get_noresume(host->mmc->parent);
+> +               pm_runtime_get_noresume(mmc->parent);
+>
+>         spin_lock_irqsave(&host->lock, flags);
+>         sdhci_enable_sdio_irq_nolock(host, enable);
+>         spin_unlock_irqrestore(&host->lock, flags);
+>
+>         if (!enable)
+> -               pm_runtime_put_noidle(host->mmc->parent);
+> +               pm_runtime_put_noidle(mmc->parent);
+>  }
+>  EXPORT_SYMBOL_GPL(sdhci_enable_sdio_irq);
+>
+> @@ -2837,7 +2837,7 @@ int sdhci_execute_tuning(struct mmc_host *mmc, u32 opcode)
+>                 goto out;
+>         }
+>
+> -       host->mmc->retune_period = tuning_count;
+> +       mmc->retune_period = tuning_count;
+>
+>         if (host->tuning_delay < 0)
+>                 host->tuning_delay = opcode == MMC_SEND_TUNING_BLOCK;
+> @@ -2886,11 +2886,10 @@ static void sdhci_enable_preset_value(struct sdhci_host *host, bool enable)
+>  static void sdhci_post_req(struct mmc_host *mmc, struct mmc_request *mrq,
+>                                 int err)
+>  {
+> -       struct sdhci_host *host = mmc_priv(mmc);
+>         struct mmc_data *data = mrq->data;
+>
+>         if (data->host_cookie != COOKIE_UNMAPPED)
+> -               dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
+> +               dma_unmap_sg(mmc_dev(mmc), data->sg, data->sg_len,
+>                              mmc_get_dma_dir(data));
+>
+>         data->host_cookie = COOKIE_UNMAPPED;
+> @@ -2941,9 +2940,9 @@ static void sdhci_card_event(struct mmc_host *mmc)
+>         /* Check sdhci_has_requests() first in case we are runtime suspended */
+>         if (sdhci_has_requests(host) && !present) {
+>                 pr_err("%s: Card removed during transfer!\n",
+> -                       mmc_hostname(host->mmc));
+> +                       mmc_hostname(mmc));
+>                 pr_err("%s: Resetting controller.\n",
+> -                       mmc_hostname(host->mmc));
+> +                       mmc_hostname(mmc));
+>
+>                 sdhci_do_reset(host, SDHCI_RESET_CMD);
+>                 sdhci_do_reset(host, SDHCI_RESET_DATA);
+> @@ -3675,7 +3674,7 @@ int sdhci_resume_host(struct sdhci_host *host)
+>                         host->ops->enable_dma(host);
+>         }
+>
+> -       if ((host->mmc->pm_flags & MMC_PM_KEEP_POWER) &&
+> +       if ((mmc->pm_flags & MMC_PM_KEEP_POWER) &&
+>             (host->quirks2 & SDHCI_QUIRK2_HOST_OFF_CARD_ON)) {
+>                 /* Card keeps power but host controller does not */
+>                 sdhci_init(host, 0);
+> @@ -3683,7 +3682,7 @@ int sdhci_resume_host(struct sdhci_host *host)
+>                 host->clock = 0;
+>                 mmc->ops->set_ios(mmc, &mmc->ios);
+>         } else {
+> -               sdhci_init(host, (host->mmc->pm_flags & MMC_PM_KEEP_POWER));
+> +               sdhci_init(host, (mmc->pm_flags & MMC_PM_KEEP_POWER));
+>         }
+>
+>         if (host->irq_wake_enabled) {
+> @@ -3691,7 +3690,7 @@ int sdhci_resume_host(struct sdhci_host *host)
+>         } else {
+>                 ret = request_threaded_irq(host->irq, sdhci_irq,
+>                                            sdhci_thread_irq, IRQF_SHARED,
+> -                                          mmc_hostname(host->mmc), host);
+> +                                          mmc_hostname(mmc), host);
+>                 if (ret)
+>                         return ret;
+>         }
+> @@ -4378,7 +4377,7 @@ int sdhci_setup_host(struct sdhci_host *host)
+>
+>         if ((host->quirks & SDHCI_QUIRK_BROKEN_CARD_DETECTION) &&
+>             mmc_card_is_removable(mmc) &&
+> -           mmc_gpio_get_cd(host->mmc) < 0)
+> +           mmc_gpio_get_cd(mmc) < 0)
+>                 mmc->caps |= MMC_CAP_NEEDS_POLL;
+>
+>         if (!IS_ERR(mmc->supply.vqmmc)) {
 > --
 > 2.30.2
 >
