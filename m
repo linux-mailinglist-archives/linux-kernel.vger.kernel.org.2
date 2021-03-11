@@ -2,136 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2868D3370AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF153370A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbhCKK6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:58:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232546AbhCKK5k (ORCPT
+        id S232532AbhCKK5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:57:38 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:54251 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232349AbhCKK5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:57:40 -0500
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C63C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:57:40 -0800 (PST)
-Received: by mail-ua1-x934.google.com with SMTP id j19so460243uax.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:57:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VhCbRq6AtdBjwnonZsJCwx9bYEGLYFxfv2gxi80ch5g=;
-        b=A2FKRP/DcTnXGGgsgddrySXuzsbPZRlNQhQF3iwzKnBnE8ZwwbZxalj5RUy8f6s3Gf
-         FL2z8W7tqUSj9r7w4514AUhGbgmXHASELTA21v72joswHcSvFbmagXJqL+IAAeCj9rh0
-         fqCd6GB9IGngabrbDCNNJr4N/HAFTPqHIPRUqZrmZ8LZ0ZY16S+qLmltKC2CxbG43ad2
-         0mPrPMDt9Z8XU+wpWaJmmRN+FBCBLpiN9JMHWOuOyJBykDgn1MeKgeavq6xm+185izn6
-         sPI5FZB8voNHacbM9a67BsE6kE/HtnzOGzdhXiVA8CNHtbUKlDlXJJ+qY7s+AyIs2+j1
-         1xMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VhCbRq6AtdBjwnonZsJCwx9bYEGLYFxfv2gxi80ch5g=;
-        b=IACd/yFK2N9MQtAhRXx4+65K1SLHGfvstPm7VqjH5h1C51EIaSxq99K7cJO5jVvtHu
-         Eno9B1F6crd54PR8OQb/WwsAdyhddgMgvt8TOQpqtXDMSqQmudk1JR8ehvheGkFIJyt5
-         o8OqxDb3c6hP6Utgw+K0TFlK4fS6GOemtX9BTTo0ix2ehWQ1K4ihKO3V7rYzJqjwnEw/
-         6if7bA9dYJRDJpgDL3zGDBDhrliWPm8wkx+DB7cwzDiCHGpfihPUnMK3Z6sIoyAPmNwW
-         X0TyrxHMBQ3yih8q2VK3wFrjdIDpIq93F7gFziFqHrNGLe9W76yvgJfBm5HRgJbtyS5A
-         FBEQ==
-X-Gm-Message-State: AOAM531QHOdKf23HKwMyIsAt8rFQxlpDqDiv1lWcOV3GwkFYCEFIUbDY
-        VIYv99ENzoMRUlpmr7th0gm7WX4bDyNMNDLL2oA04u3GmB0V40x4
-X-Google-Smtp-Source: ABdhPJxl0wiLbT5XKYx2OeE/0A/5dFP0opQRgr3W0U++as0oWRsXChTpziQMmVfwKcM2e7/2scZBIf40nDgtrdIfhxw=
-X-Received: by 2002:a9f:3546:: with SMTP id o64mr4683366uao.129.1615460259190;
- Thu, 11 Mar 2021 02:57:39 -0800 (PST)
+        Thu, 11 Mar 2021 05:57:32 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lKJ0U-0000MN-Ub; Thu, 11 Mar 2021 10:57:31 +0000
+To:     Michal Simek <michal.simek@xilinx.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: re: pinctrl: core: Handling pinmux and pinconf separately
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <d66e78e3-2000-611b-cd74-8a61461153e8@canonical.com>
+Date:   Thu, 11 Mar 2021 10:57:30 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210311174046.597d1951@xhacker.debian>
-In-Reply-To: <20210311174046.597d1951@xhacker.debian>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 11 Mar 2021 11:57:03 +0100
-Message-ID: <CAPDyKFpUM+Xpui3e8Ft2C1KpWEmR33QT-wERo33vmEJp0Grrbw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci: Use "mmc" directly rather than "host->mmc"
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 at 10:40, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
->
-> Clean up the code to use the "mmc" directly instead of "host->mmc".
-> If the code sits in hot code path, this clean up also brings trvial
-> performance improvement. Take the sdhci_post_req() for example:
->
-> before the patch:
->      ...
->      8d0:       a9be7bfd        stp     x29, x30, [sp, #-32]!
->      8d4:       910003fd        mov     x29, sp
->      8d8:       f9000bf3        str     x19, [sp, #16]
->      8dc:       f9400833        ldr     x19, [x1, #16]
->      8e0:       b9404261        ldr     w1, [x19, #64]
->      8e4:       34000161        cbz     w1, 910 <sdhci_post_req+0x50>
->      8e8:       f9424400        ldr     x0, [x0, #1160]
->      8ec:       d2800004        mov     x4, #0x0                        // #0
->      8f0:       b9401a61        ldr     w1, [x19, #24]
->      8f4:       b9403262        ldr     w2, [x19, #48]
->      8f8:       f9400000        ldr     x0, [x0]
->      8fc:       f278003f        tst     x1, #0x100
->      900:       f9401e61        ldr     x1, [x19, #56]
->      904:       1a9f17e3        cset    w3, eq  // eq = none
->      908:       11000463        add     w3, w3, #0x1
->      90c:       94000000        bl      0 <dma_unmap_sg_attrs>
->      ...
->
-> After the patch:
->      ...
->      8d0:       a9be7bfd        stp     x29, x30, [sp, #-32]!
->      8d4:       910003fd        mov     x29, sp
->      8d8:       f9000bf3        str     x19, [sp, #16]
->      8dc:       f9400833        ldr     x19, [x1, #16]
->      8e0:       b9404261        ldr     w1, [x19, #64]
->      8e4:       34000141        cbz     w1, 90c <sdhci_post_req+0x4c>
->      8e8:       b9401a61        ldr     w1, [x19, #24]
->      8ec:       d2800004        mov     x4, #0x0                        // #0
->      8f0:       b9403262        ldr     w2, [x19, #48]
->      8f4:       f9400000        ldr     x0, [x0]
->      8f8:       f278003f        tst     x1, #0x100
->      8fc:       f9401e61        ldr     x1, [x19, #56]
->      900:       1a9f17e3        cset    w3, eq  // eq = none
->      904:       11000463        add     w3, w3, #0x1
->      908:       94000000        bl      0 <dma_unmap_sg_attrs>
->      ...
->
-> We saved one ldr instruction: "ldr     x0, [x0, #1160]"
+Hi,
 
-Nice!
+Static analysis on linux-next with Coverity has found a potential issue
+in drivers/pinctrl/core.c with the following commit:
 
-Even if I think the cleanup of code makes sense alone.
+commit 0952b7ec1614abf232e921aac0cc2bca8e60e162
+Author: Michal Simek <michal.simek@xilinx.com>
+Date:   Wed Mar 10 09:16:54 2021 +0100
 
->
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> ---
->  drivers/mmc/host/sdhci.c | 33 ++++++++++++++++-----------------
->  1 file changed, 16 insertions(+), 17 deletions(-)
->
+    pinctrl: core: Handling pinmux and pinconf separately
 
-[...]
+The analysis is as follows:
 
-> @@ -2489,14 +2489,14 @@ void sdhci_enable_sdio_irq(struct mmc_host *mmc, int enable)
->         unsigned long flags;
->
->         if (enable)
-> -               pm_runtime_get_noresume(host->mmc->parent);
-> +               pm_runtime_get_noresume(mmc->parent);
+1234 /**
+1235  * pinctrl_commit_state() - select/activate/program a pinctrl state
+to HW
+1236  * @p: the pinctrl handle for the device that requests configuration
+1237  * @state: the state handle to select/activate/program
+1238  */
+1239 static int pinctrl_commit_state(struct pinctrl *p, struct
+pinctrl_state *state)
+1240 {
+1241        struct pinctrl_setting *setting, *setting2;
+1242        struct pinctrl_state *old_state = p->state;
 
-Maybe use mmc_dev(mmc) instead? At least I think I would appreciate
-consistency in the entire c-file, today it seems like both
-"mmc->parent" and mmc_dev(mmc) are being used.
+    1. var_decl: Declaring variable ret without initializer.
 
-[...]
+1243        int ret;
+1244
 
-Kind regards
-Uffe
+    2. Condition p->state, taking true branch.
+
+1245        if (p->state) {
+1246                /*
+1247                 * For each pinmux setting in the old state, forget
+SW's record
+1248                 * of mux owner for that pingroup. Any pingroups
+which are
+1249                 * still owned by the new state will be re-acquired
+by the call
+1250                 * to pinmux_enable_setting() in the loop below.
+1251                 */
+
+    3. Condition 0 /* !!(!__builtin_types_compatible_p() &&
+!__builtin_types_compatible_p()) */, taking false branch.
+    4. Condition !(&setting->node == &p->state->settings), taking true
+branch.
+    7. Condition 0 /* !!(!__builtin_types_compatible_p() &&
+!__builtin_types_compatible_p()) */, taking false branch.
+    8. Condition !(&setting->node == &p->state->settings), taking true
+branch.
+    11. Condition 0 /* !!(!__builtin_types_compatible_p() &&
+!__builtin_types_compatible_p()) */, taking false branch.
+    12. Condition !(&setting->node == &p->state->settings), taking false
+branch.
+
+1252                list_for_each_entry(setting, &p->state->settings,
+node) {
+
+    5. Condition setting->type != PIN_MAP_TYPE_MUX_GROUP, taking true
+branch.
+    9. Condition setting->type != PIN_MAP_TYPE_MUX_GROUP, taking true
+branch.
+1253                        if (setting->type != PIN_MAP_TYPE_MUX_GROUP)
+    6. Continuing loop.
+    10. Continuing loop.
+
+1254                                continue;
+1255                        pinmux_disable_setting(setting);
+1256                }
+1257        }
+1258
+1259        p->state = NULL;
+1260
+1261        /* Apply all the settings for the new state - pinmux first */
+
+    13. Condition 0 /* !!(!__builtin_types_compatible_p() &&
+!__builtin_types_compatible_p()) */, taking false branch.
+    14. Condition !(&setting->node == &state->settings), taking true branch.
+1262        list_for_each_entry(setting, &state->settings, node) {
+    15. Switch case value PIN_MAP_TYPE_CONFIGS_PIN.
+
+1263                switch (setting->type) {
+1264                case PIN_MAP_TYPE_MUX_GROUP:
+1265                        ret = pinmux_enable_setting(setting);
+1266                        break;
+1267                case PIN_MAP_TYPE_CONFIGS_PIN:
+1268                case PIN_MAP_TYPE_CONFIGS_GROUP:
+
+    16. Breaking from switch.
+
+1269                        break;
+1270                default:
+1271                        ret = -EINVAL;
+1272                        break;
+1273                }
+1274
+
+    Uninitialized scalar variable (UNINIT)
+    17. uninit_use: Using uninitialized value ret.
+
+1275                if (ret < 0)
+1276                        goto unapply_new_state;
+
+For the PIN_MAP_TYPE_CONFIGS_PIN and PIN_MAP_TYPE_CONFIGS_GROUP
+setting->type cases the loop can break out with ret not being set. Since
+ret has not been initialized it the ret < 0 check is checking against an
+uninitialized value.
+
+I was not sure if the PIN_MAP_TYPE_CONFIGS_PIN and
+PIN_MAP_TYPE_CONFIGS_GROUP cases should be setting ret and if so, what
+the value of ret should be set to (is it an error condition or not?). Or
+should ret be initialized to 0 or a default error value at the start of
+the function.
+
+Hence I'm reporting this issue.
+
+Colin
