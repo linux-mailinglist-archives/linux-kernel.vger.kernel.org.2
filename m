@@ -2,199 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AC3337A4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9604F337A50
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhCKRBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhCKRAt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:00:49 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1181C061574;
-        Thu, 11 Mar 2021 09:00:48 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id y16so2821828wrw.3;
-        Thu, 11 Mar 2021 09:00:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nv3Bt+wyhmaUxolKz9s/4n1ecqoVoh5mx8YPZNvPh5A=;
-        b=hMzqZ1F2YrouFiYVDdAsPduxuFF7r7u6RKxggfl1N2v4ambqH25aN+n4WdDvPQBULZ
-         fU4SEZ+kTfGCz4TM+OJqagrCL13DKDdYysgjnpEXkuPOTB04kUntblYK9+oragdTwlF2
-         Z2Ur84DKnXqnCdg1d7KEJo59nSbvpmkjW1T2wOQeCtSxdpZ/pHS/uqCZfmUQDrDwtv5n
-         EIuEqErhaRCDRSupI0RDGbAOKBM3ft4MtMVR7sx1vXt349DsTCiks2OgFFcxhxIjWHtm
-         nM0fMwAuA7mEPKeZ8ysDcxcBrb7kVOvnbzXXGm0Doy5Y+sHog+p01jbmtROXex+J8tei
-         LA2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nv3Bt+wyhmaUxolKz9s/4n1ecqoVoh5mx8YPZNvPh5A=;
-        b=ennnktnS7PU+ep6PLzqSO+SSpIv82GU94adY1OaY4dIaPI/pLPtjLqCa3hZdpROev/
-         +b/Tl6MK/HSPcYkVa8lOPVki/Tsa5jySGjCwaVJMzBAyYkwvLor3kdSuGVAso1Gu4pn5
-         hZVazKTqjE7sugp1XbwmO+icnSXbqXPEWpicJ309OQEArUResRVCL7W+mhl02Ot3X+8C
-         cfKww8sd6+sn4HcIGaMNfSKTAPhyV4KqaYr+gV5euT+AOwXBpGy5iMcEn8y0tdD5DIhZ
-         91AzDYi2vEXAQ1qz3x6bOJXhc574m8r07eRYMyLDue8MK3YWVTw2QXTLx/FM81Hwh3iH
-         kwgQ==
-X-Gm-Message-State: AOAM532Lf0TEm2GoFJ7ZmtR6cFMM6LExIjnxW2uxgRgTIUpGMy5MVznb
-        ZCQvaOwUK0/UE3tXGSSPpgM=
-X-Google-Smtp-Source: ABdhPJzz11W/uZTQgu7aNOz29beMG8pW503e2hxP/UDzv94J+4At0QolFNVnWW8yEDTZoXCY8aV1XQ==
-X-Received: by 2002:a5d:6703:: with SMTP id o3mr9643855wru.357.1615482042083;
-        Thu, 11 Mar 2021 09:00:42 -0800 (PST)
-Received: from [192.168.1.10] ([80.31.204.166])
-        by smtp.gmail.com with ESMTPSA id a6sm5011778wmm.0.2021.03.11.09.00.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 09:00:41 -0800 (PST)
-Subject: Re: [PATCH v6 03/15] pinctrl: bcm: add bcm63xx base code
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Michael Walle <michael@walle.cc>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20210310125504.31886-1-noltari@gmail.com>
- <20210310125504.31886-4-noltari@gmail.com>
- <CAL_JsqKZA-j2iXvVTXWtiuyKPOWeOUP0r+x-bV6QP6=_moy2VA@mail.gmail.com>
- <CACRpkda=isBSW8BwYJ2pCaPcByRoo2GFNVoZCxhaCbEKk9iNsg@mail.gmail.com>
- <CAL_Jsq+FfYE2SrzwB_A=d-LMut-JrqdivKz6x8EQhkc3Zh5NAA@mail.gmail.com>
- <CACRpkdaMYy_Z34i+0uRgciC=xBtoeNsWViHU9ZysvxqrFXB5+w@mail.gmail.com>
-From:   =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
-Message-ID: <edb31609-e138-9844-7168-004c882cae97@gmail.com>
-Date:   Thu, 11 Mar 2021 18:00:40 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229742AbhCKRCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:02:09 -0500
+Received: from mail-dm6nam12on2084.outbound.protection.outlook.com ([40.107.243.84]:50976
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229796AbhCKRBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:01:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z/dPG7SIIgdYg1QDFpjLei5OBlKsR4/I5raZuNWpA0Khc+fFqUnJ1F8Ocr9bA99xWlbTlUiDPgkDQ38uLbU/C+bvw40owitn3g13QA5XpJ5tX8jtyPgG39FnDUnWDIn3/MahQvg7DN6FwkB3bTPsy4uI9p6e1ZbZ2wH/B38z4FACkExxLLD1UaUStYNLVAysCm6kartaK0aPxBFW2QwEvLjIdmMRsV7AD5HG8KFA4OTmTof8IDo2RKN2shFQHsBH6zjVZ0BxyE4N6JWc4YwNJZsmzWD9DulikiB4pmfLYG28xIWboQWDQuLtdosUGrnhxzUaC3CQ44lRxEJFmfgcsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P68ki63yygGwBVLLKhdhPWW68gDOzl4FkHE4R1/wrxY=;
+ b=WUMrbkWHBfsipzyZUB5ZC7pOdHJ9W5ikQAMttDBmEGQWWfOgCa0gAE96FOpBGwhUDJNC64Z2qoOeivDCXICUdonSPi9DiWh+8cCSJYcjE+MBPuW3iegCByPb09szHzvKZgPBI2Xzh8Vti61HVv+j77M8JtRN2iMTykoTAz+poVG/+wj6JHgC8XOp9c+317bQiVEjbbIiggESBIT3npIWPfc4mAnltJV0qTzbGE0xQH+2Jx1I0LRAXcs71NqN5uBzvy/M5S1hWeNzvTJVHMbK7jC27MWz1Zxuudo+ALo0rxUeSqu8KGE6Ei6LdkMKfkVaBSYQKMti4Pt8VJzISEFvxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P68ki63yygGwBVLLKhdhPWW68gDOzl4FkHE4R1/wrxY=;
+ b=LECOH41l3f88Lj1lFxv4oPZDV4WZQvdk5Z4Vbyx2QuRQaW4Jz099tQnv+mI8NrtcrjehEtRH6m2iM20uUzMPV3UA/lPHYIP1/RTWTgaTEf2ha8RZF2bUSlr0Dohj/32cx9ds2RwoP8iw5AvETgg3/zcRB8azFfRRs423x2MGb+n/xElwLDAZ8rtstfLCjwqN/eFIzDvJZ0FZprw1OOU+n2Wh/MKFQERY18xouQ+3GvsWQGxJzn4gsd3VEjEvS2lvfnsNNOwWPe7oFZMz9E+tUx+nVKkh8owwuwfdz72BiM2FAjkxk5dHQTX4m5/yD5tsXUMcivjFDIGmsEfDuFaybQ==
+Authentication-Results: ozlabs.ru; dkim=none (message not signed)
+ header.d=none;ozlabs.ru; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0106.namprd12.prod.outlook.com (2603:10b6:4:4f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Thu, 11 Mar
+ 2021 17:01:46 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3933.031; Thu, 11 Mar 2021
+ 17:01:46 +0000
+Date:   Thu, 11 Mar 2021 13:01:44 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, alex.williamson@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
+        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
+        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
+        kwankhede@nvidia.com, ACurrid@nvidia.com, cjia@nvidia.com,
+        yishaih@nvidia.com, mjrosato@linux.ibm.com, hch@lst.de
+Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
+ vfio_pci drivers
+Message-ID: <20210311170144.GM2356281@nvidia.com>
+References: <19e73e58-c7a9-03ce-65a7-50f37d52ca15@ozlabs.ru>
+ <8941cf42-0c40-776e-6c02-9227146d3d66@nvidia.com>
+ <20210310130246.GW2356281@nvidia.com>
+ <3b772357-7448-5fa7-9ecc-c13c08df95c3@ozlabs.ru>
+ <20210310194002.GD2356281@nvidia.com>
+ <7f0310db-a8e3-4045-c83a-11111767a22f@ozlabs.ru>
+ <20210311013443.GH2356281@nvidia.com>
+ <d862adf9-6fe7-a99e-6c14-8413aae70cd4@ozlabs.ru>
+ <20210311020056.GI2356281@nvidia.com>
+ <73c99da0-6624-7aa2-2857-ef68092c0d07@ozlabs.ru>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73c99da0-6624-7aa2-2857-ef68092c0d07@ozlabs.ru>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BL0PR01CA0030.prod.exchangelabs.com (2603:10b6:208:71::43)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdaMYy_Z34i+0uRgciC=xBtoeNsWViHU9ZysvxqrFXB5+w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR01CA0030.prod.exchangelabs.com (2603:10b6:208:71::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.18 via Frontend Transport; Thu, 11 Mar 2021 17:01:46 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lKOgy-00BLjZ-Q8; Thu, 11 Mar 2021 13:01:44 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c7d2ed6f-7c5e-4a31-fb55-08d8e4af5a75
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0106:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB01062B0ECE1B24AC8F5776B8C2909@DM5PR1201MB0106.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JVB5/BV8DixHprtAAq62XlEhrBccqVHeEGA0BELruoVXrcNPnv8fBGrTDwckxjjMeBnVVfnjQJuiRoBNAK+sKsODc7fUFwCiLNzfTTiwJ2tJ5QfLoZNLhQ/19KI4IfmL1io0aK5FPtco3or8pVgjlDLif+WzSg2I7L8SL7C1opojknGLQeHTIveWX4gHai/lu+JzsBoy5Qqqmpicesq8WQS6mVyQssNxLAySrzwNhmutjkIvZu2xTgNrNZ9cmNN3gSt9Fop0BAjLvZDVEznWcFd3foy+y7TkkwHwKB3pkGfN6o1KHqFDW+a4z4D7a5SHVN2s4udV6/vtTJbyWtnBPyYEu4ercteGBDR9xRBhJWH7iLYxMdAC3k4GOaifbRHgHPl/eCLCJaaeH+vPr3/CfAoTQlYoJeOTaZUBiY0O4Rt1T6dJwTd+tZFx3yNUs7DzzCl2semyvtEPvurAPiOqkaQ73LdPinEPk0l58e3o3tBWCypqs5vqYYK/A0d/Vd7/5QryQotgWn34DdRrNaaotUTkfSNkdjXoc+nL5bb6/YV0T4EuGbvNGAV5aO6OkmJZ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(376002)(136003)(39860400002)(186003)(4326008)(26005)(478600001)(2616005)(5660300002)(36756003)(426003)(6916009)(1076003)(2906002)(66476007)(86362001)(316002)(9786002)(66556008)(8676002)(66946007)(9746002)(33656002)(8936002)(21314003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hc2uuc6cSIuuOdliUlZdQCrVqzdiQ9KSSebeu6IOJUuZP58pLLQp+X35kNEj?=
+ =?us-ascii?Q?jpLqSY5fZ3grUvBFEzjZRhqYPxiX8qQBVl/tHnyzrPxxKbG8uhwlja2eruJ4?=
+ =?us-ascii?Q?wW22H+vFB2gNZIRNHR7dpOPDKrlbqeprBEb1DkU4EjxGyabT+OeL5bzFnAWg?=
+ =?us-ascii?Q?stbtSfrMnmxkuV8qkeOrEBH1JE0IEnbxLtJrqooja3zRVR3J4ao7LTyDqcRq?=
+ =?us-ascii?Q?VOBDReaFXE2LyxX4V/2TK9+rweVQ14zeuV6pHccD68ooJ6O6iF2a1vur/vbk?=
+ =?us-ascii?Q?Dqf84TB+0ZYmLnM39hGHG573CzwbKjsT/l6wskcWr7hIUwB/XmJ2T4ggDnLR?=
+ =?us-ascii?Q?YlfzSQSSTda4UYO1nfa1oqQnUoC8Dl2EHhsrJnZudxOq5FCGb+iFn2wzt+ks?=
+ =?us-ascii?Q?1Mz+OcTBJNhOUUXxnxGtg85RT8y6lQ5OpNlA0EDZl4Rq09/quTFEL0UvDtcR?=
+ =?us-ascii?Q?AOhsoJsV6oEGEs85UMCrlORytboHfpPZYtTw3tWQJ4xAu83dr0H1J7Uj/XL3?=
+ =?us-ascii?Q?E0biaRRDRPtfS+znAfTQsk9xg9py4Qeg5wpjEHbaSAEBtcvh3oboM6uqsZda?=
+ =?us-ascii?Q?tgPZg6xgyrAu9Zcjl0QpTzM/ZJ3QPWUZT7/6yPJlt6tKjoUCBfNKAy0MEOLe?=
+ =?us-ascii?Q?u/NF2I0/Yx8JWltJYaG9hvmL0a/hS3D9iHWe86bmAueGa83736ZWWk/ZJOEt?=
+ =?us-ascii?Q?dUPcN3VqX7I/pn7/YgYnkMkITetZ8rFXZrxCeY3PZ3DMQXU4dOZsyVNDK27u?=
+ =?us-ascii?Q?Zbk3z2BOcHlGHt1v8HEHVL0+9H08R5rYM+fM4ZwPIT3oNq8yD4kxPK/TXnnh?=
+ =?us-ascii?Q?kxIrpRU17CM1iTXMFiXZDkuc3ykwrw5iEyB8M/L7tvKJdgm/dW2wKZheYAjD?=
+ =?us-ascii?Q?JVhzOW85//u1KAwWUwiBTyZcP6yGG1xDP5nsKSvVunaC+wnLCqrbfQxdwlYV?=
+ =?us-ascii?Q?XQ1C3jqDPbpXxFzXOF4CA6MXtnyfwaqeBrWJt043kGYPX+FN3cFz790tTHl2?=
+ =?us-ascii?Q?QOVf2OdUiX4IYzS/6DajfTgwzHhdANAu9vY0lK74H0TcBy89rVHiNlZ7zMJJ?=
+ =?us-ascii?Q?/am/wM2l+FCnNpQ40Du4yxfKmMNeZ1Y8K9JeZQBWLBQQYWlx7wNRAyawluQo?=
+ =?us-ascii?Q?9oA//9BUcWqtrBHrNBJhbjjq78+iONWN7o/wCUeUgalR1QaIZ9oJhJSKOjQL?=
+ =?us-ascii?Q?kVxb42V/Qr2Yl6EDiMC5TmA54o+V7vhk+/Lp16l6kBvegMVE1PhvBDhVIfTE?=
+ =?us-ascii?Q?BvnJOoBR/hioYi8EO6543OMxkbRgyY9p8BbTZCjZi/BQlLrahjQ36nsG582E?=
+ =?us-ascii?Q?m/gbIMIXyTrKZnUbCdCi2KQyjc8GyLpWGgLZ7F4+9L1PAg=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7d2ed6f-7c5e-4a31-fb55-08d8e4af5a75
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 17:01:46.5823
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i4tm1kjAZK7DUedCA3Xg7UuA+gQgZDwXGKxghXefiPjoQaC9+Ax6BQav7aBQZXoo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob and Linus,
+On Thu, Mar 11, 2021 at 06:54:09PM +1100, Alexey Kardashevskiy wrote:
 
-El 11/03/2021 a las 17:13, Linus Walleij escribió:
-> On Thu, Mar 11, 2021 at 3:58 PM Rob Herring <robh+dt@kernel.org> wrote:
->> On Wed, Mar 10, 2021 at 6:09 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->>> On Wed, Mar 10, 2021 at 6:51 PM Rob Herring <robh+dt@kernel.org> wrote:
->>>
->>>>> +static const struct of_device_id bcm63xx_gpio_of_match[] = {
->>>>> +       { .compatible = "brcm,bcm6318-gpio", },
->>>>> +       { .compatible = "brcm,bcm6328-gpio", },
->>>>> +       { .compatible = "brcm,bcm6358-gpio", },
->>>>> +       { .compatible = "brcm,bcm6362-gpio", },
->>>>> +       { .compatible = "brcm,bcm6368-gpio", },
->>>>> +       { .compatible = "brcm,bcm63268-gpio", },
->>>>
->>>> All these would be moved to gpio-mmio.c (or maybe that can have a
->>>> fallback compatible?).
->>>
->>> This is gpio-regmap.c and it can only be used as a library
->>> by a certain driver. gpio-mmio.c can be used stand-alone
->>> for certain really simple hardware (though most use that
->>> as a library as well).
->>
->> I don't really care which one is used, but the problem is that this
->> choice is leaking into the binding design.
-> 
-> Aha I guess I misunderstood your comment.
-> 
->> The primary problem here is
->> once someone uses regmap, then they think they must have a syscon and
->> can abandon using 'reg' and normal address properties as Linux happens
->> to not use them (currently). I think we really need some better regmap
->> vs. mmio handling to eliminate this duplication of foo-mmio and
->> foo-regmap drivers and difference in binding design. Not sure exactly
->> what that looks like, but basically some sort of 'reg' property to
->> regmap creation.
-> 
-> I see the problem. Yeah we should try to be more strict around
-> these things. To me there are syscons and "other regmaps",
-> where syscon is a real hurdle of registers while "other regmaps"
-> are just regmaps by convenience.
-> 
-> Documentation/devicetree/bindings/mfd/syscon.yaml
-> describes what a syscon really is so if everyone could
-> just read the documentation that would be great ...
-> 
->> Given we already have a Broadcom GPIO binding for what looks to be
->> similar to this one, I'm left wondering what's the real difference
->> here?
-> 
-> Which one is similar? I can take a look.
+> Is there an idea how it is going to work? For example, the Intel IGD driver
+> and vfio-pci-igd - how should the system pick one? If there is no
+> MODULE_DEVICE_TABLE in vfio-pci-xxx, is the user supposed to try binding all
+> vfio-pci-xxx drivers until some binds?
 
-@Linus I think @Rob is referring to brcm,bcm6345-gpio:
-https://github.com/torvalds/linux/blob/a74e6a014c9d4d4161061f770c9b4f98372ac778/drivers/gpio/gpio-mmio.c#L686
+We must expose some MODULE_DEVICE_TABLE like thing to userspace.
 
-However, the real difference between BCM6345 (and BCM6338) is that these 
-SoCs have no pin controller at all, only a GPIO controller:
+Compiling everything into one driver and using if statements was only
+managable with these tiny drivers - the stuff that is coming are big
+things that are infeasible to link directly to vfio_pci.ko
 
-BCM6345:
-typedef struct GpioControl {
-   uint16        unused0;
-   byte          unused1;
-   byte          TBusSel;
-   uint16        unused2;
-   uint16        GPIODir;
-   byte          unused3;
-   byte          Leds;
-   uint16        GPIOio;
-   uint32        UartCtl;
-} GpioControl;
+I'm feeling some general consensus around this approach (vs trying to
+make a subdriver) so we will start looking at exactly what form that
+could take soon.
 
-BCM6338:
-typedef struct GpioControl {
-   uint32        unused0;
-   uint32        GPIODir;      /* bits 7:0 */
-   uint32        unused1;
-   uint32        GPIOio;       /* bits 7:0 */
-   uint32        LEDCtrl;
-   uint32        SpiSlaveCfg;
-   uint32        vRegConfig;
-} GpioControl;
+The general idea would be to have a selection of extended VFIO drivers
+for PCI devices that can be loaded as an alternative to vfio-pci and
+they provide additional uapi and behaviors that only work on specific
+hardware. nvlink is a good example because it does provide new API and
+additional HW specific behavior.
 
-BCM6348 and newer also have pinctrl.
-That's the main difference between that driver @Rob's referring to and 
-the ones in this patch series.
+A way for userspace to learn about the drivers automatically and sort
+out how to load and bind them.
 
-> 
-> We currently have four Broadcom GPIO bindings,
-> which are stand alone GPIO blocks and eight Broadcom
-> pin controllers that all do GPIO as well.
-> 
-> This family of pin controllers are (as per subject) is
-> the bcm63xx series which is a MIPS-based family of SoCs
-> found in routers, top bindings in
-> Documentation/devicetree/bindings/mips/brcm/soc.txt
-> These all have a GPIO block as part of the pin controller
-> and the GPIO block is a distinct sub-function of the
-> pin controller, and it has up to 32 GPIOs per block,
-> hence it has its own subnode inside the pin controller.
-> 
-> This driver follows the pattern of the Ingenic
-> pin controller, another MIPS SoC:
-> Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
-> 
-> Another SoC with several GPIO blocks inside the pin
-> controller is SparX5 and that also follows this pattern:
-> Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
-> (This has an example with more than one GPIO block
-> inside the pin controller.)
-> 
-> Yours,
-> Linus Walleij
-> 
+I was thinking about your earlier question about FDT - do you think we
+could switch this to a platform_device and provide an of_match_table
+that would select correctly? Did IBM enforce a useful compatible
+string in the DT for these things?
+
+Jason
