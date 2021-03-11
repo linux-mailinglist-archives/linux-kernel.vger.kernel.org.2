@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A0A336CDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF9A336CDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbhCKHJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:09:46 -0500
+        id S232088AbhCKHJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:09:47 -0500
 Received: from mga04.intel.com ([192.55.52.120]:22599 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231863AbhCKHJX (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:09:23 -0500
-IronPort-SDR: WTJ0PJ7WCUOo2EbU7PoKn+sRtyR3n7PywWwMSdfgrDY1Sfu5aM8It9mK61akNS39YQqODCfU8N
- oLjXSEysawPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246131"
+        id S231864AbhCKHJZ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:09:25 -0500
+IronPort-SDR: qXfI3AceS6oTRvClhbxK32p86pZ/MSmbOzMWujCcCP3t1ydznFyX+ls4PGLQIp2OK61zBC0Ha/
+ HIQAuoFvwBgA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246143"
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="186246131"
+   d="scan'208";a="186246143"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:09:23 -0800
-IronPort-SDR: /BoT5uFE2PbCmSYokGIXZkY5wXkvDe2RiGl2VHZgUZ1rUKQ1hP4gPfrcDl6iRl15FrZQjelXjb
- vZW/67oWiJsQ==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:09:25 -0800
+IronPort-SDR: ahwB/tfyVuU6FDzlJVzvRCZ9g0qe40AMr3CkqeUjw8jyRUDVJesKoQxdKDoKERglGYKRmvUQq+
+ 5vtw9OrUadig==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="509938044"
+   d="scan'208";a="509938047"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:09:20 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:09:23 -0800
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 26/27] perf tests: Skip 'perf stat metrics (shadow stat) test' for hybrid
-Date:   Thu, 11 Mar 2021 15:07:41 +0800
-Message-Id: <20210311070742.9318-27-yao.jin@linux.intel.com>
+Subject: [PATCH v2 27/27] perf Documentation: Document intel-hybrid support
+Date:   Thu, 11 Mar 2021 15:07:42 +0800
+Message-Id: <20210311070742.9318-28-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210311070742.9318-1-yao.jin@linux.intel.com>
 References: <20210311070742.9318-1-yao.jin@linux.intel.com>
@@ -41,41 +41,277 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently we don't support shadow stat for hybrid.
-
-  root@ssp-pwrt-002:~# ./perf stat -e cycles,instructions -a -- sleep 1
-
-   Performance counter stats for 'system wide':
-
-      12,883,109,591      cpu_core/cycles/
-       6,405,163,221      cpu_atom/cycles/
-         555,553,778      cpu_core/instructions/
-         841,158,734      cpu_atom/instructions/
-
-         1.002644773 seconds time elapsed
-
-Now there is no shadow stat 'insn per cycle' reported. We will support
-it later and now just skip the 'perf stat metrics (shadow stat) test'.
+Add some words and examples to help understanding of
+Intel hybrid perf support.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
- tools/perf/tests/shell/stat+shadow_stat.sh | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/perf/Documentation/intel-hybrid.txt | 228 ++++++++++++++++++++++
+ tools/perf/Documentation/perf-record.txt  |   1 +
+ tools/perf/Documentation/perf-stat.txt    |   2 +
+ 3 files changed, 231 insertions(+)
+ create mode 100644 tools/perf/Documentation/intel-hybrid.txt
 
-diff --git a/tools/perf/tests/shell/stat+shadow_stat.sh b/tools/perf/tests/shell/stat+shadow_stat.sh
-index ebebd3596cf9..e6e35fc6c882 100755
---- a/tools/perf/tests/shell/stat+shadow_stat.sh
-+++ b/tools/perf/tests/shell/stat+shadow_stat.sh
-@@ -7,6 +7,9 @@ set -e
- # skip if system-wide mode is forbidden
- perf stat -a true > /dev/null 2>&1 || exit 2
- 
-+# skip if on hybrid platform
-+perf stat -a -e cycles sleep 1 2>&1 | grep -e cpu_core && exit 2
+diff --git a/tools/perf/Documentation/intel-hybrid.txt b/tools/perf/Documentation/intel-hybrid.txt
+new file mode 100644
+index 000000000000..ff641d9ac81b
+--- /dev/null
++++ b/tools/perf/Documentation/intel-hybrid.txt
+@@ -0,0 +1,228 @@
++Intel hybrid support
++--------------------
++Support for Intel hybrid events within perf tools.
 +
- test_global_aggr()
- {
- 	perf stat -a --no-big-num -e cycles,instructions sleep 1  2>&1 | \
++For some Intel platforms, such as AlderLake, which is hybrid platform and
++it consists of atom cpu and core cpu. Each cpu has dedicated event list.
++Part of events are available on core cpu, part of events are available
++on atom cpu and even part of events are available on both.
++
++Kernel exports two new cpu pmus via sysfs:
++/sys/devices/cpu_core
++/sys/devices/cpu_atom
++
++The 'cpus' files are created under the directories. For example,
++
++cat /sys/devices/cpu_core/cpus
++0-15
++
++cat /sys/devices/cpu_atom/cpus
++16-23
++
++It indicates cpu0-cpu15 are core cpus and cpu16-cpu23 are atom cpus.
++
++Quickstart
++
++List hybrid event
++-----------------
++
++As before, use perf-list to list the symbolic event.
++
++perf list
++
++inst_retired.any
++	[Fixed Counter: Counts the number of instructions retired. Unit: cpu_atom]
++inst_retired.any
++	[Number of instructions retired. Fixed Counter - architectural event. Unit: cpu_core]
++
++The 'Unit: xxx' is added to brief description to indicate which pmu
++the event is belong to. Same event name but with different pmu can
++be supported.
++
++Enable hybrid event with a specific pmu
++---------------------------------------
++
++To enable a core only event or atom only event, following syntax is supported:
++
++	cpu_core/<event name>/
++or
++	cpu_atom/<event name>/
++
++For example, count the 'cycles' event on core cpus.
++
++	perf stat -e cpu_core/cycles/
++
++Create two events for one hardware event automatically
++------------------------------------------------------
++
++When creating one event and the event is available on both atom and core,
++two events are created automatically. One is for atom, the other is for
++core. Most of hardware events and cache events are available on both
++cpu_core and cpu_atom.
++
++For hardware events, they have pre-defined configs (e.g. 0 for cycles).
++But on hybrid platform, kernel needs to know where the event comes from
++(from atom or from core). The original perf event type PERF_TYPE_HARDWARE
++can't carry pmu information. So a new type PERF_TYPE_HARDWARE_PMU is
++introduced.
++
++The new attr.config layout for PERF_TYPE_HARDWARE_PMU:
++
++0xDD000000AA
++AA: original hardware event ID
++DD: PMU type ID
++
++Cache event is similar. A new type PERF_TYPE_HW_CACHE_PMU is introduced.
++
++The new attr.config layout for PERF_TYPE_HW_CACHE_PMU:
++
++0xDD00CCBBAA
++AA: original hardware cache ID
++BB: original hardware cache op ID
++CC: original hardware cache op result ID
++DD: PMU type ID
++
++PMU type ID is retrieved from sysfs
++
++cat /sys/devices/cpu_atom/type
++10
++
++cat /sys/devices/cpu_core/type
++4
++
++When enabling a hardware event without specified pmu, such as,
++perf stat -e cycles -a (use system-wide in this example), two events
++are created automatically.
++
++    ------------------------------------------------------------
++    perf_event_attr:
++      type                             6
++      size                             120
++      config                           0x400000000
++      sample_type                      IDENTIFIER
++      read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
++      disabled                         1
++      inherit                          1
++      exclude_guest                    1
++    ------------------------------------------------------------
++
++and
++
++    ------------------------------------------------------------
++    perf_event_attr:
++      type                             6
++      size                             120
++      config                           0xa00000000
++      sample_type                      IDENTIFIER
++      read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
++      disabled                         1
++      inherit                          1
++      exclude_guest                    1
++    ------------------------------------------------------------
++
++type 6 is PERF_TYPE_HARDWARE_PMU.
++0x4 in 0x400000000 indicates it's cpu_core pmu.
++0xa in 0xa00000000 indicates it's cpu_atom pmu (atom pmu type id is random).
++
++The kernel creates 'cycles' (0x400000000) on cpu0-cpu15 (core cpus),
++and create 'cycles' (0xa00000000) on cpu16-cpu23 (atom cpus).
++
++For perf-stat result, it displays two events:
++
++ Performance counter stats for 'system wide':
++
++    12,869,720,529      cpu_core/cycles/
++     6,405,459,328      cpu_atom/cycles/
++
++The first 'cycles' is core event, the second 'cycles' is atom event.
++
++Thread mode example:
++--------------------
++
++perf-stat reports the scaled counts for hybrid event and with a percentage
++displayed. The percentage is the event's running time/enabling time.
++
++One example, 'triad_loop' runs on cpu16 (atom core), while we can see the
++scaled value for core cycles is 160,444,092 and the percentage is 0.47%.
++
++perf stat -e cycles -- taskset -c 16 ./triad_loop
++
++As previous, two events are created.
++
++------------------------------------------------------------
++perf_event_attr:
++  type                             6
++  size                             120
++  config                           0x400000000
++  sample_type                      IDENTIFIER
++  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
++  disabled                         1
++  inherit                          1
++  enable_on_exec                   1
++  exclude_guest                    1
++------------------------------------------------------------
++
++and
++
++------------------------------------------------------------
++perf_event_attr:
++  type                             6
++  size                             120
++  config                           0xa00000000
++  sample_type                      IDENTIFIER
++  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
++  disabled                         1
++  inherit                          1
++  enable_on_exec                   1
++  exclude_guest                    1
++------------------------------------------------------------
++
++cycles: 0: 784136 339210144 1013444
++cycles: 0: 601988862 339210144 338196700
++cycles: 262458394 339210144 1013444
++cycles: 603792788 339210144 338196700
++
++ Performance counter stats for 'taskset -c 16 ./triad_loop':
++
++       262,458,394      cpu_core/cycles/                                              (0.30%)
++       603,792,788      cpu_atom/cycles/                                              (99.70%)
++
++       0.340467913 seconds time elapsed
++
++perf-record:
++------------
++
++If there is no '-e' specified in perf record, on hybrid platform,
++it creates two default 'cycles' and adds them to event list. One
++is for core, the other is for atom.
++
++perf-stat:
++----------
++
++If there is no '-e' specified in perf stat, on hybrid platform,
++besides of software events, following events are created and
++added to event list in order.
++
++core 'cycles',
++atom 'cycles',
++core 'instructions',
++atom 'instructions',
++core 'branches',
++atom 'branches',
++core 'branch-misses',
++atom 'branch-misses'
++
++Of course, both perf-stat and perf-record support to enable
++hybrid event with a specific pmu.
++
++e.g.
++perf stat -e cpu_core/cycles/
++perf stat -e cpu_atom/cycles/
++perf stat -e cpu_core/r1a/
++perf stat -e cpu_atom/L1-icache-loads/
++perf stat -e cpu_core/cycles/,cpu_atom/instructions/
++perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}'
++
++But '{cpu_core/cycles/,cpu_atom/instructions/}' will return
++"<not supported>" for 'instructions', because the pmus in
++group are not matched (cpu_core vs. cpu_atom).
+\ No newline at end of file
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index f3161c9673e9..d71bac847936 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -695,6 +695,7 @@ measurements:
+  wait -n ${perf_pid}
+  exit $?
+ 
++include::intel-hybrid.txt[]
+ 
+ SEE ALSO
+ --------
+diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+index 08a1714494f8..d0def5c1715a 100644
+--- a/tools/perf/Documentation/perf-stat.txt
++++ b/tools/perf/Documentation/perf-stat.txt
+@@ -527,6 +527,8 @@ The fields are in this order:
+ 
+ Additional metrics may be printed with all earlier fields being empty.
+ 
++include::intel-hybrid.txt[]
++
+ SEE ALSO
+ --------
+ linkperf:perf-top[1], linkperf:perf-list[1]
 -- 
 2.17.1
 
