@@ -2,186 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C326337ADF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE42D337AE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbhCKRct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:32:49 -0500
-Received: from mail-il1-f180.google.com ([209.85.166.180]:45435 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhCKRcZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:32:25 -0500
-Received: by mail-il1-f180.google.com with SMTP id s1so19628091ilh.12;
-        Thu, 11 Mar 2021 09:32:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mciBxnYC8ZTMruTsj3A3327ldspmTar14yGRG/X9ADw=;
-        b=twXjg20hOh+9vs/EusiW0My71WLMbM+5Kq8khjjZipT3urUU4YNw6NEXt4iLWbS6O4
-         qwG2CAG8V/CQU/iV5r3LaO3983r7p/Zi98V6/lkr/GjL0QxfM38V7LB1EwNiFrs+BexE
-         y5apCjEvOMOu7fUKzRY5KjS3q8vfP14mxeeWAMn0bkTd2q6vUZbN11OEtzH7YGdOq0ZO
-         pz5w3s9nKQTTb6s36KuC04s/rMygB3Eb9PMEohbhHp9jc8n1zp+lomiDzcQBrvsa4Hab
-         qNXYZfmHjEUQPX1nmSoEdpriqnrvCr0m9kbAxONTCXn8cRHMCZhN/h8muslY7XXdK8jO
-         e77A==
-X-Gm-Message-State: AOAM532nWX3pm6zvK3XCYMfyl7XH34jU7zh1bTJCVQiXcNijgPFbmw2x
-        TkASTw0dbUasFDH8uDg//eDRUxePJA==
-X-Google-Smtp-Source: ABdhPJw33c7UkDeD10+NXNJn3sij95d8ma7Y6H5nWgbBsMNXhiJJlw09dJacyGQlFWCO5FIIUqgIYA==
-X-Received: by 2002:a05:6e02:152f:: with SMTP id i15mr8130601ilu.277.1615483944718;
-        Thu, 11 Mar 2021 09:32:24 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id m9sm95215ilf.53.2021.03.11.09.32.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 09:32:23 -0800 (PST)
-Received: (nullmailer pid 920025 invoked by uid 1000);
-        Thu, 11 Mar 2021 17:32:21 -0000
-Date:   Thu, 11 Mar 2021 10:32:21 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] dt-bindings: mtd: Document use of nvmem-cells
- compatible
-Message-ID: <20210311173221.GB866234@robh.at.kernel.org>
-References: <20210311051309.16789-1-ansuelsmth@gmail.com>
- <20210311051309.16789-2-ansuelsmth@gmail.com>
+        id S229710AbhCKRdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:33:24 -0500
+Received: from mga03.intel.com ([134.134.136.65]:20127 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhCKRdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:33:18 -0500
+IronPort-SDR: eb+DX4zT7vlUhoK+8Pu5q/StOwvDvP16rF7BAVXI11GaycjZVPNm3Rb+MlhOGN/lMpVrrBxnFV
+ YVMCFD28X+0g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188744801"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="188744801"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:33:17 -0800
+IronPort-SDR: 7nTfUYTCyxvlbXklxTKWUQYfL3Ji1/uqDy2CUA+u5DHk4Uyo8jl2fJyMjhbOlao6P7kvLaagWD
+ 9S3HhKgan3Jg==
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="410683312"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.103.95]) ([10.212.103.95])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:33:17 -0800
+Subject: Re: [PATCH 2/2] sigaction.2: wfix - Clarify si_addr description.
+To:     Stefan Puiu <stefan.puiu@gmail.com>, Borislav Petkov <bp@alien8.de>
+Cc:     lnx-man <linux-man@vger.kernel.org>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <20210226172634.26905-1-yu-cheng.yu@intel.com>
+ <20210226172634.26905-3-yu-cheng.yu@intel.com>
+ <20210308212936.GD12548@zn.tnic>
+ <40c3c4cc-e135-1355-51ee-4d0f16e47e71@intel.com>
+ <20210309143141.GD699@zn.tnic>
+ <CACKs7VBLnQTc_RgnXk8X-XgVRvR5_uXY0wL0snW7P5iDjpb8fA@mail.gmail.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <92fa4a4b-3100-cbd3-47cb-11072e4c6844@intel.com>
+Date:   Thu, 11 Mar 2021 09:33:16 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311051309.16789-2-ansuelsmth@gmail.com>
+In-Reply-To: <CACKs7VBLnQTc_RgnXk8X-XgVRvR5_uXY0wL0snW7P5iDjpb8fA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 06:12:48AM +0100, Ansuel Smith wrote:
-> Document nvmem-cells compatible used to treat mtd partitions as a
-> nvmem provider.
+On 3/11/2021 9:17 AM, Stefan Puiu wrote:
+> Hi,
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  .../bindings/mtd/partitions/nvmem-cells.yaml  | 99 +++++++++++++++++++
->  1 file changed, 99 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+> My 2 cents below.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
-> new file mode 100644
-> index 000000000000..b53faf87d4e4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/nvmem-cells.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Nvmem cells
-> +
-> +description: |
-> +  Any partition containing the compatible "nvmem-cells" will register as a
-> +  nvmem provider.
-> +  Each direct subnodes represents a nvmem cell following the nvmem binding.
-> +  Nvmem binding to declare nvmem-cells can be found in:
-> +  Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> +
-> +maintainers:
-> +  - Ansuel Smith <ansuelsmth@gmail.com>
-> +
-> +allOf:
-> +  - $ref: "../../nvmem/nvmem.yaml#"
-
-I'd rather have the 'absolute' path:
-
-/schemas/nvmem/nvmem.yaml
-
-Otherwise,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-> +
-> +properties:
-> +  compatible:
-> +    const: nvmem-cells
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    partitions {
-> +      compatible = "fixed-partitions";
-> +      #address-cells = <1>;
-> +      #size-cells = <1>;
-> +
-> +      /* ... */
-> +
-> +      };
-> +      art: art@1200000 {
-> +        compatible = "nvmem-cells";
-> +        reg = <0x1200000 0x0140000>;
-> +        label = "art";
-> +        read-only;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        macaddr_gmac1: macaddr_gmac1@0 {
-> +          reg = <0x0 0x6>;
-> +        };
-> +
-> +        macaddr_gmac2: macaddr_gmac2@6 {
-> +          reg = <0x6 0x6>;
-> +        };
-> +
-> +        pre_cal_24g: pre_cal_24g@1000 {
-> +          reg = <0x1000 0x2f20>;
-> +        };
-> +
-> +        pre_cal_5g: pre_cal_5g@5000{
-> +          reg = <0x5000 0x2f20>;
-> +        };
-> +      };
-> +  - |
-> +    partitions {
-> +        compatible = "fixed-partitions";
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        partition@0 {
-> +            label = "bootloader";
-> +            reg = <0x000000 0x100000>;
-> +            read-only;
-> +        };
-> +
-> +        firmware@100000 {
-> +            compatible = "brcm,trx";
-> +            label = "firmware";
-> +            reg = <0x100000 0xe00000>;
-> +        };
-> +
-> +        calibration@f00000 {
-> +            compatible = "nvmem-cells";
-> +            label = "calibration";
-> +            reg = <0xf00000 0x100000>;
-> +            ranges = <0 0xf00000 0x100000>;
-> +            #address-cells = <1>;
-> +            #size-cells = <1>;
-> +
-> +            wifi0@0 {
-> +                reg = <0x000000 0x080000>;
-> +            };
-> +
-> +            wifi1@80000 {
-> +                reg = <0x080000 0x080000>;
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.30.0
+> On Tue, Mar 9, 2021, 16:33 Borislav Petkov <bp@alien8.de 
+> <mailto:bp@alien8.de>> wrote:
 > 
+>     On Mon, Mar 08, 2021 at 01:46:07PM -0800, Yu, Yu-cheng wrote:
+>      > I think the sentence above is vague, but probably for the reason
+>     that each
+>      > arch is different.  Maybe this patch is unnecessary and can be
+>     dropped?
+> 
+>     Maybe.
+> 
+>     If you want to clarify it, you should audit every arch. But what
+>     would that bring? IOW, is it that important to specify when si_addr
+>     is populated and when not...? I don't know of an example but I'm
+>     no userspace programmer anyway, to know when this info would be
+>     beneficial...
+> 
+> 
+> I've worked on projects where the SIGSEGV sig handler would also print 
+> si_addr. When diagnosing a crash, the address that triggered the fault 
+> is useful to know. If you can't reproduce the crash in a debugger, or 
+> there's no core dump, at least you have an idea if it's a NULL pointer 
+> dereference or some naked pointer dereferencing. So I think it's useful 
+> to know when si_addr can be used to infer such information and when not.
+
+At least for x86, the faulting ip is already in ucontext, and si_addr is 
+mostly the memory address being accessed if that was the reason of the 
+fault (i.e. the memory is not supposed to be accessed).  That way, the 
+signal handler has both the instruction pointer and the memory address.
+
+For shadow stack violation, for example, it is not because the memory 
+being accessed; it is the instruction itself causing the violation.  It 
+is unnecessary to duplicate the ip in si_addr.  Setting si_addr to zero 
+also indicates this is not a memory type fault.
+
+--
+Yu-cheng
