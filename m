@@ -2,191 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2475E337FF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3632E337FF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhCKVzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:55:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
+        id S231181AbhCKV5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhCKVyv (ORCPT
+        with ESMTP id S230386AbhCKV4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:54:51 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91573C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:54:51 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id x10so22328430qkm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:54:51 -0800 (PST)
+        Thu, 11 Mar 2021 16:56:42 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D58FC061574;
+        Thu, 11 Mar 2021 13:56:42 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id u20so4136429lja.13;
+        Thu, 11 Mar 2021 13:56:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=E3NToVMb7SyOcWd/eqRyCe7U4wiYDLs06rM6zg487v4=;
-        b=Tw9Mm5ufk7p20s+L3uY8+zldTGCWGuQ5SIj+9jnt2SEBW4xfZEXuh0LutMljZFvcFr
-         SWCo+l6lbEvuANlvJebP3XvWPa+bidF0dXQcTWNPmOGWznQBcfcbA7HZk0J7lQHXsKPk
-         drHNU+8qTah0QZPvPkeO6jKoxRr5gougXcu1k=
+        bh=GWm0wKkXQwN2wluhR+JEh82ryi4ERiPiZTL62C5iNLE=;
+        b=D0sGPmc8ut4NgyybrDcApICctWyDw+dtiu1w9POpd7XkPydnwtHE1jJz/ImGsWSG98
+         fzwrdW6DIrzhrsJsXi/XBcpcnkDs/yLxt+bngA9zq9AQwkAQ0VXj+KLSSW4FR5s/7+tZ
+         u5U6leDdbmcYrJtBAAMj5VTGZUTx+cYN/J7Xrc8TIhZslrCg4MH3S8hfCb3wIkaYzd7l
+         nyeFDbI6Cnyik0CMPv/bLp4H1ViyhhemrCiVuQ3zxgzleMVHvYx06fFkImgC6Uy606et
+         By/dm3/+MUBfwNj1TTtttURcm9ZtCdPvpy3Z7IQRWt9utxw0irZD52Wamw32rUoMdnPo
+         ZvoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=E3NToVMb7SyOcWd/eqRyCe7U4wiYDLs06rM6zg487v4=;
-        b=P0QXwBV22KFElyzvJ9sKToGz2jMjupXHbDo5NEibroWIhVFK1cq6tywqoUDIBtsDDy
-         8iErkw58eRo6noh1sCdPWLcVrI74CKZslwtmsVs3g9xWUJCkc+SIdPL3AIH+gjVsgOKu
-         2jHwVm//q1lx6A/qN8eUaMw6Se0bzJZ5ny1YqKaQy1cQyy9I0TBxHQhY3HxxNNqIYjzh
-         J95cT9C5yOvrKfIas2TFywsYgbvlHY28m/AiHHaBb2Qq32daIP9Te9IFsrrtXu1eSnoI
-         wy0hamjN7/C32cp0EmkZ84R9/3qdLvPJO5rxKGi6mHnuunI1nD0s6KfULEm3G2ahqEwS
-         +sFQ==
-X-Gm-Message-State: AOAM530ODsf+H2XZTvXPE/pH4mpjY5UYsDcryEcUTUzvTPJ/31dzHQaj
-        o4tD7US14rvhn8s1JoUCCTI9IBXuh/sb7A==
-X-Google-Smtp-Source: ABdhPJzXhc9Ew9Gi4P+1Epwk07nfJzvJmSqLkFQ8C+1l8T9r25NO6FU2mUoXeniaklVPDw0kvyI4cA==
-X-Received: by 2002:a05:620a:c11:: with SMTP id l17mr9930329qki.487.1615499690479;
-        Thu, 11 Mar 2021 13:54:50 -0800 (PST)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id z11sm3060521qkg.52.2021.03.11.13.54.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 13:54:49 -0800 (PST)
-Received: by mail-yb1-f173.google.com with SMTP id b10so23300163ybn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:54:49 -0800 (PST)
-X-Received: by 2002:a25:9348:: with SMTP id g8mr11415895ybo.343.1615499689441;
- Thu, 11 Mar 2021 13:54:49 -0800 (PST)
+        bh=GWm0wKkXQwN2wluhR+JEh82ryi4ERiPiZTL62C5iNLE=;
+        b=FOsQlT5GNV7OlvyqCG1JrFXFhF77XLAZWuDglEESn03k/1u1gdx0um30wwQdvxQVPA
+         ilkVYl70dqSxea5nvvzOa9u8zJmv3jhAlY3n9w/6HhC1DA6WEIsEjOoixrN3BWlqX4SJ
+         3gG17B/dlgUuxbX8uu3OcgRqOUtNIF3aSiNsAAMuk8N1qJ3VN7AYU+ral6c6bdSlcMKQ
+         vp5NBGvyIsb1LZdFLHRdjfSH2LCn3jQBHmCeLmFxdnTi6trQuU1CPB/pSmesrVQGO9wd
+         yVP60uizzlz/I1yy3v7SlQyqJpQRTP42idauhzJF5KfKFBy2wDJsIzqHPeed2ASeuVtK
+         DacQ==
+X-Gm-Message-State: AOAM533QZPfWIB8QdO+Ade87SKVK7JvEGTqMSRQVnGmde4KtMkMi1EMK
+        iXxvbf/s0eWgEF9x9PRnmOYM9SsS0r8Gmq9VHteE1UwwcdQ=
+X-Google-Smtp-Source: ABdhPJy7V6Xx2odgQ34tdZANKTdrzPe5fNy8bzrJylql/8t1anaeqHlGoGIlNv6HreSyq2OGY0ZRlJLr63t50NbtAyk=
+X-Received: by 2002:a2e:b88b:: with SMTP id r11mr523355ljp.495.1615499798776;
+ Thu, 11 Mar 2021 13:56:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20210311033957.8978-1-rojay@codeaurora.org>
-In-Reply-To: <20210311033957.8978-1-rojay@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 11 Mar 2021 13:54:38 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VuGPvUY8edN+PEuZS_pO+=3WHeJ-4J5tHDAPRnXJs0QA@mail.gmail.com>
-Message-ID: <CAD=FV=VuGPvUY8edN+PEuZS_pO+=3WHeJ-4J5tHDAPRnXJs0QA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: sc7280: Add qspi, qupv3_0 and qupv3_1 nodes
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        msavaliy@qti.qualcomm.com
+References: <20210311122040.1264410-1-ribalda@chromium.org>
+ <20210311122040.1264410-5-ribalda@chromium.org> <CANiDSCtw2q7UxMoZSMeE545WCxMs-WSHR2xbjG+xWL9CaBE3Aw@mail.gmail.com>
+ <YEo95GqO0XEX4Cg0@pendragon.ideasonboard.com>
+In-Reply-To: <YEo95GqO0XEX4Cg0@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date:   Thu, 11 Mar 2021 22:56:22 +0100
+Message-ID: <CAPybu_2k8DQ2aT0eZUo39XMiiYZWQUw1mTc0Ji08aYNY_mUGGQ@mail.gmail.com>
+Subject: Re: [PATCH 03/10] media: uvcvideo: Return -EIO for control errors
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Laurent
 
-On Wed, Mar 10, 2021 at 7:41 PM Roja Rani Yarubandi
-<rojay@codeaurora.org> wrote:
+On Thu, Mar 11, 2021 at 4:59 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
-> +&qspi_cs0 {
-> +       pinconf {
-> +               pins = "gpio15";
-> +               bias-disable;
-> +       };
+> Hi Ricardo,
+>
+> Thank you for the patch.
+>
+> On Thu, Mar 11, 2021 at 03:08:22PM +0100, Ricardo Ribalda wrote:
+> > As discussed in the IRC with Hans
+> >
+> > We need to specify in the commit message that this is most likely due
+> > to hw error.
+> >
+> > On Thu, Mar 11, 2021 at 1:20 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
+> > >
+> > > Fixes v4l2-compliance:
+> > >
+> > > Control ioctls (Input 0):
+> > >                 fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
+> > >         test VIDIOC_G/S_CTRL: FAIL
+> > >                 fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
+> > >         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+>
+> As this isn't supposed to happen, how do you reproduce this ?
 
-The "pinconf" / "pinmux" subnode shouldn't be used for new SoCs. See:
+Just run v4l2-compliance in my notebook camera.
 
-http://lore.kernel.org/r/CAD=FV=UY_AFRrAY0tef5jP698LEng6oN652LcX3B4nG=aWh0gA@mail.gmail.com
+>
+> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > ---
+> > >  drivers/media/usb/uvc/uvc_video.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > > index f2f565281e63..5442e9be1c55 100644
+> > > --- a/drivers/media/usb/uvc/uvc_video.c
+> > > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > > @@ -113,7 +113,7 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
+> > >         case 6: /* Invalid control */
+> > >         case 7: /* Invalid Request */
+>
+> For cases 5-7 I think -EIO is fine, as the driver should really not call
+> this function with an invalid unit, control or request. If it does, it's
+> a bug in the driver (we can check the units and controls the device
+> claims to support, and the requests are defined by the UVC
+> specification), if it doesn't and the device still returns this error,
+> it's a bug on the device side.
+>
+> > >         case 8: /* Invalid value within range */
+>
+> For this case, however, isn't it valid for a device to return an error
+> if the control value isn't valid ? There's one particular code path I'm
+> concerned about, uvc_ioctl_default(UVCIOC_CTRL_QUERY) ->
+> uvc_xu_ctrl_query() -> uvc_query_ctrl(), where it could be useful for
+> userspace to know that the value it sets isn't valid.
+>
 
-...same feedback for this whole patch.
+Will fix in v2
 
-> +                       qup_spi0_default: qup-spi0-default {
-> +                               pinmux {
-> +                                       pins = "gpio0", "gpio1",
-> +                                              "gpio2", "gpio3";
-> +                                       function = "qup00";
-> +                               };
-> +                       };
+Thanks!
 
-Please split these SPI nodes as per the thread above, like:
-
-tlmm: pinctrl@... {
-  qup_spi0_data_clk: qup-spi0-data-clk {
-    pins = "gpio0", "gpio1", "gpio2";
-    function = "qup0";
-  };
-
-  qup_spi0_cs: qup-spi0-cs {
-    pins = "gpio3";
-    function = "qup0";
-  };
-
-  qup_spi0_cs_gpio: qup-spi0-cs-gpio {
-    pins = "gpio3";
-    function = "gpio";
-  };
-};
-
-
-> +                       qup_uart0_default: qup-uart0-default {
-> +                               pinmux {
-> +                                       pins = "gpio0", "gpio1",
-> +                                              "gpio2", "gpio3";
-> +                                       function = "qup00";
-> +                               };
-> +                       };
-
-I suspect things would actually be cleaner if we broke the uart lines
-up since the boards tend to have to adjust pulls differently for each
-line. With the new "no pinconf / pinmux" world it's pretty clean. It's
-obviously up to Bjorn, but if it were me I'd request this in the SoC
-file:
-
-qup_uart0_cts: qup-uart0-cts {
-  pins = "...";
-  function = "qup00";
-};
-
-qup_uart0_rts: qup-uart0-rts {
-  pins = "...";
-  function = "qup00";
-};
-
-qup_uart0_rx: qup-uart0-rx {
-  pins = "...";
-  function = "qup00";
-};
-
-qup_uart0_tx: qup-uart0-tx {
-  pins = "...";
-  function = "qup00";
-};
-
-...and now when the board file wants to adjust the pulls they can just
-reference each one:
-
-/*
- * Comments about why the UART0 pulls make sense.
- * Blah blah blah.
- */
-
-&qup_uart0_cts {
-  bias-pull-down;
-};
-
-&qup_uart0_rts {
-  drive-strength = <2>;
-  bias-disable;
-};
-
-&qup_uart0_rx {
-  bias-pull-up;
-};
-
-&qup_uart0_tx {
-  drive-strength = <2>;
-  bias-disable;
-};
+> > > -               return -EINVAL;
+> > > +               return -EIO;
+> > >         default: /* reserved or unknown */
+> > >                 break;
+> > >         }
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
 
-> +               qspi: spi@88dc000 {
 
-I believe the qspi node is sorted incorrectly. When I apply this to
-the top of the Qualcomm tree it shows up after the "apps_smmu:
-iommu@15000000" node. However:
-
-0x088dc000 < 0x15000000
-
-...which means it should be _before_.
-
--Doug
+-- 
+Ricardo Ribalda
