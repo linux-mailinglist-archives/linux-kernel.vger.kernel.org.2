@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB2B3376CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 849AC337661
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234107AbhCKPS1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 10:18:27 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:37178 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234129AbhCKPSF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:18:05 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 7CFD63134F7;
-        Thu, 11 Mar 2021 11:02:54 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id O3N-umeOL4PX; Thu, 11 Mar 2021 11:02:54 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 60C1C3134A9;
-        Thu, 11 Mar 2021 11:02:52 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1seYyu_9NVTJ; Thu, 11 Mar 2021 11:02:52 -0300 (-03)
-Received: from [10.208.85.246] (89-200-33-201.mobile.kpn.net [89.200.33.201])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 7F95F313399;
-        Thu, 11 Mar 2021 11:02:43 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        id S233973AbhCKPAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:00:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:37944 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233765AbhCKPAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 10:00:31 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4321C1FB;
+        Thu, 11 Mar 2021 07:00:31 -0800 (PST)
+Received: from [10.37.8.5] (unknown [10.37.8.5])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54F7F3F70D;
+        Thu, 11 Mar 2021 07:00:28 -0800 (PST)
+Subject: Re: [PATCH v14 8/8] kselftest/arm64: Verify that TCO is enabled in
+ load_unaligned_zeropad()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210308161434.33424-1-vincenzo.frascino@arm.com>
+ <20210308161434.33424-9-vincenzo.frascino@arm.com>
+ <20210311132509.GB30821@arm.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <bd403b9f-bb38-a456-b176-b6fefccb711f@arm.com>
+Date:   Thu, 11 Mar 2021 15:00:26 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Thu, 11 Mar 2021 15:02:46 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210311140243.7F95F313399@mail.curtumepanorama.com.br>
+In-Reply-To: <20210311132509.GB30821@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On 3/11/21 1:25 PM, Catalin Marinas wrote:
+> On Mon, Mar 08, 2021 at 04:14:34PM +0000, Vincenzo Frascino wrote:
+>> load_unaligned_zeropad() and __get/put_kernel_nofault() functions can
+>> read passed some buffer limits which may include some MTE granule with a
+>> different tag.
+>>
+>> When MTE async mode is enable, the load operation crosses the boundaries
+>> and the next granule has a different tag the PE sets the TFSR_EL1.TF1
+>> bit as if an asynchronous tag fault is happened:
+>>
+>>  ==================================================================
+>>  BUG: KASAN: invalid-access
+>>  Asynchronous mode enabled: no access details available
+>>
+>>  CPU: 0 PID: 1 Comm: init Not tainted 5.12.0-rc1-ge1045c86620d-dirty #8
+>>  Hardware name: FVP Base RevC (DT)
+>>  Call trace:
+>>    dump_backtrace+0x0/0x1c0
+>>    show_stack+0x18/0x24
+>>    dump_stack+0xcc/0x14c
+>>    kasan_report_async+0x54/0x70
+>>    mte_check_tfsr_el1+0x48/0x4c
+>>    exit_to_user_mode+0x18/0x38
+>>    finish_ret_to_user+0x4/0x15c
+>>  ==================================================================
+>>
+>> Verify that Tag Check Override (TCO) is enabled in these functions before
+>> the load and disable it afterwards to prevent this to happen.
+>>
+>> Note: The issue has been observed only with an MTE enabled userspace.
+> 
+> The above bug is all about kernel buffers. While userspace can trigger
+> the relevant code paths, it should not matter whether the user has MTE
+> enabled or not. Can you please confirm that you can still triggered the
+> fault with kernel-mode MTE but non-MTE user-space? If not, we may have a
+> bug somewhere as the two are unrelated: load_unaligned_zeropad() only
+> acts on kernel buffers and are subject to the kernel MTE tag check fault
+> mode.
+>
 
-Sir/Madam,
+I retried and you are right, it does not matter if it is a MTE or non-MTE
+user-space. The issue seems to be that this test does not trigger the problem
+all the times which probably lead me to the wrong conclusions.
 
-CONGRATULATIONS!!!
+> I don't think we should have a user-space selftest for this. The bug is
+> not about a user-kernel interface, so an in-kernel test is more
+> appropriate. Could we instead add this to the kasan tests and calling
+> load_unaligned_zeropad() and other functions directly?
+> 
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 9th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+I agree with you we should abandon this strategy of triggering the issue due to
+my comment above. I will investigate the option of having a kasan test and try
+to come up with one that calls the relevant functions directly. I would prefer
+though, since the rest of the series is almost ready, to post it in a future
+series. What do you think?
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+-- 
+Regards,
+Vincenzo
