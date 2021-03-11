@@ -2,174 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D033C336A01
+	by mail.lfdr.de (Postfix) with ESMTP id C67A8336A00
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhCKCC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 21:02:28 -0500
-Received: from mga03.intel.com ([134.134.136.65]:17593 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229732AbhCKCCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 21:02:00 -0500
-IronPort-SDR: Xd8thHuJZXPsFEv51ow/4pyOzC0ymbh88NrYUQ2GijjtlUR8WAJrUPb4UIjrRIKnebgw7vE/Aa
- sJVuzCnOtbng==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188637167"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="188637167"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 18:01:59 -0800
-IronPort-SDR: rC1XXEczXjVfHmcxzcFBWufL7rmCqZTEUB9lcvcJI/1dtIGjxfQrCEntZpPlWl3bskp1kH+Uh9
- BSQ5IwFmFOfQ==
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="603341119"
-Received: from xuhuiliu-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.251.31.67])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 18:01:54 -0800
-From:   Kai Huang <kai.huang@intel.com>
-To:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        Kai Huang <kai.huang@intel.com>
-Subject: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from sgx_free_epc_page()
-Date:   Thu, 11 Mar 2021 15:01:42 +1300
-Message-Id: <20210311020142.125722-1-kai.huang@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <e1ca4131bc9f98cf50a1200efcf46080d6512fe7.1615250634.git.kai.huang@intel.com>
-References: <e1ca4131bc9f98cf50a1200efcf46080d6512fe7.1615250634.git.kai.huang@intel.com>
+        id S229734AbhCKCC1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 21:02:27 -0500
+Received: from mail.kingsoft.com ([114.255.44.146]:47467 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229714AbhCKCB5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 21:01:57 -0500
+X-AuditID: 0a580155-1f5ff7000005482e-22-6049728f68b2
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 89.95.18478.F8279406; Thu, 11 Mar 2021 09:29:51 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 11 Mar
+ 2021 10:01:54 +0800
+Date:   Thu, 11 Mar 2021 10:01:54 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+CC:     "Luck, Tony" <tony.luck@intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        <yangfeng1@kingsoft.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, <sunhao2@kingsoft.com>,
+        <yaoaili@kingsoft.com>, <suhua1@kingsoft.com>
+Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
+ hwpoison page access.
+Message-ID: <20210311100154.5a75c62e@alex-virtual-machine>
+In-Reply-To: <CALCETrVqkK29n=6wtVhd7qgTWf83x3SUk6+bkD30asHyWSqppw@mail.gmail.com>
+References: <4fc1b4e8f1fb4c8c81f280db09178797@intel.com>
+        <047D5B49-FDBB-494C-81E9-DA811476747D@amacapital.net>
+        <20210311091941.45790fcf@alex-virtual-machine>
+        <CALCETrVqkK29n=6wtVhd7qgTWf83x3SUk6+bkD30asHyWSqppw@mail.gmail.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJIsWRmVeSWpSXmKPExsXCFcGooNtf5Jlg8PUUs8XnDf/YLF5saGe0
+        mLZR3GLz9w42i8u75rBZ3Fvzn9Vi9doGVovzu9ayWlw6sIDJ4mLjAUaLrftbGS2O9x5gsti8
+        aSqzxZsL91gsfmx4zOrA7/G9tY/F4/6bvywem1doeSze85LJY9OqTjaPTZ8msXu8O3eO3WPe
+        yUCPF1c3sni833eVzePzJjmPEy1fWAN4orhsUlJzMstSi/TtErgyrm5fyljQKlKxa+p91gbG
+        A/xdjOwcEgImEntsuhi5OIQEpjNJHDu0lAnCecUosfH1cSCHk4NFQFXiZ8tWMJsNyN51bxYr
+        iC0ioCnxcsp8FpAGZoFHLBINsxezgySEBZIlzkx6wAhi8wpYSWz4Mh+omYODUyBQ4sFBGYgF
+        LxglOju3s4HU8AuISfRe+Q+2QELAXqJtyyKoXkGJkzOfsIDYzEDLWrf/ZoewtSWWLXzNDGIL
+        CShKHF7yix2iV0niSPcMNgg7VmLZvFesExiFZyEZNQvJqFlIRi1gZF7FyFKcm260iRESm6E7
+        GGc0fdQ7xMjEwXiIUYKDWUmE1++4W4IQb0piZVVqUX58UWlOavEhRmkOFiVx3r3HXBOEBNIT
+        S1KzU1MLUotgskwcnFINTAdWnODNFdlnd+0k64q9+yQ6157PmrlAMSnlz4YY9RsHn3lfexrT
+        x9nftDLhu/nVi4F5tfKHOqr7fC76mSyO3CFkf7Ro2ZvEyhk2xte2+jrYJy1kNlnyzqs+5kGs
+        yx+TpeeUzwarLhBSYWrYtXvig3nLDwicMj0TaBKdOenu1arXTF6lv5MnGxb/YHQqORmxeZ+E
+        tPdeTjfZT/IS7EnecWUpgg6dhx5dCmW7krL0zv+DbXZ3HqbfcOE4FDWxPn6nk/7cu21yElXH
+        HcNN93N8UpNPCSrmmNC+6vvcrYu+cn3ZkW3566bNzMg/G49qhCvEbL4Ye+sgQ2OGzAGTg3/W
+        O2zeVnk2a+W93NMPtaxi/iixFGckGmoxFxUnAgBRSXrGPAMAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarkko Sakkinen <jarkko@kernel.org>
+On Wed, 10 Mar 2021 17:28:12 -0800
+Andy Lutomirski <luto@amacapital.net> wrote:
 
-EREMOVE takes a page and removes any association between that page and
-an enclave.  It must be run on a page before it can be added into
-another enclave.  Currently, EREMOVE is run as part of pages being freed
-into the SGX page allocator.  It is not expected to fail.
+> On Wed, Mar 10, 2021 at 5:19 PM Aili Yao <yaoaili@kingsoft.com> wrote:
+> >
+> > On Mon, 8 Mar 2021 11:00:28 -0800
+> > Andy Lutomirski <luto@amacapital.net> wrote:
+> >  
+> > > > On Mar 8, 2021, at 10:31 AM, Luck, Tony <tony.luck@intel.com> wrote:
+> > > >
+> > > > ﻿  
+> > > >>
+> > > >> Can you point me at that SIGBUS code in a current kernel?  
+> > > >
+> > > > It is in kill_me_maybe().  mce_vaddr is setup when we disassemble whatever get_user()
+> > > > or copy from user variant was in use in the kernel when the poison memory was consumed.
+> > > >
+> > > >        if (p->mce_vaddr != (void __user *)-1l) {
+> > > >                force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);  
+> > >
+> > > Hmm. On the one hand, no one has complained yet. On the other hand, hardware that supports this isn’t exactly common.
+> > >
+> > > We may need some actual ABI design here. We also need to make sure that things like io_uring accesses or, more generally, anything using the use_mm / use_temporary_mm ends up either sending no signal or sending a signal to the right target.
+> > >  
+> > > >
+> > > > Would it be any better if we used the BUS_MCEERR_AO code that goes into siginfo?  
+> > >
+> > > Dunno.  
+> >
+> > I have one thought here but don't know if it's proper:
+> >
+> > Previous patch use force_sig_mceerr to the user process for such a scenario; with this method
+> > The SIGBUS can't be ignored as force_sig_mceerr() was designed to.
+> >
+> > If the user process don't want this signal, will it set signal config to ignore?
+> > Maybe we can use a send_sig_mceerr() instead of force_sig_mceerr(), if process want to
+> > ignore the SIGBUS, then it will ignore that, or it can also process the SIGBUS?  
+> 
+> I don't think the signal blocking mechanism makes sense for this.
+> Blocking a signal is for saying that, if another process sends the
+> signal (or an async event like ctrl-C), then the process doesn't want
+> it.  Blocking doesn't block synchronous things like faults.
+> 
+> I think we need to at least fix the existing bug before we add more
+> signals.  AFAICS the MCE_IN_KERNEL_COPYIN code is busted for kernel
+> threads.
 
-KVM does not track how guest pages are used, which means that SGX
-virtualization use of EREMOVE might fail.
+Got this, Thanks!
 
-Break out the EREMOVE call from the SGX page allocator.  This will allow
-the SGX virtualization code to use the allocator directly.  (SGX/KVM
-will also introduce a more permissive EREMOVE helper).
+I read https://man7.org/linux/man-pages/man2/write.2.html, and it seems the write syscall is not expecting
+an signal, maybe a specific error code for this scenario is enough.
 
-Implement original sgx_free_epc_page() as sgx_encl_free_epc_page() to be
-more specific that it is used to free EPC page assigned to one enclave.
-Print an error message when EREMOVE fails to explicitly call out EPC
-page is leaked, and requires machine reboot to get leaked pages back.
-
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Co-developed-by: Kai Huang <kai.huang@intel.com>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
----
-v2->v3:
-
- - Fixed bug during copy/paste which results in SECS page and va pages are not
-   correctly freed in sgx_encl_release() (sorry for the mistake).
- - Added Jarkko's Acked-by.
-
-v1->v2:
-
- - Changed to hide both SGX1 and SGX2 from /proc/cpuinfo, since no concrete
-   use case, per Boris.
- - Refined commit msg to explain why to hide SGX1 and SGX2 in /proc/cpuinfo.
-
----
- arch/x86/kernel/cpu/sgx/encl.c | 27 ++++++++++++++++++++++++---
- arch/x86/kernel/cpu/sgx/main.c | 12 ++++--------
- 2 files changed, 28 insertions(+), 11 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 7449ef33f081..c0b80c0853d8 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -381,6 +381,27 @@ const struct vm_operations_struct sgx_vm_ops = {
- 	.access = sgx_vma_access,
- };
- 
-+static void sgx_encl_free_epc_page(struct sgx_epc_page *epc_page)
-+{
-+	int ret;
-+
-+	WARN_ON_ONCE(epc_page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
-+
-+	/*
-+	 * Give a message to remind EPC page is leaked when EREMOVE fails,
-+	 * and requires machine reboot to get leaked pages back. This can
-+	 * be improved in future by adding stats of leaked pages, etc.
-+	 */
-+#define EREMOVE_ERROR_MESSAGE \
-+	"EREMOVE returned %d (0x%x).  EPC page leaked.  Reboot required to retrieve leaked pages."
-+	ret = __eremove(sgx_get_epc_virt_addr(epc_page));
-+	if (WARN_ONCE(ret, EREMOVE_ERROR_MESSAGE, ret, ret))
-+		return;
-+#undef EREMOVE_ERROR_MESSAGE
-+
-+	sgx_free_epc_page(epc_page);
-+}
-+
- /**
-  * sgx_encl_release - Destroy an enclave instance
-  * @kref:	address of a kref inside &sgx_encl
-@@ -404,7 +425,7 @@ void sgx_encl_release(struct kref *ref)
- 			if (sgx_unmark_page_reclaimable(entry->epc_page))
- 				continue;
- 
--			sgx_free_epc_page(entry->epc_page);
-+			sgx_encl_free_epc_page(entry->epc_page);
- 			encl->secs_child_cnt--;
- 			entry->epc_page = NULL;
- 		}
-@@ -415,7 +436,7 @@ void sgx_encl_release(struct kref *ref)
- 	xa_destroy(&encl->page_array);
- 
- 	if (!encl->secs_child_cnt && encl->secs.epc_page) {
--		sgx_free_epc_page(encl->secs.epc_page);
-+		sgx_encl_free_epc_page(encl->secs.epc_page);
- 		encl->secs.epc_page = NULL;
- 	}
- 
-@@ -423,7 +444,7 @@ void sgx_encl_release(struct kref *ref)
- 		va_page = list_first_entry(&encl->va_pages, struct sgx_va_page,
- 					   list);
- 		list_del(&va_page->list);
--		sgx_free_epc_page(va_page->epc_page);
-+		sgx_encl_free_epc_page(va_page->epc_page);
- 		kfree(va_page);
- 	}
- 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 8df81a3ed945..44fe91a5bfb3 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -598,18 +598,14 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
-  * sgx_free_epc_page() - Free an EPC page
-  * @page:	an EPC page
-  *
-- * Call EREMOVE for an EPC page and insert it back to the list of free pages.
-+ * Put the EPC page back to the list of free pages. It's the caller's
-+ * responsibility to make sure that the page is in uninitialized state. In other
-+ * words, do EREMOVE, EWB or whatever operation is necessary before calling
-+ * this function.
-  */
- void sgx_free_epc_page(struct sgx_epc_page *page)
- {
- 	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
--	int ret;
--
--	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
--
--	ret = __eremove(sgx_get_epc_virt_addr(page));
--	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
--		return;
- 
- 	spin_lock(&section->lock);
- 	list_add_tail(&page->list, &section->page_list);
 -- 
-2.29.2
-
+Thanks!
+Aili Yao
