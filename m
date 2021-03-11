@@ -2,78 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314C3337644
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4341C3375BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbhCKO5F convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 09:57:05 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:38356 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233504AbhCKO4q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:56:46 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id B13B730A323;
-        Thu, 11 Mar 2021 10:53:45 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 8ITNJvhDq-Sr; Thu, 11 Mar 2021 10:53:45 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id B912330A2C8;
-        Thu, 11 Mar 2021 10:53:43 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ZhVIrFR8DYZB; Thu, 11 Mar 2021 10:53:43 -0300 (-03)
-Received: from [10.208.85.246] (89-200-33-201.mobile.kpn.net [89.200.33.201])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 444B830D408;
-        Thu, 11 Mar 2021 10:53:35 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        id S233892AbhCKOav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:30:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233905AbhCKOaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 09:30:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E433D64FE2;
+        Thu, 11 Mar 2021 14:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615473030;
+        bh=m2XUVNPGUTgDKeGFE7OBmHC8+8gXlteTLyWvGrLc4Jc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KFSrSouV867Dp29ScUKZyCvSd9AROjGXtxnlN7oGKWIQSo1QKBFQMP2WTJ2Vyha7l
+         8UPz8O0UmbI7WB+TSl+e1VIhihv1pvHpJ7CuUJquNf1KSDPz4BJJVo8eU33Ey3rTYk
+         ejC6o3lweUqXJ/XGf0VL+3kMUNNH5F/s8AwvYkwwcrKiSTNFuCVQdE+Q816NKNo/m0
+         9vcZrsKdUD92toBHE3VJ430v2ri5hMkhPQWzsW6QYtN+69bHqnpzvmq5WR07pN6WSI
+         W2pSZ2CiCQ93cdd95qJdGVNEXKO1flRtIcfGbSsZw0v805MRB2tDRWYIEaMW9BeyRV
+         M6ifTDBMwHtqA==
+Received: by pali.im (Postfix)
+        id 7EEC88A7; Thu, 11 Mar 2021 15:30:27 +0100 (CET)
+Date:   Thu, 11 Mar 2021 15:30:27 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Amey Narkhede <ameynarkhede02@gmail.com>
+Subject: Re: RFC: sysfs node for Secondary PCI bus reset (PCIe Hot Reset)
+Message-ID: <20210311143027.mwzdgme3omkj3ld5@pali>
+References: <20210301171221.3d42a55i7h5ubqsb@pali>
+ <20210301202817.GA201451@bjorn-Precision-5520>
+ <20210302125829.216784cd@omen.home.shazbot.org>
+ <20210303175635.nv7kxiulevpy5ax5@pali>
+ <85786a3a-c7d4-95cc-170f-26f89c2b337e@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Thu, 11 Mar 2021 14:53:38 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210311135336.444B830D408@mail.curtumepanorama.com.br>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <85786a3a-c7d4-95cc-170f-26f89c2b337e@nvidia.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Thursday 11 March 2021 19:53:26 Vidya Sagar wrote:
+> On 3/3/2021 11:26 PM, Pali Rohár wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On Tuesday 02 March 2021 12:58:29 Alex Williamson wrote:
+> > > On Mon, 1 Mar 2021 14:28:17 -0600
+> > > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > 
+> > > > [+cc Alex, reset expert]
+> > > > 
+> > > > On Mon, Mar 01, 2021 at 06:12:21PM +0100, Pali Rohár wrote:
+> > > > > Hello!
+> > > > > 
+> > > > > PCIe card can be reset via in-band Hot Reset signal which can be
+> > > > > triggered by PCIe bridge via Secondary Bus Reset bit in PCI config
+> > > > > space.
+> > > > > 
+> > > > > Kernel already exports sysfs node "reset" for triggering Functional
+> > > > > Reset of particular function of PCI device. But in some cases Functional
+> > > > > Reset is not enough and Hot Reset is required.
+> > > > > 
+> > > > > Following RFC patch exports sysfs node "reset_bus" for PCI bridges which
+> > > > > triggers Secondary Bus Reset and therefore for PCIe bridges it resets
+> > > > > connected PCIe card.
+> > > > > 
+> > > > > What do you think about it?
+> > > > > 
+> > > > > Currently there is userspace script which can trigger PCIe Hot Reset by
+> > > > > modifying PCI config space from userspace:
+> > > > > 
+> > > > > https://alexforencich.com/wiki/en/pcie/hot-reset-linux
+> > > > > 
+> > > > > But because kernel already provides way how to trigger Functional Reset
+> > > > > it could provide also way how to trigger PCIe Hot Reset.
+> > > 
+> > > What that script does and what this does, or what the existing reset
+> > > attribute does, are very different.  The script finds the upstream
+> > > bridge for a given device, removes the device (ignoring that more than
+> > > one device might be affected by the bus reset), uses setpci to trigger
+> > > a secondary bus reset, then rescans devices.  The below only triggers
+> > > the secondary bus reset, neither saving and restoring affected device
+> > > state like the existing function level reset attribute, nor removing
+> > > and rescanning as the script does.  It simply leaves an entire
+> > > hierarchy of PCI devices entirely un-programmed yet still has struct
+> > > pci_devs attached to them for untold future misery.
+> > > 
+> > > In fact, for the case of a single device affected by the bus reset, as
+> > > intended by the script, the existing reset attribute will already do
+> > > that if the device supports no other reset mechanism.  There's actually
+> > > a running LFX mentorship project that aims to allow the user to control
+> > > the type of reset performed by the existing reset attribute such that a
+> > > user could force the bus reset behavior over other reset methods.
+> > 
+> > Hello Alex? Do you have a link for this "reset" project? I'm interesting
+> > in it as I'm dealing with Compex wifi cards which are causing problems.
+> > 
+> > For correct initialization I need to issue PCIe Warm Reset for these
+> > cards (Warm Reset is done via PERST# pin which most linux controller
+> > drivers controls via GPIO subsystem). And for now there is no way to
+> > trigger PCIe Warm Reset for particular PCIe device from userspace. As
+> > there is no userspace <--> kernel API for it.
+> > 
+> > > There might be some justification for an attribute that actually
+> > > implements the referenced script correctly, perhaps in kernel we could
+> > > avoid races with bus rescans, but simply triggering an SBR to quietly
+> > > de-program all downstream devices with no state restore or device
+> > > rescan is not it.  Any affected device would be unusable.  Was this
+> > > tested?  Thanks,
+> > 
+> > I have tested my change. First I called 'remove' attribute for PCIe
+> > card, then I called this 'bus_reset' on parent PCIe bridge and later I
+> > called 'rescan' attribute on bridge. It correctly rested tested ath9k
+> > card. So I did something similar as in above script. But I agree that
+> > there are race conditions and basically lot of other calls needs to be
+> > done to restore state.
+> > 
+> > So I see that to make it 'usable' we need to do it automatically in
+> > kernel and also rescan/restore state of PCIe devices behind bridge after
+> > reset...
+> But, is save-restore alone going to be enough? I mean what is the state of
+> the device-driver going to be when the device is going through the reset
+> process? Isn't remove-rescan the correct thing to do here rather than
+> save/restore?
 
-Sir/Madam,
+I think that remove-reset-rescan (if done atomically with correct
+timeouts between them and applying kernel quirks) should be correct
+here.
 
-CONGRATULATIONS!!!
-
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 9th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+> - Vidya Sagar
+> > 
+> > > Alex
+> > > 
+> > > > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > > > > index 50fcb62d59b5..f5e11c589498 100644
+> > > > > --- a/drivers/pci/pci-sysfs.c
+> > > > > +++ b/drivers/pci/pci-sysfs.c
+> > > > > @@ -1321,6 +1321,30 @@ static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
+> > > > > 
+> > > > >   static DEVICE_ATTR(reset, 0200, NULL, reset_store);
+> > > > > 
+> > > > > +static ssize_t reset_bus_store(struct device *dev, struct device_attribute *attr,
+> > > > > +                        const char *buf, size_t count)
+> > > > > +{
+> > > > > + struct pci_dev *pdev = to_pci_dev(dev);
+> > > > > + unsigned long val;
+> > > > > + ssize_t result = kstrtoul(buf, 0, &val);
+> > > > > +
+> > > > > + if (result < 0)
+> > > > > +         return result;
+> > > > > +
+> > > > > + if (val != 1)
+> > > > > +         return -EINVAL;
+> > > > > +
+> > > > > + pm_runtime_get_sync(dev);
+> > > > > + result = pci_bridge_secondary_bus_reset(pdev);
+> > > > > + pm_runtime_put(dev);
+> > > > > + if (result < 0)
+> > > > > +         return result;
+> > > > > +
+> > > > > + return count;
+> > > > > +}
+> > > > > +
+> > > > > +static DEVICE_ATTR(reset_bus, 0200, NULL, reset_bus_store);
+> > > > > +
+> > > > >   static int pci_create_capabilities_sysfs(struct pci_dev *dev)
+> > > > >   {
+> > > > >    int retval;
+> > > > > @@ -1332,8 +1356,15 @@ static int pci_create_capabilities_sysfs(struct pci_dev *dev)
+> > > > >            if (retval)
+> > > > >                    goto error;
+> > > > >    }
+> > > > > + if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) {
+> > > > > +         retval = device_create_file(&dev->dev, &dev_attr_reset_bus);
+> > > > > +         if (retval)
+> > > > > +                 goto error_reset_bus;
+> > > > > + }
+> > > > >    return 0;
+> > > > > 
+> > > > > +error_reset_bus:
+> > > > > + device_remove_file(&dev->dev, &dev_attr_reset);
+> > > > >   error:
+> > > > >    pcie_vpd_remove_sysfs_dev_files(dev);
+> > > > >    return retval;
+> > > > > @@ -1414,6 +1445,8 @@ static void pci_remove_capabilities_sysfs(struct pci_dev *dev)
+> > > > >            device_remove_file(&dev->dev, &dev_attr_reset);
+> > > > >            dev->reset_fn = 0;
+> > > > >    }
+> > > > > + if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE)
+> > > > > +         device_remove_file(&dev->dev, &dev_attr_reset_bus);
+> > > > >   }
+> > > > > 
+> > > > >   /**
+> > > > 
+> > > 
