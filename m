@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78083370F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AD73370F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhCKLPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45794 "EHLO
+        id S232619AbhCKLPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:15:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbhCKLPD (ORCPT
+        with ESMTP id S232520AbhCKLPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:15:03 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF77CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:15:02 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id j2so1382473wrx.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:15:02 -0800 (PST)
+        Thu, 11 Mar 2021 06:15:47 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7823C061574;
+        Thu, 11 Mar 2021 03:15:46 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 133so21331622ybd.5;
+        Thu, 11 Mar 2021 03:15:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Pfw8w/HowfodcVJewDtKiPaknmOGY7Z3Znp/juepW0w=;
-        b=pMq+mgbzgL0btaJAfs2U4scqRZM4N3inTNQB9QqD1R80YsX3h01j7q3/mPhPrinWi5
-         kL5nqsw5FEPv0Ot+Nj/smfEl9yl5oAGPhPPAo2C9EAlCEio1nj+hIv114TnXWpmLw5vV
-         9dCV5N01D8vvUWwncMq4DTRdIpy8z9nIgkhTSzFRH0WA4SLh16mBhweGKchyeUKzedLW
-         F/YYIwIrXUGxvO062rTgHjxiS5WrGyIYBPsSEi+2/umSpbWRaA1PfP6OSai2q4/EYld5
-         IM9R51W+kl4XcAkW+h3Dfjgj9wuO3ICIHa2Dv2YnbB3WcVISjaLf2ziHkOrpdQc2y1Ja
-         0QAQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LFeut5mRk7QOpC8AdBxexiS9v0Cku3pHA/7OaXkYKqA=;
+        b=dFw4CQZ3N/SJJZtHGvXhEnkZlZEnrYKWsM8cV1pQYih+baCxPCDMyEUgVHqoAm1xfk
+         5pbR5+GITiepEL72NXCfkBSYT0w1S2hMdfVoH/aCYnlr7TZcOcb5VDFRopkZStqY2WXJ
+         fXvvvvSEhDbPB0SG9bG9B5duWpsHcSv9jN65YW1zvXDbCydKHkxW3OmrIUKy3RDxQVcG
+         LyrLfgjEL/vc/zhmWCbkrPKYJrTciU/vbcYOrp5Pnkveb9hpXzuOyK6LFNubh8g9uAsE
+         +TrFSU6OS8bIjupyl0DLH1dMkCcdEM63YT9GxZd4DFhAxHBISdjjWXQb8ckMiQ3uhMmv
+         tRlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Pfw8w/HowfodcVJewDtKiPaknmOGY7Z3Znp/juepW0w=;
-        b=b54Uijl5NHOKP6x1w0zk9GAK6ILhQIE1G+RN6j9lqRYZUNEHNv5/FvN7PPV6bMdd+i
-         jh3R/6JEorcZLqck/zyUdHTIf3t0lWZkT+1JAQ0SIDpY7O7XCsRcGsUSpOUnFO3JUJIe
-         djsH9FMH7VJ4SvshXa1KQOTiShH9UNBsWhxIUg9dsQdiueBpok7Ud7/d1yCFjRpyWUkG
-         bpClDsPcOZyroSk0X/9LMNQk47BbQ2zgd27FEgLyjsY7WWhOuICNObJ5u3Az3eUPE+Ku
-         D1Xxy7s9nsutHUW0RpBxt9yV/O1KC8qbfah4i0wSW5CEBkNvUfZBemMnuJEKeu3wONlD
-         5ZWQ==
-X-Gm-Message-State: AOAM533RXUa/YmfFh/atv3u9dUCuoZVItHy+K2orFKgs4T8mXxC0/sfd
-        u8w10BpmfPUgCd56zxjj3uEF8w==
-X-Google-Smtp-Source: ABdhPJysBDa1s86qN51h3Y8q5+eEiPIVWUWb7o/PTc7iLX5D+Yf7kQ1fsu0+0dIGD/HOLt6vCPHgjw==
-X-Received: by 2002:a5d:638f:: with SMTP id p15mr8053813wru.220.1615461301559;
-        Thu, 11 Mar 2021 03:15:01 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:84cf:7f4d:d470:dfd4? ([2a01:e34:ed2f:f020:84cf:7f4d:d470:dfd4])
-        by smtp.googlemail.com with ESMTPSA id h22sm3638454wmb.36.2021.03.11.03.15.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 03:15:01 -0800 (PST)
-Subject: Re: [PATCH v2] dt-bindings: timer: renesas,cmt: add r8a779a0 CMT
- support
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>
-References: <20210311090918.2197-1-wsa+renesas@sang-engineering.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <29b70ddb-5809-d2e8-a07f-0926590afa0c@linaro.org>
-Date:   Thu, 11 Mar 2021 12:15:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LFeut5mRk7QOpC8AdBxexiS9v0Cku3pHA/7OaXkYKqA=;
+        b=pOnceXUCL2Wefjo0vBFxWY8/RMzVsD9qxFLHNGWA/ukc/XBDAKhdL4OywBo+uNawRt
+         B0IoV70I9yE9oA4nziSQGggri5A1PZAItUulQ3AfdNGkqC3eqx28S0kKqZKvJhnbXNP9
+         ZWsHwuaEJtBgPfEpiVcgPFkbOMVQ1l2/2zn5Nbot4asNUQnS/6D5b0p0G4EuB/ySeMdf
+         KeZi3N1ONGDXsi3w4BwPQoBL3xYWei3buPO+kFZQtkJeqyyoGnDBiNJ8xqwItbQ5J/9z
+         wPPjNzLfH4q+6MZedZsRyLNsa3kTMKFAi79FlVyKiptw8OBpBSwp05ob0RlCLlXXgANc
+         eCZQ==
+X-Gm-Message-State: AOAM532lLgBP4fOteWw4U3k1kqfryACQG/gjGOrGjoHSZ3EGy3uVazCg
+        tvrV5wdxf9742N7C2MLXy88zjWvNvm+XZ+9jPKRvQcZHkXMh7A==
+X-Google-Smtp-Source: ABdhPJx+B2lm1YY9OlY/r/zl4P+HRIXBZy+A4G8ckrWn5a1E2tn19gRq8zhzAPEmBGze/icASy/0zDUEfCVoRZuGH3Q=
+X-Received: by 2002:a25:d296:: with SMTP id j144mr10994633ybg.33.1615461346024;
+ Thu, 11 Mar 2021 03:15:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210311090918.2197-1-wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210311094624.923913-1-masahiroy@kernel.org> <CANiq72m1e9MD83sP5iZCfzoCR0qLz2HQj_VVkE4X-56vf6e7fw@mail.gmail.com>
+ <CAK7LNATP2ORegUu0tGtSU1+CSKZVX7m84GOT913X5L29MopAXQ@mail.gmail.com>
+In-Reply-To: <CAK7LNATP2ORegUu0tGtSU1+CSKZVX7m84GOT913X5L29MopAXQ@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 11 Mar 2021 12:15:35 +0100
+Message-ID: <CANiq72kVk5BwAfXmnfKGPwMavfdHNqF1gjq9D-U4TmMipS4yoA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: collect minimum tool versions into scripts/min-tool-version.sh
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@lindev.ch>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/2021 10:09, Wolfram Sang wrote:
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
+On Thu, Mar 11, 2021 at 11:34 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Hmm, that is a simple, clean idea.
+> Then, we can simply read out the file
+>
+> $ cat scripts/min_versions/gcc
+> 4.9.0
 
-Applied, thanks
+Exactly!
 
+> I do not know how to handle
+> per-arch versions in this case.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Perhaps we should just push for 5.1.0 everywhere ;-P
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Otherwise, we could still have `min-tool-versions.sh` with something like:
+
+    $ cat scripts/min_versions/gcc
+    4.9.0
+    $ cat scripts/min_versions/gcc_arm64
+    5.1.0
+    $ cat scripts/min-tool-versions.sh
+    if min_versions/$tool_$arch exists
+        print that one
+    else
+        print the default one: min_versions/$tool
+
+i.e. having the plain files allow us to extend the cases without
+listing them explicitly in the script, plus it is anyway useful to
+separate data from code :-)
+
+Cheers,
+Miguel
