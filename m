@@ -2,178 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3257336903
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D893368FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhCKAhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 19:37:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
+        id S231273AbhCKAhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 19:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhCKAgx (ORCPT
+        with ESMTP id S229893AbhCKAgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:36:53 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D83C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:36:52 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id m22so36747808lfg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:36:52 -0800 (PST)
+        Wed, 10 Mar 2021 19:36:47 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E195C061574;
+        Wed, 10 Mar 2021 16:36:47 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id ci14so42469953ejc.7;
+        Wed, 10 Mar 2021 16:36:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EEzbsSCDR9QboIA8OrN63K5HZEwShS0wIkxT1lrzd0Y=;
-        b=riZjyH1NfHDCunME5Ebgwcbph2FiEIMHDSKKFitpNg0U8iOTWuJwtB6GzHL3vNfxn3
-         bKC6k1jMXjsf5GoCwsYzyYIe9V8eRGIjZxbtrzAHA4cWo/kfcaVq0a2yxRHziD/UHYtL
-         KrJVPIzP09ibIN4SoXEEPVGDtIxaHre5IZ2sYsYyR9ToplAng35DTKF6bOubx+i39R1f
-         Dyh6YNTaIYGkqNxapf4Gtw75AiC382TPw8+LxMz+fxeVGy15sf7k73kyLEtXBsVNkWpt
-         etsNBpGlXtrr7f+X+XS+9XGQN3Nqb1sTEg7ly23GPExeT193DJfFsQE4BqchIm93na3Z
-         gRrw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oqO3pJKn6a33Hep15t1WN1Js5VRntr+amAc96q9kneI=;
+        b=jfIfOHMXcM6f2w4k4B1AZHiThdZgVkirdz3yiQKS+aLOjGy1qkXXOJm1if6pc8xcro
+         /amdYa2m+UGYe4pWyZy0ORi1huLuPpjI1tmFDdB9ybuiZqVpwRYkunICh4SnscCfyB10
+         F8iYYy1aBj/dK6ka67vADU+QStPc6mfF6OnnZYltT8kyH5gga07MBRGNsvRQypfjREIy
+         U/o9xZVSeJ7x/K9+HGhJcJN1dSaqKS9CXpMNNUCHxdIlt0os45hmCKUCWzDqlUVmbPBw
+         ZwTpHiEH7OMFrZunJWVpurRq78AJskyYVz6cFK38D9c7B/oSawBqLGH4tUYeUKPy+AI6
+         n8Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EEzbsSCDR9QboIA8OrN63K5HZEwShS0wIkxT1lrzd0Y=;
-        b=AqUCHbwWxoGRqRsoUGdTgt6720lEgHE04ysCTlKSUJl0I2p6rbCoEHMIjBqe4PDTzb
-         JS1V2oMmBB1HrlmzF8GbaMO/TAIrdWxOyYsEALpSwzPLiM1Z2QSUCbLvx96YGt92mEr+
-         vchKtdil/HgQIb7Dsg0qlFwyCoafclZIGeWx8gOyNIbRnfZqaX+fyTMy3kLkFrk8Gj2z
-         aUQOR6PE4SIiwTH3XEGRpa/97LFMFzJK8fbCCzL0rCDbr1OpYiQ0L7e226VMSFnmwB/v
-         V0ZIGIQMbQYMWb+jBjRzBcBuVD0A9ry7UFTIGT3rAIvRwX8dXcNEhcPmltqJ7TjLbqU0
-         ZSQw==
-X-Gm-Message-State: AOAM5336c6vsorJIvVzPfnrRq7mLkaRazmzVYWCCTzPmuhIvW+ruKpqh
-        XQ3yEnnTCOwqCQyNci+oLNxDNosbSIC9K7h2yM4kow==
-X-Google-Smtp-Source: ABdhPJxPA73QJEO2P06IeIm6xha2IwSe1nk/jxmy8+2H6YjUfx61sOITuBIwpepPUOCRRsAhsWRrIoW1PKscdwIJ+Vc=
-X-Received: by 2002:a19:4c08:: with SMTP id z8mr638983lfa.157.1615423011194;
- Wed, 10 Mar 2021 16:36:51 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oqO3pJKn6a33Hep15t1WN1Js5VRntr+amAc96q9kneI=;
+        b=PQqDY/ooWe4mQ4gbr9jzuPBD+qQm9Rzpl7bBhey6fXGmr+5V3p4tu+vT7O1saIHDmQ
+         9FA+OrPmbQNIHCCsIk7jjFfVkeLlzmhMG96Cv9b2lJ9hd+jQzxU3jgF5s0rg6OYwpnEb
+         R18HUCthP8SGKZwF50IQrRg48l35rjEbg+F4aNKMa+ZFVFDkuDDuMV09qQIX6cmACKlD
+         1g3SJvdBI5ccqlxq6iOtBELcl3WdMiVgtkNUJ2EJKvOATpxKvoB5FTY6t0kcuJolFhUP
+         6g6H+aqrN2Lq0GBOVSX8jJGekg2+RAbLO8X0aiymopW7kXWOeGXttPvVmDS2XqU4X7/I
+         YD3g==
+X-Gm-Message-State: AOAM533x7IyFUGiUoamFel1kglbyHdUZ78CIM1TSk9TSmaAlnuBhazip
+        NILSd8hZfh6DVUakiltL+Sg=
+X-Google-Smtp-Source: ABdhPJzzl3KKRZNsgrJB42cLcqVrutE/Mw/Vnr1JdRAqHqqKHS25ZuAcCvBkzcKH8ALIhZZX3iVwgg==
+X-Received: by 2002:a17:906:d9d1:: with SMTP id qk17mr528224ejb.52.1615423005848;
+        Wed, 10 Mar 2021 16:36:45 -0800 (PST)
+Received: from skbuf ([188.25.219.167])
+        by smtp.gmail.com with ESMTPSA id k9sm414594edo.30.2021.03.10.16.36.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 16:36:45 -0800 (PST)
+Date:   Thu, 11 Mar 2021 02:36:44 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] net: dsa: bcm_sf2: Qualify phydev->dev_flags based
+ on port
+Message-ID: <20210311003644.tmfk6klpojrp66hg@skbuf>
+References: <20210310221758.2969808-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
- <6c542548-cc16-af68-c755-df52bd13b209@marcan.st> <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
- <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st> <CACRpkdbQks5pRFNHkNLVvLHCBhh0XCv7pHYq25EVAbU60PcwsA@mail.gmail.com>
- <0a26713a-8988-1713-4358-bc62364b9e25@marcan.st>
-In-Reply-To: <0a26713a-8988-1713-4358-bc62364b9e25@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 11 Mar 2021 01:36:39 +0100
-Message-ID: <CACRpkda9f-BNmu-CaNsghnDoOcSXvvvji=tag2Xos+tg_nNZ0w@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To:     Hector Martin <marcan@marcan.st>
-Cc:     David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Arnd Bergmann <arnd@linaro.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310221758.2969808-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 2:52 PM Hector Martin <marcan@marcan.st> wrote:
+On Wed, Mar 10, 2021 at 02:17:58PM -0800, Florian Fainelli wrote:
+> Similar to commit 92696286f3bb37ba50e4bd8d1beb24afb759a799 ("net:
+> bcmgenet: Set phydev->dev_flags only for internal PHYs") we need to
+> qualify the phydev->dev_flags based on whether the port is connected to
+> an internal or external PHY otherwise we risk having a flags collision
+> with a completely different interpretation depending on the driver.
+> 
+> Fixes: aa9aef77c761 ("net: dsa: bcm_sf2: communicate integrated PHY revision to PHY driver")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/net/dsa/bcm_sf2.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
+> index 1277e5f48b7f..321924a241f8 100644
+> --- a/drivers/net/dsa/bcm_sf2.c
+> +++ b/drivers/net/dsa/bcm_sf2.c
+> @@ -643,7 +643,10 @@ static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
+>  	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
+>  	 * the REG_PHY_REVISION register layout is.
+>  	 */
+> -	return priv->hw_params.gphy_rev;
+> +	if (priv->int_phy_mask & BIT(port))
+> +		return priv->hw_params.gphy_rev;
+> +	else
+> +		return 0;
+>  }
+>  
+>  static void bcm_sf2_sw_validate(struct dsa_switch *ds, int port,
+> -- 
+> 2.25.1
+> 
 
-> This relies on having a secure boot chain to start with (otherwise you
-> can just bypass policy that way; the RPMB is merely storage to give you
-> anti-rollback properties, it can't enforce anything itself). So you
-> would have to have a laptop with a fully locked down secure boot, which
-> can only boot some version of Linux signed by you until, say, LUKS
-> decryption. And then the tooling around that needs to be integrated with
-> RPMB, to use it as an attempt counter.
+Checkpatch probably tells you that "else" statements are not useful
+after "return", but either way, this is good.
 
-Yes and no. For secure boot yes. For other use cases it can
-still be useful.
-
-The way I understand it, there are people (not me) with secure boot
-ambitions but I wouldn't say that is the only use case, see below.
-
-> But now this ends up having to involve userspace anyway; the kernel key
-> stuff doesn't support policy like this, does it? So having the kernel
-> automagically use RPMB wouldn't get us there.
-
-Yes, you are right, I had the wrong idea. It needs to be something
-the user (or the users agent such as an organization) decides to
-make use of, and it is policy so it should be in userspace. We
-may standardize the key format on the device though.
-
-> I may be wrong on the details here, but as far as I know RPMB is
-> strictly equivalent to a simple secure increment-only counter in what it
-> buys you. The stuff about writing data to it securely is all a red
-> herring - you can implement secure storage elsewhere, and with secure
-> storage + a single secure counter, you can implement anti-rollback.
->
-> It is not intended to store keys in a way that is somehow safer than
-> other mechanisms. After all, you need to securely store the RPMB key to
-> begin with; you might as well use that to encrypt a keystore on any
-> random block device.
-
-The typical use-case mentioned in one reference is to restrict
-the number of password/pin attempts and  combine that with
-secure time to make sure that longer and longer intervals are
-required between password attempts.
-
-This seems pretty neat to me.
-
-> But RPMB does not enforce any of this policy for you. RPMB only gives
-> you a primitive: the ability to have storage that cannot be externally
-> rolled back. So none of this works unless the entire system is set up to
-> securely boot all the way until the drive unlock happens, and there are
-> no other blatant code execution avenues.
-
-This is true for firmware anti-rollback or say secure boot.
-
-But RPMB can also be used for example for restricting the
-number of PIN attempts.
-
-A typical attack vector on phones (I think candybar phones
-even) was a robot that was punching PIN codes to unlock
-the phone, combined with an electronic probe that would
-cut the WE (write enable) signal to the flash right after
-punching a code. The counter was stored in the flash.
-
-(A bit silly example as this can be countered by reading back
-the counter from flash and checking etc, but you get the idea,
-various versions of this attack is possible,)
-
-With RPMB this can be properly protected against because
-the next attempt can not be made until after the RPMB
-monotonic counter has been increased.
-
-Of course the system can be compromised in other ways,
-(like, maybe it doesn't even have secure boot or even
-no encrypted drive) but this is one of the protection
-mechanisms that can plug one hole.
-
-It is thus a countermeasure to keyboard emulators and other
-evil hardware trying to brute force their way past screen
-locks and passwords. Such devices exist, sadly.
-
-> There isn't even any encryption involved in the protocol, so all the
-> data stored in the RPMB is public and available to any attacker.
-
-You need to pass the symmetric key to increase a counter
-and store a new "key" (data chunk, 256 bytes). But as you say
-one can read it without the symmetric key.
-
-AFAICT that is not a problem for any use case for RPMB.
-
-> So unless the kernel grows a subsystem/feature to enforce complex key
-> policies (with things like use counts, retry times, etc), I don't think
-> there's a place to integrate RPMB kernel-side. You still need a trusted
-> userspace tool to glue it all together.
-
-Yes, I understand such ambitions may exist and pretty much why
-I CC the keyring people. So the question is whether they think
-that is something they would go and use for e.g. passphrase
-retries.
-
-Yours,
-Linus Walleij
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
