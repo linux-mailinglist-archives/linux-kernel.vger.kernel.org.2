@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75023370DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467FC3370E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhCKLJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:09:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44370 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232519AbhCKLJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:09:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615460956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Ftb4gg7aNzOFmaBhKRMtFjVDjZpix86WNXDo3VsIpM=;
-        b=TEB0emmNTwLphzFCW5mCrb6GRxhndTYFCHtZn9z7EFbHx5KgICDlDzhZHOUzQNksX4aGfZ
-        36L/3kX5dBoVGnMvkZMQV5hOiPRdoZfroHqtaleJIP3UjgAnnKSk6kxGDJmKQV6MqOuGJ5
-        nUqe+9rfadyyqC5zPHWIP0JoSaswsyc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3C201AB8C;
-        Thu, 11 Mar 2021 11:09:16 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 12:09:15 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, tglx@linutronix.de,
-        john.ogness@linutronix.de, urezki@gmail.com, ast@fb.com,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
- in_atomic use
-Message-ID: <YEn6W0RcjNiP0N0P@dhcp22.suse.cz>
-References: <20210311021321.127500-1-mike.kravetz@oracle.com>
- <YEnY5hWLT/en7kw1@hirez.programming.kicks-ass.net>
- <YEncYrWCVn2/20/C@dhcp22.suse.cz>
- <YEnjqLpGU2LHaysv@hirez.programming.kicks-ass.net>
- <YEnmmK42kpeB3Ho4@dhcp22.suse.cz>
- <YEnochPwIyAsiEWS@hirez.programming.kicks-ass.net>
+        id S232526AbhCKLLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232335AbhCKLK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 06:10:27 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42702C061574;
+        Thu, 11 Mar 2021 03:10:27 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id f12so804908qtq.4;
+        Thu, 11 Mar 2021 03:10:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4FDhkUkdj8fWqlipDBp6WuM7/UyISTb34fe+zJutuhk=;
+        b=P849DNFgS5nte6HYXGD6ebAhhBZ3CyFnv9N3Sr2OhrHYwPjZon8k1Uf09nEsePPWI0
+         H9dmyx+EEhFA/GBdul8L0iS9ImrDHwqzKxTUxo7LNAZ4EBKimkA8s4dQS0umgEhbgttx
+         jRTxH4Wng6J+VJxQ4lnEAxHZe3iMCaQMx9n22CblexjSVPeCf+1Nl4XSIsdSbNdMbWdx
+         i5ZhN1Ux4/9F8jxSWEX+T5YsVD+Y/92mIsKAy2YM0NsJSyw4CDCt1snVu0JcpbWQsBOc
+         wvKxY6zBFQwDQAV1K40PCqBou18XW6/Fmbt1sZ4xYK0NirvYCvAJ0nxsL+CcWem4M5TY
+         F93g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=4FDhkUkdj8fWqlipDBp6WuM7/UyISTb34fe+zJutuhk=;
+        b=LZe8mrbt3dxu9TItngECZrR/KjoiYm3guq2QYb7u376he988e/AzfeXvHPfYcKhSJY
+         gUfKJK1nrWRJWMi8v7Vv68s9E+nP3EtW7NDHGHbs0FRz3Ya1qaurGO8H5EvNy1eL8IX/
+         DzPaUkUNFT4k6Iz5vVkbnCk4wZf3wzedrgJrrWLtyphfJya4Ay7sR7px+d1Gvknb581Q
+         8dnM7L8SkidZYXXm0F0MJ+NlGYNhfIT5vEDbEcLMjTwxVy3fTL84lpTonwQdN/wqbx6L
+         ynZdhGL/8SM7P6OOwX/TiAU6YATVhBFLGS/kYNccvIhQJ/DBcojO4zlBLMggmKItecUi
+         9GKA==
+X-Gm-Message-State: AOAM530blBrq87pkPABsZHGkI4GzzcOI3bG486VBXX8kl0OVQY6CGbBF
+        0x7cLjvbSZPPw0noHumKO1k=
+X-Google-Smtp-Source: ABdhPJzAmUcpvcKbe7oVuT3jh2pvL8XEzD3mV8sjVbg+GAQtSR/Ff9hDTjoyaSog8q0e8a30rdRYew==
+X-Received: by 2002:ac8:4314:: with SMTP id z20mr6848730qtm.127.1615461026174;
+        Thu, 11 Mar 2021 03:10:26 -0800 (PST)
+Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
+        by smtp.gmail.com with ESMTPSA id p7sm1673704qkc.75.2021.03.11.03.10.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 03:10:25 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 11 Mar 2021 06:10:25 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com
+Subject: Re: [PATCH] cgroup-v2: Add taskstats counters in cgroup.stat
+Message-ID: <YEn6od+CCVjNZIS9@slm.duckdns.org>
+References: <20210311061752.310831-1-zhouchengming@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YEnochPwIyAsiEWS@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210311061752.310831-1-zhouchengming@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11-03-21 10:52:50, Peter Zijlstra wrote:
-> On Thu, Mar 11, 2021 at 10:44:56AM +0100, Michal Hocko wrote:
-> > On Thu 11-03-21 10:32:24, Peter Zijlstra wrote:
-> > > The whole changelog reads like a trainwreck, but akpm already commented
-> > > on that. I picked out a small factual incorrectness, simply because if
-> > > you can't get that right, the whole argument looses weight.
-> > 
-> > Is there any reason why in_atomic || irq_disabled wouldn't work
-> > universally?
-> 
-> I just explained to you how you really wanted:
-> 
->   in_atomic() && !irq_disabled()
+On Thu, Mar 11, 2021 at 02:17:52PM +0800, Chengming Zhou wrote:
+> We have the netlink CGROUPSTATS_CMD_GET interface to get taskstats
+> of the cgroup on v1, but haven't the equivalent interface on v2,
+> making it difficult to calculate the per-cgroup cpu load in cadvisor
+> or implement the cgroup proc interface in lxcfs, like /proc/loadavg.
 
-Sorry for being dense but I do not follow. You have provided the
-following example
-  spin_lock(&A);
-  <IRQ>
-        spin_lock(&A);
+So, this is what the PSI metrics are for and we've been using it for that
+for quite a while now. I'd much prefer not adding something duplicate (and
+incomplete).
 
-if A == hugetlb_lock then we should never reenter with
-free_huge_page
-	if (in_atomic() || irq_disabled())
-		schedule_in_wq();
-	else
-		free_directly()
+Thanks.
 
-because hugetlb_lock is never held in irq context other than from
-put_page (aka the above) path which will explicitly defer the handling and
-thus the lock to a different context. We need to check for irq_disabled
-because of the sleeping paths in the freeing path. Or do I miss
-something?
-
-From the code simplicity POV (and hugetlb has grown a lot of complexity)
-it would be really easiest to make sure __free_huge_page to be called
-from a non-atomic process context. There are few ways to do that
-- defer each call to a WQ - user visible which sucks
-- defer from atomic or otherwise non-sleeping contextx - requires
-  reliable in_atomic AFAICS
-- defer sleeping operations - makes the code flow more complex and it
-  would be again user visible in some cases.
-
-So I would say we are in "pick your own poison" kind of situation.
 -- 
-Michal Hocko
-SUSE Labs
+tejun
