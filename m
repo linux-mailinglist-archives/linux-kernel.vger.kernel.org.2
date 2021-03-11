@@ -2,62 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92871336D25
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23175336D2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhCKHeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:34:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55214 "EHLO mail.kernel.org"
+        id S231915AbhCKHf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:35:29 -0500
+Received: from mga05.intel.com ([192.55.52.43]:29828 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231631AbhCKHdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:33:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05DDA64FA6;
-        Thu, 11 Mar 2021 07:33:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615448025;
-        bh=7dTehs9P2eSp8sPbhZSelcrxKBy+711FsOPQ49ldA2M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oQrojNVlTFN7S2w7V6r70oZ6JR7PULc6szKdgpvs5dN2lZT1ILTgl2y4wcW2Eiw5z
-         T+OoyGSB4CaFAkvbVt9MfHkp/VVSEYzfSsF51gsA4ffmBakBn2BJgewmLidaee8pul
-         j8C3XGKtcv2fvkenUfOl8nPfLi1clTc7ePLBcBaU=
-Date:   Thu, 11 Mar 2021 08:33:42 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Li Li <dualli@chromium.org>
-Cc:     dualli@google.com, tkjos@google.com, christian@brauner.io,
-        arve@android.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
-        surenb@google.com, joel@joelfernandes.org, kernel-team@android.com
-Subject: Re: [PATCH v1 1/3] binder: BINDER_FREEZE ioctl
-Message-ID: <YEnH1qd527g/neY4@kroah.com>
-References: <20210310225251.2577580-1-dualli@chromium.org>
- <20210310225251.2577580-2-dualli@chromium.org>
+        id S231805AbhCKHem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:34:42 -0500
+IronPort-SDR: CAEDVrC4pyi8RRkqz7JmnAxtcvPczXDXHRQx71oJBe97+wK3vHI9lcBS6F/xwj4lJT0FPL5Y+c
+ FzDK/pbMvJ2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="273666471"
+X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
+   d="scan'208";a="273666471"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:34:39 -0800
+IronPort-SDR: NuRQBgchhrV+Vt6dNKgNTu/EnK2Uk6O5ySowyrfz123EJac6kux1f+hM1li+qNGkFydBecweTA
+ XiJ26AKXSH9g==
+X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
+   d="scan'208";a="410515964"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.249.170.224]) ([10.249.170.224])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:34:36 -0800
+Subject: Re: [PATCH V3 1/6] vDPA/ifcvf: get_vendor_id returns a device
+ specific vendor id
+To:     Jason Wang <jasowang@redhat.com>,
+        Zhu Lingshan <lingshan.zhu@linux.intel.com>, mst@redhat.com,
+        lulu@redhat.com, leonro@nvidia.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210310090052.4762-1-lingshan.zhu@intel.com>
+ <20210310090052.4762-2-lingshan.zhu@intel.com>
+ <ff5fc8f9-f886-bd2a-60cc-771c628c6c4b@redhat.com>
+ <5f2d915f-e1b0-c9eb-9fc8-4b64f5d8cd0f@linux.intel.com>
+ <05e3fbc9-be49-a208-19a4-85f891323312@redhat.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Message-ID: <a5b0c4e1-dbca-22d2-cce5-19451388ae86@intel.com>
+Date:   Thu, 11 Mar 2021 15:34:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310225251.2577580-2-dualli@chromium.org>
+In-Reply-To: <05e3fbc9-be49-a208-19a4-85f891323312@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 02:52:49PM -0800, Li Li wrote:
->  	if (target_proc) {
->  		binder_inner_proc_lock(target_proc);
-> +		target_proc->outstanding_txns--;
-> +		WARN_ON(target_proc->outstanding_txns < 0);
 
-WARN_* is a huge crutch, please just handle stuff like this properly and
-if you really need to, warn userspace (but what can they do about it?)
 
-You also just rebooted all systems that have panic-on-warn set, so if
-this can be triggered by userspace, you caused a DoS of things :(
+On 3/11/2021 2:13 PM, Jason Wang wrote:
+>
+> On 2021/3/11 12:21 下午, Zhu Lingshan wrote:
+>>
+>>
+>> On 3/11/2021 11:23 AM, Jason Wang wrote:
+>>>
+>>> On 2021/3/10 5:00 下午, Zhu Lingshan wrote:
+>>>> In this commit, ifcvf_get_vendor_id() will return
+>>>> a device specific vendor id of the probed pci device
+>>>> than a hard code.
+>>>>
+>>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>>>> ---
+>>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 ++++-
+>>>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
+>>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>> index fa1af301cf55..e501ee07de17 100644
+>>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>> @@ -324,7 +324,10 @@ static u32 ifcvf_vdpa_get_device_id(struct 
+>>>> vdpa_device *vdpa_dev)
+>>>>     static u32 ifcvf_vdpa_get_vendor_id(struct vdpa_device *vdpa_dev)
+>>>>   {
+>>>> -    return IFCVF_SUBSYS_VENDOR_ID;
+>>>> +    struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
+>>>> +    struct pci_dev *pdev = adapter->pdev;
+>>>> +
+>>>> +    return pdev->subsystem_vendor;
+>>>>   }
+>>>
+>>>
+>>> While at this, I wonder if we can do something similar in 
+>>> get_device_id() if it could be simple deduced from some simple math 
+>>> from the pci device id?
+>>>
+>>> Thanks
+>> Hi Jason,
+>>
+>> IMHO, this implementation is just some memory read ops, I think other 
+>> implementations may not save many cpu cycles, an if cost at least 
+>> three cpu cycles.
+>>
+>> Thanks!
+>
+>
+> Well, I meant whehter you can deduce virtio device id from 
+> pdev->subsystem_device.
+>
+> Thanks
+Oh, sure, I get you
+>
+>
+>>>
+>>>
+>>>>     static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
+>>>
+>>
+>
 
-So please remove all of the WARN_ON() you add in this patch series to
-properly handle the error conditions and deal with them correctly.
-
-And if these were here just for debugging, hopefully the code works
-properly now and you do not need debugging anymore so they can all just
-be dropped.
-
-thanks,
-
-greg k-h
