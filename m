@@ -2,284 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE90D337E9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 823E1337EA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhCKUAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 15:00:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhCKUA3 (ORCPT
+        id S230346AbhCKUCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 15:02:51 -0500
+Received: from [212.63.208.185] ([212.63.208.185]:43780 "EHLO
+        mail.marcansoft.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229796AbhCKUCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 15:00:29 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A94C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 12:00:28 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id x4so35112375lfu.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 12:00:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=qtec.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SbxCwEPhXTipwracNxwkGPbYwqU01oOWhlYMlt67ob0=;
-        b=g4wuqfDT6yqW21EUE3jI/TwdL9UysmEFPFFc0KI16CPZ5GX62Tg2hhOBacMT6lMOSU
-         W0rhGiUBKwNvF+JFFqk2/wbaCOpwKqHTtD1Yy6aD1zIMDbLRXs4EhRWFlJTq9jMVLVWV
-         KufGlWvVa/hBybM+MQxPoeSyWYONo9xLAZkPtbLTUTazQIG2J9FssjWI5Q6KTqpjvY4i
-         sxWxigNC05xO4vzsFuffnu4wjrpbVzXG/sR36BLf5w7uSJ/qCYg+RskyXGqxl27TpPaw
-         v29E4IeHOsZKIltNCWXZu/oJ/DT8TtR5JafaQNhQ6NLK+YTdsNAWES0R/QHSHbzdpDlS
-         UGLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SbxCwEPhXTipwracNxwkGPbYwqU01oOWhlYMlt67ob0=;
-        b=getT21dg/4xg8+0Jh51GmahHWByZ5FfuOyHJ6eC0lAQXhbRPx7Yb3Cu3oO0SRnkQAt
-         v97r7ENFeudAL46pbRWQe89jQaT4SWszY956yWKSdvsHtoljMxIW0wQyYT5eeUMXOVY1
-         dwDlhHeAjZqZguk17B3548K1YhOUKK+33bS/fqSyQDzeMchNoSkEJddoM1GJa0Ow+INK
-         xtZyJrFugox3cnbfruPaRjldIFzQf0V1HPkPtagvo0Ul9JFAHDiuAuOE40MHtqCqG87I
-         qkQICxbX5gUlkYL7z6DC0vYboLLOUii/UILEQuwPsmsUVrxQCCLq/sibKnLKTQOVk/lB
-         qHGA==
-X-Gm-Message-State: AOAM533JK+Jz7jAtJUzxQoUUL9zbTcBQQjx0SnyDKMWA6M8lPW44L0sv
-        y3VizOvn9GdndBkaliWteb+hEfkFQ9au+TDgq3nOxQ==
-X-Google-Smtp-Source: ABdhPJwUWx6yv6QoL+sdeFdwT46IgdrGZo0xPSLBqOwVgwjh8UtayMw7POod04bYIInOkF8l0Ybp+hSkgKgWf+lG0P0=
-X-Received: by 2002:a19:ec13:: with SMTP id b19mr3292972lfa.238.1615492826763;
- Thu, 11 Mar 2021 12:00:26 -0800 (PST)
+        Thu, 11 Mar 2021 15:02:37 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 7A616424D9;
+        Thu, 11 Mar 2021 20:02:24 +0000 (UTC)
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Arnd Bergmann <arnd@linaro.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Ruchika Gupta <ruchika.gupta@linaro.org>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+References: <20210303135500.24673-1-alex.bennee@linaro.org>
+ <20210303135500.24673-2-alex.bennee@linaro.org>
+ <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
+ <20210305075131.GA15940@goby>
+ <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
+ <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
+ <6c542548-cc16-af68-c755-df52bd13b209@marcan.st>
+ <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
+ <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
+ <CACRpkdbQks5pRFNHkNLVvLHCBhh0XCv7pHYq25EVAbU60PcwsA@mail.gmail.com>
+ <0a26713a-8988-1713-4358-bc62364b9e25@marcan.st>
+ <CACRpkda9f-BNmu-CaNsghnDoOcSXvvvji=tag2Xos+tg_nNZ0w@mail.gmail.com>
+ <32bdceb1-e70d-7481-96e3-a064a7108eb9@marcan.st>
+ <CACRpkdZ_-rqGBUOxUcBPeqVkLzX=Q9pjO9M+zY20-S9tNXAE0Q@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB)
+ subsystem
+Message-ID: <d7f8a732-7a44-f609-52dc-3ba824a3d192@marcan.st>
+Date:   Fri, 12 Mar 2021 05:02:22 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210310163655.2591893-1-daniel@qtec.com> <CADnq5_PmbXBaziCEqRODb_DvtKaw9ucXXjkdmdj9N_R8P-9Jcw@mail.gmail.com>
- <CAH1Ww+T4WwLzg_nnF=1sjm9LW9wCjFb0X9c=qmuubvMqJdW4PA@mail.gmail.com>
- <CAH1Ww+QiAyfQL_bf1u=zLiT=ayKFWA0Fr2n5sBHUxfpzxcPbrg@mail.gmail.com>
- <CAN22YZcnMzefgHu9FVPGEf73SKjar2tLJO-jvpYAqNJSH4F_qA@mail.gmail.com> <CADnq5_N0vvZZU9sNrfKSocXNzdMn8+PpVGNiPcE2XC6OkmJmwA@mail.gmail.com>
-In-Reply-To: <CADnq5_N0vvZZU9sNrfKSocXNzdMn8+PpVGNiPcE2XC6OkmJmwA@mail.gmail.com>
-From:   Daniel Gomez <daniel@qtec.com>
-Date:   Thu, 11 Mar 2021 21:00:15 +0100
-Message-ID: <CAH1Ww+SLckpBjiH=6FOMoougjAfqWzO45qYoD1bb6s_fy=dr3A@mail.gmail.com>
-Subject: Re: [PATCH]] drm/amdgpu/gfx9: add gfxoff quirk
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alexandre Desnoyers <alex@qtec.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Huang Rui <ray.huang@amd.com>, Nirmoy Das <nirmoy.das@amd.com>,
-        Dennis Li <Dennis.Li@amd.com>, Monk Liu <Monk.Liu@amd.com>,
-        Yintian Tao <yttao@amd.com>, Guchun Chen <guchun.chen@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACRpkdZ_-rqGBUOxUcBPeqVkLzX=Q9pjO9M+zY20-S9tNXAE0Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 at 17:10, Alex Deucher <alexdeucher@gmail.com> wrote:
->
-> On Thu, Mar 11, 2021 at 10:02 AM Alexandre Desnoyers <alex@qtec.com> wrote:
-> >
-> > On Thu, Mar 11, 2021 at 2:49 PM Daniel Gomez <daniel@qtec.com> wrote:
-> > >
-> > > On Thu, 11 Mar 2021 at 10:09, Daniel Gomez <daniel@qtec.com> wrote:
-> > > >
-> > > > On Wed, 10 Mar 2021 at 18:06, Alex Deucher <alexdeucher@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Mar 10, 2021 at 11:37 AM Daniel Gomez <daniel@qtec.com> wrote:
-> > > > > >
-> > > > > > Disabling GFXOFF via the quirk list fixes a hardware lockup in
-> > > > > > Ryzen V1605B, RAVEN 0x1002:0x15DD rev 0x83.
-> > > > > >
-> > > > > > Signed-off-by: Daniel Gomez <daniel@qtec.com>
-> > > > > > ---
-> > > > > >
-> > > > > > This patch is a continuation of the work here:
-> > > > > > https://lkml.org/lkml/2021/2/3/122 where a hardware lockup was discussed and
-> > > > > > a dma_fence deadlock was provoke as a side effect. To reproduce the issue
-> > > > > > please refer to the above link.
-> > > > > >
-> > > > > > The hardware lockup was introduced in 5.6-rc1 for our particular revision as it
-> > > > > > wasn't part of the new blacklist. Before that, in kernel v5.5, this hardware was
-> > > > > > working fine without any hardware lock because the GFXOFF was actually disabled
-> > > > > > by the if condition for the CHIP_RAVEN case. So this patch, adds the 'Radeon
-> > > > > > Vega Mobile Series [1002:15dd] (rev 83)' to the blacklist to disable the GFXOFF.
-> > > > > >
-> > > > > > But besides the fix, I'd like to ask from where this revision comes from. Is it
-> > > > > > an ASIC revision or is it hardcoded in the VBIOS from our vendor? From what I
-> > > > > > can see, it comes from the ASIC and I wonder if somehow we can get an APU in the
-> > > > > > future, 'not blacklisted', with the same problem. Then, should this table only
-> > > > > > filter for the vendor and device and not the revision? Do you know if there are
-> > > > > > any revisions for the 1002:15dd validated, tested and functional?
-> > > > >
-> > > > > The pci revision id (RID) is used to specify the specific SKU within a
-> > > > > family.  GFXOFF is supposed to be working on all raven variants.  It
-> > > > > was tested and functional on all reference platforms and any OEM
-> > > > > platforms that launched with Linux support.  There are a lot of
-> > > > > dependencies on sbios in the early raven variants (0x15dd), so it's
-> > > > > likely more of a specific platform issue, but there is not a good way
-> > > > > to detect this so we use the DID/SSID/RID as a proxy.  The newer raven
-> > > > > variants (0x15d8) have much better GFXOFF support since they all
-> > > > > shipped with newer firmware and sbios.
-> > > >
-> > > > We took one of the first reference platform boards to design our
-> > > > custom board based on the V1605B and I assume it has one of the early 'unstable'
-> > > > raven variants with RID 0x83. Also, as OEM we are in control of the bios
-> > > > (provided by insyde) but I wasn't sure about the RID so, thanks for the
-> > > > clarification. Is there anything we can do with the bios to have the GFXOFF
-> > > > enabled and 'stable' for this particular revision? Otherwise we'd need to add
-> > > > the 0x83 RID to the table. Also, there is an extra ']' in the patch
-> > > > subject. Sorry
-> > > > for that. Would you need a new patch in case you accept it with the ']' removed?
-> > > >
-> > > > Good to hear that the newer raven versions have better GFXOFF support.
-> > >
-> > > Adding Alex Desnoyer to the loop as he is the electronic/hardware and
-> > > bios responsible so, he can
-> > > provide more information about this.
-> >
-> > Hello everyone,
-> >
-> > We, Qtechnology, are the OEM of the hardware platform where we
-> > originally discovered the bug.  Our platform is based on the AMD
-> > Dibbler V-1000 reference design, with the latest Insyde BIOS release
-> > available for the (now unsupported) Dibbler platform.  We have the
-> > Insyde BIOS source code internally, so we can make some modifications
-> > as needed.
-> >
-> > The last test that Daniel and myself performed was on a standard
-> > Dibbler PCB rev.B1 motherboard (NOT our platform), and using the
-> > corresponding latest AMD released BIOS "RDB1109GA".  As Daniel wrote,
-> > the hardware lockup can be reproduced on the Dibbler, even if it has a
-> > different RID that our V1605B APU.
-> >
-> > We also have a Neousys Technology POC-515 embedded computer (V-1000,
-> > V1605B) in our office.  The Neousys PC also uses Insyde BIOS.  This
-> > computer is also locking-up in the test.
-> > https://www.neousys-tech.com/en/product/application/rugged-embedded/poc-500-amd-ryzen-ultra-compact-embedded-computer
-> >
-> >
-> > Digging into the BIOS source code, the only reference to GFXOFF is in
-> > the SMU and PSP firmware release notes, where some bug fixes have been
-> > mentioned for previous SMU/PSP releases.  After a quick "git grep -i
-> > gfx | grep -i off", there seems to be no mention of GFXOFF in the
-> > Insyde UEFI (inluding AMD PI) code base.  I would appreciate any
-> > information regarding BIOS modification needed to make the GFXOFF
-> > feature stable.  As you (Alex Deucher) mentionned, it should be
-> > functional on all AMD Raven reference platforms.
-> >
->
-> It's handled by the firmwares carried by the sbios.  I'm not sure what
-> versions off hand.  Probably want to make sure you have the latest
-> ones.  Do you have an AMD partner contact?  It might be best to bring
-> this up with them.
-I'm sure we were using the latest but let us double-check with our
-AMD partner and insyde just in case.
->
-> Regarding the issues you are seeing is this a general issue with all
-> workloads that use the GFX shader cores?  Or just specific workloads?
-> If it's just compute workloads, you might try this patch.  It may fix
-> the issue for you.
-Thanks Alex for the patch. I think it's kind of a general issue with all the
-workloads but the way we've been able to reproduce it was with the
-MatrixMultiplication test (from AMD) and clinfo. With the patch, I'm
-still able to reproduce the problem in our custom board. I'll check it
-tomorrow on the dribbler.
->
-> Alex
->
->
-> >
-> > Regards,
-> >
-> > Alexandre Desnoyers
-> >
-> >
-> > >
-> > > I've now done a test on the reference platform (dibbler) with the
-> > > latest bios available
-> > > and the hw lockup can be also reproduced with the same steps.
-> > >
-> > > For reference, I'm using mainline kernel 5.12-rc2.
-> > >
-> > > [    5.938544] [drm] initializing kernel modesetting (RAVEN
-> > > 0x1002:0x15DD 0x1002:0x15DD 0xC1).
-> > > [    5.939942] amdgpu: ATOM BIOS: 113-RAVEN-11
-> > >
-> > > As in the previous cases, the clocks go to 100% of usage when the hang occurs.
-> > >
-> > > However, when the gpu hangs, dmesg output displays the following:
-> > >
-> > > [ 1568.279847] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx
-> > > timeout, signaled seq=188, emitted seq=191
-> > > [ 1568.434084] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* Process
-> > > information: process Xorg pid 311 thread Xorg:cs0 pid 312
-> > > [ 1568.279847] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx
-> > > timeout, signaled seq=188, emitted seq=191
-> > > [ 1568.434084] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* Process
-> > > information: process Xorg pid 311 thread Xorg:cs0 pid 312
-> > > [ 1568.507000] amdgpu 0000:01:00.0: amdgpu: GPU reset begin!
-> > > [ 1628.491882] rcu: INFO: rcu_sched self-detected stall on CPU
-> > > [ 1628.491882] rcu:     3-...!: (665 ticks this GP)
-> > > idle=f9a/1/0x4000000000000000 softirq=188533/188533 fqs=15
-> > > [ 1628.491882] rcu: rcu_sched kthread timer wakeup didn't happen for
-> > > 58497 jiffies! g726761 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-> > > [ 1628.491882] rcu:     Possible timer handling issue on cpu=2
-> > > timer-softirq=55225
-> > > [ 1628.491882] rcu: rcu_sched kthread starved for 58500 jiffies!
-> > > g726761 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
-> > > [ 1628.491882] rcu:     Unless rcu_sched kthread gets sufficient CPU
-> > > time, OOM is now expected behavior.
-> > > [ 1628.491882] rcu: RCU grace-period kthread stack dump:
-> > > [ 1628.491882] rcu: Stack dump where RCU GP kthread last ran:
-> > > [ 1808.518445] rcu: INFO: rcu_sched self-detected stall on CPU
-> > > [ 1808.518445] rcu:     3-...!: (2643 ticks this GP)
-> > > idle=f9a/1/0x4000000000000000 softirq=188533/188533 fqs=15
-> > > [ 1808.518445] rcu: rcu_sched kthread starved for 238526 jiffies!
-> > > g726761 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=2
-> > > [ 1808.518445] rcu:     Unless rcu_sched kthread gets sufficient CPU
-> > > time, OOM is now expected behavior.
-> > > [ 1808.518445] rcu: RCU grace-period kthread stack dump:
-> > > [ 1808.518445] rcu: Stack dump where RCU GP kthread last ran:
-> > >
-> > > >
-> > > > Daniel
-> > > >
-> > > > >
-> > > > > Alex
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > Logs:
-> > > > > > [   27.708348] [drm] initializing kernel modesetting (RAVEN
-> > > > > > 0x1002:0x15DD 0x1002:0x15DD 0x83).
-> > > > > > [   27.789156] amdgpu: ATOM BIOS: 113-RAVEN-115
-> > > > > >
-> > > > > > Thanks in advance,
-> > > > > > Daniel
-> > > > > >
-> > > > > >  drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c | 2 ++
-> > > > > >  1 file changed, 2 insertions(+)
-> > > > > >
-> > > > > > diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-> > > > > > index 65db88bb6cbc..319d4b99aec8 100644
-> > > > > > --- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-> > > > > > +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-> > > > > > @@ -1243,6 +1243,8 @@ static const struct amdgpu_gfxoff_quirk amdgpu_gfxoff_quirk_list[] = {
-> > > > > >         { 0x1002, 0x15dd, 0x103c, 0x83e7, 0xd3 },
-> > > > > >         /* GFXOFF is unstable on C6 parts with a VBIOS 113-RAVEN-114 */
-> > > > > >         { 0x1002, 0x15dd, 0x1002, 0x15dd, 0xc6 },
-> > > > > > +       /* GFXOFF provokes a hw lockup on 83 parts with a VBIOS 113-RAVEN-115 */
-> > > > > > +       { 0x1002, 0x15dd, 0x1002, 0x15dd, 0x83 },
-> > > > > >         { 0, 0, 0, 0, 0 },
-> > > > > >  };
-> > > > > >
-> > > > > > --
-> > > > > > 2.30.1
-> > > > > >
-> > > > > > _______________________________________________
-> > > > > > dri-devel mailing list
-> > > > > > dri-devel@lists.freedesktop.org
-> > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+On 11/03/2021 23.06, Linus Walleij wrote:
+> Yes. And this is what mobile phone vendors typically did.
+> 
+> But the nature of different electrical attacks made them worried
+> about different schemes involving cutting power and disturbing
+> signals with different probes, so they wanted this counter
+> implemented in hardware and that is why RPMB exists at all
+> (IIUC).
+
+No, prior to RPMB there was no such secure counter at all. The problem 
+is that non-volatile erasable storage (i.e. EEPROM/Flash) is 
+incompatible with modern SoC manufacturing processes, so there is no way 
+to embed a secure counter into the main SoC. And once your counter needs 
+to be external, there needs to be a secure communications protocol to 
+access it. This is what RPMB implements.
+
+For preventing software downgrades, especially of bootloader code, this 
+can be implemented with one-time fuses embedded in the SoC, but there is 
+a limited supply of those. So this doesn't work for things like PIN 
+attempt counters. For that you need a secure external counter.
+
+> It is fine to be of the opinion that this entire piece of hardware
+> is pointless because the same can be achieved using
+> well written software.
+
+You've misunderstood me. RPMB isn't pointless; what I am saying is that 
+if you strip away everything but the counter functionality, you can 
+still build equivalent security guarantees. You still need the counter. 
+There is no way to get that counter without RPMB or something like it 
+(another option is e.g. to use a smartcard IC as a secure element; AIUI 
+modern Apple devices do this). Software alone doesn't work. This is why 
+I wrote that article about how the FBI cracks iPhones; that works 
+because they weren't using a secure rollback-protected storage/counter 
+chip of any kind.
+
+> The position that the kernel community shall just ignore this
+> hardware is a possible outcome of this discussion, but we need
+> to have the discussion anyway, because now a RPMB framework
+> is being promoted. The people who want it will need to sell it to
+> us.
+
+Again, you're kind of misunderstanding me here. I'm not saying the 
+feature is useless. What I'm saying is that, to understand *how* it is 
+useful, it helps if you forget about the read/write commands and treat 
+it as a simple counter.
+
+Once you do that, you'll realize that e.g. putting keys in RPMB doesn't 
+really make sense as a kernel primitive. The usefulness of RPMB is 
+purely in the integration of that counter (which is equivalent to 
+rollback-protected storage) with a policy system. Everything else is 
+icing on the cake; it doesn't create new use cases.
+
+Consider this:
+
+* You have RPMB, but you will use it as a counter only.
+* To use RPMB, you need to have a secure shared key.
+* You use the RPMB key (or a hash, or whatever) to encrypt a GPG key in 
+your filesystem
+* You have a Git repo. This is your secure rollback-protected storage.
+* We assume the filesystem can be potentially read, written, and 
+intercepted.
+
+To read from your rollback-protected storage, you:
+
+* Read the RPMB counter securely
+* Fetch the Git tag named "v%d" with the counter value
+* Ensure the Git tag is correctly signed with your secure GPG key
+* Ensure the commit description of the signed commit is also "v%d"
+
+To write to your rollback protected storage, you:
+
+* Commit your changes to the repository (as a child of the current known 
+good commit, which you know is secure via the prevous read process) with 
+the commit message "v%d" with the counter value + 1
+* Tag it "v%d" with the current counter value + 1, signing the tag with 
+your GPG private key
+* Ensure all changes are flushed to disk
+* Perform an increment operation on the RPMB counter
+
+You have now built a secure, rollback-protected Git repository, with 
+similar security properties to RPMB storage, without using RPMB storage; 
+just a counter.
+
+Just like RPMB storage, the repo is readable without a key.
+Just like RPMB storage, you need to have a secured master key stored 
+somewhere; if the attacker gets your key it is game over.
+Just like RPMB storage, the repo can only be updated (in a way that 
+would be accepted) with the key available
+Just like RPMB storage, the repo cannot be rolled back to a prior 
+version (because it would not match the counter value)
+
+Thus, we can conclude that the storage features of RPMB do not provide 
+additional security properties that cannot be derived from a simple counter.
+
+* Disclaimer: please don't actually deploy this; I'm trying to make a 
+point here, it's 5AM and I'm not claiming this is a perfectly secure 
+design and I haven't missed anything. Please don't design 
+rollback-protected Git repositories without expert review. I am assuming 
+filesystem mutations only happen between operations and handwaving away 
+active attacks, which I doubt Git is designed to be robust against. A 
+scheme like this can be implemented securely with care, but not naively.
+
+>>> With RPMB this can be properly protected against because
+>>> the next attempt can not be made until after the RPMB
+>>> monotonic counter has been increased.
+>>
+>> But this is only enforced by software. If you do not have secure boot,
+>> you can just patch software to allow infinite tries without touching the
+>> RPMB. The RPMB doesn't check PINs for you, it doesn't even gate read
+>> access to data in any way. All it does is promise you cannot make the
+>> counter count down, or make the data stored within go back in time.
+> 
+> This is true, I guess the argument is something along the
+> line that if one link in the chain is weaker, why harden
+> any other link, the chain will break anyway?
+
+This is how security works, yes :-)
+
+I'm not saying hardening a link in the chain is pointless in every case, 
+but in this case it's like heat treating one link in the chain, then 
+joining it to the next one with a ziptie. Only once you at least have 
+the entire chain of steel does it make sense to start thinking about 
+heat treatment.
+
+> I am more of the position let's harden this link if we can
+> and then deal with the others when they come up, i.e.
+> my concern is this piece of the puzzle, even if it is not
+> the centerpiece (maybe the centerpiece is secure boot
+> what do I know).
+
+Well, that's what I'm saying, you do need secureboot for this to make 
+sense :-)
+
+RPMB isn't useless and some systems should implement it; but there's no 
+real way for the kernel to transparently use it to improve security in 
+general (for anyone) without the user being aware. Since any security 
+benefit from RPMB must come from integration with user policy, it 
+doesn't make sense to "well, just do something else with RPMB because 
+it's better than nothing"; just doing "something" doesn't make systems 
+more secure. There needs to be a specific, practical use case that we'd 
+be trying to solve with RPMB here.
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
