@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F43833720B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 631D333720D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhCKMGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:06:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:34118 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233028AbhCKMFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:05:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D541912FC;
-        Thu, 11 Mar 2021 04:05:47 -0800 (PST)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4B1883F793;
-        Thu, 11 Mar 2021 04:05:46 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Subject: [PATCH v3 7/7] sched/fair: Relax task_hot() for misfit tasks
-Date:   Thu, 11 Mar 2021 12:05:27 +0000
-Message-Id: <20210311120527.167870-8-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210311120527.167870-1-valentin.schneider@arm.com>
-References: <20210311120527.167870-1-valentin.schneider@arm.com>
+        id S233044AbhCKMGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232813AbhCKMG3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:06:29 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6248C061574;
+        Thu, 11 Mar 2021 04:06:28 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id k9so39327034lfo.12;
+        Thu, 11 Mar 2021 04:06:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cz3qHn16lIPc6Bvf+yNu/XUkZnLJ8XOdvMZnsOmsGnY=;
+        b=a8DPjScMZmz1pro+pLVDtwvqiGnZRmG6Xms7jxGZ2yv19dDL5etamVTUAwCE5aE5UB
+         WbfnH6YY/EmKPQsJERMn1xtj0OSb//1hnrbLkefJhRdxD9GN/kVO0V4Jsl4c0Vwghv6I
+         g7yYUiaAR9RYkkfJBYpTqBxIDtyeyH5u7v3TR9HbmJbqo+FxEQMpJuZy629zbUSOO1jV
+         xMgr+qePicNIjbQWe1AqK/OplgsPrJUH5ywEeTL23vD/12wK7vtTHnCVnJiMkHygNpHS
+         fRP/TajOeAjwmbeayCi1L85VH8A56VRc27jaTd8TSw/Adpz3OWDLIttY8iFBzhudfEAr
+         0pvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cz3qHn16lIPc6Bvf+yNu/XUkZnLJ8XOdvMZnsOmsGnY=;
+        b=FqUIR1Zrsdmz1FWqex8kXk0b40t+NqpevMYE1ttl3GgDSierKrAdSGW0pbfbT0jSOC
+         38fU25X2PWAY3XIVHDS31YyoEs8IHU0xQjA7AbudHJXW2nOsotjB+n1o6JHngN/BZjwx
+         ul8b5quEr2j5W7CcqKhuchQsYfUwe8B+m75+97//MePB7z3v++yk23D3lGQF6WjOXIbh
+         +Fk0YlA6+hmJtxhQ0f9J9e1uezvTAtJi23tZruP2f0N5vB+xcPVttTh5RcSiBqnplHob
+         YzIcb2z7QQuUz2Ta+c/Yusct0HfEf0jmGoD3vV2Ff+s2K8UfMlZM+xg9/wfrQHjknGX4
+         F5ZA==
+X-Gm-Message-State: AOAM531A80Tqz9jrQmS05zQTNgbtwpLmW5KY4p5c7BO6xUuZoet6oSfc
+        LqmT9goHIUfuDrjVxU78aQQKrxGri/A=
+X-Google-Smtp-Source: ABdhPJz5kk96u5mzTVzWD+Rqjk1vE/7c+3MwUfCcYcQA+Y7MilwieSJz6w4fEDuz7IuHKIpk6czCaQ==
+X-Received: by 2002:a19:22d6:: with SMTP id i205mr2097509lfi.352.1615464387156;
+        Thu, 11 Mar 2021 04:06:27 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id g6sm759501lfh.232.2021.03.11.04.06.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 04:06:26 -0800 (PST)
+Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
+        guillaume.tucker@collabora.com, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
+ <a8a7a0af-895f-9d79-410d-5dd03ebbd6dd@gmail.com>
+ <7714f272-3862-84ac-306d-86363a1c4880@gmail.com>
+ <20210310221707.GB10431@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8c2f5d94-8835-9994-21aa-660df29d383c@gmail.com>
+Date:   Thu, 11 Mar 2021 15:06:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <20210310221707.GB10431@Asurada-Nvidia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consider the following topology:
+11.03.2021 01:17, Nicolin Chen пишет:
+> On Wed, Mar 10, 2021 at 11:22:57PM +0300, Dmitry Osipenko wrote:
+>> 10.03.2021 22:13, Dmitry Osipenko пишет:
+>>> I found that this patch introduced a serious regression on Tegra30 using
+>>> today's linux-next. Tegra30 has two 3d h/w blocks connected in SLI and
+>>> only one of the blocks is now attached to IOMMU domain, meaning that GPU
+>>> is unusable now. All 3d, 2d and display devices share the same "DRM"
+>>> group on Tegra30.
+>>>
+>>> Nicolin, please let me know if have any suggestions. I may take a closer
+>>> look a day later, for now I'll just revert this patch locally. Thanks in
+>>> advance.
+>>>
+>>
+>> Actually, this was easy to fix:
+>>
+>> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+>> index 97eb62f667d2..639d5ceab60b 100644
+>> --- a/drivers/iommu/tegra-smmu.c
+>> +++ b/drivers/iommu/tegra-smmu.c
+>> @@ -853,8 +853,6 @@ static struct iommu_device
+>> *tegra_smmu_probe_device(struct device *dev)
+>>
+>>  			if (err < 0)
+>>  				return ERR_PTR(err);
+>> -
+>> -			break;
+> 
+> Hmm..I don't understand why this "break" causes problems on Tegra30.
+> The older versions that used _find()+configure() had it also, e.g.:
+> https://elixir.bootlin.com/linux/v5.9.16/source/drivers/iommu/tegra-smmu.c#L760
+> 
+> Dmitry, do you have any idea?
+> 
 
-  DIE [          ]
-  MC  [    ][    ]
-       0  1  2  3
+The older variant of tegra_smmu_attach_dev() didn't use fwspec [1], that
+makes the difference. In other words, the older variant of
+tegra_smmu_probe_device() was already buggy, but the bug was masked by
+the tegra_smmu_attach_dev() that didn't use the fwspec.
 
-  capacity_orig_of(x \in {0-1}) < capacity_orig_of(x \in {2-3})
-
-w/ CPUs 2-3 idle and CPUs 0-1 running CPU hogs (util_avg=1024).
-
-When CPU2 goes through load_balance() (via periodic / NOHZ balance), it
-should pull one CPU hog from either CPU0 or CPU1 (this is misfit task
-upmigration). However, should a e.g. pcpu kworker awake on CPU0 just before
-this load_balance() happens and preempt the CPU hog running there, we would
-have, for the [0-1] group at CPU2's DIE level:
-
-o sgs->sum_nr_running > sgs->group_weight
-o sgs->group_capacity * 100 < sgs->group_util * imbalance_pct
-
-IOW, this group is group_overloaded.
-
-Considering CPU0 is picked by find_busiest_queue(), we would then visit the
-preempted CPU hog in detach_tasks(). However, given it has just been
-preempted by this pcpu kworker, task_hot() will prevent it from being
-detached. We then leave load_balance() without having done anything.
-
-Long story short, preempted misfit tasks are affected by task_hot(), while
-currently running misfit tasks are intentionally preempted by the stopper
-task to migrate them over to a higher-capacity CPU.
-
-Align detach_tasks() with the active-balance logic and let it pick a
-cache-hot misfit task when the destination CPU can provide a capacity
-uplift.
-
-Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/fair.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 41cdda7a8ea6..5454429cea7a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7474,6 +7474,17 @@ static int task_hot(struct task_struct *p, struct lb_env *env)
- 	if (env->sd->flags & SD_SHARE_CPUCAPACITY)
- 		return 0;
- 
-+	/*
-+	 * On a (sane) asymmetric CPU capacity system, the increase in compute
-+	 * capacity should offset any potential performance hit caused by a
-+	 * migration.
-+	 */
-+	if (sd_has_asym_cpucapacity(env->sd) &&
-+	    env->idle != CPU_NOT_IDLE &&
-+	    !task_fits_capacity(p, capacity_of(env->src_cpu)) &&
-+	    cpu_capacity_greater(env->dst_cpu, env->src_cpu))
-+		return 0;
-+
- 	/*
- 	 * Buddy candidates are cache hot:
- 	 */
--- 
-2.25.1
-
+[1]
+https://elixir.bootlin.com/linux/v5.10.22/source/drivers/iommu/tegra-smmu.c#L476
