@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1503338191
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901D4338194
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbhCKXhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:37:08 -0500
-Received: from mail-io1-f42.google.com ([209.85.166.42]:35213 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbhCKXgr (ORCPT
+        id S229678AbhCKXiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:38:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhCKXiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:36:47 -0500
-Received: by mail-io1-f42.google.com with SMTP id g27so23852542iox.2;
-        Thu, 11 Mar 2021 15:36:47 -0800 (PST)
+        Thu, 11 Mar 2021 18:38:04 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863F5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:38:04 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id x135so20526682oia.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:38:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y7PZLngnSiOO6tUFoYHe7nczWb/djDzvqn8CynT2y7o=;
+        b=b2rJ6NYdtpvRsYrTydu07Hbmx4KuucnrL02ilCVLMbWyGoSCM5JuPNA0SIk20Buxrw
+         Oh7oUZvjjjC0iQHpcwiYsGwSmlZp3cPbWR34ABrpQwzFL/BM3NX+sV+8FPYzCPOw+ofi
+         VzULisEMofG367pN45L/GSPzAd+IR9TP6WzLklrASPitwJGBnwKsB41AUiiYv8Af4Oag
+         soqwhhbg7skLH9mj/+yzDctmKgkUlK/mjPc53IbweQF4YwS39hFqhrrVqT4JQC8twf9n
+         tzySqGOhOX9aVvGEGiQM9cPpOxzOmfyLIsxdAoV+ujtciMM/eNpufnB5In28l9oJdP0X
+         QWqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TEluSVU381Ra21RcLCeHjZXwMsuJenQrl8kmmWg+LmQ=;
-        b=sSMZVSd7afeAxF56YtJIfZopwXw7mWE/1w4oUwe5hwqkrnVAh0vfOhrBVoJCuOll8F
-         ueKU7wfgxpCWxKHME2eHIsdu8X/gJS5jHU/nJ1ee9NCKVl5mOBsU1KtdWu7VZ5AgCW57
-         dAGFChhLDYUXyVXmujeHDRgvhBE8ShDd/Y0e1MeQAmgFx5B2Nh04JOj2+acEkqpNpJap
-         92CkzA2QBuH6LXWPglw5noQMtuBz1G+REmc8F0aYL+jI6MgGQK7FYiJWAv+hdDUqO+zU
-         T3xvdcnMR0cAamGx9XLfcyue0IYKEYuE5s6RVIwR7v9C028JgsErzuZTIwRf39PESjk8
-         FEew==
-X-Gm-Message-State: AOAM530jat5R6rtQzqZxBNeaDx0QYUrKfC2JgjnS95kjBqKh1YGvWjmr
-        AlIyrE2amLZRUwQJB+fYYL3FuT6rzA==
-X-Google-Smtp-Source: ABdhPJzasXx8vKNyWMagUD52OxJAx/dM4ycm90OSE7oYTr57NDHJc3J9OFsX+/v1Olh2uy99iXqUGg==
-X-Received: by 2002:a5d:8416:: with SMTP id i22mr7909377ion.32.1615505806554;
-        Thu, 11 Mar 2021 15:36:46 -0800 (PST)
-Received: from xps15.herring.priv ([64.188.179.253])
-        by smtp.googlemail.com with ESMTPSA id y9sm1901016ill.15.2021.03.11.15.36.44
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y7PZLngnSiOO6tUFoYHe7nczWb/djDzvqn8CynT2y7o=;
+        b=OM572bAoDlsDiMwC7nBtkiwRyP5J1EV7o0WyR85wMdylOga0pOBeakWsR2hFonbdRm
+         OlfcdwlK56JECKefaNVHZJMzEDdbHuiQ79GIL2o7zBhX0XU7Z5DabMIa2vwndP6PnbhS
+         TB2Sna57ctAYUsw7Co6VuF6remSeFOgrudW9eIZVSRv4oLMzLO/Ix0YwoJSftOSL+l/C
+         3ef2hiHHio6NFxtCW3IUmOun04/WSOkNSwF4S6N0ua9u5wFnFbM3VGvaOYjnb1aoj6fM
+         Ex/BB3A0uflkk3eck6BalEH5hfkpupmENjEAaf6avnso5kJOBrZeD6WVahpeEaW6qPzI
+         Of6Q==
+X-Gm-Message-State: AOAM5317Hfv2P49eoxXLNvMtJ0titNhbG7ddjEn+y93FOz/o4/zjvvwd
+        elyhJq8YVLoBLydS7PyYsOJ8lg==
+X-Google-Smtp-Source: ABdhPJy3trbQfPJf8Jw30MXwWRENujdAMmMOYHCnCoFk8D7mpra/ivKmRip+qDmcJtYBYf2nNtZqnw==
+X-Received: by 2002:a05:6808:140e:: with SMTP id w14mr8230991oiv.176.1615505883760;
+        Thu, 11 Mar 2021 15:38:03 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z8sm987590otp.14.2021.03.11.15.38.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 15:36:45 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH 2/2] kbuild: Enable DT undocumented compatible checks
-Date:   Thu, 11 Mar 2021 16:36:40 -0700
-Message-Id: <20210311233640.1581526-2-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210311233640.1581526-1-robh@kernel.org>
-References: <20210311233640.1581526-1-robh@kernel.org>
+        Thu, 11 Mar 2021 15:38:03 -0800 (PST)
+Date:   Thu, 11 Mar 2021 17:38:01 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 0/6] rpmsg: enable the use of the rpmsg_char device for
+ the Virtio backend
+Message-ID: <YEqp2US8OykaUAa/@builder.lan>
+References: <20210311140413.31725-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311140413.31725-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dt-validate has an option to warn on any compatible strings which don't
-match any schema. The option has recently been improved to fix false
-positives, so let's enable the option. This is useful for tracking
-compatibles which are undocumented or not yet converted to DT schema.
-Previously, the only check of undocumented compatible strings has been
-an imperfect checkpatch.pl check.
+On Thu 11 Mar 08:04 CST 2021, Arnaud Pouliquen wrote:
 
-The option is enabled by default for 'dtbs_check'. This will add more
-warnings, but some platforms are down to only a handful of these
-warnings (good job!).
+> This series is the first step in the division of the series: 
+> "Introduce a generic IOCTL interface for RPMsg channels management"[1]
+> 
+> The main goal here is to enable the RPMsg char interface for
+> the virtio RPMsg backend. 
+> 
+> In addition some patches have been includes in order to document the
+> interface and rename the rpmsg_char_init function.
+> 
+> It also includes Mathieu Poirier's comments made on [1]
+> 
+> Patchsets that should be the next steps:
+>  - Extract the control part of the char dev and create the rpmsg_ctrl.c
+>    file
+>  - Introduce the RPMSG_CREATE_DEV_IOCTL IOCTL to instantiate RPMsg devices
+> 
+> 
+> [1]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=435523
+> 
 
-There's about 100 cases in the binding examples, so the option is
-disabled until these are fixed. In the meantime, they can be checked
-with:
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-make DT_CHECKER_FLAGS=-m dt_binding_check
+Regards,
+Bjorn
 
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Cc: linux-kbuild@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/Makefile | 3 +++
- scripts/Makefile.lib                       | 3 ++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index 81f0b3294c64..bc24ee316726 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -55,6 +55,9 @@ override DTC_FLAGS := \
- 	-Wno-graph_child_address \
- 	-Wno-interrupt_provider
- 
-+# Disable undocumented compatible checks until warning free
-+override DT_CHECKER_FLAGS ?=
-+
- $(obj)/processed-schema-examples.json: $(DT_DOCS) $(src)/.yamllint check_dtschema_version FORCE
- 	$(call if_changed_rule,chkdt)
- 
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index eee59184de64..f11fac1a8e9b 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -339,12 +339,13 @@ $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
- 	$(call if_changed_dep,dtc)
- 
- DT_CHECKER ?= dt-validate
-+DT_CHECKER_FLAGS ?= -m
- DT_BINDING_DIR := Documentation/devicetree/bindings
- # DT_TMP_SCHEMA may be overridden from Documentation/devicetree/bindings/Makefile
- DT_TMP_SCHEMA ?= $(objtree)/$(DT_BINDING_DIR)/processed-schema.json
- 
- quiet_cmd_dtb_check =	CHECK   $@
--      cmd_dtb_check =	$(DT_CHECKER) -u $(srctree)/$(DT_BINDING_DIR) -p $(DT_TMP_SCHEMA) $@
-+      cmd_dtb_check =	$(DT_CHECKER) $(DT_CHECKER_FLAGS) -u $(srctree)/$(DT_BINDING_DIR) -p $(DT_TMP_SCHEMA) $@
- 
- define rule_dtc
- 	$(call cmd_and_fixdep,dtc)
--- 
-2.27.0
-
+> Arnaud Pouliquen (6):
+>   rpmsg: char: Rename rpmsg_char_init to rpmsg_chrdev_init
+>   rpmsg: Move RPMSG_ADDR_ANY in user API
+>   rpmsg: Add short description of the IOCTL defined in UAPI.
+>   rpmsg: char: Use rpmsg_sendto to specify the message destination
+>     address
+>   rpmsg: virtio: Register the rpmsg_char device
+>   rpmsg: char: Return an error if device already open
+> 
+>  drivers/rpmsg/qcom_glink_native.c | 16 ++++++++
+>  drivers/rpmsg/qcom_smd.c          | 16 ++++++++
+>  drivers/rpmsg/rpmsg_char.c        | 11 ++++--
+>  drivers/rpmsg/virtio_rpmsg_bus.c  | 62 ++++++++++++++++++++++++++++---
+>  include/linux/rpmsg.h             |  3 +-
+>  include/uapi/linux/rpmsg.h        | 13 ++++++-
+>  6 files changed, 108 insertions(+), 13 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
