@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D04F3381A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBED3381A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhCKXlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:41:22 -0500
-Received: from mail-io1-f47.google.com ([209.85.166.47]:35625 "EHLO
-        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhCKXlA (ORCPT
+        id S231303AbhCKXlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231284AbhCKXlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:41:00 -0500
-Received: by mail-io1-f47.google.com with SMTP id g27so23861109iox.2;
-        Thu, 11 Mar 2021 15:41:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4IFH0kTzeJg7A+iDC79WbeQk0xgfuMdi+7gcFmh2QEY=;
-        b=hTJEecHH25NaLwey6b5sRqTBh/FRdP1238JLiBhl10tBx/vZV15/UcZK2359DkgSJl
-         ejIy270BjXT2EGEh0VmgTusY4eFC7Agms1xNdvB0rowm6lwtnJ5t2rOBCuw5ajJ7QMEJ
-         0EWz31DDBebj7SWFP/y/kewwLkPnM68BsXuSuWWDiCFqf39kjYTjQbu/+pC5Ixjew9Oy
-         rU6KMfIuJaVx/oNSMphEh2CIQHHJkK5c5mgmCMpJoKWUWBQPT2/vJFhJr2oOr6qakb1j
-         w85YPT4vPw1pA2whFfGDx0R3H5A5I/8aKM10rPoq04bnBaPZ0wcp6rcg+SVGSU8EeOh0
-         dEOw==
-X-Gm-Message-State: AOAM530Plih6bM93gRCVZRskgZ9KDBd8cCIxk2M8NmdciHxkAiGANyS7
-        y3Fp9BGlZmtJrYAfiaTzXG4imqU6+g==
-X-Google-Smtp-Source: ABdhPJwmJHUYmsW9PwM0xgZG/Iwb0eQRDgOcXhhwLpuheItXUTEktHP4fXHEOhhtx5XwpzsBXUB3gA==
-X-Received: by 2002:a6b:d318:: with SMTP id s24mr8240183iob.89.1615506059863;
-        Thu, 11 Mar 2021 15:40:59 -0800 (PST)
-Received: from xps15.herring.priv ([64.188.179.253])
-        by smtp.googlemail.com with ESMTPSA id q20sm33139ilj.56.2021.03.11.15.40.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 15:40:59 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Conor Culhane <conor.culhane@silvaco.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-i3c@lists.infradead.org
-Subject: [PATCH] dt-bindings: i3c: Fix silvaco,i3c-master-v1 compatible string
-Date:   Thu, 11 Mar 2021 16:40:56 -0700
-Message-Id: <20210311234056.1588751-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Thu, 11 Mar 2021 18:41:35 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073DEC061574;
+        Thu, 11 Mar 2021 15:41:34 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 475D088F;
+        Fri, 12 Mar 2021 00:41:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615506093;
+        bh=n2Z7clfM7QNF0X/CDuN3u8jrbtuz8ZDpOETEtOynXYo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nvabEqa0AyjMY2Gwq/Xx7dgKynU8WNE27XQvZ48qyeb0HrvPOMjWD5fwtZif/dlwS
+         MvkBD0VT7yaQ+JCq9+vGNCAuxvASAzlUnBMFNdm15KCUy8iH+FtiHKj4hNQX3y1e7w
+         iVssd6F1zjzku0TiPQ81hNeDHDpOuigQcKmizxjw=
+Date:   Fri, 12 Mar 2021 01:40:59 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, senozhatsky@chromium.org,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v2 4/6] media: uvcvideo: set error_idx to count on EACCESS
+Message-ID: <YEqqi0kyisCr7cJP@pendragon.ideasonboard.com>
+References: <20210311221946.1319924-1-ribalda@chromium.org>
+ <20210311221946.1319924-5-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210311221946.1319924-5-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The example for the Silvaco I3C master doesn't match the schema's
-compatible string. Fix it.
+Hi Ricardo,
 
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Conor Culhane <conor.culhane@silvaco.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: linux-i3c@lists.infradead.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you for the patch.
 
-diff --git a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
-index adb5165505aa..62f3ca66274f 100644
---- a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
-+++ b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
-@@ -49,7 +49,7 @@ additionalProperties: true
- examples:
-   - |
-     i3c-master@a0000000 {
--        compatible = "silvaco,i3c-master";
-+        compatible = "silvaco,i3c-master-v1";
-         clocks = <&zynqmp_clk 71>, <&fclk>, <&sclk>;
-         clock-names = "pclk", "fast_clk", "slow_clk";
-         interrupt-parent = <&gic>;
+On Thu, Mar 11, 2021 at 11:19:44PM +0100, Ricardo Ribalda wrote:
+> According to the doc:
+> The, in hindsight quite poor, solution for that is to set error_idx to
+> count if the validation failed.
+> 
+> Fixes v4l2-compliance:
+> Control ioctls (Input 0):
+>                 fail: v4l2-test-controls.cpp(645): invalid error index write only control
+>         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+
+I'll hold off on this one until we conclude the discussion with Hans on
+v1.
+
+> ---
+>  drivers/media/usb/uvc/uvc_v4l2.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index 157310c0ca87..36eb48622d48 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -1073,7 +1073,8 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
+>  		ret = uvc_ctrl_get(chain, ctrl);
+>  		if (ret < 0) {
+>  			uvc_ctrl_rollback(handle);
+> -			ctrls->error_idx = i;
+> +			ctrls->error_idx = (ret == -EACCES) ?
+> +						ctrls->count : i;
+>  			return ret;
+>  		}
+>  	}
+
 -- 
-2.27.0
+Regards,
 
+Laurent Pinchart
