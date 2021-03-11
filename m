@@ -2,111 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72467337F79
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F997337F7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhCKVOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:14:55 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:56628 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhCKVNU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:13:20 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lKScQ-00GbqU-U7; Thu, 11 Mar 2021 14:13:19 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lKScP-0000hL-OB; Thu, 11 Mar 2021 14:13:18 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-References: <20210311132036.228542540@linutronix.de>
-Date:   Thu, 11 Mar 2021 15:13:22 -0600
-In-Reply-To: <20210311132036.228542540@linutronix.de> (Thomas Gleixner's
-        message of "Thu, 11 Mar 2021 14:20:36 +0100")
-Message-ID: <m1blbpjswd.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S231206AbhCKVP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:15:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231241AbhCKVOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 16:14:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E0A600CC;
+        Thu, 11 Mar 2021 21:14:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615497256;
+        bh=1Gq9ClTTzgzgBZrG50VQRaLjdSNMezZBgYskj+ev9t4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KjAKhaFqiLiecSpTo5ZepN/OtyJd8I3xqccgVeu2ykHABm0CrX9FiBiaAxtOZARzX
+         EPAkAJ6R2TfC4+bEJnS8FLuxcgYBfFhYAn+yd3IiJIXRRkaK9SovrOzHeF+Am6sLEv
+         jOgIsPmMjw63ZGnXdQFy3DYnyC2ZgWtykHEnucOPDmbBTlVVnTSKb9FLD5/kyzcKdc
+         c8uSaCbtu4FT7NWw0o+TyHr0blY7tttNmOxf7zsvZk2AVISUx7cGhj+tc3YIeVRTzg
+         MYfAvkaEhKd4MjNEep56EzahPsYD8Uc/psVkLNnWCq2x0i2y031Hh3mWT8TmmVTDVq
+         eRfd78i9W9blA==
+Received: by mail-ed1-f54.google.com with SMTP id j3so4945230edp.11;
+        Thu, 11 Mar 2021 13:14:16 -0800 (PST)
+X-Gm-Message-State: AOAM5308UxFV19CwB+YWhABXbcWIWaLAvPSDE4KZ4hDYFqvykCIr3h1J
+        QKuQ9GzJpxTuG/LzUGTHXUtDHZb31C/mQqEuBg==
+X-Google-Smtp-Source: ABdhPJwFGvXWlsCMvQVrIbfRFd9CXv7s7D8vCbthspQTNwPv26dQf5jf0GKdzQ2+oyoD0yzw8TW3mdFVhV5l6ZRj0yM=
+X-Received: by 2002:aa7:c403:: with SMTP id j3mr10559731edq.137.1615497254841;
+ Thu, 11 Mar 2021 13:14:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lKScP-0000hL-OB;;;mid=<m1blbpjswd.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/iCrbfciiRJ2bJ7N3WrBBhNmRg72KlJrU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Thomas Gleixner <tglx@linutronix.de>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 873 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (1.3%), b_tie_ro: 9 (1.1%), parse: 0.83 (0.1%),
-         extract_message_metadata: 12 (1.3%), get_uri_detail_list: 1.15 (0.1%),
-         tests_pri_-1000: 7 (0.8%), tests_pri_-950: 1.30 (0.1%),
-        tests_pri_-900: 1.04 (0.1%), tests_pri_-90: 52 (5.9%), check_bayes: 50
-        (5.8%), b_tokenize: 9 (1.0%), b_tok_get_all: 6 (0.7%), b_comp_prob:
-        2.7 (0.3%), b_tok_touch_all: 29 (3.3%), b_finish: 0.79 (0.1%),
-        tests_pri_0: 209 (23.9%), check_dkim_signature: 0.48 (0.1%),
-        check_dkim_adsp: 2.3 (0.3%), poll_dns_idle: 561 (64.3%), tests_pri_10:
-        1.99 (0.2%), tests_pri_500: 575 (65.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [patch V2 0/3] signals: Allow caching one sigqueue object per task
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20210309112148.2309116-1-geert+renesas@glider.be>
+ <CAL_JsqJzfoSubkKQ+aGYGbuH2=vLG2Sf_nQShxJ8DLirALff5g@mail.gmail.com> <CAMuHMdWqo7WVsiNk2xyTM=cqi883v0_-jh1Ry9R7yLBaoOYxoA@mail.gmail.com>
+In-Reply-To: <CAMuHMdWqo7WVsiNk2xyTM=cqi883v0_-jh1Ry9R7yLBaoOYxoA@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 11 Mar 2021 14:14:02 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+n6DVpoSkym3E4yG7BcUu6jS8O51tCpFD4-CeCtPesqA@mail.gmail.com>
+Message-ID: <CAL_Jsq+n6DVpoSkym3E4yG7BcUu6jS8O51tCpFD4-CeCtPesqA@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] dt-bindings: Consider DT_SCHEMA_FILES when finding
+ all json-schema
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
-
-> This is a follow up to the initial submission which can be found here:
+On Wed, Mar 10, 2021 at 1:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
->   https://lore.kernel.org/r/20210303142025.wbbt2nnr6dtgwjfi@linutronix.de
+> Hi Rob,
 >
-> Signal sending requires a kmem cache allocation at the sender side and the
-> receiver hands it back to the kmem cache when consuming the signal.
+> On Tue, Mar 9, 2021 at 6:42 PM Rob Herring <robh+dt@kernel.org> wrote:
+> > On Tue, Mar 9, 2021 at 4:21 AM Geert Uytterhoeven
+> > <geert+renesas@glider.be> wrote:
+> > > Setting DT_SCHEMA_FILES allows the user to restrict the
+> > > "dt_binding_check" make target to a specified set of DT binding files.
+> > > However, yamllint is still run on all available files, which can take
+> > > quite some time.
+> > >
+> > > Fix this by changing "find_cmd" to only return the specified files.
+> > > Note that this also affects the "cmd_chk_bindings" and "cmd_mk_schema"
+> > > rules.
+> > >
+> > > This reduces the execution time of
+> > >
+> > >     make dt_binding_check DT_SCHEMA_FILES=/path/to/json/schema/file
+> > >
+> > > from ca. 22 to less than 2 seconds on an i7-8700K.
+> >
+> > We could use xargs sharding like 'chk_bindings' does. That goes from
+> > 18s to 5s for me (i7-7700HQ). Good enough? Not sure why I didn't other
+> > than thinking 20sec was fast enough.
 >
-> This works pretty well even for realtime workloads except for the case when
-> the kmem cache allocation has to go into the slow path which is rare but
-> happens.
->
-> Preempt-RT carries a patch which allows caching of one sigqueue object per
-> task. The object is not preallocated. It's cached when the task receives a
-> signal. The cache is freed when the task exits.
+> Sounds better, but yamllint (on all files) would still take 80% of the
+> time for a single binding check, assuming a reasonably fast multi-core
+> machine.  My main objection is that while working on a new binding, and
+> using DT_SCHEMA_FILES, I don't want to waste time on checking other
+> bindings, and being bothered with warnings about them.
 
-I am probably skimming fast and missed your explanation but is there
-a reason the caching is per task (aka thread) and not per signal_struct
-(aka process)?
+We could move yamllint to when we extract the example. Then it only
+runs on modified schema files. The problem with that is we have to
+watch out for slow python start-up times. I get about 25sec for the
+whole tree 1 by 1 with a quick test:
 
-My sense is most signal delivery is per process.  Are realtime workloads
-that extensively use pthread_sigqueue?  The ordinary sigqueue interface
-only allows targeting a process.
+$ time find Documentation/devicetree/bindings/ -name '*.yaml' | xargs
+-P8 -n1 yamllint -f parsable -c
+Documentation/devicetree/bindings/.yamllint
 
-Mostly I am just trying to get a sense of the workloads that are
-improved by this.
+real    0m24.939s
+user    2m55.846s
+sys     0m12.738s
 
-Eric
+Of course, that's a parallel build compared to 18sec single threaded.
+I'm seeing about 8 min for full dt_binding_check without yamllint.
+
+Here's what the kbuild changes would look like(whitespace damaged):
+
+diff --git a/Documentation/devicetree/bindings/Makefile
+b/Documentation/devicetree/bindings/Makefile
+index 780e5618ec0a..3a213343d587 100644
+--- a/Documentation/devicetree/bindings/Makefile
++++ b/Documentation/devicetree/bindings/Makefile
+@@ -16,8 +16,13 @@ check_dtschema_version:
+ quiet_cmd_extract_ex = DTEX    $@
+       cmd_extract_ex = $(DT_EXTRACT_EX) $< > $@
+
++define rule_extract_ex
++       $(if $(DT_SCHEMA_LINT),$(call cmd,yamllint),)
++       $(call cmd,extract_ex)
++endef
++
+ $(obj)/%.example.dts: $(src)/%.yaml check_dtschema_version FORCE
+-       $(call if_changed,extract_ex)
++       $(call if_changed_rule,extract_ex)
+
+ # Use full schemas when checking %.example.dts
+ DT_TMP_SCHEMA := $(obj)/processed-schema-examples.json
+@@ -26,9 +31,8 @@ find_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
+                -name 'processed-schema*' ! \
+                -name '*.example.dt.yaml' \)
+
+-quiet_cmd_yamllint = LINT    $(src)
+-      cmd_yamllint = ($(find_cmd) | \
+-                     xargs $(DT_SCHEMA_LINT) -f parsable -c
+$(srctree)/$(src)/.yamllint) || true
++quiet_cmd_yamllint = LINT    $(patsubst $(srctree)/%,%,$<)
++      cmd_yamllint = $(DT_SCHEMA_LINT) -f parsable -c
+$(srctree)/$(src)/.yamllint $(real-prereqs) || true
+
+ quiet_cmd_chk_bindings = CHKDT   $@
+       cmd_chk_bindings = ($(find_cmd) | \
+@@ -43,7 +47,6 @@ quiet_cmd_mk_schema = SCHEMA  $@
+                      rm -f $$f
+
+ define rule_chkdt
+-       $(if $(DT_SCHEMA_LINT),$(call cmd,yamllint),)
+        $(call cmd,chk_bindings)
+        $(call cmd,mk_schema)
+ endef
