@@ -2,141 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEF5337214
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FB6337219
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhCKMJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:09:45 -0500
-Received: from mail-dm6nam11on2088.outbound.protection.outlook.com ([40.107.223.88]:41212
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232757AbhCKMJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:09:37 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YIGw+CL//NbxrxvY25viMBlrskjlXjIVuN28PNfE717eoB0pBcWMfGrHEFdPPiRnyKwunuAjAQujmK1iXJJnUCAsei0qyQ6OyKVzVA8xSnPa6DDsiCEoL8mLMFPtPY0OCFeUukdqy7B9jaNPJmvPCDMWmy9qSIUQaSJiNUSiJWdPTx3uDXJ1o0aVJmGk66u3k+oAFxdsmUKH4UO1UjyadkT88nat08LfD6xDdJQ0OR46rUohA+vdcXR9STjeTcj1dZjgz76RfeM6BKTnKedmMCdhOdKy31kcgF+O/6RtbcYG01cnKoiG7WvaMsuvDavXWn5rb6DRCI0R180xl01q+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aNsocgBo3jkBZT8Woo1IHFwETIluN6/9sMG5KVGHk6c=;
- b=gq1ewo+bOj4eG7VrOMmGMApdLoe3CV4enwoFsHIIT8ptLQqYSdCtG1gHwzHJWWA9ESJ1h21Q0N6d5uXVLOGjVUc2HDT3OP7NfnUuGipa9CRyR+4ILslpX9bPRk331B2iMMGUmK1Er32A0dWwudo6LsZmGDjlxMScH7rkB7OLvvlMpyHGOz0VTiG2tnZIPrRNLub1eGdVh4vdH3yoLTKXVAmfxPg8hHQq8kwJEjtLKuCdL8eYZFWUKRzKO4tQd+dG+UCK9BSdIlX3RPa/k9pi3mTiWr+E69oZeL9zbYVrhFtl+r0bFIk/K7QlUMslddooUkQyIOAJw8KbaGmHfcxEug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aNsocgBo3jkBZT8Woo1IHFwETIluN6/9sMG5KVGHk6c=;
- b=Njx6EIugPaCANpyfZVMTZFVSYMF5shiLwddTPzKBscPyKk5+g8BxpggLTBfK/YFgc8NXxLYej6/zZQo/Z9qhzG/D1tZ9+NW/iwel1ktLXhifb4aIpIiNKdd+EcO4T24UHeywFA6mELcQu3hNctR10TmXR2CM9kx1GlY1D6OPI2ayQSjOwYZSxcvtBwkHMoTFP6hu22MoL7DabBnMFtpIlTLtTKHplGJleqhyn0hmEd6YAh2YTDUGsmTlQATQiRSGnVLQn5bf6suPrYXKN/QHsYUtnGLgFSUG7ks00hxlKdaIw8KW51DwfWCAMOsGI97bdkatU2nMll8J4EiKgc4jyw==
-Received: from MWHPR18CA0049.namprd18.prod.outlook.com (2603:10b6:300:39::11)
- by DM6PR12MB3340.namprd12.prod.outlook.com (2603:10b6:5:3d::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.29; Thu, 11 Mar
- 2021 12:09:35 +0000
-Received: from CO1NAM11FT052.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:39:cafe::c0) by MWHPR18CA0049.outlook.office365.com
- (2603:10b6:300:39::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Thu, 11 Mar 2021 12:09:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT052.mail.protection.outlook.com (10.13.174.225) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3933.31 via Frontend Transport; Thu, 11 Mar 2021 12:09:34 +0000
-Received: from [172.27.11.33] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Mar
- 2021 12:09:28 +0000
-Subject: Re: [PATCH 9/9] vfio/pci: export igd support into vendor vfio_pci
- driver
-To:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>
-CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
-        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
-        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
-        <ACurrid@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>,
-        <mjrosato@linux.ibm.com>, <aik@ozlabs.ru>
-References: <20210309083357.65467-1-mgurtovoy@nvidia.com>
- <20210309083357.65467-10-mgurtovoy@nvidia.com> <20210310081508.GB4364@lst.de>
- <20210310123127.GT2356281@nvidia.com> <20210311113706.GC17183@lst.de>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <8dbe2c19-10f8-16e3-56ec-8026de84acc5@nvidia.com>
-Date:   Thu, 11 Mar 2021 14:09:25 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232964AbhCKMKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:10:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232919AbhCKMJz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:09:55 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E366C061574;
+        Thu, 11 Mar 2021 04:09:55 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so9258823pjb.2;
+        Thu, 11 Mar 2021 04:09:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fgejs9NwV9XHSr5esguFyo9ZNJH3pXg6b5W2nj6hE9Y=;
+        b=inU5Zx8EGGSu9ee0nwxvKjp/gAnj96crRgmjon+zOWjAbvJB7CIm3DlXUzlRygC/Py
+         x17TbBsF4biwzm1xgY5XIRUAB9PMMg7p7SHc+J2teqQ1fotk809vKUZjQxkg8iVzGB6x
+         DY8Js1w8UPPl/ENngUg1oNtfRIs24G/i64UZl+7HRNiVvMBb/bXO6xoTIw4qHd0ev+Qf
+         IFq2Ovcc3rG3qOh5DeD7px0UynbpOlpQuQ4Cwyzf8g57+Wh1otNdVLzt4/yZ+QsvcVSV
+         77p2IYAPDN2gsyKB4Ca9J1rOutvrW0R1gDN6b6je+Xw+xoZ2SMFlbBcowlEF1e6FKZjH
+         uQpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fgejs9NwV9XHSr5esguFyo9ZNJH3pXg6b5W2nj6hE9Y=;
+        b=MtYOFd95zIy18FUJTD3DViPlkClkwIuDSS/oJV1suP1WORi7nqw3JBcvyVt2NcB7mM
+         AXfP5/kDj7t1j2RdoTiD1BCniYJwbqODrYeYPWFm81NwcCZSmvFp6cO5KFNwD3c1fJXi
+         wxE3Hd9RXYDpUlfKReZ98vRVpH5E+nBkqck5BpK1GZQrrFDY5sW2+qwdC2mfImgz73Fq
+         TgK+HVTkQnXjHDq+bU1prXhAnVQOXRmaIfTwF0N1atNtprvC4byoCWNpx7cETI1et/5r
+         to3Fu5bffAMtfOft2LvQDB3XC8/LqnAGiQbyLjPyzFh9g8+zlXdT+KAC3FPpZ6dReaeo
+         mNmw==
+X-Gm-Message-State: AOAM5337CSoXx50xNJuaBY7Kqw2mo7CegBhwBsf0UjzKSFkbdTpPUUTt
+        Lf8doW4W8cjquBaCyNa3py1MPQqRZJTflJu++vc=
+X-Google-Smtp-Source: ABdhPJwpHihmwOjDMAypNOI8HBpk366v1P70tH9iUFlgBuBvxBR5OS42lhnweZRQdWNdWm0tILL6xA21z+6UYXLUudM=
+X-Received: by 2002:a17:902:c808:b029:e6:4204:f62f with SMTP id
+ u8-20020a170902c808b02900e64204f62fmr7943918plx.0.1615464594250; Thu, 11 Mar
+ 2021 04:09:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210311113706.GC17183@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: db64f0f8-b1dd-47db-3fc3-08d8e4868924
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3340:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3340F12A768619768BB93FADDE909@DM6PR12MB3340.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t/lv864Yr/gk5QiyflQnTInhHowtkF9PUPe6+63z9rIHX6HgxXuJixKlCCfZ9iDtfkdw7r9YjLXurc+ZuWzwm+p3MHyWC3Hm77OdXaaRJIClKB9ir4FmCrRbwZx9Va039vo9EsvqwwYvmetB7BLJH+6hrhli+317a6yMjlNvEzvOr3K01CHZC7HVJYOVCWT2h7UCV9uZitiTuP0PrjXvZEqP90+HrB2TLD0/g/MuPO6S0WVe/vLMj+n3TI4hE5F+keEvtetuaXa2LHPNMo2jGlL40pouYUZ49tam8TGdcVoT+4hg5Zeu6VJ5AAZQ1ATj5XWq2NYBRY3N4/ew5Cn6KHOiQl31cQGToTsRV4+b2RcLmUu6fuSpcHoKpXxHtUzGYg2Lsn7QtKQewqaoFvVYXSCiDx53eTq3oKWPdEtc1rQ1psIajAzKSeuIm/zon/p8nfAeTge0mC8eVJ4U/4+opdZFPGTDBImur1VZtRRgnmuGcM9RcnXIRdwTLDP0Ic7qqFptxJpfvP25FsGTFUEtMafap2WZO1rdpCQM6C7fWvykYXHAQ/azX0OsuSQErD84/B9ZC/GYJwavd0SQEMhflUnPGn+E/tKdfuHI2Z6RzcZ9jJk8XgsCueuYNgqWVzRknsMsVA9wd7t1BR9zu7plu0XL4E4IvZNyMGO+QKvrfRs3TKqjxNr7dYaDbURloHOYhy90MD/ZF+FlSF+PwsR1iNipFmbHll3AiYCmdJuZ46w=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(346002)(136003)(36840700001)(46966006)(6666004)(82310400003)(478600001)(26005)(4326008)(426003)(36860700001)(31686004)(47076005)(2616005)(110136005)(70206006)(8936002)(6636002)(70586007)(54906003)(16526019)(82740400003)(53546011)(7636003)(5660300002)(336012)(356005)(36906005)(186003)(316002)(8676002)(2906002)(16576012)(34070700002)(36756003)(31696002)(86362001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 12:09:34.9380
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: db64f0f8-b1dd-47db-3fc3-08d8e4868924
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT052.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3340
+References: <20210311062011.8054-1-calvin.johnson@oss.nxp.com> <20210311062011.8054-9-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20210311062011.8054-9-calvin.johnson@oss.nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 11 Mar 2021 14:09:37 +0200
+Message-ID: <CAHp75VfKoNvBxbj5tKb9NqGGbn36s=uZznm9QDBzkVWYNa=LCA@mail.gmail.com>
+Subject: Re: [net-next PATCH v7 08/16] net: mdiobus: Introduce fwnode_mdiobus_register_phy()
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>, netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 11, 2021 at 8:21 AM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+>
+> Introduce fwnode_mdiobus_register_phy() to register PHYs on the
+> mdiobus. From the compatible string, identify whether the PHY is
+> c45 and based on this create a PHY device instance which is
+> registered on the mdiobus.
 
-On 3/11/2021 1:37 PM, Christoph Hellwig wrote:
-> On Wed, Mar 10, 2021 at 08:31:27AM -0400, Jason Gunthorpe wrote:
->> Yes, that needs more refactoring. I'm viewing this series as a
->> "statement of intent" and once we commit to doing this we can go
->> through the bigger effort to split up vfio_pci_core and tidy its API.
->>
->> Obviously this is a big project, given the past comments I don't want
->> to send more effort here until we see a community consensus emerge
->> that this is what we want to do. If we build a sub-driver instead the
->> work is all in the trash bin.
-> So my viewpoint here is that this work doesn't seem very useful for
-> the existing subdrivers given how much compat pain there is.  It
-> defintively is the right way to go for a new driver.
+> uninitialized symbol 'mii_ts'
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-This bring us back to the first series that introduced mlx5_vfio_pci 
-driver without the igd, nvlink2 drivers.
+I don't think it's important to have it in a history of Git. I would
+move this after the cutter '---' line below.
 
-if we leave the subdrivers/extensions in vfio_pci_core it won't be 
-logically right.
+> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> ---
+>
+> Changes in v7:
+> - Call unregister_mii_timestamper() without NULL check
+> - Create fwnode_mdio.c and move fwnode_mdiobus_register_phy()
+>
+> Changes in v6:
+> - Initialize mii_ts to NULL
+>
+> Changes in v5: None
+> Changes in v4: None
+> Changes in v3: None
+> Changes in v2: None
+>
+>  MAINTAINERS                    |  1 +
+>  drivers/net/mdio/Kconfig       |  9 ++++
+>  drivers/net/mdio/Makefile      |  3 +-
+>  drivers/net/mdio/fwnode_mdio.c | 77 ++++++++++++++++++++++++++++++++++
+>  drivers/net/mdio/of_mdio.c     |  3 +-
+>  include/linux/fwnode_mdio.h    | 24 +++++++++++
+>  include/linux/of_mdio.h        |  6 ++-
+>  7 files changed, 120 insertions(+), 3 deletions(-)
+>  create mode 100644 drivers/net/mdio/fwnode_mdio.c
+>  create mode 100644 include/linux/fwnode_mdio.h
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e1fa5ad9bb30..146de41d2656 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6680,6 +6680,7 @@ F:        Documentation/devicetree/bindings/net/mdio*
+>  F:     Documentation/devicetree/bindings/net/qca,ar803x.yaml
+>  F:     Documentation/networking/phy.rst
+>  F:     drivers/net/mdio/
+> +F:     drivers/net/mdio/fwnode_mdio.c
+>  F:     drivers/net/mdio/of_mdio.c
+>  F:     drivers/net/pcs/
+>  F:     drivers/net/phy/
+> diff --git a/drivers/net/mdio/Kconfig b/drivers/net/mdio/Kconfig
+> index a10cc460d7cf..2d5bf5ccffb5 100644
+> --- a/drivers/net/mdio/Kconfig
+> +++ b/drivers/net/mdio/Kconfig
+> @@ -19,6 +19,15 @@ config MDIO_BUS
+>           reflects whether the mdio_bus/mdio_device code is built as a
+>           loadable module or built-in.
+>
+> +config FWNODE_MDIO
+> +       def_tristate PHYLIB
 
-If we put it in vfio_pci we'll need to maintain it and extend it if new 
-functionality or bugs will be reported.
+(Seems "selectable only" item)
 
-if we create a new drivers for these devices, we'll use the compat layer 
-and hopefully after few years these users will be using only 
-my_driver_vfio_pci and we'll be able to remove the compat layer (that is 
-not so big).
+> +       depends on ACPI
+> +       depends on OF
 
-We tried almost all the options and now we need to progress and agree on 
-the design.
+Wouldn't be better to have
+  depends on (ACPI || OF) || COMPILE_TEST
 
-Effort is big and I wish we won't continue with experiments without a 
-clear view of what exactly should be done.
+And honestly I don't understand it in either (AND or OR) variant. Why
+do you need a dependency like this for fwnode API?
 
-So we need a plan how Jason's series and my series can live together and 
-how can we start merging it gradually.
+Moreover dependencies don't work for "selectable only" items.
+
+> +       depends on PHYLIB
+> +       select FIXED_PHY
+> +       help
+> +         FWNODE MDIO bus (Ethernet PHY) accessors
+> +
+>  config OF_MDIO
+>         def_tristate PHYLIB
+>         depends on OF
+> diff --git a/drivers/net/mdio/Makefile b/drivers/net/mdio/Makefile
+> index 5c498dde463f..ea5390e2ef84 100644
+> --- a/drivers/net/mdio/Makefile
+> +++ b/drivers/net/mdio/Makefile
+> @@ -1,7 +1,8 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  # Makefile for Linux MDIO bus drivers
+>
+> -obj-$(CONFIG_OF_MDIO)  += of_mdio.o
+> +obj-$(CONFIG_FWNODE_MDIO)      += fwnode_mdio.o
+> +obj-$(CONFIG_OF_MDIO)          += of_mdio.o
+>
+>  obj-$(CONFIG_MDIO_ASPEED)              += mdio-aspeed.o
+>  obj-$(CONFIG_MDIO_BCM_IPROC)           += mdio-bcm-iproc.o
+> diff --git a/drivers/net/mdio/fwnode_mdio.c b/drivers/net/mdio/fwnode_mdio.c
+> new file mode 100644
+> index 000000000000..0982e816a6fb
+> --- /dev/null
+> +++ b/drivers/net/mdio/fwnode_mdio.c
+> @@ -0,0 +1,77 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * fwnode helpers for the MDIO (Ethernet PHY) API
+> + *
+> + * This file provides helper functions for extracting PHY device information
+> + * out of the fwnode and using it to populate an mii_bus.
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/of.h>
+> +#include <linux/of_mdio.h>
+> +#include <linux/phy.h>
+> +
+> +MODULE_AUTHOR("Calvin Johnson <calvin.johnson@oss.nxp.com>");
+> +MODULE_LICENSE("GPL");
+> +
+> +int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+> +                               struct fwnode_handle *child, u32 addr)
+> +{
+> +       struct mii_timestamper *mii_ts = NULL;
+> +       struct phy_device *phy;
+> +       bool is_c45 = false;
+> +       u32 phy_id;
+> +       int rc;
+> +
+> +       if (is_of_node(child)) {
+> +               mii_ts = of_find_mii_timestamper(to_of_node(child));
+> +               if (IS_ERR(mii_ts))
+> +                       return PTR_ERR(mii_ts);
+> +       }
+> +
+> +       rc = fwnode_property_match_string(child, "compatible", "ethernet-phy-ieee802.3-c45");
+> +       if (rc >= 0)
+> +               is_c45 = true;
+> +
+> +       if (is_c45 || fwnode_get_phy_id(child, &phy_id))
+> +               phy = get_phy_device(bus, addr, is_c45);
+> +       else
+> +               phy = phy_device_create(bus, addr, phy_id, 0, NULL);
+> +       if (IS_ERR(phy)) {
+> +               unregister_mii_timestamper(mii_ts);
+> +               return PTR_ERR(phy);
+> +       }
+> +
+> +       if (is_acpi_node(child)) {
+> +               phy->irq = bus->irq[addr];
+> +
+> +               /* Associate the fwnode with the device structure so it
+> +                * can be looked up later.
+> +                */
+> +               phy->mdio.dev.fwnode = child;
+> +
+> +               /* All data is now stored in the phy struct, so register it */
+> +               rc = phy_device_register(phy);
+> +               if (rc) {
+> +                       phy_device_free(phy);
+> +                       fwnode_handle_put(phy->mdio.dev.fwnode);
+> +                       return rc;
+> +               }
+> +       } else if (is_of_node(child)) {
+> +               rc = of_mdiobus_phy_device_register(bus, phy, to_of_node(child), addr);
+> +               if (rc) {
+> +                       unregister_mii_timestamper(mii_ts);
+> +                       phy_device_free(phy);
+> +                       return rc;
+> +               }
+> +       }
+> +
+> +       /* phy->mii_ts may already be defined by the PHY driver. A
+> +        * mii_timestamper probed via the device tree will still have
+> +        * precedence.
+> +        */
+> +       if (mii_ts)
+> +               phy->mii_ts = mii_ts;
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL(fwnode_mdiobus_register_phy);
+> diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
+> index 48b6b8458c17..db293e0b8249 100644
+> --- a/drivers/net/mdio/of_mdio.c
+> +++ b/drivers/net/mdio/of_mdio.c
+> @@ -32,7 +32,7 @@ static int of_get_phy_id(struct device_node *device, u32 *phy_id)
+>         return fwnode_get_phy_id(of_fwnode_handle(device), phy_id);
+>  }
+>
+> -static struct mii_timestamper *of_find_mii_timestamper(struct device_node *node)
+> +struct mii_timestamper *of_find_mii_timestamper(struct device_node *node)
+>  {
+>         struct of_phandle_args arg;
+>         int err;
+> @@ -49,6 +49,7 @@ static struct mii_timestamper *of_find_mii_timestamper(struct device_node *node)
+>
+>         return register_mii_timestamper(arg.np, arg.args[0]);
+>  }
+> +EXPORT_SYMBOL(of_find_mii_timestamper);
+>
+>  int of_mdiobus_phy_device_register(struct mii_bus *mdio, struct phy_device *phy,
+>                               struct device_node *child, u32 addr)
+> diff --git a/include/linux/fwnode_mdio.h b/include/linux/fwnode_mdio.h
+> new file mode 100644
+> index 000000000000..8c0392845916
+> --- /dev/null
+> +++ b/include/linux/fwnode_mdio.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * FWNODE helper for the MDIO (Ethernet PHY) API
+> + */
+> +
+> +#ifndef __LINUX_FWNODE_MDIO_H
+> +#define __LINUX_FWNODE_MDIO_H
+> +
+> +#include <linux/phy.h>
+> +
+> +#if IS_ENABLED(CONFIG_FWNODE_MDIO)
+> +int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+> +                               struct fwnode_handle *child, u32 addr);
+> +
+> +#else /* CONFIG_FWNODE_MDIO */
+> +static inline int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+> +                                             struct fwnode_handle *child,
+> +                                             u32 addr)
+> +{
+> +       return -EINVAL;
+> +}
+> +#endif
+> +
+> +#endif /* __LINUX_FWNODE_MDIO_H */
+> diff --git a/include/linux/of_mdio.h b/include/linux/of_mdio.h
+> index 2b05e7f7c238..e4ee6c4d9431 100644
+> --- a/include/linux/of_mdio.h
+> +++ b/include/linux/of_mdio.h
+> @@ -31,6 +31,7 @@ struct mii_bus *of_mdio_find_bus(struct device_node *mdio_np);
+>  int of_phy_register_fixed_link(struct device_node *np);
+>  void of_phy_deregister_fixed_link(struct device_node *np);
+>  bool of_phy_is_fixed_link(struct device_node *np);
+> +struct mii_timestamper *of_find_mii_timestamper(struct device_node *np);
+>  int of_mdiobus_phy_device_register(struct mii_bus *mdio, struct phy_device *phy,
+>                                    struct device_node *child, u32 addr);
+>
+> @@ -118,7 +119,10 @@ static inline bool of_phy_is_fixed_link(struct device_node *np)
+>  {
+>         return false;
+>  }
+> -
+> +static inline struct mii_timestamper *of_find_mii_timestamper(struct device_node *np)
+> +{
+> +       return NULL;
+> +}
+>  static inline int of_mdiobus_phy_device_register(struct mii_bus *mdio,
+>                                             struct phy_device *phy,
+>                                             struct device_node *child, u32 addr)
+> --
+> 2.17.1
+>
 
 
+-- 
+With Best Regards,
+Andy Shevchenko
