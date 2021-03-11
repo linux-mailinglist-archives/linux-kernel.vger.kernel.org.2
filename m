@@ -2,181 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051AA336C7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED4B336C83
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhCKGvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:51:06 -0500
-Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:38311
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231328AbhCKGu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:50:56 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JXaHlJA6xy8BbMBzrH72C4TY4xe9Z58itqAzAmoSUj63MRGOs08XVaulDPQLLBWAF/UVVeFoXFfU41/Biiy6VKSlvsiwDdB+DHL8Al2lreMMTsA1WteNgzBzn8L3K5S222V9WyOQ7P3kRvGiOcldzbdmzKhbNSTcwYFupiW145GmWg/uN9EhiNLTVh+/73U9vy/Qo8jN637SbBMA5ISKnw1XNpVyFUwxwGTxI8I4UcA7Q81IuNgq75xq3mtYr9/bSN/v8S2Y/y873AvydMHBaHWTHJJRPQ6UShMMgRMxTNXoML4CXZYSrQ2j+4iFDd1xR9K3ygzHzP0aseGFJQ6e0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AXZBm8Ahpu6/AXps41NEnsLlvP7ufeJ4B5ghnHg6ap4=;
- b=VkqpDGHIbRI0xtQrdY2MWJC+eWc7VO+MBEWmethr8QJ2aPxHisHf1Du64/hOqNMHjbNiyYVuy3VOSs6VDeXnAFj9vgd6GhWznh9RUplElb96BjaoesmvUTembn2veVszkqo86dXviuRqEWMb+0aSeLk/wLKJgM8uDCIodppz11vTbdFHvIqAw8w7oQLms6kIlaRY3CWocKkFt+0s+5+2vI0zagvoFyHFOqIzuHtvymoXNpLBnwaB5adJMSTkhpvw50f2IJZa1eR/52vzsckIQgnsTVoDdQzGKG2Kya1BG8NrRcuN1CcXl6U0X9N1hoKdoiYbo2LgF70GseOeOdsETA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S231492AbhCKGwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229731AbhCKGve (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 01:51:34 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA00EC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:51:33 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id u75so20598028ybi.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:51:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AXZBm8Ahpu6/AXps41NEnsLlvP7ufeJ4B5ghnHg6ap4=;
- b=OGlbhRFspa9YmfkWs6FrW5rBrOZB1BopBAY5IehAAO2b05vvL5sW7xdUL0eFZ5wj4cKFTo08qo/6zwyluqCxlukQNJt0IktWokjGJZ3A6U57l21R1kOhuK3zjLAQ2J8yzV5v3g+d3L3/rSnlKM7IIBexd7n6HylzI6AhrMs7kpA=
-Authentication-Results: linux.com; dkim=none (message not signed)
- header.d=none;linux.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BN3PR03MB2307.namprd03.prod.outlook.com
- (2a01:111:e400:7bb1::16) by BN8PR03MB4755.namprd03.prod.outlook.com
- (2603:10b6:408:6a::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.30; Thu, 11 Mar
- 2021 06:50:51 +0000
-Received: from BN3PR03MB2307.namprd03.prod.outlook.com
- ([fe80::246d:2f3d:93bf:ee56]) by BN3PR03MB2307.namprd03.prod.outlook.com
- ([fe80::246d:2f3d:93bf:ee56%4]) with mapi id 15.20.3912.030; Thu, 11 Mar 2021
- 06:50:50 +0000
-Date:   Thu, 11 Mar 2021 14:50:27 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Yue Wang <yue.wang@Amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Pratyush Anand <pratyush.anand@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-kernel@axis.com,
-        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] PCI: dwc: Move dw_pcie_msi_init() from each
- users to designware host
-Message-ID: <20210311145027.58f3955e@xhacker.debian>
-In-Reply-To: <YEVPRDt1By8TG9O5@rocinante>
-References: <20200924190421.549cb8fc@xhacker.debian>
-        <20200924190742.76939458@xhacker.debian>
-        <YEVPRDt1By8TG9O5@rocinante>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: SJ0PR03CA0136.namprd03.prod.outlook.com
- (2603:10b6:a03:33c::21) To BN3PR03MB2307.namprd03.prod.outlook.com
- (2a01:111:e400:7bb1::16)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/TWjmkYOsjWxuSvsZczTiKRCUZs8/TXiLhq6HTYxrkc=;
+        b=ZiX9Rg7lAbNihf5ARUd3fj7zUcwh3LumoEDPAk5Ai99apA62qWW2GkHJk6efyfiEy7
+         coJVlTQ102RjumLiZAw6DPjna6+4gPzHFKWtY5g+xILHxGYvd6jDQPDP5QtdTlQD/Hc9
+         ik5KFF9f83yCTuTTdV2f8XqHJ6sJIrr/hnF6DlsiO+xBdbFU+FaYxKUTgWWqQ2fFmQqt
+         eZEkduD+GIm6/za07O/KG2PEyO/LxQHG0B1W632QMeeJXb5cYOQ2FRa+nfD+UdCXcCvn
+         N3naoX+/jUCKauItbzKRwv5w5FelkgvfUjxo6FypJWGjGHvc72A44VN4Nq0XUONe9PV+
+         4C3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/TWjmkYOsjWxuSvsZczTiKRCUZs8/TXiLhq6HTYxrkc=;
+        b=iJFnXGiMrRzOT3nVIh3J5IdeWM8mssBtxY/6JOs4MQlTTAv340aFr6BMYYyo0+sTCE
+         HIYgKjlZ/+cIW1odypyzNq/iH986h/fxVFn6w1iD/F/4WjhT8u9rIZNSMd+zaLXQc3eD
+         hprinx5npgWxCNuce4lP008Rw5cw5SSyoSESga0mKwMP2aajU9eEmLokNH0FlHX7npTT
+         u5NVIOF7IzAmaVNhvCNErkOtBc3g3t3/pC/ib1sWkzjvsi+lSLfiQUZNCyZHHt9+ZMVJ
+         oWqKqIjtpjue4PV9pf59rR9EUF+h70m2NbdBu+/gHpsrhEA+LHeOOmtgo+sT0V9AxoNK
+         aa4Q==
+X-Gm-Message-State: AOAM5329cLtxNsPcNQcBvwM6h+3BWuUhk2BhoezCDsAyquETtGde4kOK
+        FY652eTaWSBLV1je4siUhs03IX2LtZO6xzmOBGP0Ag==
+X-Google-Smtp-Source: ABdhPJyeMMYfKt7AqgiPS4WR08oFWWbtn89mOZetlzxKAEFqnCJiyg8wlDXKmHktl0o6G3gFpBAeEwo1DQv7jjqj8so=
+X-Received: by 2002:a25:aa43:: with SMTP id s61mr10180775ybi.32.1615445492980;
+ Wed, 10 Mar 2021 22:51:32 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by SJ0PR03CA0136.namprd03.prod.outlook.com (2603:10b6:a03:33c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Thu, 11 Mar 2021 06:50:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bdf97653-b3c2-4657-c850-08d8e45a0201
-X-MS-TrafficTypeDiagnostic: BN8PR03MB4755:
-X-Microsoft-Antispam-PRVS: <BN8PR03MB47552C5D4FDDFC79B66D68B9ED909@BN8PR03MB4755.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CVCP7/lF/iqP97om8cFjn3zGh8BZYPQ3HTFOm4juYjzx23azX8BqHADHU5j0MWyRudsCS7+y75aGQzxURx5fbZsrAu46RIIBKHfPLacCh6uunGSERGghy1ASScDFl2TCKmhx2YGl35bMPWad0OLfQLnu9RUctQAFfMCbbGbBdZq+Koo69MZi+5S4b78miOqmltr3EG92i4MgnDF7XthtPwi8hlj8tj2vUbjxv9dH51A/b/cjKkZcf7bC4qEw9FetEyBYRWyQC5gVl+w9QtsUh26LYzUNu1ksPuQv9miUiCs/p3FRz/A4zWTv3TWUBY9k47XWGBE+djh8uZ69L0hlBAIkKIs9A5FKs1RgdzElFP+oQpD/ws7RzRv7jKoXP7zIh8GCSBz4lU2xIe+unCjIRtG3WLazCMUJgnFmOAATU5mzegWi/kTfz/bXmcxqiwzI8pU+cEF9ljg8bVZldm5kUNeTRQnLw7VZ9Y2EQ3Io2lroeSfPtmJ4XT/EmLUJSjTli88UsiprPVLkdbbYkhoxpA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN3PR03MB2307.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(136003)(39850400004)(396003)(2906002)(8936002)(86362001)(66476007)(66574015)(83380400001)(6666004)(316002)(54906003)(66556008)(4326008)(8676002)(7696005)(186003)(7406005)(55016002)(478600001)(6506007)(7416002)(5660300002)(1076003)(956004)(26005)(6916009)(66946007)(16526019)(9686003)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OVdIVE1JYXEzRm94UEJObFZXd0V3ejNxTWxEeXlITEJwd05FZFdWL2ZlcGJL?=
- =?utf-8?B?SkNNWTVPb1dueEFUcHdaVjk5ZVREN0pKbFM2eklHY0F4cVBabFVMRTJWTWZ1?=
- =?utf-8?B?M1Z2bXVmVmxCcjAxaU5VM0t0TlhYdHVxQTJqSmptWFRuYTY4bk50S1BMQjhM?=
- =?utf-8?B?OHJnOW9XdWNXQjBVZC9WZUtiZkk4ejBNRVBJcEFBY0NXbHVHWEhkRHAvTnha?=
- =?utf-8?B?ekZrTEFjUkR4ZjJYd2ZteXF0K3djbkFDb0pXd2tZTDdNdm9acEY0TjNqUkZQ?=
- =?utf-8?B?Rk5xdmpNdDBPVFUwcWdxR3BNUGhhMHdMMytRTk9nVnZDMkRmTEZIS2VBaUVz?=
- =?utf-8?B?V0M0RHd0b2hOYlR6Mk9USGVEeEFLd1M4aUc5enJpVWxlVFI4dktWTEdVTkRF?=
- =?utf-8?B?cmdGdkpLTHN5M3p1dnE5d2JrZjVsT3R1NzJ4anoydDYyT0ZRRkp0QTB2U2xL?=
- =?utf-8?B?LzR2NFVxVFExN1JtNXhCdUNGTGJYaWRHMnBoNEd6NFhFK3h2ZFYvNlpNY1lV?=
- =?utf-8?B?S1FXVURjRFh0TVVFazdmMFIvV0ViNitCN3JZR1p1Ri9YUlU3blpOY096UG03?=
- =?utf-8?B?d3VETmgwdi83emVtMTFZMVp2WHk5MzdCaitlMXd1eWpRMWY1L0NDVm93VkVx?=
- =?utf-8?B?dWEycnBXazArQ1hWTkVmMUczVWlnV1JzMFdIUy80SlpCL29SQVRjakZ5RTJC?=
- =?utf-8?B?aXArZDMvYmxHYmJlQnk1em11NmxVTDhiY09reUxvaEcwRjZ1VUVVL0V4NVZP?=
- =?utf-8?B?ZjBkaFpla09ueWY0N0lrckhXaXBweVEzYk1ZQUVCdm1tZzZvYis0YWFuc3Br?=
- =?utf-8?B?Tm9YWFVEUERvc0ZLcjByOFZ6a041ZFE2VGFMZWQxTnh1UHBLU2t5N1B3VUJz?=
- =?utf-8?B?cHRZMWQvaVE4VDltd3FoZU5raXBmeUxFNDQ3N2cwNDQ0RkNTQ2RRQ0xmVFUz?=
- =?utf-8?B?VEI0ekF3Mk4wd3JUbDhOYldPaFlaOFVKY0Z1bWJkN1Z6OHhHL2Q4SmFIbDVQ?=
- =?utf-8?B?RnZHNDZDSk0rc0JjelhkTWcxc0MzL3JNdkE0N05qTFFuWlNkVnR2c0RMa0l5?=
- =?utf-8?B?eUYxWkJzYUUxZGIrZzhYN2FLZ3ViKzBrSWVySC9MODZnTFBKSjkxMUhBQUgr?=
- =?utf-8?B?R3MyM2FkVk9iWWR5WVYwbXE0cUZyVk05M0lhZUVsV2VUdVlkRWIzVzZqNjJt?=
- =?utf-8?B?TXNkVG9ZVDNUM3U4WHRVUlhaay9Id2t2V29sYjE2V0syOVZkWTYvcGlSbmxB?=
- =?utf-8?B?eFhxdUF4VEZ6NkdGaWE0OHFjTWpoVXBMZE83cjhNZHJaTVJMV1luZ0ExMTNy?=
- =?utf-8?B?Ukk4OWQ3MG5RbHhSN3hNMEVPN0JKcHphckptUHhOYlN5aHllVEhTTVNGZ0pD?=
- =?utf-8?B?V0ZHSlM2QjJXcXNZaHl1NExTZlJqOXRCN0tkRHExNWFDUkRCZ2NRVCtCL3JP?=
- =?utf-8?B?VHhEZVFMVTdhOTltYWNtdkxTcXNZWjRlKzFYTm5Pd0tsaGlXaGVuQ1VFVnFD?=
- =?utf-8?B?MXdMN2FxTWVhMnFFZ2ZHdTBKY1ovUk5TUlVHVWYrMkhYWW45NWozN0l5THdW?=
- =?utf-8?B?N3pZYVc3Sm1vajdBYnRTTVprY3lkSVdDWkp0Lytwa0d4SHMzSlZCaldpZUtj?=
- =?utf-8?B?eGhLUUhGQ1hEbkc2bWlKUmJrOW52N3dVTElJSmxVbmxwTklJTmQwV3FjeVZQ?=
- =?utf-8?B?ZE9TNVBzeTJGWlpPNjRYVGRIRS80NFBtUUtmbFJ1ZUF4dXNFQ2JKVkZSbm1h?=
- =?utf-8?Q?xKAMHqzH8xliUpCajwSr2wIzuaXJw52pmby4v5A?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdf97653-b3c2-4657-c850-08d8e45a0201
-X-MS-Exchange-CrossTenant-AuthSource: BN3PR03MB2307.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 06:50:50.6635
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XWJ4ofTe++Lcvd8ZMOK4s6RAJrCG13IXWiA6aUdT/FkU38y1lLYSzy9L+HL+ZGGLwK1c/0n6r9RNO7A9ZXbrSw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR03MB4755
+References: <20210311062011.8054-1-calvin.johnson@oss.nxp.com> <20210311062011.8054-3-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20210311062011.8054-3-calvin.johnson@oss.nxp.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 10 Mar 2021 22:50:57 -0800
+Message-ID: <CAGETcx87Upc701NZstiDx8Px1o9b+s4ANpbG0AP5bjC8DxMMrg@mail.gmail.com>
+Subject: Re: [net-next PATCH v7 02/16] net: phy: Introduce fwnode_mdio_find_device()
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Randy Dunlap <rdunlap@infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>, netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 7 Mar 2021 23:10:12 +0100 Krzysztof Wilczy=C5=84ski  wrote:
+On Wed, Mar 10, 2021 at 10:21 PM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+>
+> Define fwnode_mdio_find_device() to get a pointer to the
+> mdio_device from fwnode passed to the function.
+>
+> Refactor of_mdio_find_device() to use fwnode_mdio_find_device().
+>
+> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> ---
+>
+> Changes in v7:
+> - correct fwnode_mdio_find_device() description
+>
+> Changes in v6:
+> - fix warning for function parameter of fwnode_mdio_find_device()
+>
+> Changes in v5: None
+> Changes in v4: None
+> Changes in v3: None
+> Changes in v2: None
+>
+>  drivers/net/mdio/of_mdio.c   | 11 +----------
+>  drivers/net/phy/phy_device.c | 23 +++++++++++++++++++++++
+>  include/linux/phy.h          |  6 ++++++
+>  3 files changed, 30 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
+> index ea9d5855fb52..d5e0970b2561 100644
+> --- a/drivers/net/mdio/of_mdio.c
+> +++ b/drivers/net/mdio/of_mdio.c
+> @@ -347,16 +347,7 @@ EXPORT_SYMBOL(of_mdiobus_register);
+>   */
+>  struct mdio_device *of_mdio_find_device(struct device_node *np)
+>  {
+> -       struct device *d;
+> -
+> -       if (!np)
+> -               return NULL;
+> -
+> -       d = bus_find_device_by_of_node(&mdio_bus_type, np);
+> -       if (!d)
+> -               return NULL;
+> -
+> -       return to_mdio_device(d);
+> +       return fwnode_mdio_find_device(of_fwnode_handle(np));
+>  }
+>  EXPORT_SYMBOL(of_mdio_find_device);
+>
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index cc38e326405a..daabb17bba00 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -2819,6 +2819,29 @@ static bool phy_drv_supports_irq(struct phy_driver *phydrv)
+>         return phydrv->config_intr && phydrv->handle_interrupt;
+>  }
+>
+> +/**
+> + * fwnode_mdio_find_device - Given a fwnode, find the mdio_device
+> + * @fwnode: pointer to the mdio_device's fwnode
+> + *
+> + * If successful, returns a pointer to the mdio_device with the embedded
+> + * struct device refcount incremented by one, or NULL on failure.
+> + * The caller should call put_device() on the mdio_device after its use.
+> + */
+> +struct mdio_device *fwnode_mdio_find_device(struct fwnode_handle *fwnode)
+> +{
+> +       struct device *d;
+> +
+> +       if (!fwnode)
+> +               return NULL;
+> +
+> +       d = bus_find_device_by_fwnode(&mdio_bus_type, fwnode);
 
->=20
->=20
-> Hi,
->=20
-> > Currently, dw_pcie_msi_init() allocates and maps page for msi, then
-> > program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
-> > may lose power during suspend-to-RAM, so when we resume, we want to
-> > redo the latter but not the former. If designware based driver (for
-> > example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
-> > previous msi page will be leaked. From another side, except
-> > pci-dra7xx.c we can move the dw_pcie_msi_init() from each users to
-> > designware host, I.E move the msi page allocation and mapping to
-> > dw_pcie_host_init() and move the PCIE_MSI_ADDR_* programming to
-> > dw_pcie_setup_rc(). After this moving, we solve the msi page leakage
-> > as well. =20
-> [...]
->=20
-> A small nitpick.  All the "designware" should be "DesignWare" both in
-> the commit message and the subject.  Similarly, "msi" would be "MSI",
-> and "I.E" would become "i.e.,".  If you ever sent another version of the
-> patch, that is.
->=20
+Sorry about the late review, but can you look into using
+get_dev_from_fwnode()? As long as you aren't registering two devices
+for the same fwnode, it's an O(1) operation instead of having to loop
+through a list of devices in a bus. You can check the returned
+device's bus type if you aren't sure about not registering two devices
+with the same fw_node and then fall back to this looping.
 
-Hi
+-Saravana
 
-This series was dropped and useless after Rob's excellent dw pcie code clea=
-n
-up.
-
-Thanks
+> +       if (!d)
+> +               return NULL;
+> +
+> +       return to_mdio_device(d);
+> +}
+> +EXPORT_SYMBOL(fwnode_mdio_find_device);
+> +
+>  /**
+>   * phy_probe - probe and init a PHY device
+>   * @dev: device to probe and init
+> diff --git a/include/linux/phy.h b/include/linux/phy.h
+> index 1a12e4436b5b..f5eb1e3981a1 100644
+> --- a/include/linux/phy.h
+> +++ b/include/linux/phy.h
+> @@ -1366,11 +1366,17 @@ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, u32 phy_id,
+>                                      bool is_c45,
+>                                      struct phy_c45_device_ids *c45_ids);
+>  #if IS_ENABLED(CONFIG_PHYLIB)
+> +struct mdio_device *fwnode_mdio_find_device(struct fwnode_handle *fwnode);
+>  struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45);
+>  int phy_device_register(struct phy_device *phy);
+>  void phy_device_free(struct phy_device *phydev);
+>  #else
+>  static inline
+> +struct mdio_device *fwnode_mdio_find_device(struct fwnode_handle *fwnode)
+> +{
+> +       return 0;
+> +}
+> +static inline
+>  struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45)
+>  {
+>         return NULL;
+> --
+> 2.17.1
+>
