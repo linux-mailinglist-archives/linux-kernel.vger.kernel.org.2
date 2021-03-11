@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08210336DD3
+	by mail.lfdr.de (Postfix) with ESMTP id 83F2D336DD4
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhCKI1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:27:53 -0500
-Received: from mga02.intel.com ([134.134.136.20]:50994 "EHLO mga02.intel.com"
+        id S231515AbhCKI1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:27:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39964 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231394AbhCKI1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:27:32 -0500
-IronPort-SDR: nsN+Jwgzo9vKGf/76IbnYy/VGzjLyTdQyVk0OXYFMI67YQUEVFEMVpDjYGCfhVAcFxQHZKf7CT
- IDUETTq4vEWQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="175744168"
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="175744168"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 00:27:31 -0800
-IronPort-SDR: pJTjStgHCnmv5a1kWffP+57JbDpIvmrdwDCAF6kvP/wMpFTNU3qOkaI8NObhjmdaZAjYTGEE8y
- xnriS9luJGow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="509955082"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 11 Mar 2021 00:27:28 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 11 Mar 2021 10:27:27 +0200
-Date:   Thu, 11 Mar 2021 10:27:27 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: tcpci: Refactor tcpc_presenting_cc1_rd
- macro
-Message-ID: <YEnUb/hBh63Bql76@kuha.fi.intel.com>
-References: <20210310223536.3471243-1-badhri@google.com>
+        id S231405AbhCKI1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:27:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615451257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RFfA+vp/9KZx10jXES2OVvQ+pa5INPvCzddyZh0Z1og=;
+        b=VL7vCelacOXvGk0dZEDo6fCWaGBJAdTCxvhhC4VVs+D3/L4PXujrMX5XMFzFFCtuBj8mv0
+        9zd5ULZXDYLZ+wzKAt+jNeNc17X8B9Ccgb5N3lLx9ML1GZFYCqCUpYXfo37iudxRWH36z/
+        4vYVXwnbBKAkEpke6WZNicXZr/R0zSU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 99BE6AC16;
+        Thu, 11 Mar 2021 08:27:37 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 09:27:37 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, tglx@linutronix.de,
+        john.ogness@linutronix.de, urezki@gmail.com, ast@fb.com,
+        Eric Dumazet <edumazet@google.com>,
+        Mina Almasry <almasrymina@google.com>, peterz@infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
+ in_atomic use
+Message-ID: <YEnUeagd/CF1W8Db@dhcp22.suse.cz>
+References: <20210311021321.127500-1-mike.kravetz@oracle.com>
+ <YEnUGtx79QaMNGVN@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310223536.3471243-1-badhri@google.com>
+In-Reply-To: <YEnUGtx79QaMNGVN@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 02:35:36PM -0800, Badhri Jagan Sridharan wrote:
-> Defining one macro instead of two for tcpc_presenting_*_rd.
-> This is a follow up of the comment left by Heikki Krogerus.
+On Thu 11-03-21 09:26:03, Michal Hocko wrote:
+> On Wed 10-03-21 18:13:21, Mike Kravetz wrote:
+> > put_page does not correctly handle all calling contexts for hugetlb
+> > pages.  This was recently discussed in the threads [1] and [2].
+> > 
+> > free_huge_page is the routine called for the final put_page of huegtlb
+> > pages.  Since at least the beginning of git history, free_huge_page has
+> > acquired the hugetlb_lock to move the page to a free list and possibly
+> > perform other processing. When this code was originally written, the
+> > hugetlb_lock should have been made irq safe.
+> > 
+> > For many years, nobody noticed this situation until lockdep code caught
+> > free_huge_page being called from irq context.  By this time, another
+> > lock (hugetlb subpool) was also taken in the free_huge_page path.  In
+> > addition, hugetlb cgroup code had been added which could hold
+> > hugetlb_lock for a considerable period of time.  Because of this, commit
+> > c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in non-task
+> > context") was added to address the issue of free_huge_page being called
+> > from irq context.  That commit hands off free_huge_page processing to a
+> > workqueue if !in_task.
+> > 
+> > The !in_task check handles the case of being called from irq context.
+> > However, it does not take into account the case when called with irqs
+> > disabled as in [1].
+> > 
+> > To complicate matters, functionality has been added to hugetlb
+> > such that free_huge_page may block/sleep in certain situations.  The
+> > hugetlb_lock is of course dropped before potentially blocking.
+> > 
+> > One way to handle all calling contexts is to have free_huge_page always
+> > send pages to the workqueue for processing.  This idea was briefly
+> > discussed here [3], but has some undesirable side effects.
 > 
-> https://patchwork.kernel.org/project/linux-usb/patch/
-> 20210304070931.1947316-1-badhri@google.com/
+> s@undesirable side effects@undesirable user visible side effects@
 > 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
->  drivers/usb/typec/tcpm/tcpci.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
+> > Ideally, the hugetlb_lock should have been irq safe from the beginning
+> > and any code added to the free_huge_page path should have taken this
+> > into account.  However, this has not happened.  The code today does have
+> > the ability to hand off requests to a workqueue.  It does this for calls
+> > from irq context.  Changing the check in the code from !in_task to
+> > in_atomic would handle the situations when called with irqs disabled.
+> > However, it does not not handle the case when called with a spinlock
+> > held.  This is needed because the code could block/sleep.
+> > 
+> > Select PREEMPT_COUNT if HUGETLB_PAGE is enabled so that in_atomic can be
+> > used to detect all atomic contexts where sleeping is not possible.
+> > 
+> > [1] https://lore.kernel.org/linux-mm/000000000000f1c03b05bc43aadc@google.com/
+> > [2] https://lore.kernel.org/linux-mm/YEjji9oAwHuZaZEt@dhcp22.suse.cz/
+> > [3] https://lore.kernel.org/linux-mm/YDzaAWK41K4gD35V@dhcp22.suse.cz/
+> > 
+> > Suggested-by: Michal Hocko <mhocko@suse.com>
+> > Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-> index 027afd7dfdce..25b480752266 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.c
-> +++ b/drivers/usb/typec/tcpm/tcpci.c
-> @@ -24,14 +24,10 @@
->  #define	AUTO_DISCHARGE_PD_HEADROOM_MV		850
->  #define	AUTO_DISCHARGE_PPS_HEADROOM_MV		1250
->  
-> -#define tcpc_presenting_cc1_rd(reg) \
-> +#define tcpc_presenting_rd(reg, cc) \
->  	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
-> -	 (((reg) & (TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT)) == \
-> -	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC1_SHIFT)))
-> -#define tcpc_presenting_cc2_rd(reg) \
-> -	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
-> -	 (((reg) & (TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT)) == \
-> -	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC2_SHIFT)))
-> +	 (((reg) & (TCPC_ROLE_CTRL_## cc ##_MASK << TCPC_ROLE_CTRL_## cc ##_SHIFT)) == \
-> +	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_## cc ##_SHIFT)))
->  
->  struct tcpci {
->  	struct device *dev;
-> @@ -201,11 +197,11 @@ static int tcpci_get_cc(struct tcpc_dev *tcpc,
->  	*cc1 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC1_SHIFT) &
->  				 TCPC_CC_STATUS_CC1_MASK,
->  				 reg & TCPC_CC_STATUS_TERM ||
-> -				 tcpc_presenting_cc1_rd(role_control));
-> +				 tcpc_presenting_rd(role_control, CC1));
->  	*cc2 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC2_SHIFT) &
->  				 TCPC_CC_STATUS_CC2_MASK,
->  				 reg & TCPC_CC_STATUS_TERM ||
-> -				 tcpc_presenting_cc2_rd(role_control));
-> +				 tcpc_presenting_rd(role_control, CC2));
->  
->  	return 0;
->  }
-> -- 
-> 2.31.0.rc1.246.gcd05c9c855-goog
+> While not an ideal solution I believe this is the most straightforward
+> one wrt to backporting to older kernels which are affected. I have a
+> hope that a preemption model independent in_atomic() is going to become
+> a norm. RCU is very much interested in the same thing as well. Now we
+> have two core kernel users requiring this so hopefully this will make
+> the case stronger.
+> 
+> That being said
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-thanks,
+Btw. we very likely want
+Cc: stable
 
 -- 
-heikki
+Michal Hocko
+SUSE Labs
