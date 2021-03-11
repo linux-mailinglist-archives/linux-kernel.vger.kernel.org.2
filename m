@@ -2,63 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA953380EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E263380F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhCKWxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 17:53:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229606AbhCKWwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 17:52:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B375464F88;
-        Thu, 11 Mar 2021 22:52:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615503152;
-        bh=4QgAP0kdRp+SvY/5gfVIOzzcM8Q+PCJdBWaJ2ssOVig=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gzFd5WjUEeVa2WCswkfsMUpVVPomdYorr/uhTZmrtvrgkDArbOefq95A2kVkl15zV
-         PxZma4wyVTPlWpp39UJJlwEUD6ccGvO++nM6sxs/ZALSDJpeN8NcnCcshqXkC/7/SD
-         FPyovlg887Tr443uPWOYN6xoHGhFLhTeBZcyQZsybyzbihDMlcCjLd4pddvY4AWBwr
-         pxCcgs9n3omYa5ZCWNzdN6xDypLqgTdd4oJyPfVjVU408oUgcieJPShI/AaECZoIVD
-         rJO0tBEI5ib35G3z8pBnx/yJB7CDCJD00DFo96XqQrnh70w/fDNhOSYAlQ0r43v5Lu
-         VkM0h6aIF3mtg==
-Date:   Thu, 11 Mar 2021 14:52:30 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: lapbether: Prevent racing when checking
- whether the netif is running
-Message-ID: <20210311145230.5f368151@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAJht_EMToKj2OeeE1fMfwAVYvhbgZpENkv0C7ac+XHnWcTe2Tg@mail.gmail.com>
-References: <20210311072311.2969-1-xie.he.0141@gmail.com>
-        <20210311124309.5ee0ef02@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAJht_EMToKj2OeeE1fMfwAVYvhbgZpENkv0C7ac+XHnWcTe2Tg@mail.gmail.com>
+        id S229569AbhCKWzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 17:55:13 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:47640 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230119AbhCKWzG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 17:55:06 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12BMnf4x115224;
+        Thu, 11 Mar 2021 22:53:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=plSnUdBNvny7Ct7a8NuaqDGnQYwwr4B6qgGyUtk/DSU=;
+ b=Msup728Ns4Ep4HZxxAMhehA9El1ybe+B5r/r357QamrJjOas3nTMuu4f9WLbOt1rqT4j
+ O/TsgrpU16UrPraEtlWljTNBA2pIeBRFwqbM89ypogW+ujxgDcLuiaAvsW99JLrKIGXm
+ phkOt1w4OZRco4aGUsOSeVOj+PU4i84dcF+IegRCZzd7qCfZOGaFsrl7FN4YC26xP9nO
+ 5hAVmdMPqxiZSQutnvVrtVOkz0cOn+wsmB9wrBov/xIog5RnMLXP7H0uHZRGy77FN+7P
+ I5NYkVAQ+qTjzfBCpV+wsKS09bIUW2EJk+EivYEL6EixViltpspVW3VtpD0cRPrvJcpG jQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 3742cnga2b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Mar 2021 22:53:32 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12BMjAIf112036;
+        Thu, 11 Mar 2021 22:53:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 374kgvn1tk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Mar 2021 22:53:31 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12BMrBos023537;
+        Thu, 11 Mar 2021 22:53:11 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 11 Mar 2021 14:53:10 -0800
+Subject: Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     Michal Hocko <mhocko@suse.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-5-songmuchun@bytedance.com>
+ <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
+ <f9f19d38-f1a7-ac8c-6ba8-3ce0bcc1e6a0@oracle.com>
+ <YEk1+mDZ4u85RKL3@dhcp22.suse.cz>
+ <20210310214909.GY2696@paulmck-ThinkPad-P72>
+ <68bc8cc9-a15b-2e97-9a2a-282fe6e9bd3f@oracle.com>
+ <20210310232851.GZ2696@paulmck-ThinkPad-P72>
+ <YEnXllhPEQhT0CRt@dhcp22.suse.cz> <YEoKa5oSm/hdgt5V@dhcp22.suse.cz>
+ <45f434da-b55b-da61-be36-c248a301f688@oracle.com>
+Message-ID: <4d4851fd-f0fd-9bfe-d271-b53891fdab6f@oracle.com>
+Date:   Thu, 11 Mar 2021 14:53:08 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <45f434da-b55b-da61-be36-c248a301f688@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9920 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103110121
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9920 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ clxscore=1015 phishscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 mlxscore=0 impostorscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103110121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 13:12:25 -0800 Xie He wrote:
-> On Thu, Mar 11, 2021 at 12:43 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > Is this a theoretical issues or do you see a path where it triggers?
-> >
-> > Who are the callers sending frames to a device which went down?  
+On 3/11/21 9:59 AM, Mike Kravetz wrote:
+> On 3/11/21 4:17 AM, Michal Hocko wrote:
+>>> Yeah per cpu preempt counting shouldn't be noticeable but I have to
+>>> confess I haven't benchmarked it.
+>>
+>> But all this seems moot now http://lkml.kernel.org/r/YEoA08n60+jzsnAl@hirez.programming.kicks-ass.net
+>>
 > 
-> This is a theoretical issue. I didn't see this issue in practice.
+> The proper fix for free_huge_page independent of this series would
+> involve:
 > 
-> When "__dev_queue_xmit" and "sch_direct_xmit" call
-> "dev_hard_start_xmit", there appears to be no locking mechanism
-> preventing the netif from going down while "dev_hard_start_xmit" is
-> doing its work.
+> - Make hugetlb_lock and subpool lock irq safe
+> - Hand off freeing to a workque if the freeing could sleep
+> 
+> Today, the only time we can sleep in free_huge_page is for gigantic
+> pages allocated via cma.  I 'think' the concern about undesirable
+> user visible side effects in this case is minimal as freeing/allocating
+> 1G pages is not something that is going to happen at a high frequency.
+> My thinking could be wrong?
+> 
+> Of more concern, is the introduction of this series.  If this feature
+> is enabled, then ALL free_huge_page requests must be sent to a workqueue.
+> Any ideas on how to address this?
+> 
 
-Normally driver's ndo_stop() calls netif_tx_disable() which takes TX
-locks, so unless your driver is lockless (LLTX) there should be no xmit
-calls after that point.
+Thinking about this more ...
+
+A call to free_huge_page has two distinct outcomes
+1) Page is freed back to the original allocator: buddy or cma
+2) Page is put on hugetlb free list
+
+We can only possibly sleep in the first case 1.  In addition, freeing a
+page back to the original allocator involves these steps:
+1) Removing page from hugetlb lists
+2) Updating hugetlb counts: nr_hugepages, surplus
+3) Updating page fields
+4) Allocate vmemmap pages if needed as in this series
+5) Calling free routine of original allocator
+
+If hugetlb_lock is irq safe, we can perform the first 3 steps under that
+lock without issue.  We would then use a workqueue to perform the last
+two steps.  Since we are updating hugetlb user visible data under the
+lock, there should be no delays.  Of course, giving those pages back to
+the original allocator could still be delayed, and a user may notice
+that.  Not sure if that would be acceptable?  I think Muchun had a
+similar setup just for vmemmmap allocation in an early version of this
+series.
+
+This would also require changes to where accounting is done in
+dissolve_free_huge_page and update_and_free_page as mentioned elsewhere.
+
+P.S. We could further optimize to check for the possibility of sleeping
+(cma or vmemmap) and only send to workqueue in those cases.
+-- 
+Mike Kravetz
