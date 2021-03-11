@@ -2,100 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BDB33816D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E9B338172
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhCKX0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhCKX0J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:26:09 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285FBC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:26:09 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DxQ711CXQz9sVt;
-        Fri, 12 Mar 2021 10:26:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1615505165;
-        bh=E/wjRfTwLwTeZtdF+8K681lQgpnJDWERQYIyr2pWj1A=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Mp9KtA2wbabfGNEAG4yTlb3/fMM0Tv1eaZo6pwYit0dnQQf2ydQGk3IHRd5RQTCwl
-         /0wzOYdhQ1nqZRO9YxSYrX81QsYksW6q1EG4QBAhaWsfbW9L/56v32LBvwbpE0fkjb
-         acBf9fVvF3ss2/CCA+jka/ZahwElg+HaUEEhbWAHcIGj/sep5vlj1x3RJ8dXIKD1XU
-         l2tcL3b+FufTlHB77twz4EiPRYz8rAOUM6MhHhnfjLaNseZiQB/xG4BlaOjo9PazuR
-         0k/JMy6SguGvK9L/Yct1RltMbwMp+5U0cSR8eiRGl9Gfwsbr9AHG38SzGUF6HOQuK2
-         FwybpQUleqVVg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 25/43] powerpc/32: Replace ASM exception exit by C
- exception exit from ppc64
-In-Reply-To: <0296d1bc-b37e-43c8-06cf-00ec458fb74e@csgroup.eu>
-References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
- <a9a50f475db97fc53795dd778bc14f58029fdd55.1615291473.git.christophe.leroy@csgroup.eu>
- <87tuphkdkz.fsf@mpe.ellerman.id.au>
- <0296d1bc-b37e-43c8-06cf-00ec458fb74e@csgroup.eu>
-Date:   Fri, 12 Mar 2021 10:26:02 +1100
-Message-ID: <87r1kljmr9.fsf@mpe.ellerman.id.au>
+        id S231406AbhCKX1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:27:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229441AbhCKX06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 18:26:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 266B464F92;
+        Thu, 11 Mar 2021 23:26:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615505217;
+        bh=muPWX0Eq0pYxdUFY28jWi+rGMz0Zydt8/SQ82W/z3so=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=nOCXmdDd4W8iPpCd/c2YLLaPr7trLnJAypKblgP0h/KQ2jnH75dP8zJIAHXHjpCch
+         orGeYVHwTQiYg3lsyL34m2hu1tIQvqszSlPkNltgKV1LKj8v2Jwie8vpIYs+B3k2Bp
+         qSxRNurUwUQOgkWIGyN2qZHqSUFao+bx86RM1WkxQzWHlXmTHcGPC8lXxfCK0Mvcz/
+         +eE5iL8eHhuXmURBggTvuk63LFeZ/41r9D43BNddBKD3KSlY9SizA6+hTLfBscebgu
+         nq2JbdzTu6GmDASoplvHqyt+t4JikVo3CSqc8BpmUIAeGV8v1o0ppXTBhVmfpPzfLN
+         14gRe7ig2FZJQ==
+Message-ID: <bdfceaa00159629ea2dbcc30eaa8e4ece0c96021.camel@kernel.org>
+Subject: Re: [PATCH] net/mlx5: use kvfree() for memory allocated with
+ kvzalloc()
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Roi Dayan <roid@nvidia.com>, angkery <angkery@163.com>,
+        leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        vladbu@nvidia.com, dlinkin@nvidia.com, dan.carpenter@oracle.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
+Date:   Thu, 11 Mar 2021 15:26:56 -0800
+In-Reply-To: <0c195a3a-53cc-dbd2-f656-54a92e5a569b@nvidia.com>
+References: <20210303024019.2245-1-angkery@163.com>
+         <0c195a3a-53cc-dbd2-f656-54a92e5a569b@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 11/03/2021 =C3=A0 14:46, Michael Ellerman a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>> This patch replaces the PPC32 ASM exception exit by C exception exit.
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> ---
->>>   arch/powerpc/kernel/entry_32.S  | 481 +++++++++-----------------------
->>>   arch/powerpc/kernel/interrupt.c |   4 +
->>>   2 files changed, 132 insertions(+), 353 deletions(-)
->>=20
->> Bisect points to this breaking qemu mac99 for me, with pmac32_defconfig.
->>=20
->> I haven't had time to dig any deeper sorry.
->
-> Embarrasing ...
+On Wed, 2021-03-03 at 09:54 +0200, Roi Dayan wrote:
+> 
+> 
+> On 2021-03-03 4:40 AM, angkery wrote:
+> > From: Junlin Yang <yangjunlin@yulong.com>
+> > 
+> > It is allocated with kvzalloc(), the corresponding release function
+> > should not be kfree(), use kvfree() instead.
+> > 
+> > Generated by: scripts/coccinelle/api/kfree_mismatch.cocci
+> > 
+> > Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+> > ---
+> >   drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c | 10
+> > +++++-----
+> >   1 file changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git
+> > a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+> > b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+> > index 6f6772b..3da7bec 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+> > @@ -248,7 +248,7 @@ static int mlx5_esw_indir_table_rule_get(struct
+> > mlx5_eswitch *esw,
+> >   err_ethertype:
+> >         kfree(rule);
+> >   out:
+> > -       kfree(rule_spec);
+> > +       kvfree(rule_spec);
+> >         return err;
+> >   }
+> >   
+> > @@ -328,7 +328,7 @@ static int
+> > mlx5_create_indir_recirc_group(struct mlx5_eswitch *esw,
+> >         e->recirc_cnt = 0;
+> >   
+> >   out:
+> > -       kfree(in);
+> > +       kvfree(in);
+> >         return err;
+> >   }
+> >   
+> > @@ -347,7 +347,7 @@ static int mlx5_create_indir_fwd_group(struct
+> > mlx5_eswitch *esw,
+> >   
+> >         spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
+> >         if (!spec) {
+> > -               kfree(in);
+> > +               kvfree(in);
+> >                 return -ENOMEM;
+> >         }
+> >   
+> > @@ -371,8 +371,8 @@ static int mlx5_create_indir_fwd_group(struct
+> > mlx5_eswitch *esw,
+> >         }
+> >   
+> >   err_out:
+> > -       kfree(spec);
+> > -       kfree(in);
+> > +       kvfree(spec);
+> > +       kvfree(in);
+> >         return err;
+> >   }
+> >   
+> > 
+> 
+> thanks!
+> 
+> Reviewed-by: Roi Dayan <roid@nvidia.com>
+> 
 
-Nah, these things happen.
+applied to net-next-mlx5
 
-> I don't get this problem on the 8xx (nohash/32) or the 83xx (book3s/32).
-> I don't get this problem with qemu mac99 when using my klibc-based initra=
-mfs.
->
-> I managed to reproduce it with the rootfs.cpio that I got some time ago f=
-rom linuxppc github Wiki.
-
-OK.
-
-I'm using the ppc-rootfs.cpio.gz from here:
-
-  https://github.com/linuxppc/ci-scripts/blob/master/root-disks/Makefile
-
-And the boot script is:
-
-  https://github.com/linuxppc/ci-scripts/blob/master/scripts/boot/qemu-mac99
-
-I've been meaning to write docs on how to use those scripts, but haven't
-got around to it.
-
-There's nothing really special though it's just a wrapper around qemu -M ma=
-c99.
-
-> I'll investigate it tomorrow.
-
-Thanks.
-
-cheers
