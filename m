@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF92337817
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D360337858
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234251AbhCKPlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:41:25 -0500
-Received: from mga07.intel.com ([134.134.136.100]:58359 "EHLO mga07.intel.com"
+        id S234239AbhCKPoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:44:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234085AbhCKPlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:41:21 -0500
-IronPort-SDR: GAP5UrQTP3+bXFB9Y/pgIa637+OnoXnFcDmQ9OTEvuAzQJnqKKVDZqz/p1elge787st9u7Zkts
- xvkAv58ttRKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="252701468"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="252701468"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 07:41:20 -0800
-IronPort-SDR: k9NRVQ7n59owaGICOtY/XD7WREgy2Ro4Ay4x0X/VaS0zLQQ3MsciwKCI6DQbg/FfFY32Y6l3o6
- W2hekEinXahQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="438738277"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 Mar 2021 07:41:03 -0800
-Received: from [10.251.15.67] (kliang2-MOBL.ccr.corp.intel.com [10.251.15.67])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 17131580514;
-        Thu, 11 Mar 2021 07:41:01 -0800 (PST)
-Subject: Re: [PATCH V2 16/25] perf/x86: Register hybrid PMUs
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
- <YEoOVTVhN3DpQXl2@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <24dbe717-ffb8-204b-bac2-59941c2314f7@linux.intel.com>
-Date:   Thu, 11 Mar 2021 10:41:00 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234320AbhCKPne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 10:43:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9624564F99;
+        Thu, 11 Mar 2021 15:43:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615477414;
+        bh=yDXgS0inYi0WFo3hlPHqtgtfl3ofv2QGTiheosYbsgE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DO49/VF0hYvfoh02CmVLYgeKyW2I0WgBl4pqoV7NoIjGE8P3vdgTcOkDXf5UiiA9u
+         gL3TYXdLM0LZfLALCKkfJCVdSfhev2lCaGbA1eQTSc2h2Lp4eunIPJNPS1G+4NoZNW
+         5Vq+0wnoRsS//E9ZE4ppX0UMiait1K5F73Fky3EF8DPlmQcVbdm5mX9OQStUwl4g/Q
+         Y5DchnhM9RXxbMWmIOzg90L7pZBS26ubra2cZL05JMVrtTel3Q1wBlduRbWyICp8HS
+         RKv3KOcap/RHHeCA9IJHGNfvoBTiHsvfB4udKqFDcStB9vf4Zsf6rcW/y95dsaJ+RG
+         jV3zj+n2jRT+Q==
+Date:   Thu, 11 Mar 2021 15:42:21 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Li, Meng" <Meng.Li@windriver.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+        "vigneshr@ti.com" <vigneshr@ti.com>,
+        "vadivel.muruganx.ramuthevar@linux.intel.com" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH] drivers: spi: cadence: set cqspi to the driver_data
+ field of struct device
+Message-ID: <20210311154221.GE4962@sirena.org.uk>
+References: <20210311091220.3615-1-Meng.Li@windriver.com>
+ <20210311132629.GD4962@sirena.org.uk>
+ <PH0PR11MB51912BDD33645BDAB88B0139F1909@PH0PR11MB5191.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <YEoOVTVhN3DpQXl2@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="brEuL7wsLY8+TuWz"
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB51912BDD33645BDAB88B0139F1909@PH0PR11MB5191.namprd11.prod.outlook.com>
+X-Cookie: I'm rated PG-34!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--brEuL7wsLY8+TuWz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 3/11/2021 7:34 AM, Peter Zijlstra wrote:
-> On Wed, Mar 10, 2021 at 08:37:52AM -0800, kan.liang@linux.intel.com wrote:
->> @@ -2092,9 +2105,37 @@ static int __init init_hw_perf_events(void)
->>   	if (err)
->>   		goto out1;
->>   
->> -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
->> -	if (err)
->> -		goto out2;
->> +	if (!is_hybrid()) {
->> +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
->> +		if (err)
->> +			goto out2;
->> +	} else {
->> +		u8 cpu_type = get_hybrid_cpu_type(smp_processor_id());
->> +		struct x86_hybrid_pmu *hybrid_pmu;
->> +		int i;
->> +
->> +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
->> +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
->> +
->> +			hybrid_pmu->pmu = pmu;
->> +			hybrid_pmu->pmu.type = -1;
->> +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
->> +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
->> +
->> +			/* Only register the PMU for the boot CPU */
-> 
-> Why ?!
-> > AFAICT we could register them all here. That instantly fixes that
-> CPU_STARTING / CPU_DEAD fail elsewhere in this patch.
+On Thu, Mar 11, 2021 at 02:05:18PM +0000, Li, Meng wrote:
+> Thanks for reminding me these issues, and I will pay attention that when I submit patch next time.
+> Do I need to submit v2 patch to fix this issue?
 
-It's possible that all CPUs of a certain type all offline, but I cannot 
-know the information here, because the boot CPU is the only online CPU. 
-I don't know the status of the other CPUs.
+No.
 
-If we unconditionally register all PMUs, users may see a PMU in 
-/sys/devices, but they cannot use it, because there is no available CPU.
-Is it acceptable that registering an empty PMU?
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
+--brEuL7wsLY8+TuWz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Kan
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBKOlwACgkQJNaLcl1U
+h9D9Twf+J3ItvaZ+wzdHvKPgLVDyBgX7VaD03gaKv46qk4cJuO9Ca5KwXYXccoG8
+IRgDyQLeVs+vTlFU/U88V/eBrGFO8LIj30RBLKmwzMQ0ZcWbDm2sLv9jzXgPLD1j
+B+avcFvw3RZZHRhJp/6/4RzF/epwrNTBB5CFH7A8kYGZ9M1+GQkn0pVbguuDDuYq
+F7nCI0p+wvsiELcHL4VXZjXEtSC02POR4MpG1o4lAMDv4Z9a04FSzCBCqIP++rVb
+PkdDqpGC5zvPoMs9CH3JuI0sZ8BuVZ6ZIDQzXuXKpEGnq3wO1sE+DY0Wem+U1Hnq
+02FCLKw7Vy+MAFpC/Y8TAOSXxvzVsQ==
+=MM7O
+-----END PGP SIGNATURE-----
+
+--brEuL7wsLY8+TuWz--
