@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27213337A6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C64F337A71
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:06:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCKRGa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 12:06:30 -0500
-Received: from mga03.intel.com ([134.134.136.65]:17589 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230046AbhCKRF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:05:56 -0500
-IronPort-SDR: sxolkFIWZJZtgDX2iitjkpbdMW3EwlRVC5T3c9Q+ZUaOtfmZwsAWTLaaJzfJdKGjlDHeuQfShi
- 3utg7r/YMeyA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188739272"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="188739272"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:05:55 -0800
-IronPort-SDR: UnBMPMNAmjlV2lOgE13+gfTJozcsEO11D+J/l9JEvw33mJDqzC0k9EivlWoaoCOoaNpc9n0Wfa
- PAmHtPuL316g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="372391140"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga006.jf.intel.com with ESMTP; 11 Mar 2021 09:05:55 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 11 Mar 2021 09:05:54 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 11 Mar 2021 09:05:54 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Thu, 11 Mar 2021 09:05:54 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>, Aili Yao <yaoaili@kingsoft.com>
-CC:     Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-Subject: RE: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Topic: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Index: AQHXCnz5ja9ELypBUEatGW66U99st6pnoa2AgAEgN4CAAIHfAIAAAyEAgAAQXwD//9g7gIABDSmAgAALNoCAB2DqAIAAiu0AgABOzQD//+3L0IABObiAgAAiT4CAACi3AIAAmjmAgACgEACAAGnOwIAHwDQAgAHAYACAAADA4A==
-Date:   Thu, 11 Mar 2021 17:05:53 +0000
-Message-ID: <db80e98d2b264e988596d0d7d7c8a776@intel.com>
-References: <20210303115710.2e9f8e23@alex-virtual-machine>
- <20210303163912.3d508e0f@alex-virtual-machine>
- <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
- <20210304101653.546a9da1@alex-virtual-machine>
- <20210304121941.667047c3@alex-virtual-machine>
- <20210304144524.795872d7@alex-virtual-machine>
- <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
- <20210305093016.40c87375@alex-virtual-machine>
- <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
- <20210310141042.4db9ea29@alex-virtual-machine>
- <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
-In-Reply-To: <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        id S230151AbhCKRGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:06:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhCKRGQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:06:16 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DBEC061574;
+        Thu, 11 Mar 2021 09:06:16 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id v9so40991537lfa.1;
+        Thu, 11 Mar 2021 09:06:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PrdT1wQhy9IxbC6XumdouIDu0exhn3fHS2Os4khyfHU=;
+        b=GMmSyrJfRU2L+dVXxXLx/8DqgviBZWz3HocHK7mj8r0efL5mxrYP0ppCFBnHBbxBGW
+         U5o4ywGa8IIOH0Nz8MMgkoToZdddhZzlHLxxtQfnE29QrbN+OQKozJsL8xemqDgrrSCt
+         BmC2kkjgTNn6jm7DqIUnMd0cl9OK0QFNTnY8EjAAmT43cIFRTts/SbLcWkBr//0YnciY
+         kzBlmt89Y5M1gpGHpZk1ugljriB5kQWwZGUPj4k/iKWenQSOQw4D3HdjUf0MoEHwO2sq
+         Lpuu74Hp3cQmRUPkl0LzDbswMDfJdRQK74ls9YHOyT2gKsDwNsW8kHB6efsFXdSSWmyB
+         JkVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PrdT1wQhy9IxbC6XumdouIDu0exhn3fHS2Os4khyfHU=;
+        b=NjxmXc5JNTTRGrcIhwiyemsdlR+UdbwQ+gAD6DIa46qqJV+LJ5JEvNvR0AyhtC8naw
+         1vRYhohkBG9XVOLxfqwY/QofcQsJaFZBtQLmUB/y3lffUWVfXPABOGyof/kZCZ531vxm
+         B750Etm6J02PInHNeoe5pET0UUiPw327DspwO+LvcgElS7KiqvN5ivZ1hFQR/JayNZ8M
+         ghBfm8JVqtkaXiNNLLYoqfTyec4cRcqyw7zi2S0wdKCpgx8QGaNIrEdLzEKrLCSAt5JU
+         +BRW3NISQFE3Q/LEXgX+CRygybsaKw/QLON1aQUS7qJuaMjzRqLVtnDOAiqjmfxErB7M
+         CyRg==
+X-Gm-Message-State: AOAM532O7V8CesdBEB54Pd7IRPPMtlu+m3SDuzW1nvKwoL7flZ6x+fbz
+        hDoXNgI3o8Mm+30RMgOAD94=
+X-Google-Smtp-Source: ABdhPJwrJiFcYr+8LThGxa9P1GY6Znhfa3CkzooW8UnHgQLBu8SQXV3ps13DVvhLzlk92OR4brVbJA==
+X-Received: by 2002:ac2:46d6:: with SMTP id p22mr2744651lfo.625.1615482374798;
+        Thu, 11 Mar 2021 09:06:14 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id p5sm1166009ljj.26.2021.03.11.09.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 09:06:14 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v14 0/2] Add memory bandwidth management to NVIDIA Tegra DRM driver
+Date:   Thu, 11 Mar 2021 20:06:04 +0300
+Message-Id: <20210311170606.7543-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I guess that p->mce_vaddr stores the virtual address of the error here.
-> If so, sending SIGBUS with the address looks enough as we do now, so why
-> do you walk page table to find the error virtual address?
+This series adds memory bandwidth management to the NVIDIA Tegra DRM driver,
+which is done using interconnect framework. It fixes display corruption that
+happens due to insufficient memory bandwidth.
 
-p->mce_vaddr only has the virtual address for the COPYIN case. In that code
-path we decode the kernel instruction that hit the fault in order to find the virtual
-address. That's easy because:
+Changelog:
 
-1) The kernel RIP is known to be good (can't page fault etc. on kernel address).
-2) There are only a half dozen instructions used by the kernel for get_user() or
-     copy_from_user().
+v14: - Made improvements that were suggested by Michał Mirosław to v13:
 
-When the machine check happens during user execution accessing poison data
-we only have the physical address (from MCi_ADDR).
+       - Changed 'unsigned int' to 'bool'.
+       - Renamed functions which calculate bandwidth state.
+       - Reworked comment in the code that explains why downscaled plane
+         require higher bandwidth.
+       - Added round-up to bandwidth calculation.
+       - Added sanity checks of the plane index and fixed out-of-bounds
+         access which happened on T124 due to the cursor plane index.
 
--Tony
+v13: - No code changes. Patches missed v5.12, re-sending them for v5.13.
+
+Dmitry Osipenko (2):
+  drm/tegra: dc: Support memory bandwidth management
+  drm/tegra: dc: Extend debug stats with total number of events
+
+ drivers/gpu/drm/tegra/Kconfig |   1 +
+ drivers/gpu/drm/tegra/dc.c    | 362 ++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/tegra/dc.h    |  19 ++
+ drivers/gpu/drm/tegra/drm.c   |  14 ++
+ drivers/gpu/drm/tegra/hub.c   |   3 +
+ drivers/gpu/drm/tegra/plane.c | 127 ++++++++++++
+ drivers/gpu/drm/tegra/plane.h |  15 ++
+ 7 files changed, 541 insertions(+)
+
+-- 
+2.29.2
+
