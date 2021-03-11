@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE87B338153
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175C9338154
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhCKXRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:17:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60448 "EHLO
+        id S231468AbhCKXRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:17:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbhCKXR0 (ORCPT
+        with ESMTP id S230445AbhCKXRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:17:26 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E61C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:17:26 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id k4so16366436qvf.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:17:26 -0800 (PST)
+        Thu, 11 Mar 2021 18:17:37 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2217BC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:17:37 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id m68so16908963qkd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:17:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=nVhAIt5VREXOLgbcbWfBMhCi9SRRPCjtnqZMSRmixNI=;
-        b=qaP2XqovDlAUs0DzgGGp+lLIkzUk6IF44/j1LRwLkgKp8GwCLjAEdyBwoB1a7rHiVk
-         V13xfo+YEeBoRTlpuxTGpryM4Cno45siFKYVCjytxck5FD+TV8sMfryv+0DM4fhB+0G/
-         vDtmCATkTSlit0JfLKCruP7W+D8Ce2t71vDcY60Lyc5AWNzMuQbxoKVP+SXxVPbOoY6X
-         9ZGcMY2uQmQOC0hO+S0Cx5U5VoNRguUMwHh5eE97otEo+D0D+JSpf+I/KNU7Ov4kqY88
-         THsDkutN4A72Y54hKXLVxLOYFlFbBJgTE9sMLZT/HpS6MOsH3wx8HbuaYdRvVMsFdD8Y
-         UyPw==
+        bh=WfbyYdb68xASx0rik3LLH3bJ+u86HlW/YnL+1UN7bRg=;
+        b=UFnnkD1qKxAJQAGTGtaWpjjsSj9Gg+i2QLcuMFbcbeO7zkkEc+TsL42Ah7MvWH0ctv
+         PFpLu/Nyywbasudcngum2Bk9NphF7J8H51jiABuNCyO9rn//W1sAXrXs0gyjiSwZPOMu
+         GugG5vfrsxqaBW8K5coQDu1VytV20y/wMnShJS5mrIR8R5GUHQzPT6K5PBCBGPze5f3E
+         /BLfCf48nUy5Y+I0vdOFRTkilK92ZpU9J97qDHxUAYugpe3UlNCiXPyB3AOt3b813mWL
+         sKUJBaU+iJbljvOcQSyJKeYZycaYcGO0c8m4VyWtInrQ/CafLAEoLTAOTX1UYku2ravM
+         NiFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=nVhAIt5VREXOLgbcbWfBMhCi9SRRPCjtnqZMSRmixNI=;
-        b=YF8VkNjX2Sf6AVoZbscSL+VTHAfuXnIod7LVX7ZeGV43QslhagSdRnXYhn1BAiKubC
-         px9xyFwEVG9o4KVF+roLJrPmdfm14GPxyqdoLs5FC9igo8MRKPWg+7+On5L+uYS4Zkur
-         yeMqsz9VwYGOK5uV0vdO/5nx+HgLIoVBsdE6bDH7TO0FapCUlLJNVIhEWmzUpuQ/8q1/
-         7IIne02U2nCNsmRL/OjSSf738tJx8lfO9srHB1hQl/Vk1uCHDOJqfTT0qSQQCk4MfoVX
-         6bBkw3SeuClP15d9jPiQiZSWZut15DsRTdQHMt4/Y+8aotoXMMN1Ut5UnOJlyJsSIMBx
-         0qGw==
-X-Gm-Message-State: AOAM5323SNCpa/S0y4mAIeAPFY1AMHpF20y8XRMOZEu73ZqsuX7cfsMS
-        fXdquosAKZvAlAtiCVxbIl/q4SkaNjp9UiaWbhTyO6h/THqZSz9j6/r6TvxWZNU+NDVSypyTT8Q
-        5CZ39Sn+DMmu05plLa8vNR/A/V7YlZ8u1zaNEUpwhb5H4NdK0amxvfYfr7QIn+DZS6o5+NN2q
-X-Google-Smtp-Source: ABdhPJyud+Anzi0dLD+vZhAklD+994rvg7BLyxQt7Qx2vCqzkZRj/TkyJHEIwzonvah7XILrc+z2D4y4UrxL
+        bh=WfbyYdb68xASx0rik3LLH3bJ+u86HlW/YnL+1UN7bRg=;
+        b=I8zAbpkFROJjPB7ZCypaNlKDigUglELBx8Y8gxfKrICNIubZFTZMFsPOD6yACoF3d8
+         3HjKd4iLAqDEsCZZJuY6Itovj4ZUiTFFJYMmVhIDa60t1GG/NdUKAjMbiauJ2WIX3Prs
+         QNLJZ3ozNNAd3Ws0ZxB8CB11YZPb6MvmhKPuuoOhBm/0kxu8KthHSIXriSDP2GGDFYqk
+         HYbEhMdGDBggh7P/FFRk2Tzqq8998ojTNSSj/mK/tStkDmgdG0b7Dl4cAzE8OYFwL2I7
+         ZN8WO5nmd7aVD93vOlKtPoL7c261a9PxX2gT3TAfHdQbyCVszH4WazD/LtU5G1aacaod
+         +LLg==
+X-Gm-Message-State: AOAM533jdXcyh8IHQBekzo+EBILYwtKKTWsr5+p2baAXg1v9JszwpVKr
+        Lgy9h7Z2gOqD1WsAcDq6k4757hibZ61a7WNYNaWg96OGO2sW5glIdJO1jegbcQt7+kD1CvV4gwe
+        AOhhUFGNsZt+JyhlwZC+NqZ9Jj4BTYyCKtyTvmrgQRVM+LwX+6m8lX9XtDN178+25fNwxMrDZ
+X-Google-Smtp-Source: ABdhPJxrh5lL/RyL27y+kf6kMDDXgW/8luozm42iisMnrZ9+99ldYCymOS7CF1DHuBrFCbDXG0qLHJdKMQTZ
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:b4d4:7253:76fa:9c42])
- (user=bgardon job=sendgmr) by 2002:a0c:b59f:: with SMTP id
- g31mr9990587qve.28.1615504645150; Thu, 11 Mar 2021 15:17:25 -0800 (PST)
-Date:   Thu, 11 Mar 2021 15:16:55 -0800
+ (user=bgardon job=sendgmr) by 2002:a0c:ed45:: with SMTP id
+ v5mr9922106qvq.13.1615504656303; Thu, 11 Mar 2021 15:17:36 -0800 (PST)
+Date:   Thu, 11 Mar 2021 15:16:56 -0800
 In-Reply-To: <20210311231658.1243953-1-bgardon@google.com>
-Message-Id: <20210311231658.1243953-2-bgardon@google.com>
+Message-Id: <20210311231658.1243953-3-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210311231658.1243953-1-bgardon@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH 1/4] KVM: x86/mmu: Fix RCU usage in handle_removed_tdp_mmu_page
+Subject: [PATCH 2/4] KVM: x86/mmu: Fix RCU usage for tdp_iter_root_pt
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
@@ -65,52 +65,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pt passed into handle_removed_tdp_mmu_page does not need RCU
-protection, as it is not at any risk of being freed by another thread at
-that point. However, the implicit cast from tdp_sptep_t to u64 * dropped
-the __rcu annotation without a proper rcu_derefrence. Fix this by
-passing the pt as a tdp_ptep_t and then rcu_dereferencing it in
-the function.
+The root page table in the TDP MMU paging structure is not protected
+with RCU, but rather by the root_count in the associated SP. As a result
+it is safe for tdp_iter_root_pt to simply return a u64 *. This sidesteps
+the complexities assoicated with propagating the __rcu annotation
+around.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
 Reported-by: kernel test robot <lkp@xxxxxxxxx>
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/x86/kvm/mmu/tdp_iter.c | 10 ++++++++--
+ arch/x86/kvm/mmu/tdp_iter.h |  2 +-
+ arch/x86/kvm/mmu/tdp_mmu.c  |  4 ++--
+ 3 files changed, 11 insertions(+), 5 deletions(-)
 
+diff --git a/arch/x86/kvm/mmu/tdp_iter.c b/arch/x86/kvm/mmu/tdp_iter.c
+index e5f148106e20..8e2c053533b6 100644
+--- a/arch/x86/kvm/mmu/tdp_iter.c
++++ b/arch/x86/kvm/mmu/tdp_iter.c
+@@ -159,8 +159,14 @@ void tdp_iter_next(struct tdp_iter *iter)
+ 	iter->valid = false;
+ }
+ 
+-tdp_ptep_t tdp_iter_root_pt(struct tdp_iter *iter)
++u64 *tdp_iter_root_pt(struct tdp_iter *iter)
+ {
+-	return iter->pt_path[iter->root_level - 1];
++	/*
++	 * Though it is stored in an array of tdp_ptep_t for convenience,
++	 * the root PT is not actually protected by RCU, but by the root
++	 * count on the associated struct kvm_mmu_page. As a result it's
++	 * safe to rcu_dereference and return the value here.
++	 */
++	return rcu_dereference(iter->pt_path[iter->root_level - 1]);
+ }
+ 
+diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
+index 4cc177d75c4a..5a47c57810ab 100644
+--- a/arch/x86/kvm/mmu/tdp_iter.h
++++ b/arch/x86/kvm/mmu/tdp_iter.h
+@@ -62,6 +62,6 @@ tdp_ptep_t spte_to_child_pt(u64 pte, int level);
+ void tdp_iter_start(struct tdp_iter *iter, u64 *root_pt, int root_level,
+ 		    int min_level, gfn_t next_last_level_gfn);
+ void tdp_iter_next(struct tdp_iter *iter);
+-tdp_ptep_t tdp_iter_root_pt(struct tdp_iter *iter);
++u64 *tdp_iter_root_pt(struct tdp_iter *iter);
+ 
+ #endif /* __KVM_X86_MMU_TDP_ITER_H */
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index c926c6b899a1..5387ac040f66 100644
+index 5387ac040f66..6c8824bcc2f2 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -301,11 +301,16 @@ static void tdp_mmu_unlink_page(struct kvm *kvm, struct kvm_mmu_page *sp,
-  *
-  * Given a page table that has been removed from the TDP paging structure,
-  * iterates through the page table to clear SPTEs and free child page tables.
-+ *
-+ * Note that pt is passed in as a tdp_ptep_t, but it does not need RCU
-+ * protection. Since this thread removed it from the paging structure,
-+ * this thread will be responsible for ensuring the page is freed. Hence the
-+ * early rcu_dereferences in the function.
-  */
--static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
-+static void handle_removed_tdp_mmu_page(struct kvm *kvm, tdp_ptep_t pt,
- 					bool shared)
+@@ -558,7 +558,7 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
+ 				      u64 new_spte, bool record_acc_track,
+ 				      bool record_dirty_log)
  {
--	struct kvm_mmu_page *sp = sptep_to_sp(pt);
-+	struct kvm_mmu_page *sp = sptep_to_sp(rcu_dereference(pt));
- 	int level = sp->role.level;
- 	gfn_t base_gfn = sp->gfn;
- 	u64 old_child_spte;
-@@ -318,7 +323,7 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
- 	tdp_mmu_unlink_page(kvm, sp, shared);
+-	tdp_ptep_t root_pt = tdp_iter_root_pt(iter);
++	u64 *root_pt = tdp_iter_root_pt(iter);
+ 	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
+ 	int as_id = kvm_mmu_page_as_id(root);
  
- 	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
--		sptep = pt + i;
-+		sptep = rcu_dereference(pt) + i;
- 		gfn = base_gfn + (i * KVM_PAGES_PER_HPAGE(level - 1));
+@@ -653,7 +653,7 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
  
- 		if (shared) {
+ 		WARN_ON(iter->gfn > iter->next_last_level_gfn);
+ 
+-		tdp_iter_start(iter, iter->pt_path[iter->root_level - 1],
++		tdp_iter_start(iter, tdp_iter_root_pt(iter),
+ 			       iter->root_level, iter->min_level,
+ 			       iter->next_last_level_gfn);
+ 
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
