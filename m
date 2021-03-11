@@ -2,66 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE89C337928
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D32337929
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234547AbhCKQVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:21:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51026 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234382AbhCKQUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:20:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615479631; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JCazLcUvicbjHvArKpub7shZHTSmNlrKDPwSJp39RjQ=;
-        b=Ot+ZpznoDen4a6aIAaDKNvpnzNFuDCDrWlV6RxRWng0vBUfuagjC2NN8PIUPzyWhY4bYCJ
-        qEdX5hhKL94mGWtpYY2cIXfdaqMz0pcbUJi/ftU5nOM/E9ijf8CJZetQ9JtN25oi2yg2T4
-        ki3UmPhLnI1fvsmeZ9Pjp5HNpCe/esM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 43B9EAC16;
-        Thu, 11 Mar 2021 16:20:31 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 17:20:25 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, David Rientjes <rientjes@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>
-Subject: Re: [PATCH] mm/oom_kill: Ensure MMU notifier range_end() is paired
- with range_start()
-Message-ID: <YEpDJ/pPioG9ndYX@dhcp22.suse.cz>
-References: <20210310213117.1444147-1-seanjc@google.com>
- <20210311002807.GQ444867@ziepe.ca>
+        id S234567AbhCKQVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:21:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234545AbhCKQUm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:20:42 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7078BC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:20:42 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id f26so2888923ljp.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:20:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4mfW5335h/WRWI9dVCvKJHe+RapkHx/nphEJf+JLEfY=;
+        b=oj/xGKhwPlYIKGs7xGNB09v6HFRF++lyyRmlXCz0eDkY5xcQ3u8RrezpbRkdy11V9C
+         +uhCGn6P/rPEbM965aoKuppk2Gvsz3XB7dmtWBEj3Emdg4PGblZQXIghdjISOtxHhdAD
+         aY6hAoFGFd5oUpC/2iLC3lzxRzBo3LWLHI52K7qiGdsN4tHYQ8AaUxh9m7mzXK0nXhV7
+         0TL4XbcYXCFYcfdH80iGpegLieJLpUbb16RFrglCRznxrD6QDUbtMYsNFXi/jR2aoDek
+         tGQmVPJ4JxDfABjrXQPMXsTqvbWSOpjf20XOFkdOJqd+b5SE51BGdaLoFVP2lAZB4aB2
+         wBwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4mfW5335h/WRWI9dVCvKJHe+RapkHx/nphEJf+JLEfY=;
+        b=Z+h72bb2BjBXw8KjHOPTq1uyGifCtQWv7c1PHO+rb4XnabMrHt/5criVdxPLuWOHGX
+         sd6S8jMT9rTyQyRBn4V0H/g+kgsVxuhBPP+JOK6i5dKzYG0e0awDJpbPVR4DNbZZ41IC
+         3itfAwCHU7cu+vxv9wIX6jx3+efjwxX3xCrP482S8PHR5cTmdDQ/pEWCYDLvj4eiXdSi
+         opkRBcLoTVzEeK20eoD7HYT7D+SuziYivud0RS3+8PS18KfVyr2lAJNEa4TFJc9sMMi1
+         cU53Wh4+HU2MHizQRBXmfgPdDPo7xG/c8gubDulVFk09zmtMMIrmX+GHrJXqFpRY6O5N
+         WZuQ==
+X-Gm-Message-State: AOAM5316U8Y1YoW/SjNwtujxBhAuHbunui9+nq5IE0/Xw5m0ULeW7Vuz
+        WC1yyAWAnDKmnfNhOSykyPAjbRRIEU1m2SOEEYGChw==
+X-Google-Smtp-Source: ABdhPJxUPh5qHPBDejHPkQZGXI7Wr8UqPIjSZ7fl43pyrVqj46hUhhEA5svMYWySIqUU/pYnrGqKZGpg5zRKasOSBwk=
+X-Received: by 2002:a2e:864a:: with SMTP id i10mr5068722ljj.467.1615479640987;
+ Thu, 11 Mar 2021 08:20:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311002807.GQ444867@ziepe.ca>
+References: <20210115224420.1635017-1-dianders@chromium.org>
+ <CACRpkdYUs2W3b_u8YrmYwq_kcUCf0DhZ-o2o6O2EmU5rdtv=BA@mail.gmail.com>
+ <CAD=FV=WDVAj+OcVXaTJRUu8tvdDzySW0KOfiGqZHi5YvP42BTA@mail.gmail.com>
+ <CACRpkda1Ast1cqNfVJ_u6zs8610DWSQGykPt4yBw+mFZFrUPSg@mail.gmail.com> <CAD=FV=Vj-6Y0X667o5vH0EL7hXi6sU4ZWs_a41B6h0D1s05_Hw@mail.gmail.com>
+In-Reply-To: <CAD=FV=Vj-6Y0X667o5vH0EL7hXi6sU4ZWs_a41B6h0D1s05_Hw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Mar 2021 17:20:30 +0100
+Message-ID: <CACRpkdZpy9yvp+bzHUGiZVyFBDpJHJcYSZQnBQreCfTQLOj1-Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] drm/panel-simple: Patches for N116BCA-EA1
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10-03-21 20:28:07, Jason Gunthorpe wrote:
-> On Wed, Mar 10, 2021 at 01:31:17PM -0800, Sean Christopherson wrote:
-> > Invoke the MMU notifier's .invalidate_range_end() callbacks even if one
-> > of the .invalidate_range_start() callbacks failed.  If there are multiple
-> > notifiers, the notifier that did not fail may have performed actions in
-> > its ...start() that it expects to unwind via ...end().  Per the
-> > mmu_notifier_ops documentation, ...start() and ...end() must be paired.
-> 
-> No this is not OK, if invalidate_start returns EBUSY invalidate_end
-> should *not* be called.
+On Thu, Mar 11, 2021 at 2:01 AM Doug Anderson <dianders@chromium.org> wrote:
 
-Yes, this is what I remember when introducing nonblock interface. So I
-agree with Jason this patch is not correct. The interface is subtle but
-I remember we couldn't come up with something more robust and still
-memory with notifiers to be reapable.
--- 
-Michal Hocko
-SUSE Labs
+> If you happen to feel in an applying mood one other patch to
+> simple-panel I think is OK to land is at:
+>
+> https://lore.kernel.org/r/20210222081716.1.I1a45aece5d2ac6a2e73bbec50da2086e43e0862b@changeid
+
+I applied and pushed this as well.
+
+Yours,
+Linus Walleij
