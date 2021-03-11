@@ -2,192 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB229336D04
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9FA336D08
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhCKHXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:23:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231623AbhCKHXT (ORCPT
+        id S231675AbhCKH1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:27:37 -0500
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:40729 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231504AbhCKH1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:23:19 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AF6C061574;
-        Wed, 10 Mar 2021 23:23:19 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id b23so5256655pfo.8;
-        Wed, 10 Mar 2021 23:23:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bQ+MhgJJeqZ2ppdhkPvqIcV/LFOsRoAQhfX9yedaWFQ=;
-        b=rRJwKAV0XQJNWpgy57IHYDrA29NKx01MUeBDc0ROiH4DQn09oY4U4ohqgcGnm03LZI
-         7p6NQY2vQ1yQAH/ikjafv18OZCs36VRuqc4x4PZ7GibDqKW4PqWcbzT1rqRVovRQwbDX
-         VQqdQuhh3L+GNUToiqf5c7MufjEc3a10lGrbT7f5fcI8N+vIVgBFL5oUn150vgGKI6Hb
-         hMpCJ6ojmCox3xcEhS/lftViVQWl8Yiod5XhQMyXMrD4GF5W4MM0F4Qm/O383hhq1mNK
-         PIRiu5H++/jODPG7Sw0gxVNHgZgiPg23CERgB83CYAARcLZcXpN5z1p1uYmHlM0GiJsW
-         VpDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bQ+MhgJJeqZ2ppdhkPvqIcV/LFOsRoAQhfX9yedaWFQ=;
-        b=fyfuz3hq+5OGnTNAJYo1ZNhyGYcyCdJmV3AkiyUFfPp3Y2CfqqMsyJKGnPw1i4rDT2
-         xod1Es4lpFYnORiVIs8noZlHzNZVXx9t4d8Mv9W4UsSNVj4mxPD77J29/9/J2H3rsr25
-         lewKXFe2N91tqP5iHFZqn1oJ+DKFrZSIRyKnTAMUES2kAtTigrO5ng6K9zkea9nTzFZn
-         1MAk5u0Wwp26w+QTRLGicQH+0Y0Nn1FCV/SkH3gPMSgWsnqZUi0G+iyRbr+E34gSrYH9
-         Ezx+ecSQPdAta4WGM6vXrMNWi/zAuzWjZOJhLn0nHPMbBI1Z1WtFIpEgjjkGIUrf+LhU
-         cDsA==
-X-Gm-Message-State: AOAM530jzP11Xp38xDZimokX4yBNLS/m/XxSN1RhnQKD0KjRmQOWPIlq
-        6O16RQoUGTPG753D3NF50H8DS/bvAVU=
-X-Google-Smtp-Source: ABdhPJxeYFCjxIueFXov0trhx3KlrCmnBpnb/cEg7BxLz4lJLip5QKwAHjfhtcrswFPjirHlLVidLQ==
-X-Received: by 2002:a62:e708:0:b029:1f8:c092:ff93 with SMTP id s8-20020a62e7080000b02901f8c092ff93mr6165670pfh.21.1615447398981;
-        Wed, 10 Mar 2021 23:23:18 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:18d9:c811:37df:1c17])
-        by smtp.gmail.com with ESMTPSA id e1sm1439730pfi.175.2021.03.10.23.23.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 23:23:18 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net] net: lapbether: Prevent racing when checking whether the netif is running
-Date:   Wed, 10 Mar 2021 23:23:09 -0800
-Message-Id: <20210311072311.2969-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 11 Mar 2021 02:27:25 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id KFj4lOWNPC40pKFj8lKLW5; Thu, 11 Mar 2021 08:27:23 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1615447643; bh=XfiRiX/Im3KbeMNo9cMm4VRSxjH+mKuoMBiQxT6LGlU=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=S8P/vj/ozRnwrIaLNNrjRcD5tykA7wlodxJw77CEslX2bFoqvlYMx2WWbyU41j+/8
+         QCHk/XQMwHYAcDNw2QV8vbBdPbozE1oQ3b3JhWNMg7smzjZbn25tuzZ7Opymx5qkvm
+         9gunPecf+VXBdSlx92Gq0qvbihTOPjjzgXvvPUptQuiAEs1Fshsl/B+KvcPN4mMx4B
+         ERDN2hs7Yvo/zzMi8GspomKcxZ99k1UMBr+dIC1uVXoBZvXPe3a96gCRih4aR04K56
+         IyiC+bMtR56EX+5f/fIXepv0SKNj7EYgyNMDg5YgMnJX2fLHpFwEda10K6ZnSWU5sA
+         XzX/C6JKZOLnw==
+Subject: Re: [PATCH v9 6/8] media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG
+ Encoder/Decoder
+To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        mchehab@kernel.org, shawnguo@kernel.org, robh+dt@kernel.org,
+        p.zabel@pengutronix.de
+Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
+        daniel.baluta@nxp.com, robert.chiras@nxp.com,
+        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, ezequiel@collabora.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se,
+        dafna.hirschfeld@collabora.com,
+        Mirela Rabulea <mirela.rabulea@nxp.com>
+References: <20210311002854.13687-1-mirela.rabulea@oss.nxp.com>
+ <20210311002854.13687-7-mirela.rabulea@oss.nxp.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <58f6d308-c5c7-f2a0-9c64-b729282c9b71@xs4all.nl>
+Date:   Thu, 11 Mar 2021 08:27:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210311002854.13687-7-mirela.rabulea@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfI6+9cNPQm1FRsig+UGPeKnoJIWK5pswKqZ+nyHhy08pjyhkqQzCmKamf0/IYLsYnzbUaR4zZSymDGyXji55s8LryA8UWj5+dPZlbSbroh4lovGMHUz+
+ +zUuZ8hTXHt5cwJh9Qcx/Fj0AMMqG8W6s+UX+EsdU/4hYJNwUQwZaoa6NFTJPcQ/pOHnAYGw2K9NgYvi3klPKS4ednumcE0fAi0jJFG6ihGb13l/gXuChBRN
+ +myg0qhyY9S5TDkeoxYRg6bSVn/SKpRiaZ9r1mp+0QxZ1oPUx620MUdlZhThWvhSbtJ+4TI9/q9P0XMfhmSniUt90IuR2k6lYD2uMcWg6XSSgAoupkrha7aC
+ ajoBGFEJj/JApFHZPWpeUW0NXssjkF6qVwzaAl09R6gwgKkpFQwUbXL/H2eZn11uv0CZKwvxiL3zNfefDEsAWSnJSV2R0B/40zBMToQonkxIS4m/uiHUspnR
+ z+TBqOeiqeXflt1CEcJTpX3wCfxw/RGi2Ychnj++7YFcjEvqNOuJ00VyJYZ/Q8J9MsBTQZNRjDygo1wOR6iGjC3A9ISzBQSp/bEt0lqvMi6eAsT+BUbTg+SU
+ Icg2sFVMwabR9TU3sIUgJad1rRiqq7QBsdg3IffWu5S9Pz/s+tVpYgeM17meFw/wxCaNF599bU0mrq+4ry7/fR1aWTw9hpHD1/Fqu+gR+KSZJTRAMT7CrGCr
+ BFshoKCB3CHx/gitzC1tekPTTygGvboONoEyaVTJzvt2ShKpeYgfpyAJf0+cXEOqB6i0X3sCSAfgPFF0Gfg6Y6K/iRm+t+ddB0j2/E8MN07QfT9M2v2uivhl
+ g1aA20zR5sgX4ZyRSE7QPHm5ZAhq/TLELhtpXc4Lq5jcNQ7mZp1w6qB2hWRJwlcE9N823+0ID4GgfCiITT90Tb8um8bzBxHPFFJgBDXd9gRxs/hphOY/4uP9
+ pMHrOQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two "netif_running" checks in this driver. One is in
-"lapbeth_xmit" and the other is in "lapbeth_rcv". They serve to make
-sure that the LAPB APIs called in these functions are called before
-"lapb_unregister" is called by the "ndo_stop" function.
+Hi Mirela,
 
-However, these "netif_running" checks are unreliable, because it's
-possible that immediately after "netif_running" returns true, "ndo_stop"
-is called (which causes "lapb_unregister" to be called).
+On 11/03/2021 01:28, Mirela Rabulea (OSS) wrote:
 
-This patch adds locking to make sure "lapbeth_xmit" and "lapbeth_rcv" can
-reliably check and ensure the netif is running while doing their work.
+<snip>
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/lapbether.c | 32 +++++++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 7 deletions(-)
+> +static const struct of_device_id mxc_jpeg_match[] = {
+> +	{
+> +		.compatible = "nxp,imx8qxp-jpgdec",
+> +		.data       = (void *)MXC_JPEG_DECODE,
 
-diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
-index c3372498f4f1..8fda0446ff71 100644
---- a/drivers/net/wan/lapbether.c
-+++ b/drivers/net/wan/lapbether.c
-@@ -51,6 +51,8 @@ struct lapbethdev {
- 	struct list_head	node;
- 	struct net_device	*ethdev;	/* link to ethernet device */
- 	struct net_device	*axdev;		/* lapbeth device (lapb#) */
-+	bool			up;
-+	spinlock_t		up_lock;	/* Protects "up" */
- };
- 
- static LIST_HEAD(lapbeth_devices);
-@@ -101,8 +103,9 @@ static int lapbeth_rcv(struct sk_buff *skb, struct net_device *dev, struct packe
- 	rcu_read_lock();
- 	lapbeth = lapbeth_get_x25_dev(dev);
- 	if (!lapbeth)
--		goto drop_unlock;
--	if (!netif_running(lapbeth->axdev))
-+		goto drop_unlock_rcu;
-+	spin_lock_bh(&lapbeth->up_lock);
-+	if (!lapbeth->up)
- 		goto drop_unlock;
- 
- 	len = skb->data[0] + skb->data[1] * 256;
-@@ -117,11 +120,14 @@ static int lapbeth_rcv(struct sk_buff *skb, struct net_device *dev, struct packe
- 		goto drop_unlock;
- 	}
- out:
-+	spin_unlock_bh(&lapbeth->up_lock);
- 	rcu_read_unlock();
- 	return 0;
- drop_unlock:
- 	kfree_skb(skb);
- 	goto out;
-+drop_unlock_rcu:
-+	rcu_read_unlock();
- drop:
- 	kfree_skb(skb);
- 	return 0;
-@@ -151,13 +157,11 @@ static int lapbeth_data_indication(struct net_device *dev, struct sk_buff *skb)
- static netdev_tx_t lapbeth_xmit(struct sk_buff *skb,
- 				      struct net_device *dev)
- {
-+	struct lapbethdev *lapbeth = netdev_priv(dev);
- 	int err;
- 
--	/*
--	 * Just to be *really* sure not to send anything if the interface
--	 * is down, the ethernet device may have gone.
--	 */
--	if (!netif_running(dev))
-+	spin_lock_bh(&lapbeth->up_lock);
-+	if (!lapbeth->up)
- 		goto drop;
- 
- 	/* There should be a pseudo header of 1 byte added by upper layers.
-@@ -194,6 +198,7 @@ static netdev_tx_t lapbeth_xmit(struct sk_buff *skb,
- 		goto drop;
- 	}
- out:
-+	spin_unlock_bh(&lapbeth->up_lock);
- 	return NETDEV_TX_OK;
- drop:
- 	kfree_skb(skb);
-@@ -285,6 +290,7 @@ static const struct lapb_register_struct lapbeth_callbacks = {
-  */
- static int lapbeth_open(struct net_device *dev)
- {
-+	struct lapbethdev *lapbeth = netdev_priv(dev);
- 	int err;
- 
- 	if ((err = lapb_register(dev, &lapbeth_callbacks)) != LAPB_OK) {
-@@ -292,13 +298,22 @@ static int lapbeth_open(struct net_device *dev)
- 		return -ENODEV;
- 	}
- 
-+	spin_lock_bh(&lapbeth->up_lock);
-+	lapbeth->up = true;
-+	spin_unlock_bh(&lapbeth->up_lock);
-+
- 	return 0;
- }
- 
- static int lapbeth_close(struct net_device *dev)
- {
-+	struct lapbethdev *lapbeth = netdev_priv(dev);
- 	int err;
- 
-+	spin_lock_bh(&lapbeth->up_lock);
-+	lapbeth->up = false;
-+	spin_unlock_bh(&lapbeth->up_lock);
-+
- 	if ((err = lapb_unregister(dev)) != LAPB_OK)
- 		pr_err("lapb_unregister error: %d\n", err);
- 
-@@ -356,6 +371,9 @@ static int lapbeth_new_device(struct net_device *dev)
- 	dev_hold(dev);
- 	lapbeth->ethdev = dev;
- 
-+	lapbeth->up = false;
-+	spin_lock_init(&lapbeth->up_lock);
-+
- 	rc = -EIO;
- 	if (register_netdevice(ndev))
- 		goto fail;
--- 
-2.27.0
+Don't do this, just say:
 
+static const int mxc_decode_mode = MXC_JPEG_DECODE;
+static const int mxc_encode_mode = MXC_JPEG_ENCODE;
+
+and point to that:
+
+		.data = &mxc_decode_mode;
+
+> +	},
+> +	{
+> +		.compatible = "nxp,imx8qxp-jpgenc",
+> +		.data       = (void *)MXC_JPEG_ENCODE,
+
+		.data = &mxc_encode_mode;
+
+> +	},
+> +	{ },
+> +};
+
+<snip>
+
+> +static int mxc_jpeg_probe(struct platform_device *pdev)
+> +{
+> +	struct mxc_jpeg_dev *jpeg;
+> +	struct device *dev = &pdev->dev;
+> +	struct resource *res;
+> +	int dec_irq;
+> +	int ret;
+> +	int mode;
+> +	const struct of_device_id *of_id;
+> +	unsigned int slot;
+> +
+> +	of_id = of_match_node(mxc_jpeg_match, dev->of_node);
+> +	mode = (int)(u64)of_id->data;
+
+and this becomes:
+
+	mode = *(const int *)of_id->data;
+
+This will solve the kernel test robot warning, and for that matter
+the same gcc warnings I get when I compile.
+
+Just post a v9.1 for this patch, everything else looks good.
+
+Regards,
+
+	Hans
