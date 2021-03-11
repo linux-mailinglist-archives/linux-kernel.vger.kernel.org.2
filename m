@@ -2,138 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AC9337A07
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1382337A11
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhCKQwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:52:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43161 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229699AbhCKQv6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:51:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615481518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2oUQOTqIayM7rAUTJf2DiLhfIeUSxHLTZHaHhcXdXXQ=;
-        b=g6C1xG6ssOdu43RQFSWWzv+6mho64H6u9eGwX6H+UrwCdYuwg0go6um4IZZDkjq8TZESZy
-        z3TnaT2JlYgk2oDVwhmnv5fiWAZHr/2flikzAvqML8tYHXnTzq5yWzzkSk235LYvSm0yDv
-        BlM4cJLBtu+sK9xBxDcq14rdkvK/cYo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-222-ZN6jh1fsMMyibfMV9z6d5A-1; Thu, 11 Mar 2021 11:51:56 -0500
-X-MC-Unique: ZN6jh1fsMMyibfMV9z6d5A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5306E83DEA6;
-        Thu, 11 Mar 2021 16:51:55 +0000 (UTC)
-Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4289560BE5;
-        Thu, 11 Mar 2021 16:51:54 +0000 (UTC)
-Subject: Re: [PATCH] mm/highmem.c: fix coding style issue
-To:     songqiang <songqiang@uniontech.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210311095015.14277-1-songqiang@uniontech.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <96db7761-b332-a1c2-f13c-a09ecd46705e@redhat.com>
-Date:   Thu, 11 Mar 2021 17:51:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210311095015.14277-1-songqiang@uniontech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S229874AbhCKQwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:52:32 -0500
+Received: from mga01.intel.com ([192.55.52.88]:23860 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229705AbhCKQwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:52:22 -0500
+IronPort-SDR: YAdINEIgmbH/hQVcIK1v9V1MPj7M6ZP7BEzzK0lVX/pS4MtkjYC1k04fkX/fyRWdO0SVRRTCJH
+ Zo/gr2Wrm5wQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="208524935"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="208524935"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 08:52:16 -0800
+IronPort-SDR: pLYlvNMkjbGeEf4DGOz05C1/jN6MKQ7sSXym97DOI81RuiFg9om+rbzMSFdenQWzFhhjJnrQPp
+ Zt1HnO3fx8QA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="409545876"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP; 11 Mar 2021 08:52:11 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 11 Mar 2021 08:52:11 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 11 Mar 2021 08:52:10 -0800
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Thu, 11 Mar 2021 08:52:10 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Andy Lutomirski <luto@amacapital.net>,
+        Aili Yao <yaoaili@kingsoft.com>
+CC:     Oleg Nesterov <oleg@redhat.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>
+Subject: RE: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
+ hwpoison page access.
+Thread-Topic: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
+ hwpoison page access.
+Thread-Index: AQHW+52QL4Na2ZzwuU6zOFVHHVSkcqpmUikAgAAvRAD//40+AIAC4sSAgAMSD4CAA5534IAAicMAgAKzWQCAAAergIAGtN8AgADz2wCAAI0/AP//fEfggACQgACAA46dgIAAAmIAgAB7hlA=
+Date:   Thu, 11 Mar 2021 16:52:10 +0000
+Message-ID: <0a0909a9005842fa9e49ba9917580e79@intel.com>
+References: <4fc1b4e8f1fb4c8c81f280db09178797@intel.com>
+ <047D5B49-FDBB-494C-81E9-DA811476747D@amacapital.net>
+ <20210311091941.45790fcf@alex-virtual-machine>
+ <CALCETrVqkK29n=6wtVhd7qgTWf83x3SUk6+bkD30asHyWSqppw@mail.gmail.com>
+In-Reply-To: <CALCETrVqkK29n=6wtVhd7qgTWf83x3SUk6+bkD30asHyWSqppw@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.03.21 10:50, songqiang wrote:
-> Delete/add some blank lines and some blank spaces
-> 
-> Signed-off-by: songqiang <songqiang@uniontech.com>
-> ---
->   mm/highmem.c | 12 +++++-------
->   1 file changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/highmem.c b/mm/highmem.c
-> index 1352a27951e3..902154b76030 100644
-> --- a/mm/highmem.c
-> +++ b/mm/highmem.c
-> @@ -110,7 +110,7 @@ EXPORT_SYMBOL(_totalhigh_pages);
->   
->   EXPORT_PER_CPU_SYMBOL(__kmap_atomic_idx);
->   
-> -unsigned int nr_free_highpages (void)
-> +unsigned int nr_free_highpages(void)
->   {
->   	struct zone *zone;
->   	unsigned int pages = 0;
-> @@ -126,7 +126,7 @@ unsigned int nr_free_highpages (void)
->   static int pkmap_count[LAST_PKMAP];
->   static  __cacheline_aligned_in_smp DEFINE_SPINLOCK(kmap_lock);
->   
-> -pte_t * pkmap_page_table;
-> +pte_t *pkmap_page_table;
->   
->   /*
->    * Most architectures have no use for kmap_high_get(), so let's abstract
-> @@ -153,6 +153,7 @@ struct page *kmap_to_page(void *vaddr)
->   
->   	if (addr >= PKMAP_ADDR(0) && addr < PKMAP_ADDR(LAST_PKMAP)) {
->   		int i = PKMAP_NR(addr);
-> +
->   		return pte_page(pkmap_page_table[i]);
->   	}
->   
-> @@ -287,9 +288,8 @@ void *kmap_high(struct page *page)
->   	pkmap_count[PKMAP_NR(vaddr)]++;
->   	BUG_ON(pkmap_count[PKMAP_NR(vaddr)] < 2);
->   	unlock_kmap();
-> -	return (void*) vaddr;
-> +	return (void *) vaddr;
->   }
-> -
->   EXPORT_SYMBOL(kmap_high);
->   
->   #ifdef ARCH_NEEDS_KMAP_HIGH_GET
-> @@ -314,7 +314,7 @@ void *kmap_high_get(struct page *page)
->   		pkmap_count[PKMAP_NR(vaddr)]++;
->   	}
->   	unlock_kmap_any(flags);
-> -	return (void*) vaddr;
-> +	return (void *) vaddr;
->   }
->   #endif
->   
-> @@ -367,7 +367,6 @@ void kunmap_high(struct page *page)
->   	if (need_wakeup)
->   		wake_up(pkmap_map_wait);
->   }
-> -
->   EXPORT_SYMBOL(kunmap_high);
->   #endif	/* CONFIG_HIGHMEM */
->   
-> @@ -431,7 +430,6 @@ void *page_address(const struct page *page)
->   	spin_unlock_irqrestore(&pas->lock, flags);
->   	return ret;
->   }
-> -
->   EXPORT_SYMBOL(page_address);
->   
->   /**
-> 
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+PiBJIHRoaW5rIHdlIG5lZWQgdG8gYXQgbGVhc3QgZml4IHRoZSBleGlzdGluZyBidWcgYmVmb3Jl
+IHdlIGFkZCBtb3JlDQo+IHNpZ25hbHMuICBBRkFJQ1MgdGhlIE1DRV9JTl9LRVJORUxfQ09QWUlO
+IGNvZGUgaXMgYnVzdGVkIGZvciBrZXJuZWwNCj4gdGhyZWFkcy4NCg0KQ2FuIGEga2VybmVsIHRo
+cmVhZCBkbyBnZXRfdXNlcigpIG9yIGNvcHlfZnJvbV91c2VyKCk/ICBEbyB3ZSBoYXZlIGtlcm5l
+bCB0aHJlYWRzDQp0aGF0IGhhdmUgYW4gYXNzb2NpYXRlZCB1c2VyIGFkZHJlc3Mgc3BhY2UgdG8g
+Y29weSBmcm9tPw0KDQotVG9ueQ0K
