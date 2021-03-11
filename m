@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8864E3372CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E003372D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbhCKMhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:37:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59666 "EHLO mail.kernel.org"
+        id S233179AbhCKMhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:37:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233179AbhCKMhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:37:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C69C64F8E;
-        Thu, 11 Mar 2021 12:37:12 +0000 (UTC)
+        id S233190AbhCKMhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:37:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1794064FE6;
+        Thu, 11 Mar 2021 12:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615466234;
-        bh=9RAEUsRaMheb+lyyBoNwvH8fiZ28fFkswXX/YYJj/Qc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SHsyKJ46coJNLN5KyTY3Av83EsbXqVCh0lxUoxFO+7a1PRE8WkvDK3wH/7kd+sElO
-         zOBqWWBSZqWEO55Ah6wTpNBmi9HQUdMijF/oWkzJNUC8fdK0H7qdMZ6CpWIQdq9NWe
-         NRh49p7iRJJqGXUDzSYPCN0GVSmt9or5pzPbPgqQzUK1YITprfFlpSmF0TUEbHivXa
-         Oxigz38Hl/mILrm+aREvW7+CI6As1yTQ2ACJYGMtvLYzCPpUZKovNYsN1UfEJ+8eVq
-         ANyA3eGPcJTgoxmQDRPTx1X0UNjFszjv/aK/fzpO0LkeZBbNXV2hm4JqK2zXL9/PKp
-         Jb4BfgcTUB5pg==
+        s=k20201202; t=1615466237;
+        bh=I4y2AElfIxluZFcgYq0yvzhKqir2bW0RPqelVOJJZ0Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=es5hNvnPZVV/ROxHIEBT0u9HtS4yhm0nUd/voR747OBTeM9uIkNm0C3Dkd8WyQV+/
+         ifgmnR9eQaqD0CtaNDMsHIEtTataXgYm6MpA5E+uAdL/ILtQDwystlPujSJaiVJiU7
+         Xo3sGkTPpQtCNBCSb8mpF01OjrprfJ7xTmywx0gg0QRB3D/VjUKg8r2WxZkqQonVRL
+         n+GXcxnWaumPbLKnwfCdBsj49WuURlOLNGd7fZfQ+BgMnSRYoM/kQ3KGCJMPZr7U3N
+         NLdPC825j5uWGPLgv3eaeB+NRCuLpzjCb6znQcXrQaO+MQYmSPZozcld4VLsRnncF4
+         H5dUH2rpzJ4vg==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>,
         "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ti Zhou <x2019cwm@stfx.ca>, Yunfeng Ye <yeyunfeng@huawei.com>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 00/10] tick/nohz updates
-Date:   Thu, 11 Mar 2021 13:36:58 +0100
-Message-Id: <20210311123708.23501-1-frederic@kernel.org>
+Subject: [PATCH 01/10] tick/nohz: Prevent tick_nohz_get_sleep_length() from returning negative value
+Date:   Thu, 11 Mar 2021 13:36:59 +0100
+Message-Id: <20210311123708.23501-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210311123708.23501-1-frederic@kernel.org>
+References: <20210311123708.23501-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Various updates for the timer/nohz side.
+From: "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
 
-* Two fixes (maybe 01/10 deserves a stable tag, I should check)
+If the hardware clock happens to fire its interrupts late, two possible
+issues can happen while calling tick_nohz_get_sleep_length(). Either:
 
-* A Kconfig help change
+1) The next clockevent device event is due past the last idle entry time.
 
-* A debug check while enqueuing timers when the tick is stopped in idle.
+or:
 
-* The rest is noise reduction for full nohz ("tick/nohz: Kick only 
-  _queued_ task whose tick dependency is updated").
-  It relies on the fact that p->on_rq is never set to anything else than
-  TASK_ON_RQ_QUEUED while the task is running on a CPU, the only relevant
-  exception being the task dequeuing itself on schedule().
-  I haven't found issues in my modest reviews of deactivate_task() callers
-  but I lost my headlamp while visiting fair's sched entity dequeuing
-  and throttling (had to find my way back in the dark again).
+2) The last timekeeping update happened before the last idle entry time
+   and the next timer callback expires before the last idle entry time.
 
-So please double check the last patch.
+Make sure that both cases are handled to avoid returning a negative
+duration to the cpuidle governors.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-	timers/nohz
-
-HEAD: e469edfa00f97e5ec5d31fe31d3aef0a5c9bd607
-
-Thanks,
-	Frederic
+Signed-off-by: Ti Zhou <x2019cwm@stfx.ca>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
+ kernel/time/tick-sched.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Frederic Weisbecker (5):
-      tick/nohz: Add tick_nohz_full_this_cpu()
-      tick/nohz: Remove superflous check for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
-      timer: Report ignored local enqueue in nohz mode
-      tick/nohz: Update nohz_full Kconfig help
-      tick/nohz: Only wakeup a single target cpu when kicking a task
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index e10a4af88737..22b6a46818cf 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -1142,6 +1142,9 @@ ktime_t tick_nohz_get_sleep_length(ktime_t *delta_next)
+ 
+ 	*delta_next = ktime_sub(dev->next_event, now);
+ 
++	if (unlikely(*delta_next < 0))
++		*delta_next = 0;
++
+ 	if (!can_stop_idle_tick(cpu, ts))
+ 		return *delta_next;
+ 
+@@ -1156,6 +1159,9 @@ ktime_t tick_nohz_get_sleep_length(ktime_t *delta_next)
+ 	next_event = min_t(u64, next_event,
+ 			   hrtimer_next_event_without(&ts->sched_timer));
+ 
++	if (unlikely(next_event < now))
++		next_event = now;
++
+ 	return ktime_sub(next_event, now);
+ }
+ 
+-- 
+2.25.1
 
-Marcelo Tosatti (2):
-      tick/nohz: Change signal tick dependency to wakeup CPUs of member tasks
-      tick/nohz: Kick only _queued_ task whose tick dependency is updated
-
-Yunfeng Ye (2):
-      tick/nohz: Conditionally restart tick on idle exit
-      tick/nohz: Update idle_exittime on actual idle exit
-
-Zhou Ti (x2019cwm) (1):
-      tick/nohz: Prevent tick_nohz_get_sleep_length() from returning negative value
-
-
- include/linux/sched.h          |   2 +
- include/linux/tick.h           |  19 ++++--
- kernel/sched/core.c            |  25 +++++++-
- kernel/time/Kconfig            |  11 ++--
- kernel/time/posix-cpu-timers.c |   4 +-
- kernel/time/tick-sched.c       | 134 +++++++++++++++++++++++++++++------------
- 6 files changed, 142 insertions(+), 53 deletions(-)
