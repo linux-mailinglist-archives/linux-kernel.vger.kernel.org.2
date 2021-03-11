@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B8C336BE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C51B336BE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhCKGNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhCKGMw (ORCPT
+        id S229932AbhCKGOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:14:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35026 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229901AbhCKGNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:12:52 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B699C061574;
-        Wed, 10 Mar 2021 22:12:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=h8aFuwdEQbq+Mg1pCOr++y0lRKxSpzr2i/D/1Sn40JY=; b=SQ71kkj+hQqJeaEdQu9vCbegeT
-        n1GqRDzngRCaYc9rpXClkElVhb8Zfx1hTZNIbZS/jy4AQg5o7wfBimD6oD0rDeO7OtFNKHYYleNKJ
-        OcxN+42NjXwBjzNJZm97rUHBShy443c35g+O/TuqQBazSG9s83Q7/8ZsDiiwDFeYteNX2yoB+uBpc
-        xQjihJ08mlZ2Bp75Ur27Vgc+FdopqAyXOxL4xRQzoQToRpjkSybCyFP4feDrIbXYqoCmaFd1VzRKo
-        907hCWSrMnK+YF7HEN5Fq3BH5aJzsn5M7WU0UNLuqThkZ/TESIIJ3EcN9a9+e7M4evsOkXfl/QFX9
-        v0rYPP+Q==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKEYz-000tUv-0m; Thu, 11 Mar 2021 06:12:49 +0000
-Subject: Re: [PATCH] net: core: Few absolutely rudimentary typo fixes
- throughout the file filter.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210311055608.12956-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <786f4801-c41f-cddd-c855-b388ec026614@infradead.org>
-Date:   Wed, 10 Mar 2021 22:12:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 11 Mar 2021 01:13:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615443211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O9dIFx5T4B5wQEwSmY/A6qMcWPDW41QAG6OtpF0Rp64=;
+        b=R2khmhMTOE/egn78bH9EQaacbFiBB7SexjI374I16irbt0cEKcfyu9T1jAWJji7Bhtm6Wk
+        e03+kN1UXdhslpuaxJvhGo/WxySRNuoR6dQ07K+TMf7/P9cCJekjA0IZcPPqp3x1gWGoXM
+        mA4wFiMnTePYVPDCTMN+Pr+SZPY3gk0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-WCvA8jlCO1WyXxzT1CSOpQ-1; Thu, 11 Mar 2021 01:13:29 -0500
+X-MC-Unique: WCvA8jlCO1WyXxzT1CSOpQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 345071858F17;
+        Thu, 11 Mar 2021 06:13:28 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-9.pek2.redhat.com [10.72.13.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D63A5945D;
+        Thu, 11 Mar 2021 06:13:21 +0000 (UTC)
+Subject: Re: [PATCH V3 1/6] vDPA/ifcvf: get_vendor_id returns a device
+ specific vendor id
+To:     Zhu Lingshan <lingshan.zhu@linux.intel.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
+        lulu@redhat.com, leonro@nvidia.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210310090052.4762-1-lingshan.zhu@intel.com>
+ <20210310090052.4762-2-lingshan.zhu@intel.com>
+ <ff5fc8f9-f886-bd2a-60cc-771c628c6c4b@redhat.com>
+ <5f2d915f-e1b0-c9eb-9fc8-4b64f5d8cd0f@linux.intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <05e3fbc9-be49-a208-19a4-85f891323312@redhat.com>
+Date:   Thu, 11 Mar 2021 14:13:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210311055608.12956-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <5f2d915f-e1b0-c9eb-9fc8-4b64f5d8cd0f@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 9:56 PM, Bhaskar Chowdhury wrote:
-> 
-> Trivial spelling fixes throughout the file.
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Hi Bhaskar,
-
-FYI:
-
-a. we accept British or American spellings
-b. we accept one or two spaces after a period ('.') at the end of a sentence
-c. we accept Oxford (serial) comma or not
-
-> ---
->  net/core/filter.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 255aeee72402..931ee5f39ae7 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2927,7 +2927,7 @@ BPF_CALL_4(bpf_msg_pop_data, struct sk_msg *, msg, u32, start,
->  	 *
->  	 * Then if B is non-zero AND there is no space allocate space and
->  	 * compact A, B regions into page. If there is space shift ring to
-> -	 * the rigth free'ing the next element in ring to place B, leaving
-> +	 * the right freeing the next element in ring to place B, leaving
->  	 * A untouched except to reduce length.
->  	 */
->  	if (start != offset) {
-> @@ -3710,7 +3710,7 @@ static inline int __bpf_skb_change_tail(struct sk_buff *skb, u32 new_len,
->  	 * be the one responsible for writing buffers.
->  	 *
->  	 * It's really expected to be a slow path operation here for
-> -	 * control message replies, so we're implicitly linearizing,
-> +	 * control message replies, so we're implicitly linearising,
->  	 * uncloning and drop offloads from the skb by this.
->  	 */
->  	ret = __bpf_try_make_writable(skb, skb->len);
-> @@ -3778,7 +3778,7 @@ static inline int __bpf_skb_change_head(struct sk_buff *skb, u32 head_room,
->  		 * allow to expand on mac header. This means that
->  		 * skb->protocol network header, etc, stay as is.
->  		 * Compared to bpf_skb_change_tail(), we're more
-> -		 * flexible due to not needing to linearize or
-> +		 * flexible due to not needing to linearise or
->  		 * reset GSO. Intention for this helper is to be
->  		 * used by an L3 skb that needs to push mac header
->  		 * for redirection into L2 device.
-> --
+On 2021/3/11 12:21 下午, Zhu Lingshan wrote:
+>
+>
+> On 3/11/2021 11:23 AM, Jason Wang wrote:
+>>
+>> On 2021/3/10 5:00 下午, Zhu Lingshan wrote:
+>>> In this commit, ifcvf_get_vendor_id() will return
+>>> a device specific vendor id of the probed pci device
+>>> than a hard code.
+>>>
+>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>>> ---
+>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 ++++-
+>>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
+>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>> index fa1af301cf55..e501ee07de17 100644
+>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>> @@ -324,7 +324,10 @@ static u32 ifcvf_vdpa_get_device_id(struct 
+>>> vdpa_device *vdpa_dev)
+>>>     static u32 ifcvf_vdpa_get_vendor_id(struct vdpa_device *vdpa_dev)
+>>>   {
+>>> -    return IFCVF_SUBSYS_VENDOR_ID;
+>>> +    struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
+>>> +    struct pci_dev *pdev = adapter->pdev;
+>>> +
+>>> +    return pdev->subsystem_vendor;
+>>>   }
+>>
+>>
+>> While at this, I wonder if we can do something similar in 
+>> get_device_id() if it could be simple deduced from some simple math 
+>> from the pci device id?
+>>
+>> Thanks
+> Hi Jason,
+>
+> IMHO, this implementation is just some memory read ops, I think other 
+> implementations may not save many cpu cycles, an if cost at least 
+> three cpu cycles.
+>
+> Thanks!
 
 
--- 
-~Randy
+Well, I meant whehter you can deduce virtio device id from 
+pdev->subsystem_device.
+
+Thanks
+
+
+>>
+>>
+>>>     static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
+>>
+>
 
