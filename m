@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE152336B23
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70116336B25
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhCKE20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 23:28:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231248AbhCKE2B (ORCPT
+        id S231288AbhCKE22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 23:28:28 -0500
+Received: from gateway21.websitewelcome.com ([192.185.45.175]:23386 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231263AbhCKE2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 23:28:01 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7353FC061574;
-        Wed, 10 Mar 2021 20:28:01 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id 73so251901qtg.13;
-        Wed, 10 Mar 2021 20:28:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EjES33pghkplwmPotcH24a/bCQBQOuZ6RX89GB25dlU=;
-        b=Koyj1Zk7sbi7mVjTgbvqs9TiqOhPIiHI/qcvdsEGyo8VhIddw0zKe5lNZYgkEEx9Mh
-         woWFsSfsYzUmFXIBd+sWNFXegzpxn8vV0Q+9OcBl1xy4J7WPrdrVviqnZFOXXC0kDSUX
-         otE+FZGKhbzkBRAM/kc/lNiKKlaCnQe/jG8qvw0Ac5YmtQ9tNaqEzJfCuFJYx9UvczgT
-         XfPAblr3jUIMculciAa0UTO+WU+w3+c1xps4gO/JsLZ0G0/fCWA67c+DeYfAFBe3csTJ
-         XXucn/IQ8XVIP9Tm9AsqrgudhsiXKElgzNr4J/sdc9w8EKwYXfJ7aLY9ry2+pJJqQr9P
-         pdZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EjES33pghkplwmPotcH24a/bCQBQOuZ6RX89GB25dlU=;
-        b=cD/beNddz2lQA0KOgURqI1SuSDZVKbkAPpIL+PkWbx49CLVNYboIeTrY6GtzRH9kt1
-         0Tz1UfoR8ESFKmVhg4Ze24jVHWjLtKApVn+fMjekh9J3iubyFqtDv0fVxe3575EJxUHY
-         tET4Q6mGBhzfl+R8GsYKNoE+I7Yu0dUoq7eqVsvPYWeI1LvK7V+IKaTp5UAKJ/gwVm04
-         zfjpvu2cByVIUB7ls759ogL76rfg0Fw70Ovaav6Y3dIAUhqPfIzqjIGj358/D161lUo9
-         xNa5Nf2cDxPBYVSK4zYpEugZX3H0rzqoqMtszzQ64LgMoQ14qAMSMeTv4iJywsCJ6vOy
-         X5og==
-X-Gm-Message-State: AOAM532NLslj0g9+/HmQR+Hcl5j0IRmJ0B3fgXZDMuiuDJ36jI3lQiYl
-        vDA5N1Cqz9DPylv/Y49qMu4=
-X-Google-Smtp-Source: ABdhPJzYKwpvnDH9e/jr7oq+CIiwYhN7lvlFm/55ul1htJ9mgJjm765Sbrr2/GgpixvIU232bPoicQ==
-X-Received: by 2002:a05:622a:42:: with SMTP id y2mr5699882qtw.11.1615436880721;
-        Wed, 10 Mar 2021 20:28:00 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:615f:1cdf:698f:e42f])
-        by smtp.googlemail.com with ESMTPSA id 131sm1171582qkl.74.2021.03.10.20.28.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 20:28:00 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Karsten Keil <isdn@linux-pingi.de>,
-        Tong Zhang <ztong0001@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] isdn: remove extra spaces in the header file
-Date:   Wed, 10 Mar 2021 23:27:55 -0500
-Message-Id: <20210311042756.2062322-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 10 Mar 2021 23:28:23 -0500
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id E69AB400CECC5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:28:22 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id KCvulJavSA1KVKCvuldj8k; Wed, 10 Mar 2021 22:28:22 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hGlSvfVilRdyjcxlHigRVXBapy983SK4zTZ5DVkCG4s=; b=pft6ycncLKFmg0KMj3fsFIn7rW
+        bWnd+RboW3SxSz09J5brSDZRt3ED+qM0oso0DQ2dT8nqUI/LmGxYCYr7vf0ytPLWVNkQXGumc6+7K
+        zanca0/r5zIWmxLbGDiBRvExFoHO57tEO73lQ49e7aah/gQOIOmFjm/YKFkBLh/G/9V88VAByyizW
+        bsuVLvs99FDjzGGCeWho3U2j4qdYc5lQahuowwRAenezYBTHfvnYNdb5eKhJpSukrbOugrAQ8kngE
+        8P1NjGReJTpPCwbTVs8bzs7OaS/Q85OyKsWFkEGjBewCnheiNAwAF8Eb0MfHgWcygXU8/uzIPBrh9
+        gIIDHWhQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:44512 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lKCvu-003P6f-Ka; Wed, 10 Mar 2021 22:28:22 -0600
+Subject: Re: [PATCH v2][next] xfs: Replace one-element arrays with
+ flexible-array members
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210310020108.GA279881@embeddedor>
+ <20210311031745.GT3419940@magnolia>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <b9e2c900-0852-fc5d-9696-835636b4219f@embeddedor.com>
+Date:   Wed, 10 Mar 2021 22:28:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210311031745.GT3419940@magnolia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lKCvu-003P6f-Ka
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:44512
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix some coding style issues in the isdn header
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/isdn/hardware/mISDN/iohelper.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/iohelper.h b/drivers/isdn/hardware/mISDN/iohelper.h
-index b2b2bde8edba..c81f7aba4b57 100644
---- a/drivers/isdn/hardware/mISDN/iohelper.h
-+++ b/drivers/isdn/hardware/mISDN/iohelper.h
-@@ -13,14 +13,14 @@
- #ifndef _IOHELPER_H
- #define _IOHELPER_H
- 
--typedef	u8	(read_reg_func)(void *hwp, u8 offset);
--			       typedef	void	(write_reg_func)(void *hwp, u8 offset, u8 value);
--			       typedef	void	(fifo_func)(void *hwp, u8 offset, u8 *datap, int size);
-+typedef u8 (read_reg_func)(void *hwp, u8 offset);
-+typedef void (write_reg_func)(void *hwp, u8 offset, u8 value);
-+typedef void (fifo_func)(void *hwp, u8 offset, u8 *datap, int size);
- 
--			       struct _ioport {
--				       u32	port;
--				       u32	ale;
--			       };
-+struct _ioport {
-+	u32 port;
-+	u32 ale;
-+};
- 
- #define IOFUNC_IO(name, hws, ap)					\
- 	static u8 Read##name##_IO(void *p, u8 off) {			\
--- 
-2.25.1
+On 3/10/21 21:17, Darrick J. Wong wrote:
 
+> Why not use size_t instead of uint?  You converted the @len declaration
+> above.
+> 
+>> +				 src_efi_fmt->efi_nextents);
+>> +	uint len64 = struct_size((xfs_efi_log_format_64_t *)0, efi_extents,
+> 
+> Also, please don't use the struct typedefs, we're trying to get rid of
+> those slowly.
+> 
+> TBH I wonder if these could just be turned into static inline helpers to
+> decrapify the code:
+> 
+> static inline size_t
+> sizeof_efi_log_format32(unsigned int nr)
+> {
+> 	return struct_size((xfs_efi_log_format_32_t *)0, efi_extents, nr);
+> }
+> 
+> Then you only need:
+> 
+> 	size_t len = sizeof_efi_log_format(src_efi_fmt->efi_nextents);
+> 	size_t len32 = sizeof_efi_log_format32(src_efi_fmt->efi_nextents);
+> 	size_t len64 = sizeof_efi_log_format64(src_efi_fmt->efi_nextents);
+> 
+> 	if (len == len32) ...
+> 	else if (len == len64) ...
+> 
+> And down below you can clean up the asserts a bit:
+> 
+> 	ASSERT(item->ri_buf[0].i_len ==
+> 			sizeof_efi_log_format32(efd_formatp->efd_nextents) ||
+> 	       item->ri_buf[0].i_len ==
+> 			sizeof_efi_log_format64(efd_formatp->efd_nextents));
+> 
+
+Done: https://lore.kernel.org/lkml/20210311042302.GA137676@embeddedor/
+
+Thanks for the feedback!
+--
+Gustavo
