@@ -2,107 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767F8337A64
+	by mail.lfdr.de (Postfix) with ESMTP id C7344337A65
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhCKRFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:05:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbhCKREv (ORCPT
+        id S230033AbhCKRFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:05:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38913 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229985AbhCKRFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:04:51 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23BFC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:04:51 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id t83so13883064oih.12
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:04:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HcdutmO19zaKE2AyPz8/OHl7hJh6xIt+CzDBadJIgpw=;
-        b=OSr6XHSRLkmL8Q4c2CFZXveBS/Yh/p8ICQ/NhU9qbY9OJhhPE9c7uvJZ1oy7e3nV+Z
-         +6Bc2NusSzrKGF38S7s5qUxQVcJWvysrPceGUb8W6YxPOhrHgTx3qWsTfp2kK2BJu8aH
-         +8VcyJoX3Ys+t6QwxoVDtqcD6i5Fbzmr6kGzIi2DPyErRYrfMimHxq9OayvnXGScRo+l
-         WckR0IyJLx1G/vyoolIVXDjc1gCBvC0XU9ZQXqPd11t/ReVFDvW8HObxKynn8+8GfBrs
-         /4PGskZGth1xcWzHTPxhVdGoS9vliWcxXTUdUIhjbInZgDWSMVHI0spxg5dTLrjak6c/
-         TTrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HcdutmO19zaKE2AyPz8/OHl7hJh6xIt+CzDBadJIgpw=;
-        b=kUfK4xY+eJD0oAg2rB6xCgoGnu8XNe6R5LmJyZ1hJAlZdYcUZUJ+V3y1cohTIV/Fcl
-         33dkkPbF/JMgTp2I4Rdr+QbWfXQyaKey2zWYSV0gYpC1Jcq8eApeAd4IAb8AQ0bH7E1F
-         ql7z0qcaWV/0Tgxf6Dm0h7PfbBrjli//cYeLL23n/SW8eiJTkTfXw/L74drzw090Qmf2
-         ushAYGd1KUyAPTMe+aNwvjsJSVAvGryJxu8JJTl1iqKWnYhYY/5mHdpAqVUqrPB6I35n
-         tLG3S+0QImLCaS1vGgmRJlXgGAjQDjKQFitm4R9AVPxroyD5DAyMil+B+U2/DuuX7Glq
-         AgZQ==
-X-Gm-Message-State: AOAM533RMoVcmzSCpeCop83otq8L2cptUng4WtCUHAkQOXiyXsbzi1r0
-        H1IMw+lMtNm0qhOwnkWdCtqEtA==
-X-Google-Smtp-Source: ABdhPJxI9F4kUMfFp6wDmThTzTexYwb0MQbi2g9FnYzIaCxAj0tdzNLUsGozYSfCaH2+Xwisb7r3Tg==
-X-Received: by 2002:aca:1818:: with SMTP id h24mr7425260oih.44.1615482291102;
-        Thu, 11 Mar 2021 09:04:51 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id e2sm747632oti.8.2021.03.11.09.04.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 09:04:50 -0800 (PST)
-Date:   Thu, 11 Mar 2021 11:04:48 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-rtc@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH 3/3] dt-bindings: mfd: Add compatible for pmk8350 rtc
-Message-ID: <YEpNsNqcyE+oj6OR@builder.lan>
-References: <1615447798-6959-1-git-send-email-skakit@codeaurora.org>
- <1615447798-6959-4-git-send-email-skakit@codeaurora.org>
+        Thu, 11 Mar 2021 12:05:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615482312;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=psOPtICF11pXofHXlU7Z/Nk2n88gRhtlSBfRfAKoCVk=;
+        b=P8hklgiDgtxKPNMTHq01F53SDPJzoo4jnnt2J8KtFTlmK4uRsF2DSQDXL3BXuCgvfze0Ra
+        p/5hxwP2SYVOCqIklZwgJ+IURFhltEVDis8FYNk1mGiPo1sCYBPIjOJjl381IOkMymvHrp
+        usn4iWZemJPSamNDIAGyJBjdouyabNw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-KeXUfcKpNEWteOEHWTYlUg-1; Thu, 11 Mar 2021 12:05:10 -0500
+X-MC-Unique: KeXUfcKpNEWteOEHWTYlUg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEB85100C661;
+        Thu, 11 Mar 2021 17:05:08 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E91AE10023AF;
+        Thu, 11 Mar 2021 17:05:06 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Add EFI_CERT_X509_GUID support for dbx/mokx entries
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615447798-6959-4-git-send-email-skakit@codeaurora.org>
+Content-Type: text/plain
+Date:   Thu, 11 Mar 2021 17:05:06 +0000
+Message-ID: <1884195.1615482306@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11 Mar 01:29 CST 2021, satya priya wrote:
 
-> Add compatible string for pmk8350 rtc support.
-> 
+Hi Linus,
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Here's a set of patches from Eric Snowberg[1] that add support for
+EFI_CERT_X509_GUID entries in the dbx and mokx UEFI tables (such entries
+cause matching certificates to be rejected).  These are currently ignored
+and only the hash entries are made use of.  Additionally Eric included his
+patches to allow such certificates to be preloaded.
 
+These patches deal with CVE-2020-26541.
 
-If you add this before doing the yaml binding migration it might be
-possible for the maintainer to merge the functional additions while
-we're still trying to figure out the yaml...
+To quote Eric:
 
-Regards,
-Bjorn
+	This is the fifth patch series for adding support for
+	EFI_CERT_X509_GUID entries [2].  It has been expanded to not only
+	include dbx entries but also entries in the mokx.  Additionally my
+	series to preload these certificate [3] has also been included.
 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-> index b4892f1..676decc 100644
-> --- a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-> @@ -53,6 +53,7 @@ patternProperties:
->            - qcom,pm8921-rtc
->            - qcom,pm8941-rtc
->            - qcom,pm8018-rtc
-> +          - qcom,pmk8350-rtc
->  
->        reg:
->          description: Specifies the base address of the RTC registers
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+	This series is based on v5.11-rc4.
+
+Notes:
+
+ (*) These patches fix a security loophole rather than actual fixing kernel
+     breakage, so they could theoretically wait for the next merge window
+     if you prefer.
+
+ (*) Patch 3 adds the extract-cert target a second time.  I think make
+     should just handle this, though it could be better to add a config
+     option specifically for building that program (it's used by multiple
+     options).
+
+Changes:
+ - Changed Jarkko's acks to his kernel.org address.
+
+ver #3:
+ - Rolled in changes from Eric to fix conditional building issues[7].
+
+ver #2:
+ - Rolled in a fix to the second patch to include certs/common.h in
+   certs/common.c[6].
+
+ver #1:
+ - I've modified the first patch in the series to fix a configuration
+   problem[4][5], to move the added functions to a more logical place
+   within thefile and to add kerneldoc comments.
+
+Link: https://lore.kernel.org/r/20210122181054.32635-1-eric.snowberg@oracle.com [1]
+Link: https://patchwork.kernel.org/project/linux-security-module/patch/20200916004927.64276-1-eric.snowberg@oracle.com/ [2]
+Link: https://lore.kernel.org/patchwork/cover/1315485/ [3]
+Link: https://lore.kernel.org/r/bc2c24e3-ed68-2521-0bf4-a1f6be4a895d@infradead.org/ [4]
+Link: https://lore.kernel.org/r/20210225125638.1841436-1-arnd@kernel.org/ [5]
+Link: https://lore.kernel.org/r/EDA280F9-F72D-4181-93C7-CDBE95976FF7@oracle.com/ [6]
+Link: https://lore.kernel.org/r/161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/161433310139.902181.11787442834918634133.stgit@warthog.procyon.org.uk/ # v2
+Link: https://lore.kernel.org/r/161529604216.163428.4905283330048991183.stgit@warthog.procyon.org.uk/ # v3
+Link: https://lore.kernel.org/r/20210304175030.184131-1-eric.snowberg@oracle.com/ [7]
+
+David
+---
+The following changes since commit 8f0bfc25c907f38e7f9dc498e8f43000d77327ef:
+
+  watch_queue: rectify kernel-doc for init_watch() (2021-01-26 11:16:34 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/keys-cve-2020-26541-v3
+
+for you to fetch changes up to ebd9c2ae369a45bdd9f8615484db09be58fc242b:
+
+  integrity: Load mokx variables into the blacklist keyring (2021-03-11 16:34:48 +0000)
+
+----------------------------------------------------------------
+Fix CVE-2020-26541
+
+----------------------------------------------------------------
+Eric Snowberg (4):
+      certs: Add EFI_CERT_X509_GUID support for dbx entries
+      certs: Move load_system_certificate_list to a common function
+      certs: Add ability to preload revocation certs
+      integrity: Load mokx variables into the blacklist keyring
+
+ certs/Kconfig                                      | 17 ++++++
+ certs/Makefile                                     | 21 ++++++-
+ certs/blacklist.c                                  | 64 ++++++++++++++++++++++
+ certs/blacklist.h                                  |  2 +
+ certs/common.c                                     | 57 +++++++++++++++++++
+ certs/common.h                                     |  9 +++
+ certs/revocation_certificates.S                    | 21 +++++++
+ certs/system_keyring.c                             | 55 +++----------------
+ include/keys/system_keyring.h                      | 15 +++++
+ scripts/Makefile                                   |  1 +
+ .../integrity/platform_certs/keyring_handler.c     | 11 ++++
+ security/integrity/platform_certs/load_uefi.c      | 20 ++++++-
+ 12 files changed, 242 insertions(+), 51 deletions(-)
+ create mode 100644 certs/common.c
+ create mode 100644 certs/common.h
+ create mode 100644 certs/revocation_certificates.S
+
