@@ -2,152 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83DD3376C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42C23376D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhCKPS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:18:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234055AbhCKPR4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:17:56 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858CBC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:17:56 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id n23so1802404otq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:17:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F5wgH+AYh/WyBJYoU8SW+a64FMCETkhDvGXcF7UG8O0=;
-        b=aSWbR3Pvn7pX6f0WXhotBAv9D8NImhk+RaEESRDwAttp8xGG3gwuYCDghud8rWELsw
-         79MvmcR+jdn5nrt8VgqML22BCf7v8lsIAk9mw0KGqViwIaC/GsBw3SNXzgS6Jzcd5pJj
-         PL3xcLndwDvqe5k/ABaAWUV8c1zAkZ4N/gpxt9wYGplTZ4Ruls2t2MeSWmfufVKTZEQC
-         Kxj2gIJWeHS/YGaWuiktzXee02XKUYgDcEEbiG3rymVUYJpc6fCg3tCSSOuUWOAQmBnY
-         9TopooQdPXsXgbkbDlr/jBXhK6GGc/YBN/eKOxEYLHOzrWfkQ6ZYqZSRjCbMEj1bN7Aa
-         O4wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F5wgH+AYh/WyBJYoU8SW+a64FMCETkhDvGXcF7UG8O0=;
-        b=SidHgd2VL7Klm6VOWO8f3AbgGNv17yNfWXXDp1FxKc6XiMKKIO3Yaiy6McMPHgUZVs
-         2vIVNBrjlZZKfo3XOS2QJUv16qDYjEkQ2GP7GvqCKb28NMb6rrqLro2Uo4vzN4psXdHb
-         LgkANfiacvidF/84m2tdZdyl70PG1LH3e/a6h95fa7dWauKvo84P+b3tIoS8DKSk5co3
-         3nKA+OKtA6IhlCdK5rxNwPyZXvqEM4hrTVMtGqmsoyLl1Jl/vtnGKrsDu1QUljO7UB48
-         6dDwqIHAzFcVUTw2Ux0ex4GUnK1XfB9XBGFOf82PVw4WKyFERe3esFV3vmnsdPVtcKsD
-         pjxg==
-X-Gm-Message-State: AOAM532XEIs4q61phF4v3LicxJzLOrKpQDWd82KtKsQPkiSFWK144tWU
-        Ek03ck1AIxbJxH5Ct3WUGjpx66xAHe0p8vbqpDCt8A==
-X-Google-Smtp-Source: ABdhPJw3cPtdxfwVqx28rchxLZPHsrrsv1nJx4iEhEJqGOxeMh88fcv/Af+jTyyEoF4hNTCZ3KkZk1EsrX59z62M+qQ=
-X-Received: by 2002:a9d:644a:: with SMTP id m10mr7491620otl.233.1615475875698;
- Thu, 11 Mar 2021 07:17:55 -0800 (PST)
+        id S233988AbhCKPUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:20:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40866 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233968AbhCKPTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 10:19:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3560CAD74;
+        Thu, 11 Mar 2021 15:19:30 +0000 (UTC)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>, Martin Wilck <mwilck@suse.com>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v2] block: Suppress uevent for hidden device when removed
+Date:   Thu, 11 Mar 2021 16:19:17 +0100
+Message-Id: <20210311151917.136091-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <1a41abb11c51b264511d9e71c303bb16d5cb367b.1615475452.git.andreyknvl@google.com>
-In-Reply-To: <1a41abb11c51b264511d9e71c303bb16d5cb367b.1615475452.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 11 Mar 2021 16:17:43 +0100
-Message-ID: <CANpmjNP4Uz4Kmr+8KE_reyjRLCTj9q0s3ncQ26Xay+1Xwxvgiw@mail.gmail.com>
-Subject: Re: [PATCH] kasan: fix per-page tags for non-page_alloc pages
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 at 16:11, Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> To allow performing tag checks on page_alloc addresses obtained via
-> page_address(), tag-based KASAN modes store tags for page_alloc
-> allocations in page->flags.
->
-> Currently, the default tag value stored in page->flags is 0x00.
-> Therefore, page_address() returns a 0x00ffff... address for pages
-> that were not allocated via page_alloc.
->
-> This might cause problems. A particular case we encountered is a conflict
-> with KFENCE. If a KFENCE-allocated slab object is being freed via
-> kfree(page_address(page) + offset), the address passed to kfree() will
-> get tagged with 0x00 (as slab pages keep the default per-page tags).
-> This leads to is_kfence_address() check failing, and a KFENCE object
-> ending up in normal slab freelist, which causes memory corruptions.
->
-> This patch changes the way KASAN stores tag in page-flags: they are now
-> stored xor'ed with 0xff. This way, KASAN doesn't need to initialize
-> per-page flags for every created page, which might be slow.
->
-> With this change, page_address() returns natively-tagged (with 0xff)
-> pointers for pages that didn't have tags set explicitly.
->
-> This patch fixes the encountered conflict with KFENCE and prevents more
-> similar issues that can occur in the future.
->
-> Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+register_disk() suppress uevents for devices with the GENHD_FL_HIDDEN
+but enables uevents at the end again in order to announce disk after
+possible partitions are created.
 
-Reviewed-by: Marco Elver <elver@google.com>
+When the device is removed the uevents are still on and user land sees
+'remove' messages for devices which were never 'add'ed to the system.
 
-Thank you!
+  KERNEL[95481.571887] remove   /devices/virtual/nvme-fabrics/ctl/nvme5/nvme0c5n1 (block)
 
-> ---
->  include/linux/mm.h | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 77e64e3eac80..c45c28f094a7 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1440,16 +1440,28 @@ static inline bool cpupid_match_pid(struct task_struct *task, int cpupid)
->
->  #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
->
-> +/*
-> + * KASAN per-page tags are stored xor'ed with 0xff. This allows to avoid
-> + * setting tags for all pages to native kernel tag value 0xff, as the default
-> + * value 0x00 maps to 0xff.
-> + */
-> +
->  static inline u8 page_kasan_tag(const struct page *page)
->  {
-> -       if (kasan_enabled())
-> -               return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
-> -       return 0xff;
-> +       u8 tag = 0xff;
-> +
-> +       if (kasan_enabled()) {
-> +               tag = (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
-> +               tag ^= 0xff;
-> +       }
-> +
-> +       return tag;
->  }
->
->  static inline void page_kasan_tag_set(struct page *page, u8 tag)
->  {
->         if (kasan_enabled()) {
-> +               tag ^= 0xff;
->                 page->flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
->                 page->flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
->         }
-> --
-> 2.31.0.rc2.261.g7f71774620-goog
->
+Let's suppress the uevents for GENHD_FL_HIDDEN by not enabling the
+uevents at all.
+
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+
+This version behaves in the same way as v1, that is I don't see any
+other effects than the expected missing uevent remove event.
+
+v2:
+  - never enable the uevents for GENHD_FL_HIDDEN
+    instead adding another test add del_gendisk()
+
+ block/genhd.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/block/genhd.c b/block/genhd.c
+index c55e8f0fced1..8c8f543572e6 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -534,10 +534,8 @@ static void register_disk(struct device *parent, struct gendisk *disk,
+ 		kobject_create_and_add("holders", &ddev->kobj);
+ 	disk->slave_dir = kobject_create_and_add("slaves", &ddev->kobj);
+ 
+-	if (disk->flags & GENHD_FL_HIDDEN) {
+-		dev_set_uevent_suppress(ddev, 0);
++	if (disk->flags & GENHD_FL_HIDDEN)
+ 		return;
+-	}
+ 
+ 	disk_scan_partitions(disk);
+ 
+-- 
+2.29.2
+
