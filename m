@@ -2,115 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613DC336B49
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 06:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E30336B50
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 06:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhCKFBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 00:01:20 -0500
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:49558 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhCKFAy (ORCPT
+        id S229685AbhCKFFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 00:05:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhCKFEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 00:00:54 -0500
+        Thu, 11 Mar 2021 00:04:48 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60497C061574;
+        Wed, 10 Mar 2021 21:04:48 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id gb6so2863860pjb.0;
+        Wed, 10 Mar 2021 21:04:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1615438854; x=1646974854;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=IWI4+2gSrZACZzxQChsLqpe+HvfyCpuEwUIo/DVKsDs=;
-  b=FPM2ndaFU1R0rnPUc+RNdZml2LvtjlrrZz7zKhnKmLbw5gUoEwoh0XBC
-   rJy5LAh4GnpUHInVNR/bziHieu4oy/ZtKMKIGJykAUf4fddDyWv5VIATT
-   3ixk4QjFJpEiMh+QrxZ9mmUA9eFfq+wVndxxzTzd3XVYkEthZPNGCpTao
-   M=;
-IronPort-HdrOrdr: A9a23:+FBHJ6jhTEtXdf2ttEK7exZcGHBQXxB13DAbvn1ZSRFFG/Gwvc
- aogfgdyFvImC8cMUtQ/eyoFYuhZTfn9ZBz6ZQMJrvKZmKNhEKEJJxvhLGO/xTOFyHy/eZW1+
- NBXsFFeaLNJHdgi8KS2mWFOvYmhOKK6aW5wdrZpk0dLj1CT4FFw0NHBh2AEktwLTM2YKYRMJ
- aH/MJIq36BVB0sDviTPXUOU+jdq9CjrvuPXTc8Cwcj+E2yi1qThoLSKRSe0xsEOgkh/Z4Z7W
- PHnwblj5/T0c2T9xm07Q7uxqUTovfajv1eGcKLis8aQw+c9jqAVcBae5nHlDopvOmrrHkwlt
- 2kmWZcA+1Dr0nwWiWfpBPm2Szhyisj5jvYxVWZmHvuptHiLQhKbPZptMZiUj+cxkwroNVx17
- 8O/2/xjesuMTrw2B7cw5zkURt3kkayvD4Zm+8ei3Q3a/p5VJZh6bY+2Ad0CtMpFj/77odiOv
- JjBNzRjcwmC2+yXjTink0q+dS2UnMvWjiBR0UPoaWuokNrtUE89Ws9gPEYhzMk+I0wTt1q4e
- HIPr8ArsA2cvMr
-X-IronPort-AV: E=Sophos;i="5.81,239,1610409600"; 
-   d="scan'208";a="918217041"
-Subject: Re: [PATCH 0/3] Add support for free vmemmap pages of HugeTLB for arm64
-Thread-Topic: [PATCH 0/3] Add support for free vmemmap pages of HugeTLB for arm64
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-c5104f52.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-9103.sea19.amazon.com with ESMTP; 11 Mar 2021 05:00:45 +0000
-Received: from EX13D22EUA004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-c5104f52.us-west-2.amazon.com (Postfix) with ESMTPS id 47476A1791;
-        Thu, 11 Mar 2021 05:00:44 +0000 (UTC)
-Received: from EX13D22EUA003.ant.amazon.com (10.43.165.210) by
- EX13D22EUA004.ant.amazon.com (10.43.165.129) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 11 Mar 2021 05:00:43 +0000
-Received: from EX13D22EUA003.ant.amazon.com ([10.43.165.210]) by
- EX13D22EUA003.ant.amazon.com ([10.43.165.210]) with mapi id 15.00.1497.012;
- Thu, 11 Mar 2021 05:00:42 +0000
-From:   "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>
-To:     Chen Huang <chenhuang5@huawei.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "rientjes@google.com" <rientjes@google.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
-        "Umesh Sargur, Gautam" <sargur@amazon.com>
-Thread-Index: AQHXFX2f1iiLEa+yjUWtpclelFHNUap+Lo8AgABpoYA=
-Date:   Thu, 11 Mar 2021 05:00:42 +0000
-Message-ID: <ED06294F-F046-4B21-9E52-F439C2B32B45@amazon.com>
-References: <20210310071535.35245-1-songmuchun@bytedance.com>
- <3eae8b3e-d6e0-83c8-e9c6-5420767788d5@huawei.com>
-In-Reply-To: <3eae8b3e-d6e0-83c8-e9c6-5420767788d5@huawei.com>
-Accept-Language: en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.164.135]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8B8D232915107C4182231959190CBBC9@amazon.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eayOjb0KZ31qj1N8PdToC+xRVUBfCHUPI3Znks8WR0k=;
+        b=IL1N7vM7p9PzFcfpvhgRRMuOzhmjBlfibWkIcOQbYlGbPOJMnLhIzjCy8LxBaJ8EGU
+         KJjjEgkbLtjbaD4sqhZ1ochG6cVFghEOlubEd7dsbfPijX8lC9eVqiLaeiTO3VXqhE5j
+         YprOjLc8isTrNz1yxLNXa7sz1Bhn0z1t0w+HJ0pPJUXLLao5DKoPWk0aWURYin4FB6OE
+         oTFCyRJLtkVFf3JLLGhSJTXk7wLVT433snzVLTFp5sM2sqXb87myqAsWS9pqaTfVDExL
+         f+ojkMFllNvYboAo4xsrXYacF/clYDZcJc779Ph0MFvl0b3brsNawqyYAhHoxSZKsU/v
+         mTBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eayOjb0KZ31qj1N8PdToC+xRVUBfCHUPI3Znks8WR0k=;
+        b=I4ncpXqV/XpjiiQX8IYi4CdCJYg6u+UUQki2biO5+yUXOx5pSccehVOvYteAU7kgvO
+         aEz0lt88Vk4KIKxJ5zDKqpLIciJi5uPu5GR3buuyhQV8zIcRdgijb2GEWieTTtSs3Zub
+         rypbB6ssKgGZzIZsFCgmlsYU62nWJtiK+IGBetFjhq89XC7uXm75dqM0xz37Mm1d69m9
+         YhWJOpbRZ84zKZRIbM8pOyFf7da7xZtOt81fRhpqtJZxiGyu4sVty/PHWBTrtPY7Ruk+
+         bdp39KdOqWlf/t7YipSwzanbBPt42sAHCDjktRdJVFJ4vWGlU3Y0pD/1/rApYYwARwG/
+         mJtA==
+X-Gm-Message-State: AOAM5305GSU6tBYodjwZeMnZCExazBP9c0XsWNtgHEJRXqCF5MOwOHIa
+        lP5XWPIYl0T89/k8YGw6x90=
+X-Google-Smtp-Source: ABdhPJzomvd6XDgwv/fL+vlX+FLEQgGyCWkzPbL90UL/BQndPGhzKH0Q4L/hjqK/fMjpcf3zxKU3vg==
+X-Received: by 2002:a17:90a:a403:: with SMTP id y3mr7078020pjp.227.1615439087609;
+        Wed, 10 Mar 2021 21:04:47 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id y2sm979638pgf.7.2021.03.10.21.04.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 21:04:47 -0800 (PST)
+Subject: Re: [PATCH v4 13/14] dt-bindings: of: Add restricted DMA pool
+To:     Rob Herring <robh+dt@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Grant Likely <grant.likely@arm.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+References: <20210209062131.2300005-1-tientzu@chromium.org>
+ <20210209062131.2300005-14-tientzu@chromium.org>
+ <20210310160747.GA29834@willie-the-truck>
+ <CAL_JsqJE6A4awYCvqzw3qk2uAJEKgkSOKbk9tPaMKup8zes8cA@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a5a684fe-5ed0-a12f-22ca-a8ba46124341@gmail.com>
+Date:   Wed, 10 Mar 2021 21:04:42 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <CAL_JsqJE6A4awYCvqzw3qk2uAJEKgkSOKbk9tPaMKup8zes8cA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2hlbiwgaXMgeW91ciB0ZXN0aW5nIHN0ZXBzIGRvY3VtZW50ZWQgc29tZXdoZXJlLCBjYW4geW91
-IHBsZWFzZSBwb2ludCB1cyB0byB0aGUgc2FtZS4gSSBmb2xsb3dlZCBzb21lIHN0ZXBzIGZvciB0
-ZXN0aW5nIHRoZSB4ODYgcGF0Y2hlcywganVzdCB3YW50ZWQgdG8gbWFrZSBzdXJlIEkgYW0gY292
-ZXJpbmcgeW91ciB0ZXN0cyBhcyB3ZWxsLiBXZSBhcmUgYWN0aXZlbHkgd29ya2luZyBvbiBidWls
-ZGluZyBhbmQgdGVzdGluZyB0aGVzZSBwYXRjaGVzIGZvciBBUk0uDQoNCu+7v09uIDExLzAzLzIx
-LCA5OjQ0IEFNLCAiQ2hlbiBIdWFuZyIgPGNoZW5odWFuZzVAaHVhd2VpLmNvbT4gd3JvdGU6DQoN
-CiAgICBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRlIG9mIHRoZSBv
-cmdhbml6YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVz
-cyB5b3UgY2FuIGNvbmZpcm0gdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZl
-Lg0KDQoNCg0KICAgIOWcqCAyMDIxLzMvMTAgMTU6MTUsIE11Y2h1biBTb25nIOWGmemBkzoNCiAg
-ICA+IFRoaXMgcGF0Y2hzZXQgaXMgYmFzZWQgb24gdGhlIHNlcmllcyBvZiAiRnJlZSBzb21lIHZt
-ZW1tYXAgcGFnZXMgb2YgSHVnZVRMQg0KICAgID4gcGFnZSIuIE1vcmUgZGV0YWlscyBjYW4gcmVm
-ZXIgdG8gdGhlIGJlbG93IGxpbmsuDQogICAgPg0KICAgID4gICBodHRwczovL2xrbWwua2VybmVs
-Lm9yZy9yLzIwMjEwMzA4MTAyODA3LjU5NzQ1LTEtc29uZ211Y2h1bkBieXRlZGFuY2UuY29tDQog
-ICAgPg0KICAgID4gSSBvZnRlbiByZWNlaXZlZCBzb21lIGZlZWRiYWNrIChXZSB3YW50IHRvIHRl
-c3QgdGhpcyBmZWF0dXJlIG9uIGFybTY0KSBiZWZvcmUuDQogICAgPiBCZWNhdXNlIHRoZSBwcmV2
-aW91cyBjb2RlIGhhcyBiZWVuIHJldmlld2VkIGZvciAxOCB2ZXJzaW9ucyBhbmQgaXMgbWVyZ2Vk
-DQogICAgPiBpbnRvIG1tIHRyZWUsIEkgdGhpbmsgdGhhdCBpdCBpcyB0aW1lIHRvIHJlbGVhc2Ug
-dGhpcyBwYXRjaHNldC4gSWYgeW91IHdhbnQNCiAgICA+IHRvIHRlc3QgdGhlbiB5b3UgY2FuIHN0
-YXJ0IG5vdyA6LSkuIEFuZCBJIGFsc28gaG9wZSBzb21lb25lIGNhbiByZXZpZXcgdGhpcy4NCiAg
-ICA+DQogICAgPiBUaGFua3MuDQogICAgPg0KICAgID4gTXVjaHVuIFNvbmcgKDMpOg0KICAgID4g
-ICBtbTogYm9vdG1lbV9pbmZvOiBtYXJrIHJlZ2lzdGVyX3BhZ2VfYm9vdG1lbV9pbmZvX3NlY3Rp
-b24gX19pbml0DQogICAgPiAgIG1tOiBodWdldGxiOiBpbnRyb2R1Y2UgYXJjaF9mcmVlX3ZtZW1t
-YXBfcGFnZQ0KICAgID4gICBhcm02NDogbW06IGh1Z2V0bGI6IGFkZCBzdXBwb3J0IGZvciBmcmVl
-IHZtZW1tYXAgcGFnZXMgb2YgSHVnZVRMQg0KICAgID4NCiAgICA+ICBhcmNoL2FybTY0L21tL21t
-dS5jICAgfCA1ICsrKysrDQogICAgPiAgYXJjaC94ODYvbW0vaW5pdF82NC5jIHwgNSArKysrKw0K
-ICAgID4gIGZzL0tjb25maWcgICAgICAgICAgICB8IDQgKystLQ0KICAgID4gIG1tL2Jvb3RtZW1f
-aW5mby5jICAgICB8IDQgKystLQ0KICAgID4gIG1tL3NwYXJzZS12bWVtbWFwLmMgICB8IDkgKysr
-KysrKy0tDQogICAgPiAgNSBmaWxlcyBjaGFuZ2VkLCAyMSBpbnNlcnRpb25zKCspLCA2IGRlbGV0
-aW9ucygtKQ0KICAgID4NCg0KICAgIFRlc3RlZC1ieTogQ2hlbiBIdWFuZyA8Y2hlbmh1YW5nNUBo
-dWF3ZWkuY29tPg0KDQogICAgSSBoYXZlIHRlc3RlZCB0aGUgcGF0Y2ggYW5kIHRoZSByZXN1bHQg
-aXMgc2FtZSBhcyB0aGUgbGFzdCB0aW1lLg0KDQo=
+
+
+On 3/10/2021 1:40 PM, Rob Herring wrote:
+> On Wed, Mar 10, 2021 at 9:08 AM Will Deacon <will@kernel.org> wrote:
+>>
+>> Hi Claire,
+>>
+>> On Tue, Feb 09, 2021 at 02:21:30PM +0800, Claire Chang wrote:
+>>> Introduce the new compatible string, restricted-dma-pool, for restricted
+>>> DMA. One can specify the address and length of the restricted DMA memory
+>>> region by restricted-dma-pool in the reserved-memory node.
+>>>
+>>> Signed-off-by: Claire Chang <tientzu@chromium.org>
+>>> ---
+>>>  .../reserved-memory/reserved-memory.txt       | 24 +++++++++++++++++++
+>>>  1 file changed, 24 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+>>> index e8d3096d922c..fc9a12c2f679 100644
+>>> --- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+>>> +++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+>>> @@ -51,6 +51,20 @@ compatible (optional) - standard definition
+>>>            used as a shared pool of DMA buffers for a set of devices. It can
+>>>            be used by an operating system to instantiate the necessary pool
+>>>            management subsystem if necessary.
+>>> +        - restricted-dma-pool: This indicates a region of memory meant to be
+>>> +          used as a pool of restricted DMA buffers for a set of devices. The
+>>> +          memory region would be the only region accessible to those devices.
+>>> +          When using this, the no-map and reusable properties must not be set,
+>>> +          so the operating system can create a virtual mapping that will be used
+>>> +          for synchronization. The main purpose for restricted DMA is to
+>>> +          mitigate the lack of DMA access control on systems without an IOMMU,
+>>> +          which could result in the DMA accessing the system memory at
+>>> +          unexpected times and/or unexpected addresses, possibly leading to data
+>>> +          leakage or corruption. The feature on its own provides a basic level
+>>> +          of protection against the DMA overwriting buffer contents at
+>>> +          unexpected times. However, to protect against general data leakage and
+>>> +          system memory corruption, the system needs to provide way to lock down
+>>> +          the memory access, e.g., MPU.
+>>
+>> As far as I can tell, these pools work with both static allocations (which
+>> seem to match your use-case where firmware has preconfigured the DMA ranges)
+>> but also with dynamic allocations where a 'size' property is present instead
+>> of the 'reg' property and the kernel is responsible for allocating the
+>> reservation during boot. Am I right and, if so, is that deliberate?
+> 
+> I believe so. I'm not keen on having size only reservations in DT.
+> Yes, we allowed that already, but that's back from the days of needing
+> large CMA carveouts to be reserved early in boot. I've read that the
+> kernel is much better now at contiguous allocations, so do we really
+> need this in DT anymore?
+
+I would say yes, there can be a number of times where you want to semi
+statically partition your physical memory and their reserved regions. Be
+it to pack everything together under the same protection rules or
+because you need to allocate memory from a particular address range in
+say a non-uniform memory controller architecture where address windows
+have different scheduling algorithms.
+-- 
+Florian
