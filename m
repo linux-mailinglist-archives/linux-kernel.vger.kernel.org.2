@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BD133684F
+	by mail.lfdr.de (Postfix) with ESMTP id BD8AB336850
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhCKADs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 19:03:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S229746AbhCKADu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 19:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhCKADd (ORCPT
+        with ESMTP id S229673AbhCKADn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:03:33 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31FBC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:03:32 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id q130so2239302oif.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:03:32 -0800 (PST)
+        Wed, 10 Mar 2021 19:03:43 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE7FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:03:43 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id z9so17339092iln.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:03:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MqQxCHeDZzA0xjKB6t0uijMIqsuaZ0QygKTZF6eoP3M=;
-        b=NXamsKAQUqB79kgFV5ijJNzR+eiRCX8NhZsktIT/wau3F0JuKgr90bLIgl3oZeZc70
-         HmTs3WOPVNlbIYyHHt2uxSWe/iWrSkfVcyH757KsxZXbRO+si9DWRTmwueiPQKan5Bzx
-         iGw9KZt3sKrHgA8HEeL+iousAW6DmXv1AnegwLTlOGBtqeBlFwcFutdjE6eJ0bbYgxvD
-         8uMfy3yFiSuhMzs7V/Thm3zYByfirgztVGHQeJmIbDUUURXqoL10YyT/AD0fHNTRw4uQ
-         1Ox4mYmfiY1yEob1pC+94NRwFIv49Op4BZV8lnujHAP/BHoU+mK5ffGbd3pAojAp/mc9
-         6I6w==
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cFWDtf2wFIR6Z0pjhiaIXpIQXNSN34oYlbsbQvsmVJQ=;
+        b=btcspacds/zBLnwErhu3LItaqtsVPPFk8yn1Il+UOyDX17OD/7ZmfHtxdgTAt/9r20
+         lVRadOU5TBXqinOGT971pBLSKnxKW8lHnCe0ev1VOmc9CABqKT/6MDAeR7VcQqU7nMe1
+         v9plKBiRUElJPpWfvbQTcsPso9OS3DqRt48x5QJ22Ho51JHOy06/AdYAjZnlzPQBH+mD
+         SrLHJUgS22v2qhGRQ5q7Zdd2AfjYfaWYnKSyuZU9u3bb1DiX7mnqazRUoGeRJ1nRqrEo
+         zfGmEwrmlXwKwCyQ38snSEJEosiOkXTt6eeJ0BUSO9jQdh+O/zbPbggeVyp7nGkIZYae
+         fb7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MqQxCHeDZzA0xjKB6t0uijMIqsuaZ0QygKTZF6eoP3M=;
-        b=aixXnXoO/hsKOcpEiVKXiISM4oT1/v62h5VICkB8BiByuYE/9OepgPEMzJ/N+Xno2R
-         ZjB8AXZrqi9g+lzeHmahGcZ9dCfelEV8/IMYgEyD1J2VdqC0GgclktEf7yXjrtL8JGvj
-         mYbyiWRwOAm1A1m9Kk9WOKcYMT3z848mXPrOU7Kb1Vexo4W5F49GGJlVXHzfC1IzMkNr
-         gkr978zh7bBktf/rd4YYSWd8p+x4aOhQvnq+NzFJXCOWnJJi2FDgHFTfX8XUlA34FoOQ
-         fM7Ey+b2V6fwTz6B5/d82eMN5bROYgOpServ5gQdeAEkNR7NyGi0CtRFBNViMgj77BQ2
-         Ttfw==
-X-Gm-Message-State: AOAM532YBASn0sB0vv8v3//BUa0CIj3t66FyBSwXkNR1YDXy8bTNQKS1
-        2DqljDthIn5l4ZG768DECTK1rQ==
-X-Google-Smtp-Source: ABdhPJyapkzWhfDKQ2HIArCWRyoK3W8H5vkuTbKNebfIJUsVO1F5uteJQ4Qt3NlrDZ0mZ92M24b8rA==
-X-Received: by 2002:aca:f50f:: with SMTP id t15mr4275634oih.53.1615421011975;
-        Wed, 10 Mar 2021 16:03:31 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n1sm209854oog.31.2021.03.10.16.03.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 16:03:31 -0800 (PST)
-Date:   Wed, 10 Mar 2021 18:03:29 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] pinctrl: pmic-mpp: Add missing dt-bindings mpp
- function defs
-Message-ID: <YEleUVnFmrBYrAe2@builder.lan>
-References: <20210225213605.117201-1-konrad.dybcio@somainline.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cFWDtf2wFIR6Z0pjhiaIXpIQXNSN34oYlbsbQvsmVJQ=;
+        b=KZvAGGSKX0gnDbmiRWBgjlFZAKgvdjHC48n+NI+iQPICdg7rBeN6PaPgF6EqG/AJc7
+         UoveGVMVbFJUV97u+eqd1gNfSvFVjLYKTvsY7sngH8aq3aJq8JgV/F9ODP7TqiBSWlNp
+         frhYxzq7pWgJQI9HOHPLsm4Eb1mUvJzL8s9MPFi3wpIhMmbrI/iuDdNY0XGQHUwA1qi1
+         RR0HXIBZIRYNrjW8Q2N+wohOCjkbLobRtX4DlUajn5/Wz4P8ZnKEx6as4MvHNF4Oy6OS
+         9dEWPLQNe7CgwJ4RzSsnML/bc3Alj+szxS2v3jZLQ55fBF4NnuplyLkuYnOQlgltHtqg
+         QGQQ==
+X-Gm-Message-State: AOAM532LIIb32LTHmPWZKCDy7Sf02khBHyLr1XmS9CDaSW27gjjXmqbM
+        7LvzflY80PRKgKdKAbR5PwAH2pRw7C5VMkFm3AwJPQ==
+X-Google-Smtp-Source: ABdhPJyLrvA8Vrt99tQd0EnIs1ywVAucAjG2yA+NMXBWB267ZiFSDoDNqjCM7FP2REc7oqap+CH/rZcaHu3cDuWUcHY=
+X-Received: by 2002:a92:cd81:: with SMTP id r1mr4695898ilb.252.1615421023280;
+ Wed, 10 Mar 2021 16:03:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225213605.117201-1-konrad.dybcio@somainline.org>
+References: <1f6d32e14f121a8ccf8807b8343597c3ae88c7d2.1587196252.git.yu.c.chen@intel.com>
+ <20210308134957.23852-1-youling257@gmail.com> <CAAYoRsXec2eq=t-pSn5TOqNt0G6kfZCKkDuEhCnX5SgL0zgkBg@mail.gmail.com>
+ <20210308161548.GA37664@chenyu-desktop>
+In-Reply-To: <20210308161548.GA37664@chenyu-desktop>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Wed, 10 Mar 2021 16:03:31 -0800
+Message-ID: <CAAYoRsVkrHberSgM42dqYjdVwz8vumURJ1_DGeV1R5-=LMdjVA@mail.gmail.com>
+Subject: Re: [3/3,v3] tools/power turbostat: Enable accumulate RAPL display
+To:     Chen Yu <yu.c.chen@intel.com>, bas@basnieuwenhuizen.nl,
+        erwanaliasr1@gmail.com, owen.si@ucloud.cn
+Cc:     youling257 <youling257@gmail.com>, lenb@kernel.org,
+        rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+        Len Brown <len.brown@intel.com>,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25 Feb 15:36 CST 2021, Konrad Dybcio wrote:
+Hi Yu,
 
-> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> 
-> The pinctrl-spmi-mpp driver supports setting more mpp functions
-> than the ones defined in the dt-bindings header, specifically,
-> digital, analog and sink.
-> 
-> To follow the current way of specifying the function config
-> in Device-Tree, add the missing three definitions in the
-> appropriate dt-bindings header as:
-> GPIO_MPP_FUNC_{DIGITAL,ANALOG,SINK}.
-> 
+I am just resending your e-mail, adjusting the "To:" list to
+include the 3 others that have submitted similar patches.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+... Doug
 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
->  include/dt-bindings/pinctrl/qcom,pmic-mpp.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/include/dt-bindings/pinctrl/qcom,pmic-mpp.h b/include/dt-bindings/pinctrl/qcom,pmic-mpp.h
-> index 32e66ee7e830..3cdca7ee1b3f 100644
-> --- a/include/dt-bindings/pinctrl/qcom,pmic-mpp.h
-> +++ b/include/dt-bindings/pinctrl/qcom,pmic-mpp.h
-> @@ -98,6 +98,9 @@
->  /* To be used with "function" */
->  #define PMIC_MPP_FUNC_NORMAL		"normal"
->  #define PMIC_MPP_FUNC_PAIRED		"paired"
-> +#define PMIC_MPP_FUNC_DIGITAL		"digital"
-> +#define PMIC_MPP_FUNC_ANALOG		"analog"
-> +#define PMIC_MPP_FUNC_SINK		"sink"
->  #define PMIC_MPP_FUNC_DTEST1		"dtest1"
->  #define PMIC_MPP_FUNC_DTEST2		"dtest2"
->  #define PMIC_MPP_FUNC_DTEST3		"dtest3"
-> -- 
-> 2.30.1
-> 
+On Mon, Mar 8, 2021 at 8:11 AM Chen Yu <yu.c.chen@intel.com> wrote:
+>
+> Hi,
+> On Mon, Mar 08, 2021 at 07:37:07AM -0800, Doug Smythies wrote:
+> > On Mon, Mar 8, 2021 at 5:50 AM youling257 <youling257@gmail.com> wrote:
+> > >
+> > > this cause turbostat not work on amd cpu.
+> > >
+> > > root@localhost:~# /turbostat
+> > > turbostat version 20.09.30 - Len Brown <lenb@kernel.org>
+> > > CPUID(0): AuthenticAMD 0xd CPUID levels; 0x8000001f xlevels; family:model:stepping 0x17:18:1 (23:24:1)
+> >
+> > There are already two fixes for this in the queue.
+> > https://marc.info/?l=linux-pm&m=161382097503925&w=2
+> > https://marc.info/?l=linux-pm&m=161141701219263&w=2
+> Thanks for reporting and pointing this out. I assume these two patches are both fixing the
+> same issue? It looks like these two patches should be merged into one:
+> 1. Bingsong's patch access MSR_PKG_ENERGY_STAT only when RAPL_AMD_F17H is set,
+>    which is consistent with the original context.
+> 2. Bas Nieuwenhuizen's patch also fixes the issue in idx_valid()
+>    in case RAPL_PKG was not set but with RAPL_AMD_F17H set.
+>
+> thanks,
+> Chenyu
