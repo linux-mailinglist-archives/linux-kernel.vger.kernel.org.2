@@ -2,460 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1591A336C7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56930336C77
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhCKGvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:51:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
+        id S231319AbhCKGua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:50:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhCKGuu (ORCPT
+        with ESMTP id S231129AbhCKGu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:50:50 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9371CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:50:50 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id o10so13067755pgg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:50:50 -0800 (PST)
+        Thu, 11 Mar 2021 01:50:29 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74E0C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:50:28 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id n79so19638963qke.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:50:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gy8z+iDVmbujI7kny+ZI/Ozlau0l7pUtmfyXuQSj6Hk=;
-        b=1E4+i/zMPc+3v7kSJcsh3DUr+LeT/2BaxlDvP/jRXyNu14oc/A79BTgQ8XQ0YmaKjP
-         hTrZlSsOMe2SyW5xQ05PsD8g+CQgyoSfJhzCvSYFlUiEYjJwsRoif67G/mRYDnXax1QK
-         pMAVCeakgTsGe/gR5i1H5sJIowFKncKEr8NNiDSB/KqtFz3QsRLB3ukZnNtMX1fw7+Pa
-         VSx8KEPyXV06f6U3EHyToWof0IJpqLCFHT2feQ3QT7Xx+doHeArel4q+IbOUv+p2Wl08
-         VL/pYPylqPAcEBb2f0DjijoU0uNC1HkfvMFBX3t2TzAwkfgfxf0LEJisQP6590iqnfGl
-         V6Cg==
+         :cc:content-transfer-encoding;
+        bh=CHiNjCVzAF9f5ZQqYFH1xiJqt7vBsG0ih+SnubPBSag=;
+        b=NhHfEjub5LruGGgnVMh3pytD99vGgrf11LNfUyPKvJWH91nm6usIh7jF6qFOYQflX/
+         sNFYmzSfLMuSW3fnmxsyxI4QmvAz3yaPKH1aZsaE4BtlMwpB9WeNOBK6LWJ7M2pip8tE
+         PwYeJ0XEFxL2L2BKrz1kN44mGw1vjEA7Xc6FXK3uvfPJHwXdnxc4n9U39mwO/gv055Dw
+         PZr9+0XH7jYep2sM5NfG9U3QeTsul+cCY/LPpovZyhcjBBk3knRNRkCgWY2m5hQZxq3Y
+         BWFNsq+KPlMzF0Kp/r96hjM+/AkLLycDeE3YP0zSl3dbodaizA1ETlF9RgqFUCfqEbyC
+         MGzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gy8z+iDVmbujI7kny+ZI/Ozlau0l7pUtmfyXuQSj6Hk=;
-        b=e9gjrX7eLShcANKhSG51LzCh6UgLHKgQV4XGuXbJ87De2syD5JFdfHXUPLmsNZVvnt
-         1DF5QX42N2wtSlI70VeMX917qnof/dR+LqGAcOVL08+Cq17H/P/owbrwUCG7HDBrM92U
-         0Jr7rQdRrS2zxjnFHEZN4q3H8nCdtavTEd17opWZ/iL4GgcSfdpUit9nqNSyDDNUJRsR
-         xMDEBTodpH8lJ4l+TZ10U2aEQPc08ngsEk6BV48ZaMZfM+Bn196Pq0+6DD6PwnaWUujU
-         YX67LYEW+ai11GHijPvyTWChx+WQh0HnP1Z243wnBp9536ZBocdWMHHfNl0rDob3oVCs
-         q/FQ==
-X-Gm-Message-State: AOAM531UWwy4K+8KWjmaJygXgnC4aqTl17f3GiZukmQtCKBR67cPXdqj
-        L+fzmEdZ9xgnzJvzHsuZvm3Bn6oYFQ9nTC0qmyH2Bw==
-X-Google-Smtp-Source: ABdhPJwOPsLr32TFsxyUO77tkAG/MDUIVAH4TSbihapuytRTDI5Hxc0VTOnkqrfd5vqbuQOdfX9ht0d1/3vOjK5KmXc=
-X-Received: by 2002:a63:161c:: with SMTP id w28mr6138181pgl.341.1615445448808;
- Wed, 10 Mar 2021 22:50:48 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CHiNjCVzAF9f5ZQqYFH1xiJqt7vBsG0ih+SnubPBSag=;
+        b=ukcqr7AoORWZ3shMkfCO+1ABx70DgitAwSmZlYxsbrU+qSul9OyGKG4BoMwnh5wH2p
+         M16pj9pxhujsveHX7rg0ILlUXYJ+BFONR5BfomX2Fb52qXFUrDErhxpRx+KCxSxx+ory
+         B3Zb8c0RjJGnQe8nLfQZBLU1xPBgNNDvwc7ujPhBtx4DbHz3tIF5hPH4OLZoPVspxoFU
+         rcokGGUQ0hcI4sf+6kr6WXLID0x0ZV4FqvhlX9jgeNBt7Y/2i3iVwRh7A16DcPKW5yy2
+         91Dyl2V0/XfK4EhYGl1q8mxxw1hkb33kzi99aCXv1WYSpnVWyKsKInUTB1Ftw5KAJyZb
+         w7RQ==
+X-Gm-Message-State: AOAM530cT03Bd4bl2Kea2oJ7BbE2pf4tDti1Kj0jLUKAiH36Jj/AoQDl
+        TWpxKKv/b0GS06J+7L6GZZ57OodcnEUFTjuKg3ikKQ==
+X-Google-Smtp-Source: ABdhPJw+cTul0haRhSS1PArbm4YkgdTL5SYzPECntuAV3MAEScZ/3fNefP0yOScmFIqJvzxlYQgnt8hfJXNGVJQ8rhY=
+X-Received: by 2002:a05:620a:410f:: with SMTP id j15mr6318478qko.424.1615445427602;
+ Wed, 10 Mar 2021 22:50:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20210309100717.253-1-songmuchun@bytedance.com>
- <20210309100717.253-4-songmuchun@bytedance.com> <YEkjyZr7Sle+adUJ@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YEkjyZr7Sle+adUJ@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 11 Mar 2021 14:50:11 +0800
-Message-ID: <CAMZfGtW01P3MxLEcTUU5Wqcd=Rbepr6FLtaOQUmdrgnaxEccDg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 3/4] mm: memcontrol: use obj_cgroup APIs
- to charge kmem pages
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+References: <000000000000b74f1b05bd316729@google.com> <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+ <dbdca868-7ef2-47b3-ac26-12fe61f3156a@codethink.co.uk> <9a0823f4-de19-c2a2-5333-41c6caadbc11@ghiti.fr>
+In-Reply-To: <9a0823f4-de19-c2a2-5333-41c6caadbc11@ghiti.fr>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 11 Mar 2021 07:50:16 +0100
+Message-ID: <CACT4Y+bP0znswS3hFrNsF0L00s35J55Vj_JTC=DJsd0d3iDKpA@mail.gmail.com>
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in schedule_tail
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Ben Dooks <ben.dooks@codethink.co.uk>,
+        syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 3:53 AM Roman Gushchin <guro@fb.com> wrote:
+On Thu, Mar 11, 2021 at 7:40 AM Alex Ghiti <alex@ghiti.fr> wrote:
 >
-> On Tue, Mar 09, 2021 at 06:07:16PM +0800, Muchun Song wrote:
-> > Since Roman series "The new cgroup slab memory controller" applied. All
-> > slab objects are charged via the new APIs of obj_cgroup. The new APIs
-> > introduce a struct obj_cgroup to charge slab objects. It prevents
-> > long-living objects from pinning the original memory cgroup in the memory.
-> > But there are still some corner objects (e.g. allocations larger than
-> > order-1 page on SLUB) which are not charged via the new APIs. Those
-> > objects (include the pages which are allocated from buddy allocator
-> > directly) are charged as kmem pages which still hold a reference to
-> > the memory cgroup.
-> >
-> > This patch aims to charge the kmem pages by using the new APIs of
-> > obj_cgroup. Finally, the page->memcg_data of the kmem page points to
-> > an object cgroup. We can use the page_objcg() to get the object
-> > cgroup associated with a kmem page. Or we can use page_memcg_check()
-> > to get the memory cgroup associated with a kmem page, but caller must
-> > ensure that the returned memcg won't be released (e.g. acquire the
-> > rcu_read_lock or css_set_lock).
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  include/linux/memcontrol.h |  63 ++++++++++++++++++------
-> >  mm/memcontrol.c            | 119 ++++++++++++++++++++++++++++++---------------
-> >  2 files changed, 128 insertions(+), 54 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 83cbcdcfcc92..07c449af9c0f 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -370,6 +370,18 @@ static inline bool page_memcg_charged(struct page *page)
-> >  }
-> >
-> >  /*
-> > + * After the initialization objcg->memcg is always pointing at
-> > + * a valid memcg, but can be atomically swapped to the parent memcg.
-> > + *
-> > + * The caller must ensure that the returned memcg won't be released:
-> > + * e.g. acquire the rcu_read_lock or css_set_lock.
-> > + */
-> > +static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg)
-> > +{
-> > +     return READ_ONCE(objcg->memcg);
-> > +}
-> > +
-> > +/*
-> >   * page_memcg - get the memory cgroup associated with a non-kmem page
-> >   * @page: a pointer to the page struct
-> >   *
-> > @@ -422,15 +434,19 @@ static inline struct mem_cgroup *page_memcg_rcu(struct page *page)
-> >   * @page: a pointer to the page struct
-> >   *
-> >   * Returns a pointer to the memory cgroup associated with the page,
-> > - * or NULL. This function unlike page_memcg() can take any  page
-> > + * or NULL. This function unlike page_memcg() can take any page
-> >   * as an argument. It has to be used in cases when it's not known if a page
-> > - * has an associated memory cgroup pointer or an object cgroups vector.
-> > + * has an associated memory cgroup pointer or an object cgroups vector or
-> > + * an object cgroup.
-> >   *
-> >   * Any of the following ensures page and memcg binding stability:
-> >   * - the page lock
-> >   * - LRU isolation
-> >   * - lock_page_memcg()
-> >   * - exclusive reference
-> > + *
-> > + * Should be called under rcu lock which can protect memcg associated with a
-> > + * kmem page from being released.
+> Hi Ben,
 >
-> How about this:
+> Le 3/10/21 =C3=A0 5:24 PM, Ben Dooks a =C3=A9crit :
+> > On 10/03/2021 17:16, Dmitry Vyukov wrote:
+> >> On Wed, Mar 10, 2021 at 5:46 PM syzbot
+> >> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
+> >>>
+> >>> Hello,
+> >>>
+> >>> syzbot found the following issue on:
+> >>>
+> >>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for
+> >>> arch_dup_tas..
+> >>> git tree:
+> >>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1212c6e6d=
+00000
+> >>> kernel config:
+> >>> https://syzkaller.appspot.com/x/.config?x=3De3c595255fb2d136
+> >>> dashboard link:
+> >>> https://syzkaller.appspot.com/bug?extid=3De74b94fe601ab9552d69
+> >>> userspace arch: riscv64
+> >>>
+> >>> Unfortunately, I don't have any reproducer for this issue yet.
+> >>>
+> >>> IMPORTANT: if you fix the issue, please add the following tag to the
+> >>> commit:
+> >>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
+> >>
+> >> +riscv maintainers
+> >>
+> >> This is riscv64-specific.
+> >> I've seen similar crashes in put_user in other places. It looks like
+> >> put_user crashes in the user address is not mapped/protected (?).
+> >
+> > The unmapped case should have been handled.
+> >
+> > I think this issue is that the check for user-mode access added. From
+> > what I read the code may be wrong in
+> >
+> > +    if (!user_mode(regs) && addr < TASK_SIZE &&
+> > +            unlikely(!(regs->status & SR_SUM)))
+> > +        die_kernel_fault("access to user memory without uaccess routin=
+es",
+> > +                addr, regs);
+> >
+> > I think the SR_SUM check might be wrong, as I read the standard the
+> > SR_SUM should be set to disable user-space access. So the check
+> > should be unlikely(regs->status & SR_SUM) to say access without
+> > having disabled the protection.
 >
-> For a non-kmem page any of the following ensures page and memcg binding stability:
-> - the page lock
-> - LRU isolation
-> - lock_page_memcg()
-> - exclusive reference
+> The check that is done seems correct to me: "The SUM (permit Supervisor
+> User Memory access) bit modifies the privilege with which S-mode loads
+> and stores access virtual memory.  *When SUM=3D0, S-mode memory accesses
+> to pages that are accessible by U-mode (U=3D1 in Figure 4.15) will fault*=
+.
+>   When SUM=3D1, these accesses are permitted.SUM  has  no  effect  when
+> page-based  virtual  memory  is  not  in  effect".
 >
-> For a kmem page a caller should hold an rcu read lock to protect memcg associated
-> with a kmem page from being released.
+> I will try to reproduce the problem locally.
 
-OK. I will use this. Thanks Roman.
+Weird. It crashes with this all the time:
+https://syzkaller.appspot.com/bug?extid=3De74b94fe601ab9552d69
 
->
-> >   */
-> >  static inline struct mem_cgroup *page_memcg_check(struct page *page)
-> >  {
-> > @@ -443,6 +459,13 @@ static inline struct mem_cgroup *page_memcg_check(struct page *page)
-> >       if (memcg_data & MEMCG_DATA_OBJCGS)
-> >               return NULL;
-> >
-> > +     if (memcg_data & MEMCG_DATA_KMEM) {
-> > +             struct obj_cgroup *objcg;
-> > +
-> > +             objcg = (void *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-> > +             return obj_cgroup_memcg(objcg);
-> > +     }
-> > +
-> >       return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-> >  }
-> >
-> > @@ -501,6 +524,25 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
-> >       return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-> >  }
-> >
-> > +/*
-> > + * page_objcg - get the object cgroup associated with a kmem page
-> > + * @page: a pointer to the page struct
-> > + *
-> > + * Returns a pointer to the object cgroup associated with the kmem page,
-> > + * or NULL. This function assumes that the page is known to have an
-> > + * associated object cgroup. It's only safe to call this function
-> > + * against kmem pages (PageMemcgKmem() returns true).
-> > + */
-> > +static inline struct obj_cgroup *page_objcg(struct page *page)
-> > +{
-> > +     unsigned long memcg_data = page->memcg_data;
-> > +
-> > +     VM_BUG_ON_PAGE(PageSlab(page), page);
-> > +     VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_OBJCGS, page);
-> > +     VM_BUG_ON_PAGE(!(memcg_data & MEMCG_DATA_KMEM), page);
-> > +
-> > +     return (struct obj_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-> > +}
-> >  #else
-> >  static inline struct obj_cgroup **page_objcgs(struct page *page)
-> >  {
-> > @@ -511,6 +553,11 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
-> >  {
-> >       return NULL;
-> >  }
-> > +
-> > +static inline struct obj_cgroup *page_objcg(struct page *page)
-> > +{
-> > +     return NULL;
-> > +}
-> >  #endif
-> >
-> >  static __always_inline bool memcg_stat_item_in_bytes(int idx)
-> > @@ -729,18 +776,6 @@ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
-> >       percpu_ref_put(&objcg->refcnt);
-> >  }
-> >
-> > -/*
-> > - * After the initialization objcg->memcg is always pointing at
-> > - * a valid memcg, but can be atomically swapped to the parent memcg.
-> > - *
-> > - * The caller must ensure that the returned memcg won't be released:
-> > - * e.g. acquire the rcu_read_lock or css_set_lock.
-> > - */
-> > -static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg)
-> > -{
-> > -     return READ_ONCE(objcg->memcg);
-> > -}
-> > -
-> >  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
-> >  {
-> >       if (memcg)
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index e1dc73ceb98a..38376f9d6659 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -859,15 +859,26 @@ void __mod_lruvec_page_state(struct page *page, enum node_stat_item idx,
-> >       pg_data_t *pgdat = page_pgdat(page);
-> >       struct lruvec *lruvec;
-> >
-> > -     memcg = page_memcg_check(head);
-> > -     /* Untracked pages have no memcg, no lruvec. Update only the node */
-> > -     if (!memcg) {
-> > -             __mod_node_page_state(pgdat, idx, val);
-> > -             return;
-> > +     if (PageMemcgKmem(head)) {
-> > +             rcu_read_lock();
-> > +             memcg = obj_cgroup_memcg(page_objcg(page));
-> > +     } else {
-> > +             memcg = page_memcg(head);
-> > +             /*
-> > +              * Untracked pages have no memcg, no lruvec. Update only the
-> > +              * node.
-> > +              */
-> > +             if (!memcg) {
-> > +                     __mod_node_page_state(pgdat, idx, val);
-> > +                     return;
-> > +             }
-> >       }
-> >
-> >       lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> >       __mod_lruvec_state(lruvec, idx, val);
-> > +
-> > +     if (PageMemcgKmem(head))
-> > +             rcu_read_unlock();
-> >  }
-> >  EXPORT_SYMBOL(__mod_lruvec_page_state);
-> >
-> > @@ -2906,6 +2917,20 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
-> >       page->memcg_data = (unsigned long)memcg;
-> >  }
-> >
-> > +static inline struct mem_cgroup *obj_cgroup_memcg_get(struct obj_cgroup *objcg)
->
-> I'd prefer get_obj_cgroup_memcg(), if you don't mind.
+Even on trivial programs that almost don't do anything.
+Maybe it's qemu bug? Do registers look sane in the dump? That SR_SUM, etc.
 
-LGTM, will do.
 
->
-> > +{
-> > +     struct mem_cgroup *memcg;
-> > +
-> > +     rcu_read_lock();
-> > +retry:
-> > +     memcg = obj_cgroup_memcg(objcg);
-> > +     if (unlikely(!css_tryget(&memcg->css)))
-> > +             goto retry;
-> > +     rcu_read_unlock();
-> > +
-> > +     return memcg;
-> > +}
-> > +
-> >  #ifdef CONFIG_MEMCG_KMEM
-> >  int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
-> >                                gfp_t gfp, bool new_page)
-> > @@ -3071,15 +3096,8 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
-> >       struct mem_cgroup *memcg;
-> >       int ret;
-> >
-> > -     rcu_read_lock();
-> > -retry:
-> > -     memcg = obj_cgroup_memcg(objcg);
-> > -     if (unlikely(!css_tryget(&memcg->css)))
-> > -             goto retry;
-> > -     rcu_read_unlock();
-> > -
-> > +     memcg = obj_cgroup_memcg_get(objcg);
-> >       ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
-> > -
-> >       css_put(&memcg->css);
-> >
-> >       return ret;
-> > @@ -3144,18 +3162,18 @@ static void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_page
-> >   */
-> >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
-> >  {
-> > -     struct mem_cgroup *memcg;
-> > +     struct obj_cgroup *objcg;
-> >       int ret = 0;
-> >
-> > -     memcg = get_mem_cgroup_from_current();
-> > -     if (memcg && !mem_cgroup_is_root(memcg)) {
-> > -             ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
-> > +     objcg = get_obj_cgroup_from_current();
-> > +     if (objcg) {
-> > +             ret = obj_cgroup_charge_pages(objcg, gfp, 1 << order);
-> >               if (!ret) {
-> > -                     page->memcg_data = (unsigned long)memcg |
-> > +                     page->memcg_data = (unsigned long)objcg |
-> >                               MEMCG_DATA_KMEM;
-> >                       return 0;
-> >               }
-> > -             css_put(&memcg->css);
-> > +             obj_cgroup_put(objcg);
-> >       }
-> >       return ret;
-> >  }
-> > @@ -3167,17 +3185,16 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
-> >   */
-> >  void __memcg_kmem_uncharge_page(struct page *page, int order)
-> >  {
-> > -     struct mem_cgroup *memcg;
-> > +     struct obj_cgroup *objcg;
-> >       unsigned int nr_pages = 1 << order;
-> >
-> >       if (!page_memcg_charged(page))
-> >               return;
-> >
-> > -     memcg = page_memcg_check(page);
-> > -     VM_BUG_ON_PAGE(mem_cgroup_is_root(memcg), page);
-> > -     __memcg_kmem_uncharge(memcg, nr_pages);
-> > +     objcg = page_objcg(page);
-> > +     obj_cgroup_uncharge_pages(objcg, nr_pages);
-> >       page->memcg_data = 0;
-> > -     css_put(&memcg->css);
-> > +     obj_cgroup_put(objcg);
-> >  }
-> >
-> >  static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
-> > @@ -6806,11 +6823,23 @@ static inline void uncharge_gather_clear(struct uncharge_gather *ug)
-> >  static void uncharge_batch(const struct uncharge_gather *ug)
-> >  {
-> >       unsigned long flags;
-> > +     unsigned long nr_pages;
-> >
-> > -     if (!mem_cgroup_is_root(ug->memcg)) {
-> > -             page_counter_uncharge(&ug->memcg->memory, ug->nr_pages);
-> > +     /*
-> > +      * The kmem pages can be reparented to the root memcg, in
-> > +      * order to prevent the memory counter of root memcg from
-> > +      * increasing indefinitely. We should decrease the memory
-> > +      * counter when unchange.
->
-> I guess the correct syntax is
-> "The kmem pages can be reparented to the root memcg. In
-> order to prevent the memory counter of root memcg from
-> increasing indefinitely, we should decrease the memory
-> counter when unchange."
+00:13:27 executing program 1:
+openat$drirender128(0xffffffffffffff9c,
+&(0x7f0000000040)=3D'/dev/dri/renderD128\x00', 0x0, 0x0)
 
-Right. I will combine your and Johannes suggestions about
-how to rework the code here.
+[  812.318182][ T4833] Unable to handle kernel access to user memory
+without uaccess routines at virtual address 00000000250b60d0
+[  812.322304][ T4833] Oops [#1]
+[  812.323196][ T4833] Modules linked in:
+[  812.324110][ T4833] CPU: 1 PID: 4833 Comm: syz-executor.1 Not
+tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+[  812.325862][ T4833] Hardware name: riscv-virtio,qemu (DT)
+[  812.327561][ T4833] epc : schedule_tail+0x72/0xb2
+[  812.328640][ T4833]  ra : schedule_tail+0x70/0xb2
+[  812.330088][ T4833] epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp
+: ffffffe0238bbec0
+[  812.331312][ T4833]  gp : ffffffe005d25378 tp : ffffffe00a275b00 t0
+: 0000000000000000
+[  812.333014][ T4833]  t1 : 0000000000000001 t2 : 00000000000f4240 s0
+: ffffffe0238bbee0
+[  812.334137][ T4833]  s1 : 00000000250b60d0 a0 : 0000000000000036 a1
+: 0000000000000003
+[  812.336063][ T4833]  a2 : 1ffffffc0cfa8b00 a3 : ffffffe0000c80cc a4
+: 7f467e72c6adf800
+[  812.337398][ T4833]  a5 : 0000000000000000 a6 : 0000000000f00000 a7
+: ffffffe0000f8c84
+[  812.339287][ T4833]  s2 : 0000000000040000 s3 : ffffffe0077a96c0 s4
+: ffffffe020e67fe0
+[  812.340658][ T4833]  s5 : 0000000000004020 s6 : ffffffe0077a9b58 s7
+: ffffffe067d74850
+[  812.342492][ T4833]  s8 : ffffffe067d73e18 s9 : 0000000000000000
+s10: ffffffe00bd72280
+[  812.343668][ T4833]  s11: 000000bd067bf638 t3 : 7f467e72c6adf800 t4
+: ffffffc403ee7fb2
+[  812.345510][ T4833]  t5 : ffffffc403ee7fba t6 : 0000000000040000
+[  812.347004][ T4833] status: 0000000000000120 badaddr:
+00000000250b60d0 cause: 000000000000000f
+[  812.348091][ T4833] Call Trace:
+[  812.349291][ T4833] [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2
+[  812.350796][ T4833] [<ffffffe000005570>] ret_from_exception+0x0/0x14
+[  812.352799][ T4833] Dumping ftrace buffer:
+[  812.354328][ T4833]    (ftrace buffer empty)
+[  812.428145][ T4833] ---[ end trace 94b077e4d677ee73 ]---
 
+
+00:10:42 executing program 1:
+bpf$ENABLE_STATS(0x20, 0x0, 0x0)
+bpf$ENABLE_STATS(0x20, 0x0, 0x0)
+
+[  646.536862][ T5163] loop0: detected capacity change from 0 to 1
+[  646.566730][ T5165] Unable to handle kernel access to user memory
+without uaccess routines at virtual address 00000000032f80d0
+[  646.586024][ T5165] Oops [#1]
+[  646.586640][ T5165] Modules linked in:
+[  646.587350][ T5165] CPU: 1 PID: 5165 Comm: syz-executor.1 Not
+tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+[  646.588209][ T5165] Hardware name: riscv-virtio,qemu (DT)
+[  646.589019][ T5165] epc : schedule_tail+0x72/0xb2
+[  646.589811][ T5165]  ra : schedule_tail+0x70/0xb2
+[  646.590435][ T5165] epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp
+: ffffffe008013ec0
+[  646.591142][ T5165]  gp : ffffffe005d25378 tp : ffffffe007634440 t0
+: 0000000000000000
+[  646.591836][ T5165]  t1 : 0000000000000001 t2 : 0000000000000008 s0
+: ffffffe008013ee0
+[  646.592509][ T5165]  s1 : 00000000032f80d0 a0 : 0000000000000004 a1
+: 0000000000000003
+[  646.593188][ T5165]  a2 : 1ffffffc0cfac500 a3 : ffffffe0000c80cc a4
+: 8d229faaffda9500
+[  646.593878][ T5165]  a5 : 0000000000000000 a6 : 0000000000f00000 a7
+: ffffffe000082eba
+[  646.594552][ T5165]  s2 : 0000000000040000 s3 : ffffffe00c82c440 s4
+: ffffffe00e61ffe0
+[  646.595253][ T5165]  s5 : 0000000000004000 s6 : ffffffe067d57e00 s7
+: ffffffe067d57850
+[  646.595938][ T5165]  s8 : ffffffe067d56e18 s9 : ffffffe067d57e00
+s10: ffffffe00c82c878
+[  646.596627][ T5165]  s11: 000000967ba7a1cc t3 : 8d229faaffda9500 t4
+: ffffffc4011bc79b
+[  646.597319][ T5165]  t5 : ffffffc4011bc79d t6 : ffffffe008de3ce8
+[  646.597909][ T5165] status: 0000000000000120 badaddr:
+00000000032f80d0 cause: 000000000000000f
+[  646.598682][ T5165] Call Trace:
+[  646.599294][ T5165] [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2
+[  646.600115][ T5165] [<ffffffe000005570>] ret_from_exception+0x0/0x14
+[  646.601333][ T5165] Dumping ftrace buffer:
+[  646.602322][ T5165]    (ftrace buffer empty)
+[  646.663691][ T5165] ---[ end trace e7b7847ce74cdfca ]---
+
+
+
+
+
+> Thanks,
 >
-> > +      */
-> > +     if (mem_cgroup_is_root(ug->memcg))
-> > +             nr_pages = ug->nr_kmem;
-> > +     else
-> > +             nr_pages = ug->nr_pages;
-> > +
-> > +     if (nr_pages) {
-> > +             page_counter_uncharge(&ug->memcg->memory, nr_pages);
-> >               if (do_memsw_account())
-> > -                     page_counter_uncharge(&ug->memcg->memsw, ug->nr_pages);
-> > +                     page_counter_uncharge(&ug->memcg->memsw, nr_pages);
-> >               if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && ug->nr_kmem)
-> >                       page_counter_uncharge(&ug->memcg->kmem, ug->nr_kmem);
-> >               memcg_oom_recover(ug->memcg);
-> > @@ -6828,7 +6857,7 @@ static void uncharge_batch(const struct uncharge_gather *ug)
+> Alex
+>
 > >
-> >  static void uncharge_page(struct page *page, struct uncharge_gather *ug)
-> >  {
-> > -     unsigned long nr_pages;
-> > +     unsigned long nr_pages, nr_kmem;
-> >       struct mem_cgroup *memcg;
+> > Without this, you can end up with an infinite loop in the fault handler=
+.
 > >
-> >       VM_BUG_ON_PAGE(PageLRU(page), page);
-> > @@ -6836,34 +6865,44 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
-> >       if (!page_memcg_charged(page))
-> >               return;
+> >>
+> >>> Unable to handle kernel access to user memory without uaccess
+> >>> routines at virtual address 000000002749f0d0
+> >>> Oops [#1]
+> >>> Modules linked in:
+> >>> CPU: 1 PID: 4875 Comm: syz-executor.0 Not tainted
+> >>> 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+> >>> Hardware name: riscv-virtio,qemu (DT)
+> >>> epc : schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
+> >>>   ra : task_pid_vnr include/linux/sched.h:1421 [inline]
+> >>>   ra : schedule_tail+0x70/0xb2 kernel/sched/core.c:4264
+> >>> epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp : ffffffe025d17ec0
+> >>>   gp : ffffffe005d25378 tp : ffffffe00f0d0000 t0 : 0000000000000000
+> >>>   t1 : 0000000000000001 t2 : 00000000000f4240 s0 : ffffffe025d17ee0
+> >>>   s1 : 000000002749f0d0 a0 : 000000000000002a a1 : 0000000000000003
+> >>>   a2 : 1ffffffc0cfac500 a3 : ffffffe0000c80cc a4 : 5ae9db91c19bbe00
+> >>>   a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
+> >>>   s2 : 0000000000040000 s3 : ffffffe00eef96c0 s4 : ffffffe022c77fe0
+> >>>   s5 : 0000000000004000 s6 : ffffffe067d74e00 s7 : ffffffe067d74850
+> >>>   s8 : ffffffe067d73e18 s9 : ffffffe067d74e00 s10: ffffffe00eef96e8
+> >>>   s11: 000000ae6cdf8368 t3 : 5ae9db91c19bbe00 t4 : ffffffc4043cafb2
+> >>>   t5 : ffffffc4043cafba t6 : 0000000000040000
+> >>> status: 0000000000000120 badaddr: 000000002749f0d0 cause:
+> >>> 000000000000000f
+> >>> Call Trace:
+> >>> [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
+> >>> [<ffffffe000005570>] ret_from_exception+0x0/0x14
+> >>> Dumping ftrace buffer:
+> >>>     (ftrace buffer empty)
+> >>> ---[ end trace b5f8f9231dc87dda ]---
+> >>>
+> >>>
+> >>> ---
+> >>> This report is generated by a bot. It may contain errors.
+> >>> See https://goo.gl/tpsmEJ for more information about syzbot.
+> >>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >>>
+> >>> syzbot will keep track of this issue. See:
+> >>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >>>
+> >>> --
+> >>> You received this message because you are subscribed to the Google
+> >>> Groups "syzkaller-bugs" group.
+> >>> To unsubscribe from this group and stop receiving emails from it,
+> >>> send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> >>> To view this discussion on the web visit
+> >>> https://groups.google.com/d/msgid/syzkaller-bugs/000000000000b74f1b05=
+bd316729%40google.com.
+> >>>
+> >>
+> >> _______________________________________________
+> >> linux-riscv mailing list
+> >> linux-riscv@lists.infradead.org
+> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >>
 > >
-> > +     nr_pages = compound_nr(page);
-> >       /*
-> >        * Nobody should be changing or seriously looking at
-> > -      * page memcg at this point, we have fully exclusive
-> > -      * access to the page.
-> > +      * page memcg or objcg at this point, we have fully
-> > +      * exclusive access to the page.
-> >        */
-> > -     memcg = page_memcg_check(page);
-> > +     if (PageMemcgKmem(page)) {
-> > +             struct obj_cgroup *objcg;
-> > +
-> > +             objcg = page_objcg(page);
-> > +             memcg = obj_cgroup_memcg_get(objcg);
-> > +
-> > +             page->memcg_data = 0;
-> > +             obj_cgroup_put(objcg);
-> > +             nr_kmem = nr_pages;
-> > +     } else {
-> > +             memcg = page_memcg(page);
-> > +             page->memcg_data = 0;
-> > +             nr_kmem = 0;
-> > +     }
-> > +
-> >       if (ug->memcg != memcg) {
-> >               if (ug->memcg) {
-> >                       uncharge_batch(ug);
-> >                       uncharge_gather_clear(ug);
-> >               }
-> >               ug->memcg = memcg;
-> > +             ug->dummy_page = page;
-> >
-> >               /* pairs with css_put in uncharge_batch */
-> >               css_get(&ug->memcg->css);
-> >       }
-> >
-> > -     nr_pages = compound_nr(page);
-> >       ug->nr_pages += nr_pages;
-> > +     ug->nr_kmem += nr_kmem;
-> > +     ug->pgpgout += !nr_kmem;
-> >
-> > -     if (PageMemcgKmem(page))
-> > -             ug->nr_kmem += nr_pages;
-> > -     else
-> > -             ug->pgpgout++;
-> > -
-> > -     ug->dummy_page = page;
-> > -     page->memcg_data = 0;
-> > -     css_put(&ug->memcg->css);
-> > +     css_put(&memcg->css);
-> >  }
-> >
-> >  /**
-> > --
-> > 2.11.0
 > >
