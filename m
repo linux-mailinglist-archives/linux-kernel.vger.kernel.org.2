@@ -2,115 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23175336D2C
+	by mail.lfdr.de (Postfix) with ESMTP id 9E530336D2D
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbhCKHf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:35:29 -0500
-Received: from mga05.intel.com ([192.55.52.43]:29828 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231805AbhCKHem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:34:42 -0500
-IronPort-SDR: CAEDVrC4pyi8RRkqz7JmnAxtcvPczXDXHRQx71oJBe97+wK3vHI9lcBS6F/xwj4lJT0FPL5Y+c
- FzDK/pbMvJ2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="273666471"
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="273666471"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:34:39 -0800
-IronPort-SDR: NuRQBgchhrV+Vt6dNKgNTu/EnK2Uk6O5ySowyrfz123EJac6kux1f+hM1li+qNGkFydBecweTA
- XiJ26AKXSH9g==
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="410515964"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.249.170.224]) ([10.249.170.224])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:34:36 -0800
-Subject: Re: [PATCH V3 1/6] vDPA/ifcvf: get_vendor_id returns a device
- specific vendor id
-To:     Jason Wang <jasowang@redhat.com>,
-        Zhu Lingshan <lingshan.zhu@linux.intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210310090052.4762-1-lingshan.zhu@intel.com>
- <20210310090052.4762-2-lingshan.zhu@intel.com>
- <ff5fc8f9-f886-bd2a-60cc-771c628c6c4b@redhat.com>
- <5f2d915f-e1b0-c9eb-9fc8-4b64f5d8cd0f@linux.intel.com>
- <05e3fbc9-be49-a208-19a4-85f891323312@redhat.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <a5b0c4e1-dbca-22d2-cce5-19451388ae86@intel.com>
-Date:   Thu, 11 Mar 2021 15:34:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231929AbhCKHfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:35:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231579AbhCKHfL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:35:11 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743CDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 23:35:10 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id jt13so44187411ejb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 23:35:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jNGC0kwLbNM3zCmg/9YNMH2soHfOD4RAVferOYuy8O4=;
+        b=d/UJ4uYG8pGnPZHiTejNuYmYpjbd6puGxWGK9ilt869UQMpaGukXYV+5jsbVfGouWJ
+         ne1HV/mtitGhpioSHNzJiLVoJva5Z8M83UnwBzfqTIEYGoegjdGOuJWkEhKoXXB1SNVC
+         YFa6m/3PD1UqfZyoF24sH9Ouy0WqeZ7m5P252nzLPVnbR255IyuFKCuegnXlKoD/sb6Q
+         5OS41joBUa1ejDXRnK7rG+P6BFLjMJ7vnS6thiFIlKMfu1J7ELisS8QuM8Gp0zsxJ9F+
+         g2d76zjddRBZWQRK3V08SOsYcgF/HgTKXlIXJcyQfMSGJoB9WRHMsu+QFQNMuHoclOoJ
+         CSEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jNGC0kwLbNM3zCmg/9YNMH2soHfOD4RAVferOYuy8O4=;
+        b=XRC5/KJVFiiIO5sIsby4EIvqrdwpod5GqT65TIMSsOjv7EYwHol6x9mdJ95VF1qqmE
+         R+Y5enHyiZCDzT4WsvQ9HOQFPwl8WuSZQPIQ2dPIsFY7l9etkyj8PkLTb+GLTUB7qmBS
+         Q12YGAq/h+bZ5HI+epiChND8bu57+bEGqtmzHy7loX84pOEjb9VCT8tibv9PliknNd5L
+         Y3nRWCNnz3UBAe5v7jDNTKXdz3C98LiVW2UDEdwXZjbot4kvtxUP/VjKBq49xrzZrRSE
+         bC+nYvmIPB1ru+YeknqwR3t2D3JsrlqyZCoukKArP8Ms7sOIU9NOKxz0duVpF3N8Ezoj
+         CADw==
+X-Gm-Message-State: AOAM5330/RkZMj36V91rSXUpiUxEGSiA5E3gTsL6GOkiTjM+nqpBt+Bz
+        n8dsKx8799Jp640ZSuhhV9Pj+XmWZrgUHMoZ6XLXtA==
+X-Google-Smtp-Source: ABdhPJyjLDrRWUJ1JQjnQx2AmwINC7mCGDtgvNC0Oc7DXaSPGV2NN06BZJOHtgMkgAkXhBanxA+I3fgVRk3y0MP+3s8=
+X-Received: by 2002:a17:906:229b:: with SMTP id p27mr1835463eja.287.1615448109052;
+ Wed, 10 Mar 2021 23:35:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <05e3fbc9-be49-a208-19a4-85f891323312@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210310132320.550932445@linuxfoundation.org>
+In-Reply-To: <20210310132320.550932445@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 11 Mar 2021 13:04:57 +0530
+Message-ID: <CA+G9fYsiskkTEov+W_E_QR0GbetJEz4i7NJtO_CBKLG71QJSAw@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/24] 5.4.105-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 10 Mar 2021 at 18:55, <gregkh@linuxfoundation.org> wrote:
+>
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> This is the start of the stable review cycle for the 5.4.105 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.105-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
-On 3/11/2021 2:13 PM, Jason Wang wrote:
->
-> On 2021/3/11 12:21 下午, Zhu Lingshan wrote:
->>
->>
->> On 3/11/2021 11:23 AM, Jason Wang wrote:
->>>
->>> On 2021/3/10 5:00 下午, Zhu Lingshan wrote:
->>>> In this commit, ifcvf_get_vendor_id() will return
->>>> a device specific vendor id of the probed pci device
->>>> than a hard code.
->>>>
->>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>>> ---
->>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 ++++-
->>>>   1 file changed, 4 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> index fa1af301cf55..e501ee07de17 100644
->>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> @@ -324,7 +324,10 @@ static u32 ifcvf_vdpa_get_device_id(struct 
->>>> vdpa_device *vdpa_dev)
->>>>     static u32 ifcvf_vdpa_get_vendor_id(struct vdpa_device *vdpa_dev)
->>>>   {
->>>> -    return IFCVF_SUBSYS_VENDOR_ID;
->>>> +    struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
->>>> +    struct pci_dev *pdev = adapter->pdev;
->>>> +
->>>> +    return pdev->subsystem_vendor;
->>>>   }
->>>
->>>
->>> While at this, I wonder if we can do something similar in 
->>> get_device_id() if it could be simple deduced from some simple math 
->>> from the pci device id?
->>>
->>> Thanks
->> Hi Jason,
->>
->> IMHO, this implementation is just some memory read ops, I think other 
->> implementations may not save many cpu cycles, an if cost at least 
->> three cpu cycles.
->>
->> Thanks!
->
->
-> Well, I meant whehter you can deduce virtio device id from 
-> pdev->subsystem_device.
->
-> Thanks
-Oh, sure, I get you
->
->
->>>
->>>
->>>>     static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
->>>
->>
->
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.4.105-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 62f8f08c9d2fbc6c5692d90f64dd70e3a8edd986
+git describe: v5.4.104-25-g62f8f08c9d2f
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.104-25-g62f8f08c9d2f
+
+No regressions (compared to build v5.4.104)
+
+No fixes (compared to build v5.4.104)
+
+Ran 53992 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* fwts
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* network-basic-tests
+* v4l2-compliance
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* ltp-open-posix-tests
+* kvm-unit-tests
+* rcutorture
+* kselftest-vsyscall-mode-native-
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
