@@ -2,83 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1AB3374DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DAD3374DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbhCKODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:03:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233254AbhCKOCd (ORCPT
+        id S233817AbhCKODE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:03:04 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36536 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232893AbhCKOCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:02:33 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B872C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:02:33 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id q204so14448309pfq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:02:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wu8fFbt6pPps0sW0Am+MuqVI376zrcxTbhhiS9bar6c=;
-        b=cC5IhqvV/5oVLBL9TLG80rhJAB1lQXpcoIBWKJoGPyUR0RiUvMVfinjN79y0CKRKnz
-         OnXELqiRYJONd+HvVSYUgV/A/ETiZRko0Fd61hMlmR7OpiocVlUHsBugAPndW1odLmT+
-         Rh8/6Iconp3bLRenDXgvTbJGddvU3RRC/w2sFpJDVP41xw70FgGzfZynuD55XCQBfY/A
-         8MDtUZmUyYBwSOZbXPKCtQAZHDetm16II269cIeajcrF5kSsam8eM5TwtnXmMfss/6YW
-         3a8MWuRAfS33rOWXaRkHlQAt1NPLlWj3+bCEO3APp4F+ue+ohs4vzvIemLshbxM7J733
-         Ptgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wu8fFbt6pPps0sW0Am+MuqVI376zrcxTbhhiS9bar6c=;
-        b=qOtBIpKOVPc3RCX6KvH5fD9aIgHXNbJJXeVYUTp+zEYyaBeZ4OKF+/HzpOcrVhTb6b
-         0r0OXNSaClu16UzQguGfXCJdp1LRVLaps9DrTSKnJs9zhnLoJ48WWl4pxew+Ku8h8Bp4
-         3wlqpE4z+KB75SHWcfn/Tew2mQGFkNfct14NRexKWlpMVdrs9ZsYCVYRb8MTi5FVyEbq
-         vZa86Bx77/nP04rbbRtTe6llojor6RSuRCJuWdxvJ3h/CZLgj57tnx9H7KXvDZIgrR3N
-         cha2mDaAiBhIKuHm3gsU3bVtcR3EFcPNB96HFzVClflZcE0yO3NqCkUz6c923zKk8LN0
-         h2bA==
-X-Gm-Message-State: AOAM5308TjEndytYIwimddg8pgi4gBtgw4n55G/1oXccWowzGFV2Yj6L
-        wIJbIQbG1Pm7djJ1Civ/Ffl9ruEdHW2CT0lxpme2pDoYUg6S7g==
-X-Google-Smtp-Source: ABdhPJzOCePPExdMTrNRTPHA6tSnt9KRAKvaxfBmfXhxn1cpJvTlQymYY+qW/liI0wajnrz1tMJFTaNzJ2TYrv7OBIE=
-X-Received: by 2002:a63:ce15:: with SMTP id y21mr7410996pgf.4.1615471352621;
- Thu, 11 Mar 2021 06:02:32 -0800 (PST)
+        Thu, 11 Mar 2021 09:02:47 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12BDWdlZ113553;
+        Thu, 11 Mar 2021 09:02:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ZQy2UK7TDDAPhQ/gJj/WhYvmNG5h42YrwOCdwC+eoWs=;
+ b=mZdHA6u6DgWrM/atqNDbTeILNhYaaKrn4t+8Q/pnvd72VNoR67Sew8zd+O0d+qe4zxTw
+ r+WQ+7aAI4R4R420FNu/1hqpKFBTXh3cvTZviHnf958s2cIzZF15apB0cMleYCc2vynb
+ q2qjgEuk2actmncxm9tv2Du73gYI9n4bSS0DvQCPK1ObTB60zEcphj788ncqgTUa0v89
+ cyBNTiCy6HsWRw7rAFgz12HEF9x4bNeA0kHlMyTWAAm3/SInEYRt/2Zve3JPL1OWWYf7
+ T+MLWqR6CnuQkpnqgunzpzRWl029cY48+gNuo5tKaMWbXmCJfp+LuKoqAml/TysptmiL 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m7xs10-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 09:02:43 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12BDWgDJ113664;
+        Thu, 11 Mar 2021 09:02:42 -0500
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m7xrym-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 09:02:42 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12BDrVjF027596;
+        Thu, 11 Mar 2021 14:02:40 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma04wdc.us.ibm.com with ESMTP id 3768n4r55n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 14:02:40 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12BE2drc10879636
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Mar 2021 14:02:39 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 045966E04C;
+        Thu, 11 Mar 2021 14:02:39 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 997696E052;
+        Thu, 11 Mar 2021 14:02:38 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 11 Mar 2021 14:02:38 +0000 (GMT)
+Subject: Re: [PATCH v2 1/3] tpm: efi: Use local variable for calculating final
+ log size
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mjg59@google.com
+References: <20210310221916.356716-1-stefanb@linux.ibm.com>
+ <20210310221916.356716-2-stefanb@linux.ibm.com> <YElUiIFkyf6txZoV@kernel.org>
+ <YElVN0kwMIyeF9gQ@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <39ea4fef-0a21-ad06-118f-dbdf01cd5c61@linux.ibm.com>
+Date:   Thu, 11 Mar 2021 09:02:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210311132741.80989-1-andriy.shevchenko@linux.intel.com> <s5hpn05vmhm.wl-tiwai@suse.de>
-In-Reply-To: <s5hpn05vmhm.wl-tiwai@suse.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 11 Mar 2021 16:02:16 +0200
-Message-ID: <CAHp75VcxRK=NsHXRtN8k8wrE8YSyNDqyTLb37TP4ojO_CW5ceg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] ALSA: hda/realtek: Sort alphanumerically the
- SND_PCI_QUIRK() entries.
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YElVN0kwMIyeF9gQ@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-11_04:2021-03-10,2021-03-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ mlxlogscore=999 bulkscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ adultscore=0 phishscore=0 impostorscore=0 priorityscore=1501 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103110073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 3:40 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Thu, 11 Mar 2021 14:27:41 +0100,
-> Andy Shevchenko wrote:
-> >
-> > Sort alphanumerically the SND_PCI_QUIRK() entries for better maintenance.
-> > No functional change implied.
->
-> I'd love to apply this kind of cleanups (and I do sometimes
-> partially), but practically seen, this may make the stable backporting
-> significantly harder because many quirk patches are backported to the
-> very old LTS kernels.  So, unless any specific reason (e.g. some
-> entries doubled or wrongly applied) is given, I'd avoid this full
-> plastic surgery.
 
-Can we ask people to follow the ordering before patches were applied?
+On 3/10/21 6:24 PM, Jarkko Sakkinen wrote:
+> On Thu, Mar 11, 2021 at 01:21:47AM +0200, Jarkko Sakkinen wrote:
+>> On Wed, Mar 10, 2021 at 05:19:14PM -0500, Stefan Berger wrote:
+>>> When tpm_read_log_efi is called multiple times, which happens when
+>>> one loads and unloads a TPM2 driver multiple times, then the global
+>>> variable efi_tpm_final_log_size will at some point become a negative
+>>> number due to the subtraction of final_events_preboot_size occurring
+>>> each time. Use a local variable to avoid this integer underflow.
+>>>
+>>> The following issue is now resolved:
+>>>
+>>> Mar  8 15:35:12 hibinst kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+>>> Mar  8 15:35:12 hibinst kernel: Workqueue: tpm-vtpm vtpm_proxy_work [tpm_vtpm_proxy]
+>>> Mar  8 15:35:12 hibinst kernel: RIP: 0010:__memcpy+0x12/0x20
+>>> Mar  8 15:35:12 hibinst kernel: Code: 00 b8 01 00 00 00 85 d2 74 0a c7 05 44 7b ef 00 0f 00 00 00 c3 cc cc cc 66 66 90 66 90 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4
+>>> Mar  8 15:35:12 hibinst kernel: RSP: 0018:ffff9ac4c0fcfde0 EFLAGS: 00010206
+>>> Mar  8 15:35:12 hibinst kernel: RAX: ffff88f878cefed5 RBX: ffff88f878ce9000 RCX: 1ffffffffffffe0f
+>>> Mar  8 15:35:12 hibinst kernel: RDX: 0000000000000003 RSI: ffff9ac4c003bff9 RDI: ffff88f878cf0e4d
+>>> Mar  8 15:35:12 hibinst kernel: RBP: ffff9ac4c003b000 R08: 0000000000001000 R09: 000000007e9d6073
+>>> Mar  8 15:35:12 hibinst kernel: R10: ffff9ac4c003b000 R11: ffff88f879ad3500 R12: 0000000000000ed5
+>>> Mar  8 15:35:12 hibinst kernel: R13: ffff88f878ce9760 R14: 0000000000000002 R15: ffff88f77de7f018
+>>> Mar  8 15:35:12 hibinst kernel: FS:  0000000000000000(0000) GS:ffff88f87bd00000(0000) knlGS:0000000000000000
+>>> Mar  8 15:35:12 hibinst kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> Mar  8 15:35:12 hibinst kernel: CR2: ffff9ac4c003c000 CR3: 00000001785a6004 CR4: 0000000000060ee0
+>>> Mar  8 15:35:12 hibinst kernel: Call Trace:
+>>> Mar  8 15:35:12 hibinst kernel: tpm_read_log_efi+0x152/0x1a7
+>>> Mar  8 15:35:12 hibinst kernel: tpm_bios_log_setup+0xc8/0x1c0
+>>> Mar  8 15:35:12 hibinst kernel: tpm_chip_register+0x8f/0x260
+>>> Mar  8 15:35:12 hibinst kernel: vtpm_proxy_work+0x16/0x60 [tpm_vtpm_proxy]
+>>> Mar  8 15:35:12 hibinst kernel: process_one_work+0x1b4/0x370
+>>> Mar  8 15:35:12 hibinst kernel: worker_thread+0x53/0x3e0
+>>> Mar  8 15:35:12 hibinst kernel: ? process_one_work+0x370/0x370
+>>>
+>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> Fixes tag for this one?
+> Or just sanity check, I think it is:
+>
+> Fixes: 166a2809d65b ("tpm: Don't duplicate events from the final event log in the TCG2 log")
+Looks good.
+>
+> Also, I guess all of the patches ought to have stable cc, right?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Yes, please. I think the maintainer has to add this 'at some point'.
+
+Since you queued them already I won't send a v3.
+
+
+Thanks!
+
+    Stefan
+
+
