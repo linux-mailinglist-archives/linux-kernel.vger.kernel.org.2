@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54214336859
+	by mail.lfdr.de (Postfix) with ESMTP id CF42D33685A
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhCKAGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 19:06:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45570 "EHLO mail.kernel.org"
+        id S230076AbhCKAGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 19:06:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229441AbhCKAF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:05:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC3064E33;
-        Thu, 11 Mar 2021 00:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615421158;
-        bh=iFxVJgMoDpJ44jsE4Fuo7YkLXTeRvt9qHwXirR8S6SQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pHbUatCvju/H17C/5K/sXqE3GC74q+fVaVWePgzCGPEelm8i6fAHWz7kps59DplLz
-         rl8g4mlo7ESlnxn/xVc/ow7B1sTyAa92MPRjY/MNPbjODF0ndY5jAMoWs9UhvruzzF
-         pbRgOgVPXwajI2R6qhkbtG469UMo5Vt3Conr7vGybjMfgOyMsHqGydidarB/nUqtte
-         x4bln9KOuq+PyFRDgZ1vH3TCOzJ92D9mEtph5qIxTfFsaDe9ZqyixECTwwRCaB0ise
-         0Vc2O5Xib/wPG/mDsEVfXTteHQGUWLD2sx6M0MVavI3kUxpsoSFPiecKAXA5hEMwgY
-         qOpr7+u2Ha48Q==
-Received: by pali.im (Postfix)
-        id 00BD9A83; Thu, 11 Mar 2021 01:05:55 +0100 (CET)
-Date:   Thu, 11 Mar 2021 01:05:55 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>,
-        Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com, drinkcat@chromium.org,
-        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
-Subject: Re: [v8,5/7] PCI: mediatek-gen3: Add MSI support
-Message-ID: <20210311000555.epypouwxdbql2aqx@pali>
-References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
- <20210224061132.26526-6-jianjun.wang@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224061132.26526-6-jianjun.wang@mediatek.com>
-User-Agent: NeoMutt/20180716
+        id S229939AbhCKAGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 19:06:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B832064E33;
+        Thu, 11 Mar 2021 00:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1615421173;
+        bh=qIPv+EoOptfJXUMF6cMDeGl3znse9/XkHNkaEbNi/wo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=f0b8REnlxOBN8ozqESJf7N3DVplCLI7jYw+q348zHSIhwQCfrfsFtNd23ZY45OI+o
+         fkVBWygiVgNKmtF4zeg5tO/6shw5cXu+7/3RPweYzJQNssPQJExGppZwYYsx4C4pwT
+         mR5/Nop6DsNFsOxtV9y2TdB5VCiKrEvY0J9EEbG0=
+Date:   Wed, 10 Mar 2021 16:06:12 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Rientjes <rientjes@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Michal Hocko <mhocko@suse.com>,
+        =?ISO-8859-1?Q? "J=E9r=F4m?= =?ISO-8859-1?Q?e_Glisse" ?= 
+        <jglisse@redhat.com>, Andrea Arcangeli <aarcange@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>
+Subject: Re: [PATCH] mm/oom_kill: Ensure MMU notifier range_end() is paired
+ with range_start()
+Message-Id: <20210310160612.dd57fcc60cbc4cc4bf86b869@linux-foundation.org>
+In-Reply-To: <20210310213117.1444147-1-seanjc@google.com>
+References: <20210310213117.1444147-1-seanjc@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 24 February 2021 14:11:30 Jianjun Wang wrote:
-> +static int mtk_msi_bottom_domain_alloc(struct irq_domain *domain,
-> +				       unsigned int virq, unsigned int nr_irqs,
-> +				       void *arg)
-> +{
-> +	struct mtk_pcie_port *port = domain->host_data;
-> +	struct mtk_msi_set *msi_set;
-> +	int i, hwirq, set_idx;
-> +
-> +	mutex_lock(&port->lock);
-> +
-> +	hwirq = bitmap_find_free_region(port->msi_irq_in_use, PCIE_MSI_IRQS_NUM,
-> +					order_base_2(nr_irqs));
-> +
-> +	mutex_unlock(&port->lock);
-> +
-> +	if (hwirq < 0)
-> +		return -ENOSPC;
-> +
-> +	set_idx = hwirq / PCIE_MSI_IRQS_PER_SET;
-> +	msi_set = &port->msi_sets[set_idx];
-> +
-> +	for (i = 0; i < nr_irqs; i++)
-> +		irq_domain_set_info(domain, virq + i, hwirq + i,
-> +				    &mtk_msi_bottom_irq_chip, msi_set,
-> +				    handle_edge_irq, NULL, NULL);
-> +
-> +	return 0;
-> +}
-> +
-> +static void mtk_msi_bottom_domain_free(struct irq_domain *domain,
-> +				       unsigned int virq, unsigned int nr_irqs)
-> +{
-> +	struct mtk_pcie_port *port = domain->host_data;
-> +	struct irq_data *data = irq_domain_get_irq_data(domain, virq);
-> +
-> +	mutex_lock(&port->lock);
-> +
-> +	bitmap_clear(port->msi_irq_in_use, data->hwirq, nr_irqs);
+On Wed, 10 Mar 2021 13:31:17 -0800 Sean Christopherson <seanjc@google.com> wrote:
 
-Marc, should not be there bitmap_release_region() with order_base_2()?
+> Invoke the MMU notifier's .invalidate_range_end() callbacks even if one
+> of the .invalidate_range_start() callbacks failed.  If there are multiple
+> notifiers, the notifier that did not fail may have performed actions in
+> its ...start() that it expects to unwind via ...end().  Per the
+> mmu_notifier_ops documentation, ...start() and ...end() must be paired.
+> 
+> The only in-kernel usage that is fatally broken is the SGI UV GRU driver,
+> which effectively blocks and sleeps fault handlers during ...start(), and
+> unblocks/wakes the handlers during ...end().  But, the only users that
+> can fail ...start() are the i915 and Nouveau drivers, which are unlikely
+> to collide with the SGI driver.
+> 
+> KVM is the only other user of ...end(), and while KVM also blocks fault
+> handlers in ...start(), the fault handlers do not sleep and originate in
+> killable ioctl() calls.  So while it's possible for the i915 and Nouveau
+> drivers to collide with KVM, the bug is benign for KVM since the process
+> is dying and KVM's guest is about to be terminated.
+> 
+> So, as of today, the bug is likely benign.  But, that may not always be
+> true, e.g. there is a potential use case for blocking memslot updates in
+> KVM while an invalidation is in-progress, and failure to unblock would
+> result in said updates being blocked indefinitely and hanging.
+> 
+> Found by inspection.  Verified by adding a second notifier in KVM that
+> periodically returns -EAGAIN on non-blockable ranges, triggering OOM,
+> and observing that KVM exits with an elevated notifier count.
 
-bitmap_release_region(port->msi_irq_in_use, data->hwirq, order_base_2(nr_irqs));
+Given that there's no way known of triggering this in 5.11 or earlier,
+I'd normally question the need to backport into -stable kernels.
 
-Because mtk_msi_bottom_domain_alloc() is allocating
-order_base_2(nr_irqs) interrupts, not only nr_irqs.
+But I guess that people might later develop modules which they want to
+load into earlier kernels, in which case this might bite them.  So I
+agree on the cc:stable thing.
 
-> +
-> +	mutex_unlock(&port->lock);
-> +
-> +	irq_domain_free_irqs_common(domain, virq, nr_irqs);
-> +}
+
