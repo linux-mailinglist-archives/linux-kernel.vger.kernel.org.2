@@ -2,180 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BD733796B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 493E333796E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhCKQbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:31:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhCKQbT (ORCPT
+        id S229699AbhCKQcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:32:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34863 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229723AbhCKQcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:31:19 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996BFC061761
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:31:19 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id q130so4780722oif.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:31:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dxCOzqw4OU5tNnGsb0G/mX+YTbwJwLies3DsLPBifnM=;
-        b=YTc1qrhxjsnX9+9VweICdIymergn23QKmhuRY3DiCjo8y5jB/7SeamD5tYP0HCTAtP
-         VKeFHLfTynEAgFT7EF+MGGhmXdSFJmyAN+ZwfWmdeKKofBwFT7o9duX2Nkt1SRdsS3YV
-         YpSLGHo0DxX6/hRelFakKkU5BLbiBpx+xjiV5Ae634VWo2hVBWYm1WVtSBBa1rzb4cW2
-         Fyylx8ycQyIsCgjCgIE7n5EWdFvV0RzoT07McHPiX9wcV50MxBDyKgmGZd0EXmLkPR/Q
-         8JjTZR0eccWaE3y4aA5ZCoUypcRkHuFplhfZo9TZ3E6xIqczVYyXfGohGbjdUrimmwNh
-         1A9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dxCOzqw4OU5tNnGsb0G/mX+YTbwJwLies3DsLPBifnM=;
-        b=qVK7/6aLBKiBKTXd7vdkBe0SAeP/V3/G1C2XwI23TEL5mTYy21Pgscs9jqrHotXtlE
-         H8NrJMJLiDA/gvz2MeStcMC0u9eORBRcHRVuA/FYYaLccCXA7sOR3COdzBfWjhFMBXJw
-         w9IJ1MSacSMsd/hL5XbdAqEDch0vHZWzDBaVD3PwLOLCEAY1lDy21uauBJrKgiwQgSYw
-         oTqjmES7ERlb8EO5T9dIRH5MXnIJqhy8Bq5hi9npU5MdVG8Tl/Ndx171LBX2eitnrBA9
-         4J2e7DkbH5wTVNAVyCJRG08LwQL/vbr3z6SYUTumswKQZ9OA8L10+WcXLMo7U7Y7ZttE
-         KXbg==
-X-Gm-Message-State: AOAM533Jrmla99cahOCu0D5O+Zx3XhtCv5BukyQFCiB2CtyYc0q7La/a
-        KiFiXc/ByblehWGMltHulyua3g==
-X-Google-Smtp-Source: ABdhPJy8g+TsPd2NUk3K/DbblvGVMt7+KSupjIq5Fp3bjoYNBvD/mp6WLJf/7RBLg4CdHqxr5X8eCg==
-X-Received: by 2002:aca:c2d7:: with SMTP id s206mr6544020oif.95.1615480278918;
-        Thu, 11 Mar 2021 08:31:18 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s193sm625571oih.52.2021.03.11.08.31.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 08:31:18 -0800 (PST)
-Date:   Thu, 11 Mar 2021 10:31:16 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Souradeep Chowdhury <schowdhu@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        sibis@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        vkoul@kernel.org
-Subject: Re: [PATCH V1 2/6] soc: qcom: dcc: Add driver support for Data
- Capture and Compare unit(DCC)
-Message-ID: <YEpF1JO4CAd2pb0m@builder.lan>
-References: <cover.1615393454.git.schowdhu@codeaurora.org>
- <48556129a02c9f7cd0b31b2e8ee0f168e6d211b7.1615393454.git.schowdhu@codeaurora.org>
- <YElUCaBUOx7hEuIh@builder.lan>
- <ab30490c016f906fd9bc5d789198530b@codeaurora.org>
+        Thu, 11 Mar 2021 11:32:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615480327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AjxBPEuos0//xANR8jHyBwhDFQYV47gI0GQ1JZxlt9U=;
+        b=dpHPYqs4ZSeJYDptuMlb7Xxg/Fe4LFZCxYC2OSW3SUJnfUPb//oVXljVKtnze8acV7Sf8c
+        jVIb69HCfrCCy5w5ZWZleX10tKlKDamB5uvfvt8Z+VkXJuZuQocB1yvD52io4Bbee1IHYZ
+        kYGkIXPWpEjeSVlH/zYvTJBzwdj3C90=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-68-RBFRbwVrOwWTOD4pUyAFhQ-1; Thu, 11 Mar 2021 11:32:01 -0500
+X-MC-Unique: RBFRbwVrOwWTOD4pUyAFhQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90C2694DC8;
+        Thu, 11 Mar 2021 16:31:59 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AFB9D60C21;
+        Thu, 11 Mar 2021 16:31:41 +0000 (UTC)
+Subject: Re: [RFC 0/2] virtio-pmem: Asynchronous flush
+To:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
+Cc:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, mst@redhat.com, jmoyer@redhat.com,
+        pankaj.gupta@cloud.ionos.com
+References: <20200420131947.41991-1-pankaj.gupta.linux@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <7e55abc4-5c91-efb8-1b32-87570dde62cc@redhat.com>
+Date:   Thu, 11 Mar 2021 17:31:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ab30490c016f906fd9bc5d789198530b@codeaurora.org>
+In-Reply-To: <20200420131947.41991-1-pankaj.gupta.linux@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11 Mar 00:19 CST 2021, Sai Prakash Ranjan wrote:
-
-> Hi Bjorn,
+On 20.04.20 15:19, Pankaj Gupta wrote:
+>   Jeff reported preflush order issue with the existing implementation
+>   of virtio pmem preflush. Dan suggested[1] to implement asynchronous flush
+>   for virtio pmem using work queue as done in md/RAID. This patch series
+>   intends to solve the preflush ordering issue and also makes the flush
+>   asynchronous from the submitting thread POV.
 > 
-> On 2021-03-11 04:49, Bjorn Andersson wrote:
-> > On Wed 10 Mar 10:46 CST 2021, Souradeep Chowdhury wrote:
-> > 
-> > > The DCC is a DMA Engine designed to capture and store data
-> > > during system crash or software triggers. The DCC operates
-> > > based on link list entries which provides it with data and
-> > > addresses and the function it needs to perform. These
-> > > functions are read, write and loop. Added the basic driver
-> > > in this patch which contains a probe method which instantiates
-> > > the resources needed by the driver. DCC has it's own SRAM which
-> > > needs to be instantiated at probe time as well.
-> > > 
-> > 
-> > So to summarize, the DCC will upon a crash copy the configured region
-> > into the dcc-ram, where it can be retrieved either by dumping the memory
-> > over USB or from sysfs on the next boot?
-> > 
+>   Submitting this patch series for feeback and is in WIP. I have
+>   done basic testing and currently doing more testing.
 > 
-> Not just the next boot, but also for the current boot via /dev/dcc_sram,
-> more below.
+> Pankaj Gupta (2):
+>    pmem: make nvdimm_flush asynchronous
+>    virtio_pmem: Async virtio-pmem flush
+> 
+>   drivers/nvdimm/nd_virtio.c   | 66 ++++++++++++++++++++++++++----------
+>   drivers/nvdimm/pmem.c        | 15 ++++----
+>   drivers/nvdimm/region_devs.c |  3 +-
+>   drivers/nvdimm/virtio_pmem.c |  9 +++++
+>   drivers/nvdimm/virtio_pmem.h | 12 +++++++
+>   5 files changed, 78 insertions(+), 27 deletions(-)
+> 
+> [1] https://marc.info/?l=linux-kernel&m=157446316409937&w=2
 > 
 
-Interesting!
+Just wondering, was there any follow up of this or are we still waiting 
+for feedback? :)
 
-> > > Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
-> > > ---
-> > >  drivers/soc/qcom/Kconfig  |   8 +
-> > >  drivers/soc/qcom/Makefile |   1 +
-> > >  drivers/soc/qcom/dcc.c    | 388
-> > > ++++++++++++++++++++++++++++++++++++++++++++++
-> > >  3 files changed, 397 insertions(+)
-> > >  create mode 100644 drivers/soc/qcom/dcc.c
-> > > 
-> 
-> <snip>...
-> 
-> > 
-> > How about implementing this using pstore instead of exposing it through
-> > a custom /dev/dcc_sram (if I read the code correclty)
-> > 
-> 
-> Using pstore is definitely a good suggestion, we have been thinking of
-> adding it as a separate change once the basic support for DCC gets in.
-> But pstore ram backend again depends on warm reboot which is present only
-> in chrome compute platforms but android platforms do not officially support
-> warm reboot. Pstore with block devices as a backend would be ideal but it
-> is still a work in progress to use mmc as the backend [1].
-> 
+-- 
+Thanks,
 
-I was under the impression that we can have multiple pstore
-implementations active, so we would have ramoops and dcc presented
-side by side after such restart. Perhaps that's a misunderstanding on my
-part?
+David / dhildenb
 
-> Now the other reason as to why we need this dev interface in addition to
-> pstore,
-> 
->  * Pstore contents are retrieved on the next boot, but DCC SRAM contents
->    can be collected via dev interface for the current boot via SW trigger.
->    Lets say we have some non-fatal errors in one of the subsystems and we
->    want to analyze the register values, it becomes as simple as configuring
->    that region, trigger dcc and collect the sram contents and parse it.
-> 
->    echo "addr" > /sys/bus/platform/devices/***.dcc/config
->    echo  1 > /sys/bus/platform/devices/***.dcc/trigger
->    cat /dev/dcc_sram > dcc_sram.bin
->    python dcc_parser.py -s dcc_sram.bin --v2 -o output/
-> 
-> We don't have to reboot at all for SW triggers. This is very useful and
-> widely used internally.
-> 
-> Is the custom /dev/dcc_sram not recommended because of the dependency on
-> the userspace component being not available openly? If so, we already have
-> the dcc parser upstream which we use to extract the sram contents [2].
-> 
-
-My concern is that we come up with a custom chardev implementation for
-something that already exists or should exist in a more generic form.
-
-
-In the runtime sequence above, why don't you have trigger just generate
-a devcoredump? But perhaps the answer is that we want a unified
-interface between the restart and runtime use cases?
-
-
-It would be nice to have some more details of how I can use this and how
-to operate the sysfs interface to achieve that, would you be able to
-elaborate on this?
-
-Regards,
-Bjorn
-
-> [1]
-> https://lore.kernel.org/lkml/20210120121047.2601-1-bbudiredla@marvell.com/
-> [2] https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
-> 
-> Thanks,
-> Sai
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
