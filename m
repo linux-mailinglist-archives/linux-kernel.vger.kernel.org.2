@@ -2,166 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD986337C94
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0CB337C86
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhCKSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:25:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59406 "EHLO mail.kernel.org"
+        id S230198AbhCKSYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:24:41 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:31616 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230214AbhCKSYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:24:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78CC964FBA;
-        Thu, 11 Mar 2021 18:24:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615487082;
-        bh=LLqLzhWdnxok5DUvrrOQtdyJlbSSW+8QR1bbI8CYBlM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kumijSRoty+JtAfLxQacL/8rhAVOjwq0WCiYvVvuI1QeEj6Sw5GXcsbZucl8FmGfs
-         Q3HgLb3Z7tTXOfBb+XF/1EUXhvRbUrZEqjAfsx1FXXdOKs0sdB6y66InNGhK3lavqo
-         UCh9cqimjmaKyR17Sb/Awhd8EOx9Hv5EjYM4dA1/Hy/WQhZrQnklUT5pYZlm6/uRrc
-         sY2kFQEG63JHcL+LH/4fBNlojvxhTZoQT0XfJg6cGZNkdPS0+rLoBJe4FJB+knAFUY
-         J9aWmxbYbmoLdsfwoqQNSf1jdDhbzItnbvqwsz+aDndPRvx4g8ifJzaHVPcb+3/sTL
-         3hiblbN2pdfbg==
-Received: by mail-ed1-f41.google.com with SMTP id i61so4267636edd.7;
-        Thu, 11 Mar 2021 10:24:42 -0800 (PST)
-X-Gm-Message-State: AOAM531ZYA62oBM6D/qSOi8smCw9si2AegC11dzMA0HDA+DxvshP+VTd
-        8AZFju1ntssc0E+IVfau1yI4Tujmj+4X1ScLOw==
-X-Google-Smtp-Source: ABdhPJw5ikUwneb4H6p8ZB8IoPDrdXlBIWUwvYgPRmdS0rgdwxxMrII3gdPBLn/6UQTl79dMIvdOpebnCsEZAJgfa0I=
-X-Received: by 2002:aa7:c403:: with SMTP id j3mr9879781edq.137.1615487080829;
- Thu, 11 Mar 2021 10:24:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20210310125504.31886-1-noltari@gmail.com> <20210310125504.31886-4-noltari@gmail.com>
- <CAL_JsqKZA-j2iXvVTXWtiuyKPOWeOUP0r+x-bV6QP6=_moy2VA@mail.gmail.com>
- <CACRpkda=isBSW8BwYJ2pCaPcByRoo2GFNVoZCxhaCbEKk9iNsg@mail.gmail.com>
- <CAL_Jsq+FfYE2SrzwB_A=d-LMut-JrqdivKz6x8EQhkc3Zh5NAA@mail.gmail.com>
- <CACRpkdaMYy_Z34i+0uRgciC=xBtoeNsWViHU9ZysvxqrFXB5+w@mail.gmail.com> <edb31609-e138-9844-7168-004c882cae97@gmail.com>
-In-Reply-To: <edb31609-e138-9844-7168-004c882cae97@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 11 Mar 2021 11:24:28 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqKSqQLUJB9OArwjtSgo5g4nPYLJFt+x54MwS+EHq0+Jww@mail.gmail.com>
-Message-ID: <CAL_JsqKSqQLUJB9OArwjtSgo5g4nPYLJFt+x54MwS+EHq0+Jww@mail.gmail.com>
-Subject: Re: [PATCH v6 03/15] pinctrl: bcm: add bcm63xx base code
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S229520AbhCKSYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 13:24:33 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DxHR12yR5z9v1Bt;
+        Thu, 11 Mar 2021 19:24:29 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id goZu1LU10u-X; Thu, 11 Mar 2021 19:24:29 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DxHR124RZz9v1Bs;
+        Thu, 11 Mar 2021 19:24:29 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EAB168B80D;
+        Thu, 11 Mar 2021 19:24:30 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id oM5t9zfqagzP; Thu, 11 Mar 2021 19:24:30 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A2AE38B80B;
+        Thu, 11 Mar 2021 19:24:30 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 3DF036758B; Thu, 11 Mar 2021 18:24:30 +0000 (UTC)
+Message-Id: <656520fecf792b8842dc54beec2da3bc29d0133c.1615486986.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] [backport for 5.10] powerpc/603: Fix protection of user pages
+ mapped with PROT_NONE
+To:     stable@vger.kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 11 Mar 2021 18:24:30 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:00 AM =C3=81lvaro Fern=C3=A1ndez Rojas
-<noltari@gmail.com> wrote:
->
-> Hi Rob and Linus,
->
-> El 11/03/2021 a las 17:13, Linus Walleij escribi=C3=B3:
-> > On Thu, Mar 11, 2021 at 3:58 PM Rob Herring <robh+dt@kernel.org> wrote:
-> >> On Wed, Mar 10, 2021 at 6:09 PM Linus Walleij <linus.walleij@linaro.or=
-g> wrote:
-> >>> On Wed, Mar 10, 2021 at 6:51 PM Rob Herring <robh+dt@kernel.org> wrot=
-e:
-> >>>
-> >>>>> +static const struct of_device_id bcm63xx_gpio_of_match[] =3D {
-> >>>>> +       { .compatible =3D "brcm,bcm6318-gpio", },
-> >>>>> +       { .compatible =3D "brcm,bcm6328-gpio", },
-> >>>>> +       { .compatible =3D "brcm,bcm6358-gpio", },
-> >>>>> +       { .compatible =3D "brcm,bcm6362-gpio", },
-> >>>>> +       { .compatible =3D "brcm,bcm6368-gpio", },
-> >>>>> +       { .compatible =3D "brcm,bcm63268-gpio", },
-> >>>>
-> >>>> All these would be moved to gpio-mmio.c (or maybe that can have a
-> >>>> fallback compatible?).
-> >>>
-> >>> This is gpio-regmap.c and it can only be used as a library
-> >>> by a certain driver. gpio-mmio.c can be used stand-alone
-> >>> for certain really simple hardware (though most use that
-> >>> as a library as well).
-> >>
-> >> I don't really care which one is used, but the problem is that this
-> >> choice is leaking into the binding design.
-> >
-> > Aha I guess I misunderstood your comment.
-> >
-> >> The primary problem here is
-> >> once someone uses regmap, then they think they must have a syscon and
-> >> can abandon using 'reg' and normal address properties as Linux happens
-> >> to not use them (currently). I think we really need some better regmap
-> >> vs. mmio handling to eliminate this duplication of foo-mmio and
-> >> foo-regmap drivers and difference in binding design. Not sure exactly
-> >> what that looks like, but basically some sort of 'reg' property to
-> >> regmap creation.
-> >
-> > I see the problem. Yeah we should try to be more strict around
-> > these things. To me there are syscons and "other regmaps",
-> > where syscon is a real hurdle of registers while "other regmaps"
-> > are just regmaps by convenience.
-> >
-> > Documentation/devicetree/bindings/mfd/syscon.yaml
-> > describes what a syscon really is so if everyone could
-> > just read the documentation that would be great ...
-> >
-> >> Given we already have a Broadcom GPIO binding for what looks to be
-> >> similar to this one, I'm left wondering what's the real difference
-> >> here?
-> >
-> > Which one is similar? I can take a look.
->
-> @Linus I think @Rob is referring to brcm,bcm6345-gpio:
-> https://github.com/torvalds/linux/blob/a74e6a014c9d4d4161061f770c9b4f9837=
-2ac778/drivers/gpio/gpio-mmio.c#L686
+(cherry picked from commit c119565a15a628efdfa51352f9f6c5186e506a1c)
 
-Well, since it's the bindings we're talking about:
-Documentation/devicetree/bindings/gpio/brcm,bcm6345-gpio.txt
+On book3s/32, page protection is defined by the PP bits in the PTE
+which provide the following protection depending on the access
+keys defined in the matching segment register:
+- PP 00 means RW with key 0 and N/A with key 1.
+- PP 01 means RW with key 0 and RO with key 1.
+- PP 10 means RW with both key 0 and key 1.
+- PP 11 means RO with both key 0 and key 1.
 
-Which says this:
-"These bindings can be used on any BCM63xx SoC. However, BCM6338 and
-BCM6345 are the only ones which don't need a pinctrl driver."
+Since the implementation of kernel userspace access protection,
+PP bits have been set as follows:
+- PP00 for pages without _PAGE_USER
+- PP01 for pages with _PAGE_USER and _PAGE_RW
+- PP11 for pages with _PAGE_USER and without _PAGE_RW
 
-Not that the 1 in tree user of this is perfect. Seems like it too
-should be a child of a system controller if there's other registers.
+For kernelspace segments, kernel accesses are performed with key 0
+and user accesses are performed with key 1. As PP00 is used for
+non _PAGE_USER pages, user can't access kernel pages not flagged
+_PAGE_USER while kernel can.
 
->
-> However, the real difference between BCM6345 (and BCM6338) is that these
-> SoCs have no pin controller at all, only a GPIO controller:
->
-> BCM6345:
-> typedef struct GpioControl {
->    uint16        unused0;
->    byte          unused1;
->    byte          TBusSel;
->    uint16        unused2;
->    uint16        GPIODir;
->    byte          unused3;
->    byte          Leds;
->    uint16        GPIOio;
->    uint32        UartCtl;
-> } GpioControl;
->
-> BCM6338:
-> typedef struct GpioControl {
->    uint32        unused0;
->    uint32        GPIODir;      /* bits 7:0 */
->    uint32        unused1;
->    uint32        GPIOio;       /* bits 7:0 */
->    uint32        LEDCtrl;
->    uint32        SpiSlaveCfg;
->    uint32        vRegConfig;
-> } GpioControl;
->
-> BCM6348 and newer also have pinctrl.
-> That's the main difference between that driver @Rob's referring to and
-> the ones in this patch series.
+For userspace segments, both kernel and user accesses are performed
+with key 0, therefore pages not flagged _PAGE_USER are still
+accessible to the user.
+
+This shouldn't be an issue, because userspace is expected to be
+accessible to the user. But unlike most other architectures, powerpc
+implements PROT_NONE protection by removing _PAGE_USER flag instead of
+flagging the page as not valid. This means that pages in userspace
+that are not flagged _PAGE_USER shall remain inaccessible.
+
+To get the expected behaviour, just mimic other architectures in the
+TLB miss handler by checking _PAGE_USER permission on userspace
+accesses as if it was the _PAGE_PRESENT bit.
+
+Note that this problem only is only for 603 cores. The 604+ have
+an hash table, and hash_page() function already implement the
+verification of _PAGE_USER permission on userspace pages.
+
+Fixes: f342adca3afc ("powerpc/32s: Prepare Kernel Userspace Access Protection")
+Change-Id: I68bc5e5ff4542bdfcdcd12923fa96a5811707475
+Cc: stable@vger.kernel.org # v5.2+
+Reported-by: Christoph Plattner <christoph.plattner@thalesgroup.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu
+---
+ arch/powerpc/kernel/head_book3s_32.S | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+index 2729d8fa6e77..96b45901da64 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -461,10 +461,11 @@ InstructionTLBMiss:
+ 	cmplw	0,r1,r3
+ #endif
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+-	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
++	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC | _PAGE_USER
+ #if defined(CONFIG_MODULES) || defined(CONFIG_DEBUG_PAGEALLOC)
+ 	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
++	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ #endif
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+@@ -523,9 +524,10 @@ DataLoadTLBMiss:
+ 	lis	r1, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+-	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
++	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
+ 	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
++	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+ 	lwz	r2,0(r2)		/* get pmd entry */
+@@ -599,9 +601,10 @@ DataStoreTLBMiss:
+ 	lis	r1, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+-	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
++	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
+ 	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
++	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+ 	lwz	r2,0(r2)		/* get pmd entry */
+-- 
+2.25.0
+
