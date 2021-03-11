@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F4E337911
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB4833791A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234494AbhCKQSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:18:52 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:50336 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbhCKQSl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:18:41 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C8F16879;
-        Thu, 11 Mar 2021 17:18:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615479520;
-        bh=CasTFxEPgNGSi54CtnJRvSEhXh9CeTK0/iNgfRRrbt8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FyCoio/I1dmdihvEEqSRUbTm3dl+4r0g7HrgR3sg2bOKZP6wly0c5EYgX5QryRJ9d
-         GJv6OJFhKp47fD+UfS4Kd1YkUd5i2vj680NMh12onu8xUXQTV1TJov5+MXjZG0Clpr
-         EEJKezcUrs+0EVJV4MLJv585spVFhLY/p5pcWmz4=
-Date:   Thu, 11 Mar 2021 18:18:05 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, senozhatsky@chromium.org
-Subject: Re: [PATCH 07/10] media: uvcvideo: set error_idx to count on EACCESS
-Message-ID: <YEpCvQYGj/4bAncp@pendragon.ideasonboard.com>
-References: <20210311122040.1264410-1-ribalda@chromium.org>
- <20210311122040.1264410-9-ribalda@chromium.org>
+        id S234523AbhCKQT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:19:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234497AbhCKQTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:19:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84D9464F97;
+        Thu, 11 Mar 2021 16:19:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615479571;
+        bh=AFZsDVrJrAtJWcG1GG6obs737AUKvX7hTKFiz+JZZUg=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=r1JtU5sjp3BLfF9gHUENNxLxY79k7OPlkh1srmbQ7Y+WbT6av82T4RB7ntRanXv+b
+         AwdOQI48IGX2lcQ2Z1teGxn0mjC4NaftgNso9qzTuyEAMnCuXpg/9zUnU1FZnbQE4u
+         WRQjwVbvxrl2kjvY/gGeyKnTq3UGgbc3R6ifDpmVZp9g5nBSrLwt5RFjRKYvRfKu/2
+         QltXMs4+zspF859ua4Mk5tH024cTcC4G7+8OKZYklLA0UXPG4me2qymCPI+Q8MLlhw
+         J9J7tF09GTFQIiofuompfwzvsjiqbB7j9Y8qhzAWJ7YFmgyPeafNwQwhip/OHAmtTT
+         UqSSSihiMz0Yw==
+From:   Mark Brown <broonie@kernel.org>
+To:     alsa-devel@alsa-project.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+In-Reply-To: <20210310193928.108850-1-pierre-louis.bossart@linux.intel.com>
+References: <20210310193928.108850-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-core: fix DMI handling
+Message-Id: <161547949199.51229.15758316133624899795.b4-ty@kernel.org>
+Date:   Thu, 11 Mar 2021 16:18:11 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210311122040.1264410-9-ribalda@chromium.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-Thank you for the patch.
-
-On Thu, Mar 11, 2021 at 01:20:37PM +0100, Ricardo Ribalda wrote:
-> According to the doc:
-
-The previous paragraph states:
-
-This check is done to avoid leaving the hardware in an inconsistent
-state due to easy-to-avoid problems. But it leads to another problem:
-the application needs to know whether an error came from the validation
-step (meaning that the hardware was not touched) or from an error during
-the actual reading from/writing to hardware.
-
-> The, in hindsight quite poor, solution for that is to set error_idx to
-> count if the validation failed.
+On Wed, 10 Mar 2021 13:39:27 -0600, Pierre-Louis Bossart wrote:
+> When DMI information is not present, trying to assign the card long
+> name results in the following warning.
 > 
-> Fixes v4l2-compliance:
-> Control ioctls (Input 0):
->                 fail: v4l2-test-controls.cpp(645): invalid error index write only control
->         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
->
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_v4l2.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
 > 
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index 625c216c46b5..9b6454bb2f28 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -1076,7 +1076,8 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
->  		ret = uvc_ctrl_get(chain, ctrl);
->  		if (ret < 0) {
->  			uvc_ctrl_rollback(handle);
-> -			ctrls->error_idx = i;
-> +			ctrls->error_idx = (ret == -EACCES) ?
-> +						ctrls->count : i;
+> The initial solution suggested was to test if the card device is an
+> ACPI one. This causes a regression visible to userspace on all Intel
+> platforms, with UCM unable to load card profiles based on DMI
+> information: the card devices are not necessarily ACPI ones, e.g. when
+> the parent creates platform devices on Intel devices.
+> 
+> [...]
 
-No need for parentheses.
+Applied to
 
-I'm not sure this is correct though. -EACCES is returned by
-__uvc_ctrl_get() when the control is found and is a write-only control.
-The uvc_ctrl_get() calls for the previous controls will have potentially
-touched the device to read the current control value if it wasn't cached
-already, to this contradicts the rationale from the specification.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-I understand the need for this when setting controls, but when reading
-them, it's more puzzling, as the interactions with the hardware to read
-the controls are not supposed to affect the hardware state in a way that
-applications should care about. It may be an issue in the V4L2
-specification.
+Thanks!
 
->  			return ret;
->  		}
->  	}
+[1/1] ASoC: soc-core: fix DMI handling
+      commit: c68fded79a9fe1376a60049f2ab45d611969de5c
 
--- 
-Regards,
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Laurent Pinchart
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
