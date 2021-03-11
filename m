@@ -2,94 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24381337503
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F885337505
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233909AbhCKOEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:04:49 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37401 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233855AbhCKOEg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:04:36 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12BE32Iu011083;
-        Thu, 11 Mar 2021 15:04:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=nBWlEyvQI2fqwZ059ASzKpc9vBdJl0uPh4tn9lalucg=;
- b=zQ+eJDMtEGdHawvMvnq6n9T+NAOR8p1TXx6YkzJYNmFuDd1xqmb5fkUsyn4BdxQepxQ3
- QhGW2wHXYd3vZzs32V4jVdXGYv1pcKq3G7pAxlbsM6z0bJzTNU+kgV0GbFkKfQttBG8p
- ZQmwrNw6DEhQkTZmu/ZgYgp2onsXBKTb5LK8jHG1Rzft2qynzEr/r45gfprTozHZFQ4x
- OaKU6uALJh5FSokbhshd70+qF5PxfNcMWWq4yk9UOnjT037m5523Ck0uoRHDRNoBk+dN
- 9aB3WoASp9ni1j1Cj6w92PgCL3d3e/0lKc4jOXmbEJ0P8KqSysORFqDUVJ4G/QUhNHz4 vA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37403775mc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Mar 2021 15:04:29 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 03D3410002A;
-        Thu, 11 Mar 2021 15:04:29 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id ED064247BC8;
-        Thu, 11 Mar 2021 15:04:28 +0100 (CET)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Mar 2021 15:04:28
- +0100
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH 6/6] rpmsg: char: Return an error if device already open
-Date:   Thu, 11 Mar 2021 15:04:13 +0100
-Message-ID: <20210311140413.31725-7-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210311140413.31725-1-arnaud.pouliquen@foss.st.com>
-References: <20210311140413.31725-1-arnaud.pouliquen@foss.st.com>
+        id S233843AbhCKOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:05:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233836AbhCKOEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 09:04:42 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA4B864F35;
+        Thu, 11 Mar 2021 14:04:40 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 09:04:39 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Cao jin <jojing64@gmail.com>, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, keescook@chromium.org, vbabka@suse.cz
+Subject: Re: [PATCH] bootconfig: Update prototype of setup_boot_config()
+Message-ID: <20210311090439.394c5293@gandalf.local.home>
+In-Reply-To: <20210311185021.cd7a42057c8500755e3732a7@kernel.org>
+References: <20210311085213.27680-1-jojing64@gmail.com>
+        <20210311185021.cd7a42057c8500755e3732a7@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-11_05:2021-03-10,2021-03-11 signatures=0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rpmsg_create_ept function is invoked when the device is opened.
-As only one endpoint must be created per device. It is not possible to
-open the same device twice. But there is nothing to prevent multi open.
-Return -EBUSY when device is already opened to have a generic error
-instead of relying on the back-end to potentially detect the error.
+On Thu, 11 Mar 2021 18:50:21 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Without this patch for instance the GLINK driver return -EBUSY while
-the virtio bus return -ENOSPC.
+> On Thu, 11 Mar 2021 16:52:13 +0800
+> Cao jin <jojing64@gmail.com> wrote:
+> 
+> > Parameter "cmdline" has no use, drop it.  
+> 
+> OK, this looks good to me.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/rpmsg/rpmsg_char.c | 3 +++
- 1 file changed, 3 insertions(+)
+Why is this using boot_command_line instead of what is passed in, which
+might be different?
 
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index 95a65f7a9d8d..2bebc9b2d163 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -127,6 +127,9 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
- 	struct rpmsg_device *rpdev = eptdev->rpdev;
- 	struct device *dev = &eptdev->dev;
- 
-+	if (eptdev->ept)
-+		return -EBUSY;
-+
- 	get_device(dev);
- 
- 	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
--- 
-2.17.1
-
+-- Steve
