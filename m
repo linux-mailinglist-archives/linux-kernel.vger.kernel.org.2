@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3CC33729C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7C13372A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233139AbhCKMbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:31:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232978AbhCKMbA (ORCPT
+        id S233212AbhCKMcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:32:11 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:60356 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233201AbhCKMbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:31:00 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681E5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:31:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=t6hAglufpM9QmvKebIGtn+Yjg4xR0fUMa1JXcygR53g=; b=vEvsCnvfv2iJfDITyPepipHmRo
-        O8EhAT02CeEAfYwhd16j4KE7jyLmu9m1mNIVytxYdRzn3tFbPJLgcxkxuZni0SIA4Hhz76KHOYbFo
-        fn8Opg8AR14omYvdCUVVyek9cJdRAsJb+uPgRyi8CE055ifUHv0kp2shuTeQoGtKcly6O7eMpOee1
-        u4u9EnWa6+GIJeZU1GXFmIwK6h8LpJohbqEh0YUpQ6pJYYM/KNLZ5wVPMqZbagt+Xtz3KdL67qPH8
-        uA2pVsAeHBrchZfVc8ZRPLYsEXDrMAeQiT4lBdBtGjBjb7eS3ZIYHQeWAWo2kbdDXjUMYf1IWx2tx
-        SB33r+Jg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKKSH-007J0G-BW; Thu, 11 Mar 2021 12:30:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D850F3013E5;
-        Thu, 11 Mar 2021 13:30:16 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C9B6929D00063; Thu, 11 Mar 2021 13:30:16 +0100 (CET)
-Date:   Thu, 11 Mar 2021 13:30:16 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-Subject: Re: [PATCH V2 16/25] perf/x86: Register hybrid PMUs
-Message-ID: <YEoNWGEYSv7Xmw6B@hirez.programming.kicks-ass.net>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
- <YEoKSyx9E+CSFIk/@hirez.programming.kicks-ass.net>
+        Thu, 11 Mar 2021 07:31:45 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12BCVZZ7081573;
+        Thu, 11 Mar 2021 06:31:35 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615465895;
+        bh=nLyeqtv8EnVsSl2C1jr9xQfWZIv7JOMvu47lgPEN2yg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=q5weBMr2vEAfx9ydL777ffX6EAHt1DCwSx5FELsk9FcTqnD2eCBUzeBLEoXkZ7qdG
+         iE38pvBna2AiCgLRL65GDohHK4y++9nTHz5gVH9iz55dwYfiAZnEoz74bZH2kj+kvZ
+         uW2EpeVRK+i3lvPzyGun5F7K9cL0rAc0ZDQ/4Mpk=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12BCVZ6R044793
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 11 Mar 2021 06:31:35 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 11
+ Mar 2021 06:31:35 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 11 Mar 2021 06:31:35 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12BCVVcU004700;
+        Thu, 11 Mar 2021 06:31:32 -0600
+Subject: Re: [PATCH v5 1/3] arm64: dts: ti: k3-j7200: Add gpio nodes
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210310161924.22256-1-a-govindraju@ti.com>
+ <20210310161924.22256-2-a-govindraju@ti.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <a52993f1-9477-4ed2-cfd6-b2cf35b24d10@ti.com>
+Date:   Thu, 11 Mar 2021 14:30:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEoKSyx9E+CSFIk/@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210310161924.22256-2-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 01:17:15PM +0100, Peter Zijlstra wrote:
-> On Wed, Mar 10, 2021 at 08:37:52AM -0800, kan.liang@linux.intel.com wrote:
-> > @@ -2092,9 +2105,37 @@ static int __init init_hw_perf_events(void)
-> >  	if (err)
-> >  		goto out1;
-> >  
-> > -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
-> > -	if (err)
-> > -		goto out2;
-> > +	if (!is_hybrid()) {
-> > +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
-> > +		if (err)
-> > +			goto out2;
-> > +	} else {
-> > +		u8 cpu_type = get_hybrid_cpu_type(smp_processor_id());
-> > +		struct x86_hybrid_pmu *hybrid_pmu;
-> > +		int i;
-> > +
-> > +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
-> > +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
+
+
+On 10/03/2021 18:19, Aswath Govindraju wrote:
+> From: Faiz Abbas <faiz_abbas@ti.com>
 > 
-> I can't find where you actually allocated x86_pmu.hybrid_pmu.
+> There are 4 instances of gpio modules in main domain:
+> 	gpio0, gpio2, gpio4 and gpio6
+> 
+> Groups are created to provide protection between different processor
+> virtual worlds. Each of these modules I/O pins are muxed within the
+> group. Exactly one module can be selected to control the corresponding
+> pin by selecting it in the pad mux configuration registers.
+> 
+> This group in main domain pins out 69 lines (5 banks). Add DT modes for
+> each module instance in the main domain.
+> 
+> Similar to the gpio groups in main domain, there is one gpio group in
+> wakeup domain with 2 module instances in it.
+> 
+> The gpio group pins out 72 pins (6 banks) of the first 85 gpio lines. Add
+> DT nodes for each module instance in the wakeup domain.
+> 
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 72 +++++++++++++++++++
+>   .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 34 +++++++++
+>   2 files changed, 106 insertions(+)
+> 
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-Ah, patch 20 has that.
-
-> > +			hybrid_pmu->pmu = pmu;
-> > +			hybrid_pmu->pmu.type = -1;
-> > +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
-> > +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
-> > +
-> > +			/* Only register the PMU for the boot CPU */
-> > +			if (hybrid_pmu->cpu_type != cpu_type)
-> > +				continue;
-> > +
-> > +			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
-> > +						x86_get_hybrid_pmu_type(cpu_type));
-> > +			if (err) {
-> > +				pr_warn("Failed to register a PMU, err %d\n", err);
-> > +				kfree(x86_pmu.hybrid_pmu);
-> > +				x86_pmu.hybrid_pmu = NULL;
-> > +				goto out2;
-> > +			}
-> > +		}
-> > +	}
-> >  
-> >  	return 0;
+-- 
+Best regards,
+grygorii
