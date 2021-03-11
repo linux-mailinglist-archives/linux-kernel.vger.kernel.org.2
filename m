@@ -2,134 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC0B336DB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A38336DB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbhCKIU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:20:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36498 "EHLO mx2.suse.de"
+        id S231560AbhCKIV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:21:28 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:54304 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231629AbhCKIUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:20:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615450837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oDyv33vblbOBiA6/8yIJlsYlnNvdAjdMwuO2OFe/iBg=;
-        b=bdu4M1e2uQ1/9Mx8YWwJdhFnuSMmGxo+Uj/7gT721vi+BAIBHAyD+9R1dWD50UBKxTwNjH
-        G18q+oGGbr+V20iDbM/8MH1Ov75D1GRAWlioNUes4tCrn6MnsZNWProoh8rqj5WIpQTcOV
-        pmMunKu8aSTBBaRx+ZJkCjEv2uS8j+8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EF074AB8C;
-        Thu, 11 Mar 2021 08:20:36 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 09:20:36 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, tglx@linutronix.de,
-        john.ogness@linutronix.de, urezki@gmail.com, ast@fb.com,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>, peterz@infradead.org
-Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
- in_atomic use
-Message-ID: <YEnS1EcVCGuMuhMy@dhcp22.suse.cz>
-References: <20210311021321.127500-1-mike.kravetz@oracle.com>
- <20210310214316.6d1ffb19a4219b4e70123e19@linux-foundation.org>
+        id S231584AbhCKIVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:21:17 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615450877; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=FcBNlfOXSoNxm2y83jgoG0XJMJEpboYwvXHkJwO65uM=;
+ b=ahUETY6MBfSo+ZGc3QlsdntCryUnDbYPGOiD/F8ajiJq4UerpVqvstYqjAGykssKkejBXyCM
+ a9VLuJ7sYJjCQGPbSE2sBskAeDBgKSqk1pJvEVpS77Hcv/Y5fPfmRFaQv0+W5atOW2JfJ6NJ
+ uccge7xDsyZosnvySxj8BR2D92E=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6049d2e76e1c22bc8dbd9ea2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 08:20:55
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D2284C43461; Thu, 11 Mar 2021 08:20:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D7A5C43465;
+        Thu, 11 Mar 2021 08:20:54 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310214316.6d1ffb19a4219b4e70123e19@linux-foundation.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 11 Mar 2021 16:20:53 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host mode
+In-Reply-To: <20210302132503.224670-6-avri.altman@wdc.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-6-avri.altman@wdc.com>
+Message-ID: <8c2b310299c0ca57bfd445cfca87fb28@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10-03-21 21:43:16, Andrew Morton wrote:
-> On Wed, 10 Mar 2021 18:13:21 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On 2021-03-02 21:24, Avri Altman wrote:
+> I host mode, the host is expected to send HPB-WRITE-BUFFER with
+
+In host mode,
+
+> buffer-id = 0x1 when it inactivates a region.
 > 
-> > put_page does not correctly handle all calling contexts for hugetlb
-> > pages.  This was recently discussed in the threads [1] and [2].
-> > 
-> > free_huge_page is the routine called for the final put_page of huegtlb
-> > pages.  Since at least the beginning of git history, free_huge_page has
-> > acquired the hugetlb_lock to move the page to a free list and possibly
-> > perform other processing. When this code was originally written, the
-> > hugetlb_lock should have been made irq safe.
-> > 
-> > For many years, nobody noticed this situation until lockdep code caught
-> > free_huge_page being called from irq context.  By this time, another
-> > lock (hugetlb subpool) was also taken in the free_huge_page path.  In
-> > addition, hugetlb cgroup code had been added which could hold
-> > hugetlb_lock for a considerable period of time.  Because of this, commit
-> > c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in non-task
-> > context") was added to address the issue of free_huge_page being called
-> > from irq context.  That commit hands off free_huge_page processing to a
-> > workqueue if !in_task.
-> > 
-> > The !in_task check handles the case of being called from irq context.
-> > However, it does not take into account the case when called with irqs
-> > disabled as in [1].
-> > 
-> > To complicate matters, functionality has been added to hugetlb
-> > such that free_huge_page may block/sleep in certain situations.  The
-> > hugetlb_lock is of course dropped before potentially blocking.
-> > 
-> > One way to handle all calling contexts is to have free_huge_page always
-> > send pages to the workqueue for processing.  This idea was briefly
-> > discussed here [3], but has some undesirable side effects.
-> > 
-> > Ideally, the hugetlb_lock should have been irq safe from the beginning
-> > and any code added to the free_huge_page path should have taken this
-> > into account.  However, this has not happened.  The code today does have
-> > the ability to hand off requests to a workqueue.  It does this for calls
-> > from irq context.  Changing the check in the code from !in_task to
-> > in_atomic would handle the situations when called with irqs disabled.
-> > However, it does not not handle the case when called with a spinlock
-> > held.  This is needed because the code could block/sleep.
-> > 
-> > Select PREEMPT_COUNT if HUGETLB_PAGE is enabled so that in_atomic can be
-> > used to detect all atomic contexts where sleeping is not possible.
-> > 
-> > [1] https://lore.kernel.org/linux-mm/000000000000f1c03b05bc43aadc@google.com/
-> > [2] https://lore.kernel.org/linux-mm/YEjji9oAwHuZaZEt@dhcp22.suse.cz/
-> > [3] https://lore.kernel.org/linux-mm/YDzaAWK41K4gD35V@dhcp22.suse.cz/
-> > 
-> > --- a/fs/Kconfig
-> > +++ b/fs/Kconfig
-> > @@ -235,6 +235,7 @@ config HUGETLBFS
-> >  
-> >  config HUGETLB_PAGE
-> >  	def_bool HUGETLBFS
-> > +	select PREEMPT_COUNT
-> >  
+> Use the map-requests pool as there is no point in assigning a
+> designated cache for umap-requests.
 > 
-> Well this is unfortunate.  hugetlb is forcing PREEMPT_COUNT because we
-> screwed things up.
-
-Yes this is far from ideal but we have tried to explore other ways all
-looking much more complex. [1] shows that this is a problem already and
-needs a reasonable fix to be backported for older kernels.
-
-> Did we consider changing the networking code to call a new
-> free_huge_tlb_from_irq()?  So the callee doesn't need to guess.
-
-I do not think we want to pollute networking or any other code that
-simply wants to put_page with a hugetlb specific knowledge.
-
-> Or something else?
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
+>  drivers/scsi/ufs/ufshpb.h |  1 +
+>  2 files changed, 15 insertions(+)
 > 
-> Is anyone looking onto fixing this for real?
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index 6f4fd22eaf2f..0744feb4d484 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct ufshpb_lu 
+> *hpb,
+> 
+>  	blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
+> 
+> +	hpb->stats.umap_req_cnt++;
+>  	return 0;
+>  }
+> 
+> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct 
+> ufshpb_lu *hpb,
+>  	return -EAGAIN;
+>  }
+> 
+> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
+> +					struct ufshpb_region *rgn)
+> +{
+> +	return ufshpb_issue_umap_req(hpb, rgn);
+> +}
+> +
+>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
+>  {
+>  	return ufshpb_issue_umap_req(hpb, NULL);
+> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct 
+> ufshpb_lu *hpb,
+>  	struct ufshpb_subregion *srgn;
+>  	int srgn_idx;
+> 
+> +
 
-Mike said he would be looking into making hugetlb_lock irq safe but
-there is a non trivial way there and this would be not a great candidate
-for backporting.
+No need of this blank line.
 
-Btw. RCU already wants to have a reliable in_atomic as well and that
-effectivelly means enabling PREEMPT_COUNT for everybody. The overhead of
-per-cpu preempt counter should pretty much invisible AFAIK.
+Regards,
+Can Guo.
 
--- 
-Michal Hocko
-SUSE Labs
+> +	if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
+> +		return;
+> +
+>  	lru_info = &hpb->lru_info;
+> 
+>  	dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n", 
+> rgn->rgn_idx);
+> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
+>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
+>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
+>  ufshpb_sysfs_attr_show_func(map_req_cnt);
+> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
+> 
+>  static struct attribute *hpb_dev_stat_attrs[] = {
+>  	&dev_attr_hit_cnt.attr,
+> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] = {
+>  	&dev_attr_rb_active_cnt.attr,
+>  	&dev_attr_rb_inactive_cnt.attr,
+>  	&dev_attr_map_req_cnt.attr,
+> +	&dev_attr_umap_req_cnt.attr,
+>  	NULL,
+>  };
+> 
+> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu 
+> *hpb)
+>  	hpb->stats.rb_active_cnt = 0;
+>  	hpb->stats.rb_inactive_cnt = 0;
+>  	hpb->stats.map_req_cnt = 0;
+> +	hpb->stats.umap_req_cnt = 0;
+>  }
+> 
+>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
+> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> index bd4308010466..84598a317897 100644
+> --- a/drivers/scsi/ufs/ufshpb.h
+> +++ b/drivers/scsi/ufs/ufshpb.h
+> @@ -186,6 +186,7 @@ struct ufshpb_stats {
+>  	u64 rb_inactive_cnt;
+>  	u64 map_req_cnt;
+>  	u64 pre_req_cnt;
+> +	u64 umap_req_cnt;
+>  };
+> 
+>  struct ufshpb_lu {
