@@ -2,117 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FE6336DF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC49336E03
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhCKIjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:39:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbhCKIjY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:39:24 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28255C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:39:24 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id y13so10574831pfr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:39:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7okIhdvDzfeqbdsdHHZ/SSKfCzFnovt5NwmOsmMe63Y=;
-        b=GSFD/NWC/G5Tzys2ROvKlEtSr/y4GPOw8htx0NZOA7E8I9FPn41CRB0rdwnd/B3Ng+
-         6zeep7LBLaFzTzWAMdwIjbz6tm1Kp1Aj5kwIYb4MbYSZugYz3CBoCaGgIPZtilOic0Ym
-         CHLKqIGMd38UATAXSira9gUsas7Ti5e+6UyP9f/RxjBCMpEcPD/UURobfGxN3OAHPg60
-         ZKs3ZrAZ52Z1GXEVz2nLOKsoZxYmJgGowTil1v5D32aTt0ng5KpeFUWGh54Q4YRXc3g6
-         SPHKZmd9Ukno6gg8KY+yCXIlGA8ydC+0KZu6gttUX2+NxSa1+ySAepJlUvFh780BH5WN
-         Tdnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7okIhdvDzfeqbdsdHHZ/SSKfCzFnovt5NwmOsmMe63Y=;
-        b=QRqZXvRop4hdVeESYKdzlyU7EpnGEO/h70c9nY/lqh++c7DA8qTCcM4+IEeB3OMk2S
-         BLSBQJTSGFSqQHAmdIUJzFPD7snsqyKT+4/Hi8I3wmMe+KqRXXB9GPlKuXqhDlaNkXIO
-         m2kXT/Pu1HQnAu65Je77Yu/3gLZaTRP18jRlyuD8276iFO6/ds0+yh+d65pE3yW+q32/
-         1cFasmh/c4N2vNRcB8tdvbxlK8Be34WTw1JZ4vNTf5OSpt2ViyXBLozHmj/5g23NubO/
-         J1v/HhS+KLBe+bqFpBSD+fS+VTVnslwpeG0mqMVRpMVLES1Us9RGlpOUCVIVeP3l7HDa
-         qqlg==
-X-Gm-Message-State: AOAM532t/WUVvpaLl4lhsKpC6WbRBG+/jPKzrcRvIMPJ+UrKeZwuQEvy
-        A4ItL6boyHbtW/CMSIeIlO8=
-X-Google-Smtp-Source: ABdhPJxIO3gpf+kSNnn7hUI/vRvmOKQW3e56B41duHnzN7CYh/eTI4kENgTFFoZKxXymVeZ8Pi5QNQ==
-X-Received: by 2002:a62:3085:0:b029:1ec:a570:682c with SMTP id w127-20020a6230850000b02901eca570682cmr6735981pfw.28.1615451963792;
-        Thu, 11 Mar 2021 00:39:23 -0800 (PST)
-Received: from localhost ([98.126.155.250])
-        by smtp.gmail.com with ESMTPSA id u17sm1625480pgl.80.2021.03.11.00.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 00:39:23 -0800 (PST)
-From:   Cao jin <jojing64@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        Cao jin <jojing64@gmail.com>
-Subject: [PATCH] x86/brk: Drop RESERVE_BRK_ARRAY()
-Date:   Thu, 11 Mar 2021 16:39:19 +0800
-Message-Id: <20210311083919.27530-1-jojing64@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S231571AbhCKIlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:41:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49810 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231394AbhCKIk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:40:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615452057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zPVxzyGzi1aB06Q/yol9xL73rwPJTQl7TL+0Dnc4zDk=;
+        b=Ln1d0WteFwtmFPRyPKUGJPriveauMVO6RTfR9ST8coq7SNjlvpAocx3emNwR9RsoPMUVSK
+        UHpwXPQDIVtkMHd0WgyH5joYmb4O/1UedHeo7Y1mXLAraoS8BKyNSNjgO7hAfZnF8NMIv8
+        dMZq3mdTcRjaImjbVehFCLmnRomStjQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 563BFAB8C;
+        Thu, 11 Mar 2021 08:40:57 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 09:40:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+Message-ID: <YEnXllhPEQhT0CRt@dhcp22.suse.cz>
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-5-songmuchun@bytedance.com>
+ <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
+ <f9f19d38-f1a7-ac8c-6ba8-3ce0bcc1e6a0@oracle.com>
+ <YEk1+mDZ4u85RKL3@dhcp22.suse.cz>
+ <20210310214909.GY2696@paulmck-ThinkPad-P72>
+ <68bc8cc9-a15b-2e97-9a2a-282fe6e9bd3f@oracle.com>
+ <20210310232851.GZ2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310232851.GZ2696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since a13f2ef168cb ("x86/xen: remove 32-bit Xen PV guest support"),
-RESERVE_BRK_ARRAY() has no user anymore, let's drop it.
+On Wed 10-03-21 15:28:51, Paul E. McKenney wrote:
+> On Wed, Mar 10, 2021 at 02:10:12PM -0800, Mike Kravetz wrote:
+> > On 3/10/21 1:49 PM, Paul E. McKenney wrote:
+> > > On Wed, Mar 10, 2021 at 10:11:22PM +0100, Michal Hocko wrote:
+> > >> On Wed 10-03-21 10:56:08, Mike Kravetz wrote:
+> > >>> On 3/10/21 7:19 AM, Michal Hocko wrote:
+> > >>>> On Mon 08-03-21 18:28:02, Muchun Song wrote:
+> > >>>> [...]
+> > >>>>> @@ -1447,7 +1486,7 @@ void free_huge_page(struct page *page)
+> > >>>>>  	/*
+> > >>>>>  	 * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
+> > >>>>>  	 */
+> > >>>>> -	if (!in_task()) {
+> > >>>>> +	if (in_atomic()) {
+> > >>>>
+> > >>>> As I've said elsewhere in_atomic doesn't work for CONFIG_PREEMPT_COUNT=n.
+> > >>>> We need this change for other reasons and so it would be better to pull
+> > >>>> it out into a separate patch which also makes HUGETLB depend on
+> > >>>> PREEMPT_COUNT.
+> > >>>
+> > >>> Yes, the issue of calling put_page for hugetlb pages from any context
+> > >>> still needs work.  IMO, that is outside the scope of this series.  We
+> > >>> already have code in this path which blocks/sleeps.
+> > >>>
+> > >>> Making HUGETLB depend on PREEMPT_COUNT is too restrictive.  IIUC,
+> > >>> PREEMPT_COUNT will only be enabled if we enable:
+> > >>> PREEMPT "Preemptible Kernel (Low-Latency Desktop)"
+> > >>> PREEMPT_RT "Fully Preemptible Kernel (Real-Time)"
+> > >>> or, other 'debug' options.  These are not enabled in 'more common'
+> > >>> kernels.  Of course, we do not want to disable HUGETLB in common
+> > >>> configurations.
+> > >>
+> > >> I haven't tried that but PREEMPT_COUNT should be selectable even without
+> > >> any change to the preemption model (e.g. !PREEMPT).
+> > > 
+> > > It works reliably for me, for example as in the diff below.  So,
+> > > as Michal says, you should be able to add "select PREEMPT_COUNT" to
+> > > whatever Kconfig option you need to.
+> > > 
+> > 
+> > Thanks Paul.
+> > 
+> > I may have been misreading Michal's suggestion of "make HUGETLB depend on
+> > PREEMPT_COUNT".  We could "select PREEMPT_COUNT" if HUGETLB is enabled.
+> > However, since HUGETLB is enabled in most configs, then this would
+> > result in PREEMPT_COUNT also being enabled in most configs.  I honestly
+> > do not know how much this will cost us?  I assume that if it was free or
+> > really cheap it would already be always on?
+> 
+> There are a -lot- of configs out there, so are you sure that HUGETLB is
+> really enabled in most of them?  ;-)
 
-Update related comments too.
+It certainly is enabled for all distribution kernels and many are
+!PREEMPT so I believe this is what Mike was concerned about.
 
-Signed-off-by: Cao jin <jojing64@gmail.com>
----
- arch/x86/include/asm/setup.h | 5 -----
- arch/x86/kernel/setup.c      | 6 +++---
- 2 files changed, 3 insertions(+), 8 deletions(-)
+> More seriously, I was going by earlier emails in this and related threads
+> plus Michal's "PREEMPT_COUNT should be selectable".  But there are other
+> situations that would like PREEMPT_COUNT.  And to your point, some who
+> would rather PREEMPT_COUNT not be universally enabled.  I haven't seen
+> any performance or kernel-size numbers from any of them, however.
 
-diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
-index 389d851a02c4..a12458a7a8d4 100644
---- a/arch/x86/include/asm/setup.h
-+++ b/arch/x86/include/asm/setup.h
-@@ -130,11 +130,6 @@ void *extend_brk(size_t size, size_t align);
- 			: : "i" (sz));					\
- 	}
- 
--/* Helper for reserving space for arrays of things */
--#define RESERVE_BRK_ARRAY(type, name, entries)		\
--	type *name;					\
--	RESERVE_BRK(name, sizeof(type) * entries)
--
- extern void probe_roms(void);
- #ifdef __i386__
- 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 740f3bdb3f61..3af27bf1f837 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -66,7 +66,7 @@ RESERVE_BRK(dmi_alloc, 65536);
- 
- /*
-  * Range of the BSS area. The size of the BSS area is determined
-- * at link time, with RESERVE_BRK*() facility reserving additional
-+ * at link time, with RESERVE_BRK() facility reserving additional
-  * chunks.
-  */
- unsigned long _brk_start = (unsigned long)__brk_base;
-@@ -1039,8 +1039,8 @@ void __init setup_arch(char **cmdline_p)
- 
- 	/*
- 	 * Need to conclude brk, before e820__memblock_setup()
--	 *  it could use memblock_find_in_range, could overlap with
--	 *  brk area.
-+	 * it could use memblock_find_in_range, could overlap with
-+	 * brk area.
- 	 */
- 	reserve_brk();
- 
+Yeah per cpu preempt counting shouldn't be noticeable but I have to
+confess I haven't benchmarked it.
 -- 
-2.29.2
-
+Michal Hocko
+SUSE Labs
