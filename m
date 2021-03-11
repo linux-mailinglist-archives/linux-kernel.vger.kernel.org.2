@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCB23374D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1AB3374DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhCKOB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
+        id S233742AbhCKODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:03:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbhCKOBO (ORCPT
+        with ESMTP id S233254AbhCKOCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:01:14 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D660C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:01:14 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id j6so10236459plx.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:01:14 -0800 (PST)
+        Thu, 11 Mar 2021 09:02:33 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B872C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:02:33 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id q204so14448309pfq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:02:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wJF95wh7Vf1iAu9VFx4eXo/tjVyufB4h+2uhaVD9LE8=;
-        b=EUqHqJRcYFF9PqkBg9cKdXfdahh8QTsY8St9qL7peDpXwxY2mvvuSvCVEtsO1QPCfG
-         pztIhwh3ZUcsaaaa0Ts9d1RTaGcSkLRCfP35DzGfGUTUbeEARwh5y8MMQm80rhHZtnBk
-         jiZZPQgR5eALIyYAlwI6lDe+kzVAKiWr8OatF/y9ZzTbRbETiyzKvplnd3IHhgSkDKeM
-         b1X+kaNKneczbbfJoPEVq1Zdh6Oq0bB+2byPtG6x8dQiiCWtnQETrpFIPwd2bn5m2hM+
-         /sTWfnyHeg+8Ir01nhgSbF+RZMS73L3qZI78xd7H6IpY8omiDwjX4C4qNmskYEYPXMig
-         ChFg==
+        bh=Wu8fFbt6pPps0sW0Am+MuqVI376zrcxTbhhiS9bar6c=;
+        b=cC5IhqvV/5oVLBL9TLG80rhJAB1lQXpcoIBWKJoGPyUR0RiUvMVfinjN79y0CKRKnz
+         OnXELqiRYJONd+HvVSYUgV/A/ETiZRko0Fd61hMlmR7OpiocVlUHsBugAPndW1odLmT+
+         Rh8/6Iconp3bLRenDXgvTbJGddvU3RRC/w2sFpJDVP41xw70FgGzfZynuD55XCQBfY/A
+         8MDtUZmUyYBwSOZbXPKCtQAZHDetm16II269cIeajcrF5kSsam8eM5TwtnXmMfss/6YW
+         3a8MWuRAfS33rOWXaRkHlQAt1NPLlWj3+bCEO3APp4F+ue+ohs4vzvIemLshbxM7J733
+         Ptgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wJF95wh7Vf1iAu9VFx4eXo/tjVyufB4h+2uhaVD9LE8=;
-        b=Xla9icgbevPmX04gIkjSW2eC8LcYXtLd3BGpnPMr4qYtXsGXFgtsx3pcYCJp1DrHXy
-         dezQM/O54CiSkVr9YPiC1z/FIrqOjWrH9OGw0xIZSPK9uuEb51zhzGu/vrTbDgwRFv78
-         qg0vcXthQRZSstiXgOgG6XpIqOC6ucgHJOS47Wb/AWArNnn8Xquihra3GAwIT1jxSbqj
-         9chhZL7vj9gwBhvfKxLDKePKStbmOz21WSitFOZ7gCkO/Wp2DE2uu7iZy4GZctqiWI9k
-         Dk5+zlYnOHv4ez1xy4RjLXSWiqAsZA0ibaVRSYua0lrzeJN7tN4EmhrBW8Axgewefxcw
-         WZQw==
-X-Gm-Message-State: AOAM531ZXAOEaSJvLIKvOEBhx56ygAIKkaC/pZh8WSw7fkhvEKE0dihz
-        yRHouRrofSM7bcZCMH78+1WlbCHFHovNjXpYUD4=
-X-Google-Smtp-Source: ABdhPJxZjrZHaMw8TojuQopQn/Ngqmtn7yVuKwSmGnaHZAqHscmhqJ2iTgbYrq/3wgwhtdxCCsumdDjRuVo/maTZpFk=
-X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
- z2-20020a170902ee02b02900e65397d79cmr8139769plb.21.1615471273960; Thu, 11 Mar
- 2021 06:01:13 -0800 (PST)
+        bh=Wu8fFbt6pPps0sW0Am+MuqVI376zrcxTbhhiS9bar6c=;
+        b=qOtBIpKOVPc3RCX6KvH5fD9aIgHXNbJJXeVYUTp+zEYyaBeZ4OKF+/HzpOcrVhTb6b
+         0r0OXNSaClu16UzQguGfXCJdp1LRVLaps9DrTSKnJs9zhnLoJ48WWl4pxew+Ku8h8Bp4
+         3wlqpE4z+KB75SHWcfn/Tew2mQGFkNfct14NRexKWlpMVdrs9ZsYCVYRb8MTi5FVyEbq
+         vZa86Bx77/nP04rbbRtTe6llojor6RSuRCJuWdxvJ3h/CZLgj57tnx9H7KXvDZIgrR3N
+         cha2mDaAiBhIKuHm3gsU3bVtcR3EFcPNB96HFzVClflZcE0yO3NqCkUz6c923zKk8LN0
+         h2bA==
+X-Gm-Message-State: AOAM5308TjEndytYIwimddg8pgi4gBtgw4n55G/1oXccWowzGFV2Yj6L
+        wIJbIQbG1Pm7djJ1Civ/Ffl9ruEdHW2CT0lxpme2pDoYUg6S7g==
+X-Google-Smtp-Source: ABdhPJzOCePPExdMTrNRTPHA6tSnt9KRAKvaxfBmfXhxn1cpJvTlQymYY+qW/liI0wajnrz1tMJFTaNzJ2TYrv7OBIE=
+X-Received: by 2002:a63:ce15:: with SMTP id y21mr7410996pgf.4.1615471352621;
+ Thu, 11 Mar 2021 06:02:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20210311132748.81071-1-andriy.shevchenko@linux.intel.com> <s5hr1klvmp3.wl-tiwai@suse.de>
-In-Reply-To: <s5hr1klvmp3.wl-tiwai@suse.de>
+References: <20210311132741.80989-1-andriy.shevchenko@linux.intel.com> <s5hpn05vmhm.wl-tiwai@suse.de>
+In-Reply-To: <s5hpn05vmhm.wl-tiwai@suse.de>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 11 Mar 2021 16:00:57 +0200
-Message-ID: <CAHp75VcjwzPOrxVhou-0i4-87X3VGAY6NqVaS=kdy3mPMOUtvQ@mail.gmail.com>
+Date:   Thu, 11 Mar 2021 16:02:16 +0200
+Message-ID: <CAHp75VcxRK=NsHXRtN8k8wrE8YSyNDqyTLb37TP4ojO_CW5ceg@mail.gmail.com>
 Subject: Re: [PATCH v1 1/1] ALSA: hda/realtek: Sort alphanumerically the
- HDA_CODEC_ENTRY() entries.
+ SND_PCI_QUIRK() entries.
 To:     Takashi Iwai <tiwai@suse.de>
 Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         ALSA Development Mailing List <alsa-devel@alsa-project.org>,
@@ -63,22 +62,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 3:36 PM Takashi Iwai <tiwai@suse.de> wrote:
+On Thu, Mar 11, 2021 at 3:40 PM Takashi Iwai <tiwai@suse.de> wrote:
 >
-> On Thu, 11 Mar 2021 14:27:48 +0100,
+> On Thu, 11 Mar 2021 14:27:41 +0100,
 > Andy Shevchenko wrote:
 > >
-> > Sort alphanumerically the HDA_CODEC_ENTRY() entries for better maintenance.
+> > Sort alphanumerically the SND_PCI_QUIRK() entries for better maintenance.
 > > No functional change implied.
-> >
-> > Note, that HDA_CODEC_REV_ENTRY() goes after HDA_CODEC_ENTRY() as per
-> > default value in the latter macro.
 >
-> This breaks the matching rule.  Please put the HDA_CODEC_REV_ENTRY()
-> before the HDA_CODEC_ENTRY().
+> I'd love to apply this kind of cleanups (and I do sometimes
+> partially), but practically seen, this may make the stable backporting
+> significantly harder because many quirk patches are backported to the
+> very old LTS kernels.  So, unless any specific reason (e.g. some
+> entries doubled or wrongly applied) is given, I'd avoid this full
+> plastic surgery.
 
-Oh, indeed. What I was thinking about... :-)
-Thanks!
+Can we ask people to follow the ordering before patches were applied?
 
 -- 
 With Best Regards,
