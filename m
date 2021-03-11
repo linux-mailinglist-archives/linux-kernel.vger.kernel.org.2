@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888AE336FAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77FB8336FAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhCKKPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:15:24 -0500
-Received: from foss.arm.com ([217.140.110.172]:60320 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231937AbhCKKPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:15:22 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17C641FB;
-        Thu, 11 Mar 2021 02:15:22 -0800 (PST)
-Received: from [10.57.19.51] (unknown [10.57.19.51])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0B5A53F70D;
-        Thu, 11 Mar 2021 02:15:20 -0800 (PST)
-Subject: Re: [PATCH v3 1/5] powercap/drivers/dtpm: Encapsulate even more the
- code
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210310110212.26512-1-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d8d3c50c-fee6-6f31-c085-d1ebce5297da@arm.com>
-Date:   Thu, 11 Mar 2021 10:15:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S232059AbhCKKQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:16:28 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:49766 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232001AbhCKKQS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 05:16:18 -0500
+Received: by mail-il1-f200.google.com with SMTP id q3so15042242ilv.16
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:16:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=pz8+zqAK2akixe3dIV64WVmHO2VaI0t+YN34HYQ794o=;
+        b=YvX9PWj9DJ4xRRRCAh1pLmJysOQJ4ZQhmfOKqxZBigVU7610+KYzE2jDDFv0uGOUEo
+         CkQ1fHVJATroiq2rwECP56ggeI/MuI2deRItMcxWuze3ZUbF5+v3b6BQvV2f/RZM6clk
+         duAUmSjTOLIrStv4lCfD9v6VI1+tgBVCvt01E6rSS6zJEuKqn3QqYCqZA/lJsRxMswLU
+         3jcvY0rdRi5bipwfR3v5LP7nh6WXRS9dKjvQjUmP9UFeO/9Z0qa0gABymyH9jgIu1Ywd
+         MChtFZ87uzxNA8HfmfsxnjjqgSQ8E1m1FHcKHO7u2EWpAt5gncP/2QAmemroqDuVsZ0t
+         qbkQ==
+X-Gm-Message-State: AOAM533umV0KzkEQeR6UzmvwETUn9AT7kWUWAOXAWrGEz4u9+XgNI4XA
+        Wg3UWzB6keIZGpDcRxFGFD4LaeiEEGXM2zCt227vG95mzEX7
+X-Google-Smtp-Source: ABdhPJxZUjTo588cmxcsepX55BknBzqLE4CVSGWPS0rOQr1jYeflliA9su2rONb0rOpxzUHAKGbMfyKWNgiDUQX39O2gEu4Lp6oz
 MIME-Version: 1.0
-In-Reply-To: <20210310110212.26512-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1069:: with SMTP id q9mr6192959ilj.97.1615457778344;
+ Thu, 11 Mar 2021 02:16:18 -0800 (PST)
+Date:   Thu, 11 Mar 2021 02:16:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000007287c05bd401384@google.com>
+Subject: [syzbot] KMSAN: uninit-value in number (3)
+From:   syzbot <syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com>
+To:     glider@google.com, hverkuil@xs4all.nl,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hello,
 
-On 3/10/21 11:02 AM, Daniel Lezcano wrote:
-> In order to increase the self-encapsulation of the dtpm generic code,
-> the following changes are adding a power update ops to the dtpm
-> ops. That allows the generic code to call directly the dtpm backend
-> function to update the power values.
-> 
-> The power update function does compute the power characteristics when
-> the function is invoked. In the case of the CPUs, the power
-> consumption depends on the number of online CPUs. The online CPUs mask
-> is not up to date at CPUHP_AP_ONLINE_DYN state in the tear down
-> callback. That is the reason why the online / offline are at separate
-> state. As there is already an existing state for DTPM, this one is
-> only moved to the DEAD state, so there is no addition of new state
-> with these changes. The dtpm node is not removed when the cpu is
-> unplugged.
-> 
-> That simplifies the code for the next changes and results in a more
-> self-encapsulated code.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
-> V2:
->   - Updated the changelog with the CPU node not being removed
->   - Commented the cpu hotplug callbacks to explain why there are two callbacks
->   - Changed 'upt_power_uw' to 'update_power_uw'
->   - Removed unused cpumask variable
-> ---
->   drivers/powercap/dtpm.c     |  54 ++++++-------
->   drivers/powercap/dtpm_cpu.c | 148 ++++++++++++++++--------------------
->   include/linux/cpuhotplug.h  |   2 +-
->   include/linux/dtpm.h        |   3 +-
->   4 files changed, 97 insertions(+), 110 deletions(-)
-> 
+syzbot found the following issue on:
 
-[snip]
+HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=148ba78ed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e17cc03a91bb1ac1
+dashboard link: https://syzkaller.appspot.com/bug?extid=a4e309017a5f3a24c7b3
+compiler:       Debian clang version 11.0.1-2
 
-> @@ -210,27 +175,20 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
->   	for_each_cpu(cpu, policy->related_cpus)
->   		per_cpu(dtpm_per_cpu, cpu) = dtpm;
->   
-> -	sprintf(name, "cpu%d", dtpm_cpu->cpu);
-> +	sprintf(name, "cpu%d-cpufreq", dtpm_cpu->cpu);
+Unfortunately, I don't have any reproducer for this issue yet.
 
-We should be safe in normal platforms, since there is less than
-< 300 cores. although, I would use 2x CPUFREQ_NAME_LEN array.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
 
-Other than that
+=====================================================
+BUG: KMSAN: uninit-value in number+0x54f/0x2540 lib/vsprintf.c:442
+CPU: 0 PID: 8467 Comm: kworker/0:4 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ number+0x54f/0x2540 lib/vsprintf.c:442
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
 
-Regards,
-Lukasz
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
