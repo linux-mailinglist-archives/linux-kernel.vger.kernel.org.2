@@ -2,134 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D89336E80
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92ECB336E7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbhCKJJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:09:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
+        id S231804AbhCKJJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbhCKJJN (ORCPT
+        with ESMTP id S231405AbhCKJI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:09:13 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43315C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:09:13 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id x29so13279468pgk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:09:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mCTW04T6FDAWe0y3Y8uvQz02hfd4dMHzD/jXKV5ni0E=;
-        b=Y/r8l2GZWPIzxtFqFbqp+HB+jA7JeWZF1hQD73NXfYnjF7SBJAfx7VeoK/MbgtuJ+U
-         /nBBJotqN2Mf403kEiXPK8qB0HtHD4oVOQdAxqrVeKM/nu+s/VuXYV2gBCN4W6HX8uUd
-         vrlV2K+JzGTmxQ8VNsMRMYR0xV1FySxGdV/tAsHBP6a9Xyqf59Dr/rvMS/pCQ+oMIKrm
-         id/jvwgp6/1c/a6VOGgI7xfYp90v/9KaF9LCFSevI00Yja48jSe7n/pfx2xds0CdvsS8
-         VdmbKG4CLJuM6nK+lyVt5r5YTVtHvHQzI+p8VOlhWeuwc9FCEFFJLYVMrFQUcSzY1eiQ
-         0vrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mCTW04T6FDAWe0y3Y8uvQz02hfd4dMHzD/jXKV5ni0E=;
-        b=L0TQbXfZ/oAwta2oEyqyrg6pMDGgLGnnTr0rtJD5Vv0EGTYu1pU6XTW3IFIas2tzIQ
-         JvNV4Re5L5gUO38sBaPebMO6XOrs/sp4m19CLfC+eYWPlrDQOgBu0hdQtSeX9Uo1vgjd
-         XFG/QMKe0yB160rw1bO7JLYS5oZprSjC0tIZCSMsiE0seH0mLYic3WEbMPDNhXJNrleY
-         4MqzsMSVDSP6N2ygYGGBM8XAQwj7Q+jF+F8Oj2vRM+zxjXU2sNfyLabs3r5G+QpH0tGa
-         IqYazYjpD7XocakSvWj0A7pmdR4uhQlqYAt4SaJtCjXEZO/TwyjfKdSzeTNLspPptYwz
-         CJiA==
-X-Gm-Message-State: AOAM533n9wzdoHyAeFPiRqARZuVNsYLg+3nlaLJ7Sb7XvKmBJ/HcvdaA
-        k6ZG9ohnQkPjn/Ui2OWvOcmYwMTJSyUoMa4rDgVaTA==
-X-Google-Smtp-Source: ABdhPJy8F/wYop3dZx7C28eOxSytt+4LbTA89Xyq6VmeWP+d2mbk9yMNhz3RbMDYqCmWI6x0q8mz5dNpU7Fue42Xc3E=
-X-Received: by 2002:aa7:910c:0:b029:1ed:ef1:81b with SMTP id
- 12-20020aa7910c0000b02901ed0ef1081bmr6861804pfh.49.1615453752720; Thu, 11 Mar
- 2021 01:09:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20210308102807.59745-1-songmuchun@bytedance.com>
- <20210308102807.59745-10-songmuchun@bytedance.com> <YEjoozshsvKeMAAu@dhcp22.suse.cz>
- <CAMZfGtV1Fp1RiQ64c9RrMmZ+=EwjGRHjwL8Wx3Q0YRWbbKF6xg@mail.gmail.com> <YEnbBPviwU6N2RzK@dhcp22.suse.cz>
-In-Reply-To: <YEnbBPviwU6N2RzK@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 11 Mar 2021 17:08:34 +0800
-Message-ID: <CAMZfGtW5uHYiA_1an3W-jEmemsoN3Org7JwieeE2V271wh9X-A@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v18 9/9] mm: hugetlb: optimize the code
- with the help of the compiler
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Thu, 11 Mar 2021 04:08:57 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4ACCC061574;
+        Thu, 11 Mar 2021 01:08:56 -0800 (PST)
+Date:   Thu, 11 Mar 2021 09:08:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615453729;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1kq9Vd6dVRi8UdZfNdOm0b+aTVgLJN6XPgExV0td+gs=;
+        b=NBn4YnQnXUtc3jRv7deMsc/76Ofuytz26DDM7yFEEmp9bfmYynMY/5Lr0H0THGd3Xvdkiw
+        pU3xkoUQJDDR/NvCn7YdUaoTilAsYE3iew7sY2J0KyHZ4wj6jA6zkXh2gu5dvgRtwjxQhB
+        YTeVohLWNsU2idR228ErCoJ2/1GQRf+odx0OV4a6juxwG2k5QxCm+cYOyIMPS2cxx3Vdxt
+        yFPLiNzcx1zoK27QbjlVVO7W5lR742y3imgwGzYmVVR+DtNGZa692LWIFSujOZKtOuQiwJ
+        8QZZeuH1YpWZih9BSk6QjjHUDWNlqiO21/jxUmpenvtRpJdomZBdPWhdslK6KQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615453729;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1kq9Vd6dVRi8UdZfNdOm0b+aTVgLJN6XPgExV0td+gs=;
+        b=fgnNE6AjHG/IjjxN1Ry6/28p89O/O9dqJa9aT51rDXjhGZwDdw2usGvSxWSZkuQfu1w1Ek
+        CcgsjIKgOnApZsDw==
+From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] x86/perf: Use RET0 as default for guest_get_msrs
+ to handle "no PMU" case
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com,
         Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210309171019.1125243-1-seanjc@google.com>
+References: <20210309171019.1125243-1-seanjc@google.com>
+MIME-Version: 1.0
+Message-ID: <161545372825.398.16630924831930486998.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 4:55 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Thu 11-03-21 15:33:20, Muchun Song wrote:
-> > On Wed, Mar 10, 2021 at 11:41 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 08-03-21 18:28:07, Muchun Song wrote:
-> > > > When the "struct page size" crosses page boundaries we cannot
-> > > > make use of this feature. Let free_vmemmap_pages_per_hpage()
-> > > > return zero if that is the case, most of the functions can be
-> > > > optimized away.
-> > >
-> > > I am confused. Don't you check for this in early_hugetlb_free_vmemmap_param already?
-> >
-> > Right.
-> >
-> > > Why do we need any runtime checks?
-> >
-> > If the size of the struct page is not power of 2, compiler can think
-> > is_hugetlb_free_vmemmap_enabled() always return false. So
-> > the code snippet of this user can be optimized away.
-> >
-> > E.g.
-> >
-> > if (is_hugetlb_free_vmemmap_enabled())
-> >         /* do something */
-> >
-> > The compiler can drop "/* do something */" directly, because
-> > it knows is_hugetlb_free_vmemmap_enabled() always returns
-> > false.
->
-> OK, so this is a micro-optimization to generate a better code?
+The following commit has been merged into the perf/urgent branch of tip:
 
-Right.
+Commit-ID:     c8e2fe13d1d1f3a02842b7b909d4e4846a4b6a2c
+Gitweb:        https://git.kernel.org/tip/c8e2fe13d1d1f3a02842b7b909d4e4846a4b6a2c
+Author:        Sean Christopherson <seanjc@google.com>
+AuthorDate:    Tue, 09 Mar 2021 09:10:19 -08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 10 Mar 2021 16:45:09 +01:00
 
-> Is this measurable to warrant more code?
+x86/perf: Use RET0 as default for guest_get_msrs to handle "no PMU" case
 
-I have disassembled the code to confirm this behavior.
-I know this is not the hot path. But it actually can decrease
-the code size.
+Initialize x86_pmu.guest_get_msrs to return 0/NULL to handle the "nop"
+case.  Patching in perf_guest_get_msrs_nop() during setup does not work
+if there is no PMU, as setup bails before updating the static calls,
+leaving x86_pmu.guest_get_msrs NULL and thus a complete nop.  Ultimately,
+this causes VMX abort on VM-Exit due to KVM putting random garbage from
+the stack into the MSR load list.
 
-Thanks.
+Add a comment in KVM to note that nr_msrs is valid if and only if the
+return value is non-NULL.
 
-> --
-> Michal Hocko
-> SUSE Labs
+Fixes: abd562df94d1 ("x86/perf: Use static_call for x86_pmu.guest_get_msrs")
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Reported-by: syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210309171019.1125243-1-seanjc@google.com
+---
+ arch/x86/events/core.c | 15 ++++++---------
+ arch/x86/kvm/vmx/vmx.c |  2 +-
+ 2 files changed, 7 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 6ddeed3..18df171 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -81,7 +81,11 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_swap_task_ctx, *x86_pmu.swap_task_ctx);
+ DEFINE_STATIC_CALL_NULL(x86_pmu_drain_pebs,   *x86_pmu.drain_pebs);
+ DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
+ 
+-DEFINE_STATIC_CALL_NULL(x86_pmu_guest_get_msrs,  *x86_pmu.guest_get_msrs);
++/*
++ * This one is magic, it will get called even when PMU init fails (because
++ * there is no PMU), in which case it should simply return NULL.
++ */
++DEFINE_STATIC_CALL_RET0(x86_pmu_guest_get_msrs, *x86_pmu.guest_get_msrs);
+ 
+ u64 __read_mostly hw_cache_event_ids
+ 				[PERF_COUNT_HW_CACHE_MAX]
+@@ -1944,13 +1948,6 @@ static void _x86_pmu_read(struct perf_event *event)
+ 	x86_perf_event_update(event);
+ }
+ 
+-static inline struct perf_guest_switch_msr *
+-perf_guest_get_msrs_nop(int *nr)
+-{
+-	*nr = 0;
+-	return NULL;
+-}
+-
+ static int __init init_hw_perf_events(void)
+ {
+ 	struct x86_pmu_quirk *quirk;
+@@ -2025,7 +2022,7 @@ static int __init init_hw_perf_events(void)
+ 		x86_pmu.read = _x86_pmu_read;
+ 
+ 	if (!x86_pmu.guest_get_msrs)
+-		x86_pmu.guest_get_msrs = perf_guest_get_msrs_nop;
++		x86_pmu.guest_get_msrs = (void *)&__static_call_return0;
+ 
+ 	x86_pmu_static_call_update();
+ 
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 50810d4..32cf828 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6580,8 +6580,8 @@ static void atomic_switch_perf_msrs(struct vcpu_vmx *vmx)
+ 	int i, nr_msrs;
+ 	struct perf_guest_switch_msr *msrs;
+ 
++	/* Note, nr_msrs may be garbage if perf_guest_get_msrs() returns NULL. */
+ 	msrs = perf_guest_get_msrs(&nr_msrs);
+-
+ 	if (!msrs)
+ 		return;
+ 
