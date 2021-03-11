@@ -2,95 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0D83380E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 577043380EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhCKWvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 17:51:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhCKWvQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 17:51:16 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EFFC061574;
-        Thu, 11 Mar 2021 14:51:16 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 21E6F3E4;
-        Thu, 11 Mar 2021 23:51:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615503072;
-        bh=8/AoyCRGIXsckqb4EVyOMhwTF3OuvhDtRN0psnr8LIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eKvNLXLZZh+5sD0hqDneEkIfmuMmj0IcySdcN8be7C+a9IV6+1FLO10Wg5SuYyXsw
-         Wi98PjL1p9ml4e1CpL2q5um3PA69mIlASDsXjGwqpzdZAezDxlSPnNZ+PmK8jh8aqy
-         /DhnsP4trfl6XpwKXWU8H/RKdpZVVWcBNvGEY/5g=
-Date:   Fri, 12 Mar 2021 00:50:38 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, senozhatsky@chromium.org,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v2 3/6] media: uvcvideo: Return -EIO for control errors
-Message-ID: <YEqevkojuvniSTFS@pendragon.ideasonboard.com>
-References: <20210311221946.1319924-1-ribalda@chromium.org>
- <20210311221946.1319924-4-ribalda@chromium.org>
+        id S231144AbhCKWwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 17:52:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229910AbhCKWv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 17:51:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E22664F26;
+        Thu, 11 Mar 2021 22:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615503115;
+        bh=vntZGoqs0CqwH2BmBiZ/QL0YFTZvd8CMaMCrkmzsLCg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=f+BMf0FazeCKv7+xE2a01FZyMKDgIawfrWTDN4xWxAzc2mfB71aO3C0KLvte4kma4
+         iROzJRsSfNj8KrEO0bqFAg0E2kwnoFKs3x/7IjXEM5v0xzw7kUI/95m8Xd9+HxkhTd
+         9at+Jpa4379HW1DRVl4e83r4Sc7zREp4lwLFYgtvxXJeczUDeL76RbOARydfVdF5Yq
+         w1Qr1R3+mHFHjTOXf91syngUVHVI+wHFuUR1edJW8WktKkWC6sZ+Sj0Nebt9C2qyJL
+         IALRiMTROT+dxsxol1TdkuLJw3skon/moH0QFZ1xvDs5WfJVBAZzD4GLJUH7HAstbM
+         y6gsSKxweYxvg==
+Message-ID: <8dff1af3191e65e28615a2a3df5269bdaea18754.camel@kernel.org>
+Subject: Re: [PATCH] net: mellanox: mlx5: fix error return code in
+ mlx5_fpga_device_start()
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     borisp@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 11 Mar 2021 14:51:54 -0800
+In-Reply-To: <YESTu9lXAgvYaroG@unreal>
+References: <20210304141814.8508-1-baijiaju1990@gmail.com>
+         <YESTu9lXAgvYaroG@unreal>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210311221946.1319924-4-ribalda@chromium.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-Thank you for the patch.
-
-On Thu, Mar 11, 2021 at 11:19:43PM +0100, Ricardo Ribalda wrote:
-> The device is doing something unspected with the control. Either because
-> the protocol is not properly implemented or there has been a HW error.
+On Sun, 2021-03-07 at 10:50 +0200, Leon Romanovsky wrote:
+> On Thu, Mar 04, 2021 at 06:18:14AM -0800, Jia-Ju Bai wrote:
+> > When mlx5_is_fpga_lookaside() returns a non-zero value, no error
+> > return code is assigned.
+> > To fix this bug, err is assigned with -EINVAL as error return code.
+> > 
+> > Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> > Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> Fixes v4l2-compliance:
+> Like Heiner said, the current code has correct behavior.
+> The mlx5_fpga_device_load_check() has same mlx5_is_fpga_lookaside()
+> check and it is not an error if it returns true.
 > 
-> Control ioctls (Input 0):
->                 fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
->         test VIDIOC_G/S_CTRL: FAIL
->                 fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
->         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+> NAK: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> Thanks
 
-The change looks good to me.
+Agreed, apparently this robot is looking for "goto {out|*err*}"
+statements and treats all of them as errors, this is very unreliable, 
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Which of the error codes below do you get with your camera, and for
-which control ?
 
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index f2f565281e63..25fd8aa23529 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -112,6 +112,11 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
->  	case 5: /* Invalid unit */
->  	case 6: /* Invalid control */
->  	case 7: /* Invalid Request */
-> +		/*
-> +		 * The firmware has not properly implemented
-> +		 * the control or there has been a HW error.
-> +		 */
-> +		return -EIO;
->  	case 8: /* Invalid value within range */
->  		return -EINVAL;
->  	default: /* reserved or unknown */
-
--- 
-Regards,
-
-Laurent Pinchart
