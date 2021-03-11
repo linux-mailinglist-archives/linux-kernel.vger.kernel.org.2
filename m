@@ -2,152 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3913F336943
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE453368AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhCKAwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 19:52:17 -0500
-Received: from gateway24.websitewelcome.com ([192.185.51.31]:39322 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229512AbhCKAwE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:52:04 -0500
-X-Greylist: delayed 1496 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Mar 2021 19:52:04 EST
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id AB8823E0C
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 18:06:53 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id K8qrlUOvtiQiZK8qrlY6DL; Wed, 10 Mar 2021 18:06:53 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=tnn1NfTKvXdkVIEGC71LezrIsubA1kaJf3yIpzYvmrw=; b=e+baLI1+wGugzndicla0y8r6ra
-        Bh3nfj10AzCJsqYjoN3r84Wk6xyuLEXoiaw54rMwj7wxfrfvRmaYcpNvCqgxHIPZ6FxplUcaHmrx/
-        tUPUTJRLDTRcTWViV6FYLZucybJA1V4fs9ePe8EEAk9yM3n1PMNMpjAxNdyw4gQEnfaSWbfhKOBpl
-        1MSEqsPSDcp98MDr9o1ENaAD21P9lG+Q8D/XAx61Lvt6P+ySxUz6QNHU7QEdSRFta8+9ogP95yN1X
-        oztU4tiHrCeOShRuorn/P0H2HpoQwJDRD79wzaz8rQFSFQ6gL4DWeVfoVCuva0CsBfQtqw+f2gZjl
-        lgm3fhLQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:36282 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lK8qr-004JNM-72; Wed, 10 Mar 2021 18:06:53 -0600
-Subject: Re: [PATCH v2][next] scsi: mpt3sas: Replace one-element array with
- flexible-array in struct _MPI2_CONFIG_PAGE_IO_UNIT_3
-To:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     James Bottomley <jejb@linux.ibm.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210202235118.GA314410@embeddedor>
- <20210308193237.GA212624@embeddedor>
- <88d9dda39a70df25b48e72247b9752d3dc5e2e8d.camel@linux.ibm.com>
- <20210308204129.GA214076@embeddedor> <202103101058.16ED27BE3@keescook>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <855e73f8-9b84-25b9-01e3-8ce368165b25@embeddedor.com>
-Date:   Wed, 10 Mar 2021 18:06:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229955AbhCKAav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 19:30:51 -0500
+Received: from mail-eopbgr60048.outbound.protection.outlook.com ([40.107.6.48]:57828
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229570AbhCKAa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 19:30:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y+MbZvKqrD45YyWHfQcBVNLcC6SHALanQIhhcfZDI+HLK1xRtDh97rxrWlgMRW6D4LtWder0qfRXC9tJZTdcAnFOLRW1yjyY8bEQJP3Wvlps26ts01J/jqmsj5rRoRthkdqrunsMiVXNjwK5Bx9NH0FB+PhF6D/qVkGf+ju4du/N5XKG+xrVe1gGzpT08HIKbh2dbIT/6NMyyLYTyDpVOpLVAi11THPzHdJpsDrQh+d3creraoGuvRzSjCHSCEVJDk5Y/gyDDupiVUp0ckH/LnHiNYl2eA8PCfknl2iPJzmv+daMRHg7EgBYPAdVunLw9IK+ETN1V5baTVALw2qnIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fxv9QQ2fu4n/bYdY2l1vKLDfPRtnMLfgUHF3INVnLRw=;
+ b=PKjoePicPY+eQgUkJpEbDd6VAdVYp1LvsWSEC09cBknR/HNVKbzaB9z9wkVws/hf4HINzhgMpjji0oSwakqp3NqSj1eTUUbwK6klsNO3X26uxmk8JaKZTaUD7LNTJrgc3n6p1jqMDqdXlYPG27HnOCKeUab8bR+AIoLhAz0ffNt21BAqjEq9tk/OJmXNutHdlseDHlYCD8gzGHhN4QM+QFrMLuhQ9s3LbUr3PBOUo6LT2c/5FfS5jO3+38bHm67Quno0KjGQaDZogWFzx/ED+vPnOM3CXFp9yuUF/lI5iYXxOqK9+USe9CQmPbNI05+c3y/PrDN51/swBq2MP8JHtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fxv9QQ2fu4n/bYdY2l1vKLDfPRtnMLfgUHF3INVnLRw=;
+ b=A3rAmeSefgDoSe+NsA4G+QejxYoa9SdN1vU3COtXEIwXO3ebIL3N3P0Q7MfmHua8eErBqnlAvyogz4WU03R8rJ+VQaxGLu1fPPUT5S27l9FVAi7qWqCnmkWkbzPSmikcpL0DrZj8+JVVoxWDW+0xw5PixFOdNpx1orgudq0CNBA=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM5PR04MB3137.eurprd04.prod.outlook.com (2603:10a6:206:c::18)
+ by AS8PR04MB7959.eurprd04.prod.outlook.com (2603:10a6:20b:289::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26; Thu, 11 Mar
+ 2021 00:30:24 +0000
+Received: from AM5PR04MB3137.eurprd04.prod.outlook.com
+ ([fe80::618c:8b68:e3d9:a8c6]) by AM5PR04MB3137.eurprd04.prod.outlook.com
+ ([fe80::618c:8b68:e3d9:a8c6%7]) with mapi id 15.20.3912.029; Thu, 11 Mar 2021
+ 00:30:24 +0000
+From:   "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, shawnguo@kernel.org,
+        robh+dt@kernel.org, p.zabel@pengutronix.de
+Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
+        daniel.baluta@nxp.com, robert.chiras@nxp.com,
+        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, ezequiel@collabora.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se,
+        dafna.hirschfeld@collabora.com,
+        Mirela Rabulea <mirela.rabulea@nxp.com>
+Subject: [PATCH v9 1/8] media: v4l: Add packed YUV444 24bpp pixel format
+Date:   Thu, 11 Mar 2021 02:28:47 +0200
+Message-Id: <20210311002854.13687-2-mirela.rabulea@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210311002854.13687-1-mirela.rabulea@oss.nxp.com>
+References: <20210311002854.13687-1-mirela.rabulea@oss.nxp.com>
+Content-Type: text/plain
+X-Originating-IP: [86.124.171.30]
+X-ClientProxiedBy: VI1P190CA0011.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:802:2b::24) To AM5PR04MB3137.eurprd04.prod.outlook.com
+ (2603:10a6:206:c::18)
 MIME-Version: 1.0
-In-Reply-To: <202103101058.16ED27BE3@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lK8qr-004JNM-72
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:36282
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 10
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1664-134.ea.freescale.net (86.124.171.30) by VI1P190CA0011.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:2b::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Thu, 11 Mar 2021 00:30:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1f792506-b21e-4f43-532d-08d8e424dc33
+X-MS-TrafficTypeDiagnostic: AS8PR04MB7959:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AS8PR04MB7959314D7C1D9E7A253A48B2CE909@AS8PR04MB7959.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o38qbghILn4ARvbqG5MVchnDWVrTMRJO4M/TCCEET1uGi0meJYaseXLQGyPy7Tx9Nffgz/ce/2GMuVJi6C5lQInBf/wDO5sbqPUo+z4iCbXRTykhiWTEen1sou8rfdUPdXDlbLb8ekDf07+4EW/cj+zq7qfr30OVAXZgjKn7/H6fO8/Gu9E/j6qX38O66craSR1hLOubvzPKcUUB55X7w/72Z27Tf5bqyJrt35FH3ximIdGxXWQrXY1I14PWRB9jW/swh1FsovItDBxSEIzlXrCEkKgS+7wCwILlY1LAnjts0f/TmnfkapozEuqEkKu+RZnMuyekOrXQfErrAU+aIyU+G8Uyf8xYC7jD34Y1ee1T3RzdZXa+kFkeYGIHR3k4Gb3UzXADyC0jjC46lZe3tMtWvt0/K7WzP7A6jHanUZFxNm4GSRoFzW+wP1+8+zoYQ8/CnmyxVRjABZPMuUv9Ua3stQOZ/Xmxd708v38Tso4/29U3Gf1beFJjq5thErvE+BFC62FYbT2eLllWtIIFXw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3137.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(346002)(136003)(376002)(366004)(956004)(2616005)(66556008)(66476007)(2906002)(66946007)(1076003)(316002)(7416002)(4326008)(478600001)(52116002)(6486002)(6512007)(186003)(26005)(16526019)(86362001)(6666004)(19627235002)(5660300002)(8676002)(6506007)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?s1T0zeQ0uZurmG3RTYk8kxUi5zcA9ad04DlJKF2N1UmATDkXwXdssXR22oKQ?=
+ =?us-ascii?Q?QVPQX508t7ZihaYBXszYV4Q336uVqtsuzDWQRFauwXo7ZPssNkrrWboZyxHB?=
+ =?us-ascii?Q?z8gLJv5pXxmbMdD77PMT3xqQZdYl4/toer3dFtQ+RJeWu+PF1TUp4lwN7VWE?=
+ =?us-ascii?Q?hgyvfFwNhPUsFn/ZTOtM/S3oSyEUoinfwRXWTyEL9gHAaFekUnEGH+OQFiqR?=
+ =?us-ascii?Q?VDitqSKe7AdaNSZbBNcZvhL07g2U/vk/kIy6kHZPe4TLXbNayJsbshXHxHhO?=
+ =?us-ascii?Q?az4qiuzB6krciRa0NT9JOASikeD1tMtCwJI6t8xSyKDl6Q6OyB3awV0DG9fH?=
+ =?us-ascii?Q?TfHvo16bN8qXqHTjnYpEwQWVNhPe+9ZHx0YRxNDoIeKITyE0r7Qoxs+WhUBp?=
+ =?us-ascii?Q?ObfrfUAG8PmlVKFFfmtOio3Y1DtD6JjR2jIjSAhjAQsk3f4cn5Fhf1rgLKgI?=
+ =?us-ascii?Q?IGWViJGivcNXO6vv1h6lhRsIAzIXqF6F3/Z+IuLwsoalxBpWrKr79s/1sLtS?=
+ =?us-ascii?Q?tp2FzzhuZ7SIl14b8W9UH10UOSigtUwdqD10XQHVAhDvAiwaxTjnfhTyTSCV?=
+ =?us-ascii?Q?alRU/7y3cMuHmcmoSBtv1EU8/e25cCeEyafQXM7Dj8H4tgQ5aMC2vzl3Ms9N?=
+ =?us-ascii?Q?bvvV4qD/rd6qvik4XOm8JEpG9VzS/jISPmNwS/Rh1GppvCU2/UecRfjxZHaa?=
+ =?us-ascii?Q?5lCPuvkqNPmlQoy5zVUjzs1gHWhgXmyFF21xKpthDDp8c5uqthJVxJqSS5sr?=
+ =?us-ascii?Q?Pe6H90grpl/kAjm+K9POa3ZIoP4B/Q3Vf15Ux93Lk+GxZzId/YklG8xe2Fwo?=
+ =?us-ascii?Q?mZhpAG2xigvojf8YT3HE5iK5XqYblj9sYdGbFCVLNfT1E1IsSkVAMVXfcykR?=
+ =?us-ascii?Q?QRqkVcgMthrag0Tl4pZ0cQ8WXIiN7L/ShV4mshXkiixEDUzMJoWOVXDL+lHO?=
+ =?us-ascii?Q?WIyrZ3PtoTt1vopnu7HHGpcLIZRFwkHpArpNun8U+r4AQN62PHDobQ7EbtU8?=
+ =?us-ascii?Q?Ed7iHG6g6CF4mb5jYbxGReEISvlEDFcbKIwiFCWQzFESmFawBIFEoq/QGwSF?=
+ =?us-ascii?Q?59ddpPhhSWbOdD1eIb0cxkykBlIdM5Ua2DSM8ycRu0yxw/maCEPRATadPkeI?=
+ =?us-ascii?Q?z5cYwa278F3WB//KUQZqrJsongqW5C7YOb7z0K9ZfzkErrdGJzj/lk4oS0YR?=
+ =?us-ascii?Q?jFFTcIdITEhVBK5gvF4iSxcTC9xKa3TepBAY1KV624BKc0uxIEcocmD0wJOD?=
+ =?us-ascii?Q?OxO95MBhWxBLkyTIsIdu6+2TxoZvDHGXABn9NpoNQPj/7hTZMgoQaRRWCS7D?=
+ =?us-ascii?Q?DwfiAYsqb02HPY7hg4v3haRe?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f792506-b21e-4f43-532d-08d8e424dc33
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3137.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 00:30:23.9270
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hi+rs6vSu1V8ApX0qxb7SVnCHuYWCjLthMxydtyxg2Fx+IGa8cBfsqPWBTumSInIUCl7FrklFp976NNUbThxTw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7959
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Mirela Rabulea <mirela.rabulea@nxp.com>
 
+The added format is V4L2_PIX_FMT_YUV24, this is a packed
+YUV 4:4:4 format, with 8 bits for each component, 24 bits
+per sample.
 
-On 3/10/21 13:07, Kees Cook wrote:
+This format is used by the i.MX 8QuadMax and i.MX 8DualXPlus/8QuadXPlus
+JPEG encoder/decoder.
 
->> diff --git a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
->> index 43a3bf8ff428..d00431f553e1 100644
->> --- a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
->> +++ b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
->> @@ -992,7 +992,7 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_1 {
->>   *one and check the value returned for GPIOCount at runtime.
->>   */
->>  #ifndef MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX
->> -#define MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX    (1)
->> +#define MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX    (36)
->>  #endif
->>
->>  typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_3 {
->> diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
->> index 44f9a05db94e..23fcf29bfd67 100644
->> --- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
->> +++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
->> @@ -3203,7 +3203,7 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
->>  {
->>         struct Scsi_Host *shost = class_to_shost(cdev);
->>         struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
->> -       Mpi2IOUnitPage3_t *io_unit_pg3 = NULL;
->> +       Mpi2IOUnitPage3_t io_unit_pg3;
->>         Mpi2ConfigReply_t mpi_reply;
->>         u16 backup_rail_monitor_status = 0;
->>         u16 ioc_status;
->> @@ -3221,16 +3221,10 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
->>                 goto out;
->>
->>         /* allocate upto GPIOVal 36 entries */
->> -       sz = offsetof(Mpi2IOUnitPage3_t, GPIOVal) + (sizeof(u16) * 36);
->> -       io_unit_pg3 = kzalloc(sz, GFP_KERNEL);
->> -       if (!io_unit_pg3) {
->> -               rc = -ENOMEM;
->> -               ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%d) bytes\n",
->> -                       __func__, sz);
->> -               goto out;
->> -       }
->> +       sz = sizeof(io_unit_pg3);
->> +       memset(&io_unit_pg3, 0, sz);
-> 
-> I like this a lot. It makes the code way simpler.
-> 
-> Putting this on the stack makes it faster, and it's less than 100 bytes,
-> which seems entirely reasonable.
-> 
->>
->> -       if (mpt3sas_config_get_iounit_pg3(ioc, &mpi_reply, io_unit_pg3, sz) !=
->> +       if (mpt3sas_config_get_iounit_pg3(ioc, &mpi_reply, &io_unit_pg3, sz) !=
-> 
-> The only thing I can imagine is if this ends up doing DMA, which isn't
-> allowed on the stack. However, in looking down through the call path,
-> it's _copied_ into DMA memory, so this appears entirely safe.
->  
-> Can you send this as a "normal" patch? Feel free to include:
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
+Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+---
+ .../userspace-api/media/v4l/pixfmt-packed-yuv.rst      | 10 ++++++++++
+ drivers/media/v4l2-core/v4l2-ioctl.c                   |  1 +
+ include/uapi/linux/videodev2.h                         |  1 +
+ 3 files changed, 12 insertions(+)
 
-Done: https://lore.kernel.org/lkml/20210310235951.GA108661@embeddedor/
+diff --git a/Documentation/userspace-api/media/v4l/pixfmt-packed-yuv.rst b/Documentation/userspace-api/media/v4l/pixfmt-packed-yuv.rst
+index 560fd2ead8ca..65520c3af7cf 100644
+--- a/Documentation/userspace-api/media/v4l/pixfmt-packed-yuv.rst
++++ b/Documentation/userspace-api/media/v4l/pixfmt-packed-yuv.rst
+@@ -220,6 +220,16 @@ the second byte and Y'\ :sub:`7-0` in the third byte.
+       - Y'\ :sub:`7-0`
+       - X\ :sub:`7-0`
+ 
++    * .. _V4L2-PIX-FMT-YUV24:
++
++      - ``V4L2_PIX_FMT_YUV24``
++      - 'YUV3'
++
++      - Y'\ :sub:`7-0`
++      - Cb\ :sub:`7-0`
++      - Cr\ :sub:`7-0`
++      - -\
++
+ .. note::
+ 
+     - The alpha component is expected to contain a meaningful value that can be
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 31d1342e61e8..9a160283b3ae 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -1304,6 +1304,7 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+ 	case V4L2_PIX_FMT_YUV444:	descr = "16-bit A/XYUV 4-4-4-4"; break;
+ 	case V4L2_PIX_FMT_YUV555:	descr = "16-bit A/XYUV 1-5-5-5"; break;
+ 	case V4L2_PIX_FMT_YUV565:	descr = "16-bit YUV 5-6-5"; break;
++	case V4L2_PIX_FMT_YUV24:	descr = "24-bit YUV 4:4:4 8-8-8"; break;
+ 	case V4L2_PIX_FMT_YUV32:	descr = "32-bit A/XYUV 8-8-8-8"; break;
+ 	case V4L2_PIX_FMT_AYUV32:	descr = "32-bit AYUV 8-8-8-8"; break;
+ 	case V4L2_PIX_FMT_XYUV32:	descr = "32-bit XYUV 8-8-8-8"; break;
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 79dbde3bcf8d..9e4359be04eb 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -586,6 +586,7 @@ struct v4l2_pix_format {
+ #define V4L2_PIX_FMT_YUV444  v4l2_fourcc('Y', '4', '4', '4') /* 16  xxxxyyyy uuuuvvvv */
+ #define V4L2_PIX_FMT_YUV555  v4l2_fourcc('Y', 'U', 'V', 'O') /* 16  YUV-5-5-5     */
+ #define V4L2_PIX_FMT_YUV565  v4l2_fourcc('Y', 'U', 'V', 'P') /* 16  YUV-5-6-5     */
++#define V4L2_PIX_FMT_YUV24   v4l2_fourcc('Y', 'U', 'V', '3') /* 24  YUV-8-8-8     */
+ #define V4L2_PIX_FMT_YUV32   v4l2_fourcc('Y', 'U', 'V', '4') /* 32  YUV-8-8-8-8   */
+ #define V4L2_PIX_FMT_AYUV32  v4l2_fourcc('A', 'Y', 'U', 'V') /* 32  AYUV-8-8-8-8  */
+ #define V4L2_PIX_FMT_XYUV32  v4l2_fourcc('X', 'Y', 'U', 'V') /* 32  XYUV-8-8-8-8  */
+-- 
+2.17.1
 
-Thanks for the comments!
---
-Gustavo
