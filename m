@@ -2,143 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F997337F7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 151BA337F86
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhCKVP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:15:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231241AbhCKVOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:14:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E0A600CC;
-        Thu, 11 Mar 2021 21:14:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615497256;
-        bh=1Gq9ClTTzgzgBZrG50VQRaLjdSNMezZBgYskj+ev9t4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KjAKhaFqiLiecSpTo5ZepN/OtyJd8I3xqccgVeu2ykHABm0CrX9FiBiaAxtOZARzX
-         EPAkAJ6R2TfC4+bEJnS8FLuxcgYBfFhYAn+yd3IiJIXRRkaK9SovrOzHeF+Am6sLEv
-         jOgIsPmMjw63ZGnXdQFy3DYnyC2ZgWtykHEnucOPDmbBTlVVnTSKb9FLD5/kyzcKdc
-         c8uSaCbtu4FT7NWw0o+TyHr0blY7tttNmOxf7zsvZk2AVISUx7cGhj+tc3YIeVRTzg
-         MYfAvkaEhKd4MjNEep56EzahPsYD8Uc/psVkLNnWCq2x0i2y031Hh3mWT8TmmVTDVq
-         eRfd78i9W9blA==
-Received: by mail-ed1-f54.google.com with SMTP id j3so4945230edp.11;
-        Thu, 11 Mar 2021 13:14:16 -0800 (PST)
-X-Gm-Message-State: AOAM5308UxFV19CwB+YWhABXbcWIWaLAvPSDE4KZ4hDYFqvykCIr3h1J
-        QKuQ9GzJpxTuG/LzUGTHXUtDHZb31C/mQqEuBg==
-X-Google-Smtp-Source: ABdhPJwFGvXWlsCMvQVrIbfRFd9CXv7s7D8vCbthspQTNwPv26dQf5jf0GKdzQ2+oyoD0yzw8TW3mdFVhV5l6ZRj0yM=
-X-Received: by 2002:aa7:c403:: with SMTP id j3mr10559731edq.137.1615497254841;
- Thu, 11 Mar 2021 13:14:14 -0800 (PST)
+        id S230231AbhCKVSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:18:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhCKVRr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 16:17:47 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5616C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:17:46 -0800 (PST)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 32FD2891AE;
+        Fri, 12 Mar 2021 10:17:44 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1615497464;
+        bh=1DcFBkSZ1GEMK4IGgLLSPohVm5dNWmmK5gXKKqQb5SE=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=2I4l3FFnAYyE+DGHLdQLbYSxuXARGckSj2PvrusoNEIBwVD97nFEDz8CEAHpO82NE
+         HTgpeW0lzhI0O2CCS3hi0F8mev9yd0qeMfllU/2iMKfZMtZQWCyod5vjlsmn2cbXim
+         n/X189mL9CAZY/VOGf/T7cny7II/DKVTtTVuwBVuBdf2D6NcBxzlVMGXqoVQ0LRoUS
+         Piqvc6LmD8HcAbb0xvvJrt8FQiidwHfOm839d2enaDkds/C+Q527t8EJ8i4lNjhT34
+         hA+mvaIxzApx4tOlg072hdCKv2z+LSZ5Tl5Yo7dACUQ+QJHszj97dwaOhEy4tF022l
+         CmXEeHhh4OlNA==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B604a88f80001>; Fri, 12 Mar 2021 10:17:44 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
+ by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
+ Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Mar 2021 10:17:43 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Fri, 12 Mar 2021 10:17:43 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Wolfram Sang <wsa@kernel.org>, Guenter Roeck <linux@roeck-us.net>
+CC:     "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: Errant readings on LM81 with T2080 SoC
+Thread-Topic: Errant readings on LM81 with T2080 SoC
+Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Sk6p4Y2sAgAAgcACAACSBgIAABe+AgAEDagCAAfS7gIAALq8AgAEX54CAAKWsgIAACmIAgADZp4A=
+Date:   Thu, 11 Mar 2021 21:17:43 +0000
+Message-ID: <94dfa9dc-a80c-98ba-4169-44cce3d810f7@alliedtelesis.co.nz>
+References: <20210311081842.GA1070@ninjato>
+In-Reply-To: <20210311081842.GA1070@ninjato>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <0B4D89C4CA0DE1478530916CB5DE73E1@atlnz.lc>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210309112148.2309116-1-geert+renesas@glider.be>
- <CAL_JsqJzfoSubkKQ+aGYGbuH2=vLG2Sf_nQShxJ8DLirALff5g@mail.gmail.com> <CAMuHMdWqo7WVsiNk2xyTM=cqi883v0_-jh1Ry9R7yLBaoOYxoA@mail.gmail.com>
-In-Reply-To: <CAMuHMdWqo7WVsiNk2xyTM=cqi883v0_-jh1Ry9R7yLBaoOYxoA@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 11 Mar 2021 14:14:02 -0700
-X-Gmail-Original-Message-ID: <CAL_Jsq+n6DVpoSkym3E4yG7BcUu6jS8O51tCpFD4-CeCtPesqA@mail.gmail.com>
-Message-ID: <CAL_Jsq+n6DVpoSkym3E4yG7BcUu6jS8O51tCpFD4-CeCtPesqA@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] dt-bindings: Consider DT_SCHEMA_FILES when finding
- all json-schema
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=N659UExz7-8A:10 a=dESyimp9J3IA:10 a=No7XfMmhj-zxftOn39MA:9 a=pILNOxqGKmIA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 1:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+
+On 11/03/21 9:18 pm, Wolfram Sang wrote:
+>> Bummer. What is really weird is that you see clock stretching under
+>> CPU load. Normally clock stretching is triggered by the device, not
+>> by the host.
+> One example: Some hosts need an interrupt per byte to know if they
+> should send ACK or NACK. If that interrupt is delayed, they stretch the
+> clock.
 >
-> Hi Rob,
->
-> On Tue, Mar 9, 2021 at 6:42 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > On Tue, Mar 9, 2021 at 4:21 AM Geert Uytterhoeven
-> > <geert+renesas@glider.be> wrote:
-> > > Setting DT_SCHEMA_FILES allows the user to restrict the
-> > > "dt_binding_check" make target to a specified set of DT binding files.
-> > > However, yamllint is still run on all available files, which can take
-> > > quite some time.
-> > >
-> > > Fix this by changing "find_cmd" to only return the specified files.
-> > > Note that this also affects the "cmd_chk_bindings" and "cmd_mk_schema"
-> > > rules.
-> > >
-> > > This reduces the execution time of
-> > >
-> > >     make dt_binding_check DT_SCHEMA_FILES=/path/to/json/schema/file
-> > >
-> > > from ca. 22 to less than 2 seconds on an i7-8700K.
-> >
-> > We could use xargs sharding like 'chk_bindings' does. That goes from
-> > 18s to 5s for me (i7-7700HQ). Good enough? Not sure why I didn't other
-> > than thinking 20sec was fast enough.
->
-> Sounds better, but yamllint (on all files) would still take 80% of the
-> time for a single binding check, assuming a reasonably fast multi-core
-> machine.  My main objection is that while working on a new binding, and
-> using DT_SCHEMA_FILES, I don't want to waste time on checking other
-> bindings, and being bothered with warnings about them.
-
-We could move yamllint to when we extract the example. Then it only
-runs on modified schema files. The problem with that is we have to
-watch out for slow python start-up times. I get about 25sec for the
-whole tree 1 by 1 with a quick test:
-
-$ time find Documentation/devicetree/bindings/ -name '*.yaml' | xargs
--P8 -n1 yamllint -f parsable -c
-Documentation/devicetree/bindings/.yamllint
-
-real    0m24.939s
-user    2m55.846s
-sys     0m12.738s
-
-Of course, that's a parallel build compared to 18sec single threaded.
-I'm seeing about 8 min for full dt_binding_check without yamllint.
-
-Here's what the kbuild changes would look like(whitespace damaged):
-
-diff --git a/Documentation/devicetree/bindings/Makefile
-b/Documentation/devicetree/bindings/Makefile
-index 780e5618ec0a..3a213343d587 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -16,8 +16,13 @@ check_dtschema_version:
- quiet_cmd_extract_ex = DTEX    $@
-       cmd_extract_ex = $(DT_EXTRACT_EX) $< > $@
-
-+define rule_extract_ex
-+       $(if $(DT_SCHEMA_LINT),$(call cmd,yamllint),)
-+       $(call cmd,extract_ex)
-+endef
-+
- $(obj)/%.example.dts: $(src)/%.yaml check_dtschema_version FORCE
--       $(call if_changed,extract_ex)
-+       $(call if_changed_rule,extract_ex)
-
- # Use full schemas when checking %.example.dts
- DT_TMP_SCHEMA := $(obj)/processed-schema-examples.json
-@@ -26,9 +31,8 @@ find_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
-                -name 'processed-schema*' ! \
-                -name '*.example.dt.yaml' \)
-
--quiet_cmd_yamllint = LINT    $(src)
--      cmd_yamllint = ($(find_cmd) | \
--                     xargs $(DT_SCHEMA_LINT) -f parsable -c
-$(srctree)/$(src)/.yamllint) || true
-+quiet_cmd_yamllint = LINT    $(patsubst $(srctree)/%,%,$<)
-+      cmd_yamllint = $(DT_SCHEMA_LINT) -f parsable -c
-$(srctree)/$(src)/.yamllint $(real-prereqs) || true
-
- quiet_cmd_chk_bindings = CHKDT   $@
-       cmd_chk_bindings = ($(find_cmd) | \
-@@ -43,7 +47,6 @@ quiet_cmd_mk_schema = SCHEMA  $@
-                      rm -f $$f
-
- define rule_chkdt
--       $(if $(DT_SCHEMA_LINT),$(call cmd,yamllint),)
-        $(call cmd,chk_bindings)
-        $(call cmd,mk_schema)
- endef
+It feels like something like that is happening. Looking at the T2080=20
+Reference manual there is an interesting timing diagram (Figure 14-2 if=20
+someone feels like looking it up). It shows SCL low between the ACK for=20
+the address and the data byte. I think if we're delayed in sending the=20
+next byte we could violate Ttimeout or Tlow:mext from the SMBUS spec.=
