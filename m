@@ -2,51 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E385833810B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D255338112
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhCKXBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:01:16 -0500
-Received: from pv50p00im-ztdg10021201.me.com ([17.58.6.45]:49346 "EHLO
-        pv50p00im-ztdg10021201.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230283AbhCKXAw (ORCPT
+        id S229756AbhCKXGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:06:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49059 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229441AbhCKXGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:00:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1615503037;
-        bh=gzupFvlplijsWU4QGQzs8gytlwyj8mMLWfvwvIvRkzw=;
-        h=Content-Type:From:Mime-Version:Subject:Message-Id:Date:To;
-        b=YrtLePh3y6d35JsoqfcaSiJtD30I5eEE16PbqYJqCH0UuPA3EnPpdGjdG0Aik7E/7
-         1z5G41/p4Vii1VMQm+Qkd0otoMy5EkcysLfpY1thZ7gOT2RP6vKyTkfmyLVgAOhJ8c
-         rqiXAn+CGm35r34CeXbxLD4nZA8nhD7Pov9nBE6l9UZH+Hb+jbd3CzzLny8g6DHQI9
-         /xKDw0h1DZ8ZSZI1xsidM097jHFSv47crf/wpsSRrJBpEROh/cawRUHI5gez4QHGIf
-         ouRpDV4ixAslwvWCuUk+wz9SxpPYNqDvcPgYKhYPEC5mcPdlml1kZpU6ViabxathYY
-         JFeye7A4hMMCA==
-Received: from [10.180.231.95] (unknown [176.204.148.171])
-        by pv50p00im-ztdg10021201.me.com (Postfix) with ESMTPSA id 2CBDFA4041D;
-        Thu, 11 Mar 2021 22:50:37 +0000 (UTC)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-From:   bin 5alaf <mayedbinkhalaf@icloud.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH -next] ASoC: rt715-sdca: Remove unused including <linux/version.h>
-Message-Id: <BF212C7D-5590-4FC7-AF10-2538021ABEBA@icloud.com>
-Date:   Fri, 12 Mar 2021 02:50:33 +0400
-To:     weiyongjun1@huawei.com
-Cc:     alsa-devel@alsa-project.org, broonie@kernel.org, hulkci@huawei.com,
-        jack.yu@realtek.com, kernel-janitors@vger.kernel.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com
-X-Mailer: iPhone Mail (18C66)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-11_12:2021-03-10,2021-03-11 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=689 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2103110122
+        Thu, 11 Mar 2021 18:06:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615503990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HtAWYSLLqT0QGTRR/NdQtQI9u91J7Jlm7FNQuSRjgM8=;
+        b=bf5oZlfzEMAtK/McZKf/j5yiIytWvRSF4IGDkaSHVwnMiQLeQQE0l17xmuDJ9pjpcltcZ4
+        Jgicis8vewUpGEPwhY+wXGWaOtfKBEy24Ku3jDH4x4W4475BdHHL+Eee+1AOhbpCPnvvOq
+        3PE9/YYPrhGSSJdzZF4uEYTuHhax2bE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-lKX6lvm1Oky9mK8Dr6mfJQ-1; Thu, 11 Mar 2021 18:06:27 -0500
+X-MC-Unique: lKX6lvm1Oky9mK8Dr6mfJQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E4EF1966322;
+        Thu, 11 Mar 2021 23:06:26 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D0C819C47;
+        Thu, 11 Mar 2021 23:06:24 +0000 (UTC)
+Subject: [PATCH v2 0/2] AFS metadata xattr fixes
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+Cc:     Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
+        dhowells@redhat.com,
+        Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 11 Mar 2021 23:06:24 +0000
+Message-ID: <161550398415.1983424.4857046033308089813.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2YXvu78NCtmF2Kgg2YbZgtmI2YQgDQrigKvYo9mP2LHYs9mE2Kog2YXZhiDYp9mE2YAgaVBob25l
-4oCs
+
+Here's a pair of fixes for AFS.
+
+ (1) Fix an oops in AFS that can be triggered by accessing one of the
+     afs.yfs.* xattrs against a yfs server[1][2] - for instance by "cp -a"
+     or "rsync -X".  These try and copy all of the xattrs.
+
+     They should pay attention to the list in /etc/xattr.conf, but cp
+     doesn't on Ubuntu and rsync doesn't seem to on Ubuntu or Fedora.
+     xattr.conf has been modified upstream[3], but a new version hasn't
+     been cut yet.  I've logged a bug against rsync for the problem
+     there[4].
+
+ (2) Stop listing "afs.*" xattrs[6], particularly ACL ones[8].  This
+     removes them from the list returned by listxattr(), but they're still
+     available to get/set.
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+Changes:
+ver #2:
+ - Hide all of the afs.* xattrs, not just the ACL ones[7].
+
+David
+
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003498.html [1]
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003501.html [2]
+Link: https://git.savannah.nongnu.org/cgit/attr.git/commit/?id=74da517cc655a82ded715dea7245ce88ebc91b98 [3]
+Link: https://github.com/WayneD/rsync/issues/163 [4]
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003516.html [5]
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003524.html [6]
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003565.html # v1
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003568.html [7]
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003570.html [8]
+
+---
+David Howells (2):
+      afs: Fix accessing YFS xattrs on a non-YFS server
+      afs: Stop listxattr() from listing "afs.*" attributes
+
+
+ fs/afs/dir.c      |  1 -
+ fs/afs/file.c     |  1 -
+ fs/afs/inode.c    |  1 -
+ fs/afs/internal.h |  1 -
+ fs/afs/mntpt.c    |  1 -
+ fs/afs/xattr.c    | 23 -----------------------
+ 6 files changed, 28 deletions(-)
+
+
