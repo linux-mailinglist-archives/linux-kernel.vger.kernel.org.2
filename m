@@ -2,144 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED34337854
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CC933785E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234414AbhCKPni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:43:38 -0500
-Received: from mail-dm6nam08on2060.outbound.protection.outlook.com ([40.107.102.60]:2431
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234156AbhCKPn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:43:29 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ht+5q+76+X1sAxjQBj3lXTL2okFxfLMIyF/EgDURDsFTMVBz7QuhSevl/OWjqBV2Q96x5jZN+L+gc14eN1RdaMXl+/eqbSuMoQI8dpkMtTSBYW0KynkbmBWM5UpuG5gErR2ImSr0BX8uB0KdpJaMCGrjwlip4qsw0sskGYe7L+82SM6mebYu4VZssBAtdIqgpzJySI6gdSykNev6WwdB5CcV4xX87VUIoxMoHnfU5xmeHSTiqjG3JI6FTLOdt1vUKA5IwEsE32hPjoiG+d5pgjhfPeun/olvwPwbK5+jVShYdF0xD1++JlXyWdHrKXpDOaJAUPPSvHFH8KId5f7NOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZzjNbxqVz9ClPz/NJ8rHva4JIxoSlpwEJoxR9Syxk7Y=;
- b=jV/Dv694HH+BWHdpVrufAb2hg8mghQLk7aGS1vWYvAU7Eq+/Bq6hRsUfAf6VdR/52+KNPskBTc5FYEL8rT6deO6su9wZMvs8P9jAQ/lcyTmzEngqoW6I8ihgmqd5hSJ4I7ivlwBCnt0/Pa7bVZkUIG84Opheah7t0kf6YpcjqaUf2IkaHVeI+OzlLiNzKmMPwYKwnku3Ue9YmDrl1nqWpIkV4WyaznECHMV4VkBO0oEl1Q74UZgahizO8V+ruw2+pmQ2nF+ttvg931/rcBkK8yY6KMk0yRlOKROuP4SqnWeWYqZE9fbs8gIjcFXm8Zs5x1f5Uvximjv+uhdGKqcTgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZzjNbxqVz9ClPz/NJ8rHva4JIxoSlpwEJoxR9Syxk7Y=;
- b=sKGMlCKjXew2N6hW59FNRzfSXYUifJWUF/b8x9KDzTvQ4XrcD3wJUW7qeLHoKRqbzOG2GkifCKWpl99DOfwEKGCmIaLRuxzFd2kjGvQQjN+cw2/LmU2fmuN25wrADPnpphnbxn/msBj3wA9F4H26RtGkEC08Um0KozP/LuCOYc4k7csjDIp6TFLny5G0RcAP/FJTpqrb8ZRsGNWKCunXfdBmbMGHY3Fqna3eL6/FUlMSx/psmCvU1uFjyGlIcQ3oErOGfBn3lQawzn1k4YZrDnCnaFt11knQkC1YwO/uEDK4sLOAoCKvnC7Fg1HG+zBbgfhhZjtUeUgrPLOtKdEq/A==
-Authentication-Results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3593.namprd12.prod.outlook.com (2603:10b6:5:11c::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Thu, 11 Mar
- 2021 15:43:26 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3933.031; Thu, 11 Mar 2021
- 15:43:26 +0000
-Date:   Thu, 11 Mar 2021 11:43:24 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, alex.williamson@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
-        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
-        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, cjia@nvidia.com,
-        yishaih@nvidia.com, mjrosato@linux.ibm.com, aik@ozlabs.ru
-Subject: Re: [PATCH 9/9] vfio/pci: export igd support into vendor vfio_pci
- driver
-Message-ID: <20210311154324.GJ2356281@nvidia.com>
-References: <20210309083357.65467-1-mgurtovoy@nvidia.com>
- <20210309083357.65467-10-mgurtovoy@nvidia.com>
- <20210310081508.GB4364@lst.de>
- <20210310123127.GT2356281@nvidia.com>
- <20210311113706.GC17183@lst.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311113706.GC17183@lst.de>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR05CA0015.namprd05.prod.outlook.com
- (2603:10b6:208:c0::28) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S234169AbhCKPpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:45:07 -0500
+Received: from mga04.intel.com ([192.55.52.120]:61146 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234096AbhCKPok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 10:44:40 -0500
+IronPort-SDR: qWK9aRE2TTZXTnoGQ6XadpIdaUrWHZIrBladi08rhh9Bhd46bi94+w+pNYdIORre8+gcMBXe4+
+ 4SNLXEpDnd0w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="186305781"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="186305781"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 07:44:40 -0800
+IronPort-SDR: lVQmY3uuvk0SUoyAiiYU6+ijNeIsC7r6XEJxTl3KcWvFb7zk/HRdoWsUdZ7GfcLk9Ooudiw5o4
+ 51RFWl0wayEQ==
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="404106966"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.103.95]) ([10.212.103.95])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 07:44:39 -0800
+Subject: Re: [PATCH v22 8/8] x86/vdso: Add ENDBR64 to __vdso_sgx_enter_enclave
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210310220519.16811-1-yu-cheng.yu@intel.com>
+ <20210310220519.16811-9-yu-cheng.yu@intel.com> <YElKjT2v628tidE/@kernel.org>
+ <8b8efe44-b79f-ce29-ee28-066f88c93840@intel.com>
+ <YEmQJjwjs8UCEO2F@kernel.org>
+ <YEnX3Zn0FXPt7pcM@hirez.programming.kicks-ass.net>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <afd769ac-dd09-0c1f-1ffa-b8f68f48113f@intel.com>
+Date:   Thu, 11 Mar 2021 07:44:39 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR05CA0015.namprd05.prod.outlook.com (2603:10b6:208:c0::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.10 via Frontend Transport; Thu, 11 Mar 2021 15:43:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lKNTA-00BKKa-B7; Thu, 11 Mar 2021 11:43:24 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c3f7c694-ffc6-42a9-86aa-08d8e4a468c4
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3593:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB359326DA9BBE2C9816D60B46C2909@DM6PR12MB3593.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5RHcjy94P1KV/s57Y8yTVoj3f7+8e8OCPNjTur4NXrZg0oWYOP438ETIRLdYxTJtC8yNIrpyTTy1uINEaLmm4NXRXrG+UvWBIJt/dr4RVZtxqAA47rfjdZz5U/B1tJCUEzPVn7elrLXP4h+LLDH0VCSZnhEIwB2rlUG7kxC6Oy/Vp7qMGXUWU8MTHBj3L2rv/1+5nasOzL3M+jL4JC9QaEZ9bAaWIwoRTf5tS1Rzia8dm7CPowR6Z6pOSFrXJ6cUhR7id/qbZ80n8pY4n56PslUTSK3DbZR+qzvabmvjL+fJcQwl0CyYk93aTqJF9WkuOHtJD/nCXBhQZzFggINzY9Rh1BAn8xzgqhDAyTrsjUGTms/BdMV1l74fubRhh9xUpB5DIaKfQ5XImEIk0K8hFDedmtQZJeT6wrJVrUKyxXPdmDV46uyvfQrDHidK8qXL720SPpaSo5hDlzHXZv+3rMU4TlrHXAUGjOLVoXGWmDsau3TRJ4XErw86Jh9Ij2IF7mI20ib8f0lEUBSefE80ry6nuIk6MXgnNHtp9MtjE7tOI5Uc3NIYIKS0qw/ziIm1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(376002)(136003)(346002)(5660300002)(66946007)(33656002)(66556008)(4326008)(66476007)(8936002)(1076003)(2906002)(86362001)(9746002)(8676002)(6916009)(26005)(478600001)(186003)(36756003)(2616005)(9786002)(426003)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QFN/hyZ/5jnW8tB2/bP70bwipOwO+vLW4NWxtGSDSdJiYc8uzvDTGzNhdxBy?=
- =?us-ascii?Q?DCuJ3lvfw3uP3cy0zyTlgsN7qCmp600jtGzlwsbUZI3ryFYUZG1ZUh+lQ8J4?=
- =?us-ascii?Q?iB7bMV8Oerb1Ql56C5K3X0NkFQL415UGLHBp5204GWB0wWICSap/vf8KmVqH?=
- =?us-ascii?Q?ay5EKy0/NHxCdy3dOXHXQcouTuJ8opNLA4+H4T/wmNscmm/qDBgJ32cQLYEC?=
- =?us-ascii?Q?tbqB0QdPQaxycLpZ9YDr/NSKY1PLtjqCXgIqM8JaC+W4NEvCwFdZI2TGAbXA?=
- =?us-ascii?Q?BzT/BHAd1sFQEwxyya8YbukO4MNCAwtNwJCTjP30PbWm9k9SBIodptm0ArA0?=
- =?us-ascii?Q?xC5+7X3VmZBoPZxjpm8otb/ly/CMyi515jRsTRbX74OuIaWwAkECICzuC2Zf?=
- =?us-ascii?Q?INBLSBet141bQBnuzSyQ+mS/9SWeB7RE1InBreyjfVW/ioej+BXvF6W9BEby?=
- =?us-ascii?Q?exd+QaPGvntEWUn58g5Lor2jv5s2p1RukuideGHF4i2Iw7i7YryqoxlY+PqR?=
- =?us-ascii?Q?tYJs9H+439nIpkWyVolYGIRbh1LIdBZ9kFNnjbhdTzqxn31P+w6nQb8kbxzS?=
- =?us-ascii?Q?mcS8VHkV+zNGYDMr/o0RrgN3qBsaT3TAYT074g7djc49EDEqeKQneU6Vhy4p?=
- =?us-ascii?Q?+sB5EjHy8d7DIfRY4mNdjC2Q6k6dOdKHGZGJSmgn6iat79lmvmqrKQlSRJTW?=
- =?us-ascii?Q?zffRcD3g30PMmgcRDSfKj+8HZp5URMQpKvBnELK5amtPIQj0zNPOdN+uWN7+?=
- =?us-ascii?Q?SnHzt6Du0UARZyntFTLibtMbJCED52rFZs60CvFz/eVqn+prREoWAxEzKnJ/?=
- =?us-ascii?Q?3BPnJIKZhrTVzrsuaHV1gGKPPDYfuAmn1tmW9wqRZJZ/XHYsEgf+B7VALrlD?=
- =?us-ascii?Q?727JgIcy9VzsCWH39eXFKmrsTyRM0EK9hoGtOfVt8PEpTk6LZuYiuFhl2YDm?=
- =?us-ascii?Q?KOJoMffo97Ua3xh8cVp0MWzr6pdR5sGQ9KKWe+aqNffi0Rlb3o0Xt3koF4F1?=
- =?us-ascii?Q?mP2CQaeUBgVu/uq43oYdwlhZPLsuc9djIa1Y8PdajAXtrYJXy8TnOIoRuwqE?=
- =?us-ascii?Q?rcQPUPsS92PGRaIu42D/wL8troigxkjLzxkXoO2Hqo8PhRIZ3XUGZNYn2wfE?=
- =?us-ascii?Q?jt6Qj6r+8UIAcCe/Ae3WtzcKWGcqjUpLdqlYK4hO7S22Wq4WonpWLJjpFsae?=
- =?us-ascii?Q?3EGG3baio1ZnJM6UxxpxC1RxzAcz3hnF+4sMK8rRsSOX9eZjF4srsHNsib9a?=
- =?us-ascii?Q?grfgSLpULiQrs+b8VpHZw7wQGLimNLAkVmRCkaNkt7g8ZtkmDg+5KgCN3aKB?=
- =?us-ascii?Q?xPfZGLRwbc/ww/1+7czvMlMk?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3f7c694-ffc6-42a9-86aa-08d8e4a468c4
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 15:43:26.3170
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cvf3DLgBWLwA34oN5Vw6HnKEcs4i+ZYbb5mF0HYP+pnFceGjPNFeTQvnNful57L4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3593
+In-Reply-To: <YEnX3Zn0FXPt7pcM@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:37:06PM +0100, Christoph Hellwig wrote:
-> On Wed, Mar 10, 2021 at 08:31:27AM -0400, Jason Gunthorpe wrote:
-> > Yes, that needs more refactoring. I'm viewing this series as a
-> > "statement of intent" and once we commit to doing this we can go
-> > through the bigger effort to split up vfio_pci_core and tidy its API.
-> > 
-> > Obviously this is a big project, given the past comments I don't want
-> > to send more effort here until we see a community consensus emerge
-> > that this is what we want to do. If we build a sub-driver instead the
-> > work is all in the trash bin.
+On 3/11/2021 12:42 AM, Peter Zijlstra wrote:
+> On Thu, Mar 11, 2021 at 05:36:06AM +0200, Jarkko Sakkinen wrote:
+>> Does it do any harm to put it there unconditionally?
 > 
-> So my viewpoint here is that this work doesn't seem very useful for
-> the existing subdrivers given how much compat pain there is.  It
-> defintively is the right way to go for a new driver.
+> Blows up your text footprint and I$ pressure. These instructions are 4
+> bytes each.
+> 
+> Aside from that, they're a NOP, so only consume front-end resources
+> (hopefully) on older CPUs and when IBT is disabled.
+> 
 
-Right, I don't think the three little drivers get much benifit, what
-they are doing is giving some guidance on how to structure the vfio
-pci core module. The reflck duplication you pointed at, for instance,
-will be in the future drivers too.
+Thanks Peter.  I think probably we'll do the macro Boris suggested. 
+That takes care of the visual clutter, and eliminates the need of using 
+.byte when the assembler is outdated.
 
-What do you see as the most compat pain? 
-
-Max made them full proper drivers, but we could do a half way and just
-split the code like Max has done but remove the pci_driver and related
-compat. It would static link in as today but still be essentially
-structured like a "new driver"
-
-Jason
+--
+Yu-cheng
