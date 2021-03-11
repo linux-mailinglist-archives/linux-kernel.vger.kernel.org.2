@@ -2,171 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1776337B9A
+	by mail.lfdr.de (Postfix) with ESMTP id EFE54337B9B
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbhCKSB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:01:26 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:25835 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCKSA5 (ORCPT
+        id S230246AbhCKSB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230236AbhCKSBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:00:57 -0500
+        Thu, 11 Mar 2021 13:01:03 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4D5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:01:03 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id q77so26618510ybq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:01:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1615485658; x=1647021658;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=hHiE2Fj7HclUhCU3wVryRnGIXFbUXKZ4cNoeZhT7hAU=;
-  b=QuWJN195TxKdBc4aMr4JKlAAgtIXH4ucpj2i5AdUsGlSLUdoeD+4ZFVs
-   SyA2pe030lj8yp/wUxZJ8Svinqvk6berBHFTzDF1ZpF49BvXDOFyH47ek
-   AUPOXoO7kjcgLfN3QDxh26GE6c1cpTMPDQQMzED7XJ+uB1llzT7oLCmsT
-   U=;
-IronPort-HdrOrdr: A9a23:mT+wi6/2irjurghqMeNuk+AAI+orLtY04lQ7vn1ZYxpTb8Ceio
- SSh/wdzxD5k3I8X3snlNCGNsC7IE/035hz/IUXIPOeTBDr0VHHEKhO5ZbvqgeNJwTQ7ehYvJ
- 0LT4FbKPndSWd3ltz75g7QKb0d6eKK+qypmuvSpk0FJT1CUb1q7AtyF2+gfXFeeQ8uP/cEKK
- Y=
-X-IronPort-AV: E=Sophos;i="5.81,241,1610409600"; 
-   d="scan'208";a="96534095"
-Subject: Re: [PATCH 0/3] Add support for free vmemmap pages of HugeTLB for arm64
-Thread-Topic: [PATCH 0/3] Add support for free vmemmap pages of HugeTLB for arm64
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-cc689b93.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 11 Mar 2021 18:00:47 +0000
-Received: from EX13D22EUA004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-cc689b93.us-west-2.amazon.com (Postfix) with ESMTPS id 987C0121740;
-        Thu, 11 Mar 2021 18:00:45 +0000 (UTC)
-Received: from EX13D22EUA003.ant.amazon.com (10.43.165.210) by
- EX13D22EUA004.ant.amazon.com (10.43.165.129) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 11 Mar 2021 18:00:44 +0000
-Received: from EX13D22EUA003.ant.amazon.com ([10.43.165.210]) by
- EX13D22EUA003.ant.amazon.com ([10.43.165.210]) with mapi id 15.00.1497.012;
- Thu, 11 Mar 2021 18:00:44 +0000
-From:   "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>
-To:     Chen Huang <chenhuang5@huawei.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "rientjes@google.com" <rientjes@google.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
-        "Umesh Sargur, Gautam" <sargur@amazon.com>
-Thread-Index: AQHXFX2f1iiLEa+yjUWtpclelFHNUap+Lo8AgABpoYD//7SwAIABJUCA
-Date:   Thu, 11 Mar 2021 18:00:44 +0000
-Message-ID: <FE02DFEF-9706-4CEE-8949-89BD13C2AE00@amazon.com>
-References: <20210310071535.35245-1-songmuchun@bytedance.com>
- <3eae8b3e-d6e0-83c8-e9c6-5420767788d5@huawei.com>
- <ED06294F-F046-4B21-9E52-F439C2B32B45@amazon.com>
- <aa3a5951-9dab-d1e1-8257-3569c269e3cf@huawei.com>
-In-Reply-To: <aa3a5951-9dab-d1e1-8257-3569c269e3cf@huawei.com>
-Accept-Language: en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.166.119]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C3B7EA81B9044E4AB8103B2854F4AA97@amazon.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=0hIsya0NPg3LraqUh9U14zv4tDyz3lAbAtT3O6KMbxI=;
+        b=kViAvDBzbyxZqyKRKrGS5AptEYuUi9oYcEnG60YN58mxT00AUqITV3I11Y+z9uN/ce
+         pXUrGMUEldjoLpWK/xnQ3ESQ4g52cJUG7ie2cBDAyzJqZgbtj7FBj75EcN+VhcCctcvy
+         A5Qz29luD76h6ydg59eXDLYzdRN56k9MxnzgfALOhHa7MN7Xb6FK8sNySmlxJPAeXht/
+         w+wDBy9Q9zQo5OcRkcsdx+owECuvGehGkeW3i6BxDK3cxI15FGxH9yKO2Z+wEQw+ujF0
+         A0rbaA+zXSTzxZOcuh3E9dun0NYuCoN0WaxaqCc/cqiL2xVeZHFy9n3oE90rPBjoGleK
+         m4bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc:content-transfer-encoding;
+        bh=0hIsya0NPg3LraqUh9U14zv4tDyz3lAbAtT3O6KMbxI=;
+        b=iuC1tyJMV9NIZC0uVy2PV4Pk+qM4BONuxUrPJPO2Wd/AMvM+nSR696py7yL9jLjUtG
+         2jbauEe47pbB8Loi86nRgdl4/8MpVCXJVipizzaPTGAR8U80e5Is816chpC36POA4c0Q
+         sWNbWt85NpkJUs2YLHm4zWZxq9SaFBmXyMyWZ9+POwLqCDbMHhIo+TrXvCbSa++HdJ7f
+         9t81CqnwnBPGKzoBqDk/2++hlKN3t+oxWKAXq+28oDEkzj2mHVrBhb49Rs76jwAh6rH9
+         aYCaJKEIA/dTITwjegLArzK7WvYfLwU8bArdkiWBDKNh/FcRXw2c2XUaomI/xcZbPKmX
+         KAUg==
+X-Gm-Message-State: AOAM532VqONSYn4o9S4TE9TLIYgeIbcpNMNLZbqgZs6Aq5r8AY+vwilq
+        Jjm4ciDMvEEv/+4F6TW4JEupaNsGeKM=
+X-Google-Smtp-Source: ABdhPJylQ6J6dAviKLv4ULtSSEsMJZ6skvXuUU4nlEFTt4EJSBPKsNrFY1Lo+yI7hOazITJ+8wVkHa/s3NQ=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:c4e3:28f1:33df:26ba])
+ (user=seanjc job=sendgmr) by 2002:a25:dccc:: with SMTP id y195mr13360755ybe.182.1615485662412;
+ Thu, 11 Mar 2021 10:01:02 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 11 Mar 2021 10:00:57 -0800
+Message-Id: <20210311180057.1582638-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v2] mm/mmu_notifiers: Esnure range_end() is paired with range_start()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Rientjes <rientjes@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?=" <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGV5LCB0aGFua3MgZm9yIHRoZSB0ZXN0aW5nIHN0ZXBzLg0KDQpJIHRyaWVkIGFwcGx5aW5nIHRo
-ZXNlIHBhdGNoZXMgb24gNS4xMSBzb3VyY2UgdHJlZS4gVGhlc2UgcGF0Y2hlcyB3ZXJlIGFwcGxp
-ZWQgb24gdG9wIG9mIHRoZSB4ODYgcGF0Y2gsIHdoaWNoIHdvcmtlZCBmaW5lLiBCdXQgaW4gdGhp
-cyBjYXNlIHdlIGRvbid0IHNlZSB0aGUgc2FtZSBpbXByb3ZlbWVudHMgaW4gb3VyIHRlc3Rpbmcu
-IFdlIG1hZGUgc3VyZSB3ZSBzZXQgQ09ORklHX0hVR0VUTEJfUEFHRV9GUkVFX1ZNRU1NQVA9eSBp
-biBvdXIgLmNvbmZpZyBmaWxlLg0KDQpBcmUgd2UgbWlzc2luZyBhbnkgbW9yZSBjb25maWd1cmF0
-aW9uIHNldHRpbmdzIHRvIGdldCB0aGlzIHBhdGNoIHRvIHdvcmsgb24gQVJNPyBDYW4geW91IHBs
-ZWFzZSBoZWxwIHdpdGggZ2VuZXJhbCB0cm91Ymxlc2hvb3Rpbmcgc3RlcHMgdG8gZGVidWcgd2hh
-dCBjb3VsZCBiZSBnb2luZyB3cm9uZy4NCg0K77u/T24gMTEvMDMvMjEsIDExOjMyIEFNLCAiQ2hl
-biBIdWFuZyIgPGNoZW5odWFuZzVAaHVhd2VpLmNvbT4gd3JvdGU6DQoNCiAgICBDQVVUSU9OOiBU
-aGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRlIG9mIHRoZSBvcmdhbml6YXRpb24uIERv
-IG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3UgY2FuIGNvbmZp
-cm0gdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0KDQoNCg0KICAgIOWc
-qCAyMDIxLzMvMTEgMTM6MDAsIEJvZGVkZHVsYSwgQmFsYXN1YnJhbWFuaWFtIOWGmemBkzoNCiAg
-ICA+IENoZW4sIGlzIHlvdXIgdGVzdGluZyBzdGVwcyBkb2N1bWVudGVkIHNvbWV3aGVyZSwgY2Fu
-IHlvdSBwbGVhc2UgcG9pbnQgdXMgdG8gdGhlIHNhbWUuIEkgZm9sbG93ZWQgc29tZSBzdGVwcyBm
-b3IgdGVzdGluZyB0aGUgeDg2IHBhdGNoZXMsIGp1c3Qgd2FudGVkIHRvIG1ha2Ugc3VyZSBJIGFt
-IGNvdmVyaW5nIHlvdXIgdGVzdHMgYXMgd2VsbC4gV2UgYXJlIGFjdGl2ZWx5IHdvcmtpbmcgb24g
-YnVpbGRpbmcgYW5kIHRlc3RpbmcgdGhlc2UgcGF0Y2hlcyBmb3IgQVJNLg0KICAgID4NCiAgICA+
-IE9uIDExLzAzLzIxLCA5OjQ0IEFNLCAiQ2hlbiBIdWFuZyIgPGNoZW5odWFuZzVAaHVhd2VpLmNv
-bT4gd3JvdGU6DQogICAgPg0KICAgID4gICAgIENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRl
-ZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9yZ2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9y
-IG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBjYW4gY29uZmlybSB0aGUgc2VuZGVyIGFuZCBr
-bm93IHRoZSBjb250ZW50IGlzIHNhZmUuDQogICAgPg0KICAgID4NCiAgICA+DQogICAgPiAgICAg
-5ZyoIDIwMjEvMy8xMCAxNToxNSwgTXVjaHVuIFNvbmcg5YaZ6YGTOg0KICAgID4gICAgID4gVGhp
-cyBwYXRjaHNldCBpcyBiYXNlZCBvbiB0aGUgc2VyaWVzIG9mICJGcmVlIHNvbWUgdm1lbW1hcCBw
-YWdlcyBvZiBIdWdlVExCDQogICAgPiAgICAgPiBwYWdlIi4gTW9yZSBkZXRhaWxzIGNhbiByZWZl
-ciB0byB0aGUgYmVsb3cgbGluay4NCiAgICA+ICAgICA+DQogICAgPiAgICAgPiAgIGh0dHBzOi8v
-bGttbC5rZXJuZWwub3JnL3IvMjAyMTAzMDgxMDI4MDcuNTk3NDUtMS1zb25nbXVjaHVuQGJ5dGVk
-YW5jZS5jb20NCiAgICA+ICAgICA+DQogICAgPiAgICAgPiBJIG9mdGVuIHJlY2VpdmVkIHNvbWUg
-ZmVlZGJhY2sgKFdlIHdhbnQgdG8gdGVzdCB0aGlzIGZlYXR1cmUgb24gYXJtNjQpIGJlZm9yZS4N
-CiAgICA+ICAgICA+IEJlY2F1c2UgdGhlIHByZXZpb3VzIGNvZGUgaGFzIGJlZW4gcmV2aWV3ZWQg
-Zm9yIDE4IHZlcnNpb25zIGFuZCBpcyBtZXJnZWQNCiAgICA+ICAgICA+IGludG8gbW0gdHJlZSwg
-SSB0aGluayB0aGF0IGl0IGlzIHRpbWUgdG8gcmVsZWFzZSB0aGlzIHBhdGNoc2V0LiBJZiB5b3Ug
-d2FudA0KICAgID4gICAgID4gdG8gdGVzdCB0aGVuIHlvdSBjYW4gc3RhcnQgbm93IDotKS4gQW5k
-IEkgYWxzbyBob3BlIHNvbWVvbmUgY2FuIHJldmlldyB0aGlzLg0KICAgID4gICAgID4NCiAgICA+
-ICAgICA+IFRoYW5rcy4NCiAgICA+ICAgICA+DQogICAgPiAgICAgPiBNdWNodW4gU29uZyAoMyk6
-DQogICAgPiAgICAgPiAgIG1tOiBib290bWVtX2luZm86IG1hcmsgcmVnaXN0ZXJfcGFnZV9ib290
-bWVtX2luZm9fc2VjdGlvbiBfX2luaXQNCiAgICA+ICAgICA+ICAgbW06IGh1Z2V0bGI6IGludHJv
-ZHVjZSBhcmNoX2ZyZWVfdm1lbW1hcF9wYWdlDQogICAgPiAgICAgPiAgIGFybTY0OiBtbTogaHVn
-ZXRsYjogYWRkIHN1cHBvcnQgZm9yIGZyZWUgdm1lbW1hcCBwYWdlcyBvZiBIdWdlVExCDQogICAg
-PiAgICAgPg0KICAgID4gICAgID4gIGFyY2gvYXJtNjQvbW0vbW11LmMgICB8IDUgKysrKysNCiAg
-ICA+ICAgICA+ICBhcmNoL3g4Ni9tbS9pbml0XzY0LmMgfCA1ICsrKysrDQogICAgPiAgICAgPiAg
-ZnMvS2NvbmZpZyAgICAgICAgICAgIHwgNCArKy0tDQogICAgPiAgICAgPiAgbW0vYm9vdG1lbV9p
-bmZvLmMgICAgIHwgNCArKy0tDQogICAgPiAgICAgPiAgbW0vc3BhcnNlLXZtZW1tYXAuYyAgIHwg
-OSArKysrKysrLS0NCiAgICA+ICAgICA+ICA1IGZpbGVzIGNoYW5nZWQsIDIxIGluc2VydGlvbnMo
-KyksIDYgZGVsZXRpb25zKC0pDQogICAgPiAgICAgPg0KICAgID4NCiAgICA+ICAgICBUZXN0ZWQt
-Ynk6IENoZW4gSHVhbmcgPGNoZW5odWFuZzVAaHVhd2VpLmNvbT4NCiAgICA+DQogICAgPiAgICAg
-SSBoYXZlIHRlc3RlZCB0aGUgcGF0Y2ggYW5kIHRoZSByZXN1bHQgaXMgc2FtZSBhcyB0aGUgbGFz
-dCB0aW1lLg0KICAgID4NCg0KICAgIFRoZSB0ZXN0IHdvcmsgaXMgdGhhdDogSSBzZXQgdGhlIHRv
-dGFsIG1lbW9yeSBvZiA0MEcsIGFuZCB1c2UgMTBHIGZvciBodWdlcGFnZXMuDQogICAgRmlyc3Qg
-SSByZXNlcnZlIDEwRyBodWdlcGFnZXMgZnJvbSB0aGUgY29tbWFuZCBsaW5lIGFuZCB0aGUgcmVz
-dWx0IGlzIHRoYXQ6DQogICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-DQogICAgICAgICAgICAgICAgICAgICAgICAyTSBwYWdlICAgICAgICAgICAgICAgICAgICB8ICAg
-ICAgICAgICAgICAgICAgICAxRyBwYWdlICAgICAgICAgICAgICAgICAgICB8DQogICAgLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18DQogICAgICAgICAgIGVuYWJsZSAgICAg
-ICAgIHwgICAgICAgIGRpc2FibGUgICAgICAgICB8ICAgICAgZW5hYmxlICAgICAgICAgIHwgICAg
-ICAgIGRpc2FibGUgICAgICAgICB8DQogICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS18DQogICAgdG90YWwgIHwgIHVzZWQgfCBmcmVlIHwgdG90YWwgIHwgIHVzZWQgfCBm
-cmVlICB8dG90YWwgIHwgIHVzZWQgfCBmcmVlIHwgdG90YWwgIHwgIHVzZWQgfCBmcmVlICB8DQog
-ICAgMzksNjk3IHwgMTAyNzkgfDI5LDQxNXwgMzk1ODAgIHwgMTAyNzkgfCAyOSwyOTfigKx8Mzks
-NzM5IHwgMTAyNzkgfDI5LDQ1NXwgMzk1ODAgIHwgMTAyNzkgfCAyOSwyOTZ8DQogICAgLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQogICAgRm9yIDJNIGh1Z2VwYWdlLCB3
-ZSBjYW4gc2F2ZSAxMThNIG1lbW9yeSB3aGljaCBpcyBjb3JyZXNwb2luZGluZyB0byB0aGUgZXhw
-ZWN0ZWQgMTIwTSBtZW1vcnkuDQogICAgRm9yIDFHIGh1Z2VwYWdlLCB3ZSBjYW4gc2F2ZSAxNTlN
-IG1lbW9yeSB3aGljaCBpcyBjb3JyZXNwb2luZGluZyB0byB0aGUgZXhwZWN0ZWQgMTYwTSBtZW1v
-cnkuDQoNCiAgICBUaGVuIEkgYWxsb2MgMTBHIGh1Z2VwYWdlcyB1c2luZyAiZWNobyBYWCA+IC9z
-eXMva2VybmVsL21tL2h1Z2VwYWdlcy9odWdlcGFnZXMtWFhrQi9ucl9odWdlcGFnZXMiLA0KICAg
-IGFuZCBnZXQgdGhlIHJlc3VsdDoNCiAgICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0NCiAgICAgICAgICAgICAgICAgICAgICAgIDJNIHBhZ2UgICAgICAgICAgICAgICAg
-ICAgIHwgICAgICAgICAgICAgICAgICAgIDFHIHBhZ2UgICAgICAgICAgICAgICAgICAgIHwNCiAg
-ICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwNCiAgICAgICAgICAgZW5h
-YmxlICAgICAgICAgfCAgICAgICAgZGlzYWJsZSAgICAgICAgIHwgICAgICBlbmFibGUgICAgICAg
-ICAgfCAgICAgICAgZGlzYWJsZSAgICAgICAgIHwNCiAgICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-fC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLXwNCiAgICB0b3RhbCAgfCAgdXNlZCB8IGZyZWUgfCB0b3RhbCAgfCAg
-dXNlZCB8IGZyZWUgIHx0b3RhbCAgfCAgdXNlZCB8IGZyZWUgfCB0b3RhbCAgfCAgdXNlZCB8IGZy
-ZWUgIHwNCiAgICAzOSw2OTkgfCAxMDI3OSB8MjksNDE1fCAzOTU4MCAgfCAxMDI3OSB8IDI5LDI5
-N+KArOKArHwzOSw3MzkgfCAxMDI3OSB8MjksNDU1fCAzOTU4MCAgfCAxMDI3OSB8IDI5LDI5NnwN
-CiAgICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiAgICBGb3IgMk0g
-aHVnZXBhZ2UsIHdlIGNhbiBzYXZlIDExOE0gbWVtb3J5IHdoaWNoIGlzIGNvcnJlc3BvaW5kaW5n
-IHRvIHRoZSBleHBlY3RlZCAxMjBNIG1lbW9yeS4NCiAgICBGb3IgMUcgaHVnZXBhZ2UsIHdlIGNh
-biBzYXZlIDE1OU0gbWVtb3J5IHdoaWNoIGlzIGNvcnJlc3BvaW5kaW5nIHRvIHRoZSBleHBlY3Rl
-ZCAxNjBNIG1lbW9yeS4NCg0K
+If one or more notifiers fails .invalidate_range_start(), invoke
+.invalidate_range_end() for "all" notifiers.  If there are multiple
+notifiers, those that did not fail are expecting _start() and _end() to
+be paired, e.g. KVM's mmu_notifier_count would become imbalanced.
+Disallow notifiers that can fail _start() from implementing _end() so
+that it's unnecessary to either track which notifiers rejected _start(),
+or had already succeeded prior to a failed _start().
+
+Note, the existing behavior of calling _start() on all notifiers even
+after a previous notifier failed _start() was an unintented "feature".
+Make it canon now that the behavior is depended on for correctness.
+
+As of today, the bug is likely benign:
+
+  1. The only caller of the non-blocking notifier is OOM kill.
+  2. The only notifiers that can fail _start() are the i915 and Nouveau
+     drivers.
+  3. The only notifiers that utilize _end() are the SGI UV GRU driver
+     and KVM.
+  4. The GRU driver will never coincide with the i195/Nouveau drivers.
+  5. An imbalanced kvm->mmu_notifier_count only causes soft lockup in the
+     _guest_, and the guest is already doomed due to being an OOM victim.
+
+Fix the bug now to play nice with future usage, e.g. KVM has a potential
+use case for blocking memslot updates in KVM while an invalidation is
+in-progress, and failure to unblock would result in said updates being
+blocked indefinitely and hanging.
+
+Found by inspection.  Verified by adding a second notifier in KVM that
+periodically returns -EAGAIN on non-blockable ranges, triggering OOM,
+and observing that KVM exits with an elevated notifier count.
+
+Fixes: 93065ac753e4 ("mm, oom: distinguish blockable mode for mmu notifiers=
+")
+Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: stable@vger.kernel.org
+Cc: David Rientjes <rientjes@google.com>
+Cc: Ben Gardon <bgardon@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+
+v2: Reimplemented as suggested by Jason.  Only functional change relative
+    to Jason's suggestion is to check invalidate_range_end before calling t=
+o
+    avoid a NULL pointer dereference.  I also added more comments, hopefull=
+y
+    they're helpful...
+
+v1: https://lkml.kernel.org/r/20210310213117.1444147-1-seanjc@google.com
+
+ include/linux/mmu_notifier.h | 10 +++++-----
+ mm/mmu_notifier.c            | 23 +++++++++++++++++++++++
+ 2 files changed, 28 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+index b8200782dede..1a6a9eb6d3fa 100644
+--- a/include/linux/mmu_notifier.h
++++ b/include/linux/mmu_notifier.h
+@@ -169,11 +169,11 @@ struct mmu_notifier_ops {
+ 	 * the last refcount is dropped.
+ 	 *
+ 	 * If blockable argument is set to false then the callback cannot
+-	 * sleep and has to return with -EAGAIN. 0 should be returned
+-	 * otherwise. Please note that if invalidate_range_start approves
+-	 * a non-blocking behavior then the same applies to
+-	 * invalidate_range_end.
+-	 *
++	 * sleep and has to return with -EAGAIN if sleeping would be required.
++	 * 0 should be returned otherwise. Please note that notifiers that can
++	 * fail invalidate_range_start are not allowed to implement
++	 * invalidate_range_end, as there is no mechanism for informing the
++	 * notifier that its start failed.
+ 	 */
+ 	int (*invalidate_range_start)(struct mmu_notifier *subscription,
+ 				      const struct mmu_notifier_range *range);
+diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
+index 61ee40ed804e..459d195d2ff6 100644
+--- a/mm/mmu_notifier.c
++++ b/mm/mmu_notifier.c
+@@ -501,10 +501,33 @@ static int mn_hlist_invalidate_range_start(
+ 						"");
+ 				WARN_ON(mmu_notifier_range_blockable(range) ||
+ 					_ret !=3D -EAGAIN);
++				/*
++				 * We call all the notifiers on any EAGAIN,
++				 * there is no way for a notifier to know if
++				 * its start method failed, thus a start that
++				 * does EAGAIN can't also do end.
++				 */
++				WARN_ON(ops->invalidate_range_end);
+ 				ret =3D _ret;
+ 			}
+ 		}
+ 	}
++
++	if (ret) {
++		/*
++		 * Must be non-blocking to get here.  If there are multiple
++		 * notifiers and one or more failed start, any that succeeded
++		 * start are expecting their end to be called.  Do so now.
++		 */
++		hlist_for_each_entry_rcu(subscription, &subscriptions->list,
++					 hlist, srcu_read_lock_held(&srcu)) {
++			if (!subscription->ops->invalidate_range_end)
++				continue;
++
++			subscription->ops->invalidate_range_end(subscription,
++								range);
++		}
++	}
+ 	srcu_read_unlock(&srcu, id);
+=20
+ 	return ret;
+--=20
+2.31.0.rc2.261.g7f71774620-goog
+
