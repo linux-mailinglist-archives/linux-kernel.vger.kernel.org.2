@@ -2,90 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4384D3371FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B801E3371FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbhCKME6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:04:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27629 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232952AbhCKME0 (ORCPT
+        id S232999AbhCKMFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:05:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232976AbhCKMFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:04:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615464265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j9DCFxw7/igOd3LmB1G3n774oKnzGKLPLaO6vlSHqIc=;
-        b=hZPDDTf8e5lgRHpBy7kfJ5Uo4nF9M0dfXJqnJaNfmQTIt9M9xdzqyArAcMrGL+fF10Bz+6
-        ugdPdbbImxVm+Dp111Eg3odlf1Xwzfc141nrXyIHWhkTRx30w7bUur3gsJf0ese7kn9xpL
-        kkAe7oGw5JGRSzqfO1y3YGceP+wbs5E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-2BgAgTuANqW8QLsufTZAzw-1; Thu, 11 Mar 2021 07:04:23 -0500
-X-MC-Unique: 2BgAgTuANqW8QLsufTZAzw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B384C1005E6C;
-        Thu, 11 Mar 2021 12:04:21 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ADF4E196E3;
-        Thu, 11 Mar 2021 12:04:20 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <109018.1615463088@turing-police>
-References: <109018.1615463088@turing-police> <91190.1615444370@turing-police> <972381.1615459754@warthog.procyon.org.uk>
-To:     =?us-ascii?Q?Valdis_Kl=3D=3Futf-8=3FQ=3F=3Dc4=3D93=3F=3Dtnieks?= 
-        <valdis.kletnieks@vt.edu>
-Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: 'make O=' indigestion with module signing
+        Thu, 11 Mar 2021 07:05:04 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4F0C061574;
+        Thu, 11 Mar 2021 04:05:04 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso9244883pjb.3;
+        Thu, 11 Mar 2021 04:05:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5mPzWNzDKlhgZjalb5GgSxS0reZzfOeD44HtiEBuIPY=;
+        b=Fcb3tje0dUKxkdjlkPSqlau11mGAIZpHC3GasdRMlPEHGqN2RlDrqCT9yYNxTHcNjC
+         oscHBf0jUyN5YvxPCz4V4kbfOCQw3njjjWGNChM57qGq+uPCOkEk/kYZXUymRF/3EJme
+         125ltp9+2o8TdCKC37u5o0L4UsNtukzNsVJF2MyWYERGDfN/iYSUimys/FtzXWclI1Z1
+         plus0rtOfdNORwwde/BnJUfI/H/1jy+dcpU+CP+3dCVqgyYUXQ0mfSotJVQbQC77ills
+         e+BGUL2yFGgTwAMc6ujbNHidRlVPuXovkbAaz3w8Yx2yE+JBB79uwMMvK3weOK2PM2UX
+         KwuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5mPzWNzDKlhgZjalb5GgSxS0reZzfOeD44HtiEBuIPY=;
+        b=ko6spRBKqVwiri45YnvGzCdm63YAgxRmDm+kkc+H1SHgNSiOZEiGO2Qq02+dhvUKrP
+         wFO1tslEethsY4d/GO4jyn89gXxraWcBjZsu24Qk+EbaocqE2dkjn9KJq7/brV+LQZVF
+         LilIYgt91Qd0X6Ty+riDkqh6PxAjcxV7UuXf6jvfMst5tkvIQ8W9D4KWs9f2i+ImZGJt
+         cUsLw/DlgmZazvJS/FMtDDL1i4lzbwZx9JsY4AYNFwCkTkzJ8QQdLGxo04fnOUUFhXl2
+         kNdQ6DsP+NfMBtN321prccjBUs0c3MhO6BR22KZFPG/vxsjjV2MwCKmNrGM7uXGyuK49
+         miiQ==
+X-Gm-Message-State: AOAM531y3RQy7SO8j+KLX2eW6hOhTI/pRZ9KLSAMtBREEIX3XUcXbt2z
+        GE+55LRwxQ9oSYuEYZpJSvBMLYMYPV2E/b6yCiM=
+X-Google-Smtp-Source: ABdhPJyS9A1hySsLSIhEDeVFwTEOELxWVczuWlA6A1LhJpAvGsEeSzFVGy7/zzKW87Ub4z+hoStcJYlPFhy/rZCwZOM=
+X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr1616787pjr.228.1615464304262;
+ Thu, 11 Mar 2021 04:05:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 11 Mar 2021 12:04:19 +0000
-Message-ID: <1486567.1615464259@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210311062011.8054-1-calvin.johnson@oss.nxp.com> <20210311062011.8054-8-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20210311062011.8054-8-calvin.johnson@oss.nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 11 Mar 2021 14:04:48 +0200
+Message-ID: <CAHp75VdMhBf8MsO+QqMOt_u3+BAiYsT2OeG5qOKnhCbZt1ygmQ@mail.gmail.com>
+Subject: Re: [net-next PATCH v7 07/16] net: mii_timestamper: check NULL in unregister_mii_timestamper()
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>, netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu> wrote:
+On Thu, Mar 11, 2021 at 8:21 AM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+>
+> Callers of unregister_mii_timestamper() currently check for NULL
+> value of mii_ts before calling it.
+>
+> Place the NULL check inside unregister_mii_timestamper() and update
+> the callers accordingly
 
-> So there's something weird going on with scripts/extract-cert when running
-> as a userid other than the owner of the source tree..  I wonder if it's
-> actually an OpenSSL issue...
+FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-I cloned next-20210311 as one user then built it as another user using:
+(Don't remember if it has been suggested by somebody, in that case
+perhaps Suggested-by?)
 
-	LANG=3DC nice -19 make O=3D/data/git/next-20210311-build -j8 allmodconfig
-	LANG=3DC nice -19 make O=3D/data/git/next-20210311-build -j8
+> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> ---
+>
+> Changes in v7:
+> - check NULL in unregister_mii_timestamper()
+>
+> Changes in v6: None
+> Changes in v5: None
+> Changes in v4: None
+> Changes in v3: None
+> Changes in v2: None
+>
+>  drivers/net/mdio/of_mdio.c        | 6 ++----
+>  drivers/net/phy/mii_timestamper.c | 3 +++
+>  drivers/net/phy/phy_device.c      | 3 +--
+>  3 files changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
+> index 612a37970f14..48b6b8458c17 100644
+> --- a/drivers/net/mdio/of_mdio.c
+> +++ b/drivers/net/mdio/of_mdio.c
+> @@ -115,15 +115,13 @@ static int of_mdiobus_register_phy(struct mii_bus *mdio,
+>         else
+>                 phy = get_phy_device(mdio, addr, is_c45);
+>         if (IS_ERR(phy)) {
+> -               if (mii_ts)
+> -                       unregister_mii_timestamper(mii_ts);
+> +               unregister_mii_timestamper(mii_ts);
+>                 return PTR_ERR(phy);
+>         }
+>
+>         rc = of_mdiobus_phy_device_register(mdio, phy, child, addr);
+>         if (rc) {
+> -               if (mii_ts)
+> -                       unregister_mii_timestamper(mii_ts);
+> +               unregister_mii_timestamper(mii_ts);
+>                 phy_device_free(phy);
+>                 return rc;
+>         }
+> diff --git a/drivers/net/phy/mii_timestamper.c b/drivers/net/phy/mii_timestamper.c
+> index b71b7456462d..51ae0593a04f 100644
+> --- a/drivers/net/phy/mii_timestamper.c
+> +++ b/drivers/net/phy/mii_timestamper.c
+> @@ -111,6 +111,9 @@ void unregister_mii_timestamper(struct mii_timestamper *mii_ts)
+>         struct mii_timestamping_desc *desc;
+>         struct list_head *this;
+>
+> +       if (!mii_ts)
+> +               return;
+> +
+>         /* mii_timestamper statically registered by the PHY driver won't use the
+>          * register_mii_timestamper() and thus don't have ->device set. Don't
+>          * try to unregister these.
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index f875efe7b4d1..9c5127405d91 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -928,8 +928,7 @@ EXPORT_SYMBOL(phy_device_register);
+>   */
+>  void phy_device_remove(struct phy_device *phydev)
+>  {
+> -       if (phydev->mii_ts)
+> -               unregister_mii_timestamper(phydev->mii_ts);
+> +       unregister_mii_timestamper(phydev->mii_ts);
+>
+>         device_del(&phydev->mdio.dev);
+>
+> --
+> 2.17.1
+>
 
-It built with no problems.  The building user definitely can't create/modify
-files in the source directory.
 
-Interestingly, the following line in the output from mine:
-
-	EXTRACT_CERTS   certs/signing_key.pem
-
-doesn't show the full path as it does in yours:
-
-	EXTRACT_CERTS   /usr/src/linux-next/"certs/signing_key.pem"
-
-but I don't know why.  There are some odd quotes in your line also which may
-be related to the problem.  The relevant config line looks the same:
-
-	CONFIG_MODULE_SIG_KEY=3D"certs/signing_key.pem"
-
-I'll have to try with the aarch64 build, see if it's something in that that=
-'s
-the problem.
-
-David
-
+-- 
+With Best Regards,
+Andy Shevchenko
