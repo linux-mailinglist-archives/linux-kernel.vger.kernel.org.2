@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742A6336D54
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7315C336D78
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhCKHxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:53:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
+        id S230048AbhCKIDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:03:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhCKHwi (ORCPT
+        with ESMTP id S229686AbhCKIDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:52:38 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F315C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 23:52:37 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id e26so5314764pfd.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 23:52:37 -0800 (PST)
+        Thu, 11 Mar 2021 03:03:03 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A4D8BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:02:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bbvG2jg5LoX38yY8nsi4YuVDKo5of66ulU0IdFyWgeE=;
-        b=Nz06HTZjorE3au1oxZpGqAnkDTZ/Ur+mWCRkyp0wKtvCEl3h1k97WtRuxMiH5o7R3o
-         6o+WyQN3DKUbHR8nqwddXRdk5QYyQH2O1mFnJvoWRRAp+ruq/hbpx6+7PnbBoIk7M7fA
-         kWwBDCNIvFzMvTHE/hH7PgsmO3+fL0a2N7IpStkY0des6uiSc91A/Gll2q6qevNtbbSj
-         aq5fb+Jrpb2jwxyaS08hyGkJyDjyKO3rDZ51IHpBNodSV24aX4meDWankTnGx/kEOVvy
-         0uxRDL+NkmrsDqHXy3799iLV/xO7T8WWa74sI0WFJZiB/mDEtxUinWX7AFZ8yH7xXrER
-         3FmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bbvG2jg5LoX38yY8nsi4YuVDKo5of66ulU0IdFyWgeE=;
-        b=dYAkl7EQ1ZVv5xICLpB6c+lYWOy8mBt8SEE8XVwoMIwQAxQVBVDUtDa/9oJyMsj7kZ
-         vtaHT7uzZazc/uZqk3TEG15P7z0luHfqtcbavcdOa0sG46MdDKLZ1FOUOs6SK50fIyXy
-         nn41Xdpa4vL1WlG5rYp3Ev+Ebh+1NkCSHRQSnhGtclsCQrx/dv4Tz8E2nQIOzhafXFQN
-         Q3LZQeY8JQ3nIR1/2TT7obvNteLpiwW6ZYwos1DMsLWhPILqtZCSk+W/B9JCICz7UZey
-         Bl/V40hVOZxEJe+8GUEmiX7lECw6zAP+f4QBHjIx1bfkZegfKEwKTcSVi+kWMd4aWZ4X
-         qDnQ==
-X-Gm-Message-State: AOAM531Oa+ZzN1Jw3b7jeNQkmTn6sQaXMtqCScXpu9J/LwqzwZY00FP0
-        roKlGn33VYP/fsMlAxilPI1AI7YGX3DalbVpW+JpvQ==
-X-Google-Smtp-Source: ABdhPJzU0JnzWK7jNW0OYzUdLDcaqsiWQOn7ToGTiWQ4q0wsZLh+ID7ged7f9s2NopMOZ7jOgs/CvUToq2FgD1le/ME=
-X-Received: by 2002:a62:7a09:0:b029:1f1:5cf4:3fd7 with SMTP id
- v9-20020a627a090000b02901f15cf43fd7mr6554831pfc.66.1615449156648; Wed, 10 Mar
- 2021 23:52:36 -0800 (PST)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=7Vw7cyxGgI
+        XCeVV3/ziy/1ezsGIffwcjH1zfDgFjFv8=; b=lWgSNpkRE6FxxJzHAGub3Gse40
+        cOZW259WsznJ9xj0wcL0uuXeJpmxBSz4hrhPMYMNgCwCe3cstr3HLG+mXsPSPbsO
+        0CetCDNeI8j+WagBB7CfHkVAZlLNa80eRU9cKhTf2W9md0AknhszTbFSdeKCTR4d
+        LYPcDJ4qlltpoV0i4=
+Received: from ubuntu.localdomain (unknown [114.214.226.60])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHjR2ozklg0JcKAA--.2630S4;
+        Thu, 11 Mar 2021 16:02:48 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     mcgrof@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] lib/test_kmod: Fix a use after free in register_test_dev_kmod
+Date:   Thu, 11 Mar 2021 00:02:46 -0800
+Message-Id: <20210311080246.11635-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1615419080-26540-1-git-send-email-bbhatt@codeaurora.org> <1615419080-26540-2-git-send-email-bbhatt@codeaurora.org>
-In-Reply-To: <1615419080-26540-2-git-send-email-bbhatt@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 11 Mar 2021 09:00:36 +0100
-Message-ID: <CAMZdPi8CHCVT8G60zOEn0n43vPJW0xx+fufnBFzb7aPXSoMQOw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] bus: mhi: core: Introduce internal register poll
- helper function
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?Q2FybCBZaW4o5q635byg5oiQKQ==?= <carl.yin@quectel.com>,
-        Naveen Kumar <naveen.kumar@quectel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygCHjR2ozklg0JcKAA--.2630S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZw4UuF1xXrW8Ww13KryDZFb_yoWfurb_ua
+        18Aw4Dur1DJrn8u347ZwsYvan7AF42yr4xJ34DtFWDXryjqrs8J34xZr1kJa9xurW3XrWa
+        g3y09r1UK398ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb0PfJ
+        UUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaumik,
+In register_test_dev_kmod, it calls free_test_dev_kmod() to free
+test_dev. But free_test_dev_kmod() can't set the original pointer
+test_dev to NULL, because the test_dev was passed by it's value
+not reference.
 
-On Thu, 11 Mar 2021 at 00:31, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
->
-> Introduce helper function to allow MHI core driver to poll for
-> a value in a register field. This helps reach a common path to
-> read and poll register values along with a retry time interval.
->
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/internal.h |  3 +++
->  drivers/bus/mhi/core/main.c     | 23 +++++++++++++++++++++++
->  2 files changed, 26 insertions(+)
->
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 6f80ec3..005286b 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -643,6 +643,9 @@ int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
->  int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
->                                     void __iomem *base, u32 offset, u32 mask,
->                                     u32 shift, u32 *out);
-> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
-> +                                   void __iomem *base, u32 offset, u32 mask,
-> +                                   u32 shift, u32 val, u32 delayus);
->  void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
->                    u32 offset, u32 val);
->  void mhi_write_reg_field(struct mhi_controller *mhi_cntrl, void __iomem *base,
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 4e0131b..7c7f41a 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -4,6 +4,7 @@
->   *
->   */
->
-> +#include <linux/delay.h>
->  #include <linux/device.h>
->  #include <linux/dma-direction.h>
->  #include <linux/dma-mapping.h>
-> @@ -37,6 +38,28 @@ int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
->         return 0;
->  }
->
-> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
-> +                                   void __iomem *base, u32 offset,
-> +                                   u32 mask, u32 shift, u32 val, u32 delayus)
-> +{
-> +       int ret;
-> +       u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
-> +
-> +       while (retry--) {
-> +               ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, shift,
-> +                                        &out);
-> +               if (ret)
-> +                       return ret;
-> +
-> +               if (out == val)
-> +                       return 0;
-> +
-> +               udelay(delayus);
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ lib/test_kmod.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Have you read my previous comment?
-Do you really want to risk hogging the CPU for several seconds? we
-know that some devices take several seconds to start/boot.
-Why not using msleep variant here?
+diff --git a/lib/test_kmod.c b/lib/test_kmod.c
+index 38c250fbace3..aa8a2a563d7e 100644
+--- a/lib/test_kmod.c
++++ b/lib/test_kmod.c
+@@ -1124,7 +1124,6 @@ static void free_test_dev_kmod(struct kmod_test_device *test_dev)
+ 		free_test_dev_info(test_dev);
+ 		kmod_config_free(test_dev);
+ 		vfree(test_dev);
+-		test_dev = NULL;
+ 	}
+ }
+ 
+@@ -1149,6 +1148,7 @@ static struct kmod_test_device *register_test_dev_kmod(void)
+ 	if (ret) {
+ 		pr_err("could not register misc device: %d\n", ret);
+ 		free_test_dev_kmod(test_dev);
++		test_dev = NULL;
+ 		goto out;
+ 	}
+ 
+-- 
+2.25.1
 
-Regards,
-Loic
+
