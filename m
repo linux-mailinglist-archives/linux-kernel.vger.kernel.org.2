@@ -2,54 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B5933706C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E939337079
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232493AbhCKKr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:47:29 -0500
-Received: from verein.lst.de ([213.95.11.211]:40356 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232394AbhCKKrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:47:15 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 037A468B05; Thu, 11 Mar 2021 11:47:13 +0100 (CET)
-Date:   Thu, 11 Mar 2021 11:47:12 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        Chaitanya.Kulkarni@wdc.com
-Subject: Re: [PATCH 1/1] nvme-pci: add the DISABLE_WRITE_ZEROES quirk for a
- Samsung PM1725a
-Message-ID: <20210311104712.GA16218@lst.de>
-References: <1615377076-3251-1-git-send-email-dmtrmonakhov@yandex-team.ru> <20210310132156.GA12145@lst.de> <20210310134110.GA13063@lst.de> <20210310200030.GA3377333@dhcp-10-100-145-180.wdc.com>
+        id S232402AbhCKKtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:49:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28477 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232224AbhCKKtW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 05:49:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615459761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JZJSx94FqW1TXm5NcCQ7bCllPHLm9/0IrJRVFHUeK0g=;
+        b=PujKW7dvGc0W81pPWGI4f/An6a9QHI6ZzGHyoNF2DPWfQzD+eLEUtD7WJyfytnZf8wKNgN
+        kTxv/6eYgkIp6jRjKsFzZ8OJqRfZRDYNdBLeFDshJzmb2T4Xj6/zzcsPQm21JMCIOVpcV+
+        SWcn8+tBZeOJRpp3Yf5lmmOyOrcxJjY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-94k_pcR9MRiLFtXeAiLxCg-1; Thu, 11 Mar 2021 05:49:18 -0500
+X-MC-Unique: 94k_pcR9MRiLFtXeAiLxCg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D77C480432F;
+        Thu, 11 Mar 2021 10:49:16 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C2B2F1B471;
+        Thu, 11 Mar 2021 10:49:15 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <91190.1615444370@turing-police>
+References: <91190.1615444370@turing-police>
+To:     "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
+Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: 'make O=' indigestion with module signing
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310200030.GA3377333@dhcp-10-100-145-180.wdc.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <972380.1615459754.1@warthog.procyon.org.uk>
+Date:   Thu, 11 Mar 2021 10:49:14 +0000
+Message-ID: <972381.1615459754@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 12:00:30PM -0800, Keith Busch wrote:
-> On Wed, Mar 10, 2021 at 02:41:10PM +0100, Christoph Hellwig wrote:
-> > On Wed, Mar 10, 2021 at 02:21:56PM +0100, Christoph Hellwig wrote:
-> > > Can you try this patch instead?
-> > > 
-> > > http://lists.infradead.org/pipermail/linux-nvme/2021-February/023183.html
-> > 
-> > Actually, please try the patch below instead, it looks like our existing
-> > logic messes up the units:
-> 
-> This seems like a good opportunity to incorporate TP4040 for non-MDTS
-> command limits. I sent a proposal here
-> 
->   http://lists.infradead.org/pipermail/linux-nvme/2021-March/023522.html
-> 
-> And it defaults to your suggestion if the controller doesn't implement
-> the capability.
+I wonder...  Can you grab branch keys-cve-2020-26541-branch from:
 
-I think TP4040 is good and useful, but I defintively want the pure
-fix get in first.
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/
+
+and try that?  If that breaks, can you try dropping the top four commits?
+
+David
+
