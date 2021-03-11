@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8C9336EFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A511336EFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbhCKJfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:35:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54688 "EHLO mx2.suse.de"
+        id S231882AbhCKJgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:36:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56036 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231882AbhCKJes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:34:48 -0500
+        id S231960AbhCKJgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 04:36:06 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615455287; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W9o690LFgyqpfmms3h5IXjlLESHjKX5ZfdgbVv24agE=;
-        b=GquV5dckyOd1vcHAkKcLMkh7armwz6a+/XhsBrmmMR57JBw57OaYyLTVjYpkYJzS3ItCUl
-        n964MZQwIdkEdqW0I76xsI8UdaWcH32IuCdg1ryXLugInxDxdugqBI2bgPJDWrMA4/k/lF
-        ZsMgP/N/c0VxHtc+e39W+gjpGgn/zrI=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 15332AC23;
-        Thu, 11 Mar 2021 09:34:47 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 10:34:46 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v5] printk: Userspace format enumeration support
-Message-ID: <YEnkNrUYAj66li9B@alley>
-References: <YEgvR6Wc1xt0qupy@chrisdown.name>
- <YEhsHELBM20f4MRE@kroah.com>
- <YEi3ySLkw3hZinnS@chrisdown.name>
- <YEi4qwBAd/O+sXyq@kroah.com>
+        by mx2.suse.de (Postfix) with ESMTP id 4BBF4AB8C;
+        Thu, 11 Mar 2021 09:36:05 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 10:36:03 +0100
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH] ASoC: soc-core: fix DMI handling
+Message-ID: <20210311103603.0bc952b6@endymion>
+In-Reply-To: <20210310193928.108850-1-pierre-louis.bossart@linux.intel.com>
+References: <20210310193928.108850-1-pierre-louis.bossart@linux.intel.com>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEi4qwBAd/O+sXyq@kroah.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-03-10 13:16:43, Greg Kroah-Hartman wrote:
-> On Wed, Mar 10, 2021 at 12:12:57PM +0000, Chris Down wrote:
-> > Greg Kroah-Hartman writes:
-> > > On Wed, Mar 10, 2021 at 02:30:31AM +0000, Chris Down wrote:
-> > > > +	ps->file = debugfs_create_file(pi_get_module_name(mod), 0444, dfs_index,
-> > > > +				       ps, &dfs_index_fops);
-> > > > +
-> > > > +	if (IS_ERR(ps->file)) {
-> > > > +		pi_sec_remove(mod);
-> > > > +		return;
-> > > > +	}
-> > > 
-> > > No need to check this and try to clean up if there is a problem, just
-> > > save the pointer off and call debugfs_remove() when you want to clean
-> > > up.
-> > 
-> > Petr, what are your thoughts on this, since you requested the cleanup on
-> > debugfs failure? :-)
+On Wed, 10 Mar 2021 13:39:27 -0600, Pierre-Louis Bossart wrote:
+> When DMI information is not present, trying to assign the card long
+> name results in the following warning.
 > 
-> There is nothing to "clean up" if there is a debugfs failure here so I
-> don't see the need.
-
-My main concern is that the allocated struct pi_sec must not be leaked
-when debugfs file was not created.
-
-I still have to check if it would be freed even without the file
-when the module is going out.
-
-
-> > > Or better yet, no need to save anything, you can always look it up when
-> > > you want to remove it, that will save you one pointer per module.
-> > 
-> > That's a good point, and with that maybe we can even do away with the pi_sec
-> > entirely then since that only leaves start/end pointers which we can
-> > calculate on demand from existing data.
+> WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
 > 
-> Please do, that makes the code simpler overall.
+> The initial solution suggested was to test if the card device is an
+> ACPI one. This causes a regression visible to userspace on all Intel
+> platforms, with UCM unable to load card profiles based on DMI
+> information: the card devices are not necessarily ACPI ones, e.g. when
+> the parent creates platform devices on Intel devices.
+> 
+> To fix this problem, this patch exports the existing dmi_available
+> variable and tests it in the ASoC core.
+> 
+> Fixes: c014170408bc ("ASoC: soc-core: Prevent warning if no DMI table is present")
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/firmware/dmi_scan.c | 1 +
+>  sound/soc/soc-core.c        | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/dmi_scan.c b/drivers/firmware/dmi_scan.c
+> index d51ca0428bb8..f191a1f901ac 100644
+> --- a/drivers/firmware/dmi_scan.c
+> +++ b/drivers/firmware/dmi_scan.c
+> @@ -166,6 +166,7 @@ static int __init dmi_checksum(const u8 *buf, u8 len)
+>  static const char *dmi_ident[DMI_STRING_MAX];
+>  static LIST_HEAD(dmi_devices);
+>  int dmi_available;
+> +EXPORT_SYMBOL_GPL(dmi_available);
+>  
+>  /*
+>   *	Save a DMI string
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 16ba54eb8164..c7e4600b2dd4 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1574,7 +1574,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+>  	if (card->long_name)
+>  		return 0; /* long name already set by driver or from DMI */
+>  
+> -	if (!is_acpi_device_node(card->dev->fwnode))
+> +	if (!dmi_available)
+>  		return 0;
+>  
+>  	/* make up dmi long name as: vendor-product-version-board */
 
-Yup, that might make things even easier. Well, I still have to go and
-try to better understand the new patch.
+Fine with me.
 
-Best Regards,
-Petr
+Acked-by: Jean Delvare <jdelvare@suse.de>
+
+-- 
+Jean Delvare
+SUSE L3 Support
