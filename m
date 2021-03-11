@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6393337A89
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B47D337A8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhCKRMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
+        id S229825AbhCKRNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:13:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhCKRMi (ORCPT
+        with ESMTP id S229809AbhCKRMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:12:38 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8708C061574;
-        Thu, 11 Mar 2021 09:12:37 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id f1so41011328lfu.3;
-        Thu, 11 Mar 2021 09:12:37 -0800 (PST)
+        Thu, 11 Mar 2021 12:12:54 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD87C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:12:54 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id m7so1682563qtq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:12:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3nZrNZAlQ7fNFVlB/ncHMU9Y9miXCLpFJ30rJ9BLUO0=;
-        b=IVGXWiOD7hDdyxq2bFepgOqkWt0DZxmoYTw6XqGU6pEShXZewrfqA8T9tolPtSbIYk
-         S61HsWxnZEuMEVPoj+gcBlWx/9Ptui0+iOe0QEoALTpTsCrelEg8NnWwnGqgJUuVKT2e
-         MYWcWhkWVY0FaiH3MK86Cjht7SyzC3WVB2jsQZwbduTJjhZt/GhMjaEeER01bOQMGEi3
-         n9Sxt5qLQoBbM948ZSoe0jqCReQnKbp5bhUDqWn/z0bs/9wqUVBw/D9OF36QH55DUQwT
-         LB8eRKKvutTv2B60vgmfCsxkB452Z1s9/mUHObrL5moifmaYHxkzCuG9nMozc2chVxQY
-         iSYw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6rCxc3cHCoDd5YPWN4pdDt+yoQYGWR6uIdzRq1ahqGE=;
+        b=HV5bjVcmi15S35Lbj514kbB9hfz75yA1KuMuBsQlKgkmq5CF7pInZmlb4c6KRY5aAD
+         ovgWVL9N9d7rpfw9jcITyVR9dzAxwWcMA7FSYY/5FO24wnNBze2YEk/alhaeMpcuzRDq
+         64L7vqz+gsF+1aguapVzhRc3XOgJT56QIQ72E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3nZrNZAlQ7fNFVlB/ncHMU9Y9miXCLpFJ30rJ9BLUO0=;
-        b=PtiQwyA5o5rAwfNUwD+gCc1oKUhxaA7JWEiQKYKh8ZMaMQWNyYH1QEa6dbh0R/85f+
-         4jbVuvclBb4SD4ZK1lmcRPmUF0U7vekvTI7WXH5kFG5H8WHaN59boPmhVExx/CYvssm3
-         qVjRBJ4HSxI/c8WrUdaK1cwXMBYvCvLeNU1UU+PZhv56ozqblGzvDTsPWGKsTvjKliEW
-         7LotQRG/WH4i60aDHolObVzpVR0fhRMfmv5NgsUEGr9oqaH3AbkjRJvzCJMRMQiycxQD
-         rkGtGMNIeAgTks2ubUU2ua48kBTnzj5tEeJiAd6HXQsgWTSG94TxH7XHK5JCuu/3uUOZ
-         sDtA==
-X-Gm-Message-State: AOAM530oCHgi2HLtf/7XDT4X+CDSD8tTeIeCNG4H5o4dTk2ijLZsFMnt
-        XqzClpi2reFyRnyqKlNr1dKLDAx0XB8=
-X-Google-Smtp-Source: ABdhPJwT6mHPhMsF54uxKS8z3qLJNi9SUeGjUOLfvAmSHkBDOAhV/V5E7fdMr1abW61xPhdiTZqtEw==
-X-Received: by 2002:a19:7fc3:: with SMTP id a186mr2691203lfd.626.1615482756315;
-        Thu, 11 Mar 2021 09:12:36 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id v70sm1004633lfa.106.2021.03.11.09.12.35
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6rCxc3cHCoDd5YPWN4pdDt+yoQYGWR6uIdzRq1ahqGE=;
+        b=oFORVBFRdL8GiJdHu7mdTFE6ACIoWZeA9k41eetpmc1C5dqdGH+WeiqRKJ+7CUt+UR
+         N/FZE6zvcT19MekIw6zub+j6Pk0o9Kk2rQ2KBOuSyG62oJOWe7nu+pM2ZsQJ57Jy4AJj
+         4o903gLGgSC3V8KXkmcT1/LUhFNToWjXN5Iw+UgW+b9Y8tn1gAkWjLkADiJ1onRYt+6i
+         +IJpOdg/t+8T77OFjHh3/M2+xBpM5uOFiVwa+hMzYqsdedvSp2BiWfMPu6mVWuC03Dz4
+         63sNBol1u7hFszffPQx4RPIW/S8x5ZhZ6M5LYAGo00BVGN0walOGfnC7Fe0xdxn8XgQu
+         ynsA==
+X-Gm-Message-State: AOAM532/GzVSDOPDXOaPxTFBlJ/T2d37YfaDMVmaQTqnmEjPvi5yHa1z
+        KkKEzkgjCKgEXiFGwnHaePs4vKPBJQyGsw==
+X-Google-Smtp-Source: ABdhPJwomb6/to/ExNEq9jmE9rHMsRfP4QLixArIzUSArKw5TgyMQTTn4FvvtSP0uLzcjPoXfMTb6g==
+X-Received: by 2002:ac8:5912:: with SMTP id 18mr8529441qty.18.1615482773145;
+        Thu, 11 Mar 2021 09:12:53 -0800 (PST)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id 73sm2270147qkk.131.2021.03.11.09.12.52
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 09:12:36 -0800 (PST)
-Subject: Re: [PATCH v14 1/2] drm/tegra: dc: Support memory bandwidth
- management
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20210311170606.7543-1-digetx@gmail.com>
- <20210311170606.7543-2-digetx@gmail.com>
-Message-ID: <37ff0499-6601-e97a-9fba-8e3e6f338b86@gmail.com>
-Date:   Thu, 11 Mar 2021 20:12:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Thu, 11 Mar 2021 09:12:52 -0800 (PST)
+Received: by mail-yb1-f181.google.com with SMTP id l8so22416560ybe.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:12:52 -0800 (PST)
+X-Received: by 2002:a25:cf88:: with SMTP id f130mr12858170ybg.476.1615482772142;
+ Thu, 11 Mar 2021 09:12:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210311170606.7543-2-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210311095316.6480-1-colin.king@canonical.com>
+In-Reply-To: <20210311095316.6480-1-colin.king@canonical.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 11 Mar 2021 09:12:40 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=V5+GvMpD1FdX0-TJ=BFyyvST+oLR08pO7jL+h38G8PCw@mail.gmail.com>
+Message-ID: <CAD=FV=V5+GvMpD1FdX0-TJ=BFyyvST+oLR08pO7jL+h38G8PCw@mail.gmail.com>
+Subject: Re: [PATCH][next] nvmem: core: Fix unintentional sign extension issue
+To:     Colin King <colin.king@canonical.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.03.2021 20:06, Dmitry Osipenko пишет:
-> +static const char * const tegra_plane_icc_names[TEGRA_DC_LEGACY_PLANES_NUM] = {
-> +	"wina", "winb", "winc", "", "", "", "cursor",
-> +};
-> +
-> +int tegra_plane_interconnect_init(struct tegra_plane *plane)
-> +{
-> +	const char *icc_name = tegra_plane_icc_names[plane->index];
-> +	struct device *dev = plane->dc->dev;
-> +	struct tegra_dc *dc = plane->dc;
-> +	int err;
-> +
-> +	if (WARN_ON(plane->index >= TEGRA_DC_LEGACY_PLANES_NUM) ||
-> +	    WARN_ON(!tegra_plane_icc_names[plane->index]))
-> +		return -EINVAL;
+Hi,
 
-It just occurred to me that I added the NULL-check here, but missed to
-change "" to NULLs. I'll make a v15 shortly.
+On Thu, Mar 11, 2021 at 1:53 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The shifting of the u8 integer buf[3] by 24 bits to the left will
+> be promoted to a 32 bit signed int and then sign-extended to a
+> u64. In the event that the top bit of buf[3] is set then all
+> then all the upper 32 bits of the u64 end up as also being set
+> because of the sign-extension. Fix this by casting buf[i] to
+> a u64 before the shift.
+>
+> Addresses-Coverity: ("Unintended sign extension")
+> Fixes: 097eb1136ebb ("nvmem: core: Add functions to make number reading easy")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/nvmem/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Thanks! I had only tested the "u64" version to read smaller data and
+store it in a u64. From my understanding of C rules, without your
+patch it would have been even worse than just a sign extension though,
+right? Shifting "buf[i]" by more than 32 bits would just not have
+worked right.
+
+In any case:
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
