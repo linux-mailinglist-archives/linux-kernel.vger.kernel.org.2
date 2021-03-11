@@ -2,128 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67A8336A00
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18665336A04
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhCKCC1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 21:02:27 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:47467 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229714AbhCKCB5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 21:01:57 -0500
-X-AuditID: 0a580155-1f5ff7000005482e-22-6049728f68b2
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 89.95.18478.F8279406; Thu, 11 Mar 2021 09:29:51 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 11 Mar
- 2021 10:01:54 +0800
-Date:   Thu, 11 Mar 2021 10:01:54 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-CC:     "Luck, Tony" <tony.luck@intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        <yangfeng1@kingsoft.com>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, <sunhao2@kingsoft.com>,
-        <yaoaili@kingsoft.com>, <suhua1@kingsoft.com>
-Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
- hwpoison page access.
-Message-ID: <20210311100154.5a75c62e@alex-virtual-machine>
-In-Reply-To: <CALCETrVqkK29n=6wtVhd7qgTWf83x3SUk6+bkD30asHyWSqppw@mail.gmail.com>
-References: <4fc1b4e8f1fb4c8c81f280db09178797@intel.com>
-        <047D5B49-FDBB-494C-81E9-DA811476747D@amacapital.net>
-        <20210311091941.45790fcf@alex-virtual-machine>
-        <CALCETrVqkK29n=6wtVhd7qgTWf83x3SUk6+bkD30asHyWSqppw@mail.gmail.com>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJIsWRmVeSWpSXmKPExsXCFcGooNtf5Jlg8PUUs8XnDf/YLF5saGe0
-        mLZR3GLz9w42i8u75rBZ3Fvzn9Vi9doGVovzu9ayWlw6sIDJ4mLjAUaLrftbGS2O9x5gsti8
-        aSqzxZsL91gsfmx4zOrA7/G9tY/F4/6bvywem1doeSze85LJY9OqTjaPTZ8msXu8O3eO3WPe
-        yUCPF1c3sni833eVzePzJjmPEy1fWAN4orhsUlJzMstSi/TtErgyrm5fyljQKlKxa+p91gbG
-        A/xdjOwcEgImEntsuhi5OIQEpjNJHDu0lAnCecUosfH1cSCHk4NFQFXiZ8tWMJsNyN51bxYr
-        iC0ioCnxcsp8FpAGZoFHLBINsxezgySEBZIlzkx6wAhi8wpYSWz4Mh+omYODUyBQ4sFBGYgF
-        LxglOju3s4HU8AuISfRe+Q+2QELAXqJtyyKoXkGJkzOfsIDYzEDLWrf/ZoewtSWWLXzNDGIL
-        CShKHF7yix2iV0niSPcMNgg7VmLZvFesExiFZyEZNQvJqFlIRi1gZF7FyFKcm260iRESm6E7
-        GGc0fdQ7xMjEwXiIUYKDWUmE1++4W4IQb0piZVVqUX58UWlOavEhRmkOFiVx3r3HXBOEBNIT
-        S1KzU1MLUotgskwcnFINTAdWnODNFdlnd+0k64q9+yQ6157PmrlAMSnlz4YY9RsHn3lfexrT
-        x9nftDLhu/nVi4F5tfKHOqr7fC76mSyO3CFkf7Ro2ZvEyhk2xte2+jrYJy1kNlnyzqs+5kGs
-        yx+TpeeUzwarLhBSYWrYtXvig3nLDwicMj0TaBKdOenu1arXTF6lv5MnGxb/YHQqORmxeZ+E
-        tPdeTjfZT/IS7EnecWUpgg6dhx5dCmW7krL0zv+DbXZ3HqbfcOE4FDWxPn6nk/7cu21yElXH
-        HcNN93N8UpNPCSrmmNC+6vvcrYu+cn3ZkW3566bNzMg/G49qhCvEbL4Ye+sgQ2OGzAGTg3/W
-        O2zeVnk2a+W93NMPtaxi/iixFGckGmoxFxUnAgBRSXrGPAMAAA==
+        id S229711AbhCKCGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 21:06:11 -0500
+Received: from mga09.intel.com ([134.134.136.24]:11748 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229483AbhCKCFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 21:05:39 -0500
+IronPort-SDR: PQzxYWTbtAXBscr0rfysBe4uRsrZfzcsHs4Uk6UH3YJHuj4RQEka0EGaeliwCl3tJSn14vhrTt
+ VRormKLFx2zg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188697240"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="188697240"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 18:05:37 -0800
+IronPort-SDR: q48dR3kVgGtxcmi9QBxCY9R6f15dk8DY6svngvGn3PyQQE/VcdF1dMSRab+qtGj8dgDMcx1Nv9
+ LPn2ICiqJqKw==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="603342257"
+Received: from xuhuiliu-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.251.31.67])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 18:05:32 -0800
+Date:   Thu, 11 Mar 2021 15:05:29 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
+        b.thiel@posteo.de, jmattson@google.com, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, corbet@lwn.net
+Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
+Message-Id: <20210311150529.4bf07611d074b654297cfd92@intel.com>
+In-Reply-To: <20210310132948.GE23521@zn.tnic>
+References: <cover.1615250634.git.kai.huang@intel.com>
+        <20210309093037.GA699@zn.tnic>
+        <76cb4216a7a689883c78b4622c86bd9c3faaa465.camel@intel.com>
+        <20210310132948.GE23521@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 17:28:12 -0800
-Andy Lutomirski <luto@amacapital.net> wrote:
-
-> On Wed, Mar 10, 2021 at 5:19 PM Aili Yao <yaoaili@kingsoft.com> wrote:
-> >
-> > On Mon, 8 Mar 2021 11:00:28 -0800
-> > Andy Lutomirski <luto@amacapital.net> wrote:
-> >  
-> > > > On Mar 8, 2021, at 10:31 AM, Luck, Tony <tony.luck@intel.com> wrote:
-> > > >
-> > > > ﻿  
-> > > >>
-> > > >> Can you point me at that SIGBUS code in a current kernel?  
-> > > >
-> > > > It is in kill_me_maybe().  mce_vaddr is setup when we disassemble whatever get_user()
-> > > > or copy from user variant was in use in the kernel when the poison memory was consumed.
-> > > >
-> > > >        if (p->mce_vaddr != (void __user *)-1l) {
-> > > >                force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);  
-> > >
-> > > Hmm. On the one hand, no one has complained yet. On the other hand, hardware that supports this isn’t exactly common.
-> > >
-> > > We may need some actual ABI design here. We also need to make sure that things like io_uring accesses or, more generally, anything using the use_mm / use_temporary_mm ends up either sending no signal or sending a signal to the right target.
-> > >  
-> > > >
-> > > > Would it be any better if we used the BUS_MCEERR_AO code that goes into siginfo?  
-> > >
-> > > Dunno.  
-> >
-> > I have one thought here but don't know if it's proper:
-> >
-> > Previous patch use force_sig_mceerr to the user process for such a scenario; with this method
-> > The SIGBUS can't be ignored as force_sig_mceerr() was designed to.
-> >
-> > If the user process don't want this signal, will it set signal config to ignore?
-> > Maybe we can use a send_sig_mceerr() instead of force_sig_mceerr(), if process want to
-> > ignore the SIGBUS, then it will ignore that, or it can also process the SIGBUS?  
+On Wed, 10 Mar 2021 14:29:48 +0100 Borislav Petkov wrote:
+> On Wed, Mar 10, 2021 at 10:27:05PM +1300, Kai Huang wrote:
+> > Sorry for the mistake. I will send out another version with that fixed.
 > 
-> I don't think the signal blocking mechanism makes sense for this.
-> Blocking a signal is for saying that, if another process sends the
-> signal (or an async event like ctrl-C), then the process doesn't want
-> it.  Blocking doesn't block synchronous things like faults.
+> If patch 3 is the only one which needs to change, you can send only that
+> one as a reply to the original patch 3 message...
 > 
-> I think we need to at least fix the existing bug before we add more
-> signals.  AFAICS the MCE_IN_KERNEL_COPYIN code is busted for kernel
-> threads.
+> Thx.
 
-Got this, Thanks!
+Hi Boris,
 
-I read https://man7.org/linux/man-pages/man2/write.2.html, and it seems the write syscall is not expecting
-an signal, maybe a specific error code for this scenario is enough.
+Yes it is the only patch needs change. I have send out updated v3 patch 3.
 
--- 
-Thanks!
-Aili Yao
+I provided some changelog history to explain and also added Jarkko's Acked-by in
+the new patch. Sorry for the trouble.
+
+Hi Sean,
+
+If you see this, could you take another check on whether this series is OK?
+
+Thanks in advance.
