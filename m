@@ -2,114 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E72B336961
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4705336964
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhCKBCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 20:02:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
+        id S229553AbhCKBGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 20:06:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhCKBCK (ORCPT
+        with ESMTP id S229468AbhCKBFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 20:02:10 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DC7C061762
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:02:10 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id t9so185386ljt.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:02:10 -0800 (PST)
+        Wed, 10 Mar 2021 20:05:24 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35239C061574;
+        Wed, 10 Mar 2021 17:05:24 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id f10so17428686ilq.5;
+        Wed, 10 Mar 2021 17:05:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c8MWUEPcWRqlNN6HV0ALExHUT0G/wuf/0Gpk6qlo1WE=;
-        b=UhMP6tzOupn8Kgm9qYDbMvA5SCQImG9o3THb5a8Ek4/IxA6Ws6YGQoiQaHOUEBSRcc
-         /ZpjF/pAJubmqTu9r/jwd7HBBwpIAp/E+cSIIircb7aU6kwwbRJuxr7BN5dvmMGw01io
-         5pVLAWKHtIxUn/RKgjkjffI+X8LpF5V88y1/uaJ9Ku/hMV1zyg+KDMDkBrczbFUCzhGs
-         S4hOB6Km+eAAvrBcseYvd3NlDzvkQTg6zzCq3AqRuJ06/FT5I8IqtJbek2KTykNN+zRz
-         s3z1LKVDczv1nd/6qnTe63ho1j/gNgmQLCSc3V4M1KuFMY7f99od7XGzD+aT+hY2pOVY
-         96xA==
+         :cc:content-transfer-encoding;
+        bh=tzLcpbEHlICK/TY3veXTxXrzL8MkHekFvgC0dEJ6xUY=;
+        b=LZBOFnzlnL8BCHZYy2gxCniNTx8DL20WUALibFUmm2iub0s76sHOMehyxztAiu90NF
+         bo5viCGgzdHJFUlaV3nPaCd9YSTdXCl94XRILUQT4MbA9Hg1i2gFq7hjyk3TSkQXe5o0
+         0j+3IS/hp3G0YuU8WDvDjXyGSG5rL8sh1Ll4D6GtDa5UL/4ZPHcdbQl8VKPI8oP3SqNH
+         NrIHlUMxzQKnjdH8POjHlTibZIMzz2EVlXcyhF6eKyqyuHl89tIZVkX46OnkDtBurmKa
+         6csBLXxCefF/9gYoCVFAsFDH2vd1+s3LXFi8gfDyse3VUc0JkBMLqUHIG9oh+LIzcoNt
+         DA4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c8MWUEPcWRqlNN6HV0ALExHUT0G/wuf/0Gpk6qlo1WE=;
-        b=BYSjUwqPnYB6sxpfbBtacStKfQUSOzTj9maUbcvJgdRBTcBHgR6c8VJfkyUc9XIcpE
-         Ttf263TpHv7Ec05t+VOgPUOleybjYbA+gGhMe3qx0alOVbIgi7A8WBoDECLRD0cQ20VP
-         TXSTEI5ShIUQ56ax/P2tPC/BaFeJdCBTBGe8CrdBs0Wu6OG9z1DWG4GW4DnpAiBmwgbS
-         yeOMV6hvzI6rcAJzFs8T/X6HORVnlJFNLwH4eVcESSMo6b6BiraX9EmnteI9sbh1Rvaf
-         wmqASI+UDBOcz6zZ82adf2o8JocceY49pOwpdwwu6CfQFqFn+dwJQMAgrYswy01+e2sP
-         OexQ==
-X-Gm-Message-State: AOAM532sDPxKiYU9VFuQbFez/GOcpuPZibZiMUC2Ni2jHmcwGEC/CNoj
-        TyeDtxHkmqHHgKJH0SjOPmNgtpLw66cPyx9p6j+kDw==
-X-Google-Smtp-Source: ABdhPJzkcZbjChLiKr2QTj6cupQ7Gt4EKlXJ9kqPzoWN9882YNqqEJKPD3YGlEuuS/DQkce8boJ9ojboDa+oHD5ilFI=
-X-Received: by 2002:a2e:1649:: with SMTP id 9mr3492915ljw.74.1615424528892;
- Wed, 10 Mar 2021 17:02:08 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tzLcpbEHlICK/TY3veXTxXrzL8MkHekFvgC0dEJ6xUY=;
+        b=fw1ABzTUrANiafdG10Vwaki6Prn3OTH/00pyHqvkN67XV/HA1DzMKLsjTJJ8PKJS6G
+         2gs7Ov+Mu/nUJykPBOI5rIoAX323xuZ/KHNfEhJlucU7GqNQHZ9hPeVe0KOqOV29q8q0
+         p7Xn4WQwo9mmZJmVEc1Desk4gL/0ZvtPFdtkjxMPKgUqn8Iw8+5tix3bXHD7Naelyqlk
+         Z+Mxulvhs6jk/2xkrJgXFS1HImBRME3Meb9SRLtIjof2kh1heXePZ3BinvADWNCOzrbQ
+         EtXFobaXTt1w7j+vR6rd8PxDJkDQQCcckzCN0FgJRWMqrsLClVEvMcahZGvQQz0UW9JU
+         L/nA==
+X-Gm-Message-State: AOAM531v/hVJlRNuKvc1gvmWcDYH1d2KvxgGIrBxgswcknzXpnPI+nOk
+        KI+mCqewnToKC5V69fUECIOm1FPGUiFil6puDGA=
+X-Google-Smtp-Source: ABdhPJygjZiXjz3N6qVWwrLUn617NgpkFbTB7aeFU0n7/FT/9HvsgsOtss8INOhAOhrg8Bm9D/+acdHqQLrNKB/mbmE=
+X-Received: by 2002:a92:c04b:: with SMTP id o11mr4720645ilf.42.1615424723613;
+ Wed, 10 Mar 2021 17:05:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20210310152900.149380-1-ulf.hansson@linaro.org>
-In-Reply-To: <20210310152900.149380-1-ulf.hansson@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 11 Mar 2021 02:01:57 +0100
-Message-ID: <CACRpkdayGkuJE9z+QT41ZVoJJN4sBx4e28c5OLzC9obvE94gBw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Fix hanging on I/O during system suspend for
- removable cards
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+References: <A221FEC9-71CE-4D0A-9F39-F75C337B5D22@contoso.com>
+In-Reply-To: <A221FEC9-71CE-4D0A-9F39-F75C337B5D22@contoso.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 10 Mar 2021 17:05:12 -0800
+Message-ID: <CAKgT0Ud508jLc4NVm1XxNSjEnq3NoLS=Q1V+o=6JZoJF_r_m0A@mail.gmail.com>
+Subject: Re: [PATCH v17 1/9] mm: Adjust shuffle code to allow for future coalescing
+To:     "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>
+Cc:     "aarcange@redhat.com" <aarcange@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "alexander.h.duyck@linux.intel.com" 
+        <alexander.h.duyck@linux.intel.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "lcapitulino@redhat.com" <lcapitulino@redhat.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        stable <stable@vger.kernel.org>
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "nitesh@redhat.com" <nitesh@redhat.com>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "pagupta@redhat.com" <pagupta@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "riel@surriel.com" <riel@surriel.com>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "wei.w.wang@intel.com" <wei.w.wang@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "yang.zhang.wz@gmail.com" <yang.zhang.wz@gmail.com>,
+        "Graf (AWS), Alexander" <graf@amazon.de>,
+        "Herrenschmidt, Benjamin" <benh@amazon.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 4:29 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+Hi Bala,
 
-> The mmc core uses a PM notifier to temporarily during system suspend, turn
-> off the card detection mechanism for removal/insertion of (e)MMC/SD/SDIO
-> cards. Additionally, the notifier may be used to remove an SDIO card
-> entirely, if a corresponding SDIO functional driver don't have the system
-> suspend/resume callbacks assigned. This behaviour has been around for a
-> very long time.
->
-> However, a recent bug report tells us there are problems with this
-> approach. More precisely, when receiving the PM_SUSPEND_PREPARE
-> notification, we may end up hanging on I/O to be completed, thus also
-> preventing the system from getting suspended.
->
-> In the end what happens, is that the cancel_delayed_work_sync() in
-> mmc_pm_notify() ends up waiting for mmc_rescan() to complete - and since
-> mmc_rescan() wants to claim the host, it needs to wait for the I/O to be
-> completed first.
->
-> Typically, this problem is triggered in Android, if there is ongoing I/O
-> while the user decides to suspend, resume and then suspend the system
-> again. This due to that after the resume, an mmc_rescan() work gets punted
-> to the workqueue, which job is to verify that the card remains inserted
-> after the system has resumed.
->
-> To fix this problem, userspace needs to become frozen to suspend the I/O,
-> prior to turning off the card detection mechanism. Therefore, let's drop
-> the PM notifiers for mmc subsystem altogether and rely on the card
-> detection to be turned off/on as a part of the system_freezable_wq, that we
-> are already using.
->
-> Moreover, to allow and SDIO card to be removed during system suspend, let's
-> manage this from a ->prepare() callback, assigned at the mmc_host_class
-> level. In this way, we can use the parent device (the mmc_host_class
-> device), to remove the card device that is the child, in the
-> device_prepare() phase.
->
-> Reported-by: Kiwoong Kim <kwmad.kim@samsung.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+There was a similar effort several months ago that was trying to do
+this in conjunction with pre-zeroing of pages. I suspect if you wanted
+to you could probably pick up some of their patch set and work with
+that. It can be found at:
+https://www.spinics.net/lists/linux-mm/msg239735.html
 
-This makes sense to me.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks.
 
-Yours,
-Linus Walleij
+- Alex
+
+On Tue, Mar 9, 2021 at 12:13 AM Bodeddula, Balasubramaniam
+<bodeddub@amazon.com> wrote:
+>
+> Hi Alexander,
+>
+>
+>
+> My team was evaluating FPR and observed that these patches don=E2=80=99t =
+report memory for deallocated hugeapages directly and need to cycle through=
+ buddy allocator. For example, say we need to allocate a maximum of 12 * 1G=
+ hugepages (by setting nr_hugepages), use 8 * 1G hugepages, and then deallo=
+cate 4 * 1G hugepages. Unlike regular 4K pages, this 4G worth of memory wil=
+l not be reported until we set nr_hugepages to 8 (wait sometime(?) for FPR =
+to do its work) and set it back again to 12. While this works fine in theor=
+y, in practice,  setting nr_hugepages to 12 could fail too due to fragmenta=
+tion (this could depend on other processes memory usage behavior).
+>
+>
+>
+> If FPR could report this free memory without cycling through buddy alloca=
+tor, it makes the solution more robust. I am looking for advice on how feas=
+ible this approach is and what would be the effort for building this functi=
+onality. In general, if there are other thoughts on how we can address this=
+, please do let me know.
+>
+>
+>
+> Thanks,
+>
+> bala
