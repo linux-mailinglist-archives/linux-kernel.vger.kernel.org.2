@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E830C336AE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 04:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A3A336AEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhCKDtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 22:49:04 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13500 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhCKDtA (ORCPT
+        id S230502AbhCKECX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 23:02:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230231AbhCKEBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 22:49:00 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dwvyk52MpzrTlR;
-        Thu, 11 Mar 2021 11:47:10 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 11 Mar 2021 11:48:52 +0800
-Subject: Re: [PATCH 4.4 0/3] Backport patch series to update Futex from 4.9
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <lee.jones@linaro.org>, <stable@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>,
-        <cj.chengjian@huawei.com>, <judy.chenhui@huawei.com>,
-        <zhangjinhao2@huawei.com>, <nixiaoming@huawei.com>
-References: <20210309030605.3295183-1-zhengyejian1@huawei.com>
- <YEdQz4AxVRoabTW4@kroah.com>
-From:   "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
-Message-ID: <d44ebf43-1fe8-6588-b84f-dcfea9eca0a4@huawei.com>
-Date:   Thu, 11 Mar 2021 11:48:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 10 Mar 2021 23:01:53 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 888D9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 20:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=G3UhdZKwhC
+        rMpAWqnCpQWDNvlbX9WuVX0dVLrPhQ1zE=; b=cpPiiFbiu6swJBQj7ApilEkTn2
+        WoXGkqM9z0EqKkiQ7Oso8dPm0lmM75a3WPUdqZarpW7rEbCcrSLJuQzB3/tO4hM0
+        wb0hef3CDUeBTuOVJqEyqo/46sreIaZ7J5oMJZ1jzk9Kt6GU1PFr2uvagkxlhx4R
+        mIUsJfiAyYBmtHSNo=
+Received: from ubuntu.localdomain (unknown [114.214.226.60])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX3uIolklgiCcJAA--.1166S4;
+        Thu, 11 Mar 2021 12:01:44 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     shshaikh@marvell.com, manishc@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] net/qlcnic: Fix a use after free in qlcnic_83xx_get_minidump_template
+Date:   Wed, 10 Mar 2021 20:01:40 -0800
+Message-Id: <20210311040140.7339-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YEdQz4AxVRoabTW4@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygDX3uIolklgiCcJAA--.1166S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ary7GrWxZr15XFy5tFyUtrb_yoW8GrWrpw
+        s7GFyUWrn7Jrsrta17Za4xJFn8A3y7try29F1kCa93Zw1ktr1xXFW5Kr4a9r1kJrZ3WFy5
+        tF18Z3Z8Z3W8CFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ2
+        3UUUUU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In qlcnic_83xx_get_minidump_template, fw_dump->tmpl_hdr was freed by
+vfree(). But unfortunately, it is used when extended is true.
+
+Fixes: 7061b2bdd620e ("qlogic: Deletion of unnecessary checks before two function calls")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
+index 7760a3394e93..7ecb3dfe30bd 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
+@@ -1425,6 +1425,7 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
+ 
+ 	if (fw_dump->tmpl_hdr == NULL || current_version > prev_version) {
+ 		vfree(fw_dump->tmpl_hdr);
++		fw_dump->tmpl_hdr = NULL;
+ 
+ 		if (qlcnic_83xx_md_check_extended_dump_capability(adapter))
+ 			extended = !qlcnic_83xx_extend_md_capab(adapter);
+@@ -1443,6 +1444,8 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
+ 			struct qlcnic_83xx_dump_template_hdr *hdr;
+ 
+ 			hdr = fw_dump->tmpl_hdr;
++			if (!hdr)
++				return;
+ 			hdr->drv_cap_mask = 0x1f;
+ 			fw_dump->cap_mask = 0x1f;
+ 			dev_info(&pdev->dev,
+-- 
+2.25.1
 
 
-On 2021/3/9 18:41, Greg KH wrote:
-> On Tue, Mar 09, 2021 at 11:06:02AM +0800, Zheng Yejian wrote:
->> Lee sent a patchset to update Futex for 4.9, see https://www.spinics.net/lists/stable/msg443081.html,
->> Then Xiaoming sent a follow-up patch for it, see https://lore.kernel.org/lkml/20210225093120.GD641347@dell/.
->>
->> These patchsets may also resolve following issues in 4.4.260 which have been reported in 4.9,
->> see https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/?h=linux-4.4.y&id=319f66f08de1083c1fe271261665c209009dd65a
->>        > /*
->>        >  * The task is on the way out. When the futex state is
->>        >  * FUTEX_STATE_DEAD, we know that the task has finished
->>        >  * the cleanup:
->>        >  */
->>        > int ret = (p->futex_state = FUTEX_STATE_DEAD) ? -ESRCH : -EAGAIN;
->>
->>      Here may be:
->>        int ret = (p->futex_state == FUTEX_STATE_DEAD) ? -ESRCH : -EAGAIN;
->>
->>        > raw_spin_unlock_irq(&p->pi_lock);
->>        > /*
->>        >  * If the owner task is between FUTEX_STATE_EXITING and
->>        >  * FUTEX_STATE_DEAD then store the task pointer and keep
->>        >  * the reference on the task struct. The calling code will
->>        >  * drop all locks, wait for the task to reach
->>        >  * FUTEX_STATE_DEAD and then drop the refcount. This is
->>        >  * required to prevent a live lock when the current task
->>        >  * preempted the exiting task between the two states.
->>        >  */
->>        > if (ret == -EBUSY)
->>
->>      And here, the variable "ret" may only be "-ESRCH" or "-EAGAIN", but not "-EBUSY".
->>
->>        > 	*exiting = p;
->>        > else
->>        > 	put_task_struct(p);
->>
->> Since 074e7d515783 ("futex: Ensure the correct return value from futex_lock_pi()") has
->> been merged in 4.4.260, I send the remain 3 patches.
-> 
-> There already are 2 futex patches in the 4.4.y stable queue, do those
-> not resolve these issues for you?
-
-I think that 2 futex patches in 4.4 stable queue are fixing other issues:
-     futex-fix-irq-self-deadlock-and-satisfy-assertion.patch
-     futex-fix-spin_lock-spin_unlock_irq-imbalance.patch
-But I am not very sure if there are any lock conflicts between that 2 
-patches and this 3 patches.
-
-> 
-> If not, please resend this series with the needed git commit ids added to
-> them.
-
-I have add that information and sent a "v2" patchset.
