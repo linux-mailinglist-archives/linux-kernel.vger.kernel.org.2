@@ -2,141 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74571337B77
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5D7337B79
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhCKR5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:57:38 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50336 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCKR5W (ORCPT
+        id S229796AbhCKR6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:58:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229657AbhCKR6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:57:22 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12BHuxlk042621;
-        Thu, 11 Mar 2021 11:56:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615485419;
-        bh=q08sJDe3heSV4QnUx6HBERqRFXasPw62PnUGroZLHvQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=EZ2htw8QV3Zy0M40FE+VW7TS8Ir0UPukIu0zvt8R36esfrQiA8LsmEk8SMdvSseOW
-         s4ng9ZYR+Zo7Iq8tT+epEjwiEb2G3F//7E6jmcnGkI/wOmrf5FNGVCuUiIixUva+3c
-         QWZrmNwtrLNVDGBUBwWYD2ZXG2oW8n7RM7TFOV5E=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12BHuxsx110234
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 11 Mar 2021 11:56:59 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 11
- Mar 2021 11:56:58 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 11 Mar 2021 11:56:58 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12BHuw1U018537;
-        Thu, 11 Mar 2021 11:56:58 -0600
-Date:   Thu, 11 Mar 2021 11:56:58 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Le Jin <le.jin@siemens.com>,
-        Bao Cheng Su <baocheng.su@siemens.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v4 3/3] arm64: dts: ti: Add support for Siemens IOT2050
- boards
-Message-ID: <20210311175658.agmnphz2pjydwnc5@annex>
-References: <cover.1615369068.git.jan.kiszka@siemens.com>
- <9bff40f434e5298890e5d139cc36cc46a0ca2d76.1615369068.git.jan.kiszka@siemens.com>
- <20210311131754.i5ewls6hgeitcgre@astonish>
- <8d076ff1-cdac-941f-e796-a2e6dba792ab@siemens.com>
- <20210311140056.fzvke3rrg6c2uuoa@uncouth>
- <519ae6b7-35db-1fdd-de1e-e0155e0ca82a@siemens.com>
- <20210311142151.5o54k7kmrnatufcw@target>
- <f8c6f598-cb9c-ecd5-0b01-09f171ce7c26@siemens.com>
+        Thu, 11 Mar 2021 12:58:01 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BAAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:58:01 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id x10so21532753qkm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:58:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4WywUmoHmcIslZBfIAYNGcMCWLJTSJyqm2ax+ex3lZg=;
+        b=hLfud36U62xFdRMVP0xJQ22zs0F3ZYICohff39RVC8U6/j3fdwTdV3rhrcta+nXsXg
+         kTMA9KT93A4jRk9lqUweLLk6xHAKUjdTFbHFKK+zBOL0zZHQYzvdmeITdlKrgfx99mXg
+         l2iPVHChfNZ8uJCygKlUwzz/RrHf20Dqkp/HDpmFaYY8UcQKensg9L1KoNz29je0O4cg
+         6rLjfOV9+zuVOlm8Otyjf+vrSE0RIBR63PrLmPZtHTYjzzT3XnyrVQX8B7HUj4rGIal6
+         07YUdh1GnA+yNXtwQQN/epEUYSRhxJYVlEgifAaCrlwxunn6q68UTP2qqnxzozD5Rzvc
+         1AvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4WywUmoHmcIslZBfIAYNGcMCWLJTSJyqm2ax+ex3lZg=;
+        b=IjgQHCE+XxktoXUDRofFtzmI/JqK8OrAriwL1uKT4HM1LVQgUYkqkjCd4nJCEF90RB
+         QKgCgoz3FCFUWl/LGACBs0/vyN2x3QPKkrpQbgTPtsHl5u407//BB1ShnZ6Q/Ql6v8Qx
+         PB+BAj1F9/q9zc8sW+9newZmrtIVtrCE5bqE35r5YW4rxsBJ2N4PTcUEjVwz9KjTvFHG
+         CYlekQz6jdZYMx9nAlb87VK5zfFAgUS7jqCqzcEUJFnlEGslvkr298TYwXDLx30MnozV
+         /K1aS3adbm46rEkSUPZopiYiuJFUmLKdZqW7gBVOZLs06VLekZY6jz7k2k9dwfPTsjzk
+         K0rQ==
+X-Gm-Message-State: AOAM533FnO9bShTnqJknOpvJk47OtpFV21XdJNL3DyeGvi2T5Jhfz+AK
+        /A+cAatiTSyd1lYeTQhVV70ivrjoiJjF6ATinDr8kDIwByetWw==
+X-Google-Smtp-Source: ABdhPJyD9GlghfhdZvjqLVxg9NP8v10ew6ZlbJtUFHlhDFYE1EejGkagEXTncqa00e89PsD9eSJiQospzRBBB0kNlwQ=
+X-Received: by 2002:a37:46cf:: with SMTP id t198mr8826556qka.265.1615485480009;
+ Thu, 11 Mar 2021 09:58:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <f8c6f598-cb9c-ecd5-0b01-09f171ce7c26@siemens.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
+ <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+In-Reply-To: <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 11 Mar 2021 18:57:48 +0100
+Message-ID: <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
+Subject: Re: arm64 syzbot instances
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15:36-20210311, Jan Kiszka wrote:
-> On 11.03.21 15:21, Nishanth Menon wrote:
-> > On 15:14-20210311, Jan Kiszka wrote:
-> > 
-> > [...]
-> > 
-> >>>
-> >>> See [1] compare the compatibles against
-> >>> Documentation/devicetree/bindings -> I think you should describe what
-> >>> your hardware really is though.
-> >>
-> >> This SPI bus is routed to an Arduino connector. By default, userspace
-> >> (e.g. mraa) takes ownership and adds the desired logic for what is being
-> >> connected. We have no idea what shield or other extension the user adds,
-> >> though.
-> > 
-> > overlays look like the right approach for variable systems like these.
-> > It is not exactly plug and play.. but it does provide a level of
-> > flexibility that is helpful.
-> 
-> Yes, that's for extensions which have kernel drivers. The default model
-> here is userspace, though. Will add as a separate patch to our queue for
-> now.
+On Thu, Mar 11, 2021 at 2:30 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > The instances found few arm64-specific issues that we have not
+> > observed on other instances:
+>
+> I've had a brief look at these:
+>
+> > https://syzkaller.appspot.com/bug?id=1d22a2cc3521d5cf6b41bd6b825793c2015f861f
+>
+> This one  doesn't seem arm64 specific at all. While the KASAN report has shown
+> up on arm64, the link to
+> https://syzkaller.appspot.com/bug?id=aa8808729c0a3540e6a29f0d45394665caf79dca
+> seems to be for x86 machines running into the same problem.
+>
+> Looking deeper into the log, I see that fw_load_sysfs_fallback() finds
+> an existing
+> list entry on the global "pending_fw_head" list, which seems to have been freed
+> earlier (the allocation listed here is not for a firmware load, so presumably it
+> was recycled in the meantime). The log shows that this is the second time that
+> loading the regulatory database failed in that run, so my guess is that it was
+> the first failed load that left the freed firmware private data on the
+> list, but I
+> don't see how that happened.
+>
+> > https://syzkaller.appspot.com/bug?id=bb2c16b0e13b4de4bbf22cf6a4b9b16fb0c20eea
+>
+> This one rings a bell: opening a 8250 uart on a well-known port must fail
+> when no I/O ports are registered in the system, or when the PCI I/O ports
+> are mapped to an invalid area.
+>
+> It seems to be attempting a register access at I/O port '1' (virtual
+> address 0xfffffbfffe800001 is one byte into the well-known PCI_IOBASE),
+> which is an unusual place for a UART, traditional PCs had it at 0x3F8.
+>
+> This could be either a result of qemu claiming to support a PIO based UART
+> at the first available address, or the table of UARTS being uninitialized
+> .bss memory.
+>
+> Definitely an arm64 specific bug.
 
-My colleagues did some checkups and pulled up a few thread on spidev
-of potential interests..
+I can reproduce this with just:
 
-See:
-https://patchwork.kernel.org/project/spi-devel-general/patch/1427499742-26916-1-git-send-email-broonie@kernel.org/
-https://yurovsky.github.io/2016/10/07/spidev-linux-devices.html
-etc...
+#include <stdlib.h>
+#include <string.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-I'd split the spidev node alone as an addendum indicate the checkpatch
-warning, describe the details and loop in spidev list, Mark, et.al. to
-discuss the direction. I am hoping we can get this resolved or get a
-direction for .13-rc1
+int main(void)
+{
+  int fd = syscall(__NR_openat, 0xffffffffffffff9cul, "/dev/ttyS3", 0ul, 0ul);
+  char ch = 0;
+  syscall(__NR_ioctl, fd, 0x5412, &ch); // TIOCSTI
+  return 0;
+}
 
-But that said, I see some examples such as 
-for i in `git grep ".compatible" drivers/spi/spidev.c|grep =|cut -d '=' -f2|cut -d ' ' -f2`; do git grep $i Documentation/devicetree/bindings/; done
 
-Documentation/devicetree/bindings/spi/spi-mux.yaml:                compatible = "lineartechnology,ltc2488";
-Documentation/devicetree/bindings/misc/ge-achc.txt:- compatible : Should be "ge,achc"
-Documentation/devicetree/bindings/misc/ge-achc.txt:     compatible = "ge,achc";
-Documentation/devicetree/bindings/misc/lwn-bk4.txt:- compatible : Should be "lwn,bk4"
-Documentation/devicetree/bindings/misc/lwn-bk4.txt:     compatible = "lwn,bk4";
-
-So, the shield could be hosting one of those say
- ge,achc or maybe lwn,bk4 ?- will probably be good to document the
-dts is for such a configuration, though it is possible that such a
-configuration might work for others?
-
-I agree with Mark that "dt should indicate specific hardware" and we
-should constraint the definition in such a scope?
-
-[...]
-
-> > 
-> >> Are we talking about spidev here? Then let's drop that node, but I do
-> >> need to know how to describe spidev properly
-> > 
-> > yes - the spidev is my problem. can you drop the node and repost? i cant
-> > locally modify and hope it works.
-> > 
-> 
-> Done.
-
-Thanks, I will try and pick up the v5 later today - need to redo my
-sanity checkups.
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+It does not even do any tty setup... does it point to a qemu bug?
