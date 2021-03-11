@@ -2,203 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BB9337F1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2189337F24
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhCKUdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 15:33:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
+        id S229938AbhCKUhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 15:37:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbhCKUdV (ORCPT
+        with ESMTP id S230372AbhCKUhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 15:33:21 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67C6C061574;
-        Thu, 11 Mar 2021 12:33:20 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id x4so35256430lfu.7;
-        Thu, 11 Mar 2021 12:33:20 -0800 (PST)
+        Thu, 11 Mar 2021 15:37:36 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E668C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 12:37:36 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id a11so2187543qto.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 12:37:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lDxi9l/65w1lS5MeVsfp0a2o3WqXobOac2jPACVvWIo=;
-        b=gqFV3M8auXLT3svzUoytk0Umf1KAkOaqlfY5H56OjlaSjU/rs3MCe5DHuNs2D7OLl1
-         dkhs9c+kSfLVsRRdcNO8Rihlpo7WJ6vkJsLOWUL1NQEN4mFx1Ne6KqzLZ8sbY1AW+dcg
-         kK3Vko9qVktuM7AG0+Gjt5X384mMAEZv6vuPCmKS95aDuBMLtRCNRTetTPNK9spStG1R
-         Ur6cHLNE1swoU03XUsY/IBHVvGOHNJQHbu1ftczt+HUArPHsGWlonCyVKYIKxxDHRpwr
-         HgoxCqw/uQ+Vdo3Uw2dTcsYgl3wYeWCueFbsun+hObn4yj+4GVGcq03dhDxi4eF1O6DV
-         YriQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=WSwg5k9sbPudFOPM+Iuoe2XRIHWLu4xDbEOxpss2E8Q=;
+        b=p71mpGqcQh2nGYEwGZbDtJNzVYMLNwCvhItHWCWoXdSBl+gUn3fIDs6zx0Ecogvm7M
+         /udVQPr9G6nsLZ4Vk9EoLyO8XERCpEx2jzP1jqAxXSNUcjirHgBAoubjv1D3l3Mei+LD
+         OUiHxciyl9BaZbRcZp/hnDwFDe89W8zEzhYi8jSumr7GF+Nzjhme1pAJKRyF/aT0i9j2
+         uXL53EHv+fHY1SZVs2Z97xZBF72wvCfsKNxvObrllw0qpx5F75hS5DHI6U4bjQLEfcb0
+         CxERUQEa1tEsmE73GW7lPYP2aYsNbvZ1rXJZ3dcHQaRw6XRXIP4NlXwO45G8jVNZ//Yq
+         MNJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lDxi9l/65w1lS5MeVsfp0a2o3WqXobOac2jPACVvWIo=;
-        b=kDqId2dP54ZVw+q5PdS5u6b60ZpDq8GXU+BIkqSX4y7XWXH/luN7rHbrVlem5mz2Zr
-         +3mXAyzIaXsGNMhUMoxN95BASUUPcInRvoJSzCBFGnFU69TOjL7uiAnSqnruPFP7eqkG
-         ktp7N/B5MZXVqQAegfETS6D7018C4MAtjnkMbEQS4dFT3WKcZDPR2OeRiqWxhStCj+Dx
-         FFjJUD5vYClRrQozpWbkLQFk9bxH6bOOD7F2Vvwt7ma9Ag6+dJIUt/8+eq/Swv+aGDre
-         jvpq4DUiuKVt3xYexxb50p1eSEXoRZDirPKiDbYX49A85iJXewqs8QyQVmTF1hpjvXIc
-         9ltw==
-X-Gm-Message-State: AOAM532hrBwLr+UK2PBKgil5Hr0aYzyIv+GS9vIHLcCJTOzC/a5ZXfji
-        nngeMQVSNz3QVTd98PJl0Lg=
-X-Google-Smtp-Source: ABdhPJw8KFY3irIf8lesknRMh5e8ws2nSFDJJQ6gOTenIvdwRyo99g33LfCaISUTRtBG972zTlzRSQ==
-X-Received: by 2002:a05:6512:4c4:: with SMTP id w4mr3281698lfq.91.1615494799457;
-        Thu, 11 Mar 2021 12:33:19 -0800 (PST)
-Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id u15sm1144658lff.262.2021.03.11.12.33.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 12:33:18 -0800 (PST)
-Subject: Re: [PATCH] dt-bindings: phy: bcm-ns-usb2-phy: convert to yaml
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        linux-phy@lists.infradead.org, Vivek Unune <npcomplete13@gmail.com>
-References: <20201116074650.16070-1-zajec5@gmail.com>
- <20201116074650.16070-2-zajec5@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <411eafa9-70d6-0d46-66dd-ea03c5594e1a@gmail.com>
-Date:   Thu, 11 Mar 2021 21:33:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=WSwg5k9sbPudFOPM+Iuoe2XRIHWLu4xDbEOxpss2E8Q=;
+        b=Bm/w7F8M4Fg8bWPPJoFYeNqe9ilGp1Ol8EyEnrQ6Ar+2Ig8+Os/0KaGd0IGRqoZ5ew
+         /eMyIag1t26uKQt53ZrbsUi/ZoXDrba22rjmCzWi063kQzlj75CwhTmlcBQP77r2XTLq
+         WmOlA+FSZQmYrQoKiuwpErfgyM5vjkEtm90S+4LyrM+aeyjW6VjFcAuAvH6nHoWM+Eoo
+         pwrDTKBA49O8lwyJqEj70uDqzdjKq8hqyFYhVRglc7a2ucE1Y1h+e373hQ4RsklYUV0W
+         DsVcUTaC8+ChrVGLW7JbWz29zjF0So7CjM165PhxOjD9k3VccK9ZotRDZEYZ27VpX9UI
+         aQMw==
+X-Gm-Message-State: AOAM530Vv5FBRh8C40IrpbhUiewi42FkG4zMls43FyJSKHP7xoAoqFcX
+        0ATztUU6xbx5Vs4TlcRf5UqqJYBf3RR8pw==
+X-Google-Smtp-Source: ABdhPJyQ3iwvyAvEG4lQaXukQSMbO+5NKXJD5sMobCpHlGQzyLkPHZAYbRMR7r/vKURPU7kdP7p+BQ==
+X-Received: by 2002:a05:622a:1c9:: with SMTP id t9mr9071842qtw.244.1615495055065;
+        Thu, 11 Mar 2021 12:37:35 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id f27sm2692401qkh.118.2021.03.11.12.37.33
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 11 Mar 2021 12:37:34 -0800 (PST)
+Date:   Thu, 11 Mar 2021 12:37:20 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Michal Hocko <mhocko@suse.com>
+cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hughd@google.com,
+        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
+        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
+        dingtianhong@huawei.com, chenweilong@huawei.com,
+        rui.xiang@huawei.com
+Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
+In-Reply-To: <YEpEzZ1CdXvc5JMt@dhcp22.suse.cz>
+Message-ID: <alpine.LSU.2.11.2103111229380.7859@eggly.anvils>
+References: <20210304074053.65527-1-zhouguanghui1@huawei.com> <20210304074053.65527-3-zhouguanghui1@huawei.com> <20210308210225.GF3479805@casper.infradead.org> <YEc5iI+ZP7dWr2fC@dhcp22.suse.cz> <20210309123255.GI3479805@casper.infradead.org>
+ <YEdyJ+ZK2l7tu0rw@dhcp22.suse.cz> <YEnWrg2XFwZ2PR0N@dhcp22.suse.cz> <YEo1gz6wuYl1Fuqt@cmpxchg.org> <YEpEzZ1CdXvc5JMt@dhcp22.suse.cz>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <20201116074650.16070-2-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.11.2020 08:46, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Thu, 11 Mar 2021, Michal Hocko wrote:
+> On Thu 11-03-21 10:21:39, Johannes Weiner wrote:
+> > On Thu, Mar 11, 2021 at 09:37:02AM +0100, Michal Hocko wrote:
+> > > Johannes, Hugh,
+> > > 
+> > > what do you think about this approach? If we want to stick with
+> > > split_page approach then we need to update the missing place Matthew has
+> > > pointed out.
+> > 
+> > I find the __free_pages() code quite tricky as well. But for that
+> > reason I would actually prefer to initiate the splitting in there,
+> > since that's the place where we actually split the page, rather than
+> > spread the handling of this situation further out.
+> > 
+> > The race condition shouldn't be hot, so I don't think we need to be as
+> > efficient about setting page->memcg_data only on the higher-order
+> > buddies as in Willy's scratch patch. We can call split_page_memcg(),
+> > which IMO should actually help document what's happening to the page.
+> > 
+> > I think that function could also benefit a bit more from step-by-step
+> > documentation about what's going on. The kerneldoc is helpful, but I
+> > don't think it does justice to how tricky this race condition is.
+> > 
+> > Something like this?
+> > 
+> > void __free_pages(struct page *page, unsigned int order)
+> > {
+> > 	/*
+> > 	 * Drop the base reference from __alloc_pages and free. In
+> > 	 * case there is an outstanding speculative reference, from
+> > 	 * e.g. the page cache, it will put and free the page later.
+> > 	 */
+> > 	if (likely(put_page_testzero(page))) {
+> > 		free_the_page(page, order);
+> > 		return;
+> > 	}
+> > 
+> > 	/*
+> > 	 * The speculative reference will put and free the page.
+> > 	 *
+> > 	 * However, if the speculation was into a higher-order page
+> > 	 * that isn't marked compound, the other side will know
+> > 	 * nothing about our buddy pages and only free the order-0
+> > 	 * page at the start of our chunk! We must split off and free
+> > 	 * the buddy pages here.
+> > 	 *
+> > 	 * The buddy pages aren't individually refcounted, so they
+> > 	 * can't have any pending speculative references themselves.
+> > 	 */
+> > 	if (!PageHead(page) && order > 0) {
+> > 		split_page_memcg(page, 1 << order);
+> > 		while (order-- > 0)
+> > 			free_the_page(page + (1 << order), order);
+> > 	}
+> > }
 > 
-> 1. Convert from txt to yaml
-> 2. Drop "Driver for" from the title
-> 3. Document "#phy-cells"
-> 4. Fix example node name (noticed by dt_binding_check)
-> 5. Add #include to example (noticed by dt_binding_check)
-> 6. Specify license
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> I think this should go through linux-phy tree. Kishon, Vinod, can you
-> take this patch?
-> 
-> This patch generates a false positive checkpatch.pl warning [0].
-> Please ignore:
-> WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
-> 
-> [0] https://lkml.org/lkml/2020/2/18/1084
+> Fine with me. Mathew was concerned about more places that do something
+> similar but I would say that if we find out more places we might
+> reconsider and currently stay with a reasonably clear model that it is
+> only head patch that carries the memcg information and split_page_memcg
+> is necessary to break such page into smaller pieces.
 
-Same thing here.
+I agree: I do like Johannes' suggestion best, now that we already
+have split_page_memcg().  Not too worried about contrived use of
+free_unref_page() here; and whether non-compound high-order pages
+should be perpetuated is a different discussion.
 
-Kishon, Vinod: I sent this patch back in December, it was Reviewed-by
-Rob, but never accepted.
-
-Could you push this patch to the linux-phy.git?
-
-
-> ---
->   .../bindings/phy/bcm-ns-usb2-phy.txt          | 21 -------
->   .../bindings/phy/bcm-ns-usb2-phy.yaml         | 59 +++++++++++++++++++
->   2 files changed, 59 insertions(+), 21 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.txt
->   create mode 100644 Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.txt b/Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.txt
-> deleted file mode 100644
-> index a7aee9ea8926..000000000000
-> --- a/Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.txt
-> +++ /dev/null
-> @@ -1,21 +0,0 @@
-> -Driver for Broadcom Northstar USB 2.0 PHY
-> -
-> -Required properties:
-> -- compatible: brcm,ns-usb2-phy
-> -- reg: iomem address range of DMU (Device Management Unit)
-> -- reg-names: "dmu", the only needed & supported reg right now
-> -- clocks: USB PHY reference clock
-> -- clock-names: "phy-ref-clk", the only needed & supported clock right now
-> -
-> -To initialize USB 2.0 PHY driver needs to setup PLL correctly. To do this it
-> -requires passing phandle to the USB PHY reference clock.
-> -
-> -Example:
-> -	usb2-phy {
-> -		compatible = "brcm,ns-usb2-phy";
-> -		reg = <0x1800c000 0x1000>;
-> -		reg-names = "dmu";
-> -		#phy-cells = <0>;
-> -		clocks = <&genpll BCM_NSP_GENPLL_USB_PHY_REF_CLK>;
-> -		clock-names = "phy-ref-clk";
-> -	};
-> diff --git a/Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.yaml b/Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.yaml
-> new file mode 100644
-> index 000000000000..05b4dcd80019
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/bcm-ns-usb2-phy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Broadcom Northstar USB 2.0 PHY
-> +
-> +description: >
-> +  To initialize USB 2.0 PHY driver needs to setup PLL correctly.
-> +  To do this it requires passing phandle to the USB PHY reference clock.
-> +
-> +maintainers:
-> +  - Rafał Miłecki <rafal@milecki.pl>
-> +
-> +properties:
-> +  compatible:
-> +    const: brcm,ns-usb2-phy
-> +
-> +  reg:
-> +    items:
-> +      - description: iomem address range of DMU (Device Management Unit)
-> +
-> +  reg-names:
-> +    items:
-> +      - const: dmu
-> +
-> +  clocks:
-> +    items:
-> +      - description: USB PHY reference clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: phy-ref-clk
-> +
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - clock-names
-> +  - "#phy-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/bcm-nsp.h>
-> +    phy@1800c000 {
-> +        compatible = "brcm,ns-usb2-phy";
-> +        reg = <0x1800c000 0x1000>;
-> +        reg-names = "dmu";
-> +        clocks = <&genpll BCM_NSP_GENPLL_USB_PHY_REF_CLK>;
-> +        clock-names = "phy-ref-clk";
-> +        #phy-cells = <0>;
-> +    };
-> 
+Hugh
