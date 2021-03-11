@@ -2,178 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C989336DB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014E3336DA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231697AbhCKIUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:20:02 -0500
-Received: from mga07.intel.com ([134.134.136.100]:25901 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231516AbhCKIT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:19:29 -0500
-IronPort-SDR: 4N2GXB1ZCXY9Td+gCbzL6R0dC32MVdjT9rqosMq/fXca40CcXZoRDTdy8n6bLuYoh95C/PlJDj
- +DYTzUiDje2Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="252649052"
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="252649052"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 00:19:28 -0800
-IronPort-SDR: 3re6xOvdgkO7Q+gVUjyKoJ1b2ZxjLfCh5+yYjl1s2xg6bmVh/Wcw/OFmIk5YQsf4CBKovT3Waz
- eOXrhKg/7tNQ==
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="410527565"
-Received: from yhuang6-mobl1.sh.intel.com ([10.238.6.89])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 00:19:26 -0800
-From:   Huang Ying <ying.huang@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Rik van Riel <riel@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [RFC -V6 6/6] memory tiering: adjust hot threshold automatically
-Date:   Thu, 11 Mar 2021 16:18:21 +0800
-Message-Id: <20210311081821.138467-7-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210311081821.138467-1-ying.huang@intel.com>
-References: <20210311081821.138467-1-ying.huang@intel.com>
+        id S231422AbhCKITX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:19:23 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1650 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230526AbhCKITD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:19:03 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12B85AIM181152;
+        Thu, 11 Mar 2021 03:18:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Svjjfu6/Asgt3ngfd3jksUIX6H62v7zQz9Fj3zBsRTs=;
+ b=oe1doOtj8tBau6DGp/fFO3kynQp0x8ZuezTPEl3sy6vPwsBYlwiWr/G87n/IqiRMj765
+ Lxa1bRhuxFyX5xdjSTK4iEX0xJIpFbqPGzvNuSEvrLD6wColNUgrowkRubGSRMfQIacI
+ WiXeOYxjcbtPkQCSdQ5mlweQZvlnR3LxfOUmdK4o2PF1zbxPpra+Wbe3b+rst56wL27Q
+ cSVptzjuHlWw2OYEhsDCdILt2hysEYkWH+I95pted9FHOHcyEkzWdCVoCf22S29omb7f
+ nDKQ9Lma37XZekXqLq4PWaqvE1DqsrruwNKnB7bojBSkO13yE4RjuR4Abohyger6wJmA mA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m3fcs4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 03:18:38 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12B85JRs182196;
+        Thu, 11 Mar 2021 03:18:37 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m3fcrb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 03:18:37 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12B8CTbM016108;
+        Thu, 11 Mar 2021 08:18:36 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma03wdc.us.ibm.com with ESMTP id 3768kx6bes-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 08:18:36 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12B8IYAM12386706
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Mar 2021 08:18:35 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DBB0E13604F;
+        Thu, 11 Mar 2021 08:18:34 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 632F8136051;
+        Thu, 11 Mar 2021 08:18:28 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.44.141])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 11 Mar 2021 08:18:27 +0000 (GMT)
+Subject: Re: [PATCH] perf tools: Remove redundant code
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        peterz@infradead.org
+Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <1615346305-16428-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <36853ff4-70f0-a28b-7114-2423d7c11fad@linux.ibm.com>
+Date:   Thu, 11 Mar 2021 13:48:26 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1615346305-16428-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-11_02:2021-03-10,2021-03-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ clxscore=1011 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103110044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It isn't easy for the administrator to determine the hot threshold.
-So in this patch, a method to adjust the hot threshold automatically
-is implemented.  The basic idea is to control the number of the
-candidate promotion pages to match the promotion rate limit.  If the
-hint page fault latency of a page is less than the hot threshold, we
-will try to promote the page, and the page is called the candidate
-promotion page.
 
-If the number of the candidate promotion pages in the statistics
-interval is much more than the promotion rate limit, the hot threshold
-will be decreased to reduce the number of the candidate promotion
-pages.  Otherwise, the hot threshold will be increased to increase the
-number of the candidate promotion pages.
 
-To make the above method works, in each statistics interval, the total
-number of the pages to check (on which the hint page faults occur) and
-the hot/cold distribution need to be stable.  Because the page tables
-are scanned linearly in NUMA balancing, but the hot/cold distribution
-isn't uniform along the address, the statistics interval should be
-larger than the NUMA balancing scan period.  So in the patch, the max
-scan period is used as statistics interval and it works well in our
-tests.
+On 3/10/21 8:48 AM, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./tools/perf/util/evlist.c:1315:5-8: Unneeded variable: "err". Return "-
+> ENOMEM" on line 1340.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  tools/perf/util/evlist.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 882cd1f..6c2a271 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -1313,7 +1313,6 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
+>  {
+>  	struct perf_cpu_map *cpus;
+>  	struct perf_thread_map *threads;
+> -	int err = -ENOMEM;
+>  
+>  	/*
+>  	 * Try reading /sys/devices/system/cpu/online to get
+> @@ -1338,7 +1337,7 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
+>  out_put:
+>  	perf_cpu_map__put(cpus);
+>  out:
+> -	return err;
+> +	return -ENOMEM;
+>  }
 
-The sysctl knob kernel.numa_balancing_hot_threshold_ms becomes the
-initial value and max value of the hot threshold.
+Seems fine to me.
 
-The patch improves the score of pmbench memory accessing benchmark
-with 80:20 read/write ratio and normal access address distribution by
-3.9% with 32.4% fewer NUMA page migrations on a 2 socket Intel server
-with Optance DC Persistent Memory.  Because it improves the accuracy
-of the hot page selection.
-
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Rik van Riel <riel@redhat.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org
----
- include/linux/mmzone.h |  3 +++
- kernel/sched/fair.c    | 40 ++++++++++++++++++++++++++++++++++++----
- 2 files changed, 39 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 0c7a4cc04f15..b95db054eee2 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -803,6 +803,9 @@ typedef struct pglist_data {
- #ifdef CONFIG_NUMA_BALANCING
- 	unsigned long numa_ts;
- 	unsigned long numa_nr_candidate;
-+	unsigned long numa_threshold_ts;
-+	unsigned long numa_threshold_nr_candidate;
-+	unsigned long numa_threshold;
- #endif
- 	/* Fields commonly accessed by the page reclaim scanner */
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index f4630961c7d0..5df863475dc8 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1479,6 +1479,35 @@ static bool numa_migration_check_rate_limit(struct pglist_data *pgdat,
- 	return true;
- }
- 
-+#define NUMA_MIGRATION_ADJUST_STEPS	16
-+
-+static void numa_migration_adjust_threshold(struct pglist_data *pgdat,
-+					    unsigned long rate_limit,
-+					    unsigned long ref_th)
-+{
-+	unsigned long now = jiffies, last_th_ts, th_period;
-+	unsigned long unit_th, th;
-+	unsigned long nr_cand, ref_cand, diff_cand;
-+
-+	th_period = msecs_to_jiffies(sysctl_numa_balancing_scan_period_max);
-+	last_th_ts = pgdat->numa_threshold_ts;
-+	if (now > last_th_ts + th_period &&
-+	    cmpxchg(&pgdat->numa_threshold_ts, last_th_ts, now) == last_th_ts) {
-+		ref_cand = rate_limit *
-+			sysctl_numa_balancing_scan_period_max / 1000;
-+		nr_cand = node_page_state(pgdat, PGPROMOTE_CANDIDATE);
-+		diff_cand = nr_cand - pgdat->numa_threshold_nr_candidate;
-+		unit_th = ref_th / NUMA_MIGRATION_ADJUST_STEPS;
-+		th = pgdat->numa_threshold ? : ref_th;
-+		if (diff_cand > ref_cand * 11 / 10)
-+			th = max(th - unit_th, unit_th);
-+		else if (diff_cand < ref_cand * 9 / 10)
-+			th = min(th + unit_th, ref_th);
-+		pgdat->numa_threshold_nr_candidate = nr_cand;
-+		pgdat->numa_threshold = th;
-+	}
-+}
-+
- bool should_numa_migrate_memory(struct task_struct *p, struct page * page,
- 				int src_nid, int dst_cpu)
- {
-@@ -1493,19 +1522,22 @@ bool should_numa_migrate_memory(struct task_struct *p, struct page * page,
- 	if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
- 	    !node_is_toptier(src_nid)) {
- 		struct pglist_data *pgdat;
--		unsigned long rate_limit, latency, th;
-+		unsigned long rate_limit, latency, th, def_th;
- 
- 		pgdat = NODE_DATA(dst_nid);
- 		if (pgdat_free_space_enough(pgdat))
- 			return true;
- 
--		th = sysctl_numa_balancing_hot_threshold;
-+		def_th = sysctl_numa_balancing_hot_threshold;
-+		rate_limit =
-+			sysctl_numa_balancing_rate_limit << (20 - PAGE_SHIFT);
-+		numa_migration_adjust_threshold(pgdat, rate_limit, def_th);
-+
-+		th = pgdat->numa_threshold ? : def_th;
- 		latency = numa_hint_fault_latency(page);
- 		if (latency > th)
- 			return false;
- 
--		rate_limit =
--			sysctl_numa_balancing_rate_limit << (20 - PAGE_SHIFT);
- 		return numa_migration_check_rate_limit(pgdat, rate_limit,
- 						       thp_nr_pages(page));
- 	}
--- 
-2.30.1
-
+Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
+Thanks,
+Kajol Jain
+>  
+>  int evlist__open(struct evlist *evlist)
+> 
