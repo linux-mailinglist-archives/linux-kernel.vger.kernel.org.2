@@ -2,123 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBB3337F99
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8544F337F9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhCKVYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbhCKVYA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:24:00 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A16C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:24:00 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id l23-20020a05683004b7b02901b529d1a2fdso338346otd.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:24:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YKbLUfcRPlMmivv7LqZuqcBPXaLhbBwd6AOGXhYBN7w=;
-        b=hfsDyraBk0D2ZtYQmKosU65268PIWr7x2FoDvEbfOX4Bab6xVuABTf651MQpXLqg9U
-         D1Djf92keOAk3HkRfyMT+531R8ta92FcDuthE+VDbbwmh5cq7rqA7SoYqarLOiVSvZLx
-         WLPaMcUOqLiyalAFQmragGmt72GZAOL2UvOkD97mlKYEw0Y/+SRGJ7hIrZYc7kMEUwGA
-         DZ9TiAxuaDx0Hxb9BD4bN8yXRJMJL7Jo510fFf92U0Ehi4z4xjLB7xdetmmCCiKbLZNh
-         nCOZuVGj6Bf/CfQFOENcFuXv/2xiDuGvhmxBdZXNQocITGDFv34caMFM0lG9QlJ7TsTb
-         +eCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YKbLUfcRPlMmivv7LqZuqcBPXaLhbBwd6AOGXhYBN7w=;
-        b=GApq7LuPBtI8FGtosJORP+a85baDgV/WvGtNvG+8PRLbiNXEbRxCDW1L/z/Sl3IRcK
-         9Ey5x0KymNRfdy+fCxE9fGYo79bfzIGX4+TSjR/+e88LZFJkF6v8m/U79ywy+vY0+xtg
-         zVQOxxYSLeQ7+009c1OKAh/2FMhKCiCj4E3wYvtg9YQncTTFsHq1+W2Q9MtKMRoOT80/
-         FaC2Wy7e+pAlP5xyZ60yIYVBgTZU5jhip1Cg3777ehK7wrqupnzG+Iw1XiPov7RBlgiU
-         FYv2e45LUJ9x5e5rmlQ7KBQQJRd7gB3jby7ZqF5X2oP9PE1waJmLniPPIfSGP6diScub
-         BixA==
-X-Gm-Message-State: AOAM5317uNk73jwnM4z7aNT2YAh3NM6xNK5Kx0p3w39jI7Y6qTXWMuTP
-        cvKHe18W0gdklcbTlcUXu/+21sCjHGESvMsUxraa9g==
-X-Google-Smtp-Source: ABdhPJyIpqYQ3Fu+fDIsygrqCEN8CkrhNyvgLeNGfFRz5squWHECRMcDifRvmc770Xh31/K7HQ8lC8HZ7gBLe38B8KE=
-X-Received: by 2002:a05:6830:4d:: with SMTP id d13mr709579otp.295.1615497839332;
- Thu, 11 Mar 2021 13:23:59 -0800 (PST)
-MIME-Version: 1.0
-References: <032386c6-4b4c-2d3f-0f6a-3d6350363b3c@amd.com> <CALMp9eTTBcdADUYizO-ADXUfkydVGqRm0CSQUO92UHNnfQ-qFw@mail.gmail.com>
- <0ebda5c6-097e-20bb-d695-f444761fbb79@amd.com> <0d8f6573-f7f6-d355-966a-9086a00ef56c@amd.com>
- <1451b13e-c67f-8948-64ff-5c01cfb47ea7@redhat.com> <3929a987-5d09-6a0c-5131-ff6ffe2ae425@amd.com>
- <7a7428f4-26b3-f704-d00b-16bcf399fd1b@amd.com> <78cc2dc7-a2ee-35ac-dd47-8f3f8b62f261@redhat.com>
- <d7c6211b-05d3-ec3f-111a-f69f09201681@amd.com> <20210311200755.GE5829@zn.tnic>
- <20210311203206.GF5829@zn.tnic>
-In-Reply-To: <20210311203206.GF5829@zn.tnic>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 11 Mar 2021 13:23:47 -0800
-Message-ID: <CALMp9eQC5V_FQWGLUjc3pMziPeO0it_Mcm=L3bYcTMSEuFdGrA@mail.gmail.com>
-Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
+        id S230107AbhCKV3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:29:47 -0500
+Received: from mga17.intel.com ([192.55.52.151]:54550 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229674AbhCKV3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 16:29:40 -0500
+IronPort-SDR: gH+S2HarAsZl4QgQovlcyVtSEG0cZOcTK2FHyfr3ITIkW3YvSLpXIStnykdPLdQ6i68JhV8ArE
+ d9uJgNVwRjbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="168660678"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="168660678"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 13:29:40 -0800
+IronPort-SDR: ZLan+XL5Ck9XZ9EYZ9bzVWWEKkqoYgSF+U+CFRBhtqjP1fCl/zFoY9Z9uhznqRtlMnvx8QTKVj
+ EikMWbOM0R7A==
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="431733870"
+Received: from shwong1-mobl1.amr.corp.intel.com (HELO [10.212.73.43]) ([10.212.73.43])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 13:29:39 -0800
+Subject: Re: [PATCH v6 3/4] x86/vmemmap: Handle unpopulated sub-pmd ranges
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210309214050.4674-1-osalvador@suse.de>
+ <20210309214050.4674-4-osalvador@suse.de>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0c4132aa-5d59-c0ba-5cfc-4ac401feba04@intel.com>
+Date:   Thu, 11 Mar 2021 13:29:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210309214050.4674-4-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:32 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Thu, Mar 11, 2021 at 09:07:55PM +0100, Borislav Petkov wrote:
-> > On Wed, Mar 10, 2021 at 07:21:23PM -0600, Babu Moger wrote:
-> > > # git bisect good
-> > > 59094faf3f618b2d2b2a45acb916437d611cede6 is the first bad commit
-> > > commit 59094faf3f618b2d2b2a45acb916437d611cede6
-> > > Author: Borislav Petkov <bp@suse.de>
-> > > Date:   Mon Dec 25 13:57:16 2017 +0100
-> > >
-> > >     x86/kaiser: Move feature detection up
-> >
-> > What is the reproducer?
-> >
-> > Boot latest 4.9 stable kernel in a SEV guest? Can you send guest
-> > .config?
-> >
-> > Upthread is talking about PCID, so I'm guessing host needs to be Zen3
-> > with PCID. Anything else?
->
-> That oops points to:
->
-> [    1.237515] kernel BUG at /build/linux-dqnRSc/linux-4.9.228/arch/x86/kernel/alternative.c:709!
->
-> which is:
->
->         local_flush_tlb();
->         sync_core();
->         /* Could also do a CLFLUSH here to speed up CPU recovery; but
->            that causes hangs on some VIA CPUs. */
->         for (i = 0; i < len; i++)
->                 BUG_ON(((char *)addr)[i] != ((char *)opcode)[i]);       <---
->         local_irq_restore(flags);
->         return addr;
->
-> in text_poke() which basically says that the patching verification
-> fails. And you have a local_flush_tlb() before that. And with PCID maybe
-> it is not flushing properly or whatnot.
->
-> And deep down in the TLB flushing code, it does:
->
->         if (kaiser_enabled)
->                 kaiser_flush_tlb_on_return_to_user();
->
-> and that uses PCID...
+On 3/9/21 1:40 PM, Oscar Salvador wrote:
+> +static void __meminit vmemmap_use_new_sub_pmd(unsigned long start, unsigned long end)
+> +{
+> +	/*
+> +	 * Could be our memmap page is filled with PAGE_UNUSED already from a
+> +	 * previous remove. Make sure to reset it.
+> +	 */
+> +	vmemmap_use_sub_pmd(start);
+> +
+> +	/*
+> +	 * Mark with PAGE_UNUSED the unused parts of the new memmap range
+> +	 */
+> +	if (!IS_ALIGNED(start, PMD_SIZE))
+> +		memset((void *)start, PAGE_UNUSED,
+> +		        start - ALIGN_DOWN(start, PMD_SIZE));
+> +	if (!IS_ALIGNED(end, PMD_SIZE))
+> +		memset((void *)end, PAGE_UNUSED,
+> +		        ALIGN(end, PMD_SIZE) - end);
+> +}
+> +#endif
 
-I would expect kaiser_enabled to be false (and PCIDs not to be used),
-since AMD CPUs are not vulnerable to Meltdown.
+This is apparently under both CONFIG_SPARSEMEM_VMEMMAP and
+CONFIG_MEMORY_HOTPLUG #ifdefs.  It errors out at compile-time with this
+config: https://sr71.net/~dave/intel/config-mmotm-20210311
+
+> linux.git/arch/x86/mm/init_64.c: In function 'vmemmap_populate_hugepages':
+> linux.git/arch/x86/mm/init_64.c:1585:6: error: implicit declaration of function 'vmemmap_use_new_sub_pmd' [-Werror=implicit-function-declaration]
+>       vmemmap_use_new_sub_pmd(addr, next);
+>       ^~~~~~~~~~~~~~~~~~~~~~~
+> /home/davehans/linux.git/arch/x86/mm/init_64.c:1591:4: error: implicit declaration of function 'vmemmap_use_sub_pmd' [-Werror=implicit-function-declaration]
+>     vmemmap_use_sub_pmd(addr, next);
+>     ^~~~~~~~~~~~~~~~~~~
+
+I didn't see a quick fix other than #ifdef'ing the call sites, which is
+pretty ugly.
