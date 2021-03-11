@@ -2,373 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E136337222
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A871337244
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhCKMLV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 07:11:21 -0500
-Received: from aposti.net ([89.234.176.197]:44672 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232950AbhCKMK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:10:56 -0500
-Date:   Thu, 11 Mar 2021 12:10:42 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 5/5] drm/ingenic: Add option to alloc cached GEM
- buffers
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-Id: <UH0TPQ.KCO6Y7W3SH323@crapouillou.net>
-In-Reply-To: <20210311022743.2542-1-hdanton@sina.com>
-References: <20210307202835.253907-1-paul@crapouillou.net>
-        <20210307202835.253907-6-paul@crapouillou.net>
-        <20210308034727.1951-1-hdanton@sina.com>
-        <PTORPQ.3IZFI0X29JNH1@crapouillou.net>
-        <20210311022743.2542-1-hdanton@sina.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+        id S233039AbhCKMSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:18:51 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:28276 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232991AbhCKMSn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:18:43 -0500
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210311121841epoutp04d49a2ac58c768f4a408646ea24aebe3f~rSPgG6GVo0619506195epoutp04Q
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 12:18:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210311121841epoutp04d49a2ac58c768f4a408646ea24aebe3f~rSPgG6GVo0619506195epoutp04Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1615465121;
+        bh=ezUYeFnslrmzKbwJuJhAv6+KfoFwUjvpsw7SoBAt21Y=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=BgTTN9odXW4ywzxkuOkYxnElvpEa/651OWwOU/um8UsQUT0xDI92uEbkOaKlyBA80
+         5z51VmPei4Hq0dHAzw1cK8cIVoy3lK4HxT71tsDQGzguNk5P6AX7nknx8IZKS/18Iv
+         WYBDXICAEVfK+HdCReqDkk4MDmLw90HQLC5gsQtQ=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210311121840epcas1p302b1ce7f837037d60384a21a31560cd4~rSPfRdfQK0692006920epcas1p3W;
+        Thu, 11 Mar 2021 12:18:40 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Dx7Jv4hppz4x9Q0; Thu, 11 Mar
+        2021 12:18:39 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4D.28.59147.F9A0A406; Thu, 11 Mar 2021 21:18:39 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210311121838epcas1p295d765b3c89ddacac9cd9bbf918d6345~rSPd0xb_21757017570epcas1p2i;
+        Thu, 11 Mar 2021 12:18:38 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210311121838epsmtrp248085b90865a4f9819b6cbcede6a9970~rSPd0C94T0536705367epsmtrp2c;
+        Thu, 11 Mar 2021 12:18:38 +0000 (GMT)
+X-AuditID: b6c32a38-e3dff7000000e70b-49-604a0a9f4b53
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3A.92.08745.E9A0A406; Thu, 11 Mar 2021 21:18:38 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.101.104]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210311121838epsmtip16ef9075af635a905532e38e1e20b7620~rSPdkgv3Z1975719757epsmtip1Y;
+        Thu, 11 Mar 2021 12:18:38 +0000 (GMT)
+From:   JeongHyeon Lee <jhs2.lee@samsung.com>
+To:     snitzer@redhat.com
+Cc:     agk@redhat.com, dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        JeongHyeon Lee <jhs2.lee@samsung.com>
+Subject: [PATCH 1/2] dm verity: fix DM_VERITY_OPTS_MAX value
+Date:   Thu, 11 Mar 2021 21:10:50 +0900
+Message-Id: <1615464651-23675-1-git-send-email-jhs2.lee@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNKsWRmVeSWpSXmKPExsWy7bCmnu58Lq8Egxn7FC3WnzrGbLH33WxW
+        i0v377BaXN41h82ibeNXRgdWj/f7rrJ59G1ZxejxeZNcAHNUjk1GamJKapFCal5yfkpmXrqt
+        kndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0EolhbLEnFKgUEBicbGSvp1NUX5pSapC
+        Rn5xia1SakFKToGhQYFecWJucWleul5yfq6VoYGBkSlQZUJORsexT8wFbZwVC3dtY29gfMTe
+        xcjBISFgIvHluWkXIxeHkMAORonTR0+zQzifGCXap0xlg3A+M0o8nHGfFaZjxgktiPguRomn
+        jQugOr4wSkyZvZCxi5GTg01AW+J2yyZ2EFtEQEziSN8DVhCbWSBPYvGLdmYQW1jARmLVv6dg
+        cRYBVYnnP96DxXkFXCRuz1jPBGJLCMhJ3DzXyQyyQEKgn13iy9SPrBAJF4l9lzvYIGxhiVfH
+        t7BD2FISn9/tZYNo6GaUuH/+NVTRBEaJ3h4miBfsJd5fsgAxmQU0Jdbv0oeoUJTY+XsuI8Sd
+        fBLvvvZAPcwr0dEmBFGiJLHi3zUWCFtCYsPhbqjhHhKrWw+BxYUEYiW+P53BOIFRdhbCggWM
+        jKsYxVILinPTU4sNC0yQ42gTIzgVaVnsYJz79oPeIUYmDsZDjBIczEoivH7H3RKEeFMSK6tS
+        i/Lji0pzUosPMZoCw2sis5Rocj4wGeaVxBuaGhkbG1uYmJmbmRorifMmGTyIFxJITyxJzU5N
+        LUgtgulj4uCUamBaePaw+6kvfwvypWc9V3DXf5/1Xex1u7HeZltJ5eN2TQUdG5VDDDrjLk19
+        tnpT50Jbk/h9Rp83MswofWVy2EZg7gv1aNknFtr3+uYnxB7dOGFT3q4vDTG2/zp5lQqn/Nt+
+        cnt9pJ3T200m7ydFLNqUKW20e2nrdJ1JOX3P05vk2gK/1dzfZvBmsk+7tmLaKjGhFau+pWll
+        +WytV7Wt7pC/4idW3LjCQ8r3dI1e/X3Lh3fPxB1hf/F6q7dRqtpDibsngsPOx8o3B/Cyn0kI
+        bvH/dKlDSSi780qAVmpbCpvx9ZsGuwIkl2nqrkw3nHphmhe3nsek2XPkTaaaC6VG98e8irHY
+        5+6UIdT2Ni7sphJLcUaioRZzUXEiAIUuoZfOAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJJMWRmVeSWpSXmKPExsWy7bCSnO48Lq8Eg8OnjC3WnzrGbLH33WxW
+        i0v377BaXN41h82ibeNXRgdWj/f7rrJ59G1ZxejxeZNcAHMUl01Kak5mWWqRvl0CV0bHsU/M
+        BW2cFQt3bWNvYHzE3sXIwSEhYCIx44RWFyMXh5DADkaJhs9bmboYOYHiEhIbNq2FqhGWOHy4
+        GKLmE6PE23dfWEFq2AS0JW63bGIHsUUExCSO9D0AizMLFEk837eADcQWFrCRWPXvKVicRUBV
+        4vmP98wgNq+Ai8TtGeuhdslJ3DzXyTyBkWcBI8MqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS9
+        5PzcTYzg0NDS2sG4Z9UHvUOMTByMhxglOJiVRHj9jrslCPGmJFZWpRblxxeV5qQWH2KU5mBR
+        Eue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cB02Vpi8xJflSMyswJ+byzZwzvrgzFvn4v1HM8t
+        JavVb/55/vyntMFbZglu4w0PGsuqJK5W8vrvK2+I/5QWeP9S8pIpLVOL57VbfUou4tzztKhC
+        fcvimdeLg7/fltv0s3bmqzyTvUInD7wKfXugpTJFdcWS32mRK+5fOrnbcvUvzW9+IYfmPEww
+        LHBbt41F4d7fWoY596d1vF3+4vUqfn8egefPM0Pe/CpU2c77R7j+YoVBYR9HJJffXHYt4ReZ
+        H+Zv/7r6Usiilfrqy34kruTdfDVix3Hl+8p8p37enVB9582r4JMpCv+rpbP3dwUdrvl1hvVD
+        +naHCfsu8ClJF+qX2ZxSPe5lZfokb6bNnjiTjUosxRmJhlrMRcWJADkiDeB8AgAA
+X-CMS-MailID: 20210311121838epcas1p295d765b3c89ddacac9cd9bbf918d6345
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210311121838epcas1p295d765b3c89ddacac9cd9bbf918d6345
+References: <CGME20210311121838epcas1p295d765b3c89ddacac9cd9bbf918d6345@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Three optional parameters at once using dm verity table is not
+supported, option can only be used exclusively.
 
+e.g.)
+  (verity_mode) (ignore_zero_block) (check_at_most_once)
 
-Le jeu. 11 mars 2021 à 10:27, Hillf Danton <hdanton@sina.com> a écrit 
-:
-> On Wed, 10 Mar 2021 19:01:01 +0000 Paul Cercueil wrote:
->> Le lun. 8 mars 2021  11:47, Hillf Danton <hdanton@sina.com> a crit :
->>>  On Sun,  7 Mar 2021 20:28:35 +0000  Paul Cercueil wrote:
->>>>   With the module parameter ingenic-drm.cached_gem_buffers, it is
->>>>  possible
->>>>   to specify that we want GEM buffers backed by non-coherent 
->>>> memory.
->>>> 
->>>>   This dramatically speeds up software rendering on Ingenic SoCs,
->>>>  even for
->>>>   tasks where write-combine memory should in theory be faster (e.g.
->>>>  simple
->>>>   blits).
->>> 
->>>  Wondering if it is due to the tricks at [1].
->>> 
->>>  If so, is dma_alloc_noncoherent() necessary in this patchset?
->> 
->> You confuse non-contiguous with non-coherent, which are two different
->> things.
-> 
-> You misunderstood me. From [1] we know coherent caching is arch thing,
-> so your proposal is not mandatory on ARM IMHO - what baffles me is
-> noncoherent back memory can speed up device, coherent ot not, 
-> regardless
-> of arch. Can you point me to the reasons behind your speedup?
+verity table: '1  /dev/sdb /dev/sdb 4096 4096 1028807 1028807
+<hash_alg> <root_hash> <salt> 11 use_fec_from_device /dev/sdb
+fec_roots 2 fec_blocks 1036909 fec_start 1036909
+restart_on_corruption ignore_zero_blocks check_at_most_once'
 
-Well, I did write in the cover letter that it would help *some* SoCs, 
-so it is not meant to be a default setting. As you can see in the last 
-patch, it is opt-in. Ingenic SoCs are MIPS SoCs, btw.
+Signed-off-by: JeongHyeon Lee <jhs2.lee@samsung.com>
+---
+ drivers/md/dm-verity-target.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-One thing I should add is that this speeds up *software* rendering (vs. 
-write-combine). It makes perfect sense that it speeds up things like 
-alpha-blending, but I can't explain why it speeds up standard blits. My 
-guess is that cache line invalidation is just extremely fast on this 
-SoC.
-
--Paul
-
->> 
->> Cheers,
->> -Paul
->> 
->>>  Christoph can you give us a concise lesson on noncoherency covering
->>>  at least
->>>  noncoherent device, noncoherent memory(used in this work), no 
->>> coherent
->>>  caching(in [1]), their links to speedup, and the thumb rule to 
->>> handle
->>>  noncoherency in workdays. It feels toe curling every time I see
->>>  noncoherence
->>>  going downtown with speedup hand in hand.
->>> 
->>>  [1] Subject: [PATCH 6/6] media: uvcvideo: Use 
->>> dma_alloc_noncontiguos
->>>  API
->>>  https://lore.kernel.org/lkml/20210301085236.947011-7-hch@lst.de/#t
->>> 
->>>> 
->>>>   Leave it disabled by default, since it is specific to one 
->>>> use-case
->>>>   (software rendering).
->>>> 
->>>>   v2: Rework code to work with new DRM APIs regarding plane states
->>>> 
->>>>   Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>>>   ---
->>>>    drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 49
->>>>  ++++++++++++++++++++++-
->>>>    drivers/gpu/drm/ingenic/ingenic-drm.h     |  4 ++
->>>>    drivers/gpu/drm/ingenic/ingenic-ipu.c     | 14 ++++++-
->>>>    3 files changed, 63 insertions(+), 4 deletions(-)
->>>> 
->>>>   diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>>>  b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>>>   index d60e1eefc9d1..ba1ac0fcda74 100644
->>>>   --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>>>   +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>>>   @@ -9,6 +9,7 @@
->>>>    #include <linux/component.h>
->>>>    #include <linux/clk.h>
->>>>    #include <linux/dma-mapping.h>
->>>>   +#include <linux/io.h>
->>>>    #include <linux/module.h>
->>>>    #include <linux/mutex.h>
->>>>    #include <linux/of_device.h>
->>>>   @@ -23,6 +24,7 @@
->>>>    #include <drm/drm_color_mgmt.h>
->>>>    #include <drm/drm_crtc.h>
->>>>    #include <drm/drm_crtc_helper.h>
->>>>   +#include <drm/drm_damage_helper.h>
->>>>    #include <drm/drm_drv.h>
->>>>    #include <drm/drm_gem_cma_helper.h>
->>>>    #include <drm/drm_fb_cma_helper.h>
->>>>   @@ -99,6 +101,11 @@ struct ingenic_drm {
->>>>    	struct notifier_block clock_nb;
->>>>    };
->>>> 
->>>>   +static bool ingenic_drm_cached_gem_buf;
->>>>   +module_param_named(cached_gem_buffers, 
->>>> ingenic_drm_cached_gem_buf,
->>>>  bool, 0400);
->>>>   +MODULE_PARM_DESC(cached_gem_buffers,
->>>>   +		 "Enable fully cached GEM buffers [default=false]");
->>>>   +
->>>>    static bool ingenic_drm_writeable_reg(struct device *dev, 
->>>> unsigned
->>>>  int reg)
->>>>    {
->>>>    	switch (reg) {
->>>>   @@ -410,6 +417,8 @@ static int
->>>>  ingenic_drm_plane_atomic_check(struct drm_plane *plane,
->>>>    	     old_plane_state->fb->format->format !=
->>>>  new_plane_state->fb->format->format))
->>>>    		crtc_state->mode_changed = true;
->>>> 
->>>>   +	drm_atomic_helper_check_plane_damage(state, new_plane_state);
->>>>   +
->>>>    	return 0;
->>>>    }
->>>> 
->>>>   @@ -541,10 +550,20 @@ static void 
->>>> ingenic_drm_update_palette(struct
->>>>  ingenic_drm *priv,
->>>>    	}
->>>>    }
->>>> 
->>>>   +void ingenic_drm_sync_data(struct device *dev,
->>>>   +			   struct drm_plane_state *old_state,
->>>>   +			   struct drm_plane_state *state)
->>>>   +{
->>>>   +	if (ingenic_drm_cached_gem_buf)
->>>>   +		drm_gem_cma_sync_data(dev, old_state, state);
->>>>   +}
->>>>   +
->>>>    static void ingenic_drm_plane_atomic_update(struct drm_plane
->>>>  *plane,
->>>>    					    struct drm_atomic_state *state)
->>>>    {
->>>>    	struct ingenic_drm *priv = drm_device_get_priv(plane->dev);
->>>>   +	struct drm_plane_state *oldstate =
->>>>  drm_atomic_get_old_plane_state(state,
->>>>   +									  plane);
->>>>    	struct drm_plane_state *newstate =
->>>>  drm_atomic_get_new_plane_state(state,
->>>>    									  plane);
->>>>    	struct drm_crtc_state *crtc_state;
->>>>   @@ -554,6 +573,8 @@ static void
->>>>  ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->>>>    	u32 fourcc;
->>>> 
->>>>    	if (newstate && newstate->fb) {
->>>>   +		ingenic_drm_sync_data(priv->dev, oldstate, newstate);
->>>>   +
->>>>    		crtc_state = newstate->crtc->state;
->>>> 
->>>>    		addr = drm_fb_cma_get_gem_addr(newstate->fb, newstate, 0);
->>>>   @@ -743,6 +764,26 @@ static void 
->>>> ingenic_drm_disable_vblank(struct
->>>>  drm_crtc *crtc)
->>>>    	regmap_update_bits(priv->map, JZ_REG_LCD_CTRL,
->>>>  JZ_LCD_CTRL_EOF_IRQ, 0);
->>>>    }
->>>> 
->>>>   +static struct drm_framebuffer *
->>>>   +ingenic_drm_gem_fb_create(struct drm_device *dev, struct 
->>>> drm_file
->>>>  *file,
->>>>   +			  const struct drm_mode_fb_cmd2 *mode_cmd)
->>>>   +{
->>>>   +	if (ingenic_drm_cached_gem_buf)
->>>>   +		return drm_gem_fb_create_with_dirty(dev, file, mode_cmd);
->>>>   +
->>>>   +	return drm_gem_fb_create(dev, file, mode_cmd);
->>>>   +}
->>>>   +
->>>>   +static int ingenic_drm_gem_cma_dumb_create(struct drm_file
->>>>  *file_priv,
->>>>   +					   struct drm_device *drm,
->>>>   +					   struct drm_mode_create_dumb *args)
->>>>   +{
->>>>   +	if (ingenic_drm_cached_gem_buf)
->>>>   +		return drm_gem_cma_dumb_create_noncoherent(file_priv, drm, 
->>>> args);
->>>>   +
->>>>   +	return drm_gem_cma_dumb_create(file_priv, drm, args);
->>>>   +}
->>>>   +
->>>>    DEFINE_DRM_GEM_CMA_FOPS(ingenic_drm_fops);
->>>> 
->>>>    static const struct drm_driver ingenic_drm_driver_data = {
->>>>   @@ -755,7 +796,7 @@ static const struct drm_driver
->>>>  ingenic_drm_driver_data = {
->>>>    	.patchlevel		= 0,
->>>> 
->>>>    	.fops			= &ingenic_drm_fops,
->>>>   -	DRM_GEM_CMA_DRIVER_OPS,
->>>> 
->>>>  
->>>> +	DRM_GEM_CMA_DRIVER_OPS_WITH_DUMB_CREATE(ingenic_drm_gem_cma_dumb_create),
->>>> 
->>>>    	.irq_handler		= ingenic_drm_irq_handler,
->>>>    };
->>>>   @@ -805,7 +846,7 @@ static const struct drm_encoder_helper_funcs
->>>>  ingenic_drm_encoder_helper_funcs =
->>>>    };
->>>> 
->>>>    static const struct drm_mode_config_funcs
->>>>  ingenic_drm_mode_config_funcs = {
->>>>   -	.fb_create		= drm_gem_fb_create,
->>>>   +	.fb_create		= ingenic_drm_gem_fb_create,
->>>>    	.output_poll_changed	= drm_fb_helper_output_poll_changed,
->>>>    	.atomic_check		= drm_atomic_helper_check,
->>>>    	.atomic_commit		= drm_atomic_helper_commit,
->>>>   @@ -962,6 +1003,8 @@ static int ingenic_drm_bind(struct device
->>>>  *dev, bool has_components)
->>>>    		return ret;
->>>>    	}
->>>> 
->>>>   +	drm_plane_enable_fb_damage_clips(&priv->f1);
->>>>   +
->>>>    	drm_crtc_helper_add(&priv->crtc, 
->>>> &ingenic_drm_crtc_helper_funcs);
->>>> 
->>>>    	ret = drm_crtc_init_with_planes(drm, &priv->crtc, primary,
->>>>   @@ -990,6 +1033,8 @@ static int ingenic_drm_bind(struct device
->>>>  *dev, bool has_components)
->>>>    			return ret;
->>>>    		}
->>>> 
->>>>   +		drm_plane_enable_fb_damage_clips(&priv->f0);
->>>>   +
->>>>    		if (IS_ENABLED(CONFIG_DRM_INGENIC_IPU) && has_components) {
->>>>    			ret = component_bind_all(dev, drm);
->>>>    			if (ret) {
->>>>   diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.h
->>>>  b/drivers/gpu/drm/ingenic/ingenic-drm.h
->>>>   index 1b4347f7f084..b6bca356e024 100644
->>>>   --- a/drivers/gpu/drm/ingenic/ingenic-drm.h
->>>>   +++ b/drivers/gpu/drm/ingenic/ingenic-drm.h
->>>>   @@ -185,6 +185,10 @@ void ingenic_drm_plane_config(struct device
->>>>  *dev,
->>>>    			      struct drm_plane *plane, u32 fourcc);
->>>>    void ingenic_drm_plane_disable(struct device *dev, struct
->>>>  drm_plane *plane);
->>>> 
->>>>   +void ingenic_drm_sync_data(struct device *dev,
->>>>   +			   struct drm_plane_state *old_state,
->>>>   +			   struct drm_plane_state *state);
->>>>   +
->>>>    extern struct platform_driver *ingenic_ipu_driver_ptr;
->>>> 
->>>>    #endif /* DRIVERS_GPU_DRM_INGENIC_INGENIC_DRM_H */
->>>>   diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c
->>>>  b/drivers/gpu/drm/ingenic/ingenic-ipu.c
->>>>   index 5ae6adab8306..7826eab044ba 100644
->>>>   --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
->>>>   +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
->>>>   @@ -20,6 +20,7 @@
->>>> 
->>>>    #include <drm/drm_atomic.h>
->>>>    #include <drm/drm_atomic_helper.h>
->>>>   +#include <drm/drm_damage_helper.h>
->>>>    #include <drm/drm_drv.h>
->>>>    #include <drm/drm_fb_cma_helper.h>
->>>>    #include <drm/drm_fourcc.h>
->>>>   @@ -285,6 +286,8 @@ static void
->>>>  ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
->>>>    					    struct drm_atomic_state *state)
->>>>    {
->>>>    	struct ingenic_ipu *ipu = plane_to_ingenic_ipu(plane);
->>>>   +	struct drm_plane_state *oldstate =
->>>>  drm_atomic_get_old_plane_state(state,
->>>>   +									  plane);
->>>>    	struct drm_plane_state *newstate =
->>>>  drm_atomic_get_new_plane_state(state,
->>>>    									  plane);
->>>>    	const struct drm_format_info *finfo;
->>>>   @@ -317,6 +320,8 @@ static void
->>>>  ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
->>>>    				JZ_IPU_CTRL_CHIP_EN | JZ_IPU_CTRL_LCDC_SEL);
->>>>    	}
->>>> 
->>>>   +	ingenic_drm_sync_data(ipu->master, oldstate, newstate);
->>>>   +
->>>>    	/* New addresses will be committed in vblank handler... */
->>>>    	ipu->addr_y = drm_fb_cma_get_gem_addr(newstate->fb, newstate, 
->>>> 0);
->>>>    	if (finfo->num_planes > 1)
->>>>   @@ -541,7 +546,7 @@ static int
->>>>  ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
->>>> 
->>>>    	if (!new_plane_state->crtc ||
->>>>    	    !crtc_state->mode.hdisplay || !crtc_state->mode.vdisplay)
->>>>   -		return 0;
->>>>   +		goto out_check_damage;
->>>> 
->>>>    	/* Plane must be fully visible */
->>>>    	if (new_plane_state->crtc_x < 0 || new_plane_state->crtc_y < 0 
->>>> ||
->>>>   @@ -558,7 +563,7 @@ static int
->>>>  ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
->>>>    		return -EINVAL;
->>>> 
->>>>    	if (!osd_changed(new_plane_state, old_plane_state))
->>>>   -		return 0;
->>>>   +		goto out_check_damage;
->>>> 
->>>>    	crtc_state->mode_changed = true;
->>>> 
->>>>   @@ -592,6 +597,9 @@ static int
->>>>  ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
->>>>    	ipu->denom_w = denom_w;
->>>>    	ipu->denom_h = denom_h;
->>>> 
->>>>   +out_check_damage:
->>>>   +	drm_atomic_helper_check_plane_damage(state, new_plane_state);
->>>>   +
->>>>    	return 0;
->>>>    }
->>>> 
->>>>   @@ -773,6 +781,8 @@ static int ingenic_ipu_bind(struct device 
->>>> *dev,
->>>>  struct device *master, void *d)
->>>>    		return err;
->>>>    	}
->>>> 
->>>>   +	drm_plane_enable_fb_damage_clips(plane);
->>>>   +
->>>>    	/*
->>>>    	 * Sharpness settings range is [0,32]
->>>>    	 * 0       : nearest-neighbor
->>>>   --
->>>>   2.30.1
-
+diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+index 6b8e5bdd8526..808a98ef624c 100644
+--- a/drivers/md/dm-verity-target.c
++++ b/drivers/md/dm-verity-target.c
+@@ -34,7 +34,7 @@
+ #define DM_VERITY_OPT_IGN_ZEROES	"ignore_zero_blocks"
+ #define DM_VERITY_OPT_AT_MOST_ONCE	"check_at_most_once"
+ 
+-#define DM_VERITY_OPTS_MAX		(2 + DM_VERITY_OPTS_FEC + \
++#define DM_VERITY_OPTS_MAX		(3 + DM_VERITY_OPTS_FEC + \
+ 					 DM_VERITY_ROOT_HASH_VERIFICATION_OPTS)
+ 
+ static unsigned dm_verity_prefetch_cluster = DM_VERITY_DEFAULT_PREFETCH_SIZE;
+-- 
+2.17.1
 
