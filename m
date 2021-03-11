@@ -2,44 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB43D337190
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3938337197
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbhCKLjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:39:51 -0500
-Received: from verein.lst.de ([213.95.11.211]:40583 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232782AbhCKLjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:39:42 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 58DDE68B05; Thu, 11 Mar 2021 12:39:40 +0100 (CET)
-Date:   Thu, 11 Mar 2021 12:39:40 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     gregkh@linuxfoundation.org
-Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
-        linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Daniel Rosenberg <drosen@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2] configfs: Fix config_item refcnt error in
- __configfs_open_file()
-Message-ID: <20210311113940.GA17668@lst.de>
-References: <20210311113510.1031406-1-gregkh@linuxfoundation.org>
+        id S232676AbhCKLnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:43:07 -0500
+Received: from 176.12.98.74.MAXnet.ru ([176.12.98.74]:53608 "EHLO
+        shell.ipa.basealt.ru" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S232739AbhCKLm1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 06:42:27 -0500
+Received: by shell.ipa.basealt.ru (Postfix, from userid 709000081)
+        id DF1BF27232; Thu, 11 Mar 2021 14:42:22 +0300 (MSK)
+From:   Nikolai Kostrigin <nickel@altlinux.org>
+Cc:     nickel@basealt.ru, Nikolai Kostrigin <nickel@altlinux.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "jingle.wu" <jingle.wu@emc.com.tw>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: elan_i2c - fix a typo in parameter name
+Date:   Thu, 11 Mar 2021 14:41:43 +0300
+Message-Id: <20210311114146.1977616-1-nickel@altlinux.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311113510.1031406-1-gregkh@linuxfoundation.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:35:10PM +0100, gregkh@linuxfoundation.org wrote:
-> From: Daniel Rosenberg <drosen@google.com>
-> 
-> __configfs_open_file() used to use configfs_get_config_item, but changed
-> in commit b0841eefd969 ("configfs: provide exclusion between IO and
-> removals") to just call to_item. The error path still tries to clean up
-> the reference, incorrectly decrementing the ref count.
+s/max_baseliune/max_baseline/
 
-This should already be covered by:
+Signed-off-by: Nikolai Kostrigin <nickel@altlinux.org>
+---
+ drivers/input/mouse/elan_i2c.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-http://git.infradead.org/users/hch/configfs.git/commitdiff/14fbbc8297728e880070f7b077b3301a8c698ef9
+diff --git a/drivers/input/mouse/elan_i2c.h b/drivers/input/mouse/elan_i2c.h
+index e12da5b024b0..55cdf60fe231 100644
+--- a/drivers/input/mouse/elan_i2c.h
++++ b/drivers/input/mouse/elan_i2c.h
+@@ -73,7 +73,7 @@ struct elan_transport_ops {
+ 	int (*calibrate_result)(struct i2c_client *client, u8 *val);
+ 
+ 	int (*get_baseline_data)(struct i2c_client *client,
+-				 bool max_baseliune, u8 *value);
++				 bool max_baseline, u8 *value);
+ 
+ 	int (*get_version)(struct i2c_client *client, u8 pattern, bool iap,
+ 			   u8 *version);
+-- 
+2.29.2
+
