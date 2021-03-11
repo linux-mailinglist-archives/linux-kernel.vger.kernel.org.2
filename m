@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15D1336F00
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:37:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C00DC336F04
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhCKJgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:36:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbhCKJgl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:36:41 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827AEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:36:41 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id 75so900392otn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:36:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z/yJc2SsfEWziBZ1LArgu9WV9K8NEngQzg7n/JFp0cM=;
-        b=RnMEZOtkbouSIgAcWgcLjYn+e8sSOQsk+gwKETZkeyO6CxfoGJomwqfueCC/TMkell
-         2ZF/GXXxdfoZlarfmCfCXhmWTv5EjeLw1PsCv1WLdMxi5V66om9ILEZmohPTVutCAadr
-         3U26F0jjA2mtiraU35ghuye85+lEj7OTtoKsk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z/yJc2SsfEWziBZ1LArgu9WV9K8NEngQzg7n/JFp0cM=;
-        b=H8ui4bDF2Xqd/sNzA4DxElut4XE/Bnc6Z79AaY6UqVPWQ+ECUbhUDolwT1CEU66KUS
-         R2TFjCDICfsAmUp3gykmScxMQiXbl36dRBX16jZwCerYvpjL+VRZUVXHBdot06e/SlX+
-         Agd+7TgQbQumOODg9ZeYHPW/O1ZcbSK0eZiYQCuMaXYuzUXNOh+6dPmC1AjkRNznc8l4
-         iEqBP+E8xKW+UFDcRjflzDJvVlGElqgW+PH2rNkj7YdIGhH2rbEg+Ixj2X1KfWfn29SS
-         TViF20YaXmfqKNVKwR4kOMN/Y6CIBkNPEPSiXLSv78ZaoTpkWBFL+4xPO0IQHJdps4Ue
-         qpHw==
-X-Gm-Message-State: AOAM530Y5+Y650Ab8fM5kZVrFfXqsmp8WVplFIN529DEMTOgdWl8+2YQ
-        cByx80sGRVXfeCWO+p2Kb3ew5Oqfr2pn/RIK
-X-Google-Smtp-Source: ABdhPJyeIkm2ynkIdN+DXN1iBDnDWO4waZuWnP4ekX0FQd3iS9VF+veYcwV1CArHptMy2M3gfxTGUA==
-X-Received: by 2002:a9d:7ac1:: with SMTP id m1mr6395423otn.186.1615455400009;
-        Thu, 11 Mar 2021 01:36:40 -0800 (PST)
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com. [209.85.210.45])
-        by smtp.gmail.com with ESMTPSA id t3sm543909otb.36.2021.03.11.01.36.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 01:36:39 -0800 (PST)
-Received: by mail-ot1-f45.google.com with SMTP id j22so909557otp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:36:38 -0800 (PST)
-X-Received: by 2002:a05:6830:144e:: with SMTP id w14mr6263501otp.0.1615455398529;
- Thu, 11 Mar 2021 01:36:38 -0800 (PST)
+        id S231639AbhCKJja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:39:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57588 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231826AbhCKJjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 04:39:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615455560; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hu/Cdr4n+Fu84h51ILPTJCG7x6gjXFjYTqSY3KHqpS0=;
+        b=ntsEAuleumNwt6HsDqK9dvf9jZZ+AVd9uXArrgRm8MTdJKc/R/St7o6eZN8YcuiuBG0HzV
+        2HpWBpQPfP0pWP+7rJeQ7Tf5D5aVBfg8pwAKhfQ1x2sV2Y6s4uewB0lApg1FaDahSkwlMt
+        Vmu4AWUKOJdszdWokf4dquhaaT9xjG0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 550E2AB8C;
+        Thu, 11 Mar 2021 09:39:20 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 10:39:18 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: Re: [External] Re: [PATCH v18 9/9] mm: hugetlb: optimize the code
+ with the help of the compiler
+Message-ID: <YEnlRlLJD1bK/Dup@dhcp22.suse.cz>
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-10-songmuchun@bytedance.com>
+ <YEjoozshsvKeMAAu@dhcp22.suse.cz>
+ <CAMZfGtV1Fp1RiQ64c9RrMmZ+=EwjGRHjwL8Wx3Q0YRWbbKF6xg@mail.gmail.com>
+ <YEnbBPviwU6N2RzK@dhcp22.suse.cz>
+ <CAMZfGtW5uHYiA_1an3W-jEmemsoN3Org7JwieeE2V271wh9X-A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210310225251.2577580-1-dualli@chromium.org> <20210310225251.2577580-2-dualli@chromium.org>
- <YEnH1qd527g/neY4@kroah.com>
-In-Reply-To: <YEnH1qd527g/neY4@kroah.com>
-From:   Li Li <dualli@chromium.org>
-Date:   Thu, 11 Mar 2021 01:36:26 -0800
-X-Gmail-Original-Message-ID: <CA+xfxX4tD30BJLgwLAoiMzF7xTC-4q1i0A5Znp3tJzyi3ATLzQ@mail.gmail.com>
-Message-ID: <CA+xfxX4tD30BJLgwLAoiMzF7xTC-4q1i0A5Znp3tJzyi3ATLzQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] binder: BINDER_FREEZE ioctl
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Todd Kjos <tkjos@google.com>, christian@brauner.io,
-        arve@android.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Martijn Coenen <maco@google.com>,
-        hridya@google.com, surenb@google.com, joel@joelfernandes.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtW5uHYiA_1an3W-jEmemsoN3Org7JwieeE2V271wh9X-A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:33 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Mar 10, 2021 at 02:52:49PM -0800, Li Li wrote:
-> >       if (target_proc) {
-> >               binder_inner_proc_lock(target_proc);
-> > +             target_proc->outstanding_txns--;
-> > +             WARN_ON(target_proc->outstanding_txns < 0);
->
-> WARN_* is a huge crutch, please just handle stuff like this properly and
-> if you really need to, warn userspace (but what can they do about it?)
->
-> You also just rebooted all systems that have panic-on-warn set, so if
-> this can be triggered by userspace, you caused a DoS of things :(
->
-> So please remove all of the WARN_ON() you add in this patch series to
-> properly handle the error conditions and deal with them correctly.
->
-> And if these were here just for debugging, hopefully the code works
-> properly now and you do not need debugging anymore so they can all just
-> be dropped.
+On Thu 11-03-21 17:08:34, Muchun Song wrote:
+> On Thu, Mar 11, 2021 at 4:55 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 11-03-21 15:33:20, Muchun Song wrote:
+> > > On Wed, Mar 10, 2021 at 11:41 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Mon 08-03-21 18:28:07, Muchun Song wrote:
+> > > > > When the "struct page size" crosses page boundaries we cannot
+> > > > > make use of this feature. Let free_vmemmap_pages_per_hpage()
+> > > > > return zero if that is the case, most of the functions can be
+> > > > > optimized away.
+> > > >
+> > > > I am confused. Don't you check for this in early_hugetlb_free_vmemmap_param already?
+> > >
+> > > Right.
+> > >
+> > > > Why do we need any runtime checks?
+> > >
+> > > If the size of the struct page is not power of 2, compiler can think
+> > > is_hugetlb_free_vmemmap_enabled() always return false. So
+> > > the code snippet of this user can be optimized away.
+> > >
+> > > E.g.
+> > >
+> > > if (is_hugetlb_free_vmemmap_enabled())
+> > >         /* do something */
+> > >
+> > > The compiler can drop "/* do something */" directly, because
+> > > it knows is_hugetlb_free_vmemmap_enabled() always returns
+> > > false.
+> >
+> > OK, so this is a micro-optimization to generate a better code?
+> 
+> Right.
+> 
+> > Is this measurable to warrant more code?
+> 
+> I have disassembled the code to confirm this behavior.
+> I know this is not the hot path. But it actually can decrease
+> the code size.
 
-When the target_proc is freed, there's no outstanding transactions already.
-The FREEZE ioctl from userspace won't trigger this. It's for debugging.
-And I'll remove it in v2. Thanks for the suggestion!
+struct page which is not power of 2 is not a common case. Are you sure
+it makes sense to micro optimize for an outliar. If you really want to
+microptimize then do that for a common case - the feature being
+disabled - via static key.
+-- 
+Michal Hocko
+SUSE Labs
