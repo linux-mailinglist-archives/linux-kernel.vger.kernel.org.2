@@ -2,147 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075CB336982
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF30933698E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhCKBUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 20:20:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
+        id S229706AbhCKBUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 20:20:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhCKBUJ (ORCPT
+        with ESMTP id S229614AbhCKBUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 20:20:09 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C136FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:20:08 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id x7so9945122pfi.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:20:08 -0800 (PST)
+        Wed, 10 Mar 2021 20:20:18 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12F8C061574;
+        Wed, 10 Mar 2021 17:20:17 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so11818436wmj.1;
+        Wed, 10 Mar 2021 17:20:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0ZkhEPXNpdhd7EV60+uxO7+s4em392s377dpq/Miruo=;
-        b=EBBjJgEO35RWOBXTBuXClQYEGc1+xzuOlvc/7LHXyZG4dDzcfOuaRT7myDPt+gjRfT
-         U3LNnOU7ejYFJXHfrysZ8b0p0SG1KWnwDTJ/lIdAstRg0sRN3KalQI6pcHXILu5rbskc
-         9RoiLLBUQHxjN5hcSpt0TvVmIN91IZYjAxB4tYIpzN+X7qpvXQ5AAOlcSmK5Jcxnkak7
-         Z6ffKi41Ho/GJUKO2u4bxgBoeNLYgZJHISf+JOBy2Q0+ytL7OOUL/bm5ThCTVxsa6QWz
-         LFzGXy1QD36ZUtTL+uAxePmi1n7l1NgFoOVUFxzNUHzhDkGHKimDIgoTBIDJ5D7r4cZw
-         NxZg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7uMncpPAE4jWoflI5coLB5nSFQY4/AWNCX9VZjYJxzI=;
+        b=Nc8MYQYGmJoLdEd5ZZcCH+7s+60s9bd/sJLF8qjzYXn6l7+txx7hTxtnP5Sw6c0YEL
+         bAcOivsyT3iQ7BNoJ5lscEOXY1jkjKc1p8fzQB0IDMsROHUt/Sr53iUVQT6Ltx57eEBf
+         vrn6YVe8AGS8B8nmLJrPnhuwAAXEadzk/ATK8DN88N1nUPy+ni4d3wDO5XdSq1F9np9e
+         94CUx7XFusbAZWXY27KYS038loBRa6l3QtLTrmtmZWbDRBL9rPQDnKx55Ohh92pf2Rpp
+         03GJmKh7lSg4yd+6d220RMg91o3FNxJ2b52JgKKThg8RtrQi7hE4l3XxzVYEudf3I+O4
+         gY4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0ZkhEPXNpdhd7EV60+uxO7+s4em392s377dpq/Miruo=;
-        b=TJzGw4I6nkIYUXSkbR2luknjM72cO917n0cOSVTrOju+71rLgoxSmv83IhVPsUwsZ8
-         IPrcdAt/8EBfThhgbhlyLIXiFG2lWCy2hN15sDJznrK6UWo/VJ1PojL/YpfBq0nkz8RK
-         53Pe133wlRwd5sK/UqCm4M1TvSrOaaFfARbtLseSWyqt6bKs6AiJWTk3HwwvF4wtGsEM
-         P/h7BePipzxB0aTSqYFZ3ZtlbXb8IvWM1llvTLxP2PvO5iUZDtQvEVoLnI3C9sLL3MC4
-         99Lez3x8vyFZSc/r8Fm9xmxGd+EkZwyXHxKv79lmdjRN04OrDKjOZeSpoUs4NnOl3OP+
-         hqmg==
-X-Gm-Message-State: AOAM532kKO8qybdi8RK4qofHQigMC2Y875KcxOQh3zat1nzWTliizpDQ
-        VD/WuIqgf+viUm1QecNGA4pNNQ==
-X-Google-Smtp-Source: ABdhPJy4oEPMcOroAyrlq+q9+5qM78TC1A3maqhY2DW8jxRIhcTfNtx+tLADENdj5/ze8zkDolTo+g==
-X-Received: by 2002:a63:ce18:: with SMTP id y24mr5100261pgf.246.1615425608150;
-        Wed, 10 Mar 2021 17:20:08 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:c4e3:28f1:33df:26ba])
-        by smtp.gmail.com with ESMTPSA id 35sm638412pgr.14.2021.03.10.17.20.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7uMncpPAE4jWoflI5coLB5nSFQY4/AWNCX9VZjYJxzI=;
+        b=keLk1ZFPIfZEvuSXAyWO6ivV94g5jHHO9blok0Id6wDX5OpyHnPhLw2S7HD2HAjeX0
+         oIvSwHphnHxq+51PFy7E/qWREmKLGIqaoyEKfXhusNWoFXiDwkWUJRusPCZtnRg7ll2A
+         3/FpqwWNhjgkkb4nWPMriheXXt8AsaZTzkQ0PCBR5mKrbg0V+xUUhygNKjZ684yDBP0S
+         dka1hNcGto20duakUkiaWPk4gmK/LSVOxHy7f6oFU4aAklzxhDNeGbwGWLruS3QV1z9Z
+         ZCSiGkSRSc+4SE4Ff4O9OFDxyIhUKlaZtx+X5q4LA2vLtPr5ERn8MCpfg83r99WnDv3/
+         y7xw==
+X-Gm-Message-State: AOAM531ePzMtLy9+9tYdq+8TIUPJfRydmnPkuBkWz53QFbQyRL1OkTzC
+        AScmpeSnjKfAXgU6smSudst/2XpB0/w=
+X-Google-Smtp-Source: ABdhPJwkA4xwc4RDlD/r9Gu6ew3RAMijLC75fiSCNAWFfjnKG95xxAfGFd47g2ZGBxvGN9qANG/Plw==
+X-Received: by 2002:a1c:541a:: with SMTP id i26mr5562580wmb.75.1615425616652;
+        Wed, 10 Mar 2021 17:20:16 -0800 (PST)
+Received: from localhost.localdomain ([81.18.95.223])
+        by smtp.gmail.com with ESMTPSA id d85sm1199127wmd.15.2021.03.10.17.20.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 17:20:07 -0800 (PST)
-Date:   Wed, 10 Mar 2021 17:20:01 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, David Rientjes <rientjes@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>
-Subject: Re: [PATCH] mm/oom_kill: Ensure MMU notifier range_end() is paired
- with range_start()
-Message-ID: <YElwQU9mPUNwPg7q@google.com>
-References: <20210310213117.1444147-1-seanjc@google.com>
- <20210311002807.GQ444867@ziepe.ca>
+        Wed, 10 Mar 2021 17:20:15 -0800 (PST)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] Add support for Actions Semi Owl Ethernet MAC
+Date:   Thu, 11 Mar 2021 03:20:11 +0200
+Message-Id: <cover.1615423279.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311002807.GQ444867@ziepe.ca>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021, Jason Gunthorpe wrote:
-> On Wed, Mar 10, 2021 at 01:31:17PM -0800, Sean Christopherson wrote:
-> > Invoke the MMU notifier's .invalidate_range_end() callbacks even if one
-> > of the .invalidate_range_start() callbacks failed.  If there are multiple
-> > notifiers, the notifier that did not fail may have performed actions in
-> > its ...start() that it expects to unwind via ...end().  Per the
-> > mmu_notifier_ops documentation, ...start() and ...end() must be paired.
-> 
-> No this is not OK, if invalidate_start returns EBUSY invalidate_end
-> should *not* be called.
-> 
-> As you observed:
->  
-> > The only in-kernel usage that is fatally broken is the SGI UV GRU driver,
-> > which effectively blocks and sleeps fault handlers during ...start(), and
-> > unblocks/wakes the handlers during ...end().  But, the only users that
-> > can fail ...start() are the i915 and Nouveau drivers, which are unlikely
-> > to collide with the SGI driver.
-> 
-> It used to be worse but I've since moved most of the other problematic
-> users to the itree notifier which doesn't have the problem.
-> 
-> > KVM is the only other user of ...end(), and while KVM also blocks fault
-> > handlers in ...start(), the fault handlers do not sleep and originate in
-> 
-> KVM will have its mmu_notifier_count become imbalanced:
-> 
-> static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
->                                         const struct mmu_notifier_range *range)
-> {
->         kvm->mmu_notifier_count++;
-> 
-> static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
->                                         const struct mmu_notifier_range *range)
-> {
->         kvm->mmu_notifier_count--;
-> 
-> Which I believe is fatal to kvm? These notifiers certainly do not only
-> happen at process exit.
+This patch series adds support for the Ethernet MAC found on the Actions
+Semi Owl family of SoCs.
 
-My point about the process dying is that the existing bug that causes
-mmu_notifier_count to become imbalanced is benign only because the process is
-being killed, and thus KVM will stop running its vCPUs.
+For the moment I have only tested the driver on RoseapplePi SBC, which is
+based on the S500 SoC variant. It might work on S900 as well, but I cannot
+tell for sure since the S900 datasheet I currently have doesn't provide
+any information regarding the MAC registers - so I couldn't check the
+compatibility with S500.
 
-> So, both of the remaining _end users become corrupted with this patch!
+Similar story for S700: the datasheet I own is incomplete, but it seems
+the MAC is advertised with Gigabit capabilities. For that reason most
+probably we need to extend the current implementation in order to support
+this SoC variant as well.
 
-I don't follow.  mn_hlist_invalidate_range_start() iterates over all notifiers,
-even if a notifier earlier in the chain failed.  How will KVM become imbalanced?
+Please note that for testing the driver it is also necessary to update the
+S500 clock subsystem:
 
-The existing _end users never fail their _start.  If KVM started failing its
-start, then yes, it could get corrupted.  But my assumption/expection is that,
-if KVM were to ever reject _start, it would be responsible for knowing that it
-must also skip _end.  I'm happy to kick that one down the road though, as I
-can't think of a scenario where KVM would _need_ to sleep.
+https://lore.kernel.org/lkml/cover.1615221459.git.cristian.ciocaltea@gmail.com/
 
-> I've tried to fix this before, the only thing that seems like it will
-> work is to sort the hlist and only call ends that have succeeded their
-> starts by comparing pointers with <.
-> 
-> This is because the hlist can have items removed concurrently under
-> SRCU so there is no easy way to compute the subset that succeeded in
-> calling start.
-> 
-> I had a prior effort to just ban more than 1 hlist notifier with end,
-> but it turns out kvm on ARM uses two all the time (IIRC)
-> 
-> > Found by inspection.  Verified by adding a second notifier in KVM
-> > that
-> 
-> AFAIK it is a non-problem in real life because kvm is not mixed with
-> notifier_start's that fail (and GRU is dead?). Everything else was
-> fixed by moving to itree.
-> 
-> Jason
+The DTS changes for the S500 SBCs will be provided separately.
+
+Thanks,
+Cristi
+
+Cristian Ciocaltea (3):
+  dt-bindings: net: Add Actions Semi Owl Ethernet MAC binding
+  net: ethernet: actions: Add Actions Semi Owl Ethernet MAC driver
+  MAINTAINERS: Add entries for Actions Semi Owl Ethernet MAC
+
+ .../bindings/net/actions,owl-emac.yaml        |   91 +
+ MAINTAINERS                                   |    2 +
+ drivers/net/ethernet/Kconfig                  |    1 +
+ drivers/net/ethernet/Makefile                 |    1 +
+ drivers/net/ethernet/actions/Kconfig          |   39 +
+ drivers/net/ethernet/actions/Makefile         |    6 +
+ drivers/net/ethernet/actions/owl-emac.c       | 1660 +++++++++++++++++
+ drivers/net/ethernet/actions/owl-emac.h       |  278 +++
+ 8 files changed, 2078 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/actions,owl-emac.yaml
+ create mode 100644 drivers/net/ethernet/actions/Kconfig
+ create mode 100644 drivers/net/ethernet/actions/Makefile
+ create mode 100644 drivers/net/ethernet/actions/owl-emac.c
+ create mode 100644 drivers/net/ethernet/actions/owl-emac.h
+
+-- 
+2.30.2
+
