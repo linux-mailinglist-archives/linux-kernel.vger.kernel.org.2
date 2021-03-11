@@ -2,195 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34237336A1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF213336A1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhCKCUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 21:20:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhCKCTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 21:19:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0156964FBA;
-        Thu, 11 Mar 2021 02:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615429190;
-        bh=QSJ3J89jiUD2fmi5xAePNUfSntRIuXMdRGvzmeL7rIo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=D9Na8fdf7cj5uzNS0wGRxLc5muMf/b7Oa+S0gj4dPS+iba9bUjMTFGSuJXUpNmsfT
-         2jiN3Ya3jyUg1U+r6ld73LyRivY5DM3NmiiONJ7CQCPxivK62QKmGx9a2AdD4oZBT+
-         9MY7bTZGtEvEGY366Tosa+n5Ya4Zxbojo/7Vgn8T8LeTZeu6cRDdHaGM4zZ3VBnZaY
-         gL80wR6eRbKPVASIvHiO8QzrN7R5Ne4gk/aWiMlBwUMMVVecKnbhcWEh5m5cmVtAAY
-         ykY5Zszd5mdU/aNjSYCYOmBUEZIAcpY/0rgn2fRVRpBcc51yyFrhh+f8cigT9tsPzM
-         2tLWUEKFhHmBg==
-Date:   Wed, 10 Mar 2021 20:19:47 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] media: siano: Fix multiple out-of-bounds warnings in
- smscore_load_firmware_family2()
-Message-ID: <20210311021947.GA129388@embeddedor>
+        id S229599AbhCKCWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 21:22:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229762AbhCKCWE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 21:22:04 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4A2CCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 18:22:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=8vVaM3fkgb
+        ix9fBLTZie1hJ57yzxZgTlG9N1TyuMbkM=; b=A+2p8Is1McTE1BLzFgxDj9dWKJ
+        LEGQB6weqhveNHW5waB7ipZr7kbWvam1f0nKIjpZCyZorF1ZyutmwMKqlmTfEoXV
+        45bu0auzGRv3sIPbs5cnoVVt0cwpuCAvKs/JKjV9wRl0PHHKUnSmA59ciHLVuPY+
+        F2nyPN/JFDQOWOTKg=
+Received: from ubuntu.localdomain (unknown [114.214.226.60])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHjuLHfklg4IwIAA--.490S4;
+        Thu, 11 Mar 2021 10:21:59 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] infiniband/core: Fix a use after free in cm_work_handler
+Date:   Wed, 10 Mar 2021 18:21:53 -0800
+Message-Id: <20210311022153.3757-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygCHjuLHfklg4IwIAA--.490S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF4DAFWxArWrZF4DXFyxZrb_yoWDuFX_Wr
+        4FgrnrJr1fCF92kr1UuFWxZryS9r4vq3s5u3Wktry5t342krnrCr1xZwsrZw4UXr4Fkanx
+        AF9rJr95Cr1DCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0D
+        UUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename struct sms_msg_data4 to sms_msg_data5 and increase the size of
-its msg_data array from 4 to 5 elements. Notice that at some point
-the 5th element of msg_data is being accessed in function
-smscore_load_firmware_family2():
+In cm_work_handler, it calls destory_cm_id() to release
+the initial reference of cm_id_priv taken by iw_create_cm_id()
+and free the cm_id_priv. After destory_cm_id(), iwcm_deref_id
+(cm_id_priv) will be called and cause a use after free.
 
-1006                 trigger_msg->msg_data[4] = 4; /* Task ID */
-
-Also, there is no need for the object _trigger_msg_ of type struct
-sms_msg_data *, when _msg_ can be used, directly. Notice that msg_data
-in struct sms_msg_data is a one-element array, which causes multiple
-out-of-bounds warnings when accessing beyond its first element
-in function smscore_load_firmware_family2():
-
- 992                 struct sms_msg_data *trigger_msg =                                                  
- 993                         (struct sms_msg_data *) msg;                                                
- 994                                                                                                     
- 995                 pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");                               
- 996                 SMS_INIT_MSG(&msg->x_msg_header,                                                    
- 997                                 MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,                                     
- 998                                 sizeof(struct sms_msg_hdr) +                                        
- 999                                 sizeof(u32) * 5);                                                   
-1000                                                                                                     
-1001                 trigger_msg->msg_data[0] = firmware->start_address;                                 
-1002                                         /* Entry point */                                           
-1003                 trigger_msg->msg_data[1] = 6; /* Priority */                                        
-1004                 trigger_msg->msg_data[2] = 0x200; /* Stack size */                                  
-1005                 trigger_msg->msg_data[3] = 0; /* Parameter */                                       
-1006                 trigger_msg->msg_data[4] = 4; /* Task ID */ 
-
-even when enough dynamic memory is allocated for _msg_:
-
- 929         /* PAGE_SIZE buffer shall be enough and dma aligned */
- 930         msg = kmalloc(PAGE_SIZE, GFP_KERNEL | coredev->gfp_buf_flags);
-
-but as _msg_ is casted to (struct sms_msg_data *):
-
- 992                 struct sms_msg_data *trigger_msg =
- 993                         (struct sms_msg_data *) msg;
-
-the out-of-bounds warnings are actually valid and should be addressed.
-
-Fix this by declaring object _msg_ of type struct sms_msg_data5 *,
-which contains a 5-elements array, instead of just 4. And use
-_msg_ directly, instead of creating object trigger_msg.
-
-This helps with the ongoing efforts to enable -Warray-bounds by fixing
-the following warnings:
-
-  CC [M]  drivers/media/common/siano/smscoreapi.o
-drivers/media/common/siano/smscoreapi.c: In function ‘smscore_load_firmware_family2’:
-drivers/media/common/siano/smscoreapi.c:1003:24: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
- 1003 |   trigger_msg->msg_data[1] = 6; /* Priority */
-      |   ~~~~~~~~~~~~~~~~~~~~~^~~
-In file included from drivers/media/common/siano/smscoreapi.c:12:
-drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
-  619 |  u32 msg_data[1];
-      |      ^~~~~~~~
-drivers/media/common/siano/smscoreapi.c:1004:24: warning: array subscript 2 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
- 1004 |   trigger_msg->msg_data[2] = 0x200; /* Stack size */
-      |   ~~~~~~~~~~~~~~~~~~~~~^~~
-In file included from drivers/media/common/siano/smscoreapi.c:12:
-drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
-  619 |  u32 msg_data[1];
-      |      ^~~~~~~~
-drivers/media/common/siano/smscoreapi.c:1005:24: warning: array subscript 3 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
- 1005 |   trigger_msg->msg_data[3] = 0; /* Parameter */
-      |   ~~~~~~~~~~~~~~~~~~~~~^~~
-In file included from drivers/media/common/siano/smscoreapi.c:12:
-drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
-  619 |  u32 msg_data[1];
-      |      ^~~~~~~~
-drivers/media/common/siano/smscoreapi.c:1006:24: warning: array subscript 4 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
- 1006 |   trigger_msg->msg_data[4] = 4; /* Task ID */
-      |   ~~~~~~~~~~~~~~~~~~~~~^~~
-In file included from drivers/media/common/siano/smscoreapi.c:12:
-drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
-  619 |  u32 msg_data[1];
-      |      ^~~~~~~~
-
-Fixes: 018b0c6f8acb ("[media] siano: make load firmware logic to work with newer firmwares")
-Co-developed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Fixes: 59c68ac31e15a ("iw_cm: free cm_id resources on the last deref")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 ---
- drivers/media/common/siano/smscoreapi.c | 22 +++++++++-------------
- drivers/media/common/siano/smscoreapi.h |  4 ++--
- 2 files changed, 11 insertions(+), 15 deletions(-)
+ drivers/infiniband/core/iwcm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
-index 410cc3ac6f94..bceaf91faa15 100644
---- a/drivers/media/common/siano/smscoreapi.c
-+++ b/drivers/media/common/siano/smscoreapi.c
-@@ -908,7 +908,7 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
- 					 void *buffer, size_t size)
- {
- 	struct sms_firmware *firmware = (struct sms_firmware *) buffer;
--	struct sms_msg_data4 *msg;
-+	struct sms_msg_data5 *msg;
- 	u32 mem_address,  calc_checksum = 0;
- 	u32 i, *ptr;
- 	u8 *payload = firmware->payload;
-@@ -989,24 +989,20 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
- 		goto exit_fw_download;
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index da8adadf4755..cb6b4ac45e21 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -1035,8 +1035,10 @@ static void cm_work_handler(struct work_struct *_work)
  
- 	if (coredev->mode == DEVICE_MODE_NONE) {
--		struct sms_msg_data *trigger_msg =
--			(struct sms_msg_data *) msg;
--
- 		pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");
- 		SMS_INIT_MSG(&msg->x_msg_header,
- 				MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,
--				sizeof(struct sms_msg_hdr) +
--				sizeof(u32) * 5);
-+				sizeof(*msg));
- 
--		trigger_msg->msg_data[0] = firmware->start_address;
-+		msg->msg_data[0] = firmware->start_address;
- 					/* Entry point */
--		trigger_msg->msg_data[1] = 6; /* Priority */
--		trigger_msg->msg_data[2] = 0x200; /* Stack size */
--		trigger_msg->msg_data[3] = 0; /* Parameter */
--		trigger_msg->msg_data[4] = 4; /* Task ID */
-+		msg->msg_data[1] = 6; /* Priority */
-+		msg->msg_data[2] = 0x200; /* Stack size */
-+		msg->msg_data[3] = 0; /* Parameter */
-+		msg->msg_data[4] = 4; /* Task ID */
- 
--		rc = smscore_sendrequest_and_wait(coredev, trigger_msg,
--					trigger_msg->x_msg_header.msg_length,
-+		rc = smscore_sendrequest_and_wait(coredev, msg,
-+					msg->x_msg_header.msg_length,
- 					&coredev->trigger_done);
- 	} else {
- 		SMS_INIT_MSG(&msg->x_msg_header, MSG_SW_RELOAD_EXEC_REQ,
-diff --git a/drivers/media/common/siano/smscoreapi.h b/drivers/media/common/siano/smscoreapi.h
-index 4a6b9f4c44ac..f8789ee0d554 100644
---- a/drivers/media/common/siano/smscoreapi.h
-+++ b/drivers/media/common/siano/smscoreapi.h
-@@ -624,9 +624,9 @@ struct sms_msg_data2 {
- 	u32 msg_data[2];
- };
- 
--struct sms_msg_data4 {
-+struct sms_msg_data5 {
- 	struct sms_msg_hdr x_msg_header;
--	u32 msg_data[4];
-+	u32 msg_data[5];
- };
- 
- struct sms_data_download {
+ 		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
+ 			ret = process_event(cm_id_priv, &levent);
+-			if (ret)
++			if (ret) {
+ 				destroy_cm_id(&cm_id_priv->id);
++				return;
++			}
+ 		} else
+ 			pr_debug("dropping event %d\n", levent.event);
+ 		if (iwcm_deref_id(cm_id_priv))
 -- 
-2.27.0
+2.25.1
+
 
