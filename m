@@ -2,139 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3503380B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C8E3380C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhCKWjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 17:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhCKWjW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 17:39:22 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BA6C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 14:39:21 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id u4so5222566edv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 14:39:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uoDXPuEltWUDmhb2tWhGvs+JKaUo3rAAVx8gEHgYL3A=;
-        b=wNJ3p351Wwf0EhnLLfleqU4QXb5i4DQy1bkaQS34GVpfwGYK9jDNRy6PLZXw8Ouzij
-         ffWdMFhQj46GRebK8TLdMvMF6e9BOFyHfZqZz+zij2D3EhmzudQKFK4De3t0Na/CLtye
-         OEeIgqrLDd8YGmpcMJf/kYB7fjsUtWMn7yutV7Zih07QEj9b8xk2PpMOny2L0kEXXkAY
-         otlpXQv8OT+EYrEGWOr+LuROUpAGaMO1fub6m+X0lcep+LgVhKlsxWa17RWV7D2HQyrx
-         X8Ra9FE9TN6sZB4I7rii6vy9Dvkyn6b9sh4NahQhZnpUE/BSCz1rYfy1VldK4EDFOu3J
-         a/uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uoDXPuEltWUDmhb2tWhGvs+JKaUo3rAAVx8gEHgYL3A=;
-        b=Z9hUvwVir2dDQQKYTrCKdk1uJy8+iepdtJ2CCaxzlJxDylmLWh9nAhwIZlAMZWZ/5a
-         flnmoeA0iqcd3M776XfBy7qTkN1EoESHG7ODbflGYP/z9R0P4vVeDe90ipiCrrIGH/sN
-         57dOtF9VGLKv41ZKoFtMJjWgpLuti0bqwCIt7NhJcFagPm0XPNNC3rOhlLOc34s+AvnB
-         IcXCebq+fs25fOERWorwhIkZM/a6YWKFTY/nr0FDySvw53E93JM2K2zJaqLvMWOvoC9U
-         Ybj/MUyFEKUnctehmQqIcA1KLyz1PazZFANNamAKygJ42mE/1QryYv+WJJhSHzbJ+05J
-         6Srg==
-X-Gm-Message-State: AOAM531RJYYwkxnr9GtdkRd9NfIUGQqKfk5c8DZ6Qay24D9LthNm5OIB
-        DEfSts2aTgQB8iyXF+kX6Ny9uidcGFWeKtB6qcAmoQ==
-X-Google-Smtp-Source: ABdhPJxFCHW41oZM+KJq47cRWr1Lwi4C6YnH9CA7LscoTteL7r9GHEnz1aWgVD1O7Qa/kZr+pCxb3iU8gTrmbuxUp8M=
-X-Received: by 2002:a05:6402:3486:: with SMTP id v6mr10850409edc.109.1615502360302;
- Thu, 11 Mar 2021 14:39:20 -0800 (PST)
+        id S229683AbhCKWmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 17:42:05 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:51876 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229441AbhCKWl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 17:41:56 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615502515; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=P6svW8ngSg504NS77cpkUbs73VgoaaSVMOcJWpi/Exs=;
+ b=A/19ZBDIDMPnuozHjPxqQWiMrf4f49LAJ72GI4WKbI5RldK6cyDHc6YbQVUJCVxGRYHzhfRX
+ mXoAoNgBiujY7i/LWkkMyDcJFArakWQ3JShqznHDHzz/fwwz34zv/ztenXiqBYX0Z8nrBMdu
+ duz7vHD6egxTl0hPNbUNX9s57gY=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 604a9c9b6dc1045b7d014eb4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 22:41:31
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4C2C6C43464; Thu, 11 Mar 2021 22:41:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 579A6C433C6;
+        Thu, 11 Mar 2021 22:41:30 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210309220014.22205-1-tharvey@gateworks.com> <8ca5c54140d69307f3c08ca85a09f0b5@walle.cc>
- <3d497991-1470-e188-8be2-e5992dfa914c@microchip.com>
-In-Reply-To: <3d497991-1470-e188-8be2-e5992dfa914c@microchip.com>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Thu, 11 Mar 2021 14:39:07 -0800
-Message-ID: <CAJ+vNU1urqqDKrH5HNsUz=Wb-Rtr+dMzEnJ3=gMJv6+qz29n2g@mail.gmail.com>
-Subject: Re: [PATCH 1/4] dt-bindings: at25: add Fujitsu MB85RS4MT
-To:     Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Cc:     Michael Walle <michael@walle.cc>,
-        Richard Weinberger <richard@nod.at>, p.yadav@ti.com,
-        vigneshr@ti.com,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-mtd@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 11 Mar 2021 14:41:30 -0800
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        surenb@google.com, willy@infradead.org, mhocko@suse.com,
+        david@redhat.com, vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
+        Minchan Kim <minchan.kim@gmail.com>
+Subject: Re: [PATCH v3 2/3] mm: disable LRU pagevec during the migration
+ temporarily
+In-Reply-To: <20210310161429.399432-2-minchan@kernel.org>
+References: <20210310161429.399432-1-minchan@kernel.org>
+ <20210310161429.399432-2-minchan@kernel.org>
+Message-ID: <623d54ccbd5324bff22ad1389eae38f4@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'On Tue, Mar 9, 2021 at 9:34 PM <Tudor.Ambarus@microchip.com> wrote:
->
-> On 3/10/21 12:59 AM, Michael Walle wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >
-> > Hi Tim,
-> >
-> > Am 2021-03-09 23:00, schrieb Tim Harvey:
-> >> Document the compatible value for the Fujitsu MB85RS4MT SPI
-> >> FRAM EEPROM device so that it can be used in DTS files.
-> >>
-> >> This is a 512KiB FRAM EEPROM.
-> >>
-> >> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> >> ---
-> >>  Documentation/devicetree/bindings/eeprom/at25.yaml | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/eeprom/at25.yaml
-> >> b/Documentation/devicetree/bindings/eeprom/at25.yaml
-> >> index 6a2dc8b3ed14..f594db72b711 100644
-> >> --- a/Documentation/devicetree/bindings/eeprom/at25.yaml
-> >> +++ b/Documentation/devicetree/bindings/eeprom/at25.yaml
-> >> @@ -26,6 +26,7 @@ properties:
-> >>                - anvo,anv32e61w
-> >>                - atmel,at25256B
-> >>                - fujitsu,mb85rs1mt
-> >> +              - fujitsu,mb85rs4mt
-> >>                - fujitsu,mb85rs64
-> >>                - microchip,at25160bn
-> >>                - microchip,25lc040
-> >
-> > Hm, the driver is spi-nor but this is for the at25 driver. Is
-> > this correct? Doesn't it work if you just add the ID to
-> > spi-nor/fujitsu.c and use 'compatible = "jedec,spi-nor' ?
-> >
->
-> Tim,
->
-> Can you try and see if you can work with this flash by setting "atmel,at25"
-> compatible?
+On 2021-03-10 08:14, Minchan Kim wrote:
+> LRU pagevec holds refcount of pages until the pagevec are drained.
+> It could prevent migration since the refcount of the page is greater
+> than the expection in migration logic. To mitigate the issue,
+> callers of migrate_pages drains LRU pagevec via migrate_prep or
+> lru_add_drain_all before migrate_pages call.
+> 
+> However, it's not enough because pages coming into pagevec after the
+> draining call still could stay at the pagevec so it could keep
+> preventing page migration. Since some callers of migrate_pages have
+> retrial logic with LRU draining, the page would migrate at next trail
+> but it is still fragile in that it doesn't close the fundamental race
+> between upcoming LRU pages into pagvec and migration so the migration
+> failure could cause contiguous memory allocation failure in the end.
+> 
+> To close the race, this patch disables lru caches(i.e, pagevec)
+> during ongoing migration until migrate is done.
+> 
+> Since it's really hard to reproduce, I measured how many times
+> migrate_pages retried with force mode(it is about a fallback to a
+> sync migration) with below debug code.
+> 
+> int migrate_pages(struct list_head *from, new_page_t get_new_page,
+> 			..
+> 			..
+> 
+> if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
+>        printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), 
+> rc);
+>        dump_page(page, "fail to migrate");
+> }
+> 
+> The test was repeating android apps launching with cma allocation
+> in background every five seconds. Total cma allocation count was
+> about 500 during the testing. With this patch, the dump_page count
+> was reduced from 400 to 30.
+> 
+> The new interface is also useful for memory hotplug which currently
+> drains lru pcp caches after each migration failure. This is rather
+> suboptimal as it has to disrupt others running during the operation.
+> With the new interface the operation happens only once. This is also in
+> line with pcp allocator cache which are disabled for the offlining as
+> well.
+> 
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
 
-It does not work with 'atmel,at25'. I was fooled into adding it to
-at25.yaml because that is where the mb85rs1mt compatible was. I
-suppose at some time the drivers were split as mb85rs1mt is clearly in
-the spi-nor driver now.
+Hi Minchan,
 
-I will drop the patch to at25.yaml and now that I realize all I need
-is 'jedec,spi-nor' I won't need any bindings patch.
+This all looks good to me - feel free to add a Reviewed-by from me.
 
->
-> There are some SPI NOR-like flashes MRAMs, FRAMs, even EEPROMs, that share
-> a part of opcodes of SPI NORs, but have slightly different characteristics
-> (ex. no erase, no wait times for writes on FRAMs).
-> See the patch series submitted by Richard, that I have stalled:
-> https://patchwork.ozlabs.org/project/linux-mtd/list/?series=208584&state=*
->
+Thanks,
 
-This series makes sense to me. I tested it and indeed it provides a
-vast performance improvement. Richards patch would collide with my
-patch that adds the mb85rs4mt detection. Let me know what you're going
-to do there and if you need me to rebase 'mtd: spi-nor: fujitsu: add
-support for MB85RS4MT' on top of it.
+Chris.
 
-Best regards,
-
-Tim
+-- 
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
