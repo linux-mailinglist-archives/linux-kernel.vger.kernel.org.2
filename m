@@ -2,99 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E98E336D50
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFACA336D5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhCKHwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:52:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:58626 "EHLO foss.arm.com"
+        id S230418AbhCKHyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:54:44 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:54164 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229686AbhCKHwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:52:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C9801FB;
-        Wed, 10 Mar 2021 23:52:19 -0800 (PST)
-Received: from [10.163.66.3] (unknown [10.163.66.3])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9E2B3F70D;
-        Wed, 10 Mar 2021 23:52:16 -0800 (PST)
-Subject: Re: [RFC] mm: Enable generic pfn_valid() to handle early sections
- with memmap holes
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mm@kvack.org, Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1615174073-10520-1-git-send-email-anshuman.khandual@arm.com>
- <YEXme5SI+GxsYli8@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <003d8a4b-9687-3e9a-c27b-908db280b44c@arm.com>
-Date:   Thu, 11 Mar 2021 13:22:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230011AbhCKHyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:54:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615449253; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ID1KDNd+0JpNyiGIk1PSRDJhaqeYgvN/2u/f3rE4gIo=;
+ b=j7EjFG+PLJdmSavMT+VND3NonKZJ5AHcZQCyc/a6wKi6fpDj6DLAh8lQdDoxW3HdOH7me3Pa
+ YZRLu+mElvHRSVmUusNQYAhttT6JhNr+YJz+kqEH+9XOQVYSrJfnvJW8LQJk8P9kfdOozyvY
+ ZDGMkTXyeQXabkqrVsui0VVnOQM=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6049cc91f14e98d35da71c15 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 07:53:53
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8AA0EC4346A; Thu, 11 Mar 2021 07:53:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3DDDBC43461;
+        Thu, 11 Mar 2021 07:53:51 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <YEXme5SI+GxsYli8@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 11 Mar 2021 15:53:51 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 04/10] scsi: ufshpb: Make eviction depends on region's
+ reads
+In-Reply-To: <20210302132503.224670-5-avri.altman@wdc.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-5-avri.altman@wdc.com>
+Message-ID: <76763b655ef8ffec56123ff1ac56f474@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Avri,
 
-On 3/8/21 2:25 PM, Mike Rapoport wrote:
-> Hi Anshuman,
+On 2021-03-02 21:24, Avri Altman wrote:
+> In host mode, eviction is considered an extreme measure.
+> verify that the entering region has enough reads, and the exiting
+> region has much less reads.
 > 
-> On Mon, Mar 08, 2021 at 08:57:53AM +0530, Anshuman Khandual wrote:
->> Platforms like arm and arm64 have redefined pfn_valid() because their early
->> memory sections might have contained memmap holes caused by memblock areas
->> tagged with MEMBLOCK_NOMAP, which should be skipped while validating a pfn
->> for struct page backing. This scenario could be captured with a new option
->> CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES and then generic pfn_valid() can be
->> improved to accommodate such platforms. This reduces overall code footprint
->> and also improves maintainability.
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/scsi/ufs/ufshpb.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
 > 
-> I wonder whether arm64 would still need to free parts of its memmap after
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index a8f8d13af21a..6f4fd22eaf2f 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -17,6 +17,7 @@
+>  #include "../sd.h"
+> 
+>  #define ACTIVATION_THRESHOLD 4 /* 4 IOs */
+> +#define EVICTION_THRESHOLD (ACTIVATION_THRESHOLD << 6) /* 256 IOs */
 
-free_unused_memmap() is applicable when CONFIG_SPARSEMEM_VMEMMAP is not enabled.
-I am not sure whether there still might be some platforms or boards which would
-benefit from this. Hence lets just keep this unchanged for now.
+Same here, can this be added as a sysfs entry?
 
-> the section size was reduced. Maybe the pain of arm64::pfn_valid() is not
-> worth the memory savings anymore?
-
-arm64 pfn_valid() special case was primarily because of MEMBLOCK_NOMAP tagged
-memory areas, which are reserved by the firmware.
+Thanks,
+Can Guo.
 
 > 
->> Commit 4f5b0c178996 ("arm, arm64: move free_unused_memmap() to generic mm")
->> had used CONFIG_HAVE_ARCH_PFN_VALID to gate free_unused_memmap(), which in
->> turn had expanded its scope to new platforms like arc and m68k. Rather lets
->> restrict back the scope for free_unused_memmap() to arm and arm64 platforms
->> using this new config option i.e CONFIG_HAVE_EARLY_SECTION_MEMMAP.
+>  /* memory management */
+>  static struct kmem_cache *ufshpb_mctx_cache;
+> @@ -1050,6 +1051,13 @@ static struct ufshpb_region
+> *ufshpb_victim_lru_info(struct ufshpb_lu *hpb)
+>  		if (ufshpb_check_srgns_issue_state(hpb, rgn))
+>  			continue;
 > 
-> The whole point of 4f5b0c178996 was to let arc and m68k to free unused
-> memory map with FLATMEM so they won't need DISCONTIGMEM or SPARSEMEM. So
-> whatever implementation there will be for arm/arm64, please keep arc and
-> m68k functionally intact.
-
-Okay. Will protect free_unused_memmap() on HAVE_EARLY_SECTION_MEMMAP_HOLES
-config as well.
-
-diff --git a/mm/memblock.c b/mm/memblock.c
-index d9fa2e62ab7a..11b624e94127 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1927,8 +1927,11 @@ static void __init free_unused_memmap(void)
-        unsigned long start, end, prev_end = 0;
-        int i;
- 
--       if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ||
--           IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
-+       if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
-+               return;
-+
-+       if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) &&
-+           !IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID))
-                return;
+> +		/*
+> +		 * in host control mode, verify that the exiting region
+> +		 * has less reads
+> +		 */
+> +		if (hpb->is_hcm && rgn->reads > (EVICTION_THRESHOLD >> 1))
+> +			continue;
+> +
+>  		victim_rgn = rgn;
+>  		break;
+>  	}
+> @@ -1235,7 +1243,7 @@ static int ufshpb_issue_map_req(struct ufshpb_lu 
+> *hpb,
+> 
+>  static int ufshpb_add_region(struct ufshpb_lu *hpb, struct 
+> ufshpb_region *rgn)
+>  {
+> -	struct ufshpb_region *victim_rgn;
+> +	struct ufshpb_region *victim_rgn = NULL;
+>  	struct victim_select_info *lru_info = &hpb->lru_info;
+>  	unsigned long flags;
+>  	int ret = 0;
+> @@ -1263,6 +1271,16 @@ static int ufshpb_add_region(struct ufshpb_lu
+> *hpb, struct ufshpb_region *rgn)
+>  			 * because the device could detect this region
+>  			 * by not issuing HPB_READ
+>  			 */
+> +
+> +			/*
+> +			 * in host control mode, verify that the entering
+> +			 * region has enough reads
+> +			 */
+> +			if (hpb->is_hcm && rgn->reads < EVICTION_THRESHOLD) {
+> +				ret = -EACCES;
+> +				goto out;
+> +			}
+> +
+>  			victim_rgn = ufshpb_victim_lru_info(hpb);
+>  			if (!victim_rgn) {
+>  				dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
