@@ -2,118 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16441336B19
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58485336B1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhCKEYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 23:24:05 -0500
-Received: from mga05.intel.com ([192.55.52.43]:31125 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231183AbhCKEXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 23:23:53 -0500
-IronPort-SDR: yYqZ2YYRzLozLR3nrMW2+rfEP854p7h3gcbf2wspRZzpCARhgKr15HkKNFeA7SzsL1+FKMq95f
- i4oUxo91dOuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="273649201"
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="273649201"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 20:23:52 -0800
-IronPort-SDR: fEmxznOusV/EE//0QLoDz7Fhmh9dS9730zuo/CNMC2b1gT+6vjt1Gr1uWtlus2v/69m3+HqoFB
- 0WpLbgNgCLig==
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="410468138"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.249.170.224]) ([10.249.170.224])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 20:23:49 -0800
-Subject: Re: [PATCH V3 3/6] vDPA/ifcvf: rename original IFCVF dev ids to N3000
- ids
-To:     Jason Wang <jasowang@redhat.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210310090052.4762-1-lingshan.zhu@intel.com>
- <20210310090052.4762-4-lingshan.zhu@intel.com>
- <5e2b22cc-7faa-2987-a30a-ce32f10099b6@redhat.com>
-From:   Zhu Lingshan <lingshan.zhu@linux.intel.com>
-Message-ID: <4472d8f3-ef44-37a0-8ee1-82caa4a0a843@linux.intel.com>
-Date:   Thu, 11 Mar 2021 12:23:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230458AbhCKE1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 23:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230429AbhCKE1K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 23:27:10 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C55C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 20:27:10 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id u18so9571198plc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 20:27:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wdHJK3DnjapBMDB3J4nzxo9opMMpuJCwZjO8+x8sSxg=;
+        b=AVptnHxhFF2lfdrbogOfvyXoS+iA20CjdW0Y3g3Im2CA4FDVur+gpc9RDSc4nV8vpn
+         DJJIGc6sd1ZnOt8Sf45R27jnkdEnwUytHhendjXcAGSizUGRxZkm8dnkfY1ouBOlLkjH
+         qjVoz1+1VCtqTyybwJiF+PCpTZrfH5mlgFw3xD4vqnk3MVVxtSMjeLHW8amWMPkzsSCj
+         NgSJFKW0TdWpZG9lcIERXexLuv01GSqWVrmA5bHD8rB/WqvoucKuDEH1jyfei/KIPRp8
+         SHwFwaL37o+276bp2p4UFrR6ft87rIemm+HhxvpUz9VzglEUjUMd/BvET7TfwvSGfBdF
+         i/eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wdHJK3DnjapBMDB3J4nzxo9opMMpuJCwZjO8+x8sSxg=;
+        b=lEBcGDAm5lI1TiT5Htg1EJuPbqlrllhnS0TyG/qTknfyv4VIBlKjFhPmLtWbo1LYyr
+         FMSOervJMNpSnvlT6Ma0KaruHp91Ea6qP1C4oOFBHHmEe4v31PV/QPJUdwsuYx22mbdi
+         5mkOdVzz9vruPOFF1G4iLRVFBlTKFTX6mNv4n2ELwD9capll0NYSq4KQozqf11gdGi0U
+         Idq8CQWJUZH4ulmtAwx85hmGelFowW12O3M+vaML+Yv7nauEqvIzu3aXyZlar/w0O/AK
+         7dFkTispM7ua4zyT7Z/cIwWaR/PX6VjnjAmrSf+9rs09ixwEbm7rmVrn8QAJk52baE1i
+         CXrQ==
+X-Gm-Message-State: AOAM531xZTpDQis9xcl36cAlGUkj2V4G3AyfJklMFBwt+NO5N1HEseR7
+        BQkJIPTUvlD+evkr/mCPj07HrT29v0efHU0zfzwebw==
+X-Google-Smtp-Source: ABdhPJyFtT1jcfBftxM1fBYo/GZ7Tgw6kfQp8Ydlw2Ya/FFTN4zt3q/TTwrXarOyu5SWEbQXYC+mJdl4VJaaDNvgL/g=
+X-Received: by 2002:a17:90a:901:: with SMTP id n1mr7048144pjn.147.1615436830045;
+ Wed, 10 Mar 2021 20:27:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5e2b22cc-7faa-2987-a30a-ce32f10099b6@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-5-songmuchun@bytedance.com> <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
+In-Reply-To: <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 11 Mar 2021 12:26:32 +0800
+Message-ID: <CAMZfGtVjLOF27VMVJ5fF8CDJRpZ0t7fWpmMHB9D-ipMK6b=POg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 10, 2021 at 11:19 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 08-03-21 18:28:02, Muchun Song wrote:
+> [...]
+> > -static void update_and_free_page(struct hstate *h, struct page *page)
+> > +static int update_and_free_page(struct hstate *h, struct page *page)
+> > +     __releases(&hugetlb_lock) __acquires(&hugetlb_lock)
+> >  {
+> >       int i;
+> >       struct page *subpage = page;
+> > +     int nid = page_to_nid(page);
+> >
+> >       if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
+> > -             return;
+> > +             return 0;
+> >
+> >       h->nr_huge_pages--;
+> > -     h->nr_huge_pages_node[page_to_nid(page)]--;
+> > +     h->nr_huge_pages_node[nid]--;
+> > +     VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
+> > +     VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
+>
+> > +     set_page_refcounted(page);
+> > +     set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
+> > +
+> > +     /*
+> > +      * If the vmemmap pages associated with the HugeTLB page can be
+> > +      * optimized or the page is gigantic, we might block in
+> > +      * alloc_huge_page_vmemmap() or free_gigantic_page(). In both
+> > +      * cases, drop the hugetlb_lock.
+> > +      */
+> > +     if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
+> > +             spin_unlock(&hugetlb_lock);
+> > +
+> > +     if (alloc_huge_page_vmemmap(h, page)) {
+> > +             spin_lock(&hugetlb_lock);
+> > +             INIT_LIST_HEAD(&page->lru);
+> > +             set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
+> > +             h->nr_huge_pages++;
+> > +             h->nr_huge_pages_node[nid]++;
+> > +
+> > +             /*
+> > +              * If we cannot allocate vmemmap pages, just refuse to free the
+> > +              * page and put the page back on the hugetlb free list and treat
+> > +              * as a surplus page.
+> > +              */
+> > +             h->surplus_huge_pages++;
+> > +             h->surplus_huge_pages_node[nid]++;
+> > +
+> > +             /*
+> > +              * The refcount can possibly be increased by memory-failure or
+> > +              * soft_offline handlers.
+>
+> This comment could be more helpful. I believe you want to say this
+>                 /*
+>                  * HWpoisoning code can increment the reference
+>                  * count here. If there is a race then bail out
+>                  * the holder of the additional reference count will
+>                  * free up the page with put_page.
+
+Right. I will reuse this. Thanks.
+
+> > +              */
+> > +             if (likely(put_page_testzero(page))) {
+> > +                     arch_clear_hugepage_flags(page);
+> > +                     enqueue_huge_page(h, page);
+> > +             }
+> > +
+> > +             return -ENOMEM;
+> > +     }
+> > +
+> >       for (i = 0; i < pages_per_huge_page(h);
+> >            i++, subpage = mem_map_next(subpage, page, i)) {
+> >               subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
+> [...]
+> > @@ -1447,7 +1486,7 @@ void free_huge_page(struct page *page)
+> >       /*
+> >        * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
+> >        */
+> > -     if (!in_task()) {
+> > +     if (in_atomic()) {
+>
+> As I've said elsewhere in_atomic doesn't work for CONFIG_PREEMPT_COUNT=n.
+> We need this change for other reasons and so it would be better to pull
+> it out into a separate patch which also makes HUGETLB depend on
+> PREEMPT_COUNT.
+>
+> [...]
+> > @@ -1771,8 +1813,12 @@ int dissolve_free_huge_page(struct page *page)
+> >               h->free_huge_pages--;
+> >               h->free_huge_pages_node[nid]--;
+> >               h->max_huge_pages--;
+> > -             update_and_free_page(h, head);
+> > -             rc = 0;
+> > +             rc = update_and_free_page(h, head);
+> > +             if (rc) {
+> > +                     h->surplus_huge_pages--;
+> > +                     h->surplus_huge_pages_node[nid]--;
+> > +                     h->max_huge_pages++;
+>
+> This is quite ugly and confusing. update_and_free_page is careful to do
+> the proper counters accounting and now you just override it partially.
+> Why cannot we rely on update_and_free_page do the right thing?
+
+Dissolving path is special here. Since update_and_free_page failed,
+the number of surplus pages was incremented.  Surplus pages are
+the number of pages greater than max_huge_pages.  Since we are
+incrementing max_huge_pages, we should decrement (undo) the
+addition to surplus_huge_pages and surplus_huge_pages_node[nid].
 
 
-On 3/11/2021 11:25 AM, Jason Wang wrote:
 >
-> On 2021/3/10 5:00 下午, Zhu Lingshan wrote:
->> IFCVF driver probes multiple types of devices now,
->> to distinguish the original device driven by IFCVF
->> from others, it is renamed as "N3000".
->>
->> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->> ---
->>   drivers/vdpa/ifcvf/ifcvf_base.h | 8 ++++----
->>   drivers/vdpa/ifcvf/ifcvf_main.c | 8 ++++----
->>   2 files changed, 8 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
->> b/drivers/vdpa/ifcvf/ifcvf_base.h
->> index 75d9a8052039..794d1505d857 100644
->> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
->> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
->> @@ -18,10 +18,10 @@
->>   #include <uapi/linux/virtio_config.h>
->>   #include <uapi/linux/virtio_pci.h>
->>   -#define IFCVF_VENDOR_ID        0x1AF4
->> -#define IFCVF_DEVICE_ID        0x1041
->> -#define IFCVF_SUBSYS_VENDOR_ID    0x8086
->> -#define IFCVF_SUBSYS_DEVICE_ID    0x001A
->> +#define N3000_VENDOR_ID        0x1AF4
->> +#define N3000_DEVICE_ID        0x1041
->> +#define N3000_SUBSYS_VENDOR_ID    0x8086
->> +#define N3000_SUBSYS_DEVICE_ID    0x001A
->>     #define C5000X_PL_VENDOR_ID        0x1AF4
->>   #define C5000X_PL_DEVICE_ID        0x1000
->> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->> b/drivers/vdpa/ifcvf/ifcvf_main.c
->> index 26a2dab7ca66..fd5befc5cbcc 100644
->> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->> @@ -480,10 +480,10 @@ static void ifcvf_remove(struct pci_dev *pdev)
->>   }
->>     static struct pci_device_id ifcvf_pci_ids[] = {
->> -    { PCI_DEVICE_SUB(IFCVF_VENDOR_ID,
->> -        IFCVF_DEVICE_ID,
->> -        IFCVF_SUBSYS_VENDOR_ID,
->> -        IFCVF_SUBSYS_DEVICE_ID) },
->> +    { PCI_DEVICE_SUB(N3000_VENDOR_ID,
->> +             N3000_DEVICE_ID,
->
->
-> I am not sure the plan for Intel but I wonder if we can simply use 
-> PCI_ANY_ID for device id here. Otherewise you need to maintain a very 
-> long list of ids here.
->
-> Thanks
-Hi Jason,
-
-Thanks! but maybe if we present a very simple and clear list like what 
-e1000 does can help the users understand what we support easily.
-
-Thanks!
->
->
->> + N3000_SUBSYS_VENDOR_ID,
->> +             N3000_SUBSYS_DEVICE_ID) },
->>       { PCI_DEVICE_SUB(C5000X_PL_VENDOR_ID,
->>                C5000X_PL_DEVICE_ID,
->>                C5000X_PL_SUBSYS_VENDOR_ID,
->
-
+> --
+> Michal Hocko
+> SUSE Labs
