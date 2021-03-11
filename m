@@ -2,105 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8B7338162
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70805338167
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhCKXYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:24:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhCKXX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:23:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0942F64F70;
-        Thu, 11 Mar 2021 23:23:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615505039;
-        bh=sg173eixY03gYcCrohhV7a+jDtOKCKdMN7GdLo07jf8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D7Yeqhq2ivqWboeyZ2ZHogw+F4RHh5LdarqESebWWq44RTSg7jcNSd8fffIFAZ43/
-         nc9aYjuyseujZvjoBlREdFl/svhhk6P2IxEEs24+fz4N5OKzLQB1BsRPEHEe3X5ucW
-         8CsGsLpyDLf2/frToHAzCd8/SjXEDepJ04EHX5VuTmnPj9d+/0oI9Cr3VcRCSygivB
-         urW2Dbllt+zNQ/0jMBygBWnWR50fTecxzX/1j3bS5JBMN15LVYkPMPhwT1wpJyWMk9
-         YN0b2CZ3/vgcOTwlqajYmBWlHrCgaxaM8MdrR415X8+0dDgDwON7PHDm0vPTMihHyF
-         rOLKELvCkaMDg==
-Date:   Fri, 12 Mar 2021 00:23:57 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 07/10] rcu: Prevent dyntick-idle until
- ksoftirqd has been spawned
-Message-ID: <20210311232357.GA29548@lothringen>
-References: <20210303235958.GA22373@paulmck-ThinkPad-P72>
- <20210304000019.22459-7-paulmck@kernel.org>
+        id S231264AbhCKXZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:25:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhCKXYe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 18:24:34 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A3FC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:24:34 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id j22so2690505otp.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:24:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KOImosFVDKe6eni3/E1z+f4eza54wkEaxNnDYMA1BkY=;
+        b=U6fz3qasj6Npqu11+ansN2N4q6/htLsUcNuxeHHOE0kW/Zk3uPhCn5BA72b6J5VKeq
+         VYxIVlEg7dzdnwx6U1XOOdyc0VwwPgepTvZ+1O/2nA4a5n7gJi+L7z7biZoaEyU1tbm4
+         t7GR7uUH/Z3LSUsxHM6NgEUrcFzkEFojrzYEY01arZgk0FJF6BjIoxcnDgaF8wBGd6o+
+         xo2Fb3QTBVNPMn7TxAPdBUbiQj5fVNFs+ALqx36KWRHIrrFpf5j9JuG0+tBBEvkZ9AVd
+         Tk3GCqUfnlM3CXuleRehOFPqK7bH3H2IU4bFWwF9axl4scW8JFQTNscdTmEchz4yKuUL
+         MfHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KOImosFVDKe6eni3/E1z+f4eza54wkEaxNnDYMA1BkY=;
+        b=nCxo7gYqoST30k1PzjKSMsaIvbfbq1OeArEWE2QWyb1DOUoF+KCQyTQ2wVs7UrZGWf
+         JZN/lv02BmbceGaYWuVPl+pALdLl8jP4CqHnsR/yn/OJ1yQhSW02NRz8OH1zYAHZltvF
+         VBI2U4RJT5/PUrLLHis6WXjzSY2N2ivbHKS5mgPu8ee3GKrF4nv1Tk3UeMmm2JIBr3NG
+         +jlfD6FrzQLrv7GlYXvvoKWxDmFO89bcvvpJyXY7Q/2NLjBL1jmnZd0J9/eyxpTsBaFo
+         X5e+vpnTHtZEvGUjkEvM2JJfUz+8uoSY3xa5e3I61YLVIOvFbPmkquIV7J3AlUrsr1Bz
+         xY2A==
+X-Gm-Message-State: AOAM533xnsWNrb6nnAguYDWaI4SpJqq0zb73d0mTvbQnfKUEe8MRkDRg
+        /vB76T7zne6zwTFVC04UZKA6zw==
+X-Google-Smtp-Source: ABdhPJxDU5xLYUJyWILcQngDIdjMhNw8UY1bDIjZNGQckzP86zmEJoPMITj8dp1yZLMsB+rXvhTYoQ==
+X-Received: by 2002:a9d:7103:: with SMTP id n3mr1034451otj.223.1615505074094;
+        Thu, 11 Mar 2021 15:24:34 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w23sm841497oow.25.2021.03.11.15.24.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 15:24:33 -0800 (PST)
+Date:   Thu, 11 Mar 2021 17:24:31 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH] arm64: dts: sc7280: Add qspi, qupv3_0 and qupv3_1 nodes
+Message-ID: <YEqmr1eUJoKp3ufO@builder.lan>
+References: <20210311033957.8978-1-rojay@codeaurora.org>
+ <CAD=FV=VuGPvUY8edN+PEuZS_pO+=3WHeJ-4J5tHDAPRnXJs0QA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210304000019.22459-7-paulmck@kernel.org>
+In-Reply-To: <CAD=FV=VuGPvUY8edN+PEuZS_pO+=3WHeJ-4J5tHDAPRnXJs0QA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 04:00:16PM -0800, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> After interrupts have enabled at boot but before some random point
-> in early_initcall() processing, softirq processing is unreliable.
-> If softirq sees a need to push softirq-handler invocation to ksoftirqd
-> during this time, then those handlers can be delayed until the ksoftirqd
-> kthreads have been spawned, which happens at some random point in the
-> early_initcall() processing.  In many cases, this delay is just fine.
-> However, if the boot sequence blocks waiting for a wakeup from a softirq
-> handler, this delay will result in a silent-hang deadlock.
-> 
-> This commit therefore prevents these hangs by ensuring that the tick
-> stays active until after the ksoftirqd kthreads have been spawned.
-> This change causes the tick to eventually drain the backlog of delayed
-> softirq handlers, breaking this deadlock.
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  kernel/rcu/tree_plugin.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 2d60377..36212de 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1255,6 +1255,11 @@ static void rcu_prepare_kthreads(int cpu)
->   */
->  int rcu_needs_cpu(u64 basemono, u64 *nextevt)
->  {
-> +	/* Through early_initcall(), need tick for softirq handlers. */
-> +	if (!IS_ENABLED(CONFIG_HZ_PERIODIC) && !this_cpu_ksoftirqd()) {
-> +		*nextevt = 1;
-> +		return 1;
-> +	}
->  	*nextevt = KTIME_MAX;
->  	return !rcu_segcblist_empty(&this_cpu_ptr(&rcu_data)->cblist) &&
->  	       !rcu_segcblist_is_offloaded(&this_cpu_ptr(&rcu_data)->cblist);
-> @@ -1350,6 +1355,12 @@ int rcu_needs_cpu(u64 basemono, u64 *nextevt)
->  
->  	lockdep_assert_irqs_disabled();
->  
-> +	/* Through early_initcall(), need tick for softirq handlers. */
-> +	if (!IS_ENABLED(CONFIG_HZ_PERIODIC) && !this_cpu_ksoftirqd()) {
-> +		*nextevt = 1;
-> +		return 1;
-> +	}
-> +
->  	/* If no non-offloaded callbacks, RCU doesn't need the CPU. */
->  	if (rcu_segcblist_empty(&rdp->cblist) ||
->  	    rcu_segcblist_is_offloaded(&this_cpu_ptr(&rcu_data)->cblist)) {
+On Thu 11 Mar 15:54 CST 2021, Doug Anderson wrote:
 
+> Hi,
+> 
+> On Wed, Mar 10, 2021 at 7:41 PM Roja Rani Yarubandi
+> <rojay@codeaurora.org> wrote:
+> >
+> > +&qspi_cs0 {
+> > +       pinconf {
+> > +               pins = "gpio15";
+> > +               bias-disable;
+> > +       };
+> 
+> The "pinconf" / "pinmux" subnode shouldn't be used for new SoCs. See:
+> 
+> http://lore.kernel.org/r/CAD=FV=UY_AFRrAY0tef5jP698LEng6oN652LcX3B4nG=aWh0gA@mail.gmail.com
+> 
+> ...same feedback for this whole patch.
+> 
+> > +                       qup_spi0_default: qup-spi0-default {
+> > +                               pinmux {
+> > +                                       pins = "gpio0", "gpio1",
+> > +                                              "gpio2", "gpio3";
+> > +                                       function = "qup00";
+> > +                               };
+> > +                       };
+> 
+> Please split these SPI nodes as per the thread above, like:
+> 
+> tlmm: pinctrl@... {
+>   qup_spi0_data_clk: qup-spi0-data-clk {
+>     pins = "gpio0", "gpio1", "gpio2";
+>     function = "qup0";
+>   };
+> 
+>   qup_spi0_cs: qup-spi0-cs {
+>     pins = "gpio3";
+>     function = "qup0";
+>   };
+> 
+>   qup_spi0_cs_gpio: qup-spi0-cs-gpio {
+>     pins = "gpio3";
+>     function = "gpio";
+>   };
+> };
+> 
+> 
+> > +                       qup_uart0_default: qup-uart0-default {
+> > +                               pinmux {
+> > +                                       pins = "gpio0", "gpio1",
+> > +                                              "gpio2", "gpio3";
+> > +                                       function = "qup00";
+> > +                               };
+> > +                       };
+> 
+> I suspect things would actually be cleaner if we broke the uart lines
+> up since the boards tend to have to adjust pulls differently for each
+> line. With the new "no pinconf / pinmux" world it's pretty clean. It's
+> obviously up to Bjorn, but if it were me I'd request this in the SoC
+> file:
+> 
 
-I suspect rcutiny should be concerned as well?
+I'd like that.
 
-In fact this patch doesn't look necessary because can_stop_idle_tick() refuse
-to stop the tick when softirqs are pending.
-
-Thanks.
+> qup_uart0_cts: qup-uart0-cts {
+>   pins = "...";
+>   function = "qup00";
+> };
+> 
+> qup_uart0_rts: qup-uart0-rts {
+>   pins = "...";
+>   function = "qup00";
+> };
+> 
+> qup_uart0_rx: qup-uart0-rx {
+>   pins = "...";
+>   function = "qup00";
+> };
+> 
+> qup_uart0_tx: qup-uart0-tx {
+>   pins = "...";
+>   function = "qup00";
+> };
+> 
+> ...and now when the board file wants to adjust the pulls they can just
+> reference each one:
+> 
+> /*
+>  * Comments about why the UART0 pulls make sense.
+>  * Blah blah blah.
+>  */
+> 
+> &qup_uart0_cts {
+>   bias-pull-down;
+> };
+> 
+> &qup_uart0_rts {
+>   drive-strength = <2>;
+>   bias-disable;
+> };
+> 
+> &qup_uart0_rx {
+>   bias-pull-up;
+> };
+> 
+> &qup_uart0_tx {
+>   drive-strength = <2>;
+>   bias-disable;
+> };
+> 
+> 
+> > +               qspi: spi@88dc000 {
+> 
+> I believe the qspi node is sorted incorrectly. When I apply this to
+> the top of the Qualcomm tree it shows up after the "apps_smmu:
+> iommu@15000000" node. However:
+> 
+> 0x088dc000 < 0x15000000
+> 
+> ...which means it should be _before_.
+> 
+> -Doug
