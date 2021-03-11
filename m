@@ -2,301 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CA0337B0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B09337B14
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbhCKRip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:38:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhCKRiX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:38:23 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9C7C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:38:22 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so9430825pjc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:38:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZyO2J6W4yzOswPxtbRFYy2YD4AnMc1XnpR1PaDWSVoc=;
-        b=FUr+2SPbP5A2lq2k9KMreqBCmNH1o8sLQqYoxPbF9TEjaLeEtwG3keJx4dJe0F4NrO
-         H0Bkl4M+4dH2ZI6JsQoo1vcSrJYQh516c72QHjIud4bvedTyjLAc8pIKf8tjXu7YM/Dt
-         E9gPwEJDfFXfhuU5lkKhzITYlE0QrPWQ17XCwt4jpfF/1x/cYjkaXY1oWlLxgiCleE3q
-         fqopIjvyW8uZdUO9yxlPeGwWSOXEcJkNibY855xSieNAJRo3QG6YMeVc4EbBXNNrLor7
-         /5Rl4vS1ROoycsfNK771xaL3Fx1f10zewx1TouIF/TNTQorOhUxv0njBRQsVWQBftAeP
-         d5WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZyO2J6W4yzOswPxtbRFYy2YD4AnMc1XnpR1PaDWSVoc=;
-        b=mJONclYHN/wukyuAVfmEGScRnDfn7egwSyPq4kEvfGVQK9wRg0FMm7KWM93hjKwyC/
-         +jw0XipaFZL7kzXYd9LAejKcCm0X/Cc7TtTfuYmNqQBABYHUM0ZZXvEl8CEtzFqL7NQS
-         yZ2c2pv5qpvWqbRo2DgYT+t72dw9T/H35Bxx73bAuIHPpYCsnznWV59B16dz7Q4SIMmw
-         fVverypKyP43Q7IT+GPzPET8WfuWFaWM1K0JlFSk9gYJKatVmj8vkxieGYWROhHjq87W
-         dkdWqAtt1LmbnP5n1ayQvWEOYHqAjcygs+gtWIxk6HVs2YM1WwiSzvdhdKhG6Nao1B44
-         aWDQ==
-X-Gm-Message-State: AOAM533xsCWaQuCx2RYM02rrBiUXluy7D22xqPbr4JBlhvvp92AP+FaD
-        dmJxFR7desXL9V7MJ9n29r26TzBvtpwnSg==
-X-Google-Smtp-Source: ABdhPJxwgv322z4GtiGEYMD9Ebnf6NDqF7umKc6h1guwT6ka8rA03h7ugFkRLhQXYv2tzwYU1PGWjw==
-X-Received: by 2002:a17:90a:d184:: with SMTP id fu4mr7673300pjb.236.1615484301895;
-        Thu, 11 Mar 2021 09:38:21 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id mz11sm2901827pjb.6.2021.03.11.09.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 09:38:21 -0800 (PST)
-Date:   Thu, 11 Mar 2021 10:38:18 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul@crapouillou.net" <paul@crapouillou.net>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "patrice.chotard@st.com" <patrice.chotard@st.com>
-Subject: Re: [PATCH V13 00/10] remoteproc: imx_rproc: support iMX8MQ/M
-Message-ID: <20210311173818.GB1113417@xps15>
-References: <1615029865-23312-1-git-send-email-peng.fan@oss.nxp.com>
- <20210308160815.GB3977653@xps15>
- <DB6PR0402MB276009028DF766731BB2C06888909@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+        id S229734AbhCKRjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:39:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229884AbhCKRjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:39:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DF1264F35;
+        Thu, 11 Mar 2021 17:39:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615484340;
+        bh=671o4q4CvWKMjD7Jb6jmbRb9iezM2tIZXeqzqG+mTMY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qdQLV9pZ7lxmWb8gppcFff8XQZL/ZOHBpYLidOQ9BDcMwAwDrEembP3jdhJ4sb7cO
+         n5F0h3tIXdrUt20RvVKJJ4CSTVWZzf9MS6YzQ2/PqpnW7wdJrL48dIbukxvdE0vhhB
+         Gbwd8q+vGKW3NqmZUaxxPz+KjQ1V25zznGwAEteY=
+Date:   Thu, 11 Mar 2021 18:38:58 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 5.11 00/36] 5.11.6-rc1 review
+Message-ID: <YEpVspB8XPGPScME@kroah.com>
+References: <20210310132320.510840709@linuxfoundation.org>
+ <CA+G9fYt=K-uVJPBvwZUtTUQVe=ZsQLzsFd1QD6SvY6GwV770Hg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB276009028DF766731BB2C06888909@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYt=K-uVJPBvwZUtTUQVe=ZsQLzsFd1QD6SvY6GwV770Hg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 01:26:25AM +0000, Peng Fan (OSS) wrote:
-> Mathieu,
+On Thu, Mar 11, 2021 at 08:51:27AM +0530, Naresh Kamboju wrote:
+> On Wed, 10 Mar 2021 at 18:54, <gregkh@linuxfoundation.org> wrote:
+> >
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >
+> > This is the start of the stable review cycle for the 5.11.6 release.
+> > There are 36 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.6-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> > Subject: Re: [PATCH V13 00/10] remoteproc: imx_rproc: support iMX8MQ/M
-> > 
-> > On Sat, Mar 06, 2021 at 07:24:15PM +0800, peng.fan@oss.nxp.com wrote:
-> > > From: Peng Fan <peng.fan@nxp.com>
-> > >
-> > > V13:
-> > >  Add R-b tag from Rob for patch 1.
-> > >  Drop the reserved memory node from patch 2 per Rob's comment.
-> > >  Mathieu, Bjorn
-> > >   Only patch 2 not have R-b/A-b tag, but since Rob's only has a minor
-> > comment, and
-> > >   addressed in this version, is it ok for you take into remoteproc next
-> > branch?
-> > >   Thanks.
-> > 
-> > As much as I want to, there is no way to move forward without an
-> > acknowledgement from Rob.
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 > 
-> Rob has gave his R-b tag for patch 2/13, please help pick up this patchset.
-> I really wanna this feature in which has been for a long time. Then
-> I will move on to add new stuff.
->
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-This set looks good to me - Bjorn will likely pick it up shortly.
- 
-> Thanks,
-> Peng.
-> 
-> 
-> > 
-> > >
-> > > V12:
-> > >  Add maxItems to avoid dt_bindings_check fail  Rebased on top of
-> > > linux-next
-> > >
-> > > V11:
-> > >  Per Rob's comments, fix memory-region in patch 1/10  Rebased on top
-> > > of Linux-next
-> > >
-> > > V10:
-> > >  Per Rob's comments, fix patch 1/10
-> > >
-> > > V9:
-> > >  Per Mathieu's comments,
-> > >    update the tile of yaml in patch 2/10
-> > >    update the Kconfig and MODULE_DESCRIPTION, I merge this change in
-> > patch 8/10,
-> > >    since this is a minor change, I still keep Mathieu's R-b tag. If any
-> > objection, I could remove.
-> > >    Add R-b tag in Patch 10/10
-> > >
-> > >  Rob, please help review patch 1/10 and 2/10
-> > >
-> > > V8:
-> > >  Address sparse warning in patch 4/10 reported by kernel test robot
-> > >
-> > > V7:
-> > >  Add R-b tag from Mathieu
-> > >  vdevbuffer->vdev0buffer in patch 1/10, 7/10  correct err msg and
-> > > shutdown seq per Mathieu's comments in patch 10/10  Hope this version
-> > > is ok to be merged.
-> > >
-> > > V6:
-> > >  Add R-b tag from Mathieu
-> > >  Convert imx-rproc.txt to yaml and add dt-bindings support for
-> > > i.MX8MQ/M, patch 1/10 2/10  No other changes.
-> > >
-> > > V5:
-> > >  Apply on Linux next
-> > >  Add V5 subject prefix
-> > >  Add R-b tag from Bjorn for 1/8, 2/8, 3/8
-> > >
-> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatc
-> > >
-> > hwork.kernel.org%2Fproject%2Flinux-remoteproc%2Fcover%2F20201229033
-> > 019
-> > > .25899-1-peng.fan%40nxp.com%2F&amp;data=04%7C01%7Cpeng.fan%40n
-> > xp.com%7
-> > >
-> > C18c2709725e14cbab54408d8e24c6492%7C686ea1d3bc2b4c6fa92cd99c5c3
-> > 01635%7
-> > >
-> > C0%7C0%7C637508165016988280%7CUnknown%7CTWFpbGZsb3d8eyJWIjoi
-> > MC4wLjAwMD
-> > >
-> > AiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata
-> > =bwlT
-> > > uTk6iRuZke6SMhuyB2gxniStfxnX%2BKlVgm7MZuk%3D&amp;reserved=0
-> > >
-> > > V4:
-> > >  According to Bjorn's comments, add is_iomem for da to va usage  1/8,
-> > > 2/8 is new patch  3/8, follow Bjorn's comments to correct/update the
-> > > err msg.
-> > >  6/8, new patch
-> > >  8/8, use dev_err_probe to simplify code, use queue_work instead
-> > > schedule_delayed_work
-> > >
-> > > V3:
-> > >  Since I was quite busy in the past days, V3 is late  Rebased on
-> > > Linux-next  Add R-b tags
-> > >  1/7: Add R-b tag of Mathieu, add comments
-> > >  4/7: Typo fix
-> > >  5/7: Add R-b tag of Mathieu, drop index Per Mathieu's comments
-> > >  6/7: Add R-b tag of Mathieu
-> > >  7/7: Add comment for vqid << 16, drop unneeded timeout settings of
-> > mailbox
-> > >       Use queue_work instead of schedule_delayed_work
-> > >       free mbox channels when remove
-> > >
-> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml
-> > > .org%2Flkml%2F2020%2F12%2F4%2F82&amp;data=04%7C01%7Cpeng.fan
-> > %40nxp.com
-> > > %7C18c2709725e14cbab54408d8e24c6492%7C686ea1d3bc2b4c6fa92cd9
-> > 9c5c301635
-> > > %7C0%7C0%7C637508165016988280%7CUnknown%7CTWFpbGZsb3d8eyJ
-> > WIjoiMC4wLjAw
-> > >
-> > MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sd
-> > ata=xQ
-> > >
-> > ReFFdUT2ZLhWyT2Vt2v0frG0xKq2psP1ExnLx%2BLXw%3D&amp;reserved=0
-> > >
-> > > V2:
-> > >  Rebased on linux-next
-> > >  Dropped early boot feature to make patchset simple.
-> > >  Drop rsc-da
-> > >
-> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatc
-> > >
-> > hwork.kernel.org%2Fproject%2Flinux-remoteproc%2Fcover%2F20200927064
-> > 131
-> > > .24101-1-peng.fan%40nxp.com%2F&amp;data=04%7C01%7Cpeng.fan%40n
-> > xp.com%7
-> > >
-> > C18c2709725e14cbab54408d8e24c6492%7C686ea1d3bc2b4c6fa92cd99c5c3
-> > 01635%7
-> > >
-> > C0%7C0%7C637508165016988280%7CUnknown%7CTWFpbGZsb3d8eyJWIjoi
-> > MC4wLjAwMD
-> > >
-> > AiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata
-> > =BWGP
-> > >
-> > gbVtOjOa%2BriGryGp9sh2CSY%2BhMESdGD%2F7LvPJ6w%3D&amp;reserved
-> > =0
-> > >
-> > > V1:
-> > >
-> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatc
-> > >
-> > hwork.kernel.org%2Fcover%2F11682461%2F&amp;data=04%7C01%7Cpeng.f
-> > an%40n
-> > >
-> > xp.com%7C18c2709725e14cbab54408d8e24c6492%7C686ea1d3bc2b4c6fa9
-> > 2cd99c5c
-> > >
-> > 301635%7C0%7C0%7C637508165016988280%7CUnknown%7CTWFpbGZsb3
-> > d8eyJWIjoiMC
-> > >
-> > 4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&
-> > amp;sd
-> > >
-> > ata=XkGYIxBgrHLwV7R3bro87N6fL7777Wa5rOAZdVjCoZs%3D&amp;reserved
-> > =0
-> > >
-> > > This patchset is to support i.MX8MQ/M coproc.
-> > > The early boot feature was dropped to make the patchset small in V2.
-> > >
-> > > Since i.MX specific TCM memory requirement, add elf platform hook.
-> > > Several patches have got reviewed by Oleksij and Mathieu in v1.
-> > >
-> > >
-> > > Peng Fan (10):
-> > >   dt-bindings: remoteproc: convert imx rproc bindings to json-schema
-> > >   dt-bindings: remoteproc: imx_rproc: add i.MX8MQ/M support
-> > >   remoteproc: introduce is_iomem to rproc_mem_entry
-> > >   remoteproc: add is_iomem to da_to_va
-> > >   remoteproc: imx_rproc: correct err message
-> > >   remoteproc: imx_rproc: use devm_ioremap
-> > >   remoteproc: imx_rproc: add i.MX specific parse fw hook
-> > >   remoteproc: imx_rproc: support i.MX8MQ/M
-> > >   remoteproc: imx_rproc: ignore mapping vdev regions
-> > >   remoteproc: imx_proc: enable virtio/mailbox
-> > >
-> > >  .../bindings/remoteproc/fsl,imx-rproc.yaml    |  90 ++++++
-> > >  .../bindings/remoteproc/imx-rproc.txt         |  33 ---
-> > >  drivers/remoteproc/Kconfig                    |   6 +-
-> > >  drivers/remoteproc/imx_rproc.c                | 262
-> > +++++++++++++++++-
-> > >  drivers/remoteproc/ingenic_rproc.c            |   2 +-
-> > >  drivers/remoteproc/keystone_remoteproc.c      |   2 +-
-> > >  drivers/remoteproc/mtk_scp.c                  |   6 +-
-> > >  drivers/remoteproc/omap_remoteproc.c          |   2 +-
-> > >  drivers/remoteproc/pru_rproc.c                |   2 +-
-> > >  drivers/remoteproc/qcom_q6v5_adsp.c           |   2 +-
-> > >  drivers/remoteproc/qcom_q6v5_pas.c            |   2 +-
-> > >  drivers/remoteproc/qcom_q6v5_wcss.c           |   2 +-
-> > >  drivers/remoteproc/qcom_wcnss.c               |   2 +-
-> > >  drivers/remoteproc/remoteproc_core.c          |   7 +-
-> > >  drivers/remoteproc/remoteproc_coredump.c      |   8 +-
-> > >  drivers/remoteproc/remoteproc_debugfs.c       |   2 +-
-> > >  drivers/remoteproc/remoteproc_elf_loader.c    |  21 +-
-> > >  drivers/remoteproc/remoteproc_internal.h      |   2 +-
-> > >  drivers/remoteproc/st_slim_rproc.c            |   2 +-
-> > >  drivers/remoteproc/ti_k3_dsp_remoteproc.c     |   2 +-
-> > >  drivers/remoteproc/ti_k3_r5_remoteproc.c      |   2 +-
-> > >  drivers/remoteproc/wkup_m3_rproc.c            |   2 +-
-> > >  include/linux/remoteproc.h                    |   4 +-
-> > >  23 files changed, 393 insertions(+), 72 deletions(-)  create mode
-> > > 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> > >  delete mode 100644
-> > > Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-> > >
-> > > --
-> > > 2.30.0
-> > >
+Thanks for testing them all and letting me know.
+
+greg k-h
