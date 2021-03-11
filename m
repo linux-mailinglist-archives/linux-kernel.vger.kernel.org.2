@@ -2,44 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E58336AE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 04:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E23336ADA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 04:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhCKDoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 22:44:44 -0500
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:50434 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbhCKDoj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 22:44:39 -0500
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKCDA-004mXI-8w; Thu, 11 Mar 2021 03:42:08 +0000
-Date:   Thu, 11 Mar 2021 03:42:08 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org, chao@kernel.org,
-        Daiyue Zhang <zhangdaiyue1@huawei.com>,
-        Yi Chen <chenyi77@huawei.com>, Ge Qiu <qiuge@huawei.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] configfs: Fix use-after-free issue in
- __configfs_open_file
-Message-ID: <YEmRkGNR+aV75XRz@zeniv-ca.linux.org.uk>
-References: <20210301061053.105377-1-yuchao0@huawei.com>
- <040d3680-0e12-7957-da05-39017d33edb4@huawei.com>
- <c9aa911a-aebc-37b8-67b3-b7670424226b@huawei.com>
+        id S230512AbhCKDnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 22:43:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229739AbhCKDmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 22:42:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BB3864E77;
+        Thu, 11 Mar 2021 03:42:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615434157;
+        bh=k8OzmRwgOFwV8GHVfIcQNSa+kPtmotoHlN41AgoZI10=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K4jGvwDhYpwbncoCFrUFbOof5b/5f5pH710z+H5rUxW9z71Y3X6QgbGBucw86Ao/V
+         Jr5iOrRO3YJs8f3XrM2677ZQqu4AsKhhENWWmTUi1wm/iUepY1EPZg2mpZcOyV8mQi
+         vUot//wgLdsm1V9RAMA6DIzlC+1xS+ST3xiobNwo2ah+/UDtqC83NdhdICi0RAD4PQ
+         sUrUxEYCAJ3I+nTbQ2ayUjqafyNwlVleeLQNAdQu6YITCDfyiSFHNFqAELYqlKKoSD
+         bs2PPtBMily/Y9UO1qJgWioS84m8ogf2oQmMrAoWO7qksKYB2ykyfxjX1TTMYDWZJI
+         Fp6qWKVXZ3xGQ==
+Date:   Thu, 11 Mar 2021 05:42:13 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jia Zhang <zhang.jia@linux.alibaba.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
+ SGX_INVALID_SIGNATURE
+Message-ID: <YEmRlQ8vL2inziEK@kernel.org>
+References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
+ <YDy51R2Wva7s+k/x@kernel.org>
+ <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
+ <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
+ <YD5B7P++T6jLoWBR@kernel.org>
+ <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
+ <YEk8f/29icpsUhas@kernel.org>
+ <20ef1254-007d-04ce-8df5-5122ffd4d8d3@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c9aa911a-aebc-37b8-67b3-b7670424226b@huawei.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20ef1254-007d-04ce-8df5-5122ffd4d8d3@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:16:20AM +0800, Chao Yu wrote:
-> Hi Joel, Christoph, Al
+On Thu, Mar 11, 2021 at 10:47:50AM +0800, Jia Zhang wrote:
 > 
-> Does any one have time to review this patch, ten days past...
+> 
+> On 2021/3/11 上午5:39, Jarkko Sakkinen wrote:
+> > On Wed, Mar 10, 2021 at 08:44:44PM +0800, Jia Zhang wrote:
+> >>
+> >>
+> >> On 2021/3/2 下午9:47, Jarkko Sakkinen wrote:
+> >>> On Mon, Mar 01, 2021 at 09:54:37PM -0800, Andy Lutomirski wrote:
+> >>>> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
+> >>>> <tianjia.zhang@linux.alibaba.com> wrote:
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>>> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
+> >>>>>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
+> >>>>>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
+> >>>>>>
+> >>>>>> What does determine this?
+> >>>>>>
+> >>>>>>> In this case, the valid portion of q2 is reordered reversely for
+> >>>>>>> little endian order, and the remaining portion is filled with zero.
+> >>>>>>
+> >>>>>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
+> >>>>>>
+> >>>>>> I'm lacking these details:
+> >>>>>>
+> >>>>>> 1. Why the length of Q2 can vary?
+> >>>>>> 2. Why reversing the bytes is the correct measure to counter-measure
+> >>>>>>     this variation?
+> >>>>>>
+> >>>>>> /Jarkko
+> >>>>>>
+> >>>>>
+> >>>>> When use openssl to generate a key instead of using the built-in
+> >>>>> sign_key.pem, there is a probability that will encounter this problem.
+> >>>>>
+> >>>>> Here is a problematic key I encountered. The calculated q1 and q2 of
+> >>>>> this key are both 383 bytes, If the length is not processed, the
+> >>>>> hardware signature will fail.
+> >>>>
+> >>>> Presumably the issue is that some keys have parameters that have
+> >>>> enough leading 0 bits to be effectively shorter.  The openssl API
+> >>>> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
+> >>>> variable-size integers.
+> >>>
+> >>> But the test uses a static key. It used to generate a key on fly but
+> >>
+> >> IMO even though the test code, it comes from the linux kernel, meaning
+> >> that its quality has a certain guarantee and it is a good reference, so
+> >> the test code still needs to ensure its correctness.
+> > 
+> > Hmm... what is working incorrectly then?
+> 
+> In current implementation, it is working well, after all the static key
+> can derive the full 384-byte length of q1 and q2. As mentioned above, if
+> someone refers to the design of signing tool from selftest code, it is
+> quite possible that the actual implementation will use dynamical or
+> external signing key deriving shorter q1 and/or q2 in length.
 
-Acked-by: Al Viro <viro@zeniv.linux.org.uk>
+A self-test needs is not meant to be generic to be directly used in 3rd
+party code. With the current key there is not issue => there is no issue.
+
+> 
+> Going back the technical background, I'm not a crypto expert, so I
+> choose to check the code, doc and make experiment.
+> 
+> Accorindg to intel sdm vol3 37.14:
+> 
+> ```
+> SIGSTRUCT includes four 3072-bit integers (MODULUS, SIGNATURE, Q1, Q2).
+> Each such integer is represented as a byte strings of length 384, with
+> the most significant byte at the position “offset + 383”, and the least
+> significant byte at position “offset”.
+> 
+> ...
+> 
+> The 3072-bit integers Q1 and Q2 are defined by:
+> q1 = floor(Signature^2 / Modulus);
+> q2 = floor((Signature^3 - q1 * Signature * Modulus) / Modulus);
+> ```
+> 
+> and the implementation of singing tool from Intel SGX SDK
+> (https://github.com/intel/linux-sgx/blob/master/sdk/sign_tool/SignTool/sign_tool.cpp#L381
+> ), the most significant byte shuld be at the position “offset +
+> q1/q2_actuall_len”, and the padding portion should be filled with zero,
+> and don't involve the order reverse, but the selftest code always does.
+> This is the root cause of SGX_INVALID_SIGNATURE.
+> 
+> Just simplily enforce size_q1 and size_q2 to SE_KEY_SIZE, and generate
+> randome siging key with `openssl genrsa -3 -out signing_key.pem 3072`,
+> the SGX_INVALID_SIGNATURE error will appear up quickly.
+> 
+> Jia
+> 
+> > 
+> > /Jarkko
+> > 
+> 
+
+/Jarkko
