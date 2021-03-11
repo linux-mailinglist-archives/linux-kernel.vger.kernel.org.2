@@ -2,107 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB50336981
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075CB336982
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbhCKBUL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 20:20:11 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:47457 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229569AbhCKBTo (ORCPT
+        id S229641AbhCKBUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 20:20:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhCKBUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 20:19:44 -0500
-X-AuditID: 0a580155-1f5ff7000005482e-6d-604968aae979
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 4C.75.18478.AA869406; Thu, 11 Mar 2021 08:47:38 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 11 Mar
- 2021 09:19:41 +0800
-Date:   Thu, 11 Mar 2021 09:19:41 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-CC:     "Luck, Tony" <tony.luck@intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        <yangfeng1@kingsoft.com>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, <yaoaili@kingsoft.com>,
-        <sunhao2@kingsoft.com>
-Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
- hwpoison page access.
-Message-ID: <20210311091941.45790fcf@alex-virtual-machine>
-In-Reply-To: <047D5B49-FDBB-494C-81E9-DA811476747D@amacapital.net>
-References: <4fc1b4e8f1fb4c8c81f280db09178797@intel.com>
-        <047D5B49-FDBB-494C-81E9-DA811476747D@amacapital.net>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Wed, 10 Mar 2021 20:20:09 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C136FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:20:08 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id x7so9945122pfi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:20:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0ZkhEPXNpdhd7EV60+uxO7+s4em392s377dpq/Miruo=;
+        b=EBBjJgEO35RWOBXTBuXClQYEGc1+xzuOlvc/7LHXyZG4dDzcfOuaRT7myDPt+gjRfT
+         U3LNnOU7ejYFJXHfrysZ8b0p0SG1KWnwDTJ/lIdAstRg0sRN3KalQI6pcHXILu5rbskc
+         9RoiLLBUQHxjN5hcSpt0TvVmIN91IZYjAxB4tYIpzN+X7qpvXQ5AAOlcSmK5Jcxnkak7
+         Z6ffKi41Ho/GJUKO2u4bxgBoeNLYgZJHISf+JOBy2Q0+ytL7OOUL/bm5ThCTVxsa6QWz
+         LFzGXy1QD36ZUtTL+uAxePmi1n7l1NgFoOVUFxzNUHzhDkGHKimDIgoTBIDJ5D7r4cZw
+         NxZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0ZkhEPXNpdhd7EV60+uxO7+s4em392s377dpq/Miruo=;
+        b=TJzGw4I6nkIYUXSkbR2luknjM72cO917n0cOSVTrOju+71rLgoxSmv83IhVPsUwsZ8
+         IPrcdAt/8EBfThhgbhlyLIXiFG2lWCy2hN15sDJznrK6UWo/VJ1PojL/YpfBq0nkz8RK
+         53Pe133wlRwd5sK/UqCm4M1TvSrOaaFfARbtLseSWyqt6bKs6AiJWTk3HwwvF4wtGsEM
+         P/h7BePipzxB0aTSqYFZ3ZtlbXb8IvWM1llvTLxP2PvO5iUZDtQvEVoLnI3C9sLL3MC4
+         99Lez3x8vyFZSc/r8Fm9xmxGd+EkZwyXHxKv79lmdjRN04OrDKjOZeSpoUs4NnOl3OP+
+         hqmg==
+X-Gm-Message-State: AOAM532kKO8qybdi8RK4qofHQigMC2Y875KcxOQh3zat1nzWTliizpDQ
+        VD/WuIqgf+viUm1QecNGA4pNNQ==
+X-Google-Smtp-Source: ABdhPJy4oEPMcOroAyrlq+q9+5qM78TC1A3maqhY2DW8jxRIhcTfNtx+tLADENdj5/ze8zkDolTo+g==
+X-Received: by 2002:a63:ce18:: with SMTP id y24mr5100261pgf.246.1615425608150;
+        Wed, 10 Mar 2021 17:20:08 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:c4e3:28f1:33df:26ba])
+        by smtp.gmail.com with ESMTPSA id 35sm638412pgr.14.2021.03.10.17.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 17:20:07 -0800 (PST)
+Date:   Wed, 10 Mar 2021 17:20:01 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, David Rientjes <rientjes@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>
+Subject: Re: [PATCH] mm/oom_kill: Ensure MMU notifier range_end() is paired
+ with range_start()
+Message-ID: <YElwQU9mPUNwPg7q@google.com>
+References: <20210310213117.1444147-1-seanjc@google.com>
+ <20210311002807.GQ444867@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsXCFcGooLsqwzPBYMZZIYvPG/6xWbzY0M5o
-        MW2juMXm7x1sFpd3zWGzuLfmP6vF6rUNrBbnd61ltbh0YAGTxcXGA4wWW/e3Mloc7z3AZLF5
-        01RmizcX7rFY/NjwmNWB3+N7ax+Lx/03f1k8Nq/Q8li85yWTx6ZVnWwemz5NYvd4d+4cu8e8
-        k4EeL65uZPF4v+8qm8fnTXIeJ1q+sAbwRHHZpKTmZJalFunbJXBlnLptXvCWp+LWpNPsDYwt
-        XF2MnBwSAiYSb96uZ+xi5OIQEpjOJLG9dSkTSEJI4BWjxLxjoSA2i4CqxImV8xlBbDYge9e9
-        WawgtoiApsTLKfNZQJqZBU6zSLTt6QYrEhZIljgz6QGYzStgJfFs11k2EJtTwEni/M9PQA0c
-        QAsKJKafCAEJ8wuISfRe+c8EcZC9RNuWRVCtghInZz5hAbGZgXa1bv/NDmFrSyxb+JoZ4k5F
-        icNLfrFD9CpJHOmewQZhx0osm/eKdQKj8Cwko2YhGTULyagFjMyrGFmKc9ONNjFCIjN0B+OM
-        po96hxiZOBgPMUpwMCuJ8Podd0sQ4k1JrKxKLcqPLyrNSS0+xCjNwaIkzrv3mGuCkEB6Yklq
-        dmpqQWoRTJaJg1OqgUnQSUF4Voulk8S9KR7SZsJCB/Pd1lufniYo3ZeZE/pGZ9+8rdlMc/pq
-        PDoDJ898IVhkrh3iymBRyuAXmmde1PtzmTLPl7j0O9tP8ShbWU7/93Tmottf/u7OSbSaaKFV
-        NE/aV6P8dtEGo+KjV529jc5NeihZsqnp7P7qjnU+56tcz6ckeE56qDevpj5zdfmSDX5ztV5O
-        bhDwYwzVM7Psk72SHGcUeK2PK8JTbL12mMFBof8fruWLmZ6NkAu+feHhYoboRdcPPfOJyPbK
-        yFTSeM/yqsUzUr0j+A1zfPbn1ybp0/4JCTBHzt1enJl/h6nc/Duf/BOXc2e0J7eeD558h709
-        Xnk2z7fzD1N85xUpsRRnJBpqMRcVJwIA7iPl1zsDAAA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311002807.GQ444867@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 11:00:28 -0800
-Andy Lutomirski <luto@amacapital.net> wrote:
-
-> > On Mar 8, 2021, at 10:31 AM, Luck, Tony <tony.luck@intel.com> wrote:
-> > 
-> > ﻿  
-> >> 
-> >> Can you point me at that SIGBUS code in a current kernel?  
-> > 
-> > It is in kill_me_maybe().  mce_vaddr is setup when we disassemble whatever get_user()
-> > or copy from user variant was in use in the kernel when the poison memory was consumed.
-> > 
-> >        if (p->mce_vaddr != (void __user *)-1l) {
-> >                force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);  
+On Wed, Mar 10, 2021, Jason Gunthorpe wrote:
+> On Wed, Mar 10, 2021 at 01:31:17PM -0800, Sean Christopherson wrote:
+> > Invoke the MMU notifier's .invalidate_range_end() callbacks even if one
+> > of the .invalidate_range_start() callbacks failed.  If there are multiple
+> > notifiers, the notifier that did not fail may have performed actions in
+> > its ...start() that it expects to unwind via ...end().  Per the
+> > mmu_notifier_ops documentation, ...start() and ...end() must be paired.
 > 
-> Hmm. On the one hand, no one has complained yet. On the other hand, hardware that supports this isn’t exactly common.
+> No this is not OK, if invalidate_start returns EBUSY invalidate_end
+> should *not* be called.
 > 
-> We may need some actual ABI design here. We also need to make sure that things like io_uring accesses or, more generally, anything using the use_mm / use_temporary_mm ends up either sending no signal or sending a signal to the right target.
+> As you observed:
+>  
+> > The only in-kernel usage that is fatally broken is the SGI UV GRU driver,
+> > which effectively blocks and sleeps fault handlers during ...start(), and
+> > unblocks/wakes the handlers during ...end().  But, the only users that
+> > can fail ...start() are the i915 and Nouveau drivers, which are unlikely
+> > to collide with the SGI driver.
 > 
-> > 
-> > Would it be any better if we used the BUS_MCEERR_AO code that goes into siginfo?  
+> It used to be worse but I've since moved most of the other problematic
+> users to the itree notifier which doesn't have the problem.
 > 
-> Dunno.
+> > KVM is the only other user of ...end(), and while KVM also blocks fault
+> > handlers in ...start(), the fault handlers do not sleep and originate in
+> 
+> KVM will have its mmu_notifier_count become imbalanced:
+> 
+> static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+>                                         const struct mmu_notifier_range *range)
+> {
+>         kvm->mmu_notifier_count++;
+> 
+> static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
+>                                         const struct mmu_notifier_range *range)
+> {
+>         kvm->mmu_notifier_count--;
+> 
+> Which I believe is fatal to kvm? These notifiers certainly do not only
+> happen at process exit.
 
-I have one thought here but don't know if it's proper:
+My point about the process dying is that the existing bug that causes
+mmu_notifier_count to become imbalanced is benign only because the process is
+being killed, and thus KVM will stop running its vCPUs.
 
-Previous patch use force_sig_mceerr to the user process for such a scenario; with this method
-The SIGBUS can't be ignored as force_sig_mceerr() was designed to.
+> So, both of the remaining _end users become corrupted with this patch!
 
-If the user process don't want this signal, will it set signal config to ignore?
-Maybe we can use a send_sig_mceerr() instead of force_sig_mceerr(), if process want to
-ignore the SIGBUS, then it will ignore that, or it can also process the SIGBUS?
+I don't follow.  mn_hlist_invalidate_range_start() iterates over all notifiers,
+even if a notifier earlier in the chain failed.  How will KVM become imbalanced?
 
--- 
-Thanks!
-Aili Yao
+The existing _end users never fail their _start.  If KVM started failing its
+start, then yes, it could get corrupted.  But my assumption/expection is that,
+if KVM were to ever reject _start, it would be responsible for knowing that it
+must also skip _end.  I'm happy to kick that one down the road though, as I
+can't think of a scenario where KVM would _need_ to sleep.
+
+> I've tried to fix this before, the only thing that seems like it will
+> work is to sort the hlist and only call ends that have succeeded their
+> starts by comparing pointers with <.
+> 
+> This is because the hlist can have items removed concurrently under
+> SRCU so there is no easy way to compute the subset that succeeded in
+> calling start.
+> 
+> I had a prior effort to just ban more than 1 hlist notifier with end,
+> but it turns out kvm on ARM uses two all the time (IIRC)
+> 
+> > Found by inspection.  Verified by adding a second notifier in KVM
+> > that
+> 
+> AFAIK it is a non-problem in real life because kvm is not mixed with
+> notifier_start's that fail (and GRU is dead?). Everything else was
+> fixed by moving to itree.
+> 
+> Jason
