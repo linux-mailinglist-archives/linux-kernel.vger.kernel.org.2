@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467FC3370E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37333370E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbhCKLLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:11:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
+        id S232537AbhCKLNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:13:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbhCKLK1 (ORCPT
+        with ESMTP id S232461AbhCKLNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:10:27 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42702C061574;
-        Thu, 11 Mar 2021 03:10:27 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id f12so804908qtq.4;
-        Thu, 11 Mar 2021 03:10:27 -0800 (PST)
+        Thu, 11 Mar 2021 06:13:35 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF93EC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:13:34 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo12535275wmq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:13:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4FDhkUkdj8fWqlipDBp6WuM7/UyISTb34fe+zJutuhk=;
-        b=P849DNFgS5nte6HYXGD6ebAhhBZ3CyFnv9N3Sr2OhrHYwPjZon8k1Uf09nEsePPWI0
-         H9dmyx+EEhFA/GBdul8L0iS9ImrDHwqzKxTUxo7LNAZ4EBKimkA8s4dQS0umgEhbgttx
-         jRTxH4Wng6J+VJxQ4lnEAxHZe3iMCaQMx9n22CblexjSVPeCf+1Nl4XSIsdSbNdMbWdx
-         i5ZhN1Ux4/9F8jxSWEX+T5YsVD+Y/92mIsKAy2YM0NsJSyw4CDCt1snVu0JcpbWQsBOc
-         wvKxY6zBFQwDQAV1K40PCqBou18XW6/Fmbt1sZ4xYK0NirvYCvAJ0nxsL+CcWem4M5TY
-         F93g==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=onK3msdJv5R6kQra+OvE3/ov8PzIbV+7IMlX9zMKU0o=;
+        b=BUcWSGO2iVS3VR+tkLs44lgdMSDPO+iedkmSt0n4V/hPlWf5gucTftw8p3ubk1VPby
+         x+ZmdLSfXmilFTsxq9nXq7q1bIEwoI8TqlNsGmNfFCSdMKrDVAdoM851B/RB80Qnx8F5
+         7Em++3kjsR/44QW0JQyWqTqNZQD9uSztxbLpriyEfDRWJ3bEad6baTyFQ3LnWK/ns6KY
+         RSj3rnz5COmnGC1li7RtRnG34VMWKJz46gj1h2LvUcPHkPGasvoeFSCvpOUoqBC4yC0F
+         oSEUpSjAGlmn0f/l7p9CC4K87BZoPB5OpJZ9d4IYM1XiYi0TW/GYIcAdmci8mfXLwqfd
+         GbnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=4FDhkUkdj8fWqlipDBp6WuM7/UyISTb34fe+zJutuhk=;
-        b=LZe8mrbt3dxu9TItngECZrR/KjoiYm3guq2QYb7u376he988e/AzfeXvHPfYcKhSJY
-         gUfKJK1nrWRJWMi8v7Vv68s9E+nP3EtW7NDHGHbs0FRz3Ya1qaurGO8H5EvNy1eL8IX/
-         DzPaUkUNFT4k6Iz5vVkbnCk4wZf3wzedrgJrrWLtyphfJya4Ay7sR7px+d1Gvknb581Q
-         8dnM7L8SkidZYXXm0F0MJ+NlGYNhfIT5vEDbEcLMjTwxVy3fTL84lpTonwQdN/wqbx6L
-         ynZdhGL/8SM7P6OOwX/TiAU6YATVhBFLGS/kYNccvIhQJ/DBcojO4zlBLMggmKItecUi
-         9GKA==
-X-Gm-Message-State: AOAM530blBrq87pkPABsZHGkI4GzzcOI3bG486VBXX8kl0OVQY6CGbBF
-        0x7cLjvbSZPPw0noHumKO1k=
-X-Google-Smtp-Source: ABdhPJzAmUcpvcKbe7oVuT3jh2pvL8XEzD3mV8sjVbg+GAQtSR/Ff9hDTjoyaSog8q0e8a30rdRYew==
-X-Received: by 2002:ac8:4314:: with SMTP id z20mr6848730qtm.127.1615461026174;
-        Thu, 11 Mar 2021 03:10:26 -0800 (PST)
-Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
-        by smtp.gmail.com with ESMTPSA id p7sm1673704qkc.75.2021.03.11.03.10.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 03:10:25 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 11 Mar 2021 06:10:25 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com
-Subject: Re: [PATCH] cgroup-v2: Add taskstats counters in cgroup.stat
-Message-ID: <YEn6od+CCVjNZIS9@slm.duckdns.org>
-References: <20210311061752.310831-1-zhouchengming@bytedance.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=onK3msdJv5R6kQra+OvE3/ov8PzIbV+7IMlX9zMKU0o=;
+        b=A8AcEAf0p1Eg5LBefR2nU7viy37n1s8x9Yfce1xK2E8IhcbLSRBM6ANWiyhD+l3KtW
+         eVlmt2OZGcRm6C07K5Jr3FtQcJG+RYUgw2MTpxxXl8DSadLowZabG+30jUF2wmPNniMB
+         g3iNz7CYotdhBV1zP2dQLuh0997MZ/x1ahcvI9MT7mOO/ozxg71sBz+WIxqiFVoNEQ/6
+         ZzGwc3jYk/nxlADAX5CQPR96/iStS9YL5CMcSKGd3w2ZFaaYCmjol9A3S1Mj6bjLrFDb
+         1BjaUB0/R4wuJXTLLK4g2GHX7biFazJpp3VfkvTFqIVn5smh/B85wE6GYPfrVA430a97
+         WUkg==
+X-Gm-Message-State: AOAM5316TLdr7WVcBflErHE514DAsienCxDIZZD8ER35cfD3h2VPzhUG
+        N7nqi8Ez4JuMtvzsAiMs1GgCnzAMtLBy9A==
+X-Google-Smtp-Source: ABdhPJzLui+97bNbwf3bHAfKS2yY0rLbo4z3as7RbJM8Hxt6Nd57DRxDNoIOJ3POTPDFFfo/QdlBjw==
+X-Received: by 2002:a05:600c:2102:: with SMTP id u2mr7786598wml.22.1615461212745;
+        Thu, 11 Mar 2021 03:13:32 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:84cf:7f4d:d470:dfd4? ([2a01:e34:ed2f:f020:84cf:7f4d:d470:dfd4])
+        by smtp.googlemail.com with ESMTPSA id z2sm3213264wrv.47.2021.03.11.03.13.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 03:13:32 -0800 (PST)
+Subject: Re: [PATCH] thermal: Fix spelling mistake "disabed" -> "disabled"
+To:     Colin King <colin.king@canonical.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210311093054.5338-1-colin.king@canonical.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <86800f7b-76e4-9f65-7c93-095b9d742a80@linaro.org>
+Date:   Thu, 11 Mar 2021 12:13:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311061752.310831-1-zhouchengming@bytedance.com>
+In-Reply-To: <20210311093054.5338-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 02:17:52PM +0800, Chengming Zhou wrote:
-> We have the netlink CGROUPSTATS_CMD_GET interface to get taskstats
-> of the cgroup on v1, but haven't the equivalent interface on v2,
-> making it difficult to calculate the per-cgroup cpu load in cadvisor
-> or implement the cgroup proc interface in lxcfs, like /proc/loadavg.
+On 11/03/2021 10:30, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in a comment, fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
 
-So, this is what the PSI metrics are for and we've been using it for that
-for quite a while now. I'd much prefer not adding something duplicate (and
-incomplete).
-
-Thanks.
+Applied, thanks
 
 -- 
-tejun
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
