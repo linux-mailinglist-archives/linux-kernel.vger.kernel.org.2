@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0219C337B5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B386337B5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhCKRvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:51:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhCKRui (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:50:38 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A57AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:50:38 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id d139-20020a1c1d910000b029010b895cb6f2so13402336wmd.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:50:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HthGmN6OoEPOkH3BUjgeaUShU2h31+ENbwr8NaXHKZ4=;
-        b=nyz24We35BGpHCczqy7X4dlSaTal3kCH6WmbMotRZv8th6gh9Mx010oWwScQbSt3Nk
-         5OCCxe83VgW99MUBnVuNBYe92Z7KFWJVtcTpv/ZbnCPlgclkGuZrDIYwlNSmvICQD34O
-         E8hyH5YWCeU/wocbV5w/Qf/bNPCrLAi0ztM+cyecnKU+g74B731lpvf2Iabd7pMi2SNa
-         pFnPzC+FL4tF6W3mrivdtJ6hBCdONz0QvFhs3sMmv4NZYlmPTQaxrHyi4lAAstQMrMl1
-         FRSZuZk/tII5v6mkQdGx3tBQngYLp1QDeJi7G3dlU9mBY0c+dcr3LoU94rjBQBBjZKzf
-         X/nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HthGmN6OoEPOkH3BUjgeaUShU2h31+ENbwr8NaXHKZ4=;
-        b=H6hVFCtnL3rcMLQaaQ0BF+HFrCWz9hmAGSFEJfGAi9xa0LlPSit7mvU3Sq4tW/j1If
-         cqKGb6SdVS904QNK0VpHKamrZITKYayhHNaq0wMuHhpYanhP7ngQ69JtjlthqO2zNyFf
-         0HI3i0tdtulfzw5FfKLbfwadQAa0TH3/C0Qb9eIle4kkoQCvz+h/CoBYFsgJZcigOkNA
-         hmKP8DtdtgS1EoevcpfHh5Y5r1He66j0yvQ8QgE/1gykgTVSGVKDnyiKljtvbgjLRGXB
-         uNCyccKemfvfrkTUQ7Ox/UDkNcaFAjQonjhpFLzZaMZQkmXtbqYe3MYM9Vsu+IGSxMCt
-         rUeg==
-X-Gm-Message-State: AOAM532ct6qPYleSsSFg5vGk/T8zq7AUeXj9pYQKlZQ2LmiJ1ome+J/O
-        kWzgeZMCpbmPwkUOUiTr+ItLTA==
-X-Google-Smtp-Source: ABdhPJxT6GAKDrraNaBEENyQ6zcJio4amNKi9uZm5C0XC3l5j4HTKLluXN7nY0KmqRu4CKB1MPgbXQ==
-X-Received: by 2002:a05:600c:2d42:: with SMTP id a2mr9431760wmg.77.1615485036685;
-        Thu, 11 Mar 2021 09:50:36 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id g202sm4559157wme.20.2021.03.11.09.50.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Mar 2021 09:50:35 -0800 (PST)
-Subject: Re: [PATCH][next] nvmem: core: Fix unintentional sign extension issue
-To:     Colin King <colin.king@canonical.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org
-References: <20210311095316.6480-1-colin.king@canonical.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <e0c2b730-7ec2-590d-975c-f515c5b48e2e@linaro.org>
-Date:   Thu, 11 Mar 2021 17:50:35 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S229711AbhCKRvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:51:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229553AbhCKRuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:50:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB68264F93;
+        Thu, 11 Mar 2021 17:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615485055;
+        bh=QDASRPXhjMA2e2jMibB5HEDLwOxOvU8zcbAAQZpaVqo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Hivnwp2FLA5U5LKOicyIaWSwa0af7vR6EsRbFWoJQV9T+kng1fdB9O9MfgD1ld1Jl
+         Dm6oqKl4JNqQG8RNC4YUIXiuh6PNisuZqgXpeEJ6MtlBCKFX0EyLlziajiwXWVh3l2
+         DLb1yQagXkxMNzqUKZ574csqvn9Ma/fLwJUnT5QmoUCdXBieE9Wsqxbl9bsIDSmgzO
+         RNkkHWW7BrNDvpq8v+Iay5VSynwZreUmtp1koNN4PmlZBAf2k1yUpltelbvscWiv/D
+         sHBIhVI3Dr0oPUD2SHZxd24kU60KLVuiKK7/bK///sRyrZSja5VTls2wYxmAYfwl95
+         MblZMEA0TM9yQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 80CF83523945; Thu, 11 Mar 2021 09:50:54 -0800 (PST)
+Date:   Thu, 11 Mar 2021 09:50:54 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        tglx@linutronix.de, john.ogness@linutronix.de, urezki@gmail.com,
+        ast@fb.com, Eric Dumazet <edumazet@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
+ in_atomic use
+Message-ID: <20210311175054.GA2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210311021321.127500-1-mike.kravetz@oracle.com>
+ <YEnY5hWLT/en7kw1@hirez.programming.kicks-ass.net>
+ <YEncYrWCVn2/20/C@dhcp22.suse.cz>
+ <YEnjqLpGU2LHaysv@hirez.programming.kicks-ass.net>
+ <YEnmmK42kpeB3Ho4@dhcp22.suse.cz>
+ <YEnochPwIyAsiEWS@hirez.programming.kicks-ass.net>
+ <YEn6W0RcjNiP0N0P@dhcp22.suse.cz>
+ <YEoA08n60+jzsnAl@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210311095316.6480-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEoA08n60+jzsnAl@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/03/2021 09:53, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Thu, Mar 11, 2021 at 12:36:51PM +0100, Peter Zijlstra wrote:
+> On Thu, Mar 11, 2021 at 12:09:15PM +0100, Michal Hocko wrote:
 > 
-> The shifting of the u8 integer buf[3] by 24 bits to the left will
-> be promoted to a 32 bit signed int and then sign-extended to a
-> u64. In the event that the top bit of buf[3] is set then all
-> then all the upper 32 bits of the u64 end up as also being set
-> because of the sign-extension. Fix this by casting buf[i] to
-> a u64 before the shift.
+> > Sorry for being dense but I do not follow. You have provided the
+> > following example
+> >   spin_lock(&A);
+> >   <IRQ>
+> >         spin_lock(&A);
+> > 
+> > if A == hugetlb_lock then we should never reenter with
+> > free_huge_page
 > 
-> Addresses-Coverity: ("Unintended sign extension")
-> Fixes: 097eb1136ebb ("nvmem: core: Add functions to make number reading easy")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
-
-Applied thanks,
-
---srini
-
->   drivers/nvmem/core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> What I'm saying is that if irq_disabled(), the that interrupt cannot
+> happen, so the second spin_lock cannot happen, so the deadlock cannot
+> happen.
 > 
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index 635e3131eb5f..bca671ff4e54 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -1693,7 +1693,7 @@ int nvmem_cell_read_variable_le_u64(struct device *dev, const char *cell_id,
->   	/* Copy w/ implicit endian conversion */
->   	*val = 0;
->   	for (i = 0; i < len; i++)
-> -		*val |= buf[i] << (8 * i);
-> +		*val |= (uint64_t)buf[i] << (8 * i);
->   
->   	kfree(buf);
->   
+> So: '!irqs_disabled() && in_atomic()' is sufficient to avoid the IRQ
+> recursion deadlock.
 > 
+> Also, Linus hates constructs like this:
+> 
+>   https://lkml.kernel.org/r/CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com
+
+To be fair, later in that same thread Linus states that his main concern
+is not core code, but rather driver code:
+
+https://lore.kernel.org/lkml/CAHk-=wjsMycgMHJrCmeetR3r+K5bpSRtmVWfd8iaoQCYd_VYAg@mail.gmail.com/
+
+Nevertheless, if the job can be done reasonably without checking the
+preemption/interrupt state, why not?  And Mike's patch is still useful
+for people hitting this bug.
+
+							Thanx, Paul
+
+> > From the code simplicity POV (and hugetlb has grown a lot of complexity)
+> > it would be really easiest to make sure __free_huge_page to be called
+> > from a non-atomic process context. There are few ways to do that
+> > - defer each call to a WQ - user visible which sucks
+> > - defer from atomic or otherwise non-sleeping contextx - requires
+> >   reliable in_atomic AFAICS
+> > - defer sleeping operations - makes the code flow more complex and it
+> >   would be again user visible in some cases.
+> > 
+> > So I would say we are in "pick your own poison" kind of situation.
+> 
+> Just to be clear:
+> 
+> NAK on this patch and any and all ductape crap. Fix it properly, make
+> hugetlb_lock, spool->lock IRQ-safe, move the workqueue into the CMA
+> thing.
+> 
+> The code really doesn't look _that_ complicated.
