@@ -2,103 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AD2337A12
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AC9337A07
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhCKQwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:52:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbhCKQw0 (ORCPT
+        id S229828AbhCKQwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:52:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43161 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229699AbhCKQv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:52:26 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F30C061574;
-        Thu, 11 Mar 2021 08:52:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jojXJ42UMX7xPogeR/Mx0xX5P7m6PdT89qs91n08TWo=; b=QtzkLjJCe42eAwZ5cWDdaH3YGv
-        Z1LcAP8aoAk5vnC910BVd4LtywBRSTrl9hlFggmzXruMJCyyBoMTBIYvjQhgir0HgupnuL8PUNVXf
-        lHl3yD/h+0nPv8WLTpdJuaBELGVsYAil6MImW+dkHkfd/NXn0qs4epBtUPwIVFsH6nIvw+Q8mOp8m
-        gfBePz0ulbeUoJICMI2OqLbmdFSrN5bDqaAUBWN6zCQfdhnMEeDniH5/CtT//D9Y32QD2NLtfPQk7
-        yQSUs6aZLVZ6cUpwxZ+/O6T5MnqhwLBcXrppHBJXaGwJ8uTzHDVY7CCKnZzSooboClxHgAZJE1KzY
-        nbMMotLA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKOXK-007qGS-Fc; Thu, 11 Mar 2021 16:51:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 59AE2301959;
-        Thu, 11 Mar 2021 17:51:45 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 464BD2BF461C2; Thu, 11 Mar 2021 17:51:45 +0100 (CET)
-Date:   Thu, 11 Mar 2021 17:51:45 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Piotr Figiel <figiel@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Oskolkov <posk@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Paul Turner <pjt@google.com>, emmir <emmir@google.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>
-Subject: Re: [PATCH v2] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
-Message-ID: <YEpKoa9PgjffO7Q5@hirez.programming.kicks-ass.net>
-References: <20210226135156.1081606-1-figiel@google.com>
- <1173189328.5477.1615474316906.JavaMail.zimbra@efficios.com>
+        Thu, 11 Mar 2021 11:51:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615481518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2oUQOTqIayM7rAUTJf2DiLhfIeUSxHLTZHaHhcXdXXQ=;
+        b=g6C1xG6ssOdu43RQFSWWzv+6mho64H6u9eGwX6H+UrwCdYuwg0go6um4IZZDkjq8TZESZy
+        z3TnaT2JlYgk2oDVwhmnv5fiWAZHr/2flikzAvqML8tYHXnTzq5yWzzkSk235LYvSm0yDv
+        BlM4cJLBtu+sK9xBxDcq14rdkvK/cYo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-ZN6jh1fsMMyibfMV9z6d5A-1; Thu, 11 Mar 2021 11:51:56 -0500
+X-MC-Unique: ZN6jh1fsMMyibfMV9z6d5A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5306E83DEA6;
+        Thu, 11 Mar 2021 16:51:55 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4289560BE5;
+        Thu, 11 Mar 2021 16:51:54 +0000 (UTC)
+Subject: Re: [PATCH] mm/highmem.c: fix coding style issue
+To:     songqiang <songqiang@uniontech.com>, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210311095015.14277-1-songqiang@uniontech.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <96db7761-b332-a1c2-f13c-a09ecd46705e@redhat.com>
+Date:   Thu, 11 Mar 2021 17:51:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1173189328.5477.1615474316906.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210311095015.14277-1-songqiang@uniontech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 09:51:56AM -0500, Mathieu Desnoyers wrote:
+On 11.03.21 10:50, songqiang wrote:
+> Delete/add some blank lines and some blank spaces
 > 
+> Signed-off-by: songqiang <songqiang@uniontech.com>
+> ---
+>   mm/highmem.c | 12 +++++-------
+>   1 file changed, 5 insertions(+), 7 deletions(-)
 > 
-> ----- On Feb 26, 2021, at 8:51 AM, Piotr Figiel figiel@google.com wrote:
+> diff --git a/mm/highmem.c b/mm/highmem.c
+> index 1352a27951e3..902154b76030 100644
+> --- a/mm/highmem.c
+> +++ b/mm/highmem.c
+> @@ -110,7 +110,7 @@ EXPORT_SYMBOL(_totalhigh_pages);
+>   
+>   EXPORT_PER_CPU_SYMBOL(__kmap_atomic_idx);
+>   
+> -unsigned int nr_free_highpages (void)
+> +unsigned int nr_free_highpages(void)
+>   {
+>   	struct zone *zone;
+>   	unsigned int pages = 0;
+> @@ -126,7 +126,7 @@ unsigned int nr_free_highpages (void)
+>   static int pkmap_count[LAST_PKMAP];
+>   static  __cacheline_aligned_in_smp DEFINE_SPINLOCK(kmap_lock);
+>   
+> -pte_t * pkmap_page_table;
+> +pte_t *pkmap_page_table;
+>   
+>   /*
+>    * Most architectures have no use for kmap_high_get(), so let's abstract
+> @@ -153,6 +153,7 @@ struct page *kmap_to_page(void *vaddr)
+>   
+>   	if (addr >= PKMAP_ADDR(0) && addr < PKMAP_ADDR(LAST_PKMAP)) {
+>   		int i = PKMAP_NR(addr);
+> +
+>   		return pte_page(pkmap_page_table[i]);
+>   	}
+>   
+> @@ -287,9 +288,8 @@ void *kmap_high(struct page *page)
+>   	pkmap_count[PKMAP_NR(vaddr)]++;
+>   	BUG_ON(pkmap_count[PKMAP_NR(vaddr)] < 2);
+>   	unlock_kmap();
+> -	return (void*) vaddr;
+> +	return (void *) vaddr;
+>   }
+> -
+>   EXPORT_SYMBOL(kmap_high);
+>   
+>   #ifdef ARCH_NEEDS_KMAP_HIGH_GET
+> @@ -314,7 +314,7 @@ void *kmap_high_get(struct page *page)
+>   		pkmap_count[PKMAP_NR(vaddr)]++;
+>   	}
+>   	unlock_kmap_any(flags);
+> -	return (void*) vaddr;
+> +	return (void *) vaddr;
+>   }
+>   #endif
+>   
+> @@ -367,7 +367,6 @@ void kunmap_high(struct page *page)
+>   	if (need_wakeup)
+>   		wake_up(pkmap_map_wait);
+>   }
+> -
+>   EXPORT_SYMBOL(kunmap_high);
+>   #endif	/* CONFIG_HIGHMEM */
+>   
+> @@ -431,7 +430,6 @@ void *page_address(const struct page *page)
+>   	spin_unlock_irqrestore(&pas->lock, flags);
+>   	return ret;
+>   }
+> -
+>   EXPORT_SYMBOL(page_address);
+>   
+>   /**
 > 
-> > For userspace checkpoint and restore (C/R) a way of getting process state
-> > containing RSEQ configuration is needed.
-> > 
-> > There are two ways this information is going to be used:
-> > - to re-enable RSEQ for threads which had it enabled before C/R
-> > - to detect if a thread was in a critical section during C/R
-> > 
-> > Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
-> > using the address registered before C/R.
-> > 
-> > Detection whether the thread is in a critical section during C/R is needed
-> > to enforce behavior of RSEQ abort during C/R. Attaching with ptrace()
-> > before registers are dumped itself doesn't cause RSEQ abort.
-> > Restoring the instruction pointer within the critical section is
-> > problematic because rseq_cs may get cleared before the control is passed
-> > to the migrated application code leading to RSEQ invariants not being
-> > preserved. C/R code will use RSEQ ABI address to find the abort handler
-> > to which the instruction pointer needs to be set.
-> > 
-> > To achieve above goals expose the RSEQ ABI address and the signature value
-> > with the new ptrace request PTRACE_GET_RSEQ_CONFIGURATION.
-> > 
-> > This new ptrace request can also be used by debuggers so they are aware
-> > of stops within restartable sequences in progress.
-> > 
-> > Signed-off-by: Piotr Figiel <figiel@google.com>
-> > Reviewed-by: Michal Miroslaw <emmir@google.com>
-> 
-> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-How do we route this? Do I stick this in tip/sched/core as being an rseq
-patch?
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
