@@ -2,103 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53364336B43
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66960336B45
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhCKExu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 23:53:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhCKExs (ORCPT
+        id S231293AbhCKEyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 23:54:25 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:47832 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230231AbhCKExy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 23:53:48 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64756C061574;
-        Wed, 10 Mar 2021 20:53:48 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id t18so2849414pjs.3;
-        Wed, 10 Mar 2021 20:53:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G/ZyAlrdSh96R2OBAg45j1/mBvyZvy2vStgPDbFN5p4=;
-        b=WqiklgzivzpudRP+SwG7E8o+XdV/4uoKhYDxwsjgC3r8b3rcEQGiKy6AJdCW5rNcZp
-         Acvdr7+l/OfuBW3yCiVvGFL5KvsBWun2OuYsIDtONqxOV25PEpgMIP+fwkzIA7fL5b8n
-         XCWhGCb4PNPHLIa3i/VpMVoII1jv5y/+uPcfyPkmguZr2NMOAYBmFpv5EENKUcP6+s8d
-         JuLsqHuJw+2CT5e5RwpmUtkNCH3Fi904CyDjf8NgeHkDOblwWPi3l+vBjx3sUTwPXnge
-         GC8shKA4G9W5lfA8JXj5Y982lkexoWvMEcJevHu/SQekdsi5p8/6Xkq+9Fe7vWl6Kk81
-         uOjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G/ZyAlrdSh96R2OBAg45j1/mBvyZvy2vStgPDbFN5p4=;
-        b=SOi/4ydGEFz80MiJA1EFyPnvbaX0jIQi35uQTZ8000X5wy2EU2CtRQ13gzq1+N9bta
-         ivWQbGg07fTmk5P0FbuWJA8nipQ2dVF4/8nVvoPvFPongZ6+pJl/U/WRlld2n+lKW6mw
-         7F5a4asC/gL7s9GXrVsizagoCDY05FJvczWX0WPCemWLW1S3M1AittCb/mq4IIodJH/e
-         xiV2/HNmU7Gmp6LiuuZYut10tjXYja7gkid61tW/FWVC2ooYoREPqvqcMWhL0R87I5Xz
-         fbp3d1wJ6xSj1Qvi48gauPKyUK4l3v0cbGi7u6IgjTdkJGatgvfyALnKkEVLUFeApyhh
-         o8lA==
-X-Gm-Message-State: AOAM530449yCtdHvo2RmqdH9itYgh4NGjuzbKI+1feE919xSePcqGusS
-        oe1sX5dzdrnSIrbrjcUT1++bl3jqNMA=
-X-Google-Smtp-Source: ABdhPJxK6RnO0t6cZRRDNm3qM/giX93t36xte/dGSz2AapcDKKpswbOec6AvcmGSLVqBIQsjpAPuUg==
-X-Received: by 2002:a17:90a:5d09:: with SMTP id s9mr6871777pji.172.1615438427336;
-        Wed, 10 Mar 2021 20:53:47 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id s4sm887710pji.2.2021.03.10.20.53.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 20:53:46 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
-        DRIVERS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net v2] net: phy: broadcom: Add power down exit reset state delay
-Date:   Wed, 10 Mar 2021 20:53:42 -0800
-Message-Id: <20210311045343.3259383-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 10 Mar 2021 23:53:54 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0URNwJ8P_1615438430;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0URNwJ8P_1615438430)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 11 Mar 2021 12:53:50 +0800
+Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
+ SGX_INVALID_SIGNATURE
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
+ <YDy51R2Wva7s+k/x@kernel.org>
+ <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
+ <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
+ <YD5B7P++T6jLoWBR@kernel.org>
+ <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
+ <YEk8f/29icpsUhas@kernel.org>
+ <20ef1254-007d-04ce-8df5-5122ffd4d8d3@linux.alibaba.com>
+ <YEmRlQ8vL2inziEK@kernel.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <710b65d6-e492-ae24-f2af-6973e1df1b85@linux.alibaba.com>
+Date:   Thu, 11 Mar 2021 12:53:49 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <YEmRlQ8vL2inziEK@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per the datasheet, when we clear the power down bit, the PHY remains in
-an internal reset state for 40us and then resume normal operation.
-Account for that delay to avoid any issues in the future if
-genphy_resume() changes.
 
-Fixes: fe26821fa614 ("net: phy: broadcom: Wire suspend/resume for BCM54810")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v2:
 
-- make it build by using flseep()
+On 3/11/21 11:42 AM, Jarkko Sakkinen wrote:
+> On Thu, Mar 11, 2021 at 10:47:50AM +0800, Jia Zhang wrote:
+>>
+>>
+>> On 2021/3/11 上午5:39, Jarkko Sakkinen wrote:
+>>> On Wed, Mar 10, 2021 at 08:44:44PM +0800, Jia Zhang wrote:
+>>>>
+>>>>
+>>>> On 2021/3/2 下午9:47, Jarkko Sakkinen wrote:
+>>>>> On Mon, Mar 01, 2021 at 09:54:37PM -0800, Andy Lutomirski wrote:
+>>>>>> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
+>>>>>> <tianjia.zhang@linux.alibaba.com> wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
+>>>>>>>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
+>>>>>>>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
+>>>>>>>>
+>>>>>>>> What does determine this?
+>>>>>>>>
+>>>>>>>>> In this case, the valid portion of q2 is reordered reversely for
+>>>>>>>>> little endian order, and the remaining portion is filled with zero.
+>>>>>>>>
+>>>>>>>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
+>>>>>>>>
+>>>>>>>> I'm lacking these details:
+>>>>>>>>
+>>>>>>>> 1. Why the length of Q2 can vary?
+>>>>>>>> 2. Why reversing the bytes is the correct measure to counter-measure
+>>>>>>>>      this variation?
+>>>>>>>>
+>>>>>>>> /Jarkko
+>>>>>>>>
+>>>>>>>
+>>>>>>> When use openssl to generate a key instead of using the built-in
+>>>>>>> sign_key.pem, there is a probability that will encounter this problem.
+>>>>>>>
+>>>>>>> Here is a problematic key I encountered. The calculated q1 and q2 of
+>>>>>>> this key are both 383 bytes, If the length is not processed, the
+>>>>>>> hardware signature will fail.
+>>>>>>
+>>>>>> Presumably the issue is that some keys have parameters that have
+>>>>>> enough leading 0 bits to be effectively shorter.  The openssl API
+>>>>>> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
+>>>>>> variable-size integers.
+>>>>>
+>>>>> But the test uses a static key. It used to generate a key on fly but
+>>>>
+>>>> IMO even though the test code, it comes from the linux kernel, meaning
+>>>> that its quality has a certain guarantee and it is a good reference, so
+>>>> the test code still needs to ensure its correctness.
+>>>
+>>> Hmm... what is working incorrectly then?
+>>
+>> In current implementation, it is working well, after all the static key
+>> can derive the full 384-byte length of q1 and q2. As mentioned above, if
+>> someone refers to the design of signing tool from selftest code, it is
+>> quite possible that the actual implementation will use dynamical or
+>> external signing key deriving shorter q1 and/or q2 in length.
+> 
+> A self-test needs is not meant to be generic to be directly used in 3rd
+> party code. With the current key there is not issue => there is no issue.
+> 
 
- drivers/net/phy/broadcom.c | 5 +++++
- 1 file changed, 5 insertions(+)
+For keys generated on fly, self-test does not work properly, this 
+experience is really worse.
 
-diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-index fa0be591ae79..ad51f1889435 100644
---- a/drivers/net/phy/broadcom.c
-+++ b/drivers/net/phy/broadcom.c
-@@ -399,6 +399,11 @@ static int bcm54xx_resume(struct phy_device *phydev)
- 	if (ret < 0)
- 		return ret;
- 
-+	/* Upon exiting power down, the PHY remains in an internal reset state
-+	 * for 40us
-+	 */
-+	fsleep(40);
-+
- 	return bcm54xx_config_init(phydev);
- }
- 
--- 
-2.25.1
-
+Best regards,
+Tianjia
