@@ -2,154 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA971337A72
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B60B0337A92
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhCKRGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
+        id S229699AbhCKRPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhCKRGS (ORCPT
+        with ESMTP id S229741AbhCKRO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:06:18 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D84DC061574;
-        Thu, 11 Mar 2021 09:06:18 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id q25so40932747lfc.8;
-        Thu, 11 Mar 2021 09:06:17 -0800 (PST)
+        Thu, 11 Mar 2021 12:14:57 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B73C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:14:57 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so3514044pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:14:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RHqyaVV9xNkvF/r79ZHMYRyngwcH1Np8oMRkBFJWWS4=;
-        b=n0UNIFzJl7UvpSVi8okqSi+a0qw8Q426ONaQ6UgCg5oXVBJmpclx3raIAebYj2fLpb
-         i5K5SM65TApPeTTWxMfmOtVa9ByKnIiod0Z3oHDV7sQE2dn00wcTxLFOwfv2DPHV8yRi
-         P/EKvTYLNnSeqGvSc+2XjKw1KYKBVMwMWD4PLq4U7hkeURvSQUvimglvgG7bLJEJF5vC
-         JxYXkbsD2ZtlX3Uevfv2syC9uMzZQIJ8nULU7RQzaz2XOZT1vmmpqer4FomgbdT/QmDb
-         ReprJRvphmy60GYWtAf2Xf+pRonxJohKCU/GFPGMxHCz+X/1U6XamMlJ306+qWjkgs8c
-         rxNQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=KSvf4FPCndcLiw/HtonVpqVmpqTSr98Q/VggjfUZvRE=;
+        b=bV/l1p/RGI5kUBrPJHMUCcdvfryqpgqsMIMQFzJ0LNuHBWi1CjedW9r31AcXulQ7X3
+         Jc5lXpTkShe9jpFEF++9vOz3qhp/bNR12mlMjjdk5s4ivWv8mof5na5dOu0F3P4ska0/
+         uGLSrZjkKOgEiweXiv2W7Cpal63OCxaXqSST9Ym3ZisuaLbLY8qmyA0WgUhWV4SVEHEy
+         wXzGQTkNgYXIsBL0Ku+jXWYZ/DBU2HVpodgu9N/dQ5eduQtix+mSpVsXbe0Hze/5EV9j
+         7LEbG7HMyjaqoOtyWbHLt3cb1b9rjsOv+vODhEZ9QUBieFMwHbQk7fAFVh9EoC3b8qzG
+         ySag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RHqyaVV9xNkvF/r79ZHMYRyngwcH1Np8oMRkBFJWWS4=;
-        b=km1M/f9gHzf/DOlHrl7OWNPAIRGXckSHyXfD1pBmk0TaExkGydydwXcD/9NCKHxXmz
-         XMQy1VJ1DWkLHsMSP7JmjQCAwwBciRiRqkwCthmf4m44sVd+0zv+9BljjbzMGCqOzPgb
-         lm7xnrg+M7HpeVGMfa8O9wSTEGNduC3bpQEeKjIR85Gs5lxqOiM2ZXO3xGsKZMu/aWLe
-         HgAE8C/rR39r9y0GFvKayMv7iC2PtWb7SJETskEcIegTXsNhCFWFFzTWTLP7x9rOGuPw
-         R6oHjAn6WBeJryC8n5rxcxMHbmuyOuJj2sHkkAqo92MgvtMr0L2UxuDWH/egVvQF8Rdf
-         7a4Q==
-X-Gm-Message-State: AOAM533vnYQRD/boOjV6VFH5hQ71qYfXsV20ywk74k/zBl+xNahuK0Gc
-        YNOh9LB+e+9pgCHJ554eoI0=
-X-Google-Smtp-Source: ABdhPJwp4zBM8qRRb3oSJtBT+UcNGKSJDJT5fRb/x0pjJ5KtFNZq3VhLvWYKp295CuBc74ao+oTU4A==
-X-Received: by 2002:ac2:53a1:: with SMTP id j1mr2827639lfh.298.1615482376537;
-        Thu, 11 Mar 2021 09:06:16 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id p5sm1166009ljj.26.2021.03.11.09.06.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KSvf4FPCndcLiw/HtonVpqVmpqTSr98Q/VggjfUZvRE=;
+        b=tXomggSNIMox0oOfu1g4NXX0MH6nt5p0xa6LnIBy9CrfP8OaCFd8hF5qbJftyCOjNT
+         xAiqJ2RjjgGxE2ktCuhSCRLsSLWG6OOFVDx2bGCWpYSBYMsItC7w/nMZbaXmgRuItUkZ
+         DG/RhwucD6jNzt3Oz5yJFnGWfLn+ey3a9y/4AnmhBl9NkjNS/ngx589WfBxutYxNc9Ir
+         LkUgOGAQWlV3IZUHIrDqFk4o4Y3opVGmwutByiq/rnBZaCreT3Khrz+qZloE+UWT53v9
+         FsannU2EZxkOMwYpDp5E7pS4IlUcnT9HFulwjy2J+uF1hEW6VOipjIgc+9hqP7Yix1vW
+         6HLQ==
+X-Gm-Message-State: AOAM5337TEOMcwKWNVALDT2fsUbdq6kZ6gxd+ORLJSPgh4gROZawsHRf
+        /ojJu8Hfj1uiULq1WjDBK2U=
+X-Google-Smtp-Source: ABdhPJw7cT40dsHwz6xBc0r7W/HnA7/118Txd3xI7ovUWPUtNpftYq+SAWVS0J/1LVzcjDrRg8BBpw==
+X-Received: by 2002:a17:90b:33c7:: with SMTP id lk7mr9943931pjb.95.1615482896577;
+        Thu, 11 Mar 2021 09:14:56 -0800 (PST)
+Received: from mail.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id e190sm3007121pfe.3.2021.03.11.09.14.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 09:06:16 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v14 2/2] drm/tegra: dc: Extend debug stats with total number of events
-Date:   Thu, 11 Mar 2021 20:06:06 +0300
-Message-Id: <20210311170606.7543-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210311170606.7543-1-digetx@gmail.com>
-References: <20210311170606.7543-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 11 Mar 2021 09:14:56 -0800 (PST)
+From:   Kamal Dasu <kdasu.kdev@gmail.com>
+To:     Brian Norris <computersforpeace@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     f.fainelli@gmail.com, linux-mtd@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] mtd: rawnand: brcmnand: read/write oob during  EDU transfer
+Date:   Thu, 11 Mar 2021 12:09:08 -0500
+Message-Id: <20210311170909.9031-1-kdasu.kdev@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's useful to know the total number of underflow events and currently
-the debug stats are getting reset each time CRTC is being disabled. Let's
-account the overall number of events that doesn't get a reset.
+Added support to read/write oob during EDU transfers.
 
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 ---
- drivers/gpu/drm/tegra/dc.c | 10 ++++++++++
- drivers/gpu/drm/tegra/dc.h |  5 +++++
- 2 files changed, 15 insertions(+)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 59 +++++++++++++++++++++---
+ 1 file changed, 52 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index 49fa488cf930..ecac28e814ec 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -1539,6 +1539,11 @@ static int tegra_dc_show_stats(struct seq_file *s, void *data)
- 	seq_printf(s, "underflow: %lu\n", dc->stats.underflow);
- 	seq_printf(s, "overflow: %lu\n", dc->stats.overflow);
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index 659eaa6f0980..1c95b21aa63b 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -242,6 +242,9 @@ struct brcmnand_controller {
+ 	u32                     edu_ext_addr;
+ 	u32                     edu_cmd;
+ 	u32                     edu_config;
++	int			sas; /* spare area size, per flash cache */
++	int			sector_size_1k;
++	u8			*oob;
  
-+	seq_printf(s, "frames total: %lu\n", dc->stats.frames_total);
-+	seq_printf(s, "vblank total: %lu\n", dc->stats.vblank_total);
-+	seq_printf(s, "underflow total: %lu\n", dc->stats.underflow_total);
-+	seq_printf(s, "overflow total: %lu\n", dc->stats.overflow_total);
+ 	/* flash_dma reg */
+ 	const u16		*flash_dma_offsets;
+@@ -249,7 +252,7 @@ struct brcmnand_controller {
+ 	dma_addr_t		dma_pa;
+ 
+ 	int (*dma_trans)(struct brcmnand_host *host, u64 addr, u32 *buf,
+-			 u32 len, u8 dma_cmd);
++			 u8 *oob, u32 len, u8 dma_cmd);
+ 
+ 	/* in-memory cache of the FLASH_CACHE, used only for some commands */
+ 	u8			flash_cache[FC_BYTES];
+@@ -1479,6 +1482,23 @@ static irqreturn_t brcmnand_edu_irq(int irq, void *data)
+ 		edu_writel(ctrl, EDU_EXT_ADDR, ctrl->edu_ext_addr);
+ 		edu_readl(ctrl, EDU_EXT_ADDR);
+ 
++		if (ctrl->oob) {
++			if (ctrl->edu_cmd == EDU_CMD_READ) {
++				ctrl->oob += read_oob_from_regs(ctrl,
++							ctrl->edu_count + 1,
++							ctrl->oob, ctrl->sas,
++							ctrl->sector_size_1k);
++			} else {
++				brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS,
++						   ctrl->edu_ext_addr);
++				brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
++				ctrl->oob += write_oob_to_regs(ctrl,
++							       ctrl->edu_count,
++							       ctrl->oob, ctrl->sas,
++							       ctrl->sector_size_1k);
++			}
++		}
 +
- 	return 0;
+ 		mb(); /* flush previous writes */
+ 		edu_writel(ctrl, EDU_CMD, ctrl->edu_cmd);
+ 		edu_readl(ctrl, EDU_CMD);
+@@ -1850,9 +1870,10 @@ static void brcmnand_write_buf(struct nand_chip *chip, const uint8_t *buf,
+  *  Kick EDU engine
+  */
+ static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
+-			      u32 len, u8 cmd)
++			      u8 *oob, u32 len, u8 cmd)
+ {
+ 	struct brcmnand_controller *ctrl = host->ctrl;
++	struct brcmnand_cfg *cfg = &host->hwcfg;
+ 	unsigned long timeo = msecs_to_jiffies(200);
+ 	int ret = 0;
+ 	int dir = (cmd == CMD_PAGE_READ ? DMA_FROM_DEVICE : DMA_TO_DEVICE);
+@@ -1860,6 +1881,9 @@ static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
+ 	unsigned int trans = len >> FC_SHIFT;
+ 	dma_addr_t pa;
+ 
++	dev_dbg(ctrl->dev, "EDU %s %p:%p\n", ((edu_cmd == EDU_CMD_READ) ?
++					      "read" : "write"), buf, oob);
++
+ 	pa = dma_map_single(ctrl->dev, buf, len, dir);
+ 	if (dma_mapping_error(ctrl->dev, pa)) {
+ 		dev_err(ctrl->dev, "unable to map buffer for EDU DMA\n");
+@@ -1871,6 +1895,8 @@ static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
+ 	ctrl->edu_ext_addr = addr;
+ 	ctrl->edu_cmd = edu_cmd;
+ 	ctrl->edu_count = trans;
++	ctrl->sas = cfg->spare_area_size;
++	ctrl->oob = oob;
+ 
+ 	edu_writel(ctrl, EDU_DRAM_ADDR, (u32)ctrl->edu_dram_addr);
+ 	edu_readl(ctrl,  EDU_DRAM_ADDR);
+@@ -1879,6 +1905,16 @@ static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
+ 	edu_writel(ctrl, EDU_LENGTH, FC_BYTES);
+ 	edu_readl(ctrl, EDU_LENGTH);
+ 
++	if (ctrl->oob && (ctrl->edu_cmd == EDU_CMD_WRITE)) {
++		brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS,
++				   ctrl->edu_ext_addr);
++		brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
++		ctrl->oob += write_oob_to_regs(ctrl,
++					       1,
++					       ctrl->oob, ctrl->sas,
++					       ctrl->sector_size_1k);
++	}
++
+ 	/* Start edu engine */
+ 	mb(); /* flush previous writes */
+ 	edu_writel(ctrl, EDU_CMD, ctrl->edu_cmd);
+@@ -1893,6 +1929,14 @@ static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
+ 
+ 	dma_unmap_single(ctrl->dev, pa, len, dir);
+ 
++	/* read last subpage oob */
++	if (ctrl->oob && (ctrl->edu_cmd == EDU_CMD_READ)) {
++		ctrl->oob += read_oob_from_regs(ctrl,
++						1,
++						ctrl->oob, ctrl->sas,
++						ctrl->sector_size_1k);
++	}
++
+ 	/* for program page check NAND status */
+ 	if (((brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS) &
+ 	      INTFC_FLASH_STATUS) & NAND_STATUS_FAIL) &&
+@@ -2002,7 +2046,7 @@ static void brcmnand_dma_run(struct brcmnand_host *host, dma_addr_t desc)
  }
  
-@@ -2313,6 +2318,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): frame end\n", __func__);
- 		*/
-+		dc->stats.frames_total++;
- 		dc->stats.frames++;
- 	}
+ static int brcmnand_dma_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
+-			      u32 len, u8 dma_cmd)
++			      u8 *oob, u32 len, u8 dma_cmd)
+ {
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+ 	dma_addr_t buf_pa;
+@@ -2147,8 +2191,9 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ try_dmaread:
+ 	brcmnand_clear_ecc_addr(ctrl);
  
-@@ -2321,6 +2327,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		dev_dbg(dc->dev, "%s(): vertical blank\n", __func__);
- 		*/
- 		drm_crtc_handle_vblank(&dc->base);
-+		dc->stats.vblank_total++;
- 		dc->stats.vblank++;
- 	}
+-	if (ctrl->dma_trans && !oob && flash_dma_buf_ok(buf)) {
+-		err = ctrl->dma_trans(host, addr, buf,
++	if (ctrl->dma_trans && (has_edu(ctrl) || !oob) &&
++	    flash_dma_buf_ok(buf)) {
++		err = ctrl->dma_trans(host, addr, buf, oob,
+ 				      trans * FC_BYTES,
+ 				      CMD_PAGE_READ);
  
-@@ -2328,6 +2335,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): underflow\n", __func__);
- 		*/
-+		dc->stats.underflow_total++;
- 		dc->stats.underflow++;
- 	}
+@@ -2296,8 +2341,8 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
+ 	for (i = 0; i < ctrl->max_oob; i += 4)
+ 		oob_reg_write(ctrl, i, 0xffffffff);
  
-@@ -2335,11 +2343,13 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): overflow\n", __func__);
- 		*/
-+		dc->stats.overflow_total++;
- 		dc->stats.overflow++;
- 	}
+-	if (use_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
+-		if (ctrl->dma_trans(host, addr, (u32 *)buf, mtd->writesize,
++	if (use_dma(ctrl) && (has_edu(ctrl) || !oob) && flash_dma_buf_ok(buf)) {
++		if (ctrl->dma_trans(host, addr, (u32 *)buf, oob, mtd->writesize,
+ 				    CMD_PROGRAM_PAGE))
  
- 	if (status & HEAD_UF_INT) {
- 		dev_dbg_ratelimited(dc->dev, "%s(): head underflow\n", __func__);
-+		dc->stats.underflow_total++;
- 		dc->stats.underflow++;
- 	}
- 
-diff --git a/drivers/gpu/drm/tegra/dc.h b/drivers/gpu/drm/tegra/dc.h
-index 69d4cca2e58c..ad8d51a55a00 100644
---- a/drivers/gpu/drm/tegra/dc.h
-+++ b/drivers/gpu/drm/tegra/dc.h
-@@ -48,6 +48,11 @@ struct tegra_dc_stats {
- 	unsigned long vblank;
- 	unsigned long underflow;
- 	unsigned long overflow;
-+
-+	unsigned long frames_total;
-+	unsigned long vblank_total;
-+	unsigned long underflow_total;
-+	unsigned long overflow_total;
- };
- 
- struct tegra_windowgroup_soc {
+ 			ret = -EIO;
 -- 
-2.29.2
+2.17.1
 
