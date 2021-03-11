@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E95337987
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803DB33798E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhCKQhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCKQgi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:36:38 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D50FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:36:38 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id u20so2956654lja.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:36:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iPZvfHb+Si345+eLdtp+jqoQGBHvb7ncg4YKmkA+66M=;
-        b=ZLRE+NNfiFUlgsLsqThPInd/fkJoau43SsDb1VjHe8HyIpwRcRvbYgYMe816XwTWGt
-         c8xc98NLjPQeVdPhwmptbgJr3kcqK3bz8W9J+CL11A1igC1hjHB8vJzRja79PyGO884M
-         auLw+6gt9LlTrKO/oswUCzxfTUR4uMEw9P2kHYViuAEz6cflssQTF69bqAKPOA7cj4RL
-         SkDfNsMhv6ewu14K88kjHDEEmgWwdQ5+emSCcWVlHwPcIzMgrqRZi5SGxUaaS63lKqMI
-         Gy1IPWqgYbu9a28p//xRh9Cl9adytNWX3q7J8NRlMe3CTnaAuBNYPHJ6Q6lmNau4KY1v
-         BsIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iPZvfHb+Si345+eLdtp+jqoQGBHvb7ncg4YKmkA+66M=;
-        b=jIVrdcvJ8kRCggxKbcFLrZXqKBWrxcqyHVsTyBug8iJ+U+K7y+BzUzdcwBzkvgI1Xy
-         7Qd9bgDAq1D5CULkpEHyVEfSn/K8l3+mG3f+hNlwgKC9AHDtclZJmMGeSrZ3UyKQTZ93
-         msTZyXWWixHWc+e3WIF7aUdwvjjWTiFOV/ZL2cPU9H9dMpXwp0vMYttXs3TMhqJNupu8
-         PAX7NiQVEaHxZjI3W7pd5Ol54EcAak+LcnhsX/YjKfu6l0LwNCYlGRQl0rAqvMFk24UO
-         o7sLbh2X6eifWhC5KvU1lyaW8mwIY6/7qXTJ2O7dNN2UodtNFFmU9qe+MY271suYMN1C
-         Abog==
-X-Gm-Message-State: AOAM531+TWVkz7ES0HH5GDzcjkK+O8PnUFCEN9hxke9AEDO9NkCH9I+r
-        80tCFOKek6YXlIK+w87Gk7OSj9sIjFFFi4mtdYM=
-X-Google-Smtp-Source: ABdhPJx0cbnzSZmTMT5sCkrs9DzzYM1gHaoFP/gpXRg/cqqijUTClvi5vIlfuq5tLasKwacsa0J+55TfM0nUhlJ9UUk=
-X-Received: by 2002:a2e:8590:: with SMTP id b16mr5273379lji.53.1615480596716;
- Thu, 11 Mar 2021 08:36:36 -0800 (PST)
+        id S229585AbhCKQiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:38:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229552AbhCKQhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:37:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58F4264F9F;
+        Thu, 11 Mar 2021 16:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615480660;
+        bh=dYVRLS5VWyX7gUG8Qu6LM+nvJxKlncbsX9vvCiH5n6c=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=TynJDyYJwdun1XTklSWx6zrN0N1SohDKb4A1N1d2Tmln9pdMPFGolSENcL96TgdoZ
+         GUxO14zs+Oi0RXf/9XuTuZUQyHeNuqmnBxwLlozaGyy4x7wp4KDNHXZoOzkuYRK/+R
+         Wg1X0piNwK+YTX3M5PQ13YwIlV4c2NJZp9IcDKXRTGvJlrueTuQyKeVGF4fPHYzxQe
+         jq9Qw9l0VzjWFtQUtU6jzmrAjltr/hi6tGvDPZ6dw0IQwRUa0zfLSz/yA9DB+stik0
+         Ubf8TJwLE+inEMzQph+w7WCrLgc0j6rX9NIrgCUgUR8F7c+zIOgjy9EaMn79nZJv8r
+         r0Lbioz+Ux1hw==
+From:   Mark Brown <broonie@kernel.org>
+To:     tiwai@suse.com, plai@codeaurora.org, linux-kernel@vger.kernel.org,
+        judyhsiao@chromium.org, robh+dt@kernel.org,
+        bgoswami@codeaurora.org, agross@kernel.org,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com,
+        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
+        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        bjorn.andersson@linaro.org, alsa-devel@alsa-project.org,
+        perex@perex.cz
+In-Reply-To: <20210311081805.20424-1-srivasam@codeaurora.org>
+References: <20210311081805.20424-1-srivasam@codeaurora.org>
+Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Fix lpass dai ids parse
+Message-Id: <161548058820.3429.7412298596711968916.b4-ty@kernel.org>
+Date:   Thu, 11 Mar 2021 16:36:28 +0000
 MIME-Version: 1.0
-References: <20210308090329.17507-1-heiko.thiery@gmail.com>
- <CAEyMn7bCdzFTWpXBQ8jP-drw_ykXRUhawHMZqXHsHgy-3oD6LA@mail.gmail.com> <CAEyMn7bZy0vWbrmEuEb3HAGPWitai=uBiZS_-yvD8UzcCN+aTQ@mail.gmail.com>
-In-Reply-To: <CAEyMn7bZy0vWbrmEuEb3HAGPWitai=uBiZS_-yvD8UzcCN+aTQ@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 11 Mar 2021 13:36:25 -0300
-Message-ID: <CAOMZO5AjV+YHMxGRhOJPafh4by=0u=BSAVynQc+NS_yPMLcSAg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: configs: Enable PCIe support for imx8mq boards
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Chris Healy <cphealy@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+On Thu, 11 Mar 2021 13:48:05 +0530, Srinivasa Rao Mandadapu wrote:
+> The max boundary check while parsing dai ids makes
+> sound card registration fail after common up dai ids.
+> 
+> Fixes: cd3484f7f1386 (ASoC: dt-bindings: lpass: Fix and common up lpass dai ids)
 
-On Thu, Mar 11, 2021 at 1:13 PM Heiko Thiery <heiko.thiery@gmail.com> wrote:
+Applied to
 
-> > > Enable PCI_IMX6 to get PCI support for imx8mq boards like imx8mq-evk,
-> > > imx8mq-kontron-pitx-imx8m and imx8mq-zii-ultra. This increases the image
-> > > by 64k.
-> >
-> > The growth of 64k is not right.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Please resend this patch without mentioning the image growth size.
+Thanks!
+
+[1/1] ASoC: qcom: lpass-cpu: Fix lpass dai ids parse
+      commit: 9922f50f7178496e709d3d064920b5031f0d9061
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
