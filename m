@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EAE53379C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4483379C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhCKQnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:43:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25913 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229900AbhCKQmp (ORCPT
+        id S229677AbhCKQn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:43:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhCKQn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:42:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615480964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Va1ZOtanAw2n/6dRqr+9ZkAc2XTPpNeFM2MzXmR/KFc=;
-        b=jPi7sidgC2l9zhoYFVD9ZaW84WNIqDQonyIBBhyFbY9zX4/s67FYyiig8cfiHG9IP5YJsD
-        pxcUCIiQAohyk/BmYDXE9GriiIAbKgey3VWyQzkeYU0I8Pvp5XYtvBNIJ2pCvuH2moP1rZ
-        bfFPXOSUp5PQ2MPrUltTsrep/n2fRbY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-Qk2CMD4WOn-CeLQMLZK1wQ-1; Thu, 11 Mar 2021 11:42:42 -0500
-X-MC-Unique: Qk2CMD4WOn-CeLQMLZK1wQ-1
-Received: by mail-wm1-f72.google.com with SMTP id v5so4267938wml.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:42:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Va1ZOtanAw2n/6dRqr+9ZkAc2XTPpNeFM2MzXmR/KFc=;
-        b=GkBcE6As02/xlgW1ln6iiJs6Pn4fR2N9uabfyUR//X55OYHE22FhKJVJi89wP/Mcwl
-         2Ye/sl1Gvyv5GBa12n7tBXX/3EuddDH0RyMU3m7492BXsHzDD6/Y0u9Ck2I1L5KmNj++
-         FS6Q3tngzBkD7iXwVguTAUkqFdpf5t204Q//AbWEXZHGm3m95Ak49ApH971jT8BX6vf/
-         W/kHVczjK7Y8ZtHoE7wGEMpfbtJEl8V3MtGY3dV9vubdV5NGvDdAa3ufd6+hwpd27A3e
-         GwOczUb1/uwZeBv8tO2cEto2cGJFdWUpu1Xdemf6WncYDDiVW6y8/RXmzqjHcy2z63/D
-         nNGw==
-X-Gm-Message-State: AOAM531fFwW5iJwf9ZBk/0HNVyEUHmF83qRKEz0ayMaTGNDu2cR8G0jL
-        MJUTzEyjedsrh66BTPKswTFGLnjuntFYnCyLyQdOiNpFmFCoDkrsqBzcF6n0JJV3xVL15kuERDd
-        BI2rVTznbIvH5gyUMCKLIuCKA
-X-Received: by 2002:a7b:ce19:: with SMTP id m25mr9125890wmc.74.1615480960099;
-        Thu, 11 Mar 2021 08:42:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwQzxGktgJgEENYc14fEDmcQqXqPEFE3sW2SOPsGR0u/IFDM4kuQ4raenTl/7wrfSpgSACISg==
-X-Received: by 2002:a7b:ce19:: with SMTP id m25mr9125870wmc.74.1615480959923;
-        Thu, 11 Mar 2021 08:42:39 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id z25sm4897002wmi.23.2021.03.11.08.42.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 08:42:39 -0800 (PST)
-Date:   Thu, 11 Mar 2021 11:42:36 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Jason Wang <jasowang@redhat.com>, netdev@vger.kernel.org,
-        Zhu Lingshan <lingshan.zhu@intel.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 0/2] vhost-vdpa: fix issues around v->config_ctx handling
-Message-ID: <20210311114217-mutt-send-email-mst@kernel.org>
-References: <20210311135257.109460-1-sgarzare@redhat.com>
+        Thu, 11 Mar 2021 11:43:28 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3579C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:43:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5BEgHPKkD8RrihWjfK9Erdgnj54632jc0KBx8eAembs=; b=IzH9+ClqSCbQumC6CAaqAkNX3Y
+        uQLsgKB9rk16+mUSOdJGTR6NGN+gTyGBdf70be1u3K+YdYiq1286MSAhpq4ZWrz4A1sqGQ9XjnTSP
+        jC8bgkU+06tynOH0r9J2Tb/bkvZazm8JJaSkHUgbg11sIN+YdFP8ezGlxaNHzEOPXdGkvCfmJs7vD
+        4NNYjoaR+dMOq1MK+hab7LHfLUyP8+7F6PXNi/Y4hEJIiijO8FNqkug/SJdvePejGpHYUJHdB7S3O
+        GQ3tGf0I7EMGKHnDcmhGHj+Fa1zd+Lw074qpNvAL4dGmo9+AZp9F1iYzTQAF9DcNF7sf8iJ0hRcK+
+        9Simsf8A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKOOd-007nBm-S4; Thu, 11 Mar 2021 16:42:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 065C63010CF;
+        Thu, 11 Mar 2021 17:42:46 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DFCEB29CB84C4; Thu, 11 Mar 2021 17:42:46 +0100 (CET)
+Date:   Thu, 11 Mar 2021 17:42:46 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
+        swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com, qais.yousef@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs
+ hotplug-rollback
+Message-ID: <YEpIhliozfznj9rY@hirez.programming.kicks-ass.net>
+References: <20210310145258.899619710@infradead.org>
+ <20210310150109.259726371@infradead.org>
+ <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311135257.109460-1-sgarzare@redhat.com>
+In-Reply-To: <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 02:52:55PM +0100, Stefano Garzarella wrote:
-> While writing a test for a Rust library [1] to handle vhost-vdpa devices,
-> I experienced the 'use-after-free' issue fixed in patch 1, then I
-> discovered the potential issue when eventfd_ctx_fdget() fails fixed in
-> patch 2.
-> 
-> Do you think it might be useful to write a vdpa test suite, perhaps using
-> this Rust library [2] ?
-> Could we put it in the kernel tree in tool/testing?
+On Thu, Mar 11, 2021 at 03:13:04PM +0000, Valentin Schneider wrote:
 
-I can add tools/vdpa, no problem ...
+> >  #ifdef CONFIG_SCHED_SMT
+> >  	/*
+> >  	 * When going down, decrement the number of cores with SMT present.
+> 
+> > @@ -8206,7 +8212,7 @@ void __init sched_init(void)
+> >  		rq->sd = NULL;
+> >  		rq->rd = NULL;
+> >  		rq->cpu_capacity = rq->cpu_capacity_orig = SCHED_CAPACITY_SCALE;
+> > -		rq->balance_callback = NULL;
+> > +		rq->balance_callback = &balance_push_callback;
+> >  		rq->active_balance = 0;
+> >  		rq->next_balance = jiffies;
+> >  		rq->push_cpu = 0;
+> > @@ -8253,6 +8259,7 @@ void __init sched_init(void)
+> >  
+> >  #ifdef CONFIG_SMP
+> >  	idle_thread_set_boot_cpu();
+> > +	balance_push_set(smp_processor_id(), false);
+> >  #endif
+> >  	init_sched_fair_class();
+> >
+> 
+> I don't get what these two changes do - the end result is the same as
+> before, no?
 
-> Thanks,
-> Stefano
-> 
-> [1] https://github.com/stefano-garzarella/vhost/tree/vdpa
-> [2] https://github.com/rust-vmm/vhost
-> 
-> Stefano Garzarella (2):
->   vhost-vdpa: fix use-after-free of v->config_ctx
->   vhost-vdpa: set v->config_ctx to NULL if eventfd_ctx_fdget() fails
-> 
->  drivers/vhost/vdpa.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> -- 
-> 2.29.2
-
+IIRC the idea was to initialize the offline CPUs to the same state as if
+they'd been offlined.
