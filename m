@@ -2,97 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBFC33744B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FBC337485
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbhCKNq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:46:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
+        id S233754AbhCKNtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:49:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233241AbhCKNqo (ORCPT
+        with ESMTP id S233664AbhCKNtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:46:44 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032DEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:46:43 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dx9GR2Cmcz9sWW;
-        Fri, 12 Mar 2021 00:46:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1615470399;
-        bh=iZZn561Pa2Y3vO+gJp8nHF4i8Co1/FqjhNLC6ZpDGho=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=LqPgtXO3e6V4LubRzK/fX4PXhI+W0hYK9LIksz+qJsNJ96M5akc9+swSpQEUI5QdB
-         IkwUG2aqYmylB34Nc09+dtxBsJW7Cms819k7JxYqdObB3LJ2jkDjhbAxjjHQf+3v3q
-         j3XNpGXmrKQ+AD0lSMtPrf7yAuiTYBzEE8wnWnbye0lT1BAlswMcMp3SVPXOX5Dse+
-         aqg0g/ETJsYJIzRTYIQNcOVV8ZyH4j77XfocRtVRXEnW3HeAKcPG9yl6frCWLlAt+J
-         j79DFutgCunfzaWUIf01Zwm1NqdEBlHiZWxH/6GBt3Gq9Lb8A4HGXWZpL62BWebsSv
-         tIjCGKp27rHNA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 25/43] powerpc/32: Replace ASM exception exit by C
- exception exit from ppc64
-In-Reply-To: <a9a50f475db97fc53795dd778bc14f58029fdd55.1615291473.git.christophe.leroy@csgroup.eu>
-References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
- <a9a50f475db97fc53795dd778bc14f58029fdd55.1615291473.git.christophe.leroy@csgroup.eu>
-Date:   Fri, 12 Mar 2021 00:46:36 +1100
-Message-ID: <87tuphkdkz.fsf@mpe.ellerman.id.au>
+        Thu, 11 Mar 2021 08:49:04 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8267EC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:49:04 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 18so39829544lff.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:49:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=qtec.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kNyayz1ynLaXs0RxPu12eHqwVdIQUw51jeFoThSwD7s=;
+        b=eRB5p3RH481LNZAhm/BdCEnIjN0fQjiylPoxlKiHrNO22LBYvHH9Q0kIUpI89sSpYx
+         yUf9zwDTiVhH5osACr7/m8BHm06jpOubzmhVd1qyYvwAZS2V5AcIRdACOYDEjSSAYHo3
+         E0B+oCzBeZyByTIMR61sAlNcGiwspQdqisfYBTXlJmjLfffm5m6/2fFnfygbuCiJQYea
+         CwWh5E6ZEPONTXXmx1ZIEl751jMFxVu1YxtNpKKnxFCdmfBa0SbRLQlnELpQf6s580aJ
+         8zMuM5uGdUicXgGIVsoK7i6K3hCSrSAxxMuvZswSb/KL86W6U55Voin82601jcZiM3eB
+         9ofw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kNyayz1ynLaXs0RxPu12eHqwVdIQUw51jeFoThSwD7s=;
+        b=ufmXPDmb1lnQV7jkc4L9nC/PzMRIpfXyr87oLqcJqZsa1UdBUhqa5xtzLEyhWJkdlS
+         UKCknVPnotDnIx4oL4uv7dry6zbxgaWdEedgc1WTHebWDvwS5gKD5KzIWS9moJ+61Mm4
+         YVGqg0R+x/bPaXuVva8YzmbmL+E3pzTsrQKfvy0iEpgzHE02JOKa7J0M7IT4IMJAtpo0
+         pMQxHZZvxsWBswnAb8J4cIwJY5K31Yv6KQRAVclBeqsNA4/ENjc5vhvsgg3CXQDMM7z3
+         QrgTq0rMMLBj3/IvG2Snak0zqyuN7QNRug+qQH6FWqZa5cUdHzAZf5630VP0cmb4z4aV
+         dyNg==
+X-Gm-Message-State: AOAM532AJLpMLkSDZqRfis62oI9FenY+a5C7Rk/SM8H8Ubh2dHU0JmZB
+        NuOqZGsS08Gyigz7V69cRaAd9GC8U7sasO8XT4azTw==
+X-Google-Smtp-Source: ABdhPJyu0O6KEYyFOIqFedvrhYJRkgEtRmSUTzgsPtEsSBxve03TOWrnzsX5ozRcSoMvpdMwkjBW+tyWp9QxReToZWg=
+X-Received: by 2002:a05:6512:32ab:: with SMTP id q11mr2377230lfe.106.1615470542956;
+ Thu, 11 Mar 2021 05:49:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210310163655.2591893-1-daniel@qtec.com> <CADnq5_PmbXBaziCEqRODb_DvtKaw9ucXXjkdmdj9N_R8P-9Jcw@mail.gmail.com>
+ <CAH1Ww+T4WwLzg_nnF=1sjm9LW9wCjFb0X9c=qmuubvMqJdW4PA@mail.gmail.com>
+In-Reply-To: <CAH1Ww+T4WwLzg_nnF=1sjm9LW9wCjFb0X9c=qmuubvMqJdW4PA@mail.gmail.com>
+From:   Daniel Gomez <daniel@qtec.com>
+Date:   Thu, 11 Mar 2021 14:48:52 +0100
+Message-ID: <CAH1Ww+QiAyfQL_bf1u=zLiT=ayKFWA0Fr2n5sBHUxfpzxcPbrg@mail.gmail.com>
+Subject: Re: [PATCH]] drm/amdgpu/gfx9: add gfxoff quirk
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Huang Rui <ray.huang@amd.com>, Nirmoy Das <nirmoy.das@amd.com>,
+        Dennis Li <Dennis.Li@amd.com>, Monk Liu <Monk.Liu@amd.com>,
+        Yintian Tao <yttao@amd.com>, Guchun Chen <guchun.chen@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Alex Desnoyers <alex@qtec.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> This patch replaces the PPC32 ASM exception exit by C exception exit.
+On Thu, 11 Mar 2021 at 10:09, Daniel Gomez <daniel@qtec.com> wrote:
 >
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/kernel/entry_32.S  | 481 +++++++++-----------------------
->  arch/powerpc/kernel/interrupt.c |   4 +
->  2 files changed, 132 insertions(+), 353 deletions(-)
+> On Wed, 10 Mar 2021 at 18:06, Alex Deucher <alexdeucher@gmail.com> wrote:
+> >
+> > On Wed, Mar 10, 2021 at 11:37 AM Daniel Gomez <daniel@qtec.com> wrote:
+> > >
+> > > Disabling GFXOFF via the quirk list fixes a hardware lockup in
+> > > Ryzen V1605B, RAVEN 0x1002:0x15DD rev 0x83.
+> > >
+> > > Signed-off-by: Daniel Gomez <daniel@qtec.com>
+> > > ---
+> > >
+> > > This patch is a continuation of the work here:
+> > > https://lkml.org/lkml/2021/2/3/122 where a hardware lockup was discussed and
+> > > a dma_fence deadlock was provoke as a side effect. To reproduce the issue
+> > > please refer to the above link.
+> > >
+> > > The hardware lockup was introduced in 5.6-rc1 for our particular revision as it
+> > > wasn't part of the new blacklist. Before that, in kernel v5.5, this hardware was
+> > > working fine without any hardware lock because the GFXOFF was actually disabled
+> > > by the if condition for the CHIP_RAVEN case. So this patch, adds the 'Radeon
+> > > Vega Mobile Series [1002:15dd] (rev 83)' to the blacklist to disable the GFXOFF.
+> > >
+> > > But besides the fix, I'd like to ask from where this revision comes from. Is it
+> > > an ASIC revision or is it hardcoded in the VBIOS from our vendor? From what I
+> > > can see, it comes from the ASIC and I wonder if somehow we can get an APU in the
+> > > future, 'not blacklisted', with the same problem. Then, should this table only
+> > > filter for the vendor and device and not the revision? Do you know if there are
+> > > any revisions for the 1002:15dd validated, tested and functional?
+> >
+> > The pci revision id (RID) is used to specify the specific SKU within a
+> > family.  GFXOFF is supposed to be working on all raven variants.  It
+> > was tested and functional on all reference platforms and any OEM
+> > platforms that launched with Linux support.  There are a lot of
+> > dependencies on sbios in the early raven variants (0x15dd), so it's
+> > likely more of a specific platform issue, but there is not a good way
+> > to detect this so we use the DID/SSID/RID as a proxy.  The newer raven
+> > variants (0x15d8) have much better GFXOFF support since they all
+> > shipped with newer firmware and sbios.
+>
+> We took one of the first reference platform boards to design our
+> custom board based on the V1605B and I assume it has one of the early 'unstable'
+> raven variants with RID 0x83. Also, as OEM we are in control of the bios
+> (provided by insyde) but I wasn't sure about the RID so, thanks for the
+> clarification. Is there anything we can do with the bios to have the GFXOFF
+> enabled and 'stable' for this particular revision? Otherwise we'd need to add
+> the 0x83 RID to the table. Also, there is an extra ']' in the patch
+> subject. Sorry
+> for that. Would you need a new patch in case you accept it with the ']' removed?
+>
+> Good to hear that the newer raven versions have better GFXOFF support.
 
-Bisect points to this breaking qemu mac99 for me, with pmac32_defconfig.
+Adding Alex Desnoyer to the loop as he is the electronic/hardware and
+bios responsible so, he can
+provide more information about this.
 
-I haven't had time to dig any deeper sorry.
+I've now done a test on the reference platform (dibbler) with the
+latest bios available
+and the hw lockup can be also reproduced with the same steps.
 
-cheers
+For reference, I'm using mainline kernel 5.12-rc2.
 
+[    5.938544] [drm] initializing kernel modesetting (RAVEN
+0x1002:0x15DD 0x1002:0x15DD 0xC1).
+[    5.939942] amdgpu: ATOM BIOS: 113-RAVEN-11
 
-Freeing unused kernel memory: 1132K
-This architecture does not have kernel memory protection.
-Run /init as init process
-init[1]: User access of kernel address (fffffd20) - exploit attempt? (uid: 0)
-init[1]: segfault (11) at fffffd20 nip b7e78638 lr b7e845e4 code 1 in ld-2.27.so[b7e6b000+22000]
-init[1]: code: 92010080 92210084 92410088 92810090 92a10094 92c10098 930100a0 932100a4
-init[1]: code: 934100a8 936100ac 93a100b4 91810074 <7d41496e> 39400000 3b810017 579c0036
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x00ERROR: Error: saw oops/warning etc. while expecting
-00000b
-CPU: 0 PID: 1 Comm: init Not tainted 5.12.0-rc2+ #1
-Call Trace:
-[f1019d80] [c004f1ec] panic+0x138/0x328 (unreliable)
-[f1019de0] [c0051c8c] do_exit+0x880/0x8f4
-[f1019e30] [c0052bdc] do_group_exit+0x40/0xa4
-[f1019e50] [c0060d04] get_signal+0x1e8/0x834
-[f1019eb0] [c000b624] do_notify_resume+0xc8/0x314
-[f1019f10] [c0010da8] interrupt_exit_user_prepare+0xa4/0xdc
-[f1019f30] [c0018228] interrupt_return+0x14/0x14c
---- interrupt: 300 at 0xb7e78638
-NIP:  b7e78638 LR: b7e845e4 CTR: c01ea2d8
-REGS: f1019f40 TRAP: 0300   Not tainted  (5.12.0-rc2+)
-MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 28004422  XER: 20000000
-DAR: fffffd20 DSISR: 42000000
-GPR00: b7e845e4 bf951440 00000000 bf951460 00000000 bf951718 fefefeff 7f7f7f7f
-GPR08: bf9516b0 406ae8e0 b7eac1d4 00000000 0a12247b 00000000 b7e8a0d0 b7e78554
-GPR16: bf951730 bf9516f0 b7eaaf40 bf9516f0 00000001 b7eaa688 10002178 bf951460
-GPR24: 00000000 00000000 b7eac200 100cff38 bf9516f0 10002179 b7e845e4 bf951440
-NIP [b7e78638] 0xb7e78638
-LR [b7e845e4] 0xb7e845e4
---- interrupt: 300
-Rebooting in 180 seconds..
+As in the previous cases, the clocks go to 100% of usage when the hang occurs.
+
+However, when the gpu hangs, dmesg output displays the following:
+
+[ 1568.279847] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx
+timeout, signaled seq=188, emitted seq=191
+[ 1568.434084] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* Process
+information: process Xorg pid 311 thread Xorg:cs0 pid 312
+[ 1568.279847] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx
+timeout, signaled seq=188, emitted seq=191
+[ 1568.434084] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* Process
+information: process Xorg pid 311 thread Xorg:cs0 pid 312
+[ 1568.507000] amdgpu 0000:01:00.0: amdgpu: GPU reset begin!
+[ 1628.491882] rcu: INFO: rcu_sched self-detected stall on CPU
+[ 1628.491882] rcu:     3-...!: (665 ticks this GP)
+idle=f9a/1/0x4000000000000000 softirq=188533/188533 fqs=15
+[ 1628.491882] rcu: rcu_sched kthread timer wakeup didn't happen for
+58497 jiffies! g726761 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+[ 1628.491882] rcu:     Possible timer handling issue on cpu=2
+timer-softirq=55225
+[ 1628.491882] rcu: rcu_sched kthread starved for 58500 jiffies!
+g726761 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
+[ 1628.491882] rcu:     Unless rcu_sched kthread gets sufficient CPU
+time, OOM is now expected behavior.
+[ 1628.491882] rcu: RCU grace-period kthread stack dump:
+[ 1628.491882] rcu: Stack dump where RCU GP kthread last ran:
+[ 1808.518445] rcu: INFO: rcu_sched self-detected stall on CPU
+[ 1808.518445] rcu:     3-...!: (2643 ticks this GP)
+idle=f9a/1/0x4000000000000000 softirq=188533/188533 fqs=15
+[ 1808.518445] rcu: rcu_sched kthread starved for 238526 jiffies!
+g726761 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=2
+[ 1808.518445] rcu:     Unless rcu_sched kthread gets sufficient CPU
+time, OOM is now expected behavior.
+[ 1808.518445] rcu: RCU grace-period kthread stack dump:
+[ 1808.518445] rcu: Stack dump where RCU GP kthread last ran:
+
+>
+> Daniel
+>
+> >
+> > Alex
+> >
+> >
+> > >
+> > > Logs:
+> > > [   27.708348] [drm] initializing kernel modesetting (RAVEN
+> > > 0x1002:0x15DD 0x1002:0x15DD 0x83).
+> > > [   27.789156] amdgpu: ATOM BIOS: 113-RAVEN-115
+> > >
+> > > Thanks in advance,
+> > > Daniel
+> > >
+> > >  drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+> > > index 65db88bb6cbc..319d4b99aec8 100644
+> > > --- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+> > > +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+> > > @@ -1243,6 +1243,8 @@ static const struct amdgpu_gfxoff_quirk amdgpu_gfxoff_quirk_list[] = {
+> > >         { 0x1002, 0x15dd, 0x103c, 0x83e7, 0xd3 },
+> > >         /* GFXOFF is unstable on C6 parts with a VBIOS 113-RAVEN-114 */
+> > >         { 0x1002, 0x15dd, 0x1002, 0x15dd, 0xc6 },
+> > > +       /* GFXOFF provokes a hw lockup on 83 parts with a VBIOS 113-RAVEN-115 */
+> > > +       { 0x1002, 0x15dd, 0x1002, 0x15dd, 0x83 },
+> > >         { 0, 0, 0, 0, 0 },
+> > >  };
+> > >
+> > > --
+> > > 2.30.1
+> > >
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
