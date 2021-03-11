@@ -2,176 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801B7337093
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8E533709D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:56:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhCKKxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:53:24 -0500
-Received: from smtp-bc0c.mail.infomaniak.ch ([45.157.188.12]:33171 "EHLO
-        smtp-bc0c.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232484AbhCKKxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:53:07 -0500
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dx5Q96kpNzMqP1K;
-        Thu, 11 Mar 2021 11:53:05 +0100 (CET)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dx5Q944mhzlh8TJ;
-        Thu, 11 Mar 2021 11:53:05 +0100 (CET)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH v3 1/1] fs: Allow no_new_privs tasks to call chroot(2)
-Date:   Thu, 11 Mar 2021 11:52:42 +0100
-Message-Id: <20210311105242.874506-2-mic@digikod.net>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210311105242.874506-1-mic@digikod.net>
-References: <20210311105242.874506-1-mic@digikod.net>
+        id S232433AbhCKKzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:55:32 -0500
+Received: from mx4.veeam.com ([104.41.138.86]:44886 "EHLO mx4.veeam.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232213AbhCKKy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 05:54:59 -0500
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx4.veeam.com (Postfix) with ESMTPS id B2743114A68;
+        Thu, 11 Mar 2021 13:54:51 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
+        t=1615460091; bh=ysp9Ts3BASY43el8K+K9xpH4kcbWvg9lBmxtjeqWXw4=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+        b=kso9SN+yGQEoMFdxtov1n6mfmMQGtgQioYHIOavcU/58x8mJo5gx6obXdt9Kn1I39
+         PvfTOxQRq7wueAVxYpJmNmvGphc+QH9m1m39ejT2Hgd4MPQk3wid7k8xQqpt04SBxQ
+         wi8sQBfhLOM+a9gzjGFhl1ueHiKyml/fl5g9WpQA=
+Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Thu, 11 Mar 2021
+ 11:54:50 +0100
+Date:   Thu, 11 Mar 2021 13:54:42 +0300
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     Christoph Hellwig <hch@infradead.org>, <snitzer@redhat.com>
+CC:     "snitzer@redhat.com" <snitzer@redhat.com>,
+        "agk@redhat.com" <agk@redhat.com>, "hare@suse.de" <hare@suse.de>,
+        "song@kernel.org" <song@kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>
+Subject: Re: [PATCH v6 4/4] dm: add DM_INTERPOSED_FLAG
+Message-ID: <20210311105442.GA27754@veeam.com>
+References: <1614774618-22410-1-git-send-email-sergei.shtepa@veeam.com>
+ <1614774618-22410-5-git-send-email-sergei.shtepa@veeam.com>
+ <20210309173555.GC201344@infradead.org>
+ <20210310052812.GB26929@veeam.com>
+ <20210310123456.GA758100@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20210310123456.GA758100@infradead.org>
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
+ (172.24.0.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29D2A50B58627062
+X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+The 03/10/2021 15:34, Christoph Hellwig wrote:
+> On Wed, Mar 10, 2021 at 08:28:12AM +0300, Sergei Shtepa wrote:
+> > > So instead of doing this shoudn't the interposer just always submit to the
+> > > whole device?  But if we keep it, the logic in this funtion should go
+> > > into a block layer helper, passing a block device instead of the
+> 
+> > 
+> > device-mapper allows to create devices of any size using only part of
+> > the underlying device. Therefore, it is not possible to apply the
+> > interposer to the whole block device.
+> > Perhaps it makes sense to put the blk_partition_unremap() function in the
+> > block layer? I'm not sure that's a good thing.
+> 
+> I suspect the answer is to not remap bios that are going to be handled
+> by the interposer.  In fact much of submit_bio_checks as-is is a bad
+> idea for interposed devices.  I think what we need to do instead is to
+> pass an explicit bdev to submit_bio_checks and use that everywhere,
+> including in the subfunctions.
+> 
+> With that we might also be able to remove the separate interpose hook
+> and thus struct bdev_interposer entirely as now ->submit_bio of the
+> interposer could do all the work:
+> 
+> static noinline blk_qc_t submit_bio_interposed(struct bio *bio)
+> {
+> 	struct block_device *orig_bdev = bio->bi_bdev, *interposer;
+> 	struct bio_list bio_list[2] = { };
+> 	blk_qc_t ret = BLK_QC_T_NONE;
+> 
+> 	if (current->bio_list) {
+>                 bio_list_add(&current->bio_list[0], bio);
+>                 return BLK_QC_T_NONE;
+>         }
+> 
+> 	if (unlikely(bio_queue_enter(bio)))
+> 		return BLK_QC_T_NONE;
+> 
+> 	interposer = orig_bdev->bd_interposer;
+> 	if (unlikely(!interposer)) {
+> 		/* interposer was removed */
+> 		bio_list_add(&current->bio_list[0], bio);
+> 		goto queue_exit;
+> 	}
+> 	if (!submit_bio_checks(bio, interposer))
+> 		goto queue_exit;
+> 
+> 	bio_set_flag(bio, BIO_INTERPOSED);
+> 
+> 	current->bio_list = bio_list;
+> 	ret = interposer->bd_disk->fops->submit_bio(bio);
+> 	current->bio_list = NULL;
+> 
+> queue_exit:
+> 	blk_queue_exit(bdev->bd_disk->queue);
+> 
+> 	/* Resubmit remaining bios */
+> 	while ((bio = bio_list_pop(&bio_list[0])))
+> 		ret = submit_bio_noacct(bio);
+> 	return ret;
+> }
+> 
+> blk_qc_t submit_bio_noacct(struct bio *bio)
+> {
+> 	if (bio->bi_bdev->bd_interposer && !bio_flagged(bio, BIO_INTERPOSED)
+> 		return submit_bio_interposed(bio);
+> 		
+> 	...
+> }
 
-Being able to easily change root directories enable to ease some
-development workflow and can be used as a tool to strengthen
-unprivileged security sandboxes.  chroot(2) is not an access-control
-mechanism per se, but it can be used to limit the absolute view of the
-filesystem, and then limit ways to access data and kernel interfaces
-(e.g. /proc, /sys, /dev, etc.).
+Your point of view is very interesting. I like.
+I will try to implement it and check how it works.
 
-Users may not wish to expose namespace complexity to potentially
-malicious processes, or limit their use because of limited resources.
-The chroot feature is much more simple (and limited) than the mount
-namespace, but can still be useful.  As for containers, users of
-chroot(2) should take care of file descriptors or data accessible by
-other means (e.g. current working directory, leaked FDs, passed FDs,
-devices, mount points, etc.).  There is a lot of literature that discuss
-the limitations of chroot, and users of this feature should be aware of
-the multiple ways to bypass it.  Using chroot(2) for security purposes
-can make sense if it is combined with other features (e.g. dedicated
-user, seccomp, LSM access-controls, etc.).
+So far, I see the problem in that the interposer device has to intercept
+all bio requests from the original device. It will not be possible to
+implement an interception of some part. Device mapper can create its own
+target for a part of the block device.
 
-One could argue that chroot(2) is useless without a properly populated
-root hierarchy (i.e. without /dev and /proc).  However, there are
-multiple use cases that don't require the chrooting process to create
-file hierarchies with special files nor mount points, e.g.:
-* A process sandboxing itself, once all its libraries are loaded, may
-  not need files other than regular files, or even no file at all.
-* Some pre-populated root hierarchies could be used to chroot into,
-  provided for instance by development environments or tailored
-  distributions.
-* Processes executed in a chroot may not require access to these special
-  files (e.g. with minimal runtimes, or by emulating some special files
-  with a LD_PRELOADed library or seccomp).
+But maybe it's a good thing. First, there is little real benefit from
+being able to intercept bio requests from a part of the block device.
+In real use, this may not be necessary. Secondly, it will get rid of the
+problem when part of the bio needs to be intercepted, and part does not.
 
-Allowing a task to change its own root directory is not a threat to the
-system if we can prevent confused deputy attacks, which could be
-performed through execution of SUID-like binaries.  This can be
-prevented if the calling task sets PR_SET_NO_NEW_PRIVS on itself with
-prctl(2).  To only affect this task, its filesystem information must not
-be shared with other tasks, which can be achieved by not passing
-CLONE_FS to clone(2).  A similar no_new_privs check is already used by
-seccomp to avoid the same kind of security issues.  Furthermore, because
-of its security use and to avoid giving a new way for attackers to get
-out of a chroot (e.g. using /proc/<pid>/root, or chroot/chdir), an
-unprivileged chroot is only allowed if the calling process is not
-already chrooted.  This limitation is the same as for creating user
-namespaces.
+I'd like to know Mike's opinion on this issue.
 
-This change may not impact systems relying on other permission models
-than POSIX capabilities (e.g. Tomoyo).  Being able to use chroot(2) on
-such systems may require to update their security policies.
+> 
+> Note that both with this and your original code the interposer must
+> never resubmit I/O to itself.  Is that actually the case for DM?  I'm
+> trying to think of a good debug check for that, but right now I can't
+> think of something that doesn't cause any overhead for n
 
-Only the chroot system call is relaxed with this no_new_privs check; the
-init_chroot() helper doesn't require such change.
+I believe that the BIO_INTERPOSED flag is quite good at solving this
+problem. When cloning a bio, the flag is passed, which means that bio
+cannot be called twice.
 
-Allowing unprivileged users to use chroot(2) is one of the initial
-objectives of no_new_privs:
-https://www.kernel.org/doc/html/latest/userspace-api/no_new_privs.html
-This patch is a follow-up of a previous one sent by Andy Lutomirski:
-https://lore.kernel.org/lkml/0e2f0f54e19bff53a3739ecfddb4ffa9a6dbde4d.1327858005.git.luto@amacapital.net/
 
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: John Johansen <john.johansen@canonical.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Kentaro Takeda <takedakn@nttdata.co.jp>
-Cc: Serge Hallyn <serge@hallyn.com>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210311105242.874506-2-mic@digikod.net
----
-
-Changes since v2:
-* Replace path_is_under() check with current_chrooted() to gain the same
-  protection as create_user_ns() (suggested by Jann Horn). See commit
-  3151527ee007 ("userns:  Don't allow creation if the user is chrooted")
-
-Changes since v1:
-* Replace custom is_path_beneath() with existing path_is_under().
----
- fs/open.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/fs/open.c b/fs/open.c
-index e53af13b5835..1eb086ed324b 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -22,6 +22,7 @@
- #include <linux/slab.h>
- #include <linux/uaccess.h>
- #include <linux/fs.h>
-+#include <linux/path.h>
- #include <linux/personality.h>
- #include <linux/pagemap.h>
- #include <linux/syscalls.h>
-@@ -546,8 +547,18 @@ SYSCALL_DEFINE1(chroot, const char __user *, filename)
- 	if (error)
- 		goto dput_and_out;
- 
-+	/*
-+	 * Changing the root directory for the calling task (and its future
-+	 * children) requires that this task has CAP_SYS_CHROOT in its
-+	 * namespace, or be running with no_new_privs and not sharing its
-+	 * fs_struct and not escaping its current root (cf. create_user_ns()).
-+	 * As for seccomp, checking no_new_privs avoids scenarios where
-+	 * unprivileged tasks can affect the behavior of privileged children.
-+	 */
- 	error = -EPERM;
--	if (!ns_capable(current_user_ns(), CAP_SYS_CHROOT))
-+	if (!ns_capable(current_user_ns(), CAP_SYS_CHROOT) &&
-+			!(task_no_new_privs(current) && current->fs->users == 1
-+				&& !current_chrooted()))
- 		goto dput_and_out;
- 	error = security_path_chroot(&path);
- 	if (error)
+Thank you again.
+Because of you, I will have to rewrite some code again ;)
+But it's all for the best.
 -- 
-2.30.2
-
+Sergei Shtepa
+Veeam Software developer.
