@@ -2,122 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F77337C66
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 263B4337C7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhCKSWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:22:34 -0500
-Received: from mail-mw2nam12on2084.outbound.protection.outlook.com ([40.107.244.84]:60321
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229469AbhCKSWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:22:03 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G8UgQELgaIAGlKN4B7nTa9AkvXmPqltxv9EOkmYBC8SEagiVI+1gU7XRKbgKXrQW+jHfL684nA+0+m7x8tngA/AMdJMYj9/wZdN4bwgM9kXQEMg2GMC38GWUqa/RfGSYUxIXU+kCyGwBsqg8CWybvfPSUZ3gu56vJfzZv0DH14LWWSOzM/jf6nWyvL8t7mffyp2C5ekMuOjONrrrQlkdNbth2AF5N+gg7cuV6r45RRyuFQZhmeHgeh8j02a9qb7NNBisJiVFyVAwQ81riDGi5ewNwAO6FIUjCZ53D+mBo3p0XtmJ9aLYATgXOwP5xhssVJA/0ITZcpvvBRafJhaYDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zaDFYElogILa9dszkzMDmQtw9LIReHEXY6Z/Kz6aY40=;
- b=MH8c+o/K4VW/s62nfljWVIidbVkZNQrp2IhxMbJ/0+t9L7ic0tjCXYo4zBVNKtkSzBWQIUKBedc8cAzF5NgDlqrIkzn8UjVzR74J5PyWAvNrvhmv9zBt9HKPQjiQXfYRQWfjHPdqPjtqKfxjt56wk3mZkMj+Mj/zWPnZHGJ1Imn79UKCRR6q8I6rHhI2imUEOF3bSTXzZbqXi54zDhyQBjRCxoT0yzg7jxfrqaip+sTb893BFkORBd+WsXmAiMkJzn6l+HOExVPJypEc6B4OpUSfdFzT2M2lK28C1HRRS3QvvaWczPZNqTk2iU/gglUMVoKfDEauKBpjlj57CS9KrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zaDFYElogILa9dszkzMDmQtw9LIReHEXY6Z/Kz6aY40=;
- b=uh7VCzp7wUKTlPu2cyLR7L6INBZwjhAbcg7oclYmc29osT5g1U7saFruJKyXVWOsRQP3g4MOD30ZZ/KZRg6nobrvWvLh1jnD35LqiWIgBqrUoludCrEhDoftqJgpZPeNCySzGuze6U11TR3+HGqZF6JxuAwohVLFPFOLOdCCsqVKpFoXKQJvGL/b0dwydnRItaudzRR8KblW0d97uLlaMFVvF1uI2evfcyR1pby3hX9SPwJk6+yF+OrmD0/6P8x+4oBjSqcQG9l8+l+KSkWdsLx9QikkAlueGIfMOczNSLE1wGTPPEwT2O2lJC45setqetObyrCDxRZR9Bo3WEdjAw==
-Authentication-Results: mail.ustc.edu.cn; dkim=none (message not signed)
- header.d=none;mail.ustc.edu.cn; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4042.namprd12.prod.outlook.com (2603:10b6:5:215::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.28; Thu, 11 Mar
- 2021 18:21:17 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3933.031; Thu, 11 Mar 2021
- 18:21:17 +0000
-Date:   Thu, 11 Mar 2021 14:21:14 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, shiraz.saleem@intel.com
-Cc:     faisal.latif@intel.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] infiniband/i40iw: Fix a use after free in
- i40iw_cm_event_handler
-Message-ID: <20210311182114.GA2733907@nvidia.com>
-References: <20210311031414.5011-1-lyl2019@mail.ustc.edu.cn>
+        id S230156AbhCKSYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:24:09 -0500
+Received: from mout.gmx.net ([212.227.15.15]:41513 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229883AbhCKSXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 13:23:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615486987;
+        bh=SpnCU8DF8fceQcBGatEhurYgUxXjyn+Yh3rMYnZtpBw=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=EJGVOIR575wXcr5c6RRSlrapvOBsan8L+f6g86Oe6pPunBUxgE4Uxr3yKQsYvuF55
+         Fk+OhstRBVDUiL5BP9azSbnTEAJAaL2YDxrGXgYab5j1zM1tCwPHuho67fkGJFNRny
+         I3CMBI7vURJKEGu4DCemsRLl20UpoLgYi+fcWYn0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MatRZ-1lrI4P44J1-00cOpP; Thu, 11
+ Mar 2021 19:23:07 +0100
+Date:   Thu, 11 Mar 2021 19:22:52 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v5 7/8] Documentation: Add documentation for the Brute LSM
+Message-ID: <20210311182252.GA3349@ubuntu>
+References: <20210227153013.6747-1-john.wood@gmx.com>
+ <20210227153013.6747-8-john.wood@gmx.com>
+ <878s78dnrm.fsf@linux.intel.com>
+ <20210302183032.GA3049@ubuntu>
+ <20210307151920.GR472138@tassilo.jf.intel.com>
+ <20210307164520.GA16296@ubuntu>
+ <20210307172540.GS472138@tassilo.jf.intel.com>
+ <20210307180541.GA17108@ubuntu>
+ <20210307224927.GT472138@tassilo.jf.intel.com>
+ <20210309184054.GA3058@ubuntu>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311031414.5011-1-lyl2019@mail.ustc.edu.cn>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR11CA0004.namprd11.prod.outlook.com
- (2603:10b6:208:23b::9) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR11CA0004.namprd11.prod.outlook.com (2603:10b6:208:23b::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Thu, 11 Mar 2021 18:21:15 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lKPvu-00BTIT-A8; Thu, 11 Mar 2021 14:21:14 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d694e699-30c2-4c8d-f056-08d8e4ba756f
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4042:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4042A97CBA02D0364CFA2103C2909@DM6PR12MB4042.namprd12.prod.outlook.com>
-X-MS-Exchange-Transport-Forked: True
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oF8Uo/ZXH/b2JzU5DUtD8cjXoamnSkU8RPufi25kae0xeI7yWiThsSh0zEaEKCkDkC/kUgUrx7A4+MXWtSUOJFlchnNYFvh2dwGeKs5Xdi4So9WC+zKvHfzlGs7clDugRcxLvKUGxVIqwEYKuoNAZUjWrZPS3AHSA40JntxVT6ZecylG85Uuq02PP+fCXeQ5jXn9l8/ymE/Iv5a2jPpkYjGTsjcyy7NlRg2A0d5buyIZIR7e2Hdb1atpzEkgFGYqDugMQA0lyU8gZE3PGxKA2SC7z+ERmVneVRgCRsEU6visXbyQdRMRm5aYQfJoxGaFHrPgU/YG+cfUz/Sx11RzNp82MF4qumdY4d894Eu3xrS57h/uMeDVEkeS3Cy+0qzCVN/3ekJxKWQ5YX2tCwr7SMQ+jspLmOZsiTnQqYc9uDVPMY1nH9cNvt1OHfzjxEpagm0KPWkqi9nZ8k7QHpjgL9gHoK4n2CSsiDU8WnaOGz0XsNXD2Otfybwom+OPTmhPXpzzsXIqA+2j5dzFD6zhRQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(366004)(396003)(478600001)(66476007)(66556008)(1076003)(4744005)(26005)(36756003)(5660300002)(8676002)(66946007)(186003)(316002)(4326008)(9746002)(83380400001)(426003)(33656002)(2906002)(9786002)(8936002)(2616005)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5xfDhkYRtxoZbEZGU0mdgfv/qoFROeBzQBS6YsAU2phn6lGuQkdVb8Bz63yK?=
- =?us-ascii?Q?zh3+EAJan0vrB+GKhs9alheRCeru1hwQMvMjqayih8NIyZADIC1PW+PRM7Tm?=
- =?us-ascii?Q?Ob8v0VKHTvb/q7GS2jfyOWWfRQ3r5jUx0m5wfTiWp3/JpDVfu0h2zxjMrH+o?=
- =?us-ascii?Q?51Y9EFMu2De+mECTn0szNn8q8PGw1aAuEGmywzu6RewvQr5CtVB7V6iCkkcs?=
- =?us-ascii?Q?hmBNa9Z4lwndL98wAQQbooBjReD07asX/23i3f2cDlH4Nz4PNtxa2Dny9MM/?=
- =?us-ascii?Q?dKztG0qT18km4YJSlo03dPwlNXJx6xmWwX58OrAjn6+gkAOWB9d2nw+4dXOO?=
- =?us-ascii?Q?yp/ArcIxzUXIUmb2u9dYrQBQEVpuwr4qMW9I9jjXx1cItoT53mh6gSpitqGU?=
- =?us-ascii?Q?qUDPWzVE7nvQjsmUAtGI2doROasVajkQnT08U9/YaF/JQKg7bS+x2iShGQ+A?=
- =?us-ascii?Q?VzzxoyCd6SsGff/W0jc8eeCM79FlE3CApd/TFcNXqlUvIXbU6C6ONIDIpDi/?=
- =?us-ascii?Q?701ghgYnmM6KvthUiBndujTg7FJXt0BZuow09RxlFEq9SBOwSH8M9efRUOmJ?=
- =?us-ascii?Q?39Bh/LwsU1XbBq3BUEVCz4/QO02H6yN/cRJg2Zk1DLt+196giAQYCEFr7WNr?=
- =?us-ascii?Q?IEw+kqd8j/vdKztUGkwfW/6H013I3owAFh2tQmeqZ1lyVg/lTRTAFuxwhxDc?=
- =?us-ascii?Q?rvS1tbEpV2GG7WvMVOX4JVS3tJiTa7mWpzeN6YhtBhtEem/SmqucmlK8MDBW?=
- =?us-ascii?Q?HXKC/qgrz6oPrBdP5TV9OMzsw1XzAA0H8njQucTnGR5hUviB76poDlCuae94?=
- =?us-ascii?Q?klSa7cenNzen670vRJmOUXPINl+DEbbH1S2MKnQ6vi1JbgmxiKhkRq3BwRnA?=
- =?us-ascii?Q?rl/AGI5EBXZQTxr62154pD5v4xlNCI6mnwnOBqQelQB+nkdZI2d7sBW2c1ny?=
- =?us-ascii?Q?ZI7X3BA0/XS/OCPYMFWYeX/oGw+MT0rFxM3Qu8/owIH/FZCwyNGE2Dv+YP0l?=
- =?us-ascii?Q?0mG6/Q+uPqE94zOaobHvDAeby5Q6Aw3FYjwZoFmdHpfRMw+CYOhkhvXpd9aX?=
- =?us-ascii?Q?oGEzgrABg5J61jCyZtrgOcBWpKoiYmkM58kjct2hfH2tJ+WTcF7l5CGX1IEf?=
- =?us-ascii?Q?ThUB0XeBK9j9iWoOcjYhmIVpRLK65OETBhD6wJWqJs41B2S9W7NU3qzce06E?=
- =?us-ascii?Q?09gLcUGKQc4g+oPQxBZVns3IgqeoGpAx3k3IDpAsffmCFqqHkEvwEgxoPMST?=
- =?us-ascii?Q?xZeDBsayvovKRWLtw80HNROYEUvgaqKFSYGx0r2kKO62sdgHBhlnkyEcz32h?=
- =?us-ascii?Q?wm+q0eJVxKV73HPkc9TMGURNSF5rw6p5e2VmaGvfe3S1fQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d694e699-30c2-4c8d-f056-08d8e4ba756f
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 18:21:17.1567
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y7sWOP8goWl2xANinIx3H5JPswpM9Vdx/nK7o0S3FbSRBRH8M51R8uiShfbowRqO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4042
+In-Reply-To: <20210309184054.GA3058@ubuntu>
+X-Provags-ID: V03:K1:G8f/cmLbzHC0nvOAJdH8LHg1kBQt5faDFzmpqz5385toUzzE7T/
+ aBAqokU4PkqDSQJV80GvLHFPwvw5izfUOdKZo0dRxlGYKGeLzprDF4za3AuKGiSftYOsWZA
+ miE6mjre9ithdQuNaeNBsIShWd524U0NwGLtlI/0nLPgFY3Gnem7CNFokvucxf3g7qGtR3L
+ dYo6zcVtd9Nhoy9g6b9tA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IuvjmF4wvE8=:k+Np5YEJ/gTxWhv5RAx2aR
+ Naxj9IijaZ8D19fjm+4yscaHdBgu7pWkS0syoMyl5PgbGlKIHME1MWaLDyHw+nTW5ev4o28gM
+ n82pmgZHDVYWbpfGjmWnQ31+Mej/j868cvItrSX00RjPyaCpDcRbzJ3K+rOcjtQnGlGcrA/qs
+ HF1X+Yo9P7S4UsSvO9p9CKACZVZLqdzSrXJ5mDZ+gKxLu9IzN4bd8NvVoAOSz6Bo/ZDfav5pP
+ 7KJLAH0fA9FqQF4lU+r4LEnMU+3cJL01dswzOfE4LOOlZitGV830gVLIzKZ4zrw6Sm/Sb11Dz
+ 5p/AJbOWpeiuIFw9aByBtBhIQq/pTCxQNaj3Ex9eP2RlUCQXAe4Q6BwljSxyTcrRsMKgijXoL
+ Qa634MLCQLMjBuuzoLgiZlHRN+nqmzw6aNw32B+CS1GIXD8yOye3v4Bu9azwDeM4uwY0kn2Mo
+ dOVF7vKPAc7rU/tVFds+vkBP5bxemL7pU/YVEHZgxB1GXXR1IDfYL6ku7kpNzlnc+Bw0f7qiD
+ 0BELxF7+QUvGlepuAFeUO5AO257g4cTKcTK1n6FmQ6rg4TQkMwMtt9GfZWWKfrSLng6h4ICQ9
+ TiSeezx3n/+kze3B9lSg4zQv2SumZB2qOIEn649sZUMFJXfcSRVL3cb2mYpYv7oMjde6z5a0Z
+ 42Y+SuykritmMsZhHreEx0fSuRr54R00t2sQd7kC9YblMm2Yy2mKLLFRvAQRWl0nKeMlsfJcu
+ 9HkF6CgCtD68r1MU2s0bK+FV3cWvICtDu/6hMHkS0DmsWgo7ZX/zsmhtfG/duSyluefLHUGAM
+ HwJwt1O/E8L0NihOxV8aNOfKusr6CnHZ2tfnvoJu/lHuuVuMBVqD8m37xgUI7jWbDe1td8OQC
+ DILVp6PlvjR8m/sRveeg==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 07:14:14PM -0800, Lv Yunlong wrote:
-> In the case of I40IW_CM_EVENT_ABORTED, i40iw_event_connect_error()
-> could be called to free the event->cm_node. However, event->cm_node
-> will be used after and cause use after free. It needs to add flags
-> to inform that event->cm_node has been freed.
-> 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->  drivers/infiniband/hw/i40iw/i40iw_cm.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+Hi,
 
-This might be OK (though I don't like the free variable), Shiraz??
+On Tue, Mar 09, 2021 at 07:40:54PM +0100, John Wood wrote:
+> On Sun, Mar 07, 2021 at 02:49:27PM -0800, Andi Kleen wrote:
+>
+> > So I think it needs more work on the user space side for most usages.
+>
+> Anyway, in the case that the supervisor is init then the system will pan=
+ic. So,
+> I think that we can add a prctl to avoid kill the parent task (the task =
+that
+> exec) and only block new fork system calls from this task. When this boo=
+lean is
+> set, any parent task that is involved in the attack will not be killed. =
+In this
+> case, any following forks will be blocked. This way the system will not =
+crash.
 
-Jason
+Another proposal that I think suits better:
+
+When a brute force attack is detected through the fork or execve system ca=
+ll,
+all the tasks involved in the attack will be killed with the exception of =
+the
+init task (task with pid equal to zero). Now, and only if the init task is
+involved in the attack, block the fork system call from the init process d=
+uring
+a user defined time (using a sysctl attribute). This way the brute force a=
+ttack
+is mitigated and the system does not panic.
+
+I think that this is a better solution than the other one since this is a =
+per
+system solution. And I believe that with a default value for the blocking =
+time
+(sysctl attribute) could be useful in a generic way (for most usages).
+
+The proposal using prctl will need more actions from userspace and it is n=
+ot a
+generic one due to it is a per process solution.
+
+> What do you think?
+
+Thanks,
+John Wood
