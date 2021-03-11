@@ -2,201 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C4A33765C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA08337647
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbhCKPAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233765AbhCKPAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:00:11 -0500
-X-Greylist: delayed 307 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 11 Mar 2021 07:00:08 PST
-Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB138C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:00:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
-        d=auristor.com; s=MDaemon; r=y; t=1615474499; x=1616079299;
-        i=jaltman@auristor.com; q=dns/txt; h=Subject:To:Cc:References:
-        From:Organization:Message-ID:Date:User-Agent:MIME-Version:
-        In-Reply-To:Content-Type; bh=T32H4xMbln8mRCO4BemdfMrRGXOFNoA7rJn
-        1tXoNvNY=; b=VedWkOJ59vWpGEWSI5ne0JlUHukLxhwG9QFhJ3EIfjCMpOHCLnf
-        xV1kCHEXT8iNkLNIfg4EQM/Qpvhdtv6kSe/8J4nUr7Ug6oCsWkuziYqeofzaTQ8W
-        xuOP3LBfBDKRsPaLpVEzB3NExAkO4w2mOdF/O9dQbpk3SEUiLzNumCHw=
-X-MDAV-Result: clean
-X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 11 Mar 2021 09:54:59 -0500
-Received: from [IPv6:2603:7000:73d:4f22:7c0c:f010:6a2e:c624] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v21.0.1d) 
-        with ESMTPSA id md5001002904908.msg; Thu, 11 Mar 2021 09:54:58 -0500
-X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 11 Mar 2021 09:54:58 -0500
-        (not processed: message from trusted or authenticated source)
-X-MDRemoteIP: 2603:7000:73d:4f22:7c0c:f010:6a2e:c624
-X-MDHelo: [IPv6:2603:7000:73d:4f22:7c0c:f010:6a2e:c624]
-X-MDArrival-Date: Thu, 11 Mar 2021 09:54:58 -0500
-X-MDOrigin-Country: United States, North America
-X-Authenticated-Sender: jaltman@auristor.com
-X-Return-Path: prvs=1704299ed9=jaltman@auristor.com
-X-Envelope-From: jaltman@auristor.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] AFS metadata xattr fixes
-To:     "David Howells (dhowells@redhat.com)" <dhowells@redhat.com>,
-        linux-afs@lists.infradead.org
-Cc:     Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <161547181530.1868820.12933722592029066752.stgit@warthog.procyon.org.uk>
-From:   Jeffrey E Altman <jaltman@auristor.com>
-Organization: AuriStor, Inc.
-Message-ID: <08de868e-d207-8980-1da4-da79eda07560@auristor.com>
-Date:   Thu, 11 Mar 2021 09:54:47 -0500
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233869AbhCKO5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:57:37 -0500
+Received: from mga12.intel.com ([192.55.52.136]:41875 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233504AbhCKO5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 09:57:06 -0500
+IronPort-SDR: fAyazLXBGm+RCxZjvt0AjIOjE/01HrKh8F0C9yLLr0cOcaXvBAdSkTa0jnFhbMoI6DpUcy+3sG
+ 1kB49NbdEIcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="167951520"
+X-IronPort-AV: E=Sophos;i="5.81,240,1610438400"; 
+   d="scan'208";a="167951520"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 06:57:06 -0800
+IronPort-SDR: bZLHUbU5lneKMCBYas2V2r3BJKdyXm2SdvIVCwHjyPj4+Y4rSPauRNbsxZDTWKnVTYRvEWayYN
+ TUY2jDJfgbMg==
+X-IronPort-AV: E=Sophos;i="5.81,240,1610438400"; 
+   d="scan'208";a="404094375"
+Received: from ideak-desk.fi.intel.com ([10.237.68.141])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 06:57:04 -0800
+Date:   Thu, 11 Mar 2021 16:57:00 +0200
+From:   Imre Deak <imre.deak@intel.com>
+To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Khaled Almahallawy <khaled.almahallawy@intel.com>,
+        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
+        <ville.syrjala@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com
+Subject: Re: [LKP] Re: [drm/i915] 7962893ecb:
+ WARNING:at_drivers/gpu/drm/i915/intel_runtime_pm.c:#intel_runtime_pm_driver_release[i915]
+Message-ID: <20210311145700.GA2970909@ideak-desk.fi.intel.com>
+Reply-To: imre.deak@intel.com
+References: <20210303055517.GB2708@xsang-OptiPlex-9020>
+ <20210304005518.GD1137473@ideak-desk.fi.intel.com>
+ <9575be26-f9e5-814b-b24c-a2497847980e@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <161547181530.1868820.12933722592029066752.stgit@warthog.procyon.org.uk>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms030802040403060804030404"
-X-MDCFSigsAdded: auristor.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9575be26-f9e5-814b-b24c-a2497847980e@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Hi,
 
---------------ms030802040403060804030404
-Content-Type: multipart/mixed;
- boundary="------------B202B6D5E6132616347ACAB7"
-Content-Language: en-US
+On Thu, Mar 11, 2021 at 09:32:04AM +0800, Xing Zhengjun wrote:
+> On 3/4/2021 8:55 AM, Imre Deak wrote:
+> > Hi Oliver,
+> > 
+> > On Wed, Mar 03, 2021 at 01:55:17PM +0800, kernel test robot wrote:
+> > > 
+> > > Greeting,
+> > > 
+> > > FYI, we noticed the following commit (built with gcc-9):
+> > > 
+> > > commit: 7962893ecb853aa7c8925ce237ab6c4274cfc1c7 ("drm/i915: Disable runtime power management during shutdown")
+> > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> > > [...]
+> > > If you fix the issue, kindly add following tag
+> > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > 
+> > > 
+> > > [   49.686892] ------------[ cut here ]------------
+> > > [   49.691510] i915 0000:00:02.0: i915 raw-wakerefs=1 wakelocks=1 on cleanup
+> > 
+> > 
+> > THanks for the report. I couldn't reproduce this. Could you add the
+> > following kconfig option for these tests (and if possible reproduce the
+> > problem with that?):
+> > 
+> > CONFIG_DRM_I915_DEBUG_RUNTIME_PM=y
+> > 
+> I add "CONFIG_DRM_I915_DEBUG_RUNTIME_PM=y" to the kernel config, re-test it,
+> the issue still happened. The kernel log is in the attachment.
 
-This is a multi-part message in MIME format.
---------------B202B6D5E6132616347ACAB7
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+thanks, the following should fix this:
+https://patchwork.freedesktop.org/patch/423617/?series=87883&rev=1
 
-On 3/11/2021 9:10 AM, David Howells (dhowells@redhat.com) wrote:
-> I wonder if it's better to just hide all the afs.* xattrs from listxatt=
-r().
-> It would probably be even better to not use xattrs for this, but I'm no=
-t
-> sure what I would use instead.
+The leaked wakeref was due to not handling the case where the DMC
+firmware is missing:
 
-I believe that all of the "afs.*" xattrs should be hidden from=20
-listxattr().  Any "afs.*" xattr that is read from an afs inode can be=20
-copied to another filesystem and stored.  Attempts to set these values=20
-in an afs volume will fail.
+[   20.316022] i915 0000:00:02.0: Direct firmware load for i915/skl_dmc_ver1_27.bin failed with error -2
+[   20.338032] i915 0000:00:02.0: [drm] DMC firmware homepage: https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/i915
 
-The use of xattrs is intended to be an alternative to the IBM/OpenAFS=20
-pioctls which are accessed by processes such as "fs", "aklog", "tokens", =
+...
 
-etc which would know the names of the xattrs and how to use them.   Such =
+[   47.439434] i915 0000:00:02.0: i915 raw-wakerefs=1 wakelocks=1 on cleanup
+...
+[   47.646836] Call Trace:
+[   47.650215]  pci_device_shutdown+0x34/0x60
+[   47.655264]  device_shutdown+0x162/0x1d0
+[   47.660103]  kernel_restart+0xe/0x40
+[   47.664615]  __do_sys_reboot+0x1d2/0x210
+[   47.669445]  ? __check_object_size+0x136/0x150
+[   47.674792]  ? rcu_nocb_try_bypass+0x1f2/0x340
+[   47.680132]  ? get_max_files+0x10/0x10
+[   47.684781]  ? exit_to_user_mode_prepare+0x112/0x150
+[   47.690672]  do_syscall_64+0x33/0x40
+...
+[   47.831502] i915 Wakeref count: 1
+[   47.835731] i915 Wakeref x1 taken at:
+[   47.835731]    track_intel_runtime_pm_wakeref+0x19/0xa0 [i915]
+[   47.835731]    intel_display_power_get+0x25/0x60 [i915]
+[   47.835731]    intel_csr_runtime_pm_get+0x22/0x60 [i915]
+[   47.835731]    intel_csr_ucode_init+0x49/0x270 [i915]
+[   47.835731]    intel_modeset_init_noirq+0x65/0x280 [i915]
+[   47.835731]    i915_driver_probe+0x518/0x990 [i915]
+[   47.835731]    i915_pci_probe+0x54/0x140 [i915]
+[   47.835731]    local_pci_probe+0x42/0x80
 
-tools would not require listxattr() to find them.
+This could also be a real problem if the FW loading hadn't yet finished
+by shutdown/reboot.
 
-Thanks for the consideration.
-
-Jeffrey Altman
-
-
-
---------------B202B6D5E6132616347ACAB7
-Content-Type: text/x-vcard; charset=utf-8;
- name="jaltman.vcf"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="jaltman.vcf"
-
-begin:vcard
-fn:Jeffrey Altman
-n:Altman;Jeffrey
-org:AuriStor, Inc.
-adr:;;255 W 94TH ST STE 6B;New York;NY;10025-6985;United States
-email;internet:jaltman@auristor.com
-title:CEO
-tel;work:+1-212-769-9018
-url:https://www.linkedin.com/in/jeffreyaltman/
-version:2.1
-end:vcard
-
-
---------------B202B6D5E6132616347ACAB7--
-
---------------ms030802040403060804030404
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-DGswggXSMIIEuqADAgECAhBAAW0B1qVVQ32wvx2EXYU6MA0GCSqGSIb3DQEBCwUAMDoxCzAJ
-BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEy
-MB4XDTE5MDkwNTE0MzE0N1oXDTIyMTEwMTE0MzE0N1owcDEvMC0GCgmSJomT8ixkAQETH0Ew
-MTQxMEMwMDAwMDE2RDAxRDZBNTQwMDAwMDQ0NDcxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
-YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQCY1TC9QeWnUgEoJ81FcAVnhGn/AWuzvkYRUG5/ZyXDdaM212e8
-ybCklgSmZweqNdrfaaHXk9vwjpvpD4YWgb07nJ1QBwlvRV/VPAaDdneIygJJWBCzaMVLttKO
-0VimH/I/HUwFBQT2mrktucCEf2qogdi2P+p5nuhnhIUiyZ71Fo43gF6cuXIMV/1rBNIJDuwM
-Q3H8zi6GL0p4mZFZDDKtbYq2l8+MNxFvMrYcLaJqejQNQRBuZVfv0Fq9pOGwNLAk19baIw3U
-xdwx+bGpTtS63Py1/57MQ0W/ZXE/Ocnt1qoDLpJeZIuEBKgMcn5/iN9+Ro5zAuOBEKg34wBS
-8QCTAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
-BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
-BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
-Mi5wN2MwHwYDVR0jBBgwFoAUpHPa72k1inXMoBl7CDL4a4nkQuwwCQYDVR0TBAIwADCCASsG
-A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
-L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
-bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
-aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
-YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
-ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
-dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTIuY3JsMB8GA1UdEQQY
-MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBR7pHsvL4H5GdzNToI9e5BuzV19
-bzAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAFlm
-JYk4Ff1v/n0foZkv661W4LCRtroBaVykOXetrDDOQNK2N6JdTa146uIZVgBeU+S/0DLvJBKY
-tkUHQ9ovjXJTsuCBmhIIw3YlHoFxbku0wHEpXMdFUHV3tUodFJJKF3MbC8j7dOMkag59/Mdz
-Sjszdvit0av9nTxWs/tRKKtSQQlxtH34TouIke2UgP/Nn901QLOrJYJmtjzVz8DW3IYVxfci
-SBHhbhJTdley5cuEzphELo5NR4gFjBNlxH7G57Hno9+EWILpx302FJMwTgodIBJbXLbPMHou
-xQbOL2anOTUMKO8oH0QdQHCtC7hpgoQa7UJYJxDBI+PRaQ/HObkwggaRMIIEeaADAgECAhEA
-+d5Wf8lNDHdw+WAbUtoVOzANBgkqhkiG9w0BAQsFADBKMQswCQYDVQQGEwJVUzESMBAGA1UE
-ChMJSWRlblRydXN0MScwJQYDVQQDEx5JZGVuVHJ1c3QgQ29tbWVyY2lhbCBSb290IENBIDEw
-HhcNMTUwMjE4MjIyNTE5WhcNMjMwMjE4MjIyNTE5WjA6MQswCQYDVQQGEwJVUzESMBAGA1UE
-ChMJSWRlblRydXN0MRcwFQYDVQQDEw5UcnVzdElEIENBIEExMjCCASIwDQYJKoZIhvcNAQEB
-BQADggEPADCCAQoCggEBANGRTTzPCic0kq5L6ZrUJWt5LE/n6tbPXPhGt2Egv7plJMoEpvVJ
-JDqGqDYymaAsd8Hn9ZMAuKUEFdlx5PgCkfu7jL5zgiMNnAFVD9PyrsuF+poqmlxhlQ06sFY2
-hbhQkVVQ00KCNgUzKcBUIvjv04w+fhNPkwGW5M7Ae5K5OGFGwOoRck9GG6MUVKvTNkBw2/vN
-MOd29VGVTtR0tjH5PS5yDXss48Yl1P4hDStO2L4wTsW2P37QGD27//XGN8K6amWB6F2XOgff
-/PmlQjQOORT95PmLkwwvma5nj0AS0CVp8kv0K2RHV7GonllKpFDMT0CkxMQKwoj+tWEWJTiD
-KSsCAwEAAaOCAoAwggJ8MIGJBggrBgEFBQcBAQR9MHswMAYIKwYBBQUHMAGGJGh0dHA6Ly9j
-b21tZXJjaWFsLm9jc3AuaWRlbnRydXN0LmNvbTBHBggrBgEFBQcwAoY7aHR0cDovL3ZhbGlk
-YXRpb24uaWRlbnRydXN0LmNvbS9yb290cy9jb21tZXJjaWFscm9vdGNhMS5wN2MwHwYDVR0j
-BBgwFoAU7UQZwNPwBovupHu+QucmVMiONnYwDwYDVR0TAQH/BAUwAwEB/zCCASAGA1UdIASC
-ARcwggETMIIBDwYEVR0gADCCAQUwggEBBggrBgEFBQcCAjCB9DBFFj5odHRwczovL3NlY3Vy
-ZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDADAgEB
-GoGqVGhpcyBUcnVzdElEIENlcnRpZmljYXRlIGhhcyBiZWVuIGlzc3VlZCBpbiBhY2NvcmRh
-bmNlIHdpdGggSWRlblRydXN0J3MgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBQb2xpY3kgZm91bmQg
-YXQgaHR0cHM6Ly9zZWN1cmUuaWRlbnRydXN0LmNvbS9jZXJ0aWZpY2F0ZXMvcG9saWN5L3Rz
-L2luZGV4Lmh0bWwwSgYDVR0fBEMwQTA/oD2gO4Y5aHR0cDovL3ZhbGlkYXRpb24uaWRlbnRy
-dXN0LmNvbS9jcmwvY29tbWVyY2lhbHJvb3RjYTEuY3JsMB0GA1UdJQQWMBQGCCsGAQUFBwMC
-BggrBgEFBQcDBDAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0OBBYEFKRz2u9pNYp1zKAZewgy+GuJ
-5ELsMA0GCSqGSIb3DQEBCwUAA4ICAQAN4YKu0vv062MZfg+xMSNUXYKvHwvZIk+6H1pUmivy
-DI4I6A3wWzxlr83ZJm0oGIF6PBsbgKJ/fhyyIzb+vAYFJmyI8I/0mGlc+nIQNuV2XY8cypPo
-VJKgpnzp/7cECXkX8R4NyPtEn8KecbNdGBdEaG4a7AkZ3ujlJofZqYdHxN29tZPdDlZ8fR36
-/mAFeCEq0wOtOOc0Eyhs29+9MIZYjyxaPoTS+l8xLcuYX3RWlirRyH6RPfeAi5kySOEhG1qu
-NHe06QIwpigjyFT6v/vRqoIBr7WpDOSt1VzXPVbSj1PcWBgkwyGKHlQUOuSbHbHcjOD8w8wH
-SDbL+L2he8hNN54doy1e1wJHKmnfb0uBAeISoxRbJnMMWvgAlH5FVrQWlgajeH/6NbYbBSRx
-ALuEOqEQepmJM6qz4oD2sxdq4GMN5adAdYEswkY/o0bRKyFXTD3mdqeRXce0jYQbWm7oapqS
-ZBccFvUgYOrB78tB6c1bxIgaQKRShtWR1zMM0JfqUfD9u8Fg7G5SVO0IG/GcxkSvZeRjhYcb
-TfqF2eAgprpyzLWmdr0mou3bv1Sq4OuBhmTQCnqxAXr4yVTRYHkp5lCvRgeJAme1OTVpVPth
-/O7HJ7VuEP9GOr6kCXCXmjB4P3UJ2oU0NqfoQdcSSSt9hliALnExTEjii20B2nSDojGCAxQw
-ggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UEAxMO
-VHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowDQYJYIZIAWUDBAIBBQCgggGXMBgG
-CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDMxMTE0NTQ0OVow
-LwYJKoZIhvcNAQkEMSIEIMpsp5MCwIUQG8wjWoH4LfGtslpNq/ZMAE6KmJ6OQ88vMF0GCSsG
-AQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UE
-AxMOVHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowXwYLKoZIhvcNAQkQAgsxUKBO
-MDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQg
-Q0EgQTEyAhBAAW0B1qVVQ32wvx2EXYU6MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEq
-MAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwIC
-AUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAhXZvYLdWwB9f
-1mo4F/tG3rZYhPVQ27fqzEmf1TeswUQZbPyXA/FRCVzE8CequVELWvKcRc7j6gOP7vB5xHZj
-KVQSGVOHvOLiXZh6+SNUrjn0HhWkA+YulRU/l2VDKKolAppsav/McYQi3jgp2LxgpP1ieypx
-ObMXutZ/bMtfXTyTybjOGWMoVUmJxXmPLFvNitUAAemgm4Jok+bhuMF6Sm4kb9t2WshRF987
-HDpIGI3p9z+FbrnqCX4hbGFSfvEKB1ILp589gSW+FrL4U6t1sZqhKOqktHKkAAz2SPdgR24K
-536CyOrEIssoBMoGZvIFFgCoGQduVmHvN9T+ITa5DQAAAAAAAA==
---------------ms030802040403060804030404--
-
+--Imre
