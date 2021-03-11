@@ -2,110 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B108337ADC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C326337ADF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhCKRbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:31:14 -0500
-Received: from mga04.intel.com ([192.55.52.120]:7048 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhCKRbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:31:10 -0500
-IronPort-SDR: hE5Tay7vDuUJZfMZ1bIOGn1uUa02h7FggHyoJninA3R6GJx3grwlmo6MQoz2CTRS5iIYde1gtO
- bJ9bTHuzImZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="186329383"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="186329383"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:31:09 -0800
-IronPort-SDR: Bugh2Iwt9i2MF+AnVAn3xB1b6sNsAqoinvdDQ1/OuBEPtH1Xb0FvUeu3V+7ghXdDwP6gt6LEAC
- YlVkXIYCAskg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="404139836"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Mar 2021 09:31:09 -0800
-Received: from [10.251.15.67] (kliang2-MOBL.ccr.corp.intel.com [10.251.15.67])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id DA88B580514;
-        Thu, 11 Mar 2021 09:31:07 -0800 (PST)
-Subject: Re: [PATCH V2 20/25] perf/x86/intel: Add Alder Lake Hybrid support
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-21-git-send-email-kan.liang@linux.intel.com>
- <YEpAtTttSxMVDWYp@hirez.programming.kicks-ass.net>
- <YEpGMm2xnfbxDZpp@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <0094f13f-17b9-3d55-a57c-a48e82fb848c@linux.intel.com>
-Date:   Thu, 11 Mar 2021 12:31:06 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229612AbhCKRct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:32:49 -0500
+Received: from mail-il1-f180.google.com ([209.85.166.180]:45435 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhCKRcZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:32:25 -0500
+Received: by mail-il1-f180.google.com with SMTP id s1so19628091ilh.12;
+        Thu, 11 Mar 2021 09:32:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mciBxnYC8ZTMruTsj3A3327ldspmTar14yGRG/X9ADw=;
+        b=twXjg20hOh+9vs/EusiW0My71WLMbM+5Kq8khjjZipT3urUU4YNw6NEXt4iLWbS6O4
+         qwG2CAG8V/CQU/iV5r3LaO3983r7p/Zi98V6/lkr/GjL0QxfM38V7LB1EwNiFrs+BexE
+         y5apCjEvOMOu7fUKzRY5KjS3q8vfP14mxeeWAMn0bkTd2q6vUZbN11OEtzH7YGdOq0ZO
+         pz5w3s9nKQTTb6s36KuC04s/rMygB3Eb9PMEohbhHp9jc8n1zp+lomiDzcQBrvsa4Hab
+         qNXYZfmHjEUQPX1nmSoEdpriqnrvCr0m9kbAxONTCXn8cRHMCZhN/h8muslY7XXdK8jO
+         e77A==
+X-Gm-Message-State: AOAM532nWX3pm6zvK3XCYMfyl7XH34jU7zh1bTJCVQiXcNijgPFbmw2x
+        TkASTw0dbUasFDH8uDg//eDRUxePJA==
+X-Google-Smtp-Source: ABdhPJw33c7UkDeD10+NXNJn3sij95d8ma7Y6H5nWgbBsMNXhiJJlw09dJacyGQlFWCO5FIIUqgIYA==
+X-Received: by 2002:a05:6e02:152f:: with SMTP id i15mr8130601ilu.277.1615483944718;
+        Thu, 11 Mar 2021 09:32:24 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id m9sm95215ilf.53.2021.03.11.09.32.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 09:32:23 -0800 (PST)
+Received: (nullmailer pid 920025 invoked by uid 1000);
+        Thu, 11 Mar 2021 17:32:21 -0000
+Date:   Thu, 11 Mar 2021 10:32:21 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] dt-bindings: mtd: Document use of nvmem-cells
+ compatible
+Message-ID: <20210311173221.GB866234@robh.at.kernel.org>
+References: <20210311051309.16789-1-ansuelsmth@gmail.com>
+ <20210311051309.16789-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YEpGMm2xnfbxDZpp@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311051309.16789-2-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/11/2021 11:32 AM, Peter Zijlstra wrote:
-> On Thu, Mar 11, 2021 at 05:09:25PM +0100, Peter Zijlstra wrote:
->> On Wed, Mar 10, 2021 at 08:37:56AM -0800, kan.liang@linux.intel.com wrote:
->>> From: Kan Liang <kan.liang@linux.intel.com>
->>>
->>> Alder Lake Hybrid system has two different types of core, Golden Cove
->>> core and Gracemont core. The Golden Cove core is registered to
->>> "cpu_core" PMU. The Gracemont core is registered to "cpu_atom" PMU.
->>>
->>> The difference between the two PMUs include:
->>> - Number of GP and fixed counters
->>> - Events
->>> - The "cpu_core" PMU supports Topdown metrics.
->>>    The "cpu_atom" PMU supports PEBS-via-PT.
->>>
->>> The "cpu_core" PMU is similar to the Sapphire Rapids PMU, but without
->>> PMEM.
->>> The "cpu_atom" PMU is similar to Tremont, but with different
->>> event_constraints, extra_regs and number of counters.
->>>
->>
->>> +		/* Initialize big core specific PerfMon capabilities.*/
->>> +		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX];
->>> +		pmu->name = "cpu_core";
->>
->>> +		/* Initialize Atom core specific PerfMon capabilities.*/
->>> +		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX];
->>> +		pmu->name = "cpu_atom";
->>
->> So do these things use the same event lists as SPR and TNT? Is there any
->> way to discover that, because AFAICT /proc/cpuinfo will say every CPU
->> is 'Alderlake', and the above also doesn't give any clue.
->>
->> FWIW, ARM big.LITTLE does discriminate in its /proc/cpuinfo, but I'm not
->> entirely sure it's really useful. Mark said perf userspace uses
->> somethink akin to our CPUID, except exposed through sysfs, to find the
->> event lists.
->>
->> My desktop has: cpu/caps/pmu_name and that gives "skylake", do we want
->> the above to have cpu_core/caps/pmu_name give "sapphire_rapids" etc.. ?
+On Thu, Mar 11, 2021 at 06:12:48AM +0100, Ansuel Smith wrote:
+> Document nvmem-cells compatible used to treat mtd partitions as a
+> nvmem provider.
 > 
-> FWIW, "Tremont" is the only pmu_name with a capital :-( I don't suppose
-> we can still fix that?
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  .../bindings/mtd/partitions/nvmem-cells.yaml  | 99 +++++++++++++++++++
+>  1 file changed, 99 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+> new file mode 100644
+> index 000000000000..b53faf87d4e4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+> @@ -0,0 +1,99 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/partitions/nvmem-cells.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Nvmem cells
+> +
+> +description: |
+> +  Any partition containing the compatible "nvmem-cells" will register as a
+> +  nvmem provider.
+> +  Each direct subnodes represents a nvmem cell following the nvmem binding.
+> +  Nvmem binding to declare nvmem-cells can be found in:
+> +  Documentation/devicetree/bindings/nvmem/nvmem.yaml
+> +
+> +maintainers:
+> +  - Ansuel Smith <ansuelsmth@gmail.com>
+> +
+> +allOf:
+> +  - $ref: "../../nvmem/nvmem.yaml#"
 
-The cpu/caps/pmu_name is not used for the event list.
+I'd rather have the 'absolute' path:
 
-I don't think perf tool checks the "Tremont". I think it should be OK to 
-fix it. Let me post a patch.
+/schemas/nvmem/nvmem.yaml
 
-Thanks,
-Kan
+Otherwise,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+> +
+> +properties:
+> +  compatible:
+> +    const: nvmem-cells
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    partitions {
+> +      compatible = "fixed-partitions";
+> +      #address-cells = <1>;
+> +      #size-cells = <1>;
+> +
+> +      /* ... */
+> +
+> +      };
+> +      art: art@1200000 {
+> +        compatible = "nvmem-cells";
+> +        reg = <0x1200000 0x0140000>;
+> +        label = "art";
+> +        read-only;
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        macaddr_gmac1: macaddr_gmac1@0 {
+> +          reg = <0x0 0x6>;
+> +        };
+> +
+> +        macaddr_gmac2: macaddr_gmac2@6 {
+> +          reg = <0x6 0x6>;
+> +        };
+> +
+> +        pre_cal_24g: pre_cal_24g@1000 {
+> +          reg = <0x1000 0x2f20>;
+> +        };
+> +
+> +        pre_cal_5g: pre_cal_5g@5000{
+> +          reg = <0x5000 0x2f20>;
+> +        };
+> +      };
+> +  - |
+> +    partitions {
+> +        compatible = "fixed-partitions";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        partition@0 {
+> +            label = "bootloader";
+> +            reg = <0x000000 0x100000>;
+> +            read-only;
+> +        };
+> +
+> +        firmware@100000 {
+> +            compatible = "brcm,trx";
+> +            label = "firmware";
+> +            reg = <0x100000 0xe00000>;
+> +        };
+> +
+> +        calibration@f00000 {
+> +            compatible = "nvmem-cells";
+> +            label = "calibration";
+> +            reg = <0xf00000 0x100000>;
+> +            ranges = <0 0xf00000 0x100000>;
+> +            #address-cells = <1>;
+> +            #size-cells = <1>;
+> +
+> +            wifi0@0 {
+> +                reg = <0x000000 0x080000>;
+> +            };
+> +
+> +            wifi1@80000 {
+> +                reg = <0x080000 0x080000>;
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.30.0
+> 
