@@ -2,85 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3353378AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D29133378F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234413AbhCKQCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:02:53 -0500
-Received: from mga06.intel.com ([134.134.136.31]:62714 "EHLO mga06.intel.com"
+        id S234505AbhCKQOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:14:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234358AbhCKQC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:02:26 -0500
-IronPort-SDR: V64VhHctN+wbuLRY+Wim9JTowjnXkfS13CQggwGD4HT2qch7b92CD5z4pFsi52mVgnlbeeJoH/
- mUkj4wR91Kuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="250051782"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="250051782"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 08:02:21 -0800
-IronPort-SDR: TgXkgDIxrkFNbVebBWByqbErUiiENfNPJN9K+7uPCMtMqH7ay2EozaXX48hLrafcqze5WzjRhp
- Z6RrXrgIyS5A==
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="603582690"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 08:02:20 -0800
-Date:   Thu, 11 Mar 2021 08:02:20 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        David Sterba <dsterba@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>
-Subject: Re: [mm/highmem] 61b205f579:
- WARNING:at_mm/highmem.c:#__kmap_local_sched_out
-Message-ID: <20210311160220.GS3014244@iweiny-DESK2.sc.intel.com>
-References: <20210304083825.GB17830@xsang-OptiPlex-9020>
- <BYAPR04MB496507720FEEF2B77FB639E186929@BYAPR04MB4965.namprd04.prod.outlook.com>
+        id S234334AbhCKQNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:13:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 706A860241;
+        Thu, 11 Mar 2021 16:03:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615478623;
+        bh=dVsP+STyCM204me9sPtkFjD1L6E5GjVrtXP5uVUENU0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=umpZhUA5RdXY7XEyc6DOL4b2RPOtUkL8zrWWG714WEf9Vs9RdRuAFY3z086hP1lth
+         1HFQQnMEVsTP93TSPOgjIejya3taNlvc28pOJviNGv+JJ0Kwy/1EZ3i6CGxurOzlQS
+         ByIC935VB/FEzpnoMZ7FTcTUF/JIpD8GoemSn7Wc2jTMO7l+DreUranianOlEndlGM
+         cq76Pksfm6ZgZpr/IR7wZbhBNng3iVzzSwr34ZkDOUHnNkyvRR0LY7boung1RCo7ej
+         2d617j6alGuNAq79E0mFtvHrSsarkcTAH/5+dV+Lpv3+UH2K5XnHHiqMReCfNlJJvX
+         0vYfSdEClP22Q==
+Subject: Re: [PATCH] clk: socfpga: fix iomem pointer cast on 64-bit
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>
+References: <20210311144833.1313387-1-krzysztof.kozlowski@canonical.com>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Message-ID: <70efd621-3125-21a2-cd5a-cc01284f0e75@kernel.org>
+Date:   Thu, 11 Mar 2021 10:03:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR04MB496507720FEEF2B77FB639E186929@BYAPR04MB4965.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20210311144833.1313387-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 08:53:04PM +0000, Chaitanya Kulkarni wrote:
-> Ira,
-> 
-> On 3/4/21 00:23, kernel test robot wrote:
-> > Greeting,
-> >
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: 61b205f579911a11f0b576f73275eca2aed0d108 ("mm/highmem: Convert memcpy_[to|from]_page() to kmap_local_page()")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> >
-> >
-> > in testcase: trinity
-> > version: trinity-static-i386-x86_64-f93256fb_2019-08-28
-> > with following parameters:
-> >
-> > 	runtime: 300s
-> >
-> > test-description: Trinity is a linux system call fuzz tester.
-> > test-url: http://codemonkey.org.uk/projects/trinity/
-> >
-> >
-> > on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> >
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> Is the fix for this been posted yet ?
 
-No.  I've been unable to reproduce it yet.
 
-Ira
-
+On 3/11/21 8:48 AM, Krzysztof Kozlowski wrote:
+> Pointers should be cast to unsigned long instead of integer.  This fixes
+> warning when compile testing on ARM64:
 > 
-> (asking since I didn't see the fix and my mailer is dropping emails from
->  lkml).
+>    drivers/clk/socfpga/clk-gate.c: In function ‘socfpga_clk_recalc_rate’:
+>    drivers/clk/socfpga/clk-gate.c:102:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>   drivers/clk/socfpga/clk-gate.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/socfpga/clk-gate.c b/drivers/clk/socfpga/clk-gate.c
+> index 43ecd507bf83..c876523d5d51 100644
+> --- a/drivers/clk/socfpga/clk-gate.c
+> +++ b/drivers/clk/socfpga/clk-gate.c
+> @@ -99,7 +99,7 @@ static unsigned long socfpga_clk_recalc_rate(struct clk_hw *hwclk,
+>   		val = readl(socfpgaclk->div_reg) >> socfpgaclk->shift;
+>   		val &= GENMASK(socfpgaclk->width - 1, 0);
+>   		/* Check for GPIO_DB_CLK by its offset */
+> -		if ((int) socfpgaclk->div_reg & SOCFPGA_GPIO_DB_CLK_OFFSET)
+> +		if ((unsigned long) socfpgaclk->div_reg & SOCFPGA_GPIO_DB_CLK_OFFSET)
+>   			div = val + 1;
+>   		else
+>   			div = (1 << val);
+> 
+
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
