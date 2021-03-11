@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBB63370D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 227B13370D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhCKLGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:06:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232461AbhCKLGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:06:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C7864F2D;
-        Thu, 11 Mar 2021 11:06:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615460762;
-        bh=cyhRmiXv5k47ECRCfIL5lHCW87E4NQGgeaFIfdFjPyk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vmCVT/wWfijArX9Q0V5zen6LvPlmGHTn8eDIJYOTn10Ave/cdZuYQU2MZ8C1CmlcP
-         vufVPg+fMKOBXG8n03GNKg5/63p/xsMDrLHJvd/u2mgDAT4xPoHVNust4PuhLQXvJd
-         4wcJI35+WnoyWZAmBM9XZF7nAdxXlXw1/gXbEOKM=
-From:   gregkh@linuxfoundation.org
-To:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>
-Cc:     linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Daniel Rosenberg <drosen@google.com>, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] configfs: Fix config_item refcnt error in __configfs_open_file()
-Date:   Thu, 11 Mar 2021 12:05:50 +0100
-Message-Id: <20210311110550.981100-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        id S232461AbhCKLGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:06:43 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44226 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232571AbhCKLGQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 06:06:16 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12BB5wZt054405;
+        Thu, 11 Mar 2021 05:05:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615460758;
+        bh=LdUi8SVqpwGudFQodpNuw3WOuVJXt08p5H4MV67u4/0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=yZv9FzRLVYgKp+Aa5UbVh/oPUlfv4MCL8Q0qOAxTmbF/dEMsGCRGcKCyOL3d9FrlX
+         rt8e5BePT3NV5Nxz7faPkv2Mcn5AytmPN6OaRCKdqf+uwdZ2b6/KY2A4OtrqUTd7Na
+         mcuxWYy+s468Fl4BpYuQwbhJkCSLt+utM7CvK1lk=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12BB5wrV055378
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 11 Mar 2021 05:05:58 -0600
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 11
+ Mar 2021 05:05:58 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 11 Mar 2021 05:05:58 -0600
+Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12BB5tHA053520;
+        Thu, 11 Mar 2021 05:05:56 -0600
+Subject: Re: [PATCH RESEND][next] mtd: cfi: Fix fall-through warnings for
+ Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>
+References: <20210305081933.GA137147@embeddedor>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <e6b57357-e491-a3d0-ada8-9590b2bb8817@ti.com>
+Date:   Thu, 11 Mar 2021 16:35:54 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210305081933.GA137147@embeddedor>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Rosenberg <drosen@google.com>
 
-__configfs_open_file() used to use configfs_get_config_item, but changed
-in commit b0841eefd969 ("configfs: provide exclusion between IO and
-removals") to just call to_item. The error path still tries to clean up
-the reference, incorrectly decrementing the ref count.
 
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
-Cc: stable@vger.kernel.org
-Fixes: b0841eefd969 ("configfs: provide exclusion between IO and removals")
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/configfs/file.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On 3/5/21 1:49 PM, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+> warnings by explicitly adding multiple break statements and a return
+> instead of letting the code fall through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
 
-diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-index 1f0270229d7b..8b7c8a8a09f3 100644
---- a/fs/configfs/file.c
-+++ b/fs/configfs/file.c
-@@ -378,7 +378,7 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
- 
- 	attr = to_attr(dentry);
- 	if (!attr)
--		goto out_put_item;
-+		goto out_put_module;
- 
- 	if (type & CONFIGFS_ITEM_BIN_ATTR) {
- 		buffer->bin_attr = to_bin_attr(dentry);
-@@ -391,7 +391,7 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
- 	/* Grab the module reference for this attribute if we have one */
- 	error = -ENODEV;
- 	if (!try_module_get(buffer->owner))
--		goto out_put_item;
-+		goto out_put_module;
- 
- 	error = -EACCES;
- 	if (!buffer->item->ci_type)
-@@ -435,8 +435,6 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
- 
- out_put_module:
- 	module_put(buffer->owner);
--out_put_item:
--	config_item_put(buffer->item);
- out_free_buffer:
- 	up_read(&frag->frag_sem);
- 	kfree(buffer);
--- 
-2.30.2
+Acked-by: Vignesh Raghavendra <vigneshr@ti.com>
 
+Miquel,
+
+Feel free to queue this via mtd/next
+
+Regards
+Vignesh
+
+[...]
