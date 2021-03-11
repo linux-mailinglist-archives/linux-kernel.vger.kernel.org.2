@@ -2,104 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612733371BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A956F3371C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbhCKLuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:50:07 -0500
-Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:46476 "EHLO
-        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232661AbhCKLtv (ORCPT
+        id S232839AbhCKLuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:50:01 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13146 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232519AbhCKLti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:49:51 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 96D16CCB2C
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 11:49:35 +0000 (GMT)
-Received: (qmail 21490 invoked from network); 11 Mar 2021 11:49:35 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 11 Mar 2021 11:49:35 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 0/5 v3] Introduce a bulk order-0 page allocator with two in-tree users
-Date:   Thu, 11 Mar 2021 11:49:30 +0000
-Message-Id: <20210311114935.11379-1-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
+        Thu, 11 Mar 2021 06:49:38 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dx6cg50HWzmVyX;
+        Thu, 11 Mar 2021 19:47:15 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 11 Mar
+ 2021 19:49:30 +0800
+Subject: Re: [PATCH v2] f2fs: allow to change discard policy based on cached
+ discard cmds
+To:     Sahitya Tummala <stummala@codeaurora.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-kernel@vger.kernel.org>
+References: <1615453148-30443-1-git-send-email-stummala@codeaurora.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <7d31f95b-d99f-b56a-8129-f65910f14cdf@huawei.com>
+Date:   Thu, 11 Mar 2021 19:49:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1615453148-30443-1-git-send-email-stummala@codeaurora.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changelog since v3
-o Prep new pages with IRQs enabled
-o Minor documentation update
+On 2021/3/11 16:59, Sahitya Tummala wrote:
+> With the default DPOLICY_BG discard thread is ioaware, which prevents
+> the discard thread from issuing the discard commands. On low RAM setups,
+> it is observed that these discard commands in the cache are consuming
+> high memory. This patch aims to relax the memory pressure on the system
+> due to f2fs pending discard cmds by changing the policy to DPOLICY_FORCE
+> based on the nm_i->ram_thresh configured.
+> 
+> Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+> ---
+> v2:
+> - by mistake the last else condition was modified, fix it now.
 
-Changelog since v1
-o Parenthesise binary and boolean comparisons
-o Add reviewed-bys
-o Rebase to 5.12-rc2
+Oh, yes,
 
-This series introduces a bulk order-0 page allocator with sunrpc and
-the network page pool being the first users. The implementation is not
-particularly efficient and the intention is to iron out what the semantics
-of the API should have for users. Once the semantics are ironed out, it
-can be made more efficient. Despite that, this is a performance-related
-for users that require multiple pages for an operation without multiple
-round-trips to the page allocator. Quoting the last patch for the
-high-speed networking use-case.
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-    For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
-    redirecting xdp_frame packets into a veth, that does XDP_PASS to
-    create an SKB from the xdp_frame, which then cannot return the page
-    to the page_pool. In this case, we saw[1] an improvement of 18.8%
-    from using the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
-
-Both users in this series are corner cases (NFS and high-speed networks)
-so it is unlikely that most users will see any benefit in the short
-term. Potential other users are batch allocations for page cache
-readahead, fault around and SLUB allocations when high-order pages are
-unavailable. It's unknown how much benefit would be seen by converting
-multiple page allocation calls to a single batch or what difference it may
-make to headline performance. It's a chicken and egg problem given that
-the potential benefit cannot be investigated without an implementation
-to test against.
-
-Light testing passed, I'm relying on Chuck and Jesper to test the target
-users more aggressively but both report performance improvements with the
-initial RFC.
-
-Patch 1 of this series is a cleanup to sunrpc, it could be merged
-	separately but is included here as a pre-requisite.
-
-Patch 2 is the prototype bulk allocator
-
-Patch 3 is the sunrpc user. Chuck also has a patch which further caches
-	pages but is not included in this series. It's not directly
-	related to the bulk allocator and as it caches pages, it might
-	have other concerns (e.g. does it need a shrinker?)
-
-Patch 4 is a preparation patch only for the network user
-
-Patch 5 converts the net page pool to the bulk allocator for order-0 pages.
-
-There is no obvious impact to the existing paths as only new users of the
-API should notice a difference between multiple calls to the allocator
-and a single bulk allocation.
-
- include/linux/gfp.h   |  13 +++++
- mm/page_alloc.c       | 118 +++++++++++++++++++++++++++++++++++++++++-
- net/core/page_pool.c  | 102 ++++++++++++++++++++++--------------
- net/sunrpc/svc_xprt.c |  47 ++++++++++++-----
- 4 files changed, 225 insertions(+), 55 deletions(-)
-
--- 
-2.26.2
-
+Thanks,
