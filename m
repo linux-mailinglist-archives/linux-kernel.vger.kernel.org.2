@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A07337D56
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 20:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97971337D6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 20:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhCKTKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 14:10:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230196AbhCKTJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 14:09:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93B0E64E60;
-        Thu, 11 Mar 2021 19:09:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615489766;
-        bh=tjRqrEnr46TNCZjccx2NGAuGGxIXCeGJ/0pAUdHa0PI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TEL/EMvYZ0+zWrD5EIuzTfjrSYY7hC23Y2j+Z8/RVD2RPw5nW9nlL9OVPhdujco5H
-         IxG1S4eYeByD+3RC4CtWTm2v9bPW3Wp6RTwwEhrAiNVg9ByP/3LKt8qv9TQ5TVf6Rn
-         168ARlFFeWq63rb7WsPBEmDpUngQIhcuvG3mb/Z3ZznNYhYt5+gDPEnWHMJqgnNnU6
-         DbcYWMOsemicENDMIBBoIaq6WYPEw+CKiBbYO2yOeJZ7nzkg3ohIzcM+MwF6wA2NPY
-         Cwys5Ma+XGmLRC4S6IjWhKdvD0b1cOPkjRYIdkkA/ct10QYWQmLHVz/w6VMUFp/FOf
-         87T98ajA+CTHg==
-Date:   Thu, 11 Mar 2021 19:09:20 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
-Subject: Re: [PATCH v4 31/34] KVM: arm64: Wrap the host with a stage 2
-Message-ID: <20210311190919.GC31586@willie-the-truck>
-References: <20210310175751.3320106-1-qperret@google.com>
- <20210310175751.3320106-32-qperret@google.com>
+        id S230299AbhCKTMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 14:12:55 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42272 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229868AbhCKTMf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 14:12:35 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12BJCMBG123822;
+        Thu, 11 Mar 2021 13:12:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615489942;
+        bh=K10iL76Rgk2W/O4gIBcHwJ90W5MxbdgPMg2+TPXlU58=;
+        h=From:To:CC:Subject:Date;
+        b=U0Gg9VpIDlC5XhTwNU5ZcXVGc0e4yE6p72o3dGXDfKhIEpPaOrzft/ZrAYp0Ce7tF
+         WYtqiP0mHXUJa3hg1kZWSHKB8ctox+3fwEkjSXaEEVg+RIUWEOxyv8uAkcOZiFkhl7
+         8ajsTiqpSAgfgrWluhKM5zMPqFDWxjDWFuDab7Dg=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12BJCM8t112956
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 11 Mar 2021 13:12:22 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 11
+ Mar 2021 13:12:22 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 11 Mar 2021 13:12:22 -0600
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12BJCHvR080816;
+        Thu, 11 Mar 2021 13:12:17 -0600
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+CC:     Pratyush Yadav <p.yadav@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for spi-cadence-quadspi
+Date:   Fri, 12 Mar 2021 00:42:10 +0530
+Message-ID: <20210311191216.7363-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310175751.3320106-32-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:57:48PM +0000, Quentin Perret wrote:
-> When KVM runs in protected nVHE mode, make use of a stage 2 page-table
-> to give the hypervisor some control over the host memory accesses. The
-> host stage 2 is created lazily using large block mappings if possible,
-> and will default to page mappings in absence of a better solution.
-> 
-> From this point on, memory accesses from the host to protected memory
-> regions (e.g. marked PROT_NONE) are fatal and lead to hyp_panic().
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/kvm_asm.h              |   1 +
->  arch/arm64/include/asm/kvm_cpufeature.h       |   2 +
->  arch/arm64/kernel/image-vars.h                |   3 +
->  arch/arm64/kvm/arm.c                          |  10 +
->  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  34 +++
->  arch/arm64/kvm/hyp/nvhe/Makefile              |   2 +-
->  arch/arm64/kvm/hyp/nvhe/hyp-init.S            |   1 +
->  arch/arm64/kvm/hyp/nvhe/hyp-main.c            |  11 +
->  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 246 ++++++++++++++++++
->  arch/arm64/kvm/hyp/nvhe/setup.c               |   5 +
->  arch/arm64/kvm/hyp/nvhe/switch.c              |   7 +-
->  arch/arm64/kvm/hyp/nvhe/tlb.c                 |   4 +-
->  12 files changed, 319 insertions(+), 7 deletions(-)
->  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/mem_protect.c
+Hi,
 
-I like this a lot more now, thanks:
+This series adds support for OSPI PHY calibration on the Cadence OSPI
+controller. This calibration procedure is needed to allow high clock
+speeds in 8D-8D-8D mode. The procedure reads some pre-determined pattern
+data from the flash and runs a sequence of test reads to find out the
+optimal delays for high speed transfer. More details on the calibration
+procedure in patch 5/6.
 
-Acked-by: Will Deacon <will@kernel.org>
+The main problem here is telling the controller where to find the
+pattern and how to read it. This RFC uses nvmem cells which point to a
+fixed partition containing the data to do the reads. It depends on [0]
+and [1].
 
-Will
+The obvious problem with this is it won't work when the partitions are
+defined via command line. I don't see any good way to add nvmem cells to
+command line partitions. I would like some help or ideas here. We don't
+necessarily have to use nvmem either. Any way that can cleanly and
+consistently let the controller find out where the pattern is stored is
+good.
+
+The dts patch depends on [2].
+
+Tested on TI's J721E EVM.
+
+[0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210302190012.1255-1-zajec5@gmail.com/
+[1] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210308011853.19360-1-ansuelsmth@gmail.com/
+[2] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210305153926.3479-2-p.yadav@ti.com/
+
+Pratyush Yadav (6):
+  spi: spi-mem: Tell controller when device is ready for calibration
+  mtd: spi-nor: core: consolidate read op creation
+  mtd: spi-nor: core: run calibration when initialization is done
+  spi: cadence-qspi: Use PHY for DAC reads if possible
+  spi: cadence-qspi: Tune PHY to allow running at higher frequencies
+  arm64: dts: ti: k3-j721e-som-p0: Enable PHY calibration
+
+ arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi |  55 ++
+ drivers/mtd/spi-nor/core.c                  |  74 +-
+ drivers/spi/spi-cadence-quadspi.c           | 820 +++++++++++++++++++-
+ drivers/spi/spi-mem.c                       |  12 +
+ include/linux/spi/spi-mem.h                 |   8 +
+ 5 files changed, 916 insertions(+), 53 deletions(-)
+
+--
+2.30.0
+
