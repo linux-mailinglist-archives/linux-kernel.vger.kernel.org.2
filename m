@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B4E337520
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F44337526
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbhCKOI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:08:56 -0500
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:42555 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233881AbhCKOIp (ORCPT
+        id S233119AbhCKOKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:10:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56578 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233192AbhCKOKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:08:45 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id KLzUlPKvu5C8yKLzXlejqd; Thu, 11 Mar 2021 15:08:44 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1615471724; bh=aJmnP5v6D4V/HN2fr+ehdvn4IeX4rsz8HRPjR+VucYU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=cDFlQVjZK+HKNrUCzuFCzzr0RFdPnrJMZHscbUl4nZu2wyWXJ0+qYiRE0UjwTXwz8
-         03f/2ysO7f1xe5jYyHSyqpbA0JJFSDl7zqjI4ijv+vdn6MgRa2bJkC1lYpOXyTIZ4B
-         ElT5ef/JVel33YA9TTzeWMHnuiVEMMVz1h2BQ2O8ABq9myzuOPfAlcqT5lhNVI6q6v
-         z75pOVaUsYxWtSfbr78UWgvrvnwoyY2/pWNKVqqE2AdVeM6HMKNWP+4HrBS4O/XK14
-         yxbDghrHiuM13ozMdlgNUaWvTf9iJm03Q21J6J1yElhtME+LaszQCOlyZQWZF/ZDwJ
-         R/DMrZxrGm0SQ==
-Subject: Re: [PATCH 03/10] media: uvcvideo: Return -EIO for control errors
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, senozhatsky@chromium.org
-References: <20210311122040.1264410-1-ribalda@chromium.org>
- <20210311122040.1264410-5-ribalda@chromium.org>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <d2c0d5cd-f6d9-c23b-c33b-507e7ceb082f@xs4all.nl>
-Date:   Thu, 11 Mar 2021 15:08:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Thu, 11 Mar 2021 09:10:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615471822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8SAz47eHS2CgakOLUqpbe6DyZoVKv0WNeJAL94/owtQ=;
+        b=bF/56KfLOLl4wxka0734CvKf7w5uzdR/+TMakDwLePjkYuCSyQSiazToFlag6Updjx/7VY
+        4tg2RB5iY3MC7eU2iE029uVufGHh3/WGOX3mM/USlrG/MBGuEk78P+keK7Qj1V8y8nf2pP
+        bJDtPU36ik9IB0mQmZ2FvbNyK0hA8Wc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-_GlUPJaANKSSX6U3yufcCg-1; Thu, 11 Mar 2021 09:10:19 -0500
+X-MC-Unique: _GlUPJaANKSSX6U3yufcCg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACBE6100C618;
+        Thu, 11 Mar 2021 14:10:17 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 362CE196E3;
+        Thu, 11 Mar 2021 14:10:16 +0000 (UTC)
+Subject: [PATCH 0/2] AFS metadata xattr fixes
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+Cc:     Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
+        dhowells@redhat.com,
+        Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 11 Mar 2021 14:10:15 +0000
+Message-ID: <161547181530.1868820.12933722592029066752.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <20210311122040.1264410-5-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfGPLfqYFT0cyBaMCW/BYf5LjdsOI5KKTHF5gYg8+ghH8RG7vo2duwoPsyhHBJZnt/OJk79Uy6ZnzVAr18Ma8Bn613hqqhfVISjS2neMSd7F8YI0BuUup
- HyVwNh3z9EaKFXDVACEWECdzNuV80nmzBc2fSjzGtcFgm7yTwGmvRVilZwalRxmvCatYgLvE8uNGknajWqLSYSe3pwd/jtK1/lRb9TrPfLXHOiWqasqJsXcT
- TFdEZaoKF1P33rFVl/dJmgagCaHDX3MVNdc7wqX6tbx3c0GuUh48FRF6POwVSRP4iCtY2YhDqnKZaXye+8pu2wN7fSNY6smkhj+GjoypfxlWIoZ0+SMjn3Ug
- TJ0MWXqqv9d0Z99+EOKRsPWxaXHaeIx8fv5Qch7KpPVIHqNaQU7hAafDM0WbBcPoaWlqz1WX
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/2021 13:20, Ricardo Ribalda wrote:
-> Fixes v4l2-compliance:
-> 
-> Control ioctls (Input 0):
->                 fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
->         test VIDIOC_G/S_CTRL: FAIL
->                 fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
->         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
 
--EIO is specifically meant for FW/HW issues. So make clear in this commit
-log that if an error occurs in the code at that place, then that's because
-of the device doing something unexpected.
+Here's a pair of fixes for AFS.
 
-Actually, that should be in a comment before the 'return -EIO;'.
+ (1) Fix an oops in AFS that can be triggered by accessing one of the
+     afs.yfs.* xattrs against a yfs server[1][2] - for instance by "cp -a"
+     or "rsync -X".  These try and copy all of the xattrs.
 
-Regards,
+     They should pay attention to the list in /etc/xattr.conf, but cp
+     doesn't on Ubuntu and rsync doesn't seem to on Ubuntu or Fedora.
+     xattr.conf has been modified upstream[3], but a new version hasn't
+     been cut yet.  I've logged a bug against rsync for the problem
+     there[4].
 
-	Hans
+ (2) Hide ACL-related AFS xattrs[6].  This removes them from the list
+     returned by listxattr(), but they're still available to get/set.
 
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index f2f565281e63..5442e9be1c55 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -113,7 +113,7 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
->  	case 6: /* Invalid control */
->  	case 7: /* Invalid Request */
->  	case 8: /* Invalid value within range */
-> -		return -EINVAL;
-> +		return -EIO;
->  	default: /* reserved or unknown */
->  		break;
->  	}
-> 
+With further regard to the second patch, I tried just hiding the
+appropriate ACL-related xattrs[5] first, but it didn't work well,
+especially when a volume is replicated across servers of different types.
+
+I wonder if it's better to just hide all the afs.* xattrs from listxattr().
+It would probably be even better to not use xattrs for this, but I'm not
+sure what I would use instead.
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+David
+
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003498.html [1]
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003501.html [2]
+Link: https://git.savannah.nongnu.org/cgit/attr.git/commit/?id=74da517cc655a82ded715dea7245ce88ebc91b98 [3]
+Link: https://github.com/WayneD/rsync/issues/163 [4]
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003516.html [5]
+Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003524.html [6]
+---
+David Howells (2):
+      afs: Fix accessing YFS xattrs on a non-YFS server
+      afs: Fix afs_listxattr() to not list afs ACL special xattrs
+
+
+ fs/afs/xattr.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
 
