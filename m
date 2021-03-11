@@ -2,302 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56930336C77
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 051AA336C7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhCKGua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhCKGu3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:50:29 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74E0C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:50:28 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id n79so19638963qke.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:50:28 -0800 (PST)
+        id S231452AbhCKGvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:51:06 -0500
+Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:38311
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231328AbhCKGu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 01:50:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JXaHlJA6xy8BbMBzrH72C4TY4xe9Z58itqAzAmoSUj63MRGOs08XVaulDPQLLBWAF/UVVeFoXFfU41/Biiy6VKSlvsiwDdB+DHL8Al2lreMMTsA1WteNgzBzn8L3K5S222V9WyOQ7P3kRvGiOcldzbdmzKhbNSTcwYFupiW145GmWg/uN9EhiNLTVh+/73U9vy/Qo8jN637SbBMA5ISKnw1XNpVyFUwxwGTxI8I4UcA7Q81IuNgq75xq3mtYr9/bSN/v8S2Y/y873AvydMHBaHWTHJJRPQ6UShMMgRMxTNXoML4CXZYSrQ2j+4iFDd1xR9K3ygzHzP0aseGFJQ6e0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AXZBm8Ahpu6/AXps41NEnsLlvP7ufeJ4B5ghnHg6ap4=;
+ b=VkqpDGHIbRI0xtQrdY2MWJC+eWc7VO+MBEWmethr8QJ2aPxHisHf1Du64/hOqNMHjbNiyYVuy3VOSs6VDeXnAFj9vgd6GhWznh9RUplElb96BjaoesmvUTembn2veVszkqo86dXviuRqEWMb+0aSeLk/wLKJgM8uDCIodppz11vTbdFHvIqAw8w7oQLms6kIlaRY3CWocKkFt+0s+5+2vI0zagvoFyHFOqIzuHtvymoXNpLBnwaB5adJMSTkhpvw50f2IJZa1eR/52vzsckIQgnsTVoDdQzGKG2Kya1BG8NrRcuN1CcXl6U0X9N1hoKdoiYbo2LgF70GseOeOdsETA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CHiNjCVzAF9f5ZQqYFH1xiJqt7vBsG0ih+SnubPBSag=;
-        b=NhHfEjub5LruGGgnVMh3pytD99vGgrf11LNfUyPKvJWH91nm6usIh7jF6qFOYQflX/
-         sNFYmzSfLMuSW3fnmxsyxI4QmvAz3yaPKH1aZsaE4BtlMwpB9WeNOBK6LWJ7M2pip8tE
-         PwYeJ0XEFxL2L2BKrz1kN44mGw1vjEA7Xc6FXK3uvfPJHwXdnxc4n9U39mwO/gv055Dw
-         PZr9+0XH7jYep2sM5NfG9U3QeTsul+cCY/LPpovZyhcjBBk3knRNRkCgWY2m5hQZxq3Y
-         BWFNsq+KPlMzF0Kp/r96hjM+/AkLLycDeE3YP0zSl3dbodaizA1ETlF9RgqFUCfqEbyC
-         MGzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CHiNjCVzAF9f5ZQqYFH1xiJqt7vBsG0ih+SnubPBSag=;
-        b=ukcqr7AoORWZ3shMkfCO+1ABx70DgitAwSmZlYxsbrU+qSul9OyGKG4BoMwnh5wH2p
-         M16pj9pxhujsveHX7rg0ILlUXYJ+BFONR5BfomX2Fb52qXFUrDErhxpRx+KCxSxx+ory
-         B3Zb8c0RjJGnQe8nLfQZBLU1xPBgNNDvwc7ujPhBtx4DbHz3tIF5hPH4OLZoPVspxoFU
-         rcokGGUQ0hcI4sf+6kr6WXLID0x0ZV4FqvhlX9jgeNBt7Y/2i3iVwRh7A16DcPKW5yy2
-         91Dyl2V0/XfK4EhYGl1q8mxxw1hkb33kzi99aCXv1WYSpnVWyKsKInUTB1Ftw5KAJyZb
-         w7RQ==
-X-Gm-Message-State: AOAM530cT03Bd4bl2Kea2oJ7BbE2pf4tDti1Kj0jLUKAiH36Jj/AoQDl
-        TWpxKKv/b0GS06J+7L6GZZ57OodcnEUFTjuKg3ikKQ==
-X-Google-Smtp-Source: ABdhPJw+cTul0haRhSS1PArbm4YkgdTL5SYzPECntuAV3MAEScZ/3fNefP0yOScmFIqJvzxlYQgnt8hfJXNGVJQ8rhY=
-X-Received: by 2002:a05:620a:410f:: with SMTP id j15mr6318478qko.424.1615445427602;
- Wed, 10 Mar 2021 22:50:27 -0800 (PST)
-MIME-Version: 1.0
-References: <000000000000b74f1b05bd316729@google.com> <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
- <dbdca868-7ef2-47b3-ac26-12fe61f3156a@codethink.co.uk> <9a0823f4-de19-c2a2-5333-41c6caadbc11@ghiti.fr>
-In-Reply-To: <9a0823f4-de19-c2a2-5333-41c6caadbc11@ghiti.fr>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 11 Mar 2021 07:50:16 +0100
-Message-ID: <CACT4Y+bP0znswS3hFrNsF0L00s35J55Vj_JTC=DJsd0d3iDKpA@mail.gmail.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in schedule_tail
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Ben Dooks <ben.dooks@codethink.co.uk>,
-        syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AXZBm8Ahpu6/AXps41NEnsLlvP7ufeJ4B5ghnHg6ap4=;
+ b=OGlbhRFspa9YmfkWs6FrW5rBrOZB1BopBAY5IehAAO2b05vvL5sW7xdUL0eFZ5wj4cKFTo08qo/6zwyluqCxlukQNJt0IktWokjGJZ3A6U57l21R1kOhuK3zjLAQ2J8yzV5v3g+d3L3/rSnlKM7IIBexd7n6HylzI6AhrMs7kpA=
+Authentication-Results: linux.com; dkim=none (message not signed)
+ header.d=none;linux.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BN3PR03MB2307.namprd03.prod.outlook.com
+ (2a01:111:e400:7bb1::16) by BN8PR03MB4755.namprd03.prod.outlook.com
+ (2603:10b6:408:6a::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.30; Thu, 11 Mar
+ 2021 06:50:51 +0000
+Received: from BN3PR03MB2307.namprd03.prod.outlook.com
+ ([fe80::246d:2f3d:93bf:ee56]) by BN3PR03MB2307.namprd03.prod.outlook.com
+ ([fe80::246d:2f3d:93bf:ee56%4]) with mapi id 15.20.3912.030; Thu, 11 Mar 2021
+ 06:50:50 +0000
+Date:   Thu, 11 Mar 2021 14:50:27 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Yue Wang <yue.wang@Amlogic.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Pratyush Anand <pratyush.anand@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-kernel@axis.com,
+        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] PCI: dwc: Move dw_pcie_msi_init() from each
+ users to designware host
+Message-ID: <20210311145027.58f3955e@xhacker.debian>
+In-Reply-To: <YEVPRDt1By8TG9O5@rocinante>
+References: <20200924190421.549cb8fc@xhacker.debian>
+        <20200924190742.76939458@xhacker.debian>
+        <YEVPRDt1By8TG9O5@rocinante>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: SJ0PR03CA0136.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::21) To BN3PR03MB2307.namprd03.prod.outlook.com
+ (2a01:111:e400:7bb1::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by SJ0PR03CA0136.namprd03.prod.outlook.com (2603:10b6:a03:33c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Thu, 11 Mar 2021 06:50:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bdf97653-b3c2-4657-c850-08d8e45a0201
+X-MS-TrafficTypeDiagnostic: BN8PR03MB4755:
+X-Microsoft-Antispam-PRVS: <BN8PR03MB47552C5D4FDDFC79B66D68B9ED909@BN8PR03MB4755.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CVCP7/lF/iqP97om8cFjn3zGh8BZYPQ3HTFOm4juYjzx23azX8BqHADHU5j0MWyRudsCS7+y75aGQzxURx5fbZsrAu46RIIBKHfPLacCh6uunGSERGghy1ASScDFl2TCKmhx2YGl35bMPWad0OLfQLnu9RUctQAFfMCbbGbBdZq+Koo69MZi+5S4b78miOqmltr3EG92i4MgnDF7XthtPwi8hlj8tj2vUbjxv9dH51A/b/cjKkZcf7bC4qEw9FetEyBYRWyQC5gVl+w9QtsUh26LYzUNu1ksPuQv9miUiCs/p3FRz/A4zWTv3TWUBY9k47XWGBE+djh8uZ69L0hlBAIkKIs9A5FKs1RgdzElFP+oQpD/ws7RzRv7jKoXP7zIh8GCSBz4lU2xIe+unCjIRtG3WLazCMUJgnFmOAATU5mzegWi/kTfz/bXmcxqiwzI8pU+cEF9ljg8bVZldm5kUNeTRQnLw7VZ9Y2EQ3Io2lroeSfPtmJ4XT/EmLUJSjTli88UsiprPVLkdbbYkhoxpA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN3PR03MB2307.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(136003)(39850400004)(396003)(2906002)(8936002)(86362001)(66476007)(66574015)(83380400001)(6666004)(316002)(54906003)(66556008)(4326008)(8676002)(7696005)(186003)(7406005)(55016002)(478600001)(6506007)(7416002)(5660300002)(1076003)(956004)(26005)(6916009)(66946007)(16526019)(9686003)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OVdIVE1JYXEzRm94UEJObFZXd0V3ejNxTWxEeXlITEJwd05FZFdWL2ZlcGJL?=
+ =?utf-8?B?SkNNWTVPb1dueEFUcHdaVjk5ZVREN0pKbFM2eklHY0F4cVBabFVMRTJWTWZ1?=
+ =?utf-8?B?M1Z2bXVmVmxCcjAxaU5VM0t0TlhYdHVxQTJqSmptWFRuYTY4bk50S1BMQjhM?=
+ =?utf-8?B?OHJnOW9XdWNXQjBVZC9WZUtiZkk4ejBNRVBJcEFBY0NXbHVHWEhkRHAvTnha?=
+ =?utf-8?B?ekZrTEFjUkR4ZjJYd2ZteXF0K3djbkFDb0pXd2tZTDdNdm9acEY0TjNqUkZQ?=
+ =?utf-8?B?Rk5xdmpNdDBPVFUwcWdxR3BNUGhhMHdMMytRTk9nVnZDMkRmTEZIS2VBaUVz?=
+ =?utf-8?B?V0M0RHd0b2hOYlR6Mk9USGVEeEFLd1M4aUc5enJpVWxlVFI4dktWTEdVTkRF?=
+ =?utf-8?B?cmdGdkpLTHN5M3p1dnE5d2JrZjVsT3R1NzJ4anoydDYyT0ZRRkp0QTB2U2xL?=
+ =?utf-8?B?LzR2NFVxVFExN1JtNXhCdUNGTGJYaWRHMnBoNEd6NFhFK3h2ZFYvNlpNY1lV?=
+ =?utf-8?B?S1FXVURjRFh0TVVFazdmMFIvV0ViNitCN3JZR1p1Ri9YUlU3blpOY096UG03?=
+ =?utf-8?B?d3VETmgwdi83emVtMTFZMVp2WHk5MzdCaitlMXd1eWpRMWY1L0NDVm93VkVx?=
+ =?utf-8?B?dWEycnBXazArQ1hWTkVmMUczVWlnV1JzMFdIUy80SlpCL29SQVRjakZ5RTJC?=
+ =?utf-8?B?aXArZDMvYmxHYmJlQnk1em11NmxVTDhiY09reUxvaEcwRjZ1VUVVL0V4NVZP?=
+ =?utf-8?B?ZjBkaFpla09ueWY0N0lrckhXaXBweVEzYk1ZQUVCdm1tZzZvYis0YWFuc3Br?=
+ =?utf-8?B?Tm9YWFVEUERvc0ZLcjByOFZ6a041ZFE2VGFMZWQxTnh1UHBLU2t5N1B3VUJz?=
+ =?utf-8?B?cHRZMWQvaVE4VDltd3FoZU5raXBmeUxFNDQ3N2cwNDQ0RkNTQ2RRQ0xmVFUz?=
+ =?utf-8?B?VEI0ekF3Mk4wd3JUbDhOYldPaFlaOFVKY0Z1bWJkN1Z6OHhHL2Q4SmFIbDVQ?=
+ =?utf-8?B?RnZHNDZDSk0rc0JjelhkTWcxc0MzL3JNdkE0N05qTFFuWlNkVnR2c0RMa0l5?=
+ =?utf-8?B?eUYxWkJzYUUxZGIrZzhYN2FLZ3ViKzBrSWVySC9MODZnTFBKSjkxMUhBQUgr?=
+ =?utf-8?B?R3MyM2FkVk9iWWR5WVYwbXE0cUZyVk05M0lhZUVsV2VUdVlkRWIzVzZqNjJt?=
+ =?utf-8?B?TXNkVG9ZVDNUM3U4WHRVUlhaay9Id2t2V29sYjE2V0syOVZkWTYvcGlSbmxB?=
+ =?utf-8?B?eFhxdUF4VEZ6NkdGaWE0OHFjTWpoVXBMZE83cjhNZHJaTVJMV1luZ0ExMTNy?=
+ =?utf-8?B?Ukk4OWQ3MG5RbHhSN3hNMEVPN0JKcHphckptUHhOYlN5aHllVEhTTVNGZ0pD?=
+ =?utf-8?B?V0ZHSlM2QjJXcXNZaHl1NExTZlJqOXRCN0tkRHExNWFDUkRCZ2NRVCtCL3JP?=
+ =?utf-8?B?VHhEZVFMVTdhOTltYWNtdkxTcXNZWjRlKzFYTm5Pd0tsaGlXaGVuQ1VFVnFD?=
+ =?utf-8?B?MXdMN2FxTWVhMnFFZ2ZHdTBKY1ovUk5TUlVHVWYrMkhYWW45NWozN0l5THdW?=
+ =?utf-8?B?N3pZYVc3Sm1vajdBYnRTTVprY3lkSVdDWkp0Lytwa0d4SHMzSlZCaldpZUtj?=
+ =?utf-8?B?eGhLUUhGQ1hEbkc2bWlKUmJrOW52N3dVTElJSmxVbmxwTklJTmQwV3FjeVZQ?=
+ =?utf-8?B?ZE9TNVBzeTJGWlpPNjRYVGRIRS80NFBtUUtmbFJ1ZUF4dXNFQ2JKVkZSbm1h?=
+ =?utf-8?Q?xKAMHqzH8xliUpCajwSr2wIzuaXJw52pmby4v5A?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdf97653-b3c2-4657-c850-08d8e45a0201
+X-MS-Exchange-CrossTenant-AuthSource: BN3PR03MB2307.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 06:50:50.6635
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XWJ4ofTe++Lcvd8ZMOK4s6RAJrCG13IXWiA6aUdT/FkU38y1lLYSzy9L+HL+ZGGLwK1c/0n6r9RNO7A9ZXbrSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR03MB4755
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 7:40 AM Alex Ghiti <alex@ghiti.fr> wrote:
->
-> Hi Ben,
->
-> Le 3/10/21 =C3=A0 5:24 PM, Ben Dooks a =C3=A9crit :
-> > On 10/03/2021 17:16, Dmitry Vyukov wrote:
-> >> On Wed, Mar 10, 2021 at 5:46 PM syzbot
-> >> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
-> >>>
-> >>> Hello,
-> >>>
-> >>> syzbot found the following issue on:
-> >>>
-> >>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for
-> >>> arch_dup_tas..
-> >>> git tree:
-> >>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1212c6e6d=
-00000
-> >>> kernel config:
-> >>> https://syzkaller.appspot.com/x/.config?x=3De3c595255fb2d136
-> >>> dashboard link:
-> >>> https://syzkaller.appspot.com/bug?extid=3De74b94fe601ab9552d69
-> >>> userspace arch: riscv64
-> >>>
-> >>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>>
-> >>> IMPORTANT: if you fix the issue, please add the following tag to the
-> >>> commit:
-> >>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
-> >>
-> >> +riscv maintainers
-> >>
-> >> This is riscv64-specific.
-> >> I've seen similar crashes in put_user in other places. It looks like
-> >> put_user crashes in the user address is not mapped/protected (?).
-> >
-> > The unmapped case should have been handled.
-> >
-> > I think this issue is that the check for user-mode access added. From
-> > what I read the code may be wrong in
-> >
-> > +    if (!user_mode(regs) && addr < TASK_SIZE &&
-> > +            unlikely(!(regs->status & SR_SUM)))
-> > +        die_kernel_fault("access to user memory without uaccess routin=
-es",
-> > +                addr, regs);
-> >
-> > I think the SR_SUM check might be wrong, as I read the standard the
-> > SR_SUM should be set to disable user-space access. So the check
-> > should be unlikely(regs->status & SR_SUM) to say access without
-> > having disabled the protection.
->
-> The check that is done seems correct to me: "The SUM (permit Supervisor
-> User Memory access) bit modifies the privilege with which S-mode loads
-> and stores access virtual memory.  *When SUM=3D0, S-mode memory accesses
-> to pages that are accessible by U-mode (U=3D1 in Figure 4.15) will fault*=
-.
->   When SUM=3D1, these accesses are permitted.SUM  has  no  effect  when
-> page-based  virtual  memory  is  not  in  effect".
->
-> I will try to reproduce the problem locally.
+On Sun, 7 Mar 2021 23:10:12 +0100 Krzysztof Wilczy=C5=84ski  wrote:
 
-Weird. It crashes with this all the time:
-https://syzkaller.appspot.com/bug?extid=3De74b94fe601ab9552d69
+>=20
+>=20
+> Hi,
+>=20
+> > Currently, dw_pcie_msi_init() allocates and maps page for msi, then
+> > program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
+> > may lose power during suspend-to-RAM, so when we resume, we want to
+> > redo the latter but not the former. If designware based driver (for
+> > example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
+> > previous msi page will be leaked. From another side, except
+> > pci-dra7xx.c we can move the dw_pcie_msi_init() from each users to
+> > designware host, I.E move the msi page allocation and mapping to
+> > dw_pcie_host_init() and move the PCIE_MSI_ADDR_* programming to
+> > dw_pcie_setup_rc(). After this moving, we solve the msi page leakage
+> > as well. =20
+> [...]
+>=20
+> A small nitpick.  All the "designware" should be "DesignWare" both in
+> the commit message and the subject.  Similarly, "msi" would be "MSI",
+> and "I.E" would become "i.e.,".  If you ever sent another version of the
+> patch, that is.
+>=20
 
-Even on trivial programs that almost don't do anything.
-Maybe it's qemu bug? Do registers look sane in the dump? That SR_SUM, etc.
+Hi
 
+This series was dropped and useless after Rob's excellent dw pcie code clea=
+n
+up.
 
-00:13:27 executing program 1:
-openat$drirender128(0xffffffffffffff9c,
-&(0x7f0000000040)=3D'/dev/dri/renderD128\x00', 0x0, 0x0)
-
-[  812.318182][ T4833] Unable to handle kernel access to user memory
-without uaccess routines at virtual address 00000000250b60d0
-[  812.322304][ T4833] Oops [#1]
-[  812.323196][ T4833] Modules linked in:
-[  812.324110][ T4833] CPU: 1 PID: 4833 Comm: syz-executor.1 Not
-tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
-[  812.325862][ T4833] Hardware name: riscv-virtio,qemu (DT)
-[  812.327561][ T4833] epc : schedule_tail+0x72/0xb2
-[  812.328640][ T4833]  ra : schedule_tail+0x70/0xb2
-[  812.330088][ T4833] epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp
-: ffffffe0238bbec0
-[  812.331312][ T4833]  gp : ffffffe005d25378 tp : ffffffe00a275b00 t0
-: 0000000000000000
-[  812.333014][ T4833]  t1 : 0000000000000001 t2 : 00000000000f4240 s0
-: ffffffe0238bbee0
-[  812.334137][ T4833]  s1 : 00000000250b60d0 a0 : 0000000000000036 a1
-: 0000000000000003
-[  812.336063][ T4833]  a2 : 1ffffffc0cfa8b00 a3 : ffffffe0000c80cc a4
-: 7f467e72c6adf800
-[  812.337398][ T4833]  a5 : 0000000000000000 a6 : 0000000000f00000 a7
-: ffffffe0000f8c84
-[  812.339287][ T4833]  s2 : 0000000000040000 s3 : ffffffe0077a96c0 s4
-: ffffffe020e67fe0
-[  812.340658][ T4833]  s5 : 0000000000004020 s6 : ffffffe0077a9b58 s7
-: ffffffe067d74850
-[  812.342492][ T4833]  s8 : ffffffe067d73e18 s9 : 0000000000000000
-s10: ffffffe00bd72280
-[  812.343668][ T4833]  s11: 000000bd067bf638 t3 : 7f467e72c6adf800 t4
-: ffffffc403ee7fb2
-[  812.345510][ T4833]  t5 : ffffffc403ee7fba t6 : 0000000000040000
-[  812.347004][ T4833] status: 0000000000000120 badaddr:
-00000000250b60d0 cause: 000000000000000f
-[  812.348091][ T4833] Call Trace:
-[  812.349291][ T4833] [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2
-[  812.350796][ T4833] [<ffffffe000005570>] ret_from_exception+0x0/0x14
-[  812.352799][ T4833] Dumping ftrace buffer:
-[  812.354328][ T4833]    (ftrace buffer empty)
-[  812.428145][ T4833] ---[ end trace 94b077e4d677ee73 ]---
-
-
-00:10:42 executing program 1:
-bpf$ENABLE_STATS(0x20, 0x0, 0x0)
-bpf$ENABLE_STATS(0x20, 0x0, 0x0)
-
-[  646.536862][ T5163] loop0: detected capacity change from 0 to 1
-[  646.566730][ T5165] Unable to handle kernel access to user memory
-without uaccess routines at virtual address 00000000032f80d0
-[  646.586024][ T5165] Oops [#1]
-[  646.586640][ T5165] Modules linked in:
-[  646.587350][ T5165] CPU: 1 PID: 5165 Comm: syz-executor.1 Not
-tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
-[  646.588209][ T5165] Hardware name: riscv-virtio,qemu (DT)
-[  646.589019][ T5165] epc : schedule_tail+0x72/0xb2
-[  646.589811][ T5165]  ra : schedule_tail+0x70/0xb2
-[  646.590435][ T5165] epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp
-: ffffffe008013ec0
-[  646.591142][ T5165]  gp : ffffffe005d25378 tp : ffffffe007634440 t0
-: 0000000000000000
-[  646.591836][ T5165]  t1 : 0000000000000001 t2 : 0000000000000008 s0
-: ffffffe008013ee0
-[  646.592509][ T5165]  s1 : 00000000032f80d0 a0 : 0000000000000004 a1
-: 0000000000000003
-[  646.593188][ T5165]  a2 : 1ffffffc0cfac500 a3 : ffffffe0000c80cc a4
-: 8d229faaffda9500
-[  646.593878][ T5165]  a5 : 0000000000000000 a6 : 0000000000f00000 a7
-: ffffffe000082eba
-[  646.594552][ T5165]  s2 : 0000000000040000 s3 : ffffffe00c82c440 s4
-: ffffffe00e61ffe0
-[  646.595253][ T5165]  s5 : 0000000000004000 s6 : ffffffe067d57e00 s7
-: ffffffe067d57850
-[  646.595938][ T5165]  s8 : ffffffe067d56e18 s9 : ffffffe067d57e00
-s10: ffffffe00c82c878
-[  646.596627][ T5165]  s11: 000000967ba7a1cc t3 : 8d229faaffda9500 t4
-: ffffffc4011bc79b
-[  646.597319][ T5165]  t5 : ffffffc4011bc79d t6 : ffffffe008de3ce8
-[  646.597909][ T5165] status: 0000000000000120 badaddr:
-00000000032f80d0 cause: 000000000000000f
-[  646.598682][ T5165] Call Trace:
-[  646.599294][ T5165] [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2
-[  646.600115][ T5165] [<ffffffe000005570>] ret_from_exception+0x0/0x14
-[  646.601333][ T5165] Dumping ftrace buffer:
-[  646.602322][ T5165]    (ftrace buffer empty)
-[  646.663691][ T5165] ---[ end trace e7b7847ce74cdfca ]---
-
-
-
-
-
-> Thanks,
->
-> Alex
->
-> >
-> > Without this, you can end up with an infinite loop in the fault handler=
-.
-> >
-> >>
-> >>> Unable to handle kernel access to user memory without uaccess
-> >>> routines at virtual address 000000002749f0d0
-> >>> Oops [#1]
-> >>> Modules linked in:
-> >>> CPU: 1 PID: 4875 Comm: syz-executor.0 Not tainted
-> >>> 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
-> >>> Hardware name: riscv-virtio,qemu (DT)
-> >>> epc : schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
-> >>>   ra : task_pid_vnr include/linux/sched.h:1421 [inline]
-> >>>   ra : schedule_tail+0x70/0xb2 kernel/sched/core.c:4264
-> >>> epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp : ffffffe025d17ec0
-> >>>   gp : ffffffe005d25378 tp : ffffffe00f0d0000 t0 : 0000000000000000
-> >>>   t1 : 0000000000000001 t2 : 00000000000f4240 s0 : ffffffe025d17ee0
-> >>>   s1 : 000000002749f0d0 a0 : 000000000000002a a1 : 0000000000000003
-> >>>   a2 : 1ffffffc0cfac500 a3 : ffffffe0000c80cc a4 : 5ae9db91c19bbe00
-> >>>   a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
-> >>>   s2 : 0000000000040000 s3 : ffffffe00eef96c0 s4 : ffffffe022c77fe0
-> >>>   s5 : 0000000000004000 s6 : ffffffe067d74e00 s7 : ffffffe067d74850
-> >>>   s8 : ffffffe067d73e18 s9 : ffffffe067d74e00 s10: ffffffe00eef96e8
-> >>>   s11: 000000ae6cdf8368 t3 : 5ae9db91c19bbe00 t4 : ffffffc4043cafb2
-> >>>   t5 : ffffffc4043cafba t6 : 0000000000040000
-> >>> status: 0000000000000120 badaddr: 000000002749f0d0 cause:
-> >>> 000000000000000f
-> >>> Call Trace:
-> >>> [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
-> >>> [<ffffffe000005570>] ret_from_exception+0x0/0x14
-> >>> Dumping ftrace buffer:
-> >>>     (ftrace buffer empty)
-> >>> ---[ end trace b5f8f9231dc87dda ]---
-> >>>
-> >>>
-> >>> ---
-> >>> This report is generated by a bot. It may contain errors.
-> >>> See https://goo.gl/tpsmEJ for more information about syzbot.
-> >>> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >>>
-> >>> syzbot will keep track of this issue. See:
-> >>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >>>
-> >>> --
-> >>> You received this message because you are subscribed to the Google
-> >>> Groups "syzkaller-bugs" group.
-> >>> To unsubscribe from this group and stop receiving emails from it,
-> >>> send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> >>> To view this discussion on the web visit
-> >>> https://groups.google.com/d/msgid/syzkaller-bugs/000000000000b74f1b05=
-bd316729%40google.com.
-> >>>
-> >>
-> >> _______________________________________________
-> >> linux-riscv mailing list
-> >> linux-riscv@lists.infradead.org
-> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >>
-> >
-> >
+Thanks
