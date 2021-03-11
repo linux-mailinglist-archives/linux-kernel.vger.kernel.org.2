@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF7F33729B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2429D3372A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbhCKMbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:31:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33900 "EHLO
+        id S233184AbhCKMbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:31:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232852AbhCKMa4 (ORCPT
+        with ESMTP id S233166AbhCKMbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:30:56 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C58C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:30:55 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id cx5so2444583qvb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:30:55 -0800 (PST)
+        Thu, 11 Mar 2021 07:31:17 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61D2C061574;
+        Thu, 11 Mar 2021 04:31:16 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id a188so14411148pfb.4;
+        Thu, 11 Mar 2021 04:31:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bpKQhfKbNOf9URva/nSmRApPfgMUfNZ5yVoPtbSlC/Q=;
-        b=hyOG914C52esB98Y6REX8gcw2n2nveTRbaqHUv2QnAbTGAkUof8DtyMcFswIRCINMo
-         /hGCXZwlDIJdy1fJFrC4BisRutmXEpf5vFSIqRfgDjSaVvD0ohhRv2SNSjysP+qCRq4y
-         vgyEes6PIXbqxrvsiiNOXXehK0sotURvFs4Y13MnNCGEYITZWGNRhGbqZinmFxVE43TT
-         zTLUJX4laK2F8GZKgSYU+SO9Ckr2B6kvr1+j+15aku1TowhwRNzhaDSU0dTnSxkeLaGj
-         Zx0rXhC35K7NazktW+Xyh7idGx96C1OJ0E9DmvEUMBxaqhlLqQnWlIyqcPOcsNMCHChJ
-         ZZkA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NSzzai4vIMGBBt9pjkbuuhFEouWU7xEJcqdEzYQD0Go=;
+        b=Ei6zZRzVQLJsCoGDNlX4Tujcqz1+s3ayFCqj9VLBlqHXZ5zrPIU8+e4FQf2ZtUwGe8
+         EeJDVwjjCwD03wzJIh4sm03OGb/RDnbcDLlhXO4reEvJttx5nz13sNxUCFDp+ESDJPhK
+         TDPtxJTDGI2x/+UOsChd3XyaZW8tz4ZgOqytIu765nu4Lozt2ImWEP4sKMrWRexUbahE
+         hIDeiF9+ktDCFbG/3rGJhXz1HTEbdmvR3sFhIvfJiJRtFFQR140mrcQCKAhMUK84viva
+         tDMb79DoUq6GT61kGTBxu6zg36vO4r5BsLwLirL7Xls+dDX2iP6FwyvuetyCOO2a2w8J
+         ED4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bpKQhfKbNOf9URva/nSmRApPfgMUfNZ5yVoPtbSlC/Q=;
-        b=BG4pAvhr8o57GcVJElVDlfxaOdOvpRYHWNNo99uuXEkPZEiIuPc1xJGYoML1/K+Y42
-         9264NbB+GM84qX9LtkSJ8xe0GfRDYUYPaewouQOoFdUGCVeOUB9I9dGQoilViTJTb2IG
-         ni6nK1X5PC7Gw3qucSI+QIVkpjSFYSTBAjqGtCSmmgu3pIm3aFjs8azik+nNLTQayS1d
-         CLVE7A1HRJsArZzYjlaR4Ct4E1cdMRH64+3SzSazssZs3HAA3rxV5Aynex+//tkO6Wfh
-         5UoLSM7okylwAhHnRpNv3wUQsMka5MK01kFMFUk0zkpTQKKOsQzba95e2C9D8V/RDKGQ
-         ReQQ==
-X-Gm-Message-State: AOAM530G+3xn36JVsAfcVOr9TiissC8EAQawUmEq66PR4e1nhZOaoxYN
-        6iQMrLa9F7MQHF1Kww2TrRgFBA==
-X-Google-Smtp-Source: ABdhPJx6obP4t+MkBKuDVOsMzDRE1yOu5ShhHE7hcGxG2ide2qdrCj/cMc/BXdtiHH8T17fwBSMigQ==
-X-Received: by 2002:a0c:b49f:: with SMTP id c31mr7370723qve.35.1615465855170;
-        Thu, 11 Mar 2021 04:30:55 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:e6d2])
-        by smtp.gmail.com with ESMTPSA id e96sm1572446qtb.60.2021.03.11.04.30.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NSzzai4vIMGBBt9pjkbuuhFEouWU7xEJcqdEzYQD0Go=;
+        b=eBqPItWoevmIOjjWGqk8eVudN0p2Ns34XSgKUSYVCS/zvFDUhluUxh2mV90T+pjiTt
+         kpIi5ZIB5zDir9UNpJxXP6ZKHNGDA1DUX+Kx6La5+BttY4uce6ZbNzVrv3gmDAFxNczd
+         7Q++usHpbauUPtgjc9fo4lKQqB/Gr82AyZm1DMYkSv0NGNqWpE68GvZgGBy49P2uHgug
+         gdqdARhxyhHXL5oUf/tKx+jMQsuG58Ge5gwBw5ZjGU6LdpfqwDmoxY6ZWDUCp9yOxIgX
+         2444WF8etO2Iwa5CXzjQ4Yl9T5vE76+qFXXeAeJVMZNnZ5uxMXMFIVEERBqvAqkj3WpL
+         9bAw==
+X-Gm-Message-State: AOAM5328HPNX+dKQWV51iCR8INBpUln+WV1YZT4imht/JpHEnyvfjOrR
+        0SjAXsQ9KKSxBNpaDIZpAvc=
+X-Google-Smtp-Source: ABdhPJzp7QrZxigNzO6cPOzvY3azF3YeWNAjNXTc8FUGi04Dc1tN5/b7vZvYOTJAtrtHERpE68bliQ==
+X-Received: by 2002:a63:1502:: with SMTP id v2mr7007804pgl.22.1615465876433;
+        Thu, 11 Mar 2021 04:31:16 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id s28sm2473608pfd.155.2021.03.11.04.31.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 04:30:54 -0800 (PST)
-Date:   Thu, 11 Mar 2021 07:30:53 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com
-Subject: Re: [PATCH v3 1/4] mm: memcontrol: introduce
- obj_cgroup_{un}charge_pages
-Message-ID: <YEoNfYvbMHw4ifyc@cmpxchg.org>
-References: <20210309100717.253-1-songmuchun@bytedance.com>
- <20210309100717.253-2-songmuchun@bytedance.com>
+        Thu, 11 Mar 2021 04:31:15 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: liu.xuzhi@zte.com.cn
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Liu xuzhi <liu.xuzhi@zte.com.cn>
+Subject: [PATCH] kernel/bpf/: fix misspellings using codespell tool
+Date:   Thu, 11 Mar 2021 04:31:03 -0800
+Message-Id: <20210311123103.323589-1-liu.xuzhi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309100717.253-2-songmuchun@bytedance.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 06:07:14PM +0800, Muchun Song wrote:
-> We know that the unit of slab object charging is bytes, the unit of
-> kmem page charging is PAGE_SIZE. If we want to reuse obj_cgroup APIs
-> to charge the kmem pages, we should pass PAGE_SIZE (as third parameter)
-> to obj_cgroup_charge(). Because the size is already PAGE_SIZE, we can
-> skip touch the objcg stock. And obj_cgroup_{un}charge_pages() are
-> introduced to charge in units of page level.
-> 
-> In the later patch, we also can reuse those two helpers to charge or
-> uncharge a number of kernel pages to a object cgroup. This is just
-> a code movement without any functional changes.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
+From: Liu xuzhi <liu.xuzhi@zte.com.cn>
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+A typo is found out by codespell tool in 34th lines of hashtab.c:
+
+$ codespell ./kernel/bpf/
+./hashtab.c:34 : differrent ==> different
+
+Fix a typo found by codespell.
+
+Signed-off-by: Liu xuzhi <liu.xuzhi@zte.com.cn>
+---
+ kernel/bpf/hashtab.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index d63912e73ad9..46f076c0b3a2 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -31,7 +31,7 @@
+ /*
+  * The bucket lock has two protection scopes:
+  *
+- * 1) Serializing concurrent operations from BPF programs on differrent
++ * 1) Serializing concurrent operations from BPF programs on different
+  *    CPUs
+  *
+  * 2) Serializing concurrent operations from BPF programs and sys_bpf()
+-- 
+2.25.1
+
