@@ -2,182 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F87336E9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE731336E9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231987AbhCKJOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:14:55 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:58670 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231834AbhCKJOd (ORCPT
+        id S232003AbhCKJP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:15:28 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:36025 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231995AbhCKJPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:14:33 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12B9D9l2019056;
-        Thu, 11 Mar 2021 10:14:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=NLAxClV6LoRWqXIaz8yJbP1l3AT05LO6i1xarp6O0vM=;
- b=W78a3qheFvIwOR2Z/77injFR4Xslv41zIh2uEr3HA4Q153FaUqdQvZOe7ij07TYcyQLU
- vkUB6qMqm1WcVSdYCH7iOfqo08WIF588rxjfZYjSEir+wXZn2dM8c1zukB/PHgcd7p4S
- ziW/39zSJIEjP61RK0xbXzJDOEbcrb70uEjSsLMIjmyp5CYc9Kip+gm0uUbj/H2vTPm8
- gZbbfjpunepH1iY7Pw+WF6m9LUnTBUoLqfYhzqRpWCZv8q0vG0v4AvxHxMpn+nglwbRC
- cyq7LGKFLFWP/8IbEUgjZIf/a2Nr77ug68wzcVu5VsEc8Ib70HoOEc3ATuVX+T3lp2tK 5Q== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3741gpwpn1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Mar 2021 10:14:25 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0A6F210002A;
-        Thu, 11 Mar 2021 10:14:25 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id ECBEA225A70;
-        Thu, 11 Mar 2021 10:14:24 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Mar
- 2021 10:14:23 +0100
-Subject: Re: [PATCH v7 12/17] remoteproc: Properly deal with the resource
- table when stopping
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <ohad@wizery.com>, <arnaud.pouliquen@st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210310211025.1084636-1-mathieu.poirier@linaro.org>
- <20210310211025.1084636-13-mathieu.poirier@linaro.org>
- <YElb4PITwZtMhpAw@builder.lan>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <0475be62-d08c-8844-f118-71755ba6cb0b@foss.st.com>
-Date:   Thu, 11 Mar 2021 10:14:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 11 Mar 2021 04:15:12 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MFbFW-1lWvnJ0PaY-00H7e9; Thu, 11 Mar 2021 10:15:07 +0100
+Received: by mail-ot1-f53.google.com with SMTP id 75so854357otn.4;
+        Thu, 11 Mar 2021 01:15:06 -0800 (PST)
+X-Gm-Message-State: AOAM530eVF7rVrpAp1XLvQIrseRQla+swzeBKntkJBil4am9F6BNaHgT
+        /7lc/bi2WdFhGObsvTlTFukx3xklGp4XhWG4Fm0=
+X-Google-Smtp-Source: ABdhPJyn+biUFqeUpWbgYz+onSoY1lB5lZXnaVdOJ59ivfe6fWw6B/LYP9dm97k0WNF1I7ZVkGTZlALTwC9lFjwxZew=
+X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr6129948otq.305.1615454105254;
+ Thu, 11 Mar 2021 01:15:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YElb4PITwZtMhpAw@builder.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-11_04:2021-03-10,2021-03-11 signatures=0
+References: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
+ <20210310083840.481615-1-krzysztof.kozlowski@canonical.com>
+ <20210310094527.GA701493@dell> <35c39c81-08e4-24c8-f683-2fa7a7ea71de@redhat.com>
+ <1c06cb74-f0b0-66e5-a594-ed1ee9bc876e@canonical.com> <CAK8P3a1CCQwbeH4KiUgif+-HdubVjjZBkMXimEjYkgeh4eJ7cg@mail.gmail.com>
+ <52d0489f-0f77-76a2-3269-e3004c6b6c07@canonical.com> <ba2536a6-7c74-0cca-023f-cc6179950d37@canonical.com>
+ <CAK8P3a1k7c5X5x=-_-=f=ACwY+uQQ8YEcAGXYfdTdSnqpo96sA@mail.gmail.com> <fb0d8ca3-ac46-f547-02b0-7f47ff8fff6b@canonical.com>
+In-Reply-To: <fb0d8ca3-ac46-f547-02b0-7f47ff8fff6b@canonical.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 11 Mar 2021 10:14:49 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a05VkttECKTgonxKCSjJR0W4V1TRrUYMydgUGywbCSCWQ@mail.gmail.com>
+Message-ID: <CAK8P3a05VkttECKTgonxKCSjJR0W4V1TRrUYMydgUGywbCSCWQ@mail.gmail.com>
+Subject: Re: [RFC v2 3/5] arm64: socfpga: rename ARCH_STRATIX10 to ARCH_SOCFPGA64
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Tom Rix <trix@redhat.com>, Lee Jones <lee.jones@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-edac@vger.kernel.org, linux-fpga@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com, arm-soc <arm@kernel.org>,
+        SoC Team <soc@kernel.org>, Olof Johansson <olof@lixom.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:8zSo19FEMGDxyiVQDBPRPGNk7oUpBJKvj23wAA3LeoGeGTVaVDe
+ tYcAtEWJuc6QF3xHchWKOFHw7SzdIyvsUGzwG5ZCAIbpfSiEs2I44sZv8Ig0uLr7MILLENl
+ cggEdUK03qWlQ/08UCGbvsKoo6DI2tigOl0tTfxiLh2W3CnAAeAKnlFxyt1SxNWb91t9oNT
+ f3uj0KvErM5ZZx+1XApng==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DHa3uyTr8Bg=:mYAf3HuyZSpvNDQzaYFPIa
+ LQ8jH4G5xwF5IsG18LSCUNEXu4cXgmL7HkSnx6t4Odmq50eV26cIJzOSX95EuRoTU568WFmVF
+ 6D6D2deAwUPjNAd5o/5141PGlP5tMgZPA3BihdFgV9Vw8oifzBng1y8RuPF4IX6cUvqY5NNbz
+ en5TQeAfMSBlKae749fUXQxsregl6IgMbfo+qesr2t5g5x2bCVIUzGqMysf6XNbekDVasEP3g
+ 6EXFmth3Dl/KzQzYt3UXUELR8LXIo7HFiARyafcLr85kuYQpClWDo5ZRL1uOd+ggzsJb/7YIE
+ CGe/BYpm/a3+KFbtnRLNP15PnpWixRxwkjNUvGXUaeCU9viIXWzITSL9ZLlZatpM1k3BK4VZp
+ gadboAk6GmkTmKrcXZfqvdunIX95jT0D0bli/LjuuMhmXSPV40LWZHonSaELFmzWfjcBHMIJ5
+ z3Fq8/5O8dgcvuQ3hGKZOMoL+YW/IWvOOEsxT4sU+CK9ihrHpjVf/eIrZ8h4RNFNvXWG6gPgJ
+ M+CdNro9r1nbTqwf74QTm4hvH8nIJCY5WcW0ZvCL+Ii/J7pF2RXZfOlA/V0c0xtqA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 11, 2021 at 8:08 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+> On 10/03/2021 17:42, Arnd Bergmann wrote:
+> > On Wed, Mar 10, 2021 at 4:54 PM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@canonical.com> wrote:
+> >> On 10/03/2021 16:47, Krzysztof Kozlowski wrote:
+> >>> This edac Altera driver is very weird... it uses the same compatible
+> >>> differently depending whether this is 32-bit or 64-bit (e.g. Stratix
+> >>> 10)! On ARMv7 the compatible means for example one IRQ... On ARMv8, we
+> >>> have two. It's quite a new code (2019 from Intel), not some ancient
+> >>> legacy, so it should never have been accepted...
+> >>
+> >> Oh, it's not that horrible as it sounds. They actually have different
+> >> compatibles for edac driver with these differences (e.g. in interrupts).
+> >> They just do not use them and instead check for the basic (common?)
+> >> compatible and architecture... Anyway without testing I am not the
+> >> person to fix the edac driver.
+> >
+> > Ok, This should be fixed properly as you describe, but as a quick hack
+> > it wouldn't be hard to just change the #ifdef to check for CONFIG_64BIT
+> > instead of CONFIG_ARCH_STRATIX10 during the rename of the config
+> > symbol.
+>
+> This would work. The trouble with renaming ARCH_SOCFPGA into
+> ARCH_INTEL_SOCFPGA is that still SOCFPGA will appear in many other
+> Kconfig symbols or even directory paths.
+>
+> Let me use ARCH_INTEL_SOCFPGA for 64bit here and renaming of 32bit a
+> little bit later.
 
+Maybe you can introduce a hidden 'ARCH_INTEL_SOCFPGA' option first
+and select that from both the 32-bit and the 64-bit platforms in the first step.
 
-On 3/11/21 12:53 AM, Bjorn Andersson wrote:
-> On Wed 10 Mar 15:10 CST 2021, Mathieu Poirier wrote:
-> 
->> When a remote processor that was attached to is stopped, special care
->> must be taken to make sure the shutdown process is similar to what
->> it would be had it been started by the remoteproc core.
->>
->> This patch takes care of that by making a copy of the resource
->> table currently used by the remote processor.  From that point on
->> the copy is used, as if the remote processor had been started by
->> the remoteproc core.
->>
->> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> ---
->> New for V7:
->>   New Patch, used to be part of 11/16 in V6.
->> ---
->>  drivers/remoteproc/remoteproc_core.c | 53 +++++++++++++++++++++++++++-
->>  1 file changed, 52 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
->> index e9ea2558432d..c488b1aa6119 100644
->> --- a/drivers/remoteproc/remoteproc_core.c
->> +++ b/drivers/remoteproc/remoteproc_core.c
->> @@ -1634,6 +1634,52 @@ static int rproc_reset_rsc_table_on_detach(struct rproc *rproc)
->>  	return 0;
->>  }
->>  
->> +static int rproc_reset_rsc_table_on_stop(struct rproc *rproc)
->> +{
->> +	struct resource_table *table_ptr;
->> +
->> +	/* A resource table was never retrieved, nothing to do here */
->> +	if (!rproc->table_ptr)
->> +		return 0;
->> +
->> +	/*
->> +	 * If a cache table exists the remote processor was started by
->> +	 * the remoteproc core.  That cache table should be used for
->> +	 * the rest of the shutdown process.
->> +	 */
->> +	if (rproc->cached_table)
->> +		goto out;
->> +
->> +	/* Remember where the external entity installed the resource table */
->> +	table_ptr = rproc->table_ptr;
->> +
-> 
-> Afaict this is just a remnant from the detach case.
-> 
-> I think the series looks really good now, please let me know and I can
-> drop the local "table_ptr" as I apply the patches.
-> 
+That should decouple the cleanups, so you can change the drivers to
+(only) 'depends on ARCH_INTEL_SOCFPGA' before removing the other
+names.
 
-Just a minor comment on patch 11, then the series LGTM also,
-
-For this one
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-
-Thanks,
-Arnaud
-
-> Regards,
-> Bjorn
-> 
->> +	/*
->> +	 * If we made it here the remote processor was started by another
->> +	 * entity and a cache table doesn't exist.  As such make a copy of
->> +	 * the resource table currently used by the remote processor and
->> +	 * use that for the rest of the shutdown process.  The memory
->> +	 * allocated here is free'd in rproc_shutdown().
->> +	 */
->> +	rproc->cached_table = kmemdup(rproc->table_ptr,
->> +				      rproc->table_sz, GFP_KERNEL);
->> +	if (!rproc->cached_table)
->> +		return -ENOMEM;
->> +
->> +	/*
->> +	 * Since the remote processor is being switched off the clean table
->> +	 * won't be needed.  Allocated in rproc_set_rsc_table().
->> +	 */
->> +	kfree(rproc->clean_table);
->> +
->> +out:
->> +	/*
->> +	 * Use a copy of the resource table for the remainder of the
->> +	 * shutdown process.
->> +	 */
->> +	rproc->table_ptr = rproc->cached_table;
->> +	return 0;
->> +}
->> +
->>  /*
->>   * Attach to remote processor - similar to rproc_fw_boot() but without
->>   * the steps that deal with the firmware image.
->> @@ -1759,7 +1805,12 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
->>  	rproc_stop_subdevices(rproc, crashed);
->>  
->>  	/* the installed resource table is no longer accessible */
->> -	rproc->table_ptr = rproc->cached_table;
->> +	ret = rproc_reset_rsc_table_on_stop(rproc);
->> +	if (ret) {
->> +		dev_err(dev, "can't reset resource table: %d\n", ret);
->> +		return ret;
->> +	}
->> +
->>  
->>  	/* power off the remote processor */
->>  	ret = rproc->ops->stop(rproc);
->> -- 
->> 2.25.1
->>
+        Arnd
