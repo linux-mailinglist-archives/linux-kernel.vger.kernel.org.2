@@ -2,146 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4563381FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 01:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB23338200
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 01:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhCKX7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231189AbhCLAAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 19:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhCKX7q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Mar 2021 18:59:46 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:18237 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhCKX7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:59:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615507161; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=KNh/PgYSoZKPjqJusJ9iEiMUTHAk/zatcqpES2T/4Rg=; b=Yp2bv8igfGUiWMd3g5R2ZicyIOrQXGYoXiqiP5wCGvIQEr2ECMRDYRoVT7yWpqEjIglHDgBR
- jcHq+Wu/Y4vZyzOMQyFlNZ7eqMm+CqvzinihILTLGehll7Vu/GEkycE6D1XCbz/o1IqXBHcM
- fjUerA5Ygogdw30CcAOSpIK2HTI=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 604aaed24db3bb6801c5505f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 23:59:14
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B6441C433ED; Thu, 11 Mar 2021 23:59:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F0FF5C433CA;
-        Thu, 11 Mar 2021 23:59:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F0FF5C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v3] usb: dwc3: gadget: Prevent EP queuing while stopping transfers
-Date:   Thu, 11 Mar 2021 15:59:02 -0800
-Message-Id: <1615507142-23097-1-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D76DC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:59:46 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id j7so2558235qtx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:59:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9rzGlCXRuAYzD4FxF8/kX8t+sLM/xQ6RjW+kfB9MHUI=;
+        b=Sht35sRAWhjUnG/vlACxlUdN1NXxZ2hn78xSNsQrOQiOnK1nALUmlUGHUAK1T+DYhZ
+         MX3lwQI/UxwTrkQv8d3kMYROr1PLyoiqVafUPMi7P056ufFmL/tRZlvShlZxbmxqDyNW
+         NLKw5iBy24OxHbW+DCJ1DQJfzdSe8iTc3c8sHbtF9tFwbdZcos5KLgrKfPlUhIrDUvII
+         vIew7klGAO8Wn/28Da6K3YhKEWpKl3Z8yXO4c0K2hvWjTBIXhDYwZP0hefzSiur217jB
+         Lo+rOwqj5lF4a/tIzhlWfi67C2vz4vtRgSFudHgU/4CmiKi4zEw8bQzulGoxFckdnomp
+         ZbNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9rzGlCXRuAYzD4FxF8/kX8t+sLM/xQ6RjW+kfB9MHUI=;
+        b=d3khzvM+mcDLzaZofcNYA+aQFa+obfw6sEkSGVQ1nv/a8R+AckQV2x5WbhVQUvJSdZ
+         uv+2nc0aCqS9IT20DEBAvAuB2op6pMjpget9LRAFpSR61lkdVChPAqQI+rITeB4yTKTd
+         URv+/VGMoxzFPDDxHXBJP0Zgi24DieKGmNgzZcX7rDh9Sz7w3N67IiM6rXyWHGL2YU4F
+         rEStzcOrXopzOcg5vt9icAhPOK9suYssvNN9Z+pNaRwXKtsr9cPVRuoglHNFTbmG8Oej
+         zPnrhXBAOqwhRBFoXlxaiJaks9l9xpyIg7n/Y4nKZyeuZ5yeplDLweQt5qo4ke08fBg0
+         AXrg==
+X-Gm-Message-State: AOAM531vbq6l5m6oFTHKQOT/xEHCSt26JRR2I0HW3XJOR72FOHZZUfXN
+        NAmrbYBa7X+6VAGTJnm7JMoCAg==
+X-Google-Smtp-Source: ABdhPJxiCSaM0aAia7Gh2ystvnvxFkgXLtQu1szm+rOtvCsRMIOPRh5BDiwH0XxEbvHajGL8eIa3Yg==
+X-Received: by 2002:aed:20cd:: with SMTP id 71mr9996620qtb.346.1615507185328;
+        Thu, 11 Mar 2021 15:59:45 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id z89sm2953405qtd.5.2021.03.11.15.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 15:59:44 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lKVDT-00BbRW-RG; Thu, 11 Mar 2021 19:59:43 -0400
+Date:   Thu, 11 Mar 2021 19:59:43 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+Subject: Re: [RFC PATCH v2 11/11] nvme-pci: Convert to using dma_map_sg for
+ p2pdma pages
+Message-ID: <20210311235943.GB2710221@ziepe.ca>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <20210311233142.7900-12-logang@deltatee.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311233142.7900-12-logang@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the situations where the DWC3 gadget stops active transfers, once
-calling the dwc3_gadget_giveback(), there is a chance where a function
-driver can queue a new USB request in between the time where the dwc3
-lock has been released and re-aquired.  This occurs after we've already
-issued an ENDXFER command.  When the stop active transfers continues
-to remove USB requests from all dep lists, the newly added request will
-also be removed, while controller still has an active TRB for it.
-This can lead to the controller accessing an unmapped memory address.
+On Thu, Mar 11, 2021 at 04:31:41PM -0700, Logan Gunthorpe wrote:
+> Convert to using dma_[un]map_sg() for PCI p2pdma pages.
+> 
+> This should be equivalent, though support will be somewhat less
+> (only dma-direct and dma-iommu are currently supported).
+> 
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>  drivers/nvme/host/pci.c | 27 +++++++--------------------
+>  1 file changed, 7 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+> index 7d40c6a9e58e..89ca5acf7a62 100644
+> +++ b/drivers/nvme/host/pci.c
+> @@ -577,17 +577,6 @@ static void nvme_free_sgls(struct nvme_dev *dev, struct request *req)
+>  
+>  }
+>  
+> -static void nvme_unmap_sg(struct nvme_dev *dev, struct request *req)
+> -{
+> -	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+> -
+> -	if (is_pci_p2pdma_page(sg_page(iod->sg)))
+> -		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
+> -				    rq_dma_dir(req));
+> -	else
+> -		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
+> -}
 
-Fix this by ensuring parameters to prevent EP queuing are set before
-calling the stop active transfers API.
+Can the two other places with this code pattern be changed too?
 
-Fixes: ae7e86108b12 ("usb: dwc3: Stop active transfers before halting the controller")
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
-Changes since V2:
- - Removed duplicate dwc->connected = false setting in pullup routine
-
-Changes since V1:
- - Added Fixes tag to point to the commit this is addressing
-
- drivers/usb/dwc3/gadget.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 4780983..2c94cc9 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -783,8 +783,6 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
- 
- 	trace_dwc3_gadget_ep_disable(dep);
- 
--	dwc3_remove_requests(dwc, dep);
--
- 	/* make sure HW endpoint isn't stalled */
- 	if (dep->flags & DWC3_EP_STALL)
- 		__dwc3_gadget_ep_set_halt(dep, 0, false);
-@@ -803,6 +801,8 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
- 		dep->endpoint.desc = NULL;
- 	}
- 
-+	dwc3_remove_requests(dwc, dep);
-+
- 	return 0;
- }
- 
-@@ -1617,7 +1617,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
- {
- 	struct dwc3		*dwc = dep->dwc;
- 
--	if (!dep->endpoint.desc || !dwc->pullups_connected) {
-+	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
- 		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
- 				dep->name);
- 		return -ESHUTDOWN;
-@@ -2247,6 +2247,7 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 	if (!is_on) {
- 		u32 count;
- 
-+		dwc->connected = false;
- 		/*
- 		 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
- 		 * Section 4.1.8 Table 4-7, it states that for a device-initiated
-@@ -2271,7 +2272,6 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 			dwc->ev_buf->lpos = (dwc->ev_buf->lpos + count) %
- 						dwc->ev_buf->length;
- 		}
--		dwc->connected = false;
- 	} else {
- 		__dwc3_gadget_start(dwc);
- 	}
-@@ -3329,8 +3329,6 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
- {
- 	u32			reg;
- 
--	dwc->connected = true;
--
- 	/*
- 	 * WORKAROUND: DWC3 revisions <1.88a have an issue which
- 	 * would cause a missing Disconnect Event if there's a
-@@ -3370,6 +3368,7 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
- 	 * transfers."
- 	 */
- 	dwc3_stop_active_transfers(dwc);
-+	dwc->connected = true;
- 
- 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
- 	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Jason
