@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7332133696B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39A533696F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbhCKBIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 20:08:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
+        id S229470AbhCKBJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 20:09:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCKBHj (ORCPT
+        with ESMTP id S229459AbhCKBJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 20:07:39 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29DDC061574;
-        Wed, 10 Mar 2021 17:07:38 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D65C61280622;
-        Wed, 10 Mar 2021 17:07:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1615424856;
-        bh=rPT+VYV1+Cvgf3klr7B1cClAbrNcSs/uscoE5EBQ0nc=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=p12GzutZqy8xcUa2GnBy4AOa+gxAVmux6akGb/gVO8WcPowOFQyN5jmyE52Lyz7/r
-         BnDxvXjx8FggJ+nr1mNWUTNHncvcWJIEcSSWGK5if6n5S5UvFcoGs9xCV/aH6Zx5oI
-         cLwFa94vi+9FtHBA27LQV/mVFHIhmeEXGaeMba6U=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id gW20K4LJnFMI; Wed, 10 Mar 2021 17:07:36 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id AA7E31280610;
-        Wed, 10 Mar 2021 17:07:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1615424856;
-        bh=rPT+VYV1+Cvgf3klr7B1cClAbrNcSs/uscoE5EBQ0nc=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=p12GzutZqy8xcUa2GnBy4AOa+gxAVmux6akGb/gVO8WcPowOFQyN5jmyE52Lyz7/r
-         BnDxvXjx8FggJ+nr1mNWUTNHncvcWJIEcSSWGK5if6n5S5UvFcoGs9xCV/aH6Zx5oI
-         cLwFa94vi+9FtHBA27LQV/mVFHIhmeEXGaeMba6U=
-Message-ID: <d93321502a3df2f7afa42da417137d79f6e49961.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB)
- subsystem
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     Hector Martin <marcan@marcan.st>, Arnd Bergmann <arnd@linaro.org>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        Alex =?ISO-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-Date:   Wed, 10 Mar 2021 17:07:34 -0800
-In-Reply-To: <CACRpkdZb5UMyq5qSJE==3ZnH-7fh92q_t4AnE8mPm0oFEJxqpQ@mail.gmail.com>
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
-         <20210303135500.24673-2-alex.bennee@linaro.org>
-         <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
-         <20210305075131.GA15940@goby>
-         <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
-         <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
-         <6c542548-cc16-af68-c755-df52bd13b209@marcan.st>
-         <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
-         <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
-         <CAFA6WYMSJxK2CjmoLJ6mdNNEfOQOMVXZPbbFRfah7KLeZNfguw@mail.gmail.com>
-         <CACRpkdZb5UMyq5qSJE==3ZnH-7fh92q_t4AnE8mPm0oFEJxqpQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Wed, 10 Mar 2021 20:09:33 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE58C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:09:32 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id p21so36832658lfu.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:09:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XuZRJd14e7XnEoXw2FvIl72vWJHeOPCk4LBUHOIGczA=;
+        b=w+Gf8sHgPrzzhqz1HDYJflI7xmJglobU58eZtpd7AIWhyj2gyDoKLtH94j+T6xthFx
+         +O73aHhgamMWP/v0AO1NrOSTxnNUqQERm1NzjmCJIzimyWqg9sM5SshUlFbI4DZ91aaP
+         9+jzRtcDTEu50u57NBjz0aFYrHW2pHUVcHv7wgW2c4Snn/fcauvNXHhb+hdM9q7nL6hO
+         gHmJgSB+62knF6gFYGvc2kgrxN1dWXl3PPpshRvmqr+Bkj0BWAnvY/psiEfRo9iCYsFW
+         M5TJRWj/zFJAifR8lInrO3eWQgxWehiWEvBqGi0Eh9ZsbEwqbd/Jx3FRKjlWsy6HCCmy
+         3b3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XuZRJd14e7XnEoXw2FvIl72vWJHeOPCk4LBUHOIGczA=;
+        b=XZgCkKWqv2oQehDh/A8Lt+KVDqpKgSqhcqK6QeW73UesSLTqR1EHG1qadBc6xRRJ2w
+         H1pUq4GxDL2AbzebSdYKZPl2+3b00fb60eftlM/tUhMz02yh5qPjLLHdrGN95WYP/Zpg
+         gued9x9PbMcxSBBEcN56QXtgjGlxExZZYJGGaPgoDuDaPgG91mtZavcnUGLmgdk1v2qO
+         ZP2Nsb0MJhjbnTa00gfMJ1P+8IYeHQJkaX3D7jZoYCbKedw6RfgSx9MxnbzZbOu3l8jp
+         1twUCPju6rqQJjeRg6MOIejs88OYHnu5gRmNbDv+GIXu7x8uDWiWLWjAnsuMKTQfK5MO
+         uxJw==
+X-Gm-Message-State: AOAM53152LmR5CYEifE5AIMUyB086p69wQ7sqr6/HzfTvfBP0q6nfeFe
+        c2x8jwlN/5LvqqjlBRReKjPHdaQXERFfOIH26ByfnA==
+X-Google-Smtp-Source: ABdhPJw+RZShrvljbVrt0dyiUUfDf24RT7ZzofmR3YJEiJ8U1WGH/BJf9C0pZcsXzUYriou3jqDHevyOELEC3IpUH2M=
+X-Received: by 2002:a19:548:: with SMTP id 69mr717784lff.465.1615424970951;
+ Wed, 10 Mar 2021 17:09:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210310125504.31886-1-noltari@gmail.com> <20210310125504.31886-4-noltari@gmail.com>
+ <CAL_JsqKZA-j2iXvVTXWtiuyKPOWeOUP0r+x-bV6QP6=_moy2VA@mail.gmail.com>
+In-Reply-To: <CAL_JsqKZA-j2iXvVTXWtiuyKPOWeOUP0r+x-bV6QP6=_moy2VA@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Mar 2021 02:09:20 +0100
+Message-ID: <CACRpkda=isBSW8BwYJ2pCaPcByRoo2GFNVoZCxhaCbEKk9iNsg@mail.gmail.com>
+Subject: Re: [PATCH v6 03/15] pinctrl: bcm: add bcm63xx base code
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-03-11 at 01:49 +0100, Linus Walleij wrote:
-> The use case for TPM on laptops is similar: it can be used by a
-> provider to lock down a machine, but it can also be used by the
-> random user to store keys. Very few users beside James
-> Bottomley are capable of doing that (I am not)
+On Wed, Mar 10, 2021 at 6:51 PM Rob Herring <robh+dt@kernel.org> wrote:
 
-Yes, that's the problem with the TPM: pretty much no-one other than
-someone prepared to become an expert in the subject can use it.  This
-means that enabling RPMB is unlikely to be useful ... you have to
-develop easy use cases for it as well.
+> > +static const struct of_device_id bcm63xx_gpio_of_match[] = {
+> > +       { .compatible = "brcm,bcm6318-gpio", },
+> > +       { .compatible = "brcm,bcm6328-gpio", },
+> > +       { .compatible = "brcm,bcm6358-gpio", },
+> > +       { .compatible = "brcm,bcm6362-gpio", },
+> > +       { .compatible = "brcm,bcm6368-gpio", },
+> > +       { .compatible = "brcm,bcm63268-gpio", },
+>
+> All these would be moved to gpio-mmio.c (or maybe that can have a
+> fallback compatible?).
 
->  but they exist.
-> https://blog.hansenpartnership.com/using-your-tpm-as-a-secure-key-store/
+This is gpio-regmap.c and it can only be used as a library
+by a certain driver. gpio-mmio.c can be used stand-alone
+for certain really simple hardware (though most use that
+as a library as well).
 
-It's the difficulty of actually *using* the thing as a keystore which
-causes the problem.   The trick to expanding use it to make it simple.
-Not to derail the thread, but this should hopefully become a whole lot
-easier soon.  Gnupg-2.3 will release with easy to use TPM support for
-all your gpg keys:
-
-https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=log;h=6720f1343aef9342127380b155c19e12c92d65ac
-
-It's not the end of the road by any means, but hopefully it will become
-a beach head of sorts for more uses.
-
-James
-
-
+Yours,
+Linus Walleij
