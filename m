@@ -2,74 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21697336F99
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AED3336F7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhCKKKE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 05:10:04 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:44591 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbhCKKJ5 (ORCPT
+        id S232155AbhCKKBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:01:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232112AbhCKKAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:09:57 -0500
-Received: from relay13.mail.gandi.net (unknown [217.70.178.233])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id A6C273A39D0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:51:22 +0000 (UTC)
-Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay13.mail.gandi.net (Postfix) with ESMTPSA id 6CEA98000D;
-        Thu, 11 Mar 2021 09:50:56 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 10:50:55 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH next v4 02/15] mtd: mtdoops: synchronize kmsg_dumper
-Message-ID: <20210311105055.4a0e864d@xps13>
-In-Reply-To: <20210303101528.29901-3-john.ogness@linutronix.de>
-References: <20210303101528.29901-1-john.ogness@linutronix.de>
-        <20210303101528.29901-3-john.ogness@linutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 11 Mar 2021 05:00:47 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60529C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:00:47 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id o38so13354028pgm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:00:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UQYHWAxJkDDd3f+gQZzvbrjXR8K2vgw8ut0GHNgkmoM=;
+        b=TGZB56pq53iJrbDY/snWAhnMelGY6QSE+Yv/4rXOZF8ClO6D17/XVaPjgLf/6KmFGv
+         UIkQ/2qRLk3cCji7+/COxGOJFB14ZYLUhacmrEXPkr5eL/l43Czfhqly17NuHNj0e+UY
+         zuFiR7pojUusz5EVmDAIDRxBRa2JsxlgSqXnwehIg5gen6srHlXbS82ai+U6lhRhjWph
+         PpsZQrZfgnFvfxrZsJvi1gFcFi/nEpv7r7rZ/GopaDNqOFb9YbRlV8FyTgFx+YSnJbr/
+         ioPbB3tV3Um5t0pJY5uKOyKLo8ACUmzSZrB9NqPQXaY5yKUUM/Ctm8B5HNpv4UmFCvPG
+         ycXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UQYHWAxJkDDd3f+gQZzvbrjXR8K2vgw8ut0GHNgkmoM=;
+        b=Fn0GOlHdZB3h4zhRC1L5+vCJJQRH0BmghB6Tojk2hUYLcnasuT7t+0CznmoAl1NvqA
+         HpOTbLy533Te6eoO+LAczZKMXppT+ab0ac3CpjlhupdqUVFuXnkmLwzho9HsfjUXk6a0
+         h9fLz0kz6FWxFJ82iBmbWflK6iRYFbKVEo/sgpq2JxQJN7Ar5yoAyzfCT+ydQFvKq9l9
+         0zyk1DLNElz2JOSCoq1qMKMgxTHoVzLNLHKbxFoQSncaXs3nY8i1MGYKuDHfB2P67ufl
+         yPhEoKx8M2pFfZwn9Rc8ltX0RFRTlB4KbNiGa0Dl0bTXuFAz1vkVHD52KWWx7ch8AJ43
+         Y2Cw==
+X-Gm-Message-State: AOAM530L6r8yyUe57P9+0MXbIDVhzObWewDodIDLSYZ6h2+vKUXnekJE
+        KXGqnlXHiQL2J9ppNvFmjeFRW0Ay9g0z47Hp59l56Q==
+X-Google-Smtp-Source: ABdhPJwqzuj630hhgNm5RpgiIIsq6u5FJpc47tt2JPxPfMHD0qYBylhZFf5FrpayQuz02H1TABPQKpF4NTKHNt6mO7g=
+X-Received: by 2002:a63:141e:: with SMTP id u30mr6765052pgl.31.1615456846679;
+ Thu, 11 Mar 2021 02:00:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-10-songmuchun@bytedance.com> <YEjoozshsvKeMAAu@dhcp22.suse.cz>
+ <CAMZfGtV1Fp1RiQ64c9RrMmZ+=EwjGRHjwL8Wx3Q0YRWbbKF6xg@mail.gmail.com>
+ <YEnbBPviwU6N2RzK@dhcp22.suse.cz> <CAMZfGtW5uHYiA_1an3W-jEmemsoN3Org7JwieeE2V271wh9X-A@mail.gmail.com>
+ <YEnlRlLJD1bK/Dup@dhcp22.suse.cz>
+In-Reply-To: <YEnlRlLJD1bK/Dup@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 11 Mar 2021 18:00:09 +0800
+Message-ID: <CAMZfGtX3pUmPOY1ieVQubnBKHZoOxfp-ARsPigYZpc=-UiiNjg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v18 9/9] mm: hugetlb: optimize the code
+ with the help of the compiler
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Mar 11, 2021 at 5:39 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 11-03-21 17:08:34, Muchun Song wrote:
+> > On Thu, Mar 11, 2021 at 4:55 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Thu 11-03-21 15:33:20, Muchun Song wrote:
+> > > > On Wed, Mar 10, 2021 at 11:41 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Mon 08-03-21 18:28:07, Muchun Song wrote:
+> > > > > > When the "struct page size" crosses page boundaries we cannot
+> > > > > > make use of this feature. Let free_vmemmap_pages_per_hpage()
+> > > > > > return zero if that is the case, most of the functions can be
+> > > > > > optimized away.
+> > > > >
+> > > > > I am confused. Don't you check for this in early_hugetlb_free_vmemmap_param already?
+> > > >
+> > > > Right.
+> > > >
+> > > > > Why do we need any runtime checks?
+> > > >
+> > > > If the size of the struct page is not power of 2, compiler can think
+> > > > is_hugetlb_free_vmemmap_enabled() always return false. So
+> > > > the code snippet of this user can be optimized away.
+> > > >
+> > > > E.g.
+> > > >
+> > > > if (is_hugetlb_free_vmemmap_enabled())
+> > > >         /* do something */
+> > > >
+> > > > The compiler can drop "/* do something */" directly, because
+> > > > it knows is_hugetlb_free_vmemmap_enabled() always returns
+> > > > false.
+> > >
+> > > OK, so this is a micro-optimization to generate a better code?
+> >
+> > Right.
+> >
+> > > Is this measurable to warrant more code?
+> >
+> > I have disassembled the code to confirm this behavior.
+> > I know this is not the hot path. But it actually can decrease
+> > the code size.
+>
+> struct page which is not power of 2 is not a common case.
 
-John Ogness <john.ogness@linutronix.de> wrote on Wed,  3 Mar 2021
-11:15:15 +0100:
+I know this is not a common case. But the check of
+is_power_of_2(sizeof(struct page)) does not bring extra
+runtime overhead. It just tells the compiler to optimize code
+as much as possible.
 
-> The kmsg_dumper can be called from any context and CPU, possibly
-> from multiple CPUs simultaneously. Since the writing of the buffer
-> can occur from a later scheduled work queue, the oops buffer must
-> be protected against simultaneous dumping.
-> 
-> Use an atomic bit to mark when the buffer is protected. Release the
-> protection in between setting the buffer and the actual writing in
-> order for a possible panic (immediate write) to be written during
-> the scheduling of a previous oops (delayed write).
-> 
-> An atomic bit (rather than a spinlock) was chosen so that no
-> scheduling or preemption side-effects would be introduced. The MTD
-> kmsg_dumper may dump directly or it may be delayed (via scheduled
-> work). Depending on the context, different MTD callbacks are used.
-> For example, mtd_write() expects to be called in a non-atomic
-> context and may take a mutex.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Are you sure
+> it makes sense to micro optimize for an outliar. If you really want to
+> microptimize then do that for a common case - the feature being
+> disabled - via static key.
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+We cannot optimize the code size (vmlinux) even if we use a static
+key when the size is not power of 2.
 
-Thanks,
-Miquèl
+Sorry. I am confused why you disagree with this change.
+It does not bring any disadvantages.
+
+> --
+> Michal Hocko
+> SUSE Labs
