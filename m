@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4292337909
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F4E337911
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhCKQRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:17:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234527AbhCKQRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:17:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCD8464F88;
-        Thu, 11 Mar 2021 16:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615479432;
-        bh=tC8xQLvl0ED5iaAOUU3NWeADhke0KZJuMgdD9l7TFWA=;
+        id S234494AbhCKQSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:18:52 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:50336 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234497AbhCKQSl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:18:41 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C8F16879;
+        Thu, 11 Mar 2021 17:18:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615479520;
+        bh=CasTFxEPgNGSi54CtnJRvSEhXh9CeTK0/iNgfRRrbt8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RyuJ62MV0j1/0koV3tq8MZh+/x1RDJHUX5qSrZ3paxvAockMHvG17rC8qJac4MdSf
-         sHjsYIzxL9OLh0PxPjAaWR59N2TlKSdwzPDYcFN/PIrCOxPJ1Kg4hn4kpogdt23424
-         7fYazPCBxabTn60iy1PugT4Y81/xcWpa8tySmBCpMPyACfFXtg8I9dYITP4zcgVR1v
-         xCS5xx73GHuHAf8z11KTd1NiFz5+tksiIeZTJ5ce74kJntcxiJJu8LL87Jd7wMuOYK
-         E1XQe3JZQXwXi6u0TyBhVZzfePlBs7lF2b2B8LZhOh43QTbgnL1VbK4fi3FFU2ApBA
-         DycL7AFAZDTxQ==
-Date:   Thu, 11 Mar 2021 16:15:58 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     Michael Walle <michael@walle.cc>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, jonathanh@nvidia.com,
-        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
-        thierry.reding@gmail.com
-Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
-Message-ID: <20210311161558.GG4962@sirena.org.uk>
-References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
- <20210309144156.18887-1-michael@walle.cc>
- <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
- <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
- <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
+        b=FyCoio/I1dmdihvEEqSRUbTm3dl+4r0g7HrgR3sg2bOKZP6wly0c5EYgX5QryRJ9d
+         GJv6OJFhKp47fD+UfS4Kd1YkUd5i2vj680NMh12onu8xUXQTV1TJov5+MXjZG0Clpr
+         EEJKezcUrs+0EVJV4MLJv585spVFhLY/p5pcWmz4=
+Date:   Thu, 11 Mar 2021 18:18:05 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, senozhatsky@chromium.org
+Subject: Re: [PATCH 07/10] media: uvcvideo: set error_idx to count on EACCESS
+Message-ID: <YEpCvQYGj/4bAncp@pendragon.ideasonboard.com>
+References: <20210311122040.1264410-1-ribalda@chromium.org>
+ <20210311122040.1264410-9-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eMnpOGXCMazMAbfp"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
-X-Cookie: I'm rated PG-34!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210311122040.1264410-9-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ricardo,
 
---eMnpOGXCMazMAbfp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thank you for the patch.
 
-On Wed, Mar 10, 2021 at 08:20:28PM +0530, Sameer Pujar wrote:
+On Thu, Mar 11, 2021 at 01:20:37PM +0100, Ricardo Ribalda wrote:
+> According to the doc:
 
-> If I read this correctly below is the configuration you need,
-> SoC -> MCLK(fixed rate) -> PLL(wm8904) -> PLL output (256 * fs) -> sysclk
+The previous paragraph states:
 
-For this device for integration with something like simple-audio-card
-since there's limited flexibility within the device the simplest thing
-would be to not make the internal clocking of the device visible and
-just have it figure out how to use the input clock, using the MCLK
-directly if possible otherwise using the FLL to generate a suitable
-clock.  The trick is figuring out if it's best to vary the input clock
-or to use the FLL to adapt a fixed input clock, and of course adapting
-any existing users if things get changed.
+This check is done to avoid leaving the hardware in an inconsistent
+state due to easy-to-avoid problems. But it leads to another problem:
+the application needs to know whether an error came from the validation
+step (meaning that the hardware was not touched) or from an error during
+the actual reading from/writing to hardware.
 
---eMnpOGXCMazMAbfp
-Content-Type: application/pgp-signature; name="signature.asc"
+> The, in hindsight quite poor, solution for that is to set error_idx to
+> count if the validation failed.
+> 
+> Fixes v4l2-compliance:
+> Control ioctls (Input 0):
+>                 fail: v4l2-test-controls.cpp(645): invalid error index write only control
+>         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_v4l2.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index 625c216c46b5..9b6454bb2f28 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -1076,7 +1076,8 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
+>  		ret = uvc_ctrl_get(chain, ctrl);
+>  		if (ret < 0) {
+>  			uvc_ctrl_rollback(handle);
+> -			ctrls->error_idx = i;
+> +			ctrls->error_idx = (ret == -EACCES) ?
+> +						ctrls->count : i;
 
------BEGIN PGP SIGNATURE-----
+No need for parentheses.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBKQj4ACgkQJNaLcl1U
-h9Bm7Qf/VJ91STTM9RrXZ6oXyjy90lybK+uguct6tIBOH/cCBlf2qGxlWOIaKw2w
-ybRwqTEJm5fKKRDMqvUBk7y7O3VF9onjg5x8N/+FcbPgrK2hEuzBJQlzEn47GEpK
-wangKZc80y5Sz7jPi5yK2dRyMfClSIyv78y5rFHcetDHH2+xLFz7com+SEczQeyx
-gBNaIJ7xyQb6/KUQQLPO21wTy4rzFpurRatmPJTVlUM1qREmptX8SB5lRFXIb8yJ
-gYp353sgoWIwm71bhZl2xtBuNyZJg7w4TnvPIaEBPi/cjaQvSUohaDJXui1tFITq
-JF2ZCpVivFlMaIgQNfKfH+lSv5Feag==
-=OLq0
------END PGP SIGNATURE-----
+I'm not sure this is correct though. -EACCES is returned by
+__uvc_ctrl_get() when the control is found and is a write-only control.
+The uvc_ctrl_get() calls for the previous controls will have potentially
+touched the device to read the current control value if it wasn't cached
+already, to this contradicts the rationale from the specification.
 
---eMnpOGXCMazMAbfp--
+I understand the need for this when setting controls, but when reading
+them, it's more puzzling, as the interactions with the hardware to read
+the controls are not supposed to affect the hardware state in a way that
+applications should care about. It may be an issue in the V4L2
+specification.
+
+>  			return ret;
+>  		}
+>  	}
+
+-- 
+Regards,
+
+Laurent Pinchart
