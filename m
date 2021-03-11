@@ -2,168 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A38336DB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BC2336DBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhCKIV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:21:28 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:54304 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231584AbhCKIVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:21:17 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615450877; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=FcBNlfOXSoNxm2y83jgoG0XJMJEpboYwvXHkJwO65uM=;
- b=ahUETY6MBfSo+ZGc3QlsdntCryUnDbYPGOiD/F8ajiJq4UerpVqvstYqjAGykssKkejBXyCM
- a9VLuJ7sYJjCQGPbSE2sBskAeDBgKSqk1pJvEVpS77Hcv/Y5fPfmRFaQv0+W5atOW2JfJ6NJ
- uccge7xDsyZosnvySxj8BR2D92E=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6049d2e76e1c22bc8dbd9ea2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 08:20:55
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D2284C43461; Thu, 11 Mar 2021 08:20:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D7A5C43465;
-        Thu, 11 Mar 2021 08:20:54 +0000 (UTC)
+        id S231301AbhCKIXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:23:37 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2684 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhCKIX2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:23:28 -0500
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dx20N5kFxz67wjQ;
+        Thu, 11 Mar 2021 16:19:00 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 11 Mar 2021 09:23:25 +0100
+Received: from [10.47.4.196] (10.47.4.196) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 11 Mar
+ 2021 08:23:24 +0000
+Subject: Re: [RFC PATCH v3 2/3] blk-mq: Freeze and quiesce all queues for
+ tagset in elevator_exit()
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <hare@suse.de>, <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <hch@lst.de>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <pragalla@codeaurora.org>,
+        <kashyap.desai@broadcom.com>, <yuyufen@huawei.com>
+References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
+ <1614957294-188540-3-git-send-email-john.garry@huawei.com>
+ <YElrSFGyim3rjDN+@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <8c6c6783-6152-2332-2f50-14c409e40320@huawei.com>
+Date:   Thu, 11 Mar 2021 08:21:21 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <YElrSFGyim3rjDN+@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 11 Mar 2021 16:20:53 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host mode
-In-Reply-To: <20210302132503.224670-6-avri.altman@wdc.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-6-avri.altman@wdc.com>
-Message-ID: <8c2b310299c0ca57bfd445cfca87fb28@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Originating-IP: [10.47.4.196]
+X-ClientProxiedBy: lhreml715-chm.china.huawei.com (10.201.108.66) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-02 21:24, Avri Altman wrote:
-> I host mode, the host is expected to send HPB-WRITE-BUFFER with
+On 11/03/2021 00:58, Ming Lei wrote:
+>> Indeed, blk_mq_queue_tag_busy_iter() already does take a reference to its
+>> queue usage counter when called, and the queue cannot be frozen to switch
+>> IO scheduler until all refs are dropped. This ensures no stale references
+>> to IO scheduler requests will be seen by blk_mq_queue_tag_busy_iter().
+>>
+>> However, there is nothing to stop blk_mq_queue_tag_busy_iter() being
+>> run for another queue associated with the same tagset, and it seeing
+>> a stale IO scheduler request from the other queue after they are freed.
+>>
+>> To stop this happening, freeze and quiesce all queues associated with the
+>> tagset as the elevator is exited.
+> I think this way can't be accepted since switching one queue's scheduler
+> is nothing to do with other request queues attached to same HBA.
+> 
+> This patch will cause performance regression because userspace may
+> switch scheduler according to medium or workloads, at that time other
+> LUNs will be affected by this patch.
 
-In host mode,
+Hmmm..that was my concern also. Do you think that it may cause a big 
+impact? Depends totally on the workload, I suppose.
 
-> buffer-id = 0x1 when it inactivates a region.
-> 
-> Use the map-requests pool as there is no point in assigning a
-> designated cache for umap-requests.
-> 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
-> ---
->  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
->  drivers/scsi/ufs/ufshpb.h |  1 +
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 6f4fd22eaf2f..0744feb4d484 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct ufshpb_lu 
-> *hpb,
-> 
->  	blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
-> 
-> +	hpb->stats.umap_req_cnt++;
->  	return 0;
->  }
-> 
-> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct 
-> ufshpb_lu *hpb,
->  	return -EAGAIN;
->  }
-> 
-> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
-> +					struct ufshpb_region *rgn)
-> +{
-> +	return ufshpb_issue_umap_req(hpb, rgn);
-> +}
-> +
->  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
->  {
->  	return ufshpb_issue_umap_req(hpb, NULL);
-> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct 
-> ufshpb_lu *hpb,
->  	struct ufshpb_subregion *srgn;
->  	int srgn_idx;
-> 
-> +
+FWIW, it is useful though for solving both iterator problems.
 
-No need of this blank line.
-
-Regards,
-Can Guo.
-
-> +	if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
-> +		return;
-> +
->  	lru_info = &hpb->lru_info;
-> 
->  	dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n", 
-> rgn->rgn_idx);
-> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
->  ufshpb_sysfs_attr_show_func(rb_active_cnt);
->  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
->  ufshpb_sysfs_attr_show_func(map_req_cnt);
-> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
-> 
->  static struct attribute *hpb_dev_stat_attrs[] = {
->  	&dev_attr_hit_cnt.attr,
-> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] = {
->  	&dev_attr_rb_active_cnt.attr,
->  	&dev_attr_rb_inactive_cnt.attr,
->  	&dev_attr_map_req_cnt.attr,
-> +	&dev_attr_umap_req_cnt.attr,
->  	NULL,
->  };
-> 
-> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu 
-> *hpb)
->  	hpb->stats.rb_active_cnt = 0;
->  	hpb->stats.rb_inactive_cnt = 0;
->  	hpb->stats.map_req_cnt = 0;
-> +	hpb->stats.umap_req_cnt = 0;
->  }
-> 
->  static void ufshpb_param_init(struct ufshpb_lu *hpb)
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index bd4308010466..84598a317897 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -186,6 +186,7 @@ struct ufshpb_stats {
->  	u64 rb_inactive_cnt;
->  	u64 map_req_cnt;
->  	u64 pre_req_cnt;
-> +	u64 umap_req_cnt;
->  };
-> 
->  struct ufshpb_lu {
+Thanks,
+John
