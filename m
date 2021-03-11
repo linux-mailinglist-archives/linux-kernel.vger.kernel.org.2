@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC77337612
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F8A33761E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbhCKOrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:47:00 -0500
-Received: from mail-pl1-f174.google.com ([209.85.214.174]:33970 "EHLO
-        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233608AbhCKOqr (ORCPT
+        id S233921AbhCKOtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:49:04 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:60707 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233692AbhCKOsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:46:47 -0500
-Received: by mail-pl1-f174.google.com with SMTP id ba1so10318808plb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:46:47 -0800 (PST)
+        Thu, 11 Mar 2021 09:48:40 -0500
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lKMcB-0001JL-Ju
+        for linux-kernel@vger.kernel.org; Thu, 11 Mar 2021 14:48:39 +0000
+Received: by mail-ed1-f69.google.com with SMTP id p6so9936596edq.21
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:48:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WAsuQjpf+/JhUAJoA6HUw/xzMiy7p5e2gW3ZZQvzL2c=;
-        b=NOWb/9QvmsnLZmcmxr3VONr0d2ONtNGQxtoi9Pkxb+wHrRwEmn9jnYvNZCZDiJZeh3
-         I0bzWlPkqcM8A4w3EqHlVVpg0o1053ydGUZT6zJE3srp1YJiNCrPYS3zRZufdrai2Mm6
-         E2nKIkTXvSOYJt2+xfwoeam+15elNCHMCG8ehtQ7cARTzQlabl0vv1m374iDXh+Q/rjm
-         PRXDGvuNzKgXPUH4+9aUNrIw5dfA6fCGguqvXoZfQOQ8QoQJPGXx+kK2axACAfiCZ0Dm
-         rnhvJUP0ZStAOMaY1g/pxYAvYVbjXmh9r89/eRZmvBBkVvvrjX6klFUiSTy2Ru9aFt/Q
-         9OnA==
-X-Gm-Message-State: AOAM533CUTudMOTGp9X8ij1mYlFos59ee8UyNPgSw9wzgH07crg5oeRe
-        cJv3PDQMDsTs116jdMDDhaAh5lLQXR0g6A==
-X-Google-Smtp-Source: ABdhPJwQDfSPsV3NmNj1e7Up1Q/4VmoqRHL9Bk54VAffoMgzGzP5KkENw7wYvDwEpa11gTkDBao31Q==
-X-Received: by 2002:a17:90b:4c4d:: with SMTP id np13mr9484452pjb.81.1615474007449;
-        Thu, 11 Mar 2021 06:46:47 -0800 (PST)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id 10sm2638348pfp.4.2021.03.11.06.46.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AfZi1aLqaVnii5CtMfRTKmgGkJ5oB3CQKhmO+KpjKXk=;
+        b=cy5DDq/r7lUTCN6AlmpK45UisuPXQxekROjNxiigaXHSMABkrjPXOgsWVxQROgy5I5
+         HJvnaohnz6ZdnbXIA/KHHobW07EgZp/q72fioJJhIHceeJiXVZtn/Mbkut9A984HrJFi
+         +3qs3MWqL/wrGm0BtIQ/gywCyoJLaJqW+IHxWEfofqTdqtuAMpt0I7KvcRHYhrG1MNS7
+         g5jxFyx4e0aCGfxYquCXv0BMrcRbZFiJp4VRKZ10vkBmPRav31/fjrQH0RXqJxPw3VzD
+         OhzKaYtXIghXR6aMkOnXXdcBbjHIBHgPnTKSOQ4hkv3DSRKhSKMniqBLUtvFRSqUSWce
+         alwA==
+X-Gm-Message-State: AOAM530r5176LGaWEsc9W58fNkvJ5ubUGPCgzjv3YUqTk36aQGTUy5Qo
+        HT7DqMz0XfeigpY2qs3TpVARe80vzrKMcnM1IXKa05XulMAX13nS0NuFSbXU5tYGqkJPKbiDsWm
+        gqe1tYueL0/mJkb/A+wu5iYetvWJy1WHJ99UQT7V5Ww==
+X-Received: by 2002:a17:906:d9d1:: with SMTP id qk17mr3415852ejb.52.1615474119390;
+        Thu, 11 Mar 2021 06:48:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyagpzsCI1n5bt7Tkf7ZjVO9M2j0SJ55XaHVkf0RzwuAx+DX5ofwBgGUu7nSq8q0RydQaLX5Q==
+X-Received: by 2002:a17:906:d9d1:: with SMTP id qk17mr3415833ejb.52.1615474119145;
+        Thu, 11 Mar 2021 06:48:39 -0800 (PST)
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id u59sm1559995edc.73.2021.03.11.06.48.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 06:46:46 -0800 (PST)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 81EA04024E; Thu, 11 Mar 2021 14:46:45 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 14:46:45 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     lyl2019@mail.ustc.edu.cn
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Re: Re: [PATCH] lib/test_kmod: Fix a use after free in
- register_test_dev_kmod
-Message-ID: <20210311144645.GU4332@42.do-not-panic.com>
-References: <20210311080246.11635-1-lyl2019@mail.ustc.edu.cn>
- <20210311130108.GS4332@42.do-not-panic.com>
- <17bb31cd.cc46.178217c9344.Coremail.lyl2019@mail.ustc.edu.cn>
- <20210311135833.GT4332@42.do-not-panic.com>
- <7c27e8b5.cf02.17821bb6891.Coremail.lyl2019@mail.ustc.edu.cn>
+        Thu, 11 Mar 2021 06:48:38 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Dinh Nguyen <dinguyen@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH] clk: socfpga: fix iomem pointer cast on 64-bit
+Date:   Thu, 11 Mar 2021 15:48:33 +0100
+Message-Id: <20210311144833.1313387-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c27e8b5.cf02.17821bb6891.Coremail.lyl2019@mail.ustc.edu.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:40:33PM +0800, lyl2019@mail.ustc.edu.cn wrote:
-> So, register_test_dev_kmod() will return a valid and freed test_dev, and cause use after free
-> in function test_kmod_init().
+Pointers should be cast to unsigned long instead of integer.  This fixes
+warning when compile testing on ARM64:
 
-Without looking at the details, in trying to improve the commit log
-further:
+  drivers/clk/socfpga/clk-gate.c: In function ‘socfpga_clk_recalc_rate’:
+  drivers/clk/socfpga/clk-gate.c:102:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 
-Is there a way you can reproduce a real world UAF and crash? If not why not?
-What is the risk of not merging this commit into the kernel tree. This
-information is useful for folks to evaluate whether or not users of this
-module might want to merge this and/or backport it into their testing
-kernel.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/clk/socfpga/clk-gate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If chances of this happening are 0, then this just a theoretical issue.
+diff --git a/drivers/clk/socfpga/clk-gate.c b/drivers/clk/socfpga/clk-gate.c
+index 43ecd507bf83..c876523d5d51 100644
+--- a/drivers/clk/socfpga/clk-gate.c
++++ b/drivers/clk/socfpga/clk-gate.c
+@@ -99,7 +99,7 @@ static unsigned long socfpga_clk_recalc_rate(struct clk_hw *hwclk,
+ 		val = readl(socfpgaclk->div_reg) >> socfpgaclk->shift;
+ 		val &= GENMASK(socfpgaclk->width - 1, 0);
+ 		/* Check for GPIO_DB_CLK by its offset */
+-		if ((int) socfpgaclk->div_reg & SOCFPGA_GPIO_DB_CLK_OFFSET)
++		if ((unsigned long) socfpgaclk->div_reg & SOCFPGA_GPIO_DB_CLK_OFFSET)
+ 			div = val + 1;
+ 		else
+ 			div = (1 << val);
+-- 
+2.25.1
 
-  Luis
