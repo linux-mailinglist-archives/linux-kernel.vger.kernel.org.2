@@ -2,142 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B80E337698
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA4233769C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbhCKPMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:12:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
+        id S234011AbhCKPMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:12:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbhCKPLq (ORCPT
+        with ESMTP id S233300AbhCKPML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:11:46 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2568C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:11:45 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id k4so15742586qtd.20
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:11:45 -0800 (PST)
+        Thu, 11 Mar 2021 10:12:11 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4082C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:12:11 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id f20so22218797ioo.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:12:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=AApTWOpa7ui0/YyXhD3tUhfEI1bu0UZzTT8+Disz7/w=;
-        b=RHJUA4xfDCj19gTdtnLY8BzgPsWIGu8LEWnYDr9Cy8aPAwzNTdDYRRyoUzwo4cMqf2
-         cD+acaWmz4tmGDVlM/dpk6biRUtSAz1iamX8bvSb9rgtMOT0xgC9ncWfL+3gIKfUyw5B
-         25QGtk8QUVqrC/5dYGGc+fEWyIF4a1xA3wyatNUUfdmHKyZq/i7PQjBYQ/CvKw5ktLPV
-         JHtnJdjr89mu/LZViYGBGXneDSr16+n4cqPZokACKXYN8aK5tVBxsCwEgTPZ7aU3UiA2
-         U8fJXmmFRZxkhqprV5YAMsysgeEgVNbcfMG8UoH6C31MW27OuBHQ6VgJFgHlgSljozH2
-         DMwA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8uzWR98tr30jTjAvujuKHcBKWh4iZ4wgejl+7WugCPs=;
+        b=Fcy+PPYqjKJEoxOQ2vElnvB1kN93O7t/tAbO2fozxIuJSzwELE6AeFpO8Fqz2FQE7s
+         m4FICO3nlvO00TFPAkSntfmWcCl0QIGQ4gTWf7aOcF1fliF86HnKTAoF8YMVYGkTzpeM
+         gi8WZ6pOBLsF5MYtqBJDo/zx/GLLTQz9cUn/dMDEHgnBsOI0O2gp7Ivvh0/svwbLCPGv
+         0VVBMwCegLfiFBAjGOMuE2r99gwnqqa8KuvxJcPS0c9+3xoFQY6vyHsiKqIwfV/F34n7
+         0/ZYJQfT/af/RTrovanNMwfVJBDYSA0uXkwIMtrX3ehf/LKEnOcj7sm/MNnqAIpRZFZI
+         jtTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=AApTWOpa7ui0/YyXhD3tUhfEI1bu0UZzTT8+Disz7/w=;
-        b=d2Y8n9MIA3E3ekAzXPYu1Bzd/DVf0cPsK3OKSEoSXXlCzCboYvOfllfqgmFtevLuhW
-         StkNOBOZIf6wkwYFVEea0PRu2yqw6OvgGXhZ9ppJrs2Zm0K2/5tRiGZ4yIf+JTKym314
-         4BaqIi/BPA/z7nCqAohELo+5M7kLeDlT3mnh3NTbQmpx3ZvLiXbzW5aNV482FYJHbbAt
-         XfmZw9c8mZACL5zTnYC/WsRFIXMukleDEI9Qh4Gm6G2lHD/kTmSmZjo4JgDlcZBfTv7s
-         EVqC8Qwtbr/gm0Em1R4Gy0rR9uDIAwb6U02GJhJySLLNRxYoUp+zySL3o0S/tKOppbY6
-         +yuQ==
-X-Gm-Message-State: AOAM531zwsjBZx/C7DZSf4iA7FaKRyCcNltHFnzRhn02n6mYEyDMGLX7
-        tZ0l80NPVCQHJ9088C35DjPUSpvbpqYlhBu4
-X-Google-Smtp-Source: ABdhPJw/9WyeAXPJh+ppicdtiNcPiRyV/8swmShG4RkM2/ZfaIcVwbL+Oyqk4hDD0utK59rhqPheAfu7VAe8mIQc
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:95a:d8a8:4925:42be])
- (user=andreyknvl job=sendgmr) by 2002:a0c:ea4b:: with SMTP id
- u11mr7819047qvp.43.1615475504801; Thu, 11 Mar 2021 07:11:44 -0800 (PST)
-Date:   Thu, 11 Mar 2021 16:11:41 +0100
-Message-Id: <1a41abb11c51b264511d9e71c303bb16d5cb367b.1615475452.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH] kasan: fix per-page tags for non-page_alloc pages
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8uzWR98tr30jTjAvujuKHcBKWh4iZ4wgejl+7WugCPs=;
+        b=RGkFGq1gjFSuJoMNrxKxEmQydVTS7o4LTXTSdvS7R1c0mQmGJIBLJZYRu181STrTlU
+         UhFMwFXIWN2K/Dy6CyoYPnOJee16THM1TFG5mcxF2tiyenncIJQcHoQ+RS6sq660H6nK
+         53HUNr3iD67d3t/ip00VLwODKJlU2OHw7JSpKGTLGlWWclLnuTL2mqr/glBuEXOlh7Rr
+         w1nUoPDszTYTAjzUeiBfZQL3WI/tGgT2qJeK+GZuibsy0ntPeZlpYgotlGlnm94ElZtS
+         wP7TONewM95+qKIEMWSc6rQla2IObLiXMf7Ri0iqja9wlKwAZJPXSu+jfG4sDIC8OaAd
+         7Iaw==
+X-Gm-Message-State: AOAM532ZPS1pgepFBCj1LAKT/YOB1jEvTSMK3mGFGHSNWJAJMshrvGpN
+        ihe1QpyzVthuVEp2e+yCjFp3VyMqzevXmw==
+X-Google-Smtp-Source: ABdhPJz1TleSAlCcpEHwXGi4dk1lb/CpLc/h59zEp0RM2ifcqF9OCZ03Hcn2cdJEzumDie7ZXCG3zw==
+X-Received: by 2002:a02:cb48:: with SMTP id k8mr4118806jap.52.1615475531036;
+        Thu, 11 Mar 2021 07:12:11 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id m15sm1369443ilh.6.2021.03.11.07.12.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 07:12:10 -0800 (PST)
+Subject: Re: [PATCH] ide: fix warning comparing pointer to 0
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        davem@davemloft.net
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        linux-ide@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <1615456086-127803-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <034a3feb-27b3-a349-6dcf-75cb36a34e23@kernel.dk>
+Date:   Thu, 11 Mar 2021 08:12:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1615456086-127803-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To allow performing tag checks on page_alloc addresses obtained via
-page_address(), tag-based KASAN modes store tags for page_alloc
-allocations in page->flags.
+On 3/11/21 2:48 AM, Jiapeng Chong wrote:
+> Fix the following coccicheck warning:
+> 
+> ./drivers/ide/pmac.c:1680:38-39: WARNING comparing pointer to 0.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/ide/pmac.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ide/pmac.c b/drivers/ide/pmac.c
+> index ea0b064..d5171e0 100644
+> --- a/drivers/ide/pmac.c
+> +++ b/drivers/ide/pmac.c
+> @@ -1677,7 +1677,7 @@ static int pmac_ide_init_dma(ide_hwif_t *hwif, const struct ide_port_info *d)
+>  	/* We won't need pci_dev if we switch to generic consistent
+>  	 * DMA routines ...
+>  	 */
+> -	if (dev == NULL || pmif->dma_regs == 0)
+> +	if (!dev || pmif->dma_regs)
+>  		return -ENODEV;
 
-Currently, the default tag value stored in page->flags is 0x00.
-Therefore, page_address() returns a 0x00ffff... address for pages
-that were not allocated via page_alloc.
+This looks utterly broken - the warning is most definitely about
+dma_regs, not dev, and you swapped the condition (failing on dma_regs
+being set, not NULL).
 
-This might cause problems. A particular case we encountered is a conflict
-with KFENCE. If a KFENCE-allocated slab object is being freed via
-kfree(page_address(page) + offset), the address passed to kfree() will
-get tagged with 0x00 (as slab pages keep the default per-page tags).
-This leads to is_kfence_address() check failing, and a KFENCE object
-ending up in normal slab freelist, which causes memory corruptions.
+I'd just leave this one alone, drivers/ide/ should be going away soon.
 
-This patch changes the way KASAN stores tag in page-flags: they are now
-stored xor'ed with 0xff. This way, KASAN doesn't need to initialize
-per-page flags for every created page, which might be slow.
-
-With this change, page_address() returns natively-tagged (with 0xff)
-pointers for pages that didn't have tags set explicitly.
-
-This patch fixes the encountered conflict with KFENCE and prevents more
-similar issues that can occur in the future.
-
-Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
-Cc: stable@vger.kernel.org
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- include/linux/mm.h | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 77e64e3eac80..c45c28f094a7 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1440,16 +1440,28 @@ static inline bool cpupid_match_pid(struct task_struct *task, int cpupid)
- 
- #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
- 
-+/*
-+ * KASAN per-page tags are stored xor'ed with 0xff. This allows to avoid
-+ * setting tags for all pages to native kernel tag value 0xff, as the default
-+ * value 0x00 maps to 0xff.
-+ */
-+
- static inline u8 page_kasan_tag(const struct page *page)
- {
--	if (kasan_enabled())
--		return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
--	return 0xff;
-+	u8 tag = 0xff;
-+
-+	if (kasan_enabled()) {
-+		tag = (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
-+		tag ^= 0xff;
-+	}
-+
-+	return tag;
- }
- 
- static inline void page_kasan_tag_set(struct page *page, u8 tag)
- {
- 	if (kasan_enabled()) {
-+		tag ^= 0xff;
- 		page->flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
- 		page->flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
- 	}
 -- 
-2.31.0.rc2.261.g7f71774620-goog
+Jens Axboe
 
