@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEA4336EF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42848336EFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhCKJdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:33:39 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51898 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhCKJdI (ORCPT
+        id S232054AbhCKJeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:34:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38573 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231882AbhCKJeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:33:08 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lKHgn-0002l7-3v; Thu, 11 Mar 2021 09:33:05 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ross Schmidt <ross.schm.dev@gmail.com>,
-        devel@driverdev.osuosl.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8723bs: Fix spelling mistake "disabed" -> "disabled"
-Date:   Thu, 11 Mar 2021 09:33:04 +0000
-Message-Id: <20210311093304.5573-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 11 Mar 2021 04:34:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615455246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RQg4MlrgZ5H1BtL2yvWxd343lPbOe8VMobn508aPtBQ=;
+        b=ZUSMg9vOHgb7AoJz8P0cKWEp9k70zjHcHAi2ReaNbxpHSS8RQGEQm4LIudCFZQubEcYIiF
+        wN/KxcrBvyiqCkExa0s6pDPKyxc0rTWFYmxfB9ok67ZZrD6Nwn4M9ZGt8nQYVGdjHvo1ti
+        X502uk/OiZYgdsc7cowiUKCwAD6zEk4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-03jMDIHuPyOpg5XCrlF6UA-1; Thu, 11 Mar 2021 04:34:04 -0500
+X-MC-Unique: 03jMDIHuPyOpg5XCrlF6UA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0197880159E;
+        Thu, 11 Mar 2021 09:34:03 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0125D3CC7;
+        Thu, 11 Mar 2021 09:34:01 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <91190.1615444370@turing-police>
+References: <91190.1615444370@turing-police>
+To:     =?us-ascii?Q?Valdis_=3D=3Futf-8=3FQ=3FKl=3Dc4=3D93tnieks=3F=3D?= 
+        <valdis.kletnieks@vt.edu>
+Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: 'make O=' indigestion with module signing
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 11 Mar 2021 09:34:01 +0000
+Message-ID: <860945.1615455241@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu> wrote:
 
-There is a spelling mistake in a comment, fix it.
+> What i *expected* was that multiple builds with different O=3D would each
+> generate themselves a unique signing key and put it in their own O=3D dir=
+ectory
+> and stay out of each other's way.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/staging/rtl8723bs/include/wifi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hmmm...  Works for me.  I use separate build dirs all the time.
 
-diff --git a/drivers/staging/rtl8723bs/include/wifi.h b/drivers/staging/rtl8723bs/include/wifi.h
-index fe984fcb66a9..4080803d9b1b 100644
---- a/drivers/staging/rtl8723bs/include/wifi.h
-+++ b/drivers/staging/rtl8723bs/include/wifi.h
-@@ -719,7 +719,7 @@ struct ADDBA_request {
- 
- #define	P2P_WILDCARD_SSID_LEN				7
- 
--#define	P2P_FINDPHASE_EX_NONE				0	/*  default value, used when: (1)p2p disabed or (2)p2p enabled but only do 1 scan phase */
-+#define	P2P_FINDPHASE_EX_NONE				0	/*  default value, used when: (1)p2p disabled or (2)p2p enabled but only do 1 scan phase */
- #define	P2P_FINDPHASE_EX_FULL				1	/*  used when p2p enabled and want to do 1 scan phase and P2P_FINDPHASE_EX_MAX-1 find phase */
- #define	P2P_FINDPHASE_EX_SOCIAL_FIRST		(P2P_FINDPHASE_EX_FULL+1)
- #define	P2P_FINDPHASE_EX_MAX					4
--- 
-2.30.2
+What version of the kernel are you using and what's the build command line -
+in particular the full O=3D option?
+
+David
 
