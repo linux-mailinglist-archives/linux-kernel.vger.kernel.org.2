@@ -2,62 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDB6336C5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C11336C60
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhCKGjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:39:44 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:44503 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229932AbhCKGjV (ORCPT
+        id S231362AbhCKGkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:40:16 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:60361 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhCKGkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:39:21 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0URPwQhx_1615444758;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0URPwQhx_1615444758)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 11 Mar 2021 14:39:18 +0800
-Date:   Thu, 11 Mar 2021 14:39:17 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     davem@davemloft.net, mingo@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
-Message-ID: <YEm7FcfJ5NY6WM+J@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
- <20210309124011.709c6cd3@gandalf.local.home>
- <YEiLbLiXe6ju/vCO@TonyMac-Alibaba>
- <20210310113112.743dcf17@gandalf.local.home>
+        Thu, 11 Mar 2021 01:40:06 -0500
+X-Originating-IP: 82.65.183.113
+Received: from [172.16.5.113] (82-65-183-113.subs.proxad.net [82.65.183.113])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E460E60004;
+        Thu, 11 Mar 2021 06:39:58 +0000 (UTC)
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
+ schedule_tail
+To:     Ben Dooks <ben.dooks@codethink.co.uk>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <000000000000b74f1b05bd316729@google.com>
+ <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+ <dbdca868-7ef2-47b3-ac26-12fe61f3156a@codethink.co.uk>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <9a0823f4-de19-c2a2-5333-41c6caadbc11@ghiti.fr>
+Date:   Thu, 11 Mar 2021 01:39:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310113112.743dcf17@gandalf.local.home>
+In-Reply-To: <dbdca868-7ef2-47b3-ac26-12fe61f3156a@codethink.co.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:31:12AM -0500, Steven Rostedt wrote:
-> On Wed, 10 Mar 2021 17:03:40 +0800
-> Tony Lu <tonylu@linux.alibaba.com> wrote:
-> 
-> > I use pahole to read vmlinux.o directly with defconfig and
-> > CONFIG_DEBUG_INFO enabled, the result shows 22 structs prefixed with
-> > trace_event_raw_ that have at least one hole.
-> 
-> I was thinking of pahole too ;-)
-> 
-> But the information can also be captured from the format files with simple
-> scripts as well. And perhaps be more tuned to see if there's actually a fix
-> for them, and ignore reporting it if there is no fix, as all trace events
-> are 4 byte aligned, and if we are off by one, sometimes it doesn't matter.
+Hi Ben,
 
-I am going to send a patch to fix this issue later. There are many
-events have more than 1 holes, I am trying to pick up the events that are
-really to be fixed.
+Le 3/10/21 à 5:24 PM, Ben Dooks a écrit :
+> On 10/03/2021 17:16, Dmitry Vyukov wrote:
+>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
+>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
+>>>
+>>> Hello,
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for 
+>>> arch_dup_tas..
+>>> git tree:       
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
+>>> kernel config:  
+>>> https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+>>> dashboard link: 
+>>> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
+>>> userspace arch: riscv64
+>>>
+>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>
+>>> IMPORTANT: if you fix the issue, please add the following tag to the 
+>>> commit:
+>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
+>>
+>> +riscv maintainers
+>>
+>> This is riscv64-specific.
+>> I've seen similar crashes in put_user in other places. It looks like
+>> put_user crashes in the user address is not mapped/protected (?).
+> 
+> The unmapped case should have been handled.
+> 
+> I think this issue is that the check for user-mode access added. From
+> what I read the code may be wrong in
+> 
+> +    if (!user_mode(regs) && addr < TASK_SIZE &&
+> +            unlikely(!(regs->status & SR_SUM)))
+> +        die_kernel_fault("access to user memory without uaccess routines",
+> +                addr, regs);
+> 
+> I think the SR_SUM check might be wrong, as I read the standard the
+> SR_SUM should be set to disable user-space access. So the check
+> should be unlikely(regs->status & SR_SUM) to say access without
+> having disabled the protection.
 
+The check that is done seems correct to me: "The SUM (permit Supervisor 
+User Memory access) bit modifies the privilege with which S-mode loads 
+and stores access virtual memory.  *When SUM=0, S-mode memory accesses 
+to pages that are accessible by U-mode (U=1 in Figure 4.15) will fault*. 
+  When SUM=1, these accesses are permitted.SUM  has  no  effect  when 
+page-based  virtual  memory  is  not  in  effect".
 
-Cheers,
-Tony Lu
+I will try to reproduce the problem locally.
+
+Thanks,
+
+Alex
 
 > 
-> -- Steve
+> Without this, you can end up with an infinite loop in the fault handler.
+> 
+>>
+>>> Unable to handle kernel access to user memory without uaccess 
+>>> routines at virtual address 000000002749f0d0
+>>> Oops [#1]
+>>> Modules linked in:
+>>> CPU: 1 PID: 4875 Comm: syz-executor.0 Not tainted 
+>>> 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+>>> Hardware name: riscv-virtio,qemu (DT)
+>>> epc : schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
+>>>   ra : task_pid_vnr include/linux/sched.h:1421 [inline]
+>>>   ra : schedule_tail+0x70/0xb2 kernel/sched/core.c:4264
+>>> epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp : ffffffe025d17ec0
+>>>   gp : ffffffe005d25378 tp : ffffffe00f0d0000 t0 : 0000000000000000
+>>>   t1 : 0000000000000001 t2 : 00000000000f4240 s0 : ffffffe025d17ee0
+>>>   s1 : 000000002749f0d0 a0 : 000000000000002a a1 : 0000000000000003
+>>>   a2 : 1ffffffc0cfac500 a3 : ffffffe0000c80cc a4 : 5ae9db91c19bbe00
+>>>   a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
+>>>   s2 : 0000000000040000 s3 : ffffffe00eef96c0 s4 : ffffffe022c77fe0
+>>>   s5 : 0000000000004000 s6 : ffffffe067d74e00 s7 : ffffffe067d74850
+>>>   s8 : ffffffe067d73e18 s9 : ffffffe067d74e00 s10: ffffffe00eef96e8
+>>>   s11: 000000ae6cdf8368 t3 : 5ae9db91c19bbe00 t4 : ffffffc4043cafb2
+>>>   t5 : ffffffc4043cafba t6 : 0000000000040000
+>>> status: 0000000000000120 badaddr: 000000002749f0d0 cause: 
+>>> 000000000000000f
+>>> Call Trace:
+>>> [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
+>>> [<ffffffe000005570>] ret_from_exception+0x0/0x14
+>>> Dumping ftrace buffer:
+>>>     (ftrace buffer empty)
+>>> ---[ end trace b5f8f9231dc87dda ]---
+>>>
+>>>
+>>> ---
+>>> This report is generated by a bot. It may contain errors.
+>>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>>
+>>> syzbot will keep track of this issue. See:
+>>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>>>
+>>> -- 
+>>> You received this message because you are subscribed to the Google 
+>>> Groups "syzkaller-bugs" group.
+>>> To unsubscribe from this group and stop receiving emails from it, 
+>>> send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+>>> To view this discussion on the web visit 
+>>> https://groups.google.com/d/msgid/syzkaller-bugs/000000000000b74f1b05bd316729%40google.com. 
+>>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>
+> 
+> 
