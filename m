@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96106337A45
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 089FC337A5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhCKRAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:00:03 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:52248 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhCKQ7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:59:49 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lKOf2-00ANxe-NU; Thu, 11 Mar 2021 17:59:44 +0100
-Date:   Thu, 11 Mar 2021 17:59:44 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org,
-        linux@armlinux.org.uk, mw@semihalf.com, rmk+kernel@armlinux.org.uk,
-        atenart@kernel.org, rabeeh@solid-run.com
-Subject: Re: [V2 net-next] net: mvpp2: Add reserved port private flag
- configuration
-Message-ID: <YEpMgK1MF6jFn2ZW@lunn.ch>
-References: <1615481007-16735-1-git-send-email-stefanc@marvell.com>
+        id S229844AbhCKRDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:03:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229657AbhCKRDm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:03:42 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2076C061574;
+        Thu, 11 Mar 2021 09:03:41 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id h13so3861059eds.5;
+        Thu, 11 Mar 2021 09:03:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AIJvF8THgvNIIJY7o0rd8q2CMHcgDSy7Mtu5dW42sFA=;
+        b=oHvYAKs8vlQsGGeTCxnbGmFJRdubhK9l9eDvFETPrXX9cQ7MlU5fEAM0qMn1C7xchN
+         YohhK3VVAFGYyqcR46GscrLSOwBqOC8DGU5uTlA+Vpc61R9ZoDyWxwVXvAqzNq2+eoNb
+         VMsGujlugvf1G0oOs6vCypmtB9xIQqYp6W3J+kjg2Sayn6B9fqAMdNasJiN5TuCCSjM/
+         JB3nztXsccELBZkyeuy3Z3uH8hBl/ALzgqBPPilDUFOd5dmSxnP17KKDRcMG9jw5cMBF
+         jb8CogOCyTD0cSSO1m+s/g4DzFYtm3m4su1yk3a6ZqdMIKH5pzI3Hfxle3x9ihR0Tajz
+         enfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AIJvF8THgvNIIJY7o0rd8q2CMHcgDSy7Mtu5dW42sFA=;
+        b=Cbl2wNLYqq5hD9rHML52rANCM5y/bsd0ycj1wCm6kNjkK8vhaC1mdKmeLC8q47WwI+
+         G+NLICPEdXweu8r4Trn00KZBYjPBwX5pna8DMbqCJMrUyLGqUSio5X5viurq6blzpAsi
+         E4mA6NgZPMyzi4XFHz9pn1YNlenxbSnD9ayHbyfG7l9tMwZ6GAnBUGBPjRE/f+Mq/QZM
+         xYeVmm4ENYPczWLgP5r5kUeW0ZC1nOaty9tIKHY/dtvZTPbo/sWI115ikRHfZWu3CUaJ
+         BiALiLfVJr7XTwc+4lXFxKrm3o4AwPsTt6mjKN7RONkmJmrjwBEiPfCnh51gt+064J+7
+         JG0g==
+X-Gm-Message-State: AOAM530dsRWjBVGZK9mBNgZ5Zbb+dGThD8WQT7qofPdMbg4PTeKSdXuF
+        Gz7Ld+P3DjOJIW9fqrDiiyo=
+X-Google-Smtp-Source: ABdhPJwETXnVswKC4ZC4+FSyf5TAqqX9vnXmWFxa0O9LzcMWBXQwYxWCRSqufx1WJgXXxc52XIj3Aw==
+X-Received: by 2002:a05:6402:1004:: with SMTP id c4mr9610447edu.364.1615482220575;
+        Thu, 11 Mar 2021 09:03:40 -0800 (PST)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.googlemail.com with ESMTPSA id b4sm1627205edh.40.2021.03.11.09.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 09:03:40 -0800 (PST)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 1/3] mtd: core: add nvmem-cells compatible to parse mtd as nvmem cells
+Date:   Thu, 11 Mar 2021 10:56:58 +0100
+Message-Id: <20210311095715.17048-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615481007-16735-1-git-send-email-stefanc@marvell.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 06:43:27PM +0200, stefanc@marvell.com wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
+Partitions that contains the nvmem-cells compatible will register
+their direct subonodes as nvmem cells and the node will be treated as a
+nvmem provider.
 
-Hi Stefan
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/mtd/mtdcore.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks for the strings change. Looks a lot better.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 2d6423d89a17..ac1b4f176a17 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -531,6 +531,7 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
+ 
+ static int mtd_nvmem_add(struct mtd_info *mtd)
+ {
++	struct device_node *node = mtd_get_of_node(mtd);
+ 	struct nvmem_config config = {};
+ 
+ 	config.id = -1;
+@@ -543,7 +544,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+ 	config.stride = 1;
+ 	config.read_only = true;
+ 	config.root_only = true;
+-	config.no_of_node = true;
++	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
+ 	config.priv = mtd;
+ 
+ 	mtd->nvmem = nvmem_register(&config);
+-- 
+2.30.0
 
-Now i took a look at the bigger picture.
-
-> According to Armada SoC architecture and design, all the PPv2 ports
-> which are populated on the same communication processor silicon die
-> (CP11x) share the same Classifier and Parser engines.
-> 
-> Armada is an embedded platform and therefore there is a need to reserve
-> some of the PPv2 ports for different use cases.
-> 
-> For example, a port can be reserved for a CM3 CPU running FreeRTOS
-> for management purposes
-
-So the CM3 CPU has its own driver for this hardware? It seems like we
-should not even instantiate the Linux driver for this port. Does the
-CM3 have its own DT blob? I think the better solution is that the
-Armada DT for the board does not list the port, and the DT for the CM3
-does. Linux never sees the port, since Linux should not be using it.
-
-> or by user-space data plane application.
-
-You mean XDP/AF_XDP? I don't see any other XDP capable drivers having
-a flag like this. If this was required, i would expect it to be a
-common properly, not driver private.
-
-	  Andrew
