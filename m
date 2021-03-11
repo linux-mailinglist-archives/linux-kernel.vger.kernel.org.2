@@ -2,77 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED62336C72
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3ED336C76
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhCKGrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:47:17 -0500
-Received: from mga05.intel.com ([192.55.52.43]:26562 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhCKGrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:47:11 -0500
-IronPort-SDR: oy+Sk+h6RUJ/q8AxBzJhfbqf1jYmOeAKfIl2SWqgD0QU+0pJ7tU2DtWXo0Zbc6Phndws6cfO56
- Z6ldUv61XlXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="273661589"
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="273661589"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 22:47:10 -0800
-IronPort-SDR: Ew6b4c2T3wX0D8nspkr4pjPdHmqyGUChpLcfAGIsLF/xeWAVkRfzmcjlicGFhiVjXX39p2ZVw9
- 4N2T/cmFYvgw==
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="410503797"
-Received: from eefimov-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.48.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 22:47:07 -0800
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210311114723.352e12f8@canb.auug.org.au>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <bad04c3d-c80e-16c1-0f5a-4d4556555a81@intel.com>
-Date:   Thu, 11 Mar 2021 07:47:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231252AbhCKGu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:50:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230455AbhCKGuO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 01:50:14 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FC0C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:50:13 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id p7so32520098eju.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:50:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ptIec5/l5SJwE7zBjHGtTGVSGpXx725GHbS1ui0XQQg=;
+        b=RNbhLnDslwV1ZAmXU6qw951y1ouK1GsjKcKS/AC4LnmMQfukacYrNpv7+yzSy3PM/8
+         yEON5p/EwJ47U/JjaojqfZajlNfmoufc4ZyQo28U9uBh+YyGVHA7wrcnKEkOM9f05ZRP
+         K0z9q06lIVknGwyCOCie/6WvGTwZAy34ZjL2THQYFAMC8PuZKDQD9Ftq3CnZ0gTgYrl/
+         8n5MJ3NoGk0Gz/aTosOQn7pHe4t3HzAT+79wY5GAu9PhJ/SDj3RvdymY7ryzcyCkdWsp
+         hV0k83Pm9PMYqnDOq/i8vtglu5Wjj73CSZzTYnvHocwdawptNfe4f5vEcX5o5GpnucZa
+         kGUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ptIec5/l5SJwE7zBjHGtTGVSGpXx725GHbS1ui0XQQg=;
+        b=CYWdBpxa9vSEDNKsqugotyPeJ9vP68NVHAAdYvu/ptnwHAVQspBP1BZw1mwTDiCs3P
+         BjlVBbdZYA2G2GcSE8ppo1huSjan15VV2f+I4Iiu4sHXCwOesWs3t/s1B8WdNVhdUL9U
+         KvtFIKLsPyd9d75kGtcHjNWJ+obv0qlt54UI7/EiNZst8aLLu1ccm/63SNK9r2TQ5Jzw
+         tLwg1G8nffM4jEjyyQjmTXie6dMsHG1x9m9fsuK9rLJqcoP4UF2y4b/FWnfPj7ABHnUN
+         /vLiO2moZUjtahqgStMOjql5VLd7a/+jDivKgUoEr64dVWHcAthjDB3kAnJJoRnLtOcF
+         WL8A==
+X-Gm-Message-State: AOAM530UgduiKF0bDOZVN2U+xsIiHnlQnXlpHUvfIEBpZ8eDZOzARQtv
+        zkNAYonA7qEUQLQgIBekUp1eGXKFhCw5xt1JfefAUA==
+X-Google-Smtp-Source: ABdhPJyszQ4KDwubpi0ogfG8RcflSl3DvQgx74jQEdqhNOhFicG4X86jAIg4rh886sWeArU+nVHdy6GuDXOjawOqMJY=
+X-Received: by 2002:a17:906:b2c3:: with SMTP id cf3mr1539444ejb.133.1615445412274;
+ Wed, 10 Mar 2021 22:50:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210311114723.352e12f8@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210310182834.696191666@linuxfoundation.org>
+In-Reply-To: <20210310182834.696191666@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 11 Mar 2021 12:20:01 +0530
+Message-ID: <CA+G9fYuVoNR9SN+1gY9TrsxPdpyJ=x0yNyBwKOsj1q-m0uoRDg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/47] 5.10.23-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-11 01:47, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the bpf-next tree, today's linux-next build (perf) failed
-> like this:
-> 
-> make[3]: *** No rule to make target 'libbpf_util.h', needed by '/home/sfr/next/perf/staticobjs/xsk.o'.  Stop.
+On Wed, 10 Mar 2021 at 23:59, <gregkh@linuxfoundation.org> wrote:
 >
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> This is the start of the stable review cycle for the 5.10.23 release.
+> There are 47 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 12 Mar 2021 18:28:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.23-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi Stephen,
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-It's an incremental build issue, as pointed out here [1], that is
-resolved by cleaning the build.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.10.23-rc2
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.10.y
+git commit: 93276f11b3afe08c3f213a3648483b1a8789673b
+git describe: v5.10.22-48-g93276f11b3af
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
+.y/build/v5.10.22-48-g93276f11b3af
+
+No regressions (compared to build v5.10.22)
 
 
-Cheers,
-Björn
-
-[1] 
-https://lore.kernel.org/bpf/CAEf4BzYPDF87At4=_gsndxof84OiqyJxgAHL7_jvpuntovUQ8w@mail.gmail.com/
+No fixes (compared to build v5.10.22)
 
 
-> Caused by commit
-> 
->    7e8bbe24cb8b ("libbpf: xsk: Move barriers from libbpf_util.h to xsk.h")
-> 
-> I have used the bpf tree from next-20210310 for today.
-> 
+Ran 56156 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-bpf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-livepatch
+* kselftest-ptrace
+* libhugetlbfs
+* ltp-containers-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* v4l2-compliance
+* fwts
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* kselftest-
+* kselftest-android
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-kexec
+* kselftest-lkdtm
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-vm
+* kselftest-x86
+* ltp-controllers-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* kunit
+* rcutorture
+* ssuite
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
