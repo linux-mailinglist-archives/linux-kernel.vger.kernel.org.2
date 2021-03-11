@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A98533794F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC2833795B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234560AbhCKQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:28:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234540AbhCKQ20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:28:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B875A64F9A;
-        Thu, 11 Mar 2021 16:28:23 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 16:28:21 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH v14 8/8] kselftest/arm64: Verify that TCO is enabled in
- load_unaligned_zeropad()
-Message-ID: <20210311162820.GE30821@arm.com>
-References: <20210308161434.33424-1-vincenzo.frascino@arm.com>
- <20210308161434.33424-9-vincenzo.frascino@arm.com>
- <20210311132509.GB30821@arm.com>
- <bd403b9f-bb38-a456-b176-b6fefccb711f@arm.com>
+        id S229459AbhCKQaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:30:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53887 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233710AbhCKQ3m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:29:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615480181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kRJOqyfDaUlicETbZC6GzKoFoUyCtPY6jEDl336fEOc=;
+        b=ghhA4gy94rDyBnhRWpGN9/puLp/kDc9W6OmKimw2w2dGuQP/G+JxPFjUF0GvsptDx1urzd
+        I2FcpJqYIxb91H2L1e0qYDe0GygIDu1zO+JZPbokt8tjJ8GspuR3ktNuEDwFPJFBa3fKau
+        f/hMPNbCROaOU2Y9gotQWAe7zWqo7Bk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38-RFti_eNzP8i70OFniEU0SA-1; Thu, 11 Mar 2021 11:29:39 -0500
+X-MC-Unique: RFti_eNzP8i70OFniEU0SA-1
+Received: by mail-wr1-f72.google.com with SMTP id p12so7171998wrn.18
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:29:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kRJOqyfDaUlicETbZC6GzKoFoUyCtPY6jEDl336fEOc=;
+        b=ZfwUZZHK+TyuHlLfwSTD7lwMXhDnvojr0OfZm0zdSaO4roh0bf7K84cE6H99Quw/4B
+         nvTLd1wrwMhHvLoV5MFVSf0rH5ZdgkVWQH8Q7b3RB03mP1v2P6eoyyaEZDLhB7HMVW0j
+         YPddmSUFRlgrNLFTzahyUETWgjIDQktVxYGTp/7hc0RwRop3gRHbsnuc08lIyyfVrMLr
+         10yspH8ClsHO6j4oZ7esELfbZdRk/hO2AHumtmIPceF1dQbW4VcqgR2niOdZdmjteWsS
+         b/rnt36FbVpvM3si3f2Z3lyPP7bI4aNgzezldj20/Wz6yzQKdOXMPVvucs2lWnzBtVx6
+         rbVQ==
+X-Gm-Message-State: AOAM531vlqXjauPvXm4xqNVXzzrENtAh43zwbQ++QiBUrqfv5fdO0+lS
+        ssy6YnXPi6eydjsYqv9NwbTQ87spTXDQuGtTqFbdCyutYt/RnnoDO45/BO5MELzn6wBD/k7MIRo
+        pE64jPg0m6gI3g2ky9piLnS0M
+X-Received: by 2002:a1c:22c2:: with SMTP id i185mr9007783wmi.99.1615480178189;
+        Thu, 11 Mar 2021 08:29:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyEFHHV6ROfRyeJhcfcGGw38UajN0mcbhcLEwuXT8dr51uqlFAl5VOj4+hNEHVIYMJCOM7V5w==
+X-Received: by 2002:a1c:22c2:: with SMTP id i185mr9007767wmi.99.1615480178025;
+        Thu, 11 Mar 2021 08:29:38 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x13sm4522105wrt.75.2021.03.11.08.29.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 08:29:37 -0800 (PST)
+To:     Tobin Feldman-Fitzthum <tobin@linux.ibm.com>, natet@google.com
+Cc:     Dov Murik <dovmurik@linux.vnet.ibm.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, seanjc@google.com, rientjes@google.com,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Laszlo Ersek <lersek@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>
+References: <20210224085915.28751-1-natet@google.com>
+ <7829472d-741c-1057-c61f-321fcfb5bdcd@linux.ibm.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
+Message-ID: <35dde628-f1a8-c3bf-9c7d-7789166b0ee1@redhat.com>
+Date:   Thu, 11 Mar 2021 17:29:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bd403b9f-bb38-a456-b176-b6fefccb711f@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <7829472d-741c-1057-c61f-321fcfb5bdcd@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 03:00:26PM +0000, Vincenzo Frascino wrote:
-> On 3/11/21 1:25 PM, Catalin Marinas wrote:
-> > On Mon, Mar 08, 2021 at 04:14:34PM +0000, Vincenzo Frascino wrote:
-> >> load_unaligned_zeropad() and __get/put_kernel_nofault() functions can
-> >> read passed some buffer limits which may include some MTE granule with a
-> >> different tag.
-> >>
-> >> When MTE async mode is enable, the load operation crosses the boundaries
-> >> and the next granule has a different tag the PE sets the TFSR_EL1.TF1
-> >> bit as if an asynchronous tag fault is happened:
-> >>
-> >>  ==================================================================
-> >>  BUG: KASAN: invalid-access
-> >>  Asynchronous mode enabled: no access details available
-> >>
-> >>  CPU: 0 PID: 1 Comm: init Not tainted 5.12.0-rc1-ge1045c86620d-dirty #8
-> >>  Hardware name: FVP Base RevC (DT)
-> >>  Call trace:
-> >>    dump_backtrace+0x0/0x1c0
-> >>    show_stack+0x18/0x24
-> >>    dump_stack+0xcc/0x14c
-> >>    kasan_report_async+0x54/0x70
-> >>    mte_check_tfsr_el1+0x48/0x4c
-> >>    exit_to_user_mode+0x18/0x38
-> >>    finish_ret_to_user+0x4/0x15c
-> >>  ==================================================================
-> >>
-> >> Verify that Tag Check Override (TCO) is enabled in these functions before
-> >> the load and disable it afterwards to prevent this to happen.
-> >>
-> >> Note: The issue has been observed only with an MTE enabled userspace.
-> > 
-> > The above bug is all about kernel buffers. While userspace can trigger
-> > the relevant code paths, it should not matter whether the user has MTE
-> > enabled or not. Can you please confirm that you can still triggered the
-> > fault with kernel-mode MTE but non-MTE user-space? If not, we may have a
-> > bug somewhere as the two are unrelated: load_unaligned_zeropad() only
-> > acts on kernel buffers and are subject to the kernel MTE tag check fault
-> > mode.
-> 
-> I retried and you are right, it does not matter if it is a MTE or non-MTE
-> user-space. The issue seems to be that this test does not trigger the problem
-> all the times which probably lead me to the wrong conclusions.
+On 11/03/21 16:30, Tobin Feldman-Fitzthum wrote:
+> I am not sure how the mirror VM will be supported in QEMU. Usually there 
+> is one QEMU process per-vm. Now we would need to run a second VM and 
+> communicate with it during migration. Is there a way to do this without 
+> adding significant complexity?
 
-Keep the test around for some quick checks before you get the kasan
-test support.
+I can answer this part.  I think this will actually be simpler than with 
+auxiliary vCPUs.  There will be a separate pair of VM+vCPU file 
+descriptors within the same QEMU process, and some code to set up the 
+memory map using KVM_SET_USER_MEMORY_REGION.
 
-> > I don't think we should have a user-space selftest for this. The bug is
-> > not about a user-kernel interface, so an in-kernel test is more
-> > appropriate. Could we instead add this to the kasan tests and calling
-> > load_unaligned_zeropad() and other functions directly?
-> 
-> I agree with you we should abandon this strategy of triggering the issue due to
-> my comment above. I will investigate the option of having a kasan test and try
-> to come up with one that calls the relevant functions directly. I would prefer
-> though, since the rest of the series is almost ready, to post it in a future
-> series. What do you think?
+However, the code to run this VM will be very small as the VM does not 
+have to do MMIO, interrupts, live migration (of itself), etc.  It just 
+starts up and communicates with QEMU using a mailbox at a predetermined 
+address.
 
-That's fine by me.
+I also think (but I'm not 100% sure) that the auxiliary VM does not have 
+to watch changes in the primary VM's memory map (e.g. mapping and 
+unmapping of BARs).  In QEMU terms, the auxiliary VM's memory map tracks 
+RAMBlocks, not MemoryRegions, which makes things much simpler.
 
--- 
-Catalin
+There are already many examples of mini VMMs running special purpose VMs 
+in the kernel's tools/testing/selftests/kvm directory, and I don't think 
+the QEMU code would be any more complex than that.
+
+Paolo
+
