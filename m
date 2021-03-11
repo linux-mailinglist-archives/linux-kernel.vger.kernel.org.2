@@ -2,74 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E5E337CCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5D5337CD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhCKSlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229607AbhCKSmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:42:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229809AbhCKSlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Mar 2021 13:41:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhCKSjI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:39:08 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B162AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:39:07 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id a24so10634197plm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:39:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nYY6d9PSDzvIH02G62MWvpqx6n+qNTtjRVrsYtpc2sg=;
-        b=GV8o93zD4C7bupA+RFkzig+B9IpHlk5Pu43LlC8v/UDHZoEVe9o5U2GZ/5tiiS3YwW
-         bnmGcAWeFpJjFmizrc2t7MDgj9jDR/wXHkaokEF/rNrv3epnONlave3C2kTDvooRS279
-         GEhDjDHHF7yqcV2j5iPZp3U+gcxSxB96gt56iPSo/F04TuIdeCO3Blt1CVB1bINuyZ97
-         rfbfz+6AlxvLhojp8rLHYj/iJWB0Jj+H9vxEEK6Vm0dvOGv4KBffTAhd5y4Hs5CRhojI
-         w7IXWvWkh9iJiGrDbZqefQdic+rQf4Ei0ee7+U+PHbn2Uz7ivxt4nLhQVxQJnxJHqLqb
-         IRpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=nYY6d9PSDzvIH02G62MWvpqx6n+qNTtjRVrsYtpc2sg=;
-        b=ODGNmBQcnDqnctAvstk/4Vt9tM807OPpGwcuN6Uc3qf0fiyjhllOTBRt5oY9SC7EmI
-         oJyGxOZ77ZW2NDv9CwC2XE5nwOkFc2N1/E6KLBrOzhdaVw3o3FQpLvfCBiCdPXNgANiZ
-         iPET9nShzgbzv0bJtC6aiy7L0KYm+tMYEgVAItVNWsNOnFm5JoQYTFUuuTLvL0+uYH+W
-         PbFNxkKLVyTbLdHpmKRAIvrq/bOPtaHHaGKfzyNmMDpzz63r5vKCdYdQFyN3426oilcR
-         yxRkLqtYZhow0XHkeOKqmFf6mbSrAnq6V78dD35ywRrzQHgv0AHH+TRWMyWU0Vu4zlYo
-         ilYg==
-X-Gm-Message-State: AOAM532qVWU5X4pu9QFd4t9uXI9eLpyCqw/5lbvKRFXO0iYMXBfPnkVz
-        +qQ3sbmtunVM66NrALq+imf3GCHww30=
-X-Google-Smtp-Source: ABdhPJz4M13YGr4sOW7pFt2j72+egGZ4VcAG0ex87KdovCtNJKExxggEd1xyJyUdswcnn4O9lH9r4Q==
-X-Received: by 2002:a17:90a:e2ca:: with SMTP id fr10mr10103075pjb.154.1615487947295;
-        Thu, 11 Mar 2021 10:39:07 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
-        by smtp.gmail.com with ESMTPSA id z27sm1890095pff.111.2021.03.11.10.39.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 10:39:06 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 11 Mar 2021 10:39:04 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D13FB64DEE;
+        Thu, 11 Mar 2021 18:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615488106;
+        bh=ipfQqSOZywUDqfSlURS+9CmL2qyZ4SrWmfyx37h5n+0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ATIvzOe2Frjw6cnZY8luSBegqGnlar+EGU8P5zbLb6U4KtUKyqz2BhXqV6C+5nMji
+         qwB1CD5VEca3+4pQIhAQa1goZwy27aD/7ACkkfkv+7VcyiwfD25BxCN7wqY92zUMfH
+         e+KyQyS1R292ut8rBdVlK/UTvsFszNXxnhnt84w9dv7FVCpHBAeqP5ly76biFEoDJ8
+         w+Dw/TtvfACTbiLJbA7hT5m09QhqbeZq4NrylBsbFxjpvym1keBsXw/xotpn0xDPVW
+         r5dEGTzcu98gt3TcK+dsrwrSM5RiyvBx9QU2ZeU7u3J6KY7y2Sz1GzD69G2QIpIfrB
+         s7XyvQeWBL0lg==
+Date:   Thu, 11 Mar 2021 18:40:33 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, j.neuschaefer@gmx.net,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: cma: Use pr_err_ratelimited for CMA warning
-Message-ID: <YEpjyBLJfdiOHnKf@google.com>
-References: <ce2251ef49e1727a9a40531d1996660b05462bd2.1615279825.git.baolin.wang@linux.alibaba.com>
+Subject: Re: [PATCH v2] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Message-ID: <20210311184033.GJ4962@sirena.org.uk>
+References: <20210308212952.20774-1-andreas@kemnade.info>
+ <20210310094821.GB701493@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lYetfuAxy9ic4HK3"
 Content-Disposition: inline
-In-Reply-To: <ce2251ef49e1727a9a40531d1996660b05462bd2.1615279825.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <20210310094821.GB701493@dell>
+X-Cookie: I'm rated PG-34!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 05:16:06PM +0800, Baolin Wang wrote:
-> If we did not reserve extra CMA memory, the log buffer can be
-> easily filled up by CMA failure warning when the devices calling
-> dmam_alloc_coherent() to alloc DMA memory. Thus we can use
-> pr_err_ratelimited() instead to reduce the duplicate CMA warning.
-> 
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Acked-by: Minchan Kim <minchan@kernel.org>
+
+--lYetfuAxy9ic4HK3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 10, 2021 at 09:48:21AM +0000, Lee Jones wrote:
+
+> Could you take a look at this for me please:
+
+> > +static int regmap_ignore_write(void *context,
+> > +			       unsigned int reg, unsigned int val)
+> > +
+> > +{
+> > +	struct regmap *regmap = context;
+> > +
+> > +	regmap_write(regmap, reg, val);
+> > +
+> > +	return 0;
+> > +}
+
+If there were more users it'd be better to have this in the core so that
+problems we can detect like cache stuff if that's used but if it's just
+one broken device it's probably not worth it, this seems like something
+you'd have to try to end up with and which is going to cause timeout
+problems with a lot of I2C controllers which would tank performance
+enough that people would notice.
+
+--lYetfuAxy9ic4HK3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBKZCAACgkQJNaLcl1U
+h9B5YQf+OWhi3p3jDEJY5RxtGOjQsm5A1eUmm/TYd2uZBEZ+tCJ9CwoDlZQ5WIAr
+QfWAhLK9var/WpC2bOgwGcB3yW4uCxNBjDrGI6mLJObrv0m2Z5cHA7uPQE98Ut79
+PKHS8+ZEXWEkgH8fPYz+lY5Ln+mddsPeB6l/yj3jkvJsoRypyWJT/S6xppsjHVhV
+15rlztZszFQl0z3A1QAKvkIeGTg7upbZUXBnltvf63RP+aF2v8M64zuv102YpWqL
+LQXGfvm7orKwS+oKIw8inbo/XjIyUVX3/VEYj2lpXGhMTRawogRcEpp3X0jUEx6W
+kvjH5HpWQ6V0ys/7gqnBhQyYMHBIZA==
+=fB7p
+-----END PGP SIGNATURE-----
+
+--lYetfuAxy9ic4HK3--
