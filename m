@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AE8337673
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B88F0337674
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233990AbhCKPED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:04:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38634 "EHLO
+        id S233985AbhCKPEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:04:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233985AbhCKPEB (ORCPT
+        with ESMTP id S233998AbhCKPEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:04:01 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BFAC3C061574;
-        Thu, 11 Mar 2021 07:03:59 -0800 (PST)
+        Thu, 11 Mar 2021 10:04:33 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5613C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:04:32 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id t16so2671319qvr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:04:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=z9RQwR+u8Z
-        1vrbiS9Q7LDRwA1h5csTWHrA1fRIMw1Go=; b=hvSHT87I1FPtk2iWcD3SSd0FxT
-        ZCl+8DAjhhwKFMgyEeVu3QUaEr9vZyNj9YvEl3WX0/0X2NTbHTfxeEvzb9ImKDid
-        KoUJMw5d6wE5Je1BsyolbUUU7coKHQm3P30dWM2L7lCD5bGFWAVnHgCp2/F9rPOE
-        kmC0xvZtpAlSJ0TNU=
-Received: from ubuntu.localdomain (unknown [114.214.226.60])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCXmxtcMUpgKCYNAA--.5291S4;
-        Thu, 11 Mar 2021 23:03:56 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] usb/usbtmc: Remove a redundant kref_put in usbtmc_disconnect
-Date:   Thu, 11 Mar 2021 07:03:54 -0800
-Message-Id: <20210311150354.8723-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WakET1rjxsh//Y4Rmd8Mn44mJORH/q+MwdmfAIdQY+k=;
+        b=uGhMxmvLjWSovhgLvlatANcpWPE3z2dbKkhlViFu1VJ7u0KZmtnoF3Fym/FUqe0gwb
+         m7tTTzeVR45EvJymGG4r2eUTJb3nf7pHe3b/1KSGtf/d/Zrm2/kuzbFBA/12YgMH8fSM
+         32qkgDkXzUmDpOlnVluldNcGJOVHHaRSfAAKArwRYZQa3wmheKZVyJGBO3d10kUtsZ1/
+         usqaEsQU1APxfbRJl/cAe39Olo+ClwhOL1ifgNzeAMCXA6LIWb2v9PGPYlnER7CFRWKk
+         tmwfk2AeLDZZUv37poGYNIP4KkuWXsXxuYS53VDdl07JLHM9MLiecevAFaGwwPAPUKAW
+         jAoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WakET1rjxsh//Y4Rmd8Mn44mJORH/q+MwdmfAIdQY+k=;
+        b=CvHP1cHR7UFpR2xR18LuuPNgZuFDim5RauPpbq99/4KdFOxlrEWteVgmBNyexcNJzp
+         bx6DkSKjmThAJmrblSufgJkYxx22oU4qvYmnG6vY6v8FJJfljB1AvMQ99CcpYr13dw96
+         DLtBUlP4kmbCeHCtW3g38lC9oKrNkIpnhN30+r1bEr+ll8JhS0ea5Oxs7uoDFWinBqxN
+         nf33OMAcId4M8KGZE88HgY1tf+J7YwvBKzaBAdf2V/EjLV8Xitwed1Y7V140YhcOO1eh
+         grUPysQa3b1/IYzKIeL2ea77qR9GK058WVg2+11UfwlZSqPiU+2wNg84WfBdb8iiHMnp
+         Zp1A==
+X-Gm-Message-State: AOAM531sIVL4ZUYhFwRjgAXsd/x1starWtyS0LBumxciOZOz55MFeo0Y
+        QFQ1gN9oBdTNcDKbTna8R8pRZdXiQYWitwTYZgI6uw==
+X-Google-Smtp-Source: ABdhPJy6VEkgnbgU77XCqgJEiMGNGn0VanbYIb3RigS2EIMQ49bn18bPTv2jQJjdf2SYuQOvNileJ6H+AOA/9q0WrNc=
+X-Received: by 2002:ad4:50d0:: with SMTP id e16mr7976110qvq.37.1615475071764;
+ Thu, 11 Mar 2021 07:04:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygCXmxtcMUpgKCYNAA--.5291S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrWDKF18Kry7tw48Aw43KFg_yoWkGFb_ua
-        yUCFsrtr4YkasrCF47Jr1rZw4fta1Fqr4xXF4kt34fZ3Wjgw4qyr1IvrZ5J397Ww4UtFyD
-        Zrn2qr98uay8ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_
-        Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUj3fH7
-        UUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+References: <0000000000002954fa05b02468d7@google.com> <000000000000e287c905bd4101dc@google.com>
+In-Reply-To: <000000000000e287c905bd4101dc@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 11 Mar 2021 16:04:19 +0100
+Message-ID: <CACT4Y+bH5vx_0wrFZiNWGLrX04Od0=iw+XU0ULC5a9Nh=qCQZw@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in squashfs_get_id
+To:     syzbot <syzbot+8e28bba73ed1772a6802@syzkaller.appspotmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, phillip@squashfs.org.uk,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the implementation of usbtmc_free_int(), it already calls
-kref_put() to free the data as shown below. So, in
-usbtmc_disconnect, call an extra kref_put() is redundant.
+On Thu, Mar 11, 2021 at 12:23 PM syzbot
+<syzbot+8e28bba73ed1772a6802@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit e812cbbbbbb15adbbbee176baa1e8bda53059bf0
+> Author: Phillip Lougher <phillip@squashfs.org.uk>
+> Date:   Tue Feb 9 21:41:50 2021 +0000
+>
+>     squashfs: avoid out of bounds writes in decompressors
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11bfa48ad00000
+> start commit:   cd796ed3 Merge tag 'trace-v5.10-rc7' of git://git.kernel.o..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=59df2a4dced5f928
+> dashboard link: https://syzkaller.appspot.com/bug?extid=8e28bba73ed1772a6802
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1138f80f500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=125e080f500000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: squashfs: avoid out of bounds writes in decompressors
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-"""
-static void usbtmc_free_int(struct usbtmc_device_data *data)
-{
-	if (!data->iin_ep_present || !data->iin_urb)
-		return;
-	usb_kill_urb(data->iin_urb);
-	kfree(data->iin_buffer);
-	data->iin_buffer = NULL;
-	usb_free_urb(data->iin_urb);
-	data->iin_urb = NULL;
-	kref_put(&data->kref, usbtmc_delete);
-}
-"""
+Looks reasonable:
 
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/usb/class/usbtmc.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/usb/class/usbtmc.c b/drivers/usb/class/usbtmc.c
-index 74d5a9c5238a..adcdd2df1949 100644
---- a/drivers/usb/class/usbtmc.c
-+++ b/drivers/usb/class/usbtmc.c
-@@ -2494,7 +2494,6 @@ static void usbtmc_disconnect(struct usb_interface *intf)
- 	}
- 	mutex_unlock(&data->io_mutex);
- 	usbtmc_free_int(data);
--	kref_put(&data->kref, usbtmc_delete);
- }
- 
- static void usbtmc_draw_down(struct usbtmc_file_data *file_data)
--- 
-2.25.1
-
-
+#syz fix: squashfs: avoid out of bounds writes in decompressors
