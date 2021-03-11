@@ -2,193 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F73338115
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EB4338132
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhCKXHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:07:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230119AbhCKXGq (ORCPT
+        id S231229AbhCKXPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:15:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229683AbhCKXPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:06:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615504005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rCnlmIeSflhpUwVGM7LvbR15TVfTJn8RZlzhAMf0UMg=;
-        b=c3TWBmCDDRHhOyuCvrkbfY08fQ0WrmGVNErsj+fx+mFnl+MUfpVqj5fflRqHgcmObwthea
-        aNJF8qOBpP3G6Y6wQHCBF5gyzD6+Ga8xBzRseBRiBgdKJPlbV9Ix8UxyovNr7BTBWPNke1
-        mrTV/nejzQTgR8FBr3QoZxjOAsr2FUk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-XLKk4cgyPpKuQkbKD40uZQ-1; Thu, 11 Mar 2021 18:06:41 -0500
-X-MC-Unique: XLKk4cgyPpKuQkbKD40uZQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64D9BE5760;
-        Thu, 11 Mar 2021 23:06:40 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 296155D742;
-        Thu, 11 Mar 2021 23:06:39 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v2 2/2] afs: Stop listxattr() from listing "afs.*" attributes
-From:   David Howells <dhowells@redhat.com>
-To:     linux-afs@lists.infradead.org
-Cc:     Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
-        dhowells@redhat.com,
-        Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 11 Mar 2021 23:06:38 +0000
-Message-ID: <161550399833.1983424.16644306048746346626.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161550398415.1983424.4857046033308089813.stgit@warthog.procyon.org.uk>
-References: <161550398415.1983424.4857046033308089813.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Thu, 11 Mar 2021 18:15:24 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80967C061574;
+        Thu, 11 Mar 2021 15:15:24 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id v11so731476wro.7;
+        Thu, 11 Mar 2021 15:15:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/Y0TGOgSlWiwp+UtOL9hMKxVKRcQgfo1+IEksLgy5FE=;
+        b=D7pE4PJUAXZY8lBo5tIwYrFcXc/m+25PgL/SF1bnIq5m5FJ+M2Vz3sl2VIB25fZhVP
+         C8yvx1bwNDcAlKPhQtp/AsAhFJnSfOdV7TBAjMbTZRLwZS65QnhLbaU7c+vHsLXlYPjc
+         zv4aQ66TuYC4MhclEXRQ4Z2H9JXJLVcB7oEs+9mCqS1YY/BtaptWK7FIimQJnEGW0ViV
+         Hn1mcMr6ZRF78gS364rsaUrdif0PlXCDO/Hwjq9GFKji54Sh3OUdWo8BxyRbKlrptjzE
+         ixfDsAdu5MTIil3o0sfrhAoFZiTLTdglGbEm4Muz3TCvswwQSJLS8LNsT59P6WkD2LJl
+         MWIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/Y0TGOgSlWiwp+UtOL9hMKxVKRcQgfo1+IEksLgy5FE=;
+        b=gF2WD0AMbSr/NHTsnkqZKlW+zrdJUNOBzrsOjKl0hWXilAS9Oyp1hQ6R/av3sDAHjw
+         1naoJbTqs1iXcG3gqvOOQisaJF9zIgOHEUKppOYoRsxq+0K97pcdwYiSmBhQNCK+Qrxq
+         OPTUrkQlIWhO1qIlCMluh+iG8beFlhGt67yVjSkHv99DOL2sx4XPBvFjuquhdhSZMZAw
+         qsp9k+fLxa8d6nyO8WUuMmn6yAw8rRlSwChLc69Gzk7HFEPuhCtVdOKPLlT902Djle9k
+         eFIMBhES73H8vrH5thi3/g5qrumEMji9loiXYN0lHZEBB2OYqvAavETFv8uICwggVfUC
+         G8OQ==
+X-Gm-Message-State: AOAM532Yobdy/3rUOKbXfbh3d0NjZcBe3BAHbcdjHGIg2y2j/o9mRvZB
+        4ayV8fMc3nx++RF578E6lFDH4M0yOwA=
+X-Google-Smtp-Source: ABdhPJyJrxLpRLdzDswOw1vbrbTC8YVVF3iqqq7rbjlR1HPs5+KQqztUeJ0czC62uHo/gNqZNeokyA==
+X-Received: by 2002:adf:edc3:: with SMTP id v3mr10637376wro.79.1615504523049;
+        Thu, 11 Mar 2021 15:15:23 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id j203sm263918wmj.40.2021.03.11.15.15.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 15:15:22 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] NVIDIA Tegra core power domain driver and OPP helper
+Date:   Fri, 12 Mar 2021 02:12:02 +0300
+Message-Id: <20210311231208.18180-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-afs_listxattr() lists all the available special afs xattrs (i.e. those in
-the "afs.*" space), no matter what type of server we're dealing with.  But
-OpenAFS servers, for example, cannot deal with some of the extra-capable
-attributes that AuriStor (YFS) servers provide.  Unfortunately, the
-presence of the afs.yfs.* attributes causes errors[1] for anything that
-tries to read them if the server is of the wrong type.
+Hello,
 
-Fix the problem by removing afs_listxattr() so that none of the special
-xattrs are listed (AFS doesn't support xattrs).  It does mean, however,
-that getfattr won't list them, though they can still be accessed with
-getxattr() and setxattr().
+This series adds Core power domain driver for NVIDIA Tegra SoCs and a
+common OPP helper which initializes OPP table specifically for Tegra
+drivers. The patches depend on the ongoing series [1] which adds
+resource-managed OPP API.
 
-This can be tested with something like:
+[1] https://patchwork.kernel.org/project/linux-pm/list/?series=446525
 
-	getfattr -d -m ".*" /afs/example.com/path/to/file
+NVIDIA Tegra SoCs have a dedicated "Core" power domain to which
+majority of SoC peripherals belong. The core domain is connected to
+a dedicated voltage rail, which is exposed as a voltage regulator to
+the Linux kernel. Adding support for power management (i.e. voltage
+scaling) of the Core domain allows to significantly improve power
+consumption of the Tegra chip.
 
-With this change, none of the afs.* attributes should be visible.
+In particular this PM work solves the overheating problem on Tegra30
+devices. It allows Ouya Tegra30 game console to run at 40C during system
+idle in oppose to going over 60C. Matt Merhar collected temperature stats
+on his Ouya [2] which show a very significant improvement.
 
-Changes:
-ver #2:
- - Hide all of the afs.* xattrs, not just the ACL ones.
+[2] https://imgur.com/a/z4NDWqk
 
-Fixes: ae46578b963f ("afs: Get YFS ACLs and information through xattrs")
-Reported-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003502.html [1]
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003567.html # v1
----
+Changelog:
 
- fs/afs/dir.c      |    1 -
- fs/afs/file.c     |    1 -
- fs/afs/inode.c    |    1 -
- fs/afs/internal.h |    1 -
- fs/afs/mntpt.c    |    1 -
- fs/afs/xattr.c    |   23 -----------------------
- 6 files changed, 28 deletions(-)
+v3: - This series is a continuation of [3][4]. I factored out and grouped
+      these soc/tegra patches since they have a common dependency on the
+      OPP API patches [1] and the rest of PM patches depend on this series.
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 714fcca9af99..17548c1faf02 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -70,7 +70,6 @@ const struct inode_operations afs_dir_inode_operations = {
- 	.permission	= afs_permission,
- 	.getattr	= afs_getattr,
- 	.setattr	= afs_setattr,
--	.listxattr	= afs_listxattr,
- };
- 
- const struct address_space_operations afs_dir_aops = {
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 85f5adf21aa0..960b64268623 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -43,7 +43,6 @@ const struct inode_operations afs_file_inode_operations = {
- 	.getattr	= afs_getattr,
- 	.setattr	= afs_setattr,
- 	.permission	= afs_permission,
--	.listxattr	= afs_listxattr,
- };
- 
- const struct address_space_operations afs_fs_aops = {
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 1156b2df28d3..12be88716e4c 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -27,7 +27,6 @@
- 
- static const struct inode_operations afs_symlink_inode_operations = {
- 	.get_link	= page_get_link,
--	.listxattr	= afs_listxattr,
- };
- 
- static noinline void dump_vnode(struct afs_vnode *vnode, struct afs_vnode *parent_vnode)
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index b626e38e9ab5..1627b1872812 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1509,7 +1509,6 @@ extern int afs_launder_page(struct page *);
-  * xattr.c
-  */
- extern const struct xattr_handler *afs_xattr_handlers[];
--extern ssize_t afs_listxattr(struct dentry *, char *, size_t);
- 
- /*
-  * yfsclient.c
-diff --git a/fs/afs/mntpt.c b/fs/afs/mntpt.c
-index 052dab2f5c03..bbb2c210d139 100644
---- a/fs/afs/mntpt.c
-+++ b/fs/afs/mntpt.c
-@@ -32,7 +32,6 @@ const struct inode_operations afs_mntpt_inode_operations = {
- 	.lookup		= afs_mntpt_lookup,
- 	.readlink	= page_readlink,
- 	.getattr	= afs_getattr,
--	.listxattr	= afs_listxattr,
- };
- 
- const struct inode_operations afs_autocell_inode_operations = {
-diff --git a/fs/afs/xattr.c b/fs/afs/xattr.c
-index 4934e325a14a..7751b0b3f81d 100644
---- a/fs/afs/xattr.c
-+++ b/fs/afs/xattr.c
-@@ -11,29 +11,6 @@
- #include <linux/xattr.h>
- #include "internal.h"
- 
--static const char afs_xattr_list[] =
--	"afs.acl\0"
--	"afs.cell\0"
--	"afs.fid\0"
--	"afs.volume\0"
--	"afs.yfs.acl\0"
--	"afs.yfs.acl_inherited\0"
--	"afs.yfs.acl_num_cleaned\0"
--	"afs.yfs.vol_acl";
--
--/*
-- * Retrieve a list of the supported xattrs.
-- */
--ssize_t afs_listxattr(struct dentry *dentry, char *buffer, size_t size)
--{
--	if (size == 0)
--		return sizeof(afs_xattr_list);
--	if (size < sizeof(afs_xattr_list))
--		return -ERANGE;
--	memcpy(buffer, afs_xattr_list, sizeof(afs_xattr_list));
--	return sizeof(afs_xattr_list);
--}
--
- /*
-  * Deal with the result of a successful fetch ACL operation.
-  */
+      [3] https://lore.kernel.org/lkml/20201217180638.22748-1-digetx@gmail.com/
+      [4] https://lore.kernel.org/linux-pm/20210121191410.13781-1-digetx@gmail.com/
 
+    - Added locking around regulators syncing, which was previously done by
+      the OPP core, but then we (me and Viresh) figured out that it will be
+      better to do it within the PD driver.
+
+    - The Core-PD driver now restores the boot voltage level before
+      shutdown/reboot, which may help some devices not to hang on reboot,
+      like Nexus 7 for example.
+
+    - Added r-b from Ulf Hansson to "regulators: Support Core domain state
+      syncing" patch, which he gave to v2.
+
+    - It should be cleaner to add the Core OPP tables and power domain to
+      the device-trees once all drivers will get the PM support, so this
+      series adds the driver and the binding for now.
+
+    - Added t-b from Paul Fertser, who tested the complete patchset on his
+      AC100 netbook and helped to spot compatibility problem with older DTBs
+      in the patch that will add PM support to the GPU driver.
+
+    - The DT binding now follows the power-domain spec, which was suggested
+      by Krzysztof Kozlowski in his comment to v2.
+
+Dmitry Osipenko (6):
+  soc/tegra: Add devm_tegra_core_dev_init_opp_table()
+  soc/tegra: Add CONFIG_SOC_TEGRA_COMMON and select PM_OPP by default
+  dt-bindings: power: tegra: Add binding for core power domain
+  soc/tegra: Introduce core power domain driver
+  soc/tegra: regulators: Support Core domain state syncing
+  soc/tegra: pmc: Link children power domains to the parent domain
+
+ .../power/nvidia,tegra20-core-domain.yaml     |  52 ++++++
+ drivers/soc/tegra/Kconfig                     |  19 +++
+ drivers/soc/tegra/Makefile                    |   1 +
+ drivers/soc/tegra/common.c                    | 138 ++++++++++++++++
+ drivers/soc/tegra/core-power-domain.c         | 154 ++++++++++++++++++
+ drivers/soc/tegra/pmc.c                       |  16 ++
+ drivers/soc/tegra/regulators-tegra20.c        |  19 ++-
+ drivers/soc/tegra/regulators-tegra30.c        |  18 +-
+ include/soc/tegra/common.h                    |  36 ++++
+ 9 files changed, 451 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml
+ create mode 100644 drivers/soc/tegra/core-power-domain.c
+
+-- 
+2.29.2
 
