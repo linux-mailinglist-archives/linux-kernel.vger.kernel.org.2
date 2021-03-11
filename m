@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F1D336CCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:09:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096EE336CD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhCKHJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:09:10 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:48097 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbhCKHIv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:08:51 -0500
-Received: from mail-wr1-f70.google.com ([209.85.221.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lKFRC-0001ho-4B
-        for linux-kernel@vger.kernel.org; Thu, 11 Mar 2021 07:08:50 +0000
-Received: by mail-wr1-f70.google.com with SMTP id g5so9047578wrd.22
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 23:08:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zgH3nywQ4QyohOt2SMlSyPyC9OdZbO8xrqdRqBr6msM=;
-        b=gotfvNDiXvjCSJ7Xn0nrSBcUigeeG8oU4HLwg3VA2D2xEc2LohEuka9ZP8wiCMXFhx
-         9GIwhgcAu/MuMJh9ed2514XqRL1QkMo9UXOvu2bTRE/tkaYt4kZDkaVOt2e2W+7gKhIN
-         0t3qSVHJ6av8E7hF9tux3WuRQlaHw5BeMSdc+lqAi2775gWjGH7XroH46H4Q30/t2SsJ
-         KOv4uZg/oOR9lmtD8c+J6vBTAQ6m4obqp29dtl1Axw7A3LL+vMZbEx/oDTurAF7mBFGu
-         BnkR6lIXl9In1BBygN8gczRO75YcT9/CcSHA8CsN9h6+fOVgihmHGAO9s6riC2Uw+s5C
-         CcuQ==
-X-Gm-Message-State: AOAM5323rtiyBUbEdBjMF8uTAAQTPVG9NeCOwm3rksLq9mWRGDuqIRqb
-        GSqEQwHWIA+bvOvUfMGXLx/S4ekM+N5FkcjzkpuZ2uOUwWBjeE8co7+aAfQN5RPkzr8102etnWl
-        jRw3NgDe9P/18QY4LS2VxcLqNiiZUFL7t6J9iCB0e2Q==
-X-Received: by 2002:a7b:ce16:: with SMTP id m22mr6850402wmc.65.1615446529710;
-        Wed, 10 Mar 2021 23:08:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxFSUTjS1JFmjO0hMPLkEAzm/KPuXrtY7IKz/mXB9yfWR7YE3pRWw0tap7L6t6boQLro+3hFQ==
-X-Received: by 2002:a7b:ce16:: with SMTP id m22mr6850370wmc.65.1615446529545;
-        Wed, 10 Mar 2021 23:08:49 -0800 (PST)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id a6sm2515137wmm.0.2021.03.10.23.08.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 23:08:49 -0800 (PST)
-Subject: Re: [RFC v2 3/5] arm64: socfpga: rename ARCH_STRATIX10 to
- ARCH_SOCFPGA64
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Tom Rix <trix@redhat.com>, Lee Jones <lee.jones@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-edac@vger.kernel.org, linux-fpga@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com, arm-soc <arm@kernel.org>,
-        SoC Team <soc@kernel.org>, Olof Johansson <olof@lixom.net>
-References: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
- <20210310083840.481615-1-krzysztof.kozlowski@canonical.com>
- <20210310094527.GA701493@dell>
- <35c39c81-08e4-24c8-f683-2fa7a7ea71de@redhat.com>
- <1c06cb74-f0b0-66e5-a594-ed1ee9bc876e@canonical.com>
- <CAK8P3a1CCQwbeH4KiUgif+-HdubVjjZBkMXimEjYkgeh4eJ7cg@mail.gmail.com>
- <52d0489f-0f77-76a2-3269-e3004c6b6c07@canonical.com>
- <ba2536a6-7c74-0cca-023f-cc6179950d37@canonical.com>
- <CAK8P3a1k7c5X5x=-_-=f=ACwY+uQQ8YEcAGXYfdTdSnqpo96sA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <fb0d8ca3-ac46-f547-02b0-7f47ff8fff6b@canonical.com>
-Date:   Thu, 11 Mar 2021 08:08:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1k7c5X5x=-_-=f=ACwY+uQQ8YEcAGXYfdTdSnqpo96sA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231882AbhCKHJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:09:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49600 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231651AbhCKHI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:08:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 31AC3AC17;
+        Thu, 11 Mar 2021 07:08:55 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 08:08:55 +0100
+Message-ID: <s5hv99yw4jc.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH] ASoC: soc-core: fix DMI handling
+In-Reply-To: <20210310193928.108850-1-pierre-louis.bossart@linux.intel.com>
+References: <20210310193928.108850-1-pierre-louis.bossart@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/03/2021 17:42, Arnd Bergmann wrote:
-> On Wed, Mar 10, 2021 at 4:54 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->> On 10/03/2021 16:47, Krzysztof Kozlowski wrote:
->>> This edac Altera driver is very weird... it uses the same compatible
->>> differently depending whether this is 32-bit or 64-bit (e.g. Stratix
->>> 10)! On ARMv7 the compatible means for example one IRQ... On ARMv8, we
->>> have two. It's quite a new code (2019 from Intel), not some ancient
->>> legacy, so it should never have been accepted...
->>
->> Oh, it's not that horrible as it sounds. They actually have different
->> compatibles for edac driver with these differences (e.g. in interrupts).
->> They just do not use them and instead check for the basic (common?)
->> compatible and architecture... Anyway without testing I am not the
->> person to fix the edac driver.
+On Wed, 10 Mar 2021 20:39:27 +0100,
+Pierre-Louis Bossart wrote:
 > 
-> Ok, This should be fixed properly as you describe, but as a quick hack
-> it wouldn't be hard to just change the #ifdef to check for CONFIG_64BIT
-> instead of CONFIG_ARCH_STRATIX10 during the rename of the config
-> symbol.
+> When DMI information is not present, trying to assign the card long
+> name results in the following warning.
+> 
+> WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
+> 
+> The initial solution suggested was to test if the card device is an
+> ACPI one. This causes a regression visible to userspace on all Intel
+> platforms, with UCM unable to load card profiles based on DMI
+> information: the card devices are not necessarily ACPI ones, e.g. when
+> the parent creates platform devices on Intel devices.
+> 
+> To fix this problem, this patch exports the existing dmi_available
+> variable and tests it in the ASoC core.
+> 
+> Fixes: c014170408bc ("ASoC: soc-core: Prevent warning if no DMI table is present")
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-This would work. The trouble with renaming ARCH_SOCFPGA into
-ARCH_INTEL_SOCFPGA is that still SOCFPGA will appear in many other
-Kconfig symbols or even directory paths.
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-Let me use ARCH_INTEL_SOCFPGA for 64bit here and renaming of 32bit a
-little bit later.
 
-Best regards,
-Krzysztof
+Takashi
+
+
+> ---
+>  drivers/firmware/dmi_scan.c | 1 +
+>  sound/soc/soc-core.c        | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/dmi_scan.c b/drivers/firmware/dmi_scan.c
+> index d51ca0428bb8..f191a1f901ac 100644
+> --- a/drivers/firmware/dmi_scan.c
+> +++ b/drivers/firmware/dmi_scan.c
+> @@ -166,6 +166,7 @@ static int __init dmi_checksum(const u8 *buf, u8 len)
+>  static const char *dmi_ident[DMI_STRING_MAX];
+>  static LIST_HEAD(dmi_devices);
+>  int dmi_available;
+> +EXPORT_SYMBOL_GPL(dmi_available);
+>  
+>  /*
+>   *	Save a DMI string
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 16ba54eb8164..c7e4600b2dd4 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1574,7 +1574,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+>  	if (card->long_name)
+>  		return 0; /* long name already set by driver or from DMI */
+>  
+> -	if (!is_acpi_device_node(card->dev->fwnode))
+> +	if (!dmi_available)
+>  		return 0;
+>  
+>  	/* make up dmi long name as: vendor-product-version-board */
+> -- 
+> 2.25.1
+> 
