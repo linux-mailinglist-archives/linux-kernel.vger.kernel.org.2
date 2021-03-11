@@ -2,84 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B12337AC4
+	by mail.lfdr.de (Postfix) with ESMTP id 06BAD337AC3
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhCKRZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:25:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhCKRZX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:25:23 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAFCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:25:22 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id dm8so3989144edb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:25:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yG/vJmP1bt9V/zcHq9LX/hDiqMUciXWcy0fyRaWMlUE=;
-        b=0YX0R0Q2hP+VRr62VJBofrj5bwB+MCjUnWO/PvCvGfcEsYGhMMejCqBm8Pfj5e8TdI
-         tREJb6S5wxcQOrnVPKESltVTqt698WVEwkHUhw6f646QkClKEo46BT5Pnx4PgGwwzpO3
-         tmo5tkrk/yQ2sRylmuPQmAPVuX47NBSI2bBBy2oVNLI2mE2W9cw46R8sHkRC8vbvs8aM
-         fJk54uUOb4JlfqsCahno6tBFIGSrTM11D1eXjVahUlcYLWXbPEs/bKkZIqkR95ZVBOgP
-         gfHGo42KJ88F0zo9mQ7JNr4WkHjSitiNGvkyRqyfELfoh99GZtkbGnaEih5B1EUO51t6
-         eiVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yG/vJmP1bt9V/zcHq9LX/hDiqMUciXWcy0fyRaWMlUE=;
-        b=nuTzW1zxELedeoVZ58vSv7crf1iZoIEbGynV5l1h3Qjw/LLTnLS8pNZe+jWzQCAZjR
-         U7S52FxLAirn3GpTZnNC71mknYH4BVrcgJzjyTkZCI6Sk/BpfM8kkOzBPCII8m3kRoac
-         +elrfGmyXvMjmfgKM65CGt/LGQc0cXhN77waOjC+I01uAa5fuG6FhvE2/MMb6a5jZr7C
-         LcdvJSZpXlQGBvEmJUmgdiC+bKhQKuxt5zc6aNFR4gNzDCGCzIXf+N7KLDjAjRw6QXeK
-         mv/YnN3JZgFZUTVkjt3yFvptwpfbwhVcSs1JPoWeHoEnkhBq3tIO8XoPfntwME/eJ0yW
-         +nyA==
-X-Gm-Message-State: AOAM530URF9PbU6t+EcxyfzU3+13MOncw8y8/q8ikmzMqyEXiVBGhWUr
-        0SZpD1DV0ABtDoMjEJSOmgLiyR6UUTjW2dUAjwMqUA==
-X-Google-Smtp-Source: ABdhPJy90akk7moyg6odTY/2ggxqCFkjHdNlPxywRl8kvBDuR1hqSnlJiDWgzS2rTOPef79+7VRiSHGqGyssrZy3vH4=
-X-Received: by 2002:a05:6402:4301:: with SMTP id m1mr9971780edc.210.1615483521452;
- Thu, 11 Mar 2021 09:25:21 -0800 (PST)
+        id S230050AbhCKRZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:25:51 -0500
+Received: from mga09.intel.com ([134.134.136.24]:43930 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229652AbhCKRZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:25:19 -0500
+IronPort-SDR: Ct3fYWRJT5I+VDHLP7rBZIS1vlsGKEzKt5DdMAO/De9iUC9ir+XBGQ5BTLeu65JL5C8wfbFyNa
+ 6MNdewHWJh6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188800539"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="188800539"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:25:18 -0800
+IronPort-SDR: iFlcMHLMuCa/j6tIYe42wD0/b27tp/AWe68zWU/Ta8IFoIasAb/hSj9tY4yhzVbyWsDCP3tx4D
+ Wby1U+MeLVUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="431658323"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Mar 2021 09:25:18 -0800
+Received: from [10.251.15.67] (kliang2-MOBL.ccr.corp.intel.com [10.251.15.67])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 75308580514;
+        Thu, 11 Mar 2021 09:25:16 -0800 (PST)
+Subject: Re: [PATCH V2 20/25] perf/x86/intel: Add Alder Lake Hybrid support
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+ <1615394281-68214-21-git-send-email-kan.liang@linux.intel.com>
+ <YEpAtTttSxMVDWYp@hirez.programming.kicks-ass.net>
+ <01176076-049b-0129-4865-8c49cd002060@linux.intel.com>
+Message-ID: <bbb66fce-71f4-e5a7-4930-21a7417ababa@linux.intel.com>
+Date:   Thu, 11 Mar 2021 12:25:14 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <CE1E7D7EFA066443B6454A6A5063B50220D0B849@dggeml509-mbs.china.huawei.com>
- <20210311121923.GU3479805@casper.infradead.org>
-In-Reply-To: <20210311121923.GU3479805@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 11 Mar 2021 09:25:10 -0800
-Message-ID: <CAPcyv4jz7-uq+T-sd_U3O_C7SB9nYWVJDnhVsaM0VNR207m8xA@mail.gmail.com>
-Subject: Re: [question] Panic in dax_writeback_one
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "chenjun (AM)" <chenjun102@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
-        "lizhe (Y)" <lizhe67@huawei.com>, yangerkun <yangerkun@huawei.com>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <01176076-049b-0129-4865-8c49cd002060@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 4:20 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, Mar 11, 2021 at 07:48:25AM +0000, chenjun (AM) wrote:
-> > static int dax_writeback_one(struct xa_state *xas, struct dax_device
-> > *dax_dev, struct address_space *mapping, void *entry)
-> > ----dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_SIZE);
-> > The pfn is returned by the driver. In my case, the pfn does not have
-> > struct page. so pfn_to_page(pfn) return a wrong address.
->
-> I wasn't involved, but I think the right solution here is simply to
-> replace page_address(pfn_to_page(pfn)) with pfn_to_virt(pfn).  I don't
-> know why Dan decided to do this in the more complicated way.
 
-pfn_to_virt() only works for the direct-map. If pages are not mapped I
-don't see how pfn_to_virt() is expected to work.
 
-The real question Chenjun is why are you writing a new simulator of
-memory as a block-device vs reusing the pmem driver or brd?
+On 3/11/2021 11:53 AM, Liang, Kan wrote:
+> 
+> 
+> On 3/11/2021 11:09 AM, Peter Zijlstra wrote:
+>> On Wed, Mar 10, 2021 at 08:37:56AM -0800, kan.liang@linux.intel.com 
+>> wrote:
+>>> From: Kan Liang <kan.liang@linux.intel.com>
+>>>
+>>> Alder Lake Hybrid system has two different types of core, Golden Cove
+>>> core and Gracemont core. The Golden Cove core is registered to
+>>> "cpu_core" PMU. The Gracemont core is registered to "cpu_atom" PMU.
+>>>
+>>> The difference between the two PMUs include:
+>>> - Number of GP and fixed counters
+>>> - Events
+>>> - The "cpu_core" PMU supports Topdown metrics.
+>>>    The "cpu_atom" PMU supports PEBS-via-PT.
+>>>
+>>> The "cpu_core" PMU is similar to the Sapphire Rapids PMU, but without
+>>> PMEM.
+>>> The "cpu_atom" PMU is similar to Tremont, but with different
+>>> event_constraints, extra_regs and number of counters.
+>>>
+>>
+>>> +        /* Initialize big core specific PerfMon capabilities.*/
+>>> +        pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX];
+>>> +        pmu->name = "cpu_core";
+>>
+>>> +        /* Initialize Atom core specific PerfMon capabilities.*/
+>>> +        pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX];
+>>> +        pmu->name = "cpu_atom";
+>>
+>> So do these things use the same event lists as SPR and TNT?
+> 
+> No, there will be two new event lists on ADL. One is for Atom core, and 
+> the other is for big core. They are different to SPR and TNT.
+> 
+>> Is there any
+>> way to discover that, because AFAICT /proc/cpuinfo will say every CPU
+>> is 'Alderlake', and the above also doesn't give any clue.
+>>
+> 
+> Ricardo once submitted a patch to expose the CPU type under 
+> /sys/devices/system/cpu, but I don't know the latest status.
+> https://lore.kernel.org/lkml/20201003011745.7768-5-ricardo.neri-calderon@linux.intel.com/ 
+> 
+> 
+> 
+> 
+>> FWIW, ARM big.LITTLE does discriminate in its /proc/cpuinfo, but I'm not
+>> entirely sure it's really useful. Mark said perf userspace uses
+>> somethink akin to our CPUID, except exposed through sysfs, to find the
+>> event lists.
+>>
+
+Ah, I guess I misunderstood the concern. Let me try again.
+
+Here is how perf tool find a event name via event list.
+
+To get the correct event list file, yes, perf tool relies on the CPUID.
+It will search a CPUID table in the 
+tools/perf/pmu-events/arch/x86/mapfile.csv.
+     GenuineIntel-6-97,v1,alderlake,core
+Now perf tool knows the event list file "alderlake" is for the CPUID 97.
+
+In the event list file for the Alder Lake (CPUID 0x97), we add a new 
+field "Unit" to distinguish the type of PMU.
+     "Unit": "cpu_core"
+     "Unit": "cpu_atom"
+
+So perf can search the event name for a certain type of PMU via PMU name 
+"cpu_core" or "cpu_atom".
+
+Perf tool doesn't use the "cpu_core/caps/pmu_name" for the event list.
+
+Thanks,
+Kan
