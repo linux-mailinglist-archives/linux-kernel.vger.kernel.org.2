@@ -2,242 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE36337D26
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 20:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9623337D30
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 20:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhCKTEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 14:04:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhCKTEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 14:04:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1E3264FA6;
-        Thu, 11 Mar 2021 19:04:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615489454;
-        bh=t8eueLxeeVg4vUyao0XhLG9F4jzDPqN36yFqpSverxE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OvJoXsqdrc8zTKUVPMsikqYXQZq8/sJvgDAbuOq7MS7/EFZ2bERblckWLryUlVJWX
-         LDymvo2Nl4XwuWGC0079jXKpBUkwoB9IIuO7jE7LfPspCA1vP91HyOHGYBJfHomAf9
-         DqEIvX+/VHNQy9NxD17j+N9vHk0ERuFOsH5xHsZq90vSAevLrMr9QHe/74f2LJ3QZ2
-         9nM93lY7Dmq4P9uaPmMAs5XbWpZw63bWeuDn9Nrzks9NuSQPUD/vHGGfEM3Ia+DG4R
-         SnzreKH0C1euCQKKNYlcnYnIqqhfrg0EFRgG28Rpo88EHB++gbQg06lwgKaZbvfvlt
-         hICLiyZQ2a+fA==
-Date:   Thu, 11 Mar 2021 19:04:07 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
-Subject: Re: [PATCH v4 30/34] KVM: arm64: Add kvm_pgtable_stage2_find_range()
-Message-ID: <20210311190406.GB31586@willie-the-truck>
-References: <20210310175751.3320106-1-qperret@google.com>
- <20210310175751.3320106-31-qperret@google.com>
+        id S229674AbhCKTHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 14:07:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25872 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229520AbhCKTHC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 14:07:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615489622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Z7LSgZqphYn16bRiHEIFqGbkZk+Pw5ovVT+gdK3G5g=;
+        b=hJ8q3/5vUof/JetrKvTIHem9gKePH33f1XdZDnxpNp7b78wFtv+3iyAs9W4qa7u1Z+XUpL
+        b8LfDxJxJsooiBCra7N2C2yHTDkAeyPJ6uy2wRVr5SeSP1kGKPArSR3MMhQkJSKXgIi0Xu
+        fe7ESvOkqeHEwJrXukT86KtIT+5u7nw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-H7kCqYhDPsib_lVwJpy_1w-1; Thu, 11 Mar 2021 14:06:58 -0500
+X-MC-Unique: H7kCqYhDPsib_lVwJpy_1w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 414F6100C671;
+        Thu, 11 Mar 2021 19:06:56 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 72E0E7A431;
+        Thu, 11 Mar 2021 19:06:54 +0000 (UTC)
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210309175546.5877-1-osalvador@suse.de>
+ <20210309175546.5877-2-osalvador@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v4 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <f600451e-48aa-184f-ae71-94e0abe9d6b1@redhat.com>
+Date:   Thu, 11 Mar 2021 20:06:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310175751.3320106-31-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210309175546.5877-2-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:57:47PM +0000, Quentin Perret wrote:
-> Since the host stage 2 will be identity mapped, and since it will own
-> most of memory, it would preferable for performance to try and use large
-> block mappings whenever that is possible. To ease this, introduce a new
-> helper in the KVM page-table code which allows to search for large
-> ranges of available IPA space. This will be used in the host memory
-> abort path to greedily idmap large portion of the PA space.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/kvm_pgtable.h | 30 ++++++++++
->  arch/arm64/kvm/hyp/pgtable.c         | 90 +++++++++++++++++++++++++++-
->  2 files changed, 117 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-> index b09af4612656..477bf10c48a9 100644
-> --- a/arch/arm64/include/asm/kvm_pgtable.h
-> +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> @@ -94,6 +94,16 @@ enum kvm_pgtable_prot {
->  #define PAGE_HYP_RO		(KVM_PGTABLE_PROT_R)
->  #define PAGE_HYP_DEVICE		(PAGE_HYP | KVM_PGTABLE_PROT_DEVICE)
->  
-> +/**
-> + * struct kvm_mem_range - Range of Intermediate Physical Addresses
-> + * @start:	Start of the range.
-> + * @end:	End of the range.
-> + */
-> +struct kvm_mem_range {
-> +	u64 start;
-> +	u64 end;
-> +};
-> +
->  /**
->   * enum kvm_pgtable_walk_flags - Flags to control a depth-first page-table walk.
->   * @KVM_PGTABLE_WALK_LEAF:		Visit leaf entries, including invalid
-> @@ -398,4 +408,24 @@ int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size);
->  int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
->  		     struct kvm_pgtable_walker *walker);
->  
-> +/**
-> + * kvm_pgtable_stage2_find_range() - Find a range of Intermediate Physical
-> + *				     Addresses with compatible permission
-> + *				     attributes.
-> + * @pgt:	Page-table structure initialised by kvm_pgtable_stage2_init().
-> + * @addr:	Address that must be covered by the range.
-> + * @prot:	Protection attributes that the range must be compatible with.
-> + * @range:	Range structure used to limit the search space at call time and
-> + *		that will hold the result.
-> + *
-> + * The offset of @addr within a page is ignored. An existing mapping is defined
-> + * as compatible with @prot if it is invalid and not owned by another entity, or
-> + * if its permission attributes are strictly similar to @prot and it has no
-> + * software bits set.
+This looks essentially good to me, except some parts in 
+mhp_supports_memmap_on_memory()
 
-nit: I think the 'or' is ambigious here, as it makes it sound like an
-invalid entry that _is_ owned by another entity is compatible if the
-permissions attribute match. How about:
-
-  | An IPA is compatible with prot iff its corresponding stage-2 page-table
-  | entry has default ownership and, if valid, is mapped with protection
-  | attributes identical to @prot.
-
-> + *
-> + * Return: 0 on success, negative error code on failure.
-> + */
-> +int kvm_pgtable_stage2_find_range(struct kvm_pgtable *pgt, u64 addr,
-> +				  enum kvm_pgtable_prot prot,
-> +				  struct kvm_mem_range *range);
->  #endif	/* __ARM64_KVM_PGTABLE_H__ */
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index c16e0306dd9a..f20287bb3e41 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -48,6 +48,8 @@
->  					 KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
->  					 KVM_PTE_LEAF_ATTR_HI_S2_XN)
->  
-> +#define KVM_PTE_LEAF_ATTR_S2_RES	GENMASK(58, 55)
-
-Please make this IGN instead of RES, to match the architecture (and because
-RES is usually used in the context of RES0 or RES1).
-
->  #define KVM_INVALID_PTE_OWNER_MASK	GENMASK(63, 32)
->  
->  struct kvm_pgtable_walk_data {
-> @@ -69,10 +71,8 @@ static u64 kvm_granule_size(u32 level)
->  	return BIT(kvm_granule_shift(level));
->  }
->  
-> -static bool kvm_block_mapping_supported(u64 addr, u64 end, u64 phys, u32 level)
-> +static bool kvm_level_support_block_mappings(u32 level)
->  {
-> -	u64 granule = kvm_granule_size(level);
-> -
->  	/*
->  	 * Reject invalid block mappings and don't bother with 4TB mappings for
->  	 * 52-bit PAs.
-> @@ -80,6 +80,16 @@ static bool kvm_block_mapping_supported(u64 addr, u64 end, u64 phys, u32 level)
->  	if (level == 0 || (PAGE_SIZE != SZ_4K && level == 1))
->  		return false;
->  
-> +	return true;
-
-return !(level == 0 || (PAGE_SIZE != SZ_4K && level == 1));
-
-> +static bool kvm_block_mapping_supported(u64 addr, u64 end, u64 phys, u32 level)
+>   
+> +bool mhp_supports_memmap_on_memory(unsigned long size)
 > +{
-> +	u64 granule = kvm_granule_size(level);
-> +
-> +	if (!kvm_level_support_block_mappings(level))
-> +		return false;
-> +
->  	if (granule > (end - addr))
->  		return false;
->  
-> @@ -1042,3 +1052,77 @@ void kvm_pgtable_stage2_destroy(struct kvm_pgtable *pgt)
->  	pgt->mm_ops->free_pages_exact(pgt->pgd, pgd_sz);
->  	pgt->pgd = NULL;
->  }
-> +
-> +#define KVM_PTE_LEAF_S2_COMPAT_MASK	(KVM_PTE_LEAF_ATTR_S2_PERMS | \
-> +					 KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR | \
-> +					 KVM_PTE_LEAF_ATTR_S2_RES)
-> +
-> +static int stage2_check_permission_walker(u64 addr, u64 end, u32 level,
-> +					  kvm_pte_t *ptep,
-> +					  enum kvm_pgtable_walk_flags flag,
-> +					  void * const arg)
-> +{
-> +	kvm_pte_t old_attr, pte = *ptep, *new_attr = arg;
+> +	unsigned long pageblock_size = PFN_PHYS(pageblock_nr_pages);
+> +	unsigned long remaining_mem = size - PMD_SIZE;
+
+This looks weird. I think what you want to test is that
+
+
+a) "nr_vmemmap_pages * sizeof(struct page)" spans complete PMDs (IOW, we 
+won't map too much via the altmap when populating a PMD in the vmemmap)
+
+b) "remaining = size - nr_vmemmap_pages * sizeof(struct page)" spans 
+complete pageblock.
+
+right?
+
 > +
 > +	/*
-> +	 * Compatible mappings are either invalid and owned by the page-table
-> +	 * owner (whose id is 0), or valid with matching permission attributes.
+> +	 * Besides having CONFIG_MHP_MEMMAP_ON_MEMORY, we need a few more
+> +	 * assumptions to hold true:
+> +	 * - we are working on a single memory block granularity
+> +	 * - the size of struct page is multiple of PMD.
+
+That's not what you are checking. (and the way it is phrase, I don;t 
+think it makes sense)
+
+> +	 * - the remaining memory after having used part of the range
+> +	 *   for vmemmap pages is pageblock aligned.
+> +	 *
+> +	 * The reason for the struct page to be multiple of PMD is because
+> +	 * otherwise two sections would intersect a PMD. This would go against
+> +	 * memmap-on-memory premise, as memory would stay pinned until both
+> +	 * sections were removed.
+> +	 *
+> +	 * And the reason for the remaining memory to be pageblock aligned is
+> +	 * because mm core functions work on pageblock granularity in order to
+> +	 * change page's migratetype.
 > +	 */
-> +	if (kvm_pte_valid(pte)) {
-> +		old_attr = pte & KVM_PTE_LEAF_S2_COMPAT_MASK;
-> +		if (old_attr != *new_attr)
-> +			return -EEXIST;
-> +	} else if (pte) {
-> +		return -EEXIST;
-> +	}
-> +
-> +	return 0;
+> +	return memmap_on_memory &&
+> +	       size == memory_block_size_bytes() &&
+> +	       IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
+> +	       !(PMD_SIZE % sizeof(struct page)) &&
+> +	       remaining_mem &&
+> +	       IS_ALIGNED(remaining_mem, pageblock_size);
 > +}
 > +
-> +int kvm_pgtable_stage2_find_range(struct kvm_pgtable *pgt, u64 addr,
-> +				  enum kvm_pgtable_prot prot,
-> +				  struct kvm_mem_range *range)
-> +{
-> +	kvm_pte_t attr;
-> +	struct kvm_pgtable_walker check_perm_walker = {
-> +		.cb		= stage2_check_permission_walker,
-> +		.flags		= KVM_PGTABLE_WALK_LEAF,
-> +		.arg		= &attr,
-> +	};
-> +	u64 granule, start, end;
-> +	u32 level;
-> +	int ret;
-> +
-> +	ret = stage2_set_prot_attr(prot, &attr);
-> +	if (ret)
-> +		return ret;
-> +	attr &= KVM_PTE_LEAF_S2_COMPAT_MASK;
-> +
-> +	for (level = pgt->start_level; level < KVM_PGTABLE_MAX_LEVELS; level++) {
-> +		granule = kvm_granule_size(level);
-> +		start = ALIGN_DOWN(addr, granule);
-> +		end = start + granule;
-> +
-> +		if (!kvm_level_support_block_mappings(level))
-> +			continue;
-> +
-> +		if (start < range->start || range->end < end)
-> +			continue;
-> +
-> +		/*
-> +		 * Check the presence of existing mappings with incompatible
-> +		 * permissions within the current block range, and try one level
-> +		 * deeper if one is found.
-> +		 */
-> +		ret = kvm_pgtable_walk(pgt, start, granule, &check_perm_walker);
-> +		if (ret != -EEXIST)
-> +			break;
-> +	}
 
-Can you write this as a:
+I suggest a restructuring, compressing the information like:
 
-	do {
-		...
-	} while (level < KVM_PGTABLE_MAX_LEVELS && ret == -EEXIST);
+"
+Besides having arch support and the feature enabled at runtime, we need 
+a few more assumptions to hold true:
 
-loop?
+a) We span a single memory block: memory onlining/offlining happens in 
+memory block granularity. We don't want the vmemmap of online memory 
+blocks to reside on offline memory blocks. In the future, we might want 
+to support variable-sized memory blocks to make the feature more versatile.
 
-Will
+b) The vmemmap pages span complete PMDs: We don't want vmemmap code to 
+populate memory from the altmap for unrelated parts (i.e., other memory 
+blocks).
+
+c) The vmemmap pages (and thereby the pages that will be exposed to the 
+buddy) have to cover full pageblocks: memory onlining/offlining code 
+requires applicable ranges to be page-aligned, for example, to set the 
+migratetypes properly.
+"
+
+Do we have to special case / protect against the vmemmap optimization 
+for hugetlb pages? Or is that already blocked somehow and I missed it?
+
+-- 
+Thanks,
+
+David / dhildenb
+
