@@ -2,187 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67689336888
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31159336894
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhCKAUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 19:20:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhCKAUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:20:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C10D64EE6;
-        Thu, 11 Mar 2021 00:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615422025;
-        bh=29A3tQmLUaVsH/VlOprQhZ4OraRU/blMhZzT0B8bXQU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WZECi1RxVRFYWjE+LGaAC3SyMy/4yH2uhjhMmliXi4M1WXtKKKIqGydZi1mRcD99k
-         VjxKHFWvDi2DGGUVSKpqV6RlZBpgFFQz/MYVXyFcB2EjEYNKh90v4+YxCDPHa4o6UJ
-         t0LVYGytBWq7tkDKe7HCf1pvwSFegP/pI/2pWTIt183Bf7leJ/taY10lrAfJplbxsU
-         z5yqOnvkJQqvmnni5tWXvAysH+hhf3h9BxWGsZ1uf0UUyKCqwN0BMBZcQ6H3S+gqfA
-         hUYpECcgJPvz84wuDN4+3D3pDgc3thrCjS0k+UzgkHo8DqLSsKPyn2oi0rDm3pO7Gg
-         YMslQ63MFcQ4Q==
-Date:   Thu, 11 Mar 2021 09:20:18 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-Id: <20210311092018.2d0e54d2c891850e549d16fe@kernel.org>
-In-Reply-To: <20210310183113.xxverwh4qplr7xxb@treble>
-References: <161495873696.346821.10161501768906432924.stgit@devnote2>
-        <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
-        <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
-        <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
-        <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
-        <20210309011945.ky7v3pnbdpxhmxkh@treble>
-        <20210310185734.332d9d52a26780ba02d09197@kernel.org>
-        <20210310150845.7kctaox34yrfyjxt@treble>
-        <20210311005509.0a1a65df0d2d6c7da73a9288@kernel.org>
-        <20210310183113.xxverwh4qplr7xxb@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229711AbhCKA01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 19:26:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhCKAZx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 19:25:53 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FFE4C061574;
+        Wed, 10 Mar 2021 16:25:53 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id hs11so42567670ejc.1;
+        Wed, 10 Mar 2021 16:25:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0BJbdaQBPi/OJeQ0WQfINatTsFRiGj2MFvpMtrAP1mY=;
+        b=rL3M66RI0pkjP818OaQ1Ej1JShNq8NzqDx5TEkcHfHNWabvSnfanSQy0Etly841Q2D
+         seKVguCLfOlIkhtbOvLkynS0/sSGTI2EfaojqDjZZZJXhJXBlgCjfW1qMHtj459RJUbN
+         L5bXlU9NrW+I2BXcEjtfmpuL8wIWVJDHL/SdGDk+18npNbOjvaPG6b40qbrnZ6L8P//p
+         v8B+UdW6kCaWbEO4Dv0Ug0LWs8EjMMNfI+NcKZLYbXcmD13FouD8vm7J8FO0gfbwFjEe
+         6TgFCQvXKsoH3U7zeL+WJb09mU/hTtyP0861ANm+waSzuCijiRP5SbVP9du+agTnISRi
+         TObg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0BJbdaQBPi/OJeQ0WQfINatTsFRiGj2MFvpMtrAP1mY=;
+        b=sQ7J5vq9NuZCzUeIijI3iJ5cKvpGiAsrPEtw1GDVWljXYntKK3P265Ufe7orVo5zTX
+         3ET6HucuRBoPgX93TCqhIiw3x+Hs3yDd6HS703D6JxniADS57n2ItkKG3ebgo0ZMinZF
+         PFvZgPqDxvM3efVKpgv+lA46Fr9rQuTRb1hAEyoVx3Id+g+08tsEJyyEV8Fq0TLtlWWX
+         /TrCqEF90niDXBNljb/iqhpvCnddiJfdjFccsgSCqp797M11Nv883MnL4/X94KWMRl7K
+         Qb0S9yqNpgfHzX90Z+kf+WBjv1cF49csqSZw9ML4NBZ6WKlDua4uGn/K1E98MVQ/jMWC
+         9Iiw==
+X-Gm-Message-State: AOAM531wQhkqIIS459ZTMu8xPz4s2atY6rEO5SFICKF9K1r8IChEhOMs
+        rH6EXqVUyvGDSxLb8o+Rxg4=
+X-Google-Smtp-Source: ABdhPJwSwD7p2IlwNFbX/A2u9wa6QgX2Eu+hl0DJMmh1yIn9YkQKwbaQ/YE4lOSEdBhMAjBWCtKAqA==
+X-Received: by 2002:a17:906:1519:: with SMTP id b25mr495212ejd.254.1615422351665;
+        Wed, 10 Mar 2021 16:25:51 -0800 (PST)
+Received: from skbuf ([188.25.219.167])
+        by smtp.gmail.com with ESMTPSA id n25sm404248edq.55.2021.03.10.16.25.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 16:25:51 -0800 (PST)
+Date:   Thu, 11 Mar 2021 02:25:49 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, vladimir.oltean@nxp.com,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: ocelot: Extend MRP
+Message-ID: <20210311002549.4ilz4fw2t6sdxxtv@skbuf>
+References: <20210310205140.1428791-1-horatiu.vultur@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310205140.1428791-1-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 12:31:13 -0600
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-
-> On Thu, Mar 11, 2021 at 12:55:09AM +0900, Masami Hiramatsu wrote:
-> > +#ifdef CONFIG_KRETPROBES
-> > +static unsigned long orc_kretprobe_correct_ip(struct unwind_state *state)
-> > +{
-> > +	return kretprobe_find_ret_addr(
-> > +			(unsigned long)kretprobe_trampoline_addr(),
-> > +			state->task, &state->kr_iter);
-> > +}
-> > +
-> > +static bool is_kretprobe_trampoline_address(unsigned long ip)
-> > +{
-> > +	return ip == (unsigned long)kretprobe_trampoline_addr();
-> > +}
-> > +#else
-> > +static unsigned long orc_kretprobe_correct_ip(struct unwind_state *state)
-> > +{
-> > +	return state->ip;
-> > +}
-> > +
-> > +static bool is_kretprobe_trampoline_address(unsigned long ip)
-> > +{
-> > +	return false;
-> > +}
-> > +#endif
-> > +
+On Wed, Mar 10, 2021 at 09:51:40PM +0100, Horatiu Vultur wrote:
+> This patch extends MRP support for Ocelot.  It allows to have multiple
+> rings and when the node has the MRC role it forwards MRP Test frames in
+> HW. For MRM there is no change.
 > 
-> Can this code go in a kprobes file?  I'd rather not clutter ORC with it,
-> and maybe it would be useful for other arches or unwinders.
-
-Yes, anyway dummy kretprobe_find_ret_addr() and kretprobe_trampoline_addr()
-should be defined !CONFIG_KRETPROBES case.
-
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  drivers/net/ethernet/mscc/ocelot.c     |   6 -
+>  drivers/net/ethernet/mscc/ocelot_mrp.c | 229 +++++++++++++++++--------
+>  include/soc/mscc/ocelot.h              |  10 +-
+>  3 files changed, 158 insertions(+), 87 deletions(-)
 > 
-> >  bool unwind_next_frame(struct unwind_state *state)
-> >  {
-> >  	unsigned long ip_p, sp, tmp, orig_ip = state->ip, prev_sp = state->sp;
-> > @@ -536,6 +561,18 @@ bool unwind_next_frame(struct unwind_state *state)
-> >  
-> >  		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
-> >  						  state->ip, (void *)ip_p);
-> > +		/*
-> > +		 * There are special cases when the stack unwinder is called
-> > +		 * from the kretprobe handler or the interrupt handler which
-> > +		 * occurs in the kretprobe trampoline code. In those cases,
-> > +		 * %sp is shown on the stack instead of the return address.
-> > +		 * Or, when the unwinder find the return address is replaced
-> > +		 * by kretprobe_trampoline.
-> > +		 * In those cases, correct address can be found in kretprobe.
-> > +		 */
-> > +		if (state->ip == sp ||
+> diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
+> index 46e5c9136bac..9b79363db17f 100644
+> --- a/drivers/net/ethernet/mscc/ocelot.c
+> +++ b/drivers/net/ethernet/mscc/ocelot.c
+> @@ -772,12 +772,6 @@ int ocelot_xtr_poll_frame(struct ocelot *ocelot, int grp, struct sk_buff **nskb)
+>  
+>  	skb->protocol = eth_type_trans(skb, dev);
+>  
+> -#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> -	if (skb->protocol == cpu_to_be16(ETH_P_MRP) &&
+> -	    cpuq & BIT(OCELOT_MRP_CPUQ))
+> -		skb->offload_fwd_mark = 0;
+> -#endif
+> -
+
+I suppose net/dsa/tag_ocelot.c doesn't need it any longer either?
+
+>  	*nskb = skb;
+>  
+>  	return 0;
+> diff --git a/drivers/net/ethernet/mscc/ocelot_mrp.c b/drivers/net/ethernet/mscc/ocelot_mrp.c
+> index 683da320bfd8..86b36e5d2279 100644
+> --- a/drivers/net/ethernet/mscc/ocelot_mrp.c
+> +++ b/drivers/net/ethernet/mscc/ocelot_mrp.c
+> @@ -1,8 +1,5 @@
+>  // SPDX-License-Identifier: (GPL-2.0 OR MIT)
+>  /* Microsemi Ocelot Switch driver
+> - *
+> - * This contains glue logic between the switchdev driver operations and the
+> - * mscc_ocelot_switch_lib.
+>   *
+>   * Copyright (c) 2017, 2019 Microsemi Corporation
+>   * Copyright 2020-2021 NXP Semiconductors
+> @@ -15,13 +12,33 @@
+>  #include "ocelot.h"
+>  #include "ocelot_vcap.h"
+>  
+> -static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int port)
+> +static const u8 mrp_test_dmac[] = {0x01, 0x15, 0x4e, 0x00, 0x00, 0x01 };
+> +static const u8 mrp_control_dmac[] = {0x01, 0x15, 0x4e, 0x00, 0x00, 0x02 };
+> +
+> +static int ocelot_mrp_find_port(struct ocelot *ocelot, struct ocelot_port *p)
+
+Could this be named:
+struct ocelot_port *ocelot_find_mrp_partner_port(struct ocelot_port *ocelot_port)
+
+and return NULL instead of zero on "not found"? Zero is a perfectly
+valid port number, definitely not what you want.
+
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ocelot->num_phys_ports; ++i) {
+> +		struct ocelot_port *ocelot_port = ocelot->ports[i];
+> +
+> +		if (!ocelot_port || p == ocelot_port)
+> +			continue;
+> +
+> +		if (ocelot_port->mrp_ring_id == p->mrp_ring_id)
+> +			return i;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int id)
+>  {
+>  	struct ocelot_vcap_block *block_vcap_is2;
+>  	struct ocelot_vcap_filter *filter;
+>  
+>  	block_vcap_is2 = &ocelot->block[VCAP_IS2];
+> -	filter = ocelot_vcap_block_find_filter_by_id(block_vcap_is2, port,
+> +	filter = ocelot_vcap_block_find_filter_by_id(block_vcap_is2, id,
+>  						     false);
+>  	if (!filter)
+>  		return 0;
+> @@ -29,6 +46,87 @@ static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int port)
+>  	return ocelot_vcap_filter_del(ocelot, filter);
+>  }
+>  
+> +static int ocelot_mrp_redirect_add_vcap(struct ocelot *ocelot, int src_port,
+> +					int dst_port)
+> +{
+> +	const u8 mrp_test_mask[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+
+OCD, but could you add a space between the opening bracket and the first
+0xff? There's one more place where that should be done.
+
+> +	struct ocelot_vcap_filter *filter;
+> +	int err;
+> +
+> +	filter = kzalloc(sizeof(*filter), GFP_ATOMIC);
+> +	if (!filter)
+> +		return -ENOMEM;
+
+Why atomic? Isn't SWITCHDEV_OBJ_ID_RING_ROLE_MRP put on the blocking
+notifier call chain?
+
+> +
+> +	filter->key_type = OCELOT_VCAP_KEY_ETYPE;
+> +	filter->prio = 1;
+> +	filter->id.cookie = src_port;
+> +	filter->id.tc_offload = false;
+> +	filter->block_id = VCAP_IS2;
+> +	filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
+> +	filter->ingress_port_mask = BIT(src_port);
+> +	ether_addr_copy(filter->key.etype.dmac.value, mrp_test_dmac);
+> +	ether_addr_copy(filter->key.etype.dmac.mask, mrp_test_mask);
+> +	filter->action.mask_mode = OCELOT_MASK_MODE_REDIRECT;
+> +	filter->action.port_mask = BIT(dst_port);
+> +
+> +	err = ocelot_vcap_filter_add(ocelot, filter, NULL);
+> +	if (err)
+> +		kfree(filter);
+> +
+> +	return err;
+> +}
+> +
+> +static int ocelot_mrp_copy_add_vcap(struct ocelot *ocelot, int port,
+> +				    int prio, int cookie)
+
+"cookie" should be unsigned long I think?
+
+> +{
+> +	const u8 mrp_mask[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0x00 };
+> +	struct ocelot_vcap_filter *filter;
+> +	int err;
+> +
+> +	filter = kzalloc(sizeof(*filter), GFP_ATOMIC);
+> +	if (!filter)
+> +		return -ENOMEM;
+> +
+> +	filter->key_type = OCELOT_VCAP_KEY_ETYPE;
+> +	filter->prio = prio;
+> +	filter->id.cookie = cookie;
+> +	filter->id.tc_offload = false;
+> +	filter->block_id = VCAP_IS2;
+> +	filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
+> +	filter->ingress_port_mask = BIT(port);
+> +	/* Here is possible to use control or test dmac because the mask
+> +	 * doesn't cover the LSB
+> +	 */
+> +	ether_addr_copy(filter->key.etype.dmac.value, mrp_test_dmac);
+> +	ether_addr_copy(filter->key.etype.dmac.mask, mrp_mask);
+> +	filter->action.mask_mode = OCELOT_MASK_MODE_PERMIT_DENY;
+> +	filter->action.port_mask = 0x0;
+> +	filter->action.cpu_copy_ena = true;
+> +	filter->action.cpu_qu_num = OCELOT_MRP_CPUQ;
+> +
+> +	err = ocelot_vcap_filter_add(ocelot, filter, NULL);
+> +	if (err)
+> +		kfree(filter);
+> +
+> +	return err;
+> +}
+> +
+> +static void ocelot_mrp_save_mac(struct ocelot *ocelot,
+> +				struct ocelot_port *port)
+> +{
+> +	ocelot_mact_learn(ocelot, PGID_MRP, mrp_test_dmac,
+> +			  port->pvid_vlan.vid, ENTRYTYPE_LOCKED);
+> +	ocelot_mact_learn(ocelot, PGID_MRP, mrp_control_dmac,
+> +			  port->pvid_vlan.vid, ENTRYTYPE_LOCKED);
+
+Let me make sure I understand.
+By learning these multicast addresses, you mark them as 'not unknown' in
+the MAC table, because otherwise they will be flooded, including to the
+CPU port module, and there's no way you can remove the CPU from the
+flood mask, even if the packets get later redirected through VCAP IS2?
+I mean that's the reason why we have the policer on the CPU port for the
+drop action in ocelot_vcap_init, no?
+
+> diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
+> index 425ff29d9389..c41696d2e82b 100644
+> --- a/include/soc/mscc/ocelot.h
+> +++ b/include/soc/mscc/ocelot.h
+> @@ -51,6 +51,7 @@
+>   */
+>  
+>  /* Reserve some destination PGIDs at the end of the range:
+> + * PGID_MRP: used for not flooding MRP frames to CPU
+
+Could this be named PGID_BLACKHOLE or something? It isn't specific to
+MRP if I understand correctly. We should also probably initialize it
+with zero.
+
+>   * PGID_CPU: used for whitelisting certain MAC addresses, such as the addresses
+>   *           of the switch port net devices, towards the CPU port module.
+>   * PGID_UC: the flooding destinations for unknown unicast traffic.
+> @@ -59,6 +60,7 @@
+>   * PGID_MCIPV6: the flooding destinations for IPv6 multicast traffic.
+>   * PGID_BC: the flooding destinations for broadcast traffic.
+>   */
+> +#define PGID_MRP			57
+>  #define PGID_CPU			58
+>  #define PGID_UC				59
+>  #define PGID_MC				60
+> @@ -611,6 +613,8 @@ struct ocelot_port {
+>  
+>  	struct net_device		*bond;
+>  	bool				lag_tx_active;
+> +
+> +	u16				mrp_ring_id;
+>  };
+>  
+>  struct ocelot {
+> @@ -679,12 +683,6 @@ struct ocelot {
+>  	/* Protects the PTP clock */
+>  	spinlock_t			ptp_clock_lock;
+>  	struct ptp_pin_desc		ptp_pins[OCELOT_PTP_PINS_NUM];
+> -
+> -#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> -	u16				mrp_ring_id;
+> -	struct net_device		*mrp_p_port;
+> -	struct net_device		*mrp_s_port;
+> -#endif
+>  };
+>  
+>  struct ocelot_policer {
+> -- 
+> 2.30.1
 > 
-> Why is the 'state->ip == sp' needed?
-
-As I commented above, until kretprobe_trampoline writes back the real
-address to the stack, sp value is there (which has been pushed by the
-'pushq %rsp' at the entry of kretprobe_trampoline.)
-
-        ".type kretprobe_trampoline, @function\n"
-        "kretprobe_trampoline:\n"
-        /* We don't bother saving the ss register */
-        "       pushq %rsp\n"				// THIS
-        "       pushfq\n"
-
-Thus, from inside the kretprobe handler, like ftrace, you'll see
-the sp value instead of the real return address.
-
-> > +		    is_kretprobe_trampoline_address(state->ip))
-> > +			state->ip = orc_kretprobe_correct_ip(state);
-> 
-> This is similar in concept to ftrace_graph_ret_addr(), right?  Would it
-> be possible to have a similar API?  Like
-> 
-> 		state->ip = kretprobe_ret_addr(state->task, &state->kr_iter, state->ip);
-
-OK, but,
-
-> and without the conditional.
-
-As I said, it is not possible because "state->ip == sp" check depends on
-ORC unwinder.
-
-> >  		state->sp = sp;
-> >  		state->regs = NULL;
-> > @@ -649,6 +686,12 @@ void __unwind_start(struct unwind_state *state, struct task_struct *task,
-> >  		state->full_regs = true;
-> >  		state->signal = true;
-> >  
-> > +		/*
-> > +		 * When the unwinder called with regs from kretprobe handler,
-> > +		 * the regs->ip starts from kretprobe_trampoline address.
-> > +		 */
-> > +		if (is_kretprobe_trampoline_address(state->ip))
-> > +			state->ip = orc_kretprobe_correct_ip(state);
-> 
-> Shouldn't __kretprobe_trampoline_handler() just set regs->ip to
-> 'correct_ret_addr' before passing the regs to the handler?  I'd think
-> that would be a less surprising value for regs->ip than
-> '&kretprobe_trampoline'.
-
-Hmm, actually current implementation on x86 mimics the behevior of
-the int3 exception (which many architectures still do).
-
-Previously the kretprobe_trampoline is a place holder like this.
-
-        "kretprobe_trampoline:\n"
-        "       nop\n"
-
-And arch_init_kprobes() puts a kprobe (int3) there.
-So in that case regs->ip should be kretprobe_trampoline.
-User handler (usually architecutre independent) finds the
-correct_ret_addr in kretprobe_instance.ret_addr field.
-
-> And it would make the unwinder just work automatically when unwinding
-> from the handler using the regs.
-> 
-> It would also work when unwinding from the handler's stack, if we put an
-> UNWIND_HINT_REGS after saving the regs.
-
-At that moment, the real return address is not identified. So we can not
-put it.
-
-> 
-> The only (rare) case it wouldn't work would be unwinding from an
-> interrupt before regs->ip gets set properly.  In which case we'd still
-> need the above call to orc_kretprobe_correct_ip() or so.
-
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
