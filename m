@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87293372C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06273372B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhCKMf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
+        id S233100AbhCKMew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:34:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233190AbhCKMfF (ORCPT
+        with ESMTP id S233118AbhCKMej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:35:05 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462A0C061574;
-        Thu, 11 Mar 2021 04:35:05 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id g9so18770157ilc.3;
-        Thu, 11 Mar 2021 04:35:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kD+l4kkxKKdUXJQ23AQkR8FXXJ0y04WGuJHxzgDJRv8=;
-        b=MP98FclJzXBmegZ2Hfg3NslxwABrao5gudQXwGIRkIt0/b4bN97IOmPAzrA8NPZ4V1
-         63Bkgl1x3VgSkyV4E5c633NfHfefkJ8aCnc0BHLJuDDRVS23pUVoRzO348MqUMV0y/Ro
-         GkCO6rMuMm5jEZzXh49AMdDXjSnAe7oJZHqDHI/2/NpUtFnoLAZPxMbzmCl6scxu/TW8
-         Nux+nl0RSz09QtfaKddJZoWe4KNIvo3ErRoGMXDoCW5DQJe/9YqZRWjspfSPlxSbFSV1
-         w//suhuA5GOw3GfBHKF780pCI0ZVx9URuGjJYqd3HcpC7vVGniH7eIHA4/Z4Zntf0mse
-         uEVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kD+l4kkxKKdUXJQ23AQkR8FXXJ0y04WGuJHxzgDJRv8=;
-        b=kiVOIlTzS8ScSr531CDlsmMsIQ8P2c5ZLfhBHZYDiN3RuEPPgzAomsggh55e6x1VzL
-         v4In39RZ40RnPVqzkv2WsBAq/cVCEBjmljM3dT2m+ccbGHVUfeECxpz/c9riLKAam6Lm
-         jcuECE+Rx+r1ygeGxaUnM1VuvoWr5hz/gTXStZBCNCzs7O29TtsT0ArcE0Yo6da5hIvZ
-         XE7kDMjPhPBsIvRc7H3LQ6KYGnOIA83Q1lBIsvF0Ao92s/U1WcbHJidgh+DgAwiZqMyf
-         e0F/hvxaIL93Gu4LLUEEDQWs9khJnNnh8jB7lsuZRqx3Jog82VY/D6S2uuOdgEqfalfc
-         h6RQ==
-X-Gm-Message-State: AOAM530VryVeTRGS2Fqsrpsmv+GB5Ydk9AG5tUy8Yic44wkOUnh0dzgx
-        WP5ojLQc1U2QRRqmmUp1QWBXa8YkaTkjz3vKWsw=
-X-Google-Smtp-Source: ABdhPJzVtEakATdWW4VtfwUZKd0SXkdKNnUM5sILMsU4t79IaXrM/CeslMV4JekVnYf9MqTbg/ZxExNZ8xXnbCrWWFs=
-X-Received: by 2002:a05:6e02:156e:: with SMTP id k14mr4381915ilu.200.1615466104755;
- Thu, 11 Mar 2021 04:35:04 -0800 (PST)
+        Thu, 11 Mar 2021 07:34:39 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B799AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:34:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uYQOV+uWm8ftXyQ2Xca8N4eM+vMvs0u/E17UZmM5nQQ=; b=gQ07OHE/uJWsc03S41EdzLrH6X
+        VDh8K0b89boqBGb47/8qBchC/pjIJFg3UZARRr7Gn9P+PDuerlK8Xra37oTb2jNgTUi+MHaZOe0Ju
+        n3l1wXnU0MuLwz8Hbas/3kA/l2aKQdvBBWUip8n8XDDCUcT6CWGrIS98wz5noEX8DG/TsVCYCJHkQ
+        P01Bw0CGiyjbPDudIHzZDfK1M5e+Qo8IAyXmQvI4sMt4e/36pReQpYbGF36qnBRKcc2ouJFN491SA
+        oby+sSlsurZMa51wbsorywdxFznT1aoz6balmAhOIp1g2yR9T/h6QmcsgPgdIfJYI8oHZuY2rpCat
+        GwttRYTQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKKWM-0096ke-FM; Thu, 11 Mar 2021 12:34:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D98C7304D28;
+        Thu, 11 Mar 2021 13:34:29 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C48AA29D00066; Thu, 11 Mar 2021 13:34:29 +0100 (CET)
+Date:   Thu, 11 Mar 2021 13:34:29 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
+Subject: Re: [PATCH V2 16/25] perf/x86: Register hybrid PMUs
+Message-ID: <YEoOVTVhN3DpQXl2@hirez.programming.kicks-ass.net>
+References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+ <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
- <1614758717-18223-9-git-send-email-dillon.minfei@gmail.com> <a5b4a06c-60c4-ba56-5f5b-dd7a8c5a0d6d@foss.st.com>
-In-Reply-To: <a5b4a06c-60c4-ba56-5f5b-dd7a8c5a0d6d@foss.st.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Thu, 11 Mar 2021 20:34:28 +0800
-Message-ID: <CAL9mu0K9f2rDsFeiVKT0izutxQzAU_=YBo6x7w1m=8gDhK9uOw@mail.gmail.com>
-Subject: Re: [PATCH 8/8] ARM: stm32: add initial support for stm32h750
-To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux@armlinux.org.uk, Vladimir Murzin <vladimir.murzin@arm.com>,
-        afzal.mohd.ma@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre
+On Wed, Mar 10, 2021 at 08:37:52AM -0800, kan.liang@linux.intel.com wrote:
+> @@ -2092,9 +2105,37 @@ static int __init init_hw_perf_events(void)
+>  	if (err)
+>  		goto out1;
+>  
+> -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> -	if (err)
+> -		goto out2;
+> +	if (!is_hybrid()) {
+> +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> +		if (err)
+> +			goto out2;
+> +	} else {
+> +		u8 cpu_type = get_hybrid_cpu_type(smp_processor_id());
+> +		struct x86_hybrid_pmu *hybrid_pmu;
+> +		int i;
+> +
+> +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
+> +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
+> +
+> +			hybrid_pmu->pmu = pmu;
+> +			hybrid_pmu->pmu.type = -1;
+> +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
+> +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
+> +
+> +			/* Only register the PMU for the boot CPU */
 
-On Thu, Mar 11, 2021 at 6:43 PM Alexandre TORGUE
-<alexandre.torgue@foss.st.com> wrote:
->
-> Hi Dillon
->
-> On 3/3/21 9:05 AM, dillon.minfei@gmail.com wrote:
-> > From: dillon min <dillon.minfei@gmail.com>
-> >
->
-> No empty commit message please
-Okay, thanks for remind.
->
-> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> > ---
-> >   arch/arm/mach-stm32/board-dt.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/arm/mach-stm32/board-dt.c b/arch/arm/mach-stm32/board-dt.c
-> > index 011d57b488c2..a766310d8dca 100644
-> > --- a/arch/arm/mach-stm32/board-dt.c
-> > +++ b/arch/arm/mach-stm32/board-dt.c
-> > @@ -17,6 +17,7 @@ static const char *const stm32_compat[] __initconst = {
-> >       "st,stm32f746",
-> >       "st,stm32f769",
-> >       "st,stm32h743",
-> > +     "st,stm32h750",
-> >       "st,stm32mp157",
-> >       NULL
-> >   };
-> >
+Why ?!
+
+AFAICT we could register them all here. That instantly fixes that
+CPU_STARTING / CPU_DEAD fail elsewhere in this patch.
+
+> +			if (hybrid_pmu->cpu_type != cpu_type)
+> +				continue;
+> +
+> +			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
+> +						x86_get_hybrid_pmu_type(cpu_type));
+> +			if (err) {
+> +				pr_warn("Failed to register a PMU, err %d\n", err);
+> +				kfree(x86_pmu.hybrid_pmu);
+> +				x86_pmu.hybrid_pmu = NULL;
+> +				goto out2;
+> +			}
+> +		}
+> +	}
+>  
+>  	return 0;
+>  
