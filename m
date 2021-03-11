@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75525336DA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE658336DAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhCKITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:19:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35020 "EHLO mail.kernel.org"
+        id S231571AbhCKIT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:19:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231302AbhCKISs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:18:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9896B61554;
-        Thu, 11 Mar 2021 08:18:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615450728;
-        bh=pcPYx32koDPoQYOnqgHXzh5B1hR+EWUWAY4YkutCz7A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FhylOKgCVND8Y9Y2qTErMZIg9mJ00+UGrQGUmieOjOSW5LUWaOGH3h7pggBgVtPM6
-         qaWJLoyx9SyhQSOm2amdTZTMFZZJ5NCzmS6kOlMQ/QvdEJITkfJpv79fBqd68P9Stb
-         PU12e9hpkKqsSTxjvUi9D71ycfDUZi5XpohwQopGd7U4w+TwGuuzoKeeTXRH/LSQ4M
-         7sm3ZXipdFxylhKPtQSkpbebDumT0kKCyn5DFRyxtMOjWHZD0ZkGHHUzJDDXljSaGN
-         k1gpUo7jMM0qcYLnnCeRrgSOurn9a1NSfEFeEGQL6UqoXcH3WTEGMehDt96Bljow5D
-         15PMBuTs/E1gw==
-Date:   Thu, 11 Mar 2021 09:18:42 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: Errant readings on LM81 with T2080 SoC
-Message-ID: <20210311081842.GA1070@ninjato>
-References: <8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@alliedtelesis.co.nz>
- <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
- <4a1b1494-df96-2d8c-9323-beb2c2ba706b@alliedtelesis.co.nz>
- <a67ea323-634d-d34e-c63e-b1aaa4737b19@alliedtelesis.co.nz>
- <5709f180-04b5-09b2-e1c4-53eb5c9345d8@roeck-us.net>
- <d6074923-ee7e-4499-0e54-383a607d3c41@alliedtelesis.co.nz>
- <1aa0dc23-0706-5902-2f46-0767de0e3ad6@alliedtelesis.co.nz>
- <d5045879-45aa-db38-e6aa-4c8ea3e62f6c@roeck-us.net>
- <b41a802b-2833-13fb-58ad-1762a3507460@alliedtelesis.co.nz>
- <d37a114c-fa3f-40e8-4d85-52eb1ff03c37@roeck-us.net>
+        id S231362AbhCKITW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:19:22 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 411B164EAE;
+        Thu, 11 Mar 2021 08:19:21 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lKGXO-000waf-MQ; Thu, 11 Mar 2021 08:19:18 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
-Content-Disposition: inline
-In-Reply-To: <d37a114c-fa3f-40e8-4d85-52eb1ff03c37@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 11 Mar 2021 08:19:18 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        sin_jieyang@mediatek.com, drinkcat@chromium.org,
+        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
+Subject: Re: [v8,5/7] PCI: mediatek-gen3: Add MSI support
+In-Reply-To: <20210311000555.epypouwxdbql2aqx@pali>
+References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+ <20210224061132.26526-6-jianjun.wang@mediatek.com>
+ <20210311000555.epypouwxdbql2aqx@pali>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <e6c53aa3863c3f5b0560ed65282fc5e2@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: pali@kernel.org, jianjun.wang@mediatek.com, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, ryder.lee@mediatek.com, p.zabel@pengutronix.de, matthias.bgg@gmail.com, linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, sj.huang@mediatek.com, youlin.pei@mediatek.com, chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com, sin_jieyang@mediatek.com, drinkcat@chromium.org, Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-11 00:05, Pali Rohár wrote:
+> On Wednesday 24 February 2021 14:11:30 Jianjun Wang wrote:
+>> +static int mtk_msi_bottom_domain_alloc(struct irq_domain *domain,
+>> +				       unsigned int virq, unsigned int nr_irqs,
+>> +				       void *arg)
+>> +{
+>> +	struct mtk_pcie_port *port = domain->host_data;
+>> +	struct mtk_msi_set *msi_set;
+>> +	int i, hwirq, set_idx;
+>> +
+>> +	mutex_lock(&port->lock);
+>> +
+>> +	hwirq = bitmap_find_free_region(port->msi_irq_in_use, 
+>> PCIE_MSI_IRQS_NUM,
+>> +					order_base_2(nr_irqs));
+>> +
+>> +	mutex_unlock(&port->lock);
+>> +
+>> +	if (hwirq < 0)
+>> +		return -ENOSPC;
+>> +
+>> +	set_idx = hwirq / PCIE_MSI_IRQS_PER_SET;
+>> +	msi_set = &port->msi_sets[set_idx];
+>> +
+>> +	for (i = 0; i < nr_irqs; i++)
+>> +		irq_domain_set_info(domain, virq + i, hwirq + i,
+>> +				    &mtk_msi_bottom_irq_chip, msi_set,
+>> +				    handle_edge_irq, NULL, NULL);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void mtk_msi_bottom_domain_free(struct irq_domain *domain,
+>> +				       unsigned int virq, unsigned int nr_irqs)
+>> +{
+>> +	struct mtk_pcie_port *port = domain->host_data;
+>> +	struct irq_data *data = irq_domain_get_irq_data(domain, virq);
+>> +
+>> +	mutex_lock(&port->lock);
+>> +
+>> +	bitmap_clear(port->msi_irq_in_use, data->hwirq, nr_irqs);
+> 
+> Marc, should not be there bitmap_release_region() with order_base_2()?
+> 
+> bitmap_release_region(port->msi_irq_in_use, data->hwirq, 
+> order_base_2(nr_irqs));
+> 
+> Because mtk_msi_bottom_domain_alloc() is allocating
+> order_base_2(nr_irqs) interrupts, not only nr_irqs.
 
---7JfCtLOvnd9MIVvH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Indeed, good catch.
 
+Thanks,
 
-> Bummer. What is really weird is that you see clock stretching under
-> CPU load. Normally clock stretching is triggered by the device, not
-> by the host.
-
-One example: Some hosts need an interrupt per byte to know if they
-should send ACK or NACK. If that interrupt is delayed, they stretch the
-clock.
-
-
---7JfCtLOvnd9MIVvH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBJ0l4ACgkQFA3kzBSg
-Kbbb/w/8DLizM94FZ2EJrsVVPXMLUIQDEIGL3ujBX2GyAsv6HeYmKAJzuE4QhMyE
-kE+xExT0T62C8UpKJ5ZHpRYzWXLgiJEucIOS2qlLEjn29rhI+u6bTd3LfPe/YpyB
-qMDuUzwLg4KiOPbiyX856rvJ5KOG/EN2owyWxZPXgKuKqqSUe+ewXIaZzu8l9Z8D
-qzvSjMhvWdisp976ZCj6ZK1U8j2iHtbijGiOIdmCvtH3TaLid1Tie/BheiwdQMPo
-2yDRYK4XkZDwcd8E0qRDN3Ew8Vv71hQH+uSiW5/cGxWSvXO3j16OuQH9TObSI+KI
-WAdnpcTyudvinJAnw5xBhm3Jmc/dbTDh0KYFHrPJS09qBg62D2zRKlG0IeFA/p3v
-VWmVk6cklvAemFo0iBejL/O9at2ItOZ+M6n3M4zVsuxGM88roenQQ9S74QxXgBKj
-roGq1udYl7LJUxDDswBwGyGTsHWcMfjDTVgimEYlvxlPkjJbg7qv0iHnLCl7hi2G
-MZMl28mpaWEmkQMAsiQygwezbEgTYGmV1xU7lVxeqDq3ypI51bsInMP3yc3LPalz
-wA8Grj0ZQloVpPWyZHu5sAVIKvEafk3NsDvfNj1rOLh/XBsGQRGv8qRuqqjQfecw
-YHTA/PJJ3Wn+i31hH9bqVkRVjgyq6iCeEP4STaAu3dCHKQFaXfs=
-=FkGx
------END PGP SIGNATURE-----
-
---7JfCtLOvnd9MIVvH--
+         M.
+-- 
+Jazz is not dead. It just smells funny...
