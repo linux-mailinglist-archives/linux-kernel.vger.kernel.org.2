@@ -2,116 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1262F33768E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05558337694
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbhCKPK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:10:26 -0500
-Received: from mga01.intel.com ([192.55.52.88]:14263 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233653AbhCKPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:10:00 -0500
-IronPort-SDR: jXkeUTjMvKX/7Qbxs0YprWU/z8lxACbPZOhA/HQcsCBOKB8EoMn0pMbQ4yfHOiHKCYtxKhatVI
- BPEP2q+tD1Qg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="208504937"
-X-IronPort-AV: E=Sophos;i="5.81,240,1610438400"; 
-   d="scan'208";a="208504937"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 07:09:59 -0800
-IronPort-SDR: UOJfqlUMv3/LSAyzsuH/KANGOVJAan5Rc6QgrmdHalsa2F590yFJu4CVdgyugOcvoqTaZiVzev
- KsPCo/fPeqQA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,240,1610438400"; 
-   d="scan'208";a="438729171"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 Mar 2021 07:09:58 -0800
-Received: from [10.251.15.67] (kliang2-MOBL.ccr.corp.intel.com [10.251.15.67])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 32D1E580816;
-        Thu, 11 Mar 2021 07:09:57 -0800 (PST)
-Subject: Re: [PATCH V2 08/25] perf/x86: Hybrid PMU support for hardware cache
- event
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-9-git-send-email-kan.liang@linux.intel.com>
- <YEn513bZDuWKj3LS@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <b29200cd-88c3-a0c9-d563-d76e819fe5f7@linux.intel.com>
-Date:   Thu, 11 Mar 2021 10:09:55 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233997AbhCKPL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:11:29 -0500
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:32886 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233978AbhCKPLZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 10:11:25 -0500
+Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12BF3LwI011868;
+        Thu, 11 Mar 2021 15:10:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=KgON0JNjPPn3agmdfKnN9oeNhsJWy56GgPCfWOLOKC0=;
+ b=Z9lP1LFRS8/LA/bKCcS3pd9zGFa2gSRWwWgFmkIDK8C9x9Y1uY8bEPg3efU7W0wJJKxY
+ +R75srS9eatU0wLo2eiKNb8+6WYaW0+3PPpNnbimAA4cJrb5YS+QMPT7VvpAemMO0zbw
+ K55jjZQnaCAVvuDK+TkXwmFt0hD9c40gIuT6gAaVXfJzsVgYvbWH6ThLyRETMXFhWpAL
+ w5xO5K3MButeSR/Bi7rd3TvR9WX1557i+PpPsbqyQqZFOf05W7ywHGStH8Ias4P7bxgW
+ 3GL23KaVsdzLT4eRggl93Fo2SuGOVNtf0uklzbS9vz78P2n34Jc/s5Yy4que/L8kzR12 fw== 
+Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
+        by mx0b-002e3701.pphosted.com with ESMTP id 377ev23ee1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 15:10:43 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g9t5008.houston.hpe.com (Postfix) with ESMTP id 4AB6653;
+        Thu, 11 Mar 2021 15:10:42 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 20DC748;
+        Thu, 11 Mar 2021 15:10:39 +0000 (UTC)
+From:   Mike Travis <mike.travis@hpe.com>
+To:     Borislav_Petkov_ <bp@alien8.de>,
+        Thomas_Gleixner_ <tglx@linutronix.de>,
+        Ingo_Molnar_ <mingo@redhat.com>,
+        Steve_Wahl_ <steve.wahl@hpe.com>, x86@kernel.org
+Cc:     Georges Aureau <georges.aureau@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri_Sivanich_ <dimitri.sivanich@hpe.com>,
+        Russ_Anderson_ <russ.anderson@hpe.com>,
+        Darren_Hart_ <dvhart@infradead.org>,
+        Andy_Shevchenko_ <andy@infradead.org>,
+        "H._Peter_Anvin_" <hpa@zytor.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/platform/uv: Add more to secondary cpu kdump info
+Date:   Thu, 11 Mar 2021 09:10:28 -0600
+Message-Id: <20210311151028.82678-1-mike.travis@hpe.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <YEn513bZDuWKj3LS@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-11_05:2021-03-10,2021-03-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1011 adultscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
+ suspectscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103110082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Georges Aureau <georges.aureau@hpe.com>
 
+Add call to run_crash_ipi_callback() to gather more info of what the
+secondary cpus were doing to help with failure analysis.
 
-On 3/11/2021 6:07 AM, Peter Zijlstra wrote:
-> On Wed, Mar 10, 2021 at 08:37:44AM -0800, kan.liang@linux.intel.com wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> The hardware cache events are different among hybrid PMUs. Each hybrid
->> PMU should have its own hw cache event table.
->>
->> Reviewed-by: Andi Kleen <ak@linux.intel.com>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> ---
->>   arch/x86/events/core.c       | 11 +++++++++--
->>   arch/x86/events/perf_event.h |  9 +++++++++
->>   2 files changed, 18 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
->> index 039a851..1db4a67 100644
->> --- a/arch/x86/events/core.c
->> +++ b/arch/x86/events/core.c
->> @@ -352,6 +352,7 @@ set_ext_hw_attr(struct hw_perf_event *hwc, struct perf_event *event)
->>   {
->>   	struct perf_event_attr *attr = &event->attr;
->>   	unsigned int cache_type, cache_op, cache_result;
->> +	struct x86_hybrid_pmu *pmu = is_hybrid() ? hybrid_pmu(event->pmu) : NULL;
->>   	u64 config, val;
->>   
->>   	config = attr->config;
->> @@ -371,7 +372,10 @@ set_ext_hw_attr(struct hw_perf_event *hwc, struct perf_event *event)
->>   		return -EINVAL;
->>   	cache_result = array_index_nospec(cache_result, PERF_COUNT_HW_CACHE_RESULT_MAX);
->>   
->> -	val = hw_cache_event_ids[cache_type][cache_op][cache_result];
->> +	if (pmu)
->> +		val = pmu->hw_cache_event_ids[cache_type][cache_op][cache_result];
->> +	else
->> +		val = hw_cache_event_ids[cache_type][cache_op][cache_result];
->>   
->>   	if (val == 0)
->>   		return -ENOENT;
->> @@ -380,7 +384,10 @@ set_ext_hw_attr(struct hw_perf_event *hwc, struct perf_event *event)
->>   		return -EINVAL;
->>   
->>   	hwc->config |= val;
->> -	attr->config1 = hw_cache_extra_regs[cache_type][cache_op][cache_result];
->> +	if (pmu)
->> +		attr->config1 = pmu->hw_cache_extra_regs[cache_type][cache_op][cache_result];
->> +	else
->> +		attr->config1 = hw_cache_extra_regs[cache_type][cache_op][cache_result];
-> 
-> Why not:
-> 
-> 	attr->config1 = hybrid(event->pmu, hw_cache_extra_regs)[cache_type][cache_op][cache_result];
-> 
-> ?
+Excerpt from Georges:
+'It is only changing where crash secondaries will be stalling after having
+taken care of properly laying down "crash note regs". Please note that
+"crash note regs" are a key piece of data used by crash dump debuggers
+to provide a reliable backtrace of running processors.'
 
-Because hw_cache_extra_regs is not part of the struct x86_pmu.
+Secondary change pursuant to a5f526ec:
+	change master/slave to main/secondary
 
+Signed-off-by: Georges Aureau <georges.aureau@hpe.com>
+Signed-off-by: Mike Travis <mike.travis@hpe.com>
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+---
+ arch/x86/platform/uv/uv_nmi.c | 39 +++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 15 deletions(-)
 
-Thanks,
-Kan
+diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
+index eafc530c8767..f83810f7bcc2 100644
+--- a/arch/x86/platform/uv/uv_nmi.c
++++ b/arch/x86/platform/uv/uv_nmi.c
+@@ -24,6 +24,7 @@
+ #include <asm/kdebug.h>
+ #include <asm/local64.h>
+ #include <asm/nmi.h>
++#include <asm/reboot.h>
+ #include <asm/traps.h>
+ #include <asm/uv/uv.h>
+ #include <asm/uv/uv_hub.h>
+@@ -834,34 +835,42 @@ static void uv_nmi_touch_watchdogs(void)
+ 	touch_nmi_watchdog();
+ }
+ 
+-static atomic_t uv_nmi_kexec_failed;
+-
+ #if defined(CONFIG_KEXEC_CORE)
+-static void uv_nmi_kdump(int cpu, int master, struct pt_regs *regs)
++static atomic_t uv_nmi_kexec_failed;
++static void uv_nmi_kdump(int cpu, int main, struct pt_regs *regs)
+ {
++	/* Check if kdump kernel loaded for both main and secondary CPUs */
++	if (!kexec_crash_image) {
++		if (main)
++			pr_err("UV: NMI error: kdump kernel not loaded\n");
++		return;
++	}
++
+ 	/* Call crash to dump system state */
+-	if (master) {
++	if (main) {
+ 		pr_emerg("UV: NMI executing crash_kexec on CPU%d\n", cpu);
+ 		crash_kexec(regs);
+ 
+-		pr_emerg("UV: crash_kexec unexpectedly returned, ");
++		pr_emerg("UV: crash_kexec unexpectedly returned\n");
+ 		atomic_set(&uv_nmi_kexec_failed, 1);
+-		if (!kexec_crash_image) {
+-			pr_cont("crash kernel not loaded\n");
+-			return;
++
++	} else { /* secondary */
++
++		/* If kdump kernel fails, secondaries will exit this loop */
++		while (atomic_read(&uv_nmi_kexec_failed) == 0) {
++
++			/* Once shootdown cpus starts, they do not return */
++			run_crash_ipi_callback(regs);
++
++			mdelay(10);
+ 		}
+-		pr_cont("kexec busy, stalling cpus while waiting\n");
+ 	}
+-
+-	/* If crash exec fails the slaves should return, otherwise stall */
+-	while (atomic_read(&uv_nmi_kexec_failed) == 0)
+-		mdelay(10);
+ }
+ 
+ #else /* !CONFIG_KEXEC_CORE */
+-static inline void uv_nmi_kdump(int cpu, int master, struct pt_regs *regs)
++static inline void uv_nmi_kdump(int cpu, int main, struct pt_regs *regs)
+ {
+-	if (master)
++	if (main)
+ 		pr_err("UV: NMI kdump: KEXEC not supported in this kernel\n");
+ 	atomic_set(&uv_nmi_kexec_failed, 1);
+ }
+-- 
+2.21.0
+
