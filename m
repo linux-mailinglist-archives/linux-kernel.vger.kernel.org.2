@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE6A337584
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A887333758A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233825AbhCKOXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:23:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47490 "EHLO mx2.suse.de"
+        id S233925AbhCKOYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:24:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47562 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233573AbhCKOXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233410AbhCKOXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Mar 2021 09:23:24 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
@@ -17,13 +17,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lLz8EEkgsQbQc5zK5shQUpeWBQPCbxXPv1CJD4/GY5s=;
-        b=IQ0vLS/VjrX40HoFEUQlgpmm/G1qlzafLoXcUzAz0m3i8GSx5sFZR9ulwVcPtvbf5MQb0/
-        RtHqUx7tOZfE8FLDs5KJJOqGu0CefWcG4SDNQ0fqCIw08DhvEYAQF8FuURxONGmk4A7xzP
-        DeEtvr5EqmS7D6CFoATk75XwHSyDFZs=
+        bh=rUUExa3MttAImINlrgzpHFxRG0q5LayeW3GQCnY3KsA=;
+        b=ZAJxz53QZ7oat6o13Y5McdL+0NLo0AOUsKeLSZhrjUJm9UE7qukAPTgq1bHXLBoIrMcD+3
+        pmO7slOuYsC9MUCYrNLiHLu0R/fXSGRJuTK+bZttZep1uutL90lHPnmqwjUO+iVDqIgcDP
+        Q+cCc9dkb9LQXbNvC9wls1PJDHWBLKM=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DB495AC8C;
-        Thu, 11 Mar 2021 14:23:22 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1D408AD72;
+        Thu, 11 Mar 2021 14:23:23 +0000 (UTC)
 From:   Juergen Gross <jgross@suse.com>
 To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
 Cc:     Juergen Gross <jgross@suse.com>,
@@ -32,9 +32,9 @@ Cc:     Juergen Gross <jgross@suse.com>,
         Jason Baron <jbaron@akamai.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH v7 02/14] static_call: move struct static_call_key definition to static_call_types.h
-Date:   Thu, 11 Mar 2021 15:23:07 +0100
-Message-Id: <20210311142319.4723-3-jgross@suse.com>
+Subject: [PATCH v7 03/14] static_call: add function to query current function
+Date:   Thu, 11 Mar 2021 15:23:08 +0100
+Message-Id: <20210311142319.4723-4-jgross@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210311142319.4723-1-jgross@suse.com>
 References: <20210311142319.4723-1-jgross@suse.com>
@@ -44,148 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having the definition of static_call() in static_call_types.h makes
-no sense as long struct static_call_key isn't defined there, as the
-generic implementation of static_call() is referencing this structure.
-
-So move the definition of struct static_call_key to static_call_types.h.
+Some users of paravirtualized functions need to query which function
+has been specified in a pv_ops vector element. In order to be able to
+switch such paravirtualized functions to static_calls instead, there
+needs to be a function to query the function which will be called via
+static_call().
 
 Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
-V5:
+V7:
 - new patch
 ---
- include/linux/static_call.h             | 18 ------------------
- include/linux/static_call_types.h       | 18 ++++++++++++++++++
- tools/include/linux/static_call_types.h | 18 ++++++++++++++++++
- 3 files changed, 36 insertions(+), 18 deletions(-)
+ include/linux/static_call.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index 85ecc789f4ff..76b881259144 100644
+index 76b881259144..e01b61ab86b1 100644
 --- a/include/linux/static_call.h
 +++ b/include/linux/static_call.h
-@@ -128,16 +128,6 @@ struct static_call_mod {
- 	struct static_call_site *sites;
- };
+@@ -20,6 +20,7 @@
+  *   static_call(name)(args...);
+  *   static_call_cond(name)(args...);
+  *   static_call_update(name, func);
++ *   static_call_query(name);
+  *
+  * Usage example:
+  *
+@@ -91,6 +92,10 @@
+  *
+  *   which will include the required value tests to avoid NULL-pointer
+  *   dereferences.
++ *
++ *   To query which function is currently set to be called, use:
++ *
++ *   func = static_call_query(name);
+  */
  
--struct static_call_key {
--	void *func;
--	union {
--		/* bit 0: 0 = mods, 1 = sites */
--		unsigned long type;
--		struct static_call_mod *mods;
--		struct static_call_site *sites;
--	};
--};
--
- /* For finding the key associated with a trampoline */
- struct static_call_tramp_key {
- 	s32 tramp;
-@@ -187,10 +177,6 @@ extern long __static_call_return0(void);
- 
- static inline int static_call_init(void) { return 0; }
- 
--struct static_call_key {
--	void *func;
--};
--
- #define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	struct static_call_key STATIC_CALL_KEY(name) = {		\
-@@ -243,10 +229,6 @@ static inline long __static_call_return0(void)
- 
- static inline int static_call_init(void) { return 0; }
- 
--struct static_call_key {
--	void *func;
--};
--
- static inline long __static_call_return0(void)
- {
- 	return 0;
-diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
-index ae5662d368b9..5a00b8b2cf9f 100644
---- a/include/linux/static_call_types.h
-+++ b/include/linux/static_call_types.h
-@@ -58,11 +58,25 @@ struct static_call_site {
- 	__raw_static_call(name);					\
+ #include <linux/types.h>
+@@ -118,6 +123,8 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
+ 			     STATIC_CALL_TRAMP_ADDR(name), func);	\
  })
  
-+struct static_call_key {
-+	void *func;
-+	union {
-+		/* bit 0: 0 = mods, 1 = sites */
-+		unsigned long type;
-+		struct static_call_mod *mods;
-+		struct static_call_site *sites;
-+	};
-+};
++#define static_call_query(name) (READ_ONCE(STATIC_CALL_KEY(name).func))
 +
- #else /* !CONFIG_HAVE_STATIC_CALL_INLINE */
+ #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
  
- #define __STATIC_CALL_ADDRESSABLE(name)
- #define __static_call(name)	__raw_static_call(name)
+ extern int __init static_call_init(void);
+@@ -191,6 +198,7 @@ static inline int static_call_init(void) { return 0; }
+ 	};								\
+ 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
  
-+struct static_call_key {
-+	void *func;
-+};
 +
- #endif /* CONFIG_HAVE_STATIC_CALL_INLINE */
+ #define static_call_cond(name)	(void)__static_call(name)
  
- #ifdef MODULE
-@@ -77,6 +91,10 @@ struct static_call_site {
- 
- #else
- 
-+struct static_call_key {
-+	void *func;
-+};
-+
- #define static_call(name)						\
- 	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
- 
-diff --git a/tools/include/linux/static_call_types.h b/tools/include/linux/static_call_types.h
-index ae5662d368b9..5a00b8b2cf9f 100644
---- a/tools/include/linux/static_call_types.h
-+++ b/tools/include/linux/static_call_types.h
-@@ -58,11 +58,25 @@ struct static_call_site {
- 	__raw_static_call(name);					\
- })
- 
-+struct static_call_key {
-+	void *func;
-+	union {
-+		/* bit 0: 0 = mods, 1 = sites */
-+		unsigned long type;
-+		struct static_call_mod *mods;
-+		struct static_call_site *sites;
-+	};
-+};
-+
- #else /* !CONFIG_HAVE_STATIC_CALL_INLINE */
- 
- #define __STATIC_CALL_ADDRESSABLE(name)
- #define __static_call(name)	__raw_static_call(name)
- 
-+struct static_call_key {
-+	void *func;
-+};
-+
- #endif /* CONFIG_HAVE_STATIC_CALL_INLINE */
- 
- #ifdef MODULE
-@@ -77,6 +91,10 @@ struct static_call_site {
- 
- #else
- 
-+struct static_call_key {
-+	void *func;
-+};
-+
- #define static_call(name)						\
- 	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
- 
+ static inline
 -- 
 2.26.2
 
