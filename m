@@ -2,146 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE259337634
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C4A33765C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbhCKOxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:53:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
+        id S233962AbhCKPAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233901AbhCKOxQ (ORCPT
+        with ESMTP id S233765AbhCKPAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:53:16 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D47C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:53:16 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id 130so20799035qkh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:53:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KHPIkhTb0LE1ggEW55e8PVY6uRKVEwz5gqVz2vI9SzE=;
-        b=Bhi8px5GrHj7K2OkZ2Wd5DLPfqYMZL+TS/bR9cALnTN0U4D3gdvsgXMevrbSUujiso
-         LGYW2QvD+RG1lpMw/i8N8mA7U3by86mAbbQvWZJEthBBeShXXuKlXuhWSAst+92Cyanl
-         DBrt9CIENu18/doC/lTokLfTU1zDe4rveMjrKh6x6CAtSoSOmn8ls+MonlmNteWEVcTw
-         Hg0aNN/YBZnR8u6774JfaGPnUz4GV12glMT5BXOmXfUswF2mwlsZkwipHPL8mMUHMR7J
-         W9piEVQTJpc3+z3niHKUjYzpJ32dO1kLNpnxweCS9K+PXLR72/Xgb6aY9yScmtSQEs3H
-         QPsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KHPIkhTb0LE1ggEW55e8PVY6uRKVEwz5gqVz2vI9SzE=;
-        b=Vdb+vJAX8ijf+9O0FKvSxnhsCZfh3V5hoTkq7FomxpR4d4I34aJ+A9JAyKfwWuVxK7
-         QfmFVZQRl7KHUCf0elgqAsLfCWAC/0sKiWvj3HFbDubBNqtdN7TP0ZbECTAb1evbNRj4
-         H3UzBesTnoNYqdQNf2lNMabez3yDjP1n0YOBQHq+PogwqFq+fa/72UgFcjWT4NTFuQok
-         lkgO+EjdqIUw6b1PHyPieqhOnIblOxwBnexUX1qLNGxuCkGBRLNaE7nsuvXmd+BTmGnF
-         dZNgbAXqheGVtHZDXv+lsQXSc60Z6pHMMU3SkfzbE3Dyf3e/Hn6k3Z8Wma6k4pKtrbaq
-         1Ggg==
-X-Gm-Message-State: AOAM533Y6MF/evGBX3NeYCth7rOzRbcdTSXFmc0TyoMJrxS1UZY/yEdq
-        c4QZ0aiOGMtbB+NvxGGfJi7zdBgTE9cTCe1Nloaq2Q==
-X-Google-Smtp-Source: ABdhPJzQ3NUbCY3lw1wcdCgBzBoejG7qGizVUeuwvRYWcaZ7RpliAYL96CzGCXNPc6j5EpotIrRQTj08SX8qAheY+cY=
-X-Received: by 2002:a05:620a:410f:: with SMTP id j15mr7970362qko.424.1615474394860;
- Thu, 11 Mar 2021 06:53:14 -0800 (PST)
+        Thu, 11 Mar 2021 10:00:11 -0500
+X-Greylist: delayed 307 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 11 Mar 2021 07:00:08 PST
+Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB138C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:00:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
+        d=auristor.com; s=MDaemon; r=y; t=1615474499; x=1616079299;
+        i=jaltman@auristor.com; q=dns/txt; h=Subject:To:Cc:References:
+        From:Organization:Message-ID:Date:User-Agent:MIME-Version:
+        In-Reply-To:Content-Type; bh=T32H4xMbln8mRCO4BemdfMrRGXOFNoA7rJn
+        1tXoNvNY=; b=VedWkOJ59vWpGEWSI5ne0JlUHukLxhwG9QFhJ3EIfjCMpOHCLnf
+        xV1kCHEXT8iNkLNIfg4EQM/Qpvhdtv6kSe/8J4nUr7Ug6oCsWkuziYqeofzaTQ8W
+        xuOP3LBfBDKRsPaLpVEzB3NExAkO4w2mOdF/O9dQbpk3SEUiLzNumCHw=
+X-MDAV-Result: clean
+X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 11 Mar 2021 09:54:59 -0500
+Received: from [IPv6:2603:7000:73d:4f22:7c0c:f010:6a2e:c624] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v21.0.1d) 
+        with ESMTPSA id md5001002904908.msg; Thu, 11 Mar 2021 09:54:58 -0500
+X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 11 Mar 2021 09:54:58 -0500
+        (not processed: message from trusted or authenticated source)
+X-MDRemoteIP: 2603:7000:73d:4f22:7c0c:f010:6a2e:c624
+X-MDHelo: [IPv6:2603:7000:73d:4f22:7c0c:f010:6a2e:c624]
+X-MDArrival-Date: Thu, 11 Mar 2021 09:54:58 -0500
+X-MDOrigin-Country: United States, North America
+X-Authenticated-Sender: jaltman@auristor.com
+X-Return-Path: prvs=1704299ed9=jaltman@auristor.com
+X-Envelope-From: jaltman@auristor.com
+X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] AFS metadata xattr fixes
+To:     "David Howells (dhowells@redhat.com)" <dhowells@redhat.com>,
+        linux-afs@lists.infradead.org
+Cc:     Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <161547181530.1868820.12933722592029066752.stgit@warthog.procyon.org.uk>
+From:   Jeffrey E Altman <jaltman@auristor.com>
+Organization: AuriStor, Inc.
+Message-ID: <08de868e-d207-8980-1da4-da79eda07560@auristor.com>
+Date:   Thu, 11 Mar 2021 09:54:47 -0500
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <0000000000008de88005bd40ac36@google.com> <20210311142503.GA31816@quack2.suse.cz>
-In-Reply-To: <20210311142503.GA31816@quack2.suse.cz>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 11 Mar 2021 15:53:03 +0100
-Message-ID: <CACT4Y+ZtBwv1aXUumTXnWzAi7LEpJ6CZemGyVR2FC6_YO2E4EQ@mail.gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in start_this_handle / start_this_handle
-To:     Jan Kara <jack@suse.cz>, Marco Elver <elver@google.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     syzbot <syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <161547181530.1868820.12933722592029066752.stgit@warthog.procyon.org.uk>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms030802040403060804030404"
+X-MDCFSigsAdded: auristor.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 3:25 PM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 11-03-21 02:59:14, syzbot wrote:
-> > HEAD commit:    a74e6a01 Merge tag 's390-5.12-3' of git://git.kernel.org/p..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=159f69ecd00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=de394bbaade74fb7
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=30774a6acf6a2cf6d535
-> > compiler:       Debian clang version 11.0.1-2
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KCSAN: data-race in start_this_handle / start_this_handle
-> >
-> > write to 0xffff888103880870 of 8 bytes by task 29956 on cpu 1:
-> >  jbd2_get_transaction fs/jbd2/transaction.c:125 [inline]
-> >  start_this_handle+0xceb/0x1010 fs/jbd2/transaction.c:400
-> >  jbd2__journal_start+0x1fc/0x3f0 fs/jbd2/transaction.c:503
-> >  __ext4_journal_start_sb+0x159/0x310 fs/ext4/ext4_jbd2.c:105
-> >  __ext4_journal_start fs/ext4/ext4_jbd2.h:320 [inline]
-> >  ext4_da_write_begin+0x460/0xaf0 fs/ext4/inode.c:2998
-> >  generic_perform_write+0x196/0x3a0 mm/filemap.c:3575
-> >  ext4_buffered_write_iter+0x2e5/0x3e0 fs/ext4/file.c:269
-> >  ext4_file_write_iter+0x48a/0x10b0 fs/ext4/file.c:502
-> >  call_write_iter include/linux/fs.h:1977 [inline]
-> >  do_iter_readv_writev+0x2cb/0x360 fs/read_write.c:740
-> >  do_iter_write+0x112/0x4c0 fs/read_write.c:866
-> >  vfs_iter_write+0x4c/0x70 fs/read_write.c:907
-> >  iter_file_splice_write+0x40a/0x750 fs/splice.c:689
-> >  do_splice_from fs/splice.c:767 [inline]
-> >  direct_splice_actor+0x80/0xa0 fs/splice.c:936
-> >  splice_direct_to_actor+0x345/0x650 fs/splice.c:891
-> >  do_splice_direct+0xf5/0x170 fs/splice.c:979
-> >  do_sendfile+0x7a6/0xe20 fs/read_write.c:1260
-> >  __do_sys_sendfile64 fs/read_write.c:1319 [inline]
-> >  __se_sys_sendfile64 fs/read_write.c:1311 [inline]
-> >  __x64_sys_sendfile64+0xa9/0x130 fs/read_write.c:1311
-> >  do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > read to 0xffff888103880870 of 8 bytes by task 29936 on cpu 0:
-> >  start_this_handle+0x1c1/0x1010 fs/jbd2/transaction.c:352
-> >  jbd2__journal_start+0x1fc/0x3f0 fs/jbd2/transaction.c:503
-> >  __ext4_journal_start_sb+0x159/0x310 fs/ext4/ext4_jbd2.c:105
-> >  __ext4_journal_start fs/ext4/ext4_jbd2.h:320 [inline]
-> >  ext4_da_write_begin+0x460/0xaf0 fs/ext4/inode.c:2998
-> >  generic_perform_write+0x196/0x3a0 mm/filemap.c:3575
-> >  ext4_buffered_write_iter+0x2e5/0x3e0 fs/ext4/file.c:269
-> >  ext4_file_write_iter+0x48a/0x10b0 fs/ext4/file.c:502
-> >  call_write_iter include/linux/fs.h:1977 [inline]
-> >  do_iter_readv_writev+0x2cb/0x360 fs/read_write.c:740
-> >  do_iter_write+0x112/0x4c0 fs/read_write.c:866
-> >  vfs_iter_write+0x4c/0x70 fs/read_write.c:907
-> >  iter_file_splice_write+0x40a/0x750 fs/splice.c:689
-> >  do_splice_from fs/splice.c:767 [inline]
-> >  direct_splice_actor+0x80/0xa0 fs/splice.c:936
-> >  splice_direct_to_actor+0x345/0x650 fs/splice.c:891
-> >  do_splice_direct+0xf5/0x170 fs/splice.c:979
-> >  do_sendfile+0x7a6/0xe20 fs/read_write.c:1260
-> >  __do_sys_sendfile64 fs/read_write.c:1319 [inline]
-> >  __se_sys_sendfile64 fs/read_write.c:1311 [inline]
-> >  __x64_sys_sendfile64+0xa9/0x130 fs/read_write.c:1311
-> >  do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > Reported by Kernel Concurrency Sanitizer on:
-> > CPU: 0 PID: 29936 Comm: syz-executor.5 Not tainted 5.12.0-rc2-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > ==================================================================
->
-> So this case is harmless. start_this_handle() does indeed check
-> journal->j_running_transaction without any protection and this is only a
-> racy check to opportunistically preallocate a transaction if we are likely
-> to need it. There was some macro to instruct KCSAN that the read is
-> actually fine, wasn't there?
+This is a cryptographically signed message in MIME format.
 
-+Marco
-+Tetsuo, did you want to fix it?
+--------------ms030802040403060804030404
+Content-Type: multipart/mixed;
+ boundary="------------B202B6D5E6132616347ACAB7"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------B202B6D5E6132616347ACAB7
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 3/11/2021 9:10 AM, David Howells (dhowells@redhat.com) wrote:
+> I wonder if it's better to just hide all the afs.* xattrs from listxatt=
+r().
+> It would probably be even better to not use xattrs for this, but I'm no=
+t
+> sure what I would use instead.
+
+I believe that all of the "afs.*" xattrs should be hidden from=20
+listxattr().  Any "afs.*" xattr that is read from an afs inode can be=20
+copied to another filesystem and stored.  Attempts to set these values=20
+in an afs volume will fail.
+
+The use of xattrs is intended to be an alternative to the IBM/OpenAFS=20
+pioctls which are accessed by processes such as "fs", "aklog", "tokens", =
+
+etc which would know the names of the xattrs and how to use them.   Such =
+
+tools would not require listxattr() to find them.
+
+Thanks for the consideration.
+
+Jeffrey Altman
+
+
+
+--------------B202B6D5E6132616347ACAB7
+Content-Type: text/x-vcard; charset=utf-8;
+ name="jaltman.vcf"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="jaltman.vcf"
+
+begin:vcard
+fn:Jeffrey Altman
+n:Altman;Jeffrey
+org:AuriStor, Inc.
+adr:;;255 W 94TH ST STE 6B;New York;NY;10025-6985;United States
+email;internet:jaltman@auristor.com
+title:CEO
+tel;work:+1-212-769-9018
+url:https://www.linkedin.com/in/jeffreyaltman/
+version:2.1
+end:vcard
+
+
+--------------B202B6D5E6132616347ACAB7--
+
+--------------ms030802040403060804030404
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+DGswggXSMIIEuqADAgECAhBAAW0B1qVVQ32wvx2EXYU6MA0GCSqGSIb3DQEBCwUAMDoxCzAJ
+BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEy
+MB4XDTE5MDkwNTE0MzE0N1oXDTIyMTEwMTE0MzE0N1owcDEvMC0GCgmSJomT8ixkAQETH0Ew
+MTQxMEMwMDAwMDE2RDAxRDZBNTQwMDAwMDQ0NDcxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
+YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCY1TC9QeWnUgEoJ81FcAVnhGn/AWuzvkYRUG5/ZyXDdaM212e8
+ybCklgSmZweqNdrfaaHXk9vwjpvpD4YWgb07nJ1QBwlvRV/VPAaDdneIygJJWBCzaMVLttKO
+0VimH/I/HUwFBQT2mrktucCEf2qogdi2P+p5nuhnhIUiyZ71Fo43gF6cuXIMV/1rBNIJDuwM
+Q3H8zi6GL0p4mZFZDDKtbYq2l8+MNxFvMrYcLaJqejQNQRBuZVfv0Fq9pOGwNLAk19baIw3U
+xdwx+bGpTtS63Py1/57MQ0W/ZXE/Ocnt1qoDLpJeZIuEBKgMcn5/iN9+Ro5zAuOBEKg34wBS
+8QCTAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
+BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
+BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
+Mi5wN2MwHwYDVR0jBBgwFoAUpHPa72k1inXMoBl7CDL4a4nkQuwwCQYDVR0TBAIwADCCASsG
+A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
+L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
+bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
+aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
+YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
+ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
+dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTIuY3JsMB8GA1UdEQQY
+MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBR7pHsvL4H5GdzNToI9e5BuzV19
+bzAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAFlm
+JYk4Ff1v/n0foZkv661W4LCRtroBaVykOXetrDDOQNK2N6JdTa146uIZVgBeU+S/0DLvJBKY
+tkUHQ9ovjXJTsuCBmhIIw3YlHoFxbku0wHEpXMdFUHV3tUodFJJKF3MbC8j7dOMkag59/Mdz
+Sjszdvit0av9nTxWs/tRKKtSQQlxtH34TouIke2UgP/Nn901QLOrJYJmtjzVz8DW3IYVxfci
+SBHhbhJTdley5cuEzphELo5NR4gFjBNlxH7G57Hno9+EWILpx302FJMwTgodIBJbXLbPMHou
+xQbOL2anOTUMKO8oH0QdQHCtC7hpgoQa7UJYJxDBI+PRaQ/HObkwggaRMIIEeaADAgECAhEA
++d5Wf8lNDHdw+WAbUtoVOzANBgkqhkiG9w0BAQsFADBKMQswCQYDVQQGEwJVUzESMBAGA1UE
+ChMJSWRlblRydXN0MScwJQYDVQQDEx5JZGVuVHJ1c3QgQ29tbWVyY2lhbCBSb290IENBIDEw
+HhcNMTUwMjE4MjIyNTE5WhcNMjMwMjE4MjIyNTE5WjA6MQswCQYDVQQGEwJVUzESMBAGA1UE
+ChMJSWRlblRydXN0MRcwFQYDVQQDEw5UcnVzdElEIENBIEExMjCCASIwDQYJKoZIhvcNAQEB
+BQADggEPADCCAQoCggEBANGRTTzPCic0kq5L6ZrUJWt5LE/n6tbPXPhGt2Egv7plJMoEpvVJ
+JDqGqDYymaAsd8Hn9ZMAuKUEFdlx5PgCkfu7jL5zgiMNnAFVD9PyrsuF+poqmlxhlQ06sFY2
+hbhQkVVQ00KCNgUzKcBUIvjv04w+fhNPkwGW5M7Ae5K5OGFGwOoRck9GG6MUVKvTNkBw2/vN
+MOd29VGVTtR0tjH5PS5yDXss48Yl1P4hDStO2L4wTsW2P37QGD27//XGN8K6amWB6F2XOgff
+/PmlQjQOORT95PmLkwwvma5nj0AS0CVp8kv0K2RHV7GonllKpFDMT0CkxMQKwoj+tWEWJTiD
+KSsCAwEAAaOCAoAwggJ8MIGJBggrBgEFBQcBAQR9MHswMAYIKwYBBQUHMAGGJGh0dHA6Ly9j
+b21tZXJjaWFsLm9jc3AuaWRlbnRydXN0LmNvbTBHBggrBgEFBQcwAoY7aHR0cDovL3ZhbGlk
+YXRpb24uaWRlbnRydXN0LmNvbS9yb290cy9jb21tZXJjaWFscm9vdGNhMS5wN2MwHwYDVR0j
+BBgwFoAU7UQZwNPwBovupHu+QucmVMiONnYwDwYDVR0TAQH/BAUwAwEB/zCCASAGA1UdIASC
+ARcwggETMIIBDwYEVR0gADCCAQUwggEBBggrBgEFBQcCAjCB9DBFFj5odHRwczovL3NlY3Vy
+ZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDADAgEB
+GoGqVGhpcyBUcnVzdElEIENlcnRpZmljYXRlIGhhcyBiZWVuIGlzc3VlZCBpbiBhY2NvcmRh
+bmNlIHdpdGggSWRlblRydXN0J3MgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBQb2xpY3kgZm91bmQg
+YXQgaHR0cHM6Ly9zZWN1cmUuaWRlbnRydXN0LmNvbS9jZXJ0aWZpY2F0ZXMvcG9saWN5L3Rz
+L2luZGV4Lmh0bWwwSgYDVR0fBEMwQTA/oD2gO4Y5aHR0cDovL3ZhbGlkYXRpb24uaWRlbnRy
+dXN0LmNvbS9jcmwvY29tbWVyY2lhbHJvb3RjYTEuY3JsMB0GA1UdJQQWMBQGCCsGAQUFBwMC
+BggrBgEFBQcDBDAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0OBBYEFKRz2u9pNYp1zKAZewgy+GuJ
+5ELsMA0GCSqGSIb3DQEBCwUAA4ICAQAN4YKu0vv062MZfg+xMSNUXYKvHwvZIk+6H1pUmivy
+DI4I6A3wWzxlr83ZJm0oGIF6PBsbgKJ/fhyyIzb+vAYFJmyI8I/0mGlc+nIQNuV2XY8cypPo
+VJKgpnzp/7cECXkX8R4NyPtEn8KecbNdGBdEaG4a7AkZ3ujlJofZqYdHxN29tZPdDlZ8fR36
+/mAFeCEq0wOtOOc0Eyhs29+9MIZYjyxaPoTS+l8xLcuYX3RWlirRyH6RPfeAi5kySOEhG1qu
+NHe06QIwpigjyFT6v/vRqoIBr7WpDOSt1VzXPVbSj1PcWBgkwyGKHlQUOuSbHbHcjOD8w8wH
+SDbL+L2he8hNN54doy1e1wJHKmnfb0uBAeISoxRbJnMMWvgAlH5FVrQWlgajeH/6NbYbBSRx
+ALuEOqEQepmJM6qz4oD2sxdq4GMN5adAdYEswkY/o0bRKyFXTD3mdqeRXce0jYQbWm7oapqS
+ZBccFvUgYOrB78tB6c1bxIgaQKRShtWR1zMM0JfqUfD9u8Fg7G5SVO0IG/GcxkSvZeRjhYcb
+TfqF2eAgprpyzLWmdr0mou3bv1Sq4OuBhmTQCnqxAXr4yVTRYHkp5lCvRgeJAme1OTVpVPth
+/O7HJ7VuEP9GOr6kCXCXmjB4P3UJ2oU0NqfoQdcSSSt9hliALnExTEjii20B2nSDojGCAxQw
+ggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UEAxMO
+VHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowDQYJYIZIAWUDBAIBBQCgggGXMBgG
+CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDMxMTE0NTQ0OVow
+LwYJKoZIhvcNAQkEMSIEIMpsp5MCwIUQG8wjWoH4LfGtslpNq/ZMAE6KmJ6OQ88vMF0GCSsG
+AQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UE
+AxMOVHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowXwYLKoZIhvcNAQkQAgsxUKBO
+MDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQg
+Q0EgQTEyAhBAAW0B1qVVQ32wvx2EXYU6MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEq
+MAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwIC
+AUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAhXZvYLdWwB9f
+1mo4F/tG3rZYhPVQ27fqzEmf1TeswUQZbPyXA/FRCVzE8CequVELWvKcRc7j6gOP7vB5xHZj
+KVQSGVOHvOLiXZh6+SNUrjn0HhWkA+YulRU/l2VDKKolAppsav/McYQi3jgp2LxgpP1ieypx
+ObMXutZ/bMtfXTyTybjOGWMoVUmJxXmPLFvNitUAAemgm4Jok+bhuMF6Sm4kb9t2WshRF987
+HDpIGI3p9z+FbrnqCX4hbGFSfvEKB1ILp589gSW+FrL4U6t1sZqhKOqktHKkAAz2SPdgR24K
+536CyOrEIssoBMoGZvIFFgCoGQduVmHvN9T+ITa5DQAAAAAAAA==
+--------------ms030802040403060804030404--
+
