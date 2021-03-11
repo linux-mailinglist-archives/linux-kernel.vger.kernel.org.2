@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434C3337925
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE89C337928
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbhCKQVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:21:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52518 "EHLO mail.kernel.org"
+        id S234547AbhCKQVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:21:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51026 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234538AbhCKQU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:20:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61EC164F97;
-        Thu, 11 Mar 2021 16:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615479627;
-        bh=d1SfHC9ERCHv1FJS48LlGyJSarikd6qR7aiqliJxVYE=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=bvFpZ93e1IgePYiLiG5qK9sH9KuAIfVWbO19+3y9I4emWmw/KFHyrWF02/sdBOIg0
-         Jd3BeUud6HyWzZ5iQwQCbDU25PgJ7ZAjwf/3psIdv7pvXIRUliSC8273WfqcVY1mpX
-         nu5ejz/Jph0e0XEJOw0bA8Add3kzEWs+R0kbdhljubhhBU9PGMKj+hhiFW1T2wIpCI
-         wxApBoRERA3Y+CQv7NQgOEYUaBgNvGvy3WZO1JaiYkkY6S0tgv1Y1Pll7lrjsAqmNg
-         fbKVI9NiukTp3NnQEQS4ngz/nq7kgn/JNQ+SaEnV3PadBsNXd5ltYm9hFAKVARgq/v
-         WFdrNY1FFQESg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20210311020558.579597-1-axel.lin@ingics.com>
-References: <20210311020558.579597-1-axel.lin@ingics.com>
-Subject: Re: [PATCH] regulator: mt6315: Fix off-by-one for .n_voltages
-Message-Id: <161547955418.51732.7639052812148728093.b4-ty@kernel.org>
-Date:   Thu, 11 Mar 2021 16:19:14 +0000
+        id S234382AbhCKQUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:20:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615479631; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JCazLcUvicbjHvArKpub7shZHTSmNlrKDPwSJp39RjQ=;
+        b=Ot+ZpznoDen4a6aIAaDKNvpnzNFuDCDrWlV6RxRWng0vBUfuagjC2NN8PIUPzyWhY4bYCJ
+        qEdX5hhKL94mGWtpYY2cIXfdaqMz0pcbUJi/ftU5nOM/E9ijf8CJZetQ9JtN25oi2yg2T4
+        ki3UmPhLnI1fvsmeZ9Pjp5HNpCe/esM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 43B9EAC16;
+        Thu, 11 Mar 2021 16:20:31 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 17:20:25 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, David Rientjes <rientjes@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>
+Subject: Re: [PATCH] mm/oom_kill: Ensure MMU notifier range_end() is paired
+ with range_start()
+Message-ID: <YEpDJ/pPioG9ndYX@dhcp22.suse.cz>
+References: <20210310213117.1444147-1-seanjc@google.com>
+ <20210311002807.GQ444867@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311002807.GQ444867@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 10:05:58 +0800, Axel Lin wrote:
-> The valid selector is 0 ~ 0xbf, so the .n_voltages should be 0xc0.
+On Wed 10-03-21 20:28:07, Jason Gunthorpe wrote:
+> On Wed, Mar 10, 2021 at 01:31:17PM -0800, Sean Christopherson wrote:
+> > Invoke the MMU notifier's .invalidate_range_end() callbacks even if one
+> > of the .invalidate_range_start() callbacks failed.  If there are multiple
+> > notifiers, the notifier that did not fail may have performed actions in
+> > its ...start() that it expects to unwind via ...end().  Per the
+> > mmu_notifier_ops documentation, ...start() and ...end() must be paired.
+> 
+> No this is not OK, if invalidate_start returns EBUSY invalidate_end
+> should *not* be called.
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/1] regulator: mt6315: Fix off-by-one for .n_voltages
-      commit: d450293c55005a3b0a25d209e981ac425483fead
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Yes, this is what I remember when introducing nonblock interface. So I
+agree with Jason this patch is not correct. The interface is subtle but
+I remember we couldn't come up with something more robust and still
+memory with notifiers to be reapable.
+-- 
+Michal Hocko
+SUSE Labs
