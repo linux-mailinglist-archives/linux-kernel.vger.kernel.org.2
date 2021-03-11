@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFF23374CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C0B33754D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233792AbhCKN6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:58:47 -0500
-Received: from mail-pj1-f42.google.com ([209.85.216.42]:40477 "EHLO
-        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233729AbhCKN6f (ORCPT
+        id S233366AbhCKOSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:18:34 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40672 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233466AbhCKOSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:58:35 -0500
-Received: by mail-pj1-f42.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so9108305pjq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:58:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IwVA9MD69i7zzeIVaDA8v+fpntKkKR+e2DISxwYyVTA=;
-        b=tvu+paATl9o6NpAH07tZ2zZbzn6hny/rCAnK7ZlQMO3FRfHIj1+2eGffa7MtciNxyO
-         M9gxB6FqOS9KSmKUNLCfhQJvE/ZndIFbh6eDTG563sPgrxQylOQGQihHGXSEPugw3B0e
-         RPx+7MkCZHbt7v2McjSU3JqArgGFCEFRRgClt6D5IB7Q5FhyoMnhZYHced1NDAmZ6Tfe
-         RdmDrnBNlmqY/7LfNxx26y32cZqTzZerd0PjJVYVM6/s5jREUsN1GSCMAnGzBy7YMJum
-         Y6vENHV4XO/9aC1jqTbU0I648LQzNnEnjTssxoiLTPJubYwvI9RBB48qJw9R/BBBMIMT
-         h7BQ==
-X-Gm-Message-State: AOAM5328x/pMeKP5JS4JhZm9pWdjLgA6skywGC9zZsTW4tonE0Ji+2ZN
-        VRk8AoGcpTq56+sEVBUqi5g=
-X-Google-Smtp-Source: ABdhPJzvfdYVR0x4ac3M8dLwlUMKy1MA+9cIi1EwecUkoLt+H2+keQX279Vm+THPizElkkQVxcaEcw==
-X-Received: by 2002:a17:90a:e60b:: with SMTP id j11mr8760472pjy.42.1615471115495;
-        Thu, 11 Mar 2021 05:58:35 -0800 (PST)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id d22sm2207485pfn.25.2021.03.11.05.58.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 05:58:34 -0800 (PST)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 2D87B4024E; Thu, 11 Mar 2021 13:58:33 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 13:58:33 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     lyl2019@mail.ustc.edu.cn
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] lib/test_kmod: Fix a use after free in
- register_test_dev_kmod
-Message-ID: <20210311135833.GT4332@42.do-not-panic.com>
-References: <20210311080246.11635-1-lyl2019@mail.ustc.edu.cn>
- <20210311130108.GS4332@42.do-not-panic.com>
- <17bb31cd.cc46.178217c9344.Coremail.lyl2019@mail.ustc.edu.cn>
+        Thu, 11 Mar 2021 09:18:17 -0500
+Message-Id: <20210311132036.228542540@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615472295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qkKcG1mgbC1GGOdB94l5t8PlzZVU4PCQ1n0hbKnZ59c=;
+        b=cv0ECABapO1jZDqwEeRZgDMFpvgJh6XLkO+9TOih/fnGTLEVLF8MLCZ+iHWq+Ybw6lbQSf
+        5g5sSJotQirzys4+LKKrRltRAU8wm8PBtqEXQZb7QJJa9dAc6bvvRYa4SA8exjogRRSEMc
+        OcF2PjyRSe41jJhTp5XAypspIEY+SG/U41qBMhnBKRuZIW3fI7woJnM8eiJ9hCwOOrdBDc
+        7JVCk9i4PnKfa7hciMITfXzOt97vum78rE9Yk0z/iDQ3+2waorcPs2R3qSZizHNLLQsZGh
+        zwv8EYwLT2MTi+ICq93XrBXSzhBgxYovi6aA0VdqWNKZ/OgW9nC8V6g4hDPNTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615472295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qkKcG1mgbC1GGOdB94l5t8PlzZVU4PCQ1n0hbKnZ59c=;
+        b=uGWQabNQVGvcQvr93kfvH4/oVdzzWKAOj62pIt3pbPRnxFvxV25JUSmTl/H/xDSpQpIjKO
+        WeXlPzOnyO1nDHAQ==
+Date:   Thu, 11 Mar 2021 14:20:36 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [patch V2 0/3] signals: Allow caching one sigqueue object per task
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <17bb31cd.cc46.178217c9344.Coremail.lyl2019@mail.ustc.edu.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 09:31:55PM +0800, lyl2019@mail.ustc.edu.cn wrote:
-> 
-> 
-> 
-> > -----原始邮件-----
-> > 发件人: "Luis Chamberlain" <mcgrof@kernel.org>
-> > 发送时间: 2021-03-11 21:01:08 (星期四)
-> > 收件人: "Lv Yunlong" <lyl2019@mail.ustc.edu.cn>
-> > 抄送: linux-kernel@vger.kernel.org
-> > 主题: Re: [PATCH] lib/test_kmod: Fix a use after free in register_test_dev_kmod
-> > 
-> > On Thu, Mar 11, 2021 at 12:02:46AM -0800, Lv Yunlong wrote:
-> > > In register_test_dev_kmod, it calls free_test_dev_kmod() to free
-> > > test_dev. But free_test_dev_kmod() can't set the original pointer
-> > > test_dev to NULL, because the test_dev was passed by it's value
-> > > not reference.
-> > 
-> > Did you actually get a crash or something? If so can you supply the
-> > actual log? If this is just an observation and you think this is an
-> > issue, specifying that would help during patch review.
-> > 
-> >   Luis
-> > 
-> > > Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> > > ---
-> > >  lib/test_kmod.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/lib/test_kmod.c b/lib/test_kmod.c
-> > > index 38c250fbace3..aa8a2a563d7e 100644
-> > > --- a/lib/test_kmod.c
-> > > +++ b/lib/test_kmod.c
-> > > @@ -1124,7 +1124,6 @@ static void free_test_dev_kmod(struct kmod_test_device *test_dev)
-> > >  		free_test_dev_info(test_dev);
-> > >  		kmod_config_free(test_dev);
-> > >  		vfree(test_dev);
-> > > -		test_dev = NULL;
-> > >  	}
-> > >  }
-> > >  
-> > > @@ -1149,6 +1148,7 @@ static struct kmod_test_device *register_test_dev_kmod(void)
-> > >  	if (ret) {
-> > >  		pr_err("could not register misc device: %d\n", ret);
-> > >  		free_test_dev_kmod(test_dev);
-> > > +		test_dev = NULL;
-> > >  		goto out;
-> > >  	}
-> > >  
-> > > -- 
-> > > 2.25.1
-> > > 
-> > > 
-> 
-> This problem was reported by source code analyzers developed by our Security Lab(Loccs).
-
-This should be included in the commit log, please.
-
-> We have confirmed this issue before submiting the patch.
-
-How was this confirmed exactly.
-
-  Luis
+VGhpcyBpcyBhIGZvbGxvdyB1cCB0byB0aGUgaW5pdGlhbCBzdWJtaXNzaW9uIHdoaWNoIGNhbiBi
+ZSBmb3VuZCBoZXJlOgoKICBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjEwMzAzMTQyMDI1
+LndiYnQybm5yNmR0Z3dqZmlAbGludXRyb25peC5kZQoKU2lnbmFsIHNlbmRpbmcgcmVxdWlyZXMg
+YSBrbWVtIGNhY2hlIGFsbG9jYXRpb24gYXQgdGhlIHNlbmRlciBzaWRlIGFuZCB0aGUKcmVjZWl2
+ZXIgaGFuZHMgaXQgYmFjayB0byB0aGUga21lbSBjYWNoZSB3aGVuIGNvbnN1bWluZyB0aGUgc2ln
+bmFsLgoKVGhpcyB3b3JrcyBwcmV0dHkgd2VsbCBldmVuIGZvciByZWFsdGltZSB3b3JrbG9hZHMg
+ZXhjZXB0IGZvciB0aGUgY2FzZSB3aGVuCnRoZSBrbWVtIGNhY2hlIGFsbG9jYXRpb24gaGFzIHRv
+IGdvIGludG8gdGhlIHNsb3cgcGF0aCB3aGljaCBpcyByYXJlIGJ1dApoYXBwZW5zLgoKUHJlZW1w
+dC1SVCBjYXJyaWVzIGEgcGF0Y2ggd2hpY2ggYWxsb3dzIGNhY2hpbmcgb2Ygb25lIHNpZ3F1ZXVl
+IG9iamVjdCBwZXIKdGFzay4gVGhlIG9iamVjdCBpcyBub3QgcHJlYWxsb2NhdGVkLiBJdCdzIGNh
+Y2hlZCB3aGVuIHRoZSB0YXNrIHJlY2VpdmVzIGEKc2lnbmFsLiBUaGUgY2FjaGUgaXMgZnJlZWQg
+d2hlbiB0aGUgdGFzayBleGl0cy4KClRoZSBtZW1vcnkgb3ZlcmhlYWQgZm9yIGEgc3RhbmRhcmQg
+ZGlzdHJvIHNldHVwIGlzIHByZXR0eSBzbWFsbC4gQWZ0ZXIgYm9vdAp0aGVyZSBhcmUgbGVzcyB0
+aGFuIDEwIG9iamVjdHMgY2FjaGVkIGluIGFib3V0IDE1MDAgdGFza3MuIFRoZSBzcGVlZHVwIGZv
+cgpzZW5kaW5nIGEgc2lnbmFsIGZyb20gYSBjYWNoZWQgc2lncXVldWUgb2JqZWN0IGlzIHNtYWxs
+ICh+M3VzKSBwZXIgc2lnbmFsCmFuZCBhbG1vc3QgaW52aXNpYmxlLCBidXQgZm9yIHNpZ25hbCBo
+ZWF2eSB3b3JrbG9hZHMgaXQncyBkZWZpbml0ZWx5Cm1lYXN1cmFibGUgYW5kIGZvciB0aGUgdGFy
+Z2V0ZWQgcmVhbHRpbWUgd29ya2xvYWRzIGl0J3Mgc29sdmluZyBhIHJlYWwKd29ybGQgbGF0ZW5j
+eSBpc3N1ZS4KCkNoYW5nZXMgdnMgVjE6CgogICAtIHRoZSBjYWNoaW5nIGlzIG5vdyB1bmNvbmRp
+dGlvbmFsCiAgIC0gZHJvcCB0aGUgcG9pbnRsZXNzIGNtcHhjaGcKICAgLSBzcGxpdCB0aGUgcGF0
+Y2ggdXAgZm9yIGJldHRlciByZWFkYWJpbGl0eQogICAtIGFkZCBhIHByb3BlciBhbmFseXNpcyB0
+byB0aGUgY2hhbmdlbG9nIHZzLiB0aGUgaW1wYWN0IGFuZCBiZW5lZml0cwoKVGhhbmtzLAoKCXRn
+bHgKLS0tCiBpbmNsdWRlL2xpbnV4L3NjaGVkLmggIHwgICAgMSArCiBpbmNsdWRlL2xpbnV4L3Np
+Z25hbC5oIHwgICAgMSArCiBrZXJuZWwvZXhpdC5jICAgICAgICAgIHwgICAgMyArLS0KIGtlcm5l
+bC9mb3JrLmMgICAgICAgICAgfCAgICAxICsKIGtlcm5lbC9zaWduYWwuYyAgICAgICAgfCAgIDQ0
+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tCiA1IGZpbGVzIGNo
+YW5nZWQsIDM3IGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQo=
