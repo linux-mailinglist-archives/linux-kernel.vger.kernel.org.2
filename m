@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DFC337FC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC93337FC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbhCKViT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:38:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39044 "EHLO
+        id S231354AbhCKViU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:38:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhCKVhr (ORCPT
+        with ESMTP id S231181AbhCKVht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:37:47 -0500
+        Thu, 11 Mar 2021 16:37:49 -0500
 Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C984C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:37:47 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id x11so13474478qki.22
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:37:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71561C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:37:49 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id e17so4790347qkg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:37:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=ftjCjXXHVhB6VMD5t3OFCFAtHdmXgYbSUPbbr/Gj6M0=;
-        b=ESbdDH1dGDyJVOngrIaGau1OqUj/sBoi5iMhooMRu0pkICXzAdcFpDb2Ul/KLNFn99
-         lZofYcZStifebLYgoQqfyIDIDZPygmK4tKz809cgrrLgeaEFORYIMtasnVGJEyJjHkEa
-         E/K8ivFsvqiyEa4HwIB6Mh9BfTO+xCkQwFnZciD1y6y3RDdaejO3SsIpy7ww3zplxkd+
-         4Wgy/It2jaGw6T7SoFg+2X2fAIar9JEXkV+lEzvZvRf/69TJ2BhSbH7NeIqQD0PmVu7j
-         M7miv5kkKHtosvttGtJ9aFfUacFCA102qbBPhQO2Ciwz4rvUYeRTH2j682GaHq76n11H
-         IwSw==
+        bh=d9MD7r+sgefmh6olz506jW43mtPrrCIc3sAEHbrSzj8=;
+        b=ax/rWBbWgfFBi82AU51k9wa1iavqd4Vuv9RUjEWuwWfeWHXtSnX5LFRCyJqlXJfA+W
+         hm1ViC5eQNv6WM0R5WEHJWm1s+Ffj+2G2yuaPXOQny71MI+E7RKHxtVS3De7jyJgvPb1
+         zBCFJM8tCCXPX/qoWnKZ6FsBO/dnl6Bhc4xLB6jKSvLRtzrTs4djQiwD/8TUzNKrG3j8
+         gTgtdYh83bQOReTyQLwntQqCzVCikVRaETyy20dw1nOiXapJ5sD0BVRrRr1sCoM+5KVH
+         A5y9ja1C+hbayglpaYIVouChO09VKiH6xoX3Anq/06nYhdxGkt+Xc1XAlrRDvWfHct3N
+         P/Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ftjCjXXHVhB6VMD5t3OFCFAtHdmXgYbSUPbbr/Gj6M0=;
-        b=nCoOKmOWyCChivf8DyhEd2gMem18zdEHKJV9u5hyJ35QrLNkH5fKG8UiLQHoNr+aOf
-         1AmhDguetvZqV9jDggK+jsZbHRxj4U9pMZ6kkBg5lG5n48S1hZS/LLoyUgLddJlVxKSN
-         bWbY56hn1aKMIc/2AqGvqGFB5d0VPXTJMQ0588LYLKGpNTc3xI+q2y5eggyntQXaJ6SQ
-         HaOgPSa1zXdchmkSwDfdubW/jnXoMN64riq/1spxUyt+TdN0NfbvpLNxghfjddPa9UiD
-         apAM0VNOTNgbfGyzIjZdOV0ZbTOPJZm0sGDxTf+Mg/QqG8aFohQzOIBoUZneAEfful2d
-         vaaQ==
-X-Gm-Message-State: AOAM531JUlidyVCgd8HQtRXhVKJ62Ztjq2WIAFqS9Ei0e8+bmpSiEobl
-        cGuDDoh8gwLzrWcy11yqAX3yfygwMbyY2vsM
-X-Google-Smtp-Source: ABdhPJwFsJ/N2kQI02XbYli6/SkAk6ET46Rz0VOBGBv3Tz8ry16DmHWricMbKll1+JUskKpcAbZIV5B73rdZviTd
+        bh=d9MD7r+sgefmh6olz506jW43mtPrrCIc3sAEHbrSzj8=;
+        b=Ep1CtDfjjp2xRVP4Jeq362KllzqMFK39/YuO7ugj4cZei5PgsSjh+0X6gcxe4Sdikm
+         54R45QCRJ0h+rXxr+8cPA15LnFHG7BnEBp/nJPcLltrrh3GqXn1MDAM//N8AA71dc/Tm
+         nzhHIGZI2q6jWryy74RDFODdo8DHuODFKKCWCZxr3/9sF/PvsAd1mXDYyu/FCCM2nnyb
+         v/xz0s55zWTrwgII4i71fHQh0qxKXzfwpbfvosUZlFS0cxSq+GE3IgGJXxbIrHTZWYef
+         vDupPcx8VazsU1zGc6JI1nEwWfKmNftAOKMUuGfsHSNMCFX5chUY2+N1DO9hSCvLTI3D
+         jasw==
+X-Gm-Message-State: AOAM533nH/8VeEgm4h+0KpK9xRhr8ggVNm8c5FC3nuzZcMWFvlEwf46a
+        zyv6Le2yLCHFqcdTrzIwD022m6/bWMj1SUFy
+X-Google-Smtp-Source: ABdhPJzpQZgOsi+fHQ89WFEZlxVp3IMtBdkjlpY0sJb25JmmNWaJDjP0pxKw0uMn7urnS6/1TroiVIGrltIjMgy0
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:95a:d8a8:4925:42be])
- (user=andreyknvl job=sendgmr) by 2002:a0c:f541:: with SMTP id
- p1mr9682518qvm.14.1615498666324; Thu, 11 Mar 2021 13:37:46 -0800 (PST)
-Date:   Thu, 11 Mar 2021 22:37:21 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a0c:9cc2:: with SMTP id
+ j2mr6061470qvf.2.1615498668637; Thu, 11 Mar 2021 13:37:48 -0800 (PST)
+Date:   Thu, 11 Mar 2021 22:37:22 +0100
 In-Reply-To: <f6efb2f36fc1f40eb22df027e6bc956cac71745e.1615498565.git.andreyknvl@google.com>
-Message-Id: <6cb4988a241f086be7e7df3eea79416a53377ade.1615498565.git.andreyknvl@google.com>
+Message-Id: <c0f6a95b0fa59ce0ef502f4ea11522141e3c8faf.1615498565.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <f6efb2f36fc1f40eb22df027e6bc956cac71745e.1615498565.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH 09/11] kasan: docs: update shadow memory section
+Subject: [PATCH 10/11] kasan: docs: update ignoring accesses section
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Alexander Potapenko <glider@google.com>,
@@ -65,83 +65,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the "Shadow memory" section in KASAN documentation:
+Update the "Ignoring accesses" section in KASAN documentation:
 
-- Rearrange the introduction paragraph do it doesn't give a
-  "KASAN has an issue" impression.
-- Update the list of architectures with vmalloc support.
-- Punctuation, readability, and other minor clean-ups.
+- Mention kasan_disable/enable_current().
+- Mention kasan_reset_tag()/page_kasan_tag_reset().
+- A punctuation clean-up.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- Documentation/dev-tools/kasan.rst | 31 ++++++++++++++-----------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
+ Documentation/dev-tools/kasan.rst | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-index f5c746a475c1..2b61d90e136f 100644
+index 2b61d90e136f..6628b133c9ad 100644
 --- a/Documentation/dev-tools/kasan.rst
 +++ b/Documentation/dev-tools/kasan.rst
-@@ -304,14 +304,11 @@ checking gets disabled.
- Shadow memory
- -------------
+@@ -368,7 +368,7 @@ Ignoring accesses
+ ~~~~~~~~~~~~~~~~~
  
--The kernel maps memory in a number of different parts of the address
--space. This poses something of a problem for KASAN, which requires
--that all addresses accessed by instrumented code have a valid shadow
--region.
--
--The range of kernel virtual addresses is large: there is not enough
--real memory to support a real shadow region for every address that
--could be accessed by the kernel.
-+The kernel maps memory in several different parts of the address space.
-+The range of kernel virtual addresses is large: there is not enough real
-+memory to support a real shadow region for every address that could be
-+accessed by the kernel. Therefore, KASAN only maps real shadow for certain
-+parts of the address space.
+ Software KASAN modes use compiler instrumentation to insert validity checks.
+-Such instrumentation might be incompatible with some part of the kernel, and
++Such instrumentation might be incompatible with some parts of the kernel, and
+ therefore needs to be disabled. To disable instrumentation for specific files
+ or directories, add a line similar to the following to the respective kernel
+ Makefile:
+@@ -381,6 +381,19 @@ Makefile:
  
- By default
- ~~~~~~~~~~
-@@ -323,10 +320,9 @@ page is mapped over the shadow area. This read-only shadow page
- declares all memory accesses as permitted.
+     KASAN_SANITIZE := n
  
- This presents a problem for modules: they do not live in the linear
--mapping, but in a dedicated module space. By hooking in to the module
--allocator, KASAN can temporarily map real shadow memory to cover
--them. This allows detection of invalid accesses to module globals, for
--example.
-+mapping but in a dedicated module space. By hooking into the module
-+allocator, KASAN temporarily maps real shadow memory to cover them.
-+This allows detection of invalid accesses to module globals, for example.
++Other parts of the kernel might access metadata for allocated objects. Normally,
++KASAN detects and reports such accesses, but in certain cases (e.g., in memory
++allocators) these accesses are valid. Disabling instrumentation for memory
++allocators files helps with accesses that happen directly in that code for
++software KASAN modes. But it does not help when the accesses happen indirectly
++(through generic function calls) or with the hardware tag-based mode that does
++not use compiler instrumentation.
++
++To disable KASAN reports in a certain part of the kernel code:
++
++- For software modes, add a
++  ``kasan_disable_current()``/``kasan_enable_current()`` critical section.
++- For tag-based modes, use ``kasan_reset_tag()`` or ``page_kasan_tag_reset()``.
  
- This also creates an incompatibility with ``VMAP_STACK``: if the stack
- lives in vmalloc space, it will be shadowed by the read-only page, and
-@@ -337,9 +333,10 @@ CONFIG_KASAN_VMALLOC
- ~~~~~~~~~~~~~~~~~~~~
- 
- With ``CONFIG_KASAN_VMALLOC``, KASAN can cover vmalloc space at the
--cost of greater memory usage. Currently this is only supported on x86.
-+cost of greater memory usage. Currently, this is supported on x86,
-+riscv, s390, and powerpc.
- 
--This works by hooking into vmalloc and vmap, and dynamically
-+This works by hooking into vmalloc and vmap and dynamically
- allocating real shadow memory to back the mappings.
- 
- Most mappings in vmalloc space are small, requiring less than a full
-@@ -358,10 +355,10 @@ memory.
- 
- To avoid the difficulties around swapping mappings around, KASAN expects
- that the part of the shadow region that covers the vmalloc space will
--not be covered by the early shadow page, but will be left
--unmapped. This will require changes in arch-specific code.
-+not be covered by the early shadow page but will be left unmapped.
-+This will require changes in arch-specific code.
- 
--This allows ``VMAP_STACK`` support on x86, and can simplify support of
-+This allows ``VMAP_STACK`` support on x86 and can simplify support of
- architectures that do not have a fixed module region.
- 
- For developers
+ Tests
+ ~~~~~
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
