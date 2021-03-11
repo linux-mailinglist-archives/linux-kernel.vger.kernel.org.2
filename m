@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB95337265
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AD133726A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbhCKMVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:21:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        id S233243AbhCKMVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:21:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233137AbhCKMUt (ORCPT
+        with ESMTP id S233139AbhCKMUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Mar 2021 07:20:49 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365B2C061760
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6D6C061574
         for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:20:49 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id r17so45757744ejy.13
+Received: by mail-ej1-x634.google.com with SMTP id e19so45855152ejt.3
         for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:20:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+2VPlkbiBZQvOkl3gccESI55+1fEnKM8yzQJ+4ZNUOo=;
-        b=XJHDcFyZr/25m7sUaROvXVgRZWsuBS4L2oB9qni1bD8gOp2B338L4AJ7z5GBRXkyy8
-         2OVDNpRboXem5rWxvEz5mJ2PMKX7YLLmbK3DefterAIQVkU1JcCkf3YhD837Ac7PnWiB
-         kK5bJFoSaLtXSCpBTkpGmscjYzLPjOGCD/2yY=
+        bh=E+KNBZ7REWHEPMEYGabkE6Q+CytCIw0tnZHRNytamFc=;
+        b=Tct1qP1En8JHx9Nj1KTwbp//IA5BpMyGDQZVotvomrcQS4N4h8oSRIqIiJRB7Vuht7
+         sAqsCzAsuVeGFrwa0AD5DObzALcNOC2Xi6gKM9KnrSzHoAsBWCtPnBXZ8vlS6qT4PLfi
+         c3JTW4v5NuCZSwqVd+ruTxSqEUpyXiNeeJEzs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+2VPlkbiBZQvOkl3gccESI55+1fEnKM8yzQJ+4ZNUOo=;
-        b=RBH7y86ksi0S0GiFXXf21/cjPAr5paW/rqrrvJWlg9sGXQFZCjdTmqMJPXD7BAR5fW
-         QLlIn6m1gjlpbqJDZXV7m4XJObB1Nvs3okdG5xe3MWy/jEvRL3oD8ycQQbLtwDLytSE5
-         /HyTsqPkIjaU0/VdO7gQLQ8D6/Q8CUrtwgvpGTEHeh6oKIgu6dxbLp35EHWlSWpmWEMN
-         Ra0RK0B0X3RefNHxu2TEovqCHy+XKG5W4IRmzAK+2AOMJgWx+izfsniE5Sg2OR4+I/he
-         j/tLP+AN5EbHMVhDNd6OK2orNKFRsvTqEWUlIX+758VgpjEfSd9Sg+i1olN+36f4KDUW
-         cedg==
-X-Gm-Message-State: AOAM5338y/DUR6lEtX/opCLVQSCM+WDYjJRQxAJPsxgIszXQw45M5mK9
-        Rm8Z93ki08f9jadFFqtGH5U14Q==
-X-Google-Smtp-Source: ABdhPJxOetNZ2J+JZUHp/jms7vJbrschr1qHqadBRSySKy3eYB1M2VhLPYjz/46qM4HlUa+rtDeueg==
-X-Received: by 2002:a17:906:a86:: with SMTP id y6mr2920176ejf.354.1615465247889;
-        Thu, 11 Mar 2021 04:20:47 -0800 (PST)
+        bh=E+KNBZ7REWHEPMEYGabkE6Q+CytCIw0tnZHRNytamFc=;
+        b=aBrS5De4z5OFlqwlnP2WT3Us7nPwRea+tKObB7ftH5o3TYWdSvL8f+EnbPcTUIaO0a
+         BWOifaAZ+VUs0OO9s2bNFbB/7aK4rfnsp2gw2+sZvkZ1hHNrMFNvWI3WyucpBr76hEI5
+         nuCFKHKeF0Fyxh+eb46VxBreeiWTReV90mdaQIEFlvGPDl4jt/YzWyekBhD1qxAwLNSl
+         oZ3ND2qngDn1iyn4hsO9ILVzcxeIEUXr2pagMYacg45wH/NBeUxvyk7F2k0YaT6iQF1k
+         KFU49AEcRKv5t6R8xqLNFrGAlQ6eXQVFBCH3WnJNueBQipFGXw7Xa1YB/S+VqYeP1oWS
+         lb2Q==
+X-Gm-Message-State: AOAM5320XFjufu3lipr9q7hwsYB43Pbyy/ZNTrfVflIykclhLqHekfYj
+        x0DdDj+bRGLmkSj1FxduAbCLow==
+X-Google-Smtp-Source: ABdhPJwm4sLiGnNCtk6Xv0aD6B7aV+f3MF4koBw0bmpELVWq9+MFQ17QtCSUiokH99iIbAloAeEqlg==
+X-Received: by 2002:a17:906:2710:: with SMTP id z16mr2868707ejc.176.1615465248453;
+        Thu, 11 Mar 2021 04:20:48 -0800 (PST)
 Received: from alco.lan ([80.71.134.83])
         by smtp.gmail.com with ESMTPSA id u13sm1264126ejy.31.2021.03.11.04.20.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 04:20:47 -0800 (PST)
+        Thu, 11 Mar 2021 04:20:48 -0800 (PST)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
         linux-kernel@vger.kernel.org, senozhatsky@chromium.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH 08/10] media: uvcvideo: Always return a value on V4L2_CTRL_WHICH_DEF_VAL
-Date:   Thu, 11 Mar 2021 13:20:38 +0100
-Message-Id: <20210311122040.1264410-10-ribalda@chromium.org>
+Subject: [PATCH 09/10] media: uvcvideo: Do not create initial events for class ctrls
+Date:   Thu, 11 Mar 2021 13:20:39 +0100
+Message-Id: <20210311122040.1264410-11-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210311122040.1264410-1-ribalda@chromium.org>
 References: <20210311122040.1264410-1-ribalda@chromium.org>
@@ -63,34 +63,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+V4L2_CTRL_TYPE_CTRL_CLASS do not generate events.
+
 Fixes v4l2-compliance:
 Control ioctls (Input 0):
-                fail: v4l2-test-controls.cpp(813): doioctl(node, VIDIOC_G_EXT_CTRLS, &ctrls)
-        test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+                fail: v4l2-test-controls.cpp(844): found event for control class 'User Controls'
+        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: FAIL
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/media/usb/uvc/uvc_ctrl.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index 9b6454bb2f28..b500356fd06c 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -1057,12 +1057,7 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
- 			struct v4l2_queryctrl qc = { .id = ctrl->id };
+diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+index 273eccc136b8..433342efc63f 100644
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -1456,6 +1456,7 @@ static void uvc_ctrl_send_events(struct uvc_fh *handle,
+ 	}
+ }
  
- 			ret = uvc_query_v4l2_ctrl(chain, &qc);
--			if (ret < 0) {
--				ctrls->error_idx = i;
--				return ret;
--			}
--
--			ctrl->value = qc.default_value;
-+			ctrl->value = (ret < 0) ? 0 : qc.default_value;
- 		}
++static const u8 uvc_ctrl_class_guid[16] = UVC_GUID_CTRL_CLASS;
+ static int uvc_ctrl_add_event(struct v4l2_subscribed_event *sev, unsigned elems)
+ {
+ 	struct uvc_fh *handle = container_of(sev->fh, struct uvc_fh, vfh);
+@@ -1474,7 +1475,8 @@ static int uvc_ctrl_add_event(struct v4l2_subscribed_event *sev, unsigned elems)
+ 	}
  
- 		return 0;
+ 	list_add_tail(&sev->node, &mapping->ev_subs);
+-	if (sev->flags & V4L2_EVENT_SUB_FL_SEND_INITIAL) {
++	if ((sev->flags & V4L2_EVENT_SUB_FL_SEND_INITIAL) &&
++	    memcmp(ctrl->info.entity, uvc_ctrl_class_guid, 16)) {
+ 		struct v4l2_event ev;
+ 		u32 changes = V4L2_EVENT_CTRL_CH_FLAGS;
+ 		s32 val = 0;
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
