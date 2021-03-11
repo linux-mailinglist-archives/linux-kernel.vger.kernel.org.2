@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C4C3371F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4384D3371FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhCKMDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbhCKMDo (ORCPT
+        id S232971AbhCKME6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:04:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27629 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232952AbhCKME0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:03:44 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A58DC061574;
-        Thu, 11 Mar 2021 04:03:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=MJ6Q5FhH+niYRr9MZksYZGfNJSjeJDZSgTze
-        IWL6YNg=; b=ri4dkvhbHjfVFDabwO7vc2oameppvWI1s4YqNs21HrdK9bjqo5Ib
-        H/2ZhhJDTTFxfDpfO7+okTY/wvMaC8WiLjJ1LQge/Sj53XzWFYNEVz4TRHGnCMiV
-        lfGo4FLGpHIgTUZaBKQIckcElDJibZsmFBQSZJm6doIL0H8v2JIx4j8=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Thu, 11 Mar
- 2021 20:03:23 +0800 (GMT+08:00)
-X-Originating-IP: [202.79.170.108]
-Date:   Thu, 11 Mar 2021 20:03:23 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: Re: [PATCH] infiniband/core: Fix a use after free in
- cm_work_handler
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <YEn5XxgB1LqQ0PSE@unreal>
-References: <20210311022153.3757-1-lyl2019@mail.ustc.edu.cn>
- <YEnhO9EXgI8pwVD2@unreal>
- <1149b747.c620.17820d56572.Coremail.lyl2019@mail.ustc.edu.cn>
- <YEn5XxgB1LqQ0PSE@unreal>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 11 Mar 2021 07:04:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615464265;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j9DCFxw7/igOd3LmB1G3n774oKnzGKLPLaO6vlSHqIc=;
+        b=hZPDDTf8e5lgRHpBy7kfJ5Uo4nF9M0dfXJqnJaNfmQTIt9M9xdzqyArAcMrGL+fF10Bz+6
+        ugdPdbbImxVm+Dp111Eg3odlf1Xwzfc141nrXyIHWhkTRx30w7bUur3gsJf0ese7kn9xpL
+        kkAe7oGw5JGRSzqfO1y3YGceP+wbs5E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-2BgAgTuANqW8QLsufTZAzw-1; Thu, 11 Mar 2021 07:04:23 -0500
+X-MC-Unique: 2BgAgTuANqW8QLsufTZAzw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B384C1005E6C;
+        Thu, 11 Mar 2021 12:04:21 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ADF4E196E3;
+        Thu, 11 Mar 2021 12:04:20 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <109018.1615463088@turing-police>
+References: <109018.1615463088@turing-police> <91190.1615444370@turing-police> <972381.1615459754@warthog.procyon.org.uk>
+To:     =?us-ascii?Q?Valdis_Kl=3D=3Futf-8=3FQ=3F=3Dc4=3D93=3F=3Dtnieks?= 
+        <valdis.kletnieks@vt.edu>
+Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: 'make O=' indigestion with module signing
 MIME-Version: 1.0
-Message-ID: <f748b4c.c8d4.178212b8650.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygB3ZGELB0pg9R8MAA--.4W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoRBlQhn5AKUgABs-
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 11 Mar 2021 12:04:19 +0000
+Message-ID: <1486567.1615464259@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkxlb24gUm9tYW5v
-dnNreSIgPGxlb25Aa2VybmVsLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTAzLTExIDE5OjA1
-OjAzICjmmJ/mnJ/lm5spDQo+IOaUtuS7tuS6ujogbHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNuDQo+
-IOaKhOmAgTogZGxlZGZvcmRAcmVkaGF0LmNvbSwgamdnQHppZXBlLmNhLCBsaW51eC1yZG1hQHZn
-ZXIua2VybmVsLm9yZywgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiDkuLvpopg6IFJl
-OiBSZTogW1BBVENIXSBpbmZpbmliYW5kL2NvcmU6IEZpeCBhIHVzZSBhZnRlciBmcmVlIGluIGNt
-X3dvcmtfaGFuZGxlcg0KPiANCj4gT24gVGh1LCBNYXIgMTEsIDIwMjEgYXQgMDY6Mjk6MTlQTSAr
-MDgwMCwgbHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNuIHdyb3RlOg0KPiA+IEluIHRoZSBpbXBsZW1l
-bnRhdGlvbiBvZiBkZXN0b3J5X2NtX2lkKCksIGl0IHJlc3RvcmVzIGNtX2lkX3ByaXYgYnkNCj4g
-PiAiY21faWRfcHJpdiA9IGNvbnRhaW5lcl9vZihjbV9pZCwgc3RydWN0IGl3Y21faWRfcHJpdmF0
-ZSwgaWQpOyIuDQo+ID4NCj4gPiBBbmQgdGhlIGxhc3QgbGluZSBvZiBkZXN0b3J5X2NtX2lkKCkg
-Y2FsbHMgIih2b2lkKWl3Y21fZGVyZWZfaWQoY21faWRfcHJpdik7Ig0KPiA+IHRvIGZyZWUgdGhl
-IGNtX2lkX3ByaXYuDQo+IA0KPiBJdCBpcyBub3QgZW5vdWdoIHRvIHNlZSBkb3VibGUgY2FsbCB0
-byBpd2NtX2RlcmVmX2lkKCkgYmVjYXVzZSBpdCBpcw0KPiBwcm90ZWN0ZWQgd2l0aCByZWZjb3Vu
-dCB0byBjbGFpbSB1c2UtYWZ0ZXItZnJlZS4gRGlkIHlvdSBoaXQgdGhlIEJVR19PTigpDQo+IGZv
-ciB0aGUgc2Vjb25kIGNhbGwgdG8gaXdjbV9kZXJlZl9pZCgpPw0KPiANCj4gQW5kIHBsZWFzZSBk
-b24ndCBkbyB0b3AtcG9zdGluZy4NCj4gDQo+IFRoYW5rcw0KPiANCj4gPg0KPiA+DQo+ID4gPiAt
-LS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+ID4gPiDlj5Hku7bkuro6ICJMZW9uIFJvbWFub3Zza3ki
-IDxsZW9uQGtlcm5lbC5vcmc+DQo+ID4gPiDlj5HpgIHml7bpl7Q6IDIwMjEtMDMtMTEgMTc6MjI6
-MDMgKOaYn+acn+WbmykNCj4gPiA+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxseWwyMDE5QG1h
-aWwudXN0Yy5lZHUuY24+DQo+ID4gPiDmioTpgIE6IGRsZWRmb3JkQHJlZGhhdC5jb20sIGpnZ0B6
-aWVwZS5jYSwgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmcsIGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmcNCj4gPiA+IOS4u+mimDogUmU6IFtQQVRDSF0gaW5maW5pYmFuZC9jb3JlOiBGaXgg
-YSB1c2UgYWZ0ZXIgZnJlZSBpbiBjbV93b3JrX2hhbmRsZXINCj4gPiA+DQo+ID4gPiBPbiBXZWQs
-IE1hciAxMCwgMjAyMSBhdCAwNjoyMTo1M1BNIC0wODAwLCBMdiBZdW5sb25nIHdyb3RlOg0KPiA+
-ID4gPiBJbiBjbV93b3JrX2hhbmRsZXIsIGl0IGNhbGxzIGRlc3RvcnlfY21faWQoKSB0byByZWxl
-YXNlDQo+ID4gPiA+IHRoZSBpbml0aWFsIHJlZmVyZW5jZSBvZiBjbV9pZF9wcml2IHRha2VuIGJ5
-IGl3X2NyZWF0ZV9jbV9pZCgpDQo+ID4gPiA+IGFuZCBmcmVlIHRoZSBjbV9pZF9wcml2LiBBZnRl
-ciBkZXN0b3J5X2NtX2lkKCksIGl3Y21fZGVyZWZfaWQNCj4gPiA+ID4gKGNtX2lkX3ByaXYpIHdp
-bGwgYmUgY2FsbGVkIGFuZCBjYXVzZSBhIHVzZSBhZnRlciBmcmVlLg0KPiA+ID4gPg0KPiA+ID4g
-PiBGaXhlczogNTljNjhhYzMxZTE1YSAoIml3X2NtOiBmcmVlIGNtX2lkIHJlc291cmNlcyBvbiB0
-aGUgbGFzdCBkZXJlZiIpDQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEx2IFl1bmxvbmcgPGx5bDIw
-MTlAbWFpbC51c3RjLmVkdS5jbj4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+IGRyaXZlcnMvaW5maW5p
-YmFuZC9jb3JlL2l3Y20uYyB8IDQgKysrLQ0KPiA+ID4gPiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNl
-cnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gPiA+DQo+ID4gPiA+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL2luZmluaWJhbmQvY29yZS9pd2NtLmMgYi9kcml2ZXJzL2luZmluaWJhbmQvY29yZS9p
-d2NtLmMNCj4gPiA+ID4gaW5kZXggZGE4YWRhZGY0NzU1Li5jYjZiNGFjNDVlMjEgMTAwNjQ0DQo+
-ID4gPiA+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2l3Y20uYw0KPiA+ID4gPiArKysg
-Yi9kcml2ZXJzL2luZmluaWJhbmQvY29yZS9pd2NtLmMNCj4gPiA+ID4gQEAgLTEwMzUsOCArMTAz
-NSwxMCBAQCBzdGF0aWMgdm9pZCBjbV93b3JrX2hhbmRsZXIoc3RydWN0IHdvcmtfc3RydWN0ICpf
-d29yaykNCj4gPiA+ID4NCj4gPiA+ID4gCQlpZiAoIXRlc3RfYml0KElXQ01fRl9EUk9QX0VWRU5U
-UywgJmNtX2lkX3ByaXYtPmZsYWdzKSkgew0KPiA+ID4gPiAJCQlyZXQgPSBwcm9jZXNzX2V2ZW50
-KGNtX2lkX3ByaXYsICZsZXZlbnQpOw0KPiA+ID4gPiAtCQkJaWYgKHJldCkNCj4gPiA+ID4gKwkJ
-CWlmIChyZXQpIHsNCj4gPiA+ID4gCQkJCWRlc3Ryb3lfY21faWQoJmNtX2lkX3ByaXYtPmlkKTsN
-Cj4gPiA+ID4gKwkJCQlyZXR1cm47DQo+ID4gPg0KPiA+ID4gVGhlIGRlc3Ryb3lfY21faWQoKSBp
-cyBjYWxsZWQgdG8gZnJlZSAtPmlkIGFuZCBub3QgY21faWRfcHJpdi4gVGhpcyAicmV0dXJuIg0K
-PiA+ID4gbGVha3MgY21faWRfcHJpdiBub3cgYW5kIHdoYXQgImEgdXNlIGFmdGVyIGZyZWUiIGRv
-IHlvdSBzZWU/DQo+ID4gPg0KPiA+ID4gPiArCQkJfQ0KPiA+ID4gPiAJCX0gZWxzZQ0KPiA+ID4g
-PiAJCQlwcl9kZWJ1ZygiZHJvcHBpbmcgZXZlbnQgJWRcbiIsIGxldmVudC5ldmVudCk7DQo+ID4g
-PiA+IAkJaWYgKGl3Y21fZGVyZWZfaWQoY21faWRfcHJpdikpDQo+ID4gPiA+IC0tDQo+ID4gPiA+
-IDIuMjUuMQ0KPiA+ID4gPg0KPiA+ID4gPg0KDQpJJ20gbm90IGZhbWlsaWFyIHdpdGggZGVidWcg
-dGhlIGtlcm5lbCwgc29ycnkuVGhpcyBwcm9ibGVtIHdhcw0KIHJlcG9ydGVkIGJ5IG15IGNvZGUg
-YW5hbHl6ZXIgYW5kIHJldmlld2VkIGJ5IG15c2VsZi4NCg0KQnV0IGkgdGhpbmsgYXMgbG9uZyBh
-cyBkZXN0cm95X2NtX2lkKCkgaXMgY2FsbGVkLCBpd2NtX2RlcmVmX2lkKCkgd2lsbCBiZSBjYWxs
-ZWQgdHdpY2UuDQpUaGVuICJCVUdfT04oYXRvbWljX3JlYWQoJmNtX2lkX3ByaXYtPnJlZmNvdW50
-KT09MCk7IiBpbiBpd2NtX2RlcmVmX2lkKCkgd2lsbCBiZSB0cmlnZ2VyZWQuDQoNCklzIGl0IG5v
-dCBhIHRydWUgcHJvYmxlbT8NCg0KDQoNCg0K
+Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu> wrote:
+
+> So there's something weird going on with scripts/extract-cert when running
+> as a userid other than the owner of the source tree..  I wonder if it's
+> actually an OpenSSL issue...
+
+I cloned next-20210311 as one user then built it as another user using:
+
+	LANG=3DC nice -19 make O=3D/data/git/next-20210311-build -j8 allmodconfig
+	LANG=3DC nice -19 make O=3D/data/git/next-20210311-build -j8
+
+It built with no problems.  The building user definitely can't create/modify
+files in the source directory.
+
+Interestingly, the following line in the output from mine:
+
+	EXTRACT_CERTS   certs/signing_key.pem
+
+doesn't show the full path as it does in yours:
+
+	EXTRACT_CERTS   /usr/src/linux-next/"certs/signing_key.pem"
+
+but I don't know why.  There are some odd quotes in your line also which may
+be related to the problem.  The relevant config line looks the same:
+
+	CONFIG_MODULE_SIG_KEY=3D"certs/signing_key.pem"
+
+I'll have to try with the aarch64 build, see if it's something in that that=
+'s
+the problem.
+
+David
+
