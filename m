@@ -2,141 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF881337FFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A66337FFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhCKWA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 17:00:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
+        id S231268AbhCKWBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 17:01:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbhCKWAo (ORCPT
+        with ESMTP id S231151AbhCKWA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 17:00:44 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A94EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 14:00:44 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id a9so22314076qkn.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 14:00:44 -0800 (PST)
+        Thu, 11 Mar 2021 17:00:58 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7199AC061574;
+        Thu, 11 Mar 2021 14:00:58 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id o19-20020a9d22130000b02901bfa5b79e18so387640ota.0;
+        Thu, 11 Mar 2021 14:00:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=+qikVGVG5hLfF30nwClUfcmwlrnzXvd9jwAMMr1ktGs=;
-        b=LdnAQcCDegAC8TFJOWY/3a6omf89kxqALwz24Q57qRRR/9nXroFKittCkYoglJrbHS
-         lHLHk4R0lXXutHT7LELW0QwVxgIAroDVsHM3NTKggsm8Lu9bO83GQqNbp8iLd+M8UwsD
-         mjmh/xY8+mzTMbJj7CQuRhByxYPB9CwwBwiP49WxwNI95AneNBV20nkWW6ZRpSnK8P3U
-         uC1CCit2IiEKuYM68th69wV6rbE837dZXwem04BnZpqMJCHfVTcZjsornmdTSSEPkum8
-         nvyPEFgacNjuJe7QiuIbGSNTKxQ8nBpSTCWr1QM/vyBL1e9oxzq6m/fzienCPzpEYlpU
-         wYvw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TQF/LGCOPFatzhvjQlpFSq+Z+gtTSsryBBpoyI/DA0Y=;
+        b=MW3anqJK1IvuFT10DnLhKdtmJzlNccK2ZlZyz+/4f3aX/69iB9jKVMBWdeLVWmqxzf
+         x2kdrKVKlWobGLU0PjJmWfiO6wa6h/3UycLDHrp37GhsxtSw7fzMEzVK1/gVYcL4EI+R
+         9hqbfy5Ptk1VMoCCo+gE2QhRmtK8IV93p3GndCIrnKpSysn4LCduxGpa4o/soUSKdbm3
+         5kekdtXYi7Mdu/zg74TVvnhVLg38xqd+6JBh31KKf1F9S5hR/utAI20c27xtZrhK4Lmw
+         YSrCasNtbVK8FRo8BsXStKdEU1c5SUcCnzhEfLD0q+NlhQx0zAb0Miv+wiVWkvCDw9jh
+         kAkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=+qikVGVG5hLfF30nwClUfcmwlrnzXvd9jwAMMr1ktGs=;
-        b=i9bzB8b1VW0MB2n0N3hwvCXNELFS7yvah/t6XfrqnxOALDJ/zjjXSZbAGm/pl40H9x
-         U+F+Nw0mEB+fZ8Ff4FIOQY3rYOvPqLWwB4naXC8ozQbgMhsq3BDIiicOxtGDB/XZIz/l
-         XM81TP46kvErrSKbjIlzFOYDi4LqwEMDYPjxrOBgTzvH/STHn00UckkTiT4wCVikhACC
-         eqq2gsO0VfjlJRIa2/X21qSVQHwFrzH0/HsulfDNLESUiPSTokMk3mU065/v1O6dXaIx
-         em2OQvw9aA+McueLCp78JzftplssffyHpI9ufRWNb8Zop0JWpRQDfUN5qvhX/fpt+qNm
-         dGOQ==
-X-Gm-Message-State: AOAM533mtNqZkyVNsCDTnXdI1P0OPpa8MxEx1FlnIkR37mySXq0VC3t3
-        sVT24Ggj73ri8xZmYf6EMGkatw==
-X-Google-Smtp-Source: ABdhPJw3RlY2CHEEFEeJxHbV6ajFeaifqXpG6xNWj2AJpoE6T3rhn60txY6ti0sGZcT5KrRyj+kEjA==
-X-Received: by 2002:a05:620a:53d:: with SMTP id h29mr9696179qkh.29.1615500043393;
-        Thu, 11 Mar 2021 14:00:43 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id q65sm2852930qkb.51.2021.03.11.14.00.41
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 11 Mar 2021 14:00:43 -0800 (PST)
-Date:   Thu, 11 Mar 2021 14:00:40 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Jue Wang <juew@google.com>
-cc:     =?UTF-8?Q?HORIGUCHI_NAOYA=28=E5=A0=80=E5=8F=A3_=E7=9B=B4=E4=B9=9F=29?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Greg Thelen <gthelen@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v1] mm, hwpoison: enable error handling on shmem thp
-In-Reply-To: <CAPcxDJ6D5OS+XRYbqpr-7bhYCySX=jdPZdZvQL1ecSrQoDEieg@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2103111312310.7859@eggly.anvils>
-References: <20210209062128.453814-1-nao.horiguchi@gmail.com> <alpine.LSU.2.11.2103102214170.7159@eggly.anvils> <20210311151446.GA28650@hori.linux.bs1.fc.nec.co.jp> <CAPcxDJ6D5OS+XRYbqpr-7bhYCySX=jdPZdZvQL1ecSrQoDEieg@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TQF/LGCOPFatzhvjQlpFSq+Z+gtTSsryBBpoyI/DA0Y=;
+        b=CjSpjITMYi93VkdiJhOS4Gue9x3rKE5euZhKcxN5k4fJNqLp4DPCBBQWuiU0dvmfIa
+         gtc3AS/NIQUjgmBC8rR3WuHRCsTHczB3nFc5SNFw63U1eMpsy5wRMfneoXyl5jpBSvAw
+         CPQBfVo6S+hSZCdZI9IUlApVjl2XNcZVsDl4Cr8ArCXKBoGrZRoqHAw6KLCntkoIlSMc
+         97A9pf08rHlI7QvEn2OU+sDeRBrYSfi80u2g40+MApxqI72A5wIvjTLUvgLXfzOC17fT
+         tyb6xN10V4dxL7HAn5AKJvwiup7WH9b6MWrdZ+D1LT02slDl62xYvr4jE6MgewES5LGR
+         mTdQ==
+X-Gm-Message-State: AOAM533C7qq/joEtOgmqhFRf1TVYRuWI3dflL9aEb7GvonR7uOCnsALG
+        dVg2CIjtzo34NmXzJubZJKVBbVxtdDU=
+X-Google-Smtp-Source: ABdhPJxLaWrVyY0NU8iAwT8s4lIqswm98TlXC/mf3MDh3pFUsp6cZXRNLp/kgApUkQInaQn6GR27fw==
+X-Received: by 2002:a9d:4808:: with SMTP id c8mr821680otf.181.1615500057877;
+        Thu, 11 Mar 2021 14:00:57 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v1sm952742otk.67.2021.03.11.14.00.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Mar 2021 14:00:57 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 11 Mar 2021 14:00:56 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Erik Rosen <erik.rosen@metormote.com>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Jean Delvare <jdelvare@suse.com>
+Subject: Re: [PATCH v3 1/2] hwmon: (pmbus) Add pmbus_set_update() function to
+ set update flag
+Message-ID: <20210311220056.GA37350@roeck-us.net>
+References: <20210218115249.28513-1-erik.rosen@metormote.com>
+ <20210218115249.28513-2-erik.rosen@metormote.com>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-1804095697-1615500042=:7859"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218115249.28513-2-erik.rosen@metormote.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Thu, Feb 18, 2021 at 12:52:48PM +0100, Erik Rosen wrote:
+> For the STPDDC60 chip, the vout alarm-limits are represented as an offset
+> relative to the commanded output voltage. This means that the limits are
+> dynamic and must not be cached by the pmbus driver. This patch adds a
+> pmbus_set_sensor() function to pmbus_core to be able to set the update flag
+> on selected sensors after auto-detection of limit attributes.
+> 
+> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
 
---0-1804095697-1615500042=:7859
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Applied.
 
-On Thu, 11 Mar 2021, Jue Wang wrote:
-> On Thu, Mar 11, 2021 at 7:14 AM HORIGUCHI NAOYA(=E5=A0=80=E5=8F=A3=E3=80=
-=80=E7=9B=B4=E4=B9=9F)
-> <naoya.horiguchi@nec.com> wrote:
-> > On Wed, Mar 10, 2021 at 11:22:18PM -0800, Hugh Dickins wrote:
-> > >
-> > > I'm not much into memory-failure myself, but Jue discovered that the
-> > > SIGBUS never arrives: because split_huge_page() on a shmem or file
-> > > THP unmaps all its pmds and ptes, and (unlike with anon) leaves them
-> > > unmapped - in normal circumstances, to be faulted back on demand.
-> > > So the page_mapped() check in hwpoison_user_mappings() fails,
-> > > and the intended SIGBUS is not delivered.
-> >
-> > Thanks for the information.  The split behaves quite differently betwee=
-n
-> > for anon thp and for shmem thp.  I saw some unexpected behavior in my
-> > testing, maybe that's due to the difference.
-> >
-> > >
-> > > (Or, is it acceptable that the SIGBUS is not delivered to those who
-> > > have the huge page mapped: should it get delivered later, to anyone
-> > > who faults back in the bad 4k?)
-> >
-> > Later access should report error in page fault, so the worst scenario
-> > of consuming corrupted data does not happen, but precautionary signal
-> > does not work so it's not acceptable.
+Thanks,
+Guenter
 
-On the other hand, if split_huge_page() does succeed, then there is an
-argument that it would be better not to SIGBUS all mappers of parts of
-the THP, but wait to select only those re-accessing the one bad 4k.
-
-> In our experiment with SHMEM THPs, later accesses resulted in a zero
-> page allocated instead of a SIGBUS with BUS_MCEERR_AR reported by the
-> page fault handler. That part might be an opportunity to prevent some
-> silent data corruption just in case.
-
-Thanks for filling in more detail, Jue: I understand better now.
-
-Maybe mm/shmem.c is wrong to be using generic_error_remove_page(),
-the function which punches a hole on memory-failure.
-
-That works well for filesystems backed by storage (at least when the
-page had not been modified), because it does not (I think) actually
-punch a hole in the stored object; and the next touch at that offset of
-the file will allocate a new cache page to be filled from good storage.
-
-But in the case of shmem (if we ignore the less likely swap cache case)
-there is no storage to read back good data from, so the next touch just
-fills a new cache page with zeroes (as you report above).
-
-I don't know enough of the philosophy of memory-failure to say, but
-I can see there's an argument for leaving the bad page in cache, to
-give SIGBUS or EFAULT or EIO (whether by observation of PageHWPoison,
-or by another MCE) to whoever accesses it - until the file or that
-part of it is deleted (then that page never returned to use again).
-
-Hugh
---0-1804095697-1615500042=:7859--
+> ---
+>  drivers/hwmon/pmbus/pmbus.h      |  1 +
+>  drivers/hwmon/pmbus/pmbus_core.c | 11 +++++++++++
+>  2 files changed, 12 insertions(+)
+> 
+> diff --git a/drivers/hwmon/pmbus/pmbus.h b/drivers/hwmon/pmbus/pmbus.h
+> index 4c30ec89f5bf..3968924f8533 100644
+> --- a/drivers/hwmon/pmbus/pmbus.h
+> +++ b/drivers/hwmon/pmbus/pmbus.h
+> @@ -475,6 +475,7 @@ extern const struct regulator_ops pmbus_regulator_ops;
+>  /* Function declarations */
+>  
+>  void pmbus_clear_cache(struct i2c_client *client);
+> +void pmbus_set_update(struct i2c_client *client, u8 reg, bool update);
+>  int pmbus_set_page(struct i2c_client *client, int page, int phase);
+>  int pmbus_read_word_data(struct i2c_client *client, int page, int phase,
+>  			 u8 reg);
+> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+> index 192442b3b7a2..a8f910826a18 100644
+> --- a/drivers/hwmon/pmbus/pmbus_core.c
+> +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> @@ -141,6 +141,17 @@ void pmbus_clear_cache(struct i2c_client *client)
+>  }
+>  EXPORT_SYMBOL_GPL(pmbus_clear_cache);
+>  
+> +void pmbus_set_update(struct i2c_client *client, u8 reg, bool update)
+> +{
+> +	struct pmbus_data *data = i2c_get_clientdata(client);
+> +	struct pmbus_sensor *sensor;
+> +
+> +	for (sensor = data->sensors; sensor; sensor = sensor->next)
+> +		if (sensor->reg == reg)
+> +			sensor->update = update;
+> +}
+> +EXPORT_SYMBOL_GPL(pmbus_set_update);
+> +
+>  int pmbus_set_page(struct i2c_client *client, int page, int phase)
+>  {
+>  	struct pmbus_data *data = i2c_get_clientdata(client);
