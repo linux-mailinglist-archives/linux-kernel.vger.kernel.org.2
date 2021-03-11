@@ -2,120 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70116336B25
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C220336B27
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhCKE22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 23:28:28 -0500
-Received: from gateway21.websitewelcome.com ([192.185.45.175]:23386 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231263AbhCKE2X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 23:28:23 -0500
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id E69AB400CECC5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:28:22 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id KCvulJavSA1KVKCvuldj8k; Wed, 10 Mar 2021 22:28:22 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=hGlSvfVilRdyjcxlHigRVXBapy983SK4zTZ5DVkCG4s=; b=pft6ycncLKFmg0KMj3fsFIn7rW
-        bWnd+RboW3SxSz09J5brSDZRt3ED+qM0oso0DQ2dT8nqUI/LmGxYCYr7vf0ytPLWVNkQXGumc6+7K
-        zanca0/r5zIWmxLbGDiBRvExFoHO57tEO73lQ49e7aah/gQOIOmFjm/YKFkBLh/G/9V88VAByyizW
-        bsuVLvs99FDjzGGCeWho3U2j4qdYc5lQahuowwRAenezYBTHfvnYNdb5eKhJpSukrbOugrAQ8kngE
-        8P1NjGReJTpPCwbTVs8bzs7OaS/Q85OyKsWFkEGjBewCnheiNAwAF8Eb0MfHgWcygXU8/uzIPBrh9
-        gIIDHWhQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:44512 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lKCvu-003P6f-Ka; Wed, 10 Mar 2021 22:28:22 -0600
-Subject: Re: [PATCH v2][next] xfs: Replace one-element arrays with
- flexible-array members
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210310020108.GA279881@embeddedor>
- <20210311031745.GT3419940@magnolia>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <b9e2c900-0852-fc5d-9696-835636b4219f@embeddedor.com>
-Date:   Wed, 10 Mar 2021 22:28:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231209AbhCKE33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 23:29:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:57328 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231295AbhCKE3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 23:29:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08B5631B;
+        Wed, 10 Mar 2021 20:29:16 -0800 (PST)
+Received: from [10.163.66.3] (unknown [10.163.66.3])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9CDD3F793;
+        Wed, 10 Mar 2021 20:29:12 -0800 (PST)
+Subject: Re: [RFC] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1615174073-10520-1-git-send-email-anshuman.khandual@arm.com>
+ <745496f5-e099-8780-e42e-f347b55e8476@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <72902ace-5f00-b484-aa71-e6841fb7d082@arm.com>
+Date:   Thu, 11 Mar 2021 09:59:49 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210311031745.GT3419940@magnolia>
+In-Reply-To: <745496f5-e099-8780-e42e-f347b55e8476@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lKCvu-003P6f-Ka
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:44512
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 3/10/21 21:17, Darrick J. Wong wrote:
+On 3/8/21 2:07 PM, David Hildenbrand wrote:
+> On 08.03.21 04:27, Anshuman Khandual wrote:
+>> Platforms like arm and arm64 have redefined pfn_valid() because their early
+>> memory sections might have contained memmap holes caused by memblock areas
+>> tagged with MEMBLOCK_NOMAP, which should be skipped while validating a pfn
+>> for struct page backing. This scenario could be captured with a new option
+>> CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES and then generic pfn_valid() can be
+>> improved to accommodate such platforms. This reduces overall code footprint
+>> and also improves maintainability.
+>>
+>> Commit 4f5b0c178996 ("arm, arm64: move free_unused_memmap() to generic mm")
+>> had used CONFIG_HAVE_ARCH_PFN_VALID to gate free_unused_memmap(), which in
+>> turn had expanded its scope to new platforms like arc and m68k. Rather lets
+>> restrict back the scope for free_unused_memmap() to arm and arm64 platforms
+>> using this new config option i.e CONFIG_HAVE_EARLY_SECTION_MEMMAP.
+>>
+>> While here, it exports the symbol memblock_is_map_memory() to build drivers
+>> that depend on pfn_valid() but does not have the required visibility. After
+>> this new config is in place, just drop CONFIG_HAVE_ARCH_PFN_VALID from both
+>> arm and arm64 platforms.
+>>
+>> Cc: Russell King <linux@armlinux.org.uk>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Mike Rapoport <rppt@kernel.org>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-mm@kvack.org
+>> Suggested-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> This applies on 5.12-rc2 along with arm64 pfn_valid() fix patches [1] and
+>> has been lightly tested on the arm64 platform. The idea to represent this
+>> unique situation on the arm and arm64 platforms with a config option was
+>> proposed by David H during an earlier discussion [2]. This still does not
+>> build on arm platform due to pfn_valid() resolution errors. Nonetheless
+>> wanted to get some early feedback whether the overall approach here, is
+>> acceptable or not.
+> 
+> It might make sense to keep the arm variant for now. The arm64 variant is where the magic happens and where we missed updates when working on the generic variant.
 
-> Why not use size_t instead of uint?  You converted the @len declaration
-> above.
+Sure, will drop the changes on arm.
+
 > 
->> +				 src_efi_fmt->efi_nextents);
->> +	uint len64 = struct_size((xfs_efi_log_format_64_t *)0, efi_extents,
+> The generic variant really only applies to 64bit targets where we have SPARSEMEM. See x86 as an example.
+
+Okay.
+
 > 
-> Also, please don't use the struct typedefs, we're trying to get rid of
-> those slowly.
+> [...]
 > 
-> TBH I wonder if these could just be turned into static inline helpers to
-> decrapify the code:
+>>   /*
+>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+>> index 47946cec7584..93532994113f 100644
+>> --- a/include/linux/mmzone.h
+>> +++ b/include/linux/mmzone.h
+>> @@ -1409,8 +1409,23 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+>>   }
+>>   #endif
+>>   +bool memblock_is_map_memory(phys_addr_t addr);
+>> +
+>>   #ifndef CONFIG_HAVE_ARCH_PFN_VALID
+>>   static inline int pfn_valid(unsigned long pfn)
+>> +{
+>> +    phys_addr_t addr = PFN_PHYS(pfn);
+>> +
+>> +    /*
+>> +     * Ensure the upper PAGE_SHIFT bits are clear in the
+>> +     * pfn. Else it might lead to false positives when
+>> +     * some of the upper bits are set, but the lower bits
+>> +     * match a valid pfn.
+>> +     */
+>> +    if (PHYS_PFN(addr) != pfn)
+>> +        return 0;
 > 
-> static inline size_t
-> sizeof_efi_log_format32(unsigned int nr)
-> {
-> 	return struct_size((xfs_efi_log_format_32_t *)0, efi_extents, nr);
-> }
+> I think this should be fine for other archs as well.
 > 
-> Then you only need:
+>> +
+>> +#ifdef CONFIG_SPARSEMEM
 > 
-> 	size_t len = sizeof_efi_log_format(src_efi_fmt->efi_nextents);
-> 	size_t len32 = sizeof_efi_log_format32(src_efi_fmt->efi_nextents);
-> 	size_t len64 = sizeof_efi_log_format64(src_efi_fmt->efi_nextents);
+> Why do we need the ifdef now? If that's to cover the arm case, then please consider the arm64 case only for now.
+
+Yes, it is not needed.
+
 > 
-> 	if (len == len32) ...
-> 	else if (len == len64) ...
+>>   {
+>>       struct mem_section *ms;
+>>   @@ -1423,7 +1438,14 @@ static inline int pfn_valid(unsigned long pfn)
+>>        * Traditionally early sections always returned pfn_valid() for
+>>        * the entire section-sized span.
+>>        */
+>> -    return early_section(ms) || pfn_section_valid(ms, pfn);
+>> +    if (early_section(ms))
+>> +        return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
+>> +            memblock_is_map_memory(pfn << PAGE_SHIFT) : 1;
+>> +
+>> +    return pfn_section_valid(ms, pfn);
+>> +}
+>> +#endif
+>> +    return 1;
+>>   }
+>>   #endif
+>>   diff --git a/mm/Kconfig b/mm/Kconfig
+>> index 24c045b24b95..0ec20f661b3f 100644
+>> --- a/mm/Kconfig
+>> +++ b/mm/Kconfig
+>> @@ -135,6 +135,16 @@ config HAVE_FAST_GUP
+>>   config ARCH_KEEP_MEMBLOCK
+>>       bool
+>>   +config HAVE_EARLY_SECTION_MEMMAP_HOLES
+>> +    depends on ARCH_KEEP_MEMBLOCK && SPARSEMEM_VMEMMAP
+>> +    def_bool n
+>> +    help
+>> +      Early sections on certain platforms might have portions which are
+>> +      not backed with struct page mapping as their memblock entries are
+>> +      marked with MEMBLOCK_NOMAP. When subscribed, this option enables
+>> +      specific handling for those memory sections in certain situations
+>> +      such as pfn_valid().
+>> +
+>>   # Keep arch NUMA mapping infrastructure post-init.
+>>   config NUMA_KEEP_MEMINFO
+>>       bool
+>> diff --git a/mm/memblock.c b/mm/memblock.c
+>> index afaefa8fc6ab..d9fa2e62ab7a 100644
+>> --- a/mm/memblock.c
+>> +++ b/mm/memblock.c
+>> @@ -1744,6 +1744,7 @@ bool __init_memblock memblock_is_map_memory(phys_addr_t addr)
+>>           return false;
+>>       return !memblock_is_nomap(&memblock.memory.regions[i]);
+>>   }
+>> +EXPORT_SYMBOL(memblock_is_map_memory);
+>>     int __init_memblock memblock_search_pfn_nid(unsigned long pfn,
+>>                unsigned long *start_pfn, unsigned long *end_pfn)
+>> @@ -1926,7 +1927,7 @@ static void __init free_unused_memmap(void)
+>>       unsigned long start, end, prev_end = 0;
+>>       int i;
+>>   -    if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
+>> +    if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ||
+>>           IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+>>           return;
+>>  
 > 
-> And down below you can clean up the asserts a bit:
+> With
 > 
-> 	ASSERT(item->ri_buf[0].i_len ==
-> 			sizeof_efi_log_format32(efd_formatp->efd_nextents) ||
-> 	       item->ri_buf[0].i_len ==
-> 			sizeof_efi_log_format64(efd_formatp->efd_nextents));
+> commit 1f90a3477df3ff1a91e064af554cdc887c8f9e5e
+> Author: Dan Williams <dan.j.williams@intel.com>
+> Date:   Thu Feb 25 17:17:05 2021 -0800
+> 
+>     mm: teach pfn_to_online_page() about ZONE_DEVICE section collisions
+> 
+> (still in -next I think)
+
+Already has merged mainline.
+
+> 
+> You'll also have to take care of pfn_to_online_page().
 > 
 
-Done: https://lore.kernel.org/lkml/20210311042302.GA137676@embeddedor/
+Something like this would work ?
 
-Thanks for the feedback!
---
-Gustavo
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 5ba51a8bdaeb..19812deb807f 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -309,6 +309,11 @@ struct page *pfn_to_online_page(unsigned long pfn)
+         * Save some code text when online_section() +
+         * pfn_section_valid() are sufficient.
+         */
++       if (IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES)) {
++               if (early_section(ms) && !memblock_is_map_memory(PFN_PHYS(pfn)))
++                       return NULL;
++       }
++
+        if (IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) && !pfn_valid(pfn))
+                return NULL;
