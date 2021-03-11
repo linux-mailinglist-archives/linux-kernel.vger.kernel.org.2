@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72C3336A35
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1513B336A3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbhCKCjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 21:39:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhCKCjl (ORCPT
+        id S229775AbhCKCsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 21:48:33 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:34259 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229469AbhCKCry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 21:39:41 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1410C061574;
-        Wed, 10 Mar 2021 18:39:41 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id a7so20257958iok.12;
-        Wed, 10 Mar 2021 18:39:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zey6YZH56sG0/UgybfDLXqvfVhV/K5l7tMblValKcY8=;
-        b=URbzlaTvQBEsRiwzE06HKEsMuT/D+UMvVLhO5t5/ADgc3QQlD/j9vDU4JNAN+wCN20
-         cRyRtmeW64S/bW7iRcbtw0gwMBpSpjvfWu5XUNbQjpjRBaPAQoCAp8s26SoXqPYGiXWo
-         bUO9cuCg1KZZctCvW/BxAps/5msoY1hXvIZyvCmtuBfuHH9chR/wmkel/hZQPgXzr/hK
-         r4CpbgQa+IREUD5RBEIYaNBqOdYx3VfGAyBiPQAzCtGxudrs4qK8pO7oFcBWq1qsgPtB
-         fnJGNyg6268xPFqkUoGMd0oK1oQ0XFSfnNczM0iXQZcCuoGkYdemt3K2sHgLG21a9QTT
-         GZ6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zey6YZH56sG0/UgybfDLXqvfVhV/K5l7tMblValKcY8=;
-        b=J0OGCVxo3celb0ATxEI2ts8bwk4e5o3swEdz9Wv8iZ/5fPPp7vGWEAeKwdpf0hoImC
-         0hSINoWRH6JnzePV29GsmwYP7PkSfnOt7WY+2M5tKbNbsuN/IYMEoQkBs/6y6qfYNGye
-         jbswvtIpY3I9SyuiaFkgEsjIqVul0gGG5D8hIvyDJXYRvKRqp0fMBgWTPnqOWzeHsbVW
-         v7mcxHh/Efgy7A9vh1BZGQfeXO3ENOEeQkmwtwiZoVyn89thtEP7Czgu4BihZ44eGdP9
-         BjEw5osD9/tjrn1RZ18oMUx1485zBLOEpg9A0vP/7JoCbNPLCpRPv5ZWW6BizGQi4E1k
-         ogTw==
-X-Gm-Message-State: AOAM532cgmF/EXMziyEP/cWWtP7zPcafF17vx3rQwTKHOqHhAwCs2rJr
-        IG6HFXS81DSBMs1Bp0Rice5V+Bkom4JD1Ingb7M=
-X-Google-Smtp-Source: ABdhPJzeglhviCeDW2QHAhoIus4BFhvOF/qC/o1iQtaVDkQ3mEKFf5ln4brGK2Khg4RJb8kQRL1iZv+qa0c67wGKSAE=
-X-Received: by 2002:a6b:5818:: with SMTP id m24mr4577553iob.144.1615430381060;
- Wed, 10 Mar 2021 18:39:41 -0800 (PST)
+        Wed, 10 Mar 2021 21:47:54 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=zhang.jia@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0URMi9aJ_1615430870;
+Received: from ali-6c96cfd98fb5.local(mailfrom:zhang.jia@linux.alibaba.com fp:SMTPD_---0URMi9aJ_1615430870)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 11 Mar 2021 10:47:50 +0800
+Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
+ SGX_INVALID_SIGNATURE
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
+ <YDy51R2Wva7s+k/x@kernel.org>
+ <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
+ <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
+ <YD5B7P++T6jLoWBR@kernel.org>
+ <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
+ <YEk8f/29icpsUhas@kernel.org>
+From:   Jia Zhang <zhang.jia@linux.alibaba.com>
+Message-ID: <20ef1254-007d-04ce-8df5-5122ffd4d8d3@linux.alibaba.com>
+Date:   Thu, 11 Mar 2021 10:47:50 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210310211420.649985-1-ilya.lipnitskiy@gmail.com>
- <20210310211420.649985-3-ilya.lipnitskiy@gmail.com> <20210310231026.lhxakeldngkr7prm@skbuf>
-In-Reply-To: <20210310231026.lhxakeldngkr7prm@skbuf>
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Date:   Wed, 10 Mar 2021 18:39:29 -0800
-Message-ID: <CALCv0x2f5M6phoGi2PMfmW9igcS3kmMm9Y5fSRi3oKckV4F1yA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] net: dsa: mt7530: setup core clock even in TRGMII mode
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YEk8f/29icpsUhas@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
 
-On Wed, Mar 10, 2021 at 3:10 PM Vladimir Oltean <olteanv@gmail.com> wrote:
->
-> Hello Ilya,
->
-> On Wed, Mar 10, 2021 at 01:14:20PM -0800, Ilya Lipnitskiy wrote:
-> > 3f9ef7785a9c ("MIPS: ralink: manage low reset lines") made it so mt7530
-> > actually resets the switch on platforms such as mt7621 (where bit 2 is
-> > the reset line for the switch). That exposed an issue where the switch
-> > would not function properly in TRGMII mode after a reset.
-> >
-> > Reconfigure core clock in TRGMII mode to fix the issue.
-> >
-> > Also, disable both core and TRGMII Tx clocks prior to reconfiguring.
-> > Previously, only the core clock was disabled, but not TRGMII Tx clock.
-> >
-> > Tested on Ubiquity ER-X (MT7621) with TRGMII mode enabled.
-> >
-> > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> > ---
->
-> For the networking subsystem there are two git trees, "net" for bugfixes
-> and "net-next" for new features, and we specify the target tree using
-> git send-email --subject-prefix="PATCH net-next".
->
-> I assume you would like the v5.12 kernel to actually be functional on
-> the Ubiquiti ER-X switch, so I would recommend keeping this patch
-> minimal and splitting it out from the current series, and targeting it
-> towards the "net" tree, which will eventually get merged into one of the
-> v5.12 rc's and then into the final version. The other patches won't go
-> into v5.12 but into v5.13, hence the "next" name.
-I think I knew this, but didn't think it through. Thanks for your
-guidance. I have submitted a single patch to "net" and that same patch
-and two more to "net-next" - hopefully that looks better, but I'm sure
-I have more to learn still.
 
->
-> Also add these lines in your .gitconfig:
->
-> [core]
->         abbrev = 12
-> [pretty]
->         fixes = Fixes: %h (\"%s\")
->
-> and run:
->
-> git show 3f9ef7785a9c --pretty=fixes
-> Fixes: 3f9ef7785a9c ("MIPS: ralink: manage low reset lines")
->
-> and paste that "Fixes:" line in the commit message, right above your
-> Signed-off-by: tag.
+On 2021/3/11 上午5:39, Jarkko Sakkinen wrote:
+> On Wed, Mar 10, 2021 at 08:44:44PM +0800, Jia Zhang wrote:
+>>
+>>
+>> On 2021/3/2 下午9:47, Jarkko Sakkinen wrote:
+>>> On Mon, Mar 01, 2021 at 09:54:37PM -0800, Andy Lutomirski wrote:
+>>>> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
+>>>> <tianjia.zhang@linux.alibaba.com> wrote:
+>>>>>
+>>>>>
+>>>>>
+>>>>> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
+>>>>>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
+>>>>>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
+>>>>>>
+>>>>>> What does determine this?
+>>>>>>
+>>>>>>> In this case, the valid portion of q2 is reordered reversely for
+>>>>>>> little endian order, and the remaining portion is filled with zero.
+>>>>>>
+>>>>>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
+>>>>>>
+>>>>>> I'm lacking these details:
+>>>>>>
+>>>>>> 1. Why the length of Q2 can vary?
+>>>>>> 2. Why reversing the bytes is the correct measure to counter-measure
+>>>>>>     this variation?
+>>>>>>
+>>>>>> /Jarkko
+>>>>>>
+>>>>>
+>>>>> When use openssl to generate a key instead of using the built-in
+>>>>> sign_key.pem, there is a probability that will encounter this problem.
+>>>>>
+>>>>> Here is a problematic key I encountered. The calculated q1 and q2 of
+>>>>> this key are both 383 bytes, If the length is not processed, the
+>>>>> hardware signature will fail.
+>>>>
+>>>> Presumably the issue is that some keys have parameters that have
+>>>> enough leading 0 bits to be effectively shorter.  The openssl API
+>>>> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
+>>>> variable-size integers.
+>>>
+>>> But the test uses a static key. It used to generate a key on fly but
+>>
+>> IMO even though the test code, it comes from the linux kernel, meaning
+>> that its quality has a certain guarantee and it is a good reference, so
+>> the test code still needs to ensure its correctness.
+> 
+> Hmm... what is working incorrectly then?
+
+In current implementation, it is working well, after all the static key
+can derive the full 384-byte length of q1 and q2. As mentioned above, if
+someone refers to the design of signing tool from selftest code, it is
+quite possible that the actual implementation will use dynamical or
+external signing key deriving shorter q1 and/or q2 in length.
+
+Going back the technical background, I'm not a crypto expert, so I
+choose to check the code, doc and make experiment.
+
+Accorindg to intel sdm vol3 37.14:
+
+```
+SIGSTRUCT includes four 3072-bit integers (MODULUS, SIGNATURE, Q1, Q2).
+Each such integer is represented as a byte strings of length 384, with
+the most significant byte at the position “offset + 383”, and the least
+significant byte at position “offset”.
+
+...
+
+The 3072-bit integers Q1 and Q2 are defined by:
+q1 = floor(Signature^2 / Modulus);
+q2 = floor((Signature^3 - q1 * Signature * Modulus) / Modulus);
+```
+
+and the implementation of singing tool from Intel SGX SDK
+(https://github.com/intel/linux-sgx/blob/master/sdk/sign_tool/SignTool/sign_tool.cpp#L381
+), the most significant byte shuld be at the position “offset +
+q1/q2_actuall_len”, and the padding portion should be filled with zero,
+and don't involve the order reverse, but the selftest code always does.
+This is the root cause of SGX_INVALID_SIGNATURE.
+
+Just simplily enforce size_q1 and size_q2 to SE_KEY_SIZE, and generate
+randome siging key with `openssl genrsa -3 -out signing_key.pem 3072`,
+the SGX_INVALID_SIGNATURE error will appear up quickly.
+
+Jia
+
+> 
+> /Jarkko
+> 
