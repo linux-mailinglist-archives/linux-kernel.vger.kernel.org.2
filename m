@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638DF336BE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B8C336BE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhCKGNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:13:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
+        id S229884AbhCKGNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhCKGNR (ORCPT
+        with ESMTP id S229686AbhCKGMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:13:17 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28124C061574;
-        Wed, 10 Mar 2021 22:13:17 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id x27so2087595qvd.2;
-        Wed, 10 Mar 2021 22:13:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wt46hiMXeu6lVx64exPB+h7EP/J6sSYqbbQi4Xj8zyA=;
-        b=TdHZLkuZCvAABU+E4VpoMDdb/snIhqSpqxEwMq0UOboPza+2CFrlDIJqFVM1nJ9QIH
-         8GS4QDYh14s6Hr1PEx287huz9YybqrdaVjO0T5C85+7pvYTNGqTKMCcTsfd++ftz0CAf
-         8ocVToClC2S/HspxSpmjgzPVS/x5zC2O8Nli8oaJ21qWaUDJMxyeykISPsuA6iQCu77I
-         pFe74pHOWm2SBn1pw6F/pl5YuekJYmDAbQS05vgOUZtHPLWwUB60BSobNQinixmjY7/k
-         JCead4Fj/EiYa/Er6d2qa8G8BemKGUEaNuY7RrDmSCuJrg7LFa4HpSoRrUprJx0BDauF
-         J8Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wt46hiMXeu6lVx64exPB+h7EP/J6sSYqbbQi4Xj8zyA=;
-        b=Z4RZbFHFg+F3KBCwGNnRXJSa64druROq+MMc2msnAvXHxVqjqjOi0UnUlj8M+ahZy2
-         GwrGI8dC6pnEKEoZm7D9yYaarR3/eMAyT++bOSIsAFruHutAl3xB/jjVX/k7WHUJip4U
-         ZW9+iZiyDZmdjTAeVBxJTVwkUJlYEhw4YMUwxrcDK3CnnmYTaWgJVBcwrbX4f0cPufsG
-         2UfLIJ5+o2e+EJCxzbSsi5wlKXFhxXwTF/0DpDKKodRGQOpC2Y6lB90L0+qif6b5RgN9
-         cAj6KKitZRuuqB04Q2nIcVlCpgYcN8IdsT74NMnLccHdyAs2vJC+T73vOqvEQq9RQ+OA
-         qnTQ==
-X-Gm-Message-State: AOAM532SieQMoXdB2iUr0axtPFuwK6CJVZnZOJ2zVB3YdJCVcGBvLgh/
-        VGciuUSvmfCA+kh8vaUjN6o=
-X-Google-Smtp-Source: ABdhPJz+uLcKBc8GXwQMSQriHiGRMJxjHmFT5X8gIisJspYhoVOhYfN9DXeZ1xXpYWg5s49fLJq1Vg==
-X-Received: by 2002:a0c:908d:: with SMTP id p13mr6372954qvp.11.1615443196466;
-        Wed, 10 Mar 2021 22:13:16 -0800 (PST)
-Received: from localhost.localdomain ([156.146.55.115])
-        by smtp.gmail.com with ESMTPSA id k28sm1306979qki.101.2021.03.10.22.13.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 22:13:15 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     unixbhaskar@gmail.com, linux-ia64@vger.kernel.org,
+        Thu, 11 Mar 2021 01:12:52 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B699C061574;
+        Wed, 10 Mar 2021 22:12:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=h8aFuwdEQbq+Mg1pCOr++y0lRKxSpzr2i/D/1Sn40JY=; b=SQ71kkj+hQqJeaEdQu9vCbegeT
+        n1GqRDzngRCaYc9rpXClkElVhb8Zfx1hTZNIbZS/jy4AQg5o7wfBimD6oD0rDeO7OtFNKHYYleNKJ
+        OcxN+42NjXwBjzNJZm97rUHBShy443c35g+O/TuqQBazSG9s83Q7/8ZsDiiwDFeYteNX2yoB+uBpc
+        xQjihJ08mlZ2Bp75Ur27Vgc+FdopqAyXOxL4xRQzoQToRpjkSybCyFP4feDrIbXYqoCmaFd1VzRKo
+        907hCWSrMnK+YF7HEN5Fq3BH5aJzsn5M7WU0UNLuqThkZ/TESIIJ3EcN9a9+e7M4evsOkXfl/QFX9
+        v0rYPP+Q==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKEYz-000tUv-0m; Thu, 11 Mar 2021 06:12:49 +0000
+Subject: Re: [PATCH] net: core: Few absolutely rudimentary typo fixes
+ throughout the file filter.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] ia64: kernel: Few typos fixed in the file fsys.S
-Date:   Thu, 11 Mar 2021 11:40:58 +0530
-Message-Id: <20210311061058.29492-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+References: <20210311055608.12956-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <786f4801-c41f-cddd-c855-b388ec026614@infradead.org>
+Date:   Wed, 10 Mar 2021 22:12:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210311055608.12956-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/10/21 9:56 PM, Bhaskar Chowdhury wrote:
+> 
+> Trivial spelling fixes throughout the file.
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Mundane spelling fixes.
+Hi Bhaskar,
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- arch/ia64/kernel/fsys.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+FYI:
 
-diff --git a/arch/ia64/kernel/fsys.S b/arch/ia64/kernel/fsys.S
-index 0750a716adc7..2094f3249019 100644
---- a/arch/ia64/kernel/fsys.S
-+++ b/arch/ia64/kernel/fsys.S
-@@ -172,7 +172,7 @@ ENTRY(fsys_gettimeofday)
- 	// r25 = itc_lastcycle value
- 	// r26 = address clocksource cycle_last
- 	// r27 = (not used)
--	// r28 = sequence number at the beginning of critcal section
-+	// r28 = sequence number at the beginning of critical section
- 	// r29 = address of itc_jitter
- 	// r30 = time processing flags / memory address
- 	// r31 = pointer to result
-@@ -432,7 +432,7 @@ GLOBAL_ENTRY(fsys_bubble_down)
- 	 *	- r29: psr
- 	 *
- 	 * We used to clear some PSR bits here but that requires slow
--	 * serialization.  Fortuntely, that isn't really necessary.
-+	 * serialization.  Fortunately, that isn't really necessary.
- 	 * The rationale is as follows: we used to clear bits
- 	 * ~PSR_PRESERVED_BITS in PSR.L.  Since
- 	 * PSR_PRESERVED_BITS==PSR.{UP,MFL,MFH,PK,DT,PP,SP,RT,IC}, we
---
-2.26.2
+a. we accept British or American spellings
+b. we accept one or two spaces after a period ('.') at the end of a sentence
+c. we accept Oxford (serial) comma or not
+
+> ---
+>  net/core/filter.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 255aeee72402..931ee5f39ae7 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2927,7 +2927,7 @@ BPF_CALL_4(bpf_msg_pop_data, struct sk_msg *, msg, u32, start,
+>  	 *
+>  	 * Then if B is non-zero AND there is no space allocate space and
+>  	 * compact A, B regions into page. If there is space shift ring to
+> -	 * the rigth free'ing the next element in ring to place B, leaving
+> +	 * the right freeing the next element in ring to place B, leaving
+>  	 * A untouched except to reduce length.
+>  	 */
+>  	if (start != offset) {
+> @@ -3710,7 +3710,7 @@ static inline int __bpf_skb_change_tail(struct sk_buff *skb, u32 new_len,
+>  	 * be the one responsible for writing buffers.
+>  	 *
+>  	 * It's really expected to be a slow path operation here for
+> -	 * control message replies, so we're implicitly linearizing,
+> +	 * control message replies, so we're implicitly linearising,
+>  	 * uncloning and drop offloads from the skb by this.
+>  	 */
+>  	ret = __bpf_try_make_writable(skb, skb->len);
+> @@ -3778,7 +3778,7 @@ static inline int __bpf_skb_change_head(struct sk_buff *skb, u32 head_room,
+>  		 * allow to expand on mac header. This means that
+>  		 * skb->protocol network header, etc, stay as is.
+>  		 * Compared to bpf_skb_change_tail(), we're more
+> -		 * flexible due to not needing to linearize or
+> +		 * flexible due to not needing to linearise or
+>  		 * reset GSO. Intention for this helper is to be
+>  		 * used by an L3 skb that needs to push mac header
+>  		 * for redirection into L2 device.
+> --
+
+
+-- 
+~Randy
 
