@@ -2,71 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83BD336BF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EAE336BF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhCKGRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:17:49 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:54077 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229731AbhCKGRa (ORCPT
+        id S229945AbhCKGSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:18:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhCKGSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:17:30 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lKEdR-003GLL-SZ; Thu, 11 Mar 2021 07:17:25 +0100
-Received: from p5b13a966.dip0.t-ipconnect.de ([91.19.169.102] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lKEdR-001XVD-M1; Thu, 11 Mar 2021 07:17:25 +0100
-Subject: Re: [PATCH] ia64: kernel: Few typos fixed in the file fsys.S
-To:     Randy Dunlap <rdunlap@infradead.org>
-References: <20210311061058.29492-1-unixbhaskar@gmail.com>
- <e26a1461-0d05-d79c-7688-de45d285e068@infradead.org>
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <356e2572-63cb-c7cb-2ebd-04ea21b161f0@physik.fu-berlin.de>
-Date:   Thu, 11 Mar 2021 07:17:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 11 Mar 2021 01:18:04 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0194C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:18:04 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id s7so9699564plg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:18:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GtG19LOebEp2WxfXZAPDVqDaGg46AUd7BpnKVeJq4kc=;
+        b=rhbKo8dcc8lTdzeUYcMZoyURBR3BB+R/PES6oMiL7hFf6Hfd2KdUNdjN3OUvIs24TK
+         Kld96DWzTaLfOLMLQ4UQ+NNx04wNaN7EPmGc0Rrs/meIZhbVWMZRyFRs0xgvufGs53+1
+         WZbD536dxbOG4ZX3uDXg6AXioZz0EA90qLurDWnmAee19bYnY5otEd1TRemCbakfWAKL
+         mfI+Cvmzdumpdq3HmPzqS/JiVMKhF+gCqZT2yLK1tmyCFPc4VVUpdmR6swDdUIApIgfY
+         qBS2ud3yIfWJyKT4/qh412WYUWrg/xwTXvwTyZLpEnvAJxOJvTLTF3sbjzl3uecblNhE
+         Sfrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GtG19LOebEp2WxfXZAPDVqDaGg46AUd7BpnKVeJq4kc=;
+        b=PyRDhMUMCA9eZhtUl21418A0fS+ihOdVzl7qW7WTpiO4LJwYvkLxGqsy6NYfgsvpg/
+         ucWqfu4g7s6sB7aNIEztiQw/RMRRHbNPLOG6dQzmdsozJ+LIvyrexqbiBZemb5NxA2Vu
+         zLOjwR1C9q4ZcQSJZ4qnzi7IkSH2WrL5Tkojn93iAt8GouigsmXwNIg44hdSfWRe27SN
+         jSYBR+KHRXGPpPcWCf2lNpQYO/vBVMN4LR/UiXxCvED6qcgOkEEaQVTlHAhxqa988u/G
+         4v31nwMyqPfUOJenDCJL72tY/1fgsO1oeCJzbi98LqKoABpSwtUbSPy4AX9j/pJqX6Jm
+         dP4A==
+X-Gm-Message-State: AOAM530KK4ZpDxHrzpJv0HywdlJ4NQE5aLFlvfaGKBDXz2rDiqVbArGf
+        RfM1iYaVOdJA2ZXFq1eSYyzNJw==
+X-Google-Smtp-Source: ABdhPJxyBUhrIkIxAqjaPMJ2bwK4AiMhyUompTTx88o6LU8BPAUdCjOWSAZUPGQMmMmsuEoYqfZllg==
+X-Received: by 2002:a17:90a:c096:: with SMTP id o22mr7450750pjs.119.1615443484161;
+        Wed, 10 Mar 2021 22:18:04 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id 25sm1241346pfh.199.2021.03.10.22.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 22:18:03 -0800 (PST)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        corbet@lwn.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhouchengming@bytedance.com, songmuchun@bytedance.com
+Subject: [PATCH] cgroup-v2: Add taskstats counters in cgroup.stat
+Date:   Thu, 11 Mar 2021 14:17:52 +0800
+Message-Id: <20210311061752.310831-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <e26a1461-0d05-d79c-7688-de45d285e068@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.169.102
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+We have the netlink CGROUPSTATS_CMD_GET interface to get taskstats
+of the cgroup on v1, but haven't the equivalent interface on v2,
+making it difficult to calculate the per-cgroup cpu load in cadvisor
+or implement the cgroup proc interface in lxcfs, like /proc/loadavg.
 
-On 3/11/21 7:15 AM, Randy Dunlap wrote:
-> On 3/10/21 10:10 PM, Bhaskar Chowdhury wrote:
->>
->> Mundane spelling fixes.
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> 
-> but no maintainer Cc:ed to pick it up...
+Since we already have these counters maintained in psi subsystem,
+so this patch sum them up and export in the cgroup.stat interface.
 
-I guess Andrew's tree will just work fine in this case?
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst |  9 +++++++
+ include/linux/psi.h                     |  1 +
+ kernel/cgroup/cgroup.c                  |  3 +++
+ kernel/sched/psi.c                      | 34 +++++++++++++++++++++++++
+ 4 files changed, 47 insertions(+)
 
-Adrian
-
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 64c62b979f2f..4184e749f687 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -923,6 +923,15 @@ All cgroup core files are prefixed with "cgroup."
+ 		A dying cgroup can consume system resources not exceeding
+ 		limits, which were active at the moment of cgroup deletion.
+ 
++	  nr_iowait_tasks
++	    Total number of tasks in iowait.
++
++	  nr_memstall_tasks
++	    Total number of tasks in memstall.
++
++	  nr_running_tasks
++	    Total number of runnable tasks.
++
+   cgroup.freeze
+ 	A read-write single value file which exists on non-root cgroups.
+ 	Allowed values are "0" and "1". The default is "0".
+diff --git a/include/linux/psi.h b/include/linux/psi.h
+index 7361023f3fdd..ea98239424ca 100644
+--- a/include/linux/psi.h
++++ b/include/linux/psi.h
+@@ -30,6 +30,7 @@ int psi_show(struct seq_file *s, struct psi_group *group, enum psi_res res);
+ int psi_cgroup_alloc(struct cgroup *cgrp);
+ void psi_cgroup_free(struct cgroup *cgrp);
+ void cgroup_move_task(struct task_struct *p, struct css_set *to);
++void psi_taskstat_show(struct seq_file *m, struct cgroup *cgrp);
+ 
+ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+ 			char *buf, size_t nbytes, enum psi_res res);
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 9153b20e5cc6..2724ae318a3b 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3502,6 +3502,9 @@ static int cgroup_stat_show(struct seq_file *seq, void *v)
+ 	seq_printf(seq, "nr_dying_descendants %d\n",
+ 		   cgroup->nr_dying_descendants);
+ 
++#ifdef CONFIG_PSI
++	psi_taskstat_show(seq, cgroup);
++#endif
+ 	return 0;
+ }
+ 
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 967732c0766c..0ae8bd278ca4 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -1000,6 +1000,40 @@ void cgroup_move_task(struct task_struct *task, struct css_set *to)
+ 
+ 	task_rq_unlock(rq, task, &rf);
+ }
++
++void psi_taskstat_show(struct seq_file *m, struct cgroup *cgrp)
++{
++	struct psi_group *group;
++	int cpu;
++	int s;
++	unsigned int taskstat[NR_PSI_TASK_COUNTS - 1] = { 0, };
++
++	if (static_branch_likely(&psi_disabled))
++		return;
++
++	group = cgroup_ino(cgrp) == 1 ? &psi_system : &cgrp->psi;
++
++	for_each_possible_cpu(cpu) {
++		struct psi_group_cpu *groupc = per_cpu_ptr(group->pcpu, cpu);
++		unsigned int tasks[NR_PSI_TASK_COUNTS];
++		unsigned int seq;
++
++		do {
++			seq = read_seqcount_begin(&groupc->seq);
++			memcpy(tasks, groupc->tasks, sizeof(groupc->tasks));
++		} while (read_seqcount_retry(&groupc->seq, seq));
++
++		for (s = 0; s < NR_ONCPU; s++)
++			taskstat[s] += tasks[s];
++	}
++
++	seq_printf(m, "nr_iowait_tasks %u\n"
++		   "nr_memstall_tasks %u\n"
++		   "nr_running_tasks %u\n",
++		   taskstat[NR_IOWAIT],
++		   taskstat[NR_MEMSTALL],
++		   taskstat[NR_RUNNING]);
++}
+ #endif /* CONFIG_CGROUPS */
+ 
+ int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.25.1
 
