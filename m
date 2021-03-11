@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBA1336CC5
+	by mail.lfdr.de (Postfix) with ESMTP id 5A354336CC6
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhCKHJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:09:01 -0500
+        id S231767AbhCKHJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:09:02 -0500
 Received: from mga04.intel.com ([192.55.52.120]:22599 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231631AbhCKHIe (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:08:34 -0500
-IronPort-SDR: +k8sGaAzHZiZoEp8iE+d7ncheu51n0BvqfNS6RDCSG++jcY6qpsa4O/ShO+tlfrEFwShuwaQqc
- gBaX+RdBVE+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246030"
+        id S231633AbhCKHIg (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:08:36 -0500
+IronPort-SDR: bSvvpyMiAtwzlG/q2GLFq1GtEOc8xRjyqR4Xl11VcR7KEL4fMQp6H1aRP1vCiJNyPZqqxF2mLx
+ Hy8tMhgXnMNw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246042"
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="186246030"
+   d="scan'208";a="186246042"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:08:34 -0800
-IronPort-SDR: DPZ8EG+76amI39tJ21/j8E8NMSp67yUDSWJGgU55Wss9FAmvA/dqFWkwdrBLGx1qpPKXTWiU0x
- /8N4aq4mlz3g==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:08:36 -0800
+IronPort-SDR: +kwOJwSS40JmlNf62kZLbpyvGt6SwE5hzxBOz+B236QqmGKYJCNdJLBFk68ORyzdO90wx6UYbE
+ 2XMEfdbjjoQA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="509937852"
+   d="scan'208";a="509937861"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:08:31 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:08:34 -0800
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 06/27] perf pmu: Add hybrid helper functions
-Date:   Thu, 11 Mar 2021 15:07:21 +0800
-Message-Id: <20210311070742.9318-7-yao.jin@linux.intel.com>
+Subject: [PATCH v2 07/27] perf evlist: Hybrid event uses its own cpus
+Date:   Thu, 11 Mar 2021 15:07:22 +0800
+Message-Id: <20210311070742.9318-8-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210311070742.9318-1-yao.jin@linux.intel.com>
 References: <20210311070742.9318-1-yao.jin@linux.intel.com>
@@ -41,91 +41,284 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The functions perf_pmu__is_hybrid and perf_pmu__find_hybrid_pmu
-can be used to identify the hybrid platform and return the found
-hybrid cpu pmu. All the detected hybrid pmus have been saved in
-'perf_pmu__hybrid_pmus' list. So we just need to search this list.
+On hybrid platform, atom events can be only enabled on atom CPUs. Core
+events can be only enabled on core CPUs. So for a hybrid event, it can
+be only enabled on it's own CPUs.
 
-perf_pmu__hybrid_type_to_pmu converts the user specified string
-to hybrid pmu name. This is used to support the '--cputype' option
-in next patches.
+But the problem for current perf is, the cpus for evsel (via PMU sysfs)
+have been merged to evsel_list->core.all_cpus. It might be all CPUs.
 
-perf_pmu__hybrid_exist checks the existing of hybrid pmu.
+So we need to figure out one way to let the hybrid event only use it's
+own CPUs.
+
+The idea is to create a new evlist__invalidate_all_cpus to invalidate
+the evsel_list->core.all_cpus then evlist__for_each_cpu returns cpu -1
+for hybrid evsel. If cpu is -1, hybrid evsel will use it's own cpus.
+
+We will see following code piece in patch.
+
+if (cpu == -1 && !evlist->thread_mode)
+        evsel__enable_cpus(pos);
+
+It lets the event be enabled on event's own cpus.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
- tools/perf/util/pmu-hybrid.c | 40 ++++++++++++++++++++++++++++++++++++
- tools/perf/util/pmu-hybrid.h | 11 ++++++++++
- 2 files changed, 51 insertions(+)
+ tools/perf/builtin-stat.c          | 37 ++++++++++++++-
+ tools/perf/util/evlist.c           | 72 ++++++++++++++++++++++++++++--
+ tools/perf/util/evlist.h           |  4 ++
+ tools/perf/util/evsel.h            |  8 ++++
+ tools/perf/util/python-ext-sources |  2 +
+ 5 files changed, 117 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/pmu-hybrid.c b/tools/perf/util/pmu-hybrid.c
-index 7316bf46e54b..86ba84d9469c 100644
---- a/tools/perf/util/pmu-hybrid.c
-+++ b/tools/perf/util/pmu-hybrid.c
-@@ -33,3 +33,43 @@ bool perf_pmu__hybrid_mounted(const char *name)
- 	snprintf(path, PATH_MAX, CPUS_TEMPLATE_CPU, sysfs, name);
- 	return file_available(path);
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 2e2e4a8345ea..68ecf68699a9 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -393,6 +393,18 @@ static int read_counter_cpu(struct evsel *counter, struct timespec *rs, int cpu)
+ 	return 0;
  }
-+
-+struct perf_pmu *perf_pmu__find_hybrid_pmu(const char *name)
+ 
++static int read_counter_cpus(struct evsel *counter, struct timespec *rs)
 +{
-+	struct perf_pmu *pmu;
++	int cpu, nr_cpus, err = 0;
++	struct perf_cpu_map *cpus = evsel__cpus(counter);
 +
-+	if (!name)
-+		return NULL;
++	nr_cpus = cpus ? cpus->nr : 1;
++	for (cpu = 0; cpu < nr_cpus; cpu++)
++		err = read_counter_cpu(counter, rs, cpu);
 +
-+	perf_pmu__for_each_hybrid_pmu(pmu) {
-+		if (!strcmp(name, pmu->name))
-+			return pmu;
++	return err;
++}
++
+ static int read_affinity_counters(struct timespec *rs)
+ {
+ 	struct evsel *counter;
+@@ -414,8 +426,14 @@ static int read_affinity_counters(struct timespec *rs)
+ 			if (evsel__cpu_iter_skip(counter, cpu))
+ 				continue;
+ 			if (!counter->err) {
+-				counter->err = read_counter_cpu(counter, rs,
+-								counter->cpu_iter - 1);
++				if (cpu == -1 && !evsel_list->thread_mode) {
++					counter->err = read_counter_cpus(counter, rs);
++				} else if (evsel_list->thread_mode) {
++					counter->err = read_counter_cpu(counter, rs, 0);
++				} else {
++					counter->err = read_counter_cpu(counter, rs,
++									counter->cpu_iter - 1);
++				}
+ 			}
+ 		}
+ 	}
+@@ -781,6 +799,21 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 	if (group)
+ 		evlist__set_leader(evsel_list);
+ 
++	/*
++	 * On hybrid platform, the cpus for evsel (via PMU sysfs) have been
++	 * merged to evsel_list->core.all_cpus. We use evlist__invalidate_all_cpus
++	 * to invalidate the evsel_list->core.all_cpus then evlist__for_each_cpu
++	 * returns cpu -1 for hybrid evsel. If cpu is -1, hybrid evsel will
++	 * use it's own cpus.
++	 */
++	if (evlist__has_hybrid_events(evsel_list)) {
++		evlist__invalidate_all_cpus(evsel_list);
++		if (!target__has_cpu(&target) ||
++		    target__has_per_thread(&target)) {
++			evsel_list->thread_mode = true;
++		}
 +	}
 +
-+	return NULL;
-+}
-+
-+bool perf_pmu__is_hybrid(const char *name)
-+{
-+	return perf_pmu__find_hybrid_pmu(name) != NULL;
-+}
-+
-+char *perf_pmu__hybrid_type_to_pmu(const char *type)
-+{
-+	char *pmu_name = NULL;
-+
-+	if (asprintf(&pmu_name, "cpu_%s", type) < 0)
-+		return NULL;
-+
-+	if (perf_pmu__is_hybrid(pmu_name))
-+		return pmu_name;
-+
-+	/*
-+	 * pmu may be not scanned, check the sysfs.
-+	 */
-+	if (perf_pmu__hybrid_mounted(pmu_name))
-+		return pmu_name;
-+
-+	free(pmu_name);
-+	return NULL;
-+}
-diff --git a/tools/perf/util/pmu-hybrid.h b/tools/perf/util/pmu-hybrid.h
-index 35bed3714438..7fb2246e939a 100644
---- a/tools/perf/util/pmu-hybrid.h
-+++ b/tools/perf/util/pmu-hybrid.h
-@@ -15,4 +15,15 @@ extern struct list_head perf_pmu__hybrid_pmus;
+ 	if (affinity__setup(&affinity) < 0)
+ 		return -1;
  
- bool perf_pmu__hybrid_mounted(const char *name);
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 882cd1f721d9..3ee12fcd0c9f 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -381,7 +381,8 @@ bool evsel__cpu_iter_skip_no_inc(struct evsel *ev, int cpu)
+ bool evsel__cpu_iter_skip(struct evsel *ev, int cpu)
+ {
+ 	if (!evsel__cpu_iter_skip_no_inc(ev, cpu)) {
+-		ev->cpu_iter++;
++		if (cpu != -1)
++			ev->cpu_iter++;
+ 		return false;
+ 	}
+ 	return true;
+@@ -410,6 +411,16 @@ static int evlist__is_enabled(struct evlist *evlist)
+ 	return false;
+ }
  
-+struct perf_pmu *perf_pmu__find_hybrid_pmu(const char *name);
-+
-+bool perf_pmu__is_hybrid(const char *name);
-+
-+char *perf_pmu__hybrid_type_to_pmu(const char *type);
-+
-+static inline bool perf_pmu__hybrid_exist(void)
++static void evsel__disable_cpus(struct evsel *evsel)
 +{
-+	return !list_empty(&perf_pmu__hybrid_pmus);
++	int cpu, nr_cpus;
++	struct perf_cpu_map *cpus = evsel__cpus(evsel);
++
++	nr_cpus = cpus ? cpus->nr : 1;
++	for (cpu = 0; cpu < nr_cpus; cpu++)
++		evsel__disable_cpu(evsel, cpu);
 +}
 +
- #endif /* __PMU_HYBRID_H */
+ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+ {
+ 	struct evsel *pos;
+@@ -436,7 +447,12 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+ 					has_imm = true;
+ 				if (pos->immediate != imm)
+ 					continue;
+-				evsel__disable_cpu(pos, pos->cpu_iter - 1);
++				if (cpu == -1 && !evlist->thread_mode)
++					evsel__disable_cpus(pos);
++				else if (evlist->thread_mode)
++					evsel__disable_cpu(pos, 0);
++				else
++					evsel__disable_cpu(pos, pos->cpu_iter - 1);
+ 			}
+ 		}
+ 		if (!has_imm)
+@@ -472,6 +488,15 @@ void evlist__disable_evsel(struct evlist *evlist, char *evsel_name)
+ 	__evlist__disable(evlist, evsel_name);
+ }
+ 
++static void evsel__enable_cpus(struct evsel *evsel)
++{
++	int cpu, nr_cpus;
++	struct perf_cpu_map *cpus = evsel__cpus(evsel);
++
++	nr_cpus = cpus ? cpus->nr : 1;
++	for (cpu = 0; cpu < nr_cpus; cpu++)
++		evsel__enable_cpu(evsel, cpu);
++}
+ static void __evlist__enable(struct evlist *evlist, char *evsel_name)
+ {
+ 	struct evsel *pos;
+@@ -491,7 +516,12 @@ static void __evlist__enable(struct evlist *evlist, char *evsel_name)
+ 				continue;
+ 			if (!evsel__is_group_leader(pos) || !pos->core.fd)
+ 				continue;
+-			evsel__enable_cpu(pos, pos->cpu_iter - 1);
++                        if (cpu == -1 && !evlist->thread_mode)
++                                evsel__enable_cpus(pos);
++                        else if (evlist->thread_mode)
++                                evsel__enable_cpu(pos, 0);
++                        else
++                                evsel__enable_cpu(pos, pos->cpu_iter - 1);
+ 		}
+ 	}
+ 	affinity__cleanup(&affinity);
+@@ -1274,6 +1304,16 @@ void evlist__set_selected(struct evlist *evlist, struct evsel *evsel)
+ 	evlist->selected = evsel;
+ }
+ 
++static void evsel__close_cpus(struct evsel *evsel)
++{
++	int cpu, nr_cpus;
++	struct perf_cpu_map *cpus = evsel__cpus(evsel);
++
++	nr_cpus = cpus ? cpus->nr : 1;
++	for (cpu = 0; cpu < nr_cpus; cpu++)
++		perf_evsel__close_cpu(&evsel->core, cpu);
++}
++
+ void evlist__close(struct evlist *evlist)
+ {
+ 	struct evsel *evsel;
+@@ -1298,7 +1338,13 @@ void evlist__close(struct evlist *evlist)
+ 		evlist__for_each_entry_reverse(evlist, evsel) {
+ 			if (evsel__cpu_iter_skip(evsel, cpu))
+ 			    continue;
+-			perf_evsel__close_cpu(&evsel->core, evsel->cpu_iter - 1);
++
++			if (cpu == -1 && !evlist->thread_mode)
++				evsel__close_cpus(evsel);
++			else if (evlist->thread_mode)
++				perf_evsel__close_cpu(&evsel->core, 0);
++			else
++				perf_evsel__close_cpu(&evsel->core, evsel->cpu_iter - 1);
+ 		}
+ 	}
+ 	affinity__cleanup(&affinity);
+@@ -2130,3 +2176,21 @@ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx)
+ 	}
+ 	return NULL;
+ }
++
++bool evlist__has_hybrid_events(struct evlist *evlist)
++{
++	struct evsel *evsel;
++
++	evlist__for_each_entry(evlist, evsel) {
++		if (evsel__is_hybrid_event(evsel))
++			return true;
++	}
++
++	return false;
++}
++
++void evlist__invalidate_all_cpus(struct evlist *evlist)
++{
++	perf_cpu_map__put(evlist->core.all_cpus);
++	evlist->core.all_cpus = perf_cpu_map__empty_new(1);
++}
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index b695ffaae519..0da683511d98 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -52,6 +52,7 @@ struct evlist {
+ 	struct perf_evlist core;
+ 	int		 nr_groups;
+ 	bool		 enabled;
++	bool		 thread_mode;
+ 	int		 id_pos;
+ 	int		 is_pos;
+ 	u64		 combined_sample_type;
+@@ -365,4 +366,7 @@ int evlist__ctlfd_ack(struct evlist *evlist);
+ #define EVLIST_DISABLED_MSG "Events disabled\n"
+ 
+ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx);
++void evlist__invalidate_all_cpus(struct evlist *evlist);
++
++bool evlist__has_hybrid_events(struct evlist *evlist);
+ #endif /* __PERF_EVLIST_H */
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index 6026487353dd..69aadc52c1bd 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -7,9 +7,11 @@
+ #include <sys/types.h>
+ #include <linux/perf_event.h>
+ #include <linux/types.h>
++#include <string.h>
+ #include <internal/evsel.h>
+ #include <perf/evsel.h>
+ #include "symbol_conf.h"
++#include "pmu-hybrid.h"
+ #include <internal/cpumap.h>
+ 
+ struct bpf_object;
+@@ -435,4 +437,10 @@ struct perf_env *evsel__env(struct evsel *evsel);
+ int evsel__store_ids(struct evsel *evsel, struct evlist *evlist);
+ 
+ void evsel__zero_per_pkg(struct evsel *evsel);
++
++static inline bool evsel__is_hybrid_event(struct evsel *evsel)
++{
++	return evsel->pmu_name && perf_pmu__is_hybrid(evsel->pmu_name);
++}
++
+ #endif /* __PERF_EVSEL_H */
+diff --git a/tools/perf/util/python-ext-sources b/tools/perf/util/python-ext-sources
+index 845dd46e3c61..d7c976671e3a 100644
+--- a/tools/perf/util/python-ext-sources
++++ b/tools/perf/util/python-ext-sources
+@@ -37,3 +37,5 @@ util/units.c
+ util/affinity.c
+ util/rwsem.c
+ util/hashmap.c
++util/pmu-hybrid.c
++util/fncache.c
 -- 
 2.17.1
 
