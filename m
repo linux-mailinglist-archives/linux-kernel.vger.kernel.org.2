@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8644B33816A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BDB33816D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhCKXZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:25:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230388AbhCKXY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:24:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4EB864F8D;
-        Thu, 11 Mar 2021 23:24:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615505096;
-        bh=gwBIEm5eCEuFPWt/lCBtyPTARvKErQXYjIBh09bK8nw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YeLVThZSuUV3lgKuJgngaUxk0h45cJzN7SEhidEFZlqAcV7kxzrDrA3DGZzo/YA0b
-         5VSXrajqBqv8lmVAuRbCQl9KjQj1VrPjSISlhVtBy0McQKG4s1Z9ogqf2AgAvyvoP2
-         WVmzsgYILuT3QOqEXa02Sms12XWkHzUO/NjFVP37RADgV9i4G9y3XiW2dgUugH3+de
-         4SRT5/vDrXgLLiESYt1gIUK8Wdx6XbTpvGn/gPNuGPaCwgpfSzQppFdjo2wmECSWSO
-         Rk3N9oPeqxvBL7+hd4rvOFQXZrGVJ8gxcJvYigCuS4lOmh3JDnutnR2rac4R5NPN6F
-         wba8reH1fXWEw==
-Message-ID: <46d60ad85a94e8bc693abbfbcbaf55ab6f7ca91e.camel@kernel.org>
-Subject: Re: [PATCH] net/mlx5: remove unneeded semicolon
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Parav Pandit <parav@nvidia.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     "leon@kernel.org" <leon@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 11 Mar 2021 15:24:55 -0800
-In-Reply-To: <DM6PR12MB433097A211B6A99DAF690958DC989@DM6PR12MB4330.namprd12.prod.outlook.com>
-References: <1613987819-43161-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-         <BY5PR12MB4322C25D61EC6E4549370917DC819@BY5PR12MB4322.namprd12.prod.outlook.com>
-         <DM6PR12MB433097A211B6A99DAF690958DC989@DM6PR12MB4330.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S231368AbhCKX0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:26:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231374AbhCKX0J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 18:26:09 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285FBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:26:09 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DxQ711CXQz9sVt;
+        Fri, 12 Mar 2021 10:26:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1615505165;
+        bh=E/wjRfTwLwTeZtdF+8K681lQgpnJDWERQYIyr2pWj1A=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Mp9KtA2wbabfGNEAG4yTlb3/fMM0Tv1eaZo6pwYit0dnQQf2ydQGk3IHRd5RQTCwl
+         /0wzOYdhQ1nqZRO9YxSYrX81QsYksW6q1EG4QBAhaWsfbW9L/56v32LBvwbpE0fkjb
+         acBf9fVvF3ss2/CCA+jka/ZahwElg+HaUEEhbWAHcIGj/sep5vlj1x3RJ8dXIKD1XU
+         l2tcL3b+FufTlHB77twz4EiPRYz8rAOUM6MhHhnfjLaNseZiQB/xG4BlaOjo9PazuR
+         0k/JMy6SguGvK9L/Yct1RltMbwMp+5U0cSR8eiRGl9Gfwsbr9AHG38SzGUF6HOQuK2
+         FwybpQUleqVVg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 25/43] powerpc/32: Replace ASM exception exit by C
+ exception exit from ppc64
+In-Reply-To: <0296d1bc-b37e-43c8-06cf-00ec458fb74e@csgroup.eu>
+References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
+ <a9a50f475db97fc53795dd778bc14f58029fdd55.1615291473.git.christophe.leroy@csgroup.eu>
+ <87tuphkdkz.fsf@mpe.ellerman.id.au>
+ <0296d1bc-b37e-43c8-06cf-00ec458fb74e@csgroup.eu>
+Date:   Fri, 12 Mar 2021 10:26:02 +1100
+Message-ID: <87r1kljmr9.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-03 at 08:52 +0000, Parav Pandit wrote:
-> Hi Saeed,
-> 
-> > From: Parav Pandit <parav@nvidia.com>
-> > Sent: Monday, February 22, 2021 3:32 PM
-> > 
-> > 
-> > > From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> > > Sent: Monday, February 22, 2021 3:27 PM
-> > > 
-> > > Fix the following coccicheck warnings:
-> > > 
-> > > ./drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c:495:2-3:
-> > > Unneeded semicolon.
-> > > 
-> > > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> > > ---
-> > >  drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> > > b/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> > > index c2ba41b..60a6328 100644
-> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> > > @@ -492,7 +492,7 @@ static int mlx5_sf_esw_event(struct
-> > > notifier_block
-> > > *nb, unsigned long event, voi
-> > >                 break;
-> > >         default:
-> > >                 break;
-> > > -       };
-> > > +       }
-> > > 
-> > >         return 0;
-> > >  }
-> > > --
-> > > 1.8.3.1
-> > 
-> > Reviewed-by: Parav Pandit <parav@nvidia.com>
-> 
-> Will you take this patch [1] to your queue?
-> 
-> [1]
-> https://lore.kernel.org/linux-rdma/1613987819-43161-1-git-send-email-jiapeng.chong@linux.alibaba.com/
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Le 11/03/2021 =C3=A0 14:46, Michael Ellerman a =C3=A9crit=C2=A0:
+>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>> This patch replaces the PPC32 ASM exception exit by C exception exit.
+>>>
+>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>> ---
+>>>   arch/powerpc/kernel/entry_32.S  | 481 +++++++++-----------------------
+>>>   arch/powerpc/kernel/interrupt.c |   4 +
+>>>   2 files changed, 132 insertions(+), 353 deletions(-)
+>>=20
+>> Bisect points to this breaking qemu mac99 for me, with pmac32_defconfig.
+>>=20
+>> I haven't had time to dig any deeper sorry.
+>
+> Embarrasing ...
 
-Applied to net-next-mlx5.
-Thanks,
-Saeed.
+Nah, these things happen.
 
+> I don't get this problem on the 8xx (nohash/32) or the 83xx (book3s/32).
+> I don't get this problem with qemu mac99 when using my klibc-based initra=
+mfs.
+>
+> I managed to reproduce it with the rootfs.cpio that I got some time ago f=
+rom linuxppc github Wiki.
+
+OK.
+
+I'm using the ppc-rootfs.cpio.gz from here:
+
+  https://github.com/linuxppc/ci-scripts/blob/master/root-disks/Makefile
+
+And the boot script is:
+
+  https://github.com/linuxppc/ci-scripts/blob/master/scripts/boot/qemu-mac99
+
+I've been meaning to write docs on how to use those scripts, but haven't
+got around to it.
+
+There's nothing really special though it's just a wrapper around qemu -M ma=
+c99.
+
+> I'll investigate it tomorrow.
+
+Thanks.
+
+cheers
