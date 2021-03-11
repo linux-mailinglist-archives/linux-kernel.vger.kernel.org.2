@@ -2,61 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5263336F14
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 216BB336F18
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:44:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbhCKJnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:43:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60188 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231956AbhCKJnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:43:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AC78DAC16;
-        Thu, 11 Mar 2021 09:43:45 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 10:43:45 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
- processing it
-Message-ID: <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
-References: <20210301175601.116405-1-dwagner@suse.de>
- <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
+        id S232050AbhCKJoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:44:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231904AbhCKJn6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 04:43:58 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F28C061574;
+        Thu, 11 Mar 2021 01:43:58 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id u18so9915370plc.12;
+        Thu, 11 Mar 2021 01:43:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=jQIVJbhzgg9ExMqmPGfrcbGNRUuxXYmbfOhJYaQQYi4=;
+        b=NHOvI6XY1tH9NH8L8YhqVRMWUxequ4w8UwfuGERHU6bus4Km+pfxVgyTpNwHdbAQhY
+         CLkgYtOf7zs5peS1TQYIDgIgs8kUoVYaIQn5yDGNEmcE7l/CfJ0SNPdOXa1JjXBFsUDu
+         mLIz2yS27If3BvxQuOlBxFC8Coe/LmEVyHrpiIvI0Y25QhX77U8eeIss6vILXwchQz9B
+         ckLTTSqGgKJ6WILr01gTodq9GCrmKinA4fj+twzA+QRIc9ohnKZFbwOzDPYbN1z3h4Q2
+         +G5hCs6lv4BIIYt/KMPl/YoVKbx+RDh0gRmHVB/I1sfQn5TTTm3glnMM6xcPCUjd4j40
+         rCLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=jQIVJbhzgg9ExMqmPGfrcbGNRUuxXYmbfOhJYaQQYi4=;
+        b=PCps7lzNyceA4RtRNmyCiuVwHdCuE1ILTiWbVIQc5QYzW1kLQrx7S2i34nkrbu+n7R
+         CJHFo5BdNLo5lFpUR4INZIZtLWaHxtXEA8dN9RPrM1RXql3BnczTBDdrhtEtngwtuZjY
+         T3W+GlWqRlH9SHTNBl/BMxT1jy/2GVNyfSGvmN0iOBm1VOYT10yeBroLuOxkVBg8JEsn
+         tVwGm6EsKBfG/L/F64sVIqpQNw1DbBVJqHQ3FrLn5nJza4/cFWFCf1QG4hqjnC7pL96y
+         GUsKwDHEa197ArCFK/UNyoy6X/5NqcHlW3tuI1J2trUzuPY6uM99qlou9OqWqxjI9XSl
+         YmkA==
+X-Gm-Message-State: AOAM533FAh4b1ZdnmbYwJZVF2kvE1xwDcIDoivcwRBXeAjrvo3dAswAf
+        hnQVayx2m3g2+6sM3/Z6EmeUfUCM0QD0YYNw
+X-Google-Smtp-Source: ABdhPJzFo1V2aQFgO8GTV3WKxfZ211m88OQti6EFoaJTA+t376UZ5jrVsYoD6WuvmD6XYTHOG3DoJw==
+X-Received: by 2002:a17:902:8f8c:b029:e3:7e6c:36fa with SMTP id z12-20020a1709028f8cb02900e37e6c36famr7430132plo.77.1615455837746;
+        Thu, 11 Mar 2021 01:43:57 -0800 (PST)
+Received: from localhost ([122.179.55.249])
+        by smtp.gmail.com with ESMTPSA id l15sm1800084pjq.9.2021.03.11.01.43.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Mar 2021 01:43:57 -0800 (PST)
+Date:   Thu, 11 Mar 2021 15:13:49 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bkkarthik@pesu.pes.edu
+Subject: [PATCH] net: core: bpf_sk_storage.c: Fix bare usage of unsigned
+Message-ID: <20210311094349.5q76vsxuqk3riwyq@kewl-virtual-machine>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sagi,
+Changed bare usage of unsigned to unsigned int
 
-On Fri, Mar 05, 2021 at 11:57:30AM -0800, Sagi Grimberg wrote:
-> Daniel, again, there is nothing specific about this to nvme-tcp,
-> this is a safeguard against a funky controller (or a different
-> bug that is hidden by this).
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ net/core/bpf_sk_storage.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-As far I can tell, the main difference between nvme-tcp and FC/NVMe,
-nvme-tcp has not a FW or a big driver which filter out some noise from a
-misbehaving controller. I haven't really checked the other transports
-but I wouldn't surprised they share the same properties as FC/NVMe.
+diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+index 4edd033e899c..d99753f88a70 100644
+--- a/net/core/bpf_sk_storage.c
++++ b/net/core/bpf_sk_storage.c
+@@ -723,7 +723,7 @@ EXPORT_SYMBOL_GPL(bpf_sk_storage_diag_put);
+ struct bpf_iter_seq_sk_storage_map_info {
+ 	struct bpf_map *map;
+ 	unsigned int bucket_id;
+-	unsigned skip_elems;
++	unsigned int skip_elems;
+ };
+ 
+ static struct bpf_local_storage_elem *
+-- 
+2.17.1
 
-> The same can happen in any other transport so I would suggest that if
-> this is a safeguard we want to put in place, we should make it a
-> generic one.
-> 
-> i.e. nvme_tag_to_rq() that _all_ transports call consistently.
-
-Okay, I'll review all the relevant code and see what could made more
-generic and consistent.
-
-Though I think nvme-tcp plays in a different league as it is exposed to
-normal networking traffic and this is a very hostile environment.
-
-Thanks,
-Daniel
