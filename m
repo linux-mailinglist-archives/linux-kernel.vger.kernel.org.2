@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5703370B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8089A3370BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhCKK7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:59:47 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44958 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbhCKK7O (ORCPT
+        id S232359AbhCKLAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:00:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232568AbhCKLAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:59:14 -0500
-Received: by mail-io1-f72.google.com with SMTP id e11so15065062ioh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:59:14 -0800 (PST)
+        Thu, 11 Mar 2021 06:00:01 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE006C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:00:00 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id n195so21252988ybg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:00:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FH9Tuemr6yEKKZ7zMO/X3RVvrhnQrqKx7Lo2YU1iHrI=;
+        b=ooY3IFfYBXB9sWaYggyj/4jO1MUUeZ2RUoy2hxC+9X5Ae/rzs2DVmUn+2y/E4fBEe6
+         XUjvPhSE/2ZODIgG+FWAEgLsRHQp1fLYjtppnYt5HGZ0eTZLXLcFjOBnrBFVMTKZdPeP
+         kHqmyvE54Awn+HPODCrobdr9BAvVs1xNLcVDprQdRR7M6y7hxlJ94PPaZ/7CrNeh+IVJ
+         yE17DY3w5Ir+63lRwMoIRiikJl+tb1Q3fpCGNasgiF8BI+wyx5RZZIMpmdotVlaIq0jR
+         DG3Axiy89gj1noB2bQ5zUEDtVnmACT+NUEfl+73bgvQh+vwYJCWr5VugWW3+dhSq23mu
+         98QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=lDX1WDkJkF7VdBPnD5IlYa41IyUfFq4jroNsiDOeVew=;
-        b=mQinklg4etMwLwG64Ur416JubALNHHjLQ4DJzJ2O5ov1tcUmOuZn0bo6feAIas3vaW
-         ecIMk41m5575qZn1ligKoj8UqMILik32JyprjUtv1kSyF+L0rD2+WVbQFnu+XPxHEu1G
-         0wqzOqsjPYnUYdRYWeYSWLQ02B1tPzQ9FkhqKHRmjps3+CfTlYEkh/mJ5bLmglG9p+N7
-         w3fio3DWN46hIv9HpTNwXLq2eh+2JbLFbAgp2R3LNGvVgyHFysqS0AHCsEqMjcGZ5/ID
-         gyTVBODFfUsTrWgofTaI9fsNIXTjn3dBJ9J0HjXI1r/fm0A6/PEGr5BXRxxhKnl8tb8C
-         JhAw==
-X-Gm-Message-State: AOAM531TYJCfXsI+X1ZUzmHQIx9Igho77+xunjFP21L6vckOmaVl61hU
-        4KdVR+59ZzQdoWPrsG6KqkA5TFvlseqAC2pJPZo4/NcTwT6W
-X-Google-Smtp-Source: ABdhPJzxPMppGclvRHn4P4Rx3FGdqjaBYLoQCNkdnd6VjRCCoz8N0lO7u1X5L7upaSpoAGargYG0ZM5gyY7pymXapRrHRXciYfQZ
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FH9Tuemr6yEKKZ7zMO/X3RVvrhnQrqKx7Lo2YU1iHrI=;
+        b=n+ugk5osPcKdhnOIwsN0i8tYTORRTFc2gw31j9L99AB03cFEeBaD419zGbN/Vn4dML
+         na4jI1fcQSRbK0M9/gafEon7bUI2O1qJR2H3WLMfM6vrPx/aBNn7U6SG8CdKOIHZtzRQ
+         r5c31kdEJifkJSYwVYXtyb54KkmjISavT2x4gCVGiRggWt2ywdQfYNeMMv6EcPURqJ57
+         Ab1ZWstdR+FjPJofFczaS3wPT7jg110WM5a3TkbbTYP8f0xPGqzbGYCqlXx0Rr15iMNx
+         /GMPMD0QqpdLbM6HN4vmiZLP82g7bI3uynP412SMTjSuvOweRkZwGKPzwlb+qYyjgMbd
+         wU5g==
+X-Gm-Message-State: AOAM530nu1RqFYSOJvFNCZPw/iQdGPsZvmM0QI9/ZTGxo+bEndw616Qm
+        h2C8T7ctsS4gMUU+D1gQNWMe2eMpb8nG2DN8NW7yWA==
+X-Google-Smtp-Source: ABdhPJw0rCRE8+qk/fPMpU0L9aogYiBwnxnxNWMrbbrimxvuY5FG9nvFEhzFPwzcg4hN1ro/ywbvb+xY48F5XutTO78=
+X-Received: by 2002:a25:2307:: with SMTP id j7mr11255547ybj.518.1615460399894;
+ Thu, 11 Mar 2021 02:59:59 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:d843:: with SMTP id h3mr6663016ilq.306.1615460354089;
- Thu, 11 Mar 2021 02:59:14 -0800 (PST)
-Date:   Thu, 11 Mar 2021 02:59:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008de88005bd40ac36@google.com>
-Subject: [syzbot] KCSAN: data-race in start_this_handle / start_this_handle
-From:   syzbot <syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com>
-To:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
+References: <20210311103446.5dwjcopeggy7k6gg@kewl-virtual-machine>
+In-Reply-To: <20210311103446.5dwjcopeggy7k6gg@kewl-virtual-machine>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 11 Mar 2021 11:59:48 +0100
+Message-ID: <CANn89iKyFJdBu4fuRaMHRy0zdzR2Jcisy7bz=5iNkoo8HB4h8A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] net: core: datagram.c: Fix use of assignment in if condition
+To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, mchehab+huawei@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    a74e6a01 Merge tag 's390-5.12-3' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=159f69ecd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=de394bbaade74fb7
-dashboard link: https://syzkaller.appspot.com/bug?extid=30774a6acf6a2cf6d535
-compiler:       Debian clang version 11.0.1-2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in start_this_handle / start_this_handle
-
-write to 0xffff888103880870 of 8 bytes by task 29956 on cpu 1:
- jbd2_get_transaction fs/jbd2/transaction.c:125 [inline]
- start_this_handle+0xceb/0x1010 fs/jbd2/transaction.c:400
- jbd2__journal_start+0x1fc/0x3f0 fs/jbd2/transaction.c:503
- __ext4_journal_start_sb+0x159/0x310 fs/ext4/ext4_jbd2.c:105
- __ext4_journal_start fs/ext4/ext4_jbd2.h:320 [inline]
- ext4_da_write_begin+0x460/0xaf0 fs/ext4/inode.c:2998
- generic_perform_write+0x196/0x3a0 mm/filemap.c:3575
- ext4_buffered_write_iter+0x2e5/0x3e0 fs/ext4/file.c:269
- ext4_file_write_iter+0x48a/0x10b0 fs/ext4/file.c:502
- call_write_iter include/linux/fs.h:1977 [inline]
- do_iter_readv_writev+0x2cb/0x360 fs/read_write.c:740
- do_iter_write+0x112/0x4c0 fs/read_write.c:866
- vfs_iter_write+0x4c/0x70 fs/read_write.c:907
- iter_file_splice_write+0x40a/0x750 fs/splice.c:689
- do_splice_from fs/splice.c:767 [inline]
- direct_splice_actor+0x80/0xa0 fs/splice.c:936
- splice_direct_to_actor+0x345/0x650 fs/splice.c:891
- do_splice_direct+0xf5/0x170 fs/splice.c:979
- do_sendfile+0x7a6/0xe20 fs/read_write.c:1260
- __do_sys_sendfile64 fs/read_write.c:1319 [inline]
- __se_sys_sendfile64 fs/read_write.c:1311 [inline]
- __x64_sys_sendfile64+0xa9/0x130 fs/read_write.c:1311
- do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-read to 0xffff888103880870 of 8 bytes by task 29936 on cpu 0:
- start_this_handle+0x1c1/0x1010 fs/jbd2/transaction.c:352
- jbd2__journal_start+0x1fc/0x3f0 fs/jbd2/transaction.c:503
- __ext4_journal_start_sb+0x159/0x310 fs/ext4/ext4_jbd2.c:105
- __ext4_journal_start fs/ext4/ext4_jbd2.h:320 [inline]
- ext4_da_write_begin+0x460/0xaf0 fs/ext4/inode.c:2998
- generic_perform_write+0x196/0x3a0 mm/filemap.c:3575
- ext4_buffered_write_iter+0x2e5/0x3e0 fs/ext4/file.c:269
- ext4_file_write_iter+0x48a/0x10b0 fs/ext4/file.c:502
- call_write_iter include/linux/fs.h:1977 [inline]
- do_iter_readv_writev+0x2cb/0x360 fs/read_write.c:740
- do_iter_write+0x112/0x4c0 fs/read_write.c:866
- vfs_iter_write+0x4c/0x70 fs/read_write.c:907
- iter_file_splice_write+0x40a/0x750 fs/splice.c:689
- do_splice_from fs/splice.c:767 [inline]
- direct_splice_actor+0x80/0xa0 fs/splice.c:936
- splice_direct_to_actor+0x345/0x650 fs/splice.c:891
- do_splice_direct+0xf5/0x170 fs/splice.c:979
- do_sendfile+0x7a6/0xe20 fs/read_write.c:1260
- __do_sys_sendfile64 fs/read_write.c:1319 [inline]
- __se_sys_sendfile64 fs/read_write.c:1311 [inline]
- __x64_sys_sendfile64+0xa9/0x130 fs/read_write.c:1311
- do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 29936 Comm: syz-executor.5 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
+On Thu, Mar 11, 2021 at 11:34 AM Shubhankar Kuranagatti
+<shubhankarvk@gmail.com> wrote:
+>
+> The assignment inside the if condition has been changed to
+> initialising outside the if condition.
+>
+> Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+> ---
+>  net/core/datagram.c | 31 ++++++++++++++++++++-----------
+>  1 file changed, 20 insertions(+), 11 deletions(-)
+>
+> diff --git a/net/core/datagram.c b/net/core/datagram.c
+> index 15ab9ffb27fe..7b2204f102b7 100644
+> --- a/net/core/datagram.c
+> +++ b/net/core/datagram.c
+> @@ -427,7 +427,8 @@ static int __skb_datagram_iter(const struct sk_buff *skb, int offset,
+>                 offset += n;
+>                 if (n != copy)
+>                         goto short_copy;
+> -               if ((len -= copy) == 0)
+> +               len -= copy
+> +               if ((len) == 0)
+>                         return 0;
+>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Quite frankly I prefer the current style.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+It also seems you have not even compiled your change, this is not a good start.
+
+Lets keep reviewer time to review patches that really bring an improvement,
+since stylistic changes like that make our backports more likely to
+have conflicts.
+
+Thanks.
