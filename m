@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CC5337F0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8B1337F17
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhCKUca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 15:32:30 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:50856 "EHLO mail.skyhub.de"
+        id S231169AbhCKUdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 15:33:14 -0500
+Received: from mga07.intel.com ([134.134.136.100]:21004 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230363AbhCKUcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 15:32:12 -0500
-Received: from zn.tnic (p200300ec2f0e1f00a86a11edd1796e13.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1f00:a86a:11ed:d179:6e13])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230388AbhCKUct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 15:32:49 -0500
+IronPort-SDR: 124eicIJoxFmPQUvdFfICzJcxeSJJLlU9q3hmugJ1H0iyR2hPIBw2o5SnIb8eRxTDQZ48mVwwO
+ uDH1UJiQv8mg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="252754139"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="252754139"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 12:32:48 -0800
+IronPort-SDR: n2Ti6faOeM/TTrhiaKAr6ll/6qNmfd4EZnmxp+IhAJucZ461U586Xe3A0yVjQyUbsbayLMzXOa
+ eHpWvga9oKIQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="603677465"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Mar 2021 12:32:47 -0800
+Received: from [10.251.15.67] (kliang2-MOBL.ccr.corp.intel.com [10.251.15.67])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3F4321EC041D;
-        Thu, 11 Mar 2021 21:32:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615494730;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=X0fH1nKE+B03jnhHgFBoQ/AhcZ8YeXX1uTmcsmmAkq0=;
-        b=CZQq1kEt+fYlsQYDk8iKQIr7kZBShezRTt1o6/eFG3JHlcPrPYk8ZoICB6TmkumNZo/ATP
-        TzZfnSAK8MKwQSY5P3MLo8QbjPJ8H/ge0JzXWSCPvw/+GCLu0tPWU0JidZ0Q2i+MX650rD
-        LRjtyvvm9IOT+VRPl1dobHQNnCLeJ/I=
-Date:   Thu, 11 Mar 2021 21:32:06 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
-Message-ID: <20210311203206.GF5829@zn.tnic>
-References: <032386c6-4b4c-2d3f-0f6a-3d6350363b3c@amd.com>
- <CALMp9eTTBcdADUYizO-ADXUfkydVGqRm0CSQUO92UHNnfQ-qFw@mail.gmail.com>
- <0ebda5c6-097e-20bb-d695-f444761fbb79@amd.com>
- <0d8f6573-f7f6-d355-966a-9086a00ef56c@amd.com>
- <1451b13e-c67f-8948-64ff-5c01cfb47ea7@redhat.com>
- <3929a987-5d09-6a0c-5131-ff6ffe2ae425@amd.com>
- <7a7428f4-26b3-f704-d00b-16bcf399fd1b@amd.com>
- <78cc2dc7-a2ee-35ac-dd47-8f3f8b62f261@redhat.com>
- <d7c6211b-05d3-ec3f-111a-f69f09201681@amd.com>
- <20210311200755.GE5829@zn.tnic>
+        by linux.intel.com (Postfix) with ESMTPS id C57F4580514;
+        Thu, 11 Mar 2021 12:32:45 -0800 (PST)
+Subject: Re: [PATCH V2 20/25] perf/x86/intel: Add Alder Lake Hybrid support
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+ <1615394281-68214-21-git-send-email-kan.liang@linux.intel.com>
+ <YEpAtTttSxMVDWYp@hirez.programming.kicks-ass.net>
+ <01176076-049b-0129-4865-8c49cd002060@linux.intel.com>
+ <20210311195832.GK4746@worktop.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <400dbd6e-389c-899d-6d11-14b5a8f8f90e@linux.intel.com>
+Date:   Thu, 11 Mar 2021 15:32:44 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210311200755.GE5829@zn.tnic>
+In-Reply-To: <20210311195832.GK4746@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 09:07:55PM +0100, Borislav Petkov wrote:
-> On Wed, Mar 10, 2021 at 07:21:23PM -0600, Babu Moger wrote:
-> > # git bisect good
-> > 59094faf3f618b2d2b2a45acb916437d611cede6 is the first bad commit
-> > commit 59094faf3f618b2d2b2a45acb916437d611cede6
-> > Author: Borislav Petkov <bp@suse.de>
-> > Date:   Mon Dec 25 13:57:16 2017 +0100
-> > 
-> >     x86/kaiser: Move feature detection up
+
+
+On 3/11/2021 2:58 PM, Peter Zijlstra wrote:
+> On Thu, Mar 11, 2021 at 11:53:35AM -0500, Liang, Kan wrote:
 > 
-> What is the reproducer?
+>>>> The "cpu_core" PMU is similar to the Sapphire Rapids PMU, but without
+>>>> PMEM.
+>>>> The "cpu_atom" PMU is similar to Tremont, but with different
+>>>> event_constraints, extra_regs and number of counters.
 > 
-> Boot latest 4.9 stable kernel in a SEV guest? Can you send guest
-> .config?
+>>> So do these things use the same event lists as SPR and TNT?
+>>
+>> No, there will be two new event lists on ADL. One is for Atom core, and the
+>> other is for big core. They are different to SPR and TNT.
 > 
-> Upthread is talking about PCID, so I'm guessing host needs to be Zen3
-> with PCID. Anything else?
+> *sigh* how different?
 
-That oops points to:
+The core PMU event list should be similar between SPR and the big core 
+of ADL, because they both utilize the Golden Cove core. But the uncore 
+PMU event list is totally different for client and server.
 
-[    1.237515] kernel BUG at /build/linux-dqnRSc/linux-4.9.228/arch/x86/kernel/alternative.c:709!
+The Atom core of ADL utilizes the Gracemont core, which is a successor 
+to Tremont. It introduces many new events. We cannot use the Tremont 
+event list instead.
 
-which is:
 
-        local_flush_tlb();
-        sync_core();
-        /* Could also do a CLFLUSH here to speed up CPU recovery; but
-           that causes hangs on some VIA CPUs. */
-        for (i = 0; i < len; i++)
-                BUG_ON(((char *)addr)[i] != ((char *)opcode)[i]);	<---
-        local_irq_restore(flags);
-        return addr;
+> 
+>>> My desktop has: cpu/caps/pmu_name and that gives "skylake", do we want
+>>> the above to have cpu_core/caps/pmu_name give "sapphire_rapids" etc.. ?
+>>>
+>>
+>> I think current implementation should be good enough.
+>>
+>> $ cat /sys/devices/cpu_atom/caps/pmu_name
+>> alderlake_hybrid
+>>
+>> "alderlake_hybrid" tells the perf tool that it's Alder Lake Hybrid system.
+>> "cpu_atom" tells the perf tool that it's for Atom core.
+> 
+> Yeah, but then I have to ask Google wth those atoms and cores actually
+> are. Why not tell me upfront?
+> 
+> Since we're now working on it, we all know, but in 6 months time nobody
+> will remember and then we'll constantly have to look it up and curse
+> ourselves for not doing better.
 
-in text_poke() which basically says that the patching verification
-fails. And you have a local_flush_tlb() before that. And with PCID maybe
-it is not flushing properly or whatnot.
+I think the "sapphire_rapids" is the code name for the server platform.
+Maybe we should use the code name of core?
 
-And deep down in the TLB flushing code, it does:
+$ cat /sys/devices/cpu_atom/caps/pmu_name
+gracemont
+$ cat /sys/devices/cpu_core/caps/pmu_name
+golden_cove
 
-        if (kaiser_enabled)
-                kaiser_flush_tlb_on_return_to_user();
 
-and that uses PCID...
-
-Anyway, needs more info.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Kan
