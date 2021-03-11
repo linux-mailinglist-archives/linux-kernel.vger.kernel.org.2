@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5D7337B79
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68706337B88
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhCKR6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:58:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
+        id S229921AbhCKSAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhCKR6B (ORCPT
+        with ESMTP id S229657AbhCKSAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:58:01 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BAAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:58:01 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id x10so21532753qkm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:58:01 -0800 (PST)
+        Thu, 11 Mar 2021 13:00:10 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08A9C061574;
+        Thu, 11 Mar 2021 10:00:09 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id u4so3307742ljo.6;
+        Thu, 11 Mar 2021 10:00:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4WywUmoHmcIslZBfIAYNGcMCWLJTSJyqm2ax+ex3lZg=;
-        b=hLfud36U62xFdRMVP0xJQ22zs0F3ZYICohff39RVC8U6/j3fdwTdV3rhrcta+nXsXg
-         kTMA9KT93A4jRk9lqUweLLk6xHAKUjdTFbHFKK+zBOL0zZHQYzvdmeITdlKrgfx99mXg
-         l2iPVHChfNZ8uJCygKlUwzz/RrHf20Dqkp/HDpmFaYY8UcQKensg9L1KoNz29je0O4cg
-         6rLjfOV9+zuVOlm8Otyjf+vrSE0RIBR63PrLmPZtHTYjzzT3XnyrVQX8B7HUj4rGIal6
-         07YUdh1GnA+yNXtwQQN/epEUYSRhxJYVlEgifAaCrlwxunn6q68UTP2qqnxzozD5Rzvc
-         1AvA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d2kCpNgpV1Us1sS5Z/bRyvGx/S38Rce/udBRavO6Lf4=;
+        b=pAiaQi/DOe5VI37J1WZL8wdDYnobnmoDkbM/rJIB6Ztvfpztzu5u+on735OxALpm74
+         lWt92dxNoOmnMea7WIS36NrWzLz6dDBkAb7NPAL/Mzojw5e5iiQ8yC9u+DNzQtiCRfg4
+         byXy7d/tQQ/M9iUFzLOE/DAevb9rfZyS5VkqQEUSAyIXYIXZIaOzvAxp6Jl8K/p8rKCS
+         +LKFJlYZjgQ/JDY5oKYUiyaE6ocYouhSfEdA3bHQn/W8DlSpgfJPsM6lTaKKB6OGv4SV
+         kzsejXu2xbtRRP90QJlOsA9yf8QK8x7ltDxKvH6JBo7bUqJcpng2xfdJENmV/NDy86Cj
+         fxsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4WywUmoHmcIslZBfIAYNGcMCWLJTSJyqm2ax+ex3lZg=;
-        b=IjgQHCE+XxktoXUDRofFtzmI/JqK8OrAriwL1uKT4HM1LVQgUYkqkjCd4nJCEF90RB
-         QKgCgoz3FCFUWl/LGACBs0/vyN2x3QPKkrpQbgTPtsHl5u407//BB1ShnZ6Q/Ql6v8Qx
-         PB+BAj1F9/q9zc8sW+9newZmrtIVtrCE5bqE35r5YW4rxsBJ2N4PTcUEjVwz9KjTvFHG
-         CYlekQz6jdZYMx9nAlb87VK5zfFAgUS7jqCqzcEUJFnlEGslvkr298TYwXDLx30MnozV
-         /K1aS3adbm46rEkSUPZopiYiuJFUmLKdZqW7gBVOZLs06VLekZY6jz7k2k9dwfPTsjzk
-         K0rQ==
-X-Gm-Message-State: AOAM533FnO9bShTnqJknOpvJk47OtpFV21XdJNL3DyeGvi2T5Jhfz+AK
-        /A+cAatiTSyd1lYeTQhVV70ivrjoiJjF6ATinDr8kDIwByetWw==
-X-Google-Smtp-Source: ABdhPJyD9GlghfhdZvjqLVxg9NP8v10ew6ZlbJtUFHlhDFYE1EejGkagEXTncqa00e89PsD9eSJiQospzRBBB0kNlwQ=
-X-Received: by 2002:a37:46cf:: with SMTP id t198mr8826556qka.265.1615485480009;
- Thu, 11 Mar 2021 09:58:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d2kCpNgpV1Us1sS5Z/bRyvGx/S38Rce/udBRavO6Lf4=;
+        b=aqtzNM4c8GuprrPuPyYFH3YE2u/rGPlzNolp1qdTo9flubKMDTa5f4uL7fgdiuslGS
+         nrBr8MzuBjQvTmwDFyfa9SEHza8TS5LftjsOxor8VQKgkaWOnPPbGp5bB0VW+00h+mMq
+         /HUemtC1WKrENtJCFrO8mhACcv+IcISslQdzHvcb5+Mw5b704mCDzrOc1njGBEF+7yJC
+         QLq7LTRI0gcgwWF0JJ4CPLmqUpD/gWT2uhH0k044vyrdOxv+pCReBD3Eblnay5DYPXdc
+         eCNoSx3ikoXWxQVXW8+5cwNhmz4NFr3yJqUgYqMBry5/r56ZdgF0qTViW7zqJFGq1XW9
+         1KuA==
+X-Gm-Message-State: AOAM532nScYTFxpLgcLypGxkJroccBdfzZUy3igc774SxCQikYn0K9yD
+        nY5ZaWpRWEo1c3tttN6FSB4=
+X-Google-Smtp-Source: ABdhPJzLaLYi8RU+Z9F3erPnTXSDwtmFGzk4dCQ3Rl1O/rGe/M9z0Ik7AAb0jXqDVL29+sci+i6S0A==
+X-Received: by 2002:a2e:3818:: with SMTP id f24mr51543lja.466.1615485607955;
+        Thu, 11 Mar 2021 10:00:07 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id k18sm1014075lfm.88.2021.03.11.10.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 10:00:07 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Fertser <fercerpav@gmail.com>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/5] Add missing reset controls to NVIDIA Tegra ASoC drivers
+Date:   Thu, 11 Mar 2021 20:59:53 +0300
+Message-Id: <20210311175958.7433-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
- <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
-In-Reply-To: <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 11 Mar 2021 18:57:48 +0100
-Message-ID: <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
-Subject: Re: arm64 syzbot instances
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 2:30 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> >
-> > The instances found few arm64-specific issues that we have not
-> > observed on other instances:
->
-> I've had a brief look at these:
->
-> > https://syzkaller.appspot.com/bug?id=1d22a2cc3521d5cf6b41bd6b825793c2015f861f
->
-> This one  doesn't seem arm64 specific at all. While the KASAN report has shown
-> up on arm64, the link to
-> https://syzkaller.appspot.com/bug?id=aa8808729c0a3540e6a29f0d45394665caf79dca
-> seems to be for x86 machines running into the same problem.
->
-> Looking deeper into the log, I see that fw_load_sysfs_fallback() finds
-> an existing
-> list entry on the global "pending_fw_head" list, which seems to have been freed
-> earlier (the allocation listed here is not for a firmware load, so presumably it
-> was recycled in the meantime). The log shows that this is the second time that
-> loading the regulatory database failed in that run, so my guess is that it was
-> the first failed load that left the freed firmware private data on the
-> list, but I
-> don't see how that happened.
->
-> > https://syzkaller.appspot.com/bug?id=bb2c16b0e13b4de4bbf22cf6a4b9b16fb0c20eea
->
-> This one rings a bell: opening a 8250 uart on a well-known port must fail
-> when no I/O ports are registered in the system, or when the PCI I/O ports
-> are mapped to an invalid area.
->
-> It seems to be attempting a register access at I/O port '1' (virtual
-> address 0xfffffbfffe800001 is one byte into the well-known PCI_IOBASE),
-> which is an unusual place for a UART, traditional PCs had it at 0x3F8.
->
-> This could be either a result of qemu claiming to support a PIO based UART
-> at the first available address, or the table of UARTS being uninitialized
-> .bss memory.
->
-> Definitely an arm64 specific bug.
+Hi,
 
-I can reproduce this with just:
+This series adds missing hardware reset controls to I2S and AC97 drivers.
+Currently drivers happen to work properly because reset is implicitly
+deasserted by tegra-clk driver, but clk driver shouldn't touch the resets
+and we need to fix it because this breaks other Tegra drivers. Previously
+we fixed the resets of the AHUB and HDMI codec drivers, but turned out
+that we missed the I2C and AC97 drivers.
 
-#include <stdlib.h>
-#include <string.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <unistd.h>
+Thanks to Paul Fertser for testing the pending clk patches and finding
+that audio got broken on Tegra20 AC100 netbook because of the missing I2S
+reset.
 
-int main(void)
-{
-  int fd = syscall(__NR_openat, 0xffffffffffffff9cul, "/dev/ttyS3", 0ul, 0ul);
-  char ch = 0;
-  syscall(__NR_ioctl, fd, 0x5412, &ch); // TIOCSTI
-  return 0;
-}
+Changelog:
 
+v4: - Added missing prototype for reset_control_bulk_put().
 
-It does not even do any tty setup... does it point to a qemu bug?
+v3: - Fixed reset stubs for !CONFIG_RESET_CONTROLLER.
+
+v2: - After some more testing I found that I2S control logic doesn't require
+      I2S clock to be enabled for resetting. Hence it's fine to have I2S to
+      be reset by parent AHUB driver, so I dropped "tegra30: i2s: Add reset
+      control" patch.
+
+    - While I was double-checking resets on Tegra30, I found that that
+      Tegra30 I2S driver has a broken runtime PM which doesn't restore
+      hardware state on resume and it's lost after AHUB RPM-resume.
+      Thus, added this new patch "tegra30: i2s: Restore hardware state
+      on runtime PM resume".
+
+    - Added new patches which switch AHUB driver to use reset-bulk API.
+      I took the RFC patch from Philipp Zabel, fixed it and added
+      devm_reset_control_bulk_optional_get_exclusive_released() that
+      will be useful for further Tegra GPU patches. This is a minor
+      improvement which makes code cleaner.
+
+Dmitry Osipenko (4):
+  ASoC: tegra20: ac97: Add reset control
+  ASoC: tegra20: i2s: Add reset control
+  ASoC: tegra30: i2s: Restore hardware state on runtime PM resume
+  ASoC: tegra: ahub: Switch to use reset-bulk API
+
+Philipp Zabel (1):
+  reset: Add reset_control_bulk API
+
+ drivers/reset/core.c           | 215 ++++++++++++++++++++++
+ include/linux/reset.h          | 315 +++++++++++++++++++++++++++++++++
+ sound/soc/tegra/tegra20_ac97.c |  21 +++
+ sound/soc/tegra/tegra20_ac97.h |   1 +
+ sound/soc/tegra/tegra20_i2s.c  |  31 ++++
+ sound/soc/tegra/tegra20_i2s.h  |   1 +
+ sound/soc/tegra/tegra30_ahub.c | 104 ++++-------
+ sound/soc/tegra/tegra30_ahub.h |   5 +-
+ sound/soc/tegra/tegra30_i2s.c  |  41 ++---
+ 9 files changed, 636 insertions(+), 98 deletions(-)
+
+-- 
+2.29.2
+
