@@ -2,61 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126A6336EDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AE9336EDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhCKJ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:28:50 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51748 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhCKJ2e (ORCPT
+        id S232021AbhCKJ3W convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 04:29:22 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:52881 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232001AbhCKJ2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:28:34 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lKHcN-0002PC-3z; Thu, 11 Mar 2021 09:28:31 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/amdgpu: Fix spelling mistake "disabed" -> "disabled"
-Date:   Thu, 11 Mar 2021 09:28:30 +0000
-Message-Id: <20210311092830.5106-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 11 Mar 2021 04:28:50 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-232-BZvBvr3pMjOf4Z7qPKK-tw-1; Thu, 11 Mar 2021 09:28:47 +0000
+X-MC-Unique: BZvBvr3pMjOf4Z7qPKK-tw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 11 Mar 2021 09:28:46 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 11 Mar 2021 09:28:46 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: RE: The killing of ideal_nops[]
+Thread-Topic: The killing of ideal_nops[]
+Thread-Index: AQHXFcc39lSrY3Kgm0WONtWbUmlAY6p+hE6A
+Date:   Thu, 11 Mar 2021 09:28:46 +0000
+Message-ID: <3913a992a9384fe083a5f24e4ef86fdc@AcuMS.aculab.com>
+References: <20210309120519.7c6bbb97@gandalf.local.home>
+ <YEfnnFUbizbJUQig@hirez.programming.kicks-ass.net>
+ <362BD2A4-016D-4F6B-8974-92C84DC0DDB4@zytor.com>
+ <YEiN+/Zp4uE/ISWD@hirez.programming.kicks-ass.net>
+ <YEiS8Xws0tTFmMJp@hirez.programming.kicks-ass.net>
+ <YEiZXtB74cnsLTx/@hirez.programming.kicks-ass.net>
+ <YEid+HQnqgnt3iyY@hirez.programming.kicks-ass.net>
+ <20210310091324.0c346d5f@oasis.local.home>
+ <YEjWryS/9uB2y62O@hirez.programming.kicks-ass.net>
+ <CAADnVQKMRWMuAJEJBPADactdKaGx4opg3y82m7fy59rRmA9Cog@mail.gmail.com>
+ <YEjuArPJsSYDaYeI@hirez.programming.kicks-ass.net>
+In-Reply-To: <YEjuArPJsSYDaYeI@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Peter Zijlstra <peterz@infradead.org>
+...
+> Below is the latest version which I just pushed out to my git tree so
+> that the robots can have a go at it.
 
-There is a spelling mistake in a drm debug message. Fix it.
+Why not delete the indirection table?
+So you end up with:
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +#ifndef CONFIG_64BIT
+> +
+> +/*
+> + * Generic 32bit nops from GAS:
+> + *
+> + * 1: nop
+> + * 2: movl %esi,%esi
+> + * 3: leal 0x00(%esi),%esi
+> + * 4: leal 0x00(,%esi,1),%esi
+> + * 5: leal %ds:0x00(,%esi,1),%esi
+> + * 6: leal 0x00000000(%esi),%esi
+> + * 7: leal 0x00000000(,%esi,1),%esi
+> + * 8: leal %ds:0x00000000(,%esi,1),%esi
+>   *
+> - * *_NOP5_ATOMIC must be a single instruction.
+> + * Except 5 and 8, which are DS prefixed 4 and 7 resp, where GAS would emit 2
+> + * nop instructions.
+>   */
+> +#define BYTES_NOP1	0x90
+> +#define BYTES_NOP2	0x89,0xf6
+> +#define BYTES_NOP3	0x8d,0x76,0x00
+> +#define BYTES_NOP4	0x8d,0x74,0x26,0x00
+> +#define BYTES_NOP5	0x3e,BYTES_NOP4
+> +#define BYTES_NOP6	0x8d,0xb6,0x00,0x00,0x00,0x00
+> +#define BYTES_NOP7	0x8d,0xb4,0x26,0x00,0x00,0x00,0x00
+> +#define BYTES_NOP8	0x3e,BYTES_NOP7
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 617e62e1eff9..dcbae9237cfa 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3464,7 +3464,7 @@ int amdgpu_device_init(struct amdgpu_device *adev,
- 				      adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_COMMON ||
- 				      adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_IH ||
- 				      adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_SMC)) {
--					DRM_DEBUG("IP %s disabed for hw_init.\n",
-+					DRM_DEBUG("IP %s disabled for hw_init.\n",
- 						adev->ip_blocks[i].version->funcs->name);
- 					adev->ip_blocks[i].status.hw = true;
- 				}
--- 
-2.30.2
+const unsigned char const x86_nops[8][8] = {
+	{ BYTES_NOP1 },
+	{ BYTES_NOP2 },
+	{ BYTES_NOP3 },
+	{ BYTES_NOP4 },
+	{ BYTES_NOP5 },
+	{ BYTES_NOP6 },
+	{ BYTES_NOP7 },
+	{ BYTES_NOP8 }
+};
+
+The rest of the patch may not need changing.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
