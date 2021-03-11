@@ -2,86 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10FB337932
+	by mail.lfdr.de (Postfix) with ESMTP id 40849337931
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbhCKQWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:22:39 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:50406 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234176AbhCKQW3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:22:29 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 60DB0879;
-        Thu, 11 Mar 2021 17:22:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615479748;
-        bh=bEKNz0DEVs402f2NWP18diiyQMl/fKPScq2R7rolfQo=;
+        id S234492AbhCKQWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:22:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234172AbhCKQWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:22:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEB776146B;
+        Thu, 11 Mar 2021 16:22:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615479728;
+        bh=1VYaodho3Fb2my+EoZ2QcmI2TzkSbTeXP60JfAHZD8E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oGSnvQDJfv547u1K6L5wBAGiDGkd3nTaPWP12yXBJ6sd1OHpe1NBHaUUGlGu85lKT
-         wReIKQZsUpZDWLjrngYfKYPH1beVssQMrO1wmzXOs/C29lT44tPl0AvMC5BrHXSmdS
-         ySc36Mb6uf2SUaXLXanSpg0WSa8ESQo3pBFmv3Vo=
-Date:   Thu, 11 Mar 2021 18:21:54 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, senozhatsky@chromium.org
-Subject: Re: [PATCH 08/10] media: uvcvideo: Always return a value on
- V4L2_CTRL_WHICH_DEF_VAL
-Message-ID: <YEpDohOKcLmfpTHQ@pendragon.ideasonboard.com>
-References: <20210311122040.1264410-1-ribalda@chromium.org>
- <20210311122040.1264410-10-ribalda@chromium.org>
+        b=LMKLdG1n8750gfq5NUbVfRcgOwLwtLSBp3+oVjApFw4OYSxxjnjWcqHa03ztA92Lz
+         aIt3vMqS5PAIsqZ/1Tc5fgLYV01t5Qpa1vW/trKAd1UbcPQHhuHQQJyRhoOmHN+9FE
+         CwQFfFya4qUmSQ+mjHGeeHKoSJNPNZJp3O2uOR+PJKFSW5ItcWOZBHoGHMEsX6krZu
+         7aA2bw3TkZPz3opFzfInaDpCUrGBjXnzjSRj6mBdmfms6NdwbP2xM1rlIivbNrhOnZ
+         rIy1RttdU7npdm8PONdNhLosyN+ckCZnw1kWirSPCqXBI10DjY5YUnSEuezjQeLpze
+         P3xanJ9ns49jw==
+Date:   Thu, 11 Mar 2021 16:22:01 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
+Subject: Re: [PATCH v4 15/34] arm64: asm: Provide set_sctlr_el2 macro
+Message-ID: <20210311162201.GE31206@willie-the-truck>
+References: <20210310175751.3320106-1-qperret@google.com>
+ <20210310175751.3320106-16-qperret@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311122040.1264410-10-ribalda@chromium.org>
+In-Reply-To: <20210310175751.3320106-16-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-Thank you for the patch.
-
-On Thu, Mar 11, 2021 at 01:20:38PM +0100, Ricardo Ribalda wrote:
-> Fixes v4l2-compliance:
-> Control ioctls (Input 0):
->                 fail: v4l2-test-controls.cpp(813): doioctl(node, VIDIOC_G_EXT_CTRLS, &ctrls)
->         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+On Wed, Mar 10, 2021 at 05:57:32PM +0000, Quentin Perret wrote:
+> We will soon need to turn the EL2 stage 1 MMU on and off in nVHE
+> protected mode, so refactor the set_sctlr_el1 macro to make it usable
+> for that purpose.
 > 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> Signed-off-by: Quentin Perret <qperret@google.com>
 > ---
->  drivers/media/usb/uvc/uvc_v4l2.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index 9b6454bb2f28..b500356fd06c 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -1057,12 +1057,7 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
->  			struct v4l2_queryctrl qc = { .id = ctrl->id };
->  
->  			ret = uvc_query_v4l2_ctrl(chain, &qc);
-> -			if (ret < 0) {
-> -				ctrls->error_idx = i;
-> -				return ret;
-> -			}
-> -
-> -			ctrl->value = qc.default_value;
-> +			ctrl->value = (ret < 0) ? 0 : qc.default_value;
+>  arch/arm64/include/asm/assembler.h | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
 
-That's not great, if an error occurs, it should be reported to the user,
-not ignored silently. Sounds like this needs to be addressed in
-v4l2-compliance, as the V4L2 specification doesn't forbid errors being
-returned from V4L2_CTRL_WHICH_DEF_VAL.
+Acked-by: Will Deacon <will@kernel.org>
 
->  		}
->  
->  		return 0;
-
--- 
-Regards,
-
-Laurent Pinchart
+Will
