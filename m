@@ -2,98 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AD3336A98
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 04:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2100C336A9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 04:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhCKDVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 22:21:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57326 "EHLO
+        id S230451AbhCKDWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 22:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231156AbhCKDVb (ORCPT
+        with ESMTP id S231161AbhCKDVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 22:21:31 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC6AC061574;
-        Wed, 10 Mar 2021 19:21:21 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id e2so4264516pld.9;
-        Wed, 10 Mar 2021 19:21:21 -0800 (PST)
+        Wed, 10 Mar 2021 22:21:40 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3971EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 19:21:40 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id mm21so43174604ejb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 19:21:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Ivcy7Ra48iIN4fx9xpDqQ0r9uvJj0RhC3xsJ+4+M9iU=;
-        b=hYxB/u6+hGcYGbqzJPZ4n+/YI9KIHDNbEmLn8g+mdbX+cCoWaGweefCTDixi2LzIhS
-         0JvxCVfQO1M5ROnGAZ5hGSPutHS465fxaAXVosQn6JdE9A8vE3Nq4KdZ+SBqjW3oMESa
-         bt9oWgULGfJ825ReLVN2CZSWltXvVe+3FxIY+4RZ4KMG5zJzKWGz87XOT22ejroq0WmZ
-         QCPMxFyy4piD0WzUSC5td3xRyCjt9D4nU8SQY0nGj58WFFVr0s8t0ac+bWDwpZlFJzky
-         d+C6x3YJ8WRlk/2DuWBgsJc3EBvRBop9NdCmAufc4sIAY1ANG6McLtnv8gw4TTKHR+ON
-         yFDg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=58KsFLgr6KLxNvD5xC5kJqAwJ63HiJ/2w1uIcACsZKs=;
+        b=S8EmBfsg5uy4YlvFeFJgLxo8uSqwMgxCkzDJaN06QegOmUb+jmfxna63ljVzv6uv0U
+         oAFzQGC4sTty9XT2fqyy55g11McLbl8kdwNnCuNoaIXdGQ9MMCd2MA+LZVT0jCDpE0lp
+         KnWM6BvNqur2AvugBuy0P9OT4In6CEFOqCI2leOkdSxhg1S6PWrqslyCzkagZLmSzzM2
+         um+85Qw0yiBovhEcSyzgIamVaJT6UhfEG90UwRftH3gY5A/dcnL68pVdUnAmJ7UC1AKz
+         WyJ6637Rob5+fRGxGwv8uh6OAi02cm0V+mQfvFDY3GuccKGJRCyIsr1nriu9p7+PtKtR
+         bPJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ivcy7Ra48iIN4fx9xpDqQ0r9uvJj0RhC3xsJ+4+M9iU=;
-        b=jBZ2eIp24TkEtBa89UfJOH/q6wkcQTULwlqtmCA0Rz09vHkHESIkkRRus9QEfiKYwv
-         yNmq9gz9n7zDy7YvzKOdzW7WfagCnVw2za72oa8rjU7fnp8HhMFi4+2QFAnO7w/k4JCD
-         1GImHTIoIajk1oCVnDa+y41ePArlvaN1U3BmMOZMFrq6JIl4aKop05YEzi5EIjtwN/Bf
-         41ZuBFbOBLmHivzoA/0DZe3Y2Wnk12+ep24uT1E3Uq8OTf7XmUM5jIAvlzsqA4JKw5dD
-         aQVoJHhZj2TbOQiCjiCVoGD9dpJmezZ1cxPQvP9MN/mLcFCvTjKPPRtxfr9RnckA6iLx
-         sbTA==
-X-Gm-Message-State: AOAM532jWyk7qQbtSqT/wzN3xG7SD/DS0/15RYDd1IDm6lZJdi6G195M
-        EXG9wgx9mA/XsK6jcJjm7tiVaytxmJI=
-X-Google-Smtp-Source: ABdhPJyj+GyJRKG6iL6Nx3uSY7ZT0SWl2tNgBCpdqHyf/QQZBu1QJgB57lu9L31MorFZqGua4kz9eQ==
-X-Received: by 2002:a17:90a:a584:: with SMTP id b4mr6724628pjq.186.1615432880340;
-        Wed, 10 Mar 2021 19:21:20 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y16sm778432pgl.58.2021.03.10.19.21.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 19:21:19 -0800 (PST)
-Subject: Re: [PATCH net] net: dsa: mt7530: setup core clock even in TRGMII
- mode
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210311012108.7190-1-ilya.lipnitskiy@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <79be95b7-0c56-f831-2f3f-5a41006d0037@gmail.com>
-Date:   Wed, 10 Mar 2021 19:21:17 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=58KsFLgr6KLxNvD5xC5kJqAwJ63HiJ/2w1uIcACsZKs=;
+        b=iu0hWqOUyG1p4Ymi3VstYH2IunAsNlqZp8Xu5HJn1Sq97I5WNwTASrF3XLlZ91PlDr
+         DpF3c4MWcaqH2a6i+AzuwOAJzpuz64zu3oX39sPjAsKsTIxa7T/KPgnnqSI1Z2tX44cr
+         DzewxCbn9f4pb1UCfOD4BCAP3mfHHgYSrAnkdLVss0N+zncMbmJe6pwpCBEbrG1tzEcG
+         EEGS4pGmcK1jfcAFDRJWPfUn89zEnjlCytX8nlIi4xWMSqgcVlaVwWfR7DwU6hDWK+Zf
+         umhj01kXszvy4jQspc2Pqp32gtB/DcHeKO87vZ8SRknrpV1TFtv/P/Y9AKeXl1a3ns6o
+         A19A==
+X-Gm-Message-State: AOAM532SkDvGDg+TExU3usMliDBInF6gzvFEjKqhEvaCUsZkS7XXoW6A
+        Q3hMKilhZmZF2i1eVk2dreYNTaXpd5Oor+ezFGWi19VEm04P3Gm9
+X-Google-Smtp-Source: ABdhPJwfU0cZitsOoMDn9KYFy1GGC5pxA5KT7muiD/jUgWKE0f6zr2B1nLaje47OpTz75JAY1P6uwV5yGszqBexkVSY=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr961390eju.375.1615432898833;
+ Wed, 10 Mar 2021 19:21:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210311012108.7190-1-ilya.lipnitskiy@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210310132320.510840709@linuxfoundation.org>
+In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 11 Mar 2021 08:51:27 +0530
+Message-ID: <CA+G9fYt=K-uVJPBvwZUtTUQVe=ZsQLzsFd1QD6SvY6GwV770Hg@mail.gmail.com>
+Subject: Re: [PATCH 5.11 00/36] 5.11.6-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 10 Mar 2021 at 18:54, <gregkh@linuxfoundation.org> wrote:
+>
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> This is the start of the stable review cycle for the 5.11.6 release.
+> There are 36 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.11.6-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.11.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On 3/10/2021 5:21 PM, Ilya Lipnitskiy wrote:
-> A recent change to MIPS ralink reset logic made it so mt7530 actually
-> resets the switch on platforms such as mt7621 (where bit 2 is the reset
-> line for the switch). That exposed an issue where the switch would not
-> function properly in TRGMII mode after a reset.
-> 
-> Reconfigure core clock in TRGMII mode to fix the issue.
-> 
-> Tested on Ubiquiti ER-X (MT7621) with TRGMII mode enabled.
-> 
-> Fixes: 3f9ef7785a9c ("MIPS: ralink: manage low reset lines")
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.11.6-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.11.y
+git commit: 4107fbb88ee5fa94c8e94ffe5833b7fbda792c96
+git describe: v5.11.5-37-g4107fbb88ee5
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
+.y/build/v5.11.5-37-g4107fbb88ee5
+
+No regressions (compared to build v5.11.5)
+
+No fixes (compared to build v5.11.5)
+
+Ran 52341 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-64k_page_size
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-commands-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* perf
+* fwts
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-ipc-tests
+* ltp-sched-tests
+* ltp-tracing-tests
+* network-basic-tests
+* v4l2-compliance
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lkdtm
+* kselftest-vm
+* kselftest-x86
+* ltp-controllers-tests
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* kvm-unit-tests
+* rcutorture
+* kunit
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
