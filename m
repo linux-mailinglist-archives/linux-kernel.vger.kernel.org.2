@@ -2,103 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06273372B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A517E3372C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbhCKMew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:34:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbhCKMej (ORCPT
+        id S230430AbhCKMfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:35:22 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58652 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233122AbhCKMet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:34:39 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B799AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:34:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uYQOV+uWm8ftXyQ2Xca8N4eM+vMvs0u/E17UZmM5nQQ=; b=gQ07OHE/uJWsc03S41EdzLrH6X
-        VDh8K0b89boqBGb47/8qBchC/pjIJFg3UZARRr7Gn9P+PDuerlK8Xra37oTb2jNgTUi+MHaZOe0Ju
-        n3l1wXnU0MuLwz8Hbas/3kA/l2aKQdvBBWUip8n8XDDCUcT6CWGrIS98wz5noEX8DG/TsVCYCJHkQ
-        P01Bw0CGiyjbPDudIHzZDfK1M5e+Qo8IAyXmQvI4sMt4e/36pReQpYbGF36qnBRKcc2ouJFN491SA
-        oby+sSlsurZMa51wbsorywdxFznT1aoz6balmAhOIp1g2yR9T/h6QmcsgPgdIfJYI8oHZuY2rpCat
-        GwttRYTQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKKWM-0096ke-FM; Thu, 11 Mar 2021 12:34:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D98C7304D28;
-        Thu, 11 Mar 2021 13:34:29 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C48AA29D00066; Thu, 11 Mar 2021 13:34:29 +0100 (CET)
-Date:   Thu, 11 Mar 2021 13:34:29 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-Subject: Re: [PATCH V2 16/25] perf/x86: Register hybrid PMUs
-Message-ID: <YEoOVTVhN3DpQXl2@hirez.programming.kicks-ass.net>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
+        Thu, 11 Mar 2021 07:34:49 -0500
+Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12BCYe8D004118;
+        Thu, 11 Mar 2021 21:34:40 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
+ Thu, 11 Mar 2021 21:34:40 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12BCYetI004115
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 11 Mar 2021 21:34:40 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 0/6] usbip fixes to crashes found by syzbot
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     shuah@kernel.org, valentina.manea.m@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1615171203.git.skhan@linuxfoundation.org>
+ <YEkQ4qS7tkwmjzDn@kroah.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <5baf6b94-72c4-6e69-65a5-35c5cfb8ca0e@i-love.sakura.ne.jp>
+Date:   Thu, 11 Mar 2021 21:34:38 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <YEkQ4qS7tkwmjzDn@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 08:37:52AM -0800, kan.liang@linux.intel.com wrote:
-> @@ -2092,9 +2105,37 @@ static int __init init_hw_perf_events(void)
->  	if (err)
->  		goto out1;
->  
-> -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
-> -	if (err)
-> -		goto out2;
-> +	if (!is_hybrid()) {
-> +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
-> +		if (err)
-> +			goto out2;
-> +	} else {
-> +		u8 cpu_type = get_hybrid_cpu_type(smp_processor_id());
-> +		struct x86_hybrid_pmu *hybrid_pmu;
-> +		int i;
-> +
-> +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
-> +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
-> +
-> +			hybrid_pmu->pmu = pmu;
-> +			hybrid_pmu->pmu.type = -1;
-> +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
-> +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
-> +
-> +			/* Only register the PMU for the boot CPU */
+On 2021/03/11 3:33, Greg KH wrote:
+> On Sun, Mar 07, 2021 at 08:53:25PM -0700, Shuah Khan wrote:
+>> This patch series fixes the following problems founds in syzbot
+>> fuzzing.
+> 
+> Thanks for these, all now queued up.
 
-Why ?!
+I send SIGSTOP to
 
-AFAICT we could register them all here. That instantly fixes that
-CPU_STARTING / CPU_DEAD fail elsewhere in this patch.
+  [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races leading to gpf
+  [PATCH 5/6] usbip: fix vhci_hcd attach_store() races leading to gpf
+  [PATCH 6/6] usbip: fix vudc usbip_sockfd_store races leading to gpf
 
-> +			if (hybrid_pmu->cpu_type != cpu_type)
-> +				continue;
-> +
-> +			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
-> +						x86_get_hybrid_pmu_type(cpu_type));
-> +			if (err) {
-> +				pr_warn("Failed to register a PMU, err %d\n", err);
-> +				kfree(x86_pmu.hybrid_pmu);
-> +				x86_pmu.hybrid_pmu = NULL;
-> +				goto out2;
-> +			}
-> +		}
-> +	}
->  
->  	return 0;
->  
+because these patches merely converted NULL pointer dererefence bug to use-after-free bug
+by breaking kthread_get_run() into kthread_create()/get_task_struct()/wake_up_process().
