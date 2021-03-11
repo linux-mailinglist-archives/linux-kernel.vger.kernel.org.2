@@ -2,233 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14F6337A59
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDE5337A58
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhCKRDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:03:46 -0500
-Received: from mail-eopbgr60041.outbound.protection.outlook.com ([40.107.6.41]:12985
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229578AbhCKRDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229741AbhCKRDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:03:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhCKRDW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Mar 2021 12:03:22 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iJpmd6SO4AIpUL2mSAWDFP+0EhY6XQY2ZUgcwDgMdGY33fCfAnLm0xmsCtONdUZIM8P07ZqIDWb3YKFcXC96Wa1Ph+et/aW7twe8GDeiKFLr9KrcL1Hsb+1DV4XRhP6PoZgiajJUb+I4s4KugCDZJxeVqekZS8+q6spaN6gJh5Y6lqm/aU4hwKiagFnBRVM6dlsTTlxtr4bVnbnWAvm1Bg0tomzY9luI3IJKBxR71OV7PJ3cWPI/oH1EdlY+q3W0EpIX3yMGixNAbpjBjveHNoSHU2V8fvzk0gZI3Z9f4yZRMi9UczMxSYhs0Ho4u1/kJknWo0bHJkqyMOgriFBTxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TwckWWMXLKDW/SlY9AZftD75V0CzvGAwGxmuRqAoJiU=;
- b=UcOcPruVQl4w8OaYuRGT/wKfXE/E9vYE0ql9pDqyyzBPDNqAB0012mEkX5xfOKwwqURZgYeUgkTNwOm8y5/fkHD0sfEZMnAGj65OGlJnNuDlnOQhBnwKTYEG/C8rlXXKYRvbkNNSwbHwy0nUuqRESeYhB1CP6PAhTEel56jGbvGQkYJNLzE+j+JxBhamXX0E4pOQct0wmScBxYZqQpVkckbnvtM5O65U1DLmqK5Tj62MQoYMbv8jHgHlBett3O1Z2hDXkb/DGLCKDTDnJFmFwKdPz+y0Us8TC12pkX9PkngLY00OMHnBPwv/CfPcSZhf/BUEUIN0CONTnqbuFSY5cA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TwckWWMXLKDW/SlY9AZftD75V0CzvGAwGxmuRqAoJiU=;
- b=duI4p/NGtpnwmU2ndqirFp7YPRkEvMYxTP5TSBh9Psq4lip6GiJQYXz4iYj1k3mm5UthKCFOVM6GdRWjt44VG1y+rFoinbBdK8rzWcAv6tPj2WEleEeu4WpApz+V+Aa/SZ4OoEMSrwkzLLBtI3JLxnMMj62QfaJFp91nNxeqfDU=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM0PR04MB7155.eurprd04.prod.outlook.com (2603:10a6:208:194::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Thu, 11 Mar
- 2021 17:03:19 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::1cd:7101:5570:cd79]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::1cd:7101:5570:cd79%7]) with mapi id 15.20.3912.027; Thu, 11 Mar 2021
- 17:03:19 +0000
-Date:   Thu, 11 Mar 2021 22:33:03 +0530
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>, netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [net-next PATCH v7 07/16] net: mii_timestamper: check NULL in
- unregister_mii_timestamper()
-Message-ID: <20210311170303.GB5031@lsv03152.swis.in-blr01.nxp.com>
-References: <20210311062011.8054-1-calvin.johnson@oss.nxp.com>
- <20210311062011.8054-8-calvin.johnson@oss.nxp.com>
- <CAHp75VdMhBf8MsO+QqMOt_u3+BAiYsT2OeG5qOKnhCbZt1ygmQ@mail.gmail.com>
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6F4C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:03:22 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id r24so2103511otp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:03:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qGxyq/OsSt/o7LyIZAAEj40X+K46fz4kxPQNOyp5WN0=;
+        b=YQAA+CBo8FPmMQf8eonpzUx3U0ffhI7sf9+4EKYIEcWGAoWN5gWnj/dxxrQkYddRo+
+         Q6V4msqXj5whx+2oYD35rtmZGputUkihnjpjtXQAGl1n/QWxgOUyE6SX1161xMlryvhn
+         oeglqfJ2hIQS4oxy943R68GmAw8vl1sUXuPRpcFESfA8FhNYwjPZd4HTyoS+2aABEdcx
+         8taRYMfmZHCBZdv2SIqQmDOacpa2OBtPfRl+uhjE2wjTYE+4vdVLBAXt0CS5gOMzCWyd
+         n8TIfT/ZkN1m+IRQYucfI7Ky0KJTq9RGAoKN4rMLVaC7MmtVpwW6ShVEtKcViivWxMGG
+         lVsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qGxyq/OsSt/o7LyIZAAEj40X+K46fz4kxPQNOyp5WN0=;
+        b=PemRzw0icBfuqWdxXvWeZHhuFP5DYrZYygMIPFAFmePnMGcEglOqoK3QBZ67mq4N3W
+         Oh49J5bIhkdUej1i6ehT9/kmaDIYLD1di5PHvFTU2HnDJa6+OVQZs9fwngehnNq1+/Rc
+         +qELQBFeHQb0AeCvNaRQNLNAxbhbPOZesFWiJfW0CcFaHC2+n3/CwoFkINKJ2y6Wi4b5
+         iRdmnAA9I0rRVwQqSUuOTWxQX/hcU/bwvT8T1YIGLh0PYrHNwDCxYlvKiL9jGRkyvrcP
+         6fgnh86PimDsAcLnIIcVvExHdezuLsiPe5nm8YdmHOkGm6GSCx1dykkdHYOkgImnEcTX
+         k6dg==
+X-Gm-Message-State: AOAM530ukrs25aaEq58O1LageRurOjiT7szJiwfoGj6eppxc4mVTWVlC
+        5l6UMrLK/tDd+6IfUxZwO98abg==
+X-Google-Smtp-Source: ABdhPJw+wQnQabYkrCKgIqFPKFTSR/Rk/TQLyy8utAEvbuPIE3KXqE8uEzXhXrkJap6Ivpf+6mll2g==
+X-Received: by 2002:a9d:187:: with SMTP id e7mr7783538ote.175.1615482201711;
+        Thu, 11 Mar 2021 09:03:21 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c9sm174985ooq.31.2021.03.11.09.03.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 09:03:21 -0800 (PST)
+Date:   Thu, 11 Mar 2021 11:03:19 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-rtc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH 2/3] dt-bindings: mfd: Convert pm8xxx bindings to yaml
+Message-ID: <YEpNV55KR2nlAXMP@builder.lan>
+References: <1615447798-6959-1-git-send-email-skakit@codeaurora.org>
+ <1615447798-6959-3-git-send-email-skakit@codeaurora.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75VdMhBf8MsO+QqMOt_u3+BAiYsT2OeG5qOKnhCbZt1ygmQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: HK2PR02CA0186.apcprd02.prod.outlook.com
- (2603:1096:201:21::22) To AM0PR04MB5636.eurprd04.prod.outlook.com
- (2603:10a6:208:130::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by HK2PR02CA0186.apcprd02.prod.outlook.com (2603:1096:201:21::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Thu, 11 Mar 2021 17:03:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 81d73b8c-1759-4d74-9a7b-08d8e4af91a8
-X-MS-TrafficTypeDiagnostic: AM0PR04MB7155:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB71555670162090CD3A526FCDD2909@AM0PR04MB7155.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yIuslhsjaH6dk5kD5B/PLHqc0tHSAWjBpSvMZZELJ9XzgBkSm8IppgtGwCa8xcN0o0Iy+hJCodT26iM03n2ixf5d42cEBgoK6s0JngZM2l18oZeclWQWrKoj/gSoZK2XFVyWex03hbb2YNeaYA1e0ejqgVQG/qTt1QpTAQukVsioyvmj5cKTjxFuwLEgu1WDtYC2ZAbQQnh+zLZJaiS13qnpdWQNwSpeR0phXT0SMdKfxYCjx5w47RFr0InYinooa+drGJH60XjnqaHQ2HOF1cd4TEFi23obkMe7/MWr9+XSDKP4W8PO0tix6/wE64EeZcIx4pGGCs0SIC0+o71hafaJvVcxIevqOYYG/8dXxVWgDMyuXYRe3vRJ2yg9jg7wa2XpbSapqNdwv4VtDfrKap622wLtkNYbRArWNfIlGfS8Ugr5u/qmOJUx8hPmXAdlt//MOhlMUNiU2p8svRbEpUXvB3Aac/PG6mmwdb1i+mwPqpP9VfZWZ8TILZEXnZr1UiFXcCSzUgfXxQuAzRcQhwFNw5sB3NVuXYwf4PdYdiAH7IZjrLWTdgDSZoStvKRSK0IrVUOxzmON6WuUrl5dS2Toqv38PTzJGPWism1ewfDJBZ8Tt8L75ejuAXshV2EgWFrzhqAY6p73xTynlCf7Pw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(39860400002)(346002)(66556008)(6506007)(44832011)(8676002)(66946007)(66476007)(52116002)(4326008)(7416002)(966005)(5660300002)(53546011)(478600001)(956004)(9686003)(83380400001)(86362001)(55016002)(2906002)(33656002)(6666004)(6916009)(55236004)(7696005)(1006002)(16526019)(1076003)(54906003)(186003)(26005)(316002)(8936002)(110426009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?rlMnP0LREGDc+MTryhH/uTrHcl3Gw7u8JdS0ojGfQdExspIqayJcxqijuUwy?=
- =?us-ascii?Q?xev/0ROYY+JPeh0eH0WNvgciUbnu94vvzT6XogdpgpS7R4QNtdrpGXh5stHk?=
- =?us-ascii?Q?pdaaI704HZ7IvxFgHwPjQ86D6PCTupQ3/6IdV6Uh3xzUL606jnYwXycyfwDw?=
- =?us-ascii?Q?dBTj0H09jFfPFJEPftI1VlROZQ59voXVRREYoYpVx4s5GGSetm4jUxoAenuR?=
- =?us-ascii?Q?a0GjtSD2eJM5lyDhidNmuCbynwVfUeP7HhtFeq1JAHI1kb/CZvG256UJ8Tog?=
- =?us-ascii?Q?XVI4RBp3n6rntQvNxwiywZ775Cr2aJMK3/2dJgzZIlQaXJApPePuvMzDAliO?=
- =?us-ascii?Q?qMZQJ2OSRFAoyQyK6u4HuGLEXmFt76CQyeKPj4jDwqaaUJYeW9icoBT3I1RI?=
- =?us-ascii?Q?nxGQutah3f9RY/Otwyg8TFirVzNNxO8ySMzt8Q1Hlhte6HRFDDlt1ZpnNdwh?=
- =?us-ascii?Q?uHOYKtFpyhsphZSTZFOM9EmLgJ8LIaoNhpcIRBRZMW98iRGPGApvTf7E/F6y?=
- =?us-ascii?Q?nqROJ7VO2MCTZHK4VeUTn4FrXaJI12GDhEXxzqScI61RyYTO9Ur5MMywBjcO?=
- =?us-ascii?Q?BDHillye/nqdWC2gI38zdGvSCQowIDtkMesDL+KJPgBMtdHk6b7W+9jvl8Q+?=
- =?us-ascii?Q?Lh2Y9z0xpTBs2NWkFO09vh57+5m3mvKtaewnvQSN6wmp3Iu1DRSr+HiZog8p?=
- =?us-ascii?Q?6N+GUjM5p21uyZKwu++XtwrJyzueu/hafVgmUonPut0R/y8CqBQOTyn5vCfY?=
- =?us-ascii?Q?Gi2frIlhqgT33khQqmfN2AHAkRUmyEcunjyWBnh/NT0Uv/yQzrOXK5hxZYg8?=
- =?us-ascii?Q?JVAGH4mzB6NYd9VsHf13phkoi5PvR6e5smMQKmVGz3UJzQU1roSH86N8w5m/?=
- =?us-ascii?Q?8BVJHrrKbcoHeRrWIvyN8xTDmbZFzBLLBWJoxPagG81sYpSghE7dsPnV9JE+?=
- =?us-ascii?Q?wYFM+Azyelfh5D0FRj2rxg/6c2VT3+HLjDvvK5m+uXadk6dAfDXAAXfiKOEs?=
- =?us-ascii?Q?JvSkzfiK76XuX0JJhU8ds9V+Xw3DbrutztAk3e7tIQJd2xbL83Alj5A18B/O?=
- =?us-ascii?Q?IgyqAQinsjIPOg6FtyNDnx7i+kjpK6XVa3kxfnMcAxC0tKndKP690ffpSEVr?=
- =?us-ascii?Q?j8STrizQVxsxLz5zEVbkwk65bOKe5pdwYAtiesRjkprO0dkG81a+CK8dyerk?=
- =?us-ascii?Q?AqEKO21BKpMQ0QrVThseOYtvYmB7HryR/YLdAkhZ5sBzZ5L/M54c2SyPwuzt?=
- =?us-ascii?Q?DvUB/fDQwNMBLk4xj165lU4S+0NJ77eq6E1AQFLRXKSpguE6xi04N7Fvpmw0?=
- =?us-ascii?Q?Jybt5HdTC0Mqrj2LIanwkjBX?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81d73b8c-1759-4d74-9a7b-08d8e4af91a8
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 17:03:19.0898
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XybxUnLozHXYV/55rmgXWM84yHtS8Lwebddo1Bpu2mMUWW85PW6HK1PQMGlfbCc/3aWQmsWadCQDawB6CXeM9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7155
+In-Reply-To: <1615447798-6959-3-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 02:04:48PM +0200, Andy Shevchenko wrote:
-> On Thu, Mar 11, 2021 at 8:21 AM Calvin Johnson
-> <calvin.johnson@oss.nxp.com> wrote:
-> >
-> > Callers of unregister_mii_timestamper() currently check for NULL
-> > value of mii_ts before calling it.
-> >
-> > Place the NULL check inside unregister_mii_timestamper() and update
-> > the callers accordingly
-> 
-> FWIW,
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> (Don't remember if it has been suggested by somebody, in that case
-> perhaps Suggested-by?)
+On Thu 11 Mar 01:29 CST 2021, satya priya wrote:
 
-It is the result of your suggestion[1]. So, I'll keep both Suggested-by and
-Reviewed-by with your name.
-
-[1] https://lore.kernel.org/linux-arm-kernel/20210218052654.28995-1-calvin.johnson@oss.nxp.com/T/#m8d209f08f97fe1dc7249a63ad97b39311d14a9b3
-
-Thanks
-Calvin
-
+> Convert pm8xxx rtc bindings from .txt to .yaml format.
 > 
-> > Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> > ---
-> >
-> > Changes in v7:
-> > - check NULL in unregister_mii_timestamper()
-> >
-> > Changes in v6: None
-> > Changes in v5: None
-> > Changes in v4: None
-> > Changes in v3: None
-> > Changes in v2: None
-> >
-> >  drivers/net/mdio/of_mdio.c        | 6 ++----
-> >  drivers/net/phy/mii_timestamper.c | 3 +++
-> >  drivers/net/phy/phy_device.c      | 3 +--
-> >  3 files changed, 6 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
-> > index 612a37970f14..48b6b8458c17 100644
-> > --- a/drivers/net/mdio/of_mdio.c
-> > +++ b/drivers/net/mdio/of_mdio.c
-> > @@ -115,15 +115,13 @@ static int of_mdiobus_register_phy(struct mii_bus *mdio,
-> >         else
-> >                 phy = get_phy_device(mdio, addr, is_c45);
-> >         if (IS_ERR(phy)) {
-> > -               if (mii_ts)
-> > -                       unregister_mii_timestamper(mii_ts);
-> > +               unregister_mii_timestamper(mii_ts);
-> >                 return PTR_ERR(phy);
-> >         }
-> >
-> >         rc = of_mdiobus_phy_device_register(mdio, phy, child, addr);
-> >         if (rc) {
-> > -               if (mii_ts)
-> > -                       unregister_mii_timestamper(mii_ts);
-> > +               unregister_mii_timestamper(mii_ts);
-> >                 phy_device_free(phy);
-> >                 return rc;
-> >         }
-> > diff --git a/drivers/net/phy/mii_timestamper.c b/drivers/net/phy/mii_timestamper.c
-> > index b71b7456462d..51ae0593a04f 100644
-> > --- a/drivers/net/phy/mii_timestamper.c
-> > +++ b/drivers/net/phy/mii_timestamper.c
-> > @@ -111,6 +111,9 @@ void unregister_mii_timestamper(struct mii_timestamper *mii_ts)
-> >         struct mii_timestamping_desc *desc;
-> >         struct list_head *this;
-> >
-> > +       if (!mii_ts)
-> > +               return;
-> > +
-> >         /* mii_timestamper statically registered by the PHY driver won't use the
-> >          * register_mii_timestamper() and thus don't have ->device set. Don't
-> >          * try to unregister these.
-> > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> > index f875efe7b4d1..9c5127405d91 100644
-> > --- a/drivers/net/phy/phy_device.c
-> > +++ b/drivers/net/phy/phy_device.c
-> > @@ -928,8 +928,7 @@ EXPORT_SYMBOL(phy_device_register);
-> >   */
-> >  void phy_device_remove(struct phy_device *phydev)
-> >  {
-> > -       if (phydev->mii_ts)
-> > -               unregister_mii_timestamper(phydev->mii_ts);
-> > +       unregister_mii_timestamper(phydev->mii_ts);
-> >
-> >         device_del(&phydev->mdio.dev);
-> >
-> > --
-> > 2.17.1
-> >
+
+Wonderful initiative, thank you!
+
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+>  .../devicetree/bindings/mfd/qcom-pm8xxx.txt        |  99 -------------------
+>  .../devicetree/bindings/mfd/qcom-pm8xxx.yaml       | 108 +++++++++++++++++++++
+>  2 files changed, 108 insertions(+), 99 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
+>  create mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
 > 
-> 
+> diff --git a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
+> deleted file mode 100644
+> index 9e5eba4..0000000
+> --- a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
+> +++ /dev/null
+> @@ -1,99 +0,0 @@
+> -Qualcomm PM8xxx PMIC multi-function devices
+> -
+> -The PM8xxx family of Power Management ICs are used to provide regulated
+> -voltages and other various functionality to Qualcomm SoCs.
+> -
+> -= PROPERTIES
+> -
+> -- compatible:
+> -	Usage: required
+> -	Value type: <string>
+> -	Definition: must be one of:
+> -		    "qcom,pm8058"
+> -		    "qcom,pm8821"
+> -		    "qcom,pm8921"
+> -
+> -- #address-cells:
+> -	Usage: required
+> -	Value type: <u32>
+> -	Definition: must be 1
+> -
+> -- #size-cells:
+> -	Usage: required
+> -	Value type: <u32>
+> -	Definition: must be 0
+> -
+> -- interrupts:
+> -	Usage: required
+> -	Value type: <prop-encoded-array>
+> -	Definition: specifies the interrupt that indicates a subdevice
+> -		    has generated an interrupt (summary interrupt). The
+> -		    format of the specifier is defined by the binding document
+> -		    describing the node's interrupt parent.
+> -
+> -- #interrupt-cells:
+> -	Usage: required
+> -	Value type : <u32>
+> -	Definition: must be 2. Specifies the number of cells needed to encode
+> -		    an interrupt source. The 1st cell contains the interrupt
+> -		    number. The 2nd cell is the trigger type and level flags
+> -		    encoded as follows:
+> -
+> -			1 = low-to-high edge triggered
+> -			2 = high-to-low edge triggered
+> -			4 = active high level-sensitive
+> -			8 = active low level-sensitive
+> -
+> -- interrupt-controller:
+> -	Usage: required
+> -	Value type: <empty>
+> -	Definition: identifies this node as an interrupt controller
+> -
+> -= SUBCOMPONENTS
+> -
+> -The PMIC contains multiple independent functions, each described in a subnode.
+> -The below bindings specify the set of valid subnodes.
+> -
+> -== Real-Time Clock
+> -
+> -- compatible:
+> -	Usage: required
+> -	Value type: <string>
+> -	Definition: must be one of:
+> -		    "qcom,pm8058-rtc"
+> -		    "qcom,pm8921-rtc"
+> -		    "qcom,pm8941-rtc"
+> -		    "qcom,pm8018-rtc"
+> -
+> -- reg:
+> -	Usage: required
+> -	Value type: <prop-encoded-array>
+> -	Definition: single entry specifying the base address of the RTC registers
+> -
+> -- interrupts:
+> -	Usage: required
+> -	Value type: <prop-encoded-array>
+> -	Definition: single entry specifying the RTC's alarm interrupt
+> -
+> -- allow-set-time:
+> -	Usage: optional
+> -	Value type: <empty>
+> -	Definition: indicates that the setting of RTC time is allowed by
+> -		    the host CPU
+> -
+> -= EXAMPLE
+> -
+> -	pmicintc: pmic@0 {
+> -		compatible = "qcom,pm8921";
+> -		interrupts = <104 8>;
+> -		#interrupt-cells = <2>;
+> -		interrupt-controller;
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
+> -		rtc@11d {
+> -			compatible = "qcom,pm8921-rtc";
+> -			reg = <0x11d>;
+> -			interrupts = <0x27 0>;
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+> new file mode 100644
+> index 0000000..b4892f1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+> @@ -0,0 +1,108 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/qcom-pm8xxx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm PM8xxx PMIC multi-function devices
+> +
+> +maintainers:
+> +  - Lee Jones <lee.jones@linaro.org>
+
+While Lee is maintainer of the mfd core, it would be better if this was
+someone looking out for the Qualcomm PMIC binding specifically.
+
+> +
+> +description: |
+> +  The PM8xxx family of Power Management ICs are used to provide regulated
+> +  voltages and other various functionality to Qualcomm SoCs.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,pm8058
+> +      - qcom,pm8821
+> +      - qcom,pm8921
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#address-cells':
+> +     const: 1
+> +
+> +  '#size-cells':
+> +     const: 0
+> +
+> +  interrupts:
+> +    description: |
+> +      Specifies the interrupt that indicates a subdevice has generated an
+> +      interrupt (summary interrupt).
+> +
+> +  '#interrupt-cells':
+> +    description: |
+> +      Specifies the number of cells needed to encode an interrupt source.
+> +      The 1st cell contains the interrupt number. The 2nd cell is the
+> +      trigger type.
+> +    const: 2
+> +
+> +  interrupt-controller: true
+> +
+> +patternProperties:
+> +  "rtc@[0-9a-f]+$":
+
+Can we somehow link this to individual binding docs instead of listing
+all the possible functions here?
+
+Regards,
+Bjorn
+
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - qcom,pm8058-rtc
+> +          - qcom,pm8921-rtc
+> +          - qcom,pm8941-rtc
+> +          - qcom,pm8018-rtc
+> +
+> +      reg:
+> +        description: Specifies the base address of the RTC registers
+> +
+> +      interrupts:
+> +        description: Specifies the RTC's alarm interrupts
+> +
+> +      allow-set-time:
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +        description:
+> +          Indicates that the setting of RTC time is allowed by the host CPU.
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - interrupts
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - '#address-cells'
+> +  - '#size-cells'
+> +  - interrupts
+> +  - '#interrupt-cells'
+> +  - interrupt-controller
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/spmi/spmi.h>
+> +    spmi_bus: spmi@c440000 {
+> +      reg = <0x0c440000 0x1100>;
+> +      #address-cells = <2>;
+> +      #size-cells = <0>;
+> +      pmicintc: pmic@0 {
+> +        reg = <0x0 SPMI_USID>;
+> +        compatible = "qcom,pm8921";
+> +        interrupts = <104 8>;
+> +        #interrupt-cells = <2>;
+> +        interrupt-controller;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        pm8921_rtc: rtc@11d {
+> +          compatible = "qcom,pm8921-rtc";
+> +          reg = <0x11d>;
+> +          interrupts = <0x27 0>;
+> +        };
+> +      };
+> +    };
+> +...
 > -- 
-> With Best Regards,
-> Andy Shevchenko
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
