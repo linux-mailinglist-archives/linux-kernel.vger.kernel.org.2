@@ -2,88 +2,814 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343AF337036
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E841337039
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232437AbhCKKkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:40:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbhCKKjn (ORCPT
+        id S232326AbhCKKke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:40:34 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41943 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232333AbhCKKk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:39:43 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C04C061574;
-        Thu, 11 Mar 2021 02:39:43 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id o10so13423488pgg.4;
-        Thu, 11 Mar 2021 02:39:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=ksz1ClkKIObXGUsnxvYXkjPZ5AxFir+5GzKwQdaVeZ4=;
-        b=glGAYCb2J+aohcnZfHsxGcq9gmaxxzKkFCmlrMc6B1lphAB8nA6a2Nsz9kFn6IZZKH
-         jsh/Uh1Mp+v0dqYDvDSoJqmVDy4wNOotAuhIDtUzqYHQenVuaDfJveQCI9K3h+IOOsjz
-         rofSB1BhuEJ551ut36Tp0UfH/p+w8zdhRZDMVouaO9oq36v0p91r6C9kG49EPYj52lnd
-         J0kGks9mqU7PqqddC0SQpdfVc9FDLTESZhOFnO1T9GYj3vT0eIDPuCz+eFNkZIRbUiN/
-         tvG2lIw+NYt3ZxEaQqI2sxw2I8EWedMy98aw4HqwxP8l0CMylqLMoQYb7XJUSscZSQdL
-         kszw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ksz1ClkKIObXGUsnxvYXkjPZ5AxFir+5GzKwQdaVeZ4=;
-        b=gaky0EnwbhUzxp30rVZEJsBVri2ATZiONkdm+01ipcsdWG5etlgKswYkqb0yyVTJti
-         +55An4+R+Wj6ilQzpGMXm62X1aADyPcA854ex6CbCU82HSX61EzJirTkj1JPLSsTwpY7
-         cs7bIrXyTfjSBEo00ZGqb8hA9x81cfmf3k3MEqZ3LjVx9jAJWpH/Nl7HlKJWVeIJncRz
-         fIhUZfxG2hDZc7I6qCdgUdLPekpqMa2gHbfTA1JxIy/w1VtKIUL2BUXkH3eNXWvL9uli
-         BkEBK425AXAHpn9h5KPT8ylJheeVXd0z9gKsIDsb0Z6QdKfz+xDPlnv8VjAXAPIIkkpc
-         SgyA==
-X-Gm-Message-State: AOAM532SfZKrdFGJnc707GwHdZiU3yq/7+9RYkn2SSy3YtprpGv1kgC2
-        iQJdJFO6x9CaWXEG8IHfYNA=
-X-Google-Smtp-Source: ABdhPJySrGWHgC0rmPQWoAcau37pT3ZtM+/0dd4hayOxBC9cK9LxRGaHAfwGzdxctWOn89FetRYNMQ==
-X-Received: by 2002:a62:7bc4:0:b029:1f1:58ea:4010 with SMTP id w187-20020a627bc40000b02901f158ea4010mr7224368pfc.70.1615459183097;
-        Thu, 11 Mar 2021 02:39:43 -0800 (PST)
-Received: from localhost ([122.179.55.249])
-        by smtp.gmail.com with ESMTPSA id z3sm2047725pff.40.2021.03.11.02.39.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 11 Mar 2021 02:39:42 -0800 (PST)
-Date:   Thu, 11 Mar 2021 16:09:40 +0530
-From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, edumazet@google.com, willemb@google.com,
-        mchehab+huawei@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] net: core: datagram.c: Fix usage of space before tab
-Message-ID: <20210311103940.2szjikrdghhosswz@kewl-virtual-machine>
+        Thu, 11 Mar 2021 05:40:27 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12BAb1R0012245;
+        Thu, 11 Mar 2021 11:40:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=BmB4zdMnNys7LTrjTCDOa3l/6mMY60lZ+cTt+f/E6EQ=;
+ b=U5ABs/uOoUhhXCm3fVeR0vgAR0zVqQPpMXnnwJvEzeMIloIvcO64sL9KxcKw80+UAiuW
+ 7owZo5ZWgDj1kSh1d1DxVHnVeGR2ZRD71LouP5uEdunwrmzt0oYgfmjF1AVYi4EJNIdN
+ PNHHLE6KiR6SpUM+7wK5LbtOVPqez+codtq6y6/PimrRivezNh47j8O+HQwPbBO7KxHO
+ Crwt/xmU3Ok/KyVrXI/hDdoGsdi/WEDK8gnnYkkyNShw8fbvvMLmiTz9Jn3ZZdN2cWI1
+ IPqNb2jorJz4ST3HOsKLJ7ZyYqPoePWg3u44V9GIXYroRrbMuWwzCH/wTds7ep3VfuC3 pQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 374037662y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 11:40:11 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9C8F110002A;
+        Thu, 11 Mar 2021 11:40:09 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 65F6422CADF;
+        Thu, 11 Mar 2021 11:40:09 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Mar
+ 2021 11:40:08 +0100
+Subject: Re: [PATCH 5/8] ARM: dts: stm32: introduce stm32h7-pinctrl.dtsi to
+ support stm32h75x
+To:     <dillon.minfei@gmail.com>, <robh+dt@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
+        <vladimir.murzin@arm.com>, <afzal.mohd.ma@gmail.com>
+References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
+ <1614758717-18223-6-git-send-email-dillon.minfei@gmail.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <b5f96460-dcdf-f40a-89d7-89def5669d7b@foss.st.com>
+Date:   Thu, 11 Mar 2021 11:40:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
+In-Reply-To: <1614758717-18223-6-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-11_04:2021-03-10,2021-03-11 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed an extra space before the tab key.
+Hi Dillon
 
-Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
----
- net/core/datagram.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 3/3/21 9:05 AM, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> To support stm32h750 and stm32h743, we need a base stm32h7-pinctrl.dtsi
+> as stm32h743 & h750 has almost the same interface. so, just rename
+> stm32h743-pinctrl.dtsi to stm32h7-pinctrl.dtsi
+> 
 
-diff --git a/net/core/datagram.c b/net/core/datagram.c
-index 7b2204f102b7..be0caaec9add 100644
---- a/net/core/datagram.c
-+++ b/net/core/datagram.c
-@@ -790,7 +790,7 @@ int skb_copy_and_csum_datagram_msg(struct sk_buff *skb,
- EXPORT_SYMBOL(skb_copy_and_csum_datagram_msg);
- 
- /**
-- * 	datagram_poll - generic datagram poll
-+ *	datagram_poll - generic datagram poll
-  *	@file: file struct
-  *	@sock: socket
-  *	@wait: poll table
--- 
-2.17.1
+You do not "just" rename but you keel also the old version. I don't 
+agree with this approach. You have first to rename 
+stm32h743-pinctrl.dtsi to stm32h7-pinctrl.dtsi (keeping copyright as 
+they are please) and modify existing H7 boards which currently use 
+stm32h743-pinctrl.dtsi.
+Then you create a second patch adding your pingroups.
 
+Now regarding "st,stm32h750-pinctrl", I see a patch dealing with this 
+new binding but no update on driver side. Do I miss something ? what are 
+differences between h743 and h750 regarding pinctrl ?
+
+Regards
+Alex
+
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+>   arch/arm/boot/dts/stm32h7-pinctrl.dtsi   | 392 +++++++++++++++++++++++++++++++
+>   arch/arm/boot/dts/stm32h743-pinctrl.dtsi | 307 +-----------------------
+>   2 files changed, 398 insertions(+), 301 deletions(-)
+>   create mode 100644 arch/arm/boot/dts/stm32h7-pinctrl.dtsi
+> 
+> diff --git a/arch/arm/boot/dts/stm32h7-pinctrl.dtsi b/arch/arm/boot/dts/stm32h7-pinctrl.dtsi
+> new file mode 100644
+> index 000000000000..7d4b5d683ccc
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/stm32h7-pinctrl.dtsi
+> @@ -0,0 +1,392 @@
+> +/*
+> + * Copyright 2021 - Dillon Min <dillon.minfei@gmail.com>
+> + *
+> + * This file is dual-licensed: you can use it either under the terms
+> + * of the GPL or the X11 license, at your option. Note that this dual
+> + * licensing only applies to this file, and not this project as a
+> + * whole.
+> + *
+> + *  a) This file is free software; you can redistribute it and/or
+> + *     modify it under the terms of the GNU General Public License as
+> + *     published by the Free Software Foundation; either version 2 of the
+> + *     License, or (at your option) any later version.
+> + *
+> + *     This file is distributed in the hope that it will be useful,
+> + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + *     GNU General Public License for more details.
+> + *
+> + * Or, alternatively,
+> + *
+> + *  b) Permission is hereby granted, free of charge, to any person
+> + *     obtaining a copy of this software and associated documentation
+> + *     files (the "Software"), to deal in the Software without
+> + *     restriction, including without limitation the rights to use,
+> + *     copy, modify, merge, publish, distribute, sublicense, and/or
+> + *     sell copies of the Software, and to permit persons to whom the
+> + *     Software is furnished to do so, subject to the following
+> + *     conditions:
+> + *
+> + *     The above copyright notice and this permission notice shall be
+> + *     included in all copies or substantial portions of the Software.
+> + *
+> + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+> + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+> + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+> + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + *     OTHER DEALINGS IN THE SOFTWARE.
+> + */
+> +
+> +#include <dt-bindings/pinctrl/stm32-pinfunc.h>
+> +
+> +/ {
+> +	soc {
+> +		pinctrl: pin-controller {
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0 0x58020000 0x3000>;
+> +			interrupt-parent = <&exti>;
+> +			st,syscfg = <&syscfg 0x8>;
+> +			pins-are-numbered;
+> +
+> +			gpioa: gpio@58020000 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x0 0x400>;
+> +				clocks = <&rcc GPIOA_CK>;
+> +				st,bank-name = "GPIOA";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpiob: gpio@58020400 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x400 0x400>;
+> +				clocks = <&rcc GPIOB_CK>;
+> +				st,bank-name = "GPIOB";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpioc: gpio@58020800 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x800 0x400>;
+> +				clocks = <&rcc GPIOC_CK>;
+> +				st,bank-name = "GPIOC";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpiod: gpio@58020c00 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0xc00 0x400>;
+> +				clocks = <&rcc GPIOD_CK>;
+> +				st,bank-name = "GPIOD";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpioe: gpio@58021000 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x1000 0x400>;
+> +				clocks = <&rcc GPIOE_CK>;
+> +				st,bank-name = "GPIOE";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpiof: gpio@58021400 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x1400 0x400>;
+> +				clocks = <&rcc GPIOF_CK>;
+> +				st,bank-name = "GPIOF";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpiog: gpio@58021800 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x1800 0x400>;
+> +				clocks = <&rcc GPIOG_CK>;
+> +				st,bank-name = "GPIOG";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpioh: gpio@58021c00 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x1c00 0x400>;
+> +				clocks = <&rcc GPIOH_CK>;
+> +				st,bank-name = "GPIOH";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpioi: gpio@58022000 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x2000 0x400>;
+> +				clocks = <&rcc GPIOI_CK>;
+> +				st,bank-name = "GPIOI";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpioj: gpio@58022400 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x2400 0x400>;
+> +				clocks = <&rcc GPIOJ_CK>;
+> +				st,bank-name = "GPIOJ";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			gpiok: gpio@58022800 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x2800 0x400>;
+> +				clocks = <&rcc GPIOK_CK>;
+> +				st,bank-name = "GPIOK";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +			};
+> +
+> +			i2c1_pins_a: i2c1-0 {
+> +				pins {
+> +					pinmux = <STM32_PINMUX('B', 6, AF4)>, /* I2C1_SCL */
+> +						 <STM32_PINMUX('B', 7, AF4)>; /* I2C1_SDA */
+> +					bias-disable;
+> +					drive-open-drain;
+> +					slew-rate = <0>;
+> +				};
+> +			};
+> +
+> +			ethernet_rmii: rmii-0 {
+> +				pins {
+> +					pinmux = <STM32_PINMUX('G', 11, AF11)>,
+> +						 <STM32_PINMUX('G', 13, AF11)>,
+> +						 <STM32_PINMUX('G', 12, AF11)>,
+> +						 <STM32_PINMUX('C', 4, AF11)>,
+> +						 <STM32_PINMUX('C', 5, AF11)>,
+> +						 <STM32_PINMUX('A', 7, AF11)>,
+> +						 <STM32_PINMUX('C', 1, AF11)>,
+> +						 <STM32_PINMUX('A', 2, AF11)>,
+> +						 <STM32_PINMUX('A', 1, AF11)>;
+> +					slew-rate = <2>;
+> +				};
+> +			};
+> +
+> +			sdmmc1_b4_pins_a: sdmmc1-b4-0 {
+> +				pins {
+> +					pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> +						 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+> +						 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+> +						 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+> +						 <STM32_PINMUX('C', 12, AF12)>, /* SDMMC1_CK */
+> +						 <STM32_PINMUX('D', 2, AF12)>; /* SDMMC1_CMD */
+> +					slew-rate = <3>;
+> +					drive-push-pull;
+> +					bias-disable;
+> +				};
+> +			};
+> +
+> +			sdmmc1_b4_od_pins_a: sdmmc1-b4-od-0 {
+> +				pins1 {
+> +					pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> +						 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+> +						 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+> +						 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+> +						 <STM32_PINMUX('C', 12, AF12)>; /* SDMMC1_CK */
+> +					slew-rate = <3>;
+> +					drive-push-pull;
+> +					bias-disable;
+> +				};
+> +				pins2{
+> +					pinmux = <STM32_PINMUX('D', 2, AF12)>; /* SDMMC1_CMD */
+> +					slew-rate = <3>;
+> +					drive-open-drain;
+> +					bias-disable;
+> +				};
+> +			};
+> +
+> +			sdmmc1_b4_sleep_pins_a: sdmmc1-b4-sleep-0 {
+> +				pins {
+> +					pinmux = <STM32_PINMUX('C', 8, ANALOG)>, /* SDMMC1_D0 */
+> +						 <STM32_PINMUX('C', 9, ANALOG)>, /* SDMMC1_D1 */
+> +						 <STM32_PINMUX('C', 10, ANALOG)>, /* SDMMC1_D2 */
+> +						 <STM32_PINMUX('C', 11, ANALOG)>, /* SDMMC1_D3 */
+> +						 <STM32_PINMUX('C', 12, ANALOG)>, /* SDMMC1_CK */
+> +						 <STM32_PINMUX('D', 2, ANALOG)>; /* SDMMC1_CMD */
+> +				};
+> +			};
+> +
+> +			sdmmc2_b4_pins_a: sdmmc2-b4-0 {
+> +				pins {
+> +					pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC1_D0 */
+> +						 <STM32_PINMUX('B', 15, AF9)>, /* SDMMC1_D1 */
+> +						 <STM32_PINMUX('B', 3, AF9)>, /* SDMMC1_D2 */
+> +						 <STM32_PINMUX('B', 4, AF9)>, /* SDMMC1_D3 */
+> +						 <STM32_PINMUX('D', 6, AF11)>, /* SDMMC1_CK */
+> +						 <STM32_PINMUX('D', 7, AF11)>; /* SDMMC1_CMD */
+> +					slew-rate = <3>;
+> +					drive-push-pull;
+> +					bias-disable;
+> +				};
+> +			};
+> +
+> +			sdmmc2_b4_od_pins_a: sdmmc2-b4-od-0 {
+> +				pins1 {
+> +					pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC2_D0 */
+> +						 <STM32_PINMUX('B', 15, AF9)>, /* SDMMC1_D1 */
+> +						 <STM32_PINMUX('B', 3, AF9)>, /* SDMMC1_D2 */
+> +						 <STM32_PINMUX('B', 4, AF9)>, /* SDMMC1_D3 */
+> +						 <STM32_PINMUX('D', 6, AF11)>; /* SDMMC1_CK */
+> +					slew-rate = <3>;
+> +					drive-push-pull;
+> +					bias-disable;
+> +				};
+> +				pins2{
+> +					pinmux = <STM32_PINMUX('D', 7, AF11)>; /* SDMMC1_CMD */
+> +					slew-rate = <3>;
+> +					drive-open-drain;
+> +					bias-disable;
+> +				};
+> +			};
+> +
+> +			sdmmc2_b4_sleep_pins_a: sdmmc2-b4-sleep-0 {
+> +				pins {
+> +					pinmux = <STM32_PINMUX('B', 14, ANALOG)>, /* SDMMC1_D0 */
+> +						 <STM32_PINMUX('B', 15, ANALOG)>, /* SDMMC1_D1 */
+> +						 <STM32_PINMUX('B', 3, ANALOG)>, /* SDMMC1_D2 */
+> +						 <STM32_PINMUX('B', 4, ANALOG)>, /* SDMMC1_D3 */
+> +						 <STM32_PINMUX('D', 6, ANALOG)>, /* SDMMC1_CK */
+> +						 <STM32_PINMUX('D', 7, ANALOG)>; /* SDMMC1_CMD */
+> +				};
+> +			};
+> +
+> +			sdmmc1_dir_pins_a: sdmmc1-dir-0 {
+> +				pins1 {
+> +					pinmux = <STM32_PINMUX('C', 6, AF8)>, /* SDMMC1_D0DIR */
+> +						 <STM32_PINMUX('C', 7, AF8)>, /* SDMMC1_D123DIR */
+> +						 <STM32_PINMUX('B', 9, AF7)>; /* SDMMC1_CDIR */
+> +					slew-rate = <3>;
+> +					drive-push-pull;
+> +					bias-pull-up;
+> +				};
+> +				pins2{
+> +					pinmux = <STM32_PINMUX('B', 8, AF7)>; /* SDMMC1_CKIN */
+> +					bias-pull-up;
+> +				};
+> +			};
+> +
+> +			sdmmc1_dir_sleep_pins_a: sdmmc1-dir-sleep-0 {
+> +				pins {
+> +					pinmux = <STM32_PINMUX('C', 6, ANALOG)>, /* SDMMC1_D0DIR */
+> +						 <STM32_PINMUX('C', 7, ANALOG)>, /* SDMMC1_D123DIR */
+> +						 <STM32_PINMUX('B', 9, ANALOG)>, /* SDMMC1_CDIR */
+> +						 <STM32_PINMUX('B', 8, ANALOG)>; /* SDMMC1_CKIN */
+> +				};
+> +			};
+> +
+> +			usart1_pins: usart1-0 {
+> +				pins1 {
+> +					pinmux = <STM32_PINMUX('B', 14, AF4)>; /* USART1_TX */
+> +					bias-disable;
+> +					drive-push-pull;
+> +					slew-rate = <0>;
+> +				};
+> +				pins2 {
+> +					pinmux = <STM32_PINMUX('B', 15, AF4)>; /* USART1_RX */
+> +					bias-disable;
+> +				};
+> +			};
+> +
+> +			usart2_pins: usart2-0 {
+> +				pins1 {
+> +					pinmux = <STM32_PINMUX('D', 5, AF7)>; /* USART2_TX */
+> +					bias-disable;
+> +					drive-push-pull;
+> +					slew-rate = <0>;
+> +				};
+> +				pins2 {
+> +					pinmux = <STM32_PINMUX('D', 6, AF7)>; /* USART2_RX */
+> +					bias-disable;
+> +				};
+> +			};
+> +
+> +			usart3_pins: usart3-0 {
+> +				pins1 {
+> +					pinmux = <STM32_PINMUX('B', 10, AF7)>; /* USART3_TX */
+> +					bias-disable;
+> +					drive-push-pull;
+> +					slew-rate = <0>;
+> +				};
+> +				pins2 {
+> +					pinmux = <STM32_PINMUX('B', 11, AF7)>; /* USART3_RX */
+> +					bias-disable;
+> +				};
+> +			};
+> +
+> +			uart4_pins: uart4-0 {
+> +				pins1 {
+> +					pinmux = <STM32_PINMUX('A', 0, AF8)>; /* UART4_TX */
+> +					bias-disable;
+> +					drive-push-pull;
+> +					slew-rate = <0>;
+> +				};
+> +				pins2 {
+> +					pinmux = <STM32_PINMUX('I', 9, AF8)>; /* UART4_RX */
+> +					bias-disable;
+> +				};
+> +			};
+> +
+> +			usbotg_hs_pins_a: usbotg-hs-0 {
+> +				pins {
+> +					pinmux = <STM32_PINMUX('H', 4, AF10)>,	/* ULPI_NXT */
+> +							 <STM32_PINMUX('I', 11, AF10)>, /* ULPI_DIR> */
+> +							 <STM32_PINMUX('C', 0, AF10)>,	/* ULPI_STP> */
+> +							 <STM32_PINMUX('A', 5, AF10)>,	/* ULPI_CK> */
+> +							 <STM32_PINMUX('A', 3, AF10)>,	/* ULPI_D0> */
+> +							 <STM32_PINMUX('B', 0, AF10)>,	/* ULPI_D1> */
+> +							 <STM32_PINMUX('B', 1, AF10)>,	/* ULPI_D2> */
+> +							 <STM32_PINMUX('B', 10, AF10)>, /* ULPI_D3> */
+> +							 <STM32_PINMUX('B', 11, AF10)>, /* ULPI_D4> */
+> +							 <STM32_PINMUX('B', 12, AF10)>, /* ULPI_D5> */
+> +							 <STM32_PINMUX('B', 13, AF10)>, /* ULPI_D6> */
+> +							 <STM32_PINMUX('B', 5, AF10)>;	/* ULPI_D7> */
+> +					bias-disable;
+> +					drive-push-pull;
+> +					slew-rate = <2>;
+> +				};
+> +			};
+> +
+> +			spi1_pins: spi1-0 {
+> +				pins1 {
+> +					pinmux = <STM32_PINMUX('A', 5, AF5)>,
+> +						/* SPI1_CLK */
+> +						 <STM32_PINMUX('B', 5, AF5)>;
+> +						/* SPI1_MOSI */
+> +					bias-disable;
+> +					drive-push-pull;
+> +					slew-rate = <2>;
+> +				};
+> +				pins2 {
+> +					pinmux = <STM32_PINMUX('G', 9, AF5)>;
+> +						/* SPI1_MISO */
+> +					bias-disable;
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm/boot/dts/stm32h743-pinctrl.dtsi b/arch/arm/boot/dts/stm32h743-pinctrl.dtsi
+> index fa5dcb6a5fdd..6b1e115307b9 100644
+> --- a/arch/arm/boot/dts/stm32h743-pinctrl.dtsi
+> +++ b/arch/arm/boot/dts/stm32h743-pinctrl.dtsi
+> @@ -1,306 +1,11 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+>   /*
+> - * Copyright 2017 - Alexandre Torgue <alexandre.torgue@st.com>
+> - *
+> - * This file is dual-licensed: you can use it either under the terms
+> - * of the GPL or the X11 license, at your option. Note that this dual
+> - * licensing only applies to this file, and not this project as a
+> - * whole.
+> - *
+> - *  a) This file is free software; you can redistribute it and/or
+> - *     modify it under the terms of the GNU General Public License as
+> - *     published by the Free Software Foundation; either version 2 of the
+> - *     License, or (at your option) any later version.
+> - *
+> - *     This file is distributed in the hope that it will be useful,
+> - *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> - *     GNU General Public License for more details.
+> - *
+> - * Or, alternatively,
+> - *
+> - *  b) Permission is hereby granted, free of charge, to any person
+> - *     obtaining a copy of this software and associated documentation
+> - *     files (the "Software"), to deal in the Software without
+> - *     restriction, including without limitation the rights to use,
+> - *     copy, modify, merge, publish, distribute, sublicense, and/or
+> - *     sell copies of the Software, and to permit persons to whom the
+> - *     Software is furnished to do so, subject to the following
+> - *     conditions:
+> - *
+> - *     The above copyright notice and this permission notice shall be
+> - *     included in all copies or substantial portions of the Software.
+> - *
+> - *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+> - *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+> - *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+> - *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> - *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> - *     OTHER DEALINGS IN THE SOFTWARE.
+> + * Copyright (C) STMicroelectronics 2017 - All Rights Reserved
+> + * Author: Alexandre Torgue  <alexandre.torgue@st.com> for STMicroelectronics.
+>    */
+>   
+> -#include <dt-bindings/pinctrl/stm32-pinfunc.h>
+> +#include "stm32h7-pinctrl.dtsi"
+>   
+> -/ {
+> -	soc {
+> -		pin-controller {
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -			compatible = "st,stm32h743-pinctrl";
+> -			ranges = <0 0x58020000 0x3000>;
+> -			interrupt-parent = <&exti>;
+> -			st,syscfg = <&syscfg 0x8>;
+> -			pins-are-numbered;
+> -
+> -			gpioa: gpio@58020000 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x0 0x400>;
+> -				clocks = <&rcc GPIOA_CK>;
+> -				st,bank-name = "GPIOA";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiob: gpio@58020400 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x400 0x400>;
+> -				clocks = <&rcc GPIOB_CK>;
+> -				st,bank-name = "GPIOB";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioc: gpio@58020800 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x800 0x400>;
+> -				clocks = <&rcc GPIOC_CK>;
+> -				st,bank-name = "GPIOC";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiod: gpio@58020c00 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0xc00 0x400>;
+> -				clocks = <&rcc GPIOD_CK>;
+> -				st,bank-name = "GPIOD";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioe: gpio@58021000 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x1000 0x400>;
+> -				clocks = <&rcc GPIOE_CK>;
+> -				st,bank-name = "GPIOE";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiof: gpio@58021400 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x1400 0x400>;
+> -				clocks = <&rcc GPIOF_CK>;
+> -				st,bank-name = "GPIOF";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiog: gpio@58021800 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x1800 0x400>;
+> -				clocks = <&rcc GPIOG_CK>;
+> -				st,bank-name = "GPIOG";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioh: gpio@58021c00 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x1c00 0x400>;
+> -				clocks = <&rcc GPIOH_CK>;
+> -				st,bank-name = "GPIOH";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioi: gpio@58022000 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x2000 0x400>;
+> -				clocks = <&rcc GPIOI_CK>;
+> -				st,bank-name = "GPIOI";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioj: gpio@58022400 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x2400 0x400>;
+> -				clocks = <&rcc GPIOJ_CK>;
+> -				st,bank-name = "GPIOJ";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiok: gpio@58022800 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x2800 0x400>;
+> -				clocks = <&rcc GPIOK_CK>;
+> -				st,bank-name = "GPIOK";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			i2c1_pins_a: i2c1-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('B', 6, AF4)>, /* I2C1_SCL */
+> -						 <STM32_PINMUX('B', 7, AF4)>; /* I2C1_SDA */
+> -					bias-disable;
+> -					drive-open-drain;
+> -					slew-rate = <0>;
+> -				};
+> -			};
+> -
+> -			ethernet_rmii: rmii-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('G', 11, AF11)>,
+> -						 <STM32_PINMUX('G', 13, AF11)>,
+> -						 <STM32_PINMUX('G', 12, AF11)>,
+> -						 <STM32_PINMUX('C', 4, AF11)>,
+> -						 <STM32_PINMUX('C', 5, AF11)>,
+> -						 <STM32_PINMUX('A', 7, AF11)>,
+> -						 <STM32_PINMUX('C', 1, AF11)>,
+> -						 <STM32_PINMUX('A', 2, AF11)>,
+> -						 <STM32_PINMUX('A', 1, AF11)>;
+> -					slew-rate = <2>;
+> -				};
+> -			};
+> -
+> -			sdmmc1_b4_pins_a: sdmmc1-b4-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> -						 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+> -						 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+> -						 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+> -						 <STM32_PINMUX('C', 12, AF12)>, /* SDMMC1_CK */
+> -						 <STM32_PINMUX('D', 2, AF12)>; /* SDMMC1_CMD */
+> -					slew-rate = <3>;
+> -					drive-push-pull;
+> -					bias-disable;
+> -				};
+> -			};
+> -
+> -			sdmmc1_b4_od_pins_a: sdmmc1-b4-od-0 {
+> -				pins1 {
+> -					pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> -						 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+> -						 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+> -						 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+> -						 <STM32_PINMUX('C', 12, AF12)>; /* SDMMC1_CK */
+> -					slew-rate = <3>;
+> -					drive-push-pull;
+> -					bias-disable;
+> -				};
+> -				pins2{
+> -					pinmux = <STM32_PINMUX('D', 2, AF12)>; /* SDMMC1_CMD */
+> -					slew-rate = <3>;
+> -					drive-open-drain;
+> -					bias-disable;
+> -				};
+> -			};
+> -
+> -			sdmmc1_b4_sleep_pins_a: sdmmc1-b4-sleep-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('C', 8, ANALOG)>, /* SDMMC1_D0 */
+> -						 <STM32_PINMUX('C', 9, ANALOG)>, /* SDMMC1_D1 */
+> -						 <STM32_PINMUX('C', 10, ANALOG)>, /* SDMMC1_D2 */
+> -						 <STM32_PINMUX('C', 11, ANALOG)>, /* SDMMC1_D3 */
+> -						 <STM32_PINMUX('C', 12, ANALOG)>, /* SDMMC1_CK */
+> -						 <STM32_PINMUX('D', 2, ANALOG)>; /* SDMMC1_CMD */
+> -				};
+> -			};
+> -
+> -			sdmmc1_dir_pins_a: sdmmc1-dir-0 {
+> -				pins1 {
+> -					pinmux = <STM32_PINMUX('C', 6, AF8)>, /* SDMMC1_D0DIR */
+> -						 <STM32_PINMUX('C', 7, AF8)>, /* SDMMC1_D123DIR */
+> -						 <STM32_PINMUX('B', 9, AF7)>; /* SDMMC1_CDIR */
+> -					slew-rate = <3>;
+> -					drive-push-pull;
+> -					bias-pull-up;
+> -				};
+> -				pins2{
+> -					pinmux = <STM32_PINMUX('B', 8, AF7)>; /* SDMMC1_CKIN */
+> -					bias-pull-up;
+> -				};
+> -			};
+> -
+> -			sdmmc1_dir_sleep_pins_a: sdmmc1-dir-sleep-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('C', 6, ANALOG)>, /* SDMMC1_D0DIR */
+> -						 <STM32_PINMUX('C', 7, ANALOG)>, /* SDMMC1_D123DIR */
+> -						 <STM32_PINMUX('B', 9, ANALOG)>, /* SDMMC1_CDIR */
+> -						 <STM32_PINMUX('B', 8, ANALOG)>; /* SDMMC1_CKIN */
+> -				};
+> -			};
+> -
+> -			usart1_pins: usart1-0 {
+> -				pins1 {
+> -					pinmux = <STM32_PINMUX('B', 14, AF4)>; /* USART1_TX */
+> -					bias-disable;
+> -					drive-push-pull;
+> -					slew-rate = <0>;
+> -				};
+> -				pins2 {
+> -					pinmux = <STM32_PINMUX('B', 15, AF4)>; /* USART1_RX */
+> -					bias-disable;
+> -				};
+> -			};
+> -
+> -			usart2_pins: usart2-0 {
+> -				pins1 {
+> -					pinmux = <STM32_PINMUX('D', 5, AF7)>; /* USART2_TX */
+> -					bias-disable;
+> -					drive-push-pull;
+> -					slew-rate = <0>;
+> -				};
+> -				pins2 {
+> -					pinmux = <STM32_PINMUX('D', 6, AF7)>; /* USART2_RX */
+> -					bias-disable;
+> -				};
+> -			};
+> -
+> -			usbotg_hs_pins_a: usbotg-hs-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('H', 4, AF10)>,	/* ULPI_NXT */
+> -							 <STM32_PINMUX('I', 11, AF10)>, /* ULPI_DIR> */
+> -							 <STM32_PINMUX('C', 0, AF10)>,	/* ULPI_STP> */
+> -							 <STM32_PINMUX('A', 5, AF10)>,	/* ULPI_CK> */
+> -							 <STM32_PINMUX('A', 3, AF10)>,	/* ULPI_D0> */
+> -							 <STM32_PINMUX('B', 0, AF10)>,	/* ULPI_D1> */
+> -							 <STM32_PINMUX('B', 1, AF10)>,	/* ULPI_D2> */
+> -							 <STM32_PINMUX('B', 10, AF10)>, /* ULPI_D3> */
+> -							 <STM32_PINMUX('B', 11, AF10)>, /* ULPI_D4> */
+> -							 <STM32_PINMUX('B', 12, AF10)>, /* ULPI_D5> */
+> -							 <STM32_PINMUX('B', 13, AF10)>, /* ULPI_D6> */
+> -							 <STM32_PINMUX('B', 5, AF10)>;	/* ULPI_D7> */
+> -					bias-disable;
+> -					drive-push-pull;
+> -					slew-rate = <2>;
+> -				};
+> -			};
+> -		};
+> -	};
+> +&pinctrl{
+> +	compatible = "st,stm32h743-pinctrl";
+>   };
+> 
