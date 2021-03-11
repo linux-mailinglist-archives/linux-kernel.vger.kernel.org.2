@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BDE337FBC
+	by mail.lfdr.de (Postfix) with ESMTP id E3969337FBD
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhCKVhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        id S231154AbhCKVhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:37:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbhCKVh3 (ORCPT
+        with ESMTP id S229674AbhCKVhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:37:29 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A85C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:37:28 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id z26so4571937wml.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:37:28 -0800 (PST)
+        Thu, 11 Mar 2021 16:37:31 -0500
+Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F090C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:37:31 -0800 (PST)
+Received: by mail-ej1-x64a.google.com with SMTP id k16so9235075ejg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:37:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=+0bSxqm3N16pi4DLzYVkzAZIIL0GOgjjdGwFbbf/d6g=;
-        b=nG+j8ZjKWJHc0pWl0HEWnV5szaRgEoGqQZAqlugEgOCqWeoxKf+eOEgQ7GtX9f3rpG
-         i//Khh4s46yYKi9ia+gYNZnqaWCjtHpXqxy/ZcUTMQyVTt3GLlVqcEy8qglz3lMxMaIS
-         fsiAaKa9PfdRoR2qpcmZ0kfyN0MgY6/pecoPIhdtnPqgaTrImvBJT87toUBYiWZm7oB5
-         tmR62qDRAGWhmkVheLXp7x+2VIZisul9o/bh/MKFtt3SJqp4vBQP+PQoayaPchChtdSW
-         aMlD3xxQiT23Etg6lerRBN4cuqOtH7J3Z2AY8K2aUCgdBr7iuUGwBE7S1OZ6QTyL4KL8
-         Talw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=bDwYzUcq1HRoRYrIwl703QQ3e7+1Dgb9ijuIXOFbJHo=;
+        b=AN4kaYWMwgLyNq9/I2+MxoRvyGdu5wrRA0oy9puCLntFIfitARVxBAREcjxAZTPB6G
+         ILX8K3mtmmvfngnASSchXJ7vleDurUCocGbi4ou5uRB8sBewWhKoQmwU4l723uGTwv0i
+         IOYQNbSuPtJupX70JfyQzfetrlZbE91wTbGJD3QCvuI8cqtl2BAtd9bpnEactwFhZEwm
+         Y3BsGpb4rA5jPvbVKm1Q62RZF7uTg2jxPjqvDirsJGKliWAZ91n1rHUiNBi32ImW3IIP
+         jYwQnl13fF1UnBnX5lD+DmCoHYVwhur1LzpCYfKjcHZGVn44dUBo8N4ElCCtQlI4ovce
+         STng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=+0bSxqm3N16pi4DLzYVkzAZIIL0GOgjjdGwFbbf/d6g=;
-        b=sR8p39Whs6HY0SU8MulYhfQZe4dYrJqXkfeo6BSrRCzfbnUjmCFyzY2eiuxMbMjmeX
-         yrlHKsl7F6McXQ+slHwdR/QQ1Gqu1VtwrOqshdCAWyiar9yUOl2KsFLePMrFlDYSQhsY
-         7R0Cw0s29Y1zZgIvNj6Q8op0lzUp824q7VlaGVV2HoNTltyW79OTmDFrpgRP81g7WhVG
-         mCAC9wcwuOO9eNmXcqhg63hOA5YgcQRqeoJ4c73WgJUFOI8YHnCDyyGDZpxFjxedk7lB
-         y99su93cZpcmxovBrP5E1J6fJ9aaQlYwK3lmRbGcJjfYp8dZvmmcLfOL2/5EIx/TqYLu
-         pl6Q==
-X-Gm-Message-State: AOAM532JdwClVChxrFcj6QNSXiLskwL7xHkNQURzGnS+wgs96kcbb16Y
-        C43APTeL1etDaQ/Zg+LymgcDeTqyp+EOUum2
-X-Google-Smtp-Source: ABdhPJzpngoBsnxjuh5T3WV1Q4rDy2G/NhYnnXiurKZVByyvDTixZR0+zyVt3uiDvASjAsjfW6bZLh3MxsQqfiap
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=bDwYzUcq1HRoRYrIwl703QQ3e7+1Dgb9ijuIXOFbJHo=;
+        b=PAWXsGtYAj0OUWfgFGGc7sVto5Ri6ezL4AwDT+zh1RgTjZpB3RKNeisfIyZ/m6HSl5
+         LZfbho0qLDhuvZGqXGxUZP7rzWcKUuC1PLSg8s7AZf63ps4DlVCcjsDkGOAES3zMxods
+         K/r9qZ7YpoLTVQ6/fX2ppxSNGhQpD+eieq03JUtmxa31pm3UlIjtLOOJ+OVSddNDbYFx
+         NcQ+MRI/wr0vVNmArfbaFor9MEtPY/NLPdhyxuTlx9YVUkyD62YYiRgi6J3InBOWSssw
+         bW6bmbWrOm1aKcPkwEdMeX0crszLCkBouwSQXY5oNJZq10DcjXZrX79mQpY83Qg5BBrU
+         BsKg==
+X-Gm-Message-State: AOAM532bZmr9jdhJEfPkin9gVLXCahMUl+Hmq88PQtrBD6fie0SgJOT4
+        A+kl0qpBcgJ0e/RUohYdFr1W2PbSqlefNBuX
+X-Google-Smtp-Source: ABdhPJzMo+eA7a6fuh+dXZsnTOZaNB7TB8P9v/TP9gl7+G9QurdFlRfLnemsNIzMnIgQfGWArKpJYiTpxeF0yhpH
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:95a:d8a8:4925:42be])
- (user=andreyknvl job=sendgmr) by 2002:a5d:638f:: with SMTP id
- p15mr10637565wru.220.1615498647343; Thu, 11 Mar 2021 13:37:27 -0800 (PST)
-Date:   Thu, 11 Mar 2021 22:37:13 +0100
-Message-Id: <f6efb2f36fc1f40eb22df027e6bc956cac71745e.1615498565.git.andreyknvl@google.com>
+ (user=andreyknvl job=sendgmr) by 2002:a17:906:bccc:: with SMTP id
+ lw12mr5043065ejb.268.1615498649994; Thu, 11 Mar 2021 13:37:29 -0800 (PST)
+Date:   Thu, 11 Mar 2021 22:37:14 +0100
+In-Reply-To: <f6efb2f36fc1f40eb22df027e6bc956cac71745e.1615498565.git.andreyknvl@google.com>
+Message-Id: <da296c4fe645f724922b691019e9e578e1834557.1615498565.git.andreyknvl@google.com>
 Mime-Version: 1.0
+References: <f6efb2f36fc1f40eb22df027e6bc956cac71745e.1615498565.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH 01/11] kasan: docs: clean up sections
+Subject: [PATCH 02/11] kasan: docs: update overview section
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Alexander Potapenko <glider@google.com>,
@@ -61,111 +65,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update KASAN documentation:
+Update the "Overview" section in KASAN documentation:
 
-- Give some sections clearer names.
-- Remove unneeded subsections in the "Tests" section.
-- Move the "For developers" section and split into subsections.
+- Outline main use cases for each mode.
+- Mention that HW_TAGS mode need compiler support too.
+- Move the part about SLUB/SLAB support from "Usage" to "Overview".
+- Punctuation, readability, and other minor clean-ups.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- Documentation/dev-tools/kasan.rst | 50 +++++++++++++++----------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+ Documentation/dev-tools/kasan.rst | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
 diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-index ddf4239a5890..c9484f34da2a 100644
+index c9484f34da2a..343a683d0520 100644
 --- a/Documentation/dev-tools/kasan.rst
 +++ b/Documentation/dev-tools/kasan.rst
-@@ -168,24 +168,6 @@ particular KASAN features.
-   report or also panic the kernel (default: ``report``). Note, that tag
-   checking gets disabled after the first reported bug.
+@@ -11,17 +11,31 @@ designed to find out-of-bound and use-after-free bugs. KASAN has three modes:
+ 2. software tag-based KASAN (similar to userspace HWASan),
+ 3. hardware tag-based KASAN (based on hardware memory tagging).
  
--For developers
--~~~~~~~~~~~~~~
+-Software KASAN modes (1 and 2) use compile-time instrumentation to insert
+-validity checks before every memory access, and therefore require a compiler
++Generic KASAN is mainly used for debugging due to a large memory overhead.
++Software tag-based KASAN can be used for dogfood testing as it has a lower
++memory overhead that allows using it with real workloads. Hardware tag-based
++KASAN comes with low memory and performance overheads and, therefore, can be
++used in production. Either as an in-field memory bug detector or as a security
++mitigation.
++
++Software KASAN modes (#1 and #2) use compile-time instrumentation to insert
++validity checks before every memory access and, therefore, require a compiler
+ version that supports that.
+ 
+-Generic KASAN is supported in both GCC and Clang. With GCC it requires version
++Generic KASAN is supported in GCC and Clang. With GCC, it requires version
+ 8.3.0 or later. Any supported Clang version is compatible, but detection of
+ out-of-bounds accesses for global variables is only supported since Clang 11.
+ 
+-Tag-based KASAN is only supported in Clang.
++Software tag-based KASAN mode is only supported in Clang.
+ 
+-Currently generic KASAN is supported for the x86_64, arm, arm64, xtensa, s390
++The hardware KASAN mode (#3) relies on hardware to perform the checks but
++still requires a compiler version that supports memory tagging instructions.
++This mode is supported in Clang 11+.
++
++Both software KASAN modes work with SLUB and SLAB memory allocators,
++while the hardware tag-based KASAN currently only supports SLUB.
++
++Currently, generic KASAN is supported for the x86_64, arm, arm64, xtensa, s390,
+ and riscv architectures, and tag-based KASAN modes are supported only for arm64.
+ 
+ Usage
+@@ -39,9 +53,6 @@ For software modes, you also need to choose between CONFIG_KASAN_OUTLINE and
+ CONFIG_KASAN_INLINE. Outline and inline are compiler instrumentation types.
+ The former produces smaller binary while the latter is 1.1 - 2 times faster.
+ 
+-Both software KASAN modes work with both SLUB and SLAB memory allocators,
+-while the hardware tag-based KASAN currently only support SLUB.
 -
--Software KASAN modes use compiler instrumentation to insert validity checks.
--Such instrumentation might be incompatible with some part of the kernel, and
--therefore needs to be disabled. To disable instrumentation for specific files
--or directories, add a line similar to the following to the respective kernel
--Makefile:
--
--- For a single file (e.g. main.o)::
--
--    KASAN_SANITIZE_main.o := n
--
--- For all files in one directory::
--
--    KASAN_SANITIZE := n
--
--
- Implementation details
- ----------------------
+ For better error reports that include stack traces, enable CONFIG_STACKTRACE.
  
-@@ -299,8 +281,8 @@ support MTE (but supports TBI).
- Hardware tag-based KASAN only reports the first found bug. After that MTE tag
- checking gets disabled.
- 
--What memory accesses are sanitised by KASAN?
----------------------------------------------
-+Shadow memory
-+-------------
- 
- The kernel maps memory in a number of different parts of the address
- space. This poses something of a problem for KASAN, which requires
-@@ -362,8 +344,29 @@ unmapped. This will require changes in arch-specific code.
- This allows ``VMAP_STACK`` support on x86, and can simplify support of
- architectures that do not have a fixed module region.
- 
--CONFIG_KASAN_KUNIT_TEST and CONFIG_KASAN_MODULE_TEST
------------------------------------------------------
-+For developers
-+--------------
-+
-+Ignoring accesses
-+~~~~~~~~~~~~~~~~~
-+
-+Software KASAN modes use compiler instrumentation to insert validity checks.
-+Such instrumentation might be incompatible with some part of the kernel, and
-+therefore needs to be disabled. To disable instrumentation for specific files
-+or directories, add a line similar to the following to the respective kernel
-+Makefile:
-+
-+- For a single file (e.g. main.o)::
-+
-+    KASAN_SANITIZE_main.o := n
-+
-+- For all files in one directory::
-+
-+    KASAN_SANITIZE := n
-+
-+
-+Tests
-+~~~~~
- 
- KASAN tests consist of two parts:
- 
-@@ -409,21 +412,18 @@ Or, if one of the tests failed::
- There are a few ways to run KUnit-compatible KASAN tests.
- 
- 1. Loadable module
--~~~~~~~~~~~~~~~~~~
- 
- With ``CONFIG_KUNIT`` enabled, ``CONFIG_KASAN_KUNIT_TEST`` can be built as
- a loadable module and run on any architecture that supports KASAN by loading
- the module with insmod or modprobe. The module is called ``test_kasan``.
- 
- 2. Built-In
--~~~~~~~~~~~
- 
- With ``CONFIG_KUNIT`` built-in, ``CONFIG_KASAN_KUNIT_TEST`` can be built-in
- on any architecure that supports KASAN. These and any other KUnit tests enabled
- will run and print the results at boot as a late-init call.
- 
- 3. Using kunit_tool
--~~~~~~~~~~~~~~~~~~~
- 
- With ``CONFIG_KUNIT`` and ``CONFIG_KASAN_KUNIT_TEST`` built-in, it's also
- possible use ``kunit_tool`` to see the results of these and other KUnit tests
+ To augment reports with last allocation and freeing stack of the physical page,
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
