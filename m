@@ -2,165 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E69336F55
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68653336F57
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232209AbhCKJxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:53:32 -0500
-Received: from relmlor2.renesas.com ([210.160.252.172]:29875 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232132AbhCKJxM (ORCPT
+        id S232155AbhCKJyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:54:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232220AbhCKJxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:53:12 -0500
-X-IronPort-AV: E=Sophos;i="5.81,240,1610377200"; 
-   d="scan'208";a="74578304"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 11 Mar 2021 18:53:11 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0203C4010DF8;
-        Thu, 11 Mar 2021 18:53:08 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: [PATCH v2 2/2] media: i2c: imx219: Balance runtime PM use-count
-Date:   Thu, 11 Mar 2021 09:52:05 +0000
-Message-Id: <20210311095205.8095-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210311095205.8095-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210311095205.8095-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Thu, 11 Mar 2021 04:53:42 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0916CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:53:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FSqh2AE8rvBwoDNCIlwIFAxfELtqU/iPz0j7NKjcDuI=; b=XOKBHtSlebtELpG/48aZcF7Y0/
+        jzcIp+dC0dtJo7fvJVrXpKoOYnrZz41SgG493jDpqTkhJ3MsZgrYDx75a2W1zfM5hye93CtVQJrh8
+        P5+uCNSbQlUA58raX9tuWvtsiJeqJN+hlS3gIsGtMT++uzsaV1+2duBxrmq2rIAch5WCyl580tEwB
+        elYANyjZWH/4EcNE9fYlL87RrGTim09Fpn534SyK4tF7VGPN9tBecC8d6gmIpKFWIMxEkYoe7LJFJ
+        X6f43+8pUdpW3ebE4129s58ePYDlaiVo1G3eAfui3G7RuZ555Eh1Mztjh54yPnbpD8Axl6x3YJnnP
+        1I5H6+4w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKHzv-0075gj-AN; Thu, 11 Mar 2021 09:52:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 28C85300455;
+        Thu, 11 Mar 2021 10:52:50 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1270D299EE417; Thu, 11 Mar 2021 10:52:50 +0100 (CET)
+Date:   Thu, 11 Mar 2021 10:52:50 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, tglx@linutronix.de,
+        john.ogness@linutronix.de, urezki@gmail.com, ast@fb.com,
+        Eric Dumazet <edumazet@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
+ in_atomic use
+Message-ID: <YEnochPwIyAsiEWS@hirez.programming.kicks-ass.net>
+References: <20210311021321.127500-1-mike.kravetz@oracle.com>
+ <YEnY5hWLT/en7kw1@hirez.programming.kicks-ass.net>
+ <YEncYrWCVn2/20/C@dhcp22.suse.cz>
+ <YEnjqLpGU2LHaysv@hirez.programming.kicks-ass.net>
+ <YEnmmK42kpeB3Ho4@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEnmmK42kpeB3Ho4@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move incrementing/decrementing runtime PM count to
-imx219_start_streaming()/imx219_stop_streaming() functions respectively.
+On Thu, Mar 11, 2021 at 10:44:56AM +0100, Michal Hocko wrote:
+> On Thu 11-03-21 10:32:24, Peter Zijlstra wrote:
+> > The whole changelog reads like a trainwreck, but akpm already commented
+> > on that. I picked out a small factual incorrectness, simply because if
+> > you can't get that right, the whole argument looses weight.
+> 
+> Is there any reason why in_atomic || irq_disabled wouldn't work
+> universally?
 
-This fixes an issue of unbalanced runtime PM count in resume callback
-error path where streaming is stopped and runtime PM count is left
-unbalanced.
+I just explained to you how you really wanted:
 
-Fixes: 1283b3b8f82b9 ("media: i2c: Add driver for Sony IMX219 sensor")
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/media/i2c/imx219.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+  in_atomic() && !irq_disabled()
 
-diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
-index 82756cbfbaac..49ba39418360 100644
---- a/drivers/media/i2c/imx219.c
-+++ b/drivers/media/i2c/imx219.c
-@@ -1035,37 +1035,47 @@ static int imx219_start_streaming(struct imx219 *imx219)
- 	const struct imx219_reg_list *reg_list;
- 	int ret;
- 
-+	ret = pm_runtime_get_sync(&client->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(&client->dev);
-+		return ret;
-+	}
-+
- 	/* Apply default values of current mode */
- 	reg_list = &imx219->mode->reg_list;
- 	ret = imx219_write_regs(imx219, reg_list->regs, reg_list->num_of_regs);
- 	if (ret) {
- 		dev_err(&client->dev, "%s failed to set mode\n", __func__);
--		return ret;
-+		goto err_rpm_put;
- 	}
- 
- 	ret = imx219_set_framefmt(imx219);
- 	if (ret) {
- 		dev_err(&client->dev, "%s failed to set frame format: %d\n",
- 			__func__, ret);
--		return ret;
-+		goto err_rpm_put;
- 	}
- 
- 	/* Apply customized values from user */
- 	ret =  __v4l2_ctrl_handler_setup(imx219->sd.ctrl_handler);
- 	if (ret)
--		return ret;
-+		goto err_rpm_put;
- 
- 	/* set stream on register */
- 	ret = imx219_write_reg(imx219, IMX219_REG_MODE_SELECT,
- 			       IMX219_REG_VALUE_08BIT, IMX219_MODE_STREAMING);
- 	if (ret)
--		return ret;
-+		goto err_rpm_put;
- 
- 	/* vflip and hflip cannot change during streaming */
- 	__v4l2_ctrl_grab(imx219->vflip, true);
- 	__v4l2_ctrl_grab(imx219->hflip, true);
- 
- 	return 0;
-+
-+err_rpm_put:
-+	pm_runtime_put(&client->dev);
-+	return ret;
- }
- 
- static void imx219_stop_streaming(struct imx219 *imx219)
-@@ -1081,12 +1091,13 @@ static void imx219_stop_streaming(struct imx219 *imx219)
- 
- 	__v4l2_ctrl_grab(imx219->vflip, false);
- 	__v4l2_ctrl_grab(imx219->hflip, false);
-+
-+	pm_runtime_put(&client->dev);
- }
- 
- static int imx219_set_stream(struct v4l2_subdev *sd, int enable)
- {
- 	struct imx219 *imx219 = to_imx219(sd);
--	struct i2c_client *client = v4l2_get_subdevdata(sd);
- 	int ret = 0;
- 
- 	mutex_lock(&imx219->mutex);
-@@ -1096,22 +1107,15 @@ static int imx219_set_stream(struct v4l2_subdev *sd, int enable)
- 	}
- 
- 	if (enable) {
--		ret = pm_runtime_get_sync(&client->dev);
--		if (ret < 0) {
--			pm_runtime_put_noidle(&client->dev);
--			goto err_unlock;
--		}
--
- 		/*
- 		 * Apply default & customized values
- 		 * and then start streaming.
- 		 */
- 		ret = imx219_start_streaming(imx219);
- 		if (ret)
--			goto err_rpm_put;
-+			goto err_unlock;
- 	} else {
- 		imx219_stop_streaming(imx219);
--		pm_runtime_put(&client->dev);
- 	}
- 
- 	imx219->streaming = enable;
-@@ -1120,8 +1124,6 @@ static int imx219_set_stream(struct v4l2_subdev *sd, int enable)
- 
- 	return ret;
- 
--err_rpm_put:
--	pm_runtime_put(&client->dev);
- err_unlock:
- 	mutex_unlock(&imx219->mutex);
- 
--- 
-2.17.1
+> > That said, I don't think you actually need it, if as you write the lock
+> > should be IRQ-safe, then you're worried about the IRQ recursion
+> > deadlock:
+> 
+> making hugetlb_lock irqsafe is a long way as explained by Mike
+> elsewhere. Not only that. The upcoming hugeltb feature to have sparse
+> vmemmap for hugetlb pages will need to allocate vmemmap when hugetlb
+> page is to be freed back to the allocator. That cannot happen in any
+> atomic context so there will be a need to tell those contexts for
+> special casing.
+
+Then scrap the vmemmap code *NOW*. Do not merge more shit before fixing
+existing problems. Especially not if that's known to make it harder to
+fix the problems.
 
