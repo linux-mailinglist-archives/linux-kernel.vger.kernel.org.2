@@ -2,85 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7470B336AFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB49336B00
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhCKEKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 23:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231187AbhCKEJ6 (ORCPT
+        id S231152AbhCKENS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 23:13:18 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12708 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230453AbhCKEM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 23:09:58 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D039C061574;
-        Wed, 10 Mar 2021 20:09:58 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id 81so20440868iou.11;
-        Wed, 10 Mar 2021 20:09:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iYzmJMnFIsemW6ucnp9c5dsNvmxj52t2F/yWsoAB8hA=;
-        b=meTchEb0pDU9HKZFPNL9tr5OuW0ZARTcEcofAYSY+lAwU7N1XK9PmszA7en7EanGZw
-         +5MEdDJ3GbSUrJn3QOSZCVQBMNWmPyllzFUIHG6Aqm2nuNl1aOVTjLZrIsigFBOnJjlj
-         tSPxRkia268/E5IAGU/P5Nly6ywBhaBpcti/T3z9r7J77tRxVIWEjumaViPkOG1TyXaf
-         lP8rUt90lq+dIjS2PJoqT2QFIhtInzKMRRQx/hJZYqahcEnwV0KoRt+HwDul96875KTq
-         BrIBC5WDW1DJb70Rv2kUBsX37en+pZAo9CEh0KoaJuyLgfZtlKMrAs3Qk6cMj3ymLw2N
-         ZB6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iYzmJMnFIsemW6ucnp9c5dsNvmxj52t2F/yWsoAB8hA=;
-        b=LC+oDTCH/wFQLxvEJ8ZVLCusNdfecMHbHBg4tyMvSOlZf37yW8oF3hLzc4+rf6BQhp
-         HXe0fAmgLFOKUqR1BO6OXf3z3AB8fQ6STaH5Uo+zdT2t7KoOkAxqO/PoJ24eiLcWfAbv
-         iBx/1X85gKjLiokIQgXFrXDfT21PNT3eUiAOyi+V+9JTn8ppAMrdzdJM3BjO6BpXb6v3
-         t/xW4FW0LvZg/ZID3S+LWYrVU3vK2EsbrzgM1i6JraTvJpkdhFzUsQMO+5wITFT720xn
-         OLdJwOBwCUHxKgBToQNhC7N7kVDnmmtkIvXYeWTKHciipF02qkVqqha6oPSjnrhTBeYv
-         dHOQ==
-X-Gm-Message-State: AOAM531DN57Z7OjZzgJrUOF3B2sJsD486O1zm8a5/cfeRXVNq145QiBD
-        g2eFWUL8sCgPAapyeWVilQU=
-X-Google-Smtp-Source: ABdhPJwrQzo1Jc4d+D4CaLUuHN8WugaRL0GozwHQDcyggUokefSvymCP80x0W+1VIRHoPdUHVFqOEg==
-X-Received: by 2002:a5e:dc01:: with SMTP id b1mr2739762iok.64.1615435797843;
-        Wed, 10 Mar 2021 20:09:57 -0800 (PST)
-Received: from book ([2601:445:8200:6c90::4210])
-        by smtp.gmail.com with ESMTPSA id 23sm839615iog.45.2021.03.10.20.09.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 20:09:57 -0800 (PST)
-Date:   Wed, 10 Mar 2021 22:09:55 -0600
-From:   Ross Schmidt <ross.schm.dev@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 00/36] 5.11.6-rc1 review
-Message-ID: <20210311040955.GD7061@book>
-References: <20210310132320.510840709@linuxfoundation.org>
+        Wed, 10 Mar 2021 23:12:58 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DwwTr5RYRzmVmM;
+        Thu, 11 Mar 2021 12:10:40 +0800 (CST)
+Received: from [10.174.177.134] (10.174.177.134) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 11 Mar 2021 12:12:49 +0800
+Subject: Re: [PATCH 0/3] Add support for free vmemmap pages of HugeTLB for
+ arm64
+To:     Muchun Song <songmuchun@bytedance.com>, <will@kernel.org>,
+        <akpm@linux-foundation.org>, <david@redhat.com>,
+        <bodeddub@amazon.com>, <osalvador@suse.de>,
+        <mike.kravetz@oracle.com>, <rientjes@google.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <duanxiongchun@bytedance.com>, Chen Huang <chenhuang5@huawei.com>
+References: <20210310071535.35245-1-songmuchun@bytedance.com>
+From:   Chen Huang <chenhuang5@huawei.com>
+Message-ID: <3eae8b3e-d6e0-83c8-e9c6-5420767788d5@huawei.com>
+Date:   Thu, 11 Mar 2021 12:12:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310132320.510840709@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210310071535.35245-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 02:23:13PM +0100, gregkh@linuxfoundation.org wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+
+在 2021/3/10 15:15, Muchun Song 写道:
+> This patchset is based on the series of "Free some vmemmap pages of HugeTLB
+> page". More details can refer to the below link.
 > 
-> This is the start of the stable review cycle for the 5.11.6 release.
-> There are 36 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
+>   https://lkml.kernel.org/r/20210308102807.59745-1-songmuchun@bytedance.com
+> 
+> I often received some feedback (We want to test this feature on arm64) before.
+> Because the previous code has been reviewed for 18 versions and is merged
+> into mm tree, I think that it is time to release this patchset. If you want
+> to test then you can start now :-). And I also hope someone can review this.
+> 
+> Thanks.
+> 
+> Muchun Song (3):
+>   mm: bootmem_info: mark register_page_bootmem_info_section __init
+>   mm: hugetlb: introduce arch_free_vmemmap_page
+>   arm64: mm: hugetlb: add support for free vmemmap pages of HugeTLB
+> 
+>  arch/arm64/mm/mmu.c   | 5 +++++
+>  arch/x86/mm/init_64.c | 5 +++++
+>  fs/Kconfig            | 4 ++--
+>  mm/bootmem_info.c     | 4 ++--
+>  mm/sparse-vmemmap.c   | 9 +++++++--
+>  5 files changed, 21 insertions(+), 6 deletions(-)
+> 
 
-Compiled and booted with no regressions on x86_64.
+Tested-by: Chen Huang <chenhuang5@huawei.com>
 
-Tested-by: Ross Schmidt <ross.schm.dev@gmail.com>
-
-
-thanks,
-
-Ross
+I have tested the patch and the result is same as the last time.
