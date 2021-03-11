@@ -2,293 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9BB336E0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E299336E17
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbhCKImU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:42:20 -0500
-Received: from outbound-smtp38.blacknight.com ([46.22.139.221]:39007 "EHLO
-        outbound-smtp38.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231590AbhCKImD (ORCPT
+        id S231394AbhCKImx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 03:42:53 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:52491 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231234AbhCKImW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:42:03 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp38.blacknight.com (Postfix) with ESMTPS id 1205E209B
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:42:02 +0000 (GMT)
-Received: (qmail 8019 invoked from network); 11 Mar 2021 08:42:01 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Mar 2021 08:42:01 -0000
-Date:   Thu, 11 Mar 2021 08:42:00 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210311084200.GR3697@techsingularity.net>
-References: <20210310104618.22750-1-mgorman@techsingularity.net>
- <20210310104618.22750-3-mgorman@techsingularity.net>
- <20210310154650.ad9760cd7cb9ac4acccf77ee@linux-foundation.org>
+        Thu, 11 Mar 2021 03:42:22 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MS3r9-1l9WAJ1WnL-00TVFD; Thu, 11 Mar 2021 09:42:20 +0100
+Received: by mail-oi1-f169.google.com with SMTP id d20so22318721oiw.10;
+        Thu, 11 Mar 2021 00:42:19 -0800 (PST)
+X-Gm-Message-State: AOAM532HYypQyDtHTT8ecNnNJRwiaKcAHhwsUnG7O+wqdE0UzDaVBwZQ
+        heMiY8w86sh8cZsmrGvdkaMYCI+4BzyXrPJdz0M=
+X-Google-Smtp-Source: ABdhPJw0KtsLD5mW4MfRrfYgVjcEGOdTXZu9D7NdBG3jZg8HvDppDRmR8vUGXG+YVlxNPnM5Hk4ZbDjA/u/ZDR28oc4=
+X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr5663752oie.4.1615452138884;
+ Thu, 11 Mar 2021 00:42:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210310154650.ad9760cd7cb9ac4acccf77ee@linux-foundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210225080453.1314-1-alex@ghiti.fr> <20210225080453.1314-3-alex@ghiti.fr>
+ <5279e97c-3841-717c-2a16-c249a61573f9@redhat.com> <7d9036d9-488b-47cc-4673-1b10c11baad0@ghiti.fr>
+ <CAK8P3a3mVDwJG6k7PZEKkteszujP06cJf8Zqhq43F0rNsU=h4g@mail.gmail.com> <236a9788-8093-9876-a024-b0ad0d672c72@ghiti.fr>
+In-Reply-To: <236a9788-8093-9876-a024-b0ad0d672c72@ghiti.fr>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 11 Mar 2021 09:42:01 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1+vSoEBqHPzj9S07B7h-Xuwvccpsh1pnn+1xJmS3UdbA@mail.gmail.com>
+Message-ID: <CAK8P3a1+vSoEBqHPzj9S07B7h-Xuwvccpsh1pnn+1xJmS3UdbA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Documentation: riscv: Add documentation that
+ describes the VM layout
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:QMP26k/nK+H+ZHkdP9mo8opGr8UAg8kFikYIqnkNzgShTT3VZEQ
+ hmFFyGu1QCvztiRcLVVERX21CltcD8gc5uiI+o6hIDusSopvhlPvTJcdQASD+tKJmJUW/M3
+ UHrVB7XCF7NA0ZKF1Y9gYUO5kg+DP9cr9yyBX0gdXU4JEHLAsX25dUL/kyGc+fnySst/YDt
+ jHbqlOI1jG6X88hNR5aCA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RH4E7qcfGzs=:gfQ8It08fa6DbGyiO5hrLQ
+ QFcSFNT7b4lzc0lELnFdcphHKN2QBSHUuvKjGc9SRlBOKqyURmqy1wYSNfVf+/nvTgl3rhBTg
+ OpD1XeJyU08qKxhJw3NDZW1ebdGObjiOMDy94sjV7fKFEHlzuclCycyUqA6PzVNK+1QZTgiwg
+ IcRmiHpEywG+IoWay5/uN2pszOfLMXZTPXNoU69w6qXNLJom7NcbmtzXpaLLzKOvehwtnwbqx
+ bR111Ko3I9sXNW8HmhXVRaBBFNgXWOlpqkUyhtCz8cPDqiXST6YDPasQxJTEoKWV3nk8xKq79
+ ZCHeLUXIJ3/og/Z1HJ6xbrR6ltjOYx4Zus0WzUi9AkDm7uec8LfNC0KP3DtBXk+pQ9e+XOC9z
+ TkQ0FCV5Pn5ue2sH/xQOojYOOlHgLQ/M1FHRJAqkfulgDfSInnUCo1j5dm2ZyRM3PbS7pxvbC
+ X6ydWdsLRk+0ROHq6tStli4as8acJt2kE1ZCMJpVkiYNjNoXkJ1AW1UPjM/ZTLH9l6d/MZTar
+ 5hdfQDZAa4QSEg3sfnZGG8sXzGqAWk2dBVFOjFTFUtt
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 03:46:50PM -0800, Andrew Morton wrote:
-> On Wed, 10 Mar 2021 10:46:15 +0000 Mel Gorman <mgorman@techsingularity.net> wrote:
-> 
-> > This patch adds a new page allocator interface via alloc_pages_bulk,
-> > and __alloc_pages_bulk_nodemask. A caller requests a number of pages
-> > to be allocated and added to a list. They can be freed in bulk using
-> > free_pages_bulk().
-> 
-> Why am I surprised we don't already have this.
-> 
-
-It was prototyped a few years ago and discussed at LSF/MM so it's in
-the back of your memory somewhere. It never got merged because it lacked
-users and I didn't think carrying dead untested code was appropriate.
-
-> > The API is not guaranteed to return the requested number of pages and
-> > may fail if the preferred allocation zone has limited free memory, the
-> > cpuset changes during the allocation or page debugging decides to fail
-> > an allocation. It's up to the caller to request more pages in batch
-> > if necessary.
-> > 
-> > Note that this implementation is not very efficient and could be improved
-> > but it would require refactoring. The intent is to make it available early
-> > to determine what semantics are required by different callers. Once the
-> > full semantics are nailed down, it can be refactored.
-> > 
-> > ...
+On Wed, Mar 10, 2021 at 8:12 PM Alex Ghiti <alex@ghiti.fr> wrote:
+> Le 3/10/21 à 6:42 AM, Arnd Bergmann a écrit :
+> > On Thu, Feb 25, 2021 at 12:56 PM Alex Ghiti <alex@ghiti.fr> wrote:
+> >>
+> >> Le 2/25/21 à 5:34 AM, David Hildenbrand a écrit :
+> >>>                    |            |                  |         |> +
+> >>> ffffffc000000000 | -256    GB | ffffffc7ffffffff |   32 GB | kasan
+> >>>> +   ffffffcefee00000 | -196    GB | ffffffcefeffffff |    2 MB | fixmap
+> >>>> +   ffffffceff000000 | -196    GB | ffffffceffffffff |   16 MB | PCI io
+> >>>> +   ffffffcf00000000 | -196    GB | ffffffcfffffffff |    4 GB | vmemmap
+> >>>> +   ffffffd000000000 | -192    GB | ffffffdfffffffff |   64 GB |
+> >>>> vmalloc/ioremap space
+> >>>> +   ffffffe000000000 | -128    GB | ffffffff7fffffff |  126 GB |
+> >>>> direct mapping of all physical memory
+> >>>
+> >>> ^ So you could never ever have more than 126 GB, correct?
+> >>>
+> >>> I assume that's nothing new.
+> >>>
+> >>
+> >> Before this patch, the limit was 128GB, so in my sense, there is nothing
+> >> new. If ever we want to increase that limit, we'll just have to lower
+> >> PAGE_OFFSET, there is still some unused virtual addresses after kasan
+> >> for example.
 > >
-> > +/* Drop reference counts and free order-0 pages from a list. */
-> > +void free_pages_bulk(struct list_head *list)
-> > +{
-> > +	struct page *page, *next;
-> > +
-> > +	list_for_each_entry_safe(page, next, list, lru) {
-> > +		trace_mm_page_free_batched(page);
-> > +		if (put_page_testzero(page)) {
-> > +			list_del(&page->lru);
-> > +			__free_pages_ok(page, 0, FPI_NONE);
-> > +		}
-> > +	}
-> > +}
-> > +EXPORT_SYMBOL_GPL(free_pages_bulk);
-> 
-> I expect that batching games are planned in here as well?
-> 
+> > Linus Walleij is looking into changing the arm32 code to have the kernel
+> > direct map inside of the vmalloc area, which would be another place
+> > that you could use here. It would be nice to not have too many different
+> > ways of doing this, but I'm not sure how hard it would be to rework your
+> > code, or if there are any downsides of doing this.
+>
+> This was what my previous version did: https://lkml.org/lkml/2020/6/7/28.
+>
+> This approach was not welcomed very well and it fixed only the problem
+> of the implementation of relocatable kernel. The second issue I'm trying
+> to resolve here is to support both 3 and 4 level page tables using the
+> same kernel without being relocatable (which would introduce performance
+> penalty). I can't do it when the kernel mapping is in the vmalloc region
+> since vmalloc region relies on PAGE_OFFSET which is different on both 3
+> and 4 level page table and that would then require the kernel to be
+> relocatable.
 
-Potentially it could be done but the page allocator would need to be
-fundamentally aware of batching to make it tidy or the per-cpu allocator
-would need knowledge of how to handle batches in the free path.  Batch
-freeing to the buddy allocator is problematic as buddy merging has to
-happen. Batch freeing to per-cpu hits pcp->high limitations.
+Ok, I see.
 
-There are a couple of ways it *could* be done. Per-cpu lists could be
-allowed to temporarily exceed the high limits and reduce them out-of-band
-like what happens with counter updates or remote pcp freeing. Care
-would need to be taken when memory is low to avoid premature OOM
-and to guarantee draining happens in a timely fashion. There would be
-additional benefits to this. For example, release_pages() can hammer the
-zone lock when freeing very large batches and would benefit from either
-large batching or "plugging" the per-cpu list. I prototyped a series to
-allow the batch limits to be temporarily exceeded but it did not actually
-improve performance because of errors in the implementation and it needs
-a lot of work.
+I suppose it might work if you moved the direct-map to the lowest
+address and the vmalloc area (incorporating the kernel mapping,
+modules, pio, and fixmap at fixed addresses) to the very top of the
+address space, but you probably already considered and rejected
+that for other reasons.
 
-> >  static inline unsigned int
-> >  gfp_to_alloc_flags(gfp_t gfp_mask)
-> >  {
-> > @@ -4919,6 +4934,9 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-> >  		struct alloc_context *ac, gfp_t *alloc_mask,
-> >  		unsigned int *alloc_flags)
-> >  {
-> > +	gfp_mask &= gfp_allowed_mask;
-> > +	*alloc_mask = gfp_mask;
-> > +
-> >  	ac->highest_zoneidx = gfp_zone(gfp_mask);
-> >  	ac->zonelist = node_zonelist(preferred_nid, gfp_mask);
-> >  	ac->nodemask = nodemask;
-> > @@ -4960,6 +4978,99 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-> >  	return true;
-> >  }
-> >  
-> > +/*
-> > + * This is a batched version of the page allocator that attempts to
-> > + * allocate nr_pages quickly from the preferred zone and add them to list.
-> > + */
-> 
-> Documentation is rather lame.  Returns number of pages allocated...
-> 
-
-I added a note on the return value. The documentation is lame because at
-this point, we do not know what the required semantics for future users
-are. We have two examples at the moment in this series but I think it
-would be better to add kerneldoc documentation when there is a reasonable
-expectation that the API will not change. For example, SLUB could use
-this API when it fails to allocate a high-order page and instead allocate
-batches of order-0 pages but I did not investigate how feasible that
-is. Similarly, it's possible that we really need to deal with high-order
-batch allocations in which case, the per-cpu list should be high-order
-aware or the core buddy allocator needs to be batch-allocation aware.
-
-> > +int __alloc_pages_bulk_nodemask(gfp_t gfp_mask, int preferred_nid,
-> > +			nodemask_t *nodemask, int nr_pages,
-> > +			struct list_head *alloc_list)
-> > +{
-> > +	struct page *page;
-> > +	unsigned long flags;
-> > +	struct zone *zone;
-> > +	struct zoneref *z;
-> > +	struct per_cpu_pages *pcp;
-> > +	struct list_head *pcp_list;
-> > +	struct alloc_context ac;
-> > +	gfp_t alloc_mask;
-> > +	unsigned int alloc_flags;
-> > +	int alloced = 0;
-> > +
-> > +	if (nr_pages == 1)
-> > +		goto failed;
-> > +
-> > +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
-> > +	if (!prepare_alloc_pages(gfp_mask, 0, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
-> > +		return 0;
-> > +	gfp_mask = alloc_mask;
-> > +
-> > +	/* Find an allowed local zone that meets the high watermark. */
-> > +	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
-> > +		unsigned long mark;
-> > +
-> > +		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
-> > +		    !__cpuset_zone_allowed(zone, gfp_mask)) {
-> > +			continue;
-> > +		}
-> > +
-> > +		if (nr_online_nodes > 1 && zone != ac.preferred_zoneref->zone &&
-> > +		    zone_to_nid(zone) != zone_to_nid(ac.preferred_zoneref->zone)) {
-> > +			goto failed;
-> > +		}
-> > +
-> > +		mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK) + nr_pages;
-> > +		if (zone_watermark_fast(zone, 0,  mark,
-> > +				zonelist_zone_idx(ac.preferred_zoneref),
-> > +				alloc_flags, gfp_mask)) {
-> > +			break;
-> > +		}
-> > +	}
-> 
-> I suspect the above was stolen from elsewhere and that some code
-> commonification is planned.
-> 
-
-It's based on get_page_from_freelist. It would be messy to have them share
-common code at this point with a risk that the fast path for the common
-path (single page requests) would be impaired. The issue is that the
-fast path and slow paths have zonelist iteration, kswapd wakeup, cpuset
-enforcement and reclaim actions all mixed together at various different
-points. The locking is also mixed up with per-cpu list locking, statistic
-locking and buddy locking all having inappropriate overlaps (e.g. IRQ
-disabling protects per-cpu list locking, partially and unnecessarily
-protects statistics depending on architecture and overlaps with the
-IRQ-safe zone lock.
-
-Ironing this out risks hurting the single page allocation path. It would
-need to be done incrementally with ultimately the core of the allocator
-dealing with batches to avoid false bisections.
-
-> 
-> > +	if (!zone)
-> > +		return 0;
-> > +
-> > +	/* Attempt the batch allocation */
-> > +	local_irq_save(flags);
-> > +	pcp = &this_cpu_ptr(zone->pageset)->pcp;
-> > +	pcp_list = &pcp->lists[ac.migratetype];
-> > +
-> > +	while (alloced < nr_pages) {
-> > +		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
-> > +								pcp, pcp_list);
-> > +		if (!page)
-> > +			break;
-> > +
-> > +		prep_new_page(page, 0, gfp_mask, 0);
-> 
-> I wonder if it would be worth running prep_new_page() in a second pass,
-> after reenabling interrupts.
-> 
-
-Possibly, I could add another patch on top that does this because it's
-trading the time that IRQs are disabled for a list iteration.
-
-> Speaking of which, will the realtime people get upset about the
-> irqs-off latency?  How many pages are we talking about here?
-> 
-
-At the moment, it looks like batches of up to a few hundred at worst. I
-don't think realtime sensitive applications are likely to be using the
-bulk allocator API at this point.
-
-The realtime people have a worse problem in that the per-cpu list does
-not use local_lock and disable IRQs more than it needs to on x86 in
-particular. I've a prototype series for this as well which splits the
-locking for the per-cpu list and statistic handling and then converts the
-per-cpu list to local_lock but I'm getting this off the table first because
-I don't want multiple page allocator series in flight at the same time.
-Thomas, Peter and Ingo would need to be cc'd on that series to review
-the local_lock aspects.
-
-Even with local_lock, it's not clear to me why per-cpu lists need to be
-locked at all because potentially it could use a lock-free llist with some
-struct page overloading. That one is harder to predict when batches are
-taken into account as splicing a batch of free pages with llist would be
-unsafe so batch free might exchange IRQ disabling overhead with multiple
-atomics. I'd need to recheck things like whether NMI handlers ever call
-the page allocator (they shouldn't but it should be checked).  It would
-need a lot of review and testing.
-
-> > +		list_add(&page->lru, alloc_list);
-> > +		alloced++;
-> > +	}
-> > +
-> > +	if (!alloced)
-> > +		goto failed_irq;
-> > +
-> > +	if (alloced) {
-> > +		__count_zid_vm_events(PGALLOC, zone_idx(zone), alloced);
-> > +		zone_statistics(zone, zone);
-> > +	}
-> > +
-> > +	local_irq_restore(flags);
-> > +
-> > +	return alloced;
-> > +
-> > +failed_irq:
-> > +	local_irq_restore(flags);
-> > +
-> > +failed:
-> 
-> Might we need some counter to show how often this path happens?
-> 
-
-I think that would be overkill at this point. It only gives useful
-information to a developer using the API for the first time and that can
-be done with a debugging patch (or probes if you're feeling creative).
-I'm already unhappy with the counter overhead in the page allocator.
-zone_statistics in particular has no business being an accurate statistic.
-It should have been a best-effort counter like vm_events that does not need
-IRQs to be disabled. If that was a simply counter as opposed to an accurate
-statistic then a failure counter at failed_irq would be very cheap to add.
-
--- 
-Mel Gorman
-SUSE Labs
+         Arnd
