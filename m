@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D228336CD3
+	by mail.lfdr.de (Postfix) with ESMTP id D98C0336CD4
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhCKHJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:09:31 -0500
+        id S231909AbhCKHJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:09:34 -0500
 Received: from mga04.intel.com ([192.55.52.120]:22599 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231697AbhCKHI6 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:08:58 -0500
-IronPort-SDR: 29cWf3EqmVDepDQrc+dChe7EhNj46ti02CY1ZkdUmSoxWsnlMqJFJopB1eWoiWrwVAj1kGh/u4
- stYWsbn+hOpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246083"
+        id S231736AbhCKHJB (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:09:01 -0500
+IronPort-SDR: A9X5mSmEecYsPzxlu0md1g87Ki/CrKK1kuFWIgxcqnQUugK9kZOwqT27gk1wIA6pehlWTI4obw
+ W9bNHUMsIZkw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246090"
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="186246083"
+   d="scan'208";a="186246090"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:08:58 -0800
-IronPort-SDR: w0LDzSuoOXFLP0++21EGcSUZy64hYPdpD7GsHBR+NA8O2+PPs+Imgi0pthfskHEzeb/YyjyVzT
- MXtM3tQ1JiBA==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:09:00 -0800
+IronPort-SDR: t6rKGFXCWWPqXjoZjMzpaNn6Sufdmtci8lazZ1j18uP2X9G/DVskkP2iPbVzLZpYZxtSBNMep0
+ gRrD2M/U0kXw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="509937953"
+   d="scan'208";a="509937958"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:08:56 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:08:58 -0800
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 16/27] perf evlist: Warn as events from different hybrid PMUs in a group
-Date:   Thu, 11 Mar 2021 15:07:31 +0800
-Message-Id: <20210311070742.9318-17-yao.jin@linux.intel.com>
+Subject: [PATCH v2 17/27] perf evsel: Adjust hybrid event and global event mixed group
+Date:   Thu, 11 Mar 2021 15:07:32 +0800
+Message-Id: <20210311070742.9318-18-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210311070742.9318-1-yao.jin@linux.intel.com>
 References: <20210311070742.9318-1-yao.jin@linux.intel.com>
@@ -41,132 +41,421 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a group has events which are from different hybrid PMUs,
-shows a warning.
+A group mixed with hybrid event and global event is allowed. For example,
+group leader is 'cpu-clock' and the group member is 'cpu_atom/cycles/'.
 
-This is to remind the user not to put the core event and atom
-event into one group.
+e.g.
+perf stat -e '{cpu-clock,cpu_atom/cycles/}' -a
 
-  root@ssp-pwrt-002:~# ./perf stat -e "{cpu_core/cycles/,cpu_atom/cycles/}" -- sleep 1
-  WARNING: Group has events from different hybrid PMUs
+The challenge is their available cpus are not fully matched.
+For example, 'cpu-clock' is available on CPU0-CPU23, but 'cpu_core/cycles/'
+is available on CPU16-CPU23.
 
-   Performance counter stats for 'sleep 1':
+When getting the group id for group member, we must be very careful
+because the cpu for 'cpu-clock' is not equal to the cpu for 'cpu_atom/cycles/'.
+Actually the cpu here is the index of evsel->core.cpus, not the real CPU ID.
+e.g. cpu0 for 'cpu-clock' is CPU0, but cpu0 for 'cpu_atom/cycles/' is CPU16.
 
-       <not counted>      cpu_core/cycles/
-     <not supported>      cpu_atom/cycles/
+Another challenge is for group read. The events in group may be not
+available on all cpus. For example the leader is a software event and
+it's available on CPU0-CPU1, but the group member is a hybrid event and
+it's only available on CPU1. For CPU0, we have only one event, but for CPU1
+we have two events. So we need to change the read size according to
+the real number of events on that cpu.
 
-         1.002585908 seconds time elapsed
+Let's see examples,
+
+  root@ssp-pwrt-002:~# ./perf stat -e '{cpu-clock,cpu_atom/cycles/}' -a -vvv -- sleep 1
+  Control descriptor is not initialized
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             1
+    size                             120
+    sample_type                      IDENTIFIER
+    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING|ID|GROUP
+    disabled                         1
+    inherit                          1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 3
+  sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 4
+  sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 5
+  sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 7
+  sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 8
+  sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 9
+  sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 10
+  sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 11
+  sys_perf_event_open: pid -1  cpu 8  group_fd -1  flags 0x8 = 12
+  sys_perf_event_open: pid -1  cpu 9  group_fd -1  flags 0x8 = 13
+  sys_perf_event_open: pid -1  cpu 10  group_fd -1  flags 0x8 = 14
+  sys_perf_event_open: pid -1  cpu 11  group_fd -1  flags 0x8 = 15
+  sys_perf_event_open: pid -1  cpu 12  group_fd -1  flags 0x8 = 16
+  sys_perf_event_open: pid -1  cpu 13  group_fd -1  flags 0x8 = 17
+  sys_perf_event_open: pid -1  cpu 14  group_fd -1  flags 0x8 = 18
+  sys_perf_event_open: pid -1  cpu 15  group_fd -1  flags 0x8 = 19
+  sys_perf_event_open: pid -1  cpu 16  group_fd -1  flags 0x8 = 20
+  sys_perf_event_open: pid -1  cpu 17  group_fd -1  flags 0x8 = 21
+  sys_perf_event_open: pid -1  cpu 18  group_fd -1  flags 0x8 = 22
+  sys_perf_event_open: pid -1  cpu 19  group_fd -1  flags 0x8 = 23
+  sys_perf_event_open: pid -1  cpu 20  group_fd -1  flags 0x8 = 24
+  sys_perf_event_open: pid -1  cpu 21  group_fd -1  flags 0x8 = 25
+  sys_perf_event_open: pid -1  cpu 22  group_fd -1  flags 0x8 = 26
+  sys_perf_event_open: pid -1  cpu 23  group_fd -1  flags 0x8 = 27
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             6
+    size                             120
+    config                           0xa00000000
+    sample_type                      IDENTIFIER
+    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING|ID|GROUP
+    inherit                          1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 16  group_fd 20  flags 0x8 = 28
+  sys_perf_event_open: pid -1  cpu 17  group_fd 21  flags 0x8 = 29
+  sys_perf_event_open: pid -1  cpu 18  group_fd 22  flags 0x8 = 30
+  sys_perf_event_open: pid -1  cpu 19  group_fd 23  flags 0x8 = 31
+  sys_perf_event_open: pid -1  cpu 20  group_fd 24  flags 0x8 = 32
+  sys_perf_event_open: pid -1  cpu 21  group_fd 25  flags 0x8 = 33
+  sys_perf_event_open: pid -1  cpu 22  group_fd 26  flags 0x8 = 34
+  sys_perf_event_open: pid -1  cpu 23  group_fd 27  flags 0x8 = 35
+  cpu-clock: 0: 1002495141 1002496165 1002496165
+  cpu-clock: 1: 1002494114 1002494741 1002494741
+  cpu-clock: 2: 1002489755 1002491096 1002491096
+  cpu-clock: 3: 1002486160 1002487660 1002487660
+  cpu-clock: 4: 1002482342 1002483461 1002483461
+  cpu-clock: 5: 1002480405 1002480756 1002480756
+  cpu-clock: 6: 1002478135 1002478698 1002478698
+  cpu-clock: 7: 1002476940 1002477251 1002477251
+  cpu-clock: 8: 1002474281 1002475616 1002475616
+  cpu-clock: 9: 1002471033 1002471983 1002471983
+  cpu-clock: 10: 1002468437 1002469553 1002469553
+  cpu-clock: 11: 1002467503 1002467892 1002467892
+  cpu-clock: 12: 1002465167 1002466190 1002466190
+  cpu-clock: 13: 1002463794 1002464109 1002464109
+  cpu-clock: 14: 1002460746 1002461897 1002461897
+  cpu-clock: 15: 1002460006 1002460371 1002460371
+  cpu-clock: 16: 1002457619 1002458056 1002458056
+  cpu-clock: 17: 1002451809 1002452414 1002452414
+  cpu-clock: 18: 1002446385 1002446927 1002446927
+  cpu-clock: 19: 1002442633 1002443203 1002443203
+  cpu-clock: 20: 1002438330 1002438939 1002438939
+  cpu-clock: 21: 1002432839 1002433483 1002433483
+  cpu-clock: 22: 1002428951 1002429416 1002429416
+  cpu-clock: 23: 1002423932 1002424604 1002424604
+  cycles: 0: 800847113 1002458056 1002458056
+  cycles: 1: 800843983 1002452414 1002452414
+  cycles: 2: 800840233 1002446927 1002446927
+  cycles: 3: 800837260 1002443203 1002443203
+  cycles: 4: 800832030 1002438939 1002438939
+  cycles: 5: 800829207 1002433483 1002433483
+  cycles: 6: 800825621 1002429416 1002429416
+  cycles: 7: 800822445 1002424604 1002424604
+  cpu-clock: 24059136457 24059154481 24059154481
+  cycles: 6406677892 8019527042 8019527042
+
+   Performance counter stats for 'system wide':
+
+           24,059.14 msec cpu-clock                 #   23.994 CPUs utilized
+       6,406,677,892      cpu_atom/cycles/          #  266.289 M/sec
+
+         1.002699058 seconds time elapsed
+
+For cpu_atom/cycles/, cpu16-cpu23 are set with valid group fd (cpu-clock's fd
+on that cpu). For counting results, cpu-clock has 24 cpus aggregation and
+cpu_atom/cycles/ has 8 cpus aggregation. That's expected.
+
+But if the event order is changed, e.g. '{cpu_atom/cycles/,cpu-clock}',
+there leaves more works to do.
+
+  root@ssp-pwrt-002:~# ./perf stat -e '{cpu_atom/cycles/,cpu-clock}' -a -vvv -- sleep 1
+  Control descriptor is not initialized
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             6
+    size                             120
+    config                           0xa00000000
+    sample_type                      IDENTIFIER
+    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING|ID|GROUP
+    disabled                         1
+    inherit                          1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 16  group_fd -1  flags 0x8 = 3
+  sys_perf_event_open: pid -1  cpu 17  group_fd -1  flags 0x8 = 4
+  sys_perf_event_open: pid -1  cpu 18  group_fd -1  flags 0x8 = 5
+  sys_perf_event_open: pid -1  cpu 19  group_fd -1  flags 0x8 = 7
+  sys_perf_event_open: pid -1  cpu 20  group_fd -1  flags 0x8 = 8
+  sys_perf_event_open: pid -1  cpu 21  group_fd -1  flags 0x8 = 9
+  sys_perf_event_open: pid -1  cpu 22  group_fd -1  flags 0x8 = 10
+  sys_perf_event_open: pid -1  cpu 23  group_fd -1  flags 0x8 = 11
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             1
+    size                             120
+    sample_type                      IDENTIFIER
+    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING|ID|GROUP
+    inherit                          1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 12
+  sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 13
+  sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 14
+  sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 15
+  sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 16
+  sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 17
+  sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 18
+  sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 19
+  sys_perf_event_open: pid -1  cpu 8  group_fd -1  flags 0x8 = 20
+  sys_perf_event_open: pid -1  cpu 9  group_fd -1  flags 0x8 = 21
+  sys_perf_event_open: pid -1  cpu 10  group_fd -1  flags 0x8 = 22
+  sys_perf_event_open: pid -1  cpu 11  group_fd -1  flags 0x8 = 23
+  sys_perf_event_open: pid -1  cpu 12  group_fd -1  flags 0x8 = 24
+  sys_perf_event_open: pid -1  cpu 13  group_fd -1  flags 0x8 = 25
+  sys_perf_event_open: pid -1  cpu 14  group_fd -1  flags 0x8 = 26
+  sys_perf_event_open: pid -1  cpu 15  group_fd -1  flags 0x8 = 27
+  sys_perf_event_open: pid -1  cpu 16  group_fd 3  flags 0x8 = 28
+  sys_perf_event_open: pid -1  cpu 17  group_fd 4  flags 0x8 = 29
+  sys_perf_event_open: pid -1  cpu 18  group_fd 5  flags 0x8 = 30
+  sys_perf_event_open: pid -1  cpu 19  group_fd 7  flags 0x8 = 31
+  sys_perf_event_open: pid -1  cpu 20  group_fd 8  flags 0x8 = 32
+  sys_perf_event_open: pid -1  cpu 21  group_fd 9  flags 0x8 = 33
+  sys_perf_event_open: pid -1  cpu 22  group_fd 10  flags 0x8 = 34
+  sys_perf_event_open: pid -1  cpu 23  group_fd 11  flags 0x8 = 35
+  cycles: 0: 810965983 1002124999 1002124999
+  cycles: 1: 810962706 1002118442 1002118442
+  cycles: 2: 810959729 1002114853 1002114853
+  cycles: 3: 810958079 1002111730 1002111730
+  cycles: 4: 800570097 1002108582 1002108582
+  cycles: 5: 800569278 1002106441 1002106441
+  cycles: 6: 800568167 1002104339 1002104339
+  cycles: 7: 800566760 1002102953 1002102953
+  WARNING: for cpu-clock, some CPU counts not read
+  cpu-clock: 0: 0 0 0
+  cpu-clock: 1: 0 0 0
+  cpu-clock: 2: 0 0 0
+  cpu-clock: 3: 0 0 0
+  cpu-clock: 4: 0 0 0
+  cpu-clock: 5: 0 0 0
+  cpu-clock: 6: 0 0 0
+  cpu-clock: 7: 0 0 0
+  cpu-clock: 8: 0 0 0
+  cpu-clock: 9: 0 0 0
+  cpu-clock: 10: 0 0 0
+  cpu-clock: 11: 0 0 0
+  cpu-clock: 12: 0 0 0
+  cpu-clock: 13: 0 0 0
+  cpu-clock: 14: 0 0 0
+  cpu-clock: 15: 0 0 0
+  cpu-clock: 16: 1002125111 1002124999 1002124999
+  cpu-clock: 17: 1002118626 1002118442 1002118442
+  cpu-clock: 18: 1002115058 1002114853 1002114853
+  cpu-clock: 19: 1002111740 1002111730 1002111730
+  cpu-clock: 20: 1002109031 1002108582 1002108582
+  cpu-clock: 21: 1002105927 1002106441 1002106441
+  cpu-clock: 22: 1002104010 1002104339 1002104339
+  cpu-clock: 23: 1002102730 1002102953 1002102953
+  cycles: 6446120799 8016892339 8016892339
+  cpu-clock: 8016892233 8016892339 8016892339
+
+   Performance counter stats for 'system wide':
+
+       6,446,120,799      cpu_atom/cycles/          #  804.067 M/sec
+            8,016.89 msec cpu-clock                 #    7.999 CPUs utilized
+
+         1.002212870 seconds time elapsed
+
+For cpu-clock, cpu16-cpu23 are set with valid group fd (cpu_atom/cycles/'s
+fd on that cpu). For counting results, cpu_atom/cycles/ has 8 cpus aggregation
+, that's correct. But for cpu-clock, it also has 8 cpus aggregation
+(cpu16-cpu23, but not all cpus), the code should be improved. Now one warning
+is displayed: "WARNING: for cpu-clock, some CPU counts not read".
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
- tools/perf/builtin-record.c |  3 +++
- tools/perf/builtin-stat.c   |  7 ++++++
- tools/perf/util/evlist.c    | 44 +++++++++++++++++++++++++++++++++++++
- tools/perf/util/evlist.h    |  2 ++
- 4 files changed, 56 insertions(+)
+ tools/perf/util/evsel.c | 105 ++++++++++++++++++++++++++++++++++++++--
+ tools/perf/util/stat.h  |   1 +
+ 2 files changed, 101 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 363ea1047148..188a1198cd4b 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -929,6 +929,9 @@ static int record__open(struct record *rec)
- 			        pos = evlist__reset_weak_group(evlist, pos, true);
- 				goto try_again;
- 			}
-+
-+			if (errno == EINVAL && perf_pmu__hybrid_exist())
-+				evlist__warn_hybrid_group(evlist);
- 			rc = -errno;
- 			evsel__open_strerror(pos, &opts->target, errno, msg, sizeof(msg));
- 			ui__error("%s\n", msg);
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 7a732508b2b4..6f780a039db0 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -239,6 +239,9 @@ static void evlist__check_cpu_maps(struct evlist *evlist)
- 	struct evsel *evsel, *pos, *leader;
- 	char buf[1024];
- 
-+	if (evlist__hybrid_exist(evlist))
-+		return;
-+
- 	evlist__for_each_entry(evlist, evsel) {
- 		leader = evsel->leader;
- 
-@@ -726,6 +729,10 @@ enum counter_recovery {
- static enum counter_recovery stat_handle_error(struct evsel *counter)
- {
- 	char msg[BUFSIZ];
-+
-+	if (perf_pmu__hybrid_exist() && errno == EINVAL)
-+		evlist__warn_hybrid_group(evsel_list);
-+
- 	/*
- 	 * PPC returns ENXIO for HW counters until 2.6.37
- 	 * (behavior changed with commit b0a873e).
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index f139151b9433..5ec891418cdd 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -2224,3 +2224,47 @@ void evlist__invalidate_all_cpus(struct evlist *evlist)
- 	perf_cpu_map__put(evlist->core.all_cpus);
- 	evlist->core.all_cpus = perf_cpu_map__empty_new(1);
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index e0b6227d263f..862fdc145f05 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1464,15 +1464,26 @@ static void evsel__set_count(struct evsel *counter, int cpu, int thread, u64 val
+ 	perf_counts__set_loaded(counter->counts, cpu, thread, true);
  }
-+
-+static bool group_hybrid_conflict(struct evsel *leader)
-+{
-+	struct evsel *pos, *prev = NULL;
-+
-+	for_each_group_evsel(pos, leader) {
-+		if (!pos->pmu_name || !perf_pmu__is_hybrid(pos->pmu_name))
-+			continue;
-+
-+		if (prev && strcmp(prev->pmu_name, pos->pmu_name))
-+			return true;
-+
-+		prev = pos;
-+	}
-+
-+	return false;
-+}
-+
-+void evlist__warn_hybrid_group(struct evlist *evlist)
-+{
-+	struct evsel *evsel;
-+
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (evsel__is_group_leader(evsel) &&
-+		    evsel->core.nr_members > 1 &&
-+		    group_hybrid_conflict(evsel)) {
-+			WARN_ONCE(1, "WARNING: Group has events from "
-+				     "different hybrid PMUs\n");
-+			return;
-+		}
-+	}
-+}
-+
-+bool evlist__hybrid_exist(struct evlist *evlist)
-+{
-+	struct evsel *evsel;
-+
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (evsel__is_hybrid_event(evsel))
-+			return true;
-+	}
-+
-+	return false;
-+}
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 0da683511d98..33dec3bb5739 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -369,4 +369,6 @@ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx);
- void evlist__invalidate_all_cpus(struct evlist *evlist);
  
- bool evlist__has_hybrid_events(struct evlist *evlist);
-+void evlist__warn_hybrid_group(struct evlist *evlist);
-+bool evlist__hybrid_exist(struct evlist *evlist);
- #endif /* __PERF_EVLIST_H */
+-static int evsel__process_group_data(struct evsel *leader, int cpu, int thread, u64 *data)
++static int evsel_cpuid_match(struct evsel *evsel1, struct evsel *evsel2,
++			     int cpu)
++{
++	int cpuid;
++
++	cpuid = perf_cpu_map__cpu(evsel1->core.cpus, cpu);
++	return perf_cpu_map__idx(evsel2->core.cpus, cpuid);
++}
++
++static int evsel__process_group_data(struct evsel *leader, int cpu, int thread,
++				     u64 *data, int nr_members)
+ {
+ 	u64 read_format = leader->core.attr.read_format;
+ 	struct sample_read_value *v;
+ 	u64 nr, ena = 0, run = 0, i;
++	int idx;
+ 
+ 	nr = *data++;
+ 
+-	if (nr != (u64) leader->core.nr_members)
++	if (nr != (u64) nr_members)
+ 		return -EINVAL;
+ 
+ 	if (read_format & PERF_FORMAT_TOTAL_TIME_ENABLED)
+@@ -1492,24 +1503,85 @@ static int evsel__process_group_data(struct evsel *leader, int cpu, int thread,
+ 		if (!counter)
+ 			return -EINVAL;
+ 
+-		evsel__set_count(counter, cpu, thread, v[i].value, ena, run);
++		if (evsel__is_hybrid_event(counter) ||
++		    evsel__is_hybrid_event(leader)) {
++			idx = evsel_cpuid_match(leader, counter, cpu);
++			if (idx == -1)
++				return -EINVAL;
++		} else
++			idx = cpu;
++
++		evsel__set_count(counter, idx, thread, v[i].value, ena, run);
+ 	}
+ 
+ 	return 0;
+ }
+ 
++static int hybrid_read_size(struct evsel *leader, int cpu, int *nr_members)
++{
++	struct evsel *pos;
++	int nr = 1, back, new_size = 0, idx;
++
++	for_each_group_member(pos, leader) {
++		idx = evsel_cpuid_match(leader, pos, cpu);
++		if (idx != -1)
++			nr++;
++	}
++
++	if (nr != leader->core.nr_members) {
++		back = leader->core.nr_members;
++		leader->core.nr_members = nr;
++		new_size = perf_evsel__read_size(&leader->core);
++		leader->core.nr_members = back;
++	}
++
++	*nr_members = nr;
++	return new_size;
++}
++
+ static int evsel__read_group(struct evsel *leader, int cpu, int thread)
+ {
+ 	struct perf_stat_evsel *ps = leader->stats;
+ 	u64 read_format = leader->core.attr.read_format;
+ 	int size = perf_evsel__read_size(&leader->core);
++	int new_size, nr_members;
+ 	u64 *data = ps->group_data;
+ 
+ 	if (!(read_format & PERF_FORMAT_ID))
+ 		return -EINVAL;
+ 
+-	if (!evsel__is_group_leader(leader))
++	if (!evsel__is_group_leader(leader)) {
++		if (evsel__is_hybrid_event(leader->leader) &&
++		    !evsel__is_hybrid_event(leader)) {
++			/*
++			 * The group leader is hybrid event and it's
++			 * only available on part of cpus. But the group
++			 * member are available on all cpus. TODO:
++			 * read the counts on the rest of cpus for group
++			 * member.
++			 */
++			WARN_ONCE(1, "WARNING: for %s, some CPU counts "
++				     "not read\n", leader->name);
++			return 0;
++		}
+ 		return -EINVAL;
++	}
++
++	/*
++	 * For example the leader is a software event and it's available on
++	 * cpu0-cpu1, but the group member is a hybrid event and it's only
++	 * available on cpu1. For cpu0, we have only one event, but for cpu1
++	 * we have two events. So we need to change the read size according to
++	 * the real number of events on a given cpu.
++	 */
++	new_size = hybrid_read_size(leader, cpu, &nr_members);
++	if (new_size)
++		size = new_size;
++
++	if (ps->group_data && ps->group_data_size < size) {
++		zfree(&ps->group_data);
++		data = NULL;
++	}
+ 
+ 	if (!data) {
+ 		data = zalloc(size);
+@@ -1517,6 +1589,7 @@ static int evsel__read_group(struct evsel *leader, int cpu, int thread)
+ 			return -ENOMEM;
+ 
+ 		ps->group_data = data;
++		ps->group_data_size = size;
+ 	}
+ 
+ 	if (FD(leader, cpu, thread) < 0)
+@@ -1525,7 +1598,7 @@ static int evsel__read_group(struct evsel *leader, int cpu, int thread)
+ 	if (readn(FD(leader, cpu, thread), data, size) <= 0)
+ 		return -errno;
+ 
+-	return evsel__process_group_data(leader, cpu, thread, data);
++	return evsel__process_group_data(leader, cpu, thread, data, nr_members);
+ }
+ 
+ int evsel__read_counter(struct evsel *evsel, int cpu, int thread)
+@@ -1572,6 +1645,28 @@ static int get_group_fd(struct evsel *evsel, int cpu, int thread)
+ 	 */
+ 	BUG_ON(!leader->core.fd);
+ 
++	/*
++	 * If leader is not hybrid event, it's available on
++	 * all cpus (e.g. software event). But hybrid evsel
++	 * member is only available on part of cpus. So need
++	 * to get the leader's fd from correct cpu.
++	 */
++	if (evsel__is_hybrid_event(evsel) &&
++	    !evsel__is_hybrid_event(leader)) {
++		cpu = evsel_cpuid_match(evsel, leader, cpu);
++		BUG_ON(cpu == -1);
++	}
++
++	/*
++	 * Leader is hybrid event but member is global event.
++	 */
++	if (!evsel__is_hybrid_event(evsel) &&
++	    evsel__is_hybrid_event(leader)) {
++		cpu = evsel_cpuid_match(evsel, leader, cpu);
++		if (cpu == -1)
++			return -1;
++	}
++
+ 	fd = FD(leader, cpu, thread);
+ 	BUG_ON(fd == -1);
+ 
+diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+index d85c292148bb..4aec97d32e69 100644
+--- a/tools/perf/util/stat.h
++++ b/tools/perf/util/stat.h
+@@ -46,6 +46,7 @@ struct perf_stat_evsel {
+ 	struct stats		 res_stats[3];
+ 	enum perf_stat_evsel_id	 id;
+ 	u64			*group_data;
++	int			 group_data_size;
+ };
+ 
+ enum aggr_mode {
 -- 
 2.17.1
 
