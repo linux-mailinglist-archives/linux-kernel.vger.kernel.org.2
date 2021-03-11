@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D538337F04
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94448337F1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhCKU3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 15:29:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhCKU3e (ORCPT
+        id S231216AbhCKUeB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 15:34:01 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:35436 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231146AbhCKUdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 15:29:34 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E474C061574;
-        Thu, 11 Mar 2021 12:29:33 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id B5444425BB;
-        Thu, 11 Mar 2021 20:29:25 +0000 (UTC)
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Arnd Bergmann <arnd@linaro.org>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org>
- <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby>
- <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
- <6c542548-cc16-af68-c755-df52bd13b209@marcan.st>
- <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
- <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
- <CAFA6WYMSJxK2CjmoLJ6mdNNEfOQOMVXZPbbFRfah7KLeZNfguw@mail.gmail.com>
- <CACRpkdZb5UMyq5qSJE==3ZnH-7fh92q_t4AnE8mPm0oFEJxqpQ@mail.gmail.com>
- <e5d3f4b5-748e-0700-b897-393187b2bb1a@marcan.st>
- <CACRpkdYxMGN3N-jFt1Uw4AkBR-x=dRj6HEvDp6g+2ku7+qCLwg@mail.gmail.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB)
- subsystem
-Message-ID: <02d035ca-697d-1634-a434-a43b9c01f4a9@marcan.st>
-Date:   Fri, 12 Mar 2021 05:29:23 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 11 Mar 2021 15:33:38 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 0E13631FFD3;
+        Thu, 11 Mar 2021 14:30:08 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id DHOXW0rwy0mK; Thu, 11 Mar 2021 14:30:07 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 9A78B31F8EB;
+        Thu, 11 Mar 2021 14:29:16 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 3CctQN8QBZUF; Thu, 11 Mar 2021 14:29:16 -0300 (-03)
+Received: from [10.208.85.246] (89-200-33-201.mobile.kpn.net [89.200.33.201])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id A009031FF5E;
+        Thu, 11 Mar 2021 14:26:32 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdYxMGN3N-jFt1Uw4AkBR-x=dRj6HEvDp6g+2ku7+qCLwg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Thu, 11 Mar 2021 18:26:53 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210311172632.A009031FF5E@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/2021 23.31, Linus Walleij wrote:
-> I understand your argument, is your position such that the nature
-> of the hardware is such that community should leave this hardware
-> alone and not try to make use of RPMB  for say ordinary (self-installed)
-> Linux distributions?
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-It's not really that the community should leave this hardware alone, so 
-much that I think there is a very small subset of users who will be able 
-to benefit from it, and that subset will be happy with a usable 
-kernel/userspace interface and some userspace tooling for this purpose, 
-including provisioning and such.
+Sir/Madam,
 
-Consider the prerequisites for using RPMB usefully here:
+CONGRATULATIONS!!!
 
-* You need (user-controlled) secureboot
-* You need secret key storage - so either some kind of CPU-fused key, or 
-one protected by a TPM paired with the secureboot (key sealed to PCR 
-values and such)
-* But if you have a TPM, that can handle secure counters for you already 
-AIUI, so you don't need RPMB
-* So this means you must be running a non-TPM secureboot system
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 9th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-And so we're back to embedded platforms like Android phones and other 
-SoC stuff... user-controlled secureboot is already somewhat rare here, 
-and even rarer are the cases where the user controls the whole chain 
-including the TEE if any (otherwise it'll be using RPMB already); this 
-pretty much excludes all production Android phones except for a few 
-designed as completely open systems; we're left with those and a subset 
-of dev boards (e.g. the Jetson TX1 I did fuse experiments on). In the 
-end, those systems will probably end up with fairly bespoke set-ups for 
-any given device or SoC family, for using RPMB.
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-But then again, if you have a full secureboot system where you control 
-the TEE level, wouldn't you want to put the RPMB shenanigans there and 
-get some semblance of secure TPM/keystore/attempt throttling 
-functionality that is robust against Linux exploits and has a smaller 
-attack surface? Systems without EL3 are rare (Apple M1 :-)) so it makes 
-more sense to do this on those that do have it. If you're paranoid 
-enough to be getting into building your own secure system with 
-anti-rollback for retry counters, you should be heading in that directly 
-anyway.
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-And now Linux's RPMB code is useless because you're running the stack in 
-the secure monitor instead :-)
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
