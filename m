@@ -2,90 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6005233692D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53963336935
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbhCKAr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 19:47:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCKAre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:47:34 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19632C061574;
-        Wed, 10 Mar 2021 16:47:29 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DwqzK6csKz9sRR;
-        Thu, 11 Mar 2021 11:47:25 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615423646;
-        bh=/imjzPaihzDddAbJxiZ1d6fJrn+8s663u8iFdGFD8bU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MSgUptuS287gmfcz3ta13qGfPCejwDnxoM1+ddnsS6nNIEutj5WZ/H8spuHqR6eb1
-         k6DcOdqpjO5b/OAnkkPtY/mhKruAgzzr6rcNBk6nl2uttWhppkTZ70CuVv/0XSOqMJ
-         NUMTfHtZ9PwHD6Zneo/QoCxIP0xeZyPoeJgAZllLcK+UgNrwkwDiVzVhLzKjoaD8Q2
-         uIdoGN2OouILjyZHda3GEvGn87v16RMgKOSVFeRSD8eAR3DgIbaDnxshNG3BXpe5W7
-         b+GsonAKQ6KOAgupF+cNCRG50w/wKQ7SnX11QM8h4dNjvP/By3HDHogTtskOu1Avp8
-         KG9zyGLYudJ8A==
-Date:   Thu, 11 Mar 2021 11:47:23 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the bpf-next tree
-Message-ID: <20210311114723.352e12f8@canb.auug.org.au>
+        id S229577AbhCKAti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 19:49:38 -0500
+Received: from mga05.intel.com ([192.55.52.43]:15447 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhCKAtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 19:49:16 -0500
+IronPort-SDR: jA8VewDEwfBIr/rRQMsRys7XHBitrc83iK/RUXKX4BrPrNZxb4bZ9x9S+M393DlsV5kq1Sk6Ow
+ P1DvGaM+XrvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="273629847"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="273629847"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 16:49:14 -0800
+IronPort-SDR: hDjsuncF8llssoUHAl8uU/QMI4xyFcq7TAK8JfSQYqi+YH2A1WFKueuFGF3ERBxayd/b+aD6Ze
+ W/XcEmU17a3A==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="370386779"
+Received: from theer-mobl2.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.212.101.109])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 16:49:13 -0800
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH 0/4] ASoC: mediatek: remove cppcheck warnings
+Date:   Wed, 10 Mar 2021 18:49:00 -0600
+Message-Id: <20210311004904.121205-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/KHDO_qP2e1=2nJb80WjgDHF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/KHDO_qP2e1=2nJb80WjgDHF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+There should be no functionality change, this patchset only fixes
+shadowed variables, prototypes and removes a useless assignment.
 
-Hi all,
+Pierre-Louis Bossart (4):
+  ASoC: mediatek: mtk-btcvsd: remove useless assignment
+  ASoC: mediatek: mt2701: align function prototype
+  ASoC: mediatek: mt2701: rename shadowed array
+  ASoC: mediatek: mt8173: rename local irq variable
 
-After merging the bpf-next tree, today's linux-next build (perf) failed
-like this:
+ sound/soc/mediatek/common/mtk-btcvsd.c            | 2 +-
+ sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.h | 4 ++--
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c        | 4 ++--
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c        | 6 +++---
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-make[3]: *** No rule to make target 'libbpf_util.h', needed by '/home/sfr/n=
-ext/perf/staticobjs/xsk.o'.  Stop.
+-- 
+2.25.1
 
-Caused by commit
-
-  7e8bbe24cb8b ("libbpf: xsk: Move barriers from libbpf_util.h to xsk.h")
-
-I have used the bpf tree from next-20210310 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/KHDO_qP2e1=2nJb80WjgDHF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBJaJsACgkQAVBC80lX
-0GyzQwf+KEu2eFmPB6gHMPuaxtZ7SredwOaBOs9jlA1KTeRBjoQY29UZ0l9kpb9+
-xNSn/rapEZtzl7C8ZS+4DXd0XPpG/vv6v6AfU1L5fxjduQlddNA4sFY13c501Ubj
-RtvsSeaKH9CHyIk9vx8a1accGseJrVcMbm/DzUMSeC0QGhEAM36hcF5eU6jRKGzB
-i67/NrQf8Mw2bhD8+27wJlGlGni6oapL4+PQtZtJrSAQvcpyfimS8TzEtt8Z+YRR
-qqomhwWdgbghLsMpKp5uJZsJXKp/ZreEuon2QQ4TLlb0AlNhakbluebjgf4LfG4f
-R9Wrm1eeJe639mwpXGqr/5xvk9WOow==
-=gb6G
------END PGP SIGNATURE-----
-
---Sig_/KHDO_qP2e1=2nJb80WjgDHF--
