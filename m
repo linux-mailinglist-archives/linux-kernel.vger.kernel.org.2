@@ -2,125 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F57336F48
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90CB336F3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhCKJwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:52:25 -0500
-Received: from lucky1.263xmail.com ([211.157.147.130]:38372 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbhCKJwD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:52:03 -0500
-Received: from localhost (unknown [192.168.167.172])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 81B99D10BC;
-        Thu, 11 Mar 2021 17:51:48 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P11225T140489871304448S1615456220209782_;
-        Thu, 11 Mar 2021 17:51:48 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <9892b09b0797cf7069056cb2265cbecb>
-X-RL-SENDER: songqiang@uniontech.com
-X-SENDER: songqiang@uniontech.com
-X-LOGIN-NAME: songqiang@uniontech.com
-X-FST-TO: akpm@linux-foundation.org
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   songqiang <songqiang@uniontech.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        songqiang <songqiang@uniontech.com>
-Subject: [PATCH] mm/highmem.c: fix coding style issue
-Date:   Thu, 11 Mar 2021 17:50:15 +0800
-Message-Id: <20210311095015.14277-1-songqiang@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232132AbhCKJuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:50:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232124AbhCKJu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 04:50:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDD2664D74;
+        Thu, 11 Mar 2021 09:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615456225;
+        bh=zh1VvqMlh+EveUf6JHW7TjAWB/CFqYj4bN/4N9pUf3I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qYTnl710VGwg4cp/N9a00zuwtMl4msfUznkhlFSRJepw9i8o8+/x/dh7miXhggqhu
+         vH+u8/GX9XZyG1eMb93AYRUJhTFY47ALyDKl+FcK/uBmRLokk11TubZX5OH/93+h1I
+         uB/ijF3BT7tyrlIhL+X6PSIk67Kz+hlfi+MSKnueWsDWdIHgNwgfDxSg8HnXPliJ81
+         Nsd5TC9Re3AYcR/sFtSzV0VWvhmiDuNEnsc/2WGoKrWj1htDVoAzXSwNTFmgtXm/dy
+         Z0vclRdkA1Gkug091rsSIfHLW8Yg0IceC3XpFKKBKnlzrWcPGlUVW0sJ6Ebbbjm7lG
+         Lgm8JChQx97xw==
+Date:   Thu, 11 Mar 2021 18:50:21 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Cao jin <jojing64@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, mhiramat@kernel.org,
+        akpm@linux-foundation.org, rostedt@goodmis.org,
+        keescook@chromium.org, vbabka@suse.cz
+Subject: Re: [PATCH] bootconfig: Update prototype of setup_boot_config()
+Message-Id: <20210311185021.cd7a42057c8500755e3732a7@kernel.org>
+In-Reply-To: <20210311085213.27680-1-jojing64@gmail.com>
+References: <20210311085213.27680-1-jojing64@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete/add some blank lines and some blank spaces
+On Thu, 11 Mar 2021 16:52:13 +0800
+Cao jin <jojing64@gmail.com> wrote:
 
-Signed-off-by: songqiang <songqiang@uniontech.com>
----
- mm/highmem.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+> Parameter "cmdline" has no use, drop it.
 
-diff --git a/mm/highmem.c b/mm/highmem.c
-index 1352a27951e3..902154b76030 100644
---- a/mm/highmem.c
-+++ b/mm/highmem.c
-@@ -110,7 +110,7 @@ EXPORT_SYMBOL(_totalhigh_pages);
- 
- EXPORT_PER_CPU_SYMBOL(__kmap_atomic_idx);
- 
--unsigned int nr_free_highpages (void)
-+unsigned int nr_free_highpages(void)
- {
- 	struct zone *zone;
- 	unsigned int pages = 0;
-@@ -126,7 +126,7 @@ unsigned int nr_free_highpages (void)
- static int pkmap_count[LAST_PKMAP];
- static  __cacheline_aligned_in_smp DEFINE_SPINLOCK(kmap_lock);
- 
--pte_t * pkmap_page_table;
-+pte_t *pkmap_page_table;
- 
- /*
-  * Most architectures have no use for kmap_high_get(), so let's abstract
-@@ -153,6 +153,7 @@ struct page *kmap_to_page(void *vaddr)
- 
- 	if (addr >= PKMAP_ADDR(0) && addr < PKMAP_ADDR(LAST_PKMAP)) {
- 		int i = PKMAP_NR(addr);
-+
- 		return pte_page(pkmap_page_table[i]);
- 	}
- 
-@@ -287,9 +288,8 @@ void *kmap_high(struct page *page)
- 	pkmap_count[PKMAP_NR(vaddr)]++;
- 	BUG_ON(pkmap_count[PKMAP_NR(vaddr)] < 2);
- 	unlock_kmap();
--	return (void*) vaddr;
-+	return (void *) vaddr;
- }
--
- EXPORT_SYMBOL(kmap_high);
- 
- #ifdef ARCH_NEEDS_KMAP_HIGH_GET
-@@ -314,7 +314,7 @@ void *kmap_high_get(struct page *page)
- 		pkmap_count[PKMAP_NR(vaddr)]++;
- 	}
- 	unlock_kmap_any(flags);
--	return (void*) vaddr;
-+	return (void *) vaddr;
- }
- #endif
- 
-@@ -367,7 +367,6 @@ void kunmap_high(struct page *page)
- 	if (need_wakeup)
- 		wake_up(pkmap_map_wait);
- }
--
- EXPORT_SYMBOL(kunmap_high);
- #endif	/* CONFIG_HIGHMEM */
- 
-@@ -431,7 +430,6 @@ void *page_address(const struct page *page)
- 	spin_unlock_irqrestore(&pas->lock, flags);
- 	return ret;
- }
--
- EXPORT_SYMBOL(page_address);
- 
- /**
+OK, this looks good to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> Signed-off-by: Cao jin <jojing64@gmail.com>
+> ---
+>  init/main.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/init/main.c b/init/main.c
+> index c68d784376ca..621a11ed18fb 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -404,7 +404,7 @@ static int __init bootconfig_params(char *param, char *val,
+>  	return 0;
+>  }
+>  
+> -static void __init setup_boot_config(const char *cmdline)
+> +static void __init setup_boot_config(void)
+>  {
+>  	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
+>  	const char *msg;
+> @@ -471,7 +471,7 @@ static void __init setup_boot_config(const char *cmdline)
+>  
+>  #else
+>  
+> -static void __init setup_boot_config(const char *cmdline)
+> +static void __init setup_boot_config(void)
+>  {
+>  	/* Remove bootconfig data from initrd */
+>  	get_boot_config_from_initrd(NULL, NULL);
+> @@ -869,7 +869,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+>  	pr_notice("%s", linux_banner);
+>  	early_security_init();
+>  	setup_arch(&command_line);
+> -	setup_boot_config(command_line);
+> +	setup_boot_config();
+>  	setup_command_line(command_line);
+>  	setup_nr_cpu_ids();
+>  	setup_per_cpu_areas();
+> -- 
+> 2.29.2
+> 
+
+
 -- 
-2.20.1
-
-
-
+Masami Hiramatsu <mhiramat@kernel.org>
