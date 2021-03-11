@@ -2,117 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901D4338194
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3945338196
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbhCKXiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:38:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhCKXiE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:38:04 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863F5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:38:04 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id x135so20526682oia.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:38:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y7PZLngnSiOO6tUFoYHe7nczWb/djDzvqn8CynT2y7o=;
-        b=b2rJ6NYdtpvRsYrTydu07Hbmx4KuucnrL02ilCVLMbWyGoSCM5JuPNA0SIk20Buxrw
-         Oh7oUZvjjjC0iQHpcwiYsGwSmlZp3cPbWR34ABrpQwzFL/BM3NX+sV+8FPYzCPOw+ofi
-         VzULisEMofG367pN45L/GSPzAd+IR9TP6WzLklrASPitwJGBnwKsB41AUiiYv8Af4Oag
-         soqwhhbg7skLH9mj/+yzDctmKgkUlK/mjPc53IbweQF4YwS39hFqhrrVqT4JQC8twf9n
-         tzySqGOhOX9aVvGEGiQM9cPpOxzOmfyLIsxdAoV+ujtciMM/eNpufnB5In28l9oJdP0X
-         QWqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y7PZLngnSiOO6tUFoYHe7nczWb/djDzvqn8CynT2y7o=;
-        b=OM572bAoDlsDiMwC7nBtkiwRyP5J1EV7o0WyR85wMdylOga0pOBeakWsR2hFonbdRm
-         OlfcdwlK56JECKefaNVHZJMzEDdbHuiQ79GIL2o7zBhX0XU7Z5DabMIa2vwndP6PnbhS
-         TB2Sna57ctAYUsw7Co6VuF6remSeFOgrudW9eIZVSRv4oLMzLO/Ix0YwoJSftOSL+l/C
-         3ef2hiHHio6NFxtCW3IUmOun04/WSOkNSwF4S6N0ua9u5wFnFbM3VGvaOYjnb1aoj6fM
-         Ex/BB3A0uflkk3eck6BalEH5hfkpupmENjEAaf6avnso5kJOBrZeD6WVahpeEaW6qPzI
-         Of6Q==
-X-Gm-Message-State: AOAM5317Hfv2P49eoxXLNvMtJ0titNhbG7ddjEn+y93FOz/o4/zjvvwd
-        elyhJq8YVLoBLydS7PyYsOJ8lg==
-X-Google-Smtp-Source: ABdhPJy3trbQfPJf8Jw30MXwWRENujdAMmMOYHCnCoFk8D7mpra/ivKmRip+qDmcJtYBYf2nNtZqnw==
-X-Received: by 2002:a05:6808:140e:: with SMTP id w14mr8230991oiv.176.1615505883760;
-        Thu, 11 Mar 2021 15:38:03 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z8sm987590otp.14.2021.03.11.15.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 15:38:03 -0800 (PST)
-Date:   Thu, 11 Mar 2021 17:38:01 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 0/6] rpmsg: enable the use of the rpmsg_char device for
- the Virtio backend
-Message-ID: <YEqp2US8OykaUAa/@builder.lan>
-References: <20210311140413.31725-1-arnaud.pouliquen@foss.st.com>
+        id S230478AbhCKXii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:38:38 -0500
+Received: from mx1.riseup.net ([198.252.153.129]:57120 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230516AbhCKXig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 18:38:36 -0500
+Received: from fews2.riseup.net (fews2-pn.riseup.net [10.0.1.84])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4DxQPR5ltyzDxcb;
+        Thu, 11 Mar 2021 15:38:35 -0800 (PST)
+X-Riseup-User-ID: 41B6C3767CFEB344B7CC4F280A24931C1154974A1CA218C3551CA99ED0AF1D68
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews2.riseup.net (Postfix) with ESMTPSA id 4DxQPQ5gYQz1y6h;
+        Thu, 11 Mar 2021 15:38:34 -0800 (PST)
+From:   Jim Newsome <jnewsome@torproject.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org, Jim Newsome <jnewsome@torproject.org>
+Subject: [PATCH v4] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
+Date:   Thu, 11 Mar 2021 17:38:23 -0600
+Message-Id: <20210311233823.20325-1-jnewsome@torproject.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311140413.31725-1-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11 Mar 08:04 CST 2021, Arnaud Pouliquen wrote:
+do_wait is an internal function used to implement waitpid, waitid,
+wait4, etc. To handle the general case, it does an O(n) linear scan of
+the thread group's children and tracees.
 
-> This series is the first step in the division of the series: 
-> "Introduce a generic IOCTL interface for RPMsg channels management"[1]
-> 
-> The main goal here is to enable the RPMsg char interface for
-> the virtio RPMsg backend. 
-> 
-> In addition some patches have been includes in order to document the
-> interface and rename the rpmsg_char_init function.
-> 
-> It also includes Mathieu Poirier's comments made on [1]
-> 
-> Patchsets that should be the next steps:
->  - Extract the control part of the char dev and create the rpmsg_ctrl.c
->    file
->  - Introduce the RPMSG_CREATE_DEV_IOCTL IOCTL to instantiate RPMsg devices
-> 
-> 
-> [1]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=435523
-> 
+This patch adds a special-case when waiting on a pid to skip these scans
+and instead do an O(1) lookup. This improves performance when waiting on
+a pid from a thread group with many children and/or tracees.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: James Newsome <jnewsome@torproject.org>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+---
 
-Regards,
-Bjorn
+v3: https://lkml.org/lkml/2021/3/9/1134
 
-> Arnaud Pouliquen (6):
->   rpmsg: char: Rename rpmsg_char_init to rpmsg_chrdev_init
->   rpmsg: Move RPMSG_ADDR_ANY in user API
->   rpmsg: Add short description of the IOCTL defined in UAPI.
->   rpmsg: char: Use rpmsg_sendto to specify the message destination
->     address
->   rpmsg: virtio: Register the rpmsg_char device
->   rpmsg: char: Return an error if device already open
-> 
->  drivers/rpmsg/qcom_glink_native.c | 16 ++++++++
->  drivers/rpmsg/qcom_smd.c          | 16 ++++++++
->  drivers/rpmsg/rpmsg_char.c        | 11 ++++--
->  drivers/rpmsg/virtio_rpmsg_bus.c  | 62 ++++++++++++++++++++++++++++---
->  include/linux/rpmsg.h             |  3 +-
->  include/uapi/linux/rpmsg.h        | 13 ++++++-
->  6 files changed, 108 insertions(+), 13 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+Oleg - I kept your "reviewed-by", but LMK if I should drop it; wasn't
+sure whether these changes were enough to have to drop it or not. Also
+while making the other requested changes I found the code was cleaner
+with a helper function after all, which I named `is_effectively_child`.
+
+ kernel/exit.c | 73 ++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 63 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 04029e35e69a..e0fd782463c5 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -1439,9 +1439,54 @@ void __wake_up_parent(struct task_struct *p, struct task_struct *parent)
+ 			   TASK_INTERRUPTIBLE, p);
+ }
+ 
++static bool is_effectively_child(struct wait_opts *wo, bool ptrace,
++				 struct task_struct *target)
++{
++	struct task_struct *parent =
++		!ptrace ? target->real_parent : target->parent;
++
++	return current == parent || (!(wo->wo_flags & __WNOTHREAD) &&
++				     same_thread_group(current, parent));
++}
++
++/*
++ * Optimization for waiting on PIDTYPE_PID. No need to iterate through child
++ * and tracee lists to find the target task.
++ */
++static int do_wait_pid(struct wait_opts *wo)
++{
++	bool ptrace;
++	struct task_struct *target;
++	int retval;
++
++	ptrace = false;
++
++	/* A non-ptrace wait can only be performed on a thread group leader. */
++	target = pid_task(wo->wo_pid, PIDTYPE_TGID);
++
++	if (target && is_effectively_child(wo, ptrace, target)) {
++		retval = wait_consider_task(wo, ptrace, target);
++		if (retval)
++			return retval;
++	}
++
++	ptrace = true;
++
++	/* A ptrace wait can be done on non-thread-group-leaders. */
++	if (!target)
++		target = pid_task(wo->wo_pid, PIDTYPE_PID);
++
++	if (target && is_effectively_child(wo, ptrace, target)) {
++		retval = wait_consider_task(wo, ptrace, target);
++		if (retval)
++			return retval;
++	}
++
++	return 0;
++}
++
+ static long do_wait(struct wait_opts *wo)
+ {
+-	struct task_struct *tsk;
+ 	int retval;
+ 
+ 	trace_sched_process_wait(wo->wo_pid);
+@@ -1463,19 +1508,27 @@ static long do_wait(struct wait_opts *wo)
+ 
+ 	set_current_state(TASK_INTERRUPTIBLE);
+ 	read_lock(&tasklist_lock);
+-	tsk = current;
+-	do {
+-		retval = do_wait_thread(wo, tsk);
+-		if (retval)
+-			goto end;
+ 
+-		retval = ptrace_do_wait(wo, tsk);
++	if (wo->wo_type == PIDTYPE_PID) {
++		retval = do_wait_pid(wo);
+ 		if (retval)
+ 			goto end;
++	} else {
++		struct task_struct *tsk = current;
++
++		do {
++			retval = do_wait_thread(wo, tsk);
++			if (retval)
++				goto end;
+ 
+-		if (wo->wo_flags & __WNOTHREAD)
+-			break;
+-	} while_each_thread(current, tsk);
++			retval = ptrace_do_wait(wo, tsk);
++			if (retval)
++				goto end;
++
++			if (wo->wo_flags & __WNOTHREAD)
++				break;
++		} while_each_thread(current, tsk);
++	}
+ 	read_unlock(&tasklist_lock);
+ 
+ notask:
+-- 
+2.30.1
+
