@@ -2,228 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB08336DE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F59336DEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhCKIg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbhCKIgN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:36:13 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9B1C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:36:13 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id j3so1466875edp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:36:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4Kb+dTW+digtgGHqIiSy+mHizYzaFwzy9otWMHUyUlM=;
-        b=boixaW8nzO94y5eRVcTgFyC2KkHBPOClBHKn32lpqCqFcdigTgIcpNwb5k+8D3ZanH
-         /ARGWNPDPjz23rLhyW6jOCrHktpK+UDREN+55ITfIMvdmxe7h4p5zgXHCh2SfJcXCYeL
-         R6249hIJuH0yLOUHWugIYC749PIYWjPuD9Dn+9ThIRfarn5hSZxku9ZwUYa9jAveXuV3
-         3781mtSaIqmuVJOn67u8vvZfiZ3l6/3YwGksiT5VoYL7iGokrh+pvQhvOnmPM7O0/vHW
-         j1mTrWGx2UlXj5nmXh2/P4llNs19RuCdaaPm7ISjACML96Q/diun53NVxQplFVjD4IGJ
-         711w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4Kb+dTW+digtgGHqIiSy+mHizYzaFwzy9otWMHUyUlM=;
-        b=DO2WKqg4fdpGJd7NFXGIP2O+KyYUjbQbyDoHdSRh9V9lJ4q8FzAFn0Uq7qPWHt5yjd
-         HFjFyiNzaT0QmwBp/PPcvz5+k4s99+gcVwlmuuF4VdK8rhZ7ZQ2qe90nHTzevfPN8/Jk
-         U9fp/VTyZUWZr/k/dYuBzZqAptAcvnCJZCX1QB4GOdo07ZFhlrcIyzxYNieL+yVeabF6
-         o335gXEy3ie7JxLTaZiiDkLx2Gkh+2JjHoH60EvEXRcJUO8SL7+q6jbGdwSZC0gzRRIQ
-         HcYKw+1+n06hzk7hXCriSUoZ6v1pP3gFlX1c7kr8nDsUX8VQALK+dK59qOUUrVablpav
-         WxEg==
-X-Gm-Message-State: AOAM532jybhmkGsq9uu4QpaPmQr29JLrQQOZXVL6PRECdQCUgOkD2OGS
-        mO0wyO1yUP0yqA6Fl6nFXpme9dKsVkJVLYK8pNOlzQ==
-X-Google-Smtp-Source: ABdhPJzVFvmB+MSziQlhFPHCOltvhAIUsXPPjRZhAegnXWEJa+Y+pZNNomK6mHfFty1Orc/9wjKs8JZ5MTecqLlpBOo=
-X-Received: by 2002:aa7:dd99:: with SMTP id g25mr7288797edv.230.1615451770809;
- Thu, 11 Mar 2021 00:36:10 -0800 (PST)
+        id S231362AbhCKIhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:37:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46370 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231356AbhCKIhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:37:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615451823; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aT+IcvZ/LIbE+g8vm51cCvXAltMkbBPr5mv3CdiYJpY=;
+        b=metQ+sXsqkfPUsi0vxW4cXWnvH5IzNBUvri643f3eYB3j4sCfZip6wmXkbo7Fgot30YYmk
+        TWaFLtIMBxNjzvgX5tOdQhIL+AjBgRTC2Dzd/c1eqviaEP6zTOwDy1Btb/ie24qSoR8teR
+        Dvtk+9VF2UTz5004GRcz5cI9QSHnHfc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 456CEAC17;
+        Thu, 11 Mar 2021 08:37:03 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 09:37:02 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Zhou Guanghui <zhouguanghui1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, hughd@google.com,
+        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
+        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
+        dingtianhong@huawei.com, chenweilong@huawei.com,
+        rui.xiang@huawei.com
+Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
+Message-ID: <YEnWrg2XFwZ2PR0N@dhcp22.suse.cz>
+References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
+ <20210304074053.65527-3-zhouguanghui1@huawei.com>
+ <20210308210225.GF3479805@casper.infradead.org>
+ <YEc5iI+ZP7dWr2fC@dhcp22.suse.cz>
+ <20210309123255.GI3479805@casper.infradead.org>
+ <YEdyJ+ZK2l7tu0rw@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20210310132320.393957501@linuxfoundation.org>
-In-Reply-To: <20210310132320.393957501@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 11 Mar 2021 14:05:59 +0530
-Message-ID: <CA+G9fYsg8Oo8AaAoyZ+B1XuCKCR0cnH-4somYOct36Of-GGQ9w@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/11] 4.9.261-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEdyJ+ZK2l7tu0rw@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 at 18:56, <gregkh@linuxfoundation.org> wrote:
->
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> This is the start of the stable review cycle for the 4.9.261 release.
-> There are 11 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.261-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Johannes, Hugh,
 
+what do you think about this approach? If we want to stick with
+split_page approach then we need to update the missing place Matthew has
+pointed out.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On Tue 09-03-21 14:03:36, Michal Hocko wrote:
+> On Tue 09-03-21 12:32:55, Matthew Wilcox wrote:
+> > On Tue, Mar 09, 2021 at 10:02:00AM +0100, Michal Hocko wrote:
+> [...]
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index 913c2b9e5c72..d44dea2b8d22 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -3135,8 +3135,21 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
+> > >  	if (memcg && !mem_cgroup_is_root(memcg)) {
+> > >  		ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
+> > >  		if (!ret) {
+> > > +			int nr_pages = 1 << order;
+> > >  			page->memcg_data = (unsigned long)memcg |
+> > >  				MEMCG_DATA_KMEM;
+> > > +			
+> > > +			/*
+> > > +			 * Compound pages are normally split or freed
+> > > +			 * via their head pages so memcg_data in in the
+> > > +			 * head page should be sufficient but there
+> > > +			 * are exceptions to the rule (see __free_pages).
+> > > +			 * Non compound pages would need to copy memcg anyway.
+> > > +			 */
+> > > +			for (i = 1; i < nr_pages; i++) {
+> > > +				struct page * p = page + i;
+> > > +				p->memcg_data = page->memcg_data
+> > > +			}
+> > >  			return 0;
+> > 
+> > I would condition this loop on if (!(gfp & __GFP_COMP)), but yes, something
+> > along these lines.  I might phrase the comment a little differently ...
+> > 
+> > 			/*
+> > 			 * Compound pages are treated as a single unit,
+> > 			 * but non-compound pages can be freed individually
+> > 			 * so each page needs to have its memcg set to get
+> > 			 * the accounting right.
+> > 			 */
+> 
+> OK, I must have misunderstood your __free_pages fix then. I thought this
+> was about compound pages. Btw. again I forgot about css ref counting so
+> here is an updated version.
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 913c2b9e5c72..ec2c705f38fa 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3133,10 +3133,22 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
+>  
+>  	memcg = get_mem_cgroup_from_current();
+>  	if (memcg && !mem_cgroup_is_root(memcg)) {
+> -		ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
+> +		int nr_pages = 1 << order;
+> +		ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
+>  		if (!ret) {
+>  			page->memcg_data = (unsigned long)memcg |
+>  				MEMCG_DATA_KMEM;
+> +			if (nr_pages > 1) {
+> +				/*
+> +				 * comment goes here
+> +				 */
+> +				for (i = 1; i < nr_pages; i++) {
+> +					struct page * p = page + i;
+> +					p->memcg_data = page->memcg_data
+> +				}
+> +				/* Head page reference from get_mem_cgroup_from_current */
+> +				css_get_many(&memcg->css, nr_pages - 1);
+> +			}
+>  			return 0;
+>  		}
+>  		css_put(&memcg->css);
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.9.261-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.9.y
-git commit: 8bf14e5a6c5c131e93c7c423725d758b0a6f531a
-git describe: v4.9.260-12-g8bf14e5a6c5c
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.260-12-g8bf14e5a6c5c
-
-No regressions (compared to build v4.9.260)
-
-No fixes (compared to build v4.9.260)
-
-
-Ran 41377 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* fwts
-* ltp-cve-tests
-* ltp-fs-tests
-* network-basic-tests
-* perf
-* kselftest-kexec
-* kselftest-sync
-* kselftest-vm
-* kselftest-x86
-* ltp-open-posix-tests
-* kvm-unit-tests
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Michal Hocko
+SUSE Labs
