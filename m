@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8C7336C48
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11550336C4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhCKGal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:30:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhCKGaO (ORCPT
+        id S231490AbhCKGcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:32:16 -0500
+Received: from conuserg-08.nifty.com ([210.131.2.75]:56175 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhCKGbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:30:14 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C137AC061574;
-        Wed, 10 Mar 2021 22:30:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=Q0Q4fXrl+Z
-        c6rfgHniJ+mO2J67W6fLX642I1Ov802hU=; b=RNOwCY2qllPTBqvhSnpcQAr3B7
-        ETjhQCvPxVK7opD9BXWhmLUl9zLGV0tMecZ/x3ZXaEiU27H54Pz8zryJH5IoTd/K
-        zY8/hcDksxYpTuZ8gfaIYAaFuTcOxLh7NJZEsm4e1bbqw0eAnWrDwQsTvhVV0PUo
-        MhWAwBXJraE2WLSjA=
-Received: from ubuntu.localdomain (unknown [114.214.226.60])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnbBzvuElg4vgJAA--.2021S4;
-        Thu, 11 Mar 2021 14:30:07 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     hare@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] scsi: Fix a double free in myrs_cleanup
-Date:   Wed, 10 Mar 2021 22:30:05 -0800
-Message-Id: <20210311063005.9963-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 11 Mar 2021 01:31:48 -0500
+Received: from localhost.localdomain (133-175-190-164.kyoto.fdn.vectant.ne.jp [133.175.190.164]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 12B6V9T8023841;
+        Thu, 11 Mar 2021 15:31:09 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 12B6V9T8023841
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615444270;
+        bh=pFK6AvxwZw3F3vXwDKj2ZIdqMuI/H73Ebds8nCytKMw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qbCEKd6kFlCtOPCJcxNHX6hBNKCcAclUb3mgPADCPsW+Awl+oag3igTZfT20YCSNh
+         75nUtpwSTMOUD8KlSc4eVv+QTfHol/pl6UJWT1rqrNS3qRK6SiqfwR5w72WiCb3k2v
+         DWqxtvb0x0Zu4zSZQ0ieCk4S8jflnOiwkCCfhpBO3wXfrhg0iV3jAlWOmRbWDedpdk
+         KP8/5pvJyPIqWSOk1AWra9SnyHlZN+vO1+2uguldw3tXtv3xLPzmUGspOWlcGPB8qb
+         FS0yI9MYOQC/xa4L26jDtmoIAoL1UcytUPh27igBUWh9pDlhFlK/pSg/VC30304Fvw
+         JcjuC25X6k99Q==
+X-Nifty-SrcIP: [133.175.190.164]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: remove meaningless parameter to $(call if_changed_rule,dtc)
+Date:   Thu, 11 Mar 2021 15:30:54 +0900
+Message-Id: <20210311063054.901232-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygBnbBzvuElg4vgJAA--.2021S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFy3AF1xGF13ZrW7WrWktFb_yoWfJwb_ur
-        4FvF4xJrW5trn7Kw18Jr4FyrWj9r48X3yF9F90gayrAFW8Zr9rXr40vwn0v3W7Ww47WFyU
-        Wws0qr1fAr4xJjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1c4S5
-        UUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In myrs_cleanup, cs->mmio_base will be freed twice by
-iounmap().
+This is a remnant of commit 78046fabe6e7 ("kbuild: determine the output
+format of DTC by the target suffix").
 
-Fixes: 77266186397c6 ("scsi: myrs: Add Mylex RAID controller (SCSI interface)")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+The parameter "yaml" is meaningless because cmd_dtc no loner takes $(2).
+
+Reported-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/scsi/myrs.c | 2 +-
+
+ scripts/Makefile.lib | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/myrs.c b/drivers/scsi/myrs.c
-index 4adf9ded296a..329fd025c718 100644
---- a/drivers/scsi/myrs.c
-+++ b/drivers/scsi/myrs.c
-@@ -2273,12 +2273,12 @@ static void myrs_cleanup(struct myrs_hba *cs)
- 	if (cs->mmio_base) {
- 		cs->disable_intr(cs);
- 		iounmap(cs->mmio_base);
-+		cs->mmio_base = NULL;
- 	}
- 	if (cs->irq)
- 		free_irq(cs->irq, cs);
- 	if (cs->io_addr)
- 		release_region(cs->io_addr, 0x80);
--	iounmap(cs->mmio_base);
- 	pci_set_drvdata(pdev, NULL);
- 	pci_disable_device(pdev);
- 	scsi_host_put(cs->host);
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 90a4e04cd8f5..8cd67b1b6d15 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -352,7 +352,7 @@ define rule_dtc
+ endef
+ 
+ $(obj)/%.dt.yaml: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
+-	$(call if_changed_rule,dtc,yaml)
++	$(call if_changed_rule,dtc)
+ 
+ dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
+ 
 -- 
-2.25.1
-
+2.27.0
 
