@@ -2,153 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7344337A65
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27213337A6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhCKRFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:05:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38913 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229985AbhCKRFM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:05:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615482312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=psOPtICF11pXofHXlU7Z/Nk2n88gRhtlSBfRfAKoCVk=;
-        b=P8hklgiDgtxKPNMTHq01F53SDPJzoo4jnnt2J8KtFTlmK4uRsF2DSQDXL3BXuCgvfze0Ra
-        p/5hxwP2SYVOCqIklZwgJ+IURFhltEVDis8FYNk1mGiPo1sCYBPIjOJjl381IOkMymvHrp
-        usn4iWZemJPSamNDIAGyJBjdouyabNw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-29-KeXUfcKpNEWteOEHWTYlUg-1; Thu, 11 Mar 2021 12:05:10 -0500
-X-MC-Unique: KeXUfcKpNEWteOEHWTYlUg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEB85100C661;
-        Thu, 11 Mar 2021 17:05:08 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E91AE10023AF;
-        Thu, 11 Mar 2021 17:05:06 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Add EFI_CERT_X509_GUID support for dbx/mokx entries
+        id S230076AbhCKRGa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 12:06:30 -0500
+Received: from mga03.intel.com ([134.134.136.65]:17589 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230046AbhCKRF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:05:56 -0500
+IronPort-SDR: sxolkFIWZJZtgDX2iitjkpbdMW3EwlRVC5T3c9Q+ZUaOtfmZwsAWTLaaJzfJdKGjlDHeuQfShi
+ 3utg7r/YMeyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188739272"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="188739272"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:05:55 -0800
+IronPort-SDR: UnBMPMNAmjlV2lOgE13+gfTJozcsEO11D+J/l9JEvw33mJDqzC0k9EivlWoaoCOoaNpc9n0Wfa
+ PAmHtPuL316g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="372391140"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga006.jf.intel.com with ESMTP; 11 Mar 2021 09:05:55 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 11 Mar 2021 09:05:54 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 11 Mar 2021 09:05:54 -0800
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Thu, 11 Mar 2021 09:05:54 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
+        <naoya.horiguchi@nec.com>, Aili Yao <yaoaili@kingsoft.com>
+CC:     Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
+Subject: RE: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Thread-Topic: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Thread-Index: AQHXCnz5ja9ELypBUEatGW66U99st6pnoa2AgAEgN4CAAIHfAIAAAyEAgAAQXwD//9g7gIABDSmAgAALNoCAB2DqAIAAiu0AgABOzQD//+3L0IABObiAgAAiT4CAACi3AIAAmjmAgACgEACAAGnOwIAHwDQAgAHAYACAAADA4A==
+Date:   Thu, 11 Mar 2021 17:05:53 +0000
+Message-ID: <db80e98d2b264e988596d0d7d7c8a776@intel.com>
+References: <20210303115710.2e9f8e23@alex-virtual-machine>
+ <20210303163912.3d508e0f@alex-virtual-machine>
+ <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
+ <20210304101653.546a9da1@alex-virtual-machine>
+ <20210304121941.667047c3@alex-virtual-machine>
+ <20210304144524.795872d7@alex-virtual-machine>
+ <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
+ <20210305093016.40c87375@alex-virtual-machine>
+ <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
+ <20210310141042.4db9ea29@alex-virtual-machine>
+ <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
+In-Reply-To: <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-Date:   Thu, 11 Mar 2021 17:05:06 +0000
-Message-ID: <1884195.1615482306@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> I guess that p->mce_vaddr stores the virtual address of the error here.
+> If so, sending SIGBUS with the address looks enough as we do now, so why
+> do you walk page table to find the error virtual address?
 
-Hi Linus,
+p->mce_vaddr only has the virtual address for the COPYIN case. In that code
+path we decode the kernel instruction that hit the fault in order to find the virtual
+address. That's easy because:
 
-Here's a set of patches from Eric Snowberg[1] that add support for
-EFI_CERT_X509_GUID entries in the dbx and mokx UEFI tables (such entries
-cause matching certificates to be rejected).  These are currently ignored
-and only the hash entries are made use of.  Additionally Eric included his
-patches to allow such certificates to be preloaded.
+1) The kernel RIP is known to be good (can't page fault etc. on kernel address).
+2) There are only a half dozen instructions used by the kernel for get_user() or
+     copy_from_user().
 
-These patches deal with CVE-2020-26541.
+When the machine check happens during user execution accessing poison data
+we only have the physical address (from MCi_ADDR).
 
-To quote Eric:
-
-	This is the fifth patch series for adding support for
-	EFI_CERT_X509_GUID entries [2].  It has been expanded to not only
-	include dbx entries but also entries in the mokx.  Additionally my
-	series to preload these certificate [3] has also been included.
-
-	This series is based on v5.11-rc4.
-
-Notes:
-
- (*) These patches fix a security loophole rather than actual fixing kernel
-     breakage, so they could theoretically wait for the next merge window
-     if you prefer.
-
- (*) Patch 3 adds the extract-cert target a second time.  I think make
-     should just handle this, though it could be better to add a config
-     option specifically for building that program (it's used by multiple
-     options).
-
-Changes:
- - Changed Jarkko's acks to his kernel.org address.
-
-ver #3:
- - Rolled in changes from Eric to fix conditional building issues[7].
-
-ver #2:
- - Rolled in a fix to the second patch to include certs/common.h in
-   certs/common.c[6].
-
-ver #1:
- - I've modified the first patch in the series to fix a configuration
-   problem[4][5], to move the added functions to a more logical place
-   within thefile and to add kerneldoc comments.
-
-Link: https://lore.kernel.org/r/20210122181054.32635-1-eric.snowberg@oracle.com [1]
-Link: https://patchwork.kernel.org/project/linux-security-module/patch/20200916004927.64276-1-eric.snowberg@oracle.com/ [2]
-Link: https://lore.kernel.org/patchwork/cover/1315485/ [3]
-Link: https://lore.kernel.org/r/bc2c24e3-ed68-2521-0bf4-a1f6be4a895d@infradead.org/ [4]
-Link: https://lore.kernel.org/r/20210225125638.1841436-1-arnd@kernel.org/ [5]
-Link: https://lore.kernel.org/r/EDA280F9-F72D-4181-93C7-CDBE95976FF7@oracle.com/ [6]
-Link: https://lore.kernel.org/r/161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/161433310139.902181.11787442834918634133.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/161529604216.163428.4905283330048991183.stgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/20210304175030.184131-1-eric.snowberg@oracle.com/ [7]
-
-David
----
-The following changes since commit 8f0bfc25c907f38e7f9dc498e8f43000d77327ef:
-
-  watch_queue: rectify kernel-doc for init_watch() (2021-01-26 11:16:34 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/keys-cve-2020-26541-v3
-
-for you to fetch changes up to ebd9c2ae369a45bdd9f8615484db09be58fc242b:
-
-  integrity: Load mokx variables into the blacklist keyring (2021-03-11 16:34:48 +0000)
-
-----------------------------------------------------------------
-Fix CVE-2020-26541
-
-----------------------------------------------------------------
-Eric Snowberg (4):
-      certs: Add EFI_CERT_X509_GUID support for dbx entries
-      certs: Move load_system_certificate_list to a common function
-      certs: Add ability to preload revocation certs
-      integrity: Load mokx variables into the blacklist keyring
-
- certs/Kconfig                                      | 17 ++++++
- certs/Makefile                                     | 21 ++++++-
- certs/blacklist.c                                  | 64 ++++++++++++++++++++++
- certs/blacklist.h                                  |  2 +
- certs/common.c                                     | 57 +++++++++++++++++++
- certs/common.h                                     |  9 +++
- certs/revocation_certificates.S                    | 21 +++++++
- certs/system_keyring.c                             | 55 +++----------------
- include/keys/system_keyring.h                      | 15 +++++
- scripts/Makefile                                   |  1 +
- .../integrity/platform_certs/keyring_handler.c     | 11 ++++
- security/integrity/platform_certs/load_uefi.c      | 20 ++++++-
- 12 files changed, 242 insertions(+), 51 deletions(-)
- create mode 100644 certs/common.c
- create mode 100644 certs/common.h
- create mode 100644 certs/revocation_certificates.S
-
+-Tony
