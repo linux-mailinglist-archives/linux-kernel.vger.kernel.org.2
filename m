@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3418336DBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8D2336DC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhCKIZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:25:14 -0500
-Received: from mga01.intel.com ([192.55.52.88]:49141 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230289AbhCKIZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:25:10 -0500
-IronPort-SDR: cuXYmVmzo89iPHPWwSEKp41iY1CvDQAM8QlPfvAdfuQj4Py2As37wgm6KzKBjbqiK9SSvjpeHj
- se4WWNJ8J4fw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="208452863"
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="208452863"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 00:25:10 -0800
-IronPort-SDR: AkynqY7WYNcU+yGW8lQOBCIkWqsuOWj2cxHX0Qcnv5cSfLREbVCUSIcNA2eOZJlt4vOvy3yX5I
- jq1duGqnpFLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="509954418"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Mar 2021 00:25:09 -0800
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add entry for the software nodes
-Date:   Thu, 11 Mar 2021 11:25:21 +0300
-Message-Id: <20210311082521.39342-1-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
+        id S231356AbhCKI0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230158AbhCKIZv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:25:51 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DCDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:25:51 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id lr13so44428172ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:25:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=cNGljFPZRpYFKEu48myr7eYFUT4vLWZX348426Ewac8=;
+        b=QbQZ/UBxpjge1O9OHMyrxQUxb8qfmuUdlZQTab1aDuqg3WkJZYrvcM5oghwUH4MJan
+         Um92IjF9ECR0I3XwDc/RAi5t3zkSKcDpv+7MLnwYnUElmIrG5dDsCoNkbHGyQg0tUioa
+         Ew1g+oilVYr2Rt0mxt/pX9hZWoJsPzlO8irgLTjLYktIwE1urMaTg0vd88DXRNqTkA1B
+         DgpwfKDKgeO54gB1clxDqpVXMs4zj+XSTtUg3ooDK4SENcLwejEkOJsCnCJMadoCnzh2
+         i1gZE5yMaVPEMGk9avpMeJ2vS5WhO8cc+ancYuaBzL71De9tp82g2RegBzzW36gjauFC
+         yMXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=cNGljFPZRpYFKEu48myr7eYFUT4vLWZX348426Ewac8=;
+        b=a942oyJaL72RUs91rO9mEcVWwYjOZSAYg7Iz/OGtJc9HyxaX2/kkiy+3DQKyuOqaKR
+         IiX1bqqGIpl3ipfD/RRx4oVmShOM3gHrtO7/c08dP98a8F0yLpCLoBAbixTLoA/QsEvV
+         bPDq0jDUjV0P9QMy/FNG/70phPieae68BfrzaKQBBT/q11FTD2md0FytDo/QDKqsBDf1
+         wz7WWSGesp2xBNzIVvjCkXzMqT2bZcMcUgC/qujIDrFab7bvstOrv+eaq+I/YLCfmtvG
+         z4xICdBJvc4fMtv+hwXCksDTDAJT2yIwnjKCkZguK0Aig7B4yH51o99xKar5EhVdSmn5
+         1Mew==
+X-Gm-Message-State: AOAM530o6sVhQJq1SnaioEpgELO/jcSO3UMAI660DmIkD7Il7wKKMKph
+        bYM0w3+AR8svXfpLsRCr8empc0Jcajtu8ArrP/8=
+X-Google-Smtp-Source: ABdhPJyr0DIm5MuAwdA6hsTFwuE2lAzhfVnT/MFlcbyXni5PywxgnIzx5TvoM0AUjHTT5Fev60I+C7WcFaDBFUAbpbg=
+X-Received: by 2002:a17:906:1d4e:: with SMTP id o14mr1230880ejh.549.1615451150221;
+ Thu, 11 Mar 2021 00:25:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:aa7:c750:0:0:0:0:0 with HTTP; Thu, 11 Mar 2021 00:25:49
+ -0800 (PST)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <edemhoegbesso@gmail.com>
+Date:   Thu, 11 Mar 2021 09:25:49 +0100
+Message-ID: <CAPM9i69CC1CeatZyKMJd8x1r-V_QYTiz2g2EzWuf8SOcWvcQgg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Making Andy and myself (Heikki) the designated reviewers of
-the thing. The software node mailing list shall be
-linux-acpi@vger.kernel.org for now.
+Hallo
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+Ich hei=C3=9Fe George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte=
+ dir anbieten
+engster Verwandter meines Klienten. Sie erben die Gesamtsumme (8,5
+Millionen US-Dollar).
+Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f032f45bc9512..a76b6c926004e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16616,6 +16616,13 @@ F:	drivers/firmware/arm_sdei.c
- F:	include/linux/arm_sdei.h
- F:	include/uapi/linux/arm_sdei.h
- 
-+SOFTWARE NODES
-+R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+R:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
-+L:	linux-acpi@vger.kernel.org
-+S:	Maintained
-+F:	drivers/base/swnode.c
-+
- SOFTWARE RAID (Multiple Disks) SUPPORT
- M:	Song Liu <song@kernel.org>
- L:	linux-raid@vger.kernel.org
--- 
-2.30.1
+Mein Klient ist ein Staatsangeh=C3=B6riger Ihres Landes, der mit seiner
+Frau bei einem Autounfall ums Leben gekommen ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, w=C3=A4hrend
+50% davon berechtigt sind
+Sein f=C3=BCr dich.
+F=C3=BCr weitere Informationen wenden Sie sich bitte an meine private
+E-Mail-Adresse: georgemike7031@gmail.com
 
+Vielen Dank im Voraus,
+Herr George Mike,
