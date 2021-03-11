@@ -2,135 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004AB337A1C
+	by mail.lfdr.de (Postfix) with ESMTP id E6E00337A1E
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCKQyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:54:08 -0500
-Received: from mga03.intel.com ([134.134.136.65]:16439 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhCKQxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:53:41 -0500
-IronPort-SDR: Xe1cPkMmw5E7xVQadQV0MGhVb3sg+u/xaTGs2XsQW+9ofwmfMqyDrDw9GhGy3eCr33CpPe403B
- PEQEXwqBnxjA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188736812"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="188736812"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 08:53:39 -0800
-IronPort-SDR: vC5obF2K5PiiFzrrfE+lRZOg1UmRm/I+mTRCNNnjc0UE7imEJl2Da32rftR89K/EtRLlWQXsvk
- Peyxvm+HkBgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="438232616"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Mar 2021 08:53:38 -0800
-Received: from [10.251.15.67] (kliang2-MOBL.ccr.corp.intel.com [10.251.15.67])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S229951AbhCKQyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:54:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48253 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229942AbhCKQxo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:53:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615481623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RsNecIoLWMmtHw2ukLD+MXYyvQSCHtDN1GLSjaRSntQ=;
+        b=aNQpgEJWAMqmnFArJwBXV4QW7bAtEeai/A1m3Fut9TjpMyAFZyu/ohg518Z0JQxR8p9juP
+        R7kJmHLR9vhoz1x8/EvLsiWL6tM/pzWWZ5jIgtcbNsw7E27sedaumVkUndFdyQiQFL8SGC
+        HKDSnLeu89l9yqzc++RMdMto7TXA4s8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-336-ibkYS-aaMPGpYU69OceJqQ-1; Thu, 11 Mar 2021 11:53:41 -0500
+X-MC-Unique: ibkYS-aaMPGpYU69OceJqQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id F33605808F3;
-        Thu, 11 Mar 2021 08:53:36 -0800 (PST)
-Subject: Re: [PATCH V2 20/25] perf/x86/intel: Add Alder Lake Hybrid support
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-21-git-send-email-kan.liang@linux.intel.com>
- <YEpAtTttSxMVDWYp@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <01176076-049b-0129-4865-8c49cd002060@linux.intel.com>
-Date:   Thu, 11 Mar 2021 11:53:35 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4E51CC624;
+        Thu, 11 Mar 2021 16:53:40 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EC9218BBC;
+        Thu, 11 Mar 2021 16:53:38 +0000 (UTC)
+Subject: Re: [PATCH] mm: cma: Use pr_err_ratelimited for CMA warning
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <ce2251ef49e1727a9a40531d1996660b05462bd2.1615279825.git.baolin.wang@linux.alibaba.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <796ca026-31e8-7958-5e7b-e8b5446247a3@redhat.com>
+Date:   Thu, 11 Mar 2021 17:53:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <YEpAtTttSxMVDWYp@hirez.programming.kicks-ass.net>
+In-Reply-To: <ce2251ef49e1727a9a40531d1996660b05462bd2.1615279825.git.baolin.wang@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/11/2021 11:09 AM, Peter Zijlstra wrote:
-> On Wed, Mar 10, 2021 at 08:37:56AM -0800, kan.liang@linux.intel.com wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> Alder Lake Hybrid system has two different types of core, Golden Cove
->> core and Gracemont core. The Golden Cove core is registered to
->> "cpu_core" PMU. The Gracemont core is registered to "cpu_atom" PMU.
->>
->> The difference between the two PMUs include:
->> - Number of GP and fixed counters
->> - Events
->> - The "cpu_core" PMU supports Topdown metrics.
->>    The "cpu_atom" PMU supports PEBS-via-PT.
->>
->> The "cpu_core" PMU is similar to the Sapphire Rapids PMU, but without
->> PMEM.
->> The "cpu_atom" PMU is similar to Tremont, but with different
->> event_constraints, extra_regs and number of counters.
->>
+On 09.03.21 10:16, Baolin Wang wrote:
+> If we did not reserve extra CMA memory, the log buffer can be
+> easily filled up by CMA failure warning when the devices calling
+> dmam_alloc_coherent() to alloc DMA memory. Thus we can use
+> pr_err_ratelimited() instead to reduce the duplicate CMA warning.
 > 
->> +		/* Initialize big core specific PerfMon capabilities.*/
->> +		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX];
->> +		pmu->name = "cpu_core";
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>   mm/cma.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
->> +		/* Initialize Atom core specific PerfMon capabilities.*/
->> +		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX];
->> +		pmu->name = "cpu_atom";
-> 
-> So do these things use the same event lists as SPR and TNT?
-
-No, there will be two new event lists on ADL. One is for Atom core, and 
-the other is for big core. They are different to SPR and TNT.
-
-> Is there any
-> way to discover that, because AFAICT /proc/cpuinfo will say every CPU
-> is 'Alderlake', and the above also doesn't give any clue.
->
-
-Ricardo once submitted a patch to expose the CPU type under 
-/sys/devices/system/cpu, but I don't know the latest status.
-https://lore.kernel.org/lkml/20201003011745.7768-5-ricardo.neri-calderon@linux.intel.com/
-
-
-
-> FWIW, ARM big.LITTLE does discriminate in its /proc/cpuinfo, but I'm not
-> entirely sure it's really useful. Mark said perf userspace uses
-> somethink akin to our CPUID, except exposed through sysfs, to find the
-> event lists.
->
-
-Perf tool can use the pmu name.
-For perf stat -e cpu_atom/EVENT_NAME/, perf will apply the event list 
-for atom.
-For perf stat -e cpu_core/EVENT_NAME/, perf will apply the event list 
-for the big core.
-For perf stat -e EVENT_NAME, perf tool will check if the EVENT_NAME 
-exists. If it's available on both event list, perf will automatically 
-create two events, perf stat -e cpu_atom/EVENT_NAME/,cpu_core/EVENT_NAME/.
-If the event name is only available on a certain type, e.g., atom. The 
-perf tool will only apply the corresponding event, e.g., perf stat -e 
-cpu_atom/EVENT_NAME/
-
-> My desktop has: cpu/caps/pmu_name and that gives "skylake", do we want
-> the above to have cpu_core/caps/pmu_name give "sapphire_rapids" etc.. ?
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 54eee21..d101bdb 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -500,8 +500,8 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>   	}
+>   
+>   	if (ret && !no_warn) {
+> -		pr_err("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
+> -		       __func__, cma->name, count, ret);
+> +		pr_err_ratelimited("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
+> +				   __func__, cma->name, count, ret);
+>   		cma_debug_show_areas(cma);
+>   	}
+>   
 > 
 
-I think current implementation should be good enough.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-$ cat /sys/devices/cpu_atom/caps/pmu_name
-alderlake_hybrid
-
-"alderlake_hybrid" tells the perf tool that it's Alder Lake Hybrid system.
-"cpu_atom" tells the perf tool that it's for Atom core.
-
-
+-- 
 Thanks,
-Kan
+
+David / dhildenb
+
