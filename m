@@ -2,142 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E69337409
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8926033740A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbhCKNcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:32:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47104 "EHLO
+        id S233625AbhCKNcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:32:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbhCKNb6 (ORCPT
+        with ESMTP id S233590AbhCKNcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:31:58 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6703C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:31:57 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id j2so1870917wrx.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:31:57 -0800 (PST)
+        Thu, 11 Mar 2021 08:32:10 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9EAB1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:32:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KQEkpGkH8X9iAKDULksHIIQVGmHhnGVSrqpZ40dKqws=;
-        b=CIIAC/BD4HiWZJv5qwhQ9qfLc69qrTy9QBuntzXqyQsbcdQGtlF0Uxjcy0ZFTg+b8P
-         sfXuhYSDbtS+1H84ubJowHGoova+nTvdE4WmseXf7gU0a1+St18coJMHpU4NlUAqNlBn
-         G6gVDx+Mqi73FbYtvA+zLBz4Tt2LtFMujxiCA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=KQEkpGkH8X9iAKDULksHIIQVGmHhnGVSrqpZ40dKqws=;
-        b=XsH3KzxwiUcYv9H1pdpFipz1mL0x/g+seZ1FbQV2zfe4/SRjcECfHa5zqtBsmXPdfv
-         pX6ST+DwWvxPBYcOZ2nZbOyeOsJ2r3DHTUb3MGqQj4RWo5Vz74z0u2ihYZl+VdvunqMl
-         /Or/FOlIvQaWAg1ObijMwKUWVBzgano6GtAB6edsL58xdgmO+8NM4PnpztWNSpkzA26E
-         RiI73keS3mCFX+dFSmDvBjBCI4EU/S887mOvJHNLLOKLIQCFhSuowE8CTyEemEdNwi21
-         022KUoOYizF4qky12rwaWDRqzomdRubbAfU+0JmGO+EEJiS4G0/NS9roOdyKwWgaeU0g
-         GeBw==
-X-Gm-Message-State: AOAM533B2wHAP6DupZOWodIoT7irMWJg099dT5us/mw/gZDQ+KaSMY45
-        hQSV6y58TjS+pUT6gdCsD4Q42A==
-X-Google-Smtp-Source: ABdhPJxEmOy2Yvf9KHNGocEPM7wKMMIxgjmjn3qYWtNne7YIpJNNmJ0zRgu4I8/UJrCDTEqBBwHj5w==
-X-Received: by 2002:a5d:5487:: with SMTP id h7mr8924011wrv.348.1615469516566;
-        Thu, 11 Mar 2021 05:31:56 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c9sm3590049wml.42.2021.03.11.05.31.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 05:31:56 -0800 (PST)
-Date:   Thu, 11 Mar 2021 14:31:53 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Roland Scheidegger <sroland@vmware.com>,
-        linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Jeremy Kolb <jkolb@brandeis.edu>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        nouveau@lists.freedesktop.org,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>
-Subject: Re: [RESEND 00/53] Rid GPU from W=1 warnings
-Message-ID: <YEobySvG0zPs9xhc@phenom.ffwll.local>
-Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        Roland Scheidegger <sroland@vmware.com>,
-        linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Jeremy Kolb <jkolb@brandeis.edu>,
-        Kuogee Hsieh <khsieh@codeaurora.org>, Leo Li <sunpeng.li@amd.com>,
-        linaro-mm-sig@lists.linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-media@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, nouveau@lists.freedesktop.org,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Rob Clark <rob.clark@linaro.org>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>
-References: <20210303134319.3160762-1-lee.jones@linaro.org>
- <16d4300e-bf29-1e85-317b-53d257890cb9@vmware.com>
- <20210308091932.GB4931@dell>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=l9tj9qGsiMmmkFd1eD0rb4YwuG4J6BUiapS/
+        nxU4++c=; b=m2nLunmU3TYvkLrfEqSnB7K25uf4fRBpBnFSmGg3KHUq2rXWcHcg
+        jZvOFHgiOrtICiO8+K9esAMn9+KJ88UDUcgi08oUgyI3q1SSSW64WymdKl2TF1tt
+        Q47yrUOZ9G9+lWYBbD0S4p+FmrNW6pn0g6Sq+1XuJluN/cX+sK2ebp4=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Thu, 11 Mar
+ 2021 21:31:55 +0800 (GMT+08:00)
+X-Originating-IP: [202.79.170.108]
+Date:   Thu, 11 Mar 2021 21:31:55 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Luis Chamberlain" <mcgrof@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] lib/test_kmod: Fix a use after free in
+ register_test_dev_kmod
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <20210311130108.GS4332@42.do-not-panic.com>
+References: <20210311080246.11635-1-lyl2019@mail.ustc.edu.cn>
+ <20210311130108.GS4332@42.do-not-panic.com>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308091932.GB4931@dell>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Message-ID: <17bb31cd.cc46.178217c9344.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygBnbj7LG0pg0aIMAA--.2W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoRBlQhn5AUNQABsG
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 09:19:32AM +0000, Lee Jones wrote:
-> On Fri, 05 Mar 2021, Roland Scheidegger wrote:
-> 
-> > The vmwgfx ones look all good to me, so for
-> > 23-53: Reviewed-by: Roland Scheidegger <sroland@vmware.com>
-> > That said, they were already signed off by Zack, so not sure what
-> > happened here.
-> 
-> Yes, they were accepted at one point, then dropped without a reason.
-> 
-> Since I rebased onto the latest -next, I had to pluck them back out of
-> a previous one.
-
-They should show up in linux-next again. We merge patches for next merge
-window even during the current merge window, but need to make sure they
-don't pollute linux-next. Occasionally the cut off is wrong so patches
-show up, and then get pulled again.
-
-Unfortunately especially the 5.12 merge cycle was very wobbly due to some
-confusion here. But your patches should all be in linux-next again (they
-are queued up for 5.13 in drm-misc-next, I checked that).
-
-Sorry for the confusion here.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkx1aXMgQ2hhbWJl
+cmxhaW4iIDxtY2dyb2ZAa2VybmVsLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTAzLTExIDIx
+OjAxOjA4ICjmmJ/mnJ/lm5spDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxseWwyMDE5QG1h
+aWwudXN0Yy5lZHUuY24+DQo+IOaKhOmAgTogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K
+PiDkuLvpopg6IFJlOiBbUEFUQ0hdIGxpYi90ZXN0X2ttb2Q6IEZpeCBhIHVzZSBhZnRlciBmcmVl
+IGluIHJlZ2lzdGVyX3Rlc3RfZGV2X2ttb2QNCj4gDQo+IE9uIFRodSwgTWFyIDExLCAyMDIxIGF0
+IDEyOjAyOjQ2QU0gLTA4MDAsIEx2IFl1bmxvbmcgd3JvdGU6DQo+ID4gSW4gcmVnaXN0ZXJfdGVz
+dF9kZXZfa21vZCwgaXQgY2FsbHMgZnJlZV90ZXN0X2Rldl9rbW9kKCkgdG8gZnJlZQ0KPiA+IHRl
+c3RfZGV2LiBCdXQgZnJlZV90ZXN0X2Rldl9rbW9kKCkgY2FuJ3Qgc2V0IHRoZSBvcmlnaW5hbCBw
+b2ludGVyDQo+ID4gdGVzdF9kZXYgdG8gTlVMTCwgYmVjYXVzZSB0aGUgdGVzdF9kZXYgd2FzIHBh
+c3NlZCBieSBpdCdzIHZhbHVlDQo+ID4gbm90IHJlZmVyZW5jZS4NCj4gDQo+IERpZCB5b3UgYWN0
+dWFsbHkgZ2V0IGEgY3Jhc2ggb3Igc29tZXRoaW5nPyBJZiBzbyBjYW4geW91IHN1cHBseSB0aGUN
+Cj4gYWN0dWFsIGxvZz8gSWYgdGhpcyBpcyBqdXN0IGFuIG9ic2VydmF0aW9uIGFuZCB5b3UgdGhp
+bmsgdGhpcyBpcyBhbg0KPiBpc3N1ZSwgc3BlY2lmeWluZyB0aGF0IHdvdWxkIGhlbHAgZHVyaW5n
+IHBhdGNoIHJldmlldy4NCj4gDQo+ICAgTHVpcw0KPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBMdiBZ
+dW5sb25nIDxseWwyMDE5QG1haWwudXN0Yy5lZHUuY24+DQo+ID4gLS0tDQo+ID4gIGxpYi90ZXN0
+X2ttb2QuYyB8IDIgKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRl
+bGV0aW9uKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2xpYi90ZXN0X2ttb2QuYyBiL2xpYi90
+ZXN0X2ttb2QuYw0KPiA+IGluZGV4IDM4YzI1MGZiYWNlMy4uYWE4YTJhNTYzZDdlIDEwMDY0NA0K
+PiA+IC0tLSBhL2xpYi90ZXN0X2ttb2QuYw0KPiA+ICsrKyBiL2xpYi90ZXN0X2ttb2QuYw0KPiA+
+IEBAIC0xMTI0LDcgKzExMjQsNiBAQCBzdGF0aWMgdm9pZCBmcmVlX3Rlc3RfZGV2X2ttb2Qoc3Ry
+dWN0IGttb2RfdGVzdF9kZXZpY2UgKnRlc3RfZGV2KQ0KPiA+ICAJCWZyZWVfdGVzdF9kZXZfaW5m
+byh0ZXN0X2Rldik7DQo+ID4gIAkJa21vZF9jb25maWdfZnJlZSh0ZXN0X2Rldik7DQo+ID4gIAkJ
+dmZyZWUodGVzdF9kZXYpOw0KPiA+IC0JCXRlc3RfZGV2ID0gTlVMTDsNCj4gPiAgCX0NCj4gPiAg
+fQ0KPiA+ICANCj4gPiBAQCAtMTE0OSw2ICsxMTQ4LDcgQEAgc3RhdGljIHN0cnVjdCBrbW9kX3Rl
+c3RfZGV2aWNlICpyZWdpc3Rlcl90ZXN0X2Rldl9rbW9kKHZvaWQpDQo+ID4gIAlpZiAocmV0KSB7
+DQo+ID4gIAkJcHJfZXJyKCJjb3VsZCBub3QgcmVnaXN0ZXIgbWlzYyBkZXZpY2U6ICVkXG4iLCBy
+ZXQpOw0KPiA+ICAJCWZyZWVfdGVzdF9kZXZfa21vZCh0ZXN0X2Rldik7DQo+ID4gKwkJdGVzdF9k
+ZXYgPSBOVUxMOw0KPiA+ICAJCWdvdG8gb3V0Ow0KPiA+ICAJfQ0KPiA+ICANCj4gPiAtLSANCj4g
+PiAyLjI1LjENCj4gPiANCj4gPiANCg0KVGhpcyBwcm9ibGVtIHdhcyByZXBvcnRlZCBieSBzb3Vy
+Y2UgY29kZSBhbmFseXplcnMgZGV2ZWxvcGVkIGJ5IG91ciBTZWN1cml0eSBMYWIoTG9jY3MpLg0K
+V2UgaGF2ZSBjb25maXJtZWQgdGhpcyBpc3N1ZSBiZWZvcmUgc3VibWl0aW5nIHRoZSBwYXRjaC4N
+Cg0KSWYgeW91IHN0aWxsIGhhdmUgYW55IHF1ZXN0aW9ucyBhYm91dCB0aGlzIHBhdGNoLCBpIHdp
+bGwgcmVwbHkgdG8geW91IGFzIHNvb24gYXMgcG9zc2libGUuDQoNClRoYW5rcyBmb3IgeW91ciB0
+aW1lLg==
