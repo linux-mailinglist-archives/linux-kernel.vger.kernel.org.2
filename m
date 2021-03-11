@@ -2,105 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4177336A43
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF567336A4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhCKCwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 21:52:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:56834 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229624AbhCKCwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 21:52:30 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 985A31FB;
-        Wed, 10 Mar 2021 18:52:24 -0800 (PST)
-Received: from bogus (unknown [10.163.66.77])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3DC383F793;
-        Wed, 10 Mar 2021 18:52:21 -0800 (PST)
-Date:   Thu, 11 Mar 2021 02:52:13 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        Sudeep Holla <sudeep.holla@arm.com>, daniel.lezcano@linaro.org,
-        robh+dt@kernel.org, ksitaraman@nvidia.com, sanjayc@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 3/5] dt-bindings: arm: Add cpu-idle-states to Tegra194
- CPU nodes
-Message-ID: <20210311025138.o4ub4j2ss725zpv4@bogus>
-References: <1614838092-30398-1-git-send-email-skomatineni@nvidia.com>
- <1614838092-30398-4-git-send-email-skomatineni@nvidia.com>
- <20210308043755.llvdsuz2jwvweovb@bogus>
- <4cebf482-a2f8-5a79-a2f6-4ccd7d31c6ad@nvidia.com>
+        id S229843AbhCKC7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 21:59:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhCKC64 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 21:58:56 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453DCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 18:58:45 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id g8so390075wmd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 18:58:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GRM9zMw9cONpV3FPTOs+yqjYIo2ZpevTzYckbkAXLwQ=;
+        b=Cnwj1JgoXGJEI1UB44KCDg0G/iPkB97ChLiwZXSc7SGMq/dWa0QyuLMXKMCUIxGaOH
+         ItTaIc3lGmgfbHSbK1AY3fk/FD7iloS2NCnboWriNBG0SVU/vWyZxIInBWmq2R7X0Wxc
+         kBLy5p1MzlIGdrtNf4dV+a/5kmSlHsrDNZYElujlbCjzgwf7Rrg2iK6lOq99qvFlbcVZ
+         KGFjkwCawTLS0XTxHCmxC/j0J1rdGVfFqFb9F9cN6L28+HKDwmlOoRWVaNnqWefwPm6+
+         5Ug7SJUfL5h037uhRzXrP4mH7/nw44sQwU/OEU+tjGqt8drUSPtEtQlH3Fcz6BZZEQK1
+         1sbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GRM9zMw9cONpV3FPTOs+yqjYIo2ZpevTzYckbkAXLwQ=;
+        b=X57wL3sCH1Y0smmLbdtu6tksjQfLQS14eCYEuekHEzBjjuhHYyQIkAs0THhaPc8sHS
+         TaTt51hO7/APbZACbeQom2Afbo+oa4yZpc9yc/cjjUUGxYJSsLZRVWJY72tfg9ZJud7A
+         eAOVrvzhaBmOdvCJvdbMT1B7H7zf0UYGJiZqTeo7HQdTcxL6LXpPgqGWihBsQWyDZ7N3
+         PNq9bmH4S/kZ5eR5AVbBrb0mDqUYvb3HeuDP87KFUD+1S2/5huWBzEuTItGkxgK9+3lJ
+         KrZ7h3xVJMYimlXkx4dZqgTyk6W6tNOm8UMI1kDH/1bR4I0Iophm4Qul/OAOO3HRujC9
+         F5ug==
+X-Gm-Message-State: AOAM531qDtgSX4WLMJLmIVgRnlvEJ1rlQe551xXg2poNx1s2ao/s9s8L
+        gr0iYu/Kw1LVFee97XbSUmgB4FVt3z54k9lEK7rBjg==
+X-Google-Smtp-Source: ABdhPJxp5FRGwwb/+YpsrWUrU3Vq6fcoiitqZQLceHJQwTGgs34sWTNe0Nu7XmZOhhqlvJ2FvmXomaRxAk4sOigOwvw=
+X-Received: by 2002:a1c:a916:: with SMTP id s22mr6202421wme.82.1615431523833;
+ Wed, 10 Mar 2021 18:58:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4cebf482-a2f8-5a79-a2f6-4ccd7d31c6ad@nvidia.com>
-User-Agent: NeoMutt/20171215
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-2-songmuchun@bytedance.com> <YEjUYOIJb2kYoQIA@dhcp22.suse.cz>
+In-Reply-To: <YEjUYOIJb2kYoQIA@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 11 Mar 2021 10:58:07 +0800
+Message-ID: <CAMZfGtUj9vcVrSjT8Tk12jfkVE127Vkdkx6Js1JXzL+=rmu7Qw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v18 1/9] mm: memory_hotplug: factor out
+ bootmem core functions to bootmem_info.c
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 10:32:17AM -0800, Sowjanya Komatineni wrote:
+On Wed, Mar 10, 2021 at 10:14 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On 3/7/21 8:37 PM, Sudeep Holla wrote:
-> > On Wed, Mar 03, 2021 at 10:08:10PM -0800, Sowjanya Komatineni wrote:
-> > > This patch adds cpu-idle-states and corresponding state nodes to
-> > > Tegra194 CPU in dt-binding document
-> > >
-> > I see that this platform has PSCI support. Can you care to explain why
-> > you need additional DT bindings and driver for PSCI based CPU suspend.
-> > Until the reasons are convincing, consider NACK from my side for this
-> > driver and DT bindings. You should be really using those bindings and
-> > the driver may be with minor changes there.
+> [I am sorry for a late review]
+
+Thanks for your review.
+
+>
+> On Mon 08-03-21 18:27:59, Muchun Song wrote:
+> > Move bootmem info registration common API to individual bootmem_info.c.
+> > And we will use {get,put}_page_bootmem() to initialize the page for the
+> > vmemmap pages or free the vmemmap pages to buddy in the later patch.
+> > So move them out of CONFIG_MEMORY_HOTPLUG_SPARSE. This is just code
+> > movement without any functional change.
 > >
-> MCE firmware is in charge of state transition for Tegra194 carmel CPUs.
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+> > Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> > Reviewed-by: David Hildenbrand <david@redhat.com>
+> > Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+> > Tested-by: Chen Huang <chenhuang5@huawei.com>
+> > Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
 >
-
-Sure, but I assume only TF-A talks to MCE and not any OSPM/Linux kernel.
-
-> For run-time state transitions, need to provide state request along with its
-> residency time to MCE firmware which is running in the background.
+> Separation from memory_hotplug.c is definitely a right step. I am
+> wondering about the config dependency though
+> [...]
+> > diff --git a/mm/Makefile b/mm/Makefile
+> > index 72227b24a616..daabf86d7da8 100644
+> > --- a/mm/Makefile
+> > +++ b/mm/Makefile
+> > @@ -83,6 +83,7 @@ obj-$(CONFIG_SLUB) += slub.o
+> >  obj-$(CONFIG_KASAN)  += kasan/
+> >  obj-$(CONFIG_KFENCE) += kfence/
+> >  obj-$(CONFIG_FAILSLAB) += failslab.o
+> > +obj-$(CONFIG_HAVE_BOOTMEM_INFO_NODE) += bootmem_info.o
 >
+> I would have expected this would depend on CONFIG_SPARSE.
+> BOOTMEM_INFO_NODE is really an odd thing to depend on here. There is
+> some functionality which requires the node info but that can be gated
+> specifically. Or what is the thinking behind?
 
-Sounds similar to x86 mwait, perhaps we need to extend PSCI if we need
-to make this firmware PSCI compliant or just say it is not and implement
-completely independent implementation. I am not saying that is acceptable
-ATM but I prefer not to mix some implementation to make it look like
-PSCI compliant.
+At first my idea was to free vmemmap pages through the bootmem
+interface. My first instinct is to rely on BOOTMEM_INFO_NODE.
+It makes sense to me to depend on CONFIG_SPARSE. I will
+update this in the next version.
 
-> State min residency is updated into power_state value along with state id
-> that is passed to psci_cpu_suspend_enter
+Thanks.
+
 >
-
-Sounds like a hack/workaround. I would prefer to standardise that. IIUC
-the power_state is more static and derived from DT. I don't like to
-overload that TBH. Need to check with authors of that binding.
-
-> Also states cross-over idle times need to be provided to MCE firmware.
+> This doesn't matter right now because it seems that the *_page_bootmem
+> is only used by x86 outside of the memory hotplug.
 >
-
-New requirements if this has to be PSCI compliant.
-
-> MCE firmware decides on state transition based on these inputs along with
-> its background work load.
->
-> So, Tegra specific CPU idle driver is required mainly to provide cross-over
-> thresholds from DT and run time idle state information to MCE firmware
-> through Tegra MCE communication APIs.
->
-
-I am worried if different vendors will come up with different custom
-solution for this. We need to either standardise this is Linux/DT or
-in PSCI.
-
-> Allowing cross-over threshold through DT allows users to vary idle time
-> thresholds for state transitions based on different use-cases.
->
-
-Sounds like policy and not platform specific to be in DT, but I will leave
-that to DT maintainers.
-
---
-Regards,
-Sudeep
+> Other than that looks good to me.
+> --
+> Michal Hocko
+> SUSE Labs
