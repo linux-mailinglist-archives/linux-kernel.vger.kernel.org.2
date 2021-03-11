@@ -2,146 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3145338067
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 844503380A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhCKWfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 17:35:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
+        id S230493AbhCKWhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 17:37:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhCKWfJ (ORCPT
+        with ESMTP id S229574AbhCKWhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 17:35:09 -0500
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C4EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 14:35:09 -0800 (PST)
-Received: by mail-vs1-xe2c.google.com with SMTP id l27so11551833vsj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 14:35:09 -0800 (PST)
+        Thu, 11 Mar 2021 17:37:35 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FF6C061574;
+        Thu, 11 Mar 2021 14:37:34 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id x21so5218745eds.4;
+        Thu, 11 Mar 2021 14:37:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Slj5ijAMQvQRxb1SS2xuWqvziQTtlap7wzaKqo38Ysg=;
-        b=KLRCe0QOPnaZz8CFfijz474n51yPgrBjC9/+FrXpUuMXqSTxBDaY3JfP0FBrQz4dUm
-         TlyU5oWoGGE+2shY3k/GfMTNiSed1JDJb9+cuQA9qE51EQJz/iqfd39qzQlhGQiupprq
-         qYMoD+0VGcJEBQK3HQ7nIoKFfbBM3F+PYMh/XrGz39eAGZioY/w4QnvZQIiPXwsnDuQV
-         zKxtobjdJDoN7Yq+c64biOLfcgJXTyDKtTEiZgkLShU7r+PXkEvTXY6M5pqTwLkROYSv
-         6GOt6T+hnw6lV3J10BKl/zzDfxl+WecXR0+zjpTKJEILzD4KuG1XsBiQ13FN3jxoGMDG
-         ctvQ==
+         :cc:content-transfer-encoding;
+        bh=fXghSk9caRWFDRCz6fZq581zxQ1h0J2EoY5DSpAlgro=;
+        b=lMzrbplLg4M4wJocvzEGEBYyWixVqH6cGi7JRgMkjT5Q/UszF26rY9VgsY7RA/0Uhk
+         GG/zYoTnqi0bwp+7ppeaR+OMjOKN6P6O52IlKBgqIsnVHp3j8B0Uq4OwDAp4i9xU4RbZ
+         cJcDc8sXYq/qem8W4zpOklI4ZJJH3iT2/RvdkM7OtjEIwW0xCQ2gS6jUGd+eAhVnsad0
+         J0MqZi9YXlC3DQ9nYgiWP5TKUcCSScSztJVDtVXZ0KMSa4qLHfsEE9duAnDqLDy9Ft5b
+         RccCUkWjb7HE2TBAOksJx0gIzv4HfD8EWVuaxwZ9VJ2xyfB2K8bPzKAAw4Qm8AyzGcsR
+         MbMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Slj5ijAMQvQRxb1SS2xuWqvziQTtlap7wzaKqo38Ysg=;
-        b=Eu6hpiIQiVwLgyxymdKnnwrL8Q9j2TzjI03P3V3zDAnYH+9ks1hbwmc/UOSmZoQ07b
-         E8gELKFxJUQDXEzdLfhC6j8bvHbgpQopOWgBOQW3WfgYd88o/0izk4Ob6PJewih1VQ2n
-         h7rlTPYR9NnuUtnBPhdQMuDmaqNMiUJfoXrp2WDR8k9mwdkXPAoAngPXNiTMpCflRlKF
-         AtQuCisfEdPGsPl/h2Dw0ZeX31l/z9MGkNRBJva+giEv9odJr0H08TE2VSdf5kPaNDdz
-         ohdV8VGKRY3Ap2k+rpzqwwi5RFIOsKWlYJhrJCLdT6eih1MkX2ZbZ7vG/cT+Q2+ajJdf
-         l5tQ==
-X-Gm-Message-State: AOAM531l+SCJic5r+5EvxubDHQi7MY6AXPXqmg/I6iMI6JmvRZs2wzBU
-        bmrmrn5QqfiOAZFd8EzFUSdzSiPm3rBns4j1GmkHpA==
-X-Google-Smtp-Source: ABdhPJxS6e6HZ5CIYY3avBcnq6Cx3ijhGntj0qmtikKDEFki6YSCBlYrsrdkcr8uflsd08tLwKMsKfBnbWFmV0NM+F4=
-X-Received: by 2002:a67:7384:: with SMTP id o126mr6898285vsc.23.1615502108020;
- Thu, 11 Mar 2021 14:35:08 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fXghSk9caRWFDRCz6fZq581zxQ1h0J2EoY5DSpAlgro=;
+        b=gHQtj7b8O7WJeupAYluqbdsekqvsbuUpnUQ5wE3/ZK47SipLTdBOMywZP4HWlp5vFD
+         0DWt0VNFjW7ImDFNJTt5irCwclg1z79LZqKCjsLO+6NVPRzpYZJEZtF6qvx0r7mEfuST
+         HzMZbFKfWN54Wk5XfnY3ebBRNLNxEBUiehaaL2drgwOwhg3lWQc5D9KAJwbd7McfRo+y
+         mSHYf9onYAtPrqg0AH9X0rcd1nJTvP+FiOeDz7VOSf5izELjcHQC8WzDuwcAt5ytmEWm
+         ARV6GoNQFZnFQPM/tFY5O0BgMPT/OuyLzCm9RG3QWTihTOQcphVeVUocueOFXxZmGZrF
+         aRYQ==
+X-Gm-Message-State: AOAM53236j/+tYxWjkpLkA9q21+vnL4Wx98o9oy24HEU+RTP7IpPakUL
+        8n8C+3AKqqxXojEwZUuT0BxPjMEYA+E92EBONgw=
+X-Google-Smtp-Source: ABdhPJzVKFYwSspdbEbBYCUOrZiXSEa8rHyVbd8LQ3zNjc4/aqAS0jN39CO9lHjA8rtfPUHdepo15UrmW+1WvpfqYE8=
+X-Received: by 2002:a05:6402:5189:: with SMTP id q9mr10774827edd.168.1615502253659;
+ Thu, 11 Mar 2021 14:37:33 -0800 (PST)
 MIME-Version: 1.0
-References: <CGME20210311121850epcas1p493c255a586998916febfebaf994bc5dc@epcas1p4.samsung.com>
- <1615464651-23675-1-git-send-email-jhs2.lee@samsung.com> <1615464651-23675-2-git-send-email-jhs2.lee@samsung.com>
-In-Reply-To: <1615464651-23675-2-git-send-email-jhs2.lee@samsung.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 11 Mar 2021 14:34:56 -0800
-Message-ID: <CABCJKucMyQbtt-LACCRSk6bxAqmS05eVhv-5ou3_XZ1Nz+XYug@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dm verity: allow only one verify mode
-To:     JeongHyeon Lee <jhs2.lee@samsung.com>
-Cc:     Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210310153544.434160-1-zi.yan@sent.com> <CAHbLzkqaGqW8_dmR=PBojEVFGU+FfUm2Y+Rhu0Ay8aP1cAChdA@mail.gmail.com>
+ <A3A1CBF3-B5D2-4CF2-97D6-9BC12E82BEAE@nvidia.com>
+In-Reply-To: <A3A1CBF3-B5D2-4CF2-97D6-9BC12E82BEAE@nvidia.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 11 Mar 2021 14:37:21 -0800
+Message-ID: <CAHbLzkpLhMkHW5JYu2K2XTgoGBjUcvR6u0iTT5UYyYHU3YDz_A@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: huge_memory: a new debugfs interface for splitting
+ THP tests.
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mika Penttila <mika.penttila@nextfour.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 4:19 AM JeongHyeon Lee <jhs2.lee@samsung.com> wrote:
+On Thu, Mar 11, 2021 at 7:52 AM Zi Yan <ziy@nvidia.com> wrote:
 >
-> If there are multiple verity mode when parsing the verity mode of dm
-> verity table, it will be set as the last one.
-> So set to 'allow only once' to prevent it.
+> On 10 Mar 2021, at 20:12, Yang Shi wrote:
+>
+> > On Wed, Mar 10, 2021 at 7:36 AM Zi Yan <zi.yan@sent.com> wrote:
+> >>
+> >> From: Zi Yan <ziy@nvidia.com>
+> >>
+> >> We do not have a direct user interface of splitting the compound page
+> >> backing a THP and there is no need unless we want to expose the THP
+> >> implementation details to users. Adding an interface for debugging.
+> >>
+> >> By writing "<pid>,<vaddr_start>,<vaddr_end>" to
+> >> <debugfs>/split_huge_pages_in_range_pid, THPs within the given virtual
+> >
+> > Can we reuse the existing split_huge_page knob instead of creating a ne=
+w one?
+> >
+> > Two knobs for splitting huge pages on debugging purpose seem
+> > overkilling to me IMHO. I'm wondering if we could check if a special
+> > value (e.g. 1 or -1) is written then split all THPs as split_huge_page
+> > knob does?
+> >
+> > I don't think this interface is used widely so the risk should be very
+> > low for breaking userspace.
+>
+> Thanks for the suggestion.
+>
+> I prefer a separate interface to keep input handling simpler. I am also
+> planning to enhance this interface later to enable splitting huge pages
+> to any lower order when Matthew Wilcox=E2=80=99s large page in page cache=
+ gets in,
+> so it is better to keep it separate from existing split_huge_pages.
 
-I agree that we shouldn't allow this, at least not without a warning,
-but out of curiosity, do you actually have a situation where this
-could happen? One ideally shouldn't be passing untrusted parameters to
-dm-verity.
+The input handling seems not that hard, you might be able to try to do:
+
+ret =3D sscanf(input_buf, "%d,0x%lx,0x%lx,%d", &pid, &vaddr_start,
+&vaddr_end, order);
+switch(ret) {
+case ret =3D=3D 1:
+                split_all_thps
+case ret =3D=3D 3:
+                 split_thp_for_pid
+case ret =3D=3D 4:
+                 split_thp_for_pid_to_order
+default:
+                 return -EINVAL
+}
+
+Will it work for you?
 
 >
-> Signed-off-by: JeongHyeon Lee <jhs2.lee@samsung.com>
-> ---
->  drivers/md/dm-verity-target.c | 38 ++++++++++++++++++++++++++---------
->  1 file changed, 28 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-> index 808a98ef624c..b76431dc7721 100644
-> --- a/drivers/md/dm-verity-target.c
-> +++ b/drivers/md/dm-verity-target.c
-> @@ -893,6 +893,28 @@ static int verity_alloc_zero_digest(struct dm_verity *v)
->         return r;
->  }
->
-> +static inline bool verity_is_verity_mode(const char *arg_name)
-> +{
-> +       return (!strcasecmp(arg_name, DM_VERITY_OPT_LOGGING) ||
-> +               !strcasecmp(arg_name, DM_VERITY_OPT_RESTART) ||
-> +               !strcasecmp(arg_name, DM_VERITY_OPT_PANIC));
-> +}
-> +
-> +static int verity_parse_verity_mode(struct dm_verity *v, const char *arg_name)
-> +{
-> +       if (v->mode)
-> +               return -EINVAL;
-> +
-> +       if (!strcasecmp(arg_name, DM_VERITY_OPT_LOGGING))
-> +               v->mode = DM_VERITY_MODE_LOGGING;
-> +       else if (!strcasecmp(arg_name, DM_VERITY_OPT_RESTART))
-> +               v->mode = DM_VERITY_MODE_RESTART;
-> +       else if (!strcasecmp(arg_name, DM_VERITY_OPT_PANIC))
-> +               v->mode = DM_VERITY_MODE_PANIC;
-> +
-> +       return 0;
-> +}
-> +
->  static int verity_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v,
->                                  struct dm_verity_sig_opts *verify_args)
->  {
-> @@ -916,16 +938,12 @@ static int verity_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v,
->                 arg_name = dm_shift_arg(as);
->                 argc--;
->
-> -               if (!strcasecmp(arg_name, DM_VERITY_OPT_LOGGING)) {
-> -                       v->mode = DM_VERITY_MODE_LOGGING;
-> -                       continue;
-> -
-> -               } else if (!strcasecmp(arg_name, DM_VERITY_OPT_RESTART)) {
-> -                       v->mode = DM_VERITY_MODE_RESTART;
-> -                       continue;
-> -
-> -               } else if (!strcasecmp(arg_name, DM_VERITY_OPT_PANIC)) {
-> -                       v->mode = DM_VERITY_MODE_PANIC;
-> +               if (verity_is_verity_mode(arg_name)) {
-> +                       r = verity_parse_verity_mode(v, arg_name);
-> +                       if (r) {
-> +                               ti->error = "Already verity mode set";
-
-I don't have a strong opinion about this, but the documentation
-doesn't talk about verity modes, so perhaps this could be reworded to
-something like "Conflicting error handling parameters"?
-
-> +                               return r;
-> +                       }
->                         continue;
->
->                 } else if (!strcasecmp(arg_name, DM_VERITY_OPT_IGN_ZEROES)) {
-> --
-> 2.17.1
->
-
-Sami
+> =E2=80=94
+> Best Regards,
+> Yan Zi
