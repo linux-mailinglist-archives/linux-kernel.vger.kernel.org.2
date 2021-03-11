@@ -2,60 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1A8337237
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC5933723D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbhCKMPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:15:06 -0500
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:47596 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbhCKMOr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:14:47 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 58EB740035F;
-        Thu, 11 Mar 2021 20:14:45 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Tony Prisk <linux@prisktech.co.nz>,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] video: fbdev: delete redundant printing of return value
-Date:   Thu, 11 Mar 2021 20:14:40 +0800
-Message-Id: <1615464880-18724-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUlMQkJMH0hMSB4eVkpNSk5PTU9DQ05NT0lVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Py46Lgw*Az8XDwI4EQ40TgMq
-        PSgKC0pVSlVKTUpOT01PQ0NOQkNPVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKTk5DNwY+
-X-HM-Tid: 0a782135ed35d991kuws58eb740035f
+        id S232813AbhCKMRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:17:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36022 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232876AbhCKMQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:16:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615464999; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mEkM1IAgkI+voRb7RZJnyirmSbrlryLssntTA2oNOzc=;
+        b=W7CkHurnahOsLsLtGmWwtQ88KbbzNczy41iGNy2ziDlhFhA4TffU/Y5N/IauDpyhJerv8I
+        DKAETXcyJ9PFp+ZXyXZbsa6PZMeIOrYYLv+oUUiZ4gGty+PWB5nCa+YS1Z/8ONbqssLWDL
+        9/fv9CwiToK0EueFodB/hSN1gcJrcj4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 90E30AC16;
+        Thu, 11 Mar 2021 12:16:39 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 13:16:37 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: Re: [External] Re: [PATCH v18 9/9] mm: hugetlb: optimize the code
+ with the help of the compiler
+Message-ID: <YEoKJYzP8//qVebC@dhcp22.suse.cz>
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-10-songmuchun@bytedance.com>
+ <YEjoozshsvKeMAAu@dhcp22.suse.cz>
+ <CAMZfGtV1Fp1RiQ64c9RrMmZ+=EwjGRHjwL8Wx3Q0YRWbbKF6xg@mail.gmail.com>
+ <YEnbBPviwU6N2RzK@dhcp22.suse.cz>
+ <CAMZfGtW5uHYiA_1an3W-jEmemsoN3Org7JwieeE2V271wh9X-A@mail.gmail.com>
+ <YEnlRlLJD1bK/Dup@dhcp22.suse.cz>
+ <CAMZfGtX3pUmPOY1ieVQubnBKHZoOxfp-ARsPigYZpc=-UiiNjg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtX3pUmPOY1ieVQubnBKHZoOxfp-ARsPigYZpc=-UiiNjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-platform_get_irq() has already checked and printed the return value, 
-the printing here is nothing special, it is not necessary at all.
+On Thu 11-03-21 18:00:09, Muchun Song wrote:
+[...]
+> Sorry. I am confused why you disagree with this change.
+> It does not bring any disadvantages.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/video/fbdev/vt8500lcdfb.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/video/fbdev/vt8500lcdfb.c b/drivers/video/fbdev/vt8500lcdfb.c
-index c614762..4cacff6
---- a/drivers/video/fbdev/vt8500lcdfb.c
-+++ b/drivers/video/fbdev/vt8500lcdfb.c
-@@ -373,7 +373,6 @@ static int vt8500lcd_probe(struct platform_device *pdev)
- 
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		dev_err(&pdev->dev, "no IRQ defined\n");
- 		ret = -ENODEV;
- 		goto failed_free_palette;
- 	}
+Because it is adding a code which is not really necessary and which will
+have to be maintained. Think of future changes which would need to grow
+more of these. Hugetlb code paths shouldn't really think about size of
+the struct page.
 -- 
-2.7.4
-
+Michal Hocko
+SUSE Labs
