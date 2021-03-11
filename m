@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B555F337270
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8537337273
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbhCKMWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:22:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39560 "EHLO mx2.suse.de"
+        id S233287AbhCKMWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:22:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39592 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233320AbhCKMV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:21:56 -0500
+        id S233321AbhCKMV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:21:57 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615465315; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1615465316; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2UBdhfTeZFPV/WlRCoCmgMOObv3xVeQp7Xthma7ZsbQ=;
-        b=I71WN/4QQluAoK4Uaap+NXh7K4NAZMoQTrepTxdl/1ch97aMFFG/4mHJ8iKFM0uWcBmsMR
-        vn26hknz1bFtTIpt0kFq7DlSrOOE5RiS4wjRIP6j3xrhlknyfk/BasMkaJjua8CCAJGJVR
-        tmF98YgO6GbxGvitTEPuxXoY2XYq+x0=
+        bh=Dm1VpRI0pRdWegL/4GNOSlgDQroovlVKC7NnZ6GivtY=;
+        b=ol8l1f0IGEqIEsYCjC4pN4AZhnGpxYjPveuhOCpNmcu7cZPngcwvV0Jl5tWt/gVjrS6wnt
+        KWBtP0HfpywrRV+Hrp/xvmobrmtAfETEB9VICvG9+WVKfMD+hvzJ5geqiTq0NNWDmrzMXa
+        5sBLFu71xrxmClEwUGDjIC4Yof8D7GQ=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9E68DAC8C;
+        by mx2.suse.de (Postfix) with ESMTP id E0EAFAD72;
         Thu, 11 Mar 2021 12:21:55 +0000 (UTC)
 From:   Petr Mladek <pmladek@suse.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -33,9 +33,9 @@ Cc:     Laurence Oberman <loberman@redhat.com>,
         Vincent Whitchurch <vincent.whitchurch@axis.com>,
         Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>
-Subject: [PATCH v2 5/7] watchdog: Fix barriers when printing backtraces from all CPUs
-Date:   Thu, 11 Mar 2021 13:21:28 +0100
-Message-Id: <20210311122130.6788-6-pmladek@suse.com>
+Subject: [PATCH v2 6/7] watchdog: Cleanup handling of false positives
+Date:   Thu, 11 Mar 2021 13:21:29 +0100
+Message-Id: <20210311122130.6788-7-pmladek@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210311122130.6788-1-pmladek@suse.com>
 References: <20210311122130.6788-1-pmladek@suse.com>
@@ -45,68 +45,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any parallel softlockup reports are skipped when one CPU is already
-printing backtraces from all CPUs.
+The commit d6ad3e286d2c075 ("softlockup: Add sched_clock_tick() to avoid
+kernel warning on kgdb resume") introduced touch_softlockup_watchdog_sync().
 
-The exclusive rights are synchronized using one bit in
-soft_lockup_nmi_warn. There is also one memory barrier that
-does not make much sense.
+It solved a problem when the watchdog was touched in an atomic context,
+the timer callback was proceed right after releasing interrupts,
+and the local clock has not been updated yet. In this case,
+sched_clock_tick() was called in watchdog_timer_fn() before
+updating the timer.
 
-Use two barriers on the right location to prevent mixing two
-reports.
+So far so good.
+
+Later the commit 5d1c0f4a80a6df73 ("watchdog: add check for suspended vm
+in softlockup detector") added two kvm_check_and_clear_guest_paused()
+calls. They touch the watchdog when the guest has been sleeping.
+
+The code makes my head spin around.
+
+Scenario 1:
+
+    + guest did sleep:
+	+ PVCLOCK_GUEST_STOPPED is set
+
+    + 1st watchdog_timer_fn() invocation:
+	+ the watchdog is not touched yet
+	+ is_softlockup() returns too big delay
+	+ kvm_check_and_clear_guest_paused():
+	   + clear PVCLOCK_GUEST_STOPPED
+	   + call touch_softlockup_watchdog_sync()
+		+ set SOFTLOCKUP_DELAY_REPORT
+		+ set softlockup_touch_sync
+	+ return from the timer callback
+
+      + 2nd watchdog_timer_fn() invocation:
+
+	+ call sched_clock_tick() even though it is not needed.
+	  The timer callback was invoked again only because the clock
+	  has already been updated in the meantime.
+
+	+ call kvm_check_and_clear_guest_paused() that does nothing
+	  because PVCLOCK_GUEST_STOPPED has been cleared already.
+
+	+ call update_report_ts() and return. This is fine. Except
+	  that sched_clock_tick() might allow to set it already
+	  during the 1st invocation.
+
+Scenario 2:
+
+	+ guest did sleep
+
+	+ 1st watchdog_timer_fn() invocation
+	    + same as in 1st scenario
+
+	+ guest did sleep again:
+	    + set PVCLOCK_GUEST_STOPPED again
+
+	+ 2nd watchdog_timer_fn() invocation
+	    + SOFTLOCKUP_DELAY_REPORT is set from 1st invocation
+	    + call sched_clock_tick()
+	    + call kvm_check_and_clear_guest_paused()
+		+ clear PVCLOCK_GUEST_STOPPED
+		+ call touch_softlockup_watchdog_sync()
+		    + set SOFTLOCKUP_DELAY_REPORT
+		    + set softlockup_touch_sync
+	    + call update_report_ts() (set real timestamp immediately)
+	    + return from the timer callback
+
+	+ 3rd watchdog_timer_fn() invocation
+	    + timestamp is set from 2nd invocation
+	    + softlockup_touch_sync is set but not checked because
+	      the real timestamp is already set
+
+Make the code more straightforward:
+
+1. Always call kvm_check_and_clear_guest_paused() at the very
+   beginning to handle PVCLOCK_GUEST_STOPPED. It touches the watchdog
+   when the quest did sleep.
+
+2. Handle the situation when the watchdog has been touched
+   (SOFTLOCKUP_DELAY_REPORT is set).
+
+   Call sched_clock_tick() when touch_*sync() variant was used. It makes
+   sure that the timestamp will be up to date even when it has been
+   touched in atomic context or quest did sleep.
+
+As a result, kvm_check_and_clear_guest_paused() is called on a single
+location. And the right timestamp is always set when returning from
+the timer callback.
 
 Signed-off-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/watchdog.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ kernel/watchdog.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index dc8a0bf943f5..6dc1f79e36aa 100644
+index 6dc1f79e36aa..c050323fcd33 100644
 --- a/kernel/watchdog.c
 +++ b/kernel/watchdog.c
-@@ -409,12 +409,18 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		if (kvm_check_and_clear_guest_paused())
- 			return HRTIMER_RESTART;
+@@ -375,7 +375,14 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ 	/* .. and repeat */
+ 	hrtimer_forward_now(hrtimer, ns_to_ktime(sample_period));
  
-+		/*
-+		 * Prevent multiple soft-lockup reports if one cpu is already
-+		 * engaged in dumping all cpu back traces.
-+		 */
- 		if (softlockup_all_cpu_backtrace) {
--			/* Prevent multiple soft-lockup reports if one cpu is already
--			 * engaged in dumping cpu back traces
--			 */
- 			if (test_and_set_bit(0, &soft_lockup_nmi_warn))
- 				return HRTIMER_RESTART;
-+			/*
-+			 * Make sure that reports are serialized. Start
-+			 * printing after getting the exclusive rights.
-+			 */
-+			smp_mb__after_atomic();
+-	/* Reset the interval when touched externally by a known slow code. */
++	/*
++	 * If a virtual machine is stopped by the host it can look to
++	 * the watchdog like a soft lockup. Check to see if the host
++	 * stopped the vm before we process the timestamps.
++	 */
++	kvm_check_and_clear_guest_paused();
++
++	/* Reset the interval when touched by known problematic code. */
+ 	if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
+ 		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
+ 			/*
+@@ -386,10 +393,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ 			sched_clock_tick();
  		}
  
- 		/* Start period for the next softlockup warning. */
-@@ -431,14 +437,14 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 			dump_stack();
- 
- 		if (softlockup_all_cpu_backtrace) {
--			/* Avoid generating two back traces for current
--			 * given that one is already made above
--			 */
- 			trigger_allbutself_cpu_backtrace();
+-		/* Clear the guest paused flag on watchdog reset */
+-		kvm_check_and_clear_guest_paused();
+ 		update_report_ts();
 -
-+			/*
-+			 * Make sure that everything is printed before
-+			 * another CPU is allowed to report lockup again.
-+			 */
-+			smp_mb__before_atomic();
-+			/* Allow a further report. */
- 			clear_bit(0, &soft_lockup_nmi_warn);
--			/* Barrier to sync with other cpus */
--			smp_mb__after_atomic();
- 		}
+ 		return HRTIMER_RESTART;
+ 	}
  
- 		add_taint(TAINT_SOFTLOCKUP, LOCKDEP_STILL_OK);
+@@ -401,14 +405,6 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ 	 */
+ 	duration = is_softlockup(touch_ts, period_ts);
+ 	if (unlikely(duration)) {
+-		/*
+-		 * If a virtual machine is stopped by the host it can look to
+-		 * the watchdog like a soft lockup, check to see if the host
+-		 * stopped the vm before we issue the warning
+-		 */
+-		if (kvm_check_and_clear_guest_paused())
+-			return HRTIMER_RESTART;
+-
+ 		/*
+ 		 * Prevent multiple soft-lockup reports if one cpu is already
+ 		 * engaged in dumping all cpu back traces.
 -- 
 2.26.2
 
