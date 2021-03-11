@@ -2,153 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8A23372DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 347F43372CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233404AbhCKMiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:38:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59978 "EHLO mail.kernel.org"
+        id S231695AbhCKMha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:37:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233362AbhCKMhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:37:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 538A164F8E;
-        Thu, 11 Mar 2021 12:37:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615466259;
-        bh=YhT4ZfDfikximjWV+HMU1tA5rnHSe7venEiAncjtcTU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WFPislG3zw00Fxk1C6+UQQy0SiTC2R1xeI1I4upL1Vut6jSdB4hPLcZna7sIeh0T2
-         eMlSIb/0lAEiyFdp/NjNeDWhvMcmzyuPhFCra6dsS7STGNtOCuk6Fcx+6+4P0udZ69
-         yNfN45adVTzZNBa1mpBbNEksRBzlOtqf53d6vCeWtHIgzdyV3dqGjMLkuIi82HmBBt
-         rgaaSTG1OJxw2jMRjuGujZlTsBCFcnp2m0Av6Cd2MRwD6fGLo4bJQexIf2wrldpw/O
-         Z+LSmvYKv5HB2tyc44jYAjMFfkO+V7Zkf2VZj6I1PWdjq/thfcF6KU/s9D15dFrIcE
-         5S4EIZGqDzAWA==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ti Zhou <x2019cwm@stfx.ca>, Yunfeng Ye <yeyunfeng@huawei.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 09/10] tick/nohz: Change signal tick dependency to wakeup CPUs of member tasks
+        id S233171AbhCKMhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:37:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA3EC64FDF;
+        Thu, 11 Mar 2021 12:37:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615466230;
+        bh=yj9BLjFX/Ld02Tvam9QEdp3E9cEM2pmnpLKhViJCcnY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qi9q8i7ZpDiWrmPgdjMaQ1aNwz5Ui+o4f4HaTU4Sp1SVGLAML8UweTXNpIYdMGUHY
+         oNixdmz8+MQCoJO6WncHqb9/v+Rs77CgAzG8Njuoqfiko6Y+d+Hao1byq6GRnBiXH1
+         OBe1f+ojjoHjv4lRoEc/5q5I6udBgjjQOHhQPjl8=
 Date:   Thu, 11 Mar 2021 13:37:07 +0100
-Message-Id: <20210311123708.23501-10-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210311123708.23501-1-frederic@kernel.org>
-References: <20210311123708.23501-1-frederic@kernel.org>
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Jasper St. Pierre" <jstpierre@mecheye.net>,
+        Chris Chiu <chiu@endlessos.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 23/49] ACPI: video: Add DMI quirk for GIGABYTE
+ GB-BXBT-2807
+Message-ID: <YEoO82QF7Y8kTif0@kroah.com>
+References: <20210310132321.948258062@linuxfoundation.org>
+ <20210310132322.685806668@linuxfoundation.org>
+ <20210310200458.GA12122@amd>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310200458.GA12122@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Tosatti <mtosatti@redhat.com>
+On Wed, Mar 10, 2021 at 09:04:58PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> On Wed 2021-03-10 14:23:34, gregkh@linuxfoundation.org wrote:
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > 
+> > From: Jasper St. Pierre <jstpierre@mecheye.net>
+> 
+> Something is funny with the From header here. But that's not main
+> thing -- this patch is evil.
 
-Rather than waking up all nohz_full CPUs on the system, only wakeup
-the target CPUs of member threads of the signal.
+That is odd...
 
-Reduces interruptions to nohz_full CPUs.
+> 
+> > 
+> > [ Upstream commit 25417185e9b5ff90746d50769d2a3fcd1629e254 ]
+> > 
+> > The GIGABYTE GB-BXBT-2807 is a mini-PC which uses off the shelf
+> > components, like an Intel GPU which is meant for mobile systems.
+> > As such, it, by default, has a backlight controller exposed.
+> > 
+> > Unfortunately, the backlight controller only confuses userspace, which
+> > sees the existence of a backlight device node and has the unrealistic
+> > belief that there is actually a backlight there!
+> > 
+> > Add a DMI quirk to force the backlight off on this system.
+> 
+> > +++ b/drivers/acpi/video_detect.c
+> > @@ -140,6 +140,13 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
+> >  	},
+> >  	{
+> >  	.callback = video_detect_force_vendor,
+> > +	.ident = "GIGABYTE GB-BXBT-2807",
+> > +	.matches = {
+> > +		DMI_MATCH(DMI_SYS_VENDOR, "GIGABYTE"),
+> > +		DMI_MATCH(DMI_PRODUCT_NAME, "GB-BXBT-2807"),
+> > +		},
+> > +	},
+> > +	{
+> >  	.ident = "Sony VPCEH3U1E",
+> >  	.matches = {
+> >  		DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
+> 
+> Yup, and it looks like this fixes the problem for GIGABYTE
+> GB-BXBT-2807 but re-introduces the problem for Sony VPCEH3U1E, because
+> its .callback is now NULL.
 
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: Yunfeng Ye <yeyunfeng@huawei.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- include/linux/tick.h           |  8 ++++----
- kernel/time/posix-cpu-timers.c |  4 ++--
- kernel/time/tick-sched.c       | 15 +++++++++++++--
- 3 files changed, 19 insertions(+), 8 deletions(-)
+That's what upstream has right now, for 5.11, so I'll take this for now
+and if upstream changes it, I'll take that patch as well.
 
-diff --git a/include/linux/tick.h b/include/linux/tick.h
-index bfc96cbe955c..9e71ab1889aa 100644
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -215,7 +215,7 @@ extern void tick_nohz_dep_set_task(struct task_struct *tsk,
- 				   enum tick_dep_bits bit);
- extern void tick_nohz_dep_clear_task(struct task_struct *tsk,
- 				     enum tick_dep_bits bit);
--extern void tick_nohz_dep_set_signal(struct signal_struct *signal,
-+extern void tick_nohz_dep_set_signal(struct task_struct *tsk,
- 				     enum tick_dep_bits bit);
- extern void tick_nohz_dep_clear_signal(struct signal_struct *signal,
- 				       enum tick_dep_bits bit);
-@@ -260,11 +260,11 @@ static inline void tick_dep_clear_task(struct task_struct *tsk,
- 	if (tick_nohz_full_enabled())
- 		tick_nohz_dep_clear_task(tsk, bit);
- }
--static inline void tick_dep_set_signal(struct signal_struct *signal,
-+static inline void tick_dep_set_signal(struct task_struct *tsk,
- 				       enum tick_dep_bits bit)
- {
- 	if (tick_nohz_full_enabled())
--		tick_nohz_dep_set_signal(signal, bit);
-+		tick_nohz_dep_set_signal(tsk, bit);
- }
- static inline void tick_dep_clear_signal(struct signal_struct *signal,
- 					 enum tick_dep_bits bit)
-@@ -293,7 +293,7 @@ static inline void tick_dep_set_task(struct task_struct *tsk,
- 				     enum tick_dep_bits bit) { }
- static inline void tick_dep_clear_task(struct task_struct *tsk,
- 				       enum tick_dep_bits bit) { }
--static inline void tick_dep_set_signal(struct signal_struct *signal,
-+static inline void tick_dep_set_signal(struct task_struct *tsk,
- 				       enum tick_dep_bits bit) { }
- static inline void tick_dep_clear_signal(struct signal_struct *signal,
- 					 enum tick_dep_bits bit) { }
-diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index a71758e34e45..932e0cb4b57b 100644
---- a/kernel/time/posix-cpu-timers.c
-+++ b/kernel/time/posix-cpu-timers.c
-@@ -523,7 +523,7 @@ static void arm_timer(struct k_itimer *timer, struct task_struct *p)
- 	if (CPUCLOCK_PERTHREAD(timer->it_clock))
- 		tick_dep_set_task(p, TICK_DEP_BIT_POSIX_TIMER);
- 	else
--		tick_dep_set_signal(p->signal, TICK_DEP_BIT_POSIX_TIMER);
-+		tick_dep_set_signal(p, TICK_DEP_BIT_POSIX_TIMER);
- }
- 
- /*
-@@ -1358,7 +1358,7 @@ void set_process_cpu_timer(struct task_struct *tsk, unsigned int clkid,
- 	if (*newval < *nextevt)
- 		*nextevt = *newval;
- 
--	tick_dep_set_signal(tsk->signal, TICK_DEP_BIT_POSIX_TIMER);
-+	tick_dep_set_signal(tsk, TICK_DEP_BIT_POSIX_TIMER);
- }
- 
- static int do_cpu_nanosleep(const clockid_t which_clock, int flags,
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 8457f15a5073..a866fd8e7bb5 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -444,9 +444,20 @@ EXPORT_SYMBOL_GPL(tick_nohz_dep_clear_task);
-  * Set a per-taskgroup tick dependency. Posix CPU timers need this in order to elapse
-  * per process timers.
-  */
--void tick_nohz_dep_set_signal(struct signal_struct *sig, enum tick_dep_bits bit)
-+void tick_nohz_dep_set_signal(struct task_struct *tsk,
-+			      enum tick_dep_bits bit)
- {
--	tick_nohz_dep_set_all(&sig->tick_dep_mask, bit);
-+	int prev;
-+	struct signal_struct *sig = tsk->signal;
-+
-+	prev = atomic_fetch_or(BIT(bit), &sig->tick_dep_mask);
-+	if (!prev) {
-+		struct task_struct *t;
-+
-+		lockdep_assert_held(&tsk->sighand->siglock);
-+		__for_each_thread(sig, t)
-+			tick_nohz_kick_task(t);
-+	}
- }
- 
- void tick_nohz_dep_clear_signal(struct signal_struct *sig, enum tick_dep_bits bit)
--- 
-2.25.1
+thanks,
 
+greg k-h
