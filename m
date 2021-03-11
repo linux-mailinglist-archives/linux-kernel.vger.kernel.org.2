@@ -2,109 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15D73378E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8224B3378E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhCKQLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:11:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234443AbhCKQLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:11:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9B2464FA3;
-        Thu, 11 Mar 2021 16:11:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615479095;
-        bh=E87K7pnoXEeIDrTmeoC6YBHh9dve+IPi3cHQxxCc+48=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r4nQkqHdL2JuiHy0v2ICafmTOqoiN8+zS4zbPAFePc4r1RMXoTJGboIAYvQZfEPBF
-         GASa0lX9rDFbjdV/u9cqZYMIfoNOCbLZtk5qU9ZXXBK88F9pjPW5AaudDHtLSMCwAK
-         UaCYzk52WXL9ew+/ibFLCtNCEoxbKtXA8hLTLaHKBz0VYcIBOLhKVG/yDso31B+O3a
-         kg08E5Shw0uyYbCKengLJSNL8r9DwTPM+BhQI9l/Avm9I16E4tw+u/FbILg0EGqcOZ
-         ZhHS/8FgummcqWjQ+ZKJoYyJ9/JRTfmt/XT0iRGrGFYfvcz9ARI3R119VVk1wpNUE2
-         /M+7wLuvdDMlQ==
-Date:   Thu, 11 Mar 2021 16:11:28 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
-Subject: Re: [PATCH v4 11/34] KVM: arm64: Stub CONFIG_DEBUG_LIST at Hyp
-Message-ID: <20210311161127.GB31206@willie-the-truck>
-References: <20210310175751.3320106-1-qperret@google.com>
- <20210310175751.3320106-12-qperret@google.com>
+        id S234476AbhCKQL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:11:57 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:45792 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234434AbhCKQLx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:11:53 -0500
+X-UUID: 920a9f543abd4b8eb024653144d1dcd3-20210312
+X-UUID: 920a9f543abd4b8eb024653144d1dcd3-20210312
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 195972198; Fri, 12 Mar 2021 00:11:45 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 12 Mar 2021 00:11:42 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 12 Mar 2021 00:11:43 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <daniel@0x0f.com>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+CC:     <daniel@thingy.jp>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
+        <maz@kernel.org>, <tglx@linutronix.de>, <yj.chiang@mediatek.com>
+Subject: Re: [PATCH v2] irqchip/irq-mst: Support polarity configuration
+Date:   Fri, 12 Mar 2021 00:11:40 +0800
+Message-ID: <20210311161140.32678-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <CAFr9PXmHhB=PT1kRoYYowf2dw2fqa1-LGCD5S52hW9jJtq5Q4w@mail.gmail.com>
+References: <CAFr9PXmHhB=PT1kRoYYowf2dw2fqa1-LGCD5S52hW9jJtq5Q4w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310175751.3320106-12-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-TM-SNTS-SMTP: F57B12502744B967590C3F5378BE9D0A449D426B3AD3C6D8362E0B0796EBA2102000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:57:28PM +0000, Quentin Perret wrote:
-> In order to use the kernel list library at EL2, introduce stubs for the
-> CONFIG_DEBUG_LIST out-of-lines calls.
+From: Daniel Palmer <daniel@0x0f.com>
+
+> On Thu, 11 Mar 2021 at 12:12, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+> > For a fiq controller, the input edge signal will be convert to level and
+> > keep the interrupt status until we do EOI operation.
+> > That means if a rising edge input if trigger the ouput line will keep high
+> > until we clear the interrupt status.
 > 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/kvm/hyp/nvhe/Makefile |  2 +-
->  arch/arm64/kvm/hyp/nvhe/stub.c   | 22 ++++++++++++++++++++++
->  2 files changed, 23 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/stub.c
+> I think maybe the fiq is always edge triggered?
+> It seems like it latches on an edge and holds it's output to the GIC
+> high until it is reset by eoi and then only triggers again on another
+> edge.
+> I can experiment to confirm that's what it actually does for the chips I have.
 > 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-> index 24ff99e2eac5..144da72ad510 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
-> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-> @@ -13,7 +13,7 @@ lib-objs := clear_page.o copy_page.o memcpy.o memset.o
->  lib-objs := $(addprefix ../../../lib/, $(lib-objs))
->  
->  obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
-> -	 hyp-main.o hyp-smp.o psci-relay.o early_alloc.o
-> +	 hyp-main.o hyp-smp.o psci-relay.o early_alloc.o stub.o
->  obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
->  	 ../fpsimd.o ../hyp-entry.o ../exception.o
->  obj-y += $(lib-objs)
-> diff --git a/arch/arm64/kvm/hyp/nvhe/stub.c b/arch/arm64/kvm/hyp/nvhe/stub.c
-> new file mode 100644
-> index 000000000000..c0aa6bbfd79d
-> --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/nvhe/stub.c
-> @@ -0,0 +1,22 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Stubs for out-of-line function calls caused by re-using kernel
-> + * infrastructure at EL2.
-> + *
-> + * Copyright (C) 2020 - Google LLC
-> + */
-> +
-> +#include <linux/list.h>
-> +
-> +#ifdef CONFIG_DEBUG_LIST
-> +bool __list_add_valid(struct list_head *new, struct list_head *prev,
-> +		      struct list_head *next)
-> +{
-> +		return true;
-> +}
-> +
-> +bool __list_del_entry_valid(struct list_head *entry)
-> +{
-> +		return true;
-> +}
-> +#endif
+> Then it seems like the irq version is almost just a configurable
+> inverter that passes either the input signal or the inverted input
+> signal to the GIC.
+> 
+> So maybe fiq should only accept edge type interrupts and irq could
+> accept either?
 
-This isn't any worse than disabling DEBUG_LIST for the EL2 object, so as
-an initial implementation:
+Why irq could accept either?
+And if it's a fiq controller, we can just remove 'mstar,intc-no-eoi' from the
+device node.
+Whether the controller is fiq or irq, the interrupt request from mst-intc to
+parent GIC is level sensitive. Because if the source is edge triggered, mst-intc
+always latch it.
 
-Acked-by: Will Deacon <will@kernel.org>
+> 
+> >  static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
+> >  {
+> > -       if (type != IRQ_TYPE_LEVEL_LOW && type != IRQ_TYPE_LEVEL_HIGH)
+> > -               return -EINVAL;
+> > -
+> > -       if (type == IRQ_TYPE_LEVEL_LOW) {
+> > +       if (type == IRQ_TYPE_EDGE_FALLING) {
+> > +               mst_set_irq(data, INTC_REV_POLARITY);
+> > +               type = IRQ_TYPE_EDGE_RISING;
 
-but we really should have the debug list checks on (probably
-unconditionally) for the EL2 code in my opinion.
+The interrupt triggered type of the parent GIC should be active high,
+I will modify it.
 
-Will
+> > +       } else if (type == IRQ_TYPE_LEVEL_LOW) {
+> >                 mst_set_irq(data, INTC_REV_POLARITY);
+> >                 type = IRQ_TYPE_LEVEL_HIGH;
+> >         }
+> 
+> I think this still needs the logic to check that type is something we
+> can handle (not IRQ_TYPE_EDGE_BOTH) and maybe if the fiq controller
+
+Agree.
+
+> can only do edge interrupts level types should return -EINVAL?
+
+No matter what triggered type of an irq we write in dts is edge or level triggered,
+the init and handling flow is the same except we need to do eoi if the
+controller doesn't have the property 'mstar,intc-no-eoi'.
+So maybe we don't need to do extra work to check the type for an fiq or irq controller?
+
+And I will update the patch as following:
+
+diff --git a/drivers/irqchip/irq-mst-intc.c b/drivers/irqchip/irq-mst-intc.c
+index 841b9b1c2699..f46ade7b1775 100644
+--- a/drivers/irqchip/irq-mst-intc.c
++++ b/drivers/irqchip/irq-mst-intc.c
+@@ -90,13 +90,14 @@ static void mst_intc_eoi_irq(struct irq_data *d)
+ 
+ static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
+ {
+-	if (type != IRQ_TYPE_LEVEL_LOW && type != IRQ_TYPE_LEVEL_HIGH)
++	if (type != IRQ_TYPE_EDGE_RISING && type != IRQ_TYPE_EDGE_FALLING &&
++	    type != IRQ_TYPE_LEVEL_HIGH && type != IRQ_TYPE_LEVEL_LOW)
+ 		return -EINVAL;
+ 
+-	if (type == IRQ_TYPE_LEVEL_LOW) {
++	if (type == IRQ_TYPE_LEVEL_LOW || type == IRQ_TYPE_EDGE_FALLING)
+ 		mst_set_irq(data, INTC_REV_POLARITY);
+-		type = IRQ_TYPE_LEVEL_HIGH;
+-	}
++
++	type = IRQ_TYPE_LEVEL_HIGH;
+ 
+ 	return irq_chip_set_type_parent(data, type);
+ }
+@@ -219,11 +220,12 @@ static int mst_intc_domain_alloc(struct irq_domain *domain, unsigned int virq,
+ 	parent_fwspec.param[1] = cd->irq_start + hwirq;
+ 
+ 	/*
+-	 * If the irq signal is active low, configure it to active high
+-	 * to meet GIC SPI spec in mst_irq_chip_set_type via REV_POLARITY bit
++	 * mst-intc latch the interrupt request if it's edge triggered,
++	 * so the output signal to parent GIC is always level sensitive.
++	 * And if the irq signal is active low, configure it to active high
++	 * to meet GIC SPI spec in mst_irq_chip_set_type via REV_POLARITY bit.
+ 	 */
+-	if (fwspec->param[2] == IRQ_TYPE_LEVEL_LOW)
+-		parent_fwspec.param[2] = IRQ_TYPE_LEVEL_HIGH;
++	parent_fwspec.param[2] = IRQ_TYPE_LEVEL_HIGH;
+ 
+ 	return irq_domain_alloc_irqs_parent(domain, virq, nr_irqs, &parent_fwspec);
+ }
