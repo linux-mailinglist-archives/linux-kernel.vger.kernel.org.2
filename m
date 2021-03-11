@@ -2,152 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9604F337A50
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B14F6337A59
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhCKRCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:02:09 -0500
-Received: from mail-dm6nam12on2084.outbound.protection.outlook.com ([40.107.243.84]:50976
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S229809AbhCKRDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:03:46 -0500
+Received: from mail-eopbgr60041.outbound.protection.outlook.com ([40.107.6.41]:12985
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229796AbhCKRBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:01:48 -0500
+        id S229578AbhCKRDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:03:22 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z/dPG7SIIgdYg1QDFpjLei5OBlKsR4/I5raZuNWpA0Khc+fFqUnJ1F8Ocr9bA99xWlbTlUiDPgkDQ38uLbU/C+bvw40owitn3g13QA5XpJ5tX8jtyPgG39FnDUnWDIn3/MahQvg7DN6FwkB3bTPsy4uI9p6e1ZbZ2wH/B38z4FACkExxLLD1UaUStYNLVAysCm6kartaK0aPxBFW2QwEvLjIdmMRsV7AD5HG8KFA4OTmTof8IDo2RKN2shFQHsBH6zjVZ0BxyE4N6JWc4YwNJZsmzWD9DulikiB4pmfLYG28xIWboQWDQuLtdosUGrnhxzUaC3CQ44lRxEJFmfgcsg==
+ b=iJpmd6SO4AIpUL2mSAWDFP+0EhY6XQY2ZUgcwDgMdGY33fCfAnLm0xmsCtONdUZIM8P07ZqIDWb3YKFcXC96Wa1Ph+et/aW7twe8GDeiKFLr9KrcL1Hsb+1DV4XRhP6PoZgiajJUb+I4s4KugCDZJxeVqekZS8+q6spaN6gJh5Y6lqm/aU4hwKiagFnBRVM6dlsTTlxtr4bVnbnWAvm1Bg0tomzY9luI3IJKBxR71OV7PJ3cWPI/oH1EdlY+q3W0EpIX3yMGixNAbpjBjveHNoSHU2V8fvzk0gZI3Z9f4yZRMi9UczMxSYhs0Ho4u1/kJknWo0bHJkqyMOgriFBTxw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P68ki63yygGwBVLLKhdhPWW68gDOzl4FkHE4R1/wrxY=;
- b=WUMrbkWHBfsipzyZUB5ZC7pOdHJ9W5ikQAMttDBmEGQWWfOgCa0gAE96FOpBGwhUDJNC64Z2qoOeivDCXICUdonSPi9DiWh+8cCSJYcjE+MBPuW3iegCByPb09szHzvKZgPBI2Xzh8Vti61HVv+j77M8JtRN2iMTykoTAz+poVG/+wj6JHgC8XOp9c+317bQiVEjbbIiggESBIT3npIWPfc4mAnltJV0qTzbGE0xQH+2Jx1I0LRAXcs71NqN5uBzvy/M5S1hWeNzvTJVHMbK7jC27MWz1Zxuudo+ALo0rxUeSqu8KGE6Ei6LdkMKfkVaBSYQKMti4Pt8VJzISEFvxg==
+ bh=TwckWWMXLKDW/SlY9AZftD75V0CzvGAwGxmuRqAoJiU=;
+ b=UcOcPruVQl4w8OaYuRGT/wKfXE/E9vYE0ql9pDqyyzBPDNqAB0012mEkX5xfOKwwqURZgYeUgkTNwOm8y5/fkHD0sfEZMnAGj65OGlJnNuDlnOQhBnwKTYEG/C8rlXXKYRvbkNNSwbHwy0nUuqRESeYhB1CP6PAhTEel56jGbvGQkYJNLzE+j+JxBhamXX0E4pOQct0wmScBxYZqQpVkckbnvtM5O65U1DLmqK5Tj62MQoYMbv8jHgHlBett3O1Z2hDXkb/DGLCKDTDnJFmFwKdPz+y0Us8TC12pkX9PkngLY00OMHnBPwv/CfPcSZhf/BUEUIN0CONTnqbuFSY5cA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P68ki63yygGwBVLLKhdhPWW68gDOzl4FkHE4R1/wrxY=;
- b=LECOH41l3f88Lj1lFxv4oPZDV4WZQvdk5Z4Vbyx2QuRQaW4Jz099tQnv+mI8NrtcrjehEtRH6m2iM20uUzMPV3UA/lPHYIP1/RTWTgaTEf2ha8RZF2bUSlr0Dohj/32cx9ds2RwoP8iw5AvETgg3/zcRB8azFfRRs423x2MGb+n/xElwLDAZ8rtstfLCjwqN/eFIzDvJZ0FZprw1OOU+n2Wh/MKFQERY18xouQ+3GvsWQGxJzn4gsd3VEjEvS2lvfnsNNOwWPe7oFZMz9E+tUx+nVKkh8owwuwfdz72BiM2FAjkxk5dHQTX4m5/yD5tsXUMcivjFDIGmsEfDuFaybQ==
-Authentication-Results: ozlabs.ru; dkim=none (message not signed)
- header.d=none;ozlabs.ru; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0106.namprd12.prod.outlook.com (2603:10b6:4:4f::20) with
+ bh=TwckWWMXLKDW/SlY9AZftD75V0CzvGAwGxmuRqAoJiU=;
+ b=duI4p/NGtpnwmU2ndqirFp7YPRkEvMYxTP5TSBh9Psq4lip6GiJQYXz4iYj1k3mm5UthKCFOVM6GdRWjt44VG1y+rFoinbBdK8rzWcAv6tPj2WEleEeu4WpApz+V+Aa/SZ4OoEMSrwkzLLBtI3JLxnMMj62QfaJFp91nNxeqfDU=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ by AM0PR04MB7155.eurprd04.prod.outlook.com (2603:10a6:208:194::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Thu, 11 Mar
- 2021 17:01:46 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3933.031; Thu, 11 Mar 2021
- 17:01:46 +0000
-Date:   Thu, 11 Mar 2021 13:01:44 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, alex.williamson@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
-        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
-        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, cjia@nvidia.com,
-        yishaih@nvidia.com, mjrosato@linux.ibm.com, hch@lst.de
-Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
- vfio_pci drivers
-Message-ID: <20210311170144.GM2356281@nvidia.com>
-References: <19e73e58-c7a9-03ce-65a7-50f37d52ca15@ozlabs.ru>
- <8941cf42-0c40-776e-6c02-9227146d3d66@nvidia.com>
- <20210310130246.GW2356281@nvidia.com>
- <3b772357-7448-5fa7-9ecc-c13c08df95c3@ozlabs.ru>
- <20210310194002.GD2356281@nvidia.com>
- <7f0310db-a8e3-4045-c83a-11111767a22f@ozlabs.ru>
- <20210311013443.GH2356281@nvidia.com>
- <d862adf9-6fe7-a99e-6c14-8413aae70cd4@ozlabs.ru>
- <20210311020056.GI2356281@nvidia.com>
- <73c99da0-6624-7aa2-2857-ef68092c0d07@ozlabs.ru>
+ 2021 17:03:19 +0000
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::1cd:7101:5570:cd79]) by AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::1cd:7101:5570:cd79%7]) with mapi id 15.20.3912.027; Thu, 11 Mar 2021
+ 17:03:19 +0000
+Date:   Thu, 11 Mar 2021 22:33:03 +0530
+From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>, netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [net-next PATCH v7 07/16] net: mii_timestamper: check NULL in
+ unregister_mii_timestamper()
+Message-ID: <20210311170303.GB5031@lsv03152.swis.in-blr01.nxp.com>
+References: <20210311062011.8054-1-calvin.johnson@oss.nxp.com>
+ <20210311062011.8054-8-calvin.johnson@oss.nxp.com>
+ <CAHp75VdMhBf8MsO+QqMOt_u3+BAiYsT2OeG5qOKnhCbZt1ygmQ@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <73c99da0-6624-7aa2-2857-ef68092c0d07@ozlabs.ru>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL0PR01CA0030.prod.exchangelabs.com (2603:10b6:208:71::43)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+In-Reply-To: <CAHp75VdMhBf8MsO+QqMOt_u3+BAiYsT2OeG5qOKnhCbZt1ygmQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: HK2PR02CA0186.apcprd02.prod.outlook.com
+ (2603:1096:201:21::22) To AM0PR04MB5636.eurprd04.prod.outlook.com
+ (2603:10a6:208:130::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR01CA0030.prod.exchangelabs.com (2603:10b6:208:71::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.18 via Frontend Transport; Thu, 11 Mar 2021 17:01:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lKOgy-00BLjZ-Q8; Thu, 11 Mar 2021 13:01:44 -0400
+Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by HK2PR02CA0186.apcprd02.prod.outlook.com (2603:1096:201:21::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Thu, 11 Mar 2021 17:03:10 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c7d2ed6f-7c5e-4a31-fb55-08d8e4af5a75
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0106:
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 81d73b8c-1759-4d74-9a7b-08d8e4af91a8
+X-MS-TrafficTypeDiagnostic: AM0PR04MB7155:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB01062B0ECE1B24AC8F5776B8C2909@DM5PR1201MB0106.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Microsoft-Antispam-PRVS: <AM0PR04MB71555670162090CD3A526FCDD2909@AM0PR04MB7155.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JVB5/BV8DixHprtAAq62XlEhrBccqVHeEGA0BELruoVXrcNPnv8fBGrTDwckxjjMeBnVVfnjQJuiRoBNAK+sKsODc7fUFwCiLNzfTTiwJ2tJ5QfLoZNLhQ/19KI4IfmL1io0aK5FPtco3or8pVgjlDLif+WzSg2I7L8SL7C1opojknGLQeHTIveWX4gHai/lu+JzsBoy5Qqqmpicesq8WQS6mVyQssNxLAySrzwNhmutjkIvZu2xTgNrNZ9cmNN3gSt9Fop0BAjLvZDVEznWcFd3foy+y7TkkwHwKB3pkGfN6o1KHqFDW+a4z4D7a5SHVN2s4udV6/vtTJbyWtnBPyYEu4ercteGBDR9xRBhJWH7iLYxMdAC3k4GOaifbRHgHPl/eCLCJaaeH+vPr3/CfAoTQlYoJeOTaZUBiY0O4Rt1T6dJwTd+tZFx3yNUs7DzzCl2semyvtEPvurAPiOqkaQ73LdPinEPk0l58e3o3tBWCypqs5vqYYK/A0d/Vd7/5QryQotgWn34DdRrNaaotUTkfSNkdjXoc+nL5bb6/YV0T4EuGbvNGAV5aO6OkmJZ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(376002)(136003)(39860400002)(186003)(4326008)(26005)(478600001)(2616005)(5660300002)(36756003)(426003)(6916009)(1076003)(2906002)(66476007)(86362001)(316002)(9786002)(66556008)(8676002)(66946007)(9746002)(33656002)(8936002)(21314003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hc2uuc6cSIuuOdliUlZdQCrVqzdiQ9KSSebeu6IOJUuZP58pLLQp+X35kNEj?=
- =?us-ascii?Q?jpLqSY5fZ3grUvBFEzjZRhqYPxiX8qQBVl/tHnyzrPxxKbG8uhwlja2eruJ4?=
- =?us-ascii?Q?wW22H+vFB2gNZIRNHR7dpOPDKrlbqeprBEb1DkU4EjxGyabT+OeL5bzFnAWg?=
- =?us-ascii?Q?stbtSfrMnmxkuV8qkeOrEBH1JE0IEnbxLtJrqooja3zRVR3J4ao7LTyDqcRq?=
- =?us-ascii?Q?VOBDReaFXE2LyxX4V/2TK9+rweVQ14zeuV6pHccD68ooJ6O6iF2a1vur/vbk?=
- =?us-ascii?Q?Dqf84TB+0ZYmLnM39hGHG573CzwbKjsT/l6wskcWr7hIUwB/XmJ2T4ggDnLR?=
- =?us-ascii?Q?YlfzSQSSTda4UYO1nfa1oqQnUoC8Dl2EHhsrJnZudxOq5FCGb+iFn2wzt+ks?=
- =?us-ascii?Q?1Mz+OcTBJNhOUUXxnxGtg85RT8y6lQ5OpNlA0EDZl4Rq09/quTFEL0UvDtcR?=
- =?us-ascii?Q?AOhsoJsV6oEGEs85UMCrlORytboHfpPZYtTw3tWQJ4xAu83dr0H1J7Uj/XL3?=
- =?us-ascii?Q?E0biaRRDRPtfS+znAfTQsk9xg9py4Qeg5wpjEHbaSAEBtcvh3oboM6uqsZda?=
- =?us-ascii?Q?tgPZg6xgyrAu9Zcjl0QpTzM/ZJ3QPWUZT7/6yPJlt6tKjoUCBfNKAy0MEOLe?=
- =?us-ascii?Q?u/NF2I0/Yx8JWltJYaG9hvmL0a/hS3D9iHWe86bmAueGa83736ZWWk/ZJOEt?=
- =?us-ascii?Q?dUPcN3VqX7I/pn7/YgYnkMkITetZ8rFXZrxCeY3PZ3DMQXU4dOZsyVNDK27u?=
- =?us-ascii?Q?Zbk3z2BOcHlGHt1v8HEHVL0+9H08R5rYM+fM4ZwPIT3oNq8yD4kxPK/TXnnh?=
- =?us-ascii?Q?kxIrpRU17CM1iTXMFiXZDkuc3ykwrw5iEyB8M/L7tvKJdgm/dW2wKZheYAjD?=
- =?us-ascii?Q?JVhzOW85//u1KAwWUwiBTyZcP6yGG1xDP5nsKSvVunaC+wnLCqrbfQxdwlYV?=
- =?us-ascii?Q?XQ1C3jqDPbpXxFzXOF4CA6MXtnyfwaqeBrWJt043kGYPX+FN3cFz790tTHl2?=
- =?us-ascii?Q?QOVf2OdUiX4IYzS/6DajfTgwzHhdANAu9vY0lK74H0TcBy89rVHiNlZ7zMJJ?=
- =?us-ascii?Q?/am/wM2l+FCnNpQ40Du4yxfKmMNeZ1Y8K9JeZQBWLBQQYWlx7wNRAyawluQo?=
- =?us-ascii?Q?9oA//9BUcWqtrBHrNBJhbjjq78+iONWN7o/wCUeUgalR1QaIZ9oJhJSKOjQL?=
- =?us-ascii?Q?kVxb42V/Qr2Yl6EDiMC5TmA54o+V7vhk+/Lp16l6kBvegMVE1PhvBDhVIfTE?=
- =?us-ascii?Q?BvnJOoBR/hioYi8EO6543OMxkbRgyY9p8BbTZCjZi/BQlLrahjQ36nsG582E?=
- =?us-ascii?Q?m/gbIMIXyTrKZnUbCdCi2KQyjc8GyLpWGgLZ7F4+9L1PAg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7d2ed6f-7c5e-4a31-fb55-08d8e4af5a75
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: yIuslhsjaH6dk5kD5B/PLHqc0tHSAWjBpSvMZZELJ9XzgBkSm8IppgtGwCa8xcN0o0Iy+hJCodT26iM03n2ixf5d42cEBgoK6s0JngZM2l18oZeclWQWrKoj/gSoZK2XFVyWex03hbb2YNeaYA1e0ejqgVQG/qTt1QpTAQukVsioyvmj5cKTjxFuwLEgu1WDtYC2ZAbQQnh+zLZJaiS13qnpdWQNwSpeR0phXT0SMdKfxYCjx5w47RFr0InYinooa+drGJH60XjnqaHQ2HOF1cd4TEFi23obkMe7/MWr9+XSDKP4W8PO0tix6/wE64EeZcIx4pGGCs0SIC0+o71hafaJvVcxIevqOYYG/8dXxVWgDMyuXYRe3vRJ2yg9jg7wa2XpbSapqNdwv4VtDfrKap622wLtkNYbRArWNfIlGfS8Ugr5u/qmOJUx8hPmXAdlt//MOhlMUNiU2p8svRbEpUXvB3Aac/PG6mmwdb1i+mwPqpP9VfZWZ8TILZEXnZr1UiFXcCSzUgfXxQuAzRcQhwFNw5sB3NVuXYwf4PdYdiAH7IZjrLWTdgDSZoStvKRSK0IrVUOxzmON6WuUrl5dS2Toqv38PTzJGPWism1ewfDJBZ8Tt8L75ejuAXshV2EgWFrzhqAY6p73xTynlCf7Pw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(39860400002)(346002)(66556008)(6506007)(44832011)(8676002)(66946007)(66476007)(52116002)(4326008)(7416002)(966005)(5660300002)(53546011)(478600001)(956004)(9686003)(83380400001)(86362001)(55016002)(2906002)(33656002)(6666004)(6916009)(55236004)(7696005)(1006002)(16526019)(1076003)(54906003)(186003)(26005)(316002)(8936002)(110426009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?rlMnP0LREGDc+MTryhH/uTrHcl3Gw7u8JdS0ojGfQdExspIqayJcxqijuUwy?=
+ =?us-ascii?Q?xev/0ROYY+JPeh0eH0WNvgciUbnu94vvzT6XogdpgpS7R4QNtdrpGXh5stHk?=
+ =?us-ascii?Q?pdaaI704HZ7IvxFgHwPjQ86D6PCTupQ3/6IdV6Uh3xzUL606jnYwXycyfwDw?=
+ =?us-ascii?Q?dBTj0H09jFfPFJEPftI1VlROZQ59voXVRREYoYpVx4s5GGSetm4jUxoAenuR?=
+ =?us-ascii?Q?a0GjtSD2eJM5lyDhidNmuCbynwVfUeP7HhtFeq1JAHI1kb/CZvG256UJ8Tog?=
+ =?us-ascii?Q?XVI4RBp3n6rntQvNxwiywZ775Cr2aJMK3/2dJgzZIlQaXJApPePuvMzDAliO?=
+ =?us-ascii?Q?qMZQJ2OSRFAoyQyK6u4HuGLEXmFt76CQyeKPj4jDwqaaUJYeW9icoBT3I1RI?=
+ =?us-ascii?Q?nxGQutah3f9RY/Otwyg8TFirVzNNxO8ySMzt8Q1Hlhte6HRFDDlt1ZpnNdwh?=
+ =?us-ascii?Q?uHOYKtFpyhsphZSTZFOM9EmLgJ8LIaoNhpcIRBRZMW98iRGPGApvTf7E/F6y?=
+ =?us-ascii?Q?nqROJ7VO2MCTZHK4VeUTn4FrXaJI12GDhEXxzqScI61RyYTO9Ur5MMywBjcO?=
+ =?us-ascii?Q?BDHillye/nqdWC2gI38zdGvSCQowIDtkMesDL+KJPgBMtdHk6b7W+9jvl8Q+?=
+ =?us-ascii?Q?Lh2Y9z0xpTBs2NWkFO09vh57+5m3mvKtaewnvQSN6wmp3Iu1DRSr+HiZog8p?=
+ =?us-ascii?Q?6N+GUjM5p21uyZKwu++XtwrJyzueu/hafVgmUonPut0R/y8CqBQOTyn5vCfY?=
+ =?us-ascii?Q?Gi2frIlhqgT33khQqmfN2AHAkRUmyEcunjyWBnh/NT0Uv/yQzrOXK5hxZYg8?=
+ =?us-ascii?Q?JVAGH4mzB6NYd9VsHf13phkoi5PvR6e5smMQKmVGz3UJzQU1roSH86N8w5m/?=
+ =?us-ascii?Q?8BVJHrrKbcoHeRrWIvyN8xTDmbZFzBLLBWJoxPagG81sYpSghE7dsPnV9JE+?=
+ =?us-ascii?Q?wYFM+Azyelfh5D0FRj2rxg/6c2VT3+HLjDvvK5m+uXadk6dAfDXAAXfiKOEs?=
+ =?us-ascii?Q?JvSkzfiK76XuX0JJhU8ds9V+Xw3DbrutztAk3e7tIQJd2xbL83Alj5A18B/O?=
+ =?us-ascii?Q?IgyqAQinsjIPOg6FtyNDnx7i+kjpK6XVa3kxfnMcAxC0tKndKP690ffpSEVr?=
+ =?us-ascii?Q?j8STrizQVxsxLz5zEVbkwk65bOKe5pdwYAtiesRjkprO0dkG81a+CK8dyerk?=
+ =?us-ascii?Q?AqEKO21BKpMQ0QrVThseOYtvYmB7HryR/YLdAkhZ5sBzZ5L/M54c2SyPwuzt?=
+ =?us-ascii?Q?DvUB/fDQwNMBLk4xj165lU4S+0NJ77eq6E1AQFLRXKSpguE6xi04N7Fvpmw0?=
+ =?us-ascii?Q?Jybt5HdTC0Mqrj2LIanwkjBX?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81d73b8c-1759-4d74-9a7b-08d8e4af91a8
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 17:01:46.5823
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 17:03:19.0898
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i4tm1kjAZK7DUedCA3Xg7UuA+gQgZDwXGKxghXefiPjoQaC9+Ax6BQav7aBQZXoo
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0106
+X-MS-Exchange-CrossTenant-UserPrincipalName: XybxUnLozHXYV/55rmgXWM84yHtS8Lwebddo1Bpu2mMUWW85PW6HK1PQMGlfbCc/3aWQmsWadCQDawB6CXeM9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7155
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 06:54:09PM +1100, Alexey Kardashevskiy wrote:
+On Thu, Mar 11, 2021 at 02:04:48PM +0200, Andy Shevchenko wrote:
+> On Thu, Mar 11, 2021 at 8:21 AM Calvin Johnson
+> <calvin.johnson@oss.nxp.com> wrote:
+> >
+> > Callers of unregister_mii_timestamper() currently check for NULL
+> > value of mii_ts before calling it.
+> >
+> > Place the NULL check inside unregister_mii_timestamper() and update
+> > the callers accordingly
+> 
+> FWIW,
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> (Don't remember if it has been suggested by somebody, in that case
+> perhaps Suggested-by?)
 
-> Is there an idea how it is going to work? For example, the Intel IGD driver
-> and vfio-pci-igd - how should the system pick one? If there is no
-> MODULE_DEVICE_TABLE in vfio-pci-xxx, is the user supposed to try binding all
-> vfio-pci-xxx drivers until some binds?
+It is the result of your suggestion[1]. So, I'll keep both Suggested-by and
+Reviewed-by with your name.
 
-We must expose some MODULE_DEVICE_TABLE like thing to userspace.
+[1] https://lore.kernel.org/linux-arm-kernel/20210218052654.28995-1-calvin.johnson@oss.nxp.com/T/#m8d209f08f97fe1dc7249a63ad97b39311d14a9b3
 
-Compiling everything into one driver and using if statements was only
-managable with these tiny drivers - the stuff that is coming are big
-things that are infeasible to link directly to vfio_pci.ko
+Thanks
+Calvin
 
-I'm feeling some general consensus around this approach (vs trying to
-make a subdriver) so we will start looking at exactly what form that
-could take soon.
-
-The general idea would be to have a selection of extended VFIO drivers
-for PCI devices that can be loaded as an alternative to vfio-pci and
-they provide additional uapi and behaviors that only work on specific
-hardware. nvlink is a good example because it does provide new API and
-additional HW specific behavior.
-
-A way for userspace to learn about the drivers automatically and sort
-out how to load and bind them.
-
-I was thinking about your earlier question about FDT - do you think we
-could switch this to a platform_device and provide an of_match_table
-that would select correctly? Did IBM enforce a useful compatible
-string in the DT for these things?
-
-Jason
+> 
+> > Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> > ---
+> >
+> > Changes in v7:
+> > - check NULL in unregister_mii_timestamper()
+> >
+> > Changes in v6: None
+> > Changes in v5: None
+> > Changes in v4: None
+> > Changes in v3: None
+> > Changes in v2: None
+> >
+> >  drivers/net/mdio/of_mdio.c        | 6 ++----
+> >  drivers/net/phy/mii_timestamper.c | 3 +++
+> >  drivers/net/phy/phy_device.c      | 3 +--
+> >  3 files changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
+> > index 612a37970f14..48b6b8458c17 100644
+> > --- a/drivers/net/mdio/of_mdio.c
+> > +++ b/drivers/net/mdio/of_mdio.c
+> > @@ -115,15 +115,13 @@ static int of_mdiobus_register_phy(struct mii_bus *mdio,
+> >         else
+> >                 phy = get_phy_device(mdio, addr, is_c45);
+> >         if (IS_ERR(phy)) {
+> > -               if (mii_ts)
+> > -                       unregister_mii_timestamper(mii_ts);
+> > +               unregister_mii_timestamper(mii_ts);
+> >                 return PTR_ERR(phy);
+> >         }
+> >
+> >         rc = of_mdiobus_phy_device_register(mdio, phy, child, addr);
+> >         if (rc) {
+> > -               if (mii_ts)
+> > -                       unregister_mii_timestamper(mii_ts);
+> > +               unregister_mii_timestamper(mii_ts);
+> >                 phy_device_free(phy);
+> >                 return rc;
+> >         }
+> > diff --git a/drivers/net/phy/mii_timestamper.c b/drivers/net/phy/mii_timestamper.c
+> > index b71b7456462d..51ae0593a04f 100644
+> > --- a/drivers/net/phy/mii_timestamper.c
+> > +++ b/drivers/net/phy/mii_timestamper.c
+> > @@ -111,6 +111,9 @@ void unregister_mii_timestamper(struct mii_timestamper *mii_ts)
+> >         struct mii_timestamping_desc *desc;
+> >         struct list_head *this;
+> >
+> > +       if (!mii_ts)
+> > +               return;
+> > +
+> >         /* mii_timestamper statically registered by the PHY driver won't use the
+> >          * register_mii_timestamper() and thus don't have ->device set. Don't
+> >          * try to unregister these.
+> > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> > index f875efe7b4d1..9c5127405d91 100644
+> > --- a/drivers/net/phy/phy_device.c
+> > +++ b/drivers/net/phy/phy_device.c
+> > @@ -928,8 +928,7 @@ EXPORT_SYMBOL(phy_device_register);
+> >   */
+> >  void phy_device_remove(struct phy_device *phydev)
+> >  {
+> > -       if (phydev->mii_ts)
+> > -               unregister_mii_timestamper(phydev->mii_ts);
+> > +       unregister_mii_timestamper(phydev->mii_ts);
+> >
+> >         device_del(&phydev->mdio.dev);
+> >
+> > --
+> > 2.17.1
+> >
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
