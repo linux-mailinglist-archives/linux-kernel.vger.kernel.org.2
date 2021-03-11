@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766ED337865
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A238E3377C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbhCKPqL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 10:46:11 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:43190 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234267AbhCKPpz (ORCPT
+        id S234122AbhCKPan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:30:43 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45146 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234121AbhCKPaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:45:55 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 62A6A311A97;
-        Thu, 11 Mar 2021 11:19:29 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id I9frbLpawXts; Thu, 11 Mar 2021 11:19:29 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 3F81C3142F5;
-        Thu, 11 Mar 2021 11:19:02 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id sSIO-183m_y4; Thu, 11 Mar 2021 11:19:02 -0300 (-03)
-Received: from [10.208.85.246] (89-200-33-201.mobile.kpn.net [89.200.33.201])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 5F5E931414B;
-        Thu, 11 Mar 2021 11:17:57 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 11 Mar 2021 10:30:22 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12BFU9qp025815
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 10:30:09 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3FF5615C3AA0; Thu, 11 Mar 2021 10:30:09 -0500 (EST)
+Date:   Thu, 11 Mar 2021 10:30:09 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, Jan Kara <jack@suse.cz>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot <syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] KCSAN: data-race in start_this_handle /
+ start_this_handle
+Message-ID: <YEo3gYOU/VnmHCeV@mit.edu>
+References: <0000000000008de88005bd40ac36@google.com>
+ <20210311142503.GA31816@quack2.suse.cz>
+ <CACT4Y+ZtBwv1aXUumTXnWzAi7LEpJ6CZemGyVR2FC6_YO2E4EQ@mail.gmail.com>
+ <YEoybjJpCQzNx15r@elver.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Thu, 11 Mar 2021 15:18:01 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210311141759.5F5E931414B@mail.curtumepanorama.com.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEoybjJpCQzNx15r@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Thu, Mar 11, 2021 at 04:08:30PM +0100, Marco Elver wrote:
+> If the outcome of the check does not affect correctness and the code is
+> entirely fault tolerant to the precise value being read, then a
+> data_race(!journal->j_running_transaction) marking here would be fine.
 
-Sir/Madam,
+So a very common coding pattern is to check a value w/o the lock, and
+if it looks like we might need to check *with* a lock, we'll grab the
+lock and recheck.  Does KCSAN understand that this sort of thing is
+safe automatically?
 
-CONGRATULATIONS!!!
+In thie particular case, it's a bit more complicated than that; we're
+checking a value, and then allocating memory, grabbing the spin lock,
+and then re-checking the value, so we don't have to drop the spinlock,
+allocate the memory, grab the lock again, and then rechecking the
+value.  So even if KCSAN catches the simpler case as described above,
+we still might need to explicitly mark the data_race explicitly.
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 9th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+But the more we could have the compiler automatically figure out
+things without needing an explicit tag, it would seem to me that this
+would be better, since manual tagging is going to be more error-prone.
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+Cheers,
 
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+      	 	       	      	      	       - Ted
