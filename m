@@ -2,138 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F59337319
+	by mail.lfdr.de (Postfix) with ESMTP id 28C13337318
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhCKMv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:51:58 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:52291 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233252AbhCKMvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:51:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615467110; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=lEjPYvoALiGGyRhX1AzfcP+F007PTFPI9XdXMUWl2FQ=; b=sv816Maf8wY2EyZvp3Wti6Srg/8WGOsJYxUzzZOa1nsab0jCFuMDEny7XhJgSRSLhUsX3igi
- nJOmlO041v9LUS9OUWNBvTU6CM5R0d9xfIjQj6MhJ5U+0N9pfrI2cvPR+17g/mES4tYlkBkJ
- lJnnQ+P0Gqq8LiggrXcNbcTihnw=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 604a1262fa6ebd85e808006a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 12:51:46
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D33B0C43461; Thu, 11 Mar 2021 12:51:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S233260AbhCKMv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:51:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233241AbhCKMvn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:51:43 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E75CC061574;
+        Thu, 11 Mar 2021 04:51:43 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0e1f0084acfb80b2ea2480.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1f00:84ac:fb80:b2ea:2480])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F1FF2C433CA;
-        Thu, 11 Mar 2021 12:51:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F1FF2C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v2] clk: qcom: clk-rcg2: Add support for duty-cycle for RCG
-Date:   Thu, 11 Mar 2021 18:21:32 +0530
-Message-Id: <1615467092-6982-1-git-send-email-tdas@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F0EBC1EC04CB;
+        Thu, 11 Mar 2021 13:51:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1615467102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=04Q81L86Yi8VhtfgMy5DPhkMLlrDvgeVfznIwom2C0o=;
+        b=F7I4zNkFealftdt3MSO2iENkOoJ7233iIBl0MIA2fExAwgTg9QWD88MEO8x3MFz8dHZN3+
+        qEbWBRHl1mcXsYMgEMA1pRva0r+EgUrrobNzE1xqTPoZc3Vv+WQhSag3viC4Y2uSFgaf4T
+        ID5ejVj1usJOEZ1VFcDtbCWF5MkzXrk=
+Date:   Thu, 11 Mar 2021 13:51:43 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, virtualization@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v6 00/12] x86: major paravirt cleanup
+Message-ID: <20210311125143.GC5829@zn.tnic>
+References: <20210309134813.23912-1-jgross@suse.com>
+ <20210311125026.GB5829@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210311125026.GB5829@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The root clock generators with MND divider has the capability to support
-change in duty-cycle by updating the 'D'. Add the clock ops which would
-check all the boundary conditions and enable setting the desired duty-cycle
-as per the consumer.
+On Thu, Mar 11, 2021 at 01:50:26PM +0100, Borislav Petkov wrote:
+> and move the cleanups patches 13 and 14 to the beginning of the set?
 
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
----
- drivers/clk/qcom/clk-rcg2.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+Yeah, 14 needs ALTERNATIVE_TERNARY so I guess after patch 5, that is.
 
-diff --git a/drivers/clk/qcom/clk-rcg2.c b/drivers/clk/qcom/clk-rcg2.c
-index 42f13a2..aac6893 100644
---- a/drivers/clk/qcom/clk-rcg2.c
-+++ b/drivers/clk/qcom/clk-rcg2.c
-@@ -357,6 +357,46 @@ static int clk_rcg2_set_floor_rate_and_parent(struct clk_hw *hw,
- 	return __clk_rcg2_set_rate(hw, rate, FLOOR);
- }
+Thx.
 
-+static int clk_rcg2_set_duty_cycle(struct clk_hw *hw, struct clk_duty *duty)
-+{
-+	struct clk_rcg2 *rcg = to_clk_rcg2(hw);
-+	u32 notn_m_val, n_val, m_val, d_val, not2d_val, mask, duty_per;
-+	int ret;
-+
-+	if (!rcg->mnd_width)
-+		return 0;
-+
-+	mask = BIT(rcg->mnd_width) - 1;
-+
-+	regmap_read(rcg->clkr.regmap, RCG_N_OFFSET(rcg), &notn_m_val);
-+	regmap_read(rcg->clkr.regmap, RCG_M_OFFSET(rcg), &m_val);
-+
-+	n_val = (~(notn_m_val) + m_val) & mask;
-+
-+	duty_per = (duty->num * 100) / duty->den;
-+
-+	/* Calculate 2d value */
-+	d_val = DIV_ROUND_CLOSEST(n_val * duty_per * 2, 100);
-+
-+	 /* Check BIT WIDTHS OF 2d. If D is too big reduce Duty cycle. */
-+	if (d_val > mask)
-+		d_val = mask;
-+
-+	if ((d_val / 2) > (n_val - m_val))
-+		d_val = (n_val - m_val) * 2;
-+	else if ((d_val / 2) < (m_val / 2))
-+		d_val = m_val;
-+
-+	not2d_val = ~d_val & mask;
-+
-+	ret = regmap_update_bits(rcg->clkr.regmap, RCG_D_OFFSET(rcg), mask,
-+				 not2d_val);
-+	if (ret)
-+		return ret;
-+
-+	return update_config(rcg);
-+}
-+
- const struct clk_ops clk_rcg2_ops = {
- 	.is_enabled = clk_rcg2_is_enabled,
- 	.get_parent = clk_rcg2_get_parent,
-@@ -365,6 +405,7 @@ const struct clk_ops clk_rcg2_ops = {
- 	.determine_rate = clk_rcg2_determine_rate,
- 	.set_rate = clk_rcg2_set_rate,
- 	.set_rate_and_parent = clk_rcg2_set_rate_and_parent,
-+	.set_duty_cycle = clk_rcg2_set_duty_cycle,
- };
- EXPORT_SYMBOL_GPL(clk_rcg2_ops);
+-- 
+Regards/Gruss,
+    Boris.
 
-@@ -376,6 +417,7 @@ const struct clk_ops clk_rcg2_floor_ops = {
- 	.determine_rate = clk_rcg2_determine_floor_rate,
- 	.set_rate = clk_rcg2_set_floor_rate,
- 	.set_rate_and_parent = clk_rcg2_set_floor_rate_and_parent,
-+	.set_duty_cycle = clk_rcg2_set_duty_cycle,
- };
- EXPORT_SYMBOL_GPL(clk_rcg2_floor_ops);
-
---
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
-
+https://people.kernel.org/tglx/notes-about-netiquette
