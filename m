@@ -2,146 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780903370DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75023370DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhCKLIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:08:52 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:2972 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232556AbhCKLIl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:08:41 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12BB71vr007933;
-        Thu, 11 Mar 2021 12:08:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=OkqMTQRlY95MowGjpWpOMwJs3OwDCODKW0EREFO2LDk=;
- b=PlSp072KAq0ETEh1TFvqP2wtL9xTdVJdnTtJXhyNum/M6GAoI7C7FaBx3I5LoqDR5smm
- IdT1nwOO8beOSN1d/WNSZx5RmL5eBjwh8i3UtYgBNC/rV+CihAgYIO77l4cqoBD9Zdr0
- 2Sc+2tgp6IKLNmbFMD0o6oGwUtWmOdrckR2PFRa4ajB5+e690VP8loPrmRSMgezl5iEH
- pKcE9S5nOa+5FBooh2XYK285ojD6hbSOMqJFE/dVO+6ZYpNkULvX7KIPdTKtX9b6DuQv
- I+rTYduy6IM3CZmQsyo23rLMSLl1TdBzSJv1xyjxLDE/6e13gCUxUuQzZoj4an52rIUB sg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3740376aw2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Mar 2021 12:08:33 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 114C810002A;
-        Thu, 11 Mar 2021 12:08:33 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F3CEA231DEA;
-        Thu, 11 Mar 2021 12:08:32 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Mar
- 2021 12:08:32 +0100
-Subject: Re: [PATCH] ARM: dts: stm32: fix usart 2 & 3 pinconf to wake up with
- flow control
-To:     Valentin CARON - foss <valentin.caron@foss.st.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Erwan LE-RAY - foss <erwan.leray@foss.st.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210211110620.31594-1-valentin.caron@foss.st.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <6dffddbe-235b-a607-a82c-5f3c3756e3a7@foss.st.com>
-Date:   Thu, 11 Mar 2021 12:08:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232592AbhCKLJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:09:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44370 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232519AbhCKLJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 06:09:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615460956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Ftb4gg7aNzOFmaBhKRMtFjVDjZpix86WNXDo3VsIpM=;
+        b=TEB0emmNTwLphzFCW5mCrb6GRxhndTYFCHtZn9z7EFbHx5KgICDlDzhZHOUzQNksX4aGfZ
+        36L/3kX5dBoVGnMvkZMQV5hOiPRdoZfroHqtaleJIP3UjgAnnKSk6kxGDJmKQV6MqOuGJ5
+        nUqe+9rfadyyqC5zPHWIP0JoSaswsyc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3C201AB8C;
+        Thu, 11 Mar 2021 11:09:16 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 12:09:15 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, tglx@linutronix.de,
+        john.ogness@linutronix.de, urezki@gmail.com, ast@fb.com,
+        Eric Dumazet <edumazet@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
+ in_atomic use
+Message-ID: <YEn6W0RcjNiP0N0P@dhcp22.suse.cz>
+References: <20210311021321.127500-1-mike.kravetz@oracle.com>
+ <YEnY5hWLT/en7kw1@hirez.programming.kicks-ass.net>
+ <YEncYrWCVn2/20/C@dhcp22.suse.cz>
+ <YEnjqLpGU2LHaysv@hirez.programming.kicks-ass.net>
+ <YEnmmK42kpeB3Ho4@dhcp22.suse.cz>
+ <YEnochPwIyAsiEWS@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210211110620.31594-1-valentin.caron@foss.st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-11_04:2021-03-10,2021-03-11 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEnochPwIyAsiEWS@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valentin
-
-On 2/11/21 12:07 PM, Valentin CARON - foss wrote:
-> Modify usart 2 & 3 pins to allow wake up from low power mode while the
-> hardware flow control is activated. UART RTS pin need to stay configure
-> in idle mode to receive characters in order to wake up.
+On Thu 11-03-21 10:52:50, Peter Zijlstra wrote:
+> On Thu, Mar 11, 2021 at 10:44:56AM +0100, Michal Hocko wrote:
+> > On Thu 11-03-21 10:32:24, Peter Zijlstra wrote:
+> > > The whole changelog reads like a trainwreck, but akpm already commented
+> > > on that. I picked out a small factual incorrectness, simply because if
+> > > you can't get that right, the whole argument looses weight.
+> > 
+> > Is there any reason why in_atomic || irq_disabled wouldn't work
+> > universally?
 > 
-> Fixes: 842ed898a757 ("ARM: dts: stm32: add usart2, usart3 and uart7 pins in stm32mp15-pinctrl")
+> I just explained to you how you really wanted:
 > 
-> Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
-> ---
+>   in_atomic() && !irq_disabled()
 
-Applied on stm32-fixes.
+Sorry for being dense but I do not follow. You have provided the
+following example
+  spin_lock(&A);
+  <IRQ>
+        spin_lock(&A);
 
-Thanks
-Alex
+if A == hugetlb_lock then we should never reenter with
+free_huge_page
+	if (in_atomic() || irq_disabled())
+		schedule_in_wq();
+	else
+		free_directly()
 
->   arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 21 ++++++++++++++++++---
->   1 file changed, 18 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-> index 7b4249ed1983..060baa8b7e9d 100644
-> --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-> @@ -1891,10 +1891,15 @@
->   	usart2_idle_pins_c: usart2-idle-2 {
->   		pins1 {
->   			pinmux = <STM32_PINMUX('D', 5, ANALOG)>, /* USART2_TX */
-> -				 <STM32_PINMUX('D', 4, ANALOG)>, /* USART2_RTS */
->   				 <STM32_PINMUX('D', 3, ANALOG)>; /* USART2_CTS_NSS */
->   		};
->   		pins2 {
-> +			pinmux = <STM32_PINMUX('D', 4, AF7)>; /* USART2_RTS */
-> +			bias-disable;
-> +			drive-push-pull;
-> +			slew-rate = <3>;
-> +		};
-> +		pins3 {
->   			pinmux = <STM32_PINMUX('D', 6, AF7)>; /* USART2_RX */
->   			bias-disable;
->   		};
-> @@ -1940,10 +1945,15 @@
->   	usart3_idle_pins_b: usart3-idle-1 {
->   		pins1 {
->   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
-> -				 <STM32_PINMUX('G', 8, ANALOG)>, /* USART3_RTS */
->   				 <STM32_PINMUX('I', 10, ANALOG)>; /* USART3_CTS_NSS */
->   		};
->   		pins2 {
-> +			pinmux = <STM32_PINMUX('G', 8, AF8)>; /* USART3_RTS */
-> +			bias-disable;
-> +			drive-push-pull;
-> +			slew-rate = <0>;
-> +		};
-> +		pins3 {
->   			pinmux = <STM32_PINMUX('B', 12, AF8)>; /* USART3_RX */
->   			bias-disable;
->   		};
-> @@ -1976,10 +1986,15 @@
->   	usart3_idle_pins_c: usart3-idle-2 {
->   		pins1 {
->   			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
-> -				 <STM32_PINMUX('G', 8, ANALOG)>, /* USART3_RTS */
->   				 <STM32_PINMUX('B', 13, ANALOG)>; /* USART3_CTS_NSS */
->   		};
->   		pins2 {
-> +			pinmux = <STM32_PINMUX('G', 8, AF8)>; /* USART3_RTS */
-> +			bias-disable;
-> +			drive-push-pull;
-> +			slew-rate = <0>;
-> +		};
-> +		pins3 {
->   			pinmux = <STM32_PINMUX('B', 12, AF8)>; /* USART3_RX */
->   			bias-disable;
->   		};
-> 
+because hugetlb_lock is never held in irq context other than from
+put_page (aka the above) path which will explicitly defer the handling and
+thus the lock to a different context. We need to check for irq_disabled
+because of the sleeping paths in the freeing path. Or do I miss
+something?
+
+From the code simplicity POV (and hugetlb has grown a lot of complexity)
+it would be really easiest to make sure __free_huge_page to be called
+from a non-atomic process context. There are few ways to do that
+- defer each call to a WQ - user visible which sucks
+- defer from atomic or otherwise non-sleeping contextx - requires
+  reliable in_atomic AFAICS
+- defer sleeping operations - makes the code flow more complex and it
+  would be again user visible in some cases.
+
+So I would say we are in "pick your own poison" kind of situation.
+-- 
+Michal Hocko
+SUSE Labs
