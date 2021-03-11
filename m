@@ -2,126 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA519337A76
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D6B337A99
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhCKRG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:06:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCKRGq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:06:46 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A43DC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:06:46 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id w8so3765308pjf.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:06:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U3BaAUXKM5qmSJ7940UEU1xJ4TluyNCp4PSxxj53kDg=;
-        b=ny5cwkw3g2zRRtrm+uf/wRSBPIgP4TgrjNtnWW2wany289CJ8ewDMOUzjr2ZWQ4ZRS
-         YoJHoAuUk3fXX8XWSzWBRKTXB5spI9mcN/lUPohrrjb1h0qEPx8sqjdKEerm8cZXQq4/
-         wfRPkhQgiGLhuJejGZjGQEbKPv46Q9OCvqIDtJ7yh/27CaWzYCUwv2EWRdYRWAEnH7BW
-         SPc6p9NXeZtieBGs2C6f6p18dQvL10vgLbUWMiGivIMsng9+4UhCc6n3qZZBsg6Vfvne
-         c0RCgfLOiqTyt/591cSdEDC7wNRr84dzLo7nx8fuVutP1aNWP+SPBo8L6EcOBMMTTAhz
-         98xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U3BaAUXKM5qmSJ7940UEU1xJ4TluyNCp4PSxxj53kDg=;
-        b=Yt8Fa16L3QZlv8cCz4awIBUAkzvRvtrBQuKdLy0nGOEk4oKnh0Mfq3p4h1/svXYP++
-         LS5iVShwF6LV82QNJvNAerVY3ZGiSg4NOAU/DHPbObB4pcE8Z4Ia98fvozFmYYMVybvp
-         cHDPkjZDVUPi5rpKAGAt8yUm6pG/VebIa7nQvGIQ9EQli5zNbghl7wFhBQIWfKIQ2wTO
-         GjHub7ZAwA0gco/rBmFoIlATziR77ac+QtSCNMclobR8Tx9goEEqn6ZzaogSZQtVJS6G
-         aOYec/jNH0htHdSMjq2t1nHNmom5MLarB34sva4iPLmDcYUzZI88IQlQx6BVl+d0NZIV
-         LdGw==
-X-Gm-Message-State: AOAM5313C2OfaAtd3H7g/4h26QIByJ3zDKQV25I1JLhJH6DlWyTMxApC
-        axhpEjiekmZ0VR36hcsaoRRd5rlRM/+mJUb71MLo/g==
-X-Google-Smtp-Source: ABdhPJxLtJVoaCQ+Hy+PqYl1Lrz2ZKWrSXJsEVR+RomEnKh59UDPuVbbiOnU/IsIs4sZT4spP5GmtFc+imPcoiZr2k8=
-X-Received: by 2002:a17:90b:4008:: with SMTP id ie8mr10220269pjb.231.1615482405656;
- Thu, 11 Mar 2021 09:06:45 -0800 (PST)
+        id S229605AbhCKRRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:17:09 -0500
+Received: from mga11.intel.com ([192.55.52.93]:27457 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229804AbhCKRRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:17:03 -0500
+IronPort-SDR: L7ODGj1XuUD8yVmE9rNDIxNOB7TJKGFddnWjrYEMB1/7tJcNqCRb/voidjuNgwABwuW34L7pvb
+ LTAAhbIsV41Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="185346383"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="185346383"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:17:03 -0800
+IronPort-SDR: BpgrJKQZfNfTJVfcYHfGs8xnMDyVP/2xJJ1lrAJck4T9PRtfSzSQdTA7VKxeqApd+IW+zzk/1d
+ qab61Oqq3RxQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="600284986"
+Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 11 Mar 2021 09:17:01 -0800
+Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lKOvl-0000s7-71; Thu, 11 Mar 2021 17:17:01 +0000
+Date:   Fri, 12 Mar 2021 01:16:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/xfs] BUILD SUCCESS
+ 964fe7ec8048c96191288a828dd5211734e5106c
+Message-ID: <604a506b.zk30YMK7mYtRFsuG%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <1615480746-28518-1-git-send-email-loic.poulain@linaro.org> <YEpJwsSy52HFB/IY@kroah.com>
-In-Reply-To: <YEpJwsSy52HFB/IY@kroah.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 11 Mar 2021 18:14:45 +0100
-Message-ID: <CAMZdPi82NpijmiAd2-Fku5ZzcrpZpDsi-8h9qgAu=Xz6VWVQhQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 1/2] net: Add a WWAN subsystem
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        open list <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 at 17:48, Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Mar 11, 2021 at 05:39:05PM +0100, Loic Poulain wrote:
-> > This change introduces initial support for a WWAN subsystem. Given the
-> > complexity and heterogeneity of existing WWAN hardwares and interfaces,
-> > there is no strict definition of what a WWAN device is and how it should
-> > be represented. It's often a collection of multiple components/devices
-> > that perform the global WWAN feature (netdev, tty, chardev, etc).
-> >
-> > One usual way to expose modem controls and configuration is via high
-> > level protocols such as the well known AT command protocol, MBIM or
-> > QMI. The USB modems started to expose that as character devices, and
-> > user daemons such as ModemManager learnt how to deal with that. This
-> > initial version adds the concept of WWAN port, which can be registered
-> > by any driver to expose one of these protocols. The WWAN core takes
-> > care of the generic part, including character device creation and lets
-> > the driver implementing access (fops) to the selected protocol.
-> >
-> > Since the different components/devices do no necesserarly know about
-> > each others, and can be created/removed in different orders, the
-> > WWAN core ensures that devices being part of the same hardware are
-> > also represented as a unique WWAN device, relying on the provided
-> > parent device (e.g. mhi controller, USB device). It's a 'trick' I
-> > copied from Johannes's earlier WWAN subsystem proposal.
-> >
-> > This initial version is purposely minimalist, it's essentially moving
-> > the generic part of the previously proposed mhi_wwan_ctrl driver inside
-> > a common WWAN framework, but the implementation is open and flexible
-> > enough to allow extension for further drivers.
-> >
-> > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> > ---
-> >  drivers/net/Kconfig          |   2 +
-> >  drivers/net/Makefile         |   1 +
-> >  drivers/net/wwan/Kconfig     |  19 ++++++
-> >  drivers/net/wwan/Makefile    |   8 +++
-> >  drivers/net/wwan/wwan_core.c | 150 +++++++++++++++++++++++++++++++++++++++++++
-> >  drivers/net/wwan/wwan_core.h |  20 ++++++
-> >  drivers/net/wwan/wwan_port.c | 136 +++++++++++++++++++++++++++++++++++++++
-> >  include/linux/wwan.h         | 121 ++++++++++++++++++++++++++++++++++
-> >  8 files changed, 457 insertions(+)
-> >  create mode 100644 drivers/net/wwan/Kconfig
-> >  create mode 100644 drivers/net/wwan/Makefile
-> >  create mode 100644 drivers/net/wwan/wwan_core.c
-> >  create mode 100644 drivers/net/wwan/wwan_core.h
-> >  create mode 100644 drivers/net/wwan/wwan_port.c
-> >  create mode 100644 include/linux/wwan.h
->
-> What changed from the last version(s)?  That should be below the ---
-> somewhere, right?
->
-> v5?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/xfs
+branch HEAD: 964fe7ec8048c96191288a828dd5211734e5106c  xfs: Replace one-element arrays with flexible-array members
 
-Yes sorry, I've overwritten my changelog with my last format-patch,
-going to address your comment and add that in the next series.
+elapsed time: 724m
 
-Regards,
-Loic
+configs tested: 92
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc836x_rdk_defconfig
+sh                           se7724_defconfig
+mips                        omega2p_defconfig
+arm                        oxnas_v6_defconfig
+parisc                           alldefconfig
+mips                     cu1000-neo_defconfig
+riscv                             allnoconfig
+mips                       lemote2f_defconfig
+mips                        workpad_defconfig
+sh                           se7206_defconfig
+powerpc                 mpc834x_itx_defconfig
+m68k                         apollo_defconfig
+sh                           se7780_defconfig
+arm                         s3c6400_defconfig
+mips                       capcella_defconfig
+arm                     am200epdkit_defconfig
+arm                          iop32x_defconfig
+arm                          lpd270_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210311
+x86_64               randconfig-a001-20210311
+x86_64               randconfig-a005-20210311
+x86_64               randconfig-a002-20210311
+x86_64               randconfig-a003-20210311
+x86_64               randconfig-a004-20210311
+i386                 randconfig-a001-20210311
+i386                 randconfig-a005-20210311
+i386                 randconfig-a003-20210311
+i386                 randconfig-a002-20210311
+i386                 randconfig-a004-20210311
+i386                 randconfig-a006-20210311
+i386                 randconfig-a013-20210311
+i386                 randconfig-a016-20210311
+i386                 randconfig-a011-20210311
+i386                 randconfig-a014-20210311
+i386                 randconfig-a015-20210311
+i386                 randconfig-a012-20210311
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a011-20210311
+x86_64               randconfig-a016-20210311
+x86_64               randconfig-a013-20210311
+x86_64               randconfig-a015-20210311
+x86_64               randconfig-a014-20210311
+x86_64               randconfig-a012-20210311
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
