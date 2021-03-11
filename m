@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D32337929
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD82F33792B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234567AbhCKQVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:21:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234545AbhCKQUm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:20:42 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7078BC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:20:42 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id f26so2888923ljp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:20:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4mfW5335h/WRWI9dVCvKJHe+RapkHx/nphEJf+JLEfY=;
-        b=oj/xGKhwPlYIKGs7xGNB09v6HFRF++lyyRmlXCz0eDkY5xcQ3u8RrezpbRkdy11V9C
-         +uhCGn6P/rPEbM965aoKuppk2Gvsz3XB7dmtWBEj3Emdg4PGblZQXIghdjISOtxHhdAD
-         aY6hAoFGFd5oUpC/2iLC3lzxRzBo3LWLHI52K7qiGdsN4tHYQ8AaUxh9m7mzXK0nXhV7
-         0TL4XbcYXCFYcfdH80iGpegLieJLpUbb16RFrglCRznxrD6QDUbtMYsNFXi/jR2aoDek
-         tGQmVPJ4JxDfABjrXQPMXsTqvbWSOpjf20XOFkdOJqd+b5SE51BGdaLoFVP2lAZB4aB2
-         wBwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4mfW5335h/WRWI9dVCvKJHe+RapkHx/nphEJf+JLEfY=;
-        b=Z+h72bb2BjBXw8KjHOPTq1uyGifCtQWv7c1PHO+rb4XnabMrHt/5criVdxPLuWOHGX
-         sd6S8jMT9rTyQyRBn4V0H/g+kgsVxuhBPP+JOK6i5dKzYG0e0awDJpbPVR4DNbZZ41IC
-         3itfAwCHU7cu+vxv9wIX6jx3+efjwxX3xCrP482S8PHR5cTmdDQ/pEWCYDLvj4eiXdSi
-         opkRBcLoTVzEeK20eoD7HYT7D+SuziYivud0RS3+8PS18KfVyr2lAJNEa4TFJc9sMMi1
-         cU53Wh4+HU2MHizQRBXmfgPdDPo7xG/c8gubDulVFk09zmtMMIrmX+GHrJXqFpRY6O5N
-         WZuQ==
-X-Gm-Message-State: AOAM5316U8Y1YoW/SjNwtujxBhAuHbunui9+nq5IE0/Xw5m0ULeW7Vuz
-        WC1yyAWAnDKmnfNhOSykyPAjbRRIEU1m2SOEEYGChw==
-X-Google-Smtp-Source: ABdhPJxUPh5qHPBDejHPkQZGXI7Wr8UqPIjSZ7fl43pyrVqj46hUhhEA5svMYWySIqUU/pYnrGqKZGpg5zRKasOSBwk=
-X-Received: by 2002:a2e:864a:: with SMTP id i10mr5068722ljj.467.1615479640987;
- Thu, 11 Mar 2021 08:20:40 -0800 (PST)
+        id S234544AbhCKQVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:21:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234455AbhCKQVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:21:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 753FC6146B;
+        Thu, 11 Mar 2021 16:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615479681;
+        bh=T+Bt7gZGUjrxDrEQ2211vo0Svgs66BNqHKZT8ttELhs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=msyy8vEG3L5NnRfp90UsA3PFVsDk+faHyWPzudfFi2aM/2Lvau5b/GnFNFcjIXYZ4
+         /FPfplr6+dJ+Ygyxek9GF75aVSIKUAhjFY2DwV7sWVm97x5FwS8KoEB8jv0f+eOe5r
+         D+CB5H+c+4unbcsz4kmfZUKT6e4dOQsekhttSnJwJ+Gu+i2j6CiZKKViTJq3oSyeGj
+         9AHJddEqOypI8jb3iT3JG8m/gWS/Dj0XdFiyEnFY3k24jWWUF64Kk2DzTpcsNKGuQO
+         DVxwDWaJDzz/tETwYwz9YuW6E9q1MifTBV3A3QBKQr83A1938NCDySQy65h8ppgjBl
+         2vXAIC0pBrEsg==
+Date:   Thu, 11 Mar 2021 16:21:13 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
+Subject: Re: [PATCH v4 16/34] KVM: arm64: Prepare the creation of s1 mappings
+ at EL2
+Message-ID: <20210311162112.GD31206@willie-the-truck>
+References: <20210310175751.3320106-1-qperret@google.com>
+ <20210310175751.3320106-17-qperret@google.com>
 MIME-Version: 1.0
-References: <20210115224420.1635017-1-dianders@chromium.org>
- <CACRpkdYUs2W3b_u8YrmYwq_kcUCf0DhZ-o2o6O2EmU5rdtv=BA@mail.gmail.com>
- <CAD=FV=WDVAj+OcVXaTJRUu8tvdDzySW0KOfiGqZHi5YvP42BTA@mail.gmail.com>
- <CACRpkda1Ast1cqNfVJ_u6zs8610DWSQGykPt4yBw+mFZFrUPSg@mail.gmail.com> <CAD=FV=Vj-6Y0X667o5vH0EL7hXi6sU4ZWs_a41B6h0D1s05_Hw@mail.gmail.com>
-In-Reply-To: <CAD=FV=Vj-6Y0X667o5vH0EL7hXi6sU4ZWs_a41B6h0D1s05_Hw@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 11 Mar 2021 17:20:30 +0100
-Message-ID: <CACRpkdZpy9yvp+bzHUGiZVyFBDpJHJcYSZQnBQreCfTQLOj1-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] drm/panel-simple: Patches for N116BCA-EA1
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310175751.3320106-17-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 2:01 AM Doug Anderson <dianders@chromium.org> wrote:
+On Wed, Mar 10, 2021 at 05:57:33PM +0000, Quentin Perret wrote:
+> When memory protection is enabled, the EL2 code needs the ability to
+> create and manage its own page-table. To do so, introduce a new set of
+> hypercalls to bootstrap a memory management system at EL2.
+> 
+> This leads to the following boot flow in nVHE Protected mode:
+> 
+>  1. the host allocates memory for the hypervisor very early on, using
+>     the memblock API;
+> 
+>  2. the host creates a set of stage 1 page-table for EL2, installs the
+>     EL2 vectors, and issues the __pkvm_init hypercall;
+> 
+>  3. during __pkvm_init, the hypervisor re-creates its stage 1 page-table
+>     and stores it in the memory pool provided by the host;
+> 
+>  4. the hypervisor then extends its stage 1 mappings to include a
+>     vmemmap in the EL2 VA space, hence allowing to use the buddy
+>     allocator introduced in a previous patch;
+> 
+>  5. the hypervisor jumps back in the idmap page, switches from the
+>     host-provided page-table to the new one, and wraps up its
+>     initialization by enabling the new allocator, before returning to
+>     the host.
+> 
+>  6. the host can free the now unused page-table created for EL2, and
+>     will now need to issue hypercalls to make changes to the EL2 stage 1
+>     mappings instead of modifying them directly.
+> 
+> Note that for the sake of simplifying the review, this patch focuses on
+> the hypervisor side of things. In other words, this only implements the
+> new hypercalls, but does not make use of them from the host yet. The
+> host-side changes will follow in a subsequent patch.
+> 
+> Credits to Will for __pkvm_init_switch_pgd.
+> 
+> Co-authored-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_asm.h     |   4 +
+>  arch/arm64/include/asm/kvm_host.h    |   7 +
+>  arch/arm64/include/asm/kvm_hyp.h     |   8 ++
+>  arch/arm64/include/asm/kvm_pgtable.h |   2 +
+>  arch/arm64/kernel/image-vars.h       |  16 +++
+>  arch/arm64/kvm/hyp/Makefile          |   2 +-
+>  arch/arm64/kvm/hyp/include/nvhe/mm.h |  71 ++++++++++
+>  arch/arm64/kvm/hyp/nvhe/Makefile     |   4 +-
+>  arch/arm64/kvm/hyp/nvhe/hyp-init.S   |  27 ++++
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c   |  49 +++++++
+>  arch/arm64/kvm/hyp/nvhe/mm.c         | 173 +++++++++++++++++++++++
+>  arch/arm64/kvm/hyp/nvhe/setup.c      | 197 +++++++++++++++++++++++++++
+>  arch/arm64/kvm/hyp/pgtable.c         |   2 -
+>  arch/arm64/kvm/hyp/reserved_mem.c    |  92 +++++++++++++
+>  arch/arm64/mm/init.c                 |   3 +
+>  15 files changed, 652 insertions(+), 5 deletions(-)
+>  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/mm.h
+>  create mode 100644 arch/arm64/kvm/hyp/nvhe/mm.c
+>  create mode 100644 arch/arm64/kvm/hyp/nvhe/setup.c
+>  create mode 100644 arch/arm64/kvm/hyp/reserved_mem.c
 
-> If you happen to feel in an applying mood one other patch to
-> simple-panel I think is OK to land is at:
->
-> https://lore.kernel.org/r/20210222081716.1.I1a45aece5d2ac6a2e73bbec50da2086e43e0862b@changeid
+Acked-by: Will Deacon <will@kernel.org>
 
-I applied and pushed this as well.
-
-Yours,
-Linus Walleij
+Will
