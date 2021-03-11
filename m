@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BC2336DBA
+	by mail.lfdr.de (Postfix) with ESMTP id 4B71D336DB9
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhCKIXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:23:37 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2684 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhCKIX2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:23:28 -0500
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dx20N5kFxz67wjQ;
-        Thu, 11 Mar 2021 16:19:00 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 11 Mar 2021 09:23:25 +0100
-Received: from [10.47.4.196] (10.47.4.196) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 11 Mar
- 2021 08:23:24 +0000
-Subject: Re: [RFC PATCH v3 2/3] blk-mq: Freeze and quiesce all queues for
- tagset in elevator_exit()
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <hare@suse.de>, <bvanassche@acm.org>, <axboe@kernel.dk>,
-        <hch@lst.de>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <pragalla@codeaurora.org>,
-        <kashyap.desai@broadcom.com>, <yuyufen@huawei.com>
-References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
- <1614957294-188540-3-git-send-email-john.garry@huawei.com>
- <YElrSFGyim3rjDN+@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <8c6c6783-6152-2332-2f50-14c409e40320@huawei.com>
-Date:   Thu, 11 Mar 2021 08:21:21 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S231207AbhCKIXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:23:36 -0500
+Received: from mga07.intel.com ([134.134.136.100]:26150 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230009AbhCKIXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:23:09 -0500
+IronPort-SDR: uydRjFS/62Lt2iVT4A2aDsgwMS5v3hYk5Bh+CCLPNi6cEjHf+TznRLQoVmAFThrHszvUZxJzKg
+ +qWXr3fr/4ZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="252649507"
+X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
+   d="scan'208";a="252649507"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 00:23:09 -0800
+IronPort-SDR: mxAc5cHEm7yMS29HbwH/QaczNjfOAkw8Zyk4zbqALoFOqYgvM5tBjZA6T5CdRINUFPTekoMWNE
+ JVUZT45S8IaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
+   d="scan'208";a="509953979"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 11 Mar 2021 00:23:07 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 11 Mar 2021 10:23:06 +0200
+Date:   Thu, 11 Mar 2021 10:23:06 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] software node: Two fixes
+Message-ID: <YEnTavP7B6MQHWam@kuha.fi.intel.com>
+References: <20210301143012.55118-1-heikki.krogerus@linux.intel.com>
+ <YEdTGsr6CjUirOsn@smile.fi.intel.com>
+ <CAJZ5v0ivHnHNTFPXKSgiKYY0fKiqSWuBaLh6noqE3xQEFC2-pA@mail.gmail.com>
+ <YEh3FGTExpE3IGhb@kuha.fi.intel.com>
+ <CAJZ5v0j1GDoqYKHfts-pQtkNQYpYsvCxeradmDQMLYMVY024mw@mail.gmail.com>
+ <CAJZ5v0hoM8zXjwxzzNbUKjVqmXfXZnrgryRdy8LE0E230iZWnw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YElrSFGyim3rjDN+@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.4.196]
-X-ClientProxiedBy: lhreml715-chm.china.huawei.com (10.201.108.66) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hoM8zXjwxzzNbUKjVqmXfXZnrgryRdy8LE0E230iZWnw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/2021 00:58, Ming Lei wrote:
->> Indeed, blk_mq_queue_tag_busy_iter() already does take a reference to its
->> queue usage counter when called, and the queue cannot be frozen to switch
->> IO scheduler until all refs are dropped. This ensures no stale references
->> to IO scheduler requests will be seen by blk_mq_queue_tag_busy_iter().
->>
->> However, there is nothing to stop blk_mq_queue_tag_busy_iter() being
->> run for another queue associated with the same tagset, and it seeing
->> a stale IO scheduler request from the other queue after they are freed.
->>
->> To stop this happening, freeze and quiesce all queues associated with the
->> tagset as the elevator is exited.
-> I think this way can't be accepted since switching one queue's scheduler
-> is nothing to do with other request queues attached to same HBA.
+On Wed, Mar 10, 2021 at 03:30:09PM +0100, Rafael J. Wysocki wrote:
+> On Wed, Mar 10, 2021 at 3:16 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Wed, Mar 10, 2021 at 8:36 AM Heikki Krogerus
+> > <heikki.krogerus@linux.intel.com> wrote:
+> > >
+> > > On Tue, Mar 09, 2021 at 02:51:22PM +0100, Rafael J. Wysocki wrote:
+> > > > On Tue, Mar 9, 2021 at 11:51 AM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > >
+> > > > > On Mon, Mar 01, 2021 at 05:30:10PM +0300, Heikki Krogerus wrote:
+> > > > > > Hi,
+> > > > > >
+> > > > > > The second one only affects 5.12-rc1.
+> > > > >
+> > > > > Rafael, Greg, can this be applied for v5.12-rcX?
+> > > >
+> > > > Do you have a pointer to this?
+> > >
+> > > Pointer?
+> >
+> > Never mind, I'll pick them up from the archive.
 > 
-> This patch will cause performance regression because userspace may
-> switch scheduler according to medium or workloads, at that time other
-> LUNs will be affected by this patch.
+> Both [1-2/2] applied as 5.12-rc material now, thanks!
+> 
+> However, I would appreciate CCing swnode-related material to linux-acpi.
 
-Hmmm..that was my concern also. Do you think that it may cause a big 
-impact? Depends totally on the workload, I suppose.
+Sure think. Maybe it would be better to add an entry for the thing to
+the MAINTAINERS file. That way we can make linux-acpi the ml for it. I
+have half automated the preparation of patches and I rely on the
+get_maintainer.pl script, so it would make at least my life a bit
+easier :-).
 
-FWIW, it is useful though for solving both iterator problems.
+I'll send you the patch. I'll make myself and Andy the reviewers.
 
-Thanks,
-John
+thanks,
+
+-- 
+heikki
