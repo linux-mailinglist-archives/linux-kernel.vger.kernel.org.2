@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3154F337208
+	by mail.lfdr.de (Postfix) with ESMTP id AC53E337209
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbhCKMGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:06:07 -0500
-Received: from foss.arm.com ([217.140.110.172]:34072 "EHLO foss.arm.com"
+        id S233073AbhCKMGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:06:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:34084 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233023AbhCKMFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:05:42 -0500
+        id S233024AbhCKMFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:05:44 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8201B11FB;
-        Thu, 11 Mar 2021 04:05:42 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A04DED1;
+        Thu, 11 Mar 2021 04:05:44 -0800 (PST)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EDBDE3F793;
-        Thu, 11 Mar 2021 04:05:40 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B6F0E3F793;
+        Thu, 11 Mar 2021 04:05:42 -0800 (PST)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Qais Yousef <qais.yousef@arm.com>,
@@ -29,9 +29,9 @@ Cc:     Qais Yousef <qais.yousef@arm.com>,
         Pavan Kondeti <pkondeti@codeaurora.org>,
         Rik van Riel <riel@surriel.com>,
         Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Subject: [PATCH v3 4/7] sched/fair: Introduce a CPU capacity comparison helper
-Date:   Thu, 11 Mar 2021 12:05:24 +0000
-Message-Id: <20210311120527.167870-5-valentin.schneider@arm.com>
+Subject: [PATCH v3 5/7] sched/fair: Employ capacity_greater() throughout load_balance()
+Date:   Thu, 11 Mar 2021 12:05:25 +0000
+Message-Id: <20210311120527.167870-6-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210311120527.167870-1-valentin.schneider@arm.com>
 References: <20210311120527.167870-1-valentin.schneider@arm.com>
@@ -41,52 +41,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During load-balance, groups classified as group_misfit_task are filtered
-out if they do not pass
-
-  group_smaller_max_cpu_capacity(<candidate group>, <local group>);
-
-which itself employs fits_capacity() to compare the sgc->max_capacity of
-both groups.
-
-Due to the underlying margin, fits_capacity(X, 1024) will return false for
-any X > 819. Tough luck, the capacity_orig's on e.g. the Pixel 4 are
-{261, 871, 1024}. If a CPU-bound task ends up on one of those "medium"
-CPUs, misfit migration will never intentionally upmigrate it to a CPU of
-higher capacity due to the aforementioned margin.
-
-One may argue the 20% margin of fits_capacity() is excessive in the advent
-of counter-enhanced load tracking (APERF/MPERF, AMUs), but one point here
-is that fits_capacity() is meant to compare a utilization value to a
-capacity value, whereas here it is being used to compare two capacity
-values. As CPU capacity and task utilization have different dynamics, a
-sensible approach here would be to add a new helper dedicated to comparing
-CPU capacities.
+While at it, replace group_smaller_{min, max}_cpu_capacity() with
+comparisons of the source group's min/max capacity and the destination
+CPU's capacity.
 
 Reviewed-by: Qais Yousef <qais.yousef@arm.com>
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/sched/fair.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ kernel/sched/fair.c | 33 ++++-----------------------------
+ 1 file changed, 4 insertions(+), 29 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index db892f6e222f..ddb2ab3edf6d 100644
+index ddb2ab3edf6d..1e8a242cd1f7 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -113,6 +113,13 @@ int __weak arch_asym_cpu_priority(int cpu)
-  */
- #define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
+@@ -8350,26 +8350,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
+ 	return false;
+ }
  
-+/*
-+ * The margin used when comparing CPU capacities.
-+ * is 'cap1' noticeably greater than 'cap2'
-+ *
-+ * (default: ~5%)
-+ */
-+#define capacity_greater(cap1, cap2) ((cap1) * 1024 > (cap2) * 1078)
- #endif
+-/*
+- * group_smaller_min_cpu_capacity: Returns true if sched_group sg has smaller
+- * per-CPU capacity than sched_group ref.
+- */
+-static inline bool
+-group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
+-{
+-	return fits_capacity(sg->sgc->min_capacity, ref->sgc->min_capacity);
+-}
+-
+-/*
+- * group_smaller_max_cpu_capacity: Returns true if sched_group sg has smaller
+- * per-CPU capacity_orig than sched_group ref.
+- */
+-static inline bool
+-group_smaller_max_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
+-{
+-	return fits_capacity(sg->sgc->max_capacity, ref->sgc->max_capacity);
+-}
+-
+ static inline enum
+ group_type group_classify(unsigned int imbalance_pct,
+ 			  struct sched_group *group,
+@@ -8518,15 +8498,10 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+ 	if (!sgs->sum_h_nr_running)
+ 		return false;
  
- #ifdef CONFIG_CFS_BANDWIDTH
+-	/*
+-	 * Don't try to pull misfit tasks we can't help.
+-	 * We can use max_capacity here as reduction in capacity on some
+-	 * CPUs in the group should either be possible to resolve
+-	 * internally or be covered by avg_load imbalance (eventually).
+-	 */
++	/* Don't try to pull misfit tasks we can't help */
+ 	if (static_branch_unlikely(&sched_asym_cpucapacity) &&
+ 	    sgs->group_type == group_misfit_task &&
+-	    (!group_smaller_max_cpu_capacity(sg, sds->local) ||
++	    (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
+ 	     sds->local_stat.group_type != group_has_spare))
+ 		return false;
+ 
+@@ -8610,7 +8585,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+ 	 */
+ 	if (sd_has_asym_cpucapacity(env->sd) &&
+ 	    (sgs->group_type <= group_fully_busy) &&
+-	    (group_smaller_min_cpu_capacity(sds->local, sg)))
++	    (capacity_greater(sg->sgc->min_capacity, capacity_of(env->dst_cpu))))
+ 		return false;
+ 
+ 	return true;
+@@ -9410,7 +9385,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 		 * average load.
+ 		 */
+ 		if (sd_has_asym_cpucapacity(env->sd) &&
+-		    capacity_of(env->dst_cpu) < capacity &&
++		    !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
+ 		    nr_running == 1)
+ 			continue;
+ 
 -- 
 2.25.1
 
