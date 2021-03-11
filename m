@@ -2,91 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678E1337006
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 206D9337017
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhCKK3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:29:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232236AbhCKK30 (ORCPT
+        id S232333AbhCKKek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:34:40 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:44728 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232359AbhCKKeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:29:26 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EE66C061574;
-        Thu, 11 Mar 2021 02:29:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=BLNMpQ/qYLIXfz8KYOf4S/wVQmoq4ZxSzAKu
-        seZ1oDQ=; b=J1Pr0UqxFJwz+cpYSuN8v3867CB9JpJDHtzDede0IyiEW8yV3fjt
-        fmnOuFRor0YknrGym+qzz4SXXxoFb1jn0aZpldnM7ERshuyVw0SwMid+gI1wUfka
-        0wecE/OFcD0H1ibiLGUSDRH6EXkcsBkm1m7b3z+pnG82AvQS/zMBjD8=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Thu, 11 Mar
- 2021 18:29:19 +0800 (GMT+08:00)
-X-Originating-IP: [202.79.170.108]
-Date:   Thu, 11 Mar 2021 18:29:19 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] infiniband/core: Fix a use after free in
- cm_work_handler
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <YEnhO9EXgI8pwVD2@unreal>
-References: <20210311022153.3757-1-lyl2019@mail.ustc.edu.cn>
- <YEnhO9EXgI8pwVD2@unreal>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 11 Mar 2021 05:34:37 -0500
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 12BAYJDi012899;
+        Thu, 11 Mar 2021 19:34:20 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 12BAYJDi012899
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615458860;
+        bh=JL39avkr6XAXggrtNaqY+rW1xFvHegX4PxpEorYJ0P0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RALITuhrD/lJww4WxZ9jRR1TUGsxgfh+ecFN+Teknu26oo8czDRd2xWctQ10J79VV
+         gHGgcCtnwbeJI7wO8sEJFfmZxE3W4tXtCht2yTha/qdVKppOR5ClUE0+uEGiX83ZQ7
+         PQeikUrGirwSAnVJYuggXUQB6KTfw6YoejzQGtCFmz0NBfXLtYZZZqs3iZ2f0GPGJ3
+         Zs28N8MBpjhF32KgX4d23rQWh98eo7KV5tWtWXnJXdJMZD1ItNv/KFX3ejDpOdtyDW
+         oyucZqvRu1h68UyOP579E5dvlUJ3JfFmTwIrdTJki/EE7nCUk9OcixoeK3Z0nM2R7Q
+         aW+az6YeJGgZA==
+X-Nifty-SrcIP: [209.85.210.181]
+Received: by mail-pf1-f181.google.com with SMTP id t29so14095124pfg.11;
+        Thu, 11 Mar 2021 02:34:20 -0800 (PST)
+X-Gm-Message-State: AOAM5314pWhdYYH+Yvd5Z4MU/fF8DRpRgMh0S1sqP0SIP1j0akObYAx7
+        jelqGmnBbrlb0GiVnig8vTVfP4zNdEyZcREhlS8=
+X-Google-Smtp-Source: ABdhPJzY0KKF0RIthLc5mGvm6tX6IBefaVdn9h1YLSHJplyPla5IWMj8zNCsMuxBzvDlUUReTD78xXXy5yDCWprwHeQ=
+X-Received: by 2002:a62:b416:0:b029:1e4:fb5a:55bb with SMTP id
+ h22-20020a62b4160000b02901e4fb5a55bbmr6828665pfn.80.1615458859439; Thu, 11
+ Mar 2021 02:34:19 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <1149b747.c620.17820d56572.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygB3ZGH_8ElgN5oLAA--.0W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoQBlQhn497xwAOsK
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+References: <20210311094624.923913-1-masahiroy@kernel.org> <CANiq72m1e9MD83sP5iZCfzoCR0qLz2HQj_VVkE4X-56vf6e7fw@mail.gmail.com>
+In-Reply-To: <CANiq72m1e9MD83sP5iZCfzoCR0qLz2HQj_VVkE4X-56vf6e7fw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 11 Mar 2021 19:33:42 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATP2ORegUu0tGtSU1+CSKZVX7m84GOT913X5L29MopAXQ@mail.gmail.com>
+Message-ID: <CAK7LNATP2ORegUu0tGtSU1+CSKZVX7m84GOT913X5L29MopAXQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: collect minimum tool versions into scripts/min-tool-version.sh
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@lindev.ch>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SW4gdGhlIGltcGxlbWVudGF0aW9uIG9mIGRlc3RvcnlfY21faWQoKSwgaXQgcmVzdG9yZXMgY21f
-aWRfcHJpdiBieSANCiJjbV9pZF9wcml2ID0gY29udGFpbmVyX29mKGNtX2lkLCBzdHJ1Y3QgaXdj
-bV9pZF9wcml2YXRlLCBpZCk7Ii4NCg0KQW5kIHRoZSBsYXN0IGxpbmUgb2YgZGVzdG9yeV9jbV9p
-ZCgpIGNhbGxzICIodm9pZClpd2NtX2RlcmVmX2lkKGNtX2lkX3ByaXYpOyINCnRvIGZyZWUgdGhl
-IGNtX2lkX3ByaXYuDQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujog
-Ikxlb24gUm9tYW5vdnNreSIgPGxlb25Aa2VybmVsLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIx
-LTAzLTExIDE3OjIyOjAzICjmmJ/mnJ/lm5spDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxs
-eWwyMDE5QG1haWwudXN0Yy5lZHUuY24+DQo+IOaKhOmAgTogZGxlZGZvcmRAcmVkaGF0LmNvbSwg
-amdnQHppZXBlLmNhLCBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZywgbGludXgta2VybmVsQHZn
-ZXIua2VybmVsLm9yZw0KPiDkuLvpopg6IFJlOiBbUEFUQ0hdIGluZmluaWJhbmQvY29yZTogRml4
-IGEgdXNlIGFmdGVyIGZyZWUgaW4gY21fd29ya19oYW5kbGVyDQo+IA0KPiBPbiBXZWQsIE1hciAx
-MCwgMjAyMSBhdCAwNjoyMTo1M1BNIC0wODAwLCBMdiBZdW5sb25nIHdyb3RlOg0KPiA+IEluIGNt
-X3dvcmtfaGFuZGxlciwgaXQgY2FsbHMgZGVzdG9yeV9jbV9pZCgpIHRvIHJlbGVhc2UNCj4gPiB0
-aGUgaW5pdGlhbCByZWZlcmVuY2Ugb2YgY21faWRfcHJpdiB0YWtlbiBieSBpd19jcmVhdGVfY21f
-aWQoKQ0KPiA+IGFuZCBmcmVlIHRoZSBjbV9pZF9wcml2LiBBZnRlciBkZXN0b3J5X2NtX2lkKCks
-IGl3Y21fZGVyZWZfaWQNCj4gPiAoY21faWRfcHJpdikgd2lsbCBiZSBjYWxsZWQgYW5kIGNhdXNl
-IGEgdXNlIGFmdGVyIGZyZWUuDQo+ID4NCj4gPiBGaXhlczogNTljNjhhYzMxZTE1YSAoIml3X2Nt
-OiBmcmVlIGNtX2lkIHJlc291cmNlcyBvbiB0aGUgbGFzdCBkZXJlZiIpDQo+ID4gU2lnbmVkLW9m
-Zi1ieTogTHYgWXVubG9uZyA8bHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNuPg0KPiA+IC0tLQ0KPiA+
-ICBkcml2ZXJzL2luZmluaWJhbmQvY29yZS9pd2NtLmMgfCA0ICsrKy0NCj4gPiAgMSBmaWxlIGNo
-YW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2l3Y20uYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9j
-b3JlL2l3Y20uYw0KPiA+IGluZGV4IGRhOGFkYWRmNDc1NS4uY2I2YjRhYzQ1ZTIxIDEwMDY0NA0K
-PiA+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2l3Y20uYw0KPiA+ICsrKyBiL2RyaXZl
-cnMvaW5maW5pYmFuZC9jb3JlL2l3Y20uYw0KPiA+IEBAIC0xMDM1LDggKzEwMzUsMTAgQEAgc3Rh
-dGljIHZvaWQgY21fd29ya19oYW5kbGVyKHN0cnVjdCB3b3JrX3N0cnVjdCAqX3dvcmspDQo+ID4N
-Cj4gPiAgCQlpZiAoIXRlc3RfYml0KElXQ01fRl9EUk9QX0VWRU5UUywgJmNtX2lkX3ByaXYtPmZs
-YWdzKSkgew0KPiA+ICAJCQlyZXQgPSBwcm9jZXNzX2V2ZW50KGNtX2lkX3ByaXYsICZsZXZlbnQp
-Ow0KPiA+IC0JCQlpZiAocmV0KQ0KPiA+ICsJCQlpZiAocmV0KSB7DQo+ID4gIAkJCQlkZXN0cm95
-X2NtX2lkKCZjbV9pZF9wcml2LT5pZCk7DQo+ID4gKwkJCQlyZXR1cm47DQo+IA0KPiBUaGUgZGVz
-dHJveV9jbV9pZCgpIGlzIGNhbGxlZCB0byBmcmVlIC0+aWQgYW5kIG5vdCBjbV9pZF9wcml2LiBU
-aGlzICJyZXR1cm4iDQo+IGxlYWtzIGNtX2lkX3ByaXYgbm93IGFuZCB3aGF0ICJhIHVzZSBhZnRl
-ciBmcmVlIiBkbyB5b3Ugc2VlPw0KPiANCj4gPiArCQkJfQ0KPiA+ICAJCX0gZWxzZQ0KPiA+ICAJ
-CQlwcl9kZWJ1ZygiZHJvcHBpbmcgZXZlbnQgJWRcbiIsIGxldmVudC5ldmVudCk7DQo+ID4gIAkJ
-aWYgKGl3Y21fZGVyZWZfaWQoY21faWRfcHJpdikpDQo+ID4gLS0NCj4gPiAyLjI1LjENCj4gPg0K
-PiA+DQo=
+On Thu, Mar 11, 2021 at 7:18 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Thu, Mar 11, 2021 at 10:47 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > +# When you raise the minimum version, please update
+> > +# Documentation/process/changes.rst as well.
+> > +min_gcc_version=4.9.0
+> > +min_llvm_version=10.0.1
+> > +min_icc_version=16.0.3 # temporary
+> > +min_binutils_version=2.23.0
+>
+> +1 to creating a central place for all minimum versions.
+>
+>     Acked-by: Miguel Ojeda <ojeda@kernel.org>
+>
+> I wonder if you considered creating a folder with files like
+> `scripts/min_versions/gcc` containing the version string. That would
+> make it easier for reading from other languages or even importing them
+> dynamically into the documentation, thus removing even more
+> duplication.
+>
+> Cheers,
+> Miguel
+
+
+Hmm, that is a simple, clean idea.
+Then, we can simply read out the file
+
+$ cat scripts/min_versions/gcc
+4.9.0
+
+I do not know how to handle
+per-arch versions in this case.
+
+
+
+
+Or, we might need to stick to shell-scripting
+to handle this.
+
+scripts/min_versions/gcc
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+if [ "$SRCARCH" = arm64 ]; then
+       echo 5.1.0
+else
+       echo 4.9.0
+fi
+
+
+-- 
+Best Regards
+Masahiro Yamada
