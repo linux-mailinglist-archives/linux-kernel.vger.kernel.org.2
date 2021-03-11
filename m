@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D508337A25
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F90B337A2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhCKQ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:57:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
+        id S229731AbhCKQ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:57:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhCKQ5B (ORCPT
+        with ESMTP id S229606AbhCKQ50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:57:01 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EB5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:57:01 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id t5so2862633qvs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:57:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YHm9mvHtvSd+8yBU3UFAB1EmCd9wLHSiLTY2qSSEVbo=;
-        b=tm8eLqmV95BluK6aHz1yOyLRnITXFAAEdKpyO5gNhmEvld/2VPVmnb1F7TjaAsDHAZ
-         gNbYMEEpnzg2qBMa+YP0k63L0Iib96yAvMMIjo3Lw82pQ+mRIve1+x2r5WJ832F8qSke
-         feZQ5RyzVfQIYrSprYZIO/mPf0tr12/ZaOHsHKmm9/QlCvtrU37qsG4jQchNDT0eMvIz
-         XGnVTO/rI1NQxe+dDWDl4RnthgMnWSHQgH0oJROOZH4UPhIdrAmVmXnZWH1mH2Fn7qSH
-         rGhmNz6t7f9H0VJ+erUC+XAJdNkhNPKabZx0tGhcn+30vkC5ER5M+8AsMRFJ7kHlpPRJ
-         kLuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YHm9mvHtvSd+8yBU3UFAB1EmCd9wLHSiLTY2qSSEVbo=;
-        b=LMO96y2S2jDdSp3/YMsqxm2PnEXW1w/FEfxwqnz/iRcm6hNYWAK8M6ycwVuHmUQLSR
-         DDz6bjAxbFlrbsH+deJLsMQnZZPGiq3hxkvjGX8e6L5djOutn2tP4K/SQOhZu1X2gaEK
-         q6spVH/sG0HFIz7WW8wDX4bhyMapO2ozLyRBpY3wdSgIkPJr/k5pQzqNfrYjnDEE4o2B
-         H4vQhEpYoRmohyjq7lstP1Nhk9SfUquL5S7gyOLJ/qSbB90GJ/F5LFU8gfRihxvc+tL5
-         Vr9b9ss3rQ9P++IKEmLg49O9FfQIB5Kj64G5JglvaHpbNNDytqJEZ0IARm0jXJu1WgtC
-         XNCQ==
-X-Gm-Message-State: AOAM530l+cuBx+QKYpyJwbvg3JwuxUMGo9EYak90sUw9PWof2CJAGEkr
-        dVSfv+/J6BquGzHW11TIovDEYAbYi+a/P58woub73Q==
-X-Google-Smtp-Source: ABdhPJy3iOUHKrCBCVlN3MNLy7HqjGjfIX5sfaiGOyTWK8Qtpf4KyLjZ9/xs3jfKEt9MAFHQkuRqrEAYZmRWaR2LU80=
-X-Received: by 2002:a05:6214:1870:: with SMTP id eh16mr8375976qvb.23.1615481819992;
- Thu, 11 Mar 2021 08:56:59 -0800 (PST)
+        Thu, 11 Mar 2021 11:57:26 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69C0C061574;
+        Thu, 11 Mar 2021 08:57:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ppV5eKP+GTwT8841mn3VqiRD2uTN7WT0z5PGxeKiaTU=; b=JvvWPkglVPY+62xqjH6sjY7+AH
+        dnyYZA6+nBL5WOheOekWnlbQ6GnYvi0waEZ5t4aWCLVN2/uv4qFZ9OrhBNIwQrDxYDa48BDiqtKrL
+        wAkN3RM1PxUTUqOQmW6PXrPB2cHM+bd5wAY56tC6WuekmNVUg7OEF1uYueDAaen3N2TFxZgRCcACb
+        Gy0nfntxV/1oJVsdUGiS1Av+z5v6RBKcIFfTrzPoy/i0uaTqdWIzU6cST62MYG4AXAwSkdp31Bb5T
+        ecWniiVWBTJ6jpgZkDQVrSGGngxUk7BvkGWXIBNwMSfTWmIivDWsN5q1kiFUH8dEHxh9F2Vt8mAg/
+        sbW9346Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKOcQ-009cwK-R4; Thu, 11 Mar 2021 16:57:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 55DE63013E5;
+        Thu, 11 Mar 2021 17:56:58 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4110F29E5D623; Thu, 11 Mar 2021 17:56:58 +0100 (CET)
+Date:   Thu, 11 Mar 2021 17:56:58 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Aili Yao <yaoaili@kingsoft.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>
+Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
+ hwpoison page access.
+Message-ID: <YEpL2im5KCoEeXlS@hirez.programming.kicks-ass.net>
+References: <4fc1b4e8f1fb4c8c81f280db09178797@intel.com>
+ <047D5B49-FDBB-494C-81E9-DA811476747D@amacapital.net>
+ <20210311091941.45790fcf@alex-virtual-machine>
+ <CALCETrVqkK29n=6wtVhd7qgTWf83x3SUk6+bkD30asHyWSqppw@mail.gmail.com>
+ <0a0909a9005842fa9e49ba9917580e79@intel.com>
 MIME-Version: 1.0
-References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
- <20210311123315.GF37303@C02TD0UTHF1T.local>
-In-Reply-To: <20210311123315.GF37303@C02TD0UTHF1T.local>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 11 Mar 2021 17:56:46 +0100
-Message-ID: <CACT4Y+ZPO7D1hGHZvuBQ52Vy2W7UUSW+YFE-Ax6-NMDnmrKTBA@mail.gmail.com>
-Subject: Re: arm64 syzbot instances
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     maz@kernel.org, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        syzkaller <syzkaller@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a0909a9005842fa9e49ba9917580e79@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 1:33 PM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Thu, Mar 11, 2021 at 12:38:21PM +0100, 'Dmitry Vyukov' via syzkaller wrote:
-> > Hi arm64 maintainers,
->
-> Hi Dmitry,
->
-> > We now have some syzbot instances testing arm64 (woohoo!) using qemu
-> > emulation. I wanted to write up the current status.
->
-> Nice!
->
-> > There are 3 instances, first uses KASAN:
-> > https://syzkaller.appspot.com/upstream?manager=ci-qemu2-arm64
-> > second KASAN and 32-bit userspace test load (compat):
-> > https://syzkaller.appspot.com/upstream?manager=ci-qemu2-arm64-compat
-> > third uses MTE/KASAN_HWTAGS:
-> > https://syzkaller.appspot.com/upstream?manager=ci-qemu2-arm64-mte
-> >
-> > Kernel configs:
-> > https://github.com/google/syzkaller/blob/master/dashboard/config/linux/upstream-arm64-kasan.config
-> > https://github.com/google/syzkaller/blob/master/dashboard/config/linux/upstream-arm64-mte.config
->
-> FWIW, I keep my fuzzing config fragment in my fuzzing/* branches on
-> git.kernel.org, and for comparison my fragment for v5.12-rc1 is:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?h=fuzzing/5.12-rc1&id=6d9f7f8a2514fe882823fadbe7478228f71d7ab1
->
-> ... I'm not sure whether there's anything in that which is novel to you.
+On Thu, Mar 11, 2021 at 04:52:10PM +0000, Luck, Tony wrote:
+> > I think we need to at least fix the existing bug before we add more
+> > signals.  AFAICS the MCE_IN_KERNEL_COPYIN code is busted for kernel
+> > threads.
+> 
+> Can a kernel thread do get_user() or copy_from_user()?  Do we have kernel threads
+> that have an associated user address space to copy from?
 
-Hi Mark,
-
-I've learned about DEBUG_TIMEKEEPING which we had disabled. I am enabling it.
-We also have CONTEXT_TRACKING_FORCE disabled. I don't completely
-understand what it's doing. Is it also "more debug checks" type of
-config?
-
-FWIW we have more debug configs:
-https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/debug.yml
-https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/base.yml
-https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/kasan.yml
-https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/kmemleak.yml
+kthread_use_mm()
