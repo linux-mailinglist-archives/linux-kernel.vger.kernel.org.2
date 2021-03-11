@@ -2,39 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C220336B27
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD93336B2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhCKE33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 23:29:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:57328 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231295AbhCKE3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 23:29:16 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08B5631B;
-        Wed, 10 Mar 2021 20:29:16 -0800 (PST)
-Received: from [10.163.66.3] (unknown [10.163.66.3])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9CDD3F793;
-        Wed, 10 Mar 2021 20:29:12 -0800 (PST)
-Subject: Re: [RFC] mm: Enable generic pfn_valid() to handle early sections
- with memmap holes
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1615174073-10520-1-git-send-email-anshuman.khandual@arm.com>
- <745496f5-e099-8780-e42e-f347b55e8476@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <72902ace-5f00-b484-aa71-e6841fb7d082@arm.com>
-Date:   Thu, 11 Mar 2021 09:59:49 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231197AbhCKEeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 23:34:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230488AbhCKEeL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 23:34:11 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D6FC061574;
+        Wed, 10 Mar 2021 20:34:11 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id v14so5942367pgq.2;
+        Wed, 10 Mar 2021 20:34:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+8rnDD+npq7/NwG6/NmcCjJaQ72jp/+rirKVpBestBY=;
+        b=riB3bmDplhOig2dJbkrRoCqRGe7JnO3/7ZSFB4Aw4B6orOD9A/zNkSM/GmJ1wiQiXv
+         8vQtf6481zjSIRcrWXHEiujmbc2TmZGhlx42HPWyLpVK7H+LCVUD3yhYPITNNegMM8wf
+         pR5QiCTb/2B6y91f1FyPz1j6dw8+yE/i2WRwMzmsDqBH+Gv8j3h8qTaR9lWsOGzAHfYH
+         P5f68GKkbWkrp1Svp6dfyF0NnDnxmuAEnpfVA/fPb1EqJVij02SOIfGALzPrHaIAkGCj
+         rlizexTJH0NvQ+ZFX+98xPGuZtTxP9RbKDbZchgaS/J3rkd6Xqd28sOLkRIGrI0e4QJ5
+         qBSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+8rnDD+npq7/NwG6/NmcCjJaQ72jp/+rirKVpBestBY=;
+        b=esNgIIkRvK/ER87Y20q95ijUIrfFwCkF6QFopIbPNoAwpXYoLXMRvVxeg71FawAZED
+         LBQ7muWnxsJTXQ6giJkiYJ+rEFHn5VoQeBMsbxZvYSwUGVpYQAGcWcdkHq4dtAfBjWs/
+         xPapGivEafvY5NU2U61q9xz7rHm7uJ11iN2KAAKNw7fNSvZEkLgMKQ81jxEl3pOwDPGT
+         cDHEFxnkKs9q7OFADvZ4dAnS13fEeqjnhORknU29uf3YN6bCFLS7Y1MKJbdOEGKXYXK0
+         BalY+p8HCbGTbGPj7wI91IQ1UM45YuwQzqoakiqYRd/pRPgaToI5BJeX5RIr9XtRrpa3
+         vseA==
+X-Gm-Message-State: AOAM531btLy94EHohG9wwwcMPn+LihMNOGoAkcJWj/qHozP5HK5fMTq5
+        gzNygbCOpVo+pYlWlcNsEgnuhBwRtYE=
+X-Google-Smtp-Source: ABdhPJz/k51TtzkHEJkKTI9J0inCetQDuY2UnF5cop/6uWIsf2zoq/3C8udzpmCYZVtlM4IAXf9RIw==
+X-Received: by 2002:a65:6a44:: with SMTP id o4mr5584204pgu.312.1615437250349;
+        Wed, 10 Mar 2021 20:34:10 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g26sm928947pfi.38.2021.03.10.20.34.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 20:34:09 -0800 (PST)
+Subject: Re: [PATCH 5.10 00/47] 5.10.23-rc2 review
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210310182834.696191666@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <70e77e00-15c0-74d8-052e-deeb61c67538@gmail.com>
+Date:   Wed, 10 Mar 2021 20:34:07 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <745496f5-e099-8780-e42e-f347b55e8476@redhat.com>
+In-Reply-To: <20210310182834.696191666@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -44,180 +72,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 3/8/21 2:07 PM, David Hildenbrand wrote:
-> On 08.03.21 04:27, Anshuman Khandual wrote:
->> Platforms like arm and arm64 have redefined pfn_valid() because their early
->> memory sections might have contained memmap holes caused by memblock areas
->> tagged with MEMBLOCK_NOMAP, which should be skipped while validating a pfn
->> for struct page backing. This scenario could be captured with a new option
->> CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES and then generic pfn_valid() can be
->> improved to accommodate such platforms. This reduces overall code footprint
->> and also improves maintainability.
->>
->> Commit 4f5b0c178996 ("arm, arm64: move free_unused_memmap() to generic mm")
->> had used CONFIG_HAVE_ARCH_PFN_VALID to gate free_unused_memmap(), which in
->> turn had expanded its scope to new platforms like arc and m68k. Rather lets
->> restrict back the scope for free_unused_memmap() to arm and arm64 platforms
->> using this new config option i.e CONFIG_HAVE_EARLY_SECTION_MEMMAP.
->>
->> While here, it exports the symbol memblock_is_map_memory() to build drivers
->> that depend on pfn_valid() but does not have the required visibility. After
->> this new config is in place, just drop CONFIG_HAVE_ARCH_PFN_VALID from both
->> arm and arm64 platforms.
->>
->> Cc: Russell King <linux@armlinux.org.uk>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Mike Rapoport <rppt@kernel.org>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-mm@kvack.org
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> This applies on 5.12-rc2 along with arm64 pfn_valid() fix patches [1] and
->> has been lightly tested on the arm64 platform. The idea to represent this
->> unique situation on the arm and arm64 platforms with a config option was
->> proposed by David H during an earlier discussion [2]. This still does not
->> build on arm platform due to pfn_valid() resolution errors. Nonetheless
->> wanted to get some early feedback whether the overall approach here, is
->> acceptable or not.
+On 3/10/2021 10:29 AM, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> It might make sense to keep the arm variant for now. The arm64 variant is where the magic happens and where we missed updates when working on the generic variant.
+> This is the start of the stable review cycle for the 5.10.23 release.
+> There are 47 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 12 Mar 2021 18:28:23 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.23-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Sure, will drop the changes on arm.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-> 
-> The generic variant really only applies to 64bit targets where we have SPARSEMEM. See x86 as an example.
-
-Okay.
-
-> 
-> [...]
-> 
->>   /*
->> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
->> index 47946cec7584..93532994113f 100644
->> --- a/include/linux/mmzone.h
->> +++ b/include/linux/mmzone.h
->> @@ -1409,8 +1409,23 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
->>   }
->>   #endif
->>   +bool memblock_is_map_memory(phys_addr_t addr);
->> +
->>   #ifndef CONFIG_HAVE_ARCH_PFN_VALID
->>   static inline int pfn_valid(unsigned long pfn)
->> +{
->> +    phys_addr_t addr = PFN_PHYS(pfn);
->> +
->> +    /*
->> +     * Ensure the upper PAGE_SHIFT bits are clear in the
->> +     * pfn. Else it might lead to false positives when
->> +     * some of the upper bits are set, but the lower bits
->> +     * match a valid pfn.
->> +     */
->> +    if (PHYS_PFN(addr) != pfn)
->> +        return 0;
-> 
-> I think this should be fine for other archs as well.
-> 
->> +
->> +#ifdef CONFIG_SPARSEMEM
-> 
-> Why do we need the ifdef now? If that's to cover the arm case, then please consider the arm64 case only for now.
-
-Yes, it is not needed.
-
-> 
->>   {
->>       struct mem_section *ms;
->>   @@ -1423,7 +1438,14 @@ static inline int pfn_valid(unsigned long pfn)
->>        * Traditionally early sections always returned pfn_valid() for
->>        * the entire section-sized span.
->>        */
->> -    return early_section(ms) || pfn_section_valid(ms, pfn);
->> +    if (early_section(ms))
->> +        return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
->> +            memblock_is_map_memory(pfn << PAGE_SHIFT) : 1;
->> +
->> +    return pfn_section_valid(ms, pfn);
->> +}
->> +#endif
->> +    return 1;
->>   }
->>   #endif
->>   diff --git a/mm/Kconfig b/mm/Kconfig
->> index 24c045b24b95..0ec20f661b3f 100644
->> --- a/mm/Kconfig
->> +++ b/mm/Kconfig
->> @@ -135,6 +135,16 @@ config HAVE_FAST_GUP
->>   config ARCH_KEEP_MEMBLOCK
->>       bool
->>   +config HAVE_EARLY_SECTION_MEMMAP_HOLES
->> +    depends on ARCH_KEEP_MEMBLOCK && SPARSEMEM_VMEMMAP
->> +    def_bool n
->> +    help
->> +      Early sections on certain platforms might have portions which are
->> +      not backed with struct page mapping as their memblock entries are
->> +      marked with MEMBLOCK_NOMAP. When subscribed, this option enables
->> +      specific handling for those memory sections in certain situations
->> +      such as pfn_valid().
->> +
->>   # Keep arch NUMA mapping infrastructure post-init.
->>   config NUMA_KEEP_MEMINFO
->>       bool
->> diff --git a/mm/memblock.c b/mm/memblock.c
->> index afaefa8fc6ab..d9fa2e62ab7a 100644
->> --- a/mm/memblock.c
->> +++ b/mm/memblock.c
->> @@ -1744,6 +1744,7 @@ bool __init_memblock memblock_is_map_memory(phys_addr_t addr)
->>           return false;
->>       return !memblock_is_nomap(&memblock.memory.regions[i]);
->>   }
->> +EXPORT_SYMBOL(memblock_is_map_memory);
->>     int __init_memblock memblock_search_pfn_nid(unsigned long pfn,
->>                unsigned long *start_pfn, unsigned long *end_pfn)
->> @@ -1926,7 +1927,7 @@ static void __init free_unused_memmap(void)
->>       unsigned long start, end, prev_end = 0;
->>       int i;
->>   -    if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
->> +    if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ||
->>           IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
->>           return;
->>  
-> 
-> With
-> 
-> commit 1f90a3477df3ff1a91e064af554cdc887c8f9e5e
-> Author: Dan Williams <dan.j.williams@intel.com>
-> Date:   Thu Feb 25 17:17:05 2021 -0800
-> 
->     mm: teach pfn_to_online_page() about ZONE_DEVICE section collisions
-> 
-> (still in -next I think)
-
-Already has merged mainline.
-
-> 
-> You'll also have to take care of pfn_to_online_page().
-> 
-
-Something like this would work ?
-
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 5ba51a8bdaeb..19812deb807f 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -309,6 +309,11 @@ struct page *pfn_to_online_page(unsigned long pfn)
-         * Save some code text when online_section() +
-         * pfn_section_valid() are sufficient.
-         */
-+       if (IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES)) {
-+               if (early_section(ms) && !memblock_is_map_memory(PFN_PHYS(pfn)))
-+                       return NULL;
-+       }
-+
-        if (IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) && !pfn_valid(pfn))
-                return NULL;
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
