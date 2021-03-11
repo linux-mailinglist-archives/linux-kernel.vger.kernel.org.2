@@ -2,76 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1F1337547
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EF9337548
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233817AbhCKORa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:17:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233805AbhCKORO (ORCPT
+        id S233860AbhCKORc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:17:32 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33124 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233811AbhCKORS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:17:14 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87341C061574;
-        Thu, 11 Mar 2021 06:17:14 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso12877360wmi.0;
-        Thu, 11 Mar 2021 06:17:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=cJnKwlLH8mf61Kjn3I5ayRTNQYAE2P9t3iD37An+Rxs=;
-        b=BDFcJNRxipcR2u0Y7Gx3hpAAAT6kXY6uO1icLZ+K6m3rRYY3U5WYf+RQl34eGk1rLA
-         iktSMghhForV0bk03hAj1mtz3yNLC8LNPHa4RIff5KoRrH93w2hjwnYuhlMguILbiXJX
-         w2hvwMM2repabNa123X2q7S7NULrvMTb7jEQqC1ZKyPgO4IOOtnfl+jTG7LoZ9D/Vf+/
-         iCChdADEhJWNRsXPW1N7lKW3py7f3bdkizVhacbJ5fyaIk45snXKSsl9I0Hr4j5qIN88
-         6jcigCSamjLUzgikwq0OJCWpsYQ8nprOVizKsUZRRU6b5pgchI2cKn11u+5f6euGn8uc
-         ixeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=cJnKwlLH8mf61Kjn3I5ayRTNQYAE2P9t3iD37An+Rxs=;
-        b=s/8oKP9/+LCorrPXw9PVNL9/gD+npB4jsCizjLa0HRgAV+FMzP8tYipO2G9RYgLy0z
-         7wX4xoy8iFYJD/9Rbtnz8rXlhXUlsapG2PswtgtRhyLIv4DoPYDcz7TqYAciCuKHkZBt
-         u5EYCqmE5vtv93iRw2ydNQOSrmqnEaqq9TJ9Nm3qsb3d/zMHg4DCe0fm1qwDwUNfZy7p
-         kMuiuseZR9O5mbYNCeahQivYMlyNT601ZD2erPstI7RjiavE1uKSWsjwIWDy04Qz3+UA
-         2pEt8dp0zg81v6QGLouQGGOcOG4vcugd7zSwLBOJa6/CsKRFzZ3Er9c3Pf/1FIGv3Xv4
-         dnSA==
-X-Gm-Message-State: AOAM532B/tOgyYZvsxE3zbHkV6Immmji5AU54eGGJkUxoUFA5jFgV2Ac
-        6JsobK3GzDrZATqXvQRu88Q1SDxJ/rI=
-X-Google-Smtp-Source: ABdhPJyRBT+peCBq0HMALni2WhboVohZEt4D1G2iLu2o5tXIakZ7N13pXyorZCtfVuMqCYwnprTfyQ==
-X-Received: by 2002:a1c:dd44:: with SMTP id u65mr8450860wmg.87.1615472233358;
-        Thu, 11 Mar 2021 06:17:13 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id i26sm4255555wmb.18.2021.03.11.06.17.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 06:17:12 -0800 (PST)
-Date:   Thu, 11 Mar 2021 15:17:11 +0100
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: sensors-detect: Found unknown chip with ID 0x0404
-Message-ID: <YEomZ1+Nk0m150lt@Red>
+        Thu, 11 Mar 2021 09:17:18 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12BEHDTf123219;
+        Thu, 11 Mar 2021 08:17:13 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615472233;
+        bh=RJ+Hl65kVO9Nq2o/JK00f0BDvO0IoP/VbHeYgicOfv8=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=GGUVCt/SsQg8ea3wJAvqR6s2BkH9EDjA5B4em8LZopFqRnZcJXe8VVBINljKECflY
+         Sb++/cvFuMEhUvzw45piwEFTVbtqriHGLLiJe4CcX9gJJWIODGAJjPnfoYH/xrxPjP
+         2YcZg1oqjDpQUZwCeUKAvxeQbWnDapT4zw3eAacY=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12BEHDu1105182
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 11 Mar 2021 08:17:13 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 11
+ Mar 2021 08:17:13 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 11 Mar 2021 08:17:13 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12BEHD0g077781;
+        Thu, 11 Mar 2021 08:17:13 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Pratyush Yadav <p.yadav@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v2 0/3] Enable 8D-8D-8D mode on J721E, J7200, AM654
+Date:   Thu, 11 Mar 2021 08:17:12 -0600
+Message-ID: <161547217307.16039.18227037879327861726.b4-ty@ti.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210305153926.3479-1-p.yadav@ti.com>
+References: <20210305153926.3479-1-p.yadav@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On Fri, 5 Mar 2021 21:09:23 +0530, Pratyush Yadav wrote:
+> Now that the OSPI controller driver and the SPI NOR core have support
+> for 8D-8D-8D mode, the device tree can be updated to allow Octal DTR
+> transactions.
+> 
+> Pratyush Yadav (3):
+>   arm64: dts: ti: k3-j721e-som-p0: Enable 8D-8D-8D mode on OSPI
+>   arm64: dts: ti: am654-base-board: Enable 8D-8D-8D mode on OSPI
+>   arm64: dts: ti: k3-j7200-som-p0: Add nodes for OSPI0
+> 
+> [...]
 
-I have a server where sensors-detecte gives:
-Some Super I/O chips contain embedded sensors. We have to write to
-standard I/O ports to probe them. This is usually safe.
-Do you want to scan for Super I/O sensors? (YES/no): 
-Probing for Super-I/O at 0x2e/0x2f
-Trying family `National Semiconductor/ITE'...               Yes
-Found unknown chip with ID 0x0404
+Hi Pratyush Yadav,
 
-I have tried to search on the motherboard but didnt find any visible NS nor ITE chip. (could it be embeded in chipset or BMC for example ?)
-Furthermore, with another OS (a buildroot with more recent kernel), sensors-detect give that the ID is 0x0101.
-Any hope there is a real hwmon chip behind ?
 
-Regards
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
+
+[1/3] arm64: dts: ti: k3-j721e-som-p0: Enable 8D-8D-8D mode on OSPI
+      commit: 4c20ee99dd1a36ab89c6a8c51ed25e9328d8a8cc
+[2/3] arm64: dts: ti: am654-base-board: Enable 8D-8D-8D mode on OSPI
+      commit: 7c172b30a540644fa53051e947d6712be5d6d6ce
+[3/3] arm64: dts: ti: k3-j7200-som-p0: Add nodes for OSPI0
+      commit: efbdf2e9183bd5e75c64d251c6b673ca61ea01b3
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
