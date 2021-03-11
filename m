@@ -2,60 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40849337931
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 606B833793E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234492AbhCKQWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:22:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234172AbhCKQWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:22:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEB776146B;
-        Thu, 11 Mar 2021 16:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615479728;
-        bh=1VYaodho3Fb2my+EoZ2QcmI2TzkSbTeXP60JfAHZD8E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LMKLdG1n8750gfq5NUbVfRcgOwLwtLSBp3+oVjApFw4OYSxxjnjWcqHa03ztA92Lz
-         aIt3vMqS5PAIsqZ/1Tc5fgLYV01t5Qpa1vW/trKAd1UbcPQHhuHQQJyRhoOmHN+9FE
-         CwQFfFya4qUmSQ+mjHGeeHKoSJNPNZJp3O2uOR+PJKFSW5ItcWOZBHoGHMEsX6krZu
-         7aA2bw3TkZPz3opFzfInaDpCUrGBjXnzjSRj6mBdmfms6NdwbP2xM1rlIivbNrhOnZ
-         rIy1RttdU7npdm8PONdNhLosyN+ckCZnw1kWirSPCqXBI10DjY5YUnSEuezjQeLpze
-         P3xanJ9ns49jw==
-Date:   Thu, 11 Mar 2021 16:22:01 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
-Subject: Re: [PATCH v4 15/34] arm64: asm: Provide set_sctlr_el2 macro
-Message-ID: <20210311162201.GE31206@willie-the-truck>
-References: <20210310175751.3320106-1-qperret@google.com>
- <20210310175751.3320106-16-qperret@google.com>
+        id S234527AbhCKQYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:24:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234580AbhCKQYG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:24:06 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA9CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:24:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=exR+xERV3ojcQqtp1j0CKhkbLxukivv9ZQ+vpw6IcR0=; b=sor4KBFsMgwGYPobUwV20byRF6
+        nBo+e/5ydiYY7zAVnWIC7bmIw/77x1crliFWRtXap/kK1cXup1NcCnY4Y7aEUM/Y9V424KOMOsU6B
+        UH8KjHCWcb6E7RUaEwvpfJzQFRwP4JYXoQ7RHAGOdzcnOU2wL9nxu/mopE+YSdk4dFcRRmB2X0ki0
+        E2ZCW/N9/LPg2PBknxSeOWa0yTFRC8KcHTB6OAtff6aan5rINwoWkVU5u3UpOlnN0jZNfDByV8mQF
+        c2topVR7aDG+eIu78x5P89Nf+uOqbkbmscM3kJ2ZvpPTLnDU7Ya4cD9E0WF1J0lnAw3hOmQXnfXPT
+        4YeMVTDA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKO6D-007jCd-AU; Thu, 11 Mar 2021 16:23:48 +0000
+Date:   Thu, 11 Mar 2021 16:23:45 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hughd@google.com,
+        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
+        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
+        dingtianhong@huawei.com, chenweilong@huawei.com,
+        rui.xiang@huawei.com
+Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
+Message-ID: <20210311162345.GW3479805@casper.infradead.org>
+References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
+ <20210304074053.65527-3-zhouguanghui1@huawei.com>
+ <20210308210225.GF3479805@casper.infradead.org>
+ <YEc5iI+ZP7dWr2fC@dhcp22.suse.cz>
+ <20210309123255.GI3479805@casper.infradead.org>
+ <YEdyJ+ZK2l7tu0rw@dhcp22.suse.cz>
+ <YEnWrg2XFwZ2PR0N@dhcp22.suse.cz>
+ <YEo1gz6wuYl1Fuqt@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310175751.3320106-16-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YEo1gz6wuYl1Fuqt@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:57:32PM +0000, Quentin Perret wrote:
-> We will soon need to turn the EL2 stage 1 MMU on and off in nVHE
-> protected mode, so refactor the set_sctlr_el1 macro to make it usable
-> for that purpose.
+On Thu, Mar 11, 2021 at 10:21:39AM -0500, Johannes Weiner wrote:
+> On Thu, Mar 11, 2021 at 09:37:02AM +0100, Michal Hocko wrote:
+> > Johannes, Hugh,
+> > 
+> > what do you think about this approach? If we want to stick with
+> > split_page approach then we need to update the missing place Matthew has
+> > pointed out.
 > 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/assembler.h | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
+> I find the __free_pages() code quite tricky as well. But for that
+> reason I would actually prefer to initiate the splitting in there,
+> since that's the place where we actually split the page, rather than
+> spread the handling of this situation further out.
 
-Acked-by: Will Deacon <will@kernel.org>
+Mmm.  The thing is, we don't actually split the page because it was
+never compound.  I don't know whether anybody actually does this,
+but it's legitimate to write:
 
-Will
+	struct page *p = alloc_pages(GFP_KERNEL, 2);
+
+	free_unref_page(p + 1);
+	free_unref_page(p + 3);
+	free_unref_page(p + 2);
+	__free_page(p);
+
+The good news is that I recently made free_unref_page() local to
+mm/internal.h, so we don't need to worry about device drivers doing this.
+As far as I can tell, we don't have any exposure to this kind of thing
+today through functions exported from mm, but I might have missed
+something.
+
+I'd really like to get rid of non-compound high-order pages.  Slab,
+filesystems and anonymous memory all use compound pages.  I think
+it's just crusty old device drivers that don't.  And alloc_pages_exact(),
+of course, but that's kind of internal.
+
+> The race condition shouldn't be hot, so I don't think we need to be as
+> efficient about setting page->memcg_data only on the higher-order
+> buddies as in Willy's scratch patch. We can call split_page_memcg(),
+> which IMO should actually help document what's happening to the page.
+
+I'm cool with that.  I agree, this is not a performance case!
+
+> I think that function could also benefit a bit more from step-by-step
+> documentation about what's going on. The kerneldoc is helpful, but I
+> don't think it does justice to how tricky this race condition is.
+
+Always good to have other people read over your explanation ...
+the kernel-doc could probably be simplified as a result.
+
