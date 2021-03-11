@@ -2,56 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D45336F06
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D870336F0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhCKJkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:40:35 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:33422 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231960AbhCKJkJ (ORCPT
+        id S232059AbhCKJlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:41:11 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:52087 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232033AbhCKJkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:40:09 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0URS8VN4_1615455602;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0URS8VN4_1615455602)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 11 Mar 2021 17:40:07 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] powerpc/prom: remove unneeded semicolon
-Date:   Thu, 11 Mar 2021 17:40:01 +0800
-Message-Id: <1615455601-117447-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 11 Mar 2021 04:40:43 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lKHnq-0003Fh-7B; Thu, 11 Mar 2021 09:40:22 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Guo Ren <guoren@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ftrace: Fix spelling mistake "disabed" -> "disabled"
+Date:   Thu, 11 Mar 2021 09:40:22 +0000
+Message-Id: <20210311094022.5978-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+From: Colin Ian King <colin.king@canonical.com>
 
-./arch/powerpc/kernel/prom_init.c:2986:2-3: Unneeded semicolon.
+There is a spelling mistake in a comment, fix it.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- arch/powerpc/kernel/prom_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/csky/kernel/probes/ftrace.c  | 2 +-
+ arch/riscv/kernel/probes/ftrace.c | 2 +-
+ arch/x86/kernel/kprobes/ftrace.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-index ccf77b9..41ed7e3 100644
---- a/arch/powerpc/kernel/prom_init.c
-+++ b/arch/powerpc/kernel/prom_init.c
-@@ -2983,7 +2983,7 @@ static void __init fixup_device_tree_efika_add_phy(void)
- 				" 0x3 encode-int encode+"
- 				" s\" interrupts\" property"
- 			" finish-device");
--	};
-+	}
+diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+index ae2b1c7b3b5c..ef2bb9bd9605 100644
+--- a/arch/csky/kernel/probes/ftrace.c
++++ b/arch/csky/kernel/probes/ftrace.c
+@@ -9,7 +9,7 @@ int arch_check_ftrace_location(struct kprobe *p)
+ 	return 0;
+ }
  
- 	/* Check for a PHY device node - if missing then create one and
- 	 * give it's phandle to the ethernet node */
+-/* Ftrace callback handler for kprobes -- called under preepmt disabed */
++/* Ftrace callback handler for kprobes -- called under preepmt disabled */
+ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
+ {
+diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
+index 2dfb33fdac74..17ca5e923bb0 100644
+--- a/arch/riscv/kernel/probes/ftrace.c
++++ b/arch/riscv/kernel/probes/ftrace.c
+@@ -2,7 +2,7 @@
+ 
+ #include <linux/kprobes.h>
+ 
+-/* Ftrace callback handler for kprobes -- called under preepmt disabed */
++/* Ftrace callback handler for kprobes -- called under preepmt disabled */
+ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
+ {
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index 373e5fa3ce1f..51c7f5271aee 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -12,7 +12,7 @@
+ 
+ #include "common.h"
+ 
+-/* Ftrace callback handler for kprobes -- called under preepmt disabed */
++/* Ftrace callback handler for kprobes -- called under preepmt disabled */
+ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
+ {
 -- 
-1.8.3.1
+2.30.2
 
