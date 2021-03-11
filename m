@@ -2,108 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706393380F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC7A338104
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhCKWxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 17:53:36 -0500
-Received: from mga05.intel.com ([192.55.52.43]:44677 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhCKWxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 17:53:18 -0500
-IronPort-SDR: IMqukzmAhFaQgJrcBIODLP5YjqoPPS50dfdBkSlQZGMQ1LeY7TEOth9Ftb/Mr0H+9UIDJ3fInh
- laelCMkgQdMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="273792716"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="273792716"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 14:53:14 -0800
-IronPort-SDR: BnU1jTB+qrvPQr9QBSa1HELuTsIJnS5daNkpyismq4WJ6r58rUNJ+KBsbgbfqudFcqDQrCbdJE
- AMHvxLTGZ7SA==
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="448439603"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 14:53:14 -0800
-Date:   Thu, 11 Mar 2021 14:55:34 -0800
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [RFC PATCH 18/18] ioasid: Add /dev/ioasid for userspace
-Message-ID: <20210311145534.6fe9bb9a@jacob-builder>
-In-Reply-To: <20210310192301.GC2356281@nvidia.com>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1614463286-97618-19-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210310192301.GC2356281@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230084AbhCKXAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:00:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229756AbhCKW7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 17:59:45 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B3FC061574;
+        Thu, 11 Mar 2021 14:59:45 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id a1so4323325ljp.2;
+        Thu, 11 Mar 2021 14:59:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=avlbXSr4K9M39N0jqaeKNrXLupfW89I8m5I+d07Bgy4=;
+        b=gSm/nnvOGdZI6sFzwqZWh7HPpHbVQ0AGQOGF88WM0Pela6vrDZzJUNLv5HK6jb8eC4
+         QgNaivc/TgEHWr59w9pEjnXbRGnb46GW/+tiT0hSWOLO3AYfVG2r7WTmVyLKeATZrmcI
+         I9tCay7UHBkkX0c5STT398fa+lKwdnTjalamlHXmcFPIVpYdQhnT7iEJh1PLQ4s/RhwI
+         JBOCJX5oGavWEpLkoJ5fvZ6J07eXz5NahPanlq0jW7e1I4szLU4yfG8N4fm5znK+yg/G
+         l46HnRBeD2e5O9qdQ7W4XzMi7Za7vMhxSRTBUA+lSjdEAzCronHGBcL3vl3FIYpIa1nr
+         b2WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=avlbXSr4K9M39N0jqaeKNrXLupfW89I8m5I+d07Bgy4=;
+        b=ABWH03RMp//vpEQkc87QjhnVZyZVYClnDUtvAdJxY8+DsGJOsbPfR4jYRtA4zGbfu+
+         3DRk/X52QxI2/epuC/Yz8PQlgfjJHEfk7l7dTHbmH+CJ6nWLlXfTooPERDtUimYpm+Nq
+         anFYz47P00cH2TSxwYyRKpmqo5oYKaltGIP4YIcx6kyCvo2YrWsvv+AfOROIItX/XX2d
+         ZpW2hvFUeHiKaq1m/nEkud3xkb8i6dHEUE+n/rgAQPuIz8QXg79TKdwycS6u05WAx3bp
+         70QDG0+jJ1n1nNSnLwljoSV5CTBB6BatHoQwXsxU6vQR97RQKS2eYV8co2Xq4Mpa3J8X
+         YLbA==
+X-Gm-Message-State: AOAM533AGTp1AyOHVMH65OoDjN3b88q4u702+40ilINX9M2jIL+kvGE2
+        a6SVyK/Cs4G0PrOL2phDPQ7KFQkPAcvSUoH35Ek=
+X-Google-Smtp-Source: ABdhPJwmhJosghyrEdq+XnttmxhhVUrZ9GssCtr29C+dzlIUcL+eJ6LR7/kKe00gR5wIB5PAIYqgQARgc/gIEoUt2Wc=
+X-Received: by 2002:a2e:6e0c:: with SMTP id j12mr652702ljc.365.1615503583894;
+ Thu, 11 Mar 2021 14:59:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210311221946.1319924-1-ribalda@chromium.org>
+ <20210311221946.1319924-4-ribalda@chromium.org> <YEqevkojuvniSTFS@pendragon.ideasonboard.com>
+In-Reply-To: <YEqevkojuvniSTFS@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date:   Thu, 11 Mar 2021 23:59:27 +0100
+Message-ID: <CAPybu_2GF96ODzrkycAixiRg+L_BMCF40uW5jBhErND8v6STjA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] media: uvcvideo: Return -EIO for control errors
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+Hi Laurent
 
-Thanks for the review.
+On Thu, Mar 11, 2021 at 11:53 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> Thank you for the patch.
 
-On Wed, 10 Mar 2021 15:23:01 -0400, Jason Gunthorpe <jgg@nvidia.com> wrote:
+Thank you :)
+>
+> On Thu, Mar 11, 2021 at 11:19:43PM +0100, Ricardo Ribalda wrote:
+> > The device is doing something unspected with the control. Either because
+> > the protocol is not properly implemented or there has been a HW error.
+> >
+> > Fixes v4l2-compliance:
+> >
+> > Control ioctls (Input 0):
+> >                 fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
+> >         test VIDIOC_G/S_CTRL: FAIL
+> >                 fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
+> >         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+>
+> The change looks good to me.
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> Which of the error codes below do you get with your camera, and for
+> which control ?
 
-> On Sat, Feb 27, 2021 at 02:01:26PM -0800, Jacob Pan wrote:
-> 
-> > +/* -------- IOCTLs for IOASID file descriptor (/dev/ioasid) -------- */
-> > +
-> > +/**
-> > + * IOASID_GET_API_VERSION - _IO(IOASID_TYPE, IOASID_BASE + 0)
-> > + *
-> > + * Report the version of the IOASID API.  This allows us to bump the
-> > entire
-> > + * API version should we later need to add or change features in
-> > incompatible
-> > + * ways.
-> > + * Return: IOASID_API_VERSION
-> > + * Availability: Always
-> > + */
-> > +#define IOASID_GET_API_VERSION		_IO(IOASID_TYPE,
-> > IOASID_BASE + 0)  
-> 
-> I think this is generally a bad idea, if you change the API later then
-> also change the ioctl numbers and everything should work out
-> 
-> eg use the 4th argument to IOC to specify something about the ABI
-> 
-Let me try to understand the idea, do you mean something like this?
-#define IOASID_GET_INFO _IOC(_IOC_NONE, IOASID_TYPE, IOASID_BASE + 1,
-sizeof(struct ioasid_info))
+Bus 001 Device 003: ID 05c8:03a2 Cheng Uei Precision Industry Co., Ltd
+(Foxlink) XiaoMi USB 2.0 Webcam
 
-If we later change the size of struct ioasid_info, IOASID_GET_INFO would be
-a different ioctl number. Then we will break the existing user space that
-uses the old number. So I am guessing you meant we need to have a different
-name also. i.e.
-
-#define IOASID_GET_INFO_V2 _IOC(_IOC_NONE, IOASID_TYPE, IOASID_BASE + 1,
-sizeof(struct ioasid_info_v2))
-
-We can get rid of the API version, just have individual IOCTL version.
-Is that right?
-
-> Jason
+info: checking extended control 'White Balance Temperature' (0x0098091a)
+Control error 7
+info: checking extended control 'Exposure (Absolute)' (0x009a0902)
+Control error 6
 
 
-Thanks,
+>
+> > ---
+> >  drivers/media/usb/uvc/uvc_video.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > index f2f565281e63..25fd8aa23529 100644
+> > --- a/drivers/media/usb/uvc/uvc_video.c
+> > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > @@ -112,6 +112,11 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
+> >       case 5: /* Invalid unit */
+> >       case 6: /* Invalid control */
+> >       case 7: /* Invalid Request */
+> > +             /*
+> > +              * The firmware has not properly implemented
+> > +              * the control or there has been a HW error.
+> > +              */
+> > +             return -EIO;
+> >       case 8: /* Invalid value within range */
+> >               return -EINVAL;
+> >       default: /* reserved or unknown */
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
-Jacob
+
+
+-- 
+Ricardo Ribalda
