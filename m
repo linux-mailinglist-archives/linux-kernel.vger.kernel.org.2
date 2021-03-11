@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9496433793A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DC53378AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234555AbhCKQXo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 11:23:44 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:57364 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234176AbhCKQXN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:23:13 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id ACE95316E63;
-        Thu, 11 Mar 2021 12:03:01 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 1LJx8AKyjrxi; Thu, 11 Mar 2021 12:03:01 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id C6E3E3159ED;
-        Thu, 11 Mar 2021 11:56:14 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 8w-WkBU8zH-8; Thu, 11 Mar 2021 11:56:14 -0300 (-03)
-Received: from [10.208.85.246] (89-200-33-201.mobile.kpn.net [89.200.33.201])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id EC7B73159E3;
-        Thu, 11 Mar 2021 11:36:53 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        id S234356AbhCKQCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:02:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234418AbhCKQCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:02:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 402CA64FDD;
+        Thu, 11 Mar 2021 16:02:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615478525;
+        bh=k5Mt9Qg9aBLbjUdebuqcA0/O+qs6ydLJzvh3zLJ9niA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=asvfWEmRsr+DqDZNyr2S+UZNW58YvwhqdM66MSke1wE6gY3SsOw3zraq7u+bjslnB
+         8hZT7z/PEmV5nT7/PXtFhqDTS4IWH1tMMnl7Raz9XSFsc/nN1qu5zeEy5DQY5ardn9
+         gm3a/tSCbRbEnkDFD3x20EXp1YiUlebjGo+3c2DrmVXGC6NBvIfoXNKTgQ8iDgrLsP
+         WPTGMzlSUc1KNxK27EX7j5L9K1Iix0nUaVD2hgwu8YMPqXbEvKoeOjUPz33zWpweAe
+         Wb2iQ4F8Q298TbIygnWKpPEQS+VuVL5xw+DQbsi0aYAwgKyHlHJLicrGcq/gWl5k3/
+         46eigJX9Epi5A==
+Date:   Thu, 11 Mar 2021 16:00:52 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     spujar@nvidia.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
+        thierry.reding@gmail.com
+Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
+Message-ID: <20210311160052.GF4962@sirena.org.uk>
+References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
+ <20210309144156.18887-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Thu, 11 Mar 2021 15:36:57 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210311143653.EC7B73159E3@mail.curtumepanorama.com.br>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
+Content-Disposition: inline
+In-Reply-To: <20210309144156.18887-1-michael@walle.cc>
+X-Cookie: I'm rated PG-34!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
 
-Sir/Madam,
+--eDB11BtaWSyaBkpc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-CONGRATULATIONS!!!
+On Tue, Mar 09, 2021 at 03:41:56PM +0100, Michael Walle wrote:
+> Hi,
+>=20
+> > If "clocks =3D <&xxx>" is specified from the CPU or Codec component
+> > device node, the clock is not getting enabled. Thus audio playback
+> > or capture fails.
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 9th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+> This actually breaks sound on my board
+> (arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts).
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+Please, when sending replies format the subject line like normal replies
+with a "Re: " at the start so people can tell it's a reply to an
+existing discussion and not a new patch.
 
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+--eDB11BtaWSyaBkpc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+-----BEGIN PGP SIGNATURE-----
 
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBKPrQACgkQJNaLcl1U
+h9Bz8wf/TDlUuWpXDfOMG5KASnW4G2LE4KydQVmKQgJJQ9RT3sRl9JYT7iCFpfVx
+nROTNxkE6gbvTO8YCwzPOKPqDgTM5GvWjxAgoxAEDf0Zw6RnoWeBxDxp5IeahvRG
+e0i0dlSczfB1KOytXcjTSg1l6HMl41kUpsS8mTuEuIQv23rGbLfykAsXFHxvIbIt
+y0sZUgwflgw0dC8CtUObQWnYnepiUvCYoCXwv66lvIW7nnLu+gIPjjAlB3SOZDrc
+yM9sBXsvhLSAmKiGL3FcvqDV401wrMG2poryA9BHvAH50rVdHgyiaxSEOJWn1weF
+AmzzM+gHNpzb5iWKDYON4aX0ZEh+OA==
+=z+cv
+-----END PGP SIGNATURE-----
 
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+--eDB11BtaWSyaBkpc--
