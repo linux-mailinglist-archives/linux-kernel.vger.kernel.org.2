@@ -2,111 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B34337D05
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BD5337D0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbhCKS5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:57:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
+        id S230259AbhCKS6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:58:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhCKSzd (ORCPT
+        with ESMTP id S230033AbhCKS5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:55:33 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B340C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:55:33 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id o9so23072244iow.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:55:33 -0800 (PST)
+        Thu, 11 Mar 2021 13:57:47 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA25C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:56:16 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id u20so3515669lja.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:56:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=stRVno9z/DCS0wZx7I98P8EWMS6yZuT8s6v7jBQ49hM=;
-        b=BMoGUsO4GNIbTwMGxgFtKIi3ncJzrgl+1h85yF0gmLnayDHFLpLPkhRm6g3mxSD7xL
-         +E6IVqxRiF49V91lnMdlLbzeDKbqvcmBoEz3F9tFSCrzgK0f7cd2Y6G/AU3DZqFcJ67M
-         Q+73CxlhW5rv7fcbNMQhEHe2fvGcle/qvBlzc=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sj72PiFPhSmQxSCZm5N0lEERJUa0o1oQN/crzfRE0Qs=;
+        b=lkz8vuw+3RRifWr422QzbO45MGu0YpLaTqDPw6zXOM0Kgh3BTWvFlC0I4tyDT2I7zh
+         Whc+nGbPZwNmlFMCz7WWW03OKrGjmweRxnhxJkPtvkZfS/Z5JLP/ScwsxtLSNoL0YelN
+         f9C/Q4V3h83yUbI95f/weBKNK1ykfxKYrcHjvTB5/OJ1InzrGj0iigPiuFxDDoWbGXfg
+         nnhJp4s98wmUvlSa7/HrB0hc19I23IkDmTSZ5LeXS5R9bNzPRZiltE2G9OBLZ3+569y2
+         eccfSZ5YUUPqTHNWeMs/wqwF/fvjj5edbqGrQxz9IWsWGXyajrClDfyJ92rvzDb8Xsda
+         lNpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=stRVno9z/DCS0wZx7I98P8EWMS6yZuT8s6v7jBQ49hM=;
-        b=nNAFzU40cAaXZgF3fN6Es7X65xAw6a5wpT8YIsa0lMPf9ObAPh5MrnG4puiiYQtRim
-         kVKksjCJDNM+fueROBBljdBzWwuAseSMcNJxuscecXURf95N4CFreBA8y0sTYIcaDmKF
-         9V6F9whReP1r7S4E9UcAhLg5zBaHXJAm+ljhZGvZihryUqBtR1i8rxLVhvZ5wEMyfhAo
-         J8CDSHNJOqNJpIuNbtO5jR0xjDDLpzT/VP0YL2LV4MkPQ4Js4uYKhjD2kA+vTtimOup6
-         RuX6OpYyYJz+z8fU8ie50fEZ/ZVMblPfZkLjfY90d9kiot1Co0QZnr7hXC6GWLuS2sbo
-         y5CQ==
-X-Gm-Message-State: AOAM533Bcu2ZJowWZ1fOIT+MKquPxgnVmAGW7ehKDrXkvqRRuiN+hEtM
-        Q9/Gt9Fq22AHVq5aWBZ2vIe7wu37TkDQFQ==
-X-Google-Smtp-Source: ABdhPJw4udqsFDFZUWvVbNULF5TWf0ztq74YOCcgDSPWaVveOnaqhlFTiqS51B7eMoc+nsI6kywBog==
-X-Received: by 2002:a6b:1415:: with SMTP id 21mr7585518iou.147.1615488932245;
-        Thu, 11 Mar 2021 10:55:32 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v4sm1691239ilo.26.2021.03.11.10.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 10:55:31 -0800 (PST)
-Subject: Re: [PATCH][next] usbip: Fix incorrect double assignment to
- udc->ud.tcp_rx
-To:     Colin King <colin.king@canonical.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210311104445.7811-1-colin.king@canonical.com>
- <8862cf33-dc2b-1d62-d7ef-56f34c5b358d@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <89eb8a32-8d43-cf0c-d460-9c25655141b4@linuxfoundation.org>
-Date:   Thu, 11 Mar 2021 11:55:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sj72PiFPhSmQxSCZm5N0lEERJUa0o1oQN/crzfRE0Qs=;
+        b=Mn2eaExGd4nvNcq/WbwgW5ieJLiEUviUlEr3VDYwlMgYe78bQB8D0+wii1PXxxVfNF
+         WrVA2fWEIsyCVhnPnEgblfS03uTv83HYYzDskjS79eFWQ1mRy7+lpwNeEQKF89UgKjAw
+         ytdZQQ89aqEsz7NAQnkOxwEWKAv/9P1sKHrHFaoPHtRjR2/UBQhyQJCkeP8Bf5R5WlCP
+         Y/zfbpOlC8Hnp+e+SyR50Y4Psk8u79Qr/aTRJ5hnqjFdvZfpnZUZU5CCOeP2ORwTyn42
+         8asbZ38eYHND1bYDP65S4Fhuus3eN7O4fEeHKELF0OC5DNCPqMyGthdGroE4xFspU9Yq
+         uUOw==
+X-Gm-Message-State: AOAM531mguTy02JcPxG571phLeYiyHjWAHReRDcjd8FRGtfz02VBIPyq
+        wr8UIAIfjJkJ4T0AAE+OX+VhNvYpIMV4zBLh1hu2Ow==
+X-Google-Smtp-Source: ABdhPJwU6JRSU7Tk++yDCpBTF31gHC9aFT1b0YhHVcrFFp/ZSeIof9AdMq5xh6RLX7SXeS8+NEaksDf3Di+KXZVGM6A=
+X-Received: by 2002:a2e:5c02:: with SMTP id q2mr171505ljb.81.1615488974746;
+ Thu, 11 Mar 2021 10:56:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8862cf33-dc2b-1d62-d7ef-56f34c5b358d@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210309100717.253-1-songmuchun@bytedance.com> <20210309100717.253-2-songmuchun@bytedance.com>
+In-Reply-To: <20210309100717.253-2-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 11 Mar 2021 10:56:02 -0800
+Message-ID: <CALvZod61mTEK2L_a9a+t10S4XWu-F+-h8SNCaG5UbC+U97v=aQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] mm: memcontrol: introduce obj_cgroup_{un}charge_pages
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/11/21 7:16 AM, Shuah Khan wrote:
-> On 3/11/21 3:44 AM, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Currently udc->ud.tcp_rx is being assigned twice, the second assignment
->> is incorrect, it should be to udc->ud.tcp_tx instead of rx. Fix this.
->>
->> Addresses-Coverity: ("Unused value")
->> Fixes: 46613c9dfa96 ("usbip: fix vudc usbip_sockfd_store races leading 
->> to gpf")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>   drivers/usb/usbip/vudc_sysfs.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/usb/usbip/vudc_sysfs.c 
->> b/drivers/usb/usbip/vudc_sysfs.c
->> index a3ec39fc6177..7383a543c6d1 100644
->> --- a/drivers/usb/usbip/vudc_sysfs.c
->> +++ b/drivers/usb/usbip/vudc_sysfs.c
->> @@ -174,7 +174,7 @@ static ssize_t usbip_sockfd_store(struct device *dev,
->>           udc->ud.tcp_socket = socket;
->>           udc->ud.tcp_rx = tcp_rx;
->> -        udc->ud.tcp_rx = tcp_tx;
->> +        udc->ud.tcp_tx = tcp_tx;
->>           udc->ud.status = SDEV_ST_USED;
->>           spin_unlock_irq(&udc->ud.lock);
->>
-> 
-> Thank you for finding and fixing this. This is my bad.
-> 
-> Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-> 
+On Tue, Mar 9, 2021 at 2:09 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> We know that the unit of slab object charging is bytes, the unit of
+> kmem page charging is PAGE_SIZE. If we want to reuse obj_cgroup APIs
+> to charge the kmem pages, we should pass PAGE_SIZE (as third parameter)
+> to obj_cgroup_charge(). Because the size is already PAGE_SIZE, we can
+> skip touch the objcg stock. And obj_cgroup_{un}charge_pages() are
+> introduced to charge in units of page level.
+>
+> In the later patch, we also can reuse those two helpers to charge or
+> uncharge a number of kernel pages to a object cgroup. This is just
+> a code movement without any functional changes.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
 
-Applies to stables as well since the 46613c9dfa96 is marked for
-stables.
-
-thanks,
--- Shuah
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
