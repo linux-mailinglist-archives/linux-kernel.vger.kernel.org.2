@@ -2,135 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFD33373A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A853373A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbhCKNTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:19:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbhCKNS4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:18:56 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A135C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:18:56 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lKLDI-0008Jt-7H; Thu, 11 Mar 2021 14:18:52 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lKLDE-0002l3-Lz; Thu, 11 Mar 2021 14:18:48 +0100
-Date:   Thu, 11 Mar 2021 14:18:45 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        wahrenst@gmx.net, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        linux-clk@vger.kernel.org, sboyd@kernel.org,
-        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
-        andy.shevchenko@gmail.com
-Subject: Re: [PATCH v7 11/11] pwm: Add Raspberry Pi Firmware based PWM bus
-Message-ID: <20210311131845.x3zybis3x2liu2uk@pengutronix.de>
-References: <20210118123244.13669-1-nsaenzjulienne@suse.de>
- <20210118123244.13669-12-nsaenzjulienne@suse.de>
- <20210310115041.s7tzvgdpksws6yss@pengutronix.de>
- <fc60ac5ab9760d791aa5e184258accf53e07ce1e.camel@suse.de>
+        id S233417AbhCKNVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:21:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233014AbhCKNVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 08:21:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71DCE64ECB;
+        Thu, 11 Mar 2021 13:21:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615468910;
+        bh=vm7SODZNT796hkkn731NJkDFfI+qPh4Y+bZ9US/HUrA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OFwtyKgNKC4D7mb+Dkaruh8AhuZxSKhmEl1rNMmWFAvCdxyMNjl7snccflvL10Olb
+         BxPjA8OU6TQy1iPpPZPIDukOCCll4RXvBzez6u5ax5MVVc4xBWd/GKknkAIS3PeLjY
+         SU5urUawBpLXA5v7zCokEdOv1gVD9RR/uZH7TLyY=
+From:   gregkh@linuxfoundation.org
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.261
+Date:   Thu, 11 Mar 2021 14:21:44 +0100
+Message-Id: <161546890424630@kroah.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jhlssdtxmegt66au"
-Content-Disposition: inline
-In-Reply-To: <fc60ac5ab9760d791aa5e184258accf53e07ce1e.camel@suse.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
---jhlssdtxmegt66au
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm announcing the release of the 4.4.261 kernel.
 
-Hello Nicolas,
+All users of the 4.4 kernel series must upgrade.
 
-On Thu, Mar 11, 2021 at 02:01:00PM +0100, Nicolas Saenz Julienne wrote:
-> On Wed, 2021-03-10 at 12:50 +0100, Uwe Kleine-K=F6nig wrote:
-> > On Mon, Jan 18, 2021 at 01:32:44PM +0100, Nicolas Saenz Julienne wrote:
->=20
-> [...]
->=20
-> > > +	/*
-> > > +	 * This sets the default duty cycle after resetting the board, we
-> > > +	 * updated it every time to mimic Raspberry Pi's downstream's driver
-> > > +	 * behaviour.
-> > > +	 */
-> > > +	ret =3D raspberrypi_pwm_set_property(rpipwm->firmware, RPI_PWM_DEF_=
-DUTY_REG,
-> > > +					   duty_cycle);
-> > > +	if (ret) {
-> > > +		dev_err(chip->dev, "Failed to set default duty cycle: %pe\n",
-> > > +			ERR_PTR(ret));
-> > > +		return ret;
-> >=20
-> > This only has an effect for the next reboot, right?
->=20
-> It effects all reboots until it's further changed.
->=20
-> > If so I wonder if it is a good idea in general. (Think: The current PWM
-> > setting enables a motor that makes a self-driving car move at 100 km/h.
-> > Consider the rpi crashes, do I want to car to pick up driving 100 km/h =
-at
-> > power up even before Linux is up again?)
->=20
-> I get your point. But this isn't used as a general purpose PWM. For now t=
-he
-> interface is solely there to drive a PWM fan that's arguably harmless. Th=
-is
-> doesn't mean that the RPi foundation will not reuse the firmware interfac=
-e for
-> other means in the future. In such case we can always use a new DT compat=
-ible
-> and bypass this feature (the current DT string is
-> 'raspberrypi,firmware-poe-pwm', which is specific to this use-case).
->=20
-> My aim here is to be on par feature wise with RPi's downstream implementa=
-tion.
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Just because the downstream kernel does it should not be the (single)
-reason to do that. My gut feeling is: For a motor restoring the PWM
-config on reboot is bad and for a fan it doesn't really hurt if it
-doesn't restart automatically. So I'd prefer to to drop this feature.
+thanks,
 
-Best regards
-Uwe
+greg k-h
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+------------
 
---jhlssdtxmegt66au
-Content-Type: application/pgp-signature; name="signature.asc"
+ Makefile                        |    2 
+ drivers/block/rsxx/core.c       |    8 ++-
+ drivers/md/dm-table.c           |   83 +++++++++++++++++++++++++---------------
+ drivers/pci/quirks.c            |    3 +
+ drivers/platform/x86/acer-wmi.c |    8 +++
+ kernel/futex.c                  |    4 +
+ sound/pci/ctxfi/cthw20k2.c      |    2 
+ 7 files changed, 73 insertions(+), 37 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+Bjorn Helgaas (1):
+      PCI: Add function 1 DMA alias quirk for Marvell 9215 SATA controller
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBKGLIACgkQwfwUeK3K
-7AmVtwf/VJTFZ6KfFb0/nBuZLz71q/mBcEZrZwWPlKFMsb9C2jLRRJpnJ/1+zUoM
-Q41GHxf9j/O0tW/e7Hl8gR/ri8qMtJN6a4LOI31Icx7b4d3jFuiWVSIg+9UfhLwN
-Oq6m1B3VzzUmL4LWK+9qsfHwKJi/1FozbnMFFDCs7tnN4b9OmmZn2JkGNInxK5FT
-NQyA3wL9Pv+HyVliXk4948HvKO73dzj9yZCVfY3cb/XTb3HADs5+kwa3IT+l/g74
-nFj5qaKNNR4+QUibzclk9PGoj63N2XsS6vDEsncDoV2QHtJumODIQat6920OyNqh
-UvNUyCqUmLZntZ28GK0jzSeX+Kz3IA==
-=DtDQ
------END PGP SIGNATURE-----
+Colin Ian King (1):
+      ALSA: ctxfi: cthw20k2: fix mask on conf to allow 4 bits
 
---jhlssdtxmegt66au--
+Dan Carpenter (1):
+      rsxx: Return -EFAULT if copy_to_user() fails
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.261
+
+Hans de Goede (1):
+      platform/x86: acer-wmi: Add new force_caps module parameter
+
+Jeffle Xu (1):
+      dm table: fix iterate_devices based device capability checks
+
+Thomas Schoebel-Theuer (2):
+      futex: fix irq self-deadlock and satisfy assertion
+      futex: fix spin_lock() / spin_unlock_irq() imbalance
+
