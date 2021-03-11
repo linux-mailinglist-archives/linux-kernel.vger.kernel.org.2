@@ -2,163 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921E1336E81
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17326336E82
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhCKJJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:09:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231834AbhCKJJW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:09:22 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859AAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:09:22 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id u4so1181319ljo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:09:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=qtec.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RnT+lPnIHBw/xRDsclmASuOvNjJ9ngFpJSmXHW9gT1s=;
-        b=LH0uuBBonQYeRw5PRypwMx3pqqtIVdxzggC6gcxg+8Fpd8x2nix9/7lRT5+jzm0UPx
-         MCspsVqaFPDjsy+63ETLGmuUlnp6dsGlWNsqApadi7qWKY9cIUGi0AlLwFkAPAT4uz7D
-         qRVolWJtwHagQiLm6gsOJ2xuXkZksMNT3jXwloZYMpmIFOBU8o11f3bK9fUcjGBZttYS
-         8RcTOHpkCWZm9fYQGw3tQyFTyN3TkDmCCsjUHr+Ydxg4pY7ef7+ThT2p0ZF1pNWO7bln
-         zEpU4WgnpJ4bBHRTlggPNCS/lCxrESMo2Fs5SI3B+6VbwF2mJvg2MXEy3HFEaM3gqc7J
-         4/RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RnT+lPnIHBw/xRDsclmASuOvNjJ9ngFpJSmXHW9gT1s=;
-        b=EPjo6UjdvftMgQpiZjyb2se+CvQjgam5jYi1uAR4lnE4oroaDD8tZMz8lXon97vGo1
-         NuMHHZikIPXP/uHl2Thhpl71Gg9kgM4jZSTYJ+YyLtCxfTgbnv7Tis+CnmqoIhyYF1TF
-         xGzBUDbNLmzwxz44Tkx73Nes2weW3ZeuH1Keq0Bu2nXx0psha2zD8RsCJzGB+RCVBHuq
-         RWo5GpAL3gwLCpi1HHXRQnmg3x11udfkNJku9kxku13tF+lkNYZ5P9Zgty7pegfkAaRy
-         8gCmGHvnHcu1p8xsL6YReY1xIv6U6JqPK24zG5gQVhWud5uGG/ORSWsQTkcAkaq/YCk2
-         k4Jg==
-X-Gm-Message-State: AOAM531W+XZV3Brgwuk8+KTIH5HsE7Fc+jUw9sHAkTFrKCGhmVkZ9C0o
-        GfhISIoqRMf96ZyscOQ9eeHjVQLNCtfL5GL31L86JA==
-X-Google-Smtp-Source: ABdhPJygCiPkPDqr0CqthkNvw/7NV0v7TWfyanbCIGUU8Z08ssP9bcbSuJn6t1JsPsFXX9SBpw2eJhIpt/fNi5u69OM=
-X-Received: by 2002:a2e:557:: with SMTP id 84mr4309802ljf.480.1615453760997;
- Thu, 11 Mar 2021 01:09:20 -0800 (PST)
+        id S231934AbhCKJJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:09:38 -0500
+Received: from www.zeus03.de ([194.117.254.33]:43206 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231866AbhCKJJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 04:09:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=L1ed2zomMI+TARiNMALoHPaEzVg
+        e4cxTqlwifdh+5MA=; b=Rw1cAStDoJq9FfjXpQKhmmOSuFMtOG7dY88d1p6Whd7
+        98T7jxkCFPNAhqN2td8gOxP28UEHueAx9YF6sQ5FiQ4NQwFkA4ECQCNz3RnaPJ6S
+        F0s5LjuV5JgrgsY5MpkWQJ2dd9GGGSsIyAAExVpB9hZd6QsdCSUq80DdOLVJsCFQ
+        =
+Received: (qmail 4135014 invoked from network); 11 Mar 2021 10:09:26 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 11 Mar 2021 10:09:26 +0100
+X-UD-Smtp-Session: l3s3148p1@mJvdIz+9HswgARa4Rf6LAY0TkMkJSYgM
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Subject: [PATCH v2] dt-bindings: timer: renesas,cmt: add r8a779a0 CMT support
+Date:   Thu, 11 Mar 2021 10:09:18 +0100
+Message-Id: <20210311090918.2197-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210310163655.2591893-1-daniel@qtec.com> <CADnq5_PmbXBaziCEqRODb_DvtKaw9ucXXjkdmdj9N_R8P-9Jcw@mail.gmail.com>
-In-Reply-To: <CADnq5_PmbXBaziCEqRODb_DvtKaw9ucXXjkdmdj9N_R8P-9Jcw@mail.gmail.com>
-From:   Daniel Gomez <daniel@qtec.com>
-Date:   Thu, 11 Mar 2021 10:09:10 +0100
-Message-ID: <CAH1Ww+T4WwLzg_nnF=1sjm9LW9wCjFb0X9c=qmuubvMqJdW4PA@mail.gmail.com>
-Subject: Re: [PATCH]] drm/amdgpu/gfx9: add gfxoff quirk
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Huang Rui <ray.huang@amd.com>, Nirmoy Das <nirmoy.das@amd.com>,
-        Dennis Li <Dennis.Li@amd.com>, Monk Liu <Monk.Liu@amd.com>,
-        Yintian Tao <yttao@amd.com>, Guchun Chen <guchun.chen@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 at 18:06, Alex Deucher <alexdeucher@gmail.com> wrote:
->
-> On Wed, Mar 10, 2021 at 11:37 AM Daniel Gomez <daniel@qtec.com> wrote:
-> >
-> > Disabling GFXOFF via the quirk list fixes a hardware lockup in
-> > Ryzen V1605B, RAVEN 0x1002:0x15DD rev 0x83.
-> >
-> > Signed-off-by: Daniel Gomez <daniel@qtec.com>
-> > ---
-> >
-> > This patch is a continuation of the work here:
-> > https://lkml.org/lkml/2021/2/3/122 where a hardware lockup was discussed and
-> > a dma_fence deadlock was provoke as a side effect. To reproduce the issue
-> > please refer to the above link.
-> >
-> > The hardware lockup was introduced in 5.6-rc1 for our particular revision as it
-> > wasn't part of the new blacklist. Before that, in kernel v5.5, this hardware was
-> > working fine without any hardware lock because the GFXOFF was actually disabled
-> > by the if condition for the CHIP_RAVEN case. So this patch, adds the 'Radeon
-> > Vega Mobile Series [1002:15dd] (rev 83)' to the blacklist to disable the GFXOFF.
-> >
-> > But besides the fix, I'd like to ask from where this revision comes from. Is it
-> > an ASIC revision or is it hardcoded in the VBIOS from our vendor? From what I
-> > can see, it comes from the ASIC and I wonder if somehow we can get an APU in the
-> > future, 'not blacklisted', with the same problem. Then, should this table only
-> > filter for the vendor and device and not the revision? Do you know if there are
-> > any revisions for the 1002:15dd validated, tested and functional?
->
-> The pci revision id (RID) is used to specify the specific SKU within a
-> family.  GFXOFF is supposed to be working on all raven variants.  It
-> was tested and functional on all reference platforms and any OEM
-> platforms that launched with Linux support.  There are a lot of
-> dependencies on sbios in the early raven variants (0x15dd), so it's
-> likely more of a specific platform issue, but there is not a good way
-> to detect this so we use the DID/SSID/RID as a proxy.  The newer raven
-> variants (0x15d8) have much better GFXOFF support since they all
-> shipped with newer firmware and sbios.
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
 
-We took one of the first reference platform boards to design our
-custom board based on the V1605B and I assume it has one of the early 'unstable'
-raven variants with RID 0x83. Also, as OEM we are in control of the bios
-(provided by insyde) but I wasn't sure about the RID so, thanks for the
-clarification. Is there anything we can do with the bios to have the GFXOFF
-enabled and 'stable' for this particular revision? Otherwise we'd need to add
-the 0x83 RID to the table. Also, there is an extra ']' in the patch
-subject. Sorry
-for that. Would you need a new patch in case you accept it with the ']' removed?
+Changes since V1:
+* none, but additional testing was done which revealed that this CMT
+  in deed behaves the same as other Gen3 SoCs. There was one hickup
+  which seemed unique to V3U but has been reproduced with M3N meanwhile.
+  This is something we need to tackle, but no reason to prevent adding
+  V3U support.
 
-Good to hear that the newer raven versions have better GFXOFF support.
+ Documentation/devicetree/bindings/timer/renesas,cmt.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Daniel
+diff --git a/Documentation/devicetree/bindings/timer/renesas,cmt.yaml b/Documentation/devicetree/bindings/timer/renesas,cmt.yaml
+index 428db3a21bb9..363ec28e07da 100644
+--- a/Documentation/devicetree/bindings/timer/renesas,cmt.yaml
++++ b/Documentation/devicetree/bindings/timer/renesas,cmt.yaml
+@@ -79,6 +79,7 @@ properties:
+               - renesas,r8a77980-cmt0     # 32-bit CMT0 on R-Car V3H
+               - renesas,r8a77990-cmt0     # 32-bit CMT0 on R-Car E3
+               - renesas,r8a77995-cmt0     # 32-bit CMT0 on R-Car D3
++              - renesas,r8a779a0-cmt0     # 32-bit CMT0 on R-Car V3U
+           - const: renesas,rcar-gen3-cmt0 # 32-bit CMT0 on R-Car Gen3 and RZ/G2
+ 
+       - items:
+@@ -94,6 +95,7 @@ properties:
+               - renesas,r8a77980-cmt1     # 48-bit CMT on R-Car V3H
+               - renesas,r8a77990-cmt1     # 48-bit CMT on R-Car E3
+               - renesas,r8a77995-cmt1     # 48-bit CMT on R-Car D3
++              - renesas,r8a779a0-cmt1     # 48-bit CMT on R-Car V3U
+           - const: renesas,rcar-gen3-cmt1 # 48-bit CMT on R-Car Gen3 and RZ/G2
+ 
+   reg:
+-- 
+2.30.0
 
->
-> Alex
->
->
-> >
-> > Logs:
-> > [   27.708348] [drm] initializing kernel modesetting (RAVEN
-> > 0x1002:0x15DD 0x1002:0x15DD 0x83).
-> > [   27.789156] amdgpu: ATOM BIOS: 113-RAVEN-115
-> >
-> > Thanks in advance,
-> > Daniel
-> >
-> >  drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-> > index 65db88bb6cbc..319d4b99aec8 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-> > @@ -1243,6 +1243,8 @@ static const struct amdgpu_gfxoff_quirk amdgpu_gfxoff_quirk_list[] = {
-> >         { 0x1002, 0x15dd, 0x103c, 0x83e7, 0xd3 },
-> >         /* GFXOFF is unstable on C6 parts with a VBIOS 113-RAVEN-114 */
-> >         { 0x1002, 0x15dd, 0x1002, 0x15dd, 0xc6 },
-> > +       /* GFXOFF provokes a hw lockup on 83 parts with a VBIOS 113-RAVEN-115 */
-> > +       { 0x1002, 0x15dd, 0x1002, 0x15dd, 0x83 },
-> >         { 0, 0, 0, 0, 0 },
-> >  };
-> >
-> > --
-> > 2.30.1
-> >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
