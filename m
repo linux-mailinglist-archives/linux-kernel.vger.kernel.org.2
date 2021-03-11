@@ -2,131 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C6F33762B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCF2337632
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233951AbhCKOvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:51:14 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:60807 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233424AbhCKOui (ORCPT
+        id S233708AbhCKOwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:52:16 -0500
+Received: from mail.efficios.com ([167.114.26.124]:44810 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233762AbhCKOv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:50:38 -0500
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lKMe5-0001Wu-0u
-        for linux-kernel@vger.kernel.org; Thu, 11 Mar 2021 14:50:37 +0000
-Received: by mail-wm1-f71.google.com with SMTP id o9so1611774wmq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:50:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uKAiLuqa2i9OZl7ygZkPLgKIbolSbL3Tro2Nub/Uk4Y=;
-        b=M8kjUOcvUWjefeh9TS4lDP3cwdiMfRHzmlhyN8EZTuvtf4i+gjBFxdgdAZoCgiOIGx
-         AbIQi6y5+Gd2lu/a4CNLlOt3qOsI4uOm1fMD7OtlQOZvkQcU3gTYiz+I5wbSgyS0GJPA
-         Vwh7eShb4c8dP732NG9LojweykPS4jVeYOGGXEseRDqCbEl6l9FaC5hp3JDyhSv/p7i2
-         HpbaBpqzYZPzquhCqd6QkVlFMfXzAfguQM6YwuxXsnViRz2MnqrL81navuZRhonE8Eut
-         96+ltdtqzPavQqUNMFGDStUn2Su0o0vDzBTq1S+vQuQ7dJa/Og8m36g1A9nnWYb6/WIZ
-         Nc/Q==
-X-Gm-Message-State: AOAM533zN2dQ9t4+Q7EDva93klXhHfctgeDi1AyRypGbOVh7UxBJjTO4
-        EiADvv7e4J6Ry1hR+aLJvNjX69FmJ3eclx2YXy7KPS7w3MyDuYEz1B78DvWqFAayyIM5gsQ+zFt
-        l3lijOwahAkAFnkhfnr0YWkw9NnpaUPCZflUaYmaYaQ==
-X-Received: by 2002:adf:f852:: with SMTP id d18mr9342154wrq.210.1615474236736;
-        Thu, 11 Mar 2021 06:50:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyesJMeh5P/4D8iW/copAeKCALuE0/kYNU8cA4lvJq7myQHewdqjAfZPd2tqbyUu+ezagHw4g==
-X-Received: by 2002:adf:f852:: with SMTP id d18mr9342138wrq.210.1615474236553;
-        Thu, 11 Mar 2021 06:50:36 -0800 (PST)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id 4sm4433053wma.0.2021.03.11.06.50.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 06:50:36 -0800 (PST)
-Subject: Re: [RFC v2 3/5] arm64: socfpga: rename ARCH_STRATIX10 to
- ARCH_SOCFPGA64
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Tom Rix <trix@redhat.com>, Lee Jones <lee.jones@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-edac@vger.kernel.org, linux-fpga@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com, arm-soc <arm@kernel.org>,
-        SoC Team <soc@kernel.org>, Olof Johansson <olof@lixom.net>
-References: <20210310083327.480837-1-krzysztof.kozlowski@canonical.com>
- <20210310083840.481615-1-krzysztof.kozlowski@canonical.com>
- <20210310094527.GA701493@dell>
- <35c39c81-08e4-24c8-f683-2fa7a7ea71de@redhat.com>
- <1c06cb74-f0b0-66e5-a594-ed1ee9bc876e@canonical.com>
- <CAK8P3a1CCQwbeH4KiUgif+-HdubVjjZBkMXimEjYkgeh4eJ7cg@mail.gmail.com>
- <52d0489f-0f77-76a2-3269-e3004c6b6c07@canonical.com>
- <ba2536a6-7c74-0cca-023f-cc6179950d37@canonical.com>
- <CAK8P3a1k7c5X5x=-_-=f=ACwY+uQQ8YEcAGXYfdTdSnqpo96sA@mail.gmail.com>
- <fb0d8ca3-ac46-f547-02b0-7f47ff8fff6b@canonical.com>
- <CAK8P3a05VkttECKTgonxKCSjJR0W4V1TRrUYMydgUGywbCSCWQ@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <30ba7549-c60d-4ee9-3502-b863bca8d3a7@canonical.com>
-Date:   Thu, 11 Mar 2021 15:50:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 11 Mar 2021 09:51:58 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7740B28D5BE;
+        Thu, 11 Mar 2021 09:51:57 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Qu3OP2STmJ-C; Thu, 11 Mar 2021 09:51:57 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 074B828D5BD;
+        Thu, 11 Mar 2021 09:51:57 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 074B828D5BD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1615474317;
+        bh=PL+Do3RiU8ZwEmjPMN8oQVW2UGeiF+zVdGoFeQ4cSx4=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=jv175HtwimfwS6DkFe8T/vS1w1bh0NcwlXqk7dKpjlAdALUXNOm0OxIBhSrG8E089
+         +zL5DwJnGgFZSdvbxppMoC0G2xvtdfPH1o25no1tybqqaafn7NploK0Z92jNLQ8wTG
+         IsrhCsE9JbEoBIU4bHgdz7xEGUiYv3ONY2VeFkDPA4L7W0utgb2HVu/DWHIbVL76X3
+         GtWmueKFYIA/4tPn+ed+IVNgqh13+9CGEPMFS4TMrQuzV5QMaPPZpIzxlrkzy0FCwT
+         1HLOfQldbUxoRsHn9KpYOo0/yRntRFKBJ23AMi0EOiqOpKtQ0ZDNHtCMQfPPqrUx8U
+         OG759MevL+Ckw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id mKGBq-sN7b6l; Thu, 11 Mar 2021 09:51:56 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id E842128D62F;
+        Thu, 11 Mar 2021 09:51:56 -0500 (EST)
+Date:   Thu, 11 Mar 2021 09:51:56 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Piotr Figiel <figiel@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Dmitry V. Levin" <ldv@altlinux.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Oskolkov <posk@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Paul Turner <pjt@google.com>, emmir <emmir@google.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>
+Message-ID: <1173189328.5477.1615474316906.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210226135156.1081606-1-figiel@google.com>
+References: <20210226135156.1081606-1-figiel@google.com>
+Subject: Re: [PATCH v2] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a05VkttECKTgonxKCSjJR0W4V1TRrUYMydgUGywbCSCWQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
+Thread-Topic: ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+Thread-Index: lCuYtmkZYQcWdMyqmX3XXApDYL6h2g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/2021 10:14, Arnd Bergmann wrote:
-> On Thu, Mar 11, 2021 at 8:08 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->> On 10/03/2021 17:42, Arnd Bergmann wrote:
->>> On Wed, Mar 10, 2021 at 4:54 PM Krzysztof Kozlowski
->>> <krzysztof.kozlowski@canonical.com> wrote:
->>>> On 10/03/2021 16:47, Krzysztof Kozlowski wrote:
->>>>> This edac Altera driver is very weird... it uses the same compatible
->>>>> differently depending whether this is 32-bit or 64-bit (e.g. Stratix
->>>>> 10)! On ARMv7 the compatible means for example one IRQ... On ARMv8, we
->>>>> have two. It's quite a new code (2019 from Intel), not some ancient
->>>>> legacy, so it should never have been accepted...
->>>>
->>>> Oh, it's not that horrible as it sounds. They actually have different
->>>> compatibles for edac driver with these differences (e.g. in interrupts).
->>>> They just do not use them and instead check for the basic (common?)
->>>> compatible and architecture... Anyway without testing I am not the
->>>> person to fix the edac driver.
->>>
->>> Ok, This should be fixed properly as you describe, but as a quick hack
->>> it wouldn't be hard to just change the #ifdef to check for CONFIG_64BIT
->>> instead of CONFIG_ARCH_STRATIX10 during the rename of the config
->>> symbol.
->>
->> This would work. The trouble with renaming ARCH_SOCFPGA into
->> ARCH_INTEL_SOCFPGA is that still SOCFPGA will appear in many other
->> Kconfig symbols or even directory paths.
->>
->> Let me use ARCH_INTEL_SOCFPGA for 64bit here and renaming of 32bit a
->> little bit later.
-> 
-> Maybe you can introduce a hidden 'ARCH_INTEL_SOCFPGA' option first
-> and select that from both the 32-bit and the 64-bit platforms in the first step.
-> 
-> That should decouple the cleanups, so you can change the drivers to
-> (only) 'depends on ARCH_INTEL_SOCFPGA' before removing the other
-> names.
 
-Sure, let me try that. I have a v3 almost ready.
 
-Best regards,
-Krzysztof
+----- On Feb 26, 2021, at 8:51 AM, Piotr Figiel figiel@google.com wrote:
+
+> For userspace checkpoint and restore (C/R) a way of getting process state
+> containing RSEQ configuration is needed.
+> 
+> There are two ways this information is going to be used:
+> - to re-enable RSEQ for threads which had it enabled before C/R
+> - to detect if a thread was in a critical section during C/R
+> 
+> Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
+> using the address registered before C/R.
+> 
+> Detection whether the thread is in a critical section during C/R is needed
+> to enforce behavior of RSEQ abort during C/R. Attaching with ptrace()
+> before registers are dumped itself doesn't cause RSEQ abort.
+> Restoring the instruction pointer within the critical section is
+> problematic because rseq_cs may get cleared before the control is passed
+> to the migrated application code leading to RSEQ invariants not being
+> preserved. C/R code will use RSEQ ABI address to find the abort handler
+> to which the instruction pointer needs to be set.
+> 
+> To achieve above goals expose the RSEQ ABI address and the signature value
+> with the new ptrace request PTRACE_GET_RSEQ_CONFIGURATION.
+> 
+> This new ptrace request can also be used by debuggers so they are aware
+> of stops within restartable sequences in progress.
+> 
+> Signed-off-by: Piotr Figiel <figiel@google.com>
+> Reviewed-by: Michal Miroslaw <emmir@google.com>
+
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+
+Thanks!
+
+Mathieu
+
+
+> 
+> ---
+> v2:
+> Applied review comments:
+> - changed return value from the ptrace request to the size of the
+>   configuration structure
+> - expanded configuration structure with the flags field and
+>   the rseq abi structure size
+> 
+> v1:
+> https://lore.kernel.org/lkml/20210222100443.4155938-1-figiel@google.com/
+> 
+> ---
+> include/uapi/linux/ptrace.h | 10 ++++++++++
+> kernel/ptrace.c             | 25 +++++++++++++++++++++++++
+> 2 files changed, 35 insertions(+)
+> 
+> diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
+> index 83ee45fa634b..3747bf816f9a 100644
+> --- a/include/uapi/linux/ptrace.h
+> +++ b/include/uapi/linux/ptrace.h
+> @@ -102,6 +102,16 @@ struct ptrace_syscall_info {
+> 	};
+> };
+> 
+> +#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
+> +
+> +struct ptrace_rseq_configuration {
+> +	__u64 rseq_abi_pointer;
+> +	__u32 rseq_abi_size;
+> +	__u32 signature;
+> +	__u32 flags;
+> +	__u32 pad;
+> +};
+> +
+> /*
+>  * These values are stored in task->ptrace_message
+>  * by tracehook_report_syscall_* to describe the current syscall-stop.
+> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+> index 61db50f7ca86..76f09456ec4b 100644
+> --- a/kernel/ptrace.c
+> +++ b/kernel/ptrace.c
+> @@ -31,6 +31,7 @@
+> #include <linux/cn_proc.h>
+> #include <linux/compat.h>
+> #include <linux/sched/signal.h>
+> +#include <linux/minmax.h>
+> 
+> #include <asm/syscall.h>	/* for syscall_get_* */
+> 
+> @@ -779,6 +780,24 @@ static int ptrace_peek_siginfo(struct task_struct *child,
+> 	return ret;
+> }
+> 
+> +#ifdef CONFIG_RSEQ
+> +static long ptrace_get_rseq_configuration(struct task_struct *task,
+> +					  unsigned long size, void __user *data)
+> +{
+> +	struct ptrace_rseq_configuration conf = {
+> +		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
+> +		.rseq_abi_size = sizeof(*task->rseq),
+> +		.signature = task->rseq_sig,
+> +		.flags = 0,
+> +	};
+> +
+> +	size = min_t(unsigned long, size, sizeof(conf));
+> +	if (copy_to_user(data, &conf, size))
+> +		return -EFAULT;
+> +	return sizeof(conf);
+> +}
+> +#endif
+> +
+> #ifdef PTRACE_SINGLESTEP
+> #define is_singlestep(request)		((request) == PTRACE_SINGLESTEP)
+> #else
+> @@ -1222,6 +1241,12 @@ int ptrace_request(struct task_struct *child, long
+> request,
+> 		ret = seccomp_get_metadata(child, addr, datavp);
+> 		break;
+> 
+> +#ifdef CONFIG_RSEQ
+> +	case PTRACE_GET_RSEQ_CONFIGURATION:
+> +		ret = ptrace_get_rseq_configuration(child, addr, datavp);
+> +		break;
+> +#endif
+> +
+> 	default:
+> 		break;
+> 	}
+> --
+> 2.30.1.766.gb4fecdf3b7-goog
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
