@@ -2,129 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38B2336E90
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55BD336E93
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbhCKJMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:12:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231960AbhCKJMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:12:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E02B64FD3;
-        Thu, 11 Mar 2021 09:12:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615453940;
-        bh=UNAIXrkfTNShut/I3gLeR6MyhyTRWg+W8FSgOB8eYQ4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DI4pa8FmJBv1+nb41cqRzZo7Hptz7QQQzvlRjcJTBIw0e/bhAXWQ7W/gwVc+jd0k9
-         ZhqqzIBC7e8rnatmT33kA0ARL5vzlopH0zM+MiiCEFAq49oH9QUGlrZhDDZ9HowwEy
-         lrFjsqsuQtlzhtCZWchRd9MeM8YeCZe0xYbzjGaWZf+kyrzeZ0vM7VHhwB5ReoXTvT
-         e0QH/bJZxd66iwjZbtaqAuumCK8Xo5edq0Kim+f5qYxrZ+QJHZefURHKQ5iK9hMsKl
-         YzNhCe3+7KZ+eKoEl/RBKaSAA+e1J4B+4QeR+cRu3cQSFA7S2n8+W3egWk1uEsn7G1
-         xl69qAw6Tm39g==
-Received: by mail-oo1-f52.google.com with SMTP id e19-20020a4a73530000b02901b62c0e1bb6so511976oof.11;
-        Thu, 11 Mar 2021 01:12:20 -0800 (PST)
-X-Gm-Message-State: AOAM530a8gom26bMc/UCqdtbMuFQLu0HhU4qH5U5jPPwOAtgQHdFOqgY
-        cssk5aZXoZppqGwhxvF5z2j/AxQJlgHyE2imuN4=
-X-Google-Smtp-Source: ABdhPJygUghNxY2XSM2ghWokFwLHqZ3nZ8W75yDA/iVYNJIzeGBm7t3OFNlQOYjAFsneiZxfCa4ihGnIYWF71hoNWi4=
-X-Received: by 2002:a4a:8ed2:: with SMTP id c18mr5911583ool.66.1615453939509;
- Thu, 11 Mar 2021 01:12:19 -0800 (PST)
+        id S231980AbhCKJMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:12:49 -0500
+Received: from mail-mw2nam08on2073.outbound.protection.outlook.com ([40.107.101.73]:62305
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231629AbhCKJMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 04:12:40 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eU98DeqvAkhtArar1x+s0XjYrKkUdrRamH0bRq+JeBdBD7zYQXcol3FolXHkVDZLTHMq85XiCkeZ2NbI3nST/58Mzi4LtMH0twOABI0cSPOyT0ibJB6m+hyzAaAEExRGcawbv3vArKVBSSSfWP9d0fYuyliFFXspbh5IzfszbQT1YlLEA0K1zk1uF/xihbIn1LW2auj8u5nG/FcDtGLXiVUx/6+U1JCGQKFx6lNTiQyPE6le8Qm8OyjKPLq0lL2nNdnNWgrGjb5MN7Rghh0shllC8V7Idi4IHJN1CVyvooeMLWW/Gryr5PvGDL8sF6AM6NXivLfUIazCdsDOIzD1Yw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XjBk/Yuz9KEtlPONsE751Cye6/EZ8PgTW8Teaqp4Bn8=;
+ b=IYId6j3L2bVSYOopR40RFHlRdMxK+6PzL/exUfdVolbkNQN4gni9P7FGGbouOg51vvnHjx4ECMpJoPo8XUeDTh8pBTlLrii/jNLJfBeRNfvwIUJ5zZgtt+0BnQnjQqBoMA/eQvtXJgEf9ibqMegdFjF+hVQCqN8X256a7HCgoNhv0ubeVXIdFXPI9xFuw4BqmHE8oabEt1IqWYe95FC0cU/I3LhOfHjmQT3eORqf9/2IgtFbjwIEPcdNldhw5dl501Jhq8WsTtvV66NliBtssb4g1FwZtGWURwOUuduFI/5c231qD9eBd+vqu2YC+YgNsDemIGP/eigjuF1VzcexIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XjBk/Yuz9KEtlPONsE751Cye6/EZ8PgTW8Teaqp4Bn8=;
+ b=idiKAd0GGMt85yWf19OuxrXOlqWMkLfLBw1IqeOnwZqLfdr+pbTBCX/lfpHZyrA1qzsC4bXeHPLKjtb0LS+OXwzj6vqv1E9meLH5j9ecIykzu7a/iXRuKGdI7p4WQNjv4qx+BtnGvCcu0woJ6h9sbYqHUlgfz1O/Bcygn30QOU0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from PH0PR11MB5191.namprd11.prod.outlook.com (2603:10b6:510:3e::24)
+ by PH0PR11MB5063.namprd11.prod.outlook.com (2603:10b6:510:3d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Thu, 11 Mar
+ 2021 09:12:38 +0000
+Received: from PH0PR11MB5191.namprd11.prod.outlook.com
+ ([fe80::d1ae:8c2:d0a0:4aa3]) by PH0PR11MB5191.namprd11.prod.outlook.com
+ ([fe80::d1ae:8c2:d0a0:4aa3%5]) with mapi id 15.20.3912.031; Thu, 11 Mar 2021
+ 09:12:38 +0000
+From:   Meng.Li@windriver.com
+To:     linux-kernel@vger.kernel.org
+Cc:     broonie@kernel.org, tudor.ambarus@microchip.com, vigneshr@ti.com,
+        vadivel.muruganx.ramuthevar@linux.intel.com,
+        linux-spi@vger.kernel.org, meng.li@windriver.com
+Subject: [PATCH] drivers: spi: cadence: set cqspi to the driver_data field of struct device
+Date:   Thu, 11 Mar 2021 17:12:20 +0800
+Message-Id: <20210311091220.3615-1-Meng.Li@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR02CA0204.apcprd02.prod.outlook.com
+ (2603:1096:201:20::16) To PH0PR11MB5191.namprd11.prod.outlook.com
+ (2603:10b6:510:3e::24)
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
- <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
- <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st> <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
- <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
- <CAK8P3a0_GBB-VYFO5NaySyBJDN2Ra-WMH4WfFrnzgOejmJVG8g@mail.gmail.com>
- <20210308211306.GA2920998@robh.at.kernel.org> <CAK8P3a2GfzUevuQNZeQarJ4GNFsuDj0g7oFuN940Hdaw06YJbA@mail.gmail.com>
- <CAL_JsqK8FagJyQVyG5DAocUjLGZT91b6NzDm_DNMW1hdCz51Xg@mail.gmail.com>
- <c5693760-3b18-e8f1-18b6-bae42c05d329@marcan.st> <CAL_Jsq+VLLPa98iaTvOkK-tjuBH4qY7FNEGtufYGv7rXAbwegQ@mail.gmail.com>
- <332c0b9a-dcfd-4c3b-9038-47cbda90eb3f@marcan.st> <CAL_Jsq+X7JPm-xrxmy5bGKSuLO59yk6S=EuXmdMn0FwhpZAD7A@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+X7JPm-xrxmy5bGKSuLO59yk6S=EuXmdMn0FwhpZAD7A@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 11 Mar 2021 10:12:02 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2HWbHc-aGHk792TVh6ea2j+aKswYrB6EBsjPA6fH1=xA@mail.gmail.com>
-Message-ID: <CAK8P3a2HWbHc-aGHk792TVh6ea2j+aKswYrB6EBsjPA6fH1=xA@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
- MMIO as non-posted
-To:     Rob Herring <robh@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-mli1-d2.wrs.com (60.247.85.82) by HK2PR02CA0204.apcprd02.prod.outlook.com (2603:1096:201:20::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Thu, 11 Mar 2021 09:12:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dd332a76-7fdc-4de8-a8c3-08d8e46dd0f6
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5063:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR11MB50639C10E3295CF6580EBE4DF1909@PH0PR11MB5063.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i95xRmRCG3PGCPFdm3ZKu1gL3Tcazfv5QO6wD+UI6sfuOjM5NNKGllZbAsjT4zb6ljgqsz3sAIetFiCdFNdkZNkeR5JJc+YMfKm7RX6NPibQPvzHHGqAKfGGtwUE8dok1BYU0UVnHafcbPQdXSRqwiRtAY/hHCbZVbmGFFD3WyPUiqSlNZI+6Y3kx2zc+P1CCwFJnlK8YcRJrzTZ2JLUzSo4a/8VZJGsw+Th7ZYAJ5//C5/zZ0VmdH9sp0nS1WKscoJXiBTvk5kGqEDkAASNAV9M1LKHq7tFfI8FPagOndLmdN7TbNnN4/eKrWbG07t7l/iHy+XmRn4IpzYktzSxd7BA+6sh8xiWBVY7wVCYk7dU7Fo6OBPqvB175vTy6i47p4w+V4b8S1zz8E3dPXClALVOyrGRBq9U/MoqOBgWok/NepcXPv9Oc8dzIQspwys1NvF3cZKsBBHuLQU6WCwz9pxSiFo9TROYJ/795sBPSbdzGDwn40Ume7QvRkGZp+wlRR1Zu9ECTPhiZOfkPGf6eA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5191.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(39850400004)(396003)(66556008)(316002)(66476007)(83380400001)(52116002)(4326008)(186003)(66946007)(478600001)(16526019)(6506007)(2616005)(956004)(2906002)(8676002)(9686003)(1076003)(6512007)(6486002)(8936002)(26005)(5660300002)(6916009)(107886003)(86362001)(6666004)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?J9Wudd8TfPtCOzETIfOcZb/mgSodtzhg7gmxHkpGkZpm+5Ke7MBiL2EXRsAK?=
+ =?us-ascii?Q?BL65TZn3WZfJo82FlNxe8fjD1FSWVlpjb032CUw+HI+5EHewrcHSry9qFrdx?=
+ =?us-ascii?Q?RdFCrDaysKpD5SY4XaHIt6nCxPlIr5xKtzAnyp543gogUcfqSgHg5DlmKiOF?=
+ =?us-ascii?Q?W+A9G377X5f+rBDI6ffEGXb6LcVmSDsGbvedw3srAw7OVmHj1mvdwGlx2yna?=
+ =?us-ascii?Q?s8BSpu5OQDaiHPBwzqBOAvjDPT2/zfOYe7bukvpy2w15bQPAvrie2AX8SECW?=
+ =?us-ascii?Q?M1z7udlVkExZRIPwJ8PESMaJ9BrX1mK2m2xgncwXcXC966+ZWMGSebzM5/l1?=
+ =?us-ascii?Q?S1sxPyCbhlXFn+Hus+4adyMx1KUKmn5RGV5Jso6Q57mxafieGOYiO1LdEgH8?=
+ =?us-ascii?Q?7ZaXYJfc3F/nSaYWWZdQSNs+KfPaGisbhlcFLtSnmSkSkABRXe3sr+fRnL9n?=
+ =?us-ascii?Q?CRDOUADxvWvu8vl3VE/K3FJ12etpuZuxRHCYqFxbpQd994N8RZxCjPM/rYNe?=
+ =?us-ascii?Q?tatX083ShOb+0+2JIohITW8QU/R3i4+hoY3RzbmHNNQlP++TwVY09UJ5iWCc?=
+ =?us-ascii?Q?3evgJrqCL0EGY1PRV16qR2S5+/8FZ3967Ud1musxhwGYursuu29idFpzW63H?=
+ =?us-ascii?Q?VxXcWrzJvQlFh+RbAMUclCgbw/Y9lC9rF3L5wjObAQVeaXJfJuwXQB/Jaupm?=
+ =?us-ascii?Q?eiks9YL5CabQv3y5At9YxgUGshfpdB/XOcgnKXivXG9zH7+6TsQBD2Zs59wl?=
+ =?us-ascii?Q?Gar+ce18pQaQdqS0hTOTPcZZUx//38NXFjhtZe264y0ENnnlpPOMccpIpNWH?=
+ =?us-ascii?Q?W7aW0REbYryvMmt9ZqUDuZZWBOgVk541FDfsVwfEf09DWwlO4u1iPX0yp2b3?=
+ =?us-ascii?Q?Vj8q6bbCM/GDicTUFwkKVVhI+Fuhww5T3wynRZgmXTlraLeWY6g27X3e+Zz5?=
+ =?us-ascii?Q?36VudTZMaue7hhaqM27MfyZaxTgzX+neB6bqqseSDBmwQf+GTjAUJKRfqu4/?=
+ =?us-ascii?Q?RWKpI/pdF8kp2zcmECCaVodP0A6I7pOBqc78ZwmdzWSnEL9jmArLcuEZY44n?=
+ =?us-ascii?Q?lz/6iExiNA3E0wXAaqV5zRlpwR0GA02GNQaM+9K7OzKV2uc+0O9LCbfASH++?=
+ =?us-ascii?Q?o0TcpGyArIbj21ZyJkmI7VfKRf4hMeuvNItLig+mb66bDexZOF2TeeyoZkqz?=
+ =?us-ascii?Q?IcHdjpj4w4Tawh5I8eAuQ0G7vgmg0/jRhkwRhS4fKxf0mdFkeK6zBxmzP5B7?=
+ =?us-ascii?Q?vtRYBYkJy3h64DAv83THeSIfbkmk7PoVt4hGtcsuFl1IktCYG7XHI2dyjYvF?=
+ =?us-ascii?Q?Lirw8dmuKXaKv+fJfdCsaDq3?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd332a76-7fdc-4de8-a8c3-08d8e46dd0f6
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5191.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 09:12:38.5082
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7vy6GsuJ9HJ54LynA435Tx4MjWf1y+YfhBmL8p8rqFhFl2Q72IEngLAGGX3zV8fpuGmB8wVOpw3E5lBl+i4Icw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 6:01 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Mar 10, 2021 at 1:27 AM Hector Martin <marcan@marcan.st> wrote:
-> >
-> > On 10/03/2021 07.06, Rob Herring wrote:
-> > >> My main concern here is that this creates an inconsistency in the device
-> > >> tree representation that only works because PCI drivers happen not to
-> > >> use these code paths. Logically, having "nonposted-mmio" above the PCI
-> > >> controller would imply that it applies to that bus too. Sure, it doesn't
-> > >> matter for Linux since it is ignored, but this creates an implicit
-> > >> exception that PCI buses always use posted modes.
-> > >
-> > > We could be stricter that "nonposted-mmio" must be in the immediate
-> > > parent. That's kind of in line with how addressing already works.
-> > > Every level has to have 'ranges' to be an MMIO address, and the
-> > > address cell size is set by the immediate parent.
-> > >
-> > >> Then if a device comes along that due to some twisted fabric logic needs
-> > >> nonposted nGnRnE mappings for PCIe (even though the actual PCIe ops will
-> > >> end up posted at the bus anyway)... how do we represent that? Declare
-> > >> that another "nonposted-mmio" on the PCIe bus means "no, really, use
-> > >> nonposted mmio for this"?
-> > >
-> > > If we're strict, yes. The PCI host bridge would have to have "nonposted-mmio".
-> >
-> > Works for me; then let's just make it non-recursive.
-> >
-> > Do you think we can get rid of the Apple-only optimization if we do
-> > this? It would mean only looking at the parent during address
-> > resolution, not recursing all the way to the top, so presumably the
-> > performance impact would be quite minimal.
+From: Meng Li <Meng.Li@windriver.com>
 
-Works for me.
+When initialize cadence qspi controller, it is need to set cqspi
+to the driver_data field of struct device, because it will be
+used in function cqspi_remove/suspend/resume(). Otherwise, there
+will be a crash trace as below when invoking these finctions.
+Call trace:
+ cqspi_suspend+0x14/0x44
+ dpm_run_callback+0x50/0x1c0
+ __device_suspend+0x114/0x514
+ ......
+ el0_svc+0x20/0x30
+ el0_sync_handler+0x1a4/0x1b0
+ el0_sync+0x174/0x180
 
-> Yeah, that should be fine. I'd keep an IS_ENABLED() config check
-> though. Then I'll also know if anyone else needs this.
+Fixes: 31fb632b5d43("spi: Move cadence-quadspi driver to drivers/spi/")
+Cc: stable@vger.kernel.org
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+---
+ drivers/spi/spi-cadence-quadspi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Ok, makes sense.
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index ba7d40c2922f..d8b0e1f1cb3a 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1198,6 +1198,7 @@ static int cqspi_probe(struct platform_device *pdev)
+ 	cqspi = spi_master_get_devdata(master);
+ 
+ 	cqspi->pdev = pdev;
++	platform_set_drvdata(pdev, cqspi);
+ 
+ 	/* Obtain configuration from OF. */
+ 	ret = cqspi_of_get_pdata(cqspi);
+-- 
+2.17.1
 
-Conceptually, I'd like to then see a check that verifies that the
-property is only set for nodes whose parent also has it set, since
-that is how AXI defines it: A bus can wait for the ack from its
-child node, or it can acknowledge the write to its parent early.
-However, this breaks down as soon as a bus does the early ack:
-all its children by definition use posted writes (as seen by the
-CPU), even if they wait for stores that come from other masters.
-
-Does this make sense to you?
-
-       Arnd
