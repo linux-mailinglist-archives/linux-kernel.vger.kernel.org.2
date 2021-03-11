@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305F23379B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5275C3379A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhCKQl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:41:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30732 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229637AbhCKQla (ORCPT
+        id S229806AbhCKQlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:41:22 -0500
+Received: from mail-il1-f178.google.com ([209.85.166.178]:37497 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhCKQlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:41:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615480889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jsITyOiHG8sZT6fImLghXS0y6X8Glr5m582sfHNQHmU=;
-        b=KM6dQD5gWRn3HVKLf7FsnwQ0MsnaTwAWhaAFep03RQIkcU6J6O4cq07k/9K6PGtNz3WXJE
-        dzptw5pQZMMNzbh8bF/T4z9qpJKlddXKXs12Y8oY4m6jy4/LQQiylphDlJtBTEOgnszdZt
-        Ix2qk6MFfBFpbYjoRbN31Y/6ifA9xxE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-aNlLOjZjOIanJlsdFfNpQw-1; Thu, 11 Mar 2021 11:41:26 -0500
-X-MC-Unique: aNlLOjZjOIanJlsdFfNpQw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B519E800D55;
-        Thu, 11 Mar 2021 16:41:24 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A39F10013D6;
-        Thu, 11 Mar 2021 16:41:23 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Eric Paris <eparis@parisplace.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: [PATCH 2/2] audit: document /proc/PID/sessionid
-Date:   Thu, 11 Mar 2021 11:40:51 -0500
-Message-Id: <b8a16198e196bf8acc07f8c6701d9870d72f967c.1615414262.git.rgb@redhat.com>
-In-Reply-To: <cover.1615414262.git.rgb@redhat.com>
-References: <cover.1615414262.git.rgb@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Thu, 11 Mar 2021 11:41:11 -0500
+Received: by mail-il1-f178.google.com with SMTP id k2so19492431ili.4;
+        Thu, 11 Mar 2021 08:41:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=WJe+Al4qm0TlWJf1+/8W5HUdeHTdNJA3rf8BM2iIptk=;
+        b=AzJcO3wSF//A/H6wlYrvP1gsRK6NLXNJQbpM6PU25xBHeGT+z8VDjSSemb4FRQfVGw
+         0euEULDjyW4RtKpHDbVVCAowCwCPw+D3Pk3FBZa69gdzWILj2lQz4mOob9oZ++z1zgcp
+         fQJzXnQbz02sMZZK9zBQVbnDtJhEWKFC+gOsEcFGEmvKow2pGmo2GXybi5Rr852skOGr
+         LhZSzod/vXWl2r6orGg03QgChgqwVU0Nb9xLblkfmfYN/XjzAS6Hz/FuVC3RGunWqbYW
+         aSUO7z8nOM6qO+nPJl9jlUZIn4J197uzrJq/5LJyzd8uL5p2YiQ01GJPnDS3t66G9H7L
+         9Ohw==
+X-Gm-Message-State: AOAM532IvssVqgFHUi2HzELwlEgl0nWxRqrM0qRoxzF8RBzFAcDQRgFF
+        0X9y6ju8XkCAysDqP/zCwQ==
+X-Google-Smtp-Source: ABdhPJy5JH73VdS/BWpz9w3adZarKXeH/Kn/+riDA2p7RpMCJf639DgSqQxK8bSDmbnL693mxvBLDw==
+X-Received: by 2002:a05:6e02:1154:: with SMTP id o20mr7664202ill.236.1615480870559;
+        Thu, 11 Mar 2021 08:41:10 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id y18sm1588767ili.16.2021.03.11.08.41.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 08:41:08 -0800 (PST)
+Received: (nullmailer pid 841935 invoked by uid 1000);
+        Thu, 11 Mar 2021 16:41:02 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, mazziesaccount@gmail.com,
+        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+In-Reply-To: <6793280eb1a3376a1aa4d408a8931202050c828d.1615454845.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1615454845.git.matti.vaittinen@fi.rohmeurope.com> <6793280eb1a3376a1aa4d408a8931202050c828d.1615454845.git.matti.vaittinen@fi.rohmeurope.com>
+Subject: Re: [RFC PATCH v3 5/7] dt-bindings: regulator: bd9576 add FET ON-resistance for OCW
+Date:   Thu, 11 Mar 2021 09:41:02 -0700
+Message-Id: <1615480862.535831.841934.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe the /proc/PID/loginuid interface in Documentation/ABI/stable that
-was added 2008-03-13 in commit 1e0bd7550ea9 ("[PATCH] export sessionid
-alongside the loginuid in procfs")
+On Thu, 11 Mar 2021 12:23:33 +0200, Matti Vaittinen wrote:
+> BD9576MUF provides over-current protection and detection. Current is
+> measured as voltage loss over external FET. Allow specifying FET's on
+> resistance so current monitoring limits can be converted to voltages.
+> 
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
+> v3:
+>  - no changes
+> v2:
+>  - use standard micro-ohms suffix
+> 
+>  .../devicetree/bindings/regulator/rohm,bd9576-regulator.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
 
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
----
- Documentation/ABI/stable/procfs-audit_loginuid | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-diff --git a/Documentation/ABI/stable/procfs-audit_loginuid b/Documentation/ABI/stable/procfs-audit_loginuid
-index fae63bef2970..175ee6ec3695 100644
---- a/Documentation/ABI/stable/procfs-audit_loginuid
-+++ b/Documentation/ABI/stable/procfs-audit_loginuid
-@@ -13,3 +13,15 @@ Description:
- 		AUDIT_FEATURE_LOGINUID_IMMUTABLE is enabled.  It cannot be
- 		unset if AUDIT_FEATURE_ONLY_UNSET_LOGINUID is enabled.
- 
-+
-+What:		Audit Login Session ID
-+Date:		2008-03-13
-+KernelVersion:	2.6.25-rc7 1e0bd7550ea9 ("[PATCH] export sessionid alongside the loginuid in procfs")
-+Contact:	linux-audit@redhat.com
-+Format:		u32
-+Users:		auditd, libaudit, audit-testsuite, login
-+Description:
-+		The /proc/$pid/sessionid pseudofile is read to get the
-+		audit login session ID of process $pid.  It is set
-+		automatically, serially assigned with each new login.
-+
--- 
-2.27.0
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml:31:35: [error] empty value in block mapping (empty-values)
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml: patternProperties:regulator-.+:properties:description: "External FET's ON-resistance. Required if VoutS1 OCP/OCW is to be set." is not of type 'object', 'boolean'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml: patternProperties:regulator-.+:properties:rohm,ocw-fet-ron-micro-ohms: None is not of type 'object', 'boolean'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml: patternProperties:regulator-.+:properties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for 'description'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml: ignoring, error in schema: patternProperties: regulator-.+: properties: rohm,ocw-fet-ron-micro-ohms
+warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
+
+See https://patchwork.ozlabs.org/patch/1451051
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
