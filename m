@@ -2,146 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A48D337FEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71E3337FED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhCKVvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:51:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
+        id S231250AbhCKVwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:52:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231151AbhCKVu5 (ORCPT
+        with ESMTP id S231140AbhCKVvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:50:57 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF5EC061574;
-        Thu, 11 Mar 2021 13:50:57 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id r24so2555967otq.13;
-        Thu, 11 Mar 2021 13:50:57 -0800 (PST)
+        Thu, 11 Mar 2021 16:51:36 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165CFC061574;
+        Thu, 11 Mar 2021 13:51:36 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 184so4122863ljf.9;
+        Thu, 11 Mar 2021 13:51:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RghmcBEWWaLa3LYEb5KeXgAu7tLFH8qmbtPks5jMJnM=;
-        b=uw0tPyq9JKT4k4vPqANK4T8kGZQisKH51l4zEcL5z7+dnCzqdDm0M1UogB/7xDw9Ep
-         nr2YeKWBFxS0RaiTxZJ/dNIpv7l+aLK8t779g50An3fQwD6n+j+FPMR89IoheBolifbh
-         ZJQ57bfv4tgxXVX1AI7YrfZmk6UyoFcKZdfgFIhK88rBgJ1TEWStBpbxEWRiaynBTtEe
-         HLW1bwElhdAW95yAYpa4nl8UepTpNevDTp4e+U+1KUUCh4NZdfW6LBatBeweVD4612rc
-         CE5qcYsIKTMuTkWh1xpcsKrNm6y5EYboh7pOz6ZxUNMPhUd5vRp9xcHi2dLMf0L+cd+b
-         +F3w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VWL2hdvWE8yxFugzonJANm0MQE5wMI2Tm0xlPLUiebg=;
+        b=kVcu+9FYbu/EPpCCYjGckkjYE9Hmq1VggOFh3Hq+5c0ox3mKPJw4bVmD4uvDNw7+a5
+         7COTtE9g+1c8RvKnMqaPhyq1fFwZKgMUTI8lk1H3z4QaVHbu+n7bNErahyrFOExZNe27
+         izSNG9daGPEhMjeVQIf5KIUSM0Z7g3CSmcLHHTCOQwCXJO+rbq5ps860QO60gOQMiLbo
+         qgkZZMTwTG3rXBPQXx2PDTVixTU3/twt5m4XGdcdsgND0TlqWFYr6k9ETePg0VY9H5Vq
+         dd/CCYZcr/N1Is29jgsVxxaZFVsdaFbUzK4JbXerwWWQQpf9rTDq8PssQG1b/x7iDqFL
+         YtPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RghmcBEWWaLa3LYEb5KeXgAu7tLFH8qmbtPks5jMJnM=;
-        b=ZXpUlELTdj2y56lEbqH/zDQCtEzaAESCtGRS5nB4cFTbOIqZGWGm6Sekt5obAOZSkw
-         CYQaqibbz47D10GHHgIp7vUxFxyivZilJSkttcuO40tJKNFQfDej/PAxBLbtmC7qXbf4
-         uO50Wf67YNqPFbwO8+8qLU9+ivIQXoFdbB81KRn2ekOlb2w6qytMACqmT5mZLvQLQqUs
-         LbotJl/+3I5rzc0oYVem7tvKzrjveORwj7Khz5PjJCwefbmEsVacnuZtrmBSOs+mCGND
-         lcLalC0HfsB723BdXWNVK78oBWChQP9tGiancvF19ohyScXWElq8QCcqNOnpDUO3Mjo8
-         glnA==
-X-Gm-Message-State: AOAM531iSZIBW1mnobg1QPn3RKKlnVCLqdtwlq5WgGvrBcgGb80xlPWQ
-        cxNXJVQN+xEH8K8kckSjqn/kk5RZjEU=
-X-Google-Smtp-Source: ABdhPJw2hMGqcY7TxtCBbMX9xSMReiGny73b/EAjQJECXqTtftYUeER38gIIMygXxGxMo6XkttOKiA==
-X-Received: by 2002:a9d:61d2:: with SMTP id h18mr804034otk.113.1615499456777;
-        Thu, 11 Mar 2021 13:50:56 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r20sm927593otd.26.2021.03.11.13.50.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 11 Mar 2021 13:50:56 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 11 Mar 2021 13:50:55 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jiqi Li <lijq9@lenovo.com>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, markpearson@lenovo.com
-Subject: Re: [PATCH v2] hwmon: (nct6883) Support NCT6686D
-Message-ID: <20210311215055.GA36492@roeck-us.net>
-References: <20210304104421.1912934-1-lijq9@lenovo.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VWL2hdvWE8yxFugzonJANm0MQE5wMI2Tm0xlPLUiebg=;
+        b=LQrl+IrmCueWZZb+NH3cCOCfQUOaHL7PwdaZRQPS9FXxdLGX6UG8pGfXC45iaNeeU4
+         Nay6Cx7R3KOFw/ScOkR2rPQfraulnJXInpfr0bz/Dycx7tfHRh2cN0Jr+8C+sw9htD9b
+         Rrmn0um7vJzo+uOvoIBtV3ly7EVUOMSQYP6X75zfuHbwHspMiWRQLaiI8x3V1Y2ip3WM
+         aVAVy2OEbVS++NrMZv7yC1WGODbkMsN9qjpaRVqnTGiFjlH6j0e+5DSUu2CjrXf61IXf
+         jz0ihQX5rZ8DkTySYZzShIGr4qtjWIQcIgagiNLQBJjSZHaPF4R/Xcy73beolAaDDZiU
+         Lewg==
+X-Gm-Message-State: AOAM533KlVV1LW8Rfl9+smDnBVmFPXXf2Bih2t3Ig+kgPRnQz1xKrXcN
+        1nJDR3mpM8gQ89FDSY+ng759ePQpwX6nW2YSmc5ZqUI52Zi+xg==
+X-Google-Smtp-Source: ABdhPJxMLb8RWEI/keYCNxwHCJ2lmrzl+gJ737rNjqic7IHQmrx5b78nJt43K2G0SMjZsCxkcyq4uCMWFHgrrml+eXo=
+X-Received: by 2002:a2e:878c:: with SMTP id n12mr572284lji.58.1615499494414;
+ Thu, 11 Mar 2021 13:51:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304104421.1912934-1-lijq9@lenovo.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210311122040.1264410-1-ribalda@chromium.org>
+ <20210311122040.1264410-9-ribalda@chromium.org> <YEpCvQYGj/4bAncp@pendragon.ideasonboard.com>
+In-Reply-To: <YEpCvQYGj/4bAncp@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date:   Thu, 11 Mar 2021 22:51:18 +0100
+Message-ID: <CAPybu_2UhCzOp56LWgnuoXPCWDhQ2GfC3jsKejqDFTW4k4jiEg@mail.gmail.com>
+Subject: Re: [PATCH 07/10] media: uvcvideo: set error_idx to count on EACCESS
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, senozhatsky@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 06:44:21PM +0800, Jiqi Li wrote:
-> Add support for NCT6686D chip used in the Lenovo P620.
-> 
-> Signed-off-by: Jiqi Li <lijq9@lenovo.com>
-> Reviewed-by: Mark Pearson <markpearson@lenovo.com>
-> ---
-> Changes in v2: Corrected typo from NCT6886D to NCT6686D
+Hi Laurent
 
-Not entirely; the subject is still partially wrong.
-No need to resend, though, I'll fix then while applying it.
+On Thu, Mar 11, 2021 at 5:20 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> Thank you for the patch.
 
-Guenter
+Thank you for the review :)
 
-> ---
->  drivers/hwmon/nct6683.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hwmon/nct6683.c b/drivers/hwmon/nct6683.c
-> index a23047a3bfe2..256e8d62f858 100644
-> --- a/drivers/hwmon/nct6683.c
-> +++ b/drivers/hwmon/nct6683.c
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * nct6683 - Driver for the hardware monitoring functionality of
-> - *	     Nuvoton NCT6683D/NCT6687D eSIO
-> + *	     Nuvoton NCT6683D/NCT6686D/NCT6687D eSIO
->   *
->   * Copyright (C) 2013  Guenter Roeck <linux@roeck-us.net>
->   *
-> @@ -12,6 +12,7 @@
->   *
->   * Chip        #vin    #fan    #pwm    #temp  chip ID
->   * nct6683d     21(1)   16      8       32(1) 0xc730
-> + * nct6686d     21(1)   16      8       32(1) 0xd440
->   * nct6687d     21(1)   16      8       32(1) 0xd590
->   *
->   * Notes:
-> @@ -33,7 +34,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->  
-> -enum kinds { nct6683, nct6687 };
-> +enum kinds { nct6683, nct6686, nct6687 };
->  
->  static bool force;
->  module_param(force, bool, 0);
-> @@ -41,11 +42,13 @@ MODULE_PARM_DESC(force, "Set to one to enable support for unknown vendors");
->  
->  static const char * const nct6683_device_names[] = {
->  	"nct6683",
-> +	"nct6686",
->  	"nct6687",
->  };
->  
->  static const char * const nct6683_chip_names[] = {
->  	"NCT6683D",
-> +	"NCT6686D",
->  	"NCT6687D",
->  };
->  
-> @@ -66,6 +69,7 @@ static const char * const nct6683_chip_names[] = {
->  
->  #define SIO_NCT6681_ID		0xb270	/* for later */
->  #define SIO_NCT6683_ID		0xc730
-> +#define SIO_NCT6686_ID		0xd440
->  #define SIO_NCT6687_ID		0xd590
->  #define SIO_ID_MASK		0xFFF0
->  
-> @@ -1362,6 +1366,9 @@ static int __init nct6683_find(int sioaddr, struct nct6683_sio_data *sio_data)
->  	case SIO_NCT6683_ID:
->  		sio_data->kind = nct6683;
->  		break;
-> +	case SIO_NCT6686_ID:
-> +		sio_data->kind = nct6686;
-> +		break;
->  	case SIO_NCT6687_ID:
->  		sio_data->kind = nct6687;
->  		break;
+>
+> On Thu, Mar 11, 2021 at 01:20:37PM +0100, Ricardo Ribalda wrote:
+> > According to the doc:
+>
+> The previous paragraph states:
+>
+> This check is done to avoid leaving the hardware in an inconsistent
+> state due to easy-to-avoid problems. But it leads to another problem:
+> the application needs to know whether an error came from the validation
+> step (meaning that the hardware was not touched) or from an error during
+> the actual reading from/writing to hardware.
+
+I think we wrote his standard when we were young and naive ;)
+
+>
+> > The, in hindsight quite poor, solution for that is to set error_idx to
+> > count if the validation failed.
+> >
+> > Fixes v4l2-compliance:
+> > Control ioctls (Input 0):
+> >                 fail: v4l2-test-controls.cpp(645): invalid error index write only control
+> >         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_v4l2.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> > index 625c216c46b5..9b6454bb2f28 100644
+> > --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> > +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> > @@ -1076,7 +1076,8 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
+> >               ret = uvc_ctrl_get(chain, ctrl);
+> >               if (ret < 0) {
+> >                       uvc_ctrl_rollback(handle);
+> > -                     ctrls->error_idx = i;
+> > +                     ctrls->error_idx = (ret == -EACCES) ?
+> > +                                             ctrls->count : i;
+>
+> No need for parentheses.
+
+I really like my parenthesis before the ? :. Can I leave it? :)
+
+If it bothers you a lot I remove it, but I like to delimit where the
+ternary operators end.
+>
+> I'm not sure this is correct though. -EACCES is returned by
+> __uvc_ctrl_get() when the control is found and is a write-only control.
+> The uvc_ctrl_get() calls for the previous controls will have potentially
+> touched the device to read the current control value if it wasn't cached
+> already, to this contradicts the rationale from the specification.
+>
+> I understand the need for this when setting controls, but when reading
+> them, it's more puzzling, as the interactions with the hardware to read
+> the controls are not supposed to affect the hardware state in a way that
+> applications should care about. It may be an issue in the V4L2
+> specification.
+
+I have no strong opinions in both directions. If v4l2-compliance is
+the de-facto standard I believe we should keep this patch or change
+the compliance test.
+
+Hans, what do think?
+
+>
+> >                       return ret;
+> >               }
+> >       }
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
+
+-- 
+Ricardo Ribalda
