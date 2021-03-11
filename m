@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54807337FFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C94A4338007
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhCKV7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:59:52 -0500
-Received: from mailoutvs32.siol.net ([185.57.226.223]:58678 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229679AbhCKV7o (ORCPT
+        id S231222AbhCKWET convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 17:04:19 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:33654 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230512AbhCKWD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:59:44 -0500
+        Thu, 11 Mar 2021 17:03:58 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 7D6D0524AD8;
-        Thu, 11 Mar 2021 22:59:36 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id doooZCoLUepj; Thu, 11 Mar 2021 22:59:36 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 34F9D524D14;
-        Thu, 11 Mar 2021 22:59:36 +0100 (CET)
-Received: from kista.localnet (cpe-86-58-17-133.cable.triera.net [86.58.17.133])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 7C948524AD8;
-        Thu, 11 Mar 2021 22:59:35 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: Re: [PATCH] ARM: dts: sun8i: h3: beelink-x2: Add power button
-Date:   Thu, 11 Mar 2021 22:59:35 +0100
-Message-ID: <2517400.0zBCEEo8qi@kista>
-In-Reply-To: <20210308130506.v35gjviwknr5hat5@gilmour>
-References: <20210306203611.15534-1-jernej.skrabec@siol.net> <20210308130506.v35gjviwknr5hat5@gilmour>
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 0130A3153FF;
+        Thu, 11 Mar 2021 15:37:14 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id TrxEDCDVORWY; Thu, 11 Mar 2021 15:37:14 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 58EDE348D57;
+        Thu, 11 Mar 2021 15:34:47 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id XbuKv5mMDf1G; Thu, 11 Mar 2021 15:34:47 -0300 (-03)
+Received: from [10.208.85.246] (89-200-33-201.mobile.kpn.net [89.200.33.201])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 4C9BE3488F3;
+        Thu, 11 Mar 2021 15:30:16 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Thu, 11 Mar 2021 19:30:42 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210311183016.4C9BE3488F3@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Dne ponedeljek, 08. marec 2021 ob 14:05:06 CET je Maxime Ripard napisal(a):
-> Hi
-> 
-> On Sat, Mar 06, 2021 at 09:36:11PM +0100, Jernej Skrabec wrote:
-> > Beelink X2 has power button. Add node for it.
-> > 
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > ---
-> >  arch/arm/boot/dts/sun8i-h3-beelink-x2.dts | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts b/arch/arm/boot/dts/
-sun8i-h3-beelink-x2.dts
-> > index 62b5280ec093..4a2cb072ecf6 100644
-> > --- a/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts
-> > +++ b/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts
-> > @@ -111,6 +111,17 @@ spdif_out: spdif-out {
-> >  		#sound-dai-cells = <0>;
-> >  		compatible = "linux,spdif-dit";
-> >  	};
-> > +
-> > +	r_gpio_keys {
-> 
-> Underscores are not valid for node names (and will trigger a dtc warning
-> when running with W=1).
+Sir/Madam,
 
-Unless I'm doing something wrong, I didn't get any warning with "make dtbs 
-W=1". In fact many H3 boards have a node with this name and not a single 
-warning is produced with this command for underscores (there are other 
-warnings though).
+CONGRATULATIONS!!!
 
-Actually, several H3 DT files have nodes like "sound_spdif" or "wifi_pwrseq". It 
-seems like warnings are triggered only for children of soc node.
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 9th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-> 
-> > +		compatible = "gpio-keys";
-> > +
-> > +		power {
-> > +			label = "power";
-> 
-> IIRC the node name is used as a fallback when the label isn't there?
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-Binding doesn't say anything about what happens if label is missing. Driver 
-sets generic description "gpio_keys" in such case, which is not something that 
-we want.
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-Best regards,
-Jernej
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
-> 
-> Maxime
-> 
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
 
 
