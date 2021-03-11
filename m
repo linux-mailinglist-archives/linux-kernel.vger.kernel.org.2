@@ -2,132 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4733378A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6616B337901
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234287AbhCKQA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:00:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233943AbhCKQAN (ORCPT
+        id S234436AbhCKQQN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 11:16:13 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:59044 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234251AbhCKQPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:00:13 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9527DC061574;
-        Thu, 11 Mar 2021 08:00:13 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 99D82879;
-        Thu, 11 Mar 2021 17:00:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615478410;
-        bh=88gQ2lkGXDtbfbgviEA36zdOmTrkESs9PAAixpS5TD8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qWdNtBO2ruDPFJ6QiU7Z/xh0SO2LD+0UhqpgTGOijIdQ94pUYu83dVca4Q3EkN67+
-         suiicXtnUL0mLGEiafcGnTe6M6Li5Q9sSi9Pa3/L05aoiOv07q7shhmgbYOXBqzdXb
-         vF1NCptPH86L4/oNHMGaflOts5rIxVyrgeHxrkiQ=
-Date:   Thu, 11 Mar 2021 17:59:36 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, senozhatsky@chromium.org
-Subject: Re: [PATCH 10/10] media: uvcvideo: Populate only active control
- classes
-Message-ID: <YEo+aLunKHemzWhA@pendragon.ideasonboard.com>
-References: <20210311122040.1264410-1-ribalda@chromium.org>
- <20210311122040.1264410-12-ribalda@chromium.org>
- <f2341e0e-e9c9-a1f6-2d9f-4355e232cf4a@xs4all.nl>
- <CAPybu_08hhaAh4tPyohrEwhfowE5TC1NDfg9tUEo0tHQjcFJug@mail.gmail.com>
+        Thu, 11 Mar 2021 11:15:44 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id C668731081D;
+        Thu, 11 Mar 2021 10:14:53 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 2HwTf5VRw-hi; Thu, 11 Mar 2021 10:14:53 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 78478310837;
+        Thu, 11 Mar 2021 10:14:52 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 7abFS8AnxBYO; Thu, 11 Mar 2021 10:14:52 -0300 (-03)
+Received: from [10.208.85.246] (89-200-33-201.mobile.kpn.net [89.200.33.201])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 8905630DC29;
+        Thu, 11 Mar 2021 10:14:45 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAPybu_08hhaAh4tPyohrEwhfowE5TC1NDfg9tUEo0tHQjcFJug@mail.gmail.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Thu, 11 Mar 2021 14:14:45 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210311131445.8905630DC29@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-On Thu, Mar 11, 2021 at 04:21:38PM +0100, Ricardo Ribalda Delgado wrote:
-> On Thu, Mar 11, 2021 at 3:32 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
-> >
-> > On 11/03/2021 13:20, Ricardo Ribalda wrote:
-> > > Do not create Control Classes for empty classes.
-> >
-> > Shouldn't this be squashed with patch 06/10?
-> 
-> Most of the cameras I have used have the two classes, So  I am not
-> sure if squash with 6/10, or remove it. I separated it to feel what
-> Laurent has to say :)
+Sir/Madam,
 
-I think it makes sense to only expose the classes that are being used,
-so the change is good. As it fixes a bug introduced in 06/10, I'd squash
-it.
+CONGRATULATIONS!!!
 
-> > > Fixes v4l2-compliance:
-> > >
-> > > Control ioctls (Input 0):
-> > >                       fail: v4l2-test-controls.cpp(255): no controls in class 009d0000
-> > >       test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
-> > >
-> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > ---
-> > >  drivers/media/usb/uvc/uvc_ctrl.c   | 11 +++++++++++
-> > >  drivers/media/usb/uvc/uvc_driver.c |  1 -
-> > >  drivers/media/usb/uvc/uvcvideo.h   |  1 -
-> > >  3 files changed, 11 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> > > index 433342efc63f..5efbb3b5aa5b 100644
-> > > --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> > > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> > > @@ -2128,6 +2128,17 @@ static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
-> > >       if (map->set == NULL)
-> > >               map->set = uvc_set_le_value;
-> > >
-> > > +     switch (V4L2_CTRL_ID2WHICH(map->id)) {
-> > > +     case V4L2_CTRL_ID2WHICH(V4L2_CID_CAMERA_CLASS):
-> > > +             dev->ctrl_class_unit->ctrl_class.bmControls[0] |=
-> > > +                                             BIT(UVC_CC_CAMERA_CLASS);
-> > > +             break;
-> > > +     case V4L2_CTRL_ID2WHICH(V4L2_CID_USER_CLASS):
-> > > +             dev->ctrl_class_unit->ctrl_class.bmControls[0] |=
-> > > +                                             BIT(UVC_CC_USER_CLASS);
-> > > +             break;
-> > > +     }
-> > > +
-> > >       list_add_tail(&map->list, &ctrl->info.mappings);
-> > >       uvc_dbg(dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
-> > >               map->name, ctrl->info.entity, ctrl->info.selector);
-> > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > > index 996e8bd06ac5..4f368ab3a1f1 100644
-> > > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > > @@ -1501,7 +1501,6 @@ static int uvc_ctrl_class_parse(struct uvc_device *dev)
-> > >
-> > >       unit->ctrl_class.bControlSize = 1;
-> > >       unit->ctrl_class.bmControls = (u8 *)unit + sizeof(*unit);
-> > > -     unit->ctrl_class.bmControls[0] = (1 << (UVC_CC_LAST_CLASS + 1)) - 1;
-> > >       unit->get_info = uvc_ctrl_class_get_info;
-> > >       strncpy(unit->name, "Control Class", sizeof(unit->name) - 1);
-> > >
-> > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > > index 1d59ac10c2eb..cc573d63e459 100644
-> > > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > > @@ -186,7 +186,6 @@
-> > >   */
-> > >  #define UVC_CC_CAMERA_CLASS  0
-> > >  #define UVC_CC_USER_CLASS    1
-> > > -#define UVC_CC_LAST_CLASS    UVC_CC_USER_CLASS
-> > >
-> > >  /* ------------------------------------------------------------------------
-> > >   * Driver specific constants.
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 9th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
--- 
-Regards,
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-Laurent Pinchart
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
