@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5D5337CD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181F4337CDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhCKSmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:42:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhCKSlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:41:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D13FB64DEE;
-        Thu, 11 Mar 2021 18:41:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615488106;
-        bh=ipfQqSOZywUDqfSlURS+9CmL2qyZ4SrWmfyx37h5n+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ATIvzOe2Frjw6cnZY8luSBegqGnlar+EGU8P5zbLb6U4KtUKyqz2BhXqV6C+5nMji
-         qwB1CD5VEca3+4pQIhAQa1goZwy27aD/7ACkkfkv+7VcyiwfD25BxCN7wqY92zUMfH
-         e+KyQyS1R292ut8rBdVlK/UTvsFszNXxnhnt84w9dv7FVCpHBAeqP5ly76biFEoDJ8
-         w+Dw/TtvfACTbiLJbA7hT5m09QhqbeZq4NrylBsbFxjpvym1keBsXw/xotpn0xDPVW
-         r5dEGTzcu98gt3TcK+dsrwrSM5RiyvBx9QU2ZeU7u3J6KY7y2Sz1GzD69G2QIpIfrB
-         s7XyvQeWBL0lg==
-Date:   Thu, 11 Mar 2021 18:40:33 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Andreas Kemnade <andreas@kemnade.info>, j.neuschaefer@gmx.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: ntxec: Support for EC in Tolino Shine 2 HD
-Message-ID: <20210311184033.GJ4962@sirena.org.uk>
-References: <20210308212952.20774-1-andreas@kemnade.info>
- <20210310094821.GB701493@dell>
+        id S229871AbhCKSqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:46:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhCKSqe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 13:46:34 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E95C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:46:33 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id 16so153689pfn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+gqARGgjAQnr55mFUijIK03G998er1GFZ5SCixV4R80=;
+        b=QtlHbXolb8SN9mg3v2/7JBl319h23rtwHwXdGsaDMWaf4Pl0+qPGV9H+YG7vVhibvi
+         DStAjNqHEd0C5VT9tV5TRubtqms+1Wy3/fo7dgOkzA618+2MI7Z4WBTDqho+/ZtEFYao
+         eOpXwJZkHmub3MJNdJVKrIcyc4TaPKjOeGgqk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+gqARGgjAQnr55mFUijIK03G998er1GFZ5SCixV4R80=;
+        b=nHlXsHJirfy3RZPxBSMFptVvmw9AT7VfjGA8WzpmJ9Zr1b6NVJfg+vnaqlIcz+n4m1
+         XxDPJx7t6ZBGsHe5IV7lelBNLxfgqUvgKPrpnYlW5b+x7YiS/PwUjyXqgaoqZlGETyKb
+         6c9BZkJZ3TVrK4VDj3ccQWXff2SiHPRoC0G6QhVaocHo7tzFmzWVLAID7z8wSETkheDW
+         +sqYidZnCRflHrWMiEkqfOR1OL/ZX3vW3+ZBAH809czq07xNli+m0nJGbmZyO/fWQ7dK
+         VLe23LwsmNKl5RDpj7TS5+EEeARVwPQeZnHUp0MQ1PkB5KX0E0HyMC7i/jmUSDp9hIyS
+         Szug==
+X-Gm-Message-State: AOAM532ENu1Nq9bn3vMDYIb/FB7YISskBTwF0JsEM7Frf0jbgxfVStX0
+        v8aizlQCb+A2LjskQ/jd+c24UA==
+X-Google-Smtp-Source: ABdhPJwlBziDT3FhaXdYvPF6eDa8YqqHFIjIoTjx6XhgMxeOgn8cwk1uh/tks7FBVkr1hkxgkwzlMw==
+X-Received: by 2002:a63:4d56:: with SMTP id n22mr8404937pgl.277.1615488393373;
+        Thu, 11 Mar 2021 10:46:33 -0800 (PST)
+Received: from li-cloudtop.c.googlers.com.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id z2sm3108398pfq.198.2021.03.11.10.46.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 10:46:32 -0800 (PST)
+From:   Li Li <dualli@chromium.org>
+To:     dualli@google.com, tkjos@google.com, gregkh@linuxfoundation.org,
+        christian@brauner.io, arve@android.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
+        surenb@google.com
+Cc:     joel@joelfernandes.org, kernel-team@android.com
+Subject: [PATCH v2 0/3] Binder: Enable App Freezing Capability
+Date:   Thu, 11 Mar 2021 10:46:26 -0800
+Message-Id: <20210311184629.589725-1-dualli@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lYetfuAxy9ic4HK3"
-Content-Disposition: inline
-In-Reply-To: <20210310094821.GB701493@dell>
-X-Cookie: I'm rated PG-34!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Li Li <dualli@google.com>
 
---lYetfuAxy9ic4HK3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+To improve the user experience when switching between recently used
+applications, the background applications which are not currently needed
+are cached in the memory. Normally, a well designed application will not
+consume valuable CPU resources in the background. However, it's possible
+some applications are not able or willing to behave as expected, wasting
+energy even after being cached.
 
-On Wed, Mar 10, 2021 at 09:48:21AM +0000, Lee Jones wrote:
+It is a good idea to freeze those applications when they're only being
+kept alive for the sake of faster startup and energy saving. These kernel
+patches will provide the necessary infrastructure for user space framework
+to freeze and thaw a cached process, check the current freezing status and
+correctly deal with outstanding binder transactions to frozen processes.
 
-> Could you take a look at this for me please:
+Changes in v2: avoid panic by using pr_warn for unexpected cases.
 
-> > +static int regmap_ignore_write(void *context,
-> > +			       unsigned int reg, unsigned int val)
-> > +
-> > +{
-> > +	struct regmap *regmap = context;
-> > +
-> > +	regmap_write(regmap, reg, val);
-> > +
-> > +	return 0;
-> > +}
+Marco Ballesio (3):
+  binder: BINDER_FREEZE ioctl
+  binder: use EINTR for interrupted wait for work
+  binder: BINDER_GET_FROZEN_INFO ioctl
 
-If there were more users it'd be better to have this in the core so that
-problems we can detect like cache stuff if that's used but if it's just
-one broken device it's probably not worth it, this seems like something
-you'd have to try to end up with and which is going to cause timeout
-problems with a lot of I2C controllers which would tank performance
-enough that people would notice.
+ drivers/android/binder.c            | 200 ++++++++++++++++++++++++++--
+ drivers/android/binder_internal.h   |  18 +++
+ include/uapi/linux/android/binder.h |  20 +++
+ 3 files changed, 226 insertions(+), 12 deletions(-)
 
---lYetfuAxy9ic4HK3
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBKZCAACgkQJNaLcl1U
-h9B5YQf+OWhi3p3jDEJY5RxtGOjQsm5A1eUmm/TYd2uZBEZ+tCJ9CwoDlZQ5WIAr
-QfWAhLK9var/WpC2bOgwGcB3yW4uCxNBjDrGI6mLJObrv0m2Z5cHA7uPQE98Ut79
-PKHS8+ZEXWEkgH8fPYz+lY5Ln+mddsPeB6l/yj3jkvJsoRypyWJT/S6xppsjHVhV
-15rlztZszFQl0z3A1QAKvkIeGTg7upbZUXBnltvf63RP+aF2v8M64zuv102YpWqL
-LQXGfvm7orKwS+oKIw8inbo/XjIyUVX3/VEYj2lpXGhMTRawogRcEpp3X0jUEx6W
-kvjH5HpWQ6V0ys/7gqnBhQyYMHBIZA==
-=fB7p
------END PGP SIGNATURE-----
-
---lYetfuAxy9ic4HK3--
