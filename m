@@ -2,288 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21783337B40
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEDB337B4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCKRnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:43:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhCKRnR (ORCPT
+        id S229686AbhCKRoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:44:39 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:53328 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230173AbhCKRoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:43:17 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4588CC061760;
-        Thu, 11 Mar 2021 09:43:17 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id p21so41094810lfu.11;
-        Thu, 11 Mar 2021 09:43:17 -0800 (PST)
+        Thu, 11 Mar 2021 12:44:15 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12BHdiAq017831;
+        Thu, 11 Mar 2021 09:44:03 -0800
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2177.outbound.protection.outlook.com [104.47.58.177])
+        by mx0a-0016f401.pphosted.com with ESMTP id 377gn9hkga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 09:44:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fxCqQa1T6SJst8FnGuWIIP5k//21Wwgk5wimevpKoRSAFRcrmcKDOegXoPcE84PPBqk1ZpLAxIiCFEsGb/Qg9dcmLkoHfduNcEwJzDoDOgoohF6lY61V+s9ZF2BMwi9/S8I1SQAvu9HcagRYPMtKETueeh7r4wbAOoOJJFbUucjvMnAGpIU9WCd35b4jTdEIwFlDxG8T9F+ONcfhk8f6CHLGQihRmzK48uCjDfEi0mdcCI6pnFyLWAgEUmm2QZQTRPnjnDBm15obbTq7GB0/Qdd0aozFoRcjI2Jq25pkulLBjM9lRmt49R7PCG53mFL4rXuBkz3EIyu1sUXgoI7RtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xG6Vba2CKyMgJjs02rThLsd2bm57yASnhx/1PEYbFMo=;
+ b=SjC2nIT696ltbZoHOHAbqDlPDCEsu7ESGAInX6m+wFZq6RabdBdn6IezwC9IZm1ql4yOvMPq4RzhXoyKdObTS+EIQzbovf9H2cA3X6rAOp8vIFXXvvAIN/lJb7OoTw8zKBAq7d548q6tt7598fZby0HqaoDxQtLOlEvSUokiZfKXMjYRD6sNLLncdwDyC3zhW1b4wnMYeGg/ks0/I4giX3qZe17wnBAHqoqJuHXG5qaGo4xvYNL+uqCOhoedDo6h0cgRjfRLkil8qZeKZUznlhATknHhblN5p322tOMWFBZawzOpQ9iv3fBfkbPvakOSUFvy+zH6Y7thU2cYjkrPsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KFH1WQ55n2o2H6XVeSwGtTqtJ0JVSPd2X/kO35Iu2VI=;
-        b=JYIOXxWQ0tCq5tpE5vlFkgbMyZR4z0PZzmUho8YJJBzdNyHjvAoAriWB8Kk47Irn7Y
-         /RVSAvvbV4KA/9nBbU9SxdJLs+SxbSQ9kCdyNI5ScmtMiwghBTiyl/IJoQcmCE6mGmR/
-         cSCKXUi4XsDQmwwRe/qYgh9thvxXimW9jRf17yktbfGQaa92Z+O6mA4JSB7eDrH0X7Gj
-         8N4VN3/cgY8/IEHMXQGa75Xh4YS0U8IzO1SPuLtNcEl1XHZ0G+sVOIaCqBFXkkZSojWf
-         hw4wu9sWfmR4RCsm+Ef83k9BBw2N9dEWCBDUU19o2DFqS8FucBrgWoB3b2DiZelAaYqO
-         7tBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KFH1WQ55n2o2H6XVeSwGtTqtJ0JVSPd2X/kO35Iu2VI=;
-        b=SaD2f1p7QLtFkA9rrX7DTat24wPrra1gKnesUNJ5GfiaH6op8WLiA3r9hb4iJmzpJE
-         YK8coC3YUfPNiv1q8xsMFSxUD+ZUQ7onoOUXmhkeW/boQQLD8nCeO52Vnmp8y88b8sjH
-         NVL7YrKPW696+esqacHbBVo4zm0axbsVUiSurmxj8tX/gluM7baNlybTiNc4m59bxxu/
-         G25H+2XbTNNQFnvVIx7Gwu+n82bPBfOVg6176J56Zl2W8jlW4X7KaUE6iuuaSeQq09d8
-         3FDMJJsvkX/nRuIEjOi7OYtUaA+EOF+4QVQqdCw53vR+zzUH1T/Yg0YdMEtYglLbaWcQ
-         MBzg==
-X-Gm-Message-State: AOAM531XnWheSymDiSBtFaAx07h9FaYa0Qe6JtFAGYcB2JVZo3P15cH0
-        RC1ACKkYBD6LFKHn5WF2eUs=
-X-Google-Smtp-Source: ABdhPJx+umdPXW4BrOcDOBr5X/nTi6J68GJ4UmbG0xK+Rc+6qqHb//k3tPQCAP+QpJuCr8CJdtfkYA==
-X-Received: by 2002:a19:6b10:: with SMTP id d16mr2764909lfa.540.1615484595668;
-        Thu, 11 Mar 2021 09:43:15 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id g10sm1021245lfe.90.2021.03.11.09.43.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 09:43:15 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Paul Fertser <fercerpav@gmail.com>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] ASoC: tegra: ahub: Switch to use reset-bulk API
-Date:   Thu, 11 Mar 2021 20:43:02 +0300
-Message-Id: <20210311174302.15430-6-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210311174302.15430-1-digetx@gmail.com>
-References: <20210311174302.15430-1-digetx@gmail.com>
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xG6Vba2CKyMgJjs02rThLsd2bm57yASnhx/1PEYbFMo=;
+ b=t8S7Xs+5YX8iPLKk8CpbpG0ycgXAzy1j6flk3byDT5tpw2ZrnjJ4sou1cMvS9UZjiuTHPNhB9CD2E+7p1vMbXItiEGToRQGpCB75Vvr5vAq3AAg+U90TrFwwZb/CJzv0E68j59RkOwJuKuQrZSUaBxAthEMsyOJAB+lC3br5q7Y=
+Received: from DM6PR18MB3065.namprd18.prod.outlook.com (2603:10b6:5:171::14)
+ by DM5PR18MB1450.namprd18.prod.outlook.com (2603:10b6:3:b9::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3933.31; Thu, 11 Mar 2021 17:43:59 +0000
+Received: from DM6PR18MB3065.namprd18.prod.outlook.com
+ ([fe80::7411:39d:9a90:faa7]) by DM6PR18MB3065.namprd18.prod.outlook.com
+ ([fe80::7411:39d:9a90:faa7%3]) with mapi id 15.20.3933.031; Thu, 11 Mar 2021
+ 17:43:59 +0000
+From:   Felix Manlunas <fmanlunas@marvell.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        Derek Chickles <dchickles@marvell.com>,
+        Satananda Burla <sburla@marvell.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXT] module refcount issues in the liquidio driver
+Thread-Topic: [EXT] module refcount issues in the liquidio driver
+Thread-Index: AQHXFklvx9i/gRlQO0K4Wf6sBClIg6p/DuEw
+Date:   Thu, 11 Mar 2021 17:43:59 +0000
+Message-ID: <DM6PR18MB306560B6FA9700B884065FF9B9909@DM6PR18MB3065.namprd18.prod.outlook.com>
+References: <YEnIvMOComLaaVa5@infradead.org>
+In-Reply-To: <YEnIvMOComLaaVa5@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [67.180.122.75]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: aa4db7c9-f5d9-44e0-00de-08d8e4b540ba
+x-ms-traffictypediagnostic: DM5PR18MB1450:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR18MB1450253C36A54357B6CD8D88B9909@DM5PR18MB1450.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6KXZoI864MGI32vHncvlDarhqJ2RsQp+MDl3OxO7XhOse88blM58CZtgkkc1Ef9x2d3/MP8JO9c3dktrezsSTYnQgrhA/TnxBg0ylDZAEgI58Yn3G6+0ob/bqtq75W1D23rG1AumuwSebCbORloRQlxOttn3C68i2zFh1b3iAcs1n6lBVt7gZ5iYwsqOJvoLSmCvNXjybV1vCChGpOQjLVGiMJFp/XNwts5cHC7pxj1ZjZA6P9fEOFAc+6re7vvXGysHjBK7Y4OhAAXV7BZTaG02jyNtSxyBd8mHiM6s3oQACUP3ayu6NuUxIgAEf+RLLNUyQFqlaYNNQ6KMU5ImjJBcXzzJt4d/5VQRYBBdzmtZE8S7IMPtQykMP58gEog9kdOi6nb7U0T/LMeQ2jSLGCXZ7clU31SZkB6N5Z7QSNhY52rnCnMrDorzMOtpJvkHyH014nktDn8BuRH6qwMgbPBvkxhSDSuhF9vGhBPT6vUKSZf1Y1PyKYB2LWbIZMRG5kiArBqYxd7umP+i10acD42ov801qJuyaDJuC+vJz5Bj39jVx0hjYQMsk4o3cCxB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR18MB3065.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(366004)(6636002)(86362001)(71200400001)(26005)(2906002)(55016002)(316002)(33656002)(9686003)(83380400001)(478600001)(76116006)(54906003)(110136005)(8936002)(66946007)(7696005)(6506007)(5660300002)(4326008)(186003)(52536014)(66476007)(66446008)(66556008)(64756008)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?EaRYGpcSibhiF7n6ugxYUWPO7abRt9esjh2jR+TW23JTswJAsA3E4IsJuS0R?=
+ =?us-ascii?Q?Q1/hXZ0KeNlL/B1onqDHIF9UVRQHWcL1BQa0k2cURKrGr725ZnIjHO4UwFjn?=
+ =?us-ascii?Q?7DK4G0gHx5T1jOfeJaVs8cXicQUF/o7E8ma9UN7gz8w1rSUFmKRfjdC4V6Gx?=
+ =?us-ascii?Q?Je0QK4rFSMNBiMbcescIPW746TpwBjcEFozr9cYeayguy5A+uoUPDxg85M+w?=
+ =?us-ascii?Q?i9jBv+dHYK+mg4SZDjmeCMsz5xlz1By23Xvd/lV4pCSzj3Bab+B0MCioq/lE?=
+ =?us-ascii?Q?bP0NcxMLKtqcwXZb9MDMJnTPghDotcFkDdVzpoXxOe2WPRc665Q1OH5IC66c?=
+ =?us-ascii?Q?PSp8s0E87cPa0pcr5WCnRBFQ3L0yoyWkenTHturcrrsdOF5KMendb0rMKyZV?=
+ =?us-ascii?Q?WONiUsyNZDR7TmSPNkqMAeq2setOmYeAqBo0lyJ9/qZZATikfsbUwcgxpgqR?=
+ =?us-ascii?Q?jQi6w31CA8ebI0ZCzQsceb8s5Grrd3sZ/Uq8hKMfaXUAx+SUShHm1x6FVkXv?=
+ =?us-ascii?Q?9W6sBAyEpsNFGm/SCgtakogijr7qnvPbxwVCThs4o8X50Wwxeus6alaOZ0wu?=
+ =?us-ascii?Q?TuzVj4YZX8pGtiF/cmjo2Bt2f0G6SoyCMEg3ymyU/Md3FEm85nLx6QitK7cz?=
+ =?us-ascii?Q?8UexG0VOQw1UZhvmO95HV5fnmqnMRk9HofdoAPSH3Q8gbol+AzSGHXZMX4uU?=
+ =?us-ascii?Q?354yIZXdl5/nd/UmOTz89OhA2u6DeicBbpoME5uqdtlRibmaGPqjtmG35Gnb?=
+ =?us-ascii?Q?egN9bbARbtrtLoyebvvc20ux5wB3s5p5WF0v4QZczZXOw98QktSg/nFsK0Ia?=
+ =?us-ascii?Q?wyh1c/QrdSc17aWNEdJ+9GVePFGZYETyxOb+6DPsEqsgKzD2AC50fYO8Vxp4?=
+ =?us-ascii?Q?IBATnP2XpKZR4hzgo1suAT1HIRVWEjRgdlB3zylTMGLoeOXrwFfTkEsPwHIx?=
+ =?us-ascii?Q?NHLQaDppT5jQjyjBud/Tux/VV+JRDi2dklM1AKzAZsIrGgSgmzffLCg4lpux?=
+ =?us-ascii?Q?xB/XOKN+/Nu2bjyqxTcQMFsedontqVkd9Upp5jmiveRuQBIPDro9/GsTjfI4?=
+ =?us-ascii?Q?8PJvos2exKPx8zEnV7b3yl1LysbcF88a1cEjndGpGrWDs8OVauvIKOYSH88o?=
+ =?us-ascii?Q?YLtLYnZ3+o9pPzAS2gB9EWBgHtzb7BJQm35xznZ1rT3FaW8+r1Jt9tJLVn+q?=
+ =?us-ascii?Q?deJT87QP14gVFrnIu3Pa5HhcX1h84TeDdq8ygL4h993CwwdEElT3bK/xmnaC?=
+ =?us-ascii?Q?OoNsHfxfxDQaxBPoTNZ2NWkKbLTnHwW1ZCWc06U0qHnARKJvddKsGPCsZaMi?=
+ =?us-ascii?Q?yDYR4xX/LMkrRPZLqNeqwOTD?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR18MB3065.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa4db7c9-f5d9-44e0-00de-08d8e4b540ba
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2021 17:43:59.8110
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fYla2wiP6JZoQyncbdkJ6dCdrjJl0UfrOeDEliYeVfREqmRZ31RdCkXa2kSLKYfDhfovJ1OoZj5Fe47IEfGzuQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR18MB1450
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-11_06:2021-03-10,2021-03-11 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use reset-bulk API in order to make code cleaner.
+From: Christoph Hellwig <hch@infradead.org>
+Date: Wed 3/10/2021 11:38 PM -0800
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- sound/soc/tegra/tegra30_ahub.c | 104 ++++++++++++---------------------
- sound/soc/tegra/tegra30_ahub.h |   5 +-
- sound/soc/tegra/tegra30_i2s.c  |   1 +
- 3 files changed, 40 insertions(+), 70 deletions(-)
+> Hi all,
+>=20
+> I just stumbled over the odd handling of module refcounts in the liquidio
+> driver.  The big red flag is the call to module_refcount in
+> liquidio_watchdog, which will do the wrong thing for any external module
+> refcount, like a userspace open.
+>
+> But more importantly the whole concept of acquiring module refcounts from
+> inside the driver is pretty bogus.  What problem does this try to solve?
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 9ef05ca4f6c4..d24c26f4960d 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -65,7 +65,7 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
- {
- 	int ret;
- 
--	ret = reset_control_assert(ahub->reset);
-+	ret = reset_control_bulk_assert(ahub->nresets, ahub->resets);
- 	if (ret)
- 		return ret;
- 
-@@ -75,7 +75,7 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
- 
- 	usleep_range(10, 100);
- 
--	ret = reset_control_deassert(ahub->reset);
-+	ret = reset_control_bulk_deassert(ahub->nresets, ahub->resets);
- 	if (ret)
- 		goto disable_clocks;
- 
-@@ -339,41 +339,28 @@ int tegra30_ahub_unset_rx_cif_source(enum tegra30_ahub_rxcif rxcif)
- }
- EXPORT_SYMBOL_GPL(tegra30_ahub_unset_rx_cif_source);
- 
--#define MOD_LIST_MASK_TEGRA30	BIT(0)
--#define MOD_LIST_MASK_TEGRA114	BIT(1)
--#define MOD_LIST_MASK_TEGRA124	BIT(2)
--
--#define MOD_LIST_MASK_TEGRA30_OR_LATER \
--		(MOD_LIST_MASK_TEGRA30 | MOD_LIST_MASK_TEGRA114 | \
--			MOD_LIST_MASK_TEGRA124)
--#define MOD_LIST_MASK_TEGRA114_OR_LATER \
--		(MOD_LIST_MASK_TEGRA114 | MOD_LIST_MASK_TEGRA124)
--
--static const struct {
--	const char *rst_name;
--	u32 mod_list_mask;
--} configlink_mods[] = {
--	{ "d_audio", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "apbif", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s0", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s1", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s2", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s3", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s4", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "dam0", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "dam1", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "dam2", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "spdif", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "amx", MOD_LIST_MASK_TEGRA114_OR_LATER },
--	{ "adx", MOD_LIST_MASK_TEGRA114_OR_LATER },
--	{ "amx1", MOD_LIST_MASK_TEGRA124 },
--	{ "adx1", MOD_LIST_MASK_TEGRA124 },
--	{ "afc0", MOD_LIST_MASK_TEGRA124 },
--	{ "afc1", MOD_LIST_MASK_TEGRA124 },
--	{ "afc2", MOD_LIST_MASK_TEGRA124 },
--	{ "afc3", MOD_LIST_MASK_TEGRA124 },
--	{ "afc4", MOD_LIST_MASK_TEGRA124 },
--	{ "afc5", MOD_LIST_MASK_TEGRA124 },
-+static const struct reset_control_bulk_data tegra30_ahub_resets_data[] = {
-+	{ "d_audio" },
-+	{ "apbif" },
-+	{ "i2s0" },
-+	{ "i2s1" },
-+	{ "i2s2" },
-+	{ "i2s3" },
-+	{ "i2s4" },
-+	{ "dam0" },
-+	{ "dam1" },
-+	{ "dam2" },
-+	{ "spdif" },
-+	{ "amx" }, /* Tegra114+ */
-+	{ "adx" }, /* Tegra114+ */
-+	{ "amx1" }, /* Tegra124 */
-+	{ "adx1" }, /* Tegra124 */
-+	{ "afc0" }, /* Tegra124 */
-+	{ "afc1" }, /* Tegra124 */
-+	{ "afc2" }, /* Tegra124 */
-+	{ "afc3" }, /* Tegra124 */
-+	{ "afc4" }, /* Tegra124 */
-+	{ "afc5" }, /* Tegra124 */
- };
- 
- #define LAST_REG(name) \
-@@ -502,17 +489,17 @@ static const struct regmap_config tegra30_ahub_ahub_regmap_config = {
- };
- 
- static struct tegra30_ahub_soc_data soc_data_tegra30 = {
--	.mod_list_mask = MOD_LIST_MASK_TEGRA30,
-+	.num_resets = 11,
- 	.set_audio_cif = tegra30_ahub_set_cif,
- };
- 
- static struct tegra30_ahub_soc_data soc_data_tegra114 = {
--	.mod_list_mask = MOD_LIST_MASK_TEGRA114,
-+	.num_resets = 13,
- 	.set_audio_cif = tegra30_ahub_set_cif,
- };
- 
- static struct tegra30_ahub_soc_data soc_data_tegra124 = {
--	.mod_list_mask = MOD_LIST_MASK_TEGRA124,
-+	.num_resets = 21,
- 	.set_audio_cif = tegra124_ahub_set_cif,
- };
- 
-@@ -527,8 +514,6 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- {
- 	const struct of_device_id *match;
- 	const struct tegra30_ahub_soc_data *soc_data;
--	struct reset_control *rst;
--	int i;
- 	struct resource *res0;
- 	void __iomem *regs_apbif, *regs_ahub;
- 	int ret = 0;
-@@ -541,34 +526,16 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	soc_data = match->data;
- 
--	/*
--	 * The AHUB hosts a register bus: the "configlink". For this to
--	 * operate correctly, all devices on this bus must be out of reset.
--	 */
--	for (i = 0; i < ARRAY_SIZE(configlink_mods); i++) {
--		if (!(configlink_mods[i].mod_list_mask &
--					soc_data->mod_list_mask))
--			continue;
--
--		rst = reset_control_get_exclusive(&pdev->dev,
--						  configlink_mods[i].rst_name);
--		if (IS_ERR(rst)) {
--			dev_err(&pdev->dev, "Can't get reset %s\n",
--				configlink_mods[i].rst_name);
--			ret = PTR_ERR(rst);
--			return ret;
--		}
--
--		/* just check presence of the reset control in DT */
--		reset_control_put(rst);
--	}
--
- 	ahub = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
- 			    GFP_KERNEL);
- 	if (!ahub)
- 		return -ENOMEM;
- 	dev_set_drvdata(&pdev->dev, ahub);
- 
-+	BUILD_BUG_ON(sizeof(ahub->resets) != sizeof(tegra30_ahub_resets_data));
-+	memcpy(ahub->resets, tegra30_ahub_resets_data, sizeof(ahub->resets));
-+
-+	ahub->nresets = soc_data->num_resets;
- 	ahub->soc_data = soc_data;
- 	ahub->dev = &pdev->dev;
- 
-@@ -579,10 +546,11 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	ahub->reset = devm_reset_control_array_get_exclusive(&pdev->dev);
--	if (IS_ERR(ahub->reset)) {
--		dev_err(&pdev->dev, "Can't get resets: %pe\n", ahub->reset);
--		return PTR_ERR(ahub->reset);
-+	ret = devm_reset_control_bulk_get_exclusive(&pdev->dev, ahub->nresets,
-+						    ahub->resets);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Can't get resets: %d\n", ret);
-+		return ret;
- 	}
- 
- 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-diff --git a/sound/soc/tegra/tegra30_ahub.h b/sound/soc/tegra/tegra30_ahub.h
-index 3b85244f87f1..c9eaf4ec8f6e 100644
---- a/sound/soc/tegra/tegra30_ahub.h
-+++ b/sound/soc/tegra/tegra30_ahub.h
-@@ -491,7 +491,7 @@ void tegra124_ahub_set_cif(struct regmap *regmap, unsigned int reg,
- 			   struct tegra30_ahub_cif_conf *conf);
- 
- struct tegra30_ahub_soc_data {
--	u32 mod_list_mask;
-+	unsigned int num_resets;
- 	void (*set_audio_cif)(struct regmap *regmap,
- 			      unsigned int reg,
- 			      struct tegra30_ahub_cif_conf *conf);
-@@ -511,7 +511,8 @@ struct tegra30_ahub_soc_data {
- struct tegra30_ahub {
- 	const struct tegra30_ahub_soc_data *soc_data;
- 	struct device *dev;
--	struct reset_control *reset;
-+	struct reset_control_bulk_data resets[21];
-+	unsigned int nresets;
- 	struct clk_bulk_data clocks[2];
- 	unsigned int nclocks;
- 	resource_size_t apbif_addr;
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 3d22c1be6f3d..614b67be1dd9 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -23,6 +23,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
--- 
-2.29.2
+The problem is described in the commit log below, in "(2) Decrement the
+module refcount ...".
+
+commit bb54be589c7a8451a0504924703abdffeb06b79f
+Author: Felix Manlunas <felix.manlunas@cavium.com>
+Date:   Tue Apr 4 19:26:57 2017 -0700
+
+    liquidio: fix Octeon core watchdog timeout false alarm
+   =20
+    Detection of watchdog timeout of Octeon cores is flawed and susceptible=
+ to
+    false alarms.  Refactor by removing the detection code, and in its plac=
+e,
+    leverage existing code that monitors for an indication from the NIC
+    firmware that an Octeon core crashed; expand the meaning of the indicat=
+ion
+    to "an Octeon core crashed or its watchdog timer expired".  Detection o=
+f
+    watchdog timeout is now delegated to an exception handler in the NIC
+    firmware; this is free of false alarms.
+   =20
+    Also if there's an Octeon core crash or watchdog timeout:
+    (1) Disable VF Ethernet links.
+    (2) Decrement the module refcount by an amount equal to the number of
+        active VFs of the NIC whose Octeon core crashed or had a watchdog
+        timeout.  The refcount will continue to reflect the active VFs of
+        other liquidio NIC(s) (if present) whose Octeon cores are faultless=
+.
+   =20
+    Item (2) is needed to avoid the case of not being able to unload the dr=
+iver
+    because the module refcount is stuck at some non-zero number.  There is
+    code that, in normal cases, decrements the refcount upon receiving a
+    message from the firmware that a VF driver was unloaded.  But in
+    exceptional cases like an Octeon core crash or watchdog timeout, arriva=
+l of
+    that particular message from the firmware might be unreliable.  That no=
+rmal
+    case code is changed to not touch the refcount in the exceptional case =
+to
+    avoid contention (over the refcount) with the liquidio_watchdog kernel
+    thread who will carry out item (2).
+   =20
+    Signed-off-by: Felix Manlunas <felix.manlunas@cavium.com>
+    Signed-off-by: Derek Chickles <derek.chickles@cavium.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
 
