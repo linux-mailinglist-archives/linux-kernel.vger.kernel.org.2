@@ -2,161 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92175336E02
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9BB336E0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhCKIlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:41:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhCKIk7 (ORCPT
+        id S231572AbhCKImU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:42:20 -0500
+Received: from outbound-smtp38.blacknight.com ([46.22.139.221]:39007 "EHLO
+        outbound-smtp38.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231590AbhCKImD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:40:59 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01E8C061574;
-        Thu, 11 Mar 2021 00:40:58 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id t18so3104951pjs.3;
-        Thu, 11 Mar 2021 00:40:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6mHyVtaVWSP9V2QIq3wJeCIuCzZt3/lvF8Edv6hD61g=;
-        b=XUFa0Cyiyni1CphJwyUp0Crd/UMZTGN3WylVXXa4xmaDwP10UFqZfeG5689oOZVrOf
-         mW49lwUUDzlnW7tcQVdgBVCZ/VXBcEmDKl56xXILMvA+bQzpcXe11r8vkxIB3yxssoRD
-         7tYxjZG+FwMLZK9pUlHlkZobkpjChRmCLWhAMn5pmHLysa4sHRShfDA+HMOnQS0uvZM6
-         okkyuExtxOQxWzgbdHqqkesdTibJTSdepuwAa3gL3uR4vXdsLmD3r6L6GstybvEN7hJl
-         c9u+ncRpgBjrKsAfNi5MS4eunDUghMFBrIkhtinH/keuIiRfeP5h0330KHTcoFRloE3a
-         Y9VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6mHyVtaVWSP9V2QIq3wJeCIuCzZt3/lvF8Edv6hD61g=;
-        b=nwiE4utoOuCv0sPoP6AIqkA4fWBWby5LMPXFnkW7TyQNMgXzQvKNg+jdJdyKzROXLi
-         tpjKla7LLAU69YCF315k85Xg4DldpzNhAsVqUgO7Z8/4k8R4l1p2HoW6KK3JGGvoTM93
-         qhphrIpNxl0z6d/LexKKQv/sKnldpA4Ou8mp5skYhzP0yaOEO8l7NCUBwCQt2DpDdfsl
-         w99zxLummOM6KEjFMAllzIEyUawyODgQxIpI0hD9ZvVhelPj8S1Dg0sXCpxfCc+FieBN
-         8iD9MqN2PFjo7WQeggz7OxLZI+HJseS5aORLdnLvc0Le9BDCrGF8h43AaXNqboWGhVkg
-         4uEQ==
-X-Gm-Message-State: AOAM53160441SZK4ZsaS3rADWctUv36jfB57YJtMVxv5XJiSbdumH7X4
-        UgIqYdTPuq4Okm0Brr2uny5ajIloS3ba3fWj
-X-Google-Smtp-Source: ABdhPJzzCTl16BWQXDUd6QiXp8eVV/DD2BBXrJK0gAHjOLjNFOoI8dgw2RxRLnu5lmLZqEaFYGJimA==
-X-Received: by 2002:a17:90a:bb91:: with SMTP id v17mr7602440pjr.24.1615452057971;
-        Thu, 11 Mar 2021 00:40:57 -0800 (PST)
-Received: from glados.. ([2601:647:6000:3e5b::a27])
-        by smtp.gmail.com with ESMTPSA id c22sm1585829pfl.169.2021.03.11.00.40.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 00:40:57 -0800 (PST)
-From:   Thomas Hebb <tommyhebb@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Hebb <tommyhebb@gmail.com>, stable@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>, linux-mm@kvack.org
-Subject: [PATCH] z3fold: prevent reclaim/free race for headless pages
-Date:   Thu, 11 Mar 2021 00:40:54 -0800
-Message-Id: <c8106dbe6d8390b290cd1d7f873a2942e805349e.1615452048.git.tommyhebb@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Thu, 11 Mar 2021 03:42:03 -0500
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp38.blacknight.com (Postfix) with ESMTPS id 1205E209B
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:42:02 +0000 (GMT)
+Received: (qmail 8019 invoked from network); 11 Mar 2021 08:42:01 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Mar 2021 08:42:01 -0000
+Date:   Thu, 11 Mar 2021 08:42:00 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210311084200.GR3697@techsingularity.net>
+References: <20210310104618.22750-1-mgorman@techsingularity.net>
+ <20210310104618.22750-3-mgorman@techsingularity.net>
+ <20210310154650.ad9760cd7cb9ac4acccf77ee@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210310154650.ad9760cd7cb9ac4acccf77ee@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit ca0246bb97c2 ("z3fold: fix possible reclaim races") introduced
-the PAGE_CLAIMED flag "to avoid racing on a z3fold 'headless' page
-release." By atomically testing and setting the bit in each of
-z3fold_free() and z3fold_reclaim_page(), a double-free was avoided.
+On Wed, Mar 10, 2021 at 03:46:50PM -0800, Andrew Morton wrote:
+> On Wed, 10 Mar 2021 10:46:15 +0000 Mel Gorman <mgorman@techsingularity.net> wrote:
+> 
+> > This patch adds a new page allocator interface via alloc_pages_bulk,
+> > and __alloc_pages_bulk_nodemask. A caller requests a number of pages
+> > to be allocated and added to a list. They can be freed in bulk using
+> > free_pages_bulk().
+> 
+> Why am I surprised we don't already have this.
+> 
 
-However, commit dcf5aedb24f8 ("z3fold: stricter locking and more careful
-reclaim") appears to have unintentionally broken this behavior by moving
-the PAGE_CLAIMED check in z3fold_reclaim_page() to after the page lock
-gets taken, which only happens for non-headless pages. For headless
-pages, the check is now skipped entirely and races can occur again.
+It was prototyped a few years ago and discussed at LSF/MM so it's in
+the back of your memory somewhere. It never got merged because it lacked
+users and I didn't think carrying dead untested code was appropriate.
 
-I have observed such a race on my system:
+> > The API is not guaranteed to return the requested number of pages and
+> > may fail if the preferred allocation zone has limited free memory, the
+> > cpuset changes during the allocation or page debugging decides to fail
+> > an allocation. It's up to the caller to request more pages in batch
+> > if necessary.
+> > 
+> > Note that this implementation is not very efficient and could be improved
+> > but it would require refactoring. The intent is to make it available early
+> > to determine what semantics are required by different callers. Once the
+> > full semantics are nailed down, it can be refactored.
+> > 
+> > ...
+> >
+> > +/* Drop reference counts and free order-0 pages from a list. */
+> > +void free_pages_bulk(struct list_head *list)
+> > +{
+> > +	struct page *page, *next;
+> > +
+> > +	list_for_each_entry_safe(page, next, list, lru) {
+> > +		trace_mm_page_free_batched(page);
+> > +		if (put_page_testzero(page)) {
+> > +			list_del(&page->lru);
+> > +			__free_pages_ok(page, 0, FPI_NONE);
+> > +		}
+> > +	}
+> > +}
+> > +EXPORT_SYMBOL_GPL(free_pages_bulk);
+> 
+> I expect that batching games are planned in here as well?
+> 
 
-    page:00000000ffbd76b7 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x165316
-    flags: 0x2ffff0000000000()
-    raw: 02ffff0000000000 ffffea0004535f48 ffff8881d553a170 0000000000000000
-    raw: 0000000000000000 0000000000000011 00000000ffffffff 0000000000000000
-    page dumped because: VM_BUG_ON_PAGE(page_ref_count(page) == 0)
-    ------------[ cut here ]------------
-    kernel BUG at include/linux/mm.h:707!
-    invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-    CPU: 2 PID: 291928 Comm: kworker/2:0 Tainted: G    B             5.10.7-arch1-1-kasan #1
-    Hardware name: Gigabyte Technology Co., Ltd. H97N-WIFI/H97N-WIFI, BIOS F9b 03/03/2016
-    Workqueue: zswap-shrink shrink_worker
-    RIP: 0010:__free_pages+0x10a/0x130
-    Code: c1 e7 06 48 01 ef 45 85 e4 74 d1 44 89 e6 31 d2 41 83 ec 01 e8 e7 b0 ff ff eb da 48 c7 c6 e0 32 91 88 48 89 ef e8 a6 89 f8 ff <0f> 0b 4c 89 e7 e8 fc 79 07 00 e9 33 ff ff ff 48 89 ef e8 ff 79 07
-    RSP: 0000:ffff88819a2ffb98 EFLAGS: 00010296
-    RAX: 0000000000000000 RBX: ffffea000594c5a8 RCX: 0000000000000000
-    RDX: 1ffffd4000b298b7 RSI: 0000000000000000 RDI: ffffea000594c5b8
-    RBP: ffffea000594c580 R08: 000000000000003e R09: ffff8881d5520bbb
-    R10: ffffed103aaa4177 R11: 0000000000000001 R12: ffffea000594c5b4
-    R13: 0000000000000000 R14: ffff888165316000 R15: ffffea000594c588
-    FS:  0000000000000000(0000) GS:ffff8881d5500000(0000) knlGS:0000000000000000
-    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-    CR2: 00007f7c8c3654d8 CR3: 0000000103f42004 CR4: 00000000001706e0
-    Call Trace:
-     z3fold_zpool_shrink+0x9b6/0x1240
-     ? sugov_update_single+0x357/0x990
-     ? sched_clock+0x5/0x10
-     ? sched_clock_cpu+0x18/0x180
-     ? z3fold_zpool_map+0x490/0x490
-     ? _raw_spin_lock_irq+0x88/0xe0
-     shrink_worker+0x35/0x90
-     process_one_work+0x70c/0x1210
-     ? pwq_dec_nr_in_flight+0x15b/0x2a0
-     worker_thread+0x539/0x1200
-     ? __kthread_parkme+0x73/0x120
-     ? rescuer_thread+0x1000/0x1000
-     kthread+0x330/0x400
-     ? __kthread_bind_mask+0x90/0x90
-     ret_from_fork+0x22/0x30
-    Modules linked in: rfcomm ebtable_filter ebtables ip6table_filter ip6_tables iptable_filter ccm algif_aead des_generic libdes ecb algif_skcipher cmac bnep md4 algif_hash af_alg vfat fat intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel iwlmvm hid_logitech_hidpp kvm at24 mac80211 snd_hda_codec_realtek iTCO_wdt snd_hda_codec_generic intel_pmc_bxt snd_hda_codec_hdmi ledtrig_audio iTCO_vendor_support mei_wdt mei_hdcp snd_hda_intel snd_intel_dspcfg libarc4 soundwire_intel irqbypass iwlwifi soundwire_generic_allocation rapl soundwire_cadence intel_cstate snd_hda_codec intel_uncore btusb joydev mousedev snd_usb_audio pcspkr btrtl uvcvideo nouveau btbcm i2c_i801 btintel snd_hda_core videobuf2_vmalloc i2c_smbus snd_usbmidi_lib videobuf2_memops bluetooth snd_hwdep soundwire_bus snd_soc_rt5640 videobuf2_v4l2 cfg80211 snd_soc_rl6231 videobuf2_common snd_rawmidi lpc_ich alx videodev mdio snd_seq_device snd_soc_core mc ecdh_generic mxm_wmi mei_me
-     hid_logitech_dj wmi snd_compress e1000e ac97_bus mei ttm rfkill snd_pcm_dmaengine ecc snd_pcm snd_timer snd soundcore mac_hid acpi_pad pkcs8_key_parser it87 hwmon_vid crypto_user fuse ip_tables x_tables ext4 crc32c_generic crc16 mbcache jbd2 dm_crypt cbc encrypted_keys trusted tpm rng_core usbhid dm_mod crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cryptd glue_helper xhci_pci xhci_pci_renesas i915 video intel_gtt i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec drm agpgart
-    ---[ end trace 126d646fc3dc0ad8 ]---
+Potentially it could be done but the page allocator would need to be
+fundamentally aware of batching to make it tidy or the per-cpu allocator
+would need knowledge of how to handle batches in the free path.  Batch
+freeing to the buddy allocator is problematic as buddy merging has to
+happen. Batch freeing to per-cpu hits pcp->high limitations.
 
-To fix the issue, re-add the earlier test and set in the case where we
-have a headless page.
+There are a couple of ways it *could* be done. Per-cpu lists could be
+allowed to temporarily exceed the high limits and reduce them out-of-band
+like what happens with counter updates or remote pcp freeing. Care
+would need to be taken when memory is low to avoid premature OOM
+and to guarantee draining happens in a timely fashion. There would be
+additional benefits to this. For example, release_pages() can hammer the
+zone lock when freeing very large batches and would benefit from either
+large batching or "plugging" the per-cpu list. I prototyped a series to
+allow the batch limits to be temporarily exceeded but it did not actually
+improve performance because of errors in the implementation and it needs
+a lot of work.
 
-Fixes: dcf5aedb24f8 ("z3fold: stricter locking and more careful reclaim")
-Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
----
+> >  static inline unsigned int
+> >  gfp_to_alloc_flags(gfp_t gfp_mask)
+> >  {
+> > @@ -4919,6 +4934,9 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+> >  		struct alloc_context *ac, gfp_t *alloc_mask,
+> >  		unsigned int *alloc_flags)
+> >  {
+> > +	gfp_mask &= gfp_allowed_mask;
+> > +	*alloc_mask = gfp_mask;
+> > +
+> >  	ac->highest_zoneidx = gfp_zone(gfp_mask);
+> >  	ac->zonelist = node_zonelist(preferred_nid, gfp_mask);
+> >  	ac->nodemask = nodemask;
+> > @@ -4960,6 +4978,99 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+> >  	return true;
+> >  }
+> >  
+> > +/*
+> > + * This is a batched version of the page allocator that attempts to
+> > + * allocate nr_pages quickly from the preferred zone and add them to list.
+> > + */
+> 
+> Documentation is rather lame.  Returns number of pages allocated...
+> 
 
- mm/z3fold.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+I added a note on the return value. The documentation is lame because at
+this point, we do not know what the required semantics for future users
+are. We have two examples at the moment in this series but I think it
+would be better to add kerneldoc documentation when there is a reasonable
+expectation that the API will not change. For example, SLUB could use
+this API when it fails to allocate a high-order page and instead allocate
+batches of order-0 pages but I did not investigate how feasible that
+is. Similarly, it's possible that we really need to deal with high-order
+batch allocations in which case, the per-cpu list should be high-order
+aware or the core buddy allocator needs to be batch-allocation aware.
 
-diff --git a/mm/z3fold.c b/mm/z3fold.c
-index 0152ad9931a8..8ae944eeb8e2 100644
---- a/mm/z3fold.c
-+++ b/mm/z3fold.c
-@@ -1350,8 +1350,22 @@ static int z3fold_reclaim_page(struct z3fold_pool *pool, unsigned int retries)
- 			page = list_entry(pos, struct page, lru);
- 
- 			zhdr = page_address(page);
--			if (test_bit(PAGE_HEADLESS, &page->private))
-+			if (test_bit(PAGE_HEADLESS, &page->private)) {
-+				/*
-+				 * For non-headless pages, we wait to do this
-+				 * until we have the page lock to avoid racing
-+				 * with __z3fold_alloc(). Headless pages don't
-+				 * have a lock (and __z3fold_alloc() will never
-+				 * see them), but we still need to test and set
-+				 * PAGE_CLAIMED to avoid racing with
-+				 * z3fold_free(), so just do it now before
-+				 * leaving the loop.
-+				 */
-+				if (test_and_set_bit(PAGE_CLAIMED, &page->private))
-+					continue;
-+
- 				break;
-+			}
- 
- 			if (kref_get_unless_zero(&zhdr->refcount) == 0) {
- 				zhdr = NULL;
+> > +int __alloc_pages_bulk_nodemask(gfp_t gfp_mask, int preferred_nid,
+> > +			nodemask_t *nodemask, int nr_pages,
+> > +			struct list_head *alloc_list)
+> > +{
+> > +	struct page *page;
+> > +	unsigned long flags;
+> > +	struct zone *zone;
+> > +	struct zoneref *z;
+> > +	struct per_cpu_pages *pcp;
+> > +	struct list_head *pcp_list;
+> > +	struct alloc_context ac;
+> > +	gfp_t alloc_mask;
+> > +	unsigned int alloc_flags;
+> > +	int alloced = 0;
+> > +
+> > +	if (nr_pages == 1)
+> > +		goto failed;
+> > +
+> > +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
+> > +	if (!prepare_alloc_pages(gfp_mask, 0, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
+> > +		return 0;
+> > +	gfp_mask = alloc_mask;
+> > +
+> > +	/* Find an allowed local zone that meets the high watermark. */
+> > +	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
+> > +		unsigned long mark;
+> > +
+> > +		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
+> > +		    !__cpuset_zone_allowed(zone, gfp_mask)) {
+> > +			continue;
+> > +		}
+> > +
+> > +		if (nr_online_nodes > 1 && zone != ac.preferred_zoneref->zone &&
+> > +		    zone_to_nid(zone) != zone_to_nid(ac.preferred_zoneref->zone)) {
+> > +			goto failed;
+> > +		}
+> > +
+> > +		mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK) + nr_pages;
+> > +		if (zone_watermark_fast(zone, 0,  mark,
+> > +				zonelist_zone_idx(ac.preferred_zoneref),
+> > +				alloc_flags, gfp_mask)) {
+> > +			break;
+> > +		}
+> > +	}
+> 
+> I suspect the above was stolen from elsewhere and that some code
+> commonification is planned.
+> 
+
+It's based on get_page_from_freelist. It would be messy to have them share
+common code at this point with a risk that the fast path for the common
+path (single page requests) would be impaired. The issue is that the
+fast path and slow paths have zonelist iteration, kswapd wakeup, cpuset
+enforcement and reclaim actions all mixed together at various different
+points. The locking is also mixed up with per-cpu list locking, statistic
+locking and buddy locking all having inappropriate overlaps (e.g. IRQ
+disabling protects per-cpu list locking, partially and unnecessarily
+protects statistics depending on architecture and overlaps with the
+IRQ-safe zone lock.
+
+Ironing this out risks hurting the single page allocation path. It would
+need to be done incrementally with ultimately the core of the allocator
+dealing with batches to avoid false bisections.
+
+> 
+> > +	if (!zone)
+> > +		return 0;
+> > +
+> > +	/* Attempt the batch allocation */
+> > +	local_irq_save(flags);
+> > +	pcp = &this_cpu_ptr(zone->pageset)->pcp;
+> > +	pcp_list = &pcp->lists[ac.migratetype];
+> > +
+> > +	while (alloced < nr_pages) {
+> > +		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
+> > +								pcp, pcp_list);
+> > +		if (!page)
+> > +			break;
+> > +
+> > +		prep_new_page(page, 0, gfp_mask, 0);
+> 
+> I wonder if it would be worth running prep_new_page() in a second pass,
+> after reenabling interrupts.
+> 
+
+Possibly, I could add another patch on top that does this because it's
+trading the time that IRQs are disabled for a list iteration.
+
+> Speaking of which, will the realtime people get upset about the
+> irqs-off latency?  How many pages are we talking about here?
+> 
+
+At the moment, it looks like batches of up to a few hundred at worst. I
+don't think realtime sensitive applications are likely to be using the
+bulk allocator API at this point.
+
+The realtime people have a worse problem in that the per-cpu list does
+not use local_lock and disable IRQs more than it needs to on x86 in
+particular. I've a prototype series for this as well which splits the
+locking for the per-cpu list and statistic handling and then converts the
+per-cpu list to local_lock but I'm getting this off the table first because
+I don't want multiple page allocator series in flight at the same time.
+Thomas, Peter and Ingo would need to be cc'd on that series to review
+the local_lock aspects.
+
+Even with local_lock, it's not clear to me why per-cpu lists need to be
+locked at all because potentially it could use a lock-free llist with some
+struct page overloading. That one is harder to predict when batches are
+taken into account as splicing a batch of free pages with llist would be
+unsafe so batch free might exchange IRQ disabling overhead with multiple
+atomics. I'd need to recheck things like whether NMI handlers ever call
+the page allocator (they shouldn't but it should be checked).  It would
+need a lot of review and testing.
+
+> > +		list_add(&page->lru, alloc_list);
+> > +		alloced++;
+> > +	}
+> > +
+> > +	if (!alloced)
+> > +		goto failed_irq;
+> > +
+> > +	if (alloced) {
+> > +		__count_zid_vm_events(PGALLOC, zone_idx(zone), alloced);
+> > +		zone_statistics(zone, zone);
+> > +	}
+> > +
+> > +	local_irq_restore(flags);
+> > +
+> > +	return alloced;
+> > +
+> > +failed_irq:
+> > +	local_irq_restore(flags);
+> > +
+> > +failed:
+> 
+> Might we need some counter to show how often this path happens?
+> 
+
+I think that would be overkill at this point. It only gives useful
+information to a developer using the API for the first time and that can
+be done with a debugging patch (or probes if you're feeling creative).
+I'm already unhappy with the counter overhead in the page allocator.
+zone_statistics in particular has no business being an accurate statistic.
+It should have been a best-effort counter like vm_events that does not need
+IRQs to be disabled. If that was a simply counter as opposed to an accurate
+statistic then a failure counter at failed_irq would be very cheap to add.
+
 -- 
-2.30.0
-
+Mel Gorman
+SUSE Labs
