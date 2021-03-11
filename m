@@ -2,113 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206D9337017
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0792E33701C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbhCKKek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:34:40 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:44728 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbhCKKeh (ORCPT
+        id S232354AbhCKKfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:35:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232224AbhCKKez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:34:37 -0500
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 12BAYJDi012899;
-        Thu, 11 Mar 2021 19:34:20 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 12BAYJDi012899
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615458860;
-        bh=JL39avkr6XAXggrtNaqY+rW1xFvHegX4PxpEorYJ0P0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RALITuhrD/lJww4WxZ9jRR1TUGsxgfh+ecFN+Teknu26oo8czDRd2xWctQ10J79VV
-         gHGgcCtnwbeJI7wO8sEJFfmZxE3W4tXtCht2yTha/qdVKppOR5ClUE0+uEGiX83ZQ7
-         PQeikUrGirwSAnVJYuggXUQB6KTfw6YoejzQGtCFmz0NBfXLtYZZZqs3iZ2f0GPGJ3
-         Zs28N8MBpjhF32KgX4d23rQWh98eo7KV5tWtWXnJXdJMZD1ItNv/KFX3ejDpOdtyDW
-         oyucZqvRu1h68UyOP579E5dvlUJ3JfFmTwIrdTJki/EE7nCUk9OcixoeK3Z0nM2R7Q
-         aW+az6YeJGgZA==
-X-Nifty-SrcIP: [209.85.210.181]
-Received: by mail-pf1-f181.google.com with SMTP id t29so14095124pfg.11;
-        Thu, 11 Mar 2021 02:34:20 -0800 (PST)
-X-Gm-Message-State: AOAM5314pWhdYYH+Yvd5Z4MU/fF8DRpRgMh0S1sqP0SIP1j0akObYAx7
-        jelqGmnBbrlb0GiVnig8vTVfP4zNdEyZcREhlS8=
-X-Google-Smtp-Source: ABdhPJzY0KKF0RIthLc5mGvm6tX6IBefaVdn9h1YLSHJplyPla5IWMj8zNCsMuxBzvDlUUReTD78xXXy5yDCWprwHeQ=
-X-Received: by 2002:a62:b416:0:b029:1e4:fb5a:55bb with SMTP id
- h22-20020a62b4160000b02901e4fb5a55bbmr6828665pfn.80.1615458859439; Thu, 11
- Mar 2021 02:34:19 -0800 (PST)
+        Thu, 11 Mar 2021 05:34:55 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9723C061574;
+        Thu, 11 Mar 2021 02:34:55 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id x7so10772541pfi.7;
+        Thu, 11 Mar 2021 02:34:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=LsOaumeF1bmcVfafAU6tzrmF1qroFKtzuGLnEEy+C7c=;
+        b=r7mxmWqZUvPRxN2Tf0nBPPv6ZVCtyKY1eO85F6qwp9uURZvOD3YtUyaeNQqFKIXSM7
+         7tU1ilpHcXoklZDnJIizla5vIuNpJ3YDlYO5V5PLZ7mcemz0ChUBGhho8fPCeU3+/yWd
+         h+tezmrzydpuAJybKGnG7664qT43RE1urlmN+I/ynMKOVQZE/poYC3GZUB3zu3MBCHjc
+         k5KICnnkd6FEWVTfBk5fPF7T+i60INsUAKKt1UUipwt7NeWOeQ+uZuk6VION2fkWazNO
+         gUBRwIHFFvfTiqgbrMi91Lvbh4zMGM83BhE/6dSuoFoowivegeqn9hbarTW4r9cP297B
+         QcJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=LsOaumeF1bmcVfafAU6tzrmF1qroFKtzuGLnEEy+C7c=;
+        b=rKgUI6VWrl7tfOooHFgxwIswfKAtGyFrrzmOPRpHxYWzEtmRmaCbS1NYODD/tm0WKm
+         ihpxJtwmx4SMvRYij1sJ1r5ReNFtXBUgvnXGyHIWpN9Gf7LjOF7h8vihzW16kjqQKFoH
+         V5mdoNxit7c4cVVpILHmYjS+y1ahXy/vZImHolaB7+wfIEzXKgmtufxqws7fIx0iY59f
+         veBMWtDcz7dhZjwyG57TyEdlJBfxL8NtPFxcEmN1cLdgxpRQ5+L3sZt+xlRs+B+bL596
+         kKctmIUYsM/lpSIRk3+RWkOc7lSuy161+2drBm8e6hd4HFrCZHyyuGUaJmmWZTMNJ18k
+         w0VA==
+X-Gm-Message-State: AOAM5318X3/z2uKI3+caJyAVajkDRZU+dquKt2UcgBOsNkpGyK3l3tMD
+        IfM6bNlT17OLZoQiCj/Qxa4=
+X-Google-Smtp-Source: ABdhPJz3RY6gWzEtcEztwFA61OFqjJ7MBX4+oYMCv7blv4qHRDObAe6Dw5PYquj4XKHmZFguzWVAMw==
+X-Received: by 2002:a62:928f:0:b029:1ef:2370:2600 with SMTP id o137-20020a62928f0000b02901ef23702600mr7272144pfd.9.1615458895142;
+        Thu, 11 Mar 2021 02:34:55 -0800 (PST)
+Received: from localhost ([122.179.55.249])
+        by smtp.gmail.com with ESMTPSA id w17sm2061414pgg.41.2021.03.11.02.34.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Mar 2021 02:34:54 -0800 (PST)
+Date:   Thu, 11 Mar 2021 16:04:46 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, edumazet@google.com, willemb@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab+huawei@kernel.org
+Subject: [PATCH 1/2] net: core: datagram.c: Fix use of assignment in if
+ condition
+Message-ID: <20210311103446.5dwjcopeggy7k6gg@kewl-virtual-machine>
 MIME-Version: 1.0
-References: <20210311094624.923913-1-masahiroy@kernel.org> <CANiq72m1e9MD83sP5iZCfzoCR0qLz2HQj_VVkE4X-56vf6e7fw@mail.gmail.com>
-In-Reply-To: <CANiq72m1e9MD83sP5iZCfzoCR0qLz2HQj_VVkE4X-56vf6e7fw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 11 Mar 2021 19:33:42 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATP2ORegUu0tGtSU1+CSKZVX7m84GOT913X5L29MopAXQ@mail.gmail.com>
-Message-ID: <CAK7LNATP2ORegUu0tGtSU1+CSKZVX7m84GOT913X5L29MopAXQ@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: collect minimum tool versions into scripts/min-tool-version.sh
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@lindev.ch>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 7:18 PM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Thu, Mar 11, 2021 at 10:47 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > +# When you raise the minimum version, please update
-> > +# Documentation/process/changes.rst as well.
-> > +min_gcc_version=4.9.0
-> > +min_llvm_version=10.0.1
-> > +min_icc_version=16.0.3 # temporary
-> > +min_binutils_version=2.23.0
->
-> +1 to creating a central place for all minimum versions.
->
->     Acked-by: Miguel Ojeda <ojeda@kernel.org>
->
-> I wonder if you considered creating a folder with files like
-> `scripts/min_versions/gcc` containing the version string. That would
-> make it easier for reading from other languages or even importing them
-> dynamically into the documentation, thus removing even more
-> duplication.
->
-> Cheers,
-> Miguel
+The assignment inside the if condition has been changed to
+initialising outside the if condition.
 
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ net/core/datagram.c | 31 ++++++++++++++++++++-----------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
 
-Hmm, that is a simple, clean idea.
-Then, we can simply read out the file
-
-$ cat scripts/min_versions/gcc
-4.9.0
-
-I do not know how to handle
-per-arch versions in this case.
-
-
-
-
-Or, we might need to stick to shell-scripting
-to handle this.
-
-scripts/min_versions/gcc
-#!/bin/sh
-# SPDX-License-Identifier: GPL-2.0-only
-if [ "$SRCARCH" = arm64 ]; then
-       echo 5.1.0
-else
-       echo 4.9.0
-fi
-
-
+diff --git a/net/core/datagram.c b/net/core/datagram.c
+index 15ab9ffb27fe..7b2204f102b7 100644
+--- a/net/core/datagram.c
++++ b/net/core/datagram.c
+@@ -427,7 +427,8 @@ static int __skb_datagram_iter(const struct sk_buff *skb, int offset,
+ 		offset += n;
+ 		if (n != copy)
+ 			goto short_copy;
+-		if ((len -= copy) == 0)
++		len -= copy
++		if ((len) == 0)
+ 			return 0;
+ 	}
+ 
+@@ -439,7 +440,8 @@ static int __skb_datagram_iter(const struct sk_buff *skb, int offset,
+ 		WARN_ON(start > offset + len);
+ 
+ 		end = start + skb_frag_size(frag);
+-		if ((copy = end - offset) > 0) {
++		copy = end - offset
++		if ((copy) > 0) {
+ 			struct page *page = skb_frag_page(frag);
+ 			u8 *vaddr = kmap(page);
+ 
+@@ -452,7 +454,8 @@ static int __skb_datagram_iter(const struct sk_buff *skb, int offset,
+ 			offset += n;
+ 			if (n != copy)
+ 				goto short_copy;
+-			if (!(len -= copy))
++			len -= copy
++			if (!(len))
+ 				return 0;
+ 		}
+ 		start = end;
+@@ -464,13 +467,15 @@ static int __skb_datagram_iter(const struct sk_buff *skb, int offset,
+ 		WARN_ON(start > offset + len);
+ 
+ 		end = start + frag_iter->len;
+-		if ((copy = end - offset) > 0) {
++		copy = end - offset;
++		if ((copy) > 0) {
+ 			if (copy > len)
+ 				copy = len;
+ 			if (__skb_datagram_iter(frag_iter, offset - start,
+ 						to, copy, fault_short, cb, data))
+ 				goto fault;
+-			if ((len -= copy) == 0)
++			len -= copy
++			if ((len) == 0)
+ 				return 0;
+ 			offset += copy;
+ 		}
+@@ -558,7 +563,8 @@ int skb_copy_datagram_from_iter(struct sk_buff *skb, int offset,
+ 			copy = len;
+ 		if (copy_from_iter(skb->data + offset, copy, from) != copy)
+ 			goto fault;
+-		if ((len -= copy) == 0)
++		len -= copy;
++		if ((len) == 0)
+ 			return 0;
+ 		offset += copy;
+ 	}
+@@ -571,7 +577,8 @@ int skb_copy_datagram_from_iter(struct sk_buff *skb, int offset,
+ 		WARN_ON(start > offset + len);
+ 
+ 		end = start + skb_frag_size(frag);
+-		if ((copy = end - offset) > 0) {
++		copy = end - offset;
++		if ((copy) > 0) {
+ 			size_t copied;
+ 
+ 			if (copy > len)
+@@ -581,8 +588,8 @@ int skb_copy_datagram_from_iter(struct sk_buff *skb, int offset,
+ 					  copy, from);
+ 			if (copied != copy)
+ 				goto fault;
+-
+-			if (!(len -= copy))
++			len -= copy
++			if (!(len))
+ 				return 0;
+ 			offset += copy;
+ 		}
+@@ -595,14 +602,16 @@ int skb_copy_datagram_from_iter(struct sk_buff *skb, int offset,
+ 		WARN_ON(start > offset + len);
+ 
+ 		end = start + frag_iter->len;
+-		if ((copy = end - offset) > 0) {
++		copy = end - offset;
++		if ((copy) > 0) {
+ 			if (copy > len)
+ 				copy = len;
+ 			if (skb_copy_datagram_from_iter(frag_iter,
+ 							offset - start,
+ 							from, copy))
+ 				goto fault;
+-			if ((len -= copy) == 0)
++			len -= copy;
++			if ((len) == 0)
+ 				return 0;
+ 			offset += copy;
+ 		}
 -- 
-Best Regards
-Masahiro Yamada
+2.17.1
+
