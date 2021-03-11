@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998003373CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B8F3373CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbhCKNZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:25:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233497AbhCKNZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:25:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BFDE64E22;
-        Thu, 11 Mar 2021 13:25:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615469135;
-        bh=B5m68Po8w3os9yQiGJPiV9q82N4dqr6WBL0kdTMcdkE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MjCyyt+WM9SJMwz8ODdfgJHY+CjecBrvn7ITdIe+B62odgTd8wOZ3iQyhuSnbjvcX
-         sqc0wwHGsav2UkHFjtGcxzwcICR3EiqzO8hKLY4onyhcCJ77fMAEXoXRD7NaNNJyU8
-         UWhm/x3+SvRfLyd6tnJ4Z3eDDrEhcRFdo2GlbgGKmrt/l9fHJZ/olOm+9g1EvdAeVG
-         2Puj4cXlcHRO/mErk8LtYrlvvYME08dFGM1U9q1BITrECCqsPjS7uFiBASzVk0o3JD
-         +BjD6F291H+zNPAGUjaBPGsSeQdepziJCmUz5kytJwvm9Ocj4noW9182ZVFbHdu5QA
-         x5bzLhYoI8Lsw==
-Date:   Thu, 11 Mar 2021 13:24:23 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Meng.Li@windriver.com
-Cc:     linux-kernel@vger.kernel.org, tudor.ambarus@microchip.com,
-        vigneshr@ti.com, vadivel.muruganx.ramuthevar@linux.intel.com,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH] drivers: spi: cadence: set cqspi to the driver_data
- field of struct device
-Message-ID: <20210311132423.GC4962@sirena.org.uk>
-References: <20210311091220.3615-1-Meng.Li@windriver.com>
+        id S233564AbhCKNZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:25:06 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:56134 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233285AbhCKNYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 08:24:53 -0500
+Received: from fsav403.sakura.ne.jp (fsav403.sakura.ne.jp [133.242.250.102])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12BDOkql055153;
+        Thu, 11 Mar 2021 22:24:46 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav403.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp);
+ Thu, 11 Mar 2021 22:24:46 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12BDOjbO055145
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 11 Mar 2021 22:24:46 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 0/6] usbip fixes to crashes found by syzbot
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        valentina.manea.m@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1615171203.git.skhan@linuxfoundation.org>
+ <YEkQ4qS7tkwmjzDn@kroah.com>
+ <5baf6b94-72c4-6e69-65a5-35c5cfb8ca0e@i-love.sakura.ne.jp>
+ <YEoTw7CoK7Ob0YR+@kroah.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <8dc1e893-4338-90ff-ea61-de727cad1d11@i-love.sakura.ne.jp>
+Date:   Thu, 11 Mar 2021 22:24:43 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
-Content-Disposition: inline
-In-Reply-To: <20210311091220.3615-1-Meng.Li@windriver.com>
-X-Cookie: I'm rated PG-34!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YEoTw7CoK7Ob0YR+@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/03/11 21:57, Greg KH wrote:
+> On Thu, Mar 11, 2021 at 09:34:38PM +0900, Tetsuo Handa wrote:
+>> On 2021/03/11 3:33, Greg KH wrote:
+>>> On Sun, Mar 07, 2021 at 08:53:25PM -0700, Shuah Khan wrote:
+>>>> This patch series fixes the following problems founds in syzbot
+>>>> fuzzing.
+>>>
+>>> Thanks for these, all now queued up.
+>>
+>> I send SIGSTOP to
+>>
+>>   [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races leading to gpf
+>>   [PATCH 5/6] usbip: fix vhci_hcd attach_store() races leading to gpf
+>>   [PATCH 6/6] usbip: fix vudc usbip_sockfd_store races leading to gpf
+>>
+>> because these patches merely converted NULL pointer dererefence bug to use-after-free bug
+>> by breaking kthread_get_run() into kthread_create()/get_task_struct()/wake_up_process().
+> 
+> I'll take follow-on patches to fix that other issue, if it's proven to
+> be valid.  It's nice to fix up NULL dereference issues as soon as
+> possible :)
 
---Md/poaVZ8hnGTzuv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Not an "other issue". Shuah's [PATCH 4,5,6/6] is failing to fix NULL pointer dereference issue.
+These patches simply replaces NULL pointer dereference issue (caused by preemption) with
+use after free issue (caused by exactly same preemption) issue. Shuah has to understand
+the consequence of calling wake_up_process() on rx thread in order to fix this NULL pointer
+dereference issue.
 
-On Thu, Mar 11, 2021 at 05:12:20PM +0800, Meng.Li@windriver.com wrote:
-> From: Meng Li <Meng.Li@windriver.com>
->=20
-> When initialize cadence qspi controller, it is need to set cqspi
-> to the driver_data field of struct device, because it will be
-> used in function cqspi_remove/suspend/resume(). Otherwise, there
-> will be a crash trace as below when invoking these finctions.
-> Call trace:
->  cqspi_suspend+0x14/0x44
->  dpm_run_callback+0x50/0x1c0
->  __device_suspend+0x114/0x514
+The only fix we can safely apply now is
+https://lkml.kernel.org/r/20210205135707.4574-1-penguin-kernel@I-love.SAKURA.ne.jp .
+Since I and Shuah agreed that we will remove kthread_get_run(), it is nice to fix up
+frequently happening -EINTR pointer dereference issue as soon as possible.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
---Md/poaVZ8hnGTzuv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBKGgYACgkQJNaLcl1U
-h9B8TAf/ZGIgTgeFYIlLZOWVbymla/Z5wI3Wo+nVH2QzHbcDMVoRZpBg7jA+CPqm
-MEPn3ZooJycb5yS1pMNn7KQx7gkFHacscU9I914ha8ELh13PYVlOBTbYykjXEysM
-X34o3Kdx8yfZZ5XeDlkPNJRGWNNBykgIrnrH2ZEqvJ41jweaDuiFXbd+2lpQXcQr
-1w02HfMD3JxLnj8quTEPeYtcA2Iulm8rA2pj0+9K5GG7Jr7iFK3L2a04sbCqFeoT
-/H1h4rnHFJ4UySFobqJ2iTPetzTBA3teJaka63hTUk7d2m3ISp9+h+x1S434AiMX
-0vst4CeAKCrS9yCK52P9JqjPgU99WQ==
-=UTwX
------END PGP SIGNATURE-----
-
---Md/poaVZ8hnGTzuv--
