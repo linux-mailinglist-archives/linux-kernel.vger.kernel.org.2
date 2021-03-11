@@ -2,81 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71B0337F77
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316CC337F76
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhCKVOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:14:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
+        id S231224AbhCKVNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhCKVNJ (ORCPT
+        with ESMTP id S231216AbhCKVNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Mar 2021 16:13:09 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439E9C061574;
-        Thu, 11 Mar 2021 13:12:37 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id t37so3671058pga.11;
-        Thu, 11 Mar 2021 13:12:37 -0800 (PST)
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1539C061762
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:13:04 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id o10so14474819pgg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:13:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VzvYjKyt62IHiCr5kkB4Gy+4y5xhft1EvZve9BUvvPg=;
-        b=nK76W7i+GqBliQ0em41v8QQPefEcafvPmbHVqWHH2+G0wKCus9aXEXbpnWfbmMy0dZ
-         YYGPGwzKrguSGJ5ZsWHJ7SaH9K9h1ABpjbVbsyEXmO1FsBKxW42M/6d23yte3w0Qxi/+
-         JBWMAvEc5ENsJ304hNUUkQC5AZjEK2eLoV4b9s0130ocKdWjdPs768nkBiZ9GaMeG1jT
-         ebZzedR4hW/wKy6+ISW0nqc/QP7uHo3Aa+RgKhXd3MBzH+yDEIMfZu0GRKQKms81YJLs
-         /T7lle7lXvPf+vBNXfMj6gjmg3w9bL/r6hLqy7wZYlJ2h0Uy+r+6u0clNL/WeLBfVS8s
-         KbYQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hu6N2c26ob5VSIjkLdDPo/XEQBI5GcbOJ5Q5+a/XrD0=;
+        b=VY/tVCOyvjoZ/Z3CoAWkFRM/TecX7OFfGs04TDrnK9CjQuxrVSbdKh4hx07J62ZxwE
+         C2JwJbYywAXlTPU0bneB9EkbtScBSL8nr+lnQBlNXusun5VLi4wftKtPHLtA0b7Vhk8K
+         FNCnhMpOMuZ3ANj6WTKwv6pjGYNvi6DgnFfBY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VzvYjKyt62IHiCr5kkB4Gy+4y5xhft1EvZve9BUvvPg=;
-        b=pIqclEtM1U5qgVRof+f39YJ/XeKPypLAli6FrU1myxNlZrl/OqNfixocH5aBgnJjAS
-         yulujeENsrzdf0FxRpkxRQxCep+fGSe9BIVeDWXCvViVq+xbr6wB7IMmD8fronzA98OZ
-         gkDS0iaTeuMfiN6JHlsenvFVyeU1LIKsxWFF1gjoyx21aE8R5tKPqk9SyeD/GZgoPTcX
-         tdOu55qjIGOzMo5G6zEMUxh5Don3l2OcYAoEVE0qtwjJ69j8uWJDT1NZMEMsJNkz1rdc
-         qLdpA21/yM65I+3MtDESE4ZDLEHS/tr4OYgAtSZSobkVVENxKtOQWN68lM6Uk5ewscNS
-         KaQA==
-X-Gm-Message-State: AOAM533ria4m692u9ohFnm+AYyoB0ZeKZ/3y4yNChqpyp9omr44tNLMT
-        sWdFqAQdSb1o0SDi0Ilai45azFYfyKz/cnVvJS0=
-X-Google-Smtp-Source: ABdhPJzusGCSOu+jTBZ4AycWfxtC/PM/JzhkZn9Osc6HFh4pBeYCHJTg/oqxvnhimdW/7m/S7v7Z8Qa6zs7tOoKBrm4=
-X-Received: by 2002:aa7:8498:0:b029:1f6:8a25:7ade with SMTP id
- u24-20020aa784980000b02901f68a257ademr9214656pfn.76.1615497156695; Thu, 11
- Mar 2021 13:12:36 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hu6N2c26ob5VSIjkLdDPo/XEQBI5GcbOJ5Q5+a/XrD0=;
+        b=oUWiBmT3fSF9QIWzVTF6AXDRpBDZUvEkf7hZ59D1+26Ye551X/RIKYNVck++EpGUHe
+         i1NAa8rkvcjPMFdQCMvDfZ+RRUSWcZc+ZhJhWtmfXg5dZPB4UPNe73tQIgRQrchPORfe
+         bs/+LJ6OKN/Hoj8nfw7bftapjcJrblcP4GoUK56ucwDPXQyuLohEB7m5fxsTCfODxyob
+         M/5fkrWIwW4NCdHKPYMZgBPDArmLrhChRUp0dE6gv1Zmti8KOCc9SKFew9nnUzKiEatd
+         NT64WGtjrKlmBqM4F7hEqUn+nQjE/DXBe3DdJprLN53+b50iK9Ppy8yWROwONanrz4pv
+         nppQ==
+X-Gm-Message-State: AOAM530hBzBTarLbxu5lq3rDE2MgBrg3e/0wEWeRpC1+BQAZKdZrZ4PT
+        5YwtRWMp+ZCp6nzpv+tge5lHDw==
+X-Google-Smtp-Source: ABdhPJwF9dj5QdrWGGlb9ywhLjkfy+TrcolBRDSOohdN3oPACrGh8qyfegAb1VPZ6PmONDFrj2NYvw==
+X-Received: by 2002:aa7:9989:0:b029:1f5:aa05:94af with SMTP id k9-20020aa799890000b02901f5aa0594afmr9276024pfh.34.1615497184169;
+        Thu, 11 Mar 2021 13:13:04 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:cc68:8f0e:75e5:47ab])
+        by smtp.gmail.com with ESMTPSA id l2sm26428pji.45.2021.03.11.13.13.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 13:13:03 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, mka@chromium.org,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc7180: Drop duplicate dp_hot_plug_det node in trogdor
+Date:   Thu, 11 Mar 2021 13:12:41 -0800
+Message-Id: <20210311131008.1.I85fc8146c0ee47e261faa0c54dd621467b81952d@changeid>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-References: <20210311072311.2969-1-xie.he.0141@gmail.com> <20210311124309.5ee0ef02@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210311124309.5ee0ef02@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Thu, 11 Mar 2021 13:12:25 -0800
-Message-ID: <CAJht_EMToKj2OeeE1fMfwAVYvhbgZpENkv0C7ac+XHnWcTe2Tg@mail.gmail.com>
-Subject: Re: [PATCH net] net: lapbether: Prevent racing when checking whether
- the netif is running
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:43 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Is this a theoretical issues or do you see a path where it triggers?
->
-> Who are the callers sending frames to a device which went down?
+From: Stephen Boyd <swboyd@chromium.org>
 
-This is a theoretical issue. I didn't see this issue in practice.
+This moved from being trogdor specific to being part of the general
+sc7180.dtsi SoC file in commit 681a607ad21a ("arm64: dts: qcom:
+sc7180: Add DisplayPort HPD pin dt node"). Then we dropped the pinconf
+from the general sc7180.dtsi file in commit 8d079bf20410 ("arm64: dts:
+qcom: sc7180: Drop pinconf on dp_hot_plug_det") and added it back to
+the trogdor dts file in commit f772081f4883 ("arm64: dts: qcom:
+sc7180: Add "dp_hot_plug_det" pinconf for trogdor").
 
-When "__dev_queue_xmit" and "sch_direct_xmit" call
-"dev_hard_start_xmit", there appears to be no locking mechanism
-preventing the netif from going down while "dev_hard_start_xmit" is
-doing its work.
+As part of this we managed to forget to drop the old copy in the
+trogdor dts. Let's do it now.
 
-David once confirmed in an email that a driver's "ndo_stop" function
-would indeed race with its "ndo_start_xmit" function:
-https://lore.kernel.org/netdev/20190520.200922.2277656639346033061.davem@davemloft.net/
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+[dianders: updated desc]
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+Sorry for missing this in my last batch. I think my eyes glazed over
+everything "dp" related as not-done-yet even though this one is easy
+to do now.
+
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 436582279dad..192e2e424fde 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -1155,20 +1155,6 @@ pinconf {
+ 		};
+ 	};
+ 
+-	dp_hot_plug_det: dp-hot-plug-det {
+-		 pinmux {
+-			 pins = "gpio117";
+-			 function = "dp_hot";
+-		 };
+-
+-		 config {
+-			 pins = "gpio117";
+-			 bias-disable;
+-			 input-enable;
+-			 drive-strength = <2>;
+-		 };
+-	 };
+-
+ 	edp_brij_en: edp-brij-en {
+ 		pinmux {
+ 			pins = "gpio104";
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
