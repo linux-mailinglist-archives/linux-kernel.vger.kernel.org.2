@@ -2,288 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCBF3376C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B83DD3376C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234093AbhCKPR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
+        id S234099AbhCKPS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:18:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234055AbhCKPRD (ORCPT
+        with ESMTP id S234055AbhCKPR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:17:03 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C36C061760;
-        Thu, 11 Mar 2021 07:17:03 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id f16so2605602ljm.1;
-        Thu, 11 Mar 2021 07:17:03 -0800 (PST)
+        Thu, 11 Mar 2021 10:17:56 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858CBC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:17:56 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id n23so1802404otq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:17:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KFH1WQ55n2o2H6XVeSwGtTqtJ0JVSPd2X/kO35Iu2VI=;
-        b=UDBlQOo0VHuBWQvz7qb5TRIEFjZSUTGJX4ib8y2FFVO4qqp0rOjQQ7+kS7wzvmI0bW
-         M5toL29Iv+a3TDrQmKObPT9sE6ZoCW2RV9sFYqQl55y7pDFRxUQHKe96PHH4n1SWFka9
-         VQO86dINekEbGOh3fnI79PXP9hNiZXiRp4Trv3phpZtbwn1l+QTRxSEW/h4iQAuqd9YU
-         96ydk0HNI35S+PkhPFhVnmCweJWvoRDYflvssGhCIoRbWEMN0S4yMz2aMAVUqNvMSQlT
-         Mt1uPEngr3+Ba7WdTLJ3tpSmWxCxNtcw+RS1/eyY9YefrqCLj2dtwV4Uwl2vrMGnCXXn
-         Vu4Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F5wgH+AYh/WyBJYoU8SW+a64FMCETkhDvGXcF7UG8O0=;
+        b=aSWbR3Pvn7pX6f0WXhotBAv9D8NImhk+RaEESRDwAttp8xGG3gwuYCDghud8rWELsw
+         79MvmcR+jdn5nrt8VgqML22BCf7v8lsIAk9mw0KGqViwIaC/GsBw3SNXzgS6Jzcd5pJj
+         PL3xcLndwDvqe5k/ABaAWUV8c1zAkZ4N/gpxt9wYGplTZ4Ruls2t2MeSWmfufVKTZEQC
+         Kxj2gIJWeHS/YGaWuiktzXee02XKUYgDcEEbiG3rymVUYJpc6fCg3tCSSOuUWOAQmBnY
+         9TopooQdPXsXgbkbDlr/jBXhK6GGc/YBN/eKOxEYLHOzrWfkQ6ZYqZSRjCbMEj1bN7Aa
+         O4wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KFH1WQ55n2o2H6XVeSwGtTqtJ0JVSPd2X/kO35Iu2VI=;
-        b=e4umUHBrOr3DTFkbOol6g6GxmcqxtATZ8uqqOi2DBKEMus/nwH/w997TavFwb6ohPO
-         zqVrjG0V4w6e0irP9+rpe12a/cPBYnBHvIfXsqn60Sva43or+LX7ZMafv1H0FOwzd/np
-         aWMrAs5JA1vOUC3RKWj35VJ2s20YJvNE3FsdGro6sht+/nxlsbEhdcAiPH0dEjO9dM0K
-         NjDfmjeAMChG728qUOKAZasODfkC+dfOCkCVaU5vO3NdNVCFS18BMewO8lG1l6Fd9TVN
-         ma0KCEIphLk5iKG3adfDWoo2uta3oYWkODIZ0AJLOSaSPq/ja+e1UW5XYopWaPafLf4k
-         Ka8A==
-X-Gm-Message-State: AOAM530/bNQnq218zRISODy0jJFSxIJYMs+k5Qk1WvM5Qcva2HdSVoBg
-        /cyOz/8P3oJwsTWj/5kgEqQ=
-X-Google-Smtp-Source: ABdhPJxOKm/YqUC61DpNZ2SEmcZxsIjoGKR76Kk7YgVANQIN4qWFQoo9dB1XipoxHFS1Kh13U9Dj6A==
-X-Received: by 2002:a2e:8e75:: with SMTP id t21mr5176930ljk.216.1615475821883;
-        Thu, 11 Mar 2021 07:17:01 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id m24sm923138lfq.184.2021.03.11.07.17.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 07:17:01 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Paul Fertser <fercerpav@gmail.com>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] ASoC: tegra: ahub: Switch to use reset-bulk API
-Date:   Thu, 11 Mar 2021 18:15:54 +0300
-Message-Id: <20210311151554.23982-6-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210311151554.23982-1-digetx@gmail.com>
-References: <20210311151554.23982-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F5wgH+AYh/WyBJYoU8SW+a64FMCETkhDvGXcF7UG8O0=;
+        b=SidHgd2VL7Klm6VOWO8f3AbgGNv17yNfWXXDp1FxKc6XiMKKIO3Yaiy6McMPHgUZVs
+         2vIVNBrjlZZKfo3XOS2QJUv16qDYjEkQ2GP7GvqCKb28NMb6rrqLro2Uo4vzN4psXdHb
+         LgkANfiacvidF/84m2tdZdyl70PG1LH3e/a6h95fa7dWauKvo84P+b3tIoS8DKSk5co3
+         3nKA+OKtA6IhlCdK5rxNwPyZXvqEM4hrTVMtGqmsoyLl1Jl/vtnGKrsDu1QUljO7UB48
+         6dDwqIHAzFcVUTw2Ux0ex4GUnK1XfB9XBGFOf82PVw4WKyFERe3esFV3vmnsdPVtcKsD
+         pjxg==
+X-Gm-Message-State: AOAM532XEIs4q61phF4v3LicxJzLOrKpQDWd82KtKsQPkiSFWK144tWU
+        Ek03ck1AIxbJxH5Ct3WUGjpx66xAHe0p8vbqpDCt8A==
+X-Google-Smtp-Source: ABdhPJw3cPtdxfwVqx28rchxLZPHsrrsv1nJx4iEhEJqGOxeMh88fcv/Af+jTyyEoF4hNTCZ3KkZk1EsrX59z62M+qQ=
+X-Received: by 2002:a9d:644a:: with SMTP id m10mr7491620otl.233.1615475875698;
+ Thu, 11 Mar 2021 07:17:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1a41abb11c51b264511d9e71c303bb16d5cb367b.1615475452.git.andreyknvl@google.com>
+In-Reply-To: <1a41abb11c51b264511d9e71c303bb16d5cb367b.1615475452.git.andreyknvl@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 11 Mar 2021 16:17:43 +0100
+Message-ID: <CANpmjNP4Uz4Kmr+8KE_reyjRLCTj9q0s3ncQ26Xay+1Xwxvgiw@mail.gmail.com>
+Subject: Re: [PATCH] kasan: fix per-page tags for non-page_alloc pages
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use reset-bulk API in order to make code cleaner.
+On Thu, 11 Mar 2021 at 16:11, Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> To allow performing tag checks on page_alloc addresses obtained via
+> page_address(), tag-based KASAN modes store tags for page_alloc
+> allocations in page->flags.
+>
+> Currently, the default tag value stored in page->flags is 0x00.
+> Therefore, page_address() returns a 0x00ffff... address for pages
+> that were not allocated via page_alloc.
+>
+> This might cause problems. A particular case we encountered is a conflict
+> with KFENCE. If a KFENCE-allocated slab object is being freed via
+> kfree(page_address(page) + offset), the address passed to kfree() will
+> get tagged with 0x00 (as slab pages keep the default per-page tags).
+> This leads to is_kfence_address() check failing, and a KFENCE object
+> ending up in normal slab freelist, which causes memory corruptions.
+>
+> This patch changes the way KASAN stores tag in page-flags: they are now
+> stored xor'ed with 0xff. This way, KASAN doesn't need to initialize
+> per-page flags for every created page, which might be slow.
+>
+> With this change, page_address() returns natively-tagged (with 0xff)
+> pointers for pages that didn't have tags set explicitly.
+>
+> This patch fixes the encountered conflict with KFENCE and prevents more
+> similar issues that can occur in the future.
+>
+> Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- sound/soc/tegra/tegra30_ahub.c | 104 ++++++++++++---------------------
- sound/soc/tegra/tegra30_ahub.h |   5 +-
- sound/soc/tegra/tegra30_i2s.c  |   1 +
- 3 files changed, 40 insertions(+), 70 deletions(-)
+Reviewed-by: Marco Elver <elver@google.com>
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 9ef05ca4f6c4..d24c26f4960d 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -65,7 +65,7 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
- {
- 	int ret;
- 
--	ret = reset_control_assert(ahub->reset);
-+	ret = reset_control_bulk_assert(ahub->nresets, ahub->resets);
- 	if (ret)
- 		return ret;
- 
-@@ -75,7 +75,7 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
- 
- 	usleep_range(10, 100);
- 
--	ret = reset_control_deassert(ahub->reset);
-+	ret = reset_control_bulk_deassert(ahub->nresets, ahub->resets);
- 	if (ret)
- 		goto disable_clocks;
- 
-@@ -339,41 +339,28 @@ int tegra30_ahub_unset_rx_cif_source(enum tegra30_ahub_rxcif rxcif)
- }
- EXPORT_SYMBOL_GPL(tegra30_ahub_unset_rx_cif_source);
- 
--#define MOD_LIST_MASK_TEGRA30	BIT(0)
--#define MOD_LIST_MASK_TEGRA114	BIT(1)
--#define MOD_LIST_MASK_TEGRA124	BIT(2)
--
--#define MOD_LIST_MASK_TEGRA30_OR_LATER \
--		(MOD_LIST_MASK_TEGRA30 | MOD_LIST_MASK_TEGRA114 | \
--			MOD_LIST_MASK_TEGRA124)
--#define MOD_LIST_MASK_TEGRA114_OR_LATER \
--		(MOD_LIST_MASK_TEGRA114 | MOD_LIST_MASK_TEGRA124)
--
--static const struct {
--	const char *rst_name;
--	u32 mod_list_mask;
--} configlink_mods[] = {
--	{ "d_audio", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "apbif", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s0", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s1", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s2", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s3", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s4", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "dam0", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "dam1", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "dam2", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "spdif", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "amx", MOD_LIST_MASK_TEGRA114_OR_LATER },
--	{ "adx", MOD_LIST_MASK_TEGRA114_OR_LATER },
--	{ "amx1", MOD_LIST_MASK_TEGRA124 },
--	{ "adx1", MOD_LIST_MASK_TEGRA124 },
--	{ "afc0", MOD_LIST_MASK_TEGRA124 },
--	{ "afc1", MOD_LIST_MASK_TEGRA124 },
--	{ "afc2", MOD_LIST_MASK_TEGRA124 },
--	{ "afc3", MOD_LIST_MASK_TEGRA124 },
--	{ "afc4", MOD_LIST_MASK_TEGRA124 },
--	{ "afc5", MOD_LIST_MASK_TEGRA124 },
-+static const struct reset_control_bulk_data tegra30_ahub_resets_data[] = {
-+	{ "d_audio" },
-+	{ "apbif" },
-+	{ "i2s0" },
-+	{ "i2s1" },
-+	{ "i2s2" },
-+	{ "i2s3" },
-+	{ "i2s4" },
-+	{ "dam0" },
-+	{ "dam1" },
-+	{ "dam2" },
-+	{ "spdif" },
-+	{ "amx" }, /* Tegra114+ */
-+	{ "adx" }, /* Tegra114+ */
-+	{ "amx1" }, /* Tegra124 */
-+	{ "adx1" }, /* Tegra124 */
-+	{ "afc0" }, /* Tegra124 */
-+	{ "afc1" }, /* Tegra124 */
-+	{ "afc2" }, /* Tegra124 */
-+	{ "afc3" }, /* Tegra124 */
-+	{ "afc4" }, /* Tegra124 */
-+	{ "afc5" }, /* Tegra124 */
- };
- 
- #define LAST_REG(name) \
-@@ -502,17 +489,17 @@ static const struct regmap_config tegra30_ahub_ahub_regmap_config = {
- };
- 
- static struct tegra30_ahub_soc_data soc_data_tegra30 = {
--	.mod_list_mask = MOD_LIST_MASK_TEGRA30,
-+	.num_resets = 11,
- 	.set_audio_cif = tegra30_ahub_set_cif,
- };
- 
- static struct tegra30_ahub_soc_data soc_data_tegra114 = {
--	.mod_list_mask = MOD_LIST_MASK_TEGRA114,
-+	.num_resets = 13,
- 	.set_audio_cif = tegra30_ahub_set_cif,
- };
- 
- static struct tegra30_ahub_soc_data soc_data_tegra124 = {
--	.mod_list_mask = MOD_LIST_MASK_TEGRA124,
-+	.num_resets = 21,
- 	.set_audio_cif = tegra124_ahub_set_cif,
- };
- 
-@@ -527,8 +514,6 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- {
- 	const struct of_device_id *match;
- 	const struct tegra30_ahub_soc_data *soc_data;
--	struct reset_control *rst;
--	int i;
- 	struct resource *res0;
- 	void __iomem *regs_apbif, *regs_ahub;
- 	int ret = 0;
-@@ -541,34 +526,16 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	soc_data = match->data;
- 
--	/*
--	 * The AHUB hosts a register bus: the "configlink". For this to
--	 * operate correctly, all devices on this bus must be out of reset.
--	 */
--	for (i = 0; i < ARRAY_SIZE(configlink_mods); i++) {
--		if (!(configlink_mods[i].mod_list_mask &
--					soc_data->mod_list_mask))
--			continue;
--
--		rst = reset_control_get_exclusive(&pdev->dev,
--						  configlink_mods[i].rst_name);
--		if (IS_ERR(rst)) {
--			dev_err(&pdev->dev, "Can't get reset %s\n",
--				configlink_mods[i].rst_name);
--			ret = PTR_ERR(rst);
--			return ret;
--		}
--
--		/* just check presence of the reset control in DT */
--		reset_control_put(rst);
--	}
--
- 	ahub = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
- 			    GFP_KERNEL);
- 	if (!ahub)
- 		return -ENOMEM;
- 	dev_set_drvdata(&pdev->dev, ahub);
- 
-+	BUILD_BUG_ON(sizeof(ahub->resets) != sizeof(tegra30_ahub_resets_data));
-+	memcpy(ahub->resets, tegra30_ahub_resets_data, sizeof(ahub->resets));
-+
-+	ahub->nresets = soc_data->num_resets;
- 	ahub->soc_data = soc_data;
- 	ahub->dev = &pdev->dev;
- 
-@@ -579,10 +546,11 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	ahub->reset = devm_reset_control_array_get_exclusive(&pdev->dev);
--	if (IS_ERR(ahub->reset)) {
--		dev_err(&pdev->dev, "Can't get resets: %pe\n", ahub->reset);
--		return PTR_ERR(ahub->reset);
-+	ret = devm_reset_control_bulk_get_exclusive(&pdev->dev, ahub->nresets,
-+						    ahub->resets);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Can't get resets: %d\n", ret);
-+		return ret;
- 	}
- 
- 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-diff --git a/sound/soc/tegra/tegra30_ahub.h b/sound/soc/tegra/tegra30_ahub.h
-index 3b85244f87f1..c9eaf4ec8f6e 100644
---- a/sound/soc/tegra/tegra30_ahub.h
-+++ b/sound/soc/tegra/tegra30_ahub.h
-@@ -491,7 +491,7 @@ void tegra124_ahub_set_cif(struct regmap *regmap, unsigned int reg,
- 			   struct tegra30_ahub_cif_conf *conf);
- 
- struct tegra30_ahub_soc_data {
--	u32 mod_list_mask;
-+	unsigned int num_resets;
- 	void (*set_audio_cif)(struct regmap *regmap,
- 			      unsigned int reg,
- 			      struct tegra30_ahub_cif_conf *conf);
-@@ -511,7 +511,8 @@ struct tegra30_ahub_soc_data {
- struct tegra30_ahub {
- 	const struct tegra30_ahub_soc_data *soc_data;
- 	struct device *dev;
--	struct reset_control *reset;
-+	struct reset_control_bulk_data resets[21];
-+	unsigned int nresets;
- 	struct clk_bulk_data clocks[2];
- 	unsigned int nclocks;
- 	resource_size_t apbif_addr;
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 3d22c1be6f3d..614b67be1dd9 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -23,6 +23,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
--- 
-2.29.2
+Thank you!
 
+> ---
+>  include/linux/mm.h | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 77e64e3eac80..c45c28f094a7 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1440,16 +1440,28 @@ static inline bool cpupid_match_pid(struct task_struct *task, int cpupid)
+>
+>  #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+>
+> +/*
+> + * KASAN per-page tags are stored xor'ed with 0xff. This allows to avoid
+> + * setting tags for all pages to native kernel tag value 0xff, as the default
+> + * value 0x00 maps to 0xff.
+> + */
+> +
+>  static inline u8 page_kasan_tag(const struct page *page)
+>  {
+> -       if (kasan_enabled())
+> -               return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
+> -       return 0xff;
+> +       u8 tag = 0xff;
+> +
+> +       if (kasan_enabled()) {
+> +               tag = (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
+> +               tag ^= 0xff;
+> +       }
+> +
+> +       return tag;
+>  }
+>
+>  static inline void page_kasan_tag_set(struct page *page, u8 tag)
+>  {
+>         if (kasan_enabled()) {
+> +               tag ^= 0xff;
+>                 page->flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
+>                 page->flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
+>         }
+> --
+> 2.31.0.rc2.261.g7f71774620-goog
+>
