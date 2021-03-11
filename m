@@ -2,198 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBF6337AF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 472CB337AEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhCKRfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:35:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhCKRfK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:35:10 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDFCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:35:09 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id h98so2955011wrh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:35:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dmwld0IDC1/VOWzieR6BKsgTEmEgxYcesuBOqNZddyg=;
-        b=UdIUHFtcpCc8g1KL7Z7LVur9YLn073u5jgtMXXB6zpFFL9aOv5EM+jVshrgGu2xT+C
-         tdfFNj1p2uTY59JKdulxGQaWLpNEhicKK0G+3WiiYSu9dh1jE0oCWLLOw8m7VI7i/4Qc
-         TT64GyNQKLA33VpNTtK2fjxmf3RVfeEKGzEZexjEk4r6abiEDdrEtJBx0P78a7XquLwj
-         066C8hBpU66wjLGS+WN6+1BFmEbBDcAaMcI9JTBZgCUxQpotT7PuCAHFOts3pOTT/eMB
-         VJaq7h75Peo2XTXO/wWMaTuKf9ZfqJEDCTFdeuwUGM9VKmFPxXiCrwgVCLWFkl4N0+SY
-         fq6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dmwld0IDC1/VOWzieR6BKsgTEmEgxYcesuBOqNZddyg=;
-        b=HfjCSVrgFgxasHm2ZlNDSo8RsheohuNBxDuIDWz6r+mwhR8kJyRjDwNq+RSXsltwDQ
-         Wjq4ppMelntCKbkJ1SENxBnIDIe93vBlYy4WOLsQRopTjeQYCOpzc9edIfp73PkW/oD2
-         LcdcVC2UkFdn0oH93ZLb3RFOqMw7MyB5JICc6oo4iG7y2AbHVeMu4ToXmQb0lrh04P3L
-         NSz3moabPo0PZJuDNhDeIaM51IEYC52Qaxm8jRY5p6+Lb45tj0ntHfPbAZDaT/NHGgbl
-         ckOnvLvQlaA2xLxxpvBCxWXUhUQUAaXMUvTAX+gPHzmEvil4qprbZxUmyGaBPPz5dS15
-         00qg==
-X-Gm-Message-State: AOAM53232VmRbbK6oSk5716dmmS0cgdIxavGIe7RY8nYuT/IT2h5sD+G
-        MSyHGZ4hP/dnzjbn2LLUpisIBw==
-X-Google-Smtp-Source: ABdhPJxi1uHaxJEyBsCkfwTg5oVkY2ifXAmE0uv9xyqTI5zaTrMd+17FOR1P59M+tHYgxjf7ZYycbw==
-X-Received: by 2002:adf:9bca:: with SMTP id e10mr9951025wrc.364.1615484108639;
-        Thu, 11 Mar 2021 09:35:08 -0800 (PST)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id 36sm5221152wrh.94.2021.03.11.09.35.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 09:35:07 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 7/7] ASoC: codecs: wcd938x: add audio routing
-Date:   Thu, 11 Mar 2021 17:34:16 +0000
-Message-Id: <20210311173416.25219-8-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210311173416.25219-1-srinivas.kandagatla@linaro.org>
-References: <20210311173416.25219-1-srinivas.kandagatla@linaro.org>
+        id S229680AbhCKRfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:35:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229914AbhCKReg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:34:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69BE264F90;
+        Thu, 11 Mar 2021 17:34:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615484075;
+        bh=iNN2zownLKbHetBsCygEAW1/v3+W5uETEqkoW22vGqs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=agrMrkebeT9PSY05fmnsQZQ1qFj5ZUo2w9A7Tr3yAW/SE1BLeFHMZQ54WAMGbdPjT
+         7CjAwF7Hn1GLjANBtsdQDfL+qeRhl6m5QHmljdhuK+u4124mq3++zF0iLae9q4KU9r
+         F4Gj+B1znOTW2rbo5yOP4TO7KfUweT4ZzMGdoP4lcmUVxalCwVVGmlKQZcSnrZa42H
+         DYvYAm6cneoyBmEYVn2jhkPbOKLeTg5U3X1rYiOKdVbSTHYtGH9ffkgi46xwwvUg5D
+         34tSLrDQtzGdihPp97ACXWSR9JYostQgLKWL8DaGM2ceVquWxiXsQjMo1uOft8PJiZ
+         hokHJnW7khpyg==
+Date:   Thu, 11 Mar 2021 11:34:33 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Victor Ding <victording@google.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Subject: Re: [PATCH v2] PCI/ASPM: Disable ASPM when save/restore PCI state
+Message-ID: <20210311173433.GA2071075@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128155237.v2.1.I42c1001f8b0eaac973a99e1e5c2170788ee36c9c@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds audio routing for both playback and capture.
+On Thu, Jan 28, 2021 at 03:52:42PM +0000, Victor Ding wrote:
+> Certain PCIe devices (e.g. GL9750) have high penalties (e.g. high Port
+> T_POWER_ON) when exiting L1 but enter L1 aggressively. As a result,
+> such devices enter and exit L1 frequently during pci_save_state and
+> pci_restore_state; eventually causing poor suspend/resume performance.
+> 
+> Based on the observation that PCI accesses dominance pci_save_state/
+> pci_restore_state plus these accesses are fairly close to each other, the
+> actual time the device could stay in low power states is negligible.
+> Therefore, the little power-saving benefit from ASPM during suspend/resume
+> does not overweight the performance degradation caused by high L1 exit
+> penalties.
+> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211187
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/wcd938x.c | 97 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 97 insertions(+)
+Thanks for this!
 
-diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index d8aad187458f..f189d98e2f04 100644
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -3217,6 +3217,99 @@ static const struct snd_soc_dapm_widget wcd938x_rx_dapm_widgets[] = {
- 
- };
- 
-+static const struct snd_soc_dapm_route wcd938x_rx_audio_map[] = {
-+	{"IN1_HPHL", NULL, "VDD_BUCK"},
-+	{"IN1_HPHL", NULL, "CLS_H_PORT"},
-+
-+	{"RX1", NULL, "IN1_HPHL"},
-+	{"RX1", NULL, "RXCLK"},
-+	{"RDAC1", NULL, "RX1"},
-+	{"HPHL_RDAC", "Switch", "RDAC1"},
-+	{"HPHL PGA", NULL, "HPHL_RDAC"},
-+	{"HPHL", NULL, "HPHL PGA"},
-+
-+	{"IN2_HPHR", NULL, "VDD_BUCK"},
-+	{"IN2_HPHR", NULL, "CLS_H_PORT"},
-+	{"RX2", NULL, "IN2_HPHR"},
-+	{"RDAC2", NULL, "RX2"},
-+	{"RX2", NULL, "RXCLK"},
-+	{"HPHR_RDAC", "Switch", "RDAC2"},
-+	{"HPHR PGA", NULL, "HPHR_RDAC"},
-+	{"HPHR", NULL, "HPHR PGA"},
-+
-+	{"IN3_AUX", NULL, "VDD_BUCK"},
-+	{"IN3_AUX", NULL, "CLS_H_PORT"},
-+	{"RX3", NULL, "IN3_AUX"},
-+	{"RDAC4", NULL, "RX3"},
-+	{"RX3", NULL, "RXCLK"},
-+	{"AUX_RDAC", "Switch", "RDAC4"},
-+	{"AUX PGA", NULL, "AUX_RDAC"},
-+	{"AUX", NULL, "AUX PGA"},
-+
-+	{"RDAC3_MUX", "RX3", "RX3"},
-+	{"RDAC3_MUX", "RX1", "RX1"},
-+	{"RDAC3", NULL, "RDAC3_MUX"},
-+	{"EAR_RDAC", "Switch", "RDAC3"},
-+	{"EAR PGA", NULL, "EAR_RDAC"},
-+	{"EAR", NULL, "EAR PGA"},
-+};
-+
-+static const struct snd_soc_dapm_route wcd938x_audio_map[] = {
-+	{"ADC1_OUTPUT", NULL, "ADC1_MIXER"},
-+	{"ADC1_MIXER", "Switch", "ADC1 REQ"},
-+	{"ADC1 REQ", NULL, "ADC1"},
-+	{"ADC1", NULL, "AMIC1"},
-+
-+	{"ADC2_OUTPUT", NULL, "ADC2_MIXER"},
-+	{"ADC2_MIXER", "Switch", "ADC2 REQ"},
-+	{"ADC2 REQ", NULL, "ADC2"},
-+	{"ADC2", NULL, "HDR12 MUX"},
-+	{"HDR12 MUX", "NO_HDR12", "ADC2 MUX"},
-+	{"HDR12 MUX", "HDR12", "AMIC1"},
-+	{"ADC2 MUX", "INP3", "AMIC3"},
-+	{"ADC2 MUX", "INP2", "AMIC2"},
-+
-+	{"ADC3_OUTPUT", NULL, "ADC3_MIXER"},
-+	{"ADC3_MIXER", "Switch", "ADC3 REQ"},
-+	{"ADC3 REQ", NULL, "ADC3"},
-+	{"ADC3", NULL, "HDR34 MUX"},
-+	{"HDR34 MUX", "NO_HDR34", "ADC3 MUX"},
-+	{"HDR34 MUX", "HDR34", "AMIC5"},
-+	{"ADC3 MUX", "INP4", "AMIC4"},
-+	{"ADC3 MUX", "INP6", "AMIC6"},
-+
-+	{"ADC4_OUTPUT", NULL, "ADC4_MIXER"},
-+	{"ADC4_MIXER", "Switch", "ADC4 REQ"},
-+	{"ADC4 REQ", NULL, "ADC4"},
-+	{"ADC4", NULL, "ADC4 MUX"},
-+	{"ADC4 MUX", "INP5", "AMIC5"},
-+	{"ADC4 MUX", "INP7", "AMIC7"},
-+
-+	{"DMIC1_OUTPUT", NULL, "DMIC1_MIXER"},
-+	{"DMIC1_MIXER", "Switch", "DMIC1"},
-+
-+	{"DMIC2_OUTPUT", NULL, "DMIC2_MIXER"},
-+	{"DMIC2_MIXER", "Switch", "DMIC2"},
-+
-+	{"DMIC3_OUTPUT", NULL, "DMIC3_MIXER"},
-+	{"DMIC3_MIXER", "Switch", "DMIC3"},
-+
-+	{"DMIC4_OUTPUT", NULL, "DMIC4_MIXER"},
-+	{"DMIC4_MIXER", "Switch", "DMIC4"},
-+
-+	{"DMIC5_OUTPUT", NULL, "DMIC5_MIXER"},
-+	{"DMIC5_MIXER", "Switch", "DMIC5"},
-+
-+	{"DMIC6_OUTPUT", NULL, "DMIC6_MIXER"},
-+	{"DMIC6_MIXER", "Switch", "DMIC6"},
-+
-+	{"DMIC7_OUTPUT", NULL, "DMIC7_MIXER"},
-+	{"DMIC7_MIXER", "Switch", "DMIC7"},
-+
-+	{"DMIC8_OUTPUT", NULL, "DMIC8_MIXER"},
-+	{"DMIC8_MIXER", "Switch", "DMIC8"},
-+};
-+
- static int wcd938x_get_micb_vout_ctl_val(u32 micb_mv)
- {
- 	/* min micbias voltage is 1V and maximum is 2.85V */
-@@ -3393,6 +3486,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd938x_sdw_rx = {
- 	.num_controls = ARRAY_SIZE(wcd938x_rx_snd_controls),
- 	.dapm_widgets = wcd938x_rx_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(wcd938x_rx_dapm_widgets),
-+	.dapm_routes = wcd938x_rx_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wcd938x_rx_audio_map),
- };
- 
- static const struct snd_soc_component_driver soc_codec_dev_wcd938x_sdw_tx = {
-@@ -3402,6 +3497,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd938x_sdw_tx = {
- 	.num_controls = ARRAY_SIZE(wcd938x_snd_controls),
- 	.dapm_widgets = wcd938x_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(wcd938x_dapm_widgets),
-+	.dapm_routes = wcd938x_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wcd938x_audio_map),
- };
- 
- static void wcd938x_dt_parse_micbias_info(struct device *dev, struct wcd938x_priv *wcd)
--- 
-2.21.0
+This device can tolerate unlimited delay for L1 exit (DevCtl Endpoint
+L1 Acceptable Latency is unlimited) and it makes no guarantees about
+how fast it can exit L1 (LnkCap L1 Exit Latency is also unlimited), so
+I think there's basically no restriction on when it can enter ASPM
+L1.0.
 
+I have a hard time interpreting the L1.2 entry conditions in PCIe
+r5.0, sec 5.5.1, but I can believe it enters L1.2 aggressively since
+the device says it can tolerate any latencies.
+
+If L1.2 exit takes 3100us, it could do ~60 L1 exits in 200ms.  I guess
+config accesses and code execution can account for some of that, but
+still seems like a lot of L1 entries/exits during suspend.  I wouldn't
+think we would touch the device that much and that intermittently.
+
+> Signed-off-by: Victor Ding <victording@google.com>
+> 
+> ---
+> 
+> Changes in v2:
+> - Updated commit message to remove unnecessary information
+> - Fixed a bug reading wrong register in pcie_save_aspm_control
+> - Updated to reuse existing pcie_config_aspm_dev where possible
+> - Fixed goto label style
+> 
+>  drivers/pci/pci.c       | 18 +++++++++++++++---
+>  drivers/pci/pci.h       |  6 ++++++
+>  drivers/pci/pcie/aspm.c | 27 +++++++++++++++++++++++++++
+>  include/linux/pci.h     |  1 +
+>  4 files changed, 49 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 32011b7b4c04..9ea88953f90b 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1542,6 +1542,10 @@ static void pci_restore_ltr_state(struct pci_dev *dev)
+>  int pci_save_state(struct pci_dev *dev)
+>  {
+>  	int i;
+> +
+> +	pcie_save_aspm_control(dev);
+> +	pcie_disable_aspm(dev);
+
+If I understand this patch correctly, it basically does this:
+
+    pci_save_state
+  +   pcie_save_aspm_control
+  +   pcie_disable_aspm
+      <save state>
+  +   pcie_restore_aspm_control
+
+The <save state> part is just a bunch of config reads with very little
+other code execution.  I'm really surprised that there's enough time
+between config reads for the link to go to L1.  I guess you've
+verified that this does speed up suspend significantly, but this just
+doesn't make sense to me.
+
+In the bugzilla you say the GL9750 can go to L1.2 after ~4us of
+inactivity.  That's enough time for a lot of code execution.  We must
+be missing something.  There's so much PCI traffic during save/restore
+that it should be easy to match up the analyzer trace with the code.
+Can you get any insight into what's going on that way?
+
+>  	/* XXX: 100% dword access ok here? */
+>  	for (i = 0; i < 16; i++) {
+>  		pci_read_config_dword(dev, i * 4, &dev->saved_config_space[i]);
+> @@ -1552,18 +1556,22 @@ int pci_save_state(struct pci_dev *dev)
+>  
+>  	i = pci_save_pcie_state(dev);
+>  	if (i != 0)
+> -		return i;
+> +		goto exit;
+>  
+>  	i = pci_save_pcix_state(dev);
+>  	if (i != 0)
+> -		return i;
+> +		goto exit;
+>  
+>  	pci_save_ltr_state(dev);
+>  	pci_save_aspm_l1ss_state(dev);
+>  	pci_save_dpc_state(dev);
+>  	pci_save_aer_state(dev);
+>  	pci_save_ptm_state(dev);
+> -	return pci_save_vc_state(dev);
+> +	i = pci_save_vc_state(dev);
+> +
+> +exit:
+> +	pcie_restore_aspm_control(dev);
+> +	return i;
+>  }
+>  EXPORT_SYMBOL(pci_save_state);
+>  
+> @@ -1661,6 +1669,8 @@ void pci_restore_state(struct pci_dev *dev)
+>  	if (!dev->state_saved)
+>  		return;
+>  
+> +	pcie_disable_aspm(dev);
+> +
+>  	/*
+>  	 * Restore max latencies (in the LTR capability) before enabling
+>  	 * LTR itself (in the PCIe capability).
+> @@ -1689,6 +1699,8 @@ void pci_restore_state(struct pci_dev *dev)
+>  	pci_enable_acs(dev);
+>  	pci_restore_iov_state(dev);
+>  
+> +	pcie_restore_aspm_control(dev);
+> +
+>  	dev->state_saved = false;
+>  }
+>  EXPORT_SYMBOL(pci_restore_state);
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index a81459159f6d..e074a0cbe73c 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -584,6 +584,9 @@ void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+>  void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
+>  void pci_save_aspm_l1ss_state(struct pci_dev *dev);
+>  void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
+> +void pcie_save_aspm_control(struct pci_dev *dev);
+> +void pcie_restore_aspm_control(struct pci_dev *dev);
+> +void pcie_disable_aspm(struct pci_dev *pdev);
+>  #else
+>  static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+>  static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+> @@ -591,6 +594,9 @@ static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+>  static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
+>  static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
+>  static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
+> +static inline void pcie_save_aspm_control(struct pci_dev *dev) { }
+> +static inline void pcie_restore_aspm_control(struct pci_dev *dev) { }
+> +static inline void pcie_disable_aspm(struct pci_dev *pdev) { }
+>  #endif
+>  
+>  #ifdef CONFIG_PCIE_ECRC
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index a08e7d6dc248..e1e97db32e8b 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -784,6 +784,33 @@ static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
+>  					   PCI_EXP_LNKCTL_ASPMC, val);
+>  }
+>  
+> +void pcie_disable_aspm(struct pci_dev *pdev)
+> +{
+> +	if (!pci_is_pcie(pdev))
+> +		return;
+> +
+> +	pcie_config_aspm_dev(pdev, 0);
+> +}
+> +
+> +void pcie_save_aspm_control(struct pci_dev *pdev)
+> +{
+> +	u16 lnkctl;
+> +
+> +	if (!pci_is_pcie(pdev))
+> +		return;
+> +
+> +	pcie_capability_read_word(pdev, PCI_EXP_LNKCTL, &lnkctl);
+> +	pdev->saved_aspm_ctl = lnkctl & PCI_EXP_LNKCTL_ASPMC;
+> +}
+> +
+> +void pcie_restore_aspm_control(struct pci_dev *pdev)
+> +{
+> +	if (!pci_is_pcie(pdev))
+> +		return;
+> +
+> +	pcie_config_aspm_dev(pdev, pdev->saved_aspm_ctl);
+> +}
+> +
+>  static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
+>  {
+>  	u32 upstream = 0, dwstream = 0;
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index b32126d26997..a21bfd6e3f89 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -387,6 +387,7 @@ struct pci_dev {
+>  	unsigned int	ltr_path:1;	/* Latency Tolerance Reporting
+>  					   supported from root to here */
+>  	u16		l1ss;		/* L1SS Capability pointer */
+> +	u16		saved_aspm_ctl; /* ASPM Control saved at suspend time */
+>  #endif
+>  	unsigned int	eetlp_prefix_path:1;	/* End-to-End TLP Prefix */
+>  
+> -- 
+> 2.30.0.280.ga3ce27912f-goog
+> 
