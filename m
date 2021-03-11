@@ -2,217 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FBC337485
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C1F3374A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbhCKNtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:49:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233664AbhCKNtE (ORCPT
+        id S233771AbhCKNtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:49:40 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52904 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233664AbhCKNtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:49:04 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8267EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:49:04 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 18so39829544lff.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:49:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=qtec.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kNyayz1ynLaXs0RxPu12eHqwVdIQUw51jeFoThSwD7s=;
-        b=eRB5p3RH481LNZAhm/BdCEnIjN0fQjiylPoxlKiHrNO22LBYvHH9Q0kIUpI89sSpYx
-         yUf9zwDTiVhH5osACr7/m8BHm06jpOubzmhVd1qyYvwAZS2V5AcIRdACOYDEjSSAYHo3
-         E0B+oCzBeZyByTIMR61sAlNcGiwspQdqisfYBTXlJmjLfffm5m6/2fFnfygbuCiJQYea
-         CwWh5E6ZEPONTXXmx1ZIEl751jMFxVu1YxtNpKKnxFCdmfBa0SbRLQlnELpQf6s580aJ
-         8zMuM5uGdUicXgGIVsoK7i6K3hCSrSAxxMuvZswSb/KL86W6U55Voin82601jcZiM3eB
-         9ofw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kNyayz1ynLaXs0RxPu12eHqwVdIQUw51jeFoThSwD7s=;
-        b=ufmXPDmb1lnQV7jkc4L9nC/PzMRIpfXyr87oLqcJqZsa1UdBUhqa5xtzLEyhWJkdlS
-         UKCknVPnotDnIx4oL4uv7dry6zbxgaWdEedgc1WTHebWDvwS5gKD5KzIWS9moJ+61Mm4
-         YVGqg0R+x/bPaXuVva8YzmbmL+E3pzTsrQKfvy0iEpgzHE02JOKa7J0M7IT4IMJAtpo0
-         pMQxHZZvxsWBswnAb8J4cIwJY5K31Yv6KQRAVclBeqsNA4/ENjc5vhvsgg3CXQDMM7z3
-         QrgTq0rMMLBj3/IvG2Snak0zqyuN7QNRug+qQH6FWqZa5cUdHzAZf5630VP0cmb4z4aV
-         dyNg==
-X-Gm-Message-State: AOAM532AJLpMLkSDZqRfis62oI9FenY+a5C7Rk/SM8H8Ubh2dHU0JmZB
-        NuOqZGsS08Gyigz7V69cRaAd9GC8U7sasO8XT4azTw==
-X-Google-Smtp-Source: ABdhPJyu0O6KEYyFOIqFedvrhYJRkgEtRmSUTzgsPtEsSBxve03TOWrnzsX5ozRcSoMvpdMwkjBW+tyWp9QxReToZWg=
-X-Received: by 2002:a05:6512:32ab:: with SMTP id q11mr2377230lfe.106.1615470542956;
- Thu, 11 Mar 2021 05:49:02 -0800 (PST)
+        Thu, 11 Mar 2021 08:49:14 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12BDn9jw111388;
+        Thu, 11 Mar 2021 07:49:09 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615470549;
+        bh=grd2oCLmaTvLeuSLi6pSR0CslwxZa/zJyeZL4sdHKIc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=dZvUayL7NEVFGP/4BVmxCuHkA87/ZzM3EZIyMCshw1w39ND4BkH4knlBObG+oE/OT
+         hy3sEH1NvdeamVPA3in96aR4c/K37iuYG8tLNZwvwhBPlaW8aQ8Hs1kRScih0WD4dK
+         LqBV0t9b7q9v7Mq1WruFNdyUJQwYybtZ+O2ggZGQ=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12BDn9b7052046
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 11 Mar 2021 07:49:09 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 11
+ Mar 2021 07:49:08 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 11 Mar 2021 07:49:08 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12BDn8qu080233;
+        Thu, 11 Mar 2021 07:49:08 -0600
+Date:   Thu, 11 Mar 2021 07:49:08 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Pratyush Yadav <p.yadav@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] arm64: dts: ti: k3-j7200-som-p0: Add nodes for
+ OSPI0
+Message-ID: <20210311134908.jsh2lywtwzvlyvbc@finally>
+References: <20210305153926.3479-1-p.yadav@ti.com>
+ <20210305153926.3479-4-p.yadav@ti.com>
+ <cbc23906-68cd-d885-2a81-c6088c402caf@ti.com>
+ <20210311132250.6kwrgo75emyoglzo@pauper>
+ <20210311134109.pbqsq3l5v2h5ivlx@ti.com>
 MIME-Version: 1.0
-References: <20210310163655.2591893-1-daniel@qtec.com> <CADnq5_PmbXBaziCEqRODb_DvtKaw9ucXXjkdmdj9N_R8P-9Jcw@mail.gmail.com>
- <CAH1Ww+T4WwLzg_nnF=1sjm9LW9wCjFb0X9c=qmuubvMqJdW4PA@mail.gmail.com>
-In-Reply-To: <CAH1Ww+T4WwLzg_nnF=1sjm9LW9wCjFb0X9c=qmuubvMqJdW4PA@mail.gmail.com>
-From:   Daniel Gomez <daniel@qtec.com>
-Date:   Thu, 11 Mar 2021 14:48:52 +0100
-Message-ID: <CAH1Ww+QiAyfQL_bf1u=zLiT=ayKFWA0Fr2n5sBHUxfpzxcPbrg@mail.gmail.com>
-Subject: Re: [PATCH]] drm/amdgpu/gfx9: add gfxoff quirk
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Huang Rui <ray.huang@amd.com>, Nirmoy Das <nirmoy.das@amd.com>,
-        Dennis Li <Dennis.Li@amd.com>, Monk Liu <Monk.Liu@amd.com>,
-        Yintian Tao <yttao@amd.com>, Guchun Chen <guchun.chen@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Alex Desnoyers <alex@qtec.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210311134109.pbqsq3l5v2h5ivlx@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 at 10:09, Daniel Gomez <daniel@qtec.com> wrote:
->
-> On Wed, 10 Mar 2021 at 18:06, Alex Deucher <alexdeucher@gmail.com> wrote:
-> >
-> > On Wed, Mar 10, 2021 at 11:37 AM Daniel Gomez <daniel@qtec.com> wrote:
-> > >
-> > > Disabling GFXOFF via the quirk list fixes a hardware lockup in
-> > > Ryzen V1605B, RAVEN 0x1002:0x15DD rev 0x83.
-> > >
-> > > Signed-off-by: Daniel Gomez <daniel@qtec.com>
-> > > ---
-> > >
-> > > This patch is a continuation of the work here:
-> > > https://lkml.org/lkml/2021/2/3/122 where a hardware lockup was discussed and
-> > > a dma_fence deadlock was provoke as a side effect. To reproduce the issue
-> > > please refer to the above link.
-> > >
-> > > The hardware lockup was introduced in 5.6-rc1 for our particular revision as it
-> > > wasn't part of the new blacklist. Before that, in kernel v5.5, this hardware was
-> > > working fine without any hardware lock because the GFXOFF was actually disabled
-> > > by the if condition for the CHIP_RAVEN case. So this patch, adds the 'Radeon
-> > > Vega Mobile Series [1002:15dd] (rev 83)' to the blacklist to disable the GFXOFF.
-> > >
-> > > But besides the fix, I'd like to ask from where this revision comes from. Is it
-> > > an ASIC revision or is it hardcoded in the VBIOS from our vendor? From what I
-> > > can see, it comes from the ASIC and I wonder if somehow we can get an APU in the
-> > > future, 'not blacklisted', with the same problem. Then, should this table only
-> > > filter for the vendor and device and not the revision? Do you know if there are
-> > > any revisions for the 1002:15dd validated, tested and functional?
-> >
-> > The pci revision id (RID) is used to specify the specific SKU within a
-> > family.  GFXOFF is supposed to be working on all raven variants.  It
-> > was tested and functional on all reference platforms and any OEM
-> > platforms that launched with Linux support.  There are a lot of
-> > dependencies on sbios in the early raven variants (0x15dd), so it's
-> > likely more of a specific platform issue, but there is not a good way
-> > to detect this so we use the DID/SSID/RID as a proxy.  The newer raven
-> > variants (0x15d8) have much better GFXOFF support since they all
-> > shipped with newer firmware and sbios.
->
-> We took one of the first reference platform boards to design our
-> custom board based on the V1605B and I assume it has one of the early 'unstable'
-> raven variants with RID 0x83. Also, as OEM we are in control of the bios
-> (provided by insyde) but I wasn't sure about the RID so, thanks for the
-> clarification. Is there anything we can do with the bios to have the GFXOFF
-> enabled and 'stable' for this particular revision? Otherwise we'd need to add
-> the 0x83 RID to the table. Also, there is an extra ']' in the patch
-> subject. Sorry
-> for that. Would you need a new patch in case you accept it with the ']' removed?
->
-> Good to hear that the newer raven versions have better GFXOFF support.
+On 19:11-20210311, Pratyush Yadav wrote:
+> On 11/03/21 07:22AM, Nishanth Menon wrote:
+> > On 21:43-20210305, Vignesh Raghavendra wrote:
+> > > 
+> > > 
+> > > On 3/5/21 9:09 PM, Pratyush Yadav wrote:
+> > > > TI J7200 has the Cadence OSPI controller for interfacing with OSPI
+> > > > flashes. Add its node to allow using SPI flashes.
+> > > > 
+> > > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > > > ---
+> > > 
+> > > Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+> > > 
+> > > 
+> > > 
+> > > > 
+> > > > Notes:
+> > > >     Changes in v2:
+> > > >     - Do not force a pulldown on the DQS line because it already has a
+> > > >       pulldown resistor.
+> > > > 
+> > > >  .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 17 +++++++++
+> > > >  arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi   | 36 +++++++++++++++++++
+> > > >  2 files changed, 53 insertions(+)
+> > > > 
+> > > > diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+> > > > index 359e3e8a8cd0..5408ec815d58 100644
+> > > > --- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+> > > > +++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+> > > > @@ -269,6 +269,23 @@ hbmc: hyperbus@47034000 {
+> > > >  			#size-cells = <1>;
+> > > >  			mux-controls = <&hbmc_mux 0>;
+> > > >  		};
+> > > > +
+> > > > +		ospi0: spi@47040000 {
+> > > > +			compatible = "ti,am654-ospi";
+> > > > +			reg = <0x0 0x47040000 0x0 0x100>,
+> > > > +			      <0x5 0x00000000 0x1 0x0000000>;
+> > > > +			interrupts = <GIC_SPI 840 IRQ_TYPE_LEVEL_HIGH>;
+> > > > +			cdns,fifo-depth = <256>;
+> > > > +			cdns,fifo-width = <4>;
+> > > > +			cdns,trigger-address = <0x0>;
+> > > > +			clocks = <&k3_clks 103 0>;
+> > > > +			assigned-clocks = <&k3_clks 103 0>;
+> > > > +			assigned-clock-parents = <&k3_clks 103 2>;
+> > > > +			assigned-clock-rates = <166666666>;
+> > > > +			power-domains = <&k3_pds 103 TI_SCI_PD_EXCLUSIVE>;
+> > > > +			#address-cells = <1>;
+> > > > +			#size-cells = <0>;
+> > > > +		};
+> > > >  	};
+> > > >  
+> > > >  	tscadc0: tscadc@40200000 {
+> > > > diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> > > > index a988e2ab2ba1..34724440171a 100644
+> > > > --- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> > > > +++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> > > > @@ -100,6 +100,22 @@ J721E_WKUP_IOPAD(0x24, PIN_INPUT, 1) /* (A8) MCU_OSPI0_D6.MCU_HYPERBUS0_DQ6 */
+> > > >  			J721E_WKUP_IOPAD(0x28, PIN_INPUT, 1) /* (A7) MCU_OSPI0_D7.MCU_HYPERBUS0_DQ7 */
+> > > >  		>;
+> > > >  	};
+> > > > +
+> > > > +	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins-default {
+> > > > +		pinctrl-single,pins = <
+> > > > +			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_OSPI0_CLK */
+> > > > +			J721E_WKUP_IOPAD(0x002c, PIN_OUTPUT, 0) /* MCU_OSPI0_CSn0 */
+> > > > +			J721E_WKUP_IOPAD(0x000c, PIN_INPUT, 0)  /* MCU_OSPI0_D0 */
+> > > > +			J721E_WKUP_IOPAD(0x0010, PIN_INPUT, 0)  /* MCU_OSPI0_D1 */
+> > > > +			J721E_WKUP_IOPAD(0x0014, PIN_INPUT, 0)  /* MCU_OSPI0_D2 */
+> > > > +			J721E_WKUP_IOPAD(0x0018, PIN_INPUT, 0)  /* MCU_OSPI0_D3 */
+> > > > +			J721E_WKUP_IOPAD(0x001c, PIN_INPUT, 0)  /* MCU_OSPI0_D4 */
+> > > > +			J721E_WKUP_IOPAD(0x0020, PIN_INPUT, 0)  /* MCU_OSPI0_D5 */
+> > > > +			J721E_WKUP_IOPAD(0x0024, PIN_INPUT, 0)  /* MCU_OSPI0_D6 */
+> > > > +			J721E_WKUP_IOPAD(0x0028, PIN_INPUT, 0)  /* MCU_OSPI0_D7 */
+> > > > +			J721E_WKUP_IOPAD(0x0008, PIN_INPUT, 0)  /* MCU_OSPI0_DQS */
+> > > > +		>;
+> > > > +	};
+> > > >  };
+> > > >  
+> > > >  &main_pmx0 {
+> > > > @@ -235,3 +251,23 @@ exp_som: gpio@21 {
+> > > >  				  "GPIO_LIN_EN", "CAN_STB";
+> > > >  	};
+> > > >  };
+> > > > +
+> > > > +&ospi0 {
+> > > > +	pinctrl-names = "default";
+> > > > +	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
+> > > > +
+> > > > +	flash@0{
+> > > > +		compatible = "jedec,spi-nor";
+> > > > +		reg = <0x0>;
+> > > > +		spi-tx-bus-width = <8>;
+> > > > +		spi-rx-bus-width = <8>;
+> > > > +		spi-max-frequency = <25000000>;
+> > > > +		cdns,tshsl-ns = <60>;
+> > > > +		cdns,tsd2d-ns = <60>;
+> > > > +		cdns,tchsh-ns = <60>;
+> > > > +		cdns,tslch-ns = <60>;
+> > > > +		cdns,read-delay = <4>;
+> > > > +		#address-cells = <1>;
+> > > > +		#size-cells = <1>;
+> > > > +	};
+> > I see this:
+> > +/workdir/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dt.yaml: flash@0: 'cdns,read-delay', 'cdns,tchsh-ns', 'cdns,tsd2d-ns', 'cdns,tshsl-ns', 'cdns,tslch-ns' do not match any of the regexes: '^partition@', 'pinctrl-[0-9]+'
+> > 
+> > 
+> > And that is because
+> > Documentation/devicetree/bindings/spi/cadence-quadspi.txt is not
+> > converted to yaml. Following the new stringent rules, yaml please?
+> 
+> Ok. I am working on the conversion. Will send it soon.
 
-Adding Alex Desnoyer to the loop as he is the electronic/hardware and
-bios responsible so, he can
-provide more information about this.
 
-I've now done a test on the reference platform (dibbler) with the
-latest bios available
-and the hw lockup can be also reproduced with the same steps.
+OK I am keeping to our old rule that as long as binding is pre-existing
+and they are in Documentation/devicetree/ we are picking the node up..
+new bindings absolutely must be in yaml.
 
-For reference, I'm using mainline kernel 5.12-rc2.
+But really, it is high time these txt files get converted to yaml..
+Lets use this current collection for 5.13-rc1 cycle as the last window
+where we permit this.
 
-[    5.938544] [drm] initializing kernel modesetting (RAVEN
-0x1002:0x15DD 0x1002:0x15DD 0xC1).
-[    5.939942] amdgpu: ATOM BIOS: 113-RAVEN-11
+* 5.14-rc1 cycle patches, lets make sure: no txt file bindings, yaml at
+ least in next
+* 5.15-rc1 cycle patches, yaml binding must be in master OR a immutable
+  tag from subsystem maintainer.
 
-As in the previous cases, the clocks go to 100% of usage when the hang occurs.
+new bindings already need to be yaml.
 
-However, when the gpu hangs, dmesg output displays the following:
-
-[ 1568.279847] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx
-timeout, signaled seq=188, emitted seq=191
-[ 1568.434084] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* Process
-information: process Xorg pid 311 thread Xorg:cs0 pid 312
-[ 1568.279847] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx
-timeout, signaled seq=188, emitted seq=191
-[ 1568.434084] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* Process
-information: process Xorg pid 311 thread Xorg:cs0 pid 312
-[ 1568.507000] amdgpu 0000:01:00.0: amdgpu: GPU reset begin!
-[ 1628.491882] rcu: INFO: rcu_sched self-detected stall on CPU
-[ 1628.491882] rcu:     3-...!: (665 ticks this GP)
-idle=f9a/1/0x4000000000000000 softirq=188533/188533 fqs=15
-[ 1628.491882] rcu: rcu_sched kthread timer wakeup didn't happen for
-58497 jiffies! g726761 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-[ 1628.491882] rcu:     Possible timer handling issue on cpu=2
-timer-softirq=55225
-[ 1628.491882] rcu: rcu_sched kthread starved for 58500 jiffies!
-g726761 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
-[ 1628.491882] rcu:     Unless rcu_sched kthread gets sufficient CPU
-time, OOM is now expected behavior.
-[ 1628.491882] rcu: RCU grace-period kthread stack dump:
-[ 1628.491882] rcu: Stack dump where RCU GP kthread last ran:
-[ 1808.518445] rcu: INFO: rcu_sched self-detected stall on CPU
-[ 1808.518445] rcu:     3-...!: (2643 ticks this GP)
-idle=f9a/1/0x4000000000000000 softirq=188533/188533 fqs=15
-[ 1808.518445] rcu: rcu_sched kthread starved for 238526 jiffies!
-g726761 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=2
-[ 1808.518445] rcu:     Unless rcu_sched kthread gets sufficient CPU
-time, OOM is now expected behavior.
-[ 1808.518445] rcu: RCU grace-period kthread stack dump:
-[ 1808.518445] rcu: Stack dump where RCU GP kthread last ran:
-
->
-> Daniel
->
-> >
-> > Alex
-> >
-> >
-> > >
-> > > Logs:
-> > > [   27.708348] [drm] initializing kernel modesetting (RAVEN
-> > > 0x1002:0x15DD 0x1002:0x15DD 0x83).
-> > > [   27.789156] amdgpu: ATOM BIOS: 113-RAVEN-115
-> > >
-> > > Thanks in advance,
-> > > Daniel
-> > >
-> > >  drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-> > > index 65db88bb6cbc..319d4b99aec8 100644
-> > > --- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-> > > +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-> > > @@ -1243,6 +1243,8 @@ static const struct amdgpu_gfxoff_quirk amdgpu_gfxoff_quirk_list[] = {
-> > >         { 0x1002, 0x15dd, 0x103c, 0x83e7, 0xd3 },
-> > >         /* GFXOFF is unstable on C6 parts with a VBIOS 113-RAVEN-114 */
-> > >         { 0x1002, 0x15dd, 0x1002, 0x15dd, 0xc6 },
-> > > +       /* GFXOFF provokes a hw lockup on 83 parts with a VBIOS 113-RAVEN-115 */
-> > > +       { 0x1002, 0x15dd, 0x1002, 0x15dd, 0x83 },
-> > >         { 0, 0, 0, 0, 0 },
-> > >  };
-> > >
-> > > --
-> > > 2.30.1
-> > >
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
