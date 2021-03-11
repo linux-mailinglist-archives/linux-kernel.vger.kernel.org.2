@@ -2,131 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF854336BDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE64336BD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhCKGHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:07:36 -0500
-Received: from mail-vi1eur05on2076.outbound.protection.outlook.com ([40.107.21.76]:4321
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229854AbhCKGHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:07:04 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DfOn3A+dLE1x04Bz8tJEYohvl0mrd2+o2rZLy0pI8pObQkwRlFmYRUyL5qkqm8ekbu+s0Mo0J7RldKoWCpp7L1wgIHueeDpCwiqgzKF2C6n5ovFq9gojDSrrRrn4uUira7rtl7/61KnwdHAipueVq+tUCKhLSzotY9gAjA1zn17ByOVRCSHZF+IDRNuF+cttfU+S8P2ijOvgiBbMA/1sQ3o+2llU1xqObwW7eUEcKuTsI72UdzA242feyogU9P+FCYZv9Ea9emk05/QHI0z576gDhPMOBcwmwGOFOGb2pEWDz9dxeGBa9NxWO/t1uCJQ2GQV2mH420QASRZ8WUayKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fk9epxyytAneh5Y+KvaTJ102CTBHHhpnctUUPTVHAVg=;
- b=DmI596oCj67kOBXrJBba1rTYkttpY/SvqG0V+092NMc0Clz3gRcjkdeB65TZs3JMpRMTTIKkyhz3y0Zy9fwn+MizMVc5bNoY9BoFCzAaZGSEEiH8uYoLITVTpD1JLwDuZwTo6pQh0PKCoNNCKMrDpicVXu7x29TzEmhsxO1vOpI0ytFcRcgTkayldOBxj5KFweP9BNAm4//HZAvtiC1ej5+mxyDTV3jz1ALXHGCahGbB1hWavG6MWEnlDPy4sx8ceZiVEhxcLE7j4IFJzvYHNbak5xV90rx4xcX25V6gge9v/5riWRqbtQVSbP/0Ur0BvZXQPz6ec/8SIZ1WQ5f8BA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fk9epxyytAneh5Y+KvaTJ102CTBHHhpnctUUPTVHAVg=;
- b=GIpr3/n0ZE71oZa61VwqbHxwzQazb/A0m42bLzK8D32jTfCc7S5Ddcs5YOLds3dU6Y8lwJrNXh+dCfvqJkKGrd8SKD0q46POwvQTeoUeknvlG0YnAz9fR0k/Aj6XwQENHgk0DElIaXgzKzP7/7+Lkov9a+oQKFbkzED0O80czos=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB6992.eurprd04.prod.outlook.com (2603:10a6:803:139::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Thu, 11 Mar
- 2021 06:07:01 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3912.028; Thu, 11 Mar 2021
- 06:07:01 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     mchehab@kernel.org, laurent.pinchart@ideasonboard.com,
-        linux-imx@nxp.com
-Subject: [PATCH] media: docs: Fix data organization of MEDIA_BUS_FMT_RGB101010_1X30
-Date:   Thu, 11 Mar 2021 13:53:47 +0800
-Message-Id: <1615442027-16010-1-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK2PR04CA0072.apcprd04.prod.outlook.com
- (2603:1096:202:15::16) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S229945AbhCKGBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:01:44 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13501 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhCKGBM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 01:01:12 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DwyvG47QmzrTjr;
+        Thu, 11 Mar 2021 13:59:22 +0800 (CST)
+Received: from [10.174.177.134] (10.174.177.134) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 11 Mar 2021 14:01:09 +0800
+Subject: Re: [PATCH 0/3] Add support for free vmemmap pages of HugeTLB for
+ arm64
+To:     "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
+        "rientjes@google.com" <rientjes@google.com>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
+        "Umesh Sargur, Gautam" <sargur@amazon.com>
+References: <20210310071535.35245-1-songmuchun@bytedance.com>
+ <3eae8b3e-d6e0-83c8-e9c6-5420767788d5@huawei.com>
+ <ED06294F-F046-4B21-9E52-F439C2B32B45@amazon.com>
+From:   Chen Huang <chenhuang5@huawei.com>
+Message-ID: <aa3a5951-9dab-d1e1-8257-3569c269e3cf@huawei.com>
+Date:   Thu, 11 Mar 2021 14:01:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by HK2PR04CA0072.apcprd04.prod.outlook.com (2603:1096:202:15::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3912.17 via Frontend Transport; Thu, 11 Mar 2021 06:06:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 958daf2d-0b5c-4189-ee7b-08d8e453e275
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6992:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB699236C15418784D46E85FA298909@VI1PR04MB6992.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ie8KsRGul8xCBwX3sAr/shxi7GBZB90+g3AnBOMH80TIu0dx1bSZxoikkMlSYMPYTRzgWaNyfgjM7xCwA4ZEvP7WfvVSqyJo0/vkZ6jTbNG3mN7fsZ8fW7DsWUJJMozBMirK2tXcuWj032fOj8CwDMCOmN2EceJLMrj+OYe2frchRVWYw9MZe8blBF18w3oged7U7BrXCIkPtATeOVua/1eCRk3fHq3YYTjfSAYb0+QwroFdNpDeQSVZglklytoesSsMSBAsNYetAOcBiIvsDJlYWJVwBXyMS9/6w0dMJqjqMX05yLcK2kg2qRzC6BbxgyjgIslHFZpVpMZ7nLmm/jhaJP6dbyIES/MasZ9NOLzINfSB6q5c9Q3gexhqQX504s2Of2UFHocT6IWM8a66olsjg68cri3JpR6G3qFq5AJ1oOTdNqnmIDgcN5lO7z5S2UKUocU3tVdDa7OA2UDEeLoBADoKF73laPCD7WIesqwAvBDRP7E3iCO1w8i2ZuZZHtq1uYGX6FVBzxlZ9Zb38zwrksuFoOy/MNqq2wtJkHvkRrMEJSVI6kcsYpOoN8LqoexZXRZpu4zeXH5M71vgQA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(136003)(396003)(376002)(316002)(6506007)(69590400012)(6666004)(86362001)(186003)(6486002)(16526019)(956004)(66946007)(8936002)(2616005)(5660300002)(4744005)(66556008)(66476007)(8676002)(6512007)(26005)(4326008)(478600001)(2906002)(52116002)(83380400001)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?3moanCiu0gDfG4sm+83Sqyrs9Edpyjvl/dzSP6cbHdcF5z1CKhkotWBK0PPU?=
- =?us-ascii?Q?9w29fVJ+Epseo04NryzW1r13TriG36SC6nj9IaVcgZmU37FZT+D51QcRsLBj?=
- =?us-ascii?Q?8Z06+fKymhOQ4969mBfZA/PBIAzIgboBqtw9tMeA7kIeWJtvxtMZ1yvGZj3N?=
- =?us-ascii?Q?9wmsVsEMSH7V06Ne/nENX+O9Ksp4ME3dQjVIQylHaasKA55qDCZNagl1hMre?=
- =?us-ascii?Q?WsMRET3X/ao1hY5tdG4mh6/zsDb4HcZxYRNv/3r1stbSyeyvdr0NFU9lLWpb?=
- =?us-ascii?Q?Akc0PiFqVG7LAj2IEotv87d8ThP9MVthjsfzn4kUNej1a7/fuYRyZgl8lcNd?=
- =?us-ascii?Q?PALMrenxw2XEw+dx1wIwP1KNCSyuyzSgR2lTytM7kw+DyxQUV4AC8QHDOQu0?=
- =?us-ascii?Q?wjPnq72x2iia3iHd1nwfGV+uqM/6Yjx+rbZj79C2THEKmifPss5rAOrc/xtS?=
- =?us-ascii?Q?h70DZwRGLZHNOsCt0Ug3bPpW0eqFkgiPz/q65KDVKFWh4fUBeyLrL4KXYoUE?=
- =?us-ascii?Q?pM0aQuNMPoQyf5Jp6bQKR4NR6U3ybOD23E6JfkwNFOXoqvOq7LueVC3JE2bz?=
- =?us-ascii?Q?07qQ8l5YxqsAqImyRUFMuWEEWXF3Q3ZT2h1/CSjpe3/E5WqrVn3q8wcum/DH?=
- =?us-ascii?Q?WVHfYrTREPLLs9ILSxzOH/AODf/rkdS5nGRk67kibOoyT3xtsu3GsZVZl5bk?=
- =?us-ascii?Q?N5xHzm6bF8lbUmm+ROwcE9MjXHqfjNmJDU/1QcI17oitnF+LTYVST6/LLwbk?=
- =?us-ascii?Q?B7xsfs99T1HIESklHQsPmzKGiZp5nRM09MvN9+H10YFA0+OgMpMLib99r3sl?=
- =?us-ascii?Q?7Wft8ZJD4CjkE6zYEVi03puVGmBnuyCbVyUsdYCziZ2VIrC5q4lJhlaLY4rw?=
- =?us-ascii?Q?xK2uYoTHFlgUFS/RKnWGFaqP6SVMm84fOoKqvZm/KCyTg7/oXySKydf96TqN?=
- =?us-ascii?Q?PxikjX9XuSz77jrslSYYQDw+NYERXWfpTD5y1yRYKej9dIcggrUOVXZn9HUT?=
- =?us-ascii?Q?k/5rWw+D7R9CpIw2FH90WoaG+7SQBIao9IY4Iwqz23yFXKtmUU4LLC12XVbN?=
- =?us-ascii?Q?4Jc3d/NaFBT1D5bjTLjl0XyLMooXGLkIdPyJEhI31RowqWC5flBSmUFrgJHQ?=
- =?us-ascii?Q?vtmWuOdUx5dTGiqfNiVSsHByafk3FyonMiywdqCeIDvIyeE/EaHLzl8w6r0Z?=
- =?us-ascii?Q?ybt6CP6BgRYaJ9ndKGI9qv4YXJj0B2GgUs0OSJMkcoGhPfuMhMnHUaz65Bjb?=
- =?us-ascii?Q?WMAsTol1QrkYVvH+b8UqiMbhctrzxmHnffqQJfqPX2HX+z65r7yNyAQdG+W5?=
- =?us-ascii?Q?dcYGbR2WvXXd41WjF+kq7vdg?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 958daf2d-0b5c-4189-ee7b-08d8e453e275
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 06:07:00.9840
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZFXv8YzYxflvG6nLilSmI9Z3fOhFsz2Udxz+cwnW/eI6eZm5mHyw2go+UMGsA6hQxI2Y1sAUMcqUchdhYQ68ag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6992
+In-Reply-To: <ED06294F-F046-4B21-9E52-F439C2B32B45@amazon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The media bus bit width of MEDIA_BUS_FMT_RGB101010_1X30 is 30.
-So, 'Bit31' and 'Bit30' cells for the 'MEDIA_BUS_FMT_RGB101010_1X30'
-row should be spaces instead of '0's.
 
-Fixes: 54f38fcae536 ("media: docs: move uAPI book to userspace-api/media")
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
- Documentation/userspace-api/media/v4l/subdev-formats.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/subdev-formats.rst b/Documentation/userspace-api/media/v4l/subdev-formats.rst
-index 7f16cbe..e6a9faa 100644
---- a/Documentation/userspace-api/media/v4l/subdev-formats.rst
-+++ b/Documentation/userspace-api/media/v4l/subdev-formats.rst
-@@ -1567,8 +1567,8 @@ The following tables list existing packed RGB formats.
-       - MEDIA_BUS_FMT_RGB101010_1X30
-       - 0x1018
-       -
--      - 0
--      - 0
-+      -
-+      -
-       - r\ :sub:`9`
-       - r\ :sub:`8`
-       - r\ :sub:`7`
--- 
-2.7.4
+在 2021/3/11 13:00, Bodeddula, Balasubramaniam 写道:
+> Chen, is your testing steps documented somewhere, can you please point us to the same. I followed some steps for testing the x86 patches, just wanted to make sure I am covering your tests as well. We are actively working on building and testing these patches for ARM.
+> 
+> ﻿On 11/03/21, 9:44 AM, "Chen Huang" <chenhuang5@huawei.com> wrote:
+> 
+>     CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> 
+> 
+> 
+>     在 2021/3/10 15:15, Muchun Song 写道:
+>     > This patchset is based on the series of "Free some vmemmap pages of HugeTLB
+>     > page". More details can refer to the below link.
+>     >
+>     >   https://lkml.kernel.org/r/20210308102807.59745-1-songmuchun@bytedance.com
+>     >
+>     > I often received some feedback (We want to test this feature on arm64) before.
+>     > Because the previous code has been reviewed for 18 versions and is merged
+>     > into mm tree, I think that it is time to release this patchset. If you want
+>     > to test then you can start now :-). And I also hope someone can review this.
+>     >
+>     > Thanks.
+>     >
+>     > Muchun Song (3):
+>     >   mm: bootmem_info: mark register_page_bootmem_info_section __init
+>     >   mm: hugetlb: introduce arch_free_vmemmap_page
+>     >   arm64: mm: hugetlb: add support for free vmemmap pages of HugeTLB
+>     >
+>     >  arch/arm64/mm/mmu.c   | 5 +++++
+>     >  arch/x86/mm/init_64.c | 5 +++++
+>     >  fs/Kconfig            | 4 ++--
+>     >  mm/bootmem_info.c     | 4 ++--
+>     >  mm/sparse-vmemmap.c   | 9 +++++++--
+>     >  5 files changed, 21 insertions(+), 6 deletions(-)
+>     >
+> 
+>     Tested-by: Chen Huang <chenhuang5@huawei.com>
+> 
+>     I have tested the patch and the result is same as the last time.
+> 
 
+The test work is that: I set the total memory of 40G, and use 10G for hugepages.
+First I reserve 10G hugepages from the command line and the result is that:
+------------------------------------------------------------------------------------------------
+                    2M page                    |                    1G page                    |
+----------------------|------------------------|----------------------|------------------------|
+       enable         |        disable         |      enable          |        disable         |
+----------------------|------------------------|----------------------|------------------------|
+total  |  used | free | total  |  used | free  |total  |  used | free | total  |  used | free  |
+39,697 | 10279 |29,415| 39580  | 10279 | 29,297‬|39,739 | 10279 |29,455| 39580  | 10279 | 29,296|
+------------------------------------------------------------------------------------------------
+For 2M hugepage, we can save 118M memory which is correspoinding to the expected 120M memory.
+For 1G hugepage, we can save 159M memory which is correspoinding to the expected 160M memory.
+
+Then I alloc 10G hugepages using "echo XX > /sys/kernel/mm/hugepages/hugepages-XXkB/nr_hugepages",
+and get the result:
+------------------------------------------------------------------------------------------------
+                    2M page                    |                    1G page                    |
+----------------------|------------------------|----------------------|------------------------|
+       enable         |        disable         |      enable          |        disable         |
+----------------------|------------------------|----------------------|------------------------|
+total  |  used | free | total  |  used | free  |total  |  used | free | total  |  used | free  |
+39,699 | 10279 |29,415| 39580  | 10279 | 29,297‬‬|39,739 | 10279 |29,455| 39580  | 10279 | 29,296|
+------------------------------------------------------------------------------------------------
+For 2M hugepage, we can save 118M memory which is correspoinding to the expected 120M memory.
+For 1G hugepage, we can save 159M memory which is correspoinding to the expected 160M memory.
