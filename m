@@ -2,185 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BC0336A1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34237336A1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhCKCQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 21:16:54 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13591 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhCKCQ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 21:16:28 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dwsvy6Fcbz17JSD;
-        Thu, 11 Mar 2021 10:14:38 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 11 Mar
- 2021 10:16:21 +0800
-Subject: Re: [PATCH] configfs: Fix use-after-free issue in
- __configfs_open_file
-From:   Chao Yu <yuchao0@huawei.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>
-CC:     <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Daiyue Zhang <zhangdaiyue1@huawei.com>,
-        Yi Chen <chenyi77@huawei.com>, Ge Qiu <qiuge@huawei.com>,
-        <linux-fsdevel@vger.kernel.org>
-References: <20210301061053.105377-1-yuchao0@huawei.com>
- <040d3680-0e12-7957-da05-39017d33edb4@huawei.com>
-Message-ID: <c9aa911a-aebc-37b8-67b3-b7670424226b@huawei.com>
-Date:   Thu, 11 Mar 2021 10:16:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S229546AbhCKCUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 21:20:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhCKCTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 21:19:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0156964FBA;
+        Thu, 11 Mar 2021 02:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615429190;
+        bh=QSJ3J89jiUD2fmi5xAePNUfSntRIuXMdRGvzmeL7rIo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=D9Na8fdf7cj5uzNS0wGRxLc5muMf/b7Oa+S0gj4dPS+iba9bUjMTFGSuJXUpNmsfT
+         2jiN3Ya3jyUg1U+r6ld73LyRivY5DM3NmiiONJ7CQCPxivK62QKmGx9a2AdD4oZBT+
+         9MY7bTZGtEvEGY366Tosa+n5Ya4Zxbojo/7Vgn8T8LeTZeu6cRDdHaGM4zZ3VBnZaY
+         gL80wR6eRbKPVASIvHiO8QzrN7R5Ne4gk/aWiMlBwUMMVVecKnbhcWEh5m5cmVtAAY
+         ykY5Zszd5mdU/aNjSYCYOmBUEZIAcpY/0rgn2fRVRpBcc51yyFrhh+f8cigT9tsPzM
+         2tLWUEKFhHmBg==
+Date:   Wed, 10 Mar 2021 20:19:47 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] media: siano: Fix multiple out-of-bounds warnings in
+ smscore_load_firmware_family2()
+Message-ID: <20210311021947.GA129388@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <040d3680-0e12-7957-da05-39017d33edb4@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel, Christoph, Al
+Rename struct sms_msg_data4 to sms_msg_data5 and increase the size of
+its msg_data array from 4 to 5 elements. Notice that at some point
+the 5th element of msg_data is being accessed in function
+smscore_load_firmware_family2():
 
-Does any one have time to review this patch, ten days past...
+1006                 trigger_msg->msg_data[4] = 4; /* Task ID */
 
-Thanks,
+Also, there is no need for the object _trigger_msg_ of type struct
+sms_msg_data *, when _msg_ can be used, directly. Notice that msg_data
+in struct sms_msg_data is a one-element array, which causes multiple
+out-of-bounds warnings when accessing beyond its first element
+in function smscore_load_firmware_family2():
 
-On 2021/3/5 11:29, Chao Yu wrote:
-> +Cc fsdevel
-> 
-> Ping,
-> 
-> Any comments one this patch?
-> 
-> On 2021/3/1 14:10, Chao Yu wrote:
->> From: Daiyue Zhang <zhangdaiyue1@huawei.com>
->>
->> Commit b0841eefd969 ("configfs: provide exclusion between IO and removals")
->> uses ->frag_dead to mark the fragment state, thus no bothering with extra
->> refcount on config_item when opening a file. The configfs_get_config_item
->> was removed in __configfs_open_file, but not with config_item_put. So the
->> refcount on config_item will lost its balance, causing use-after-free
->> issues in some occasions like this:
->>
->> Test:
->> 1. Mount configfs on /config with read-only items:
->> drwxrwx--- 289 root   root            0 2021-04-01 11:55 /config
->> drwxr-xr-x   2 root   root            0 2021-04-01 11:54 /config/a
->> --w--w--w-   1 root   root         4096 2021-04-01 11:53 /config/a/1.txt
->> ......
->>
->> 2. Then run:
->> for file in /config
->> do
->> echo $file
->> grep -R 'key' $file
->> done
->>
->> 3. __configfs_open_file will be called in parallel, the first one
->> got called will do:
->> if (file->f_mode & FMODE_READ) {
->> 	if (!(inode->i_mode & S_IRUGO))
->> 		goto out_put_module;
->> 			config_item_put(buffer->item);
->> 				kref_put()
->> 					package_details_release()
->> 						kfree()
->>
->> the other one will run into use-after-free issues like this:
->> BUG: KASAN: use-after-free in __configfs_open_file+0x1bc/0x3b0
->> Read of size 8 at addr fffffff155f02480 by task grep/13096
->> CPU: 0 PID: 13096 Comm: grep VIP: 00 Tainted: G        W       4.14.116-kasan #1
->> TGID: 13096 Comm: grep
->> Call trace:
->> dump_stack+0x118/0x160
->> kasan_report+0x22c/0x294
->> __asan_load8+0x80/0x88
->> __configfs_open_file+0x1bc/0x3b0
->> configfs_open_file+0x28/0x34
->> do_dentry_open+0x2cc/0x5c0
->> vfs_open+0x80/0xe0
->> path_openat+0xd8c/0x2988
->> do_filp_open+0x1c4/0x2fc
->> do_sys_open+0x23c/0x404
->> SyS_openat+0x38/0x48
->>
->> Allocated by task 2138:
->> kasan_kmalloc+0xe0/0x1ac
->> kmem_cache_alloc_trace+0x334/0x394
->> packages_make_item+0x4c/0x180
->> configfs_mkdir+0x358/0x740
->> vfs_mkdir2+0x1bc/0x2e8
->> SyS_mkdirat+0x154/0x23c
->> el0_svc_naked+0x34/0x38
->>
->> Freed by task 13096:
->> kasan_slab_free+0xb8/0x194
->> kfree+0x13c/0x910
->> package_details_release+0x524/0x56c
->> kref_put+0xc4/0x104
->> config_item_put+0x24/0x34
->> __configfs_open_file+0x35c/0x3b0
->> configfs_open_file+0x28/0x34
->> do_dentry_open+0x2cc/0x5c0
->> vfs_open+0x80/0xe0
->> path_openat+0xd8c/0x2988
->> do_filp_open+0x1c4/0x2fc
->> do_sys_open+0x23c/0x404
->> SyS_openat+0x38/0x48
->> el0_svc_naked+0x34/0x38
->>
->> To fix this issue, remove the config_item_put in
->> __configfs_open_file to balance the refcount of config_item.
->>
->> Fixes: b0841eefd969 ("configfs: provide exclusion between IO and removals")
->> Cc: Al Viro <viro@zeniv.linux.org.uk>
->> Cc: Joel Becker <jlbec@evilplan.org>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Signed-off-by: Daiyue Zhang <zhangdaiyue1@huawei.com>
->> Signed-off-by: Yi Chen <chenyi77@huawei.com>
->> Signed-off-by: Ge Qiu <qiuge@huawei.com>
->> Reviewed-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>    fs/configfs/file.c | 6 ++----
->>    1 file changed, 2 insertions(+), 4 deletions(-)
->>
->> diff --git a/fs/configfs/file.c b/fs/configfs/file.c
->> index 1f0270229d7b..da8351d1e455 100644
->> --- a/fs/configfs/file.c
->> +++ b/fs/configfs/file.c
->> @@ -378,7 +378,7 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
->>    
->>    	attr = to_attr(dentry);
->>    	if (!attr)
->> -		goto out_put_item;
->> +		goto out_free_buffer;
->>    
->>    	if (type & CONFIGFS_ITEM_BIN_ATTR) {
->>    		buffer->bin_attr = to_bin_attr(dentry);
->> @@ -391,7 +391,7 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
->>    	/* Grab the module reference for this attribute if we have one */
->>    	error = -ENODEV;
->>    	if (!try_module_get(buffer->owner))
->> -		goto out_put_item;
->> +		goto out_free_buffer;
->>    
->>    	error = -EACCES;
->>    	if (!buffer->item->ci_type)
->> @@ -435,8 +435,6 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
->>    
->>    out_put_module:
->>    	module_put(buffer->owner);
->> -out_put_item:
->> -	config_item_put(buffer->item);
->>    out_free_buffer:
->>    	up_read(&frag->frag_sem);
->>    	kfree(buffer);
->>
-> .
-> 
+ 992                 struct sms_msg_data *trigger_msg =                                                  
+ 993                         (struct sms_msg_data *) msg;                                                
+ 994                                                                                                     
+ 995                 pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");                               
+ 996                 SMS_INIT_MSG(&msg->x_msg_header,                                                    
+ 997                                 MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,                                     
+ 998                                 sizeof(struct sms_msg_hdr) +                                        
+ 999                                 sizeof(u32) * 5);                                                   
+1000                                                                                                     
+1001                 trigger_msg->msg_data[0] = firmware->start_address;                                 
+1002                                         /* Entry point */                                           
+1003                 trigger_msg->msg_data[1] = 6; /* Priority */                                        
+1004                 trigger_msg->msg_data[2] = 0x200; /* Stack size */                                  
+1005                 trigger_msg->msg_data[3] = 0; /* Parameter */                                       
+1006                 trigger_msg->msg_data[4] = 4; /* Task ID */ 
+
+even when enough dynamic memory is allocated for _msg_:
+
+ 929         /* PAGE_SIZE buffer shall be enough and dma aligned */
+ 930         msg = kmalloc(PAGE_SIZE, GFP_KERNEL | coredev->gfp_buf_flags);
+
+but as _msg_ is casted to (struct sms_msg_data *):
+
+ 992                 struct sms_msg_data *trigger_msg =
+ 993                         (struct sms_msg_data *) msg;
+
+the out-of-bounds warnings are actually valid and should be addressed.
+
+Fix this by declaring object _msg_ of type struct sms_msg_data5 *,
+which contains a 5-elements array, instead of just 4. And use
+_msg_ directly, instead of creating object trigger_msg.
+
+This helps with the ongoing efforts to enable -Warray-bounds by fixing
+the following warnings:
+
+  CC [M]  drivers/media/common/siano/smscoreapi.o
+drivers/media/common/siano/smscoreapi.c: In function ‘smscore_load_firmware_family2’:
+drivers/media/common/siano/smscoreapi.c:1003:24: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+ 1003 |   trigger_msg->msg_data[1] = 6; /* Priority */
+      |   ~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from drivers/media/common/siano/smscoreapi.c:12:
+drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+  619 |  u32 msg_data[1];
+      |      ^~~~~~~~
+drivers/media/common/siano/smscoreapi.c:1004:24: warning: array subscript 2 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+ 1004 |   trigger_msg->msg_data[2] = 0x200; /* Stack size */
+      |   ~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from drivers/media/common/siano/smscoreapi.c:12:
+drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+  619 |  u32 msg_data[1];
+      |      ^~~~~~~~
+drivers/media/common/siano/smscoreapi.c:1005:24: warning: array subscript 3 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+ 1005 |   trigger_msg->msg_data[3] = 0; /* Parameter */
+      |   ~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from drivers/media/common/siano/smscoreapi.c:12:
+drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+  619 |  u32 msg_data[1];
+      |      ^~~~~~~~
+drivers/media/common/siano/smscoreapi.c:1006:24: warning: array subscript 4 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+ 1006 |   trigger_msg->msg_data[4] = 4; /* Task ID */
+      |   ~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from drivers/media/common/siano/smscoreapi.c:12:
+drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+  619 |  u32 msg_data[1];
+      |      ^~~~~~~~
+
+Fixes: 018b0c6f8acb ("[media] siano: make load firmware logic to work with newer firmwares")
+Co-developed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/media/common/siano/smscoreapi.c | 22 +++++++++-------------
+ drivers/media/common/siano/smscoreapi.h |  4 ++--
+ 2 files changed, 11 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
+index 410cc3ac6f94..bceaf91faa15 100644
+--- a/drivers/media/common/siano/smscoreapi.c
++++ b/drivers/media/common/siano/smscoreapi.c
+@@ -908,7 +908,7 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+ 					 void *buffer, size_t size)
+ {
+ 	struct sms_firmware *firmware = (struct sms_firmware *) buffer;
+-	struct sms_msg_data4 *msg;
++	struct sms_msg_data5 *msg;
+ 	u32 mem_address,  calc_checksum = 0;
+ 	u32 i, *ptr;
+ 	u8 *payload = firmware->payload;
+@@ -989,24 +989,20 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+ 		goto exit_fw_download;
+ 
+ 	if (coredev->mode == DEVICE_MODE_NONE) {
+-		struct sms_msg_data *trigger_msg =
+-			(struct sms_msg_data *) msg;
+-
+ 		pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");
+ 		SMS_INIT_MSG(&msg->x_msg_header,
+ 				MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,
+-				sizeof(struct sms_msg_hdr) +
+-				sizeof(u32) * 5);
++				sizeof(*msg));
+ 
+-		trigger_msg->msg_data[0] = firmware->start_address;
++		msg->msg_data[0] = firmware->start_address;
+ 					/* Entry point */
+-		trigger_msg->msg_data[1] = 6; /* Priority */
+-		trigger_msg->msg_data[2] = 0x200; /* Stack size */
+-		trigger_msg->msg_data[3] = 0; /* Parameter */
+-		trigger_msg->msg_data[4] = 4; /* Task ID */
++		msg->msg_data[1] = 6; /* Priority */
++		msg->msg_data[2] = 0x200; /* Stack size */
++		msg->msg_data[3] = 0; /* Parameter */
++		msg->msg_data[4] = 4; /* Task ID */
+ 
+-		rc = smscore_sendrequest_and_wait(coredev, trigger_msg,
+-					trigger_msg->x_msg_header.msg_length,
++		rc = smscore_sendrequest_and_wait(coredev, msg,
++					msg->x_msg_header.msg_length,
+ 					&coredev->trigger_done);
+ 	} else {
+ 		SMS_INIT_MSG(&msg->x_msg_header, MSG_SW_RELOAD_EXEC_REQ,
+diff --git a/drivers/media/common/siano/smscoreapi.h b/drivers/media/common/siano/smscoreapi.h
+index 4a6b9f4c44ac..f8789ee0d554 100644
+--- a/drivers/media/common/siano/smscoreapi.h
++++ b/drivers/media/common/siano/smscoreapi.h
+@@ -624,9 +624,9 @@ struct sms_msg_data2 {
+ 	u32 msg_data[2];
+ };
+ 
+-struct sms_msg_data4 {
++struct sms_msg_data5 {
+ 	struct sms_msg_hdr x_msg_header;
+-	u32 msg_data[4];
++	u32 msg_data[5];
+ };
+ 
+ struct sms_data_download {
+-- 
+2.27.0
+
