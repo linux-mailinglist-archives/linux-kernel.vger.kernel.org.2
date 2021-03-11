@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66960336B45
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 613DC336B49
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 06:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhCKEyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 23:54:25 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:47832 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230231AbhCKExy (ORCPT
+        id S229606AbhCKFBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 00:01:20 -0500
+Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:49558 "EHLO
+        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhCKFAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 23:53:54 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0URNwJ8P_1615438430;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0URNwJ8P_1615438430)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 11 Mar 2021 12:53:50 +0800
-Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
- SGX_INVALID_SIGNATURE
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
- <YDy51R2Wva7s+k/x@kernel.org>
- <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
- <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
- <YD5B7P++T6jLoWBR@kernel.org>
- <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
- <YEk8f/29icpsUhas@kernel.org>
- <20ef1254-007d-04ce-8df5-5122ffd4d8d3@linux.alibaba.com>
- <YEmRlQ8vL2inziEK@kernel.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <710b65d6-e492-ae24-f2af-6973e1df1b85@linux.alibaba.com>
-Date:   Thu, 11 Mar 2021 12:53:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Thu, 11 Mar 2021 00:00:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1615438854; x=1646974854;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version:subject;
+  bh=IWI4+2gSrZACZzxQChsLqpe+HvfyCpuEwUIo/DVKsDs=;
+  b=FPM2ndaFU1R0rnPUc+RNdZml2LvtjlrrZz7zKhnKmLbw5gUoEwoh0XBC
+   rJy5LAh4GnpUHInVNR/bziHieu4oy/ZtKMKIGJykAUf4fddDyWv5VIATT
+   3ixk4QjFJpEiMh+QrxZ9mmUA9eFfq+wVndxxzTzd3XVYkEthZPNGCpTao
+   M=;
+IronPort-HdrOrdr: A9a23:+FBHJ6jhTEtXdf2ttEK7exZcGHBQXxB13DAbvn1ZSRFFG/Gwvc
+ aogfgdyFvImC8cMUtQ/eyoFYuhZTfn9ZBz6ZQMJrvKZmKNhEKEJJxvhLGO/xTOFyHy/eZW1+
+ NBXsFFeaLNJHdgi8KS2mWFOvYmhOKK6aW5wdrZpk0dLj1CT4FFw0NHBh2AEktwLTM2YKYRMJ
+ aH/MJIq36BVB0sDviTPXUOU+jdq9CjrvuPXTc8Cwcj+E2yi1qThoLSKRSe0xsEOgkh/Z4Z7W
+ PHnwblj5/T0c2T9xm07Q7uxqUTovfajv1eGcKLis8aQw+c9jqAVcBae5nHlDopvOmrrHkwlt
+ 2kmWZcA+1Dr0nwWiWfpBPm2Szhyisj5jvYxVWZmHvuptHiLQhKbPZptMZiUj+cxkwroNVx17
+ 8O/2/xjesuMTrw2B7cw5zkURt3kkayvD4Zm+8ei3Q3a/p5VJZh6bY+2Ad0CtMpFj/77odiOv
+ JjBNzRjcwmC2+yXjTink0q+dS2UnMvWjiBR0UPoaWuokNrtUE89Ws9gPEYhzMk+I0wTt1q4e
+ HIPr8ArsA2cvMr
+X-IronPort-AV: E=Sophos;i="5.81,239,1610409600"; 
+   d="scan'208";a="918217041"
+Subject: Re: [PATCH 0/3] Add support for free vmemmap pages of HugeTLB for arm64
+Thread-Topic: [PATCH 0/3] Add support for free vmemmap pages of HugeTLB for arm64
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-c5104f52.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-9103.sea19.amazon.com with ESMTP; 11 Mar 2021 05:00:45 +0000
+Received: from EX13D22EUA004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-c5104f52.us-west-2.amazon.com (Postfix) with ESMTPS id 47476A1791;
+        Thu, 11 Mar 2021 05:00:44 +0000 (UTC)
+Received: from EX13D22EUA003.ant.amazon.com (10.43.165.210) by
+ EX13D22EUA004.ant.amazon.com (10.43.165.129) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 11 Mar 2021 05:00:43 +0000
+Received: from EX13D22EUA003.ant.amazon.com ([10.43.165.210]) by
+ EX13D22EUA003.ant.amazon.com ([10.43.165.210]) with mapi id 15.00.1497.012;
+ Thu, 11 Mar 2021 05:00:42 +0000
+From:   "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>
+To:     Chen Huang <chenhuang5@huawei.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
+        "rientjes@google.com" <rientjes@google.com>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
+        "Umesh Sargur, Gautam" <sargur@amazon.com>
+Thread-Index: AQHXFX2f1iiLEa+yjUWtpclelFHNUap+Lo8AgABpoYA=
+Date:   Thu, 11 Mar 2021 05:00:42 +0000
+Message-ID: <ED06294F-F046-4B21-9E52-F439C2B32B45@amazon.com>
+References: <20210310071535.35245-1-songmuchun@bytedance.com>
+ <3eae8b3e-d6e0-83c8-e9c6-5420767788d5@huawei.com>
+In-Reply-To: <3eae8b3e-d6e0-83c8-e9c6-5420767788d5@huawei.com>
+Accept-Language: en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.164.135]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8B8D232915107C4182231959190CBBC9@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <YEmRlQ8vL2inziEK@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/11/21 11:42 AM, Jarkko Sakkinen wrote:
-> On Thu, Mar 11, 2021 at 10:47:50AM +0800, Jia Zhang wrote:
->>
->>
->> On 2021/3/11 上午5:39, Jarkko Sakkinen wrote:
->>> On Wed, Mar 10, 2021 at 08:44:44PM +0800, Jia Zhang wrote:
->>>>
->>>>
->>>> On 2021/3/2 下午9:47, Jarkko Sakkinen wrote:
->>>>> On Mon, Mar 01, 2021 at 09:54:37PM -0800, Andy Lutomirski wrote:
->>>>>> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
->>>>>> <tianjia.zhang@linux.alibaba.com> wrote:
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
->>>>>>>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
->>>>>>>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
->>>>>>>>
->>>>>>>> What does determine this?
->>>>>>>>
->>>>>>>>> In this case, the valid portion of q2 is reordered reversely for
->>>>>>>>> little endian order, and the remaining portion is filled with zero.
->>>>>>>>
->>>>>>>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
->>>>>>>>
->>>>>>>> I'm lacking these details:
->>>>>>>>
->>>>>>>> 1. Why the length of Q2 can vary?
->>>>>>>> 2. Why reversing the bytes is the correct measure to counter-measure
->>>>>>>>      this variation?
->>>>>>>>
->>>>>>>> /Jarkko
->>>>>>>>
->>>>>>>
->>>>>>> When use openssl to generate a key instead of using the built-in
->>>>>>> sign_key.pem, there is a probability that will encounter this problem.
->>>>>>>
->>>>>>> Here is a problematic key I encountered. The calculated q1 and q2 of
->>>>>>> this key are both 383 bytes, If the length is not processed, the
->>>>>>> hardware signature will fail.
->>>>>>
->>>>>> Presumably the issue is that some keys have parameters that have
->>>>>> enough leading 0 bits to be effectively shorter.  The openssl API
->>>>>> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
->>>>>> variable-size integers.
->>>>>
->>>>> But the test uses a static key. It used to generate a key on fly but
->>>>
->>>> IMO even though the test code, it comes from the linux kernel, meaning
->>>> that its quality has a certain guarantee and it is a good reference, so
->>>> the test code still needs to ensure its correctness.
->>>
->>> Hmm... what is working incorrectly then?
->>
->> In current implementation, it is working well, after all the static key
->> can derive the full 384-byte length of q1 and q2. As mentioned above, if
->> someone refers to the design of signing tool from selftest code, it is
->> quite possible that the actual implementation will use dynamical or
->> external signing key deriving shorter q1 and/or q2 in length.
-> 
-> A self-test needs is not meant to be generic to be directly used in 3rd
-> party code. With the current key there is not issue => there is no issue.
-> 
-
-For keys generated on fly, self-test does not work properly, this 
-experience is really worse.
-
-Best regards,
-Tianjia
+Q2hlbiwgaXMgeW91ciB0ZXN0aW5nIHN0ZXBzIGRvY3VtZW50ZWQgc29tZXdoZXJlLCBjYW4geW91
+IHBsZWFzZSBwb2ludCB1cyB0byB0aGUgc2FtZS4gSSBmb2xsb3dlZCBzb21lIHN0ZXBzIGZvciB0
+ZXN0aW5nIHRoZSB4ODYgcGF0Y2hlcywganVzdCB3YW50ZWQgdG8gbWFrZSBzdXJlIEkgYW0gY292
+ZXJpbmcgeW91ciB0ZXN0cyBhcyB3ZWxsLiBXZSBhcmUgYWN0aXZlbHkgd29ya2luZyBvbiBidWls
+ZGluZyBhbmQgdGVzdGluZyB0aGVzZSBwYXRjaGVzIGZvciBBUk0uDQoNCu+7v09uIDExLzAzLzIx
+LCA5OjQ0IEFNLCAiQ2hlbiBIdWFuZyIgPGNoZW5odWFuZzVAaHVhd2VpLmNvbT4gd3JvdGU6DQoN
+CiAgICBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRlIG9mIHRoZSBv
+cmdhbml6YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVz
+cyB5b3UgY2FuIGNvbmZpcm0gdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZl
+Lg0KDQoNCg0KICAgIOWcqCAyMDIxLzMvMTAgMTU6MTUsIE11Y2h1biBTb25nIOWGmemBkzoNCiAg
+ICA+IFRoaXMgcGF0Y2hzZXQgaXMgYmFzZWQgb24gdGhlIHNlcmllcyBvZiAiRnJlZSBzb21lIHZt
+ZW1tYXAgcGFnZXMgb2YgSHVnZVRMQg0KICAgID4gcGFnZSIuIE1vcmUgZGV0YWlscyBjYW4gcmVm
+ZXIgdG8gdGhlIGJlbG93IGxpbmsuDQogICAgPg0KICAgID4gICBodHRwczovL2xrbWwua2VybmVs
+Lm9yZy9yLzIwMjEwMzA4MTAyODA3LjU5NzQ1LTEtc29uZ211Y2h1bkBieXRlZGFuY2UuY29tDQog
+ICAgPg0KICAgID4gSSBvZnRlbiByZWNlaXZlZCBzb21lIGZlZWRiYWNrIChXZSB3YW50IHRvIHRl
+c3QgdGhpcyBmZWF0dXJlIG9uIGFybTY0KSBiZWZvcmUuDQogICAgPiBCZWNhdXNlIHRoZSBwcmV2
+aW91cyBjb2RlIGhhcyBiZWVuIHJldmlld2VkIGZvciAxOCB2ZXJzaW9ucyBhbmQgaXMgbWVyZ2Vk
+DQogICAgPiBpbnRvIG1tIHRyZWUsIEkgdGhpbmsgdGhhdCBpdCBpcyB0aW1lIHRvIHJlbGVhc2Ug
+dGhpcyBwYXRjaHNldC4gSWYgeW91IHdhbnQNCiAgICA+IHRvIHRlc3QgdGhlbiB5b3UgY2FuIHN0
+YXJ0IG5vdyA6LSkuIEFuZCBJIGFsc28gaG9wZSBzb21lb25lIGNhbiByZXZpZXcgdGhpcy4NCiAg
+ICA+DQogICAgPiBUaGFua3MuDQogICAgPg0KICAgID4gTXVjaHVuIFNvbmcgKDMpOg0KICAgID4g
+ICBtbTogYm9vdG1lbV9pbmZvOiBtYXJrIHJlZ2lzdGVyX3BhZ2VfYm9vdG1lbV9pbmZvX3NlY3Rp
+b24gX19pbml0DQogICAgPiAgIG1tOiBodWdldGxiOiBpbnRyb2R1Y2UgYXJjaF9mcmVlX3ZtZW1t
+YXBfcGFnZQ0KICAgID4gICBhcm02NDogbW06IGh1Z2V0bGI6IGFkZCBzdXBwb3J0IGZvciBmcmVl
+IHZtZW1tYXAgcGFnZXMgb2YgSHVnZVRMQg0KICAgID4NCiAgICA+ICBhcmNoL2FybTY0L21tL21t
+dS5jICAgfCA1ICsrKysrDQogICAgPiAgYXJjaC94ODYvbW0vaW5pdF82NC5jIHwgNSArKysrKw0K
+ICAgID4gIGZzL0tjb25maWcgICAgICAgICAgICB8IDQgKystLQ0KICAgID4gIG1tL2Jvb3RtZW1f
+aW5mby5jICAgICB8IDQgKystLQ0KICAgID4gIG1tL3NwYXJzZS12bWVtbWFwLmMgICB8IDkgKysr
+KysrKy0tDQogICAgPiAgNSBmaWxlcyBjaGFuZ2VkLCAyMSBpbnNlcnRpb25zKCspLCA2IGRlbGV0
+aW9ucygtKQ0KICAgID4NCg0KICAgIFRlc3RlZC1ieTogQ2hlbiBIdWFuZyA8Y2hlbmh1YW5nNUBo
+dWF3ZWkuY29tPg0KDQogICAgSSBoYXZlIHRlc3RlZCB0aGUgcGF0Y2ggYW5kIHRoZSByZXN1bHQg
+aXMgc2FtZSBhcyB0aGUgbGFzdCB0aW1lLg0KDQo=
