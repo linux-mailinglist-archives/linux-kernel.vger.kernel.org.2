@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC743378E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61A33378ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234494AbhCKQM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:12:28 -0500
-Received: from mail-out.m-online.net ([212.18.0.10]:57202 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234465AbhCKQL4 (ORCPT
+        id S234465AbhCKQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:13:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234418AbhCKQNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:11:56 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DxDV06DYQz1s00y;
-        Thu, 11 Mar 2021 17:11:52 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DxDV0432hz1qr4l;
-        Thu, 11 Mar 2021 17:11:52 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id jnJYO_qSd5et; Thu, 11 Mar 2021 17:11:50 +0100 (CET)
-X-Auth-Info: 2KuBOCaE/sL/z2h12qu6ViGM9U9yOLCzuzHVP39GOc4=
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 11 Mar 2021 17:11:50 +0100 (CET)
-Subject: Re: [Linux-stm32] [PATCH v2 00/14] Introduce STM32MP1 RCC in secured
- mode
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "Alex G." <mr.nuke.me@gmail.com>,
-        Gabriel FERNANDEZ - foss <gabriel.fernandez@foss.st.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Etienne CARRIERE <etienne.carriere@st.com>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-References: <20210126090120.19900-1-gabriel.fernandez@foss.st.com>
- <2e04f814-b694-119d-fe8a-13e6df129536@gmail.com>
- <AS8PR10MB4712C27260707345FA99ED5AEE909@AS8PR10MB4712.EURPRD10.PROD.OUTLOOK.COM>
- <c57775fe-41ef-07f5-56a2-04b8f70797c1@denx.de>
- <463dafed-ec60-cd9a-33d2-ba118a6af629@foss.st.com>
- <c1c9c89b-8794-9b91-b626-d743cd8ff31e@pengutronix.de>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <b87a2b24-678a-724d-e5df-1eabf5969ad2@denx.de>
-Date:   Thu, 11 Mar 2021 17:11:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 11 Mar 2021 11:13:21 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0912C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:13:20 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id y1so2854133ljm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:13:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VQqJbfAYtz5Jhxh+kW0jsH0W6pnu5XQBNj3WuYw2Xtc=;
+        b=cosIYzxp+AQBWf4DjdHUHtwN1fxUlfumsi7VjMoDLhQ+83JP/MK0vudESRREjie/UR
+         iMFQ2WhYk0gYumKFgFwcJ+soUMaNAUNC/iwGkkuzK7MQjdtdV2GONF2nIoNBC/6JU1hA
+         f/Vt+q5/77cnv4RXTnDYNck5pmNL0pbqtcZY8YDoWeDk2cPDKa1ZBaDTjUuUUnQ6yKAm
+         M4RHw//gbUbOfpCchlPFPlp+v9xN/xMzXnih2fprdBgo67IorYJDhWu88pp68rzE+Rnq
+         Nru/8aaNPUUyT3pU3FikSeGRWEicSYMnvWWUVf0iOOMusjQRxe4mbpoQavpt/Xm0IeA6
+         HeJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VQqJbfAYtz5Jhxh+kW0jsH0W6pnu5XQBNj3WuYw2Xtc=;
+        b=oCgpzdg/A+eBFwe1NYhaGmecw16iDiga+VzoaXeBzk7J9sZ4ASPLE8uIeUz5lPl0It
+         uaVv+JE7rsNBEweJshcLfuaO+4X37WziuOANi+e8Ug4qYPEwON812/KXbNFuLQH5oluW
+         K0kxFtObCChb1o9WqDznSi+ZZ/f36qh7z93vZJjOAUdh9wIF+wrRtJ6Bktpz8HVuQ4Ug
+         fUQogg4MHfXRSmP/2+25tdnj/gEnp79SXOPTzrjcMsYSpXaOW/DKACIWRNKb51EHC+KD
+         WbaE8EFn5o/6pYZko2dKRt2W62sC7IIzAmBFYCGQcZxpZaP+64lKnMOGnQ71uLFtoX9Q
+         RcRQ==
+X-Gm-Message-State: AOAM531g84ROGNQcdixTtBHWukc+kFB/YqKxKwiaq8mnjDnmTCVgnmse
+        QANE20rM+ZOcm/tIhnuoFpA6VzAH89EmXCYluMKmLA==
+X-Google-Smtp-Source: ABdhPJyCRD3HazyOgncwD1yTs3xl5dw5MMFa1OC940N21HVZaWtg/1LKhzgfIrBGJvld4DMc2wg3oEgkkD5l5WOCsYc=
+X-Received: by 2002:a2e:7001:: with SMTP id l1mr5244023ljc.200.1615479199200;
+ Thu, 11 Mar 2021 08:13:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c1c9c89b-8794-9b91-b626-d743cd8ff31e@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210310125504.31886-1-noltari@gmail.com> <20210310125504.31886-4-noltari@gmail.com>
+ <CAL_JsqKZA-j2iXvVTXWtiuyKPOWeOUP0r+x-bV6QP6=_moy2VA@mail.gmail.com>
+ <CACRpkda=isBSW8BwYJ2pCaPcByRoo2GFNVoZCxhaCbEKk9iNsg@mail.gmail.com> <CAL_Jsq+FfYE2SrzwB_A=d-LMut-JrqdivKz6x8EQhkc3Zh5NAA@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+FfYE2SrzwB_A=d-LMut-JrqdivKz6x8EQhkc3Zh5NAA@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Mar 2021 17:13:07 +0100
+Message-ID: <CACRpkdaMYy_Z34i+0uRgciC=xBtoeNsWViHU9ZysvxqrFXB5+w@mail.gmail.com>
+Subject: Re: [PATCH v6 03/15] pinctrl: bcm: add bcm63xx base code
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/11/21 3:41 PM, Ahmad Fatoum wrote:
-> Hello,
+On Thu, Mar 11, 2021 at 3:58 PM Rob Herring <robh+dt@kernel.org> wrote:
+> On Wed, Mar 10, 2021 at 6:09 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > On Wed, Mar 10, 2021 at 6:51 PM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > > > +static const struct of_device_id bcm63xx_gpio_of_match[] = {
+> > > > +       { .compatible = "brcm,bcm6318-gpio", },
+> > > > +       { .compatible = "brcm,bcm6328-gpio", },
+> > > > +       { .compatible = "brcm,bcm6358-gpio", },
+> > > > +       { .compatible = "brcm,bcm6362-gpio", },
+> > > > +       { .compatible = "brcm,bcm6368-gpio", },
+> > > > +       { .compatible = "brcm,bcm63268-gpio", },
+> > >
+> > > All these would be moved to gpio-mmio.c (or maybe that can have a
+> > > fallback compatible?).
+> >
+> > This is gpio-regmap.c and it can only be used as a library
+> > by a certain driver. gpio-mmio.c can be used stand-alone
+> > for certain really simple hardware (though most use that
+> > as a library as well).
+>
+> I don't really care which one is used, but the problem is that this
+> choice is leaking into the binding design.
 
-Hi,
+Aha I guess I misunderstood your comment.
 
-> On 11.03.21 15:02, Alexandre TORGUE wrote:
->> On 3/11/21 12:43 PM, Marek Vasut wrote:
->>> On 3/11/21 9:08 AM, Alexandre TORGUE wrote:
->>>> 1- Break the current ABI: as soon as those patches are merged, stm32mp157c-dk2.dtb will impose to use
->>>> A tf-a for scmi clocks. For people using u-boot spl, the will have to create their own "no-secure" devicetree.
->>>
->>> NAK, this breaks existing boards and existing setups, e.g. DK2 that does not use ATF.
->>>
->>>> 2-As you suggest, create a new "secure" dtb per boards (Not my wish for maintenance perspectives).
->>>
->>> I agree with Alex (G) that the "secure" option should be opt-in.
->>> That way existing setups remain working and no extra requirements are imposed on MP1 users. Esp. since as far as I understand this, the "secure" part isn't really about security, but rather about moving clock configuration from Linux to some firmware blob.
->>>
->>>> 3- Keep kernel device tree as they are and applied this secure layer (scmi clocks phandle) thanks to dtbo in
->>>> U-boot.
->>>
->>> Is this really better than
->>> #include "stm32mp15xx-enable-secure-stuff.dtsi"
->>> in a board DT ? Because that is how I imagine the opt-in "secure" option could work.
->>>
->>
->> Discussing with Patrick about u-boot, we could use dtbo application thanks to extlinux.conf. BUT it it will not prevent other case (i.e. TF-A which jump directly in kernel@). So the "least worst" solution is to create a new "stm32mp1257c-scmi-dk2 board which will overload clock entries with a scmi phandle (as proposed by Alex).
-> 
-> I raised this issue before with your colleagues. I still believe the correct way
-> would be for the TF-A to pass down either a device tree or an overlay with the
-> actual settings in use, e.g.:
-> 
->    - Clocks/Resets done via SCMI
->    - Reserved memory regions
-> 
-> If TF-A directly boots Linux, it can apply the overlay itself, otherwise it's
-> passed down to SSBL that applies it before booting Linux.
+>The primary problem here is
+> once someone uses regmap, then they think they must have a syscon and
+> can abandon using 'reg' and normal address properties as Linux happens
+> to not use them (currently). I think we really need some better regmap
+> vs. mmio handling to eliminate this duplication of foo-mmio and
+> foo-regmap drivers and difference in binding design. Not sure exactly
+> what that looks like, but basically some sort of 'reg' property to
+> regmap creation.
 
-That sounds good and it is something e.g. R-Car already does, it merges 
-DT fragment from prior stages at U-Boot level and then passes the result 
-to Linux.
+I see the problem. Yeah we should try to be more strict around
+these things. To me there are syscons and "other regmaps",
+where syscon is a real hurdle of registers while "other regmaps"
+are just regmaps by convenience.
 
-So on ST hardware, the same could very well happen and it would work for 
-both non-ATF / ATF / ATF+TEE options.
+Documentation/devicetree/bindings/mfd/syscon.yaml
+describes what a syscon really is so if everyone could
+just read the documentation that would be great ...
+
+> Given we already have a Broadcom GPIO binding for what looks to be
+> similar to this one, I'm left wondering what's the real difference
+> here?
+
+Which one is similar? I can take a look.
+
+We currently have four Broadcom GPIO bindings,
+which are stand alone GPIO blocks and eight Broadcom
+pin controllers that all do GPIO as well.
+
+This family of pin controllers are (as per subject) is
+the bcm63xx series which is a MIPS-based family of SoCs
+found in routers, top bindings in
+Documentation/devicetree/bindings/mips/brcm/soc.txt
+These all have a GPIO block as part of the pin controller
+and the GPIO block is a distinct sub-function of the
+pin controller, and it has up to 32 GPIOs per block,
+hence it has its own subnode inside the pin controller.
+
+This driver follows the pattern of the Ingenic
+pin controller, another MIPS SoC:
+Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+
+Another SoC with several GPIO blocks inside the pin
+controller is SparX5 and that also follows this pattern:
+Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
+(This has an example with more than one GPIO block
+inside the pin controller.)
+
+Yours,
+Linus Walleij
