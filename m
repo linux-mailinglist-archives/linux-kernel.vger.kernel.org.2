@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2C4337188
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29765337189
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbhCKLjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:39:21 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:41403 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232787AbhCKLjD (ORCPT
+        id S232878AbhCKLjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:39:22 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35205 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232792AbhCKLjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:39:03 -0500
+        Thu, 11 Mar 2021 06:39:10 -0500
+X-Originating-IP: 90.89.138.59
 Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
         (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id BB03024000C;
-        Thu, 11 Mar 2021 11:39:00 +0000 (UTC)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 1770760005;
+        Thu, 11 Mar 2021 11:39:05 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH RESEND][next] mtd: cfi: Fix fall-through warnings for Clang
-Date:   Thu, 11 Mar 2021 12:39:00 +0100
-Message-Id: <20210311113900.305819-1-miquel.raynal@bootlin.com>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, chris.packham@alliedtelesis.co.nz,
+        Sergey.Semin@baikalelectronics.ru
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: maps: fix error return code of physmap_flash_remove()
+Date:   Thu, 11 Mar 2021 12:39:05 +0100
+Message-Id: <20210311113905.305884-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210305081933.GA137147@embeddedor>
+In-Reply-To: <20210308034446.3052-1-baijiaju1990@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'c6f51f1f5527946a83da930b43da2e37dc741dc2'
+X-linux-mtd-patch-commit: b'620b90d30c08684dc6ebee07c72755d997f9d1f6'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-03-05 at 08:19:33 UTC, "Gustavo A. R. Silva" wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> warnings by explicitly adding multiple break statements and a return
-> instead of letting the code fall through to the next case.
+On Mon, 2021-03-08 at 03:44:46 UTC, Jia-Ju Bai wrote:
+> When platform_get_drvdata() returns NULL to info, no error return code
+> of physmap_flash_remove() is assigned.
+> To fix this bug, err is assigned with -EINVAL in this case
 > 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Acked-by: Vignesh Raghavendra <vigneshr@ti.com>
+> Fixes: 73566edf9b91 ("[MTD] Convert physmap to platform driver")
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
