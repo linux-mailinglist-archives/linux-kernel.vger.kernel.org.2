@@ -2,165 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A362336C22
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23ABE336C28
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbhCKGWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:22:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
+        id S231440AbhCKGWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:22:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhCKGVp (ORCPT
+        with ESMTP id S231325AbhCKGVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:21:45 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C816C061574;
-        Wed, 10 Mar 2021 22:21:45 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id g8so2094246qvx.1;
-        Wed, 10 Mar 2021 22:21:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mwI4bRpwupjwaOM766OD0JzhQH2VY3vQqz4Cyis/nWw=;
-        b=iPYyNGHMDgHcReMaKZZcDWfpCX7RaYlzElT6BUVQG1EqTF4lDSoeGlJOmE668FNFx3
-         /RekKh7QjywWQbFtvIaMp8Hk6O3Nx3PNcT2UybtofF2mCj39fpOhZCXT1Ma2TGNe/Dd6
-         Q5gALJna5wQc+DPGQy0Lh8jcsfif9ahR0k2i0dULfGHtyrrsVPP7AuPsHptmmWYYgAMT
-         rp7BWiCDJof/WP3X9JQguHTolaWF65Qgmea2QWiJsV9XrlHeKPxsVMmVdQMH118fad/c
-         w8u89WrM9PEo52oYdLCuf+BVfkVlN43+aTIBMnU6x/S+abjldFD3IEOUV22OJnaDlHab
-         jdzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=mwI4bRpwupjwaOM766OD0JzhQH2VY3vQqz4Cyis/nWw=;
-        b=Xe2ME/KOLMlLwouAVf3KFyo1A7SEKK/ybkvqSy/6PkvH/x+tuFp58ZZbKWbdWF72RO
-         kJbd9rS66lRUZMv0LK6g29u+3eTLfDYIbcLKKJ/u98j0jZCwOD9KSESCvl6ZD1q5av6p
-         l9fopbjLN1b/53z7ln5KZz01Tio6MuGVhYYIgGXr8yHPouPE5eX/akabWCeBRXSVmOv7
-         rkckOrsaDEpHDGZ1OSpzfwjqEvNNm1eHyMasnKza57oh6s6gJwWRN1YCVxUBUYpzSbTW
-         Nblio+CBM5n+QTMn8YG8cQriOOeNe4MRAgjrsjQfm/qwwpgqmsg2tRbYhvqrfmAgCsvk
-         abFw==
-X-Gm-Message-State: AOAM533NP1KwsHZGreDEVghUcb6PbhuIK6qTDAXLJJs2cN4Vvo+Vpop3
-        IGnyOMjLAM6ZPMjGfDnCGVM=
-X-Google-Smtp-Source: ABdhPJyT83kqdvObAxCcZYXi0DujrbSPpoelNSxU1D5yeGuPI8x/AKLUsbZhh8+jsm+/kMdpzXQqVQ==
-X-Received: by 2002:a0c:c488:: with SMTP id u8mr6285052qvi.9.1615443704737;
-        Wed, 10 Mar 2021 22:21:44 -0800 (PST)
-Received: from Gentoo ([156.146.55.115])
-        by smtp.gmail.com with ESMTPSA id p7sm1307505qkc.75.2021.03.10.22.21.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 22:21:43 -0800 (PST)
-Date:   Thu, 11 Mar 2021 11:51:31 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: core: Few absolutely rudimentary typo fixes
- throughout the file filter.c
-Message-ID: <YEm26xk0pOeBSUmu@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210311055608.12956-1-unixbhaskar@gmail.com>
- <786f4801-c41f-cddd-c855-b388ec026614@infradead.org>
+        Thu, 11 Mar 2021 01:21:50 -0500
+X-Greylist: delayed 376 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 10 Mar 2021 22:21:50 PST
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C6CC061574;
+        Wed, 10 Mar 2021 22:21:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Zr8zbvgyg7nhRZoeY3Vz1jrV4bcNHTKeMaKRinH1yII=; b=NCADNCLO/4QMkjLSVyP7bP/oJW
+        uCDchjo4FZbIq3ZEDIU1dLicZOplGeORgs50bjamRJ9YOANS5nMIzRqPlGRkCXCea4QhJgA6kLPvZ
+        gq/3E2ghyOhBQhKCZWQ18EmwRbZHIaiZZGtTN5PCOONAumtUX6yedboGmjUHaITbnq6+YU9F7IAAD
+        lamNgWrGUh4aTXXQQT96Bw9pMHE0lyCeUXuSePMTxatlvOjZzR4WKZJdiL18mJH3dHghjs7tO9U+1
+        wGfDq6JM8x9zJvFBejU5CwVC0bWTZ2Pp96+CwX/hQNXNNbxXRu8QSkmwUKFxQqoYyKziYv1tfBqsf
+        h+YTmduA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKEhg-000tZN-1W; Thu, 11 Mar 2021 06:21:48 +0000
+Subject: Re: [PATCH] ia64: kernel: Few typos fixed in the file fsys.S
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210311061058.29492-1-unixbhaskar@gmail.com>
+ <e26a1461-0d05-d79c-7688-de45d285e068@infradead.org>
+ <356e2572-63cb-c7cb-2ebd-04ea21b161f0@physik.fu-berlin.de>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <eb1ceeee-3620-d494-7d3c-9baeca027ff2@infradead.org>
+Date:   Wed, 10 Mar 2021 22:21:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Y2n5PfDwgrKa+sR2"
-Content-Disposition: inline
-In-Reply-To: <786f4801-c41f-cddd-c855-b388ec026614@infradead.org>
+In-Reply-To: <356e2572-63cb-c7cb-2ebd-04ea21b161f0@physik.fu-berlin.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---Y2n5PfDwgrKa+sR2
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 22:12 Wed 10 Mar 2021, Randy Dunlap wrote:
->On 3/10/21 9:56 PM, Bhaskar Chowdhury wrote:
+On 3/10/21 10:17 PM, John Paul Adrian Glaubitz wrote:
+> Hi!
+> 
+> On 3/11/21 7:15 AM, Randy Dunlap wrote:
+>> On 3/10/21 10:10 PM, Bhaskar Chowdhury wrote:
+>>>
+>>> Mundane spelling fixes.
+>>>
+>>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 >>
->> Trivial spelling fixes throughout the file.
+>> Acked-by: Randy Dunlap <rdunlap@infradead.org>
 >>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->
->Hi Bhaskar,
->
->FYI:
->
->a. we accept British or American spellings
->b. we accept one or two spaces after a period ('.') at the end of a sentence
->c. we accept Oxford (serial) comma or not
->
-Hey Randy,
+>> but no maintainer Cc:ed to pick it up...
+> 
+> I guess Andrew's tree will just work fine in this case?
 
-First one had an apostrophe in the word....(s/free'ing/freeing/) ????
+Sure, it could.
 
-Yup, last two was bad change ..it all same whether it's "s" or "z" in
-it.Apologies.. will be cautious ...
+-- 
+~Randy
 
-
->> ---
->>  net/core/filter.c | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index 255aeee72402..931ee5f39ae7 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -2927,7 +2927,7 @@ BPF_CALL_4(bpf_msg_pop_data, struct sk_msg *, msg, u32, start,
->>  	 *
->>  	 * Then if B is non-zero AND there is no space allocate space and
->>  	 * compact A, B regions into page. If there is space shift ring to
->> -	 * the rigth free'ing the next element in ring to place B, leaving
->> +	 * the right freeing the next element in ring to place B, leaving
->>  	 * A untouched except to reduce length.
->>  	 */
->>  	if (start != offset) {
->> @@ -3710,7 +3710,7 @@ static inline int __bpf_skb_change_tail(struct sk_buff *skb, u32 new_len,
->>  	 * be the one responsible for writing buffers.
->>  	 *
->>  	 * It's really expected to be a slow path operation here for
->> -	 * control message replies, so we're implicitly linearizing,
->> +	 * control message replies, so we're implicitly linearising,
->>  	 * uncloning and drop offloads from the skb by this.
->>  	 */
->>  	ret = __bpf_try_make_writable(skb, skb->len);
->> @@ -3778,7 +3778,7 @@ static inline int __bpf_skb_change_head(struct sk_buff *skb, u32 head_room,
->>  		 * allow to expand on mac header. This means that
->>  		 * skb->protocol network header, etc, stay as is.
->>  		 * Compared to bpf_skb_change_tail(), we're more
->> -		 * flexible due to not needing to linearize or
->> +		 * flexible due to not needing to linearise or
->>  		 * reset GSO. Intention for this helper is to be
->>  		 * used by an L3 skb that needs to push mac header
->>  		 * for redirection into L2 device.
->> --
->
->
->--
->~Randy
->
-
---Y2n5PfDwgrKa+sR2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBJtucACgkQsjqdtxFL
-KRUHxAf/a1X94/OMJEC73SGsqAit7BuFpA4Hcp/7CEe+I6TAWvpmqWW8i+B3IvpC
-1K3HqqETVKT8w0Vj8i6zeaki9nirpSj/8Ok+YKu7wvuf0UKZLn/ZgulS9e7wPDPq
-3EjZSyxIzA/yERJRmO9IyykwEkSajLPODgHwmyJJGKY3huzjkZVaEGcHCdhl+6vW
-I6YRC1W+jsBAVmgU/pVTO34QZTE5MJzDUqgzGTUrLTlo3/PKnZIQwPbck7Z3UKiu
-v8vnnT12z0YCxiz6/A24h/BZMGI3o6ooP8Mzv6UFU4ZewUardHwX7ndheL9HpLp3
-8YmCOtQOx5Vsw/fSh50XQUUbPWEv1g==
-=0qoF
------END PGP SIGNATURE-----
-
---Y2n5PfDwgrKa+sR2--
