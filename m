@@ -2,208 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCF2337632
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE259337634
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233708AbhCKOwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:52:16 -0500
-Received: from mail.efficios.com ([167.114.26.124]:44810 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233762AbhCKOv6 (ORCPT
+        id S233927AbhCKOxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:53:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233901AbhCKOxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:51:58 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 7740B28D5BE;
-        Thu, 11 Mar 2021 09:51:57 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Qu3OP2STmJ-C; Thu, 11 Mar 2021 09:51:57 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 074B828D5BD;
-        Thu, 11 Mar 2021 09:51:57 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 074B828D5BD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1615474317;
-        bh=PL+Do3RiU8ZwEmjPMN8oQVW2UGeiF+zVdGoFeQ4cSx4=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=jv175HtwimfwS6DkFe8T/vS1w1bh0NcwlXqk7dKpjlAdALUXNOm0OxIBhSrG8E089
-         +zL5DwJnGgFZSdvbxppMoC0G2xvtdfPH1o25no1tybqqaafn7NploK0Z92jNLQ8wTG
-         IsrhCsE9JbEoBIU4bHgdz7xEGUiYv3ONY2VeFkDPA4L7W0utgb2HVu/DWHIbVL76X3
-         GtWmueKFYIA/4tPn+ed+IVNgqh13+9CGEPMFS4TMrQuzV5QMaPPZpIzxlrkzy0FCwT
-         1HLOfQldbUxoRsHn9KpYOo0/yRntRFKBJ23AMi0EOiqOpKtQ0ZDNHtCMQfPPqrUx8U
-         OG759MevL+Ckw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mKGBq-sN7b6l; Thu, 11 Mar 2021 09:51:56 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id E842128D62F;
-        Thu, 11 Mar 2021 09:51:56 -0500 (EST)
-Date:   Thu, 11 Mar 2021 09:51:56 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Piotr Figiel <figiel@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Oskolkov <posk@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Paul Turner <pjt@google.com>, emmir <emmir@google.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>
-Message-ID: <1173189328.5477.1615474316906.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210226135156.1081606-1-figiel@google.com>
-References: <20210226135156.1081606-1-figiel@google.com>
-Subject: Re: [PATCH v2] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+        Thu, 11 Mar 2021 09:53:16 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D47C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:53:16 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id 130so20799035qkh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:53:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KHPIkhTb0LE1ggEW55e8PVY6uRKVEwz5gqVz2vI9SzE=;
+        b=Bhi8px5GrHj7K2OkZ2Wd5DLPfqYMZL+TS/bR9cALnTN0U4D3gdvsgXMevrbSUujiso
+         LGYW2QvD+RG1lpMw/i8N8mA7U3by86mAbbQvWZJEthBBeShXXuKlXuhWSAst+92Cyanl
+         DBrt9CIENu18/doC/lTokLfTU1zDe4rveMjrKh6x6CAtSoSOmn8ls+MonlmNteWEVcTw
+         Hg0aNN/YBZnR8u6774JfaGPnUz4GV12glMT5BXOmXfUswF2mwlsZkwipHPL8mMUHMR7J
+         W9piEVQTJpc3+z3niHKUjYzpJ32dO1kLNpnxweCS9K+PXLR72/Xgb6aY9yScmtSQEs3H
+         QPsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KHPIkhTb0LE1ggEW55e8PVY6uRKVEwz5gqVz2vI9SzE=;
+        b=Vdb+vJAX8ijf+9O0FKvSxnhsCZfh3V5hoTkq7FomxpR4d4I34aJ+A9JAyKfwWuVxK7
+         QfmFVZQRl7KHUCf0elgqAsLfCWAC/0sKiWvj3HFbDubBNqtdN7TP0ZbECTAb1evbNRj4
+         H3UzBesTnoNYqdQNf2lNMabez3yDjP1n0YOBQHq+PogwqFq+fa/72UgFcjWT4NTFuQok
+         lkgO+EjdqIUw6b1PHyPieqhOnIblOxwBnexUX1qLNGxuCkGBRLNaE7nsuvXmd+BTmGnF
+         dZNgbAXqheGVtHZDXv+lsQXSc60Z6pHMMU3SkfzbE3Dyf3e/Hn6k3Z8Wma6k4pKtrbaq
+         1Ggg==
+X-Gm-Message-State: AOAM533Y6MF/evGBX3NeYCth7rOzRbcdTSXFmc0TyoMJrxS1UZY/yEdq
+        c4QZ0aiOGMtbB+NvxGGfJi7zdBgTE9cTCe1Nloaq2Q==
+X-Google-Smtp-Source: ABdhPJzQ3NUbCY3lw1wcdCgBzBoejG7qGizVUeuwvRYWcaZ7RpliAYL96CzGCXNPc6j5EpotIrRQTj08SX8qAheY+cY=
+X-Received: by 2002:a05:620a:410f:: with SMTP id j15mr7970362qko.424.1615474394860;
+ Thu, 11 Mar 2021 06:53:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
-Thread-Topic: ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
-Thread-Index: lCuYtmkZYQcWdMyqmX3XXApDYL6h2g==
+References: <0000000000008de88005bd40ac36@google.com> <20210311142503.GA31816@quack2.suse.cz>
+In-Reply-To: <20210311142503.GA31816@quack2.suse.cz>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 11 Mar 2021 15:53:03 +0100
+Message-ID: <CACT4Y+ZtBwv1aXUumTXnWzAi7LEpJ6CZemGyVR2FC6_YO2E4EQ@mail.gmail.com>
+Subject: Re: [syzbot] KCSAN: data-race in start_this_handle / start_this_handle
+To:     Jan Kara <jack@suse.cz>, Marco Elver <elver@google.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     syzbot <syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 11, 2021 at 3:25 PM Jan Kara <jack@suse.cz> wrote:
+>
+> On Thu 11-03-21 02:59:14, syzbot wrote:
+> > HEAD commit:    a74e6a01 Merge tag 's390-5.12-3' of git://git.kernel.org/p..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=159f69ecd00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=de394bbaade74fb7
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=30774a6acf6a2cf6d535
+> > compiler:       Debian clang version 11.0.1-2
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com
+> >
+> > ==================================================================
+> > BUG: KCSAN: data-race in start_this_handle / start_this_handle
+> >
+> > write to 0xffff888103880870 of 8 bytes by task 29956 on cpu 1:
+> >  jbd2_get_transaction fs/jbd2/transaction.c:125 [inline]
+> >  start_this_handle+0xceb/0x1010 fs/jbd2/transaction.c:400
+> >  jbd2__journal_start+0x1fc/0x3f0 fs/jbd2/transaction.c:503
+> >  __ext4_journal_start_sb+0x159/0x310 fs/ext4/ext4_jbd2.c:105
+> >  __ext4_journal_start fs/ext4/ext4_jbd2.h:320 [inline]
+> >  ext4_da_write_begin+0x460/0xaf0 fs/ext4/inode.c:2998
+> >  generic_perform_write+0x196/0x3a0 mm/filemap.c:3575
+> >  ext4_buffered_write_iter+0x2e5/0x3e0 fs/ext4/file.c:269
+> >  ext4_file_write_iter+0x48a/0x10b0 fs/ext4/file.c:502
+> >  call_write_iter include/linux/fs.h:1977 [inline]
+> >  do_iter_readv_writev+0x2cb/0x360 fs/read_write.c:740
+> >  do_iter_write+0x112/0x4c0 fs/read_write.c:866
+> >  vfs_iter_write+0x4c/0x70 fs/read_write.c:907
+> >  iter_file_splice_write+0x40a/0x750 fs/splice.c:689
+> >  do_splice_from fs/splice.c:767 [inline]
+> >  direct_splice_actor+0x80/0xa0 fs/splice.c:936
+> >  splice_direct_to_actor+0x345/0x650 fs/splice.c:891
+> >  do_splice_direct+0xf5/0x170 fs/splice.c:979
+> >  do_sendfile+0x7a6/0xe20 fs/read_write.c:1260
+> >  __do_sys_sendfile64 fs/read_write.c:1319 [inline]
+> >  __se_sys_sendfile64 fs/read_write.c:1311 [inline]
+> >  __x64_sys_sendfile64+0xa9/0x130 fs/read_write.c:1311
+> >  do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> > read to 0xffff888103880870 of 8 bytes by task 29936 on cpu 0:
+> >  start_this_handle+0x1c1/0x1010 fs/jbd2/transaction.c:352
+> >  jbd2__journal_start+0x1fc/0x3f0 fs/jbd2/transaction.c:503
+> >  __ext4_journal_start_sb+0x159/0x310 fs/ext4/ext4_jbd2.c:105
+> >  __ext4_journal_start fs/ext4/ext4_jbd2.h:320 [inline]
+> >  ext4_da_write_begin+0x460/0xaf0 fs/ext4/inode.c:2998
+> >  generic_perform_write+0x196/0x3a0 mm/filemap.c:3575
+> >  ext4_buffered_write_iter+0x2e5/0x3e0 fs/ext4/file.c:269
+> >  ext4_file_write_iter+0x48a/0x10b0 fs/ext4/file.c:502
+> >  call_write_iter include/linux/fs.h:1977 [inline]
+> >  do_iter_readv_writev+0x2cb/0x360 fs/read_write.c:740
+> >  do_iter_write+0x112/0x4c0 fs/read_write.c:866
+> >  vfs_iter_write+0x4c/0x70 fs/read_write.c:907
+> >  iter_file_splice_write+0x40a/0x750 fs/splice.c:689
+> >  do_splice_from fs/splice.c:767 [inline]
+> >  direct_splice_actor+0x80/0xa0 fs/splice.c:936
+> >  splice_direct_to_actor+0x345/0x650 fs/splice.c:891
+> >  do_splice_direct+0xf5/0x170 fs/splice.c:979
+> >  do_sendfile+0x7a6/0xe20 fs/read_write.c:1260
+> >  __do_sys_sendfile64 fs/read_write.c:1319 [inline]
+> >  __se_sys_sendfile64 fs/read_write.c:1311 [inline]
+> >  __x64_sys_sendfile64+0xa9/0x130 fs/read_write.c:1311
+> >  do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> > Reported by Kernel Concurrency Sanitizer on:
+> > CPU: 0 PID: 29936 Comm: syz-executor.5 Not tainted 5.12.0-rc2-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > ==================================================================
+>
+> So this case is harmless. start_this_handle() does indeed check
+> journal->j_running_transaction without any protection and this is only a
+> racy check to opportunistically preallocate a transaction if we are likely
+> to need it. There was some macro to instruct KCSAN that the read is
+> actually fine, wasn't there?
 
-
------ On Feb 26, 2021, at 8:51 AM, Piotr Figiel figiel@google.com wrote:
-
-> For userspace checkpoint and restore (C/R) a way of getting process state
-> containing RSEQ configuration is needed.
-> 
-> There are two ways this information is going to be used:
-> - to re-enable RSEQ for threads which had it enabled before C/R
-> - to detect if a thread was in a critical section during C/R
-> 
-> Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
-> using the address registered before C/R.
-> 
-> Detection whether the thread is in a critical section during C/R is needed
-> to enforce behavior of RSEQ abort during C/R. Attaching with ptrace()
-> before registers are dumped itself doesn't cause RSEQ abort.
-> Restoring the instruction pointer within the critical section is
-> problematic because rseq_cs may get cleared before the control is passed
-> to the migrated application code leading to RSEQ invariants not being
-> preserved. C/R code will use RSEQ ABI address to find the abort handler
-> to which the instruction pointer needs to be set.
-> 
-> To achieve above goals expose the RSEQ ABI address and the signature value
-> with the new ptrace request PTRACE_GET_RSEQ_CONFIGURATION.
-> 
-> This new ptrace request can also be used by debuggers so they are aware
-> of stops within restartable sequences in progress.
-> 
-> Signed-off-by: Piotr Figiel <figiel@google.com>
-> Reviewed-by: Michal Miroslaw <emmir@google.com>
-
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-
-Thanks!
-
-Mathieu
-
-
-> 
-> ---
-> v2:
-> Applied review comments:
-> - changed return value from the ptrace request to the size of the
->   configuration structure
-> - expanded configuration structure with the flags field and
->   the rseq abi structure size
-> 
-> v1:
-> https://lore.kernel.org/lkml/20210222100443.4155938-1-figiel@google.com/
-> 
-> ---
-> include/uapi/linux/ptrace.h | 10 ++++++++++
-> kernel/ptrace.c             | 25 +++++++++++++++++++++++++
-> 2 files changed, 35 insertions(+)
-> 
-> diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
-> index 83ee45fa634b..3747bf816f9a 100644
-> --- a/include/uapi/linux/ptrace.h
-> +++ b/include/uapi/linux/ptrace.h
-> @@ -102,6 +102,16 @@ struct ptrace_syscall_info {
-> 	};
-> };
-> 
-> +#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
-> +
-> +struct ptrace_rseq_configuration {
-> +	__u64 rseq_abi_pointer;
-> +	__u32 rseq_abi_size;
-> +	__u32 signature;
-> +	__u32 flags;
-> +	__u32 pad;
-> +};
-> +
-> /*
->  * These values are stored in task->ptrace_message
->  * by tracehook_report_syscall_* to describe the current syscall-stop.
-> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-> index 61db50f7ca86..76f09456ec4b 100644
-> --- a/kernel/ptrace.c
-> +++ b/kernel/ptrace.c
-> @@ -31,6 +31,7 @@
-> #include <linux/cn_proc.h>
-> #include <linux/compat.h>
-> #include <linux/sched/signal.h>
-> +#include <linux/minmax.h>
-> 
-> #include <asm/syscall.h>	/* for syscall_get_* */
-> 
-> @@ -779,6 +780,24 @@ static int ptrace_peek_siginfo(struct task_struct *child,
-> 	return ret;
-> }
-> 
-> +#ifdef CONFIG_RSEQ
-> +static long ptrace_get_rseq_configuration(struct task_struct *task,
-> +					  unsigned long size, void __user *data)
-> +{
-> +	struct ptrace_rseq_configuration conf = {
-> +		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
-> +		.rseq_abi_size = sizeof(*task->rseq),
-> +		.signature = task->rseq_sig,
-> +		.flags = 0,
-> +	};
-> +
-> +	size = min_t(unsigned long, size, sizeof(conf));
-> +	if (copy_to_user(data, &conf, size))
-> +		return -EFAULT;
-> +	return sizeof(conf);
-> +}
-> +#endif
-> +
-> #ifdef PTRACE_SINGLESTEP
-> #define is_singlestep(request)		((request) == PTRACE_SINGLESTEP)
-> #else
-> @@ -1222,6 +1241,12 @@ int ptrace_request(struct task_struct *child, long
-> request,
-> 		ret = seccomp_get_metadata(child, addr, datavp);
-> 		break;
-> 
-> +#ifdef CONFIG_RSEQ
-> +	case PTRACE_GET_RSEQ_CONFIGURATION:
-> +		ret = ptrace_get_rseq_configuration(child, addr, datavp);
-> +		break;
-> +#endif
-> +
-> 	default:
-> 		break;
-> 	}
-> --
-> 2.30.1.766.gb4fecdf3b7-goog
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
++Marco
++Tetsuo, did you want to fix it?
