@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C0B33754D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9668A33754F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbhCKOSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:18:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:40672 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233466AbhCKOSR (ORCPT
+        id S233837AbhCKOSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:18:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233735AbhCKOSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:18:17 -0500
-Message-Id: <20210311132036.228542540@linutronix.de>
+        Thu, 11 Mar 2021 09:18:20 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFBDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:18:20 -0800 (PST)
+Message-Id: <20210311141704.101079841@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615472295;
+        s=2020; t=1615472296;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qkKcG1mgbC1GGOdB94l5t8PlzZVU4PCQ1n0hbKnZ59c=;
-        b=cv0ECABapO1jZDqwEeRZgDMFpvgJh6XLkO+9TOih/fnGTLEVLF8MLCZ+iHWq+Ybw6lbQSf
-        5g5sSJotQirzys4+LKKrRltRAU8wm8PBtqEXQZb7QJJa9dAc6bvvRYa4SA8exjogRRSEMc
-        OcF2PjyRSe41jJhTp5XAypspIEY+SG/U41qBMhnBKRuZIW3fI7woJnM8eiJ9hCwOOrdBDc
-        7JVCk9i4PnKfa7hciMITfXzOt97vum78rE9Yk0z/iDQ3+2waorcPs2R3qSZizHNLLQsZGh
-        zwv8EYwLT2MTi+ICq93XrBXSzhBgxYovi6aA0VdqWNKZ/OgW9nC8V6g4hDPNTw==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=tr/QHK6EO98/6Jbi/V6kHHTycEaZE2XVuVjSeCrgP9M=;
+        b=4v+5xOgfnanby0Ahyc/JquqZiepPdlAK+AqhdUfRetz+nKuz9A5OBGYh07fb0sSaVvPCF7
+        MJPlzSWRhanV/LqQVLeATf+EI2Uo5525GR/KYIOU1hE5vIL4h49Ze5jjUghUA5zknzAioU
+        JUEzs17o3suFncuh0jBtaLhbLJK72gNxpGxjCkFSMYKldyhPRA0XytESUXwyEc6Y4e40uJ
+        58JPWubnsHuVUkrZ+qlTQ905XeGi4TAIn8uEwM0L1/ZKuDOQqBlKFxt6WOPkDASIVNcFIg
+        t7aqbA+pl3N52iCfrQIoGVPzrelj8ADw2ILvnPzNpk309hjooHlJ7K2Yxboutw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615472295;
+        s=2020e; t=1615472296;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qkKcG1mgbC1GGOdB94l5t8PlzZVU4PCQ1n0hbKnZ59c=;
-        b=uGWQabNQVGvcQvr93kfvH4/oVdzzWKAOj62pIt3pbPRnxFvxV25JUSmTl/H/xDSpQpIjKO
-        WeXlPzOnyO1nDHAQ==
-Date:   Thu, 11 Mar 2021 14:20:36 +0100
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=tr/QHK6EO98/6Jbi/V6kHHTycEaZE2XVuVjSeCrgP9M=;
+        b=nKEIfwkv+ZPZVCAlw8BxQ+0U6KVP6e47tsoIaQWyRLQnnpsLNJHiOD3vnCuyIqMCrAIPfq
+        LNomXh480nqPIXCw==
+Date:   Thu, 11 Mar 2021 14:20:37 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Oleg Nesterov <oleg@redhat.com>,
@@ -47,38 +50,65 @@ Cc:     Oleg Nesterov <oleg@redhat.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Matt Fleming <matt@codeblueprint.co.uk>,
         "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [patch V2 0/3] signals: Allow caching one sigqueue object per task
+Subject: [patch V2 1/3] signal: Provide and use exit_task_sighand()
+References: <20210311132036.228542540@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBpcyBhIGZvbGxvdyB1cCB0byB0aGUgaW5pdGlhbCBzdWJtaXNzaW9uIHdoaWNoIGNhbiBi
-ZSBmb3VuZCBoZXJlOgoKICBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjEwMzAzMTQyMDI1
-LndiYnQybm5yNmR0Z3dqZmlAbGludXRyb25peC5kZQoKU2lnbmFsIHNlbmRpbmcgcmVxdWlyZXMg
-YSBrbWVtIGNhY2hlIGFsbG9jYXRpb24gYXQgdGhlIHNlbmRlciBzaWRlIGFuZCB0aGUKcmVjZWl2
-ZXIgaGFuZHMgaXQgYmFjayB0byB0aGUga21lbSBjYWNoZSB3aGVuIGNvbnN1bWluZyB0aGUgc2ln
-bmFsLgoKVGhpcyB3b3JrcyBwcmV0dHkgd2VsbCBldmVuIGZvciByZWFsdGltZSB3b3JrbG9hZHMg
-ZXhjZXB0IGZvciB0aGUgY2FzZSB3aGVuCnRoZSBrbWVtIGNhY2hlIGFsbG9jYXRpb24gaGFzIHRv
-IGdvIGludG8gdGhlIHNsb3cgcGF0aCB3aGljaCBpcyByYXJlIGJ1dApoYXBwZW5zLgoKUHJlZW1w
-dC1SVCBjYXJyaWVzIGEgcGF0Y2ggd2hpY2ggYWxsb3dzIGNhY2hpbmcgb2Ygb25lIHNpZ3F1ZXVl
-IG9iamVjdCBwZXIKdGFzay4gVGhlIG9iamVjdCBpcyBub3QgcHJlYWxsb2NhdGVkLiBJdCdzIGNh
-Y2hlZCB3aGVuIHRoZSB0YXNrIHJlY2VpdmVzIGEKc2lnbmFsLiBUaGUgY2FjaGUgaXMgZnJlZWQg
-d2hlbiB0aGUgdGFzayBleGl0cy4KClRoZSBtZW1vcnkgb3ZlcmhlYWQgZm9yIGEgc3RhbmRhcmQg
-ZGlzdHJvIHNldHVwIGlzIHByZXR0eSBzbWFsbC4gQWZ0ZXIgYm9vdAp0aGVyZSBhcmUgbGVzcyB0
-aGFuIDEwIG9iamVjdHMgY2FjaGVkIGluIGFib3V0IDE1MDAgdGFza3MuIFRoZSBzcGVlZHVwIGZv
-cgpzZW5kaW5nIGEgc2lnbmFsIGZyb20gYSBjYWNoZWQgc2lncXVldWUgb2JqZWN0IGlzIHNtYWxs
-ICh+M3VzKSBwZXIgc2lnbmFsCmFuZCBhbG1vc3QgaW52aXNpYmxlLCBidXQgZm9yIHNpZ25hbCBo
-ZWF2eSB3b3JrbG9hZHMgaXQncyBkZWZpbml0ZWx5Cm1lYXN1cmFibGUgYW5kIGZvciB0aGUgdGFy
-Z2V0ZWQgcmVhbHRpbWUgd29ya2xvYWRzIGl0J3Mgc29sdmluZyBhIHJlYWwKd29ybGQgbGF0ZW5j
-eSBpc3N1ZS4KCkNoYW5nZXMgdnMgVjE6CgogICAtIHRoZSBjYWNoaW5nIGlzIG5vdyB1bmNvbmRp
-dGlvbmFsCiAgIC0gZHJvcCB0aGUgcG9pbnRsZXNzIGNtcHhjaGcKICAgLSBzcGxpdCB0aGUgcGF0
-Y2ggdXAgZm9yIGJldHRlciByZWFkYWJpbGl0eQogICAtIGFkZCBhIHByb3BlciBhbmFseXNpcyB0
-byB0aGUgY2hhbmdlbG9nIHZzLiB0aGUgaW1wYWN0IGFuZCBiZW5lZml0cwoKVGhhbmtzLAoKCXRn
-bHgKLS0tCiBpbmNsdWRlL2xpbnV4L3NjaGVkLmggIHwgICAgMSArCiBpbmNsdWRlL2xpbnV4L3Np
-Z25hbC5oIHwgICAgMSArCiBrZXJuZWwvZXhpdC5jICAgICAgICAgIHwgICAgMyArLS0KIGtlcm5l
-bC9mb3JrLmMgICAgICAgICAgfCAgICAxICsKIGtlcm5lbC9zaWduYWwuYyAgICAgICAgfCAgIDQ0
-ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tCiA1IGZpbGVzIGNo
-YW5nZWQsIDM3IGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQo=
+To prepare for caching a sigqueue per task, implement a dedicated function
+to flush the sigqueue of the exiting task.
+
+No functional change.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/signal.h |    1 +
+ kernel/exit.c          |    3 +--
+ kernel/signal.c        |    9 +++++++++
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -265,6 +265,7 @@ static inline void init_sigpending(struc
+ }
+ 
+ extern void flush_sigqueue(struct sigpending *queue);
++extern void exit_task_sighand(struct task_struct *tsk);
+ 
+ /* Test if 'sig' is valid signal. Use this instead of testing _NSIG directly */
+ static inline int valid_signal(unsigned long sig)
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -152,8 +152,7 @@ static void __exit_signal(struct task_st
+ 	 * Do this under ->siglock, we can race with another thread
+ 	 * doing sigqueue_free() if we have SIGQUEUE_PREALLOC signals.
+ 	 */
+-	flush_sigqueue(&tsk->pending);
+-	tsk->sighand = NULL;
++	exit_task_sighand(tsk);
+ 	spin_unlock(&sighand->siglock);
+ 
+ 	__cleanup_sighand(sighand);
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -471,6 +471,15 @@ void flush_sigqueue(struct sigpending *q
+ }
+ 
+ /*
++ * Called from __exit_signal. Flush tsk->pending and clear tsk->sighand.
++ */
++void exit_task_sighand(struct task_struct *tsk)
++{
++	flush_sigqueue(&tsk->pending);
++	tsk->sighand = NULL;
++}
++
++/*
+  * Flush all pending signals for this kthread.
+  */
+ void flush_signals(struct task_struct *t)
+
