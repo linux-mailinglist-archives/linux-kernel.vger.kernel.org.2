@@ -2,134 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2427A336C4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FA2336C52
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhCKGdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:33:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
+        id S230252AbhCKGe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:34:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhCKGcx (ORCPT
+        with ESMTP id S229831AbhCKGen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:32:53 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDC7C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:32:53 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id u7so404468qtq.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:32:52 -0800 (PST)
+        Thu, 11 Mar 2021 01:34:43 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059BBC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:34:42 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id b23so5181573pfo.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:34:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:mime-version:content-transfer-encoding
-         :date:message-id;
-        bh=BizFYMd4lnfnBCNV1I/csBONi2AAiqpb4n7PCn9WcW8=;
-        b=DzhYAAvXKF93EBOHLTIeuCFiN2xnFJkBMayInq9r9s4V5WwKwrhefz1OLvDmsAqPIG
-         mPSJXZgAWKIXuBhn6PCHMWKW0Hj92SNEljy5tsuIa7Q1aTR1V4GEZYw55e8AHBC7gnmK
-         tbxYAIr2z30giHd30rMn945CxEiVK1LP6Sa/kXkYObC54RfL6nf2UA4vaHDx2SKnw6sV
-         F0e+C46e7Tv2WQ7AAV2NTLgyIoKjaGW1pLDKY7ri8K9E7+b9jz725cRFcz6LxLY+kogh
-         lfY4cvIcYHC43ZbYnWgmIgO5nvH8fUQeIlO1fTDr8VV0dAITs6TO2cY8a7TS21ztjEdL
-         xWsA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EMMUWb6wkhLMBAppMxvapOaONJYk7j8bUa+/YNRBP94=;
+        b=rJWEx+ADO8oIMyKvAeH0m8caehRYaxZIaezUA2ITd8u9kXI2G+oMYLwndIXRjqgOiu
+         JkAKcqxk9fKJdVRfKbQNKc8HBWLHO1vKUTWGTXzgo2wQJMBxl+afufAGW/UfojT26Twu
+         ewSDWMdgA+a9KPS/5OF0YrkTTTajHtWGENtKpRma5dqpGkexo5YHC9m+Tgm28pct8+LX
+         RBS9dA4U54sQ+97JI30XtfA8Q9fXfYcBJjTJi8eTYsyuIRzL5MHfBgJwh3wWTPatDqY8
+         QeeLccZhySsP+F1UJ0u0+ZQ+putCYgKfAw1lZDrPRVHmrWeYw6IGcg/4tDr9U1AT4Rca
+         Iq8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=BizFYMd4lnfnBCNV1I/csBONi2AAiqpb4n7PCn9WcW8=;
-        b=fUSowppuTKO/w5d4HbKSpFFDmsdQBboGqdH5s2utSLphcHLP8AAHNBir43kx4RfyzM
-         c4rqnsc5LggJFLnip3wUPjqip0RG5kPdvjlUtGlkK24fLsSLsThGl6UDnxUXMDuZGQPi
-         JkpEUmkVhr4X1wp02vpQuE3of/xLCI6lYhQjGticpmQVOEfoYJ3Y8Bi0+OnDm0lbc5tR
-         G9bXbwozdvYV9f0JqXjBnKL0zdCSp130qlQWvj/tF3398VIo6QKs4W6Vqu0lIeaTe7gk
-         GkS6x/5jpwDhFWjFcC8oFcG0kuA5AVG7fxfDDhAWPQ8ILTv+SalPiHYz1j32BKQ25bjZ
-         lbow==
-X-Gm-Message-State: AOAM53114pEnMKPIB8PM10UuDSAAbx8oJqhig7b4BPeZ7IBHmZlVe0t0
-        21dTyfFHW1ur0JuustXBJeu5Cw==
-X-Google-Smtp-Source: ABdhPJxo9JCV0i430aeowSbupXwCUIw61RVhNtF1B9UvTEK16su2H+ORwzLBs+/eyCNbi9dDAiKzKg==
-X-Received: by 2002:ac8:7153:: with SMTP id h19mr6367855qtp.176.1615444372117;
-        Wed, 10 Mar 2021 22:32:52 -0800 (PST)
-Received: from turing-police ([2601:5c0:c380:d61:2b0f:e860:4e22:d54f])
-        by smtp.gmail.com with ESMTPSA id d10sm1108163qtq.78.2021.03.10.22.32.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 22:32:51 -0800 (PST)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: 'make O=' indigestion with module signing
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1615444370_76436P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 11 Mar 2021 01:32:50 -0500
-Message-ID: <91190.1615444370@turing-police>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EMMUWb6wkhLMBAppMxvapOaONJYk7j8bUa+/YNRBP94=;
+        b=op8oqlfrJqj+UfTe8YTQf+o5N7fLZ/elwWsy23hQUUxGxjzMkBzOTyLlRh5Eanfs02
+         csGQtRCecd8pXtCyXYz8sUyO47oZ7A7MUxe0+6rSVIrOprZfvbJYPXk968+AAZP9PHV2
+         3hx4CMOKLlCyeCKuIFdmgeUOHpul5Xkvt1YFreSg9hv6ruFGnASGTxp4bC23Xy6MN8ce
+         jNmPnVVqjQhUyjU0dcHDGej4kfbYk0kharVXktebmK/1PiV+M2v1U8ri6DRocw0ORq/n
+         dRakV/upQcfuhDIZpm3r9Oh9KqxJzlfjQizRwEgdEqygCrnfOWOarva9ZatvUB6uum5f
+         Zj1Q==
+X-Gm-Message-State: AOAM531w6Npczrni7j24ozyleS3L7Q1HXbYJQghDLNWLczZyDxCc74Nd
+        spvjNN4E2xXZVTp++E1CeXby7q6x53HTww2PUhVO+g==
+X-Google-Smtp-Source: ABdhPJzwBQFtGazIbsVXLKumsvSrTi8d2fb13fZdnf2cMZU66URqGmfZPUDWHywNnxYZFrnuI2DJ/fANdeDreUFkOC8=
+X-Received: by 2002:a65:6645:: with SMTP id z5mr5879991pgv.273.1615444482382;
+ Wed, 10 Mar 2021 22:34:42 -0800 (PST)
+MIME-Version: 1.0
+References: <20210308102807.59745-1-songmuchun@bytedance.com>
+ <20210308102807.59745-6-songmuchun@bytedance.com> <YEjlf/yV+hz+NksO@dhcp22.suse.cz>
+In-Reply-To: <YEjlf/yV+hz+NksO@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 11 Mar 2021 14:34:04 +0800
+Message-ID: <CAMZfGtX28p-42bMCuddsYfE0AWpDbWUoLY32+4vn8L5nptNxqw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v18 5/9] mm: hugetlb: set the PageHWPoison
+ to the raw error page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1615444370_76436P
-Content-Type: text/plain; charset=us-ascii
+On Wed, Mar 10, 2021 at 11:28 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 08-03-21 18:28:03, Muchun Song wrote:
+> > Because we reuse the first tail vmemmap page frame and remap it
+> > with read-only, we cannot set the PageHWPosion on some tail pages.
+> > So we can use the head[4].private (There are at least 128 struct
+> > page structures associated with the optimized HugeTLB page, so
+> > using head[4].private is safe) to record the real error page index
+> > and set the raw error page PageHWPoison later.
+>
+> Can we have more poisoned tail pages? Also who does consume that index
+> and set the HWPoison on the proper tail page?
 
-So, I tried doing a 'make O=... allmodconfig', with a setup where the uid of
-the build process had write permission to the O= directory, but intentionally
-did *not* have write permission to the source tree (so they couldn't mess up
-the tree - I got tired of having to repeatedly do 'make mrproper' because of
-pilot error)
+Good point. I look at the routine of memory failure closely.
+If we do not clear the HWPoison of the head page, we cannot
+poison another tail page.
 
-allmodconfig gave me a .config that had:
+So we should not set the destructor of the huge page from
+HUGETLB_PAGE_DTOR to NULL_COMPOUND_DTOR
+before calling alloc_huge_page_vmemmap(). In this case,
+the below check of PageHuge() always returns true.
 
-CONFIG_MODULE_SIG_FORMAT=y
-CONFIG_MODULE_SIG=y
-CONFIG_MODULE_SIG_FORCE=y
-CONFIG_MODULE_SIG_ALL=y
-CONFIG_MODULE_SIG_SHA1=y
-# CONFIG_MODULE_SIG_SHA224 is not set
-# CONFIG_MODULE_SIG_SHA256 is not set
-# CONFIG_MODULE_SIG_SHA384 is not set
-# CONFIG_MODULE_SIG_SHA512 is not set
-CONFIG_MODULE_SIG_HASH="sha1"
-CONFIG_IMA_APPRAISE_REQUIRE_MODULE_SIGS=y
-CONFIG_MODULE_SIG_KEY="certs/signing_key.pem"
+I need to fix this in the previous patch.
 
-What i *expected* was that multiple builds with different O= would each
-generate themselves a unique signing key and put it in their own O= directory
-and stay out of each other's way.
+memory_failure()
+    if (PageHuge(page))
+        memory_failure_hugetlb()
+            head = compound_head(page)
+            if (TestSetPageHWPoison(head))
+                return
 
-What actually happened:
+Thanks.
 
-  EXTRACT_CERTS   /usr/src/linux-next/"certs/signing_key.pem"
-At main.c:142:
-- SSL error:0200100D:system library:fopen:Permission denied: ../crypto/bio/bss_file.c:69
-- SSL error:2006D002:BIO routines:BIO_new_file:system lib: ../crypto/bio/bss_file.c:78
-extract-cert: /usr/src/linux-next/certs/signing_key.pem: Permission denied
-make[2]: *** [/usr/src/linux-next/certs/Makefile:106: certs/signing_key.x509] Error 1
-make[1]: *** [/usr/src/linux-next/Makefile:1847: certs] Error 2
-make[1]: Leaving directory '/usr/src/linux-next/out/arm64'
-make: *** [Makefile:215: __sub-make] Error 2
-
-It tried to put the key into the source tree rather than the build tree.
-
-Before I try to code up a fix for this, is this intentionally designed
-behavior, or have I just managed to trip over a rarely-tested corner case?
-
---==_Exmh_1615444370_76436P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQIVAwUBYEm5kgdmEQWDXROgAQKR7A//a5ygFNNhhw7c953h2Tz4djYPSGEgBOLV
-nPyT9ZRRU0cmaZjw3bCfZNfP5BBioFDrvN0vYjopP2eZ8yJXJ/qFB9oST8eu4YsO
-BFTvRglMsvwDvHoKORM0jUkxFgsIwK6IficTZldx1h//4+frT4LkxLaAVWCZOGa2
-yWnHT2xGPXpirlTy3EuQR9oseshC4NYw2unGAVQ69t8e55uAmGCST3pe5zuBuSOb
-2WDEnxdU7A0hyWIlmwRZvKPUPZvl2K5eM5C1+9PDB/0KLJ0mouJBxP48x5yUw3Ci
-0V4YYDtnGRXNYniJeX0eaqIWX/Pkx+Z/PVjWR+Ys4U+z6eZuMMVCIyw3wfBsprSj
-kPz0KXxpShMfmkIdwH0piZNwd+4axDM1akgOp8PHkI5uuhOw8pxanqIy7uLB/E0j
-9Og5LlnuVDa4bawYD4+iAjdelcA98CbWaORB2cmG9/uI+1VSi75uWYAa2VIRokGm
-yTWVXtuJq/2JCviF6hF6HMxXkxhUQKn2P71fzhPqVSnlUb+duAnpOBB1P07LjMyq
-LfWKdrTl+mSt4r2XICnWilozkwkMb3Uq2VB2CF5JSJmjM1dXt/sMC9hTxEHr/MAZ
-wf0Z6DF3iBqDDQ6sQ0jFrOxWdifGyOAjE2iscqJ7gyH0WkM5+q9OTpGHBglqM6lL
-QuGzzjsLpxE=
-=TNNH
------END PGP SIGNATURE-----
-
---==_Exmh_1615444370_76436P--
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> > Acked-by: David Rientjes <rientjes@google.com>
+> > Tested-by: Chen Huang <chenhuang5@huawei.com>
+> > Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+> > ---
+> >  mm/hugetlb.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++------
+> >  1 file changed, 72 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 377e0c1b283f..c0c1b7635ca9 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -1304,6 +1304,74 @@ static inline void destroy_compound_gigantic_page(struct page *page,
+> >                                               unsigned int order) { }
+> >  #endif
+> >
+> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > +static inline void hwpoison_subpage_deliver(struct hstate *h, struct page *head)
+> > +{
+> > +     struct page *page;
+> > +
+> > +     if (!PageHWPoison(head) || !free_vmemmap_pages_per_hpage(h))
+> > +             return;
+> > +
+> > +     page = head + page_private(head + 4);
+> > +
+> > +     /*
+> > +      * Move PageHWPoison flag from head page to the raw error page,
+> > +      * which makes any subpages rather than the error page reusable.
+> > +      */
+> > +     if (page != head) {
+> > +             SetPageHWPoison(page);
+> > +             ClearPageHWPoison(head);
+> > +     }
+> > +}
+> > +
+> > +static inline void hwpoison_subpage_set(struct hstate *h, struct page *head,
+> > +                                     struct page *page)
+> > +{
+> > +     if (!PageHWPoison(head))
+> > +             return;
+> > +
+> > +     if (free_vmemmap_pages_per_hpage(h)) {
+> > +             set_page_private(head + 4, page - head);
+> > +     } else if (page != head) {
+> > +             /*
+> > +              * Move PageHWPoison flag from head page to the raw error page,
+> > +              * which makes any subpages rather than the error page reusable.
+> > +              */
+> > +             SetPageHWPoison(page);
+> > +             ClearPageHWPoison(head);
+> > +     }
+> > +}
+> > +
+> > +static inline void hwpoison_subpage_clear(struct hstate *h, struct page *head)
+> > +{
+> > +     if (!PageHWPoison(head) || !free_vmemmap_pages_per_hpage(h))
+> > +             return;
+> > +
+> > +     set_page_private(head + 4, 0);
+> > +}
+> > +#else
+> > +static inline void hwpoison_subpage_deliver(struct hstate *h, struct page *head)
+> > +{
+> > +}
+> > +
+> > +static inline void hwpoison_subpage_set(struct hstate *h, struct page *head,
+> > +                                     struct page *page)
+> > +{
+> > +     if (PageHWPoison(head) && page != head) {
+> > +             /*
+> > +              * Move PageHWPoison flag from head page to the raw error page,
+> > +              * which makes any subpages rather than the error page reusable.
+> > +              */
+> > +             SetPageHWPoison(page);
+> > +             ClearPageHWPoison(head);
+> > +     }
+> > +}
+> > +
+> > +static inline void hwpoison_subpage_clear(struct hstate *h, struct page *head)
+> > +{
+> > +}
+> > +#endif
+> > +
+> >  static int update_and_free_page(struct hstate *h, struct page *page)
+> >       __releases(&hugetlb_lock) __acquires(&hugetlb_lock)
+> >  {
+> > @@ -1357,6 +1425,8 @@ static int update_and_free_page(struct hstate *h, struct page *page)
+> >               return -ENOMEM;
+> >       }
+> >
+> > +     hwpoison_subpage_deliver(h, page);
+> > +
+> >       for (i = 0; i < pages_per_huge_page(h);
+> >            i++, subpage = mem_map_next(subpage, page, i)) {
+> >               subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
+> > @@ -1801,14 +1871,7 @@ int dissolve_free_huge_page(struct page *page)
+> >                       goto retry;
+> >               }
+> >
+> > -             /*
+> > -              * Move PageHWPoison flag from head page to the raw error page,
+> > -              * which makes any subpages rather than the error page reusable.
+> > -              */
+> > -             if (PageHWPoison(head) && page != head) {
+> > -                     SetPageHWPoison(page);
+> > -                     ClearPageHWPoison(head);
+> > -             }
+> > +             hwpoison_subpage_set(h, head, page);
+> >               list_del(&head->lru);
+> >               h->free_huge_pages--;
+> >               h->free_huge_pages_node[nid]--;
+> > @@ -1818,6 +1881,7 @@ int dissolve_free_huge_page(struct page *page)
+> >                       h->surplus_huge_pages--;
+> >                       h->surplus_huge_pages_node[nid]--;
+> >                       h->max_huge_pages++;
+> > +                     hwpoison_subpage_clear(h, head);
+> >               }
+> >       }
+> >  out:
+> > --
+> > 2.11.0
+> >
+>
+> --
+> Michal Hocko
+> SUSE Labs
