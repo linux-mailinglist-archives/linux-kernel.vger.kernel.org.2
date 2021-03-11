@@ -2,159 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4252C3373B7
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1043373B8
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbhCKNXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:23:32 -0500
-Received: from mail-out.m-online.net ([212.18.0.10]:45956 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233522AbhCKNXR (ORCPT
+        id S233530AbhCKNXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:23:33 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4260 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233523AbhCKNXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:23:17 -0500
-X-Greylist: delayed 6006 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Mar 2021 08:23:16 EST
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Dx8lR0Tzqz1rxM2;
-        Thu, 11 Mar 2021 14:23:15 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Dx8lQ5SnGz1qr4q;
-        Thu, 11 Mar 2021 14:23:14 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id vqhgIlzpzvH2; Thu, 11 Mar 2021 14:23:12 +0100 (CET)
-X-Auth-Info: vaM/MyCctl1jnKfAoeQi+iHMyd++jHdcGuu7CUSTTKQ=
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 11 Mar 2021 14:23:12 +0100 (CET)
-Subject: Re: [PATCH v2 00/14] Introduce STM32MP1 RCC in secured mode
-To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "Alex G." <mr.nuke.me@gmail.com>,
-        Gabriel FERNANDEZ - foss <gabriel.fernandez@foss.st.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Etienne CARRIERE <etienne.carriere@st.com>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210126090120.19900-1-gabriel.fernandez@foss.st.com>
- <2e04f814-b694-119d-fe8a-13e6df129536@gmail.com>
- <AS8PR10MB4712C27260707345FA99ED5AEE909@AS8PR10MB4712.EURPRD10.PROD.OUTLOOK.COM>
- <c57775fe-41ef-07f5-56a2-04b8f70797c1@denx.de>
- <ac98b89f-9664-b89c-c12c-24c1cbd29b00@foss.st.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <838b70a1-c02c-0433-ac3d-fc48874b132d@denx.de>
-Date:   Thu, 11 Mar 2021 14:23:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 11 Mar 2021 08:23:24 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12BDLYOY177910;
+        Thu, 11 Mar 2021 08:23:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=HoI1Hk2ZBlzD7gj6q9asIOXi6AplmwxWdhOXCjCm0cY=;
+ b=noVj3cpoohNaKk7zUikaMzBCbWOiBvFUmooIMuLkW1Z2UJD1J+4yMqpzXD524EBjR4lW
+ me7A9Eyg5S8WADobj8AKZBKhCxo6WWAIaJSGhYE2WMTNSPC0YHETKMozcMoUbpwMVmJS
+ OX2320iqfwGw/VgHRs0XKVURf90KPxCTS6CKfK9jkQonVlSuvP6wplsNxARAvfrjACNS
+ 61/XlWUWLmZladf++B+/A80Gmxc6jwgpqj1P778NhjYT9nNel206ubUqFfh8Te5D+uBO
+ F1WALwNAavZtzdKrETSBybsh0hY3mc+SDhAX5cFXpSfbvDaitwAvXwiFETRyeB4VikPr Xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m073vm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 08:23:22 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12BDMGjS184778;
+        Thu, 11 Mar 2021 08:23:22 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m073s9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 08:23:21 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12BDMEeP020474;
+        Thu, 11 Mar 2021 13:23:14 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 376mb0scu0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 13:23:14 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12BDNCT844564988
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Mar 2021 13:23:12 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 89AC4A404D;
+        Thu, 11 Mar 2021 13:23:12 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63793A4040;
+        Thu, 11 Mar 2021 13:23:12 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 11 Mar 2021 13:23:12 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: Print a debug message on PCI device release
+Date:   Thu, 11 Mar 2021 14:23:12 +0100
+Message-Id: <20210311132312.2882425-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <ac98b89f-9664-b89c-c12c-24c1cbd29b00@foss.st.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-11_04:2021-03-10,2021-03-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ impostorscore=0 mlxlogscore=999 bulkscore=0 lowpriorityscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 phishscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103110070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/11/21 2:15 PM, Alexandre TORGUE wrote:
-> Hi Marek
+Commit 62795041418d ("PCI: enhance physical slot debug information")
+added a debug print on releasing the PCI slot and another message on
+destroying it. There is however no debug print on releasing the PCI
+device structure itself and even with closely looking at the kernel log
+during hotplug testing, I overlooked several missing pci_dev_put() calls
+for way too long. So let's add a debug print in pci_release_dev() making
+it much easier to spot when the PCI device structure is not released
+when it is supposed to.
 
-Hello Alexandre,
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+---
+ drivers/pci/probe.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> On 3/11/21 12:43 PM, Marek Vasut wrote:
->> On 3/11/21 9:08 AM, Alexandre TORGUE wrote:
->>> Hi ALex
->>
->> Hello everyone,
->>
->> [...]
->>
->>>> Subject: Re: [PATCH v2 00/14] Introduce STM32MP1 RCC in secured mode
->>>>
->>>> On 1/26/21 3:01 AM, gabriel.fernandez@foss.st.com wrote:
->>>>> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->>>>>
->>>>> Platform STM32MP1 can be used in configuration where some clocks and
->>>>> IP resets can relate as secure resources.
->>>>> These resources are moved from a RCC clock/reset handle to a SCMI
->>>>> clock/reset_domain handle.
->>>>>
->>>>> The RCC clock driver is now dependent of the SCMI driver, then we have
->>>>> to manage now the probe defering.
->>>>>
->>>>> v1 -> v2:
->>>>>     - fix yamllint warnings.
->>>>
->>>> Hi Gabriel,
->>>>
->>>> I don't have much clout with the maintainers, but I have to NAK this 
->>>> series
->>>> after finding major breakage.
->>>>
->>>> The problem with series is that it breaks pretty much every board it 
->>>> touches.
->>>> I have a DK2 here that I'm using for development, which no longer 
->>>> boots with
->>>> this series applied.
->>>>
->>>> The crux of the matter is that this series assumes all boards will 
->>>> boot with an
->>>> FSBL that implements a very specific SCMI clock tree. This is major ABI
->>>> breakage for anyone not using TF-A as the first stage bootloader. 
->>>> Anyone
->>>> using u-boot SPL is screwed.
->>>>
->>>> This series imposes a SOC-wide change via the dtsi files. So even 
->>>> boards that
->>>> you don't intend to convert to SCMI will get broken this way.
->>>> Adding a -no-scmi file that isn't used anywhere doesn't help things.
->>>
->>> You are right. We mainly take care about NO ST (DH/...) boards, but 
->>> not really about current usage
->>> Of our stm32 boards. Several options exist:
->>
->> Since a lot of people benefit from the good upstream support for the 
->> MP1 _and_ keep updating their machines to get the latest fixes, it is 
->> very important to keep the current usage working.
->>
->>> 1- Break the current ABI: as soon as those patches are merged, 
->>> stm32mp157c-dk2.dtb will impose to use
->>> A tf-a for scmi clocks. For people using u-boot spl, the will have to 
->>> create their own "no-secure" devicetree.
->>
->> NAK, this breaks existing boards and existing setups, e.g. DK2 that 
->> does not use ATF. >
->>> 2-As you suggest, create a new "secure" dtb per boards (Not my wish 
->>> for maintenance perspectives).
->>
->> I agree with Alex (G) that the "secure" option should be opt-in.
->> That way existing setups remain working and no extra requirements are 
->> imposed on MP1 users. Esp. since as far as I understand this, the 
->> "secure" part isn't really about security, but rather about moving 
->> clock configuration from Linux to some firmware blob.
->>
->>> 3- Keep kernel device tree as they are and applied this secure layer 
->>> (scmi clocks phandle) thanks to dtbo in
->>> U-boot.
->>
->> Is this really better than
->> #include "stm32mp15xx-enable-secure-stuff.dtsi"
->> in a board DT ? Because that is how I imagine the opt-in "secure" 
->> option could work.
-> 
-> The dtbo usage could avoid to add another st board (actually a secure 
-> config) in arch/arm/boot/dts.
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 953f15abc850..3e3669a00a2f 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -2226,6 +2226,7 @@ static void pci_release_dev(struct device *dev)
+ 	pci_bus_put(pci_dev->bus);
+ 	kfree(pci_dev->driver_override);
+ 	bitmap_free(pci_dev->dma_alias_mask);
++	dev_dbg(dev, "device released\n");
+ 	kfree(pci_dev);
+ }
+ 
+-- 
+2.25.1
 
-It isn't even a board, it is a configuration. Could you detect this 
-secure/non-secure state at runtime, have both clock options in the DT, 
-and handle it accordingly ? That might be even better option.
