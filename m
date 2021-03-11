@@ -2,163 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77026336C5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8B7336C5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhCKGiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
+        id S231301AbhCKGhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhCKGhf (ORCPT
+        with ESMTP id S230456AbhCKGhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:37:35 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C53C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:37:13 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id e26so5198975pfd.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:37:13 -0800 (PST)
+        Thu, 11 Mar 2021 01:37:17 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED2AC061760;
+        Wed, 10 Mar 2021 22:37:17 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id f16so711952ljm.1;
+        Wed, 10 Mar 2021 22:37:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BeQyTYDxu+mGro++oymiELRqMwjIOrSXrDik0WPZ8lQ=;
-        b=RZcW539H9MWd36hiZs7lgXBG+XKoPV1/UUl8taMCto0bKxozH4ZDvSAKp7CCZachZT
-         9E4blGTxybgDyo/hGSqFw7sL2STmxtGOq5RP9siA6QmFT97Ajcy7pLzzFDf495LWH73T
-         URxCbfagkbTTmMqc/w79Jnc5wAMaRyNaoIC3NZu4wMOITPm3V3s9aMdcGW7DT9zNVXT9
-         vgXbom7xazFXS1mdWKxWVm7n6EZakzjJe4T9m++tMoXpdLNfmhYC5SwJjm43VxRapdZ7
-         pvmcJisV+ygxOLcHCTXiIa6dLt7Vb4417l/gcjGkTUc0+yaYuMCCDNfwCtF9ZfzMDyGK
-         ZWpg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rkUl4bL4Z7DgHnZybct6/BLTh4ZxrA3lKivu8PK+2QI=;
+        b=f3qcanvEF1LN1YKHY6H2vlT/q1YtVAag+kxo3N1KAuotT4GHI9TLZKew984mF7l5A3
+         BEZChTCiQHcRpaTH3hWlBYx/Hmej5K3hhB5yP2cSHududRuoYcTrrssqSzBGWUtrP9Ha
+         xo1B/ekaUr65Elf7PpIY3V+uj6nnSRwUIb7pu72J5JNUkA6q4wD5az5lwKZOua9t+XMH
+         bDwGLurh1sj2YE2tveQqQPYkTfoJT4BrE3QKf2CEhvMtSYODACRqdZGnroSvLL9yzmVx
+         +6+iAoR5IUc6Om/eDF3ee0fSj9mg1qie3PgaXnlMBhKiNRRnZkBTq9Gkd8xG+lrt8CXm
+         c7/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BeQyTYDxu+mGro++oymiELRqMwjIOrSXrDik0WPZ8lQ=;
-        b=Ox4LTyRfgvliqUhPIGR9mzkuNGAsqwTD3TUrCXUZcIDQEksve5iUKHQY0Ayjopjl/4
-         o8tKTM2UxiqQpmFTp+dQDL9M3X+o6H09J8L+IULpkT3yNSF7REap0PPkEpyog1ZUCoLM
-         y3YGxysYNFRPTSCVIxvAQ9vNIh36NcMmqGc7LD4INe8k3/btP2yn7Yk4x3Xb2uZYahyB
-         PEMVPuNw90epwABrAauD6UcMyePXrnLRF7VuF6YZR6t/ExjCKMoN+SBWNQSuqJKH+geK
-         cD8UiCTpBVSD12/DUPOGsw14DQRtrDQK03mx3EsIp8VzZg3v3rQLW6L8TsYo5NlLNkEC
-         /BVA==
-X-Gm-Message-State: AOAM5329x8CvmYYjMkan3aXVvRj75tpPwi3dRkm0in1DPwObps8XfW8P
-        6+Q2S7GnGf5bZaC8nihbWOocbYCBUO9J1LkVVhW56Q==
-X-Google-Smtp-Source: ABdhPJzK1UAVUjPA7zmyTIvbrAACo4MlpKdGzW6HkdeVszf/4mbQp6NKD8Nx74e3KVQB9Isx/GWCwqffONxKsgnFRfA=
-X-Received: by 2002:a63:141e:: with SMTP id u30mr6156143pgl.31.1615444632963;
- Wed, 10 Mar 2021 22:37:12 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rkUl4bL4Z7DgHnZybct6/BLTh4ZxrA3lKivu8PK+2QI=;
+        b=tsNNj3LAsH4KCYi9kkvNA2CBz4PoN80/GExpdg4clnuWsmcuYrVh51tJREQUNcNX3S
+         fu5evvt4ZuEnHLfBhF2Kpm4HgiaQEYwGeM1c5GqA4WZ4AhbqZ80R8d1v15u5zKSX+4nF
+         jIaWH5M8RmsKuBxA/9o5ruFo2OQZlEzfGzHpry51RILRttcimNwuoaa+NuM5VcsaU0fL
+         gYlWgU1vRT+/cTI8Da3eOedJRTUuYeFN6ESUhuVSBPioqbMNAxt9NqEuzQ6nHtEkVvEa
+         IBf2HV6jXR+zSbabK0ZjfGx6qimCBxmEsv7SVixPNm2zdLTDegpfnMwvICRQ/Oyv7B5W
+         9w/w==
+X-Gm-Message-State: AOAM5315JGx4HEDu3AgrsSq4MtdaSMJSIDz2yzLEsuB4iXuAe0fNFYA7
+        xYYykywDs0ydmfpSp2Bjz2MxIXVsKxQ=
+X-Google-Smtp-Source: ABdhPJxk/USnHIUP+u2UTxk3wmttgYIJ3fJuHFSR6FpVpEU6hXIIM/uYblSNQUv6rrw3ttxdf3BdTQ==
+X-Received: by 2002:a2e:a487:: with SMTP id h7mr3803393lji.447.1615444635933;
+        Wed, 10 Mar 2021 22:37:15 -0800 (PST)
+Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id p3sm531674lfg.14.2021.03.10.22.37.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 22:37:15 -0800 (PST)
+Subject: Re: [PATCH v4 2/3] dt-bindings: mtd: Document use of nvmem-cells
+ compatible
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210310210812.8880-1-ansuelsmth@gmail.com>
+ <20210310210812.8880-2-ansuelsmth@gmail.com>
+ <5d798266-3a18-d50d-9c3e-f91bc2460fe5@gmail.com>
+ <YElMjg/AspNSRe0A@Ansuel-xps.localdomain>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <1d2ad735-ad15-be6a-ad90-9c33f5845a15@gmail.com>
+Date:   Thu, 11 Mar 2021 07:37:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210308102807.59745-1-songmuchun@bytedance.com>
- <20210308102807.59745-7-songmuchun@bytedance.com> <YEjnpwN8eDlyc08+@dhcp22.suse.cz>
- <4ed29af1-1114-a085-d47d-21d646963ab7@infradead.org>
-In-Reply-To: <4ed29af1-1114-a085-d47d-21d646963ab7@infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 11 Mar 2021 14:36:35 +0800
-Message-ID: <CAMZfGtW-DFYO=84-jzEp4WMiiBEjKHLN_JiWOyMisR+wXUoRkA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v18 6/9] mm: hugetlb: add a kernel
- parameter hugetlb_free_vmemmap
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YElMjg/AspNSRe0A@Ansuel-xps.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 1:16 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 3/10/21 7:37 AM, Michal Hocko wrote:
-> > On Mon 08-03-21 18:28:04, Muchun Song wrote:
-> >> Add a kernel parameter hugetlb_free_vmemmap to enable the feature of
-> >> freeing unused vmemmap pages associated with each hugetlb page on boot.
-> >>
-> >> We disables PMD mapping of vmemmap pages for x86-64 arch when this
-> >> feature is enabled. Because vmemmap_remap_free() depends on vmemmap
-> >> being base page mapped.
-> >>
-> >> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> >> Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
-> >> Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-> >> Tested-by: Chen Huang <chenhuang5@huawei.com>
-> >> Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
-> >> ---
-> >>  Documentation/admin-guide/kernel-parameters.txt | 14 ++++++++++++++
-> >>  Documentation/admin-guide/mm/hugetlbpage.rst    |  3 +++
-> >>  arch/x86/mm/init_64.c                           |  8 ++++++--
-> >>  include/linux/hugetlb.h                         | 19 +++++++++++++++++++
-> >>  mm/hugetlb_vmemmap.c                            | 24 ++++++++++++++++++++++++
-> >>  5 files changed, 66 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> >> index 04545725f187..de91d54573c4 100644
-> >> --- a/Documentation/admin-guide/kernel-parameters.txt
-> >> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> >> @@ -1557,6 +1557,20 @@
-> >>                      Documentation/admin-guide/mm/hugetlbpage.rst.
-> >>                      Format: size[KMG]
-> >>
-> >> +    hugetlb_free_vmemmap=
-> >> +                    [KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
-> >> +                    this controls freeing unused vmemmap pages associated
-> >> +                    with each HugeTLB page. When this option is enabled,
-> >> +                    we disable PMD/huge page mapping of vmemmap pages which
-> >> +                    increase page table pages. So if a user/sysadmin only
-> >> +                    uses a small number of HugeTLB pages (as a percentage
-> >> +                    of system memory), they could end up using more memory
-> >> +                    with hugetlb_free_vmemmap on as opposed to off.
-> >> +                    Format: { on | off (default) }
-> >
-> > Please note this is an admin guide and for those this seems overly low
-> > level. I would use something like the following
-> >                       [KNL] Reguires CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> >                       enabled.
-> >                       Allows heavy hugetlb users to free up some more
-> >                       memory (6 * PAGE_SIZE for each 2MB hugetlb
-> >                       page).
-> >                       This feauture is not free though. Large page
-> >                       tables are not use to back vmemmap pages which
->
->                                are not used
+On 10.03.2021 23:47, Ansuel Smith wrote:
+> On Wed, Mar 10, 2021 at 11:41:24PM +0100, Rafał Miłecki wrote:
+>> See inline
+>>
+>> On 10.03.2021 22:08, Ansuel Smith wrote:
+>>> Document nvmem-cells compatible used to treat mtd partitions as a
+>>> nvmem provider.
+>>>
+>>> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+>>> ---
+>>>    .../bindings/mtd/partitions/nvmem-cells.yaml  | 96 +++++++++++++++++++
+>>>    1 file changed, 96 insertions(+)
+>>>    create mode 100644 Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+>>> new file mode 100644
+>>> index 000000000000..f70d7597a6b0
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+>>> @@ -0,0 +1,96 @@
+>>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/mtd/partitions/nvmem-cells.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Nvmem cells
+>>> +
+>>> +description: |
+>>> +  Any partition containing the compatible "nvmem-cells" will register as a
+>>> +  nvmem provider.
+>>> +  Each direct subnodes represents a nvmem cell following the nvmem binding.
+>>> +  Nvmem binding to declare nvmem-cells can be found in:
+>>> +  Documentation/devicetree/bindings/nvmem/nvmem.yaml
+>>> +
+>>> +maintainers:
+>>> +  - Ansuel Smith <ansuelsmth@gmail.com>
+>>
+>> I think that when Rob wrote:
+>>
+>> On 10.03.2021 03:58, Rob Herring wrote:
+>>> I think this should reference nvmem.yaml.
+>>
+>> he meant you using:
+>>
+>> allOf:
+>>    - $ref: "nvmem.yaml#"
+>>
+>> (you'll need to adjust binding path).
+>>
+>> Please check how it's done in Documentation/devicetree/bindings/nvmem/*.yaml files
+>>
+>>
+> 
+> Aside from that, should I readd the old properties or I can keep the
+> compatible as the only one required?
 
-Thanks.
+What old properties do you mean?
 
->
-> >                       can lead to a performance degradation for some
-> >                       workloads. Also there will be memory allocation
-> >                       required when hugetlb pages are freed from the
-> >                       pool which can lead to corner cases under heavy
-> >                       memory pressure.
-> >> +
-> >> +                    on:  enable the feature
-> >> +                    off: disable the feature
-> >> +
-> >>      hung_task_panic=
-> >>                      [KNL] Should the hung task detector generate panics.
-> >>                      Format: 0 | 1
->
->
-> --
-> ~Randy
->
+You shouldn't need to add anything to the list of "required" I think.
+
+Some NVMEM providers add "#address-cells" and "#size-cells". That makes
+sense if NVMEM provider must provide at least 1 cell. I'm not sure if we
+need that for MTD.
+
+Even "compatible" is actually redundant but most YAML files list it for
+convenience. Source:
+
+On 10.12.2020 03:48, Rob Herring wrote:
+ > And drop 'compatible' as required. It's redundant anyways because the
+ > schema will only be applied if compatible matches.
+
+http://lists.infradead.org/pipermail/linux-mtd/2020-December/084574.html
+https://patchwork.ozlabs.org/comment/2597326/
