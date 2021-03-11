@@ -2,163 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563B1338173
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4101F338177
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhCKX1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:27:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        id S230341AbhCKX3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:29:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhCKX1D (ORCPT
+        with ESMTP id S229488AbhCKX2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:27:03 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB55C061574;
-        Thu, 11 Mar 2021 15:27:02 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id s7so22559682qkg.4;
-        Thu, 11 Mar 2021 15:27:02 -0800 (PST)
+        Thu, 11 Mar 2021 18:28:49 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC9FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:28:49 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id 30so3425726qva.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:28:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eGur/YOoRlDCdFA68I/JbkJXl6oe8JCfqTE/jfegHn0=;
-        b=XlLu2LltlpJC+8bv4gWABDlveadGiiMv5cDxaU0X+3GeqYANkLZYT3JjR3SNgN6v88
-         yp8n0QefMDCikY0M1sZBxftbTN3dPUMhkPHDVI42TS5ZYgpr2k3oCko5pwKzIAAsvQ+a
-         jpINiV8bSDFRNQVUpg2GfWtmVCvGXY9MweOUbek01vdW5Bf71aak/UVucTp4MdyglYb0
-         0aAuyVYT1iXmBY8Vm1sLAFGtYH4tHeGOhO8oc1ly8A7PqKFGIFzGe0lAsbD38v87ga8N
-         fyka8S1kGJhttD3JNfJt45iwmQ1kSjWtRyRMHqsFjZhV3BdUZrcDyCTKR+LP6i2XmimT
-         2mHg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ZsSTpigG2EoWvSWDLvggAQ39g5J0AwVfYh+qxTHZ8LU=;
+        b=IWOEEnWQoNSOrS2PqbGH9PEDsz/QWKgm5I7jMWtbuGawERSQrp1bg6FD4+Y2OIwXWv
+         lhFlSM6FGcFFbGyYFuwHQKjIhB4pVNZIP59Yb6NotJT8Wfnh5Aj5AXw3QHD7LFIVeuC8
+         D+4y67T5V2yyzsFyj7VqJyyjXjgx/YciTHlTrUQ9ek4mGeyVWUlF1reMf/kd7HcxEjrc
+         IozCtDPPSYApjRSHjtSm3M6GWYJ6a3gpmx40MRAuKqzXC2f+AMdl0cEmzX/RDDdPx0Rr
+         6oXxr+/go8dW7Dx9lM6AjEGVlwxZlb1dadji1aWpUORogDpU+4gwp8w5hiRo9SVKh7Sk
+         2s7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eGur/YOoRlDCdFA68I/JbkJXl6oe8JCfqTE/jfegHn0=;
-        b=F7H7lcyvpTthjEbaVNswGfrQdZi6c49KtuT5xk/afWwfuY6kdj4Tmj+hOx80kIp5lS
-         KLCMX7mCJGBTPrWDiIhKz6GRIzsaLowjMepWe4ca4T51b8Yw/wlhpUb7KcxqS7tHADQ3
-         QbGVwe+CqmSaTm2LprYX98JUm4+qc7P/+SHgNzjCWgsDJxy/ZsNsZNVzNAL3SxnAg1tD
-         7WAnJMmZH4xoU4UdKJ6z3C9Z8GCTzoA5IQGr4Y1ZnqkvMiN1YiuFc1APjoKMTY+5+kw/
-         d2JIknxQoEJzjbqVr+gF26CnYoRUL1XftgC1gurQzYxj7NoAfQakoTB5ojaJGHkUzgor
-         xQZA==
-X-Gm-Message-State: AOAM530E7LByVym4YgUQACpWirbkUyWSe5VljlcOqU0ZDQ8RUcXfEf1N
-        AVqMewhx4fKmVzdtmcwhm2E=
-X-Google-Smtp-Source: ABdhPJxYMdzRnLYFj2Rmb5YjVxaJstDM3jcH8qHrZhzVfOFDJZtaeWFriaFJYchomaCqcwApQF+BKg==
-X-Received: by 2002:a37:96c4:: with SMTP id y187mr10780849qkd.231.1615505222183;
-        Thu, 11 Mar 2021 15:27:02 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id g11sm3155527qkk.5.2021.03.11.15.27.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 15:27:01 -0800 (PST)
-Subject: Re: [PATCH V11 0/5] dt: Add fdtoverlay rule and statically build
- unittest
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-References: <cover.1615354376.git.viresh.kumar@linaro.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <7211f09e-092b-d928-0c69-e2dcd1fc7c1e@gmail.com>
-Date:   Thu, 11 Mar 2021 17:27:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZsSTpigG2EoWvSWDLvggAQ39g5J0AwVfYh+qxTHZ8LU=;
+        b=LbLyjntVB2v+zCGxtnMHP2j9Dt2hvmMqPkUdpVHILymTXatHmzRJ0CB9V4XqJhgwyJ
+         eDNGkEI4TmnGABLrTaM0qAv+8OOKimTXaR39LTWySm8uYNyYmfMiBuqn6865nSMrf4LI
+         sDj4kmZsH01MT3f1Xnv9FK91E3g6nyxXHPAJJwK+Puo63cBeMlaSdHErDc5TWI5W8+vP
+         mxOzlrSDP3kyjyXCxEpS8B+m3zZbQyCMUlJXKYNRb5JpYat+dnQyVvGEUnuFRej7PyqN
+         mYnRgefss1Tx9nwjZ4PfXlqNYY3OjTBvXsJyIGn5QyZnmFODe15QkV8HL8HE02RQcF7w
+         NCGg==
+X-Gm-Message-State: AOAM533Do9RDgV3o+F1L35ze6g751yj7g6GD5Rb0g6mKKYGSaAMY3sim
+        5DPwq7L0HZODXlI//tq9VNdvUQ==
+X-Google-Smtp-Source: ABdhPJzBjsjG7Pl5Zhuv6V4OecqUGWpRQDn0c//JMhL+sHbYjjgsaUY8upg9kadvBAaVvK5/NwWRmQ==
+X-Received: by 2002:a05:6214:c8a:: with SMTP id r10mr10077768qvr.13.1615505328343;
+        Thu, 11 Mar 2021 15:28:48 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id n136sm3118483qke.123.2021.03.11.15.28.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 15:28:47 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lKUjX-00BZaI-6h; Thu, 11 Mar 2021 19:28:47 -0400
+Date:   Thu, 11 Mar 2021 19:28:47 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        David Rientjes <rientjes@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>
+Subject: Re: [PATCH v2] mm/mmu_notifiers: Esnure range_end() is paired with
+ range_start()
+Message-ID: <20210311232847.GA2710221@ziepe.ca>
+References: <20210311180057.1582638-1-seanjc@google.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1615354376.git.viresh.kumar@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210311180057.1582638-1-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 11:35 PM, Viresh Kumar wrote:
-> Hi,
+On Thu, Mar 11, 2021 at 10:00:57AM -0800, Sean Christopherson wrote:
+> If one or more notifiers fails .invalidate_range_start(), invoke
+> .invalidate_range_end() for "all" notifiers.  If there are multiple
+> notifiers, those that did not fail are expecting _start() and _end() to
+> be paired, e.g. KVM's mmu_notifier_count would become imbalanced.
+> Disallow notifiers that can fail _start() from implementing _end() so
+> that it's unnecessary to either track which notifiers rejected _start(),
+> or had already succeeded prior to a failed _start().
 > 
-> This patchset adds a generic rule for applying overlays using fdtoverlay
-> tool and then updates unittests to get built statically using the same.
+> Note, the existing behavior of calling _start() on all notifiers even
+> after a previous notifier failed _start() was an unintented "feature".
+> Make it canon now that the behavior is depended on for correctness.
 > 
-> V10->V11:
-> - Update patch 4/5 to fix checkpatch warning on spaces and tabs.
-> - Added Acked-by from Masahiro for patch 2/5.
+> As of today, the bug is likely benign:
 > 
-> V9->V10:
-> - Add a new patch to allow .dtso files.
-> - Update 2/5 to be more efficient and also generate symbols for base
->   files automatically.
-> - No need to add lines like DTC_FLAGS_foo_base += -@ in patch 5/5.
-> - Add Ack by Masahiro for 1/5.
+>   1. The only caller of the non-blocking notifier is OOM kill.
+>   2. The only notifiers that can fail _start() are the i915 and Nouveau
+>      drivers.
+>   3. The only notifiers that utilize _end() are the SGI UV GRU driver
+>      and KVM.
+>   4. The GRU driver will never coincide with the i195/Nouveau drivers.
+>   5. An imbalanced kvm->mmu_notifier_count only causes soft lockup in the
+>      _guest_, and the guest is already doomed due to being an OOM victim.
 > 
-> V8->V9:
-> - Added some comment in patch 3/4 based on Frank's suggestions.
+> Fix the bug now to play nice with future usage, e.g. KVM has a potential
+> use case for blocking memslot updates in KVM while an invalidation is
+> in-progress, and failure to unblock would result in said updates being
+> blocked indefinitely and hanging.
 > 
-> V7->V8:
-> - Patch 1 is new.
-> - Platforms need to use dtb-y += foo.dtb instead of overlay-y +=
->   foo.dtb.
-> - Use multi_depend instead of .SECONDEXPANSION.
-> - Use dtb-y for unittest instead of overlay-y.
-> - Rename the commented dtb filess in unittest Makefile as .dtbo.
-> - Improved Makefile code (I am learning a lot every day :)
+> Found by inspection.  Verified by adding a second notifier in KVM that
+> periodically returns -EAGAIN on non-blockable ranges, triggering OOM,
+> and observing that KVM exits with an elevated notifier count.
 > 
-> V6->V7:
-> - Dropped the first 4 patches, already merged.
-> - Patch 1/3 is new, suggested by Rob and slightly modified by me.
-> - Adapt Patch 3/3 to the new rule and name the overlay dtbs as .dtbo.
+> Fixes: 93065ac753e4 ("mm, oom: distinguish blockable mode for mmu notifiers")
+> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: stable@vger.kernel.org
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Ben Gardon <bgardon@google.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: "Jérôme Glisse" <jglisse@redhat.com>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > 
-> --
-> Viresh
+> v2: Reimplemented as suggested by Jason.  Only functional change relative
+>     to Jason's suggestion is to check invalidate_range_end before calling to
+>     avoid a NULL pointer dereference.  I also added more comments, hopefully
+>     they're helpful...
 > 
-> Rob Herring (1):
->   kbuild: Add generic rule to apply fdtoverlay
-> 
-> Viresh Kumar (4):
->   kbuild: Simplify builds with CONFIG_OF_ALL_DTBS
->   kbuild: Allow .dtso format for overlay source files
->   of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
->   of: unittest: Statically apply overlays using fdtoverlay
-> 
->  drivers/of/unittest-data/Makefile             | 48 ++++++++++
->  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
->  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
->  drivers/of/unittest-data/static_base_1.dts    |  4 +
->  drivers/of/unittest-data/static_base_2.dts    |  4 +
->  drivers/of/unittest-data/testcases.dts        | 23 ++---
->  .../of/unittest-data/testcases_common.dtsi    | 19 ++++
->  .../of/unittest-data/tests-interrupts.dtsi    | 11 +--
->  scripts/Makefile.lib                          | 40 ++++++--
->  9 files changed, 218 insertions(+), 112 deletions(-)
->  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
->  create mode 100644 drivers/of/unittest-data/static_base_1.dts
->  create mode 100644 drivers/of/unittest-data/static_base_2.dts
->  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
-> 
-> 
-> base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
-> 
+> v1: https://lkml.kernel.org/r/20210310213117.1444147-1-seanjc@google.com
 
-Does not apply to 5.12-rc2 because of a dependency on a patch to
-scripts/Makefile.lib.  That patch has been merged by Linus
-somewhere between -rc2 and -rc3.  I had a working version
-between -rc2 and -rc3 at commit e6f197677b2e that does have
-the required patch, so that is the version I used to test
-this series.
+Looks fine, thanks. I think you need some commit message remark to
+discourage backporting, the added WARN_ON will trigger on older
+kernels that have many more things implementing
+invalidate_range_end(). It should not be backported to anything that
+has more invalidate_range_ends()'s than today's kernel.
 
-There is still confusion caused by the contortions that unittest
-goes through to mis-use base DTBs vs overlay DTBs, so _after_
-this series is merged by Rob, I will poke around and see if
-I can change unittest so that it does not look like it is
-mis-using DTBs and overlay DTBs.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-
-Reviewed-by: Frank Rowand <frank.rowand@sony.com>
-Tested-by: Frank Rowand <frank.rowand@sony.com>
-
-
+Jason
