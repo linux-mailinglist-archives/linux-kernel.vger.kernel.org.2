@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A6C336953
+	by mail.lfdr.de (Postfix) with ESMTP id D339D336954
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbhCKA6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 19:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
+        id S229608AbhCKA6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 19:58:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhCKA5z (ORCPT
+        with ESMTP id S229503AbhCKA6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:57:55 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714EBC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:57:55 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id c19so154880ljn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:57:55 -0800 (PST)
+        Wed, 10 Mar 2021 19:58:03 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893E2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:58:02 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id d3so36788926lfg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:58:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vSj/dwULrjxVufnDrQsDcLS09iDx+d6/UwmJlnNd/VY=;
-        b=cwcp1C80AvtIfL9vAGM+afRexbxSMIx/F8UzcDXUXvAjbsHZ9BVODU2ilVUdcFhSWU
-         +I6YUwMMB7/R6WlWEBNvImQPhH0nfFqhk4yzz5CsfxD/ASFQqfV/3HPVEs3K/Fcw4Zzu
-         7O4uEdZAcCZrTCQRwxbwNsdHC0vKGF1NIrr/iXZTKDXGLGQhsNQ1lTWgm589PmPHZFq0
-         uIuROkxkRmPOk2CQKNvgbK0gfoLbbvxrJEi7j3fIvlss06sPhpN4mOs1U0VbHxyrAU8T
-         2puFwQYR0JaB9Gmi/fgryrhzashcruX9FP0JVtx/JBwBkNOzixksH+yXU6owoamCJTch
-         KAoA==
+        bh=CrfiISBeWcM0aghiGCmSAIV9dxcofoH89E4I2n3l8ko=;
+        b=fOC/xkbof84GSdDqGTqMuAYyiGl9AT6rEWRfjjF30HZBilUqm25UMz9Zh8pezHE+lY
+         VrwLXmP2U2XJl0HYbYqDhCd5fZ1oImvNq3Uz259jpqJqG0sNu6Yr/EMbuhSJTMM9nRKo
+         euin/u8aCf9vResvfQ5bxbg5AVU4TpRd1zmSok1+VFvnE1LeQKELyQ1cJtxjR4KKwKgm
+         bSuSsrm1kh9KROHeh4624u58UIG8aXB27Z4Fp/xDPfcCAvlb4c9XPNnRlz3zbk0gXZi1
+         mpCjKqw//YoPe2Khl+6Qx7ux47X7Eg47OQuDQss9gnQc55vAUhKdytduEXUN2s8bdYkp
+         U2nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vSj/dwULrjxVufnDrQsDcLS09iDx+d6/UwmJlnNd/VY=;
-        b=LfThOVwMaMnyRw8xc0D/qDKGn8PipBebfXw3Ch+/bZsXFtbXmOMVcaUbpxL862Vvro
-         UWhb1ingGyA6VvYgjZNH6YrCdOx4lxnJzTtjj/YipcIpW2bZK9iqvJDKfWhEbKCt+00R
-         VfJhhnCOr9bGTFtzBCtb2kZ0fB9Y8nx8QxiN7jNswIzKzJdWFjMDeH1/d2cKl97ZoqW8
-         Vj/YaX7vE1bLyJqTqgPZJfFOQ/M1rMdHRq7ItpjH1bUjHaiZq8coLgs2RJCk01qHQ1S3
-         CUFsc5pk4VAZoRLB7tRc1hin2EtcxQ+wB69FMebBdNP36DgRg+zXRhWmSX1pYUSEflnA
-         2RGA==
-X-Gm-Message-State: AOAM530BWS2+kzIXJb2MC7C9aKeUAloMqRKkeY+PN5FYMN0JsOkoVb5w
-        n0LEtfH+P9uUGBA5fMZMiZbljzg5X+OuSEVSJS9Xhg==
-X-Google-Smtp-Source: ABdhPJysK0fExuH+11P9BQ/mtsfyGAM+Hu/0JEYndG2PKhUbYZml/8qS4OKjWWklTW1wK9sNp3uwaa/aE7+sFct5t8g=
-X-Received: by 2002:a2e:700a:: with SMTP id l10mr3331922ljc.368.1615424273882;
- Wed, 10 Mar 2021 16:57:53 -0800 (PST)
+        bh=CrfiISBeWcM0aghiGCmSAIV9dxcofoH89E4I2n3l8ko=;
+        b=pAl8VZlYCVAhoKYm/yCOHNHb1tW0ZmvtYfWoVg59iHL0FzHxybe19vyfkGKBaVp9ZJ
+         nwK8S6buLAfMyJ3lelTuTjKTkwHIFUMwPx1jtwPARZvdgvvFc4bFfBcrP13luSBiytn7
+         OF0E93n6pViv78YyPx2Rh8+pqcNwAzqN9VC9qJcFztuygZqMcMkMcRQqQZyuFFbGTWRT
+         zzjLQPy3qV7wAEwDurK4sr0b+J5Js1m1Tae+WhwuSXlbU2CIhbglR1+1OK9ovEss+Q0V
+         oM9Hhn/6cfkC1tzKLuzpQIU68Pxc93lgCBte9IUuDmfkZN35bWTJLWgc5SwHm8OuJhix
+         aa5Q==
+X-Gm-Message-State: AOAM532nzUrm+eZk6sbSiezS0g9sRBN4XcDBhAI6hpOEY6Jykxn1Z0a8
+        g82I3yOAG9gMEwq5QlYs3J207ZigjsSxk97qRTGsNw==
+X-Google-Smtp-Source: ABdhPJwMGRKq9/WgW0SNx8+uw2SlrViPc03sBFHB9sWqOYawhu2bCVGCKfQ+zEg9JyrhTauiMKXGeqYxoahn9yitUZo=
+X-Received: by 2002:a19:3804:: with SMTP id f4mr721936lfa.117.1615424280844;
+ Wed, 10 Mar 2021 16:58:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20210115224420.1635017-1-dianders@chromium.org>
- <CACRpkdYUs2W3b_u8YrmYwq_kcUCf0DhZ-o2o6O2EmU5rdtv=BA@mail.gmail.com> <CAD=FV=WDVAj+OcVXaTJRUu8tvdDzySW0KOfiGqZHi5YvP42BTA@mail.gmail.com>
-In-Reply-To: <CAD=FV=WDVAj+OcVXaTJRUu8tvdDzySW0KOfiGqZHi5YvP42BTA@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 11 Mar 2021 01:57:43 +0100
-Message-ID: <CACRpkda1Ast1cqNfVJ_u6zs8610DWSQGykPt4yBw+mFZFrUPSg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] drm/panel-simple: Patches for N116BCA-EA1
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210311004449.1170308-1-ying.huang@intel.com>
+In-Reply-To: <20210311004449.1170308-1-ying.huang@intel.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 10 Mar 2021 16:57:49 -0800
+Message-ID: <CALvZod7QNEXdKCJ3H3eoZKsRj5jtOESkmHm1dTC-ZjSBAcW7ng@mail.gmail.com>
+Subject: Re: [PATCH] vmscan: retry without cache trim mode if nothing scanned
+To:     "Huang, Ying" <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Michal Hocko <mhocko@suse.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:47 AM Doug Anderson <dianders@chromium.org> wrote:
-
-> I guess what I'd say in summary is:
+On Wed, Mar 10, 2021 at 4:47 PM Huang, Ying <ying.huang@intel.com> wrote:
 >
-> * If you object to the retries in simple panel, I still hope the rest
-> of the series can land.
+> From: Huang Ying <ying.huang@intel.com>
 >
-> * If somehow this panel gets out into real users hands and we find
-> that the retries are necessary and people still don't want the retries
-> in simple panel, I can fork a special panel driver just for it then.
+> In shrink_node(), to determine whether to enable cache trim mode, the
+> LRU size is gotten via lruvec_page_state().  That gets the value from
+> a per-CPU counter (mem_cgroup_per_node->lruvec_stat[]).  The error of
+> the per-CPU counter from CPU local counting and the descendant memory
+> cgroups may cause some issues.  We run into this in 0-Day performance
+> test.
+>
+> 0-Day uses the RAM file system as root file system, so the number of
+> the reclaimable file pages is very small.  In the swap testing, the
+> inactive file LRU list will become almost empty soon.  But the size of
+> the inactive file LRU list gotten from the per-CPU counter may keep a
+> much larger value (say, 33, 50, etc.).  This will enable cache trim
+> mode, but nothing can be scanned in fact.  The following pattern
+> repeats for long time in the test,
+>
+> priority        inactive_file_size      cache_trim_mode
+> 12              33                      0
+> 11              33                      0
+> ...
+> 6               33                      0
+> 5               33                      1
+> ...
+> 1               33                      1
+>
+> That is, the cache_trim_mode will be enabled wrongly when the scan
+> priority decreases to 5.  And the problem will not be recovered for
+> long time.
+>
+> It's hard to get the more accurate size of the inactive file list
+> without much more overhead.  And it's hard to estimate the error of
+> the per-CPU counter too, because there may be many descendant memory
+> cgroups.  But after the actual scanning, if nothing can be scanned
+> with the cache trim mode, it should be wrong to enable the cache trim
+> mode.  So we can retry with the cache trim mode disabled.  This patch
+> implement this policy.
 
-I'm fine with the retries, if it is needed outside of the "simple" (hm)
-panel driver then we can certainly factor it out as a helper or
-library.
-
-I looked at the patches at lore.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-I see also Stephen has reviewed some patches.
-
-Tell me if you need me to also apply them to drm-misc.
-(I guess yes?)
-
-Yours,
-Linus Walleij
+Instead of playing with the already complicated heuristics, we should
+improve the accuracy of the lruvec stats. Johannes already fixed the
+memcg stats using rstat infrastructure and Tejun has suggestions on
+how to use rstat infrastructure efficiently for lruvec stats at
+https://lore.kernel.org/linux-mm/YCFgr300eRiEZwpL@slm.duckdns.org/.
