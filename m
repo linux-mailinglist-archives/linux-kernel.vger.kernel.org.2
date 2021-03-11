@@ -2,168 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652DF3376A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D73493376AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhCKPPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:15:47 -0500
-Received: from mout.gmx.net ([212.227.15.15]:46329 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233964AbhCKPPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:15:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1615475724;
-        bh=3MuCYAd6N7yB81hhbCXNSkIdDWEBq396zeTdmwrQ8MI=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=LMcl0z4JNhv9EIUVD8fSbPuP+FBV8lMdcztkZvi0R4qqx5nUZtL2L/jrFNF3LvzXD
-         aLUidRdD+MJLlm8QhAIaHB116jNRvLQY8OiSShcVDUJDNyqCN0Oh3PGfnMpSYtnx0H
-         oEHML4JPwtIGPhasC5C4G4uyWDBti5QaF/cf7NZo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1McYCl-1lst291umL-00d2eu; Thu, 11
- Mar 2021 16:15:24 +0100
-Date:   Thu, 11 Mar 2021 16:15:23 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 RESEND 2/2] ARM: dts: Add board-specific compatible
- string to npcm750-evb devicetree
-Message-ID: <YEo0CynZ5X8tMylL@latitude>
-References: <20210303154622.3018839-1-j.neuschaefer@gmx.net>
- <20210303154622.3018839-2-j.neuschaefer@gmx.net>
- <CAP6Zq1hwp+wJpbN496096q8izRRoU2Jg+OKugcSk+BcXWfME9A@mail.gmail.com>
- <YED/zzV5kb35k2vb@latitude>
- <CAP6Zq1h5QK0_3gBek3QNN_cb6tGFJJXU_D8UPJOqnaDbsQAkxw@mail.gmail.com>
+        id S234028AbhCKPQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:16:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35462 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233985AbhCKPPv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 10:15:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615475751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ePysAuoR5eyBTRsoJfPDxFlLe0KkuV0VsDp7AuSD5rQ=;
+        b=Yggf9v73xm+yyXA9n1IaJznoTR51VqpWA3lXpO+ElpDFuK/r+wh1sNt5urzYZ79B4aj07V
+        4d6icIaQqbuOq2+S66ExbQ9bXkK8IjciVC+EOrUgBFLk+pT1YI5m4kdyH27dUgEbM/qMxX
+        wTwz57CUiOBBrYnHRujVivir0LoTqms=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-BDRL-dPEOEeqA8yh9ity2A-1; Thu, 11 Mar 2021 10:15:47 -0500
+X-MC-Unique: BDRL-dPEOEeqA8yh9ity2A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5CD1802B7E;
+        Thu, 11 Mar 2021 15:15:45 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.196.40])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 47333610A8;
+        Thu, 11 Mar 2021 15:15:43 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 11 Mar 2021 16:15:45 +0100 (CET)
+Date:   Thu, 11 Mar 2021 16:15:43 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jim Newsome <jnewsome@torproject.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
+Message-ID: <20210311151542.GB15552@redhat.com>
+References: <20210309203919.15920-1-jnewsome@torproject.org>
+ <m1blbqmy2u.fsf@fess.ebiederm.org>
+ <4d9006b4-b65a-6ce0-b367-971f29de1f21@torproject.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="boiCNNVZ39FMb+0t"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP6Zq1h5QK0_3gBek3QNN_cb6tGFJJXU_D8UPJOqnaDbsQAkxw@mail.gmail.com>
-X-Provags-ID: V03:K1:6vLihh2S+F7saU2HwNrs8j1CfmrBwnxVRD2NCYnR4RMVesOzzqp
- jneuthTPUBItLgGUbQA/3AT6ygHEYpjD24QotjOsmc7ZMHDxEVTUnWLV9GZHyl7iSkwSK16
- 38zmm9d3cD4x/L/uxADjuUWF/oUcSHtJnRh6ghEsXoIXTltIM4gje7CtvFfS6xGN3vtJ5U/
- qWHMgsBPph6pKOKXEWdaA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dIuN6dI2zjE=:xHgIUqVDXzGExR5n9tVOgs
- Uq/+WNuJIZmsBsFV7CDfCXqJ36ufjsXmOST0CmrJ32qcAZnCqPM4Fkj31nmiOj8asW5sl3afX
- jyZMxD0x50jFeDY/NV1iQxPSZfYPe6qU5bdr4kHWxs7XCFPalvHGsB2ElAJKMtu8R1anx6ufu
- OwvwFIox1lXL3/yTYl6M/9ZceV1Az7vse/JI8N0K5wTUrVPAcusqaEGdydJgSwSNzjGOMu7uV
- R5UmiWZxn8gYR2Zun/tjGQj712HO/ylUbffOF71TFSrXdRaN/g1Ai3SsNVK2iTlDNYrWzgMdO
- QlNCuMXjQsihT2LPI+ZmGjImDdEgRNwTDfGAV2Tu8u/vxc4/mvc6KFioZaIRT1tJlDyLVrx2/
- hbMJHukLTpuVfJLj/DuJjbHDP7+YuOlpyF5F8mO1cjOJpsFGoeOe8V7HUUZnaMf+gFvLf41Fo
- 5yLs9X/cFlWXSsb/lIdgy4ygaQa7Y+/jocsXKhj+VFduEBiR+DPsu3AZVKiMatMMxdFUvjkpJ
- 4Ofz2dDPtHqsykzAycAe5i5pZBIqZ7CscNbW6MloIuhY23KrEkDsd7EU8BD9fl80GkT6zrhL0
- njXkPsuwzus/xaLKixp8RSeyGS+/ykC0ViCFcnZKJf5hO2tVkiIZPBFSY3I9M01k5LnZpSyNy
- mY4CHVVuPNIoMgCIScG4hoU9DXG6txp8gA+kaoZ5U5e8uAAur9+j3zSTVFQWAdOeCru16BHO8
- /9nUNytOifgVysPKmRkTqD0OV/jFm886sI3PSLa8zlwedgI82xwwB7/4vN68xQusm4CgivKhF
- JOXsGpIbMXHrutubyccdczvt8YdQr9czrcrCBvArUOuA5MqIige7LNO3l3jxrQQD65n8dMKSp
- XZbm2He3HanazFsR4Vvw==
+In-Reply-To: <4d9006b4-b65a-6ce0-b367-971f29de1f21@torproject.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---boiCNNVZ39FMb+0t
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Tomer,
-
-your in-line reply got lost in the "> " lines, but I found it anyway.
-
-On Thu, Mar 11, 2021 at 04:11:59PM +0200, Tomer Maimon wrote:
-> Hi Jonathan,
->=20
-> Thanks a lot for your effort!
->=20
-> On Thu, 4 Mar 2021 at 17:42, Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.=
-net>
-> wrote:
->=20
-> > On Thu, Mar 04, 2021 at 05:21:36PM +0200, Tomer Maimon wrote:
-> > > Hi Jonathan,
-> > >
-> > > Thanks a lot for sending the patch,
-> > >
-> > > I think that when it related to the SoC EVB it can stay with the
-> > > genral compatible name nuvoton,npcm750
-> > >
-> > > you can see it also in,
-> > > https://github.com/torvalds/linux/blob/master/arch/arm/boot/dts/aspee=
-d-ast2500-evb.dts#L8
-> >
-> > To make the single compatible string match the DT binding, I'll have to
-> > write the binding a little differently. I wrote it like this:
-> >
-> >   compatible:
-> >     oneOf:
-> >       - description: NPCM750 based boards
-> >         items:
-> >           - enum:
-> >               - nuvoton,npcm750-evb         # NPCM750 evaluation board
-> >           - const: nuvoton,npcm750
-> >
+On 03/10, Jim Newsome wrote:
 >
-> I think it should be like the exemple above
-
-If I specify the devicetree binding like above (which I initially did),
-it implies that the compatible line in nuvoton-npcm750-evb.dts should be
-
-	compatible =3D "nuvoton,npcm750-evb", "nuvoton,npcm750";
-
-not
-
-	compatible =3D "nuvoton,npcm750";
-
-
-This is why I suggested rewriting it like below:
-
-> >   compatible:
-> >     oneOf:
-> >       - description: NPCM750 development board
-> >         const: nuvoton,npcm750
+> On 3/10/21 16:40, Eric W. Biederman wrote:
+>
+> >> +static int do_wait_pid(struct wait_opts *wo)
+> >> +{
+> >> +	struct task_struct *target = pid_task(wo->wo_pid, PIDTYPE_PID);
+> >                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > This is subtle change in behavior.
 > >
-> >       - description: NPCM750 based boards
-> >         items:
-> >           - enum:
-> >               - vendor,foo-bar-bmc
-> >           - const: nuvoton,npcm750
+> > Today on the task->children list we only place thread group leaders.
+>
+> Shouldn't we allow waiting on clone children if __WALL or __WCLONE is set?
 
+Don't confuse clone child with child's sub-thread.
 
-I will send this new approach as a patch in a few days.
+Oleg.
 
-
-Thanks,
-Jonathan Neusch=C3=A4fer
-
---boiCNNVZ39FMb+0t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBKNAMACgkQCDBEmo7z
-X9tVqw//d78aQEHzqrMmTFjpknPfzV0jICAFnC3gHY5Fz+YK4Ff47meK8UDdxmrv
-SHZbL4OoQfqxKRWICSMklYLNp1igbJ7wtr5r5c5yog7Vc80ToGQRyG4d06wdYl5Z
-cjj8kQcNiKiqiCdAJXrzDdZHXePfmd4CjZok1zHC6rrYrBMjrMYEdAnUU+9JTfU8
-gB0/Gt4cPyurybY62bgTF1s4WWHqdmFuBt4ZNL2H983jDdgEgI7vZOtoneBTarpM
-XIUkCXv1jdxuRqs+G8Ln4liO/C2xyn7VrnVzdhdMohIaZ+CeE8z2iUoa+pktBwHM
-+jIEg5EjZ9CjrQGa2t4DvL8PcSUSLVmwPetjiRJ0b76KQhVsUP6HvRyKOlGKF4Q3
-V7rrjCSW70m7mZl5pokQRU2AcpGSWtkoJ7XxfMLFJE7Bdzsn278nRUo5IGr38M/r
-9yCpVtc+E9DlpUPDavyJIEMn1R7q+fPM7Y/Sdks1hGTO+EiqzuUReH6ilzF2TIQo
-pPBkoNdvDwfwA4DzCcZiz3vjPpG90T0hLqaZv00J7HBvcvnGz54jvFyJqqagAfbB
-ZWRtBra4l5XtW84+FGo0nOVwRik45F0pwsui0tFzsqLPDvLhX0XW2upsFXZnUOBz
-Vzy8RZw3uhbIEDogQx1vUof2AyAUUWjdE/1LA2aw7ZTyNxF3Jq4=
-=7rtB
------END PGP SIGNATURE-----
-
---boiCNNVZ39FMb+0t--
