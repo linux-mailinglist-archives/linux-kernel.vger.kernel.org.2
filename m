@@ -2,109 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CCC337CCE
+	by mail.lfdr.de (Postfix) with ESMTP id 42E5E337CCD
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhCKSlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
+        id S229938AbhCKSlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:41:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhCKSjK (ORCPT
+        with ESMTP id S229468AbhCKSjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:39:10 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0323CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:39:10 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id q25so41408697lfc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:39:09 -0800 (PST)
+        Thu, 11 Mar 2021 13:39:08 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B162AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:39:07 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id a24so10634197plm.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:39:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gZMsl4SrnDNQhd4ss3KWwc1HYh6yuRdaCQt7xbLMh8A=;
-        b=TVObpuTugYdYCxrt4yJ7mLxCcGcVZpumSlcHjoubdC/5aM8aXfiADtCv0mkmJbWhnv
-         Qu2CVI6nHvbwPY0udk1XCEcsFLrnBDAPZMx8p32XngB0l5XOSIKuhHaxBXnlJQT5hP2x
-         716Fo6M1Lx3GTW7RriA35f53OKhxn31f0ffZA=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nYY6d9PSDzvIH02G62MWvpqx6n+qNTtjRVrsYtpc2sg=;
+        b=GV8o93zD4C7bupA+RFkzig+B9IpHlk5Pu43LlC8v/UDHZoEVe9o5U2GZ/5tiiS3YwW
+         bnmGcAWeFpJjFmizrc2t7MDgj9jDR/wXHkaokEF/rNrv3epnONlave3C2kTDvooRS279
+         GEhDjDHHF7yqcV2j5iPZp3U+gcxSxB96gt56iPSo/F04TuIdeCO3Blt1CVB1bINuyZ97
+         rfbfz+6AlxvLhojp8rLHYj/iJWB0Jj+H9vxEEK6Vm0dvOGv4KBffTAhd5y4Hs5CRhojI
+         w7IXWvWkh9iJiGrDbZqefQdic+rQf4Ei0ee7+U+PHbn2Uz7ivxt4nLhQVxQJnxJHqLqb
+         IRpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gZMsl4SrnDNQhd4ss3KWwc1HYh6yuRdaCQt7xbLMh8A=;
-        b=dPjWNt+gFPV1MOQ6HwVh4ClO7ejhNgpOt6AJS5IIrkwj1oJcPuO1cuxDDXcZdc/e3+
-         tzf7OAZ+dm0qLdMSbu7TDkd42v1p0RPy4Rsmli4jtYu//MiO98rUUJxRzSksnyldy8LU
-         CztTr1x/J+12KqGIcVb5ogKdsxVRzFAFR/++FW6TOpAPUY49CHF26umAHmSU2G/N9N7P
-         myYgwSCd+Bz5UPOPNiyLXZUfiKXehivTD5dsuf5/2HuCzjp8KoRpqv0i0FhbZ41xHeB4
-         wfqVd9SQvPBkejBVwnJgrbe4ge7VQv23qs6KM6MURPiRT7MwQc9Dy1ExO1EXLJlxpM/W
-         X1Wg==
-X-Gm-Message-State: AOAM5320eV3VH9qTrbma74kAeDz12N5QSEGKpDn9VHqh06ZVcml+4xh3
-        d5qhOtJ04hkQFR4DuQi9Ut3+pSkyIp29Lw==
-X-Google-Smtp-Source: ABdhPJwtcCT3yK8WNOhEV9c4v7ZwvRt80onD71JzyKEcZfZQHoQK+CHFAYvBY8ukXur2gVqKsTL/7g==
-X-Received: by 2002:a05:6512:3cc:: with SMTP id w12mr2921203lfp.650.1615487948148;
-        Thu, 11 Mar 2021 10:39:08 -0800 (PST)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id v70sm1064665lfa.106.2021.03.11.10.39.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=nYY6d9PSDzvIH02G62MWvpqx6n+qNTtjRVrsYtpc2sg=;
+        b=ODGNmBQcnDqnctAvstk/4Vt9tM807OPpGwcuN6Uc3qf0fiyjhllOTBRt5oY9SC7EmI
+         oJyGxOZ77ZW2NDv9CwC2XE5nwOkFc2N1/E6KLBrOzhdaVw3o3FQpLvfCBiCdPXNgANiZ
+         iPET9nShzgbzv0bJtC6aiy7L0KYm+tMYEgVAItVNWsNOnFm5JoQYTFUuuTLvL0+uYH+W
+         PbFNxkKLVyTbLdHpmKRAIvrq/bOPtaHHaGKfzyNmMDpzz63r5vKCdYdQFyN3426oilcR
+         yxRkLqtYZhow0XHkeOKqmFf6mbSrAnq6V78dD35ywRrzQHgv0AHH+TRWMyWU0Vu4zlYo
+         ilYg==
+X-Gm-Message-State: AOAM532qVWU5X4pu9QFd4t9uXI9eLpyCqw/5lbvKRFXO0iYMXBfPnkVz
+        +qQ3sbmtunVM66NrALq+imf3GCHww30=
+X-Google-Smtp-Source: ABdhPJz4M13YGr4sOW7pFt2j72+egGZ4VcAG0ex87KdovCtNJKExxggEd1xyJyUdswcnn4O9lH9r4Q==
+X-Received: by 2002:a17:90a:e2ca:: with SMTP id fr10mr10103075pjb.154.1615487947295;
         Thu, 11 Mar 2021 10:39:07 -0800 (PST)
-Received: by mail-lf1-f50.google.com with SMTP id f1so41448922lfu.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:39:07 -0800 (PST)
-X-Received: by 2002:a05:6512:33cc:: with SMTP id d12mr2891513lfg.487.1615487947099;
- Thu, 11 Mar 2021 10:39:07 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
+        by smtp.gmail.com with ESMTPSA id z27sm1890095pff.111.2021.03.11.10.39.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 10:39:06 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 11 Mar 2021 10:39:04 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: cma: Use pr_err_ratelimited for CMA warning
+Message-ID: <YEpjyBLJfdiOHnKf@google.com>
+References: <ce2251ef49e1727a9a40531d1996660b05462bd2.1615279825.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20210311130328.2859337-1-oberpar@linux.ibm.com>
-In-Reply-To: <20210311130328.2859337-1-oberpar@linux.ibm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 11 Mar 2021 10:38:51 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whmwT-_VJJ72C1Wyzbzb_rRb9c7bc5RpGhdOXsyz4FDKQ@mail.gmail.com>
-Message-ID: <CAHk-=whmwT-_VJJ72C1Wyzbzb_rRb9c7bc5RpGhdOXsyz4FDKQ@mail.gmail.com>
-Subject: Re: [PATCH] gcov: fail build on gcov_info size mismatch
-To:     Peter Oberparleiter <oberpar@linux.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce2251ef49e1727a9a40531d1996660b05462bd2.1615279825.git.baolin.wang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 5:07 AM Peter Oberparleiter
-<oberpar@linux.ibm.com> wrote:
->
-> This patch adds a compile-time check to ensure that the kernel's version
-> of struct gcov_info has the same length as the one used by GCC as
-> determined by looking at GCC's assembler output.
-
-So I don't think this is a bad idea, but if you end up test-compiling
-something, could we not verify things a bit more?
-
-If you actually build the object file, you should be able to then
-check much more. You'll find the pointer to the struct gcov_info in
-"__gcov_.fn", which is admittedly hard to then link against a test
-program (because of that dot in the name that means that you can't
-even use "attribute((alias..))" to generate some other name for it).
-
-But then you could test not only the size, but you could verify that
-the "filename" field matches, that the n_functions field should be 1
-etc.
-
-IOW, it feels like some ELF munging (possibly even with just scripting
-with "objdump") should be able to add verification for a bit more than
-just the size.
-
-I guess the size is kind of critical, because of how GCOV_COUNTERS has
-changed, but if any other layout issue changes, the size might not be
-all that relevant.
-
-For example, looking at the current "struct gcov_info" gcc uses, it's
-very badly packed, with 32-bit fields literally interspersed with
-64-bit fields. So I could easily imagine that somebody goes "heyt,
-guys, we need to add another GCOV counter, but we don't need to change
-the size of the gcov_info, because we can just out the "version" and
-"stamp" integers next to each other and getting rid of the padding
-makes up for the extra counter".
-
-I dunno. The gcov code has obviously never actually done anything like
-this before, so maybe I'm just taking the "we could verify
-_something_" and my reaction is that there could be even more
-verification if we really want to go down that rabbit hole..
-
-           Linus
+On Tue, Mar 09, 2021 at 05:16:06PM +0800, Baolin Wang wrote:
+> If we did not reserve extra CMA memory, the log buffer can be
+> easily filled up by CMA failure warning when the devices calling
+> dmam_alloc_coherent() to alloc DMA memory. Thus we can use
+> pr_err_ratelimited() instead to reduce the duplicate CMA warning.
+> 
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
