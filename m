@@ -2,136 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BAD337AC3
+	by mail.lfdr.de (Postfix) with ESMTP id CD5F7337AC5
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhCKRZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:25:51 -0500
-Received: from mga09.intel.com ([134.134.136.24]:43930 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229652AbhCKRZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:25:19 -0500
-IronPort-SDR: Ct3fYWRJT5I+VDHLP7rBZIS1vlsGKEzKt5DdMAO/De9iUC9ir+XBGQ5BTLeu65JL5C8wfbFyNa
- 6MNdewHWJh6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188800539"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="188800539"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:25:18 -0800
-IronPort-SDR: iFlcMHLMuCa/j6tIYe42wD0/b27tp/AWe68zWU/Ta8IFoIasAb/hSj9tY4yhzVbyWsDCP3tx4D
- Wby1U+MeLVUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="431658323"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Mar 2021 09:25:18 -0800
-Received: from [10.251.15.67] (kliang2-MOBL.ccr.corp.intel.com [10.251.15.67])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 75308580514;
-        Thu, 11 Mar 2021 09:25:16 -0800 (PST)
-Subject: Re: [PATCH V2 20/25] perf/x86/intel: Add Alder Lake Hybrid support
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-21-git-send-email-kan.liang@linux.intel.com>
- <YEpAtTttSxMVDWYp@hirez.programming.kicks-ass.net>
- <01176076-049b-0129-4865-8c49cd002060@linux.intel.com>
-Message-ID: <bbb66fce-71f4-e5a7-4930-21a7417ababa@linux.intel.com>
-Date:   Thu, 11 Mar 2021 12:25:14 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230134AbhCKRZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:25:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230026AbhCKRZi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:25:38 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D07FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:25:38 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id cx5so2903098qvb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 09:25:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tP/tKiRNygeIpzt+sV7itRbtILpJcSCyB6twSViOA+A=;
+        b=R/ae6g94KiIc1VaUlUYIsfgPSfpNMge4KqOnAo7ay5Glz8UakGrRaXnUsvGrbkHLjF
+         4O787Oga/UaaFlpFglyH0h1/L3Sqhd6YjA/4DrRerj8Tz8KynrNcE3Lgj0Zk24lbjwH8
+         0r2L5Rxzn2GyCcJh4EEtblT9GGUbIXmz3/1mIElecJpcrzzkHPgbrSeSkOa57Lc1Yzv7
+         EV/PBE4F5d7KF2SXqneJ1CBXxSGhWtPgkfpGGsMLLVMIPSrZKue+FEWRJWYC25vqSv9k
+         22rs9IuWkYRqoOOliTM5K/F6CwAVzxaDufvC15hc9tBKq1ClT5wAhSmKfPzdqzLyW4NK
+         jmhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tP/tKiRNygeIpzt+sV7itRbtILpJcSCyB6twSViOA+A=;
+        b=t5ZiocNfLvzOzJrMYu7mP9W1XIoQTq35XMzC5Qu/5KFegxKht/tJ6zrIG5uYz4s5Wf
+         Xi9eHx08uDZjWKQhZETlChZWsvTo65rMQACE+51Svd7xJ9aJHzu/MQYLq5MVR0+xKChy
+         +MnTwq79mtiFv7vsz34ReLgGTVb079lA8l9jdEbc6ydmy6YcQMRJ0Djnntfw9qkMlih4
+         YuZ3J/P/f2bUHOnyfCfe1Hqvuz5sDPvbtnRosbXaPxqWO7jKVd6xx7oVWe/O8ts9eolZ
+         q2BhD5csi3BRrkREZocbC4cuPa/AWpiqVO4PrscPvUvthG6DFYygB69uNgqK8BZR3sxF
+         5xdQ==
+X-Gm-Message-State: AOAM533UjY06d25kWs61NmOHG+RX3BQGt874pA110gDmLuCo32GbaKMK
+        g34EwQGpDuWjE8HRF+sqCWKOnVFX0f7RsQayq2D5iA==
+X-Google-Smtp-Source: ABdhPJzZYvLF863xU5IO1BcearQqPvN74V47caCVN6R8NwmwrDX9JnyA8PSsZPtPI2FX1hdLI1UHh0mrgSRr/Vqy4JM=
+X-Received: by 2002:a05:6214:1870:: with SMTP id eh16mr8491532qvb.23.1615483537555;
+ Thu, 11 Mar 2021 09:25:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <01176076-049b-0129-4865-8c49cd002060@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
+ <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+In-Reply-To: <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 11 Mar 2021 18:25:26 +0100
+Message-ID: <CACT4Y+Z_Req6qLArMOH0FHR92cTPyv+PLM91CCjkSw4Ua_vWjw@mail.gmail.com>
+Subject: Re: arm64 syzbot instances
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 11, 2021 at 2:30 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Thu, Mar 11, 2021 at 12:38 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > The instances found few arm64-specific issues that we have not
+> > observed on other instances:
+>
+> I've had a brief look at these:
+>
+> > https://syzkaller.appspot.com/bug?id=1d22a2cc3521d5cf6b41bd6b825793c2015f861f
+>
+> This one  doesn't seem arm64 specific at all. While the KASAN report has shown
+> up on arm64, the link to
+> https://syzkaller.appspot.com/bug?id=aa8808729c0a3540e6a29f0d45394665caf79dca
+> seems to be for x86 machines running into the same problem.
+
+You are right. It's probably a consequence of some configs being enabled.
+I think we need to enable CONFIG_FW_LOADER_USER_HELPER on x86_64
+upstream instances as well.
 
 
-On 3/11/2021 11:53 AM, Liang, Kan wrote:
-> 
-> 
-> On 3/11/2021 11:09 AM, Peter Zijlstra wrote:
->> On Wed, Mar 10, 2021 at 08:37:56AM -0800, kan.liang@linux.intel.com 
->> wrote:
->>> From: Kan Liang <kan.liang@linux.intel.com>
->>>
->>> Alder Lake Hybrid system has two different types of core, Golden Cove
->>> core and Gracemont core. The Golden Cove core is registered to
->>> "cpu_core" PMU. The Gracemont core is registered to "cpu_atom" PMU.
->>>
->>> The difference between the two PMUs include:
->>> - Number of GP and fixed counters
->>> - Events
->>> - The "cpu_core" PMU supports Topdown metrics.
->>>    The "cpu_atom" PMU supports PEBS-via-PT.
->>>
->>> The "cpu_core" PMU is similar to the Sapphire Rapids PMU, but without
->>> PMEM.
->>> The "cpu_atom" PMU is similar to Tremont, but with different
->>> event_constraints, extra_regs and number of counters.
->>>
->>
->>> +        /* Initialize big core specific PerfMon capabilities.*/
->>> +        pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX];
->>> +        pmu->name = "cpu_core";
->>
->>> +        /* Initialize Atom core specific PerfMon capabilities.*/
->>> +        pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX];
->>> +        pmu->name = "cpu_atom";
->>
->> So do these things use the same event lists as SPR and TNT?
-> 
-> No, there will be two new event lists on ADL. One is for Atom core, and 
-> the other is for big core. They are different to SPR and TNT.
-> 
->> Is there any
->> way to discover that, because AFAICT /proc/cpuinfo will say every CPU
->> is 'Alderlake', and the above also doesn't give any clue.
->>
-> 
-> Ricardo once submitted a patch to expose the CPU type under 
-> /sys/devices/system/cpu, but I don't know the latest status.
-> https://lore.kernel.org/lkml/20201003011745.7768-5-ricardo.neri-calderon@linux.intel.com/ 
-> 
-> 
-> 
-> 
->> FWIW, ARM big.LITTLE does discriminate in its /proc/cpuinfo, but I'm not
->> entirely sure it's really useful. Mark said perf userspace uses
->> somethink akin to our CPUID, except exposed through sysfs, to find the
->> event lists.
->>
+> Looking deeper into the log, I see that fw_load_sysfs_fallback() finds
+> an existing
+> list entry on the global "pending_fw_head" list, which seems to have been freed
+> earlier (the allocation listed here is not for a firmware load, so presumably it
+> was recycled in the meantime). The log shows that this is the second time that
+> loading the regulatory database failed in that run, so my guess is that it was
+> the first failed load that left the freed firmware private data on the
+> list, but I
+> don't see how that happened.
 
-Ah, I guess I misunderstood the concern. Let me try again.
-
-Here is how perf tool find a event name via event list.
-
-To get the correct event list file, yes, perf tool relies on the CPUID.
-It will search a CPUID table in the 
-tools/perf/pmu-events/arch/x86/mapfile.csv.
-     GenuineIntel-6-97,v1,alderlake,core
-Now perf tool knows the event list file "alderlake" is for the CPUID 97.
-
-In the event list file for the Alder Lake (CPUID 0x97), we add a new 
-field "Unit" to distinguish the type of PMU.
-     "Unit": "cpu_core"
-     "Unit": "cpu_atom"
-
-So perf can search the event name for a certain type of PMU via PMU name 
-"cpu_core" or "cpu_atom".
-
-Perf tool doesn't use the "cpu_core/caps/pmu_name" for the event list.
-
-Thanks,
-Kan
+Can it be as simple as: fw_load_sysfs_fallback adds fw to the pending
+list, but then returns with an error w/o removing it from the list?
+There are some errors checks after that:
+https://elixir.bootlin.com/linux/v5.12-rc2/source/drivers/base/firmware_loader/fallback.c#L536
+and it seems that the caller deletes fw in this case:
+https://elixir.bootlin.com/linux/v5.12-rc2/source/drivers/base/firmware_loader/main.c#L839
