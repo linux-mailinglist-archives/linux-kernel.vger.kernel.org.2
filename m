@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631D333720D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8199B337210
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233044AbhCKMGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        id S233106AbhCKMHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbhCKMG3 (ORCPT
+        with ESMTP id S232678AbhCKMG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:06:29 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6248C061574;
-        Thu, 11 Mar 2021 04:06:28 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id k9so39327034lfo.12;
-        Thu, 11 Mar 2021 04:06:28 -0800 (PST)
+        Thu, 11 Mar 2021 07:06:58 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F025C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:06:58 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id q2-20020a17090a2e02b02900bee668844dso8969141pjd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:06:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cz3qHn16lIPc6Bvf+yNu/XUkZnLJ8XOdvMZnsOmsGnY=;
-        b=a8DPjScMZmz1pro+pLVDtwvqiGnZRmG6Xms7jxGZ2yv19dDL5etamVTUAwCE5aE5UB
-         WbfnH6YY/EmKPQsJERMn1xtj0OSb//1hnrbLkefJhRdxD9GN/kVO0V4Jsl4c0Vwghv6I
-         g7yYUiaAR9RYkkfJBYpTqBxIDtyeyH5u7v3TR9HbmJbqo+FxEQMpJuZy629zbUSOO1jV
-         xMgr+qePicNIjbQWe1AqK/OplgsPrJUH5ywEeTL23vD/12wK7vtTHnCVnJiMkHygNpHS
-         fRP/TajOeAjwmbeayCi1L85VH8A56VRc27jaTd8TSw/Adpz3OWDLIttY8iFBzhudfEAr
-         0pvQ==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=wNDZFX51bsE7mLUj7OGeYIqHZHoyzFxKsl+4kSmptoc=;
+        b=S04+Lyqp5any22LRph4iaTTz9xpXHKiLYYeZP2157OAUWffr/mJ/nvRWp4+CVvVXZ2
+         /3RLgoyqC3Ok1BETg5scAhIqGADy8dspFMs4bsfUF9sULZgz9CH09p5eraTbVXv3hbsK
+         8xhE0w2Bh2dABDuIvK7dxA2XGyIWxFswAnws7K7kBQVyz61X+gKkwggI4q/bCviGLOgx
+         d99EgkTdgdh1hL+g/3eUh375dEWlv+inSAbyLqyX8wzTAo2aYDGjEV8lw0QofYXN66qF
+         5amd+gBDS7YDIdqISbTKXKc0ve+wcSOScWQ0Wn08apuKDa11rpzt9pt/Bu4mun/B3pEG
+         E5Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cz3qHn16lIPc6Bvf+yNu/XUkZnLJ8XOdvMZnsOmsGnY=;
-        b=FqUIR1Zrsdmz1FWqex8kXk0b40t+NqpevMYE1ttl3GgDSierKrAdSGW0pbfbT0jSOC
-         38fU25X2PWAY3XIVHDS31YyoEs8IHU0xQjA7AbudHJXW2nOsotjB+n1o6JHngN/BZjwx
-         ul8b5quEr2j5W7CcqKhuchQsYfUwe8B+m75+97//MePB7z3v++yk23D3lGQF6WjOXIbh
-         +Fk0YlA6+hmJtxhQ0f9J9e1uezvTAtJi23tZruP2f0N5vB+xcPVttTh5RcSiBqnplHob
-         YzIcb2z7QQuUz2Ta+c/Yusct0HfEf0jmGoD3vV2Ff+s2K8UfMlZM+xg9/wfrQHjknGX4
-         F5ZA==
-X-Gm-Message-State: AOAM531A80Tqz9jrQmS05zQTNgbtwpLmW5KY4p5c7BO6xUuZoet6oSfc
-        LqmT9goHIUfuDrjVxU78aQQKrxGri/A=
-X-Google-Smtp-Source: ABdhPJz5kk96u5mzTVzWD+Rqjk1vE/7c+3MwUfCcYcQA+Y7MilwieSJz6w4fEDuz7IuHKIpk6czCaQ==
-X-Received: by 2002:a19:22d6:: with SMTP id i205mr2097509lfi.352.1615464387156;
-        Thu, 11 Mar 2021 04:06:27 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id g6sm759501lfh.232.2021.03.11.04.06.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 04:06:26 -0800 (PST)
-Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        guillaume.tucker@collabora.com, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
- <a8a7a0af-895f-9d79-410d-5dd03ebbd6dd@gmail.com>
- <7714f272-3862-84ac-306d-86363a1c4880@gmail.com>
- <20210310221707.GB10431@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <8c2f5d94-8835-9994-21aa-660df29d383c@gmail.com>
-Date:   Thu, 11 Mar 2021 15:06:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=wNDZFX51bsE7mLUj7OGeYIqHZHoyzFxKsl+4kSmptoc=;
+        b=MBFEBAQiMrEAXKzxBf0FatKCnz0XbfFO+p0tBOTeb2C9s+sd725Eid4CTPs2m9X19d
+         wqXaRZnggxfJ2oF618DrcJSrVNoZBvAQfsH9iuwxX0o8Rlowm60VbWJqmDmRQqz9RLgk
+         NMPZBg3QMspFIygV/Fzoa7Mby4XeOd/K/OnW7k2EMfKCWR/aFN9wcTiLMJQ71rsQ7dgg
+         h5WF/TmS/eSRecaqYtHk92cMY/OjG22UVj+hQvFF3kL4tg/Ht/oZirjLMHyKBMAimqLX
+         nw5afv2ZKmy8e1QYFZBHFWtfU/U87zkgLAYux18Z4pqMZ5r02PJY+rj9x5bUWNNfNCES
+         0EIA==
+X-Gm-Message-State: AOAM5309vSVPOupJDhkEFlfRK8EwceBj0lXCpE6P0iG4TrtDmxmmMSTh
+        H5aQqKMV2bVfByzGL9Vo+TQ=
+X-Google-Smtp-Source: ABdhPJztmvPrMXgdrZqmMI8iUDlM0JsDN8/4I5AIY3+iQ16Nwz8ifZAs96LHo37/FCe6imJ0BDn+0Q==
+X-Received: by 2002:a17:90a:a63:: with SMTP id o90mr8825647pjo.90.1615464417838;
+        Thu, 11 Mar 2021 04:06:57 -0800 (PST)
+Received: from localhost ([122.179.55.249])
+        by smtp.gmail.com with ESMTPSA id co20sm2362958pjb.32.2021.03.11.04.06.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Mar 2021 04:06:57 -0800 (PST)
+Date:   Thu, 11 Mar 2021 17:36:50 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     axboe@kernel.dk
+Cc:     jack@suse.cz, hare@suse.de, gregkh@linuxfoundation.org,
+        tj@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] init: do_mounts.c: Fix indentation errors.
+Message-ID: <20210311120650.nzgv6l3addpouwep@kewl-virtual-machine>
 MIME-Version: 1.0
-In-Reply-To: <20210310221707.GB10431@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.03.2021 01:17, Nicolin Chen пишет:
-> On Wed, Mar 10, 2021 at 11:22:57PM +0300, Dmitry Osipenko wrote:
->> 10.03.2021 22:13, Dmitry Osipenko пишет:
->>> I found that this patch introduced a serious regression on Tegra30 using
->>> today's linux-next. Tegra30 has two 3d h/w blocks connected in SLI and
->>> only one of the blocks is now attached to IOMMU domain, meaning that GPU
->>> is unusable now. All 3d, 2d and display devices share the same "DRM"
->>> group on Tegra30.
->>>
->>> Nicolin, please let me know if have any suggestions. I may take a closer
->>> look a day later, for now I'll just revert this patch locally. Thanks in
->>> advance.
->>>
->>
->> Actually, this was easy to fix:
->>
->> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
->> index 97eb62f667d2..639d5ceab60b 100644
->> --- a/drivers/iommu/tegra-smmu.c
->> +++ b/drivers/iommu/tegra-smmu.c
->> @@ -853,8 +853,6 @@ static struct iommu_device
->> *tegra_smmu_probe_device(struct device *dev)
->>
->>  			if (err < 0)
->>  				return ERR_PTR(err);
->> -
->> -			break;
-> 
-> Hmm..I don't understand why this "break" causes problems on Tegra30.
-> The older versions that used _find()+configure() had it also, e.g.:
-> https://elixir.bootlin.com/linux/v5.9.16/source/drivers/iommu/tegra-smmu.c#L760
-> 
-> Dmitry, do you have any idea?
-> 
+Switch and case have been aligned together, extra tab removed
+Removed extra space before tab.
 
-The older variant of tegra_smmu_attach_dev() didn't use fwspec [1], that
-makes the difference. In other words, the older variant of
-tegra_smmu_probe_device() was already buggy, but the bug was masked by
-the tegra_smmu_attach_dev() that didn't use the fwspec.
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ init/do_mounts.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-[1]
-https://elixir.bootlin.com/linux/v5.10.22/source/drivers/iommu/tegra-smmu.c#L476
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index a78e44ee6adb..82fe66d2eb97 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -422,13 +422,13 @@ void __init mount_block_root(char *name, int flags)
+ 	for (p = fs_names; *p; p += strlen(p)+1) {
+ 		int err = do_mount_root(name, p, flags, root_mount_data);
+ 		switch (err) {
+-			case 0:
+-				goto out;
+-			case -EACCES:
+-			case -EINVAL:
+-				continue;
++		case 0:
++			goto out;
++		case -EACCES:
++		case -EINVAL:
++			continue;
+ 		}
+-	        /*
++		/*
+ 		 * Allow the user to distinguish between failed sys_open
+ 		 * and bad superblock on root device.
+ 		 * and give them a list of the available devices
+@@ -459,7 +459,6 @@ void __init mount_block_root(char *name, int flags)
+ out:
+ 	put_page(page);
+ }
+- 
+ #ifdef CONFIG_ROOT_NFS
+ 
+ #define NFSROOT_TIMEOUT_MIN	5
+-- 
+2.17.1
+
