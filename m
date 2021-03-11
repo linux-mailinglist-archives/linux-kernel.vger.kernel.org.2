@@ -2,75 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E458E33789B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4733378A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234303AbhCKP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:58:22 -0500
-Received: from mga01.intel.com ([192.55.52.88]:18629 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234018AbhCKP5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:57:49 -0500
-IronPort-SDR: JzTy6vn+hG5vaC4mr1HVVV604SM6XhXKbjNhC146mduXX/jZgaWM4jH/pLxt4o0qlcMtExVTJp
- Vfud35QEJK6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="208512589"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="208512589"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 07:57:49 -0800
-IronPort-SDR: T9NgBxuLmQfyVoP+1uuu+kXqcqghmZvmA2pZZKMD3+0o8z+KHEVHi5/XqOj01MWt1m8iaVa1Zi
- 7M56Mx/ejamA==
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="410650575"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 07:57:49 -0800
-Date:   Thu, 11 Mar 2021 07:57:48 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: Convert kmap/memset/kunmap to memzero_user()
-Message-ID: <20210311155748.GR3014244@iweiny-DESK2.sc.intel.com>
-References: <20210309212137.2610186-1-ira.weiny@intel.com>
- <20210310155836.7d63604e28d746ef493c1882@linux-foundation.org>
+        id S234287AbhCKQA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:00:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233943AbhCKQAN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:00:13 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9527DC061574;
+        Thu, 11 Mar 2021 08:00:13 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 99D82879;
+        Thu, 11 Mar 2021 17:00:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615478410;
+        bh=88gQ2lkGXDtbfbgviEA36zdOmTrkESs9PAAixpS5TD8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qWdNtBO2ruDPFJ6QiU7Z/xh0SO2LD+0UhqpgTGOijIdQ94pUYu83dVca4Q3EkN67+
+         suiicXtnUL0mLGEiafcGnTe6M6Li5Q9sSi9Pa3/L05aoiOv07q7shhmgbYOXBqzdXb
+         vF1NCptPH86L4/oNHMGaflOts5rIxVyrgeHxrkiQ=
+Date:   Thu, 11 Mar 2021 17:59:36 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, senozhatsky@chromium.org
+Subject: Re: [PATCH 10/10] media: uvcvideo: Populate only active control
+ classes
+Message-ID: <YEo+aLunKHemzWhA@pendragon.ideasonboard.com>
+References: <20210311122040.1264410-1-ribalda@chromium.org>
+ <20210311122040.1264410-12-ribalda@chromium.org>
+ <f2341e0e-e9c9-a1f6-2d9f-4355e232cf4a@xs4all.nl>
+ <CAPybu_08hhaAh4tPyohrEwhfowE5TC1NDfg9tUEo0tHQjcFJug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210310155836.7d63604e28d746ef493c1882@linux-foundation.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <CAPybu_08hhaAh4tPyohrEwhfowE5TC1NDfg9tUEo0tHQjcFJug@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 03:58:36PM -0800, Andrew Morton wrote:
-> On Tue,  9 Mar 2021 13:21:34 -0800 ira.weiny@intel.com wrote:
+Hi Ricardo,
+
+On Thu, Mar 11, 2021 at 04:21:38PM +0100, Ricardo Ribalda Delgado wrote:
+> On Thu, Mar 11, 2021 at 3:32 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+> >
+> > On 11/03/2021 13:20, Ricardo Ribalda wrote:
+> > > Do not create Control Classes for empty classes.
+> >
+> > Shouldn't this be squashed with patch 06/10?
 > 
-> > Previously this was submitted to convert to zero_user()[1].  zero_user() is not
-> > the same as memzero_user() and in fact some zero_user() calls may be better off
-> > as memzero_user().  Regardless it was incorrect to convert btrfs to
-> > zero_user().
-> > 
-> > This series corrects this by lifting memzero_user(), converting it to
-> > kmap_local_page(), and then using it in btrfs.
-> 
-> This impacts btrfs more than MM.  I suggest the btrfs developers grab
-> it, with my
+> Most of the cameras I have used have the two classes, So  I am not
+> sure if squash with 6/10, or remove it. I separated it to feel what
+> Laurent has to say :)
 
-I thought David wanted you to take these this time?
+I think it makes sense to only expose the classes that are being used,
+so the change is good. As it fixes a bug introduced in 06/10, I'd squash
+it.
 
-"I can play the messenger again but now it seems a round of review is needed
-and with some testing it'll be possible in some -rc. At that point you may take
-the patches via the mm tree, unless Linus is ok with a late pull."
+> > > Fixes v4l2-compliance:
+> > >
+> > > Control ioctls (Input 0):
+> > >                       fail: v4l2-test-controls.cpp(255): no controls in class 009d0000
+> > >       test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
+> > >
+> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > ---
+> > >  drivers/media/usb/uvc/uvc_ctrl.c   | 11 +++++++++++
+> > >  drivers/media/usb/uvc/uvc_driver.c |  1 -
+> > >  drivers/media/usb/uvc/uvcvideo.h   |  1 -
+> > >  3 files changed, 11 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> > > index 433342efc63f..5efbb3b5aa5b 100644
+> > > --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> > > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> > > @@ -2128,6 +2128,17 @@ static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
+> > >       if (map->set == NULL)
+> > >               map->set = uvc_set_le_value;
+> > >
+> > > +     switch (V4L2_CTRL_ID2WHICH(map->id)) {
+> > > +     case V4L2_CTRL_ID2WHICH(V4L2_CID_CAMERA_CLASS):
+> > > +             dev->ctrl_class_unit->ctrl_class.bmControls[0] |=
+> > > +                                             BIT(UVC_CC_CAMERA_CLASS);
+> > > +             break;
+> > > +     case V4L2_CTRL_ID2WHICH(V4L2_CID_USER_CLASS):
+> > > +             dev->ctrl_class_unit->ctrl_class.bmControls[0] |=
+> > > +                                             BIT(UVC_CC_USER_CLASS);
+> > > +             break;
+> > > +     }
+> > > +
+> > >       list_add_tail(&map->list, &ctrl->info.mappings);
+> > >       uvc_dbg(dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
+> > >               map->name, ctrl->info.entity, ctrl->info.selector);
+> > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > > index 996e8bd06ac5..4f368ab3a1f1 100644
+> > > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > > @@ -1501,7 +1501,6 @@ static int uvc_ctrl_class_parse(struct uvc_device *dev)
+> > >
+> > >       unit->ctrl_class.bControlSize = 1;
+> > >       unit->ctrl_class.bmControls = (u8 *)unit + sizeof(*unit);
+> > > -     unit->ctrl_class.bmControls[0] = (1 << (UVC_CC_LAST_CLASS + 1)) - 1;
+> > >       unit->get_info = uvc_ctrl_class_get_info;
+> > >       strncpy(unit->name, "Control Class", sizeof(unit->name) - 1);
+> > >
+> > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > > index 1d59ac10c2eb..cc573d63e459 100644
+> > > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > > @@ -186,7 +186,6 @@
+> > >   */
+> > >  #define UVC_CC_CAMERA_CLASS  0
+> > >  #define UVC_CC_USER_CLASS    1
+> > > -#define UVC_CC_LAST_CLASS    UVC_CC_USER_CLASS
+> > >
+> > >  /* ------------------------------------------------------------------------
+> > >   * Driver specific constants.
 
-	-- https://lore.kernel.org/lkml/20210224123049.GX1993@twin.jikos.cz/
+-- 
+Regards,
 
-But reading that again I'm not sure what he meant.
-
-David?
-
-Ira
-
-> 
-> Acked-by: Andrew Morton <akpm@linux-foundation.org>
-> 
+Laurent Pinchart
