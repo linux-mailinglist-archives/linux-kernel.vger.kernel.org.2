@@ -2,152 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97B63370A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B543370AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbhCKK5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
+        id S232487AbhCKK6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:58:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232402AbhCKK5g (ORCPT
+        with ESMTP id S232416AbhCKK6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:57:36 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FD8C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:57:35 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id u16so1342498wrt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:57:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0WoDEOEAOGPkW650sbkLs7at5Q4e6z35HMVpBvCmwDM=;
-        b=Tk81BFzK+AmCFPv2ccmZobqgA+bVqq7N6LxjoZ1k8bBcfgJVXDg+kJuHkCjmK/RNUp
-         /NRl9hDTC30Vp6VL4pWd0AW2aWyJ7z1oab1CkPxO7ABXLPZ11wFSzg5A7vejclRH/dYU
-         rx5nO3HmqGYqb3NG8Wvf3NGSJkHMdPTLGxMnR3zKQgfq+9wtmN0TgaJDbqRQ1mxm2W/B
-         NU+FogkXdk/dXpbEuV0g5Ec5ITJL+sFSiP+Sus6zEXVhfPAKBc2+LHFivn+nU479PLAL
-         F42mhJbLgcNiMM3XUPfjSAZ7DT4CPC2+vpnkjSL/Xxy1xZX6reKvv3bmPSuaEzp1ePoi
-         DoWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0WoDEOEAOGPkW650sbkLs7at5Q4e6z35HMVpBvCmwDM=;
-        b=kvBzzazgHmaEqnlwem0ekDIcLBZNtjOVIrRypjgbXH+MtjH/krKKYEDo6yIJaDWejh
-         ecWPtNhtN8v/CcA4DGunerDPSgVaS/smqjlRWRqu1Gl7+WqnKUa3NjcFmwnKE1ZKRUtG
-         O9I2Ii9YrE0ZFnI9VQuNIn+RX7oPdHcrrezU8tCNSoUzsXfUIRDBEkBAGjaiHLSJw6KA
-         oDv5WV+Wz/azAcmEwK6KLQw2nLMp7AZ7EW09g1l317tMFQrEE92k1clA8gaCTye3AGR9
-         3f10AWmgs3Nrwlh/kNg8A5oZbDT4nO39tDWGk/mgCuspMujF+9HrYwQ5JqueoaGh5bII
-         41qw==
-X-Gm-Message-State: AOAM530plxpVl39S6uCNNRnTOQ4UWtkw61w6WvhaZxuClAta9Y7GsJ0S
-        aDXtMeIALjHW/mP+8ZxeTNXoKw==
-X-Google-Smtp-Source: ABdhPJzdhJbRihFrxoqsr/gXLuovKNBMOqZ6AGknvcDViX3N0NBwH/DRhVwAe9lNbGfw8z4dzK0y7w==
-X-Received: by 2002:a05:6000:1107:: with SMTP id z7mr7767526wrw.415.1615460254185;
-        Thu, 11 Mar 2021 02:57:34 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:84cf:7f4d:d470:dfd4? ([2a01:e34:ed2f:f020:84cf:7f4d:d470:dfd4])
-        by smtp.googlemail.com with ESMTPSA id s83sm3078015wmf.26.2021.03.11.02.57.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 02:57:33 -0800 (PST)
-Subject: Re: [PATCH v3 1/5] powercap/drivers/dtpm: Encapsulate even more the
- code
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210310110212.26512-1-daniel.lezcano@linaro.org>
- <d8d3c50c-fee6-6f31-c085-d1ebce5297da@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <aa1ecdaa-3f91-c886-ce1e-45557d01991a@linaro.org>
-Date:   Thu, 11 Mar 2021 11:57:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 11 Mar 2021 05:58:21 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C59FC061574;
+        Thu, 11 Mar 2021 02:58:21 -0800 (PST)
+Date:   Thu, 11 Mar 2021 10:58:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615460297;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WnrYOiwTFZaDNVyCNtVPxv+svxcZAVs3Yc64JkNyUvc=;
+        b=Vp4bQFolZHblbeM9TdKI5MIOMC1D8E6ZQUBta7LGsG2YziUpPFCghsF+mFqyv9gTYXd/W2
+        OnxsIsatKQNtK91K1ZrfLrNCoAcEBdTyP9tLVv3h2huUo7zk8pkLI30lmtqt90SDVQq1V9
+        WbAVb8VMWrtkReeTfIBcwHZcLLg8YDLGMsZeTNYSfiVZJCtSuGoMdvhTOmrQm0bdRbLrjX
+        P6ibq8h8Zs0pnXhAUhNerzX2N2QBqI4RBqVkS/LqhFTe4WN9q7ozlZHA22YNViPCqUMmj0
+        gjz30+tfm6PXWkfAgqWYkWA30nnOjSOy4+7/fJZ635c+N60/SPy6X91tBctjZg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615460297;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WnrYOiwTFZaDNVyCNtVPxv+svxcZAVs3Yc64JkNyUvc=;
+        b=Mo0w2rXf2oxnDt6prSmjduOewrpp5d31F7vVsZ/0tWQkaQYNjVNCMqfDAVIUi4BUjcaee3
+        IOPrANQ4gKq4WkBA==
+From:   "tip-bot2 for Cao jin" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/setup: Remove unused RESERVE_BRK_ARRAY()
+Cc:     Cao jin <jojing64@gmail.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210311083919.27530-1-jojing64@gmail.com>
+References: <20210311083919.27530-1-jojing64@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d8d3c50c-fee6-6f31-c085-d1ebce5297da@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Message-ID: <161546029670.398.10659315178601851593.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/2021 11:15, Lukasz Luba wrote:
-> Hi Daniel,
-> 
-> On 3/10/21 11:02 AM, Daniel Lezcano wrote:
->> In order to increase the self-encapsulation of the dtpm generic code,
->> the following changes are adding a power update ops to the dtpm
->> ops. That allows the generic code to call directly the dtpm backend
->> function to update the power values.
->>
->> The power update function does compute the power characteristics when
->> the function is invoked. In the case of the CPUs, the power
->> consumption depends on the number of online CPUs. The online CPUs mask
->> is not up to date at CPUHP_AP_ONLINE_DYN state in the tear down
->> callback. That is the reason why the online / offline are at separate
->> state. As there is already an existing state for DTPM, this one is
->> only moved to the DEAD state, so there is no addition of new state
->> with these changes. The dtpm node is not removed when the cpu is
->> unplugged.
->>
->> That simplifies the code for the next changes and results in a more
->> self-encapsulated code.
->>
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> ---
->> V2:
->>   - Updated the changelog with the CPU node not being removed
->>   - Commented the cpu hotplug callbacks to explain why there are two
->> callbacks
->>   - Changed 'upt_power_uw' to 'update_power_uw'
->>   - Removed unused cpumask variable
->> ---
->>   drivers/powercap/dtpm.c     |  54 ++++++-------
->>   drivers/powercap/dtpm_cpu.c | 148 ++++++++++++++++--------------------
->>   include/linux/cpuhotplug.h  |   2 +-
->>   include/linux/dtpm.h        |   3 +-
->>   4 files changed, 97 insertions(+), 110 deletions(-)
->>
-> 
-> [snip]
-> 
->> @@ -210,27 +175,20 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
->>       for_each_cpu(cpu, policy->related_cpus)
->>           per_cpu(dtpm_per_cpu, cpu) = dtpm;
->>   -    sprintf(name, "cpu%d", dtpm_cpu->cpu);
->> +    sprintf(name, "cpu%d-cpufreq", dtpm_cpu->cpu);
-> 
-> We should be safe in normal platforms, since there is less than
-> < 300 cores. although, I would use 2x CPUFREQ_NAME_LEN array.
+The following commit has been merged into the x86/cleanups branch of tip:
 
-I'm counting 9999 cores.
+Commit-ID:     81519f778830d1ab02274eeaaeab6797fdc4ec52
+Gitweb:        https://git.kernel.org/tip/81519f778830d1ab02274eeaaeab6797fdc4ec52
+Author:        Cao jin <jojing64@gmail.com>
+AuthorDate:    Thu, 11 Mar 2021 16:39:19 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 11 Mar 2021 11:47:37 +01:00
 
-We have:
-#define CPUFREQ_NAME_LEN 16
+x86/setup: Remove unused RESERVE_BRK_ARRAY()
 
-"cpu-cpufreq\0" counts 12 characters.
+Since a13f2ef168cb ("x86/xen: remove 32-bit Xen PV guest support"),
+RESERVE_BRK_ARRAY() has no user anymore so drop it.
 
-There are 4 characters left, 9999 max then, no ?
+Update related comments too.
 
-The code is designed for cpufreq with the energy model which targets
-ARM64 architecture and AFAICT we are far away of having so many cores on
-our phones.
+Signed-off-by: Cao jin <jojing64@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210311083919.27530-1-jojing64@gmail.com
+---
+ arch/x86/include/asm/setup.h | 5 -----
+ arch/x86/kernel/setup.c      | 6 +++---
+ 2 files changed, 3 insertions(+), 8 deletions(-)
 
-Except I'm wrong, I would prefer to keep the current CPUFREQ_NAME_LEN to
-not introduce subtle bugs (like stack overflow) if the length is
-increased in cpufreq.h.
-
-What do you think ?
-
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-> 
-> Regards,
-> Lukasz
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
+index 389d851..a12458a 100644
+--- a/arch/x86/include/asm/setup.h
++++ b/arch/x86/include/asm/setup.h
+@@ -130,11 +130,6 @@ void *extend_brk(size_t size, size_t align);
+ 			: : "i" (sz));					\
+ 	}
+ 
+-/* Helper for reserving space for arrays of things */
+-#define RESERVE_BRK_ARRAY(type, name, entries)		\
+-	type *name;					\
+-	RESERVE_BRK(name, sizeof(type) * entries)
+-
+ extern void probe_roms(void);
+ #ifdef __i386__
+ 
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index d883176..cdf7bbd 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -65,7 +65,7 @@ RESERVE_BRK(dmi_alloc, 65536);
+ 
+ /*
+  * Range of the BSS area. The size of the BSS area is determined
+- * at link time, with RESERVE_BRK*() facility reserving additional
++ * at link time, with RESERVE_BRK() facility reserving additional
+  * chunks.
+  */
+ unsigned long _brk_start = (unsigned long)__brk_base;
+@@ -1038,8 +1038,8 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	/*
+ 	 * Need to conclude brk, before e820__memblock_setup()
+-	 *  it could use memblock_find_in_range, could overlap with
+-	 *  brk area.
++	 * it could use memblock_find_in_range, could overlap with
++	 * brk area.
+ 	 */
+ 	reserve_brk();
+ 
