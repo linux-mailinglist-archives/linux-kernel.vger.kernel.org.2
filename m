@@ -2,97 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE42D337AE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED33337AE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhCKRdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:33:24 -0500
-Received: from mga03.intel.com ([134.134.136.65]:20127 "EHLO mga03.intel.com"
+        id S229806AbhCKRdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:33:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhCKRdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:33:18 -0500
-IronPort-SDR: eb+DX4zT7vlUhoK+8Pu5q/StOwvDvP16rF7BAVXI11GaycjZVPNm3Rb+MlhOGN/lMpVrrBxnFV
- YVMCFD28X+0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188744801"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="188744801"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:33:17 -0800
-IronPort-SDR: 7nTfUYTCyxvlbXklxTKWUQYfL3Ji1/uqDy2CUA+u5DHk4Uyo8jl2fJyMjhbOlao6P7kvLaagWD
- 9S3HhKgan3Jg==
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="410683312"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.103.95]) ([10.212.103.95])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 09:33:17 -0800
-Subject: Re: [PATCH 2/2] sigaction.2: wfix - Clarify si_addr description.
-To:     Stefan Puiu <stefan.puiu@gmail.com>, Borislav Petkov <bp@alien8.de>
-Cc:     lnx-man <linux-man@vger.kernel.org>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-References: <20210226172634.26905-1-yu-cheng.yu@intel.com>
- <20210226172634.26905-3-yu-cheng.yu@intel.com>
- <20210308212936.GD12548@zn.tnic>
- <40c3c4cc-e135-1355-51ee-4d0f16e47e71@intel.com>
- <20210309143141.GD699@zn.tnic>
- <CACKs7VBLnQTc_RgnXk8X-XgVRvR5_uXY0wL0snW7P5iDjpb8fA@mail.gmail.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <92fa4a4b-3100-cbd3-47cb-11072e4c6844@intel.com>
-Date:   Thu, 11 Mar 2021 09:33:16 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229811AbhCKRdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:33:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA49D64F3B;
+        Thu, 11 Mar 2021 17:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615484026;
+        bh=o1Y/vDKuu7aZiyDLEgSjzY1Vv/0l7khcTBK8HwjsoGQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=StXTdMIYRq9vcgvR/dNjfS56cBddLlVJKJKQCvqtMCFBUNOmXutiPeoJ11Xx+VuFf
+         /+KHCvw2+OwLpL5UG3eIpA7QD+TTLKRBf0ZNuXB0dXulvFP4o8j0qXCShLJTTRziEJ
+         Jz93U5S57TqEzZGJGMG3o+bJfkctMgi7nsgqDrS6tbFL2JVzI0kj4XQPNvj03uWuX8
+         aQe+reCBQMj3x6wujDSOp9VOMDgySuxMMasbiUj2/yB8tsH1wzLGSBQSdbFO4ZR+Nl
+         oLgn3H/8voL9Qn7/3w3ZDyYgX4JmD3GrntZ7HSnGS021nluLybNz8+xGkf6pjORDrJ
+         FuNIT9hRcqnyA==
+Date:   Thu, 11 Mar 2021 17:33:38 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
+Subject: Re: [PATCH v4 27/34] KVM: arm64: Always zero invalid PTEs
+Message-ID: <20210311173338.GB31378@willie-the-truck>
+References: <20210310175751.3320106-1-qperret@google.com>
+ <20210310175751.3320106-28-qperret@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CACKs7VBLnQTc_RgnXk8X-XgVRvR5_uXY0wL0snW7P5iDjpb8fA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310175751.3320106-28-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/11/2021 9:17 AM, Stefan Puiu wrote:
-> Hi,
-> 
-> My 2 cents below.
-> 
-> On Tue, Mar 9, 2021, 16:33 Borislav Petkov <bp@alien8.de 
-> <mailto:bp@alien8.de>> wrote:
-> 
->     On Mon, Mar 08, 2021 at 01:46:07PM -0800, Yu, Yu-cheng wrote:
->      > I think the sentence above is vague, but probably for the reason
->     that each
->      > arch is different.  Maybe this patch is unnecessary and can be
->     dropped?
-> 
->     Maybe.
-> 
->     If you want to clarify it, you should audit every arch. But what
->     would that bring? IOW, is it that important to specify when si_addr
->     is populated and when not...? I don't know of an example but I'm
->     no userspace programmer anyway, to know when this info would be
->     beneficial...
-> 
-> 
-> I've worked on projects where the SIGSEGV sig handler would also print 
-> si_addr. When diagnosing a crash, the address that triggered the fault 
-> is useful to know. If you can't reproduce the crash in a debugger, or 
-> there's no core dump, at least you have an idea if it's a NULL pointer 
-> dereference or some naked pointer dereferencing. So I think it's useful 
-> to know when si_addr can be used to infer such information and when not.
+On Wed, Mar 10, 2021 at 05:57:44PM +0000, Quentin Perret wrote:
+> kvm_set_invalid_pte() currently only clears bit 0 from a PTE because
+> stage2_map_walk_table_post() needs to be able to follow the anchor. In
+> preparation for re-using bits 63-02 from invalid PTEs, make sure to zero
 
-At least for x86, the faulting ip is already in ucontext, and si_addr is 
-mostly the memory address being accessed if that was the reason of the 
-fault (i.e. the memory is not supposed to be accessed).  That way, the 
-signal handler has both the instruction pointer and the memory address.
+Why do you exclude bit 1 from this range?
 
-For shadow stack violation, for example, it is not because the memory 
-being accessed; it is the instruction itself causing the violation.  It 
-is unnecessary to duplicate the ip in si_addr.  Setting si_addr to zero 
-also indicates this is not a memory type fault.
+> it entirely by ensuring to cache the anchor's child upfront.
+> 
+> Suggested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/kvm/hyp/pgtable.c | 26 ++++++++++++++++----------
+>  1 file changed, 16 insertions(+), 10 deletions(-)
 
---
-Yu-cheng
+For the patch:
+
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
