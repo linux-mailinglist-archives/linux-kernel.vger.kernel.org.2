@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151BA337F86
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4673337F94
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhCKVSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:18:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhCKVRr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:17:47 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5616C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:17:46 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 32FD2891AE;
-        Fri, 12 Mar 2021 10:17:44 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1615497464;
-        bh=1DcFBkSZ1GEMK4IGgLLSPohVm5dNWmmK5gXKKqQb5SE=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=2I4l3FFnAYyE+DGHLdQLbYSxuXARGckSj2PvrusoNEIBwVD97nFEDz8CEAHpO82NE
-         HTgpeW0lzhI0O2CCS3hi0F8mev9yd0qeMfllU/2iMKfZMtZQWCyod5vjlsmn2cbXim
-         n/X189mL9CAZY/VOGf/T7cny7II/DKVTtTVuwBVuBdf2D6NcBxzlVMGXqoVQ0LRoUS
-         Piqvc6LmD8HcAbb0xvvJrt8FQiidwHfOm839d2enaDkds/C+Q527t8EJ8i4lNjhT34
-         hA+mvaIxzApx4tOlg072hdCKv2z+LSZ5Tl5Yo7dACUQ+QJHszj97dwaOhEy4tF022l
-         CmXEeHhh4OlNA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B604a88f80001>; Fri, 12 Mar 2021 10:17:44 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Mar 2021 10:17:43 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Fri, 12 Mar 2021 10:17:43 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Wolfram Sang <wsa@kernel.org>, Guenter Roeck <linux@roeck-us.net>
-CC:     "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: Errant readings on LM81 with T2080 SoC
-Thread-Topic: Errant readings on LM81 with T2080 SoC
-Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Sk6p4Y2sAgAAgcACAACSBgIAABe+AgAEDagCAAfS7gIAALq8AgAEX54CAAKWsgIAACmIAgADZp4A=
-Date:   Thu, 11 Mar 2021 21:17:43 +0000
-Message-ID: <94dfa9dc-a80c-98ba-4169-44cce3d810f7@alliedtelesis.co.nz>
-References: <20210311081842.GA1070@ninjato>
-In-Reply-To: <20210311081842.GA1070@ninjato>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <0B4D89C4CA0DE1478530916CB5DE73E1@atlnz.lc>
-Content-Transfer-Encoding: quoted-printable
+        id S230341AbhCKVWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:22:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229679AbhCKVV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 16:21:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 697FF64F91;
+        Thu, 11 Mar 2021 21:21:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615497715;
+        bh=bWhxGi69aLbiI/43wckgcUfry0IkgWHtLgLYXm6vlTA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VFZMUY4cjDc2Tq79J0o6EQ8Qn48LImTG3qu6cTzyvNmo02Pl6daYmQY12J/tqYBtE
+         tuILkyblqzQ9tuI3vAv49HEMUirjxoyjh6NlwCAjhD1DwSBfsoOYZ9u5XAgHk+ElPm
+         Xl2NnYKUfdlJLnzgGNJK6LAmmJRpaGe90rG+CgmfEf1Nb5ibJnfLJRbFEIc/6Y/VpX
+         ZH82YIDYEAFnGNtu8zVvy1i6lerDqJZYodAsmw454jORVGUgxRqarM5nKHWqOOTKdP
+         f/Fcs3FdP8BdD+P2mAoX7pH/yzOMfEjpNg64sJn5bsSCZGASAVbCGygTF600Fp5Wdf
+         PZBny2/epZKpg==
+Date:   Thu, 11 Mar 2021 15:21:53 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     linux-pci@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH] MAINTAINERS: Update PCI patchwork to kernel.org instance
+Message-ID: <20210311212153.GA2169497@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=N659UExz7-8A:10 a=dESyimp9J3IA:10 a=No7XfMmhj-zxftOn39MA:9 a=pILNOxqGKmIA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311211223.2168267-1-helgaas@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 11, 2021 at 03:12:23PM -0600, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> We now use the kernel.org patchwork instance.  Update the links in
+> MAINTAINERS.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-On 11/03/21 9:18 pm, Wolfram Sang wrote:
->> Bummer. What is really weird is that you see clock stretching under
->> CPU load. Normally clock stretching is triggered by the device, not
->> by the host.
-> One example: Some hosts need an interrupt per byte to know if they
-> should send ACK or NACK. If that interrupt is delayed, they stretch the
-> clock.
->
-It feels like something like that is happening. Looking at the T2080=20
-Reference manual there is an interesting timing diagram (Figure 14-2 if=20
-someone feels like looking it up). It shows SCL low between the ACK for=20
-the address and the data byte. I think if we're delayed in sending the=20
-next byte we could violate Ttimeout or Tlow:mext from the SMBUS spec.=
+I put this on for-linus for v5.12.
+
+> ---
+>  MAINTAINERS | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d92f85ca831d..a3c2e930b3d5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13843,7 +13843,7 @@ M:	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+>  R:	Rob Herring <robh@kernel.org>
+>  L:	linux-pci@vger.kernel.org
+>  S:	Supported
+> -Q:	http://patchwork.ozlabs.org/project/linux-pci/list/
+> +Q:	http://patchwork.kernel.org/project/linux-pci/list/
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/lpieralisi/pci.git/
+>  F:	drivers/pci/controller/
+>  
+> @@ -13851,7 +13851,7 @@ PCI SUBSYSTEM
+>  M:	Bjorn Helgaas <bhelgaas@google.com>
+>  L:	linux-pci@vger.kernel.org
+>  S:	Supported
+> -Q:	http://patchwork.ozlabs.org/project/linux-pci/list/
+> +Q:	http://patchwork.kernel.org/project/linux-pci/list/
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git
+>  F:	Documentation/PCI/
+>  F:	Documentation/devicetree/bindings/pci/
+> -- 
+> 2.25.1
+> 
