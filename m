@@ -2,183 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA5B337CAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DDC337CBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbhCKSbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:31:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhCKSax (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:30:53 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FD7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:30:53 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so3608298pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:30:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XRdnc5SDeTexTqP3MNLjYUShpFLyOV3cOuJK17cu5t0=;
-        b=Eaj7BV16iNhjkvv7eG9kOZ8zk1a4xmieMjdQxgljP4biZbBHY2uAqoNmKGJGJEJnEA
-         M2cSgRjJLVejPbnNJ+rVEnXl90dYWv7w2tzA2lpPxnOz1hUtTemOZVy9V1pYWryz3JAt
-         LFRGGfy4fHK0c3A1cjcc167ElOkhu33LZjXeap50pWivUFVnh9yfdiNY7cFNeWoHCaap
-         /4NNFips0lYMT2/J3+MKl0dSyYdbHMkiI4eipFaLHZuOhM0bdeNSybJ6auM6NpIQ+3yj
-         DGxQ67VcvpXgEavIpyT2nVj0OHfFzZCH8OPefqyplYFZNft1+Z8Bc3X0odViHIOieVPq
-         7Wpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=XRdnc5SDeTexTqP3MNLjYUShpFLyOV3cOuJK17cu5t0=;
-        b=uI16/4t1r84Y1m9M8KqaLvaOlObieJ10T0ksgpRlfh9CrJuXXRlx+SuXLYzD2hNZcQ
-         mtYXx23vMExZZsK6qXPST8fWEc3GLYhSu4uJmyvL4HQUbD0bNlBTJKqE0d4LK9GN3Q3b
-         zSrsSEP4mwkxziNnzoj67JoIo9FUYycmcrfAjS4qqOJjwTdGl2NVUINotZRQezTe+Cki
-         YFIXf6FTgxbTMwcyN7Xp1CgYzsn6ecGTFPO4X3mE81Zyx9wNQeFjKHQ6OE8wF2beQwpu
-         2NVe9dlO1H1r+TUirnF16u/52qifO0sfCuEGrpePS2IufW6DB8olPIimcZ8SxPX1HU2O
-         ciJw==
-X-Gm-Message-State: AOAM533LRiwx3I9cenDqU4E3tnt6AjxgV7mj90Mf7QL3jUUwxcV9tF6m
-        lPUNM1pCDLdfup58HH32UJE=
-X-Google-Smtp-Source: ABdhPJzqBu2Y0YEvVsaYJofwr2522kQDsScN0UT+21p/DRbEssyzHF6cjwld6nLX4UJ+uxf3JZzCQg==
-X-Received: by 2002:a17:902:6b42:b029:e6:733a:332 with SMTP id g2-20020a1709026b42b02900e6733a0332mr856614plt.35.1615487453005;
-        Thu, 11 Mar 2021 10:30:53 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
-        by smtp.gmail.com with ESMTPSA id k127sm3308590pfd.63.2021.03.11.10.30.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 10:30:51 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH v4] mm: page_alloc: dump migrate-failed pages
-Date:   Thu, 11 Mar 2021 10:30:47 -0800
-Message-Id: <20210311183047.805891-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+        id S229699AbhCKSgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:36:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229883AbhCKSdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 13:33:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 128D064FBA;
+        Thu, 11 Mar 2021 18:33:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615487625;
+        bh=UuAGM0Gt3Xfbl0gOtHDiItqylElW5b4tuS7aBiHOlMA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EBF4ybHteUqHU+SkWpUIO4Jrz4NGI53Kao8vuFthSr/m++IElbjxPhfSeab+kFI/q
+         dINts6q4cDCSPIv8xltU7hY2ZTkBJKlbDnl6kAtHVZ+iy8Hu7uytQ7VhJzewBomZf5
+         LBMk2IPdEKhIYwvSw3n9fWoD5v4+tpXx/hHhwTOOGWhTHW4p+WfDBED3OrlebTV/0u
+         kd96i1z19rZO4xX/oULiSPNzL/mZpRBgTUCZ3sDNOSry2pNuMun3e/dc2LeCxh9emM
+         fcNiqEn8TEFu94FQjhzP5Dekvp944iuv2Au8ZO06D8AJ5SXcxqXbiZ9BAcQ+63Zh8f
+         iacuToYkDxQFg==
+Date:   Thu, 11 Mar 2021 18:32:31 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     skakit@codeaurora.org
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, kgunda@codeaurora.org
+Subject: Re: [PATCH 3/7] regulator: qcom-rpmh: Correct the pmic5_hfsmps515
+ buck
+Message-ID: <20210311183231.GI4962@sirena.org.uk>
+References: <1614155592-14060-1-git-send-email-skakit@codeaurora.org>
+ <1614155592-14060-4-git-send-email-skakit@codeaurora.org>
+ <50151f4b-298c-f0ee-a88f-7bdd945ad249@linaro.org>
+ <51390b828a5d534e308460098f1b9af0@codeaurora.org>
+ <CAA8EJpqN-jb3b3yHTHwrQQj_h3M-yxAvX7Hz7bNSV3_NBCJEwQ@mail.gmail.com>
+ <da15c05877c345f2aeb51649c075a95c@codeaurora.org>
+ <CAA8EJprc24gTfLaffsrKeJ9MOv2m8B1L168VV4uNm=xsjnF5ZQ@mail.gmail.com>
+ <189b9f1cac1b52241c199e541f0d14ba@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Li7ckgedzMh1NgdW"
+Content-Disposition: inline
+In-Reply-To: <189b9f1cac1b52241c199e541f0d14ba@codeaurora.org>
+X-Cookie: I'm rated PG-34!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, debugging CMA allocation failures is quite limited.
-The most commong source of these failures seems to be page
-migration which doesn't provide any useful information on the
-reason of the failure by itself. alloc_contig_range can report
-those failures as it holds a list of migrate-failed pages.
 
-page refcount, mapcount with page flags on dump_page are
-helpful information to deduce the culprit. Furthermore,
-dump_page_owner was super helpful to find long term pinner
-who initiated the page allocation.
+--Li7ckgedzMh1NgdW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The reason it approach with dynamic debug is the debug message
-could emit lots of noises as alloc_contig_range calls more
-frequently since it's a best effort allocator.
+On Thu, Mar 11, 2021 at 09:45:41AM +0530, skakit@codeaurora.org wrote:
+> On 2021-03-02 19:51, Dmitry Baryshkov wrote:
 
-There are two ifdefery conditions to support common dyndbg options:
+> > I'd still prefer to have two different regulator types (as we did for
+> > pm8009 P=0 and P=1 variants). However it's probably up to the
+> > maintainers to decide.
 
-- CONFIG_DYNAMIC_DEBUG_CORE && DYNAMIC_DEBUG_MODULE
-It aims for supporting the feature with only specific file
-with adding ccflags.
+> As Mark already picked this, I think we can leave it this way.
 
-- CONFIG_DYNAMIC_DEBUG
-It aims for supporting the feature with system wide globally.
+As far as I can tell this is a system configuration issue, the board
+constraints will ensure that we don't try to set a voltage that the
+system can't support so there should be no need for this to be handled
+as separate variants.  That assumes that this P register field just
+extends the values available, it doesn't have to be tied to some board
+setup or anything.  If it is a board configuration thing it probably
+makes more sense to add a boolean property for it, ideally something
+tied to whatever the board configuration is so that it's easier for
+people to discover.
 
-A simple example to enable the feature:
+I had understood the pm8009 case as being two different parts with the
+same name rather than two different options for the same part.
 
-Admin could enable the dump like this(by default, disabled)
+--Li7ckgedzMh1NgdW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	echo "func alloc_contig_dump_pages +p" > control
+-----BEGIN PGP SIGNATURE-----
 
-Admin could disable it.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBKYj4ACgkQJNaLcl1U
+h9COYQf/biFeYWkuTQsa6ND/FAhYd+og1KhsxXWai18EVpf99Za5KuiJ3ztC+fxE
+G0IGMZq8h0VDgaUFibJRg04ZsYf/qYHmB+k0+lqEUamSR/Kq+KkTztdM1LXI47KF
+fcxwq6+J/lWYBH9p2jqAtiv9hmOYTV2iDeiUAt0IUWwDcs0N5nH0OP4Tm7lqEOiX
+YsMv5gEtYoTeXSWkzHOlEMVEPVDbDweHetN0LjKSJFVAcNnn4IxMa98g8n5MG7tT
+nxq+PcmWIMDOn4v0ghM+qcPsz+8UGMmUqGxwwHobLHxwEaJ63q6xCE+j05X3A3q8
+4gTkVP7D+i2HF9BXvKU4Qf941LUY0Q==
+=cYYL
+-----END PGP SIGNATURE-----
 
-	echo "func alloc_contig_dump_pages =_" > control
-
-Detail goes Documentation/admin-guide/dynamic-debug-howto.rst
-
-A concern is utility functions in dump_page uses inconsistent
-loglevels.
-
-__dump_page: KERN_WARNING
-__dump_page_owner: KERN_ALERT
-        stack_trace_print: KERN_DEFAULT
-
-There are bunch of places to use the inconsistent loglevel
-utility functions(e.g., just grep dump_page/strace_trace_print).
-It's unfortunate but here we are. It could be addressed
-different patchset.
-
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
-* from v3 - https://lore.kernel.org/linux-mm/20210310180104.517886-1-minchan@kernel.org
-  * add dyndgb usage comment - akpm
-  * use dumpstack instead of warn_on - david
-
-* from v2 - https://lore.kernel.org/linux-mm/20210308202047.1903802-1-minchan@kernel.org/
-  * remove ratelimit - mhocko
-
-* from v1 - https://lore.kernel.org/linux-mm/20210217163603.429062-1-minchan@kernel.org/
-  * use dynamic debugging with system wide instead of per-call site - mhocko
-
- mm/page_alloc.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3e4b29ee2b1e..76fc202cb105 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8453,6 +8453,36 @@ static unsigned long pfn_max_align_up(unsigned long pfn)
- 				pageblock_nr_pages));
- }
- 
-+#if defined(CONFIG_DYNAMIC_DEBUG) || \
-+	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-+/*
-+ * usage)
-+ * 	dyndbg_dir="/sys/kernel/debug/dynamic_debug"
-+ * To enable:
-+ * 	echo "func alloc_contig_dump_pages +p" > $dyndbg_dir/control
-+ * To disable:
-+ * 	echo "func alloc_contig_dump_pages =_" > $dyndbg_dir/control
-+ * For detail, read dynamic-debug-howto.rst
-+ */
-+static void alloc_contig_dump_pages(struct list_head *page_list)
-+{
-+	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
-+			"migrate failure");
-+
-+	if (DYNAMIC_DEBUG_BRANCH(descriptor)) {
-+		struct page *page;
-+
-+		dump_stack();
-+		list_for_each_entry(page, page_list, lru)
-+			dump_page(page, "migration failure");
-+	}
-+}
-+#else
-+static inline void alloc_contig_dump_pages(struct list_head *page_list)
-+{
-+}
-+#endif
-+
- /* [start, end) must belong to a single zone. */
- static int __alloc_contig_migrate_range(struct compact_control *cc,
- 					unsigned long start, unsigned long end)
-@@ -8496,6 +8526,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
- 				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
- 	}
- 	if (ret < 0) {
-+		alloc_contig_dump_pages(&cc->migratepages);
- 		putback_movable_pages(&cc->migratepages);
- 		return ret;
- 	}
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
+--Li7ckgedzMh1NgdW--
