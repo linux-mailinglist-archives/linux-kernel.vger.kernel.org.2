@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9CD336EBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5010336ECE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhCKJXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:23:30 -0500
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:38856 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhCKJX1 (ORCPT
+        id S231909AbhCKJZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:25:38 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:51684 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231639AbhCKJZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:23:27 -0500
-Received: by mail-vs1-f44.google.com with SMTP id e21so8332809vsh.5;
-        Thu, 11 Mar 2021 01:23:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SNJVqKR0vBMbNZlXFpBSrtzy35CKdcLAn+6qaYBCnOE=;
-        b=pdeWrJ83dZIgnLuo+a42r67p1J0iKqDCl2Q705tp8yrIJsyuTpU8KqckJC6DjQIgLc
-         8X7JB7qolEQnnMLynyZHxI7AaNAYkJGGabCyqOkUjws/P4iqL+BUkkwhL7gHN8CRw3+K
-         cHMm/FSP2rGj7bUxetsP8RaztwH+lhYrI/XhqECs9iGnbjjviw7zgOeFlXW1HhAWbA4M
-         Y9fvnyId6I+xhH0MtiEMnENbI+yYcCXqJmpNg7jcUD3sXHm/MrT7RE/i9vvoV3CcLfNQ
-         hhjRKsPsGd4WHP7yzcK7AnCyfpmeW7U9IM/N/0E+bvgg1mDOG8cnXzR6htGFEDdjCXva
-         bM3g==
-X-Gm-Message-State: AOAM533Wl1P/jAVKFukPpeOGWpYBCX1Do4/5JFQZVMjPsnPPxhj6IGC2
-        8nIQ63aY+Ozlv/MtB9O6F86zNu7oRq11bD7vrPLQS7XW
-X-Google-Smtp-Source: ABdhPJzIX7Fz1hqWP3FDCxQHPordmndItXLeFDaiXXelJtKl+B6hhb16yrA6fRktlzl/Osx3yDjJxYVxmri+Lu/7KDI=
-X-Received: by 2002:a67:8883:: with SMTP id k125mr4898621vsd.18.1615454606792;
- Thu, 11 Mar 2021 01:23:26 -0800 (PST)
+        Thu, 11 Mar 2021 04:25:32 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lKHZR-0002Ad-Ob; Thu, 11 Mar 2021 09:25:29 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] usb: mtu3: Fix spelling mistake "disabed" -> "disabled"
+Date:   Thu, 11 Mar 2021 09:25:29 +0000
+Message-Id: <20210311092529.4898-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210311090918.2197-1-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20210311090918.2197-1-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 11 Mar 2021 10:23:15 +0100
-Message-ID: <CAMuHMdXrD-Bi9Tc5dWnE7hU48zdfuGkpGMksfMuEPbyktDz3pA@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: timer: renesas,cmt: add r8a779a0 CMT support
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:09 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+The variable u3_ports_disabed contains a spelling mistake,
+rename it to u3_ports_disabled.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/usb/mtu3/mtu3_host.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-                        Geert
-
+diff --git a/drivers/usb/mtu3/mtu3_host.c b/drivers/usb/mtu3/mtu3_host.c
+index c871b94f3e6f..41a5675ac5ca 100644
+--- a/drivers/usb/mtu3/mtu3_host.c
++++ b/drivers/usb/mtu3/mtu3_host.c
+@@ -109,7 +109,7 @@ int ssusb_host_enable(struct ssusb_mtk *ssusb)
+ 	void __iomem *ibase = ssusb->ippc_base;
+ 	int num_u3p = ssusb->u3_ports;
+ 	int num_u2p = ssusb->u2_ports;
+-	int u3_ports_disabed;
++	int u3_ports_disabled;
+ 	u32 check_clk;
+ 	u32 value;
+ 	int i;
+@@ -118,10 +118,10 @@ int ssusb_host_enable(struct ssusb_mtk *ssusb)
+ 	mtu3_clrbits(ibase, U3D_SSUSB_IP_PW_CTRL1, SSUSB_IP_HOST_PDN);
+ 
+ 	/* power on and enable u3 ports except skipped ones */
+-	u3_ports_disabed = 0;
++	u3_ports_disabled = 0;
+ 	for (i = 0; i < num_u3p; i++) {
+ 		if ((0x1 << i) & ssusb->u3p_dis_msk) {
+-			u3_ports_disabed++;
++			u3_ports_disabled++;
+ 			continue;
+ 		}
+ 
+@@ -140,7 +140,7 @@ int ssusb_host_enable(struct ssusb_mtk *ssusb)
+ 	}
+ 
+ 	check_clk = SSUSB_XHCI_RST_B_STS;
+-	if (num_u3p > u3_ports_disabed)
++	if (num_u3p > u3_ports_disabled)
+ 		check_clk = SSUSB_U3_MAC_RST_B_STS;
+ 
+ 	return ssusb_check_clocks(ssusb, check_clk);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
