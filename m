@@ -2,153 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15613371E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFFF93371E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbhCKL5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
+        id S232839AbhCKL6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:58:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232753AbhCKL5Y (ORCPT
+        with ESMTP id S232739AbhCKL5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:57:24 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DC7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:57:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=koF1sgaPtBGi5gEpR0MtXvHtGkghU8CuWBVUbqTefHM=; b=BalhLNT/FI7NEFEsZr111zdUtb
-        yQ3wwpRHuBButeBrWTOSny3cJHWMAHRTnr9dUol+c2zxxBdidPrVUI8B0kvyCAMHmQ8FZpg5Nxif4
-        gfsimLMjT7inN6bsauoz/hlny/0COHQ4RFATUf3IQUHTmzRHEP0GJPjmwOp2/cC4qLnZnA3YDkUSP
-        02irssnNIFrJrntpEZEWfdqdAozTLErdK4e3mGRxqW4iI+NIO9jIwg9MnlF4bf1gFWHfa0ZfZBU/g
-        tt2dXmCVXHY6mB/bzEQz//iE2ZiCzCcYXNiZx+wsgmSTjM1Fi5WFpHi8K5lmmaJAZCPl++yyDj+C9
-        vA0f2TAg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKJw3-007H5S-Qv; Thu, 11 Mar 2021 11:57:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B9483300455;
-        Thu, 11 Mar 2021 12:56:58 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A894C29A42B87; Thu, 11 Mar 2021 12:56:58 +0100 (CET)
-Date:   Thu, 11 Mar 2021 12:56:58 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-Subject: Re: [PATCH V2 16/25] perf/x86: Register hybrid PMUs
-Message-ID: <YEoFitWfyKOkx61M@hirez.programming.kicks-ass.net>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
+        Thu, 11 Mar 2021 06:57:37 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B35C061574;
+        Thu, 11 Mar 2021 03:57:37 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id t18so3350336pjs.3;
+        Thu, 11 Mar 2021 03:57:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Md+pCA3Kui1jvX3JWGWDOlz+kcNBji2G/7qB9JjUzw=;
+        b=dyOaG9/2zhOwjpMkAgZc0yyt25IyNvlkCd1DMi2r/xquo37eXdlH5CxCVTMrl/u325
+         Ls6DqRc7UPPbwWQfsI7S2kl362KWDJlW58wwGRC01gX6/OMUMa9ykMOvBYw8bFRI9clR
+         QKoFCrpEqjF58J/zdOjQtilZTKNxcB6VlWFv3a1uShEa5LSe5M93wW8140LHFjHAbDB7
+         QECYL+I/MkiWiFBPUjswQpFMvrtQ3MvhQIFLttq6vswRdhlslrv5fvSDa1hNx1er/CzI
+         yoCr+k0AtW9WlAO5OE3o40M3Vbr2YncLyNwf3qkFwWIIXcyFcw5Z41dhP023hK0x4lWL
+         wTnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Md+pCA3Kui1jvX3JWGWDOlz+kcNBji2G/7qB9JjUzw=;
+        b=ODC6/teO3fghFk6Ov9oq+ECl5dCi1X+v6NfWsGbRSMB5psxho10kr8SGIu5cxnvQ51
+         7Zl6hRrIN//L3mGMy3WqSHuQ4FjIUOhnw8T6rabrb/N/o7TB3sccLToC4QTOn0mn2XP4
+         7rt39c23hAt+ghSb0xd5/2upZNzFqrAau7BQibYHx+c3Uy7UDihW59yl+62y4n/JMe8d
+         /HlIlLH8i/SLJ00yCdeteTGhmCzqbqVndEaGenMHGu6C3mRoPFOVmf5fQun7XFb36cA/
+         CGRT5MBfHra58yMTGVz7tot9UVGcZbnup++kGavX/ET6wxU5Oq3rfcI1UAAweTcYB+uh
+         Vw7w==
+X-Gm-Message-State: AOAM531pvDzKvC5MRpvlYaBO8ISVuLDEGb60YmqMO3dXe5KzdrBhz3zo
+        DcG82Cmm3Pfy92OGJL/Fg4c=
+X-Google-Smtp-Source: ABdhPJy5d6hESIgQG9qLtNPGi27ICWzYl8fVYg/OlrMfYthmbBJxTFr7eg9VyOFmUj/hh3ibipezpw==
+X-Received: by 2002:a17:90a:7bce:: with SMTP id d14mr8931282pjl.139.1615463856721;
+        Thu, 11 Mar 2021 03:57:36 -0800 (PST)
+Received: from DESKTOP-4V60UBS.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id k11sm2116135pfc.22.2021.03.11.03.57.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 03:57:36 -0800 (PST)
+From:   Xiaofeng Cao <cxfcosmos@gmail.com>
+To:     sre@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, Xiaofeng Cao <cxfcosmos@gmail.com>,
+        Xiaofeng Cao <caoxiaofeng@yulong.com>
+Subject: [PATCH] Rectify spelling
+Date:   Thu, 11 Mar 2021 19:57:35 +0800
+Message-Id: <20210311115735.1103-1-cxfcosmos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 08:37:52AM -0800, kan.liang@linux.intel.com wrote:
-> +static void init_hybrid_pmu(int cpu)
-> +{
-> +	unsigned int fixed_mask, unused_eax, unused_ebx, unused_edx;
-> +	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
-> +	u8 cpu_type = get_hybrid_cpu_type(cpu);
-> +	struct x86_hybrid_pmu *pmu = NULL;
-> +	struct perf_cpu_context *cpuctx;
-> +	int i;
-> +
-> +	for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
-> +		if (x86_pmu.hybrid_pmu[i].cpu_type == cpu_type) {
-> +			pmu = &x86_pmu.hybrid_pmu[i];
-> +			break;
-> +		}
-> +	}
-> +	if (WARN_ON_ONCE(!pmu))
-> +		return;
-> +
-> +	cpuc->pmu = &pmu->pmu;
-> +
-> +	/* Only register PMU for the first CPU */
-> +	if (!cpumask_empty(&pmu->supported_cpus)) {
-> +		cpumask_set_cpu(cpu, &pmu->supported_cpus);
-> +		goto end;
-> +	}
-> +
-> +	if (!check_hw_exists(&pmu->pmu, pmu->num_counters, pmu->num_counters_fixed))
-> +		return;
-> +
-> +	if ((pmu->pmu.type == -1) &&
-> +	    perf_pmu_register(&pmu->pmu, pmu->name, x86_get_hybrid_pmu_type(pmu->cpu_type)))
-> +		return;
-> +
-> +	/*
-> +	 * Except for ECX, other fields have been stored in the x86 struct
-> +	 * at boot time.
-> +	 */
-> +	cpuid(10, &unused_eax, &unused_ebx, &fixed_mask, &unused_edx);
-> +
-> +	intel_pmu_check_num_counters(&pmu->num_counters,
-> +				     &pmu->num_counters_fixed,
-> +				     &pmu->intel_ctrl,
-> +				     (u64)fixed_mask);
-> +
-> +	pr_info("%s PMU driver: ", pmu->name);
-> +
-> +	if (pmu->intel_cap.perf_metrics) {
-> +		pmu->intel_ctrl |= 1ULL << GLOBAL_CTRL_EN_PERF_METRICS;
-> +		pmu->intel_ctrl |= INTEL_PMC_MSK_FIXED_SLOTS;
-> +	}
-> +
-> +	if (pmu->intel_cap.pebs_output_pt_available) {
-> +		pmu->pmu.capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
-> +		pr_cont("PEBS-via-PT ");
-> +	}
-> +
-> +	intel_pmu_check_event_constraints(pmu->event_constraints,
-> +					  pmu->num_counters,
-> +					  pmu->num_counters_fixed,
-> +					  pmu->intel_ctrl);
-> +
-> +	intel_pmu_check_extra_regs(pmu->extra_regs);
-> +
-> +	pr_cont("\n");
-> +
-> +	x86_pmu_show_pmu_cap(pmu->num_counters, pmu->num_counters_fixed,
-> +			     pmu->intel_ctrl);
-> +
-> +	cpumask_set_cpu(cpu, &pmu->supported_cpus);
-> +end:
-> +	/*
-> +	 * The cpuctx of all CPUs are allocated when registering the
-> +	 * boot CPU's PMU. At that time, the PMU for other hybrid CPUs
-> +	 * is not registered yet. The boot CPU's PMU was
-> +	 * unconditionally assigned to each cpuctx->ctx.pmu.
-> +	 * Update the cpuctx->ctx.pmu when the PMU for other hybrid
-> +	 * CPUs is known.
-> +	 */
-> +	cpuctx = per_cpu_ptr(pmu->pmu.pmu_cpu_context, cpu);
-> +	cpuctx->ctx.pmu = &pmu->pmu;
-> +}
-> +
->  static void intel_pmu_cpu_starting(int cpu)
->  {
->  	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
->  	int core_id = topology_core_id(cpu);
->  	int i;
->  
-> +	if (is_hybrid())
-> +		init_hybrid_pmu(cpu);
-> +
->  	init_debug_store_on_cpu(cpu);
->  	/*
->  	 * Deal with CPUs that don't clear their LBRs on power-up.
+Change  'stanalone'      to  'standalone'
+Change  'mesaurement'    to  'measurement'
+Change  'nonvilatile'    to  'nonvolatile'
+Change  'unical'         to  'unique'
+Change  'unaccesable'    to  'unaccessible'
+Change  'correcpondent'  to  'correspond'
 
-This is buggered. CPU_STARTING is the initial IRQs disabled part of
-hotplug, but you're calling perf_pmu_register() which does mutex_lock().
+Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+---
+ drivers/power/supply/max1721x_battery.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/power/supply/max1721x_battery.c b/drivers/power/supply/max1721x_battery.c
+index 1b1a36f8e929..473e53cd2801 100644
+--- a/drivers/power/supply/max1721x_battery.c
++++ b/drivers/power/supply/max1721x_battery.c
+@@ -1,6 +1,6 @@
+ /*
+  * 1-Wire implementation for Maxim Semiconductor
+- * MAX7211/MAX17215 stanalone fuel gauge chip
++ * MAX7211/MAX17215 standalone fuel gauge chip
+  *
+  * Copyright (C) 2017 Radioavionica Corporation
+  * Author: Alex A. Mihaylov <minimumlaw@rambler.ru>
+@@ -28,7 +28,7 @@
+ /* Number of valid register addresses in W1 mode */
+ #define MAX1721X_MAX_REG_NR	0x1EF
+ 
+-/* Factory settings (nonvilatile registers) (W1 specific) */
++/* Factory settings (nonvolatile registers) (W1 specific) */
+ #define MAX1721X_REG_NRSENSE	0x1CF	/* RSense in 10^-5 Ohm */
+ /* Strings */
+ #define MAX1721X_REG_MFG_STR	0x1CC
+@@ -105,7 +105,7 @@ static inline int max172xx_temperature_to_ps(unsigned int reg)
+ /*
+  * Calculating current registers resolution:
+  *
+- * RSense stored in 10^-5 Ohm, so mesaurment voltage must be
++ * RSense stored in 10^-5 Ohm, so measurement voltage must be
+  * in 10^-11 Volts for get current in uA.
+  * 16 bit current reg fullscale +/-51.2mV is 102400 uV.
+  * So: 102400 / 65535 * 10^5 = 156252
+@@ -137,7 +137,7 @@ static int max1721x_battery_get_property(struct power_supply *psy,
+ 		/*
+ 		 * POWER_SUPPLY_PROP_PRESENT will always readable via
+ 		 * sysfs interface. Value return 0 if battery not
+-		 * present or unaccesable via W1.
++		 * present or unaccessible via W1.
+ 		 */
+ 		val->intval =
+ 			regmap_read(info->regmap, MAX172XX_REG_STATUS,
+@@ -334,9 +334,9 @@ static int devm_w1_max1721x_add_device(struct w1_slave *sl)
+ 
+ 	/*
+ 	 * power_supply class battery name translated from W1 slave device
+-	 * unical ID (look like 26-0123456789AB) to "max1721x-0123456789AB\0"
+-	 * so, 26 (device family) correcpondent to max1721x devices.
+-	 * Device name still unical for any numbers connected devices.
++	 * unique ID (look like 26-0123456789AB) to "max1721x-0123456789AB\0"
++	 * so, 26 (device family) correspond to max1721x devices.
++	 * Device name still unique for any number of connected devices.
+ 	 */
+ 	snprintf(info->name, sizeof(info->name),
+ 		"max1721x-%012X", (unsigned int)sl->reg_num.id);
+-- 
+2.25.1
+
