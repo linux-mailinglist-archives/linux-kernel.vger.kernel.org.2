@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A82337055
+	by mail.lfdr.de (Postfix) with ESMTP id AE8B4337056
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbhCKKnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
+        id S232455AbhCKKnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:43:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbhCKKml (ORCPT
+        with ESMTP id S232416AbhCKKm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:42:41 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE623C061574;
-        Thu, 11 Mar 2021 02:42:40 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d23so6793267plq.2;
-        Thu, 11 Mar 2021 02:42:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gIYOMYOKVo+mGI0uXGsSplZ/o4gRCgxMr3FfOW9mCVo=;
-        b=tFGfT19FBFVyyK3VQA4Wq7SpOr38r2IGnV+qwMcK4MsVW4cU7+StpniuRufqxRD4lt
-         FlHYF6oNxGEmCPZ33aEbzkOgGsL6UVmvvQSDNB+utQ60/RUrWSePFy5+tVzPgWrQNN8x
-         euwzsttAPS6k0b7vebnjOCwpC2ffNox5S8TEyyJWpTHwQurDCZsey3QvCUD7bM70RM0B
-         8xYgtwE3b7VBEpGMD/32n0gKK0dw+lSvJ0qPxlibrMnuruBg8cZXgziweSPtkefDHsC1
-         gOu70GU7hzLtqtMBCk/zB6J8J1HQr82JeJelXPCc7AzNC6SwyhVRqUm9LLvKhSGNzwMB
-         r8wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gIYOMYOKVo+mGI0uXGsSplZ/o4gRCgxMr3FfOW9mCVo=;
-        b=ONAv1r+uNvliR66LKk/R92XReP+xicU4y0Xb8iaPcSRFK3DSqR4x76BmZcFeHiFh6j
-         lRcKgZZAQ9WmIUtwuNrL2U4JfrrrUMsBMQ3c00WHUGS6VTbwAKWxIANitSZwh9N7yomV
-         Qkgf45YvizVXpyjM+sIt0p7Lo8AgzMJi7+0Kw7zYHl4W6upghB40T1m1Qc6lnKRZ2u+y
-         LJ2lVD2XakWHaESCx8x0z+KTsZiA/mK/Q+xOdujFZv86rfpyP6y1Yb+uaF1a8Nw3dp2q
-         JaVvhP6/O6WxAX1Ah7SiyUnZTT551WqkmYXNFxNrIBNemXyvNT1vrjtnXfWsJssDrkoP
-         +bGg==
-X-Gm-Message-State: AOAM531sNJ8UMvIpgqX+Tz1Et9Q1SLUFzclszvxcbT88CHAbFS6P/6aj
-        oI9Xp3VJaB2JCiMLcG75xO2K5PjIcv9ZRvBy+Wg=
-X-Google-Smtp-Source: ABdhPJzWoP6XUS/TeIQwbRQ3c0qtQADY6wEUfpkbZ9HBzQWiD0PdI2WY+R/Tq2+whLln3VZBvC8NB6PQb3ClOlNb/X0=
-X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr1271593pjr.228.1615459360370;
- Thu, 11 Mar 2021 02:42:40 -0800 (PST)
+        Thu, 11 Mar 2021 05:42:59 -0500
+Received: from smtp-8fad.mail.infomaniak.ch (smtp-8fad.mail.infomaniak.ch [IPv6:2001:1600:3:17::8fad])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA1FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:42:59 -0800 (PST)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dx5BT525BzMqPvZ;
+        Thu, 11 Mar 2021 11:42:57 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dx5BS2NHZzlh8Tb;
+        Thu, 11 Mar 2021 11:42:56 +0100 (CET)
+Subject: Re: [PATCH v1 0/1] Unprivileged chroot
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Eric Biederman <ebiederm@xmission.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+References: <20210310161000.382796-1-mic@digikod.net>
+ <4b9a1bb3-94f0-72af-f8f6-27f1ca2b43a2@schaufler-ca.com>
+ <e0b03cf2-8e37-6a41-5132-b74566a8f269@digikod.net>
+ <0dfd4306-8e7c-239b-2829-d4103395ea44@schaufler-ca.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <a28100f5-19ca-adbf-7056-575f6bfc9dc6@digikod.net>
+Date:   Thu, 11 Mar 2021 11:42:55 +0100
+User-Agent: 
 MIME-Version: 1.0
-References: <20210208222203.22335-1-info@metux.net> <20210208222203.22335-8-info@metux.net>
- <CACRpkdb5R+VQrv0QuKa+EYmAMkodRpyv4fV1QCWQ+vcEyd0sZQ@mail.gmail.com> <acae5f9a-1cc8-46e1-2b3b-c806679ef062@metux.net>
-In-Reply-To: <acae5f9a-1cc8-46e1-2b3b-c806679ef062@metux.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 11 Mar 2021 12:42:24 +0200
-Message-ID: <CAHp75VeWW__18hwK+-uEibpzLpehD4h=QCnTbKOc-2GbkMB0TA@mail.gmail.com>
-Subject: Re: [RFC PATCH 07/12] gpio: amd-fch: add oftree probing support
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0dfd4306-8e7c-239b-2829-d4103395ea44@schaufler-ca.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:20 PM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
-> On 01.03.21 15:51, Linus Walleij wrote:
 
-> > I don't know what the idea is with this but register are not normally defined
-> > in the DTS files. The registers are determined from the compatible value.
->
-> The idea is basically replacing the pdata struct by oftree node.
-> (subsequent patches in this queue use this by doing the board setup via
-> compiled-in dtb, instead of the currently hardcoded tables).
+On 10/03/2021 21:59, Casey Schaufler wrote:
+> On 3/10/2021 10:17 AM, Mickaël Salaün wrote:
+>> On 10/03/2021 18:22, Casey Schaufler wrote:
+>>> On 3/10/2021 8:09 AM, Mickaël Salaün wrote:
+>>>> Hi,
+>>>>
+>>>> The chroot system call is currently limited to be used by processes with
+>>>> the CAP_SYS_CHROOT capability.  This protects against malicious
+>>>> procesess willing to trick SUID-like binaries.  The following patch
+>>>> allows unprivileged users to safely use chroot(2).
+>>> Mount namespaces have pretty well obsoleted chroot(). CAP_SYS_CHROOT is
+>>> one of the few fine grained capabilities. We're still finding edge cases
+>>> (e.g. ptrace) where no_new_privs is imperfect. I doesn't seem that there
+>>> is a compelling reason to remove the privilege requirement on chroot().
+>> What is the link between chroot and ptrace?
+> 
+> The possibility of sophisticated interactions with no_new_privs.
 
-You are a bit late. We have built-in device properties (and
-corresponding API, which recently becomes swnode) which aims exactly
-this.
+Would you mind giving some practical examples?
 
+> 
+>> What is interesting with CAP_SYS_CHROOT?
+> 
+> CAP_SYS_CHROOT is specific to chroot. It doesn't give you privilege
+> beyond what you expect, unlike CAP_CHOWN or CAP_SYS_ADMIN. Making chroot
+> unprivileged is silly when it's possibly the best example of how the
+> capability mechanism is supposed to work.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Why would it be silly to make the use of this feature safe for any
+processes instead of giving the right (with CAP_SYS_CHROOT) to some
+processes to use it unsafely?
+
+> 
+>>
+>>>> This patch is a follow-up of a previous one sent by Andy Lutomirski some
+>>>> time ago:
+>>>> https://lore.kernel.org/lkml/0e2f0f54e19bff53a3739ecfddb4ffa9a6dbde4d.1327858005.git.luto@amacapital.net/
+>>>>
+>>>> This patch can be applied on top of v5.12-rc2 .  I would really
+>>>> appreciate constructive reviews.
+>>>>
+>>>> Regards,
+>>>>
+>>>> Mickaël Salaün (1):
+>>>>   fs: Allow no_new_privs tasks to call chroot(2)
+>>>>
+>>>>  fs/open.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++---
+>>>>  1 file changed, 61 insertions(+), 3 deletions(-)
+>>>>
+>>>>
+>>>> base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+> 
