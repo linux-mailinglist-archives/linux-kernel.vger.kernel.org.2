@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5226336E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4830D336E24
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhCKIqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:46:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56974 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230009AbhCKIqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:46:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615452371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WufQ3n/kwHjfZtEAjPC6dKTzReIW3D11ZqXq64CI764=;
-        b=NPZL6lossPXcyKWueKyjDu+enqVqiYJGJSYU6wRfI5nseEMa6INY3gr/s9kR5xnKCsZI/Y
-        LxFsfDER3lI9iNKUuKGiJvtfBZDAvmidD5WBhiTFhmTuJ+IP+cE1P6iimwGLV7XK4WhEQe
-        t9iu5Xy2dt09xbzS70zlQquMtYsSzwk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2BB0CAB8C;
-        Thu, 11 Mar 2021 08:46:11 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 09:46:10 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Subject: Re: [External] Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-Message-ID: <YEnY0qXuBGYW6LHA@dhcp22.suse.cz>
-References: <20210308102807.59745-1-songmuchun@bytedance.com>
- <20210308102807.59745-5-songmuchun@bytedance.com>
- <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
- <CAMZfGtVjLOF27VMVJ5fF8CDJRpZ0t7fWpmMHB9D-ipMK6b=POg@mail.gmail.com>
+        id S231546AbhCKIqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:46:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231157AbhCKIq3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:46:29 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77987C061574;
+        Thu, 11 Mar 2021 00:46:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=2UJb+wsmJ2
+        FcUp6+0rWvkv9WpaHiRbHAp+kj50P9o9U=; b=W6EknMUlXpOxz2ooLVWJL9ds6D
+        dmTiHOpvqNM5cHU40h3qzWhcn4x9Q7++9SxnUkZ9wIhoGxEkocaRgpp5GjV3A6EP
+        OQAjgREHpMzI1z/5ooZfvR7xy5HPyszF1fJ1gIFwHDAY+ZbHS5SQpkeNMHP0bpUg
+        gSVzFnN8HS8mqq0sI=
+Received: from ubuntu.localdomain (unknown [114.214.226.60])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn7x_a2ElglukKAA--.3103S4;
+        Thu, 11 Mar 2021 16:46:18 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] net/rds: Fix a use after free in rds_message_map_pages
+Date:   Thu, 11 Mar 2021 00:46:16 -0800
+Message-Id: <20210311084616.12356-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtVjLOF27VMVJ5fF8CDJRpZ0t7fWpmMHB9D-ipMK6b=POg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygDn7x_a2ElglukKAA--.3103S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrW3JF4UCw4DXr4rKw15urg_yoWDGFg_uF
+        WxJrn7W347XFyIkrs7KrsrAw4fZr1kXw18ua42qFn5tryDCFn5Xw48trn8uwnrCFW2vr1x
+        C3yDXr93ua4kZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbx8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ2
+        3UUUUU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11-03-21 12:26:32, Muchun Song wrote:
-> On Wed, Mar 10, 2021 at 11:19 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 08-03-21 18:28:02, Muchun Song wrote:
-[...]
-> > > @@ -1771,8 +1813,12 @@ int dissolve_free_huge_page(struct page *page)
-> > >               h->free_huge_pages--;
-> > >               h->free_huge_pages_node[nid]--;
-> > >               h->max_huge_pages--;
-> > > -             update_and_free_page(h, head);
-> > > -             rc = 0;
-> > > +             rc = update_and_free_page(h, head);
-> > > +             if (rc) {
-> > > +                     h->surplus_huge_pages--;
-> > > +                     h->surplus_huge_pages_node[nid]--;
-> > > +                     h->max_huge_pages++;
-> >
-> > This is quite ugly and confusing. update_and_free_page is careful to do
-> > the proper counters accounting and now you just override it partially.
-> > Why cannot we rely on update_and_free_page do the right thing?
-> 
-> Dissolving path is special here. Since update_and_free_page failed,
-> the number of surplus pages was incremented.  Surplus pages are
-> the number of pages greater than max_huge_pages.  Since we are
-> incrementing max_huge_pages, we should decrement (undo) the
-> addition to surplus_huge_pages and surplus_huge_pages_node[nid].
+In rds_message_map_pages, rds_message_put() will free rm.
+Maybe store the value of rm->data.op_sg ahead of rds_message_put()
+is better. Otherwise other threads could allocate the freed chunk
+and may change the value of rm->data.op_sg.
 
-Can we make dissolve_free_huge_page less special or tell
-update_and_free_page to not account against dissolve_free_huge_page?
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ net/rds/message.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/rds/message.c b/net/rds/message.c
+index 071a261fdaab..392e3a2f41a0 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -347,8 +347,9 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
+ 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
+ 	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
+ 	if (IS_ERR(rm->data.op_sg)) {
++		struct scatterlist *tmp = rm->data.op_sg;
+ 		rds_message_put(rm);
+-		return ERR_CAST(rm->data.op_sg);
++		return ERR_CAST(tmp);
+ 	}
+ 
+ 	for (i = 0; i < rm->data.op_nents; ++i) {
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
+
