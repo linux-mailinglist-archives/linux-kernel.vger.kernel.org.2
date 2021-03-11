@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13DA336F11
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E93336F13
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhCKJnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:43:18 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13521 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232093AbhCKJmw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:42:52 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dx3pN4GJ7zNl0L;
-        Thu, 11 Mar 2021 17:40:28 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 11 Mar 2021 17:42:42 +0800
-Subject: Re: [PATCH 5.4 00/24] 5.4.105-rc1 review
-To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210310132320.550932445@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <1e283f99-ef4c-9f80-0d72-03ad0b9a1cd0@huawei.com>
-Date:   Thu, 11 Mar 2021 17:42:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S232097AbhCKJnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:43:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232038AbhCKJnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 04:43:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DA4A64F38;
+        Thu, 11 Mar 2021 09:43:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615455826;
+        bh=J8Jxz9e8okdXOazQPLeITn0YDWgZhVvBfqAaIZA7/5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c9kMxhDQOgu7bmak3puPXUM5oqPm+l1jssvTS8AgrsJNDzzyrutLfKJs3d7P42Qdh
+         6xNPaO/V9C3lYU3zBj7nwTI86nd8I5A+N1FhRLTRaYTucItaYg6cFcoK2Fjnmse74w
+         HqBBm7KDFt/cqHUn4UQjgLhK8JkX2eteFoWPPTzs=
+Date:   Thu, 11 Mar 2021 10:43:44 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+Message-ID: <YEnmUEscWfcmDE+5@kroah.com>
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
+ <YEhsHELBM20f4MRE@kroah.com>
+ <YEi3ySLkw3hZinnS@chrisdown.name>
+ <YEi4qwBAd/O+sXyq@kroah.com>
+ <YEnkNrUYAj66li9B@alley>
 MIME-Version: 1.0
-In-Reply-To: <20210310132320.550932445@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEnkNrUYAj66li9B@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/3/10 21:24, gregkh@linuxfoundation.org wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Thu, Mar 11, 2021 at 10:34:46AM +0100, Petr Mladek wrote:
+> On Wed 2021-03-10 13:16:43, Greg Kroah-Hartman wrote:
+> > On Wed, Mar 10, 2021 at 12:12:57PM +0000, Chris Down wrote:
+> > > Greg Kroah-Hartman writes:
+> > > > On Wed, Mar 10, 2021 at 02:30:31AM +0000, Chris Down wrote:
+> > > > > +	ps->file = debugfs_create_file(pi_get_module_name(mod), 0444, dfs_index,
+> > > > > +				       ps, &dfs_index_fops);
+> > > > > +
+> > > > > +	if (IS_ERR(ps->file)) {
+> > > > > +		pi_sec_remove(mod);
+> > > > > +		return;
+> > > > > +	}
+> > > > 
+> > > > No need to check this and try to clean up if there is a problem, just
+> > > > save the pointer off and call debugfs_remove() when you want to clean
+> > > > up.
+> > > 
+> > > Petr, what are your thoughts on this, since you requested the cleanup on
+> > > debugfs failure? :-)
+> > 
+> > There is nothing to "clean up" if there is a debugfs failure here so I
+> > don't see the need.
 > 
-> This is the start of the stable review cycle for the 5.4.105 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> My main concern is that the allocated struct pi_sec must not be leaked
+> when debugfs file was not created.
 > 
-> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.105-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> I still have to check if it would be freed even without the file
+> when the module is going out.
 
-Tested on arm64 and x86 for 5.4.105-rc1,
+To me it looks like it still will happen as pi_sec_remove() will be
+called either way.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.105-rc1+
-Commit: 62f8f08c9d2fbc6c5692d90f64dd70e3a8edd986
-Compiler: gcc version 7.3.0 (GCC)
+thanks,
 
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total_num: 4703
-succeed_num: 4703
-failed_num: 0
-timeout_num: 0
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total_num: 4703
-succeed_num: 4703
-failed_num: 0
-timeout_num: 0
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+greg k-h
