@@ -2,127 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D273B336F37
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD1A336F3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhCKJtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbhCKJti (ORCPT
+        id S232070AbhCKJut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:50:49 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:23322 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232120AbhCKJuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:49:38 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A10C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:49:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qTTXD4rDBXLQmKbDmwsmX4CcXJeQvWfH6qNaQAGLaWQ=; b=dQPNckSHiEl3oEVreFjBKR+61Y
-        M3JWAzF9I9MiI+7YJaHHBZpjiIgk/ky4xehaAWQwDIa+imXla9ugmp8s9x2CsFHjxrIKMPGO2MzaK
-        5+mAbrFn1H59FIB6OuuXvnHO3TktcR2vDMj+yvoBj+2BbRYD2rQntsivq01hjAKkubPvO0Gbw0BOZ
-        TL9UdTtIHRTfSoZk5i3a8h8aeFU25gy0Y/A7wsRnQCT+22fQVRNjDs4tUvlAV8kWQXRNmvwn5p8ds
-        QVPOFfoiKV5ZqZFTRAzcHNbK6br3+OwBTy9agVa6isH+z/aAFxODpOgXkU2sX9LgbPkHazFurDZUw
-        t0lQMBaA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKHwb-008mST-HR; Thu, 11 Mar 2021 09:49:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DE17A300455;
-        Thu, 11 Mar 2021 10:49:23 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D06EE2027A4AC; Thu, 11 Mar 2021 10:49:23 +0100 (CET)
-Date:   Thu, 11 Mar 2021 10:49:23 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, tglx@linutronix.de,
-        john.ogness@linutronix.de, urezki@gmail.com, ast@fb.com,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
- in_atomic use
-Message-ID: <YEnno0Qt90omMXUG@hirez.programming.kicks-ass.net>
-References: <20210311021321.127500-1-mike.kravetz@oracle.com>
+        Thu, 11 Mar 2021 04:50:25 -0500
+X-UUID: e5328eea42a34bd78e6899844d53d5dc-20210311
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=a9ej59heEilQzTKWC4HbE25Ht5GD9Ct0059vCNX/I/s=;
+        b=b/fiesXnCh7ySSCfvoHnSxpK/D4VYjfKySMm1KzuavvUqrRLcZl0zuryJ9ZuWVp0dbATFvwLXEC1/GFGdB7hg5cijeMlJ38lux1g+R/ZkJgyHWNftPczFTIyhV4czctrYw9SvggcuJEMSXuoCIhSlnMBZiGNIhg9W1/aXCLoFV4=;
+X-UUID: e5328eea42a34bd78e6899844d53d5dc-20210311
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1471753253; Thu, 11 Mar 2021 17:50:17 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Mar
+ 2021 17:50:15 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 11 Mar 2021 17:50:14 +0800
+Message-ID: <1615456214.25662.62.camel@mhfsdcap03>
+Subject: Re: [v8,5/7] PCI: mediatek-gen3: Add MSI support
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Sj Huang" <sj.huang@mediatek.com>, <youlin.pei@mediatek.com>,
+        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
+        <sin_jieyang@mediatek.com>, <drinkcat@chromium.org>,
+        <Rex-BC.Chen@mediatek.com>, <anson.chuang@mediatek.com>
+Date:   Thu, 11 Mar 2021 17:50:14 +0800
+In-Reply-To: <e6c53aa3863c3f5b0560ed65282fc5e2@kernel.org>
+References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+         <20210224061132.26526-6-jianjun.wang@mediatek.com>
+         <20210311000555.epypouwxdbql2aqx@pali>
+         <e6c53aa3863c3f5b0560ed65282fc5e2@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311021321.127500-1-mike.kravetz@oracle.com>
+X-TM-SNTS-SMTP: F9A112B6DED8DAAFAF6E68A112F27E84405F5EF3E9F86C2A91FF46CE880EBB382000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 06:13:21PM -0800, Mike Kravetz wrote:
-> put_page does not correctly handle all calling contexts for hugetlb
-> pages.  This was recently discussed in the threads [1] and [2].
-> 
-> free_huge_page is the routine called for the final put_page of huegtlb
-> pages.  Since at least the beginning of git history, free_huge_page has
-> acquired the hugetlb_lock to move the page to a free list and possibly
-> perform other processing. When this code was originally written, the
-> hugetlb_lock should have been made irq safe.
-> 
-> For many years, nobody noticed this situation until lockdep code caught
-> free_huge_page being called from irq context.  By this time, another
-> lock (hugetlb subpool) was also taken in the free_huge_page path. 
+T24gVGh1LCAyMDIxLTAzLTExIGF0IDA4OjE5ICswMDAwLCBNYXJjIFp5bmdpZXIgd3JvdGU6DQo+
+IE9uIDIwMjEtMDMtMTEgMDA6MDUsIFBhbGkgUm9ow6FyIHdyb3RlOg0KPiA+IE9uIFdlZG5lc2Rh
+eSAyNCBGZWJydWFyeSAyMDIxIDE0OjExOjMwIEppYW5qdW4gV2FuZyB3cm90ZToNCj4gPj4gK3N0
+YXRpYyBpbnQgbXRrX21zaV9ib3R0b21fZG9tYWluX2FsbG9jKHN0cnVjdCBpcnFfZG9tYWluICpk
+b21haW4sDQo+ID4+ICsJCQkJICAgICAgIHVuc2lnbmVkIGludCB2aXJxLCB1bnNpZ25lZCBpbnQg
+bnJfaXJxcywNCj4gPj4gKwkJCQkgICAgICAgdm9pZCAqYXJnKQ0KPiA+PiArew0KPiA+PiArCXN0
+cnVjdCBtdGtfcGNpZV9wb3J0ICpwb3J0ID0gZG9tYWluLT5ob3N0X2RhdGE7DQo+ID4+ICsJc3Ry
+dWN0IG10a19tc2lfc2V0ICptc2lfc2V0Ow0KPiA+PiArCWludCBpLCBod2lycSwgc2V0X2lkeDsN
+Cj4gPj4gKw0KPiA+PiArCW11dGV4X2xvY2soJnBvcnQtPmxvY2spOw0KPiA+PiArDQo+ID4+ICsJ
+aHdpcnEgPSBiaXRtYXBfZmluZF9mcmVlX3JlZ2lvbihwb3J0LT5tc2lfaXJxX2luX3VzZSwgDQo+
+ID4+IFBDSUVfTVNJX0lSUVNfTlVNLA0KPiA+PiArCQkJCQlvcmRlcl9iYXNlXzIobnJfaXJxcykp
+Ow0KPiA+PiArDQo+ID4+ICsJbXV0ZXhfdW5sb2NrKCZwb3J0LT5sb2NrKTsNCj4gPj4gKw0KPiA+
+PiArCWlmIChod2lycSA8IDApDQo+ID4+ICsJCXJldHVybiAtRU5PU1BDOw0KPiA+PiArDQo+ID4+
+ICsJc2V0X2lkeCA9IGh3aXJxIC8gUENJRV9NU0lfSVJRU19QRVJfU0VUOw0KPiA+PiArCW1zaV9z
+ZXQgPSAmcG9ydC0+bXNpX3NldHNbc2V0X2lkeF07DQo+ID4+ICsNCj4gPj4gKwlmb3IgKGkgPSAw
+OyBpIDwgbnJfaXJxczsgaSsrKQ0KPiA+PiArCQlpcnFfZG9tYWluX3NldF9pbmZvKGRvbWFpbiwg
+dmlycSArIGksIGh3aXJxICsgaSwNCj4gPj4gKwkJCQkgICAgJm10a19tc2lfYm90dG9tX2lycV9j
+aGlwLCBtc2lfc2V0LA0KPiA+PiArCQkJCSAgICBoYW5kbGVfZWRnZV9pcnEsIE5VTEwsIE5VTEwp
+Ow0KPiA+PiArDQo+ID4+ICsJcmV0dXJuIDA7DQo+ID4+ICt9DQo+ID4+ICsNCj4gPj4gK3N0YXRp
+YyB2b2lkIG10a19tc2lfYm90dG9tX2RvbWFpbl9mcmVlKHN0cnVjdCBpcnFfZG9tYWluICpkb21h
+aW4sDQo+ID4+ICsJCQkJICAgICAgIHVuc2lnbmVkIGludCB2aXJxLCB1bnNpZ25lZCBpbnQgbnJf
+aXJxcykNCj4gPj4gK3sNCj4gPj4gKwlzdHJ1Y3QgbXRrX3BjaWVfcG9ydCAqcG9ydCA9IGRvbWFp
+bi0+aG9zdF9kYXRhOw0KPiA+PiArCXN0cnVjdCBpcnFfZGF0YSAqZGF0YSA9IGlycV9kb21haW5f
+Z2V0X2lycV9kYXRhKGRvbWFpbiwgdmlycSk7DQo+ID4+ICsNCj4gPj4gKwltdXRleF9sb2NrKCZw
+b3J0LT5sb2NrKTsNCj4gPj4gKw0KPiA+PiArCWJpdG1hcF9jbGVhcihwb3J0LT5tc2lfaXJxX2lu
+X3VzZSwgZGF0YS0+aHdpcnEsIG5yX2lycXMpOw0KPiA+IA0KPiA+IE1hcmMsIHNob3VsZCBub3Qg
+YmUgdGhlcmUgYml0bWFwX3JlbGVhc2VfcmVnaW9uKCkgd2l0aCBvcmRlcl9iYXNlXzIoKT8NCj4g
+PiANCj4gPiBiaXRtYXBfcmVsZWFzZV9yZWdpb24ocG9ydC0+bXNpX2lycV9pbl91c2UsIGRhdGEt
+Pmh3aXJxLCANCj4gPiBvcmRlcl9iYXNlXzIobnJfaXJxcykpOw0KPiA+IA0KPiA+IEJlY2F1c2Ug
+bXRrX21zaV9ib3R0b21fZG9tYWluX2FsbG9jKCkgaXMgYWxsb2NhdGluZw0KPiA+IG9yZGVyX2Jh
+c2VfMihucl9pcnFzKSBpbnRlcnJ1cHRzLCBub3Qgb25seSBucl9pcnFzLg0KPiANCj4gSW5kZWVk
+LCBnb29kIGNhdGNoLg0KDQpJIHdpbGwgZml4IGl0IGluIHRoZSBuZXh0IHZlcnNpb24sIHRoYW5r
+cyBmb3IgeW91ciByZXZpZXcuDQoNCj4gDQo+IFRoYW5rcywNCj4gDQo+ICAgICAgICAgIE0uDQoN
+Cg==
 
-AFAICT there's no actual problem with making spool->lock IRQ-safe too.
-
-> In addition, hugetlb cgroup code had been added which could hold
-> hugetlb_lock for a considerable period of time. 
-
-cgroups, always bloody cgroups. The scheduler (and a fair number of
-other places) get to deal with cgroups with IRQs disabled, so I'm sure
-this can too.
-
-> Because of this, commit
-> c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in non-task
-> context") was added to address the issue of free_huge_page being called
-> from irq context.  That commit hands off free_huge_page processing to a
-> workqueue if !in_task.
-> 
-> The !in_task check handles the case of being called from irq context.
-> However, it does not take into account the case when called with irqs
-> disabled as in [1].
-> 
-> To complicate matters, functionality has been added to hugetlb
-> such that free_huge_page may block/sleep in certain situations.  The
-> hugetlb_lock is of course dropped before potentially blocking.
-
-AFAICT that's because CMA, right? That's only hstate_is_gigantic() and
-free_gigantic_page() that has that particular trainwreck.
-
-So you could move the workqueue there, and leave all the other hugetlb
-sizes unaffected. Afaict if you limit the workqueue crud to
-cma_clear_bitmap(), you don't get your..
-
-> One way to handle all calling contexts is to have free_huge_page always
-> send pages to the workqueue for processing.  This idea was briefly
-> discussed here [3], but has some undesirable side effects.
-
-... user visible side effects either.
-
-> Ideally, the hugetlb_lock should have been irq safe from the beginning
-> and any code added to the free_huge_page path should have taken this
-> into account.  However, this has not happened.  The code today does have
-> the ability to hand off requests to a workqueue.  It does this for calls
-> from irq context.  Changing the check in the code from !in_task to
-> in_atomic would handle the situations when called with irqs disabled.
-> However, it does not not handle the case when called with a spinlock
-> held.  This is needed because the code could block/sleep.
-
-I'll argue the current workqueue thing is in the wrong place to begin
-with.
-
-So how about you make hugetlb_lock and spool->lock IRQ-safe, move thw
-workqueue thingy into cma_release(), and then worry about optimizing the
-cgroup crap?
-
-Correctness first, performance second. Also, if you really care about
-performance, not using cgroups is a very good option anyway.
