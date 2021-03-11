@@ -2,171 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97FC337F5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7FD337F55
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhCKVIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:08:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
+        id S230118AbhCKVEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:04:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbhCKVIK (ORCPT
+        with ESMTP id S229468AbhCKVEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:08:10 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE1AC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:08:09 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id w18so4916520edc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 13:08:09 -0800 (PST)
+        Thu, 11 Mar 2021 16:04:02 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424D0C061574;
+        Thu, 11 Mar 2021 13:04:02 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id l7so397314pfd.3;
+        Thu, 11 Mar 2021 13:04:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=WprC7wQ8pjk4v3rRNQRsNnfM+sFohsfztPY3hS+tZkY=;
-        b=dqHaE7uAtCtfTturKUgGaMRMcA5A6xT5Sf8lWsZrZvnIOXfijL+712llEvyyGGggiF
-         wBWpjvliIAbOJwKVKtia5E8gK+FEXGp883lN5XdlpTcUthISPjGAzEDaQzMjNHqIAyOS
-         gQxFTfquWRQsSAYvti2QLI1048+HoB/47fTF6sUFrKPoXb2cwjYenOd15JYOR4ifTgKP
-         Y/aP63Q2Vv9xef4NdGHljiTVumdtsFEIsGT/+DcDiRDvrywW83Y9ZV/VMTxOfTmODQul
-         6JA203LPm32+ADaE3s3VxsP3fZrJNfIzDdNhjPisiCu+P05s6e6Z3rOo4A6pucodFt3d
-         MOWQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ALluUOsoSqK4P+is/Y65pRMrQ+pvKVSisjX8vHlvv0Y=;
+        b=L+SgzsufpGKpowTezzieLVjENQonW5ufjAo6UGxYlvwEYAI4R3Qj8ejfabUzZ/E35o
+         eP9qU2CcWjrsiUp0VsPN31ep4vrG2ZKq3HcgPOxDBjbUXCYSXAWaZ+pmUCv+heU0V5oW
+         /N+1KeI7yCDxPza1UrJh8a7SkpoEKLDHq4B+3hXsZXbrxyg/dy+zV98l3aAz6sMVOA3s
+         Hjit8bp39EJkvN5r58j4op+3TcIFxih28ZAKczlzbdGAvz2SPAuwELFxIL8tExshpE0O
+         NiOLjc2mc0mkMvJuD1RhE5BztpkbE4VkrEIxUTb2+BzrwzAHTdIVr3aSp3zFY9z7YoB6
+         XjNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=WprC7wQ8pjk4v3rRNQRsNnfM+sFohsfztPY3hS+tZkY=;
-        b=EjsPyamnV2itn72Dr5ytJDrA0rgslOK7n3DmDK1sKVAOIL+poF22kkvsYiTV+N93Pi
-         +cPTJfJef5XgjnjO6MVu1edQ3OHESFb8jmxbA4YKcWySOrm/eE3LrqdCZNrvp5lRQkxj
-         YZfMzfkJ/OlhBTn+A4CiZerU0zJ5CNGRVsVQ1UQNuryX+dPSlweaNtflLXjurlNg6QTP
-         MCvTF8BpJ8oRAUYqip1yYxGljaKsadXaXCNs/4nuRCWxjZ5OZi+W6M0TECQZmU6cvBjI
-         bMguv9X2pKv9/VUxf9PUUKPukv1znizTXM5S3raJD8V0gs55LuEjvlZKQWYaeY4FINrQ
-         uhWQ==
-X-Gm-Message-State: AOAM531Qd+Yip2shNaOjCWCzNLm5nRPhGeTe4m9LyZjbTkYjW1Sa2mui
-        gCjgoQ7wmDWP/tQbuU+m3todUA==
-X-Google-Smtp-Source: ABdhPJwAmSWpyfZATg+lLALZWFEJgeSck6q627M8RqFqEoi+++wgypQpRJHtQ7KuVGQHjPuTtFTqTQ==
-X-Received: by 2002:a05:6402:3075:: with SMTP id bs21mr10586641edb.274.1615496888399;
-        Thu, 11 Mar 2021 13:08:08 -0800 (PST)
-Received: from zen.linaroharston ([51.148.130.216])
-        by smtp.gmail.com with ESMTPSA id r17sm1875032ejz.109.2021.03.11.13.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 13:08:07 -0800 (PST)
-Received: from zen (localhost [127.0.0.1])
-        by zen.linaroharston (Postfix) with ESMTP id 85CC91FF7E;
-        Thu, 11 Mar 2021 21:08:06 +0000 (GMT)
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org>
- <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby>
- <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
- <6c542548-cc16-af68-c755-df52bd13b209@marcan.st>
- <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
- <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
- <CAFA6WYMSJxK2CjmoLJ6mdNNEfOQOMVXZPbbFRfah7KLeZNfguw@mail.gmail.com>
- <CACRpkdZb5UMyq5qSJE==3ZnH-7fh92q_t4AnE8mPm0oFEJxqpQ@mail.gmail.com>
- <e5d3f4b5-748e-0700-b897-393187b2bb1a@marcan.st>
- <CACRpkdYxMGN3N-jFt1Uw4AkBR-x=dRj6HEvDp6g+2ku7+qCLwg@mail.gmail.com>
- <02d035ca-697d-1634-a434-a43b9c01f4a9@marcan.st>
-User-agent: mu4e 1.5.8; emacs 28.0.50
-From:   Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Arnd Bergmann <arnd@linaro.org>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB)
- subsystem
-Date:   Thu, 11 Mar 2021 20:57:50 +0000
-In-reply-to: <02d035ca-697d-1634-a434-a43b9c01f4a9@marcan.st>
-Message-ID: <87k0qd7615.fsf@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ALluUOsoSqK4P+is/Y65pRMrQ+pvKVSisjX8vHlvv0Y=;
+        b=Uc1M5jn0UHjh8u8B6BV4mmrqApdHu7o70oTM+Q6QSoo0yiHmSTjFdLE2ko2zrWCVMB
+         eGjsQ6z+F9Nk+egA2QPi7GNVUT5+Fit+xGqATfBzFlVwY9+50Pg+qNHJjXHuSntHXhJ3
+         9JDRDwblzSeNZswTa3ul/+fAIBxYtRz3qAr0IHHDeIPe0tTUO13ORbNrKImNn64xhHXj
+         u9z/kNiZz8cVu8nIHDCGreJCw8j6oRV0tquz7PczQMP1QvhVtc0cjYsPqgGg5j4YSAYp
+         OZaQkhdAm5Z+v5I5i9EgB67t4o44ajCHRafXkyPAujU3YHzUnBmedjjxmLP59Age3qtB
+         mF2Q==
+X-Gm-Message-State: AOAM5326HNjOl/NQJSvD015SASVlcGru3FVVYqJgmDQB97uEm2WRigVO
+        pwPsLnSvD3EikrZnz9/CWNzyeFPF0UpO2RNe
+X-Google-Smtp-Source: ABdhPJwkBvX01oEU2foX84xttZrz/R4IafR2gkTb0wcgibS6UEN6hIYEQ+Oza7/LP/IS8mv91M7qkQ==
+X-Received: by 2002:a63:161c:: with SMTP id w28mr8872540pgl.341.1615496641519;
+        Thu, 11 Mar 2021 13:04:01 -0800 (PST)
+Received: from ?IPv6:2405:201:600d:a089:c1b4:679a:535a:d260? ([2405:201:600d:a089:c1b4:679a:535a:d260])
+        by smtp.gmail.com with ESMTPSA id s28sm3336112pfd.155.2021.03.11.13.03.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 13:04:01 -0800 (PST)
+Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
+ commented lines in file
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Markus Heiser <markus.heiser@darmarit.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210309125324.4456-1-yashsri421@gmail.com>
+ <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
+ <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com>
+ <CAKXUXMwg7Vs5hm_X3ZHJj9309w5VYbnNeqXaajHBHS1oAKQydw@mail.gmail.com>
+From:   Aditya <yashsri421@gmail.com>
+Message-ID: <838a823b-f3fd-ed1b-70d1-82611f9f4ada@gmail.com>
+Date:   Fri, 12 Mar 2021 02:33:55 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAKXUXMwg7Vs5hm_X3ZHJj9309w5VYbnNeqXaajHBHS1oAKQydw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/3/21 11:49 am, Lukas Bulwahn wrote:
+> On Tue, Mar 9, 2021 at 10:24 PM Aditya <yashsri421@gmail.com> wrote:
+>>
+>> On 9/3/21 7:00 pm, Markus Heiser wrote:
+>>>
+>>> Am 09.03.21 um 13:53 schrieb Aditya Srivastava:
+>>>> Starting commented lines in a file mostly contains comments describing
+>>>> license, copyright or general information about the file.
+>>>>
+>>>> E.g., in sound/pci/ctxfi/ctresource.c, initial comment lines describe
+>>>> its copyright and other related file informations.
+>>>
+>>> The opening comment mark /** is used for kernel-doc comments [1]
+>>>
+>>> [1]
+>>> https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html#how-to-format-kernel-doc-comments
+>>>
+>>
+>> Hi Markus!
+>> That's true. But the content inside the comment does not follow
+>> kernel-doc format.
+>> For e.g., try running kernel-doc -none/man/rst on the above file in
+>> the example("sound/pci/ctxfi/ctresource.c").
+>> The starting 2-3 lines in files generally do not contain any
+>> struct/enum/function, etc. declaration.
+>>
+> 
+> Aditya, can you provide a diff of the warnings over the whole kernel tree?
+> 
+> At the moment, your patch just implements ignoring the initial
+> comment, which probably is good for experimentation.
+> 
+> Alternatively, we could simply have a dedicated warning and then
+> ignore it or even warn and then parse it as-if.
+> 
+> In the "long run", we would probably want to fix all current files in
+> the repository by just replacing '/**' by '/*' and have kernel-doc
+> warn about this suspicious pattern, when new files appear (maybe even
+> configurable, but that is another feature to enable or disable certain
+> kernel-doc checks and warnings). I would certainly assist and
+> contribute to such a clean-up task.
+> 
+> I think the first step is to look at the diff, and see how many cases
+> really appear in the tree... then check how many patches throughout
+> the whole tree are required and if they are generally accepted.
+> 
 
-Hector Martin <marcan@marcan.st> writes:
+Hi Lukas!
+This is the diff of the warnings over kernel tree before and after
+applying these changes.
+There are 2 sections in this report:
+1) for the warnings present before, but not after, and;
+2) after but not before
 
-> On 11/03/2021 23.31, Linus Walleij wrote:
->> I understand your argument, is your position such that the nature
->> of the hardware is such that community should leave this hardware
->> alone and not try to make use of RPMB  for say ordinary (self-installed)
->> Linux distributions?
->
-> It's not really that the community should leave this hardware alone, so=20
-> much that I think there is a very small subset of users who will be able=
-=20
-> to benefit from it, and that subset will be happy with a usable=20
-> kernel/userspace interface and some userspace tooling for this purpose,=20
-> including provisioning and such.
->
-> Consider the prerequisites for using RPMB usefully here:
->
-> * You need (user-controlled) secureboot
-> * You need secret key storage - so either some kind of CPU-fused key, or=
-=20
-> one protected by a TPM paired with the secureboot (key sealed to PCR=20
-> values and such)
-> * But if you have a TPM, that can handle secure counters for you already=
-=20
-> AIUI, so you don't need RPMB
-> * So this means you must be running a non-TPM secureboot system
->
-> And so we're back to embedded platforms like Android phones and other=20
-> SoC stuff... user-controlled secureboot is already somewhat rare here,=20
-> and even rarer are the cases where the user controls the whole chain=20
-> including the TEE if any (otherwise it'll be using RPMB already); this=20
-> pretty much excludes all production Android phones except for a few=20
-> designed as completely open systems; we're left with those and a subset=20
-> of dev boards (e.g. the Jetson TX1 I did fuse experiments on). In the=20
-> end, those systems will probably end up with fairly bespoke set-ups for=20
-> any given device or SoC family, for using RPMB.
->
-> But then again, if you have a full secureboot system where you control=20
-> the TEE level, wouldn't you want to put the RPMB shenanigans there and=20
-> get some semblance of secure TPM/keystore/attempt throttling=20
-> functionality that is robust against Linux exploits and has a smaller=20
-> attack surface? Systems without EL3 are rare (Apple M1 :-)) so it makes=20
-> more sense to do this on those that do have it. If you're paranoid=20
-> enough to be getting into building your own secure system with=20
-> anti-rollback for retry counters, you should be heading in that directly=
-=20
-> anyway.
->
-> And now Linux's RPMB code is useless because you're running the stack in=
-=20
-> the secure monitor instead :-)
+The part (2) contains, for some cases, where the warning for "warning:
+Incorrect use of kernel-doc format:" type has changed to "warning:
+wrong kernel-doc identifier on line:" type.
 
-Well quiet - the principle use-case of virtio-rpmb is to provide a RPMB
-like device emulation for things like OPTEE when running under QEMU's
-full-system emulation. However when it came to testing it out I went for
-Thomas' patches because that was the only virtio FE implementation
-available.
+The diff file can be found at:
+https://github.com/AdityaSrivast/kernel-tasks/blob/master/random/kernel-doc/avoid_init_line_diff.txt
 
-When I finished the implementation and Ilias started on the uBoot
-front-end for virtio-rpmb. uBoot being firmware could very well be
-running in the secure world so would have a valid use case accessing an
-RPMB device. We ran into API dissonance because uboot's driver model is
-roughly modelled on the kernel so expects to be talking to eMMC devices
-which lead to requirements to fake something up to keep the driver
-stacks happy.
 
-I guess what we are saying is that real secure monitors should come up
-with their own common API for interfacing with RPMB devices without
-looking to the Linux kernel for inspiration?
-
---=20
-Alex Benn=C3=A9e
+Thanks
+Aditya
