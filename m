@@ -2,73 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503F6337EBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99728337EBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 21:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhCKUIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 15:08:47 -0500
-Received: from mga09.intel.com ([134.134.136.24]:58343 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhCKUIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 15:08:23 -0500
-IronPort-SDR: 6ux7mApO6T0UIC2xMvfNfvIy2VBXZoB65X2Defpxhy3sPL1ctqTM+Bcehgbu83BMVG9idfkT/0
- cSxrZCoXx71g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188829210"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="188829210"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 12:08:23 -0800
-IronPort-SDR: KjMxJMyU8wBcqzcezN9xDQb+xk6wNl0Cwu+bdMoU7Efbs+0g5YtEQEXOORxIL7v1gEYy3MflXo
- XC0C20dAjegA==
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="448398607"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 12:08:13 -0800
-Date:   Thu, 11 Mar 2021 12:08:11 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     John Wood <john.wood@gmx.com>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v5 7/8] Documentation: Add documentation for the Brute LSM
-Message-ID: <20210311200811.GH203350@tassilo.jf.intel.com>
-References: <20210227153013.6747-8-john.wood@gmx.com>
- <878s78dnrm.fsf@linux.intel.com>
- <20210302183032.GA3049@ubuntu>
- <20210307151920.GR472138@tassilo.jf.intel.com>
- <20210307164520.GA16296@ubuntu>
- <20210307172540.GS472138@tassilo.jf.intel.com>
- <20210307180541.GA17108@ubuntu>
- <20210307224927.GT472138@tassilo.jf.intel.com>
- <20210309184054.GA3058@ubuntu>
- <20210311182252.GA3349@ubuntu>
+        id S230286AbhCKUJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 15:09:50 -0500
+Received: from mail-out.m-online.net ([212.18.0.9]:41985 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229868AbhCKUJq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 15:09:46 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4DxKmR5bXsz1qs38;
+        Thu, 11 Mar 2021 21:09:43 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4DxKmR3gKNz1qr4s;
+        Thu, 11 Mar 2021 21:09:43 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id xdvMXdWRZ0pI; Thu, 11 Mar 2021 21:09:41 +0100 (CET)
+X-Auth-Info: 4h4LNEsJBJd7/MPZriIKyOYb+MfyZ+tSGG76SXiY4q8=
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu, 11 Mar 2021 21:09:41 +0100 (CET)
+Subject: Re: [Linux-stm32] [PATCH v2 00/14] Introduce STM32MP1 RCC in secured
+ mode
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        "Alex G." <mr.nuke.me@gmail.com>,
+        Gabriel FERNANDEZ - foss <gabriel.fernandez@foss.st.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Etienne CARRIERE <etienne.carriere@st.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
+References: <20210126090120.19900-1-gabriel.fernandez@foss.st.com>
+ <2e04f814-b694-119d-fe8a-13e6df129536@gmail.com>
+ <AS8PR10MB4712C27260707345FA99ED5AEE909@AS8PR10MB4712.EURPRD10.PROD.OUTLOOK.COM>
+ <c57775fe-41ef-07f5-56a2-04b8f70797c1@denx.de>
+ <463dafed-ec60-cd9a-33d2-ba118a6af629@foss.st.com>
+ <c1c9c89b-8794-9b91-b626-d743cd8ff31e@pengutronix.de>
+ <b87a2b24-678a-724d-e5df-1eabf5969ad2@denx.de>
+ <a23933fa-0c94-1e22-6100-d5b1a50826dd@foss.st.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <58d107c4-eb3d-e49a-8377-007b6f21baf4@denx.de>
+Date:   Thu, 11 Mar 2021 21:09:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311182252.GA3349@ubuntu>
+In-Reply-To: <a23933fa-0c94-1e22-6100-d5b1a50826dd@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> When a brute force attack is detected through the fork or execve system call,
-> all the tasks involved in the attack will be killed with the exception of the
-> init task (task with pid equal to zero). Now, and only if the init task is
-> involved in the attack, block the fork system call from the init process during
-> a user defined time (using a sysctl attribute). This way the brute force attack
-> is mitigated and the system does not panic.
+On 3/11/21 7:10 PM, Alexandre TORGUE wrote:
+> Hi Guys
+> 
+> On 3/11/21 5:11 PM, Marek Vasut wrote:
+>> On 3/11/21 3:41 PM, Ahmad Fatoum wrote:
+>>> Hello,
+>>
+>> Hi,
+>>
+>>> On 11.03.21 15:02, Alexandre TORGUE wrote:
+>>>> On 3/11/21 12:43 PM, Marek Vasut wrote:
+>>>>> On 3/11/21 9:08 AM, Alexandre TORGUE wrote:
+>>>>>> 1- Break the current ABI: as soon as those patches are merged, 
+>>>>>> stm32mp157c-dk2.dtb will impose to use
+>>>>>> A tf-a for scmi clocks. For people using u-boot spl, the will have 
+>>>>>> to create their own "no-secure" devicetree.
+>>>>>
+>>>>> NAK, this breaks existing boards and existing setups, e.g. DK2 that 
+>>>>> does not use ATF.
+>>>>>
+>>>>>> 2-As you suggest, create a new "secure" dtb per boards (Not my 
+>>>>>> wish for maintenance perspectives).
+>>>>>
+>>>>> I agree with Alex (G) that the "secure" option should be opt-in.
+>>>>> That way existing setups remain working and no extra requirements 
+>>>>> are imposed on MP1 users. Esp. since as far as I understand this, 
+>>>>> the "secure" part isn't really about security, but rather about 
+>>>>> moving clock configuration from Linux to some firmware blob.
+>>>>>
+>>>>>> 3- Keep kernel device tree as they are and applied this secure 
+>>>>>> layer (scmi clocks phandle) thanks to dtbo in
+>>>>>> U-boot.
+>>>>>
+>>>>> Is this really better than
+>>>>> #include "stm32mp15xx-enable-secure-stuff.dtsi"
+>>>>> in a board DT ? Because that is how I imagine the opt-in "secure" 
+>>>>> option could work.
+>>>>>
+>>>>
+>>>> Discussing with Patrick about u-boot, we could use dtbo application 
+>>>> thanks to extlinux.conf. BUT it it will not prevent other case (i.e. 
+>>>> TF-A which jump directly in kernel@). So the "least worst" solution 
+>>>> is to create a new "stm32mp1257c-scmi-dk2 board which will overload 
+>>>> clock entries with a scmi phandle (as proposed by Alex).
+>>>
+>>> I raised this issue before with your colleagues. I still believe the 
+>>> correct way
+>>> would be for the TF-A to pass down either a device tree or an overlay 
+>>> with the
+>>> actual settings in use, e.g.:
+>>>
+>>>    - Clocks/Resets done via SCMI
+>>>    - Reserved memory regions
+>>>
+>>> If TF-A directly boots Linux, it can apply the overlay itself, 
+>>> otherwise it's
+>>> passed down to SSBL that applies it before booting Linux.
+>>
+>> That sounds good and it is something e.g. R-Car already does, it 
+>> merges DT fragment from prior stages at U-Boot level and then passes 
+>> the result to Linux.
+>>
+>> So on ST hardware, the same could very well happen and it would work 
+>> for both non-ATF / ATF / ATF+TEE options.
+> 
+> Even this solution sounds good but we are currently not able to do it in 
+> our TF-A/u-boot so not feasible for the moment.
 
-That means nobody can log in and fix the system during that time.
+Why not ? U-Boot is perfectly capable of merging prior stage DT and DT 
+loaded from elsewhere. See R-Car3 for example.
 
-Would be better to have that policy in init. Perhaps add some way
-that someone doing wait*() can know the exit was due this mitigation
-(and not something way) Then they could disable respawning of that daemon.
+> So we have to find a 
+> solution for now. Create a new dtb can be this solution. Our internal 
+> strategy is to use scmi on our official ST board. It will be a really 
+> drawback to include a "no-scmi.dtsi" in DH boards (for example) and to 
+> create a stm32mp157c-noscmi-dk2.dts ?
 
--Andi
+I would highly prefer the SCMI to be opt-in, not opt-out.
+
+But still, isn't it possible to auto-detect the board configuration in 
+Linux and pick the clock enumeration based on that automatically ?
