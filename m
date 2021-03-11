@@ -2,140 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6699336CB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A95336CB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbhCKHEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:04:06 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12710 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbhCKHDr (ORCPT
+        id S231614AbhCKHEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:04:39 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:54212 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231610AbhCKHEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:03:47 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dx0Gt3QxszmVqH;
-        Thu, 11 Mar 2021 15:01:26 +0800 (CST)
-Received: from [10.174.184.135] (10.174.184.135) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 11 Mar 2021 15:03:32 +0800
-Subject: Re: [PATCH v3 0/4] KVM: arm64: Add VLPI migration support on GICv4.1
-From:   Shenming Lu <lushenming@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Eric Auger <eric.auger@redhat.com>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210127121337.1092-1-lushenming@huawei.com>
- <4c2fdcc3-4189-6515-3a68-7bdf26e31973@huawei.com>
-Message-ID: <ba9511e7-a23f-f644-e310-f0bf1bce835a@huawei.com>
-Date:   Thu, 11 Mar 2021 15:03:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
-MIME-Version: 1.0
-In-Reply-To: <4c2fdcc3-4189-6515-3a68-7bdf26e31973@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.135]
-X-CFilter-Loop: Reflected
+        Thu, 11 Mar 2021 02:04:16 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 10 Mar 2021 23:04:16 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 10 Mar 2021 23:04:13 -0800
+X-QCInternal: smtphost
+Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 11 Mar 2021 12:33:44 +0530
+Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
+        id 15CD020E6E; Thu, 11 Mar 2021 12:33:43 +0530 (IST)
+From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        rjliao@codeaurora.org, hbandi@codeaurora.org,
+        abhishekpandit@chromium.org,
+        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Subject: [RFC PATCH v2] Bluetooth: hci_qca: Add device_may_wakeup support
+Date:   Thu, 11 Mar 2021 12:33:40 +0530
+Message-Id: <1615446220-969-1-git-send-email-gubbaven@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Based on device may wakeup status, Bluez stack will enable/disable
+passive scanning with whitelist in BT controller while suspending.
+As interrupt from BT SoC is handled by UART driver,we need to use
+device handle of UART driver to get the status of device may wakeup
 
-Sorry to bother again, I am really hoping a response for this series. :-)
+Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+---
+ drivers/bluetooth/hci_qca.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Thanks,
-Shenming
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index de36af6..73af901 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1571,6 +1571,20 @@ static void qca_cmd_timeout(struct hci_dev *hdev)
+ 	mutex_unlock(&qca->hci_memdump_lock);
+ }
+ 
++static bool qca_prevent_wake(struct hci_dev *hdev)
++{
++	struct hci_uart *hu = hci_get_drvdata(hdev);
++	bool wakeup;
++
++	/* UART driver handles the interrupt from BT SoC.So we need to use
++	 * device handle of UART driver to get the status of device may wakeup.
++	 */
++	wakeup = device_may_wakeup(hu->serdev->ctrl->dev.parent);
++	bt_dev_dbg(hu->hdev, "wakeup status : %d", wakeup);
++
++	return !wakeup;
++}
++
+ static int qca_wcn3990_init(struct hci_uart *hu)
+ {
+ 	struct qca_serdev *qcadev;
+@@ -1721,6 +1735,7 @@ static int qca_setup(struct hci_uart *hu)
+ 		qca_debugfs_init(hdev);
+ 		hu->hdev->hw_error = qca_hw_error;
+ 		hu->hdev->cmd_timeout = qca_cmd_timeout;
++		hu->hdev->prevent_wake = qca_prevent_wake;
+ 	} else if (ret == -ENOENT) {
+ 		/* No patch/nvm-config found, run with original fw/config */
+ 		set_bit(QCA_ROM_FW, &qca->flags);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-On 2021/2/26 16:58, Shenming Lu wrote:
-> Hi Marc,
-> 
-> Gentle ping. Does this series need any further modification? Wish you can pick it up. :-)
-> 
-> Thanks,
-> Shenming
-> 
-> On 2021/1/27 20:13, Shenming Lu wrote:
->> Hi Marc, sorry for the late commit.
->>
->> In GICv4.1, migration has been supported except for (directly-injected)
->> VLPI. And GICv4.1 Spec explicitly gives a way to get the VLPI's pending
->> state (which was crucially missing in GICv4.0). So we make VLPI migration
->> capable on GICv4.1 in this patch set.
->>
->> In order to support VLPI migration, we need to save and restore all
->> required configuration information and pending states of VLPIs. But
->> in fact, the configuration information of VLPIs has already been saved
->> (or will be reallocated on the dst host...) in vgic(kvm) migration.
->> So we only have to migrate the pending states of VLPIs specially.
->>
->> Below is the related workflow in migration.
->>
->> On the save path:
->> 	In migration completion:
->> 		pause all vCPUs
->> 				|
->> 		call each VM state change handler:
->> 			pause other devices (just keep from sending interrupts, and
->> 			such as VFIO migration protocol has already realized it [1])
->> 					|
->> 			flush ITS tables into guest RAM
->> 					|
->> 			flush RDIST pending tables (also flush VLPI state here)
->> 				|
->> 		...
->> On the resume path:
->> 	load each device's state:
->> 		restore ITS tables (include pending tables) from guest RAM
->> 				|
->> 		for other (PCI) devices (paused), if configured to have VLPIs,
->> 		establish the forwarding paths of their VLPIs (and transfer
->> 		the pending states from kvm's vgic to VPT here)
->>
->> We have tested this series in VFIO migration, and found some related
->> issues in QEMU [2].
->>
->> Links:
->> [1] vfio: UAPI for migration interface for device state:
->>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a8a24f3f6e38103b77cf399c38eb54e1219d00d6
->> [2] vfio: Some fixes and optimizations for VFIO migration:
->>     https://patchwork.ozlabs.org/cover/1413263/
->>
->> History:
->>
->> v2 -> v3
->>  - Add the vgic initialized check to ensure that the allocation and enabling
->>    of the doorbells have already been done before unmapping the vPEs.
->>  - Check all get_vlpi_state related conditions in save_pending_tables in one place.
->>  - Nit fixes.
->>
->> v1 -> v2:
->>  - Get the VLPI state from the KVM side.
->>  - Nit fixes.
->>
->> Thanks,
->> Shenming
->>
->>
->> Shenming Lu (3):
->>   KVM: arm64: GICv4.1: Add function to get VLPI state
->>   KVM: arm64: GICv4.1: Try to save hw pending state in
->>     save_pending_tables
->>   KVM: arm64: GICv4.1: Give a chance to save VLPI's pending state
->>
->> Zenghui Yu (1):
->>   KVM: arm64: GICv4.1: Restore VLPI's pending state to physical side
->>
->>  .../virt/kvm/devices/arm-vgic-its.rst         |  2 +-
->>  arch/arm64/kvm/vgic/vgic-its.c                |  6 +-
->>  arch/arm64/kvm/vgic/vgic-v3.c                 | 61 +++++++++++++++++--
->>  arch/arm64/kvm/vgic/vgic-v4.c                 | 33 ++++++++++
->>  arch/arm64/kvm/vgic/vgic.h                    |  1 +
->>  5 files changed, 93 insertions(+), 10 deletions(-)
->>
