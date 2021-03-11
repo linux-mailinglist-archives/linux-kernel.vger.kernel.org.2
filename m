@@ -2,174 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C11336C60
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D709336C65
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhCKGkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:40:16 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:60361 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhCKGkG (ORCPT
+        id S230475AbhCKGn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:43:29 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54241 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230290AbhCKGnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:40:06 -0500
-X-Originating-IP: 82.65.183.113
-Received: from [172.16.5.113] (82-65-183-113.subs.proxad.net [82.65.183.113])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E460E60004;
-        Thu, 11 Mar 2021 06:39:58 +0000 (UTC)
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
- schedule_tail
-To:     Ben Dooks <ben.dooks@codethink.co.uk>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <000000000000b74f1b05bd316729@google.com>
- <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
- <dbdca868-7ef2-47b3-ac26-12fe61f3156a@codethink.co.uk>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <9a0823f4-de19-c2a2-5333-41c6caadbc11@ghiti.fr>
-Date:   Thu, 11 Mar 2021 01:39:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 11 Mar 2021 01:43:05 -0500
+X-UUID: 9775fa7397f5439dbf3453bf1e23d5cb-20210311
+X-UUID: 9775fa7397f5439dbf3453bf1e23d5cb-20210311
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 543715440; Thu, 11 Mar 2021 14:42:53 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 11 Mar 2021 14:42:51 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 11 Mar 2021 14:42:51 +0800
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Jim Lin <jilin@nvidia.com>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Ainge Hsu <ainge.hsu@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>, <stable@vger.kernel.org>
+Subject: [PATCH v4] usb: gadget: configfs: Fix KASAN use-after-free
+Date:   Thu, 11 Mar 2021 14:42:41 +0800
+Message-ID: <1615444961-13376-1-git-send-email-macpaul.lin@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <1484647168-30135-1-git-send-email-jilin@nvidia.com>
+References: <1484647168-30135-1-git-send-email-jilin@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <dbdca868-7ef2-47b3-ac26-12fe61f3156a@codethink.co.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben,
+From: Jim Lin <jilin@nvidia.com>
 
-Le 3/10/21 à 5:24 PM, Ben Dooks a écrit :
-> On 10/03/2021 17:16, Dmitry Vyukov wrote:
->> On Wed, Mar 10, 2021 at 5:46 PM syzbot
->> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
->>>
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for 
->>> arch_dup_tas..
->>> git tree:       
->>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
->>> kernel config:  
->>> https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
->>> dashboard link: 
->>> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
->>> userspace arch: riscv64
->>>
->>> Unfortunately, I don't have any reproducer for this issue yet.
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the 
->>> commit:
->>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
->>
->> +riscv maintainers
->>
->> This is riscv64-specific.
->> I've seen similar crashes in put_user in other places. It looks like
->> put_user crashes in the user address is not mapped/protected (?).
-> 
-> The unmapped case should have been handled.
-> 
-> I think this issue is that the check for user-mode access added. From
-> what I read the code may be wrong in
-> 
-> +    if (!user_mode(regs) && addr < TASK_SIZE &&
-> +            unlikely(!(regs->status & SR_SUM)))
-> +        die_kernel_fault("access to user memory without uaccess routines",
-> +                addr, regs);
-> 
-> I think the SR_SUM check might be wrong, as I read the standard the
-> SR_SUM should be set to disable user-space access. So the check
-> should be unlikely(regs->status & SR_SUM) to say access without
-> having disabled the protection.
+When gadget is disconnected, running sequence is like this.
+. composite_disconnect
+. Call trace:
+  usb_string_copy+0xd0/0x128
+  gadget_config_name_configuration_store+0x4
+  gadget_config_name_attr_store+0x40/0x50
+  configfs_write_file+0x198/0x1f4
+  vfs_write+0x100/0x220
+  SyS_write+0x58/0xa8
+. configfs_composite_unbind
+. configfs_composite_bind
 
-The check that is done seems correct to me: "The SUM (permit Supervisor 
-User Memory access) bit modifies the privilege with which S-mode loads 
-and stores access virtual memory.  *When SUM=0, S-mode memory accesses 
-to pages that are accessible by U-mode (U=1 in Figure 4.15) will fault*. 
-  When SUM=1, these accesses are permitted.SUM  has  no  effect  when 
-page-based  virtual  memory  is  not  in  effect".
+In configfs_composite_bind, it has
+"cn->strings.s = cn->configuration;"
 
-I will try to reproduce the problem locally.
+When usb_string_copy is invoked. it would
+allocate memory, copy input string, release previous pointed memory space,
+and use new allocated memory.
 
-Thanks,
+When gadget is connected, host sends down request to get information.
+Call trace:
+  usb_gadget_get_string+0xec/0x168
+  lookup_string+0x64/0x98
+  composite_setup+0xa34/0x1ee8
 
-Alex
+If gadget is disconnected and connected quickly, in the failed case,
+cn->configuration memory has been released by usb_string_copy kfree but
+configfs_composite_bind hasn't been run in time to assign new allocated
+"cn->configuration" pointer to "cn->strings.s".
 
-> 
-> Without this, you can end up with an infinite loop in the fault handler.
-> 
->>
->>> Unable to handle kernel access to user memory without uaccess 
->>> routines at virtual address 000000002749f0d0
->>> Oops [#1]
->>> Modules linked in:
->>> CPU: 1 PID: 4875 Comm: syz-executor.0 Not tainted 
->>> 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
->>> Hardware name: riscv-virtio,qemu (DT)
->>> epc : schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
->>>   ra : task_pid_vnr include/linux/sched.h:1421 [inline]
->>>   ra : schedule_tail+0x70/0xb2 kernel/sched/core.c:4264
->>> epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp : ffffffe025d17ec0
->>>   gp : ffffffe005d25378 tp : ffffffe00f0d0000 t0 : 0000000000000000
->>>   t1 : 0000000000000001 t2 : 00000000000f4240 s0 : ffffffe025d17ee0
->>>   s1 : 000000002749f0d0 a0 : 000000000000002a a1 : 0000000000000003
->>>   a2 : 1ffffffc0cfac500 a3 : ffffffe0000c80cc a4 : 5ae9db91c19bbe00
->>>   a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
->>>   s2 : 0000000000040000 s3 : ffffffe00eef96c0 s4 : ffffffe022c77fe0
->>>   s5 : 0000000000004000 s6 : ffffffe067d74e00 s7 : ffffffe067d74850
->>>   s8 : ffffffe067d73e18 s9 : ffffffe067d74e00 s10: ffffffe00eef96e8
->>>   s11: 000000ae6cdf8368 t3 : 5ae9db91c19bbe00 t4 : ffffffc4043cafb2
->>>   t5 : ffffffc4043cafba t6 : 0000000000040000
->>> status: 0000000000000120 badaddr: 000000002749f0d0 cause: 
->>> 000000000000000f
->>> Call Trace:
->>> [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2 kernel/sched/core.c:4264
->>> [<ffffffe000005570>] ret_from_exception+0x0/0x14
->>> Dumping ftrace buffer:
->>>     (ftrace buffer empty)
->>> ---[ end trace b5f8f9231dc87dda ]---
->>>
->>>
->>> ---
->>> This report is generated by a bot. It may contain errors.
->>> See https://goo.gl/tpsmEJ for more information about syzbot.
->>> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>>
->>> syzbot will keep track of this issue. See:
->>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->>>
->>> -- 
->>> You received this message because you are subscribed to the Google 
->>> Groups "syzkaller-bugs" group.
->>> To unsubscribe from this group and stop receiving emails from it, 
->>> send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
->>> To view this discussion on the web visit 
->>> https://groups.google.com/d/msgid/syzkaller-bugs/000000000000b74f1b05bd316729%40google.com. 
->>>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>
-> 
-> 
+When "strlen(s->s) of usb_gadget_get_string is being executed, the dangling
+memory is accessed, "BUG: KASAN: use-after-free" error occurs.
+
+Signed-off-by: Jim Lin <jilin@nvidia.com>
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+Cc: stable@vger.kernel.org
+---
+Changes in v2:
+Changes in v3:
+ - Change commit description
+Changes in v4:
+ - Fix build error and adapt patch to kernel-5.12-rc1.
+   Replace definition "MAX_USB_STRING_WITH_NULL_LEN" with
+   "USB_MAX_STRING_WITH_NULL_LEN".
+ - Note: The patch v2 and v3 has been verified by
+   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+   http://spinics.net/lists/kernel/msg3840792.html
+   and
+   Macpaul Lin <macpaul.lin@mediatek.com> on Android kernels.
+   http://lkml.org/lkml/2020/6/11/8
+ - The patch is suggested to be applied to LTS versions.
+
+ drivers/usb/gadget/configfs.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/gadget/configfs.c b/drivers/usb/gadget/configfs.c
+index 0d56f33..15a607c 100644
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -97,6 +97,8 @@ struct gadget_config_name {
+ 	struct list_head list;
+ };
+ 
++#define USB_MAX_STRING_WITH_NULL_LEN	(USB_MAX_STRING_LEN+1)
++
+ static int usb_string_copy(const char *s, char **s_copy)
+ {
+ 	int ret;
+@@ -106,12 +108,16 @@ static int usb_string_copy(const char *s, char **s_copy)
+ 	if (ret > USB_MAX_STRING_LEN)
+ 		return -EOVERFLOW;
+ 
+-	str = kstrdup(s, GFP_KERNEL);
+-	if (!str)
+-		return -ENOMEM;
++	if (copy) {
++		str = copy;
++	} else {
++		str = kmalloc(USB_MAX_STRING_WITH_NULL_LEN, GFP_KERNEL);
++		if (!str)
++			return -ENOMEM;
++	}
++	strcpy(str, s);
+ 	if (str[ret - 1] == '\n')
+ 		str[ret - 1] = '\0';
+-	kfree(copy);
+ 	*s_copy = str;
+ 	return 0;
+ }
+-- 
+1.7.9.5
+
