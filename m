@@ -2,117 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B96333788D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF19233788F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234406AbhCKPzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:55:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234382AbhCKPy5 (ORCPT
+        id S234172AbhCKPzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:55:39 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:39251 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234246AbhCKPze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:54:57 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D82C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:54:56 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id n23so1920614otq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:54:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yALvACLbG4vrfUUx3qZqeyzSfVcl9s+hAiG4U+bMuHc=;
-        b=swKJ+cXtjqjUiqBziIbCvK1W0Jqtxsmb0JtDejFHsmeoRUzMlbqcwAtEhWCA1WLZsZ
-         RH60dBjjXVu4l8heRsjnmMDBjVX7KwWd73gdXeI+E9lbeYSp1mXN+DZ4BaslqifvVqZR
-         w6nemR8fVkgXXZCOKjQhlcE9GrZ/vDcRzDoCQI8h9GZKjcUgLTQSODn9Gd8+bVdJs3F4
-         b0kGBA9E4OBgzpT+84Cdm1hSQPvG70L6Mj4R8kka8qPEXqwEV2+P10wQf4TimR+WDVvE
-         UpbaJ4tyuuxVXSmhtK0mpHTxJQAUydEl4PcdWheT6xpmjJK8WnDias+aZNUktH/L1RPV
-         Z94w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yALvACLbG4vrfUUx3qZqeyzSfVcl9s+hAiG4U+bMuHc=;
-        b=qu3Ufwd3joX3/yIyMbMOB8xEjT7dDd8CsaZE8uclRJkZUG9zMqBsD2JPN0cOcbyYFH
-         YIjddMrbqL/JGvyzQFesnTdbEhgUnecS3e1/5QCzqEDUiyvbHfuYHja+4X78/NgQJ9gC
-         IW8y+lzxMc2aaQzEh9SPzRGZZU2KmyRxoMz6l80ljRKwYr3pt699gLIUjsxkEq5KUMxm
-         N3eMEp4GXEvJFsaq/9sPbOA9GyTMW2rHl+SrEc3iC5DtBMv5IFuSZxN5Ehz95qKfguIg
-         QojwCw64Anw5zWm6j3KD9+1lOb+VrNfQo9SLo673e7knXAvBY4kHsE5wMng5TAKIwb/8
-         3Stg==
-X-Gm-Message-State: AOAM5308U3TnbkwlwdqvHqAyTBQgk9VKV9nZlfj7lTeX0aI6t/lhidOO
-        Xa2Q+09vAlcKZF9aY7YxkHXkIW7pCg/wShwT5fihZQ==
-X-Google-Smtp-Source: ABdhPJxvoq+npQntQQMIFeeZH42ft8CkQkhq67+pg4zE4YOm2vvzUdK+/8BO/kgi062xNyX9aYsqJNf1y/VOlmT/nzc=
-X-Received: by 2002:a9d:644a:: with SMTP id m10mr7632608otl.233.1615478096124;
- Thu, 11 Mar 2021 07:54:56 -0800 (PST)
+        Thu, 11 Mar 2021 10:55:34 -0500
+Received: from [192.168.100.1] ([82.142.6.26]) by mrelayeu.kundenserver.de
+ (mreue012 [213.165.67.103]) with ESMTPSA (Nemesis) id
+ 1N6JtR-1lnOn21c5p-016g76; Thu, 11 Mar 2021 16:55:29 +0100
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>
+References: <20210309224313.956065-1-laurent@vivier.eu>
+ <20210311104414-mutt-send-email-mst@kernel.org>
+From:   Laurent Vivier <laurent@vivier.eu>
+Subject: Re: [PATCH] virtio-mmio: read[wl]()/write[wl] are already
+ little-endian
+Message-ID: <60e83b80-f42b-456a-f37d-b7836e3abe1f@vivier.eu>
+Date:   Thu, 11 Mar 2021 16:55:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <0000000000008de88005bd40ac36@google.com> <20210311142503.GA31816@quack2.suse.cz>
- <CACT4Y+ZtBwv1aXUumTXnWzAi7LEpJ6CZemGyVR2FC6_YO2E4EQ@mail.gmail.com>
- <YEoybjJpCQzNx15r@elver.google.com> <YEo3gYOU/VnmHCeV@mit.edu>
-In-Reply-To: <YEo3gYOU/VnmHCeV@mit.edu>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 11 Mar 2021 16:54:43 +0100
-Message-ID: <CANpmjNNwvDDcDnfDtwCKKpGVnHEuwhn5tP+eK0CH7R_FgQgCtA@mail.gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in start_this_handle / start_this_handle
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, Jan Kara <jack@suse.cz>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzbot <syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210311104414-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:0Zat+MwnHuiHIsJ6RasX0CpPm68DNDxtPY2t33OP3ELYFeX6KxC
+ D2zbenpLenwKw8wfSy+0gBlPWbUz5SfevgQh1FlfsLq+wyrmuCnOlk5Cnjck2pqokxX6Do/
+ q+FvWmZUWBCA0m5Y6kYDkj+zhp3wdpartT9Pwktqw7vQsUX6BTgf3d79psEaTsHqH9dVE9Y
+ ihV50oO9QIffcC+lFXOEg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LWoVhg73Vfo=:zHaVSVSSPzQKH+rIQNkOzl
+ gG+aLV/uCVWUDmUfmezRGb2Riq2JsQOn51uDuX6G8c4tp99JpOiGxMOGo/TLDBftyRf/0CflI
+ PEvbmutPoA7ZTyiTljt1vEH/l0mbgfl2AH+U1JfjceVWAzayMPWLx2T3TPlzW4Cj+c2TAM2yw
+ trcXiH9MhHzcRs63jzRIcSZ3yq1rcwZjea45KB4zk2kx5tbZrf316DSMQkWWs+sJGbYi3hvBh
+ 6GqW4q4hTbeG7dMP6DkxH+stGvf81gj8E+nWg+ws8eIrzQGp/2kWetqhYHjrEDhrRY10jhiDn
+ gPjpHGPVMsnFP0xuQ2hWwscfN3ocxPEDzpaFd7B+CQ/8lgVHiNBIYmUYUAY1MNIVSWwpjg0xx
+ BKNKHMTxlx+ZPcj6+FFkO+znvRuMcUTu94xNpzNv3FU8d+SQE9/E/pF+nnfgku+JafT8RAa75
+ Na3GtJohOw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc Paul
+Le 11/03/2021 à 16:44, Michael S. Tsirkin a écrit :
+> On Tue, Mar 09, 2021 at 11:43:13PM +0100, Laurent Vivier wrote:
+>> read[wl]()/write[wl] already access memory in little-endian mode.
+> 
+> But then they convert it to CPU right? We just convert it back ...
 
-On Thu, 11 Mar 2021 at 16:30, Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Thu, Mar 11, 2021 at 04:08:30PM +0100, Marco Elver wrote:
-> > If the outcome of the check does not affect correctness and the code is
-> > entirely fault tolerant to the precise value being read, then a
-> > data_race(!journal->j_running_transaction) marking here would be fine.
->
-> So a very common coding pattern is to check a value w/o the lock, and
-> if it looks like we might need to check *with* a lock, we'll grab the
-> lock and recheck.  Does KCSAN understand that this sort of thing is
-> safe automatically?
+Yes, you're right.
 
-It doesn't -- these are concurrency patterns that go way beyond the
-scope of a data race detector. The main problem, as always with such
-patterns, is that in one case it seems fine, yet in the next it isn't.
+But there's a real problem with a big-endian guest using directly virtio-mmio without using virtio-pci.
 
-> In thie particular case, it's a bit more complicated than that; we're
-> checking a value, and then allocating memory, grabbing the spin lock,
-> and then re-checking the value, so we don't have to drop the spinlock,
-> allocate the memory, grab the lock again, and then rechecking the
-> value.  So even if KCSAN catches the simpler case as described above,
-> we still might need to explicitly mark the data_race explicitly.
-
-This seems like a variation of double-checked locking.
-
-> But the more we could have the compiler automatically figure out
-> things without needing an explicit tag, it would seem to me that this
-> would be better, since manual tagging is going to be more error-prone.
-
-What you're alluding to here would go much further than a data race
-detector ("data race" is still just defined by the memory model). The
-wish that there was a static analysis tool that would automatically
-understand the "concurrency semantics as intended by the developer" is
-something that'd be nice to have, but just doesn't seem realistic.
-Because how can a tool tell what the developer intended, without input
-from that developer?
-
-If there's worry marking accesses is error-prone, then that might be a
-signal that the concurrency design is too complex (or the developer
-hasn't considered all cases).
-
-For that reason, we need to mark accesses to tell the compiler and
-tooling where to expect concurrency, so that 1) the compiler generates
-correct code, and 2) tooling such as KCSAN can double-check what the
-developer intended is actually what's happening.
+It seems there is one too many little-endian conversion somewhere, and this has not been detected
+before because there is no big-endian guest that uses virtio-mmio directly, and with little-endian
+guests the conversion is a no-op. I'm going to have a closer look to the code path... perhaps the
+problem is in QEMU not in the kernel.
 
 Thanks,
--- Marco
+Laurent
