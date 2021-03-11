@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E973337AAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFD8337AB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 18:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhCKRXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 12:23:06 -0500
-Received: from mout.gmx.net ([212.227.17.20]:58463 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhCKRW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:22:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1615483363;
-        bh=WhOe5KnvPWYxb9Bi+2Zstm68we1vlo0d48PEY9VRvcc=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=Nctrc0My1en6w1WlaPhxN/PdRY+hWH0UjRrMMsMRN9Qq0TEJ75ZnbmXkzpLfa9S7I
-         wBvlf5ZrcmPlPSFqdMsLNoSnrTtLqEr4JrszcZk5OUj74UFAvh0fK4tKEOePeTHwOE
-         UlNXt6CQut5hWSRdX10UVG9FKXaPHsOvdNfPsBhE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MhU9j-1lxqVc2drn-00efjs; Thu, 11
- Mar 2021 18:22:43 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: networking: phy: Improve placement of parenthesis
-Date:   Thu, 11 Mar 2021 18:22:34 +0100
-Message-Id: <20210311172234.1812323-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.30.1
+        id S229796AbhCKRYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 12:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229806AbhCKRXv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:23:51 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BFAC061574;
+        Thu, 11 Mar 2021 09:23:51 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id u4so3168989ljo.6;
+        Thu, 11 Mar 2021 09:23:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NLoHiP3d+5lNwT7CIKnzK9m4XZbys2sERvq2/PuPWts=;
+        b=OjWK3wFbksojHdfmupqd5gy+Mg37v24f6j+8Ol8GghZXgYnlKwjv0D+10szaRXsatR
+         Oah/RPo7tgEpMBJvtNSlw0maRM+Sy/z6e7DURhN2dDk/0BLd9NniGeCDGeycTjsx+L8E
+         4UMAh+a7sNYJQFfJOsTBYMQv/v48mlax2rcic89sVYfdHzmpUrULmLBDcYK1Z7GwuyRl
+         cNgSclfnXPb2kTyAkNE4QRXrg2GSwJYRhApcLxH8VbA0uhwWzXpWSbwu4ZfpXCw8Rz63
+         VjQ4PcqUSKPdcy1A+adzAjOr/G75y9nppt6Wc9Rl8SkKovZ2g5jDen6onnP4LRhGSFFD
+         dY5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NLoHiP3d+5lNwT7CIKnzK9m4XZbys2sERvq2/PuPWts=;
+        b=OMySTh6FovhfwIAOO1I7jPQ2mAsi781yaayIunrUG4b8UQAGHDK6Ayz7T7W0YNPUne
+         R1S+uEbOqeP4tvwgFI/Fo2IzO5auycbK6Yq/R8RTN6BUt5Bw00VcJGn9XjESkzwfBQiK
+         wl7FH7el3ZYFwpGCEaHrr4xh6Jl4xzeWULJGt7scaP7d4PZ8sgMUvnnhqrLWieuD3WLl
+         8WbwQlD2QWTnN4nWiOallFZVtu4VYnBFmvtM/phB+BJWQ+hqBMrrsPQWCovH6saciahl
+         /Gb+wPrJeULC730vfkGdycltxgusTRJCR92h6hvV/nprdKnYe3sj58ImpPK9DTzy/6Ni
+         8OPQ==
+X-Gm-Message-State: AOAM532mNJAMJnvDCD7ILxv2fqDxJc/4w7DbHmzxu7kNGWZJqIm4Wf1P
+        EL6bbWrR+87W//FK4khGk8MXnBBYE8k=
+X-Google-Smtp-Source: ABdhPJxudYcrz6shnnCY/yzrTieJmSXgC6cgM00Md07ielNo75CBMq/9vqKKoCu2ueg5MihZZ1OejQ==
+X-Received: by 2002:a2e:8111:: with SMTP id d17mr5366586ljg.337.1615483429543;
+        Thu, 11 Mar 2021 09:23:49 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id p5sm1180088ljj.26.2021.03.11.09.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 09:23:49 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v15 0/2] Add memory bandwidth management to NVIDIA Tegra DRM driver
+Date:   Thu, 11 Mar 2021 20:22:53 +0300
+Message-Id: <20210311172255.25213-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4EQBIBSkgsHfHhBnB/oo8npiCpJeENXBEaY9yog56vdX9GPkNse
- joUi2khkrZJ624oS9pq6fQtC617v0BsOmxFNosum+iKqdpp0YJzhhSFlxDq0a8/VI9bmOne
- MxAvOuORIORa0I+9JqNsC1CVDrlTxgBp8dUwGK+fUKjUPU0j4SrQ6Kp9fthzPkTKjGrFs0D
- 3l+bN8fWFONl9/ih9T6yw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bVWiX8V1yOI=:YYfPg1iTcw5jsv3X8xGaFM
- MyVH9CEq02F4LyTkPGe3zrNfp4Ju9CJOmMugyhnSG8OGKC8P3VVHDSu2QcXCUgW8D3BaT2iwy
- eSO9Svwy0abg3UuxSQ2Ch+miNfjsX5GT4Rge6x2byjsw6LdDOpJIO88q2hmPqlZLsO0oqfJgo
- WysWJUnjxkvh+msROAHFY5Rjrr2k0aowRLEEGoqQZZtyUwPcS5I7t7vtjiQqQasrxutwSFYhq
- BEBFLAGGA7of2WY5kM3Q/VBtdx15u2ctIQEZaWX2TK9ZX2BPvbD3ERmVG6WgvbdN6sWKutZik
- aTjSeWP0u0wBk+TiEctwik090inFOI0Ip5is6xHNuGB62dy/D8TVO7DQgfXGhu9j7KJ0my+T3
- Vzq51KzgHZHZtHP9fvkn4EnX+BDrfZekJ6xDODfh7D3jZgmfxSl9r0/pPNhaBKGXUcmqiJbOA
- V2SEzVAQEmAQE1dgRJeOlloSf6xx3V2YQDS2n5cdAvCGnmjZpghcEnM0mK7l3nKN4AezV8bGL
- qx35L1rDTjwAC2D/BIjwu/LMAgPzro5mvyDthHlIV76WBWl/5llXeP2vZoJU2vDEmslvD7NPO
- MC2wlvFk5j/LEcrXfnimgYpNgQSI1q6eztA/i6oSVunGAA4F/8KP71q1pc+qOyS3SnP+sP5vJ
- YNyQEooCbEL9PEOni/wd2Y6nFTYBg6+aQYUcDbbzhOBVSFD1Y84qJOI4GKTPkDPgj/n7/iwY0
- GZfnXlErWBuBu+xby38m0ltNEC6GFY54UIiC39Y6cftjpBL+fFotbyXRjFzY4IPBtFZYqU2jE
- tGfw36QtmhRaF221J/zk8NxRkqSwPR4BYvk+0Lbk9/gos5JCaLTmkcvFa+End6LNuDJweGpOC
- 91TRYIv1EgCaRxFS29wA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"either" is outside the parentheses, so the matching "or" should be too.
+This series adds memory bandwidth management to the NVIDIA Tegra DRM driver,
+which is done using interconnect framework. It fixes display corruption that
+happens due to insufficient memory bandwidth.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- Documentation/networking/phy.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changelog:
 
-diff --git a/Documentation/networking/phy.rst b/Documentation/networking/p=
-hy.rst
-index 06adfc2afcf02..3f05d50ecd6e9 100644
-=2D-- a/Documentation/networking/phy.rst
-+++ b/Documentation/networking/phy.rst
-@@ -80,8 +80,8 @@ values of phy_interface_t must be understood from the pe=
-rspective of the PHY
- device itself, leading to the following:
+v15: - Corrected tegra_plane_icc_names[] NULL-check that was partially lost
+       by accident in v14 after unsuccessful rebase.
 
- * PHY_INTERFACE_MODE_RGMII: the PHY is not responsible for inserting any
--  internal delay by itself, it assumes that either the Ethernet MAC (if c=
-apable
--  or the PCB traces) insert the correct 1.5-2ns delay
-+  internal delay by itself, it assumes that either the Ethernet MAC (if c=
-apable)
-+  or the PCB traces insert the correct 1.5-2ns delay
+v14: - Made improvements that were suggested by Michał Mirosław to v13:
 
- * PHY_INTERFACE_MODE_RGMII_TXID: the PHY should insert an internal delay
-   for the transmit data lines (TXD[3:0]) processed by the PHY device
-=2D-
-2.30.1
+       - Changed 'unsigned int' to 'bool'.
+       - Renamed functions which calculate bandwidth state.
+       - Reworked comment in the code that explains why downscaled plane
+         require higher bandwidth.
+       - Added round-up to bandwidth calculation.
+       - Added sanity checks of the plane index and fixed out-of-bounds
+         access which happened on T124 due to the cursor plane index.
+
+v13: - No code changes. Patches missed v5.12, re-sending them for v5.13.
+
+Dmitry Osipenko (2):
+  drm/tegra: dc: Support memory bandwidth management
+  drm/tegra: dc: Extend debug stats with total number of events
+
+ drivers/gpu/drm/tegra/Kconfig |   1 +
+ drivers/gpu/drm/tegra/dc.c    | 362 ++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/tegra/dc.h    |  19 ++
+ drivers/gpu/drm/tegra/drm.c   |  14 ++
+ drivers/gpu/drm/tegra/hub.c   |   3 +
+ drivers/gpu/drm/tegra/plane.c | 127 ++++++++++++
+ drivers/gpu/drm/tegra/plane.h |  15 ++
+ 7 files changed, 541 insertions(+)
+
+-- 
+2.29.2
 
