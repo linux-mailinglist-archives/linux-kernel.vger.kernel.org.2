@@ -2,225 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047B3337047
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90E7337054
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhCKKmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:42:10 -0500
-Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:57496 "EHLO
-        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232213AbhCKKmB (ORCPT
+        id S232408AbhCKKnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:43:14 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:26460 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232213AbhCKKml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:42:01 -0500
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
-        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1lKIlH-0006rS-9X; Thu, 11 Mar 2021 10:41:47 +0000
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
- schedule_tail
-To:     Dmitry Vyukov <dvyukov@google.com>, Alex Ghiti <alex@ghiti.fr>
-Cc:     syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <000000000000b74f1b05bd316729@google.com>
- <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
- <dbdca868-7ef2-47b3-ac26-12fe61f3156a@codethink.co.uk>
- <9a0823f4-de19-c2a2-5333-41c6caadbc11@ghiti.fr>
- <CACT4Y+bP0znswS3hFrNsF0L00s35J55Vj_JTC=DJsd0d3iDKpA@mail.gmail.com>
- <CACT4Y+Z=6OJWa--b6M6j5rbJ4VPi=f_ftBNVdYyRErja1pH37A@mail.gmail.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <384bb562-dd57-c6c7-03d7-8e222da7c368@codethink.co.uk>
-Date:   Thu, 11 Mar 2021 10:41:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 11 Mar 2021 05:42:41 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12BAavrp005475;
+        Thu, 11 Mar 2021 11:42:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=1qdphD4rMJGSr1maeruLAYcgz5KVK4Tm+Y31ZA95hls=;
+ b=Zsjg+0naNjYaEnkaq67NQreyNwemY/Xsr6Hi7mSTwlO3Hmh3Tb2l0qJrOzSLh+ryq71o
+ uaV4FAZrPZwrqAe3oo5zxDly3R1PIjZa98U5jMhjL6HvVojZbL9Q+twIoyJeOCy7wRgy
+ Vixx/DLX1xpuQiIvPkw9aWpKgqJcP+84xmxd1ZtR7bzAXKv3B8nvSN6ln2kWzAkhTlZD
+ P/FXTxzoVxFcTHIkraWPMdXn2DtCBc/gKGexc0omu13LeCCxHNq0vfpNXA20f4M8awpM
+ qWSTch/83UCNIS0gVZrd4vvokmVo1Ipz0qdBQdVP35cQ7GEWdRPvXbVKn9TmCbYpTmHK xg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 373yrexxyj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 11:42:24 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4ACCA10002A;
+        Thu, 11 Mar 2021 11:42:24 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 33C3722D61F;
+        Thu, 11 Mar 2021 11:42:24 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Mar
+ 2021 11:42:23 +0100
+Subject: Re: [PATCH 7/8] ARM: dts: stm32: add support for art-pi board based
+ on stm32h750xbh6
+To:     <dillon.minfei@gmail.com>, <robh+dt@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
+        <vladimir.murzin@arm.com>, <afzal.mohd.ma@gmail.com>
+References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
+ <1614758717-18223-8-git-send-email-dillon.minfei@gmail.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <c6bd6a3f-b53d-71d0-d9b4-69d29eb27395@foss.st.com>
+Date:   Thu, 11 Mar 2021 11:42:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+Z=6OJWa--b6M6j5rbJ4VPi=f_ftBNVdYyRErja1pH37A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1614758717-18223-8-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-11_04:2021-03-10,2021-03-11 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/2021 06:52, Dmitry Vyukov wrote:
-> On Thu, Mar 11, 2021 at 7:50 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->>
->> On Thu, Mar 11, 2021 at 7:40 AM Alex Ghiti <alex@ghiti.fr> wrote:
->>>
->>> Hi Ben,
->>>
->>> Le 3/10/21 à 5:24 PM, Ben Dooks a écrit :
->>>> On 10/03/2021 17:16, Dmitry Vyukov wrote:
->>>>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
->>>>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
->>>>>>
->>>>>> Hello,
->>>>>>
->>>>>> syzbot found the following issue on:
->>>>>>
->>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for
->>>>>> arch_dup_tas..
->>>>>> git tree:
->>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
->>>>>> kernel config:
->>>>>> https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
->>>>>> dashboard link:
->>>>>> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
->>>>>> userspace arch: riscv64
->>>>>>
->>>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>>>
->>>>>> IMPORTANT: if you fix the issue, please add the following tag to the
->>>>>> commit:
->>>>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
->>>>>
->>>>> +riscv maintainers
->>>>>
->>>>> This is riscv64-specific.
->>>>> I've seen similar crashes in put_user in other places. It looks like
->>>>> put_user crashes in the user address is not mapped/protected (?).
->>>>
->>>> The unmapped case should have been handled.
->>>>
->>>> I think this issue is that the check for user-mode access added. From
->>>> what I read the code may be wrong in
->>>>
->>>> +    if (!user_mode(regs) && addr < TASK_SIZE &&
->>>> +            unlikely(!(regs->status & SR_SUM)))
->>>> +        die_kernel_fault("access to user memory without uaccess routines",
->>>> +                addr, regs);
->>>>
->>>> I think the SR_SUM check might be wrong, as I read the standard the
->>>> SR_SUM should be set to disable user-space access. So the check
->>>> should be unlikely(regs->status & SR_SUM) to say access without
->>>> having disabled the protection.
->>>
->>> The check that is done seems correct to me: "The SUM (permit Supervisor
->>> User Memory access) bit modifies the privilege with which S-mode loads
->>> and stores access virtual memory.  *When SUM=0, S-mode memory accesses
->>> to pages that are accessible by U-mode (U=1 in Figure 4.15) will fault*.
->>>    When SUM=1, these accesses are permitted.SUM  has  no  effect  when
->>> page-based  virtual  memory  is  not  in  effect".
->>>
->>> I will try to reproduce the problem locally.
->>
->> Weird. It crashes with this all the time:
->> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
->>
->> Even on trivial programs that almost don't do anything.
->> Maybe it's qemu bug? Do registers look sane in the dump? That SR_SUM, etc.
->>
->>
->> 00:13:27 executing program 1:
->> openat$drirender128(0xffffffffffffff9c,
->> &(0x7f0000000040)='/dev/dri/renderD128\x00', 0x0, 0x0)
->>
->> [  812.318182][ T4833] Unable to handle kernel access to user memory
->> without uaccess routines at virtual address 00000000250b60d0
->> [  812.322304][ T4833] Oops [#1]
->> [  812.323196][ T4833] Modules linked in:
->> [  812.324110][ T4833] CPU: 1 PID: 4833 Comm: syz-executor.1 Not
->> tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
->> [  812.325862][ T4833] Hardware name: riscv-virtio,qemu (DT)
->> [  812.327561][ T4833] epc : schedule_tail+0x72/0xb2
->> [  812.328640][ T4833]  ra : schedule_tail+0x70/0xb2
->> [  812.330088][ T4833] epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp
->> : ffffffe0238bbec0
->> [  812.331312][ T4833]  gp : ffffffe005d25378 tp : ffffffe00a275b00 t0
->> : 0000000000000000
->> [  812.333014][ T4833]  t1 : 0000000000000001 t2 : 00000000000f4240 s0
->> : ffffffe0238bbee0
->> [  812.334137][ T4833]  s1 : 00000000250b60d0 a0 : 0000000000000036 a1
->> : 0000000000000003
->> [  812.336063][ T4833]  a2 : 1ffffffc0cfa8b00 a3 : ffffffe0000c80cc a4
->> : 7f467e72c6adf800
->> [  812.337398][ T4833]  a5 : 0000000000000000 a6 : 0000000000f00000 a7
->> : ffffffe0000f8c84
->> [  812.339287][ T4833]  s2 : 0000000000040000 s3 : ffffffe0077a96c0 s4
->> : ffffffe020e67fe0
->> [  812.340658][ T4833]  s5 : 0000000000004020 s6 : ffffffe0077a9b58 s7
->> : ffffffe067d74850
->> [  812.342492][ T4833]  s8 : ffffffe067d73e18 s9 : 0000000000000000
->> s10: ffffffe00bd72280
->> [  812.343668][ T4833]  s11: 000000bd067bf638 t3 : 7f467e72c6adf800 t4
->> : ffffffc403ee7fb2
->> [  812.345510][ T4833]  t5 : ffffffc403ee7fba t6 : 0000000000040000
->> [  812.347004][ T4833] status: 0000000000000120 badaddr:
->> 00000000250b60d0 cause: 000000000000000f
->> [  812.348091][ T4833] Call Trace:
->> [  812.349291][ T4833] [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2
->> [  812.350796][ T4833] [<ffffffe000005570>] ret_from_exception+0x0/0x14
->> [  812.352799][ T4833] Dumping ftrace buffer:
->> [  812.354328][ T4833]    (ftrace buffer empty)
->> [  812.428145][ T4833] ---[ end trace 94b077e4d677ee73 ]---
->>
->>
->> 00:10:42 executing program 1:
->> bpf$ENABLE_STATS(0x20, 0x0, 0x0)
->> bpf$ENABLE_STATS(0x20, 0x0, 0x0)
->>
->> [  646.536862][ T5163] loop0: detected capacity change from 0 to 1
->> [  646.566730][ T5165] Unable to handle kernel access to user memory
->> without uaccess routines at virtual address 00000000032f80d0
->> [  646.586024][ T5165] Oops [#1]
->> [  646.586640][ T5165] Modules linked in:
->> [  646.587350][ T5165] CPU: 1 PID: 5165 Comm: syz-executor.1 Not
->> tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
->> [  646.588209][ T5165] Hardware name: riscv-virtio,qemu (DT)
->> [  646.589019][ T5165] epc : schedule_tail+0x72/0xb2
->> [  646.589811][ T5165]  ra : schedule_tail+0x70/0xb2
->> [  646.590435][ T5165] epc : ffffffe00008c8b0 ra : ffffffe00008c8ae sp
->> : ffffffe008013ec0
->> [  646.591142][ T5165]  gp : ffffffe005d25378 tp : ffffffe007634440 t0
->> : 0000000000000000
->> [  646.591836][ T5165]  t1 : 0000000000000001 t2 : 0000000000000008 s0
->> : ffffffe008013ee0
->> [  646.592509][ T5165]  s1 : 00000000032f80d0 a0 : 0000000000000004 a1
->> : 0000000000000003
->> [  646.593188][ T5165]  a2 : 1ffffffc0cfac500 a3 : ffffffe0000c80cc a4
->> : 8d229faaffda9500
->> [  646.593878][ T5165]  a5 : 0000000000000000 a6 : 0000000000f00000 a7
->> : ffffffe000082eba
->> [  646.594552][ T5165]  s2 : 0000000000040000 s3 : ffffffe00c82c440 s4
->> : ffffffe00e61ffe0
->> [  646.595253][ T5165]  s5 : 0000000000004000 s6 : ffffffe067d57e00 s7
->> : ffffffe067d57850
->> [  646.595938][ T5165]  s8 : ffffffe067d56e18 s9 : ffffffe067d57e00
->> s10: ffffffe00c82c878
->> [  646.596627][ T5165]  s11: 000000967ba7a1cc t3 : 8d229faaffda9500 t4
->> : ffffffc4011bc79b
->> [  646.597319][ T5165]  t5 : ffffffc4011bc79d t6 : ffffffe008de3ce8
->> [  646.597909][ T5165] status: 0000000000000120 badaddr:
->> 00000000032f80d0 cause: 000000000000000f
->> [  646.598682][ T5165] Call Trace:
->> [  646.599294][ T5165] [<ffffffe00008c8b0>] schedule_tail+0x72/0xb2
->> [  646.600115][ T5165] [<ffffffe000005570>] ret_from_exception+0x0/0x14
->> [  646.601333][ T5165] Dumping ftrace buffer:
->> [  646.602322][ T5165]    (ftrace buffer empty)
->> [  646.663691][ T5165] ---[ end trace e7b7847ce74cdfca ]---
+
+
+On 3/3/21 9:05 AM, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
 > 
-> Is it reasonable that schedule_tail is called from ret_from_exception?
-> Maybe the issue is in ret_from_exception? I see it does something with
-> registers.
+> This patchset has following changes:
+> 
+> - add stm32h750i-art-pi.dtb
+> - add dts binding usart3 for bt, uart4 for console
+> - add dts binding sdmmc2 for wifi
+> - add stm32h750-art-pi.dts to support art-pi board
+> 
+> board component:
+> - 8MiB qspi flash
+> - 16MiB spi flash
+> - 32MiB sdram
+> - ap6212 wifi&bt&fm
+> 
+> the detail board information can be found at:
+> https://art-pi.gitee.io/website/
+> 
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+>   arch/arm/boot/dts/Makefile              |   1 +
+>   arch/arm/boot/dts/stm32h743.dtsi        |  30 +++++
+>   arch/arm/boot/dts/stm32h750.dtsi        |   5 +
+>   arch/arm/boot/dts/stm32h750i-art-pi.dts | 224 ++++++++++++++++++++++++++++++++
+>   4 files changed, 260 insertions(+)
+>   create mode 100644 arch/arm/boot/dts/stm32h750.dtsi
+>   create mode 100644 arch/arm/boot/dts/stm32h750i-art-pi.dts
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 8e5d4ab4e75e..a19c5ab9df84 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1071,6 +1071,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
+>   	stm32746g-eval.dtb \
+>   	stm32h743i-eval.dtb \
+>   	stm32h743i-disco.dtb \
+> +	stm32h750i-art-pi.dtb \
+>   	stm32mp153c-dhcom-drc02.dtb \
+>   	stm32mp157a-avenger96.dtb \
+>   	stm32mp157a-dhcor-avenger96.dtb \
+> diff --git a/arch/arm/boot/dts/stm32h743.dtsi b/arch/arm/boot/dts/stm32h743.dtsi
+> index 4ebffb0a45a3..981d44051007 100644
+> --- a/arch/arm/boot/dts/stm32h743.dtsi
+> +++ b/arch/arm/boot/dts/stm32h743.dtsi
+> @@ -135,6 +135,22 @@
+>   			clocks = <&rcc USART2_CK>;
+>   		};
+>   
+> +		usart3: serial@40004800 {
+> +			compatible = "st,stm32h7-uart";
+> +			reg = <0x40004800 0x400>;
+> +			interrupts = <39>;
+> +			status = "disabled";
+> +			clocks = <&rcc USART3_CK>;
+> +		};
+> +
+> +		uart4: serial@40004c00 {
+> +			compatible = "st,stm32h7-uart";
+> +			reg = <0x40004c00 0x400>;
+> +			interrupts = <52>;
+> +			status = "disabled";
+> +			clocks = <&rcc UART4_CK>;
+> +		};
+> +
 
-I'd not noticed this with an earlier kernel (5.10 and the user-fault
-check patches) but this may be an qemu issue?
+Those peripherals are available on h743 ?
 
+>   		i2c1: i2c@40005400 {
+>   			compatible = "st,stm32f7-i2c";
+>   			#address-cells = <1>;
+> @@ -368,6 +384,20 @@
+>   			max-frequency = <120000000>;
+>   		};
+>   
+> +		sdmmc2: mmc@48022400 {
+> +			compatible = "arm,pl18x", "arm,primecell";
+> +			arm,primecell-periphid = <0x10153180>;
+> +			reg = <0x48022400 0x400>;
+> +			interrupts = <124>;
+> +			interrupt-names	= "cmd_irq";
+> +			clocks = <&rcc SDMMC2_CK>;
+> +			clock-names = "apb_pclk";
+> +			resets = <&rcc STM32H7_AHB2_RESET(SDMMC2)>;
+> +			cap-sd-highspeed;
+> +			cap-mmc-highspeed;
+> +			max-frequency = <120000000>;
+> +		};
+> +
+>   		exti: interrupt-controller@58000000 {
+>   			compatible = "st,stm32h7-exti";
+>   			interrupt-controller;
+> diff --git a/arch/arm/boot/dts/stm32h750.dtsi b/arch/arm/boot/dts/stm32h750.dtsi
+> new file mode 100644
+> index 000000000000..dd9166223c2f
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/stm32h750.dtsi
+> @@ -0,0 +1,5 @@
+> +/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
+> +/* Copyright (C) STMicroelectronics 2021 - All Rights Reserved */
+> +
+> +#include "stm32h743.dtsi"
+> +
+> diff --git a/arch/arm/boot/dts/stm32h750i-art-pi.dts b/arch/arm/boot/dts/stm32h750i-art-pi.dts
+> new file mode 100644
+> index 000000000000..84cf70d7800c
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/stm32h750i-art-pi.dts
+> @@ -0,0 +1,224 @@
+> +/*
+> + * Copyright 2021 - Dillon Min <dillon.minfei@gmail.com>
+> + *
+> + * This file is dual-licensed: you can use it either under the terms
+> + * of the GPL or the X11 license, at your option. Note that this dual
+> + * licensing only applies to this file, and not this project as a
+> + * whole.
+> + *
+> + *  a) This file is free software; you can redistribute it and/or
+> + *     modify it under the terms of the GNU General Public License as
+> + *     published by the Free Software Foundation; either version 2 of the
+> + *     License, or (at your option) any later version.
+> + *
+> + *     This file is distributed in the hope that it will be useful,
+> + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + *     GNU General Public License for more details.
+> + *
+> + * Or, alternatively,
+> + *
+> + *  b) Permission is hereby granted, free of charge, to any person
+> + *     obtaining a copy of this software and associated documentation
+> + *     files (the "Software"), to deal in the Software without
+> + *     restriction, including without limitation the rights to use,
+> + *     copy, modify, merge, publish, distribute, sublicense, and/or
+> + *     sell copies of the Software, and to permit persons to whom the
+> + *     Software is furnished to do so, subject to the following
+> + *     conditions:
+> + *
+> + *     The above copyright notice and this permission notice shall be
+> + *     included in all copies or substantial portions of the Software.
+> + *
+> + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+> + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+> + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+> + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + *     OTHER DEALINGS IN THE SOFTWARE.
+> + */
+> +
+> +/dts-v1/;
+> +#include "stm32h750.dtsi"
+> +#include "stm32h750-pinctrl.dtsi"
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +/ {
+> +	model = "RT-Thread STM32H750i-ART-PI board";
+> +	compatible = "st,stm32h750i-art-pi", "st,stm32h750";
+> +
+> +	chosen {
+> +		bootargs = "root=/dev/ram";
+> +		stdout-path = "serial0:2000000n8";
+> +	};
+> +
+> +	memory@c0000000 {
+> +		device_type = "memory";
+> +		reg = <0xc0000000 0x2000000>;
+> +	};
+> +
+> +	reserved-memory {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
+> +
+> +		linux,cma {
+> +			compatible = "shared-dma-pool";
+> +			no-map;
+> +			size = <0x100000>;
+> +			linux,dma-default;
+> +		};
+> +	};
+> +
+> +	aliases {
+> +		serial0 = &uart4;
+> +		serial1 = &usart3;
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +		led-red {
+> +			gpios = <&gpioi 8 0>;
+> +		};
+> +		led-green {
+> +			gpios = <&gpioc 15 0>;
+> +			linux,default-trigger = "heartbeat";
+> +		};
+> +	};
+> +
+> +	v3v3: regulator-v3v3 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "v3v3";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	wlan_pwr: regulator-wlan {
+> +		compatible = "regulator-fixed";
+> +
+> +		regulator-name = "wl-reg";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +
+> +		gpios = <&gpioc 13 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +};
+> +
+> +&clk_hse {
+> +	clock-frequency = <25000000>;
+> +};
+> +
+> +&mac {
+> +	status = "disabled";
+> +	pinctrl-0	= <&ethernet_rmii>;
+> +	pinctrl-names	= "default";
+> +	phy-mode	= "rmii";
+> +	phy-handle	= <&phy0>;
+> +
+> +	mdio0 {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		compatible = "snps,dwmac-mdio";
+> +		phy0: ethernet-phy@0 {
+> +			reg = <0>;
+> +		};
+> +	};
+> +};
+> +
+> +&sdmmc1 {
+> +	pinctrl-names = "default", "opendrain", "sleep";
+> +	pinctrl-0 = <&sdmmc1_b4_pins_a>;
+> +	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
+> +	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
+> +	broken-cd;
+> +	st,neg-edge;
+> +	bus-width = <4>;
+> +	vmmc-supply = <&v3v3>;
+> +	status = "okay";
+> +};
+> +
+> +&usart2 {
+> +	pinctrl-0 = <&usart2_pins>;
+> +	pinctrl-names = "default";
+> +	status = "disabled";
+> +};
+> +
+> +&uart4 {
+> +	pinctrl-0 = <&uart4_pins>;
+> +	pinctrl-names = "default";
+> +	status = "okay";
+> +};
+> +
+> +&dma1 {
+> +	status = "okay";
+> +};
+> +
 
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+Would be better to order by name, but it is your board :)
 
-https://www.codethink.co.uk/privacy.html
+> +&dma2 {
+> +	status = "okay";
+> +};
+> +
+> +&spi1 {
+> +	status = "okay";
+> +	pinctrl-0 = <&spi1_pins>;
+> +	pinctrl-names = "default";
+> +	cs-gpios = <&gpioa 4 GPIO_ACTIVE_LOW>;
+> +	dmas = <&dmamux1 37 0x400 0x05>,
+> +	       <&dmamux1 38 0x400 0x05>;
+> +	dma-names = "rx", "tx";
+> +
+> +	flash@0 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "winbond,w25q128", "jedec,spi-nor";
+> +		reg = <0>;
+> +		spi-max-frequency = <80000000>;
+> +
+> +		partition@0 {
+> +			label = "root filesystem";
+> +			reg = <0 0x1000000>;
+> +		};
+> +	};
+> +};
+> +
+> +&sdmmc2 {
+> +	pinctrl-names = "default", "opendrain", "sleep";
+> +	pinctrl-0 = <&sdmmc2_b4_pins_a>;
+> +	pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
+> +	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
+> +	broken-cd;
+> +	non-removable;
+> +	st,neg-edge;
+> +	bus-width = <4>;
+> +	vmmc-supply = <&wlan_pwr>;
+> +	status = "okay";
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	brcmf: bcrmf@1 {
+> +		reg = <1>;
+> +		compatible = "brcm,bcm4329-fmac";
+> +	};
+> +};
+> +
+> +&usart3 {
+> +	/delete-property/st,hw-flow-ctrl;
+> +	cts-gpios = <&gpiod 11 GPIO_ACTIVE_LOW>;
+> +	rts-gpios = <&gpiod 12 GPIO_ACTIVE_LOW>;
+> +	dmas = <&dmamux1 45 0x400 0x05>,
+> +	       <&dmamux1 46 0x400 0x05>;
+> +	dma-names = "rx", "tx";
+> +	status = "okay";
+> +
+> +	bluetooth {
+> +		host-wakeup-gpios = <&gpioc 0 GPIO_ACTIVE_HIGH>;
+> +		device-wakeup-gpios = <&gpioi 10 GPIO_ACTIVE_HIGH>;
+> +		shutdown-gpios = <&gpioi 11 GPIO_ACTIVE_HIGH>;
+> +		compatible = "brcm,bcm43438-bt";
+> +		max-speed = <115200>;
+> +	};
+> +};
+> 
