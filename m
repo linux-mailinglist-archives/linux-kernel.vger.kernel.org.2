@@ -2,86 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B4433811E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C396338129
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbhCKXMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
+        id S230523AbhCKXO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:14:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhCKXMY (ORCPT
+        with ESMTP id S231159AbhCKXOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:12:24 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF86C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:12:24 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id w195so18324776oif.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:12:24 -0800 (PST)
+        Thu, 11 Mar 2021 18:14:04 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C18C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:14:03 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id d16so15664878oic.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:14:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GdiULIB6ebT4Vr8C+yaWN+9MOsEzs8BW5c8rV4RqHcM=;
-        b=M/UWLvP/T1EjzdQSQA7JcJTe4xNPDL3AvFy/vBfJKMoex1jqYqGQO7X9IQ+Y+9xuBb
-         YPZTffUb5Ua9TKqQ6BKJPK921+dK8LyZLsCmup0aVByX48GSfJ7j/HfnVDUz9qGF+NAQ
-         wbpp7LgkeF3RHVbxqGwxLGMKi5MESlRCygL81d+F8GPnB2QAFbbcivei0sqEP0ROwUFX
-         XAsjmd5lMCORwgx5rKF6+bQ+vOiIqT+n3OSl96U/7NsdFKjEHKMeSWAel3N5SrFQWd/y
-         mvQTO5pGq6ecjDFc8HXRAnC6Wb2bbciF+5GNReQcarfqP/EEpAq1TP9sPt6WsEgYQzT1
-         tOeA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nhmLVmrcPmGwvbjYVDwRR3WnIqaaWiz28GD602W121E=;
+        b=dkuu4DwH/C66+QzC0DfeRwOQ6Gdk09sDk7RZU+vrg9WM31NbEp8K5IwM9MaPWMYfRc
+         DwV63vVIJv06FFgnWuylt7tHa2dbPSbEjIsC8lVtyxFQDMXaZfryum63trs8bStN++Fw
+         3HymaBA7HACTegKX3eD72jLDBUU6uCDv98Ts4446f1Xw2uXFB0A+IcAb17iss2/h1nau
+         QAdOdE3PukNwZy6gU+do84Sp1a6AuIbbTVQvTKLT9Nj2zLGP2ITVP8bz3FQL3yS+Fxik
+         JCxEyK8i09c7ucYm3ai0wEvVOQ88oAAFgCGnDdXLdHZiH4l9qyHcuGe6W7TVV4MDC3if
+         S82w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GdiULIB6ebT4Vr8C+yaWN+9MOsEzs8BW5c8rV4RqHcM=;
-        b=rKAdubFRG3PaNpG/xqwA2kaDC1TYtcflbqATuBL6tGpKCC7BM9Nc3yZBLsD1ALCbfU
-         PpZ75UxbOHjxWvkTCgaOBMRbZ1YH9LWM1NYsMD9SpUe3NxHCSPiVUracZVKWPY4Uqtgj
-         TAECr8WmodvsYYVBL2CrARNIfUWOtvfE41O3kqh4Wvg3TBjj5nzLPoGl/cjCy7Y3TcZh
-         JOqoRRznWOppmUGT8FWT+QcnrLrkUcJUlQXgXbIhKXzIJUGNjxD64vw+zF3yUEvN1J3c
-         dWRNQgWYbIUmXadtNhTGsYfB5O/si9N+J0Y2gLDnccw44+abSGsJiY/vLh8+rctHL4er
-         4WpQ==
-X-Gm-Message-State: AOAM5323zGCJeU6DCThIQ/5LYZRlKLAQstjcOoSJ86u0XQzfkrFrwlQR
-        xg9NvU0pTbS/oQtzylVSsaMm0A==
-X-Google-Smtp-Source: ABdhPJzBISRNdzGariH5EcLX6sCGLNea21uuGPiUbMbukx09Urom88NH7SF95VfStC3GDAwf0zgcDw==
-X-Received: by 2002:aca:b156:: with SMTP id a83mr8061611oif.8.1615504343804;
-        Thu, 11 Mar 2021 15:12:23 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r16sm854193oic.29.2021.03.11.15.12.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nhmLVmrcPmGwvbjYVDwRR3WnIqaaWiz28GD602W121E=;
+        b=iiqlDsMxoVAPmlkRQ7QDmRiJ7XSRNwv/f6s1AKONkoFZKvPMBbk/kLkxhQWs0eDIvr
+         6Ke0BHyJqQX+nkR+fLRG3g6K8ZABRxLYKQoxwzPvbFSpDW02JQE3/zB/2tRFYFvZjV5H
+         E0y+ipAKCZd5QFWzRhWhwhXJMs1IEL0WXLnGwzPaRKr5Lg1Ohpr9g/SRP/a5TdEj5EGD
+         x2zyHeInk2/NZTEW5tXA8r8AKBpaQZqNsIbfsxl5jFQmXwPF41dzOPTTZHgq4/3PDIap
+         G3XvWR8ybsExRulLwBhk3FYffV5lQRsHdmTb3r0CvjIcRVYroRsTUUNkOrP1LzlW08ab
+         9B4A==
+X-Gm-Message-State: AOAM531pxZfjLaSjv1/+yV5ZXNvswuhVxxv5FbxXlsXfAIyJRpg8jOGg
+        0S7ZFOXiuVZFMMi56jhZ2Okvgg==
+X-Google-Smtp-Source: ABdhPJxt1o5MUEMvXqsKbwhzM9TckDBLY6QgtLIucb5t5kLcQDIMESK8ilAVtfUiwUHM86IFWupBPA==
+X-Received: by 2002:a54:4e8c:: with SMTP id c12mr7986767oiy.175.1615504443179;
+        Thu, 11 Mar 2021 15:14:03 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g3sm803107ooi.28.2021.03.11.15.14.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 15:12:23 -0800 (PST)
+        Thu, 11 Mar 2021 15:14:02 -0800 (PST)
+Date:   Thu, 11 Mar 2021 17:14:00 -0600
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jassi Brar <jaswinder.singh@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add DT bindings directory to mailbox
-Date:   Thu, 11 Mar 2021 15:13:28 -0800
-Message-Id: <20210311231328.3248833-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: Re: [PATCH 0/9] qcom/sc7280: Enable various hardware blocks on
+ SC7280 SoC
+Message-ID: <YEqkOOuYztTUg1u3@builder.lan>
+References: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DT bindings related to mailbox drivers are typically picked by the
-mailbox maintainer, so add the binding folder to the maintainers entry
-to make sure get_maintainer finds it.
+On Thu 25 Feb 03:30 CST 2021, Sai Prakash Ranjan wrote:
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+> This series enables various hardware blocks such as LLCC, IPCC, AOSS QMP
+> and Coresight on SC7280 SoC.
+> 
+> This series is dependent on the base support added for SC7280 in [1].
+> 
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9095d182deaf..670f1461b65c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10608,6 +10608,7 @@ S:	Maintained
- F:	drivers/mailbox/
- F:	include/linux/mailbox_client.h
- F:	include/linux/mailbox_controller.h
-+F:	Documentation/devicetree/bindings/mailbox/
- 
- MAILBOX ARM MHUv2
- M:	Viresh Kumar <viresh.kumar@linaro.org>
--- 
-2.29.2
+I've picked some of these patches...
 
+
+It would be helpful if you split series like this based on how they will
+be picked up my various maintainers. E.g. I think it's quite likely
+Jassi won't find and pick up the mailbox binding patch.
+
+
+PS. I sent a patch to Jassi adding the mailbox binding directory to
+MAINTAINERS.
+
+Regards,
+Bjorn
+
+> [1] https://lore.kernel.org/patchwork/cover/1379842/
+> 
+> Sai Prakash Ranjan (9):
+>   dt-bindings: arm: msm: Add LLCC for SC7280
+>   soc: qcom: llcc: Add configuration data for SC7280
+>   arm64: dts: qcom: sc7280: Add device tree node for LLCC
+>   dt-bindings: mailbox: qcom-ipcc: Add compatible for SC7280
+>   arm64: dts: qcom: sc7280: Add IPCC for SC7280 SoC
+>   dt-bindings: soc: qcom: aoss: Add SC7280 compatible
+>   soc: qcom: aoss: Add AOSS QMP support for SC7280
+>   arm64: dts: qcom: sc7280: Add AOSS QMP node
+>   arm64: dts: qcom: sc7280: Add Coresight support
+> 
+>  .../bindings/arm/msm/qcom,llcc.yaml           |   1 +
+>  .../bindings/mailbox/qcom-ipcc.yaml           |   1 +
+>  .../bindings/soc/qcom/qcom,aoss-qmp.txt       |   1 +
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi          | 520 ++++++++++++++++++
+>  drivers/soc/qcom/llcc-qcom.c                  |  19 +
+>  drivers/soc/qcom/qcom_aoss.c                  |   1 +
+>  6 files changed, 543 insertions(+)
+> 
+> 
+> base-commit: d79b47c59576a51d8e288a6b98b75ccf4afb8acd
+> prerequisite-patch-id: d8babdd3c8a9923360af342f3d8d9876820272e5
+> prerequisite-patch-id: 5757e07e4336d773d402769d09106924962ce31b
+> prerequisite-patch-id: 9b21eb51aa86619f5695a511c65c9236e3bc0f2b
+> prerequisite-patch-id: 2f834cc892f7f9109cbf32a87d504ba27b64a5df
+> prerequisite-patch-id: 14b1185357703d750c3411a16e97675489ca7dde
+> prerequisite-patch-id: 55c143f21b646c18da921a62bbd2801a5df38c8f
+> prerequisite-patch-id: 66f4c58aff2f1a7283b0103590ff82384907bae3
+> prerequisite-patch-id: 75e73e6b13ab91ed5e3a96b59957aa5e867d65ea
+> prerequisite-patch-id: eb46845b4f9eb3706a26911042c2865a58577198
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
