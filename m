@@ -2,150 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92ECB336E7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 921E1336E81
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhCKJJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:09:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
+        id S231923AbhCKJJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:09:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbhCKJI5 (ORCPT
+        with ESMTP id S231834AbhCKJJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:08:57 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4ACCC061574;
-        Thu, 11 Mar 2021 01:08:56 -0800 (PST)
-Date:   Thu, 11 Mar 2021 09:08:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615453729;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kq9Vd6dVRi8UdZfNdOm0b+aTVgLJN6XPgExV0td+gs=;
-        b=NBn4YnQnXUtc3jRv7deMsc/76Ofuytz26DDM7yFEEmp9bfmYynMY/5Lr0H0THGd3Xvdkiw
-        pU3xkoUQJDDR/NvCn7YdUaoTilAsYE3iew7sY2J0KyHZ4wj6jA6zkXh2gu5dvgRtwjxQhB
-        YTeVohLWNsU2idR228ErCoJ2/1GQRf+odx0OV4a6juxwG2k5QxCm+cYOyIMPS2cxx3Vdxt
-        yFPLiNzcx1zoK27QbjlVVO7W5lR742y3imgwGzYmVVR+DtNGZa692LWIFSujOZKtOuQiwJ
-        8QZZeuH1YpWZih9BSk6QjjHUDWNlqiO21/jxUmpenvtRpJdomZBdPWhdslK6KQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615453729;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kq9Vd6dVRi8UdZfNdOm0b+aTVgLJN6XPgExV0td+gs=;
-        b=fgnNE6AjHG/IjjxN1Ry6/28p89O/O9dqJa9aT51rDXjhGZwDdw2usGvSxWSZkuQfu1w1Ek
-        CcgsjIKgOnApZsDw==
-From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] x86/perf: Use RET0 as default for guest_get_msrs
- to handle "no PMU" case
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210309171019.1125243-1-seanjc@google.com>
-References: <20210309171019.1125243-1-seanjc@google.com>
+        Thu, 11 Mar 2021 04:09:22 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859AAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:09:22 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id u4so1181319ljo.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 01:09:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=qtec.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RnT+lPnIHBw/xRDsclmASuOvNjJ9ngFpJSmXHW9gT1s=;
+        b=LH0uuBBonQYeRw5PRypwMx3pqqtIVdxzggC6gcxg+8Fpd8x2nix9/7lRT5+jzm0UPx
+         MCspsVqaFPDjsy+63ETLGmuUlnp6dsGlWNsqApadi7qWKY9cIUGi0AlLwFkAPAT4uz7D
+         qRVolWJtwHagQiLm6gsOJ2xuXkZksMNT3jXwloZYMpmIFOBU8o11f3bK9fUcjGBZttYS
+         8RcTOHpkCWZm9fYQGw3tQyFTyN3TkDmCCsjUHr+Ydxg4pY7ef7+ThT2p0ZF1pNWO7bln
+         zEpU4WgnpJ4bBHRTlggPNCS/lCxrESMo2Fs5SI3B+6VbwF2mJvg2MXEy3HFEaM3gqc7J
+         4/RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RnT+lPnIHBw/xRDsclmASuOvNjJ9ngFpJSmXHW9gT1s=;
+        b=EPjo6UjdvftMgQpiZjyb2se+CvQjgam5jYi1uAR4lnE4oroaDD8tZMz8lXon97vGo1
+         NuMHHZikIPXP/uHl2Thhpl71Gg9kgM4jZSTYJ+YyLtCxfTgbnv7Tis+CnmqoIhyYF1TF
+         xGzBUDbNLmzwxz44Tkx73Nes2weW3ZeuH1Keq0Bu2nXx0psha2zD8RsCJzGB+RCVBHuq
+         RWo5GpAL3gwLCpi1HHXRQnmg3x11udfkNJku9kxku13tF+lkNYZ5P9Zgty7pegfkAaRy
+         8gCmGHvnHcu1p8xsL6YReY1xIv6U6JqPK24zG5gQVhWud5uGG/ORSWsQTkcAkaq/YCk2
+         k4Jg==
+X-Gm-Message-State: AOAM531W+XZV3Brgwuk8+KTIH5HsE7Fc+jUw9sHAkTFrKCGhmVkZ9C0o
+        GfhISIoqRMf96ZyscOQ9eeHjVQLNCtfL5GL31L86JA==
+X-Google-Smtp-Source: ABdhPJygCiPkPDqr0CqthkNvw/7NV0v7TWfyanbCIGUU8Z08ssP9bcbSuJn6t1JsPsFXX9SBpw2eJhIpt/fNi5u69OM=
+X-Received: by 2002:a2e:557:: with SMTP id 84mr4309802ljf.480.1615453760997;
+ Thu, 11 Mar 2021 01:09:20 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <161545372825.398.16630924831930486998.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210310163655.2591893-1-daniel@qtec.com> <CADnq5_PmbXBaziCEqRODb_DvtKaw9ucXXjkdmdj9N_R8P-9Jcw@mail.gmail.com>
+In-Reply-To: <CADnq5_PmbXBaziCEqRODb_DvtKaw9ucXXjkdmdj9N_R8P-9Jcw@mail.gmail.com>
+From:   Daniel Gomez <daniel@qtec.com>
+Date:   Thu, 11 Mar 2021 10:09:10 +0100
+Message-ID: <CAH1Ww+T4WwLzg_nnF=1sjm9LW9wCjFb0X9c=qmuubvMqJdW4PA@mail.gmail.com>
+Subject: Re: [PATCH]] drm/amdgpu/gfx9: add gfxoff quirk
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Huang Rui <ray.huang@amd.com>, Nirmoy Das <nirmoy.das@amd.com>,
+        Dennis Li <Dennis.Li@amd.com>, Monk Liu <Monk.Liu@amd.com>,
+        Yintian Tao <yttao@amd.com>, Guchun Chen <guchun.chen@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+On Wed, 10 Mar 2021 at 18:06, Alex Deucher <alexdeucher@gmail.com> wrote:
+>
+> On Wed, Mar 10, 2021 at 11:37 AM Daniel Gomez <daniel@qtec.com> wrote:
+> >
+> > Disabling GFXOFF via the quirk list fixes a hardware lockup in
+> > Ryzen V1605B, RAVEN 0x1002:0x15DD rev 0x83.
+> >
+> > Signed-off-by: Daniel Gomez <daniel@qtec.com>
+> > ---
+> >
+> > This patch is a continuation of the work here:
+> > https://lkml.org/lkml/2021/2/3/122 where a hardware lockup was discussed and
+> > a dma_fence deadlock was provoke as a side effect. To reproduce the issue
+> > please refer to the above link.
+> >
+> > The hardware lockup was introduced in 5.6-rc1 for our particular revision as it
+> > wasn't part of the new blacklist. Before that, in kernel v5.5, this hardware was
+> > working fine without any hardware lock because the GFXOFF was actually disabled
+> > by the if condition for the CHIP_RAVEN case. So this patch, adds the 'Radeon
+> > Vega Mobile Series [1002:15dd] (rev 83)' to the blacklist to disable the GFXOFF.
+> >
+> > But besides the fix, I'd like to ask from where this revision comes from. Is it
+> > an ASIC revision or is it hardcoded in the VBIOS from our vendor? From what I
+> > can see, it comes from the ASIC and I wonder if somehow we can get an APU in the
+> > future, 'not blacklisted', with the same problem. Then, should this table only
+> > filter for the vendor and device and not the revision? Do you know if there are
+> > any revisions for the 1002:15dd validated, tested and functional?
+>
+> The pci revision id (RID) is used to specify the specific SKU within a
+> family.  GFXOFF is supposed to be working on all raven variants.  It
+> was tested and functional on all reference platforms and any OEM
+> platforms that launched with Linux support.  There are a lot of
+> dependencies on sbios in the early raven variants (0x15dd), so it's
+> likely more of a specific platform issue, but there is not a good way
+> to detect this so we use the DID/SSID/RID as a proxy.  The newer raven
+> variants (0x15d8) have much better GFXOFF support since they all
+> shipped with newer firmware and sbios.
 
-Commit-ID:     c8e2fe13d1d1f3a02842b7b909d4e4846a4b6a2c
-Gitweb:        https://git.kernel.org/tip/c8e2fe13d1d1f3a02842b7b909d4e4846a4b6a2c
-Author:        Sean Christopherson <seanjc@google.com>
-AuthorDate:    Tue, 09 Mar 2021 09:10:19 -08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 10 Mar 2021 16:45:09 +01:00
+We took one of the first reference platform boards to design our
+custom board based on the V1605B and I assume it has one of the early 'unstable'
+raven variants with RID 0x83. Also, as OEM we are in control of the bios
+(provided by insyde) but I wasn't sure about the RID so, thanks for the
+clarification. Is there anything we can do with the bios to have the GFXOFF
+enabled and 'stable' for this particular revision? Otherwise we'd need to add
+the 0x83 RID to the table. Also, there is an extra ']' in the patch
+subject. Sorry
+for that. Would you need a new patch in case you accept it with the ']' removed?
 
-x86/perf: Use RET0 as default for guest_get_msrs to handle "no PMU" case
+Good to hear that the newer raven versions have better GFXOFF support.
 
-Initialize x86_pmu.guest_get_msrs to return 0/NULL to handle the "nop"
-case.  Patching in perf_guest_get_msrs_nop() during setup does not work
-if there is no PMU, as setup bails before updating the static calls,
-leaving x86_pmu.guest_get_msrs NULL and thus a complete nop.  Ultimately,
-this causes VMX abort on VM-Exit due to KVM putting random garbage from
-the stack into the MSR load list.
+Daniel
 
-Add a comment in KVM to note that nr_msrs is valid if and only if the
-return value is non-NULL.
-
-Fixes: abd562df94d1 ("x86/perf: Use static_call for x86_pmu.guest_get_msrs")
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Reported-by: syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210309171019.1125243-1-seanjc@google.com
----
- arch/x86/events/core.c | 15 ++++++---------
- arch/x86/kvm/vmx/vmx.c |  2 +-
- 2 files changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 6ddeed3..18df171 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -81,7 +81,11 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_swap_task_ctx, *x86_pmu.swap_task_ctx);
- DEFINE_STATIC_CALL_NULL(x86_pmu_drain_pebs,   *x86_pmu.drain_pebs);
- DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
- 
--DEFINE_STATIC_CALL_NULL(x86_pmu_guest_get_msrs,  *x86_pmu.guest_get_msrs);
-+/*
-+ * This one is magic, it will get called even when PMU init fails (because
-+ * there is no PMU), in which case it should simply return NULL.
-+ */
-+DEFINE_STATIC_CALL_RET0(x86_pmu_guest_get_msrs, *x86_pmu.guest_get_msrs);
- 
- u64 __read_mostly hw_cache_event_ids
- 				[PERF_COUNT_HW_CACHE_MAX]
-@@ -1944,13 +1948,6 @@ static void _x86_pmu_read(struct perf_event *event)
- 	x86_perf_event_update(event);
- }
- 
--static inline struct perf_guest_switch_msr *
--perf_guest_get_msrs_nop(int *nr)
--{
--	*nr = 0;
--	return NULL;
--}
--
- static int __init init_hw_perf_events(void)
- {
- 	struct x86_pmu_quirk *quirk;
-@@ -2025,7 +2022,7 @@ static int __init init_hw_perf_events(void)
- 		x86_pmu.read = _x86_pmu_read;
- 
- 	if (!x86_pmu.guest_get_msrs)
--		x86_pmu.guest_get_msrs = perf_guest_get_msrs_nop;
-+		x86_pmu.guest_get_msrs = (void *)&__static_call_return0;
- 
- 	x86_pmu_static_call_update();
- 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 50810d4..32cf828 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6580,8 +6580,8 @@ static void atomic_switch_perf_msrs(struct vcpu_vmx *vmx)
- 	int i, nr_msrs;
- 	struct perf_guest_switch_msr *msrs;
- 
-+	/* Note, nr_msrs may be garbage if perf_guest_get_msrs() returns NULL. */
- 	msrs = perf_guest_get_msrs(&nr_msrs);
--
- 	if (!msrs)
- 		return;
- 
+>
+> Alex
+>
+>
+> >
+> > Logs:
+> > [   27.708348] [drm] initializing kernel modesetting (RAVEN
+> > 0x1002:0x15DD 0x1002:0x15DD 0x83).
+> > [   27.789156] amdgpu: ATOM BIOS: 113-RAVEN-115
+> >
+> > Thanks in advance,
+> > Daniel
+> >
+> >  drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+> > index 65db88bb6cbc..319d4b99aec8 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+> > @@ -1243,6 +1243,8 @@ static const struct amdgpu_gfxoff_quirk amdgpu_gfxoff_quirk_list[] = {
+> >         { 0x1002, 0x15dd, 0x103c, 0x83e7, 0xd3 },
+> >         /* GFXOFF is unstable on C6 parts with a VBIOS 113-RAVEN-114 */
+> >         { 0x1002, 0x15dd, 0x1002, 0x15dd, 0xc6 },
+> > +       /* GFXOFF provokes a hw lockup on 83 parts with a VBIOS 113-RAVEN-115 */
+> > +       { 0x1002, 0x15dd, 0x1002, 0x15dd, 0x83 },
+> >         { 0, 0, 0, 0, 0 },
+> >  };
+> >
+> > --
+> > 2.30.1
+> >
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
