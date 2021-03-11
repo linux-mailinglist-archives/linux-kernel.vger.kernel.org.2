@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A3A336AEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE27336AF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhCKECX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 23:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
+        id S230512AbhCKEFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 23:05:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhCKEBx (ORCPT
+        with ESMTP id S230215AbhCKEEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 23:01:53 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 888D9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 20:01:51 -0800 (PST)
+        Wed, 10 Mar 2021 23:04:53 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14DAC061574;
+        Wed, 10 Mar 2021 20:04:52 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id c10so17733688ilo.8;
+        Wed, 10 Mar 2021 20:04:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=G3UhdZKwhC
-        rMpAWqnCpQWDNvlbX9WuVX0dVLrPhQ1zE=; b=cpPiiFbiu6swJBQj7ApilEkTn2
-        WoXGkqM9z0EqKkiQ7Oso8dPm0lmM75a3WPUdqZarpW7rEbCcrSLJuQzB3/tO4hM0
-        wb0hef3CDUeBTuOVJqEyqo/46sreIaZ7J5oMJZ1jzk9Kt6GU1PFr2uvagkxlhx4R
-        mIUsJfiAyYBmtHSNo=
-Received: from ubuntu.localdomain (unknown [114.214.226.60])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX3uIolklgiCcJAA--.1166S4;
-        Thu, 11 Mar 2021 12:01:44 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     shshaikh@marvell.com, manishc@marvell.com,
-        GR-Linux-NIC-Dev@marvell.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] net/qlcnic: Fix a use after free in qlcnic_83xx_get_minidump_template
-Date:   Wed, 10 Mar 2021 20:01:40 -0800
-Message-Id: <20210311040140.7339-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YHQDPJLlBCHVTwjigC7ZPwhYb9aYfT9a1b5eWJFDzVg=;
+        b=FmP3qbXwq2UV+dG9BAkN6yO7CdohLpAuFabmpMm1Drvo5ynjBRjLw+d/JLfCMpQyAC
+         AYULwojgrIHSbToO/xeZGEA6n9xB0Xsg8uwS6Am4L7vFrWSkdmW4o0En+vZNzrSzKTDj
+         RZBthpXJ7Xxu1NwaZNkpS2R8N+Eeb0s8eCcPbxHIeREzYVyqXmZz79VokdtoD+PReXse
+         Lq+f/hacr6hv2QG3QyNEnQa1GqWa1OZgHtBLoZYxQwKILwwXfIp7/Fk4c4yVoPfc2Nig
+         rd/lqooutd0LnZ299XIPBV2+BCtsEH8VlReNAHrk5CwuF6rTVIQ1Y6pzdWksInhM34vZ
+         Y3Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YHQDPJLlBCHVTwjigC7ZPwhYb9aYfT9a1b5eWJFDzVg=;
+        b=rydlDrQB2iOmvYxZvOKPWYJUTV/CpQbj54C1x88LUJaxoPFMx/cUzUT/nnA5ZCB/Fb
+         N5rKWCfKvNCoEw6Xm9OD9Pcwmm8iR2JSzTQAyIyJ5YdLqDmhL+Svjbv10gB911TElczM
+         D0rtm2jrIyy7ua0Ty/8MVYNq9nuDzPc10q+yPONnnmB7ZTzeunzEN+Iu/pb9rf7bjJCq
+         9DXnBQ7+NBtPk5ydLeDGAng2ZR+w0oVsT/ii6+3RHrDK62eLZITZde9suiNCqw+w2JZL
+         dC561XOpphsoa1D6w35o+SOuPfHTjMgwbLXR5PFHB6Q0tH5BNyY6xJP53cRsrVDjqpys
+         oePg==
+X-Gm-Message-State: AOAM530NviEf0VskDfFuaGV0o3T39OdF03XljNlocWHWUmDdrg7rbCAx
+        +SkIqyBn1V/SX41ddDnAqJM=
+X-Google-Smtp-Source: ABdhPJxtWu+YDO6s5jbTZQHamDMIo1K6GRyjRSwY9THaCIl0mxldDS35BIfpS3d1AUIPEyea6rPJfw==
+X-Received: by 2002:a92:dc50:: with SMTP id x16mr5348515ilq.281.1615435492496;
+        Wed, 10 Mar 2021 20:04:52 -0800 (PST)
+Received: from book ([2601:445:8200:6c90::4210])
+        by smtp.gmail.com with ESMTPSA id y18sm766648ili.16.2021.03.10.20.04.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 20:04:52 -0800 (PST)
+Date:   Wed, 10 Mar 2021 22:04:50 -0600
+From:   Ross Schmidt <ross.schm.dev@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/39] 4.19.180-rc1 review
+Message-ID: <20210311040450.GA7061@book>
+References: <20210310132319.708237392@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygDX3uIolklgiCcJAA--.1166S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ary7GrWxZr15XFy5tFyUtrb_yoW8GrWrpw
-        s7GFyUWrn7Jrsrta17Za4xJFn8A3y7try29F1kCa93Zw1ktr1xXFW5Kr4a9r1kJrZ3WFy5
-        tF18Z3Z8Z3W8CFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
-        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ2
-        3UUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310132319.708237392@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In qlcnic_83xx_get_minidump_template, fw_dump->tmpl_hdr was freed by
-vfree(). But unfortunately, it is used when extended is true.
+On Wed, Mar 10, 2021 at 02:24:08PM +0100, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 4.19.180 release.
+> There are 39 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
 
-Fixes: 7061b2bdd620e ("qlogic: Deletion of unnecessary checks before two function calls")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c | 3 +++
- 1 file changed, 3 insertions(+)
+Compiled and booted with no regressions on x86_64.
 
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-index 7760a3394e93..7ecb3dfe30bd 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-@@ -1425,6 +1425,7 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
- 
- 	if (fw_dump->tmpl_hdr == NULL || current_version > prev_version) {
- 		vfree(fw_dump->tmpl_hdr);
-+		fw_dump->tmpl_hdr = NULL;
- 
- 		if (qlcnic_83xx_md_check_extended_dump_capability(adapter))
- 			extended = !qlcnic_83xx_extend_md_capab(adapter);
-@@ -1443,6 +1444,8 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
- 			struct qlcnic_83xx_dump_template_hdr *hdr;
- 
- 			hdr = fw_dump->tmpl_hdr;
-+			if (!hdr)
-+				return;
- 			hdr->drv_cap_mask = 0x1f;
- 			fw_dump->cap_mask = 0x1f;
- 			dev_info(&pdev->dev,
--- 
-2.25.1
+Tested-by: Ross Schmidt <ross.schm.dev@gmail.com>
 
 
+thanks,
+
+Ross
