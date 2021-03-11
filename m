@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F60336A7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 04:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90596336A7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 04:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhCKDNf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 22:13:35 -0500
-Received: from mga14.intel.com ([192.55.52.115]:52462 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229971AbhCKDNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 22:13:07 -0500
-IronPort-SDR: BhKXoqS3G88QgZR5uwchuOl3v7XdbxSIKqH3YDmB6SaN3SaVKwHR2brx5qtaRtQWirm3wZ/pbG
- THs7rKMCfGlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="187969867"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="187969867"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 19:13:06 -0800
-IronPort-SDR: F3pACgYlTs8CBDSVQ5RlGllv1DSyR8uBThdE+p8bxtiapg0xRu79HdIxkWCByfBKEEJx0twRsU
- MsD+jwekRijw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="370421299"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga003.jf.intel.com with ESMTP; 10 Mar 2021 19:13:06 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 10 Mar 2021 19:13:06 -0800
-Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 10 Mar 2021 19:13:05 -0800
-Received: from shsmsx605.ccr.corp.intel.com ([10.109.6.215]) by
- SHSMSX605.ccr.corp.intel.com ([10.109.6.215]) with mapi id 15.01.2106.013;
- Thu, 11 Mar 2021 11:13:02 +0800
-From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-To:     'Bjorn Helgaas' <helgaas@kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
- association
-Thread-Topic: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
- association
-Thread-Index: AQHXCLh6LEG1CfkjwEO3CLgkzlZ+yap9WgQAgADHGrA=
-Date:   Thu, 11 Mar 2021 03:13:02 +0000
-Message-ID: <b76a5239650842f7bd852b6b4dba3288@intel.com>
-References: <20210222011717.43266-1-qiuxu.zhuo@intel.com>
- <20210310220030.GA2068330@bjorn-Precision-5520>
-In-Reply-To: <20210310220030.GA2068330@bjorn-Precision-5520>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: 8BIT
+        id S230319AbhCKDOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 22:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhCKDOb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 22:14:31 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8804EC061574;
+        Wed, 10 Mar 2021 19:14:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=zCNqttcaFW
+        TtybUdDPtqNAqitPAbuSHYmg9++K2KPdI=; b=ZYqnpU5yM0UAXUDrvL0LGlf6DE
+        ARG+QgAVsl6PgTFpiMv3OfuUtI+BVcRBQ8xYY5WDdZbQQWj+tWM18hC4swsmmxTK
+        /vyp74fPf6xmG6U9gscNczrRC4NAremHgpejiRoS/slUimItyy5EG7X8vHcXkTix
+        7g79KQOkeVXK7AkkY=
+Received: from ubuntu.localdomain (unknown [114.214.226.60])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3PT0Ji0lgttcIAA--.842S4;
+        Thu, 11 Mar 2021 11:14:17 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     faisal.latif@intel.com, shiraz.saleem@intel.com,
+        dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] infiniband/i40iw: Fix a use after free in i40iw_cm_event_handler
+Date:   Wed, 10 Mar 2021 19:14:14 -0800
+Message-Id: <20210311031414.5011-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygA3PT0Ji0lgttcIAA--.842S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw1Utr4Dur1rur1DurW3Jrb_yoW8XrWxp3
+        y8Wr9IkF4DXFyDur9Yyryqkry3Ga4ft3yDK3s5G3WrGF98u3s8JF18KrWjvFZ8Aryfuw47
+        Aw4DKr45WFW8AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWU
+        JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOl
+        ksUUUUU
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> [...]
-> 
-> I think 507b460f8144 appeared in v5.11, so not something we broke in v5.12.
-> Applied to pci/error for v5.13, thanks!
+In the case of I40IW_CM_EVENT_ABORTED, i40iw_event_connect_error()
+could be called to free the event->cm_node. However, event->cm_node
+will be used after and cause use after free. It needs to add flags
+to inform that event->cm_node has been freed.
 
-Thanks Bjorn!
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/infiniband/hw/i40iw/i40iw_cm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> If I understand correctly, we previously only got this right in one
-> case:
-> 
->    0 == PCI_SLOT(00.0)    # correct
->    1 == PCI_SLOT(00.1)    # incorrect
->    2 == PCI_SLOT(00.2)    # incorrect
->    ...
->    8 == PCI_SLOT(01.0)    # incorrect
->    9 == PCI_SLOT(01.1)    # incorrect
->    ...
->   31 == PCI_SLOT(03.7)    # incorrect
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+index ac65c8237b2e..447b43c2d21f 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+@@ -4175,6 +4175,7 @@ static void i40iw_cm_event_handler(struct work_struct *work)
+ 						    struct i40iw_cm_event,
+ 						    event_work);
+ 	struct i40iw_cm_node *cm_node;
++	int flags = 0;
+ 
+ 	if (!event || !event->cm_node || !event->cm_node->cm_core)
+ 		return;
+@@ -4211,6 +4212,7 @@ static void i40iw_cm_event_handler(struct work_struct *work)
+ 		    (event->cm_node->state == I40IW_CM_STATE_OFFLOADED))
+ 			break;
+ 		i40iw_event_connect_error(event);
++		flags = 1;
+ 		break;
+ 	default:
+ 		i40iw_pr_err("event type = %d\n", event->type);
+@@ -4218,7 +4220,8 @@ static void i40iw_cm_event_handler(struct work_struct *work)
+ 	}
+ 
+ 	event->cm_info.cm_id->rem_ref(event->cm_info.cm_id);
+-	i40iw_rem_ref_cm_node(event->cm_node);
++	if (!flags)
++		i40iw_rem_ref_cm_node(event->cm_node);
+ 	kfree(event);
+ }
+ 
+-- 
+2.25.1
 
-Yes, you're right. 
-
-Thanks!
--Qiuxu
 
