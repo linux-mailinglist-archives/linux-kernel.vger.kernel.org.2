@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE5833753D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 501C3337542
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 15:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233071AbhCKOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 09:16:28 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:32830 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbhCKOQN (ORCPT
+        id S233559AbhCKOQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 09:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233564AbhCKOQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:16:13 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12BEG8fU122858;
-        Thu, 11 Mar 2021 08:16:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615472168;
-        bh=otsioTu5qCUse4Zaap7lDZdr6bDLm7MeSEmVeWJ8PVk=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=dAeozZWqFTSw2O6hPImspbfN2I51ihS3M7KLua5IO05zMFcABKVqIdC8l5fND4Iu0
-         Ol46Dhf9S7rbUt+eTLUauI58r0WhJGC8u/XpF0DyfgepvJ7eA/mcrPO25iHPNLxqdf
-         XosQoNmsA6acOWWFbQoT+Pqyj0dwiY39tIjKwhEM=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12BEG7xe103343
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 11 Mar 2021 08:16:08 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 11
- Mar 2021 08:16:07 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 11 Mar 2021 08:16:07 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12BEG7NF075903;
-        Thu, 11 Mar 2021 08:16:07 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, Kishon Vijay Abraham I <kishon@ti.com>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Faiz Abbas <faiz_abbas@ti.com>, <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-j721e-main: Update the speed modes supported and their itap delay values for MMCSD subsystems
-Date:   Thu, 11 Mar 2021 08:16:06 -0600
-Message-ID: <161547214086.15807.8150332275762636624.b4-ty@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210305054104.10153-1-a-govindraju@ti.com>
-References: <20210305054104.10153-1-a-govindraju@ti.com>
+        Thu, 11 Mar 2021 09:16:36 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB32CC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:16:35 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id o11so22100892iob.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:16:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ei63gaWMLxEmNqdA5R8TWOwXizZ14K3nYqemAOmaLh0=;
+        b=BM20wCWVV1daEhIL7RR4tpSwAlnVVR0qilSyirp5e9d5AeGSONNUbOezG5g0sIl8N0
+         iKzmbfU7PYqFcVzmCPhyt34d/rn718kYBejBQEiEw+7Bhg4o/0zoWKFgeKs/T5SCDhz/
+         Y+CA+JkDYVgEckMgjA7ipLpf7vPQfokqtnX3M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ei63gaWMLxEmNqdA5R8TWOwXizZ14K3nYqemAOmaLh0=;
+        b=sqlOP+PLZvVbLzibv9A7CZViuvVqD7L1FyZwG8UPU1uaktRLA4varB2842fTPSSObu
+         RO68AA9vtkSSOltrLXVgQ8ZkQDWWAnPPAjcJk2uDEaKUeQOCdPRhsopBmyaJR2hUC+/b
+         gnmA8JOUfoE3/9WECfxB547aPzTFORiRqWZo7FpourB3KK8YmIfdgmZZz3WXixKuTDs5
+         FysHiC5fFlnduPPRVt9VYnkLCRNbltyd9CobLE8JBjmPRzBKubgvzLMMDAjpQK4wx8Gu
+         prJp4PPblxBPUg16rbgHlI9uSUviuz8vqjnL/s7vwJEoJ1MKfkks1X63vFtfgY2CDOk2
+         uFAw==
+X-Gm-Message-State: AOAM533X+5m+1QohxyzPZMhFlnrFcVmkKFW74WipriwkXj3nfcoxzfzE
+        prPxiffVyKASqB6zBmA0TmYuXA==
+X-Google-Smtp-Source: ABdhPJznZ+AHNcMJKPGfmI7E72r9ApIrvzDEbLZiFeHTaRZVBzc1h30T1+1JSTqagBoZh3uacL86SA==
+X-Received: by 2002:a02:cc1b:: with SMTP id n27mr3811358jap.106.1615472195170;
+        Thu, 11 Mar 2021 06:16:35 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x6sm1429790ioh.19.2021.03.11.06.16.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 06:16:34 -0800 (PST)
+Subject: Re: [PATCH][next] usbip: Fix incorrect double assignment to
+ udc->ud.tcp_rx
+To:     Colin King <colin.king@canonical.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210311104445.7811-1-colin.king@canonical.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <8862cf33-dc2b-1d62-d7ef-56f34c5b358d@linuxfoundation.org>
+Date:   Thu, 11 Mar 2021 07:16:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210311104445.7811-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 11:11:04 +0530, Aswath Govindraju wrote:
-> According to latest errata of J721e [1], HS400 mode is not supported
-> in MMCSD0 subsystem (i2024) and SDR104 mode is not supported in MMCSD1/2
-> subsystems (i2090). Therefore, replace mmc-hs400-1_8v with mmc-hs200-1_8v
-> in MMCSD0 subsystem and add a sdhci mask to disable SDR104 speed mode.
+On 3/11/21 3:44 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Also, update the itap delay values for all the MMCSD subsystems according
-> the latest J721e data sheet[2]
+> Currently udc->ud.tcp_rx is being assigned twice, the second assignment
+> is incorrect, it should be to udc->ud.tcp_tx instead of rx. Fix this.
 > 
-> [...]
+> Addresses-Coverity: ("Unused value")
+> Fixes: 46613c9dfa96 ("usbip: fix vudc usbip_sockfd_store races leading to gpf")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/usb/usbip/vudc_sysfs.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/usbip/vudc_sysfs.c b/drivers/usb/usbip/vudc_sysfs.c
+> index a3ec39fc6177..7383a543c6d1 100644
+> --- a/drivers/usb/usbip/vudc_sysfs.c
+> +++ b/drivers/usb/usbip/vudc_sysfs.c
+> @@ -174,7 +174,7 @@ static ssize_t usbip_sockfd_store(struct device *dev,
+>   
+>   		udc->ud.tcp_socket = socket;
+>   		udc->ud.tcp_rx = tcp_rx;
+> -		udc->ud.tcp_rx = tcp_tx;
+> +		udc->ud.tcp_tx = tcp_tx;
+>   		udc->ud.status = SDEV_ST_USED;
+>   
+>   		spin_unlock_irq(&udc->ud.lock);
+> 
 
-Hi Aswath Govindraju,
+Thank you for finding and fixing this. This is my bad.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
 
-[1/1] arm64: dts: ti: k3-j721e-main: Update the speed modes supported and their itap delay values for MMCSD subsystems
-      commit: eb8f6194e8074d7b00642dd75cf04d13e1b218e4
+thanks,
+-- Shuah
 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
