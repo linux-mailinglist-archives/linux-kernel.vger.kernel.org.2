@@ -2,165 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6025336886
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67689336888
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 01:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhCKASP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 19:18:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhCKASA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:18:00 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D66C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:18:00 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id p7so31130285eju.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 16:18:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G4FQbNRWUPHu0esiM/KhhSS0r0J+jY7lV+LBrNx60IA=;
-        b=bHw6jMe/lzuOunnh4UmDL0wAQVP06RtK7GeTNu+koDs7UaTK3l+eizZkrdLQKNVyAJ
-         CrsuHRMgQ9TUvIx0cGzlZfxFATWRS7Timti1zhG9rGKABgLMUGmJd4kNTdbw5J3Sm/kE
-         CoH3/cCyTFEDWqK8WkUebLLHgZ4PL1ojRa+Gs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G4FQbNRWUPHu0esiM/KhhSS0r0J+jY7lV+LBrNx60IA=;
-        b=PYcAnOKIgwMI00ZfuxGptx0lky2D/6pLFshdfLnjIRX+FH+og7C5fNcrPjIbOdtwWn
-         51n/G8wbbY9/Lm1nmrVgch+mChCjOYSvfi8bOI6/jFHqBiGuOF5o2bZYcmz9bXrbuD7/
-         XqRFYKgbOmFEJShsCVFEKz29zZdz3B/8HGnBA5e2B2w+qIGR3EcDBIQL5LSDU8My0p01
-         h0tFeV3sAo5eIt2aHbi6Ll0O6EoNuaS6eiM9ZunE+FBfwzeiEMM1SihvdlBq4YdBxmaK
-         4/ZIPaGYpif4aKvW0nx6PqXwQici5mkb/s6+zCyjoo+held1HjCJEDfAtIdcDTHUm9ZG
-         Iuhg==
-X-Gm-Message-State: AOAM533gOYzMoNrryzbgg495AbJxmy1KdSjxYrZwkq/U/IrNP933k4Al
-        SnfOkQismh0wnp1dNhrSdFzd9A==
-X-Google-Smtp-Source: ABdhPJzZ+lhnADptD+LfToJ+yS1ju2CjMP+M2S4DhwrkG8kEePr2iJ2g2I3vbiWU0RY54ex/RO5INA==
-X-Received: by 2002:a17:906:35cf:: with SMTP id p15mr434674ejb.379.1615421877737;
-        Wed, 10 Mar 2021 16:17:57 -0800 (PST)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id lu26sm458076ejb.33.2021.03.10.16.17.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 16:17:57 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] init/initramfs.c: allow asynchronous unpacking
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <20210224142909.2092914-1-linux@rasmusvillemoes.dk>
- <20210309211700.2011017-1-linux@rasmusvillemoes.dk>
- <20210309211700.2011017-2-linux@rasmusvillemoes.dk>
- <CAHk-=wgfMQyYSkdRkCuHOQEcvoyw=fN7q+0cU-s9dNqDHkSmrw@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <2a33d478-b7a8-5b3c-7bc5-f33eb27b44fa@rasmusvillemoes.dk>
-Date:   Thu, 11 Mar 2021 01:17:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgfMQyYSkdRkCuHOQEcvoyw=fN7q+0cU-s9dNqDHkSmrw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S229725AbhCKAUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 19:20:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhCKAUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 19:20:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C10D64EE6;
+        Thu, 11 Mar 2021 00:20:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615422025;
+        bh=29A3tQmLUaVsH/VlOprQhZ4OraRU/blMhZzT0B8bXQU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WZECi1RxVRFYWjE+LGaAC3SyMy/4yH2uhjhMmliXi4M1WXtKKKIqGydZi1mRcD99k
+         VjxKHFWvDi2DGGUVSKpqV6RlZBpgFFQz/MYVXyFcB2EjEYNKh90v4+YxCDPHa4o6UJ
+         t0LVYGytBWq7tkDKe7HCf1pvwSFegP/pI/2pWTIt183Bf7leJ/taY10lrAfJplbxsU
+         z5yqOnvkJQqvmnni5tWXvAysH+hhf3h9BxWGsZ1uf0UUyKCqwN0BMBZcQ6H3S+gqfA
+         hUYpECcgJPvz84wuDN4+3D3pDgc3thrCjS0k+UzgkHo8DqLSsKPyn2oi0rDm3pO7Gg
+         YMslQ63MFcQ4Q==
+Date:   Thu, 11 Mar 2021 09:20:18 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
+        kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
+Message-Id: <20210311092018.2d0e54d2c891850e549d16fe@kernel.org>
+In-Reply-To: <20210310183113.xxverwh4qplr7xxb@treble>
+References: <161495873696.346821.10161501768906432924.stgit@devnote2>
+        <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
+        <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
+        <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
+        <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
+        <20210309011945.ky7v3pnbdpxhmxkh@treble>
+        <20210310185734.332d9d52a26780ba02d09197@kernel.org>
+        <20210310150845.7kctaox34yrfyjxt@treble>
+        <20210311005509.0a1a65df0d2d6c7da73a9288@kernel.org>
+        <20210310183113.xxverwh4qplr7xxb@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/03/2021 23.16, Linus Torvalds wrote:
-> On Tue, Mar 9, 2021 at 1:17 PM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
->>
->> So add an initramfs_async= kernel parameter, allowing the main init
->> process to proceed to handling device_initcall()s without waiting for
->> populate_rootfs() to finish.
+On Wed, 10 Mar 2021 12:31:13 -0600
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+
+> On Thu, Mar 11, 2021 at 12:55:09AM +0900, Masami Hiramatsu wrote:
+> > +#ifdef CONFIG_KRETPROBES
+> > +static unsigned long orc_kretprobe_correct_ip(struct unwind_state *state)
+> > +{
+> > +	return kretprobe_find_ret_addr(
+> > +			(unsigned long)kretprobe_trampoline_addr(),
+> > +			state->task, &state->kr_iter);
+> > +}
+> > +
+> > +static bool is_kretprobe_trampoline_address(unsigned long ip)
+> > +{
+> > +	return ip == (unsigned long)kretprobe_trampoline_addr();
+> > +}
+> > +#else
+> > +static unsigned long orc_kretprobe_correct_ip(struct unwind_state *state)
+> > +{
+> > +	return state->ip;
+> > +}
+> > +
+> > +static bool is_kretprobe_trampoline_address(unsigned long ip)
+> > +{
+> > +	return false;
+> > +}
+> > +#endif
+> > +
 > 
-> Oh, and a completely unrelated second comment about this: some of the
-> initramfs population code seems to be actively written to be slow.
+> Can this code go in a kprobes file?  I'd rather not clutter ORC with it,
+> and maybe it would be useful for other arches or unwinders.
+
+Yes, anyway dummy kretprobe_find_ret_addr() and kretprobe_trampoline_addr()
+should be defined !CONFIG_KRETPROBES case.
+
 > 
-> For example, I'm not sure why that write_buffer() function uses an
-> array of indirect function pointer actions. Even ignoring the whole
-> "speculation protections make that really slow" issue that came later,
-> it seems to always have been actively (a) slower and (b) more complex.
+> >  bool unwind_next_frame(struct unwind_state *state)
+> >  {
+> >  	unsigned long ip_p, sp, tmp, orig_ip = state->ip, prev_sp = state->sp;
+> > @@ -536,6 +561,18 @@ bool unwind_next_frame(struct unwind_state *state)
+> >  
+> >  		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
+> >  						  state->ip, (void *)ip_p);
+> > +		/*
+> > +		 * There are special cases when the stack unwinder is called
+> > +		 * from the kretprobe handler or the interrupt handler which
+> > +		 * occurs in the kretprobe trampoline code. In those cases,
+> > +		 * %sp is shown on the stack instead of the return address.
+> > +		 * Or, when the unwinder find the return address is replaced
+> > +		 * by kretprobe_trampoline.
+> > +		 * In those cases, correct address can be found in kretprobe.
+> > +		 */
+> > +		if (state->ip == sp ||
 > 
-> The normal way to do that is with a simple switch() statement, which
-> makes the compiler able to do a much better job. Not just for the
-> state selector - maybe it picks that function pointer approach, but
-> probably these days just direct comparisons - but simply to do things
-> like inline all those "it's used in one place" cases entirely. In
-> fact, at that point, a lot of the state machine changes may end up
-> turning into pure goto's - compilers are sometimes good at that
-> (because state machines have often been very timing-critical).
+> Why is the 'state->ip == sp' needed?
 
-FWIW, I tried doing
+As I commented above, until kretprobe_trampoline writes back the real
+address to the stack, sp value is there (which has been pushed by the
+'pushq %rsp' at the entry of kretprobe_trampoline.)
 
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -401,24 +401,26 @@ static int __init do_symlink(void)
-        return 0;
- }
+        ".type kretprobe_trampoline, @function\n"
+        "kretprobe_trampoline:\n"
+        /* We don't bother saving the ss register */
+        "       pushq %rsp\n"				// THIS
+        "       pushfq\n"
 
--static __initdata int (*actions[])(void) = {
--       [Start]         = do_start,
--       [Collect]       = do_collect,
--       [GotHeader]     = do_header,
--       [SkipIt]        = do_skip,
--       [GotName]       = do_name,
--       [CopyFile]      = do_copy,
--       [GotSymlink]    = do_symlink,
--       [Reset]         = do_reset,
--};
--
- static long __init write_buffer(char *buf, unsigned long len)
- {
-+       int ret;
-+
-        byte_count = len;
-        victim = buf;
+Thus, from inside the kretprobe handler, like ftrace, you'll see
+the sp value instead of the real return address.
 
--       while (!actions[state]())
--               ;
-+       do {
-+               switch (state) {
-+               case Start: ret = do_start(); break;
-+               case Collect: ret = do_collect(); break;
-+               case GotHeader: ret = do_header(); break;
-+               case SkipIt: ret = do_skip(); break;
-+               case GotName: ret = do_name(); break;
-+               case CopyFile: ret = do_copy(); break;
-+               case GotSymlink: ret = do_symlink(); break;
-+               case Reset: ret = do_reset(); break;
-+               }
-+       } while (!ret);
-+
-        return len - byte_count;
- }
+> > +		    is_kretprobe_trampoline_address(state->ip))
+> > +			state->ip = orc_kretprobe_correct_ip(state);
+> 
+> This is similar in concept to ftrace_graph_ret_addr(), right?  Would it
+> be possible to have a similar API?  Like
+> 
+> 		state->ip = kretprobe_ret_addr(state->task, &state->kr_iter, state->ip);
+
+OK, but,
+
+> and without the conditional.
+
+As I said, it is not possible because "state->ip == sp" check depends on
+ORC unwinder.
+
+> >  		state->sp = sp;
+> >  		state->regs = NULL;
+> > @@ -649,6 +686,12 @@ void __unwind_start(struct unwind_state *state, struct task_struct *task,
+> >  		state->full_regs = true;
+> >  		state->signal = true;
+> >  
+> > +		/*
+> > +		 * When the unwinder called with regs from kretprobe handler,
+> > +		 * the regs->ip starts from kretprobe_trampoline address.
+> > +		 */
+> > +		if (is_kretprobe_trampoline_address(state->ip))
+> > +			state->ip = orc_kretprobe_correct_ip(state);
+> 
+> Shouldn't __kretprobe_trampoline_handler() just set regs->ip to
+> 'correct_ret_addr' before passing the regs to the handler?  I'd think
+> that would be a less surprising value for regs->ip than
+> '&kretprobe_trampoline'.
+
+Hmm, actually current implementation on x86 mimics the behevior of
+the int3 exception (which many architectures still do).
+
+Previously the kretprobe_trampoline is a place holder like this.
+
+        "kretprobe_trampoline:\n"
+        "       nop\n"
+
+And arch_init_kprobes() puts a kprobe (int3) there.
+So in that case regs->ip should be kretprobe_trampoline.
+User handler (usually architecutre independent) finds the
+correct_ret_addr in kretprobe_instance.ret_addr field.
+
+> And it would make the unwinder just work automatically when unwinding
+> from the handler using the regs.
+> 
+> It would also work when unwinding from the handler's stack, if we put an
+> UNWIND_HINT_REGS after saving the regs.
+
+At that moment, the real return address is not identified. So we can not
+put it.
+
+> 
+> The only (rare) case it wouldn't work would be unwinding from an
+> interrupt before regs->ip gets set properly.  In which case we'd still
+> need the above call to orc_kretprobe_correct_ip() or so.
 
 
-and yes, all the do_* functions get inlined into write_buffer with some
-net space saving:
+Thank you,
 
-add/remove: 0/9 grow/shrink: 1/0 up/down: 1696/-2112 (-416)
-Function                                     old     new   delta
-write_buffer                                 100    1796   +1696
-actions                                       32       -     -32
-do_start                                      52       -     -52
-do_reset                                     112       -    -112
-do_skip                                      128       -    -128
-do_collect                                   144       -    -144
-do_symlink                                   172       -    -172
-do_copy                                      304       -    -304
-do_header                                    572       -    -572
-do_name                                      596       -    -596
-Total: Before=5360, After=4944, chg -7.76%
-
-(ppc32 build). But the unpacking still takes the same time. It might be
-different on x86.
-
-Rasmus
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
