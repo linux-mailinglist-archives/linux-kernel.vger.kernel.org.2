@@ -2,53 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFD933702F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF09337030
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhCKKi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:38:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34476 "EHLO mail.kernel.org"
+        id S232419AbhCKKj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:39:29 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:10328 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232229AbhCKKiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:38:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF13664FBA;
-        Thu, 11 Mar 2021 10:38:52 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 10:38:49 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH v14 3/8] arm64: mte: Drop arch_enable_tagging()
-Message-ID: <20210311103848.GA30821@arm.com>
-References: <20210308161434.33424-1-vincenzo.frascino@arm.com>
- <20210308161434.33424-4-vincenzo.frascino@arm.com>
+        id S232420AbhCKKjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 05:39:02 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dx55w1NnBz9v13c;
+        Thu, 11 Mar 2021 11:39:00 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id tZloAslLb0pz; Thu, 11 Mar 2021 11:39:00 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dx55v51kbz9v13Y;
+        Thu, 11 Mar 2021 11:38:59 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D605D8B807;
+        Thu, 11 Mar 2021 11:39:00 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id A76jusLrAy7J; Thu, 11 Mar 2021 11:39:00 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 66C008B806;
+        Thu, 11 Mar 2021 11:39:00 +0100 (CET)
+Subject: Re: [PATCH v2 36/43] powerpc/32: Set current->thread.regs in C
+ interrupt entry
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
+ <8d523f9ecee1de0515cc31d43030c12ab171a670.1615291474.git.christophe.leroy@csgroup.eu>
+ <1615339900.vmbtzuirqw.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <035298ad-4d0b-5e74-6f5c-e03677580924@csgroup.eu>
+Date:   Thu, 11 Mar 2021 11:38:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308161434.33424-4-vincenzo.frascino@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1615339900.vmbtzuirqw.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:14:29PM +0000, Vincenzo Frascino wrote:
-> arch_enable_tagging() was left in memory.h after the introduction of
-> async mode to not break the bysectability of the KASAN KUNIT tests.
-> 
-> Remove the function now that KASAN has been fully converted.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+
+Le 10/03/2021 à 02:33, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of March 9, 2021 10:10 pm:
+>> No need to do that is assembly, do it in C.
+> 
+> Hmm. No issues with the patch as such, but why does ppc32 need this but
+> not 64? AFAIKS 64 sets this when a thread is created.
+
+Looks like ppc64 was doing the same in function save_remaining_regs() in arch/ppc64/kernel/head.S 
+until commit https://github.com/mpe/linux-fullhistory/commit/e5bb080d
+
+But I can't find what happend to it in that commit.
+
+Where is it done now ? Maybe that's also already done for ppc32.
+
+Thanks
+Christophe
+
+
+> 
+> Thanks,
+> Nick
+> 
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/include/asm/interrupt.h | 4 +++-
+>>   arch/powerpc/kernel/entry_32.S       | 3 +--
+>>   2 files changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+>> index 861e6eadc98c..e6d71c2e3aa2 100644
+>> --- a/arch/powerpc/include/asm/interrupt.h
+>> +++ b/arch/powerpc/include/asm/interrupt.h
+>> @@ -33,8 +33,10 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrup
+>>   	if (!arch_irq_disabled_regs(regs))
+>>   		trace_hardirqs_off();
+>>   
+>> -	if (user_mode(regs))
+>> +	if (user_mode(regs)) {
+>> +		current->thread.regs = regs;
+>>   		account_cpu_user_entry();
+>> +	}
+>>   #endif
+>>   	/*
+>>   	 * Book3E reconciles irq soft mask in asm
+>> diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
+>> index 8fe1c3fdfa6e..815a4ff1ba76 100644
+>> --- a/arch/powerpc/kernel/entry_32.S
+>> +++ b/arch/powerpc/kernel/entry_32.S
+>> @@ -52,8 +52,7 @@
+>>   prepare_transfer_to_handler:
+>>   	andi.	r0,r9,MSR_PR
+>>   	addi	r12, r2, THREAD
+>> -	beq	2f			/* if from user, fix up THREAD.regs */
+>> -	stw	r3,PT_REGS(r12)
+>> +	beq	2f
+>>   #ifdef CONFIG_PPC_BOOK3S_32
+>>   	kuep_lock r11, r12
+>>   #endif
+>> -- 
+>> 2.25.0
+>>
+>>
