@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C1E336CD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D228336CD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhCKHJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:09:27 -0500
+        id S231897AbhCKHJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:09:31 -0500
 Received: from mga04.intel.com ([192.55.52.120]:22599 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231669AbhCKHI4 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:08:56 -0500
-IronPort-SDR: JN/R7DUWXXUcyY0T+/Q2iWAJnS9RvZEOP7J8AKANRzT44JY8lDoO1oqSoG+k0Bl1FWYXML9sPt
- ACd+CGsv/9rQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246080"
+        id S231697AbhCKHI6 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:08:58 -0500
+IronPort-SDR: 29cWf3EqmVDepDQrc+dChe7EhNj46ti02CY1ZkdUmSoxWsnlMqJFJopB1eWoiWrwVAj1kGh/u4
+ stYWsbn+hOpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246083"
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="186246080"
+   d="scan'208";a="186246083"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:08:55 -0800
-IronPort-SDR: sYISkTII7BhqcvDnSM45wXvfEIBO48MNW0Eb5OcDVuKSJwEtU+b6JHohWCwxyjlaU7zEQdkDOM
- /IMXItY2Gs3w==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:08:58 -0800
+IronPort-SDR: w0LDzSuoOXFLP0++21EGcSUZy64hYPdpD7GsHBR+NA8O2+PPs+Imgi0pthfskHEzeb/YyjyVzT
+ MXtM3tQ1JiBA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="509937945"
+   d="scan'208";a="509937953"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:08:53 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:08:56 -0800
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 15/27] perf stat: Filter out unmatched aggregation for hybrid event
-Date:   Thu, 11 Mar 2021 15:07:30 +0800
-Message-Id: <20210311070742.9318-16-yao.jin@linux.intel.com>
+Subject: [PATCH v2 16/27] perf evlist: Warn as events from different hybrid PMUs in a group
+Date:   Thu, 11 Mar 2021 15:07:31 +0800
+Message-Id: <20210311070742.9318-17-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210311070742.9318-1-yao.jin@linux.intel.com>
 References: <20210311070742.9318-1-yao.jin@linux.intel.com>
@@ -41,93 +41,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf-stat has supported some aggregation modes, such as --per-core,
---per-socket and etc. While for hybrid event, it may only available
-on part of cpus. So for --per-core, we need to filter out the
-unavailable cores, for --per-socket, filter out the unavailable
-sockets, and so on.
+If a group has events which are from different hybrid PMUs,
+shows a warning.
 
-Before:
+This is to remind the user not to put the core event and atom
+event into one group.
 
-  root@ssp-pwrt-002:~# ./perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
+  root@ssp-pwrt-002:~# ./perf stat -e "{cpu_core/cycles/,cpu_atom/cycles/}" -- sleep 1
+  WARNING: Group has events from different hybrid PMUs
 
-   Performance counter stats for 'system wide':
+   Performance counter stats for 'sleep 1':
 
-  S0-D0-C0           2      1,604,426,524      cpu_core/cycles/
-  S0-D0-C4           2      1,604,408,224      cpu_core/cycles/
-  S0-D0-C8           2      1,605,995,644      cpu_core/cycles/
-  S0-D0-C12          2      1,628,056,554      cpu_core/cycles/
-  S0-D0-C16          2      1,611,488,734      cpu_core/cycles/
-  S0-D0-C20          2      1,616,314,761      cpu_core/cycles/
-  S0-D0-C24          2      1,603,558,295      cpu_core/cycles/
-  S0-D0-C28          2      1,603,541,128      cpu_core/cycles/
-  S0-D0-C32          0      <not counted>      cpu_core/cycles/
-  S0-D0-C33          0      <not counted>      cpu_core/cycles/
-  S0-D0-C34          0      <not counted>      cpu_core/cycles/
-  S0-D0-C35          0      <not counted>      cpu_core/cycles/
-  S0-D0-C36          0      <not counted>      cpu_core/cycles/
-  S0-D0-C37          0      <not counted>      cpu_core/cycles/
-  S0-D0-C38          0      <not counted>      cpu_core/cycles/
-  S0-D0-C39          0      <not counted>      cpu_core/cycles/
+       <not counted>      cpu_core/cycles/
+     <not supported>      cpu_atom/cycles/
 
-After:
-
-  root@ssp-pwrt-002:~# ./perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
-
-   Performance counter stats for 'system wide':
-
-  S0-D0-C0           2      1,621,781,943      cpu_core/cycles/
-  S0-D0-C4           2      1,621,755,088      cpu_core/cycles/
-  S0-D0-C8           2      1,604,276,920      cpu_core/cycles/
-  S0-D0-C12          2      1,603,446,963      cpu_core/cycles/
-  S0-D0-C16          2      1,604,231,725      cpu_core/cycles/
-  S0-D0-C20          2      1,603,435,286      cpu_core/cycles/
-  S0-D0-C24          2      1,603,387,250      cpu_core/cycles/
-  S0-D0-C28          2      1,604,173,183      cpu_core/cycles/
+         1.002585908 seconds time elapsed
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
- tools/perf/util/stat-display.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ tools/perf/builtin-record.c |  3 +++
+ tools/perf/builtin-stat.c   |  7 ++++++
+ tools/perf/util/evlist.c    | 44 +++++++++++++++++++++++++++++++++++++
+ tools/perf/util/evlist.h    |  2 ++
+ 4 files changed, 56 insertions(+)
 
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index ed37d8e7ea1a..2db7c36a03ad 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -634,6 +634,20 @@ static void aggr_cb(struct perf_stat_config *config,
- 	}
- }
- 
-+static bool aggr_id_hybrid_matched(struct perf_stat_config *config,
-+				   struct evsel *counter, struct aggr_cpu_id id)
-+{
-+	struct aggr_cpu_id s;
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 363ea1047148..188a1198cd4b 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -929,6 +929,9 @@ static int record__open(struct record *rec)
+ 			        pos = evlist__reset_weak_group(evlist, pos, true);
+ 				goto try_again;
+ 			}
 +
-+	for (int i = 0; i < evsel__nr_cpus(counter); i++) {
-+		s = config->aggr_get_id(config, evsel__cpus(counter), i);
-+		if (cpu_map__compare_aggr_cpu_id(s, id))
++			if (errno == EINVAL && perf_pmu__hybrid_exist())
++				evlist__warn_hybrid_group(evlist);
+ 			rc = -errno;
+ 			evsel__open_strerror(pos, &opts->target, errno, msg, sizeof(msg));
+ 			ui__error("%s\n", msg);
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 7a732508b2b4..6f780a039db0 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -239,6 +239,9 @@ static void evlist__check_cpu_maps(struct evlist *evlist)
+ 	struct evsel *evsel, *pos, *leader;
+ 	char buf[1024];
+ 
++	if (evlist__hybrid_exist(evlist))
++		return;
++
+ 	evlist__for_each_entry(evlist, evsel) {
+ 		leader = evsel->leader;
+ 
+@@ -726,6 +729,10 @@ enum counter_recovery {
+ static enum counter_recovery stat_handle_error(struct evsel *counter)
+ {
+ 	char msg[BUFSIZ];
++
++	if (perf_pmu__hybrid_exist() && errno == EINVAL)
++		evlist__warn_hybrid_group(evsel_list);
++
+ 	/*
+ 	 * PPC returns ENXIO for HW counters until 2.6.37
+ 	 * (behavior changed with commit b0a873e).
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index f139151b9433..5ec891418cdd 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -2224,3 +2224,47 @@ void evlist__invalidate_all_cpus(struct evlist *evlist)
+ 	perf_cpu_map__put(evlist->core.all_cpus);
+ 	evlist->core.all_cpus = perf_cpu_map__empty_new(1);
+ }
++
++static bool group_hybrid_conflict(struct evsel *leader)
++{
++	struct evsel *pos, *prev = NULL;
++
++	for_each_group_evsel(pos, leader) {
++		if (!pos->pmu_name || !perf_pmu__is_hybrid(pos->pmu_name))
++			continue;
++
++		if (prev && strcmp(prev->pmu_name, pos->pmu_name))
 +			return true;
++
++		prev = pos;
 +	}
 +
 +	return false;
 +}
 +
- static void print_counter_aggrdata(struct perf_stat_config *config,
- 				   struct evsel *counter, int s,
- 				   char *prefix, bool metric_only,
-@@ -647,6 +661,12 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
- 	double uval;
- 
- 	ad.id = id = config->aggr_map->map[s];
++void evlist__warn_hybrid_group(struct evlist *evlist)
++{
++	struct evsel *evsel;
 +
-+	if (perf_pmu__hybrid_exist() &&
-+	    !aggr_id_hybrid_matched(config, counter, id)) {
-+		return;
++	evlist__for_each_entry(evlist, evsel) {
++		if (evsel__is_group_leader(evsel) &&
++		    evsel->core.nr_members > 1 &&
++		    group_hybrid_conflict(evsel)) {
++			WARN_ONCE(1, "WARNING: Group has events from "
++				     "different hybrid PMUs\n");
++			return;
++		}
++	}
++}
++
++bool evlist__hybrid_exist(struct evlist *evlist)
++{
++	struct evsel *evsel;
++
++	evlist__for_each_entry(evlist, evsel) {
++		if (evsel__is_hybrid_event(evsel))
++			return true;
 +	}
 +
- 	ad.val = ad.ena = ad.run = 0;
- 	ad.nr = 0;
- 	if (!collect_data(config, counter, aggr_cb, &ad))
++	return false;
++}
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index 0da683511d98..33dec3bb5739 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -369,4 +369,6 @@ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx);
+ void evlist__invalidate_all_cpus(struct evlist *evlist);
+ 
+ bool evlist__has_hybrid_events(struct evlist *evlist);
++void evlist__warn_hybrid_group(struct evlist *evlist);
++bool evlist__hybrid_exist(struct evlist *evlist);
+ #endif /* __PERF_EVLIST_H */
 -- 
 2.17.1
 
