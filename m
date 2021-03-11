@@ -2,66 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E247336F56
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D1C336F61
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhCKJxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:53:33 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:52429 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231882AbhCKJxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:53:18 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lKI0K-0004EF-Up; Thu, 11 Mar 2021 09:53:17 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org
-Subject: [PATCH][next] nvmem: core: Fix unintentional sign extension issue
-Date:   Thu, 11 Mar 2021 09:53:16 +0000
-Message-Id: <20210311095316.6480-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S232112AbhCKJ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:56:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231991AbhCKJzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 04:55:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7995164E04;
+        Thu, 11 Mar 2021 09:55:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615456538;
+        bh=9wEgtYJxwFrFRjLiQajWmNSfLrWwcoVi6KN3QRm2d5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eU1L6/5/U94bb351eFjcy9XB1cEq8MbuONF3gVia+LqsNbv+pHIkMTjCiiOyQZMb+
+         ADGGVxPnyV+qWYIAanEWsnqrjzd192N07G6EW6qNd9AWvG4N2cTvssRt9ulWGSwoun
+         19pRsC1CeQWx+ew+cdzvBvdeHhmU1W5WGfLDoBkI=
+Date:   Thu, 11 Mar 2021 10:55:35 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bkkarthik@pesu.pes.edu
+Subject: Re: [PATCH] net: core: bpf_sk_storage.c: Fix bare usage of unsigned
+Message-ID: <YEnpF8AfvS7b/wln@kroah.com>
+References: <20210311094349.5q76vsxuqk3riwyq@kewl-virtual-machine>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311094349.5q76vsxuqk3riwyq@kewl-virtual-machine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Mar 11, 2021 at 03:13:49PM +0530, Shubhankar Kuranagatti wrote:
+> Changed bare usage of unsigned to unsigned int
 
-The shifting of the u8 integer buf[3] by 24 bits to the left will
-be promoted to a 32 bit signed int and then sign-extended to a
-u64. In the event that the top bit of buf[3] is set then all
-then all the upper 32 bits of the u64 end up as also being set
-because of the sign-extension. Fix this by casting buf[i] to
-a u64 before the shift.
+That says _what_ you did, but not _why_ you did it :(
 
-Addresses-Coverity: ("Unintended sign extension")
-Fixes: 097eb1136ebb ("nvmem: core: Add functions to make number reading easy")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/nvmem/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+thanks,
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 635e3131eb5f..bca671ff4e54 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -1693,7 +1693,7 @@ int nvmem_cell_read_variable_le_u64(struct device *dev, const char *cell_id,
- 	/* Copy w/ implicit endian conversion */
- 	*val = 0;
- 	for (i = 0; i < len; i++)
--		*val |= buf[i] << (8 * i);
-+		*val |= (uint64_t)buf[i] << (8 * i);
- 
- 	kfree(buf);
- 
--- 
-2.30.2
-
+greg k-h
