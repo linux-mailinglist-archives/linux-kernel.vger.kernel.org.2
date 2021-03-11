@@ -2,153 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E5433698F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3734D336992
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhCKBUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 20:20:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59628 "EHLO
+        id S229938AbhCKBVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 20:21:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhCKBUn (ORCPT
+        with ESMTP id S229542AbhCKBVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 20:20:43 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE938C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:20:42 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id l2so12596326pgb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:20:42 -0800 (PST)
+        Wed, 10 Mar 2021 20:21:10 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C3FC061574;
+        Wed, 10 Mar 2021 17:21:10 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id n9so11638027pgi.7;
+        Wed, 10 Mar 2021 17:21:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=e05gNqFmEe1I9vJPFbv/SBKS9J6IN2bhiLFxjOWA5Fw=;
-        b=eDRfPDA6YWI7zoh24eHzQJzr78ortggEi1AHgvYtrnYCkxmk5PSyRHlgrf3YkgNxv4
-         NT/0UAhbi8fJmsjFHVqowR3sFslQ0K3+0K8LjLzqeJs40m/2xPJfPNYODX3PMrIsrEJX
-         RDWOpMCPiaCA/eNlX/75paoBX4JCXzvdWrWhjkrVwHz2P+b03TP4LbeyGVExZtjnojf9
-         UYU00AxdnKYgctlyr/D5fctCWAg+qMVAAdW7DY0Ltx5lJQ1XqcAhsTGs5d5YijBZ0Cff
-         lKIjUm3HrWyC9jMNeZBERZse/a4Ntt1OF6BOooH9M6OW+1eJwhVNaSeglDZmaqHkkqZA
-         onLQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=te3KkZ/7y8l0N1gnz9fMIpGsfWHYXiKPURp+vcWCB8E=;
+        b=Au+RBIDSlz3wCuB/gOx33O1w5AROEEMoqV2WiwYIkaqfiSq5If3GPNfTo4eKol3JQ4
+         Eml/1T0KBGaXSkuPgFUmVompKUMjCZcjkA5FbWidBCi2qGUpae5SYoxAo/lGyrO/0OaB
+         7CiWJw6z8ttZuazqW32CJ9OifmAson1OXihNyRbijeKyHXSjiguefsl4DjJocHNr3LgO
+         zLY+oXDx1E0VFOLORK2ljBX/5s66zo1Wn2o29peHdEr6+pedp7ldmPgrsjPmj6AVfuVG
+         c6ZEXgCDW9AGspuGz/YfpjcauGdltXbLLLjFvBW7fU9CBfc/CjEk9N11G8wK3qv/P/zC
+         bk7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=e05gNqFmEe1I9vJPFbv/SBKS9J6IN2bhiLFxjOWA5Fw=;
-        b=DzW3x1oS/f6Rqipjt1P6wHgH9xyz/fxZUrwUQsoJO4XGLsy7/j91svKJoaeYcMwa/O
-         XXoH1w3RRfIeZLiRU7jRO7YY/C0/lJ2YDp8DZM6/yHZq5zqtsdggNTcn2bJg+Bdj2SlU
-         4cprwtC2shlVcHND9IG9dV+8H3sZsdZrOvyRdqNlFN4qhWkfwPJMiUgqvpcTP80Il2SX
-         3jygwWIN/alhEezCGkHWv17Wd1HbHbYe9Yu+QkflRv9WTnj3Jg/aeoQ07cLR4C1RmDwP
-         Tlqn72/2h4P0h1OXQPvawRrgKjvsZ61/rjqyLKD4QzJLnZdfiUduwWlQn5jh9ajiMd3R
-         4t3Q==
-X-Gm-Message-State: AOAM533p0USkrcApXarfFa5gFbqPjUW870tv7PR6C63xH7bq5aypytiW
-        5hsxA8mTbZFcoMLGhoY1Iu6ksCuXFm5crg==
-X-Google-Smtp-Source: ABdhPJx0VDBZ7VTI7yH5PnrUyDBS4jmSPdJDctDRFMlePYS5ZGmao3zjdhZdmlcZ3uU8uc4P5FgodA==
-X-Received: by 2002:a62:38d7:0:b029:1fb:2382:57b0 with SMTP id f206-20020a6238d70000b02901fb238257b0mr5441431pfa.10.1615425642503;
-        Wed, 10 Mar 2021 17:20:42 -0800 (PST)
-Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
-        by smtp.gmail.com with UTF8SMTPSA id 138sm631493pfv.192.2021.03.10.17.20.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 17:20:42 -0800 (PST)
-Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor vfio_pci
- drivers
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, alex.williamson@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
-        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
-        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, cjia@nvidia.com,
-        yishaih@nvidia.com, mjrosato@linux.ibm.com, hch@lst.de
-References: <20210309083357.65467-1-mgurtovoy@nvidia.com>
- <20210309083357.65467-9-mgurtovoy@nvidia.com>
- <19e73e58-c7a9-03ce-65a7-50f37d52ca15@ozlabs.ru>
- <8941cf42-0c40-776e-6c02-9227146d3d66@nvidia.com>
- <20210310130246.GW2356281@nvidia.com>
- <3b772357-7448-5fa7-9ecc-c13c08df95c3@ozlabs.ru>
- <20210310194002.GD2356281@nvidia.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <7f0310db-a8e3-4045-c83a-11111767a22f@ozlabs.ru>
-Date:   Thu, 11 Mar 2021 12:20:33 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        bh=te3KkZ/7y8l0N1gnz9fMIpGsfWHYXiKPURp+vcWCB8E=;
+        b=CuPnNRZQEf1H9w1CUbZLDCGf1scFM69M+zY4U0DzP2HQCDN2JUJ7LpcMWJ6mRP31lO
+         jTSem1Q4ktRwc7cdC6YkdF4qekIYFnDpZCWeXhOXq7RM5GOsrEO83FGQyiXHckWLs/B6
+         tZs79Wp0Jz2dw+1HHZLP8xNVxiyf2PWrMrqQyLOs6VDMZfVlDptRs3Uvn3C91lIzkKZ1
+         UjuTt85yGXgAcamb2Up+IG5tNp+JIadBPb/Ip3au4xszCemM/jbsCo3uFqk4TJOCrnsX
+         VvZ/bXxV/Z5dYBBTWD+JgDZ4YBHWmMyVC4eHePxzEXHv4yGoQQi3Kb3pa33AjIn2ue1i
+         z1Cw==
+X-Gm-Message-State: AOAM533uzLfCNObkGiIb4qfs6DK2YBYuzV5aTM4331zNN/et+T941CUF
+        A3BBpUWqxUHVQXR6Iq7Wuv8=
+X-Google-Smtp-Source: ABdhPJzfCTM0tCmlERAEvAYmQCorqH4rabL9SlWfRvF5lqGrcyno8QV1gtoYRxQjOM8CF4PXaClBkQ==
+X-Received: by 2002:aa7:8286:0:b029:1e2:70ef:c410 with SMTP id s6-20020aa782860000b02901e270efc410mr5058738pfm.45.1615425670189;
+        Wed, 10 Mar 2021 17:21:10 -0800 (PST)
+Received: from z640-arch.lan ([2602:61:738f:1000::678])
+        by smtp.gmail.com with ESMTPSA id g7sm595470pgb.10.2021.03.10.17.21.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 17:21:09 -0800 (PST)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH net] net: dsa: mt7530: setup core clock even in TRGMII mode
+Date:   Wed, 10 Mar 2021 17:21:08 -0800
+Message-Id: <20210311012108.7190-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210310194002.GD2356281@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A recent change to MIPS ralink reset logic made it so mt7530 actually
+resets the switch on platforms such as mt7621 (where bit 2 is the reset
+line for the switch). That exposed an issue where the switch would not
+function properly in TRGMII mode after a reset.
 
+Reconfigure core clock in TRGMII mode to fix the issue.
 
-On 11/03/2021 06:40, Jason Gunthorpe wrote:
-> On Thu, Mar 11, 2021 at 01:24:47AM +1100, Alexey Kardashevskiy wrote:
->>
->>
->> On 11/03/2021 00:02, Jason Gunthorpe wrote:
->>> On Wed, Mar 10, 2021 at 02:57:57PM +0200, Max Gurtovoy wrote:
->>>
->>>>>> +    .err_handler        = &vfio_pci_core_err_handlers,
->>>>>> +};
->>>>>> +
->>>>>> +#ifdef CONFIG_VFIO_PCI_DRIVER_COMPAT
->>>>>> +struct pci_driver *get_nvlink2gpu_vfio_pci_driver(struct pci_dev *pdev)
->>>>>> +{
->>>>>> +    if (pci_match_id(nvlink2gpu_vfio_pci_driver.id_table, pdev))
->>>>>> +        return &nvlink2gpu_vfio_pci_driver;
->>>>>
->>>>>
->>>>> Why do we need matching PCI ids here instead of looking at the FDT which
->>>>> will work better?
->>>>
->>>> what is FDT ? any is it better to use it instead of match_id ?
->>>
->>> This is emulating the device_driver match for the pci_driver.
->>
->> No it is not, it is a device tree info which lets to skip the linux PCI
->> discovery part (the firmware does it anyway) but it tells nothing about
->> which drivers to bind.
-> 
-> I mean get_nvlink2gpu_vfio_pci_driver() is emulating the PCI match.
-> 
-> Max added a pci driver for NPU here:
-> 
-> +static struct pci_driver npu2_vfio_pci_driver = {
-> +	.name			= "npu2-vfio-pci",
-> +	.id_table		= npu2_vfio_pci_table,
-> +	.probe			= npu2_vfio_pci_probe,
-> 
-> 
-> new userspace should use driver_override with "npu-vfio-pci" as the
-> string not "vfio-pci"
-> 
-> The point of the get_npu2_vfio_pci_driver() is only optional
-> compatibility to redirect old userspace using "vfio-pci" in the
-> driver_override to the now split driver code so userspace doesn't see
-> any change in behavior.
-> 
-> If we don't do this then the vfio-pci driver override will disable the
-> npu2 special stuff, since Max took it all out of vfio-pci's
-> pci_driver.
-> 
-> It is supposed to match exactly the same match table as the pci_driver
-> above. We *don't* want different behavior from what the standrd PCI
-> driver matcher will do.
+Tested on Ubiquiti ER-X (MT7621) with TRGMII mode enabled.
 
+Fixes: 3f9ef7785a9c ("MIPS: ralink: manage low reset lines")
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+---
+ drivers/net/dsa/mt7530.c | 52 +++++++++++++++++++---------------------
+ 1 file changed, 25 insertions(+), 27 deletions(-)
 
-This is not a standard PCI driver though and the main vfio-pci won't 
-have a list to match ever. IBM NPU PCI id is unlikely to change ever but 
-NVIDIA keeps making new devices which work in those P9 boxes, are you 
-going to keep adding those ids to nvlink2gpu_vfio_pci_table? btw can the 
-id list have only vendor ids and not have device ids?
-
-
-> Since we don't have any way to mix in FDT discovery to the standard
-> PCI driver match it will still attach the npu driver but not enable
-> any special support. This seems OK.
-
-
-
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index f06f5fa2f898..9871d7cff93a 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -436,34 +436,32 @@ mt7530_pad_clk_setup(struct dsa_switch *ds, phy_interface_t interface)
+ 			     TD_DM_DRVP(8) | TD_DM_DRVN(8));
+ 
+ 	/* Setup core clock for MT7530 */
+-	if (!trgint) {
+-		/* Disable MT7530 core clock */
+-		core_clear(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+-
+-		/* Disable PLL, since phy_device has not yet been created
+-		 * provided for phy_[read,write]_mmd_indirect is called, we
+-		 * provide our own core_write_mmd_indirect to complete this
+-		 * function.
+-		 */
+-		core_write_mmd_indirect(priv,
+-					CORE_GSWPLL_GRP1,
+-					MDIO_MMD_VEND2,
+-					0);
+-
+-		/* Set core clock into 500Mhz */
+-		core_write(priv, CORE_GSWPLL_GRP2,
+-			   RG_GSWPLL_POSDIV_500M(1) |
+-			   RG_GSWPLL_FBKDIV_500M(25));
++	/* Disable MT7530 core clock */
++	core_clear(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+ 
+-		/* Enable PLL */
+-		core_write(priv, CORE_GSWPLL_GRP1,
+-			   RG_GSWPLL_EN_PRE |
+-			   RG_GSWPLL_POSDIV_200M(2) |
+-			   RG_GSWPLL_FBKDIV_200M(32));
+-
+-		/* Enable MT7530 core clock */
+-		core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+-	}
++	/* Disable PLL, since phy_device has not yet been created
++	 * provided for phy_[read,write]_mmd_indirect is called, we
++	 * provide our own core_write_mmd_indirect to complete this
++	 * function.
++	 */
++	core_write_mmd_indirect(priv,
++				CORE_GSWPLL_GRP1,
++				MDIO_MMD_VEND2,
++				0);
++
++	/* Set core clock into 500Mhz */
++	core_write(priv, CORE_GSWPLL_GRP2,
++		   RG_GSWPLL_POSDIV_500M(1) |
++		   RG_GSWPLL_FBKDIV_500M(25));
++
++	/* Enable PLL */
++	core_write(priv, CORE_GSWPLL_GRP1,
++		   RG_GSWPLL_EN_PRE |
++		   RG_GSWPLL_POSDIV_200M(2) |
++		   RG_GSWPLL_FBKDIV_200M(32));
++
++	/* Enable MT7530 core clock */
++	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+ 
+ 	/* Setup the MT7530 TRGMII Tx Clock */
+ 	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
 -- 
-Alexey
+2.30.2
+
