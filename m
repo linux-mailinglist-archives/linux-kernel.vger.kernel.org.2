@@ -2,64 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76627336E29
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F534336E37
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhCKIrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:47:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbhCKIrQ (ORCPT
+        id S231735AbhCKIuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:50:20 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2685 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231596AbhCKIty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:47:16 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE92C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:47:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=L2P1sESFUaV/AW0lkKatvnx8pKxtKng9weUi15MfMaU=; b=gBR8eV/IbSiscH5JXflpZdDHlL
-        qXZjFCvww+N7QntlYCowl3IeE37q+IDEkBXAxykul4NiMQAW19F/sjBYh3mIXa0UshPeV29p4k4EJ
-        Yxh2q43xfCKcQ0/DH0QF2tY0s5MrbYg8pELzhVxzsAEMMHzr79AmjLs2Eg3umsSUH6oDZefUO/Pa6
-        JW45InAPh5dp07yzhiUFaew3WEUyxqEvWmVCGJIOLgx1JlIy2RUk/z3gIyC+tt4kFQ7VKCs6C4mrR
-        Xy7Xy6OIkFSg0FPFWXzeLZa0WxY0g/tYCZJBHymbix50HqitTL6iQXBWFYy0UctE1BatbdFnkRfck
-        t5ifThQw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKGxk-006tOG-55; Thu, 11 Mar 2021 08:46:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1E2B63013E5;
-        Thu, 11 Mar 2021 09:46:31 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 03A2520C99AA3; Thu, 11 Mar 2021 09:46:30 +0100 (CET)
-Date:   Thu, 11 Mar 2021 09:46:30 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, tglx@linutronix.de,
-        john.ogness@linutronix.de, urezki@gmail.com, ast@fb.com,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
- in_atomic use
-Message-ID: <YEnY5hWLT/en7kw1@hirez.programming.kicks-ass.net>
-References: <20210311021321.127500-1-mike.kravetz@oracle.com>
+        Thu, 11 Mar 2021 03:49:54 -0500
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dx2Vf2mzKz67xCl;
+        Thu, 11 Mar 2021 16:41:46 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 11 Mar 2021 09:49:52 +0100
+Received: from [10.47.4.196] (10.47.4.196) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 11 Mar
+ 2021 08:49:50 +0000
+Subject: Re: [PATCH 1/5] perf metricgroup: Support printing metrics for arm64
+To:     Jiri Olsa <jolsa@redhat.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>
+CC:     "will@kernel.org" <will@kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "irogers@google.com" <irogers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Zhangshaokun <zhangshaokun@hisilicon.com>,
+        "qiangqing.zhang@nxp.com" <qiangqing.zhang@nxp.com>
+References: <1614784938-27080-1-git-send-email-john.garry@huawei.com>
+ <1614784938-27080-2-git-send-email-john.garry@huawei.com>
+ <YEE9oInI38txHWmo@krava> <95205463-4c80-4e8a-a7c0-c2a4e4553838@huawei.com>
+ <YEPZNssS200w3Axy@krava>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <9db4f883-378e-303a-4580-044c579c96e0@huawei.com>
+Date:   Thu, 11 Mar 2021 08:47:47 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311021321.127500-1-mike.kravetz@oracle.com>
+In-Reply-To: <YEPZNssS200w3Axy@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.4.196]
+X-ClientProxiedBy: lhreml715-chm.china.huawei.com (10.201.108.66) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 06:13:21PM -0800, Mike Kravetz wrote:
-> from irq context.  Changing the check in the code from !in_task to
-> in_atomic would handle the situations when called with irqs disabled.
+On 06/03/2021 19:34, Jiri Olsa wrote:
+> On Fri, Mar 05, 2021 at 11:06:58AM +0000, John Garry wrote:
+>> Hi Jirka,
+>>
+>>>> -	struct pmu_events_map *map = perf_pmu__find_map(NULL);
+>>>> +	struct pmu_events_map *map = find_cpumap();
+>>> so this is just for arm at the moment right?
+>>>
+>> Yes - but to be more accurate, arm64.
+>>
+>> At the moment, from the archs which use pmu-events, only arm64 and nds32
+>> have versions of get_cpuid_str() which require a non-NULL pmu argument.
+>>
+>> But then apparently nds32 only supports a single CPU, so this issue of
+>> heterogeneous CPUs should not be a concern there:)
+>>
+>>> could we rather make this arch specific code, so we don't need
+>>> to do the scanning on archs where this is not needed?
+>>>
+>>> like marking perf_pmu__find_map as __weak and add arm specific
+>>> version?
+>> Well I was thinking that this code should not be in metricgroup.c anyway.
+>>
+>> So there is code which is common in current perf_pmu__find_map() for all
+>> archs.
+>>
+>> I could factor that out into a common function, below. Just a bit worried
+>> about perf_pmu__find_map() and perf_pmu__find_pmu_map() being confused.
+> right, so perf_pmu__find_map does not take perf_pmu as argument
+> anymore, so the prefix does not fit, how about pmu_events_map__find ?
 
-It does not. local_irq_disable() does not change preempt_count().
+I just noticed this series:
+https://lore.kernel.org/lkml/1612797946-18784-1-git-send-email-kan.liang@linux.intel.com/
+
+Seems that this has metricgroup support for heterogeneous system config, 
+while this series is metricgroup support for homogeneous system config 
+for arch which supports heterogeneous system config. I need to check 
+further for any conflicts.
+
+@Kan Liang, it would be great if you could cc me on that series. I don't 
+subscribe to the general list.
+
+Thanks,
+John
