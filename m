@@ -2,312 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A587C336DF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FE6336DF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhCKIji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:39:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40580 "EHLO
+        id S231341AbhCKIjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:39:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhCKIjN (ORCPT
+        with ESMTP id S230158AbhCKIjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:39:13 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E90C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:39:12 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id bf3so1487304edb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:39:12 -0800 (PST)
+        Thu, 11 Mar 2021 03:39:24 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28255C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:39:24 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id y13so10574831pfr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:39:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TGOFJXs5ttYJbh2qbl9PCocPOfFdqA3yKC8zVQhcGxU=;
-        b=prDMXNaydyrGw8bqd0fvNq25wElCMZTN7GsDi7kDU2BVApKNCxSnyHTvgCm8/RwG/l
-         tEQLsVa+RtKDdzdWP3njllCJzVqD+zT5N/wG4/NJRBa0xoXdPc44fTH0If4xcREJG5LD
-         mrLk8J3mzcjC6WngrrEg3t1g3k28PYLcJPs5JSVO5VZVm36OaX7BsjuCdoWefdk03rfB
-         FaWfekOWxlLMy6nKDPW8o2loc5jaDoFanDSIEj4eoHHl3ixgIVqpcLZukTX/XYxY+PYY
-         5GOGUNf6GUyXJkuTnvagu8pP6PQnF9XacHHJ1MpVEkHp+RBo9sYisqGv3tzGjxcJBz2p
-         BvdA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7okIhdvDzfeqbdsdHHZ/SSKfCzFnovt5NwmOsmMe63Y=;
+        b=GSFD/NWC/G5Tzys2ROvKlEtSr/y4GPOw8htx0NZOA7E8I9FPn41CRB0rdwnd/B3Ng+
+         6zeep7LBLaFzTzWAMdwIjbz6tm1Kp1Aj5kwIYb4MbYSZugYz3CBoCaGgIPZtilOic0Ym
+         CHLKqIGMd38UATAXSira9gUsas7Ti5e+6UyP9f/RxjBCMpEcPD/UURobfGxN3OAHPg60
+         ZKs3ZrAZ52Z1GXEVz2nLOKsoZxYmJgGowTil1v5D32aTt0ng5KpeFUWGh54Q4YRXc3g6
+         SPHKZmd9Ukno6gg8KY+yCXIlGA8ydC+0KZu6gttUX2+NxSa1+ySAepJlUvFh780BH5WN
+         Tdnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TGOFJXs5ttYJbh2qbl9PCocPOfFdqA3yKC8zVQhcGxU=;
-        b=kF16tQEbVKVzx0p09SMd5jUgWeX3jZkcTYY4ihfvhQkR6hPngwvW7AWSVxBfaRWPCj
-         1aPkdJ0H3s/TNqWgx1sakOk7Nnmi2nbWhaCHCSkXTT8LbIZ+7kzZ3YuDoLuDlQDIED6t
-         aFJpE0JPhIcSN94p/TYO2vVVZJl2XuOhJIMzcOhMMdHlLey3Hk58IX8BMhdUsZ4lrYyL
-         CLD3Dg0/H6scSij9pedFzH6yocqa4L6UrM9QCgb5xWGbUUluLmfx8wRaPxk6w9czioZ9
-         p7GNRdojuJAc2jpX1M63phqEVjAnSgR4ENaZ7CJc73azoxj6lyDXhvbE6Ki/nYEm0EIW
-         rriA==
-X-Gm-Message-State: AOAM532VFSFPd0i/wI/+9lgH8Oz2znr82xR+E3IQy6isZ+bWV//CL3x/
-        /2V0ivu5ay6qPEZrADpH3+m3mFZZ7hGxtVs/9SopHA==
-X-Google-Smtp-Source: ABdhPJymSPeN6UBqT56voe0FfMH/udSk1NzayynpcFenxBzNk6KoQFzmihDVfixKRf24QN40x8s9/MbWQrbxyXxxX4o=
-X-Received: by 2002:a05:6402:13ce:: with SMTP id a14mr7449847edx.365.1615451951256;
- Thu, 11 Mar 2021 00:39:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7okIhdvDzfeqbdsdHHZ/SSKfCzFnovt5NwmOsmMe63Y=;
+        b=QRqZXvRop4hdVeESYKdzlyU7EpnGEO/h70c9nY/lqh++c7DA8qTCcM4+IEeB3OMk2S
+         BLSBQJTSGFSqQHAmdIUJzFPD7snsqyKT+4/Hi8I3wmMe+KqRXXB9GPlKuXqhDlaNkXIO
+         m2kXT/Pu1HQnAu65Je77Yu/3gLZaTRP18jRlyuD8276iFO6/ds0+yh+d65pE3yW+q32/
+         1cFasmh/c4N2vNRcB8tdvbxlK8Be34WTw1JZ4vNTf5OSpt2ViyXBLozHmj/5g23NubO/
+         J1v/HhS+KLBe+bqFpBSD+fS+VTVnslwpeG0mqMVRpMVLES1Us9RGlpOUCVIVeP3l7HDa
+         qqlg==
+X-Gm-Message-State: AOAM532t/WUVvpaLl4lhsKpC6WbRBG+/jPKzrcRvIMPJ+UrKeZwuQEvy
+        A4ItL6boyHbtW/CMSIeIlO8=
+X-Google-Smtp-Source: ABdhPJxIO3gpf+kSNnn7hUI/vRvmOKQW3e56B41duHnzN7CYh/eTI4kENgTFFoZKxXymVeZ8Pi5QNQ==
+X-Received: by 2002:a62:3085:0:b029:1ec:a570:682c with SMTP id w127-20020a6230850000b02901eca570682cmr6735981pfw.28.1615451963792;
+        Thu, 11 Mar 2021 00:39:23 -0800 (PST)
+Received: from localhost ([98.126.155.250])
+        by smtp.gmail.com with ESMTPSA id u17sm1625480pgl.80.2021.03.11.00.39.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 00:39:23 -0800 (PST)
+From:   Cao jin <jojing64@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        Cao jin <jojing64@gmail.com>
+Subject: [PATCH] x86/brk: Drop RESERVE_BRK_ARRAY()
+Date:   Thu, 11 Mar 2021 16:39:19 +0800
+Message-Id: <20210311083919.27530-1-jojing64@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210310132319.155338551@linuxfoundation.org>
-In-Reply-To: <20210310132319.155338551@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 11 Mar 2021 14:08:58 +0530
-Message-ID: <CA+G9fYtoYbSLWW10qXFrv1k7qzwuo+SttUm=Cng-7UpoQbB0zQ@mail.gmail.com>
-Subject: Re: [PATCH 4.4 0/7] 4.4.261-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 at 18:57, <gregkh@linuxfoundation.org> wrote:
->
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> This is the start of the stable review cycle for the 4.4.261 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.261-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Since a13f2ef168cb ("x86/xen: remove 32-bit Xen PV guest support"),
+RESERVE_BRK_ARRAY() has no user anymore, let's drop it.
 
+Update related comments too.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Cao jin <jojing64@gmail.com>
+---
+ arch/x86/include/asm/setup.h | 5 -----
+ arch/x86/kernel/setup.c      | 6 +++---
+ 2 files changed, 3 insertions(+), 8 deletions(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
+index 389d851a02c4..a12458a7a8d4 100644
+--- a/arch/x86/include/asm/setup.h
++++ b/arch/x86/include/asm/setup.h
+@@ -130,11 +130,6 @@ void *extend_brk(size_t size, size_t align);
+ 			: : "i" (sz));					\
+ 	}
+ 
+-/* Helper for reserving space for arrays of things */
+-#define RESERVE_BRK_ARRAY(type, name, entries)		\
+-	type *name;					\
+-	RESERVE_BRK(name, sizeof(type) * entries)
+-
+ extern void probe_roms(void);
+ #ifdef __i386__
+ 
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 740f3bdb3f61..3af27bf1f837 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -66,7 +66,7 @@ RESERVE_BRK(dmi_alloc, 65536);
+ 
+ /*
+  * Range of the BSS area. The size of the BSS area is determined
+- * at link time, with RESERVE_BRK*() facility reserving additional
++ * at link time, with RESERVE_BRK() facility reserving additional
+  * chunks.
+  */
+ unsigned long _brk_start = (unsigned long)__brk_base;
+@@ -1039,8 +1039,8 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	/*
+ 	 * Need to conclude brk, before e820__memblock_setup()
+-	 *  it could use memblock_find_in_range, could overlap with
+-	 *  brk area.
++	 * it could use memblock_find_in_range, could overlap with
++	 * brk area.
+ 	 */
+ 	reserve_brk();
+ 
+-- 
+2.29.2
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.261-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 9de32cd2fc5194157c9c116eec56a219048dc511
-git describe: v4.4.260-8-g9de32cd2fc51
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.260-8-g9de32cd2fc51
-
-No regressions (compared to build v4.4.260)
-
-No fixes (compared to build v4.4.260)
-
-
-Ran 26428 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-cap_bounds-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* kvm-unit-tests
-* ltp-open-posix-tests
-* perf
-* v4l2-compliance
-* install-android-platform-tools-r2600
-* kselftest-kvm
-* kselftest-vm
-* fwts
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.261-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.261-rc1-hikey-20210310-953
-git commit: bf1bdacd039d70403f1ce3196f223cae689ca15f
-git describe: 4.4.261-rc1-hikey-20210310-953
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.261-rc1-hikey-20210310-953
-
-No regressions (compared to build 4.4.261-rc1-hikey-20210308-951)
-
-
-No fixes (compared to build 4.4.261-rc1-hikey-20210308-951)
-
-Ran 1965 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
