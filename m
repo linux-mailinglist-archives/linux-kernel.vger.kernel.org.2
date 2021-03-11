@@ -2,180 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4F7337436
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4421D33743A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233716AbhCKNlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:41:39 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:50898 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233635AbhCKNlV (ORCPT
+        id S233635AbhCKNmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:42:42 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:42313 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233726AbhCKNmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:41:21 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12BDfCaq108524;
-        Thu, 11 Mar 2021 07:41:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615470072;
-        bh=vYLdQbvqwMSqb9Nc4Kl09M1XlI2NhnGkj2qZH+9v8j8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=OBbm3t30O4VZAsUnIreBTI/XsavIqsW+FaJrebHc7IpZmU121Z5j6SYtfghbclZxZ
-         zfSBj0o9zFchOkAq5sdFxNod8LmZzUWdHPOFjHK8zeuwDiIth2yRId2jsbce7Ghsl6
-         XHIvKbL6Ah6v9RtcBbGI3GQxKkiPid/UwlDDHv7w=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12BDfCPk032166
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 11 Mar 2021 07:41:12 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 11
- Mar 2021 07:41:12 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 11 Mar 2021 07:41:12 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12BDfBiK001084;
-        Thu, 11 Mar 2021 07:41:12 -0600
-Date:   Thu, 11 Mar 2021 19:11:11 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Nishanth Menon <nm@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] arm64: dts: ti: k3-j7200-som-p0: Add nodes for
- OSPI0
-Message-ID: <20210311134109.pbqsq3l5v2h5ivlx@ti.com>
-References: <20210305153926.3479-1-p.yadav@ti.com>
- <20210305153926.3479-4-p.yadav@ti.com>
- <cbc23906-68cd-d885-2a81-c6088c402caf@ti.com>
- <20210311132250.6kwrgo75emyoglzo@pauper>
+        Thu, 11 Mar 2021 08:42:24 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-160-0OoTqTl0OueELvA3YO31BA-1; Thu, 11 Mar 2021 13:42:18 +0000
+X-MC-Unique: 0OoTqTl0OueELvA3YO31BA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 11 Mar 2021 13:42:16 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 11 Mar 2021 13:42:16 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jens Axboe' <axboe@kernel.dk>,
+        Nathan Chancellor <nathan@kernel.org>
+CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: RE: -Walign-mismatch in block/blk-mq.c
+Thread-Topic: -Walign-mismatch in block/blk-mq.c
+Thread-Index: AQHXFe27ca/ZROQGTEKd9Li70YywSKp+zBWQ
+Date:   Thu, 11 Mar 2021 13:42:16 +0000
+Message-ID: <15284544c46b4cff8422abd027eb0f8a@AcuMS.aculab.com>
+References: <20210310182307.zzcbi5w5jrmveld4@archlinux-ax161>
+ <99cf90ea-81c0-e110-4815-dd1f7df36cb4@kernel.dk>
+ <20210310203323.35w2q7tlnxe23ukg@Ryzen-9-3900X.localdomain>
+ <e43dba61-8c74-757d-862d-99d23559cf50@kernel.dk>
+In-Reply-To: <e43dba61-8c74-757d-862d-99d23559cf50@kernel.dk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210311132250.6kwrgo75emyoglzo@pauper>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/21 07:22AM, Nishanth Menon wrote:
-> On 21:43-20210305, Vignesh Raghavendra wrote:
-> > 
-> > 
-> > On 3/5/21 9:09 PM, Pratyush Yadav wrote:
-> > > TI J7200 has the Cadence OSPI controller for interfacing with OSPI
-> > > flashes. Add its node to allow using SPI flashes.
-> > > 
-> > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > > ---
-> > 
-> > Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-> > 
-> > 
-> > 
-> > > 
-> > > Notes:
-> > >     Changes in v2:
-> > >     - Do not force a pulldown on the DQS line because it already has a
-> > >       pulldown resistor.
-> > > 
-> > >  .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 17 +++++++++
-> > >  arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi   | 36 +++++++++++++++++++
-> > >  2 files changed, 53 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> > > index 359e3e8a8cd0..5408ec815d58 100644
-> > > --- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> > > +++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> > > @@ -269,6 +269,23 @@ hbmc: hyperbus@47034000 {
-> > >  			#size-cells = <1>;
-> > >  			mux-controls = <&hbmc_mux 0>;
-> > >  		};
-> > > +
-> > > +		ospi0: spi@47040000 {
-> > > +			compatible = "ti,am654-ospi";
-> > > +			reg = <0x0 0x47040000 0x0 0x100>,
-> > > +			      <0x5 0x00000000 0x1 0x0000000>;
-> > > +			interrupts = <GIC_SPI 840 IRQ_TYPE_LEVEL_HIGH>;
-> > > +			cdns,fifo-depth = <256>;
-> > > +			cdns,fifo-width = <4>;
-> > > +			cdns,trigger-address = <0x0>;
-> > > +			clocks = <&k3_clks 103 0>;
-> > > +			assigned-clocks = <&k3_clks 103 0>;
-> > > +			assigned-clock-parents = <&k3_clks 103 2>;
-> > > +			assigned-clock-rates = <166666666>;
-> > > +			power-domains = <&k3_pds 103 TI_SCI_PD_EXCLUSIVE>;
-> > > +			#address-cells = <1>;
-> > > +			#size-cells = <0>;
-> > > +		};
-> > >  	};
-> > >  
-> > >  	tscadc0: tscadc@40200000 {
-> > > diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-> > > index a988e2ab2ba1..34724440171a 100644
-> > > --- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-> > > +++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-> > > @@ -100,6 +100,22 @@ J721E_WKUP_IOPAD(0x24, PIN_INPUT, 1) /* (A8) MCU_OSPI0_D6.MCU_HYPERBUS0_DQ6 */
-> > >  			J721E_WKUP_IOPAD(0x28, PIN_INPUT, 1) /* (A7) MCU_OSPI0_D7.MCU_HYPERBUS0_DQ7 */
-> > >  		>;
-> > >  	};
-> > > +
-> > > +	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins-default {
-> > > +		pinctrl-single,pins = <
-> > > +			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_OSPI0_CLK */
-> > > +			J721E_WKUP_IOPAD(0x002c, PIN_OUTPUT, 0) /* MCU_OSPI0_CSn0 */
-> > > +			J721E_WKUP_IOPAD(0x000c, PIN_INPUT, 0)  /* MCU_OSPI0_D0 */
-> > > +			J721E_WKUP_IOPAD(0x0010, PIN_INPUT, 0)  /* MCU_OSPI0_D1 */
-> > > +			J721E_WKUP_IOPAD(0x0014, PIN_INPUT, 0)  /* MCU_OSPI0_D2 */
-> > > +			J721E_WKUP_IOPAD(0x0018, PIN_INPUT, 0)  /* MCU_OSPI0_D3 */
-> > > +			J721E_WKUP_IOPAD(0x001c, PIN_INPUT, 0)  /* MCU_OSPI0_D4 */
-> > > +			J721E_WKUP_IOPAD(0x0020, PIN_INPUT, 0)  /* MCU_OSPI0_D5 */
-> > > +			J721E_WKUP_IOPAD(0x0024, PIN_INPUT, 0)  /* MCU_OSPI0_D6 */
-> > > +			J721E_WKUP_IOPAD(0x0028, PIN_INPUT, 0)  /* MCU_OSPI0_D7 */
-> > > +			J721E_WKUP_IOPAD(0x0008, PIN_INPUT, 0)  /* MCU_OSPI0_DQS */
-> > > +		>;
-> > > +	};
-> > >  };
-> > >  
-> > >  &main_pmx0 {
-> > > @@ -235,3 +251,23 @@ exp_som: gpio@21 {
-> > >  				  "GPIO_LIN_EN", "CAN_STB";
-> > >  	};
-> > >  };
-> > > +
-> > > +&ospi0 {
-> > > +	pinctrl-names = "default";
-> > > +	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
-> > > +
-> > > +	flash@0{
-> > > +		compatible = "jedec,spi-nor";
-> > > +		reg = <0x0>;
-> > > +		spi-tx-bus-width = <8>;
-> > > +		spi-rx-bus-width = <8>;
-> > > +		spi-max-frequency = <25000000>;
-> > > +		cdns,tshsl-ns = <60>;
-> > > +		cdns,tsd2d-ns = <60>;
-> > > +		cdns,tchsh-ns = <60>;
-> > > +		cdns,tslch-ns = <60>;
-> > > +		cdns,read-delay = <4>;
-> > > +		#address-cells = <1>;
-> > > +		#size-cells = <1>;
-> > > +	};
-> I see this:
-> +/workdir/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dt.yaml: flash@0: 'cdns,read-delay', 'cdns,tchsh-ns', 'cdns,tsd2d-ns', 'cdns,tshsl-ns', 'cdns,tslch-ns' do not match any of the regexes: '^partition@', 'pinctrl-[0-9]+'
-> 
-> 
-> And that is because
-> Documentation/devicetree/bindings/spi/cadence-quadspi.txt is not
-> converted to yaml. Following the new stringent rules, yaml please?
+RnJvbTogSmVucyBBeGJvZQ0KPiBTZW50OiAxMCBNYXJjaCAyMDIxIDIwOjQwDQo+IA0KPiBPbiAz
+LzEwLzIxIDE6MzMgUE0sIE5hdGhhbiBDaGFuY2VsbG9yIHdyb3RlOg0KPiA+IE9uIFdlZCwgTWFy
+IDEwLCAyMDIxIGF0IDAxOjIxOjUyUE0gLTA3MDAsIEplbnMgQXhib2Ugd3JvdGU6DQo+ID4+IE9u
+IDMvMTAvMjEgMTE6MjMgQU0sIE5hdGhhbiBDaGFuY2VsbG9yIHdyb3RlOg0KPiA+Pj4gSGkgSmVu
+cywNCj4gPj4+DQo+ID4+PiBUaGVyZSBpcyBhIG5ldyBjbGFuZyB3YXJuaW5nIGFkZGVkIGluIHRo
+ZSBkZXZlbG9wbWVudCBicmFuY2gsDQo+ID4+PiAtV2FsaWduLW1pc21hdGNoLCB3aGljaCBzaG93
+cyBhbiBpbnN0YW5jZSBpbiBibG9jay9ibGstbXEuYzoNCj4gPj4+DQo+ID4+PiBibG9jay9ibGst
+bXEuYzo2MzA6Mzk6IHdhcm5pbmc6IHBhc3NpbmcgOC1ieXRlIGFsaWduZWQgYXJndW1lbnQgdG8N
+Cj4gPj4+IDMyLWJ5dGUgYWxpZ25lZCBwYXJhbWV0ZXIgMiBvZiAnc21wX2NhbGxfZnVuY3Rpb25f
+c2luZ2xlX2FzeW5jJyBtYXkNCj4gPj4+IHJlc3VsdCBpbiBhbiB1bmFsaWduZWQgcG9pbnRlciBh
+Y2Nlc3MgWy1XYWxpZ24tbWlzbWF0Y2hdDQo+ID4+PiAgICAgICAgICAgICAgICAgc21wX2NhbGxf
+ZnVuY3Rpb25fc2luZ2xlX2FzeW5jKGNwdSwgJnJxLT5jc2QpOw0KPiA+Pj4gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4NCj4gPj4+IDEgd2Fybmlu
+ZyBnZW5lcmF0ZWQuDQo+ID4+Pg0KPiA+Pj4gVGhlcmUgYXBwZWFycyB0byBiZSBzb21lIGhpc3Rv
+cnkgaGVyZSBhcyBJIGNhbiBzZWUgdGhhdCB0aGlzIG1lbWJlciB3YXMNCj4gPj4+IHB1cnBvc2Vm
+dWxseSB1bmFsaWduZWQgaW4gY29tbWl0IDRjY2FmZTAzMjAwNSAoImJsb2NrOiB1bmFsaWduDQo+
+ID4+PiBjYWxsX3NpbmdsZV9kYXRhIGluIHN0cnVjdCByZXF1ZXN0IikuIEhvd2V2ZXIsIEkgbGF0
+ZXIgc2VlIGEgY2hhbmdlIGluDQo+ID4+PiBjb21taXQgN2MzZmI3MGYwMzQxICgiYmxvY2s6IHJl
+YXJyYW5nZSBhIGZldyByZXF1ZXN0IGZpZWxkcyBmb3IgYmV0dGVyDQo+ID4+PiBjYWNoZSBsYXlv
+dXQiKSB0aGF0IHNlZW1zIHNvbWV3aGF0IHJlbGF0ZWQuIElzIGl0IHBvc3NpYmxlIHRvIGdldCBi
+YWNrDQo+ID4+PiB0aGUgYWxpZ25tZW50IGJ5IHJlYXJyYW5naW5nIHRoZSBzdHJ1Y3R1cmUgYWdh
+aW4/IFRoaXMgc2VlbXMgdG8gYmUgdGhlDQo+ID4+PiBvbmx5IHNvbHV0aW9uIGZvciB0aGUgd2Fy
+bmluZyBhc2lkZSBmcm9tIGp1c3Qgb3V0cmlnaHQgZGlzYWJsaW5nIGl0LA0KPiA+Pj4gd2hpY2gg
+d291bGQgYmUgYSBzaGFtZSBzaW5jZSBpdCBzZWVtcyBsaWtlIGl0IGNvdWxkIGJlIHVzZWZ1bCBm
+b3INCj4gPj4+IGFyY2hpdGVjdHVyZXMgdGhhdCBjYW5ub3QgaGFuZGxlIHVuYWxpZ25lZCBhY2Nl
+c3NlcyB3ZWxsLCB1bmxlc3MgSSBhbQ0KPiA+Pj4gbWlzc2luZyBzb21ldGhpbmcgb2J2aW91cyA6
+KQ0KPiA+Pg0KPiA+PiBJdCBzaG91bGQgbm90IGJlIGhhcmQgdG8gZW5zdXJlIHRoYXQgYWxpZ25t
+ZW50IHdpdGhvdXQgcmUtaW50cm9kdWNpbmcNCj4gPj4gdGhlIGJsb2F0LiBJcyB0aGVyZSBzb21l
+IGJhY2tncm91bmQgb24gd2h5IDMyLWJ5dGUgYWxpZ25tZW50IGlzDQo+ID4+IHJlcXVpcmVkPw0K
+PiA+Pg0KPiA+DQo+ID4gVGhpcyBhbGlnbm1lbnQgcmVxdWlyZW1lbnQgd2FzIGludHJvZHVjZWQg
+aW4gY29tbWl0IDk2NmE5NjcxMTZlNiAoInNtcDoNCj4gPiBBdm9pZCB1c2luZyB0d28gY2FjaGUg
+bGluZXMgZm9yIHN0cnVjdCBjYWxsX3NpbmdsZV9kYXRhIikgYW5kIGl0IGxvb2tzDQo+ID4gbGlr
+ZSB0aGVyZSB3YXMgYSB0aHJlYWQgYmV0d2VlbiB5b3UgYW5kIFBldGVyIFppamxzdHJhIHRoYXQg
+aGFzIHNvbWUNCj4gPiBtb3JlIGluZm9ybWF0aW9uIG9uIHRoaXM6DQo+ID4gaHR0cHM6Ly9sb3Jl
+Lmtlcm5lbC5vcmcvci9hOWJlYjQ1Mi03MzQ0LTllMmQtZmM4MC0wOTRkOGY1YTAzOTRAa2VybmVs
+LmRrLw0KPiANCj4gQWggbm93IEkgcmVtZW1iZXIgLSBzbyBpdCdzIG5vdCB0aGF0IGl0IF9uZWVk
+c18gdG8gYmUgMzItYnl0ZSBhbGlnbmVkLA0KPiBpdCdzIGp1c3QgYSBoYW5keSB3YXkgdG8gZW5z
+dXJlIHRoYXQgaXQgZG9lc24ndCBzdHJhZGRsZSB0d28gY2FjaGVsaW5lcy4NCj4gSW4gZmFjdCwg
+dGhlcmUncyBubyByZWFsIGFsaWdubWVudCBjb25jZXJuLCBvdXRzaWRlIG9mIHBlcmZvcm1hbmNl
+DQo+IHJlYXNvbnMgd2UgZG9uJ3Qgd2FudCBpdCB0b3VjaGluZyB0d28gY2FjaGVsaW5lcy4NCj4g
+DQo+IFNvLi4uIHdoYXQgZXhhY3RseSBpcyB5b3VyIGNvbmNlcm4/IEp1c3Qgc2lsZW5jaW5nIHRo
+YXQgd2FybmluZz8gQmVjYXVzZQ0KPiB0aGVyZSBkb2Vzbid0IHNlZW0gdG8gYmUgYW4gaXNzdWUg
+d2l0aCBqdXN0IGhhdmluZyBpdCB3aGVyZXZlciBpbiBzdHJ1Y3QNCj4gcmVxdWVzdC4NCg0KQ2Fu
+IHlvdSBzaWxlbmNlIGl0IGJ5IGFkZGluZyBhbiBleHRyYSBsYXllciBvZiAnc3RydWN0Jz8NClNv
+bWV0aGluZyBsaWtlOg0KDQpzdHJ1Y3QgWw0KCS4uLi4NCglzdHJ1Y3Qgew0KCQlycV9yeXBlIHJx
+Og0KCX0gX19hbGlnbmVkKDgpOw0KCS4uLg0KfTsNCg0KU28gdGhhdCAncnEnIHdpbGwgYmUgYWxp
+Z25lZCwgYnV0IGl0c2VsZiBkb2Vzbid0IGhhdmUNCnRoZSBhbGlnbm1lbnQgY29uc3RyYWludD8N
+Cg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2Fk
+LCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5v
+OiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Ok. I am working on the conversion. Will send it soon.
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
