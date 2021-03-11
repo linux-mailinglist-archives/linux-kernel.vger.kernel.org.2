@@ -2,114 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6251337E50
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 20:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01585337E54
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 20:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhCKTkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 14:40:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
+        id S230145AbhCKTlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 14:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhCKTjj (ORCPT
+        with ESMTP id S230300AbhCKTks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 14:39:39 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D106BC061574;
-        Thu, 11 Mar 2021 11:39:38 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id a9so21866670qkn.13;
-        Thu, 11 Mar 2021 11:39:38 -0800 (PST)
+        Thu, 11 Mar 2021 14:40:48 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFD5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 11:40:47 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 16so7907407pgo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 11:40:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=J6ZVBfVZRTkSOXZ58J3mQQUyv5RexzLY8G/YXzNw3gg=;
-        b=aeyBPHOo96EVYsMl4EKRqRg7PAOMWcAChCuvfw246ZdPtGEFxCU5KTrsB0CrwxwPV5
-         VeofU1Vy+8OGBU14nm3l8e8shZpL2cXu4wVt+1zqc+2zagrT6Ixgo+SXwXqPvIQTyej+
-         /5+KcpdjG38fHSNPGd3AXgvkbiZvQtXbTfU9Hr1/1+uK3hWWNzRRuCIcZUFP6+AmfyiG
-         fLwqY7StbRxtPyibTYlXFxg4YgN9Wc2tDY6cbjPSafLEp+JD0hFEUpMLMJtXO4lsjqWJ
-         EMHXMSN8XdbVX6cALJvJdTxsgIwSBhivrT2abm88VpVpalQuevvoExn7gVv8djmqGWTr
-         t3hw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LalnUbYf3ptXykE/fAOITuo1+VnkRoBvM429zzABfbw=;
+        b=QH29SGQv+qsfrY41BlWBCcR/c2jDruOpA9TAaYWeoasgmytXsqzci0c823NzjDj0Ro
+         XyWzpCzjwptQ+6PKMTLnBYDgNspqbEM4QppGppJtu7qFnpRscNSYdhIQoR/wAmKKv7s/
+         2DGWXNNnmubpk8YUYEiZ9S+nDpMFd8FLRqs77caG4Lfq6Y6ToTuE18cTk7IsPK/28+In
+         yg3Pj6Fq1iVKThomdPxQ//TOtXD7Fm7kNDIRRyY6v2efLWqilv3jjNGrO0X9ceMjHkNy
+         ZLj4pOnV82V/hcLM3Iu3NKtxP3RMqPKLkrAa5YyZmKt7W72fGdVYTjkJ4oq9TgUCKR9Y
+         1LVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=J6ZVBfVZRTkSOXZ58J3mQQUyv5RexzLY8G/YXzNw3gg=;
-        b=FEuumfOLtBazVLyqlIy/WyQF+jFhRfrG/Q9rXT4BxGh6UAl+sKylmK4S015+VOpngc
-         TbulsZmqX61K/UaktTy+7OEB8WLXi40upjtEGGS9wDvoKFcpXKX8TMe5hh4rdclF9t9L
-         cNtn9KjRJUgZ5Kv66fxAdpDxNh8v7UWCk8kxv860C+hQcIVgbTTRMYx4YLL/UfICnhBw
-         AKglC8+1m3KzvnwEwF1max1s54r3F0E7V/K/2l4A2syrNsGrkt6iWz2CNYXrjO5AaTv2
-         QrnZh0hc8WSuHA1kwwucTZqdxIQ6njY3eUpiWMIy4k8xAEoO+5TwcqjHwSuc8OTXXvFZ
-         OW9w==
-X-Gm-Message-State: AOAM5323IpTm+C6exJffExgftyuXpfQ51xwMGrxhiiE9CmIzIN1vOFF7
-        UVFBY1rMAo77cCqAI7oEFF8=
-X-Google-Smtp-Source: ABdhPJy5A+CmvUM20BCIYZj+wwWjdnWw7OCE4uLMPsqVK6GnI9O2jt7rLLqtNu5XReRylUGz7+vQQw==
-X-Received: by 2002:a37:8544:: with SMTP id h65mr9228499qkd.200.1615491577840;
-        Thu, 11 Mar 2021 11:39:37 -0800 (PST)
-Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
-        by smtp.gmail.com with ESMTPSA id t24sm2399092qto.23.2021.03.11.11.39.37
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=LalnUbYf3ptXykE/fAOITuo1+VnkRoBvM429zzABfbw=;
+        b=KPUxCvwYWa8tUSGPgwTBhKISNo/5zk7j1/EqPlilz4EE9XTsxRCovLLd4/4P+OwO4S
+         CEaSs+RTsr/8tPvYjFSFWT4szZqxoRZxbxDRNbYTzGIXcdcBKaU8XExkY3VfDhR0RSul
+         8URW5sFeHNJRw0Zoa3I63geyEDK1cTpJ6ixylz6R7uVqPmzyjYxU2/cNStl8VB0O0bbs
+         L/ropF95zU5iVTeP40hmm2uBRWxlP5d/VNdTUS4uZIviA4OFqc2kvqR/O5k/JVAs5iyq
+         e5CmW+cOkiJUYa2yFhBWKWU4FNqksBzMEa1syu3RhVLqSWGRUp1YQbKxx5wKTS4422oh
+         RBKQ==
+X-Gm-Message-State: AOAM532GWCn/YwHGO6uW0qWiU6EOhWDhe01zD+vni0j91n7p3AF0PQfQ
+        351yHKdZxRbkwtesMj8d30M=
+X-Google-Smtp-Source: ABdhPJwKSdw3/TfsN8wIXuBnCAgQYOOM2hbHIv3zxJLQl4ktRA4SMuF+hzU8rSVY9On7VZeQW7AQfw==
+X-Received: by 2002:a62:5bc4:0:b029:1fe:86f7:3a66 with SMTP id p187-20020a625bc40000b02901fe86f73a66mr5871557pfb.42.1615491647278;
+        Thu, 11 Mar 2021 11:40:47 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
+        by smtp.gmail.com with ESMTPSA id s194sm3251595pfs.57.2021.03.11.11.40.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 11:39:37 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 11 Mar 2021 14:39:36 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Vipin Sharma <vipinsh@google.com>, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 0/2] cgroup: New misc cgroup controller
-Message-ID: <YEpx+HTd/S2EfJCe@slm.duckdns.org>
-References: <20210304231946.2766648-1-vipinsh@google.com>
- <YETLqGIw1GekWdYK@slm.duckdns.org>
- <YEpoS90X19Z2QOro@blackbook>
+        Thu, 11 Mar 2021 11:40:46 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Dias <joaodias@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH v5] mm: page_alloc: dump migrate-failed pages
+Date:   Thu, 11 Mar 2021 11:40:42 -0800
+Message-Id: <20210311194042.825152-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YEpoS90X19Z2QOro@blackbook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Currently, debugging CMA allocation failures is quite limited.
+The most common source of these failures seems to be page
+migration which doesn't provide any useful information on the
+reason of the failure by itself. alloc_contig_range can report
+those failures as it holds a list of migrate-failed pages.
 
-On Thu, Mar 11, 2021 at 07:58:19PM +0100, Michal Koutný wrote:
-> > Michal, as you've been reviewing the series, can you please take
-> > another look and ack them if you don't find anything objectionable?
-> Honestly, I'm still sitting on the fence whether this needs a new
-> controller and whether the miscontroller (:-p) is a good approach in the
-> long term [1].
+The information logged by dump_page() has already proven helpful
+for debugging allocation issues, like identifying long-term
+pinnings on ZONE_MOVABLE or MIGRATE_CMA.
 
-Yeah, it's a bit of cop-out. My take is that the underlying hardware feature
-isn't mature enough to have reasonable abstraction built on top of them.
-Given time, maybe future iterations will get there or maybe it's a passing
-fad and people will mostly forget about these.
+Let's use the dynamic debugging infrastructure, such that we
+avoid flooding the logs and creating a lot of noise on frequent
+alloc_contig_range() calls. This information is helpful for
+debugging only.
 
-In the meantime, keeping them out of cgroup is one direction, a relatively
-high friction one but still viable. Or we can provide something of a halfway
-house so that people who have immediate needs can still leverage the
-existing infrastructure while controlling the amount of time, energy and
-future lock-ins they take. So, that's misc controller.
+There are two ifdefery conditions to support common dyndbg options:
 
-I'm somewhat ambivalent but we've had multiple of these things popping up in
-the past several years and containment seems to be a reasonable approach at
-this point.
+- CONFIG_DYNAMIC_DEBUG_CORE && DYNAMIC_DEBUG_MODULE
+It aims for supporting the feature with only specific file
+with adding ccflags.
 
-> [1] Currently, only one thing comes to my mind -- the delegation via
-> cgroup.subtree_control. The miscontroller may add possibly further
-> resources whose delegation granularity is bunched up under one entry.
+- CONFIG_DYNAMIC_DEBUG
+It aims for supporting the feature with system wide globally.
 
-Controller enabling and delegation in themselves aren't supposed to have
-resource or security implications, so I don't think it's a practical
-problem.
+A simple example to enable the feature:
 
-Thanks.
+Admin could enable the dump like this(by default, disabled)
 
+	echo "func alloc_contig_dump_pages +p" > control
+
+Admin could disable it.
+
+	echo "func alloc_contig_dump_pages =_" > control
+
+Detail goes Documentation/admin-guide/dynamic-debug-howto.rst
+
+A concern is utility functions in dump_page use inconsistent
+loglevels. In the future, we might want to make the loglevels
+used inside dump_page() consistent and eventually rework the way
+we log the information here. See [1].
+
+[1] https://lore.kernel.org/linux-mm/YEh4doXvyuRl5BDB@google.com/
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+* from v4 - https://lore.kernel.org/linux-mm/20210311183047.805891-1-minchan@kernel.org/
+  * better description - david
+  * add reviewed-by - david
+
+* from v3 - https://lore.kernel.org/linux-mm/20210310180104.517886-1-minchan@kernel.org
+  * add dyndgb usage comment - akpm
+  * use dumpstack instead of warn_on - david
+
+* from v2 - https://lore.kernel.org/linux-mm/20210308202047.1903802-1-minchan@kernel.org/
+  * remove ratelimit - mhocko
+
+* from v1 - https://lore.kernel.org/linux-mm/20210217163603.429062-1-minchan@kernel.org/
+  * use dynamic debugging with system wide instead of per-call site - mhocko
+
+ mm/page_alloc.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3e4b29ee2b1e..d4b72b6682b6 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8453,6 +8453,27 @@ static unsigned long pfn_max_align_up(unsigned long pfn)
+ 				pageblock_nr_pages));
+ }
+ 
++#if defined(CONFIG_DYNAMIC_DEBUG) || \
++	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
++/* Usage: See admin-guide/dynamic-debug-howto.rst */
++static void alloc_contig_dump_pages(struct list_head *page_list)
++{
++	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor, "migrate failure");
++
++	if (DYNAMIC_DEBUG_BRANCH(descriptor)) {
++		struct page *page;
++
++		dump_stack();
++		list_for_each_entry(page, page_list, lru)
++			dump_page(page, "migration failure");
++	}
++}
++#else
++static inline void alloc_contig_dump_pages(struct list_head *page_list)
++{
++}
++#endif
++
+ /* [start, end) must belong to a single zone. */
+ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 					unsigned long start, unsigned long end)
+@@ -8496,6 +8517,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+ 	}
+ 	if (ret < 0) {
++		alloc_contig_dump_pages(&cc->migratepages);
+ 		putback_movable_pages(&cc->migratepages);
+ 		return ret;
+ 	}
 -- 
-tejun
+2.31.0.rc2.261.g7f71774620-goog
+
