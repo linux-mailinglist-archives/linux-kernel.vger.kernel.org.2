@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA513371B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 612733371BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhCKLuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:50:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232774AbhCKLtn (ORCPT
+        id S232937AbhCKLuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:50:07 -0500
+Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:46476 "EHLO
+        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232661AbhCKLtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:49:43 -0500
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0AEC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:49:42 -0800 (PST)
-Received: by mail-ua1-x935.google.com with SMTP id 97so507497uav.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 03:49:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KXqg8vgL3gnu/IDGJ8BFXqaOeLb5eaolcYdE67ipBbM=;
-        b=ZqM+6G+f/TXtH5dXXDax6oiHd3LF2JqvfGtwN7T1sctJhWpCiG5lI+vXqJSmDxORI/
-         DMO6WOUZ2u0zvvk7CiAmNFAh7lIk3tQuZ6sQMPBjaF93S6sMpEL7wZWqUMuMt+MoZBrb
-         xi5YWbdefl2EqWu3ypFz+SaVhPrkEMDWNom1EFWxEGs7m0LC+DAwFngH70PWTKacis+L
-         AbNzNRCCbogg/Ei7uL3MfsySyBBDn9HlDY9e5U1suoackSsyBPSYweHrLU4U3AH9/cmh
-         Ko/4eYAlVqO7J0WXwFFkvfmppaRdA8EvtsgVKqKE0gEWGeLY5qOEWzg9iMtXi4y6JbJ+
-         uhAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KXqg8vgL3gnu/IDGJ8BFXqaOeLb5eaolcYdE67ipBbM=;
-        b=IpfNurCdUm3BYRVt1MgiVwK3tM3BEzNO9o78B7lSyq/Z4pRsd75S7DQe5+T7mISSQL
-         187jJKNCa9k5L1wgAjBFgQMv0w1L8mjtrptG18Es0KSEdFcE3YoSFxDv59w4hhIm9eZc
-         +xcLW33ZHTghTSZ9QyS9YXc/W+/fUp7aWf8Dg8UIFnexU67jrZOMO1GeSZBrDZN5m35d
-         r7mUtLwxU91ESlzsHJbAx51kVWRuEITV1sPdoPyv3f4KseudTvWB5VcIHQuyhC8pSe4z
-         AG8vmU4BJ16/9rE00JTUAi25WuSqyfztNkQwi1xFC+lOEb7DUNJL7Hv4kCUomqf1rRry
-         KQNg==
-X-Gm-Message-State: AOAM533Zq5WnT8Am/19UGL17lUFX1s2+MAPPD7niizGNNcGIWmLAm4sk
-        +tyYruDP/+9oXRx40dtcfsJdDe4s3nXhXTK4Yk9DKy5UdPaciQ==
-X-Google-Smtp-Source: ABdhPJwRCEITIrXY4A7xuxCWdT5/HWX0F5raWsn79lSa3I6wONdV/YVQtrSk0arALTCLzXvkvByWZIGBEPiEQ3eq+kg=
-X-Received: by 2002:ab0:6f0e:: with SMTP id r14mr3251737uah.15.1615463382129;
- Thu, 11 Mar 2021 03:49:42 -0800 (PST)
+        Thu, 11 Mar 2021 06:49:51 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 96D16CCB2C
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 11:49:35 +0000 (GMT)
+Received: (qmail 21490 invoked from network); 11 Mar 2021 11:49:35 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 11 Mar 2021 11:49:35 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 0/5 v3] Introduce a bulk order-0 page allocator with two in-tree users
+Date:   Thu, 11 Mar 2021 11:49:30 +0000
+Message-Id: <20210311114935.11379-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210311181432.6385cd2b@xhacker.debian>
-In-Reply-To: <20210311181432.6385cd2b@xhacker.debian>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 11 Mar 2021 12:49:05 +0100
-Message-ID: <CAPDyKFon6knyavDHO_PujQeVwgzE6pcK13zuS9xwHfzbfwd1NQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-pci: Avoid comma separated statements
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 at 11:14, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
->
-> Use semicolons.
->
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Changelog since v3
+o Prep new pages with IRQs enabled
+o Minor documentation update
 
-Applied for next, thanks!
+Changelog since v1
+o Parenthesise binary and boolean comparisons
+o Add reviewed-bys
+o Rebase to 5.12-rc2
 
-Kind regards
-Uffe
+This series introduces a bulk order-0 page allocator with sunrpc and
+the network page pool being the first users. The implementation is not
+particularly efficient and the intention is to iron out what the semantics
+of the API should have for users. Once the semantics are ironed out, it
+can be made more efficient. Despite that, this is a performance-related
+for users that require multiple pages for an operation without multiple
+round-trips to the page allocator. Quoting the last patch for the
+high-speed networking use-case.
 
+    For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
+    redirecting xdp_frame packets into a veth, that does XDP_PASS to
+    create an SKB from the xdp_frame, which then cannot return the page
+    to the page_pool. In this case, we saw[1] an improvement of 18.8%
+    from using the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
 
-> ---
->  drivers/mmc/host/sdhci-pci-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-> index 9552708846ca..62799c1d9c0c 100644
-> --- a/drivers/mmc/host/sdhci-pci-core.c
-> +++ b/drivers/mmc/host/sdhci-pci-core.c
-> @@ -958,7 +958,7 @@ static int glk_emmc_probe_slot(struct sdhci_pci_slot *slot)
->                 slot->host->mmc->caps2 |= MMC_CAP2_CQE;
->
->         if (slot->chip->pdev->device != PCI_DEVICE_ID_INTEL_GLK_EMMC) {
-> -               slot->host->mmc->caps2 |= MMC_CAP2_HS400_ES,
-> +               slot->host->mmc->caps2 |= MMC_CAP2_HS400_ES;
->                 slot->host->mmc_host_ops.hs400_enhanced_strobe =
->                                                 intel_hs400_enhanced_strobe;
->                 slot->host->mmc->caps2 |= MMC_CAP2_CQE_DCMD;
-> --
-> 2.30.2
->
+Both users in this series are corner cases (NFS and high-speed networks)
+so it is unlikely that most users will see any benefit in the short
+term. Potential other users are batch allocations for page cache
+readahead, fault around and SLUB allocations when high-order pages are
+unavailable. It's unknown how much benefit would be seen by converting
+multiple page allocation calls to a single batch or what difference it may
+make to headline performance. It's a chicken and egg problem given that
+the potential benefit cannot be investigated without an implementation
+to test against.
+
+Light testing passed, I'm relying on Chuck and Jesper to test the target
+users more aggressively but both report performance improvements with the
+initial RFC.
+
+Patch 1 of this series is a cleanup to sunrpc, it could be merged
+	separately but is included here as a pre-requisite.
+
+Patch 2 is the prototype bulk allocator
+
+Patch 3 is the sunrpc user. Chuck also has a patch which further caches
+	pages but is not included in this series. It's not directly
+	related to the bulk allocator and as it caches pages, it might
+	have other concerns (e.g. does it need a shrinker?)
+
+Patch 4 is a preparation patch only for the network user
+
+Patch 5 converts the net page pool to the bulk allocator for order-0 pages.
+
+There is no obvious impact to the existing paths as only new users of the
+API should notice a difference between multiple calls to the allocator
+and a single bulk allocation.
+
+ include/linux/gfp.h   |  13 +++++
+ mm/page_alloc.c       | 118 +++++++++++++++++++++++++++++++++++++++++-
+ net/core/page_pool.c  | 102 ++++++++++++++++++++++--------------
+ net/sunrpc/svc_xprt.c |  47 ++++++++++++-----
+ 4 files changed, 225 insertions(+), 55 deletions(-)
+
+-- 
+2.26.2
+
