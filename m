@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B6A3379AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E243379C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhCKQlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:41:25 -0500
-Received: from mail-io1-f45.google.com ([209.85.166.45]:36385 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhCKQlR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:41:17 -0500
-Received: by mail-io1-f45.google.com with SMTP id n14so22623223iog.3;
-        Thu, 11 Mar 2021 08:41:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=U7jzm/CFG4Ylm4v8voBfCMU+CxkY3bE8NKg4UeAuxbQ=;
-        b=CJuO0VNQHqSZfWQzgCHyrOHoPkj2utBJ2dA22/3cKyNU866g0/v3PqXAFxG4xH6LTh
-         /am0DTOgkfqpKFC+psKOIwzwp/cJsIIS7/ayJ1wqePdpHlLPQ0GokqFfYnsFafTH9mJn
-         sJ3UvNPpyJRE7oyHkSTgUJE66Fr0QIfiVcdfzUYkn4sb+nbPwCCg8jujOiR3jta2fImh
-         z6rWkmcbSVfoQQtkcpDrv3Jklntqh2L5+FozOIVazMeGV+ACQjS95M7thKkf76yl9K+B
-         i39NqR4OJRT3oUfEH4ptyhpjZRmPk82HdhGGBHb/n/Le+ENnJ7oyY3IHrO5zsUacZcAl
-         GJbA==
-X-Gm-Message-State: AOAM531o4Vseuk+ysRIkW6eLTbCtqYjOc0Di6rUhwkbTGQYVoRk3C51s
-        9/SatcmZZ39eTY8TZn3uPA==
-X-Google-Smtp-Source: ABdhPJxbaDM4XI8ZWhFC1q8ZH6bP9IzTuINR+19AO6I/yVBlCCKLU9oTvGO8Q+5z803ksGP47PsfAQ==
-X-Received: by 2002:a05:6602:228f:: with SMTP id d15mr6509757iod.141.1615480876875;
-        Thu, 11 Mar 2021 08:41:16 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id u14sm1471024ilv.0.2021.03.11.08.41.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 08:41:14 -0800 (PST)
-Received: (nullmailer pid 841933 invoked by uid 1000);
-        Thu, 11 Mar 2021 16:41:02 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, kgunda@codeaurora.org,
-        Alessandro Zummo <a.zummo@towertech.it>
-In-Reply-To: <1615447798-6959-3-git-send-email-skakit@codeaurora.org>
-References: <1615447798-6959-1-git-send-email-skakit@codeaurora.org> <1615447798-6959-3-git-send-email-skakit@codeaurora.org>
-Subject: Re: [PATCH 2/3] dt-bindings: mfd: Convert pm8xxx bindings to yaml
-Date:   Thu, 11 Mar 2021 09:41:02 -0700
-Message-Id: <1615480862.528721.841932.nullmailer@robh.at.kernel.org>
+        id S229896AbhCKQm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:42:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229601AbhCKQme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:42:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4193864F9C;
+        Thu, 11 Mar 2021 16:42:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615480953;
+        bh=/6vQFL+YC53+oP6/fdeoiyO4ZhYeLe3QT/YKKRdQyYY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eR71nWvdnbgmZqCoFZFfpumRGVzmdJTDmB64hingCLqVQQRXFhTLfcutl2Bfsxy01
+         28MHy50cfVkV4BQeNI1j4muoeiVmyUbFZmmFI5HyicrY7tSRG15MqLD1xwvt704x9O
+         8Zm5HWkhWFUI07wObuNbzQHeYgxuARESL4yTNGHOjX5bOumTWAesVqQnk7K09G9O16
+         GZA3troXIT6iGqun/ydwipRCYdN1Y3PuuVmAWzdjsfC1snmJYfcw9rZdO5PD+GK70h
+         mRbXGC4DNt0VNFS5UWyRYTklKGLqSLWDYNwJhURI2IwTRw0+0nkuIbmhw54rVRWNGm
+         pjOXWwstfsySg==
+Date:   Thu, 11 Mar 2021 16:41:21 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
+        thierry.reding@gmail.com
+Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
+Message-ID: <20210311164121.GH4962@sirena.org.uk>
+References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
+ <20210309144156.18887-1-michael@walle.cc>
+ <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
+ <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
+ <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
+ <eb26f8e0a4c99d0c9de9d92612102718@walle.cc>
+ <fa654e7a-80cc-7ae8-15c6-780e7fa29bb1@nvidia.com>
+ <cadc59f29bbb2e0d02235d4c10cb7f4d@walle.cc>
+ <36c37df5-dffb-9168-d92f-4b3e482602fa@nvidia.com>
+ <d4947632a8b3ebefff7fb6751d05a9bd@walle.cc>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gKijDXBCEH69PxaN"
+Content-Disposition: inline
+In-Reply-To: <d4947632a8b3ebefff7fb6751d05a9bd@walle.cc>
+X-Cookie: I'm rated PG-34!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 12:59:57 +0530, satya priya wrote:
-> Convert pm8xxx rtc bindings from .txt to .yaml format.
-> 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  .../devicetree/bindings/mfd/qcom-pm8xxx.txt        |  99 -------------------
->  .../devicetree/bindings/mfd/qcom-pm8xxx.yaml       | 108 +++++++++++++++++++++
->  2 files changed, 108 insertions(+), 99 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
->  create mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-> 
 
-My bot found errors running 'make dt_binding_check' on your patch:
+--gKijDXBCEH69PxaN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml:27:6: [warning] wrong indentation: expected 4 but found 5 (indentation)
-./Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml:30:6: [warning] wrong indentation: expected 4 but found 5 (indentation)
+On Thu, Mar 11, 2021 at 04:43:20PM +0100, Michael Walle wrote:
 
-dtschema/dtc warnings/errors:
+> This could be a last resort, yes. But I'd rather see a flag which
+> indicates whether the simple-audio-card should control the (first)
+> clock of the codec or not. Because until now, this wasn't the case.
+> And I don't know if this was an oversight or on purpose. Kuninori would
+> need to comment on that. And with the "we change mclk by default", we
+> break codecs with automatic sysclk generation.
 
-See https://patchwork.ozlabs.org/patch/1450975
+It shouldn't break anything so long as the clock ends up correct via
+some path.  Where there's multiple options we can also try going through
+them in some order, preferring the clock in the CODEC would probably
+make sense from both a compatibility and quality point of view.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+> > > And its fetching just the first clock, doesn't it? What happens if a
+> > > codec has two clock inputs?
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+> > Yes, it would have been more descriptive if it were specifically
+> > looking for clock "mclk". I think the original assumption was codec
+> > takes one input clock (MCLK) and uses it for sysclk.
 
-pip3 install dtschema --upgrade
+> Yeah, I've just noticed that the clk_get_rate() also only works
+> for the first clock of the codec.
 
-Please check and re-submit.
+simple-audio-card isn't really intended to work with complex devices,
+it's very much only for the simplest of use cases.
 
+--gKijDXBCEH69PxaN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBKSDAACgkQJNaLcl1U
+h9BNawf9GPsQcYK9qmE3//5SNFERoM69/yBv84rbvNTtsS0rkB4/XlhUxFM/yrhI
+6PbCDI9RiR1smLwcBsrRv9z3/NPQ2sVeW8uOWvWQvXjPMWxSqNSU6XRVUBFBwuZv
+m4UZqd9ldjRxLGajUkhVCWKCAJ4cx0hx3TvwBjAbKYCfsfFpC6Xx+UcNxsOnMeXt
+FuzFO4NZ7zmnCBRpsa74nvjfoWdb+FCvh15SVz4anlEeD8fagk5Nf4QZT+KgE+nD
+xyqchbWdLgFDs4lLfHlxAt/Pu62fPs8gcNPbfVFO8m4Ge638UVbFipmEhoMaubt0
+TsIEC7GPWF9EMTk0JQs5kHnrAAAoQA==
+=EORL
+-----END PGP SIGNATURE-----
+
+--gKijDXBCEH69PxaN--
