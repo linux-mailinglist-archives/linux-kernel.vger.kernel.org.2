@@ -2,159 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05558337694
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B80E337698
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233997AbhCKPL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:11:29 -0500
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:32886 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233978AbhCKPLZ (ORCPT
+        id S234005AbhCKPMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:12:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233978AbhCKPLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:11:25 -0500
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12BF3LwI011868;
-        Thu, 11 Mar 2021 15:10:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
- bh=KgON0JNjPPn3agmdfKnN9oeNhsJWy56GgPCfWOLOKC0=;
- b=Z9lP1LFRS8/LA/bKCcS3pd9zGFa2gSRWwWgFmkIDK8C9x9Y1uY8bEPg3efU7W0wJJKxY
- +R75srS9eatU0wLo2eiKNb8+6WYaW0+3PPpNnbimAA4cJrb5YS+QMPT7VvpAemMO0zbw
- K55jjZQnaCAVvuDK+TkXwmFt0hD9c40gIuT6gAaVXfJzsVgYvbWH6ThLyRETMXFhWpAL
- w5xO5K3MButeSR/Bi7rd3TvR9WX1557i+PpPsbqyQqZFOf05W7ywHGStH8Ias4P7bxgW
- 3GL23KaVsdzLT4eRggl93Fo2SuGOVNtf0uklzbS9vz78P2n34Jc/s5Yy4que/L8kzR12 fw== 
-Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
-        by mx0b-002e3701.pphosted.com with ESMTP id 377ev23ee1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Mar 2021 15:10:43 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g9t5008.houston.hpe.com (Postfix) with ESMTP id 4AB6653;
-        Thu, 11 Mar 2021 15:10:42 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 20DC748;
-        Thu, 11 Mar 2021 15:10:39 +0000 (UTC)
-From:   Mike Travis <mike.travis@hpe.com>
-To:     Borislav_Petkov_ <bp@alien8.de>,
-        Thomas_Gleixner_ <tglx@linutronix.de>,
-        Ingo_Molnar_ <mingo@redhat.com>,
-        Steve_Wahl_ <steve.wahl@hpe.com>, x86@kernel.org
-Cc:     Georges Aureau <georges.aureau@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri_Sivanich_ <dimitri.sivanich@hpe.com>,
-        Russ_Anderson_ <russ.anderson@hpe.com>,
-        Darren_Hart_ <dvhart@infradead.org>,
-        Andy_Shevchenko_ <andy@infradead.org>,
-        "H._Peter_Anvin_" <hpa@zytor.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/platform/uv: Add more to secondary cpu kdump info
-Date:   Thu, 11 Mar 2021 09:10:28 -0600
-Message-Id: <20210311151028.82678-1-mike.travis@hpe.com>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-11_05:2021-03-10,2021-03-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1011 adultscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103110082
+        Thu, 11 Mar 2021 10:11:46 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2568C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:11:45 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id k4so15742586qtd.20
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:11:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=AApTWOpa7ui0/YyXhD3tUhfEI1bu0UZzTT8+Disz7/w=;
+        b=RHJUA4xfDCj19gTdtnLY8BzgPsWIGu8LEWnYDr9Cy8aPAwzNTdDYRRyoUzwo4cMqf2
+         cD+acaWmz4tmGDVlM/dpk6biRUtSAz1iamX8bvSb9rgtMOT0xgC9ncWfL+3gIKfUyw5B
+         25QGtk8QUVqrC/5dYGGc+fEWyIF4a1xA3wyatNUUfdmHKyZq/i7PQjBYQ/CvKw5ktLPV
+         JHtnJdjr89mu/LZViYGBGXneDSr16+n4cqPZokACKXYN8aK5tVBxsCwEgTPZ7aU3UiA2
+         U8fJXmmFRZxkhqprV5YAMsysgeEgVNbcfMG8UoH6C31MW27OuBHQ6VgJFgHlgSljozH2
+         DMwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=AApTWOpa7ui0/YyXhD3tUhfEI1bu0UZzTT8+Disz7/w=;
+        b=d2Y8n9MIA3E3ekAzXPYu1Bzd/DVf0cPsK3OKSEoSXXlCzCboYvOfllfqgmFtevLuhW
+         StkNOBOZIf6wkwYFVEea0PRu2yqw6OvgGXhZ9ppJrs2Zm0K2/5tRiGZ4yIf+JTKym314
+         4BaqIi/BPA/z7nCqAohELo+5M7kLeDlT3mnh3NTbQmpx3ZvLiXbzW5aNV482FYJHbbAt
+         XfmZw9c8mZACL5zTnYC/WsRFIXMukleDEI9Qh4Gm6G2lHD/kTmSmZjo4JgDlcZBfTv7s
+         EVqC8Qwtbr/gm0Em1R4Gy0rR9uDIAwb6U02GJhJySLLNRxYoUp+zySL3o0S/tKOppbY6
+         +yuQ==
+X-Gm-Message-State: AOAM531zwsjBZx/C7DZSf4iA7FaKRyCcNltHFnzRhn02n6mYEyDMGLX7
+        tZ0l80NPVCQHJ9088C35DjPUSpvbpqYlhBu4
+X-Google-Smtp-Source: ABdhPJw/9WyeAXPJh+ppicdtiNcPiRyV/8swmShG4RkM2/ZfaIcVwbL+Oyqk4hDD0utK59rhqPheAfu7VAe8mIQc
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:95a:d8a8:4925:42be])
+ (user=andreyknvl job=sendgmr) by 2002:a0c:ea4b:: with SMTP id
+ u11mr7819047qvp.43.1615475504801; Thu, 11 Mar 2021 07:11:44 -0800 (PST)
+Date:   Thu, 11 Mar 2021 16:11:41 +0100
+Message-Id: <1a41abb11c51b264511d9e71c303bb16d5cb367b.1615475452.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] kasan: fix per-page tags for non-page_alloc pages
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georges Aureau <georges.aureau@hpe.com>
+To allow performing tag checks on page_alloc addresses obtained via
+page_address(), tag-based KASAN modes store tags for page_alloc
+allocations in page->flags.
 
-Add call to run_crash_ipi_callback() to gather more info of what the
-secondary cpus were doing to help with failure analysis.
+Currently, the default tag value stored in page->flags is 0x00.
+Therefore, page_address() returns a 0x00ffff... address for pages
+that were not allocated via page_alloc.
 
-Excerpt from Georges:
-'It is only changing where crash secondaries will be stalling after having
-taken care of properly laying down "crash note regs". Please note that
-"crash note regs" are a key piece of data used by crash dump debuggers
-to provide a reliable backtrace of running processors.'
+This might cause problems. A particular case we encountered is a conflict
+with KFENCE. If a KFENCE-allocated slab object is being freed via
+kfree(page_address(page) + offset), the address passed to kfree() will
+get tagged with 0x00 (as slab pages keep the default per-page tags).
+This leads to is_kfence_address() check failing, and a KFENCE object
+ending up in normal slab freelist, which causes memory corruptions.
 
-Secondary change pursuant to a5f526ec:
-	change master/slave to main/secondary
+This patch changes the way KASAN stores tag in page-flags: they are now
+stored xor'ed with 0xff. This way, KASAN doesn't need to initialize
+per-page flags for every created page, which might be slow.
 
-Signed-off-by: Georges Aureau <georges.aureau@hpe.com>
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+With this change, page_address() returns natively-tagged (with 0xff)
+pointers for pages that didn't have tags set explicitly.
+
+This patch fixes the encountered conflict with KFENCE and prevents more
+similar issues that can occur in the future.
+
+Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
+Cc: stable@vger.kernel.org
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- arch/x86/platform/uv/uv_nmi.c | 39 +++++++++++++++++++++--------------
- 1 file changed, 24 insertions(+), 15 deletions(-)
+ include/linux/mm.h | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
-index eafc530c8767..f83810f7bcc2 100644
---- a/arch/x86/platform/uv/uv_nmi.c
-+++ b/arch/x86/platform/uv/uv_nmi.c
-@@ -24,6 +24,7 @@
- #include <asm/kdebug.h>
- #include <asm/local64.h>
- #include <asm/nmi.h>
-+#include <asm/reboot.h>
- #include <asm/traps.h>
- #include <asm/uv/uv.h>
- #include <asm/uv/uv_hub.h>
-@@ -834,34 +835,42 @@ static void uv_nmi_touch_watchdogs(void)
- 	touch_nmi_watchdog();
- }
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 77e64e3eac80..c45c28f094a7 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1440,16 +1440,28 @@ static inline bool cpupid_match_pid(struct task_struct *task, int cpupid)
  
--static atomic_t uv_nmi_kexec_failed;
--
- #if defined(CONFIG_KEXEC_CORE)
--static void uv_nmi_kdump(int cpu, int master, struct pt_regs *regs)
-+static atomic_t uv_nmi_kexec_failed;
-+static void uv_nmi_kdump(int cpu, int main, struct pt_regs *regs)
+ #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+ 
++/*
++ * KASAN per-page tags are stored xor'ed with 0xff. This allows to avoid
++ * setting tags for all pages to native kernel tag value 0xff, as the default
++ * value 0x00 maps to 0xff.
++ */
++
+ static inline u8 page_kasan_tag(const struct page *page)
  {
-+	/* Check if kdump kernel loaded for both main and secondary CPUs */
-+	if (!kexec_crash_image) {
-+		if (main)
-+			pr_err("UV: NMI error: kdump kernel not loaded\n");
-+		return;
+-	if (kasan_enabled())
+-		return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
+-	return 0xff;
++	u8 tag = 0xff;
++
++	if (kasan_enabled()) {
++		tag = (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
++		tag ^= 0xff;
 +	}
 +
- 	/* Call crash to dump system state */
--	if (master) {
-+	if (main) {
- 		pr_emerg("UV: NMI executing crash_kexec on CPU%d\n", cpu);
- 		crash_kexec(regs);
- 
--		pr_emerg("UV: crash_kexec unexpectedly returned, ");
-+		pr_emerg("UV: crash_kexec unexpectedly returned\n");
- 		atomic_set(&uv_nmi_kexec_failed, 1);
--		if (!kexec_crash_image) {
--			pr_cont("crash kernel not loaded\n");
--			return;
-+
-+	} else { /* secondary */
-+
-+		/* If kdump kernel fails, secondaries will exit this loop */
-+		while (atomic_read(&uv_nmi_kexec_failed) == 0) {
-+
-+			/* Once shootdown cpus starts, they do not return */
-+			run_crash_ipi_callback(regs);
-+
-+			mdelay(10);
- 		}
--		pr_cont("kexec busy, stalling cpus while waiting\n");
- 	}
--
--	/* If crash exec fails the slaves should return, otherwise stall */
--	while (atomic_read(&uv_nmi_kexec_failed) == 0)
--		mdelay(10);
++	return tag;
  }
  
- #else /* !CONFIG_KEXEC_CORE */
--static inline void uv_nmi_kdump(int cpu, int master, struct pt_regs *regs)
-+static inline void uv_nmi_kdump(int cpu, int main, struct pt_regs *regs)
+ static inline void page_kasan_tag_set(struct page *page, u8 tag)
  {
--	if (master)
-+	if (main)
- 		pr_err("UV: NMI kdump: KEXEC not supported in this kernel\n");
- 	atomic_set(&uv_nmi_kexec_failed, 1);
- }
+ 	if (kasan_enabled()) {
++		tag ^= 0xff;
+ 		page->flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
+ 		page->flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
+ 	}
 -- 
-2.21.0
+2.31.0.rc2.261.g7f71774620-goog
 
