@@ -2,195 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416D933711B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2102A337124
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhCKLZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:25:25 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:55150 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232619AbhCKLY4 (ORCPT
+        id S232683AbhCKL0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:26:01 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:31885 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232646AbhCKLZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:24:56 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lKJR1-00029h-JR; Thu, 11 Mar 2021 11:24:55 +0000
-Subject: Re: pinctrl: core: Handling pinmux and pinconf separately
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <d66e78e3-2000-611b-cd74-8a61461153e8@canonical.com>
- <5c08bd61-688f-e95b-5fa3-584f190ed4bf@xilinx.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <bf508c29-4a51-5f97-8459-06c1fe74b60f@canonical.com>
-Date:   Thu, 11 Mar 2021 11:24:55 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <5c08bd61-688f-e95b-5fa3-584f190ed4bf@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 11 Mar 2021 06:25:30 -0500
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 11 Mar 2021 03:25:31 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 11 Mar 2021 03:25:29 -0800
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 11 Mar 2021 16:55:08 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 457D2212F0; Thu, 11 Mar 2021 16:55:07 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
+        stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v8 0/2] Add encoder ctrls for long term reference
+Date:   Thu, 11 Mar 2021 16:54:59 +0530
+Message-Id: <1615461901-16675-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/2021 11:16, Michal Simek wrote:
-> 
-> 
-> On 3/11/21 11:57 AM, Colin Ian King wrote:
->> Hi,
->>
->> Static analysis on linux-next with Coverity has found a potential issue
->> in drivers/pinctrl/core.c with the following commit:
->>
->> commit 0952b7ec1614abf232e921aac0cc2bca8e60e162
->> Author: Michal Simek <michal.simek@xilinx.com>
->> Date:   Wed Mar 10 09:16:54 2021 +0100
->>
->>     pinctrl: core: Handling pinmux and pinconf separately
->>
->> The analysis is as follows:
->>
->> 1234 /**
->> 1235  * pinctrl_commit_state() - select/activate/program a pinctrl state
->> to HW
->> 1236  * @p: the pinctrl handle for the device that requests configuration
->> 1237  * @state: the state handle to select/activate/program
->> 1238  */
->> 1239 static int pinctrl_commit_state(struct pinctrl *p, struct
->> pinctrl_state *state)
->> 1240 {
->> 1241        struct pinctrl_setting *setting, *setting2;
->> 1242        struct pinctrl_state *old_state = p->state;
->>
->>     1. var_decl: Declaring variable ret without initializer.
->>
->> 1243        int ret;
->> 1244
->>
->>     2. Condition p->state, taking true branch.
->>
->> 1245        if (p->state) {
->> 1246                /*
->> 1247                 * For each pinmux setting in the old state, forget
->> SW's record
->> 1248                 * of mux owner for that pingroup. Any pingroups
->> which are
->> 1249                 * still owned by the new state will be re-acquired
->> by the call
->> 1250                 * to pinmux_enable_setting() in the loop below.
->> 1251                 */
->>
->>     3. Condition 0 /* !!(!__builtin_types_compatible_p() &&
->> !__builtin_types_compatible_p()) */, taking false branch.
->>     4. Condition !(&setting->node == &p->state->settings), taking true
->> branch.
->>     7. Condition 0 /* !!(!__builtin_types_compatible_p() &&
->> !__builtin_types_compatible_p()) */, taking false branch.
->>     8. Condition !(&setting->node == &p->state->settings), taking true
->> branch.
->>     11. Condition 0 /* !!(!__builtin_types_compatible_p() &&
->> !__builtin_types_compatible_p()) */, taking false branch.
->>     12. Condition !(&setting->node == &p->state->settings), taking false
->> branch.
->>
->> 1252                list_for_each_entry(setting, &p->state->settings,
->> node) {
->>
->>     5. Condition setting->type != PIN_MAP_TYPE_MUX_GROUP, taking true
->> branch.
->>     9. Condition setting->type != PIN_MAP_TYPE_MUX_GROUP, taking true
->> branch.
->> 1253                        if (setting->type != PIN_MAP_TYPE_MUX_GROUP)
->>     6. Continuing loop.
->>     10. Continuing loop.
->>
->> 1254                                continue;
->> 1255                        pinmux_disable_setting(setting);
->> 1256                }
->> 1257        }
->> 1258
->> 1259        p->state = NULL;
->> 1260
->> 1261        /* Apply all the settings for the new state - pinmux first */
->>
->>     13. Condition 0 /* !!(!__builtin_types_compatible_p() &&
->> !__builtin_types_compatible_p()) */, taking false branch.
->>     14. Condition !(&setting->node == &state->settings), taking true branch.
->> 1262        list_for_each_entry(setting, &state->settings, node) {
->>     15. Switch case value PIN_MAP_TYPE_CONFIGS_PIN.
->>
->> 1263                switch (setting->type) {
->> 1264                case PIN_MAP_TYPE_MUX_GROUP:
->> 1265                        ret = pinmux_enable_setting(setting);
->> 1266                        break;
->> 1267                case PIN_MAP_TYPE_CONFIGS_PIN:
->> 1268                case PIN_MAP_TYPE_CONFIGS_GROUP:
->>
->>     16. Breaking from switch.
->>
->> 1269                        break;
->> 1270                default:
->> 1271                        ret = -EINVAL;
->> 1272                        break;
->> 1273                }
->> 1274
->>
->>     Uninitialized scalar variable (UNINIT)
->>     17. uninit_use: Using uninitialized value ret.
->>
->> 1275                if (ret < 0)
->> 1276                        goto unapply_new_state;
->>
->> For the PIN_MAP_TYPE_CONFIGS_PIN and PIN_MAP_TYPE_CONFIGS_GROUP
->> setting->type cases the loop can break out with ret not being set. Since
->> ret has not been initialized it the ret < 0 check is checking against an
->> uninitialized value.
->>
->> I was not sure if the PIN_MAP_TYPE_CONFIGS_PIN and
->> PIN_MAP_TYPE_CONFIGS_GROUP cases should be setting ret and if so, what
->> the value of ret should be set to (is it an error condition or not?). Or
->> should ret be initialized to 0 or a default error value at the start of
->> the function.
->>
->> Hence I'm reporting this issue.
-> 
-> What about this? Is this passing static analysis?
+This series add the encoder controls for long term reference (LTR)
+and support for the same in venus driver.
 
-It will take me 2 hours to re-run the analysis, but from eyeballing the
-code I think the assignments will fix this.
+Dikshita Agarwal (2):
+  media: v4l2-ctrl: add controls for long term reference.
+  venus: venc: Add support for Long Term Reference (LTR) controls
 
-Colin
+Changes since v7:
+- addressed comments regarding documentation.
 
-> 
-> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-> index f5c32d2a3c91..136c323d855e 100644
-> --- a/drivers/pinctrl/core.c
-> +++ b/drivers/pinctrl/core.c
-> @@ -1266,6 +1266,7 @@ static int pinctrl_commit_state(struct pinctrl *p,
-> struct pinctrl_state *state)
->                         break;
->                 case PIN_MAP_TYPE_CONFIGS_PIN:
->                 case PIN_MAP_TYPE_CONFIGS_GROUP:
-> +                       ret = 0;
->                         break;
->                 default:
->                         ret = -EINVAL;
-> @@ -1284,6 +1285,7 @@ static int pinctrl_commit_state(struct pinctrl *p,
-> struct pinctrl_state *state)
->         list_for_each_entry(setting, &state->settings, node) {
->                 switch (setting->type) {
->                 case PIN_MAP_TYPE_MUX_GROUP:
-> +                       ret = 0;
->                         break;
->                 case PIN_MAP_TYPE_CONFIGS_PIN:
->                 case PIN_MAP_TYPE_CONFIGS_GROUP:
-> 
-> Thanks,
-> Michal
-> 
+ .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 18 ++++++++
+ drivers/media/platform/qcom/venus/venc_ctrls.c     | 49 +++++++++++++++++++++-
+ drivers/media/v4l2-core/v4l2-ctrls.c               | 14 +++++++
+ include/uapi/linux/v4l2-controls.h                 |  3 ++
+ 4 files changed, 83 insertions(+), 1 deletion(-)
+
+-- 
+2.7.4
 
