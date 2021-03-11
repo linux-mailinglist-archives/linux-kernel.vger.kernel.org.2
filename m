@@ -2,171 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552B9337CA6
+	by mail.lfdr.de (Postfix) with ESMTP id A141D337CA7
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhCKS0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:26:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhCKS0f (ORCPT
+        id S230260AbhCKS0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:26:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52495 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229942AbhCKS0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:26:35 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B90C061574;
-        Thu, 11 Mar 2021 10:26:34 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id w11so3093867wrr.10;
-        Thu, 11 Mar 2021 10:26:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9HxhUMCrD9+ZkWt0mUL/2aXvr5b+kfJE63kRa41DPx8=;
-        b=or1WPs5X/Hhu/p+m4i7ddPsadUVhJRZ5nJEJIDAXfN3T/3PDcPyaofRXIhY2Yrh1/i
-         1V/xhJzEZbIxRhDS/ZhxkHQZeqhiYGJ6aQSiZSjq0TYGYj+IrWls82kW1dxcEXTvqshz
-         /usHFkaZhW4D74FBIi3tAkzGZ2Vj+NMlvmkxE5sPuYM6RN5mjOG8+Js1BBeHh1256N4D
-         SSFnEvCEMfujVAP4Qhe4sDqZcZrax/kTDnp90C0LrfgK6yCCT4NKnNu1Bdq8ehsgu86Z
-         rDG3UQ3Tqw//DQwceJROnQju5VLWBZmwQ4hRiQtvWvXTKpPgKe6kj+vDpQtsivD+D/Bk
-         VX9w==
+        Thu, 11 Mar 2021 13:26:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615487199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7/wSGYLh9BUQ/m4VK2E3Iu8L1K7AWw+HwFDDXH/P7x4=;
+        b=Dt56iO4QJuJA+k3BrHjVi7X4akcMO+fRI3Op/0Vlc4YS1d0fSliXBiTt5M6YPh81npUeAo
+        DONzHVH3vUzM3i7Q/rhj6Wb86BvX9R713O30qm86eYnTVWaw712H2o2v2ckbvL/zzFODWg
+        NXs61CYptcr97lCFNI+HveKAq/RCz64=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-GUVYd-KdNVyg2lVODjOFTg-1; Thu, 11 Mar 2021 13:26:37 -0500
+X-MC-Unique: GUVYd-KdNVyg2lVODjOFTg-1
+Received: by mail-qk1-f200.google.com with SMTP id m68so16297097qkd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:26:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9HxhUMCrD9+ZkWt0mUL/2aXvr5b+kfJE63kRa41DPx8=;
-        b=T1Wunoj6CCxYBbbAM4PbXvQbZ0lXfBu3JMmnEHME8xftgjCWWEzd3K8lQxRAxxr0fr
-         p+Yi3jQbka7Dios0Au8Glryu+mGyD7daJrs0+54YfqejL/JTqLrjcBTvJcCweZHcAWGX
-         4q0cG/kxfrLh+ut9xvv6gAgfBgToOkSRhowDwyeX6qh4LsqnaaQCw0yAq+mqV3o3Vlyz
-         5OyLWFkbfUZEnVmbnJ172KN9pRwYmufSF6heQPbUPrmrKzixGbhu5Kz5dqWe8AoK3C92
-         p8dlQviMPsoM+rUKLbmu692V7++0N7c533IISTcybixBCmWd44zYEL0wpVL6BvXnNuX8
-         SmzA==
-X-Gm-Message-State: AOAM533m0wieFO8VdDv/MUao2NM3JtVQgMHNR9DuKfjDJVLuni6qLgIN
-        EjKvIKSfEjSAU0h6hHZ3X1+ClCY6oIJzMoe/GYA=
-X-Google-Smtp-Source: ABdhPJxQFpuouVwrgD1i7fKZ5jDwC1G5xPeoqqHPRXd4m3/czr+/IYlrzmUQZuSvZ8ur3WQxLQVdoFVQEqjx1zfDNW8=
-X-Received: by 2002:adf:fb8a:: with SMTP id a10mr9970966wrr.365.1615487193211;
- Thu, 11 Mar 2021 10:26:33 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=7/wSGYLh9BUQ/m4VK2E3Iu8L1K7AWw+HwFDDXH/P7x4=;
+        b=QjzC+k31E9YIF3GUJQVB3eIdM47rnmV3PMMVY6x7i4ccUTF3s3ncX761eOH/yajqhH
+         3OvALcQ1tjbcThNwclT6xPiEY6fhGzYJ1m0wYtRk3WNEAwNAXzPDfFda1toUzDhjhjLA
+         eIFVPMBp04WbAIzKtEJ+Is+2oavK0IvxHD+KcQ4vl3c+lZQ+f98eYQ0zxDmzVawlinOq
+         l8pTyJ0O0G9gevl1H4e8Gtmt1vNI+NopygWagKg9fcgg85r2vA0Yjq2RDjokQWFvlFOQ
+         CaxhEFjo9qo8SKnmQwJPT7lu7v2LFlMJs60GkTVYlXL8YqE552cyGtwQUYnneDDR3XKW
+         888w==
+X-Gm-Message-State: AOAM530tArcgW7DBb5VP3JtGplIuBAGUwngODCF5vzk0pegNxbdyek49
+        JGAfAk7W0m14x9uCxA2lLBJt1E1A7hTTbWVWPsgh4WpninJ7UHBaxeavan1SlnutbgC8767PDky
+        i8zAj4x42KomBJQuNrt/lmNlk
+X-Received: by 2002:ac8:68d:: with SMTP id f13mr8512352qth.300.1615487197326;
+        Thu, 11 Mar 2021 10:26:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJykrRpLf1VdnWeXfJOmyNvXTcgKB/EbD8MxyP146EU0lCHJTfc5M6K1GGvBKnS5gI4cz7i4ig==
+X-Received: by 2002:ac8:68d:: with SMTP id f13mr8512326qth.300.1615487197076;
+        Thu, 11 Mar 2021 10:26:37 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 77sm2571571qko.48.2021.03.11.10.26.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 10:26:36 -0800 (PST)
+Subject: Re: [PATCH v3 00/15] arm64 / clk: socfpga: simplifying, cleanups and
+ compile testing
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
+References: <20210311152545.1317581-1-krzysztof.kozlowski@canonical.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <f0b90916-9047-d5da-5cde-75d4330cf041@redhat.com>
+Date:   Thu, 11 Mar 2021 10:26:32 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <161547181530.1868820.12933722592029066752.stgit@warthog.procyon.org.uk>
- <161547182293.1868820.9860274141056722598.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161547182293.1868820.9860274141056722598.stgit@warthog.procyon.org.uk>
-From:   Marc Dionne <marc.c.dionne@gmail.com>
-Date:   Thu, 11 Mar 2021 14:26:22 -0400
-Message-ID: <CAB9dFdtq9S04CjuBeUW8g9=59mtGFQducO-HTu-CLNNPnCWt4Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] afs: Fix accessing YFS xattrs on a non-YFS server
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org,
-        Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210311152545.1317581-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:10 AM David Howells <dhowells@redhat.com> wrote:
->
-> If someone attempts to access YFS-related xattrs (e.g. afs.yfs.acl) on a
-> file on a non-YFS AFS server (such as OpenAFS), then the kernel will jump
-> to a NULL function pointer because the afs_fetch_acl_operation descriptor
-> doesn't point to a function for issuing an operation on a non-YFS
-> server[1].
->
-> Fix this by making afs_wait_for_operation() check that the issue_afs_rpc
-> method is set before jumping to it and setting -ENOTSUPP if not.  This fix
-> also covers other potential operations that also only exist on YFS servers.
->
-> afs_xattr_get/set_yfs() then need to translate -ENOTSUPP to -ENODATA as the
-> former error is internal to the kernel.
->
-> The bug shows up as an oops like the following:
->
->         BUG: kernel NULL pointer dereference, address: 0000000000000000
->         [...]
->         Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
->         [...]
->         Call Trace:
->          afs_wait_for_operation+0x83/0x1b0 [kafs]
->          afs_xattr_get_yfs+0xe6/0x270 [kafs]
->          __vfs_getxattr+0x59/0x80
->          vfs_getxattr+0x11c/0x140
->          getxattr+0x181/0x250
->          ? __check_object_size+0x13f/0x150
->          ? __fput+0x16d/0x250
->          __x64_sys_fgetxattr+0x64/0xb0
->          do_syscall_64+0x49/0xc0
->          entry_SYSCALL_64_after_hwframe+0x44/0xa9
->         RIP: 0033:0x7fb120a9defe
->
-> This was triggered with "cp -a" which attempts to copy xattrs, including
-> afs ones, but is easier to reproduce with getfattr, e.g.:
->
->         getfattr -d -m ".*" /afs/openafs.org/
->
-> Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" concept")
-> Reported-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Tested-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-> cc: linux-afs@lists.infradead.org
-> Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003498.html [1]
-> ---
->
->  fs/afs/fs_operation.c |    7 +++++--
->  fs/afs/xattr.c        |    8 +++++++-
->  2 files changed, 12 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/afs/fs_operation.c b/fs/afs/fs_operation.c
-> index 97cab12b0a6c..71c58723763d 100644
-> --- a/fs/afs/fs_operation.c
-> +++ b/fs/afs/fs_operation.c
-> @@ -181,10 +181,13 @@ void afs_wait_for_operation(struct afs_operation *op)
->                 if (test_bit(AFS_SERVER_FL_IS_YFS, &op->server->flags) &&
->                     op->ops->issue_yfs_rpc)
->                         op->ops->issue_yfs_rpc(op);
-> -               else
-> +               else if (op->ops->issue_afs_rpc)
->                         op->ops->issue_afs_rpc(op);
-> +               else
-> +                       op->ac.error = -ENOTSUPP;
->
-> -               op->error = afs_wait_for_call_to_complete(op->call, &op->ac);
-> +               if (op->call)
-> +                       op->error = afs_wait_for_call_to_complete(op->call, &op->ac);
->         }
->
->         switch (op->error) {
-> diff --git a/fs/afs/xattr.c b/fs/afs/xattr.c
-> index c629caae5002..4934e325a14a 100644
-> --- a/fs/afs/xattr.c
-> +++ b/fs/afs/xattr.c
-> @@ -231,6 +231,8 @@ static int afs_xattr_get_yfs(const struct xattr_handler *handler,
->                         else
->                                 ret = -ERANGE;
->                 }
-> +       } else if (ret == -ENOTSUPP) {
-> +               ret = -ENODATA;
->         }
->
->  error_yacl:
-> @@ -256,6 +258,7 @@ static int afs_xattr_set_yfs(const struct xattr_handler *handler,
->  {
->         struct afs_operation *op;
->         struct afs_vnode *vnode = AFS_FS_I(inode);
-> +       int ret;
->
->         if (flags == XATTR_CREATE ||
->             strcmp(name, "acl") != 0)
-> @@ -270,7 +273,10 @@ static int afs_xattr_set_yfs(const struct xattr_handler *handler,
->                 return afs_put_operation(op);
->
->         op->ops = &yfs_store_opaque_acl2_operation;
-> -       return afs_do_sync_operation(op);
-> +       ret = afs_do_sync_operation(op);
-> +       if (ret == -ENOTSUPP)
-> +               ret = -ENODATA;
-> +       return ret;
->  }
->
->  static const struct xattr_handler afs_xattr_yfs_handler = {
 
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
+On 3/11/21 7:25 AM, Krzysztof Kozlowski wrote:
+> Hi,
+>
+> All three Intel arm64 SoCFPGA architectures (Agilex, N5X and Stratix 10)
+> are basically flavors/platforms of the same architecture.  At least from
+> the Linux point of view.  Up to a point that N5X and Agilex share DTSI.
+> Having three top-level architectures for the same one barely makes
+> sense and complicates driver selection.
+>
+> Additionally it was pointed out that ARCH_SOCFPGA name is too generic.
+> There are other vendors making SoC+FPGA designs, so the name should be
+> changed to have real vendor (currently: Intel).
+>
+>
+> Dependencies / merging
+> ======================
+> 1. Patch 1 is used as base, so other changes depend on its hunks.
+>    I put it at beginning as it is something close to a fix, so candidate
+>    for stable (even though I did not mark it like that).
+> 2. Patch 2: everything depends on it.
+>
+> 3. 64-bit path:
+> 3a. Patches 3-7: depend on patch 2, from 64-bit point of view.
+> 3b. Patch 8: depends on 2-7 as it finally removes 64-bit ARCH_XXX
+>     symbols.
+>
+> 4. 32-bit path:
+> 4a. Patches 9-14: depend on 2, from 32-bit point of view.
+> 4b. Patch 15: depends on 9-14 as it finally removes 32-bit ARCH_SOCFPGA
+>     symbol.
+>
+> If the patches look good, proposed merging is via SoC tree (after
+> getting acks from everyone). Sharing immutable branches is also a way.
+>
+>
+> Changes since v2
+> ================
+> 1. Several new patches and changes.
+> 2. Rename ARCH_SOCFPGA to ARCH_INTEL_SOCFPGA on 32-bit and 64-bit.
+> 3. Enable compile testing of 32-bit socfpga clock drivers.
+> 4. Split changes per subsystems for easier review.
+> 5. I already received an ack from Lee Jones, but I did not add it as
+>    there was big refactoring.  Please kindly ack one more time if it
+>    looks good.
+>
+> Changes since v1
+> ================
+> 1. New patch 3: arm64: socfpga: rename ARCH_STRATIX10 to ARCH_SOCFPGA64.
+> 2. New patch 4: arm64: intel: merge Agilex and N5X into ARCH_SOCFPGA64.
+> 3. Fix build is.sue reported by kernel test robot (with ARCH_STRATIX10
+>    and COMPILE_TEST but without selecting some of the clocks).
+>
+>
+> RFT
+> ===
+> I tested compile builds on few configurations, so I hope kbuild 0-day
+> will check more options (please give it few days on the lists).
+> I compare the generated autoconf.h and found no issues.  Testing on real
+> hardware would be appreciated.
+>
+> Best regards,
+> Krzysztof
+>
+> Krzysztof Kozlowski (15):
+>   clk: socfpga: allow building N5X clocks with ARCH_N5X
+>   ARM: socfpga: introduce common ARCH_INTEL_SOCFPGA
+>   mfd: altera: merge ARCH_SOCFPGA and ARCH_STRATIX10
+>   net: stmmac: merge ARCH_SOCFPGA and ARCH_STRATIX10
+>   clk: socfpga: build together Stratix 10, Agilex and N5X clock drivers
+>   clk: socfpga: merge ARCH_SOCFPGA and ARCH_STRATIX10
+>   EDAC: altera: merge ARCH_SOCFPGA and ARCH_STRATIX10
+>   arm64: socfpga: merge Agilex and N5X into ARCH_INTEL_SOCFPGA
+>   clk: socfpga: allow compile testing of Stratix 10 / Agilex clocks
+>   clk: socfpga: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs (and
+>     compile test)
+>   dmaengine: socfpga: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs
+>   fpga: altera: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs
+>   i2c: altera: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs
+>   reset: socfpga: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs
+>   ARM: socfpga: drop ARCH_SOCFPGA
+>
+>  arch/arm/Kconfig                            |  2 +-
+>  arch/arm/Kconfig.debug                      |  6 +++---
+>  arch/arm/Makefile                           |  2 +-
+>  arch/arm/boot/dts/Makefile                  |  2 +-
+>  arch/arm/configs/multi_v7_defconfig         |  2 +-
+>  arch/arm/configs/socfpga_defconfig          |  2 +-
+>  arch/arm/mach-socfpga/Kconfig               |  4 ++--
+>  arch/arm64/Kconfig.platforms                | 17 ++++-------------
+>  arch/arm64/boot/dts/altera/Makefile         |  2 +-
+>  arch/arm64/boot/dts/intel/Makefile          |  6 +++---
+>  arch/arm64/configs/defconfig                |  3 +--
+>  drivers/clk/Kconfig                         |  1 +
+>  drivers/clk/Makefile                        |  4 +---
+>  drivers/clk/socfpga/Kconfig                 | 19 +++++++++++++++++++
+>  drivers/clk/socfpga/Makefile                | 11 +++++------
+>  drivers/dma/Kconfig                         |  2 +-
+>  drivers/edac/Kconfig                        |  2 +-
+>  drivers/edac/altera_edac.c                  | 17 +++++++++++------
+>  drivers/firmware/Kconfig                    |  2 +-
+>  drivers/fpga/Kconfig                        |  8 ++++----
+>  drivers/i2c/busses/Kconfig                  |  2 +-
+>  drivers/mfd/Kconfig                         |  4 ++--
+>  drivers/net/ethernet/stmicro/stmmac/Kconfig |  4 ++--
+>  drivers/reset/Kconfig                       |  6 +++---
+>  24 files changed, 71 insertions(+), 59 deletions(-)
+>  create mode 100644 drivers/clk/socfpga/Kconfig
+>
+Thanks for changing the config name.
 
-Marc
+Please review checkpatch --strict on this set, the typical complaint is
+
+clk: socfpga: use ARCH_INTEL_SOCFPGA also for 32-bit ARM SoCs (and compile test)    
+WARNING: please write a paragraph that describes the config symbol fully
+#35: FILE: drivers/clk/socfpg/Kconfig:11:                       
++config CLK_INTEL_SOCFPGA32
+
+Tom
+
