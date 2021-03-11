@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82CE336F8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203E1336F8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 11:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhCKKDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 05:03:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58594 "EHLO
+        id S232246AbhCKKDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 05:03:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbhCKKDW (ORCPT
+        with ESMTP id S232214AbhCKKDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 05:03:22 -0500
+        Thu, 11 Mar 2021 05:03:24 -0500
 Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108D9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:03:22 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id h20so15043942qkj.18
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:03:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FF8C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:03:23 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id a1so14977461qkn.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 02:03:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=l9CMWPdWDhliYrHN/g/05oM0suTsXVO5bL0BBWp8xVQ=;
-        b=PWe712s1TPhf8Wes9gxc0mJgydqlFrhOqr/zVo/FIMQjUrI87BLhHdZJCQcG3U/3d4
-         2IdEJ2Bxsl7OLDluzj/zIZKsKcELdEQnW0Byo7Y/BxotOJ6XqhZgVjyLdttUnkauH+c5
-         irENCVF6E0IqCOjOsxkTCNlwhNkD35JWux8qiWNA2rRBKTaMDJhjFE6YzZI2t6Ehq2g9
-         48uhRwcuFJ6KRwxm2yIcrbUOuf6acW1UTXDJTpBJVsUSNexNPUCapGRtrJPqkvsH5Z5s
-         RomwmVw+wJeK0hN+zU2VBWqOQn2JUiAvlMyh+/8viUBo4Xlf95a1gAdUDxEfZz8WhfqI
-         gXyg==
+        bh=Hcg8ctscEa0t8SSV4gNeUgkygeqJTngQzkOo9fh7MZE=;
+        b=pY/arfFlAeunr2gBLh/qaucb9n4p2jHJsMQdzw2R0zgMiyRNgPIwWwpkUiUoegcP+P
+         CpjC5aws7kQ6Br4CxtAGk8WrVQLzvTR4VOQdO9DrPZZ98A1Qd5hXZmEwmUM4b0XJIc/r
+         ZeyVwVAH0W4hI3oowy8Rbr8SIoecXf+kenzXVRBpGloiUhf6mj2ESUI9PsWhSqaiAyjb
+         PooBa28gYPzLgTGnN9eDzMrQaBmCUKYtNVe3UOC6oNFRu6eBd8WItgfFeqVdBAuXEMPN
+         26O2UrXUUVritRYagYxDjMjpKzRQAo2zLNBwA7Y2xwKe7NEHVaxri6uMV5okxs9LT3Gh
+         RduA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=l9CMWPdWDhliYrHN/g/05oM0suTsXVO5bL0BBWp8xVQ=;
-        b=ZnwFfIj8ROEPEBY46e05GEWuPJB4/TxtWRvESA8P7AX1+TsS92x0Q54u7297H19+Vr
-         DaGItuSIniK2f7KI+84KONCRnke6EiVUu485V33tBebtobpz6Ka1qvuRAm2Lb7qZcybL
-         HPn64898gL9EFCO5snvaRgSZe1x5JZCC52NWk/CDIyvwFl0PuQztjiHur48DxkCkczK1
-         mwJCy/FCPTt2uMf584oSreFS+H2Y8JWnqxZRpn1yW6mBryZ6uC6kOaSPx1a2pxH1WQjX
-         JJZ1xD5txeW6VL5yGyFOJq0zYBZV2Xe1AZuK1R02u4iES2W+eFqwDjZkHfWvQBjsE6th
-         ZL+A==
-X-Gm-Message-State: AOAM531oN/I5+HzWxwjf4vYxmbmzQRyqGUR1wLCHDVUmKmzj6hP0HMG7
-        vwA2V9v5GcIJwTy4V9r420UNuVAj5u8=
-X-Google-Smtp-Source: ABdhPJxWJw52lTOHAorcVvKKdbDVGEprFZqCIR2v+1inSvJ2s/QvAEBJg6tupvELlAQ5ynL8cWwBGRO9OKs=
+        bh=Hcg8ctscEa0t8SSV4gNeUgkygeqJTngQzkOo9fh7MZE=;
+        b=ZXgsGZ3XU5egcm6WMbNv5EoqKyYQeA1GKQlFZeBjf5GuRTV9dJ8+wvXh5aEyMIYWz4
+         XMJtjaAYnKq5zpPWjiDQmZf6T+girvqupmPWwInVHeTw/dM7uZKydVEfPzpe5TG+mN0i
+         B4J5m1ljbWZeKqZwjKIXLoTs0wzV7R08Q0D22q5cwcxScY34sIjbjVwlHSU5cpX1nXAh
+         e9CsJbw1i1I2+TX5hpyienhhAipnhS6HP84XED8SfiDyg0NwuDTmaLuyHC+ODp/9cskh
+         keN/uYdH1PY7155klRGPkgJ6OJ+2AiP/uuSsnYdD4yecmEra8gIAW7U7v26mrOyW7uHl
+         zNvw==
+X-Gm-Message-State: AOAM5303AL8/0QMbKNbPoPeR+VzC9kRE2HKxzFQjZrv4gn6tc5CKS785
+        bhS2x7o91ZPuZtqGEGqB0EyJg1yyWt4=
+X-Google-Smtp-Source: ABdhPJwJfpnB5Bcd8nZ5NGE+1+XjO3DvogRTxHoA3Kak2RVpj+77JMe/TjEqDy0XIv3k30GGMUVXeMgRX9E=
 X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:39e6:8b30:8665:4bec])
- (user=badhri job=sendgmr) by 2002:a05:6214:12a1:: with SMTP id
- w1mr6851339qvu.57.1615457001221; Thu, 11 Mar 2021 02:03:21 -0800 (PST)
-Date:   Thu, 11 Mar 2021 02:03:11 -0800
+ (user=badhri job=sendgmr) by 2002:a05:6214:1085:: with SMTP id
+ o5mr6988474qvr.5.1615457003120; Thu, 11 Mar 2021 02:03:23 -0800 (PST)
+Date:   Thu, 11 Mar 2021 02:03:12 -0800
 In-Reply-To: <20210311100313.3591254-1-badhri@google.com>
-Message-Id: <20210311100313.3591254-2-badhri@google.com>
+Message-Id: <20210311100313.3591254-3-badhri@google.com>
 Mime-Version: 1.0
 References: <20210311100313.3591254-1-badhri@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH 2/4] usb: typec: tcpci: Add tcpc chip level callbacks
+Subject: [PATCH 3/4] usb: typec: tcpci_maxim: configure charging & data paths
 From:   Badhri Jagan Sridharan <badhri@google.com>
 To:     Guenter Roeck <linux@roeck-us.net>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -65,115 +65,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds chip callbacks for the following operations:
-1. Setting/getting vbus voltage and current limits.
-2. Notifying presence of PD capable partner
-3. Notifying port role
-4. Notifying orientation
+This change allows the driver to configure input current/voltage
+limit for the charging path. The driver sets current_max and voltage_max
+values of the power supply identified through chg-psy-name.
+
+The change also exposes the data_role and the orientation as a extcon
+interface for configuring the USB data controller.
 
 Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
- drivers/usb/typec/tcpm/tcpci.c | 45 +++++++++++++++++++++++++++++++++-
- drivers/usb/typec/tcpm/tcpci.h |  7 ++++++
- 2 files changed, 51 insertions(+), 1 deletion(-)
+ drivers/usb/typec/tcpm/tcpci_maxim.c | 126 ++++++++++++++++++++++++++-
+ 1 file changed, 125 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-index 027afd7dfdce..35f229d1dde8 100644
---- a/drivers/usb/typec/tcpm/tcpci.c
-+++ b/drivers/usb/typec/tcpm/tcpci.c
-@@ -265,9 +265,16 @@ static int tcpci_set_polarity(struct tcpc_dev *tcpc,
- 	if (ret < 0)
- 		return ret;
+diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
+index 041a1c393594..365ff4c18146 100644
+--- a/drivers/usb/typec/tcpm/tcpci_maxim.c
++++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
+@@ -7,8 +7,11 @@
  
--	return regmap_write(tcpci->regmap, TCPC_TCPC_CTRL,
-+	ret = regmap_write(tcpci->regmap, TCPC_TCPC_CTRL,
- 			   (polarity == TYPEC_POLARITY_CC2) ?
- 			   TCPC_TCPC_CTRL_ORIENTATION : 0);
+ #include <linux/interrupt.h>
+ #include <linux/i2c.h>
++#include <linux/extcon.h>
++#include <linux/extcon-provider.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/power_supply.h>
+ #include <linux/regmap.h>
+ #include <linux/usb/pd.h>
+ #include <linux/usb/tcpm.h>
+@@ -46,6 +49,10 @@ struct max_tcpci_chip {
+ 	struct device *dev;
+ 	struct i2c_client *client;
+ 	struct tcpm_port *port;
++	bool pd_capable;
++	bool attached;
++	struct power_supply *chg_psy;
++	struct extcon_dev *extcon;
+ };
+ 
+ static const struct regmap_range max_tcpci_tcpci_range[] = {
+@@ -439,11 +446,92 @@ static int tcpci_init(struct tcpci *tcpci, struct tcpci_data *data)
+ 	return -1;
+ }
+ 
++static int max_tcpci_get_current_limit(struct tcpci *tcpci, struct tcpci_data *data)
++{
++	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
++	union power_supply_propval val = {0};
++	int ret;
++
++	if (!chip->chg_psy)
++		return 0;
++
++	ret = power_supply_get_property(chip->chg_psy, POWER_SUPPLY_PROP_CURRENT_MAX, &val);
++	return ret < 0 ? ret : val.intval;
++}
++
++static int max_tcpci_set_current_limit(struct tcpci *tcpci, struct tcpci_data *data, u32 max_ma,
++				       u32 mv)
++{
++	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
++	union power_supply_propval val;
++	int ret;
++
++	if (!chip->chg_psy)
++		return 0;
++
++	val.intval = mv;
++	ret = power_supply_set_property(chip->chg_psy, POWER_SUPPLY_PROP_VOLTAGE_MAX, &val);
 +	if (ret < 0)
 +		return ret;
 +
-+	if (tcpci->data->set_cc_polarity)
-+		tcpci->data->set_cc_polarity(tcpci, tcpci->data, polarity);
++	/*
++	 * Disregard 0mA vote for Rp-default value. Rp-default current values
++	 * would be inferred from other sources such BC1.2 and data stack.
++	 */
++	if (!chip->pd_capable && max_ma == 0 && chip->attached)
++		return 0;
 +
-+	return ret;
- }
++	val.intval = max_ma;
++	return power_supply_set_property(chip->chg_psy, POWER_SUPPLY_PROP_CURRENT_MAX, &val);
++}
++
++static void max_tcpci_set_pd_capable(struct tcpci *tcpci, struct tcpci_data *data, bool capable)
++{
++	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
++
++	chip->pd_capable = capable;
++}
++
++static void max_tcpci_set_roles(struct tcpci *tcpci, struct tcpci_data *data, bool attached,
++				enum typec_role role, enum typec_data_role data_role)
++{
++	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
++
++	chip->attached = attached;
++
++	if (!attached) {
++		extcon_set_state_sync(chip->extcon, EXTCON_USB_HOST, 0);
++		extcon_set_state_sync(chip->extcon, EXTCON_USB, 0);
++		return;
++	}
++
++	extcon_set_state_sync(chip->extcon, data_role == TYPEC_HOST ? EXTCON_USB_HOST : EXTCON_USB,
++			      1);
++}
++
++static void max_tcpci_set_cc_polarity(struct tcpci *tcpci, struct tcpci_data *data,
++				      enum typec_cc_polarity polarity)
++{
++	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
++
++	extcon_set_property(chip->extcon, EXTCON_USB, EXTCON_PROP_USB_TYPEC_POLARITY,
++			    (union extcon_property_value)(int)polarity);
++	extcon_set_property(chip->extcon, EXTCON_USB_HOST, EXTCON_PROP_USB_TYPEC_POLARITY,
++			    (union extcon_property_value)(int)polarity);
++}
++
++static const unsigned int usbpd_extcon[] = {
++	EXTCON_USB,
++	EXTCON_USB_HOST,
++};
++
+ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id *i2c_id)
+ {
+ 	int ret;
+ 	struct max_tcpci_chip *chip;
+ 	u8 power_status;
++	char *chg_psy_name;
++	struct device_node *dn;
  
- static void tcpci_set_partner_usb_comm_capable(struct tcpc_dev *tcpc, bool capable)
-@@ -395,6 +402,9 @@ static int tcpci_set_roles(struct tcpc_dev *tcpc, bool attached,
+ 	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
+ 	if (!chip)
+@@ -472,6 +560,11 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
+ 	chip->data.auto_discharge_disconnect = true;
+ 	chip->data.vbus_vsafe0v = true;
+ 	chip->data.set_partner_usb_comm_capable = max_tcpci_set_partner_usb_comm_capable;
++	chip->data.get_current_limit = max_tcpci_get_current_limit;
++	chip->data.set_current_limit = max_tcpci_set_current_limit;
++	chip->data.set_pd_capable = max_tcpci_set_pd_capable;
++	chip->data.set_roles = max_tcpci_set_roles;
++	chip->data.set_cc_polarity = max_tcpci_set_cc_polarity;
+ 
+ 	max_tcpci_init_regs(chip);
+ 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
+@@ -484,9 +577,38 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
  	if (ret < 0)
- 		return ret;
+ 		goto unreg_port;
  
-+	if (tcpci->data->set_roles)
-+		tcpci->data->set_roles(tcpci, tcpci->data, attached, role, data);
++	dn = dev_of_node(&client->dev);
++	if (!dn) {
++		dev_err(&client->dev, "of node not found\n");
++		ret = -EINVAL;
++		goto unreg_port;
++	}
++	chg_psy_name = (char *)of_get_property(dn, "chg-psy-name", NULL);
++	if (chg_psy_name)
++		chip->chg_psy = power_supply_get_by_name(chg_psy_name);
 +
++	chip->extcon = devm_extcon_dev_allocate(&client->dev, usbpd_extcon);
++	if (IS_ERR(chip->extcon)) {
++		dev_err(&client->dev, "Error allocating extcon: %ld\n", PTR_ERR(chip->extcon));
++		ret = PTR_ERR(chip->extcon);
++		goto psy_put;
++	}
++
++	ret = devm_extcon_dev_register(&client->dev, chip->extcon);
++	if (ret < 0) {
++		dev_err(&client->dev, "failed to register extcon device");
++		goto psy_put;
++	}
++
++	extcon_set_property_capability(chip->extcon, EXTCON_USB, EXTCON_PROP_USB_TYPEC_POLARITY);
++	extcon_set_property_capability(chip->extcon, EXTCON_USB_HOST,
++				       EXTCON_PROP_USB_TYPEC_POLARITY);
++
+ 	device_init_wakeup(chip->dev, true);
+ 	return 0;
+-
++psy_put:
++	if (chip->chg_psy)
++		power_supply_put(chip->chg_psy);
+ unreg_port:
+ 	tcpci_unregister_port(chip->tcpci);
+ 
+@@ -499,6 +621,8 @@ static int max_tcpci_remove(struct i2c_client *client)
+ 
+ 	if (!IS_ERR_OR_NULL(chip->tcpci))
+ 		tcpci_unregister_port(chip->tcpci);
++	if (chip->chg_psy)
++		power_supply_put(chip->chg_psy);
+ 
  	return 0;
  }
- 
-@@ -439,6 +449,36 @@ static bool tcpci_is_vbus_vsafe0v(struct tcpc_dev *tcpc)
- 	return !!(reg & TCPC_EXTENDED_STATUS_VSAFE0V);
- }
- 
-+static void tcpci_set_pd_capable(struct tcpc_dev *tcpc, bool capable)
-+{
-+	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-+
-+	if (tcpci->data->set_pd_capable)
-+		tcpci->data->set_pd_capable(tcpci, tcpci->data, capable);
-+}
-+
-+static int tcpci_get_current_limit(struct tcpc_dev *tcpc)
-+{
-+	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-+
-+	if (tcpci->data->get_current_limit)
-+		return tcpci->data->get_current_limit(tcpci, tcpci->data);
-+
-+	return 0;
-+}
-+
-+static int tcpci_set_current_limit(struct tcpc_dev *tcpc, u32 max_ma, u32 mv)
-+{
-+	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-+	int ret = 0;
-+
-+	if (tcpci->data->set_current_limit)
-+		ret = tcpci->data->set_current_limit(tcpci, tcpci->data, max_ma,
-+						     mv);
-+
-+	return ret;
-+}
-+
- static int tcpci_set_vbus(struct tcpc_dev *tcpc, bool source, bool sink)
- {
- 	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-@@ -744,6 +784,9 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
- 	tcpci->tcpc.enable_frs = tcpci_enable_frs;
- 	tcpci->tcpc.frs_sourcing_vbus = tcpci_frs_sourcing_vbus;
- 	tcpci->tcpc.set_partner_usb_comm_capable = tcpci_set_partner_usb_comm_capable;
-+	tcpci->tcpc.set_pd_capable = tcpci_set_pd_capable;
-+	tcpci->tcpc.set_current_limit = tcpci_set_current_limit;
-+	tcpci->tcpc.get_current_limit = tcpci_get_current_limit;
- 
- 	if (tcpci->data->auto_discharge_disconnect) {
- 		tcpci->tcpc.enable_auto_vbus_discharge = tcpci_enable_auto_vbus_discharge;
-diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-index 57b6e24e0a0c..6fdad15ce1f2 100644
---- a/drivers/usb/typec/tcpm/tcpci.h
-+++ b/drivers/usb/typec/tcpm/tcpci.h
-@@ -181,6 +181,13 @@ struct tcpci_data {
- 	void (*frs_sourcing_vbus)(struct tcpci *tcpci, struct tcpci_data *data);
- 	void (*set_partner_usb_comm_capable)(struct tcpci *tcpci, struct tcpci_data *data,
- 					     bool capable);
-+	void (*set_pd_capable)(struct tcpci *tcpci, struct tcpci_data *data, bool capable);
-+	int (*get_current_limit)(struct tcpci *tcpci, struct tcpci_data *data);
-+	int (*set_current_limit)(struct tcpci *tcpci, struct tcpci_data *data, u32 max_ma, u32 mv);
-+	void (*set_roles)(struct tcpci *tcpci, struct tcpci_data *data, bool attached,
-+			  enum typec_role role, enum typec_data_role data_role);
-+	void (*set_cc_polarity)(struct tcpci *tcpci, struct tcpci_data *data,
-+				enum typec_cc_polarity polarity);
- };
- 
- struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data);
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
