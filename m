@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1C6337CDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63AD7337CE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 19:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbhCKSqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 13:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
+        id S229944AbhCKSqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 13:46:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhCKSqe (ORCPT
+        with ESMTP id S229705AbhCKSqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:46:34 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF76C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:46:34 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id n9so13289877pgi.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:46:34 -0800 (PST)
+        Thu, 11 Mar 2021 13:46:35 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31810C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:46:35 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id g4so14244311pgj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 10:46:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=q1Tx+T/IreZm3jpHZdVz8uD/lMhqA9vxvJDhq2i5X24=;
-        b=T2cGjTXfSR8gKanHdJ9pP/zBxKicefBoOdeEj5j4iBR2CzqHFCILhY7g049++1CdeD
-         /yWgken4MptpcTulHBrCV47YwqVIjWjRfrmFLuUHGc4bovI+7prGKGWeTYktqv3L7/39
-         /TSUQvinWtDP8//2Vq5jHcwulsrPj86yJTYqc=
+        bh=jsb6E0FK8MRIhs7lJ7D4eERwE7vUrhoh8LogP70fZt4=;
+        b=M2eO061lK/r+Wprxytw5m1AqfRReogSNsgcZMLc5wcHCDT+xRXZ6eg4P4wXyWb+zNU
+         Yw8A7pyi619WeytrvNrXC5RE8cfIsq39+KTkqX5o2jhiUubEHySgJzUDhH1DswG7BR1O
+         yVAb8b20uwjiL3motL+4kSsMJ+GDAvNCUr7mU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=q1Tx+T/IreZm3jpHZdVz8uD/lMhqA9vxvJDhq2i5X24=;
-        b=lVsoAV5Ry/UUL86O3jy1gzt/o+/Ct4P1/0t1zj/AS1IjuzSjWQ6JkUhhIBbIdQUdBz
-         7HRr0voWI57h+a2xW8RcHjP6zH8n5VLaNJxLd5ash70U8lTk3gMKED4EIZrutYj+4Mg+
-         2v/vZg3zXa/I6eSq3vKzUs3B6psaF/tjfD9iHw26sZ95NCgSpg1W2Wpe5ZoCO2/qkvzu
-         9LTjyHOzwT6zz3rOFVHl5MxoeAa6x13YBBID4kB3/iVO3QacCf2nPW5VRqnmBCoS9nvn
-         Cl4CD8OG8WJzfwOIgF0YEbO4eyIu44N8Dm6K+voY29GPeIWCHhEl7IePkJRl/PQXKy0E
-         A5Ig==
-X-Gm-Message-State: AOAM530GOxmNBjfZixacigvAbeRoJ0HlEQ0T9LkGaDIsm0/JVTcKlU58
-        C5xT/KAZr7uqqvqcX84Tv+F8Wg==
-X-Google-Smtp-Source: ABdhPJx0kKvx5BvxGN/SBKiZNsq9qIYbPjMtdeDLVIc/16QO7YQv8PE2MucdIGBhY0Aa4R8Dg0M1Cw==
-X-Received: by 2002:a63:4082:: with SMTP id n124mr8476670pga.340.1615488394057;
+        bh=jsb6E0FK8MRIhs7lJ7D4eERwE7vUrhoh8LogP70fZt4=;
+        b=bL5BiCKytxP4tMijue5GmJHKzy/bxgwYrj32W4r8uQymytWhUuu5/sglRxOkKKwMty
+         19/fxvKUEyo8zrhBv3pyNLwor+uzH6CNHZCZh6bIzhOC/WvstFeIuTFc54S6TIH+iTo6
+         JnKrke8O/FQSWWzA+o5I3e50ozszVKsSw7PJ/gD0dWvW98UkDWzlHeemPKkNtRrO4hAw
+         Io+toga9meHsZL5/RnVsCUFUCFdxIUx4r4itST6l3+PUfVGeJc4Lgq5YRnZA5/svpFn0
+         dPe/kS6upiwN3ufvjX6jUPBdbr3gY49SHduhIV4RVOWqTEsooJhEux2UMCC+X0TtBgCc
+         f4iQ==
+X-Gm-Message-State: AOAM532CEWjrf9EQ5TcBW89VMNEMDGwFlN4wmGb4mbwgsjfV5VSyzU1k
+        q8EsAEUfltvOTSmfbgKmEtQM/g==
+X-Google-Smtp-Source: ABdhPJw8Kn5XC+uVS/X25xneC62+nmr9A/S66pErwyPEkvxxDuPvVOSdORxBHW7dZ3xkYf26Hhl3Og==
+X-Received: by 2002:a63:161c:: with SMTP id w28mr8473860pgl.341.1615488394733;
         Thu, 11 Mar 2021 10:46:34 -0800 (PST)
 Received: from li-cloudtop.c.googlers.com.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id z2sm3108398pfq.198.2021.03.11.10.46.33
+        by smtp.gmail.com with ESMTPSA id z2sm3108398pfq.198.2021.03.11.10.46.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 10:46:33 -0800 (PST)
+        Thu, 11 Mar 2021 10:46:34 -0800 (PST)
 From:   Li Li <dualli@chromium.org>
 To:     dualli@google.com, tkjos@google.com, gregkh@linuxfoundation.org,
         christian@brauner.io, arve@android.com, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
         surenb@google.com
 Cc:     joel@joelfernandes.org, kernel-team@android.com
-Subject: [PATCH v2 1/3] binder: BINDER_FREEZE ioctl
-Date:   Thu, 11 Mar 2021 10:46:27 -0800
-Message-Id: <20210311184629.589725-2-dualli@chromium.org>
+Subject: [PATCH v2 2/3] binder: use EINTR for interrupted wait for work
+Date:   Thu, 11 Mar 2021 10:46:28 -0800
+Message-Id: <20210311184629.589725-3-dualli@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210311184629.589725-1-dualli@chromium.org>
 References: <20210311184629.589725-1-dualli@chromium.org>
@@ -65,355 +65,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marco Ballesio <balejs@google.com>
 
-Frozen tasks can't process binder transactions, so a way is required to
-inform transmitting ends of communication failures due to the frozen
-state of their receiving counterparts. Additionally, races are possible
-between transitions to frozen state and binder transactions enqueued to
-a specific process.
+when interrupted by a signal, binder_wait_for_work currently returns
+-ERESTARTSYS. This error code isn't propagated to user space, but a way
+to handle interruption due to signals must be provided to code using
+this API.
 
-Implement BINDER_FREEZE ioctl for user space to inform the binder driver
-about the intention to freeze or unfreeze a process. When the ioctl is
-called, block the caller until any pending binder transactions toward
-the target process are flushed. Return an error to transactions to
-processes marked as frozen.
+Replace this instance of -ERESTARTSYS with -EINTR, which is propagated
+to user space.
 
+Test: built, booted, interrupted a worker thread within
+binder_wait_for_work
 Signed-off-by: Marco Ballesio <balejs@google.com>
-Co-developed-by: Todd Kjos <tkjos@google.com>
-Signed-off-by: Todd Kjos <tkjos@google.com>
 Signed-off-by: Li Li <dualli@google.com>
 ---
- drivers/android/binder.c            | 141 ++++++++++++++++++++++++++--
- drivers/android/binder_internal.h   |  12 +++
- include/uapi/linux/android/binder.h |  13 +++
- 3 files changed, 156 insertions(+), 10 deletions(-)
+ drivers/android/binder.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index c119736ca56a..76ea558df03e 100644
+index 76ea558df03e..38bbf9a4ce99 100644
 --- a/drivers/android/binder.c
 +++ b/drivers/android/binder.c
-@@ -1506,6 +1506,12 @@ static void binder_free_transaction(struct binder_transaction *t)
- 
- 	if (target_proc) {
- 		binder_inner_proc_lock(target_proc);
-+		target_proc->outstanding_txns--;
-+		if (target_proc->outstanding_txns < 0)
-+			pr_warn("%s: Unexpected outstanding_txns %d\n",
-+				__func__, target_proc->outstanding_txns);
-+		if (!target_proc->outstanding_txns && target_proc->is_frozen)
-+			wake_up_interruptible_all(&target_proc->freeze_wait);
- 		if (t->buffer)
- 			t->buffer->transaction = NULL;
- 		binder_inner_proc_unlock(target_proc);
-@@ -2331,10 +2337,11 @@ static int binder_fixup_parent(struct binder_transaction *t,
-  * If the @thread parameter is not NULL, the transaction is always queued
-  * to the waitlist of that specific thread.
-  *
-- * Return:	true if the transactions was successfully queued
-- *		false if the target process or thread is dead
-+ * Return:	0 if the transaction was successfully queued
-+ *		BR_DEAD_REPLY if the target process or thread is dead
-+ *		BR_FROZEN_REPLY if the target process or thread is frozen
-  */
--static bool binder_proc_transaction(struct binder_transaction *t,
-+static int binder_proc_transaction(struct binder_transaction *t,
- 				    struct binder_proc *proc,
- 				    struct binder_thread *thread)
- {
-@@ -2354,10 +2361,13 @@ static bool binder_proc_transaction(struct binder_transaction *t,
- 
- 	binder_inner_proc_lock(proc);
- 
--	if (proc->is_dead || (thread && thread->is_dead)) {
-+	if ((proc->is_frozen && !oneway) || proc->is_dead ||
-+			(thread && thread->is_dead)) {
-+		bool proc_is_dead = proc->is_dead
-+			|| (thread && thread->is_dead);
- 		binder_inner_proc_unlock(proc);
- 		binder_node_unlock(node);
--		return false;
-+		return proc_is_dead ? BR_DEAD_REPLY : BR_FROZEN_REPLY;
- 	}
- 
- 	if (!thread && !pending_async)
-@@ -2373,10 +2383,11 @@ static bool binder_proc_transaction(struct binder_transaction *t,
- 	if (!pending_async)
- 		binder_wakeup_thread_ilocked(proc, thread, !oneway /* sync */);
- 
-+	proc->outstanding_txns++;
- 	binder_inner_proc_unlock(proc);
- 	binder_node_unlock(node);
- 
--	return true;
-+	return 0;
- }
- 
- /**
-@@ -3013,13 +3024,16 @@ static void binder_transaction(struct binder_proc *proc,
- 	if (reply) {
- 		binder_enqueue_thread_work(thread, tcomplete);
- 		binder_inner_proc_lock(target_proc);
--		if (target_thread->is_dead) {
-+		if (target_thread->is_dead || target_proc->is_frozen) {
-+			return_error = target_thread->is_dead ?
-+				BR_DEAD_REPLY : BR_FROZEN_REPLY;
- 			binder_inner_proc_unlock(target_proc);
- 			goto err_dead_proc_or_thread;
+@@ -3712,7 +3712,7 @@ static int binder_wait_for_work(struct binder_thread *thread,
+ 		binder_inner_proc_lock(proc);
+ 		list_del_init(&thread->waiting_thread_node);
+ 		if (signal_pending(current)) {
+-			ret = -ERESTARTSYS;
++			ret = -EINTR;
+ 			break;
  		}
- 		BUG_ON(t->buffer->async_transaction != 0);
- 		binder_pop_transaction_ilocked(target_thread, in_reply_to);
- 		binder_enqueue_thread_work_ilocked(target_thread, &t->work);
-+		target_proc->outstanding_txns++;
- 		binder_inner_proc_unlock(target_proc);
- 		wake_up_interruptible_sync(&target_thread->wait);
- 		binder_free_transaction(in_reply_to);
-@@ -3038,7 +3052,9 @@ static void binder_transaction(struct binder_proc *proc,
- 		t->from_parent = thread->transaction_stack;
- 		thread->transaction_stack = t;
- 		binder_inner_proc_unlock(proc);
--		if (!binder_proc_transaction(t, target_proc, target_thread)) {
-+		return_error = binder_proc_transaction(t,
-+				target_proc, target_thread);
-+		if (return_error) {
- 			binder_inner_proc_lock(proc);
- 			binder_pop_transaction_ilocked(thread, t);
- 			binder_inner_proc_unlock(proc);
-@@ -3048,7 +3064,8 @@ static void binder_transaction(struct binder_proc *proc,
- 		BUG_ON(target_node == NULL);
- 		BUG_ON(t->buffer->async_transaction != 1);
- 		binder_enqueue_thread_work(thread, tcomplete);
--		if (!binder_proc_transaction(t, target_proc, NULL))
-+		return_error = binder_proc_transaction(t, target_proc, NULL);
-+		if (return_error)
- 			goto err_dead_proc_or_thread;
  	}
- 	if (target_thread)
-@@ -3065,7 +3082,6 @@ static void binder_transaction(struct binder_proc *proc,
- 	return;
- 
- err_dead_proc_or_thread:
--	return_error = BR_DEAD_REPLY;
- 	return_error_line = __LINE__;
- 	binder_dequeue_work(proc, tcomplete);
- err_translate_failed:
-@@ -4298,6 +4314,9 @@ static void binder_free_proc(struct binder_proc *proc)
- 
- 	BUG_ON(!list_empty(&proc->todo));
- 	BUG_ON(!list_empty(&proc->delivered_death));
-+	if (proc->outstanding_txns)
-+		pr_warn("%s: Unexpected outstanding_txns %d\n",
-+			__func__, proc->outstanding_txns);
- 	device = container_of(proc->context, struct binder_device, context);
- 	if (refcount_dec_and_test(&device->ref)) {
- 		kfree(proc->context->name);
-@@ -4359,6 +4378,7 @@ static int binder_thread_release(struct binder_proc *proc,
- 			     (t->to_thread == thread) ? "in" : "out");
- 
- 		if (t->to_thread == thread) {
-+			thread->proc->outstanding_txns--;
- 			t->to_proc = NULL;
- 			t->to_thread = NULL;
- 			if (t->buffer) {
-@@ -4609,6 +4629,45 @@ static int binder_ioctl_get_node_debug_info(struct binder_proc *proc,
- 	return 0;
- }
- 
-+static int binder_ioctl_freeze(struct binder_freeze_info *info,
-+			       struct binder_proc *target_proc)
-+{
-+	int ret = 0;
-+
-+	if (!info->enable) {
-+		binder_inner_proc_lock(target_proc);
-+		target_proc->is_frozen = false;
-+		binder_inner_proc_unlock(target_proc);
-+		return 0;
-+	}
-+
-+	/*
-+	 * Freezing the target. Prevent new transactions by
-+	 * setting frozen state. If timeout specified, wait
-+	 * for transactions to drain.
-+	 */
-+	binder_inner_proc_lock(target_proc);
-+	target_proc->is_frozen = true;
-+	binder_inner_proc_unlock(target_proc);
-+
-+	if (info->timeout_ms > 0)
-+		ret = wait_event_interruptible_timeout(
-+			target_proc->freeze_wait,
-+			(!target_proc->outstanding_txns),
-+			msecs_to_jiffies(info->timeout_ms));
-+
-+	if (!ret && target_proc->outstanding_txns)
-+		ret = -EAGAIN;
-+
-+	if (ret < 0) {
-+		binder_inner_proc_lock(target_proc);
-+		target_proc->is_frozen = false;
-+		binder_inner_proc_unlock(target_proc);
-+	}
-+
-+	return ret;
-+}
-+
- static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
- 	int ret;
-@@ -4727,6 +4786,66 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		}
- 		break;
- 	}
-+	case BINDER_FREEZE: {
-+		struct binder_freeze_info info;
-+		struct binder_proc **target_procs = NULL, *target_proc;
-+		int target_procs_count = 0, i = 0;
-+
-+		ret = 0;
-+
-+		if (copy_from_user(&info, ubuf, sizeof(info))) {
-+			ret = -EFAULT;
-+			goto err;
-+		}
-+
-+		mutex_lock(&binder_procs_lock);
-+		hlist_for_each_entry(target_proc, &binder_procs, proc_node) {
-+			if (target_proc->pid == info.pid)
-+				target_procs_count++;
-+		}
-+
-+		if (target_procs_count == 0) {
-+			mutex_unlock(&binder_procs_lock);
-+			ret = -EINVAL;
-+			goto err;
-+		}
-+
-+		target_procs = kcalloc(target_procs_count,
-+				       sizeof(struct binder_proc *),
-+				       GFP_KERNEL);
-+
-+		if (!target_procs) {
-+			mutex_unlock(&binder_procs_lock);
-+			ret = -ENOMEM;
-+			goto err;
-+		}
-+
-+		hlist_for_each_entry(target_proc, &binder_procs, proc_node) {
-+			if (target_proc->pid != info.pid)
-+				continue;
-+
-+			binder_inner_proc_lock(target_proc);
-+			target_proc->tmp_ref++;
-+			binder_inner_proc_unlock(target_proc);
-+
-+			target_procs[i++] = target_proc;
-+		}
-+		mutex_unlock(&binder_procs_lock);
-+
-+		for (i = 0; i < target_procs_count; i++) {
-+			if (ret >= 0)
-+				ret = binder_ioctl_freeze(&info,
-+							  target_procs[i]);
-+
-+			binder_proc_dec_tmpref(target_procs[i]);
-+		}
-+
-+		kfree(target_procs);
-+
-+		if (ret < 0)
-+			goto err;
-+		break;
-+	}
- 	default:
- 		ret = -EINVAL;
- 		goto err;
-@@ -4823,6 +4942,7 @@ static int binder_open(struct inode *nodp, struct file *filp)
- 	get_task_struct(current->group_leader);
- 	proc->tsk = current->group_leader;
- 	INIT_LIST_HEAD(&proc->todo);
-+	init_waitqueue_head(&proc->freeze_wait);
- 	proc->default_priority = task_nice(current);
- 	/* binderfs stashes devices in i_private */
- 	if (is_binderfs_device(nodp)) {
-@@ -5035,6 +5155,7 @@ static void binder_deferred_release(struct binder_proc *proc)
- 	proc->tmp_ref++;
- 
- 	proc->is_dead = true;
-+	proc->is_frozen = false;
- 	threads = 0;
- 	active_transactions = 0;
- 	while ((n = rb_first(&proc->threads))) {
-diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-index 6cd79011e35d..e6a53e98c6da 100644
---- a/drivers/android/binder_internal.h
-+++ b/drivers/android/binder_internal.h
-@@ -367,9 +367,18 @@ struct binder_ref {
-  *                        (protected by binder_deferred_lock)
-  * @deferred_work:        bitmap of deferred work to perform
-  *                        (protected by binder_deferred_lock)
-+ * @outstanding_txns:     number of transactions to be transmitted before
-+ *                        processes in freeze_wait are woken up
-+ *                        (protected by @inner_lock)
-  * @is_dead:              process is dead and awaiting free
-  *                        when outstanding transactions are cleaned up
-  *                        (protected by @inner_lock)
-+ * @is_frozen:            process is frozen and unable to service
-+ *                        binder transactions
-+ *                        (protected by @inner_lock)
-+ * @freeze_wait:          waitqueue of processes waiting for all outstanding
-+ *                        transactions to be processed
-+ *                        (protected by @inner_lock)
-  * @todo:                 list of work for this process
-  *                        (protected by @inner_lock)
-  * @stats:                per-process binder statistics
-@@ -410,7 +419,10 @@ struct binder_proc {
- 	struct task_struct *tsk;
- 	struct hlist_node deferred_work_node;
- 	int deferred_work;
-+	int outstanding_txns;
- 	bool is_dead;
-+	bool is_frozen;
-+	wait_queue_head_t freeze_wait;
- 
- 	struct list_head todo;
- 	struct binder_stats stats;
-diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/android/binder.h
-index ec84ad106568..7eb5b818b3c1 100644
---- a/include/uapi/linux/android/binder.h
-+++ b/include/uapi/linux/android/binder.h
-@@ -217,6 +217,12 @@ struct binder_node_info_for_ref {
- 	__u32            reserved3;
- };
- 
-+struct binder_freeze_info {
-+	__u32            pid;
-+	__u32            enable;
-+	__u32            timeout_ms;
-+};
-+
- #define BINDER_WRITE_READ		_IOWR('b', 1, struct binder_write_read)
- #define BINDER_SET_IDLE_TIMEOUT		_IOW('b', 3, __s64)
- #define BINDER_SET_MAX_THREADS		_IOW('b', 5, __u32)
-@@ -227,6 +233,7 @@ struct binder_node_info_for_ref {
- #define BINDER_GET_NODE_DEBUG_INFO	_IOWR('b', 11, struct binder_node_debug_info)
- #define BINDER_GET_NODE_INFO_FOR_REF	_IOWR('b', 12, struct binder_node_info_for_ref)
- #define BINDER_SET_CONTEXT_MGR_EXT	_IOW('b', 13, struct flat_binder_object)
-+#define BINDER_FREEZE			_IOW('b', 14, struct binder_freeze_info)
- 
- /*
-  * NOTE: Two special error codes you should check for when calling
-@@ -408,6 +415,12 @@ enum binder_driver_return_protocol {
- 	 * The last transaction (either a bcTRANSACTION or
- 	 * a bcATTEMPT_ACQUIRE) failed (e.g. out of memory).  No parameters.
- 	 */
-+
-+	BR_FROZEN_REPLY = _IO('r', 18),
-+	/*
-+	 * The target of the last transaction (either a bcTRANSACTION or
-+	 * a bcATTEMPT_ACQUIRE) is frozen.  No parameters.
-+	 */
- };
- 
- enum binder_driver_command_protocol {
+@@ -4855,7 +4855,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	if (thread)
+ 		thread->looper_need_return = false;
+ 	wait_event_interruptible(binder_user_error_wait, binder_stop_on_user_error < 2);
+-	if (ret && ret != -ERESTARTSYS)
++	if (ret && ret != -EINTR)
+ 		pr_info("%d:%d ioctl %x %lx returned %d\n", proc->pid, current->pid, cmd, arg, ret);
+ err_unlocked:
+ 	trace_binder_ioctl_done(ret);
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
