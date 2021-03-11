@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AAA336EB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DF5336EB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 10:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbhCKJUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 04:20:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41710 "EHLO mx2.suse.de"
+        id S231629AbhCKJWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 04:22:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231394AbhCKJUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:20:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615454410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9ppLPHKZgOdvD8q1olTE2OHVSuWb2Yyu7oHswBfK/4o=;
-        b=PKdWTFIsCC4tX0n6KUKWfu648sxdDnCzFyDM4J6VaCsMFVvOES1qh3DiAcsGS85XXzW8mv
-        Ka/kzrGNAfSWT4fe5sP2rC7JwbO1XXngq9M/82faS/Oz9z2kGGKTvwlN8zdBp4YZkVBKbk
-        PD3YDVNhWfi/K7eKG3L8zqwIGhYN+Uk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9682EAB8C;
-        Thu, 11 Mar 2021 09:20:10 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 10:20:09 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v5] printk: Userspace format enumeration support
-Message-ID: <YEngyd950bHqesez@alley>
-References: <YEgvR6Wc1xt0qupy@chrisdown.name>
- <YEi47xUFix0Dg1Li@chrisdown.name>
+        id S231965AbhCKJWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 04:22:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 610A264E5F;
+        Thu, 11 Mar 2021 09:22:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615454527;
+        bh=QRVck+IIsi24TGqXEvxqoBtyhlaKGyxDG/OywFja2Vk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jdq0+S96sulLfadpU8BIgL3NRrGUddU63uusQBKkKf2lVLjDfRuRhb6Ncf1dvrwH2
+         VPPYzO8pW6lzbR0DHD3fMZJweKB5529IOqtEDNAZTTe3AnPWoARCHOdA8eEdRYzQOx
+         xW74JlEURfReF5oKjznIF8hJ7QPQqb80kOE39U/5+qjRPicPtE6moM68/p0I910EGi
+         2TQIWmzY/PZ64ta/JZOuXdUU0ObdgDuwxlSTZrUouXOiSq7bNqSvqFqVjTw59l5Ixx
+         UKEWd9qMyrlaumQ/V95hk/xq1t5mjPNkqWu0glEFedfK3tcqC8LM4F89rRfAMTI3vX
+         Lu6xfOiIHcqlA==
+Date:   Thu, 11 Mar 2021 11:22:03 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] infiniband/core: Fix a use after free in cm_work_handler
+Message-ID: <YEnhO9EXgI8pwVD2@unreal>
+References: <20210311022153.3757-1-lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YEi47xUFix0Dg1Li@chrisdown.name>
+In-Reply-To: <20210311022153.3757-1-lyl2019@mail.ustc.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-03-10 12:17:51, Chris Down wrote:
-> Hey Petr,
-> 
-> Chris Down writes:
-> >    $ head -1 vmlinux; shuf -n 5 vmlinux
-> >    # <level[,flags]> filename:line function "format"
-> >    <5> block/blk-settings.c:661 disk_stack_limits "%s: Warning: Device %s is misaligned\n"
-> >    <4> kernel/trace/trace.c:8296 trace_create_file "Could not create tracefs '%s' entry\n"
-> >    <6> arch/x86/kernel/hpet.c:144 _hpet_print_config "hpet: %s(%d):\n"
-> >    <6> init/do_mounts.c:605 prepare_namespace "Waiting for root device %s...\n"
-> >    <6> drivers/acpi/osl.c:1410 acpi_no_auto_serialize_setup "ACPI: auto-serialization disabled\n"
-> 
-> Regardless of any of the internals, how does this format look to you? I ask
-> because the sooner we agree on the format, the sooner I can provide an
-> interim version of this patch to internal customers, even if the eventual
-> implementation changes a little :-)
+On Wed, Mar 10, 2021 at 06:21:53PM -0800, Lv Yunlong wrote:
+> In cm_work_handler, it calls destory_cm_id() to release
+> the initial reference of cm_id_priv taken by iw_create_cm_id()
+> and free the cm_id_priv. After destory_cm_id(), iwcm_deref_id
+> (cm_id_priv) will be called and cause a use after free.
+>
+> Fixes: 59c68ac31e15a ("iw_cm: free cm_id resources on the last deref")
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  drivers/infiniband/core/iwcm.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+> index da8adadf4755..cb6b4ac45e21 100644
+> --- a/drivers/infiniband/core/iwcm.c
+> +++ b/drivers/infiniband/core/iwcm.c
+> @@ -1035,8 +1035,10 @@ static void cm_work_handler(struct work_struct *_work)
+>
+>  		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
+>  			ret = process_event(cm_id_priv, &levent);
+> -			if (ret)
+> +			if (ret) {
+>  				destroy_cm_id(&cm_id_priv->id);
+> +				return;
 
-It looks good to me.
+The destroy_cm_id() is called to free ->id and not cm_id_priv. This "return"
+leaks cm_id_priv now and what "a use after free" do you see?
 
-I do not have any better idea. And I believe that the filename, line,
-and function name might be useful.
-
-Best Regards,
-Petr
+> +			}
+>  		} else
+>  			pr_debug("dropping event %d\n", levent.event);
+>  		if (iwcm_deref_id(cm_id_priv))
+> --
+> 2.25.1
+>
+>
