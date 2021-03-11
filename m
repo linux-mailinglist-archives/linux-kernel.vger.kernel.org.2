@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0B033789C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E458E33789B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234350AbhCKP6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:58:23 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:50060 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbhCKP6A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:58:00 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 65A71879;
-        Thu, 11 Mar 2021 16:57:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615478278;
-        bh=uh0v20vIuAerIj2S1tG5H54I5B46Ush+Nb3Iwpomybs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I0LF6V+jDvhn51RT9PakCHBIk2FP3zx1PsFE4pqMeVqiPKlJZDp/2WPXk1550Q9DD
-         48HcHgK5a2tUQpKijh0uZ7OARltXcY4gJ8W/IoFNfwiqARowKmBzqg0qQIO8XVlhzV
-         rvmwG37dVm0/Stj5tt15e9V8M5hXOnpIdXu5u4w4=
-Date:   Thu, 11 Mar 2021 17:57:24 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Subject: Re: [PATCH 03/10] media: uvcvideo: Return -EIO for control errors
-Message-ID: <YEo95GqO0XEX4Cg0@pendragon.ideasonboard.com>
-References: <20210311122040.1264410-1-ribalda@chromium.org>
- <20210311122040.1264410-5-ribalda@chromium.org>
- <CANiDSCtw2q7UxMoZSMeE545WCxMs-WSHR2xbjG+xWL9CaBE3Aw@mail.gmail.com>
+        id S234303AbhCKP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:58:22 -0500
+Received: from mga01.intel.com ([192.55.52.88]:18629 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234018AbhCKP5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 10:57:49 -0500
+IronPort-SDR: JzTy6vn+hG5vaC4mr1HVVV604SM6XhXKbjNhC146mduXX/jZgaWM4jH/pLxt4o0qlcMtExVTJp
+ Vfud35QEJK6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="208512589"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="208512589"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 07:57:49 -0800
+IronPort-SDR: T9NgBxuLmQfyVoP+1uuu+kXqcqghmZvmA2pZZKMD3+0o8z+KHEVHi5/XqOj01MWt1m8iaVa1Zi
+ 7M56Mx/ejamA==
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="410650575"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 07:57:49 -0800
+Date:   Thu, 11 Mar 2021 07:57:48 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Sterba <dsterba@suse.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: Convert kmap/memset/kunmap to memzero_user()
+Message-ID: <20210311155748.GR3014244@iweiny-DESK2.sc.intel.com>
+References: <20210309212137.2610186-1-ira.weiny@intel.com>
+ <20210310155836.7d63604e28d746ef493c1882@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANiDSCtw2q7UxMoZSMeE545WCxMs-WSHR2xbjG+xWL9CaBE3Aw@mail.gmail.com>
+In-Reply-To: <20210310155836.7d63604e28d746ef493c1882@linux-foundation.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-Thank you for the patch.
-
-On Thu, Mar 11, 2021 at 03:08:22PM +0100, Ricardo Ribalda wrote:
-> As discussed in the IRC with Hans
+On Wed, Mar 10, 2021 at 03:58:36PM -0800, Andrew Morton wrote:
+> On Tue,  9 Mar 2021 13:21:34 -0800 ira.weiny@intel.com wrote:
 > 
-> We need to specify in the commit message that this is most likely due
-> to hw error.
+> > Previously this was submitted to convert to zero_user()[1].  zero_user() is not
+> > the same as memzero_user() and in fact some zero_user() calls may be better off
+> > as memzero_user().  Regardless it was incorrect to convert btrfs to
+> > zero_user().
+> > 
+> > This series corrects this by lifting memzero_user(), converting it to
+> > kmap_local_page(), and then using it in btrfs.
 > 
-> On Thu, Mar 11, 2021 at 1:20 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
-> >
-> > Fixes v4l2-compliance:
-> >
-> > Control ioctls (Input 0):
-> >                 fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
-> >         test VIDIOC_G/S_CTRL: FAIL
-> >                 fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
-> >         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+> This impacts btrfs more than MM.  I suggest the btrfs developers grab
+> it, with my
 
-As this isn't supposed to happen, how do you reproduce this ? 
+I thought David wanted you to take these this time?
 
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  drivers/media/usb/uvc/uvc_video.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > index f2f565281e63..5442e9be1c55 100644
-> > --- a/drivers/media/usb/uvc/uvc_video.c
-> > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > @@ -113,7 +113,7 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
-> >         case 6: /* Invalid control */
-> >         case 7: /* Invalid Request */
+"I can play the messenger again but now it seems a round of review is needed
+and with some testing it'll be possible in some -rc. At that point you may take
+the patches via the mm tree, unless Linus is ok with a late pull."
 
-For cases 5-7 I think -EIO is fine, as the driver should really not call
-this function with an invalid unit, control or request. If it does, it's
-a bug in the driver (we can check the units and controls the device
-claims to support, and the requests are defined by the UVC
-specification), if it doesn't and the device still returns this error,
-it's a bug on the device side.
+	-- https://lore.kernel.org/lkml/20210224123049.GX1993@twin.jikos.cz/
 
-> >         case 8: /* Invalid value within range */
+But reading that again I'm not sure what he meant.
 
-For this case, however, isn't it valid for a device to return an error
-if the control value isn't valid ? There's one particular code path I'm
-concerned about, uvc_ioctl_default(UVCIOC_CTRL_QUERY) ->
-uvc_xu_ctrl_query() -> uvc_query_ctrl(), where it could be useful for
-userspace to know that the value it sets isn't valid.
+David?
 
-> > -               return -EINVAL;
-> > +               return -EIO;
-> >         default: /* reserved or unknown */
-> >                 break;
-> >         }
+Ira
 
--- 
-Regards,
-
-Laurent Pinchart
+> 
+> Acked-by: Andrew Morton <akpm@linux-foundation.org>
+> 
