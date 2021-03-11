@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18913336A75
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 04:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F60336A7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 04:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhCKDNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 22:13:01 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:47862 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229813AbhCKDMu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 22:12:50 -0500
-X-UUID: 097cc62d2c2843ae90ebdfca6ba06e71-20210311
-X-UUID: 097cc62d2c2843ae90ebdfca6ba06e71-20210311
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1897031880; Thu, 11 Mar 2021 11:12:45 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 11 Mar 2021 11:12:44 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 11 Mar 2021 11:12:44 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <daniel@0x0f.com>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-CC:     <daniel@thingy.jp>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <maz@kernel.org>, <tglx@linutronix.de>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH v2] irqchip/irq-mst: Support polarity configuration
-Date:   Thu, 11 Mar 2021 11:12:42 +0800
-Message-ID: <20210311031242.24232-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CAFr9PX=dz1kt_BphpWr250asLiHFQNeBgNPhuPje==hzkcHWhg@mail.gmail.com>
-References: <CAFr9PX=dz1kt_BphpWr250asLiHFQNeBgNPhuPje==hzkcHWhg@mail.gmail.com>
+        id S230416AbhCKDNf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 22:13:35 -0500
+Received: from mga14.intel.com ([192.55.52.115]:52462 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229971AbhCKDNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 22:13:07 -0500
+IronPort-SDR: BhKXoqS3G88QgZR5uwchuOl3v7XdbxSIKqH3YDmB6SaN3SaVKwHR2brx5qtaRtQWirm3wZ/pbG
+ THs7rKMCfGlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="187969867"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="187969867"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 19:13:06 -0800
+IronPort-SDR: F3pACgYlTs8CBDSVQ5RlGllv1DSyR8uBThdE+p8bxtiapg0xRu79HdIxkWCByfBKEEJx0twRsU
+ MsD+jwekRijw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
+   d="scan'208";a="370421299"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by orsmga003.jf.intel.com with ESMTP; 10 Mar 2021 19:13:06 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 10 Mar 2021 19:13:06 -0800
+Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 10 Mar 2021 19:13:05 -0800
+Received: from shsmsx605.ccr.corp.intel.com ([10.109.6.215]) by
+ SHSMSX605.ccr.corp.intel.com ([10.109.6.215]) with mapi id 15.01.2106.013;
+ Thu, 11 Mar 2021 11:13:02 +0800
+From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+To:     'Bjorn Helgaas' <helgaas@kernel.org>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
+ association
+Thread-Topic: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
+ association
+Thread-Index: AQHXCLh6LEG1CfkjwEO3CLgkzlZ+yap9WgQAgADHGrA=
+Date:   Thu, 11 Mar 2021 03:13:02 +0000
+Message-ID: <b76a5239650842f7bd852b6b4dba3288@intel.com>
+References: <20210222011717.43266-1-qiuxu.zhuo@intel.com>
+ <20210310220030.GA2068330@bjorn-Precision-5520>
+In-Reply-To: <20210310220030.GA2068330@bjorn-Precision-5520>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.239.127.36]
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Palmer <daniel@0x0f.com>
+> [...]
+> 
+> I think 507b460f8144 appeared in v5.11, so not something we broke in v5.12.
+> Applied to pci/error for v5.13, thanks!
 
->On Mon, 8 Mar 2021 at 23:30, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
->> From: Daniel Palmer <daniel@0x0f.com>
->> >On Mon, 8 Mar 2021 at 15:05, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
->> >> +static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
->> >       > +{
->> >> +       if (type != IRQ_TYPE_LEVEL_LOW && type != IRQ_TYPE_LEVEL_HIGH)
->> >> +               return -EINVAL;
->> >> +
->> >
->> >Does this mean we can't do rising or falling edge interrupts?
->>
->> Yes, the interrupt of mst-intc is either level high or level low.
->> Actually the input signal can be pulse, but it will be converted to level
->> by the latch in mst-intc.
->
->Are the GPIO connected interrupts meant to be configured as level
->interrupts then?
->For the MStar MSC313(e) there are 4 (that I know of) GPIO lines that
->are wired into the mst-intc that requires EOI.
->Until this patch with those lines configured as a rising edge a single
->interrupt came each time the GPIO was pulled up as far as I remember.
->
->I'm probably misunderstanding but a level interrupt doesn't seem to
->make sense for a GPIO as it can't be serviced to clear the interrupt.
+Thanks Bjorn!
 
+> If I understand correctly, we previously only got this right in one
+> case:
+> 
+>    0 == PCI_SLOT(00.0)    # correct
+>    1 == PCI_SLOT(00.1)    # incorrect
+>    2 == PCI_SLOT(00.2)    # incorrect
+>    ...
+>    8 == PCI_SLOT(01.0)    # incorrect
+>    9 == PCI_SLOT(01.1)    # incorrect
+>    ...
+>   31 == PCI_SLOT(03.7)    # incorrect
 
-As I understand it, there are 2 types of mst-intc, one we need do EOI
-operation(fiq) and the other we don't(irq).
-For a fiq controller, the input edge signal will be convert to level and
-keep the interrupt status until we do EOI operation.
-That means if a rising edge input if trigger the ouput line will keep high
-until we clear the interrupt status.
+Yes, you're right. 
 
-And I think you're right, make these kind of interrupts edge may make more sense.
-So I will modify the patch as following:
+Thanks!
+-Qiuxu
 
- static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
- {
--       if (type != IRQ_TYPE_LEVEL_LOW && type != IRQ_TYPE_LEVEL_HIGH)
--               return -EINVAL;
--
--       if (type == IRQ_TYPE_LEVEL_LOW) {
-+       if (type == IRQ_TYPE_EDGE_FALLING) {
-+               mst_set_irq(data, INTC_REV_POLARITY);
-+               type = IRQ_TYPE_EDGE_RISING;
-+       } else if (type == IRQ_TYPE_LEVEL_LOW) {
-                mst_set_irq(data, INTC_REV_POLARITY);
-                type = IRQ_TYPE_LEVEL_HIGH;
-        }
