@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A818B336CC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C288336CC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbhCKHJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 02:09:03 -0500
+        id S231799AbhCKHJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:09:04 -0500
 Received: from mga04.intel.com ([192.55.52.120]:22599 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231634AbhCKHIi (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 02:08:38 -0500
-IronPort-SDR: Su8z6nYHnKtOJn70rERqmcA2NMMiVjxBKnf+VHSX4DCiB/MioycxLmxbpLlCEVKtgBl1U5XUFL
- Yeuhrz9TdGrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246045"
+        id S231636AbhCKHIl (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:08:41 -0500
+IronPort-SDR: ReI5srqV270tkBd7ccE89tRiT1U6ahNvh5HuzAzn5RRNm8ab6wsDZeUCeXy4zB+xGSOkb/P+z5
+ tFcwFqBv/6Rg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="186246049"
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="186246045"
+   d="scan'208";a="186246049"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:08:38 -0800
-IronPort-SDR: YlkUpQeC1kx9OJ/tey6AvKkooA90TXWAH650L6hlGdCsFKrbZ8KREdMvR347vuB6gnEiEYXVDa
- p5lnNEIB5b8A==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 23:08:41 -0800
+IronPort-SDR: D8oQyxpFdYYJ+73G5Pqpv8S0TziU4DLgYjq8exP7t4AqDVisNnQTce5L5j9xCM09V4+OAfeaRW
+ vZpa5+PdCkBQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="509937877"
+   d="scan'208";a="509937881"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:08:36 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 10 Mar 2021 23:08:39 -0800
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 08/27] perf stat: Uniquify hybrid event name
-Date:   Thu, 11 Mar 2021 15:07:23 +0800
-Message-Id: <20210311070742.9318-9-yao.jin@linux.intel.com>
+Subject: [PATCH v2 09/27] perf parse-events: Create two hybrid hardware events
+Date:   Thu, 11 Mar 2021 15:07:24 +0800
+Message-Id: <20210311070742.9318-10-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210311070742.9318-1-yao.jin@linux.intel.com>
 References: <20210311070742.9318-1-yao.jin@linux.intel.com>
@@ -41,67 +41,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It would be useful to tell user the pmu which the event belongs to.
-perf-stat has supported '--no-merge' option and it can print the pmu
-name after the event name, such as:
+For hardware events, they have pre-defined configs. The kernel
+needs to know where the event comes from (e.g. from cpu_core pmu
+or from cpu_atom pmu). But the perf type 'PERF_TYPE_HARDWARE'
+can't carry pmu information.
 
-"cycles [cpu_core]"
+So the kernel introduces a new type 'PERF_TYPE_HARDWARE_PMU'.
+The new attr.config layout for PERF_TYPE_HARDWARE_PMU is:
 
-Now this option is enabled by default for hybrid platform but change
-the format to:
+0xDD000000AA
+AA: original hardware event ID
+DD: PMU type ID
 
-"cpu_core/cycles/"
+PMU type ID is retrieved from sysfs. For example,
+
+  cat /sys/devices/cpu_atom/type
+  10
+
+  cat /sys/devices/cpu_core/type
+  4
+
+When enabling a hybrid hardware event without specified pmu, such as,
+'perf stat -e cycles -a', two events are created automatically. One
+is for atom, the other is for core.
+
+  root@ssp-pwrt-002:~# ./perf stat -e cycles -vv -a -- sleep 1
+  Control descriptor is not initialized
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             6
+    size                             120
+    config                           0x400000000
+    sample_type                      IDENTIFIER
+    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+    disabled                         1
+    inherit                          1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 3
+  sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 4
+  sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 5
+  sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 7
+  sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 8
+  sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 9
+  sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 10
+  sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 11
+  sys_perf_event_open: pid -1  cpu 8  group_fd -1  flags 0x8 = 12
+  sys_perf_event_open: pid -1  cpu 9  group_fd -1  flags 0x8 = 13
+  sys_perf_event_open: pid -1  cpu 10  group_fd -1  flags 0x8 = 14
+  sys_perf_event_open: pid -1  cpu 11  group_fd -1  flags 0x8 = 15
+  sys_perf_event_open: pid -1  cpu 12  group_fd -1  flags 0x8 = 16
+  sys_perf_event_open: pid -1  cpu 13  group_fd -1  flags 0x8 = 17
+  sys_perf_event_open: pid -1  cpu 14  group_fd -1  flags 0x8 = 18
+  sys_perf_event_open: pid -1  cpu 15  group_fd -1  flags 0x8 = 19
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             6
+    size                             120
+    config                           0xa00000000
+    sample_type                      IDENTIFIER
+    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+    disabled                         1
+    inherit                          1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 16  group_fd -1  flags 0x8 = 20
+  sys_perf_event_open: pid -1  cpu 17  group_fd -1  flags 0x8 = 21
+  sys_perf_event_open: pid -1  cpu 18  group_fd -1  flags 0x8 = 22
+  sys_perf_event_open: pid -1  cpu 19  group_fd -1  flags 0x8 = 23
+  sys_perf_event_open: pid -1  cpu 20  group_fd -1  flags 0x8 = 24
+  sys_perf_event_open: pid -1  cpu 21  group_fd -1  flags 0x8 = 25
+  sys_perf_event_open: pid -1  cpu 22  group_fd -1  flags 0x8 = 26
+  sys_perf_event_open: pid -1  cpu 23  group_fd -1  flags 0x8 = 27
+  cycles: 0: 810754998 1002563650 1002563650
+  cycles: 1: 810749852 1002559947 1002559947
+  cycles: 2: 808096005 1002555036 1002555036
+  cycles: 3: 808090246 1002543496 1002543496
+  cycles: 4: 800933425 1002536659 1002536659
+  cycles: 5: 800928573 1002528386 1002528386
+  cycles: 6: 800924347 1002520527 1002520527
+  cycles: 7: 800922009 1002513176 1002513176
+  cycles: 8: 800919624 1002507326 1002507326
+  cycles: 9: 800917204 1002500663 1002500663
+  cycles: 10: 802096579 1002494280 1002494280
+  cycles: 11: 802093770 1002486404 1002486404
+  cycles: 12: 803284338 1002479491 1002479491
+  cycles: 13: 803277609 1002469777 1002469777
+  cycles: 14: 800875902 1002458861 1002458861
+  cycles: 15: 800873241 1002451350 1002451350
+  cycles: 0: 800837379 1002444645 1002444645
+  cycles: 1: 800833400 1002438505 1002438505
+  cycles: 2: 800829291 1002433698 1002433698
+  cycles: 3: 800824390 1002427584 1002427584
+  cycles: 4: 800819360 1002422099 1002422099
+  cycles: 5: 800814787 1002415845 1002415845
+  cycles: 6: 800810125 1002410301 1002410301
+  cycles: 7: 800791893 1002386845 1002386845
+  cycles: 12855737722 16040169029 16040169029
+  cycles: 6406560625 8019379522 8019379522
+
+   Performance counter stats for 'system wide':
+
+      12,855,737,722      cpu_core/cycles/
+       6,406,560,625      cpu_atom/cycles/
+
+         1.002774658 seconds time elapsed
+
+type 6 is PERF_TYPE_HARDWARE_PMU.
+0x4 in 0x400000000 indicates the cpu_core pmu.
+0xa in 0xa00000000 indicates the cpu_atom pmu.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
- tools/perf/builtin-stat.c      |  3 +++
- tools/perf/util/stat-display.c | 12 ++++++++++--
- 2 files changed, 13 insertions(+), 2 deletions(-)
+ tools/perf/util/parse-events.c | 73 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 68ecf68699a9..6c0a21323814 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -2390,6 +2390,9 @@ int cmd_stat(int argc, const char **argv)
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 42c84adeb2fb..c6c76fc810a3 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -446,6 +446,24 @@ static int config_attr(struct perf_event_attr *attr,
+ 		       struct parse_events_error *err,
+ 		       config_term_func_t config_term);
  
- 	evlist__check_cpu_maps(evsel_list);
- 
-+	if (perf_pmu__hybrid_exist())
-+		stat_config.no_merge = true;
++static void config_hybrid_attr(struct perf_event_attr *attr,
++			       int type, int pmu_type)
++{
++	/*
++	 * attr.config layout:
++	 * PERF_TYPE_HARDWARE_PMU:     0xDD000000AA
++	 *                             AA: hardware event ID
++	 *                             DD: PMU type ID
++	 * PERF_TYPE_HW_CACHE_PMU:     0xDD00CCBBAA
++	 *                             AA: hardware cache ID
++	 *                             BB: hardware cache op ID
++	 *                             CC: hardware cache op result ID
++	 *                             DD: PMU type ID
++	 */
++	attr->type = type;
++	attr->config = attr->config | ((__u64)pmu_type << PERF_PMU_TYPE_SHIFT);
++}
 +
- 	/*
- 	 * Initialize thread_map with comm names,
- 	 * so we could print it out on output.
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 7f09cdaf5b60..ed37d8e7ea1a 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -526,6 +526,7 @@ static void uniquify_event_name(struct evsel *counter)
+ int parse_events_add_cache(struct list_head *list, int *idx,
+ 			   char *type, char *op_result1, char *op_result2,
+ 			   struct parse_events_error *err,
+@@ -1409,6 +1427,47 @@ int parse_events_add_tracepoint(struct list_head *list, int *idx,
+ 					    err, head_config);
+ }
+ 
++static int create_hybrid_hw_event(struct parse_events_state *parse_state,
++				  struct list_head *list,
++				  struct perf_event_attr *attr,
++				  struct perf_pmu *pmu)
++{
++	struct evsel *evsel;
++	__u32 type = attr->type;
++	__u64 config = attr->config;
++
++	config_hybrid_attr(attr, PERF_TYPE_HARDWARE_PMU, pmu->type);
++	evsel = __add_event(list, &parse_state->idx, attr, true, NULL,
++			    pmu, NULL, false, NULL);
++	if (evsel)
++		evsel->pmu_name = strdup(pmu->name);
++	else
++		return -ENOMEM;
++
++	attr->type = type;
++	attr->config = config;
++	return 0;
++}
++
++static int add_hybrid_numeric(struct parse_events_state *parse_state,
++			      struct list_head *list,
++			      struct perf_event_attr *attr,
++			      bool *hybrid)
++{
++	struct perf_pmu *pmu;
++	int ret;
++
++	*hybrid = false;
++	perf_pmu__for_each_hybrid_pmu(pmu) {
++		*hybrid = true;
++		ret = create_hybrid_hw_event(parse_state, list, attr, pmu);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
+ int parse_events_add_numeric(struct parse_events_state *parse_state,
+ 			     struct list_head *list,
+ 			     u32 type, u64 config,
+@@ -1416,6 +1475,8 @@ int parse_events_add_numeric(struct parse_events_state *parse_state,
  {
- 	char *new_name;
- 	char *config;
+ 	struct perf_event_attr attr;
+ 	LIST_HEAD(config_terms);
++	bool hybrid;
 +	int ret;
  
- 	if (counter->uniquified_name ||
- 	    !counter->pmu_name || !strncmp(counter->name, counter->pmu_name,
-@@ -540,8 +541,15 @@ static void uniquify_event_name(struct evsel *counter)
- 			counter->name = new_name;
- 		}
- 	} else {
--		if (asprintf(&new_name,
--			     "%s [%s]", counter->name, counter->pmu_name) > 0) {
-+		if (perf_pmu__hybrid_exist()) {
-+			ret = asprintf(&new_name, "%s/%s/",
-+				       counter->pmu_name, counter->name);
-+		} else {
-+			ret = asprintf(&new_name, "%s [%s]",
-+				       counter->name, counter->pmu_name);
-+		}
+ 	memset(&attr, 0, sizeof(attr));
+ 	attr.type = type;
+@@ -1430,6 +1491,18 @@ int parse_events_add_numeric(struct parse_events_state *parse_state,
+ 			return -ENOMEM;
+ 	}
+ 
++	/*
++	 * Skip the software dummy event.
++	 */
++	if (type != PERF_TYPE_SOFTWARE) {
++		if (!perf_pmu__hybrid_exist())
++			perf_pmu__scan(NULL);
 +
-+		if (ret) {
- 			free(counter->name);
- 			counter->name = new_name;
- 		}
++		ret = add_hybrid_numeric(parse_state, list, &attr, &hybrid);
++		if (hybrid)
++			return ret;
++	}
++
+ 	return add_event(list, &parse_state->idx, &attr,
+ 			 get_config_name(head_config), &config_terms);
+ }
 -- 
 2.17.1
 
