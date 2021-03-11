@@ -2,201 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58485336B1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 258FE336B21
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 05:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhCKE1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 23:27:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
+        id S231217AbhCKE1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 23:27:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230429AbhCKE1K (ORCPT
+        with ESMTP id S230429AbhCKE1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 23:27:10 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C55C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 20:27:10 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id u18so9571198plc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 20:27:10 -0800 (PST)
+        Wed, 10 Mar 2021 23:27:31 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F63C061574;
+        Wed, 10 Mar 2021 20:27:31 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id n10so12853633pgl.10;
+        Wed, 10 Mar 2021 20:27:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wdHJK3DnjapBMDB3J4nzxo9opMMpuJCwZjO8+x8sSxg=;
-        b=AVptnHxhFF2lfdrbogOfvyXoS+iA20CjdW0Y3g3Im2CA4FDVur+gpc9RDSc4nV8vpn
-         DJJIGc6sd1ZnOt8Sf45R27jnkdEnwUytHhendjXcAGSizUGRxZkm8dnkfY1ouBOlLkjH
-         qjVoz1+1VCtqTyybwJiF+PCpTZrfH5mlgFw3xD4vqnk3MVVxtSMjeLHW8amWMPkzsSCj
-         NgSJFKW0TdWpZG9lcIERXexLuv01GSqWVrmA5bHD8rB/WqvoucKuDEH1jyfei/KIPRp8
-         SHwFwaL37o+276bp2p4UFrR6ft87rIemm+HhxvpUz9VzglEUjUMd/BvET7TfwvSGfBdF
-         i/eg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dnvZsVGYoV6b36V+gQHP4wJ1jrXvkrRSflx6BXkt3as=;
+        b=XoZF6bbzldAfLbqUOfjVda/PK+XcmgtntLcPcNGvkYJMjUUrgsTAcQli3g3dK9Wr3k
+         nN4MKKTDSdVhEdqgJrcUrLQsX+T41LwkPtqmAo86hLcXo2nTaAQKjPqCKvO4ORZLtF00
+         pIKA5lL6W/OwEEh3VG66+sH1GEoTAoGTX0/pDRJswWjo/yFiwr6eyB0EiHiVmf9p139E
+         iXmnVTX+y0ef7RdukbXsKvk+hLT6mFSCDiyvZow4hV5/MGzmAcqJ8ablYemXhDpxkg5t
+         sjmLppgp0Z2oqaHyhYMbmgwAEI61snT3p6lLSX3OPj9bBwTzty9GN3M0wIOKiXTgc0o9
+         Hnzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wdHJK3DnjapBMDB3J4nzxo9opMMpuJCwZjO8+x8sSxg=;
-        b=lEBcGDAm5lI1TiT5Htg1EJuPbqlrllhnS0TyG/qTknfyv4VIBlKjFhPmLtWbo1LYyr
-         FMSOervJMNpSnvlT6Ma0KaruHp91Ea6qP1C4oOFBHHmEe4v31PV/QPJUdwsuYx22mbdi
-         5mkOdVzz9vruPOFF1G4iLRVFBlTKFTX6mNv4n2ELwD9capll0NYSq4KQozqf11gdGi0U
-         Idq8CQWJUZH4ulmtAwx85hmGelFowW12O3M+vaML+Yv7nauEqvIzu3aXyZlar/w0O/AK
-         7dFkTispM7ua4zyT7Z/cIwWaR/PX6VjnjAmrSf+9rs09ixwEbm7rmVrn8QAJk52baE1i
-         CXrQ==
-X-Gm-Message-State: AOAM531xZTpDQis9xcl36cAlGUkj2V4G3AyfJklMFBwt+NO5N1HEseR7
-        BQkJIPTUvlD+evkr/mCPj07HrT29v0efHU0zfzwebw==
-X-Google-Smtp-Source: ABdhPJyFtT1jcfBftxM1fBYo/GZ7Tgw6kfQp8Ydlw2Ya/FFTN4zt3q/TTwrXarOyu5SWEbQXYC+mJdl4VJaaDNvgL/g=
-X-Received: by 2002:a17:90a:901:: with SMTP id n1mr7048144pjn.147.1615436830045;
- Wed, 10 Mar 2021 20:27:10 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dnvZsVGYoV6b36V+gQHP4wJ1jrXvkrRSflx6BXkt3as=;
+        b=IofL2saT3Ym4k943ti5ofHGDBGfu1awd8NinaL+74Q+psx8tlGHyTKpI3PS4zJQR8z
+         gl8AYX9HwQr2QIfD3EmSa2W/azHD6jdHKyb6BrJvUbhEQdWSGNfR6BRWSI1nG0xOnRvF
+         BwHOAbvb6ZZZDNSa8c3JKgZhM/vUCflBXFpAaqYfGRwUyfmvDICdbVDsBjdTdUA05vcY
+         acb/rSXT7uf2CxZua4AwUHHnkkCfgrcMDrGiJQZqYfMNMJ0NpWYD07JaT1j2pCalZmS+
+         t399tAp44wXBwM1bhngtbBVp3G12fehk/Uu92/BEpSWIV0IcUG9A6iTLgqy2vx1DqkYl
+         eaeA==
+X-Gm-Message-State: AOAM531lqwIzNjZKhl6OrKah7hA/MDb9RnlQ7EewJVhQjdI6oKghU1D7
+        Uj8xCPcxbkqsEa5mfWtLpq8TmOCbeAA=
+X-Google-Smtp-Source: ABdhPJyYdueLP9mElLdy2/vn8wKbZxU3sNeFFszJ82SyKlkFFjjP1w/Osq/5k8DuYGCfSs2CHdT+wQ==
+X-Received: by 2002:a62:1d06:0:b029:1fb:94fb:4940 with SMTP id d6-20020a621d060000b02901fb94fb4940mr6002289pfd.6.1615436850557;
+        Wed, 10 Mar 2021 20:27:30 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 3sm778894pjk.26.2021.03.10.20.27.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Mar 2021 20:27:30 -0800 (PST)
+Subject: Re: [PATCH 4.9 00/11] 4.9.261-rc1 review
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210310132320.393957501@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <dd235a40-7570-52c9-0e17-7be771c84ddd@gmail.com>
+Date:   Wed, 10 Mar 2021 20:27:28 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210308102807.59745-1-songmuchun@bytedance.com>
- <20210308102807.59745-5-songmuchun@bytedance.com> <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
-In-Reply-To: <YEjji9oAwHuZaZEt@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 11 Mar 2021 12:26:32 +0800
-Message-ID: <CAMZfGtVjLOF27VMVJ5fF8CDJRpZ0t7fWpmMHB9D-ipMK6b=POg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v18 4/9] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210310132320.393957501@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:19 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 08-03-21 18:28:02, Muchun Song wrote:
-> [...]
-> > -static void update_and_free_page(struct hstate *h, struct page *page)
-> > +static int update_and_free_page(struct hstate *h, struct page *page)
-> > +     __releases(&hugetlb_lock) __acquires(&hugetlb_lock)
-> >  {
-> >       int i;
-> >       struct page *subpage = page;
-> > +     int nid = page_to_nid(page);
-> >
-> >       if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
-> > -             return;
-> > +             return 0;
-> >
-> >       h->nr_huge_pages--;
-> > -     h->nr_huge_pages_node[page_to_nid(page)]--;
-> > +     h->nr_huge_pages_node[nid]--;
-> > +     VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
-> > +     VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
->
-> > +     set_page_refcounted(page);
-> > +     set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> > +
-> > +     /*
-> > +      * If the vmemmap pages associated with the HugeTLB page can be
-> > +      * optimized or the page is gigantic, we might block in
-> > +      * alloc_huge_page_vmemmap() or free_gigantic_page(). In both
-> > +      * cases, drop the hugetlb_lock.
-> > +      */
-> > +     if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
-> > +             spin_unlock(&hugetlb_lock);
-> > +
-> > +     if (alloc_huge_page_vmemmap(h, page)) {
-> > +             spin_lock(&hugetlb_lock);
-> > +             INIT_LIST_HEAD(&page->lru);
-> > +             set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
-> > +             h->nr_huge_pages++;
-> > +             h->nr_huge_pages_node[nid]++;
-> > +
-> > +             /*
-> > +              * If we cannot allocate vmemmap pages, just refuse to free the
-> > +              * page and put the page back on the hugetlb free list and treat
-> > +              * as a surplus page.
-> > +              */
-> > +             h->surplus_huge_pages++;
-> > +             h->surplus_huge_pages_node[nid]++;
-> > +
-> > +             /*
-> > +              * The refcount can possibly be increased by memory-failure or
-> > +              * soft_offline handlers.
->
-> This comment could be more helpful. I believe you want to say this
->                 /*
->                  * HWpoisoning code can increment the reference
->                  * count here. If there is a race then bail out
->                  * the holder of the additional reference count will
->                  * free up the page with put_page.
-
-Right. I will reuse this. Thanks.
-
-> > +              */
-> > +             if (likely(put_page_testzero(page))) {
-> > +                     arch_clear_hugepage_flags(page);
-> > +                     enqueue_huge_page(h, page);
-> > +             }
-> > +
-> > +             return -ENOMEM;
-> > +     }
-> > +
-> >       for (i = 0; i < pages_per_huge_page(h);
-> >            i++, subpage = mem_map_next(subpage, page, i)) {
-> >               subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
-> [...]
-> > @@ -1447,7 +1486,7 @@ void free_huge_page(struct page *page)
-> >       /*
-> >        * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
-> >        */
-> > -     if (!in_task()) {
-> > +     if (in_atomic()) {
->
-> As I've said elsewhere in_atomic doesn't work for CONFIG_PREEMPT_COUNT=n.
-> We need this change for other reasons and so it would be better to pull
-> it out into a separate patch which also makes HUGETLB depend on
-> PREEMPT_COUNT.
->
-> [...]
-> > @@ -1771,8 +1813,12 @@ int dissolve_free_huge_page(struct page *page)
-> >               h->free_huge_pages--;
-> >               h->free_huge_pages_node[nid]--;
-> >               h->max_huge_pages--;
-> > -             update_and_free_page(h, head);
-> > -             rc = 0;
-> > +             rc = update_and_free_page(h, head);
-> > +             if (rc) {
-> > +                     h->surplus_huge_pages--;
-> > +                     h->surplus_huge_pages_node[nid]--;
-> > +                     h->max_huge_pages++;
->
-> This is quite ugly and confusing. update_and_free_page is careful to do
-> the proper counters accounting and now you just override it partially.
-> Why cannot we rely on update_and_free_page do the right thing?
-
-Dissolving path is special here. Since update_and_free_page failed,
-the number of surplus pages was incremented.  Surplus pages are
-the number of pages greater than max_huge_pages.  Since we are
-incrementing max_huge_pages, we should decrement (undo) the
-addition to surplus_huge_pages and surplus_huge_pages_node[nid].
 
 
->
-> --
-> Michal Hocko
-> SUSE Labs
+On 3/10/2021 5:24 AM, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 4.9.261 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.261-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
