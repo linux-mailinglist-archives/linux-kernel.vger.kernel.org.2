@@ -2,89 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085E1336D9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDF6336DA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbhCKISs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:18:48 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:37261 "EHLO z11.mailgun.us"
+        id S231452AbhCKITZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:19:25 -0500
+Received: from mga07.intel.com ([134.134.136.100]:25901 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231335AbhCKISh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:18:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615450717; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=ZBXnKQ2z5F+w5AO3Zn+MXqGx/PcyC6YiGN2avgOMwvk=; b=H2GKwcmO/czBJ5qv8UmWSvYDqoEiN6Yph3IsQtho9vNbuWkhL7PNaZwtde6KcDXTxer2QW6Z
- fmStBaFKgGf4HjxaF/2jQFP6Qc/gCzppqxRWrpFWtFOaplk5NXAGu3WxKcOOFFiMCTQ1IHtd
- xhYoXuBpm77/J3utoAo4ra8wUvI=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6049d24f0c7cf0f56c6ec0ce (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 08:18:23
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 575B5C43467; Thu, 11 Mar 2021 08:18:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6724FC43461;
-        Thu, 11 Mar 2021 08:18:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6724FC43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH] ASoC: qcom: lpass-cpu: Fix lpass dai ids parse
-Date:   Thu, 11 Mar 2021 13:48:05 +0530
-Message-Id: <20210311081805.20424-1-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S231309AbhCKITM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 03:19:12 -0500
+IronPort-SDR: ysRu/kyZZR3rtsVnaj0hUEwwuk2MyZ8MZ6dTlEiUHRn5b1j4zzSFgto+O7WkchBIR0FwLkhSYM
+ ucaNAH9gyQow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="252649004"
+X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
+   d="scan'208";a="252649004"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 00:19:10 -0800
+IronPort-SDR: /2g2KcpmZ52Dw/TqC3r3vMRY+meoH0EDa8MsyRDhH+9vy903uhzhQNVQkUa6RuNqoqeTqb2qaS
+ nLipLKF0/ywA==
+X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
+   d="scan'208";a="410527508"
+Received: from yhuang6-mobl1.sh.intel.com ([10.238.6.89])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 00:19:06 -0800
+From:   Huang Ying <ying.huang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Rik van Riel <riel@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [RFC -V6 0/6] NUMA balancing: optimize memory placement for memory tiering system
+Date:   Thu, 11 Mar 2021 16:18:15 +0800
+Message-Id: <20210311081821.138467-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The max boundary check while parsing dai ids makes
-sound card registration fail after common up dai ids.
+With the advent of various new memory types, some machines will have
+multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
+memory subsystem of these machines can be called memory tiering
+system, because the performance of the different types of memory are
+usually different.
 
-Fixes: cd3484f7f1386 (ASoC: dt-bindings: lpass: Fix and common up lpass dai ids)
+After commit c221c0b0308f ("device-dax: "Hotplug" persistent memory
+for use like normal RAM"), the PMEM could be used as the
+cost-effective volatile memory in separate NUMA nodes.  In a typical
+memory tiering system, there are CPUs, DRAM and PMEM in each physical
+NUMA node.  The CPUs and the DRAM will be put in one logical node,
+while the PMEM will be put in another (faked) logical node.
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-cpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+To optimize the system overall performance, the hot pages should be
+placed in DRAM node.  To do that, we need to identify the hot pages in
+the PMEM node and migrate them to DRAM node via NUMA migration.
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 4762286b33fe..c62d2612e8f5 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -739,7 +739,7 @@ static void of_lpass_cpu_parse_dai_data(struct device *dev,
- 
- 	for_each_child_of_node(dev->of_node, node) {
- 		ret = of_property_read_u32(node, "reg", &id);
--		if (ret || id < 0 || id >= data->variant->num_dai) {
-+		if (ret || id < 0) {
- 			dev_err(dev, "valid dai id not found: %d\n", ret);
- 			continue;
- 		}
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+In the original NUMA balancing, there are already a set of existing
+mechanisms to identify the pages recently accessed by the CPUs in a
+node and migrate the pages to the node.  So we can reuse these
+mechanisms to build the mechanisms to optimize the page placement in
+the memory tiering system.  This has been implemented in this
+patchset.
 
+At the other hand, the cold pages should be placed in PMEM node.  So,
+we also need to identify the cold pages in the DRAM node and migrate
+them to PMEM node.
+
+In the following patchset,
+
+[PATCH 00/10] [v6] Migrate Pages in lieu of discard
+https://lore.kernel.org/lkml/20210304235949.7922C1C3@viggo.jf.intel.com/
+
+A mechanism to demote the cold DRAM pages to PMEM node under memory
+pressure is implemented.  Based on that, the cold DRAM pages can be
+demoted to PMEM node proactively to free some memory space on DRAM
+node.  And this frees the space on DRAM node for the hot PMEM pages to
+be promoted to.  This has been implemented in this patchset too.
+
+The patchset is based on the following not-yet-merged patchset,
+
+[PATCH 00/10] [v6] Migrate Pages in lieu of discard
+https://lore.kernel.org/lkml/20210304235949.7922C1C3@viggo.jf.intel.com/
+
+This is part of a larger patch set.  If you want to apply these or
+play with them, I'd suggest using the tree from below,
+
+https://github.com/hying-caritas/linux/commits/autonuma-r6
+
+We have tested the solution with the pmbench memory accessing
+benchmark with the 80:20 read/write ratio and the normal access
+address distribution on a 2 socket Intel server with Optane DC
+Persistent Memory Model.  The test results of the base kernel and step
+by step optimizations are as follows,
+
+                Throughput	Promotion      DRAM bandwidth
+		  access/s           MB/s                MB/s
+               -----------     ----------      --------------
+Base            74238178.0                             4291.7
+Patch 2        146050652.3          359.4             11248.6
+Patch 3        146300787.1          355.2             11237.2
+Patch 4        162536383.0          211.7             11890.4
+Patch 5        157187775.0          105.9             10412.3
+Patch 6        164028415.2           73.3             10810.6
+
+The whole patchset improves the benchmark score up to 119.1%.  The
+basic NUMA balancing based optimization solution (patch 1), the hot
+page selection algorithm (patch 4), and the threshold automatic
+adjustment algorithms (patch 6) improves the performance or reduce the
+overhead (promotion MB/s) mostly.
+
+Changelog:
+
+v6:
+
+- Rebased on the latest page demotion patchset. (which bases on v5.11)
+
+v5:
+
+- Rebased on the latest page demotion patchset. (which bases on v5.10)
+
+v4:
+
+- Rebased on the latest page demotion patchset. (which bases on v5.9-rc6)
+
+- Add page promotion counter.
+
+v3:
+
+- Move the rate limit control as late as possible per Mel Gorman's
+  comments.
+
+- Revise the hot page selection implementation to store page scan time
+  in struct page.
+
+- Code cleanup.
+
+- Rebased on the latest page demotion patchset.
+
+v2:
+
+- Addressed comments for V1.
+
+- Rebased on v5.5.
+
+Huang Ying (6):
+  NUMA balancing: optimize page placement for memory tiering system
+  memory tiering: add page promotion counter
+  memory tiering: skip to scan fast memory
+  memory tiering: hot page selection with hint page fault latency
+  memory tiering: rate limit NUMA migration throughput
+  memory tiering: adjust hot threshold automatically
+
+ include/linux/mm.h           |  29 ++++++++
+ include/linux/mmzone.h       |  11 ++++
+ include/linux/node.h         |   5 ++
+ include/linux/sched/sysctl.h |  12 ++++
+ kernel/sched/core.c          |   9 +--
+ kernel/sched/fair.c          | 124 +++++++++++++++++++++++++++++++++++
+ kernel/sysctl.c              |  22 ++++++-
+ mm/huge_memory.c             |  41 ++++++++----
+ mm/memory.c                  |  11 +++-
+ mm/migrate.c                 |  52 +++++++++++++--
+ mm/mmzone.c                  |  17 +++++
+ mm/mprotect.c                |  19 +++++-
+ mm/vmscan.c                  |  15 +++++
+ mm/vmstat.c                  |   4 ++
+ 14 files changed, 345 insertions(+), 26 deletions(-)
+
+Best Regards,
+Huang, Ying
