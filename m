@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E613378F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEC33378F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234461AbhCKQOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:14:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234507AbhCKQOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:14:06 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1280AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:14:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=whWBvoNb3Pce92YggrosMeszjH470wWd9Ek1CsO5FDg=; b=eK9pitziHMJtSJXvhapq7T/fc7
-        DRm1pbST/KHjdVdaERzlBisGGXFfu735qkDSTCcpKRUHwBsxma/gLd5wKSL66Nikhx9f/neCWsaI6
-        TzDCZQfTevWM15i0ZJwgTcWdBARWZUohpx+b3MvhyKWOyfWdtwN6K/fBvTldNyyuw2VaSJR4puV1d
-        //W554lyfo5xVx/nZVGSUTN4k1PYlBa05I8saB0K48rRUS3rDUd/jQ5KpU6jmkikrmk4ndyOMjC84
-        gh5d89mDPyKBonbKV/NT0fnft2v4AAYYX8C75SRiQ/P4qcYtzZe17874ncFyxkjAKUC38KZg8fQ0g
-        wc/PH/KQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKNwh-009XjQ-St; Thu, 11 Mar 2021 16:13:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 645203013E5;
-        Thu, 11 Mar 2021 17:13:55 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4FD8C29E3D9F5; Thu, 11 Mar 2021 17:13:55 +0100 (CET)
-Date:   Thu, 11 Mar 2021 17:13:55 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-Subject: Re: [PATCH V2 16/25] perf/x86: Register hybrid PMUs
-Message-ID: <YEpBw0jRH+ariY70@hirez.programming.kicks-ass.net>
-References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
- <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
- <YEoOVTVhN3DpQXl2@hirez.programming.kicks-ass.net>
- <24dbe717-ffb8-204b-bac2-59941c2314f7@linux.intel.com>
+        id S234508AbhCKQPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:15:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234431AbhCKQOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 11:14:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFD5464F88;
+        Thu, 11 Mar 2021 16:14:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615479288;
+        bh=qYDGWCW64bxyZudXVN5dkVQ3DwMt7Dn8FEVKXvpunG4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i8MnI3+2/a4u7kdasK8yp0GaOhcv8jnkA0X0v12U8iXfzM0yXF00qlOJQJ8BLfxR5
+         SnPL1CygmdEkO3n6m167qfRXk7n9zJx/PGswMJN3JnCgolPkglroyEnbPjel4Fq5LP
+         1yHs7VglYuyH6+Eh34R9mwABULkfgq9200BQns63jNQjRiJATlopDnbhkoPGNlq66y
+         ruNVpmIy/icGq9PgJjCT8YCHy4irUwrh0eyvmpmb0QZt7fz/XlOMiRbrRVgbCud2js
+         0MrnSAz1IeSLEuIJbhrD54+im2PZkuBoIndFzApzln30phdH25lNkXlpxqIENZCiCV
+         D+iGWJPBqZCCQ==
+Date:   Thu, 11 Mar 2021 16:14:42 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
+Subject: Re: [PATCH v4 12/34] KVM: arm64: Introduce a Hyp buddy page allocator
+Message-ID: <20210311161441.GC31206@willie-the-truck>
+References: <20210310175751.3320106-1-qperret@google.com>
+ <20210310175751.3320106-13-qperret@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <24dbe717-ffb8-204b-bac2-59941c2314f7@linux.intel.com>
+In-Reply-To: <20210310175751.3320106-13-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:41:00AM -0500, Liang, Kan wrote:
+On Wed, Mar 10, 2021 at 05:57:29PM +0000, Quentin Perret wrote:
+> When memory protection is enabled, the hyp code will require a basic
+> form of memory management in order to allocate and free memory pages at
+> EL2. This is needed for various use-cases, including the creation of hyp
+> mappings or the allocation of stage 2 page tables.
 > 
+> To address these use-case, introduce a simple memory allocator in the
+> hyp code. The allocator is designed as a conventional 'buddy allocator',
+> working with a page granularity. It allows to allocate and free
+> physically contiguous pages from memory 'pools', with a guaranteed order
+> alignment in the PA space. Each page in a memory pool is associated
+> with a struct hyp_page which holds the page's metadata, including its
+> refcount, as well as its current order, hence mimicking the kernel's
+> buddy system in the GFP infrastructure. The hyp_page metadata are made
+> accessible through a hyp_vmemmap, following the concept of
+> SPARSE_VMEMMAP in the kernel.
 > 
-> On 3/11/2021 7:34 AM, Peter Zijlstra wrote:
-> > On Wed, Mar 10, 2021 at 08:37:52AM -0800, kan.liang@linux.intel.com wrote:
-> > > @@ -2092,9 +2105,37 @@ static int __init init_hw_perf_events(void)
-> > >   	if (err)
-> > >   		goto out1;
-> > > -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
-> > > -	if (err)
-> > > -		goto out2;
-> > > +	if (!is_hybrid()) {
-> > > +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
-> > > +		if (err)
-> > > +			goto out2;
-> > > +	} else {
-> > > +		u8 cpu_type = get_hybrid_cpu_type(smp_processor_id());
-> > > +		struct x86_hybrid_pmu *hybrid_pmu;
-> > > +		int i;
-> > > +
-> > > +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
-> > > +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
-> > > +
-> > > +			hybrid_pmu->pmu = pmu;
-> > > +			hybrid_pmu->pmu.type = -1;
-> > > +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
-> > > +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
-> > > +
-> > > +			/* Only register the PMU for the boot CPU */
-> > 
-> > Why ?!
-> > > AFAICT we could register them all here. That instantly fixes that
-> > CPU_STARTING / CPU_DEAD fail elsewhere in this patch.
-> 
-> It's possible that all CPUs of a certain type all offline, but I cannot know
-> the information here, because the boot CPU is the only online CPU. I don't
-> know the status of the other CPUs.
-> 
-> If we unconditionally register all PMUs, users may see a PMU in
-> /sys/devices, but they cannot use it, because there is no available CPU.
-> Is it acceptable that registering an empty PMU?
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/kvm/hyp/include/nvhe/gfp.h    |  68 ++++++++
+>  arch/arm64/kvm/hyp/include/nvhe/memory.h |  28 ++++
+>  arch/arm64/kvm/hyp/nvhe/Makefile         |   2 +-
+>  arch/arm64/kvm/hyp/nvhe/page_alloc.c     | 195 +++++++++++++++++++++++
+>  4 files changed, 292 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/gfp.h
+>  create mode 100644 arch/arm64/kvm/hyp/nvhe/page_alloc.c
 
-Sure. That's what it has a cpumask for after all.
+Eventually, we can replace the refcount with refcount_t, but for now this
+looks pretty good:
 
-ISTR that being the case with some dodgy RAPL thing on SPR as well.
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
