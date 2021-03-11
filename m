@@ -2,177 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EAE336BF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3237336BFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhCKGSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhCKGSE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:18:04 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0194C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:18:04 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id s7so9699564plg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 22:18:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GtG19LOebEp2WxfXZAPDVqDaGg46AUd7BpnKVeJq4kc=;
-        b=rhbKo8dcc8lTdzeUYcMZoyURBR3BB+R/PES6oMiL7hFf6Hfd2KdUNdjN3OUvIs24TK
-         Kld96DWzTaLfOLMLQ4UQ+NNx04wNaN7EPmGc0Rrs/meIZhbVWMZRyFRs0xgvufGs53+1
-         WZbD536dxbOG4ZX3uDXg6AXioZz0EA90qLurDWnmAee19bYnY5otEd1TRemCbakfWAKL
-         mfI+Cvmzdumpdq3HmPzqS/JiVMKhF+gCqZT2yLK1tmyCFPc4VVUpdmR6swDdUIApIgfY
-         qBS2ud3yIfWJyKT4/qh412WYUWrg/xwTXvwTyZLpEnvAJxOJvTLTF3sbjzl3uecblNhE
-         Sfrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GtG19LOebEp2WxfXZAPDVqDaGg46AUd7BpnKVeJq4kc=;
-        b=PyRDhMUMCA9eZhtUl21418A0fS+ihOdVzl7qW7WTpiO4LJwYvkLxGqsy6NYfgsvpg/
-         ucWqfu4g7s6sB7aNIEztiQw/RMRRHbNPLOG6dQzmdsozJ+LIvyrexqbiBZemb5NxA2Vu
-         zLOjwR1C9q4ZcQSJZ4qnzi7IkSH2WrL5Tkojn93iAt8GouigsmXwNIg44hdSfWRe27SN
-         jSYBR+KHRXGPpPcWCf2lNpQYO/vBVMN4LR/UiXxCvED6qcgOkEEaQVTlHAhxqa988u/G
-         4v31nwMyqPfUOJenDCJL72tY/1fgsO1oeCJzbi98LqKoABpSwtUbSPy4AX9j/pJqX6Jm
-         dP4A==
-X-Gm-Message-State: AOAM530KK4ZpDxHrzpJv0HywdlJ4NQE5aLFlvfaGKBDXz2rDiqVbArGf
-        RfM1iYaVOdJA2ZXFq1eSYyzNJw==
-X-Google-Smtp-Source: ABdhPJxyBUhrIkIxAqjaPMJ2bwK4AiMhyUompTTx88o6LU8BPAUdCjOWSAZUPGQMmMmsuEoYqfZllg==
-X-Received: by 2002:a17:90a:c096:: with SMTP id o22mr7450750pjs.119.1615443484161;
-        Wed, 10 Mar 2021 22:18:04 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.230])
-        by smtp.gmail.com with ESMTPSA id 25sm1241346pfh.199.2021.03.10.22.17.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 22:18:03 -0800 (PST)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        corbet@lwn.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org
-Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouchengming@bytedance.com, songmuchun@bytedance.com
-Subject: [PATCH] cgroup-v2: Add taskstats counters in cgroup.stat
-Date:   Thu, 11 Mar 2021 14:17:52 +0800
-Message-Id: <20210311061752.310831-1-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        id S230009AbhCKGT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:19:58 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:17340 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229973AbhCKGTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 01:19:48 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615443588; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ga3DsNa4ubV/OCXuniJ9QllbjgFwaAs6FxP/8OgRzaA=;
+ b=Trh1Yg+37cPWmrAaidjveB3UPUA822dGm6uXbQByVeDnnQoKGUTd7nisiHXqZkrVBFD01C1K
+ k/D8mDwZbAFy1nqyek2okzW/9e22OEMQ/029X/lQsnFcsdAA5M7umngIb52CbPJUe/Unb9hP
+ SNq22ST1Q5MQ8OpId4bYwiDaA9M=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6049b6790c7cf0f56c3f2a54 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 06:19:37
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5E1C7C43461; Thu, 11 Mar 2021 06:19:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62892C433C6;
+        Thu, 11 Mar 2021 06:19:36 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 11 Mar 2021 11:49:36 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Souradeep Chowdhury <schowdhu@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        sibis@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        vkoul@kernel.org
+Subject: Re: [PATCH V1 2/6] soc: qcom: dcc: Add driver support for Data
+ Capture and Compare unit(DCC)
+In-Reply-To: <YElUCaBUOx7hEuIh@builder.lan>
+References: <cover.1615393454.git.schowdhu@codeaurora.org>
+ <48556129a02c9f7cd0b31b2e8ee0f168e6d211b7.1615393454.git.schowdhu@codeaurora.org>
+ <YElUCaBUOx7hEuIh@builder.lan>
+Message-ID: <ab30490c016f906fd9bc5d789198530b@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have the netlink CGROUPSTATS_CMD_GET interface to get taskstats
-of the cgroup on v1, but haven't the equivalent interface on v2,
-making it difficult to calculate the per-cgroup cpu load in cadvisor
-or implement the cgroup proc interface in lxcfs, like /proc/loadavg.
+Hi Bjorn,
 
-Since we already have these counters maintained in psi subsystem,
-so this patch sum them up and export in the cgroup.stat interface.
+On 2021-03-11 04:49, Bjorn Andersson wrote:
+> On Wed 10 Mar 10:46 CST 2021, Souradeep Chowdhury wrote:
+> 
+>> The DCC is a DMA Engine designed to capture and store data
+>> during system crash or software triggers. The DCC operates
+>> based on link list entries which provides it with data and
+>> addresses and the function it needs to perform. These
+>> functions are read, write and loop. Added the basic driver
+>> in this patch which contains a probe method which instantiates
+>> the resources needed by the driver. DCC has it's own SRAM which
+>> needs to be instantiated at probe time as well.
+>> 
+> 
+> So to summarize, the DCC will upon a crash copy the configured region
+> into the dcc-ram, where it can be retrieved either by dumping the 
+> memory
+> over USB or from sysfs on the next boot?
+> 
 
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- Documentation/admin-guide/cgroup-v2.rst |  9 +++++++
- include/linux/psi.h                     |  1 +
- kernel/cgroup/cgroup.c                  |  3 +++
- kernel/sched/psi.c                      | 34 +++++++++++++++++++++++++
- 4 files changed, 47 insertions(+)
+Not just the next boot, but also for the current boot via /dev/dcc_sram,
+more below.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 64c62b979f2f..4184e749f687 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -923,6 +923,15 @@ All cgroup core files are prefixed with "cgroup."
- 		A dying cgroup can consume system resources not exceeding
- 		limits, which were active at the moment of cgroup deletion.
- 
-+	  nr_iowait_tasks
-+	    Total number of tasks in iowait.
-+
-+	  nr_memstall_tasks
-+	    Total number of tasks in memstall.
-+
-+	  nr_running_tasks
-+	    Total number of runnable tasks.
-+
-   cgroup.freeze
- 	A read-write single value file which exists on non-root cgroups.
- 	Allowed values are "0" and "1". The default is "0".
-diff --git a/include/linux/psi.h b/include/linux/psi.h
-index 7361023f3fdd..ea98239424ca 100644
---- a/include/linux/psi.h
-+++ b/include/linux/psi.h
-@@ -30,6 +30,7 @@ int psi_show(struct seq_file *s, struct psi_group *group, enum psi_res res);
- int psi_cgroup_alloc(struct cgroup *cgrp);
- void psi_cgroup_free(struct cgroup *cgrp);
- void cgroup_move_task(struct task_struct *p, struct css_set *to);
-+void psi_taskstat_show(struct seq_file *m, struct cgroup *cgrp);
- 
- struct psi_trigger *psi_trigger_create(struct psi_group *group,
- 			char *buf, size_t nbytes, enum psi_res res);
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 9153b20e5cc6..2724ae318a3b 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -3502,6 +3502,9 @@ static int cgroup_stat_show(struct seq_file *seq, void *v)
- 	seq_printf(seq, "nr_dying_descendants %d\n",
- 		   cgroup->nr_dying_descendants);
- 
-+#ifdef CONFIG_PSI
-+	psi_taskstat_show(seq, cgroup);
-+#endif
- 	return 0;
- }
- 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 967732c0766c..0ae8bd278ca4 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -1000,6 +1000,40 @@ void cgroup_move_task(struct task_struct *task, struct css_set *to)
- 
- 	task_rq_unlock(rq, task, &rf);
- }
-+
-+void psi_taskstat_show(struct seq_file *m, struct cgroup *cgrp)
-+{
-+	struct psi_group *group;
-+	int cpu;
-+	int s;
-+	unsigned int taskstat[NR_PSI_TASK_COUNTS - 1] = { 0, };
-+
-+	if (static_branch_likely(&psi_disabled))
-+		return;
-+
-+	group = cgroup_ino(cgrp) == 1 ? &psi_system : &cgrp->psi;
-+
-+	for_each_possible_cpu(cpu) {
-+		struct psi_group_cpu *groupc = per_cpu_ptr(group->pcpu, cpu);
-+		unsigned int tasks[NR_PSI_TASK_COUNTS];
-+		unsigned int seq;
-+
-+		do {
-+			seq = read_seqcount_begin(&groupc->seq);
-+			memcpy(tasks, groupc->tasks, sizeof(groupc->tasks));
-+		} while (read_seqcount_retry(&groupc->seq, seq));
-+
-+		for (s = 0; s < NR_ONCPU; s++)
-+			taskstat[s] += tasks[s];
-+	}
-+
-+	seq_printf(m, "nr_iowait_tasks %u\n"
-+		   "nr_memstall_tasks %u\n"
-+		   "nr_running_tasks %u\n",
-+		   taskstat[NR_IOWAIT],
-+		   taskstat[NR_MEMSTALL],
-+		   taskstat[NR_RUNNING]);
-+}
- #endif /* CONFIG_CGROUPS */
- 
- int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
+>> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> ---
+>>  drivers/soc/qcom/Kconfig  |   8 +
+>>  drivers/soc/qcom/Makefile |   1 +
+>>  drivers/soc/qcom/dcc.c    | 388 
+>> ++++++++++++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 397 insertions(+)
+>>  create mode 100644 drivers/soc/qcom/dcc.c
+>> 
+
+<snip>...
+
+> 
+> How about implementing this using pstore instead of exposing it through
+> a custom /dev/dcc_sram (if I read the code correclty)
+> 
+
+Using pstore is definitely a good suggestion, we have been thinking of
+adding it as a separate change once the basic support for DCC gets in.
+But pstore ram backend again depends on warm reboot which is present 
+only
+in chrome compute platforms but android platforms do not officially 
+support
+warm reboot. Pstore with block devices as a backend would be ideal but 
+it
+is still a work in progress to use mmc as the backend [1].
+
+Now the other reason as to why we need this dev interface in addition to
+pstore,
+
+  * Pstore contents are retrieved on the next boot, but DCC SRAM contents
+    can be collected via dev interface for the current boot via SW 
+trigger.
+    Lets say we have some non-fatal errors in one of the subsystems and 
+we
+    want to analyze the register values, it becomes as simple as 
+configuring
+    that region, trigger dcc and collect the sram contents and parse it.
+
+    echo "addr" > /sys/bus/platform/devices/***.dcc/config
+    echo  1 > /sys/bus/platform/devices/***.dcc/trigger
+    cat /dev/dcc_sram > dcc_sram.bin
+    python dcc_parser.py -s dcc_sram.bin --v2 -o output/
+
+We don't have to reboot at all for SW triggers. This is very useful and
+widely used internally.
+
+Is the custom /dev/dcc_sram not recommended because of the dependency on
+the userspace component being not available openly? If so, we already 
+have
+the dcc parser upstream which we use to extract the sram contents [2].
+
+[1] 
+https://lore.kernel.org/lkml/20210120121047.2601-1-bbudiredla@marvell.com/
+[2] 
+https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
+
+Thanks,
+Sai
+
 -- 
-2.25.1
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
