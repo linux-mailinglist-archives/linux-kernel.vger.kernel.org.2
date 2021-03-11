@@ -2,78 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B90E337A18
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6988233795F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhCKQxg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 11:53:36 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:48680 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229632AbhCKQxD (ORCPT
+        id S229599AbhCKQai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:30:38 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:50230 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhCKQaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:53:03 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 70A8E316FBD;
-        Thu, 11 Mar 2021 12:09:48 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id kh25UbSZFope; Thu, 11 Mar 2021 12:09:47 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 80D393165C9;
-        Thu, 11 Mar 2021 12:06:10 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id wAKSjvJS8-dX; Thu, 11 Mar 2021 12:06:10 -0300 (-03)
-Received: from [10.208.85.246] (89-200-33-201.mobile.kpn.net [89.200.33.201])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id A22E231707C;
-        Thu, 11 Mar 2021 11:59:34 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 11 Mar 2021 11:30:07 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lKOCK-006Yp6-ET; Thu, 11 Mar 2021 09:30:05 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lKOCJ-002zwx-DR; Thu, 11 Mar 2021 09:30:04 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Jim Newsome <jnewsome@torproject.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org
+References: <20210309203919.15920-1-jnewsome@torproject.org>
+        <m1blbqmy2u.fsf@fess.ebiederm.org>
+        <4d9006b4-b65a-6ce0-b367-971f29de1f21@torproject.org>
+Date:   Thu, 11 Mar 2021 10:30:08 -0600
+In-Reply-To: <4d9006b4-b65a-6ce0-b367-971f29de1f21@torproject.org> (Jim
+        Newsome's message of "Wed, 10 Mar 2021 18:14:44 -0600")
+Message-ID: <m1lfatlkkv.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Thu, 11 Mar 2021 15:59:44 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210311145934.A22E231707C@mail.curtumepanorama.com.br>
+Content-Type: text/plain
+X-XM-SPF: eid=1lKOCJ-002zwx-DR;;;mid=<m1lfatlkkv.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+m8dO/ge78RntGs8rj8stSQIb2dmMTiio=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,
+        T_TooManySym_01,T_TooManySym_02,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4998]
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Jim Newsome <jnewsome@torproject.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 376 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 11 (3.0%), b_tie_ro: 10 (2.6%), parse: 1.31
+        (0.3%), extract_message_metadata: 12 (3.2%), get_uri_detail_list: 1.20
+        (0.3%), tests_pri_-1000: 16 (4.2%), tests_pri_-950: 1.72 (0.5%),
+        tests_pri_-900: 1.40 (0.4%), tests_pri_-90: 100 (26.7%), check_bayes:
+        98 (26.0%), b_tokenize: 9 (2.4%), b_tok_get_all: 7 (1.9%),
+        b_comp_prob: 3.5 (0.9%), b_tok_touch_all: 74 (19.8%), b_finish: 0.98
+        (0.3%), tests_pri_0: 220 (58.4%), check_dkim_signature: 0.74 (0.2%),
+        check_dkim_adsp: 7 (2.0%), poll_dns_idle: 0.44 (0.1%), tests_pri_10:
+        1.94 (0.5%), tests_pri_500: 7 (1.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v3] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+Jim Newsome <jnewsome@torproject.org> writes:
 
-Sir/Madam,
+> On 3/10/21 16:40, Eric W. Biederman wrote:
+>>> +// Optimization for waiting on PIDTYPE_PID. No need to iterate
+> through child
+>>> +// and tracee lists to find the target task.
+>>
+>> Minor nit:  C++ style comments look very out of place in this file
+>>             which uses old school C /* */ comment delimiters for
+>>             all of it's block comments.
+>
+> Will do
+>
+>>> +static int do_wait_pid(struct wait_opts *wo)
+>>> +{
+>>> +	struct task_struct *target = pid_task(wo->wo_pid, PIDTYPE_PID);
+>>                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>> This is subtle change in behavior.
+>> 
+>> Today on the task->children list we only place thread group leaders.
+>
+> Shouldn't we allow waiting on clone children if __WALL or __WCLONE is set?
+>
+> This is already checked later in `eligible_child`, called from
+> `wait_consider_task`, so I *think* the current form should already do
+> the right thing. Now I'm confused though how the general path (through
+> `do_wait_thread`) works if clone children aren't on the task->children
+> list...?
+>
+> (In any case it seems this will need another version with at least an
+> explanatory comment here)
 
-CONGRATULATIONS!!!
+What I am worried about are not clone children.  AKA ordinary children
+that have a different exit signal but CLONE_THREAD children that are
+never put on the children list so are naturally excluded from today's
+do_wait (except in the case of ptrace). These are also known as threads.
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 9th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+Maybe I am missing it but I don't see anything in wait_consider_task
+or in the way that you are calling it that would exclude CLONE_THREAD
+children for the non-ptrace case.
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+Eric
