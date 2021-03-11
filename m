@@ -2,165 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90495338031
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE06338022
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 23:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhCKWUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 17:20:40 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:23361 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhCKWU0 (ORCPT
+        id S229687AbhCKWUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 17:20:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229476AbhCKWTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 17:20:26 -0500
-IronPort-SDR: 6KenlCSms4cTQYBsfLjg/CFrPlmb6WUOcBqAcJuEQH+416atzJ13VlOKJ/PtaCst0SkhLIgNjm
- xW7aqc85rmt2dZ39qL5nVUYZhmaWqMtOaZjQLc2km0QSJm4LAILF4q26lE1VgZmhA+rT5pwynB
- 6BRqjZg28lAcPTe4p3iBg8f9Sm5B2xUiXh0kaPahToESYxJ0GKTi2FIN/WvxY8PplPvAOJyZog
- MiJ12gVrCRUsoWVQaOFm4wNsGj5g/2dkBvqpU6IMJkz+JLffvjL8m43Ud15vM8Ligi09eRSWSv
- vEQ=
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="29688096"
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by labrats.qualcomm.com with ESMTP; 11 Mar 2021 14:20:24 -0800
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 11 Mar 2021 14:20:23 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 92687)
-        id E3B4A20F71; Thu, 11 Mar 2021 14:20:23 -0800 (PST)
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     cang@codeaurora.org, martin.petersen@oracle.com,
-        adrian.hunter@intel.com, linux-scsi@vger.kernel.org
-Cc:     Asutosh Das <asutoshd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v11 2/2] ufs: sysfs: Resume the proper scsi device
-Date:   Thu, 11 Mar 2021 14:19:35 -0800
-Message-Id: <fb3b49a985cea12b4db39f00d920c82a7c8be468.1615500685.git.asutoshd@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1615500685.git.asutoshd@codeaurora.org>
-References: <cover.1615500685.git.asutoshd@codeaurora.org>
-In-Reply-To: <cover.1615500685.git.asutoshd@codeaurora.org>
-References: <cover.1615500685.git.asutoshd@codeaurora.org>
+        Thu, 11 Mar 2021 17:19:55 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84993C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 14:19:55 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id bm21so49467296ejb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 14:19:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jmEJpwXpy96wPy0Wn2mPt1c7y2RKVHHDQGI/F3VWN68=;
+        b=gvIijDMs3UNbfQbZICXSqwNVSd2+Okw4B5WlV7s5XKHyRlzO6sWOJNzMGEhjtDApwf
+         DOSdTqKuzJYBCEPjaf4QgDFJGJ8KiQLOugnMB1tNaqyXvMg5hKR3W7U3skOaUUSRvfn5
+         43kUK6F5T1kKg6T3GjVFBB19rr1xs62jBM9xo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jmEJpwXpy96wPy0Wn2mPt1c7y2RKVHHDQGI/F3VWN68=;
+        b=VVTw+it9myHtOx8tw3FuO3AApk2ShamMGFG1yS/8BVTUP5ZIZUxEMVkaPJB8d6u64Z
+         AJJ9Z8Erdxmi9ZJhLMM7wmC2OVlIal9a0jofVLI5zFAJIooRc+4c6IW1GD+IQ3W3wOl4
+         HULEiRul92RV4uXFXvXaaqg10VDfTjfWeddVA+1E2DgoHnyQUL7qQaKNUCzUMq20/CRg
+         fneC1AcRAfkRy6wEBiyOfTEk9cZ+2fQIpJiBDIfY8d25P/ZAZiZz6yp82uj7r0fELcJB
+         /F30CQ5Cy2Kffiq8uqkAQMk+6Cs36etqPM89m1zIie2w7WWaeOyKV+I8J1R8ZcVHMerA
+         z8fA==
+X-Gm-Message-State: AOAM530qk/RUCtv2Nwz0Xb8Xa7MWCQAPZhgVUYDJCRTWrgCVcOalVYbJ
+        6Baf6dCuUqeyxxzd6Qtw5rzJkw==
+X-Google-Smtp-Source: ABdhPJxEiV0/8FTUyoH+2YuL5QVGZZj14u74Ix9DA0IrhToipBp5SgyEMm+tqcCXSSD26v8EtX5xGA==
+X-Received: by 2002:a17:906:7c48:: with SMTP id g8mr5343178ejp.138.1615501194090;
+        Thu, 11 Mar 2021 14:19:54 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id b18sm1942174ejb.77.2021.03.11.14.19.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 14:19:53 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, senozhatsky@chromium.org,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v2 0/6] uvcvideo: Fix v4l2-compliance errors
+Date:   Thu, 11 Mar 2021 23:19:40 +0100
+Message-Id: <20210311221946.1319924-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resumes the actual scsi device the unit descriptor of which
-is being accessed instead of the hba alone.
+In my computer I am getting this output for
 
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
----
- drivers/scsi/ufs/ufs-sysfs.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+v4l2-compliance -m /dev/media0 -a -f
+Total for uvcvideo device /dev/media0: 8, Succeeded: 6, Failed: 2, Warnings: 0
+Total for uvcvideo device /dev/video0: 54, Succeeded: 50, Failed: 4, Warnings: 2
+Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 102,
+Failed: 6, Warnings: 2
 
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index acc54f5..3fc182b 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -245,9 +245,9 @@ static ssize_t wb_on_store(struct device *dev, struct device_attribute *attr,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	scsi_autopm_get_device(hba->sdev_ufs_device);
- 	res = ufshcd_wb_ctrl(hba, wb_enable);
--	pm_runtime_put_sync(hba->dev);
-+	scsi_autopm_put_device(hba->sdev_ufs_device);
- out:
- 	up(&hba->host_sem);
- 	return res < 0 ? res : count;
-@@ -297,10 +297,10 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	scsi_autopm_get_device(hba->sdev_ufs_device);
- 	ret = ufshcd_read_desc_param(hba, desc_id, desc_index,
- 				param_offset, desc_buf, param_size);
--	pm_runtime_put_sync(hba->dev);
-+	scsi_autopm_put_device(hba->sdev_ufs_device);
- 	if (ret) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -678,7 +678,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 		up(&hba->host_sem);					\
- 		return -ENOMEM;						\
- 	}								\
--	pm_runtime_get_sync(hba->dev);					\
-+	scsi_autopm_get_device(hba->sdev_ufs_device);			\
- 	ret = ufshcd_query_descriptor_retry(hba,			\
- 		UPIU_QUERY_OPCODE_READ_DESC, QUERY_DESC_IDN_DEVICE,	\
- 		0, 0, desc_buf, &desc_len);				\
-@@ -695,7 +695,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 		goto out;						\
- 	ret = sysfs_emit(buf, "%s\n", desc_buf);			\
- out:									\
--	pm_runtime_put_sync(hba->dev);					\
-+	scsi_autopm_put_device(hba->sdev_ufs_device);			\
- 	kfree(desc_buf);						\
- 	up(&hba->host_sem);						\
- 	return ret;							\
-@@ -744,10 +744,10 @@ static ssize_t _name##_show(struct device *dev,				\
- 	}								\
- 	if (ufshcd_is_wb_flags(QUERY_FLAG_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	scsi_autopm_get_device(hba->sdev_ufs_device);			\
- 	ret = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,	\
- 		QUERY_FLAG_IDN##_uname, index, &flag);			\
--	pm_runtime_put_sync(hba->dev);					\
-+	scsi_autopm_put_device(hba->sdev_ufs_device);			\
- 	if (ret) {							\
- 		ret = -EINVAL;						\
- 		goto out;						\
-@@ -813,10 +813,10 @@ static ssize_t _name##_show(struct device *dev,				\
- 	}								\
- 	if (ufshcd_is_wb_attrs(QUERY_ATTR_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	scsi_autopm_get_device(hba->sdev_ufs_device);			\
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,	\
- 		QUERY_ATTR_IDN##_uname, index, 0, &value);		\
--	pm_runtime_put_sync(hba->dev);					\
-+	scsi_autopm_put_device(hba->sdev_ufs_device);			\
- 	if (ret) {							\
- 		ret = -EINVAL;						\
- 		goto out;						\
-@@ -899,11 +899,15 @@ static ssize_t _pname##_show(struct device *dev,			\
- 	struct scsi_device *sdev = to_scsi_device(dev);			\
- 	struct ufs_hba *hba = shost_priv(sdev->host);			\
- 	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);			\
-+	int ret;							\
- 	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun,		\
- 				_duname##_DESC_PARAM##_puname))		\
- 		return -EINVAL;						\
--	return ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
-+	scsi_autopm_get_device(sdev);					\
-+	ret = ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
- 		lun, _duname##_DESC_PARAM##_puname, buf, _size);	\
-+	scsi_autopm_put_device(sdev);					\
-+	return ret;							\
- }									\
- static DEVICE_ATTR_RO(_pname)
- 
-@@ -964,10 +968,10 @@ static ssize_t dyn_cap_needed_attribute_show(struct device *dev,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	scsi_autopm_get_device(hba->sdev_ufs_device);
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
- 		QUERY_ATTR_IDN_DYN_CAP_NEEDED, lun, 0, &value);
--	pm_runtime_put_sync(hba->dev);
-+	scsi_autopm_put_device(hba->sdev_ufs_device);
- 	if (ret) {
- 		ret = -EINVAL;
- 		goto out;
+After fixing all of them we go down to:
+
+Total for uvcvideo device /dev/media0: 8, Succeeded: 8, Failed: 0, Warnings: 0
+Total for uvcvideo device /dev/video0: 54, Succeeded: 54, Failed: 0, Warnings: 9
+Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 108,
+Failed: 0, Warnings: 9
+
+We are still not compliant with v4l2-compliance -s:
+
+Streaming ioctls:
+        test read/write: OK (Not Supported)
+        test blocking wait: OK
+                fail: v4l2-test-buffers.cpp(1265):
+node->streamon(q.g_type()) != EINVAL
+        test MMAP (no poll): FAIL
+                fail: v4l2-test-buffers.cpp(1265):
+node->streamon(q.g_type()) != EINVAL
+        test MMAP (select): FAIL
+                fail: v4l2-test-buffers.cpp(1265):
+node->streamon(q.g_type()) != EINVAL
+        test MMAP (epoll): FAIL
+
+But fixing that will probably require a lot of changes in the driver
+that are already implemented in the vb2 helpers. It is better to
+continue Hans work on that:
+https://git.linuxtv.org/hverkuil/media_tree.git/commit/?h=uvc-4.19&id=a6a0a05f643521d29a4c1e551b0be73ce66b7108
+
+Changelog v2 (Thanks to Hans and Laurent)
+
+- Reimplement the CTRL_CLASS as a patch on queryctl
+- Do not return -EIO for case 8
+- Handle request bug and which_def multiclass in core
+
+Ricardo Ribalda (6):
+  media: v4l2-ioctl: Fix check_ext_ctrls
+  media: uvcvideo: Set capability in s_param
+  media: uvcvideo: Return -EIO for control errors
+  media: uvcvideo: set error_idx to count on EACCESS
+  media: uvcvideo: Add support for V4L2_CTRL_TYPE_CTRL_CLASS
+  media: uvcvideo: Set a different name for the metadata entity
+
+ drivers/media/usb/uvc/uvc_ctrl.c     | 90 ++++++++++++++++++++++++++++
+ drivers/media/usb/uvc/uvc_driver.c   |  5 +-
+ drivers/media/usb/uvc/uvc_v4l2.c     | 10 +++-
+ drivers/media/usb/uvc/uvc_video.c    |  5 ++
+ drivers/media/usb/uvc/uvcvideo.h     |  7 +++
+ drivers/media/v4l2-core/v4l2-ioctl.c |  4 +-
+ 6 files changed, 116 insertions(+), 5 deletions(-)
+
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.31.0.rc2.261.g7f71774620-goog
 
