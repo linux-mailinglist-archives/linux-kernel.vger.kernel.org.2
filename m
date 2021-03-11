@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD1833697C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB50336981
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbhCKBRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 20:17:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhCKBRG (ORCPT
+        id S229608AbhCKBUL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Mar 2021 20:20:11 -0500
+Received: from mail.kingsoft.com ([114.255.44.146]:47457 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229569AbhCKBTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 20:17:06 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B032C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:17:06 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id i26so241879ljn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:17:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=B7suaILMqkwRadnzQQxPfSqPrJ+7maZjfwE653KBZsY=;
-        b=I5asAXLdzh8hgadBtI0ePVcXHJrnN3OmbnuSEAkDUiL0l06QmaBO6SEvt38EGF78gw
-         4pYxRtg/ieeD8DN8YCl4k7jqQ279+qebcaI5JCfgzkfCSUTDbm7oPeSyDia1K4POiRcE
-         svhAa93OB6ht1jgc3bJptcPsnmUNrx+ASd5wg5GFTiwyrv9eb0tv+225S/E5ieGTSimn
-         5kaUwzH+jvzR/B17DSTBMtW2JtMPFpZ3JDJC+8VHAqlwo6oDf9KG9TJXxFi/MO0d6Eb8
-         wCtp3I0jIoQ9Uh2F3fPVO4HUrle8NDDBjTb/VBolSr75a8Aw4LtePcfXea5S3CwR7ZVw
-         l2lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=B7suaILMqkwRadnzQQxPfSqPrJ+7maZjfwE653KBZsY=;
-        b=E5PaAyXQilvCD2K+ie0qmrs/AE+NYvlAQga7KeaHP+EQDqrRy7geGCDyoIl1ygD56d
-         IxuQ21xmNQZNrBxzwkn7FoOzPlsqI8cNX/F902EJWgw2zTVGdMRWyDJajPrdshgqtRDJ
-         egkbS5Gkt1uZQWBsHjBoZV10EPIMcSrRnwX5Z+xShGQlXA3jNqfT4a3T8BUXwKKE6Xdm
-         7/4oVEmu+I5Otx2q3oCk6Y+6Aj4QGPCszF/yd9ABgkQLEbGpPBvHXANYpPD6Rq2HQLtf
-         tVQlvQlgxV1/jNeN/mGnUL7Q0GQVyoRDyWWgocdRSdsyuc/pULUbYhc6lOBPHsV3eIwL
-         LCgg==
-X-Gm-Message-State: AOAM530PUCalB5thFoOSIjCn4KAzyzFaKe9jBdtSanPvprIxDkCYxUML
-        e4MoJJAm4T0sHejVataetXxkZCmeZL/g1v6otpytfw==
-X-Google-Smtp-Source: ABdhPJw4+/D839Q6QR+cLunMDw8nqYj+e0QUG0rP80PVTMnqGi4QCWr0d3t0u6bTJ/26oZMuJfs1lIwcmmW3VWl7mIQ=
-X-Received: by 2002:a2e:9004:: with SMTP id h4mr3415908ljg.326.1615425424782;
- Wed, 10 Mar 2021 17:17:04 -0800 (PST)
+        Wed, 10 Mar 2021 20:19:44 -0500
+X-AuditID: 0a580155-1f5ff7000005482e-6d-604968aae979
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 4C.75.18478.AA869406; Thu, 11 Mar 2021 08:47:38 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 11 Mar
+ 2021 09:19:41 +0800
+Date:   Thu, 11 Mar 2021 09:19:41 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+CC:     "Luck, Tony" <tony.luck@intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        <yangfeng1@kingsoft.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, <yaoaili@kingsoft.com>,
+        <sunhao2@kingsoft.com>
+Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
+ hwpoison page access.
+Message-ID: <20210311091941.45790fcf@alex-virtual-machine>
+In-Reply-To: <047D5B49-FDBB-494C-81E9-DA811476747D@amacapital.net>
+References: <4fc1b4e8f1fb4c8c81f280db09178797@intel.com>
+        <047D5B49-FDBB-494C-81E9-DA811476747D@amacapital.net>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210310125504.31886-1-noltari@gmail.com> <20210310125504.31886-3-noltari@gmail.com>
- <7e35bfd395f3ae40029b0f3cb2bc8f70@walle.cc> <DC6BACCE-C76F-41C5-8CB9-BEF3257B3B57@gmail.com>
-In-Reply-To: <DC6BACCE-C76F-41C5-8CB9-BEF3257B3B57@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 11 Mar 2021 02:16:54 +0100
-Message-ID: <CACRpkdam6kbGNywdaoxMJ4gCisyne_PNmXQfVczwi8ToABGgUw@mail.gmail.com>
-Subject: Re: [PATCH v6 02/15] gpio: regmap: set gpio_chip of_node
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Michael Walle <michael@walle.cc>, Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsXCFcGooLsqwzPBYMZZIYvPG/6xWbzY0M5o
+        MW2juMXm7x1sFpd3zWGzuLfmP6vF6rUNrBbnd61ltbh0YAGTxcXGA4wWW/e3Mloc7z3AZLF5
+        01RmizcX7rFY/NjwmNWB3+N7ax+Lx/03f1k8Nq/Q8li85yWTx6ZVnWwemz5NYvd4d+4cu8e8
+        k4EeL65uZPF4v+8qm8fnTXIeJ1q+sAbwRHHZpKTmZJalFunbJXBlnLptXvCWp+LWpNPsDYwt
+        XF2MnBwSAiYSb96uZ+xi5OIQEpjOJLG9dSkTSEJI4BWjxLxjoSA2i4CqxImV8xlBbDYge9e9
+        WawgtoiApsTLKfNZQJqZBU6zSLTt6QYrEhZIljgz6QGYzStgJfFs11k2EJtTwEni/M9PQA0c
+        QAsKJKafCAEJ8wuISfRe+c8EcZC9RNuWRVCtghInZz5hAbGZgXa1bv/NDmFrSyxb+JoZ4k5F
+        icNLfrFD9CpJHOmewQZhx0osm/eKdQKj8Cwko2YhGTULyagFjMyrGFmKc9ONNjFCIjN0B+OM
+        po96hxiZOBgPMUpwMCuJ8Podd0sQ4k1JrKxKLcqPLyrNSS0+xCjNwaIkzrv3mGuCkEB6Yklq
+        dmpqQWoRTJaJg1OqgUnQSUF4Voulk8S9KR7SZsJCB/Pd1lufniYo3ZeZE/pGZ9+8rdlMc/pq
+        PDoDJ898IVhkrh3iymBRyuAXmmde1PtzmTLPl7j0O9tP8ShbWU7/93Tmottf/u7OSbSaaKFV
+        NE/aV6P8dtEGo+KjV529jc5NeihZsqnp7P7qjnU+56tcz6ckeE56qDevpj5zdfmSDX5ztV5O
+        bhDwYwzVM7Psk72SHGcUeK2PK8JTbL12mMFBof8fruWLmZ6NkAu+feHhYoboRdcPPfOJyPbK
+        yFTSeM/yqsUzUr0j+A1zfPbn1ybp0/4JCTBHzt1enJl/h6nc/Duf/BOXc2e0J7eeD558h709
+        Xnk2z7fzD1N85xUpsRRnJBpqMRcVJwIA7iPl1zsDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 8:12 PM =C3=81lvaro Fern=C3=A1ndez Rojas
-<noltari@gmail.com> wrote:
+On Mon, 8 Mar 2021 11:00:28 -0800
+Andy Lutomirski <luto@amacapital.net> wrote:
 
-> > If there will be a new version, please add the following comment:
->
-> Right now I don=E2=80=99t know that either, because I=E2=80=99m honestly =
-getting tired of this=E2=80=A6
+> > On Mar 8, 2021, at 10:31 AM, Luck, Tony <tony.luck@intel.com> wrote:
+> > 
+> > ﻿  
+> >> 
+> >> Can you point me at that SIGBUS code in a current kernel?  
+> > 
+> > It is in kill_me_maybe().  mce_vaddr is setup when we disassemble whatever get_user()
+> > or copy from user variant was in use in the kernel when the poison memory was consumed.
+> > 
+> >        if (p->mce_vaddr != (void __user *)-1l) {
+> >                force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);  
+> 
+> Hmm. On the one hand, no one has complained yet. On the other hand, hardware that supports this isn’t exactly common.
+> 
+> We may need some actual ABI design here. We also need to make sure that things like io_uring accesses or, more generally, anything using the use_mm / use_temporary_mm ends up either sending no signal or sending a signal to the right target.
+> 
+> > 
+> > Would it be any better if we used the BUS_MCEERR_AO code that goes into siginfo?  
+> 
+> Dunno.
 
-IMO there is indeed such a thing as over-review when it comes
-to migrating legacy platforms: as subsystem maintainer I ask the bigger
-question: does the kernel look better after than before this patch? If the
-author is stressed by too much review I tend to just apply it and say that
-comments can be addressed by additional patches.
+I have one thought here but don't know if it's proper:
 
-DT bindings are different because they are written in stone. We just need
-to settle the DT bindings. Give the patch set some rest and come back and
-poke me to apply it when the chatter stops.
+Previous patch use force_sig_mceerr to the user process for such a scenario; with this method
+The SIGBUS can't be ignored as force_sig_mceerr() was designed to.
 
-Yours,
-Linus Walleij
+If the user process don't want this signal, will it set signal config to ignore?
+Maybe we can use a send_sig_mceerr() instead of force_sig_mceerr(), if process want to
+ignore the SIGBUS, then it will ignore that, or it can also process the SIGBUS?
+
+-- 
+Thanks!
+Aili Yao
