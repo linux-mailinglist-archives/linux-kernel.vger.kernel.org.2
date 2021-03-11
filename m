@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D7E336E30
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC35336E2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231697AbhCKIsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:48:47 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12711 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231626AbhCKIsb (ORCPT
+        id S231613AbhCKIsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:48:45 -0500
+Received: from outbound-smtp01.blacknight.com ([81.17.249.7]:46177 "EHLO
+        outbound-smtp01.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231362AbhCKIs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:48:31 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dx2bh1fl8zmVy3;
-        Thu, 11 Mar 2021 16:46:08 +0800 (CST)
-Received: from [10.67.102.248] (10.67.102.248) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 11 Mar 2021 16:48:17 +0800
-Subject: Re: [PATCH] perf annotate: Fix sample events lost in stdio mode
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
-        <mliska@suse.cz>, <linux-kernel@vger.kernel.org>
-CC:     <zhangjinhao2@huawei.com>
-References: <20210306082859.179541-1-yangjihong1@huawei.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <53ff575f-1fcf-6650-76ad-a0304f6bdf15@huawei.com>
-Date:   Thu, 11 Mar 2021 16:48:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 11 Mar 2021 03:48:29 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id 980ACC4BCE
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:48:28 +0000 (GMT)
+Received: (qmail 19459 invoked from network); 11 Mar 2021 08:48:28 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Mar 2021 08:48:28 -0000
+Date:   Thu, 11 Mar 2021 08:48:27 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/5] Introduce a bulk order-0 page allocator with two
+ in-tree users
+Message-ID: <20210311084827.GS3697@techsingularity.net>
+References: <20210310104618.22750-1-mgorman@techsingularity.net>
+ <20210310154704.9389055d0be891a0c3549cc2@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210306082859.179541-1-yangjihong1@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210310154704.9389055d0be891a0c3549cc2@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Mar 10, 2021 at 03:47:04PM -0800, Andrew Morton wrote:
+> On Wed, 10 Mar 2021 10:46:13 +0000 Mel Gorman <mgorman@techsingularity.net> wrote:
+> 
+> > This series introduces a bulk order-0 page allocator with sunrpc and
+> > the network page pool being the first users.
+> 
+> <scratches head>
+> 
+> Right now, the [0/n] doesn't even tell us that it's a performance
+> patchset!
+> 
 
-On 2021/3/6 16:28, Yang Jihong wrote:
-> In hist__find_annotations function, since have a hist_entry per IP for the same
-> symbol, we free notes->src to signal already processed this symbol in stdio mode;
-> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
-> 
-> However, there is a problem, for example, run the following command:
-> 
->   # perf record -e branch-misses -e branch-instructions -a sleep 1
-> 
-> perf.data file contains different types of sample event.
-> 
-> If the same IP sample event exists in branch-misses and branch-instructions,
-> this event uses the same symbol. When annotate branch-misses events, notes->src
-> corresponding to this event is set to null, as a result, when annotate
-> branch-instructions events, this event is skipped and no annotate is output.
-> 
-> Solution of this patch is to add a u8 member to struct sym_hist and use a bit to
-> indicate whether the symbol has been processed.
-> Because different types of event correspond to different sym_hist, no conflict
-> occurs.
-> ---
->   tools/perf/builtin-annotate.c | 22 ++++++++++++++--------
->   tools/perf/util/annotate.h    |  4 ++++
->   2 files changed, 18 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-> index a23ba6bb99b6..c8c67892ae82 100644
-> --- a/tools/perf/builtin-annotate.c
-> +++ b/tools/perf/builtin-annotate.c
-> @@ -372,15 +372,21 @@ static void hists__find_annotations(struct hists *hists,
->   			if (next != NULL)
->   				nd = next;
->   		} else {
-> -			hist_entry__tty_annotate(he, evsel, ann);
-> +			struct sym_hist *h = annotated_source__histogram(notes->src,
-> +									 evsel->idx);
-> +
-> +			if (h->processed == 0) {
-> +				hist_entry__tty_annotate(he, evsel, ann);
-> +
-> +				/*
-> +				 * Since we have a hist_entry per IP for the same
-> +				 * symbol, set processed flag of evsel in sym_hist
-> +				 * to signal we already processed this symbol.
-> +				 */
-> +				h->processed = 1;
-> +			}
-> +
->   			nd = rb_next(nd);
-> -			/*
-> -			 * Since we have a hist_entry per IP for the same
-> -			 * symbol, free he->ms.sym->src to signal we already
-> -			 * processed this symbol.
-> -			 */
-> -			zfree(&notes->src->cycles_hist);
-> -			zfree(&notes->src);
->   		}
->   	}
->   }
-> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-> index 096cdaf21b01..89872bfdc958 100644
-> --- a/tools/perf/util/annotate.h
-> +++ b/tools/perf/util/annotate.h
-> @@ -228,6 +228,10 @@ void symbol__calc_percent(struct symbol *sym, struct evsel *evsel);
->   struct sym_hist {
->   	u64		      nr_samples;
->   	u64		      period;
-> +
-> +	u8		      processed  : 1, /* whether symbol has been processed, used for annotate */
-> +			      __reserved : 7;
-> +
->   	struct sym_hist_entry addr[];
->   };
->   
-> 
-Please check whether this solution is feasible, look forward to your review.
+I'll add a note about this improving performance for users that operate
+on batches of patches and want to avoid multiple round-trips to the
+page allocator.
 
-Thanks,
-Yang
+> The whole point of this patchset appears to appear in the final paragraph
+> of the final patch's changelog.
+> 
+
+I'll copy&paste that note to the introduction. It's likely that high-speed
+networking is the most relevant user in the short-term.
+
+> : For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
+> : redirecting xdp_frame packets into a veth, that does XDP_PASS to create
+> : an SKB from the xdp_frame, which then cannot return the page to the
+> : page_pool.  In this case, we saw[1] an improvement of 18.8% from using
+> : the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
+> 
+> Much more detail on the overall objective and the observed results,
+> please?
+> 
+
+I cannot generate that data right now so I need Jesper to comment on
+exactly why this is beneficial. For example, while I get that more data
+can be processed in a microbenchmark, I do not have a good handle on how
+much difference that makes to a practical application. About all I know
+is that this problem has been knocking around for 3-4 years at least.
+
+> Also, that workload looks awfully corner-casey.  How beneficial is this
+> work for more general and widely-used operations?
+> 
+
+At this point, probably nothing for most users because batch page
+allocation is not common. It's primarily why I avoided reworking the
+whole allocator just to make this a bit tidier.
+
+> > The implementation is not
+> > particularly efficient and the intention is to iron out what the semantics
+> > of the API should have for users. Once the semantics are ironed out, it can
+> > be made more efficient.
+> 
+> And some guesstimates about how much benefit remains to be realized
+> would be helpful.
+> 
+
+I don't have that information unfortunately. It's a chicken and egg
+problem because without the API, there is no point creating new users.
+For example, fault around or readahead could potentially batch pages
+but whether it is actually noticable when page zeroing has to happen
+is a completely different story. It's a similar story for SLUB, we know
+lower order allocations hurt some microbenchmarks like hackbench-sockets
+but have not quantified what happens if SLUB batch allocates pages when
+high-order allocations fail.
+
+-- 
+Mel Gorman
+SUSE Labs
