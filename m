@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE64336BD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC532336BD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhCKGBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:01:44 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13501 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhCKGBM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:01:12 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DwyvG47QmzrTjr;
-        Thu, 11 Mar 2021 13:59:22 +0800 (CST)
-Received: from [10.174.177.134] (10.174.177.134) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 11 Mar 2021 14:01:09 +0800
-Subject: Re: [PATCH 0/3] Add support for free vmemmap pages of HugeTLB for
- arm64
-To:     "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "rientjes@google.com" <rientjes@google.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
-        "Umesh Sargur, Gautam" <sargur@amazon.com>
-References: <20210310071535.35245-1-songmuchun@bytedance.com>
- <3eae8b3e-d6e0-83c8-e9c6-5420767788d5@huawei.com>
- <ED06294F-F046-4B21-9E52-F439C2B32B45@amazon.com>
-From:   Chen Huang <chenhuang5@huawei.com>
-Message-ID: <aa3a5951-9dab-d1e1-8257-3569c269e3cf@huawei.com>
-Date:   Thu, 11 Mar 2021 14:01:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S229972AbhCKGBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 01:01:46 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:35565 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229923AbhCKGBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 01:01:14 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615442473; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=8J/JgNXr6szzZFjZUCFer4YmlobEUjzipvX57ytXkHE=;
+ b=SeTkGQ7xBjBTfNyZOXECUbfGrSWBQpmWPpx/Cu8BBoqUcLm6EXGhXPapGjmY/7nwzOUPumdi
+ qzbYnPlxIi0US4rpHOG6nInHMW0nnBcACQ0907lJz/EyYgTPlV5hUQME+oOKXy+ZGxAXHoG/
+ tdXnT+Wxyvz72y5VUO1CYg2d8Wc=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6049b227d3a53bc38f60fff1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 06:01:11
+ GMT
+Sender: gubbaven=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A313BC43461; Thu, 11 Mar 2021 06:01:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: gubbaven)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0C49C433C6;
+        Thu, 11 Mar 2021 06:01:09 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <ED06294F-F046-4B21-9E52-F439C2B32B45@amazon.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.134]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 11 Mar 2021 11:31:09 +0530
+From:   gubbaven@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, mka@chromium.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        bgodavar@codeaurora.org, rjliao@codeaurora.org,
+        hbandi@codeaurora.org, abhishekpandit@chromium.org
+Subject: Re: [RFC PATCH v1] Bluetooth: hci_qca: Add device_may_wakeup support
+In-Reply-To: <YEjfjZ/5y+Z0r63Z@builder.lan>
+References: <1615376496-13577-1-git-send-email-gubbaven@codeaurora.org>
+ <YEjfjZ/5y+Z0r63Z@builder.lan>
+Message-ID: <202e5c0a16b533e49940e34a2be31d79@codeaurora.org>
+X-Sender: gubbaven@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bjorn,
 
+On 2021-03-10 20:32, Bjorn Andersson wrote:
+> On Wed 10 Mar 05:41 CST 2021, Venkata Lakshmi Narayana Gubba wrote:
+> 
+>> Added device_may_wakeup() support.
+> 
+> This would be an excellent place to describe _why_ this is necessary,
+> instead of just repeating $subject.
+> 
+> Something along the lines of the comment in the patch.
+> 
+> Regards,
+> Bjorn
+> 
+[Venkata]:
+Sure.I will update in next patch.
+>> 
+>> Signed-off-by: Venkata Lakshmi Narayana Gubba 
+>> <gubbaven@codeaurora.org>
+>> ---
+>>  drivers/bluetooth/hci_qca.c | 15 +++++++++++++++
+>>  1 file changed, 15 insertions(+)
+>> 
+>> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+>> index de36af6..73af901 100644
+>> --- a/drivers/bluetooth/hci_qca.c
+>> +++ b/drivers/bluetooth/hci_qca.c
+>> @@ -1571,6 +1571,20 @@ static void qca_cmd_timeout(struct hci_dev 
+>> *hdev)
+>>  	mutex_unlock(&qca->hci_memdump_lock);
+>>  }
+>> 
+>> +static bool qca_prevent_wake(struct hci_dev *hdev)
+>> +{
+>> +	struct hci_uart *hu = hci_get_drvdata(hdev);
+>> +	bool wakeup;
+>> +
+>> +	/* UART driver handles the interrupt from BT SoC.So we need to use
+>> +	 * device handle of UART driver to get the status of device may 
+>> wakeup.
+>> +	 */
+>> +	wakeup = device_may_wakeup(hu->serdev->ctrl->dev.parent);
+>> +	bt_dev_dbg(hu->hdev, "wakeup status : %d", wakeup);
+>> +
+>> +	return !wakeup;
+>> +}
+>> +
+>>  static int qca_wcn3990_init(struct hci_uart *hu)
+>>  {
+>>  	struct qca_serdev *qcadev;
+>> @@ -1721,6 +1735,7 @@ static int qca_setup(struct hci_uart *hu)
+>>  		qca_debugfs_init(hdev);
+>>  		hu->hdev->hw_error = qca_hw_error;
+>>  		hu->hdev->cmd_timeout = qca_cmd_timeout;
+>> +		hu->hdev->prevent_wake = qca_prevent_wake;
+>>  	} else if (ret == -ENOENT) {
+>>  		/* No patch/nvm-config found, run with original fw/config */
+>>  		set_bit(QCA_ROM_FW, &qca->flags);
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
 
-在 2021/3/11 13:00, Bodeddula, Balasubramaniam 写道:
-> Chen, is your testing steps documented somewhere, can you please point us to the same. I followed some steps for testing the x86 patches, just wanted to make sure I am covering your tests as well. We are actively working on building and testing these patches for ARM.
-> 
-> ﻿On 11/03/21, 9:44 AM, "Chen Huang" <chenhuang5@huawei.com> wrote:
-> 
->     CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> 
-> 
->     在 2021/3/10 15:15, Muchun Song 写道:
->     > This patchset is based on the series of "Free some vmemmap pages of HugeTLB
->     > page". More details can refer to the below link.
->     >
->     >   https://lkml.kernel.org/r/20210308102807.59745-1-songmuchun@bytedance.com
->     >
->     > I often received some feedback (We want to test this feature on arm64) before.
->     > Because the previous code has been reviewed for 18 versions and is merged
->     > into mm tree, I think that it is time to release this patchset. If you want
->     > to test then you can start now :-). And I also hope someone can review this.
->     >
->     > Thanks.
->     >
->     > Muchun Song (3):
->     >   mm: bootmem_info: mark register_page_bootmem_info_section __init
->     >   mm: hugetlb: introduce arch_free_vmemmap_page
->     >   arm64: mm: hugetlb: add support for free vmemmap pages of HugeTLB
->     >
->     >  arch/arm64/mm/mmu.c   | 5 +++++
->     >  arch/x86/mm/init_64.c | 5 +++++
->     >  fs/Kconfig            | 4 ++--
->     >  mm/bootmem_info.c     | 4 ++--
->     >  mm/sparse-vmemmap.c   | 9 +++++++--
->     >  5 files changed, 21 insertions(+), 6 deletions(-)
->     >
-> 
->     Tested-by: Chen Huang <chenhuang5@huawei.com>
-> 
->     I have tested the patch and the result is same as the last time.
-> 
-
-The test work is that: I set the total memory of 40G, and use 10G for hugepages.
-First I reserve 10G hugepages from the command line and the result is that:
-------------------------------------------------------------------------------------------------
-                    2M page                    |                    1G page                    |
-----------------------|------------------------|----------------------|------------------------|
-       enable         |        disable         |      enable          |        disable         |
-----------------------|------------------------|----------------------|------------------------|
-total  |  used | free | total  |  used | free  |total  |  used | free | total  |  used | free  |
-39,697 | 10279 |29,415| 39580  | 10279 | 29,297‬|39,739 | 10279 |29,455| 39580  | 10279 | 29,296|
-------------------------------------------------------------------------------------------------
-For 2M hugepage, we can save 118M memory which is correspoinding to the expected 120M memory.
-For 1G hugepage, we can save 159M memory which is correspoinding to the expected 160M memory.
-
-Then I alloc 10G hugepages using "echo XX > /sys/kernel/mm/hugepages/hugepages-XXkB/nr_hugepages",
-and get the result:
-------------------------------------------------------------------------------------------------
-                    2M page                    |                    1G page                    |
-----------------------|------------------------|----------------------|------------------------|
-       enable         |        disable         |      enable          |        disable         |
-----------------------|------------------------|----------------------|------------------------|
-total  |  used | free | total  |  used | free  |total  |  used | free | total  |  used | free  |
-39,699 | 10279 |29,415| 39580  | 10279 | 29,297‬‬|39,739 | 10279 |29,455| 39580  | 10279 | 29,296|
-------------------------------------------------------------------------------------------------
-For 2M hugepage, we can save 118M memory which is correspoinding to the expected 120M memory.
-For 1G hugepage, we can save 159M memory which is correspoinding to the expected 160M memory.
+Regards,
+Venkata.
