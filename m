@@ -2,132 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8E233734D
+	by mail.lfdr.de (Postfix) with ESMTP id CD2F9337350
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbhCKNBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:01:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59444 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233322AbhCKNBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:01:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4820BAC16;
-        Thu, 11 Mar 2021 13:01:02 +0000 (UTC)
-Message-ID: <fc60ac5ab9760d791aa5e184258accf53e07ce1e.camel@suse.de>
-Subject: Re: [PATCH v7 11/11] pwm: Add Raspberry Pi Firmware based PWM bus
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        wahrenst@gmx.net, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        linux-clk@vger.kernel.org, sboyd@kernel.org,
-        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
-        andy.shevchenko@gmail.com
-Date:   Thu, 11 Mar 2021 14:01:00 +0100
-In-Reply-To: <20210310115041.s7tzvgdpksws6yss@pengutronix.de>
-References: <20210118123244.13669-1-nsaenzjulienne@suse.de>
-         <20210118123244.13669-12-nsaenzjulienne@suse.de>
-         <20210310115041.s7tzvgdpksws6yss@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-rPtClvAMAu3vmlHUSTv2"
-User-Agent: Evolution 3.38.4 
+        id S233358AbhCKNBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:01:33 -0500
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:36588 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233326AbhCKNBL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 08:01:11 -0500
+Received: by mail-pj1-f44.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so9040990pjh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:01:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fkuG5au6qThpVo2vTa3qhvtLmsbYvgjHYrjfL1pZJfw=;
+        b=CY9VzVn8CrR6nF/V19rJlQD2TG/L7lSyq2QkBfaAqAWdh5Cv6+FVBe2JLXDxjhQr/L
+         AI/oZ3SnrFGO4aqIQNBHFZi2hRC0LdrJQKCde1a+ACjPpHfMkKDydTbHMCfDiaUw3JCf
+         VIefM0pCK4hnU8KT2HH7aj9zDptBy++pCpK9WMh8AwUjucPcxcBTSUM/rGGYS13zbgsU
+         Ojru5vw7dF4dNpVHCqebmiIzgz2TRMdiWTT9mPoC3WufTZNhwktL/31rWA/TxPAnFB7D
+         icOyrpgtrl9Ddf6pU5TEYKvjEMJxsD5SMNT8lrXdySDaCknJXl2Fx21OV7TxoCpOBR1n
+         K+Sg==
+X-Gm-Message-State: AOAM5308hXUaVCJlEpmzys3OwSKbmAbRyhz5QLa0Lo9Xkhav5QXjna/V
+        n6gHlJUTMD1Y4aTt7hE8G0o=
+X-Google-Smtp-Source: ABdhPJxO1pDzTHYaB+2LTKfbIUWN5p9cc2ms6j8s1u6L46wZmSejU9F3SUhPgTrS/qeFoCqgMNp/3g==
+X-Received: by 2002:a17:902:b08b:b029:e4:deb:69a9 with SMTP id p11-20020a170902b08bb02900e40deb69a9mr7654386plr.35.1615467671014;
+        Thu, 11 Mar 2021 05:01:11 -0800 (PST)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id g21sm2309113pjl.28.2021.03.11.05.01.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 05:01:09 -0800 (PST)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id E54924024E; Thu, 11 Mar 2021 13:01:08 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 13:01:08 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/test_kmod: Fix a use after free in
+ register_test_dev_kmod
+Message-ID: <20210311130108.GS4332@42.do-not-panic.com>
+References: <20210311080246.11635-1-lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311080246.11635-1-lyl2019@mail.ustc.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 11, 2021 at 12:02:46AM -0800, Lv Yunlong wrote:
+> In register_test_dev_kmod, it calls free_test_dev_kmod() to free
+> test_dev. But free_test_dev_kmod() can't set the original pointer
+> test_dev to NULL, because the test_dev was passed by it's value
+> not reference.
 
---=-rPtClvAMAu3vmlHUSTv2
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Did you actually get a crash or something? If so can you supply the
+actual log? If this is just an observation and you think this is an
+issue, specifying that would help during patch review.
 
-Hi Uwe,
-thanks for taking the time to look into this. :)
+  Luis
 
-On Wed, 2021-03-10 at 12:50 +0100, Uwe Kleine-K=C3=B6nig wrote:
-> Hello Nicolas,
->=20
-> On Mon, Jan 18, 2021 at 01:32:44PM +0100, Nicolas Saenz Julienne wrote:
-
-[...]
-
-> > +	/*
-> > +	 * This sets the default duty cycle after resetting the board, we
-> > +	 * updated it every time to mimic Raspberry Pi's downstream's driver
-> > +	 * behaviour.
-> > +	 */
-> > +	ret =3D raspberrypi_pwm_set_property(rpipwm->firmware, RPI_PWM_DEF_DU=
-TY_REG,
-> > +					   duty_cycle);
-> > +	if (ret) {
-> > +		dev_err(chip->dev, "Failed to set default duty cycle: %pe\n",
-> > +			ERR_PTR(ret));
-> > +		return ret;
->=20
-> This only has an effect for the next reboot, right?
-
-It effects all reboots until it's further changed.
-
-> If so I wonder if it is a good idea in general. (Think: The current PWM
-> setting enables a motor that makes a self-driving car move at 100 km/h.
-> Consider the rpi crashes, do I want to car to pick up driving 100 km/h at
-> power up even before Linux is up again?)
-
-I get your point. But this isn't used as a general purpose PWM. For now the
-interface is solely there to drive a PWM fan that's arguably harmless. This
-doesn't mean that the RPi foundation will not reuse the firmware interface =
-for
-other means in the future. In such case we can always use a new DT compatib=
-le
-and bypass this feature (the current DT string is
-'raspberrypi,firmware-poe-pwm', which is specific to this use-case).
-
-My aim here is to be on par feature wise with RPi's downstream implementati=
-on.
-So as for them to be able to use it as is and avoid duplication. Now, if th=
-is
-is blocking the driver from being merged, I'd rather remove it. It'll be a
-patch for the downstream kernel to maintain, but better than nothing.
-
-> And if we agree it's a good idea: Should raspberrypi_pwm_apply return 0 i=
-f
-> setting the duty cycle succeeded and only setting the default didn't?
-
-Good point. I don't think so. We'd be also missing on the following by
-returning early:
-
-	rpipwm->duty_cycle =3D duty_cycle;
-
-I propose to change it to a 'best effort' approach, if it fails, log it and
-continue successfully.
-
-Regards,
-Nicolas
-
-
---=-rPtClvAMAu3vmlHUSTv2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBKFIwACgkQlfZmHno8
-x/5Xwwf/epKXd8rgN+dNn1qRP2YYm1lUu6pbJFf3mtkjI4AkSoZaHsvNqGMSIe5q
-FZEL262SPZKC5f2EaZhbvuGF2Jengz0t4cC1dID9Asup+lK4baI17+1iNzOJoAgC
-6OewHa2pkDzUoo+J94nSB8FMPqTorYR+8kP7O2+olrz1UPvH2UJonwSlgiWuzI1Q
-rIxjBhqHy0Q/R5Aa9oNCZalpdmeGaq9ewIZFfpYyns/MAOSGH3tYP/dH70yUBQO3
-awy7Ly59mr2+ggecgxW5R0okT95/CdRxivA+DmOE2jxl3/BhNHglRijTY9KRj8c6
-kS3q0R8eKZK6q0C2OJFotH6xrhPVOA==
-=/TKa
------END PGP SIGNATURE-----
-
---=-rPtClvAMAu3vmlHUSTv2--
-
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  lib/test_kmod.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/test_kmod.c b/lib/test_kmod.c
+> index 38c250fbace3..aa8a2a563d7e 100644
+> --- a/lib/test_kmod.c
+> +++ b/lib/test_kmod.c
+> @@ -1124,7 +1124,6 @@ static void free_test_dev_kmod(struct kmod_test_device *test_dev)
+>  		free_test_dev_info(test_dev);
+>  		kmod_config_free(test_dev);
+>  		vfree(test_dev);
+> -		test_dev = NULL;
+>  	}
+>  }
+>  
+> @@ -1149,6 +1148,7 @@ static struct kmod_test_device *register_test_dev_kmod(void)
+>  	if (ret) {
+>  		pr_err("could not register misc device: %d\n", ret);
+>  		free_test_dev_kmod(test_dev);
+> +		test_dev = NULL;
+>  		goto out;
+>  	}
+>  
+> -- 
+> 2.25.1
+> 
+> 
