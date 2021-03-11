@@ -2,230 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C826C337387
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830CC33736E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 14:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbhCKNNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 08:13:21 -0500
-Received: from smtp1.axis.com ([195.60.68.17]:15038 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233014AbhCKNMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:12:46 -0500
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Mar 2021 08:12:45 EST
+        id S233409AbhCKNI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 08:08:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233141AbhCKNIS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 08:08:18 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCEEC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:08:18 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id 7so1812992wrz.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 05:08:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1615468366;
-  x=1647004366;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=PKxcbrdtFXzVaXcDXMV5bGrOudDtSg/m6UMUlPopE4I=;
-  b=JZTk9isx+RbsuR82+vEkmjWfYsBYbfbrYI7B/gw2t8OCDQ1zMAJ/El6j
-   nCU+nuGESF3FJ+usQGRGVCHCJ3mZq+VtQ6XGMJvcaieyHZkuQ1ly9wubX
-   Ar1LiD5FWw8TNTGCE8TZ5ufkfWHUOBqCiIxFmJ2GEYVpK4wI8iDhhMEz4
-   iybGfLfOdg9Z8yakqASIbxZtA0ywTztNQ/Q+Y7Dk/Berq0z68DzbgHD3s
-   Y4WDrFYiOMV6pA2LbGv/6rYcRj4expTujcRFgGCXvEWh0XlrgH2269ERd
-   rAq0mLOy+cLUCFD4JOltc/Y51bSwSLiWz+jywEi6pQM6B5I2WTzAiVkjO
-   w==;
-From:   Hermes Zhang <chenhui.zhang@axis.com>
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>
-CC:     <kernel@axis.com>, Hermes Zhang <chenhuiz@axis.com>,
-        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
-Subject: [PATCH] leds: leds-dual-gpio: Add dual GPIO LEDs driver
-Date:   Thu, 11 Mar 2021 21:04:08 +0800
-Message-ID: <20210311130408.10820-1-chenhui.zhang@axis.com>
-X-Mailer: git-send-email 2.20.1
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qrZXdv7fA+TcxxTTrB5ztlGjFi4s6fIUC/dA2snL+J4=;
+        b=H1Mx4eM+pBm8MyWuGXMOKHl3WtuARTV9DvGf+45bIvtmO0jV3xm/8C3F3IzIlvCuWB
+         /sJU/QgidjO8Yc7gPPwK3BePumHRo34w09nStf7KTuFip2dqg6aQOUR8jnO1rK8qgpfd
+         jV0YXuHYWNxUEr8ckF70BRM49DclZ2EjZg9RY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=qrZXdv7fA+TcxxTTrB5ztlGjFi4s6fIUC/dA2snL+J4=;
+        b=kmAPxAx9ck60SBE4oHqX6h0xN3BDyAGuOEEbcB8k2pA+N/5aQoEnoXT16ktnPMVwVg
+         fXP4ro3x65HQnIsbvAxRdaBZTvRupqRG4KNee1liDnhsdi/2e9uuuE8KpP3z13dkgl05
+         kt8QnpyI2U4jafrHjg0h5e88SrolPYO3jhVAqAsJFxRZe9cie+5qR9IKQlPY/UCZrKOp
+         OUECUsNe+bgqunWmv2lYFUgF2Lmmzs2R1kz18gQvhRE6Nv0jHY4bU2mXFgol5tHQSSRf
+         fsCgnugEh2rKQUrQxLFOljL/QP5MTkpVcOMwlO+RVF6GIz0pk9y62lA7m/VLtca7ePeU
+         X2hQ==
+X-Gm-Message-State: AOAM5321MRSuSUqq8FgdIe5TD7DSnkxOAMIKNMRtrQL1oQeTPUfnd6Sx
+        Hayr7AGxcXdgowxxqEahwbSWwA==
+X-Google-Smtp-Source: ABdhPJw/Fk5Unx0u9LEM2CG3q6jKm9fGk6h7EJuj5MzNUKYgO1OO/uCt2XtGHsu0Cdq/UlAXo2DtKg==
+X-Received: by 2002:a5d:58e8:: with SMTP id f8mr8698775wrd.102.1615468097072;
+        Thu, 11 Mar 2021 05:08:17 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id j12sm3883091wrx.59.2021.03.11.05.08.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 05:08:16 -0800 (PST)
+Date:   Thu, 11 Mar 2021 14:08:14 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH 04/44] vgacon: comment on vga_rolled_over
+Message-ID: <YEoWPoXq0Ob5+2yS@phenom.ffwll.local>
+Mail-Followup-To: Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+References: <20210302062214.29627-1-jslaby@suse.cz>
+ <20210302062214.29627-4-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302062214.29627-4-jslaby@suse.cz>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hermes Zhang <chenhuiz@axis.com>
+On Tue, Mar 02, 2021 at 07:21:34AM +0100, Jiri Slaby wrote:
+> Long time ago, I figured out what this number is good for and documented
+> that locally. But never submitted, so do it now.
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-fbdev@vger.kernel.org
 
-Introduce a new Dual GPIO LED driver. These two GPIOs LED will act as
-one LED as normal GPIO LED but give the possibility to change the
-intensity in four levels: OFF, LOW, MIDDLE and HIGH.
----
- drivers/leds/Kconfig          |   9 +++
- drivers/leds/Makefile         |   1 +
- drivers/leds/leds-dual-gpio.c | 136 ++++++++++++++++++++++++++++++++++
- 3 files changed, 146 insertions(+)
- create mode 100644 drivers/leds/leds-dual-gpio.c
+I think Greg volunteered to take care of these ... Also my brain is toast
+and I'm not even close to ready to grok vc code to review this properly
+:-/
 
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index b6742b4231bf..bc374d3b40ef 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -370,6 +370,15 @@ config LEDS_GPIO
- 	  defined as platform devices and/or OpenFirmware platform devices.
- 	  The code to use these bindings can be selected below.
- 
-+config LEDS_DUAL_GPIO
-+	tristate "LED Support for Dual GPIO connected LEDs"
-+	depends on LEDS_CLASS
-+	depends on GPIOLIB || COMPILE_TEST
-+	help
-+	  This option enables support for the two LEDs connected to GPIO
-+	  outputs. These two GPIO LEDs act as one LED in the sysfs and
-+	  perform different intensity by enable either one of them or both.
-+
- config LEDS_LP3944
- 	tristate "LED Support for N.S. LP3944 (Fun Light) I2C chip"
- 	depends on LEDS_CLASS
-diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-index 2a698df9da57..10015cc81f79 100644
---- a/drivers/leds/Makefile
-+++ b/drivers/leds/Makefile
-@@ -30,6 +30,7 @@ obj-$(CONFIG_LEDS_DA903X)		+= leds-da903x.o
- obj-$(CONFIG_LEDS_DA9052)		+= leds-da9052.o
- obj-$(CONFIG_LEDS_FSG)			+= leds-fsg.o
- obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
-+obj-$(CONFIG_LEDS_DUAL_GPIO)		+= leds-dual-gpio.o
- obj-$(CONFIG_LEDS_GPIO_REGISTER)	+= leds-gpio-register.o
- obj-$(CONFIG_LEDS_HP6XX)		+= leds-hp6xx.o
- obj-$(CONFIG_LEDS_INTEL_SS4200)		+= leds-ss4200.o
-diff --git a/drivers/leds/leds-dual-gpio.c b/drivers/leds/leds-dual-gpio.c
-new file mode 100644
-index 000000000000..5d3b9be46f4b
---- /dev/null
-+++ b/drivers/leds/leds-dual-gpio.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * LEDs driver for GPIOs
-+ *
-+ * Copyright (C) 2021 Axis Communications AB
-+ * Hermes Zhang <chenhui.zhang@axis.com>
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/kernel.h>
-+#include <linux/leds.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/slab.h>
-+
-+#define GPIO_LOGICAL_ON   1
-+#define GPIO_LOGICAL_OFF  0
-+
-+struct gpio_dual_leds_priv {
-+	struct gpio_desc *low_gpio;
-+	struct gpio_desc *high_gpio;
-+	struct led_classdev cdev;
-+};
-+
-+
-+static void gpio_dual_led_set(struct led_classdev *led_cdev,
-+	enum led_brightness value)
-+{
-+	struct gpio_dual_leds_priv *priv;
-+
-+	priv = container_of(led_cdev, struct gpio_dual_leds_priv, cdev);
-+
-+	if (value == LED_FULL) {
-+		gpiod_set_value(priv->low_gpio, GPIO_LOGICAL_ON);
-+		gpiod_set_value(priv->high_gpio, GPIO_LOGICAL_ON);
-+	} else if (value < LED_FULL && value > LED_HALF) {
-+		/* Enable high only */
-+		gpiod_set_value(priv->low_gpio, GPIO_LOGICAL_OFF);
-+		gpiod_set_value(priv->high_gpio, GPIO_LOGICAL_ON);
-+	} else if (value <= LED_HALF && value > LED_OFF) {
-+		/* Enable low only */
-+		gpiod_set_value(priv->low_gpio, GPIO_LOGICAL_ON);
-+		gpiod_set_value(priv->high_gpio, GPIO_LOGICAL_OFF);
-+	} else {
-+		gpiod_set_value(priv->low_gpio, GPIO_LOGICAL_OFF);
-+		gpiod_set_value(priv->high_gpio, GPIO_LOGICAL_OFF);
-+	}
-+}
-+
-+static int gpio_dual_led_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *node = dev->of_node;
-+	struct gpio_dual_leds_priv *priv = NULL;
-+	int ret;
-+	const char *state;
-+
-+	priv = devm_kzalloc(dev, sizeof(struct gpio_dual_leds_priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->low_gpio = devm_gpiod_get(dev, "low", GPIOD_OUT_LOW);
-+	ret = PTR_ERR_OR_ZERO(priv->low_gpio);
-+	if (ret) {
-+		dev_err(dev, "cannot get low-gpios %d\n", ret);
-+		return ret;
-+	}
-+
-+	priv->high_gpio = devm_gpiod_get(dev, "high", GPIOD_OUT_LOW);
-+	ret = PTR_ERR_OR_ZERO(priv->high_gpio);
-+	if (ret) {
-+		dev_err(dev, "cannot get high-gpios %d\n", ret);
-+		return ret;
-+	}
-+
-+	priv->cdev.name = of_get_property(node, "label", NULL);
-+	priv->cdev.max_brightness = LED_FULL;
-+	priv->cdev.default_trigger =
-+	  of_get_property(node, "linux,default-trigger", NULL);
-+	priv->cdev.brightness_set = gpio_dual_led_set;
-+
-+	ret = devm_led_classdev_register(dev, &priv->cdev);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!of_property_read_string(node, "default-state", &state)
-+	    && !strcmp(state, "on"))
-+		gpio_dual_led_set(&priv->cdev, LED_FULL);
-+	else
-+		gpio_dual_led_set(&priv->cdev, LED_OFF);
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	return 0;
-+}
-+
-+static void gpio_dual_led_shutdown(struct platform_device *pdev)
-+{
-+	struct gpio_dual_leds_priv *priv = platform_get_drvdata(pdev);
-+
-+	gpio_dual_led_set(&priv->cdev, LED_OFF);
-+}
-+
-+static int gpio_dual_led_remove(struct platform_device *pdev)
-+{
-+	gpio_dual_led_shutdown(pdev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id of_gpio_dual_leds_match[] = {
-+	{ .compatible = "gpio-dual-leds", },
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(of, of_gpio_dual_leds_match);
-+
-+static struct platform_driver gpio_dual_led_driver = {
-+	.probe		= gpio_dual_led_probe,
-+	.remove		= gpio_dual_led_remove,
-+	.shutdown	= gpio_dual_led_shutdown,
-+	.driver		= {
-+		.name	= "leds-dual-gpio",
-+		.of_match_table = of_gpio_dual_leds_match,
-+	},
-+};
-+
-+module_platform_driver(gpio_dual_led_driver);
-+
-+MODULE_DESCRIPTION("Dual GPIO LED driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:leds-dual-gpio");
+Cheers, Daniel
+> ---
+>  drivers/video/console/vgacon.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
+> index 962c12be9774..0d26e821e73b 100644
+> --- a/drivers/video/console/vgacon.c
+> +++ b/drivers/video/console/vgacon.c
+> @@ -96,7 +96,7 @@ static bool 		vga_is_gfx;
+>  static bool 		vga_512_chars;
+>  static int 		vga_video_font_height;
+>  static int 		vga_scan_lines		__read_mostly;
+> -static unsigned int 	vga_rolled_over;
+> +static unsigned int 	vga_rolled_over; /* last vc_origin offset before wrap */
+>  
+>  static bool vgacon_text_mode_force;
+>  static bool vga_hardscroll_enabled;
+> -- 
+> 2.30.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 -- 
-2.20.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
