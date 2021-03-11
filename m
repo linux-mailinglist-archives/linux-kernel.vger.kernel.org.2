@@ -2,130 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E311E3369A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4953369A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbhCKB20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 20:28:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33050 "EHLO
+        id S229614AbhCKBak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 20:30:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhCKB2Z (ORCPT
+        with ESMTP id S229459AbhCKBaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 20:28:25 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10982C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:28:25 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id dx17so42829135ejb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:28:24 -0800 (PST)
+        Wed, 10 Mar 2021 20:30:30 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98646C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:30:29 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id t9so225011ljt.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:30:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VpOIjQ3p9w0rNFfbAO51HuvtMJp/6aJrl+qPrZuKuR8=;
-        b=aM/wmrMKYr9tu1cwciQttikcxEZH1/v/i+xHpN3cj4QpcL/AU7fKmsWFk9SGeEeUAl
-         XPRFwqreWDxUrqnN+WDqh9pH3udYulUcseEJtij+krUz2w6yLZIBO72w7H/PytPOU0e2
-         QmAagxnT+PmwAfCzV8VyX8VL3c8FH0PJwrZzjgDMO6vWECa/F3XMyH25193pxJTWq18m
-         5wejTpNj21k/DNvUX2DyHlQG3osbrPUlZ33s1jbLzrAZZoIR/lydR1HenxDeUjb+wE+U
-         w8P5ha3WaUO7prJow5sGuquFUmLi1UG/i0AyhEw7Hb0HD7XRKP1xbj67OrL0cbUnw6L5
-         3StQ==
+         :cc;
+        bh=rjmW9Uac0/2GrP31pLOWn3QA56y7+9ATmhFYXpW5mMY=;
+        b=pQuXvzWN+db+D8fIiSC7NIQ96zoj81U+4eiFhIBqhrtAQtEAnFzrePK97DaCEUVWzH
+         CZWBx5oZsrPwDHJ9f6Eg6nn36AJWCzbeqDFwFp+SceGCdvZeqpXMDf1CpKZWF45Hn1cl
+         rrYlL47mJ13JaqCJ4iT16Q8ngf7AjILLq6zyJbBaiYBHCDTk2m/+kW7CfIbJrq0VJ2Cp
+         NvMoiyuMBRTWcwSUs8bS8rloAaCA78P74M6rC0CWiEKQ3QL8GZUXbpo91i5u4Td2fBAJ
+         x3R31WUfKbJwnzwl2DRcEWZe9zm0Gdx140vHJ2DZE5Pf21Q5wh/Ldt6h5oCJzusW1pXZ
+         BqJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VpOIjQ3p9w0rNFfbAO51HuvtMJp/6aJrl+qPrZuKuR8=;
-        b=X0X7S3tvZVfo76g5Z/DygB2iUyNx8qLn0hRJXW+UpPZBLnQVfaReKWLJszu/wf1bPS
-         dpEnyieFEo2YOxOCmPvtKLkR+6zvGl17a4duAOjowx295dKndlzbVE1s1k3CPsnx9jb4
-         Y2sBC6Ghk2KM3ypyb/XcCz2/0DwRWbsX0ZFr4sCxRAsuwmACNG2f5qLw2/oEYQpoXPif
-         3KiwohxESwBQkNQ5kvm12zzpQmvyH4sm6LTLturJabUhYPBGIoCvCbgdJJTwVRl3wqEE
-         gfnOhMRraJVygbpFAw9fuffcrEm50R5YI+mDMqMrorr/smqDTBHTAbmgnRSN12mrG88t
-         /GAA==
-X-Gm-Message-State: AOAM531HPG5R2FA4EW9ejW3aurf8R1k+CYhnTIW/AyPGD10BuyyNV23K
-        0mAu72Qy1CvlVJD6Gs4fzbmxao+pGKLqip5r1PVU7w==
-X-Google-Smtp-Source: ABdhPJyzKbaBgpWAEV4KmB44LDkGtgM1yTLos/iUC1Eu7napm28BHmC/ZQK21pLB22uKasKXJZ2WMcH9tvd3gLPonNY=
-X-Received: by 2002:a17:906:f44:: with SMTP id h4mr663334ejj.204.1615426103622;
- Wed, 10 Mar 2021 17:28:23 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=rjmW9Uac0/2GrP31pLOWn3QA56y7+9ATmhFYXpW5mMY=;
+        b=I8n5PISkOPS1hFb0tNKuRXZPlW7ieaHvjuz/WUSw/xoDWq2HKOSOcYMg+KuFheG28Z
+         GyoE0NXDelWh5/gHjRzprVyMosCD3a/zfsTRm56r93xuKvwPhAqQFrpLig0kg5f0nPAl
+         gNAwp7yEgNNdSL5Kc1vh6BD4hFCyz20k6nhR+3gm8C2mUTHrpIjPRtKTPhgn+6M129ko
+         1021tHRf1hz2EfhOcNbJ8cBlAxfWcNrhe41nYgOMh24tM4u4ts7VMu/AMM5fOySKik8S
+         q3AJRU27s5OmVm9HPDLtDSrb0LBS+HFNqcKm4iRTMKh6nDVDu3PJH/HNCDNn/FNqWe4d
+         CayQ==
+X-Gm-Message-State: AOAM5302HCant3xjxu039MutdBA7uqF0VbmDqbMUbawU4gl2Pe699orj
+        k9Aewec7ozdxOY17/EZ1NvOWS+Is3eHleIEXEsmPLyay0M5p5w==
+X-Google-Smtp-Source: ABdhPJwfaIW8mpCWEuHXpl+cqaKh42CR6MT9EqnfL2awrN4j5kaWwACRbQXrx2G+Wy0JmOsZDn0iMOdMdKwRu2NUq/Y=
+X-Received: by 2002:a2e:7d03:: with SMTP id y3mr3466050ljc.0.1615426227893;
+ Wed, 10 Mar 2021 17:30:27 -0800 (PST)
 MIME-Version: 1.0
-References: <4fc1b4e8f1fb4c8c81f280db09178797@intel.com> <047D5B49-FDBB-494C-81E9-DA811476747D@amacapital.net>
- <20210311091941.45790fcf@alex-virtual-machine>
-In-Reply-To: <20210311091941.45790fcf@alex-virtual-machine>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Wed, 10 Mar 2021 17:28:12 -0800
-Message-ID: <CALCETrVqkK29n=6wtVhd7qgTWf83x3SUk6+bkD30asHyWSqppw@mail.gmail.com>
-Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
- hwpoison page access.
-To:     Aili Yao <yaoaili@kingsoft.com>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        yangfeng1@kingsoft.com, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, sunhao2@kingsoft.com
+References: <20210311005418.2207250-1-nathan@kernel.org>
+In-Reply-To: <20210311005418.2207250-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 10 Mar 2021 17:30:17 -0800
+Message-ID: <CAKwvOd=Ezmh7iNxnAncZFkqUj3SY57Y=QzAwC5nXF0r26gKu5A@mail.gmail.com>
+Subject: Re: [PATCH] ARM: Make UNWINDER_ARM depend on ld.bfd or ld.lld 11.0.0+
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 5:19 PM Aili Yao <yaoaili@kingsoft.com> wrote:
+On Wed, Mar 10, 2021 at 4:54 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> On Mon, 8 Mar 2021 11:00:28 -0800
-> Andy Lutomirski <luto@amacapital.net> wrote:
+> When linking aspeed_g5_defconfig with ld.lld 10.0.1, the following error
+> occurs:
 >
-> > > On Mar 8, 2021, at 10:31 AM, Luck, Tony <tony.luck@intel.com> wrote:
-> > >
-> > > =EF=BB=BF
-> > >>
-> > >> Can you point me at that SIGBUS code in a current kernel?
-> > >
-> > > It is in kill_me_maybe().  mce_vaddr is setup when we disassemble wha=
-tever get_user()
-> > > or copy from user variant was in use in the kernel when the poison me=
-mory was consumed.
-> > >
-> > >        if (p->mce_vaddr !=3D (void __user *)-1l) {
-> > >                force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHI=
-FT);
-> >
-> > Hmm. On the one hand, no one has complained yet. On the other hand, har=
-dware that supports this isn=E2=80=99t exactly common.
-> >
-> > We may need some actual ABI design here. We also need to make sure that=
- things like io_uring accesses or, more generally, anything using the use_m=
-m / use_temporary_mm ends up either sending no signal or sending a signal t=
-o the right target.
-> >
-> > >
-> > > Would it be any better if we used the BUS_MCEERR_AO code that goes in=
-to siginfo?
-> >
-> > Dunno.
+> ld.lld: error: .tmp_vmlinux.kallsyms1:(.ARM.exidx+0x34D98): relocation
+> R_ARM_PREL31 out of range: 2135538592 is not in [-1073741824,
+> 1073741823]
 >
-> I have one thought here but don't know if it's proper:
+> This was resolved in ld.lld 11.0.0 but the minimum supported version of
+> ld.lld for the kernel is 10.0.1. Prevent CONFIG_UNWINDER_ARM from being
+> selected in this case so that the problematic sections cannot be
+> created.
 >
-> Previous patch use force_sig_mceerr to the user process for such a scenar=
-io; with this method
-> The SIGBUS can't be ignored as force_sig_mceerr() was designed to.
->
-> If the user process don't want this signal, will it set signal config to =
-ignore?
-> Maybe we can use a send_sig_mceerr() instead of force_sig_mceerr(), if pr=
-ocess want to
-> ignore the SIGBUS, then it will ignore that, or it can also process the S=
-IGBUS?
+> Link: https://github.com/ClangBuiltLinux/linux/issues/732
+> Link: https://github.com/llvm/llvm-project/commit/48aebfc908ba7b9372aaa478a9c200789491096e
+> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-I don't think the signal blocking mechanism makes sense for this.
-Blocking a signal is for saying that, if another process sends the
-signal (or an async event like ctrl-C), then the process doesn't want
-it.  Blocking doesn't block synchronous things like faults.
+Thanks for the patch.  We discussed at the kernelCI meeting yesterday
+and the clangbuiltlinux meeting today continuing coverage for kernel
+builds with clang-10, so this is still worthwhile IMO at least for
+randconfig testing not to select known broken configs when using older
+tools. We can rip it out once we bump the minimum supported version of
+clang.
 
-I think we need to at least fix the existing bug before we add more
-signals.  AFAICS the MCE_IN_KERNEL_COPYIN code is busted for kernel
-threads.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
---Andy
+> ---
+>  arch/arm/Kconfig.debug | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
+> index 9e0b5e7f12af..64c1f8a46ab5 100644
+> --- a/arch/arm/Kconfig.debug
+> +++ b/arch/arm/Kconfig.debug
+> @@ -66,6 +66,8 @@ config UNWINDER_FRAME_POINTER
+>  config UNWINDER_ARM
+>         bool "ARM EABI stack unwinder"
+>         depends on AEABI && !FUNCTION_GRAPH_TRACER
+> +       # https://github.com/ClangBuiltLinux/linux/issues/732
+> +       depends on !LD_IS_LLD || LLD_VERSION >= 110000
+>         select ARM_UNWIND
+>         help
+>           This option enables stack unwinding support in the kernel
+>
+> base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+> --
+
+-- 
+Thanks,
+~Nick Desaulniers
