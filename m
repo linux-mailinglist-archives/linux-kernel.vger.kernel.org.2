@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B8F33775F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600F9337762
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbhCKP0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:26:40 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:33889 "EHLO
+        id S234307AbhCKP0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:26:42 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:33895 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234141AbhCKPZ6 (ORCPT
+        with ESMTP id S234161AbhCKPZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:25:58 -0500
-Received: from mail-ej1-f71.google.com ([209.85.218.71])
+        Thu, 11 Mar 2021 10:25:59 -0500
+Received: from mail-ej1-f70.google.com ([209.85.218.70])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lKNCH-0004qK-59
-        for linux-kernel@vger.kernel.org; Thu, 11 Mar 2021 15:25:57 +0000
-Received: by mail-ej1-f71.google.com with SMTP id gn30so8760802ejc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:25:57 -0800 (PST)
+        id 1lKNCI-0004re-36
+        for linux-kernel@vger.kernel.org; Thu, 11 Mar 2021 15:25:58 +0000
+Received: by mail-ej1-f70.google.com with SMTP id r26so8841107eja.22
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 07:25:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iqBtdrPZUrIr273DOWXhTiFtzvKiycYDoohgxVay2ig=;
-        b=Sa3Ow1KEO3HPNrzpzBbetIdx6g4gC42/roI1WsAiI+jug9LYGFU57VH7iG199VtacO
-         G+GetieF80oHH4IMAZVRmlhzRAoqsXRAWYJIFW81hA/N32PnQU0WklkzMw1YTSjYs8C4
-         4mI6+fxUnD34z0eF+rRoqeE3Q8MKbU3BGqSZDwwgt3oqe6pz8lOnj8VvcFeNJRRZ5RuX
-         5xxLabUUC8hdvJBywIpEWcIpVp52wLKA2977wtzhigP6eDzSnInGMtbtvDk8QDXXLhtQ
-         m4YF7+2G+Wir+DYXRa7vs5WOh6sGacuUFP71Yrnd0lzKYSSdbZWZoZCI4AJMqOgMs1q2
-         +v9Q==
-X-Gm-Message-State: AOAM5339NXZ2od/BUmFYjAcGJkutWuvFXFxftgxlWALZcRHwIPNFVKyn
-        CITViKQMVPz2i6NALZXmm+Vehlq7c0ulB4+hYNJg45EbD3YPWVO6d6U2xiBSuHUMyUgU8If84ie
-        HViPSNEj92iELfeI+hO1VcdGmNKzzJhKIkti4erX6oA==
-X-Received: by 2002:a17:906:3e92:: with SMTP id a18mr3481198ejj.95.1615476356732;
-        Thu, 11 Mar 2021 07:25:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzBK+qKCuhZ0F3r9CfvieGjxQ0hczqfyfgEN1oKXCTHk7Irl87ZJGZ5ydURk3A6P7WXhh1OmQ==
-X-Received: by 2002:a17:906:3e92:: with SMTP id a18mr3481161ejj.95.1615476356529;
-        Thu, 11 Mar 2021 07:25:56 -0800 (PST)
+        bh=Xs6GGjw8nQu2H0zJNhMFfPjtjv4pASlZetLF+qPJ3jI=;
+        b=BvegHGiCGH3Jcq+Vw9gRt6S/iq0rJk9aVTJcf1Bhg3mqqDCoU+XB7IlINKNWAQOXDO
+         GumEi1Zy+mWyBzfCIqMe0kQvOBBc782qv6U+rhVhLqbEbQZa7leqUQ81VOLOKJxyqhKU
+         SXK8mczf/0h2PwTfFtoSIce4e31JzoouLzO+RFvj7gS+vHLQcYhdbk7VivwhaGkP0lgg
+         IwbhzvDpD2UNBzcYqB/+e/6MeZJ7JQkMX0haaovWSYhvodrMl6mHtxnys2qre6Ict6Ve
+         /+has1ULHukOyFqgNIMX+U4OvBw88l9s7K0JkTeUraFmFkPqS/IGu7QScLQ8SsYk+0ec
+         WeTA==
+X-Gm-Message-State: AOAM532ntbfld9U4QORjxcL8URJ4IcKdwpL/cPB+16iPMuY3Ug1Brks1
+        fGieOOATKLJnMMTtd33N7Fr0dQbaajqIXCjA3+WtGrb7qe2a39Rx2St8q5scvzf5rOaDxaz5hTt
+        3NeVRetqXeDqTve7ngkvUSEzwq3QReMIAwyQxVTS6Hg==
+X-Received: by 2002:a05:6402:2070:: with SMTP id bd16mr9025974edb.133.1615476357796;
+        Thu, 11 Mar 2021 07:25:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxEy/VWcYtVhHpWmtyv1K3JAU4Nmfhx02KoGEuoEu8P/ERdDmK4z05THjQn7v4EX/URDdO6zA==
+X-Received: by 2002:a05:6402:2070:: with SMTP id bd16mr9025945edb.133.1615476357547;
+        Thu, 11 Mar 2021 07:25:57 -0800 (PST)
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id v25sm1517826edr.18.2021.03.11.07.25.55
+        by smtp.gmail.com with ESMTPSA id v25sm1517826edr.18.2021.03.11.07.25.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 07:25:56 -0800 (PST)
+        Thu, 11 Mar 2021 07:25:57 -0800 (PST)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
@@ -70,9 +70,9 @@ To:     Russell King <linux@armlinux.org.uk>,
         linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
         netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH v3 05/15] clk: socfpga: build together Stratix 10, Agilex and N5X clock drivers
-Date:   Thu, 11 Mar 2021 16:25:35 +0100
-Message-Id: <20210311152545.1317581-6-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v3 06/15] clk: socfpga: merge ARCH_SOCFPGA and ARCH_STRATIX10
+Date:   Thu, 11 Mar 2021 16:25:36 +0100
+Message-Id: <20210311152545.1317581-7-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210311152545.1317581-1-krzysztof.kozlowski@canonical.com>
 References: <20210311152545.1317581-1-krzysztof.kozlowski@canonical.com>
@@ -82,49 +82,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a multiplatform kernel there is little benefit in splitting each
-clock driver per platform because space savings are minimal.  Such split
-also complicates the code, especially after adding compile testing.
-
-Build all arm64 Intel SoCFPGA clocks together with one entry in
-Makefile.  This also removed duplicated line in the Makefile (selecting
-common part of clocks per platform).
+Simplify 32-bit and 64-bit Intel SoCFPGA Kconfig options by having only
+one for both of them.  This the common practice for other platforms.
+Additionally, the ARCH_SOCFPGA is too generic as SoCFPGA designs come
+from multiple vendors.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/clk/socfpga/Kconfig  | 6 +++---
- drivers/clk/socfpga/Makefile | 7 +++----
- 2 files changed, 6 insertions(+), 7 deletions(-)
+ drivers/clk/Makefile | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/clk/socfpga/Kconfig b/drivers/clk/socfpga/Kconfig
-index 3c30617169bf..bc102e0f0be0 100644
---- a/drivers/clk/socfpga/Kconfig
-+++ b/drivers/clk/socfpga/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- config CLK_INTEL_SOCFPGA64
- 	bool
--	# Intel Agilex / N5X clock controller support
--	default (ARCH_AGILEX || ARCH_N5X)
--	depends on ARCH_AGILEX || ARCH_N5X
-+	# Intel Stratix / Agilex / N5X clock controller support
-+	default (ARCH_AGILEX || ARCH_N5X || ARCH_STRATIX10)
-+	depends on ARCH_AGILEX || ARCH_N5X || ARCH_STRATIX10
-diff --git a/drivers/clk/socfpga/Makefile b/drivers/clk/socfpga/Makefile
-index c6db8dd4ab35..ebd3538d12de 100644
---- a/drivers/clk/socfpga/Makefile
-+++ b/drivers/clk/socfpga/Makefile
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_ARCH_SOCFPGA) += clk.o clk-gate.o clk-pll.o clk-periph.o
- obj-$(CONFIG_ARCH_SOCFPGA) += clk-pll-a10.o clk-periph-a10.o clk-gate-a10.o
--obj-$(CONFIG_ARCH_STRATIX10) += clk-s10.o
--obj-$(CONFIG_ARCH_STRATIX10) += clk-pll-s10.o clk-periph-s10.o clk-gate-s10.o
--obj-$(CONFIG_CLK_INTEL_SOCFPGA64) += clk-agilex.o
--obj-$(CONFIG_CLK_INTEL_SOCFPGA64) += clk-pll-s10.o clk-periph-s10.o clk-gate-s10.o
-+obj-$(CONFIG_CLK_INTEL_SOCFPGA64) += clk-s10.o \
-+				     clk-pll-s10.o clk-periph-s10.o clk-gate-s10.o \
-+				     clk-agilex.o
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index 12e46b12e587..1e29e5ad107a 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -104,10 +104,9 @@ obj-y					+= renesas/
+ obj-$(CONFIG_ARCH_ROCKCHIP)		+= rockchip/
+ obj-$(CONFIG_COMMON_CLK_SAMSUNG)	+= samsung/
+ obj-$(CONFIG_CLK_SIFIVE)		+= sifive/
+-obj-$(CONFIG_ARCH_SOCFPGA)		+= socfpga/
++obj-$(CONFIG_ARCH_INTEL_SOCFPGA)	+= socfpga/
+ obj-$(CONFIG_ARCH_AGILEX)		+= socfpga/
+ obj-$(CONFIG_ARCH_N5X)			+= socfpga/
+-obj-$(CONFIG_ARCH_STRATIX10)		+= socfpga/
+ obj-$(CONFIG_PLAT_SPEAR)		+= spear/
+ obj-y					+= sprd/
+ obj-$(CONFIG_ARCH_STI)			+= st/
 -- 
 2.25.1
 
