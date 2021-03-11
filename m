@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20A4338120
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B4433811E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 00:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhCKXNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 18:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
+        id S229505AbhCKXMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 18:12:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhCKXNN (ORCPT
+        with ESMTP id S229441AbhCKXMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:13:13 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0DFC061574;
-        Thu, 11 Mar 2021 15:13:12 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10126349pjv.1;
-        Thu, 11 Mar 2021 15:13:12 -0800 (PST)
+        Thu, 11 Mar 2021 18:12:24 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF86C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:12:24 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id w195so18324776oif.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:12:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bU9j8QS9UEqtU91hrNDexuTDXigIeltrQEJrDXB39JU=;
-        b=f/kuHReiRdBMXdOa966VBks+JO5X0AAmZaiPPeBGrQwvKqvQ+CoD8qjV0uQPREWRWw
-         kadZC5M5uY7DFdui29GRMfDwEtxCy3Wbx118+IUwqSe+lPsb54h4N0OYNNB9yyxg00oa
-         L0KycMqH4/jDv7S43dH6PV3jHzLfhkS7HX0mScTYZ2tZUpAL0oiSv9xzVWPDelvLGrBE
-         Perdg5mKo4+BR34Hk3I/luPCkFHgGSD7Qpn4cChs+DVRKr9k2sAXmNndgBhMMKHk7MS6
-         MQkYlftREEuPfE9Zt8D2QQbjv0u8QpWSfRODvd0owNP62OcuPwIrGZDIC5QOlYlnEO6m
-         wDZA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GdiULIB6ebT4Vr8C+yaWN+9MOsEzs8BW5c8rV4RqHcM=;
+        b=M/UWLvP/T1EjzdQSQA7JcJTe4xNPDL3AvFy/vBfJKMoex1jqYqGQO7X9IQ+Y+9xuBb
+         YPZTffUb5Ua9TKqQ6BKJPK921+dK8LyZLsCmup0aVByX48GSfJ7j/HfnVDUz9qGF+NAQ
+         wbpp7LgkeF3RHVbxqGwxLGMKi5MESlRCygL81d+F8GPnB2QAFbbcivei0sqEP0ROwUFX
+         XAsjmd5lMCORwgx5rKF6+bQ+vOiIqT+n3OSl96U/7NsdFKjEHKMeSWAel3N5SrFQWd/y
+         mvQTO5pGq6ecjDFc8HXRAnC6Wb2bbciF+5GNReQcarfqP/EEpAq1TP9sPt6WsEgYQzT1
+         tOeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bU9j8QS9UEqtU91hrNDexuTDXigIeltrQEJrDXB39JU=;
-        b=DMYkSsNfWYXyvhCkVCIAlEwG4EkQrGDcMNaa0sDR8zcZK9KV7OSD3x7g3CmJu4tw2U
-         6Kb4R6irrPHJNWp2qv0pfuQJtNN/jd51U6tM7XXqLkYiNH3Ke2Fz0klvkSOV0JgnF+/a
-         jmRVke46c/DsESNJUisf4kFGnstZdqgAEfxFMAdzoUUHchAHziPYptHUpqO8D7DhHJqL
-         aVOBMvcUhRYVKXtOjcnvo7zdcHbF5SPRUIwcsl/dsnPT2SvI2w7FP7T6WSJpC0NnUgtb
-         8a1kTG4Hw/ZDZYACwwy2JCxIRL8AxMG6Nsb2TOw/oqE6naUJY5G6eH6aahPinr45e0fN
-         pS7g==
-X-Gm-Message-State: AOAM531pYXUwBLdbYPRUCNzWAXiUDixXcZQq4VP20ew+xN74jqOmW/Yx
-        cxnnB0SjPcZawKRlmdHLmWy7KEoXSxEeVPnvPSTbj6n5vTI=
-X-Google-Smtp-Source: ABdhPJxCQlZY7oDGdfCTApTySwUAzoKFFF1LkwbBouxB3bZObIYRGghCCCfAIky1XLTOTgoYXqyOfWvpPJVug9y+5Xs=
-X-Received: by 2002:a17:90a:ea91:: with SMTP id h17mr11119542pjz.66.1615504392023;
- Thu, 11 Mar 2021 15:13:12 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GdiULIB6ebT4Vr8C+yaWN+9MOsEzs8BW5c8rV4RqHcM=;
+        b=rKAdubFRG3PaNpG/xqwA2kaDC1TYtcflbqATuBL6tGpKCC7BM9Nc3yZBLsD1ALCbfU
+         PpZ75UxbOHjxWvkTCgaOBMRbZ1YH9LWM1NYsMD9SpUe3NxHCSPiVUracZVKWPY4Uqtgj
+         TAECr8WmodvsYYVBL2CrARNIfUWOtvfE41O3kqh4Wvg3TBjj5nzLPoGl/cjCy7Y3TcZh
+         JOqoRRznWOppmUGT8FWT+QcnrLrkUcJUlQXgXbIhKXzIJUGNjxD64vw+zF3yUEvN1J3c
+         dWRNQgWYbIUmXadtNhTGsYfB5O/si9N+J0Y2gLDnccw44+abSGsJiY/vLh8+rctHL4er
+         4WpQ==
+X-Gm-Message-State: AOAM5323zGCJeU6DCThIQ/5LYZRlKLAQstjcOoSJ86u0XQzfkrFrwlQR
+        xg9NvU0pTbS/oQtzylVSsaMm0A==
+X-Google-Smtp-Source: ABdhPJzBISRNdzGariH5EcLX6sCGLNea21uuGPiUbMbukx09Urom88NH7SF95VfStC3GDAwf0zgcDw==
+X-Received: by 2002:aca:b156:: with SMTP id a83mr8061611oif.8.1615504343804;
+        Thu, 11 Mar 2021 15:12:23 -0800 (PST)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r16sm854193oic.29.2021.03.11.15.12.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 15:12:23 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jassi Brar <jaswinder.singh@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: Add DT bindings directory to mailbox
+Date:   Thu, 11 Mar 2021 15:13:28 -0800
+Message-Id: <20210311231328.3248833-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210311072311.2969-1-xie.he.0141@gmail.com> <20210311124309.5ee0ef02@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EMToKj2OeeE1fMfwAVYvhbgZpENkv0C7ac+XHnWcTe2Tg@mail.gmail.com> <20210311145230.5f368151@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210311145230.5f368151@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Thu, 11 Mar 2021 15:13:01 -0800
-Message-ID: <CAJht_EMR6kqsetwNUbJJziLW97T0pXBSqSNZ5ma-q175cxoKyQ@mail.gmail.com>
-Subject: Re: [PATCH net] net: lapbether: Prevent racing when checking whether
- the netif is running
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 2:52 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Normally driver's ndo_stop() calls netif_tx_disable() which takes TX
-> locks, so unless your driver is lockless (LLTX) there should be no xmit
-> calls after that point.
+DT bindings related to mailbox drivers are typically picked by the
+mailbox maintainer, so add the binding folder to the maintainers entry
+to make sure get_maintainer finds it.
 
-Do you mean I should call "netif_tx_disable" inside my "ndo_stop"
-function as a fix for the racing between "ndo_stop" and
-"ndo_start_xmit"?
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-I can't call "netif_tx_disable" inside my "ndo_stop" function because
-"netif_tx_disable" will call "netif_tx_stop_queue", which causes
-another racing problem. Please see my recent commit f7d9d4854519
-("net: lapbether: Remove netif_start_queue / netif_stop_queue")
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9095d182deaf..670f1461b65c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10608,6 +10608,7 @@ S:	Maintained
+ F:	drivers/mailbox/
+ F:	include/linux/mailbox_client.h
+ F:	include/linux/mailbox_controller.h
++F:	Documentation/devicetree/bindings/mailbox/
+ 
+ MAILBOX ARM MHUv2
+ M:	Viresh Kumar <viresh.kumar@linaro.org>
+-- 
+2.29.2
+
