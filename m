@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB43337880
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 098B233787D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 16:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhCKPxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 10:53:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234324AbhCKPw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 10:52:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 223E664FDE;
-        Thu, 11 Mar 2021 15:52:25 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.14.225-rt108
-Date:   Thu, 11 Mar 2021 15:51:01 -0000
-Message-ID: <161547786136.724078.3244775266456292306@puck.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
+        id S234099AbhCKPw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 10:52:29 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:46944 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233943AbhCKPvr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 10:51:47 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4FA5120B39C5;
+        Thu, 11 Mar 2021 07:51:46 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4FA5120B39C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1615477906;
+        bh=LJfQJ/icbAeUVvT27wr79VOCQwsfPDKj2VzkZBi/gSY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eQR/3MfMgttOZ1JLQPvpNUpJrKMLwROpypDosCfhM9M526Rp9luZUktDRFHlxM4qD
+         hYW/bQKopgxrnPW8Q52DI9XJfJs8oLO+s4Agi88oSnDpUlUqWpDr4vfj5jE7qYzA81
+         YdoLhhJ4Cm2EBC0wnUfePVXNZZJG2Nwox5QlJ9zg=
+Date:   Thu, 11 Mar 2021 09:51:25 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        subashab@codeaurora.org, netfilter-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] Don't use RCU for x_tables synchronization
+Message-ID: <20210311155125.GA4374@sequoia>
+References: <20210308012413.14383-1-mark.tomlinson@alliedtelesis.co.nz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308012413.14383-1-mark.tomlinson@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On 2021-03-08 14:24:10, Mark Tomlinson wrote:
+> The patches to change to using RCU synchronization in x_tables cause
+> updating tables to be slowed down by an order of magnitude. This has
+> been tried before, see https://lore.kernel.org/patchwork/patch/151796/
+> and ultimately was rejected. As mentioned in the patch description, a
+> different method can be used to ensure ordering of reads/writes. This
+> can simply be done by changing from smp_wmb() to smp_mb().
 
-I'm pleased to announce the 4.14.225-rt108 stable release.
+I came across these patches while trying to root-cause a significant boot time
+regression we were seeing when comparing 5.4 to 5.10. The RCU changes were
+where I had started to investigate but hadn't yet made it to the point that
+Mark had reached when he sent out these fixes.
 
-You can get this release via the git tree at:
+Mark's description of the problem and fix looks correct to me.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+To touch on why the performance regression is a problem for us, we have
+three services that load various firewall rules during boot up. Here are
+the total run times that `systemd-analyze blame` reported for each one
+to run to completion:
 
-  branch: v4.14-rt
-  Head SHA1: 9be9032dc85d3b02a04145284595ef2333b4c250
+5.4.88:
 
-Or to build 4.14.225-rt108 directly, the following patches should be applied:
+ 129ms fw-1.service
+ 56ms  fw-2.service
+ 38ms  fw-3.service
 
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
+5.10.19:
+                                                                                            
+ 586ms fw-1.service
+ 847ms fw-2.service
+ 193ms fw-3.service
 
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.225.xz
+5.10.19 + these fixes:
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.225-rt108.patch.xz
+ 98ms fw-1.service
+ 25ms fw-2.service
+ 54ms fw-3.service
 
+You can see that the performance regression from 5.4.88 -> 5.10.19
+considerably increased our boot time.
 
-You can also build from 4.14.224-rt107 by applying the incremental patch:
+I cannot explain why '5.10.19 + these fixes' shows improvements over
+5.4.88 for two of the three services but I suspect it is due to systemd
+taking different code paths, units executing at different times,
+unrelated kernel performance improvements, etc.
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.224-rt107-rt108.patch.xz
+For all three patches,
 
-Enjoy!
-Clark
+ Tested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+ Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-Changes from v4.14.224-rt107:
----
+Tyler
 
-Andrey Ryabinin (1):
-      iommu/amd: Fix sleeping in atomic in increase_address_space()
-
-AngeloGioacchino Del Regno (1):
-      drm/msm/a5xx: Remove overwriting A5XX_PC_DBG_ECO_CNTL register
-
-Antonio Borneo (1):
-      usbip: tools: fix build error for multiple definition
-
-Aswath Govindraju (1):
-      misc: eeprom_93xx46: Add quirk to support Microchip 93LC46B eeprom
-
-Bjorn Helgaas (1):
-      PCI: Add function 1 DMA alias quirk for Marvell 9215 SATA controller
-
-Clark Williams (2):
-      Merge tag 'v4.14.225' into v4.14-rt
-      Linux 4.14.225-rt108
-
-Colin Ian King (1):
-      ALSA: ctxfi: cthw20k2: fix mask on conf to allow 4 bits
-
-Dan Carpenter (1):
-      rsxx: Return -EFAULT if copy_to_user() fails
-
-David Sterba (1):
-      btrfs: raid56: simplify tracking of Q stripe presence
-
-Greg Kroah-Hartman (1):
-      Linux 4.14.225
-
-Hans de Goede (6):
-      platform/x86: acer-wmi: Cleanup ACER_CAP_FOO defines
-      platform/x86: acer-wmi: Cleanup accelerometer device handling
-      platform/x86: acer-wmi: Add new force_caps module parameter
-      platform/x86: acer-wmi: Add ACER_CAP_SET_FUNCTION_MODE capability flag
-      platform/x86: acer-wmi: Add support for SW_TABLET_MODE on Switch devices
-      platform/x86: acer-wmi: Add ACER_CAP_KBD_DOCK quirk for the Aspire Switch 10E SW3-016
-
-Ira Weiny (1):
-      btrfs: fix raid6 qstripe kmap
-
-Jeffle Xu (3):
-      dm table: fix iterate_devices based device capability checks
-      dm table: fix DAX iterate_devices based device capability checks
-      dm table: fix zoned iterate_devices based device capability checks
-
-Rafael J. Wysocki (1):
-      PM: runtime: Update device status before letting suppliers suspend
-
-Tsuchiya Yuto (1):
-      mwifiex: pcie: skip cancel_work_sync() on reset failure path
----
-Makefile                                    |   2 +-
- drivers/base/power/runtime.c                |  62 ++++++----
- drivers/block/rsxx/core.c                   |   8 +-
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c       |   2 -
- drivers/iommu/amd_iommu.c                   |  10 +-
- drivers/md/dm-table.c                       | 168 ++++++++++++---------------
- drivers/misc/eeprom/eeprom_93xx46.c         |  15 +++
- drivers/net/wireless/marvell/mwifiex/pcie.c |  18 ++-
- drivers/net/wireless/marvell/mwifiex/pcie.h |   2 +
- drivers/pci/quirks.c                        |   3 +
- drivers/platform/x86/acer-wmi.c             | 169 +++++++++++++++++++++++-----
- fs/btrfs/raid56.c                           |  58 ++++------
- include/linux/eeprom_93xx46.h               |   2 +
- localversion-rt                             |   2 +-
- sound/pci/ctxfi/cthw20k2.c                  |   2 +-
- tools/usb/usbip/libsrc/usbip_host_common.c  |   2 +-
- 16 files changed, 326 insertions(+), 199 deletions(-)
+> 
+> changes in v2:
+> - Update commit messages only
+> 
+> Mark Tomlinson (3):
+>   Revert "netfilter: x_tables: Update remaining dereference to RCU"
+>   Revert "netfilter: x_tables: Switch synchronization to RCU"
+>   netfilter: x_tables: Use correct memory barriers.
+> 
+>  include/linux/netfilter/x_tables.h |  7 ++---
+>  net/ipv4/netfilter/arp_tables.c    | 16 +++++-----
+>  net/ipv4/netfilter/ip_tables.c     | 16 +++++-----
+>  net/ipv6/netfilter/ip6_tables.c    | 16 +++++-----
+>  net/netfilter/x_tables.c           | 49 +++++++++++++++++++++---------
+>  5 files changed, 60 insertions(+), 44 deletions(-)
+> 
+> -- 
+> 2.30.1
+> 
