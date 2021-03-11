@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4830D336E24
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76627336E29
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 09:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhCKIqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 03:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
+        id S231440AbhCKIrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 03:47:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbhCKIq3 (ORCPT
+        with ESMTP id S231697AbhCKIrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:46:29 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77987C061574;
-        Thu, 11 Mar 2021 00:46:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=2UJb+wsmJ2
-        FcUp6+0rWvkv9WpaHiRbHAp+kj50P9o9U=; b=W6EknMUlXpOxz2ooLVWJL9ds6D
-        dmTiHOpvqNM5cHU40h3qzWhcn4x9Q7++9SxnUkZ9wIhoGxEkocaRgpp5GjV3A6EP
-        OQAjgREHpMzI1z/5ooZfvR7xy5HPyszF1fJ1gIFwHDAY+ZbHS5SQpkeNMHP0bpUg
-        gSVzFnN8HS8mqq0sI=
-Received: from ubuntu.localdomain (unknown [114.214.226.60])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn7x_a2ElglukKAA--.3103S4;
-        Thu, 11 Mar 2021 16:46:18 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] net/rds: Fix a use after free in rds_message_map_pages
-Date:   Thu, 11 Mar 2021 00:46:16 -0800
-Message-Id: <20210311084616.12356-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 11 Mar 2021 03:47:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE92C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 00:47:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L2P1sESFUaV/AW0lkKatvnx8pKxtKng9weUi15MfMaU=; b=gBR8eV/IbSiscH5JXflpZdDHlL
+        qXZjFCvww+N7QntlYCowl3IeE37q+IDEkBXAxykul4NiMQAW19F/sjBYh3mIXa0UshPeV29p4k4EJ
+        Yxh2q43xfCKcQ0/DH0QF2tY0s5MrbYg8pELzhVxzsAEMMHzr79AmjLs2Eg3umsSUH6oDZefUO/Pa6
+        JW45InAPh5dp07yzhiUFaew3WEUyxqEvWmVCGJIOLgx1JlIy2RUk/z3gIyC+tt4kFQ7VKCs6C4mrR
+        Xy7Xy6OIkFSg0FPFWXzeLZa0WxY0g/tYCZJBHymbix50HqitTL6iQXBWFYy0UctE1BatbdFnkRfck
+        t5ifThQw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKGxk-006tOG-55; Thu, 11 Mar 2021 08:46:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1E2B63013E5;
+        Thu, 11 Mar 2021 09:46:31 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 03A2520C99AA3; Thu, 11 Mar 2021 09:46:30 +0100 (CET)
+Date:   Thu, 11 Mar 2021 09:46:30 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, tglx@linutronix.de,
+        john.ogness@linutronix.de, urezki@gmail.com, ast@fb.com,
+        Eric Dumazet <edumazet@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] hugetlb: select PREEMPT_COUNT if HUGETLB_PAGE for
+ in_atomic use
+Message-ID: <YEnY5hWLT/en7kw1@hirez.programming.kicks-ass.net>
+References: <20210311021321.127500-1-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygDn7x_a2ElglukKAA--.3103S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrW3JF4UCw4DXr4rKw15urg_yoWDGFg_uF
-        WxJrn7W347XFyIkrs7KrsrAw4fZr1kXw18ua42qFn5tryDCFn5Xw48trn8uwnrCFW2vr1x
-        C3yDXr93ua4kZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbx8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
-        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ2
-        3UUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311021321.127500-1-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In rds_message_map_pages, rds_message_put() will free rm.
-Maybe store the value of rm->data.op_sg ahead of rds_message_put()
-is better. Otherwise other threads could allocate the freed chunk
-and may change the value of rm->data.op_sg.
+On Wed, Mar 10, 2021 at 06:13:21PM -0800, Mike Kravetz wrote:
+> from irq context.  Changing the check in the code from !in_task to
+> in_atomic would handle the situations when called with irqs disabled.
 
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- net/rds/message.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/rds/message.c b/net/rds/message.c
-index 071a261fdaab..392e3a2f41a0 100644
---- a/net/rds/message.c
-+++ b/net/rds/message.c
-@@ -347,8 +347,9 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
- 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
- 	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
- 	if (IS_ERR(rm->data.op_sg)) {
-+		struct scatterlist *tmp = rm->data.op_sg;
- 		rds_message_put(rm);
--		return ERR_CAST(rm->data.op_sg);
-+		return ERR_CAST(tmp);
- 	}
- 
- 	for (i = 0; i < rm->data.op_nents; ++i) {
--- 
-2.25.1
-
-
+It does not. local_irq_disable() does not change preempt_count().
