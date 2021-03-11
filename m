@@ -2,136 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D853370BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A06A3370CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 12:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbhCKLBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 06:01:53 -0500
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:44233 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232402AbhCKLBh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:01:37 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id KJ4NlPmBxC40pKJ4QlL29n; Thu, 11 Mar 2021 12:01:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1615460495; bh=XZfVWBtfwrsC30R13V20cTW43bqM10QXTplpPo1ZOM0=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=RFZ6+34TrfE6cjkoWQAFsQ8XWJOEJuOJ47ctQilnfyqZxNKTOH6PuczLtfNkXlOVK
-         6LhtG3eawC5xyDRVYbDMJ0BijaTjqCd2n7QouXik5ts0bzcHwUOKk2s3evOpo7YYoU
-         cMV0jnrbqtI9kN4peGThiW4wM5Uhs+Nt0+ozNL/PXvmGOYOwVB+5UKQvTvBxxfHvQ7
-         lSCfg5AzNlxPVQlPpDCA/qoXAAMTa+TAtZzUGY4vY9ipe1jBzwR46Tx7ceqDZWEH9y
-         RwTm62DLnJkrk24p1z46ETlGKURrD8V3sX9ctNhYwZa+Aqs+0wjMnazXfgSwNsN9Lb
-         86DUy/jo0+N6Q==
-Subject: Re: [PATCH v9 7/8] arm64: dts: imx8qxp: Add jpeg encoder/decoder
- nodes
-To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
-        mchehab@kernel.org, shawnguo@kernel.org, robh+dt@kernel.org,
-        p.zabel@pengutronix.de
-Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
-        daniel.baluta@nxp.com, robert.chiras@nxp.com,
-        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
-        devicetree@vger.kernel.org, ezequiel@collabora.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se,
-        dafna.hirschfeld@collabora.com,
-        Mirela Rabulea <mirela.rabulea@nxp.com>
-References: <20210311002854.13687-1-mirela.rabulea@oss.nxp.com>
- <20210311002854.13687-8-mirela.rabulea@oss.nxp.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <a0f7d919-46bb-5c5d-1fef-39a90e9969ea@xs4all.nl>
-Date:   Thu, 11 Mar 2021 12:01:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        id S232468AbhCKLFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 06:05:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232471AbhCKLFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 06:05:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82AE264F2D;
+        Thu, 11 Mar 2021 11:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615460707;
+        bh=ojLsKqfHgZ/ae7khvpUUUEKBw/8cvtf1sRoHwUnM5Xk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aDoKshXjwCFRnIIjb8xnD4Tm4t7ur2iUmxbF2Yxtuhvg2Vx1TZUvzdEGxBORmXNSj
+         PsOpC7k1yu9BSdzWP7tgNZtG8nMG3TYSPOcrjzvCpCGR12bsMCFHC42FRWVYqIWn8p
+         xjVO9FsVLQPQSc50wJkGuORTbn/kVAkrqaIZC2dXeZ+obslcQyeFkPB5bbZ8ZzE/eJ
+         ++pV5t83DZMi1x9E9BY2OwLtwyYmpNoyAjCw4w1B7ZGTiWChvHzko+LBJwSC315Dgb
+         2K/+m3x0M63TahFcKOhEna5EMqmUMW1fgxNw5J+5+BtSlJjNIPqE2ddqU6hevq3M6B
+         LQ0PdvHtM2usg==
+Date:   Thu, 11 Mar 2021 13:05:03 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     lyl2019@mail.ustc.edu.cn
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] infiniband/core: Fix a use after free in
+ cm_work_handler
+Message-ID: <YEn5XxgB1LqQ0PSE@unreal>
+References: <20210311022153.3757-1-lyl2019@mail.ustc.edu.cn>
+ <YEnhO9EXgI8pwVD2@unreal>
+ <1149b747.c620.17820d56572.Coremail.lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
-In-Reply-To: <20210311002854.13687-8-mirela.rabulea@oss.nxp.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfCd+BzbXB9V38+V/GrmFz757XXp4BJdTgMi/vynIWutrFjdRyQD+1VFn0h4EVeAzSfKMx0HHIBPGIQrI+Kxp/CbARX5tNp0TeVyVQ7HEb5fZY+Z5DSkG
- VrvS1H6Oc0P54TNl5benkg75MzZ/iIhbQbBtcpVjVS8ZSSl0rzqh3nVbSQ8uvu9nzsHd132TLkn/8XP9skghuL+f237T5ifliK7NZ9jsp07PdY1f0t37mEvy
- 4l0NeGpz7MBsca8KdNzIIXsO3rOMHT7295ChsqVoD0sURHZ31l7JBRK+m15v53eDt3Krhk0dlFSuv2MLSJzy8wiXCQamAZqomTfp9e5TI9U7Z/r2S4osYjRV
- kT3XS9j7RZDnZsOM+emeorF4TT338TQ86FdVdDnG/dn6zsG0tTQIRWCaVPYYz36WNpMfHfcLfFH3qt3M0uqg2T3RWVvvVdeC70jH9jwZ7CDEvJ7ykDqL7D5A
- YIRkrsF9fXxuwy+TzXwXTDnJCLcE98jhIA8USVWw6mcUgjSPwGziTKiDJcMRrJgwOr+AnE8yQDqzELKMesxWOSqwZhOWm7WoycaYMoFTJcctwx0oUjdW2FIb
- Mx/epztYpTsv7f4YugzdfRXaUWuBv4HpdfMC2qPt2KFvBBA9n7Pu7BylF+UZ+7cNk7tImEWwBCTg4H+DfHYcnxQSjkPERxrCvf/8Oc4NiVzY/aisbR/HKcwY
- s2z3pPfI3JPTbDx3yC+qtPo72aA3VtDPCQGDVjhQctjWbBXNmcJHOYtPHAb67umtggN7zsD4AF0ySveSXSTA0459S7eEus5+GLH5xYuIsA+MUEIgBT/5/F+c
- SaEzaBACJ803/uYaIONn+MqG3aWNB0dCWKGG2p/C9FTHt+G16gMbTCEH581dykSyS8656Zxe9QvuWrBvcN58HXdcP1tRaEjqbEa8ZTjJvc+zSx3BwNIvSqZ2
- +KFFog==
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1149b747.c620.17820d56572.Coremail.lyl2019@mail.ustc.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mirela,
+On Thu, Mar 11, 2021 at 06:29:19PM +0800, lyl2019@mail.ustc.edu.cn wrote:
+> In the implementation of destory_cm_id(), it restores cm_id_priv by
+> "cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);".
+>
+> And the last line of destory_cm_id() calls "(void)iwcm_deref_id(cm_id_priv);"
+> to free the cm_id_priv.
 
-On 11/03/2021 01:28, Mirela Rabulea (OSS) wrote:
-> From: Mirela Rabulea <mirela.rabulea@nxp.com>
-> 
-> Add jpeg decoder/encoder nodes, for now on imx8qxp only.
-> The same should work on imx8qm, but it was not tested.
+It is not enough to see double call to iwcm_deref_id() because it is
+protected with refcount to claim use-after-free. Did you hit the BUG_ON()
+for the second call to iwcm_deref_id()?
 
-FYI: I've posted a pull request for this driver, and once it is merged
-in our media tree this patch can be merged for 5.13 by whoever handles
-these dts patches.
+And please don't do top-posting.
 
-Thank you for all your work on this!
+Thanks
 
-Regards,
-
-	Hans
-
-> 
-> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8qxp.dtsi | 35 ++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> index 1d522de7b017..4f2b3edd7850 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> @@ -629,4 +629,39 @@
->  			};
->  		};
->  	};
-> +
-> +	img_subsys: bus@58000000 {
-> +		compatible = "simple-bus";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x58000000 0x0 0x58000000 0x1000000>;
-> +
-> +		jpegdec: jpegdec@58400000 {
-> +			compatible = "nxp,imx8qxp-jpgdec";
-> +			reg = <0x58400000 0x00050000 >;
-> +			interrupts = <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 310 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 311 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>;
-> +			power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>,
-> +					<&pd IMX_SC_R_MJPEG_DEC_S0>,
-> +					<&pd IMX_SC_R_MJPEG_DEC_S1>,
-> +					<&pd IMX_SC_R_MJPEG_DEC_S2>,
-> +					<&pd IMX_SC_R_MJPEG_DEC_S3>;
-> +		};
-> +
-> +		jpegenc: jpegenc@58450000 {
-> +			compatible = "nxp,imx8qxp-jpgenc";
-> +			reg = <0x58450000 0x00050000 >;
-> +			interrupts = <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>;
-> +			power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>,
-> +					<&pd IMX_SC_R_MJPEG_ENC_S0>,
-> +					<&pd IMX_SC_R_MJPEG_ENC_S1>,
-> +					<&pd IMX_SC_R_MJPEG_ENC_S2>,
-> +					<&pd IMX_SC_R_MJPEG_ENC_S3>;
-> +		};
-> +	};
->  };
-> 
-
+>
+>
+> > -----原始邮件-----
+> > 发件人: "Leon Romanovsky" <leon@kernel.org>
+> > 发送时间: 2021-03-11 17:22:03 (星期四)
+> > 收件人: "Lv Yunlong" <lyl2019@mail.ustc.edu.cn>
+> > 抄送: dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+> > 主题: Re: [PATCH] infiniband/core: Fix a use after free in cm_work_handler
+> >
+> > On Wed, Mar 10, 2021 at 06:21:53PM -0800, Lv Yunlong wrote:
+> > > In cm_work_handler, it calls destory_cm_id() to release
+> > > the initial reference of cm_id_priv taken by iw_create_cm_id()
+> > > and free the cm_id_priv. After destory_cm_id(), iwcm_deref_id
+> > > (cm_id_priv) will be called and cause a use after free.
+> > >
+> > > Fixes: 59c68ac31e15a ("iw_cm: free cm_id resources on the last deref")
+> > > Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> > > ---
+> > >  drivers/infiniband/core/iwcm.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+> > > index da8adadf4755..cb6b4ac45e21 100644
+> > > --- a/drivers/infiniband/core/iwcm.c
+> > > +++ b/drivers/infiniband/core/iwcm.c
+> > > @@ -1035,8 +1035,10 @@ static void cm_work_handler(struct work_struct *_work)
+> > >
+> > >  		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
+> > >  			ret = process_event(cm_id_priv, &levent);
+> > > -			if (ret)
+> > > +			if (ret) {
+> > >  				destroy_cm_id(&cm_id_priv->id);
+> > > +				return;
+> >
+> > The destroy_cm_id() is called to free ->id and not cm_id_priv. This "return"
+> > leaks cm_id_priv now and what "a use after free" do you see?
+> >
+> > > +			}
+> > >  		} else
+> > >  			pr_debug("dropping event %d\n", levent.event);
+> > >  		if (iwcm_deref_id(cm_id_priv))
+> > > --
+> > > 2.25.1
+> > >
+> > >
