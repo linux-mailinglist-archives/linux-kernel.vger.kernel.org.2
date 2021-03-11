@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2C43372AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1D53372B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhCKMco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:32:44 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13594 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232730AbhCKMcU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:32:20 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dx7ZX3jllz16Hkl;
-        Thu, 11 Mar 2021 20:30:28 +0800 (CST)
-Received: from [10.174.184.135] (10.174.184.135) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 11 Mar 2021 20:32:07 +0800
-Subject: Re: [PATCH v3 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending state
- to physical side
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210127121337.1092-1-lushenming@huawei.com>
- <20210127121337.1092-4-lushenming@huawei.com> <87tupif3x3.wl-maz@kernel.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <0820f429-4c29-acd6-d9e0-af9f6deb68e4@huawei.com>
-Date:   Thu, 11 Mar 2021 20:32:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S233241AbhCKMdQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Mar 2021 07:33:16 -0500
+Received: from aposti.net ([89.234.176.197]:47038 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233243AbhCKMcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 07:32:45 -0500
+Date:   Thu, 11 Mar 2021 12:32:27 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 3/5] drm: Add and export function
+ drm_gem_cma_mmap_noncoherent
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Message-Id: <3I1TPQ.E55GRWWDYVRG@crapouillou.net>
+In-Reply-To: <20210311122642.GB1739082@infradead.org>
+References: <20210307202835.253907-1-paul@crapouillou.net>
+        <20210307202835.253907-4-paul@crapouillou.net>
+        <20210311122642.GB1739082@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <87tupif3x3.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.184.135]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/11 17:14, Marc Zyngier wrote:
-> On Wed, 27 Jan 2021 12:13:36 +0000,
-> Shenming Lu <lushenming@huawei.com> wrote:
->>
->> From: Zenghui Yu <yuzenghui@huawei.com>
->>
->> When setting the forwarding path of a VLPI (switch to the HW mode),
->> we could also transfer the pending state from irq->pending_latch to
->> VPT (especially in migration, the pending states of VLPIs are restored
->> into kvmâ€™s vgic first). And we currently send "INT+VSYNC" to trigger
->> a VLPI to pending.
->>
->> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->> ---
->>  arch/arm64/kvm/vgic/vgic-v4.c | 14 ++++++++++++++
->>  1 file changed, 14 insertions(+)
->>
->> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
->> index ac029ba3d337..a3542af6f04a 100644
->> --- a/arch/arm64/kvm/vgic/vgic-v4.c
->> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
->> @@ -449,6 +449,20 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
->>  	irq->host_irq	= virq;
->>  	atomic_inc(&map.vpe->vlpi_count);
->>  
->> +	/* Transfer pending state */
->> +	if (irq->pending_latch) {
->> +		ret = irq_set_irqchip_state(irq->host_irq,
->> +					    IRQCHIP_STATE_PENDING,
->> +					    irq->pending_latch);
->> +		WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
->> +
->> +		/*
->> +		 * Let it be pruned from ap_list later and don't bother
->> +		 * the List Register.
->> +		 */
->> +		irq->pending_latch = false;
-> 
-> NAK. If the interrupt is on the AP list, it must be pruned from it
-> *immediately*. The only case where it can be !pending and still on the
-> AP list is in interval between sync and prune. If we start messing
-> with this, we can't reason about the state of this list anymore.
-> 
-> Consider calling vgic_queue_irq_unlock() here.
+Hi Christoph,
 
-Thanks for giving a hint, but it seems that vgic_queue_irq_unlock() only
-queues an IRQ after checking, did you mean vgic_prune_ap_list() instead?
+Le jeu. 11 mars 2021 à 12:26, Christoph Hellwig <hch@infradead.org> a 
+écrit :
+>>  +int drm_gem_cma_mmap_noncoherent(struct drm_gem_object *obj,
+>>  +				 struct vm_area_struct *vma)
+>>  +{
+>>  +	struct drm_gem_cma_object *cma_obj;
+>>  +	unsigned long pfn;
+>>  +	int ret;
+>>  +
+>>  +	/*
+>>  +	 * Clear the VM_PFNMAP flag that was set by drm_gem_mmap(), and 
+>> set the
+>>  +	 * vm_pgoff (used as a fake buffer offset by DRM) to 0 as we want 
+>> to map
+>>  +	 * the whole buffer.
+>>  +	 */
+>>  +	vma->vm_pgoff -= drm_vma_node_start(&obj->vma_node);
+>>  +	vma->vm_flags &= ~VM_PFNMAP;
+>>  +	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+>>  +
+>>  +	cma_obj = to_drm_gem_cma_obj(obj);
+>>  +
+>>  +	pfn = PHYS_PFN(dma_to_phys(cma_obj->base.dev->dev, 
+>> cma_obj->paddr));
+>>  +
+>>  +	ret = remap_pfn_range(vma, vma->vm_start, pfn,
+>>  +			      vma->vm_end - vma->vm_start,
+>>  +			      vma->vm_page_prot);
+> 
+> dma_to_phys must not be used by drivers.
+> 
+> I have a proper helper for this waiting for users:
+> 
+> http://git.infradead.org/users/hch/misc.git/commitdiff/96a546e7229ec53aadbdb7936d1e5e6cb5958952
+> 
+> If you can confirm the helpers works for you I can try to still sneak
+> it to Linus for 5.12 to ease the merge pain.
 
-Thanks a lot for the comments! :-)
-Shenming
+I can try. How do I get a page pointer from a dma_addr_t?
 
-> 
-> Thanks,
-> 
-> 	M.
-> 
+-Paul
+
+
