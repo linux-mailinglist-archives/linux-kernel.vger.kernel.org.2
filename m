@@ -2,146 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718D23378F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E613378F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 17:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhCKQOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 11:14:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
+        id S234461AbhCKQOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 11:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234303AbhCKQNg (ORCPT
+        with ESMTP id S234507AbhCKQOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:13:36 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCE0C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:13:36 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id k2so22509858ioh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:13:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FqcL1Rgnmec2dt7Ge1HH6XIfpeDIZHEe5J5YJyQSwbQ=;
-        b=sObyGxKKUC+sMYUqLDRBzSDwKOjtmv7SlzU9YCmYUHsYMGISfSaIVPkcvOaHJtjmzO
-         +PX4PzP7DOOnUMttbf4yDC0cdBp5h6sphBhpISXd6lVp/AduWKd8BUZsC6JP437Cu2hF
-         IudA9w/ffcv+LUkj4xfvLqqQIE+nY1h8ejWf43reUh8rZ9P9WyuCMEPxryCqMHChhdNw
-         MnJGMKhZqblDgj4V6MurQZ1qtKQuXw2e/u2rYWWKFF8b6nzGF6uzI+/Aez0+9YBUBhLt
-         9FDztcAMqOLprR/8t3bnzu3YQlNIruitg2nJg9jUDixRPDfhFithO92upgX4z4U+pJxg
-         V3zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FqcL1Rgnmec2dt7Ge1HH6XIfpeDIZHEe5J5YJyQSwbQ=;
-        b=bvaGzbz3u+v6QpQuXbcVb+FTIprIoyfl5Wx3z/Remw9XcNeDdp7gkzSO+OB21/VVUj
-         WKDu4IWNIIl39mTnsnVlKWyXPUxr1Gwyw45r4eVYSoI+T1hwJKnAU6zYzhliOv+CwEQu
-         bFH3lfqF/BoZV1Pzcd5eIZYQs/FPyvmTkJCHX8vEPk0mk+7me2lGneqNqDWvQFZ8js8r
-         2O0Vn6Fl749rTyFEpA00QqqKslNs5hw4WVedjvWwZmws3XohZym5LT0Z4HxTZLks+jxz
-         4HEGJbhL5uB5hBh1evLAhKAQQusxj5/cCNSpxCj2xtqy0rGvlomA00hfd7/c450lIjEw
-         N22Q==
-X-Gm-Message-State: AOAM531LOVHGiUi2I92PUBJo0fS/DCDZLcN2sqxoBgnVrSxTobClgFaQ
-        xZS66RV68SQNB/J2cKl/Jy+bIRHAEtREF+p0g9M=
-X-Google-Smtp-Source: ABdhPJyAo2+H+YtUgIzOh2AWw100Gssn6rA/M5Fx2bY7jZSRwYwSG46453UXNrylYvBvnchs6yRkkKpRTgd4Tq3b2RA=
-X-Received: by 2002:a05:6638:3293:: with SMTP id f19mr4632722jav.0.1615479215990;
- Thu, 11 Mar 2021 08:13:35 -0800 (PST)
+        Thu, 11 Mar 2021 11:14:06 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1280AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 08:14:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=whWBvoNb3Pce92YggrosMeszjH470wWd9Ek1CsO5FDg=; b=eK9pitziHMJtSJXvhapq7T/fc7
+        DRm1pbST/KHjdVdaERzlBisGGXFfu735qkDSTCcpKRUHwBsxma/gLd5wKSL66Nikhx9f/neCWsaI6
+        TzDCZQfTevWM15i0ZJwgTcWdBARWZUohpx+b3MvhyKWOyfWdtwN6K/fBvTldNyyuw2VaSJR4puV1d
+        //W554lyfo5xVx/nZVGSUTN4k1PYlBa05I8saB0K48rRUS3rDUd/jQ5KpU6jmkikrmk4ndyOMjC84
+        gh5d89mDPyKBonbKV/NT0fnft2v4AAYYX8C75SRiQ/P4qcYtzZe17874ncFyxkjAKUC38KZg8fQ0g
+        wc/PH/KQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKNwh-009XjQ-St; Thu, 11 Mar 2021 16:13:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 645203013E5;
+        Thu, 11 Mar 2021 17:13:55 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4FD8C29E3D9F5; Thu, 11 Mar 2021 17:13:55 +0100 (CET)
+Date:   Thu, 11 Mar 2021 17:13:55 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
+Subject: Re: [PATCH V2 16/25] perf/x86: Register hybrid PMUs
+Message-ID: <YEpBw0jRH+ariY70@hirez.programming.kicks-ass.net>
+References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+ <1615394281-68214-17-git-send-email-kan.liang@linux.intel.com>
+ <YEoOVTVhN3DpQXl2@hirez.programming.kicks-ass.net>
+ <24dbe717-ffb8-204b-bac2-59941c2314f7@linux.intel.com>
 MIME-Version: 1.0
-References: <20210308090329.17507-1-heiko.thiery@gmail.com> <CAEyMn7bCdzFTWpXBQ8jP-drw_ykXRUhawHMZqXHsHgy-3oD6LA@mail.gmail.com>
-In-Reply-To: <CAEyMn7bCdzFTWpXBQ8jP-drw_ykXRUhawHMZqXHsHgy-3oD6LA@mail.gmail.com>
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-Date:   Thu, 11 Mar 2021 17:13:25 +0100
-Message-ID: <CAEyMn7bZy0vWbrmEuEb3HAGPWitai=uBiZS_-yvD8UzcCN+aTQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: configs: Enable PCIe support for imx8mq boards
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Chris Healy <cphealy@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24dbe717-ffb8-204b-bac2-59941c2314f7@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Thu, Mar 11, 2021 at 10:41:00AM -0500, Liang, Kan wrote:
+> 
+> 
+> On 3/11/2021 7:34 AM, Peter Zijlstra wrote:
+> > On Wed, Mar 10, 2021 at 08:37:52AM -0800, kan.liang@linux.intel.com wrote:
+> > > @@ -2092,9 +2105,37 @@ static int __init init_hw_perf_events(void)
+> > >   	if (err)
+> > >   		goto out1;
+> > > -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> > > -	if (err)
+> > > -		goto out2;
+> > > +	if (!is_hybrid()) {
+> > > +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> > > +		if (err)
+> > > +			goto out2;
+> > > +	} else {
+> > > +		u8 cpu_type = get_hybrid_cpu_type(smp_processor_id());
+> > > +		struct x86_hybrid_pmu *hybrid_pmu;
+> > > +		int i;
+> > > +
+> > > +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
+> > > +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
+> > > +
+> > > +			hybrid_pmu->pmu = pmu;
+> > > +			hybrid_pmu->pmu.type = -1;
+> > > +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
+> > > +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
+> > > +
+> > > +			/* Only register the PMU for the boot CPU */
+> > 
+> > Why ?!
+> > > AFAICT we could register them all here. That instantly fixes that
+> > CPU_STARTING / CPU_DEAD fail elsewhere in this patch.
+> 
+> It's possible that all CPUs of a certain type all offline, but I cannot know
+> the information here, because the boot CPU is the only online CPU. I don't
+> know the status of the other CPUs.
+> 
+> If we unconditionally register all PMUs, users may see a PMU in
+> /sys/devices, but they cannot use it, because there is no available CPU.
+> Is it acceptable that registering an empty PMU?
 
-Added some more to the CC list since they could be interested in this.
+Sure. That's what it has a cpumask for after all.
 
-Am Mo., 8. M=C3=A4rz 2021 um 13:58 Uhr schrieb Heiko Thiery <heiko.thiery@g=
-mail.com>:
->
-> Hi all,
->
-> Am Mo., 8. M=C3=A4rz 2021 um 10:03 Uhr schrieb Heiko Thiery <heiko.thiery=
-@gmail.com>:
-> >
-> > Enable PCI_IMX6 to get PCI support for imx8mq boards like imx8mq-evk,
-> > imx8mq-kontron-pitx-imx8m and imx8mq-zii-ultra. This increases the imag=
-e
-> > by 64k.
->
-> The growth of 64k is not right.
->
-> Using the support script shows:
->
-> $ scripts/bloat-o-meter vmlinux vmlinux.with_pci
-> add/remove: 22/2 grow/shrink: 2/0 up/down: 8338/-16 (8322)
-> Function                                     old     new   delta
-> imx6_pcie_probe                                -    1804   +1804
-> imx6_pcie_deassert_core_reset                  -    1356   +1356
-> imx6_pcie_of_match                             -    1200   +1200
-> imx6_pcie_start_link                           -     692    +692
-> imx6_pcie_suspend_noirq                        -     528    +528
-> imx6_pcie_init_phy                             -     496    +496
-> imx6_pcie_host_init                            -     336    +336
-> imx6_pcie_assert_core_reset                    -     332    +332
-> pcie_phy_write                                 -     272    +272
-> imx6_pcie_driver                               -     200    +200
-> imx6_pcie_pm_ops                               -     184    +184
-> pcie_phy_read                                  -     168    +168
-> imx6_pcie_resume_noirq                         -     156    +156
-> pcie_phy_wait_ack                              -     140    +140
-> pcie_phy_poll_ack.isra                         -     124    +124
-> imx6_pcie_quirk                                -     124    +124
-> drvdata                                        -      60     +60
-> dw_pcie_ops                                  208     264     +56
-> imx6_pcie_init                                 -      40     +40
-> imx6_pcie_shutdown                             -      32     +32
-> imx6_pcie_host_ops                             -      16     +16
-> e843419@0d4b_0001256e_27c4                     -       8      +8
-> e843419@0590_00007810_4f0                      -       8      +8
-> vermagic                                      76      82      +6
-> e843419@0c2e_0001064f_80                       8       -      -8
-> e843419@0633_00008212_13c                      8       -      -8
-> Total: Before=3D21884381, After=3D21892703, chg +0.04%
->
->
-> > Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
-> > ---
-> >  arch/arm64/configs/defconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfi=
-g
-> > index d612f633b771..4b7b4a8f1860 100644
-> > --- a/arch/arm64/configs/defconfig
-> > +++ b/arch/arm64/configs/defconfig
-> > @@ -225,6 +225,7 @@ CONFIG_PCI_HOST_THUNDER_PEM=3Dy
-> >  CONFIG_PCI_HOST_THUNDER_ECAM=3Dy
-> >  CONFIG_PCIE_ROCKCHIP_HOST=3Dm
-> >  CONFIG_PCIE_BRCMSTB=3Dm
-> > +CONFIG_PCI_IMX6=3Dy
-> >  CONFIG_PCI_LAYERSCAPE=3Dy
-> >  CONFIG_PCIE_LAYERSCAPE_GEN4=3Dy
-> >  CONFIG_PCI_HISI=3Dy
-> > --
-> > 2.30.0
-> >
-
-
---=20
-Heiko
+ISTR that being the case with some dodgy RAPL thing on SPR as well.
