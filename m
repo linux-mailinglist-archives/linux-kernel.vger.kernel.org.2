@@ -2,289 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1F7336C8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 07:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05431336CA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 08:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbhCKGyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 01:54:16 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:44705 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231151AbhCKGyM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:54:12 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210311065410epoutp026f067db7aebc245e3568f81a413a6cb1~rN0KUCkM01382513825epoutp02u
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 06:54:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210311065410epoutp026f067db7aebc245e3568f81a413a6cb1~rN0KUCkM01382513825epoutp02u
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615445650;
-        bh=1SKavNcvKEiXQ2vHcHjxl2zorqJ6iU+5NwC0spP2h9I=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ZBlBwuLjbCUfftkNtwPL2gd9cIQW51ObG+yddvN87OmYaxIxq726MyiZpVJry4HxB
-         dBXOMKaMsHEk0dMLO5gDfwH8IFoulhEH7MnM+tOM5SwJfYuyY/lclo0AR0zX9f3P1Y
-         OzXnusm7dGFRoAIKVu0pu4yoZLiFwyOk5uaVgaVE=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210311065409epcas1p272adc96f7516eadfc7396ab070e8a196~rN0JvjZ3L3111631116epcas1p20;
-        Thu, 11 Mar 2021 06:54:09 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.154]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Dx06R31rQz4x9Pv; Thu, 11 Mar
-        2021 06:54:07 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        16.4E.59147.F8EB9406; Thu, 11 Mar 2021 15:54:07 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210311065406epcas1p374520f410148634741b2b9e2927c9d96~rN0G9J28Q2120621206epcas1p3J;
-        Thu, 11 Mar 2021 06:54:06 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210311065406epsmtrp169106dc6487abccd2583e05d3251a5ac~rN0G8M6tj2566425664epsmtrp1Z;
-        Thu, 11 Mar 2021 06:54:06 +0000 (GMT)
-X-AuditID: b6c32a38-e3dff7000000e70b-47-6049be8f28b1
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        50.F3.13470.E8EB9406; Thu, 11 Mar 2021 15:54:06 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210311065406epsmtip18ce31088337cb4f2f880d91a435e18c6~rN0Gnlp9o1552715527epsmtip1P;
-        Thu, 11 Mar 2021 06:54:06 +0000 (GMT)
-Subject: Re: [PATCH 07/11] PM / devfreq: check get_dev_status before start
- monitor
-To:     Dong Aisheng <dongas86@gmail.com>
-Cc:     Chanwoo Choi <cwchoi00@gmail.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        Abel Vesa <abel.vesa@nxp.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <b5a3ee55-0c71-a0ca-b03f-3b6790f3d2f4@samsung.com>
-Date:   Thu, 11 Mar 2021 16:10:47 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S231469AbhCKHAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 02:00:55 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:13719 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231479AbhCKHAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:00:44 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615446044; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=3+uYjBQK4ORw94HoS3mEIbHBXvqWMu6fhtYX/73Hjuc=; b=oCO1GMaPzOLZE4XRCz5vqesuPt6sXYabDpIUqu/wpBdqXu1fm6smrsMQ8FThbrRCPFIMP6av
+ A4wZd7yd7XRSC1p12WQhs8Wcna/s15f6gVqp3nBF9+uofxCCURcoprhzhd1Ni+zVIAup6wa/
+ c5wj7kMoawgSrmS8c5kGnMQgStY=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6049bff9b86af9bf23f5b442 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 07:00:09
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 907F9C433CA; Thu, 11 Mar 2021 07:00:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66F14C433CA;
+        Thu, 11 Mar 2021 07:00:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 66F14C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jes Sorensen <Jes.Sorensen@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for Clang
+References: <20210305094850.GA141221@embeddedor>
+        <871rct67n2.fsf@codeaurora.org> <202103101107.BE8B6AF2@keescook>
+Date:   Thu, 11 Mar 2021 09:00:03 +0200
+In-Reply-To: <202103101107.BE8B6AF2@keescook> (Kees Cook's message of "Wed, 10
+        Mar 2021 11:14:56 -0800")
+Message-ID: <878s6uyy30.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAA+hA=S76yHTeL_yCDkv55iKpBLbtZc_cV8sjORheLxbSuenzA@mail.gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOJsWRmVeSWpSXmKPExsWy7bCmgW7/Ps8Eg5dPRCyWXTrKaPFl6i5m
-        i2dHtS3+bp7OZrFq6k4Wi7NNb9gtNj2+xmrR9Wsls8XlXXPYLD73HmG0uN24gs3ixRZxBx6P
-        nbPusntsWtXJ5rF5Sb3Hxnc7mDz6/xp49G1ZxejxeZNcAHtUtk1GamJKapFCal5yfkpmXrqt
-        kndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0JVKCmWJOaVAoYDE4mIlfTubovzSklSF
-        jPziElul1IKUnALLAr3ixNzi0rx0veT8XCtDAwMjU6DChOyMX4+OMxXM16v4uGouYwPjDtUu
-        Rk4OCQETifX/ZrCD2EICOxgldjV5djFyAdmfGCVaj+5hh3C+MUqcnf+QEabj++6lLBCJvYwS
-        3WcPMUE47xkltsxYyApSJSwQIjH59F9mEFtEQFVi7orvjCBFzAJHmCV+TZwAtpBNQEti/4sb
-        bCA2v4CixNUfj8FW8ArYSVz+tADMZgFqXrRgFli9qECYxMltLVA1ghInZz5hAbE5BQIleve0
-        gi1mFhCXuPVkPhOELS/RvHU2M8TZZzgkbnS4QNguEuvev2GCsIUlXh3fwg5hS0m87G+Dsqsl
-        Vp48wgZytIRAB9Bn+y+wQiSMJfYvnQzUzAG0QFNi/S59iLCixM7fcxkh9vJJvPvawwpSIiHA
-        K9HRJgRRoixx+cFdqLWSEovbO9kmMCrNQvLNLCQfzELywSyEZQsYWVYxiqUWFOempxYbFpgg
-        x/YmRnAK1rLYwTj37Qe9Q4xMHIyHGCU4mJVEeP2OuyUI8aYkVlalFuXHF5XmpBYfYjQFhu9E
-        ZinR5HxgFsgriTc0NTI2NrYwMTQzNTRUEudNMngQLySQnliSmp2aWpBaBNPHxMEp1cDkUHk4
-        OKg+eofKrB65pbJFTlmlvGmdud2qO6QOaFQ8y1rqc/KO8uEvkhefftIW2vdiv1reRWsVbuFt
-        mWWrP1wV1jg9f71OcMuX98sXv9rkWPH93/be95OLM0PCbp48EsnJ33rZvvji9zjHPzKRHFIJ
-        M/5fXDk979SLw3xrOdbz5P/suC3ZpFy98/7l3Y+nsa+f8Kz72+4jp6ZldYkcNrpz64jI7+a3
-        wXovX1+edXRaxNSuT24lk9jKTq27qrvklVTb20PFGnKGiy+WPy67dmrrZv7Ahr129y8s+L/g
-        YtEexioevgI5q9SV7ZetfqT88jjirpQ87eZUp1ktoU0f33hk/3ySWVOY8OfH50nn+f1KHiux
-        FGckGmoxFxUnAgBNx67eSgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsWy7bCSnG7fPs8Eg1PXtC2WXTrKaPFl6i5m
-        i2dHtS3+bp7OZrFq6k4Wi7NNb9gtNj2+xmrR9Wsls8XlXXPYLD73HmG0uN24gs3ixRZxBx6P
-        nbPusntsWtXJ5rF5Sb3Hxnc7mDz6/xp49G1ZxejxeZNcAHsUl01Kak5mWWqRvl0CV8avR8eZ
-        CubrVXxcNZexgXGHahcjJ4eEgInE991LWboYuTiEBHYzSpx49JgRIiEpMe3iUeYuRg4gW1ji
-        8OFiiJq3jBLdi1rZQWqEBUIkJp/+ywxiiwioSsxd8Z0RpIhZ4BizxPot75kgOv4wSzQcmgPW
-        wSagJbH/xQ02EJtfQFHi6g+IbbwCdhKXPy0As1mAJi1aMAusXlQgTGLnksdMEDWCEidnPmEB
-        sTkFAiV697SygtjMAuoSf+ZdYoawxSVuPZnPBGHLSzRvnc08gVF4FpL2WUhaZiFpmYWkZQEj
-        yypGydSC4tz03GLDAsO81HK94sTc4tK8dL3k/NxNjOB41NLcwbh91Qe9Q4xMHIyHGCU4mJVE
-        eP2OuyUI8aYkVlalFuXHF5XmpBYfYpTmYFES573QdTJeSCA9sSQ1OzW1ILUIJsvEwSnVwLTl
-        ev3xjs5jk6NdeIS4BXnmdlbM6HyyanvxSZVY9aNbhIuaJucZqzjEzTOfK3N1RgDrE45sr6Xn
-        TIIfzG+sq1s5e0bHnW39Zi31YrsYJ7vZ7Og/Wdy/YPv1B+d1pue/uS8db6Ou1tXBJLSM8dzb
-        uQp2J613n3fh5DnwOeShTrOJ6+7L/z5Ov3Eq6OZ3+3OHL1ovc7gv4vvknWKc8MSVdqdPlO/8
-        viL5DhPfcqZ/KdfTTZYZ1Gp136/9XMm8x3Jz995z4npVmQWs+y3Oa1w6y5HMyrujlPdTiPz6
-        oqi0zV5HQjx5OjsPmi5U75zNH34u/v3XyUc/cEwrUoiYuvDPvRlSeZKT4l5k7GA7dEPh+Csl
-        luKMREMt5qLiRAA6aptENgMAAA==
-X-CMS-MailID: 20210311065406epcas1p374520f410148634741b2b9e2927c9d96
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210310025703epcas1p10fdb324cc7ce1accfdc8f66315e8a93e
-References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
-        <1615294733-22761-8-git-send-email-aisheng.dong@nxp.com>
-        <de25cd22-7f17-5902-21d3-881e3128dd31@gmail.com>
-        <a546248b-3946-c781-94a9-30f0c92f88d2@gmail.com>
-        <CGME20210310025703epcas1p10fdb324cc7ce1accfdc8f66315e8a93e@epcas1p1.samsung.com>
-        <CAA+hA=QZbxE-aFh2UnH6wHBUStj8SAtW8C4SEZtGcxQwsOO=Aw@mail.gmail.com>
-        <31be2267-8988-f162-f5a6-6e6389bbf1fb@samsung.com>
-        <CAA+hA=S76yHTeL_yCDkv55iKpBLbtZc_cV8sjORheLxbSuenzA@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 1:56 PM, Dong Aisheng wrote:
-> On Wed, Mar 10, 2021 at 11:08 AM Chanwoo Choi <cw00.choi@samsung.com> wrote:
->>
->> On 3/10/21 11:56 AM, Dong Aisheng wrote:
->>> On Wed, Mar 10, 2021 at 12:12 AM Chanwoo Choi <cwchoi00@gmail.com> wrote:
->>>>
->>>> On 21. 3. 10. 오전 12:58, Chanwoo Choi wrote:
->>>>> On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
->>>>>> The devfreq monitor depends on the device to provide load information
->>>>>> by .get_dev_status() to calculate the next target freq.
->>>>>>
->>>>>> And this will cause changing governor to simple ondemand fail
->>>>>> if device can't support.
->>>>>>
->>>>>> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
->>>>>> ---
->>>>>>   drivers/devfreq/devfreq.c                 | 10 +++++++---
->>>>>>   drivers/devfreq/governor.h                |  2 +-
->>>>>>   drivers/devfreq/governor_simpleondemand.c |  3 +--
->>>>>>   3 files changed, 9 insertions(+), 6 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
->>>>>> index 7231fe6862a2..d1787b6c7d7c 100644
->>>>>> --- a/drivers/devfreq/devfreq.c
->>>>>> +++ b/drivers/devfreq/devfreq.c
->>>>>> @@ -482,10 +482,13 @@ static void devfreq_monitor(struct work_struct
->>>>>> *work)
->>>>>>    * to be called from governor in response to DEVFREQ_GOV_START
->>>>>>    * event when device is added to devfreq framework.
->>>>>>    */
->>>>>> -void devfreq_monitor_start(struct devfreq *devfreq)
->>>>>> +int devfreq_monitor_start(struct devfreq *devfreq)
->>>>>>   {
->>>>>>       if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
->>>>>> -        return;
->>>>>> +        return 0;
->>>>>> +
->>>>>> +    if (!devfreq->profile->get_dev_status)
->>>>>> +        return -EINVAL;
->>>>
->>>> Again, I think that get_dev_status is not used for all governors.
->>>> So that it cause the governor start fail. Don't check whether
->>>> .get_dev_status is NULL or not.
->>>>
->>>
->>> I'm not quite understand your point.
->>> it is used by governor_simpleondemand.c and tegra_devfreq_governor.
->>> get_target_freq -> devfreq_update_stats -> get_dev_status
->>
->> The devfreq can add the new governor by anyone.
->> So these functions like devfreq_monitor_* have to support
->> the governors and also must support the governor to be added
->> in the future.
-> 
-> Yes, but devfreq_monitor_* is only used by polling mode, right?
-> The governor using it has to implement get_dev_status unless
-> there's an exception in the future.
-> 
-> Currently this patch wants to address the issue that user can switch
-> to ondemand governor (polling mode) by sysfs even devices does
-> not support it (no get_dev_status implemented).
+Kees Cook <keescook@chromium.org> writes:
 
-As I commented, I'll fix this issue. If devfreq driver doesn't implement
-the .get_dev_status, don't show it via available_governors. I think that
-it is fundamental solution to fix this issue. So on this version,
-don't add the this conditional statement on this function
+> On Fri, Mar 05, 2021 at 03:40:33PM +0200, Kalle Valo wrote:
+>> "Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
+>> 
+>> > In preparation to enable -Wimplicit-fallthrough for Clang, fix
+>> > multiple warnings by replacing /* fall through */ comments with
+>> > the new pseudo-keyword macro fallthrough; instead of letting the
+>> > code fall through to the next case.
+>> >
+>> > Notice that Clang doesn't recognize /* fall through */ comments as
+>> > implicit fall-through markings.
+>> >
+>> > Link: https://github.com/KSPP/linux/issues/115
+>> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> 
+>> It's not cool that you ignore the comments you got in [1], then after a
+>> while mark the patch as "RESEND" and not even include a changelog why it
+>> was resent.
+>> 
+>> [1] https://patchwork.kernel.org/project/linux-wireless/patch/d522f387b2d0dde774785c7169c1f25aa529989d.1605896060.git.gustavoars@kernel.org/
+>
+> Hm, this conversation looks like a miscommunication, mainly? I see
+> Gustavo, as requested by many others[1], replacing the fallthrough
+> comments with the "fallthrough" statement. (This is more than just a
+> "Clang doesn't parse comments" issue.)
 
-And on next version, please use the capital letter for first character
-on patch title as following:
+v1 was clearly rejected by Jes, so sending a new version without any
+changelog or comments is not the way to go. The changelog shoud at least
+have had "v1 was rejected but I'm resending this again because <insert
+reason here>" or something like that to make it clear what's happening.
 
-- PM / devfreq: Check get_dev_status before start monitor
+> This could be a tree-wide patch and not bother you, but Greg KH has
+> generally advised us to send these changes broken out. Anyway, this
+> change still needs to land, so what would be the preferred path? I think
+> Gustavo could just carry it for Linus to merge without bothering you if
+> that'd be preferred?
 
-> 
-> Regards
-> Aisheng
-> 
->>
->>>
->>> Without checking, device can switch to ondemand governor if it does not support.
->>>
->>> Am i missed something?
->>>
->>> Regards
->>> Aisheng
->>>
->>>>>>       switch (devfreq->profile->timer) {
->>>>>>       case DEVFREQ_TIMER_DEFERRABLE:
->>>>>> @@ -495,12 +498,13 @@ void devfreq_monitor_start(struct devfreq *devfreq)
->>>>>>           INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
->>>>>>           break;
->>>>>>       default:
->>>>>> -        return;
->>>>>> +        return -EINVAL;
->>>>>>       }
->>>>>>       if (devfreq->profile->polling_ms)
->>>>>>           queue_delayed_work(devfreq_wq, &devfreq->work,
->>>>>>               msecs_to_jiffies(devfreq->profile->polling_ms));
->>>>>> +    return 0;
->>>>>>   }
->>>>>>   EXPORT_SYMBOL(devfreq_monitor_start);
->>>>>> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
->>>>>> index 5cee3f64fe2b..31af6d072a10 100644
->>>>>> --- a/drivers/devfreq/governor.h
->>>>>> +++ b/drivers/devfreq/governor.h
->>>>>> @@ -75,7 +75,7 @@ struct devfreq_governor {
->>>>>>                   unsigned int event, void *data);
->>>>>>   };
->>>>>> -void devfreq_monitor_start(struct devfreq *devfreq);
->>>>>> +int devfreq_monitor_start(struct devfreq *devfreq);
->>>>>>   void devfreq_monitor_stop(struct devfreq *devfreq);
->>>>>>   void devfreq_monitor_suspend(struct devfreq *devfreq);
->>>>>>   void devfreq_monitor_resume(struct devfreq *devfreq);
->>>>>> diff --git a/drivers/devfreq/governor_simpleondemand.c
->>>>>> b/drivers/devfreq/governor_simpleondemand.c
->>>>>> index d57b82a2b570..ea287b57cbf3 100644
->>>>>> --- a/drivers/devfreq/governor_simpleondemand.c
->>>>>> +++ b/drivers/devfreq/governor_simpleondemand.c
->>>>>> @@ -89,8 +89,7 @@ static int devfreq_simple_ondemand_handler(struct
->>>>>> devfreq *devfreq,
->>>>>>   {
->>>>>>       switch (event) {
->>>>>>       case DEVFREQ_GOV_START:
->>>>>> -        devfreq_monitor_start(devfreq);
->>>>>> -        break;
->>>>>> +        return devfreq_monitor_start(devfreq);
->>>>>>       case DEVFREQ_GOV_STOP:
->>>>>>           devfreq_monitor_stop(devfreq);
->>>>>>
->>>>>
->>>>> Need to handle the all points of devfreq_monitor_start() usage.
->>>>> please check the tegra30-devfreq.c for this update.
->>>>>
->>>>> $ grep -rn "devfreq_monitor_start" drivers/
->>>>> drivers/devfreq/governor_simpleondemand.c:92:
->>>>> devfreq_monitor_start(devfreq);
->>>>> drivers/devfreq/tegra30-devfreq.c:744:
->>>>> devfreq_monitor_start(devfreq);
->>>>> ......
->>>>>
->>>>
->>>>
->>>> --
->>>> Best Regards,
->>>> Samsung Electronics
->>>> Chanwoo Choi
->>>
->>>
->>
->>
->> --
->> Best Regards,
->> Chanwoo Choi
->> Samsung Electronics
-> 
-> 
+I agree with Greg. Please don't do cleanups like this via another tree
+as that just creates more work due to conflicts between the trees, which
+is a lot more annoying to deal with than applying few patches. But when
+submitting patches please follow the rules, don't cut corners.
 
+Jes, I don't like 'fallthrough' either and prefer the original comment,
+but the ship has sailed on this one. Maybe we should just take it?
 
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
