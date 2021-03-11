@@ -2,127 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4705336964
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F34B6336967
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhCKBGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 20:06:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhCKBFY (ORCPT
+        id S229633AbhCKBGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 20:06:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24692 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229578AbhCKBG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 20:05:24 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35239C061574;
-        Wed, 10 Mar 2021 17:05:24 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id f10so17428686ilq.5;
-        Wed, 10 Mar 2021 17:05:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tzLcpbEHlICK/TY3veXTxXrzL8MkHekFvgC0dEJ6xUY=;
-        b=LZBOFnzlnL8BCHZYy2gxCniNTx8DL20WUALibFUmm2iub0s76sHOMehyxztAiu90NF
-         bo5viCGgzdHJFUlaV3nPaCd9YSTdXCl94XRILUQT4MbA9Hg1i2gFq7hjyk3TSkQXe5o0
-         0j+3IS/hp3G0YuU8WDvDjXyGSG5rL8sh1Ll4D6GtDa5UL/4ZPHcdbQl8VKPI8oP3SqNH
-         NrIHlUMxzQKnjdH8POjHlTibZIMzz2EVlXcyhF6eKyqyuHl89tIZVkX46OnkDtBurmKa
-         6csBLXxCefF/9gYoCVFAsFDH2vd1+s3LXFi8gfDyse3VUc0JkBMLqUHIG9oh+LIzcoNt
-         DA4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tzLcpbEHlICK/TY3veXTxXrzL8MkHekFvgC0dEJ6xUY=;
-        b=fw1ABzTUrANiafdG10Vwaki6Prn3OTH/00pyHqvkN67XV/HA1DzMKLsjTJJ8PKJS6G
-         2gs7Ov+Mu/nUJykPBOI5rIoAX323xuZ/KHNfEhJlucU7GqNQHZ9hPeVe0KOqOV29q8q0
-         p7Xn4WQwo9mmZJmVEc1Desk4gL/0ZvtPFdtkjxMPKgUqn8Iw8+5tix3bXHD7Naelyqlk
-         Z+Mxulvhs6jk/2xkrJgXFS1HImBRME3Meb9SRLtIjof2kh1heXePZ3BinvADWNCOzrbQ
-         EtXFobaXTt1w7j+vR6rd8PxDJkDQQCcckzCN0FgJRWMqrsLClVEvMcahZGvQQz0UW9JU
-         L/nA==
-X-Gm-Message-State: AOAM531v/hVJlRNuKvc1gvmWcDYH1d2KvxgGIrBxgswcknzXpnPI+nOk
-        KI+mCqewnToKC5V69fUECIOm1FPGUiFil6puDGA=
-X-Google-Smtp-Source: ABdhPJygjZiXjz3N6qVWwrLUn617NgpkFbTB7aeFU0n7/FT/9HvsgsOtss8INOhAOhrg8Bm9D/+acdHqQLrNKB/mbmE=
-X-Received: by 2002:a92:c04b:: with SMTP id o11mr4720645ilf.42.1615424723613;
- Wed, 10 Mar 2021 17:05:23 -0800 (PST)
+        Wed, 10 Mar 2021 20:06:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615424788;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NlNmI4tedf0ptWCOX9AN1BL2Q8MJrpCOVljUQI3bIm0=;
+        b=FBAqsUFnhoPyDgW9Iz37vFNt1s2KWwlFOrZ66dbta4etyTKeBqMtN7sljSpYlrRi3UCXnE
+        UZIavlSNEm/rYYCWBd2skpYjSjbJZWv9UVqBSWTgz03B7rZ0ZB12UKZXTO4apcCeT9rj7X
+        dX+vosPpisncOFB1rUfhoEHToPU8Ysw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-556-OsMim5OTMCSQb5c4x9uz8A-1; Wed, 10 Mar 2021 20:06:24 -0500
+X-MC-Unique: OsMim5OTMCSQb5c4x9uz8A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 142091005D45;
+        Thu, 11 Mar 2021 01:06:22 +0000 (UTC)
+Received: from treble (ovpn-118-249.rdu2.redhat.com [10.10.118.249])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BD45E1981B;
+        Thu, 11 Mar 2021 01:06:18 +0000 (UTC)
+Date:   Wed, 10 Mar 2021 19:06:15 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
+        kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
+Message-ID: <20210311010615.7pemfngxx7cy42fe@treble>
+References: <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
+ <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
+ <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
+ <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
+ <20210309011945.ky7v3pnbdpxhmxkh@treble>
+ <20210310185734.332d9d52a26780ba02d09197@kernel.org>
+ <20210310150845.7kctaox34yrfyjxt@treble>
+ <20210311005509.0a1a65df0d2d6c7da73a9288@kernel.org>
+ <20210310183113.xxverwh4qplr7xxb@treble>
+ <20210311092018.2d0e54d2c891850e549d16fe@kernel.org>
 MIME-Version: 1.0
-References: <A221FEC9-71CE-4D0A-9F39-F75C337B5D22@contoso.com>
-In-Reply-To: <A221FEC9-71CE-4D0A-9F39-F75C337B5D22@contoso.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 10 Mar 2021 17:05:12 -0800
-Message-ID: <CAKgT0Ud508jLc4NVm1XxNSjEnq3NoLS=Q1V+o=6JZoJF_r_m0A@mail.gmail.com>
-Subject: Re: [PATCH v17 1/9] mm: Adjust shuffle code to allow for future coalescing
-To:     "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>
-Cc:     "aarcange@redhat.com" <aarcange@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "alexander.h.duyck@linux.intel.com" 
-        <alexander.h.duyck@linux.intel.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "lcapitulino@redhat.com" <lcapitulino@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "nitesh@redhat.com" <nitesh@redhat.com>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "pagupta@redhat.com" <pagupta@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "riel@surriel.com" <riel@surriel.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "wei.w.wang@intel.com" <wei.w.wang@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "yang.zhang.wz@gmail.com" <yang.zhang.wz@gmail.com>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "Herrenschmidt, Benjamin" <benh@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210311092018.2d0e54d2c891850e549d16fe@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bala,
+On Thu, Mar 11, 2021 at 09:20:18AM +0900, Masami Hiramatsu wrote:
+> > >  bool unwind_next_frame(struct unwind_state *state)
+> > >  {
+> > >  	unsigned long ip_p, sp, tmp, orig_ip = state->ip, prev_sp = state->sp;
+> > > @@ -536,6 +561,18 @@ bool unwind_next_frame(struct unwind_state *state)
+> > >  
+> > >  		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
+> > >  						  state->ip, (void *)ip_p);
+> > > +		/*
+> > > +		 * There are special cases when the stack unwinder is called
+> > > +		 * from the kretprobe handler or the interrupt handler which
+> > > +		 * occurs in the kretprobe trampoline code. In those cases,
+> > > +		 * %sp is shown on the stack instead of the return address.
+> > > +		 * Or, when the unwinder find the return address is replaced
+> > > +		 * by kretprobe_trampoline.
+> > > +		 * In those cases, correct address can be found in kretprobe.
+> > > +		 */
+> > > +		if (state->ip == sp ||
+> > 
+> > Why is the 'state->ip == sp' needed?
+> 
+> As I commented above, until kretprobe_trampoline writes back the real
+> address to the stack, sp value is there (which has been pushed by the
+> 'pushq %rsp' at the entry of kretprobe_trampoline.)
+> 
+>         ".type kretprobe_trampoline, @function\n"
+>         "kretprobe_trampoline:\n"
+>         /* We don't bother saving the ss register */
+>         "       pushq %rsp\n"				// THIS
+>         "       pushfq\n"
+> 
+> Thus, from inside the kretprobe handler, like ftrace, you'll see
+> the sp value instead of the real return address.
 
-There was a similar effort several months ago that was trying to do
-this in conjunction with pre-zeroing of pages. I suspect if you wanted
-to you could probably pick up some of their patch set and work with
-that. It can be found at:
-https://www.spinics.net/lists/linux-mm/msg239735.html
+I see.  If you change is_kretprobe_trampoline_address() to include the
+entire function, like:
 
-Thanks.
+static bool is_kretprobe_trampoline_address(unsigned long ip)
+{
+	return (void *)ip >= kretprobe_trampoline &&
+	       (void *)ip < kretprobe_trampoline_end;
+}
 
-- Alex
+then the unwinder won't ever read the bogus %rsp value into state->ip,
+and the 'state->ip == sp' check can be removed.
 
-On Tue, Mar 9, 2021 at 12:13 AM Bodeddula, Balasubramaniam
-<bodeddub@amazon.com> wrote:
->
-> Hi Alexander,
->
->
->
-> My team was evaluating FPR and observed that these patches don=E2=80=99t =
-report memory for deallocated hugeapages directly and need to cycle through=
- buddy allocator. For example, say we need to allocate a maximum of 12 * 1G=
- hugepages (by setting nr_hugepages), use 8 * 1G hugepages, and then deallo=
-cate 4 * 1G hugepages. Unlike regular 4K pages, this 4G worth of memory wil=
-l not be reported until we set nr_hugepages to 8 (wait sometime(?) for FPR =
-to do its work) and set it back again to 12. While this works fine in theor=
-y, in practice,  setting nr_hugepages to 12 could fail too due to fragmenta=
-tion (this could depend on other processes memory usage behavior).
->
->
->
-> If FPR could report this free memory without cycling through buddy alloca=
-tor, it makes the solution more robust. I am looking for advice on how feas=
-ible this approach is and what would be the effort for building this functi=
-onality. In general, if there are other thoughts on how we can address this=
-, please do let me know.
->
->
->
-> Thanks,
->
-> bala
+> > And it would make the unwinder just work automatically when unwinding
+> > from the handler using the regs.
+> > 
+> > It would also work when unwinding from the handler's stack, if we put an
+> > UNWIND_HINT_REGS after saving the regs.
+> 
+> At that moment, the real return address is not identified. So we can not
+> put it.
+
+True, at the time the regs are originally saved, the real return address
+isn't available.  But by the time the user handler is called, the return
+address *is* available.  So if the real return address were placed in
+regs->ip before calling the handler, the unwinder could find it there,
+when called from the handler.
+
+Then we wouldn't need the call to orc_kretprobe_correct_ip() in
+__unwind_start().
+
+But maybe it's not possible due to the regs->ip expectations of legacy
+handlers?
+
+-- 
+Josh
+
