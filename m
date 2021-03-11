@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAFE336A05
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CC7336A0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 03:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhCKCGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 21:06:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhCKCGY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 21:06:24 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED0CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 18:06:13 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id z5so9462917plg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 18:06:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=coDvSDUBJQPVLSZkKZ05ZugBq5eL94Od5GZjs8z9wn8=;
-        b=gdHxWYFB8lai36v50M2CSU1yrASaAV1VmyWv8xtPnO+qcVWOCkQxM8fCSpF5eyo5hQ
-         2oDKkm9OeHIiMba1zj64m2IZjSQl5951ysENMhpUDupEXIDOXWC0roIUnDx/7SgdLt+N
-         O1LedtLo5lSCdCYxmGjxaCWVMw/bhDdCwS1sSSnIZ+RfBjNNhS3uZQTujEnPAa6NazUi
-         LLZIh1q/FUSw0eeUyJGKttPnQOIREqIQ+ypbg9fdL0cpo//BiIUNUdxShMQi9z0Jvhzf
-         t1E0Ss5/fXWxDMk8+xWrp9Hrqt0T8cKapx8m8vqxoY25+VbeImmdhwmYKUDueLrgirYv
-         4oCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=coDvSDUBJQPVLSZkKZ05ZugBq5eL94Od5GZjs8z9wn8=;
-        b=U2aLbdYSx9tQeXnChWHf0q46jGvrCc9brg92uCiL2EgczAEEoB8In+zYO1R1axi5O3
-         4AXn8aiETof1t1Vw0Zhi6B6v4zb6R/O4Nhc4WEwmJym2S0fZqN9hEfdBiYqjoLIcQN/2
-         x4nWGxJyFaBptXrmwLpRM8rvpeTh4LbcRUoHDBVhSrB5kiwXDIzN6By33Pg5EMrn/f1Y
-         g1rJCEvOE2pg+6KWw9GyH9Esinpbwu68YICfd288H6WTmiI2dMFs7AqBP1c0fL+fXULt
-         88Fyb7TnZ/EE0vp+JD1DK4qLx+MXyTZs4jXvIq/r0sVOqGkHYu+L6YQyIc5UriRNk5H4
-         ZSEw==
-X-Gm-Message-State: AOAM530TUtH0/Gsh6GGvqvr7IKJYV/qk97Rc4Ccp3fOpzkqguFHA87Db
-        1P8nbvHJfTsZ7ZoWNli/E+Uzb9FZtsHsww==
-X-Google-Smtp-Source: ABdhPJw/rjlo1qIMK8WD0HnTLz++v2zCHesg6Nq636iyUeOEzrvvVunQqU1rbsniS5sPmSwRNBdt3g==
-X-Received: by 2002:a17:902:8b86:b029:e5:bef6:56b0 with SMTP id ay6-20020a1709028b86b02900e5bef656b0mr5875971plb.76.1615428372971;
-        Wed, 10 Mar 2021 18:06:12 -0800 (PST)
-Received: from localhost.localdomain (220-133-186-239.HINET-IP.hinet.net. [220.133.186.239])
-        by smtp.gmail.com with ESMTPSA id s19sm688941pfh.168.2021.03.10.18.06.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 18:06:12 -0800 (PST)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: mt6315: Fix off-by-one for .n_voltages
-Date:   Thu, 11 Mar 2021 10:05:58 +0800
-Message-Id: <20210311020558.579597-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        id S229658AbhCKCKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 21:10:30 -0500
+Received: from m12-14.163.com ([220.181.12.14]:33349 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229544AbhCKCKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 21:10:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=qyUs4
+        6i2FA688vwg0k0f54ioff9WxpH9cOp5ivb9sgM=; b=So5eQYKGDWqD2yBVzCjV6
+        AoXT5+5s7T+3AlCM9b9abvMRRl8cqaeZ9u5mtyST7o/AhFjX4/OtJ4KawsmX2YVo
+        c3J7e8uDy6y4cpncE1I75GVq0OryOdDpqg9etBCSSZiFFB76XwWfaWswcKaCU4Pd
+        ezlmDVuLngGrk5uiWiIuZs=
+Received: from yangjunlin.ccdomain.com (unknown [119.137.52.39])
+        by smtp10 (Coremail) with SMTP id DsCowABndY29e0lgQ14Qow--.17433S2;
+        Thu, 11 Mar 2021 10:09:02 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] esp6: remove a duplicative condition
+Date:   Thu, 11 Mar 2021 10:07:56 +0800
+Message-Id: <20210311020756.1570-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowABndY29e0lgQ14Qow--.17433S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1DtF47KFy5JFy5AryDGFg_yoWfGFc_CF
+        4v9FWUGFW8J34vyw1ayFWrWw12yw18uFZakry2g3y8Gw15Ar1rXrs2qr98CFWqgr1xWrW2
+        qF4DuFy8Jry29jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8V6wtUUUUU==
+X-Originating-IP: [119.137.52.39]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiKx9SI1QHWr82iAAAsN
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The valid selector is 0 ~ 0xbf, so the .n_voltages should be 0xc0.
+From: Junlin Yang <yangjunlin@yulong.com>
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Fixes coccicheck warnings:
+./net/ipv6/esp6_offload.c:319:32-34:
+WARNING !A || A && B is equivalent to !A || B
+
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
 ---
- drivers/regulator/mt6315-regulator.c | 2 +-
+ net/ipv6/esp6_offload.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/mt6315-regulator.c b/drivers/regulator/mt6315-regulator.c
-index fc7654624dd6..9edc34981ee0 100644
---- a/drivers/regulator/mt6315-regulator.c
-+++ b/drivers/regulator/mt6315-regulator.c
-@@ -41,7 +41,7 @@ struct mt6315_chip {
- 		.type = REGULATOR_VOLTAGE,			\
- 		.id = _bid,					\
- 		.owner = THIS_MODULE,				\
--		.n_voltages = 0xbf,				\
-+		.n_voltages = 0xc0,				\
- 		.linear_ranges = mt_volt_range1,		\
- 		.n_linear_ranges = ARRAY_SIZE(mt_volt_range1),	\
- 		.vsel_reg = _vsel,				\
+diff --git a/net/ipv6/esp6_offload.c b/net/ipv6/esp6_offload.c
+index 1ca516f..631c168 100644
+--- a/net/ipv6/esp6_offload.c
++++ b/net/ipv6/esp6_offload.c
+@@ -316,7 +316,7 @@ static int esp6_xmit(struct xfrm_state *x, struct sk_buff *skb,  netdev_features
+ 	esp.plen = esp.clen - skb->len - esp.tfclen;
+ 	esp.tailen = esp.tfclen + esp.plen + alen;
+ 
+-	if (!hw_offload || (hw_offload && !skb_is_gso(skb))) {
++	if (!hw_offload || !skb_is_gso(skb)) {
+ 		esp.nfrags = esp6_output_head(x, skb, &esp);
+ 		if (esp.nfrags < 0)
+ 			return esp.nfrags;
 -- 
-2.25.1
+1.9.1
+
 
