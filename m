@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902FF337FA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E394D337FA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 22:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhCKVbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 16:31:01 -0500
-Received: from mga03.intel.com ([134.134.136.65]:40304 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230372AbhCKVau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 16:30:50 -0500
-IronPort-SDR: LF0e03fZJPwUGNmFY9BNzgizS6DVe/81WRuuJpOPaeiy2pqSfOka+4nlJHx8o3uG2xAijIcPlk
- mRjjWKPDL6RA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188783606"
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="188783606"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 13:30:45 -0800
-IronPort-SDR: DlRAVzb0h1LKCjR04Ra2E/3XWPdAp2Fxpkv9nhQVAdjWKKQblommhVGUuywhcc+8s8w5mCffqe
- vtDIdfgFLSPw==
-X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
-   d="scan'208";a="410768023"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 13:30:45 -0800
-Date:   Thu, 11 Mar 2021 13:30:45 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/4] btrfs: Convert more kmaps to kmap_local_page()
-Message-ID: <20210311213045.GT3014244@iweiny-DESK2.sc.intel.com>
-References: <20210217024826.3466046-1-ira.weiny@intel.com>
+        id S230404AbhCKVe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 16:34:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhCKVeW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 16:34:22 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDCDC061574;
+        Thu, 11 Mar 2021 13:34:22 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id BE3632224F;
+        Thu, 11 Mar 2021 22:34:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615498460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C4zSLxlmqKWF8rF0E50MCvu5Ykg7ipqxtjl4CTHHmzA=;
+        b=ZpGo7Mvg7andqY/6j3wcUlI/ZZ36ZFpZxlFQ7qjY7AyvhSjy4Lu5xwF4lK/BQqWYb35nT0
+        bFAmPDCx5s/W5oWNNnIYXpJPMm5HbpgX+6vfndyd6XUT4FxjqkjqV7bjgSkhPt/tfDE7XU
+        a1Acu4TpejE05Ov5HorT10yEPvOH+64=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217024826.3466046-1-ira.weiny@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 11 Mar 2021 22:34:19 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     spujar@nvidia.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
+        thierry.reding@gmail.com
+Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
+In-Reply-To: <20210311160052.GF4962@sirena.org.uk>
+References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
+ <20210309144156.18887-1-michael@walle.cc>
+ <20210311160052.GF4962@sirena.org.uk>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <9575973104ff11d4a864a510b5c0a350@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 06:48:22PM -0800, 'Ira Weiny' wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+Am 2021-03-11 17:00, schrieb Mark Brown:
+> On Tue, Mar 09, 2021 at 03:41:56PM +0100, Michael Walle wrote:
+>> Hi,
+>> 
+>> > If "clocks = <&xxx>" is specified from the CPU or Codec component
+>> > device node, the clock is not getting enabled. Thus audio playback
+>> > or capture fails.
 > 
-> I am submitting these for 5.13.
+>> This actually breaks sound on my board
+>> (arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts).
+> 
+> Please, when sending replies format the subject line like normal 
+> replies
+> with a "Re: " at the start so people can tell it's a reply to an
+> existing discussion and not a new patch.
 
-Just a friendly ping on this set.
+Whoops, must have missed that. I need to figure out a new mail setup,
+rather than saving the mbox from lore.kernel.org, editing it and
+sending it with git-send-email.
 
-Ira
-
-> 
-> Further work to remove more kmap() calls in favor of the kmap_local_page() this
-> series converts those calls which required more than a common pattern which
-> were covered in my previous series[1].  This is the second of what I hope to be
-> 3 series to fully convert btrfs.  However, the 3rd series is going to be an RFC
-> because I need to have more eyes on it before I'm sure about what to do.  For
-> now this series should be good to go for 5.13.
-> 
-> Also this series converts the kmaps in the raid5/6 code which required a fix to
-> the kmap'ings which was submitted in [2].
-> 
-> Thanks,
-> Ira
-> 
-> [1] https://lore.kernel.org/lkml/20210210062221.3023586-1-ira.weiny@intel.com/
-> [2] https://lore.kernel.org/lkml/20210205163943.GD5033@iweiny-DESK2.sc.intel.com/
-> 
-> 
-> Ira Weiny (4):
->   fs/btrfs: Convert kmap to kmap_local_page() using coccinelle
->   fs/btrfs: Convert raid5/6 kmaps to kmap_local_page()
->   fs/btrfs: Use kmap_local_page() in __btrfsic_submit_bio()
->   fs/btrfs: Convert block context kmap's to kmap_local_page()
-> 
->  fs/btrfs/check-integrity.c | 12 ++++----
->  fs/btrfs/compression.c     |  4 +--
->  fs/btrfs/inode.c           |  4 +--
->  fs/btrfs/lzo.c             |  9 +++---
->  fs/btrfs/raid56.c          | 61 +++++++++++++++++++-------------------
->  5 files changed, 44 insertions(+), 46 deletions(-)
-> 
-> -- 
-> 2.28.0.rc0.12.gb6a658bd00c9
-> 
+-michael
