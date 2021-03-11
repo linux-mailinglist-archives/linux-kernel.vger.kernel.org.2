@@ -2,135 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3A53369DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AFA3369DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 02:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhCKBnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Mar 2021 20:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhCKBnM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Mar 2021 20:43:12 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A2EC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:43:12 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id e26so4781160pfd.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 17:43:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MWojlJbUjd8zeoqWw9mfU3jMWrIYqMEd6vbJ5jtrUws=;
-        b=Sa9/Vp7ANEMp+nq3kdNHz5hLIhyAAfUqRrv1U71IBC4MZ/QwYxf7GA9TfF/vIleoGD
-         LG8ZdcTnkWi2Ka8G05Q7H2ZoN5R/0JvxjDcdf0DAXG6U4b0v0u1RzaFZhTvGjvNIjfM3
-         qtcB1HniugfDx0NsU9tGro1jViIiR8g0aBIjQlQng4CtvI2uwqfqlTCwryXZZqhW/cPE
-         Dm5HnCFbg2UjhbaxBUvhOp+d+SjnHLvSno2XKApGMKeJ/JXyU6i4hieRNdF+PvxwZYLn
-         /uziyQZs2tSbiWGTLsonMt00StcmiDExuqM1O7g5RN75xk8KPmpS1CBXJJlWEvkOPkGN
-         gFnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MWojlJbUjd8zeoqWw9mfU3jMWrIYqMEd6vbJ5jtrUws=;
-        b=oqscpBSPEvobCtEPijfwwwQ/NdRQW/T4Mxm/zWdA2Pb0EJvm9NGch0QK9cjGHYMI/Z
-         /Ji775J0mYN9LIrNlGp8warE/y1btscyCsrme/8yG9bT/MoZKoxry17HsEoLfNf6Oix0
-         4iRZCh8P4raSFbUeWzrOnp9z8ybw1WFDRHqP0gvdkZw59iZN8JKlvwnwozkHhXYwjt9v
-         ZgoUfKAOL+qz3bG+pPAlDYUp7pSpndu0W/MGuev/UVXQ5+A5lj7MhFNVCJTOY86eCyDY
-         ForcqRR1UaIIQ2Wuo3BebMWd1ppKiVGn7K5TAt7aebhgbQ/nwJURnLCAOe/9gFPQzLZe
-         rwdw==
-X-Gm-Message-State: AOAM533MO0kJWGRjMOJVCFKDEmk4ArUmtc9sZci3f03NpxxDbCkz7rf9
-        e++CKwaWUGlqX6A1iP8RTk/Bjw==
-X-Google-Smtp-Source: ABdhPJzCjrEDF22HR8BBzOTqHG5psBpFNzWPU//hpBEJ39p1CwsucIYBG8PUZdW8cdI4LaaOtKux6g==
-X-Received: by 2002:a63:689:: with SMTP id 131mr5200828pgg.416.1615426991602;
-        Wed, 10 Mar 2021 17:43:11 -0800 (PST)
-Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
-        by smtp.gmail.com with UTF8SMTPSA id s11sm641511pfu.69.2021.03.10.17.42.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Mar 2021 17:43:11 -0800 (PST)
-Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor vfio_pci
- drivers
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, alex.williamson@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
-        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
-        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, cjia@nvidia.com,
-        yishaih@nvidia.com, mjrosato@linux.ibm.com, hch@lst.de
-References: <20210309083357.65467-1-mgurtovoy@nvidia.com>
- <20210309083357.65467-9-mgurtovoy@nvidia.com>
- <19e73e58-c7a9-03ce-65a7-50f37d52ca15@ozlabs.ru>
- <8941cf42-0c40-776e-6c02-9227146d3d66@nvidia.com>
- <20210310130246.GW2356281@nvidia.com>
- <3b772357-7448-5fa7-9ecc-c13c08df95c3@ozlabs.ru>
- <20210310194002.GD2356281@nvidia.com>
- <7f0310db-a8e3-4045-c83a-11111767a22f@ozlabs.ru>
- <20210311013443.GH2356281@nvidia.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <d862adf9-6fe7-a99e-6c14-8413aae70cd4@ozlabs.ru>
-Date:   Thu, 11 Mar 2021 12:42:56 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        id S229646AbhCKBnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Mar 2021 20:43:45 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:33562 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229468AbhCKBnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Mar 2021 20:43:25 -0500
+Received: from [10.130.0.65] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD_KzdUlgUuoXAA--.13819S3;
+        Thu, 11 Mar 2021 09:43:15 +0800 (CST)
+Subject: Re: [PATCH v4 6/7] dt-bindings: interrupt-controller: Add
+ Loongson-2K1000 LIOINTC
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+References: <20210310075639.20372-1-zhangqing@loongson.cn>
+ <20210310075639.20372-7-zhangqing@loongson.cn>
+ <da399bdd-9454-4d63-a549-546c049c1a29@www.fastmail.com>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Ming Wang <wangming01@loongson.cn>
+From:   zhangqing <zhangqing@loongson.cn>
+Message-ID: <8bd4f6c3-f2cf-4f36-879b-9755117cdac7@loongson.cn>
+Date:   Thu, 11 Mar 2021 09:43:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <20210311013443.GH2356281@nvidia.com>
+In-Reply-To: <da399bdd-9454-4d63-a549-546c049c1a29@www.fastmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxD_KzdUlgUuoXAA--.13819S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF4rXw47KF1UXr13tr45GFg_yoW8Zw15pr
+        ZrCanFgF48tr13Cayxta40ka15Zr98AwnrKrsFv3y7GFnrKw1UXr1a9F1rZFZ5uFWIqF4j
+        vF1F9a4UWasIyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
+        WxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07Al
+        zVAYIcxG8wCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
+        73UjIFyTuYvjfUFVyIUUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/03/2021 12:34, Jason Gunthorpe wrote:
-> On Thu, Mar 11, 2021 at 12:20:33PM +1100, Alexey Kardashevskiy wrote:
-> 
->>> It is supposed to match exactly the same match table as the pci_driver
->>> above. We *don't* want different behavior from what the standrd PCI
->>> driver matcher will do.
+On 03/10/2021 08:04 PM, Jiaxun Yang wrote:
+>
+> On Wed, Mar 10, 2021, at 3:56 PM, Qing Zhang wrote:
+>> Add liointc-2.0 properties support, so update the maxItems and description.
 >>
->> This is not a standard PCI driver though
-> 
-> It is now, that is what this patch makes it into. This is why it now
-> has a struct pci_driver.
-> 
->> and the main vfio-pci won't have a
->> list to match ever.
-> 
-> ?? vfio-pci uses driver_override or new_id to manage its match list
+>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ^ I have nothing todo with this patch so please drop me for this one :-)
+>
+>> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+>> Tested-by: Ming Wang <wangming01@loongson.cn>
+>> ---
+>>
+>> v3-v4: Standard submission of information
+> ^ It's called commit message.
+>
+>>   .../bindings/interrupt-controller/loongson,liointc.yaml    | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git
+>> a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+>> index f38e0113f360..5280cf60a9a7 100644
+>> ---
+>> a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+>> +++
+>> b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+>> @@ -10,9 +10,9 @@ maintainers:
+>>     - Jiaxun Yang <jiaxun.yang@flygoat.com>
+>>   
+>>   description: |
+>> -  This interrupt controller is found in the Loongson-3 family of chips
+>> as the primary
+>> -  package interrupt controller which can route local I/O interrupt to
+>> interrupt lines
+>> -  of cores.
+>> +  This interrupt controller is found in the Loongson-3 family of chips
+>> and
+>> +  Loongson-2K1000 chip, as the primary package interrupt controller
+>> which
+>> +  can route local I/O interrupt to interrupt lines of cores.
+>>   
+>>   allOf:
+>>     - $ref: /schemas/interrupt-controller.yaml#
+>> @@ -22,6 +22,7 @@ properties:
+>>       oneOf:
+>>         - const: loongson,liointc-1.0
+>>         - const: loongson,liointc-1.0a
+>> +      - const: loongson,liointc-2.0
+>>   
+>>     reg:
+>>       maxItems: 1
+> ^ Please document multiple reg prop change as well.
+   Hi, Jiaxun
 
+   Thank you for your reply,
 
-Exactly, no list to update.
+   I will do it and send v5.
 
+   Thanks,
+   -Qing
+>
+> Thanks.
+>
+> - Jiaxun
+>
+>> -- 
+>> 2.20.1
+>>
+>>
 
->> IBM NPU PCI id is unlikely to change ever but NVIDIA keeps making
->> new devices which work in those P9 boxes, are you going to keep
->> adding those ids to nvlink2gpu_vfio_pci_table?
-> 
-> Certainly, as needed. PCI list updates is normal for the kernel.
-> 
->> btw can the id list have only vendor ids and not have device ids?
-> 
-> The PCI matcher is quite flexable, see the other patch from Max for
-> the igd
-
-
-ah cool, do this for NVIDIA GPUs then please, I just discovered another 
-P9 system sold with NVIDIA T4s which is not in your list.
-
-
-> But best practice is to be as narrow as possible as I hope this will
-> eventually impact module autoloading and other details.
-
-The amount of device specific knowledge is too little to tie it up to 
-device ids, it is a generic PCI driver with quirks. We do not have a 
-separate drivers for the hardware which requires quirks.
-
-And how do you hope this should impact autoloading?
-
-
-
--- 
-Alexey
