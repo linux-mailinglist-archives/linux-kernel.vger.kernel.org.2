@@ -2,124 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D042133728C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A066C33728E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhCKM1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:27:22 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13593 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbhCKM0y (ORCPT
+        id S232940AbhCKM1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:27:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233077AbhCKM1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:26:54 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dx7SB0fTgz17Jh9;
-        Thu, 11 Mar 2021 20:24:58 +0800 (CST)
-Received: from [10.174.184.135] (10.174.184.135) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 11 Mar 2021 20:26:38 +0800
-Subject: Re: [PATCH v3 1/4] KVM: arm64: GICv4.1: Add function to get VLPI
- state
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210127121337.1092-1-lushenming@huawei.com>
- <20210127121337.1092-2-lushenming@huawei.com> <87wnuef4oj.wl-maz@kernel.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <fc7dc4ec-e223-91ae-536f-1aa52c8a5739@huawei.com>
-Date:   Thu, 11 Mar 2021 20:26:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Thu, 11 Mar 2021 07:27:21 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22CFC061574;
+        Thu, 11 Mar 2021 04:27:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8DrH20SyIhaL5dK4MtN3ycWDMzkAzg5EQ7aSqI2ov9w=; b=X0cMyaSGqKu2P/fq3y1JdWH3JF
+        mCwL1UOG577Rsl7j8VXv96vG4pFensynHv8HwkEq5ySh/oUxcJEvzJTgCB64bMSF6IlirMRzqmF1r
+        k82MTnL3eNQjnSpYeAOhomO6qFhk7R3p7lm6AGLEfFU0/8Ma8UqPaDudCaeqTN1zpd6yJpDextUWF
+        BPCMte6FU2bUGTkUFyc3RKmGZ0ap7CEBpRQL5qaP8w4oQ2KcFxAawLxSE6QCQh5tTF+d95WvkMMgg
+        htFr2Mac14C9mhMpsHc/pmwelab23jyp2QsfbiWdM62+LhanSL9NWJ3j4HXapkSYSrV9a32u8MGL+
+        eFS64k/A==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKKOo-007In6-Px; Thu, 11 Mar 2021 12:26:48 +0000
+Date:   Thu, 11 Mar 2021 12:26:42 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] drm: Add and export function
+ drm_gem_cma_mmap_noncoherent
+Message-ID: <20210311122642.GB1739082@infradead.org>
+References: <20210307202835.253907-1-paul@crapouillou.net>
+ <20210307202835.253907-4-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <87wnuef4oj.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.135]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210307202835.253907-4-paul@crapouillou.net>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/11 16:57, Marc Zyngier wrote:
-> On Wed, 27 Jan 2021 12:13:34 +0000,
-> Shenming Lu <lushenming@huawei.com> wrote:
->>
->> With GICv4.1 and the vPE unmapped, which indicates the invalidation
->> of any VPT caches associated with the vPE, we can get the VLPI state
->> by peeking at the VPT. So we add a function for this.
->>
->> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->> ---
->>  arch/arm64/kvm/vgic/vgic-v4.c | 19 +++++++++++++++++++
->>  arch/arm64/kvm/vgic/vgic.h    |  1 +
->>  2 files changed, 20 insertions(+)
->>
->> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
->> index 66508b03094f..ac029ba3d337 100644
->> --- a/arch/arm64/kvm/vgic/vgic-v4.c
->> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
->> @@ -203,6 +203,25 @@ void vgic_v4_configure_vsgis(struct kvm *kvm)
->>  	kvm_arm_resume_guest(kvm);
->>  }
->>  
->> +/*
->> + * Must be called with GICv4.1 and the vPE unmapped, which
->> + * indicates the invalidation of any VPT caches associated
->> + * with the vPE, thus we can get the VLPI state by peeking
->> + * at the VPT.
->> + */
->> +void vgic_v4_get_vlpi_state(struct vgic_irq *irq, bool *val)
->> +{
->> +	struct its_vpe *vpe = &irq->target_vcpu->arch.vgic_cpu.vgic_v3.its_vpe;
->> +	int mask = BIT(irq->intid % BITS_PER_BYTE);
->> +	void *va;
->> +	u8 *ptr;
->> +
->> +	va = page_address(vpe->vpt_page);
->> +	ptr = va + irq->intid / BITS_PER_BYTE;
->> +
->> +	*val = !!(*ptr & mask);
-> 
-> What guarantees that you can actually read anything valid? Yes, the
-> VPT caches are clean. But that doesn't make them coherent with CPU
-> caches.
-> 
-> You need some level of cache maintenance here.
+> +int drm_gem_cma_mmap_noncoherent(struct drm_gem_object *obj,
+> +				 struct vm_area_struct *vma)
+> +{
+> +	struct drm_gem_cma_object *cma_obj;
+> +	unsigned long pfn;
+> +	int ret;
+> +
+> +	/*
+> +	 * Clear the VM_PFNMAP flag that was set by drm_gem_mmap(), and set the
+> +	 * vm_pgoff (used as a fake buffer offset by DRM) to 0 as we want to map
+> +	 * the whole buffer.
+> +	 */
+> +	vma->vm_pgoff -= drm_vma_node_start(&obj->vma_node);
+> +	vma->vm_flags &= ~VM_PFNMAP;
+> +	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+> +
+> +	cma_obj = to_drm_gem_cma_obj(obj);
+> +
+> +	pfn = PHYS_PFN(dma_to_phys(cma_obj->base.dev->dev, cma_obj->paddr));
+> +
+> +	ret = remap_pfn_range(vma, vma->vm_start, pfn,
+> +			      vma->vm_end - vma->vm_start,
+> +			      vma->vm_page_prot);
 
-Yeah, and you have come up with some codes for this in v2:
+dma_to_phys must not be used by drivers.
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c
-b/drivers/irqchip/irq-gic-v3-its.c
-index 7db602434ac5..2dbef127ca15 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -4552,6 +4552,10 @@ static void its_vpe_irq_domain_deactivate(struct
-irq_domain *domain,
+I have a proper helper for this waiting for users:
 
-  		its_send_vmapp(its, vpe, false);
-  	}
-+
-+	if (find_4_1_its() && !atomic_read(vpe->vmapp_count))
-+		gic_flush_dcache_to_poc(page_address(vpe->vpt_page),
-+					LPI_PENDBASE_SZ);
-  }
+http://git.infradead.org/users/hch/misc.git/commitdiff/96a546e7229ec53aadbdb7936d1e5e6cb5958952
 
-  static const struct irq_domain_ops its_vpe_domain_ops = {
-
-Could I add it to this series? :-)
-
-Thanks,
-Shenming
-
-> 
-> Thanks,
-> 
-> 	M.
-> 
+If you can confirm the helpers works for you I can try to still sneak
+it to Linus for 5.12 to ease the merge pain.
