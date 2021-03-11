@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330DE337261
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3E6337266
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Mar 2021 13:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233190AbhCKMVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 07:21:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
+        id S233205AbhCKMVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 07:21:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233129AbhCKMUr (ORCPT
+        with ESMTP id S233130AbhCKMUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:20:47 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A17FC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:20:47 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id y6so2433469eds.1
+        Thu, 11 Mar 2021 07:20:48 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08866C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:20:48 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id e19so45854952ejt.3
         for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 04:20:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=H9SEgVG4eW/6G+FzcssVlXUnq9VbXCnxHNhzrfDeXOM=;
-        b=oHho/dq2Er/TJG1cYRUOtK84ZV08O0m7lIIdCOL1I2yXh17pJGwEl7cvnU4QwwgRcv
-         xUM4G0jILvbk6r3Ubw77aan4OXB+uTBERPPPLB0LEf9cVMlJ12CwYr1ByDExbFsjxgb2
-         e/BhlZqNtu/41CK9Sf+rNG6ljbKCXvc7QtouM=
+        bh=CaRhVK/8csj+vIrO16ApXt+4+Lm7p1eKMEWudzp2f7U=;
+        b=gmjGSpExTAWAssj+18RP7Dlx4fkoDIUccDxXC04TbeBV0PT+XzNObVR3Q4Oe/gFjL1
+         b+m/r2+mTqwiTUxiI2rO61orwxdgpzrlTTjZ3V1j36I+mh9TA1zyqwA9v+IWQaSI25Xy
+         FTXNwfE5qDdmUWnNgCapfmcqnmFFEhHizT9Cc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H9SEgVG4eW/6G+FzcssVlXUnq9VbXCnxHNhzrfDeXOM=;
-        b=e6KpF+fNKXyKQixX7yxsEHp8tFEkRMdA74owJ1FLtx4nAWJuJ8qQxtKNOMx3++HdTq
-         v7qEL10Xgmr42bzSsb03CIlnwqnsCmL0nOLajK2SKdriiuuvdhNRoSixSgGJdPUG8tyR
-         2+o1rR6wXNa3nY0NJ6UMzD/LLGbA/zr7Wb4BwNvDk0FE/EnWphjAMMbK5BKwvjPA+5I2
-         yFE4Jm8YhwQvEo7uhULjNmjSGxnmRxop3A4DWB0Bp0EfTl/wX93wM1lzt0YEWmtR9KBm
-         5sUxl1hqlAJlEE65FQ3vvJZYnyWSsg2A4RnSMVNB04EWI42POv+EBkpSu7jbmVgfUAA3
-         oX8A==
-X-Gm-Message-State: AOAM5327tDyiaj7X303XifyJsqo9bvWEZLY0R30QXbdN4wksV17CZ3sK
-        G/PXgN0cLL/zGIQ+trwyVBS43w==
-X-Google-Smtp-Source: ABdhPJwoSMMiTwOlh9Fxqgpc06dFU06j7T75nybumv1yhnimMHvjmzrSOodv0w+ZUj3w9nU93NS/gQ==
-X-Received: by 2002:a50:cdd1:: with SMTP id h17mr8278139edj.178.1615465246224;
+        bh=CaRhVK/8csj+vIrO16ApXt+4+Lm7p1eKMEWudzp2f7U=;
+        b=ZsrCO1X7GF7oEopcbHp2Mphw+my622j4jyMqshXR6TkemdJmORoh1tis8rhaTEyH+R
+         vewtuifKCUXfEggmjBF2ijaw8ht/DsuHxyZbel0CdKBXBG0viYXnTt4WLGA3XsQTokEf
+         tKFo7tBEeUcB1i9T2WwQdb4taYvBEO3/Y0uPni68sEYOYRH+eBiq0hfPWcGlhCo7bO/i
+         YpBiVK4uedDtT4+OB1g/KHrezaP5aUXK2uOEW5TlSfA+LSdDSZmI2kyqqiukR9FUBFN0
+         z/tJpw+bdN6dlQftTgR5j6yMnZX//5FxuGc6LlSkyAFMtf1JnQrLS6CLpLifDCiRJHpN
+         sWFg==
+X-Gm-Message-State: AOAM532T13Kb5i3vfS/XkDk8ITqN8H8gIQ1Z2AwW25GDF+1EEwfCXsu6
+        jINKVQKkpQRORQiZJpA7tjjbfg==
+X-Google-Smtp-Source: ABdhPJz9csyyS/O02ggpZUqK882qN17Rjf54BW2VsvpJXVt4YaeHbCvtOfqPHRIQesuhtAKo8HIZYQ==
+X-Received: by 2002:a17:906:3b47:: with SMTP id h7mr2769759ejf.377.1615465246673;
         Thu, 11 Mar 2021 04:20:46 -0800 (PST)
 Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id u13sm1264126ejy.31.2021.03.11.04.20.45
+        by smtp.gmail.com with ESMTPSA id u13sm1264126ejy.31.2021.03.11.04.20.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 04:20:45 -0800 (PST)
+        Thu, 11 Mar 2021 04:20:46 -0800 (PST)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
         linux-kernel@vger.kernel.org, senozhatsky@chromium.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH 05/10] media: uvcvideo: Define Control and GUIDs for class ctrls
-Date:   Thu, 11 Mar 2021 13:20:35 +0100
-Message-Id: <20210311122040.1264410-7-ribalda@chromium.org>
+Subject: [PATCH 06/10] media: uvcvideo: Implement UVC_CTRL_CLASS_UNIT
+Date:   Thu, 11 Mar 2021 13:20:36 +0100
+Message-Id: <20210311122040.1264410-8-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210311122040.1264410-1-ribalda@chromium.org>
 References: <20210311122040.1264410-1-ribalda@chromium.org>
@@ -63,93 +63,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new bindings for class controls. This controls will be implemented
-by a virtual entity.
+Create a virtual entity that holds all the class control.
+
+Fixes v4l2-compliance:
+Control ioctls (Input 0):
+                fail: v4l2-test-controls.cpp(216): missing control class for class 00980000
+                fail: v4l2-test-controls.cpp(253): missing control class for class 009a0000
+        test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_ctrl.c | 34 ++++++++++++++++++++++++++++++++
- drivers/media/usb/uvc/uvcvideo.h |  8 ++++++++
- 2 files changed, 42 insertions(+)
+ drivers/media/usb/uvc/uvc_ctrl.c   |  3 ++
+ drivers/media/usb/uvc/uvc_driver.c | 52 +++++++++++++++++++++++++++---
+ drivers/media/usb/uvc/uvc_entity.c |  1 +
+ drivers/media/usb/uvc/uvcvideo.h   | 10 ++++++
+ 4 files changed, 61 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index 08877897dc5a..fd4d5ad098b9 100644
+index fd4d5ad098b9..273eccc136b8 100644
 --- a/drivers/media/usb/uvc/uvc_ctrl.c
 +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -355,6 +355,20 @@ static const struct uvc_control_info uvc_ctrls[] = {
- 		.flags		= UVC_CTRL_FLAG_GET_CUR
- 				| UVC_CTRL_FLAG_AUTO_UPDATE,
- 	},
-+	{
-+		.entity		= UVC_GUID_CTRL_CLASS,
-+		.selector	= UVC_CC_CAMERA_CLASS,
-+		.index		= 0,
-+		.size		= 1,
-+		.flags		= 0,
-+	},
-+	{
-+		.entity		= UVC_GUID_CTRL_CLASS,
-+		.selector	= UVC_CC_USER_CLASS,
-+		.index		= 1,
-+		.size		= 1,
-+		.flags		= 0,
-+	},
- };
+@@ -2354,6 +2354,9 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
+ 		} else if (UVC_ENTITY_TYPE(entity) == UVC_EXT_GPIO_UNIT) {
+ 			bmControls = entity->gpio.bmControls;
+ 			bControlSize = entity->gpio.bControlSize;
++		} else if (UVC_ENTITY_TYPE(entity) == UVC_CTRL_CLASS_UNIT) {
++			bmControls = entity->ctrl_class.bmControls;
++			bControlSize = entity->ctrl_class.bControlSize;
+ 		}
  
- static const struct uvc_menu_info power_line_frequency_controls[] = {
-@@ -753,6 +767,26 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
- 		.v4l2_type	= V4L2_CTRL_TYPE_BOOLEAN,
- 		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
- 	},
-+	{
-+		.id		= V4L2_CID_CAMERA_CLASS,
-+		.name		= "Camera Controls",
-+		.entity		= UVC_GUID_CTRL_CLASS,
-+		.selector	= UVC_CC_CAMERA_CLASS,
-+		.size		= 1,
-+		.offset		= 0,
-+		.v4l2_type	= V4L2_CTRL_TYPE_CTRL_CLASS,
-+		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
-+	},
-+	{
-+		.id		= V4L2_CID_USER_CLASS,
-+		.name		= "User Controls",
-+		.entity		= UVC_GUID_CTRL_CLASS,
-+		.selector	= UVC_CC_USER_CLASS,
-+		.size		= 1,
-+		.offset		= 0,
-+		.v4l2_type	= V4L2_CTRL_TYPE_CTRL_CLASS,
-+		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
-+	},
- };
+ 		/* Remove bogus/blacklisted controls */
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 30ef2a3110f7..996e8bd06ac5 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -1025,6 +1025,7 @@ static int uvc_parse_streaming(struct uvc_device *dev,
+ }
  
- /* ------------------------------------------------------------------------
+ static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
++static const u8 uvc_ctrl_class_guid[16] = UVC_GUID_CTRL_CLASS;
+ static const u8 uvc_gpio_guid[16] = UVC_GUID_EXT_GPIO_CONTROLLER;
+ static const u8 uvc_media_transport_input_guid[16] =
+ 	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
+@@ -1057,6 +1058,9 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u16 id,
+ 	 * is initialized by the caller.
+ 	 */
+ 	switch (type) {
++	case UVC_CTRL_CLASS_UNIT:
++		memcpy(entity->guid, uvc_ctrl_class_guid, 16);
++		break;
+ 	case UVC_EXT_GPIO_UNIT:
+ 		memcpy(entity->guid, uvc_gpio_guid, 16);
+ 		break;
+@@ -1474,6 +1478,39 @@ static int uvc_parse_control(struct uvc_device *dev)
+ 	return 0;
+ }
+ 
++/* -----------------------------------------------------------------------------
++ * Control Class
++ */
++
++static int uvc_ctrl_class_get_info(struct uvc_device *dev,
++				   struct uvc_entity *entity,
++				   u8 cs, u8 *caps)
++{
++	*caps = 0;
++	return 0;
++}
++
++static int uvc_ctrl_class_parse(struct uvc_device *dev)
++{
++	struct uvc_entity *unit;
++
++	unit = uvc_alloc_entity(UVC_CTRL_CLASS_UNIT,
++				UVC_CTRL_CLASS_UNIT_ID, 0, 1);
++	if (!unit)
++		return -ENOMEM;
++
++	unit->ctrl_class.bControlSize = 1;
++	unit->ctrl_class.bmControls = (u8 *)unit + sizeof(*unit);
++	unit->ctrl_class.bmControls[0] = (1 << (UVC_CC_LAST_CLASS + 1)) - 1;
++	unit->get_info = uvc_ctrl_class_get_info;
++	strncpy(unit->name, "Control Class", sizeof(unit->name) - 1);
++
++	list_add_tail(&unit->list, &dev->entities);
++	dev->ctrl_class_unit = unit;
++
++	return 0;
++}
++
+ /* -----------------------------------------------------------------------------
+  * Privacy GPIO
+  */
+@@ -2054,12 +2091,11 @@ static int uvc_scan_device(struct uvc_device *dev)
+ 		return -1;
+ 	}
+ 
+-	/* Add GPIO entity to the first chain. */
+-	if (dev->gpio_unit) {
+-		chain = list_first_entry(&dev->chains,
+-					 struct uvc_video_chain, list);
++	/* Add virtual entities to the first chain. */
++	chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
++	list_add_tail(&dev->ctrl_class_unit->chain, &chain->entities);
++	if (dev->gpio_unit)
+ 		list_add_tail(&dev->gpio_unit->chain, &chain->entities);
+-	}
+ 
+ 	return 0;
+ }
+@@ -2399,6 +2435,12 @@ static int uvc_probe(struct usb_interface *intf,
+ 		goto error;
+ 	}
+ 
++	/* Parse the control class. */
++	if (uvc_ctrl_class_parse(dev) < 0) {
++		uvc_dbg(dev, PROBE, "Unable to parse UVC CTRL CLASS\n");
++		goto error;
++	}
++
+ 	dev_info(&dev->udev->dev, "Found UVC %u.%02x device %s (%04x:%04x)\n",
+ 		 dev->uvc_version >> 8, dev->uvc_version & 0xff,
+ 		 udev->product ? udev->product : "<unnamed>",
+diff --git a/drivers/media/usb/uvc/uvc_entity.c b/drivers/media/usb/uvc/uvc_entity.c
+index 7c4d2f93d351..5285030a738c 100644
+--- a/drivers/media/usb/uvc/uvc_entity.c
++++ b/drivers/media/usb/uvc/uvc_entity.c
+@@ -106,6 +106,7 @@ static int uvc_mc_init_entity(struct uvc_video_chain *chain,
+ 		case UVC_OTT_MEDIA_TRANSPORT_OUTPUT:
+ 		case UVC_EXTERNAL_VENDOR_SPECIFIC:
+ 		case UVC_EXT_GPIO_UNIT:
++		case UVC_CTRL_CLASS_UNIT:
+ 		default:
+ 			function = MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN;
+ 			break;
 diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 97df5ecd66c9..5792232ed312 100644
+index 5792232ed312..1d59ac10c2eb 100644
 --- a/drivers/media/usb/uvc/uvcvideo.h
 +++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -62,6 +62,9 @@
- #define UVC_GUID_EXT_GPIO_CONTROLLER \
- 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
- 	 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03}
-+#define UVC_GUID_CTRL_CLASS \
-+	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
-+	 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x04}
+@@ -41,6 +41,9 @@
+ #define UVC_EXT_GPIO_UNIT		0x7ffe
+ #define UVC_EXT_GPIO_UNIT_ID		0x100
  
- #define UVC_GUID_FORMAT_MJPEG \
- 	{ 'M',  'J',  'P',  'G', 0x00, 0x00, 0x10, 0x00, \
-@@ -175,6 +178,11 @@
- 	{ 'H',  'E',  'V',  'C', 0x00, 0x00, 0x10, 0x00, \
- 	 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
- 
-+/* ------------------------------------------------------------------------
-+ * Control Class Constants
-+ */
-+#define UVC_CC_CAMERA_CLASS	0
-+#define UVC_CC_USER_CLASS	1
++#define UVC_CTRL_CLASS_UNIT		0x7ffd
++#define UVC_CTRL_CLASS_UNIT_ID		0x101
++
+ /* ------------------------------------------------------------------------
+  * GUIDs
+  */
+@@ -183,6 +186,7 @@
+  */
+ #define UVC_CC_CAMERA_CLASS	0
+ #define UVC_CC_USER_CLASS	1
++#define UVC_CC_LAST_CLASS	UVC_CC_USER_CLASS
  
  /* ------------------------------------------------------------------------
   * Driver specific constants.
+@@ -375,6 +379,11 @@ struct uvc_entity {
+ 			struct gpio_desc *gpio_privacy;
+ 			int irq;
+ 		} gpio;
++
++		struct {
++			u8  bControlSize;
++			u8  *bmControls;
++		} ctrl_class;
+ 	};
+ 
+ 	u8 bNrInPins;
+@@ -715,6 +724,7 @@ struct uvc_device {
+ 	} async_ctrl;
+ 
+ 	struct uvc_entity *gpio_unit;
++	struct uvc_entity *ctrl_class_unit;
+ };
+ 
+ enum uvc_handle_state {
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
