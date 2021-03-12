@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF925339309
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CB5339303
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhCLQVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:21:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231849AbhCLQUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:20:43 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FFE764F9E;
-        Fri, 12 Mar 2021 16:20:43 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lKkWn-001GPo-GO; Fri, 12 Mar 2021 16:20:41 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hector Martin <marcan@marcan.st>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: [GIT PULL] irqchip/irqdomain fixes for 5.12, take #1
-Date:   Fri, 12 Mar 2021 16:20:16 +0000
-Message-Id: <20210312162016.3921500-1-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232313AbhCLQUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:20:46 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52162 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230302AbhCLQUj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:20:39 -0500
+X-UUID: 172eed7caacc41d69545d2aff34b1179-20210313
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=63lLgyhShcz7hBrpoA+jQ3pPfygS4j51tNuMwt/5+Hk=;
+        b=R/+d07dxKnfShHwEMfyGFND/Q4EzY2Kb+4zGeLRJ4BcrCrk5/gWTVp3uWnmjG1IZuFICN4obx14YNvZbtdqzv3qrQoFcAmgJnx8iwg4LiI91HSl07hzKyarhOvOm/e4rPZprGNQvxv8VQSorjQoPzEj9PsjwbdzgXK1a+3+OQh4=;
+X-UUID: 172eed7caacc41d69545d2aff34b1179-20210313
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2122130386; Sat, 13 Mar 2021 00:20:36 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 13 Mar 2021 00:20:34 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 13 Mar 2021 00:20:34 +0800
+Message-ID: <1615566034.27101.5.camel@mtksdaap41>
+Subject: Re: [PATCH RESEND v5 7/8] regulator: mt6359: Add support for
+ MT6359P regulator
+From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        Fei Shao <fshao@chromium.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Yuchen Huang <yuchen.huang@mediatek.com>,
+        Ran Bi <ran.bi@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Sat, 13 Mar 2021 00:20:34 +0800
+In-Reply-To: <20210301102156.GJ641347@dell>
+References: <1611913781-23460-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <1611913781-23460-8-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <20210301102156.GJ641347@dell>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, gregkh@linuxfoundation.org, marcan@marcan.st, mark.rutland@arm.com, paul@crapouillou.net, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-TM-SNTS-SMTP: 720C1621FB1260E7C53FD91671EB4931ED0AA89ED611D0A41887A4B6E089299B2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+T24gTW9uLCAyMDIxLTAzLTAxIGF0IDEwOjIxICswMDAwLCBMZWUgSm9uZXMgd3JvdGU6DQo+IE9u
+IEZyaSwgMjkgSmFuIDIwMjEsIEhzaW4tSHNpdW5nIFdhbmcgd3JvdGU6DQo+IA0KPiA+IFRoZSBN
+VDYzNTlQIGlzIGEgZWNvIHZlcnNpb24gZm9yIE1UNjM1OSByZWd1bGF0b3IuDQo+ID4gV2UgYWRk
+IHN1cHBvcnQgYmFzZWQgb24gTVQ2MzU5IHJlZ3VsYXRvciBkcml2ZXIuDQo+ID4gDQo+ID4gU2ln
+bmVkLW9mZi1ieTogSHNpbi1Ic2l1bmcgV2FuZyA8aHNpbi1oc2l1bmcud2FuZ0BtZWRpYXRlay5j
+b20+DQo+ID4gLS0tDQo+ID4gY2hhbmdlcyBzaW5jZSB2NDoNCj4gPiAtIGFkZCB0aGUgcmVndWxh
+dG9yc19ub2RlIHN1cHBvcnQuDQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvcmVndWxhdG9yL210NjM1
+OS1yZWd1bGF0b3IuYyAgICAgICB8IDM3OSArKysrKysrKysrKysrKysrKysrKy0NCj4gDQo+ID4g
+IGluY2x1ZGUvbGludXgvbWZkL210NjM1OXAvcmVnaXN0ZXJzLmggICAgICB8IDI0OSArKysrKysr
+KysrKysrKw0KPiANCj4gQWx0aG91Z2ggdGhlIGNvZGUgaXMgZmluZSwganVzdCBiZSBhd2FyZSB0
+aGF0IExpbnVzIGNhbiBnZXQgZ3J1bXB5DQo+IGhhdmluZyAxMDBzIGFuZCAxMDBzIG9mIHVudXNl
+ZCByZWdpc3RlciBkZWZpbmVzIGluIHRoZSBrZXJuZWwuDQo+IA0KDQpUaGFua3MgZm9yIHRoZSBj
+b21tZW50LiBXZSB3aWxsIG11bGwgaXQgb3Zlci4NCg0KPiA+ICBpbmNsdWRlL2xpbnV4L3JlZ3Vs
+YXRvci9tdDYzNTktcmVndWxhdG9yLmggfCAgIDEgKw0KPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDYy
+MyBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
+aW5jbHVkZS9saW51eC9tZmQvbXQ2MzU5cC9yZWdpc3RlcnMuaA0KPiANCg0K
 
-Here's the very small first set of irqchip/irqdomain fixes for
-5.12. We have the usual DT updates for new SoCs, a debugfs cleanup,
-and some Kconfig cleanups ahead of the arm64 changes that are planned
-for 5.13.
-
-Please pull,
-
-	M.
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.12-1
-
-for you to fetch changes up to 5fbecd2389f48e1415799c63130d0cdce1cf3f60:
-
-  irqchip/ingenic: Add support for the JZ4760 (2021-03-09 08:45:17 +0000)
-
-----------------------------------------------------------------
-irqchip fixes for 5.12, take #1
-
-- More compatible strings for the Ingenic irqchip (introducing the
-  JZ4760B SoC)
-- Select GENERIC_IRQ_MULTI_HANDLER on the ARM ep93xx platform
-- Drop all GENERIC_IRQ_MULTI_HANDLER selections from the irqchip
-  Kconfig, now relying on the architecture to get it right
-- Drop the debugfs_file field from struct irq_domain, now that
-  debugfs can track things on its own
-
-----------------------------------------------------------------
-Greg Kroah-Hartman (1):
-      irqdomain: Remove debugfs_file from struct irq_domain
-
-Marc Zyngier (2):
-      ARM: ep93xx: Select GENERIC_IRQ_MULTI_HANDLER directly
-      irqchip: Do not blindly select CONFIG_GENERIC_IRQ_MULTI_HANDLER
-
-Paul Cercueil (2):
-      dt-bindings/irq: Add compatible string for the JZ4760B
-      irqchip/ingenic: Add support for the JZ4760
-
- .../devicetree/bindings/interrupt-controller/ingenic,intc.yaml   | 1 +
- arch/arm/Kconfig                                                 | 1 +
- drivers/irqchip/Kconfig                                          | 9 ---------
- drivers/irqchip/irq-ingenic-tcu.c                                | 1 +
- drivers/irqchip/irq-ingenic.c                                    | 1 +
- include/linux/irqdomain.h                                        | 4 ----
- kernel/irq/irqdomain.c                                           | 9 ++++-----
- 7 files changed, 8 insertions(+), 18 deletions(-)
