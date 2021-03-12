@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CACA33830E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 02:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1A0338306
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 02:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhCLBLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 20:11:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
+        id S229756AbhCLBKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 20:10:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhCLBLt (ORCPT
+        with ESMTP id S229568AbhCLBJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 20:11:49 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DA1C061574;
-        Thu, 11 Mar 2021 17:11:48 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso10242947pjb.4;
-        Thu, 11 Mar 2021 17:11:48 -0800 (PST)
+        Thu, 11 Mar 2021 20:09:48 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12EF5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 17:09:48 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id b78so17030818qkg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 17:09:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=16+EGqIhvzNXbdawWsI24XgIQiUgZzzrwVqWt5tsI6Q=;
-        b=k9/V8e9h7lxJGy3+MvDbuIN+ZYqSyUG2tRF5AcbhR75EaTsDgVFbTPeXzQFoCt5Y0z
-         maWum4fpgZCnxzMCM1UnW6bV7Mc2dki6/0AEPh09DM69U4ozafluPUirqWTSkR3qG5ZL
-         TSs0o2z4duN4aAcf3R0oLBDNGwGZ6IBeAhMoS8/4GEYwtyNOWYRgduR3Ucky7rCRJaQS
-         Xd54+6SIcYHnOWuWSRZt5t6f4pxRxV0n12IFfwY3Or+u6tch+nNOSe8ZrKzL38zFBgs5
-         F6esRhGL1FrhBS8hrao32eJDPriSrnDFQBn2dPFJML18s58L0JOwcbt0p9QzSH/54iOD
-         y+PQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=n+xPhT43NmscUpw6p+xSEcR+gcJnv0oKtggQXvDZY6A=;
+        b=Ro7zBPpxkv9FGSgPZFnM4f/xnbzurCHaDDuwf9MoExNQZwY6ITRKadi3mmz/10oyIk
+         jbG9SPspaCX6+P9I0cNl0hbHQnuUokAMvktXjd23CEiEv8ioWJJHcFrrHDNMAeSyDxe2
+         wTgf/lwKD88qYnR9E346OOlA7E1St+6zSVdCvQNng/q9X60rKfoLDOBEJeTjIUwtPwqO
+         5Lag+KohaD3ZGIYgCHdnCm4tEePfwEmWpgN7I/ZsveYEH+XwuGzGESnb71SMVrR9Rzm1
+         8dZXTgH4SKk+Ns9knYcDnQsiHrQ1Fe6lf9tWlzFiK/UGcCaP2UwR0nqyslLqlVKYJEU5
+         Wx0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=16+EGqIhvzNXbdawWsI24XgIQiUgZzzrwVqWt5tsI6Q=;
-        b=AHmNyGG106SHGQVAbRjYufYD3KR7/w6MBJi8+1Wu5kTy+I9M8c7I+avYKyDcz90WbQ
-         EdiHcyV4CjMclX9zoT5XQU6yAYONs8NmdwGZP7orgHsroW3z6w3Wo4pvq50PPQq3l18M
-         5USafL0C3cUFULQmZmaagh5pFjBNUlZE8tgOXht/sxgqzIDTiebUQzA3fS0w8q8Hh5D8
-         WYwAvzcYANCwgoyOU3L+XimGDKHmTxP+9TDz9Z6lxKYaalxYRfB06tkSyfF27HsZFaCL
-         pJ5Jm2eOFdAgQnS7d0aB3DexQ2DaowvVbHymEX9Feqdk87E9RPIRS4LgDcsdL5tf6puK
-         +PSw==
-X-Gm-Message-State: AOAM531oiDhfngZCyEugyZTc62uD0xLr7V7kCS4f/BF1TGxVjckR/wXP
-        cFJbvoqBYIQHp/Vfr4sTS8A=
-X-Google-Smtp-Source: ABdhPJzra0SHtLriT5uJdvG596fUt/NZvuBX6OT9xr5DxY7UWyuTAm+swZOTYPYO+BHr8ri+MLVl2Q==
-X-Received: by 2002:a17:90a:f82:: with SMTP id 2mr11837097pjz.196.1615511508531;
-        Thu, 11 Mar 2021 17:11:48 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id y7sm268087pja.25.2021.03.11.17.11.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 11 Mar 2021 17:11:48 -0800 (PST)
-Date:   Thu, 11 Mar 2021 17:09:33 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iommu/tegra-smmu: Add pagetable mappings to debugfs
-Message-ID: <20210312010932.GB29926@Asurada-Nvidia>
-References: <20210310033614.16772-1-nicoleotsuka@gmail.com>
- <abcedfa6-fbad-b34d-fba1-d3a778fbf5b4@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <abcedfa6-fbad-b34d-fba1-d3a778fbf5b4@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=n+xPhT43NmscUpw6p+xSEcR+gcJnv0oKtggQXvDZY6A=;
+        b=PCeFJECVo9I5totNPs0Pjb1wQMKeRBOLCfR4hidVTAyhvFeuv12kxcOphELEE3FTks
+         1kH66IPMwZbdJClCM1F/uokrs5soL2+SFwPs10gS2As7nSTbn0+PUkb2m9+JSwqR0Cyz
+         LeutiCYWxfTjz1uUWcV/kAaVjsoqM/hqsjAgY/+aFx5lcU8byRDtKsmZRLMjn/bxjB+S
+         ZdePPrIXHg6IeGrbd0dshpr0WfVUc10ZEwlXyI7nbsgQQ6FKM8ROoayezyqaJVOMhRcw
+         yCQ0ATVAxzGIBdudUGNiFQazkOowQDrsFesNeW1C6YkMtV904S6y16nLfrYjdQ4UnIPt
+         9pdw==
+X-Gm-Message-State: AOAM533Be7/0DJdQYtCiumtSw7syf1KpDziD5olxTrhAA9AghQi5/cfd
+        CQzpMPXib78IpORAct5xYFo2xlok2ExxuT2ILd0=
+X-Google-Smtp-Source: ABdhPJxYksMhjkXz0qS5Tfc9f8b0uN6DGFNkVdVKfReR40RRwT5Q+xttnmmUY1MNmPTTJzGoFmbUlVIiqIJCxZIfmlU=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:9c6c:84f8:2058:5b95])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6214:10e7:: with SMTP id
+ q7mr10184252qvt.16.1615511387105; Thu, 11 Mar 2021 17:09:47 -0800 (PST)
+Date:   Thu, 11 Mar 2021 17:09:41 -0800
+Message-Id: <20210312010942.1546679-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] Makefile: LTO: have linker check -Wframe-larger-than
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Candle Sun <candlesea@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 05:04:06PM +0300, Dmitry Osipenko wrote:
-> 10.03.2021 06:36, Nicolin Chen пишет:
-> ...
-> > +static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
-> > +{
-> > +	struct tegra_smmu_group_debug *group_debug = s->private;
-> > +	const struct tegra_smmu_swgroup *group;
-> > +	struct tegra_smmu_as *as;
-> > +	struct tegra_smmu *smmu;
-> > +	int pd_index, pt_index;
-> 
-> > +DEFINE_SHOW_ATTRIBUTE(tegra_smmu_mappings);
-> > +
-> >  static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
-> >  {
-> > +	const struct tegra_smmu_soc *soc = smmu->soc;
-> > +	struct tegra_smmu_group_debug *group_debug;
-> > +	struct device *dev = smmu->dev;
-> > +	struct dentry *d;
-> > +	int i;
-> 
-> You should use unsigned types for everything that isn't signed.
+-Wframe-larger-than= requires stack frame information, which the
+frontend cannot provide. This diagnostic is emitted late during
+compilation once stack frame size is available.
 
-Okay. Will fix. Thanks!
+When building with LTO, the frontend simply lowers C to LLVM IR and does
+not have stack frame information, so it cannot emit this diagnostic.
+When the linker drives LTO, it restarts optimizations and lowers LLVM IR
+to object code. At that point, it has stack frame information but
+doesn't know to check for a specific max stack frame size.
+
+I consider this a bug in LLVM that we need to fix. There are some
+details we're working out related to LTO such as which value to use when
+there are multiple different values specified per TU, or how to
+propagate these to compiler synthesized routines properly, if at all.
+
+Until it's fixed, ensure we don't miss these. At that point we can wrap
+this in a compiler version guard or revert this based on the minimum
+support version of Clang.
+
+The error message is not generated during link:
+  LTO     vmlinux.o
+ld.lld: warning: stack size limit exceeded (8224) in foobarbaz
+
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Reported-by: Candle Sun <candlesea@gmail.com>
+Suggested-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+LTO users might want to `make clean` or `rm -rf .thinlto-cache` to test
+this.
+
+ Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index f9b54da2fca0..74566b1417b8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -910,6 +910,11 @@ CC_FLAGS_LTO	+= -fvisibility=hidden
+ 
+ # Limit inlining across translation units to reduce binary size
+ KBUILD_LDFLAGS += -mllvm -import-instr-limit=5
++
++# Check for frame size exceeding threshold during prolog/epilog insertion.
++ifneq ($(CONFIG_FRAME_WARN),0)
++KBUILD_LDFLAGS	+= -plugin-opt=-warn-stack-size=$(CONFIG_FRAME_WARN)
++endif
+ endif
+ 
+ ifdef CONFIG_LTO
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
