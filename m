@@ -2,86 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46318338872
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D58FE338879
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbhCLJSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:18:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232432AbhCLJRd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:17:33 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401B7C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:17:33 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id u7so3239225qtq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:17:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:mime-version:date:message-id;
-        bh=ECNP794vd/MqltNp2Xg1xMd6ACxG0sB1oY12VAH2vHU=;
-        b=V/wWzHU1hT9jBhi9t484erOHog2VFbPMLaoOOY5XGCGy3gB169QpYK3c1TRiTRqSPf
-         DPRY6eSqGSGKEDH0kjaZ0W1yw9he4LD/Yrgt7jTHNwzohT5LMgpvZa1BorugnE+xKwon
-         BVqreFmioVKya2H+155oyoputkKQl0ASuftZOrYCEEgzL8ryQUfX00hwKKpnMYDjllwh
-         mJqD7FYTVIYSx1q6lZdNlkmlDJBXqVaQk/7nR8KcbzLWYwX1Ae+SlTM+Jj8Iku7+Un/q
-         P2fH0Ocdp4hTqcEOlNUp4I2W504psLLmSdTqZq+0XvvLvzaIaDxH+ieT7de/kiN1CHKm
-         Omyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version:date
-         :message-id;
-        bh=ECNP794vd/MqltNp2Xg1xMd6ACxG0sB1oY12VAH2vHU=;
-        b=XgrgSQyljR9I7oqggewPUBZebyif5b9YL3lbPY2hSK3PXENBLUxuKC4juVydVxAKU+
-         77wbSLgDuwDCLUL6EhC1/ieM0uKhVnrr3S4BmXxXtMiSxCyL5+CxUO+KCTU4xfR3+lT1
-         qjfIrxCYUllIJwbhm6xBsmeyoSj64K1tA3Affeq9X4EfaHbHsLSNk0RWaAxQauvZLAHB
-         KPYYHtMfxkTviAKva1/qfcwEIQa9nMBYicqzZLQbHtbRVkWRDmORQbrvvH6tOGEPTNQh
-         nSRKdp3MZsf2rL3xx2Dp4MNRxokjGk8M9cBt3WyrJEQAg2If4JBSMJhj3HOizIEtlkAf
-         FiiQ==
-X-Gm-Message-State: AOAM531VDTwj400Z+aZw8UH+/G5GTxeWURZqAXhPXLUnhvl5AK1qaM81
-        QiT6Cax0h4nWJw55hxHJNMyFfw==
-X-Google-Smtp-Source: ABdhPJwWaXqCxHEPAWJAT0KOTrRahWktwjM6wPwdOLs5kbgTHCi5aaryXcQLnmvBhHKA9k8sqHrKVg==
-X-Received: by 2002:ac8:6892:: with SMTP id m18mr10802240qtq.5.1615540652417;
-        Fri, 12 Mar 2021 01:17:32 -0800 (PST)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id t188sm3963922qke.91.2021.03.12.01.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:17:32 -0800 (PST)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>
-cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm: Fix sparse warnings in adreno-smmu-priv.h
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date:   Fri, 12 Mar 2021 04:17:31 -0500
-Message-ID: <160589.1615540651@turing-police>
+        id S232756AbhCLJVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:21:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232552AbhCLJVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 04:21:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2130464FE0;
+        Fri, 12 Mar 2021 09:21:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615540868;
+        bh=HKyzLPWLU/FWL7rz8JEjHBFhc9WIdajW+NR/EByr3kc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iuZ39FOeACJa0lsjB/CIP8vCYlh5EXP/6LFVPl//kTg/tFdLV+EL82Lv5jZ/QNb1r
+         8xUO4hcT03dZWaHUTo6XkwJgkObfnIpaU3ijuQwzXW8seMp8aiNY+Kg7CN5zWxJsA7
+         +YlFhRUahfO2vrpmCUNk5AJ+XKzR64MBx+VrIn+ZYiCe6x82gsPTcvpfZRzElNAJ0k
+         2f3TUzQ3ptT5pYWNG+nOmBkgkwttpTWsQboaN+W8xbTDQ/fz2IV4OFHJGj25VKGOTS
+         MyEpP/alSPOKFmC7xVJrIC8ZrZz2I8Ww6dH8L+PBWKOHA/JEU11JWgNlDJ4cqYPURx
+         CB+ewXtt+Utzw==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lKdyx-0006rQ-CS; Fri, 12 Mar 2021 10:21:20 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Rob Herring <robh@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Jens Frederich <jfrederich@gmail.com>,
+        Jon Nettleton <jon.nettleton@gmail.com>,
+        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH v2 RESEND] x86/apic/of: Fix CPU devicetree-node lookups
+Date:   Fri, 12 Mar 2021 10:20:33 +0100
+Message-Id: <20210312092033.26317-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sparse throws 27 complaints of the form:
-  CHECK   /usr/src/linux-next/drivers/gpu/drm/msm/msm_perf.c
-/usr/src/linux-next/drivers/gpu/drm/msm/msm_perf.c: note: in included file (through /usr/src/linux-next/drivers/gpu/drm/msm/msm_gpu.h):
-/usr/src/linux-next/include/linux/adreno-smmu-priv.h:36:33: warning: no newline at end of file
+Architectures that describe the CPU topology in devicetree and that do
+not have an identity mapping between physical and logical CPU ids need
+to override the default implementation of arch_match_cpu_phys_id().
 
-Give it the missing newline...
+Failing to do so breaks CPU devicetree-node lookups using
+of_get_cpu_node() and of_cpu_device_node_get() which several drivers
+rely on. It also causes the CPU struct devices exported through sysfs to
+point to the wrong devicetree nodes.
 
-Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+On x86, CPUs are described in devicetree using their APIC ids and those
+do not generally coincide with the logical ids, even if CPU0 typically
+uses APIC id 0. Add the missing implementation of
+arch_match_cpu_phys_id() so that CPU-node lookups work also with SMP.
 
-diff --git a/include/linux/adreno-smmu-priv.h b/include/linux/adreno-smmu-priv.h
-index a889f28afb42..977e7c3a21e6 100644
---- a/include/linux/adreno-smmu-priv.h
-+++ b/include/linux/adreno-smmu-priv.h
-@@ -33,4 +33,4 @@ struct adreno_smmu_priv {
-     int (*set_ttbr0_cfg)(const void *cookie, const struct io_pgtable_cfg *cfg);
+Apart from fixing the broken sysfs devicetree-node links this likely do
+not affect current users of mainline kernels on x86.
+
+Fixes: 4e07db9c8db8 ("x86/devicetree: Use CPU description from Device Tree")
+Cc: stable@vger.kernel.org	# 4.17
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ arch/x86/kernel/apic/apic.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+
+It's been over three months so resending.
+
+Can someone please pick this up for 5.12 or -next?
+
+Again, my use case for this is still out-of-tree, but since CPU-node
+lookup is generic functionality and with observable impact also for
+mainline users (sysfs) I added a stable tag in v2. Just drop the tag
+if you think it's unwarranted.
+
+Johan
+
+
+ Changes in v2
+ - rewrite commit message
+ - add Fixes tag
+ - add stable tag for the benefit of out-of-tree users
+
+
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 6bd20c0de8bc..7cb93a4f4524 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2330,6 +2330,11 @@ static int cpuid_to_apicid[] = {
+ 	[0 ... NR_CPUS - 1] = -1,
  };
  
--#endif /* __ADRENO_SMMU_PRIV_H */
-\ No newline at end of file
-+#endif /* __ADRENO_SMMU_PRIV_H */
++bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
++{
++	return phys_id == cpuid_to_apicid[cpu];
++}
++
+ #ifdef CONFIG_SMP
+ /**
+  * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
+-- 
+2.26.2
 
