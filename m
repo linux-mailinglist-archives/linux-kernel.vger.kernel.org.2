@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B0333867C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2EC338676
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhCLHUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:20:32 -0500
-Received: from m12-17.163.com ([220.181.12.17]:47236 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231485AbhCLHUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:20:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=E1I51
-        7xxvK7g3rGfwB8KIhZ2f7fCT3nY+bZTzzZ3FbM=; b=BiOu+anaQsAwAPlBp9LZ7
-        xeCCYjX8TxUHzzs+WrE52Bb9a2LbU9z1R+fg+qLsFFT1I410tG0IKWpXmt9dnXj6
-        HIf8bock8fp9qnumOImtmQVy98E7CftNMBMd0ZmvOiZomh0DpYIyBXKvKxmOq2+s
-        qCxm0UHtwme/dfKQ7X0YrY=
-Received: from yangjunlin.ccdomain.com (unknown [119.137.52.39])
-        by smtp13 (Coremail) with SMTP id EcCowAAHBo7VFUtg3tQRpg--.3254S2;
-        Fri, 12 Mar 2021 15:18:46 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     tomba@kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        sebastian.reichel@collabora.com, laurent.pinchart@ideasonboard.com
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH] drm/omap: dsi: fix unsigned expression compared with zero
-Date:   Fri, 12 Mar 2021 15:14:45 +0800
-Message-Id: <20210312071445.1721-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S231130AbhCLHRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:17:50 -0500
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:51817 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229688AbhCLHRd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 02:17:33 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id Kc36ly3iU4ywlKc39l2HmC; Fri, 12 Mar 2021 08:17:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1615533451; bh=OP2DhD6seMyRaLqWP0q7MnMJlB5gR26hw+PcsK0yWIc=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=tLByZYRECSZWIFR7o7aj8Mntim8uz7SqIuDzD1Un1ybytOnc1WFXaKx8Cfp7ch72j
+         frtPbMQa6nIY5YH1+OY5npZUK+X5bwiZRxVUCRHTw8+dekq0ZMa++IkCqwyBsiRVUI
+         qpixfLeohUBaUr3b/loRBW1he04f8hDkHWvgwA6rx2fnIoQez0QQPpoYDdg0//S9Vl
+         lEIPta57nDS/RcHmMjSJZIX+KXeR5StS50bS787wJGnmeoI6m1SlNN53OMRor0PRF/
+         bUgZ1ud8lJCGksePXzC6sBgO3fwsxCWR3NaqqzvnadT+hF/7UwUU8Pv0eQGtxMECdL
+         1+EMsZKbknNqQ==
+Subject: Re: [PATCH v2 6/6] media: uvcvideo: Set a different name for the
+ metadata entity
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, senozhatsky@chromium.org
+References: <20210311221946.1319924-1-ribalda@chromium.org>
+ <20210311221946.1319924-7-ribalda@chromium.org>
+ <YEqp/EkIUwOQhAN5@pendragon.ideasonboard.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <96245ed2-dd6f-ddc3-aa02-a9924f76bc76@xs4all.nl>
+Date:   Fri, 12 Mar 2021 08:17:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowAAHBo7VFUtg3tQRpg--.3254S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1DCr1fKr4rGr4xtw1UKFg_yoWDCFc_CF
-        1Ivr13WrWUCF9rZr4ayay7Zry09F1SvFWrWr12qa4fA3yaqr9rJ3srCFyxXw1DCF4UtF95
-        G3WDur1fZan7GjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0j0P7UUUUU==
-X-Originating-IP: [119.137.52.39]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiKxZTI1QHWs6ysAAAsI
+In-Reply-To: <YEqp/EkIUwOQhAN5@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfCijKaXrKF6v97+P2fdEcICG8bp0cwmL0k+fViWJfGPSKDz912TfFGypf9u7rdCdl+DsHy8ST4/R5mgESJkHJL70ITTuJnBo1sJn0X4Kjw6JILBIhmGm
+ 8ugFxN1qYm3rgLS0Z5pVHUpDE0frJDu2acmElfXtQS4n38NwLjT5A7eAC81ONDCRQ5Z//jbyVECJhYfDD1w9q1T8d5k1BQDX2MlCpS5QVHNB2Stdq/hCl55q
+ TETuI2ugAGHrRLmCTFLcwCE6SngOn/KgCZ2nN2/8x2aNm35aZmef6sR7v1QBjcF/oLskDzs3D+gK7I1x4tGtT69AyJCn1++t7+p62iLVWr/j/h5s40JTDt0S
+ n9Yyq7ohDoH+5Fqu6Kngx1IibFdyZK2ou0XKfXv1NXdiTwYh7l0EpOFKqHdQUr01TGzPV+fW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+On 12/03/2021 00:38, Laurent Pinchart wrote:
+> Hi Ricardo,
+> 
+> Thank you for the patch.
+> 
+> On Thu, Mar 11, 2021 at 11:19:46PM +0100, Ricardo Ribalda wrote:
+>> All the entities must have a unique name.
+>>
+>> Fixes v4l2-compliance:
+>> Media Controller ioctls:
+>>                 fail: v4l2-test-media.cpp(205): v2_entity_names_set.find(key) != v2_entity_names_set.end()
+>>         test MEDIA_IOC_G_TOPOLOGY: FAIL
+>>                 fail: v4l2-test-media.cpp(394): num_data_links != num_links
+>> 	test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
+>>
+>> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+>> ---
+>>  drivers/media/usb/uvc/uvc_driver.c | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+>> index 30ef2a3110f7..47efa9a9be99 100644
+>> --- a/drivers/media/usb/uvc/uvc_driver.c
+>> +++ b/drivers/media/usb/uvc/uvc_driver.c
+>> @@ -2199,7 +2199,10 @@ int uvc_register_video_device(struct uvc_device *dev,
+>>  		break;
+>>  	}
+>>  
+>> -	strscpy(vdev->name, dev->name, sizeof(vdev->name));
+>> +	if (type == V4L2_BUF_TYPE_META_CAPTURE)
+>> +		strscpy(vdev->name, "Metadata Videodev", sizeof(vdev->name));
+>> +	else
+>> +		strscpy(vdev->name, dev->name, sizeof(vdev->name));
+> 
+> A UVC device could contain multiple output terminals (either in the same
+> chain or in different chains), which would still result in multiple
+> entities having the same name. Could this be fixed at the same time ?
+> You can use the unit ID of the output terminal to create unique names
+> (and it would be nice if the video and metadata nodes has similar names,
+> with "video" and "metadata" being the only difference between them).
 
-r is "u32" always >= 0,mipi_dsi_create_packet may return little than zero.
-so r < 0 condition is never accessible.
+I agree with Laurent. How about using something like this for the videodevs:
 
-Fixes coccicheck warnings:
-./drivers/gpu/drm/omapdrm/dss/dsi.c:2155:5-6:
-WARNING: Unsigned expression compared with zero: r < 0
+	snprintf(vdev->name, sizeof(vdev->name), "Meta %s", dev->name);
 
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
- drivers/gpu/drm/omapdrm/dss/dsi.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+and:
 
-diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
-index 8e11612..b31d750 100644
---- a/drivers/gpu/drm/omapdrm/dss/dsi.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
-@@ -2149,11 +2149,12 @@ static int dsi_vc_send_short(struct dsi_data *dsi, int vc,
- 			     const struct mipi_dsi_msg *msg)
- {
- 	struct mipi_dsi_packet pkt;
-+	int ret;
- 	u32 r;
- 
--	r = mipi_dsi_create_packet(&pkt, msg);
--	if (r < 0)
--		return r;
-+	ret = mipi_dsi_create_packet(&pkt, msg);
-+	if (ret < 0)
-+		return ret;
- 
- 	WARN_ON(!dsi_bus_is_locked(dsi));
- 
--- 
-1.9.1
+	snprintf(vdev->name, sizeof(vdev->name), "Video %s", dev->name);
 
+Regards,
+
+	Hans
+
+> 
+>>  
+>>  	/*
+>>  	 * Set the driver data before calling video_register_device, otherwise
+> 
 
