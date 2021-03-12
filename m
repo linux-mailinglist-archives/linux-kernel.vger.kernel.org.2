@@ -2,89 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E73A3398DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8449F3398E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235135AbhCLVJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:09:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235126AbhCLVJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:09:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA06264EF2;
-        Fri, 12 Mar 2021 21:09:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615583359;
-        bh=2N2ztC788SQbCuYFCkp/J92j6XWqG+f7aPQnOJz6HRI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=kYCX8BFCWc0ElvYGsar6D0FWraDj7ShI/F7iOE2Fibe1ZawhE9OKCO3pWvVf952ls
-         HDWgBXW2knX459ELgJ8G04RcsviPo/bzvOQJo5Y0VtyzCS0Q1wFHU5QR5o9azg8oXj
-         J+OuKE68FD/FhYoSZoTmj/9ECqBjPbPxfh/O0sq/3WCFNSCSMHaM4TwJpb324Ab7aS
-         V6+nU0Za7SiThxxECORekb04lVcQv7WrG/9S63k9ihrfSIwDl90atM7y4gDzrkYzN7
-         cAz4t4wY13XDSnzFPX93qkS7Zo1y/ej+8cCzNI6j+qTYegGuHB1wB286O/Q2odX738
-         ihtdL9+VXVnJQ==
-Date:   Fri, 12 Mar 2021 15:09:17 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Antti =?iso-8859-1?Q?J=E4rvinen?= <antti.jarvinen@gmail.com>
-Cc:     kw@linux.com, alex.williamson@redhat.com, bhelgaas@google.com,
-        kishon@ti.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, m-karicheri2@ti.com
-Subject: Re: [PATCH v3] PCI: Add quirk for preventing bus reset on TI C667X
-Message-ID: <20210312210917.GA2290948@bjorn-Precision-5520>
+        id S235152AbhCLVKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235142AbhCLVKU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 16:10:20 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF36C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:10:19 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id t29so2691064pfg.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:10:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pAFjvyG2BbuTR3wtn+p9SqjjHJsHfZYBaKEIukNmkVY=;
+        b=vc6FxzbYVVZjdJEOtsXsduPQatLfiaVPUx7lsOMuWZRohiMgayTvLyeV0MwzdexptK
+         Bm7Vc9Au744meaK5aoM+NFWSf8U+JGpmsaD445FNT5K1mQiBDhIeJgdCw5AL+rShRVPy
+         752uzcppiFQZa6/ExdAzCZp8TnMbPQAH6uXQyeZlZKEVfzTp7Lg0iqLaqSzDJy0v5KzE
+         OkPackqgyz9EWoFSsQFavX3gYpLEv4l/p0vqPrC4Si/JVzFXxtE3HBhtHu8wUUxlKVlU
+         PZX92mQZuR9qYIdAFlwntQDcqmYC4GAiPD+zK/xpmWPeCm62eZg2gx0iZ2pFPtOeqP7Q
+         rgWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pAFjvyG2BbuTR3wtn+p9SqjjHJsHfZYBaKEIukNmkVY=;
+        b=QJy1HafUxhR7MvBsW7C3MIiQoKrJAYPJqNBWZ9IEdJV0X7RtHb85jF8y6oA4Skzm74
+         PsoSLEtLgIzsg2Z1InFEru8cZiGvy32Wl0fulCDauhbPr9UjaxL0nQszkzO6pU27E5bT
+         lL5924enAO3AuEfyGV0oc8tTpnoW40gqT+lN3ES2sRBSDXSZu5uUufl3Bm7RJrPAAsH1
+         tLIdLiwBplMvsh7oMmTqTWFW5P86PWwBwdxGaCsFpmb9SpmT43iBHkj57MyHtn7tH6q8
+         rAjsYb///gJ3CusuhK8mquoXIQ+gMgYcvrHYlt/vEoqd20u5GmhaR7lxZ/PpN6L8Ywg5
+         EeUg==
+X-Gm-Message-State: AOAM530q8z4EbaWuTBN2itLwq5wtCpJ1LIWirDgFRnbjroKA/X5PcLTK
+        J80u2KZFqBTob8bYV4D6b2OXBw==
+X-Google-Smtp-Source: ABdhPJzZqo8fypR7EoA+WAQj0FiBpOz4ZTPpaT51JQKOswutZAbZB0I1mU0vdImvhQDzgMdCafHRuA==
+X-Received: by 2002:a63:cd08:: with SMTP id i8mr13355788pgg.49.1615583418687;
+        Fri, 12 Mar 2021 13:10:18 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e1a6:2eeb:4e45:756])
+        by smtp.gmail.com with ESMTPSA id q95sm2911339pjq.20.2021.03.12.13.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 13:10:18 -0800 (PST)
+Date:   Fri, 12 Mar 2021 13:10:11 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v2 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
+Message-ID: <YEvYsx+jUfALD8Py@google.com>
+References: <cover.1615250634.git.kai.huang@intel.com>
+ <164745a2de1b9c5bede8c08a3a57566b75a61ae1.1615250634.git.kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210308142130.13835-1-antti.jarvinen@gmail.com>
+In-Reply-To: <164745a2de1b9c5bede8c08a3a57566b75a61ae1.1615250634.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 02:21:30PM +0000, Antti Järvinen wrote:
-> Some TI KeyStone C667X devices do no support bus/hot reset. Its PCIESS
-> automatically disables LTSSM when secondary bus reset is received and
-> device stops working. Prevent bus reset by adding quirk_no_bus_reset to
-> the device. With this change device can be assigned to VMs with VFIO,
-> but it will leak state between VMs.
+On Tue, Mar 09, 2021, Kai Huang wrote:
+> @@ -290,6 +290,8 @@
+>  #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in kernel entry SWAPGS path */
+>  #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split lock */
+>  #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
+> +#define X86_FEATURE_SGX1		(11*32+ 8) /* "" Basic SGX */
+> +#define X86_FEATURE_SGX2        	(11*32+ 9) /* "" SGX Enclave Dynamic Memory Management (EDMM) */
 
-s/do no/do/not/ (also in the comment below)
-
-Does the user get any indication of this leaking state?  I looked
-through drivers/vfio and drivers/pci, but I haven't found anything
-yet.
-
-We *could* log something in quirk_no_bus_reset(), but that would just
-be noise for people who don't pass the device through to a VM.  So
-maybe it would be nicer if we logged something when we actually *do*
-pass it through to a VM.
-
-> Reference: https://e2e.ti.com/support/processors/f/791/t/954382
-> Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
-> ---
->  drivers/pci/quirks.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 653660e3ba9e..d9201ad1ca39 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3578,6 +3578,16 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
->   */
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
->  
-> +/*
-> + * Some TI keystone C667X devices do no support bus/hot reset.
-> + * Its PCIESS automatically disables LTSSM when secondary bus reset is
-> + * received and device stops working. Prevent bus reset by adding
-> + * quirk_no_bus_reset to the device. With this change device can be
-> + * assigned to VMs with VFIO, but it will leak state between VMs.
-> + * Reference https://e2e.ti.com/support/processors/f/791/t/954382
-> + */
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
-> +
->  static void quirk_no_pm_reset(struct pci_dev *dev)
->  {
->  	/*
-> -- 
-> 2.17.1
-> 
+There are spaces immediately after _SGX2 that can be replace by a tab.
