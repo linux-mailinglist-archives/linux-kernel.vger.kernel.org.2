@@ -2,50 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DCA338E2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2A3338E30
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhCLNDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:03:05 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:54402 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231488AbhCLNCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:02:32 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lKhQr-00060E-Ez; Sat, 13 Mar 2021 00:02:22 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sat, 13 Mar 2021 00:02:21 +1100
-Date:   Sat, 13 Mar 2021 00:02:21 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     davem@davemloft.net, Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Eric Biggers <ebiggers@google.com>, ardb@kernel.org,
-        sivaprak@codeaurora.org, linux-crypto@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/7] Add support for AEAD algorithms in Qualcomm Crypto
- Engine driver
-Message-ID: <20210312130221.GB17238@gondor.apana.org.au>
-References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
- <20210304053027.GC25972@gondor.apana.org.au>
- <CALD-y_y8qidsypp7=F-5OLitaq3B1E==c+eQgyqq7hv9t3xcmw@mail.gmail.com>
+        id S231701AbhCLNDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:03:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhCLNCw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:02:52 -0500
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055DEC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:02:51 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:f9e2:c536:b8cc:fbbc])
+        by andre.telenet-ops.be with bizsmtp
+        id fR2o240071ACAb301R2oAe; Fri, 12 Mar 2021 14:02:48 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lKhRH-0077p4-QP; Fri, 12 Mar 2021 14:02:47 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lKhRH-00EDuq-4n; Fri, 12 Mar 2021 14:02:47 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/3] regulator: bd9571mwv: Miscellaneous fixes and improvements
+Date:   Fri, 12 Mar 2021 14:02:39 +0100
+Message-Id: <20210312130242.3390038-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALD-y_y8qidsypp7=F-5OLitaq3B1E==c+eQgyqq7hv9t3xcmw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 01:41:15PM -0500, Thara Gopinath wrote:
->
-> Yes it did. The last patch adds fallback for unsupported cases and
-> this will make it pass the fuzz tests.
+*** BLURB HERE ***
 
-Please include this information in the next round.
+Geert Uytterhoeven (3):
+  regulator: bd9571mwv: Fix AVS and DVFS voltage range
+  regulator: bd9571mwv: Fix regulator name printed on registration
+    failure
+  regulator: bd9571mwv: Convert device attribute to sysfs_emit()
 
-Thanks,
+ drivers/regulator/bd9571mwv-regulator.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.25.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
