@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2339C339A29
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A1B339A2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235901AbhCLXs5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 18:48:57 -0500
-Received: from mga17.intel.com ([192.55.52.151]:60337 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235917AbhCLXsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 18:48:35 -0500
-IronPort-SDR: zvGsp/lYoTNcTDolUZlvQVsfiOCLUMS8A+jXMjg+uvIqQ3BSHnF9M5pBvzn5JTw1M/je1/krZm
- 18+d1eYA/l/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="168822009"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="168822009"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 15:48:32 -0800
-IronPort-SDR: eU82mLSqcCkLWvqZYcSZQVkkNBFocFGN+1m26nc2uVQbSnZahEsgExEJmQGe4pwUfLdTG/q96a
- RMCoALwfuXig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="604110535"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Mar 2021 15:48:32 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Mar 2021 15:48:32 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Mar 2021 15:48:31 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Fri, 12 Mar 2021 15:48:31 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Aili Yao <yaoaili@kingsoft.com>
-CC:     =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>
-Subject: RE: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Topic: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Index: AQHXCnz5ja9ELypBUEatGW66U99st6pnoa2AgAEgN4CAAIHfAIAAAyEAgAAQXwD//9g7gIABDSmAgAALNoCAB2DqAIAAiu0AgABOzQD//+3L0IABObiAgAAiT4CAACi3AIAAmjmAgACgEACAAGnOwIAHwDQAgAHAYACAAADA4IABX0yAgAAnh8CAAHr7MA==
-Date:   Fri, 12 Mar 2021 23:48:31 +0000
-Message-ID: <af80221baed940d8bcc643e3e7d40036@intel.com>
-References: <20210303115710.2e9f8e23@alex-virtual-machine>
-        <20210303163912.3d508e0f@alex-virtual-machine>
-        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
-        <20210304101653.546a9da1@alex-virtual-machine>
-        <20210304121941.667047c3@alex-virtual-machine>
-        <20210304144524.795872d7@alex-virtual-machine>
-        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
-        <20210305093016.40c87375@alex-virtual-machine>
-        <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
-        <20210310141042.4db9ea29@alex-virtual-machine>
-        <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
-        <db80e98d2b264e988596d0d7d7c8a776@intel.com>
- <20210312135531.72e33b35@alex-virtual-machine>
- <3900f518d1324c388be52cf81f5220e4@intel.com>
-In-Reply-To: <3900f518d1324c388be52cf81f5220e4@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        id S235875AbhCLXxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 18:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235690AbhCLXxB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 18:53:01 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0572C061574;
+        Fri, 12 Mar 2021 15:53:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=PyYSziSvb4CbAQOs+YzAOIzweinnSghlNEf/rKo2Ts4=; b=PQL/uvuGcCnjoakkeUNEap8YbX
+        Xy8KLQ5UyP/cE7TmrA9Zew7qRbzuIdH+6Xy8Rx1byc/nsjI7l/rZm9zPYhn+KTOpST6+lg3MwZ8MB
+        sbvWUS0IESwBHHMQ1WSztlkpJf4U6QtB4kWEhqk+05uNEbaFSO/i+o3+bL3a5GtHLsUrtAHK+8v2Y
+        MzzP5j0ptRDvy+dFqG+XDfxMVg0BjKk1ma8/cd1B7CSN93F/NECgCB0/mP1bmxNPG8h8RE0cUZiJm
+        w/rne8RXF9C0gs9qwY9lkCDCQf70m9wbE1DZln8ngec+DsZbxHB2QhhuhCQ0/GUy/oN8cPr+rcvCG
+        z2Jkr5xw==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKraT-0016Ht-LK; Fri, 12 Mar 2021 23:52:58 +0000
+Subject: Re: [PATCH] cpufreq: Rudimentary typos fix in the file
+ s5pv210-cpufreq.c
+To:     Tom Saeger <tom.saeger@oracle.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210312120817.12604-1-unixbhaskar@gmail.com>
+ <4c0c0738-72c3-7704-500a-28cb1a068aa1@kernel.org> <YEv2RDAdeJEU75ib@Gentoo>
+ <20210312233802.bzriltvej5gccsdp@brm-x62-17.us.oracle.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <56934ae8-d9f6-360f-241d-8e8aee448b7d@infradead.org>
+Date:   Fri, 12 Mar 2021 15:52:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <20210312233802.bzriltvej5gccsdp@brm-x62-17.us.oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> will memory_failure() find it and unmap it? if succeed, then the current will be
->> signaled with correct vaddr and shift?
->
-> That's a very good question.  I didn't see a SIGBUS when I first wrote this code,
-> hence all the p->mce_vaddr.  But now I'm
-> a) not sure why there wasn't a signal
-> b) if we are to fix the problems noted by AndyL, need to make sure that there isn't a SIGBUS
+On 3/12/21 3:38 PM, Tom Saeger wrote:
+> On Sat, Mar 13, 2021 at 04:46:20AM +0530, Bhaskar Chowdhury wrote:
+>> On 15:01 Fri 12 Mar 2021, Krzysztof Kozlowski wrote:
+>>> On 12/03/2021 13:08, Bhaskar Chowdhury wrote:
+>>>>
+>>>> s/untile/until/
+>>>> s/souce/source/
+>>>> s/divier/divider/
+>>>>
 
-Tests on upstream kernel today show that memory_failure() is both unmapping the page
-and sending a SIGBUS.
+> 
+> May as well roll in few more?
+> 
+> Regards,
+> 
+> --Tom
+> 
+> diff --git a/drivers/cpufreq/s5pv210-cpufreq.c b/drivers/cpufreq/s5pv210-cpufreq.c
+> index a186c0d8a290..6ecef301bd40 100644
+> --- a/drivers/cpufreq/s5pv210-cpufreq.c
+> +++ b/drivers/cpufreq/s5pv210-cpufreq.c
+> @@ -91,7 +91,7 @@ static DEFINE_MUTEX(set_freq_lock);
+>  /* Use 800MHz when entering sleep mode */
+>  #define SLEEP_FREQ     (800 * 1000)
+> 
+> -/* Tracks if cpu freqency can be updated anymore */
+> +/* Tracks if cpu frequency can be updated anymore */
+>  static bool no_cpufreq_access;
+> 
+>  /*
+> @@ -190,7 +190,7 @@ static u32 clkdiv_val[5][11] = {
+> 
+>  /*
+>   * This function set DRAM refresh counter
+> - * accoriding to operating frequency of DRAM
+> + * according to operating frequency of DRAM
+>   * ch: DMC port number 0 or 1
+>   * freq: Operating frequency of DRAM(KHz)
+>   */
+> @@ -320,7 +320,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
+> 
+>                 /*
+>                  * 3. DMC1 refresh count for 133Mhz if (index == L4) is
+> -                * true refresh counter is already programed in upper
+> +                * true refresh counter is already programmed in upper
+>                  * code. 0x287@83Mhz
+>                  */
+>                 if (!bus_speed_changing)
+> 
 
+LGTM.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-My biggest issue with the KERNEL_COPYIN recovery path is that we don't have code
-to mark the page not present while we are still in do_machine_check().  That's resulted
-in recovery working for simple cases where there is a single get_user() call followed by
-an error return if that failed. But more complex cases require more machine checks and
-a touching faith that the kernel will eventually give up trying (spoiler: it sometimes doesn't).
+Thanks.
 
-Thanks to the decode of the instruction we do have the virtual address. So we just need
-a safe walk of pgd->p4d->pud->pmd->pte (truncated if we hit a huge page) with a write
-of a "not-present" value. Maybe a different poison type from the one we get from
-memory_failure() so that the #PF code can recognize this as a special case and do any
-other work that we avoided because we were in #MC context.
+-- 
+~Randy
 
--Tony
