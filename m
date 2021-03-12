@@ -2,115 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9A533901A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB16333901F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhCLOdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:33:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbhCLOdN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:33:13 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A79C061574;
-        Fri, 12 Mar 2021 06:33:13 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lKiqc-00FE4K-N4; Fri, 12 Mar 2021 15:33:02 +0100
-Message-ID: <d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net>
-Subject: Re: [PATCH 0/6] um: fix up CONFIG_GCOV support
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Date:   Fri, 12 Mar 2021 15:33:01 +0100
-In-Reply-To: <20210312095526.197739-1-johannes@sipsolutions.net>
-References: <20210312095526.197739-1-johannes@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S230386AbhCLOfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:35:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229959AbhCLOey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 09:34:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3EF664F23
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 14:34:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615559694;
+        bh=L+vIlV/agm+Y36Vfdw7/F5SkJZPDHB3Vs6EXYx4Bj2k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jZ1X2NRhsDUW1GlhHciFxm6eAqpOL45+qNK9KcUxiae0eqdasrc43PlcZ4KhNjggh
+         45ZXI8tNC2an3Q35h9th6SeTdZMAc2oINIraEZwHWUosyuto8eMPoknkwUv5NcNqpd
+         pkiOdNGyLOd2b9HWC6X+tvV3MiF4TZAjSvFFP8POHg+47osOxALpcKNIj8sLwhn859
+         ScnzukpPKaEnD/ssu4K7SmZCYqHeiNChBVzk9G040aHA/RMsVJ4e5YRxI5BizLdqfL
+         z2l9zMTovHl/Bj0D99N9YmsEhEtHdr9mBhhCR6Hu9PdodOuud25EHDVx412bFs7V/P
+         +8kr68uSrF+1w==
+Received: by mail-ej1-f46.google.com with SMTP id k16so232102ejx.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 06:34:53 -0800 (PST)
+X-Gm-Message-State: AOAM531BqphWOzborXSewPzrLRyt4BWeDTI3hehPCQBvzufvW6nMdmp7
+        kdjTt1u69SBFe24M+65bGf80uxAsco0OOLCHiw==
+X-Google-Smtp-Source: ABdhPJydJdts2afhRCK8ep/AJsnZcQOl4g9AawP6BZ9hsjbVGEH1Y5VtSm8XHshzur+pzfZ8W+Saf5Ne3S8gRAYKol4=
+X-Received: by 2002:a17:906:1d44:: with SMTP id o4mr8252548ejh.130.1615559692308;
+ Fri, 12 Mar 2021 06:34:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+References: <20210311000837.3630499-1-robh@kernel.org> <20210311000837.3630499-5-robh@kernel.org>
+ <YEtzl5c1m7jxWkEw@krava>
+In-Reply-To: <YEtzl5c1m7jxWkEw@krava>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 12 Mar 2021 07:34:39 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqLMDLRN2OvMt7cBb1tPWmsupCzQ7DOs_P8nbpjirP4Hwg@mail.gmail.com>
+Message-ID: <CAL_JsqLMDLRN2OvMt7cBb1tPWmsupCzQ7DOs_P8nbpjirP4Hwg@mail.gmail.com>
+Subject: Re: [PATCH v6 04/10] libperf: Add evsel mmap support
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-03-12 at 10:55 +0100, Johannes Berg wrote:
-> CONFIG_GCOV is fairly useful for ARCH=um (e.g. with kunit, though
-> my main use case is a bit different) since it writes coverage data
-> directly out like a normal userspace binary. Theoretically, that
-> is.
-> 
-> Unfortunately, it's broken in multiple ways today:
-> 
->  1) it doesn't like, due to 'mangle_path' in seq_file, and the only
->     solution to that seems to be to rename our symbol, but that's
->     not so bad, and "mangle_path" sounds very generic anyway, which
->     it isn't quite
-> 
->  2) gcov requires exit handlers to write out the data, and those are
->     never called for modules, config CONSTRUCTORS exists for init
->     handlers, so add CONFIG_MODULE_DESTRUCTORS here that we can then
->     select in ARCH=um
+On Fri, Mar 12, 2021 at 6:59 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Mar 10, 2021 at 05:08:31PM -0700, Rob Herring wrote:
+>
+> SNIP
+>
+> > +
+> >  static int
+> >  sys_perf_event_open(struct perf_event_attr *attr,
+> >                   pid_t pid, int cpu, int group_fd,
+> > @@ -137,6 +147,8 @@ void perf_evsel__free_fd(struct perf_evsel *evsel)
+> >  {
+> >       xyarray__delete(evsel->fd);
+> >       evsel->fd = NULL;
+> > +     xyarray__delete(evsel->mmap);
+> > +     evsel->mmap = NULL;
+> >  }
+> >
+> >  void perf_evsel__close(struct perf_evsel *evsel)
+> > @@ -156,6 +168,45 @@ void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu)
+> >       perf_evsel__close_fd_cpu(evsel, cpu);
+> >  }
+> >
+> > +int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
+> > +{
+> > +     int ret, cpu, thread;
+> > +     struct perf_mmap_param mp = {
+> > +             .prot = PROT_READ | PROT_WRITE,
+> > +             .mask = (pages * page_size) - 1,
+> > +     };
+>
+> I don't mind using evsel->fd for dimensions below,
+> but we need to check in here that it's defined,
+> that perf_evsel__open was called
 
-Yeah, I wish.
+Right, so I'll add this here:
 
-None of this can really work. Thing is, __gcov_init(), called from the
-constructors, will add the local data structure for the object file into
-the global list (__gcov_root). So far, so good.
+if (evsel->fd == NULL)
+    return -EINVAL;
 
-However, __gcov_exit(), which is called from the destructors (fini_array
-which I added support for here) never gets passed the local data
-structure pointer. It dumps __gcov_root, and that's it.
+Note that struct evsel has dimensions in it, but they are only set in
+the evlist code. I couldn't tell if that was by design or mistake.
 
-That basically means each executable/shared object should have its own
-instance of __gcov_root and the functions. But the code in UML was set
-up to export __gcov_exit(), which obviously then dumps the kernel's gcov
-data.
+BTW, I just noticed perf_evsel__open is leaking memory on most of its
+error paths.
 
-So to make this really work we should treat modules like shared objects,
-and link libgcov.a into each one of them. That might even work, but we
-get
-
-ERROR: modpost: "free" [module.ko] undefined!
-ERROR: modpost: "vfprintf" [module.ko] undefined!
-ERROR: modpost: "fcntl" [module.ko] undefined!
-ERROR: modpost: "setbuf" [module.ko] undefined!
-ERROR: modpost: "exit" [module.ko] undefined!
-ERROR: modpost: "fwrite" [module.ko] undefined!
-ERROR: modpost: "stderr" [module.ko] undefined!
-ERROR: modpost: "fclose" [module.ko] undefined!
-ERROR: modpost: "ftell" [module.ko] undefined!
-ERROR: modpost: "fopen" [module.ko] undefined!
-ERROR: modpost: "fread" [module.ko] undefined!
-ERROR: modpost: "fdopen" [module.ko] undefined!
-ERROR: modpost: "fseek" [module.ko] undefined!
-ERROR: modpost: "fprintf" [module.ko] undefined!
-ERROR: modpost: "strtol" [module.ko] undefined!
-ERROR: modpost: "malloc" [module.ko] undefined!
-ERROR: modpost: "getpid" [module.ko] undefined!
-ERROR: modpost: "getenv" [module.ko] undefined!
-
-We could of course export those, but that makes me nervous, e.g.
-printf() is known to use a LOT of stack, far more than we have in the
-kernel.
-
-Also, we see:
-
-WARNING: modpost: "__gcov_var" [module] is COMMON symbol
-WARNING: modpost: "__gcov_root" [module] is COMMON symbol
-
-which means the module cannot be loaded.
-
-I think I'll just make CONFIG_GCOV depend on !MODULE instead, and for my
-use case use CONFIG_GCOV_KERNEL.
-
-Or maybe just kill CONFIG_GCOV entirely, since obviously nobody has ever
-tried to use it with modules or with recent toolchains (gcc 9 or newer,
-the mangle_path conflict).
-
-johannes
-
+>
+> jirka
+>
+> > +
+> > +     if (evsel->mmap == NULL &&
+> > +         perf_evsel__alloc_mmap(evsel, xyarray__max_x(evsel->fd), xyarray__max_y(evsel->fd)) < 0)
+> > +             return -ENOMEM;
+> > +
+> > +     for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++) {
+> > +             for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
+> > +                     int fd = FD(evsel, cpu, thread);
+> > +                     struct perf_mmap *map = MMAP(evsel, cpu, thread);
+> > +
+> > +                     if (fd < 0)
+> > +                             continue;
+> > +
+> > +                     perf_mmap__init(map, NULL, false, NULL);
+> > +
+> > +                     ret = perf_mmap__mmap(map, &mp, fd, cpu);
+> > +                     if (ret)
+> > +                             return -1;
+> > +             }
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+>
+> SNIP
+>
