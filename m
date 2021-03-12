@@ -2,1042 +2,732 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BBA338364
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B30B338366
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhCLCDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 21:03:44 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8060 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229569AbhCLCDO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 21:03:14 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12C21hre010881
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 18:03:14 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=OjUddpg+TchtDeWemQ4ZJUJCzI7IaXGMLRaHZ1XUUVk=;
- b=dqLI3XfV7GGtFPqB4aQDrca7oUPU+HfNdw07X1bg98Fub2CWKrdRSpKyu5pSpihObd6V
- pr5bzvdnUN1I78taT8Z4+mAosyhzhUoG6iqniep+uZ1cpt+t2/yGyPLHzkOvd6eDEHI2
- PYiAqov+tEiegM+/eUEHg17iI7hnWpgGI5o= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 377reb29h9-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 18:03:13 -0800
-Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 11 Mar 2021 18:03:12 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id D5B6D62E2438; Thu, 11 Mar 2021 18:03:00 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <acme@kernel.org>, <acme@redhat.com>,
-        <namhyung@kernel.org>, <jolsa@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH] perf-stat: introduce bperf, share hardware PMCs with BPF
-Date:   Thu, 11 Mar 2021 18:02:57 -0800
-Message-ID: <20210312020257.197137-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S231320AbhCLCEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 21:04:21 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:49692 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229938AbhCLCEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 21:04:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615514653; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=d2Mg6Vj53czXW6dCI2Xx0677ldmea7oOVO3gCfEBqHc=;
+ b=r5dkff1BaFYnYmnSHfes4t0doTgJaCWieOHB+DUyTYJvCgkErwWY0FQCUUdow8jpyWInTCx4
+ f/Rz/6kNYDV1hDPrmzt6HOT0vUt0C632eTLdLRZZK3no7nKw3vhgjKKmG+z81iWk5vizqRov
+ zcVyClfBtCTiH7EQ5kzmCwsGOXM=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 604acc0c1de5dd7b99496c79 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 12 Mar 2021 02:03:56
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 734DEC433CA; Fri, 12 Mar 2021 02:03:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0F91C433C6;
+        Fri, 12 Mar 2021 02:03:51 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-11_12:2021-03-10,2021-03-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
- spamscore=0 clxscore=1015 impostorscore=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103120012
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 12 Mar 2021 10:03:51 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        bvanassche@acm.org, huobean@gmail.com,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: Re: [PATCH v26 2/4] scsi: ufs: L2P map management for HPB read
+In-Reply-To: <20210312014822epcms2p392a87c6902c21d77c289b0356a598fa4@epcms2p3>
+References: <aef00e5c83ef9c73644711b4d0bb6e51@codeaurora.org>
+ <20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p2>
+ <20210303062829epcms2p678450953f611c340a2b8e88b5542fe73@epcms2p6>
+ <CGME20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p3>
+ <20210312014822epcms2p392a87c6902c21d77c289b0356a598fa4@epcms2p3>
+Message-ID: <0eb7909278e596c3777e533c09e0f12e@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf uses performance monitoring counters (PMCs) to monitor system
-performance. The PMCs are limited hardware resources. For example,
-Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
+On 2021-03-12 09:48, Daejun Park wrote:
+>> > This is a patch for managing L2P map in HPB module.
+>> >
+>> > The HPB divides logical addresses into several regions. A region
+>> > consists
+>> > of several sub-regions. The sub-region is a basic unit where L2P
+>> > mapping is
+>> > managed. The driver loads L2P mapping data of each sub-region. The
+>> > loaded
+>> > sub-region is called active-state. The HPB driver unloads L2P mapping
+>> > data
+>> > as region unit. The unloaded region is called inactive-state.
+>> >
+>> > Sub-region/region candidates to be loaded and unloaded are delivered
+>> > from
+>> > the UFS device. The UFS device delivers the recommended active
+>> > sub-region
+>> > and inactivate region to the driver using sensedata.
+>> > The HPB module performs L2P mapping management on the host through the
+>> > delivered information.
+>> >
+>> > A pinned region is a pre-set regions on the UFS device that is always
+>> > activate-state.
+>> >
+>> > The data structure for map data request and L2P map uses mempool API,
+>> > minimizing allocation overhead while avoiding static allocation.
+>> >
+>> > The mininum size of the memory pool used in the HPB is implemented
+>> > as a module parameter, so that it can be configurable by the user.
+>> >
+>> > To gurantee a minimum memory pool size of 4MB:
+>> > ufshpb_host_map_kbytes=4096
+>> >
+>> > The map_work manages active/inactive by 2 "to-do" lists.
+>> > Each hpb lun maintains 2 "to-do" lists:
+>> >   hpb->lh_inact_rgn - regions to be inactivated, and
+>> >   hpb->lh_act_srgn - subregions to be activated
+>> > Those lists are maintained on IO completion.
+>> >
+>> > Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+>> > Reviewed-by: Can Guo <cang@codeaurora.org>
+>> > Acked-by: Avri Altman <Avri.Altman@wdc.com>
+>> > Tested-by: Bean Huo <beanhuo@micron.com>
+>> > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+>> > ---
+>> >  drivers/scsi/ufs/ufs.h    |   36 ++
+>> >  drivers/scsi/ufs/ufshcd.c |    4 +
+>> >  drivers/scsi/ufs/ufshpb.c | 1091 ++++++++++++++++++++++++++++++++++++-
+>> >  drivers/scsi/ufs/ufshpb.h |   65 +++
+>> >  4 files changed, 1181 insertions(+), 15 deletions(-)
+>> >
+>> > diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+>> > index 65563635e20e..957763db1006 100644
+>> > --- a/drivers/scsi/ufs/ufs.h
+>> > +++ b/drivers/scsi/ufs/ufs.h
+>> > @@ -472,6 +472,41 @@ struct utp_cmd_rsp {
+>> >          u8 sense_data[UFS_SENSE_SIZE];
+>> >  };
+>> >
+>> > +struct ufshpb_active_field {
+>> > +        __be16 active_rgn;
+>> > +        __be16 active_srgn;
+>> > +};
+>> > +#define HPB_ACT_FIELD_SIZE 4
+>> > +
+>> > +/**
+>> > + * struct utp_hpb_rsp - Response UPIU structure
+>> > + * @residual_transfer_count: Residual transfer count DW-3
+>> > + * @reserved1: Reserved double words DW-4 to DW-7
+>> > + * @sense_data_len: Sense data length DW-8 U16
+>> > + * @desc_type: Descriptor type of sense data
+>> > + * @additional_len: Additional length of sense data
+>> > + * @hpb_op: HPB operation type
+>> > + * @lun: LUN of response UPIU
+>> > + * @active_rgn_cnt: Active region count
+>> > + * @inactive_rgn_cnt: Inactive region count
+>> > + * @hpb_active_field: Recommended to read HPB region and subregion
+>> > + * @hpb_inactive_field: To be inactivated HPB region and subregion
+>> > + */
+>> > +struct utp_hpb_rsp {
+>> > +        __be32 residual_transfer_count;
+>> > +        __be32 reserved1[4];
+>> > +        __be16 sense_data_len;
+>> > +        u8 desc_type;
+>> > +        u8 additional_len;
+>> > +        u8 hpb_op;
+>> > +        u8 lun;
+>> > +        u8 active_rgn_cnt;
+>> > +        u8 inactive_rgn_cnt;
+>> > +        struct ufshpb_active_field hpb_active_field[2];
+>> > +        __be16 hpb_inactive_field[2];
+>> > +};
+>> > +#define UTP_HPB_RSP_SIZE 40
+>> > +
+>> >  /**
+>> >   * struct utp_upiu_rsp - general upiu response structure
+>> >   * @header: UPIU header structure DW-0 to DW-2
+>> > @@ -482,6 +517,7 @@ struct utp_upiu_rsp {
+>> >          struct utp_upiu_header header;
+>> >          union {
+>> >                  struct utp_cmd_rsp sr;
+>> > +                struct utp_hpb_rsp hr;
+>> >                  struct utp_upiu_query qr;
+>> >          };
+>> >  };
+>> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> > index 49b3d5d24fa6..5852ff44c3cc 100644
+>> > --- a/drivers/scsi/ufs/ufshcd.c
+>> > +++ b/drivers/scsi/ufs/ufshcd.c
+>> > @@ -5021,6 +5021,9 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba,
+>> > struct ufshcd_lrb *lrbp)
+>> >                                   */
+>> >                                  pm_runtime_get_noresume(hba->dev);
+>> >                          }
+>> > +
+>> > +                        if (scsi_status == SAM_STAT_GOOD)
+>> > +                                ufshpb_rsp_upiu(hba, lrbp);
+>> >                          break;
+>> >                  case UPIU_TRANSACTION_REJECT_UPIU:
+>> >                          /* TODO: handle Reject UPIU Response */
+>> > @@ -9221,6 +9224,7 @@ EXPORT_SYMBOL(ufshcd_shutdown);
+>> >  void ufshcd_remove(struct ufs_hba *hba)
+>> >  {
+>> >          ufs_bsg_remove(hba);
+>> > +        ufshpb_remove(hba);
+>> >          ufs_sysfs_remove_nodes(hba->dev);
+>> >          blk_cleanup_queue(hba->tmf_queue);
+>> >          blk_mq_free_tag_set(&hba->tmf_tag_set);
+>> > diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+>> > index 1a72f6541510..8abadb0e010a 100644
+>> > --- a/drivers/scsi/ufs/ufshpb.c
+>> > +++ b/drivers/scsi/ufs/ufshpb.c
+>> > @@ -16,6 +16,16 @@
+>> >  #include "ufshpb.h"
+>> >  #include "../sd.h"
+>> >
+>> > +/* memory management */
+>> > +static struct kmem_cache *ufshpb_mctx_cache;
+>> > +static mempool_t *ufshpb_mctx_pool;
+>> > +static mempool_t *ufshpb_page_pool;
+>> > +/* A cache size of 2MB can cache ppn in the 1GB range. */
+>> > +static unsigned int ufshpb_host_map_kbytes = 2048;
+>> > +static int tot_active_srgn_pages;
+>> > +
+>> > +static struct workqueue_struct *ufshpb_wq;
+>> > +
+>> >  bool ufshpb_is_allowed(struct ufs_hba *hba)
+>> >  {
+>> >          return !(hba->ufshpb_dev.hpb_disabled);
+>> > @@ -36,14 +46,892 @@ static void ufshpb_set_state(struct ufshpb_lu
+>> > *hpb, int state)
+>> >          atomic_set(&hpb->hpb_state, state);
+>> >  }
+>> >
+>> > +static bool ufshpb_is_general_lun(int lun)
+>> > +{
+>> > +        return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
+>> > +}
+>> > +
+>> > +static bool
+>> > +ufshpb_is_pinned_region(struct ufshpb_lu *hpb, int rgn_idx)
+>> > +{
+>> > +        if (hpb->lu_pinned_end != PINNED_NOT_SET &&
+>> > +            rgn_idx >= hpb->lu_pinned_start &&
+>> > +            rgn_idx <= hpb->lu_pinned_end)
+>> > +                return true;
+>> > +
+>> > +        return false;
+>> > +}
+>> > +
+>> > +static void ufshpb_kick_map_work(struct ufshpb_lu *hpb)
+>> > +{
+>> > +        bool ret = false;
+>> > +        unsigned long flags;
+>> > +
+>> > +        if (ufshpb_get_state(hpb) != HPB_PRESENT)
+>> > +                return;
+>> > +
+>> > +        spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+>> > +        if (!list_empty(&hpb->lh_inact_rgn) ||
+>> > !list_empty(&hpb->lh_act_srgn))
+>> > +                ret = true;
+>> > +        spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+>> > +
+>> > +        if (ret)
+>> > +                queue_work(ufshpb_wq, &hpb->map_work);
+>> > +}
+>> > +
+>> > +static bool ufshpb_is_hpb_rsp_valid(struct ufs_hba *hba,
+>> > +                                         struct ufshcd_lrb *lrbp,
+>> > +                                         struct utp_hpb_rsp *rsp_field)
+>> > +{
+>> > +        /* Check HPB_UPDATE_ALERT */
+>> > +        if (!(lrbp->ucd_rsp_ptr->header.dword_2 &
+>> > +              UPIU_HEADER_DWORD(0, 2, 0, 0)))
+>> > +                return false;
+>> > +
+>> > +        if (be16_to_cpu(rsp_field->sense_data_len) != DEV_SENSE_SEG_LEN ||
+>> > +            rsp_field->desc_type != DEV_DES_TYPE ||
+>> > +            rsp_field->additional_len != DEV_ADDITIONAL_LEN ||
+>> > +            rsp_field->active_rgn_cnt > MAX_ACTIVE_NUM ||
+>> > +            rsp_field->inactive_rgn_cnt > MAX_INACTIVE_NUM ||
+>> > +            rsp_field->hpb_op == HPB_RSP_NONE ||
+>> > +            (rsp_field->hpb_op == HPB_RSP_REQ_REGION_UPDATE &&
+>> > +             !rsp_field->active_rgn_cnt && !rsp_field->inactive_rgn_cnt))
+>> > +                return false;
+>> > +
+>> > +        if (!ufshpb_is_general_lun(rsp_field->lun)) {
+>> > +                dev_warn(hba->dev, "ufshpb: lun(%d) not supported\n",
+>> > +                         lrbp->lun);
+>> > +                return false;
+>> > +        }
+>> > +
+>> > +        return true;
+>> > +}
+>> > +
+>> > +static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+>> > +                                             struct ufshpb_subregion *srgn)
+>> > +{
+>> > +        struct ufshpb_req *map_req;
+>> > +        struct request *req;
+>> > +        struct bio *bio;
+>> > +        int retries = HPB_MAP_REQ_RETRIES;
+>> > +
+>> > +        map_req = kmem_cache_alloc(hpb->map_req_cache, GFP_KERNEL);
+>> > +        if (!map_req)
+>> > +                return NULL;
+>> > +
+>> > +retry:
+>> > +        req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
+>> > +                              REQ_OP_SCSI_IN, BLK_MQ_REQ_NOWAIT);
+>> > +
+>> > +        if ((PTR_ERR(req) == -EWOULDBLOCK) && (--retries > 0)) {
+>> > +                usleep_range(3000, 3100);
+>> > +                goto retry;
+>> > +        }
+>> > +
+>> > +        if (IS_ERR(req))
+>> > +                goto free_map_req;
+>> > +
+>> > +        bio = bio_alloc(GFP_KERNEL, hpb->pages_per_srgn);
+>> > +        if (!bio) {
+>> > +                blk_put_request(req);
+>> > +                goto free_map_req;
+>> > +        }
+>> > +
+>> > +        map_req->hpb = hpb;
+>> > +        map_req->req = req;
+>> > +        map_req->bio = bio;
+>> > +
+>> > +        map_req->rgn_idx = srgn->rgn_idx;
+>> > +        map_req->srgn_idx = srgn->srgn_idx;
+>> > +        map_req->mctx = srgn->mctx;
+>> > +
+>> > +        return map_req;
+>> > +
+>> > +free_map_req:
+>> > +        kmem_cache_free(hpb->map_req_cache, map_req);
+>> > +        return NULL;
+>> > +}
+>> > +
+>> > +static void ufshpb_put_map_req(struct ufshpb_lu *hpb,
+>> > +                                      struct ufshpb_req *map_req)
+>> > +{
+>> > +        bio_put(map_req->bio);
+>> > +        blk_put_request(map_req->req);
+>> > +        kmem_cache_free(hpb->map_req_cache, map_req);
+>> > +}
+>> > +
+>> > +static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
+>> > +                                     struct ufshpb_subregion *srgn)
+>> > +{
+>> > +        u32 num_entries = hpb->entries_per_srgn;
+>> > +
+>> > +        if (!srgn->mctx) {
+>> > +                dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+>> > +                        "no mctx in region %d subregion %d.\n",
+>> > +                        srgn->rgn_idx, srgn->srgn_idx);
+>> > +                return -1;
+>> > +        }
+>> > +
+>> > +        if (unlikely(srgn->is_last))
+>> > +                num_entries = hpb->last_srgn_entries;
+>> > +
+>> > +        bitmap_zero(srgn->mctx->ppn_dirty, num_entries);
+>> > +        return 0;
+>> > +}
+>> > +
+>> > +static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int
+>> > rgn_idx,
+>> > +                                      int srgn_idx)
+>> > +{
+>> > +        struct ufshpb_region *rgn;
+>> > +        struct ufshpb_subregion *srgn;
+>> > +
+>> > +        rgn = hpb->rgn_tbl + rgn_idx;
+>> > +        srgn = rgn->srgn_tbl + srgn_idx;
+>> > +
+>> > +        list_del_init(&rgn->list_inact_rgn);
+>> > +
+>> > +        if (list_empty(&srgn->list_act_srgn))
+>> > +                list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
+>> > +}
+>> > +
+>> > +static void ufshpb_update_inactive_info(struct ufshpb_lu *hpb, int
+>> > rgn_idx)
+>> > +{
+>> > +        struct ufshpb_region *rgn;
+>> > +        struct ufshpb_subregion *srgn;
+>> > +        int srgn_idx;
+>> > +
+>> > +        rgn = hpb->rgn_tbl + rgn_idx;
+>> > +
+>> > +        for_each_sub_region(rgn, srgn_idx, srgn)
+>> > +                list_del_init(&srgn->list_act_srgn);
+>> > +
+>> > +        if (list_empty(&rgn->list_inact_rgn))
+>> > +                list_add_tail(&rgn->list_inact_rgn, &hpb->lh_inact_rgn);
+>> > +}
+>> > +
+>> > +static void ufshpb_activate_subregion(struct ufshpb_lu *hpb,
+>> > +                                      struct ufshpb_subregion *srgn)
+>> > +{
+>> > +        struct ufshpb_region *rgn;
+>> > +
+>> > +        /*
+>> > +         * If there is no mctx in subregion
+>> > +         * after I/O progress for HPB_READ_BUFFER, the region to which the
+>> > +         * subregion belongs was evicted.
+>> > +         * Make sure the region must not evict in I/O progress
+>> > +         */
+>> > +        if (!srgn->mctx) {
+>> > +                dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+>> > +                        "no mctx in region %d subregion %d.\n",
+>> > +                        srgn->rgn_idx, srgn->srgn_idx);
+>> > +                srgn->srgn_state = HPB_SRGN_INVALID;
+>> > +                return;
+>> > +        }
+>> > +
+>> > +        rgn = hpb->rgn_tbl + srgn->rgn_idx;
+>> > +
+>> > +        if (unlikely(rgn->rgn_state == HPB_RGN_INACTIVE)) {
+>> > +                dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+>> > +                        "region %d subregion %d evicted\n",
+>> > +                        srgn->rgn_idx, srgn->srgn_idx);
+>> > +                srgn->srgn_state = HPB_SRGN_INVALID;
+>> > +                return;
+>> > +        }
+>> > +        srgn->srgn_state = HPB_SRGN_VALID;
+>> > +}
+>> > +
+>> > +static void ufshpb_map_req_compl_fn(struct request *req, blk_status_t
+>> > error)
+>> > +{
+>> > +        struct ufshpb_req *map_req = (struct ufshpb_req *) req->end_io_data;
+>> > +        struct ufshpb_lu *hpb = map_req->hpb;
+>> > +        struct ufshpb_subregion *srgn;
+>> > +        unsigned long flags;
+>> > +
+>> > +        srgn = hpb->rgn_tbl[map_req->rgn_idx].srgn_tbl +
+>> > +                map_req->srgn_idx;
+>> > +
+>> > +        ufshpb_clear_dirty_bitmap(hpb, srgn);
+>> > +        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+>> > +        ufshpb_activate_subregion(hpb, srgn);
+>> > +        spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+>> > +
+>> > +        ufshpb_put_map_req(map_req->hpb, map_req);
+>> > +}
+>> > +
+>> > +static void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
+>> > +                                    int srgn_idx, int srgn_mem_size)
+>> > +{
+>> > +        cdb[0] = UFSHPB_READ_BUFFER;
+>> > +        cdb[1] = UFSHPB_READ_BUFFER_ID;
+>> > +
+>> > +        put_unaligned_be16(rgn_idx, &cdb[2]);
+>> > +        put_unaligned_be16(srgn_idx, &cdb[4]);
+>> > +        put_unaligned_be24(srgn_mem_size, &cdb[6]);
+>> > +
+>> > +        cdb[9] = 0x00;
+>> > +}
+>> > +
+>> > +static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
+>> > +                                  struct ufshpb_req *map_req, bool last)
+>> > +{
+>> > +        struct request_queue *q;
+>> > +        struct request *req;
+>> > +        struct scsi_request *rq;
+>> > +        int mem_size = hpb->srgn_mem_size;
+>> > +        int ret = 0;
+>> > +        int i;
+>> > +
+>> > +        q = hpb->sdev_ufs_lu->request_queue;
+>> > +        for (i = 0; i < hpb->pages_per_srgn; i++) {
+>> > +                ret = bio_add_pc_page(q, map_req->bio, map_req->mctx->m_page[i],
+>> > +                                      PAGE_SIZE, 0);
+>> > +                if (ret != PAGE_SIZE) {
+>> > +                        dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+>> > +                                   "bio_add_pc_page fail %d - %d\n",
+>> > +                                   map_req->rgn_idx, map_req->srgn_idx);
+>> > +                        return ret;
+>> > +                }
+>> > +        }
+>> > +
+>> > +        req = map_req->req;
+>> > +
+>> > +        blk_rq_append_bio(req, &map_req->bio);
+>> > +
+>> > +        req->end_io_data = map_req;
+>> > +
+>> > +        rq = scsi_req(req);
+>> > +
+>> > +        if (unlikely(last))
+>> > +                mem_size = hpb->last_srgn_entries * HPB_ENTRY_SIZE;
+>> > +
+>> > +        ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
+>> > +                                map_req->srgn_idx, mem_size);
+>> > +        rq->cmd_len = HPB_READ_BUFFER_CMD_LENGTH;
+>> > +
+>> > +        blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_map_req_compl_fn);
+>> > +
+>> > +        hpb->stats.map_req_cnt++;
+>> > +        return 0;
+>> > +}
+>> > +
+>> > +static struct ufshpb_map_ctx *ufshpb_get_map_ctx(struct ufshpb_lu
+>> > *hpb,
+>> > +                                                 bool last)
+>> > +{
+>> > +        struct ufshpb_map_ctx *mctx;
+>> > +        u32 num_entries = hpb->entries_per_srgn;
+>> > +        int i, j;
+>> > +
+>> > +        mctx = mempool_alloc(ufshpb_mctx_pool, GFP_KERNEL);
+>> > +        if (!mctx)
+>> > +                return NULL;
+>> > +
+>> > +        mctx->m_page = kmem_cache_alloc(hpb->m_page_cache, GFP_KERNEL);
+>> > +        if (!mctx->m_page)
+>> > +                goto release_mctx;
+>> > +
+>> > +        if (unlikely(last))
+>> > +                num_entries = hpb->last_srgn_entries;
+>> > +
+>> > +        mctx->ppn_dirty = bitmap_zalloc(num_entries, GFP_KERNEL);
+>> > +        if (!mctx->ppn_dirty)
+>> > +                goto release_m_page;
+>> > +
+>> > +        for (i = 0; i < hpb->pages_per_srgn; i++) {
+>> > +                mctx->m_page[i] = mempool_alloc(ufshpb_page_pool, GFP_KERNEL);
+>> > +                if (!mctx->m_page[i]) {
+>> > +                        for (j = 0; j < i; j++)
+>> > +                                mempool_free(mctx->m_page[j], ufshpb_page_pool);
+>> > +                        goto release_ppn_dirty;
+>> > +                }
+>> > +                clear_page(page_address(mctx->m_page[i]));
+>> > +        }
+>> > +
+>> > +        return mctx;
+>> > +
+>> > +release_ppn_dirty:
+>> > +        bitmap_free(mctx->ppn_dirty);
+>> > +release_m_page:
+>> > +        kmem_cache_free(hpb->m_page_cache, mctx->m_page);
+>> > +release_mctx:
+>> > +        mempool_free(mctx, ufshpb_mctx_pool);
+>> > +        return NULL;
+>> > +}
+>> > +
+>> > +static void ufshpb_put_map_ctx(struct ufshpb_lu *hpb,
+>> > +                               struct ufshpb_map_ctx *mctx)
+>> > +{
+>> > +        int i;
+>> > +
+>> > +        for (i = 0; i < hpb->pages_per_srgn; i++)
+>> > +                mempool_free(mctx->m_page[i], ufshpb_page_pool);
+>> > +
+>> > +        bitmap_free(mctx->ppn_dirty);
+>> > +        kmem_cache_free(hpb->m_page_cache, mctx->m_page);
+>> > +        mempool_free(mctx, ufshpb_mctx_pool);
+>> > +}
+>> > +
+>> > +static int ufshpb_check_srgns_issue_state(struct ufshpb_lu *hpb,
+>> > +                                          struct ufshpb_region *rgn)
+>> > +{
+>> > +        struct ufshpb_subregion *srgn;
+>> > +        int srgn_idx;
+>> > +
+>> > +        for_each_sub_region(rgn, srgn_idx, srgn)
+>> > +                if (srgn->srgn_state == HPB_SRGN_ISSUED)
+>> > +                        return -EPERM;
+>> > +
+>> > +        return 0;
+>> > +}
+>> > +
+>> > +static void ufshpb_add_lru_info(struct victim_select_info *lru_info,
+>> > +                                struct ufshpb_region *rgn)
+>> > +{
+>> > +        rgn->rgn_state = HPB_RGN_ACTIVE;
+>> > +        list_add_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
+>> > +        atomic_inc(&lru_info->active_cnt);
+>> > +}
+>> > +
+>> > +static void ufshpb_hit_lru_info(struct victim_select_info *lru_info,
+>> > +                                struct ufshpb_region *rgn)
+>> > +{
+>> > +        list_move_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
+>> > +}
+>> > +
+>> > +static struct ufshpb_region *ufshpb_victim_lru_info(struct ufshpb_lu
+>> > *hpb)
+>> > +{
+>> > +        struct victim_select_info *lru_info = &hpb->lru_info;
+>> > +        struct ufshpb_region *rgn, *victim_rgn = NULL;
+>> > +
+>> > +        list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn) {
+>> > +                if (!rgn) {
+>> > +                        dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+>> > +                                "%s: no region allocated\n",
+>> > +                                __func__);
+>> > +                        return NULL;
+>> > +                }
+>> > +                if (ufshpb_check_srgns_issue_state(hpb, rgn))
+>> > +                        continue;
+>> > +
+>> > +                victim_rgn = rgn;
+>> > +                break;
+>> > +        }
+>> > +
+>> > +        return victim_rgn;
+>> > +}
+>> > +
+>> > +static void ufshpb_cleanup_lru_info(struct victim_select_info
+>> > *lru_info,
+>> > +                                    struct ufshpb_region *rgn)
+>> > +{
+>> > +        list_del_init(&rgn->list_lru_rgn);
+>> > +        rgn->rgn_state = HPB_RGN_INACTIVE;
+>> > +        atomic_dec(&lru_info->active_cnt);
+>> > +}
+>> > +
+>> > +static void ufshpb_purge_active_subregion(struct ufshpb_lu *hpb,
+>> > +                                          struct ufshpb_subregion *srgn)
+>> > +{
+>> > +        if (srgn->srgn_state != HPB_SRGN_UNUSED) {
+>> > +                ufshpb_put_map_ctx(hpb, srgn->mctx);
+>> > +                srgn->srgn_state = HPB_SRGN_UNUSED;
+>> > +                srgn->mctx = NULL;
+>> > +        }
+>> > +}
+>> > +
+>> > +static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
+>> > +                                  struct ufshpb_region *rgn)
+>> > +{
+>> > +        struct victim_select_info *lru_info;
+>> > +        struct ufshpb_subregion *srgn;
+>> > +        int srgn_idx;
+>> > +
+>> > +        lru_info = &hpb->lru_info;
+>> > +
+>> > +        dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
+>> > rgn->rgn_idx);
+>> > +
+>> > +        ufshpb_cleanup_lru_info(lru_info, rgn);
+>> > +
+>> > +        for_each_sub_region(rgn, srgn_idx, srgn)
+>> > +                ufshpb_purge_active_subregion(hpb, srgn);
+>> > +}
+>> > +
+>> > +static int ufshpb_evict_region(struct ufshpb_lu *hpb, struct
+>> > ufshpb_region *rgn)
+>> > +{
+>> > +        unsigned long flags;
+>> > +        int ret = 0;
+>> > +
+>> > +        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+>> > +        if (rgn->rgn_state == HPB_RGN_PINNED) {
+>> > +                dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>> > +                         "pinned region cannot drop-out. region %d\n",
+>> > +                         rgn->rgn_idx);
+>> > +                goto out;
+>> > +        }
+>> > +        if (!list_empty(&rgn->list_lru_rgn)) {
+>> > +                if (ufshpb_check_srgns_issue_state(hpb, rgn)) {
+>> > +                        ret = -EBUSY;
+>> > +                        goto out;
+>> > +                }
+>> > +
+>> > +                __ufshpb_evict_region(hpb, rgn);
+>> > +        }
+>> > +out:
+>> > +        spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+>> > +        return ret;
+>> > +}
+>> > +
+>> > +static int ufshpb_issue_map_req(struct ufshpb_lu *hpb,
+>> > +                                struct ufshpb_region *rgn,
+>> > +                                struct ufshpb_subregion *srgn)
+>> > +{
+>> > +        struct ufshpb_req *map_req;
+>> > +        unsigned long flags;
+>> > +        int ret;
+>> > +        int err = -EAGAIN;
+>> > +        bool alloc_required = false;
+>> > +        enum HPB_SRGN_STATE state = HPB_SRGN_INVALID;
+>> > +
+>> > +        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+>> > +
+>> > +        if (ufshpb_get_state(hpb) != HPB_PRESENT) {
+>> > +                dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
+>> > +                           "%s: ufshpb state is not PRESENT\n", __func__);
+>> > +                goto unlock_out;
+>> > +        }
+>> > +
+>> > +        if ((rgn->rgn_state == HPB_RGN_INACTIVE) &&
+>> > +            (srgn->srgn_state == HPB_SRGN_INVALID)) {
+>> > +                err = 0;
+>> > +                goto unlock_out;
+>> > +        }
+>> > +
+>> > +        if (srgn->srgn_state == HPB_SRGN_UNUSED)
+>> > +                alloc_required = true;
+>> > +
+>> > +        /*
+>> > +         * If the subregion is already ISSUED state,
+>> > +         * a specific event (e.g., GC or wear-leveling, etc.) occurs in
+>> > +         * the device and HPB response for map loading is received.
+>> > +         * In this case, after finishing the HPB_READ_BUFFER,
+>> > +         * the next HPB_READ_BUFFER is performed again to obtain the latest
+>> > +         * map data.
+>> > +         */
+>> > +        if (srgn->srgn_state == HPB_SRGN_ISSUED)
+>> > +                goto unlock_out;
+>> > +
+>> > +        srgn->srgn_state = HPB_SRGN_ISSUED;
+>> > +        spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+>> > +
+>> > +        if (alloc_required) {
+>> > +                if (srgn->mctx) {
+>> 
+>> Can this really happen?
+>> 
+>> alloc_required is true if srgn->srgn_state == HPB_SRGN_UNUSED.
+>> ufshpb_put_map_ctx() is called and srgn->srgn_state is given
+>> HPB_SRGN_UNUSED together in ufshpb_purge_active_subregion().
+>> Do I miss anything?
+> 
+> It is not normal case, but it is for preventing memory leak on abnormal 
+> case.
+> 
+> Thanks,
+> Daejun
 
-Modern data center systems use these PMCs in many different ways:
-system level monitoring, (maybe nested) container level monitoring, per
-process monitoring, profiling (in sample mode), etc. In some cases,
-there are more active perf_events than available hardware PMCs. To allow
-all perf_events to have a chance to run, it is necessary to do expensive
-time multiplexing of events.
+Abnormal how? Could you please give an example?
 
-On the other hand, many monitoring tools count the common metrics (cycles=
-,
-instructions). It is a waste to have multiple tools create multiple
-perf_events of "cycles" and occupy multiple PMCs.
-
-bperf tries to reduce such wastes by allowing multiple perf_events of
-"cycles" or "instructions" (at different scopes) to share PMUs. Instead
-of having each perf-stat session to read its own perf_events, bperf uses
-BPF programs to read the perf_events and aggregate readings to BPF maps.
-Then, the perf-stat session(s) reads the values from these BPF maps.
-
-Please refer to the comment before the definition of bperf_ops for the
-description of bperf architecture.
-
-bperf is off by default. To enable it, pass --use-bpf option to perf-stat=
-.
-bperf uses a BPF hashmap to share information about BPF programs and maps
-used by bperf. This map is pinned to bpffs. The default address is
-/sys/fs/bpf/bperf_attr_map. The user could change the address with option
---attr-map.
-
----
-Known limitations:
-1. Do not support per cgroup events;
-2. Do not support monitoring of BPF program (perf-stat -b);
-3. Do not support event groups.
-
-The following commands have been tested:
-
-   perf stat --use-bpf -e cycles -a
-   perf stat --use-bpf -e cycles -C 1,3,4
-   perf stat --use-bpf -e cycles -p 123
-   perf stat --use-bpf -e cycles -t 100,101
-
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- tools/perf/Makefile.perf                      |   1 +
- tools/perf/builtin-stat.c                     |  20 +-
- tools/perf/util/bpf_counter.c                 | 552 +++++++++++++++++-
- tools/perf/util/bpf_skel/bperf.h              |  14 +
- tools/perf/util/bpf_skel/bperf_follower.bpf.c |  65 +++
- tools/perf/util/bpf_skel/bperf_leader.bpf.c   |  46 ++
- tools/perf/util/evsel.h                       |  20 +-
- tools/perf/util/target.h                      |   4 +-
- 8 files changed, 712 insertions(+), 10 deletions(-)
- create mode 100644 tools/perf/util/bpf_skel/bperf.h
- create mode 100644 tools/perf/util/bpf_skel/bperf_follower.bpf.c
- create mode 100644 tools/perf/util/bpf_skel/bperf_leader.bpf.c
-
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index f6e609673de2b..ca9aa08e85a1f 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -1007,6 +1007,7 @@ python-clean:
- SKEL_OUT :=3D $(abspath $(OUTPUT)util/bpf_skel)
- SKEL_TMP_OUT :=3D $(abspath $(SKEL_OUT)/.tmp)
- SKELETONS :=3D $(SKEL_OUT)/bpf_prog_profiler.skel.h
-+SKELETONS +=3D $(SKEL_OUT)/bperf_leader.skel.h $(SKEL_OUT)/bperf_followe=
-r.skel.h
-=20
- ifdef BUILD_BPF_SKEL
- BPFTOOL :=3D $(SKEL_TMP_OUT)/bootstrap/bpftool
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 2e2e4a8345ea2..34df713a8eea9 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -792,6 +792,12 @@ static int __run_perf_stat(int argc, const char **ar=
-gv, int run_idx)
- 	}
-=20
- 	evlist__for_each_cpu (evsel_list, i, cpu) {
-+		/*
-+		 * bperf calls evsel__open_per_cpu() in bperf__load(), so
-+		 * no need to call it again here.
-+		 */
-+		if (target.use_bpf)
-+			break;
- 		affinity__set(&affinity, cpu);
-=20
- 		evlist__for_each_entry(evsel_list, counter) {
-@@ -925,15 +931,15 @@ static int __run_perf_stat(int argc, const char **a=
-rgv, int run_idx)
- 	/*
- 	 * Enable counters and exec the command:
- 	 */
--	t0 =3D rdclock();
--	clock_gettime(CLOCK_MONOTONIC, &ref_time);
--
- 	if (forks) {
- 		evlist__start_workload(evsel_list);
- 		err =3D enable_counters();
- 		if (err)
- 			return -1;
-=20
-+		t0 =3D rdclock();
-+		clock_gettime(CLOCK_MONOTONIC, &ref_time);
-+
- 		if (interval || timeout || evlist__ctlfd_initialized(evsel_list))
- 			status =3D dispatch_events(forks, timeout, interval, &times);
- 		if (child_pid !=3D -1) {
-@@ -954,6 +960,10 @@ static int __run_perf_stat(int argc, const char **ar=
-gv, int run_idx)
- 		err =3D enable_counters();
- 		if (err)
- 			return -1;
-+
-+		t0 =3D rdclock();
-+		clock_gettime(CLOCK_MONOTONIC, &ref_time);
-+
- 		status =3D dispatch_events(forks, timeout, interval, &times);
- 	}
-=20
-@@ -1146,6 +1156,10 @@ static struct option stat_options[] =3D {
- #ifdef HAVE_BPF_SKEL
- 	OPT_STRING('b', "bpf-prog", &target.bpf_str, "bpf-prog-id",
- 		   "stat events on existing bpf program id"),
-+	OPT_BOOLEAN(0, "use-bpf", &target.use_bpf,
-+		    "use bpf program to count events"),
-+	OPT_STRING(0, "attr-map", &target.attr_map, "attr-map-path",
-+		   "path to perf_event_attr map"),
- #endif
- 	OPT_BOOLEAN('a', "all-cpus", &target.system_wide,
- 		    "system-wide collection from all CPUs"),
-diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.=
-c
-index 04f89120b3232..d232011ec8f26 100644
---- a/tools/perf/util/bpf_counter.c
-+++ b/tools/perf/util/bpf_counter.c
-@@ -5,6 +5,7 @@
- #include <assert.h>
- #include <limits.h>
- #include <unistd.h>
-+#include <sys/file.h>
- #include <sys/time.h>
- #include <sys/resource.h>
- #include <linux/err.h>
-@@ -18,8 +19,37 @@
- #include "debug.h"
- #include "evsel.h"
- #include "target.h"
-+#include "cpumap.h"
-+#include "thread_map.h"
-=20
- #include "bpf_skel/bpf_prog_profiler.skel.h"
-+#include "bpf_skel/bperf_u.h"
-+#include "bpf_skel/bperf_leader.skel.h"
-+#include "bpf_skel/bperf_follower.skel.h"
-+
-+/*
-+ * bperf uses a hashmap, the attr_map, to track all the leader programs.
-+ * The hashmap is pinned in bpffs. flock() on this file is used to ensur=
-e
-+ * no concurrent access to the attr_map.  The key of attr_map is struct
-+ * perf_event_attr, and the value is struct bperf_attr_map_entry.
-+ *
-+ * struct bperf_attr_map_entry contains two __u32 IDs, bpf_link of the
-+ * leader prog, and the diff_map. Each perf-stat session holds a referen=
-ce
-+ * to the bpf_link to make sure the leader prog is attached to sched_swi=
-tch
-+ * tracepoint.
-+ *
-+ * Since the hashmap only contains IDs of the bpf_link and diff_map, it
-+ * does not hold any references to the leader program. Once all perf-sta=
-t
-+ * sessions of these events exit, the leader prog, its maps, and the
-+ * perf_events will be freed.
-+ */
-+struct bperf_attr_map_entry {
-+	__u32 link_id;
-+	__u32 diff_map_id;
-+};
-+
-+#define DEFAULT_ATTR_MAP_PATH "/sys/fs/bpf/bperf_attr_map"
-+#define ATTR_MAP_SIZE 16
-=20
- static inline void *u64_to_ptr(__u64 ptr)
- {
-@@ -274,17 +304,529 @@ struct bpf_counter_ops bpf_program_profiler_ops =3D=
- {
- 	.install_pe =3D bpf_program_profiler__install_pe,
- };
-=20
-+static __u32 bpf_link_get_id(int fd)
-+{
-+	struct bpf_link_info link_info;
-+	__u32 link_info_len;
-+
-+	link_info_len =3D sizeof(link_info);
-+	memset(&link_info, 0, link_info_len);
-+	bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-+	return link_info.id;
-+}
-+
-+static __u32 bpf_link_get_prog_id(int fd)
-+{
-+	struct bpf_link_info link_info;
-+	__u32 link_info_len;
-+
-+	link_info_len =3D sizeof(link_info);
-+	memset(&link_info, 0, link_info_len);
-+	bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-+	return link_info.prog_id;
-+}
-+
-+static __u32 bpf_map_get_id(int fd)
-+{
-+	struct bpf_map_info map_info;
-+	__u32 map_info_len;
-+
-+	map_info_len =3D sizeof(map_info);
-+	memset(&map_info, 0, map_info_len);
-+	bpf_obj_get_info_by_fd(fd, &map_info, &map_info_len);
-+	return map_info.id;
-+}
-+
-+static int bperf_lock_attr_map(struct target *target)
-+{
-+	const char *path =3D target->attr_map ? : DEFAULT_ATTR_MAP_PATH;
-+	int map_fd, err;
-+
-+	if (access(path, F_OK)) {
-+		map_fd =3D bpf_create_map(BPF_MAP_TYPE_HASH,
-+					sizeof(struct perf_event_attr),
-+					sizeof(struct bperf_attr_map_entry),
-+					ATTR_MAP_SIZE, 0);
-+		if (map_fd < 0)
-+			return -1;
-+
-+		err =3D bpf_obj_pin(map_fd, path);
-+		if (err) {
-+			/* someone pinned the map in parallel? */
-+			close(map_fd);
-+			map_fd =3D bpf_obj_get(path);
-+			if (map_fd < 0)
-+				return -1;
-+		}
-+	} else {
-+		map_fd =3D bpf_obj_get(path);
-+		if (map_fd < 0)
-+			return -1;
-+	}
-+
-+	err =3D flock(map_fd, LOCK_EX);
-+	if (err) {
-+		close(map_fd);
-+		return -1;
-+	}
-+	return map_fd;
-+}
-+
-+/* trigger the leader program on a cpu */
-+static int bperf_trigger_reading(int prog_fd, int cpu)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+			    .ctx_in =3D NULL,
-+			    .ctx_size_in =3D 0,
-+			    .flags =3D BPF_F_TEST_RUN_ON_CPU,
-+			    .cpu =3D cpu,
-+			    .retval =3D 0,
-+		);
-+
-+	return bpf_prog_test_run_opts(prog_fd, &opts);
-+}
-+
-+static int bperf_check_target(struct evsel *evsel,
-+			      struct target *target,
-+			      enum bperf_filter_type *filter_type,
-+			      __u32 *filter_entry_cnt)
-+{
-+	if (evsel->leader->core.nr_members > 1) {
-+		pr_err("bpf managed perf events do not yet support groups.\n");
-+		return -1;
-+	}
-+
-+	/* determine filter type based on target */
-+	if (target->system_wide) {
-+		*filter_type =3D BPERF_FILTER_GLOBAL;
-+		*filter_entry_cnt =3D 1;
-+	} else if (target->cpu_list) {
-+		*filter_type =3D BPERF_FILTER_CPU;
-+		*filter_entry_cnt =3D perf_cpu_map__nr(evsel__cpus(evsel));
-+	} else if (target->tid) {
-+		*filter_type =3D BPERF_FILTER_PID;
-+		*filter_entry_cnt =3D perf_thread_map__nr(evsel->core.threads);
-+	} else if (target->pid) {
-+		*filter_type =3D BPERF_FILTER_TGID;
-+		*filter_entry_cnt =3D perf_thread_map__nr(evsel->core.threads);
-+	} else {
-+		pr_err("bpf managed perf events do not yet support these targets.\n");
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int bperf_reload_leader_program(struct evsel *evsel, int attr_map=
-_fd,
-+				       struct bperf_attr_map_entry *entry)
-+{
-+	struct bperf_leader_bpf *skel =3D NULL;
-+	struct perf_cpu_map *all_cpus;
-+	int link_fd, diff_map_fd, err;
-+	struct bpf_link *link =3D NULL;
-+
-+	skel =3D bperf_leader_bpf__open();
-+	if (!skel) {
-+		pr_err("Failed to open leader skeleton\n");
-+		return -1;
-+	}
-+
-+	bpf_map__resize(skel->maps.events, libbpf_num_possible_cpus());
-+	err =3D bperf_leader_bpf__load(skel);
-+	if (err) {
-+		pr_err("Failed to load leader skeleton\n");
-+		goto out;
-+	}
-+
-+	err =3D -1;
-+	link =3D bpf_program__attach(skel->progs.on_switch);
-+	if (!link) {
-+		pr_err("Failed to attach leader program\n");
-+		goto out;
-+	}
-+
-+	all_cpus =3D perf_cpu_map__new(NULL);
-+	if (!all_cpus) {
-+		pr_err("Failed to open cpu_map for all cpus\n");
-+		goto out;
-+	}
-+
-+	link_fd =3D bpf_link__fd(link);
-+	diff_map_fd =3D bpf_map__fd(skel->maps.diff_readings);
-+	entry->link_id =3D bpf_link_get_id(link_fd);
-+	entry->diff_map_id =3D bpf_map_get_id(diff_map_fd);
-+	err =3D bpf_map_update_elem(attr_map_fd, &evsel->core.attr, entry, BPF_=
-ANY);
-+	assert(err =3D=3D 0);
-+
-+	evsel->bperf_leader_link_fd =3D bpf_link_get_fd_by_id(entry->link_id);
-+	assert(evsel->bperf_leader_link_fd >=3D 0);
-+
-+	/* save leader_skel for install_pe */
-+	evsel->leader_skel =3D skel;
-+	evsel__open_per_cpu(evsel, all_cpus, -1);
-+	perf_cpu_map__put(all_cpus);
-+
-+out:
-+	bperf_leader_bpf__destroy(skel);
-+	bpf_link__destroy(link);
-+	return err;
-+}
-+
-+static int bperf__load(struct evsel *evsel, struct target *target)
-+{
-+	struct bperf_attr_map_entry entry =3D {0xffffffff, 0xffffffff};
-+	int attr_map_fd, diff_map_fd =3D -1, err;
-+	enum bperf_filter_type filter_type;
-+	__u32 filter_entry_cnt, i;
-+
-+	if (bperf_check_target(evsel, target, &filter_type, &filter_entry_cnt))
-+		return -1;
-+
-+	evsel->bperf_leader_prog_fd =3D -1;
-+	evsel->bperf_leader_link_fd =3D -1;
-+
-+	/*
-+	 * Step 1: hold a fd on the leader program and the bpf_link, if
-+	 * the program is not already gone, reload the program.
-+	 * Use flock() to ensure exclusive access to the perf_event_attr
-+	 * map.
-+	 */
-+	attr_map_fd =3D bperf_lock_attr_map(target);
-+	if (attr_map_fd < 0) {
-+		pr_err("Failed to lock perf_event_attr map\n");
-+		return -1;
-+	}
-+
-+	err =3D bpf_map_lookup_elem(attr_map_fd, &evsel->core.attr, &entry);
-+	if (err) {
-+		err =3D bpf_map_update_elem(attr_map_fd, &evsel->core.attr, &entry, BP=
-F_ANY);
-+		if (err)
-+			goto out;
-+	}
-+
-+	evsel->bperf_leader_link_fd =3D bpf_link_get_fd_by_id(entry.link_id);
-+	if (evsel->bperf_leader_link_fd < 0 &&
-+	    bperf_reload_leader_program(evsel, attr_map_fd, &entry))
-+		goto out;
-+
-+	/*
-+	 * The bpf_link holds reference to the leader program, and the
-+	 * leader program holds reference to the maps. Therefore, if
-+	 * link_id is valid, diff_map_id should also be valid.
-+	 */
-+	evsel->bperf_leader_prog_fd =3D bpf_prog_get_fd_by_id(
-+		bpf_link_get_prog_id(evsel->bperf_leader_link_fd));
-+	assert(evsel->bperf_leader_prog_fd >=3D 0);
-+
-+	diff_map_fd =3D bpf_map_get_fd_by_id(entry.diff_map_id);
-+	assert(diff_map_fd >=3D 0);
-+
-+	/*
-+	 * bperf uses BPF_PROG_TEST_RUN to get accurate reading. Check
-+	 * whether the kernel support it
-+	 */
-+	err =3D bperf_trigger_reading(evsel->bperf_leader_prog_fd, 0);
-+	if (err) {
-+		pr_err("The kernel does not support test_run for raw_tp BPF programs.\=
-n"
-+		       "Therefore, --use-bpf might show inaccurate readings\n");
-+		goto out;
-+	}
-+
-+	/* Step 2: load the follower skeleton */
-+	evsel->follower_skel =3D bperf_follower_bpf__open();
-+	if (!evsel->follower_skel) {
-+		pr_err("Failed to open follower skeleton\n");
-+		goto out;
-+	}
-+
-+	/* attach fexit program to the leader program */
-+	bpf_program__set_attach_target(evsel->follower_skel->progs.fexit_XXX,
-+				       evsel->bperf_leader_prog_fd, "on_switch");
-+
-+	/* connect to leader diff_reading map */
-+	bpf_map__reuse_fd(evsel->follower_skel->maps.diff_readings, diff_map_fd=
-);
-+
-+	/* set up reading map */
-+	bpf_map__set_max_entries(evsel->follower_skel->maps.accum_readings,
-+				 filter_entry_cnt);
-+	/* set up follower filter based on target */
-+	bpf_map__set_max_entries(evsel->follower_skel->maps.filter,
-+				 filter_entry_cnt);
-+	err =3D bperf_follower_bpf__load(evsel->follower_skel);
-+	if (err) {
-+		pr_err("Failed to load follower skeleton\n");
-+		bperf_follower_bpf__destroy(evsel->follower_skel);
-+		evsel->follower_skel =3D NULL;
-+		goto out;
-+	}
-+
-+	for (i =3D 0; i < filter_entry_cnt; i++) {
-+		int filter_map_fd;
-+		__u32 key;
-+
-+		if (filter_type =3D=3D BPERF_FILTER_PID ||
-+		    filter_type =3D=3D BPERF_FILTER_TGID)
-+			key =3D evsel->core.threads->map[i].pid;
-+		else if (filter_type =3D=3D BPERF_FILTER_CPU)
-+			key =3D evsel->core.cpus->map[i];
-+		else
-+			break;
-+
-+		filter_map_fd =3D bpf_map__fd(evsel->follower_skel->maps.filter);
-+		bpf_map_update_elem(filter_map_fd, &key, &i, BPF_ANY);
-+	}
-+
-+	evsel->follower_skel->bss->type =3D filter_type;
-+
-+out:
-+	if (err && evsel->bperf_leader_link_fd >=3D 0)
-+		close(evsel->bperf_leader_link_fd);
-+	if (err && evsel->bperf_leader_prog_fd >=3D 0)
-+		close(evsel->bperf_leader_prog_fd);
-+	if (diff_map_fd >=3D 0)
-+		close(diff_map_fd);
-+
-+	flock(attr_map_fd, LOCK_UN);
-+	close(attr_map_fd);
-+
-+	return err;
-+}
-+
-+static int bperf__install_pe(struct evsel *evsel, int cpu, int fd)
-+{
-+	struct bperf_leader_bpf *skel =3D evsel->leader_skel;
-+
-+	return bpf_map_update_elem(bpf_map__fd(skel->maps.events),
-+				   &cpu, &fd, BPF_ANY);
-+}
-+
-+/*
-+ * trigger the leader prog on each cpu, so the accum_reading map could g=
-et
-+ * the latest readings.
-+ */
-+static int bperf_sync_counters(struct evsel *evsel)
-+{
-+	struct perf_cpu_map *all_cpus =3D perf_cpu_map__new(NULL);
-+	int num_cpu, i, cpu;
-+
-+	if (!all_cpus)
-+		return -1;
-+
-+	num_cpu =3D all_cpus->nr;
-+	for (i =3D 0; i < num_cpu; i++) {
-+		cpu =3D all_cpus->map[i];
-+		bperf_trigger_reading(evsel->bperf_leader_prog_fd, cpu);
-+	}
-+	return 0;
-+}
-+
-+static int bperf__enable(struct evsel *evsel)
-+{
-+	struct bperf_follower_bpf *skel =3D evsel->follower_skel;
-+	__u32 num_cpu_bpf =3D libbpf_num_possible_cpus();
-+	struct bpf_perf_event_value values[num_cpu_bpf];
-+	int err, i, entry_cnt;
-+
-+	err =3D bperf_follower_bpf__attach(evsel->follower_skel);
-+	if (err)
-+		return -1;
-+
-+	/*
-+	 * Attahcing the skeleton takes non-trivial time (0.2s+ on a kernel
-+	 * with some debug options enabled). This shows as a longer first
-+	 * interval:
-+	 *
-+	 * # perf stat -e cycles -a -I 1000
-+	 * #           time             counts unit events
-+	 *      1.267634674     26,259,166,523      cycles
-+	 *      2.271637827     22,550,822,286      cycles
-+	 *      3.275406553     22,852,583,744      cycles
-+	 *
-+	 * Fix this by zeroing accum_readings after attaching the program.
-+	 */
-+	bperf_sync_counters(evsel);
-+	entry_cnt =3D bpf_map__max_entries(skel->maps.accum_readings);
-+	memset(values, 0, sizeof(struct bpf_perf_event_value) * num_cpu_bpf);
-+
-+	for (i =3D 0; i < entry_cnt; i++) {
-+		bpf_map_update_elem(bpf_map__fd(skel->maps.accum_readings),
-+				    &i, values, BPF_ANY);
-+	}
-+	return 0;
-+}
-+
-+static int bperf__read(struct evsel *evsel)
-+{
-+	struct bperf_follower_bpf *skel =3D evsel->follower_skel;
-+	__u32 num_cpu_bpf =3D libbpf_num_possible_cpus();
-+	struct bpf_perf_event_value values[num_cpu_bpf];
-+	static struct perf_cpu_map *all_cpus;
-+	int reading_map_fd, err =3D 0;
-+	__u32 i, j, num_cpu;
-+
-+	if (!all_cpus) {
-+		all_cpus =3D perf_cpu_map__new(NULL);
-+		if (!all_cpus)
-+			return -1;
-+	}
-+
-+	bperf_sync_counters(evsel);
-+	reading_map_fd =3D bpf_map__fd(skel->maps.accum_readings);
-+
-+	for (i =3D 0; i < bpf_map__max_entries(skel->maps.accum_readings); i++)=
- {
-+		__u32 cpu;
-+
-+		err =3D bpf_map_lookup_elem(reading_map_fd, &i, values);
-+		if (err)
-+			goto out;
-+		switch (evsel->follower_skel->bss->type) {
-+		case BPERF_FILTER_GLOBAL:
-+			assert(i =3D=3D 0);
-+
-+			num_cpu =3D all_cpus->nr;
-+			for (j =3D 0; j < num_cpu; j++) {
-+				cpu =3D all_cpus->map[j];
-+				perf_counts(evsel->counts, cpu, 0)->val =3D values[cpu].counter;
-+				perf_counts(evsel->counts, cpu, 0)->ena =3D values[cpu].enabled;
-+				perf_counts(evsel->counts, cpu, 0)->run =3D values[cpu].running;
-+			}
-+			break;
-+		case BPERF_FILTER_CPU:
-+			cpu =3D evsel->core.cpus->map[i];
-+			perf_counts(evsel->counts, i, 0)->val =3D values[cpu].counter;
-+			perf_counts(evsel->counts, i, 0)->ena =3D values[cpu].enabled;
-+			perf_counts(evsel->counts, i, 0)->run =3D values[cpu].running;
-+			break;
-+		case BPERF_FILTER_PID:
-+		case BPERF_FILTER_TGID:
-+			perf_counts(evsel->counts, 0, i)->val =3D 0;
-+			perf_counts(evsel->counts, 0, i)->ena =3D 0;
-+			perf_counts(evsel->counts, 0, i)->run =3D 0;
-+
-+			for (cpu =3D 0; cpu < num_cpu_bpf; cpu++) {
-+				perf_counts(evsel->counts, 0, i)->val +=3D values[cpu].counter;
-+				perf_counts(evsel->counts, 0, i)->ena +=3D values[cpu].enabled;
-+				perf_counts(evsel->counts, 0, i)->run +=3D values[cpu].running;
-+			}
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+out:
-+	return err;
-+}
-+
-+static int bperf__destroy(struct evsel *evsel)
-+{
-+	bperf_follower_bpf__destroy(evsel->follower_skel);
-+	close(evsel->bperf_leader_prog_fd);
-+	close(evsel->bperf_leader_link_fd);
-+	return 0;
-+}
-+
-+/*
-+ * bperf: share hardware PMCs with BPF
-+ *
-+ * perf uses performance monitoring counters (PMC) to monitor system
-+ * performance. The PMCs are limited hardware resources. For example,
-+ * Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
-+ *
-+ * Modern data center systems use these PMCs in many different ways:
-+ * system level monitoring, (maybe nested) container level monitoring, p=
-er
-+ * process monitoring, profiling (in sample mode), etc. In some cases,
-+ * there are more active perf_events than available hardware PMCs. To al=
-low
-+ * all perf_events to have a chance to run, it is necessary to do expens=
-ive
-+ * time multiplexing of events.
-+ *
-+ * On the other hand, many monitoring tools count the common metrics
-+ * (cycles, instructions). It is a waste to have multiple tools create
-+ * multiple perf_events of "cycles" and occupy multiple PMCs.
-+ *
-+ * bperf tries to reduce such wastes by allowing multiple perf_events of
-+ * "cycles" or "instructions" (at different scopes) to share PMUs. Inste=
-ad
-+ * of having each perf-stat session to read its own perf_events, bperf u=
-ses
-+ * BPF programs to read the perf_events and aggregate readings to BPF ma=
-ps.
-+ * Then, the perf-stat session(s) reads the values from these BPF maps.
-+ *
-+ *                                ||
-+ *       shared progs and maps <- || -> per session progs and maps
-+ *                                ||
-+ *   ---------------              ||
-+ *   | perf_events |              ||
-+ *   ---------------       fexit  ||      -----------------
-+ *          |             --------||----> | follower prog |
-+ *       --------------- /        || ---  -----------------
-+ * cs -> | leader prog |/         ||/        |         |
-+ *   --> ---------------         /||  --------------  ------------------
-+ *  /       |         |         / ||  | filter map |  | accum_readings |
-+ * /  ------------  ------------  ||  --------------  ------------------
-+ * |  | prev map |  | diff map |  ||                        |
-+ * |  ------------  ------------  ||                        |
-+ *  \                             ||                        |
-+ * =3D \ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D | =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+ *    \                                                    /   user spac=
-e
-+ *     \                                                  /
-+ *      \                                                /
-+ *    BPF_PROG_TEST_RUN                    BPF_MAP_LOOKUP_ELEM
-+ *        \                                            /
-+ *         \                                          /
-+ *          \------  perf-stat ----------------------/
-+ *
-+ * The figure above shows the architecture of bperf. Note that the figur=
-e
-+ * is divided into 3 regions: shared progs and maps (top left), per sess=
-ion
-+ * progs and maps (top right), and user space (bottom).
-+ *
-+ * The leader prog is triggered on each context switch (cs). The leader
-+ * prog reads perf_events and stores the difference (current_reading -
-+ * previous_reading) to the diff map. For the same metric, e.g. "cycles"=
-,
-+ * multiple perf-stat sessions share the same leader prog.
-+ *
-+ * Each perf-stat session creates a follower prog as fexit program to th=
-e
-+ * leader prog. It is possible to attach up to BPF_MAX_TRAMP_PROGS (38)
-+ * follower progs to the same leader prog. The follower prog checks curr=
-ent
-+ * task and processor ID to decide whether to add the value from the dif=
-f
-+ * map to its accumulated reading map (accum_readings).
-+ *
-+ * Finally, perf-stat user space reads the value from accum_reading map.
-+ *
-+ * Besides context switch, it is also necessary to trigger the leader pr=
-og
-+ * before perf-stat reads the value. Otherwise, the accum_reading map ma=
-y
-+ * not have the latest reading from the perf_events. This is achieved by
-+ * triggering the event via sys_bpf(BPF_PROG_TEST_RUN) to each CPU.
-+ *
-+ * Comment before the definition of struct bperf_attr_map_entry describe=
-s
-+ * how different sessions of perf-stat share information about the leade=
-r
-+ * prog.
-+ */
-+
-+struct bpf_counter_ops bperf_ops =3D {
-+	.load       =3D bperf__load,
-+	.enable     =3D bperf__enable,
-+	.read       =3D bperf__read,
-+	.install_pe =3D bperf__install_pe,
-+	.destroy    =3D bperf__destroy,
-+};
-+
-+static inline bool bpf_counter_skip(struct evsel *evsel)
-+{
-+	return list_empty(&evsel->bpf_counter_list) &&
-+		evsel->follower_skel =3D=3D NULL;
-+}
-+
- int bpf_counter__install_pe(struct evsel *evsel, int cpu, int fd)
- {
--	if (list_empty(&evsel->bpf_counter_list))
-+	if (bpf_counter_skip(evsel))
- 		return 0;
- 	return evsel->bpf_counter_ops->install_pe(evsel, cpu, fd);
- }
-=20
- int bpf_counter__load(struct evsel *evsel, struct target *target)
- {
--	if (target__has_bpf(target))
-+	if (target->bpf_str)
- 		evsel->bpf_counter_ops =3D &bpf_program_profiler_ops;
-+	else if (target->use_bpf)
-+		evsel->bpf_counter_ops =3D &bperf_ops;
-=20
- 	if (evsel->bpf_counter_ops)
- 		return evsel->bpf_counter_ops->load(evsel, target);
-@@ -293,21 +835,21 @@ int bpf_counter__load(struct evsel *evsel, struct t=
-arget *target)
-=20
- int bpf_counter__enable(struct evsel *evsel)
- {
--	if (list_empty(&evsel->bpf_counter_list))
-+	if (bpf_counter_skip(evsel))
- 		return 0;
- 	return evsel->bpf_counter_ops->enable(evsel);
- }
-=20
- int bpf_counter__read(struct evsel *evsel)
- {
--	if (list_empty(&evsel->bpf_counter_list))
-+	if (bpf_counter_skip(evsel))
- 		return -EAGAIN;
- 	return evsel->bpf_counter_ops->read(evsel);
- }
-=20
- void bpf_counter__destroy(struct evsel *evsel)
- {
--	if (list_empty(&evsel->bpf_counter_list))
-+	if (bpf_counter_skip(evsel))
- 		return;
- 	evsel->bpf_counter_ops->destroy(evsel);
- 	evsel->bpf_counter_ops =3D NULL;
-diff --git a/tools/perf/util/bpf_skel/bperf.h b/tools/perf/util/bpf_skel/=
-bperf.h
-new file mode 100644
-index 0000000000000..186a5551ddb9d
---- /dev/null
-+++ b/tools/perf/util/bpf_skel/bperf.h
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+// Copyright (c) 2021 Facebook
-+
-+#ifndef __BPERF_STAT_H
-+#define __BPERF_STAT_H
-+
-+typedef struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct bpf_perf_event_value));
-+	__uint(max_entries, 1);
-+} reading_map;
-+
-+#endif /* __BPERF_STAT_H */
-diff --git a/tools/perf/util/bpf_skel/bperf_follower.bpf.c b/tools/perf/u=
-til/bpf_skel/bperf_follower.bpf.c
-new file mode 100644
-index 0000000000000..7535d9557ab9a
---- /dev/null
-+++ b/tools/perf/util/bpf_skel/bperf_follower.bpf.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+// Copyright (c) 2021 Facebook
-+#include <linux/bpf.h>
-+#include <linux/perf_event.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bperf.h"
-+#include "bperf_u.h"
-+
-+reading_map diff_readings SEC(".maps");
-+reading_map accum_readings SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} filter SEC(".maps");
-+
-+enum bperf_filter_type type =3D 0;
-+
-+SEC("fexit/XXX")
-+int BPF_PROG(fexit_XXX)
-+{
-+	struct bpf_perf_event_value *diff_val, *accum_val;
-+	__u32 filter_key, zero =3D 0;
-+	__u32 *accum_key;
-+
-+	switch (type) {
-+	case BPERF_FILTER_GLOBAL:
-+		accum_key =3D &zero;
-+		goto do_add;
-+	case BPERF_FILTER_CPU:
-+		filter_key =3D bpf_get_smp_processor_id();
-+		break;
-+	case BPERF_FILTER_PID:
-+		filter_key =3D bpf_get_current_pid_tgid() & 0xffffffff;
-+		break;
-+	case BPERF_FILTER_TGID:
-+		filter_key =3D bpf_get_current_pid_tgid() >> 32;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	accum_key =3D bpf_map_lookup_elem(&filter, &filter_key);
-+	if (!accum_key)
-+		return 0;
-+
-+do_add:
-+	diff_val =3D bpf_map_lookup_elem(&diff_readings, &zero);
-+	if (!diff_val)
-+		return 0;
-+
-+	accum_val =3D bpf_map_lookup_elem(&accum_readings, accum_key);
-+	if (!accum_val)
-+		return 0;
-+
-+	accum_val->counter +=3D diff_val->counter;
-+	accum_val->enabled +=3D diff_val->enabled;
-+	accum_val->running +=3D diff_val->running;
-+
-+	return 0;
-+}
-+
-+char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
-diff --git a/tools/perf/util/bpf_skel/bperf_leader.bpf.c b/tools/perf/uti=
-l/bpf_skel/bperf_leader.bpf.c
-new file mode 100644
-index 0000000000000..4f70d1459e86c
---- /dev/null
-+++ b/tools/perf/util/bpf_skel/bperf_leader.bpf.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+// Copyright (c) 2021 Facebook
-+#include <linux/bpf.h>
-+#include <linux/perf_event.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bperf.h"
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(int));
-+	__uint(map_flags, BPF_F_PRESERVE_ELEMS);
-+} events SEC(".maps");
-+
-+reading_map prev_readings SEC(".maps");
-+reading_map diff_readings SEC(".maps");
-+
-+SEC("raw_tp/sched_switch")
-+int BPF_PROG(on_switch)
-+{
-+	struct bpf_perf_event_value val, *prev_val, *diff_val;
-+	__u32 key =3D bpf_get_smp_processor_id();
-+	__u32 zero =3D 0;
-+	long err;
-+
-+	prev_val =3D bpf_map_lookup_elem(&prev_readings, &zero);
-+	if (!prev_val)
-+		return 0;
-+
-+	diff_val =3D bpf_map_lookup_elem(&diff_readings, &zero);
-+	if (!diff_val)
-+		return 0;
-+
-+	err =3D bpf_perf_event_read_value(&events, key, &val, sizeof(val));
-+	if (err)
-+		return 0;
-+
-+	diff_val->counter =3D val.counter - prev_val->counter;
-+	diff_val->enabled =3D val.enabled - prev_val->enabled;
-+	diff_val->running =3D val.running - prev_val->running;
-+	*prev_val =3D val;
-+	return 0;
-+}
-+
-+char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 6026487353dd8..dd4f56f9cfdf5 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -20,6 +20,8 @@ union perf_event;
- struct bpf_counter_ops;
- struct target;
- struct hashmap;
-+struct bperf_leader_bpf;
-+struct bperf_follower_bpf;
-=20
- typedef int (evsel__sb_cb_t)(union perf_event *event, void *data);
-=20
-@@ -130,8 +132,24 @@ struct evsel {
- 	 * See also evsel__has_callchain().
- 	 */
- 	__u64			synth_sample_type;
--	struct list_head	bpf_counter_list;
-+
-+	/*
-+	 * bpf_counter_ops serves two use cases:
-+	 *   1. perf-stat -b          counting events used byBPF programs
-+	 *   2. perf-stat --use-bpf   use BPF programs to aggregate counts
-+	 */
- 	struct bpf_counter_ops	*bpf_counter_ops;
-+
-+	/* for perf-stat -b */
-+	struct list_head	bpf_counter_list;
-+
-+	/* for perf-stat --use-bpf */
-+	int			bperf_leader_prog_fd;
-+	int			bperf_leader_link_fd;
-+	union {
-+		struct bperf_leader_bpf *leader_skel;
-+		struct bperf_follower_bpf *follower_skel;
-+	};
- };
-=20
- struct perf_missing_features {
-diff --git a/tools/perf/util/target.h b/tools/perf/util/target.h
-index f132c6c2eef81..1bce3eb28ef25 100644
---- a/tools/perf/util/target.h
-+++ b/tools/perf/util/target.h
-@@ -16,6 +16,8 @@ struct target {
- 	bool	     uses_mmap;
- 	bool	     default_per_cpu;
- 	bool	     per_thread;
-+	bool	     use_bpf;
-+	const char   *attr_map;
- };
-=20
- enum target_errno {
-@@ -66,7 +68,7 @@ static inline bool target__has_cpu(struct target *targe=
-t)
-=20
- static inline bool target__has_bpf(struct target *target)
- {
--	return target->bpf_str;
-+	return target->bpf_str || target->use_bpf;
- }
-=20
- static inline bool target__none(struct target *target)
---=20
-2.24.1
-
+Thanks,
+Can Guo
