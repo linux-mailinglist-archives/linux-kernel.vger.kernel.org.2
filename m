@@ -2,87 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436FC338829
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 848A033882F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbhCLJBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:01:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53213 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232617AbhCLJBm (ORCPT
+        id S232628AbhCLJDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:03:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232720AbhCLJCt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:01:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615539701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kZgi8ac9iRjWqxn6NnFC7WOkmA3vCT3GJ0uAoFy454Y=;
-        b=NEgCV/pHoSgDm4BYpy0p1mTjKYY/Jp0wVR5GswzvG/VBM/IDP1wNHbadmghqTGlxvgFLw+
-        /MbByJ7/rCdX18VGPSwnfTAwlSs9hckcZTBjwBr9iHv5XyPmWLlgpkgo7wXzeEl4DCUeh9
-        8uLtU/vpR+aiWh4oXLNFKJx2RGOxc+Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-3rk5lSl7O5qjq-AoOjETww-1; Fri, 12 Mar 2021 04:01:39 -0500
-X-MC-Unique: 3rk5lSl7O5qjq-AoOjETww-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C7A518397A1;
-        Fri, 12 Mar 2021 09:01:38 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A96F5C234;
-        Fri, 12 Mar 2021 09:01:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <134696.1615510534@turing-police>
-References: <134696.1615510534@turing-police> <109018.1615463088@turing-police> <91190.1615444370@turing-police> <972381.1615459754@warthog.procyon.org.uk> <1486567.1615464259@warthog.procyon.org.uk>
-To:     =?us-ascii?Q?Valdis_Kl=3D=3Futf-8=3FQ=3F=3Dc4=3D93=3F=3Dtnieks?= 
-        <valdis.kletnieks@vt.edu>
-Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: 'make O=' indigestion with module signing
+        Fri, 12 Mar 2021 04:02:49 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0955EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:02:48 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id x21so89544pfa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:02:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=coMaeMgwYndIuacusZtcjMM2Bpuh2O6iPW8BYwVPuYo=;
+        b=gkCeYdJatw7igkk2aK8sIdyamQHpJJDqCfzeFQbDf2QdM6wEdjoo3pgGPBZ/VQ2rCK
+         5SXbqGtipGvPHi7eSevO2BMl9O8STKUwEqQksCiVlkBPe3y5A2Vkgir07rqUZq2KbQo/
+         5rOEml9oq0vLcQMl4/cgDmF5U9lZoy+409Y/sZdkvhV6R6fT+dQ1/HEtqoIX/zYYmKyu
+         yA2EvkrQb/M2NwXdzUsuYD3RE/mOzFUgS5U6iMbiecWzFayXXxE5EvbWAc2cNb7hHVh5
+         hnKLgqE3iK7VF1IAQjQZGlGqIi37jVpISjW7zrnS9twtYhIq0hAuA5ZK2bIOOaxFnLZM
+         fm0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=coMaeMgwYndIuacusZtcjMM2Bpuh2O6iPW8BYwVPuYo=;
+        b=SvtwtzbkIsbIFbglZkmfjgFurW5evTpTWU1wvoybBGAnwEKDifosiJAMqnIKBIM94z
+         3eD4f9GRh8FVWgtkFb0TtgK8bpQd9n7TnSfy0Vc1nv05cCCy26wZQAHKJHZM/kwyiI4o
+         qkVfjMrjLPqax7hM6gvLIlCQY/8JV2/fR1UEUKXjixqBLwo3v3CWhiknji3EUKXvnNC2
+         z9v2r9WYp0wvNtxuyOGoZMZ6XShp6+PiKOqeK9lIVpXSUaR+gcCJsGxVWxdvlhJmZwkI
+         4bSrgu9KRVAl4Sd/MOevrZtZy6U5QNPa9wvKwZRUOsF1gjczKGxkzBTAGUuHr36E6JQA
+         AYzg==
+X-Gm-Message-State: AOAM531ht14Pi7YCeiOWGXgJ17tlxRM2foeqW603PTYV5D2ziIlTHQhE
+        skUm7hpu/0FVniRzfCiUI24=
+X-Google-Smtp-Source: ABdhPJyVYSOxPTEHpvK9d/fG0S60rVOswnNg32MxML3ktLFfobsQHWxlfkCrCf5DOFYv6b5lAG2IQw==
+X-Received: by 2002:a65:5c42:: with SMTP id v2mr11042664pgr.339.1615539767596;
+        Fri, 12 Mar 2021 01:02:47 -0800 (PST)
+Received: from localhost.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id e24sm4862903pgl.81.2021.03.12.01.02.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 01:02:47 -0800 (PST)
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     zhangxuezhi1@yulong.com, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: display: sitronix,st7789v-dbi: Add Waveshare 2inch LCD module
+Date:   Fri, 12 Mar 2021 09:02:41 +0000
+Message-Id: <20210312090241.98359-1-zhangxuezhi3@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 12 Mar 2021 09:01:36 +0000
-Message-ID: <2026575.1615539696@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu> wrote:
+From: "Carlis" <zhangxuezhi1@yulong.com>
 
-> So the root cause was: 'make mrproper doesn't clean certs/' out enough,
-> and this chunk of certs/Makefile
-> ...
-> I admit not being sure how (or if) this should be fixed
+Document support for the Waveshare 2inch LCD module display, which is a
+240x320 2" TFT display driven by a Sitronix ST7789V TFT Controller.
 
-It's tricky because CONFIG_MODULE_SIG_KEY may not point to a file, let alon=
-e a
-file that was autogenerated - it can be given a PKCS#11 URI, for instance. =
- I
-had to put in the autogeneration based on a magic config string value to st=
-op
-randconfig blowing up - but it only does the autogeneration if you don't put
-in your own file there before building.
+Signed-off-by: Carlis <zhangxuezhi1@yulong.com>
+---
+v2:change compatible name.
+---
+ .../display/sitronix,st7789v-dbi.yaml         | 72 +++++++++++++++++++
+ 1 file changed, 72 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
 
-Possibly I can add something like:
-
-	clean-files :=3D signing_key.pem x509.genkey
-
-inside the
-
-	ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
-	...
-	endif
-
-section.
-
-David
+diff --git a/Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml b/Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
+new file mode 100644
+index 000000000000..6abf82966230
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/sitronix,st7789v-dbi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Sitronix ST7789V Display Panels Device Tree Bindings
++
++maintainers:
++  - Carlis <zhangxuezhi1@yulong.com>
++
++description:
++  This binding is for display panels using a Sitronix ST7789V
++  controller in SPI mode.
++
++allOf:
++  - $ref: panel/panel-common.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - description:
++          Waveshare 2" 240x320 Color TFT LCD
++        items:
++          - enum:
++              - waveshare,ws2inch
++          - const: sitronix,st7789v-dbi
++
++  spi-max-frequency:
++    maximum: 32000000
++
++  dc-gpios:
++    maxItems: 1
++    description: Display data/command selection (D/CX)
++
++  backlight: true
++  reg: true
++  reset-gpios: true
++  rotation: true
++
++required:
++  - compatible
++  - reg
++  - dc-gpios
++  - reset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    backlight: backlight {
++            compatible = "gpio-backlight";
++            gpios = <&gpio 18 GPIO_ACTIVE_HIGH>;
++    };
++
++    spi {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            display@0{
++                    compatible = "waveshare,ws2inch", "sitronix,st7789v-dbi";
++                    reg = <0>;
++                    spi-max-frequency = <32000000>;
++                    dc-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
++                    reset-gpios = <&gpio 27 GPIO_ACTIVE_HIGH>;
++                    rotation = <270>;
++            };
++    };
++
++...
+-- 
+2.25.1
 
