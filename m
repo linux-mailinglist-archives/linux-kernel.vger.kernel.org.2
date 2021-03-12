@@ -2,237 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5206933860B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF2C338610
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhCLGjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 01:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhCLGjd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:39:33 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC57C061574;
-        Thu, 11 Mar 2021 22:39:32 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id t83so15849455oih.12;
-        Thu, 11 Mar 2021 22:39:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8XahDnVGHaB/78dul3sUbFzUy28ZenBQybUMz+VE5cQ=;
-        b=ucoPKW6zFerWPdw8Bz0r7s+RhzbQAJqvZjQ7CiHpN5Rz9axeCocavipwTqGinq96Bq
-         8wDoPcacC5KvKlBp1NbLDRNB4i3CeQMj2MpJ/NLUm2tPKls4FX0kFsz1LWE9IL2MaaaV
-         lqhJIHsnGl7UHnBUqWnCQKO47ahFeKeFEBeQ+CbHR8GuTR0g8XlXDgJ2ALLhieFXftCM
-         CAXN9rtSscwDHFKc/VYyvPNiLYiWyPB9enZuCkaP4pbUx9oxgzAK1HaNda8V5IMMqYSj
-         LQwhHZPeEycmitrcPSv6ee6DzZsoBlo1DZpfT7MhY5zph5YsfdYbL+lqQIXW/UvQJAxv
-         6WRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=8XahDnVGHaB/78dul3sUbFzUy28ZenBQybUMz+VE5cQ=;
-        b=Ylj3ENpOhFOBE3I3nocIIVWYOAETBVpH5KoHh8/6q5qZm7DB7cEqv3aNoHT80mIdxL
-         ri3SBBFfL3sJkfFI9D75jjdNzZ0RZ73OZAEVFsddvB5dmVLhVYW1tbHToqi5PMqrLfpV
-         9sF8fmbETYPwyd8OImQlIqz5gEkdbOUqWvce1fpWPZ03qIbIyN+N1it7ldjs8nSXkIIy
-         6+OfGw59XjSYcFBnD+Y5P1SqZ5ir2+H3CO/qeXUbq6/syvFAPkpgvNoD8lvEapuXCPDm
-         GNXOhzzX6hjlWThjeme/d0Co7NvWlbab31NnjHnAOMayh7aJIQZYBPblzhuKvGx5NVHe
-         sy2g==
-X-Gm-Message-State: AOAM532MhnSLoOFekCWGQGQi749ABKsE4OcsPNwiocZ6oZ1AE1mHE78D
-        Ub4ruFcRMUIfBU6jz0Dp7FXO+T23e0M=
-X-Google-Smtp-Source: ABdhPJwoIxuN82CSdQ9947ImRoini2UHZR7pQ9Vpa7Pkm+d6f5JKe8QIoM0WV14llY7O8SBfNhY3+g==
-X-Received: by 2002:a05:6808:1450:: with SMTP id x16mr9062541oiv.6.1615531172061;
-        Thu, 11 Mar 2021 22:39:32 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l26sm1203189otd.21.2021.03.11.22.39.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 22:39:31 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2 2/2] usb: typec: tcpci_maxim: configure charging & data
- paths
-To:     Badhri Jagan Sridharan <badhri@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>
-References: <20210312052443.3797674-1-badhri@google.com>
- <20210312052443.3797674-2-badhri@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <dba54e90-17e7-ab42-bc82-4ca39ee5de30@roeck-us.net>
-Date:   Thu, 11 Mar 2021 22:39:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231908AbhCLGku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 01:40:50 -0500
+Received: from mga04.intel.com ([192.55.52.120]:1795 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230175AbhCLGkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 01:40:37 -0500
+IronPort-SDR: WpSkSycepxtyrJacb5u8TFUU4Wd7Jg3rfPfr2AovdFpNpfUNaZNyCwsC4K8RiwvGMhjFCzk3tj
+ 16edUv7Pe+xg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="186416776"
+X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
+   d="scan'208";a="186416776"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 22:40:36 -0800
+IronPort-SDR: T6+IIT5dUJgvUP2o5e2S60+UU2tbglvfwcnw/zvytnFpNdDjZhOgeCvMaop0Q4TNhHm0iQCpkg
+ RecChuH4nEUA==
+X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
+   d="scan'208";a="410909635"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.214.210]) ([10.254.214.210])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 22:40:33 -0800
+Subject: Re: [PATCH V3 6/6] vDPA/ifcvf: verify mandatory feature bits for vDPA
+To:     Jason Wang <jasowang@redhat.com>,
+        Zhu Lingshan <lingshan.zhu@linux.intel.com>, mst@redhat.com,
+        lulu@redhat.com, leonro@nvidia.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+References: <20210310090052.4762-1-lingshan.zhu@intel.com>
+ <20210310090052.4762-7-lingshan.zhu@intel.com>
+ <3e53a5c9-c531-48ee-c9a7-907dfdacc9d1@redhat.com>
+ <9c2fb3d0-2d69-20b9-589d-cc5ffc830f38@linux.intel.com>
+ <4f3ef2bb-d823-d53d-3bb0-0152a3f6c9f1@redhat.com>
+ <a1f346cc-c9fd-6d16-39d7-b59965a18b0a@intel.com>
+ <67be60b6-bf30-de85-ed42-d9fad974f42b@redhat.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Message-ID: <2a6e31d3-ea31-9b64-0749-1f149b656623@intel.com>
+Date:   Fri, 12 Mar 2021 14:40:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210312052443.3797674-2-badhri@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <67be60b6-bf30-de85-ed42-d9fad974f42b@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/11/21 9:24 PM, Badhri Jagan Sridharan wrote:
-> The change exposes the data_role and the orientation as a extcon
-> interface for configuring the USB data controller.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
-> Changes since V1:
-> - Dropped changes related to get_/set_current_limit and pd_capable
->   callback. Will send them in as separate patches.
-> ---
->  drivers/usb/typec/tcpm/tcpci_maxim.c | 56 ++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> index 041a1c393594..1210445713ee 100644
-> --- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-> +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> @@ -7,6 +7,8 @@
->  
->  #include <linux/interrupt.h>
->  #include <linux/i2c.h>
-> +#include <linux/extcon.h>
-> +#include <linux/extcon-provider.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/regmap.h>
-> @@ -46,6 +48,8 @@ struct max_tcpci_chip {
->  	struct device *dev;
->  	struct i2c_client *client;
->  	struct tcpm_port *port;
-> +	bool attached;
-> +	struct extcon_dev *extcon;
->  };
->  
->  static const struct regmap_range max_tcpci_tcpci_range[] = {
-> @@ -439,6 +443,39 @@ static int tcpci_init(struct tcpci *tcpci, struct tcpci_data *data)
->  	return -1;
->  }
->  
-> +static void max_tcpci_set_roles(struct tcpci *tcpci, struct tcpci_data *data, bool attached,
-> +				enum typec_role role, enum typec_data_role data_role)
-> +{
-> +	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
-> +
-> +	chip->attached = attached;
-> +
-> +	if (!attached) {
-> +		extcon_set_state_sync(chip->extcon, EXTCON_USB_HOST, 0);
-> +		extcon_set_state_sync(chip->extcon, EXTCON_USB, 0);
-> +		return;
-> +	}
-> +
-> +	extcon_set_state_sync(chip->extcon, data_role == TYPEC_HOST ? EXTCON_USB_HOST : EXTCON_USB,
-> +			      1);
-> +}
-> +
-> +static void max_tcpci_set_cc_polarity(struct tcpci *tcpci, struct tcpci_data *data,
-> +				      enum typec_cc_polarity polarity)
-> +{
-> +	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
-> +
-> +	extcon_set_property(chip->extcon, EXTCON_USB, EXTCON_PROP_USB_TYPEC_POLARITY,
-> +			    (union extcon_property_value)(int)polarity);
-> +	extcon_set_property(chip->extcon, EXTCON_USB_HOST, EXTCON_PROP_USB_TYPEC_POLARITY,
-> +			    (union extcon_property_value)(int)polarity);
-> +}
-> +
-> +static const unsigned int usbpd_extcon[] = {
-> +	EXTCON_USB,
-> +	EXTCON_USB_HOST,
-> +};
-> +
->  static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id *i2c_id)
->  {
->  	int ret;
-> @@ -472,6 +509,8 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
->  	chip->data.auto_discharge_disconnect = true;
->  	chip->data.vbus_vsafe0v = true;
->  	chip->data.set_partner_usb_comm_capable = max_tcpci_set_partner_usb_comm_capable;
-> +	chip->data.set_roles = max_tcpci_set_roles;
-> +	chip->data.set_cc_polarity = max_tcpci_set_cc_polarity;
->  
->  	max_tcpci_init_regs(chip);
->  	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
-> @@ -484,6 +523,23 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
->  	if (ret < 0)
->  		goto unreg_port;
->  
-> +	chip->extcon = devm_extcon_dev_allocate(&client->dev, usbpd_extcon);
-> +	if (IS_ERR(chip->extcon)) {
-> +		dev_err(&client->dev, "Error allocating extcon: %ld\n", PTR_ERR(chip->extcon));
-> +		ret = PTR_ERR(chip->extcon);
-> +		goto unreg_port;
-> +	}
-> +
-> +	ret = devm_extcon_dev_register(&client->dev, chip->extcon);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "failed to register extcon device");
-> +		goto unreg_port;
-> +	}
 
-Effectively this mandates extcon support to be able to use this driver/chip.
-Does that make sense ? If this is indeed mandatory, how did it work so far ?
 
-Also, what makes this code chip specific ?
-
-Thanks,
-Guenter
-
-> +
-> +	extcon_set_property_capability(chip->extcon, EXTCON_USB, EXTCON_PROP_USB_TYPEC_POLARITY);
-> +	extcon_set_property_capability(chip->extcon, EXTCON_USB_HOST,
-> +				       EXTCON_PROP_USB_TYPEC_POLARITY);
-> +
->  	device_init_wakeup(chip->dev, true);
->  	return 0;
->  
-> 
+On 3/12/2021 1:52 PM, Jason Wang wrote:
+>
+> On 2021/3/11 3:19 下午, Zhu, Lingshan wrote:
+>>
+>>
+>> On 3/11/2021 2:20 PM, Jason Wang wrote:
+>>>
+>>> On 2021/3/11 12:16 下午, Zhu Lingshan wrote:
+>>>>
+>>>>
+>>>> On 3/11/2021 11:20 AM, Jason Wang wrote:
+>>>>>
+>>>>> On 2021/3/10 5:00 下午, Zhu Lingshan wrote:
+>>>>>> vDPA requres VIRTIO_F_ACCESS_PLATFORM as a must, this commit
+>>>>>> examines this when set features.
+>>>>>>
+>>>>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>>>>>> ---
+>>>>>>   drivers/vdpa/ifcvf/ifcvf_base.c | 8 ++++++++
+>>>>>>   drivers/vdpa/ifcvf/ifcvf_base.h | 1 +
+>>>>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 +++++
+>>>>>>   3 files changed, 14 insertions(+)
+>>>>>>
+>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c 
+>>>>>> b/drivers/vdpa/ifcvf/ifcvf_base.c
+>>>>>> index ea6a78791c9b..58f47fdce385 100644
+>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.c
+>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.c
+>>>>>> @@ -224,6 +224,14 @@ u64 ifcvf_get_features(struct ifcvf_hw *hw)
+>>>>>>       return hw->hw_features;
+>>>>>>   }
+>>>>>>   +int ifcvf_verify_min_features(struct ifcvf_hw *hw)
+>>>>>> +{
+>>>>>> +    if (!(hw->hw_features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
+>>>>>> +        return -EINVAL;
+>>>>>> +
+>>>>>> +    return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>>   void ifcvf_read_net_config(struct ifcvf_hw *hw, u64 offset,
+>>>>>>                  void *dst, int length)
+>>>>>>   {
+>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
+>>>>>> b/drivers/vdpa/ifcvf/ifcvf_base.h
+>>>>>> index dbb8c10aa3b1..91c5735d4dc9 100644
+>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
+>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
+>>>>>> @@ -123,6 +123,7 @@ void io_write64_twopart(u64 val, u32 *lo, u32 
+>>>>>> *hi);
+>>>>>>   void ifcvf_reset(struct ifcvf_hw *hw);
+>>>>>>   u64 ifcvf_get_features(struct ifcvf_hw *hw);
+>>>>>>   u64 ifcvf_get_hw_features(struct ifcvf_hw *hw);
+>>>>>> +int ifcvf_verify_min_features(struct ifcvf_hw *hw);
+>>>>>>   u16 ifcvf_get_vq_state(struct ifcvf_hw *hw, u16 qid);
+>>>>>>   int ifcvf_set_vq_state(struct ifcvf_hw *hw, u16 qid, u16 num);
+>>>>>>   struct ifcvf_adapter *vf_to_adapter(struct ifcvf_hw *hw);
+>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
+>>>>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>>>> index 25fb9dfe23f0..f624f202447d 100644
+>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>>>> @@ -179,6 +179,11 @@ static u64 ifcvf_vdpa_get_features(struct 
+>>>>>> vdpa_device *vdpa_dev)
+>>>>>>   static int ifcvf_vdpa_set_features(struct vdpa_device 
+>>>>>> *vdpa_dev, u64 features)
+>>>>>>   {
+>>>>>>       struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+>>>>>> +    int ret;
+>>>>>> +
+>>>>>> +    ret = ifcvf_verify_min_features(vf);
+>>>>>
+>>>>>
+>>>>> So this validate device features instead of driver which is the 
+>>>>> one we really want to check?
+>>>>>
+>>>>> Thanks
+>>>>
+>>>> Hi Jason,
+>>>>
+>>>> Here we check device feature bits to make sure the device support 
+>>>> ACCESS_PLATFORM. 
+>>>
+>>>
+>>> If you want to check device features, you need to do that during 
+>>> probe() and fail the probing if without the feature. But I think you 
+>>> won't ship cards without ACCESS_PLATFORM.
+>> Yes, there are no reasons ship a card without ACCESS_PLATFORM
+>>>
+>>>
+>>>> In get_features(),
+>>>> it will return a intersection of device features bit and driver 
+>>>> supported features bits(which includes ACCESS_PLATFORM).
+>>>> Other components like QEMU should not set features bits more than 
+>>>> this intersection of bits. so we can make sure if this
+>>>> ifcvf_verify_min_features() passed, both device and driver support 
+>>>> ACCESS_PLATFORM.
+>>>>
+>>>> Are you suggesting check driver feature bits in 
+>>>> ifcvf_verify_min_features() in the meantime as well?
+>>>
+>>>
+>>> So it really depends on your hardware. If you hardware can always 
+>>> offer ACCESS_PLATFORM, you just need to check driver features. This 
+>>> is how vdpa_sim and mlx5_vdpa work.
+>> Yes, we always support ACCESS_PLATFORM, so it is hard coded in the 
+>> macro IFCVF_SUPPORTED_FEATURES.
+>
+>
+> That's not what I read from the code:
+>
+>         features = ifcvf_get_features(vf) & IFCVF_SUPPORTED_FEATURES;
+ifcvf_get_features() reads device feature bits(which should always has 
+ACCSSS_PLATFORM) and IFCVF_SUPPORTED_FEATURES is the driver supported 
+feature bits which hard coded ACCESS_PLATFORM, so the intersection 
+should include ACCESS_PLATFORM.
+the intersection "features" is returned in get_features(), qemu should 
+set features according to it.
+>
+>
+>> Now we check whether device support this feature bit as a double 
+>> conformation, are you suggesting we should check whether 
+>> ACCESS_PLATFORM & IFCVF_SUPPORTED_FEATURES
+>> in set_features() as well?
+>
+>
+> If we know device will always offer ACCESS_PLATFORM, there's no need 
+> to check it again. What we should check if whether driver set that, 
+> and if it doesn't we need to fail set_features(). I think there's 
+> little chance that IFCVF can work when IOMMU_PLATFORM is not negotiated.
+Agree, will check the features bit to set instead of device feature 
+bits. Thanks!
+>
+>
+>
+>> I prefer check both device and IFCVF_SUPPORTED_FEATURES both, more 
+>> reliable.
+>
+>
+> So again, if you want to check device features, set_features() is not 
+> the proper place. We need to fail the probe in this case.
+>
+> Thanks
+>
+>
+>>
+>> Thanks!
+>>>
+>>> Thanks
+>>>
+>>>
+>>>>
+>>>> Thanks！
+>>>>>
+>>>>>
+>>>>>> +    if (ret)
+>>>>>> +        return ret;
+>>>>>>         vf->req_features = features;
+>>>>>
+>>>>> _______________________________________________
+>>>>> Virtualization mailing list
+>>>>> Virtualization@lists.linux-foundation.org
+>>>>> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+>>>>
+>>>
+>>
+>
 
