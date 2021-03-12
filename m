@@ -2,203 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C9F338FD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3288338FE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbhCLOXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231802AbhCLOWq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:22:46 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF07DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 06:22:45 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so4645961wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 06:22:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e4w+I/qltVMaZpzAv1nWIPtn2ghNS5HKzhAOV/OcQBU=;
-        b=ZYTGcYys+/Zea+0jtFGoBgrWP4bQgPF8DqoyJQuuNraBgNLduERLGUjUFfNKrLCAay
-         x/pNzXQ9s7dkNUWv7LyPpqBYR4fr+GAOZGB1Fql7/BuvRHHbzww5RcIa+gqeJSS5UD85
-         SbyHtbv+Iqz5L2wYNxJg2tqcy6e/ExkQbIamg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=e4w+I/qltVMaZpzAv1nWIPtn2ghNS5HKzhAOV/OcQBU=;
-        b=VWbpVS43H12kUGqhNT6CfDj1Z06MP/Hn3xlh761sLMP45z+T/O6h7ucBDP95XrYzq0
-         +wEqEdCtmL58/H2ti2F8sShe+GAcaaz8Znlt2SD7wj9FrlER3ZY/nSuzG+cOHL3TbB5s
-         a3sA9qp41QjgGKzfIGjWTHKHd+MsEDuE8OxoOd9h7JqesEwTRBJKTK0Gdo/gC/S+q/f+
-         YtH7kLB2FCQNVj7qMrvueOQyDll8zH1/ccx/bUKjTXPfhADJjWQQEDldW/2mi4lO1mGe
-         i9D+OqwMKB3uDIPTOpYHRWFYCwtTye9jbYdBqw57qbwenuYUtAmU/6E9XzCqJMgMcSgk
-         dvlA==
-X-Gm-Message-State: AOAM533i1N7WNclfqOmj/J32IkgirZUdpuZSj41yR7n841CM6lCIop41
-        ESaJ04x++Oaxgl+3WnYn4uqC3Q==
-X-Google-Smtp-Source: ABdhPJywmBqLmetHNuc/QkxjjAKDl0Slt139sCD0THqtTaiLOFSRCggU+h02FT33MwVQ3UuK4U3Ylg==
-X-Received: by 2002:a7b:c084:: with SMTP id r4mr13376756wmh.166.1615558964430;
-        Fri, 12 Mar 2021 06:22:44 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m17sm8169334wrx.92.2021.03.12.06.22.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 06:22:43 -0800 (PST)
-Date:   Fri, 12 Mar 2021 15:22:41 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+333bd014262fd5d0a418@syzkaller.appspotmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, melissa.srw@gmail.com,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] upstream boot error: WARNING in vkms_vblank_simulate
-Message-ID: <YEt5MfyAB7YCFFhl@phenom.ffwll.local>
-Mail-Followup-To: Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+333bd014262fd5d0a418@syzkaller.appspotmail.com>,
-        David Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, melissa.srw@gmail.com,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <0000000000009cd8d505bd545452@google.com>
- <CACT4Y+a68cidsRa1zd8h=rNVkwyYKdihBtO2YBPyyxwc2Twpng@mail.gmail.com>
+        id S232119AbhCLOYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:24:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231778AbhCLOYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 09:24:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3042964FAD;
+        Fri, 12 Mar 2021 14:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615559053;
+        bh=4fcxO7Smoa0cv+E1nslqtIlJSCuMHvSdEw8b0mNB4U0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tO/PBxqflYey1RZMejEfbXJSNJjstUTyAxuftBDTRRX3JQXMVyk2pIehKsK0zfqKY
+         OaeLkntuazPfukF2+hQbv2uA6vPj5imVNwLt6XsQIsTkOP1nGN6cTqAmyIivvBjzHo
+         JCm0IJIJAdVTV1FypyOyTGOZKI+yOr0mvw2VWO/IO8GzV/WIud7Lcr4/6iWmpIz5vY
+         Zak5js87cfi/bL3jZRII1dDN7FPBqardF1tuwn1c/ONj7mpZkwam4M7FVvLN+YigdP
+         HdJ276wpNszh0vxzKhA1yey7kPI8yzjB6CKdV/O5wftcq/pOpPAKIGoMsPFZt/q87R
+         u34VCvu33P3hQ==
+Date:   Fri, 12 Mar 2021 14:23:00 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Daniel Baluta <daniel.baluta@gmail.com>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "S.j. Wang" <shengjiu.wang@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
+Message-ID: <20210312142300.GG5348@sirena.org.uk>
+References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
+ <20210309153455.GB4878@sirena.org.uk>
+ <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
+ <20210312104931.GA5348@sirena.org.uk>
+ <CAEnQRZDe_Q-N7L_7z7aVz1o3guKd6R+WFrOfT9KPbggJP8SPZw@mail.gmail.com>
+ <20210312115748.GC5348@sirena.org.uk>
+ <CAEnQRZAAU34YS778WJVD6uubSwQxjA-5LTG9g0CvSdSZOuO+tQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="JkW1gnuWHDypiMFO"
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+a68cidsRa1zd8h=rNVkwyYKdihBtO2YBPyyxwc2Twpng@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <CAEnQRZAAU34YS778WJVD6uubSwQxjA-5LTG9g0CvSdSZOuO+tQ@mail.gmail.com>
+X-Cookie: Lake Erie died for your sins.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 11:46:27AM +0100, Dmitry Vyukov wrote:
-> On Fri, Mar 12, 2021 at 11:26 AM syzbot
-> <syzbot+333bd014262fd5d0a418@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    f78d76e7 Merge tag 'drm-fixes-2021-03-12-1' of git://anong..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=11c16ba2d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=dc02c6afcb046874
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=333bd014262fd5d0a418
-> > userspace arch: arm
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+333bd014262fd5d0a418@syzkaller.appspotmail.com
-> 
-> This WARNING seems to be happening just randomly.
-> It was already reported as:
-> 
-> #syz dup: WARNING in vkms_vblank_simulate (2)
-> https://syzkaller.appspot.com/bug?id=9b10491371879700d6a21c15684c2232ff015084
-> 
-> It now has whooping 48589 crashes and also crashes slow qemu tcg instances.
 
-Yeah your box is too slow. We're trying to simulate hw here, which means
-if we can process less than 1 hrtimer per vblank (standard every 16ms)
-then we scream, because things go very wrong with the simulated hw. And
-the hrtimer is really not that big, all the expensive processing is pushed
-to worker, where we have code to handle if it falls back too much.
+--JkW1gnuWHDypiMFO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So either patch this out or make the code robust against a kernel that
-somehow can't process a single hrtimer every 16ms.
--Daniel
+On Fri, Mar 12, 2021 at 02:37:30PM +0200, Daniel Baluta wrote:
+> On Fri, Mar 12, 2021 at 1:59 PM Mark Brown <broonie@kernel.org> wrote:
 
-> 
-> 
-> 
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 0 at drivers/gpu/drm/vkms/vkms_crtc.c:21 vkms_vblank_simulate+0x26c/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:41
-> > Modules linked in:
-> > CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc2-syzkaller-00338-gf78d76e72a46 #0
-> > Hardware name: linux,dummy-virt (DT)
-> > pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
-> > pc : vkms_vblank_simulate+0x26c/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:21
-> > lr : hrtimer_forward_now include/linux/hrtimer.h:510 [inline]
-> > lr : vkms_vblank_simulate+0x90/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:19
-> > sp : ffff00006a693cd0
-> > x29: ffff00006a693cd0 x28: ffff00000c9d1e58
-> > x27: dfff800000000000 x26: ffff00006a67f540
-> > x25: 1fffe0000d4cfeb1 x24: 1fffe0000d4cfeaa
-> > x23: ffff00000c9d0d30 x22: 0000000000fe4c00
-> > x21: ffff00006a67f540 x20: ffff00000c9d0e58
-> > x19: ffff00000c9d1e58 x18: ffff00006a6a1b48
-> > x17: 1fffe00001952345 x16: 0000000000000000
-> > x15: ffff8000197bf810 x14: 1fffe0000d4d2750
-> > x13: 0000000000000001 x12: 0000000000000033
-> > x11: 1ffff00002fb4936 x10: 0000000000000007
-> > x9 : 1ffff00002fb4943 x8 : ffff800017d14c00
-> > x7 : 00000000f1f1f1f1 x6 : dfff800000000000
-> > x5 : 7fffffffffffffff x4 : 00000008e44f6b90
-> > x3 : 00000008e54db790 x2 : 00000008e44f6b90
-> > x1 : 00000008e54db790 x0 : 0000000000000002
-> > Call trace:
-> >  vkms_vblank_simulate+0x26c/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:41
-> >  __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
-> >  __hrtimer_run_queues+0x590/0xe40 kernel/time/hrtimer.c:1583
-> >  hrtimer_interrupt+0x2d4/0x810 kernel/time/hrtimer.c:1645
-> >  timer_handler drivers/clocksource/arm_arch_timer.c:647 [inline]
-> >  arch_timer_handler_phys+0x4c/0x70 drivers/clocksource/arm_arch_timer.c:665
-> >  handle_percpu_devid_irq+0x19c/0x330 kernel/irq/chip.c:930
-> >  generic_handle_irq_desc include/linux/irqdesc.h:158 [inline]
-> >  generic_handle_irq kernel/irq/irqdesc.c:652 [inline]
-> >  __handle_domain_irq+0x11c/0x1f0 kernel/irq/irqdesc.c:689
-> >  handle_domain_irq include/linux/irqdesc.h:176 [inline]
-> >  gic_handle_irq+0x5c/0x1b0 drivers/irqchip/irq-gic.c:370
-> >  el1_irq+0xb4/0x180 arch/arm64/kernel/entry.S:669
-> >  arch_local_irq_restore arch/arm64/include/asm/irqflags.h:124 [inline]
-> >  queue_work_on+0x74/0x110 kernel/workqueue.c:1528
-> >  queue_work include/linux/workqueue.h:507 [inline]
-> >  cursor_timer_handler+0x64/0x100 drivers/video/fbdev/core/fbcon.c:397
-> >  call_timer_fn+0x1d4/0x9c4 kernel/time/timer.c:1431
-> >  expire_timers kernel/time/timer.c:1476 [inline]
-> >  __run_timers.part.0+0x530/0xa00 kernel/time/timer.c:1745
-> >  __run_timers kernel/time/timer.c:1726 [inline]
-> >  run_timer_softirq+0xa4/0x1a0 kernel/time/timer.c:1758
-> >  _stext+0x2b4/0x1084
-> >  do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
-> >  invoke_softirq kernel/softirq.c:228 [inline]
-> >  __irq_exit_rcu+0x46c/0x510 kernel/softirq.c:422
-> >  irq_exit+0x14/0x84 kernel/softirq.c:446
-> >  __handle_domain_irq+0x120/0x1f0 kernel/irq/irqdesc.c:692
-> >  handle_domain_irq include/linux/irqdesc.h:176 [inline]
-> >  gic_handle_irq+0x5c/0x1b0 drivers/irqchip/irq-gic.c:370
-> >  el1_irq+0xb4/0x180 arch/arm64/kernel/entry.S:669
-> >  arch_local_irq_enable+0xc/0x14 arch/arm64/include/asm/irqflags.h:37
-> >  default_idle_call+0x64/0xf4 kernel/sched/idle.c:112
-> >  cpuidle_idle_call kernel/sched/idle.c:194 [inline]
-> >  do_idle+0x38c/0x4ec kernel/sched/idle.c:300
-> >  cpu_startup_entry+0x28/0x80 kernel/sched/idle.c:397
-> >  rest_init+0x1d0/0x2cc init/main.c:721
-> >  arch_call_rest_init+0x10/0x1c
-> >  start_kernel+0x3b0/0x3e8 init/main.c:1064
-> >  0x0
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000009cd8d505bd545452%40google.com.
+> > No, just the opposite!  If there's an explict name configured why do you
+> > want to ignore it?
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> Because the initial assignment:
+
+> dai_link->platforms->name =3D component->name;
+
+> doesn't take into consideration that dai_link->platform->of_node is
+> also explicitly configured.
+
+But why should we take that into consideration here?
+
+> dai->link->platforms->of_node
+> configured and we hit this error:
+>=20
+> soc_dai_link_sanity_check:
+> /*
+>  * Platform may be specified by either name or OF node, but it
+>  * can be left unspecified, then no components will be inserted
+>  * in the rtdcom list
+>  */
+> if (!!platform->name =3D=3D !!platform->of_node) {
+>     dev_err(card->dev,
+>     "ASoC: Neither/both platform name/of_node are set for %s\n", link->na=
+me);
+>     return -EINVAL;
+> }
+
+OK, but then does this check actually make sense?  The code has been
+that way since the initial DT introduction since we disallow matching by
+both name and OF node in order to avoid confusion when building the card
+so I think it does but it's only with this mail that I get the
+information to figure out that this is something we actually check for
+then go find the reason why we check.
+
+--JkW1gnuWHDypiMFO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLeUMACgkQJNaLcl1U
+h9CxEwf9GYlTDgLnBKPQQLdh53qJmZp0mq31jrvlr0BU1jZT1bUP/jkJAufFi4fz
+2YIwTI8K79Pj/AoMoQXJ1L2XOedZ7/AspZFanBhgUovzs+f36XfW00fum5QmG+A0
+W7wLEhoJuoUxGOOJ0Z4EYRT07LFfvN23lYoNxKBb0gqO4FxnJEAe1E5+O9n39zTO
+yCdwDl0H5JhLp8U8SuutChBnt87l474a04Tx5GdCRZ3yAvwuvvNLZ74/68We+82F
+NlPAf+g2d4ojF1UqCYtgR59jPLpTmJmDtMfcgBqtskFMeCtqrM7B3Jqz8O1b8Ix9
+/Pvscq3dBWICZSt7Qj9Ilh1IScjMdg==
+=CF3l
+-----END PGP SIGNATURE-----
+
+--JkW1gnuWHDypiMFO--
