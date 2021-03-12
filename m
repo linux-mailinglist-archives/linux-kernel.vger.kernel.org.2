@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC733392DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 309A23392F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhCLQQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:16:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231786AbhCLQQw (ORCPT
+        id S232138AbhCLQTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:19:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58509 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232109AbhCLQSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:16:52 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6945C061574;
-        Fri, 12 Mar 2021 08:16:51 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id b23so2168497pfo.8;
-        Fri, 12 Mar 2021 08:16:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RWX7IO2Oo8TmYRuvuDdsRAk9vA6pUn2t00R0cd7mmNY=;
-        b=X4jSZfe3lHmcE9DCz66oF+AtqRfB9k4nokKIZLlTYP0fUTdg4jUnEBbV8+B4X9gXKr
-         v41BQlIVv63M6r/7EnNVCLgRgPetx1PR7p4CFwA2UJnLZBwAk9ZulMBuPMmoEsi6m29W
-         OmOLY6ys2ZYaMv/XuQS7OUhHDEaymlyczm5M/t9s3npWtw0wl2l0qKFuUzo2FH+MZ1qE
-         lOJMBbNZJYOCCm/YN/G6MbnoGE8nnhhHuXQrMAWenAZndJ4+ruQuQcg3mn6CF8upb316
-         8pCR+hEoKHH1XTJY7ofscv+TFMtAMYTi/p/Ye69ZqF+RI79GEIxD6HoHiz/L6ljdMSRB
-         lVKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RWX7IO2Oo8TmYRuvuDdsRAk9vA6pUn2t00R0cd7mmNY=;
-        b=YauMUALDdKdRZ2daBIpqBySadVzjZySsO/ZbuHMVMlMfAujRy7Xfmwhxwv/NjF7mVZ
-         3ChVaxzUB7egvLw5sFiUQGcjS1cA4DbpvROA0LupI74P9tHFLv5O+bLPT3n7l/qI0FYC
-         4oTiAoohm+PIIFHCDTr2MCCOxEQ58Mh/faTZxseTAxHsbI66CBU+VxVG4ziHSitY6m6n
-         FCb0cG2q4kg1TaGt6YMQ4jsTuCWSOO9XWysjbSShQEhMuT3w/IpCDA7ktmfD/UmEMs0W
-         eK+UdJSP2bJiBpEryEVROWz89aJwxqdXqMti7wUJhd0gcD0zflefpTPWo6sYTRkEnoM5
-         Rf1w==
-X-Gm-Message-State: AOAM532/A31DeWo7nBc1+vgyxRsbUQYUB/LGlrK/DObmuNG0YNhvwIGx
-        yzlq33lqAUpuGHLHzGz/Ocic9I4oEjKqKUrlmsE=
-X-Google-Smtp-Source: ABdhPJz6vyzpTP4o67vc3LofqtGMMBjfIhyVHOQ7lRF8qzxyZJzPG6wfXLunT91X9sV5ghtOs7hM9AfLFkXGo8BrcwI=
-X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
- g136-20020a62528e0000b02901f5c5eea487mr12965348pfb.7.1615565811282; Fri, 12
- Mar 2021 08:16:51 -0800 (PST)
+        Fri, 12 Mar 2021 11:18:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615565928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5c5N1ZK1U0xPecIFlI/Fl2cm3KIuypx4d5GpgtQy3DI=;
+        b=hbZ/g4ELTBU7RqjibaXc190FLfxi7gJ0/F9ScyBW3xuiAOc4z5VUgDuhRO1JfHRi94wycF
+        mcFioYNCMd2OdZTh7bSHedZqBwp3zqPShOjuScWaECnx23W8+QLn/t2lpb6u0Iskb9GbuF
+        7xbRX1ZTNczhFQpJOYiaxjEHGcI/454=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-vBvgoyUhNMaKFinv31tAiA-1; Fri, 12 Mar 2021 11:18:44 -0500
+X-MC-Unique: vBvgoyUhNMaKFinv31tAiA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05911100C619;
+        Fri, 12 Mar 2021 16:18:42 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.14])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A0DFA100164A;
+        Fri, 12 Mar 2021 16:18:32 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 12 Mar 2021 17:18:41 +0100 (CET)
+Date:   Fri, 12 Mar 2021 17:18:31 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: Re: [patch V2 3/3] signal: Allow tasks to cache one sigqueue struct
+Message-ID: <20210312161830.GA27820@redhat.com>
+References: <20210311132036.228542540@linutronix.de>
+ <20210311141704.424120350@linutronix.de>
+ <20210312113540.7byffvc46cgj75ah@linutronix.de>
 MIME-Version: 1.0
-References: <20210312141908.2388121-1-ztong0001@gmail.com> <20210312141908.2388121-3-ztong0001@gmail.com>
- <CAHp75VduTXkNgpmuQj_feQbHMAfWi7iGLtYxEJ6ugojmL1Da9Q@mail.gmail.com>
- <CAA5qM4CM4noDtaedPpd0yh8R2f+jDV2DnCERKi_ycD5Lq-vKDw@mail.gmail.com>
- <CAHp75VcFDXTXcaFqOyRCdArx1bGED_jsEeK1yRQhxUvHp0goTg@mail.gmail.com> <CAA5qM4DPqtPWMydx41Ovx6DCQoEESewkZbQrbhdwfVhkcy0nCA@mail.gmail.com>
-In-Reply-To: <CAA5qM4DPqtPWMydx41Ovx6DCQoEESewkZbQrbhdwfVhkcy0nCA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 12 Mar 2021 18:16:35 +0200
-Message-ID: <CAHp75Ven=Sfmy0YE_Q60fiF-pyXg2tO8iq7_vN+aUzaxYTtZmA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] crypto: qat: ADF_STATUS_PF_RUNNING should be set
- after adf_dev_init
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        qat-linux@intel.com, linux-crypto <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312113540.7byffvc46cgj75ah@linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 6:10 PM Tong Zhang <ztong0001@gmail.com> wrote:
+On 03/12, Sebastian Andrzej Siewior wrote:
+>
+> On 2021-03-11 14:20:39 [+0100], Thomas Gleixner wrote:
+> > --- a/kernel/signal.c
+> > +++ b/kernel/signal.c
+> > @@ -433,7 +433,11 @@ static struct sigqueue *
+> >  	rcu_read_unlock();
+> >
+> >  	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
+> > -		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
+> > +		/* Preallocation does not hold sighand::siglock */
+> > +		if (sigqueue_flags || !t->sigqueue_cache)
+> > +			q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
+> > +		else
+> > +			q = xchg(&t->sigqueue_cache, NULL);
+>
+> Could it happen that two tasks saw t->sigqueue_cache != NULL, the first
+> one got the pointer via xchg() and the second got NULL via xchg()?
 
-> I am not really sure this reviewed by line should be added by me --
-> IMHO from my past experience this line is added by the actual person
-> who reviewed it on a per-patch and version basis
+It is called with sighand::siglock held, we don't even need xchg().
 
-> I can send out another revision adding this Reviewed-by line if you
-> think this is something should be done by me,
-> but I don't feel I have such power to do this since I am not that guy
-> and I am not a maintainer.
+Oleg.
 
-If you are sending a new version, it's your responsibility to collect
-all tags, except the cases when the code in question drastically
-changed between versions of the series.
-So, please add a tag (and feel free to add the same tag to the patch
-1) and resend as v3.
-Thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
