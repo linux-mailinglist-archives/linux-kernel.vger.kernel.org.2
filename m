@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40168338EEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA12338EFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbhCLNe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:34:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231512AbhCLNeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:34:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A21460190;
-        Fri, 12 Mar 2021 13:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615556060;
-        bh=9UTrPGnInmHkhNMOk81TEKQqO2DhO9DZdatw5H8tVY0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Tk+a6BGJqFQQhv9OY1VL/pEelzLl8rGKThSK3+gP2RM3anONJioh0OhrlvZEpuGmQ
-         m76D2ZpPUrFVnkkJy6C4eEUUvV7Yi+/Y7oTCeUQkclfZj7hTlE8fH7ATpEOGMeP/EL
-         nw2TAcsHMYmFshEBGixxEUZX9oW0Mne1pJO9XODHpBvkypIWLAuGbwkU0ukyB1+xss
-         NBx3CuAto2EHGNhYMp+nIO69uOoRXrogjFKiIYoJRdEGFsberjI377ZgQuMEE76gMt
-         gAm1dqCjeBMsfR0elUA2nnIPGw7dWUt0DDnuBOdgtLeUfuANnf6dwD/Oo1ak4WltJJ
-         akPsL9hCPpIhA==
-Date:   Fri, 12 Mar 2021 13:34:16 +0000
-From:   Will Deacon <will@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM Kernel Mailing List 
-        <linux-arm-kernel@lists.infradead.org>, kernel-team@android.com
-Subject: [GIT PULL] arm64: Fixes for -rc3
-Message-ID: <20210312133415.GA359@willie-the-truck>
+        id S230072AbhCLNla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:41:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhCLNlA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:41:00 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF61EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:40:59 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id ox4so37818000ejb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:40:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SlkfLw8Neaaz5YToNxw3zyE/AeBfKZ9Au+54DNTf9Hg=;
+        b=GRlQoI0IO2icO5oP/pQqgiELU7s2k4QaUbN89SPnVCX4EFGKK/xS7bHZaBeSCtYn+x
+         LB7rIUXyM9eUVBqyooCCqKlDe/oplETynuBc0/gZgDMYZ1Auq+yxGJEvEYuh/VdpivN4
+         S3S+I8544E7KYIw1/57UnsGPUWq+R9A+bCfFB0tDS5oDSs9CMgr+HvmSjPLUsCPEgiAc
+         ccSBLkzKfpv6+QhsRnaQnGDC367d7tJSPtlj5CR26TjytMmSI4wOY9+vNb7SImAG/QOm
+         sZzgP284Dz1oWV/RyGldeAWdCRYeO1TjFHhhps295Xss4Hzht8XMMuNjABIsGkrchzql
+         fA6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SlkfLw8Neaaz5YToNxw3zyE/AeBfKZ9Au+54DNTf9Hg=;
+        b=k0QqoGP8Ro9zgvlOWojWlawO+Esi+Up3BHBhCXxhShxa1i3+o/wJkceNeh7j7yCoM4
+         TLi11bhEi5rPC7PI7cK0Kjihpi+Ygb9+DfR7U6bgKeu72Tcq9yM/FphanRR7wvgSFiwP
+         LvuX73BHpyzLC9sX0faJYO0tkPG8c8ZaKpOT4o3GVpn/ULsWata5K/F9KFfla+sJ5mtY
+         iqoFfOPUNqBixkpZ3MHMSe1HWhJ2lagMryQOuOuUWQXTstEqpaqF2O+DJXsLxQfVJ3Ll
+         lLD/xL3PTcfjIUrn/BZg8nfJvnI4zxiDun2EMvS6DWAMedbzVcGacO+QCMaU0QEGflGz
+         Oflg==
+X-Gm-Message-State: AOAM530+jPL32qfRXa2yv9NBF9+MkwMNxek8QbNenMGNYvAWVGqKemql
+        QfwWFPmCzPc/bj7Bi+49oETg4987xYEiPQMzcx0AUw==
+X-Google-Smtp-Source: ABdhPJwtm4v97kPrzdnQxf0mV2PkLS8sJs5nBVfE1CL3gYBJyAzifajJbvTYVgx2t203x80Jo1LjyBsd0Q/Fgg/CuYk=
+X-Received: by 2002:a17:906:c0c8:: with SMTP id bn8mr8450077ejb.445.1615556458708;
+ Fri, 12 Mar 2021 05:40:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210309093736.67925-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210309093736.67925-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 12 Mar 2021 14:40:47 +0100
+Message-ID: <CAMpxmJW=z+jX3grh+KuikEo0hwPNqz0JQDEyfGLsFzF8A8+f2w@mail.gmail.com>
+Subject: Re: [PATCH v6 0/6] gpiolib: switch to fwnode in the core
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Mar 9, 2021 at 10:37 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> GPIO library uses of_node and fwnode in the core in non-unified way.
+> The series cleans this up and improves IRQ domain creation for non-OF cases
+> where currently the names of the domain are 'unknown'.
+>
+> This has been tested on Intel Galileo Gen 2.
+>
+> It touches GPIO core parts and it's expected that the series is routed via
+> GPIO tree.
+>
+> In v6:
+> - added tag to the patch 5 (Rafael)
+> - dropped ops temporary variable (Rafael)
+>
+> In v5:
+> - same as v4 + v3 (patches 1-4/5) in order to route via GPIO tree (Bart)
+>
+> In v4:
+> - based on Rafael's bleeding-edge
+> - split the rest to two patches (Rafael)
+> - elaborate WARN() deduplication in the commit message (Rafael)
+>
+> In v3:
+> - fixed subtle bug in gpiod_count
+> - made irq_domain_add_simple() static inline (Marc)
+>
+> In v2:
+> - added a new patch due to functionality in irq_comain_add_simple() (Linus)
+> - tagged patches 2-4 (Linus)
+> - Cc'ed to Rafael
+>
+> Andy Shevchenko (6):
+>   irqdomain: Introduce irq_domain_create_simple() API
+>   gpiolib: Unify the checks on fwnode type
+>   gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
+>   gpiolib: Introduce acpi_gpio_dev_init() and call it from core
+>   gpiolib: Reuse device's fwnode to create IRQ domain
+>   gpiolib: Fold conditionals into a simple ternary operator
+>
+>  Documentation/core-api/irq/irq-domain.rst | 22 ++++----
+>  drivers/gpio/gpiolib-acpi.c               |  7 +++
+>  drivers/gpio/gpiolib-acpi.h               |  4 ++
+>  drivers/gpio/gpiolib-of.c                 |  6 ++-
+>  drivers/gpio/gpiolib.c                    | 62 +++++++++--------------
+>  include/linux/irqdomain.h                 | 19 +++++--
+>  kernel/irq/irqdomain.c                    | 20 ++++----
+>  7 files changed, 75 insertions(+), 65 deletions(-)
+>
+> --
+> 2.30.1
+>
 
-Please pull these arm64 fixes for -rc3. Summary in the tag, but we've
-got a smattering of changes all over the place which we've acrued since
--rc1. To my knowledge, there aren't any pending issues at the moment,
-but there's still plenty of time for something else to crop up...
+Series applied, thanks!
 
-Cheers,
-
-Will
-
---->8
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
-
-for you to fetch changes up to c8e3866836528a4ba3b0535834f03768d74f7d8e:
-
-  perf/arm_dmc620_pmu: Fix error return code in dmc620_pmu_device_probe() (2021-03-12 11:30:31 +0000)
-
-----------------------------------------------------------------
-arm64 fixes for -rc3
-
-- Fix booting a 52-bit-VA-aware kernel on Qualcomm Amberwing
-
-- Fix pfn_valid() not to reject all ZONE_DEVICE memory
-
-- Fix memory tagging setup for hotplugged memory regions
-
-- Fix KASAN tagging in page_alloc() when DEBUG_VIRTUAL is enabled
-
-- Fix accidental truncation of CPU PMU event counters
-
-- Fix error code initialisation when failing probe of DMC620 PMU
-
-- Fix return value initialisation for sve-ptrace selftest
-
-- Drop broken support for CMDLINE_EXTEND
-
-----------------------------------------------------------------
-Andrey Konovalov (1):
-      arm64: kasan: fix page_alloc tagging with DEBUG_VIRTUAL
-
-Anshuman Khandual (4):
-      arm64/mm: Drop redundant ARCH_WANT_HUGE_PMD_SHARE
-      arm64/mm: Drop THP conditionality from FORCE_MAX_ZONEORDER
-      arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-      arm64/mm: Reorganize pfn_valid()
-
-Ard Biesheuvel (2):
-      arm64: mm: use a 48-bit ID map when possible on 52-bit VA builds
-      arm64: mm: remove unused __cpu_uses_extended_idmap[_level()]
-
-Catalin Marinas (1):
-      arm64: mte: Map hotplugged memory as Normal Tagged
-
-James Morse (1):
-      arm64/mm: Fix __enable_mmu() for new TGRAN range values
-
-Mark Brown (1):
-      kselftest: arm64: Fix exit code of sve-ptrace
-
-Rob Herring (1):
-      arm64: perf: Fix 64-bit event counter read truncation
-
-Wei Yongjun (1):
-      perf/arm_dmc620_pmu: Fix error return code in dmc620_pmu_device_probe()
-
-Will Deacon (2):
-      arm64: cpufeatures: Fix handling of CONFIG_CMDLINE for idreg overrides
-      arm64: Drop support for CMDLINE_EXTEND
-
- arch/arm64/Kconfig                            | 12 ++------
- arch/arm64/include/asm/memory.h               |  5 ++++
- arch/arm64/include/asm/mmu_context.h          | 17 -----------
- arch/arm64/include/asm/pgtable-prot.h         |  1 -
- arch/arm64/include/asm/pgtable.h              |  3 ++
- arch/arm64/include/asm/sysreg.h               | 20 +++++++++----
- arch/arm64/kernel/head.S                      |  8 +++--
- arch/arm64/kernel/idreg-override.c            | 43 ++++++++++++++-------------
- arch/arm64/kernel/perf_event.c                |  2 +-
- arch/arm64/kvm/reset.c                        | 10 ++++---
- arch/arm64/mm/init.c                          | 29 ++++++++++++++++--
- arch/arm64/mm/mmu.c                           |  5 ++--
- drivers/firmware/efi/libstub/arm64-stub.c     |  2 +-
- drivers/perf/arm_dmc620_pmu.c                 |  1 +
- include/linux/pgtable.h                       |  4 +++
- mm/memory_hotplug.c                           |  2 +-
- tools/testing/selftests/arm64/fp/sve-ptrace.c |  2 +-
- 17 files changed, 96 insertions(+), 70 deletions(-)
+Bartosz
