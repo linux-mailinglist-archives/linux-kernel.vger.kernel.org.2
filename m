@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593393389C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BFC3389C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbhCLKM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:12:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:50702 "EHLO foss.arm.com"
+        id S233189AbhCLKNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:13:34 -0500
+Received: from mail.katalix.com ([3.9.82.81]:54810 "EHLO mail.katalix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233158AbhCLKL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:11:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 229C31FB;
-        Fri, 12 Mar 2021 02:11:55 -0800 (PST)
-Received: from [10.57.17.106] (unknown [10.57.17.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 169D13F70D;
-        Fri, 12 Mar 2021 02:11:53 -0800 (PST)
-Subject: Re: [PATCH v3 1/5] powercap/drivers/dtpm: Encapsulate even more the
- code
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210310110212.26512-1-daniel.lezcano@linaro.org>
- <d8d3c50c-fee6-6f31-c085-d1ebce5297da@arm.com>
- <aa1ecdaa-3f91-c886-ce1e-45557d01991a@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <c35d7d49-3772-a231-1690-bbea2af3f4f4@arm.com>
-Date:   Fri, 12 Mar 2021 10:11:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S232506AbhCLKNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:13:00 -0500
+Received: from localhost (82-69-49-219.dsl.in-addr.zen.co.uk [82.69.49.219])
+        (Authenticated sender: tom)
+        by mail.katalix.com (Postfix) with ESMTPSA id 059E4835E5;
+        Fri, 12 Mar 2021 10:12:59 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=katalix.com; s=mail;
+        t=1615543979; bh=fxXe6I1aSG6SQ/i16YVUY5JNgwXtt14li56ntHRbnoo=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Disposition:In-Reply-To:From;
+        z=Date:=20Fri,=2012=20Mar=202021=2010:12:58=20+0000|From:=20Tom=20P
+         arkin=20<tparkin@katalix.com>|To:=20lyl2019@mail.ustc.edu.cn|Cc:=2
+         0paulus@samba.org,=20davem@davemloft.net,=20linux-ppp@vger.kernel.
+         org,=0D=0A=09netdev@vger.kernel.org,=20linux-kernel@vger.kernel.or
+         g|Subject:=20Re:=20[BUG]=20net/ppp:=20A=20use=20after=20free=20in=
+         20ppp_unregister_channe|Message-ID:=20<20210312101258.GA4951@katal
+         ix.com>|References:=20<6057386d.ca12.1782148389e.Coremail.lyl2019@
+         mail.ustc.edu.cn>|MIME-Version:=201.0|Content-Disposition:=20inlin
+         e|In-Reply-To:=20<6057386d.ca12.1782148389e.Coremail.lyl2019@mail.
+         ustc.edu.cn>;
+        b=sguwCApzj0ZtEa8x8DRyYXUxnDj7Yp2FujIJ2/lG/q9FIufJheBxzq9pym/SIMlsw
+         LhoczNet61yZdohGuxCyL/+zEj0gf6L0LHLQ9/4lmwJIDz3GN6xuWSrqnhhAC35Nmw
+         OnLnLBLbHi3oveJXrMU9Uyu76xXhXAUW5b2jLY6vpo/UGkFV4s1Hfl/uJWu319EPRZ
+         MmBSgRMT14qs0eeKiBwYEN4bslKaTLsT04rhGw1LVXEVs+vjd5XR+0G/3NcfGLoXjd
+         D/mGL0PoUYN+2nwWV44crYkBVDA7KS3wGQruCHLQq0wTv6wmrKgEaKUQSO3vhpsSsl
+         RlQZzQlF5x9nA==
+Date:   Fri, 12 Mar 2021 10:12:58 +0000
+From:   Tom Parkin <tparkin@katalix.com>
+To:     lyl2019@mail.ustc.edu.cn
+Cc:     paulus@samba.org, davem@davemloft.net, linux-ppp@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [BUG] net/ppp: A use after free in ppp_unregister_channe
+Message-ID: <20210312101258.GA4951@katalix.com>
+References: <6057386d.ca12.1782148389e.Coremail.lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
-In-Reply-To: <aa1ecdaa-3f91-c886-ce1e-45557d01991a@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
+Content-Disposition: inline
+In-Reply-To: <6057386d.ca12.1782148389e.Coremail.lyl2019@mail.ustc.edu.cn>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 3/11/21 10:57 AM, Daniel Lezcano wrote:
-> On 11/03/2021 11:15, Lukasz Luba wrote:
->> Hi Daniel,
->>
->> On 3/10/21 11:02 AM, Daniel Lezcano wrote:
->>> In order to increase the self-encapsulation of the dtpm generic code,
->>> the following changes are adding a power update ops to the dtpm
->>> ops. That allows the generic code to call directly the dtpm backend
->>> function to update the power values.
->>>
->>> The power update function does compute the power characteristics when
->>> the function is invoked. In the case of the CPUs, the power
->>> consumption depends on the number of online CPUs. The online CPUs mask
->>> is not up to date at CPUHP_AP_ONLINE_DYN state in the tear down
->>> callback. That is the reason why the online / offline are at separate
->>> state. As there is already an existing state for DTPM, this one is
->>> only moved to the DEAD state, so there is no addition of new state
->>> with these changes. The dtpm node is not removed when the cpu is
->>> unplugged.
->>>
->>> That simplifies the code for the next changes and results in a more
->>> self-encapsulated code.
->>>
->>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>> ---
->>> V2:
->>>    - Updated the changelog with the CPU node not being removed
->>>    - Commented the cpu hotplug callbacks to explain why there are two
->>> callbacks
->>>    - Changed 'upt_power_uw' to 'update_power_uw'
->>>    - Removed unused cpumask variable
->>> ---
->>>    drivers/powercap/dtpm.c     |  54 ++++++-------
->>>    drivers/powercap/dtpm_cpu.c | 148 ++++++++++++++++--------------------
->>>    include/linux/cpuhotplug.h  |   2 +-
->>>    include/linux/dtpm.h        |   3 +-
->>>    4 files changed, 97 insertions(+), 110 deletions(-)
->>>
->>
->> [snip]
->>
->>> @@ -210,27 +175,20 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
->>>        for_each_cpu(cpu, policy->related_cpus)
->>>            per_cpu(dtpm_per_cpu, cpu) = dtpm;
->>>    -    sprintf(name, "cpu%d", dtpm_cpu->cpu);
->>> +    sprintf(name, "cpu%d-cpufreq", dtpm_cpu->cpu);
->>
->> We should be safe in normal platforms, since there is less than
->> < 300 cores. although, I would use 2x CPUFREQ_NAME_LEN array.
-> 
-> I'm counting 9999 cores.
-> 
-> We have:
-> #define CPUFREQ_NAME_LEN 16
-> 
-> "cpu-cpufreq\0" counts 12 characters.
-> 
-> There are 4 characters left, 9999 max then, no ?
+Thanks for the report!
 
-Yes, my '< 300' was referring to some server platforms,
-which IIRC had 2 sockets, each with 128 cores. I don't
-know about future, though.
+On  Thu, Mar 11, 2021 at 20:34:44 +0800, lyl2019@mail.ustc.edu.cn wrote:
+> File: drivers/net/ppp/ppp_generic.c
+>=20
+> In ppp_unregister_channel, pch could be freed in ppp_unbridge_channels()
+> but after that pch is still in use. Inside the function ppp_unbridge_chan=
+nels,
+> if "pchbb =3D=3D pch" is true and then pch will be freed.
 
-> 
-> The code is designed for cpufreq with the energy model which targets
-> ARM64 architecture and AFAICT we are far away of having so many cores on
-> our phones.
+Do you have a way to reproduce a use-after-free scenario?
 
-True, otherwise with such big number of cores in mobile, we would face
-probably more hard to investigate issues, than this simple one ;)
+=46rom static analysis I'm not sure how pch would be freed in
+ppp_unbridge_channels when called via. ppp_unregister_channel.
 
-> 
-> Except I'm wrong, I would prefer to keep the current CPUFREQ_NAME_LEN to
-> not introduce subtle bugs (like stack overflow) if the length is
-> increased in cpufreq.h.
-> 
-> What do you think ?
+In theory (at least!) the caller of ppp_register_net_channel holds=20
+a reference on struct channel which ppp_unregister_channel drops.
 
-Agree, please skip my former comment and just take the reviewed tag.
+Each channel in a bridged pair holds a reference on the other.
 
-> 
->> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
->>
->> Regards,
->> Lukasz
->>
-> 
-> 
+Hence on return from ppp_unbridge_channels, the channel should not have
+been freed (in this code path) because the ppp_register_net_channel
+reference has not yet been dropped.
+
+Maybe there is an issue with the reference counting or a race of some
+sort?
+
+> I checked the commit history and found that this problem is introduced fr=
+om
+> 4cf476ced45d7 ("ppp: add PPPIOCBRIDGECHAN and PPPIOCUNBRIDGECHAN ioctls").
+>=20
+> I have no idea about how to generate a suitable patch, sorry.
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEsUkgyDzMwrj81nq0lIwGZQq6i9AFAmBLPqIACgkQlIwGZQq6
+i9BImgf/VhpowGVVPkfWqgkYkfOsWZfxmDueUkeoSFD2dVhLeTNU/jnOGI400Cc0
+Yk+sEFL4fqmjZPjsjIGBlhdpndQJbW+yCKh+G/xmU9ynd9xe+0KrP0WpToJ5Dd3+
+1aCU4n1y5h8MhP6i0BuFe4KQ7K0SSIoSqubAyAF56bHp15arsHGaFB5clBQwy/Nj
+LBW4St5DNAOQTc9heT+s+rhC6LSzXJgz9URaGkwbPtFuFIYmkloFvTRwqC3YJGCQ
+OKF6B3w3uow6gxIX/K3MSRsrDiktsYRNiK1jqOM7l8Jm9qP1EaarbqdCN7W5RhBk
+GecNJWitncHg1zyx+SvpFTVJbxjxYA==
+=npR2
+-----END PGP SIGNATURE-----
+
+--Dxnq1zWXvFF0Q93v--
