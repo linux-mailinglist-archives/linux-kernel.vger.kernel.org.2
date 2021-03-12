@@ -2,203 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59A3338455
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26933338456
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhCLDWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 22:22:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231573AbhCLDWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 22:22:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A3064F8D;
-        Fri, 12 Mar 2021 03:22:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615519364;
-        bh=tFRlENPzzzTji5RdOHauaisevYkYYed7N5Ib325hWXw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cD9v2FT0NxDRc/hLAa6Omm7XYH14xA968UpBADEJU/O5bZzk77YTm099OQA9KaIeT
-         J3kAytlQ9VLaRFwnUYzxi4Zo99Z1sUtqIsI3Wvb3LM+ESZwQM1m8VgsrqeKLNc8yLw
-         qMVO0tsZVm/GomUvSin+tWQmtN1Q+1GUkCBopIWW4S1T7i/ZXtgmUUUycX0wM4ZpCn
-         WPAaE80YflaDS7e5LdjWJWcBy5mQiXiaew9n5wzd6ID2f2X6IfSIRhnXkOL3JEolsb
-         Xt+17B3urfLmK0D/ogGGHuHEiDDSEFMVVZ9LlamiVAvZ96PyB+1xbV7ea8nzJuIZK4
-         MJUNLkoze6H5A==
-Date:   Fri, 12 Mar 2021 12:22:39 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-Id: <20210312122239.12fb22d3259e198f72caf7ea@kernel.org>
-In-Reply-To: <20210311165110.y22uyne6ax4qgryf@treble>
-References: <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
-        <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
-        <20210309011945.ky7v3pnbdpxhmxkh@treble>
-        <20210310185734.332d9d52a26780ba02d09197@kernel.org>
-        <20210310150845.7kctaox34yrfyjxt@treble>
-        <20210311005509.0a1a65df0d2d6c7da73a9288@kernel.org>
-        <20210310183113.xxverwh4qplr7xxb@treble>
-        <20210311092018.2d0e54d2c891850e549d16fe@kernel.org>
-        <20210311010615.7pemfngxx7cy42fe@treble>
-        <20210311105438.cca15ed7645c454294dc3e1f@kernel.org>
-        <20210311165110.y22uyne6ax4qgryf@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S231600AbhCLDYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 22:24:36 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13503 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231573AbhCLDYK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 22:24:10 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DxWMb4PTHzrVGW;
+        Fri, 12 Mar 2021 11:22:19 +0800 (CST)
+Received: from [10.67.102.248] (10.67.102.248) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 12 Mar 2021 11:24:00 +0800
+Subject: Re: [PATCH] perf annotate: Fix sample events lost in stdio mode
+To:     Namhyung Kim <namhyung@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Yao Jin <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
+        <mliska@suse.cz>, linux-kernel <linux-kernel@vger.kernel.org>,
+        <zhangjinhao2@huawei.com>
+References: <20210306082859.179541-1-yangjihong1@huawei.com>
+ <53ff575f-1fcf-6650-76ad-a0304f6bdf15@huawei.com>
+ <CAM9d7chRZq743y1Qb24eLZ5ScXeZs0b_0dyffRcOAwuLdVag7g@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <02146240-e532-1c52-0589-bfff3fbe5166@huawei.com>
+Date:   Fri, 12 Mar 2021 11:24:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <CAM9d7chRZq743y1Qb24eLZ5ScXeZs0b_0dyffRcOAwuLdVag7g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 10:51:10 -0600
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+Hello, Namhyung
 
-> On Thu, Mar 11, 2021 at 10:54:38AM +0900, Masami Hiramatsu wrote:
-> > On Wed, 10 Mar 2021 19:06:15 -0600
-> > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > 
-> > > On Thu, Mar 11, 2021 at 09:20:18AM +0900, Masami Hiramatsu wrote:
-> > > > > >  bool unwind_next_frame(struct unwind_state *state)
-> > > > > >  {
-> > > > > >  	unsigned long ip_p, sp, tmp, orig_ip = state->ip, prev_sp = state->sp;
-> > > > > > @@ -536,6 +561,18 @@ bool unwind_next_frame(struct unwind_state *state)
-> > > > > >  
-> > > > > >  		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
-> > > > > >  						  state->ip, (void *)ip_p);
-> > > > > > +		/*
-> > > > > > +		 * There are special cases when the stack unwinder is called
-> > > > > > +		 * from the kretprobe handler or the interrupt handler which
-> > > > > > +		 * occurs in the kretprobe trampoline code. In those cases,
-> > > > > > +		 * %sp is shown on the stack instead of the return address.
-> > > > > > +		 * Or, when the unwinder find the return address is replaced
-> > > > > > +		 * by kretprobe_trampoline.
-> > > > > > +		 * In those cases, correct address can be found in kretprobe.
-> > > > > > +		 */
-> > > > > > +		if (state->ip == sp ||
-> > > > > 
-> > > > > Why is the 'state->ip == sp' needed?
-> > > > 
-> > > > As I commented above, until kretprobe_trampoline writes back the real
-> > > > address to the stack, sp value is there (which has been pushed by the
-> > > > 'pushq %rsp' at the entry of kretprobe_trampoline.)
-> > > > 
-> > > >         ".type kretprobe_trampoline, @function\n"
-> > > >         "kretprobe_trampoline:\n"
-> > > >         /* We don't bother saving the ss register */
-> > > >         "       pushq %rsp\n"				// THIS
-> > > >         "       pushfq\n"
-> > > > 
-> > > > Thus, from inside the kretprobe handler, like ftrace, you'll see
-> > > > the sp value instead of the real return address.
-> > > 
-> > > I see.  If you change is_kretprobe_trampoline_address() to include the
-> > > entire function, like:
-> > > 
-> > > static bool is_kretprobe_trampoline_address(unsigned long ip)
-> > > {
-> > > 	return (void *)ip >= kretprobe_trampoline &&
-> > > 	       (void *)ip < kretprobe_trampoline_end;
-> > > }
-> > > 
-> > > then the unwinder won't ever read the bogus %rsp value into state->ip,
-> > > and the 'state->ip == sp' check can be removed.
-> > 
-> > Hmm, I couldn't get your point. Since sp is the address of stack,
-> > it always out of text address.
+On 2021/3/11 22:42, Namhyung Kim wrote:
+> Hi,
 > 
-> When unwinding from trampoline_handler(), state->ip will point to the
-> instruction after the call:
+> On Thu, Mar 11, 2021 at 5:48 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>> Hello,
+>>
+>> On 2021/3/6 16:28, Yang Jihong wrote:
+>>> In hist__find_annotations function, since have a hist_entry per IP for the same
+>>> symbol, we free notes->src to signal already processed this symbol in stdio mode;
+>>> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
 > 
-> 	call trampoline_handler
-> 	movq %rax, 19*8(%rsp)   <-- state->ip points to this insn
+> I'm not sure it's still true that we have a hist_entry per IP.
+> Afaik the default sort key is comm,dso,sym which means it should have a single
+> hist_entry for each symbol.  It seems like an old comment..
 > 
-> But then, the above version of is_kretprobe_trampoline_address() is
-> true, so state->ip gets immediately replaced with the real return
-> address:
+Emm, yes, we have a hist_entry for per IP.
+a member named "sym" in struct "hist_entry" points to symbol,
+different IP may point to the same symbol.
+
+The hist_entry struct is as follows:
+struct hist_entry {
+     ...
+     struct map_symbol ms;
+     ...
+};
+struct map_symbol {
+     struct maps *maps;
+     struct map *map;
+     struct symbol *sym;
+};
+
+>>>
+>>> However, there is a problem, for example, run the following command:
+>>>
+>>>    # perf record -e branch-misses -e branch-instructions -a sleep 1
+>>>
+>>> perf.data file contains different types of sample event.
+>>>
+>>> If the same IP sample event exists in branch-misses and branch-instructions,
+>>> this event uses the same symbol. When annotate branch-misses events, notes->src
+>>> corresponding to this event is set to null, as a result, when annotate
+>>> branch-instructions events, this event is skipped and no annotate is output.
+>>>
+>>> Solution of this patch is to add a u8 member to struct sym_hist and use a bit to
+>>> indicate whether the symbol has been processed.
+>>> Because different types of event correspond to different sym_hist, no conflict
+>>> occurs.
+>>> ---
+>>>    tools/perf/builtin-annotate.c | 22 ++++++++++++++--------
+>>>    tools/perf/util/annotate.h    |  4 ++++
+>>>    2 files changed, 18 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+>>> index a23ba6bb99b6..c8c67892ae82 100644
+>>> --- a/tools/perf/builtin-annotate.c
+>>> +++ b/tools/perf/builtin-annotate.c
+>>> @@ -372,15 +372,21 @@ static void hists__find_annotations(struct hists *hists,
+>>>                        if (next != NULL)
+>>>                                nd = next;
+>>>                } else {
+>>> -                     hist_entry__tty_annotate(he, evsel, ann);
+>>> +                     struct sym_hist *h = annotated_source__histogram(notes->src,
+>>> +                                                                      evsel->idx);
+>>> +
+>>> +                     if (h->processed == 0) {
+>>> +                             hist_entry__tty_annotate(he, evsel, ann);
+>>> +
+>>> +                             /*
+>>> +                              * Since we have a hist_entry per IP for the same
+>>> +                              * symbol, set processed flag of evsel in sym_hist
+>>> +                              * to signal we already processed this symbol.
+>>> +                              */
+>>> +                             h->processed = 1;
+>>> +                     }
+>>> +
+>>>                        nd = rb_next(nd);
+>>> -                     /*
+>>> -                      * Since we have a hist_entry per IP for the same
+>>> -                      * symbol, free he->ms.sym->src to signal we already
+>>> -                      * processed this symbol.
+>>> -                      */
+>>> -                     zfree(&notes->src->cycles_hist);
+>>> -                     zfree(&notes->src);
+>>>                }
+>>>        }
+>>>    }
+>>> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+>>> index 096cdaf21b01..89872bfdc958 100644
+>>> --- a/tools/perf/util/annotate.h
+>>> +++ b/tools/perf/util/annotate.h
+>>> @@ -228,6 +228,10 @@ void symbol__calc_percent(struct symbol *sym, struct evsel *evsel);
+>>>    struct sym_hist {
+>>>        u64                   nr_samples;
+>>>        u64                   period;
+>>> +
+>>> +     u8                    processed  : 1, /* whether symbol has been processed, used for annotate */
+>>> +                           __reserved : 7;
 > 
-> 	if (is_kretprobe_trampoline_address(state->ip))
-> 		state->ip = orc_kretprobe_correct_ip(state);
+> I think just a bool member is fine.
+>
+OK, I have submitted the v2 patch and changed to bool member, new patch 
+is as follows, look forward to your review:
+https://lore.kernel.org/patchwork/patch/1393901/
 
-Hmm, but that ip is for the "next" frame, isn't it?
-
-[stack]
-0x040 kretprobe_trampoline+0x25 -+
-0x048 r15                        | 
-...     /* pt_regs */            +- ORC sp_offset at the kretprobe_trampoline+0x24
-0x0d8 flags                     -+
-0x0e0 rsp (=0x0e0) /* will be replaced by the real return address */
-
-Your idea seems replacing stack@0x040 with the real return address.
-In that case, may orc_find() returns the wrong ORC info?
-
-
-> so the unwinder skips over the kretprobe_trampoline() frame and goes
-> straight to the frame of the real return address.  Thus it never reads
-> this bogus return value into state->ip:
+>>> +
+>>>        struct sym_hist_entry addr[];
+>>>    };
+>>>
+>>>
+>> Please check whether this solution is feasible, look forward to your review.
 > 
-> 	pushq %rsp
+> What about this?  (not tested)
 > 
-> which is why the weird 'state->ip == sp' check is no longer needed.
-
-But that is what the kretprobe_trampoline actually does. I would rather
-like to see the real information from stacktrace.
-
-> The only "downside" is that the unwinder skips the
-> kretprobe_trampoline() frame.  (note that downside wouldn't exist in
-> the case of UNWIND_HINT_REGS + valid regs->ip).
-
-As I said, I would like to see the kretprobe_trampoline+0x25 on
-my stacktrace, because kretprobe doesn't replace the kretprobe_trampoline
-but the target_func on the stack.
-
-> > > > > And it would make the unwinder just work automatically when unwinding
-> > > > > from the handler using the regs.
-> > > > > 
-> > > > > It would also work when unwinding from the handler's stack, if we put an
-> > > > > UNWIND_HINT_REGS after saving the regs.
-> > > > 
-> > > > At that moment, the real return address is not identified. So we can not
-> > > > put it.
-> > > 
-> > > True, at the time the regs are originally saved, the real return address
-> > > isn't available.  But by the time the user handler is called, the return
-> > > address *is* available.  So if the real return address were placed in
-> > > regs->ip before calling the handler, the unwinder could find it there,
-> > > when called from the handler.
-> > 
-> > OK, but this is not arch independent specification. I can make a hack
-> > only for x86, but that is not clean implementation, hmm.
-> > 
-> > > 
-> > > Then we wouldn't need the call to orc_kretprobe_correct_ip() in
-> > > __unwind_start().
-> > 
-> > What about the ORC implementation in other architecture? Is that for
-> > x86 only?
+> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+> index a23ba6bb99b6..a91fe45bd69f 100644
+> --- a/tools/perf/builtin-annotate.c
+> +++ b/tools/perf/builtin-annotate.c
+> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
+>                  } else {
+>                          hist_entry__tty_annotate(he, evsel, ann);
+>                          nd = rb_next(nd);
+> -                       /*
+> -                        * Since we have a hist_entry per IP for the same
+> -                        * symbol, free he->ms.sym->src to signal we already
+> -                        * processed this symbol.
+> -                        */
+> -                       zfree(&notes->src->cycles_hist);
+> -                       zfree(&notes->src);
+>                  }
+>          }
+>   }
 > 
-> ORC is x86 only.
+This solution may have the following problem:
+For example, if two sample events are in two different processes but in 
+the same symbol, repeated output may occur.
+Therefore, a flag is required to indicate whether the symbol has been 
+processed to avoid repeated output.
+> Thanks,
+> Namhyung
+> .
 > 
-> > > But maybe it's not possible due to the regs->ip expectations of legacy
-> > > handlers?
-> > 
-> > Usually, the legacy handlers will ignore it, the official way to access
-> > the correct return address is kretprobe_instance.ret_addr. Because it is
-> > arch independent.
-> > 
-> > Nowadays there are instruction_pointer() and instruction_pointer_set() APIs
-> > in many (not all) architecutre, so I can try to replace to use it instead
-> > of the kretprobe_instance.ret_addr.
-> > (and it will break the out-of-tree codes)
-> 
-> That sounds better to me, though I don't have an understanding of what
-> it would break.
-
-OK, anyway try to do that and see what happen.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks,
+Yang
+.
