@@ -2,158 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2963391AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEF0339204
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhCLPoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:44:15 -0500
-Received: from outbound-smtp38.blacknight.com ([46.22.139.221]:55233 "EHLO
-        outbound-smtp38.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232035AbhCLPnh (ORCPT
+        id S233072AbhCLPpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:45:02 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55622 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232530AbhCLPoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:43:37 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp38.blacknight.com (Postfix) with ESMTPS id BA56B1ACF
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:43:33 +0000 (GMT)
-Received: (qmail 19934 invoked from network); 12 Mar 2021 15:43:33 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 12 Mar 2021 15:43:33 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 7/7] net: page_pool: use alloc_pages_bulk in refill code path
-Date:   Fri, 12 Mar 2021 15:43:31 +0000
-Message-Id: <20210312154331.32229-8-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210312154331.32229-1-mgorman@techsingularity.net>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
+        Fri, 12 Mar 2021 10:44:14 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 9F2E91F46E99
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 47C204800E4; Fri, 12 Mar 2021 16:44:08 +0100 (CET)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH 12/38] dt-bindings: power: supply: ds2760: Convert to DT schema format
+Date:   Fri, 12 Mar 2021 16:43:31 +0100
+Message-Id: <20210312154357.1561730-13-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Convert the binding to DT schema format.
 
-There are cases where the page_pool need to refill with pages from the
-page allocator. Some workloads cause the page_pool to release pages
-instead of recycling these pages.
-
-For these workload it can improve performance to bulk alloc pages from
-the page-allocator to refill the alloc cache.
-
-For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
-redirecting xdp_frame packets into a veth, that does XDP_PASS to create
-an SKB from the xdp_frame, which then cannot return the page to the
-page_pool. In this case, we saw[1] an improvement of 18.8% from using
-the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
-
-[1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- net/core/page_pool.c | 62 ++++++++++++++++++++++++++++----------------
- 1 file changed, 39 insertions(+), 23 deletions(-)
+ .../bindings/power/supply/maxim,ds2760.txt    | 26 -----------
+ .../bindings/power/supply/maxim,ds2760.yaml   | 45 +++++++++++++++++++
+ 2 files changed, 45 insertions(+), 26 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/maxim,ds2760.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/maxim,ds2760.yaml
 
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 40e1b2beaa6c..a5889f1b86aa 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -208,44 +208,60 @@ noinline
- static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 						 gfp_t _gfp)
- {
-+	const int bulk = PP_ALLOC_CACHE_REFILL;
-+	struct page *page, *next, *first_page;
- 	unsigned int pp_flags = pool->p.flags;
--	struct page *page;
-+	unsigned int pp_order = pool->p.order;
-+	int pp_nid = pool->p.nid;
-+	LIST_HEAD(page_list);
- 	gfp_t gfp = _gfp;
- 
--	/* We could always set __GFP_COMP, and avoid this branch, as
--	 * prep_new_page() can handle order-0 with __GFP_COMP.
--	 */
--	if (pool->p.order)
-+	/* Don't support bulk alloc for high-order pages */
-+	if (unlikely(pp_order)) {
- 		gfp |= __GFP_COMP;
-+		first_page = alloc_pages_node(pp_nid, gfp, pp_order);
-+		if (unlikely(!first_page))
-+			return NULL;
-+		goto out;
-+	}
- 
--	/* FUTURE development:
--	 *
--	 * Current slow-path essentially falls back to single page
--	 * allocations, which doesn't improve performance.  This code
--	 * need bulk allocation support from the page allocator code.
--	 */
+diff --git a/Documentation/devicetree/bindings/power/supply/maxim,ds2760.txt b/Documentation/devicetree/bindings/power/supply/maxim,ds2760.txt
+deleted file mode 100644
+index 55967a0bee11..000000000000
+--- a/Documentation/devicetree/bindings/power/supply/maxim,ds2760.txt
++++ /dev/null
+@@ -1,26 +0,0 @@
+-Devicetree bindings for Maxim DS2760
+-====================================
 -
--	/* Cache was empty, do real allocation */
--#ifdef CONFIG_NUMA
--	page = alloc_pages_node(pool->p.nid, gfp, pool->p.order);
--#else
--	page = alloc_pages(gfp, pool->p.order);
--#endif
--	if (!page)
-+	if (unlikely(!__alloc_pages_bulk(gfp, pp_nid, NULL, bulk, &page_list)))
- 		return NULL;
- 
-+	/* First page is extracted and returned to caller */
-+	first_page = list_first_entry(&page_list, struct page, lru);
-+	list_del(&first_page->lru);
+-The ds2760 is a w1 slave device and must hence have its sub-node in DT
+-under a w1 bus master node.
+-
+-The device exposes a power supply, so the details described in
+-Documentation/devicetree/bindings/power/supply/power_supply.txt apply.
+-
+-Required properties:
+-- compatible: must be "maxim,ds2760"
+-
+-Optional properties:
+-- power-supplies:	Refers to one or more power supplies connected to
+-			this battery.
+-- maxim,pmod-enabled:	This boolean property enables the DS2760 to enter
+-			sleep mode when the DQ line goes low for greater
+-			than 2 seconds and leave sleep Mode when the DQ
+-			line goes high.
+-- maxim,cache-time-ms:	Time im milliseconds to cache the data for. When
+-			this time expires, the values are read again from
+-			the hardware. Defaults to 1000.
+-- rated-capacity-microamp-hours:
+-			The rated capacity of the battery, in mAh.
+-			If not specified, the value stored in the
+-			non-volatile chip memory is used.
+diff --git a/Documentation/devicetree/bindings/power/supply/maxim,ds2760.yaml b/Documentation/devicetree/bindings/power/supply/maxim,ds2760.yaml
+new file mode 100644
+index 000000000000..3b3fb611393a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/maxim,ds2760.yaml
+@@ -0,0 +1,45 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/power/supply/maxim,ds2760.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+	/* Remaining pages store in alloc.cache */
-+	list_for_each_entry_safe(page, next, &page_list, lru) {
-+		list_del(&page->lru);
-+		if ((pp_flags & PP_FLAG_DMA_MAP) &&
-+		    unlikely(!page_pool_dma_map(pool, page))) {
-+			put_page(page);
-+			continue;
-+		}
-+		if (likely(pool->alloc.count < PP_ALLOC_CACHE_SIZE)) {
-+			pool->alloc.cache[pool->alloc.count++] = page;
-+			pool->pages_state_hold_cnt++;
-+			trace_page_pool_state_hold(pool, page,
-+						   pool->pages_state_hold_cnt);
-+		} else {
-+			put_page(page);
-+		}
-+	}
-+out:
- 	if ((pp_flags & PP_FLAG_DMA_MAP) &&
--	    unlikely(!page_pool_dma_map(pool, page))) {
--		put_page(page);
-+	    unlikely(!page_pool_dma_map(pool, first_page))) {
-+		put_page(first_page);
- 		return NULL;
- 	}
- 
- 	/* Track how many pages are held 'in-flight' */
- 	pool->pages_state_hold_cnt++;
--	trace_page_pool_state_hold(pool, page, pool->pages_state_hold_cnt);
-+	trace_page_pool_state_hold(pool, first_page, pool->pages_state_hold_cnt);
- 
- 	/* When page just alloc'ed is should/must have refcnt 1. */
--	return page;
-+	return first_page;
- }
- 
- /* For using page_pool replace: alloc_pages() API calls, but provide
++title: Maxim DS2760 DT bindings
++
++maintainers:
++  - Sebastian Reichel <sre@kernel.org>
++
++description: |
++  The ds2760 is a w1 slave device and must hence have its sub-node in
++  DT under a w1 bus master node.
++
++allOf:
++  - $ref: power-supply.yaml#
++
++properties:
++  compatible:
++    const: maxim,ds2760
++
++  maxim,pmod-enabled:
++    description: |
++      Allow the DS2760 to enter sleep mode when the DQ line goes low for more than 2 seconds
++      and leave sleep Mode when the DQ line goes high.
++    type: boolean
++
++  maxim,cache-time-ms:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Time im milliseconds to cache the data for.
++      When this time expires, the values are read again from the hardware.
++      Defaults to 1000.
++
++  rated-capacity-microamp-hours:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      The rated capacity of the battery, in mAh.
++      If not specified, the value stored in the non-volatile chip memory is used.
++
++required:
++  - compatible
++
++unevaluatedProperties: false
 -- 
-2.26.2
+2.30.1
 
