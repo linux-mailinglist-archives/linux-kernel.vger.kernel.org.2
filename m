@@ -2,297 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A28339473
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F5333945C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232871AbhCLRN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:13:57 -0500
-Received: from smtp-8fac.mail.infomaniak.ch ([83.166.143.172]:42247 "EHLO
-        smtp-8fac.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232647AbhCLRNU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:13:20 -0500
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DxspR33rnzMq6wm;
-        Fri, 12 Mar 2021 18:13:19 +0100 (CET)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DxspR0Hr5zlh8v0;
-        Fri, 12 Mar 2021 18:13:19 +0100 (CET)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH v7 5/5] certs: Allow root user to append signed hashes to the blacklist keyring
-Date:   Fri, 12 Mar 2021 18:12:32 +0100
-Message-Id: <20210312171232.2681989-6-mic@digikod.net>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210312171232.2681989-1-mic@digikod.net>
-References: <20210312171232.2681989-1-mic@digikod.net>
+        id S232342AbhCLRNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:13:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:57634 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232392AbhCLRNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 12:13:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 387D111FB;
+        Fri, 12 Mar 2021 09:13:12 -0800 (PST)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5956F3F7D7;
+        Fri, 12 Mar 2021 09:13:10 -0800 (PST)
+From:   James Morse <james.morse@arm.com>
+Subject: Re: [PATCH 06/24] x86/resctrl: Store the effective num_closid in the
+ schema
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>
+References: <20201030161120.227225-1-james.morse@arm.com>
+ <20201030161120.227225-7-james.morse@arm.com>
+ <14fa276a-ce44-07f4-203e-d1c8f5967b0b@intel.com>
+Message-ID: <52acfce6-8043-30eb-8300-648ed613cdaa@arm.com>
+Date:   Fri, 12 Mar 2021 17:13:09 +0000
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <14fa276a-ce44-07f4-203e-d1c8f5967b0b@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+Hi Reinette,
 
-Add a kernel option SYSTEM_BLACKLIST_AUTH_UPDATE to enable the root user
-to dynamically add new keys to the blacklist keyring.  This enables to
-invalidate new certificates, either from being loaded in a keyring, or
-from being trusted in a PKCS#7 certificate chain.  This also enables to
-add new file hashes to be denied by the integrity infrastructure.
+On 17/11/2020 22:04, Reinette Chatre wrote:
+> On 10/30/2020 9:11 AM, James Morse wrote:
+>> resctrl_schema holds properties that vary with the style of configuration
+>> that resctrl applies to a resource.
+>>
+>> Once the arch code has a single resource per cache that can be configured,
+>> resctrl will need to keep track of the num_closid itself.
+>>
+>> Add num_closid to resctrl_schema. Change callers like
+>> rdtgroup_schemata_show() to walk the schema instead.
 
-Being able to untrust a certificate which could have normaly been
-trusted is a sensitive operation.  This is why adding new hashes to the
-blacklist keyring is only allowed when these hashes are signed and
-vouched by the builtin trusted keyring.  A blacklist hash is stored as a
-key description.  The PKCS#7 signature of this description must be
-provided as the key payload.
+> This is a significant patch in that it introduces a second num_closid available for code
+> to use. Even so, the commit message is treating it quite nonchalantly ... essentially
+> stating that "here is a new closid and change some code to use it".
 
-Marking a certificate as untrusted should be enforced while the system
-is running.  It is then forbiden to remove such blacklist keys.
+The difference already exists, the number of closid that resctrl exposes to user-space may
+be different from what the hardware supports. Currently the arch code does a
+bait-and-switch with the L3CODE/L3DATA resources, but this is specific to x86, it
+shouldn't be required for another architecture to copy it if its not necessary to support CDP.
 
-Update blacklist keyring, blacklist key and revoked certificate access rights:
-* allows the root user to search for a specific blacklisted hash, which
-  make sense because the descriptions are already viewable;
-* forbids key update (blacklist and asymmetric ones);
-* restricts kernel rights on the blacklist keyring to align with the
-  root user rights.
+I'll expand the commit message with this.
 
-See help in tools/certs/print-cert-tbs-hash.sh .
+An earlier version tried to use different types for the 'hw' number of closid, and the
+version used by resctrl, but I figured it was too noisy.
 
-Cc: David Howells <dhowells@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Eric Snowberg <eric.snowberg@oracle.com>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210312171232.2681989-6-mic@digikod.net
----
 
-Changes since v6:
-* Rebase on keys-cve-2020-26541-v3: commit ebd9c2ae369a ("integrity:
-  Load mokx variables into the blacklist keyring").
+> Could you please elaborate how the callers needing to "walk the schema instead" were chosen?
 
-Changes since v5:
-* Rebase on keys-next, fix Kconfig conflict, and update the asymmetric
-  key rights added to the blacklist keyring by the new
-  add_key_to_revocation_list(): align with blacklist key rights by
-  removing KEY_POS_WRITE as a safeguard, and add
-  KEY_ALLOC_BYPASS_RESTRICTION to not be subject to
-  restrict_link_for_blacklist() that only allows blacklist key types to
-  be added to the keyring.
-* Change the return code for restrict_link_for_blacklist() from -EPERM
-  to -EOPNOTSUPP to align with asymmetric key keyrings.
+These all want the num_closid value that is exposed to user-space:
+rdtgroup_parse_resource()
+rdtgroup_schemata_show()
+rdt_num_closids_show()
+closid_init()
 
-Changes since v3:
-* Update commit message for print-cert-tbs-hash.sh .
+If resctrl is in control of that, it should come from the schema instead of being pulled
+straight out of the architecture code.
 
-Changes since v2:
-* Add comment for blacklist_key_instantiate().
----
- certs/Kconfig     | 10 +++++
- certs/blacklist.c | 96 ++++++++++++++++++++++++++++++++++++-----------
- 2 files changed, 85 insertions(+), 21 deletions(-)
 
-diff --git a/certs/Kconfig b/certs/Kconfig
-index cf3740c1b22b..3aa5e597cfae 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -103,4 +103,14 @@ config SYSTEM_REVOCATION_KEYS
- 	  containing X.509 certificates to be included in the default blacklist
- 	  keyring.
- 
-+config SYSTEM_BLACKLIST_AUTH_UPDATE
-+	bool "Allow root to add signed blacklist keys"
-+	depends on SYSTEM_BLACKLIST_KEYRING
-+	depends on SYSTEM_DATA_VERIFICATION
-+	help
-+	  If set, provide the ability to load new blacklist keys at run time if
-+	  they are signed and vouched by a certificate from the builtin trusted
-+	  keyring.  The PKCS#7 signature of the description is set in the key
-+	  payload.  Blacklist keys cannot be removed.
-+
- endmenu
-diff --git a/certs/blacklist.c b/certs/blacklist.c
-index b254c87ceb3a..486ce0dd8e9c 100644
---- a/certs/blacklist.c
-+++ b/certs/blacklist.c
-@@ -15,6 +15,7 @@
- #include <linux/err.h>
- #include <linux/seq_file.h>
- #include <linux/uidgid.h>
-+#include <linux/verification.h>
- #include <keys/system_keyring.h>
- #include "blacklist.h"
- #include "common.h"
-@@ -26,6 +27,9 @@
-  */
- #define MAX_HASH_LEN	128
- 
-+#define BLACKLIST_KEY_PERM (KEY_POS_SEARCH | KEY_POS_VIEW | \
-+			    KEY_USR_SEARCH | KEY_USR_VIEW)
-+
- static const char tbs_prefix[] = "tbs";
- static const char bin_prefix[] = "bin";
- 
-@@ -80,19 +84,51 @@ static int blacklist_vet_description(const char *desc)
- 	return 0;
- }
- 
--/*
-- * The hash to be blacklisted is expected to be in the description.  There will
-- * be no payload.
-- */
--static int blacklist_preparse(struct key_preparsed_payload *prep)
-+static int blacklist_key_instantiate(struct key *key,
-+		struct key_preparsed_payload *prep)
- {
--	if (prep->datalen > 0)
--		return -EINVAL;
--	return 0;
-+#ifdef CONFIG_SYSTEM_BLACKLIST_AUTH_UPDATE
-+	int err;
-+#endif
-+
-+	/* Sets safe default permissions for keys loaded by user space. */
-+	key->perm = BLACKLIST_KEY_PERM;
-+
-+	/*
-+	 * Skips the authentication step for builtin hashes, they are not
-+	 * signed but still trusted.
-+	 */
-+	if (key->flags & (1 << KEY_FLAG_BUILTIN))
-+		goto out;
-+
-+#ifdef CONFIG_SYSTEM_BLACKLIST_AUTH_UPDATE
-+	/*
-+	 * Verifies the description's PKCS#7 signature against the builtin
-+	 * trusted keyring.
-+	 */
-+	err = verify_pkcs7_signature(key->description,
-+			strlen(key->description), prep->data, prep->datalen,
-+			NULL, VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
-+	if (err)
-+		return err;
-+#else
-+	/*
-+	 * It should not be possible to come here because the keyring doesn't
-+	 * have KEY_USR_WRITE and the only other way to call this function is
-+	 * for builtin hashes.
-+	 */
-+	WARN_ON_ONCE(1);
-+	return -EPERM;
-+#endif
-+
-+out:
-+	return generic_key_instantiate(key, prep);
- }
- 
--static void blacklist_free_preparse(struct key_preparsed_payload *prep)
-+static int blacklist_key_update(struct key *key,
-+		struct key_preparsed_payload *prep)
- {
-+	return -EPERM;
- }
- 
- static void blacklist_describe(const struct key *key, struct seq_file *m)
-@@ -103,9 +139,8 @@ static void blacklist_describe(const struct key *key, struct seq_file *m)
- static struct key_type key_type_blacklist = {
- 	.name			= "blacklist",
- 	.vet_description	= blacklist_vet_description,
--	.preparse		= blacklist_preparse,
--	.free_preparse		= blacklist_free_preparse,
--	.instantiate		= generic_key_instantiate,
-+	.instantiate		= blacklist_key_instantiate,
-+	.update			= blacklist_key_update,
- 	.describe		= blacklist_describe,
- };
- 
-@@ -154,8 +189,7 @@ static int mark_raw_hash_blacklisted(const char *hash)
- 				   hash,
- 				   NULL,
- 				   0,
--				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
--				    KEY_USR_VIEW),
-+				   BLACKLIST_KEY_PERM,
- 				   KEY_ALLOC_NOT_IN_QUOTA |
- 				   KEY_ALLOC_BUILT_IN);
- 	if (IS_ERR(key)) {
-@@ -232,8 +266,10 @@ int add_key_to_revocation_list(const char *data, size_t size)
- 				   NULL,
- 				   data,
- 				   size,
--				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW),
--				   KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_BUILT_IN);
-+				   KEY_POS_VIEW | KEY_POS_READ | KEY_POS_SEARCH
-+				   | KEY_USR_VIEW,
-+				   KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_BUILT_IN
-+				   | KEY_ALLOC_BYPASS_RESTRICTION);
- 
- 	if (IS_ERR(key)) {
- 		pr_err("Problem with revocation key (%ld)\n", PTR_ERR(key));
-@@ -260,25 +296,43 @@ int is_key_on_revocation_list(struct pkcs7_message *pkcs7)
- }
- #endif
- 
-+static int restrict_link_for_blacklist(struct key *dest_keyring,
-+		const struct key_type *type, const union key_payload *payload,
-+		struct key *restrict_key)
-+{
-+	if (type == &key_type_blacklist)
-+		return 0;
-+	return -EOPNOTSUPP;
-+}
-+
- /*
-  * Initialise the blacklist
-  */
- static int __init blacklist_init(void)
- {
- 	const char *const *bl;
-+	struct key_restriction *restriction;
- 
- 	if (register_key_type(&key_type_blacklist) < 0)
- 		panic("Can't allocate system blacklist key type\n");
- 
-+	restriction = kzalloc(sizeof(*restriction), GFP_KERNEL);
-+	if (!restriction)
-+		panic("Can't allocate blacklist keyring restriction\n");
-+	restriction->check = restrict_link_for_blacklist;
-+
- 	blacklist_keyring =
- 		keyring_alloc(".blacklist",
- 			      GLOBAL_ROOT_UID, GLOBAL_ROOT_GID, current_cred(),
--			      (KEY_POS_ALL & ~KEY_POS_SETATTR) |
--			      KEY_USR_VIEW | KEY_USR_READ |
--			      KEY_USR_SEARCH,
--			      KEY_ALLOC_NOT_IN_QUOTA |
-+			      KEY_POS_VIEW | KEY_POS_READ | KEY_POS_SEARCH |
-+			      KEY_POS_WRITE |
-+			      KEY_USR_VIEW | KEY_USR_READ | KEY_USR_SEARCH
-+#ifdef CONFIG_SYSTEM_BLACKLIST_AUTH_UPDATE
-+			      | KEY_USR_WRITE
-+#endif
-+			      , KEY_ALLOC_NOT_IN_QUOTA |
- 			      KEY_ALLOC_SET_KEEP,
--			      NULL, NULL);
-+			      restriction, NULL);
- 	if (IS_ERR(blacklist_keyring))
- 		panic("Can't allocate system blacklist keyring\n");
- 
--- 
-2.30.2
+> This seems almost a revert of the earlier patch that introduced the helper and I wonder if
+> it may not make this easier to understand if these areas do not receive the temporary
+> change to use that helper.
 
+Its a trade-off between churn for a self contained change (i.e. all the 'fs' bits,
+regardless of if they are around later), and keeping the patches that are to do with the
+schema together.
+
+I don't think its a good idea to have "these are left alone as they will be changed
+differently later" as that is liable to break (or just get weird) as the series is
+restructured to fix it.
+
+It will probably be fewer lines of change to do it the other way round. v2 does this,
+hopefully that is easier on the eye!
+
+
+Thanks,
+
+James
