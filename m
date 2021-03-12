@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1E53389DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF99E3389E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhCLKS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:18:27 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47534 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233156AbhCLKSL (ORCPT
+        id S233295AbhCLKUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:20:02 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:39892 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232892AbhCLKTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:18:11 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CAI0DD050060;
-        Fri, 12 Mar 2021 04:18:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615544281;
-        bh=MfHMI0fXR00zadLL4T1wsZcvbhBWRv7oQ2OBFrlNjNw=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=MXOcBS2aVAK1p98zHHFlckstB1IISDTdfsSWGLIlwWt7drpjXT+cJjlh4Ll4GY+2F
-         bPTBW7zyv8AU8t3T/EnJg3Zscvo7XtLoCV/FcarOSY2n20oqPVIaC5yn297i5XdgWR
-         BAbnrt0N6STmXSIJQLETiNiYX0y6PDq9PIMXSD8g=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CAI0CB033573
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Mar 2021 04:18:00 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
- Mar 2021 04:18:00 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 12 Mar 2021 04:18:00 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CAHxaA123485;
-        Fri, 12 Mar 2021 04:18:00 -0600
-Date:   Fri, 12 Mar 2021 15:47:59 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <broonie@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 4/6] spi: cadence-qspi: Use PHY for DAC reads if
- possible
-Message-ID: <20210312101757.sqeyledbwjnpqdoy@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-5-p.yadav@ti.com>
- <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
+        Fri, 12 Mar 2021 05:19:33 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 43FA68F9;
+        Fri, 12 Mar 2021 11:19:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615544372;
+        bh=4WVLNWsi0vGsr2BYi2E+FHBor319xTVMivfKBNEC2nk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b4gaPxeiNSII5ZsDx7Xv4IatsN/uodYX4TQU7WbyhBK+jGyV85/lgoxqsMjWc9OH5
+         pculN6iZ7LUXS/LtGW6fFlYr2OTOhRPIIOc1Nz6jXHGHQmCDYDvZHXYmpEZjpwgnTd
+         JHCG5u2+Fq4vsW7+hKWLbb6vbORXx6/lOgyWiKFI=
+Date:   Fri, 12 Mar 2021 12:18:57 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, senozhatsky@chromium.org
+Subject: Re: [PATCH v2 4/6] media: uvcvideo: set error_idx to count on EACCESS
+Message-ID: <YEtAEUbJr2mosKow@pendragon.ideasonboard.com>
+References: <20210311221946.1319924-1-ribalda@chromium.org>
+ <20210311221946.1319924-5-ribalda@chromium.org>
+ <e5860193-a672-96b8-9a40-5f6d77dd4783@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <e5860193-a672-96b8-9a40-5f6d77dd4783@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/21 09:13AM, Tudor.Ambarus@microchip.com wrote:
-> On 3/11/21 9:12 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > Check if a read is eligible for PHY and if it is, enable PHY and DQS.
+Hi Hans,
+
+On Fri, Mar 12, 2021 at 08:14:13AM +0100, Hans Verkuil wrote:
+> On 11/03/2021 23:19, Ricardo Ribalda wrote:
+> > According to the doc:
+> > The, in hindsight quite poor, solution for that is to set error_idx to
+> > count if the validation failed.
 > 
-> DQS as in data strobe? Shouldn't the upper layer inform the QSPI controller
-> whether DS is required or not?
-
-Yes, DQS as in data strobe. I need to check this again, but IIRC the 
-controller cannot run in PHY mode unless DS is used. Ideally the upper 
-layer should indeed inform the controller whether DS is supported/in-use 
-or not. That can be used to decide whether PHY mode (and consequently 
-the DS line) is to be used or not.
-
-Currently there are only two flashes that use 8D-8D-8D mode (S28HS512T 
-and MT35XU512ABA), and both of them drive the DS line.
-
+> I think this needs a bit more explanation. How about this:
 > 
+> "If an error is found when validating the list of controls passed with
+> VIDIOC_G_EXT_CTRLS, then error_idx shall be set to ctrls->count to indicate
+> to userspace that no actual hardware was touched.
+> 
+> It would have been much nicer of course if error_idx could point to the
+> control index that failed the validation, but sadly that's not how the
+> API was designed."
+
+Here's what I commented on v1:
+
+The [V4L2 spec] states:
+
+"This check is done to avoid leaving the hardware in an inconsistent
+state due to easy-to-avoid problems. But it leads to another problem:
+the application needs to know whether an error came from the validation
+step (meaning that the hardware was not touched) or from an error during
+the actual reading from/writing to hardware."
+
+I'm not sure this is correct though. -EACCES is returned by
+__uvc_ctrl_get() when the control is found and is a write-only control.
+The uvc_ctrl_get() calls for the previous controls will have potentially
+touched the device to read the current control value if it wasn't cached
+already, to this contradicts the rationale from the specification.
+
+I understand the need for this when setting controls, but when reading
+them, it's more puzzling, as the interactions with the hardware to read
+the controls are not supposed to affect the hardware state in a way that
+applications should care about. It may be an issue in the V4L2
+specification.
+
 > > 
-> > Since PHY reads only work at an address that is 16-byte aligned and of
-> > size that is a multiple of 16 bytes, read the starting and ending
-> > unaligned portions without PHY, and only enable PHY for the middle part.
+> > Fixes v4l2-compliance:
+> > Control ioctls (Input 0):
+> >                 fail: v4l2-test-controls.cpp(645): invalid error index write only control
+> >         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
 > > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> 
+> After improving the commit log you can add my:
+> 
+> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> 
 > > ---
-> >  drivers/spi/spi-cadence-quadspi.c | 203 ++++++++++++++++++++++++++----
-> >  1 file changed, 182 insertions(+), 21 deletions(-)
+> >  drivers/media/usb/uvc/uvc_v4l2.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
 > > 
+> > diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> > index 157310c0ca87..36eb48622d48 100644
+> > --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> > +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> > @@ -1073,7 +1073,8 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
+> >  		ret = uvc_ctrl_get(chain, ctrl);
+> >  		if (ret < 0) {
+> >  			uvc_ctrl_rollback(handle);
+> > -			ctrls->error_idx = i;
+> > +			ctrls->error_idx = (ret == -EACCES) ?
+> > +						ctrls->count : i;
+> >  			return ret;
+> >  		}
+> >  	}
 
 -- 
 Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+
+Laurent Pinchart
