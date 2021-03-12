@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C982339907
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84BC233990A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235203AbhCLVWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:22:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35622 "EHLO
+        id S235230AbhCLVXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:23:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235208AbhCLVWD (ORCPT
+        with ESMTP id S235222AbhCLVXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:22:03 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90854C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:22:02 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id b23so2713845pfo.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:22:02 -0800 (PST)
+        Fri, 12 Mar 2021 16:23:46 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6DCC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:23:46 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id i18so3836679ilq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:23:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u8uyrgtbd9PGRfePe3rRDCTWMbYmxWtSWg0H3VHkObM=;
-        b=UkNlmgi9rqD5m/wnaoUPOHBunw3rWK12wNn0DEuN7i3IglDv2RFxVs/cwvjvksS+vC
-         9+hWZaAAfQ4mbo+QAgp69sVeQ7coqMOr+xbqWi/URqtKXC3AnkDmJgLBNoOMNEM6/BCL
-         9OJtuiE+ZvWqS0BgUWeEdRRxmVGYpE8Uq+GNNo/O/oGDDsU5jj3FFMUvs0rxxvcvTp4T
-         y1G85vW09NTHiPojS44NlNiQmbFaCYRR7nIuQDxX1vFudkyDQL7hZ9EvRj5b0neVtqWI
-         mS7oYJt/DOPgW2Zc3+nJ9RUuiJtGg+qhL00fryQnj9QwSyd/cxpARoPMVXOXFCqADdFd
-         Ua1g==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m4dUhRPgwvR6514Yqwy95xcRdtxSJsYD6PiYtKpsc6k=;
+        b=lSq4S3+IwqMbfHhfNyqK4OtaSKgVhsQ1SAfZ6ThWxskkCfec5K85zfC9e8Pngrog/l
+         SMt6UPt7oFTMDT444LkDL/ybE4h5DB7D9FD1GsXgAXhGMF5z9PZUu7d07UWhP6L/aymf
+         medNVfjqDIBiC543XfHpDWgmJhtswlTr10Yas=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u8uyrgtbd9PGRfePe3rRDCTWMbYmxWtSWg0H3VHkObM=;
-        b=FIxad4cv4QGhjSrQlJBHKjJvswAj5/YcqXcg1NHE7XJELiu9JzDlaJfL+FSyCqMrbh
-         dJ4wH7szrpqzpNkp3nE/NNa5qUqquQx56Et+/dipacPtgmi9u5Be8sfxrqvPrVFHuNBr
-         ZQoZq7sRnfvpah6Y1WBO/Hdcp46shRxEnRsSIyhWDO0UIyxA2GzvjCnNZjMMBC7Hd0hy
-         6ydTvDSThV0zoeS6GZf9V4lZZFt+xLt+yFUpltRjhS4TzwgI463bHdnu36466NcdezAh
-         sNnwsFW5Id4cmgV0OAFlS3V7OptZ6N+aVgrGf0/p2qP+Lhk5rOGQMdHVy2UvBGMQ8Zdi
-         S10w==
-X-Gm-Message-State: AOAM530zZbhib2Bazw0qPQedTsDdn+3cLsuOBoWJED+ZsV8NfLR4NVNV
-        6FlhssV851eHdxtD7CBHi6mupg==
-X-Google-Smtp-Source: ABdhPJyxFWrKdyGKv6RmzV1VVMWiUb8JpfXwKBY27PwR6dQy3L1X7t02k4akXUsl4jPCHDsPWatC+A==
-X-Received: by 2002:a63:fa02:: with SMTP id y2mr13327763pgh.412.1615584122019;
-        Fri, 12 Mar 2021 13:22:02 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e1a6:2eeb:4e45:756])
-        by smtp.gmail.com with ESMTPSA id m16sm6300380pgj.26.2021.03.12.13.22.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 13:22:01 -0800 (PST)
-Date:   Fri, 12 Mar 2021 13:21:54 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <YEvbcrTZyiUAxZAu@google.com>
-References: <e1ca4131bc9f98cf50a1200efcf46080d6512fe7.1615250634.git.kai.huang@intel.com>
- <20210311020142.125722-1-kai.huang@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m4dUhRPgwvR6514Yqwy95xcRdtxSJsYD6PiYtKpsc6k=;
+        b=PKHZFdzJ0H/tp8EuhTmCdJ3c7Po/jTmY9cr28h9PTLGeBt7VFfRuz+d5CHkhM3HJj7
+         igL3fZ6v6ZR7hNs5gzFTcfJu5AlTAW9eO987Cih1px/88toIjkpEBlvHxg8gymJ0dRnS
+         YIdGVzib1Omp0J1D5NDji95kbtxMe8Ufnc5Fwk+3MzfVIyQl5PXyyDpLD6wSDUG+KMNA
+         u7N95wzyd2GWhNbGTfDMjtt5Ivv8r6XyDqArewc6CpcjPzysFNNNQwT+aB/9kxGtoVE+
+         E4wB4iooWtg+tj8PLTFhzt7ZdZIt6cJaJ3u0fT4mz4W+WKMiyUf193ESsasumdWi3WEY
+         B7iw==
+X-Gm-Message-State: AOAM531o6y2hR/QAfWt8vgac5OTJddqyN+eJDl+9IlgfjyR5bmm8i4Pa
+        3pD1BpqtTobydXH+AQmlrn97wE11nGAp4DbihzAQLQ==
+X-Google-Smtp-Source: ABdhPJzab4zZ/ouHYzM7t59+GY64/Gxc/rhhlHYCUT+THom3AyuTi4frDzmJnTc45UlC26Nyje29GRVmam+CukQOJww=
+X-Received: by 2002:a92:d5d2:: with SMTP id d18mr3927676ilq.50.1615584226260;
+ Fri, 12 Mar 2021 13:23:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311020142.125722-1-kai.huang@intel.com>
+References: <20210211024601.1963379-1-swboyd@chromium.org> <20210211024601.1963379-4-swboyd@chromium.org>
+ <20210214124809.4abfa363@archlinux> <161333519805.1254594.18000613822693540497@swboyd.mtv.corp.google.com>
+ <20210221155314.56f55e85@archlinux>
+In-Reply-To: <20210221155314.56f55e85@archlinux>
+From:   Gwendal Grignou <gwendal@chromium.org>
+Date:   Fri, 12 Mar 2021 13:23:35 -0800
+Message-ID: <CAPUE2uu90ySZu6iyanakBZ+Oy-1YSTaHwBaeZdnUxK3ncW9BZA@mail.gmail.com>
+Subject: Re: [PATCH v6 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021, Kai Huang wrote:
-> From: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> EREMOVE takes a page and removes any association between that page and
-> an enclave.  It must be run on a page before it can be added into
-> another enclave.  Currently, EREMOVE is run as part of pages being freed
-> into the SGX page allocator.  It is not expected to fail.
-> 
-> KVM does not track how guest pages are used, which means that SGX
-> virtualization use of EREMOVE might fail.
-> 
-> Break out the EREMOVE call from the SGX page allocator.  This will allow
-> the SGX virtualization code to use the allocator directly.  (SGX/KVM
-> will also introduce a more permissive EREMOVE helper).
-> 
-> Implement original sgx_free_epc_page() as sgx_encl_free_epc_page() to be
-> more specific that it is used to free EPC page assigned to one enclave.
-> Print an error message when EREMOVE fails to explicitly call out EPC
-> page is leaked, and requires machine reboot to get leaked pages back.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Co-developed-by: Kai Huang <kai.huang@intel.com>
-> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> ---
-> v2->v3:
-> 
->  - Fixed bug during copy/paste which results in SECS page and va pages are not
->    correctly freed in sgx_encl_release() (sorry for the mistake).
->  - Added Jarkko's Acked-by.
+On Sun, Feb 21, 2021 at 7:53 AM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sun, 14 Feb 2021 12:39:58 -0800
+> Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> > Quoting Jonathan Cameron (2021-02-14 04:48:09)
+> > > On Wed, 10 Feb 2021 18:46:01 -0800
+> > > Stephen Boyd <swboyd@chromium.org> wrote:
+> > >
+> > > > Add support for a ChromeOS EC proximity driver that exposes a "front"
+> > > > proximity sensor via the IIO subsystem. The EC decides when front
+> > > > proximity is near and sets an MKBP switch 'EC_MKBP_FRONT_PROXIMITY' to
+> > > > notify the kernel of proximity. Similarly, when proximity detects
+> > > > something far away it sets the switch bit to 0. For now this driver
+> > > > exposes a single sensor, but it could be expanded in the future via more
+> > > > MKBP bits if desired.
+> > > >
+> > > > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > > > Cc: Benson Leung <bleung@chromium.org>
+> > > > Cc: Guenter Roeck <groeck@chromium.org>
+> > > > Cc: Douglas Anderson <dianders@chromium.org>
+> > > > Cc: Gwendal Grignou <gwendal@chromium.org>
+> > > > Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > >
+> > > I'm fine with this, but want to leave a little time for others to take
+> > > one last look.  We've missed the coming merge window now anyway.
+> > >
+> > > If I seem to have forgotten this in a couple of weeks, feel free to
+> > > give me a bump.
+> > >
+> >
+> > Ok no problem. Gwendal had some comments on v5 that may be applicable
+> > here too but I think they mostly mean that the resume handler may not be
+> > needed if cros ec is fixed. Having the resume handler shouldn't hurt
+> > though unless I missed something. Gwendal?
+>
+> @Gwendal, could you take a quick glance at this, or alternatively let
+> us know if you need more time to get to it.
+It will work as is.
 
-That Acked-by should either be dropped or moved above Co-developed-by to make
-checkpatch happy.
-
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Gwendal Grignou <gwendal@chromium.org>
+>
+> Thanks,
+>
+> Jonathan
+>
+>
