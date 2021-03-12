@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C382339384
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D75533939A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhCLQfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:35:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58224 "EHLO
+        id S232697AbhCLQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232506AbhCLQfd (ORCPT
+        with ESMTP id S231789AbhCLQhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:35:33 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205D2C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:35:32 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so10981689pjq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:35:32 -0800 (PST)
+        Fri, 12 Mar 2021 11:37:24 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EDEC061574;
+        Fri, 12 Mar 2021 08:37:23 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 15so7540936ljj.0;
+        Fri, 12 Mar 2021 08:37:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M1oLZJqjtjwriizT550dV/7keuNI0itwOyJW5hn/1TE=;
-        b=YTqBDZIhkQErgpRLDruA3lP9/gm2v8Qn0iE5L6hMzg8tMD/nd48sg2lBf23FoveqNe
-         HDQi3Hl1lMVHUKqZXwGWRgIUPkHc0J6+qa0ltdv56aZHsDAIJEEewqMbm0O+H14t2gtv
-         1LJZofXL9gnCePFSuQJHttqNqT52+DpFt+5s5zgBAP87R2mgUr6mt9BaV+HA3rXiEPRC
-         oCRcam9d2oXPyYOOelSFqpjvZLYwHl8qLUgntLR1uQRS6iU4X3jY168c49pkEsIInr5e
-         T3gf/O+y7orlUEGOOZxfCn961VFqEAe9PzBwGQUg0JwzbbyYpzqpFqMZVvDP0/NKDHMl
-         T7hw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aMH/wfW4yjgJKNSy/oW2kbzV3PH21seubOZOK6KVyoQ=;
+        b=SPBs1ceelgHNGGJmIQF6zJcRAzWshU7HO5lrtyridGrbdF0p7qWPgBAPIB5SO4WBpo
+         2ZzyU5O0TD0wQIUpGwI9z0BUS0+COTAtJFd1QwrqrMpXSBsxMRdZeQhbqd84fvGB8q00
+         sr3Qc2ntPr5rrEijqC7/sfBKctNZzAFeqDpjMk/5BYoFM4dq7fjbSBFGJxVjdgNMNajq
+         q42YXd7GzxQwpVsv1oU21auTS6hjUvnm6v1g/UOw7PkEtbzsnNrcU/MPdH3CXuBjSM2p
+         GszgkuzwojkiXdLbFeBXBR6tdhToZI3Oh1fo33/lUlcCEIgdN6btBtQrn6cbX3GF2N9v
+         ZMFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M1oLZJqjtjwriizT550dV/7keuNI0itwOyJW5hn/1TE=;
-        b=pTYMLXrrrXgEoejqixma+Z6c+0p0Npt30oWcqZ3UyxndFnve7fOm1DTIpTa7J7pi1F
-         tZV7dghnI9MhIwAOWqrRdsCN3AGegjgi1tuBX16NcSLHLDnJOcZ6e/5KDkH7UdJ34nzs
-         HsLt0+wFdZDH6jTzOdSeMUzrPuJnNAMv3JY5qPm4Azeg+YHVz3UrJFHP3+Qahlh+9Hvl
-         rpO0IekskQea9j5/iglvO9nyW9sr2Av+UEBC/gGJWRmNwIIiWYo3GLaiq/YYxGOlHMSR
-         R6IXrgLMXoe4sXiKdOraTCkYp2lLxSEwRqc6V25mNTRmOPkfkqNsqFMUkDw6RaiF7gPy
-         ASdg==
-X-Gm-Message-State: AOAM533eF+VO2iao4JGIb/ozSzT+QMdzZbbMPELFcKsI9zA5bKd/b2/5
-        ivIX+H6bfb57QweUa+QDFse9TA==
-X-Google-Smtp-Source: ABdhPJxheV+DKT6kR8vMi7FN/wSbPyRX3UcrIbZenKRHnBu/7oIdrg89nNYJ/BWwNrTukQUvMyOYFg==
-X-Received: by 2002:a17:90a:516:: with SMTP id h22mr14325622pjh.222.1615566931518;
-        Fri, 12 Mar 2021 08:35:31 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e1a6:2eeb:4e45:756])
-        by smtp.gmail.com with ESMTPSA id h23sm5971681pfn.118.2021.03.12.08.35.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aMH/wfW4yjgJKNSy/oW2kbzV3PH21seubOZOK6KVyoQ=;
+        b=jYLAfq4wfQYQWSIfsZOxUNroGLgRHKtvhqoO2gl6xTytCn+YhEMJRoLUhPCloHtH4r
+         zqEJmEsz1UKVD2rkWTsKnFAspJjT/I9I2wN6antfrPOCglguc4o+tIAV80SUQ/9R+3IJ
+         /KxGOBWsvo//KzljcewLu1zzKs209PN5Rr2HlJqvr8iz/H4j/Spm+UpBKb6nOXyR3Oz4
+         GFvFIGZIkuqke8Mk4HAVjUtxJR/KlroRTbu2xmgCX6d7h1KNoRH1MwFOPXYXCz6NNuLf
+         qLNsOv2DorwXTilAJpMz1cQD+qkVDDhKA9L1JR9kUpPv5LQrkPYyl8WkDfiW0Pd7sqt5
+         bHFQ==
+X-Gm-Message-State: AOAM5327HF9tNLbq3LbL3b7rYaU+6iVaGw4wi+Fs1vEBQltlpqL06hjD
+        i2OHNTdaDRLY8Fh0SzRmpzE=
+X-Google-Smtp-Source: ABdhPJyGzurPvbG3Wi2EbHBVL1dIM1EF6TZey71X8yBXxE1Cp6qL+b3x8KdndhVXqPXF/44C/T7vrg==
+X-Received: by 2002:a2e:6c06:: with SMTP id h6mr2996728ljc.154.1615567042296;
+        Fri, 12 Mar 2021 08:37:22 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id l21sm1771703lfg.300.2021.03.12.08.37.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 08:35:30 -0800 (PST)
-Date:   Fri, 12 Mar 2021 08:35:24 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH 4/4] KVM: x86/mmu: Factor out tdp_iter_return_to_root
-Message-ID: <YEuYTF3mzzMCkz5c@google.com>
-References: <20210311231658.1243953-1-bgardon@google.com>
- <20210311231658.1243953-5-bgardon@google.com>
+        Fri, 12 Mar 2021 08:37:21 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v4 0/7] Couple improvements for Tegra clk driver
+Date:   Fri, 12 Mar 2021 19:36:25 +0300
+Message-Id: <20210312163632.8861-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311231658.1243953-5-bgardon@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021, Ben Gardon wrote:
-> In tdp_mmu_iter_cond_resched there is a call to tdp_iter_start which
-> causes the iterator to continue its walk over the paging structure from
-> the root. This is needed after a yield as paging structure could have
-> been freed in the interim.
-> 
-> The tdp_iter_start call is not very clear and something of a hack. It
-> requires exposing tdp_iter fields not used elsewhere in tdp_mmu.c and
-> the effect is not obvious from the function name. Factor a more aptly
-> named function out of tdp_iter_start and call it from
-> tdp_mmu_iter_cond_resched and tdp_iter_start.
+This series fixes couple minor standalone problems of the Tegra clk
+driver.
 
-What about calling it tdp_iter_restart()?  Or tdp_iter_resume()?  Or something
-like tdp_iter_restart_at_next() if we want it to give a hint that the next_last
-thing is where it restarts.
+Changelog:
 
-I think I like tdp_iter_restart() the best.  It'd be easy enough to add a
-function comment clarifying from where it restarts, and IMO the resulting code
-in tdp_mmu_iter_cond_resched() is the most intutive, e.g. it makes it very clear
-that the walk is being restarted in some capacity after yielding.
+v4: - Added new patch that converts DT bindings to schema.
+
+v3: - Added acks from Thierry Reding that he gave to v2.
+
+    - Added new patch "clk: tegra: Don't allow zero clock rate for PLLs".
+
+v2: - Added these new patches:
+
+      clk: tegra: Halve SCLK rate on Tegra20
+      MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
+
+v1: - Collected clk patches into a single series.
+
+Dmitry Osipenko (7):
+  clk: tegra30: Use 300MHz for video decoder by default
+  clk: tegra: Fix refcounting of gate clocks
+  clk: tegra: Ensure that PLLU configuration is applied properly
+  clk: tegra: Halve SCLK rate on Tegra20
+  MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
+  clk: tegra: Don't allow zero clock rate for PLLs
+  dt-bindings: clock: tegra: Convert to schema
+
+ CREDITS                                       |   6 +
+ .../bindings/clock/nvidia,tegra-car.yaml      | 118 ++++++++++++++++++
+ .../bindings/clock/nvidia,tegra114-car.txt    |  63 ----------
+ .../bindings/clock/nvidia,tegra124-car.txt    | 107 ----------------
+ .../bindings/clock/nvidia,tegra20-car.txt     |  63 ----------
+ .../bindings/clock/nvidia,tegra210-car.txt    |  56 ---------
+ .../bindings/clock/nvidia,tegra30-car.txt     |  63 ----------
+ MAINTAINERS                                   |   4 +-
+ drivers/clk/tegra/clk-periph-gate.c           |  72 +++++++----
+ drivers/clk/tegra/clk-periph.c                |  11 ++
+ drivers/clk/tegra/clk-pll.c                   |  12 +-
+ drivers/clk/tegra/clk-tegra20.c               |   6 +-
+ drivers/clk/tegra/clk-tegra30.c               |   2 +-
+ 13 files changed, 195 insertions(+), 388 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra-car.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
+
+-- 
+2.29.2
+
