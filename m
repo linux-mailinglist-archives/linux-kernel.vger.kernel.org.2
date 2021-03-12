@@ -2,93 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFFE339148
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17414339149
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbhCLPaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:30:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52980 "EHLO mail.kernel.org"
+        id S232132AbhCLPaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:30:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231883AbhCLP3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:29:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B769664FEE;
-        Fri, 12 Mar 2021 15:29:30 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 15:29:28 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH v15 5/8] arm64: mte: Enable TCO in functions that can
- read beyond buffer limits
-Message-ID: <20210312152927.GD24210@arm.com>
-References: <20210312142210.21326-1-vincenzo.frascino@arm.com>
- <20210312142210.21326-6-vincenzo.frascino@arm.com>
- <20210312151259.GB24210@arm.com>
- <31b7a388-4c57-cb25-2d30-da7c37e2b4d6@arm.com>
+        id S232109AbhCLP3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:29:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD05565005;
+        Fri, 12 Mar 2021 15:29:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615562985;
+        bh=rKgdQYESel3XklV9o+UMlPn+Zcemc7VrYjrJgoVlgfc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a8gDGN7iu91HdPfgLtYk+3i4nyaVlDKQKpJMzQX+bEKoS31Z3OWOJvOtGn/5YNdYT
+         exwgdpig6T9WBdlFQ5OQ/H7knKN6AHmgZsUBJD/u5dy1CfloHtzkndfGbD/avViJao
+         FGFtjpTr86XTL6Mpu2WRNQDDLBMTWQlbYzkgiyNaeTMv/7UgTRgJTAQuZLQpx6H2Ce
+         77aCMmaHl6bxmmuifG9lbFdJLrcKOG5NbEVpTrIqExv1rqyMYJgTh/+deeuByoE9rS
+         1EdkmyhBHutrR+kmOxdK1R89y+8mb3LC9WLla0WpkszPr/ifNAgMvzRLMH0I1PdPZA
+         f9JOYPGD1Om0A==
+Received: by mail-ed1-f49.google.com with SMTP id h10so8502136edt.13;
+        Fri, 12 Mar 2021 07:29:44 -0800 (PST)
+X-Gm-Message-State: AOAM531K5lzESyT5vX3fxwB7l579KbI4Pr7TG2/3D9eSQgRcV7kI7GPU
+        LYRznwJ1BD4mKjyy1ad2jR8TZ9xGOh9qDq1ysQ==
+X-Google-Smtp-Source: ABdhPJyclz/73OOg6sTfoXE8LGotbn7gLdaHa7SA11t9mp1PeD9dyWTsowBtpTGNe+EQQDxCwpjFRYIWTkrVv4Omavo=
+X-Received: by 2002:a05:6402:c88:: with SMTP id cm8mr14759440edb.62.1615562983294;
+ Fri, 12 Mar 2021 07:29:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31b7a388-4c57-cb25-2d30-da7c37e2b4d6@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210311234042.1588310-1-robh@kernel.org> <YErC9/zxKKRXaj+m@pendragon.ideasonboard.com>
+In-Reply-To: <YErC9/zxKKRXaj+m@pendragon.ideasonboard.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 12 Mar 2021 08:29:30 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqK7cnwjdBSvgy+j_2_5gNCwL0C9j+VYBYEtjSKZm=Ar-w@mail.gmail.com>
+Message-ID: <CAL_JsqK7cnwjdBSvgy+j_2_5gNCwL0C9j+VYBYEtjSKZm=Ar-w@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: media: Convert video-mux to DT schema
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 03:23:44PM +0000, Vincenzo Frascino wrote:
-> On 3/12/21 3:13 PM, Catalin Marinas wrote:
-> > On Fri, Mar 12, 2021 at 02:22:07PM +0000, Vincenzo Frascino wrote:
-> >> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> >> index 9b557a457f24..8603c6636a7d 100644
-> >> --- a/arch/arm64/include/asm/mte.h
-> >> +++ b/arch/arm64/include/asm/mte.h
-> >> @@ -90,5 +90,20 @@ static inline void mte_assign_mem_tag_range(void *addr, size_t size)
-> >>  
-> >>  #endif /* CONFIG_ARM64_MTE */
-> >>  
-> >> +#ifdef CONFIG_KASAN_HW_TAGS
-> >> +/* Whether the MTE asynchronous mode is enabled. */
-> >> +DECLARE_STATIC_KEY_FALSE(mte_async_mode);
-> >> +
-> >> +static inline bool system_uses_mte_async_mode(void)
-> >> +{
-> >> +	return static_branch_unlikely(&mte_async_mode);
-> >> +}
-> >> +#else
-> >> +static inline bool system_uses_mte_async_mode(void)
-> >> +{
-> >> +	return false;
-> >> +}
-> >> +#endif /* CONFIG_KASAN_HW_TAGS */
-> > 
-> > You can write this with fewer lines:
-> > 
-> > DECLARE_STATIC_KEY_FALSE(mte_async_mode);
-> > 
-> > static inline bool system_uses_mte_async_mode(void)
-> > {
-> > 	return IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&
-> > 		static_branch_unlikely(&mte_async_mode);
-> > }
-> > 
-> > The compiler will ensure that mte_async_mode is not referred when
-> > !CONFIG_KASAN_HW_TAGS and therefore doesn't need to be defined.
-> 
-> Yes, I agree, but I introduce "#ifdef CONFIG_KASAN_HW_TAGS" in the successive
-> patch anyway, according to me the overall code looks more uniform like this. But
-> I do not have a strong opinion or preference on this.
+On Thu, Mar 11, 2021 at 6:25 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Rob,
+>
+> Thank you for the patch.
+>
+> On Thu, Mar 11, 2021 at 04:40:42PM -0700, Rob Herring wrote:
+> > Now that we have the graph schema, convert the video-mux binding to DT
+> > schema.
+> >
+> > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > Cc: linux-media@vger.kernel.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../devicetree/bindings/media/video-mux.txt   | 60 ------------
+> >  .../devicetree/bindings/media/video-mux.yaml  | 93 +++++++++++++++++++
+> >  2 files changed, 93 insertions(+), 60 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/media/video-mux.txt
+> >  create mode 100644 Documentation/devicetree/bindings/media/video-mux.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/media/video-mux.txt b/Documentation/devicetree/bindings/media/video-mux.txt
+> > deleted file mode 100644
+> > index 63b9dc913e45..000000000000
+> > --- a/Documentation/devicetree/bindings/media/video-mux.txt
+> > +++ /dev/null
+> > @@ -1,60 +0,0 @@
+> > -Video Multiplexer
+> > -=================
+> > -
+> > -Video multiplexers allow to select between multiple input ports. Video received
+> > -on the active input port is passed through to the output port. Muxes described
+> > -by this binding are controlled by a multiplexer controller that is described by
+> > -the bindings in Documentation/devicetree/bindings/mux/mux-controller.txt
+> > -
+> > -Required properties:
+> > -- compatible : should be "video-mux"
+> > -- mux-controls : mux controller node to use for operating the mux
+> > -- #address-cells: should be <1>
+> > -- #size-cells: should be <0>
+> > -- port@*: at least three port nodes containing endpoints connecting to the
+> > -  source and sink devices according to of_graph bindings. The last port is
+> > -  the output port, all others are inputs.
+> > -
+> > -Optionally, #address-cells, #size-cells, and port nodes can be grouped under a
+> > -ports node as described in Documentation/devicetree/bindings/graph.txt.
+> > -
+> > -Example:
+> > -
+> > -     mux: mux-controller {
+> > -             compatible = "gpio-mux";
+> > -             #mux-control-cells = <0>;
+> > -
+> > -             mux-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+> > -     };
+> > -
+> > -     video-mux {
+> > -             compatible = "video-mux";
+> > -             mux-controls = <&mux>;
+> > -             #address-cells = <1>;
+> > -             #size-cells = <0>;
+> > -
+> > -             port@0 {
+> > -                     reg = <0>;
+> > -
+> > -                     mux_in0: endpoint {
+> > -                             remote-endpoint = <&video_source0_out>;
+> > -                     };
+> > -             };
+> > -
+> > -             port@1 {
+> > -                     reg = <1>;
+> > -
+> > -                     mux_in1: endpoint {
+> > -                             remote-endpoint = <&video_source1_out>;
+> > -                     };
+> > -             };
+> > -
+> > -             port@2 {
+> > -                     reg = <2>;
+> > -
+> > -                     mux_out: endpoint {
+> > -                             remote-endpoint = <&capture_interface_in>;
+> > -                     };
+> > -             };
+> > -     };
+> > -};
+> > diff --git a/Documentation/devicetree/bindings/media/video-mux.yaml b/Documentation/devicetree/bindings/media/video-mux.yaml
+> > new file mode 100644
+> > index 000000000000..780fbbd46a38
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/video-mux.yaml
+> > @@ -0,0 +1,93 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/video-mux.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Video Multiplexer
+> > +
+> > +maintainers:
+> > +  - Sakari Ailus <sakari.ailus@linux.intel.com>
+> > +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > +
+> > +description:
+> > +  Video multiplexers allow to select between multiple input ports. Video
+> > +  received on the active input port is passed through to the output port. Muxes
+> > +  described by this binding are controlled by a multiplexer controller.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: video-mux
+> > +
+> > +  mux-controls:
+> > +    maxItems: 1
+> > +
+> > +  '#address-cells':
+> > +    const: 1
+> > +
+> > +  '#size-cells':
+> > +    const: 0
+> > +
+> > +  ports:
+> > +    $ref: /schemas/graph.yaml#/properties/ports
+> > +
+> > +    patternProperties:
+> > +      '^port@':
+> > +        $ref: /schemas/graph.yaml#/properties/port
+>
+> Should we require at least port@0, port@1 and port@2 ?
 
-Ah, yes, I didn't look at patch 6 again as it was already reviewed and I
-forgot the context. Leave it as it is then, my reviewed-by still stands.
+Is the numbering defined to be 0-N or it's defined by the mux values?
+Even if the former case, a port could be missing if the input is not
+hooked up.
 
--- 
-Catalin
+> > +patternProperties:
+> > +  '^port@':
+> > +    $ref: /schemas/graph.yaml#/properties/port
+> > +    description:
+> > +      At least three port nodes containing endpoints connecting to the source
+> > +      and sink devices according to of_graph bindings. The last port is the
+> > +      output port, all others are inputs.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - mux-controls
+>
+> Should a constraint be added to ensure that either a ports node or
+> port@0, port@1 and port@2 nodes exists ?
+
+I kind of figured missing mux entries in a mux node was obvious
+enough. Though given the above, I don't think we can.
+
+Also, we don't have any users with 'ports', so I debated doing away
+with that. Supporting either way is kind of pointless.
+
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+Thanks,
+Rob
