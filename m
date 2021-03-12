@@ -2,95 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83388338959
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A701033892E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhCLJ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        id S233521AbhCLJt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:49:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232920AbhCLJzt (ORCPT
+        with ESMTP id S233219AbhCLJsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:55:49 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADBCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:55:48 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id g14so3959134qvn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:55:48 -0800 (PST)
+        Fri, 12 Mar 2021 04:48:43 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2030C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:48:30 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so10499432pjq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:48:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:mime-version:date:message-id;
-        bh=WD8sR2qQ2FGd9LryCvWh2EJSu2H3tjlxVjm2yprOu/o=;
-        b=U+2l7nwkR7iEiWldFc7tBtdy70VCTqjQ+cqtMR/9AukMgbRwQ1qm+j8f1OPhue17ok
-         Z7Hf/nscO48w/9JeE281Wg7Jmc2x9LchSQvbUN84d28axeWSIrB2zf8FR10hOE/svIx8
-         XxXTxxMQ26aeol3yQ1WgDOR+XEXe9Fk2egVGIIn1aQ8sEs8W6zfqOZxTvMKlS1FfBpKF
-         /3ol/ljWB+/u+rAqhaAv1nDd19fIVODfgpVpV54E/QnDtuH9exLPH2Q9ZD/aRhJurQCJ
-         aIjcAiBIiyVSplj8eaPI47WBAMwywHTWE2e637NI536+NQ4UkEafKh5biEJhnM082+yL
-         mMZQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tSU5JZNqo+LpLrL2J51K9EjU+XyoQGqUAnrQL7MEH1A=;
+        b=BSO27GPbEPW3Y0DxHwpWJXPbfk/efqUoz0Ts35dPQpg3azwscSr3PyX6Yvg1k5/Vvu
+         rrrKcjRhyk3g9vbulgwJ+N5Snq3ZMDz+Yfzm5q4as7sqj2xhSh3jRLERoymuwTZaHmGQ
+         O470J/wbp0z+szFwzPzJruJlo2PA7kZ75ZS7szfch+9Y127uDd1aSJvvqElBJWFCIf30
+         EOqG672RXJKBBrRSlnLfGzZhidgoyLob8Y+/2ZFdABSbWS75rLEc6WL8M+p+wEcL7kNe
+         nH26iT8xLXYiPICHd41uyOYR4e4BMA/QWgP3JsWJoQUlEebA0qx3xde1XG0p/VsH0nx/
+         Pybw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version:date
-         :message-id;
-        bh=WD8sR2qQ2FGd9LryCvWh2EJSu2H3tjlxVjm2yprOu/o=;
-        b=kJYMaeryEplKVLTNxePQBUSzj2s8u99vx/5c/aUAQSP9kLHsyB/c00wdh9pch4pxgV
-         eO87GhbOpDLMfNnEtVfkupx6DzfFQA/AFIyer54xJKcBZpDv7CAGBvPMGk4vOotRBXRE
-         nQMl7DFVWpEwkdldZSnFPYNIh72Urzo5IxQQNLtJhLwfb8e4pV1XNrpyVSvt+0Azdl2r
-         DTbUvr8OTJ6yV3kYCTdIuWLdKeMSxs6gOrkMkmwFOXOPL2QNUmL+wvlH38SbRiBe4XN5
-         Mefsrz0WRMo6m8KSPfVSOhlLS4YW9I7QGdcXCPsYxrwr1o8Wmeg014YIVvmpz1ECm+UY
-         7QQg==
-X-Gm-Message-State: AOAM533Bm8jBZ2vXpgOagYslQQSr6UUGLgr+PEbPOHUCzuIzG4dZMY3O
-        9Bb5E+D7ReLw/tl97V09VcwUfw==
-X-Google-Smtp-Source: ABdhPJz0TMeIw9oMkW/odwOY1oS5xc65r8v/HhBz0Y6YiLT1vO4cEsYvXAs3vG7rMT4Q0uGAYFOCJg==
-X-Received: by 2002:a0c:cc8c:: with SMTP id f12mr11348749qvl.14.1615542948097;
-        Fri, 12 Mar 2021 01:55:48 -0800 (PST)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id j6sm3291662qtx.14.2021.03.12.01.55.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:55:47 -0800 (PST)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: arm64: kernel/sys.c - silence initialization warnings.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date:   Fri, 12 Mar 2021 04:55:46 -0500
-Message-ID: <162859.1615542946@turing-police>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tSU5JZNqo+LpLrL2J51K9EjU+XyoQGqUAnrQL7MEH1A=;
+        b=D/nOFmRXDtW2c7qbPOM6IpA+fqK/Qo2AJv19pj6twQnBZtbT2Nl48w0k0rg/LbIK4M
+         W/T5gLFlOgMQk3YAuTfgdBYAji2fhMj9hal1dYzkLh2iOubY0GGJdWpjZiNiJM+Fra9S
+         mUIBO1B2zPNlKjXSUcMXTzoB8PJYyaXQLgK4K298BwBSS7CwDEkeVfAZgqU5oGC3yCBP
+         wS0KoCfwrnDPSuj06DJAxUsB9IWUkeGPYo/dngwYllcj3hgcuGlugF6QdZMAvvL8Jehy
+         sqnjkvNzuRvzxtIFZdlwqztx3RY+5YhdXA8NUNbOQoea2tZKWxRLrT3UnzOmKm3c4eaX
+         yfaw==
+X-Gm-Message-State: AOAM532Hi0K73v7OHhgRVJYF9MjHgbxHRw0ZyEB+rb8hwOLa2lXizcn+
+        fZsAC2sg/dKt+H505Shfnd4w9e0qohOBiB0Q2Hs9Hg==
+X-Google-Smtp-Source: ABdhPJw36o2X0nO0HlNpiC9Gns3o1MZJQZ1G66o2rNmvzS6qI9yLSWVNqK2hTXy0D/2zAf4BkSxNTx323LRQ7k7BbX8=
+X-Received: by 2002:a17:90a:1463:: with SMTP id j90mr13526493pja.205.1615542510061;
+ Fri, 12 Mar 2021 01:48:30 -0800 (PST)
+MIME-Version: 1.0
+References: <1615495264-6816-1-git-send-email-loic.poulain@linaro.org>
+ <1615495264-6816-2-git-send-email-loic.poulain@linaro.org> <YEsjbnOPihKPJYpx@kroah.com>
+In-Reply-To: <YEsjbnOPihKPJYpx@kroah.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Fri, 12 Mar 2021 10:56:30 +0100
+Message-ID: <CAMZdPi83Bzo=ucLr_PFshRJqAeUqcnTwR-eJ3f1WAOaA1ZoDQw@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 2/2] net: Add Qcom WWAN control driver
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        open list <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>, rdunlap@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building arch/arm64/kernel/sys.o with W=1 throws over 300 warnings:
+Hi Greg,
 
-/usr/src/linux-next/arch/arm64/kernel/sys.c:56:40: warning: initialized field overwritten [-Woverride-init]
-   56 | #define __SYSCALL(nr, sym)      [nr] = __arm64_##sym,
-      |                                        ^~~~~~~~
-/usr/src/linux-next/include/uapi/asm-generic/unistd.h:29:37: note: in expansion of macro '__SYSCALL'
-   29 | #define __SC_COMP(_nr, _sys, _comp) __SYSCALL(_nr, _sys)
-      |                                     ^~~~~~~~~
-/usr/src/linux-next/include/uapi/asm-generic/unistd.h:34:1: note: in expansion of macro '__SC_COMP'
-   34 | __SC_COMP(__NR_io_setup, sys_io_setup, compat_sys_io_setup)
-      | ^~~~~~~~~
+On Fri, 12 Mar 2021 at 09:16, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Mar 11, 2021 at 09:41:04PM +0100, Loic Poulain wrote:
+> > The MHI WWWAN control driver allows MHI QCOM-based modems to expose
+> > different modem control protocols/ports to userspace, so that userspace
+> > modem tools or daemon (e.g. ModemManager) can control WWAN config
+> > and state (APN config, SMS, provider selection...). A QCOM-based
+> > modem can expose one or several of the following protocols:
+> > - AT: Well known AT commands interactive protocol (microcom, minicom...)
+> > - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
+> > - QMI: QCOM MSM/Modem Interface (libqmi, qmicli)
+> > - QCDM: QCOM Modem diagnostic interface (libqcdm)
+> > - FIREHOSE: XML-based protocol for Modem firmware management
+> >         (qmi-firmware-update)
+> >
+> > The different interfaces are exposed as character devices through the
+> > WWAN subsystem, in the same way as for USB modem variants.
+> >
+> > Note that this patch is mostly a rework of the earlier MHI UCI
+> > tentative that was a generic interface for accessing MHI bus from
+> > userspace. As suggested, this new version is WWAN specific and is
+> > dedicated to only expose channels used for controlling a modem, and
+> > for which related opensource user support exist. Other MHI channels
+> > not fitting the requirements will request either to be plugged to
+> > the right Linux subsystem (when available) or to be discussed as a
+> > new MHI driver (e.g AI accelerator, WiFi debug channels, etc...).
+> >
+> > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+> > ---
+> >  v2: update copyright (2021)
+> >  v3: Move driver to dedicated drivers/net/wwan directory
+> >  v4: Rework to use wwan framework instead of self cdev management
+> >  v5: Fix errors/typos in Kconfig
+> >
+> >  drivers/net/wwan/Kconfig         |  14 ++
+> >  drivers/net/wwan/Makefile        |   1 +
+> >  drivers/net/wwan/mhi_wwan_ctrl.c | 497 +++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 512 insertions(+)
+> >  create mode 100644 drivers/net/wwan/mhi_wwan_ctrl.c
+> >
+> > diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
+> > index 545fe54..ce0bbfb 100644
+> > --- a/drivers/net/wwan/Kconfig
+> > +++ b/drivers/net/wwan/Kconfig
+> > @@ -19,4 +19,18 @@ config WWAN_CORE
+> >         To compile this driver as a module, choose M here: the module will be
+> >         called wwan.
+> >
+> > +config MHI_WWAN_CTRL
+> > +     tristate "MHI WWAN control driver for QCOM-based PCIe modems"
+> > +     select WWAN_CORE
+> > +     depends on MHI_BUS
+> > +     help
+> > +       MHI WWAN CTRL allows QCOM-based PCIe modems to expose different modem
+> > +       control protocols/ports to userspace, including AT, MBIM, QMI, DIAG
+> > +       and FIREHOSE. These protocols can be accessed directly from userspace
+> > +       (e.g. AT commands) or via libraries/tools (e.g. libmbim, libqmi,
+> > +       libqcdm...).
+> > +
+> > +       To compile this driver as a module, choose M here: the module will be
+> > +       called mhi_wwan_ctrl
+> > +
+> >  endif # WWAN
+> > diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
+> > index ca8bb5a..e18ecda 100644
+> > --- a/drivers/net/wwan/Makefile
+> > +++ b/drivers/net/wwan/Makefile
+> > @@ -6,3 +6,4 @@
+> >  obj-$(CONFIG_WWAN_CORE) += wwan.o
+> >  wwan-objs += wwan_core.o wwan_port.o
+> >
+> > +obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
+> > diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
+> > new file mode 100644
+> > index 0000000..abda4b0
+> > --- /dev/null
+> > +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
+> > @@ -0,0 +1,497 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/* Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.*/
+> > +
+> > +#include <linux/kernel.h>
+> > +#include <linux/mhi.h>
+> > +#include <linux/mod_devicetable.h>
+> > +#include <linux/module.h>
+> > +#include <linux/poll.h>
+> > +
+> > +#include "wwan_core.h"
+> > +
+> > +#define MHI_WWAN_CTRL_DRIVER_NAME "mhi_wwan_ctrl"
+> > +#define MHI_WWAN_CTRL_MAX_MINORS 128
+> > +#define MHI_WWAN_MAX_MTU 0x8000
+> > +
+> > +/* MHI wwan device flags */
+> > +#define MHI_WWAN_DL_CAP              BIT(0)
+> > +#define MHI_WWAN_UL_CAP              BIT(1)
+> > +#define MHI_WWAN_CONNECTED   BIT(2)
+> > +
+> > +struct mhi_wwan_buf {
+> > +     struct list_head node;
+> > +     void *data;
+> > +     size_t len;
+> > +     size_t consumed;
+> > +};
+> > +
+> > +struct mhi_wwan_dev {
+> > +     unsigned int minor;
+>
+> You never use this, why is it here?
+>
+> {sigh}
+>
+> Who reviewed this series before sending it out?
 
-We know that's pretty much the file's purpose in life, so tell the
-build system to not remind us.  This makes the 1 other warning a
-lot more noticeable. 
+I clearly moved too fast on the wwan/mhi split and overlooked
+the refactoring, I'll ensure to get a proper internal review before
+resubmitting a new version.
 
-Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+Thanks,
+Loic
 
-diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index ed65576ce710..916b21d2b35b 100644
---- a/arch/arm64/kernel/Makefile
-+++ b/arch/arm64/kernel/Makefile
-@@ -8,6 +8,7 @@ CFLAGS_armv8_deprecated.o := -I$(src)
- CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_insn.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_return_address.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_sys.o += $(call cc-disable-warning, override-init)
- 
- # Object file lists.
- obj-y			:= debug-monitors.o entry.o irq.o fpsimd.o		\
-
+>
+> greg k-h
