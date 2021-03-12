@@ -2,73 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB930339816
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CF1339819
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbhCLUP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:15:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S234703AbhCLURA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:17:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234636AbhCLUPt (ORCPT
+        with ESMTP id S234673AbhCLUQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:15:49 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D249C061574;
-        Fri, 12 Mar 2021 12:15:49 -0800 (PST)
-Date:   Fri, 12 Mar 2021 21:15:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615580148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=26NUqTHOHh2gaO+/ehndv9FNFiMzz0v2PvCLPL3Z7ZY=;
-        b=KcqBpn4ly6wSrrAee6PI7//GPoTZJLUINacKGO3RyfQzB3j/NhJ6g2sL9ZjWIO6KK5Ld0/
-        UUkw5wFnHCsqa4FmreNVAfdA0WWxswxSA7Z0tqip10y94zucpI4Y6rzN/iwn9JACt95n8G
-        ZWYjHyp6RuPXvuINahRf83r6rq2LinXR94US/nRhNbCdbK/zLTscu6WVpebFLrASeRA4gg
-        mflEh3G4z7qxXKXHO9PZgf8S2HLjrPubIS7Kb/AdYgPbAOq0V/mhEFZ6kUlFsmqet/DGEf
-        Pya6jNV5JJT7erT/wTeDreJcvG28sovZnHy07UxKMdB3jaaH5U712We7YUJbjQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615580148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=26NUqTHOHh2gaO+/ehndv9FNFiMzz0v2PvCLPL3Z7ZY=;
-        b=VDuawlXFWPVCfaY3Ge6thWVZD/QswA4nA/PXld7XFtnj+adYS0VRRR2pRMmZAHQvxjgDF6
-        aJC/uiEvYkr3MfDQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.12-rc2-rt1
-Message-ID: <20210312201546.gskgnresmjnw3h3x@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Fri, 12 Mar 2021 15:16:45 -0500
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EC5C061574;
+        Fri, 12 Mar 2021 12:16:45 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 9906E4CFCCBE9;
+        Fri, 12 Mar 2021 12:16:43 -0800 (PST)
+Date:   Fri, 12 Mar 2021 12:16:42 -0800 (PST)
+Message-Id: <20210312.121642.657598616674920805.davem@davemloft.net>
+To:     eric.dumazet@gmail.com
+Cc:     roid@nvidia.com, baijiaju1990@gmail.com, j.vosburgh@gmail.com,
+        vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        saeedm@nvidia.com
+Subject: Re: [PATCH] net: bonding: fix error return code of
+ bond_neigh_init()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <5d4cbafa-dbad-9b66-c5be-bca6ecc8e6f3@gmail.com>
+References: <20210308031102.26730-1-baijiaju1990@gmail.com>
+        <e15f36f7-6421-69a3-f10a-45b83621b96f@nvidia.com>
+        <5d4cbafa-dbad-9b66-c5be-bca6ecc8e6f3@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 12 Mar 2021 12:16:44 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Date: Wed, 10 Mar 2021 17:55:04 +0100
 
-I'm pleased to announce the v5.12-rc2-rt1 patch set. 
+> 
+> Agreed, this commit made no sense, please revert.
 
-Changes since v5.11.4-rt11:
-
-  - Update to v5.12-rc2.
-
-Known issues
-     - kdb/kgdb can easily deadlock.
-     - netconsole triggers WARN.
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.12-rc2-rt1
-
-The RT patch against v5.12-rc2 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.12/older/patch-5.12-rc2-rt1.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.12/older/patches-5.12-rc2-rt1.tar.xz
-
-Sebastian
+Done.
