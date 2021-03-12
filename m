@@ -2,157 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5701D3396C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C94C3396D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbhCLSl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:41:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233036AbhCLSlT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:41:19 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAE1C061574;
-        Fri, 12 Mar 2021 10:41:18 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id s21so2471876pfm.1;
-        Fri, 12 Mar 2021 10:41:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4yRPxufzWT3thQ7Bv+f09drpbgtD2Z1Oj1m47AWLtpw=;
-        b=XW4UHta53j/lMCQhf6ZIWbHCTtIkoPjRHjL0Y3ZT9eSjftYN418B5pVvbexerz/rb/
-         JwRTG+v8LcqiY409epXxWGrojOVTZ14YZZ4clda2vG4nm9mnUv+gimOj+xaQ1GZKyE4e
-         Kk09hRUU1VvtrMrWFPkKxgm1epfBndvbr7D6zKWoCZowENAXebbGCVyTdZ6oU4/pFUJ5
-         8fxlIg07MF7F9r0Ae3cj9DvkZWBZvjuxz9DE37hdhfGADWJEgQz5uO2laQ+5iOBvNhCk
-         4OvAoGNmYmydYS9uHLJBk6tt71cV8HYBXghCyDS9NN+J83/uO4LMKC5dt5sAQVOItXa0
-         3bQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4yRPxufzWT3thQ7Bv+f09drpbgtD2Z1Oj1m47AWLtpw=;
-        b=Ae6raJVoLRsXXkoHAC+hLIbcquRZqvNqfjVj1rv5mVPYL6G9NLF3eqY8OAMU1QJfb4
-         sAIP0ZbJYzGThKTSOK50DDgHd2LQES2l2st7jBJ1ZXuCSMhYJdo59kklQM7VpKswIFPD
-         V0weauXLOcHD4wCV3NnTjqq1i8YXyDF3lBzlyssTEZQ67kSYFvUXdRmIvmlacjY6bfXZ
-         vtBtM2EG4Y13Y6aipb0GdJ+PIfrqhBftOGPqHmYhD3ichAwEzn3cRvAKv55sVAlVW1b4
-         9xqH38gTbg293SBWP68YsqhKAwvJfaYry4UZq++1ymTO76xOoGonBX6trSmWytdW/dCE
-         IiEA==
-X-Gm-Message-State: AOAM5304EqVwNw2vB8EBd/3LwLE+TH7ti+BeEBPUZns4fQVeBrPuCbi3
-        aB6ZHFUrMUlyE2v9CESJfX9hHnuea0dPHw==
-X-Google-Smtp-Source: ABdhPJzX+Kk6OzaJLcGb4y3lU8P7acpzzlbTVaWA3v23i0E2TNvrXi406JAmWEYpkU4MvEGaPDXmKg==
-X-Received: by 2002:a63:7885:: with SMTP id t127mr12651569pgc.237.1615574477523;
-        Fri, 12 Mar 2021 10:41:17 -0800 (PST)
-Received: from localhost ([103.248.31.144])
-        by smtp.gmail.com with ESMTPSA id v27sm6104554pfi.89.2021.03.12.10.41.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 10:41:17 -0800 (PST)
-Date:   Sat, 13 Mar 2021 00:10:38 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, raphael.norwitz@nutanix.com
-Subject: Re: [PATCH 0/4] Expose and manage PCI device reset
-Message-ID: <20210312184038.to3g3px6ep4xfavn@archlinux>
-References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
- <20210312112043.3f2954e3@omen.home.shazbot.org>
+        id S233868AbhCLSng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:43:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233832AbhCLSnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 13:43:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E3C164DEF;
+        Fri, 12 Mar 2021 18:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615574611;
+        bh=sKX2rrb6XkiYk5GQI8k4S0Xcn1WhEhpPzkJYF4w5HQY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WGa+OIImtBLT6B9fBhRu9whkob+oyS22VSvs/u9Hl+jTC06bBuhomU1HA92pU+7qP
+         V44Py2/oLpwuvLVslyFSAmiQpPhUViqyPypv1+1luj2tmFp6mHHF1+LdrbbkgtX6MC
+         A0Hkek/kJvJHWBF5rOosCmIDbpmLNmz+w078KgNWiZiDkTObqd+IneILAMFj5sg87o
+         I+ynB0YhhFoPyTzO/naeUawbmx7KINbkX+4LnCvkg6dhZg6EwoQzzqFPGFwb0e4siB
+         UK9w9UmnnxtwxGMPlC1fQhr478bXztBwBXb4VC+dO95r2mbwgU2zZge2x3LnKMak5n
+         GcJTCFp0+Lwcg==
+Date:   Fri, 12 Mar 2021 18:42:18 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-pwm@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        allen <allen.chen@ite.com.tw>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [GIT PULL] Immutable branch between MFD, PWM and RTC due for the
+ v5.13 merge window
+Message-ID: <20210312184218.GL5348@sirena.org.uk>
+References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
+ <20210301102826.GK641347@dell>
+ <20210309200520.GA4931@dell>
+ <20210310113959.dnokjrt7dos43fx6@pengutronix.de>
+ <YEizYHPnzyLad6Yi@piout.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sMZCuqyhuhd4ycTi"
 Content-Disposition: inline
-In-Reply-To: <20210312112043.3f2954e3@omen.home.shazbot.org>
+In-Reply-To: <YEizYHPnzyLad6Yi@piout.net>
+X-Cookie: Lake Erie died for your sins.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/03/12 11:20AM, Alex Williamson wrote:
-> On Fri, 12 Mar 2021 23:04:48 +0530
-> ameynarkhede03@gmail.com wrote:
->
-> > From: Amey Narkhede <ameynarkhede03@gmail.com>
-> >
-> > PCI and PCIe devices may support a number of possible reset mechanisms
-> > for example Function Level Reset (FLR) provided via Advanced Feature or
-> > PCIe capabilities, Power Management reset, bus reset, or device specific reset.
-> > Currently the PCI subsystem creates a policy prioritizing these reset methods
-> > which provides neither visibility nor control to userspace.
-> >
-> > Expose the reset methods available per device to userspace, via sysfs
-> > and allow an administrative user or device owner to have ability to
-> > manage per device reset method priorities or exclusions.
-> > This feature aims to allow greater control of a device for use cases
-> > as device assignment, where specific device or platform issues may
-> > interact poorly with a given reset method, and for which device specific
-> > quirks have not been developed.
-> >
-> > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> > Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
-> > Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
->
-> Reviews/Acks/Sign-off-by from others (aside from Tested/Reported-by)
-> really need to be explicit, IMO.  This is a common issue for new
-> developers, but it really needs to be more formal.  I wouldn't claim to
-> be able to speak for Raphael and interpret his comments so far as his
-> final seal of approval.
->
-> Also in the patches, all Sign-offs/Reviews/Acks need to be above the
-> triple dash '---' line.  Anything between that line and the beginning
-> of the diff is discarded by tools.  People will often use that for
-> difference between version since it will be discarded on commit.
-> Likewise, the cover letter is not committed, so Review-by there are
-> generally not done.  I generally make my Sign-off last in the chain and
-> maintainers will generally add theirs after that.  This makes for a
-> chain where someone can read up from the bottom to see how this commit
-> entered the kernel.  Reviews, Acks, and whatnot will therefore usually
-> be collected above the author posting the patch.
->
-> Since this is a v1 patch and it's likely there will be more revisions,
-> rather than send a v2 immediately with corrections, I'd probably just
-> reply to the cover letter retracting Raphael's Review-by for him to
-> send his own and noting that you'll fix the commit reviews formatting,
-> but will wait for a bit for further comments before sending a new
-> version.
->
-> No big deal, nice work getting it sent out.  Thanks,
->
-> Alex
->
-Raphael sent me the email with
-Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com> that
-is why I included it.
-So basically in v2 I should reorder tags such that Sign-off will be
-the last. Did I get that right? Or am I missing something?
 
-Thanks,
-Amey
+--sMZCuqyhuhd4ycTi
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Amey Narkhede (4):
-> >   PCI: Refactor pcie_flr to follow calling convention of other reset
-> >     methods
-> >   PCI: Add new bitmap for keeping track of supported reset mechanisms
-> >   PCI: Remove reset_fn field from pci_dev
-> >   PCI/sysfs: Allow userspace to query and set device reset mechanism
-> >
-> >  Documentation/ABI/testing/sysfs-bus-pci       |  15 ++
-> >  drivers/crypto/cavium/nitrox/nitrox_main.c    |   4 +-
-> >  drivers/crypto/qat/qat_common/adf_aer.c       |   2 +-
-> >  drivers/infiniband/hw/hfi1/chip.c             |   4 +-
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   2 +-
-> >  .../ethernet/cavium/liquidio/lio_vf_main.c    |   4 +-
-> >  .../ethernet/cavium/liquidio/octeon_mailbox.c |   2 +-
-> >  drivers/net/ethernet/freescale/enetc/enetc.c  |   2 +-
-> >  .../ethernet/freescale/enetc/enetc_pci_mdio.c |   2 +-
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   4 +-
-> >  drivers/pci/pci-sysfs.c                       |  68 +++++++-
-> >  drivers/pci/pci.c                             | 160 ++++++++++--------
-> >  drivers/pci/pci.h                             |  11 +-
-> >  drivers/pci/pcie/aer.c                        |  12 +-
-> >  drivers/pci/probe.c                           |   4 +-
-> >  drivers/pci/quirks.c                          |  17 +-
-> >  include/linux/pci.h                           |  17 +-
-> >  17 files changed, 213 insertions(+), 117 deletions(-)
-> >
-> > --
-> > 2.30.2
-> >
->
+On Wed, Mar 10, 2021 at 12:54:08PM +0100, Alexandre Belloni wrote:
+> On 10/03/2021 12:39:59+0100, Uwe Kleine-K=F6nig wrote:
+
+> > IMHO there are two ways forward: Either someone (Lee again?) creates a
+> > new pull request for this series rebased on -rc2; or we accept that
+> > these few patches are based on -rc1. For the latter it would be
+> > beneficial to merge the tag into a tree that is already based on -rc2.
+
+> The solution is simply for the maintainers merging the immutable branch
+> to do that in a branch based on -rc2. Eg. I've rebased rtc-next on -rc2
+> (fast forward, I didn't have any patch). I can now merge this branch if
+> necessary, problem solved. If you can't rebased, nothing prevents you
+> from merging -rc2 in any branch.
+
+That doesn't exactly address the issue - the goal was to reduce the
+number of commits that a bisect could hit which have the swapfile bug
+but lack the fix.  How serious a few extra commits on a shared branch
+really are is of course an open question though.
+
+--sMZCuqyhuhd4ycTi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLtgkACgkQJNaLcl1U
+h9CB+wf/ZO7mIUoi7YJ5RncEf1EitAjvU8hcKZiAZOlXiI1OS8PQOpWUQ5K+RbDD
+NJIy7txxdvWxHDxl1pG7f/3iZ0j1S/3VWPDj8U6L04HcMCivzVFsfGME8coY6V8P
+GnJDXv/7OCbnDvmUz8TYpcKRI+OSbOVadnQH2eUoGz1BZ9AAyJ1LL1qHKx7vOp2Z
+rwoSkqkJwBVyuR+bjHFR4vHeBLfcxyBJ0DJG0Cb7INwK1D6t1qbnk90+mSFx3myS
+3ji8G1NRtqfZH5cG76rCoWnXiaDRCPhnanQeI3p3qCEF5PDJQG7ODmWY95HJyZJh
+RNgn4Del1wOcCkNVuV+u5M9+dLu73g==
+=ckES
+-----END PGP SIGNATURE-----
+
+--sMZCuqyhuhd4ycTi--
