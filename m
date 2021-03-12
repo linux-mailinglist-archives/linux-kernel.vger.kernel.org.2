@@ -2,324 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0510F339971
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE63339975
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235446AbhCLWFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:05:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50454 "EHLO mail.kernel.org"
+        id S235451AbhCLWJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:09:41 -0500
+Received: from mga02.intel.com ([134.134.136.20]:1029 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235438AbhCLWFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:05:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C38D64E38;
-        Fri, 12 Mar 2021 22:05:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615586723;
-        bh=48crzVxTBjIj7veZwpiMyXwtSrw4kl0+sVS6SHq/gUo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hGAAr6EjcMvOP/mCptHoiPf2mFwlFTgD4uHYzz3WPL3s2YdjpwEncWLKLFPc2I6oB
-         nGGPUWCsZ9DXu2MqLlMeUg304qIwTyXGOmhc3qf09HVK+rdubYd2huoGx56GKK4g9X
-         IcHiEN/1+xoL/TRcJslT4bujO+S35B4Ywn0ZWeVJjdZBxFhkVG0sHwH4Ny0y9tdat2
-         Hwx4kvq32+Y7YjOVqKCPFK8WotczlH18ksWIiPWFS2v7OehQna3/V9UWHvCeRsahs5
-         UKZnaM/jjhgCbAmhh8LZhZqlPHWlwd/iXzUdFQ3URy/77kPpfHvHZQj9+M8LPwhOEI
-         v/srAtJ6chb7w==
-Date:   Fri, 12 Mar 2021 15:05:18 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fangrui Song <maskray@google.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] gcov: fix clang-11+ support
-Message-ID: <20210312220518.rz6cjh33bkwaumzz@archlinux-ax161>
-References: <20210312192139.2503087-1-ndesaulniers@google.com>
- <20210312195815.2hnhuyk3qo4p7ysr@archlinux-ax161>
- <CAKwvOdnTVobEoOR2n41qsGMZ50ZYBa8zOvV+Lek86r84racidA@mail.gmail.com>
- <20210312205151.orzr7hxhxngnftxi@archlinux-ax161>
- <CAKwvOdmV5co+mMSBbnnXyBXiwOha=S987PMA68Xe9jP8gJYkdw@mail.gmail.com>
+        id S235308AbhCLWJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 17:09:22 -0500
+IronPort-SDR: eHGodOyMK3GZhXWVaz7k6iTuYTkzv1hYayqI1tPZZ6GOG8/GCvDsxk84R4SEHfb4M/OBtV7/zl
+ Zg8JgwtvDLSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="176023026"
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
+   d="scan'208";a="176023026"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 14:09:17 -0800
+IronPort-SDR: eRra4IuVxIDZ5yWYYZKPaGF/3+AzVch2zRTcTIEXCTCFKlK+QQjJ537AMySI8vDd0118ghpIPx
+ L0k0iQsEdG4w==
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
+   d="scan'208";a="510463891"
+Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 14:09:15 -0800
+Date:   Fri, 12 Mar 2021 22:09:08 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 08/21] selftests/resctrl: Call kselftest APIs to log
+ test results
+Message-ID: <YEvmhPIQjt7Wd6N9@otcwcpicx3.sc.intel.com>
+References: <20210307145502.2916364-1-fenghua.yu@intel.com>
+ <20210307145502.2916364-9-fenghua.yu@intel.com>
+ <d902468d-644f-65e4-1043-81c90fdf4da8@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdmV5co+mMSBbnnXyBXiwOha=S987PMA68Xe9jP8gJYkdw@mail.gmail.com>
+In-Reply-To: <d902468d-644f-65e4-1043-81c90fdf4da8@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 01:57:47PM -0800, 'Nick Desaulniers' via Clang Built Linux wrote:
-> On Fri, Mar 12, 2021 at 12:51 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > On Fri, Mar 12, 2021 at 12:14:42PM -0800, Nick Desaulniers wrote:
-> > > On Fri, Mar 12, 2021 at 11:58 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> > > >
-> > > > On Fri, Mar 12, 2021 at 11:21:39AM -0800, Nick Desaulniers wrote:
-> > > > > LLVM changed the expected function signatures for llvm_gcda_start_file()
-> > > > > and llvm_gcda_emit_function() in the clang-11 release. Users of clang-11
-> > > > > or newer may have noticed their kernels failing to boot due to a panic
-> > > > > when enabling CONFIG_GCOV_KERNEL=y +CONFIG_GCOV_PROFILE_ALL=y.  Fix up
-> > > > > the function signatures so calling these functions doesn't panic the
-> > > > > kernel.
-> > > > >
-> > > > > When we drop clang-10 support from the kernel, we should carefully
-> > > > > update the original implementations to try to preserve git blame,
-> > > > > deleting these implementations.
-> > > > >
-> > > > > Link: https://reviews.llvm.org/rGcdd683b516d147925212724b09ec6fb792a40041
-> > > > > Link: https://reviews.llvm.org/rG13a633b438b6500ecad9e4f936ebadf3411d0f44
-> > > > > Cc: Fangrui Song <maskray@google.com>
-> > > > > Reported-by: Prasad Sodagudi<psodagud@quicinc.com>
-> > > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > >
-> > > > I can reproduce the panic (as a boot hang) in QEMU before this patch and
-> > > > it is resolved after it so:
-> > > >
-> > > > Tested-by: Nathan Chancellor <nathan@kernel.org>
-> > > >
-> > > > However, the duplication hurts :( would it potentially be better to just
-> > > > do the full update to clang-11+ and require it for CONFIG_GCOV_KERNEL?
-> > > >
-> > > >     depends on CC_IS_GCC || CLANG_VERSION >= 110000?
-> > >
-> > > I'm not opposed, and value your input on the matter.  Either way, this
-> > > will need to be back ported to stable.  Should we be concerned with
-> > > users of stable's branches before we mandated clang-10 as the minimum
-> > > supported version?
-> > >
-> > > commit 1f7a44f63e6c ("compiler-clang: add build check for clang 10.0.1")
-> > >
-> > > first landed in v5.10-rc1. Does not exist in v5.4.y.  The diff you
-> >
-> > Hmmm fair point, I did not realize that this support had landed in 5.2
-> > meaning that 5.4 needs it as well at 5.10.
-> >
-> > > suggest is certainly easier to review to observe the differences, and
-> > > I we don't have users of the latest Android or CrOS kernels using
-> > > older clang, but I suspect there may be older kernel versions where if
-> > > they try to upgrade their version of clang, GCOV support will regress
-> > > for them.  Though, I guess that's fine since either approach will fix
-> > > this for them. I guess if they don't want to upgrade from clang-10 say
-> > > for example, then this approach can be backported to stable.
-> >
-> > If people are happy with this approach, it is the more "stable friendly"
-> > change because it fixes it for all versions of clang that should have
-> > been supported at their respective times. Maybe it is worthwhile to do
-> > both? This change gets picked up with a Cc: stable@vger.kernel.org then
-> > in a follow up patch, we remove the #ifdef's and gate GCOV on clang-11?
-> > The CLANG_VERSION string is usually what we will search for when
-> > removing old workarounds.
-> 
-> Sounds like we're on the same page; will send a v2 with your
-> recommendation on top.
-> 
-> > Additionally, your patch could just use
-> >
-> > #if CLANG_VERSION <= 110000
-> >
-> > to more easily see this. I have no strong opinion one way or the other
-> > though. If people are happy with this approach, let's do it.
-> 
-> Err that would be nicer, but:
-> kernel/gcov/clang.c:78:5: warning: 'CLANG_VERSION' is not defined,
-> evaluates to 0 [-Wundef]
-> #if CLANG_VERSION < 110000
->     ^
-> kernel/gcov/clang.c:110:5: warning: 'CLANG_VERSION' is not defined,
-> evaluates to 0 [-Wundef]
-> #if CLANG_VERSION < 110000
->     ^
-> kernel/gcov/clang.c:130:5: warning: 'CLANG_VERSION' is not defined,
-> evaluates to 0 [-Wundef]
-> #if CLANG_VERSION < 110000
->     ^
-> kernel/gcov/clang.c:330:5: warning: 'CLANG_VERSION' is not defined,
-> evaluates to 0 [-Wundef]
-> #if CLANG_VERSION < 110000
->     ^
-> kernel/gcov/clang.c:420:5: warning: 'CLANG_VERSION' is not defined,
-> evaluates to 0 [-Wundef]
-> #if CLANG_VERSION < 110000
->     ^
+Hi, Babu,
 
-Ah sorry, CONFIG_CLANG_VERSION.
-
-> Did we just break this in commit aec6c60a01d3 ("kbuild: check the
-> minimum compiler version in Kconfig") in v5.12-rc1?  So I'll keep it
-> as is for v2, but we should discuss with Masahiro and Miguel if we
-> should be removing CLANG_VERSION even if there are no in tree users at
-> the moment.  (I guess I could re-introduce it in my series for v2, but
-> that will unnecessarily complicate the backports, so I won't).  My
-> fault for not catching that in code review.
-
-Technically yes, but the {CLANG,GCC}_VERSION macros are not portable
-because they are only defined in their respective headers, resulting in
-problems like commit df3da04880b4 ("mips: Fix unroll macro when building
-with Clang").
-
-Cheers,
-Nathan
-
-> >
-> > Cheers,
-> > Nathan
-> >
-> > > >
-> > > > > ---
-> > > > >  kernel/gcov/clang.c | 69 +++++++++++++++++++++++++++++++++++++++++++++
-> > > > >  1 file changed, 69 insertions(+)
-> > > > >
-> > > > > diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-> > > > > index c94b820a1b62..20e6760ec05d 100644
-> > > > > --- a/kernel/gcov/clang.c
-> > > > > +++ b/kernel/gcov/clang.c
-> > > > > @@ -75,7 +75,9 @@ struct gcov_fn_info {
-> > > > >
-> > > > >       u32 num_counters;
-> > > > >       u64 *counters;
-> > > > > +#if __clang_major__ < 11
-> > > > >       const char *function_name;
-> > > > > +#endif
-> > > > >  };
-> > > > >
-> > > > >  static struct gcov_info *current_info;
-> > > > > @@ -105,6 +107,7 @@ void llvm_gcov_init(llvm_gcov_callback writeout, llvm_gcov_callback flush)
-> > > > >  }
-> > > > >  EXPORT_SYMBOL(llvm_gcov_init);
-> > > > >
-> > > > > +#if __clang_major__ < 11
-> > > > >  void llvm_gcda_start_file(const char *orig_filename, const char version[4],
-> > > > >               u32 checksum)
-> > > > >  {
-> > > > > @@ -113,7 +116,17 @@ void llvm_gcda_start_file(const char *orig_filename, const char version[4],
-> > > > >       current_info->checksum = checksum;
-> > > > >  }
-> > > > >  EXPORT_SYMBOL(llvm_gcda_start_file);
-> > > > > +#else
-> > > > > +void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
-> > > > > +{
-> > > > > +     current_info->filename = orig_filename;
-> > > > > +     current_info->version = version;
-> > > > > +     current_info->checksum = checksum;
-> > > > > +}
-> > > > > +EXPORT_SYMBOL(llvm_gcda_start_file);
-> > > > > +#endif
-> > > > >
-> > > > > +#if __clang_major__ < 11
-> > > > >  void llvm_gcda_emit_function(u32 ident, const char *function_name,
-> > > > >               u32 func_checksum, u8 use_extra_checksum, u32 cfg_checksum)
-> > > > >  {
-> > > > > @@ -133,6 +146,24 @@ void llvm_gcda_emit_function(u32 ident, const char *function_name,
-> > > > >       list_add_tail(&info->head, &current_info->functions);
-> > > > >  }
-> > > > >  EXPORT_SYMBOL(llvm_gcda_emit_function);
-> > > > > +#else
-> > > > > +void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
-> > > > > +             u8 use_extra_checksum, u32 cfg_checksum)
-> > > > > +{
-> > > > > +     struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-> > > > > +
-> > > > > +     if (!info)
-> > > > > +             return;
-> > > > > +
-> > > > > +     INIT_LIST_HEAD(&info->head);
-> > > > > +     info->ident = ident;
-> > > > > +     info->checksum = func_checksum;
-> > > > > +     info->use_extra_checksum = use_extra_checksum;
-> > > > > +     info->cfg_checksum = cfg_checksum;
-> > > > > +     list_add_tail(&info->head, &current_info->functions);
-> > > > > +}
-> > > > > +EXPORT_SYMBOL(llvm_gcda_emit_function);
-> > > > > +#endif
-> > > > >
-> > > > >  void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
-> > > > >  {
-> > > > > @@ -295,6 +326,7 @@ void gcov_info_add(struct gcov_info *dst, struct gcov_info *src)
-> > > > >       }
-> > > > >  }
-> > > > >
-> > > > > +#if __clang_major__ < 11
-> > > > >  static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
-> > > > >  {
-> > > > >       size_t cv_size; /* counter values size */
-> > > > > @@ -322,6 +354,28 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
-> > > > >       kfree(fn_dup);
-> > > > >       return NULL;
-> > > > >  }
-> > > > > +#else
-> > > > > +static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
-> > > > > +{
-> > > > > +     size_t cv_size; /* counter values size */
-> > > > > +     struct gcov_fn_info *fn_dup = kmemdup(fn, sizeof(*fn),
-> > > > > +                     GFP_KERNEL);
-> > > > > +     if (!fn_dup)
-> > > > > +             return NULL;
-> > > > > +     INIT_LIST_HEAD(&fn_dup->head);
-> > > > > +
-> > > > > +     cv_size = fn->num_counters * sizeof(fn->counters[0]);
-> > > > > +     fn_dup->counters = vmalloc(cv_size);
-> > > > > +     if (!fn_dup->counters) {
-> > > > > +             kfree(fn_dup);
-> > > > > +             return NULL;
-> > > > > +     }
-> > > > > +
-> > > > > +     memcpy(fn_dup->counters, fn->counters, cv_size);
-> > > > > +
-> > > > > +     return fn_dup;
-> > > > > +}
-> > > > > +#endif
-> > > > >
-> > > > >  /**
-> > > > >   * gcov_info_dup - duplicate profiling data set
-> > > > > @@ -362,6 +416,7 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
-> > > > >   * gcov_info_free - release memory for profiling data set duplicate
-> > > > >   * @info: profiling data set duplicate to free
-> > > > >   */
-> > > > > +#if __clang_major__ < 11
-> > > > >  void gcov_info_free(struct gcov_info *info)
-> > > > >  {
-> > > > >       struct gcov_fn_info *fn, *tmp;
-> > > > > @@ -375,6 +430,20 @@ void gcov_info_free(struct gcov_info *info)
-> > > > >       kfree(info->filename);
-> > > > >       kfree(info);
-> > > > >  }
-> > > > > +#else
-> > > > > +void gcov_info_free(struct gcov_info *info)
-> > > > > +{
-> > > > > +     struct gcov_fn_info *fn, *tmp;
-> > > > > +
-> > > > > +     list_for_each_entry_safe(fn, tmp, &info->functions, head) {
-> > > > > +             vfree(fn->counters);
-> > > > > +             list_del(&fn->head);
-> > > > > +             kfree(fn);
-> > > > > +     }
-> > > > > +     kfree(info->filename);
-> > > > > +     kfree(info);
-> > > > > +}
-> > > > > +#endif
-> > > > >
-> > > > >  #define ITER_STRIDE  PAGE_SIZE
-> > > > >
-> > > > >
-> > > > > base-commit: f78d76e72a4671ea52d12752d92077788b4f5d50
-> > > > > --
-> > > > > 2.31.0.rc2.261.g7f71774620-goog
-> > > > >
-> > >
-> > >
-> > >
-> > > --
-> > > Thanks,
-> > > ~Nick Desaulniers
+On Fri, Mar 12, 2021 at 01:12:35PM -0600, Babu Moger wrote:
+> > -			printf("# dmesg: %s", line);
+> > +			ksft_print_msg("dmesg: %s", line);
+> >  		if (strstr(line, "resctrl:"))
+> > -			printf("# dmesg: %s", line);
+> > +			ksft_print_msg("dmesg: %s", line);
 > 
+> In general, this patch has some minor nits. When displaying the messages,
+>  normally the first character should be capitalized.
+> ksft_print_msg("checking for pass/fail\n");
+> should be
+>  ksft_print_msg("Checking for pass/fail\n");
 > 
+> And
+> ksft_print_msg("Please Enter value in range 1 to %d\n",count_of_bits);
+> Should be
 > 
-> -- 
-> Thanks,
-> ~Nick Desaulniers
+> ksft_print_msg("Please enter value in range 1 to %d\n", count_of_bits);
 > 
-> -- 
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdmV5co%2BmMSBbnnXyBXiwOha%3DS987PMA68Xe9jP8gJYkdw%40mail.gmail.com.
+> I am not too concerned about this. You can improve it if you like it.
+> 
+Ok. Will fix them.
+
+Thanks.
+
+-Fenghua
