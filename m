@@ -2,76 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABFF338BE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B68338B89
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhCLLwr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 06:52:47 -0500
-Received: from aposti.net ([89.234.176.197]:38764 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231611AbhCLLwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:52:22 -0500
-Date:   Thu, 11 Mar 2021 16:12:55 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 3/5] drm: Add and export function
- drm_gem_cma_mmap_noncoherent
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Message-Id: <JPBTPQ.TL10VUKPUBL23@crapouillou.net>
-In-Reply-To: <20210311123642.GA1741910@infradead.org>
-References: <20210307202835.253907-1-paul@crapouillou.net>
-        <20210307202835.253907-4-paul@crapouillou.net>
-        <20210311122642.GB1739082@infradead.org>
-        <3I1TPQ.E55GRWWDYVRG@crapouillou.net>
-        <20210311123642.GA1741910@infradead.org>
+        id S232146AbhCLLcm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 06:32:42 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:49002 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232105AbhCLLcd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:32:33 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id DB9743A7C4D;
+        Fri, 12 Mar 2021 06:55:05 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id fMh4KBrl0xau; Fri, 12 Mar 2021 06:55:05 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 666E73A7C0B;
+        Fri, 12 Mar 2021 06:54:20 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id YlJtvZ5gjimV; Fri, 12 Mar 2021 06:54:20 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id A86A53A7B9D;
+        Fri, 12 Mar 2021 06:53:37 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 10:53:49 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312095337.A86A53A7B9D@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
+Sir/Madam,
 
-Le jeu. 11 mars 2021 � 12:36, Christoph Hellwig <hch@infradead.org> a 
-�crit :
-> On Thu, Mar 11, 2021 at 12:32:27PM +0000, Paul Cercueil wrote:
->>  > dma_to_phys must not be used by drivers.
->>  >
->>  > I have a proper helper for this waiting for users:
->>  >
->>  > 
->> http://git.infradead.org/users/hch/misc.git/commitdiff/96a546e7229ec53aadbdb7936d1e5e6cb5958952
->>  >
->>  > If you can confirm the helpers works for you I can try to still 
->> sneak
->>  > it to Linus for 5.12 to ease the merge pain.
->> 
->>  I can try. How do I get a page pointer from a dma_addr_t?
-> 
-> You don't - you get it from using virt_to_page on the pointer returned
-> from dma_alloc_noncoherent.  That beind said to keep the API sane I
-> should probably add a wrapper that does that for you.
+CONGRATULATIONS!!!
 
-I tested using:
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-ret = dma_mmap_pages(cma_obj->base.dev->dev,
-                     vma, vma->vm_end - vma->vm_start,
-                     virt_to_page(cma_obj->vaddr));
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-It works fine.
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-I think I can use remap_pfn_range() for now, and switch to your new API 
-once it's available in drm-misc-next.
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
-Cheers,
--Paul
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
 
 
